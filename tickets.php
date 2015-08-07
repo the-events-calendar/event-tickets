@@ -52,10 +52,16 @@ function tribe_init_tickets_autoloading() {
 	if ( ! class_exists( 'Tribe__Events__Autoloader' ) ) {
 		return;
 	}
-
 	$autoloader = Tribe__Events__Autoloader::instance();
 
 	$autoloader->register_prefix( 'Tribe__Events__Tickets__', dirname( __FILE__ ) . '/src/Tribe/Tickets' );
+
+ //require_once $this->pluginPath . 'src/functions/template-tags/tickets.php';
+
+// foreach ( glob( $this->pluginPath . 'src/deprecated/*.php' ) as $file ) {
+//  $class_name = str_replace( '.php', '', basename( $file ) );
+//  $autoloader->register_class( $class_name, $file );
+// }
 
 	$autoloader->register_autoloader();
 }
