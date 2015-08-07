@@ -1,0 +1,24 @@
+# /vendor/
+.DS_Store
+.idea
+
+# build files for js minification
+
+compiler.jar
+*.ps1
+
+phpunit.xml
+codeception.yml
+tests/codeception/_output
+vendor/badcow
+vendor/bin
+vendor/codeception
+vendor/composer
+vendor/facebook
+vendor/guzzlehttp
+vendor/lucatume
+vendor/ocramius
+vendor/phpunit
+vendor/sebastian
+vendor/symfony
+vendor/autoload.php
