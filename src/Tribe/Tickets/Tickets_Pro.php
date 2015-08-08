@@ -104,7 +104,7 @@ class Tribe__Events__Tickets__Tickets_Pro {
 			return;
 		}
 
-		$resources_url = plugins_url( 'resources', dirname( ( dirname( __FILE__ ) ) ) );
+		$resources_url = plugins_url( 'resources', dirname( dirname( __FILE__ ) ) );
 
 		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Main::VERSION ) );
 		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Main::VERSION ), 'print' );
