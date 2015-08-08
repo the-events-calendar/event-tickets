@@ -145,8 +145,9 @@ class Tribe__Events__Tickets__Attendees_Table extends WP_List_Table {
 
 		// If the warning flag is set, add the appropriate icon
 		if ( $warning ) {
-			$tec  = Tribe__Events__Main::instance();
-			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", trailingslashit( $tec->pluginUrl ) . 'resources/images/warning.png' );
+			$resources_url = plugins_url( 'resources', dirname( dirname( __FILE__ ) ) );
+
+			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", $resources_url . '/images/warning.png' );
 		}
 
 		// Look for an order_status_label, fall back on the actual order_status string @todo remove fallback in 3.4.3
