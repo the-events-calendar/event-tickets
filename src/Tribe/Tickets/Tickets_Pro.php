@@ -104,9 +104,11 @@ class Tribe__Events__Tickets__Tickets_Pro {
 			return;
 		}
 
-		wp_enqueue_style( self::$attendees_slug, tribe_events_resource_url( 'tickets-attendees.css' ), array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Main::VERSION ) );
-		wp_enqueue_style( self::$attendees_slug . '-print', tribe_events_resource_url( 'tickets-attendees-print.css' ), array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Main::VERSION ), 'print' );
-		wp_enqueue_script( self::$attendees_slug, tribe_events_resource_url( 'tickets-attendees.js' ), array( 'jquery' ), apply_filters( 'tribe_events_js_version', Tribe__Events__Main::VERSION ) );
+		$resources_url = plugins_url( 'resources', dirname( ( dirname( __FILE__ ) ) ) );
+
+		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Main::VERSION ) );
+		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Main::VERSION ), 'print' );
+		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), apply_filters( 'tribe_events_js_version', Tribe__Events__Main::VERSION ) );
 
 		$mail_data = array(
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
@@ -185,7 +187,7 @@ class Tribe__Events__Tickets__Tickets_Pro {
 	 * Renders the Attendees page
 	 */
 	public function attendees_page_inside() {
-		include $this->path . 'src/admin-views/tickets/attendees.php';
+		include $this->path . 'src/admin-views/attendees.php';
 	}
 
 
@@ -349,7 +351,7 @@ class Tribe__Events__Tickets__Tickets_Pro {
 		$endMeridianOptions   = Tribe__Events__View_Helpers::getMeridianOptions( null );
 
 		$tickets = Tribe__Events__Tickets__Tickets::get_event_tickets( $post_id );
-		include $this->path . 'src/admin-views/tickets/meta-box.php';
+		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
 	/**
@@ -359,7 +361,7 @@ class Tribe__Events__Tickets__Tickets_Pro {
 	 */
 	public function ticket_list_markup( $tickets = array() ) {
 		if ( ! empty( $tickets ) ) {
-			include $this->path . 'src/admin-views/tickets/list.php';
+			include $this->path . 'src/admin-views/list.php';
 		}
 	}
 

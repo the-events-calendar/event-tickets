@@ -32,16 +32,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-add_action( 'plugins_loaded', 'tribe_tickets_init', 15 );
+// This needs to happen before Tickets PRO
+add_action( 'plugins_loaded', 'tribe_tickets_init', 5 );
 
 
 function tribe_tickets_init() {
+
+	if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+		return;
+	}
+
 	tribe_init_tickets_autoloading();
 
 	load_plugin_textdomain( 'tribe-tickets', false, trailingslashit( basename( dirname( __FILE__ ) ) ) . 'lang/' );
 
-	add_action( 'add_meta_boxes', array( 'Tribe__Events__Tickets__Metabox', 'maybe_add_meta_box' ) );
-	add_action( 'admin_enqueue_scripts', array( 'Tribe__Events__Tickets__Metabox', 'add_admin_scripts' ) );
+	add_action( 'add_meta_boxes',        array( 'Tribe__Events__Tickets__Metabox', 'maybe_add_meta_box' ) );
+	add_action( 'admin_enqueue_scripts', array( 'Tribe__Events__Tickets__Metabox', 'add_admin_scripts'  ) );
 }
 
 /**
@@ -56,12 +62,12 @@ function tribe_init_tickets_autoloading() {
 
 	$autoloader->register_prefix( 'Tribe__Events__Tickets__', dirname( __FILE__ ) . '/src/Tribe/Tickets' );
 
- //require_once $this->pluginPath . 'src/functions/template-tags/tickets.php';
+	require_once dirname( __FILE__ ) . '/src/template-tags/tickets.php';
 
-// foreach ( glob( $this->pluginPath . 'src/deprecated/*.php' ) as $file ) {
-//  $class_name = str_replace( '.php', '', basename( $file ) );
-//  $autoloader->register_class( $class_name, $file );
-// }
+	foreach ( glob( dirname( __FILE__ ) . '/src/deprecated/*.php' ) as $file ) {
+		$class_name = str_replace( '.php', '', basename( $file ) );
+		$autoloader->register_class( $class_name, $file );
+	}
 
 	$autoloader->register_autoloader();
 }
