@@ -188,13 +188,15 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 
 	/**
 	 * Generate and store all the attendees information for a new order.
+	 *
 	 * @param $order_id
 	 */
 	public function generate_tickets( $order_id ) {
 		// Bail if we already generated the info for this order
 		$done = get_post_meta( $order_id, $this->order_has_tickets, true );
-		if ( ! empty( $done ) )
+		if ( ! empty( $done ) ) {
 			return;
+		}
 
 		$has_tickets = false;
 		// Get the items purchased in this order
@@ -203,8 +205,9 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		$order_items = $order->get_items();
 
 		// Bail if the order is empty
-		if ( empty( $order_items ) )
+		if ( empty( $order_items ) ) {
 			return;
+		}
 
 		// Iterate over each product
 		foreach ( (array) $order_items as $item ) {
@@ -220,10 +223,12 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 				// Iterate over all the amount of tickets purchased (for this product)
 				for ( $i = 0; $i < intval( $item['qty'] ); $i ++ ) {
 
-					$attendee = array( 'post_status' => 'publish',
-					                   'post_title'  => $order_id . ' | ' . $item['name'] . ' | ' . ( $i + 1 ),
-					                   'post_type'   => $this->attendee_object,
-					                   'ping_status' => 'closed' );
+					$attendee = array(
+						'post_status' => 'publish',
+						'post_title'  => $order_id . ' | ' . $item['name'] . ' | ' . ( $i + 1 ),
+						'post_type'   => $this->attendee_object,
+						'ping_status' => 'closed'
+					);
 
 					// Insert individual ticket purchased
 					$attendee_id = wp_insert_post( $attendee );
@@ -231,7 +236,8 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 					update_post_meta( $attendee_id, $this->atendee_product_key, $product_id );
 					update_post_meta( $attendee_id, $this->atendee_order_key, $order_id );
 					update_post_meta( $attendee_id, $this->atendee_event_key, $event_id );
-					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $order_id, $attendee_id ) );
+					update_post_meta( $attendee_id, $this->security_code,
+						$this->generate_security_code( $order_id, $attendee_id ) );
 				}
 			}
 		}
@@ -260,9 +266,9 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	/**
 	 * Saves a given ticket (WooCommerce product)
 	 *
-	 * @param int                     $event_id
+	 * @param int                                   $event_id
 	 * @param Tribe__Events__Tickets__Ticket_Object $ticket
-	 * @param array                   $raw_data
+	 * @param array                                 $raw_data
 	 *
 	 * @return bool
 	 */
@@ -329,7 +335,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 
 		// Decrement the sales figure
 		$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-		update_post_meta( $product_id, 'total_sales', --$sales );
+		update_post_meta( $product_id, 'total_sales', -- $sales );
 
 		//Store name so we can still show it in the attendee list
 		$attendees      = $this->get_attendees( $event_id );
@@ -363,8 +369,9 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	protected function get_tickets( $event_id ) {
 		$ticket_ids = $this->get_tickets_ids( $event_id );
 
-		if ( ! $ticket_ids )
+		if ( ! $ticket_ids ) {
 			return array();
+		}
 
 		$tickets = array();
 
@@ -417,171 +424,28 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * @return null|Tribe__Events__Tickets__Ticket_Object
 	 */
 	public function get_ticket( $event_id, $ticket_id ) {
-		if ( class_exists( 'WC_Product_Simple' ) ) {
-			$product = new WC_Product_Simple( $ticket_id );
-		} else {
-			$product = new WC_Product( $ticket_id );
+		$product = get_post( $ticket_id );
+
+		if ( ! $product ) {
+			return null;
 		}
 
-		if ( ! $product )
-			return null;
+		$return = new Tribe__Events__Tickets__Ticket_Object();
+		$qty    = get_post_meta( $ticket_id, 'total_sales', true );
 
-		$return       = new Tribe__Events__Tickets__Ticket_Object();
-		$product_data = $product->get_post_data();
-		$qty          = get_post_meta( $ticket_id, 'total_sales', true );
-
-		$return->description    = $product_data->post_excerpt;
+		$return->description    = $product->post_excerpt;
 		$return->frontend_link  = get_permalink( $ticket_id );
 		$return->ID             = $ticket_id;
-		$return->name           = $product->get_title();
-		$return->price          = $product->get_price();
-		$return->regular_price  = $product->get_regular_price();
-		$return->on_sale        = (bool) $product->is_on_sale();
+		$return->name           = $product->post_title;
+		$return->price          = 0;
 		$return->provider_class = get_class( $this );
-		$return->admin_link     = admin_url( sprintf( get_post_type_object( $product_data->post_type )->_edit_link . '&action=edit', $ticket_id ) );
-		$return->stock          = $product->get_stock_quantity();
+		$return->admin_link     = '';
+		$return->stock          = 0;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->qty_sold       = $qty ? $qty : 0;
-		$return->qty_pending    = $qty ? $this->count_incomplete_order_items( $ticket_id ) : 0;
 
 		return $return;
-	}
-
-	/**
-	 * Determine the total number of the specified ticket contained in orders which have not
-	 * progressed to a "completed" status.
-	 *
-	 * Essentially this returns the total quantity of tickets held within orders that are
-	 * "pending", "on hold" or "processing".
-	 *
-	 * @param $ticket_id
-	 * @return int
-	 */
-	protected function count_incomplete_order_items( $ticket_id ) {
-		$total = 0;
-
-		$incomplete_orders = version_compare( '2.2', WooCommerce::instance()->version, '<=' )
-			? $this->get_incomplete_orders( $ticket_id ) : $this->backcompat_get_incomplete_orders( $ticket_id );
-
-		foreach ( $incomplete_orders as $order_id ) {
-			$order = new WC_Order( $order_id );
-
-			foreach ( (array) $order->get_items() as $order_item ) {
-				if ( $order_item['product_id'] == $ticket_id ) {
-					$total += (int) $order_item['qty'];
-				}
-			}
-		}
-
-		return $total;
-	}
-
-	protected function get_incomplete_orders( $ticket_id ) {
-		global $wpdb;
-
-		$order_state_sql = '';
-		$incomplete_states = $this->incomplete_order_states();
-
-		if ( ! empty( $incomplete_states ) )
-			$order_state_sql = "AND posts.post_status IN ($incomplete_states)";
-
-		$query = "
-			SELECT
-			    items.order_id
-			FROM
-			    {$wpdb->prefix}woocommerce_order_itemmeta AS meta
-			        INNER JOIN
-			    {$wpdb->prefix}woocommerce_order_items AS items ON meta.order_item_id = items.order_item_id
-			        INNER JOIN
-			    {$wpdb->prefix}posts AS posts ON items.order_id = posts.ID
-			WHERE
-			    (meta_key = '_product_id'
-			        AND meta_value = %d
-			        $order_state_sql );
-		";
-
-		return (array) $wpdb->get_col( $wpdb->prepare( $query, $ticket_id ) );
-	}
-
-	/**
-	 * Returns a comma separated list of term IDs representing incomplete order
-	 * states.
-	 *
-	 * @return string
-	 */
-	protected function incomplete_order_states() {
-		$considered_incomplete = (array) apply_filters( 'wootickets_incomplete_order_states', array(
-			'wc-on-hold',
-			'wc-pending',
-			'wc-processing'
-		) );
-
-		foreach ( $considered_incomplete as &$incomplete )
-			$incomplete = '"' . $incomplete . '"';
-
-		return join( ',', $considered_incomplete );
-	}
-
-	/**
-	 * Retrieves the IDs of any orders containing the specified product (ticket_id) so
-	 * long as the order is considered incomplete.
-	 *
-	 * @deprecated remove in 4.0 (provides compatibility with pre-2.2 WC releases)
-	 *
-	 * @param $ticket_id
-	 *
-	 * @return array
-	 */
-	protected function backcompat_get_incomplete_orders( $ticket_id ) {
-		global $wpdb;
-		$total = 0;
-
-		$incomplete_states = $this->backcompat_incomplete_order_states();
-		if ( empty( $incomplete_states ) ) return array();
-
-		$query = "
-			SELECT
-			    items.order_id
-			FROM
-			    {$wpdb->prefix}woocommerce_order_itemmeta AS meta
-			        INNER JOIN
-			    {$wpdb->prefix}woocommerce_order_items AS items ON meta.order_item_id = items.order_item_id
-			        INNER JOIN
-			    {$wpdb->prefix}term_relationships AS relationships ON items.order_id = relationships.object_id
-			WHERE
-			    (meta_key = '_product_id'
-			        AND meta_value = %d )
-			        AND (relationships.term_taxonomy_id IN ( $incomplete_states ));
-		";
-
-		return (array) $wpdb->get_col( $wpdb->prepare( $query, $ticket_id ) );
-	}
-
-	/**
-	 * Returns a comma separated list of term IDs representing incomplete order
-	 * states.
-	 *
-	 * @deprecated remove in 4.0 (provides compatibility with pre-2.2 WC releases)
-	 *
-	 * @return string
-	 */
-	protected function backcompat_incomplete_order_states() {
-		$considered_incomplete = (array) apply_filters( 'wootickets_incomplete_order_states', array(
-			'pending',
-			'on-hold',
-			'processing'
-		) );
-
-		$incomplete_states = array();
-
-		foreach ( $considered_incomplete as $term_slug ) {
-			$term = get_term_by( 'slug', $term_slug, 'shop_order_status' );
-			if ( false === $term ) continue;
-			$incomplete_states[] = (int) $term->term_id;
-		}
-
-		return join( ',', $incomplete_states );
 	}
 
 	/**
@@ -629,6 +493,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 *     provider
 	 *
 	 * @param $event_id
+	 *
 	 * @return array
 	 */
 	protected function get_attendees( $event_id ) {
@@ -641,75 +506,41 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			'order'          => 'DESC'
 		) );
 
-		if ( ! $attendees_query->have_posts() ) return array();
+		if ( ! $attendees_query->have_posts() ) {
+			return array();
+		}
+
 		$attendees = array();
 
 		foreach ( $attendees_query->posts as $attendee ) {
-			$order_id   = get_post_meta( $attendee->ID, $this->atendee_order_key, true );
 			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
 			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
 			$product_id = get_post_meta( $attendee->ID, $this->atendee_product_key, true );
-			$name       = get_post_meta( $order_id, '_billing_first_name', true ) . ' ' . get_post_meta( $order_id, '_billing_last_name', true );
-			$email      = get_post_meta( $order_id, '_billing_email', true );
+			$name       = get_post_meta( $attendee->ID, 'name', true );
+			$email      = get_post_meta( $attendee->ID, 'email', true );
 
-			if ( empty( $product_id ) ) continue;
-
-			$order_status = $this->order_status( $order_id );
-			$order_status_label = __( $order_status, 'woocommerce' );
-			$order_warning = false;
-
-			// Warning flag for refunded, cancelled and failed orders
-			switch ( $order_status ) {
-				case 'refunded': case 'cancelled': case 'failed':
-					$order_warning = true;
-				break;
+			if ( empty( $product_id ) ) {
+				continue;
 			}
 
-			// Warning flag where the order post was trashed
-			if ( ! empty( $order_status ) && get_post_status( $order_id ) == 'trash' ) {
-				$order_status_label = sprintf( __( 'In trash (was %s)', 'tribe-wootickets' ), $order_status_label );
-				$order_warning = true;
-			}
-
-			// Warning flag where the order has been completely deleted
-			if ( empty( $order_status ) && ! get_post( $order_id ) ) {
-				$order_status_label = __( 'Deleted', 'tribe-wootickets' );
-				$order_warning = true;
-			}
-
-			$product = get_post( $product_id );
-			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'wootickets' );
+			$product       = get_post( $product_id );
+			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID,
+					$this->deleted_product, true ) . ' ' . __( '(deleted)', 'wootickets' );
 
 			$attendees[] = array(
-				'order_id'           => $order_id,
-				'order_status'       => $order_status,
-				'order_status_label' => $order_status_label,
-				'order_warning'      => $order_warning,
-				'purchaser_name'     => $name,
-				'purchaser_email'    => $email,
-				'ticket'             => $product_title,
-				'attendee_id'        => $attendee->ID,
-				'security'           => $security,
-				'product_id'         => $product_id,
-				'check_in'           => $checkin,
-				'provider'           => __CLASS__ );
+				'order_id'        => '',
+				'purchaser_name'  => $name,
+				'purchaser_email' => $email,
+				'ticket'          => $product_title,
+				'attendee_id'     => $attendee->ID,
+				'security'        => $security,
+				'product_id'      => $product_id,
+				'check_in'        => $checkin,
+				'provider'        => __CLASS__
+			);
 		}
 
 		return $attendees;
-	}
-
-	/**
-	 * Returns the order status.
-	 *
-	 * @todo remove safety check against existence of wc_get_order_status_name() in future release
-	 *       (exists for backward compatibility with versions of WC below 2.2)
-	 *
-	 * @param $order_id
-	 * @return string
-	 */
-	protected function order_status( $order_id ) {
-		if ( ! function_exists( 'wc_get_order_status_name' ) ) return __( 'Unknown', 'tribe-wootickets' );
-		return wc_get_order_status_name( get_post_status( $order_id ) );
 	}
 
 	/**
@@ -721,7 +552,8 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 */
 	public function checkin( $attendee_id ) {
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
-		do_action( 'wootickets_checkin', $attendee_id );
+		do_action( 'rsvp_checkin', $attendee_id );
+
 		return true;
 	}
 
@@ -734,50 +566,20 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 */
 	public function uncheckin( $attendee_id ) {
 		delete_post_meta( $attendee_id, $this->checkin_key );
-		do_action( 'wootickets_uncheckin', $attendee_id );
+		do_action( 'rsvp_uncheckin', $attendee_id );
+
 		return true;
-	}
-
-	/**
-	 * Add the extra options in the admin's new/edit ticket metabox
-	 *
-	 * @param $event_id
-	 * @param $ticket_id
-	 * @return void
-	 */
-	public function do_metabox_advanced_options( $event_id, $ticket_id ) {
-		$url = $stock = $sku = '';
-
-		if ( ! empty( $ticket_id ) ) {
-			$ticket = $this->get_ticket( $event_id, $ticket_id );
-			if ( ! empty( $ticket ) ) {
-				$stock = $ticket->stock;
-				$sku   = get_post_meta( $ticket_id, '_sku', true );
-			}
-		}
-
-		include $this->pluginPath . 'src/admin-views/metabox-advanced.php';
 	}
 
 	/**
 	 * Links to sales report for all tickets for this event.
 	 *
 	 * @param $event_id
+	 *
 	 * @return string
 	 */
 	public function get_event_reports_link( $event_id ) {
-		$ticket_ids = (array) $this->get_tickets_ids( $event_id );
-		if ( empty( $ticket_ids ) ) return '';
-
-		$query = array(
-			'page' => 'wc-reports',
-			'tab' => 'orders',
-			'report' => 'sales_by_product',
-			'product_ids' => $ticket_ids
-		);
-
-		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
-		return '<small> <a href="' . esc_url( $report_url ) . '">' . __( 'Event sales report', 'tribe-wootickets' ) . '</a> </small>';
+		return '';
 	}
 
 	/**
@@ -785,103 +587,44 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
+	 *
 	 * @return string
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
-		if ( empty( $ticket_id ) )
-			return '';
-
-		$query = array(
-			'page' => 'wc-reports',
-			'tab' => 'orders',
-			'report' => 'sales_by_product',
-			'product_ids' => $ticket_id
-		);
-
-		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
-		return '<span><a href="' . esc_url( $report_url ) . '">' . __( 'Report', 'tribe-wootickets' ) . '</a></span>';
+		return '';
 	}
 
-	/**
-	 * Registers a metabox in the WooCommerce product edit screen
-	 * with a link back to the product related Event.
-	 *
-	 */
-	public function woocommerce_meta_box() {
-		$event_id = get_post_meta( get_the_ID(), $this->event_key, true );
-
-		if ( ! empty( $event_id ) )
-			add_meta_box( 'wootickets-linkback', 'Event', array( $this,
-				'woocommerce_meta_box_inside', ), 'product', 'normal', 'high' );
-	}
-
-	/**
-	 * Contents for the metabox in the WooCommerce product edit screen
-	 * with a link back to the product related Event.
-	 */
-	public function woocommerce_meta_box_inside() {
-		$event_id = get_post_meta( get_the_ID(), $this->event_key, true );
-		if ( ! empty( $event_id ) )
-			echo sprintf( '%s <a href="%s">%s</a>', __( 'This is a ticket for the event:', 'tribe-wootickets' ), esc_url( get_edit_post_link( $event_id ) ), esc_html( get_the_title( $event_id ) ) );
-	}
-
-	/**
-	 * Get's the WC product price html
-	 *
-	 * @param int|object $product
-	 *
-	 * @return string
-	 */
-	public function get_price_html( $product ) {
-		if ( is_numeric( $product ) ) {
-			if ( class_exists( 'WC_Product_Simple' ) ) {
-				$product = new WC_Product_Simple( $product );
-			} else {
-				$product = new WC_Product( $product );
-			}
-		}
-
-		if ( ! method_exists( $product, 'get_price_html' ) )
-			return '';
-
-		return $product->get_price_html();
-	}
 
 	public function get_tickets_ids( $event_id ) {
-		if ( is_object( $event_id ) )
+		if ( is_object( $event_id ) ) {
 			$event_id = $event_id->ID;
+		}
 
-		$query = new WP_Query( array( 'post_type'      => 'product',
-		                              'meta_key'       => $this->event_key,
-		                              'meta_value'     => $event_id,
-		                              'meta_compare'   => '=',
-		                              'posts_per_page' => - 1,
-		                              'fields'         => 'ids',
-		                              'post_status'    => 'publish', ) );
+		$query = new WP_Query( array(
+			'post_type'      => 'product',
+			'meta_key'       => $this->event_key,
+			'meta_value'     => $event_id,
+			'meta_compare'   => '=',
+			'posts_per_page' => - 1,
+			'fields'         => 'ids',
+			'post_status'    => 'publish',
+		) );
 
 		return $query->posts;
 	}
 
 	/**
-	 * Adds an action to resend the tickets to the customer
-	 * in the WooCommerce actions dropdown, in the order edit screen.
+	 * Renders the advanced fields in the new/edit ticket form.
+	 * Using the method, providers can add as many fields as
+	 * they want, specific to their implementation.
 	 *
-	 * @param $emails
 	 *
-	 * @return array
+	 * @param $event_id
+	 * @param $ticket_id
+	 *
+	 * @return mixed
 	 */
-	public function add_resend_tickets_action( $emails ) {
-		$order = get_the_ID();
-
-		if ( empty( $order ) )
-			return $emails;
-
-		$has_tickets = get_post_meta( $order, $this->order_has_tickets, true );
-
-		if ( ! $has_tickets )
-			return $emails;
-
-		$emails[] = 'wootickets';
-		return $emails;
+	public function do_metabox_advanced_options( $event_id, $ticket_id ) {
+		return;
 	}
 }
