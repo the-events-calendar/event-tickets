@@ -154,7 +154,6 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		}
 	}
 
-
 	/**
 	 * Register our custom post type
 	 */
@@ -261,7 +260,6 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	private function generate_security_code( $order_id, $attendee_id ) {
 		return substr( md5( $order_id . '_' . $attendee_id ), 0, 10 );
 	}
-
 
 	/**
 	 * Saves a given ticket (WooCommerce product)
@@ -608,7 +606,6 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
 		return '';
 	}
-
 
 	public function get_tickets_ids( $event_id ) {
 		if ( is_object( $event_id ) ) {
