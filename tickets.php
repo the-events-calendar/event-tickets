@@ -35,13 +35,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 // This needs to happen before Tickets PRO
 add_action( 'plugins_loaded', 'tribe_tickets_init', 5 );
 
+tribe_init_tickets_autoloading();
+
 function tribe_tickets_init() {
 
 	if ( ! class_exists( 'Tribe__Events__Main' ) ) {
 		return;
 	}
-
-	tribe_init_tickets_autoloading();
 
 	load_plugin_textdomain( 'tribe-tickets', false, trailingslashit( basename( dirname( __FILE__ ) ) ) . 'lang/' );
 
