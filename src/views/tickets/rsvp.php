@@ -6,7 +6,7 @@ $is_there_any_product_to_sell = false;
 ob_start();
 ?>
 <form action="" class="cart" method="post" enctype='multipart/form-data'>
-	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'tribe-wootickets' ) ?></h2>
+	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'tribe-tickets' ) ?></h2>
 
 	<table width="100%" class="tribe-events-tickets">
 		<?php
