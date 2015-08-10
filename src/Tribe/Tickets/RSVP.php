@@ -440,7 +440,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		$return->price          = 0;
 		$return->provider_class = get_class( $this );
 		$return->admin_link     = '';
-		$return->stock          = 0;
+		$return->stock          = null;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->qty_sold       = $qty ? $qty : 0;
