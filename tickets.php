@@ -35,6 +35,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 // This needs to happen before Tickets PRO
 add_action( 'plugins_loaded', 'tribe_tickets_init', 5 );
 
+// Load abstract framework early to play nice with the current
+// version of WooTickets, etc
+require_once dirname( __FILE__ ) . '/src/Tribe/Tickets/Tickets.php';
 
 function tribe_tickets_init() {
 
