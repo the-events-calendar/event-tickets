@@ -601,7 +601,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		}
 
 		$query = new WP_Query( array(
-			'post_type'      => 'product',
+			'post_type'      => $this->ticket_object,
 			'meta_key'       => $this->event_key,
 			'meta_value'     => $event_id,
 			'meta_compare'   => '=',
