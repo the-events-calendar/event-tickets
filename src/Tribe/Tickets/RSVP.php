@@ -303,6 +303,13 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			return false;
 		}
 
+		update_post_meta( $ticket->ID, '_price', $ticket->price );
+
+		if ( trim( $raw_data['ticket_rsvp_stock'] ) !== '' ) {
+			$stock = (int) $raw_data['ticket_rsvp_stock'];
+			update_post_meta( $ticket->ID, '_stock', $stock );
+		}
+
 		if ( isset( $ticket->start_date ) ) {
 			update_post_meta( $ticket->ID, '_ticket_start_date', $ticket->start_date );
 		} else {
@@ -445,10 +452,10 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		$return->frontend_link  = get_permalink( $ticket_id );
 		$return->ID             = $ticket_id;
 		$return->name           = $product->post_title;
-		$return->price          = 0;
+		$return->price          = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class = get_class( $this );
 		$return->admin_link     = '';
-		$return->stock          = null;
+		$return->stock          = get_post_meta( $ticket_id, '_stock', true );;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->qty_sold       = $qty ? $qty : 0;
@@ -633,6 +640,15 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_advanced_options( $event_id, $ticket_id ) {
-		return;
+		$stock = '';
+
+		if ( ! empty( $ticket_id ) ) {
+			$ticket = $this->get_ticket( $event_id, $ticket_id );
+			if ( ! empty( $ticket ) ) {
+				$stock = $ticket->stock;
+			}
+		}
+
+		include $this->pluginPath . 'src/admin-views/rsvp-metabox-advanced.php';
 	}
 }
