@@ -104,8 +104,8 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		/* Set up some parent's vars */
 		$this->pluginName = 'RSVP';
 		$this->pluginSlug = 'rsvp';
-		$this->pluginUrl  = trailingslashit( plugins_url( '', dirname(dirname(dirname( __FILE__ ))) ) );
-
+		$this->pluginUrl  = trailingslashit( plugins_url( '', dirname( dirname( dirname( __FILE__ ) ) ) ) );
+		$this->pluginPath = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $this->pluginUrl );
 		parent::__construct();
 
 		$this->hooks();
@@ -117,7 +117,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	public function hooks() {
 		add_action( 'init',                               array( $this, 'register_types'     )     );
 		add_action( 'init',                               array( $this, 'process_rsvp'       )     );
-		add_action( 'woocommerce_order_status_completed', array( $this, 'generate_tickets'   ), 12 );
+		//add_action( 'woocommerce_order_status_completed', array( $this, 'generate_tickets'   ), 12 );
 		add_action( 'wp_enqueue_scripts',                 array( $this, 'enqueue_styles'     ), 11 );
 	}
 
@@ -390,6 +390,14 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
+		static $done;
+
+		if ( $done ) {
+			return;
+		}
+
+		$done = true;
+
 		$post = $GLOBALS['post'];
 
 		if ( ! empty( $post->post_parent ) ) {
