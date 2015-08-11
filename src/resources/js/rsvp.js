@@ -24,7 +24,13 @@ var tribe_tickets_rsvp = {
 		this.num_attendees++;
 	};
 
+	my.remove_attendee = function( $rsvp ) {
+		$rsvp.find( '.tribe-tickets-attendee:last-child' ).remove();
+		this.num_attendees--;
+	};
+
 	my.quantity_changed = function( $quantity ) {
+		var i = 0;
 		var $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
 		var quantity = parseInt( $quantity.val(), 10 );
 
@@ -35,8 +41,12 @@ var tribe_tickets_rsvp = {
 		}
 
 		if ( quantity > this.num_attendees ) {
-			for ( var i = this.num_attendees; i < quantity; i++ ) {
+			for ( i = this.num_attendees; i < quantity; i++ ) {
 				this.add_attendee( $rsvp );
+			}
+		} else {
+			for ( i = this.num_attendees; i > quantity; i-- ) {
+				this.remove_attendee( $rsvp );
 			}
 		}
 	};
