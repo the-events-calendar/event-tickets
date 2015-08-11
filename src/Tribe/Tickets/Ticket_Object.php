@@ -137,7 +137,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Ticket_Object' ) ) {
 		 * @return boolean
 		 */
 		public function is_in_stock() {
-			return ( $this->stock - $this->qty_sold - $this->qty_pending ) > 0;
+			return ( absint( $this->stock ) - absint( $this->qty_sold ) - absint( $this->qty_pending ) ) > 0;
 		}
 	}
 }

@@ -8,7 +8,7 @@ ob_start();
 <form action="" class="cart" method="post" enctype='multipart/form-data'>
 	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'tribe-tickets' ) ?></h2>
 
-	<table width="100%" class="tribe-events-tickets">
+	<table width="100%" class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
 		foreach ( $tickets as $ticket ) {
 			// if the ticket isn't an RSVP ticket, then let's skip it
@@ -44,7 +44,7 @@ ob_start();
 						<?php echo tribe_format_currency( $ticket->price ); ?>
 					</td>
 					<td class="tickets_description">
-						<?php echo $ticket->description; ?>
+						<?php echo esc_html( $ticket->description ); ?>
 					</td>
 				</tr>
 				<?php
@@ -53,6 +53,10 @@ ob_start();
 
 		if ( $is_there_any_product_to_sell ) {
 			?>
+			<tr class="tribe-tickets-meta-row">
+				<td colspan="4" class="tribe-tickets-attendees">
+				</td>
+			</tr>
 			<tr>
 				<td colspan="4" class="add-to-cart">
 					<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'tribe-tickets' );?></button>
@@ -62,6 +66,29 @@ ob_start();
 		}
 		?>
 	</table>
+	<script type="text/tribe-template" id="tribe-tickets-rsvp-tmpl">
+		<div class="tribe-tickets-attendee" data-attendee="">
+			<h3 class="tribe-tickets-attendee-heading"></h3>
+			<table>
+				<tr class="tribe-tickets-full-name-row">
+					<td>
+						<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name:', 'tribe-tickets' ); ?></label>
+					</td>
+					<td colspan="3">
+						<input type="text" name="attendee[][full_name]" id="tribe-tickets-full-name">
+					</td>
+				</tr>
+				<tr class="tribe-tickets-email-row">
+					<td>
+						<label for="tribe-tickets-email"><?php esc_html_e( 'Email:', 'tribe-tickets' ); ?></label>
+					</td>
+					<td colspan="3">
+						<input type="email" name="attendee[][email]" id="tribe-tickets-email">
+					</td>
+				</tr>
+			</table>
+		</div>
+	</script>
 </form>
 
 <?php
