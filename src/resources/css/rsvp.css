@@ -1,1 +1,24 @@
-/* Here goes the beauty */
+.tribe-tickets-meta-row {
+	display: none;
+}
+
+.tribe-tickets-has-rsvp .tribe-tickets-meta-row {
+	display: table-row;
+}
+
+.tribe-tickets-attendee {
+	padding: 10px;
+}
+
+table.tribe-events-tickets td {
+	padding: 8px 10px;
+}
+
+.tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee table,
+.tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee tr,
+.tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee td,
+.tribe-events-tickets .tribe-tickets-attendee table,
+.tribe-events-tickets .tribe-tickets-attendee tr,
+.tribe-events-tickets .tribe-tickets-attendee td {
+	border: 0;
+}

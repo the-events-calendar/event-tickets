@@ -115,10 +115,10 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Registers all actions/filters
 	 */
 	public function hooks() {
-		add_action( 'init',                               array( $this, 'register_types'     )     );
-		add_action( 'init',                               array( $this, 'process_rsvp'       )     );
+		add_action( 'init', array( $this, 'register_types' ) );
+		add_action( 'init', array( $this, 'process_rsvp' ) );
 		//add_action( 'woocommerce_order_status_completed', array( $this, 'generate_tickets'   ), 12 );
-		add_action( 'wp_enqueue_scripts',                 array( $this, 'enqueue_styles'     ), 11 );
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
 	}
 
 	/**
@@ -128,22 +128,24 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * @since  3.9
 	 * @return void
 	 */
-	public function enqueue_styles() {
+	public function enqueue_resources() {
 		if ( ! is_singular( Tribe__Events__Main::POSTTYPE ) ) {
 			return;
 		}
 
 
-		$stylesheet_url = $this->pluginUrl . 'src/resources/css/wootickets.css';
-
-		// Get minified CSS if it exists
+		$stylesheet_url = $this->pluginUrl . 'src/resources/css/rsvp.css';
 		$stylesheet_url = Tribe__Events__Template_Factory::getMinFile( $stylesheet_url, true );
 
 		// apply filters
-		$stylesheet_url = apply_filters( 'tribe_ticket_rsvp_stylesheet_url', $stylesheet_url );
+		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
 
-		wp_enqueue_style( 'TribeEventsTicketsRSVP', $stylesheet_url, array(),
-			apply_filters( 'tribe_events_tickets_rsvp_css_version', Tribe__Events__Tickets__RSVP::VERSION ) );
+		wp_enqueue_style(
+			'TribeEventsTicketsRSVP',
+			$stylesheet_url,
+			array(),
+			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Events__Tickets__RSVP::VERSION )
+		);
 
 		//Check for override stylesheet
 		$user_stylesheet_url = Tribe__Events__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
@@ -152,8 +154,23 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		if ( $user_stylesheet_url ) {
 			wp_enqueue_style( 'tribe-events-tickets-rsvp-override-style', $user_stylesheet_url );
 		}
-	}
 
+		$js_url = $this->pluginUrl . 'src/resources/js/rsvp.js';
+		$js_url = Tribe__Events__Template_Factory::getMinFile( $js_url, true );
+		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
+
+		wp_enqueue_script(
+			'tribe-tickets-rsvp',
+			$js_url,
+			array( 'jquery' ),
+			apply_filters( 'tribe_tickets_rsvp_js_version', Tribe__Events__Tickets__RSVP::VERSION ),
+			true
+		);
+
+		wp_localize_script( 'tribe-tickets-rsvp', 'tribe_tickets_rsvp_strings', array(
+			'attendee' => _x( 'Attendee %1$s', 'Attendee number', 'tribe-tickets' ),
+		) );
+	}
 
 	/**
 	 * Register our custom post type
@@ -261,7 +278,6 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	private function generate_security_code( $order_id, $attendee_id ) {
 		return substr( md5( $order_id . '_' . $attendee_id ), 0, 10 );
 	}
-
 
 	/**
 	 * Saves a given ticket (WooCommerce product)
@@ -608,7 +624,6 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
 		return '';
 	}
-
 
 	public function get_tickets_ids( $event_id ) {
 		if ( is_object( $event_id ) ) {

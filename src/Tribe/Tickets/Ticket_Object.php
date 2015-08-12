@@ -102,5 +102,47 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Ticket_Object' ) ) {
 		 */
 		public $end_date;
 
+		/**
+		 * Determines if the given date is within the ticket's start/end date range
+		 *
+		 * @param string $datetime The date/time that we want to determine if it falls within the start/end date range
+		 *
+		 * @return boolean Whether or not the provided date/time falls within the start/end date range
+		 */
+		public function date_in_range( $datetime ) {
+			if ( is_numeric( $datetime ) ) {
+				$timestamp = $datetime;
+			} else {
+				$timestamp = strtotime( $datetime );
+			}
+
+			$end_date = null;
+			if ( ! empty( $this->end_date ) ){
+				$end_date = strtotime( $this->end_date );
+			} else {
+				$end_date = strtotime( tribe_get_end_date( get_the_ID(), false, 'Y-m-d G:i' ) );
+			}
+
+			$start_date = null;
+			if ( ! empty( $this->start_date ) ) {
+				$start_date = strtotime( $this->start_date );
+			}
+
+			return ( empty( $start_date ) || $timestamp > $start_date ) && ( empty( $end_date ) || $timestamp < $end_date );
+		}
+
+		/**
+		 * Determines if there is any stock for purchasing
+		 *
+		 * @return boolean
+		 */
+		public function is_in_stock() {
+			// if we aren't tracking stock, then always assume it is in stock
+			if ( empty( $this->stock ) ) {
+				return true;
+			}
+
+			return ( absint( $this->stock ) - absint( $this->qty_sold ) - absint( $this->qty_pending ) ) > 0;
+		}
 	}
 }
