@@ -55,6 +55,24 @@ ob_start();
 			?>
 			<tr class="tribe-tickets-meta-row">
 				<td colspan="4" class="tribe-tickets-attendees">
+					<table>
+						<tr class="tribe-tickets-full-name-row">
+							<td>
+								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name:', 'tribe-tickets' ); ?></label>
+							</td>
+							<td colspan="3">
+								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name">
+							</td>
+						</tr>
+						<tr class="tribe-tickets-email-row">
+							<td>
+								<label for="tribe-tickets-email"><?php esc_html_e( 'Email:', 'tribe-tickets' ); ?></label>
+							</td>
+							<td colspan="3">
+								<input type="email" name="attendee[email]" id="tribe-tickets-email">
+							</td>
+						</tr>
+					</table>
 				</td>
 			</tr>
 			<tr>
@@ -66,29 +84,6 @@ ob_start();
 		}
 		?>
 	</table>
-	<script type="text/tribe-template" id="tribe-tickets-rsvp-tmpl">
-		<div class="tribe-tickets-attendee" data-attendee="">
-			<h3 class="tribe-tickets-attendee-heading"></h3>
-			<table>
-				<tr class="tribe-tickets-full-name-row">
-					<td>
-						<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name:', 'tribe-tickets' ); ?></label>
-					</td>
-					<td colspan="3">
-						<input type="text" name="attendee[][full_name]" id="tribe-tickets-full-name">
-					</td>
-				</tr>
-				<tr class="tribe-tickets-email-row">
-					<td>
-						<label for="tribe-tickets-email"><?php esc_html_e( 'Email:', 'tribe-tickets' ); ?></label>
-					</td>
-					<td colspan="3">
-						<input type="email" name="attendee[][email]" id="tribe-tickets-email">
-					</td>
-				</tr>
-			</table>
-		</div>
-	</script>
 </form>
 
 <?php
