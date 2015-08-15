@@ -34,6 +34,11 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	public $atendee_product_key = '_tribe_rsvp_product';
 
 	/**
+	 * Meta key that ties attendees together by order
+	 * @var string
+	 */
+	public $order_key = '_tribe_rsvp_order';
+	/**
 	 * Meta key that relates Attendees and Events
 	 * @var string
 	 */
@@ -46,10 +51,18 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	public $security_code = '_tribe_rsvp_security_code';
 
 	/**
-	 * Meta key that holds if an order has tickets (for performance)
+	 * Meta key that holds the full name of the tickets RSVP "buyer"
+	 *
 	 * @var string
 	 */
-	public $order_has_tickets = '_tribe_has_tickets';
+	public $full_name = '_tribe_rsvp_full_name';
+
+	/**
+	 * Meta key that holds the email of the tickets RSVP "buyer"
+	 *
+	 * @var string
+	 */
+	public $email = '_tribe_rsvp_email';
 
 	/**
 	 * Meta key that holds the name of a ticket to be used in reports if the Product is deleted
@@ -115,9 +128,9 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Registers all actions/filters
 	 */
 	public function hooks() {
-		add_action( 'init', array( $this, 'register_types' ) );
-		add_action( 'init', array( $this, 'process_rsvp' ) );
-		//add_action( 'woocommerce_order_status_completed', array( $this, 'generate_tickets'   ), 12 );
+		add_action( 'init',               array( $this, 'register_types'    )     );
+		add_action( 'init',               array( $this, 'process_rsvp'      )     );
+		add_action( 'init',               array( $this, 'generate_tickets'  )     );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
 	}
 
@@ -205,78 +218,115 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 
 	/**
 	 * Generate and store all the attendees information for a new order.
-	 *
-	 * @param $order_id
 	 */
-	public function generate_tickets( $order_id ) {
-		// Bail if we already generated the info for this order
-		$done = get_post_meta( $order_id, $this->order_has_tickets, true );
-		if ( ! empty( $done ) ) {
+	public function generate_tickets( ) {
+
+		if ( empty( $_POST['tickets_process'] ) || empty( $_POST['attendee'] ) || empty( $_POST['product_id'] ) ) {
 			return;
 		}
 
 		$has_tickets = false;
-		// Get the items purchased in this order
 
-		$order       = new WC_Order( $order_id );
-		$order_items = $order->get_items();
-
-		// Bail if the order is empty
-		if ( empty( $order_items ) ) {
-			return;
-		}
+		$order_id = md5( time() . rand() );
 
 		// Iterate over each product
-		foreach ( (array) $order_items as $item ) {
-			$product_id = isset( $item['product_id'] ) ? $item['product_id'] : $item['id'];
+		foreach ( (array) $_POST['product_id'] as $product_id ) {
 
 			// Get the event this tickets is for
 			$event_id = get_post_meta( $product_id, $this->event_key, true );
 
-			if ( ! empty( $event_id ) ) {
+			if ( empty( $event_id ) ) {
+				continue;
+			}
 
-				$has_tickets = true;
+			$qty = ! empty( $_POST[ 'quantity_' . $product_id ] ) ? intval( $_POST[ 'quantity_' . $product_id ] ) : 1;
 
-				// Iterate over all the amount of tickets purchased (for this product)
-				for ( $i = 0; $i < intval( $item['qty'] ); $i ++ ) {
+			$has_tickets = true;
 
-					$attendee = array(
-						'post_status' => 'publish',
-						'post_title'  => $order_id . ' | ' . $item['name'] . ' | ' . ( $i + 1 ),
-						'post_type'   => $this->attendee_object,
-						'ping_status' => 'closed'
-					);
+			// Iterate over all the amount of tickets purchased (for this product)
+			for ( $i = 0; $i < $qty; $i ++ ) {
 
-					// Insert individual ticket purchased
-					$attendee_id = wp_insert_post( $attendee );
+				$attendee = array(
+					'post_status' => 'publish',
+					'post_title'  => $_POST['attendee']['full_name'] . ' | ' . ( $i + 1 ),
+					'post_type'   => $this->attendee_object,
+					'ping_status' => 'closed'
+				);
 
-					update_post_meta( $attendee_id, $this->atendee_product_key, $product_id );
-					update_post_meta( $attendee_id, $this->atendee_order_key, $order_id );
-					update_post_meta( $attendee_id, $this->atendee_event_key, $event_id );
-					update_post_meta( $attendee_id, $this->security_code,
-						$this->generate_security_code( $order_id, $attendee_id ) );
-				}
+				// Insert individual ticket purchased
+				$attendee_id = wp_insert_post( $attendee );
+
+				update_post_meta( $attendee_id, $this->atendee_product_key, $product_id );
+				update_post_meta( $attendee_id, $this->atendee_event_key, $event_id );
+				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
+				update_post_meta( $attendee_id, $this->order_key, $order_id );
+				update_post_meta( $attendee_id, $this->full_name, $_POST['attendee']['full_name'] );
+				update_post_meta( $attendee_id, $this->email, $_POST['attendee']['email'] );
 			}
 		}
 		if ( $has_tickets ) {
-			update_post_meta( $order_id, $this->order_has_tickets, '1' );
-
-			// Send the email to the user
-			do_action( 'wootickets-send-tickets-email', $order_id );
+			$this->send_tickets_email( $order_id ) ;
 		}
+	}
+
+	public function send_tickets_email( $order_id ) {
+		$attendees = $this->get_attendees_by_transaction( $order_id );
+
+		if ( empty( $attendees ) ) {
+			return;
+		}
+
+		// For now all ticket holders in an order share the same email
+		$to = $attendees['0']['holder_email'];
+
+		if ( is_email( $to ) ) {
+			return;
+		}
+
+		$content     = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $attendees ) );
+		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ) );
+		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
+		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
+		$subject     = apply_filters( 'tribe_rsvp_email_subject',
+			sprintf( __( 'Your tickets from %s', 'tribe-tickets' ), get_bloginfo( 'name' ) ) );
+
+		wp_mail( $to, $subject, $content, $headers, $attachments );
+	}
+
+	protected function get_attendees_by_transaction( $order_id ) {
+		$attendees = array();
+		$query     = new WP_Query( array(
+			'post_type'      => $this->attendee_object,
+			'meta_key'       => $this->order_key,
+			'meta_value'     => $order_id,
+			'posts_per_page' => - 1
+		) );
+
+		foreach ( $query->posts as $post ) {
+			$attendees[] = array(
+				'event_id'      => get_post_meta( $post->ID, $this->atendee_product_key, true ),
+				'ticket_name'   => get_post( get_post_meta( $post->ID, $this->atendee_product_key, true ) )->post_title,
+				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
+				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
+				'order_id'      => $order_id,
+				'ticket_id'     => $post->ID,
+				'security_code' => get_post_meta( $post->ID, $this->security_code, true )
+			);
+		}
+
+		return $attendees;
 	}
 
 	/**
 	 * Generates the validation code that will be printed in the ticket.
 	 * It purpose is to be used to validate the ticket at the door of an event.
 	 *
-	 * @param int $order_id
 	 * @param int $attendee_id
 	 *
 	 * @return string
 	 */
-	private function generate_security_code( $order_id, $attendee_id ) {
-		return substr( md5( $order_id . '_' . $attendee_id ), 0, 10 );
+	private function generate_security_code( $attendee_id ) {
+		return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
 	}
 
 	/**
