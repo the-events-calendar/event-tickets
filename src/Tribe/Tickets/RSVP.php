@@ -225,7 +225,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			return;
 		}
 
-		$has_tickets = false;
+		$has_tickets = $event_id = false;
 
 		$order_id = md5( time() . rand() );
 
@@ -266,6 +266,13 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		}
 		if ( $has_tickets ) {
 			$this->send_tickets_email( $order_id ) ;
+		}
+
+		// Redirect to the same page to prevent double purchase on refresh
+		if ( ! empty( $event_id ) ) {
+			$url = get_permalink( $event_id );
+			$url = add_query_arg( 'rsvp_sent', 1, $url );
+			wp_redirect( $url );
 		}
 	}
 
