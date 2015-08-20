@@ -279,7 +279,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		// For now all ticket holders in an order share the same email
 		$to = $attendees['0']['holder_email'];
 
-		if ( is_email( $to ) ) {
+		if ( ! is_email( $to ) ) {
 			return;
 		}
 

@@ -657,7 +657,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 		 */
 		public function generate_tickets_email_content( $tickets ) {
 			ob_start();
-			include Tribe__Events__Templates::getTemplateHierarchy( 'tickets/email.php', array( 'namespace' => 'tickets' ) );
+			include $this->getTemplateHierarchy( 'tickets/email.php' );
 
 			return ob_get_clean();
 		}
