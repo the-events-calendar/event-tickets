@@ -71,6 +71,11 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * Messages for submission
+	 */
+	protected $messages = array();
+
+	/**
 	 * Instance of this class for use as singleton
 	 */
 	private static $instance;
@@ -128,9 +133,8 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Registers all actions/filters
 	 */
 	public function hooks() {
-		add_action( 'init',               array( $this, 'register_types'    )     );
-		add_action( 'init',               array( $this, 'process_rsvp'      )     );
-		add_action( 'init',               array( $this, 'generate_tickets'  )     );
+		add_action( 'init', array( $this, 'register_types' ) );
+		add_action( 'init', array( $this, 'generate_tickets' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
 	}
 
@@ -229,6 +233,17 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 
 		$order_id = md5( time() . rand() );
 
+		$attendee_email = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
+		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
+
+		if ( ! $attendee_email || ! $attendee_full_name ) {
+			$url = get_permalink( $event_id );
+			$url = add_query_arg( 'rsvp_error', 1, $url );
+			wp_redirect( esc_url_raw( $url ) );
+			die;
+		}
+
 		// Iterate over each product
 		foreach ( (array) $_POST['product_id'] as $product_id ) {
 
@@ -248,7 +263,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 
 				$attendee = array(
 					'post_status' => 'publish',
-					'post_title'  => $_POST['attendee']['full_name'] . ' | ' . ( $i + 1 ),
+					'post_title'  => $attendee_full_name . ' | ' . ( $i + 1 ),
 					'post_type'   => $this->attendee_object,
 					'ping_status' => 'closed'
 				);
@@ -260,8 +275,8 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 				update_post_meta( $attendee_id, $this->atendee_event_key, $event_id );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
-				update_post_meta( $attendee_id, $this->full_name, $_POST['attendee']['full_name'] );
-				update_post_meta( $attendee_id, $this->email, $_POST['attendee']['email'] );
+				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
+				update_post_meta( $attendee_id, $this->email, $attendee_email );
 			}
 		}
 		if ( $has_tickets ) {
@@ -272,7 +287,8 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		if ( ! empty( $event_id ) ) {
 			$url = get_permalink( $event_id );
 			$url = add_query_arg( 'rsvp_sent', 1, $url );
-			wp_redirect( $url );
+			wp_redirect( esc_url_raw( $url ) );
+			die;
 		}
 	}
 
@@ -490,17 +506,18 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			return;
 		}
 
+		$rsvp_sent = empty( $_GET['rsvp_sent'] ) ? false : true;
+		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : true;
+
+		if ( $rsvp_sent ) {
+			$this->add_message( __( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'tribe-tickets' ), 'success' );
+		}
+
+		if ( $rsvp_error ) {
+			$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'tribe-tickets' ), 'error' );
+		}
+
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
-	}
-
-	/**
-	 * Grabs the submitted front end tickets form and adds the attendees
-	 */
-	public function process_rsvp() {
-
-		// ToDo once I have the front end form
-
-		return;
 	}
 
 	/**
@@ -722,5 +739,14 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 		}
 
 		include $this->pluginPath . 'src/admin-views/rsvp-metabox-advanced.php';
+	}
+
+	public function get_messages() {
+		return $this->messages;
+	}
+
+	public function add_message( $message, $type = 'update' ) {
+		$message = apply_filters( 'tribe_rsvp_submission_message', $message, $type );
+		$this->messages[] = (object) array( 'message' => $message, 'type' => $type );
 	}
 }

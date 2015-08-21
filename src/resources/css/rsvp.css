@@ -22,3 +22,31 @@ table.tribe-events-tickets td {
 .tribe-events-tickets .tribe-tickets-attendee td {
 	border: 0;
 }
+
+.tribe-rsvp-messages {
+	padding: 10px 10px 5px;
+}
+
+.tribe-rsvp-message {
+	margin-bottom: 5px;
+	-khtml-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	border-style: solid;
+	border-width: 1px;
+	font-family: Helvetica, Arial, sans;
+	font-size: 12px;
+	margin: 0 0 5px;
+	padding: 0 .6em;
+}
+
+.tribe-rsvp-message-success {
+	background-color: #ffffE0;
+	border-color: #e6db55;
+}
+
+.tribe-rsvp-message-error {
+	background-color: #ffebe8;
+	border-color: #c00;
+}
