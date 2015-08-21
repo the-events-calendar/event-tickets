@@ -4,28 +4,28 @@ $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 
 ob_start();
-
-$messages = Tribe__Events__Tickets__RSVP::instance()->get_messages();
-
-if ( $messages ) {
-	?>
-	<div class="tribe-rsvp-messages">
-		<?php
-		foreach ( $messages as $message ) {
-			?>
-			<div class="tribe-rsvp-message tribe-rsvp-message-<?php echo esc_attr( $message->type ); ?>">
-				<?php echo esc_html( $message->message ); ?>
-			</div>
-			<?php
-		}//end foreach
-		?>
-	</div>
-	<?php
-}//end if
 ?>
 <form action="" class="cart" method="post" enctype='multipart/form-data'>
 	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'tribe-tickets' ) ?></h2>
+	<?php
+	$messages = Tribe__Events__Tickets__RSVP::get_instance()->get_messages();
 
+	if ( $messages ) {
+		?>
+		<div class="tribe-rsvp-messages">
+			<?php
+			foreach ( $messages as $message ) {
+				?>
+				<div class="tribe-rsvp-message tribe-rsvp-message-<?php echo esc_attr( $message->type ); ?>">
+					<?php echo esc_html( $message->message ); ?>
+				</div>
+				<?php
+			}//end foreach
+			?>
+		</div>
+		<?php
+	}//end if
+	?>
 	<table width="100%" class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
 		foreach ( $tickets as $ticket ) {

@@ -73,7 +73,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	/**
 	 * Messages for submission
 	 */
-	protected $messages = array();
+	protected static $messages = array();
 
 	/**
 	 * Instance of this class for use as singleton
@@ -742,11 +742,11 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	}
 
 	public function get_messages() {
-		return $this->messages;
+		return self::$messages;
 	}
 
 	public function add_message( $message, $type = 'update' ) {
 		$message = apply_filters( 'tribe_rsvp_submission_message', $message, $type );
-		$this->messages[] = (object) array( 'message' => $message, 'type' => $type );
+		self::$messages[] = (object) array( 'message' => $message, 'type' => $type );
 	}
 }
