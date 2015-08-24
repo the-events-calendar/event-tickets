@@ -32,6 +32,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+define( 'EVENTS_TICKETS_DIR', dirname( __FILE__ ) );
+
 // This needs to happen before Tickets PRO
 add_action( 'plugins_loaded', 'tribe_tickets_init', 5 );
 
@@ -48,7 +50,7 @@ function tribe_tickets_init() {
 	add_action( 'add_meta_boxes',        array( 'Tribe__Events__Tickets__Metabox', 'maybe_add_meta_box' ) );
 	add_action( 'admin_enqueue_scripts', array( 'Tribe__Events__Tickets__Metabox', 'add_admin_scripts'  ) );
 
-	new Tribe__Events__Tickets__RSVP();
+	new Tribe__Events__Tickets__Main;
 }
 
 /**

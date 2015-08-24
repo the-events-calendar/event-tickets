@@ -81,26 +81,11 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	private static $instance;
 
 	/**
-	 * Current version of this plugin
-	 */
-	const VERSION = '3.9.3';
-
-	/**
-	 * Min required The Events Calendar version
-	 */
-	const REQUIRED_TEC_VERSION = '3.9.2';
-
-
-	/**
 	 * Creates the instance of the class
 	 *
 	 * @static
 	 * @return void
 	 */
-	public static function init() {
-		self::$instance = self::get_instance();
-	}
-
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
@@ -119,11 +104,13 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Class constructor
 	 */
 	public function __construct() {
+		$main = Tribe__Events__Tickets__Main::instance();
+
 		/* Set up some parent's vars */
 		$this->pluginName = 'RSVP';
-		$this->pluginSlug = 'rsvp';
-		$this->pluginUrl  = trailingslashit( plugins_url( '', dirname( dirname( dirname( __FILE__ ) ) ) ) );
-		$this->pluginPath = str_replace( WP_CONTENT_URL, WP_CONTENT_DIR, $this->pluginUrl );
+		$this->pluginPath = $main->plugin_path;
+		$this->pluginUrl = $main->plugin_url;
+
 		parent::__construct();
 
 		$this->hooks();
@@ -133,9 +120,53 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Registers all actions/filters
 	 */
 	public function hooks() {
-		add_action( 'init', array( $this, 'register_types' ) );
-		add_action( 'init', array( $this, 'generate_tickets' ) );
+		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
+	}
+
+	/**
+	 * Hooked to the init action
+	 */
+	public function init() {
+		$this->register_resources();
+		$this->register_types();
+		$this->generate_tickets();
+	}
+
+	/**
+	 * registers resources
+	 */
+	public function register_resources() {
+		$main = Tribe__Events__Tickets__Main::instance();
+
+		$stylesheet_url = $main->plugin_url . 'src/resources/css/rsvp.css';
+		$stylesheet_url = Tribe__Events__Template_Factory::getMinFile( $stylesheet_url, true );
+
+		// apply filters
+		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
+
+		wp_register_style(
+			'tribe-tickets-rsvp',
+			$stylesheet_url,
+			array(),
+			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Events__Tickets__Main::VERSION )
+		);
+
+		$js_url = $main->plugin_url . 'src/resources/js/rsvp.js';
+		$js_url = Tribe__Events__Template_Factory::getMinFile( $js_url, true );
+		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
+
+		wp_register_script(
+			'tribe-tickets-rsvp',
+			$js_url,
+			array( 'jquery', 'jquery-ui-datepicker' ),
+			apply_filters( 'tribe_tickets_rsvp_js_version', Tribe__Events__Tickets__Main::VERSION ),
+			true
+		);
+
+		wp_localize_script( 'tribe-tickets-rsvp', 'tribe_tickets_rsvp_strings', array(
+			'attendee' => _x( 'Attendee %1$s', 'Attendee number', 'tribe-tickets' ),
+		) );
 	}
 
 	/**
@@ -146,47 +177,22 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * @return void
 	 */
 	public function enqueue_resources() {
-		if ( ! is_singular( Tribe__Events__Main::POSTTYPE ) ) {
+		$post_types = Tribe__Events__Tickets__Main::instance()->post_types();
+
+		if ( ! is_singular( $post_types ) ) {
 			return;
 		}
 
+		wp_enqueue_style( 'tribe-tickets-rsvp' );
+		wp_enqueue_script( 'tribe-tickets-rsvp' );
 
-		$stylesheet_url = $this->pluginUrl . 'src/resources/css/rsvp.css';
-		$stylesheet_url = Tribe__Events__Template_Factory::getMinFile( $stylesheet_url, true );
-
-		// apply filters
-		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
-
-		wp_enqueue_style(
-			'TribeEventsTicketsRSVP',
-			$stylesheet_url,
-			array(),
-			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Events__Tickets__RSVP::VERSION )
-		);
-
-		//Check for override stylesheet
+		// Check for override stylesheet
 		$user_stylesheet_url = Tribe__Events__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
 
-		//If override stylesheet exists, then enqueue it
+		// If override stylesheet exists, then enqueue it
 		if ( $user_stylesheet_url ) {
 			wp_enqueue_style( 'tribe-events-tickets-rsvp-override-style', $user_stylesheet_url );
 		}
-
-		$js_url = $this->pluginUrl . 'src/resources/js/rsvp.js';
-		$js_url = Tribe__Events__Template_Factory::getMinFile( $js_url, true );
-		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
-
-		wp_enqueue_script(
-			'tribe-tickets-rsvp',
-			$js_url,
-			array( 'jquery' ),
-			apply_filters( 'tribe_tickets_rsvp_js_version', Tribe__Events__Tickets__RSVP::VERSION ),
-			true
-		);
-
-		wp_localize_script( 'tribe-tickets-rsvp', 'tribe_tickets_rsvp_strings', array(
-			'attendee' => _x( 'Attendee %1$s', 'Attendee number', 'tribe-tickets' ),
-		) );
 	}
 
 	/**
@@ -575,7 +581,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			return false;
 		}
 
-		if ( Tribe__Events__Main::POSTTYPE === get_post_type( $event ) ) {
+		if ( in_array( get_post_type( $event ), Tribe__Events__Tickets__Main::instance()->post_types() ) ) {
 			return get_post( $event );
 		}
 
@@ -738,7 +744,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			}
 		}
 
-		include $this->pluginPath . 'src/admin-views/rsvp-metabox-advanced.php';
+		include Tribe__Events__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-advanced.php';
 	}
 
 	public function get_messages() {
