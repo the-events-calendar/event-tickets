@@ -46,7 +46,32 @@ class Tribe__Events__Tickets__Main {
 		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
 		$this->plugin_url = trailingslashit( plugins_url( $this->plugin_dir ) );
 
+		// include the autolader class
+		require_once $this->plugin_path . '/src/Tribe/Tickets/Autoloader.php';
+		$this->init_autoloading();
+
+		load_plugin_textdomain( 'tribe-tickets', false, $this->plugin_dir . 'lang/' );
+
 		$this->hooks();
+	}
+
+	/**
+	 * Sets up autoloading
+	 */
+	protected function init_autoloading() {
+		$autoloader = Tribe__Events__Tickets__Autoloader::instance();
+
+		$autoloader->register_prefix( 'Tribe__Events__Tickets__', $this->plugin_path . '/src/Tribe/Tickets' );
+
+		require_once $this->plugin_path . 'src/template-tags/tickets.php';
+
+		// deprecated classes are registered in a class to path fashion
+		foreach ( glob( $this->plugin_path . 'src/deprecated/*.php' ) as $file ) {
+			$class_name = str_replace( '.php', '', basename( $file ) );
+			$autoloader->register_class( $class_name, $file );
+		}
+
+		$autoloader->register_autoloader();
 	}
 
 	/**
@@ -54,6 +79,8 @@ class Tribe__Events__Tickets__Main {
 	 */
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'add_meta_boxes', array( 'Tribe__Events__Tickets__Metabox', 'maybe_add_meta_box' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Tribe__Events__Tickets__Metabox', 'add_admin_scripts' ) );
 	}
 
 	/**
