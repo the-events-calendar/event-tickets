@@ -1,9 +1,9 @@
 <?php
-class Tribe__Events__Tickets__Tickets_Pro {
+class Tribe__Events__Tickets__Tickets_Handler {
 	/**
 	 * Singleton instance of this class
 	 *
-	 * @var Tribe__Events__Tickets__Tickets_Pro
+	 * @var Tribe__Events__Tickets__Tickets_Handler
 	 * @static
 	 */
 	protected static $instance;
@@ -457,7 +457,7 @@ class Tribe__Events__Tickets__Tickets_Pro {
 	/**
 	 * Static Singleton Factory Method
 	 *
-	 * @return Tribe__Events__Tickets__Tickets_Pro
+	 * @return Tribe__Events__Tickets__Tickets_Handler
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) ) {

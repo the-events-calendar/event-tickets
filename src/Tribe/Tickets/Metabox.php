@@ -53,7 +53,7 @@ class Tribe__Events__Tickets__Metabox {
 			return;
 		}
 
-		Tribe__Events__Tickets__Tickets_Pro::instance()->do_meta_box( $post_id );
+		Tribe__Events__Tickets__Tickets_Handler::instance()->do_meta_box( $post_id );
 	}
 
 	/**

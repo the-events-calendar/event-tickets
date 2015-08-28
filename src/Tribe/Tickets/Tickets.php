@@ -234,7 +234,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 		function __construct() {
 
 			// Start the singleton with the generic functionality to all providers.
-			Tribe__Events__Tickets__Tickets_Pro::instance();
+			Tribe__Events__Tickets__Tickets_Handler::instance();
 
 			// As this is an abstract class, we want to know which child instantiated it
 			$this->className = get_class( $this );
@@ -323,7 +323,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 			if ( $return ) {
 				// Let's create a tickets list markup to return
 				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Events__Tickets__Tickets_Pro::instance()->get_ticket_list_markup( $tickets );
+				$return  = Tribe__Events__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
 				$return = $this->notice( __( 'Your ticket has been saved.', 'tribe-tickets' ) ) . $return;
 
@@ -404,7 +404,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 			if ( $return ) {
 				// Let's create a tickets list markup to return
 				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Events__Tickets__Tickets_Pro::instance()->get_ticket_list_markup( $tickets );
+				$return  = Tribe__Events__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
 				$return = $this->notice( __( 'Your ticket has been deleted.', 'tribe-tickets' ) ) . $return;
 
