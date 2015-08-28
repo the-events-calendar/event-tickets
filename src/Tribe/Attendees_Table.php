@@ -153,7 +153,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// Look for an order_status_label, fall back on the actual order_status string @todo remove fallback in 3.4.3
 		if ( empty( $item['order_status'] ) ) {
-			$item['order_status'] = ''
+			$item['order_status'] = '';
 		}
 		$label = isset( $item['order_status_label'] ) ? $item['order_status_label'] : ucwords( $item['order_status'] );
 
