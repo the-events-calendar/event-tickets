@@ -103,7 +103,7 @@ class Tribe__Tickets__Main {
 		static $rsvp;
 
 		if ( ! $rsvp ) {
-			$rsvp = new Tribe__Tickets__RSVP;
+			$rsvp = Tribe__Tickets__RSVP::get_instance();
 		}
 
 		return $rsvp;

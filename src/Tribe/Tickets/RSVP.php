@@ -735,6 +735,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_advanced_options( $event_id, $ticket_id ) {
+
+
 		$stock = '';
 
 		if ( ! empty( $ticket_id ) ) {
