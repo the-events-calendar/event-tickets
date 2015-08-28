@@ -3,10 +3,21 @@
 	$provider = null;
 	$count    = 0;
 	global $post;
+
+	$post_type = 'post';
+
 	if ( $post ) {
 		$post_id = get_the_ID();
+		$post_type = $post->post_type;
 	} else {
 		$post_id = $_POST['post_ID'];
+
+
+		if ( ! empty( $_POST['post_type'] ) ) {
+			$post_type = $_POST['post_type'];
+		} elseif ( ! empty( $_GET['post_type'] ) ) {
+			$post_type = $_GET['post_type'];
+		}
 	}
 
 	$modules = Tribe__Events__Tickets__Tickets::modules();
@@ -38,7 +49,7 @@
 				<h4 class="tribe_sectionheader"><?php echo esc_html( $modules[ $ticket->provider_class ] ); ?>
 					<?php echo $provider_obj->get_event_reports_link( $post_id ); ?>
 					<small>&nbsp;|&nbsp;</small>
-					<?php echo sprintf( '<small><a title="' . esc_attr__( 'See who purchased tickets to this event', 'tribe-tickets' ) . '" href="%s">%s</a></small>', esc_url( admin_url( sprintf( 'edit.php?post_type=%s&page=%s&event_id=%d', Tribe__Events__Main::POSTTYPE, Tribe__Events__Tickets__Tickets_Pro::$attendees_slug, $post_id ) ) ), __( 'Attendees', 'tribe-tickets' ) ); ?>
+					<?php echo sprintf( '<small><a title="' . esc_attr__( 'See who purchased tickets to this event', 'tribe-tickets' ) . '" href="%s">%s</a></small>', esc_url( admin_url( sprintf( 'edit.php?post_type=%s&page=%s&event_id=%d', $post_type, Tribe__Events__Tickets__Tickets_Pro::$attendees_slug, $post_id ) ) ), __( 'Attendees', 'tribe-tickets' ) ); ?>
 				</h4>
 			</td>
 		<?php endif; ?>

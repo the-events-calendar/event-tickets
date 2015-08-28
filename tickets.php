@@ -32,45 +32,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
+define( 'EVENTS_TICKETS_DIR', dirname( __FILE__ ) );
+
+// the main plugin class
+require_once dirname( __FILE__ ) . '/src/Tribe/Tickets/Main.php';
+
 // This needs to happen before Tickets PRO
-add_action( 'plugins_loaded', 'tribe_tickets_init', 5 );
-
-tribe_init_tickets_autoloading();
-
-function tribe_tickets_init() {
-
-	if ( ! class_exists( 'Tribe__Events__Main' ) ) {
-		return;
-	}
-
-	load_plugin_textdomain( 'tribe-tickets', false, trailingslashit( basename( dirname( __FILE__ ) ) ) . 'lang/' );
-
-	add_action( 'add_meta_boxes',        array( 'Tribe__Events__Tickets__Metabox', 'maybe_add_meta_box' ) );
-	add_action( 'admin_enqueue_scripts', array( 'Tribe__Events__Tickets__Metabox', 'add_admin_scripts'  ) );
-
-	new Tribe__Events__Tickets__RSVP();
-}
-
-/**
- * Requires the autoloader class from the main plugin class and sets up
- * autoloading.
- */
-function tribe_init_tickets_autoloading() {
-	if ( ! class_exists( 'Tribe__Events__Autoloader' ) ) {
-		return;
-	}
-	$autoloader = Tribe__Events__Autoloader::instance();
-
-	$autoloader->register_prefix( 'Tribe__Events__Tickets__', dirname( __FILE__ ) . '/src/Tribe/Tickets' );
-
-	require_once dirname( __FILE__ ) . '/src/template-tags/tickets.php';
-
-	foreach ( glob( dirname( __FILE__ ) . '/src/deprecated/*.php' ) as $file ) {
-		$class_name = str_replace( '.php', '', basename( $file ) );
-		$autoloader->register_class( $class_name, $file );
-	}
-
-	$autoloader->register_autoloader();
-}
-
-
+add_action( 'plugins_loaded', array( 'Tribe__Events__Tickets__Main', 'instance' ), 5 );
