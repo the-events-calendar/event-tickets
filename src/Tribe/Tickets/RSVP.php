@@ -1,6 +1,6 @@
 <?php
 
-class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
+class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Name of the CPT that holds Attendees (tickets holders)
@@ -90,7 +90,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
 	 * @static
-	 * @return Tribe__Events__Tickets__Woo__Main
+	 * @return Tribe__Tickets__Woo__Main
 	 */
 	public static function get_instance() {
 		if ( ! is_a( self::$instance, __CLASS__ ) ) {
@@ -104,7 +104,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Class constructor
 	 */
 	public function __construct() {
-		$main = Tribe__Events__Tickets__Main::instance();
+		$main = Tribe__Tickets__Main::instance();
 
 		/* Set up some parent's vars */
 		$this->pluginName = 'RSVP';
@@ -137,7 +137,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * registers resources
 	 */
 	public function register_resources() {
-		$main = Tribe__Events__Tickets__Main::instance();
+		$main = Tribe__Tickets__Main::instance();
 
 		$stylesheet_url = $main->plugin_url . 'src/resources/css/rsvp.css';
 		$stylesheet_url = Tribe__Events__Template_Factory::getMinFile( $stylesheet_url, true );
@@ -149,7 +149,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			'tribe-tickets-rsvp',
 			$stylesheet_url,
 			array(),
-			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Events__Tickets__Main::VERSION )
+			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Tickets__Main::VERSION )
 		);
 
 		$js_url = $main->plugin_url . 'src/resources/js/rsvp.js';
@@ -160,7 +160,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			'tribe-tickets-rsvp',
 			$js_url,
 			array( 'jquery', 'jquery-ui-datepicker' ),
-			apply_filters( 'tribe_tickets_rsvp_js_version', Tribe__Events__Tickets__Main::VERSION ),
+			apply_filters( 'tribe_tickets_rsvp_js_version', Tribe__Tickets__Main::VERSION ),
 			true
 		);
 
@@ -177,7 +177,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * @return void
 	 */
 	public function enqueue_resources() {
-		$post_types = Tribe__Events__Tickets__Main::instance()->post_types();
+		$post_types = Tribe__Tickets__Main::instance()->post_types();
 
 		if ( ! is_singular( $post_types ) ) {
 			return;
@@ -362,7 +362,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * Saves a given ticket (WooCommerce product)
 	 *
 	 * @param int                                   $event_id
-	 * @param Tribe__Events__Tickets__Ticket_Object $ticket
+	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 * @param array                                 $raw_data
 	 *
 	 * @return bool
@@ -532,7 +532,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 	 * @param $event_id
 	 * @param $ticket_id
 	 *
-	 * @return null|Tribe__Events__Tickets__Ticket_Object
+	 * @return null|Tribe__Tickets__Ticket_Object
 	 */
 	public function get_ticket( $event_id, $ticket_id ) {
 		$product = get_post( $ticket_id );
@@ -541,7 +541,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			return null;
 		}
 
-		$return = new Tribe__Events__Tickets__Ticket_Object();
+		$return = new Tribe__Tickets__Ticket_Object();
 		$qty    = get_post_meta( $ticket_id, 'total_sales', true );
 
 		$return->description    = $product->post_excerpt;
@@ -581,7 +581,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			return false;
 		}
 
-		if ( in_array( get_post_type( $event ), Tribe__Events__Tickets__Main::instance()->post_types() ) ) {
+		if ( in_array( get_post_type( $event ), Tribe__Tickets__Main::instance()->post_types() ) ) {
 			return get_post( $event );
 		}
 
@@ -744,7 +744,7 @@ class Tribe__Events__Tickets__RSVP extends Tribe__Events__Tickets__Tickets {
 			}
 		}
 
-		include Tribe__Events__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-advanced.php';
+		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-advanced.php';
 	}
 
 	public function get_messages() {

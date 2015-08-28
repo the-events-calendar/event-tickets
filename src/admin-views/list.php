@@ -20,7 +20,7 @@
 		}
 	}
 
-	$modules = Tribe__Events__Tickets__Tickets::modules();
+	$modules = Tribe__Tickets__Tickets::modules();
 
 	foreach ( $tickets as $ticket ) {
 
@@ -49,7 +49,7 @@
 				<h4 class="tribe_sectionheader"><?php echo esc_html( $modules[ $ticket->provider_class ] ); ?>
 					<?php echo $provider_obj->get_event_reports_link( $post_id ); ?>
 					<small>&nbsp;|&nbsp;</small>
-					<?php echo sprintf( '<small><a title="' . esc_attr__( 'See who purchased tickets to this event', 'tribe-tickets' ) . '" href="%s">%s</a></small>', esc_url( admin_url( sprintf( 'edit.php?post_type=%s&page=%s&event_id=%d', $post_type, Tribe__Events__Tickets__Tickets_Handler::$attendees_slug, $post_id ) ) ), __( 'Attendees', 'tribe-tickets' ) ); ?>
+					<?php echo sprintf( '<small><a title="' . esc_attr__( 'See who purchased tickets to this event', 'tribe-tickets' ) . '" href="%s">%s</a></small>', esc_url( admin_url( sprintf( 'edit.php?post_type=%s&page=%s&event_id=%d', $post_type, Tribe__Tickets__Tickets_Handler::$attendees_slug, $post_id ) ) ), __( 'Attendees', 'tribe-tickets' ) ); ?>
 				</h4>
 			</td>
 		<?php endif; ?>

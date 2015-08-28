@@ -6,11 +6,11 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 
 
 /**
- * Class Tribe__Events__Tickets__Attendees_Table
+ * Class Tribe__Tickets__Attendees_Table
  *
  * See documentation for WP_List_Table
  */
-class Tribe__Events__Tickets__Attendees_Table extends WP_List_Table {
+class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Class constructor
@@ -338,7 +338,7 @@ class Tribe__Events__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$addon = call_user_func( array( $parts[1], 'get_instance' ) );
-		if ( ! is_subclass_of( $addon, 'Tribe__Events__Tickets__Tickets' ) ) {
+		if ( ! is_subclass_of( $addon, 'Tribe__Tickets__Tickets' ) ) {
 			return $failed;
 		}
 
@@ -354,7 +354,7 @@ class Tribe__Events__Tickets__Attendees_Table extends WP_List_Table {
 
 		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
 
-		$items = Tribe__Events__Tickets__Tickets::get_event_attendees( $event_id );
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
 
 		$this->items = $items;

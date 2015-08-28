@@ -1,16 +1,16 @@
 <?php
 
-if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
+if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
 	 * Abstract class with the API definition and common functionality
 	 * for Tribe Tickets Pro. Providers for this functionality need to
 	 * extend this class. For a functional example of how this works
 	 * see Tribe WooTickets.
 	 */
-	abstract class Tribe__Events__Tickets__Tickets {
+	abstract class Tribe__Tickets__Tickets {
 
 		/**
-		 * All Tribe__Events__Tickets__Tickets api consumers. It's static, so it's shared across all child.
+		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all child.
 		 *
 		 * @var array
 		 */
@@ -234,7 +234,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 		function __construct() {
 
 			// Start the singleton with the generic functionality to all providers.
-			Tribe__Events__Tickets__Tickets_Handler::instance();
+			Tribe__Tickets__Tickets_Handler::instance();
 
 			// As this is an abstract class, we want to know which child instantiated it
 			$this->className = get_class( $this );
@@ -242,7 +242,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 			$this->parentPath = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
 			$this->parentUrl  = trailingslashit( plugins_url( '', $this->parentPath ) );
 
-			// Register all Tribe__Events__Tickets__Tickets api consumers
+			// Register all Tribe__Tickets__Tickets api consumers
 			self::$active_modules[$this->className] = $this->pluginName;
 
 			add_filter( 'tribe_events_tickets_modules', 		 array( $this, 'modules' 					 )		  );
@@ -292,7 +292,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 			if ( ! isset( $data["ticket_provider"] ) || ! $this->module_is_valid( $data["ticket_provider"] ) )
 				$this->ajax_error( 'Bad module' );
 
-			$ticket = new Tribe__Events__Tickets__Ticket_Object();
+			$ticket = new Tribe__Tickets__Ticket_Object();
 
 			$ticket->ID          = isset( $data["ticket_id"] ) ? absint( $data["ticket_id"] ) : null;
 			$ticket->name        = isset( $data["ticket_name"] ) ? esc_html( $data["ticket_name"] ) : null;
@@ -323,7 +323,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 			if ( $return ) {
 				// Let's create a tickets list markup to return
 				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Events__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
 				$return = $this->notice( __( 'Your ticket has been saved.', 'tribe-tickets' ) ) . $return;
 
@@ -404,7 +404,7 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 			if ( $return ) {
 				// Let's create a tickets list markup to return
 				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Events__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
 				$return = $this->notice( __( 'Your ticket has been deleted.', 'tribe-tickets' ) ) . $return;
 
@@ -528,9 +528,9 @@ if ( ! class_exists( 'Tribe__Events__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		final static public function get_event_checkedin_attendees_count( $event_id ) {
-			$checkedin = Tribe__Events__Tickets__Tickets::get_event_attendees( $event_id );
+			$checkedin = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
-			return array_reduce( $checkedin, array( "Tribe__Events__Tickets__Tickets", "_checkedin_attendees_array_filter" ), 0 );
+			return array_reduce( $checkedin, array( "Tribe__Tickets__Tickets", "_checkedin_attendees_array_filter" ), 0 );
 		}
 
 		/**

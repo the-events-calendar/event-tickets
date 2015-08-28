@@ -8,8 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-if ( ! class_exists( 'Tribe__Events__Tickets__View_Helpers' ) ) {
-	class Tribe__Events__Tickets__View_Helpers {
+if ( ! class_exists( 'Tribe__Tickets__View_Helpers' ) ) {
+	class Tribe__Tickets__View_Helpers {
 		/**
 		 * Builds a set of options for displaying an hour chooser
 		 *

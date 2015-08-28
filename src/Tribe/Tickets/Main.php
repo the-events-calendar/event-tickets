@@ -1,6 +1,6 @@
 <?php
 
-class Tribe__Events__Tickets__Main {
+class Tribe__Tickets__Main {
 	/**
 	 * Post types that tickets can be tied to
 	 */
@@ -25,7 +25,7 @@ class Tribe__Events__Tickets__Main {
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
 	 * @static
-	 * @return Tribe__Events__Tickets__Woo__Main
+	 * @return Tribe__Tickets__Woo__Main
 	 */
 	public static function instance() {
 		if ( ! self::$instance ) {
@@ -59,9 +59,9 @@ class Tribe__Events__Tickets__Main {
 	 * Sets up autoloading
 	 */
 	protected function init_autoloading() {
-		$autoloader = Tribe__Events__Tickets__Autoloader::instance();
+		$autoloader = Tribe__Tickets__Autoloader::instance();
 
-		$autoloader->register_prefix( 'Tribe__Events__Tickets__', $this->plugin_path . '/src/Tribe/Tickets' );
+		$autoloader->register_prefix( 'Tribe__Tickets__', $this->plugin_path . '/src/Tribe/Tickets' );
 
 		require_once $this->plugin_path . 'src/template-tags/tickets.php';
 
@@ -79,8 +79,8 @@ class Tribe__Events__Tickets__Main {
 	 */
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ) );
-		add_action( 'add_meta_boxes', array( 'Tribe__Events__Tickets__Metabox', 'maybe_add_meta_box' ) );
-		add_action( 'admin_enqueue_scripts', array( 'Tribe__Events__Tickets__Metabox', 'add_admin_scripts' ) );
+		add_action( 'add_meta_boxes', array( 'Tribe__Tickets__Metabox', 'maybe_add_meta_box' ) );
+		add_action( 'admin_enqueue_scripts', array( 'Tribe__Tickets__Metabox', 'add_admin_scripts' ) );
 	}
 
 	/**
@@ -103,7 +103,7 @@ class Tribe__Events__Tickets__Main {
 		static $rsvp;
 
 		if ( ! $rsvp ) {
-			$rsvp = new Tribe__Events__Tickets__RSVP;
+			$rsvp = new Tribe__Tickets__RSVP;
 		}
 
 		return $rsvp;

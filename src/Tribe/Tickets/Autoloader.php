@@ -1,8 +1,8 @@
 <?php
 
-	if ( ! class_exists( 'Tribe__Events__Tickets__Autoloader' ) ) {
+	if ( ! class_exists( 'Tribe__Tickets__Autoloader' ) ) {
 		/**
-		 * Class Tribe__Events__Tickets__Autoloader
+		 * Class Tribe__Tickets__Autoloader
 		 *
 		 * Allows for autoloading of Tribe plugins classes.
 		 *
@@ -42,10 +42,10 @@
 		 *      // `/var/www/site/wp-content/plugins/the-events-calendar/deprecated/Tribe_DeprecatedClass.php'
 		 *      $i = new Tribe_DeprecatedClass();
 		 */
-		class Tribe__Events__Tickets__Autoloader {
+		class Tribe__Tickets__Autoloader {
 
 			/**
-			 * @var Tribe__Events__Tickets__Autoloader
+			 * @var Tribe__Tickets__Autoloader
 			 */
 			protected static $instance;
 
@@ -80,10 +80,10 @@
 			/**
 			 * Returns the singleton instance of the class.
 			 *
-			 * @return Tribe__Events__Tickets__Autoloader
+			 * @return Tribe__Tickets__Autoloader
 			 */
 			public static function instance() {
-				if ( ! self::$instance instanceof Tribe__Events__Tickets__Autoloader ) {
+				if ( ! self::$instance instanceof Tribe__Tickets__Autoloader ) {
 					self::$instance = new self();
 				}
 

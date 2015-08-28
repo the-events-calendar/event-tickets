@@ -1,9 +1,9 @@
 <?php
-class Tribe__Events__Tickets__Tickets_Handler {
+class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Singleton instance of this class
 	 *
-	 * @var Tribe__Events__Tickets__Tickets_Handler
+	 * @var Tribe__Tickets__Tickets_Handler
 	 * @static
 	 */
 	protected static $instance;
@@ -34,12 +34,12 @@ class Tribe__Events__Tickets__Tickets_Handler {
 
 	/**
 	 * WP_Post_List children for Attendees
-	 * @var Tribe__Events__Tickets__Attendees_Table
+	 * @var Tribe__Tickets__Attendees_Table
 	 */
 	private $attendees_table;
 
 	/**
-	 * @var Tribe__Events__Tickets__Google_Event_Data
+	 * @var Tribe__Tickets__Google_Event_Data
 	 */
 	protected $google_event_data;
 
@@ -48,7 +48,7 @@ class Tribe__Events__Tickets__Tickets_Handler {
 	 *    Class constructor.
 	 */
 	public function __construct() {
-		$main = Tribe__Events__Tickets__Main::instance();
+		$main = Tribe__Tickets__Main::instance();
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ), 10, 2 );
@@ -59,7 +59,7 @@ class Tribe__Events__Tickets__Tickets_Handler {
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
 
 		$this->path = trailingslashit( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) );
-		$this->google_event_data = new Tribe__Events__Tickets__Google_Event_Data;
+		$this->google_event_data = new Tribe__Tickets__Google_Event_Data;
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Tribe__Events__Tickets__Tickets_Handler {
 	public function attendees_row_action( $actions ) {
 		global $post;
 
-		if ( in_array( $post->post_type, Tribe__Events__Tickets__Main::instance()->post_types() ) ) {
+		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
 			$url = add_query_arg( array(
 				'post_type' => $post->post_type,
 				'page'      => self::$attendees_slug,
@@ -110,9 +110,9 @@ class Tribe__Events__Tickets__Tickets_Handler {
 
 		$resources_url = plugins_url( 'resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Tickets__Main::VERSION ) );
-		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Events__Tickets__Main::VERSION ), 'print' );
-		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), apply_filters( 'tribe_events_js_version', Tribe__Events__Tickets__Main::VERSION ) );
+		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ) );
+		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ), 'print' );
+		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), apply_filters( 'tribe_events_js_version', Tribe__Tickets__Main::VERSION ) );
 
 		$mail_data = array(
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
@@ -159,7 +159,7 @@ class Tribe__Events__Tickets__Tickets_Handler {
 	 */
 	public function attendees_page_screen_setup() {
 
-		$this->attendees_table = new Tribe__Events__Tickets__Attendees_Table();
+		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
 
 		$this->maybe_generate_attendees_csv();
 
@@ -224,7 +224,7 @@ class Tribe__Events__Tickets__Tickets_Handler {
 		$export_columns = array_filter( array_keys( $export_columns ) );
 
 		// Get the data
-		$items = Tribe__Events__Tickets__Tickets::get_event_attendees( $event_id );
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
 		$rows = array( $columns_names );
 		//And echo the data
@@ -347,14 +347,14 @@ class Tribe__Events__Tickets__Tickets_Handler {
 	 */
 	public function do_meta_box( $post_id ) {
 
-		$startMinuteOptions   = Tribe__Events__Tickets__View_Helpers::getMinuteOptions( null );
-		$endMinuteOptions     = Tribe__Events__Tickets__View_Helpers::getMinuteOptions( null );
-		$startHourOptions     = Tribe__Events__Tickets__View_Helpers::getHourOptions( null, true );
-		$endHourOptions       = Tribe__Events__Tickets__View_Helpers::getHourOptions( null, false );
-		$startMeridianOptions = Tribe__Events__Tickets__View_Helpers::getMeridianOptions( null, true );
-		$endMeridianOptions   = Tribe__Events__Tickets__View_Helpers::getMeridianOptions( null );
+		$startMinuteOptions   = Tribe__Tickets__View_Helpers::getMinuteOptions( null );
+		$endMinuteOptions     = Tribe__Tickets__View_Helpers::getMinuteOptions( null );
+		$startHourOptions     = Tribe__Tickets__View_Helpers::getHourOptions( null, true );
+		$endHourOptions       = Tribe__Tickets__View_Helpers::getHourOptions( null, false );
+		$startMeridianOptions = Tribe__Tickets__View_Helpers::getMeridianOptions( null, true );
+		$endMeridianOptions   = Tribe__Tickets__View_Helpers::getMeridianOptions( null );
 
-		$tickets = Tribe__Events__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
@@ -457,7 +457,7 @@ class Tribe__Events__Tickets__Tickets_Handler {
 	/**
 	 * Static Singleton Factory Method
 	 *
-	 * @return Tribe__Events__Tickets__Tickets_Handler
+	 * @return Tribe__Tickets__Tickets_Handler
 	 */
 	public static function instance() {
 		if ( ! isset( self::$instance ) ) {

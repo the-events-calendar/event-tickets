@@ -5,7 +5,7 @@
  *
  * @see Tribe__Events__Google_Data_Markup
  */
-class Tribe__Events__Tickets__Google_Event_Data {
+class Tribe__Tickets__Google_Event_Data {
 	/**
 	 * @var stdClass
 	 */
@@ -17,7 +17,7 @@ class Tribe__Events__Tickets__Google_Event_Data {
 	protected $event_id;
 
 	/**
-	 * @var Tribe__Events__Tickets__Ticket_Object
+	 * @var Tribe__Tickets__Ticket_Object
 	 */
 	protected $ticket;
 
@@ -60,7 +60,7 @@ class Tribe__Events__Tickets__Google_Event_Data {
 	 * Adds ticket data to the offers property of the event object.
 	 */
 	protected function add_ticket_offers() {
-		foreach ( Tribe__Events__Tickets__Tickets::get_all_event_tickets( $this->event_id ) as $this->ticket ) {
+		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $this->event_id ) as $this->ticket ) {
 			$this->add_individual_offer();
 		}
 	}
@@ -97,7 +97,7 @@ class Tribe__Events__Tickets__Google_Event_Data {
 		 * event ticket.
 		 *
 		 * @param object                  $offer
-		 * @param Tribe__Events__Tickets__Ticket_Object $ticket
+		 * @param Tribe__Tickets__Ticket_Object $ticket
 		 * @param object                  $event
 		 */
 		return (object) apply_filters( 'tribe_events_tickets_google_event_data_offer', (object) $offer, $this->ticket, $this->event );

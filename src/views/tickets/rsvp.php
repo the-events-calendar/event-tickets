@@ -8,7 +8,7 @@ ob_start();
 <form action="" class="cart" method="post" enctype='multipart/form-data'>
 	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'tribe-tickets' ) ?></h2>
 	<?php
-	$messages = Tribe__Events__Tickets__RSVP::get_instance()->get_messages();
+	$messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 
 	if ( $messages ) {
 		?>
@@ -30,7 +30,7 @@ ob_start();
 		<?php
 		foreach ( $tickets as $ticket ) {
 			// if the ticket isn't an RSVP ticket, then let's skip it
-			if ( 'Tribe__Events__Tickets__RSVP' !== $ticket->provider_class ) {
+			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
 				continue;
 			}
 
