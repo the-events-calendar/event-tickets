@@ -150,6 +150,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", $resources_url . '/images/warning.png' );
 		}
 
+
 		// Look for an order_status_label, fall back on the actual order_status string @todo remove fallback in 3.4.3
 		$label = isset( $item['order_status_label'] ) ? $item['order_status_label'] : ucwords( $item['order_status'] );
 

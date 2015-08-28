@@ -58,7 +58,7 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
 
-		$this->path = trailingslashit( dirname( dirname( dirname( dirname( __FILE__ ) ) ) ) );
+		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 		$this->google_event_data = new Tribe__Tickets__Google_Event_Data;
 	}
 
@@ -108,7 +108,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		$resources_url = plugins_url( 'resources', dirname( dirname( __FILE__ ) ) );
+		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
 		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ) );
 		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ), 'print' );

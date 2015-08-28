@@ -35,7 +35,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'EVENTS_TICKETS_DIR', dirname( __FILE__ ) );
 
 // the main plugin class
-require_once dirname( __FILE__ ) . '/src/Tribe/Tickets/Main.php';
+require_once dirname( __FILE__ ) . '/src/Tribe/Main.php';
 
 // This needs to happen before Tickets PRO
 add_action( 'plugins_loaded', array( 'Tribe__Tickets__Main', 'instance' ), 5 );
