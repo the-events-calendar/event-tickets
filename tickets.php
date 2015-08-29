@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-define( 'EVENTS_TICKETS_DIR', dirname( __FILE__ ) );
+define( 'TRIBE_TICKETS_DIR', dirname( __FILE__ ) );
 
 // the main plugin class
 require_once dirname( __FILE__ ) . '/src/Tribe/Main.php';

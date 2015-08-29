@@ -42,7 +42,7 @@ class Tribe__Tickets__Main {
 		/* Set up some parent's vars */
 		$this->plugin_name = 'Tickets';
 		$this->plugin_slug = 'tickets';
-		$this->plugin_path = trailingslashit( EVENTS_TICKETS_DIR );
+		$this->plugin_path = trailingslashit( TRIBE_TICKETS_DIR );
 		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
 		$this->plugin_url = trailingslashit( plugins_url( $this->plugin_dir ) );
 
