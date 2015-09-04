@@ -327,8 +327,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$return = $this->notice( __( 'Your ticket has been saved.', 'tribe-tickets' ) ) . $return;
 
-				// Additionally ensure the event costs meta data is updated accordingly
-				Tribe__Events__API::update_event_cost( $post_id );
+				/**
+				 * Fire action when a ticket has been added
+				 *
+				 * @param $post_id
+				 */
+				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
 
 			$this->ajax_ok( $return );
@@ -408,8 +412,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$return = $this->notice( __( 'Your ticket has been deleted.', 'tribe-tickets' ) ) . $return;
 
-				// Additionally ensure the event costs meta data is updated accordingly
-				Tribe__Events__API::update_event_cost( $post_id );
+				/**
+				 * Fire action when a ticket has been deleted
+				 *
+				 * @param $post_id
+				 */
+				do_action( 'tribe_tickets_ticket_deleted', $post_id );
 			}
 
 			$this->ajax_ok( $return );

@@ -89,6 +89,7 @@ class Tribe__Tickets__Main {
 		$this->rsvp();
 
 		// if TEC is running, add event post types the supported post types list
+		// @TODO: add settings page that allows users to select post types
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
 			self::$post_types[] = Tribe__Events__Main::POSTTYPE;
 		}

@@ -163,7 +163,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 	<form id="topics-filter" method="post">
 		<input type="hidden" name="page" value="<?php echo esc_attr( $_GET['page'] ); ?>" />
 		<input type="hidden" name="event_id" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
-		<input type="hidden" name="post_type" value="<?php echo esc_attr( Tribe__Events__Main::POSTTYPE ); ?>" />
+		<input type="hidden" name="post_type" value="<?php echo esc_attr( $event->post_type ); ?>" />
 		<?php $this->attendees_table->display() ?>
 	</form>
 
