@@ -46,8 +46,6 @@ class Tribe__Tickets__Main {
 		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
 		$this->plugin_url = trailingslashit( plugins_url( $this->plugin_dir ) );
 
-		// include the autolader class
-		require_once $this->plugin_path . '/src/Tribe/Autoloader.php';
 		$this->init_autoloading();
 
 		load_plugin_textdomain( 'tribe-tickets', false, $this->plugin_dir . 'lang/' );
@@ -59,7 +57,7 @@ class Tribe__Tickets__Main {
 	 * Sets up autoloading
 	 */
 	protected function init_autoloading() {
-		$autoloader = Tribe__Tickets__Autoloader::instance();
+		$autoloader = Tribe__Autoloader::instance();
 
 		$autoloader->register_prefix( 'Tribe__Tickets__', $this->plugin_path . '/src/Tribe' );
 

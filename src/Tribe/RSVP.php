@@ -140,7 +140,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 
 		$stylesheet_url = $main->plugin_url . 'src/resources/css/rsvp.css';
-		$stylesheet_url = Tribe__Events__Template_Factory::getMinFile( $stylesheet_url, true );
+		$stylesheet_url = Tribe__Template_Factory::getMinFile( $stylesheet_url, true );
 
 		// apply filters
 		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
@@ -153,7 +153,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		);
 
 		$js_url = $main->plugin_url . 'src/resources/js/rsvp.js';
-		$js_url = Tribe__Events__Template_Factory::getMinFile( $js_url, true );
+		$js_url = Tribe__Template_Factory::getMinFile( $js_url, true );
 		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
 
 		wp_register_script(
@@ -187,7 +187,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		wp_enqueue_script( 'tribe-tickets-rsvp' );
 
 		// Check for override stylesheet
-		$user_stylesheet_url = Tribe__Events__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
+		$user_stylesheet_url = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
 
 		// If override stylesheet exists, then enqueue it
 		if ( $user_stylesheet_url ) {
