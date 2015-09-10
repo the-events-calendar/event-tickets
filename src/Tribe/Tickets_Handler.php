@@ -347,12 +347,12 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function do_meta_box( $post_id ) {
 
-		$startMinuteOptions   = Tribe__Tickets__View_Helpers::getMinuteOptions( null );
-		$endMinuteOptions     = Tribe__Tickets__View_Helpers::getMinuteOptions( null );
-		$startHourOptions     = Tribe__Tickets__View_Helpers::getHourOptions( null, true );
-		$endHourOptions       = Tribe__Tickets__View_Helpers::getHourOptions( null, false );
-		$startMeridianOptions = Tribe__Tickets__View_Helpers::getMeridianOptions( null, true );
-		$endMeridianOptions   = Tribe__Tickets__View_Helpers::getMeridianOptions( null );
+		$startMinuteOptions   = Tribe__View_Helpers::getMinuteOptions( null );
+		$endMinuteOptions     = Tribe__View_Helpers::getMinuteOptions( null );
+		$startHourOptions     = Tribe__View_Helpers::getHourOptions( null, true );
+		$endHourOptions       = Tribe__View_Helpers::getHourOptions( null, false );
+		$startMeridianOptions = Tribe__View_Helpers::getMeridianOptions( null, true );
+		$endMeridianOptions   = Tribe__View_Helpers::getMeridianOptions( null );
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		include $this->path . 'src/admin-views/meta-box.php';
