@@ -187,7 +187,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		wp_enqueue_script( 'tribe-tickets-rsvp' );
 
 		// Check for override stylesheet
-		$user_stylesheet_url = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
+		$user_stylesheet_url = Tribe__Events__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
 
 		// If override stylesheet exists, then enqueue it
 		if ( $user_stylesheet_url ) {
