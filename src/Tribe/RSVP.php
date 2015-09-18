@@ -31,7 +31,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Meta key that relates Attendees and Products
 	 * @var string
 	 */
-	public $atendee_product_key = '_tribe_rsvp_product';
+	public $attendee_product_key = '_tribe_rsvp_product';
 
 	/**
 	 * Meta key that ties attendees together by order
@@ -42,7 +42,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Meta key that relates Attendees and Events
 	 * @var string
 	 */
-	public $atendee_event_key = '_tribe_rsvp_event';
+	public $attendee_event_key = '_tribe_rsvp_event';
 
 	/**
 	 * Meta key that holds the security code that's printed in the tickets
@@ -113,6 +113,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		parent::__construct();
 
+		$this->init();
 		$this->hooks();
 	}
 
@@ -120,7 +121,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Registers all actions/filters
 	 */
 	public function hooks() {
-		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
 	}
 
@@ -277,8 +277,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				// Insert individual ticket purchased
 				$attendee_id = wp_insert_post( $attendee );
 
-				update_post_meta( $attendee_id, $this->atendee_product_key, $product_id );
-				update_post_meta( $attendee_id, $this->atendee_event_key, $event_id );
+				update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
+				update_post_meta( $attendee_id, $this->attendee_event_key, $event_id );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
@@ -333,8 +333,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $query->posts as $post ) {
 			$attendees[] = array(
-				'event_id'      => get_post_meta( $post->ID, $this->atendee_product_key, true ),
-				'ticket_name'   => get_post( get_post_meta( $post->ID, $this->atendee_product_key, true ) )->post_title,
+				'event_id'      => get_post_meta( $post->ID, $this->attendee_product_key, true ),
+				'ticket_name'   => get_post( get_post_meta( $post->ID, $this->attendee_product_key, true ) )->post_title,
 				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'order_id'      => $order_id,
@@ -431,9 +431,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function delete_ticket( $event_id, $ticket_id ) {
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
-			$event_id = get_post_meta( $ticket_id, $this->atendee_event_key, true );
+			$event_id = get_post_meta( $ticket_id, $this->attendee_event_key, true );
 		}
-		$product_id = get_post_meta( $ticket_id, $this->atendee_product_key, true );
+		$product_id = get_post_meta( $ticket_id, $this->attendee_product_key, true );
 
 		// Decrement the sales figure
 		$sales = (int) get_post_meta( $product_id, 'total_sales', true );
@@ -611,7 +611,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendees_query = new WP_Query( array(
 			'posts_per_page' => - 1,
 			'post_type'      => $this->attendee_object,
-			'meta_key'       => $this->atendee_event_key,
+			'meta_key'       => $this->attendee_event_key,
 			'meta_value'     => $event_id,
 			'orderby'        => 'ID',
 			'order'          => 'DESC'
@@ -626,7 +626,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		foreach ( $attendees_query->posts as $attendee ) {
 			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
 			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
-			$product_id = get_post_meta( $attendee->ID, $this->atendee_product_key, true );
+			$product_id = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
 			$name       = get_post_meta( $attendee->ID, 'name', true );
 			$email      = get_post_meta( $attendee->ID, 'email', true );
 

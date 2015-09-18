@@ -44,7 +44,14 @@ class Tribe__Tickets__Main {
 		$this->plugin_slug = 'tickets';
 		$this->plugin_path = trailingslashit( TRIBE_TICKETS_DIR );
 		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
-		$this->plugin_url = trailingslashit( plugins_url( $this->plugin_dir ) );
+
+		$dir_prefix = '';
+
+		if ( false !== strstr( TRIBE_TICKETS_DIR, '/vendor/' ) ) {
+			$dir_prefix = basename( dirname( dirname( TRIBE_TICKETS_DIR ) ) ) . '/vendor/';
+		}
+
+		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
 
 		$this->init_autoloading();
 
