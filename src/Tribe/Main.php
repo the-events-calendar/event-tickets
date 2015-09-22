@@ -55,23 +55,48 @@ class Tribe__Tickets__Main {
 
 		$this->init_autoloading();
 
+		// initialize the common libraries
+		$this->common();
+
 		load_plugin_textdomain( 'tribe-tickets', false, $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
 	}
 
 	/**
+	 * Common library object accessor method
+	 */
+	public function common() {
+		static $common;
+
+		if ( ! $common ) {
+			$common = new Tribe__Main( $this );
+		}
+
+		return $common;
+	}
+
+	/**
 	 * Sets up autoloading
 	 */
 	protected function init_autoloading() {
-		$autoloader = Tribe__Autoloader::instance();
+		$prefixes = array(
+			'Tribe__Tickets__' => $this->plugin_path . 'src/Tribe',
+		);
 
-		$autoloader->register_prefix( 'Tribe__Tickets__', $this->plugin_path . '/src/Tribe' );
+		if ( ! class_exists( 'Tribe__Autoloader' ) ) {
+			require_once( $this->plugin_path . '/common/Tribe/Autoloader.php' );
+
+			$prefixes['Tribe__'] = $this->plugin_path . 'common/Tribe';
+		}
+
+		$autoloader = Tribe__Autoloader::instance();
+		$autoloader->register_prefixes( $prefixes );
 
 		require_once $this->plugin_path . 'src/template-tags/tickets.php';
 
 		// deprecated classes are registered in a class to path fashion
-		foreach ( glob( $this->plugin_path . 'src/deprecated/*.php' ) as $file ) {
+		foreach ( glob( $this->plugin_path . '{common,src}/deprecated/*.php', GLOB_BRACE ) as $file ) {
 			$class_name = str_replace( '.php', '', basename( $file ) );
 			$autoloader->register_class( $class_name, $file );
 		}
