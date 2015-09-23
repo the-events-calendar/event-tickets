@@ -2,11 +2,6 @@
 
 class Tribe__Tickets__Main {
 	/**
-	 * Post types that tickets can be tied to
-	 */
-	private static $post_types = array( 'post' );
-
-	/**
 	 * Instance of this class for use as singleton
 	 */
 	private static $instance;
@@ -120,11 +115,7 @@ class Tribe__Tickets__Main {
 		// set up the RSVP object
 		$this->rsvp();
 
-		// if TEC is running, add event post types the supported post types list
-		// @TODO: add settings page that allows users to select post types
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			self::$post_types[] = Tribe__Events__Main::POSTTYPE;
-		}
+		$this->settings_tab();
 	}
 
 	/**
@@ -141,14 +132,36 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * settings page object accessor
+	 */
+	public function settings_tab() {
+		static $settings;
+
+		if ( ! $settings ) {
+			$settings = new Tribe__Tickets__Admin__Ticket_Settings;
+		}
+
+		return $settings;
+	}
+
+	/**
 	 * Returns the supported post types for tickets
 	 */
 	public function post_types() {
+		$options = get_option( Tribe__Main::OPTIONNAME );
+
+		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
+		if ( ! isset( $options['ticket-enabled-post-types'] ) ) {
+			$options['ticket-enabled-post-types'] = array(
+				'tribe_events',
+			);
+		}
+
 		/**
 		 * Filters the list of post types that support tickets
 		 *
 		 * @param array $post_types Array of post types
 		 */
-		return apply_filters( 'tribe_tickets_post_types', self::$post_types );
+		return apply_filters( 'tribe_tickets_post_types', $options['ticket-enabled-post-types'] );
 	}
 }
