@@ -25,6 +25,7 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 }
 
 $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
+$options = get_option( Tribe__Main::OPTIONNAME );
 
 $tickets_tab = array(
 	'priority' => 20,
@@ -42,6 +43,8 @@ $tickets_tab = array(
 			'ticket-enabled-post-types' => array(
 				'type' => 'checkbox_list',
 				'label' => esc_html__( 'Post types that can have tickets', 'tribe-tickets' ),
+				// only set the default to tribe_events if the ticket-endabled-post-types index has never been saved
+				'default' => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 				'options' => $all_post_types,
 				'validation_type' => 'options_multi',
 				'can_be_empty' => true,

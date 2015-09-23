@@ -151,7 +151,7 @@ class Tribe__Tickets__Main {
 		$options = get_option( Tribe__Main::OPTIONNAME );
 
 		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
-		if ( ! isset( $options['ticket-enabled-post-types'] ) ) {
+		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
 			$options['ticket-enabled-post-types'] = array(
 				'tribe_events',
 			);
