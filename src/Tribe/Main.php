@@ -162,6 +162,6 @@ class Tribe__Tickets__Main {
 		 *
 		 * @param array $post_types Array of post types
 		 */
-		return apply_filters( 'tribe_tickets_post_types', $options['ticket-enabled-post-types'] );
+		return apply_filters( 'tribe_tickets_post_types', (array) $options['ticket-enabled-post-types'] );
 	}
 }
