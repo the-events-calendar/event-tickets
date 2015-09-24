@@ -62,3 +62,7 @@ p.ticket_name {
 .ticket_time{
 	display:none;
 }
+
+.tribe-tickets-remaining {
+	font-size: 10px;
+}

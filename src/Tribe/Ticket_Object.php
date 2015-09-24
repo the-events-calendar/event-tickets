@@ -142,7 +142,29 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return true;
 			}
 
-			return ( absint( $this->stock ) - absint( $this->qty_sold ) - absint( $this->qty_pending ) ) > 0;
+			return $this->remaining() > 0;
+		}
+
+		/**
+		 * Provides the quantity of remaining tickets
+		 *
+		 * @return int
+		 */
+		public function remaining() {
+			// if we aren't tracking stock, then always assume it is in stock
+			if ( empty( $this->stock ) ) {
+				return -1;
+			}
+
+			$remaining = absint( $this->stock ) - absint( $this->qty_sold ) - absint( $this->qty_pending );
+
+			if ( $remaining > $this->stock ) {
+				$remaining = $this->stock;
+			} elseif ( $remaining < 0 ) {
+				$remaining = 0;
+			}
+
+			return $remaining;
 		}
 	}
 }
