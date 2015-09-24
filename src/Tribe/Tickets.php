@@ -325,7 +325,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$tickets = $this->get_event_tickets( $post_id );
 				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
-				$return = $this->notice( __( 'Your ticket has been saved.', 'tribe-tickets' ) ) . $return;
+				$return = $this->notice( esc_html__( 'Your ticket has been saved.', 'tribe-tickets' ) ) . $return;
 
 				/**
 				 * Fire action when a ticket has been added
@@ -410,7 +410,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$tickets = $this->get_event_tickets( $post_id );
 				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
-				$return = $this->notice( __( 'Your ticket has been deleted.', 'tribe-tickets' ) ) . $return;
+				$return = $this->notice( esc_html__( 'Your ticket has been deleted.', 'tribe-tickets' ) ) . $return;
 
 				/**
 				 * Fire action when a ticket has been deleted

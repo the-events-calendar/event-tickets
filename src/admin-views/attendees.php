@@ -100,7 +100,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 							}
 
 							if ( empty( $stock ) && $stock !== 0 ) {
-								echo sprintf( __( 'Sold %1$d %2$s', 'tribe-tickets' ), esc_html( $sold ), $pending );
+								echo sprintf( esc_html__( 'Sold %1$d %2$s', 'tribe-tickets' ), esc_html( $sold ), $pending );
 							}
 							else {
 								echo sprintf( __( 'Sold %1$d of %2$d %3$s', 'tribe-tickets' ), esc_html( $sold ), esc_html( $sold + $stock ), $pending );
@@ -176,7 +176,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 					array(
 						'name'             => 'email_to_user',
 						'id'               => 'email_to_user',
-						'show_option_none' => __( 'Select...', 'tribe-tickets' ),
+						'show_option_none' => esc_html__( 'Select...', 'tribe-tickets' ),
 						'selected'         => '',
 					)
 				); ?>
