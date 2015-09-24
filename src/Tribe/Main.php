@@ -48,6 +48,8 @@ class Tribe__Tickets__Main {
 
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
 
+		$this->maybe_set_common_lib_info();
+
 		$this->init_autoloading();
 
 		// initialize the common libraries
@@ -56,6 +58,31 @@ class Tribe__Tickets__Main {
 		load_plugin_textdomain( 'tribe-tickets', false, $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
+	}
+
+	public function maybe_set_common_lib_info() {
+		$common_version = file_get_contents( $this->plugin_path . 'common/Tribe/Main.php' );
+
+		// if there isn't a tribe-common version, bail
+		if ( ! preg_match( "/const\s+VERSION\s*=\s*'([^']+)'/m", $common_version, $matches ) ) {
+			add_action( 'admin_head', array( $this, 'missing_common_libs' ) );
+
+			return;
+		}
+
+		$common_version = $matches[1];
+
+		if ( empty( $GLOBALS['tribe-common-info'] ) ) {
+			$GLOBALS['tribe-common-info'] = array(
+				'dir' => "{$this->plugin_path}common/Tribe",
+				'version' => $common_version,
+			);
+		} elseif ( 1 == version_compare( $GLOBALS['tribe-common-info']['version'], $common_version, '<' ) ) {
+			$GLOBALS['tribe-common-info'] = array(
+				'dir' => "{$this->plugin_path}common/Tribe",
+				'version' => $common_version,
+			);
+		}
 	}
 
 	/**
@@ -80,9 +107,9 @@ class Tribe__Tickets__Main {
 		);
 
 		if ( ! class_exists( 'Tribe__Autoloader' ) ) {
-			require_once( $this->plugin_path . '/common/Tribe/Autoloader.php' );
+			require_once( $GLOBALS['tribe-common-info']['dir'] . '/Autoloader.php' );
 
-			$prefixes['Tribe__'] = $this->plugin_path . 'common/Tribe';
+			$prefixes['Tribe__'] = $GLOBALS['tribe-common-info']['dir'];
 		}
 
 		$autoloader = Tribe__Autoloader::instance();
