@@ -385,13 +385,10 @@
 							</tr>
 						</table>
 						<?php
-						}
-						?>
+			}//end foreach
 
-
-
-						<?php do_action( 'tribe_tickets_ticket_email_bottom' ); ?>
-
+			do_action( 'tribe_tickets_ticket_email_bottom' );
+			?>
 		</center>
 	</div>
 </body>
