@@ -271,7 +271,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					'post_status' => 'publish',
 					'post_title'  => $attendee_full_name . ' | ' . ( $i + 1 ),
 					'post_type'   => $this->attendee_object,
-					'ping_status' => 'closed'
+					'ping_status' => 'closed',
 				);
 
 				// Insert individual ticket purchased
@@ -328,7 +328,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'post_type'      => $this->attendee_object,
 			'meta_key'       => $this->order_key,
 			'meta_value'     => $order_id,
-			'posts_per_page' => - 1
+			'posts_per_page' => - 1,
 		) );
 
 		foreach ( $query->posts as $post ) {
@@ -339,7 +339,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'order_id'      => $order_id,
 				'ticket_id'     => $post->ID,
-				'security_code' => get_post_meta( $post->ID, $this->security_code, true )
+				'security_code' => get_post_meta( $post->ID, $this->security_code, true ),
 			);
 		}
 
@@ -376,7 +376,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'post_type'    => $this->ticket_object,
 				'post_author'  => get_current_user_id(),
 				'post_excerpt' => $ticket->description,
-				'post_title'   => $ticket->name
+				'post_title'   => $ticket->name,
 			);
 
 			$ticket->ID = wp_insert_post( $args );
@@ -388,7 +388,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$args = array(
 				'ID'           => $ticket->ID,
 				'post_excerpt' => $ticket->description,
-				'post_title'   => $ticket->name
+				'post_title'   => $ticket->name,
 			);
 
 			$ticket->ID = wp_update_post( $args );
@@ -614,7 +614,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'meta_key'       => $this->attendee_event_key,
 			'meta_value'     => $event_id,
 			'orderby'        => 'ID',
-			'order'          => 'DESC'
+			'order'          => 'DESC',
 		) );
 
 		if ( ! $attendees_query->have_posts() ) {
@@ -647,7 +647,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'security'        => $security,
 				'product_id'      => $product_id,
 				'check_in'        => $checkin,
-				'provider'        => __CLASS__
+				'provider'        => __CLASS__,
 			);
 		}
 

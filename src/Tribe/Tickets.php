@@ -64,7 +64,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract function get_event_reports_link( $event_id );
+		abstract public function get_event_reports_link( $event_id );
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
@@ -77,7 +77,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract function get_ticket_reports_link( $event_id, $ticket_id );
+		abstract public function get_ticket_reports_link( $event_id, $ticket_id );
 
 		/**
 		 * Returns a single ticket
@@ -89,7 +89,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract function get_ticket( $event_id, $ticket_id );
+		abstract public function get_ticket( $event_id, $ticket_id );
 
 		/**
 		 * Returns the event post corresponding to the possible ticket object/ticket ID.
@@ -121,7 +121,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract function delete_ticket( $event_id, $ticket_id );
+		abstract public function delete_ticket( $event_id, $ticket_id );
 
 		/**
 		 * Saves a ticket
@@ -134,7 +134,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract function save_ticket( $event_id, $ticket, $raw_data = array() );
+		abstract public function save_ticket( $event_id, $ticket, $raw_data = array() );
 
 		/**
 		 * Get all the tickets for an event
@@ -192,7 +192,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract function do_metabox_advanced_options( $event_id, $ticket_id );
+		abstract public function do_metabox_advanced_options( $event_id, $ticket_id );
 
 		/**
 		 * Renders the front end form for selling tickets in the event single page
@@ -203,7 +203,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract function front_end_tickets_form( $content );
+		abstract public function front_end_tickets_form( $content );
 
 		/**
 		 * Returns the markup for the price field
@@ -213,7 +213,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string
 		 */
-		function get_price_html( $product ) {
+		public function get_price_html( $product ) {
 			return '';
 		}
 
@@ -224,14 +224,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @abstract
 		 * @return mixed
 		 */
-		static function get_instance() {}
+		public static function get_instance() {}
 
 		// end API Definitions
 
 		/**
 		 *
 		 */
-		function __construct() {
+		public function __construct() {
 
 			// Start the singleton with the generic functionality to all providers.
 			Tribe__Tickets__Tickets_Handler::instance();
@@ -243,16 +243,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$this->parentUrl  = trailingslashit( plugins_url( '', $this->parentPath ) );
 
 			// Register all Tribe__Tickets__Tickets api consumers
-			self::$active_modules[$this->className] = $this->pluginName;
+			self::$active_modules[ $this->className ] = $this->pluginName;
 
-			add_filter( 'tribe_events_tickets_modules', 		 array( $this, 'modules' 					 )		  );
+			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
 			add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
 
 			// Admin AJAX actions for each provider
-			add_action( 'wp_ajax_tribe-ticket-add-'       . $this->className, array( $this, 'ajax_handler_ticket_add' 		  ) );
-			add_action( 'wp_ajax_tribe-ticket-delete-'    . $this->className, array( $this, 'ajax_handler_ticket_delete' 	  ) );
-			add_action( 'wp_ajax_tribe-ticket-edit-'      . $this->className, array( $this, 'ajax_handler_ticket_edit' 		  ) );
-			add_action( 'wp_ajax_tribe-ticket-checkin-'   . $this->className, array( $this, 'ajax_handler_attendee_checkin'   ) );
+			add_action( 'wp_ajax_tribe-ticket-add-' . $this->className, array( $this, 'ajax_handler_ticket_add' ) );
+			add_action( 'wp_ajax_tribe-ticket-delete-' . $this->className, array( $this, 'ajax_handler_ticket_delete' ) );
+			add_action( 'wp_ajax_tribe-ticket-edit-' . $this->className, array( $this, 'ajax_handler_ticket_edit' ) );
+			add_action( 'wp_ajax_tribe-ticket-checkin-' . $this->className, array( $this, 'ajax_handler_attendee_checkin' ) );
 			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->className, array( $this, 'ajax_handler_attendee_uncheckin' ) );
 
 			// Front end
@@ -269,35 +269,36 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *    Sanitizes the data for the new/edit ticket ajax call,
 		 *  and calls the child save_ticket function.
 		 */
-		public final function ajax_handler_ticket_add() {
+		final public function ajax_handler_ticket_add() {
 
-			if ( ! isset( $_POST["formdata"] ) ) {
+			if ( ! isset( $_POST['formdata'] ) ) {
 				$this->ajax_error( 'Bad post' );
 			}
-			if ( ! isset( $_POST["post_ID"] ) )
+			if ( ! isset( $_POST['post_ID'] ) )
 				$this->ajax_error( 'Bad post' );
 
 			/*
 			 This is needed because a provider can implement a dynamic set of fields.
 			 Each provider is responsible for sanitizing these values.
 			*/
-			$data = wp_parse_args( $_POST["formdata"] );
+			$data = wp_parse_args( $_POST['formdata'] );
 
+			$post_id = $_POST['post_ID'];
 
-			$post_id = $_POST["post_ID"];
-
-			if ( empty( $_POST["nonce"] ) || ! wp_verify_nonce( $_POST["nonce"], 'add_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) )
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'add_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
+			}
 
-			if ( ! isset( $data["ticket_provider"] ) || ! $this->module_is_valid( $data["ticket_provider"] ) )
+			if ( ! isset( $data['ticket_provider'] ) || ! $this->module_is_valid( $data['ticket_provider'] ) ) {
 				$this->ajax_error( 'Bad module' );
+			}
 
 			$ticket = new Tribe__Tickets__Ticket_Object();
 
-			$ticket->ID          = isset( $data["ticket_id"] ) ? absint( $data["ticket_id"] ) : null;
-			$ticket->name        = isset( $data["ticket_name"] ) ? esc_html( $data["ticket_name"] ) : null;
-			$ticket->description = isset( $data["ticket_description"] ) ? esc_html( $data["ticket_description"] ) : null;
-			$ticket->price       = ! empty( $data["ticket_price"] ) ? trim( $data["ticket_price"] ) : 0;
+			$ticket->ID          = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
+			$ticket->name        = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
+			$ticket->description = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
+			$ticket->price       = ! empty( $data['ticket_price'] ) ? trim( $data['ticket_price'] ) : 0;
 
 			if ( ! empty( $ticket->price ) ) {
 				//remove non-money characters
@@ -305,13 +306,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
-				$meridian           = ! empty( $data['ticket_start_meridian'] ) ? " " . $data['ticket_start_meridian'] : "";
-				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $data['ticket_start_date'] . " " . $data['ticket_start_hour'] . ":" . $data['ticket_start_minute'] . ":00" . $meridian ) );
+				$meridian           = ! empty( $data['ticket_start_meridian'] ) ? ' ' . $data['ticket_start_meridian'] : '';
+				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $data['ticket_start_date'] . ' ' . $data['ticket_start_hour'] . ':' . $data['ticket_start_minute'] . ':00' . $meridian ) );
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
-				$meridian         = ! empty( $data['ticket_end_meridian'] ) ? " " . $data['ticket_end_meridian'] : "";
-				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $data['ticket_end_date'] . " " . $data['ticket_end_hour'] . ":" . $data['ticket_end_minute'] . ":00" . $meridian ) );
+				$meridian         = ! empty( $data['ticket_end_meridian'] ) ? ' ' . $data['ticket_end_meridian'] : '';
+				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $data['ticket_end_date'] . ' ' . $data['ticket_end_hour'] . ':' . $data['ticket_end_minute'] . ':00' . $meridian ) );
 			}
 
 			$ticket->provider_class = $this->className;
@@ -343,17 +344,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *    Handles the check-in ajax call, and calls the
 		 *  checkin method.
 		 */
-		public final function ajax_handler_attendee_checkin() {
+		final public function ajax_handler_attendee_checkin() {
 
-			if ( ! isset( $_POST["order_ID"] ) || intval( $_POST["order_ID"] ) == 0 )
+			if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
 				$this->ajax_error( 'Bad post' );
-			if ( ! isset( $_POST["provider"] ) || ! $this->module_is_valid( $_POST["provider"] ) )
+			}
+
+			if ( ! isset( $_POST['provider'] ) || ! $this->module_is_valid( $_POST['provider'] ) ) {
 				$this->ajax_error( 'Bad module' );
+			}
 
-			if ( empty( $_POST["nonce"] ) || ! wp_verify_nonce( $_POST["nonce"], 'checkin' ) || ! current_user_can( 'edit_tribe_events' ) )
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! current_user_can( 'edit_tribe_events' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
+			}
 
-			$order_id = $_POST["order_ID"];
+			$order_id = $_POST['order_ID'];
 
 			// Pass the control to the child object
 			$return = $this->checkin( $order_id );
@@ -365,18 +370,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *  Handles the check-in ajax call, and calls the
 		 *  uncheckin method.
 		 */
-		public final function ajax_handler_attendee_uncheckin() {
+		final public function ajax_handler_attendee_uncheckin() {
 
-			if ( ! isset( $_POST["order_ID"] ) || intval( $_POST["order_ID"] ) == 0 )
+			if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
 				$this->ajax_error( 'Bad post' );
-			if ( ! isset( $_POST["provider"] ) || ! $this->module_is_valid( $_POST["provider"] ) )
+			}
+
+			if ( ! isset( $_POST['provider'] ) || ! $this->module_is_valid( $_POST['provider'] ) ) {
 				$this->ajax_error( 'Bad module' );
+			}
 
-			if ( empty( $_POST["nonce"] ) || ! wp_verify_nonce( $_POST["nonce"], 'uncheckin' ) || ! current_user_can( 'edit_tribe_events' ) )
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! current_user_can( 'edit_tribe_events' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
+			}
 
-
-			$order_id = $_POST["order_ID"];
+			$order_id = $_POST['order_ID'];
 
 			// Pass the control to the child object
 			$return = $this->uncheckin( $order_id );
@@ -388,18 +396,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *  Sanitizes the data for the delete ticket ajax call,
 		 *  and calls the child delete_ticket function.
 		 */
-		public final function ajax_handler_ticket_delete() {
+		final public function ajax_handler_ticket_delete() {
 
-			if ( ! isset( $_POST["post_ID"] ) )
+			if ( ! isset( $_POST['post_ID'] ) ) {
 				$this->ajax_error( 'Bad post' );
-			if ( ! isset( $_POST["ticket_id"] ) )
-				$this->ajax_error( 'Bad post' );
+			}
 
-			if ( empty( $_POST["nonce"] ) || ! wp_verify_nonce( $_POST["nonce"], 'remove_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) )
+			if ( ! isset( $_POST['ticket_id'] ) ) {
+				$this->ajax_error( 'Bad post' );
+			}
+
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'remove_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) )
 				$this->ajax_error( "Cheatin' huh?" );
 
-			$post_id   = $_POST["post_ID"];
-			$ticket_id = $_POST["ticket_id"];
+			$post_id   = $_POST['post_ID'];
+			$ticket_id = $_POST['ticket_id'];
 
 			// Pass the control to the child object
 			$return = $this->delete_ticket( $post_id, $ticket_id );
@@ -427,18 +438,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns the data from a single ticket to populate
 		 * the edit form.
 		 */
-		public final function ajax_handler_ticket_edit() {
+		final public function ajax_handler_ticket_edit() {
 
-			if ( ! isset( $_POST["post_ID"] ) )
+			if ( ! isset( $_POST['post_ID'] ) ) {
 				$this->ajax_error( 'Bad post' );
-			if ( ! isset( $_POST["ticket_id"] ) )
-				$this->ajax_error( 'Bad post' );
+			}
 
-			if ( empty( $_POST["nonce"] ) || ! wp_verify_nonce( $_POST["nonce"], 'edit_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) )
+			if ( ! isset( $_POST['ticket_id'] ) ) {
+				$this->ajax_error( 'Bad post' );
+			}
+
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'edit_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
+			}
 
-			$post_id   = $_POST["post_ID"];
-			$ticket_id = $_POST["ticket_id"];
+			$post_id   = $_POST['post_ID'];
+			$ticket_id = $_POST['ticket_id'];
 
 			$return = get_object_vars( $this->get_ticket( $post_id, $ticket_id ) );
 
@@ -447,7 +462,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$extra = ob_get_contents();
 			ob_end_clean();
 
-			$return["advanced_fields"] = $extra;
+			$return['advanced_fields'] = $extra;
 
 			$this->ajax_ok( $return );
 		}
@@ -535,10 +550,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		final static public function get_event_checkedin_attendees_count( $event_id ) {
-			$checkedin = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		final public static function get_event_checkedin_attendees_count( $event_id ) {
+			$checkedin = self::get_event_attendees( $event_id );
 
-			return array_reduce( $checkedin, array( "Tribe__Tickets__Tickets", "_checkedin_attendees_array_filter" ), 0 );
+			return array_reduce( $checkedin, array( 'Tribe__Tickets__Tickets', '_checkedin_attendees_array_filter' ), 0 );
 		}
 
 		/**
@@ -580,7 +595,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Echos the class for the <tr> in the tickets list admin
 		 */
 		protected function tr_class() {
-			echo "ticket_advanced ticket_advanced_" . $this->className;
+			echo 'ticket_advanced ticket_advanced_' . $this->className;
 		}
 
 		/**
@@ -602,7 +617,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		final static public function get_event_tickets( $event_id ) {
+		final public static function get_event_tickets( $event_id ) {
 
 			$tickets = array();
 
@@ -619,13 +634,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param string $message
 		 */
-		protected final function ajax_error( $message = "" ) {
+		final protected function ajax_error( $message = '' ) {
 			header( 'Content-type: application/json' );
 
 			echo json_encode(
 				array(
-					"success" => false,
-					"message" => $message
+					'success' => false,
+					'message' => $message,
 				)
 			);
 			exit;
@@ -636,21 +651,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param $data
 		 */
-		protected final function ajax_ok( $data ) {
+		final protected function ajax_ok( $data ) {
 			$return = array();
 			if ( is_object( $data ) ) {
 				$return = get_object_vars( $data );
 			} elseif ( is_array( $data ) || is_string( $data ) ) {
 				$return = $data;
 			} elseif ( is_bool( $data ) && ! $data ) {
-				$this->ajax_error( "Something went wrong" );
+				$this->ajax_error( 'Something went wrong' );
 			}
 
 			header( 'Content-type: application/json' );
 			echo json_encode(
 				array(
-					"success" => true,
-					"data"    => $return
+					'success' => true,
+					'data'    => $return,
 				)
 			);
 			exit;
