@@ -4,6 +4,28 @@ $this->attendees_table->prepare_items();
 $event_id = isset( $_GET['event_id'] ) ? intval( $_GET['event_id'] ) : 0;
 $event = get_post( $event_id );
 $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
+
+$total_sold = 0;
+$total_pending = 0;
+
+foreach ( $tickets as $ticket ) {
+	$sold = ! empty ( $ticket->qty_sold ) ? $ticket->qty_sold : 0;
+
+	$total_sold += absint( $sold );
+	$total_pending += absint( $ticket->qty_pending );
+	$total_completed = $total_sold - $total_pending;
+}//end foreach
+
+if ( tribe_has_venue( $event_id ) ) {
+	$venue_id = tribe_get_venue_id( $event_id );
+
+	$url = get_post_meta( $venue_id, '_VenueURL', true );
+	if ( $url ) {
+		$display_url  = parse_url( $url, PHP_URL_HOST );
+		$display_url .= parse_url( $url, PHP_URL_PATH ) ? '/&hellip;' : '';
+		$display_url = apply_filters( 'tribe_venue_display_url', $display_url, $url, $venue_id );
+	}
+}
 ?>
 
 <div class="wrap">
@@ -34,7 +56,6 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 						echo tribe_get_end_date( $event_id, false, tribe_get_datetime_format( true ) );
 
 						if ( tribe_has_venue( $event_id ) ) {
-							$venue_id = tribe_get_venue_id( $event_id );
 							?>
 
 							<div class="venue-name">
@@ -57,16 +78,12 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 								<?php
 							}//end if
 
-							if ( $url = esc_url( get_post_meta( $venue_id, '_VenueURL', true ) ) ) {
+							if ( $url ) {
 								?>
 								<div class="venue-url">
 									<strong><?php echo esc_html( __( 'Website:', 'tribe-tickets' ) ); ?> </strong>
-									<a target="_blank" href="<?php echo $url; ?>">
-									<?php
-									$display_url  = parse_url( $url, PHP_URL_HOST );
-									$display_url .= parse_url( $url, PHP_URL_PATH ) ? '/&hellip;' : '';
-									echo apply_filters( 'tribe_venue_display_url', $display_url, $url, $venue_id );
-									?>
+									<a target="_blank" href="<?php echo esc_url( $url ); ?>">
+										<?php echo esc_html( $display_url ); ?>
 									</a>
 								</div>
 								<?php
@@ -83,34 +100,12 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 
 						<?php
 
-						$total_sold = 0;
-						$total_pending = 0;
-
 						foreach ( $tickets as $ticket ) {
 							?>
 							<strong><?php echo esc_html( $ticket->name ) ?>: </strong>
+							<?php echo tribe_tickets_get_ticket_stock_message( $ticket ); ?>
+							<br/>
 							<?php
-							$stock = $ticket->stock;
-							$sold = ! empty ( $ticket->qty_sold ) ? $ticket->qty_sold : 0;
-
-							$pending = '';
-
-							if ( $ticket->qty_pending > 0 ) {
-								$pending = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'tribe-tickets', $ticket->qty_pending ), (int) $ticket->qty_pending );
-							}
-
-							if ( empty( $stock ) && $stock !== 0 ) {
-								echo sprintf( esc_html__( 'Sold %1$d %2$s', 'tribe-tickets' ), esc_html( $sold ), $pending );
-							}
-							else {
-								echo sprintf( __( 'Sold %1$d of %2$d %3$s', 'tribe-tickets' ), esc_html( $sold ), esc_html( $sold + $stock ), $pending );
-							}
-
-							echo '<br />';
-
-							$total_sold += $sold;
-							$total_pending += $ticket->qty_pending;
-							$total_completed = $total_sold - $total_pending;
 						}//end foreach
 
 						do_action( 'tribe_events_tickets_attendees_ticket_sales_bottom', $event_id );

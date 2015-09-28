@@ -173,3 +173,28 @@ function tribe_events_ticket_is_on_sale( Tribe__Tickets__Ticket_Object $ticket )
 	// Result
 	return ( $has_started && $not_ended );
 }
+
+/**
+ * Gets the "tickets sold" message for a given ticket
+ *
+ * @param Tribe__Ticket_Object $ticket Ticket to analyze
+ *
+ * @return string
+ */
+function tribe_tickets_get_ticket_stock_message( $ticket ) {
+	$sold = ! empty ( $ticket->qty_sold ) ? $ticket->qty_sold : 0;
+
+	$pending = '';
+
+	if ( $ticket->qty_pending > 0 ) {
+		$pending = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'tribe-tickets', $ticket->qty_pending ), (int) $ticket->qty_pending );
+	}
+
+	if ( empty( $ticket->stock ) && $ticket->stock !== 0 ) {
+		$message = sprintf( esc_html__( 'Sold %1$d %2$s', 'tribe-tickets' ), esc_html( $sold ), esc_html( $pending ) );
+	} else {
+		$message = sprintf( esc_html__( 'Sold %1$d of %2$d %3$s', 'tribe-tickets' ), esc_html( $sold ), esc_html( $sold + $ticket->stock ), esc_html( $pending ) );
+	}
+
+	return $message;
+}
