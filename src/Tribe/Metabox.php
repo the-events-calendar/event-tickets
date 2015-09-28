@@ -79,7 +79,7 @@ class Tribe__Tickets__Metabox {
 
 		$upload_header_data = array(
 			'title'  => esc_html__( 'Ticket header image', 'tribe-tickets' ),
-			'button' => esc_html__( 'Set as ticket header', 'tribe-tickets' )
+			'button' => esc_html__( 'Set as ticket header', 'tribe-tickets' ),
 		);
 		wp_localize_script( 'events-tickets', 'HeaderImageData', $upload_header_data );
 
@@ -87,7 +87,7 @@ class Tribe__Tickets__Metabox {
 		$nonces = array(
 			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
 			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
-			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' )
+			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
 		);
 
 		wp_localize_script( 'events-tickets', 'TribeTickets', $nonces );
