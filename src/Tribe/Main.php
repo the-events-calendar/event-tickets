@@ -133,6 +133,7 @@ class Tribe__Tickets__Main {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'add_meta_boxes', array( 'Tribe__Tickets__Metabox', 'maybe_add_meta_box' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Tribe__Tickets__Metabox', 'add_admin_scripts' ) );
+		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
 	}
 
 	/**
@@ -190,5 +191,13 @@ class Tribe__Tickets__Main {
 		 * @param array $post_types Array of post types
 		 */
 		return apply_filters( 'tribe_tickets_post_types', (array) $options['ticket-enabled-post-types'] );
+	}
+
+	/**
+	 * Injects post types into the tribe-common post_types array
+	 */
+	public function inject_post_types( $post_types ) {
+		$post_types = array_merge( $post_types, $this->post_types() );
+		return $post_types;
 	}
 }
