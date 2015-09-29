@@ -257,6 +257,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Front end
 			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'front_end_tickets_form' ), 5 );
+			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ) );
 
 			// Ensure ticket prices and event costs are linked
 			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
@@ -735,5 +736,38 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		// end Helpers
+
+		public function front_end_tickets_form_in_content( $content ) {
+			global $post;
+
+			// if this isn't a post for some reason, bail
+			if ( ! $post instanceof WP_Post ) {
+				return $content;
+			}
+
+			// if this isn't a supported post type, bail
+			if ( ! in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
+				return $content;
+			}
+
+			// if this is a tribe_events post, let's bail because those post types are handled with a different hook
+			if ( 'tribe_events' === $post->post_type ) {
+				return $content;
+			}
+
+			// if there aren't any tickets, bail
+			$tickets = $this->get_tickets( $post->ID );
+			if ( empty( $tickets ) ) {
+				return $content;
+			}
+
+			ob_start();
+			$this->front_end_tickets_form( $content );
+			$form = ob_get_clean();
+
+			$content .= $form;
+
+			return $content;
+		}
 	}
 }

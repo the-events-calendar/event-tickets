@@ -506,7 +506,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$post = get_post( $post->post_parent );
 		}
 
-		$tickets = self::get_tickets( $post->ID );
+		$tickets = $this->get_tickets( $post->ID );
 
 		if ( empty( $tickets ) ) {
 			return;
@@ -635,8 +635,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 
 			$product       = get_post( $product_id );
-			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID,
-					$this->deleted_product, true ) . ' ' . __( '(deleted)', 'wootickets' );
+			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'tribe-tickets' );
 
 			$attendees[] = array(
 				'order_id'        => '',
