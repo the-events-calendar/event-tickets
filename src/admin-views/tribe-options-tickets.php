@@ -25,7 +25,7 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 }
 
 $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
-$options = get_option( Tribe__Main::OPTIONNAME );
+$options = get_option( Tribe__Main::OPTIONNAME, array() );
 
 $tickets_tab = array(
 	'priority' => 20,

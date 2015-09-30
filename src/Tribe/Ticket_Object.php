@@ -120,7 +120,16 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			if ( ! empty( $this->end_date ) ){
 				$end_date = strtotime( $this->end_date );
 			} else {
-				$end_date = strtotime( tribe_get_end_date( get_the_ID(), false, 'Y-m-d G:i' ) );
+				$post_id = get_the_ID();
+
+				/**
+				 * Set a default end date for tickets if the end date wasn't specified in the registration form
+				 *
+				 * @var $date End date for the tickets (defaults to tomorrow ... which means registrations will not end)
+				 * @var $post_id Post id for the post that tickets are attached to
+				 */
+				$end_date = apply_filters( 'tribe_tickets_default_end_date', date( 'Y-m-d G:i', strtotime( '+1 day' ) ), $post_id );
+				$end_date = strtotime( $end_date );
 			}
 
 			$start_date = null;

@@ -264,6 +264,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 
+		public function has_permission( $post, $data, $nonce_action ) {
+			if ( ! $post instanceof WP_Post ) {
+				if ( ! is_numeric( $post ) ) {
+					return false;
+				}
+
+				$post = get_post( $post );
+			}
+
+			$cap = "edit_{$post->post_type}";
+			if ( 'post' === $post->post_type || 'page' === $post->post_type ) {
+				$cap .= 's';
+			}
+
+			return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( $cap );
+		}
+
 		/* AJAX Handlers */
 
 		/**
@@ -286,7 +303,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$post_id = $_POST['post_ID'];
 
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'add_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+			if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
 			}
 
@@ -355,6 +372,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
+			do_action( 'debug_robot', '$_POST :: ' . print_r( $_POST, TRUE ) );
+
 			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! current_user_can( 'edit_tribe_events' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
 			}
@@ -407,10 +426,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad post' );
 			}
 
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'remove_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) )
-				$this->ajax_error( "Cheatin' huh?" );
+			$post_id = $_POST['post_ID'];
 
-			$post_id   = $_POST['post_ID'];
+			if ( ! $this->has_permission( $post_id, $_POST, 'remove_ticket_nonce' ) ) {
+				$this->ajax_error( "Cheatin' huh?" );
+			}
+
 			$ticket_id = $_POST['ticket_id'];
 
 			// Pass the control to the child object
@@ -449,11 +470,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad post' );
 			}
 
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'edit_ticket_nonce' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+			$post_id = $_POST['post_ID'];
+
+			if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
 			}
 
-			$post_id   = $_POST['post_ID'];
 			$ticket_id = $_POST['ticket_id'];
 
 			$return = get_object_vars( $this->get_ticket( $post_id, $ticket_id ) );
