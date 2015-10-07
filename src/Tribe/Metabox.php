@@ -74,8 +74,8 @@ class Tribe__Tickets__Metabox {
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style  ( 'events-tickets', $resources_url .'/css/tickets.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ) );
-		wp_enqueue_script ( 'events-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), apply_filters( 'tribe_events_js_version', Tribe__Tickets__Main::VERSION ), true );
+		wp_enqueue_style( 'events-tickets', $resources_url .'/css/tickets.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ) );
+		wp_enqueue_script( 'events-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), apply_filters( 'tribe_events_js_version', Tribe__Tickets__Main::VERSION ), true );
 
 		$upload_header_data = array(
 			'title'  => esc_html__( 'Ticket header image', 'tribe-tickets' ),

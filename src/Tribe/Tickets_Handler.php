@@ -259,7 +259,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 
-		$items = $this->_generate_filtered_attendees_list( $_GET['event_id'] );
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->_generate_filtered_attendees_list( $_GET['event_id'] ) );;
 		$event = get_post( $_GET['event_id'] );
 
 		if ( ! empty( $items ) ) {
