@@ -16,12 +16,12 @@ foreach ( $tickets as $ticket ) {
 	$total_completed = $total_sold - $total_pending;
 }//end foreach
 
-if ( tribe_has_venue( $event_id ) ) {
+if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 	$venue_id = tribe_get_venue_id( $event_id );
 
 	$url = get_post_meta( $venue_id, '_VenueURL', true );
 	if ( $url ) {
-		$display_url  = parse_url( $url, PHP_URL_HOST );
+		$display_url = parse_url( $url, PHP_URL_HOST );
 		$display_url .= parse_url( $url, PHP_URL_PATH ) ? '/&hellip;' : '';
 		$display_url = apply_filters( 'tribe_venue_display_url', $display_url, $url, $venue_id );
 	}
@@ -47,15 +47,17 @@ if ( tribe_has_venue( $event_id ) ) {
 
 						<h4><?php esc_html_e( 'Event Details', 'tribe-tickets' ); ?></h4>
 
-						<strong><?php esc_html_e( 'Start Date / Time:', 'tribe-tickets' ) ?></strong>
-						<?php echo tribe_get_start_date( $event_id, false, tribe_get_datetime_format( true ) ) ?>
-						<br />
+						<?php if ( function_exists( 'tribe_get_start_date' ) ): ?>
+							<strong><?php esc_html_e( 'Start Date / Time:', 'tribe-tickets' ) ?></strong>
+							<?php echo tribe_get_start_date( $event_id, false, tribe_get_datetime_format( true ) ) ?>
+							<br/>
 
-						<strong><?php esc_html_e( 'End Date / Time:', 'tribe-tickets' ) ?></strong>
-						<?php
-						echo tribe_get_end_date( $event_id, false, tribe_get_datetime_format( true ) );
+							<strong><?php esc_html_e( 'End Date / Time:', 'tribe-tickets' ) ?></strong>
+							<?php
+							echo tribe_get_end_date( $event_id, false, tribe_get_datetime_format( true ) );
+						endif;
 
-						if ( tribe_has_venue( $event_id ) ) {
+						if ( function_exists('tribe_has_venue') && tribe_has_venue( $event_id ) ) {
 							?>
 
 							<div class="venue-name">
