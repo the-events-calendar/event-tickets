@@ -230,23 +230,28 @@
 			$count = 0;
 			$break = '';
 			foreach ( $tickets as $ticket ) {
-				$count ++;
+			$count ++;
 
-				if ( $count == 2 ) {
-					$break = 'page-break-before: always !important;';
-				}
+			if ( $count == 2 ) {
+				$break = 'page-break-before: always !important;';
+			}
 
-				$event      = get_post( $ticket['event_id'] );
-				$header_id  = Tribe__Tickets__Tickets_Handler::instance()->get_header_image_id( $ticket['event_id'] );
-				$header_img = false;
-				if ( ! empty( $header_id ) ) {
-					$header_img = wp_get_attachment_image_src( $header_id, 'full' );
-				}
+			$event      = get_post( $ticket['event_id'] );
+			$header_id  = Tribe__Tickets__Tickets_Handler::instance()->get_header_image_id( $ticket['event_id'] );
+			$header_img = false;
+			if ( ! empty( $header_id ) ) {
+				$header_img = wp_get_attachment_image_src( $header_id, 'full' );
+			}
 
+			$venue_label = '';
+
+			if ( function_exists( 'tribe_get_venue_id' ) ) {
 				$venue_id = tribe_get_venue_id( $event->ID );
 				if ( ! empty( $venue_id ) ) {
 					$venue = get_post( $venue_id );
 				}
+
+				$venue_label = tribe_get_venue_label_singular();
 
 				$venue_name = $venue_phone = $venue_address = $venue_city = $venue_web = '';
 				if ( ! empty( $venue ) ) {
@@ -256,6 +261,16 @@
 					$venue_city    = get_post_meta( $venue_id, '_VenueCity', true );
 					$venue_web     = get_post_meta( $venue_id, '_VenueURL', true );
 				}
+
+			}
+
+			if ( function_exists( 'tribe_get_start_date' ) ) {
+				$start_date = tribe_get_start_date( $event, true );
+			}
+
+			if ( function_exists( 'tribe_get_organizer_ids' ) ) {
+				$organizers = tribe_get_organizer_ids( $event->ID );
+			}
 
 			?>
 
@@ -286,9 +301,11 @@
 												<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; text-align:left;line-height: 100%;">
 													<span style="color:#0a0a0e !important"><?php echo $event->post_title; ?></span>
 												</h2>
-												<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">
-													<span style="color:#0a0a0e !important"><?php echo tribe_get_start_date( $event, true ); ?></span>
-												</h4>
+												<?php if ( ! empty( $start_date ) ): ?>
+													<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">
+														<span style="color:#0a0a0e !important"><?php echo $start_date; ?></span>
+													</h4>
+												<?php endif; ?>
 											</td>
 										</tr>
 									</table>
@@ -329,7 +346,7 @@
 									<table class="ticket-venue" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
 										<tr>
 											<td class="ticket-venue" valign="top" align="left" width="300" style="padding: 0 !important; width:300px; margin:0 !important;">
-												<h6 style="color:#909090 !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( tribe_get_venue_label_singular(), 'tribe-tickets' ); ?></h6>
+												<h6 style="color:#909090 !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php esc_html_e( $venue_label, 'tribe-tickets' ); ?></h6>
 												<table class="venue-details" border="0" cellpadding="0" cellspacing="0" width="100%" align="center">
 													<tr>
 														<td class="ticket-venue-child" valign="top" align="left" width="130" style="padding: 0 10px 0 0 !important; width:130px; margin:0 !important;">
@@ -349,11 +366,14 @@
 												</table>
 											</td>
 											<td class="ticket-organizer" valign="top" align="left" width="140" style="padding: 0 !important; width:140px; margin:0 !important;">
-												<?php $organizers = tribe_get_organizer_ids( $event->ID ); ?>
-												<h6 style="color:#909090 !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo tribe_get_organizer_label( count( $organizers ) < 2 ); ?></h6>
-												<?php foreach ( $organizers as $organizer_id ) { ?>
-													<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; display:block; padding-bottom:5px;"><?php echo tribe_get_organizer( $organizer_id ); ?></span>
-												<?php } ?>
+
+												<?php if ( ! empty( $organizers ) ): ?>
+													<h6 style="color:#909090 !important; margin:0 0 4px 0; font-family: 'Helvetica Neue', Helvetica, sans-serif; text-transform:uppercase; font-size:13px; font-weight:700 !important;"><?php echo tribe_get_organizer_label( count( $organizers ) < 2 ); ?></h6>
+													<?php foreach ( $organizers as $organizer_id ) { ?>
+														<span
+															style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:15px; display:block; padding-bottom:5px;"><?php echo tribe_get_organizer( $organizer_id ); ?></span>
+													<?php } ?>
+												<?php endif; ?>
 											</td>
 
 											<?php $qr_code_url = apply_filters( 'tribe_tickets_ticket_qr_code', '', $ticket ); ?>
