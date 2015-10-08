@@ -277,6 +277,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				// Insert individual ticket purchased
 				$attendee_id = wp_insert_post( $attendee );
 
+				$sales = (int) get_post_meta( $product_id, 'total_sales', true );
+				update_post_meta( $product_id, 'total_sales', ++ $sales );
+
 				update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
 				update_post_meta( $attendee_id, $this->attendee_event_key, $event_id );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
@@ -542,7 +545,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$return = new Tribe__Tickets__Ticket_Object();
-		$qty    = get_post_meta( $ticket_id, 'total_sales', true );
+		$qty    = (int) get_post_meta( $ticket_id, 'total_sales', true );
 
 		$return->description    = $product->post_excerpt;
 		$return->frontend_link  = get_permalink( $ticket_id );
@@ -551,10 +554,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->price          = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class = get_class( $this );
 		$return->admin_link     = '';
-		$return->stock          = get_post_meta( $ticket_id, '_stock', true );;
+		$return->stock          = get_post_meta( $ticket_id, '_stock', true )-$qty;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$return->qty_sold       = $qty ? $qty : 0;
+		$return->qty_sold       = $qty;
 
 		return $return;
 	}
@@ -627,18 +630,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
 			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
 			$product_id = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
-			$name       = get_post_meta( $attendee->ID, 'name', true );
-			$email      = get_post_meta( $attendee->ID, 'email', true );
+			$name       = get_post_meta( $attendee->ID, $this->full_name, true );
+			$email      = get_post_meta( $attendee->ID, $this->email, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
 			}
 
 			$product       = get_post( $product_id );
-			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'tribe-tickets' );
+			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product,
+					true ) . ' ' . __( '(deleted)', 'tribe-tickets' );
 
 			$attendees[] = array(
-				'order_id'        => '',
+				'order_id'        => $attendee->ID,
 				'purchaser_name'  => $name,
 				'purchaser_email' => $email,
 				'ticket'          => $product_title,
