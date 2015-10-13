@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: The Events Calendar: Tickets
-Description: The Events Calendar: Tickets allows you to sell tickets to events
+Plugin Name: Event Tickets
+Description: Event Tickets allows you to sell tickets to events
 Version: 3.9
 Author: Modern Tribe, Inc.
 Author URI: http://m.tri.be/28
 License: GPLv2 or later
-Text Domain: tribe-tickets
+Text Domain: event-tickets
 Domain Path: /lang/
  */
 

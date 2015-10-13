@@ -28,7 +28,7 @@ class Tribe__Tickets__Metabox {
 
 		add_meta_box(
 			'tribetickets',
-			esc_html__( 'Tickets', 'tribe-tickets' ),
+			esc_html__( 'Tickets', 'event-tickets' ),
 			array(
 				'Tribe__Tickets__Metabox',
 				'do_modules_metaboxes',
@@ -78,8 +78,8 @@ class Tribe__Tickets__Metabox {
 		wp_enqueue_script( 'events-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), apply_filters( 'tribe_events_js_version', Tribe__Tickets__Main::VERSION ), true );
 
 		$upload_header_data = array(
-			'title'  => esc_html__( 'Ticket header image', 'tribe-tickets' ),
-			'button' => esc_html__( 'Set as ticket header', 'tribe-tickets' ),
+			'title'  => esc_html__( 'Ticket header image', 'event-tickets' ),
+			'button' => esc_html__( 'Set as ticket header', 'event-tickets' ),
 		);
 		wp_localize_script( 'events-tickets', 'HeaderImageData', $upload_header_data );
 

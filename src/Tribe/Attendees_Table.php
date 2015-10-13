@@ -71,14 +71,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			'cb'              => '<input type="checkbox" />',
-			'order_id'        => esc_html__( 'Order #', 'tribe-tickets' ),
-			'order_status'    => esc_html__( 'Order Status', 'tribe-tickets' ),
-			'purchaser_name'  => esc_html__( 'Purchaser name', 'tribe-tickets' ),
-			'purchaser_email' => esc_html__( 'Purchaser email', 'tribe-tickets' ),
-			'ticket'          => esc_html__( 'Ticket type', 'tribe-tickets' ),
-			'attendee_id'     => esc_html__( 'Ticket #', 'tribe-tickets' ),
-			'security'        => esc_html__( 'Security Code', 'tribe-tickets' ),
-			'check_in'        => esc_html__( 'Check in', 'tribe-tickets' ),
+			'order_id'        => esc_html__( 'Order #', 'event-tickets' ),
+			'order_status'    => esc_html__( 'Order Status', 'event-tickets' ),
+			'purchaser_name'  => esc_html__( 'Purchaser name', 'event-tickets' ),
+			'purchaser_email' => esc_html__( 'Purchaser email', 'event-tickets' ),
+			'ticket'          => esc_html__( 'Ticket type', 'event-tickets' ),
+			'attendee_id'     => esc_html__( 'Ticket #', 'event-tickets' ),
+			'security'        => esc_html__( 'Security Code', 'event-tickets' ),
+			'check_in'        => esc_html__( 'Check in', 'event-tickets' ),
 		);
 
 		return $columns;
@@ -168,8 +168,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_check_in( $item ) {
-		$checkin   = sprintf( '<a href="#" data-attendee-id="%d" data-provider="%s" class="button-secondary tickets_checkin">%s</a>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Check in', 'tribe-tickets' ) );
-		$uncheckin = sprintf( '<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Undo Check in', 'tribe-tickets' ) );
+		$checkin   = sprintf( '<a href="#" data-attendee-id="%d" data-provider="%s" class="button-secondary tickets_checkin">%s</a>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Check in', 'event-tickets' ) );
+		$uncheckin = sprintf( '<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Undo Check in', 'event-tickets' ) );
 
 		return $checkin . $uncheckin;
 	}
@@ -213,15 +213,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$nav = array(
 			'left' => array(
-				'print' => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'tribe-tickets' ) ),
-				'email' => sprintf( '<input type="button" name="email" class="email button action" value="%s">', esc_attr__( 'Email', 'tribe-tickets' ) ),
-				'export' => sprintf( '<a href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'tribe-tickets' ) ),
+				'print' => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
+				'email' => sprintf( '<input type="button" name="email" class="email button action" value="%s">', esc_attr__( 'Email', 'event-tickets' ) ),
+				'export' => sprintf( '<a href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
 			),
 			'right' => array(),
 		);
 
 		if ( 'top' == $which ) {
-			$nav['right']['filter_box'] = sprintf( '%s: <input type="text" name="filter_attendee" id="filter_attendee" value="">', esc_html__( 'Filter by purchaser name, ticket #, order # or security code', 'tribe-tickets' ) );
+			$nav['right']['filter_box'] = sprintf( '%s: <input type="text" name="filter_attendee" id="filter_attendee" value="">', esc_html__( 'Filter by purchaser name, ticket #, order # or security code', 'event-tickets' ) );
 		}
 
 		$nav = apply_filters( 'tribe_events_tickets_attendees_table_nav', $nav, $which );
@@ -240,9 +240,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'check_in'        => esc_attr__( 'Check in', 'tribe-tickets' ),
-			'uncheck_in'      => esc_attr__( 'Undo Check in', 'tribe-tickets' ),
-			'delete_attendee' => esc_attr__( 'Delete', 'tribe-tickets' ),
+			'check_in'        => esc_attr__( 'Check in', 'event-tickets' ),
+			'uncheck_in'      => esc_attr__( 'Undo Check in', 'event-tickets' ),
+			'delete_attendee' => esc_attr__( 'Delete', 'event-tickets' ),
 		);
 
 		return (array) apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', $actions );

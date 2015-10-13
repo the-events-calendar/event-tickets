@@ -146,7 +146,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
 
 		wp_register_style(
-			'tribe-tickets-rsvp',
+			'event-tickets-rsvp',
 			$stylesheet_url,
 			array(),
 			apply_filters( 'tribe_tickets_rsvp_css_version', Tribe__Tickets__Main::VERSION )
@@ -157,15 +157,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$js_url = apply_filters( 'tribe_tickets_rsvp_js_url', $js_url );
 
 		wp_register_script(
-			'tribe-tickets-rsvp',
+			'event-tickets-rsvp',
 			$js_url,
 			array( 'jquery', 'jquery-ui-datepicker' ),
 			apply_filters( 'tribe_tickets_rsvp_js_version', Tribe__Tickets__Main::VERSION ),
 			true
 		);
 
-		wp_localize_script( 'tribe-tickets-rsvp', 'tribe_tickets_rsvp_strings', array(
-			'attendee' => _x( 'Attendee %1$s', 'Attendee number', 'tribe-tickets' ),
+		wp_localize_script( 'event-tickets-rsvp', 'tribe_tickets_rsvp_strings', array(
+			'attendee' => _x( 'Attendee %1$s', 'Attendee number', 'event-tickets' ),
 		) );
 	}
 
@@ -183,8 +183,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		wp_enqueue_style( 'tribe-tickets-rsvp' );
-		wp_enqueue_script( 'tribe-tickets-rsvp' );
+		wp_enqueue_style( 'event-tickets-rsvp' );
+		wp_enqueue_script( 'event-tickets-rsvp' );
 
 		// Check for override stylesheet
 		$user_stylesheet_url = Tribe__Templates::locate_stylesheet( 'tribe-events/tickets/rsvp.css' );
@@ -320,7 +320,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
 		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
-			sprintf( __( 'Your tickets from %s', 'tribe-tickets' ), get_bloginfo( 'name' ) ) );
+			sprintf( __( 'Your tickets from %s', 'event-tickets' ), get_bloginfo( 'name' ) ) );
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
@@ -519,11 +519,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : true;
 
 		if ( $rsvp_sent ) {
-			$this->add_message( __( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'tribe-tickets' ), 'success' );
+			$this->add_message( __( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'event-tickets' ), 'success' );
 		}
 
 		if ( $rsvp_error ) {
-			$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'tribe-tickets' ), 'error' );
+			$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'event-tickets' ), 'error' );
 		}
 
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
@@ -639,7 +639,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			$product       = get_post( $product_id );
 			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product,
-					true ) . ' ' . __( '(deleted)', 'tribe-tickets' );
+					true ) . ' ' . __( '(deleted)', 'event-tickets' );
 
 			$attendees[] = array(
 				'order_id'        => $attendee->ID,
