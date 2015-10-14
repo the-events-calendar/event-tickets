@@ -37,13 +37,13 @@ class Tribe__Tickets__Main {
 		/* Set up some parent's vars */
 		$this->plugin_name = 'Tickets';
 		$this->plugin_slug = 'tickets';
-		$this->plugin_path = trailingslashit( TRIBE_TICKETS_DIR );
+		$this->plugin_path = trailingslashit( EVENT_TICKETS_DIR );
 		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
 
 		$dir_prefix = '';
 
-		if ( false !== strstr( TRIBE_TICKETS_DIR, '/vendor/' ) ) {
-			$dir_prefix = basename( dirname( dirname( TRIBE_TICKETS_DIR ) ) ) . '/vendor/';
+		if ( false !== strstr( EVENT_TICKETS_DIR, '/vendor/' ) ) {
+			$dir_prefix = basename( dirname( dirname( EVENT_TICKETS_DIR ) ) ) . '/vendor/';
 		}
 
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
@@ -55,7 +55,7 @@ class Tribe__Tickets__Main {
 		// initialize the common libraries
 		$this->common();
 
-		load_plugin_textdomain( 'tribe-tickets', false, $this->plugin_dir . 'lang/' );
+		load_plugin_textdomain( 'event-tickets', false, $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
 	}

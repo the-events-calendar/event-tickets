@@ -79,7 +79,7 @@ class Tribe__Tickets__Tickets_Handler {
 				'event_id'  => $post->ID,
 			), admin_url( 'edit.php' ) );
 
-			$actions['tickets_attendees'] = sprintf( '<a title="%s" href="%s">%s</a>', esc_html__( 'See who purchased tickets to this event', 'tribe-tickets' ), esc_url( $url ), esc_html__( 'Attendees', 'tribe-tickets' ) );
+			$actions['tickets_attendees'] = sprintf( '<a title="%s" href="%s">%s</a>', esc_html__( 'See who purchased tickets to this event', 'event-tickets' ), esc_url( $url ), esc_html__( 'Attendees', 'event-tickets' ) );
 		}
 
 		return $actions;
@@ -116,8 +116,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$mail_data = array(
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
-			'required'        => esc_html__( 'You need to select a user or type a valid email address', 'tribe-tickets' ),
-			'sending'         => esc_html__( 'Sending...', 'tribe-tickets' ),
+			'required'        => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
+			'sending'         => esc_html__( 'Sending...', 'event-tickets' ),
 			'checkin_nonce'   => wp_create_nonce( 'checkin' ),
 			'uncheckin_nonce' => wp_create_nonce( 'uncheckin' ),
 		);
@@ -143,7 +143,7 @@ class Tribe__Tickets__Tickets_Handler {
 				'pointer_id' => 'attendees_filters',
 				'target'     => '#screen-options-link-wrap',
 				'options'    => array(
-					'content' => sprintf( '<h2> %s </h2> <p> %s </p>', esc_html__( 'Columns', 'tribe-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'tribe-tickets' ) ),
+					'content' => sprintf( '<h2> %s </h2> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
 					'position' => array( 'edge' => 'top', 'align' => 'center' ),
 				),
 			);
@@ -233,7 +233,7 @@ class Tribe__Tickets__Tickets_Handler {
 			foreach ( $item as $key => $data ) {
 				if ( in_array( $key, $export_columns ) ) {
 					if ( $key == 'check_in' && $data == 1 ) {
-						$data = esc_html__( 'Yes', 'tribe-tickets' );
+						$data = esc_html__( 'Yes', 'event-tickets' );
 					}
 					$row[ $key ] = $data;
 				}
@@ -265,7 +265,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! empty( $items ) ) {
 
 			$charset  = get_option( 'blog_charset' );
-			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'tribe-tickets' ) );
+			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
 
 			// output headers so that the file is downloaded rather than displayed
 			header( "Content-Type: text/csv; charset=$charset" );
@@ -319,7 +319,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$content = ob_get_clean();
 
 		add_filter( 'wp_mail_content_type', array( $this, 'set_contenttype' ) );
-		if ( ! wp_mail( $email, sprintf( esc_html__( 'Attendee List for: %s', 'tribe-tickets' ), $event->post_title ), $content ) ) {
+		if ( ! wp_mail( $email, sprintf( esc_html__( 'Attendee List for: %s', 'event-tickets' ), $event->post_title ), $content ) ) {
 			$this->ajax_error( 'Error sending email' );
 		}
 

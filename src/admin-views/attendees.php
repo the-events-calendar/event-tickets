@@ -30,13 +30,13 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-tickets-attendees"><br></div>
-	<h1><?php esc_html_e( 'Attendees', 'tribe-tickets' ); ?></h1>
+	<h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
 
 	<h1><?php echo apply_filters( 'tribe_events_tickets_attendees_event_title', $event->post_title, $event->ID ); ?></h1>
 
 	<div id="tribe-filters" class="metabox-holder">
 		<div id="filters-wrap" class="postbox">
-			<h3 title="Click to toggle"><?php esc_html_e( 'Event Summary', 'tribe-tickets' ); ?></h3>
+			<h3 title="Click to toggle"><?php esc_html_e( 'Event Summary', 'event-tickets' ); ?></h3>
 
 			<?php do_action( 'tribe_events_tickets_attendees_event_summary_table_before', $event_id ); ?>
 
@@ -45,14 +45,14 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 					<td width="33%" valign="top">
 						<?php do_action( 'tribe_events_tickets_attendees_event_details_top', $event_id ); ?>
 
-						<h4><?php esc_html_e( 'Event Details', 'tribe-tickets' ); ?></h4>
+						<h4><?php esc_html_e( 'Event Details', 'event-tickets' ); ?></h4>
 
 						<?php if ( function_exists( 'tribe_get_start_date' ) ): ?>
-							<strong><?php esc_html_e( 'Start Date / Time:', 'tribe-tickets' ) ?></strong>
+							<strong><?php esc_html_e( 'Start Date / Time:', 'event-tickets' ) ?></strong>
 							<?php echo tribe_get_start_date( $event_id, false, tribe_get_datetime_format( true ) ) ?>
 							<br/>
 
-							<strong><?php esc_html_e( 'End Date / Time:', 'tribe-tickets' ) ?></strong>
+							<strong><?php esc_html_e( 'End Date / Time:', 'event-tickets' ) ?></strong>
 							<?php
 							echo tribe_get_end_date( $event_id, false, tribe_get_datetime_format( true ) );
 						endif;
@@ -66,7 +66,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							</div>
 
 							<div class="venue-address">
-								<strong><?php _e( 'Address:', 'tribe-tickets' ); ?> </strong>
+								<strong><?php _e( 'Address:', 'event-tickets' ); ?> </strong>
 								<?php echo tribe_get_full_address( $venue_id ); ?>
 							</div>
 
@@ -74,7 +74,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							if ( $phone = tribe_get_phone( $venue_id ) ) {
 								?>
 								<div class="venue-phone">
-									<strong><?php echo esc_html( __( 'Phone:', 'tribe-tickets' ) ); ?> </strong>
+									<strong><?php echo esc_html( __( 'Phone:', 'event-tickets' ) ); ?> </strong>
 									<?php echo esc_html( $phone ); ?>
 								</div>
 								<?php
@@ -83,7 +83,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							if ( $url ) {
 								?>
 								<div class="venue-url">
-									<strong><?php echo esc_html( __( 'Website:', 'tribe-tickets' ) ); ?> </strong>
+									<strong><?php echo esc_html( __( 'Website:', 'event-tickets' ) ); ?> </strong>
 									<a target="_blank" href="<?php echo esc_url( $url ); ?>">
 										<?php echo esc_html( $display_url ); ?>
 									</a>
@@ -98,7 +98,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 					<td width="33%" valign="top">
 						<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_top', $event_id ); ?>
 
-						<h4><?php esc_html_e( 'Ticket Sales', 'tribe-tickets' ); ?></h4>
+						<h4><?php esc_html_e( 'Ticket Sales', 'event-tickets' ); ?></h4>
 
 						<?php
 
@@ -121,7 +121,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							$checkedin = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event_id ); ?>
 
 							<span id="total_tickets_sold_wrapper">
-								<?php esc_html_e( 'Tickets sold:', 'tribe-tickets' ) ?>
+								<?php esc_html_e( 'Tickets sold:', 'event-tickets' ) ?>
 								<span id="total_tickets_sold"><?php echo $total_sold ?></span>
 							</span>
 
@@ -130,10 +130,10 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 								?>
 								<span id="sales_breakdown_wrapper">
 								<br />
-									<?php esc_html_e( 'Finalized:', 'tribe-tickets' ); ?>
+									<?php esc_html_e( 'Finalized:', 'event-tickets' ); ?>
 									<span id="total_issued"><?php echo $total_completed ?></span>
 
-									<?php esc_html_e( 'Awaiting review:', 'tribe-tickets' ); ?>
+									<?php esc_html_e( 'Awaiting review:', 'event-tickets' ); ?>
 									<span id="total_pending"><?php echo $total_pending ?></span>
 								</span>
 								<?php
@@ -142,7 +142,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 
 							<span id="total_checkedin_wrapper">
 								<br />
-								<?php esc_html_e( 'Checked in:', 'tribe-tickets' ); ?>
+								<?php esc_html_e( 'Checked in:', 'event-tickets' ); ?>
 								<span id="total_checkedin"><?php echo $checkedin ?></span>
 							</span>
 
@@ -164,23 +164,23 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 		<?php $this->attendees_table->display() ?>
 	</form>
 
-	<div id="attendees_email_wrapper" title="<?php esc_html_e( 'Send the attendee list by email', 'tribe-tickets' ); ?>">
+	<div id="attendees_email_wrapper" title="<?php esc_html_e( 'Send the attendee list by email', 'event-tickets' ); ?>">
 		<div id="email_errors"></div>
 		<div id="email_send">
 			<label for="email_to_user">
-				<span><?php esc_html_e( 'Select a User:', 'tribe-tickets' ); ?></span>
+				<span><?php esc_html_e( 'Select a User:', 'event-tickets' ); ?></span>
 				<?php wp_dropdown_users(
 					array(
 						'name'             => 'email_to_user',
 						'id'               => 'email_to_user',
-						'show_option_none' => esc_html__( 'Select...', 'tribe-tickets' ),
+						'show_option_none' => esc_html__( 'Select...', 'event-tickets' ),
 						'selected'         => '',
 					)
 				); ?>
 			</label>
-			<span class="attendees_or"><?php esc_html_e( 'or', 'tribe-tickets' ); ?></span>
+			<span class="attendees_or"><?php esc_html_e( 'or', 'event-tickets' ); ?></span>
 			<label for="email_to_address">
-				<span><?php esc_html_e( 'Email Address:', 'tribe-tickets' ); ?></span>
+				<span><?php esc_html_e( 'Email Address:', 'event-tickets' ); ?></span>
 				<input type="text" name="email_to_address" id="email_to_address" value="">
 			</label>
 		</div>

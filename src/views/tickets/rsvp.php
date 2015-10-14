@@ -6,7 +6,7 @@ $is_there_any_product_to_sell = false;
 ob_start();
 ?>
 <form action="" class="cart" method="post" enctype='multipart/form-data'>
-	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'tribe-tickets' ) ?></h2>
+	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'event-tickets' ) ?></h2>
 	<?php
 	$messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 
@@ -54,7 +54,7 @@ ob_start();
 								?>
 								<span class="tribe-tickets-remaining">
 									<?php
-									echo sprintf( esc_html__( '%1$s out of %2$s available', 'tribe-tickets' ), $remaining, $ticket->stock );
+									echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $remaining, $ticket->stock );
 									?>
 								</span>
 								<?php
@@ -62,7 +62,7 @@ ob_start();
 						}//end if
 						else {
 							?>
-							<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'tribe-tickets' ); ?></span>
+							<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
 							<?php
 						}
 						?>
@@ -88,7 +88,7 @@ ob_start();
 					<table>
 						<tr class="tribe-tickets-full-name-row">
 							<td>
-								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name:', 'tribe-tickets' ); ?></label>
+								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name:', 'event-tickets' ); ?></label>
 							</td>
 							<td colspan="3">
 								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name">
@@ -96,7 +96,7 @@ ob_start();
 						</tr>
 						<tr class="tribe-tickets-email-row">
 							<td>
-								<label for="tribe-tickets-email"><?php esc_html_e( 'Email:', 'tribe-tickets' ); ?></label>
+								<label for="tribe-tickets-email"><?php esc_html_e( 'Email:', 'event-tickets' ); ?></label>
 							</td>
 							<td colspan="3">
 								<input type="email" name="attendee[email]" id="tribe-tickets-email">
@@ -107,7 +107,7 @@ ob_start();
 			</tr>
 			<tr>
 				<td colspan="4" class="add-to-cart">
-					<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'tribe-tickets' );?></button>
+					<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?></button>
 				</td>
 			</tr>
 			<?php

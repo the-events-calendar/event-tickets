@@ -38,11 +38,11 @@ $tickets_tab = array(
 			),
 			'tickets-title' => array(
 				'type' => 'html',
-				'html' => '<h3>' . esc_html__( 'Ticket Settings', 'tribe-tickets' ) . '</h3>',
+				'html' => '<h3>' . esc_html__( 'Ticket Settings', 'event-tickets' ) . '</h3>',
 			),
 			'ticket-enabled-post-types' => array(
 				'type' => 'checkbox_list',
-				'label' => esc_html__( 'Post types that can have tickets', 'tribe-tickets' ),
+				'label' => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
 				// only set the default to tribe_events if the ticket-endabled-post-types index has never been saved
 				'default' => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 				'options' => $all_post_types,
