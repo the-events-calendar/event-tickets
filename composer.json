@@ -1,0 +1,20 @@
+{
+  "name": "moderntribe/event-tickets",
+  "description": "Standalone Tickets Framework",
+  "type": "wordpress-plugin",
+  "keywords": [
+    "wordpress",
+    "events",
+    "tickets"
+  ],
+  "homepage": "http://tri.be/shop/wordpress-events-calendar/",
+  "license": "GPL-2.0",
+  "require-dev": {
+    "lucatume/wp-browser": "~1.6"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "config": {
+    "preferred-install": "dist"
+  }
+}
