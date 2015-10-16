@@ -100,12 +100,26 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( 'input[name=ticket_provider]:radio' ).change( function() {
 			$( 'tr.ticket_advanced' ).hide();
 			$( 'tr.ticket_advanced_' + this.value ).show();
+
+			var $ticket_price = $( document.getElementById( 'ticket_price' ) );
+			if ( 'Tribe__Tickets__RSVP' === this.value ) {
+				$ticket_price.closest( 'tr' ).hide();
+			} else {
+				$ticket_price.closest( 'tr' ).show();
+			}
 		} );
 
 		/* Show the advanced metabox for the selected provider and hide the others at ready */
 		$( 'input[name=ticket_provider]:checked' ).each( function() {
 			$( 'tr.ticket_advanced' ).hide();
 			$( 'tr.ticket_advanced_' + this.value ).show();
+
+			var $ticket_price = $( document.getElementById( 'ticket_price' ) );
+			if ( 'Tribe__Tickets__RSVP' === this.value ) {
+				$ticket_price.closest( 'tr' ).hide();
+			} else {
+				$ticket_price.closest( 'tr' ).show();
+			}
 		} );
 
 		/* "Add a ticket" link action */

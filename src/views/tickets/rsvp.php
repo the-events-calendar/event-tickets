@@ -70,10 +70,7 @@ ob_start();
 					<td nowrap="nowrap" class="tickets_name">
 						<?php echo esc_html( $ticket->name ); ?>
 					</td>
-					<td class="tickets_price">
-						<?php echo tribe_format_currency( $ticket->price ); ?>
-					</td>
-					<td class="tickets_description">
+					<td class="tickets_description" colspan="2">
 						<?php echo esc_html( $ticket->description ); ?>
 					</td>
 				</tr>
