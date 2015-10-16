@@ -1,0 +1,2121 @@
+# Translation of Event Tickets in English (Canada)
+# This file is distributed under the same license as the Event Tickets package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-10-14 17:38:43+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Event Tickets\n"
+
+#: common/src/Tribe/View_Helpers.php:123
+msgid "French Polynesia"
+msgstr "French Polynesia"
+
+#: common/src/admin-views/tribe-options-help.php:69
+msgid "The Events Calendar: WooCommerce Tickets"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:124
+msgid "French Southern Territories"
+msgstr "French Southern Territories"
+
+#: common/src/admin-views/tribe-options-help.php:79
+msgid "The Events Calendar: EDD Tickets"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:125
+msgid "Gabon"
+msgstr "Gabon"
+
+#: common/src/admin-views/tribe-options-help.php:89
+msgid "The Events Calendar: WPEC Tickets"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:126
+msgid "Gambia"
+msgstr "Gambia"
+
+#: common/src/admin-views/tribe-options-help.php:99
+msgid "The Events Calendar: Shopp Tickets"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:127 common/src/Tribe/View_Helpers.php:326
+msgid "Georgia"
+msgstr "Georgia"
+
+#: common/src/admin-views/tribe-options-help.php:109
+msgid "The Events Calendar: Filter Bar"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:128
+msgid "Germany"
+msgstr "Germany"
+
+#: common/src/admin-views/tribe-options-help.php:125
+msgid "If you're looking for help with The Events Calendar, you've come to the right place. We are committed to helping make your calendar be spectacular... and hope the resources provided below will help get you there."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:129
+msgid "Ghana"
+msgstr "Ghana"
+
+#: common/src/admin-views/tribe-options-help.php:134
+msgid "If this is your first time using The Events Calendar, you're in for a treat and are already well on your way to creating a first event. Here are some basics we've found helpful for users jumping into it for the first time:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:130
+msgid "Gibraltar"
+msgstr "Gibraltar"
+
+#: common/src/admin-views/tribe-options-help.php:137
+msgid "%sOur New User Primer%s was designed for folks in your exact position. Featuring both step-by-step videos and written walkthroughs that feature accompanying screenshots, the primer aims to take you from zero to hero in no time."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:131
+msgid "Greece"
+msgstr "Greece"
+
+#: common/src/admin-views/tribe-options-help.php:139
+msgid "%sInstallation/Setup FAQs%s from our support page can help give an overview of what the plugin can and cannot do. This section of the FAQs may be helpful as it aims to address any basic install questions not addressed by the new user primer."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:132
+msgid "Greenland"
+msgstr "Greenland"
+
+#: common/src/admin-views/tribe-options-help.php:141
+msgid "Otherwise, if you're feeling adventurous, you can get started by heading to the Events menu and adding your first event."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:133
+msgid "Grenada"
+msgstr "Grenada"
+
+#: common/src/admin-views/tribe-options-help.php:145
+msgid "We've redone our support page from the ground up in an effort to better help our users. Head over to our %sSupport Page%s and you'll find lots of great resources, including:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:134
+msgid "Guadeloupe"
+msgstr "Guadeloupe"
+
+#: common/src/admin-views/tribe-options-help.php:147
+msgid "%sTemplate tags, functions, and hooks & filters%s for The Events Calendar &amp; Events Calendar PRO"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:135
+msgid "Guam"
+msgstr "Guam"
+
+#: common/src/admin-views/tribe-options-help.php:149
+msgid "%sFrequently Asked Questions%s ranging from the most basic setup questions to advanced themer tweaks"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:136
+msgid "Guatemala"
+msgstr "Guatemala"
+
+#: common/src/admin-views/tribe-options-help.php:152
+msgid "%sTutorials%s written by both members of our team and users from the community, covering custom queries, integration with third-party themes and plugins, etc."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:137
+msgid "Guinea"
+msgstr "Guinea"
+
+#: common/src/admin-views/tribe-options-help.php:154
+msgid "Release notes for painting an overall picture of the plugin's lifecycle and when features/bug fixes were introduced."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:138
+msgid "Guinea-Bissau"
+msgstr "Guinea-Bissau"
+
+#: common/src/admin-views/tribe-options-help.php:156
+msgid "%sAdd-on documentation%s for all of Modern Tribe's official extensions for The Events Calendar (including WooTickets, Community Events, Eventbrite Tickets, Facebook Events, etc)"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:139
+msgid "Guyana"
+msgstr "Guyana"
+
+#: common/src/admin-views/tribe-options-help.php:158
+msgid "We've also got a %sModern Tribe UserVoice%s page where we're actively watching for feature ideas from the community. If after playing with the plugin and reviewing the resources above, you're finding a feature isn't present that should be, let us know. Vote up existing feature requests or add your own, and help us shape the future of the products business in a way that best meets the community's needs."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:140
+msgid "Haiti"
+msgstr "Haiti"
+
+#: common/src/admin-views/tribe-options-help.php:162
+msgid "Written documentation can only take things so far...sometimes, you need help from a real person. This is where our %ssupport forums%s come into play."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:141
+msgid "Heard And Mc Donald Islands"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-help.php:163
+msgid "Users of the free The Events Calendar should post their support concerns to the plugin's %sWordPress.org support forum%s. While we are happy to help identify and fix bugs that are reported at WordPress.org, please make sure to read our %ssupport expectations sticky thread%s before posting so you understand our limitations."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:142
+msgid "Holy See (Vatican City State)"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-help.php:164
+msgid "We hit the WordPress.org forum throughout the week, watching for bugs. If you report a legitimate bug that we're able to reproduce, we will log it and patch for an upcoming release. However we are unfortunately unable to provide customization tips or assist in integrating with 3rd party plugins or themes."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:143
+msgid "Honduras"
+msgstr "Honduras"
+
+#: common/src/admin-views/tribe-options-help.php:165
+msgid "If you're a user of The Events Calendar and would like more support, please %spurchase a PRO license%s. We hit the PRO forums daily, and can provide a deeper level of customization/integration support for paying users than we can on WordPress.org."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:144
+msgid "Hong Kong"
+msgstr "Hong Kong"
+
+#: common/src/admin-views/tribe-options-help.php:169
+msgid "If you find that you aren't getting the level of service you've come to expect from Modern Tribe, shoot us an email at %1$s or tweet %2$s and tell us why. We'll do what we can to make it right."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:145
+msgid "Hungary"
+msgstr "Hungary"
+
+#: common/src/admin-views/tribe-options-help.php:170
+msgid "More..."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:146
+msgid "Iceland"
+msgstr "Iceland"
+
+#: common/src/admin-views/tribe-options-help.php:179
+msgid "Hi! We are Modern Tribe and we are here to help you be awesome. Thanks so much for installing our labor of love!"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:147
+msgid "India"
+msgstr "India"
+
+#: common/src/admin-views/tribe-options-help.php:191
+msgid "Getting Started"
+msgstr "Getting Started"
+
+#: common/src/Tribe/View_Helpers.php:148
+msgid "Indonesia"
+msgstr "Indonesia"
+
+#: common/src/admin-views/tribe-options-help.php:201
+msgid "Support Resources To Help You Be Awesome"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:149
+msgid "Iran (Islamic Republic Of)"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-help.php:211
+msgid "Forums: Because Everyone Needs A Buddy"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:150
+msgid "Iraq"
+msgstr "Iraq"
+
+#: common/src/admin-views/tribe-options-help.php:221
+msgid "Not getting help?"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:151
+msgid "Ireland"
+msgstr "Ireland"
+
+#: common/src/admin-views/tribe-options-help.php:248
+msgid "Premium Add-Ons"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:152
+msgid "Israel"
+msgstr "Israel"
+
+#: common/src/admin-views/tribe-options-help.php:257
+msgid "(Coming Soon!)"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:153
+msgid "Italy"
+msgstr "Italy"
+
+#: common/src/admin-views/tribe-options-help.php:267
+msgid "News and Tutorials"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:154
+msgid "Jamaica"
+msgstr "Jamaica"
+
+#: common/src/admin-views/tribe-options-licenses.php:13
+msgid "<p>The license key you received when completing your purchase from %1$s will grant you access to support and updates until it expires. You do not need to enter the key below for the plugins to work, but you will need to enter it to get automatic updates. <strong>Find your license keys at <a href=\"%2$s\" target=\"_blank\">%3$s</a></strong>.</p> <p>Each paid add-on has its own unique license key. Simply paste the key into its appropriate field on below, and give it a moment to validate. You know you're set when a green expiration date appears alongside a \"valid\" message.</p> <p>If you're seeing a red message telling you that your key isn't valid or is out of installs, visit <a href=\"%4$s\" target=\"_blank\">%5$s</a> to manage your installs or renew / upgrade your license.</p><p>Not seeing an update but expecting one? In WordPress, go to <a href=\"%6$s\">Dashboard > Updates</a> and click \"Check Again\".</p>"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:155
+msgid "Japan"
+msgstr "Japan"
+
+#: common/src/admin-views/tribe-options-licenses.php:18
+msgid "%1$s Using our plugins in a multisite network? %2$s Please note that your license key will be applied to the entire network, not just this site."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:156
+msgid "Jordan"
+msgstr "Jordan"
+
+#: common/src/admin-views/tribe-options-licenses.php:28
+msgid "Only license fields for %1$snetwork activated%2$s plugins will be listed on this screen. "
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:157
+msgid "Kazakhstan"
+msgstr "Kazakhstan"
+
+#: common/src/admin-views/tribe-options-network.php:15
+msgid "Network Settings"
+msgstr "Network Settings"
+
+#: common/src/Tribe/View_Helpers.php:158
+msgid "Kenya"
+msgstr "Kenya"
+
+#: common/src/admin-views/tribe-options-network.php:19
+msgid "This is where all of the global network settings for Modern Tribe's The Events Calendar can be modified."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:159
+msgid "Kiribati"
+msgstr "Kiribati"
+
+#: common/src/admin-views/tribe-options-network.php:27
+msgid "Hide the following settings tabs on every site:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:160
+msgid "Korea, Democratic People's Republic Of"
+msgstr ""
+
+#: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
+msgid "Tickets"
+msgstr "Tickets"
+
+#: common/src/Tribe/View_Helpers.php:161
+msgid "Korea, Republic Of"
+msgstr ""
+
+#: src/Tribe/Attendees_Table.php:74
+msgid "Order #"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:162
+msgid "Kuwait"
+msgstr "Kuwait"
+
+#: src/Tribe/Attendees_Table.php:75
+msgid "Order Status"
+msgstr "Order Status"
+
+#: common/src/Tribe/View_Helpers.php:163
+msgid "Kyrgyzstan"
+msgstr "Kyrgyzstan"
+
+#: src/Tribe/Attendees_Table.php:76
+msgid "Purchaser name"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:164
+msgid "Lao People's Democratic Republic"
+msgstr ""
+
+#: src/Tribe/Attendees_Table.php:77
+msgid "Purchaser email"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:165
+msgid "Latvia"
+msgstr "Latvia"
+
+#: src/Tribe/Attendees_Table.php:78
+msgid "Ticket type"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:166
+msgid "Lebanon"
+msgstr "Lebanon"
+
+#: src/Tribe/Attendees_Table.php:79 src/views/tickets/email.php:322
+msgid "Ticket #"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:167
+msgid "Lesotho"
+msgstr "Lesotho"
+
+#: src/Tribe/Attendees_Table.php:80 src/views/tickets/email.php:334
+msgid "Security Code"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:168
+msgid "Liberia"
+msgstr "Liberia"
+
+#: src/Tribe/Attendees_Table.php:81 src/Tribe/Attendees_Table.php:171
+#: src/Tribe/Attendees_Table.php:243
+msgid "Check in"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:169
+msgid "Libya"
+msgstr "Libya"
+
+#: src/Tribe/Attendees_Table.php:172 src/Tribe/Attendees_Table.php:244
+msgid "Undo Check in"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:170
+msgid "Liechtenstein"
+msgstr "Liechtenstein"
+
+#: src/Tribe/Attendees_Table.php:216
+msgid "Print"
+msgstr "Print"
+
+#: common/src/Tribe/View_Helpers.php:171
+msgid "Lithuania"
+msgstr "Lithuania"
+
+#: src/Tribe/Attendees_Table.php:217
+msgid "Email"
+msgstr "Email"
+
+#: common/src/Tribe/View_Helpers.php:172
+msgid "Luxembourg"
+msgstr "Luxembourg"
+
+#: src/Tribe/Attendees_Table.php:218
+msgid "Export"
+msgstr "Export"
+
+#: common/src/Tribe/View_Helpers.php:173
+msgid "Macau"
+msgstr "Macau"
+
+#: src/Tribe/Attendees_Table.php:224
+msgid "Filter by purchaser name, ticket #, order # or security code"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:174
+msgid "Macedonia"
+msgstr "Macedonia"
+
+#: src/Tribe/Attendees_Table.php:245 src/admin-views/list.php:33
+msgid "Delete"
+msgstr "Delete"
+
+#: common/src/Tribe/View_Helpers.php:175
+msgid "Madagascar"
+msgstr "Madagascar"
+
+#: src/Tribe/Metabox.php:81
+msgid "Ticket header image"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:176
+msgid "Malawi"
+msgstr "Malawi"
+
+#: src/Tribe/Metabox.php:82
+msgid "Set as ticket header"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:177
+msgid "Malaysia"
+msgstr "Malaysia"
+
+#: src/Tribe/RSVP.php:168
+msgctxt "Attendee number"
+msgid "Attendee %1$s"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:178
+msgid "Maldives"
+msgstr "Maldives"
+
+#: src/Tribe/RSVP.php:323
+msgid "Your tickets from %s"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:179
+msgid "Mali"
+msgstr "Mali"
+
+#: src/Tribe/RSVP.php:522
+msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:180
+msgid "Malta"
+msgstr "Malta"
+
+#: src/Tribe/RSVP.php:526
+msgid "In order to RSVP, you must enter your name and a valid email address."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:181
+msgid "Marshall Islands"
+msgstr "Marshall Islands"
+
+#: src/Tribe/RSVP.php:642
+msgid "(deleted)"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:182
+msgid "Martinique"
+msgstr "Martinique"
+
+#: src/Tribe/Tickets.php:347
+msgid "Your ticket has been saved."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:183
+msgid "Mauritania"
+msgstr "Mauritania"
+
+#: src/Tribe/Tickets.php:444
+msgid "Your ticket has been deleted."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:184
+msgid "Mauritius"
+msgstr "Mauritius"
+
+#: src/Tribe/Tickets_Handler.php:82 src/admin-views/list.php:52
+msgid "See who purchased tickets to this event"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:185
+msgid "Mayotte"
+msgstr "Mayotte"
+
+#: src/Tribe/Tickets_Handler.php:82 src/admin-views/attendees.php:33
+#: src/admin-views/list.php:52
+msgid "Attendees"
+msgstr "Attendees"
+
+#: common/src/Tribe/View_Helpers.php:186
+msgid "Mexico"
+msgstr "Mexico"
+
+#: src/Tribe/Tickets_Handler.php:119
+msgid "You need to select a user or type a valid email address"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:187
+msgid "Micronesia, Federated States Of"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:120
+msgid "Sending..."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:188
+msgid "Moldova, Republic Of"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:146
+msgid "Columns"
+msgstr "Columns"
+
+#: common/src/Tribe/View_Helpers.php:189
+msgid "Monaco"
+msgstr "Monaco"
+
+#: src/Tribe/Tickets_Handler.php:146
+msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:190
+msgid "Mongolia"
+msgstr "Mongolia"
+
+#: src/Tribe/Tickets_Handler.php:236
+msgid "Yes"
+msgstr "Yes"
+
+#: common/src/Tribe/View_Helpers.php:191
+msgid "Montenegro"
+msgstr "Montenegro"
+
+#: src/Tribe/Tickets_Handler.php:268
+msgid "attendees"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:192
+msgid "Montserrat"
+msgstr "Montserrat"
+
+#: src/Tribe/Tickets_Handler.php:322
+msgid "Attendee List for: %s"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:193
+msgid "Morocco"
+msgstr "Morocco"
+
+#: src/admin-views/attendees.php:39
+msgid "Event Summary"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:194
+msgid "Mozambique"
+msgstr "Mozambique"
+
+#: src/admin-views/attendees.php:48
+msgid "Event Details"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:195
+msgid "Myanmar"
+msgstr "Myanmar"
+
+#: src/admin-views/attendees.php:51
+msgid "Start Date / Time:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:196
+msgid "Namibia"
+msgstr "Namibia"
+
+#: src/admin-views/attendees.php:55
+msgid "End Date / Time:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:197
+msgid "Nauru"
+msgstr "Nauru"
+
+#: src/admin-views/attendees.php:69
+msgid "Address:"
+msgstr "Address:"
+
+#: common/src/Tribe/View_Helpers.php:198
+msgid "Nepal"
+msgstr "Nepal"
+
+#: src/admin-views/attendees.php:77
+msgid "Phone:"
+msgstr "Phone:"
+
+#: common/src/Tribe/View_Helpers.php:199
+msgid "Netherlands"
+msgstr "Netherlands"
+
+#: src/admin-views/attendees.php:86
+msgid "Website:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:200
+msgid "Netherlands Antilles"
+msgstr "Netherlands Antilles"
+
+#: src/admin-views/attendees.php:101
+msgid "Ticket Sales"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:201
+msgid "New Caledonia"
+msgstr "New Caledonia"
+
+#: src/admin-views/attendees.php:124
+msgid "Tickets sold:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:202
+msgid "New Zealand"
+msgstr "New Zealand"
+
+#: src/admin-views/attendees.php:133
+msgid "Finalized:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:203
+msgid "Nicaragua"
+msgstr "Nicaragua"
+
+#: src/admin-views/attendees.php:136
+msgid "Awaiting review:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:204
+msgid "Niger"
+msgstr "Niger"
+
+#: src/admin-views/attendees.php:145
+msgid "Checked in:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:205
+msgid "Nigeria"
+msgstr "Nigeria"
+
+#: src/admin-views/attendees.php:167
+msgid "Send the attendee list by email"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:206
+msgid "Niue"
+msgstr "Niue"
+
+#: src/admin-views/attendees.php:171
+msgid "Select a User:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:207
+msgid "Norfolk Island"
+msgstr "Norfolk Island"
+
+#: src/admin-views/attendees.php:176
+msgid "Select..."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:208
+msgid "Northern Mariana Islands"
+msgstr "Northern Mariana Islands"
+
+#: src/admin-views/attendees.php:181
+msgid "or"
+msgstr "or"
+
+#: common/src/Tribe/View_Helpers.php:209
+msgid "Norway"
+msgstr "Norway"
+
+#: src/admin-views/attendees.php:183
+msgid "Email Address:"
+msgstr "Email Address:"
+
+#: common/src/Tribe/View_Helpers.php:210
+msgid "Oman"
+msgstr "Oman"
+
+#: src/admin-views/list.php:32
+msgid "Edit"
+msgstr "Edit"
+
+#: common/src/Tribe/View_Helpers.php:211
+msgid "Pakistan"
+msgstr "Pakistan"
+
+#: src/admin-views/list.php:35
+msgid "Edit in %s"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:212
+msgid "Palau"
+msgstr "Palau"
+
+#: src/admin-views/list.php:38
+msgid "View"
+msgstr "View"
+
+#: common/src/Tribe/View_Helpers.php:213
+msgid "Panama"
+msgstr "Panama"
+
+#: src/admin-views/list.php:78
+msgid "Sold %d"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:214
+msgid "Papua New Guinea"
+msgstr "Papua New Guinea"
+
+#: src/admin-views/list.php:80
+msgid "Sold %1$d of %2$d"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:215
+msgid "Paraguay"
+msgstr "Paraguay"
+
+#: src/admin-views/meta-box.php:23
+msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:216
+msgid "Peru"
+msgstr "Peru"
+
+#: src/admin-views/meta-box.php:34
+msgid "Upload image for the ticket header"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:217
+msgid "Philippines"
+msgstr "Philippines"
+
+#: src/admin-views/meta-box.php:35
+msgid "The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like \"retina\" support use an image sized to 1160px wide."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:218
+msgid "Pitcairn"
+msgstr "Pitcairn"
+
+#: src/admin-views/meta-box.php:38
+msgid "Select an Image"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:219
+msgid "Poland"
+msgstr "Poland"
+
+#: src/admin-views/meta-box.php:46
+msgid "Remove"
+msgstr "Remove"
+
+#: common/src/Tribe/View_Helpers.php:220
+msgid "Portugal"
+msgstr "Portugal"
+
+#: src/admin-views/meta-box.php:64 src/admin-views/meta-box.php:74
+msgid "Add new ticket"
+msgstr "Add new ticket"
+
+#: common/src/Tribe/View_Helpers.php:221
+msgid "Puerto Rico"
+msgstr "Puerto Rico"
+
+#: src/admin-views/meta-box.php:75
+msgid "Edit ticket"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:222
+msgid "Qatar"
+msgstr "Qatar"
+
+#: src/admin-views/meta-box.php:80
+msgid "Sell using:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:223
+msgid "Reunion"
+msgstr "Reunion"
+
+#: src/admin-views/meta-box.php:97
+msgid "Ticket Name:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:224
+msgid "Romania"
+msgstr "Romania"
+
+#: src/admin-views/meta-box.php:104
+msgid "Ticket Description:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:225
+msgid "Russian Federation"
+msgstr ""
+
+#: src/admin-views/meta-box.php:113
+msgid "Price:"
+msgstr "Price:"
+
+#: common/src/Tribe/View_Helpers.php:226
+msgid "Rwanda"
+msgstr "Rwanda"
+
+#: src/admin-views/meta-box.php:119
+msgid "(0 or empty for free tickets)"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:227
+msgid "Saint Kitts And Nevis"
+msgstr ""
+
+#: src/admin-views/meta-box.php:125
+msgid "Sale Price:"
+msgstr "Sale Price:"
+
+#: common/src/Tribe/View_Helpers.php:228
+msgid "Saint Lucia"
+msgstr "Saint Lucia"
+
+#: src/admin-views/meta-box.php:131
+msgid "(Current sale price - this can be managed via the product editor)"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:229
+msgid "Saint Vincent And The Grenadines"
+msgstr ""
+
+#: src/admin-views/meta-box.php:137
+msgid "Start sale:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:230
+msgid "Samoa"
+msgstr "Samoa"
+
+#: src/admin-views/meta-box.php:161
+msgid "End sale:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:231
+msgid "San Marino"
+msgstr "San Marino"
+
+#: src/admin-views/meta-box.php:183
+msgid "When will ticket sales occur? If you don't set a start/end date for sales, tickets will be available from now until the event ends."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:232
+msgid "Sao Tome And Principe"
+msgstr ""
+
+#: src/admin-views/meta-box.php:195
+msgid "Save this ticket"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:233
+msgid "Saudi Arabia"
+msgstr "Saudi Arabia"
+
+#: src/admin-views/rsvp-metabox-advanced.php:2
+msgid "Stock:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:234
+msgid "Senegal"
+msgstr "Senegal"
+
+#: src/admin-views/rsvp-metabox-advanced.php:6
+msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out)"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:235
+msgid "Serbia"
+msgstr "Serbia"
+
+#: src/admin-views/rsvp-metabox-advanced.php:16
+msgid "Selling tickets for recurring events"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:236
+msgid "Seychelles"
+msgstr "Seychelles"
+
+#: src/admin-views/rsvp-metabox-advanced.php:20
+msgid "Currently, Tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:237
+msgid "Sierra Leone"
+msgstr "Sierra Leone"
+
+#: src/admin-views/tribe-options-tickets.php:41
+msgid "Ticket Settings"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:238
+msgid "Singapore"
+msgstr "Singapore"
+
+#: src/admin-views/tribe-options-tickets.php:45
+msgid "Post types that can have tickets"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:239
+msgid "Slovakia (Slovak Republic)"
+msgstr ""
+
+#: src/template-tags/tickets.php:190
+msgid "(%d awaiting review)"
+msgid_plural "(%d awaiting review)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: common/src/Tribe/View_Helpers.php:240
+msgid "Slovenia"
+msgstr "Slovenia"
+
+#: src/template-tags/tickets.php:194
+msgid "Sold %1$d %2$s"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:241
+msgid "Solomon Islands"
+msgstr "Solomon Islands"
+
+#: src/template-tags/tickets.php:196
+msgid "Sold %1$d of %2$d %3$s"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:242
+msgid "Somalia"
+msgstr "Somalia"
+
+#: src/views/tickets/attendees-email.php:24
+msgid "Attendee List"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:243
+msgid "South Africa"
+msgstr "South Africa"
+
+#: src/views/tickets/email.php:26
+msgid "Your tickets"
+msgstr ""
+
+#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:62
+msgid "<a href=\"%s\">Edit the page slug</a>"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:244
+msgid "South Georgia, South Sandwich Islands"
+msgstr ""
+
+#: src/views/tickets/email.php:326
+msgid "Ticket Type"
+msgstr ""
+
+#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:63
+msgid "Ask the site administrator to edit the page slug"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:245
+msgid "Spain"
+msgstr "Spain"
+
+#: src/views/tickets/email.php:330
+msgid "Purchaser"
+msgstr ""
+
+#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:68
+msgid "<a href=\"%s\">edit The Events Calendar settings</a>."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:246
+msgid "Sri Lanka"
+msgstr "Sri Lanka"
+
+#: src/views/tickets/rsvp.php:9
+msgid "RSVP"
+msgstr ""
+
+#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:69
+msgid " ask the site administrator set a different Events URL slug."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:247
+msgid "St. Helena"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:57
+msgid "%1$s out of %2$s available"
+msgstr ""
+
+#: common/src/Tribe/App_Shop.php:63 common/src/Tribe/App_Shop.php:64
+#: common/src/Tribe/App_Shop.php:94
+msgid "Event Add-Ons"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:248
+msgid "St. Pierre And Miquelon"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:65
+msgid "Out of stock!"
+msgstr ""
+
+#: common/src/Tribe/Credits.php:31
+msgid "This calendar is powered by The Events Calendar."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:249
+msgid "Sudan"
+msgstr "Sudan"
+
+#: src/views/tickets/rsvp.php:91
+msgid "Full Name:"
+msgstr ""
+
+#: common/src/Tribe/Credits.php:51
+msgid "Rate %3$sThe Events Calendar%4$s %1$s on %2$s to keep this plugin free.  Thanks from the friendly folks at Modern Tribe."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:250
+msgid "Suriname"
+msgstr "Suriname"
+
+#: src/views/tickets/rsvp.php:99
+msgid "Email:"
+msgstr "Email:"
+
+#: common/src/Tribe/Field.php:209
+msgid "Invalid field type specified"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:251
+msgid "Svalbard And Jan Mayen Islands"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:110
+msgid "Confirm RSVP"
+msgstr ""
+
+#: common/src/Tribe/Field.php:466
+msgid "No radio options specified"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:252
+msgid "Swaziland"
+msgstr "Swaziland"
+
+#. Plugin Name of the plugin/theme
+msgid "Event Tickets"
+msgstr ""
+
+#: common/src/Tribe/Field.php:502
+msgid "No checkbox options specified"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:253
+msgid "Sweden"
+msgstr "Sweden"
+
+#. Description of the plugin/theme
+msgid "Event Tickets allows you to sell tickets to events"
+msgstr ""
+
+#: common/src/Tribe/Field.php:558
+msgid "No select options specified"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:254
+msgid "Switzerland"
+msgstr "Switzerland"
+
+#. Author of the plugin/theme
+msgid "Modern Tribe, Inc."
+msgstr ""
+
+#: common/src/Tribe/Settings.php:149
+msgid "The Events Calendar"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:255
+msgid "Syrian Arab Republic"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://m.tri.be/28"
+msgstr ""
+
+#: common/src/Tribe/Settings.php:180 common/src/Tribe/Settings.php:181
+msgid "Events"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:256
+msgid "Taiwan"
+msgstr "Taiwan"
+
+#: common/src/Tribe/Settings.php:191 common/src/Tribe/Settings.php:207
+msgid "The Events Calendar Settings"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:257
+msgid "Tajikistan"
+msgstr "Tajikistan"
+
+#: common/src/Tribe/Settings.php:192
+msgid "Settings"
+msgstr "Settings"
+
+#: common/src/Tribe/View_Helpers.php:258
+msgid "Tanzania, United Republic Of"
+msgstr ""
+
+#: common/src/Tribe/Settings.php:207
+msgid "Events Settings"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:259
+msgid "Thailand"
+msgstr "Thailand"
+
+#: common/src/Tribe/Settings.php:272
+msgid "%s Settings"
+msgstr "%s Settings"
+
+#: common/src/Tribe/View_Helpers.php:260
+msgid "Togo"
+msgstr "Togo"
+
+#: common/src/Tribe/Settings.php:286
+msgid "You've requested a non-existent tab."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:261
+msgid "Tokelau"
+msgstr "Tokelau"
+
+#: common/src/Tribe/Settings.php:294
+msgid "Save Changes"
+msgstr "Save Changes"
+
+#: common/src/Tribe/View_Helpers.php:262
+msgid "Tonga"
+msgstr "Tonga"
+
+#: common/src/Tribe/Settings.php:342
+msgid "You don't have permission to do that."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:263
+msgid "Trinidad And Tobago"
+msgstr ""
+
+#: common/src/Tribe/Settings.php:348
+msgid "The request was sent insecurely."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:264
+msgid "Tunisia"
+msgstr "Tunisia"
+
+#: common/src/Tribe/Settings.php:354
+msgid "The request wasn't sent from this tab."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:265
+msgid "Turkey"
+msgstr "Turkey"
+
+#: common/src/Tribe/Settings.php:522
+msgid "Your form had the following errors:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:266
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+#: common/src/Tribe/Settings.php:532
+msgid "None of your settings were saved. Please try again."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:267
+msgid "Turks And Caicos Islands"
+msgstr ""
+
+#: common/src/Tribe/Settings.php:533
+msgid "The above setting was not saved. Other settings were successfully saved."
+msgid_plural "The above settings were not saved. Other settings were successfully saved."
+msgstr[0] ""
+msgstr[1] ""
+
+#: common/src/Tribe/View_Helpers.php:268
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: common/src/Tribe/Settings.php:555
+msgid "Settings saved."
+msgstr "Settings saved."
+
+#: common/src/Tribe/View_Helpers.php:269
+msgid "Uganda"
+msgstr "Uganda"
+
+#: common/src/Tribe/Settings_Manager.php:55
+msgid "General"
+msgstr "General"
+
+#: common/src/Tribe/View_Helpers.php:270
+msgid "Ukraine"
+msgstr "Ukraine"
+
+#: common/src/Tribe/Settings_Manager.php:56
+msgid "Display"
+msgstr "Display"
+
+#: common/src/Tribe/View_Helpers.php:271
+msgid "United Arab Emirates"
+msgstr "United Arab Emirates"
+
+#: common/src/Tribe/Settings_Manager.php:62
+#: common/src/Tribe/Settings_Manager.php:289
+msgid "Help"
+msgstr "Help"
+
+#: common/src/Tribe/View_Helpers.php:272
+msgid "United Kingdom"
+msgstr "United Kingdom"
+
+#: common/src/Tribe/Settings_Manager.php:229
+msgid "Network"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:273
+msgid "United States Minor Outlying Islands"
+msgstr ""
+
+#: common/src/Tribe/Settings_Manager.php:263
+#: common/src/admin-views/tribe-options-licenses.php:46
+msgid "Licenses"
+msgstr "Licences"
+
+#: common/src/Tribe/View_Helpers.php:274
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: common/src/Tribe/Settings_Tab.php:224
+msgid "There are no fields setup for this tab yet."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:275
+msgid "Uzbekistan"
+msgstr "Uzbekistan"
+
+#: common/src/Tribe/Support.php:46
+msgid "Sometimes it's hard to tell what's going wrong without knowing more about your system steup. For your convenience, we've put together a little report on what's cooking under the hood."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:276
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: common/src/Tribe/Support.php:47
+msgid "If you suspect that the problem you're having is related to another plugin, or we're just plain having trouble reproducing your bug report, please copy and send all of this to our support team."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:277
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: common/src/Tribe/Support.php:51
+msgid "System Information"
+msgstr "System Information"
+
+#: common/src/Tribe/View_Helpers.php:278
+msgid "Viet Nam"
+msgstr ""
+
+#: common/src/Tribe/Support.php:137
+msgid "Unknown or not set"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:279
+msgid "Virgin Islands (British)"
+msgstr "Virgin Islands (British)"
+
+#: common/src/Tribe/Support.php:144
+msgid "Rewrite rules were purged on load of this help page. Chances are there is a rewrite rule flush occurring in a plugin or theme!"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:280
+msgid "Virgin Islands (U.S.)"
+msgstr ""
+
+#: common/src/Tribe/Validate.php:76 common/src/Tribe/Validate.php:117
+msgid "Invalid or incomplete field passed"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:281
+msgid "Wallis And Futuna Islands"
+msgstr ""
+
+#: common/src/Tribe/Validate.php:77 common/src/Tribe/Validate.php:112
+#: common/src/Tribe/Validate.php:118
+msgid "Field ID:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:282
+msgid "Western Sahara"
+msgstr "Western Sahara"
+
+#: common/src/Tribe/Validate.php:111
+msgid "Non-existant field validation function passed"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:283
+msgid "Yemen"
+msgstr "Yemen"
+
+#: common/src/Tribe/Validate.php:112
+msgctxt "non-existant function name passed for field validation"
+msgid "with function name:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:284
+msgid "Zambia"
+msgstr "Zambia"
+
+#: common/src/Tribe/Validate.php:135 common/src/Tribe/Validate.php:151
+msgid "%s must contain numbers and letters only"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:285
+msgid "Zimbabwe"
+msgstr "Zimbabwe"
+
+#: common/src/Tribe/Validate.php:167
+msgid "%s must contain numbers, letters and dots only"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:316
+msgid "Alabama"
+msgstr "Alabama"
+
+#: common/src/Tribe/Validate.php:181
+msgid "%s must be a positive number."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:317
+msgid "Alaska"
+msgstr "Alaska"
+
+#: common/src/Tribe/Validate.php:196
+msgid "%s must be a valid slug (numbers, letters, dashes, and underscores)."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:318
+msgid "Arizona"
+msgstr "Arizona"
+
+#: common/src/Tribe/Validate.php:211
+msgid "%s must be a valid absolute URL."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:319
+msgid "Arkansas"
+msgstr "Arkansas"
+
+#: common/src/Tribe/Validate.php:227 common/src/Tribe/Validate.php:244
+#: common/src/Tribe/Validate.php:266
+msgid "%s must have a value that's part of its options."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:320
+msgid "California"
+msgstr "California"
+
+#: common/src/Tribe/Validate.php:280
+msgid "Comparison validation failed because no comparison value was provided, for field %s"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:321
+msgid "Colorado"
+msgstr "Colorado"
+
+#: common/src/Tribe/Validate.php:287
+msgid "%s cannot be the same as %s."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:322
+msgid "Connecticut"
+msgstr "Connecticut"
+
+#: common/src/Tribe/Validate.php:289
+msgid "%s cannot be a duplicate"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:323
+msgid "Delaware"
+msgstr "Delaware"
+
+#: common/src/Tribe/Validate.php:305
+msgid "%s must be a number or percentage."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:324
+msgid "District of Columbia"
+msgstr ""
+
+#: common/src/Tribe/Validate.php:359
+msgid "%s must be a number between 0 and 21."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:325
+msgid "Florida"
+msgstr "Florida"
+
+#: common/src/Tribe/Validate.php:375
+msgid "%s must consist of letters, numbers, dashes, apostrophes, and spaces only."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:327
+msgid "Hawaii"
+msgstr "Hawaii"
+
+#: common/src/Tribe/Validate.php:391
+msgid "%s must consist of letters, spaces, apostrophes, and dashes."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:328
+msgid "Idaho"
+msgstr "Idaho"
+
+#: common/src/Tribe/Validate.php:405
+msgid "%s must consist of 5 numbers."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:329
+msgid "Illinois"
+msgstr "Illinois"
+
+#: common/src/Tribe/Validate.php:419
+msgid "%s must be a phone number."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:330
+msgid "Indiana"
+msgstr "Indiana"
+
+#: common/src/Tribe/Validate.php:435
+msgid "Country List must be formatted as one country per line in the following format: <br>US, United States <br> UK, United Kingdom."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:331
+msgid "Iowa"
+msgstr "Iowa"
+
+#: common/src/Tribe/View_Helpers.php:26 common/src/Tribe/View_Helpers.php:45
+msgid "Select a Country:"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:332
+msgid "Kansas"
+msgstr "Kansas"
+
+#: common/src/Tribe/View_Helpers.php:46
+msgid "United States"
+msgstr "United States"
+
+#: common/src/Tribe/View_Helpers.php:333
+msgid "Kentucky"
+msgstr "Kentucky"
+
+#: common/src/Tribe/View_Helpers.php:47
+msgid "Afghanistan"
+msgstr "Afghanistan"
+
+#: common/src/Tribe/View_Helpers.php:334
+msgid "Louisiana"
+msgstr "Louisiana"
+
+#: common/src/Tribe/View_Helpers.php:48
+msgid "Albania"
+msgstr "Albania"
+
+#: common/src/Tribe/View_Helpers.php:335
+msgid "Maine"
+msgstr "Maine"
+
+#: common/src/Tribe/View_Helpers.php:49
+msgid "Algeria"
+msgstr "Algeria"
+
+#: common/src/Tribe/View_Helpers.php:336
+msgid "Maryland"
+msgstr "Maryland"
+
+#: common/src/Tribe/View_Helpers.php:50
+msgid "American Samoa"
+msgstr "American Samoa"
+
+#: common/src/Tribe/View_Helpers.php:337
+msgid "Massachusetts"
+msgstr "Massachusetts"
+
+#: common/src/Tribe/View_Helpers.php:51
+msgid "Andorra"
+msgstr "Andorra"
+
+#: common/src/Tribe/View_Helpers.php:338
+msgid "Michigan"
+msgstr "Michigan"
+
+#: common/src/Tribe/View_Helpers.php:52
+msgid "Angola"
+msgstr "Angola"
+
+#: common/src/Tribe/View_Helpers.php:339
+msgid "Minnesota"
+msgstr "Minnesota"
+
+#: common/src/Tribe/View_Helpers.php:53
+msgid "Anguilla"
+msgstr "Anguilla"
+
+#: common/src/Tribe/View_Helpers.php:340
+msgid "Mississippi"
+msgstr "Mississippi"
+
+#: common/src/Tribe/View_Helpers.php:54
+msgid "Antarctica"
+msgstr "Antarctica"
+
+#: common/src/Tribe/View_Helpers.php:341
+msgid "Missouri"
+msgstr "Missouri"
+
+#: common/src/Tribe/View_Helpers.php:55
+msgid "Antigua And Barbuda"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:342
+msgid "Montana"
+msgstr "Montana"
+
+#: common/src/Tribe/View_Helpers.php:56
+msgid "Argentina"
+msgstr "Argentina"
+
+#: common/src/Tribe/View_Helpers.php:343
+msgid "Nebraska"
+msgstr "Nebraska"
+
+#: common/src/Tribe/View_Helpers.php:57
+msgid "Armenia"
+msgstr "Armenia"
+
+#: common/src/Tribe/View_Helpers.php:344
+msgid "Nevada"
+msgstr "Nevada"
+
+#: common/src/Tribe/View_Helpers.php:58
+msgid "Aruba"
+msgstr "Aruba"
+
+#: common/src/Tribe/View_Helpers.php:345
+msgid "New Hampshire"
+msgstr "New Hampshire"
+
+#: common/src/Tribe/View_Helpers.php:59
+msgid "Australia"
+msgstr "Australia"
+
+#: common/src/Tribe/View_Helpers.php:346
+msgid "New Jersey"
+msgstr "New Jersey"
+
+#: common/src/Tribe/View_Helpers.php:60
+msgid "Austria"
+msgstr "Austria"
+
+#: common/src/Tribe/View_Helpers.php:347
+msgid "New Mexico"
+msgstr "New Mexico"
+
+#: common/src/Tribe/View_Helpers.php:61
+msgid "Azerbaijan"
+msgstr "Azerbaijan"
+
+#: common/src/Tribe/View_Helpers.php:348
+msgid "New York"
+msgstr "New York"
+
+#: common/src/Tribe/View_Helpers.php:62
+msgid "Bahamas"
+msgstr "Bahamas"
+
+#: common/src/Tribe/View_Helpers.php:349
+msgid "North Carolina"
+msgstr "North Carolina"
+
+#: common/src/Tribe/View_Helpers.php:63
+msgid "Bahrain"
+msgstr "Bahrain"
+
+#: common/src/Tribe/View_Helpers.php:350
+msgid "North Dakota"
+msgstr "North Dakota"
+
+#: common/src/Tribe/View_Helpers.php:64
+msgid "Bangladesh"
+msgstr "Bangladesh"
+
+#: common/src/Tribe/View_Helpers.php:351
+msgid "Ohio"
+msgstr "Ohio"
+
+#: common/src/Tribe/View_Helpers.php:65
+msgid "Barbados"
+msgstr "Barbados"
+
+#: common/src/Tribe/View_Helpers.php:352
+msgid "Oklahoma"
+msgstr "Oklahoma"
+
+#: common/src/Tribe/View_Helpers.php:66
+msgid "Belarus"
+msgstr "Belarus"
+
+#: common/src/Tribe/View_Helpers.php:353
+msgid "Oregon"
+msgstr "Oregon"
+
+#: common/src/Tribe/View_Helpers.php:67
+msgid "Belgium"
+msgstr "Belgium"
+
+#: common/src/Tribe/View_Helpers.php:354
+msgid "Pennsylvania"
+msgstr "Pennsylvania"
+
+#: common/src/Tribe/View_Helpers.php:68
+msgid "Belize"
+msgstr "Belize"
+
+#: common/src/Tribe/View_Helpers.php:355
+msgid "Rhode Island"
+msgstr "Rhode Island"
+
+#: common/src/Tribe/View_Helpers.php:69
+msgid "Benin"
+msgstr "Benin"
+
+#: common/src/Tribe/View_Helpers.php:356
+msgid "South Carolina"
+msgstr "South Carolina"
+
+#: common/src/Tribe/View_Helpers.php:70
+msgid "Bermuda"
+msgstr "Bermuda"
+
+#: common/src/Tribe/View_Helpers.php:357
+msgid "South Dakota"
+msgstr "South Dakota"
+
+#: common/src/Tribe/View_Helpers.php:71
+msgid "Bhutan"
+msgstr "Bhutan"
+
+#: common/src/Tribe/View_Helpers.php:358
+msgid "Tennessee"
+msgstr "Tennessee"
+
+#: common/src/Tribe/View_Helpers.php:72
+msgid "Bolivia"
+msgstr "Bolivia"
+
+#: common/src/Tribe/View_Helpers.php:359
+msgid "Texas"
+msgstr "Texas"
+
+#: common/src/Tribe/View_Helpers.php:73
+msgid "Bosnia And Herzegowina"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:360
+msgid "Utah"
+msgstr "Utah"
+
+#: common/src/Tribe/View_Helpers.php:74
+msgid "Botswana"
+msgstr "Botswana"
+
+#: common/src/Tribe/View_Helpers.php:361
+msgid "Vermont"
+msgstr "Vermont"
+
+#: common/src/Tribe/View_Helpers.php:75
+msgid "Bouvet Island"
+msgstr "Bouvet Island"
+
+#: common/src/Tribe/View_Helpers.php:362
+msgid "Virginia"
+msgstr "Virginia"
+
+#: common/src/Tribe/View_Helpers.php:76
+msgid "Brazil"
+msgstr "Brazil"
+
+#: common/src/Tribe/View_Helpers.php:363
+msgid "Washington"
+msgstr "Washington"
+
+#: common/src/Tribe/View_Helpers.php:77
+msgid "British Indian Ocean Territory"
+msgstr "British Indian Ocean Territory"
+
+#: common/src/Tribe/View_Helpers.php:364
+msgid "West Virginia"
+msgstr "West Virginia"
+
+#: common/src/Tribe/View_Helpers.php:78
+msgid "Brunei Darussalam"
+msgstr "Brunei Darussalam"
+
+#: common/src/Tribe/View_Helpers.php:365
+msgid "Wisconsin"
+msgstr "Wisconsin"
+
+#: common/src/Tribe/View_Helpers.php:79
+msgid "Bulgaria"
+msgstr "Bulgaria"
+
+#: common/src/Tribe/View_Helpers.php:366
+msgid "Wyoming"
+msgstr "Wyoming"
+
+#: common/src/Tribe/View_Helpers.php:80
+msgid "Burkina Faso"
+msgstr "Burkina Faso"
+
+#: common/src/admin-views/app-shop.php:4
+msgid "Tribe Event Add-Ons"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:81
+msgid "Burundi"
+msgstr "Burundi"
+
+#: common/src/admin-views/app-shop.php:54
+msgid "Version"
+msgstr "Version"
+
+#: common/src/Tribe/View_Helpers.php:82
+msgid "Cambodia"
+msgstr "Cambodia"
+
+#: common/src/admin-views/app-shop.php:57
+msgid "Last Update"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:83
+msgid "Cameroon"
+msgstr "Cameroon"
+
+#: common/src/admin-views/tribe-options-display.php:22
+msgid "Date Format Settings"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:84
+msgid "Canada"
+msgstr "Canada"
+
+#: common/src/admin-views/tribe-options-display.php:26
+msgid "<p>The following three fields accept the date format options available to the php date() function. <a href=\"http://codex.wordpress.org/Formatting_Date_and_Time\" target=\"_blank\">Learn how to make your own date format here</a>.</p>"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:85
+msgid "Cape Verde"
+msgstr "Cape Verde"
+
+#: common/src/admin-views/tribe-options-display.php:30
+msgid "Date with year"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:86
+msgid "Cayman Islands"
+msgstr "Cayman Islands"
+
+#: common/src/admin-views/tribe-options-display.php:31
+msgid "Enter the format to use for displaying dates with the year. Used when showing an event from a past or future year, also used for dates in view headers."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:87
+msgid "Central African Republic"
+msgstr "Central African Republic"
+
+#: common/src/admin-views/tribe-options-display.php:38
+msgid "Date without year"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:88
+msgid "Chad"
+msgstr "Chad"
+
+#: common/src/admin-views/tribe-options-display.php:39
+msgid "Enter the format to use for displaying dates without a year. Used when showing an event from the current year."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:89
+msgid "Chile"
+msgstr "Chile"
+
+#: common/src/admin-views/tribe-options-display.php:46
+msgid "Month and year format"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:90
+msgid "China"
+msgstr "China"
+
+#: common/src/admin-views/tribe-options-display.php:47
+msgid "Enter the format to use for dates that show a month and year only. Used on month view."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:91
+msgid "Christmas Island"
+msgstr "Christmas Island"
+
+#: common/src/admin-views/tribe-options-display.php:54
+msgid "Date time separator"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:92
+msgid "Cocos (Keeling) Islands"
+msgstr "Cocos (Keeling) Islands"
+
+#: common/src/admin-views/tribe-options-display.php:55
+msgid "Enter the separator that will be placed between the date and time, when both are shown."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:93
+msgid "Colombia"
+msgstr "Colombia"
+
+#: common/src/admin-views/tribe-options-display.php:62
+msgid "Time range separator"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:94
+msgid "Comoros"
+msgstr "Comoros"
+
+#: common/src/admin-views/tribe-options-display.php:63
+msgid "Enter the separator that will be used between the start and end time of an event."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:95
+msgid "Congo"
+msgstr "Congo"
+
+#: common/src/admin-views/tribe-options-display.php:70
+msgid "Datepicker Date Format"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:96
+msgid "Congo, The Democratic Republic Of The"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-display.php:71
+msgid "Select the date format to use in datepickers"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:97
+msgid "Cook Islands"
+msgstr "Cook Islands"
+
+#: common/src/admin-views/tribe-options-general.php:10
+msgid "Looking for additional functionality including recurring events, custom meta, community events, ticket sales and more?"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:98
+msgid "Costa Rica"
+msgstr "Costa Rica"
+
+#: common/src/admin-views/tribe-options-general.php:10
+msgid "Check out the available add-ons"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:99
+msgid "Cote D'Ivoire"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-general.php:15
+msgid "We hope our plugin is helping you out."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:100
+msgid "Croatia (Local Name: Hrvatska)"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-general.php:19
+msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text-only link at the bottom of your calendar pointing to The Events Calendar project."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:101
+msgid "Cuba"
+msgstr "Cuba"
+
+#: common/src/admin-views/tribe-options-general.php:19
+#: common/src/admin-views/tribe-options-general.php:24
+msgid "See an example of the link"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:102
+msgid "Cyprus"
+msgstr "Cyprus"
+
+#: common/src/admin-views/tribe-options-general.php:24
+msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text only link at the bottom of your calendar pointing to The Events Calendar project."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:103
+msgid "Czech Republic"
+msgstr "Czech Republic"
+
+#: common/src/admin-views/tribe-options-general.php:29
+msgid "Show The Events Calendar link"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:104
+msgid "Denmark"
+msgstr "Denmark"
+
+#: common/src/admin-views/tribe-options-general.php:43
+msgid "General Settings"
+msgstr "General Settings"
+
+#: common/src/Tribe/View_Helpers.php:105
+msgid "Djibouti"
+msgstr "Djibouti"
+
+#: common/src/admin-views/tribe-options-general.php:47
+msgid "End of day cutoff"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:106
+msgid "Dominica"
+msgstr "Dominica"
+
+#: common/src/admin-views/tribe-options-general.php:68
+msgid "Have an event that runs past midnight? Select a time after that event's end to avoid showing the event on the next day's calendar."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:107
+msgid "Dominican Republic"
+msgstr "Dominican Republic"
+
+#: common/src/admin-views/tribe-options-general.php:73
+msgid "Default currency symbol"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:108
+msgid "East Timor"
+msgstr "East Timor"
+
+#: common/src/admin-views/tribe-options-general.php:74
+msgid "Set the default currency symbol for event costs. Note that this only impacts future events, and changes made will not apply retroactively."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:109
+msgid "Ecuador"
+msgstr "Ecuador"
+
+#: common/src/admin-views/tribe-options-general.php:81
+msgid "Currency symbol follows value"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:110
+msgid "Egypt"
+msgstr "Egypt"
+
+#: common/src/admin-views/tribe-options-general.php:82
+msgid "The currency symbol normally precedes the value. Enabling this option positions the symbol after the value."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:111
+msgid "El Salvador"
+msgstr "El Salvador"
+
+#: common/src/admin-views/tribe-options-general.php:88
+msgid "Miscellaneous Settings"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:112
+msgid "Equatorial Guinea"
+msgstr "Equatorial Guinea"
+
+#: common/src/admin-views/tribe-options-general.php:92
+msgid "View Welcome Page"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:113
+msgid "Eritrea"
+msgstr "Eritrea"
+
+#: common/src/admin-views/tribe-options-general.php:92
+msgid "View the page that displayed when you initially installed the plugin."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:114
+msgid "Estonia"
+msgstr "Estonia"
+
+#: common/src/admin-views/tribe-options-general.php:97
+msgid "View Update Page"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:115
+msgid "Ethiopia"
+msgstr "Ethiopia"
+
+#: common/src/admin-views/tribe-options-general.php:97
+msgid "View the page that displayed when you updated the plugin."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:116
+msgid "Falkland Islands (Malvinas)"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-general.php:104
+msgid "Debug mode"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:117
+msgid "Faroe Islands"
+msgstr "Faroe Islands"
+
+#: common/src/admin-views/tribe-options-general.php:110
+msgid "Enable this option to log debug information. By default this will log to your server PHP error log. If you'd like to see the log messages in your browser, then we recommend that you install the %s and look for the \"Tribe\" tab in the debug output."
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:118
+msgid "Fiji"
+msgstr "Fiji"
+
+#: common/src/admin-views/tribe-options-general.php:110
+msgid "Debug Bar Plugin"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:119
+msgid "Finland"
+msgstr "Finland"
+
+#: common/src/admin-views/tribe-options-help.php:33
+msgid "The Events Calendar PRO"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:120
+msgid "France"
+msgstr "France"
+
+#: common/src/admin-views/tribe-options-help.php:42
+msgid "The Events Calendar: Eventbrite Tickets"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:121
+msgid "France, Metropolitan"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-help.php:51
+msgid "The Events Calendar: Community Events"
+msgstr ""
+
+#: common/src/Tribe/View_Helpers.php:122
+msgid "French Guiana"
+msgstr "French Guiana"
+
+#: common/src/admin-views/tribe-options-help.php:60
+msgid "The Events Calendar: Facebook Events"
+msgstr ""
