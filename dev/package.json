@@ -21,6 +21,7 @@
     "grunt-contrib-csslint": "^0.2.0",
     "grunt-contrib-cssmin": "^0.10.0",
     "grunt-contrib-watch": "^0.6.1",
+    "grunt-glotpress": "^0.2.1",
     "grunt-git": "^0.2.14",
     "grunt-rename": "^0.1.3",
     "load-grunt-tasks": "^0.6.0"
