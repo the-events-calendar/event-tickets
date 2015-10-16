@@ -548,7 +548,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$qty    = (int) get_post_meta( $ticket_id, 'total_sales', true );
 
 		$return->description    = $product->post_excerpt;
-		$return->frontend_link  = get_permalink( $ticket_id );
 		$return->ID             = $ticket_id;
 		$return->name           = $product->post_title;
 		$return->price          = get_post_meta( $ticket_id, '_price', true );
