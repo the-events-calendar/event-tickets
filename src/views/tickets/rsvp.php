@@ -48,13 +48,11 @@ ob_start();
 							<input type="number" class="tribe-ticket-quantity" min="0" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="0">
 							<?php
 
-							$remaining = $ticket->remaining();
-
-							if ( $remaining ) {
+							if ( $ticket->managing_stock() ) {
 								?>
 								<span class="tribe-tickets-remaining">
 									<?php
-									echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $remaining, $ticket->stock );
+									echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->remaining(), $ticket->original_stock() );
 									?>
 								</span>
 								<?php
