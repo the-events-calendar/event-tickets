@@ -104,8 +104,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		/* Show the advanced metabox for the selected provider and hide the others at ready */
 		$( 'input[name=ticket_provider]:checked' ).each( function() {
-			$( 'tr.ticket_advanced' ).hide();
-			$( 'tr.ticket_advanced_' + this.value + ':not(.sale_price)' ).show();
+			var $ticket_advanced = $( 'tr.ticket_advanced' );
+			$ticket_advanced.hide()
+				.filter( 'tr.ticket_advanced_' + this.value )
+				.not( '.sale_price' )
+				.show();
 		} );
 
 		/* "Add a ticket" link action */
