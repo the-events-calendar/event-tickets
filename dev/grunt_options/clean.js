@@ -15,6 +15,12 @@ module.exports = {
 		'<%= pkg._zipfoldername %>/**'
 	],
 
+	resourcescripts: [
+		'<%= pkg._resourcepath %>/js/rsvp.processed.js',
+		'<%= pkg._resourcepath %>/js/tickets.processed.js',
+		'<%= pkg._resourcepath %>/js/tickets-attendees.processed.js'
+	],
+
 	resourcecss: [
 		'<%= pkg._resourcepath %>/*.min.css'
 	]

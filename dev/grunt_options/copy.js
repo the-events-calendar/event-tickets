@@ -27,10 +27,17 @@ module.exports = {
 	dist: {
 		files: [{
 				expand: true,
-				src: ['**',
+				src: ['*',
+				      '**/common/**',
+				      '**/lang/**',
+				      '**/src/**',
 				      '!**/dev/**',
 				      '!**/tests/**',
-				      '!**/.git/**'
+				      '!**/.git/**',
+				      '!**/phpunit.xml',
+				      '!**/codeception.yml',
+				      '!**/composer.json',
+				      '!**/composer.lock'
 				],
 				dest: '<%= pkg._zipfoldername %>/'
 			}]

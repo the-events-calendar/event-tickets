@@ -122,6 +122,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function hooks() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
+		add_action( 'trashed_post', array( $this, 'maybe_redirect_to_attendees_report' ) );
 	}
 
 	/**
@@ -553,7 +554,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->price          = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class = get_class( $this );
 		$return->admin_link     = '';
-		$return->stock          = get_post_meta( $ticket_id, '_stock', true )-$qty;
+		$return->stock          = get_post_meta( $ticket_id, '_stock', true ) - $qty;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->qty_sold       = $qty;
@@ -758,5 +759,33 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function add_message( $message, $type = 'update' ) {
 		$message = apply_filters( 'tribe_rsvp_submission_message', $message, $type );
 		self::$messages[] = (object) array( 'message' => $message, 'type' => $type );
+	}
+
+
+	/**
+	 * If the post that was moved to the trash was an RSVP attendee post type, redirect to
+	 * the Attendees Report rather than the RSVP attendees post list (because that's kind of
+	 * confusing)
+	 *
+	 * @param int $post_id WP_Post ID
+	 */
+	public function maybe_redirect_to_attendees_report( $post_id ) {
+		$post = get_post( $post_id );
+
+		if ( $this->attendee_object !== $post->post_type ) {
+			return;
+		}
+
+		$args = array(
+			'post_type' => 'tribe_events',
+			'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
+			'event_id' => get_post_meta( $post_id, '_tribe_rsvp_event', true ),
+		);
+
+		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
+		$url = esc_url_raw( $url );
+
+		wp_redirect( $url );
+		die;
 	}
 }
