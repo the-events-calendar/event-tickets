@@ -112,8 +112,16 @@ jQuery( document ).ready( function( $ ) {
 
 	} );
 
+	var $filter_attendee = $( document.getElementById( 'filter_attendee' ) );
 
-	$( '#filter_attendee' ).on( 'keyup paste', function() {
+	$filter_attendee.on( 'keydown', function( e ) {
+		// if enter was pressed, pretend it wasn't
+		if ( 13 === e.keyCode ) {
+			return false;
+		}
+	} );
+
+	$filter_attendee.on( 'keyup paste', function() {
 
 		var search = jQuery( this ).val().toLowerCase();
 
