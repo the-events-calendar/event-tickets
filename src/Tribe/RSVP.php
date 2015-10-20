@@ -746,7 +746,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
 			if ( ! empty( $ticket ) ) {
-				$stock = $ticket->stock;
+				$stock = $ticket->original_stock();
 			}
 		}
 
