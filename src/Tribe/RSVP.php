@@ -261,7 +261,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$qty = ! empty( $_POST[ 'quantity_' . $product_id ] ) ? intval( $_POST[ 'quantity_' . $product_id ] ) : 1;
+			// if there were no RSVP tickets for the product added to the cart, continue
+			if ( empty( $_POST["quantity_{$product_id}"] ) ) {
+				continue;
+			}
+
+			$qty = intval( $_POST[ 'quantity_' . $product_id ] );
 
 			$has_tickets = true;
 
