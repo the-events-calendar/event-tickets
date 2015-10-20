@@ -7,6 +7,8 @@
 compiler.jar
 *.ps1
 
+dev/jshint-report.html
+
 codeception.yml
 tests/_bootstrap.php
 tests/_output/
