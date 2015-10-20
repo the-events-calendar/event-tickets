@@ -266,7 +266,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$qty = intval( $_POST[ 'quantity_' . $product_id ] );
+			$qty = intval( $_POST[ "quantity_{$product_id}" ] );
 
 			$has_tickets = true;
 
