@@ -22,6 +22,7 @@ tests/functional.suite.yml
 tests/unit.suite.yml
 phpunit.xml
 
+vendor/
 vendor/badcow
 vendor/bin
 vendor/codeception
