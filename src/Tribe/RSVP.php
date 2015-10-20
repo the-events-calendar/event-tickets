@@ -804,7 +804,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function updated_messages( $messages ) {
 		$ticket_post = get_post();
+
+		if ( ! $ticket_post ) {
+			return $messages;
+		}
+
 		$post_type = get_post_type( $ticket_post );
+
+		if ( $this->attendee_object !== $post_type ) {
+			return $messages;
+		}
+
 		$event = $this->get_event_for_ticket( $ticket_post );
 
 		$attendees_report_url = add_query_arg(
