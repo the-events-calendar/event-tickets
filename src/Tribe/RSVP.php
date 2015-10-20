@@ -262,7 +262,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 
 			// if there were no RSVP tickets for the product added to the cart, continue
-			if ( empty( $_POST["quantity_{$product_id}"] ) ) {
+			if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
 				continue;
 			}
 
