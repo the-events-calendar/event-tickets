@@ -554,7 +554,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->price          = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class = get_class( $this );
 		$return->admin_link     = '';
-		$return->stock          = get_post_meta( $ticket_id, '_stock', true )-$qty;
+		$return->stock          = get_post_meta( $ticket_id, '_stock', true ) - $qty;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->qty_sold       = $qty;

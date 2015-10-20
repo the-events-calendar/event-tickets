@@ -103,6 +103,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $end_date;
 
 		/**
+		 * Returns whether or not the ticket is managing stock
+		 *
+		 * @return boolean
+		 */
+		public function managing_stock() {
+			return 'no' !== get_post_meta( $this->ID, '_manage_stock', true );
+		}
+
+		/**
 		 * Determines if the given date is within the ticket's start/end date range
 		 *
 		 * @param string $datetime The date/time that we want to determine if it falls within the start/end date range
@@ -147,11 +156,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function is_in_stock() {
 			// if we aren't tracking stock, then always assume it is in stock
-			if ( empty( $this->stock ) ) {
+			if ( ! $this->managing_stock() ) {
 				return true;
 			}
 
-			return $this->remaining() > 0;
+			$remaining = $this->remaining();
+
+			return false === $remaining || $remaining > 0;
 		}
 
 		/**
@@ -161,19 +172,26 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function remaining() {
 			// if we aren't tracking stock, then always assume it is in stock
-			if ( empty( $this->stock ) ) {
-				return -1;
+			if ( ! $this->managing_stock() ) {
+				return false;
 			}
 
-			$remaining = absint( $this->stock ) - absint( $this->qty_sold ) - absint( $this->qty_pending );
+			$remaining = absint( $this->stock ) - absint( $this->qty_pending );
 
-			if ( $remaining > $this->stock ) {
-				$remaining = $this->stock;
-			} elseif ( $remaining < 0 ) {
+			if ( $remaining < 0 ) {
 				$remaining = 0;
 			}
 
 			return $remaining;
+		}
+
+		/**
+		 * Provides the quantity of original stock of tickets
+		 *
+		 * @return int
+		 */
+		public function original_stock() {
+			return absint( $this->stock ) + absint( $this->qty_sold ) + absint( $this->qty_pending );
 		}
 	}
 }
