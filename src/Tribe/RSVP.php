@@ -261,12 +261,21 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
+			$ticket = $this->get_ticket( $event_id, $product_id );
+
 			// if there were no RSVP tickets for the product added to the cart, continue
 			if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
 				continue;
 			}
 
-			$qty = intval( $_POST[ "quantity_{$product_id}" ] );
+			$qty = max( intval( $_POST[ "quantity_{$product_id}" ] ), 0 );
+
+			// Throw an error if Qty is bigger then Remaining
+			if ( $qty > $ticket->remaining() ){
+				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $event_id ) );
+				wp_redirect( esc_url_raw( $url ) );
+				die;
+			}
 
 			$has_tickets = true;
 
@@ -522,14 +531,23 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$rsvp_sent = empty( $_GET['rsvp_sent'] ) ? false : true;
-		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : true;
+		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : intval( $_GET['rsvp_error'] );
 
 		if ( $rsvp_sent ) {
 			$this->add_message( __( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'event-tickets' ), 'success' );
 		}
 
 		if ( $rsvp_error ) {
-			$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'event-tickets' ), 'error' );
+			switch ( $rsvp_error ) {
+				case 2:
+					$this->add_message( __( 'You can\'t  RSVP more then the total remaining tickets.', 'event-tickets' ), 'error' );
+					break;
+
+				case 1:
+				default:
+					$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'event-tickets' ), 'error' );
+					break;
+			}
 		}
 
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
@@ -559,10 +577,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->price          = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class = get_class( $this );
 		$return->admin_link     = '';
-		$return->stock          = get_post_meta( $ticket_id, '_stock', true ) - $qty;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$return->qty_sold       = $qty;
+
+		$return->stock( get_post_meta( $ticket_id, '_stock', true ) - $qty );
+		$return->qty_sold( $qty );
 
 		return $return;
 	}

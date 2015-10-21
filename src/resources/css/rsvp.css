@@ -50,3 +50,8 @@ table.tribe-events-tickets td {
 	background-color: #ffebe8;
 	border-color: #c00;
 }
+
+
+.tribe-ticket-quantity {
+	width: 100%;
+}

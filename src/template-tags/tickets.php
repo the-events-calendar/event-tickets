@@ -67,11 +67,11 @@ function tribe_events_partially_soldout( $event = null ) {
 	$some_have_soldout = false;
 
 	foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-		if ( ! $stock_is_available && 0 < $ticket->stock ) {
+		if ( ! $stock_is_available && 0 < $ticket->stock() ) {
 			$stock_is_available = true;
 		}
 
-		if ( ! $some_have_soldout && 0 == $ticket->stock ) {
+		if ( ! $some_have_soldout && 0 == $ticket->stock() ) {
 			$some_have_soldout = true;
 		}
 	}
@@ -95,7 +95,7 @@ function tribe_events_count_available_tickets( $event = null ) {
 	}
 
 	foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-		$count += $ticket->stock;
+		$count += $ticket->stock();
 	}
 
 	return $count;
@@ -115,7 +115,7 @@ function tribe_events_has_unlimited_stock_tickets( $event = null ) {
 	}
 
 	foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-		if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock ) return true;
+		if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock() ) return true;
 	}
 
 	return false;
@@ -186,14 +186,14 @@ function tribe_tickets_get_ticket_stock_message( $ticket ) {
 
 	$pending = '';
 
-	if ( $ticket->qty_pending > 0 ) {
+	if ( $ticket->qty_pending() > 0 ) {
 		$pending = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'event-tickets', $ticket->qty_pending ), (int) $ticket->qty_pending );
 	}
 
-	if ( empty( $ticket->stock ) && $ticket->stock !== 0 ) {
+	if ( empty( $ticket->stock() ) && $ticket->stock() !== 0 ) {
 		$message = sprintf( esc_html__( 'Sold %1$d %2$s', 'event-tickets' ), esc_html( $sold ), esc_html( $pending ) );
 	} else {
-		$message = sprintf( esc_html__( 'Sold %1$d of %2$d %3$s', 'event-tickets' ), esc_html( $sold ), esc_html( $sold + $ticket->stock ), esc_html( $pending ) );
+		$message = sprintf( esc_html__( 'Sold %1$d of %2$d %3$s', 'event-tickets' ), esc_html( $sold ), esc_html( $sold + $ticket->stock() ), esc_html( $pending ) );
 	}
 
 	return $message;
