@@ -191,6 +191,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function original_stock() {
+			if ( ! $this->managing_stock() ) {
+				return '';
+			}
+
 			return absint( $this->stock ) + absint( $this->qty_sold ) + absint( $this->qty_pending );
 		}
 	}
