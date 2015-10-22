@@ -109,7 +109,7 @@ class Tribe__Tickets__Google_Event_Data {
 	 * @return string
 	 */
 	protected function get_ticket_availability() {
-		$stock = $this->ticket->stock;
+		$stock = $this->ticket->stock();
 
 		if ( $stock <= 0 && $stock !== '' ) {
 			return 'SoldOut';

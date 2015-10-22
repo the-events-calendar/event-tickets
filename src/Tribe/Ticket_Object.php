@@ -73,22 +73,30 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Amount of tickets of this kind in stock
+		 * Use $this->stock( value ) to set manage and get the value
+		 *
 		 * @var mixed
+		 * @access protected
 		 */
-		public $stock;
+		protected $stock = 0;
 
 		/**
 		 * Amount of tickets of this kind sold
+		 * Use $this->qty_sold( value ) to set manage and get the value
+		 *
 		 * @var int
+		 * @access protected
 		 */
-		public $qty_sold;
+		protected $qty_sold = 0;
 
 		/**
 		 * Number of tickets for which an order has been placed but not confirmed or "completed".
+		 * Use $this->qty_pending( value ) to set manage and get the value
 		 *
 		 * @var int
+		 * @access protected
 		 */
-		public $qty_pending = 0;
+		protected $qty_pending = 0;
 
 		/**
 		 * When the ticket should be put on sale
@@ -176,13 +184,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return false;
 			}
 
-			$remaining = absint( $this->stock ) - absint( $this->qty_pending );
+			// Do the math!
+			$remaining = $this->original_stock() - $this->qty_sold() - $this->qty_pending();
 
-			if ( $remaining < 0 ) {
-				$remaining = 0;
-			}
-
-			return $remaining;
+			// Prevents Negative
+			return max( $remaining, 0 );
 		}
 
 		/**
@@ -191,7 +197,85 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function original_stock() {
-			return absint( $this->stock ) + absint( $this->qty_sold ) + absint( $this->qty_pending );
+			return $this->stock() + $this->qty_sold() + $this->qty_pending();
+		}
+
+		/**
+		 * Method to manage the protected `stock` propriety of the Object
+		 * Prevents setting `stock` lower then zero
+		 *
+		 * @param int|null $value This will overwrite the old value
+		 * @return int
+		 */
+		public function stock( $value = null ) {
+			// If the Value was passed as numeric value overwrite
+			if ( is_numeric( $value ) ){
+				$this->stock = $value;
+			}
+
+			// Prevents stock from going negative
+			$this->stock = max( (int) $this->stock, 0 );
+
+			// return the new Stock
+			return $this->stock;
+		}
+
+		/**
+		 * Method to manage the protected `qty_sold` propriety of the Object
+		 * Prevents setting `qty_sold` lower then zero
+		 * Prevents setting `qty_sold`+`qty_pending` been bigger then stock
+		 *
+		 * @param int|null $value This will overwrite the old value
+		 * @return int
+		 */
+		public function qty_sold( $value = null ) {
+			// If the Value was passed as numeric value overwrite
+			if ( is_numeric( $value ) ){
+				$this->qty_sold = $value;
+			}
+
+			// Prevents qty_sold from going negative
+			$this->qty_sold = max( (int) $this->qty_sold, 0 );
+
+			// Total qty
+			$total = $this->qty_sold + $this->qty_pending;
+
+			// Prevents total from going above stock
+			if ( $total > $this->stock() ) {
+				$this->qty_sold = $this->stock() - $this->qty_pending;
+			}
+
+			// return the new Qty Sold
+			return $this->qty_sold;
+		}
+
+		/**
+		 * Method to manage the protected `qty_pending` propriety of the Object
+		 * Prevents setting `qty_pending` lower then zero
+		 * Prevents setting `qty_pending`+`qty_sold` been bigger then stock
+		 *
+		 * @param int|null $value This will overwrite the old value
+		 * @return int
+		 */
+		public function qty_pending( $value = null ) {
+			// If the Value was passed as numeric value overwrite
+			if ( is_numeric( $value ) ){
+				$this->qty_pending = $value;
+			}
+
+			// Prevents qty_pending from going negative
+			$this->qty_pending = max( (int) $this->qty_pending, 0 );
+
+			// Total qty
+			$total = $this->qty_pending + $this->qty_sold;
+
+			// Prevents total from going above stock
+			if ( $total > $this->stock() ) {
+				$this->qty_pending = $this->stock() - $this->qty_sold;
+			}
+
+			// return the new Qty Pending
+			return $this->qty_pending;
 		}
 	}
 }
