@@ -9,10 +9,8 @@ $total_sold = 0;
 $total_pending = 0;
 
 foreach ( $tickets as $ticket ) {
-	$sold = ! empty ( $ticket->qty_sold ) ? $ticket->qty_sold : 0;
-
-	$total_sold += absint( $sold );
-	$total_pending += absint( $ticket->qty_pending );
+	$total_sold += $ticket->qty_sold();
+	$total_pending += $ticket->qty_pending();
 	$total_completed = $total_sold - $total_pending;
 }//end foreach
 

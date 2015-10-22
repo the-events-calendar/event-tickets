@@ -23,7 +23,6 @@
 	$modules = Tribe__Tickets__Tickets::modules();
 
 	foreach ( $tickets as $ticket ) {
-
 		$controls     = array();
 		$provider     = $ticket->provider_class;
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
@@ -71,8 +70,8 @@
 
 			<td nowrap="nowrap">
 				<?php
-				$stock = $ticket->stock;
-				$sold  = ! empty ( $ticket->qty_sold ) ? $ticket->qty_sold : 0;
+				$stock = $ticket->stock();
+				$sold  = $ticket->qty_sold();
 
 				if ( empty( $stock ) && $stock !== 0 ) : ?>
 					<?php echo sprintf( esc_html__( 'Sold %d', 'event-tickets' ), esc_html( $sold ) ); ?>

@@ -123,6 +123,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function hooks() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
 		add_action( 'trashed_post', array( $this, 'maybe_redirect_to_attendees_report' ) );
+		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 	}
 
 	/**
@@ -261,12 +262,21 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
+			$ticket = $this->get_ticket( $event_id, $product_id );
+
 			// if there were no RSVP tickets for the product added to the cart, continue
 			if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
 				continue;
 			}
 
-			$qty = intval( $_POST[ "quantity_{$product_id}" ] );
+			$qty = max( intval( $_POST[ "quantity_{$product_id}" ] ), 0 );
+
+			// Throw an error if Qty is bigger then Remaining
+			if ( $qty > $ticket->remaining() ){
+				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $event_id ) );
+				wp_redirect( esc_url_raw( $url ) );
+				die;
+			}
 
 			$has_tickets = true;
 
@@ -527,14 +537,23 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$rsvp_sent = empty( $_GET['rsvp_sent'] ) ? false : true;
-		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : true;
+		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : intval( $_GET['rsvp_error'] );
 
 		if ( $rsvp_sent ) {
 			$this->add_message( __( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'event-tickets' ), 'success' );
 		}
 
 		if ( $rsvp_error ) {
-			$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'event-tickets' ), 'error' );
+			switch ( $rsvp_error ) {
+				case 2:
+					$this->add_message( __( 'You can\'t  RSVP more then the total remaining tickets.', 'event-tickets' ), 'error' );
+					break;
+
+				case 1:
+				default:
+					$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'event-tickets' ), 'error' );
+					break;
+			}
 		}
 
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
@@ -564,10 +583,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->price          = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class = get_class( $this );
 		$return->admin_link     = '';
-		$return->stock          = get_post_meta( $ticket_id, '_stock', true ) - $qty;
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$return->qty_sold       = $qty;
+
+		$return->stock( get_post_meta( $ticket_id, '_stock', true ) - $qty );
+		$return->qty_sold( $qty );
 
 		return $return;
 	}
@@ -590,7 +610,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		if ( '' === ( $event = get_post_meta( $ticket_product, $this->event_key, true ) ) ) {
+		$event = get_post_meta( $ticket_product, $this->event_key, true );
+
+		if ( ! $event && '' === ( $event = get_post_meta( $ticket_product, $this->attendee_event_key, true ) ) ) {
 			return false;
 		}
 
@@ -771,7 +793,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		self::$messages[] = (object) array( 'message' => $message, 'type' => $type );
 	}
 
-
 	/**
 	 * If the post that was moved to the trash was an RSVP attendee post type, redirect to
 	 * the Attendees Report rather than the RSVP attendees post list (because that's kind of
@@ -797,5 +818,56 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		wp_redirect( $url );
 		die;
+	}
+
+	/**
+	 * Filters the post_updated_messages array for attendees
+	 *
+	 * @param array $messages Array of update messages
+	 */
+	public function updated_messages( $messages ) {
+		$ticket_post = get_post();
+
+		if ( ! $ticket_post ) {
+			return $messages;
+		}
+
+		$post_type = get_post_type( $ticket_post );
+
+		if ( $this->attendee_object !== $post_type ) {
+			return $messages;
+		}
+
+		$event = $this->get_event_for_ticket( $ticket_post );
+
+		$attendees_report_url = add_query_arg(
+			array(
+				'post_type' => $event->post_type,
+				'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
+				'event_id' => $event->ID,
+			),
+			admin_url( 'edit.php' )
+		);
+
+		$return_link = sprintf(
+			esc_html__( 'Return to the %1$sAttendees Report%2$s.', 'event-tickets' ),
+			"<a href='" . esc_url( $attendees_report_url ) . "'>",
+			'</a>'
+		);
+
+		$messages[ $this->attendee_object ] = $messages['post'];
+		$messages[ $this->attendee_object ][1] = sprintf(
+			esc_html__( 'Post updated. %1$s', 'event-tickets' ),
+			$return_link
+		);
+		$messages[ $this->attendee_object ][6] = sprintf(
+			esc_html__( 'Post published. %1$s', 'event-tickets' ),
+			$return_link
+		);
+		$messages[ $this->attendee_object ][8] = esc_html__( 'Post submitted.', 'event-tickets' );
+		$messages[ $this->attendee_object ][9] = esc_html__( 'Post scheduled.', 'event-tickets' );
+		$messages[ $this->attendee_object ][10] = esc_html__( 'Post draft updated.', 'event-tickets' );
+
+		return $messages;
 	}
 }

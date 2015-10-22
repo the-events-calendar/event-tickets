@@ -45,7 +45,7 @@ ob_start();
 						if ( $ticket->is_in_stock() ) {
 							$is_there_any_product_to_sell = true;
 							?>
-							<input type="number" class="tribe-ticket-quantity" min="0" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="0">
+							<input type="number" class="tribe-ticket-quantity" min="0" max="<?php echo esc_attr( $ticket->remaining() ); ?>" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="0">
 							<?php
 
 							if ( $ticket->managing_stock() ) {
