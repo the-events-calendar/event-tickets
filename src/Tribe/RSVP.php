@@ -419,7 +419,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 
-		do_action( 'debug_robot', '$raw_data[ticket_rsvp_stock] :: ' . print_r( $raw_data['ticket_rsvp_stock'], TRUE ) );
 		if ( trim( $raw_data['ticket_rsvp_stock'] ) !== '' ) {
 			$stock = (int) $raw_data['ticket_rsvp_stock'];
 			update_post_meta( $ticket->ID, '_stock', $stock );
