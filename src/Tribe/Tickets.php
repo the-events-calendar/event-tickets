@@ -332,6 +332,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$this->ajax_ok( $return );
 		}
 
+		/**
+		 * Creates a ticket object and calls the child save_ticket function
+		 *
+		 * @param int $post_id WP_Post ID the ticket is being attached to
+		 * @param array $data Raw post data
+		 *
+		 * @return boolean
+		 */
 		final public function ticket_add( $post_id, $data ) {
 			$ticket = new Tribe__Tickets__Ticket_Object();
 
