@@ -1,6 +1,10 @@
 <?php
 
 class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
+	/**
+	 * When a ticket has a stock value, make sure the object returns expected value druing the life of
+	 * the in-stock values
+	 */
 	public function test_ticket_with_stock() {
 		$start = strtotime( date( 'Y-m-d H:00:00' ) );
 		$end = strtotime( date( 'Y-m-d H:00:00', strtotime( '+5 days' ) ) );
@@ -60,6 +64,10 @@ class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
 		$this->assertTrue( $ticket->is_in_stock(), 'RSVP ticket that is not managing stock should be report that it is in stock' );
 	}
 
+	/**
+	 * When a ticket does not have a stock value, make sure the object returns expected value druing the life of
+	 * the in-stock values
+	 */
 	public function test_ticket_without_stock() {
 		$start = strtotime( date( 'Y-m-d H:00:00' ) );
 		$end = strtotime( date( 'Y-m-d H:00:00', strtotime( '+5 days' ) ) );
