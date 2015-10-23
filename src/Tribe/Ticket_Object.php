@@ -197,7 +197,21 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function original_stock() {
-			return $this->stock() + $this->qty_sold() + $this->qty_pending();
+			if ( ! $this->managing_stock() ) {
+				return '';
+			}
+
+			$stock = $this->stock();
+
+			// if the stock is less than 0, that means we've sold more than what we want in stock. If stock
+			// holds a value greater than 0, then we want the original stock to be greater than the number
+			// sold by the new stock amount. We do that with some simple math to offset the negative stock
+			// with the quantity sold
+			if ( 0 > $stock ) {
+				$stock += $this->qty_sold();
+			}
+
+			return $stock + $this->qty_sold() + $this->qty_pending();
 		}
 
 		/**
@@ -213,9 +227,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$this->stock = $value;
 			}
 
-			// Prevents stock from going negative
-			$this->stock = max( (int) $this->stock, 0 );
-
 			// return the new Stock
 			return $this->stock;
 		}
@@ -223,7 +234,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Method to manage the protected `qty_sold` propriety of the Object
 		 * Prevents setting `qty_sold` lower then zero
-		 * Prevents setting `qty_sold`+`qty_pending` been bigger then stock
 		 *
 		 * @param int|null $value This will overwrite the old value
 		 * @return int
@@ -237,14 +247,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Prevents qty_sold from going negative
 			$this->qty_sold = max( (int) $this->qty_sold, 0 );
 
-			// Total qty
-			$total = $this->qty_sold + $this->qty_pending;
-
-			// Prevents total from going above stock
-			if ( $total > $this->stock() ) {
-				$this->qty_sold = $this->stock() - $this->qty_pending;
-			}
-
 			// return the new Qty Sold
 			return $this->qty_sold;
 		}
@@ -252,7 +254,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Method to manage the protected `qty_pending` propriety of the Object
 		 * Prevents setting `qty_pending` lower then zero
-		 * Prevents setting `qty_pending`+`qty_sold` been bigger then stock
 		 *
 		 * @param int|null $value This will overwrite the old value
 		 * @return int
@@ -265,14 +266,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// Prevents qty_pending from going negative
 			$this->qty_pending = max( (int) $this->qty_pending, 0 );
-
-			// Total qty
-			$total = $this->qty_pending + $this->qty_sold;
-
-			// Prevents total from going above stock
-			if ( $total > $this->stock() ) {
-				$this->qty_pending = $this->stock() - $this->qty_sold;
-			}
 
 			// return the new Qty Pending
 			return $this->qty_pending;

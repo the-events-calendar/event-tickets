@@ -311,6 +311,36 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
+			$return = $this->ticket_add( $post_id, $data );
+
+			// Successful?
+			if ( $return ) {
+				// Let's create a tickets list markup to return
+				$tickets = $this->get_event_tickets( $post_id );
+				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+
+				$return = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) ) . $return;
+
+				/**
+				 * Fire action when a ticket has been added
+				 *
+				 * @param $post_id
+				 */
+				do_action( 'tribe_tickets_ticket_added', $post_id );
+			}
+
+			$this->ajax_ok( $return );
+		}
+
+		/**
+		 * Creates a ticket object and calls the child save_ticket function
+		 *
+		 * @param int $post_id WP_Post ID the ticket is being attached to
+		 * @param array $data Raw post data
+		 *
+		 * @return boolean
+		 */
+		final public function ticket_add( $post_id, $data ) {
 			$ticket = new Tribe__Tickets__Ticket_Object();
 
 			$ticket->ID          = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
@@ -336,25 +366,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->provider_class = $this->className;
 
 			// Pass the control to the child object
-			$return = $this->save_ticket( $post_id, $ticket, $data );
-
-			// Successful?
-			if ( $return ) {
-				// Let's create a tickets list markup to return
-				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
-
-				$return = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) ) . $return;
-
-				/**
-				 * Fire action when a ticket has been added
-				 *
-				 * @param $post_id
-				 */
-				do_action( 'tribe_tickets_ticket_added', $post_id );
-			}
-
-			$this->ajax_ok( $return );
+			return $this->save_ticket( $post_id, $ticket, $data );
 		}
 
 
