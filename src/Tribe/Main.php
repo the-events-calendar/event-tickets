@@ -17,6 +17,30 @@ class Tribe__Tickets__Main {
 	const REQUIRED_TEC_VERSION = '3.9.2';
 
 	/**
+	 * Name of the provider
+	 * @var
+	 */
+	public $plugin_name;
+
+	/**
+	 * Directory of the plugin
+	 * @var
+	 */
+	public $plugin_dir;
+
+	/**
+	 * Path of the plugin
+	 * @var
+	 */
+	public $plugin_path;
+
+	/**
+	 * URL of the plugin
+	 * @var
+	 */
+	public $plugin_url;
+
+	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
 	 * @static

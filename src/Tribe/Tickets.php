@@ -713,7 +713,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function generate_tickets_email_content( $tickets ) {
 			ob_start();
-			include $this->getTemplateHierarchy( 'tickets/email.php' );
+			$file = $this->getTemplateHierarchy( 'tickets/email.php' );
+
+			if ( ! file_exists( $file ) ) {
+				include Tribe__Tickets__Main::instance()->plugin_path . 'src/views/tickets/email.php';
+			}
 
 			return ob_get_clean();
 		}
