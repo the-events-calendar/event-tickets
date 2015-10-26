@@ -250,7 +250,26 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( '#ticket_id' ).val( response.data.ID );
 						$( '#ticket_name' ).val( response.data.name );
 						$( '#ticket_description' ).val( response.data.description );
-						$( '#ticket_price' ).val( regularPrice );
+
+						var $ticket_price = $( document.getElementById( 'ticket_price' ) );
+						$ticket_price.val( regularPrice );
+
+						if ( 'undefined' !== typeof response.data.disallow_update_price_message ) {
+							$ticket_price.siblings( '.no-update-message' ).html( response.data.disallow_update_price_message );
+						} else {
+							$ticket_price.siblings( '.no-update-message' ).html( '' );
+						}
+
+						if ( 'undefined' !== typeof response.data.can_update_price && ! response.data.can_update_price ) {
+							$ticket_price.prop( 'disabled', 'disabled' );
+							$ticket_price.siblings( '.description' ).hide();
+							$ticket_price.siblings( '.no-update-message' ).show();
+						} else {
+							$ticket_price.removeProp( 'disabled' );
+							$ticket_price.siblings( '.description' ).show();
+							$ticket_price.siblings( '.no-update-message' ).hide();
+						}
+
 						$( '#ticket_sale_price' ).val( salePrice );
 
 						if ( onSale ) {
@@ -381,7 +400,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$( '.ticket_start_time' ).hide();
 			$( '.ticket_end_time' ).hide();
-			$( '.ticket_advanced.sale_price' ).hide();
+			$( '.ticket.sale_price' ).hide();
+
+			var $ticket_price = $( document.getElementById( 'ticket_price' ) );
+			var $no_update_message = $ticket_price.siblings( '.no-update-message' );
+
+			$no_update_message.html( '' ).hide();
+			$ticket_price.removeProp( 'disabled' );
+			$ticket_price.siblings( '.description' ).show();
 
 			$( '#ticket_form textarea' ).val( '' );
 

@@ -100,12 +100,36 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 
 						<?php
 
+						$total_sold = 0;
+						$total_pending = 0;
+
 						foreach ( $tickets as $ticket ) {
 							?>
 							<strong><?php echo esc_html( $ticket->name ) ?>: </strong>
 							<?php echo tribe_tickets_get_ticket_stock_message( $ticket ); ?>
 							<br/>
 							<?php
+							$stock = $ticket->stock();
+							$sold = ! empty ( $ticket->qty_sold() ) ? $ticket->qty_sold() : 0;
+
+							$pending = '';
+
+							if ( $ticket->qty_pending() > 0 ) {
+								$pending = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'the-events-calendar', $ticket->qty_pending() ), (int) $ticket->qty_pending() );
+							}
+
+							if ( empty( $stock ) && $stock !== 0 ) {
+								echo sprintf( __( 'Sold %1$d %2$s', 'the-events-calendar' ), esc_html( $sold ), $pending );
+							}
+							else {
+								echo sprintf( __( 'Sold %1$d of %2$d %3$s', 'the-events-calendar' ), esc_html( $sold ), esc_html( $sold + $stock ), $pending );
+							}
+
+							echo '<br />';
+
+							$total_sold += $sold;
+							$total_pending += $ticket->qty_pending();
+							$total_completed = $total_sold - $total_pending;
 						}//end foreach
 
 						do_action( 'tribe_events_tickets_attendees_ticket_sales_bottom', $event_id );
@@ -156,7 +180,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 	</div>
 
 	<form id="topics-filter" method="post">
-		<input type="hidden" name="page" value="<?php echo esc_attr( $_GET['page'] ); ?>" />
+		<input type="hidden" name="page" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="event_id" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
 		<input type="hidden" name="post_type" value="<?php echo esc_attr( $event->post_type ); ?>" />
 		<?php $this->attendees_table->display() ?>

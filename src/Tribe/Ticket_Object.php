@@ -111,6 +111,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $end_date;
 
 		/**
+		 * Purchase limite for the ticket
+		 * @var
+		 */
+		public $purchase_limit;
+
+		/**
 		 * Returns whether or not the ticket is managing stock
 		 *
 		 * @return boolean
