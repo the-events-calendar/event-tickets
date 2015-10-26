@@ -107,11 +107,11 @@ $event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
 								<div id="sales_breakdown_wrapper" class="tribe-event-meta-note">
 									<div>
 										<?php esc_html_e( 'Completed:', 'the-events-calendar' ); ?>
-										<span id="total_issued"><?php echo $total_completed ?></span>
+										<span id="total_issued"><?php echo esc_html( $total_completed ); ?></span>
 									</div>
 									<div>
 										<?php esc_html_e( 'Awaiting review:', 'the-events-calendar' ); ?>
-										<span id="total_pending"><?php echo $total_pending ?></span>
+										<span id="total_pending"><?php echo esc_html( $total_pending ); ?></span>
 									</div>
 								</div>
 							<?php endif ?>
@@ -216,8 +216,6 @@ $event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
 		<input type="hidden" name="page" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="event_id" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
 		<input type="hidden" name="post_type" value="<?php echo esc_attr( Tribe__Events__Main::POSTTYPE ); ?>" />
-		<?php
-		echo $table;
-		?>
+		<?php echo $table; ?>
 	</form>
 </div>

@@ -39,10 +39,10 @@
 
 		if ( is_admin() ) {
 			if ( $ticket->admin_link ) {
-				$controls[] = sprintf( "<span><a href='%s'>" . __( 'Edit in %s', 'event-tickets' ) . '</a></span>', esc_url( $ticket->admin_link ), $modules[$ticket->provider_class] );
+				$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'Edit in %s', 'event-tickets' ) . '</a></span>', esc_url( $ticket->admin_link ), $modules[ $ticket->provider_class ] );
 			}
 			if ( $ticket->frontend_link && 'publish' === get_post_status( $post_id ) ) {
-				$controls[] = sprintf( "<span><a href='%s'>" . __( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
+				$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
 		}
 
 		$report = $provider_obj->get_ticket_reports_link( $post_id, $ticket->ID );
@@ -56,7 +56,7 @@
 			<td colspan="4" class="titlewrap">
 				<h4 class="tribe_sectionheader">
 					<?php
-					echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $modules[$ticket->provider_class], $ticket->provider_class ) );
+					echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $modules[ $ticket->provider_class ], $ticket->provider_class ) );
 					echo $provider_obj->get_event_reports_link( $post_id );
 					?>
 					<small>&nbsp;|&nbsp;</small>

@@ -55,7 +55,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							echo tribe_get_end_date( $event_id, false, tribe_get_datetime_format( true ) );
 						endif;
 
-						if ( function_exists('tribe_has_venue') && tribe_has_venue( $event_id ) ) {
+						if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							?>
 
 							<div class="venue-name">
@@ -115,14 +115,14 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							$pending = '';
 
 							if ( $ticket->qty_pending() > 0 ) {
-								$pending = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'the-events-calendar', $ticket->qty_pending() ), (int) $ticket->qty_pending() );
+								$pending = esc_html( sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'event-tickets', $ticket->qty_pending() ), (int) $ticket->qty_pending() ) );
 							}
 
 							if ( empty( $stock ) && $stock !== 0 ) {
-								echo sprintf( __( 'Sold %1$d %2$s', 'the-events-calendar' ), esc_html( $sold ), $pending );
+								echo sprintf( esc_html__( 'Sold %1$d %2$s', 'event-tickets' ), esc_html( $sold ), $pending );
 							}
 							else {
-								echo sprintf( __( 'Sold %1$d of %2$d %3$s', 'the-events-calendar' ), esc_html( $sold ), esc_html( $sold + $stock ), $pending );
+								echo sprintf( esc_html__( 'Sold %1$d of %2$d %3$s', 'event-tickets' ), esc_html( $sold ), esc_html( $sold + $stock ), $pending );
 							}
 
 							echo '<br />';
