@@ -210,7 +210,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$this->orders_page = add_submenu_page(
 			null, 'Order list', 'Order list', 'edit_posts', self::$orders_slug, array(
 				$this,
-				'orders_page_inside'
+				'orders_page_inside',
 			)
 		);
 
@@ -275,7 +275,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public function orders_admin_title( $admin_title, $title ) {
 		if ( ! empty( $_GET['event_id'] ) ) {
 			$event       = get_post( $_GET['event_id'] );
-			$admin_title = sprintf( "%s - Order list", $event->post_title );
+			$admin_title = sprintf( esc_html__( '%s - Order list', 'event-tickets' ), $event->post_title );
 		}
 
 		return $admin_title;
