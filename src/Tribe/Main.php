@@ -101,7 +101,17 @@ class Tribe__Tickets__Main {
 	 * TEC that is too old
 	 */
 	public function tec_compatibility_notice() {
-		$plugin_short_path = basename( dirname( dirname( __FILE__ ) ) ) . '/the-events-calendar.php';
+		$active_plugins = get_option( 'active_plugins' );
+
+		$plugin_short_path = null;
+
+		foreach ( $active_plugins as $plugin ) {
+			if ( false !== strstr( $plugin, 'the-events-calendar.php' ) ) {
+				$plugin_short_path = $plugin;
+				break;
+			}
+		}
+
 		$upgrade_path      = wp_nonce_url(
 			add_query_arg(
 				array(
