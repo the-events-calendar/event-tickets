@@ -270,5 +270,49 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// return the new Qty Pending
 			return $this->qty_pending;
 		}
+
+		/**
+		 * Magic getter to handle fetching protected properties
+		 *
+		 * @deprecated 4.0
+		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 */
+		public function __get( $var ) {
+			switch ( $var ) {
+				case 'stock':
+					return $this->stock();
+					break;
+				case 'qty_pending':
+					return $this->qty_pending();
+					break;
+				case 'qty_sold':
+					return $this->qty_sold();
+					break;
+			}
+
+			return null;
+		}
+
+		/**
+		 * Magic setter to handle setting protected properties
+		 *
+		 * @deprecated 4.0
+		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 */
+		public function __set( $var, $value ) {
+			switch ( $var ) {
+				case 'stock':
+					return $this->stock( $value );
+					break;
+				case 'qty_pending':
+					return $this->qty_pending( $value );
+					break;
+				case 'qty_sold':
+					return $this->qty_sold( $value );
+					break;
+			}
+
+			return null;
+		}
 	}
 }
