@@ -34,7 +34,7 @@
 			$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'Edit in %s', 'event-tickets' ) . '</a></span>', esc_url( $ticket->admin_link ), $modules[ $ticket->provider_class ] );
 		}
 		if ( $ticket->frontend_link && get_post_status( $post_id ) == 'publish' ) {
-			$controls[] = sprintf( "<span><a href='%s'>" . __( 'View', 'the-events-calendar' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
+			$controls[] = sprintf( "<span><a href='%s'>" . __( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
 		}
 
 		if ( is_admin() ) {
@@ -73,7 +73,7 @@
 					echo sprintf(
 						"<small><a title='" . esc_attr__( 'See who purchased tickets to this event', 'event-tickets' ) . "' href='%s'>%s</a></small>",
 						esc_url( apply_filters( 'tribe_events_tickets_attendees_url', $attendees_url, $post_id ) ),
-						esc_html__( 'Attendees', 'the-events-calendar' )
+						esc_html__( 'Attendees', 'event-tickets' )
 					);
 					?>
 				</h4>
