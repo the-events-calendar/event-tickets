@@ -82,8 +82,8 @@ class Tribe__Tickets__Main {
 	 */
 	public function plugins_loaded() {
 		if (
-			class_exists( 'Tribe__Events__Main' ) && ! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' )
-			|| class_exists( 'TribeEvents', false )
+			class_exists( 'TribeEvents', false )
+			|| ( class_exists( 'Tribe__Events__Main' ) && ! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' ) )
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
 			return;
