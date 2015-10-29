@@ -99,6 +99,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		protected $qty_pending = 0;
 
 		/**
+		 * Holds whether or not stock is being managed
+		 *
+		 * @var boolean
+		 */
+		protected $manage_stock = false;
+
+		/**
 		 * When the ticket should be put on sale
 		 * @var
 		 */
@@ -113,10 +120,32 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Returns whether or not the ticket is managing stock
 		 *
+		 * @param boolean $manages_stock Boolean to set stock management state
 		 * @return boolean
 		 */
-		public function managing_stock() {
-			return 'no' !== get_post_meta( $this->ID, '_manage_stock', true );
+		public function manage_stock( $manages_stock = null ) {
+
+			if ( null !== $manages_stock ) {
+
+				// let's catch a truthy string and consider it false
+				if ( 'no' === $manages_stock ) {
+					$manages_stock = false;
+				}
+
+				$this->manage_stock = (bool) $manages_stock;
+			}
+
+			return $this->manage_stock;
+		}
+
+		/**
+		 * Returns whether or not the ticket is managing stock. Alias method with a friendlier name for fetching state.
+		 *
+		 * @param boolean $manages_stock Boolean to set stock management state
+		 * @return boolean
+		 */
+		public function managing_stock( $manages_stock = null ) {
+			return $this->manage_stock( $manages_stock );
 		}
 
 		/**
