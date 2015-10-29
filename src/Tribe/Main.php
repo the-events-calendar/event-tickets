@@ -40,6 +40,11 @@ class Tribe__Tickets__Main {
 	 */
 	public $plugin_url;
 
+	/**
+	 * @var Tribe__Tickets__Legacy_Provider_Support
+	 */
+	public $legacy_provider_support;
+
 	private $has_initialized = false;
 
 	/**
@@ -221,6 +226,9 @@ class Tribe__Tickets__Main {
 	public function init() {
 		// set up the RSVP object
 		$this->rsvp();
+
+		// Provide continued support for legacy ticketing modules
+		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 
 		$this->settings_tab();
 	}
