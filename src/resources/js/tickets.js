@@ -250,8 +250,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( '#ticket_id' ).val( response.data.ID );
 						$( '#ticket_name' ).val( response.data.name );
 						$( '#ticket_description' ).val( response.data.description );
-						$( '#ticket_price' ).val( regularPrice );
-						$( '#ticket_sale_price' ).val( salePrice );
 
 						if ( onSale ) {
 							$( '.ticket_advanced_' + response.data.provider_class + '.sale_price' ).show();
@@ -328,6 +326,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
+
+						// set the prices after the advanced fields have been added to the form
+						$( '#ticket_price' ).val( regularPrice );
+						$( '#ticket_sale_price' ).val( salePrice );
 
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 
