@@ -126,7 +126,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function manage_stock( $manages_stock = null ) {
 
 			if ( null !== $manages_stock ) {
-				$this->manage_stock = $manages_stock;
+
+				// let's catch a truthy string and consider it false
+				if ( 'no' === $manages_stock ) {
+					$manages_stock = false;
+				}
+
+				$this->manage_stock = (bool) $manages_stock;
 			}
 
 			return $this->manage_stock;
