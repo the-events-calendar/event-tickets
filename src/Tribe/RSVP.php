@@ -90,7 +90,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
 	 * @static
-	 * @return Tribe__Tickets__Woo__Main
+	 * @return Tribe__Tickets__RSVP
 	 */
 	public static function get_instance() {
 		if ( ! is_a( self::$instance, __CLASS__ ) ) {
