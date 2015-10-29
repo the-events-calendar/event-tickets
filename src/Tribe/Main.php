@@ -40,6 +40,8 @@ class Tribe__Tickets__Main {
 	 */
 	public $plugin_url;
 
+	private $has_initialized = false;
+
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
@@ -81,6 +83,12 @@ class Tribe__Tickets__Main {
 	 * Finalize the initialization of this plugin
 	 */
 	public function plugins_loaded() {
+		// It's possible we'll have initialized already (if the plugin has been embedded as a vendor lib
+		// within another plugin, for example) in which case we need not repeat the process
+		if ( $this->has_initialized ) {
+			return;
+		}
+
 		if (
 			class_exists( 'TribeEvents', false )
 			|| ( class_exists( 'Tribe__Events__Main' ) && ! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' ) )
@@ -97,6 +105,7 @@ class Tribe__Tickets__Main {
 		load_plugin_textdomain( 'event-tickets', false, $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
+		$this->has_initialized = true;
 	}
 
 	/**
