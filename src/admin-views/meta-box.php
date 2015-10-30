@@ -113,7 +113,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 							for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
 					</td>
 					<td>
-						<input autocomplete="off" type="text" class="ticket_field" size='7' name="ticket_start_date"
+						<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date"
 							   id="ticket_start_date" value="">
 						<span class="ticket_start_time ticket_time">
 							<?php echo tribe_get_datetime_separator(); ?>
@@ -137,7 +137,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 							for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
 					</td>
 					<td valign="top">
-						<input autocomplete="off" type="text" class="ticket_field" size='7' name="ticket_end_date"
+						<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date"
 							   id="ticket_end_date" value="">
 
 						<span class="ticket_end_time ticket_time">
