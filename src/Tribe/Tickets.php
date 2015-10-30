@@ -716,8 +716,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$file = $this->getTemplateHierarchy( 'tickets/email.php' );
 
 			if ( ! file_exists( $file ) ) {
-				include Tribe__Tickets__Main::instance()->plugin_path . 'src/views/tickets/email.php';
+				$file = Tribe__Tickets__Main::instance()->plugin_path . 'src/views/tickets/email.php';
 			}
+
+			include $file;
 
 			return ob_get_clean();
 		}
