@@ -490,6 +490,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$return = get_object_vars( $this->get_ticket( $post_id, $ticket_id ) );
 
+			// Prevent HTML elements from been escaped
+			$return['name'] = html_entity_decode( $return['name'], ENT_QUOTES );
+			$return['name'] = htmlspecialchars_decode( $return['name'] );
+			$return['description'] = html_entity_decode( $return['description'], ENT_QUOTES );
+			$return['description'] = htmlspecialchars_decode( $return['description'] );
+
 			ob_start();
 			$this->do_metabox_advanced_options( $post_id, $ticket_id );
 			$extra = ob_get_contents();
