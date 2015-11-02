@@ -90,7 +90,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
 	 * @static
-	 * @return Tribe__Tickets__Woo__Main
+	 * @return Tribe__Tickets__RSVP
 	 */
 	public static function get_instance() {
 		if ( ! is_a( self::$instance, __CLASS__ ) ) {
@@ -352,7 +352,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $query->posts as $post ) {
 			$attendees[] = array(
-				'event_id'      => get_post_meta( $post->ID, $this->attendee_product_key, true ),
+				'event_id'      => get_post_meta( $post->ID, $this->attendee_event_key, true ),
 				'ticket_name'   => get_post( get_post_meta( $post->ID, $this->attendee_product_key, true ) )->post_title,
 				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
