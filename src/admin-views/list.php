@@ -55,7 +55,7 @@
 					$attendees_url = add_query_arg(
 						array(
 							'post_type' => Tribe__Events__Main::POSTTYPE,
-							'page' => Tribe__Events__Tickets__Tickets_Pro::$attendees_slug,
+							'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
 							'event_id' => $post_id,
 						),
 						admin_url( 'edit.php' )
