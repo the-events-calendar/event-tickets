@@ -47,7 +47,7 @@
 			<td colspan="4" class="titlewrap">
 				<h4 class="tribe_sectionheader">
 					<?php
-					echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $modules[$ticket->provider_class], $ticket->provider_class ) );
+					echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $modules[ $ticket->provider_class ], $ticket->provider_class ) );
 					echo $provider_obj->get_event_reports_link( $post_id );
 					?>
 					<small>&nbsp;|&nbsp;</small>
