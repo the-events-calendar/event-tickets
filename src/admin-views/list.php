@@ -45,10 +45,28 @@
 		if ( ( $ticket->provider_class !== $provider ) || $count == 0 ) :
 			?>
 			<td colspan="4" class="titlewrap">
-				<h4 class="tribe_sectionheader"><?php echo esc_html( $modules[ $ticket->provider_class ] ); ?>
-					<?php echo $provider_obj->get_event_reports_link( $post_id ); ?>
+				<h4 class="tribe_sectionheader">
+					<?php
+					echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $modules[$ticket->provider_class], $ticket->provider_class ) );
+					echo $provider_obj->get_event_reports_link( $post_id );
+					?>
 					<small>&nbsp;|&nbsp;</small>
-					<?php printf( '<small><a title="' . esc_attr__( 'See who purchased tickets to this event', 'event-tickets' ) . '" href="%s">%s</a></small>', esc_url( admin_url( sprintf( 'edit.php?post_type=%s&page=%s&event_id=%d', $post_type, Tribe__Tickets__Tickets_Handler::$attendees_slug, $post_id ) ) ), esc_html__( 'Attendees', 'event-tickets' ) ); ?>
+					<?php
+					$attendees_url = add_query_arg(
+						array(
+							'post_type' => Tribe__Events__Main::POSTTYPE,
+							'page' => Tribe__Events__Tickets__Tickets_Pro::$attendees_slug,
+							'event_id' => $post_id,
+						),
+						admin_url( 'edit.php' )
+					);
+
+					echo sprintf(
+						"<small><a title='" . esc_attr__( 'See who purchased tickets to this event', 'event-tickets' ) . "' href='%s'>%s</a></small>",
+						esc_url( apply_filters( 'tribe_events_tickets_attendees_url', $attendees_url, $post_id ) ),
+						esc_html__( 'Attendees', 'event-tickets' )
+					);
+					?>
 				</h4>
 			</td>
 		<?php endif; ?>
