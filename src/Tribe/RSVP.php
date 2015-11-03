@@ -545,7 +545,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( $rsvp_error ) {
 			switch ( $rsvp_error ) {
 				case 2:
-					$this->add_message( __( 'You can\'t  RSVP more then the total remaining tickets.', 'event-tickets' ), 'error' );
+					$this->add_message( __( 'You can\'t RSVP more than the total remaining tickets.', 'event-tickets' ), 'error' );
 					break;
 
 				case 1:
