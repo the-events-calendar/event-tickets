@@ -251,27 +251,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( '#ticket_name' ).val( response.data.name );
 						$( '#ticket_description' ).val( response.data.description );
 
-						var $ticket_price = $( document.getElementById( 'ticket_price' ) );
-						$ticket_price.val( regularPrice );
-
-						if ( 'undefined' !== typeof response.data.disallow_update_price_message ) {
-							$ticket_price.siblings( '.no-update-message' ).html( response.data.disallow_update_price_message );
-						} else {
-							$ticket_price.siblings( '.no-update-message' ).html( '' );
-						}
-
-						if ( 'undefined' !== typeof response.data.can_update_price && ! response.data.can_update_price ) {
-							$ticket_price.prop( 'disabled', 'disabled' );
-							$ticket_price.siblings( '.description' ).hide();
-							$ticket_price.siblings( '.no-update-message' ).show();
-						} else {
-							$ticket_price.removeProp( 'disabled' );
-							$ticket_price.siblings( '.description' ).show();
-							$ticket_price.siblings( '.no-update-message' ).hide();
-						}
-
-						$( '#ticket_sale_price' ).val( salePrice );
-
 						if ( onSale ) {
 							$( '.ticket_advanced_' + response.data.provider_class + '.sale_price' ).show();
 						}
@@ -347,6 +326,28 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
+
+						// set the prices after the advanced fields have been added to the form
+						var $ticket_price = $( document.getElementById( 'ticket_price' ) );
+						$ticket_price.val( regularPrice );
+
+						if ( 'undefined' !== typeof response.data.disallow_update_price_message ) {
+							$ticket_price.siblings( '.no-update-message' ).html( response.data.disallow_update_price_message );
+						} else {
+							$ticket_price.siblings( '.no-update-message' ).html( '' );
+						}
+
+						if ( 'undefined' !== typeof response.data.can_update_price && ! response.data.can_update_price ) {
+							$ticket_price.prop( 'disabled', 'disabled' );
+							$ticket_price.siblings( '.description' ).hide();
+							$ticket_price.siblings( '.no-update-message' ).show();
+						} else {
+							$ticket_price.removeProp( 'disabled' );
+							$ticket_price.siblings( '.description' ).show();
+							$ticket_price.siblings( '.no-update-message' ).hide();
+						}
+
+						$( '#ticket_sale_price' ).val( salePrice );
 
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 

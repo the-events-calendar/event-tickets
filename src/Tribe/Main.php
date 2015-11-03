@@ -9,12 +9,12 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '3.9.3';
+	const VERSION = '4.0';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const REQUIRED_TEC_VERSION = '3.9.2';
+	const MIN_TEC_VERSION = '3.12.4';
 
 	/**
 	 * Name of the provider
@@ -39,6 +39,8 @@ class Tribe__Tickets__Main {
 	 * @var
 	 */
 	public $plugin_url;
+
+	private $has_initialized = false;
 
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
@@ -74,6 +76,27 @@ class Tribe__Tickets__Main {
 
 		$this->maybe_set_common_lib_info();
 
+		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
+	}
+
+	/**
+	 * Finalize the initialization of this plugin
+	 */
+	public function plugins_loaded() {
+		// It's possible we'll have initialized already (if the plugin has been embedded as a vendor lib
+		// within another plugin, for example) in which case we need not repeat the process
+		if ( $this->has_initialized ) {
+			return;
+		}
+
+		if (
+			class_exists( 'TribeEvents', false )
+			|| ( class_exists( 'Tribe__Events__Main' ) && ! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' ) )
+		) {
+			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
+			return;
+		}
+
 		$this->init_autoloading();
 
 		// initialize the common libraries
@@ -82,6 +105,38 @@ class Tribe__Tickets__Main {
 		load_plugin_textdomain( 'event-tickets', false, $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
+		$this->has_initialized = true;
+	}
+
+	/**
+	 * Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
+	 * TEC that is too old
+	 */
+	public function tec_compatibility_notice() {
+		$active_plugins = get_option( 'active_plugins' );
+
+		$plugin_short_path = null;
+
+		foreach ( $active_plugins as $plugin ) {
+			if ( false !== strstr( $plugin, 'the-events-calendar.php' ) ) {
+				$plugin_short_path = $plugin;
+				break;
+			}
+		}
+
+		$upgrade_path      = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action' => 'upgrade-plugin',
+					'plugin' => $plugin_short_path,
+				), get_admin_url() . 'update.php'
+			), 'upgrade-plugin_' . $plugin_short_path
+		);
+		$output = '<div class="error">';
+		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), self::MIN_TEC_VERSION, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
+		$output .= '</div>';
+
+		echo $output;
 	}
 
 	public function maybe_set_common_lib_info() {

@@ -99,6 +99,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		protected $qty_pending = 0;
 
 		/**
+		 * Holds whether or not stock is being managed
+		 *
+		 * @var boolean
+		 */
+		protected $manage_stock = false;
+
+		/**
 		 * When the ticket should be put on sale
 		 * @var
 		 */
@@ -119,10 +126,32 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Returns whether or not the ticket is managing stock
 		 *
+		 * @param boolean $manages_stock Boolean to set stock management state
 		 * @return boolean
 		 */
-		public function managing_stock() {
-			return 'no' !== get_post_meta( $this->ID, '_manage_stock', true );
+		public function manage_stock( $manages_stock = null ) {
+
+			if ( null !== $manages_stock ) {
+
+				// let's catch a truthy string and consider it false
+				if ( 'no' === $manages_stock ) {
+					$manages_stock = false;
+				}
+
+				$this->manage_stock = (bool) $manages_stock;
+			}
+
+			return $this->manage_stock;
+		}
+
+		/**
+		 * Returns whether or not the ticket is managing stock. Alias method with a friendlier name for fetching state.
+		 *
+		 * @param boolean $manages_stock Boolean to set stock management state
+		 * @return boolean
+		 */
+		public function managing_stock( $manages_stock = null ) {
+			return $this->manage_stock( $manages_stock );
 		}
 
 		/**
@@ -275,6 +304,50 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// return the new Qty Pending
 			return $this->qty_pending;
+		}
+
+		/**
+		 * Magic getter to handle fetching protected properties
+		 *
+		 * @deprecated 4.0
+		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 */
+		public function __get( $var ) {
+			switch ( $var ) {
+				case 'stock':
+					return $this->stock();
+					break;
+				case 'qty_pending':
+					return $this->qty_pending();
+					break;
+				case 'qty_sold':
+					return $this->qty_sold();
+					break;
+			}
+
+			return null;
+		}
+
+		/**
+		 * Magic setter to handle setting protected properties
+		 *
+		 * @deprecated 4.0
+		 * @todo Remove when event-tickets-* plugins are fully de-supported
+		 */
+		public function __set( $var, $value ) {
+			switch ( $var ) {
+				case 'stock':
+					return $this->stock( $value );
+					break;
+				case 'qty_pending':
+					return $this->qty_pending( $value );
+					break;
+				case 'qty_sold':
+					return $this->qty_sold( $value );
+					break;
+			}
+
+			return null;
 		}
 	}
 }
