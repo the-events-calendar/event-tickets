@@ -167,12 +167,8 @@ $modules = Tribe__Tickets__Tickets::modules();
 					<td></td>
 					<td>
 						<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" value="" />
-
-						<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_html_e( 'Save this ticket', 'event-tickets' ); ?>"
-							   class="button-primary" />
-
-						<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="Cancel"
-							   class="button-secondary" />
+						<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
+						<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
 					</td>
 				</tr>
 			</table>
