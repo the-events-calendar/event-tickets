@@ -29,6 +29,12 @@ class Tribe__Tickets__Legacy_Provider_Support {
 		add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'add_fields_ajax' ) );
 	}
 
+	/**
+	 * Scan for the presence of any "old school" ticketing providers.
+	 *
+	 * For each (if any) that is discovered, the main class name of that plugin is
+	 * added to the $this->active_legacy_modules array.
+	 */
 	protected function find_active_legacy_modules() {
 		$legacy_classes = array(
 			'Tribe__Events__Tickets__Woo__Main',
