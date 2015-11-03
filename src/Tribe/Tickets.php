@@ -503,6 +503,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$return['advanced_fields'] = $extra;
 
+			/**
+			 * Provides an opportunity for final adjustments to the data used to populate
+			 * the edit-ticket form.
+			 *
+			 * @var array $return data returned to the client
+			 * @var Tribe__Events__Tickets $ticket_object
+			 */
+			$return = (array) apply_filters( 'tribe_events_tickets_ajax_ticket_edit', $return, $this );
+
 			$this->ajax_ok( $return );
 		}
 
