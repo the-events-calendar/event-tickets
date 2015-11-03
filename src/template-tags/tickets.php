@@ -216,3 +216,55 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		return $message;
 	}
 }//end if
+
+/**
+ * Returns or echoes a url to a file in the Event Tickets plugin resources directory
+ *
+ * @category Tickets
+ * @param string $resource the filename of the resource
+ * @param bool   $echo     whether or not to echo the url
+ * @param string $root_dir directory to hunt for resource files (src or common)
+ *
+ * @return string
+ **/
+function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src' ) {
+	$extension = pathinfo( $resource, PATHINFO_EXTENSION );
+
+	if ( 'src' !== $root_dir ) {
+		return tribe_resource_url( $resource, $echo, $root_dir );
+	}
+
+	$resources_path = $root_dir . '/resources/';
+	switch ( $extension ) {
+		case 'css':
+			$resource_path = $resources_path .'css/';
+			break;
+		case 'js':
+			$resource_path = $resources_path .'js/';
+			break;
+		case 'scss':
+			$resource_path = $resources_path .'scss/';
+			break;
+		default:
+			$resource_path = $resources_path;
+			break;
+	}
+
+	$path = $resource_path . $resource;
+
+	$url  = plugins_url( Tribe__Tickets__Main::instance()->plugin_dir . $path );
+
+	/**
+	 * Filter the ticket resource URL
+	 *
+	 * @var $url Resource URL
+	 * @var $resource The filename of the resource
+	 */
+	$url = apply_filters( 'tribe_tickets_resource_url', $url, $resource );
+
+	if ( $echo ) {
+		echo esc_url( $url );
+	}
+
+	return $url;
+}

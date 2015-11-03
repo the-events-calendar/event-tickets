@@ -110,9 +110,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ) );
-		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ), 'print' );
-		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), apply_filters( 'tribe_events_js_version', Tribe__Tickets__Main::VERSION ) );
+		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
+		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
 
 		$mail_data = array(
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
@@ -193,7 +193,6 @@ class Tribe__Tickets__Tickets_Handler {
 	public function attendees_page_inside() {
 		include $this->path . 'src/admin-views/attendees.php';
 	}
-
 
 	/**
 	 * Generates a list of attendees taking into account the Screen Options.

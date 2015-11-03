@@ -76,7 +76,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Use $this->stock( value ) to set manage and get the value
 		 *
 		 * @var mixed
-		 * @access protected
 		 */
 		protected $stock = 0;
 
@@ -85,7 +84,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Use $this->qty_sold( value ) to set manage and get the value
 		 *
 		 * @var int
-		 * @access protected
 		 */
 		protected $qty_sold = 0;
 
@@ -94,7 +92,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Use $this->qty_pending( value ) to set manage and get the value
 		 *
 		 * @var int
-		 * @access protected
 		 */
 		protected $qty_pending = 0;
 
@@ -116,6 +113,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @var
 		 */
 		public $end_date;
+
+		/**
+		 * Purchase limite for the ticket
+		 * @var
+		 */
+		public $purchase_limit;
 
 		/**
 		 * Returns whether or not the ticket is managing stock

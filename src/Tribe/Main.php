@@ -247,6 +247,36 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * Provides the CSS version number for CSS files
+	 *
+	 * @return string
+	 */
+	public function css_version() {
+		static $version;
+
+		if ( ! $version ) {
+			$version = apply_filters( 'tribe_tickets_css_version', self::VERSION );
+		}
+
+		return $version;
+	}
+
+	/**
+	 * Provides the JS version number for JS scripts
+	 *
+	 * @return string
+	 */
+	public function js_version() {
+		static $version;
+
+		if ( ! $version ) {
+			$version = apply_filters( 'tribe_tickets_js_version', self::VERSION );
+		}
+
+		return $version;
+	}
+
+	/**
 	 * settings page object accessor
 	 */
 	public function settings_tab() {

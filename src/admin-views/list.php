@@ -37,9 +37,18 @@
 			$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
 		}
 
+		if ( is_admin() ) {
+			if ( $ticket->admin_link ) {
+				$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'Edit in %s', 'event-tickets' ) . '</a></span>', esc_url( $ticket->admin_link ), $modules[ $ticket->provider_class ] );
+			}
+			if ( $ticket->frontend_link && 'publish' === get_post_status( $post_id ) ) {
+				$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
+		}
+
 		$report = $provider_obj->get_ticket_reports_link( $post_id, $ticket->ID );
 		if ( $report ) {
 			$controls[] = $report;
+		}
 		}
 
 		if ( ( $ticket->provider_class !== $provider ) || $count == 0 ) :
