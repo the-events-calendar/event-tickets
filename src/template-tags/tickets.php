@@ -255,7 +255,10 @@ function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src'
 	$url  = plugins_url( Tribe__Tickets__Main::instance()->plugin_dir . $path );
 
 	/**
-	 * Deprected the tribe_events_resource_url filter in 4.0 in favor of tribe_resource_url. Remove in 5.0
+	 * Filter the ticket resource URL
+	 *
+	 * @var $url Resource URL
+	 * @var $resource The filename of the resource
 	 */
 	$url = apply_filters( 'tribe_tickets_resource_url', $url, $resource );
 
