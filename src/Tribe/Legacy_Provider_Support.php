@@ -25,8 +25,8 @@ class Tribe__Tickets__Legacy_Provider_Support {
 			return;
 		}
 
-		// We hook up add_price_fields using an early priority for consistent positioning
-		add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'add_price_fields' ), 5 );
+		add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'add_fields' ), 5 );
+		add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'add_fields_ajax' ) );
 	}
 
 	protected function find_active_legacy_modules() {
@@ -49,11 +49,38 @@ class Tribe__Tickets__Legacy_Provider_Support {
 	 * Legacy ticketing modules relied on core The Events Calendar code to generate the price field,
 	 * this method takes over that responsibility.
 	 */
-	public function add_price_fields() {
+	public function add_fields( $price = null, $regular_price = null ) {
 		$metabox_template = Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/legacy-ticket-fields.php';
 
 		foreach ( $this->active_legacy_modules as $legacy_identifier ) {
 			include $metabox_template;
 		}
+	}
+
+	/**
+	 * When existing tickets are edited, the information used to populate the edit-ticket form
+	 * is supplied by ajax along with any advanced meta fields.
+	 *
+	 * This method filters the response data to inject the necessary extra fields.
+	 *
+	 * @param array $response_data
+	 *
+	 * @return array
+	 */
+	public function add_fields_ajax( array $response_data ) {
+		$sale_price    = $response_data['price'];
+		$regular_price = $response_data['regular_price'];
+
+		// If not on sale, remove the sale price (no point displaying it)
+		if ( ! $response_data['on_sale'] ) {
+			$sale_price = '';
+		}
+
+		ob_start();
+		$this->add_fields( $sale_price, $regular_price );
+		$extra_fields = ob_get_clean();
+
+		$response_data['advanced_fields'] = $extra_fields . $response_data['advanced_fields'];
+		return $response_data;
 	}
 }
