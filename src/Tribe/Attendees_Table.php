@@ -34,8 +34,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * We don't want Core's search box, because we implemented our own jQuery based filter,
 	 * so this function overrides the parent's one and returns empty.
 	 *
-	 * @access public
-	 *
 	 * @param string $text     The search button text
 	 * @param string $input_id The search input id
 	 */
@@ -46,8 +44,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Display the pagination.
 	 * We are not paginating the attendee list, so it returns empty.
-	 *
-	 * @access protected
 	 */
 	public function pagination( $which ) {
 		return '';
@@ -55,8 +51,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Checks the current user's permissions
-	 *
-	 * @access public
 	 */
 	public function ajax_user_can() {
 		return current_user_can( get_post_type_object( $this->screen->post_type )->cap->edit_posts );

@@ -1,43 +1,3 @@
-<?php
-$this->orders_table->prepare_items();
-
-$event_id = isset( $_GET['event_id'] ) ? intval( $_GET['event_id'] ) : 0;
-$event = get_post( $event_id );
-$tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
-
-/**
- * Filters whether or not fees are being passed to the end user (purchaser)
- *
- * @var boolean $pass_fees Whether or not to pass fees to user
- * @var int $event_id Event post ID
- */
-Tribe__Tickets__Orders_Table::$pass_fees_to_user = apply_filters( 'tribe_tickets_pass_fees_to_user', true, $event_id );
-
-/**
- * Filters the fee percentage to apply to a ticket/order
- *
- * @var float $fee_percent Fee percentage
- */
-Tribe__Tickets__Orders_Table::$fee_percent = apply_filters( 'tribe_tickets_fee_percent', 0, $event_id );
-
-/**
- * Filters the flat fee to apply to a ticket/order
- *
- * @var float $fee_flat Flat fee
- */
-Tribe__Tickets__Orders_Table::$fee_flat = apply_filters( 'tribe_tickets_fee_flat', 0, $event_id );
-
-ob_start();
-$this->orders_table->display();
-$table = ob_get_clean();
-
-$organizer = get_user_by( 'id', $event->post_author );
-
-$event_revenue = Tribe__Tickets__Orders_Table::event_revenue( $event_id );
-$event_sales = Tribe__Tickets__Orders_Table::event_sales( $event_id );
-$event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
-?>
-
 <div class="wrap">
 	<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
 	<h2><?php esc_html_e( 'Orders', 'event-tickets' ); ?></h2>
@@ -67,39 +27,6 @@ $event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
 					</td>
 					<td width="33%" valign="top">
 						<h4><?php esc_html_e( 'Ticket Sales', 'event-tickets' ); ?></h4>
-
-						<?php
-
-						$tickets_sold = array();
-						$total_sold = 0;
-						$total_pending = 0;
-						$total_profit = 0;
-						$total_completed = 0;
-
-						foreach ( $tickets as $ticket ) {
-							if ( empty( $tickets_sold[ $ticket->name ] ) ) {
-								$tickets_sold[ $ticket->name ] = array(
-									'ticket' => $ticket,
-									'has_stock' => ! ( empty( $ticket->stock() ) && 0 !== $ticket->stock() ),
-									'sku' => get_post_meta( $ticket->ID, '_sku', true ),
-									'sold' => 0,
-									'pending' => 0,
-									'completed' => 0,
-								);
-							}
-							$stock = $ticket->stock();
-							$sold = ! empty ( $ticket->qty_sold() ) ? $ticket->qty_sold() : 0;
-
-							$tickets_sold[ $ticket->name ]['sold'] += $sold;
-							$tickets_sold[ $ticket->name ]['pending'] += absint( $ticket->qty_pending() );
-							$tickets_sold[ $ticket->name ]['completed'] += absint( $tickets_sold[ $ticket->name ]['sold'] ) - absint( $tickets_sold[ $ticket->name ]['pending'] );
-
-							$total_sold += $sold;
-							$total_pending += absint( $ticket->qty_pending() );
-						}
-
-						$total_completed += absint( $total_sold ) - absint( $total_pending );
-						?>
 						<div class="tribe-event-meta tribe-event-meta-tickets-sold">
 							<strong><?php echo esc_html__( 'Tickets sold:', 'event-tickets' ); ?></strong>
 							<?php echo absint( $total_sold ); ?>
@@ -133,8 +60,7 @@ $event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
 							}
 
 							if ( $ticket_sold['ticket']->price ) {
-								$price_format = get_woocommerce_price_format();
-								$price = sprintf( ' (' . $price_format . ')', get_woocommerce_currency_symbol(), number_format( $ticket_sold['ticket']->price, 2 ) );
+								$price = ' (' . tribe_format_currency( number_format( $ticket_sold['ticket']->price, 2 ), $event_id ) . ')';
 							}
 							?>
 							<div class="tribe-event-meta tribe-event-meta-tickets-sold-itemized">
@@ -160,11 +86,7 @@ $event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
 						<div class="tribe-event-meta tribe-event-meta-total-revenue">
 							<strong><?php esc_html_e( 'Total Revenue:', 'event-tickets' ) ?></strong>
 							<?php
-							printf(
-								get_woocommerce_price_format(),
-								get_woocommerce_currency_symbol(),
-								number_format( $event_revenue, 2 )
-							);
+							echo esc_html( tribe_format_currency( number_format( $event_revenue, 2 ), $event_id ) );
 
 							if ( $event_fees ) {
 								?>
@@ -180,23 +102,11 @@ $event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
 							?>
 							<div class="tribe-event-meta tribe-event-meta-total-ticket-sales">
 								<strong><?php esc_html_e( 'Total Ticket Sales:', 'event-tickets' ) ?></strong>
-								<?php
-								printf(
-									get_woocommerce_price_format(),
-									get_woocommerce_currency_symbol(),
-									number_format( $event_sales, 2 )
-								);
-								?>
+								<?php echo esc_html( tribe_format_currency( number_format( $event_sales, 2 ), $event_id ) ); ?>
 							</div>
 							<div class="tribe-event-meta tribe-event-meta-total-site-fees">
 								<strong><?php esc_html_e( 'Total Site Fees:', 'event-tickets' ) ?></strong>
-								<?php
-								printf(
-									get_woocommerce_price_format(),
-									get_woocommerce_currency_symbol(),
-									number_format( $event_fees, 2 )
-								);
-								?>
+								<?php echo esc_html( tribe_format_currency( number_format( $event_fees, 2 ), $event_id ) ); ?>
 								<div class="tribe-event-meta-note">
 									<?php
 									echo apply_filters( 'tribe_events_orders_report_site_fees_note', '', $event, $organizer );
@@ -215,7 +125,7 @@ $event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
 	<form id="topics-filter" method="get">
 		<input type="hidden" name="page" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="event_id" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
-		<input type="hidden" name="post_type" value="<?php echo esc_attr( Tribe__Events__Main::POSTTYPE ); ?>" />
+		<input type="hidden" name="post_type" value="<?php echo esc_attr( $event->post_type ); ?>" />
 		<?php echo $table; ?>
 	</form>
 </div>

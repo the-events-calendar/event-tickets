@@ -37,8 +37,6 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 	 * We don't want Core's search box, because we implemented our own jQuery based filter,
 	 * so this function overrides the parent's one and returns empty.
 	 *
-	 * @access public
-	 *
 	 * @param string $text     The search button text
 	 * @param string $input_id The search input id
 	 */
@@ -49,8 +47,6 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 	/**
 	 * Display the pagination.
 	 * We are not paginating the order list, so it returns empty.
-	 *
-	 * @access protected
 	 */
 	public function pagination( $which ) {
 		return '';
@@ -58,8 +54,6 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 
 	/**
 	 * Checks the current user's permissions
-	 *
-	 * @access public
 	 */
 	public function ajax_user_can() {
 		$post_type = get_post_type_object( $this->screen->post_type );
@@ -129,9 +123,6 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 		if (
 			empty( $shipping['address_1'] )
 			|| empty( $shipping['city'] )
-			|| empty( $shipping['state'] )
-			|| empty( $shipping['postcode'] )
-			|| empty( $shipping['country'] )
 		) {
 			return '';
 		}
@@ -152,7 +143,19 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 			$address .= "{$shipping['address_2']}<br>";
 		}
 
-		$address .= "{$shipping['city']}, {$shipping['state']} {$shipping['postcode']}";
+		$address .= $shipping['city'];
+
+		if ( ! empty( $shipping['state'] ) ) {
+			$address .= ", {$shipping['state']}";
+		}
+
+		if ( ! empty( $shipping['country'] ) ) {
+			$address .= " {$shipping['country']}";
+		}
+
+		if ( ! empty( $shipping['postcode'] ) ) {
+			$address .= " {$shipping['postcode']}";
+		}
 
 		return $address;
 	}//end column_ship_to
@@ -253,8 +256,6 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 	public function column_subtotal( $item ) {
 		$total = 0;
 
-		$price_format = get_woocommerce_price_format();
-
 		foreach ( $this->valid_order_items[ $item['id'] ] as $line_item ) {
 			$total += $line_item['subtotal'];
 		}
@@ -263,7 +264,7 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 			$total -= self::calc_site_fee( $total );
 		}
 
-		return sprintf( $price_format, get_woocommerce_currency_symbol(), number_format( $total, 2 ) );
+		return tribe_format_currency( number_format( $total, 2 ) );
 	}//end column_subtotal
 
 	/**
@@ -276,8 +277,6 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 	public function column_total( $item ) {
 		$total = 0;
 
-		$price_format = get_woocommerce_price_format();
-
 		foreach ( $this->valid_order_items[ $item['id'] ] as $line_item ) {
 			$total += $line_item['subtotal'];
 		}
@@ -286,7 +285,7 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 			$total += $this->calc_site_fee( $total );
 		}
 
-		return sprintf( $price_format, get_woocommerce_currency_symbol(), number_format( $total, 2 ) );
+		return tribe_format_currency( number_format( $total, 2 ) );
 	}//end column_total
 
 	/**
@@ -299,13 +298,11 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 	public function column_site_fee( $item ) {
 		$total = 0;
 
-		$price_format = get_woocommerce_price_format();
-
 		foreach ( $this->valid_order_items[ $item['id'] ] as $line_item ) {
 			$total += $line_item['subtotal'];
 		}
 
-		return sprintf( $price_format, get_woocommerce_currency_symbol(), number_format( $this->calc_site_fee( $total ), 2 ) );
+		return tribe_format_currency( number_format( $this->calc_site_fee( $total ), 2 ) );
 	}//end column_site_fee
 
 	/**
@@ -321,15 +318,6 @@ class Tribe__Tickets__Orders_Table extends WP_List_Table {
 		$this->single_row_columns( $item );
 		echo '</tr>';
 	}//end single_row
-
-	/**
-	 * Extra controls to be displayed between bulk actions and pagination.
-	 *
-	 * Used for the Print, Email and Export buttons, and for the jQuery based search.
-	 *
-	 */
-	public function extra_tablenav( $which ) {
-	}//end extra_tablenav
 
 	public static function get_orders( $event_id ) {
 		if ( ! $event_id ) {

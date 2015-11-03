@@ -118,9 +118,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ) );
-		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), apply_filters( 'tribe_events_css_version', Tribe__Tickets__Main::VERSION ), 'print' );
-		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), apply_filters( 'tribe_events_js_version', Tribe__Tickets__Main::VERSION ) );
+		wp_enqueue_style( self::$attendees_slug, $resources_url . '/css/tickets-attendees.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
+		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
 
 		$mail_data = array(
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
@@ -206,6 +206,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Registers the Orders admin page
 	 */
 	public function orders_page_register() {
+		// the orders table only works with WooCommerce
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return;
+		}
 
 		$this->orders_page = add_submenu_page(
 			null, 'Order list', 'Order list', 'edit_posts', self::$orders_slug, array(
@@ -229,6 +233,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function orders_row_action( $actions ) {
 		global $post;
+
+		// the orders table only works with WooCommerce
+		if ( ! class_exists( 'WooCommerce' ) ) {
+			return $actions;
+		}
 
 		if ( $post->post_type != Tribe__Events__Main::POSTTYPE ) {
 			return $actions;
@@ -285,6 +294,74 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Renders the Orders page
 	 */
 	public function orders_page_inside() {
+		$this->orders_table->prepare_items();
+
+		$event_id = isset( $_GET['event_id'] ) ? intval( $_GET['event_id'] ) : 0;
+		$event = get_post( $event_id );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
+
+		/**
+		 * Filters whether or not fees are being passed to the end user (purchaser)
+		 *
+		 * @var boolean $pass_fees Whether or not to pass fees to user
+		 * @var int $event_id Event post ID
+		 */
+		Tribe__Tickets__Orders_Table::$pass_fees_to_user = apply_filters( 'tribe_tickets_pass_fees_to_user', true, $event_id );
+
+		/**
+		 * Filters the fee percentage to apply to a ticket/order
+		 *
+		 * @var float $fee_percent Fee percentage
+		 */
+		Tribe__Tickets__Orders_Table::$fee_percent = apply_filters( 'tribe_tickets_fee_percent', 0, $event_id );
+
+		/**
+		 * Filters the flat fee to apply to a ticket/order
+		 *
+		 * @var float $fee_flat Flat fee
+		 */
+		Tribe__Tickets__Orders_Table::$fee_flat = apply_filters( 'tribe_tickets_fee_flat', 0, $event_id );
+
+		ob_start();
+		$this->orders_table->display();
+		$table = ob_get_clean();
+
+		$organizer = get_user_by( 'id', $event->post_author );
+
+		$event_revenue = Tribe__Tickets__Orders_Table::event_revenue( $event_id );
+		$event_sales = Tribe__Tickets__Orders_Table::event_sales( $event_id );
+		$event_fees = Tribe__Tickets__Orders_Table::event_fees( $event_id );
+
+		$tickets_sold = array();
+		$total_sold = 0;
+		$total_pending = 0;
+		$total_profit = 0;
+		$total_completed = 0;
+
+		foreach ( $tickets as $ticket ) {
+			if ( empty( $tickets_sold[ $ticket->name ] ) ) {
+				$tickets_sold[ $ticket->name ] = array(
+					'ticket' => $ticket,
+					'has_stock' => ! ( empty( $ticket->stock() ) && 0 !== $ticket->stock() ),
+					'sku' => get_post_meta( $ticket->ID, '_sku', true ),
+					'sold' => 0,
+					'pending' => 0,
+					'completed' => 0,
+				);
+			}
+			$stock = $ticket->stock();
+			$sold = ! empty ( $ticket->qty_sold() ) ? $ticket->qty_sold() : 0;
+
+			$tickets_sold[ $ticket->name ]['sold'] += $sold;
+			$tickets_sold[ $ticket->name ]['pending'] += absint( $ticket->qty_pending() );
+			$tickets_sold[ $ticket->name ]['completed'] += absint( $tickets_sold[ $ticket->name ]['sold'] ) - absint( $tickets_sold[ $ticket->name ]['pending'] );
+
+			$total_sold += $sold;
+			$total_pending += absint( $ticket->qty_pending() );
+		}
+
+		$total_completed += absint( $total_sold ) - absint( $total_pending );
+
 		include $this->path . 'src/admin-views/orders.php';
 	}
 
