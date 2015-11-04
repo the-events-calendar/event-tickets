@@ -8,7 +8,7 @@ Stable tag: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Event Tickets allows you to your visitors to RSVP to events.  Works seamlessly with The Events Calendar.
+Event Tickets allows your visitors to RSVP to events.  Works seamlessly with The Events Calendar.
 
 == Description ==
 
