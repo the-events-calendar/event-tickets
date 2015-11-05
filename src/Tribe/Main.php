@@ -215,27 +215,24 @@ class Tribe__Tickets__Main {
 		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
 
 		// Setup Help Tab texting
-		add_filter( 'tribe_help_section_support', array( $this, 'filter_support_content' ) );
+		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
 	}
 
 	/**
 	 * Append the text about Event Tickets to the support section on the Help page
 	 *
-	 * @filter "tribe_help_section_{$section_id}"
-	 * @param object $section
-	 * @return object $section
+	 * @filter "tribe_help_pre_get_sections"
+	 * @param Tribe__Admin__Help_Page $help The Help Page Instance
+	 * @return void
 	 */
-	public function filter_support_content( $section ) {
-		$section->content[20] = '<strong>' . esc_html__( 'Support for Event Tickets', 'event-tickets' ) . '</strong>';
-
-		$section->content[21] = array(
+	public function add_help_section_support_content( $help ) {
+		$help->add_section_content( 'support', '<strong>' . esc_html__( 'Support for Event Tickets', 'event-tickets' ) . '</strong>', 20 );
+		$help->add_section_content( 'support', array(
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Customizing Events Tickets', 'event-tickets' ) . '</a></strong>',
-		);
-
-		return $section;
+		) . '</strong>', 20 );
 	}
 
 	/**
