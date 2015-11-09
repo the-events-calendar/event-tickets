@@ -28,16 +28,17 @@ module.exports = {
 		files: [{
 				expand: true,
 				src: ['*',
-				      '**/common/**',
-				      '**/lang/**',
-				      '**/src/**',
-				      '!**/dev/**',
-				      '!**/tests/**',
-				      '!**/.git/**',
-				      '!**/phpunit.xml',
-				      '!**/codeception.yml',
-				      '!**/composer.json',
-				      '!**/composer.lock'
+					'**/common/**',
+					'**/lang/**',
+					'**/src/**',
+					'!**/.editorconfig',
+					'!**/dev/**',
+					'!**/tests/**',
+					'!**/.git/**',
+					'!**/phpunit.xml',
+					'!**/codeception.yml',
+					'!**/composer.json',
+					'!**/composer.lock'
 				],
 				dest: '<%= pkg._zipfoldername %>/'
 			}]
