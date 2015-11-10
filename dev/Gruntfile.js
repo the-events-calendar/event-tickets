@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+	'use strict';
 
 	/**
 	 *
@@ -46,6 +47,14 @@ module.exports = function(grunt) {
 	 */
 
 	grunt.initConfig(config);
+
+	if ( grunt.option( 'branch' ) ) {
+		grunt.config.data.gitcheckout.dist.options.branch = grunt.option( 'branch' );
+	}
+
+	if ( grunt.option( 'returnbranch' ) ) {
+		grunt.config.data.gitcheckout.dev.options.branch = grunt.option( 'returnbranch' );
+	}
 
 	/**
 	 *
