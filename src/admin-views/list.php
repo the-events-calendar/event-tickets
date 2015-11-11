@@ -63,7 +63,7 @@
 					<?php
 					$attendees_url = add_query_arg(
 						array(
-							'post_type' => Tribe__Events__Main::POSTTYPE,
+							'post_type' => $post_type,
 							'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
 							'event_id' => $post_id,
 						),
