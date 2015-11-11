@@ -237,7 +237,7 @@ class Tribe__Tickets__Main {
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Customizing Events Tickets', 'event-tickets' ) . '</a></strong>',
-		) . '</strong>', 20 );
+		), 20 );
 	}
 
 	/**
