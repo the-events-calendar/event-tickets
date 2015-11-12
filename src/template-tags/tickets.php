@@ -199,18 +199,19 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * @return string
 	 */
 	function tribe_tickets_get_ticket_stock_message( $ticket ) {
-		$sold = ! empty ( $ticket->qty_sold ) ? $ticket->qty_sold : 0;
+		$stock = $ticket->stock();
+		$sold = $ticket->qty_sold();
+		$pending = $ticket->qty_pending();
 
-		$pending = '';
-
-		if ( $ticket->qty_pending() > 0 ) {
-			$pending = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'event-tickets', $ticket->qty_pending ), (int) $ticket->qty_pending );
+		$pending_message = '';
+		if ( $pending > 0 ) {
+			$pending_message = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'event-tickets', $pending ), (int) $pending );
 		}
 
-		if ( ! $ticket->stock() ) {
-			$message = sprintf( esc_html__( 'Sold %1$d %2$s', 'event-tickets' ), esc_html( $sold ), esc_html( $pending ) );
+		if ( ! $stock ) {
+			$message = sprintf( esc_html__( 'Sold all %1$d %2$s', 'event-tickets' ), esc_html( $sold ), esc_html( $pending_message ) );
 		} else {
-			$message = sprintf( esc_html__( 'Sold %1$d of %2$d %3$s', 'event-tickets' ), esc_html( $sold ), esc_html( $sold + $ticket->stock() ), esc_html( $pending ) );
+			$message = sprintf( esc_html__( 'Sold %1$d of %2$d %3$s', 'event-tickets' ), esc_html( $sold ), esc_html( $stock ), esc_html( $pending_message ) );
 		}
 
 		return $message;

@@ -1,6 +1,5 @@
 jQuery( document ).ready( function( $ ) {
 
-
 	if ( AttendeesPointer ) {
 		options = $.extend( AttendeesPointer.options, {
 			close: function() {
