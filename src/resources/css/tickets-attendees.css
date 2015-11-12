@@ -43,6 +43,12 @@
 }
 
 @media screen and (max-width: 870px) {
+	#tribe-attendees-summary h3,
+	#tribe-attendees-summary .about-description {
+		width: 100%;
+	}
+
+
 	#tribe-attendees-summary .welcome-panel-column li {
 		display: list-item;
 	}
