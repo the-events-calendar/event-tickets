@@ -110,7 +110,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 							<br/>
 							<?php
 							$stock = $ticket->stock();
-							$sold = ! empty ( $ticket->qty_sold() ) ? $ticket->qty_sold() : 0;
+							$sold = $ticket->qty_sold();
 
 							$pending = '';
 
@@ -118,7 +118,7 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 								$pending = esc_html( sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'event-tickets', $ticket->qty_pending() ), (int) $ticket->qty_pending() ) );
 							}
 
-							if ( empty( $stock ) && $stock !== 0 ) {
+							if ( ! $ticket->stock() ) {
 								echo sprintf( esc_html__( 'Sold %1$d %2$s', 'event-tickets' ), esc_html( $sold ), $pending );
 							}
 							else {
