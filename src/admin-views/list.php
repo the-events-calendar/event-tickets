@@ -30,9 +30,7 @@
 
 		$controls[] = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_edit_%2$s" class="ticket_edit">' . esc_html__( 'Edit', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
 		$controls[] = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">' . esc_html__( 'Delete', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
-		if ( $ticket->admin_link ) {
-			$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'Edit in %s', 'event-tickets' ) . '</a></span>', esc_url( $ticket->admin_link ), $modules[ $ticket->provider_class ] );
-		}
+
 		if ( $ticket->frontend_link && get_post_status( $post_id ) == 'publish' ) {
 			$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
 		}
@@ -41,14 +39,11 @@
 			if ( $ticket->admin_link ) {
 				$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'Edit in %s', 'event-tickets' ) . '</a></span>', esc_url( $ticket->admin_link ), $modules[ $ticket->provider_class ] );
 			}
-			if ( $ticket->frontend_link && 'publish' === get_post_status( $post_id ) ) {
-				$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
-		}
 
-		$report = $provider_obj->get_ticket_reports_link( $post_id, $ticket->ID );
-		if ( $report ) {
-			$controls[] = $report;
-		}
+			$report = $provider_obj->get_ticket_reports_link( $post_id, $ticket->ID );
+			if ( $report ) {
+				$controls[] = $report;
+			}
 		}
 
 		if ( ( $ticket->provider_class !== $provider ) || $count == 0 ) :
