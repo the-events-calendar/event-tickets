@@ -123,7 +123,7 @@
 #attendees_email_wrapper #email_response {
 	text-align : center;
 	padding:80px 0 30px;
-	background:url('../../../common/src/resources/images/tribe-loading.gif') 50% 30% no-repeat;
+	background:url('../images/tribe-loading.gif') 50% 30% no-repeat;
 	border:0;
 	background-size:32px 32px;
 	display:none;
