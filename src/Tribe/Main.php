@@ -221,6 +221,7 @@ class Tribe__Tickets__Main {
 
 		// Setup Help Tab texting
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
+		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
 	}
 
 	/**
@@ -238,6 +239,24 @@ class Tribe__Tickets__Main {
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
 			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Customizing Events Tickets', 'event-tickets' ) . '</a></strong>',
 		), 20 );
+	}
+
+	/**
+	 * Append the text about Event Tickets to the Feature box section on the Help page
+	 *
+	 * @filter "tribe_help_pre_get_sections"
+	 * @param Tribe__Admin__Help_Page $help The Help Page Instance
+	 * @return void
+	 */
+	public function add_help_section_featured_content( $help ) {
+		// If The Events Calendar is active dont add
+		if ( $help->get_plugins( 'the-events-calendar', true ) ){
+			return;
+		}
+
+		$link = '<a href="http://m.tri.be/18j8" target="_blank">' . esc_html__( 'New User Primer', 'the-events-calendar' ) . '</a>';
+
+		$help->add_section_content( 'feature-box', sprintf( __( 'We are committed to helping you sell tickets for your event. Check out our handy %s to get started.', 'event-tickets' ), $link ), 20 );
 	}
 
 	/**
