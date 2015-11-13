@@ -222,6 +222,7 @@ class Tribe__Tickets__Main {
 		// Setup Help Tab texting
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
+		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
 	}
 
 	/**
@@ -271,7 +272,7 @@ class Tribe__Tickets__Main {
 		if ( ! $help->is_active( array( 'events-calendar-pro', 'event-tickets-plus' ) ) && $help->is_active( 'the-events-calendar' ) ) {
 			// We just skip because it's treated on TEC
 			return;
-		} elseif ( ! $help->is_active( 'the-events-calendar' ) ){
+		} elseif ( ! $help->is_active( 'the-events-calendar' ) ) {
 			if ( ! $help->is_active( 'event-tickets-plus' ) ) {
 
 				$link = '<a href="@todo" target="_blank">' . esc_html__( 'open-source forum on WordPress.org', 'the-events-calendar' ) . '</a>';
