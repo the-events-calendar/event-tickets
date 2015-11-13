@@ -8,6 +8,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 $checkedin = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event_id );
 $total_sold = 0;
 $total_pending = 0;
+$total_completed = 0;
 
 foreach ( $tickets as $ticket ) {
 	$total_sold += $ticket->qty_sold();
