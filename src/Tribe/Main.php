@@ -255,7 +255,7 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		$link = '<a href="http://m.tri.be/18j8" target="_blank">' . esc_html__( 'New User Primer', 'the-events-calendar' ) . '</a>';
+		$link = '<a href="http://m.tri.be/18j8" target="_blank">' . esc_html__( 'New User Primer', 'event-tickets' ) . '</a>';
 
 		$help->add_section_content( 'feature-box', sprintf( __( 'We are committed to helping you sell tickets for your event. Check out our handy %s to get started.', 'event-tickets' ), $link ), 20 );
 	}
