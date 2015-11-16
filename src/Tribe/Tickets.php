@@ -234,7 +234,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function __construct() {
 
 			// Start the singleton with the generic functionality to all providers.
-			Tribe__Tickets__Tickets_Handler::instance();
+			Tribe__Tickets__Tickets_Handler::instance( $this );
 
 			// As this is an abstract class, we want to know which child instantiated it
 			$this->className = get_class( $this );
@@ -410,7 +410,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! current_user_can( 'edit_posts' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
 			}
 

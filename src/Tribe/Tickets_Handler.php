@@ -21,6 +21,11 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $image_header_field = '_tribe_ticket_header';
 
 	/**
+	 * @var Tribe__Tickets__Tickets
+	 */
+	protected $tickets_provider;
+
+	/**
 	 * Slug of the admin page for attendees
 	 * @var string
 	 */
@@ -46,9 +51,12 @@ class Tribe__Tickets__Tickets_Handler {
 
 	/**
 	 *    Class constructor.
+	 *
+	 * @param Tribe__Tickets__Tickets $tickets_provider
 	 */
-	public function __construct() {
+	public function __construct( Tribe__Tickets__Tickets $tickets_provider ) {
 		$main = Tribe__Tickets__Main::instance();
+		$this->tickets_provider = $tickets_provider;
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ), 10, 2 );
@@ -253,7 +261,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! current_user_can( 'edit_posts' ) ) {
 			return;
 		}
 
@@ -291,7 +299,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! isset( $_POST['event_id'] ) || ! isset( $_POST['email'] ) || ! ( is_numeric( $_POST['email'] ) || is_email( $_POST['email'] ) ) ) {
 			$this->ajax_error( 'Bad post' );
 		}
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! current_user_can( 'edit_posts' ) ) {
 			$this->ajax_error( 'Cheatin Huh?' );
 		}
 
@@ -313,7 +321,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$event = get_post( $_POST['event_id'] );
 
 		ob_start();
-		$attendee_tpl = Tribe__Templates::getTemplateHierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
+		$attendee_tpl = $this->tickets_provider->getTemplateHierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
 		include $attendee_tpl;
 		$content = ob_get_clean();
 
@@ -456,12 +464,13 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Static Singleton Factory Method
 	 *
+	 * @param Tribe__Tickets__Tickets $tickets_provider
 	 * @return Tribe__Tickets__Tickets_Handler
 	 */
-	public static function instance() {
+	public static function instance( Tribe__Tickets__Tickets $tickets_provider ) {
 		if ( ! isset( self::$instance ) ) {
 			$className      = __CLASS__;
-			self::$instance = new $className;
+			self::$instance = new $className( $tickets_provider );
 		}
 
 		return self::$instance;
