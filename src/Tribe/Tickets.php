@@ -34,6 +34,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		private $parentUrl;
 
+		/**
+		 * @var Tribe__Tickets__Tickets_Handler
+		 */
+		private $tickets_handler;
+
 		// start API Definitions
 		// Child classes must implement all these functions / properties
 
@@ -234,7 +239,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function __construct() {
 
 			// Start the singleton with the generic functionality to all providers.
-			Tribe__Tickets__Tickets_Handler::instance( $this );
+			$this->tickets_handler = Tribe__Tickets__Tickets_Handler::instance( $this );
 
 			// As this is an abstract class, we want to know which child instantiated it
 			$this->className = get_class( $this );
@@ -807,6 +812,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $prices;
+		}
+
+		/**
+		 * Returns the tickets handler associated with this ticketing implementation.
+		 *
+		 * @return Tribe__Tickets__Tickets_Handler
+		 */
+		public function get_tickets_handler() {
+			return $this->tickets_handler;
 		}
 
 		// end Helpers
