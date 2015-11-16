@@ -410,7 +410,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! current_user_can( 'edit_posts' ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
 			}
 

@@ -253,7 +253,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! current_user_can( 'edit_posts' ) ) {
 			return;
 		}
 
@@ -291,7 +291,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! isset( $_POST['event_id'] ) || ! isset( $_POST['email'] ) || ! ( is_numeric( $_POST['email'] ) || is_email( $_POST['email'] ) ) ) {
 			$this->ajax_error( 'Bad post' );
 		}
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! current_user_can( 'edit_posts' ) ) {
 			$this->ajax_error( 'Cheatin Huh?' );
 		}
 
