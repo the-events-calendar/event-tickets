@@ -6,6 +6,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 * for Tribe Tickets Pro. Providers for this functionality need to
 	 * extend this class. For a functional example of how this works
 	 * see Tribe WooTickets.
+	 *
+	 * The relationship between orders, attendees and event posts is
+	 * maintained through post meta fields set for the attendee object.
+	 * Implementing classes are expected to provide the following class
+	 * constants detailing those meta keys:
+	 *
+	 *     ATTENDEE_ORDER_KEY
+	 *     ATTENDEE_EVENT_KEY
+	 *     ATTENDEE_PRODUCT_KEY
+	 *
+	 * The post type name used for the attendee object should also be
+	 * made available via:
+	 *
+	 *     ATTENDEE_OBJECT
 	 */
 	abstract class Tribe__Tickets__Tickets {
 
@@ -384,7 +398,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! current_user_can( 'edit_posts' ) ) {
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
 			}
 
@@ -410,7 +424,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
 				$this->ajax_error( "Cheatin' huh?" );
 			}
 
@@ -807,6 +821,163 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $prices;
+		}
+
+		/**
+		 * Tests if the user has the specified capability in relation to whatever post type
+		 * the attendee object relates to.
+		 *
+		 * For example, if the attendee was generated for a ticket ste up in relation to a
+		 * post of the banana type, the generic capability "edit_posts" will be mapped to
+		 * "edit_bananas" or whatever is appropriate.
+		 *
+		 * @internal for internal plugin use only (in spite of having public visibility)
+		 * @see Tribe__Tickets__Tickets_Handler::user_can()
+		 *
+		 * @param  string $generic_cap
+		 * @param  int    $attendee_id
+		 * @return boolean
+		 */
+		public function user_can( $generic_cap, $attendee_id ) {
+			$event_id = $this->get_event_id_from_attendee_id( $attendee_id );
+
+			if ( empty( $event_id ) ) {
+				return false;
+			}
+
+			return Tribe__Tickets__Tickets_Handler::instance()->user_can( $generic_cap, $event_id );
+		}
+
+		/**
+		 * Given a valid attendee ID, returns the event ID it relates to or else boolean false
+		 * if it cannot be determined.
+		 *
+		 * @param  int   $attendee_id
+		 * @return mixed int|bool
+		 */
+		public function get_event_id_from_attendee_id( $attendee_id ) {
+			$provider_class     = new ReflectionClass( $this );
+			$attendee_event_key = $this->get_attendee_event_key( $provider_class );
+
+			if ( empty( $attendee_event_key ) ) {
+				return false;
+			}
+
+			$event_id = get_post_meta( $attendee_id, $attendee_event_key, true );
+
+			if ( empty( $event_id ) ) {
+				return false;
+			}
+
+			return (int) $event_id;
+		}
+
+		/**
+		 * Given a valid order ID, returns the event ID it relates to or else boolean false
+		 * if it cannot be determined.
+		 *
+		 * @param  int   $order_id
+		 * @return mixed int|bool
+		 */
+		public function get_event_id_from_order_id( $order_id ) {
+			$provider_class     = new ReflectionClass( $this );
+			$attendee_order_key = $this->get_attendee_order_key( $provider_class );
+			$attendee_event_key = $this->get_attendee_event_key( $provider_class );
+			$attendee_object    = $this->get_attendee_object( $provider_class );
+
+			if ( empty( $attendee_order_key ) || empty( $attendee_event_key ) || empty( $attendee_object ) ) {
+				return false;
+			}
+
+			$first_matched_attendee = get_posts( array(
+				'post_type'  => $attendee_object,
+				'meta_key'   => $attendee_order_key,
+				'meta_value' => $order_id,
+				'posts_per_page' => 1,
+			) );
+
+			if ( empty( $first_matched_attendee ) ) {
+				return false;
+			}
+
+			return $this->get_event_id_from_attendee_id( $first_matched_attendee[0]->ID );
+		}
+
+		/**
+		 * Returns the meta key used to link attendees with orders.
+		 *
+		 * This method provides backwards compatibility with older ticketing providers
+		 * that do not define the expected class constants. Once a decent period has
+		 * elapsed we can kill this method and access the class constants directly.
+		 *
+		 * @param  ReflectionClass $provider_class representing the concrete ticket provider
+		 * @return string
+		 */
+		protected function get_attendee_order_key( $provider_class ) {
+			$attendee_order_key = $provider_class->getConstant( 'ATTENDEE_ORDER_KEY' );
+
+			if ( empty( $attendee_order_key ) ) {
+				switch( $this->className ) {
+					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_order';   break;
+					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_order';   break;
+					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_order'; break;
+					case 'Tribe__Events__Tickets__Wpec__Main':  return '_tribe_wpecticket_order';  break;
+				}
+			}
+
+			return (string) $attendee_order_key;
+		}
+
+		/**
+		 * Returns the attendee object post type.
+		 *
+		 * This method provides backwards compatibility with older ticketing providers
+		 * that do not define the expected class constants. Once a decent period has
+		 * elapsed we can kill this method and access the class constants directly.
+		 *
+		 * @param  ReflectionClass $provider_class representing the concrete ticket provider
+		 * @return string
+		 */
+		protected function get_attendee_object( $provider_class ) {
+			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
+
+			if ( empty( $attendee_order_key ) ) {
+				switch( $this->className ) {
+					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
+					case 'Tribe__Events__Tickets__EDD__Main':   return 'tribe_eddticket';   break;
+					case 'Tribe__Events__Tickets__Shopp__Main': return 'tribe_shoppticket'; break;
+					case 'Tribe__Events__Tickets__Wpec__Main':  return 'tribe_wpecticket';  break;
+				}
+			}
+
+			return (string) $attendee_object;
+		}
+
+		/**
+		 * Returns the meta key used to link attendees with the base event.
+		 *
+		 * This method provides backwards compatibility with older ticketing providers
+		 * that do not define the expected class constants. Once a decent period has
+		 * elapsed we can kill this method and access the class constants directly.
+		 *
+		 * If the meta key cannot be determined the returned string will be empty.
+		 *
+		 * @param  ReflectionClass $provider_class representing the concrete ticket provider
+		 * @return string
+		 */
+		protected function get_attendee_event_key( $provider_class ) {
+			$attendee_event_key = $provider_class->getConstant( 'ATTENDEE_EVENT_KEY' );
+
+			if ( empty( $attendee_event_key ) ) {
+				switch( $this->className ) {
+					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_event';   break;
+					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_event';   break;
+					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_event'; break;
+					case 'Tribe__Events__Tickets__Wpec__Main':  return '_tribe_wpecticket_event';  break;
+				}
+			}
+
+			return (string) $attendee_event_key;
 		}
 
 		// end Helpers
