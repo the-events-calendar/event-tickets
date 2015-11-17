@@ -35,11 +35,7 @@ class Tribe__Tickets__Templates extends Tribe__Templates {
 				'disable_view_check' => false,
 			)
 		);
-		/**
-		 * @var string $namespace
-		 * @var string $pluginpath
-		 * @var bool   $disable_view_check
-		 */
+
 		$namespace = $args['namespace'];
 		$plugin_path = $args['plugin_path'];
 		$disable_view_check = $args['disable_view_check'];
