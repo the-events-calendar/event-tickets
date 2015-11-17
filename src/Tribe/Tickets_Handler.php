@@ -313,7 +313,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$event = get_post( $_POST['event_id'] );
 
 		ob_start();
-		$attendee_tpl = Tribe__Templates::getTemplateHierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
+		$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
 		include $attendee_tpl;
 		$content = ob_get_clean();
 
