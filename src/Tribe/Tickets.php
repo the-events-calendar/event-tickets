@@ -385,8 +385,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 
 		/**
-		 *    Handles the check-in ajax call, and calls the
-		 *  checkin method.
+		 * Handles the check-in ajax call, and calls the checkin method.
+		 *
+		 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
+		 *       we should consider revising in a back-compat minded way
 		 */
 		final public function ajax_handler_attendee_checkin() {
 
@@ -411,8 +413,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 *  Handles the check-in ajax call, and calls the
-		 *  uncheckin method.
+		 * Handles the check-in ajax call, and calls the uncheckin method.
+		 *
+		 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
+		 *       we should consider revising in a back-compat minded way
 		 */
 		final public function ajax_handler_attendee_uncheckin() {
 
@@ -437,8 +441,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 *  Sanitizes the data for the delete ticket ajax call,
-		 *  and calls the child delete_ticket function.
+		 * Sanitizes the data for the delete ticket ajax call, and calls the child delete_ticket
+		 * function.
+		 *
+		 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
+		 *       we should consider revising in a back-compat minded way
 		 */
 		final public function ajax_handler_ticket_delete() {
 
