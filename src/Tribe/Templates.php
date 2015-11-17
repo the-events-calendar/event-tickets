@@ -12,13 +12,13 @@ class Tribe__Tickets__Templates extends Tribe__Templates {
 	 *                         - plugin_path
 	 *                         - disable_view_check - bypass the check to see if the view is enabled
 	 *
-	 * @return template path
+	 * @return string
 	 **/
 	public static function get_template_hierarchy( $template, $args = array() ) {
 		if ( ! is_array( $args ) ) {
 			$args          = array();
 			$passed        = func_get_args();
-			$backwards_map = array( 'namespace', 'plugin_path' );
+			$backwards_map = array( 'namespace', 'plugin_path', 'disable_view_check' );
 			$count = count( $passed );
 
 			if ( $count > 1 ) {
@@ -49,7 +49,11 @@ class Tribe__Tickets__Templates extends Tribe__Templates {
 			$template .= '.php';
 		}
 
-		// Allow base path for templates to be filtered
+		/**
+		 * Allow base path for templates to be filtered
+		 *
+		 * @var array
+		 */
 		$template_base_paths = apply_filters( 'tribe_tickets_template_paths', ( array ) Tribe__Tickets__Main::instance()->plugin_path );
 
 		// backwards compatibility if $plugin_path arg is used
@@ -96,6 +100,12 @@ class Tribe__Tickets__Templates extends Tribe__Templates {
 
 				$file = $template_base_path . 'src/views/' . $template;
 
+				/**
+				 * Filter the template file path before inclusion
+				 *
+				 * @var string File path
+				 * @var string Template filename
+				 */
 				$file = apply_filters( 'tribe_tickets_template', $file, $template );
 
 				// return the first one found
@@ -107,6 +117,11 @@ class Tribe__Tickets__Templates extends Tribe__Templates {
 			}
 		}
 
+		/**
+		 * Filter the template file path before inclusion for the specific requested template
+		 *
+		 * @var string File path
+		 */
 		return apply_filters( 'tribe_tickets_template_' . $template, $file );
 	}
 }
