@@ -215,15 +215,26 @@ class Tribe__Tickets__Tickets_Handler {
 		$hidden[] = 'cb';
 		$hidden[] = 'provider';
 
+		// Get the data
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+
+		// if there are attendees, hide any column that the attendee array doesn't contain
+		if ( count( $items ) ) {
+			$hidden = array_merge(
+				$hidden,
+				array_diff(
+					array_keys( $columns ),
+					array_keys( $items[0] )
+				)
+			);
+		}
+
 		// remove the hidden fields from the final list of columns
 		$hidden         = array_filter( $hidden );
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 		$columns_names  = array_filter( array_values( $export_columns ) );
 		$export_columns = array_filter( array_keys( $export_columns ) );
-
-		// Get the data
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
 		$rows = array( $columns_names );
 		//And echo the data
