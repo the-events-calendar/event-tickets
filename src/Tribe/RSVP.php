@@ -1,9 +1,39 @@
 <?php
 
 class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
+	/**
+	 * Name of the CPT that holds Attendees (tickets holders).
+	 *
+	 * @var string
+	 */
+	const ATTENDEE_OBJECT   = 'tribe_rsvp_attendees';
 
 	/**
-	 * Name of the CPT that holds Attendees (tickets holders)
+	 * Meta key that relates Attendees and Events.
+	 *
+	 * @var string
+	 */
+	const ATTENDEE_EVENT_KEY = '_tribe_rsvp_event';
+
+	/**
+	 * Meta key that relates Attendees and Products.
+	 *
+	 * @var string
+	 */
+	const ATTENDEE_PRODUCT_KEY = '_tribe_rsvp_product';
+
+	/**
+	 * Currently unused for this provider, but defined per the Tribe__Tickets__Tickets spec.
+	 *
+	 * @var string
+	 */
+	const ATTENDEE_ORDER_KEY = '';
+
+	/**
+	 * Name of the CPT that holds Attendees (tickets holders).
+	 *
+	 * @deprecated please use the ATTENDEE_OBJECT constant instead
+	 *
 	 * @var string
 	 */
 	public $attendee_object = 'tribe_rsvp_attendees';
@@ -28,7 +58,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public $checkin_key = '_tribe_rsvp_checkedin';
 
 	/**
-	 * Meta key that relates Attendees and Products
+	 * Meta key that relates Attendees and Products.
+	 *
+	 * @deprecated please use the ATTENDEE_PRODUCT_KEY constant instead
+	 *
 	 * @var string
 	 */
 	public $attendee_product_key = '_tribe_rsvp_product';
@@ -38,8 +71,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @var string
 	 */
 	public $order_key = '_tribe_rsvp_order';
+
 	/**
-	 * Meta key that relates Attendees and Events
+	 * Meta key that relates Attendees and Events.
+	 *
+	 * @deprecated please use the ATTENDEE_EVENT_KEY constant instead
+	 *
 	 * @var string
 	 */
 	public $attendee_event_key = '_tribe_rsvp_event';
@@ -215,7 +252,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		) );
 
 
-		register_post_type( $this->attendee_object, array(
+		register_post_type( self::ATTENDEE_OBJECT, array(
 			'label'           => 'Attendees',
 			'public'          => false,
 			'show_ui'         => false,
@@ -286,7 +323,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$attendee = array(
 					'post_status' => 'publish',
 					'post_title'  => $attendee_full_name . ' | ' . ( $i + 1 ),
-					'post_type'   => $this->attendee_object,
+					'post_type'   => self::ATTENDEE_OBJECT,
 					'ping_status' => 'closed',
 				);
 
@@ -296,8 +333,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 				update_post_meta( $product_id, 'total_sales', ++ $sales );
 
-				update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
-				update_post_meta( $attendee_id, $this->attendee_event_key, $event_id );
+				update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
+				update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $event_id );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
@@ -344,7 +381,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	protected function get_attendees_by_transaction( $order_id ) {
 		$attendees = array();
 		$query     = new WP_Query( array(
-			'post_type'      => $this->attendee_object,
+			'post_type'      => self::ATTENDEE_OBJECT,
 			'meta_key'       => $this->order_key,
 			'meta_value'     => $order_id,
 			'posts_per_page' => - 1,
@@ -352,8 +389,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $query->posts as $post ) {
 			$attendees[] = array(
-				'event_id'      => get_post_meta( $post->ID, $this->attendee_event_key, true ),
-				'ticket_name'   => get_post( get_post_meta( $post->ID, $this->attendee_product_key, true ) )->post_title,
+				'event_id'      => get_post_meta( $post->ID, self::ATTENDEE_EVENT_KEY, true ),
+				'ticket_name'   => get_post( get_post_meta( $post->ID, self::ATTENDEE_PRODUCT_KEY, true ) )->post_title,
 				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'order_id'      => $order_id,
@@ -454,9 +491,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function delete_ticket( $event_id, $ticket_id ) {
 		// Ensure we know the event and product IDs (the event ID may not have been passed in)
 		if ( empty( $event_id ) ) {
-			$event_id = get_post_meta( $ticket_id, $this->attendee_event_key, true );
+			$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
 		}
-		$product_id = get_post_meta( $ticket_id, $this->attendee_product_key, true );
+		$product_id = get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true );
 
 		// Decrement the sales figure
 		$sales = (int) get_post_meta( $product_id, 'total_sales', true );
@@ -612,7 +649,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$event = get_post_meta( $ticket_product, $this->event_key, true );
 
-		if ( ! $event && '' === ( $event = get_post_meta( $ticket_product, $this->attendee_event_key, true ) ) ) {
+		if ( ! $event && '' === ( $event = get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true ) ) ) {
 			return false;
 		}
 
@@ -645,8 +682,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	protected function get_attendees( $event_id ) {
 		$attendees_query = new WP_Query( array(
 			'posts_per_page' => - 1,
-			'post_type'      => $this->attendee_object,
-			'meta_key'       => $this->attendee_event_key,
+			'post_type'      => self::ATTENDEE_OBJECT,
+			'meta_key'       => self::ATTENDEE_EVENT_KEY,
 			'meta_value'     => $event_id,
 			'orderby'        => 'ID',
 			'order'          => 'DESC',
@@ -661,7 +698,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		foreach ( $attendees_query->posts as $attendee ) {
 			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
 			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
-			$product_id = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
+			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
 			$name       = get_post_meta( $attendee->ID, $this->full_name, true );
 			$email      = get_post_meta( $attendee->ID, $this->email, true );
 
@@ -803,7 +840,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function maybe_redirect_to_attendees_report( $post_id ) {
 		$post = get_post( $post_id );
 
-		if ( $this->attendee_object !== $post->post_type ) {
+		if ( self::ATTENDEE_OBJECT !== $post->post_type ) {
 			return;
 		}
 
@@ -834,7 +871,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$post_type = get_post_type( $ticket_post );
 
-		if ( $this->attendee_object !== $post_type ) {
+		if ( self::ATTENDEE_OBJECT !== $post_type ) {
 			return $messages;
 		}
 
@@ -855,18 +892,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'</a>'
 		);
 
-		$messages[ $this->attendee_object ] = $messages['post'];
-		$messages[ $this->attendee_object ][1] = sprintf(
+		$messages[ self::ATTENDEE_OBJECT ] = $messages['post'];
+		$messages[ self::ATTENDEE_OBJECT ][1] = sprintf(
 			esc_html__( 'Post updated. %1$s', 'event-tickets' ),
 			$return_link
 		);
-		$messages[ $this->attendee_object ][6] = sprintf(
+		$messages[ self::ATTENDEE_OBJECT ][6] = sprintf(
 			esc_html__( 'Post published. %1$s', 'event-tickets' ),
 			$return_link
 		);
-		$messages[ $this->attendee_object ][8] = esc_html__( 'Post submitted.', 'event-tickets' );
-		$messages[ $this->attendee_object ][9] = esc_html__( 'Post scheduled.', 'event-tickets' );
-		$messages[ $this->attendee_object ][10] = esc_html__( 'Post draft updated.', 'event-tickets' );
+		$messages[ self::ATTENDEE_OBJECT ][8] = esc_html__( 'Post submitted.', 'event-tickets' );
+		$messages[ self::ATTENDEE_OBJECT ][9] = esc_html__( 'Post scheduled.', 'event-tickets' );
+		$messages[ self::ATTENDEE_OBJECT ][10] = esc_html__( 'Post draft updated.', 'event-tickets' );
 
 		return $messages;
 	}
