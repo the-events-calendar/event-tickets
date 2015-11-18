@@ -30,15 +30,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_ORDER_KEY = '';
 
 	/**
-	 * Name of the CPT that holds Attendees (tickets holders).
-	 *
-	 * @deprecated please use the ATTENDEE_OBJECT constant instead
-	 *
-	 * @var string
-	 */
-	public $attendee_object = 'tribe_rsvp_attendees';
-
-	/**
 	 *Name of the CPT that holds Tickets
 	 *
 	 * @var string
@@ -58,28 +49,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public $checkin_key = '_tribe_rsvp_checkedin';
 
 	/**
-	 * Meta key that relates Attendees and Products.
-	 *
-	 * @deprecated please use the ATTENDEE_PRODUCT_KEY constant instead
-	 *
-	 * @var string
-	 */
-	public $attendee_product_key = '_tribe_rsvp_product';
-
-	/**
 	 * Meta key that ties attendees together by order
 	 * @var string
 	 */
 	public $order_key = '_tribe_rsvp_order';
-
-	/**
-	 * Meta key that relates Attendees and Events.
-	 *
-	 * @deprecated please use the ATTENDEE_EVENT_KEY constant instead
-	 *
-	 * @var string
-	 */
-	public $attendee_event_key = '_tribe_rsvp_event';
 
 	/**
 	 * Meta key that holds the security code that's printed in the tickets
