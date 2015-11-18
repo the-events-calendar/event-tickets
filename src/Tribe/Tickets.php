@@ -834,7 +834,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Tests if the user has the specified capability in relation to whatever post type
 		 * the attendee object relates to.
 		 *
-		 * For example, if the attendee was generated for a ticket ste up in relation to a
+		 * For example, if the attendee was generated for a ticket set up in relation to a
 		 * post of the banana type, the generic capability "edit_posts" will be mapped to
 		 * "edit_bananas" or whatever is appropriate.
 		 *
