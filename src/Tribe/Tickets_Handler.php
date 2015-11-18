@@ -253,7 +253,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
 			return;
 		}
 
@@ -291,7 +291,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! isset( $_POST['event_id'] ) || ! isset( $_POST['email'] ) || ! ( is_numeric( $_POST['email'] ) || is_email( $_POST['email'] ) ) ) {
 			$this->ajax_error( 'Bad post' );
 		}
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! current_user_can( 'edit_tribe_events' ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
 			$this->ajax_error( 'Cheatin Huh?' );
 		}
 
@@ -335,6 +335,36 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function set_contenttype( $content_type ) {
 		return 'text/html';
+	}
+
+	/**
+	 * Tests if the user has the specified capability in relation to whatever post type
+	 * the ticket relates to.
+	 *
+	 * For example, if tickets are created for the banana post type, the generic capability
+	 * "edit_posts" will be mapped to "edit_bananas" or whatever is appropriate.
+	 *
+	 * @internal for internal plugin use only (in spite of having public visibility)
+	 *
+	 * @param  string $generic_cap
+	 * @param  int    $event_id
+	 * @return boolean
+	 */
+	public function user_can( $generic_cap, $event_id ) {
+		$type = get_post_type( $event_id );
+
+		// It's possible we'll get null back
+		if ( null === $type ) {
+			return false;
+		}
+
+		$type_config = get_post_type_object( $type );
+
+		if ( ! empty( $type_config->cap->{$generic_cap} ) ) {
+			return current_user_can( $type_config->cap->{$generic_cap} );
+		}
+
+		return false;
 	}
 
 	/* Tickets Metabox */
