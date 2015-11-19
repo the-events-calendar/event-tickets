@@ -46,7 +46,82 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	$( document ).ready( function() {
 		var $event_pickers = $( '#tribe-event-datepickers' );
 
-		var startofweek = 0;
+		var startofweek = 0,
+			$tribeTickets = $( '#tribetickets' ),
+			$ticketsContainer = $( '#event_tickets' ),
+			$body = $( 'html, body' );
+
+		$tribeTickets.on( {
+			/**
+			 * Makes a Visual Spining thingy appear on the Tickets metabox.
+			 * Also prevents user Action on the metabox elements.
+			 *
+			 * @param  {jQuery.event} event  The jQuery event
+			 * @param  {string} action You can use `start` or `stop`
+			 * @return {void}
+			 */
+			'spin.tribe': function( event, action ) {
+				if ( typeof	action === 'undefined' || $.inArray( action, [ 'start', 'stop' ] ) ){
+					action = 'stop';
+				}
+
+				if ( 'stop' === action ) {
+					$ticketsContainer.css( 'opacity', '1' )
+						.find( '#tribe-loading' ).hide();
+				} else {
+					$ticketsContainer.css( 'opacity', '0.5' )
+						.find( '#tribe-loading' ).show();
+
+				}
+			},
+
+			/**
+			 * Clears the Form fields the correct way
+			 *
+			 * @param  {jQuery.event} event  The jQuery event
+			 * @return {void}
+			 */
+			'clear.tribe': function( event ) {
+				var $this = $( this );
+
+				$this.find( 'a#ticket_form_toggle' ).show();
+
+				$this.find( '#ticket_form input:not(:button):not(:radio):not(:checkbox)' ).val( '' );
+				$this.find( '#ticket_form input:checkbox' ).attr( 'checked', false );
+
+				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
+				$this.find( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null );
+				$this.find( '#ticket_end_date' ).datepicker( 'option', 'minDate', null );
+
+				$this.find( '.ticket_start_time' ).hide();
+				$this.find( '.ticket_end_time' ).hide();
+				$this.find( '.ticket.sale_price' ).hide();
+
+				var $ticket_price = $this.find( document.getElementById( 'ticket_price' ) );
+				var $no_update_message = $ticket_price.siblings( '.no-update-message' );
+
+				$no_update_message.html( '' ).hide();
+				$ticket_price.removeProp( 'disabled' );
+				$ticket_price.siblings( '.description' ).show();
+
+				$this.find( '#ticket_form textarea' ).val( '' );
+				$this.find( '#ticket_form' ).hide();
+			},
+
+			/**
+			 * Scrolls to the Tickets container, to show it when required
+			 *
+			 * @param  {jQuery.event} event  The jQuery event
+			 * @return {void}
+			 */
+
+			'focus.tribe': function( event ) {
+				$body.animate( {
+					scrollTop: $ticketsContainer.offset().top - 50
+				}, 500 );
+			}
+
+		} );
 
 		if ( $event_pickers.length ) {
 			startofweek = $event_pickers.data( 'startofweek' );
@@ -116,37 +191,27 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( 'h4.ticket_form_title_edit' ).hide();
 			$( 'h4.ticket_form_title_add' ).show();
 			$( this ).hide();
-			ticket_clear_form();
+			$tribeTickets.trigger( 'clear.tribe' ).trigger( 'focus.tribe' );
 			$( '#ticket_form' ).show();
-			$( 'html, body' ).animate( {
-				scrollTop: $( '#ticket_form_table' ).offset().top - 50
-			}, 500 );
 			e.preventDefault();
 		} );
 
 		/* "Cancel" button action */
 		$( '#ticket_form_cancel' ).click( function() {
-
-			ticket_clear_form();
-
-			$( 'html, body' ).animate( {
-				scrollTop: $( '#event_tickets' ).offset().top - 50
-			}, 500 );
-
+			$tribeTickets.trigger( 'clear.tribe' ).trigger( 'focus.tribe' );
 		} );
-
-		var $tribetickets = $('#tribetickets');
 
 		/* "Save Ticket" button action */
 		$( '#ticket_form_save' ).click( function( e ) {
+			var $form = $( '#ticket_form_table' ),
+				type = $form.find( '#ticket_provider:checked' ).val(),
+				$rows = $form.find( '.ticket, .ticket_advanced_' + type );
 
-			$tribetickets.trigger( 'save-ticket.tribe', e );
-
-			tickets_start_spin();
+			$tribeTickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
-				formdata: $( '.ticket_field' ).serialize(),
+				formdata: $rows.find( '.ticket_field' ).serialize(),
 				post_ID : $( '#post_ID' ).val(),
 				nonce   : TribeTickets.add_ticket_nonce
 			};
@@ -155,34 +220,28 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				ajaxurl,
 				params,
 				function( response ) {
-					$tribetickets.trigger( 'saved-ticket.tribe', response );
+					$tribeTickets.trigger( 'saved-ticket.tribe', response );
 
 					if ( response.success ) {
-						ticket_clear_form();
+						$tribeTickets.trigger( 'clear.tribe' );
 						$( 'td.ticket_list_container' ).empty().html( response.data );
 						$( '.ticket_time' ).hide();
 					}
 				},
 				'json'
 			).complete( function() {
-					$( 'html, body' ).animate( {
-						scrollTop: $( '#event_tickets' ).offset().top - 50
-					}, 500 );
-
-					tickets_stop_spin();
-				} );
+				$tribeTickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
+			} );
 
 		} );
 
 		/* "Delete Ticket" link action */
 
-		$tribetickets.on( 'click', '.ticket_delete', function( e ) {
+		$tribeTickets.on( 'click', '.ticket_delete', function( e ) {
 
 			e.preventDefault();
 
-			$tribetickets.trigger( 'delete-ticket.tribe', e );
-
-			tickets_start_spin();
+			$tribeTickets.trigger( 'delete-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
 			var params = {
 				action   : 'tribe-ticket-delete-' + $( this ).attr( 'attr-provider' ),
@@ -195,24 +254,22 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				ajaxurl,
 				params,
 				function( response ) {
-					$tribetickets.trigger( 'deleted-ticket.tribe', response );
+					$tribeTickets.trigger( 'deleted-ticket.tribe', response );
 
 					if ( response.success ) {
-						ticket_clear_form();
+						$tribeTickets.trigger( 'clear.tribe' );
 						$( 'td.ticket_list_container' ).empty().html( response.data );
 					}
 				},
 				'json'
 			).complete( function() {
-					tickets_stop_spin();
-				} );
-
-
+				$tribeTickets.trigger( 'spin.tribe', 'stop' );
+			} );
 		} );
 
 		/* "Edit Ticket" link action */
 
-		$tribetickets
+		$tribeTickets
 			.on( 'click', '.ticket_edit', function( e ) {
 
 				e.preventDefault();
@@ -220,8 +277,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( 'h4.ticket_form_title_edit' ).show();
 				$( 'h4.ticket_form_title_add' ).hide();
 
-
-				tickets_start_spin();
+				$tribeTickets.trigger( 'spin.tribe', 'start' );
 
 				var params = {
 					action   : 'tribe-ticket-edit-' + $( this ).attr( 'attr-provider' ),
@@ -234,9 +290,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					ajaxurl,
 					params,
 					function( response ) {
-						ticket_clear_form();
+						$tribeTickets;
 
-						$tribetickets.trigger( 'edit-ticket.tribe', response );
+						$tribeTickets.trigger( 'clear.tribe' ).trigger( 'edit-ticket.tribe', response );
 
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
@@ -357,12 +413,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					},
 					'json'
 				).complete( function() {
-						$( 'html, body' ).animate( {
-							scrollTop: $( '#ticket_form_table' ).offset().top - 50
-						}, 500 );
-
-						tickets_stop_spin();
-					} );
+					$tribeTickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
+				} );
 
 			} )
 			.on( 'click', '#tribe_ticket_header_image', function( e ) {
@@ -389,44 +441,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		/* Helper functions */
 
-		function ticket_clear_form() {
-			$( 'a#ticket_form_toggle' ).show();
-
-			$( '#ticket_form input:not(:button):not(:radio):not(:checkbox)' ).val( '' );
-			$( '#ticket_form input:checkbox' ).attr( 'checked', false );
-
-			// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
-			$( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null );
-			$( '#ticket_end_date' ).datepicker( 'option', 'minDate', null );
-
-			$( '.ticket_start_time' ).hide();
-			$( '.ticket_end_time' ).hide();
-			$( '.ticket.sale_price' ).hide();
-
-			var $ticket_price = $( document.getElementById( 'ticket_price' ) );
-			var $no_update_message = $ticket_price.siblings( '.no-update-message' );
-
-			$no_update_message.html( '' ).hide();
-			$ticket_price.removeProp( 'disabled' );
-			$ticket_price.siblings( '.description' ).show();
-
-			$( '#ticket_form textarea' ).val( '' );
-
-			$( '#ticket_form' ).hide();
-		}
-
-		function tickets_start_spin() {
-			$( '#event_tickets' ).css( 'opacity', '0.5' );
-			$( '#tribe-loading' ).show();
-		}
-
-		function tickets_stop_spin() {
-			$( '#event_tickets' ).css( 'opacity', '1' );
-			$( '#tribe-loading' ).hide();
-		}
-
 		function tribe_fix_image_width() {
-			if ( $tribetickets.width() < $tiximg.width() ) {
+			if ( $tribeTickets.width() < $tiximg.width() ) {
 				$tiximg.css( 'width', '95%' );
 			}
 		}

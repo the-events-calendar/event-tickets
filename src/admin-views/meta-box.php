@@ -76,7 +76,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 					</td>
 				</tr>
 
-				<tr>
+				<tr class="ticket">
 					<td width="20%"><label for="ticket_provider"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></label></td>
 					<td>
 						<?php
@@ -93,7 +93,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 						?>
 					</td>
 				</tr>
-				<tr>
+				<tr class="ticket">
 					<td><label for="ticket_name"><?php esc_html_e( 'Ticket Name:', 'event-tickets' ); ?></label></td>
 					<td>
 						<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
