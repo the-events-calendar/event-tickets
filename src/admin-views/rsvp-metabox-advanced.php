@@ -12,9 +12,9 @@ if ( class_exists( 'Tribe__Events__Pro__Main' ) ) {
 	?>
 	<tr class="<?php $this->tr_class(); ?>">
 		<td colspan="2" class="tribe_sectionheader updated">
-			<p id="selling-tickets-info" class="bumpdown-trigger">
+			<p>
 				<?php esc_html_e( 'Selling tickets for recurring events', 'event-tickets' ); ?>
-				<span class="target dashicons dashicons-editor-help"></span>
+				<span id="selling-tickets-info" class="target dashicons dashicons-editor-help bumpdown-trigger"></span>
 			</p>
 			<div class="bumpdown" data-trigger="selling-tickets-info">
 				<?php _e( 'Currently, Tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ); ?>
