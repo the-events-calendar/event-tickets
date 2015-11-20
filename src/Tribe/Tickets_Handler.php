@@ -302,7 +302,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! isset( $_POST['event_id'] ) || ! isset( $_POST['email'] ) || ! ( is_numeric( $_POST['email'] ) || is_email( $_POST['email'] ) ) ) {
 			$this->ajax_error( 'Bad post' );
 		}
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! $this->user_can( 'edit_posts', $_POST['event_id'] ) ) {
 			$this->ajax_error( 'Cheatin Huh?' );
 		}
 
