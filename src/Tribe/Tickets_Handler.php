@@ -395,6 +395,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$endMeridianOptions   = Tribe__View_Helpers::getMeridianOptions( null );
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$post = get_post( $post_id );
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
