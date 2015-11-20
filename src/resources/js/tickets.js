@@ -86,7 +86,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 				$this.find( 'a#ticket_form_toggle' ).show();
 
-				$this.find( 'input:not(:button):not(:radio):not(:checkbox), textarea' ).val( '' );
+				$this.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
 				$this.find( 'input:checkbox' ).attr( 'checked', false );
 
 				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
