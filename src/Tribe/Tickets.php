@@ -363,8 +363,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->price       = ! empty( $data['ticket_price'] ) ? trim( $data['ticket_price'] ) : 0;
 
 			if ( ! empty( $ticket->price ) ) {
-				//remove non-money characters
-				$ticket->price = preg_replace( '/[^0-9\.]/Uis', '', $ticket->price );
+				// remove non-money characters
+				$ticket->price = preg_replace( '/[^0-9\.\,]/Uis', '', $ticket->price );
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
