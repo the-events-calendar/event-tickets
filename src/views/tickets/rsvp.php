@@ -65,7 +65,7 @@ ob_start();
 						}
 						?>
 					</td>
-					<td nowrap="nowrap" class="tickets_name">
+					<td class="tickets_name">
 						<?php echo esc_html( $ticket->name ); ?>
 					</td>
 					<td class="tickets_description" colspan="2">
