@@ -130,7 +130,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					// if there's a value in the name attribute, move it to the data attribute then clear out the id as well
 					if ( $el.attr( 'name' ) ) {
-						$el.data( 'name', $el.attr( 'name' ) ).attr( 'name', '' ).attr( 'id', '' );
+						$el.data( 'name', $el.attr( 'name' ) ).attr( {
+							'name': '',
+							'id': ''
+						} );
 					}
 
 					// if the field is for the currently selected provider, make sure the name and id fields are populated
@@ -139,7 +142,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						&& $el.data( 'name' )
 						&& 0 === $el.attr( 'name' ).length
 					) {
-						$el.attr( 'name', $el.data( 'name' ) ).attr( 'id', $el.data( 'name' ) );
+						$el.attr( {
+							'name': $el.data( 'name' ),
+							'id': $el.data( 'name' )
+						} );
 					}
 				} );
 			}
@@ -412,7 +418,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						}
 
 						var $ticket_advanced = $( 'tr.ticket_advanced input' );
-						$ticket_advanced.data( 'name', $ticket_advanced.attr( 'name' ) ).attr( 'name', '' ).attr( 'id', '' );
+						$ticket_advanced.data( 'name', $ticket_advanced.attr( 'name' ) ).attr( {
+							'name': '',
+							'id': ''
+						} );
 						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
 
@@ -439,8 +448,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						var $sale_field = $tribe_tickets.find( '#ticket_sale_price' );
 
 						if ( onSale ) {
-							$sale_field.val( salePrice );
-							$sale_field.closest( 'tr' ).show();
+							$sale_field
+								.val( salePrice )
+								.closest( 'tr' )
+								.show();
 						} else {
 							$sale_field.closest( 'tr' ).hide();
 						}
