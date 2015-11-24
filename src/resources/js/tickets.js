@@ -457,6 +457,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$sale_field.closest( 'tr' ).hide();
 						}
 
+						if ( 'undefined' !== typeof response.data.purchase_limit && response.data.purchase_limit ) {
+							$( '#ticket_purchase_limit' ).val( response.data.purchase_limit );
+						}
+
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 
 						$( 'a#ticket_form_toggle' ).hide();
