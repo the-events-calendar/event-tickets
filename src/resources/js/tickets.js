@@ -77,10 +77,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			/**
 			 * Clears the Form fields the correct way
 			 *
-			 * @param  {jQuery.event} event  The jQuery event
 			 * @return {void}
 			 */
-			'clear.tribe': function( event ) {
+			'clear.tribe': function() {
 				var $this = $( this ),
 					$ticket_form = $this.find( '#ticket_form' );
 
@@ -105,14 +104,50 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			/**
 			 * Scrolls to the Tickets container, to show it when required
 			 *
-			 * @param  {jQuery.event} event  The jQuery event
 			 * @return {void}
 			 */
-
-			'focus.tribe': function( event ) {
+			'focus.tribe': function() {
 				$body.animate( {
 					scrollTop: $tickets_container.offset().top - 50
 				}, 500 );
+			},
+
+			/**
+			 * Sets/Swaps out the name & id attributes on Advanced ticket meta fields so we don't have (or submit)
+			 * duplicate fields
+			 *
+			 * @return {void}
+			 */
+			'set-advanced-fields.tribe': function() {
+				var $this = $( this );
+				var $ticket_form = $this.find( '#ticket_form' );
+				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced' ).find( 'input, select, textarea' );
+				var provider = $ticket_form.find( '#ticket_provider:checked' ).val();
+
+				// for each advanded ticket input, select, and textarea, relocate the name and id fields a bit
+				$ticket_advanced.each( function() {
+					var $el = $( this );
+
+					// if there's a value in the name attribute, move it to the data attribute then clear out the id as well
+					if ( $el.attr( 'name' ) ) {
+						$el.data( 'name', $el.attr( 'name' ) ).attr( {
+							'name': '',
+							'id': ''
+						} );
+					}
+
+					// if the field is for the currently selected provider, make sure the name and id fields are populated
+					if (
+						$el.closest( 'tr' ).hasClass( 'ticket_advanced_' + provider )
+						&& $el.data( 'name' )
+						&& 0 === $el.attr( 'name' ).length
+					) {
+						$el.attr( {
+							'name': $el.data( 'name' ),
+							'id': $el.data( 'name' )
+						} );
+					}
+				} );
 			}
 
 		} );
@@ -168,6 +203,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		/* Show the advanced metabox for the selected provider and hide the others on selection change */
 		$( 'input[name=ticket_provider]:radio' ).change( function() {
 			$( 'tr.ticket_advanced' ).hide();
+			$tribe_tickets.trigger( 'set-advanced-fields.tribe' );
 			$( 'tr.ticket_advanced_' + this.value + ':not(.sale_price)' ).show();
 		} );
 
@@ -185,14 +221,20 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( 'h4.ticket_form_title_edit' ).hide();
 			$( 'h4.ticket_form_title_add' ).show();
 			$( this ).hide();
-			$tribe_tickets.trigger( 'clear.tribe' ).trigger( 'focus.tribe' );
+			$tribe_tickets
+				.trigger( 'clear.tribe' )
+				.trigger( 'set-advanced-fields.tribe' )
+				.trigger( 'focus.tribe' );
 			$( '#ticket_form' ).show();
 			e.preventDefault();
 		} );
 
 		/* "Cancel" button action */
 		$( '#ticket_form_cancel' ).click( function() {
-			$tribe_tickets.trigger( 'clear.tribe' ).trigger( 'focus.tribe' );
+			$tribe_tickets
+				.trigger( 'clear.tribe' )
+				.trigger( 'set-advanced-fields.tribe' )
+				.trigger( 'focus.tribe' );
 		} );
 
 		/* "Save Ticket" button action */
@@ -284,7 +326,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					ajaxurl,
 					params,
 					function( response ) {
-						$tribe_tickets.trigger( 'clear.tribe' ).trigger( 'edit-ticket.tribe', response );
+						$tribe_tickets
+							.trigger( 'clear.tribe' )
+							.trigger( 'set-advanced-fields.tribe' )
+							.trigger( 'edit-ticket.tribe', response );
 
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
@@ -372,11 +417,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$( '.ticket_end_time' ).show();
 						}
 
+						var $ticket_advanced = $( 'tr.ticket_advanced input' );
+						$ticket_advanced.data( 'name', $ticket_advanced.attr( 'name' ) ).attr( {
+							'name': '',
+							'id': ''
+						} );
 						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
 
 						// set the prices after the advanced fields have been added to the form
-						var $ticket_price = $( document.getElementById( 'ticket_price' ) );
+						var $ticket_price = $tribe_tickets.find( '#ticket_price' );
 						$ticket_price.val( regularPrice );
 
 						if ( 'undefined' !== typeof response.data.disallow_update_price_message ) {
@@ -395,7 +445,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$ticket_price.siblings( '.no-update-message' ).hide();
 						}
 
-						$( '#ticket_sale_price' ).val( salePrice );
+						var $sale_field = $tribe_tickets.find( '#ticket_sale_price' );
+
+						if ( onSale ) {
+							$sale_field
+								.val( salePrice )
+								.closest( 'tr' )
+								.show();
+						} else {
+							$sale_field.closest( 'tr' ).hide();
+						}
 
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 
