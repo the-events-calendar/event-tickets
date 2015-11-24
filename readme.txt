@@ -8,16 +8,17 @@ Stable tag: 4.0rc1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Event Tickets allows your visitors to RSVP to events.  Works seamlessly with The Events Calendar.
+Event Tickets allows your visitors to RSVP to events on your site.  Also works seamlessly with <a href="http://m.tri.be/18tg">The Events Calendar</a>.
 
 == Description ==
 
-Event Tickets provides a simple way for visitors to RSVP to your events.  This plugin works seamlessly with The Events Calendar.
+Event Tickets provides a simple way for visitors to RSVP to your events.  You can add RSVP functionality to posts or pages. When paired with <a href="http://m.tri.be/18tg">The Events Calendar</a>, you can also add RSVP to your calendar listings.
 
 = Event Tickets =
 
 * Visitors can RSVP to events
-* Upgrade to Event Tickets Plus to sell tickets using WooCommerce, Shopp, Easy Digital Downloads or WP-eCommerce
+* Add RSVP to posts, pages, or event listings
+* Upgrade to <a href="http://m.tri.be/18th">Tickets Plus</a> to sell tickets using WooCommerce, Shopp, Easy Digital Downloads or WP-eCommerce
 
 == Installation ==
 
@@ -38,13 +39,13 @@ Event Tickets provides a simple way for visitors to RSVP to your events.  This p
 
 == Documentation ==
 
-Tutorials are available at http://m.tri.be/44
+Our <a href="http://m.tri.be/18ti">New User Primer</a> will help you get started. You can find more tutorials at http://m.tri.be/44.
 
 == Frequently Asked Questions ==
 
 = Where do I go to file a bug or ask a question? =
 
-Please visit the forum for questions or comments: http://m.tri.be/18ku
+Users of the free plugin can post in the Event Tickets support forum on WordPress.org: https://wordpress.org/support/plugin/event-tickets/. Our team reviews that forum weekly to look for bug reports. If you need more in-depth help, consider purchasing a license for <a href="http://m.tri.be/18th">Tickets Plus</a>. A valid license gives you access to our <a href="http://m.tri.be/18u1">premium support forums</a> which are checked daily.
 
 = Are there any troubleshooting steps you'd suggest I try that might resolve my issue before I post a new thread? =
 
@@ -56,12 +57,11 @@ Note that we aren't going to say "tough luck" if you identify a plugin/theme con
 
 = I'm still stuck. Where do I go to file a bug or ask a question? =
 
-If you're an Event Tickets Plus user, you're entitled access to our actively-monitored <a href="http://m.tri.be/3x">forums</a> at the theeventscalendar.com website. We can provide a deeper level of support here and hit these forums on a daily basis during the work week. No post should go more than 24-hours during that time without a response.
-
+If you're an Event Tickets Plus user, you're entitled access to our actively-monitored <a href="http://m.tri.be/18u1">forums</a> at the theeventscalendar.com website. We can provide a deeper level of support here and hit these forums on a daily basis during the work week. No post should go more than 24-48 hours during that time without a response.
 
 == Contributors ==
 
-The plugin is produced by <a href="http://m.tri.be/3i">Modern Tribe Inc</a>.
+The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 
 = Current Contributors =
 
@@ -115,7 +115,7 @@ We don’t have any translations for this plugin yet, but you can help us! You c
 
 == Add-Ons ==
 
-But wait: there's more! We've got a whole stable of plugins available to help you be awesome at what you do. Check out a full list of the products below, and over at <a href="http://m.tri.be/3k">The Events Calendar website.</a>
+But wait: there's more! We've got a whole stable of plugins available to help you be awesome at what you do. Check out a full list of the products below, and over at <a href="http://m.tri.be/18uh">The Events Calendar website.</a>
 
 Our Free Plugins:
 
@@ -127,13 +127,13 @@ Our Free Plugins:
 
 Our Premium Plugins:
 
-* <a href="" target="_blank">Event Tickets Plus</a>
-* <a href="http://m.tri.be/2c" target="_blank">The Events Calendar PRO</a>
-* <a href="http://m.tri.be/2e" target="_blank">The Events Calendar: Eventbrite Tickets</a>
-* <a href="http://m.tri.be/2g" target="_blank">The Events Calendar: Community Events</a>
-* <a href="http://m.tri.be/18m2" target="_blank">The Events Calendar: Community Tickets
-* <a href="http://m.tri.be/2h" target="_blank">The Events Calendar: Facebook Events</a>
-* <a href="http://m.tri.be/fa" target="_blank">The Events Calendar: Filter Bar</a>
+* <a href="http://m.tri.be/18th" target="_blank">Event Tickets Plus</a>
+* <a href="http://m.tri.be/18ul" target="_blank">The Events Calendar PRO</a>
+* <a href="http://m.tri.be/18uo" target="_blank">The Events Calendar: Eventbrite Tickets</a>
+* <a href="http://m.tri.be/18uu" target="_blank">The Events Calendar: Community Events</a>
+* <a href="http://m.tri.be/18uy" target="_blank">The Events Calendar: Community Tickets
+* <a href="http://m.tri.be/18v0" target="_blank">The Events Calendar: Facebook Events</a>
+* <a href="http://m.tri.be/18v2" target="_blank">The Events Calendar: Filter Bar</a>
 
 == Changelog ==
 
