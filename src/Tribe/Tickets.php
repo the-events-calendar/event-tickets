@@ -992,6 +992,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function front_end_tickets_form_in_content( $content ) {
 			global $post;
 
+			if ( is_admin() ) {
+				return $content;
+			}
+
 			// if this isn't a post for some reason, bail
 			if ( ! $post instanceof WP_Post ) {
 				return $content;
