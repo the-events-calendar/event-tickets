@@ -1,8 +1,8 @@
 <?php
 $this->attendees_table->prepare_items();
 
-$event_id = isset( $_GET['event_id'] ) ? intval( $_GET['event_id'] ) : 0;
-$event = get_post( $event_id );
+$event_id = $this->attendees_table->event->ID;
+$event = $this->attendees_table->event;
 $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 
 $checkedin = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event_id );
@@ -143,27 +143,4 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 		<input type="hidden" name="post_type" value="<?php echo esc_attr( $event->post_type ); ?>" />
 		<?php $this->attendees_table->display() ?>
 	</form>
-
-	<div id="attendees_email_wrapper" title="<?php esc_html_e( 'Send the attendee list by email', 'event-tickets' ); ?>">
-		<div id="email_errors"></div>
-		<div id="email_send">
-			<label for="email_to_user">
-				<span><?php esc_html_e( 'Select a User:', 'event-tickets' ); ?></span>
-				<?php wp_dropdown_users(
-					array(
-						'name'             => 'email_to_user',
-						'id'               => 'email_to_user',
-						'show_option_none' => esc_html__( 'Select...', 'event-tickets' ),
-						'selected'         => '',
-					)
-				); ?>
-			</label>
-			<span class="attendees_or"><?php esc_html_e( 'or', 'event-tickets' ); ?></span>
-			<label for="email_to_address">
-				<span><?php esc_html_e( 'Email Address:', 'event-tickets' ); ?></span>
-				<input type="text" name="email_to_address" id="email_to_address" value="">
-			</label>
-		</div>
-		<div id="email_response"></div>
-	</div>
 </div>
