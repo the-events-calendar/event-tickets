@@ -463,6 +463,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 
+						$tribe_tickets.find( '.bumpdown-trigger' ).bumpdown();
+						$tribe_tickets.find( '.bumpdown' ).hide();
+
 						$( 'a#ticket_form_toggle' ).hide();
 						$( '#ticket_form' ).show();
 
