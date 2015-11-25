@@ -143,8 +143,8 @@ class Tribe__Tickets__Tickets_Handler {
 				'pointer_id' => 'attendees_filters',
 				'target'     => '#screen-options-link-wrap',
 				'options'    => array(
-					'content' => sprintf( '<h2> %s </h2> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
-					'position' => array( 'edge' => 'top', 'align' => 'center' ),
+					'content' => sprintf( '<h3> %s </h3> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
+					'position' => array( 'edge' => 'top', 'align' => 'right' ),
 				),
 			);
 			wp_enqueue_script( 'wp-pointer' );

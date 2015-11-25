@@ -7,10 +7,26 @@ jQuery( document ).ready( function( $ ) {
 					pointer: AttendeesPointer.pointer_id,
 					action : 'dismiss-wp-pointer'
 				} );
+			},
+			open: function( event, widget ) {
+				widget.pointer
+					.css({
+						top: parseInt( widget.pointer.css( 'top' ).replace( 'px', '' ), 10 ) + 5
+					})
+					.find( '.wp-pointer-arrow' ).css({
+						right: '50px',
+						left: 'auto'
+					} );
+
+				widget.element.on({
+					'click': function() {
+						widget.element.pointer( 'close' );
+					}
+				});
 			}
 		} );
 
-		$( AttendeesPointer.target ).pointer( options ).pointer( 'open' );
+		var $pointer = $( AttendeesPointer.target ).pointer( options ).pointer( 'open' ).pointer( 'widget' );
 	}
 
 	$( 'input.print' ).on( 'click', function( e ) {
