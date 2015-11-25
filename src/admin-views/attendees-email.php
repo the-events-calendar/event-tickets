@@ -1,8 +1,3 @@
-<style type="text/css">
-html.no-js {
-	display: none;
-}
-</style>
 <form method="POST" class="tribe-attendees-email">
 	<div id="plugin-information-title">
 		<?php esc_html_e( 'Send the attendee list by email', 'event-tickets' ); ?>
