@@ -89,6 +89,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$this.find( 'input:checkbox' ).attr( 'checked', false );
 				$this.find( '#ticket_id' ).val( '' );
 
+				// some fields may have a default value we don't want to lose after clearing the form
+				$this.find( 'input[data-default-value]' ).each( function() {
+					var $current_field = $( this );
+					$current_field.val( $current_field.data( 'default-value' ) );
+				} );
+
 				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
 				$this.find( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null );
 				$this.find( '#ticket_end_date' ).datepicker( 'option', 'minDate', null );
