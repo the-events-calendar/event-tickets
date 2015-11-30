@@ -143,8 +143,8 @@ class Tribe__Tickets__Tickets_Handler {
 				'pointer_id' => 'attendees_filters',
 				'target'     => '#screen-options-link-wrap',
 				'options'    => array(
-					'content' => sprintf( '<h2> %s </h2> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
-					'position' => array( 'edge' => 'top', 'align' => 'center' ),
+					'content' => sprintf( '<h3> %s </h3> <p> %s </p>', esc_html__( 'Columns', 'event-tickets' ), esc_html__( 'You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export.', 'event-tickets' ) ),
+					'position' => array( 'edge' => 'top', 'align' => 'right' ),
 				),
 			);
 			wp_enqueue_script( 'wp-pointer' );
@@ -158,15 +158,39 @@ class Tribe__Tickets__Tickets_Handler {
 	 *    Setups the Attendees screen data.
 	 */
 	public function attendees_page_screen_setup() {
+		if ( ! empty( $_GET['action'] ) && in_array( $_GET['action'], array( 'email' ) ) ) {
+			define( 'IFRAME_REQUEST', true );
 
-		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
+			// Use iFrame Header -- WP Method
+			iframe_header();
 
-		$this->maybe_generate_attendees_csv();
+			// Check if we need to send an Email!
+			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) {
+				$status = $this->send_attendee_mail_list();
+			} else {
+				$status = false;
+			}
 
-		wp_enqueue_script( 'jquery-ui-dialog' );
+			$which_tmpl = sanitize_file_name( $_GET['action'] );
+			include $this->path . 'src/admin-views/attendees-' . $which_tmpl . '.php';
 
-		add_filter( 'admin_title', array( $this, 'attendees_admin_title' ), 10, 2 );
+			// Use iFrame Footer -- WP Method
+			iframe_footer();
 
+			// We need nothing else here
+			exit;
+		} else {
+			$this->attendees_table = new Tribe__Tickets__Attendees_Table();
+
+			$this->maybe_generate_attendees_csv();
+
+			add_filter( 'admin_title', array( $this, 'attendees_admin_title' ), 10, 2 );
+			add_filter( 'admin_body_class', array( $this, 'attendees_admin_body_class' ) );
+		}
+	}
+
+	public function attendees_admin_body_class( $body_classes ) {
+		return $body_classes . ' plugins-php';
 	}
 
 	/**
@@ -215,15 +239,26 @@ class Tribe__Tickets__Tickets_Handler {
 		$hidden[] = 'cb';
 		$hidden[] = 'provider';
 
+		// Get the data
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+
+		// if there are attendees, hide any column that the attendee array doesn't contain
+		if ( count( $items ) ) {
+			$hidden = array_merge(
+				$hidden,
+				array_diff(
+					array_keys( $columns ),
+					array_keys( $items[0] )
+				)
+			);
+		}
+
 		// remove the hidden fields from the final list of columns
 		$hidden         = array_filter( $hidden );
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 		$columns_names  = array_filter( array_values( $export_columns ) );
 		$export_columns = array_filter( array_keys( $export_columns ) );
-
-		// Get the data
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
 		$rows = array( $columns_names );
 		//And echo the data
@@ -284,45 +319,85 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 *    Handles the "send to email" action for the attendees list.
+	 * Handles the "send to email" action for the attendees list.
 	 */
-	public function ajax_handler_attendee_mail_list() {
+	public function send_attendee_mail_list() {
+		$error = new WP_Error();
 
-		if ( ! isset( $_POST['event_id'] ) || ! isset( $_POST['email'] ) || ! ( is_numeric( $_POST['email'] ) || is_email( $_POST['email'] ) ) ) {
-			$this->ajax_error( 'Bad post' );
-		}
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'email-attendee-list' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
-			$this->ajax_error( 'Cheatin Huh?' );
+		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'email-attendees-list' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
+			$error->add( 'nonce-fail', esc_html__( 'Cheatin Huh?', 'event-tickets' ), array( 'type' => 'general' ) );
+
+			return $error;
 		}
 
-		if ( is_email( $_POST['email'] ) ) {
-			$email = $_POST['email'];
+		if ( empty( $_GET['event_id'] ) ) {
+			$error->add( 'no-event-id', esc_html__( 'Invalid Event ID', 'event-tickets' ), array( 'type' => 'general' ) );
+
+			return $error;
+		}
+
+		if ( empty( $_POST['email_to_address'] ) && ( empty( $_POST['email_to_user'] ) || 0 >= (int) $_POST['email_to_user'] ) ) {
+			$error->add( 'empty-fields', esc_html__( 'Empty user and email', 'event-tickets' ), array( 'type' => 'general' ) );
+
+			return $error;
+		}
+
+		if ( ! empty( $_POST['email_to_address'] ) ) {
+			$type = 'email';
 		} else {
-			$user  = get_user_by( 'id', $_POST['email'] );
+			$type = 'user';
+		}
+
+		if ( 'email' === $type && ! is_email( $_POST['email_to_address'] ) ) {
+			$error->add( 'invalid-email', esc_html__( 'Invalid Email', 'event-tickets' ), array( 'type' => $type ) );
+
+			return $error;
+		}
+
+		if ( 'user' === $type && ! is_numeric( $_POST['email_to_user'] ) ) {
+			$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), array( 'type' => $type ) );
+
+			return $error;
+		}
+
+		/**
+		 * Now we know we have valid data
+		 */
+
+		if ( 'email' === $type ) {
+			// We already check this variable so, no harm here
+			$email = $_POST['email_to_address'];
+		} else {
+			$user = get_user_by( 'id', $_POST['email_to_user'] );
+
+			if ( ! is_object( $user ) ) {
+				$error->add( 'invalid-user', esc_html__( 'Invalid User ID', 'event-tickets' ), array( 'type' => $type ) );
+
+				return $error;
+			}
+
 			$email = $user->data->user_email;
 		}
 
-		if ( empty( $GLOBALS['hook_suffix'] ) ) {
-			$GLOBALS['hook_suffix'] = 'tribe_ajax';
-		}
+		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
 
-		$this->attendees_page_screen_setup();
+		$items = $this->_generate_filtered_attendees_list( $_GET['event_id'] );
 
-		$items = $this->_generate_filtered_attendees_list( $_POST['event_id'] );
-
-		$event = get_post( $_POST['event_id'] );
+		$event = get_post( $_GET['event_id'] );
 
 		ob_start();
-		$attendee_tpl = Tribe__Templates::getTemplateHierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
+		$attendee_tpl = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/attendees-email.php', array( 'disable_view_check' => true ) );
 		include $attendee_tpl;
 		$content = ob_get_clean();
 
 		add_filter( 'wp_mail_content_type', array( $this, 'set_contenttype' ) );
 		if ( ! wp_mail( $email, sprintf( esc_html__( 'Attendee List for: %s', 'event-tickets' ), $event->post_title ), $content ) ) {
-			$this->ajax_error( 'Error sending email' );
+			$error->add( 'email-error', esc_html__( 'Error when sending the email', 'event-tickets' ), array( 'type' => 'general' ) );
+
+			return $error;
 		}
 
-		$this->ajax_ok( array() );
+		return esc_html__( 'Email sent successfully!', 'event-tickets' );
 	}
 
 	/**
@@ -445,42 +520,6 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		return;
-	}
-
-
-	/**
-	 *
-	 * @param string $message
-	 */
-	final protected function ajax_error( $message = '' ) {
-		header( 'Content-type: application/json' );
-
-		echo json_encode( array(
-			'success' => false,
-			'message' => $message,
-		) );
-		exit;
-	}
-
-	/**
-	 * @param $data
-	 */
-	final protected function ajax_ok( $data ) {
-		$return = array();
-		if ( is_object( $data ) ) {
-			$return = get_object_vars( $data );
-		} elseif ( is_array( $data ) || is_string( $data ) ) {
-			$return = $data;
-		} elseif ( is_bool( $data ) && ! $data ) {
-			$this->ajax_error( 'Something went wrong' );
-		}
-
-		header( 'Content-type: application/json' );
-		echo json_encode( array(
-			'success' => true,
-			'data'    => $return,
-		) );
-		exit;
 	}
 
 	/**

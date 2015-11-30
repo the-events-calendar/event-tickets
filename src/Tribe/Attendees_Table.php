@@ -12,6 +12,9 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
+	// Store a possible Event
+	public $event = false;
+
 	/**
 	 * Class constructor
 	 *
@@ -25,6 +28,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'plural'   => 'attendees',
 			'ajax'     => true,
 		) );
+
+		// Fetch the event Object
+		if ( ! empty( $_GET['event_id'] ) ) {
+			$this->event = get_post( $_GET['event_id'] );
+		}
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
 	}
 
@@ -205,10 +213,19 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			)
 		);
 
+		$email_link = Tribe__Settings::instance()->get_url( array(
+			'page' => 'tickets-attendees',
+			'action' => 'email',
+			'event_id' => $this->event->ID,
+			'TB_iframe' => true,
+			'width' => 410,
+			'height' => 300,
+		) );
+
 		$nav = array(
 			'left' => array(
 				'print' => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
-				'email' => sprintf( '<input type="button" name="email" class="email button action" value="%s">', esc_attr__( 'Email', 'event-tickets' ) ),
+				'email' => '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>',
 				'export' => sprintf( '<a href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
 			),
 			'right' => array(),

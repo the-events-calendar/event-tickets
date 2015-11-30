@@ -76,7 +76,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 					</td>
 				</tr>
 
-				<tr>
+				<tr class="ticket">
 					<td width="20%"><label for="ticket_provider"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></label></td>
 					<td>
 						<?php
@@ -93,7 +93,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 						?>
 					</td>
 				</tr>
-				<tr>
+				<tr class="ticket">
 					<td><label for="ticket_name"><?php esc_html_e( 'Ticket Name:', 'event-tickets' ); ?></label></td>
 					<td>
 						<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
@@ -156,10 +156,17 @@ $modules = Tribe__Tickets__Tickets::modules();
 						</span>
 						<br />
 
-						<p class="description"><?php esc_html_e( "When will ticket sales occur? If you don't set a start/end date for sales, tickets will be available from now until the event ends.", 'event-tickets' ); ?></p>
+						<p class="description">
+							<?php esc_html_e( 'When will ticket sales occur?', 'event-tickets' ); ?>
+							<?php
+							// Why break in and out of PHP? because I want the space between the phrases without including them in the translations
+							if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post_id ) ) {
+								esc_html_e( "If you don't set a start/end date for sales, tickets will be available from now until the event ends.", 'event-tickets' );
+							}
+							?>
+						</p>
 					</td>
 				</tr>
-
 
 				<?php do_action( 'tribe_events_tickets_metabox_advanced', get_the_ID(), null ); ?>
 

@@ -361,10 +361,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->name        = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
 			$ticket->description = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
 			$ticket->price       = ! empty( $data['ticket_price'] ) ? trim( $data['ticket_price'] ) : 0;
+			$ticket->purchase_limit = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit' ] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 
 			if ( ! empty( $ticket->price ) ) {
-				//remove non-money characters
-				$ticket->price = preg_replace( '/[^0-9\.]/Uis', '', $ticket->price );
+				// remove non-money characters
+				$ticket->price = preg_replace( '/[^0-9\.\,]/Uis', '', $ticket->price );
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
@@ -509,7 +510,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$ticket_id = $_POST['ticket_id'];
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
-			$ticket->purchase_limit = isset( $_POST['ticket_purchase_limit'] ) ? absint( $_POST['ticket_purchase_limit' ] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 
 			$return = get_object_vars( $ticket );
 			/**
@@ -991,6 +991,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		public function front_end_tickets_form_in_content( $content ) {
 			global $post;
+
+			if ( is_admin() ) {
+				return $content;
+			}
 
 			// if this isn't a post for some reason, bail
 			if ( ! $post instanceof WP_Post ) {

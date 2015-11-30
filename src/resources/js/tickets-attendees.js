@@ -7,108 +7,30 @@ jQuery( document ).ready( function( $ ) {
 					pointer: AttendeesPointer.pointer_id,
 					action : 'dismiss-wp-pointer'
 				} );
+			},
+			open: function( event, widget ) {
+				widget.pointer
+					.css({
+						top: parseInt( widget.pointer.css( 'top' ).replace( 'px', '' ), 10 ) + 5
+					})
+					.find( '.wp-pointer-arrow' ).css({
+						right: '50px',
+						left: 'auto'
+					} );
+
+				widget.element.on({
+					'click': function() {
+						widget.element.pointer( 'close' );
+					}
+				});
 			}
 		} );
 
-		$( AttendeesPointer.target ).pointer( options ).pointer( 'open' );
+		var $pointer = $( AttendeesPointer.target ).pointer( options ).pointer( 'open' ).pointer( 'widget' );
 	}
 
 	$( 'input.print' ).on( 'click', function( e ) {
 		window.print();
-	} );
-
-	$( "#attendees_email_wrapper" ).dialog( {
-		autoOpen   : false,
-		dialogClass: 'attendees_email_dialog',
-		height     : 'auto',
-		width      : 400,
-		modal      : true,
-		buttons    : {
-			"Send": function() {
-
-				var $errors = $( '.attendees_email_dialog #email_errors' );
-				var $response = $( '.attendees_email_dialog #email_response' );
-				var $send = $( '.attendees_email_dialog #email_send, .attendees_email_dialog .ui-dialog-buttonpane' );
-
-				$errors.show();
-
-				var $email = tribe_validate_email();
-
-				if ( $email !== false ) {
-
-					$response.show();
-					$send.hide();
-
-					var opts = {
-						action  : 'tribe-ticket-email-attendee-list',
-						email   : $email,
-						nonce   : Attendees.nonce,
-						event_id: $( '#event_id' ).val()
-					};
-
-					$.post( ajaxurl, opts, function( response ) {
-						if ( response.success ) {
-							$errors.removeClass( 'ui-state-error' ).removeClass( 'ui-state-highlight' ).text( '' );
-							var combo = $( '#email_to_user' );
-							combo.prop( 'disabled', false );
-							combo.val( '' );
-							$( '#email_to_address' ).val( '' );
-							$( '#attendees_email_wrapper' ).dialog( "close" );
-							$response.hide();
-							$send.show();
-							$errors.hide();
-						}
-						else {
-							tribe_status_bg = $response.css( 'background' );
-							$errors.removeClass( 'ui-state-highlight' ).addClass( 'ui-state-error' ).text( response.message );
-							$( '.ui-dialog-buttonpane' ).show();
-							$( '.ui-button-text-only:first' ).hide();
-							$( '#email_response' ).css( 'background', 'none' );
-						}
-					} );
-				}
-
-			},
-			Close : function() {
-				$( this ).dialog( "close" );
-				$( '.ui-button-text-only:first' ).show();
-				$( '.attendees_email_dialog #email_response' ).hide();
-				$( '.attendees_email_dialog #email_send, .attendees_email_dialog .ui-dialog-buttonpane' ).show();
-				$( '.attendees_email_dialog #email_errors' ).removeClass( 'ui-state-error' ).removeClass( 'ui-state-highlight' ).text( '' ).hide();
-
-			}
-		} } );
-
-	$( "input.email" ).click( function() {
-
-		/* Cleanup */
-		var combo = $( '#email_to_user' );
-		combo.prop( 'disabled', false );
-		combo.val( '' );
-		$( '#email_to_address' ).val( '' );
-		$( '#email_response' ).removeClass( 'ui-state-error' ).removeClass( 'ui-state-highlight' ).text( '' );
-		$( '.ui-button-text-only:first' ).show();
-		$( '.attendees_email_dialog #email_response' ).hide();
-		$( '.attendees_email_dialog #email_send, .attendees_email_dialog .ui-dialog-buttonpane' ).show();
-
-		$( "#attendees_email_wrapper" ).dialog( "open" );
-
-	} );
-
-
-	$( '#email_to_address' ).on( 'keyup paste', function() {
-
-		var email = jQuery( this ).val().trim();
-		var combo = $( '#email_to_user' );
-
-		if ( email === '' ) {
-			combo.prop( 'disabled', false );
-		}
-		else {
-			combo.val( '' );
-			combo.prop( 'disabled', 'disabled' );
-		}
-
 	} );
 
 	var $filter_attendee = $( document.getElementById( 'filter_attendee' ) );
@@ -147,6 +69,12 @@ jQuery( document ).ready( function( $ ) {
 		} );
 
 	} );
+
+	$( '.tribe-attendees-email' ).on({
+		'submit': function( event ) {
+			$( 'html' ).hide();
+		}
+	});
 
 
 	$( '.tickets_checkin' ).click( function( e ) {
