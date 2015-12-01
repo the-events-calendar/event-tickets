@@ -223,6 +223,7 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
+		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 	}
 
 	/**
@@ -251,7 +252,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function add_help_section_featured_content( $help ) {
 		// If The Events Calendar is active dont add
-		if ( $help->is_active( 'the-events-calendar', true ) ){
+		if ( $help->is_active( 'the-events-calendar', true ) ) {
 			return;
 		}
 
