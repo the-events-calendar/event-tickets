@@ -12,6 +12,10 @@ Event Tickets allows your visitors to RSVP to events on your site.  Also works s
 
 == Description ==
 
+><strong>A note about support:</strong> We’re here to help troubleshoot bugs, but should set expectations early that the support forums at WordPress.org are only checked once a week.
+>
+> Users looking for more timely/in-depth support are encouraged to check out <a href="http://m.tri.be/18th" target="_blank" title="[new window]">Event Tickets Plus</a>.
+
 Event Tickets provides a simple way for visitors to RSVP to your events.  You can add RSVP functionality to posts or pages. When paired with <a href="http://m.tri.be/18tg">The Events Calendar</a>, you can also add RSVP to your calendar listings.
 
 = Event Tickets =
