@@ -9,7 +9,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.0rc1';
+	const VERSION = '4.0';
 
 	/**
 	 * Min required The Events Calendar version
@@ -223,6 +223,7 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
+		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 	}
 
 	/**
@@ -235,10 +236,10 @@ class Tribe__Tickets__Main {
 	public function add_help_section_support_content( $help ) {
 		$help->add_section_content( 'support', '<strong>' . esc_html__( 'Support for Event Tickets', 'event-tickets' ) . '</strong>', 20 );
 		$help->add_section_content( 'support', array(
-			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
-			'<strong><a href="@todo" target="_blank">' . esc_html__( 'Customizing Events Tickets', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="http://m.tri.be/18ne" target="_blank">' . esc_html__( 'Settings overview', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="http://m.tri.be/18nf" target="_blank">' . esc_html__( 'Features overview', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="http://m.tri.be/18jb" target="_blank">' . esc_html__( 'Troubleshooting common problems', 'event-tickets' ) . '</a></strong>',
+			'<strong><a href="http://m.tri.be/18ng" target="_blank">' . esc_html__( 'Customizing Event Tickets', 'event-tickets' ) . '</a></strong>',
 		), 20 );
 	}
 
@@ -251,11 +252,11 @@ class Tribe__Tickets__Main {
 	 */
 	public function add_help_section_featured_content( $help ) {
 		// If The Events Calendar is active dont add
-		if ( $help->is_active( 'the-events-calendar', true ) ){
+		if ( $help->is_active( 'the-events-calendar', true ) ) {
 			return;
 		}
 
-		$link = '<a href="http://m.tri.be/18j8" target="_blank">' . esc_html__( 'New User Primer', 'event-tickets' ) . '</a>';
+		$link = '<a href="http://m.tri.be/18nd" target="_blank">' . esc_html__( 'New User Primer', 'event-tickets' ) . '</a>';
 
 		$help->add_section_content( 'feature-box', sprintf( __( 'We are committed to helping you sell tickets for your event. Check out our handy %s to get started.', 'event-tickets' ), $link ), 20 );
 	}
@@ -275,19 +276,19 @@ class Tribe__Tickets__Main {
 		} elseif ( ! $help->is_active( 'the-events-calendar' ) ) {
 			if ( ! $help->is_active( 'event-tickets-plus' ) ) {
 
-				$link = '<a href="@todo" target="_blank">' . esc_html__( 'open-source forum on WordPress.org', 'event-tickets' ) . '</a>';
+				$link = '<a href="https://wordpress.org/support/plugin/event-tickets/" target="_blank">' . esc_html__( 'open-source forum on WordPress.org', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there.', 'event-tickets' ), $link ), 20 );
 
 				$link_forum = '<a href="http://m.tri.be/4w/" target="_blank">' . esc_html__( 'premium support on our website', 'event-tickets' ) . '</a>';
-				$link_plus = '<a href="@todo" target="_blank">' . esc_html__( 'Events Tickets Plus', 'event-tickets' ) . '</a>';
+				$link_plus = '<a href="http://m.tri.be/18ni" target="_blank">' . esc_html__( 'Events Tickets Plus', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays.', 'event-tickets' ), $link_forum, $link_plus ), 20 );
 
-				$link = '<a href="@todo" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
+				$link = '<a href="http://m.tri.be/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week).', 'event-tickets' ), $link ), 20 );
 
 			}  else {
 
-				$link = '<a href="@todo" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
+				$link = '<a href="http://m.tri.be/4w/" target="_blank">' . esc_html__( 'post a thread', 'event-tickets' ) . '</a>';
 				$help->add_section_content( 'extra-help', sprintf( __( 'If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week).', 'event-tickets' ), $link ), 20 );
 
 			}
