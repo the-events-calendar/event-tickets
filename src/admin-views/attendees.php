@@ -4,6 +4,7 @@ $this->attendees_table->prepare_items();
 $event_id = $this->attendees_table->event->ID;
 $event = $this->attendees_table->event;
 $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
+$post_type_object = get_post_type_object( $event->post_type );
 
 $checkedin = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event_id );
 $total_sold = 0;
@@ -14,18 +15,6 @@ foreach ( $tickets as $ticket ) {
 	$total_sold += $ticket->qty_sold();
 	$total_pending += $ticket->qty_pending();
 	$total_completed = $total_sold - $total_pending;
-}
-
-if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
-	$venue_id = tribe_get_venue_id( $event_id );
-
-	$url = get_post_meta( $venue_id, '_VenueURL', true );
-	if ( $url ) {
-		$url_path = parse_url( $url, PHP_URL_PATH );
-		$display_url = parse_url( $url, PHP_URL_HOST );
-		$display_url .= empty( $url_path ) && $url_path !== '/' ? '/&hellip;' : '';
-		$display_url = apply_filters( 'tribe_venue_display_url', $display_url, $url, $venue_id );
-	}
 }
 
 ?>
@@ -42,53 +31,26 @@ if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
 					<?php do_action( 'tribe_events_tickets_attendees_event_details_top', $event_id ); ?>
 
 					<ul>
-					<?php if ( function_exists( 'tribe_get_start_date' ) ): ?>
-						<li>
-							<strong><?php esc_html_e( 'Start Date / Time:', 'event-tickets' ) ?></strong>
-							<?php echo tribe_get_start_date( $event_id, false, tribe_get_datetime_format( true ) ) ?>
-						</li>
-
-						<li>
-							<strong><?php esc_html_e( 'End Date / Time:', 'event-tickets' ) ?></strong>
-							<?php echo tribe_get_end_date( $event_id, false, tribe_get_datetime_format( true ) ); ?>
-						</li>
-					<?php endif; ?>
-
-					<?php if ( function_exists( 'tribe_has_venue' ) && tribe_has_venue( $event_id ) ) {
-						?>
-
-						<li class="venue-name">
-							<strong><?php echo tribe_get_venue_label_singular(); ?>: </strong>
-							<a href="<?php echo get_edit_post_link( $venue_id ); ?>" title="<?php esc_html_e( 'Edit Venue', 'event-tickets' ); ?>"><?php echo tribe_get_venue( $event_id ) ?></a>
-						</li>
-
-						<li class="venue-address">
-							<strong><?php _e( 'Address:', 'event-tickets' ); ?> </strong>
-							<?php echo tribe_get_full_address( $venue_id ); ?>
-						</li>
-
 						<?php
-						if ( $phone = tribe_get_phone( $venue_id ) ) {
-							?>
-							<li class="venue-phone">
-								<strong><?php echo esc_html( __( 'Phone:', 'event-tickets' ) ); ?> </strong>
-								<?php echo esc_html( $phone ); ?>
-							</li>
-							<?php
-						}//end if
-
-						if ( $url ) {
-							?>
-							<li class="venue-url">
-								<strong><?php echo esc_html( __( 'Website:', 'event-tickets' ) ); ?> </strong>
-								<a target="_blank" href="<?php echo esc_url( $url ); ?>">
-									<?php echo esc_html( $display_url ); ?>
-								</a>
-							</li>
-							<?php
-						}//end if
-					}
-					?>
+						/**
+						 * Provides an action that allows for the injections of fields at the top of the event details meta ul
+						 *
+						 * @var $event_id
+						 */
+						do_action( 'tribe_tickets_attendees_event_details_list_top', $event_id );
+						?>
+						<li>
+							<strong><?php esc_html_e( 'Post Type:', 'event-tickets' ); ?></strong>
+							<?php echo esc_html( $post_type_object->labels->singular_name ); ?>
+						</li>
+						<?php
+						/**
+						 * Provides an action that allows for the injections of fields at the bottom of the event details meta ul
+						 *
+						 * @var $event_id
+						 */
+						do_action( 'tribe_tickets_attendees_event_details_list_bottom', $event_id );
+						?>
 					</ul>
 					<?php do_action( 'tribe_events_tickets_attendees_event_details_bottom', $event_id ); ?>
 				</div>
