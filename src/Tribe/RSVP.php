@@ -282,7 +282,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$qty = max( intval( $_POST[ "quantity_{$product_id}" ] ), 0 );
 
 			// Throw an error if Qty is bigger then Remaining
-			if ( $qty > $ticket->remaining() ){
+			if ( $ticket->managing_stock() && $qty > $ticket->remaining() ) {
 				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $event_id ) );
 				wp_redirect( esc_url_raw( $url ) );
 				die;
