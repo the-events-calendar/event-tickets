@@ -89,6 +89,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$this.find( 'input:checkbox' ).attr( 'checked', false );
 				$this.find( '#ticket_id' ).val( '' );
 
+				$this.find( '#ticket_form input[name="show_attendee_info"]' ).prop( 'checked', false ).change();
+
 				// some fields may have a default value we don't want to lose after clearing the form
 				$this.find( 'input[data-default-value]' ).each( function() {
 					var $current_field = $( this );
@@ -104,6 +106,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$this.find( '#ticket_price' ).removeProp( 'disabled' )
 					.siblings( '.no-update-message' ).html( '' ).hide()
 					.end().siblings( '.description' ).show();
+
+				$('#tribe-tickets-attendee-sortables').empty();
+				$('.tribe-tickets-attendee-saved-fields').show();
 
 				$ticket_form.hide();
 			},
@@ -212,6 +217,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( 'tr.ticket_advanced' ).hide();
 			$tribe_tickets.trigger( 'set-advanced-fields.tribe' );
 			$( 'tr.ticket_advanced_' + this.value + ':not(.sale_price)' ).show();
+			$( 'tr.ticket_advanced_meta' ).show();
 		} );
 
 		/* Show the advanced metabox for the selected provider and hide the others at ready */
@@ -221,6 +227,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.filter( 'tr.ticket_advanced_' + this.value )
 				.not( '.sale_price' )
 				.show();
+
+			$( 'tr.ticket_advanced_meta' ).show();
 		} );
 
 		/* "Add a ticket" link action */
@@ -247,14 +255,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		/* "Save Ticket" button action */
 		$( '#ticket_form_save' ).click( function( e ) {
 			var $form = $( '#ticket_form_table' ),
-				type = $form.find( '#ticket_provider:checked' ).val(),
-				$rows = $form.find( '.ticket, .ticket_advanced_' + type );
+				type = $form.find( '#ticket_provider:checked' ).val();
 
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
-				formdata: $rows.find( '.ticket_field' ).serialize(),
+				formdata: $( '.ticket_field' ).serialize(),
 				post_ID : $( '#post_ID' ).val(),
 				nonce   : TribeTickets.add_ticket_nonce
 			};
@@ -430,6 +437,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							'id': ''
 						} );
 						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
+						$( 'tr.ticket_advanced_meta' ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
 
 						// set the prices after the advanced fields have been added to the form
@@ -474,6 +482,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( 'a#ticket_form_toggle' ).hide();
 						$( '#ticket_form' ).show();
+						$tribe_tickets.trigger( 'edit-ticket.tribe' )
 
 					},
 					'json'

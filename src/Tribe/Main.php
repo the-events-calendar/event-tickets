@@ -45,6 +45,11 @@ class Tribe__Tickets__Main {
 	 */
 	public $legacy_provider_support;
 
+	/**
+	 * @var Tribe__Tickets__Meta
+	 */
+	public $meta;
+
 	private $has_initialized = false;
 
 	/**
@@ -110,6 +115,7 @@ class Tribe__Tickets__Main {
 		load_plugin_textdomain( 'event-tickets', false, $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
+
 		$this->has_initialized = true;
 	}
 
@@ -224,6 +230,7 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
+
 	}
 
 	/**
@@ -304,6 +311,8 @@ class Tribe__Tickets__Main {
 
 		// Provide continued support for legacy ticketing modules
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
+
+		$this->meta = new Tribe__Tickets__Meta( $this->plugin_path );
 
 		$this->settings_tab();
 	}
