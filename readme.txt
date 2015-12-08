@@ -141,6 +141,11 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.0.1] unreleased =
+
+* Tweak - Removed The Events Calendar-specific fields from the Attendees Report as defaults. The Events Calendar will now hook into the report and inject event-specific fields
+* Fix - Fixed issue where a retina-friendly loading gif was 404ing
+
 = [4.0] 2015-12-02 =
 
 * Initial release
