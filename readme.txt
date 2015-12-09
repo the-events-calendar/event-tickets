@@ -16,13 +16,51 @@ Event Tickets allows your visitors to RSVP to events on your site.  Also works s
 >
 > Users looking for more timely/in-depth support are encouraged to check out <a href="http://m.tri.be/18th" target="_blank" title="[new window]">Event Tickets Plus</a>.
 
-Event Tickets provides a simple way for visitors to RSVP to your events.  You can add RSVP functionality to posts or pages. When paired with <a href="http://m.tri.be/18tg">The Events Calendar</a>, you can also add RSVP to your calendar listings.
+Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with The Events Calendar, you can add that same RSVP functionality directly to your event listings.
 
-= Event Tickets =
+Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
+
+= BUILT SOLID & SUPPORTED =
+
+The team at Modern Tribe stands by our work and offers light support every Wednesday to the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the <a href="http://m.tri.be/18th">premium add-on plugin</a> and you get access to premium support forums with 24-48 hour response times on weekdays.
+
+Enjoy using Event Tickets, know how to get under the hood and want to make money helping people? We're growing our community team and would love to hear from you. If you’re interested, <a href="http://m.tri.be/mk">check this out!</a>
+
+= PLUG-N-PLAY & HIGHLY CUSTOMIZABLE =
+
+Event Tickets is built to work out of the box: it doesn’t use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs within minutes.
+
+By developers, for developers... it's ready to be the foundation for your wildest hack sessions. Complete with a skeleton stylesheet to theme fast and efficiently, loads of tools including partial template overrides, a host of template tags, hooks and filters, <a href="http://m.tri.be/eu">careful documentation</a>, as well as a <a href="https://github.com/moderntribe">library of code snippets</a> on GitHub. Events Tickets is built FOR people who build websites.
+
+Whether your vision is big or small, we have you in mind.
+
+= FEATURES =
+
+Just getting started? Definitely watch and read through the <a href="http://m.tri.be/18ti">New User Primer</a> before going much further.
 
 * Visitors can RSVP to events
-* Add RSVP to posts, pages, or event listings
+* Add RSVP to posts, pages, or any custom post type
+* Works out of the box with The Events Calendar
 * Upgrade to <a href="http://m.tri.be/18th">Tickets Plus</a> to sell tickets using WooCommerce, Shopp, Easy Digital Downloads or WP-eCommerce
+* Completely responsive from mobile to tablet to desktop
+* Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
+* Internationalized & Translated
+* Extensive Template Tags for Customization
+* Hook & Filters up the wazoo
+
+Looking for something else?
+
+
+* Sell tickets, collect sales, and manage attendees all from within your WordPress dashboard! Combine our <a href="http://m.tri.be/18wg">Event Tickets Plus add-on</a> with your favorite ecommerce plugin (WooCommerce, Shopp, Easy Digital Downloads, or WP E-commerce).
+* <a href="https://wordpress.org/plugins/the-events-calendar/" target="_blank">The Events Calendar</a> is the most popular calendar solution for WordPress.  Team it up with Event Tickets and see the real magic happen.
+* <a href="http://m.tri.be/2c">Events Calendar PRO</a>: recurring events, a whole range of new views ( week / map / photo / venue / organizer) & widgets (calendar / featured venue / week / event countdown), custom event attributes, default content, location search and a lot more.
+* Have so many amazing events that your users get overwhelmed? Drop some filters on them with the <a href="http://m.tri.be/52" target="_blank">Filter Bar plugin</a>.
+* Get your community involved by letting them submit events with our <a href="http://m.tri.be/18uu" target="_blank">Community Events</a> plugin.  Take it to the next level by letting them sell tickets with the <a href="http://m.tri.be/18uy" target="_blank">Community Tickets</a> add-on!
+<a href="https://www.facebook.com/theeventscalendar/" target="_blank">Join us on Facebook</a> to be part of our active community, check us out <a href="https://twitter.com/TheEventsCal" target="_blank">on Twitter</a>, and <a href="http://m.tri.be/rm">sign up for our newsletter</a> for release announcements and discounts.
+
+= SUBMITTING PATCHES =
+
+If you’ve identified a bug and want to submit a patch, we’d welcome it at our <a href="https://github.com/moderntribe/events-tickets" target="_blank">GitHub page for Event Tickets.</a> Simply cue up your proposed patch as a pull request, and we’ll review as part of our release cycle and merge into the codebase if appropriate from there. (If a pull request is rejected, we’ll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin’s changelog. For more information, check out the readme at our GitHub page. Happy coding!
 
 == Installation ==
 
@@ -135,7 +173,7 @@ Our Premium Plugins:
 * <a href="http://m.tri.be/18ul" target="_blank">The Events Calendar PRO</a>
 * <a href="http://m.tri.be/18uo" target="_blank">The Events Calendar: Eventbrite Tickets</a>
 * <a href="http://m.tri.be/18uu" target="_blank">The Events Calendar: Community Events</a>
-* <a href="http://m.tri.be/18uy" target="_blank">The Events Calendar: Community Tickets
+* <a href="http://m.tri.be/18uy" target="_blank">The Events Calendar: Community Tickets</a>
 * <a href="http://m.tri.be/18v0" target="_blank">The Events Calendar: Facebook Events</a>
 * <a href="http://m.tri.be/18v2" target="_blank">The Events Calendar: Filter Bar</a>
 
