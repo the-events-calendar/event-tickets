@@ -243,6 +243,7 @@
 				}
 
 				$venue_label = '';
+				$venue_name = null;
 
 				if ( function_exists( 'tribe_get_venue_id' ) ) {
 					$venue_id = tribe_get_venue_id( $event->ID );
@@ -262,7 +263,17 @@
 					}
 				}
 
-				if ( function_exists( 'tribe_get_start_date' ) ) {
+				$start_date = null;
+
+				/**
+				 * Filters whether or not the event start date should be included in the ticket email
+				 *
+				 * @var boolean Include start date? Defaults to false
+				 * @var int Event ID
+				 */
+				$include_start_date = apply_filters( 'event_tickets_email_include_start_date', false, $event->ID );
+
+				if ( $include_start_date && function_exists( 'tribe_get_start_date' ) ) {
 					$start_date = tribe_get_start_date( $event, true );
 				}
 
