@@ -93,7 +93,7 @@
 				<?php
 				$stock = $ticket->stock();
 				$sold  = $ticket->qty_sold();
-				$cancelled = $ticket->cancelled();
+				$cancelled = $ticket->qty_cancelled();
 
 				if ( empty( $stock ) && $stock !== 0 ) : ?>
 					<?php echo sprintf( esc_html__( 'Sold %d', 'event-tickets' ), esc_html( $sold ) ); ?>
