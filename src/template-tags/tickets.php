@@ -205,7 +205,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$pending_message = '';
 		if ( $pending > 0 ) {
-			$pending_message = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', 'event-tickets', $pending ), (int) $pending );
+			$pending_message = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', $pending, 'event-tickets' ), (int) $pending );
 		}
 
 		if ( ! $stock ) {
