@@ -60,7 +60,7 @@ Looking for something else?
 
 = SUBMITTING PATCHES =
 
-If you’ve identified a bug and want to submit a patch, we’d welcome it at our <a href="https://github.com/moderntribe/events-tickets" target="_blank">GitHub page for Event Tickets.</a> Simply cue up your proposed patch as a pull request, and we’ll review as part of our release cycle and merge into the codebase if appropriate from there. (If a pull request is rejected, we’ll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin’s changelog. For more information, check out the readme at our GitHub page. Happy coding!
+If you’ve identified a bug and want to submit a patch, we’d welcome it at our <a href="https://github.com/moderntribe/event-tickets" target="_blank">GitHub page for Event Tickets.</a> Simply cue up your proposed patch as a pull request, and we’ll review as part of our release cycle and merge into the codebase if appropriate from there. (If a pull request is rejected, we’ll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin’s changelog. For more information, check out the readme at our GitHub page. Happy coding!
 
 == Installation ==
 
