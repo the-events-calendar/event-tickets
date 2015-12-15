@@ -370,7 +370,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function qty_cancelled(  $value = null ) {
 			// If the Value was passed as numeric value overwrite
-			if ( is_numeric( $value ) ){
+			if ( is_numeric( $value ) ) {
 				$this->qty_cancelled = $value;
 			}
 
