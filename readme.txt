@@ -179,6 +179,11 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.0.2] 2015-12-16 =
+
+* Tweak - Removing dates from ticket emails when those tickets are attached to non The Events Calendar event posts
+* Fix - Fixed a settings page URL
+
 = [4.0.1] 2015-12-10 =
 
 * Tweak - Removed The Events Calendar-specific fields from the Attendees Report as defaults. The Events Calendar will now hook into the report and inject event-specific fields
