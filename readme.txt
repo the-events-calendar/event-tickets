@@ -182,7 +182,7 @@ Our Premium Plugins:
 = [4.0.2] 2015-12-16 =
 
 * Tweak - Removing dates from ticket emails when those tickets are attached to non The Events Calendar event posts
-* Fix - Fixed a settings page URL
+* Fix - Fixed a settings page URL (Thanks for the tip Kristy!)
 
 = [4.0.1] 2015-12-10 =
 
