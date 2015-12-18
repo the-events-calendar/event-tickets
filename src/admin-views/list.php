@@ -91,7 +91,7 @@
 
 			<td nowrap="nowrap">
 				<?php
-				$stock = $ticket->stock();
+				$stock = $ticket->original_stock();
 				$sold  = $ticket->qty_sold();
 				$cancelled = $ticket->qty_cancelled();
 
@@ -105,7 +105,7 @@
 					));
 					$line = sprintf(
 						esc_html__( 'Sold %1$d of %2$d%3$s', 'event-tickets' ), esc_html( $sold ),
-						esc_html( $sold + $stock ), $cancelled_entry
+						esc_html( $stock ), $cancelled_entry
 					);
 
 					echo $line;
