@@ -179,6 +179,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.1] unreleased =
+
+* Tweak - Conditonally show attendees link on Event Listing at the WordPress Administration
+
 = [4.0.3] unreleased =
 
 * Tweak - Leverage the original_stock() method when rendering ticket availability to avoid funky math problems with different Event Tickets Plus commerce providers
