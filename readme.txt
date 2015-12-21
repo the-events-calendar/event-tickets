@@ -179,7 +179,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.0.3] unreleased =
+= [4.0.3] 2015-12-22 =
 
 * Tweak - Leverage the original_stock() method when rendering ticket availability to avoid funky math problems with different Event Tickets Plus commerce providers
 
