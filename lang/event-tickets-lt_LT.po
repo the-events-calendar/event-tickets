@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-02 18:12:07+0000\n"
+"PO-Revision-Date: 2015-12-11 12:03:16+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1325,7 +1325,7 @@ msgstr ""
 
 #: common/src/Tribe/Credits.php:26
 msgid "This calendar is powered by The Events Calendar."
-msgstr ""
+msgstr "Šis kalendorius sukurtas naudojant The Events Calendar. "
 
 #: common/src/Tribe/View_Helpers.php:249
 msgid "Sudan"
@@ -1394,7 +1394,7 @@ msgstr "Šveicarija"
 
 #. Author of the plugin/theme
 msgid "Modern Tribe, Inc."
-msgstr ""
+msgstr "Modern Tribe, Inc."
 
 #: common/src/Tribe/Admin/Help_Page.php:48
 msgid "The Events Calendar"
@@ -1455,7 +1455,7 @@ msgstr "Tokelau"
 
 #: common/src/Tribe/Settings.php:322
 msgid "Save Changes"
-msgstr ""
+msgstr "Išsaugoti pakeitimus"
 
 #: common/src/Tribe/View_Helpers.php:262
 msgid "Tonga"
