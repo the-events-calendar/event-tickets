@@ -199,7 +199,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * @return string
 	 */
 	function tribe_tickets_get_ticket_stock_message( $ticket ) {
-		$stock = $ticket->stock();
+		$stock = $ticket->original_stock();
 		$sold = $ticket->qty_sold();
 		$pending = $ticket->qty_pending();
 
