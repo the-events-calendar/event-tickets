@@ -179,6 +179,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.0.4] 2015-12-23 =
+
+* Fix - Resolved issue with stock calculations on the Attendees report
+
 = [4.0.3] 2015-12-22 =
 
 * Tweak - Leverage the original_stock() method when rendering ticket availability to avoid funky math problems with different Event Tickets Plus commerce providers (Thank you liblogger for reporting this issue!)
