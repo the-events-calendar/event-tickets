@@ -45,11 +45,6 @@ class Tribe__Tickets__Main {
 	 */
 	public $legacy_provider_support;
 
-	/**
-	 * @var Tribe__Tickets__Meta
-	 */
-	public $meta;
-
 	private $has_initialized = false;
 
 	/**
@@ -311,8 +306,6 @@ class Tribe__Tickets__Main {
 
 		// Provide continued support for legacy ticketing modules
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
-
-		$this->meta = new Tribe__Tickets__Meta( $this->plugin_path );
 
 		$this->settings_tab();
 	}
