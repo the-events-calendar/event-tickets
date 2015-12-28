@@ -91,13 +91,25 @@
 
 			<td nowrap="nowrap">
 				<?php
-				$stock = $ticket->stock();
+				$stock = $ticket->original_stock();
 				$sold  = $ticket->qty_sold();
+				$cancelled = $ticket->qty_cancelled();
 
 				if ( empty( $stock ) && $stock !== 0 ) : ?>
 					<?php echo sprintf( esc_html__( 'Sold %d', 'event-tickets' ), esc_html( $sold ) ); ?>
 				<?php else : ?>
-					<?php echo sprintf( esc_html__( 'Sold %1$d of %2$d', 'event-tickets' ), esc_html( $sold ), esc_html( $sold + $stock ) ); ?>
+					<?php
+					$cancelled_entry = empty( $cancelled ) ? '' : esc_html(sprintf(
+						__( ' (%1$d %2$s)' ), $cancelled,
+						_n( 'unit cancelled', 'units cancelled', $cancelled, 'event-tickets' )
+					));
+					$line = sprintf(
+						esc_html__( 'Sold %1$d of %2$d%3$s', 'event-tickets' ), esc_html( $sold ),
+						esc_html( $stock ), $cancelled_entry
+					);
+
+					echo $line;
+					?>
 				<?php endif; ?>
 			</td>
 			<td width="40%" valign="top">

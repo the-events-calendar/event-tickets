@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-02 18:12:07+0000\n"
+"PO-Revision-Date: 2015-12-20 09:25:47+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -60,35 +60,35 @@ msgstr ""
 
 #: src/Tribe/Tickets_Handler.php:352
 msgid "Invalid Email"
-msgstr ""
+msgstr "Ongeldige e-mail"
 
 #: src/Tribe/Tickets_Handler.php:358 src/Tribe/Tickets_Handler.php:374
 msgid "Invalid User ID"
-msgstr ""
+msgstr "Ongeldige gebruiker ID"
 
 #: src/Tribe/Tickets_Handler.php:395
 msgid "Error when sending the email"
-msgstr ""
+msgstr "Fout bij het versturen van de e-mail"
 
 #: src/Tribe/Tickets_Handler.php:400
 msgid "Email sent successfully!"
-msgstr ""
+msgstr "E-mail succesvol verzonden!"
 
 #: src/admin-views/attendees-email.php:42
 msgid "Send Email"
-msgstr ""
+msgstr "Verstuur e-mail"
 
 #: src/admin-views/attendees.php:37
 msgid "Edit Event"
-msgstr ""
+msgstr "Wijzig evenement"
 
 #: src/admin-views/attendees.php:38
 msgid "See Event Page"
-msgstr ""
+msgstr "Bekijk evenementenpagina"
 
 #: src/admin-views/attendees.php:62
 msgid "Edit Venue"
-msgstr ""
+msgstr "Wijzig locatie"
 
 #: src/admin-views/attendees.php:96
 msgid "Sales by Ticket"
@@ -96,11 +96,11 @@ msgstr ""
 
 #: src/admin-views/attendees.php:102
 msgid "Edit Ticket"
-msgstr ""
+msgstr "Wijzig ticket"
 
 #: src/admin-views/attendees.php:113
 msgid "Total Sold:"
-msgstr ""
+msgstr "Totaal verkocht:"
 
 #: src/admin-views/meta-box.php:160
 msgid "When will ticket sales occur?"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: src/admin-views/meta-box.php:178
 msgid "Cancel"
-msgstr "Annuller"
+msgstr "Annuleren"
 
 #: src/template-tags/tickets.php:212
 msgid "Sold all %1$d %2$s"
@@ -168,7 +168,7 @@ msgstr ""
 
 #: src/Tribe/Main.php:283
 msgid "Events Tickets Plus"
-msgstr ""
+msgstr "Events Tickets Plus"
 
 #: src/Tribe/Main.php:284
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
@@ -188,7 +188,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:31
 msgid "Read more about our support policy"
-msgstr ""
+msgstr "Lees meer over ons ondersteuningsbeleid"
 
 #: common/src/admin-views/tribe-options-help.php:26
 msgid "%s. There are very few issues we haven’t seen and it’s likely another user has already asked your question and gotten an answer from our support staff. While posting to the forums is open only to paid customers, they are open for anyone to search and review."
@@ -204,7 +204,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:24
 msgid "Check our Knowledgebase"
-msgstr ""
+msgstr "Kijk in onze Kennisbank"
 
 #: common/src/admin-views/tribe-options-help.php:25
 msgid "%s. Testing for an existing conflict is the best start for in-depth troubleshooting. We will often ask you to follow these steps when opening a new thread, so doing this ahead of time will be super helpful."
@@ -220,7 +220,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:15
 msgid "Knowledgebase"
-msgstr ""
+msgstr "Kennisbank"
 
 #: common/src/admin-views/tribe-options-help.php:16
 msgid "<strong>Want to dive deeper?</strong> Check out our %s for developers."
@@ -228,7 +228,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:16
 msgid "list of available functions"
-msgstr ""
+msgstr "overzicht van beschikbare functies"
 
 #: common/src/admin-views/tribe-options-help.php:19
 msgid "Getting More Help"
@@ -244,7 +244,7 @@ msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:448
 msgid "Hmmm... something's wrong with this validator. Please contact %ssupport%s."
-msgstr ""
+msgstr "Hmmm, er gaat iets fout met de validiteitscontrole. Neem contact op met %ssupport%s"
 
 #: common/src/Tribe/Validate.php:195
 msgid "%s must be a positive number or percent."
@@ -280,7 +280,7 @@ msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:80
 msgid "Advanced Post Manager"
-msgstr ""
+msgstr "Advanced Post Manager"
 
 #: common/src/Tribe/Admin/Help_Page.php:84
 msgid "Turbo charge your posts admin for any custom post type with sortable filters and columns, and auto-registration of metaboxes."
@@ -292,7 +292,7 @@ msgstr " en "
 
 #: common/src/Tribe/Admin/Help_Page.php:192
 msgid "Eventbrite Tickets"
-msgstr ""
+msgstr "Eventbrite Tickets"
 
 #: common/src/Tribe/Admin/Help_Page.php:200
 msgid "Community Events"
@@ -304,7 +304,7 @@ msgstr "Facebook Evenementen"
 
 #: common/src/Tribe/Admin/Help_Page.php:216
 msgid "Events Filter Bar"
-msgstr ""
+msgstr "Events Filter Bar"
 
 #: common/src/Tribe/Admin/Help_Page.php:224
 msgid "Event Tickets Plus"
@@ -330,23 +330,23 @@ msgstr "Je hebt de nieuwste versie!"
 
 #: common/src/Tribe/Admin/Help_Page.php:787
 msgid "Activate %s"
-msgstr ""
+msgstr "Activeer %s"
 
 #: common/src/Tribe/Admin/Help_Page.php:787
 msgid "Activate Plugin"
-msgstr ""
+msgstr "Plugin activeren"
 
 #: common/src/Tribe/Admin/Help_Page.php:795
 msgid "Upgrade Plugin"
-msgstr ""
+msgstr "Plugin upgraden"
 
 #: common/src/Tribe/Admin/Help_Page.php:811
 msgid "Install %s"
-msgstr ""
+msgstr "Installeer %s"
 
 #: common/src/Tribe/Admin/Help_Page.php:811
 msgid "Install Plugin"
-msgstr ""
+msgstr "Plugin installeren"
 
 #: common/src/Tribe/Admin/Help_Page.php:828
 msgid "Latest Version:"
@@ -362,27 +362,27 @@ msgstr "Wordpress "
 
 #: common/src/Tribe/Admin/Help_Page.php:834
 msgid "Active Users:"
-msgstr ""
+msgstr "Actieve gebruikers:"
 
 #: common/src/Tribe/Admin/Help_Page.php:837
 msgid "Rating:"
-msgstr ""
+msgstr "Waardering:"
 
 #: common/src/Tribe/Admin/Help_Page.php:862
 msgid "Plugin Active"
-msgstr ""
+msgstr "Plugin actief"
 
 #: common/src/Tribe/Admin/Help_Page.php:864
 msgid "Plugin Inactive"
-msgstr ""
+msgstr "Plugin uitgeschakeld"
 
 #: common/src/Tribe/Admin/Help_Page.php:869
 msgid "Visit the Add-on Page"
-msgstr ""
+msgstr "Bezoek de pagina met add-ons"
 
 #: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:68
 msgid "<a href=\"%s\">edit Events settings</a>."
-msgstr ""
+msgstr "<a href=\"%s\">wijzig evenementinstellingen</a>."
 
 #: common/src/Tribe/PUE/Checker.php:308
 msgid "License Key"
@@ -1193,7 +1193,7 @@ msgstr "Senegal"
 
 #: src/admin-views/rsvp-metabox-advanced.php:6
 msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
-msgstr ""
+msgstr "(Totaal beschikbare # van dit ticket type. Zodra ze verdwenen zijn, is dit ticket type uitverkocht)"
 
 #: common/src/Tribe/View_Helpers.php:235
 msgid "Serbia"
@@ -2310,7 +2310,7 @@ msgstr "Finland"
 
 #: common/src/Tribe/Admin/Help_Page.php:183
 msgid "Events Calendar PRO"
-msgstr ""
+msgstr "Events Calendar PRO"
 
 #: common/src/Tribe/View_Helpers.php:120
 msgid "France"

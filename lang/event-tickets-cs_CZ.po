@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-02 18:12:07+0000\n"
+"PO-Revision-Date: 2015-12-21 17:57:28+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,99 +16,99 @@ msgstr ""
 
 #: src/Tribe/RSVP.php:558
 msgid "You can't RSVP more than the total remaining tickets."
-msgstr ""
+msgstr "Nemůžete potvrdit účast pro více než kolik je k dispozici zbývajících vstupenek."
 
 #: src/Tribe/RSVP.php:863
 msgid "Return to the %1$sAttendees Report%2$s."
-msgstr ""
+msgstr "Zpět na %1$spřehled účastníků%2$s."
 
 #: src/Tribe/RSVP.php:870
 msgid "Post updated. %1$s"
-msgstr ""
+msgstr "Příspěvek byl aktualizován. %1$s"
 
 #: src/Tribe/RSVP.php:874
 msgid "Post published. %1$s"
-msgstr ""
+msgstr "Příspěvek byl publikován. %1$s"
 
 #: src/Tribe/RSVP.php:877
 msgid "Post submitted."
-msgstr ""
+msgstr "Příspěvek byl odeslán ke schválení."
 
 #: src/Tribe/RSVP.php:878
 msgid "Post scheduled."
-msgstr ""
+msgstr "Příspěvek bude automaticky publikován."
 
 #: src/Tribe/RSVP.php:879
 msgid "Post draft updated."
-msgstr ""
+msgstr "Koncept příspěvku byl uložen."
 
 #: src/Tribe/Tickets.php:532
 msgid "Editing the ticket price is currently disallowed."
-msgstr ""
+msgstr "Upravovaní ceny vstupenky není aktuálně povoleno."
 
 #: src/Tribe/Tickets_Handler.php:328
 msgid "Cheatin Huh?"
-msgstr ""
+msgstr "Co zkúšáš, jak zkúšáš?"
 
 #: src/Tribe/Tickets_Handler.php:334
 msgid "Invalid Event ID"
-msgstr ""
+msgstr "Neplatné ID akce"
 
 #: src/Tribe/Tickets_Handler.php:340
 msgid "Empty user and email"
-msgstr ""
+msgstr "Nebylo zadáno uživatelské jméno a emailová adresa"
 
 #: src/Tribe/Tickets_Handler.php:352
 msgid "Invalid Email"
-msgstr ""
+msgstr "Neplatná emailová adresa"
 
 #: src/Tribe/Tickets_Handler.php:358 src/Tribe/Tickets_Handler.php:374
 msgid "Invalid User ID"
-msgstr ""
+msgstr "Neplatné ID uživatele"
 
 #: src/Tribe/Tickets_Handler.php:395
 msgid "Error when sending the email"
-msgstr ""
+msgstr "Došlo k chybě při odesílání emailu"
 
 #: src/Tribe/Tickets_Handler.php:400
 msgid "Email sent successfully!"
-msgstr ""
+msgstr "Email byl úspěšně odeslán!"
 
 #: src/admin-views/attendees-email.php:42
 msgid "Send Email"
-msgstr ""
+msgstr "Poslat email"
 
 #: src/admin-views/attendees.php:37
 msgid "Edit Event"
-msgstr ""
+msgstr "Upravit akci"
 
 #: src/admin-views/attendees.php:38
 msgid "See Event Page"
-msgstr ""
+msgstr "Zobrazit stránku akce"
 
 #: src/admin-views/attendees.php:62
 msgid "Edit Venue"
-msgstr ""
+msgstr "Upravit místo konání"
 
 #: src/admin-views/attendees.php:96
 msgid "Sales by Ticket"
-msgstr ""
+msgstr "Prodeje dle vstupenky"
 
 #: src/admin-views/attendees.php:102
 msgid "Edit Ticket"
-msgstr ""
+msgstr "Upravit vstupenku"
 
 #: src/admin-views/attendees.php:113
 msgid "Total Sold:"
-msgstr ""
+msgstr "Celkem prodáno:"
 
 #: src/admin-views/meta-box.php:160
 msgid "When will ticket sales occur?"
-msgstr ""
+msgstr "Kdy nastane prodej vstupenek?"
 
 #: src/admin-views/meta-box.php:164
 msgid "If you don't set a start/end date for sales, tickets will be available from now until the event ends."
-msgstr ""
+msgstr "Pokud nenastavíte začátek a konec prodeje, budou vstupenky k dispozici od této chvíle až do ukončení akce."
 
 #: src/admin-views/meta-box.php:178
 msgid "Cancel"
@@ -116,7 +116,7 @@ msgstr "Zrušit"
 
 #: src/template-tags/tickets.php:212
 msgid "Sold all %1$d %2$s"
-msgstr ""
+msgstr "Prodáno všech %1$d %2$s"
 
 #: common/src/admin-views/tribe-options-help.php:35
 msgid "The details of your calendar plugin and settings is often needed for you or our staff to help troubleshoot an issue. We may ask you to share this information if you ask for support. If you post in one of our premium forums, please copy and paste this information into the System Information field and it will help us help you faster!"
@@ -132,11 +132,11 @@ msgstr ""
 
 #: src/Tribe/Main.php:239
 msgid "Settings overview"
-msgstr ""
+msgstr "Přehled nastavení"
 
 #: src/Tribe/Main.php:240
 msgid "Features overview"
-msgstr ""
+msgstr "Přehled funkcí"
 
 #: src/Tribe/Main.php:241
 msgid "Troubleshooting common problems"
@@ -168,7 +168,7 @@ msgstr ""
 
 #: src/Tribe/Main.php:283
 msgid "Events Tickets Plus"
-msgstr ""
+msgstr "Events Tickets Plus"
 
 #: src/Tribe/Main.php:284
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
@@ -228,7 +228,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:16
 msgid "list of available functions"
-msgstr ""
+msgstr "seznam dostupných funkcí"
 
 #: common/src/admin-views/tribe-options-help.php:19
 msgid "Getting More Help"
@@ -240,19 +240,19 @@ msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:440
 msgid "Thanks for setting up a valid key, it will expire on %s"
-msgstr ""
+msgstr "Děkujeme za vložení platného klíče. Jeho platnost skončí %s"
 
 #: common/src/Tribe/PUE/Checker.php:448
 msgid "Hmmm... something's wrong with this validator. Please contact %ssupport%s."
-msgstr ""
+msgstr "Hmmm... něco je špatně s tímto validátorem. Kontaktujte prosím %spodporu%s."
 
 #: common/src/Tribe/Validate.php:195
 msgid "%s must be a positive number or percent."
-msgstr ""
+msgstr "%s musí být kladné číslo nebo procento."
 
 #: common/src/admin-views/tribe-options-display.php:31
 msgid "Enter the format to use for displaying dates with the year. Used when displaying a date in a future year."
-msgstr ""
+msgstr "Zadejte formát pro zobrazování data včetně roku. Používá se při zobrazení data v příštím roce."
 
 #: common/src/admin-views/tribe-options-general.php:10
 msgid "Thank you for using Event Tickets! All of us at Modern Tribe sincerely appreciate your support and we're excited to see you using our plugins. Check out our handy %1$sNew User Primer%2$s to get started."
@@ -268,7 +268,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:14
 msgid "Getting Support"
-msgstr ""
+msgstr "Získání podpory"
 
 #: common/src/Tribe/Admin/Help_Page.php:52
 msgid "The Events Calendar is a carefully crafted, extensible plugin that lets you easily share your events."
@@ -292,7 +292,7 @@ msgstr " a "
 
 #: common/src/Tribe/Admin/Help_Page.php:192
 msgid "Eventbrite Tickets"
-msgstr ""
+msgstr "Eventbrite Tickets"
 
 #: common/src/Tribe/Admin/Help_Page.php:200
 msgid "Community Events"
@@ -304,15 +304,15 @@ msgstr "Akce z Facebooku"
 
 #: common/src/Tribe/Admin/Help_Page.php:216
 msgid "Events Filter Bar"
-msgstr ""
+msgstr "Events Filter Bar"
 
 #: common/src/Tribe/Admin/Help_Page.php:224
 msgid "Event Tickets Plus"
-msgstr ""
+msgstr "Event Tickets Plus"
 
 #: common/src/Tribe/Admin/Help_Page.php:233
 msgid "Community Tickets"
-msgstr ""
+msgstr "Community Tickets"
 
 #: common/src/Tribe/Admin/Help_Page.php:394
 msgctxt "not available"
@@ -330,23 +330,23 @@ msgstr "Používáte nejnovější verzi!"
 
 #: common/src/Tribe/Admin/Help_Page.php:787
 msgid "Activate %s"
-msgstr ""
+msgstr "Aktivovat %s"
 
 #: common/src/Tribe/Admin/Help_Page.php:787
 msgid "Activate Plugin"
-msgstr ""
+msgstr "Aktivovat plugin"
 
 #: common/src/Tribe/Admin/Help_Page.php:795
 msgid "Upgrade Plugin"
-msgstr ""
+msgstr "Aktualizovat plugin"
 
 #: common/src/Tribe/Admin/Help_Page.php:811
 msgid "Install %s"
-msgstr ""
+msgstr "Instalovat %s"
 
 #: common/src/Tribe/Admin/Help_Page.php:811
 msgid "Install Plugin"
-msgstr ""
+msgstr "Instalovat plugin"
 
 #: common/src/Tribe/Admin/Help_Page.php:828
 msgid "Latest Version:"
@@ -362,27 +362,27 @@ msgstr "WordPress"
 
 #: common/src/Tribe/Admin/Help_Page.php:834
 msgid "Active Users:"
-msgstr ""
+msgstr "Aktivních uživatelů:"
 
 #: common/src/Tribe/Admin/Help_Page.php:837
 msgid "Rating:"
-msgstr ""
+msgstr "Hodnocení:"
 
 #: common/src/Tribe/Admin/Help_Page.php:862
 msgid "Plugin Active"
-msgstr ""
+msgstr "Aktivovaný plugin"
 
 #: common/src/Tribe/Admin/Help_Page.php:864
 msgid "Plugin Inactive"
-msgstr ""
+msgstr "Neaktivní plugin"
 
 #: common/src/Tribe/Admin/Help_Page.php:869
 msgid "Visit the Add-on Page"
-msgstr ""
+msgstr "Navštívit webovou stránku doplňku"
 
 #: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:68
 msgid "<a href=\"%s\">edit Events settings</a>."
-msgstr ""
+msgstr "<a href=\"%s\">změňte nastavení akcí</a>."
 
 #: common/src/Tribe/PUE/Checker.php:308
 msgid "License Key"
@@ -574,7 +574,7 @@ msgstr "Japonsko"
 
 #: common/src/admin-views/tribe-options-licenses.php:18
 msgid "%1$s Using our plugins in a multisite network? %2$s Please note that your license key will be applied to the entire network, not just this site."
-msgstr ""
+msgstr "%1$s Používáte naše pluginy v síti webů? %2$s Berte prosím na vědomí, že váš licenční klíč se aplikuje na celou síť webů a nikoli pouze na tento web."
 
 #: common/src/Tribe/View_Helpers.php:156
 msgid "Jordan"
@@ -679,7 +679,7 @@ msgstr "Libérie"
 #: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:173
 #: src/Tribe/Attendees_Table.php:254
 msgid "Check in"
-msgstr "Zaškrtnout"
+msgstr "Zaregistrovat"
 
 #: common/src/Tribe/View_Helpers.php:169
 msgid "Libya"
@@ -687,7 +687,7 @@ msgstr "Libye"
 
 #: src/Tribe/Attendees_Table.php:174 src/Tribe/Attendees_Table.php:255
 msgid "Undo Check in"
-msgstr "Zrušit zaškrtnutí"
+msgstr "Zrušit registraci"
 
 #: common/src/Tribe/View_Helpers.php:170
 msgid "Liechtenstein"
@@ -752,7 +752,7 @@ msgstr "Malajsie"
 #: src/Tribe/RSVP.php:180
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
-msgstr ""
+msgstr "Účastník %1$s"
 
 #: common/src/Tribe/View_Helpers.php:178
 msgid "Maldives"
@@ -760,7 +760,7 @@ msgstr "Maledivy"
 
 #: src/Tribe/RSVP.php:349
 msgid "Your tickets from %s"
-msgstr ""
+msgstr "Vaše vstupenky z webu %s"
 
 #: common/src/Tribe/View_Helpers.php:179
 msgid "Mali"
@@ -768,7 +768,7 @@ msgstr "Mali"
 
 #: src/Tribe/RSVP.php:552
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
-msgstr ""
+msgstr "Vaše potvrzení účasti bylo přijato. Zkontrolujte prosím emailovou schránku, kam byl odeslán kontrolní email."
 
 #: common/src/Tribe/View_Helpers.php:180
 msgid "Malta"
@@ -776,7 +776,7 @@ msgstr "Malta"
 
 #: src/Tribe/RSVP.php:563
 msgid "In order to RSVP, you must enter your name and a valid email address."
-msgstr ""
+msgstr "Pro potvrzení účasti musíte zadat své jméno a platnou emailovou adresu."
 
 #: common/src/Tribe/View_Helpers.php:181
 msgid "Marshall Islands"
@@ -784,7 +784,7 @@ msgstr "Marshallovy ostrovy"
 
 #: src/Tribe/RSVP.php:684
 msgid "(deleted)"
-msgstr ""
+msgstr "(smazáno)"
 
 #: common/src/Tribe/View_Helpers.php:182
 msgid "Martinique"
@@ -957,7 +957,7 @@ msgstr "Niger"
 
 #: src/admin-views/attendees.php:129
 msgid "Checked in:"
-msgstr "Zaškrtnutých:"
+msgstr "Zaregistrováno:"
 
 #: common/src/Tribe/View_Helpers.php:205
 msgid "Nigeria"
@@ -1185,7 +1185,7 @@ msgstr "Saúdská Arábie"
 
 #: src/admin-views/rsvp-metabox-advanced.php:2
 msgid "Stock:"
-msgstr ""
+msgstr "Skladem:"
 
 #: common/src/Tribe/View_Helpers.php:234
 msgid "Senegal"
@@ -1193,7 +1193,7 @@ msgstr "Senegal"
 
 #: src/admin-views/rsvp-metabox-advanced.php:6
 msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
-msgstr ""
+msgstr "(Celkový počet vstupenek tohoto typu k dispozici. Jakmile jsou pryč, tento typ je vyprodán.)"
 
 #: common/src/Tribe/View_Helpers.php:235
 msgid "Serbia"
@@ -1201,7 +1201,7 @@ msgstr "Srbsko"
 
 #: src/admin-views/rsvp-metabox-advanced.php:16
 msgid "Selling tickets for recurring events"
-msgstr ""
+msgstr "Prodej vstupenek na opakující se akce"
 
 #: common/src/Tribe/View_Helpers.php:236
 msgid "Seychelles"
@@ -1209,7 +1209,7 @@ msgstr "Seychely"
 
 #: src/admin-views/rsvp-metabox-advanced.php:20
 msgid "Currently, Tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly."
-msgstr ""
+msgstr "Momentálně se vstupenky z Tickets zobrazí na webu pouze jednou pro celou akci. Pro uživatele PRO verze to znamená, že stejná vstupenka se zobrazí u všech opakujících se akcí ze stejné série. Nastavte si prosím své akce odpovídajícím způsobem."
 
 #: common/src/Tribe/View_Helpers.php:237
 msgid "Sierra Leone"
@@ -1217,7 +1217,7 @@ msgstr "Sierra Leone"
 
 #: src/admin-views/tribe-options-tickets.php:41
 msgid "Ticket Settings"
-msgstr ""
+msgstr "Nastavení pro vstupenky"
 
 #: common/src/Tribe/View_Helpers.php:238
 msgid "Singapore"
@@ -1225,7 +1225,7 @@ msgstr "Singapur"
 
 #: src/admin-views/tribe-options-tickets.php:45
 msgid "Post types that can have tickets"
-msgstr ""
+msgstr "Typy příspěvků, které mohou mít vstupenky"
 
 #: common/src/Tribe/View_Helpers.php:239
 msgid "Slovakia (Slovak Republic)"
@@ -1296,7 +1296,7 @@ msgstr "Šrí Lanka"
 
 #: src/views/tickets/rsvp.php:9
 msgid "RSVP"
-msgstr ""
+msgstr "Potvrzení účasti"
 
 #: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:69
 msgid " ask the site administrator set a different Events URL slug."
@@ -1308,7 +1308,7 @@ msgstr "Svatá Helena"
 
 #: src/views/tickets/rsvp.php:55
 msgid "%1$s out of %2$s available"
-msgstr ""
+msgstr "%1$s z celkem %2$s k dispozici"
 
 #: common/src/Tribe/App_Shop.php:67 common/src/Tribe/App_Shop.php:68
 #: common/src/Tribe/App_Shop.php:91
@@ -1321,7 +1321,7 @@ msgstr "Saint-Pierre a Miquelon"
 
 #: src/views/tickets/rsvp.php:63
 msgid "Out of stock!"
-msgstr ""
+msgstr "Není skladem!"
 
 #: common/src/Tribe/Credits.php:26
 msgid "This calendar is powered by The Events Calendar."
@@ -1333,11 +1333,11 @@ msgstr "Súdán"
 
 #: src/views/tickets/rsvp.php:86
 msgid "Full Name:"
-msgstr ""
+msgstr "Celé jméno:"
 
 #: common/src/Tribe/Credits.php:46
 msgid "Rate %3$sThe Events Calendar%4$s %1$s on %2$s to keep this plugin free.  Thanks from the friendly folks at Modern Tribe."
-msgstr ""
+msgstr "Ohodnocením pluginu %3$sThe Events Calendar%4$s %1$s na webu %2$s ho pomůžete zachovat i nadále bezplatným. Vřelé díky od lidiček v Modern Tribe."
 
 #: common/src/Tribe/View_Helpers.php:250
 msgid "Suriname"
@@ -1357,7 +1357,7 @@ msgstr "Špicberky"
 
 #: src/views/tickets/rsvp.php:105
 msgid "Confirm RSVP"
-msgstr ""
+msgstr "Potvrdit účast"
 
 #: common/src/Tribe/Field.php:466
 msgid "No radio options specified"
@@ -1370,7 +1370,7 @@ msgstr "Svazijsko"
 #. Plugin Name of the plugin/theme
 #: common/src/Tribe/Admin/Help_Page.php:64
 msgid "Event Tickets"
-msgstr ""
+msgstr "Event Tickets"
 
 #: common/src/Tribe/Field.php:502
 msgid "No checkbox options specified"
@@ -1382,7 +1382,7 @@ msgstr "Švédsko"
 
 #. Description of the plugin/theme
 msgid "Event Tickets allows you to sell tickets to events"
-msgstr ""
+msgstr "Event Tickets vám umožní prodej vstupenek na akce"
 
 #: common/src/Tribe/Field.php:558
 msgid "No select options specified"
@@ -1406,7 +1406,7 @@ msgstr "Sýrie"
 
 #. Author URI of the plugin/theme
 msgid "http://m.tri.be/28"
-msgstr ""
+msgstr "http://m.tri.be/28"
 
 #: common/src/Tribe/Settings.php:148 common/src/Tribe/Settings.php:203
 #: common/src/Tribe/Settings.php:204
@@ -2312,7 +2312,7 @@ msgstr "Finsko"
 
 #: common/src/Tribe/Admin/Help_Page.php:183
 msgid "Events Calendar PRO"
-msgstr ""
+msgstr "Events Calendar PRO"
 
 #: common/src/Tribe/View_Helpers.php:120
 msgid "France"
