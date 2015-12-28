@@ -256,7 +256,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( '#ticket_form_save' ).click( function( e ) {
 			var $form = $( '#ticket_form_table' ),
 				type = $form.find( '#ticket_provider:checked' ).val(),
-				$rows = $form.find( '.ticket, .ticket_advanced_' + type );
+				$rows = $form.find( '.ticket, .ticket_advanced_meta, .ticket_advanced_' + type );
 
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
