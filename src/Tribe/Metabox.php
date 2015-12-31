@@ -37,6 +37,8 @@ class Tribe__Tickets__Metabox {
 			'normal',
 			'high'
 		);
+
+		add_action( 'tribe_tickets_meta_box_after_start_sale_time', 'Tribe__Tickets__Metabox::sale_date_advice' );
 	}
 
 	/**
@@ -91,6 +93,30 @@ class Tribe__Tickets__Metabox {
 		);
 
 		wp_localize_script( 'event-tickets', 'TribeTickets', $nonces );
+	}
+
+	/**
+	 * For posts other than events it's quite likely there will not be event start/end
+	 * dates. In these cases we should advise the user that the start/end *sale* dates
+	 * must be set if the tickets are to display.
+	 */
+	public static function sale_date_advice() {
+		// If the post currently being edited is an event, we need not display any extra advice
+		if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type() ) {
+			return;
+		}
+
+		// Even if this isn't an event-type post, it's possible it may have an event start date
+		$start_date = get_post_meta( get_the_ID(), "_EventStartDate", true );
+
+		// If it *does* have a start date, we can again bail out without displaying extra advice
+		if ( ! empty( $start_date ) ) {
+			return;
+		}
+
+		echo '<div class="start-date-advice">'
+		   . __( 'You must set a start date/time to make the tickets appear!', 'event-tickets' )
+		   . '</div>';
 	}
 }
 

@@ -129,6 +129,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 								</select>
 							<?php endif; ?>
 						</span>
+						<?php do_action( 'tribe_tickets_meta_box_after_start_sale_time' ); ?>
 					</td>
 				</tr>
 
@@ -165,6 +166,8 @@ $modules = Tribe__Tickets__Tickets::modules();
 							}
 							?>
 						</p>
+
+						<?php do_action( 'tribe_tickets_meta_box_after_end_sale_time' ); ?>
 					</td>
 				</tr>
 
