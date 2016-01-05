@@ -73,6 +73,11 @@ ob_start();
 					</td>
 				</tr>
 				<?php
+			}//end if
+			else {
+				?>
+				<span class="tickets_nostock"><?php esc_html_e( 'Tickets are no longer on sale.', 'event-tickets' ); ?></span>
+				<?php
 			}
 		}//end foreach
 
