@@ -74,7 +74,11 @@ ob_start();
 				</tr>
 				<?php
 			}//end if
-			else {
+			elseif ( $ticket->date_is_earlier( time() ) ) { {
+				?>
+				<span class="tickets_nostock"><?php esc_html_e( 'Tickets are not yet on sale.', 'event-tickets' ); ?></span>
+				<?php
+			}else {
 				?>
 				<span class="tickets_nostock"><?php esc_html_e( 'Tickets are no longer on sale.', 'event-tickets' ); ?></span>
 				<?php
