@@ -320,7 +320,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				 * @var $event_id Event post ID
 				 * @var $product_id RSVP ticket post ID
 				 */
-				do_action ( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id );
+				do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id );
 			}
 
 			/**
@@ -338,7 +338,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 *
 		 * @var $order_id ID of the RSVP order
 		 */
-		do_action ( 'event_tickets_rsvp_tickets_generated', $order_id );
+		do_action( 'event_tickets_rsvp_tickets_generated', $order_id );
 
 		if ( $has_tickets ) {
 			$this->send_tickets_email( $order_id ) ;
