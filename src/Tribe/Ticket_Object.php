@@ -196,7 +196,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			return ( empty( $start_date ) || $timestamp > $start_date ) && ( empty( $end_date ) || $timestamp < $end_date );
 		}
-	
+
 	        /**
 	         * Determines if the given date is smaller than the ticket's start date
 	         *
