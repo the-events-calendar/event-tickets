@@ -312,8 +312,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
 				update_post_meta( $attendee_id, $this->email, $attendee_email );
+				
+				do_action ( 'event_tickets_rsvp_tickets_created', $attendee_id, $event_id, $product_id );
 			}
+			
+			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty );
 		}
+		
+		do_action ( 'event_tickets_rsvp_tickets_generated', $order_id );
+				
 		if ( $has_tickets ) {
 			$this->send_tickets_email( $order_id ) ;
 		}
