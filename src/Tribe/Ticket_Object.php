@@ -196,7 +196,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			return ( empty( $start_date ) || $timestamp > $start_date ) && ( empty( $end_date ) || $timestamp < $end_date );
 		}
-		
+	
 	        /**
 	         * Determines if the given date is smaller than the ticket's start date
 	         *
@@ -210,18 +210,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 	            } else {
 	                $timestamp = strtotime( $datetime );
 	            }
-	
+
 	            $start_date = null;
 	            if ( ! empty( $this->start_date ) ) {
 	                $start_date = strtotime( $this->start_date );
 	            }
 	            
-	            if (strtotime($timestamp) < $start_date) { // $date occurs in the future
+	            if ( strtotime( $timestamp ) < $start_date ) { // $date occurs in the future
 	                return 1;
 	            } else { // $date occurs now or in the past
 	                return 0;
 	            }
-	
+
 	        }
 
 		/**
