@@ -312,15 +312,34 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
 				update_post_meta( $attendee_id, $this->email, $attendee_email );
-				
-				do_action ( 'event_tickets_rsvp_tickets_created', $attendee_id, $event_id, $product_id );
+
+				/**
+				 * Action fired when an RSVP attendee ticket is created
+				 *
+				 * @var $attendee_id ID of the attendee post
+				 * @var $event_id Event post ID
+				 * @var $product_id RSVP ticket post ID
+				 */
+				do_action ( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id );
 			}
-			
+
+			/**
+			 * Action fired when an RSVP has had attendee tickets generated for it
+			 *
+			 * @var $product_id RSVP ticket post ID
+			 * @var $order_id ID of the RSVP order
+			 * @var $qty Quantity ordered
+			 */
 			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty );
 		}
-		
+
+		/**
+		 * Action fired when an RSVP attendee tickets have been generated
+		 *
+		 * @var $order_id ID of the RSVP order
+		 */
 		do_action ( 'event_tickets_rsvp_tickets_generated', $order_id );
-				
+
 		if ( $has_tickets ) {
 			$this->send_tickets_email( $order_id ) ;
 		}
