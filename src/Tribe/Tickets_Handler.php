@@ -72,7 +72,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public function attendees_row_action( $actions ) {
 		global $post;
 
-		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
+		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) && ! empty( Tribe__Tickets__Tickets::get_event_tickets( $post->ID ) ) ) {
 			$url = add_query_arg( array(
 				'post_type' => $post->post_type,
 				'page'      => self::$attendees_slug,

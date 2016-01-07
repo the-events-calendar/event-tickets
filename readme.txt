@@ -179,7 +179,11 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1] unrelease =
+= [4.1] unreleased =
+
+* Tweak - Conditonally show attendees link on Event Listing at the WordPress Administration
+
+= [4.0.3] unreleased =
 
 * Tweak - Added actions on RSVP attendee ticket generation (props to 75ninteen on GitHub for the pull request!)
 
