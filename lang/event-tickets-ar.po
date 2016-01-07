@@ -1,12 +1,12 @@
-# Translation of Event Tickets in Russian
+# Translation of Event Tickets in Arabic
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-11 11:49:23+0000\n"
+"PO-Revision-Date: 2015-12-11 12:02:55+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 "X-Generator: GlotPress/1.0-alpha-1100\n"
 "Project-Id-Version: Event Tickets\n"
 
@@ -16,7 +16,7 @@ msgstr ""
 
 #: src/Tribe/RSVP.php:558
 msgid "You can't RSVP more than the total remaining tickets."
-msgstr "Вы не можете зарезервировать больше билетов, чем осталось в наличии"
+msgstr ""
 
 #: src/Tribe/RSVP.php:863
 msgid "Return to the %1$sAttendees Report%2$s."
@@ -24,11 +24,11 @@ msgstr ""
 
 #: src/Tribe/RSVP.php:870
 msgid "Post updated. %1$s"
-msgstr "Сообщение обновлено. %1$s"
+msgstr ""
 
 #: src/Tribe/RSVP.php:874
 msgid "Post published. %1$s"
-msgstr "Сообщение опубликовано. %1$s"
+msgstr ""
 
 #: src/Tribe/RSVP.php:877
 msgid "Post submitted."
@@ -40,7 +40,7 @@ msgstr ""
 
 #: src/Tribe/RSVP.php:879
 msgid "Post draft updated."
-msgstr "Черновик сообщения обновлен"
+msgstr ""
 
 #: src/Tribe/Tickets.php:532
 msgid "Editing the ticket price is currently disallowed."
@@ -60,7 +60,7 @@ msgstr ""
 
 #: src/Tribe/Tickets_Handler.php:352
 msgid "Invalid Email"
-msgstr "Неправильный адрес email"
+msgstr ""
 
 #: src/Tribe/Tickets_Handler.php:358 src/Tribe/Tickets_Handler.php:374
 msgid "Invalid User ID"
@@ -72,35 +72,35 @@ msgstr ""
 
 #: src/Tribe/Tickets_Handler.php:400
 msgid "Email sent successfully!"
-msgstr "Письмо успешно отправлено"
+msgstr ""
 
 #: src/admin-views/attendees-email.php:42
 msgid "Send Email"
-msgstr "Отправить письмо"
+msgstr ""
 
 #: src/admin-views/attendees.php:37
 msgid "Edit Event"
-msgstr "Редактировать мероприятие"
+msgstr ""
 
 #: src/admin-views/attendees.php:38
 msgid "See Event Page"
-msgstr "Посмотреть страницу мероприятия"
+msgstr ""
 
 #: src/admin-views/attendees.php:62
 msgid "Edit Venue"
-msgstr "Редактировать место проведения"
+msgstr ""
 
 #: src/admin-views/attendees.php:96
 msgid "Sales by Ticket"
-msgstr "Продажи по билетам"
+msgstr ""
 
 #: src/admin-views/attendees.php:102
 msgid "Edit Ticket"
-msgstr "Редактировать билет"
+msgstr ""
 
 #: src/admin-views/attendees.php:113
 msgid "Total Sold:"
-msgstr "Всего продано:"
+msgstr ""
 
 #: src/admin-views/meta-box.php:160
 msgid "When will ticket sales occur?"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: src/admin-views/meta-box.php:178
 msgid "Cancel"
-msgstr "Отмена"
+msgstr ""
 
 #: src/template-tags/tickets.php:212
 msgid "Sold all %1$d %2$s"
@@ -288,7 +288,7 @@ msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:159
 msgid " and "
-msgstr "и"
+msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:192
 msgid "Eventbrite Tickets"
@@ -296,11 +296,11 @@ msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:200
 msgid "Community Events"
-msgstr "Встречи сообщества"
+msgstr "فعاليات المجتمع"
 
 #: common/src/Tribe/Admin/Help_Page.php:208
 msgid "Facebook Events"
-msgstr "Мероприятия Фейсбука"
+msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:216
 msgid "Events Filter Bar"
@@ -317,16 +317,16 @@ msgstr ""
 #: common/src/Tribe/Admin/Help_Page.php:394
 msgctxt "not available"
 msgid "n/a"
-msgstr "н/д"
+msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:402
 msgid "You need to upgrade!"
-msgstr "Вам нужно обновиться!"
+msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:402
 #: common/src/Tribe/Admin/Help_Page.php:797
 msgid "You are up to date!"
-msgstr "У вас самая новая версия!"
+msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:787
 msgid "Activate %s"
@@ -350,15 +350,15 @@ msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:828
 msgid "Latest Version:"
-msgstr "Последняя версия:"
+msgstr "أحدث اصدار:"
 
 #: common/src/Tribe/Admin/Help_Page.php:831
 msgid "Requires:"
-msgstr "Требуется:"
+msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:832
 msgid "WordPress "
-msgstr "WordPress "
+msgstr "ووردبريس"
 
 #: common/src/Tribe/Admin/Help_Page.php:834
 msgid "Active Users:"
@@ -386,183 +386,183 @@ msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:308
 msgid "License Key"
-msgstr "Лицензионный ключ"
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:309
 msgid "A valid license key is required for support and updates"
-msgstr "Необходим допустимый лицензионный ключ для поддержки и обновлений."
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:380
 msgid "License key(s) updated."
-msgstr "Лицензионный ключ(и) обновлен."
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:419
 msgid "unknown date"
-msgstr "неизвестная дата"
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:422
 msgid "Sorry, key validation server is not available."
-msgstr "Извините, сервер подтверждения ключа недоступен."
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:424
 msgid "Sorry, this key is expired."
-msgstr "Извините, срок действия этого ключа истек."
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:427
 msgid "Sorry, this key is out of installs."
-msgstr "Извините, этот ключ не подходит к установленным версиям."
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:428
 msgid "Why am I seeing this message?"
-msgstr "Почему я вижу это сообщение?"
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:431
 msgid "Sorry, this key is not valid."
-msgstr "Извините, этот ключ недействителен."
+msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:435
 msgid "Valid Key! Expires on %s"
-msgstr "Допустимый ключ! Срок действия заканчивается %s"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:123
 msgid "French Polynesia"
-msgstr "Французская Полинезия"
+msgstr "بولينيزيا الفرنسية"
 
 #: common/src/Tribe/View_Helpers.php:124
 msgid "French Southern Territories"
-msgstr "Французские Южные Территории"
+msgstr "الأقاليم الجنوبية الفرنسية"
 
 #: common/src/Tribe/View_Helpers.php:125
 msgid "Gabon"
-msgstr "Габон"
+msgstr "الغابون"
 
 #: common/src/Tribe/View_Helpers.php:126
 msgid "Gambia"
-msgstr "Гамбия"
+msgstr "غامبيا"
 
 #: common/src/Tribe/View_Helpers.php:127 common/src/Tribe/View_Helpers.php:326
 msgid "Georgia"
-msgstr "Грузия"
+msgstr "جورجيا"
 
 #: common/src/Tribe/View_Helpers.php:128
 msgid "Germany"
-msgstr "Германия"
+msgstr "ألمانيا"
 
 #: common/src/Tribe/View_Helpers.php:129
 msgid "Ghana"
-msgstr "Гана"
+msgstr "غانا"
 
 #: common/src/Tribe/View_Helpers.php:130
 msgid "Gibraltar"
-msgstr "Гибралтар"
+msgstr "جبل طارق"
 
 #: common/src/Tribe/View_Helpers.php:131
 msgid "Greece"
-msgstr "Греция"
+msgstr "اليونان"
 
 #: common/src/Tribe/View_Helpers.php:132
 msgid "Greenland"
-msgstr "Гренландия"
+msgstr "غرينلاند"
 
 #: common/src/Tribe/View_Helpers.php:133
 msgid "Grenada"
-msgstr "Гренада"
+msgstr "غرينادا"
 
 #: common/src/Tribe/View_Helpers.php:134
 msgid "Guadeloupe"
-msgstr "Гваделупа"
+msgstr "غوادلوب"
 
 #: common/src/Tribe/View_Helpers.php:135
 msgid "Guam"
-msgstr "Гуам"
+msgstr "غوام"
 
 #: common/src/Tribe/View_Helpers.php:136
 msgid "Guatemala"
-msgstr "Гватемала"
+msgstr "غواتيمالا"
 
 #: common/src/Tribe/View_Helpers.php:137
 msgid "Guinea"
-msgstr "Гвинея"
+msgstr "غينيا"
 
 #: common/src/Tribe/View_Helpers.php:138
 msgid "Guinea-Bissau"
-msgstr "Гвинея-Бисау"
+msgstr "غينيا بيساو"
 
 #: common/src/Tribe/View_Helpers.php:139
 msgid "Guyana"
-msgstr "Гайана"
+msgstr "غيانا"
 
 #: common/src/Tribe/View_Helpers.php:140
 msgid "Haiti"
-msgstr "Гаити"
+msgstr "هايتي"
 
 #: common/src/Tribe/View_Helpers.php:141
 msgid "Heard And Mc Donald Islands"
-msgstr "Остров Херд и острова Макдональд"
+msgstr "هيرد وجزر ماك دونالد"
 
 #: common/src/Tribe/View_Helpers.php:142
 msgid "Holy See (Vatican City State)"
-msgstr "Ватикан"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:143
 msgid "Honduras"
-msgstr "Гондурас"
+msgstr "هندوراس"
 
 #: common/src/Tribe/View_Helpers.php:144
 msgid "Hong Kong"
-msgstr "Гонг-Конг"
+msgstr "هونج كونج"
 
 #: common/src/Tribe/View_Helpers.php:145
 msgid "Hungary"
-msgstr "Венгрия"
+msgstr "هنغاريا"
 
 #: common/src/admin-views/tribe-options-help.php:60
 msgid "More..."
-msgstr "Больше..."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:146
 msgid "Iceland"
-msgstr "Исландия"
+msgstr "أيسلندا"
 
 #: common/src/Tribe/View_Helpers.php:147
 msgid "India"
-msgstr "Индия"
+msgstr "الهند"
 
 #: common/src/Tribe/View_Helpers.php:148
 msgid "Indonesia"
-msgstr "Индонезия"
+msgstr "أندونيسيا"
 
 #: common/src/Tribe/View_Helpers.php:149
 msgid "Iran (Islamic Republic Of)"
-msgstr "Иран (Исламская республика)"
+msgstr "جمهورية إيران الإسلامية"
 
 #: common/src/Tribe/View_Helpers.php:150
 msgid "Iraq"
-msgstr "Ирак"
+msgstr "العراق"
 
 #: common/src/Tribe/View_Helpers.php:151
 msgid "Ireland"
-msgstr "Ирландия"
+msgstr "أيرلندا"
 
 #: common/src/Tribe/Admin/Help_Page.php:856
 msgid "Premium Add-Ons"
-msgstr "Премиальные расширения"
+msgstr "إضافات مدفوعة"
 
 #: common/src/Tribe/View_Helpers.php:152
 msgid "Israel"
-msgstr "Израиль"
+msgstr "إسرائيل"
 
 #: common/src/Tribe/View_Helpers.php:153
 msgid "Italy"
-msgstr "Италия"
+msgstr "إيطاليا"
 
 #: common/src/admin-views/tribe-options-help.php:54
 msgid "News and Tutorials"
-msgstr "Новости и инструкции"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:154
 msgid "Jamaica"
-msgstr "Ямайка"
+msgstr "جامايكا"
 
 #: common/src/admin-views/tribe-options-licenses.php:13
 msgid "<p>The license key you received when completing your purchase from %1$s will grant you access to support and updates until it expires. You do not need to enter the key below for the plugins to work, but you will need to enter it to get automatic updates. <strong>Find your license keys at <a href=\"%2$s\" target=\"_blank\">%3$s</a></strong>.</p> <p>Each paid add-on has its own unique license key. Simply paste the key into its appropriate field on below, and give it a moment to validate. You know you're set when a green expiration date appears alongside a \"valid\" message.</p> <p>If you're seeing a red message telling you that your key isn't valid or is out of installs, visit <a href=\"%4$s\" target=\"_blank\">%5$s</a> to manage your installs or renew / upgrade your license.</p><p>Not seeing an update but expecting one? In WordPress, go to <a href=\"%6$s\">Dashboard > Updates</a> and click \"Check Again\".</p>"
@@ -570,7 +570,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:155
 msgid "Japan"
-msgstr "Япония"
+msgstr "اليابان"
 
 #: common/src/admin-views/tribe-options-licenses.php:18
 msgid "%1$s Using our plugins in a multisite network? %2$s Please note that your license key will be applied to the entire network, not just this site."
@@ -578,7 +578,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:156
 msgid "Jordan"
-msgstr "Иордания"
+msgstr "الأردن"
 
 #: common/src/admin-views/tribe-options-licenses.php:28
 msgid "Only license fields for %1$snetwork activated%2$s plugins will be listed on this screen. "
@@ -586,168 +586,168 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:157
 msgid "Kazakhstan"
-msgstr "Казахстан"
+msgstr "كازاخستان"
 
 #: common/src/admin-views/tribe-options-network.php:15
 msgid "Network Settings"
-msgstr "Настройки сети"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:158
 msgid "Kenya"
-msgstr "Кения"
+msgstr "كينيا"
 
 #: common/src/admin-views/tribe-options-network.php:19
 msgid "This is where all of the global network settings for Modern Tribe's The Events Calendar can be modified."
-msgstr "Здесь могут быть изменены все настройки глобальной сети The Events Calendar от Modern Tribe."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:159
 msgid "Kiribati"
-msgstr "Кирибати"
+msgstr "كيريباتي"
 
 #: common/src/admin-views/tribe-options-network.php:27
 msgid "Hide the following settings tabs on every site:"
-msgstr "Скрыть следующие вкладки настроек на каждом сайте:"
+msgstr "إخفاء علامات تبويب الإعدادات التالية في كل موقع:"
 
 #: common/src/Tribe/View_Helpers.php:160
 msgid "Korea, Democratic People's Republic Of"
-msgstr "Северная Корея"
+msgstr "جمهورية كوريا الديموقراطية الشعبية"
 
 #: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
 msgid "Tickets"
-msgstr "Билеты"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:161
 msgid "Korea, Republic Of"
-msgstr "Южная Корея"
+msgstr "جمهورية كوريا"
 
 #: src/Tribe/Attendees_Table.php:76
 msgid "Order #"
-msgstr "№ заказа"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:162
 msgid "Kuwait"
-msgstr "Кувейт"
+msgstr "الكويت"
 
 #: src/Tribe/Attendees_Table.php:77
 msgid "Order Status"
-msgstr "Статус заказа"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:163
 msgid "Kyrgyzstan"
-msgstr "Киргизстан"
+msgstr "قيرغيزستان"
 
 #: src/Tribe/Attendees_Table.php:78
 msgid "Purchaser name"
-msgstr "Имя покупателя"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:164
 msgid "Lao People's Democratic Republic"
-msgstr "Лаосская Народно-Демократическая Республика"
+msgstr "جمهورية لاو الديمقراطية الشعبية"
 
 #: src/Tribe/Attendees_Table.php:79
 msgid "Purchaser email"
-msgstr "Электронная почта покупателя"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:165
 msgid "Latvia"
-msgstr "Латвия"
+msgstr "لاتفيا"
 
 #: src/Tribe/Attendees_Table.php:80
 msgid "Ticket type"
-msgstr "Вид билета"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:166
 msgid "Lebanon"
-msgstr "Ливан"
+msgstr "لبنان"
 
 #: src/Tribe/Attendees_Table.php:81 src/views/tickets/email.php:321
 msgid "Ticket #"
-msgstr "№ билета"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:167
 msgid "Lesotho"
-msgstr "Лесото"
+msgstr "ليسوتو"
 
 #: src/Tribe/Attendees_Table.php:82 src/views/tickets/email.php:333
 msgid "Security Code"
-msgstr "Код безопасности"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:168
 msgid "Liberia"
-msgstr "Либерия"
+msgstr "ليبيريا"
 
 #: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:173
 #: src/Tribe/Attendees_Table.php:254
 msgid "Check in"
-msgstr "Зарегистрироваться"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:169
 msgid "Libya"
-msgstr "Ливия"
+msgstr "ليبيا"
 
 #: src/Tribe/Attendees_Table.php:174 src/Tribe/Attendees_Table.php:255
 msgid "Undo Check in"
-msgstr "Отменить регистрацию"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:170
 msgid "Liechtenstein"
-msgstr "Лихтенштейн"
+msgstr "ليشتنشتاين"
 
 #: src/Tribe/Attendees_Table.php:227
 msgid "Print"
-msgstr "Печать"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:171
 msgid "Lithuania"
-msgstr "Литва"
+msgstr "ليتوانيا"
 
 #: src/Tribe/Attendees_Table.php:228
 msgid "Email"
-msgstr "Электронная почта"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:172
 msgid "Luxembourg"
-msgstr "Люксембург"
+msgstr "لوكسمبورغ"
 
 #: src/Tribe/Attendees_Table.php:229
 msgid "Export"
-msgstr "Экспорт"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:173
 msgid "Macau"
-msgstr "Макао"
+msgstr "ماكاو"
 
 #: src/Tribe/Attendees_Table.php:235
 msgid "Filter by purchaser name, ticket #, order # or security code"
-msgstr "Фильтровать по Имени покупателя, номеру билета, номеру заказа или коду безопасности"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:174
 msgid "Macedonia"
-msgstr "Македония"
+msgstr "مقدونيا"
 
 #: src/Tribe/Attendees_Table.php:256 src/admin-views/list.php:31
 msgid "Delete"
-msgstr "Удалить"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:175
 msgid "Madagascar"
-msgstr "Мадагаскар"
+msgstr "مدغشقر"
 
 #: src/Tribe/Metabox.php:81
 msgid "Ticket header image"
-msgstr "Изображение заголовка билета"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:176
 msgid "Malawi"
-msgstr "Малави"
+msgstr "ملاوي"
 
 #: src/Tribe/Metabox.php:82
 msgid "Set as ticket header"
-msgstr "Установить как заголовок билета"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:177
 msgid "Malaysia"
-msgstr "Малайзия"
+msgstr "ماليزيا"
 
 #: src/Tribe/RSVP.php:180
 msgctxt "Attendee number"
@@ -756,7 +756,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:178
 msgid "Maldives"
-msgstr "Мальдивы"
+msgstr "جزر المالديف"
 
 #: src/Tribe/RSVP.php:349
 msgid "Your tickets from %s"
@@ -764,7 +764,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:179
 msgid "Mali"
-msgstr "Мали"
+msgstr "مالي"
 
 #: src/Tribe/RSVP.php:552
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
@@ -772,7 +772,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:180
 msgid "Malta"
-msgstr "Мальта"
+msgstr "مالطا"
 
 #: src/Tribe/RSVP.php:563
 msgid "In order to RSVP, you must enter your name and a valid email address."
@@ -780,7 +780,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:181
 msgid "Marshall Islands"
-msgstr "Маршалловы острова"
+msgstr "جزر مارشال"
 
 #: src/Tribe/RSVP.php:684
 msgid "(deleted)"
@@ -788,164 +788,164 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:182
 msgid "Martinique"
-msgstr "Мартиника"
+msgstr "مارتينيك"
 
 #: src/Tribe/Tickets.php:336
 msgid "Your ticket has been saved."
-msgstr "Ваш билет сохранен."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:183
 msgid "Mauritania"
-msgstr "Мавритания"
+msgstr "موريتانيا"
 
 #: src/Tribe/Tickets.php:478
 msgid "Your ticket has been deleted."
-msgstr "Ваш билет удален."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:184
 msgid "Mauritius"
-msgstr "Маврикий"
+msgstr "موريشيوس"
 
 #: src/Tribe/Tickets_Handler.php:82 src/admin-views/list.php:68
 msgid "See who purchased tickets to this event"
-msgstr "Посмотреть, кто купил билеты на это мероприятие"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:185
 msgid "Mayotte"
-msgstr "Майотта"
+msgstr "مايوت"
 
 #: src/Tribe/Tickets_Handler.php:82 src/admin-views/attendees.php:34
 #: src/admin-views/list.php:70
 msgid "Attendees"
-msgstr "Учасники"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:186
 msgid "Mexico"
-msgstr "Мексика"
+msgstr "المكسيك"
 
 #: src/Tribe/Tickets_Handler.php:119
 msgid "You need to select a user or type a valid email address"
-msgstr "Вам нужно выбрать пользователя или ввести действительный адрес электронной почты"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:187
 msgid "Micronesia, Federated States Of"
-msgstr "Микронезия, Федеративные Штаты"
+msgstr "ولايات ميكرونيزيا الموحدة"
 
 #: src/Tribe/Tickets_Handler.php:120
 msgid "Sending..."
-msgstr "Отправка..."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:188
 msgid "Moldova, Republic Of"
-msgstr "Руспублика Молдова"
+msgstr "جمهورية مولدوفا"
 
 #: src/Tribe/Tickets_Handler.php:146
 msgid "Columns"
-msgstr "Колонки"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:189
 msgid "Monaco"
-msgstr "Монако"
+msgstr "موناكو"
 
 #: src/Tribe/Tickets_Handler.php:146
 msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
-msgstr "Вы можете использовать Параметры экрана, чтобы выбрать, какие колонки вы хотите видеть. Выбор работает в таблице ниже, в электронном письме, для печати и для экспорта CSV."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:190
 msgid "Mongolia"
-msgstr "Монголия"
+msgstr "منغوليا"
 
 #: src/Tribe/Tickets_Handler.php:270
 msgid "Yes"
-msgstr "Да"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:191
 msgid "Montenegro"
-msgstr "Монтенегро"
+msgstr "الجبل الأسود"
 
 #: src/Tribe/Tickets_Handler.php:302
 msgid "attendees"
-msgstr "посетители"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:192
 msgid "Montserrat"
-msgstr "Монтсеррат"
+msgstr "مونتسيرات"
 
 #: src/Tribe/Tickets_Handler.php:394
 msgid "Attendee List for: %s"
-msgstr "Список посетителей для: %s"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:193
 msgid "Morocco"
-msgstr "Марокко"
+msgstr "المغرب"
 
 #: common/src/Tribe/View_Helpers.php:194
 msgid "Mozambique"
-msgstr "Мозамбик"
+msgstr "موزمبيق"
 
 #: src/admin-views/attendees.php:41
 msgid "Event Details"
-msgstr "Детали мероприятия"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:195
 msgid "Myanmar"
-msgstr "Мьянма"
+msgstr "ميانمار"
 
 #: src/admin-views/attendees.php:47
 msgid "Start Date / Time:"
-msgstr "Дата/время начала:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:196
 msgid "Namibia"
-msgstr "Намибия"
+msgstr "ناميبيا"
 
 #: src/admin-views/attendees.php:52
 msgid "End Date / Time:"
-msgstr "Дата/время окончания:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:197
 msgid "Nauru"
-msgstr "Науру"
+msgstr "ناورو"
 
 #: src/admin-views/attendees.php:66
 msgid "Address:"
-msgstr "Адрес:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:198
 msgid "Nepal"
-msgstr "Непал"
+msgstr "نيبال"
 
 #: src/admin-views/attendees.php:74
 msgid "Phone:"
-msgstr "Телефон:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:199
 msgid "Netherlands"
-msgstr "Нидерланды"
+msgstr "هولندا"
 
 #: src/admin-views/attendees.php:83
 msgid "Website:"
-msgstr "Веб-сайт:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:200
 msgid "Netherlands Antilles"
-msgstr "Надерландские Антильские острова"
+msgstr "جزر الأنتيل الهولندية"
 
 #: common/src/Tribe/View_Helpers.php:201
 msgid "New Caledonia"
-msgstr "Новая Каледония"
+msgstr "كاليدونيا الجديدة"
 
 #: common/src/Tribe/View_Helpers.php:202
 msgid "New Zealand"
-msgstr "Новая Зеландия"
+msgstr "نيوزيلندا"
 
 #: src/admin-views/attendees.php:118
 msgid "Finalized:"
-msgstr "Завершено"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:203
 msgid "Nicaragua"
-msgstr "Никарагуа"
+msgstr "نيكاراغوا"
 
 #: src/admin-views/attendees.php:124
 msgid "Awaiting review:"
@@ -953,87 +953,87 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:204
 msgid "Niger"
-msgstr "Нигер"
+msgstr "النيجر"
 
 #: src/admin-views/attendees.php:129
 msgid "Checked in:"
-msgstr "Зарегистрировано:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:205
 msgid "Nigeria"
-msgstr "Нигерия"
+msgstr "نيجيريا"
 
 #: src/admin-views/attendees-email.php:3
 msgid "Send the attendee list by email"
-msgstr "Прислать список учасников по электронной почте"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:206
 msgid "Niue"
-msgstr "Ниуэ"
+msgstr "نيوي"
 
 #: src/admin-views/attendees-email.php:9
 msgid "Select a User:"
-msgstr "Выбрать пользователя:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:207
 msgid "Norfolk Island"
-msgstr "Остров Норфолк"
+msgstr "جزيرة نورفولك"
 
 #: src/admin-views/attendees-email.php:14
 msgid "Select..."
-msgstr "Выбрать:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:208
 msgid "Northern Mariana Islands"
-msgstr "Северные Марианские острова"
+msgstr "جزر ماريانا الشمالية"
 
 #: src/admin-views/attendees-email.php:19
 msgid "or"
-msgstr "или"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:209
 msgid "Norway"
-msgstr "Норвегия"
+msgstr "النرويج"
 
 #: src/admin-views/attendees-email.php:21
 msgid "Email Address:"
-msgstr "Адрес электронной почты:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:210
 msgid "Oman"
-msgstr "Оман"
+msgstr "عمان"
 
 #: src/admin-views/list.php:30
 msgid "Edit"
-msgstr "Редактировать"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:211
 msgid "Pakistan"
-msgstr "Пакистан"
+msgstr "باكستان"
 
 #: src/admin-views/list.php:39
 msgid "Edit in %s"
-msgstr "Редактировать в %s"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:212
 msgid "Palau"
-msgstr "Палау"
+msgstr "بالاو"
 
 #: src/admin-views/list.php:34
 msgid "View"
-msgstr "Просмотр"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:213
 msgid "Panama"
-msgstr "Панама"
+msgstr "بناما"
 
 #: src/admin-views/list.php:98
 msgid "Sold %d"
-msgstr "Продано %d"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:214
 msgid "Papua New Guinea"
-msgstr "Папуа Новая Гвинея"
+msgstr "بابوا غينيا الجديدة"
 
 #: src/admin-views/list.php:100
 msgid "Sold %1$d of %2$d"
@@ -1041,103 +1041,103 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:215
 msgid "Paraguay"
-msgstr "Парагвай"
+msgstr "باراغواي"
 
 #: src/admin-views/meta-box.php:23
 msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
-msgstr "Это мероприятие было создано через Общественные мероприятия. Вы уверены, что хотите продать на него билеты?"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:216
 msgid "Peru"
-msgstr "Перу"
+msgstr "بيرو"
 
 #: src/admin-views/meta-box.php:34
 msgid "Upload image for the ticket header"
-msgstr "Загрузить изображение для заголовка билета"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:217
 msgid "Philippines"
-msgstr "Филипины"
+msgstr "الفلبين"
 
 #: src/admin-views/meta-box.php:35
 msgid "The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like \"retina\" support use an image sized to 1160px wide."
-msgstr "Максимальный размер изображения в электронном письму будет шириной 580 пкс и любой высоты, а потом масштабировано для мобильного устройства. Если вы хотите, чтобы поддерживалась \"ретина\", используйте изображение шириной 1160 пкс."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:218
 msgid "Pitcairn"
-msgstr "Питкэрн"
+msgstr "بيتكيرن"
 
 #: src/admin-views/meta-box.php:38
 msgid "Select an Image"
-msgstr "Выбрать изображение"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:219
 msgid "Poland"
-msgstr "Польша"
+msgstr "بولندا"
 
 #: src/admin-views/meta-box.php:46
 msgid "Remove"
-msgstr "Удалить"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:220
 msgid "Portugal"
-msgstr "Португалия"
+msgstr "البرتغال"
 
 #: src/admin-views/meta-box.php:64 src/admin-views/meta-box.php:74
 msgid "Add new ticket"
-msgstr "Добавить новый билет"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:221
 msgid "Puerto Rico"
-msgstr "Пуэрто Рико"
+msgstr "بورتوريكو"
 
 #: src/admin-views/meta-box.php:75
 msgid "Edit ticket"
-msgstr "Редактировать билет"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:222
 msgid "Qatar"
-msgstr "Катар"
+msgstr "قطر"
 
 #: src/admin-views/meta-box.php:80
 msgid "Sell using:"
-msgstr "Продавать используя:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:223
 msgid "Reunion"
-msgstr "Реюньон"
+msgstr ""
 
 #: src/admin-views/meta-box.php:97
 msgid "Ticket Name:"
-msgstr "Название билета:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:224
 msgid "Romania"
-msgstr "Румыния"
+msgstr "رومانيا"
 
 #: src/admin-views/meta-box.php:104
 msgid "Ticket Description:"
-msgstr "Описание билета:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:225
 msgid "Russian Federation"
-msgstr "Российская Федерация"
+msgstr "الفيدرالية الروسية"
 
 #: src/admin-views/legacy-ticket-fields.php:15
 msgid "Price:"
-msgstr "Цена:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:226
 msgid "Rwanda"
-msgstr "Руанда"
+msgstr "رواندا"
 
 #: src/admin-views/legacy-ticket-fields.php:19
 msgid "(0 or empty for free tickets)"
-msgstr "(0 или пустое поле для бесплатных билетов)"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:227
 msgid "Saint Kitts And Nevis"
-msgstr "Сент-Китс и Невис"
+msgstr "سانت كيتس ونيفيس"
 
 #: src/admin-views/legacy-ticket-fields.php:24
 msgid "Sale Price:"
@@ -1145,7 +1145,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:228
 msgid "Saint Lucia"
-msgstr "Сент-Люсия"
+msgstr "سانت لوسيا"
 
 #: src/admin-views/legacy-ticket-fields.php:28
 msgid "(Current sale price - this can be managed via the product editor)"
@@ -1153,35 +1153,35 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:229
 msgid "Saint Vincent And The Grenadines"
-msgstr "Сент-Винсент и Гренадины"
+msgstr "سانت فنسنت وغرينادين"
 
 #: src/admin-views/meta-box.php:113
 msgid "Start sale:"
-msgstr "Начало продажи:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:230
 msgid "Samoa"
-msgstr "Самоа"
+msgstr "ساموا"
 
 #: src/admin-views/meta-box.php:137
 msgid "End sale:"
-msgstr "Окончание продажи:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:231
 msgid "San Marino"
-msgstr "Сан Марино"
+msgstr "سان مارينو"
 
 #: common/src/Tribe/View_Helpers.php:232
 msgid "Sao Tome And Principe"
-msgstr "Демократическая Республика Сан-Томе и Принсипи"
+msgstr "ساو تومي وبرينسيبي"
 
 #: src/admin-views/meta-box.php:177
 msgid "Save this ticket"
-msgstr "Сохранить этот билет."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:233
 msgid "Saudi Arabia"
-msgstr "Саудовская Аравия"
+msgstr "المملكة العربية السعودية"
 
 #: src/admin-views/rsvp-metabox-advanced.php:2
 msgid "Stock:"
@@ -1189,7 +1189,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:234
 msgid "Senegal"
-msgstr "Сенегал"
+msgstr "السنغال"
 
 #: src/admin-views/rsvp-metabox-advanced.php:6
 msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
@@ -1197,7 +1197,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:235
 msgid "Serbia"
-msgstr "Сербия"
+msgstr "صربيا"
 
 #: src/admin-views/rsvp-metabox-advanced.php:16
 msgid "Selling tickets for recurring events"
@@ -1205,7 +1205,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:236
 msgid "Seychelles"
-msgstr "Сейшелы"
+msgstr "سيشيل"
 
 #: src/admin-views/rsvp-metabox-advanced.php:20
 msgid "Currently, Tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly."
@@ -1213,7 +1213,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:237
 msgid "Sierra Leone"
-msgstr "Сьерра-Леоне"
+msgstr "سيرا ليون"
 
 #: src/admin-views/tribe-options-tickets.php:41
 msgid "Ticket Settings"
@@ -1221,7 +1221,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:238
 msgid "Singapore"
-msgstr "Сингапур"
+msgstr "سنغافورة"
 
 #: src/admin-views/tribe-options-tickets.php:45
 msgid "Post types that can have tickets"
@@ -1229,7 +1229,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:239
 msgid "Slovakia (Slovak Republic)"
-msgstr "Словакия (Словацкая Республика)"
+msgstr "سلوفاكيا (جمهورية سلوفاكيا)"
 
 #: src/template-tags/tickets.php:208
 msgid "(%d awaiting review)"
@@ -1237,14 +1237,17 @@ msgid_plural "(%d awaiting review)"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: common/src/Tribe/View_Helpers.php:240
 msgid "Slovenia"
-msgstr "Словения"
+msgstr "سلوفينيا"
 
 #: common/src/Tribe/View_Helpers.php:241
 msgid "Solomon Islands"
-msgstr "Соломоновы острова"
+msgstr "جزر سليمان"
 
 #: src/template-tags/tickets.php:214
 msgid "Sold %1$d of %2$d %3$s"
@@ -1252,19 +1255,19 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:242
 msgid "Somalia"
-msgstr "Сомали"
+msgstr "الصومال"
 
 #: src/views/tickets/attendees-email.php:24
 msgid "Attendee List"
-msgstr "Список посетителей"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:243
 msgid "South Africa"
-msgstr "Южная Африка"
+msgstr "جنوب افريقيا"
 
 #: src/views/tickets/email.php:26
 msgid "Your tickets"
-msgstr "Ваши билеты"
+msgstr ""
 
 #: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:62
 msgid "<a href=\"%s\">Edit the page slug</a>"
@@ -1272,11 +1275,11 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:244
 msgid "South Georgia, South Sandwich Islands"
-msgstr "Южная Георгия, Южные Сандвичевы острова"
+msgstr "جورجيا الجنوبية وجزر ساندويتش الجنوبية"
 
 #: src/views/tickets/email.php:325
 msgid "Ticket Type"
-msgstr "Вид билета"
+msgstr ""
 
 #: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:63
 msgid "Ask the site administrator to edit the page slug"
@@ -1284,15 +1287,15 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:245
 msgid "Spain"
-msgstr "Испания"
+msgstr "إسبانيا"
 
 #: src/views/tickets/email.php:329
 msgid "Purchaser"
-msgstr "Покупатель"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:246
 msgid "Sri Lanka"
-msgstr "Шри Ланка"
+msgstr "سيريلانكا"
 
 #: src/views/tickets/rsvp.php:9
 msgid "RSVP"
@@ -1304,7 +1307,7 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:247
 msgid "St. Helena"
-msgstr "Остров Святой Елены"
+msgstr "سانت هيلانة"
 
 #: src/views/tickets/rsvp.php:55
 msgid "%1$s out of %2$s available"
@@ -1313,11 +1316,11 @@ msgstr ""
 #: common/src/Tribe/App_Shop.php:67 common/src/Tribe/App_Shop.php:68
 #: common/src/Tribe/App_Shop.php:91
 msgid "Event Add-Ons"
-msgstr "Расширения мероприятия"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:248
 msgid "St. Pierre And Miquelon"
-msgstr "Сен-Пьер и Микелон"
+msgstr "سانت بيير وميكلون"
 
 #: src/views/tickets/rsvp.php:63
 msgid "Out of stock!"
@@ -1325,11 +1328,11 @@ msgstr ""
 
 #: common/src/Tribe/Credits.php:26
 msgid "This calendar is powered by The Events Calendar."
-msgstr "Этот календарь работает на The Events Calendar."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:249
 msgid "Sudan"
-msgstr "Судан"
+msgstr "السودان"
 
 #: src/views/tickets/rsvp.php:86
 msgid "Full Name:"
@@ -1341,19 +1344,19 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:250
 msgid "Suriname"
-msgstr "Суринам"
+msgstr "سورينام"
 
 #: src/views/tickets/rsvp.php:94
 msgid "Email:"
-msgstr "Электронная почта:"
+msgstr ""
 
 #: common/src/Tribe/Field.php:209
 msgid "Invalid field type specified"
-msgstr "Указан недопустимый тип поля"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:251
 msgid "Svalbard And Jan Mayen Islands"
-msgstr "Шпицберген и Ян-Майен"
+msgstr "جزر سفالبارد وجان ماين"
 
 #: src/views/tickets/rsvp.php:105
 msgid "Confirm RSVP"
@@ -1361,11 +1364,11 @@ msgstr ""
 
 #: common/src/Tribe/Field.php:466
 msgid "No radio options specified"
-msgstr "Параметры радио не установлены"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:252
 msgid "Swaziland"
-msgstr "Свазиленд"
+msgstr "سوازيلاند"
 
 #. Plugin Name of the plugin/theme
 #: common/src/Tribe/Admin/Help_Page.php:64
@@ -1374,11 +1377,11 @@ msgstr ""
 
 #: common/src/Tribe/Field.php:502
 msgid "No checkbox options specified"
-msgstr "Ни один из параметров не задан"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:253
 msgid "Sweden"
-msgstr "Швеция"
+msgstr "السويد"
 
 #. Description of the plugin/theme
 msgid "Event Tickets allows you to sell tickets to events"
@@ -1386,11 +1389,11 @@ msgstr ""
 
 #: common/src/Tribe/Field.php:558
 msgid "No select options specified"
-msgstr "Параметры выбора не установлены"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:254
 msgid "Switzerland"
-msgstr "Швейцария"
+msgstr "سويسرا"
 
 #. Author of the plugin/theme
 msgid "Modern Tribe, Inc."
@@ -1398,11 +1401,11 @@ msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:48
 msgid "The Events Calendar"
-msgstr "The Events Calendar"
+msgstr "تقويم الفعاليات"
 
 #: common/src/Tribe/View_Helpers.php:255
 msgid "Syrian Arab Republic"
-msgstr "Сирийская Арабская Республика"
+msgstr "الجمهورية العربية السورية"
 
 #. Author URI of the plugin/theme
 msgid "http://m.tri.be/28"
@@ -1411,47 +1414,47 @@ msgstr ""
 #: common/src/Tribe/Settings.php:148 common/src/Tribe/Settings.php:203
 #: common/src/Tribe/Settings.php:204
 msgid "Events"
-msgstr "Мероприятия"
+msgstr "الفعاليات"
 
 #: common/src/Tribe/View_Helpers.php:256
 msgid "Taiwan"
-msgstr "Тайвань"
+msgstr "تايوان"
 
 #: common/src/Tribe/View_Helpers.php:257
 msgid "Tajikistan"
-msgstr "Таджикистан"
+msgstr "طاجيكستان"
 
 #: common/src/Tribe/Settings.php:215
 msgid "Settings"
-msgstr "Параметры"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:258
 msgid "Tanzania, United Republic Of"
-msgstr "Танзания (Объединенная Республика)"
+msgstr "جمهورية تنزانيا المتحدة"
 
 #: common/src/Tribe/Settings.php:214 common/src/Tribe/Settings.php:235
 msgid "Events Settings"
-msgstr "Настройки мероприятий"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:259
 msgid "Thailand"
-msgstr "Таиланд"
+msgstr "تايلاند"
 
 #: common/src/Tribe/Settings.php:300
 msgid "%s Settings"
-msgstr "Настройки %s"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:260
 msgid "Togo"
-msgstr "Того"
+msgstr "توغو"
 
 #: common/src/Tribe/Settings.php:314
 msgid "You've requested a non-existent tab."
-msgstr "Вы запросили несуществующую вкладку."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:261
 msgid "Tokelau"
-msgstr "Токелау"
+msgstr "توكيلاو"
 
 #: common/src/Tribe/Settings.php:322
 msgid "Save Changes"
@@ -1459,140 +1462,143 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:262
 msgid "Tonga"
-msgstr "Тонга"
+msgstr "تونغا"
 
 #: common/src/Tribe/Settings.php:370
 msgid "You don't have permission to do that."
-msgstr "У вас нет на это разрешения."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:263
 msgid "Trinidad And Tobago"
-msgstr "Тринидад и Тобаго"
+msgstr "ترينداد وتوباغو"
 
 #: common/src/Tribe/Settings.php:376
 msgid "The request was sent insecurely."
-msgstr "Запрос отправлен небезопасно."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:264
 msgid "Tunisia"
-msgstr "Тунис"
+msgstr "تونس"
 
 #: common/src/Tribe/Settings.php:382
 msgid "The request wasn't sent from this tab."
-msgstr "Запрос отправлен не с этой вкладки."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:265
 msgid "Turkey"
-msgstr "Турция"
+msgstr "تركيا"
 
 #: common/src/Tribe/Settings.php:550
 msgid "Your form had the following errors:"
-msgstr "В вашей форме были следующие ошибки:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:266
 msgid "Turkmenistan"
-msgstr "Туркменистан"
+msgstr "تركمانستان"
 
 #: common/src/Tribe/Settings.php:560
 msgid "None of your settings were saved. Please try again."
-msgstr "Ни одна из ваших настроек не была сохранена. Пожалуйста, попробуйте снова."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:267
 msgid "Turks And Caicos Islands"
-msgstr "Теркс и Кайкос"
+msgstr "جزر تركس وكايكوس"
 
 #: common/src/Tribe/Settings.php:561
 msgid "The above setting was not saved. Other settings were successfully saved."
 msgid_plural "The above settings were not saved. Other settings were successfully saved."
-msgstr[0] "Вышеуказанная настройка не была сохранена. Остальные настройки сохранены успешно."
-msgstr[1] "Вышеуказанные настройки не были сохранены. Остальные настройки сохранены успешно."
-msgstr[2] "Вышеуказанные настройки не были сохранены. Остальные настройки сохранены успешно."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+msgstr[4] ""
+msgstr[5] ""
 
 #: common/src/Tribe/View_Helpers.php:268
 msgid "Tuvalu"
-msgstr "Острова Тувалу"
+msgstr "توفالو"
 
 #: common/src/Tribe/Settings.php:583
 msgid "Settings saved."
-msgstr "Настройки сохранены."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:269
 msgid "Uganda"
-msgstr "Уганда"
+msgstr "أوغندا"
 
 #: common/src/Tribe/Settings_Manager.php:55
 msgid "General"
-msgstr "Общее"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:270
 msgid "Ukraine"
-msgstr "Украина"
+msgstr "أوكرانيا"
 
 #: common/src/Tribe/Settings_Manager.php:56
 msgid "Display"
-msgstr "Показать"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:271
 msgid "United Arab Emirates"
-msgstr "Объединенные Арабские Эмираты"
+msgstr "الإمارات العربية المتحدة"
 
 #: common/src/Tribe/Settings_Manager.php:62
 #: common/src/Tribe/Settings_Manager.php:289
 msgid "Help"
-msgstr "Помощь"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:272
 msgid "United Kingdom"
-msgstr "Великобритания"
+msgstr "المملكة المتحدة"
 
 #: common/src/Tribe/Settings_Manager.php:229
 msgid "Network"
-msgstr "Сеть"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:273
 msgid "United States Minor Outlying Islands"
-msgstr "Малые Удаленные Острова США"
+msgstr ""
 
 #: common/src/Tribe/Settings_Manager.php:263
 #: common/src/admin-views/tribe-options-licenses.php:46
 msgid "Licenses"
-msgstr "Лицензии"
+msgstr "التراخيص"
 
 #: common/src/Tribe/View_Helpers.php:274
 msgid "Uruguay"
-msgstr "Уругвай"
+msgstr ""
 
 #: common/src/Tribe/Settings_Tab.php:222
 msgid "There are no fields setup for this tab yet."
-msgstr "Для этой вкладки пока не установлены поля."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:275
 msgid "Uzbekistan"
-msgstr "Узбекистан"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:276
 msgid "Vanuatu"
-msgstr "Вануату"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:277
 msgid "Venezuela"
-msgstr "Венесуэла"
+msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:34
 msgid "System Information"
-msgstr "Информация о системе"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:278
 msgid "Viet Nam"
-msgstr "Вьетнам"
+msgstr ""
 
 #: common/src/Tribe/Support.php:122
 msgid "Unknown or not set"
-msgstr "Неизвестный или не установленный"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:279
 msgid "Virgin Islands (British)"
-msgstr "Виргинские острова (Британские)"
+msgstr ""
 
 #: common/src/Tribe/Support.php:129
 msgid "Rewrite rules were purged on load of this help page. Chances are there is a rewrite rule flush occurring in a plugin or theme!"
@@ -1600,715 +1606,715 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:280
 msgid "Virgin Islands (U.S.)"
-msgstr "Виргинские острова (США)"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:76 common/src/Tribe/Validate.php:117
 msgid "Invalid or incomplete field passed"
-msgstr "Отправлено пустое поле или поле с неправильным значением"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:281
 msgid "Wallis And Futuna Islands"
-msgstr "Острова Уоллис и Футуна"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:77 common/src/Tribe/Validate.php:112
 #: common/src/Tribe/Validate.php:118
 msgid "Field ID:"
-msgstr "ID поля:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:282
 msgid "Western Sahara"
-msgstr "Западная Сахара"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:111
 msgid "Non-existant field validation function passed"
-msgstr "Отправлена не существующая функция проверки поля"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:283
 msgid "Yemen"
-msgstr "Йемен"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:112
 msgctxt "non-existant function name passed for field validation"
 msgid "with function name:"
-msgstr "с названием функции:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:284
 msgid "Zambia"
-msgstr "Замбия"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:135 common/src/Tribe/Validate.php:151
 msgid "%s must contain numbers and letters only"
-msgstr "%s должен содержать только цифры и буквы"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:285
 msgid "Zimbabwe"
-msgstr "Зимбабве"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:167
 msgid "%s must contain numbers, letters and dots only"
-msgstr "%s должен содержать только цифры, буквы и точки"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:316
 msgid "Alabama"
-msgstr "Алабама"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:181 common/src/Tribe/Validate.php:209
 msgid "%s must be a positive number."
-msgstr "%s должен быть положительным числом."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:317
 msgid "Alaska"
-msgstr "Аляска"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:224
 msgid "%s must be a valid slug (numbers, letters, dashes, and underscores)."
-msgstr "%s должен быть допустимым адресом (цифры, буквы, тире и подчеркивания)"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:318
 msgid "Arizona"
-msgstr "Аризона"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:239
 msgid "%s must be a valid absolute URL."
-msgstr "%s должен быть допустимой абсолютной ссылкой."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:319
 msgid "Arkansas"
-msgstr "Арканзас"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:255 common/src/Tribe/Validate.php:272
 #: common/src/Tribe/Validate.php:294
 msgid "%s must have a value that's part of its options."
-msgstr "%s должен иметь значение, которое является частью его параметров."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:320
 msgid "California"
-msgstr "Калифорния"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:308
 msgid "Comparison validation failed because no comparison value was provided, for field %s"
-msgstr "Cравнение не произошло, поскольку для поля %s не было предоставлено никакое значение"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:321
 msgid "Colorado"
-msgstr "Колорадо"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:315
 msgid "%s cannot be the same as %s."
-msgstr "%s не может совпадать с %s."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:322
 msgid "Connecticut"
-msgstr "Коннектикут"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:317
 msgid "%s cannot be a duplicate"
-msgstr "%s не может быть копией"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:323
 msgid "Delaware"
-msgstr "Делавэр"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:333
 msgid "%s must be a number or percentage."
-msgstr "%s должен быть числом или процентом."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:324
 msgid "District of Columbia"
-msgstr "Округ Колумбия"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:387
 msgid "%s must be a number between 0 and 21."
-msgstr "%s должен быть числом от 0 до 21."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:325
 msgid "Florida"
-msgstr "Флорида"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:403
 msgid "%s must consist of letters, numbers, dashes, apostrophes, and spaces only."
-msgstr "%s должен содержать только буквы, цифры, тире, апострофы и пробелы."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:327
 msgid "Hawaii"
-msgstr "Гавайи"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:419
 msgid "%s must consist of letters, spaces, apostrophes, and dashes."
-msgstr "%s должен содержать буквы, пробелы, апострофы и тире."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:328
 msgid "Idaho"
-msgstr "Айдахо"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:433
 msgid "%s must consist of 5 numbers."
-msgstr "%s должен содержать 5 цифр."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:329
 msgid "Illinois"
-msgstr "Иллинойс"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:447
 msgid "%s must be a phone number."
-msgstr "%s должен быть номером телефона."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:330
 msgid "Indiana"
-msgstr "Индиана"
+msgstr ""
 
 #: common/src/Tribe/Validate.php:463
 msgid "Country List must be formatted as one country per line in the following format: <br>US, United States <br> UK, United Kingdom."
-msgstr "Список стран должен быть форматирован следующим образом: одна страна в строке в формате <br>США, Соединенные штаты Америки <br>ВБ, Великобритания."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:331
 msgid "Iowa"
-msgstr "Айова"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:26 common/src/Tribe/View_Helpers.php:45
 msgid "Select a Country:"
-msgstr "Выберите страну:"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:332
 msgid "Kansas"
-msgstr "Канзас"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:46
 msgid "United States"
-msgstr "Соединенные штаты"
+msgstr "الولايات المتحدة"
 
 #: common/src/Tribe/View_Helpers.php:333
 msgid "Kentucky"
-msgstr "Кентукки"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:47
 msgid "Afghanistan"
-msgstr "Афганистан"
+msgstr "أفغانستان"
 
 #: common/src/Tribe/View_Helpers.php:334
 msgid "Louisiana"
-msgstr "Луизиана"
+msgstr "لويزيانا"
 
 #: common/src/Tribe/View_Helpers.php:48
 msgid "Albania"
-msgstr "Албания"
+msgstr "ألبانيا"
 
 #: common/src/Tribe/View_Helpers.php:335
 msgid "Maine"
-msgstr "Мэн"
+msgstr "ولاية مين"
 
 #: common/src/Tribe/View_Helpers.php:49
 msgid "Algeria"
-msgstr "Алжир"
+msgstr "الجزائر"
 
 #: common/src/Tribe/View_Helpers.php:336
 msgid "Maryland"
-msgstr "Мэрилэнд"
+msgstr "ولاية ميريلاند"
 
 #: common/src/Tribe/View_Helpers.php:50
 msgid "American Samoa"
-msgstr "Американское Самоа"
+msgstr "ساموا الأمريكية"
 
 #: common/src/Tribe/View_Helpers.php:337
 msgid "Massachusetts"
-msgstr "Массачусетс"
+msgstr "ولاية ماساتشوستس"
 
 #: common/src/Tribe/View_Helpers.php:51
 msgid "Andorra"
-msgstr "Андорра"
+msgstr "أندورا"
 
 #: common/src/Tribe/View_Helpers.php:338
 msgid "Michigan"
-msgstr "Мичиган"
+msgstr "ولاية ميشيغان"
 
 #: common/src/Tribe/View_Helpers.php:52
 msgid "Angola"
-msgstr "Ангола"
+msgstr "أنغولا"
 
 #: common/src/Tribe/View_Helpers.php:339
 msgid "Minnesota"
-msgstr "Миннесота"
+msgstr "ولاية مينيسوتا"
 
 #: common/src/Tribe/View_Helpers.php:53
 msgid "Anguilla"
-msgstr "Ангилья"
+msgstr "أنغيلا"
 
 #: common/src/Tribe/View_Helpers.php:340
 msgid "Mississippi"
-msgstr "Миссисипи"
+msgstr "ولاية ميسيسيبي"
 
 #: common/src/Tribe/View_Helpers.php:54
 msgid "Antarctica"
-msgstr "Антарктика"
+msgstr "القارة القطبية الجنوبية"
 
 #: common/src/Tribe/View_Helpers.php:341
 msgid "Missouri"
-msgstr "Миссури"
+msgstr "ولاية ميسوري"
 
 #: common/src/Tribe/View_Helpers.php:55
 msgid "Antigua And Barbuda"
-msgstr "Антигуа и Барбуда"
+msgstr "أنتيغوا وبربودا"
 
 #: common/src/Tribe/View_Helpers.php:342
 msgid "Montana"
-msgstr "Монтана"
+msgstr "ولاية مونتانا"
 
 #: common/src/Tribe/View_Helpers.php:56
 msgid "Argentina"
-msgstr "Аргентина"
+msgstr "الأرجنتين"
 
 #: common/src/Tribe/View_Helpers.php:343
 msgid "Nebraska"
-msgstr "Небраска"
+msgstr "ولاية نبراسكا"
 
 #: common/src/Tribe/View_Helpers.php:57
 msgid "Armenia"
-msgstr "Армения"
+msgstr "أرمينيا"
 
 #: common/src/Tribe/View_Helpers.php:344
 msgid "Nevada"
-msgstr "Невада"
+msgstr "نيفادا"
 
 #: common/src/Tribe/View_Helpers.php:58
 msgid "Aruba"
-msgstr "Аруба"
+msgstr "أروبا"
 
 #: common/src/Tribe/View_Helpers.php:345
 msgid "New Hampshire"
-msgstr "Нью-Гэмпшир"
+msgstr "نيو هامبشاير"
 
 #: common/src/Tribe/View_Helpers.php:59
 msgid "Australia"
-msgstr "Австралия"
+msgstr "أستراليا"
 
 #: common/src/Tribe/View_Helpers.php:346
 msgid "New Jersey"
-msgstr "Нью-Джерси"
+msgstr "نيو جيرسي"
 
 #: common/src/Tribe/View_Helpers.php:60
 msgid "Austria"
-msgstr "Австрия"
+msgstr "النمسا"
 
 #: common/src/Tribe/View_Helpers.php:347
 msgid "New Mexico"
-msgstr "Нью-Мексико"
+msgstr "نيو ميكسيكو"
 
 #: common/src/Tribe/View_Helpers.php:61
 msgid "Azerbaijan"
-msgstr "Азербайджан"
+msgstr "أذربيجان"
 
 #: common/src/Tribe/View_Helpers.php:348
 msgid "New York"
-msgstr "Нью-Йорк"
+msgstr "نيويورك"
 
 #: common/src/Tribe/View_Helpers.php:62
 msgid "Bahamas"
-msgstr "Багамы"
+msgstr "جزر البهاما"
 
 #: common/src/Tribe/View_Helpers.php:349
 msgid "North Carolina"
-msgstr "Северная Каролина"
+msgstr "كارولاينا الشمالية"
 
 #: common/src/Tribe/View_Helpers.php:63
 msgid "Bahrain"
-msgstr "Бахрейн"
+msgstr "البحرين"
 
 #: common/src/Tribe/View_Helpers.php:350
 msgid "North Dakota"
-msgstr "Северная Дакота"
+msgstr "داكوتا الشمالية"
 
 #: common/src/Tribe/View_Helpers.php:64
 msgid "Bangladesh"
-msgstr "Бангладеш"
+msgstr "بنغلاديش"
 
 #: common/src/Tribe/View_Helpers.php:351
 msgid "Ohio"
-msgstr "Огайо"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:65
 msgid "Barbados"
-msgstr "Барбадос"
+msgstr "بربادوس"
 
 #: common/src/Tribe/View_Helpers.php:352
 msgid "Oklahoma"
-msgstr "Оклахома"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:66
 msgid "Belarus"
-msgstr "Беларусь"
+msgstr "روسيا البيضاء"
 
 #: common/src/Tribe/View_Helpers.php:353
 msgid "Oregon"
-msgstr "Орегон"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:67
 msgid "Belgium"
-msgstr "Бельгия"
+msgstr "بلجيكا"
 
 #: common/src/Tribe/View_Helpers.php:354
 msgid "Pennsylvania"
-msgstr "Пенсильвания"
+msgstr "بنسلفانيا"
 
 #: common/src/Tribe/View_Helpers.php:68
 msgid "Belize"
-msgstr "Белиз"
+msgstr "بليز"
 
 #: common/src/Tribe/View_Helpers.php:355
 msgid "Rhode Island"
-msgstr "Род-Айленд"
+msgstr "رود ايلاند"
 
 #: common/src/Tribe/View_Helpers.php:69
 msgid "Benin"
-msgstr "Бенин"
+msgstr "بنين"
 
 #: common/src/Tribe/View_Helpers.php:356
 msgid "South Carolina"
-msgstr "Южная Каролина"
+msgstr "كارولينا الجنوبية"
 
 #: common/src/Tribe/View_Helpers.php:70
 msgid "Bermuda"
-msgstr "Бермудские острова"
+msgstr "برمودا"
 
 #: common/src/Tribe/View_Helpers.php:357
 msgid "South Dakota"
-msgstr "Южная Дакота"
+msgstr "جنوب داكوتا"
 
 #: common/src/Tribe/View_Helpers.php:71
 msgid "Bhutan"
-msgstr "Бутан"
+msgstr "بوتان"
 
 #: common/src/Tribe/View_Helpers.php:358
 msgid "Tennessee"
-msgstr "Теннесси"
+msgstr "تينيسي"
 
 #: common/src/Tribe/View_Helpers.php:72
 msgid "Bolivia"
-msgstr "Боливия"
+msgstr "بوليفيا"
 
 #: common/src/Tribe/View_Helpers.php:359
 msgid "Texas"
-msgstr "Техас"
+msgstr "تكساس"
 
 #: common/src/Tribe/View_Helpers.php:73
 msgid "Bosnia And Herzegowina"
-msgstr "Босния и Герцоговина"
+msgstr "البوسنة والهرسك"
 
 #: common/src/Tribe/View_Helpers.php:360
 msgid "Utah"
-msgstr "Юта"
+msgstr "يوتا"
 
 #: common/src/Tribe/View_Helpers.php:74
 msgid "Botswana"
-msgstr "Ботсвана"
+msgstr "بوتسوانا"
 
 #: common/src/Tribe/View_Helpers.php:361
 msgid "Vermont"
-msgstr "Вермонт"
+msgstr "فيرمونت"
 
 #: common/src/Tribe/View_Helpers.php:75
 msgid "Bouvet Island"
-msgstr "Остров Буве"
+msgstr "جزيرة بوفيت"
 
 #: common/src/Tribe/View_Helpers.php:362
 msgid "Virginia"
-msgstr "Вирджиния"
+msgstr "فرجينيا"
 
 #: common/src/Tribe/View_Helpers.php:76
 msgid "Brazil"
-msgstr "Бразилия"
+msgstr "البرازيل"
 
 #: common/src/Tribe/View_Helpers.php:363
 msgid "Washington"
-msgstr "Вашингтон"
+msgstr "واشنطن"
 
 #: common/src/Tribe/View_Helpers.php:77
 msgid "British Indian Ocean Territory"
-msgstr "Британская территория в Индийском океане"
+msgstr "إقليم المحيط الهندي البريطاني"
 
 #: common/src/Tribe/View_Helpers.php:364
 msgid "West Virginia"
-msgstr "Западная Вирджиния"
+msgstr "فرجينيا الغربية"
 
 #: common/src/Tribe/View_Helpers.php:78
 msgid "Brunei Darussalam"
-msgstr "Бруней Даруссалам"
+msgstr "بروناي دار السلام"
 
 #: common/src/Tribe/View_Helpers.php:365
 msgid "Wisconsin"
-msgstr "Висконсин"
+msgstr "ويسكونسن"
 
 #: common/src/Tribe/View_Helpers.php:79
 msgid "Bulgaria"
-msgstr "Болгария"
+msgstr "بلغاريا"
 
 #: common/src/Tribe/View_Helpers.php:366
 msgid "Wyoming"
-msgstr "Вайоминг"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:80
 msgid "Burkina Faso"
-msgstr "Буркина-Фасо"
+msgstr "بوركينا فاسو"
 
 #: common/src/admin-views/app-shop.php:4
 msgid "Tribe Event Add-Ons"
-msgstr "Расширения Tribe Event"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:81
 msgid "Burundi"
-msgstr "Бурунди"
+msgstr "بوروندي"
 
 #: common/src/admin-views/app-shop.php:54
 msgid "Version"
-msgstr "Версия"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:82
 msgid "Cambodia"
-msgstr "Камбоджа"
+msgstr "كمبوديا"
 
 #: common/src/admin-views/app-shop.php:57
 msgid "Last Update"
-msgstr "Последнее обновление"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:83
 msgid "Cameroon"
-msgstr "Камерун"
+msgstr "الكاميرون"
 
 #: common/src/admin-views/tribe-options-display.php:22
 msgid "Date Format Settings"
-msgstr "Настройки формата даты"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:84
 msgid "Canada"
-msgstr "Канада"
+msgstr "كندا"
 
 #: common/src/admin-views/tribe-options-display.php:26
 msgid "<p>The following three fields accept the date format options available to the php date() function. <a href=\"http://codex.wordpress.org/Formatting_Date_and_Time\" target=\"_blank\">Learn how to make your own date format here</a>.</p>"
-msgstr "<p> Следующие три поля приимать параметры формата даты, доступные функции даты() php. <a href=\"http://codex.wordpress.org/Formatting_Date_and_Time\" target=\"_blank\">Узнайте, как создать ваш собственный формат даты здесь</a>.</p>"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:85
 msgid "Cape Verde"
-msgstr "Кабо-Верде"
+msgstr "الرأس الأخضر"
 
 #: common/src/admin-views/tribe-options-display.php:30
 msgid "Date with year"
-msgstr "Дата с годом"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:86
 msgid "Cayman Islands"
-msgstr "Кайманские острова"
+msgstr "جزر كايمان"
 
 #: common/src/Tribe/View_Helpers.php:87
 msgid "Central African Republic"
-msgstr "Центральная Африканская Республика"
+msgstr "جمهورية افريقيا الوسطى"
 
 #: common/src/Tribe/View_Helpers.php:88
 msgid "Chad"
-msgstr "Чад"
+msgstr "تشاد"
 
 #: common/src/Tribe/View_Helpers.php:89
 msgid "Chile"
-msgstr "Чили"
+msgstr "تشيلي"
 
 #: common/src/Tribe/View_Helpers.php:90
 msgid "China"
-msgstr "Китай"
+msgstr "الصين"
 
 #: common/src/Tribe/View_Helpers.php:91
 msgid "Christmas Island"
-msgstr "Остров Рождества"
+msgstr "جزيرة الكريسماس"
 
 #: common/src/admin-views/tribe-options-display.php:38
 msgid "Date time separator"
-msgstr "Разделитель даты времени"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:92
 msgid "Cocos (Keeling) Islands"
-msgstr "Кокосовые острова (о-ва Килинг)"
+msgstr "جزر كوكوس (كيلينغ)"
 
 #: common/src/admin-views/tribe-options-display.php:39
 msgid "Enter the separator that will be placed between the date and time, when both are shown."
-msgstr "Введите разделитель, который будет стоять между датой и временем при показе обоих элементов."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:93
 msgid "Colombia"
-msgstr "Колумбия"
+msgstr "كولومبيا"
 
 #: common/src/Tribe/View_Helpers.php:94
 msgid "Comoros"
-msgstr "Коморские острова"
+msgstr "جزر القمر"
 
 #: common/src/Tribe/View_Helpers.php:95
 msgid "Congo"
-msgstr "Конго"
+msgstr "الكونغو"
 
 #: common/src/admin-views/tribe-options-display.php:46
 msgid "Datepicker Date Format"
-msgstr "Формат даты Datepicker"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:96
 msgid "Congo, The Democratic Republic Of The"
-msgstr "Конго, Демократическая республика"
+msgstr "جمهورية الكونغو الديمقراطية"
 
 #: common/src/admin-views/tribe-options-display.php:47
 msgid "Select the date format to use in datepickers"
-msgstr "Выберите формат даты, который будет исспользоваться в datepickers"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:97
 msgid "Cook Islands"
-msgstr "Острова Кука"
+msgstr "جزر كوك"
 
 #: common/src/admin-views/tribe-options-general.php:20
 msgid "Looking for additional functionality including recurring events, custom meta, community events, ticket sales and more?"
-msgstr "Ищете дополнительные функции, включая повторяющиеся события, настраиваемые метаданные, общественные мероприятия, продажу билетов и другое?"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:98
 msgid "Costa Rica"
-msgstr "Коста Рика"
+msgstr "كوستا ريكا"
 
 #: common/src/admin-views/tribe-options-general.php:20
 msgid "Check out the available add-ons"
-msgstr "Посмотрите доступные расширения"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:99
 msgid "Cote D'Ivoire"
-msgstr "Кот-д'Ивуар"
+msgstr "ساحل العاج"
 
 #: common/src/admin-views/tribe-options-general.php:25
 msgid "We hope our plugin is helping you out."
-msgstr "Надеемся, наш плагин помогает вам."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:100
 msgid "Croatia (Local Name: Hrvatska)"
-msgstr "Хорватия"
+msgstr "كرواتيا (الاسم المحلي: هرفاتسكا)"
 
 #: common/src/admin-views/tribe-options-general.php:30
 msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text-only link at the bottom of your calendar pointing to The Events Calendar project."
-msgstr "Вы думаете \"Ух ты, этот плагин замечательный! Я должен поблагодарить Modern Tribe за их тяжелую работу.\" Лучшая благодарность для нас - признание. Добавьте в конце вашего календаря небольшую текстовую ссылку на проект The Events Calendar."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:101
 msgid "Cuba"
-msgstr "Куба"
+msgstr "كوبا"
 
 #: common/src/admin-views/tribe-options-general.php:30
 #: common/src/admin-views/tribe-options-general.php:35
 msgid "See an example of the link"
-msgstr "Посмотреть образец ссылки"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:102
 msgid "Cyprus"
-msgstr "Кипр"
+msgstr "قبرص"
 
 #: common/src/admin-views/tribe-options-general.php:35
 msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text only link at the bottom of your calendar pointing to The Events Calendar project."
-msgstr "Вы думаете \"Ух ты, этот плагин замечательный! Я должен поблагодарить Modern Tribe за их тяжелую работу.\" Лучшая благодарность для нас - признание. Добавьте в конце вашего календаря небольшую текстовую ссылку на проект The Events Calendar."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:103
 msgid "Czech Republic"
-msgstr "Чешская республика"
+msgstr "الجمهورية التشيكية"
 
 #: common/src/admin-views/tribe-options-general.php:40
 msgid "Show The Events Calendar link"
-msgstr "Показать ссылку на The Events Calendar"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:104
 msgid "Denmark"
-msgstr "Дания"
+msgstr "الدنمارك"
 
 #: common/src/admin-views/tribe-options-general.php:55
 msgid "General Settings"
-msgstr "Общие настройки"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:105
 msgid "Djibouti"
-msgstr "Джибути"
+msgstr "جيبوتي"
 
 #: common/src/Tribe/View_Helpers.php:106
 msgid "Dominica"
-msgstr "Доминика"
+msgstr "دومينيكا"
 
 #: common/src/Tribe/View_Helpers.php:107
 msgid "Dominican Republic"
-msgstr "Доминиканская республика"
+msgstr "جمهورية الدومينيكان"
 
 #: common/src/admin-views/tribe-options-general.php:59
 msgid "Default currency symbol"
-msgstr "Символ валюты по умолчанию"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:108
 msgid "East Timor"
-msgstr "Восточный Тимор"
+msgstr "تيمور الشرقية"
 
 #: common/src/admin-views/tribe-options-general.php:60
 msgid "Set the default currency symbol for event costs. Note that this only impacts future events, and changes made will not apply retroactively."
-msgstr "Установите символ валюты по умолчанию для стоимости мероприятия. Обратите внимание, что это влияет только на будущие мероприятия, и изменения не будут приняты для прошедших мероприятий."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:109
 msgid "Ecuador"
-msgstr "Эквадор"
+msgstr "الإكوادور"
 
 #: common/src/admin-views/tribe-options-general.php:67
 msgid "Currency symbol follows value"
-msgstr "Символ валюты находится после стоимости"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:110
 msgid "Egypt"
-msgstr "Египт"
+msgstr "مصر"
 
 #: common/src/admin-views/tribe-options-general.php:68
 msgid "The currency symbol normally precedes the value. Enabling this option positions the symbol after the value."
-msgstr "Символ валюты обычно находится перед стоимостью. При включении этого параметра, символ будет показан после стоимости."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:111
 msgid "El Salvador"
-msgstr "Сальвадор"
+msgstr "السلفادور"
 
 #: common/src/admin-views/tribe-options-general.php:74
 msgid "Miscellaneous Settings"
-msgstr "Другие настройки"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:112
 msgid "Equatorial Guinea"
-msgstr "Экваториальная Гвинея"
+msgstr "غينيا الاستوائية"
 
 #: common/src/Tribe/View_Helpers.php:113
 msgid "Eritrea"
-msgstr "Эритрея"
+msgstr "إريتريا"
 
 #: common/src/Tribe/View_Helpers.php:114
 msgid "Estonia"
-msgstr "Эстония"
+msgstr "استونيا"
 
 #: common/src/Tribe/View_Helpers.php:115
 msgid "Ethiopia"
-msgstr "Эфиопия"
+msgstr "أثيوبيا"
 
 #: common/src/Tribe/View_Helpers.php:116
 msgid "Falkland Islands (Malvinas)"
-msgstr "Фолклендские (Мальвинские) острова"
+msgstr "جزر فوكلاند (مالفيناس)"
 
 #: common/src/admin-views/tribe-options-general.php:81
 msgid "Debug mode"
-msgstr "Режим корректирования"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:117
 msgid "Faroe Islands"
-msgstr "Фарерские острова"
+msgstr "جزر فارو"
 
 #: common/src/admin-views/tribe-options-general.php:87
 msgid "Enable this option to log debug information. By default this will log to your server PHP error log. If you'd like to see the log messages in your browser, then we recommend that you install the %s and look for the \"Tribe\" tab in the debug output."
-msgstr "Включите этот параметр, чтобы вести журнал информации о коррекции. По умолчанию, записи будут осуществляться в вашем журнале ошибок сервера PHP. Если вы хотите увидеть записи журнала в вашем браузере, мы рекомендуем вам установить %s и искать вкладку \"Tribe\" в выходных данных коррекции."
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:118
 msgid "Fiji"
-msgstr "Фиджи"
+msgstr "فيجي"
 
 #: common/src/admin-views/tribe-options-general.php:87
 msgid "Debug Bar Plugin"
-msgstr "Плагин строки коррекции"
+msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:119
 msgid "Finland"
-msgstr "Финляндия"
+msgstr "فنلندا"
 
 #: common/src/Tribe/Admin/Help_Page.php:183
 msgid "Events Calendar PRO"
@@ -2316,12 +2322,12 @@ msgstr ""
 
 #: common/src/Tribe/View_Helpers.php:120
 msgid "France"
-msgstr "Франция"
+msgstr "فرنسا"
 
 #: common/src/Tribe/View_Helpers.php:121
 msgid "France, Metropolitan"
-msgstr "Метрополия Франция"
+msgstr "فرنسا، متروبوليتان"
 
 #: common/src/Tribe/View_Helpers.php:122
 msgid "French Guiana"
-msgstr "Французская Гвиана"
+msgstr "غيانا الفرنسية"
