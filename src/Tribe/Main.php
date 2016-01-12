@@ -223,7 +223,7 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
-		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_update_check' ) );
+		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 	}
 
@@ -303,7 +303,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @return array
 	 */
-	public function add_template_update_check( $plugins ) {
+	public function add_template_updates_check( $plugins ) {
 		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = array(
 			self::VERSION,
 			$this->plugin_path . 'src/views/tickets',
