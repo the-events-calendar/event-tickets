@@ -180,6 +180,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		</div>
 		<?php
 
+		/**
+		 * Hook to allow for the insertion of additional content in the ticket table cell
+		 *
+		 * @var $item Attendee row item
+		 */
 		do_action( 'event_tickets_attendees_table_ticket_column', $item );
 
 		$output = ob_get_clean();
