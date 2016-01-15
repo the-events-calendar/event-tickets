@@ -224,6 +224,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$this->single_row_columns( $item );
 		echo '</tr>';
 
+		/**
+		 * Hook to allow for the insertion of data after an attendee table row
+		 *
+		 * @var $item Attendee data
+		 */
 		do_action( 'event_tickets_attendees_table_after_row', $item );
 	}
 
