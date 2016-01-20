@@ -228,6 +228,13 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return array
 	 */
 	private function generate_filtered_attendees_list( $event_id ) {
+		/**
+		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
+		 *
+		 * @param int $event_id
+		 */
+		do_action( 'tribe_events_tickets_generate_filtered_attendees_list', $event_id );
+
 		if ( empty( $this->attendees_page ) ) {
 			$this->attendees_page = 'tribe_events_page_tickets-attendees';
 		}
