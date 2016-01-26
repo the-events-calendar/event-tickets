@@ -71,8 +71,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_row_action( $actions ) {
 		global $post;
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 
-		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) && ! empty( Tribe__Tickets__Tickets::get_event_tickets( $post->ID ) ) ) {
+		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) && ! empty( $tickets ) ) {
 			$url = add_query_arg( array(
 				'post_type' => $post->post_type,
 				'page'      => self::$attendees_slug,
@@ -226,52 +227,50 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @return array
 	 */
-	private function _generate_filtered_attendees_list( $event_id ) {
+	private function generate_filtered_attendees_list( $event_id ) {
+		/**
+		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
+		 *
+		 * @param int $event_id
+		 */
+		do_action( 'tribe_events_tickets_generate_filtered_attendees_list', $event_id );
 
 		if ( empty( $this->attendees_page ) ) {
 			$this->attendees_page = 'tribe_events_page_tickets-attendees';
 		}
 
-		$columns = $this->attendees_table->get_columns();
+		$items   = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		$columns = get_column_headers( get_current_screen() );
 		$hidden  = get_hidden_columns( $this->attendees_page );
 
 		// We dont want to export html inputs or private data
 		$hidden[] = 'cb';
 		$hidden[] = 'provider';
 
-		// Get the data
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
-
-		// if there are attendees, hide any column that the attendee array doesn't contain
-		if ( count( $items ) ) {
-			$hidden = array_merge(
-				$hidden,
-				array_diff(
-					array_keys( $columns ),
-					array_keys( $items[0] )
-				)
-			);
-		}
-
-		// remove the hidden fields from the final list of columns
-		$hidden         = array_filter( $hidden );
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
-		$columns_names  = array_filter( array_values( $export_columns ) );
-		$export_columns = array_filter( array_keys( $export_columns ) );
 
-		$rows = array( $columns_names );
-		//And echo the data
-		foreach ( $items as $item ) {
+		// Add the export column headers as the first row
+		$rows = array(
+			array_values( $export_columns ),
+		);
+
+		foreach ( $items as $single_item ) {
+			// Fresh row!
 			$row = array();
-			foreach ( $item as $key => $data ) {
-				if ( in_array( $key, $export_columns ) ) {
-					if ( $key == 'check_in' && $data == 1 ) {
-						$data = esc_html__( 'Yes', 'event-tickets' );
-					}
-					$row[ $key ] = $data;
+
+			foreach ( $export_columns as $column_id => $column_name ) {
+				// If additional columns have been added to the attendee list table we can obtain the
+				// values by calling the table object's column_default() method - any other values
+				// should simply be passed back unmodified
+				$row[ $column_id ] = $this->attendees_table->column_default( $single_item, $column_id );
+
+				// Special handling for the check_in column
+				if ( 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
+					$row[ $column_id ] = esc_html__( 'Yes', 'event-tickets' );
 				}
 			}
+
 			$rows[] = array_values( $row );
 		}
 
@@ -279,11 +278,10 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 *    Checks if the user requested a CSV export from the attendees list.
-	 *  If so, generates the download and finishes the execution.
+	 * Checks if the user requested a CSV export from the attendees list.
+	 * If so, generates the download and finishes the execution.
 	 */
 	public function maybe_generate_attendees_csv() {
-
 		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || empty( $_GET['event_id'] ) ) {
 			return;
 		}
@@ -292,8 +290,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-
-		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->_generate_filtered_attendees_list( $_GET['event_id'] ) );;
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->generate_filtered_attendees_list( $_GET['event_id'] ) );;
 		$event = get_post( $_GET['event_id'] );
 
 		if ( ! empty( $items ) ) {

@@ -9,7 +9,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.0.4';
+	const VERSION = '4.1beta1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -226,7 +226,18 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
 		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
+		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
 
+	}
+
+	/**
+	 * Add an Anchor for users to be able to link to
+	 * The height is to make sure it links on all browsers
+	 *
+	 * @return void
+	 */
+	public function add_linking_archor() {
+		echo '<div id="buy-tickets" style="height: 1px;"></div>';
 	}
 
 	/**
