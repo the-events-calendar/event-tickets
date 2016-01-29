@@ -171,7 +171,14 @@ $modules = Tribe__Tickets__Tickets::modules();
 					</td>
 				</tr>
 
-				<?php do_action( 'tribe_events_tickets_metabox_advanced', get_the_ID(), null ); ?>
+				<?php
+				/**
+				 * Fired to allow for the insertion of additional content into the ticket admin form
+				 *
+				 * @var Post ID
+				 * @var null Ticket ID
+				 */
+				do_action( 'tribe_events_tickets_metabox_advanced', get_the_ID(), null ); ?>
 
 				<tr class="ticket bottom">
 					<td></td>

@@ -9,7 +9,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.0.4';
+	const VERSION = '4.1beta1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -110,6 +110,7 @@ class Tribe__Tickets__Main {
 		load_plugin_textdomain( 'event-tickets', false, $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
+
 		$this->has_initialized = true;
 	}
 
@@ -223,7 +224,20 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_support_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
+		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
+		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
+
+	}
+
+	/**
+	 * Add an Anchor for users to be able to link to
+	 * The height is to make sure it links on all browsers
+	 *
+	 * @return void
+	 */
+	public function add_linking_archor() {
+		echo '<div id="buy-tickets" style="height: 1px;"></div>';
 	}
 
 	/**
@@ -293,6 +307,23 @@ class Tribe__Tickets__Main {
 
 			}
 		}
+	}
+
+	/**
+	 * Register Event Tickets with the template update checker.
+	 *
+	 * @param array $plugins
+	 *
+	 * @return array
+	 */
+	public function add_template_updates_check( $plugins ) {
+		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = array(
+			self::VERSION,
+			$this->plugin_path . 'src/views/tickets',
+			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets'
+		);
+
+		return $plugins;
 	}
 
 	/**

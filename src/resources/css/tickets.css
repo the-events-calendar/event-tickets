@@ -66,3 +66,13 @@ p.ticket_name {
 .tribe-tickets-remaining {
 	font-size: 10px;
 }
+
+.eventtable {
+	margin      : 0;
+	padding-top : 0;
+	width       : 100%;
+}
+
+#event_tickets, .eventtable.ticket_list.eventForm {
+	table-layout : fixed;
+}

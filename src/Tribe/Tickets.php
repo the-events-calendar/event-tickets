@@ -380,6 +380,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$ticket->provider_class = $this->className;
 
+			/**
+			 * Fired once a ticket has been created and added to a post
+			 *
+			 * @var $post_id Post ID
+			 * @var $ticket Ticket object
+			 * @var $data Submitted post data
+			 */
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
+
 			// Pass the control to the child object
 			return $this->save_ticket( $post_id, $ticket, $data );
 		}
@@ -539,7 +548,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$return['description'] = htmlspecialchars_decode( $return['description'] );
 
 			ob_start();
-			$this->do_metabox_advanced_options( $post_id, $ticket_id );
+			/**
+			 * Fired to allow for the insertion of extra form data in the ticket admin form
+			 *
+			 * @var $post_id Post ID
+			 * @var $ticket_id Ticket ID
+			 */
+			do_action( 'tribe_events_tickets_metabox_advanced', $post_id, $ticket_id );
 			$extra = ob_get_contents();
 			ob_end_clean();
 
