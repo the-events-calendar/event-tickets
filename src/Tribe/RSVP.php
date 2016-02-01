@@ -242,7 +242,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Generate and store all the attendees information for a new order.
 	 */
 	public function generate_tickets( ) {
-
 		if ( empty( $_POST['tickets_process'] ) || empty( $_POST['attendee'] ) || empty( $_POST['product_id'] ) ) {
 			return;
 		}
@@ -264,6 +263,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Iterate over each product
 		foreach ( (array) $_POST['product_id'] as $product_id ) {
+			$order_attendee_id = 0;
 
 			// Get the event this tickets is for
 			$event_id = get_post_meta( $product_id, $this->event_key, true );
@@ -319,8 +319,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				 * @var $attendee_id ID of the attendee post
 				 * @var $event_id Event post ID
 				 * @var $product_id RSVP ticket post ID
+				 * @var $order_attendee_id Attendee # for order
 				 */
-				do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id );
+				do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id, $order_attendee_id );
+
+				$order_attendee_id++;
 			}
 
 			/**
@@ -646,14 +649,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		$event = get_post_meta( $ticket_product, $this->event_key, true );
+		$event_id = get_post_meta( $ticket_product, $this->event_key, true );
 
-		if ( ! $event && '' === ( $event = get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true ) ) ) {
+		if ( ! $event_id && '' === ( $event_id = get_post_meta( $ticket_product, self::ATTENDEE_EVENT_KEY, true ) ) ) {
 			return false;
 		}
 
-		if ( in_array( get_post_type( $event ), Tribe__Tickets__Main::instance()->post_types() ) ) {
-			return get_post( $event );
+		if ( in_array( get_post_type( $event_id ), Tribe__Tickets__Main::instance()->post_types() ) ) {
+			return get_post( $event_id );
 		}
 
 		return false;
