@@ -404,6 +404,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'order_id'      => $order_id,
 				'ticket_id'     => $post->ID,
 				'security_code' => get_post_meta( $post->ID, $this->security_code, true ),
+				'optout'        => get_post_meta( $post->ID, $this->optout, true ),
 			);
 		}
 
@@ -709,6 +710,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
 			$name       = get_post_meta( $attendee->ID, $this->full_name, true );
 			$email      = get_post_meta( $attendee->ID, $this->email, true );
+			$optout     = get_post_meta( $post->ID, $this->optout, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
@@ -722,6 +724,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'order_id'        => $attendee->ID,
 				'purchaser_name'  => $name,
 				'purchaser_email' => $email,
+				'optout'          => $optout,
 				'ticket'          => $product_title,
 				'attendee_id'     => $attendee->ID,
 				'security'        => $security,

@@ -99,7 +99,7 @@ ob_start();
 						</tr>
 						<tr class="tribe-tickets-attendees-list-optout">
 							<td colspan="4">
-								<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout" checked>
+								<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout">
 								<label for="tribe-tickets-attendees-list-optout"><?php esc_html_e( 'Hide me from Attendees List', 'event-tickets' ); ?></label>
 							</td>
 						</tr>
