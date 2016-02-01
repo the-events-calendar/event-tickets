@@ -74,6 +74,12 @@ ob_start();
 				</tr>
 				<?php
 
+				/**
+				 * Allows injection of HTML after an RSVP ticket table row
+				 *
+				 * @var Event ID
+				 * @var Tribe__Tickets__Ticket_Object
+				 */
 				do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
 			}
 		}//end foreach
@@ -84,7 +90,12 @@ ob_start();
 				<td colspan="4" class="tribe-tickets-attendees">
 					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets-plus' ); ?></header>
 					<?php
-					do_action( 'event_tickets_rsvp_before_confirmation_fields', $ticket );
+					/**
+					 * Allows injection of HTML before RSVP ticket confirmation fields
+					 *
+					 * @var array of Tribe__Tickets__Ticket_Object
+					 */
+					do_action( 'event_tickets_rsvp_before_confirmation_fields', $tickets );
 					?>
 					<table>
 						<tr class="tribe-tickets-full-name-row">

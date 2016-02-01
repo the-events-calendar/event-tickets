@@ -319,6 +319,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				 * @var $attendee_id ID of the attendee post
 				 * @var $event_id Event post ID
 				 * @var $product_id RSVP ticket post ID
+				 * @var $order_attendee_id Attendee # for order
 				 */
 				do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id, $order_attendee_id );
 
