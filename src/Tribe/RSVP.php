@@ -482,6 +482,26 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			delete_post_meta( $ticket->ID, '_ticket_end_date' );
 		}
 
+		/**
+		 * Generic action fired after saving a ticket (by type)
+		 *
+		 * @var int Post ID of post the ticket is tied to
+		 * @var Tribe__Tickets__Ticket_Object Ticket that was just saved
+		 * @var array Ticket data
+		 * @var string Commerce engine class
+		 */
+		do_action( 'event_tickets_plus_after_' . $save_type . '_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+
+		/**
+		 * Generic action fired after saving a ticket
+		 *
+		 * @var int Post ID of post the ticket is tied to
+		 * @var Tribe__Tickets__Ticket_Object Ticket that was just saved
+		 * @var array Ticket data
+		 * @var string Commerce engine class
+		 */
+		do_action( 'event_tickets_plus_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+
 		return true;
 	}
 
