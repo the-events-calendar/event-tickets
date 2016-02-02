@@ -217,7 +217,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( 'tr.ticket_advanced' ).hide();
 			$tribe_tickets.trigger( 'set-advanced-fields.tribe' );
 			$( 'tr.ticket_advanced_' + this.value + ':not(.sale_price)' ).show();
-			$( 'tr.ticket_advanced_meta' ).show();
+			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
 		} );
 
 		/* Show the advanced metabox for the selected provider and hide the others at ready */
@@ -228,7 +228,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.not( '.sale_price' )
 				.show();
 
-			$( 'tr.ticket_advanced_meta' ).show();
+			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
 		} );
 
 		/* "Add a ticket" link action */
@@ -241,6 +241,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.trigger( 'set-advanced-fields.tribe' )
 				.trigger( 'focus.tribe' );
 			$( '#ticket_form' ).show();
+			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
 			e.preventDefault();
 		} );
 
