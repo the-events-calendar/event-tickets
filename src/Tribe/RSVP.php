@@ -390,9 +390,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		) );
 
 		foreach ( $query->posts as $post ) {
+			$product = get_post( get_post_meta( $post->ID, self::ATTENDEE_PRODUCT_KEY, true ) );
+
 			$attendees[] = array(
 				'event_id'      => get_post_meta( $post->ID, self::ATTENDEE_EVENT_KEY, true ),
-				'ticket_name'   => get_post( get_post_meta( $post->ID, self::ATTENDEE_PRODUCT_KEY, true ) )->post_title,
+				'product_id'    => $product->ID,
+				'ticket_name'   => $product->post_title,
 				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'order_id'      => $order_id,
