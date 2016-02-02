@@ -65,7 +65,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	public $optout = '_tribe_rsvp_optout';
+	public $optout = '_tribe_rsvp_attendee_optout';
 
 	/**
 	 * Meta key that holds the full name of the tickets RSVP "buyer"
