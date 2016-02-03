@@ -490,7 +490,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @var array Ticket data
 		 * @var string Commerce engine class
 		 */
-		do_action( 'event_tickets_plus_after_' . $save_type . '_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_' . $save_type . '_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
 
 		/**
 		 * Generic action fired after saving a ticket
@@ -500,7 +500,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @var array Ticket data
 		 * @var string Commerce engine class
 		 */
-		do_action( 'event_tickets_plus_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
 
 		return true;
 	}
