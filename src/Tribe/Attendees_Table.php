@@ -200,6 +200,32 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_check_in( $item ) {
+		$default_checkin_stati_map = array(
+			'woo' => array( 'completed' ),
+		);
+
+		$provider              = $item['provider_slug'];
+		$is_supported_provider = array_key_exists( $provider, $default_checkin_stati_map );
+		$default_checkin_stati = $is_supported_provider ? $default_checkin_stati_map[ $provider ] : false;
+
+		$order_id = $item['order_id'];
+		/**
+		 * Filters the order stati that will allow for a ticket to be checked in.
+		 *
+		 * @since 4.2
+		 *
+		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
+		 * @param string $provider              The ticket provider slug.
+		 * @param int    $order_id              The order post ID.
+		 */
+		$check_in_stati = apply_filters( 'event_tickets_attendees_checkin_stati', $default_checkin_stati, $provider, $order_id );
+
+		if ( is_array($check_in_stati) && ! in_array( $item['order_status'], $check_in_stati ) ) {
+			$button_template = '<a href="%s" class="button-secondary tickets-checkin">%s</a>';
+
+			return sprintf( $button_template, $item['order_id_link_src'], __( 'View order', 'event-tickets' ) );
+		}
+
 		$checkin   = sprintf( '<a href="#" data-attendee-id="%d" data-provider="%s" class="button-secondary tickets_checkin">%s</a>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Check in', 'event-tickets' ) );
 		$uncheckin = sprintf( '<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Undo Check in', 'event-tickets' ) );
 
