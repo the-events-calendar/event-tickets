@@ -429,8 +429,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+		// assume we are updating until we find out otherwise
+		$save_type = 'update';
 
 		if ( empty( $ticket->ID ) ) {
+			$save_type = 'create';
+
 			/* Create main product post */
 			$args = array(
 				'post_status'  => 'publish',
