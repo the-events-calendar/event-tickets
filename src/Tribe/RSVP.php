@@ -103,8 +103,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return Tribe__Tickets__RSVP
 	 */
 	public static function get_instance() {
-		if ( ! is_a( self::$instance, __CLASS__ ) ) {
-			self::$instance = new self();
+		if ( ! self::$instance ) {
+			self::$instance = new self;
 		}
 
 		return self::$instance;
@@ -123,8 +123,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		parent::__construct();
 
-		$this->init();
-		$this->hooks();
+		add_action( 'init', array( $this, 'init' ) );
 	}
 
 	/**
@@ -140,6 +139,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Hooked to the init action
 	 */
 	public function init() {
+		$this->hooks();
 		$this->register_resources();
 		$this->register_types();
 		$this->generate_tickets();
