@@ -232,6 +232,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Indicates if the module/ticket provider supports a concept of global stock.
+		 * Implementations should override this and return true if they do.
+		 *
+		 * @return bool
+		 */
+		public function supports_global_stock() {
+			return false;
+		}
+
+		/**
 		 * Returns instance of the child class (singleton)
 		 *
 		 * @static
@@ -684,6 +694,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		// end Attendees
 
 		// start Helpers
+
+		/**
+		 * Indicates if any of the currently available providers support global stock.
+		 *
+		 * @return bool
+		 */
+		public static function global_stock_available() {
+			foreach ( self::$active_modules as $class => $module ) {
+				$provider = call_user_func( array( $class, 'get_instance' ) );
+
+				if ( method_exists( $provider, 'supports_global_stock' ) && $provider->supports_global_stock() ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 
 		/**
 		 * Returns whether a class name is a valid active module/provider.

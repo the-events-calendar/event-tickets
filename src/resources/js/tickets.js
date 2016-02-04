@@ -47,6 +47,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $event_pickers = $( '#tribe-event-datepickers' ),
 			$tribe_tickets = $( '#tribetickets' ),
 			$tickets_container = $( '#event_tickets' ),
+			$global_stock = $( '#tribe-global-stock-settings' ),
+			$enable_global_stock = $( "#tribe-tickets-enable-global-stock" ),
+			$global_stock_level = $( "#tribe-tickets-global-stock-level" ),
 			$body = $( 'html, body' ),
 			startofweek = 0;
 
@@ -211,6 +214,27 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$.datepicker._clearDate( this );
 			}
 		} );
+
+		/**
+		 * Indicates if the "enable global stock" field has been checked.
+		 *
+		 * @returns boolean
+         */
+		function global_stock_enabled() {
+			return $enable_global_stock.prop( "checked" );
+		}
+
+		/**
+		 * Show or hide global stock fields and settings as appropriate.
+		 */
+		function show_hide_global_stock() {
+			var enabled = global_stock_enabled();
+			$global_stock_level.toggle( enabled );
+		}
+
+		// Show or hide the global stock level as appropriate, both initially and thereafter
+		$enable_global_stock.change( show_hide_global_stock );
+		$enable_global_stock.trigger( 'change' );
 
 		/* Show the advanced metabox for the selected provider and hide the others on selection change */
 		$( 'input[name=ticket_provider]:radio' ).change( function() {
