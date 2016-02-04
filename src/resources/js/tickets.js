@@ -174,13 +174,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			},
 
 			'set-global-stock-fields.tribe': function() {
-				var $ticket_form         = $( this ).find( '#ticket_form' );
-				var $normal_stock_field  = $ticket_form.find( '.stock' );
-				var $global_stock_fields = $ticket_form.find( '.global-stock-mode' );
+				var provider_class   = currently_selected_provider();
+				var $provider_fields = $( this ).find( '#ticket_form').find( '.ticket_advanced_' + provider_class );
+
+				if ( $provider_fields.length < 1 ) {
+					return;
+				}
+
+				var $normal_stock_field  = $provider_fields.filter( '.stock' );
+				var $global_stock_fields = $provider_fields.filter( '.global-stock-mode' );
 				var $sales_cap_field     = $global_stock_fields.filter( '.sales-cap-field' );
 
-				var mode    = $( '#ticket_global_stock' ).val();
-				var enabled = global_stock_enabled();
+				var mode     = $( '#ticket_global_stock' ).val();
+				var enabled  = global_stock_enabled();
 
 				// Show or hide global (and normal, "per-ticket") stock settings as appropriate
 				$global_stock_level.toggle(enabled);
@@ -274,27 +280,40 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
 		}
 
+		/**
+		 * Show or hide the appropriate set of provider-specific fields.
+		 */
+		function show_hide_advanced_fields() {
+			$( 'tr.ticket_advanced' ).hide();
+			$( 'tr.ticket_advanced_' + currently_selected_provider() + ':not(.sale_price)' ).show();
+			$tribe_tickets.trigger( 'set-advanced-fields.tribe' );
+			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
+		}
+
+		/**
+		 * Returns the currently selected ticketing provider.
+		 *
+		 * @return string
+		 */
+		function currently_selected_provider() {
+			var $checked_provider = $( 'input[name="ticket_provider"]:checked' );
+			return ( $checked_provider.length > 0 )
+				? $checked_provider[0].value
+				: "";
+		}
+
 		// Show or hide the global stock level as appropriate, both initially and thereafter
 		$enable_global_stock.change( show_hide_global_stock );
 		$enable_global_stock.trigger( 'change' );
 
 		/* Show the advanced metabox for the selected provider and hide the others on selection change */
 		$( 'input[name=ticket_provider]:radio' ).change( function() {
-			$( 'tr.ticket_advanced' ).hide();
-			$tribe_tickets.trigger( 'set-advanced-fields.tribe' );
-			$( 'tr.ticket_advanced_' + this.value + ':not(.sale_price)' ).show();
-			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
+			show_hide_advanced_fields();
 		} );
 
 		/* Show the advanced metabox for the selected provider and hide the others at ready */
 		$( 'input[name=ticket_provider]:checked' ).each( function() {
-			var $ticket_advanced = $( 'tr.ticket_advanced' );
-			$ticket_advanced.hide()
-				.filter( 'tr.ticket_advanced_' + this.value )
-				.not( '.sale_price' )
-				.show();
-
-			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
+			show_hide_advanced_fields();
 		} );
 
 		/* "Add a ticket" link action */
