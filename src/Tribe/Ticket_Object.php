@@ -80,6 +80,22 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		protected $stock = 0;
 
 		/**
+		 * The mode of stock handling to be used for the ticket when global stock
+		 * is enabled for the event.
+		 *
+		 * @var string
+		 */
+		protected $global_stock_mode = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE;
+
+		/**
+		 * The maximum permitted number of sales for this ticket when global stock
+		 * is enabled for the event and CAPPED_STOCK_MODE is in effect.
+		 *
+		 * @var int
+		 */
+		protected $global_stock_cap = 0;
+
+		/**
 		 * Amount of tickets of this kind sold
 		 * Use $this->qty_sold( value ) to set manage and get the value
 		 *
@@ -269,6 +285,43 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// return the new Stock
 			return $this->stock;
+		}
+
+		/**
+		 * Sets of gets the current global stock mode in effect for the ticket.
+		 *
+		 * Typically this is one of the constants provided by Tribe__Tickets__Global_Stock:
+		 *
+		 *     GLOBAL_STOCK_MODE if it should draw on the global stock
+		 *     CAPPED_STOCK_MODE as above but with a limit on the total number of allowed sales
+		 *     OWN_STOCK_MODE if it should behave as if global stock is not in effect
+		 *
+		 * @param string $mode
+		 *
+		 * @return string
+		 */
+		public function global_stock_mode( $mode = null ) {
+			if ( is_string( $mode ) ) {
+				$this->global_stock_mode = $mode;
+			} elseif ( null === $mode ) {
+				return $this->global_stock_mode;
+			}
+		}
+
+		/**
+		 * Sets or gets any cap on sales that might be in effect for this ticket when global stock
+		 * mode is in effect.
+		 *
+		 * @param int $cap
+		 *
+		 * @return int
+		 */
+		public function global_stock_cap( $cap = null ) {
+			if ( is_numeric( $cap ) ) {
+				$this->global_stock_cap = (int) $cap;
+			} elseif ( null === $cap ) {
+				return (int) $this->global_stock_cap;
+			}
 		}
 
 		/**

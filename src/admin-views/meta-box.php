@@ -34,7 +34,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	<?php
 	}
 	?>
-	<tr>
+	<tr class="event-wide-settings">
 		<td colspan="2" class="tribe_sectionheader updated">
 			<table class="eventtable ticket_list eventForm">
 				<tr class="tribe-tickets-image-upload">
@@ -60,7 +60,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 		</td>
 	</tr>
 	<?php if ( $show_global_stock ): ?>
-		<tr id="tribe-global-stock-settings">
+		<tr id="tribe-global-stock-settings" class="event-wide-settings">
 			<td colspan="2">
 				<table class="eventtable ticket_list eventForm">
 					<tr>

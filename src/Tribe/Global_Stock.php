@@ -11,6 +11,26 @@ class Tribe__Tickets__Global_Stock {
 	const GLOBAL_STOCK_LEVEL = '_tribe_ticket_global_stock_level';
 
 	/**
+	 * Flag used to indicate that a ticket will use the global stock.
+	 */
+	const GLOBAL_STOCK_MODE = 'global';
+
+	/**
+	 * Flag used to indicate that a ticket will use the global stock,
+	 * but that a cap has been placed on the total number of sales for
+	 * this ticket type.
+	 */
+	const CAPPED_STOCK_MODE = 'capped';
+
+	/**
+	 * Flag used to indicate that, if global stock is in effect for
+	 * an event, the specific ticket this flag is applied to will
+	 * maintain it's own inventory rather than draw from the global
+	 * pool.
+	 */
+	const OWN_STOCK_MODE = 'own';
+
+	/**
 	 * @var int $post_id
 	 */
 	protected $post_id;

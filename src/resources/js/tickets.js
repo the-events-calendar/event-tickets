@@ -47,7 +47,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var $event_pickers = $( '#tribe-event-datepickers' ),
 			$tribe_tickets = $( '#tribetickets' ),
 			$tickets_container = $( '#event_tickets' ),
-			$global_stock = $( '#tribe-global-stock-settings' ),
 			$enable_global_stock = $( "#tribe-tickets-enable-global-stock" ),
 			$global_stock_level = $( "#tribe-tickets-global-stock-level" ),
 			$body = $( 'html, body' ),
@@ -84,13 +83,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 */
 			'clear.tribe': function() {
 				var $this = $( this ),
-					$ticket_form = $this.find( '#ticket_form' );
+					$ticket_form = $this.find( '#ticket_form'),
+					$ticket_settings = $ticket_form.find( "tr:not(.event-wide-settings)" );
 
 				$this.find( 'a#ticket_form_toggle' ).show();
 
-				$this.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
-				$this.find( 'input:checkbox' ).attr( 'checked', false );
-				$this.find( '#ticket_id' ).val( '' );
+				$ticket_settings.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
+				$ticket_settings.find( 'input:checkbox' ).attr( 'checked', false );
+				$ticket_settings.find( '#ticket_id' ).val( '' );
 
 				$this.find( '#ticket_form input[name="show_attendee_info"]' ).prop( 'checked', false ).change();
 
@@ -163,8 +163,51 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						} );
 					}
 				} );
-			}
 
+				// (Re-)set the global stock fields
+				$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
+
+				// Also reset each time the global stock mode selector is changed
+				$( '#ticket_global_stock' ).change( function() {
+					$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
+				})
+			},
+
+			'set-global-stock-fields.tribe': function() {
+				var $ticket_form         = $( this ).find( '#ticket_form' );
+				var $normal_stock_field  = $ticket_form.find( '.stock' );
+				var $global_stock_fields = $ticket_form.find( '.global-stock-mode' );
+				var $sales_cap_field     = $global_stock_fields.filter( '.sales-cap-field' );
+
+				var mode    = $( '#ticket_global_stock' ).val();
+				var enabled = global_stock_enabled();
+
+				// Show or hide global (and normal, "per-ticket") stock settings as appropriate
+				$global_stock_level.toggle(enabled);
+				$global_stock_fields.toggle(global_stock_enabled());
+				$normal_stock_field.toggle(!enabled);
+
+				// If global stock is not enabled we need go no further
+				if ( ! enabled ) {
+					return;
+				}
+
+				// Otherwise, toggle on and off the relevant stock quantity fields
+				switch ( mode ) {
+					case "global":
+						$sales_cap_field.hide();
+						$normal_stock_field.hide();
+						break;
+					case "capped":
+						$sales_cap_field.show();
+						$normal_stock_field.hide();
+						break;
+					case "own":
+						$sales_cap_field.hide();
+						$normal_stock_field.show();
+						break;
+				}
+			}
 		} );
 
 		if ( $event_pickers.length ) {
@@ -228,8 +271,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * Show or hide global stock fields and settings as appropriate.
 		 */
 		function show_hide_global_stock() {
-			var enabled = global_stock_enabled();
-			$global_stock_level.toggle( enabled );
+			$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
 		}
 
 		// Show or hide the global stock level as appropriate, both initially and thereafter
@@ -508,7 +550,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( 'a#ticket_form_toggle' ).hide();
 						$( '#ticket_form' ).show();
-						$tribe_tickets.trigger( 'edit-ticket.tribe' )
+
+						$tribe_tickets
+							.trigger( 'set-advanced-fields.tribe' )
+							.trigger( 'edit-ticket.tribe' );
 
 					},
 					'json'

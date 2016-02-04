@@ -233,7 +233,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Indicates if the module/ticket provider supports a concept of global stock.
-		 * Implementations should override this and return true if they do.
+		 *
+		 * For backward compatibility reasons this method has not been declared abstract but
+		 * implementaions are still expected to override it.
 		 *
 		 * @return bool
 		 */
@@ -728,6 +730,42 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function tr_class() {
 			echo 'ticket_advanced ticket_advanced_' . $this->className;
+		}
+
+		/**
+		 * Generates a select element listing the available global stock mode options.
+		 *
+		 * @param string $current_option
+		 *
+		 * @return string
+		 */
+		protected function global_stock_mode_selector( $current_option = '' ) {
+			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field'>\n";
+
+			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
+				$identifier = esc_html( $identifier );
+				$name = esc_html( $name );
+				$selected = selected( $identifier === $current_option, true, false );
+				$output .= "\t<option value='$identifier' $selected> $name </option>\n";
+			}
+
+			return "$output</select>";
+		}
+
+		/**
+		 * Returns an array of standard global stock mode options that can be
+		 * reused by implementations.
+		 *
+		 * Format is: [ 'identifier' => 'Localized name', ... ]
+		 *
+		 * @return array
+		 */
+		protected function global_stock_mode_options() {
+			return array(
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Use global stock', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE => __( 'Use global stock but cap sales', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Independent (do not use global stock)', 'event-tickets' ),
+			);
 		}
 
 		/**
