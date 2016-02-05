@@ -112,6 +112,9 @@ class Tribe__Tickets__Main {
 		$this->hooks();
 
 		$this->has_initialized = true;
+
+		// set up the RSVP object
+		$this->rsvp();
 	}
 
 	/**
@@ -330,9 +333,6 @@ class Tribe__Tickets__Main {
 	 * Hooked to the init action
 	 */
 	public function init() {
-		// set up the RSVP object
-		$this->rsvp();
-
 		// Provide continued support for legacy ticketing modules
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 
@@ -343,13 +343,7 @@ class Tribe__Tickets__Main {
 	 * rsvp ticket object accessor
 	 */
 	public function rsvp() {
-		static $rsvp;
-
-		if ( ! $rsvp ) {
-			$rsvp = Tribe__Tickets__RSVP::get_instance();
-		}
-
-		return $rsvp;
+		return Tribe__Tickets__RSVP::get_instance();
 	}
 
 	/**
