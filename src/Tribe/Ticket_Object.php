@@ -72,6 +72,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $provider_class;
 
 		/**
+		 * @var Tribe__Tickets__Tickets
+		 */
+		protected $provider;
+
+		/**
 		 * Amount of tickets of this kind in stock
 		 * Use $this->stock( value ) to set manage and get the value
 		 *
@@ -433,6 +438,41 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// return the new Qty Cancelled
 			return $this->qty_cancelled;
 		}
-	}
 
+		/**
+		 * Returns an instance of the provider class.
+		 *
+		 * @return Tribe__Tickets__Tickets|null
+		 */
+		public function get_provider() {
+			if ( empty( $this->provider ) ) {
+				if ( empty( $this->provider_class ) || ! class_exists( $this->provider_class ) ) {
+					return null;
+				}
+
+				if ( method_exists( $this->provider_class, 'get_instance' ) ) {
+					$this->provider = call_user_func( array( $this->provider_class, 'get_instance' ) );
+				} else {
+					$this->provider = new $this->provider_class;
+				}
+			}
+
+			return $this->provider;
+		}
+
+		/**
+		 * Returns the ID of the event post this ticket belongs to.
+		 *
+		 * @return WP_Post|null
+		 */
+		public function get_event() {
+			$provider = $this->get_provider();
+
+			if ( null !== $provider ) {
+				return $provider->get_event_for_ticket( $this->ID );
+			}
+
+			return null;
+		}
+	}
 }
