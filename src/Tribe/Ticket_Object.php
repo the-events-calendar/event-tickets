@@ -90,7 +90,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @var string
 		 */
-		protected $global_stock_mode = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE;
+		protected $global_stock_mode = Tribe__Tickets__Global_Stock::OWN_STOCK_MODE;
 
 		/**
 		 * The maximum permitted number of sales for this ticket when global stock

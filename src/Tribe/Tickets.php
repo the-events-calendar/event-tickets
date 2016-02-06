@@ -43,7 +43,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $global_stock_ticket_data = array();
+		protected static $frontend_ticket_data = array();
 
 		/**
 		 * Name of this class. Note that it refers to the child class.
@@ -789,7 +789,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param array $tickets
 		 */
-		public static function add_global_stock_data( array $tickets ) {
+		public static function add_frontend_stock_data( array $tickets ) {
 			// Add the frontend ticket form script as needed (we do this lazily since right now
 			// it's only required for certain combinations of event/ticket
 			if ( ! self::$frontend_script_enqueued ) {
@@ -797,16 +797,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$url = Tribe__Template_Factory::getMinFile( $url, true );
 
 				wp_enqueue_script( 'tribe_tickets_frontend_tickets', $url, array( 'jquery' ), Tribe__Tickets__Main::VERSION, true );
-				add_action( 'wp_footer', array( __CLASS__, 'enqueue_global_stock_data' ), 1 );
+				add_action( 'wp_footer', array( __CLASS__, 'enqueue_frontend_stock_data' ), 1 );
 			}
 
-			self::$global_stock_ticket_data += $tickets;
+			self::$frontend_ticket_data += $tickets;
 		}
 
 		/**
 		 * Takes any global stock data and makes it available via a wp_localize_script() call.
 		 */
-		public static function enqueue_global_stock_data() {
+		public static function enqueue_frontend_stock_data() {
 			$data = array(
 				'tickets'  => array(),
 				'events'   => array(),
@@ -815,25 +815,33 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				),
 			);
 
-			foreach ( self::$global_stock_ticket_data as $ticket ) {
+			foreach ( self::$frontend_ticket_data as $ticket ) {
 				/**
 				 * @var Tribe__Tickets__Ticket_Object $ticket
 				 */
 				$event_id = $ticket->get_event()->ID;
 				$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+				$stock_mode = $ticket->global_stock_mode();
 
 				$data[ 'tickets' ][ $ticket->ID ] = array(
 					'event_id' => $event_id,
-					'mode' => $ticket->global_stock_mode(),
-					'cap' => $ticket->global_stock_cap(),
+					'mode' => $stock_mode,
 				);
+
+				if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode ) {
+					$data[ 'tickets' ][ $ticket->ID ][ 'cap' ] = $ticket->global_stock_cap();
+				}
+
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+					$data[ 'tickets' ][ $ticket->ID ][ 'stock' ] = $ticket->stock();
+				}
 
 				$data[ 'events' ][ $event_id ] = array(
 					'stock' => $global_stock->get_stock_level()
 				);
 			}
 
-			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_global_stock_data', $data );
+			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
 		}
 
 		/**
