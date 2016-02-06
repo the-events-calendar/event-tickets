@@ -248,6 +248,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Do the math!
 			$remaining = $this->original_stock() - $this->qty_sold() - $this->qty_pending();
 
+			// Adjust if using global stock with a sales cap
+			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
+				$remaining = min( $remaining, $this->global_stock_cap() );
+			}
+
 			// Prevents Negative
 			return max( $remaining, 0 );
 		}

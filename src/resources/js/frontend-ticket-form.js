@@ -23,7 +23,6 @@ jQuery( function( $ ) {
 		} else {
 			normal_stock_quantity_changed( $this, ticket_id );
 		}
-
 	}
 
 	/**
@@ -94,6 +93,10 @@ jQuery( function( $ ) {
 		var remaining = get_global_stock( event_id ) - currently_requested_event_stock( event_id );
 
 		for ( var ticket_id in tickets ) {
+			if ( ! tickets.hasOwnProperty( ticket_id ) ) {
+				continue;
+			}
+
 			var ticket = tickets[ ticket_id ];
 
 			if ( 'global' === ticket.mode ) {
@@ -101,7 +104,7 @@ jQuery( function( $ ) {
 			}
 
 			if ( 'capped' === ticket.mode ) {
-				remaining = ( remaining > ticket.cap ) ? ticket.cap : remaining;
+				remaining = ticket.cap - $( '[data-product-id=' + ticket_id + ']' ).find( 'input' ).val();
 				$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining );
 			}
 		}
