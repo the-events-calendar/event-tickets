@@ -103,6 +103,11 @@ jQuery( document ).ready( function( $ ) {
 	 * @returns boolean|string
      */
 	function get_ticket_property( ticket_id, property ) {
+		// Don't trigger errors if tribe_global_stock_data is not available
+		if ( "object" !== typeof tribe_global_stock_data ) {
+			return false;
+		}
+
 		var ticket = tribe_global_stock_data.tickets[ ticket_id ];
 
 		// If we don't have any data for this ticket we can assume it doesn't use global stock
@@ -122,6 +127,11 @@ jQuery( document ).ready( function( $ ) {
 	 * @returns Array
      */
 	function get_tickets_of( event_id ) {
+		// Don't trigger errors if tribe_global_stock_data is not available
+		if ( "object" !== typeof tribe_global_stock_data ) {
+			return false;
+		}
+
 		var set_of_tickets = [];
 
 		for ( var ticket_id in tribe_global_stock_data.tickets ) {
@@ -161,6 +171,11 @@ jQuery( document ).ready( function( $ ) {
 	 * @returns boolean|string
 	 */
 	function get_event_property( event_id, property ) {
+		// Don't trigger errors if tribe_global_stock_data is not available
+		if ( "object" !== typeof tribe_global_stock_data ) {
+			return false;
+		}
+
 		var event = tribe_global_stock_data.events[ event_id ];
 
 		// If we don't have any data for this ticket we can assume it doesn't use global stock
