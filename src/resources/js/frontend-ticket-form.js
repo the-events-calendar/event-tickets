@@ -117,7 +117,7 @@ jQuery( document ).ready( function( $ ) {
 	 * Provides an array of ticket objects that all belong to the specified
 	 * event.
 	 *
-	 * @param int event_id
+	 * @param event_id
 	 *
 	 * @returns Array
      */
