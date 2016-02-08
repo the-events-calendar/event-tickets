@@ -32,7 +32,7 @@ jQuery( function( $ ) {
 	 * @param $input
 	 * @param event_id
 	 * @param ticket_id
-     */
+	 */
 	function global_stock_quantity_changed( $input, ticket_id ) {
 		var new_quantity    = $input.val();
 		var event_id        = get_event_id( ticket_id );
@@ -87,7 +87,7 @@ jQuery( function( $ ) {
 	 * quantity input. This method updates those counts appropriately.
 	 *
 	 * @param event_id
-     */
+	 */
 	function update_available_stock_counts( event_id ) {
 		var tickets   = get_tickets_of( event_id );
 		var remaining = get_global_stock( event_id ) - currently_requested_event_stock( event_id );
@@ -117,7 +117,7 @@ jQuery( function( $ ) {
 	 * @param element
 	 *
 	 * @returns null|string
-     */
+	 */
 	function get_matching_ticket_id( element ) {
 		// There should be an element close by (parent or grandparent) from which we can
 		// obtain the ticket ID
@@ -139,7 +139,7 @@ jQuery( function( $ ) {
 	 * @param property
 	 *
 	 * @returns boolean|string
-     */
+	 */
 	function get_ticket_property( ticket_id, property ) {
 		// Don't trigger errors if tribe_tickets_stock_data is not available
 		if ( "object" !== typeof tribe_tickets_stock_data ) {
@@ -163,7 +163,7 @@ jQuery( function( $ ) {
 	 * @param event_id
 	 *
 	 * @returns Array
-     */
+	 */
 	function get_tickets_of( event_id ) {
 		// Don't trigger errors if tribe_tickets_stock_data is not available
 		if ( "object" !== typeof tribe_tickets_stock_data ) {
@@ -187,7 +187,7 @@ jQuery( function( $ ) {
 	 *
 	 * @param event_id
 	 * @returns {number}
-     */
+	 */
 	function currently_requested_event_stock( event_id ) {
 		var total   = 0;
 		var tickets = get_tickets_of( event_id );
