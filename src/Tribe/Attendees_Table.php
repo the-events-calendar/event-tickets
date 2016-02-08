@@ -207,7 +207,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filters the order stati that will allow for a ticket to be checked in for all commerce providers.
 		 *
-		 * @since 4.2
+		 * @since 4.1
 		 *
 		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
 		 * @param string $provider              The ticket provider slug.
@@ -218,7 +218,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filters the order stati that will allow for a ticket to be checked in for a specific commerce provider.
 		 *
-		 * @since 4.2
+		 * @since 4.1
 		 *
 		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
 		 * @param int    $order_id              The order post ID.
