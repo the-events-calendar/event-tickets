@@ -133,7 +133,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			'set-advanced-fields.tribe': function() {
 				var $this = $( this );
 				var $ticket_form = $this.find( '#ticket_form' );
-				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced' ).find( 'input, select, textarea' );
+				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced:not(.ticket_advanced_meta)' ).find( 'input, select, textarea' );
 				var provider = $ticket_form.find( '#ticket_provider:checked' ).val();
 
 				// for each advanded ticket input, select, and textarea, relocate the name and id fields a bit
