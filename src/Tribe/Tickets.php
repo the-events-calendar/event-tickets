@@ -810,9 +810,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$data = array(
 				'tickets'  => array(),
 				'events'   => array(),
-				'messages' => array(
-					''
-				),
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
