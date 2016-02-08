@@ -268,7 +268,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * Indicates if the "enable global stock" field has been checked.
 		 *
 		 * @returns boolean
-         */
+		 */
 		function global_stock_enabled() {
 			return $enable_global_stock.prop( "checked" );
 		}
