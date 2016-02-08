@@ -438,9 +438,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							'name': '',
 							'id': ''
 						} );
-						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
-						$( 'tr.ticket_advanced_meta' ).remove();
+						$( 'tr.ticket_advanced' ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
+
+						// trigger a change event on the provider radio input so the advanced fields can be re-initialized
+						$( 'input[name=ticket_provider]:radio' ).change();
 
 						// set the prices after the advanced fields have been added to the form
 						var $ticket_price = $tribe_tickets.find( '#ticket_price' );
