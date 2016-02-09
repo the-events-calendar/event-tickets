@@ -189,9 +189,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				var enabled  = global_stock_enabled();
 
 				// Show or hide global (and normal, "per-ticket") stock settings as appropriate
-				$global_stock_level.toggle(enabled);
-				$global_stock_fields.toggle(global_stock_enabled());
-				$normal_stock_field.toggle(!enabled);
+				$global_stock_level.toggle( enabled );
+				$global_stock_fields.toggle( global_stock_enabled() );
+				$normal_stock_field.toggle( ! enabled );
 
 				// If global stock is not enabled we need go no further
 				if ( ! enabled ) {
