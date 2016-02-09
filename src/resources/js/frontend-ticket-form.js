@@ -1,44 +1,43 @@
+var tribe_tickets_ticket_form = {};
+
 /**
  * Provides global stock handling for frontend ticket forms.
  *
  * @var object tribe_tickets_stock_data
  */
-jQuery( function( $ ) {
+( function( $, my ) {
 	var $tickets_lists   = $( '.tribe-events-tickets' );
 	var $quantity_fields = $tickets_lists.find( '.quantity' ).find( 'input' );
-
-	$quantity_fields.on( 'change', on_quantity_change );
 
 	/**
 	 * Every time a ticket quantity field is changed we should evaluate
 	 * the new quantity and ensure it is still "in bounds" with relation
 	 * to global stock.
 	 */
-	function on_quantity_change() {
+	my.on_quantity_change = function() {
 		var $this     = $( this );
-		var ticket_id = get_matching_ticket_id( this );
+		var ticket_id = my.get_matching_ticket_id( this );
 
-		if ( ticket_uses_global_stock( ticket_id ) ) {
-			global_stock_quantity_changed( $this, ticket_id );
+		if ( my.ticket_uses_global_stock( ticket_id ) ) {
+			my.global_stock_quantity_changed( $this, ticket_id );
 		} else {
-			normal_stock_quantity_changed( $this, ticket_id );
+			my.normal_stock_quantity_changed( $this, ticket_id );
 		}
-	}
+	};
 
 	/**
 	 * Handle updates and checks where the modified quantity selector belongs to
 	 * a ticket that uses global stock.
 	 *
 	 * @param $input
-	 * @param event_id
 	 * @param ticket_id
 	 */
-	function global_stock_quantity_changed( $input, ticket_id ) {
+	my.global_stock_quantity_changed = function( $input, ticket_id ) {
 		var new_quantity    = $input.val();
-		var event_id        = get_event_id( ticket_id );
-		var ticket_cap      = get_cap( ticket_id );
-		var event_stock     = get_global_stock( event_id );
-		var total_requested = currently_requested_event_stock( event_id );
+		var event_id        = my.get_event_id( ticket_id );
+		var ticket_cap      = my.get_cap( ticket_id );
+		var event_stock     = my.get_global_stock( event_id );
+		var total_requested = my.currently_requested_event_stock( event_id );
 
 		// If the total stock requested across all inputs now exceeds what's available, adjust this one
 		if ( total_requested > event_stock ) {
@@ -46,7 +45,7 @@ jQuery( function( $ ) {
 		}
 
 		// If sales for this input have been capped, adjust if necessary to stay within the cap
-		if ( stock_mode_is_capped( ticket_id ) && new_quantity > ticket_cap ) {
+		if ( my.stock_mode_is_capped( ticket_id ) && new_quantity > ticket_cap ) {
 			new_quantity = ticket_cap;
 		}
 
@@ -56,8 +55,8 @@ jQuery( function( $ ) {
 		}
 
 		$input.val( new_quantity );
-		update_available_stock_counts( event_id );
-	}
+		my.update_available_stock_counts( event_id );
+	};
 
 	/**
 	 * Handle updates and checks where the modified quantity selector belongs to
@@ -66,9 +65,9 @@ jQuery( function( $ ) {
 	 * @param $input
 	 * @param ticket_id
 	 */
-	function normal_stock_quantity_changed( $input, ticket_id ) {
+	my.normal_stock_quantity_changed = function( $input, ticket_id ) {
 		var new_quantity    = $input.val();
-		var available_stock = get_single_stock( ticket_id );
+		var available_stock = my.get_single_stock( ticket_id );
 		var remaining;
 
 		// Keep in check (should be handled for us by numeric inputs in most browsers, but let's be safe)
@@ -80,7 +79,7 @@ jQuery( function( $ ) {
 		$input.val( new_quantity );
 		remaining = available_stock - new_quantity;
 		$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining );
-	}
+	};
 
 	/**
 	 * Each ticket list typically shows the remaining inventory next to each
@@ -88,9 +87,9 @@ jQuery( function( $ ) {
 	 *
 	 * @param event_id
 	 */
-	function update_available_stock_counts( event_id ) {
-		var tickets   = get_tickets_of( event_id );
-		var remaining = get_global_stock( event_id ) - currently_requested_event_stock( event_id );
+	my.update_available_stock_counts = function( event_id ) {
+		var tickets   = my.get_tickets_of( event_id );
+		var remaining = my.get_global_stock( event_id ) - my.currently_requested_event_stock( event_id );
 
 		for ( var ticket_id in tickets ) {
 			if ( ! tickets.hasOwnProperty( ticket_id ) ) {
@@ -108,7 +107,7 @@ jQuery( function( $ ) {
 				$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining );
 			}
 		}
-	}
+	};
 
 	/**
 	 * Attempts to determine the product ID associated with the passed
@@ -118,7 +117,7 @@ jQuery( function( $ ) {
 	 *
 	 * @returns null|string
 	 */
-	function get_matching_ticket_id( element ) {
+	my.get_matching_ticket_id = function( element ) {
 		// There should be an element close by (parent or grandparent) from which we can
 		// obtain the ticket ID
 		var $closest_identifier = $( element ).closest( '[data-product-id]' );
@@ -129,7 +128,7 @@ jQuery( function( $ ) {
 		}
 
 		return $closest_identifier.data( 'product-id' );
-	}
+	};
 
 	/**
 	 * If possible, returns the value of the specified ticket's property or
@@ -140,7 +139,7 @@ jQuery( function( $ ) {
 	 *
 	 * @returns boolean|string
 	 */
-	function get_ticket_property( ticket_id, property ) {
+	my.get_ticket_property = function( ticket_id, property ) {
 		// Don't trigger errors if tribe_tickets_stock_data is not available
 		if ( "object" !== typeof tribe_tickets_stock_data ) {
 			return false;
@@ -154,7 +153,7 @@ jQuery( function( $ ) {
 		}
 
 		return ticket[property];
-	}
+	};
 
 	/**
 	 * Provides an array of ticket objects that all belong to the specified
@@ -164,7 +163,7 @@ jQuery( function( $ ) {
 	 *
 	 * @returns Array
 	 */
-	function get_tickets_of( event_id ) {
+	my.get_tickets_of = function( event_id ) {
 		// Don't trigger errors if tribe_tickets_stock_data is not available
 		if ( "object" !== typeof tribe_tickets_stock_data ) {
 			return false;
@@ -180,7 +179,7 @@ jQuery( function( $ ) {
 		}
 
 		return set_of_tickets;
-	}
+	};
 
 	/**
 	 * Sum of all quantity inputs that have tickets drawing on the event's global stock.
@@ -188,16 +187,16 @@ jQuery( function( $ ) {
 	 * @param event_id
 	 * @returns {number}
 	 */
-	function currently_requested_event_stock( event_id ) {
+	my.currently_requested_event_stock = function( event_id ) {
 		var total   = 0;
-		var tickets = get_tickets_of( event_id );
+		var tickets = my.get_tickets_of( event_id );
 
 		for ( var ticket_id in tickets ) {
 			total += parseInt( $tickets_lists.find( '[data-product-id=' + ticket_id + ']').find( 'input').val(), 10 );
 		}
 
 		return total;
-	}
+	};
 
 	/**
 	 * If possible, returns the value of the specified event's property or
@@ -208,7 +207,7 @@ jQuery( function( $ ) {
 	 *
 	 * @returns boolean|string
 	 */
-	function get_event_property( event_id, property ) {
+	my.get_event_property = function( event_id, property ) {
 		// Don't trigger errors if tribe_tickets_stock_data is not available
 		if ( "object" !== typeof tribe_tickets_stock_data ) {
 			return false;
@@ -222,37 +221,40 @@ jQuery( function( $ ) {
 		}
 
 		return event[property];
-	}
+	};
 
-	function stock_mode_is_global( ticket_id ) {
-		return "global" === get_mode( ticket_id );
-	}
+	my.stock_mode_is_global = function( ticket_id ) {
+		return "global" === my.get_mode( ticket_id );
+	};
 
-	function stock_mode_is_capped( ticket_id ) {
-		return "capped" === get_mode( ticket_id );
-	}
+	my.stock_mode_is_capped = function( ticket_id ) {
+		return "capped" === my.get_mode( ticket_id );
+	};
 
-	function ticket_uses_global_stock( ticket_id ) {
-		return stock_mode_is_capped( ticket_id ) || stock_mode_is_global( ticket_id );
-	}
+	my.ticket_uses_global_stock = function( ticket_id ) {
+		return my.stock_mode_is_capped( ticket_id ) || my.stock_mode_is_global( ticket_id );
+	};
 
-	function get_mode( ticket_id ) {
-		return get_ticket_property( ticket_id, 'mode' );
-	}
+	my.get_mode = function( ticket_id ) {
+		return my.get_ticket_property( ticket_id, 'mode' );
+	};
 
-	function get_event_id( ticket_id ) {
-		return get_ticket_property( ticket_id, 'event_id' );
-	}
+	my.get_event_id = function( ticket_id ) {
+		return my.get_ticket_property( ticket_id, 'event_id' );
+	};
 
-	function get_cap( ticket_id ) {
-		return get_ticket_property( ticket_id, 'cap' );
-	}
+	my.get_cap = function( ticket_id ) {
+		return my.get_ticket_property( ticket_id, 'cap' );
+	};
 
-	function get_global_stock( event_id ) {
-		return get_event_property( event_id, 'stock' );
-	}
+	my.get_global_stock = function( event_id ) {
+		return my.get_event_property( event_id, 'stock' );
+	};
 
-	function get_single_stock( ticket_id ) {
-		return get_ticket_property( ticket_id, 'stock' );
-	}
-} );
+	my.get_single_stock = function( ticket_id ) {
+		return my.get_ticket_property( ticket_id, 'stock' );
+	};
+
+	$quantity_fields.on( 'change', my.on_quantity_change );
+
+} )( jQuery, tribe_tickets_ticket_form );
