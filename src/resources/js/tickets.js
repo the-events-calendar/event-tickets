@@ -133,7 +133,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			'set-advanced-fields.tribe': function() {
 				var $this = $( this );
 				var $ticket_form = $this.find( '#ticket_form' );
-				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced' ).find( 'input, select, textarea' );
+				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced:not(.ticket_advanced_meta)' ).find( 'input, select, textarea' );
 				var provider = $ticket_form.find( '#ticket_provider:checked' ).val();
 
 				// for each advanded ticket input, select, and textarea, relocate the name and id fields a bit
@@ -438,9 +438,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							'name': '',
 							'id': ''
 						} );
-						$( 'tr.ticket_advanced_' + response.data.provider_class ).remove();
-						$( 'tr.ticket_advanced_meta' ).remove();
+						$( 'tr.ticket_advanced' ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
+
+						// trigger a change event on the provider radio input so the advanced fields can be re-initialized
+						$( 'input[name=ticket_provider]:radio' ).change();
 
 						// set the prices after the advanced fields have been added to the form
 						var $ticket_price = $tribe_tickets.find( '#ticket_price' );
