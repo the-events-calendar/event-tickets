@@ -6,8 +6,14 @@ var tribe_tickets_ticket_form = {};
  * @var object tribe_tickets_stock_data
  */
 ( function( $, my ) {
-	var $tickets_lists   = $( '.tribe-events-tickets' );
-	var $quantity_fields = $tickets_lists.find( '.quantity' ).find( 'input' );
+	var $tickets_lists;
+	var $quantity_fields;
+
+	my.init = function() {
+		$tickets_lists = $( '.tribe-events-tickets' );
+		$quantity_fields = $tickets_lists.find( '.quantity' ).find( 'input' );
+		$quantity_fields.on( 'change', my.on_quantity_change );
+	};
 
 	/**
 	 * Every time a ticket quantity field is changed we should evaluate
@@ -255,6 +261,7 @@ var tribe_tickets_ticket_form = {};
 		return my.get_ticket_property( ticket_id, 'stock' );
 	};
 
-	$quantity_fields.on( 'change', my.on_quantity_change );
-
+	$( function() {
+		my.init();
+	} );
 } )( jQuery, tribe_tickets_ticket_form );
