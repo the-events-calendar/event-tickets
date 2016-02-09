@@ -298,7 +298,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Sets of gets the current global stock mode in effect for the ticket.
+		 * Sets or gets the current global stock mode in effect for the ticket.
 		 *
 		 * Typically this is one of the constants provided by Tribe__Tickets__Global_Stock:
 		 *
@@ -313,9 +313,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function global_stock_mode( $mode = null ) {
 			if ( is_string( $mode ) ) {
 				$this->global_stock_mode = $mode;
-			} elseif ( null === $mode ) {
-				return $this->global_stock_mode;
 			}
+
+			return $this->global_stock_mode;
 		}
 
 		/**
@@ -329,9 +329,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function global_stock_cap( $cap = null ) {
 			if ( is_numeric( $cap ) ) {
 				$this->global_stock_cap = (int) $cap;
-			} elseif ( null === $cap ) {
-				return (int) $this->global_stock_cap;
 			}
+
+			return (int) $this->global_stock_cap;
 		}
 
 		/**
