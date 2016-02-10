@@ -109,8 +109,9 @@ var tribe_tickets_ticket_form = {};
 			}
 
 			if ( 'capped' === ticket.mode ) {
-				remaining = ticket.cap - $( '[data-product-id=' + ticket_id + ']' ).find( 'input' ).val();
-				$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining );
+				var effective_cap = Math.min( remaining, ticket.cap );
+				var remaining_capped_stock = effective_cap - $( '[data-product-id=' + ticket_id + ']' ).find( 'input' ).val();
+				$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining_capped_stock );
 			}
 		}
 	};
