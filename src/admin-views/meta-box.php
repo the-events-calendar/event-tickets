@@ -1,4 +1,10 @@
 <?php
+/**
+ * @var WP_Post $post
+ * @var bool $show_global_stock
+ * @var Tribe__Tickets__Global_Stock $global_stock
+ */
+
 // Don't load directly
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
@@ -16,6 +22,8 @@ $modules = Tribe__Tickets__Tickets::modules();
 
 <table id="event_tickets" class="eventtable">
 	<?php
+	wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' );
+
 	if ( get_post_meta( get_the_ID(), '_EventOrigin', true ) === 'community-events' ) {
 		?>
 		<tr>
@@ -26,7 +34,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	<?php
 	}
 	?>
-	<tr>
+	<tr class="event-wide-settings">
 		<td colspan="2" class="tribe_sectionheader updated">
 			<table class="eventtable ticket_list eventForm">
 				<tr class="tribe-tickets-image-upload">
@@ -43,7 +51,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 						<div class="tribe_preview" id="tribe_ticket_header_preview">
 							<?php echo $header_img; ?>
 						</div>
-						<p class="description"><a href="#" id="tribe_ticket_header_remove"><?php esc_html_e( 'Remove' ); ?></a></p>
+						<p class="description"><a href="#" id="tribe_ticket_header_remove"><?php esc_html_e( 'Remove', 'event-tickets' ); ?></a></p>
 
 						<input type="hidden" id="tribe_ticket_header_image_id" name="tribe_ticket_header_image_id" value="<?php echo esc_attr( $header_id ); ?>" />
 					</td>
@@ -51,6 +59,37 @@ $modules = Tribe__Tickets__Tickets::modules();
 			</table>
 		</td>
 	</tr>
+	<?php if ( $show_global_stock ): ?>
+		<tr id="tribe-global-stock-settings" class="event-wide-settings">
+			<td colspan="2">
+				<table class="eventtable ticket_list eventForm">
+					<tr>
+						<td>
+							<label for="tribe-tickets-enable-global-stock">
+								<?php esc_html_e( 'Enable global stock', 'event-tickets' ); ?>
+							</label>
+						</td>
+						<td>
+							<input type="checkbox" name="tribe-tickets-enable-global-stock" id="tribe-tickets-enable-global-stock" value="1" <?php checked( $global_stock->is_enabled() ); ?> />
+						</td>
+					</tr>
+					<tr id="tribe-tickets-global-stock-level">
+						<td>
+							<label for="tribe-tickets-global-stock">
+								<?php esc_html_e( 'Global stock level', 'event-tickets' ); ?>
+							</label>
+						</td>
+						<td>
+							<input type="number" name="tribe-tickets-global-stock" id="tribe-tickets-global-stock" value="<?php echo esc_attr( $global_stock->get_stock_level() ); ?>" />
+							<span class="tribe-tickets-global-sales">
+								<?php echo esc_html( sprintf( _n( '(%s sold)', '(%s sold)', 0, 'event-tickets' ), 0 ) ); ?>
+							</span>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	<?php endif; ?>
 	<tr>
 		<td colspan="2" class="tribe_sectionheader ticket_list_container">
 
@@ -160,7 +199,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 							<?php esc_html_e( 'When will ticket sales occur?', 'event-tickets' ); ?>
 							<?php
 							// Why break in and out of PHP? because I want the space between the phrases without including them in the translations
-							if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post_id ) ) {
+							if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post ) ) {
 								esc_html_e( "If you don't set a start/end date for sales, tickets will be available from now until the event ends.", 'event-tickets' );
 							}
 							?>

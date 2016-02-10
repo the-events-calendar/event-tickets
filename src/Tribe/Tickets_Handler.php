@@ -51,7 +51,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$main = Tribe__Tickets__Main::instance();
 
 		foreach ( $main->post_types() as $post_type ) {
-			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ), 10, 2 );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
 		}
 
 		add_action( 'wp_ajax_tribe-ticket-email-attendee-list', array( $this, 'ajax_handler_attendee_mail_list' ) );
@@ -444,9 +445,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Includes the tickets metabox inside the Event edit screen
 	 *
-	 * @param $post_id
+	 * @param WP_Post $post
 	 */
-	public function do_meta_box( $post_id ) {
+	public function do_meta_box( $post ) {
 
 		$startMinuteOptions   = Tribe__View_Helpers::getMinuteOptions( null );
 		$endMinuteOptions     = Tribe__View_Helpers::getMinuteOptions( null );
@@ -455,7 +456,10 @@ class Tribe__Tickets__Tickets_Handler {
 		$startMeridianOptions = Tribe__View_Helpers::getMeridianOptions( null, true );
 		$endMeridianOptions   = Tribe__View_Helpers::getMeridianOptions( null );
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$show_global_stock = Tribe__Tickets__Tickets::global_stock_available();
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post );
+		$global_stock = new Tribe__Tickets__Global_Stock( $post->ID );
+
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
@@ -501,10 +505,13 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Save or delete the image header for tickets on an event
 	 *
-	 * @param $post_id
-	 * @param $post
+	 * @param int $post_id
 	 */
-	public function save_image_header( $post_id, $post ) {
+	public function save_image_header( $post_id ) {
+		if ( ! wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) {
+			return;
+		}
+
 		// don't do anything on autosave or auto-draft either or massupdates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
@@ -517,6 +524,29 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		return;
+	}
+
+	/**
+	 * Save the current global stock properties for this event.
+	 *
+	 * @param int $post_id
+	 */
+	public function save_global_stock( $post_id ) {
+		if ( ! wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) {
+			return;
+		}
+
+		// Bail on autosaves/bulk updates
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		$enable = ! empty( $_POST[ 'tribe-tickets-enable-global-stock' ] );
+		$stock  = (int) @$_POST[ 'tribe-tickets-global-stock' ];
+
+		$post_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+		$post_global_stock->enable( $enable );
+		$post_global_stock->set_stock_level( $stock );
 	}
 
 	/**
