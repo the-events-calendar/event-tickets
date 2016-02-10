@@ -223,7 +223,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
 		 * @param int    $order_id              The order post ID.
 		 */
-		$check_in_stati = apply_filters( "event_tickets_attendees_{$provider}_checkin_stati", $default_checkin_stati, $order_id );
+		$check_in_stati = apply_filters( "event_tickets_attendees_{$provider}_checkin_stati", $check_in_stati, $order_id );
 
 		if ( is_array( $check_in_stati ) && ! in_array( $item['order_status'], $check_in_stati ) ) {
 			$button_template = '<a href="%s" class="button-secondary tickets-checkin">%s</a>';
