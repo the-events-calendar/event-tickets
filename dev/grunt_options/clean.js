@@ -18,7 +18,8 @@ module.exports = {
 	resourcescripts: [
 		'<%= pkg._resourcepath %>/js/rsvp.processed.js',
 		'<%= pkg._resourcepath %>/js/tickets.processed.js',
-		'<%= pkg._resourcepath %>/js/tickets-attendees.processed.js'
+		'<%= pkg._resourcepath %>/js/tickets-attendees.processed.js',
+		'<%= pkg._resourcepath %>/js/frontend-ticket-form.processed.js'
 	],
 
 	resourcecss: [
