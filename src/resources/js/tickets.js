@@ -624,7 +624,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * changes then try to bring this to their attention!
 		 */
 		$( window ).on( 'beforeunload', function() {
-			// If the global stock setting
+			// If the global stock settings have not changed, do not interfere
 			if ( ! global_stock_setting_changed ) {
 				return;
 			}
