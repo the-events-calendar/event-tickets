@@ -508,7 +508,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param int $post_id
 	 */
 	public function save_image_header( $post_id ) {
-		if ( ! wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) {
+		if ( ! ( isset($_POST[ 'tribe-tickets-post-settings' ])  && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
 			return;
 		}
 
@@ -532,7 +532,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param int $post_id
 	 */
 	public function save_global_stock( $post_id ) {
-		if ( ! wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) {
+		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
 			return;
 		}
 
