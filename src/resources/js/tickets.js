@@ -49,6 +49,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$tickets_container = $( '#event_tickets' ),
 			$enable_global_stock = $( "#tribe-tickets-enable-global-stock" ),
 			$global_stock_level = $( "#tribe-tickets-global-stock-level" ),
+			global_stock_setting_changed = false,
 			$body = $( 'html, body' ),
 			startofweek = 0;
 
@@ -277,6 +278,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * Show or hide global stock fields and settings as appropriate.
 		 */
 		function show_hide_global_stock() {
+			global_stock_setting_changed = true;
 			$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
 		}
 
@@ -305,6 +307,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Show or hide the global stock level as appropriate, both initially and thereafter
 		$enable_global_stock.change( show_hide_global_stock );
 		$enable_global_stock.trigger( 'change' );
+
+		// Triggering a change event will falsely set the global_stock_setting_changed flag to
+		// true - undo this as it is a one-time false positive
+		global_stock_setting_changed = false;
 
 		/* Show the advanced metabox for the selected provider and hide the others on selection change */
 		$( 'input[name=ticket_provider]:radio' ).change( function() {
@@ -595,6 +601,39 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		if ( $preview.find( 'img' ).length ) {
 			$remove.show();
 		}
+
+		/**
+		 * Track changes to the global stock level. Changes to the global stock
+		 * checkbox itself is handled elsewhere.
+		 */
+		$global_stock_level.change( function() {
+			global_stock_setting_changed = true;
+		} );
+
+		/**
+		 * Unset the global stock settings changed flag if the post is being
+		 * saved/updated (no need to trigger a confirmation dialog in these
+		 * cases).
+		 */
+		$( 'input[type="submit"]' ).click( function() {
+			global_stock_setting_changed = false;
+		} );
+
+		/**
+		 * If the user attempts to nav away without saving global stock setting
+		 * changes then try to bring this to their attention!
+		 */
+		$( window ).on( 'beforeunload', function() {
+			// If the global stock settings have not changed, do not interfere
+			if ( ! global_stock_setting_changed ) {
+				return;
+			}
+
+			// We can't trigger a confirm() dialog from within this action but returning
+			// a string should achieve effectively the same result
+			return tribe_global_stock_admin_ui.nav_away_msg;
+
+		} );
 
 		$('body').on( 'click', '#tribe_ticket_header_remove', function( e ) {
 
