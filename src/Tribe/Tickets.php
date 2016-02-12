@@ -757,6 +757,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function global_stock_mode_selector( $current_option = '' ) {
 			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field'>\n";
 
+			// Default to using own stock unless the user explicitly specifies otherwise (important
+			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
+			if ( empty( $current_option ) ) {
+				$current_option = Tribe__Tickets__Global_Stock::OWN_STOCK_MODE;
+			}
+
 			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
 				$identifier = esc_html( $identifier );
 				$name = esc_html( $name );
