@@ -637,6 +637,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns the total number of attendees for an event (regardless of provider).
+		 *
+		 * @param int $event_id
+		 *
+		 * @return int
+		 */
+		public static function get_event_attendees_count( $event_id ) {
+			$attendees = self::get_event_attendees( $event_id );
+			return count( $attendees );
+		}
+
+		/**
 		 * Returns all tickets for an event (all providers are queried for this information).
 		 *
 		 * @param $event_id

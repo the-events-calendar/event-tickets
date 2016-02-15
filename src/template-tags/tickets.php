@@ -194,24 +194,36 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	/**
 	 * Gets the "tickets sold" message for a given ticket
 	 *
-	 * @param Tribe__Ticket_Object $ticket Ticket to analyze
+	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze
 	 *
 	 * @return string
 	 */
-	function tribe_tickets_get_ticket_stock_message( $ticket ) {
-		$stock = $ticket->original_stock();
-		$sold = $ticket->qty_sold();
-		$pending = $ticket->qty_pending();
+	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {
+		$stock     = $ticket->stock();
+		$sold      = $ticket->qty_sold();
+		$cancelled = $ticket->qty_cancelled();
+		$pending   = $ticket->qty_pending();
 
-		$pending_message = '';
-		if ( $pending > 0 ) {
-			$pending_message = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', $pending, 'event-tickets' ), (int) $pending );
+		// There may not be a fixed inventory - in which case just report the number actually sold so far
+		if ( empty( $stock ) && $stock !== 0 ) {
+			$message = sprintf( esc_html__( 'Sold %d', 'event-tickets' ), esc_html( $sold ) );
 		}
+		// If we do have a fixed stock then we can provide more information
+		else {
+			$cancelled_count = empty( $cancelled ) ? '' : esc_html( sprintf(
+				_x( ' cancelled: %1$d', 'ticket stock message (cancelled stock)', 'event-tickets' ),
+				(int) $cancelled
+			) );
 
-		if ( ! $stock ) {
-			$message = sprintf( esc_html__( 'Sold all %1$d %2$s', 'event-tickets' ), esc_html( $sold ), esc_html( $pending_message ) );
-		} else {
-			$message = sprintf( esc_html__( 'Sold %1$d of %2$d %3$s', 'event-tickets' ), esc_html( $sold ), esc_html( $stock ), esc_html( $pending_message ) );
+			$pending_count = $pending < 1 ? '' : esc_html( sprintf(
+				__( ' pending: %1$d', 'ticket stock message (pending stock)', 'event-tickets' ),
+				(int) $pending
+			) );
+
+			$message = sprintf(
+				esc_html__( 'Sold %1$d (units remaining: %2$d%3$s%4$s)', 'event-tickets' ),
+				esc_html( $sold ), (int) $stock, $cancelled_count, $pending_count
+			);
 		}
 
 		return $message;

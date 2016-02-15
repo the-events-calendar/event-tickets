@@ -15,8 +15,9 @@ foreach ( $tickets as $ticket ) {
 	$total_sold += $ticket->qty_sold() + $ticket->qty_pending();
 	$total_pending += $ticket->qty_pending();
 }
-$total_completed = $total_sold - $total_pending;
-
+$total_completed   = $total_sold - $total_pending;
+$total_attendees   = Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
+$deleted_attendees = $total_sold - $total_attendees;
 ?>
 
 <div class="wrap tribe-attendees-page">
@@ -91,6 +92,13 @@ $total_completed = $total_sold - $total_pending;
 							<strong><?php esc_html_e( 'Checked in:', 'event-tickets' ); ?></strong>
 							<span id="total_checkedin"><?php echo esc_html( $checkedin ); ?></span>
 						</li>
+
+						<?php if ( $deleted_attendees > 0 ): ?>
+							<li>
+								<strong><?php esc_html_e( 'Deleted:', 'event-tickets' ); ?></strong>
+								<span id="total_deleted"><?php echo esc_html( $deleted_attendees ); ?></span>
+							</li>
+						<?php endif; ?>
 					</ul>
 					<?php do_action( 'tribe_events_tickets_attendees_totals_bottom', $event_id ); ?>
 				</div>

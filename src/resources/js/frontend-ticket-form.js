@@ -43,7 +43,7 @@ var tribe_tickets_ticket_form = {};
 		var event_id        = my.get_event_id( ticket_id );
 		var ticket_cap      = my.get_cap( ticket_id );
 		var event_stock     = my.get_global_stock( event_id );
-		var total_requested = my.currently_requested_event_stock( event_id );
+		var total_requested = my.currently_requested_global_event_stock( event_id );
 
 		// If the total stock requested across all inputs now exceeds what's available, adjust this one
 		if ( total_requested > event_stock ) {
@@ -95,7 +95,7 @@ var tribe_tickets_ticket_form = {};
 	 */
 	my.update_available_stock_counts = function( event_id ) {
 		var tickets   = my.get_tickets_of( event_id );
-		var remaining = my.get_global_stock( event_id ) - my.currently_requested_event_stock( event_id );
+		var remaining = my.get_global_stock( event_id ) - my.currently_requested_global_event_stock( event_id );
 
 		for ( var ticket_id in tickets ) {
 			if ( ! tickets.hasOwnProperty( ticket_id ) ) {
@@ -194,12 +194,17 @@ var tribe_tickets_ticket_form = {};
 	 * @param event_id
 	 * @returns {number}
 	 */
-	my.currently_requested_event_stock = function( event_id ) {
+	my.currently_requested_global_event_stock = function( event_id ) {
 		var total   = 0;
 		var tickets = my.get_tickets_of( event_id );
 
 		for ( var ticket_id in tickets ) {
-			total += parseInt( $tickets_lists.find( '[data-product-id=' + ticket_id + ']').find( 'input').val(), 10 );
+			switch ( tribe_tickets_stock_data.tickets[ticket_id].mode ) {
+				case 'global':
+				case 'capped':
+					total += parseInt( $tickets_lists.find( '[data-product-id=' + ticket_id + ']').find( 'input').val(), 10 );
+				break;
+			}
 		}
 
 		return total;
