@@ -81,7 +81,11 @@ class Tribe__Tickets__Metabox {
 			'title'  => esc_html__( 'Ticket header image', 'event-tickets' ),
 			'button' => esc_html__( 'Set as ticket header', 'event-tickets' ),
 		);
+
 		wp_localize_script( 'event-tickets', 'HeaderImageData', $upload_header_data );
+		wp_localize_script( 'event-tickets', 'tribe_global_stock_admin_ui', array(
+			'nav_away_msg' => __( 'It looks like you have modified your global stock settings but have not saved or updated the post.', 'event-tickets' ),
+		) );
 
 
 		$nonces = array(
