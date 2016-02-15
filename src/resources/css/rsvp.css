@@ -23,12 +23,16 @@ table.tribe-events-tickets td {
 	border: 0;
 }
 
+.tribe-rsvp-message-display .tribe-rsvp-messages {
+	display: block;
+}
+
 .tribe-rsvp-messages {
+	display: none;
 	padding: 10px 10px 5px;
 }
 
 .tribe-rsvp-message {
-	margin-bottom: 5px;
 	-khtml-border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
