@@ -82,6 +82,14 @@ class Tribe__Tickets__Global_Stock {
 	 */
 	public function set_stock_level( $quantity ) {
 		update_post_meta( $this->post_id, self::GLOBAL_STOCK_LEVEL, (int) $quantity );
+
+		/**
+		 * Fires when the global stock level is set/changed.
+		 *
+		 * @param int $post_id
+		 * @param int $quantity
+		 */
+		do_action( 'tribe_tickets_global_stock_level_changed', $this->post_id, $quantity );
 	}
 
 	/**
