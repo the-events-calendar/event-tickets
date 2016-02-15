@@ -211,20 +211,18 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		// If we do have a fixed stock then we can provide more information
 		else {
 			$cancelled_count = empty( $cancelled ) ? '' : esc_html( sprintf(
-				_x( ' %1$s %2$d', 'ticket stock message (cancelled stock)', 'event-tickets' ),
-				_x( 'cancelled:', 'ticket stock message (cancelled stock)', 'event-tickets' ),
+				_x( ' cancelled: %1$d', 'ticket stock message (cancelled stock)', 'event-tickets' ),
 				(int) $cancelled
 			) );
 
 			$pending_count = $pending < 1 ? '' : esc_html( sprintf(
-				__( ' %1$s %2$d', 'ticket stock message (pending stock)', 'event-tickets' ),
-				__( ' pending:', 'ticket stock message (pending stock)', 'event-tickets' ),
+				__( ' pending: %1$d', 'ticket stock message (pending stock)', 'event-tickets' ),
 				(int) $pending
 			) );
 
 			$message = sprintf(
-				esc_html__( 'Sold %1$d (units remaining: %2$d%3$s%4$s)', 'event-tickets' ), esc_html( $sold ),
-				(int) $stock, $cancelled_count, $pending_count
+				esc_html__( 'Sold %1$d (units remaining: %2$d%3$s%4$s)', 'event-tickets' ),
+				esc_html( $sold ), (int) $stock, $cancelled_count, $pending_count
 			);
 		}
 
