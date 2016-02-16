@@ -370,6 +370,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
 
+			$return = array( 'html' => $return );
+
+			/**
+			 * Filters the return data for ticket add
+			 *
+			 * @var array Array of data to return to the ajax call
+			 */
+			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
+
 			$this->ajax_ok( $return );
 		}
 
