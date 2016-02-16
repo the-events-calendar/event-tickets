@@ -457,8 +457,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$endMeridianOptions   = Tribe__View_Helpers::getMeridianOptions( null );
 
 		$show_global_stock = Tribe__Tickets__Tickets::global_stock_available();
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post );
-		$global_stock = new Tribe__Tickets__Global_Stock( $post );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+		$global_stock = new Tribe__Tickets__Global_Stock( $post->ID );
 
 		include $this->path . 'src/admin-views/meta-box.php';
 	}

@@ -367,7 +367,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					if ( response.success ) {
 						$tribe_tickets.trigger( 'clear.tribe' );
-						$( 'td.ticket_list_container' ).empty().html( response.data );
+						$( 'td.ticket_list_container' ).empty().html( response.data.html );
 						$( '.ticket_time' ).hide();
 					}
 				},
