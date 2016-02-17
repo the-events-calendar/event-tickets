@@ -78,9 +78,17 @@
 		<?php endif; ?>
 		<tr>
 			<td>
-				<p class="ticket_name"><?php
-					printf( "<a href='#' attr-provider='%s' attr-ticket-id='%s' class='ticket_edit'>%s</a></span>", esc_attr( $ticket->provider_class ), esc_attr( $ticket->ID ), esc_html( $ticket->name ) );
-					?></p>
+				<p class="ticket_name">
+					<?php
+					printf(
+						"<a href='#' attr-provider='%s' attr-ticket-id='%s' class='ticket_edit'>%s</a>",
+						esc_attr( $ticket->provider_class ),
+						esc_attr( $ticket->ID ),
+						esc_html( $ticket->name )
+					);
+					do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket );
+					?>
+				</p>
 
 				<div class="ticket_controls">
 					<?php echo join( ' | ', $controls ); ?>

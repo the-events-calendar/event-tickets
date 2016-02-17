@@ -171,12 +171,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function column_ticket( $item ) {
 		ob_start();
 
+		$acquired_by_label = 'Tribe__Tickets__RSVP' === $item['provider'] ? __( 'Reserved by:', 'event-tickets' ) : __( 'Purchased by:', 'event-tickets' );
+
 		?>
 		<div class="event-tickets-ticket-name">
 			<?php echo esc_html( $item['ticket'] ); ?>
 		</div>
 		<div class="event-tickets-ticket-purchaser">
-			<?php esc_html_e( 'Purchased by:', 'event-tickets' ); ?> <?php echo esc_html( $item['purchaser_name'] ); ?> (<?php echo esc_html( $item['purchaser_email'] ); ?>)
+			<?php echo esc_html( $acquired_by_label ); ?> <?php echo esc_html( $item['purchaser_name'] ); ?> (<?php echo esc_html( $item['purchaser_email'] ); ?>)
 		</div>
 		<?php
 

@@ -4,16 +4,14 @@ $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 
 ob_start();
+$messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
+$messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 ?>
-<form action="" class="cart" method="post" enctype='multipart/form-data'>
+<form action="" class="cart <?php echo esc_attr( $messages_class ); ?>" method="post" enctype='multipart/form-data'>
 	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'event-tickets' ) ?></h2>
-	<?php
-	$messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
-
-	if ( $messages ) {
-		?>
-		<div class="tribe-rsvp-messages">
-			<?php
+	<div class="tribe-rsvp-messages">
+		<?php
+		if ( $messages ) {
 			foreach ( $messages as $message ) {
 				?>
 				<div class="tribe-rsvp-message tribe-rsvp-message-<?php echo esc_attr( $message->type ); ?>">
@@ -21,11 +19,12 @@ ob_start();
 				</div>
 				<?php
 			}//end foreach
-			?>
+		}//end if
+		?>
+		<div class="tribe-rsvp-message tribe-rsvp-message-error">
+			<?php echo esc_html_e( 'Please fill in the RSVP confirmation name and email fields.', 'event-tickets' ); ?>
 		</div>
-		<?php
-	}//end if
-	?>
+	</div>
 	<table width="100%" class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
 		foreach ( $tickets as $ticket ) {
