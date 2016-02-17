@@ -102,6 +102,11 @@ var tribe_tickets_ticket_form = {};
 				continue;
 			}
 
+			// Do not allow a sub-zero tickets remaining count
+			if ( remaining < 0 ) {
+				remaining = 0;
+			}
+
 			var ticket = tickets[ ticket_id ];
 
 			if ( 'global' === ticket.mode ) {
@@ -109,9 +114,21 @@ var tribe_tickets_ticket_form = {};
 			}
 
 			if ( 'capped' === ticket.mode ) {
-				var effective_cap = Math.min( remaining, ticket.cap );
-				var remaining_capped_stock = effective_cap - $( '[data-product-id=' + ticket_id + ']' ).find( 'input' ).val();
-				$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining_capped_stock );
+				// If x units of global stock have been requested, the effective cap is the actual cap less value x
+				var effective_cap       = Math.min( remaining, ticket.cap );
+				var requested_stock     = parseInt( $( '[data-product-id=' + ticket_id + ']' ).find( 'input' ).val(), 10 );
+				var remaining_under_cap = ticket.cap - requested_stock;
+
+				// As with all other ticket types, capped tickets should not have a sub-zero count either
+				if ( remaining_under_cap < 0 ) {
+					remaining_under_cap = 0;
+				}
+				// Nor can their count exceed the effective cap
+				else if ( remaining_under_cap > effective_cap ) {
+					remaining_under_cap = effective_cap;
+				}
+
+				$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining_under_cap );
 			}
 		}
 	};
