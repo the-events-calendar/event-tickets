@@ -2,7 +2,7 @@
 /*
 Plugin Name: Event Tickets
 Description: Event Tickets allows you to sell tickets to events
-Version: 4.0.4
+Version: 4.0.5
 Author: Modern Tribe, Inc.
 Author URI: http://m.tri.be/28
 License: GPLv2 or later
