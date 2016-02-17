@@ -204,6 +204,14 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$cancelled = $ticket->qty_cancelled();
 		$pending   = $ticket->qty_pending();
 
+		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode();
+		$stock_cap = $ticket->global_stock_cap();
+
+		// If ticket sales are capped, do not suggest that more than the cap amount are available
+		if ( $is_capped && $stock > $stock_cap ) {
+			$stock = $stock_cap;
+		}
+
 		// There may not be a fixed inventory - in which case just report the number actually sold so far
 		if ( empty( $stock ) && $stock !== 0 ) {
 			$message = sprintf( esc_html__( 'Sold %d', 'event-tickets' ), esc_html( $sold ) );
