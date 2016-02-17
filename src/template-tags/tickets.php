@@ -199,17 +199,25 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * @return string
 	 */
 	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {
-		$stock     = $ticket->stock();
-		$sold      = $ticket->qty_sold();
-		$cancelled = $ticket->qty_cancelled();
-		$pending   = $ticket->qty_pending();
+		$stock       = $ticket->stock();
+		$sold        = $ticket->qty_sold();
+		$cancelled   = $ticket->qty_cancelled();
+		$pending     = $ticket->qty_pending();
+		$woo_tickets = Tribe__Tickets_Plus__Commerce__WooCommerce__Main::get_instance();
 
+		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode();
 		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode();
 		$stock_cap = $ticket->global_stock_cap();
 
 		// If ticket sales are capped, do not suggest that more than the cap amount are available
 		if ( $is_capped && $stock > $stock_cap ) {
 			$stock = $stock_cap;
+		}
+
+		// If it is a global-stock ticket but the global stock level has not yet been set for the event
+		// then return something better than just '0' as the available stock
+		if ( $is_global && 0 === $stock && ! $woo_tickets->uses_global_stock( $ticket->get_event()->ID ) ) {
+			$stock = '<i>' . __( 'global inventory', 'event-tickets-plus' ) . '</i>';
 		}
 
 		// There may not be a fixed inventory - in which case just report the number actually sold so far
@@ -229,8 +237,8 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			) );
 
 			$message = sprintf(
-				esc_html__( 'Sold %1$d (units remaining: %2$d%3$s%4$s)', 'event-tickets' ),
-				esc_html( $sold ), (int) $stock, $cancelled_count, $pending_count
+				esc_html__( 'Sold %1$d (units remaining: %2$s%3$s%4$s)', 'event-tickets' ),
+				esc_html( $sold ), $stock, $cancelled_count, $pending_count
 			);
 		}
 
