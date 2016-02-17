@@ -178,6 +178,9 @@ Our Premium Plugins:
 * <a href="http://m.tri.be/18v2" target="_blank">The Events Calendar: Filter Bar</a>
 
 == Changelog ==
+= [4.0.5] unreleased =
+
+* Add - Add a loading graphic after clicking send email for the attendee's report
 
 = [4.0.4] 2015-12-23 =
 
