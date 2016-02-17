@@ -199,11 +199,12 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * @return string
 	 */
 	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {
-		$stock       = $ticket->stock();
-		$sold        = $ticket->qty_sold();
-		$cancelled   = $ticket->qty_cancelled();
-		$pending     = $ticket->qty_pending();
-		$woo_tickets = Tribe__Tickets_Plus__Commerce__WooCommerce__Main::get_instance();
+		$stock        = $ticket->stock();
+		$sold         = $ticket->qty_sold();
+		$cancelled    = $ticket->qty_cancelled();
+		$pending      = $ticket->qty_pending();
+		$event        = Tribe__Tickets__Tickets::find_matching_event( $ticket );
+		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 
 		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode();
 		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode();
@@ -216,7 +217,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		// If it is a global-stock ticket but the global stock level has not yet been set for the event
 		// then return something better than just '0' as the available stock
-		if ( $is_global && 0 === $stock && ! $woo_tickets->uses_global_stock( $ticket->get_event()->ID ) ) {
+		if ( $is_global && 0 === $stock && ! $global_stock->is_enabled() ) {
 			$stock = '<i>' . __( 'global inventory', 'event-tickets-plus' ) . '</i>';
 		}
 
