@@ -21,7 +21,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 			}//end foreach
 		}//end if
 		?>
-		<div class="tribe-rsvp-message tribe-rsvp-message-error">
+		<div class="tribe-rsvp-message tribe-rsvp-message-error tribe-rsvp-message-confirmation-error" style="display:none;">
 			<?php echo esc_html_e( 'Please fill in the RSVP confirmation name and email fields.', 'event-tickets' ); ?>
 		</div>
 	</div>

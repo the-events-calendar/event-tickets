@@ -49,6 +49,7 @@ var tribe_tickets_rsvp = {
 			var $form = $( this ).closest( 'form' );
 
 			$form.addClass( 'tribe-rsvp-message-display' );
+			$form.find( '.tribe-rsvp-message-confirmation-error' ).show();
 
 			$( 'html, body').animate({
 				scrollTop: $form.offset().top
