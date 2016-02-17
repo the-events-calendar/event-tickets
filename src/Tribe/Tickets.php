@@ -370,6 +370,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
 
+			$return = array( 'html' => $return );
+
+			/**
+			 * Filters the return data for ticket add
+			 *
+			 * @var array Array of data to return to the ajax call
+			 */
+			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
+
 			$this->ajax_ok( $return );
 		}
 
@@ -768,6 +777,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function global_stock_mode_selector( $current_option = '' ) {
 			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field'>\n";
+
+			// Default to using own stock unless the user explicitly specifies otherwise (important
+			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
+			if ( empty( $current_option ) ) {
+				$current_option = Tribe__Tickets__Global_Stock::OWN_STOCK_MODE;
+			}
 
 			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
 				$identifier = esc_html( $identifier );
