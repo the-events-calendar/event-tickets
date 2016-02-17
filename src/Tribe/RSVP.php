@@ -749,6 +749,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'product_id'      => $product_id,
 				'check_in'        => $checkin,
 				'provider'        => __CLASS__,
+				'provider_slug'   => 'rsvp',
 			);
 		}
 
