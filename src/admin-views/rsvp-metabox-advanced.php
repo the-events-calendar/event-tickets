@@ -1,5 +1,5 @@
 <tr class="<?php $this->tr_class(); ?>">
-	<td><label for="ticket_woo_stock"><?php esc_html_e( 'Stock:', 'event-tickets' ); ?></label></td>
+	<td><label for="ticket_rsvp_stock"><?php esc_html_e( 'Stock:', 'event-tickets' ); ?></label></td>
 	<td>
 		<input type='text' id='ticket_rsvp_stock' name='ticket_rsvp_stock' class="ticket_field" size='7' value='<?php echo esc_attr( $stock ); ?>'/>
 

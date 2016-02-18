@@ -9,7 +9,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.0.4';
+	const VERSION = '4.1beta1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -112,6 +112,9 @@ class Tribe__Tickets__Main {
 		$this->hooks();
 
 		$this->has_initialized = true;
+
+		// set up the RSVP object
+		$this->rsvp();
 	}
 
 	/**
@@ -226,7 +229,18 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
 		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
+		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
 
+	}
+
+	/**
+	 * Add an Anchor for users to be able to link to
+	 * The height is to make sure it links on all browsers
+	 *
+	 * @return void
+	 */
+	public function add_linking_archor() {
+		echo '<div id="buy-tickets" style="height: 1px;"></div>';
 	}
 
 	/**
@@ -319,9 +333,6 @@ class Tribe__Tickets__Main {
 	 * Hooked to the init action
 	 */
 	public function init() {
-		// set up the RSVP object
-		$this->rsvp();
-
 		// Provide continued support for legacy ticketing modules
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 
@@ -332,13 +343,7 @@ class Tribe__Tickets__Main {
 	 * rsvp ticket object accessor
 	 */
 	public function rsvp() {
-		static $rsvp;
-
-		if ( ! $rsvp ) {
-			$rsvp = Tribe__Tickets__RSVP::get_instance();
-		}
-
-		return $rsvp;
+		return Tribe__Tickets__RSVP::get_instance();
 	}
 
 	/**

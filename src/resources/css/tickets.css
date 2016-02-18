@@ -47,6 +47,10 @@ p.ticket_name {
 	display : inline;
 }
 
+.ticket_form p.description.detailed-description {
+	display : block;
+}
+
 .ticket_form h4.ticket_form_title_edit {
 	display : none;
 }

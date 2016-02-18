@@ -19,7 +19,8 @@ module.exports = {
 		files: {
 			'<%= pkg._resourcepath %>/js/rsvp.min.js' : '<%= pkg._resourcepath %>/js/rsvp.processed.js',
 			'<%= pkg._resourcepath %>/js/tickets.min.js' : '<%= pkg._resourcepath %>/js/tickets.processed.js',
-			'<%= pkg._resourcepath %>/js/tickets-attendees.min.js' : '<%= pkg._resourcepath %>/js/tickets-attendees.processed.js'
+			'<%= pkg._resourcepath %>/js/tickets-attendees.min.js' : '<%= pkg._resourcepath %>/js/tickets-attendees.processed.js',
+			'<%= pkg._resourcepath %>/js/frontend-ticket-form.min.js' : '<%= pkg._resourcepath %>/js/frontend-ticket-form.processed.js'
 		}
 	}
 

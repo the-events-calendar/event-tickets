@@ -23,6 +23,9 @@
 	$modules = Tribe__Tickets__Tickets::modules();
 
 	foreach ( $tickets as $ticket ) {
+		/**
+		 * @var Tribe__Tickets__Ticket_Object $ticket
+		 */
 		$controls     = array();
 		$provider     = $ticket->provider_class;
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
@@ -75,9 +78,17 @@
 		<?php endif; ?>
 		<tr>
 			<td>
-				<p class="ticket_name"><?php
-					printf( "<a href='#' attr-provider='%s' attr-ticket-id='%s' class='ticket_edit'>%s</a></span>", esc_attr( $ticket->provider_class ), esc_attr( $ticket->ID ), esc_html( $ticket->name ) );
-					?></p>
+				<p class="ticket_name">
+					<?php
+					printf(
+						"<a href='#' attr-provider='%s' attr-ticket-id='%s' class='ticket_edit'>%s</a>",
+						esc_attr( $ticket->provider_class ),
+						esc_attr( $ticket->ID ),
+						esc_html( $ticket->name )
+					);
+					do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket );
+					?>
+				</p>
 
 				<div class="ticket_controls">
 					<?php echo join( ' | ', $controls ); ?>
@@ -90,27 +101,7 @@
 			</td>
 
 			<td nowrap="nowrap">
-				<?php
-				$stock = $ticket->original_stock();
-				$sold  = $ticket->qty_sold();
-				$cancelled = $ticket->qty_cancelled();
-
-				if ( empty( $stock ) && $stock !== 0 ) : ?>
-					<?php echo sprintf( esc_html__( 'Sold %d', 'event-tickets' ), esc_html( $sold ) ); ?>
-				<?php else : ?>
-					<?php
-					$cancelled_entry = empty( $cancelled ) ? '' : esc_html(sprintf(
-						__( ' (%1$d %2$s)' ), $cancelled,
-						_n( 'unit cancelled', 'units cancelled', $cancelled, 'event-tickets' )
-					));
-					$line = sprintf(
-						esc_html__( 'Sold %1$d of %2$d%3$s', 'event-tickets' ), esc_html( $sold ),
-						esc_html( $stock ), $cancelled_entry
-					);
-
-					echo $line;
-					?>
-				<?php endif; ?>
+				<?php echo tribe_tickets_get_ticket_stock_message( $ticket ); ?>
 			</td>
 			<td width="40%" valign="top">
 				<?php echo esc_html( $ticket->description ); ?>

@@ -4,16 +4,14 @@ $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 
 ob_start();
+$messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
+$messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 ?>
-<form action="" class="cart" method="post" enctype='multipart/form-data'>
+<form action="" class="cart <?php echo esc_attr( $messages_class ); ?>" method="post" enctype='multipart/form-data'>
 	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'event-tickets' ) ?></h2>
-	<?php
-	$messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
-
-	if ( $messages ) {
-		?>
-		<div class="tribe-rsvp-messages">
-			<?php
+	<div class="tribe-rsvp-messages">
+		<?php
+		if ( $messages ) {
 			foreach ( $messages as $message ) {
 				?>
 				<div class="tribe-rsvp-message tribe-rsvp-message-<?php echo esc_attr( $message->type ); ?>">
@@ -21,11 +19,12 @@ ob_start();
 				</div>
 				<?php
 			}//end foreach
-			?>
+		}//end if
+		?>
+		<div class="tribe-rsvp-message tribe-rsvp-message-error tribe-rsvp-message-confirmation-error" style="display:none;">
+			<?php echo esc_html_e( 'Please fill in the RSVP confirmation name and email fields.', 'event-tickets' ); ?>
 		</div>
-		<?php
-	}//end if
-	?>
+	</div>
 	<table width="100%" class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
 		foreach ( $tickets as $ticket ) {
@@ -39,7 +38,7 @@ ob_start();
 
 				?>
 				<tr>
-					<td class="tribe-ticket">
+					<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
 						<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket->ID ); ?>">
 						<?php
 						if ( $ticket->is_in_stock() ) {
@@ -73,6 +72,14 @@ ob_start();
 					</td>
 				</tr>
 				<?php
+
+				/**
+				 * Allows injection of HTML after an RSVP ticket table row
+				 *
+				 * @var Event ID
+				 * @var Tribe__Tickets__Ticket_Object
+				 */
+				do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
 			}
 		}//end foreach
 
@@ -80,10 +87,19 @@ ob_start();
 			?>
 			<tr class="tribe-tickets-meta-row">
 				<td colspan="4" class="tribe-tickets-attendees">
+					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets-plus' ); ?></header>
+					<?php
+					/**
+					 * Allows injection of HTML before RSVP ticket confirmation fields
+					 *
+					 * @var array of Tribe__Tickets__Ticket_Object
+					 */
+					do_action( 'event_tickets_rsvp_before_confirmation_fields', $tickets );
+					?>
 					<table>
 						<tr class="tribe-tickets-full-name-row">
 							<td>
-								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name:', 'event-tickets' ); ?></label>
+								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
 								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name">
@@ -91,7 +107,7 @@ ob_start();
 						</tr>
 						<tr class="tribe-tickets-email-row">
 							<td>
-								<label for="tribe-tickets-email"><?php esc_html_e( 'Email:', 'event-tickets' ); ?></label>
+								<label for="tribe-tickets-email"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
 								<input type="email" name="attendee[email]" id="tribe-tickets-email">

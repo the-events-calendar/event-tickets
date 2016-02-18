@@ -51,7 +51,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$main = Tribe__Tickets__Main::instance();
 
 		foreach ( $main->post_types() as $post_type ) {
-			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ), 10, 2 );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
 		}
 
 		add_action( 'wp_ajax_tribe-ticket-email-attendee-list', array( $this, 'ajax_handler_attendee_mail_list' ) );
@@ -227,52 +228,50 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @return array
 	 */
-	private function _generate_filtered_attendees_list( $event_id ) {
+	private function generate_filtered_attendees_list( $event_id ) {
+		/**
+		 * Fire immediately prior to the generation of a filtered (exportable) attendee list.
+		 *
+		 * @param int $event_id
+		 */
+		do_action( 'tribe_events_tickets_generate_filtered_attendees_list', $event_id );
 
 		if ( empty( $this->attendees_page ) ) {
 			$this->attendees_page = 'tribe_events_page_tickets-attendees';
 		}
 
-		$columns = $this->attendees_table->get_columns();
+		$items   = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		$columns = get_column_headers( get_current_screen() );
 		$hidden  = get_hidden_columns( $this->attendees_page );
 
 		// We dont want to export html inputs or private data
 		$hidden[] = 'cb';
 		$hidden[] = 'provider';
 
-		// Get the data
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
-
-		// if there are attendees, hide any column that the attendee array doesn't contain
-		if ( count( $items ) ) {
-			$hidden = array_merge(
-				$hidden,
-				array_diff(
-					array_keys( $columns ),
-					array_keys( $items[0] )
-				)
-			);
-		}
-
-		// remove the hidden fields from the final list of columns
-		$hidden         = array_filter( $hidden );
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
-		$columns_names  = array_filter( array_values( $export_columns ) );
-		$export_columns = array_filter( array_keys( $export_columns ) );
 
-		$rows = array( $columns_names );
-		//And echo the data
-		foreach ( $items as $item ) {
+		// Add the export column headers as the first row
+		$rows = array(
+			array_values( $export_columns ),
+		);
+
+		foreach ( $items as $single_item ) {
+			// Fresh row!
 			$row = array();
-			foreach ( $item as $key => $data ) {
-				if ( in_array( $key, $export_columns ) ) {
-					if ( $key == 'check_in' && $data == 1 ) {
-						$data = esc_html__( 'Yes', 'event-tickets' );
-					}
-					$row[ $key ] = $data;
+
+			foreach ( $export_columns as $column_id => $column_name ) {
+				// If additional columns have been added to the attendee list table we can obtain the
+				// values by calling the table object's column_default() method - any other values
+				// should simply be passed back unmodified
+				$row[ $column_id ] = $this->attendees_table->column_default( $single_item, $column_id );
+
+				// Special handling for the check_in column
+				if ( 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
+					$row[ $column_id ] = esc_html__( 'Yes', 'event-tickets' );
 				}
 			}
+
 			$rows[] = array_values( $row );
 		}
 
@@ -280,11 +279,10 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 *    Checks if the user requested a CSV export from the attendees list.
-	 *  If so, generates the download and finishes the execution.
+	 * Checks if the user requested a CSV export from the attendees list.
+	 * If so, generates the download and finishes the execution.
 	 */
 	public function maybe_generate_attendees_csv() {
-
 		if ( empty( $_GET['attendees_csv'] ) || empty( $_GET['attendees_csv_nonce'] ) || empty( $_GET['event_id'] ) ) {
 			return;
 		}
@@ -293,8 +291,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-
-		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->_generate_filtered_attendees_list( $_GET['event_id'] ) );;
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->generate_filtered_attendees_list( $_GET['event_id'] ) );;
 		$event = get_post( $_GET['event_id'] );
 
 		if ( ! empty( $items ) ) {
@@ -382,7 +379,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
 
-		$items = $this->_generate_filtered_attendees_list( $_GET['event_id'] );
+		$items = $this->generate_filtered_attendees_list( $_GET['event_id'] );
 
 		$event = get_post( $_GET['event_id'] );
 
@@ -448,9 +445,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Includes the tickets metabox inside the Event edit screen
 	 *
-	 * @param $post_id
+	 * @param WP_Post $post
 	 */
-	public function do_meta_box( $post_id ) {
+	public function do_meta_box( $post ) {
 
 		$startMinuteOptions   = Tribe__View_Helpers::getMinuteOptions( null );
 		$endMinuteOptions     = Tribe__View_Helpers::getMinuteOptions( null );
@@ -459,7 +456,10 @@ class Tribe__Tickets__Tickets_Handler {
 		$startMeridianOptions = Tribe__View_Helpers::getMeridianOptions( null, true );
 		$endMeridianOptions   = Tribe__View_Helpers::getMeridianOptions( null );
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$show_global_stock = Tribe__Tickets__Tickets::global_stock_available();
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+		$global_stock = new Tribe__Tickets__Global_Stock( $post->ID );
+
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
@@ -505,10 +505,13 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Save or delete the image header for tickets on an event
 	 *
-	 * @param $post_id
-	 * @param $post
+	 * @param int $post_id
 	 */
-	public function save_image_header( $post_id, $post ) {
+	public function save_image_header( $post_id ) {
+		if ( ! ( isset($_POST[ 'tribe-tickets-post-settings' ])  && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+			return;
+		}
+
 		// don't do anything on autosave or auto-draft either or massupdates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
@@ -521,6 +524,29 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		return;
+	}
+
+	/**
+	 * Save the current global stock properties for this event.
+	 *
+	 * @param int $post_id
+	 */
+	public function save_global_stock( $post_id ) {
+		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+			return;
+		}
+
+		// Bail on autosaves/bulk updates
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		$enable = ! empty( $_POST[ 'tribe-tickets-enable-global-stock' ] );
+		$stock  = (int) @$_POST[ 'tribe-tickets-global-stock' ];
+
+		$post_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+		$post_global_stock->enable( $enable );
+		$post_global_stock->set_stock_level( $stock );
 	}
 
 	/**

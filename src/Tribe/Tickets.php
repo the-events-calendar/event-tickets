@@ -31,6 +31,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected static $active_modules = array();
 
 		/**
+		 * Indicates if the frontend ticket form script has already been enqueued (or not).
+		 *
+		 * @var bool
+		 */
+		protected static $frontend_script_enqueued = false;
+
+		/**
+		 * Collection of ticket objects for which we wish to make global stock data available
+		 * on the frontend.
+		 *
+		 * @var array
+		 */
+		protected static $frontend_ticket_data = array();
+
+		/**
 		 * Name of this class. Note that it refers to the child class.
 		 * @var string
 		 */
@@ -237,6 +252,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Indicates if the module/ticket provider supports a concept of global stock.
+		 *
+		 * For backward compatibility reasons this method has not been declared abstract but
+		 * implementaions are still expected to override it.
+		 *
+		 * @return bool
+		 */
+		public function supports_global_stock() {
+			return false;
+		}
+
+		/**
 		 * Returns instance of the child class (singleton)
 		 *
 		 * @static
@@ -347,6 +374,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 */
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
+
+			$return = array( 'html' => $return );
+
+			/**
+			 * Filters the return data for ticket add
+			 *
+			 * @var array Array of data to return to the ajax call
+			 */
+			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
 
 			$this->ajax_ok( $return );
 		}
@@ -632,6 +668,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns the total number of attendees for an event (regardless of provider).
+		 *
+		 * @param int $event_id
+		 *
+		 * @return int
+		 */
+		public static function get_event_attendees_count( $event_id ) {
+			$attendees = self::get_event_attendees( $event_id );
+			return count( $attendees );
+		}
+
+		/**
 		 * Returns all tickets for an event (all providers are queried for this information).
 		 *
 		 * @param $event_id
@@ -708,6 +756,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		// start Helpers
 
 		/**
+		 * Indicates if any of the currently available providers support global stock.
+		 *
+		 * @return bool
+		 */
+		public static function global_stock_available() {
+			foreach ( self::$active_modules as $class => $module ) {
+				$provider = call_user_func( array( $class, 'get_instance' ) );
+
+				if ( method_exists( $provider, 'supports_global_stock' ) && $provider->supports_global_stock() ) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		/**
 		 * Returns whether a class name is a valid active module/provider.
 		 *
 		 * @param $module
@@ -723,6 +788,106 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function tr_class() {
 			echo 'ticket_advanced ticket_advanced_' . $this->className;
+		}
+
+		/**
+		 * Generates a select element listing the available global stock mode options.
+		 *
+		 * @param string $current_option
+		 *
+		 * @return string
+		 */
+		protected function global_stock_mode_selector( $current_option = '' ) {
+			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field'>\n";
+
+			// Default to using own stock unless the user explicitly specifies otherwise (important
+			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
+			if ( empty( $current_option ) ) {
+				$current_option = Tribe__Tickets__Global_Stock::OWN_STOCK_MODE;
+			}
+
+			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
+				$identifier = esc_html( $identifier );
+				$name = esc_html( $name );
+				$selected = selected( $identifier === $current_option, true, false );
+				$output .= "\t<option value='$identifier' $selected> $name </option>\n";
+			}
+
+			return "$output</select>";
+		}
+
+		/**
+		 * Returns an array of standard global stock mode options that can be
+		 * reused by implementations.
+		 *
+		 * Format is: [ 'identifier' => 'Localized name', ... ]
+		 *
+		 * @return array
+		 */
+		protected function global_stock_mode_options() {
+			return array(
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Use global stock', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE => __( 'Use global stock but cap sales', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Independent (do not use global stock)', 'event-tickets' ),
+			);
+		}
+
+		/**
+		 * Tries to make data about global stock levels and global stock-enabled ticket objects
+		 * available to frontend scripts.
+		 *
+		 * @param array $tickets
+		 */
+		public static function add_frontend_stock_data( array $tickets ) {
+			// Add the frontend ticket form script as needed (we do this lazily since right now
+			// it's only required for certain combinations of event/ticket
+			if ( ! self::$frontend_script_enqueued ) {
+				$url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/frontend-ticket-form.js';
+				$url = Tribe__Template_Factory::getMinFile( $url, true );
+
+				wp_enqueue_script( 'tribe_tickets_frontend_tickets', $url, array( 'jquery' ), Tribe__Tickets__Main::VERSION, true );
+				add_action( 'wp_footer', array( __CLASS__, 'enqueue_frontend_stock_data' ), 1 );
+			}
+
+			self::$frontend_ticket_data += $tickets;
+		}
+
+		/**
+		 * Takes any global stock data and makes it available via a wp_localize_script() call.
+		 */
+		public static function enqueue_frontend_stock_data() {
+			$data = array(
+				'tickets'  => array(),
+				'events'   => array(),
+			);
+
+			foreach ( self::$frontend_ticket_data as $ticket ) {
+				/**
+				 * @var Tribe__Tickets__Ticket_Object $ticket
+				 */
+				$event_id = $ticket->get_event()->ID;
+				$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+				$stock_mode = $ticket->global_stock_mode();
+
+				$data[ 'tickets' ][ $ticket->ID ] = array(
+					'event_id' => $event_id,
+					'mode' => $stock_mode,
+				);
+
+				if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode ) {
+					$data[ 'tickets' ][ $ticket->ID ][ 'cap' ] = $ticket->global_stock_cap();
+				}
+
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+					$data[ 'tickets' ][ $ticket->ID ][ 'stock' ] = $ticket->stock();
+				}
+
+				$data[ 'events' ][ $event_id ] = array(
+					'stock' => $global_stock->get_stock_level()
+				);
+			}
+
+			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
 		}
 
 		/**
