@@ -72,7 +72,8 @@ jQuery( document ).ready( function( $ ) {
 
 	$( '.tribe-attendees-email' ).on({
 		'submit': function( event ) {
-			$( 'html' ).hide();
+			$( '.tribe-attendees-email' ).hide();
+			$( document.getElementById( 'tribe-loading' ) ).show();
 		}
 	});
 

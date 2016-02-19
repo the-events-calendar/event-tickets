@@ -183,9 +183,9 @@ Our Premium Plugins:
 
 * Tweak - Conditonally show attendees link on Event Listing at the WordPress Administration
 
-= [4.0.3] unreleased =
+= [4.0.5] 2016-02-17 =
 
-* Tweak - Added actions on RSVP attendee ticket generation (props to 75ninteen on GitHub for the pull request!)
+* Add - Add a loading graphic after clicking send email for the attendee's report
 
 = [4.0.4] 2015-12-23 =
 
