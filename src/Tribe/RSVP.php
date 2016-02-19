@@ -61,6 +61,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public $security_code = '_tribe_rsvp_security_code';
 
 	/**
+	 * Meta key that if this attendee wants to show on the attendee list
+	 *
+	 * @var string
+	 */
+	public $optout = '_tribe_rsvp_attendee_optout';
+
+	/**
 	 * Meta key that holds the full name of the tickets RSVP "buyer"
 	 *
 	 * @var string
@@ -253,6 +260,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_email = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
 		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
+		$attendee_optout = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$url = get_permalink( $event_id );
@@ -310,6 +318,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $event_id );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
+				update_post_meta( $attendee_id, $this->optout, (bool) $attendee_optout );
 				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
 				update_post_meta( $attendee_id, $this->email, $attendee_email );
 
@@ -401,6 +410,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'order_id'      => $order_id,
 				'ticket_id'     => $post->ID,
 				'security_code' => get_post_meta( $post->ID, $this->security_code, true ),
+				'optout'        => (bool) get_post_meta( $post->ID, $this->optout, true ),
 			);
 		}
 
@@ -697,6 +707,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *     order_status
 	 *     purchaser_name
 	 *     purchaser_email
+	 *     optout
 	 *     ticket
 	 *     attendee_id
 	 *     security
@@ -730,6 +741,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
 			$name       = get_post_meta( $attendee->ID, $this->full_name, true );
 			$email      = get_post_meta( $attendee->ID, $this->email, true );
+			$optout     = (bool) get_post_meta( $attendee->ID, $this->optout, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
@@ -743,6 +755,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'order_id'        => $attendee->ID,
 				'purchaser_name'  => $name,
 				'purchaser_email' => $email,
+				'optout'          => $optout,
 				'ticket'          => $product_title,
 				'attendee_id'     => $attendee->ID,
 				'security'        => $security,

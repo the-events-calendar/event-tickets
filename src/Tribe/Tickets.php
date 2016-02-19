@@ -85,6 +85,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected $pluginUrl;
 
 		/**
+		 * Constant with the Transient Key for Attendees Cache
+		 */
+		const ATTENDEES_CACHE = 'tribe_attendees';
+
+		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 * @abstract
@@ -636,10 +641,27 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function get_event_attendees( $event_id ) {
 			$attendees = array();
+			if ( ! is_admin() ) {
+				$post_transient = Tribe__Post_Transient::instance();
+
+				$attendees = $post_transient->get( $event_id, self::ATTENDEES_CACHE );
+				if ( ! $attendees ) {
+					$attendees = array();
+				}
+
+				if ( is_array( $attendees ) && count( $attendees ) > 0 ) {
+					return $attendees;
+				}
+			}
 
 			foreach ( self::$active_modules as $class => $module ) {
 				$obj       = call_user_func( array( $class, 'get_instance' ) );
 				$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
+			}
+
+			if ( ! is_admin() ) {
+				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+				$post_transient->set( $event_id, self::ATTENDEES_CACHE, $attendees, $expire );
 			}
 
 			return $attendees;
