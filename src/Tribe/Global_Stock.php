@@ -100,4 +100,22 @@ class Tribe__Tickets__Global_Stock {
 	public function get_stock_level() {
 		return (int) get_post_meta( $this->post_id, self::GLOBAL_STOCK_LEVEL, true );
 	}
+
+	/**
+	 * Returns a count of the number of global ticket sales for this event.
+	 *
+	 * @return int
+	 */
+	public function tickets_sold() {
+		$sales = 0;
+
+		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $this->post_id ) as $ticket ) {
+			/**
+			 * @var Tribe__Tickets__Ticket_Object $ticket
+			 */
+			$sales += (int) $ticket->qty_sold();
+		}
+
+		return $sales;
+	}
 }
