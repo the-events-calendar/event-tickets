@@ -82,7 +82,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 						<td>
 							<input type="number" name="tribe-tickets-global-stock" id="tribe-tickets-global-stock" value="<?php echo esc_attr( $global_stock->get_stock_level() ); ?>" />
 							<span class="tribe-tickets-global-sales">
-								<?php echo esc_html( sprintf( _n( '(%s sold)', '(%s sold)', 0, 'event-tickets' ), 0 ) ); ?>
+								<?php echo esc_html( sprintf( _n( '(%s sold)', '(%s sold)', $global_stock->tickets_sold(), 'event-tickets' ), $global_stock->tickets_sold() ) ); ?>
 							</span>
 						</td>
 					</tr>
