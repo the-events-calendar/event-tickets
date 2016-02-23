@@ -95,7 +95,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	/**
 	 * Fired to allow for the insertion of additional content into the ticket admin form before the tickets listing
 	 *
-	 * @var Post ID
+	 * @param Post ID
 	 */
 	do_action( 'tribe_events_tickets_metabox_pre', get_the_ID() ); ?>
 
