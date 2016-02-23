@@ -90,6 +90,15 @@ $modules = Tribe__Tickets__Tickets::modules();
 			</td>
 		</tr>
 	<?php endif; ?>
+
+	<?php
+	/**
+	 * Fired to allow for the insertion of additional content into the ticket admin form before the tickets listing
+	 *
+	 * @param Post ID
+	 */
+	do_action( 'tribe_events_tickets_metabox_pre', get_the_ID() ); ?>
+
 	<tr>
 		<td colspan="2" class="tribe_sectionheader ticket_list_container">
 
