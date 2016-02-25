@@ -177,10 +177,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @abstract
 		 *
 		 * @param $attendee_id
+		 * @param $qr true if from QR checkin process
 		 *
 		 * @return mixed
 		 */
-		abstract public function checkin( $attendee_id );
+		abstract public function checkin( $attendee_id, $qr );
 
 		/**
 		 * Mark an attendee as not checked in
