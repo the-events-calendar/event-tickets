@@ -703,12 +703,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Marks an attendee as checked in for an event
 	 *
 	 * @param $attendee_id
+	 * @param $qr
 	 *
 	 * @return bool
 	 */
 	public function checkin( $attendee_id, $qr = null ) {
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
-		if ( 'qr' != $qr ) {
+		if ( ! $qr ) {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 'qr' );
 		}
 		do_action( 'rsvp_checkin', $attendee_id );
