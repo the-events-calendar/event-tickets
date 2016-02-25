@@ -177,6 +177,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @abstract
 		 *
 		 * @param $attendee_id
+		 * @param $qr true if from QR checkin process
 		 *
 		 * @return mixed
 		 */

@@ -703,7 +703,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Marks an attendee as checked in for an event
 	 *
 	 * @param $attendee_id
-	 * @param $qr
+	 @param $qr true if from QR checkin process
 	 *
 	 * @return bool
 	 */
