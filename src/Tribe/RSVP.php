@@ -131,6 +131,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Registers all actions/filters
 	 */
 	public function hooks() {
+		add_action( 'wp_enqueue_scripts', array( $this, 'register_resources' ), 5 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
 		add_action( 'trashed_post', array( $this, 'maybe_redirect_to_attendees_report' ) );
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
@@ -140,7 +141,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Hooked to the init action
 	 */
 	public function init() {
-		$this->register_resources();
 		$this->register_types();
 		$this->generate_tickets();
 	}
