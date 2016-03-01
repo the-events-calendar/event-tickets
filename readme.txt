@@ -179,6 +179,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.0.6] 2016-02-17 =
+
+* Fix - Prevent notices to enqueue method when moving form hooks
+
 = [4.0.5] 2016-02-17 =
 
 * Add - Add a loading graphic after clicking send email for the attendee's report
