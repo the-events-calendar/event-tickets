@@ -179,7 +179,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.0.6] 2016-03-01 =
+= [4.0.6] 2016-03-02 =
 
 * Fix - Prevent notices to enqueue method when moving form hooks
 
