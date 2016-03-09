@@ -80,3 +80,9 @@ p.ticket_name {
 #event_tickets, .eventtable.ticket_list.eventForm {
 	table-layout : fixed;
 }
+
+/* Specific goal of this rule is to prevent the number input busting the ticket form layout under Twenty Fifteen */
+.tribe-theme-twentyfifteen .tribe-events-tickets input[type="number"] {
+	padding: 0.375em;
+	width: 100%;
+}
