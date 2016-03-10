@@ -114,8 +114,8 @@ class Tribe__Tickets__Global_Stock {
 			 * @var Tribe__Tickets__Ticket_Object $ticket
 			 */
 			switch ( $ticket->global_stock_mode() ) {
-				case Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE:
-				case Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE:
+				case self::CAPPED_STOCK_MODE:
+				case self::GLOBAL_STOCK_MODE:
 					$sales += (int) $ticket->qty_sold();
 				break;
 			}
