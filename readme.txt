@@ -189,6 +189,10 @@ Our Premium Plugins:
 * Fix - Fixed issue where some characters were not escaped appropriately for month and year formats
 * Fix - Resolved issue where the RSVP confirmation error message displayed when it wasn't supposed to
 
+= [4.0.6] 2016-03-02 =
+
+* Fix - Prevent notices to enqueue method when moving form hooks
+
 = [4.0.5] 2016-02-17 =
 
 * Add - Add a loading graphic after clicking send email for the attendee's report

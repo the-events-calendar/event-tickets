@@ -14,7 +14,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '3.12.4';
+	const MIN_TEC_VERSION = '4.0.7';
 
 	/**
 	 * Name of the provider
