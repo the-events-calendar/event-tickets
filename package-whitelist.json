@@ -1,0 +1,14 @@
+[
+  "event-tickets.php",
+  "src/**/*",
+  "common/tribe-autoload.php",
+  "common/tribe-common.php",
+  "common/readme.txt",
+  "common/src/**/*",
+  "common/lang/**/*",
+  "common/vendor/jquery/*.css",
+  "common/vendor/jquery/images/*.png",
+  "lang/**/*",
+  "license.txt",
+  "readme.txt"
+]
