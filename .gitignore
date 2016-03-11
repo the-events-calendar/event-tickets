@@ -1,13 +1,12 @@
 # /vendor/
 .DS_Store
 .idea
+node_modules
 
 # build files for js minification
 
 compiler.jar
 *.ps1
-
-dev/jshint-report.html
 
 codeception.yml
 tests/_bootstrap.php
