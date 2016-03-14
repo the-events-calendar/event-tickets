@@ -181,13 +181,13 @@ Our Premium Plugins:
 
 = [4.1] unreleased =
 
-* Feature - Implemented global stock per event allowing multiple tickets to pull from the same pool of available tickets on an event
+* Feature - Implemented global stock per event allowing multiple tickets to pull from the same pool of available tickets on an event (Heck yeah to all those who voted on this feature!)
 * Feature - Added filters for RSVP ticket generation: event_tickets_rsvp_tickets_created, event_tickets_rsvp_tickets_generated_for_product, and event_tickets_rsvp_tickets_generated (props to 75ninteen for this pull request!)
-* Tweak - Conditonally show attendees link on Event Listing at the WordPress Administration
+* Tweak - Conditionally show attendees link on Event listing in the WordPress administration
 * Tweak - Obfuscated license keys Events > Help > System Information
 * Tweak - Allowed the "same slug" notice to be dismissed and fix some text in that message
 * Fix - Fixed issue where some characters were not escaped appropriately for month and year formats
-* Fix - Resolved issue where the RSVP confirmation error message displayed when it wasn't supposed to
+* Fix - Resolved issue where the RSVP confirmation error message displayed when it shouldn't
 
 = [4.0.6] 2016-03-02 =
 
