@@ -534,6 +534,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						// trigger a change event on the provider radio input so the advanced fields can be re-initialized
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
+						$( 'input[name=ticket_provider]:radio' ).change();
 
 						// set the prices after the advanced fields have been added to the form
 						var $ticket_price = $tribe_tickets.find( '#ticket_price' );
