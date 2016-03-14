@@ -1,4 +1,10 @@
 <?php
+/**
+ * This template renders the RSVP ticket form
+ *
+ * @version 4.1
+ *
+ */
 
 $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
