@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-20 09:25:47+0000\n"
+"PO-Revision-Date: 2016-01-29 19:15:03+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -184,7 +184,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:30
 msgid "Please note that all hands-on support is provided via the forums. You can email or tweet at us… ​but we will probably point you back to the forums "
-msgstr ""
+msgstr "Let er op dat alle hands-on ondersteuning wordt geleverd via onze forums. Je kan ons e-mailen of tweeten... maar we zullen je zeer waarschijnlijk weer terugverwijzen naar de forums."
 
 #: common/src/admin-views/tribe-options-help.php:31
 msgid "Read more about our support policy"
@@ -192,15 +192,15 @@ msgstr "Lees meer over ons ondersteuningsbeleid"
 
 #: common/src/admin-views/tribe-options-help.php:26
 msgid "%s. There are very few issues we haven’t seen and it’s likely another user has already asked your question and gotten an answer from our support staff. While posting to the forums is open only to paid customers, they are open for anyone to search and review."
-msgstr ""
+msgstr "%s. Er zijn maar weinig problemen die we niet eerder gezien hebben, dus de kans is groot dat een andere gebruiker jouw vraag ook al heeft gesteld en al antwoord heeft gehad van ons ondersteuningsteam. Het plaatsen van nieuwe berichten in het forum is alleen mogelijk voor betalende gebruikers, maar het is voor iedereen vrij om te doorzoeken. "
 
 #: common/src/admin-views/tribe-options-help.php:26
 msgid "Search our support forum"
-msgstr ""
+msgstr "Zoek in ons supportforum"
 
 #: common/src/admin-views/tribe-options-help.php:24
 msgid "%s. All of the common (and not-so-common) answers to questions we see are here. It’s often the fastest path to finding an answer!"
-msgstr ""
+msgstr "%s. Alle veelvoorkomende (en niet-zoveel-voorkomende) antwoorden op vragen die we krijgen kan je hier vinden. Het is vaak de snelste manier om je antwoord te vinden!"
 
 #: common/src/admin-views/tribe-options-help.php:24
 msgid "Check our Knowledgebase"
@@ -208,15 +208,15 @@ msgstr "Kijk in onze Kennisbank"
 
 #: common/src/admin-views/tribe-options-help.php:25
 msgid "%s. Testing for an existing conflict is the best start for in-depth troubleshooting. We will often ask you to follow these steps when opening a new thread, so doing this ahead of time will be super helpful."
-msgstr ""
+msgstr "%s. Het testen of er een bestaand conflict is, is de beste start voor verdere troubleshooting. We zullen je in veel gevallen vragen deze stappen uit te voeren als je een nieuwe thread aanmaakt, dus als je deze stappen al van te voren uitvoert kunnen we je sneller helpen met het oplossen van je probleem."
 
 #: common/src/admin-views/tribe-options-help.php:25
 msgid "Test for a theme or plugin conflict"
-msgstr ""
+msgstr "Controleer of er sprake is van een thema- of pluginconflict"
 
 #: common/src/admin-views/tribe-options-help.php:15
 msgid "Our website’s %s is a great place to find tips and tricks for using and customizing our plugins."
-msgstr ""
+msgstr "De %s op onze website is een geweldige plek om tips en tricks te vinden voor het gebruik en aanpassen van onze plug-ins."
 
 #: common/src/admin-views/tribe-options-help.php:15
 msgid "Knowledgebase"
@@ -224,7 +224,7 @@ msgstr "Kennisbank"
 
 #: common/src/admin-views/tribe-options-help.php:16
 msgid "<strong>Want to dive deeper?</strong> Check out our %s for developers."
-msgstr ""
+msgstr "<strong>Wil je nog dieper in de materie duiken?</strong> Kijk dan eens naar onze %s voor ontwikkelaars."
 
 #: common/src/admin-views/tribe-options-help.php:16
 msgid "list of available functions"
@@ -240,7 +240,7 @@ msgstr ""
 
 #: common/src/Tribe/PUE/Checker.php:440
 msgid "Thanks for setting up a valid key, it will expire on %s"
-msgstr ""
+msgstr "Bedankt voor het instellen van een geldige licentiecode, het zal verlopen op %s"
 
 #: common/src/Tribe/PUE/Checker.php:448
 msgid "Hmmm... something's wrong with this validator. Please contact %ssupport%s."
@@ -248,15 +248,15 @@ msgstr "Hmmm, er gaat iets fout met de validiteitscontrole. Neem contact op met 
 
 #: common/src/Tribe/Validate.php:195
 msgid "%s must be a positive number or percent."
-msgstr ""
+msgstr "%s moet een positief nummer of een percentage zijn."
 
 #: common/src/admin-views/tribe-options-display.php:31
 msgid "Enter the format to use for displaying dates with the year. Used when displaying a date in a future year."
-msgstr ""
+msgstr "Voer het formaat in waarin je datums met het jaartal wilt laten zien. Wordt gebruikt bij de weergave van een datum in een toekomstig jaar."
 
 #: common/src/admin-views/tribe-options-general.php:10
 msgid "Thank you for using Event Tickets! All of us at Modern Tribe sincerely appreciate your support and we're excited to see you using our plugins. Check out our handy %1$sNew User Primer%2$s to get started."
-msgstr ""
+msgstr "Bedankt voor het gebruiken van Event Tickets! Iedereen bij Modern Tribe waardeert je ondersteuning en we zijn erg blij om te zien dat je onze plug-ins gebruikt. Kijk ook eens in onze handige %1$sKickstarter voor nieuwe gebruikers%2$s om van start te gaan."
 
 #: common/src/admin-views/tribe-options-general.php:15
 msgid "Optimize your site's event listings with %1$sThe Events Calendar%2$s, our free calendar plugin. Looking for additional functionality including recurring events, user-submission, advanced ticket sales and more? Check out our %3$spremium add-ons%4$s."
@@ -272,11 +272,11 @@ msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:52
 msgid "The Events Calendar is a carefully crafted, extensible plugin that lets you easily share your events."
-msgstr ""
+msgstr "Events Tickets is een zorgvuldig gemaakte en uitbreidbare plug-in die je in staat stelt om makkelijk je evenementen te delen."
 
 #: common/src/Tribe/Admin/Help_Page.php:68
 msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
-msgstr ""
+msgstr "Events Tickets is een zorgvuldig gemaakte en uitbreidbare plug-in die je in staat stelt om makkelijk tickets te verkopen voor je evenementen."
 
 #: common/src/Tribe/Admin/Help_Page.php:80
 msgid "Advanced Post Manager"

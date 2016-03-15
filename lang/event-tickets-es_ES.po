@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-02 18:12:07+0000\n"
+"PO-Revision-Date: 2016-03-11 22:36:31+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -760,7 +760,7 @@ msgstr "Maldivas"
 
 #: src/Tribe/RSVP.php:349
 msgid "Your tickets from %s"
-msgstr ""
+msgstr "Tus tickets de parte de %s"
 
 #: common/src/Tribe/View_Helpers.php:179
 msgid "Mali"
@@ -1193,7 +1193,7 @@ msgstr "Senegal"
 
 #: src/admin-views/rsvp-metabox-advanced.php:6
 msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
-msgstr ""
+msgstr "(# Total disponible para este categoría de boleto. Una vez vendidos, esta categoría está agotada)"
 
 #: common/src/Tribe/View_Helpers.php:235
 msgid "Serbia"
@@ -1201,7 +1201,7 @@ msgstr "Serbia"
 
 #: src/admin-views/rsvp-metabox-advanced.php:16
 msgid "Selling tickets for recurring events"
-msgstr ""
+msgstr "Vender tickets para eventos recurrentes"
 
 #: common/src/Tribe/View_Helpers.php:236
 msgid "Seychelles"
