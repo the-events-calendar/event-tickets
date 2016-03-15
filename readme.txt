@@ -188,9 +188,6 @@ Our Premium Plugins:
 * Tweak - Allowed the "same slug" notice to be dismissed and fix some text in that message
 * Fix - Fixed issue where some characters were not escaped appropriately for month and year formats
 * Fix - Resolved issue where the RSVP confirmation error message displayed when it shouldn't
-
-= [4.0.6] 2016-03-02 =
-
 * Fix - Prevent notices to enqueue method when moving form hooks
 
 = [4.0.5] 2016-02-17 =
