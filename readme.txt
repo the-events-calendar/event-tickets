@@ -179,7 +179,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1] unreleased =
+= [4.1] 2016-03-15 =
 
 * Feature - Implemented global stock per event allowing multiple tickets to pull from the same pool of available tickets on an event (Heck yeah to all those who voted on this feature!)
 * Feature - Added filters for RSVP ticket generation: event_tickets_rsvp_tickets_created, event_tickets_rsvp_tickets_generated_for_product, and event_tickets_rsvp_tickets_generated (props to 75ninteen for this pull request!)
