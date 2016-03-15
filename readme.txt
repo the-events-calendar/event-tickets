@@ -3,8 +3,8 @@
 Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
-Tested up to: 4.4
-Stable tag: 4.1beta1
+Tested up to: 4.4.2
+Stable tag: 4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -179,18 +179,15 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1] unreleased =
+= [4.1] 2016-03-15 =
 
-* Feature - Implemented global stock per event allowing multiple tickets to pull from the same pool of available tickets on an event
+* Feature - Implemented global stock per event allowing multiple tickets to pull from the same pool of available tickets on an event (Heck yeah to all those who voted on this feature!)
 * Feature - Added filters for RSVP ticket generation: event_tickets_rsvp_tickets_created, event_tickets_rsvp_tickets_generated_for_product, and event_tickets_rsvp_tickets_generated (props to 75ninteen for this pull request!)
-* Tweak - Conditonally show attendees link on Event Listing at the WordPress Administration
+* Tweak - Conditionally show attendees link on Event listing in the WordPress administration
 * Tweak - Obfuscated license keys Events > Help > System Information
 * Tweak - Allowed the "same slug" notice to be dismissed and fix some text in that message
 * Fix - Fixed issue where some characters were not escaped appropriately for month and year formats
-* Fix - Resolved issue where the RSVP confirmation error message displayed when it wasn't supposed to
-
-= [4.0.6] 2016-03-02 =
-
+* Fix - Resolved issue where the RSVP confirmation error message displayed when it shouldn't
 * Fix - Prevent notices to enqueue method when moving form hooks
 
 = [4.0.5] 2016-02-17 =

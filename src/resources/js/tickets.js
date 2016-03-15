@@ -171,7 +171,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				// Also reset each time the global stock mode selector is changed
 				$( '#ticket_global_stock' ).change( function() {
 					$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
-				})
+				});
 			},
 
 			'set-global-stock-fields.tribe': function() {
@@ -533,6 +533,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
 
 						// trigger a change event on the provider radio input so the advanced fields can be re-initialized
+						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 						$( 'input[name=ticket_provider]:radio' ).change();
 
 						// set the prices after the advanced fields have been added to the form
@@ -569,8 +570,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						if ( 'undefined' !== typeof response.data.purchase_limit && response.data.purchase_limit ) {
 							$( '#ticket_purchase_limit' ).val( response.data.purchase_limit );
 						}
-
-						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 
 						$tribe_tickets.find( '.bumpdown-trigger' ).bumpdown();
 						$tribe_tickets.find( '.bumpdown' ).hide();
