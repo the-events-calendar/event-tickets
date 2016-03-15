@@ -771,16 +771,33 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Marks an attendee as checked in for an event
 	 *
+	 * Because we must still support our legacy ticket plugins, we cannot change the abstract
+	 * checkin() method's signature. However, the QR checkin process needs to move forward
+	 * so we get around that problem by leveraging func_get_arg() to pass a second argument.
+	 *
+	 * It is hacky, but we'll aim to resolve this issue when we end-of-life our legacy ticket plugins
+	 * OR write around it in a future major release
+	 *
 	 * @param $attendee_id
-	 * @param $qr true if from QR checkin process
+	 * @param $qr true if from QR checkin process (NOTE: this is a param-less parameter for backward compatibility)
 	 *
 	 * @return bool
 	 */
-	public function checkin( $attendee_id, $qr = null ) {
+	public function checkin( $attendee_id ) {
+		$qr = null;
+
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
-		if ( ! $qr ) {
+
+		if ( func_num_args() > 1 && $qr = func_get_arg( 1 ) ) {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
+
+		/**
+		 * Fires a checkin action
+		 *
+		 * @var int $attendee_id
+		 * @var bool|null $qr
+		 */
 		do_action( 'rsvp_checkin', $attendee_id, $qr );
 
 		return true;
