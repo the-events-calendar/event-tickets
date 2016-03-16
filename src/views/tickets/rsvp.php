@@ -152,4 +152,8 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 $content = ob_get_clean();
 if ( $is_there_any_product ) {
 	echo $content;
+}else{
+	?>
+	<span class="tickets_nostock"><?php esc_html_e( 'There are no Tickets available for this event!', 'event-tickets' ); ?></span>
+	<?php
 }
