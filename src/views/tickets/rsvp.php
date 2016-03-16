@@ -86,6 +86,15 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 				 * @var Tribe__Tickets__Ticket_Object
 				 */
 				do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
+			} // end if		
+			elseif ( $ticket->date_is_earlier( time() ) ) { {
+				?>
+				<span class="tickets_nostock"><?php esc_html_e( 'Tickets are not yet on sale.', 'event-tickets' ); ?></span>
+				<?php
+			}else {
+				?>
+				<span class="tickets_nostock"><?php esc_html_e( 'Tickets are no longer on sale.', 'event-tickets' ); ?></span>
+				<?php
 			}
 		}//end foreach
 
