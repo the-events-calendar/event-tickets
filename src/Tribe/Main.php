@@ -231,6 +231,9 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
 
+		// CSV Import options
+		add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );
+
 	}
 
 	/**
