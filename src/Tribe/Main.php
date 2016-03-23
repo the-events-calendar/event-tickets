@@ -115,6 +115,8 @@ class Tribe__Tickets__Main {
 
 		// set up the RSVP object
 		$this->rsvp();
+
+		$this->attendees_csv_export();
 	}
 
 	/**
@@ -344,6 +346,27 @@ class Tribe__Tickets__Main {
 	 */
 	public function rsvp() {
 		return Tribe__Tickets__RSVP::get_instance();
+	}
+
+
+	/**
+	 * The Object for the Attendees CSV Exporting class
+	 *
+	 * @return Tribe__Tickets_Plus__Attendees_CSV_Export
+	 */
+	protected static $attendees_csv_export;
+
+	/**
+	 * Object accessor method for Attendees CSV Export
+	 *
+	 * @return Tribe__Tickets_Plus__Attendees_CSV_Export
+	 */
+	public function attendees_csv_export() {
+		if ( ! self::$attendees_csv_export ) {
+			self::$attendees_csv_export = Tribe__Tickets__Attendees_CSV_Export::hook();
+		}
+
+		return self::$attendees_csv_export;
 	}
 
 	/**
