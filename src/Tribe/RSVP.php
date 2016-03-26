@@ -749,7 +749,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					true ) . ' ' . __( '(deleted)', 'event-tickets' );
 
 			$attendee_data = array_merge(
-				$this->get_order_data( $order_id ),
+				$this->get_order_data( $attendee->ID ),
 				array(
 					'optout'          => $optout,
 					'ticket'          => $product_title,
