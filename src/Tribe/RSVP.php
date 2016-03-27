@@ -131,6 +131,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		parent::__construct();
 
 		add_action( 'init', array( $this, 'init' ) );
+
+		/**
+		 * Whenever we are dealing with Redirects we cannot do stuff on `init`
+		 * Use: `template_redirect`
+		 *
+		 * Was running into an issue of `get_permalink( $event_id )` returning
+		 * the wrong url because it was too early on the execution
+		 */
+		add_action( 'template_redirect', array( $this, 'generate_tickets' ) );
 	}
 
 	/**
@@ -148,7 +157,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function init() {
 		$this->register_types();
-		$this->generate_tickets();
 	}
 
 	/**
