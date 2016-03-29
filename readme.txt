@@ -179,7 +179,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1.1] TBD =
+= [4.1.1] 2016-03-30 =
 
 * Tweak - Add filters for generated attendee and order data; tribe_tickets_attendee_data and tribe_tickets_order_data, respectively
 * Tweak - Relocated the generation of tickets to the template_redirect action because init was too early for proper permalink fetching
