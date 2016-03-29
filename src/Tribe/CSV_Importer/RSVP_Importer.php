@@ -1,18 +1,41 @@
 <?php
 
 
+/**
+ * Class Tribe__Tickets__CSV_Importer__RSVP_Importer
+ */
 class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importer__File_Importer {
 
 	/**
-	 * @var Tribe__Events__Importer__File_Reader
+	 * @var array
 	 */
-	private $file_reader;
+	protected $required_fields = array( 'event_name', 'ticket_name' );
+
+	/**
+	 * @var array
+	 */
+	protected static $event_name_cache = array();
+
+	/**
+	 * @var array
+	 */
+	protected static $ticket_name_cache = array();
+
+	/**
+	 * @var Tribe__Tickets__RSVP
+	 */
+	protected $rsvp_tickets;
+
+	/**
+	 * @var bool|string
+	 */
+	protected $row_message = false;
 
 	/**
 	 * The class constructor proxy method.
 	 *
-	 * @param                                      $instance
-	 * @param Tribe__Events__Importer__File_Reader $file_reader
+	 * @param Tribe__Events__Importer__File_Importer|null $instance The default instance that would be used for the type.
+	 * @param Tribe__Events__Importer__File_Reader        $file_reader
 	 *
 	 * @return Tribe__Tickets__CSV_Importer__RSVP_Importer
 	 */
@@ -20,71 +43,197 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		return new self( $file_reader );
 	}
 
+	/**
+	 * Resets that class static caches
+	 */
+	public static function reset_cache() {
+		self::$event_name_cache  = array();
+		self::$ticket_name_cache = array();
+	}
+
+	/**
+	 * Tribe__Tickets__CSV_Importer__RSVP_Importer constructor.
+	 *
+	 * @param Tribe__Events__Importer__File_Reader                  $file_reader
+	 * @param Tribe__Events__Importer__Featured_Image_Uploader|null $featured_image_uploader
+	 * @param Tribe__Tickets__RSVP|null                             $rsvp_tickets
+	 */
+	public function __construct(
+		Tribe__Events__Importer__File_Reader $file_reader, Tribe__Events__Importer__Featured_Image_Uploader $featured_image_uploader = null, Tribe__Tickets__RSVP $rsvp_tickets = null
+	) {
+		parent::__construct( $file_reader, $featured_image_uploader );
+		$this->rsvp_tickets = ! empty( $rsvp_tickets ) ? $rsvp_tickets : Tribe__Tickets__RSVP::get_instance();
+	}
+
+	/**
+	 * @param array $record
+	 *
+	 * @return bool
+	 */
 	public function match_existing_post( array $record ) {
-		// try to match a ticket by event name and ticket name
-		$start_date = $this->get_event_start_date( $record );
-		$end_date   = $this->get_event_end_date( $record );
-		$all_day    = $this->get_boolean_value_by_key( $record, 'event_all_day' );
+		$event = $this->get_event_from( $record );
 
-		// Base query - only the meta query will be different
-		$query_args = array(
-			'post_type'      => Tribe__Events__Main::POSTTYPE,
-			'post_title'     => $this->get_value_by_key( $record, 'event_name' ),
-			'fields'         => 'ids',
-			'posts_per_page' => 1,
-		);
-
-		// When trying to find matches for all day events, the comparison should only be against the date
-		// component only since a) the time is irrelevant and b) the time may have been adjusted to match
-		// the eod cutoff setting
-		if ( Tribe__Date_Utils::is_all_day( $all_day ) ) {
-			$meta_query = array(
-				array(
-					'key'     => '_EventStartDate',
-					'value'   => $this->get_event_start_date( $record, true ),
-					'compare' => 'LIKE',
-				),
-				array(
-					'key'     => '_EventAllDay',
-					'value'   => 'yes',
-				),
-			);
-			// For regular, non-all day events, use the full date *and* time in the start date comparison
-		} else {
-			$meta_query = array(
-				array(
-					'key'   => '_EventStartDate',
-					'value' => $start_date,
-				),
-			);
+		if ( empty( $event ) ) {
+			return false;
 		}
 
-		// Optionally use the end date/time for matching, where available
-		if ( ! empty( $end_date ) && ! $all_day ) {
-			$meta_query[] = array(
-				'key'   => '_EventEndDate',
-				'value' => $end_date,
-			);
+		$ticket_name = $this->get_value_by_key( $record, 'ticket_name' );
+		$cache_key   = $ticket_name . '-' . $event->ID;
+
+		if ( isset( self::$ticket_name_cache[ $cache_key ] ) ) {
+			return self::$ticket_name_cache[ $cache_key ];
 		}
 
-		$query_args['meta_query'] = $meta_query;
-
-		add_filter( 'posts_search', array( $this, 'filter_query_for_title_search' ), 10, 2 );
-		$matches = get_posts( $query_args );
-		remove_filter( 'posts_search', array( $this, 'filter_query_for_title_search' ), 10, 2 );
-
-		if ( empty( $matches ) ) {
-			return 0;
+		$ticket_post = get_page_by_title( $ticket_name, OBJECT, $this->rsvp_tickets->ticket_object );
+		if ( empty( $ticket_post ) ) {
+			return false;
 		}
 
-		return reset( $matches );
+		$ticket = $this->rsvp_tickets->get_ticket( $event->ID, $ticket_post->ID );
+
+		$match = $ticket->get_event() == $event ? true : false;
+
+		self::$ticket_name_cache[ $cache_key ] = $match;
+
+		return $match;
 	}
 
-	protected function update_post( $post_id, array $record ) {
-		// TODO: Implement update_post() method.
+	/**
+	 * @param       $post_id
+	 * @param array $record
+	 */
+	public function update_post( $post_id, array $record ) {
+		// nothing is updated in existing tickets
 	}
 
-	protected function create_post( array $record ) {
-		// TODO: Implement create_post() method.
+	/**
+	 * @param array $record
+	 *
+	 * @return int|bool Either the new RSVP ticket post ID or `false` on failure.
+	 */
+	public function create_post( array $record ) {
+		$event = $this->get_event_from( $record );
+		$data  = $this->get_ticket_data_from( $record );
+
+		$ticket_id = $this->rsvp_tickets->ticket_add( $event->ID, $data );
+
+		$ticket_name = $this->get_value_by_key( $record, 'ticket_name' );
+		$cache_key   = $ticket_name . '-' . $event->ID;
+
+		self::$ticket_name_cache[ $cache_key ] = true;
+
+		return $ticket_id;
+	}
+
+	/**
+	 * @param array $record
+	 *
+	 * @return bool|WP_Post
+	 */
+	protected function get_event_from( array $record ) {
+		$event_name = $this->get_value_by_key( $record, 'event_name' );
+
+		if ( empty( $event_name ) ) {
+			return false;
+		}
+
+		if ( isset( self::$event_name_cache[ $event_name ] ) ) {
+			return self::$event_name_cache[ $event_name ];
+		}
+
+		// by title
+		$event = get_page_by_title( $event_name, OBJECT, Tribe__Events__Main::POSTTYPE );
+		if ( empty( $event ) ) {
+			// by slug
+			$event = get_page_by_path( $event_name, OBJECT, Tribe__Events__Main::POSTTYPE );
+		}
+		if ( empty( $event ) ) {
+			// by ID
+			$event = get_post( $event_name );
+		}
+
+		$event = ! empty( $event ) ? $event : false;
+
+		self::$event_name_cache[ $event_name ] = $event;
+
+		return $event;
+	}
+
+	/**
+	 * @param array $record
+	 *
+	 * @return array
+	 */
+	protected function get_ticket_data_from( array $record ) {
+		$data                       = array();
+		$data['ticket_name']        = $this->get_value_by_key( $record, 'ticket_name' );
+		$data['ticket_description'] = $this->get_value_by_key( $record, 'ticket_description' );
+		$data['ticket_start_date']  = $this->get_value_by_key( $record, 'ticket_start_sale_date' );
+		$data['ticket_end_date']    = $this->get_value_by_key( $record, 'ticket_end_sale_date' );
+
+
+		$ticket_start_sale_time = $this->get_value_by_key( $record, 'ticket_start_sale_time' );
+
+		if ( ! empty( $data['ticket_start_date'] ) && ! empty( $ticket_start_sale_time ) ) {
+			$start_date = new DateTime( $data['ticket_start_date'] . ' ' . $ticket_start_sale_time );
+
+			$data['ticket_start_meridian'] = $start_date->format( 'A' );
+			$data['ticket_start_hour']     = $start_date->format( 'h' );
+			$data['ticket_start_minute']   = $start_date->format( 'i' );
+		}
+
+		$ticket_end_sale_time = $this->get_value_by_key( $record, 'ticket_end_sale_time' );
+
+		if ( ! empty( $data['ticket_end_date'] ) && ! empty( $ticket_end_sale_time ) ) {
+			$end_date = new DateTime( $data['ticket_end_date'] . ' ' . $ticket_end_sale_time );
+
+			$data['ticket_end_meridian'] = $end_date->format( 'A' );
+			$data['ticket_end_hour']     = $end_date->format( 'h' );
+			$data['ticket_end_minute']   = $end_date->format( 'i' );
+		}
+
+		$data['ticket_rsvp_stock'] = $this->get_value_by_key( $record, 'ticket_stock' );
+
+		return $data;
+	}
+
+	/**
+	 * @param array $record
+	 *
+	 * @return bool
+	 */
+	public function is_valid_record( array $record ) {
+		$valid = parent::is_valid_record( $record );
+		if ( empty( $valid ) ) {
+			return false;
+		}
+
+		$event = $this->get_event_from( $record );
+
+		if ( empty( $event ) ) {
+			return false;
+		}
+
+		if ( function_exists( 'tribe_is_recurring_event' ) ) {
+			$is_recurring = tribe_is_recurring_event( $event->ID );
+
+			if ( $is_recurring ) {
+				$this->row_message = sprintf( esc_html__( 'Recurring event tickets are not supported, event %d.', 'event-tickets' ), $event->post_title );
+			}
+
+			return ! $is_recurring;
+		}
+		$this->row_message = false;
+
+		return true;
+	}
+
+	/**
+	 * @param $row
+	 *
+	 * @return string
+	 */
+	protected function get_skipped_row_message( $row ) {
+		return $this->row_message === false ? parent::get_skipped_row_message( $row ) : $this->row_message;
 	}
 }
