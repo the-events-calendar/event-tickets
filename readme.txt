@@ -179,6 +179,13 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.1.1] TBD =
+
+* Tweak - Add filters for generated attendee and order data; tribe_tickets_attendee_data and tribe_tickets_order_data, respectively
+* Tweak - Relocated the generation of tickets to the template_redirect action because init was too early for proper permalink fetching
+* Fix - Resolved issue where purchasing tickets was impossible if ticket stock was set to unlimited
+* Fix - Fixed issue where the customer name and customer email address had been removed from the attendee export CSV
+
 = [4.1] 2016-03-15 =
 
 * Feature - Implemented global stock per event allowing multiple tickets to pull from the same pool of available tickets on an event (Heck yeah to all those who voted on this feature!)
