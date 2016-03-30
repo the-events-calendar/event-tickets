@@ -183,8 +183,8 @@ Our Premium Plugins:
 
 * Tweak - Add filters for generated attendee and order data; tribe_tickets_attendee_data and tribe_tickets_order_data, respectively
 * Tweak - Relocated the generation of tickets to the template_redirect action because init was too early for proper permalink fetching
-* Fix - Resolved issue where purchasing tickets was impossible if ticket stock was set to unlimited
-* Fix - Fixed issue where the customer name and customer email address had been removed from the attendee export CSV
+* Fix - Resolved issue where purchasing tickets was impossible if ticket stock was set to unlimited (thanks to James for reporting this one)
+* Fix - Fixed issue where the customer name and customer email address had been removed from the attendee export CSV (nice find here by Joe in our forums)
 
 = [4.1] 2016-03-15 =
 
