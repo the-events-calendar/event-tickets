@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjesse
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.4.2
-Stable tag: 4.1
+Stable tag: 4.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -178,6 +178,13 @@ Our Premium Plugins:
 * <a href="http://m.tri.be/18v2" target="_blank">The Events Calendar: Filter Bar</a>
 
 == Changelog ==
+
+= [4.1.1] 2016-03-30 =
+
+* Tweak - Add filters for generated attendee and order data; tribe_tickets_attendee_data and tribe_tickets_order_data, respectively
+* Tweak - Relocated the generation of tickets to the template_redirect action because init was too early for proper permalink fetching
+* Fix - Resolved issue where purchasing tickets was impossible if ticket stock was set to unlimited (thanks to James for reporting this one)
+* Fix - Fixed issue where the customer name and customer email address had been removed from the attendee export CSV (nice find here by Joe in our forums)
 
 = [4.1] 2016-03-15 =
 

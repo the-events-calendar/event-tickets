@@ -251,6 +251,20 @@ class Tribe__Tickets__Tickets_Handler {
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 
+		// Add the Purchaser Information
+		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets-plus' );
+		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets-plus' );
+
+		/**
+		 * Used to modify what columns should be shown on the CSV export
+		 * The column name should be the Array Index and the Header is the array Value
+		 *
+		 * @var array Columns, associative array
+		 * @var array Items to be exported
+		 * @var int   Event ID
+		 */
+		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
+
 		// Add the export column headers as the first row
 		$rows = array(
 			array_values( $export_columns ),

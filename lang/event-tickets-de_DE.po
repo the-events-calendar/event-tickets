@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2016-01-04 16:39:46+0000\n"
+"PO-Revision-Date: 2016-03-19 17:48:29+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -120,7 +120,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:35
 msgid "The details of your calendar plugin and settings is often needed for you or our staff to help troubleshoot an issue. We may ask you to share this information if you ask for support. If you post in one of our premium forums, please copy and paste this information into the System Information field and it will help us help you faster!"
-msgstr ""
+msgstr "Die Details Ihrer Kalender-Plugin und Einstellungen werden oft für Sie oder unsere Mitarbeiter benötigt, um zu helfen, ein Problem zu beheben. Möglicherweise bitten wir Sie, uns diese Informationen mitzuteilen, wenn Sie um Unterstützung bitten. Wenn Sie in einem unserer Premium-Foren schreiben, kopieren und fügen Sie diese Informationen in das Systeminformationen Feld ein. Es wird uns helfen, Ihnen schneller Ihnen helfen!"
 
 #: src/Tribe/Main.php:141
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
@@ -184,7 +184,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:30
 msgid "Please note that all hands-on support is provided via the forums. You can email or tweet at us… ​but we will probably point you back to the forums "
-msgstr ""
+msgstr "Bitte beachten Sie, dass jegliche Hands-On Unterstützung über die Foren erfolgt. Sie können bei uns eine E-Mail senden oder tweeten ... aber wir werden Sie wahrscheinlich auf die Foren verweisen"
 
 #: common/src/admin-views/tribe-options-help.php:31
 msgid "Read more about our support policy"
@@ -192,7 +192,7 @@ msgstr "Lesen Sie mehr über unsere Supportbedingungen"
 
 #: common/src/admin-views/tribe-options-help.php:26
 msgid "%s. There are very few issues we haven’t seen and it’s likely another user has already asked your question and gotten an answer from our support staff. While posting to the forums is open only to paid customers, they are open for anyone to search and review."
-msgstr ""
+msgstr "%s. Es gibt sehr wenige Probleme, die wir nicht gesehen haben. Es ist wahrscheinlich, dass ein anderer Benutzer schon danach gefragt hat und eine Antwort von unserem Support-Mitarbeiter dazu bekommen hat. Während jeder das Forum durchsuchen kann, können nur zahlende Kunden, darin auch Fragen stellen."
 
 #: common/src/admin-views/tribe-options-help.php:26
 msgid "Search our support forum"
@@ -200,7 +200,7 @@ msgstr "Unser Support Forum durchsuchen"
 
 #: common/src/admin-views/tribe-options-help.php:24
 msgid "%s. All of the common (and not-so-common) answers to questions we see are here. It’s often the fastest path to finding an answer!"
-msgstr ""
+msgstr "%s. Alle gängigen (und nicht so häufigen) Antworten auf Fragen sehen wir häufig hier. Es ist oft der schnellste Weg, eine Antwort zu finden!"
 
 #: common/src/admin-views/tribe-options-help.php:24
 msgid "Check our Knowledgebase"
@@ -208,7 +208,7 @@ msgstr "In der Knowledgebase nachschauen"
 
 #: common/src/admin-views/tribe-options-help.php:25
 msgid "%s. Testing for an existing conflict is the best start for in-depth troubleshooting. We will often ask you to follow these steps when opening a new thread, so doing this ahead of time will be super helpful."
-msgstr ""
+msgstr "%s. Testen für einen bestehenden Konflikt (z.B. mit einem anderen Plugin oder Theme) ist der beste Start für eine eingehende Fehleranalyse. Wir bitten Sie oft diese Schritte zu befolgen, wenn Sie eine neue Anfrage stellen. Es wäre also sehr gut, wenn Sie dies schon vorab prüfen könnten."
 
 #: common/src/admin-views/tribe-options-help.php:25
 msgid "Test for a theme or plugin conflict"
@@ -216,7 +216,7 @@ msgstr "Auf einen Theme oder Plugin Konflikt prüfen"
 
 #: common/src/admin-views/tribe-options-help.php:15
 msgid "Our website’s %s is a great place to find tips and tricks for using and customizing our plugins."
-msgstr ""
+msgstr "Unsere Website' %s ist ein idealer Or, Tipps und Tricks für die Verwendung und Anpassung von unseren Plugins zu finden."
 
 #: common/src/admin-views/tribe-options-help.php:15
 msgid "Knowledgebase"
@@ -236,7 +236,7 @@ msgstr "Mehr Unterstützung erhalten"
 
 #: common/src/admin-views/tribe-options-help.php:20
 msgid "While the resources above help solve a majority of the issues we see, there are times you might be looking for extra support. If you need assistance using our plugins and would like us to take a look, please follow these steps:"
-msgstr ""
+msgstr "Während die Ressourcen oben helfen, die Mehrheit der Probleme zu lösen, gibt es Zeiten, in denen Sie möglicherweise zusätzliche Unterstützung benötigen. Wenn Sie Hilfe bei der Verwendung unserer Plugins benötigen und möchten, dass wir einen Blick darauf werfen, gehen Sie folgendermaßen vor:"
 
 #: common/src/Tribe/PUE/Checker.php:440
 msgid "Thanks for setting up a valid key, it will expire on %s"
@@ -244,7 +244,7 @@ msgstr "Danke für das Nutzen einen gültigen Lizenzschlüssels. Er wird am %s a
 
 #: common/src/Tribe/PUE/Checker.php:448
 msgid "Hmmm... something's wrong with this validator. Please contact %ssupport%s."
-msgstr ""
+msgstr "Hmm... irgendwas ist schiefgelaufen. Bitte kontaktieren Sie den %sSupport%s."
 
 #: common/src/Tribe/Validate.php:195
 msgid "%s must be a positive number or percent."
@@ -252,19 +252,19 @@ msgstr "%s muss eine positive Zahl oder ein Prozentwert sein."
 
 #: common/src/admin-views/tribe-options-display.php:31
 msgid "Enter the format to use for displaying dates with the year. Used when displaying a date in a future year."
-msgstr ""
+msgstr "Geben Sie das Format ein, wie ein Datum mit einem Jahr angezeigt werden soll. Wird verwendet wenn ein Datum in einem zukünftigen ihr angezeigt wird."
 
 #: common/src/admin-views/tribe-options-general.php:10
 msgid "Thank you for using Event Tickets! All of us at Modern Tribe sincerely appreciate your support and we're excited to see you using our plugins. Check out our handy %1$sNew User Primer%2$s to get started."
-msgstr ""
+msgstr "Herzlichen Dank, dass Sie Event Tickets nutzen! Wir bei Modern Tribe schätzen Ihre Unterstützung sehr und finden es toll, dass Sie unsere Plugins nutzen. Verwenden Sie unser %1$sNeue Nutzer Handbuch%2$s um direkt durchzustarten."
 
 #: common/src/admin-views/tribe-options-general.php:15
 msgid "Optimize your site's event listings with %1$sThe Events Calendar%2$s, our free calendar plugin. Looking for additional functionality including recurring events, user-submission, advanced ticket sales and more? Check out our %3$spremium add-ons%4$s."
-msgstr ""
+msgstr "Optimieren Sie Ihre Veranstaltungswebsite mit %1$sThe Events Calendar%2$s, unserem kostenlosen Kalender-Plugin. Suchen Sie zusätzliche Funktionalität einschließlich Serientermine, Übermittlung von Terminen durch Nutze, erweiterten Ticketverkauf und mehr? Schauen Sie sich unsere %3$sPremium-Add-ons%4$s an."
 
 #: common/src/admin-views/tribe-options-help.php:11
 msgid "Thanks you for using %s! All of us at Modern Tribe sincerely appreciate your support and we’re excited to see you using our plugins."
-msgstr ""
+msgstr "Herzlichen Dank, dass Sie %s nutzen! Wir bei Modern Tribe schätzen Ihre Unterstützung sehr und finden es toll, dass Sie unsere Plugins nutzen."
 
 #: common/src/admin-views/tribe-options-help.php:14
 msgid "Getting Support"
@@ -272,11 +272,11 @@ msgstr "Unterstützung erhalten"
 
 #: common/src/Tribe/Admin/Help_Page.php:52
 msgid "The Events Calendar is a carefully crafted, extensible plugin that lets you easily share your events."
-msgstr ""
+msgstr "The Events Calendar ist ein sorgfältig erstelltes, erweiterbares Plugin, mit dem Sie ganz einfach Tickets für Ihre Veranstaltungen verkaufen können."
 
 #: common/src/Tribe/Admin/Help_Page.php:68
 msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
-msgstr ""
+msgstr "Events Tickets ist ein sorgfältig erstelltes, erweiterbares Plugin, mit dem Sie ganz einfach  Tickets für Ihre Veranstaltungen verkaufen können."
 
 #: common/src/Tribe/Admin/Help_Page.php:80
 msgid "Advanced Post Manager"
@@ -284,7 +284,7 @@ msgstr "Advanced Post Manager"
 
 #: common/src/Tribe/Admin/Help_Page.php:84
 msgid "Turbo charge your posts admin for any custom post type with sortable filters and columns, and auto-registration of metaboxes."
-msgstr ""
+msgstr "Starten Sie den Turbo für Beiträge mit benutzerdefinierte Feldern,  sortierbaren Filtern und Spalten und die automatische Registrierung von Meta-Boxen."
 
 #: common/src/Tribe/Admin/Help_Page.php:159
 msgid " and "
@@ -574,7 +574,7 @@ msgstr "Japan"
 
 #: common/src/admin-views/tribe-options-licenses.php:18
 msgid "%1$s Using our plugins in a multisite network? %2$s Please note that your license key will be applied to the entire network, not just this site."
-msgstr ""
+msgstr "%1$s Nutzen Sie unser Plugin in einem Multisite Netzwerk?%2$s Bitte beachten Sie, dass der Lizenzschlüssel für das gesamte Netzwerk angewendet wird, nicht nur für diese Seite."
 
 #: common/src/Tribe/View_Helpers.php:156
 msgid "Jordan"
@@ -582,7 +582,7 @@ msgstr "Jordanien"
 
 #: common/src/admin-views/tribe-options-licenses.php:28
 msgid "Only license fields for %1$snetwork activated%2$s plugins will be listed on this screen. "
-msgstr ""
+msgstr "Nur Lizenz Felder für %1$s Netzwerk aktivierte %2$s Plugins werden auf diesem Bildschirm angezeigt."
 
 #: common/src/Tribe/View_Helpers.php:157
 msgid "Kazakhstan"
@@ -2310,7 +2310,7 @@ msgstr "Finnland"
 
 #: common/src/Tribe/Admin/Help_Page.php:183
 msgid "Events Calendar PRO"
-msgstr ""
+msgstr "Veranstaltungskalender PRO"
 
 #: common/src/Tribe/View_Helpers.php:120
 msgid "France"

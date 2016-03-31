@@ -131,6 +131,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		parent::__construct();
 
 		add_action( 'init', array( $this, 'init' ) );
+
+		/**
+		 * Whenever we are dealing with Redirects we cannot do stuff on `init`
+		 * Use: `template_redirect`
+		 *
+		 * Was running into an issue of `get_permalink( $event_id )` returning
+		 * the wrong url because it was too early on the execution
+		 */
+		add_action( 'template_redirect', array( $this, 'generate_tickets' ) );
 	}
 
 	/**
@@ -148,7 +157,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function init() {
 		$this->register_types();
-		$this->generate_tickets();
 	}
 
 	/**
@@ -738,8 +746,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
 			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
 			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
-			$name       = get_post_meta( $attendee->ID, $this->full_name, true );
-			$email      = get_post_meta( $attendee->ID, $this->email, true );
 			$optout     = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
 
 			if ( empty( $product_id ) ) {
@@ -750,23 +756,73 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product,
 					true ) . ' ' . __( '(deleted)', 'event-tickets' );
 
-			$attendees[] = array(
-				'order_id'        => $attendee->ID,
-				'purchaser_name'  => $name,
-				'purchaser_email' => $email,
-				'optout'          => $optout,
-				'ticket'          => $product_title,
-				'attendee_id'     => $attendee->ID,
-				'security'        => $security,
-				'product_id'      => $product_id,
-				'check_in'        => $checkin,
-				'provider'        => __CLASS__,
-				'provider_slug'   => 'rsvp',
+			$attendee_data = array_merge(
+				$this->get_order_data( $attendee->ID ),
+				array(
+					'optout'          => $optout,
+					'ticket'          => $product_title,
+					'attendee_id'     => $attendee->ID,
+					'security'        => $security,
+					'product_id'      => $product_id,
+					'check_in'        => $checkin,
+				)
 			);
+
+			/**
+			 * Allow users to filter the Attendee Data
+			 *
+			 * @var array An associative array with the Information of the Attendee
+			 * @var string What Provider is been used
+			 * @var WP_Post Attendee Object
+			 * @var int Event ID
+			 *
+			 */
+			$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'rsvp', $attendee, $event_id );
+
+			$attendees[] = $attendee_data;
 		}
 
 		return $attendees;
 	}
+
+	/**
+	 * Retreive only order related information
+	 * Important: On RSVP the order is the Attendee Object
+	 *
+	 *     order_id
+	 *     purchaser_name
+	 *     purchaser_email
+	 *     provider
+	 *     provider_slug
+	 *
+	 * @param int $order_id
+	 * @return array
+	 */
+	public function get_order_data( $order_id ) {
+		$name       = get_post_meta( $order_id, $this->full_name, true );
+		$email      = get_post_meta( $order_id, $this->email, true );
+
+		$data = array(
+			'order_id'        => $order_id,
+			'purchaser_name'  => $name,
+			'purchaser_email' => $email,
+			'provider'        => __CLASS__,
+			'provider_slug'   => 'rsvp',
+		);
+
+		/**
+		 * Allow users to filter the Order Data
+		 *
+		 * @var array An associative array with the Information of the Order
+		 * @var string What Provider is been used
+		 * @var int Order ID
+		 *
+		 */
+		$data = apply_filters( 'tribe_tickets_order_data', $data, 'rsvp', $order_id );
+
+		return $data;
+	}
+
 
 	/**
 	 * Marks an attendee as checked in for an event
