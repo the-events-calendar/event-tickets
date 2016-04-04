@@ -179,6 +179,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2] TBD =
+
+* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files [36246]
+
 = [4.1] 2016-03-15 =
 
 * Feature - Implemented global stock per event allowing multiple tickets to pull from the same pool of available tickets on an event (Heck yeah to all those who voted on this feature!)
