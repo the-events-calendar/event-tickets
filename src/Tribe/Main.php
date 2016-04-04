@@ -107,7 +107,7 @@ class Tribe__Tickets__Main {
 		// initialize the common libraries
 		$this->common();
 
-		load_plugin_textdomain( 'event-tickets', false, $this->plugin_dir . 'lang/' );
+		Tribe__Main::instance()->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
 
