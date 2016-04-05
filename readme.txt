@@ -179,6 +179,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2] TBD =
+
+* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files [36246]
+
 = [4.1.1] 2016-03-30 =
 
 * Tweak - Add filters for generated attendee and order data; tribe_tickets_attendee_data and tribe_tickets_order_data, respectively
