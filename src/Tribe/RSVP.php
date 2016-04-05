@@ -172,7 +172,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// apply filters
 		$stylesheet_url = apply_filters( 'tribe_tickets_rsvp_stylesheet_url', $stylesheet_url );
-		do_action( 'debug_robot', '$stylesheet_url :: ' . print_r( $stylesheet_url, TRUE ) );
 
 		wp_register_style(
 			'event-tickets-rsvp',
