@@ -182,6 +182,7 @@ Our Premium Plugins:
 = [4.2] TBD =
 
 * Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files [36246]
+* Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (props to masteradhoc on GitHub for this change) [45467]
 
 = [4.1.1] 2016-03-30 =
 
