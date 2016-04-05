@@ -218,6 +218,31 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			return ( empty( $start_date ) || $timestamp > $start_date ) && ( empty( $end_date ) || $timestamp < $end_date );
 		}
 
+	        /**
+	         * Determines if the given date is smaller than the ticket's start date
+	         *
+	         * @param string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
+	         *
+	         * @return boolean Whether or not the provided date/time is smaller than the ticket's start date
+	         */
+	        public function date_is_earlier( $datetime ) {
+	            if ( is_numeric( $datetime ) ) {
+	                $timestamp = $datetime;
+	            } else {
+	                $timestamp = strtotime( $datetime );
+	            }
+	            $start_date = null;
+	            if ( ! empty( $this->start_date ) ) {
+	                $start_date = strtotime( $this->start_date );
+	            }
+	            
+	            if ( strtotime( $timestamp ) < $start_date ) { // $date occurs in the future
+	                return 1;
+	            } else { // $date occurs now or in the past
+	                return 0;
+	            }
+	        }
+
 		/**
 		 * Determines if there is any stock for purchasing
 		 *
