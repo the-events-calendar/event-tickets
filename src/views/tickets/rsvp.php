@@ -12,6 +12,7 @@ $is_there_any_product_to_sell = false;
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
+$now = current_time( 'timestamp' );
 ?>
 <form action="" class="cart <?php echo esc_attr( $messages_class ); ?>" method="post" enctype='multipart/form-data'>
 	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'event-tickets' ) ?></h2>
@@ -39,7 +40,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 				continue;
 			}
 
-			if ( $ticket->date_in_range( time() ) ) {
+			if ( $ticket->date_in_range( $now ) ) {
 				$is_there_any_product = true;
 
 				?>
@@ -86,7 +87,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 				 * @var Tribe__Tickets__Ticket_Object
 				 */
 				do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
-			
+
 			}
 		}//end foreach
 
@@ -144,16 +145,17 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 $content = ob_get_clean();
 if ( $is_there_any_product ) {
 	echo $content;
-}elseif ( $ticket->date_is_earlier( time() ) ) {
+} else {
+	$unavailability_message = $this->get_tickets_unavailable_message( $tickets );
+
+	// if there isn't an unavailability message, bail
+	if ( ! $unavailability_message ) {
+		return;
+	}
+
 	?>
-	<span class="tickets_nostock"><?php esc_html_e( 'Tickets are not yet on sale.', 'event-tickets' ); ?></span>
-	<?php
-}elseif ( ! $ticket->date_is_earlier( time() ) ) {
-	?>
-	<span class="tickets_nostock"><?php esc_html_e( 'Tickets are no longer on sale.', 'event-tickets' ); ?></span>
-	<?php
-}else{
-	?>
-	<span class="tickets_nostock"><?php esc_html_e( 'There are no Tickets available for this event!', 'event-tickets' ); ?></span>
+	<div class="tickets-unavailable">
+		<?php echo esc_html( $unavailability_message ); ?>
+	</div>
 	<?php
 }

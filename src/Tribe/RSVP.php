@@ -130,6 +130,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		parent::__construct();
 
+		$this->hooks();
+
 		add_action( 'init', array( $this, 'init' ) );
 
 		/**
