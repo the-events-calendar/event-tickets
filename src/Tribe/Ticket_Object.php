@@ -309,6 +309,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$slug = 'availability-past';
 			}
 
+			/**
+			 * Filters the availability slug
+			 *
+			 * @var string Slug
+			 * @var string Datetime string
+			 */
+			$slug = apply_filters( 'event_tickets_availability_slug', $slug, $datetime );
+
 			return $slug;
 		}
 
