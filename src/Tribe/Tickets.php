@@ -879,7 +879,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$data[ 'tickets' ][ $ticket->ID ][ 'cap' ] = $ticket->global_stock_cap();
 				}
 
-				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+				if (
+					Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
+					&& $ticket->managing_stock()
+				) {
 					$data[ 'tickets' ][ $ticket->ID ][ 'stock' ] = $ticket->stock();
 				}
 
@@ -1190,6 +1193,98 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return (string) $attendee_event_key;
 		}
 
+		/**
+		 * Returns an availability slug based on all tickets in the provided collection
+		 *
+		 * The availability slug is used for CSS class names and filter helper strings
+		 *
+		 * @since 4.2
+		 *
+		 * @param array $tickets Collection of tickets
+		 * @param string $datetime Datetime string
+		 *
+		 * @return string
+		 */
+		public function get_availability_slug_by_collection( $tickets, $datetime = null ) {
+			if ( ! $tickets ) {
+				return;
+			}
+
+			if ( is_numeric( $datetime ) ) {
+				$timestamp = $datetime;
+			} elseif ( $datetime ) {
+				$timestamp = strtotime( $datetime );
+			} else {
+				$timestamp = current_time( 'timestamp' );
+			}
+
+			$collection_availability_slug = 'available';
+			$tickets_available = false;
+			$slugs = array();
+
+			foreach ( $tickets as $ticket ) {
+				$availability_slug = $ticket->availability_slug( $timestamp );
+
+				// if any ticket is available for this event, consider the availability slug as 'available'
+				if ( 'available' === $availability_slug ) {
+					// reset the collected slugs to "available" only
+					$slugs = array( 'available' );
+					break;
+				}
+
+				// track unique availability slugs
+				if ( ! in_array( $availability_slug, $slugs ) ) {
+					$slugs[] = $availability_slug;
+				}
+			}
+
+			if ( 1 === count( $slugs ) ) {
+				$collection_availability_slug = $slugs[0];
+			} else {
+				$collection_availability_slug = 'availability-mixed';
+			}
+
+			/**
+			 * Filters the availability slug for a collection of tickets
+			 *
+			 * @var string Availability slug
+			 * @var array Collection of tickets
+			 * @var string Datetime string
+			 */
+			return apply_filters( 'event_tickets_availability_slug_by_collection', $collection_availability_slug, $tickets, $datetime );
+		}
+
+		/**
+		 * Returns a tickets unavailable message based on the availability slug of a collection of tickets
+		 *
+		 * @since 4.2
+		 *
+		 * @param array $tickets Collection of tickets
+		 *
+		 * @return string
+		 */
+		public function get_tickets_unavailable_message( $tickets ) {
+			$availability_slug = $this->get_availability_slug_by_collection( $tickets );
+			$message = null;
+
+			if ( 'availability-future' === $availability_slug ) {
+				$message = __( 'Tickets are not yet available.', 'event-tickets' );
+			} elseif ( 'availability-past' === $availability_slug ) {
+				$message = __( 'Tickets are no longer available.', 'event-tickets' );
+			} elseif ( 'availability-mixed' === $availability_slug ) {
+				$message = __( 'There are no tickets available at this time.', 'event-tickets' );
+			}
+
+			/**
+			 * Filters the unavailability message for a ticket collection
+			 *
+			 * @var string Unavailability message
+			 * @var array Collection of tickets
+			 */
+			$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
+
+			return $message;
+		}
 		// end Helpers
 
 		public function front_end_tickets_form_in_content( $content ) {

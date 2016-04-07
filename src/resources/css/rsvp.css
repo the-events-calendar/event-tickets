@@ -55,7 +55,10 @@ table.tribe-events-tickets td {
 	border-color: #c00;
 }
 
-
 .tribe-ticket-quantity {
 	width: 100%;
+}
+
+.tickets-unavailable {
+	font-style: italic;
 }
