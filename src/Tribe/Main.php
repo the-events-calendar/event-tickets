@@ -231,6 +231,9 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
 
+		// hook to oembeds
+		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
+		add_action( 'embed_head', array( $this, 'embed_head' ) );
 	}
 
 	/**
@@ -278,7 +281,6 @@ class Tribe__Tickets__Main {
 		$help->add_section_content( 'feature-box', sprintf( __( 'We are committed to helping you sell tickets for your event. Check out our handy %s to get started.', 'event-tickets' ), $link ), 20 );
 	}
 
-
 	/**
 	 * Append the text about Event Tickets to the Extra Help section on the Help page
 	 *
@@ -323,7 +325,7 @@ class Tribe__Tickets__Main {
 		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = array(
 			self::VERSION,
 			$this->plugin_path . 'src/views/tickets',
-			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets'
+			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
 		);
 
 		return $plugins;
@@ -416,5 +418,76 @@ class Tribe__Tickets__Main {
 	public function inject_post_types( $post_types ) {
 		$post_types = array_merge( $post_types, $this->post_types() );
 		return $post_types;
+	}
+
+	/**
+	 * Injects a buy/RSVP button into oembeds for events when necessary
+	 */
+	public function inject_buy_button_into_oembed() {
+		$event_id = get_the_ID();
+
+		if ( ! tribe_events_has_tickets( $event_id ) ) {
+			return;
+		}
+
+		$tickets      = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		$has_non_rsvp = false;
+		$available    = false;
+		$now          = current_time( 'timestamp' );
+
+		foreach ( $tickets as $ticket ) {
+			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+				$has_non_rsvp = true;
+			}
+
+			if (
+				$ticket->date_in_range( $now )
+				&& $ticket->is_in_stock()
+			) {
+				$available = true;
+			}
+		}
+
+		// if there aren't any tickets available, bail
+		if ( ! $available ) {
+			return;
+		}
+
+		$button_text = $has_non_rsvp ? __( 'Buy', 'event-tickets' ) : __( 'RSVP', 'event-tickets' );
+		/**
+		 * Filters the text that appears in the buy/rsvp button on event oembeds
+		 *
+		 * @var string The button text
+		 * @var int Event ID
+		 */
+		$button_text = apply_filters( 'event_tickets_embed_buy_button_text', $button_text, $event_id );
+
+		ob_start();
+		?>
+		<a class="tribe-event-buy" href="<?php echo esc_url( tribe_get_event_link() ); ?>" title="<?php the_title_attribute() ?>" rel="bookmark"><?php echo esc_html( $button_text ); ?></a>
+		<?php
+		$buy_button = ob_get_clean();
+
+		/**
+		 * Filters the buy button that appears on event oembeds
+		 *
+		 * @var string The button markup
+		 * @var int Event ID
+		 */
+		echo apply_filters( 'event_tickets_embed_buy_button', $buy_button, $event_id );
+	}
+
+	/**
+	 * Adds content to the embed head tag
+	 *
+	 * The embed header DOES NOT have wp_head() executed inside of it. Instead, any scripts/styles
+	 * are explicitly output
+	 */
+	public function embed_head() {
+		$css_path = Tribe__Template_Factory::getMinFile( $this->plugin_url . 'src/resources/css/tickets-embed.css', true );
+		$css_path = add_query_arg( 'ver', self::VERSION, $css_path );
+		?>
+		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
+		<?php
 	}
 }
