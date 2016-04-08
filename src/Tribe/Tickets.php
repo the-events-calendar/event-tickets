@@ -320,12 +320,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post = get_post( $post );
 			}
 
-			$cap = "edit_{$post->post_type}";
-			if ( 'post' === $post->post_type || 'page' === $post->post_type ) {
-				$cap .= 's';
-			}
-
-			return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( $cap );
+			return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
 		}
 
 		/* AJAX Handlers */
