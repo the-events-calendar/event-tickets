@@ -55,7 +55,6 @@ class Tribe__Tickets__Tickets_Handler {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
 		}
 
-		add_action( 'wp_ajax_tribe-ticket-email-attendee-list', array( $this, 'ajax_handler_attendee_mail_list' ) );
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
 
