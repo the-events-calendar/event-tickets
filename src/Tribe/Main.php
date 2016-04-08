@@ -474,9 +474,7 @@ class Tribe__Tickets__Main {
 		 * @var string The button markup
 		 * @var int Event ID
 		 */
-		$buy_button = apply_filters( 'event_tickets_embed_buy_button', $buy_button, $event_id );
-
-		echo $buy_button;
+		echo apply_filters( 'event_tickets_embed_buy_button', $buy_button, $event_id );
 	}
 
 	/**
