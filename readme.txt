@@ -179,6 +179,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.1.2] unreleased =
+
+* Fix - Remove a notice happening on attendees list because of non-existent email method on a Hook
+
 = [4.1.1] 2016-03-30 =
 
 * Tweak - Add filters for generated attendee and order data; tribe_tickets_attendee_data and tribe_tickets_order_data, respectively
