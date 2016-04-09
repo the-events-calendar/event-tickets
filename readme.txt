@@ -181,7 +181,7 @@ Our Premium Plugins:
 
 = [4.1.2] unreleased =
 
-* Fix - Remove a notice happening on attendees list because of non-existent email method on a Hook
+* Fix - Removed a notice on attendees list when a non-existent email method is on a hook
 
 = [4.1.1] 2016-03-30 =
 
