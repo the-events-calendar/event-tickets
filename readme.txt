@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjesse
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.4.2
-Stable tag: 4.1.1
+Stable tag: 4.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,6 +183,10 @@ Our Premium Plugins:
 
 * Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files [36246]
 * Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (props to masteradhoc on GitHub for this change) [45467]
+
+= [4.1.2] 2016-04-11 =
+
+* Fix - Removed a notice on attendees list when a non-existent email method is on a hook
 
 = [4.1.1] 2016-03-30 =
 
