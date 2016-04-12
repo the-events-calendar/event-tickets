@@ -1,0 +1,4 @@
+Event Name,Ticket Name,Ticket Description,Start Sale Date,Start Sale Time,End Sale Date,End Sale Time,Stock
+Some Event,RSVP Ticket 1,The first RSVP Ticket Entry,"May 11, 2016",9:00 AM,"May 19, 2016",8:00 PM,100
+Some Event,RSVP Ticket 2,The second RSVP Ticket Entry,"June 12, 2016",10:00 AM,"June 20, 2016",8:00 PM,10
+Some Event,RSVP Ticket 3,The third RSVP Ticket Entry,"July 13, 2016",11:30 AM,"July 21, 2016",8:00 PM,100

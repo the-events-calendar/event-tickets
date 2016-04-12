@@ -73,6 +73,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $pluginName;
 
 		/**
+		 * The name of the post type representing a ticket.
+		 * @var string
+		 */
+		public $ticket_object = '';
+
+		/**
 		 * Path of the child class
 		 * @var
 		 */
@@ -83,7 +89,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var
 		 */
 		protected $pluginUrl;
-
+		
 		/**
 		 * Constant with the Transient Key for Attendees Cache
 		 */

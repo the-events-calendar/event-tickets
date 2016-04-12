@@ -231,9 +231,16 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
 
-		// hook to oembeds
+		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
+
+		// CSV Import options
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );
+			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
+			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
+		}
 	}
 
 	/**

@@ -445,7 +445,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 * @param array                                 $raw_data
 	 *
-	 * @return bool
+	 * @return int The updated/created ticket post ID
 	 */
 	public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
 		// assume we are updating until we find out otherwise
@@ -525,7 +525,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
 
-		return true;
+		return $ticket->ID;
 	}
 
 	/**
