@@ -77,7 +77,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $ticket_object = '';
-		
+
 		/**
 		 * Path of the child class
 		 * @var
