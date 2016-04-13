@@ -339,8 +339,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				 * @var $order_id RSVP order ID
 				 * @var $product_id RSVP product ID
 				 */
-				do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $event_id, $order_id );
-				
+				do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $event_id, $order_id );				
+
 				/**
 				 * Action fired when an RSVP attendee ticket is created
 				 *
@@ -421,7 +421,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$product = get_post( get_post_meta( $post->ID, self::ATTENDEE_PRODUCT_KEY, true ) );
 			$ticket_unique_id = get_post_meta( $post->ID, '_unique_id', true );
 			$ticket_unique_id = $ticket_unique_id === '' ? $post->ID : $ticket_unique_id;
-			
+
 			$attendees[] = array(
 				'event_id'      => get_post_meta( $post->ID, self::ATTENDEE_EVENT_KEY, true ),
 				'product_id'    => $product->ID,
