@@ -339,7 +339,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				 * @var $order_id RSVP order ID
 				 * @var $product_id RSVP product ID
 				 */
-				do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $event_id, $order_id );				
+				do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $event_id, $order_id );
 
 				/**
 				 * Action fired when an RSVP attendee ticket is created
