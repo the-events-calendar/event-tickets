@@ -244,6 +244,14 @@ class Tribe__Tickets__Main {
 		}
 	}
 
+	/**
+	 * Used to add our beloved tickets to the JSON-LD markup
+	 *
+	 * @param  array   $data The actual json-ld variable
+	 * @param  array   $args Arguments used to create the Markup
+	 * @param  WP_Post $post What post does this referer too
+	 * @return array
+	 */
 	public function inject_tickets_json_ld( $data, $args, $post ) {
 		if ( 'Event' !== $data->{'@type'} ) {
 			return $data;
