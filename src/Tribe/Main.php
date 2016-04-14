@@ -259,7 +259,7 @@ class Tribe__Tickets__Main {
 		$startdates = array();
 		$enddates = array();
 		$in_stock = array();
-		foreach ( $tickets as $i => $ticket ) {
+		foreach ( $tickets as $ticket ) {
 			$in_stock[] = $ticket->is_in_stock();
 
 			if ( $ticket->is_in_stock() ) {
