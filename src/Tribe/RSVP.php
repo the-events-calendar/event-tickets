@@ -332,6 +332,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				update_post_meta( $attendee_id, $this->email, $attendee_email );
 
 				/**
+				 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated
+				 *
+				 * @var $attendee_id ID of attendee ticket
+				 * @var $event_id ID of event
+				 * @var $order_id RSVP order ID
+				 * @var $product_id RSVP product ID
+				 */
+				do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $event_id, $order_id );
+
+				/**
 				 * Action fired when an RSVP attendee ticket is created
 				 *
 				 * @var $attendee_id ID of the attendee post
@@ -409,6 +419,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $query->posts as $post ) {
 			$product = get_post( get_post_meta( $post->ID, self::ATTENDEE_PRODUCT_KEY, true ) );
+			$ticket_unique_id = get_post_meta( $post->ID, '_unique_id', true );
+			$ticket_unique_id = $ticket_unique_id === '' ? $post->ID : $ticket_unique_id;
 
 			$attendees[] = array(
 				'event_id'      => get_post_meta( $post->ID, self::ATTENDEE_EVENT_KEY, true ),
@@ -417,7 +429,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'order_id'      => $order_id,
-				'ticket_id'     => $post->ID,
+				'ticket_id'     => $ticket_unique_id,
 				'security_code' => get_post_meta( $post->ID, $this->security_code, true ),
 				'optout'        => (bool) get_post_meta( $post->ID, self::ATTENDEE_OPTOUT_KEY, true ),
 			);
