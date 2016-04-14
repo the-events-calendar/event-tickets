@@ -234,7 +234,7 @@ class Tribe__Tickets__Main {
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
-		add_filter( 'tribe_json_ld_event_data_object', array( $this, 'inject_tickets_json_ld' ), 10, 3 );
+		add_filter( 'tribe_json_ld_event_object', array( $this, 'inject_tickets_json_ld' ), 10, 3 );
 
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
