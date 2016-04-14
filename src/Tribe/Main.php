@@ -234,6 +234,7 @@ class Tribe__Tickets__Main {
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
+		add_filter( 'tribe_json_ld_event_object', array( $this, 'inject_tickets_json_ld' ), 10, 3 );
 
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
@@ -241,6 +242,53 @@ class Tribe__Tickets__Main {
 			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
 			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
 		}
+	}
+
+	/**
+	 * Used to add our beloved tickets to the JSON-LD markup
+	 *
+	 * @param  array   $data The actual json-ld variable
+	 * @param  array   $args Arguments used to create the Markup
+	 * @param  WP_Post $post What post does this referer too
+	 * @return array
+	 */
+	public function inject_tickets_json_ld( $data, $args, $post ) {
+		if ( 'Event' !== $data->{'@type'} ) {
+			return $data;
+		}
+
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
+
+		if ( empty( $tickets ) ) {
+			return $data;
+		}
+
+		$data->offers = array();
+		$startdates = array();
+		$enddates = array();
+		$in_stock = array();
+		foreach ( $tickets as $ticket ) {
+			$in_stock[] = $ticket->is_in_stock();
+
+			if ( $ticket->is_in_stock() ) {
+				$startdates[] = $ticket->start_date();
+				$enddates[] = $ticket->end_date();
+			}
+		}
+
+		$offer = (object) array(
+			'@type' => 'AggregateOffer',
+			'price' => tribe_get_cost( $post->ID ),
+
+			// Do not translate these strings
+			'availability' => 'http://schema.org/' . in_array( true, $in_stock ) ? 'InStock' : 'OutOfStock',
+			'availabilityStarts' => get_gmt_from_date( date( Tribe__Date_Utils::DBDATETIMEFORMAT, min( $startdates ) ), 'c' ),
+			'availabilityEnds' => get_gmt_from_date( date( Tribe__Date_Utils::DBDATETIMEFORMAT, max( $enddates ) ), 'c' ),
+		);
+
+		$data->offers = $offer;
+
+		return $data;
 	}
 
 	/**
