@@ -18,7 +18,7 @@
 	width: 66%;
 }
 
-#tribe-attendees-summary h3 a, #tribe-attendees-summary .about-description a {
+#tribe-attendees-summary .about-description a {
 	color: inherit;
 }
 
@@ -83,23 +83,23 @@
 	margin: 1px 8px 0 0;
 }
 
-.tribe-attendees-email .button-primary {
-	margin-top: 3px;
-}
-
 .tribe-attendees-email .tribe-attendees-email-message {
 	float: left;
 	margin: 0;
 }
 
-.tribe-attendees-email .tribe-attendees-email-message ul {
+.tribe-attendees-email .button-primary {
+	margin-top: 3px;
+}
+
+.tribe-attendees-email-message ul {
 	font-size: 13px;
 	line-height: 1.5;
 	margin: .5em 0;
 	padding: 2px;
 }
 
-.tribe-attendees-email .tribe-attendees-email-message ul li:last-child {
+.tribe-attendees-email-message ul li:last-child {
 	margin-bottom: 0;
 }
 
@@ -175,7 +175,7 @@
 
 @media screen and (max-width: 782px) {
 
-	.tribe-attendees-email .tribe-attendees-email-message .notice-dismiss {
+	.tribe-attendees-email-message .notice-dismiss {
 		padding: 9px;
 	}
 }

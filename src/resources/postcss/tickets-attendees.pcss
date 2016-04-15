@@ -6,13 +6,13 @@
 	.about-description {
 		width: 66%;
 
-		a {
-			color: inherit;
-		}
-
 		@media screen and (max-width: 870px) {
 			width: 100%;
 		}
+	}
+
+	.about-description a {
+		color: inherit;
 	}
 
 	.welcome-panel-column-container {
@@ -116,35 +116,34 @@
 }
 
 .tribe-attendees-email {
+	.tribe-attendees-email-message {
+		float: left;
+		margin: 0;
+	}
 
 	.button-primary {
 		margin-top: 3px;
 	}
+}
 
-	.tribe-attendees-email-message {
-		float: left;
-		margin: 0;
+.tribe-attendees-email-message {
+	ul {
+		font-size: 13px;
+		line-height: 1.5;
+		margin: .5em 0;
+		padding: 2px;
 
-		ul {
-			font-size: 13px;
-			line-height: 1.5;
-			margin: .5em 0;
-			padding: 2px;
-
-			li:last-child {
-				margin-bottom: 0;
-			}
-		}
-
-		@media screen and (max-width: 782px) {
-			.notice-dismiss {
-				padding: 9px;
-			}
+		li:last-child {
+			margin-bottom: 0;
 		}
 	}
 
+	@media screen and (max-width: 782px) {
+		.notice-dismiss {
+			padding: 9px;
+		}
+	}
 }
-
 
 #attendees_email_wrapper {
 	margin-top: 10px;
