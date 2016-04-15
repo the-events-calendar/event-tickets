@@ -1,0 +1,173 @@
+#tribe-attendees-summary {
+	padding-bottom: 10px;
+	position: relative;
+
+	h3,
+	.about-description {
+		width: 66%;
+
+		@media screen and (max-width: 870px) {
+			width: 100%;
+		}
+	}
+
+	.about-description a {
+		color: inherit;
+	}
+
+	.welcome-panel-column-container {
+		position: initial;
+
+		@media screen and (max-width: 870px) {
+			margin-bottom: 115px;
+		}
+	}
+
+	.welcome-panel-column li {
+		line-height: 1.4em;
+		margin-bottom: 2px;
+
+		@media screen and (max-width: 870px) {
+			display: list-item;
+		}
+	}
+
+	.welcome-panel-last {
+		border-left: 1px solid #eee;
+		bottom: 0;
+		padding: 10px 20px 5px;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 200px;
+
+		@media screen and (max-width: 870px) {
+			border-left: 0;
+			border-top: 1px solid #eee;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			top: initial;
+			width: 100%;
+		}
+
+		h4 {
+			font-size: 1.5em;
+			text-align: center;
+		}
+
+		li {
+			font-size: 1.2em;
+		}
+
+		ul {
+			@media screen and (max-width: 870px) {
+				float: left;
+				width: 50%;
+			}
+
+			@media screen and (min-width: 870px) {
+				&:first-child {
+					margin-bottom: 0;
+				}
+
+				&:last-child {
+					margin-top: 0;
+				}
+			}
+		}
+	}
+}
+
+.tribe-attendees-page{
+	a.tickets_uncheckin {
+		display: none;
+	}
+
+	.tickets_checked {
+		td {
+			opacity: .7;
+			text-decoration: line-through;
+		}
+
+		a.tickets_checkin {
+			display: none;
+		}
+
+		td.column-check_in {
+			text-decoration: none !important;
+		}
+
+		a.tickets_uncheckin {
+			display: block;
+		}
+	}
+
+	.column-attendee_id,
+	.column-order_id {
+		width: 70px;
+	}
+
+	.print,
+	.email,
+	.export {
+		margin: 1px 8px 0 0;
+	}
+}
+
+.tribe-attendees-email {
+	.tribe-attendees-email-message {
+		float: left;
+		margin: 0;
+	}
+
+	.button-primary {
+		margin-top: 3px;
+	}
+}
+
+.tribe-attendees-email-message {
+	ul {
+		font-size: 13px;
+		line-height: 1.5;
+		margin: .5em 0;
+		padding: 2px;
+
+		li:last-child {
+			margin-bottom: 0;
+		}
+	}
+
+	@media screen and (max-width: 782px) {
+		.notice-dismiss {
+			padding: 9px;
+		}
+	}
+}
+
+#attendees_email_wrapper {
+	margin-top: 10px;
+	overflow: hidden;
+	padding: 20px;
+
+	label {
+		display: block;
+
+		span {
+			display: inline-block;
+			width: 105px;
+		}
+	}
+
+	select,
+	input[type='text'] {
+		width: 285px;
+	}
+
+	.attendees_or {
+		display: block;
+		font-size: 20px;
+		margin: 20px 0;
+		text-align: center;
+	}
+}
