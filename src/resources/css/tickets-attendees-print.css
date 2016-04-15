@@ -38,7 +38,7 @@
         color: #000
     }
     .widefat thead tr th,
-	.widefat tfoot tr th {
+		.widefat tfoot tr th {
         background: none;
         text-shadow: none
     }

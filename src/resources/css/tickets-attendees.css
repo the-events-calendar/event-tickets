@@ -8,24 +8,23 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
-
 #tribe-attendees-summary {
 	padding-bottom: 10px;
 	position: relative;
 }
 
-#tribe-attendees-summary .welcome-panel-column-container {
-	position: static;
-	position: initial;
-}
-
 #tribe-attendees-summary h3,
-#tribe-attendees-summary .about-description {
+	#tribe-attendees-summary .about-description {
 	width: 66%;
 }
 
-#tribe-attendees-summary .about-description a {
+#tribe-attendees-summary h3 a, #tribe-attendees-summary .about-description a {
 	color: inherit;
+}
+
+#tribe-attendees-summary .welcome-panel-column-container {
+	position: static;
+	position: initial;
 }
 
 #tribe-attendees-summary .welcome-panel-column li {
@@ -52,6 +51,10 @@
 	font-size: 1.2em;
 }
 
+.tribe-attendees-page a.tickets_uncheckin {
+	display: none;
+}
+
 .tribe-attendees-page .tickets_checked td {
 	opacity: .7;
 	text-decoration: line-through;
@@ -65,22 +68,18 @@
 	text-decoration: none !important;
 }
 
-.tribe-attendees-page a.tickets_uncheckin {
-	display: none;
-}
-
 .tribe-attendees-page .tickets_checked a.tickets_uncheckin {
 	display: block;
 }
 
 .tribe-attendees-page .column-attendee_id,
-.tribe-attendees-page .column-order_id {
+	.tribe-attendees-page .column-order_id {
 	width: 70px;
 }
 
 .tribe-attendees-page .print,
-.tribe-attendees-page .email,
-.tribe-attendees-page .export {
+	.tribe-attendees-page .email,
+	.tribe-attendees-page .export {
 	margin: 1px 8px 0 0;
 }
 
@@ -93,14 +92,14 @@
 	margin: 0;
 }
 
-.tribe-attendees-email-message ul {
+.tribe-attendees-email .tribe-attendees-email-message ul {
 	font-size: 13px;
 	line-height: 1.5;
 	margin: .5em 0;
 	padding: 2px;
 }
 
-.tribe-attendees-email-message ul li:last-child {
+.tribe-attendees-email .tribe-attendees-email-message ul li:last-child {
 	margin-bottom: 0;
 }
 
@@ -119,16 +118,16 @@
 	width: 105px;
 }
 
+#attendees_email_wrapper select,
+	#attendees_email_wrapper input[type='text'] {
+	width: 285px;
+}
+
 #attendees_email_wrapper .attendees_or {
 	display: block;
 	font-size: 20px;
 	margin: 20px 0;
 	text-align: center;
-}
-
-#attendees_email_wrapper select,
-#attendees_email_wrapper input[type='text'] {
-	width: 285px;
 }
 
 @media screen and (max-width: 870px) {
@@ -138,12 +137,12 @@
 		width: 100%;
 	}
 
-	#tribe-attendees-summary .welcome-panel-column li {
-		display: list-item;
-	}
-
 	#tribe-attendees-summary .welcome-panel-column-container {
 		margin-bottom: 115px;
+	}
+
+	#tribe-attendees-summary .welcome-panel-column li {
+		display: list-item;
 	}
 
 	#tribe-attendees-summary .welcome-panel-last {
@@ -176,7 +175,7 @@
 
 @media screen and (max-width: 782px) {
 
-	.tribe-attendees-email-message .notice-dismiss {
+	.tribe-attendees-email .tribe-attendees-email-message .notice-dismiss {
 		padding: 9px;
 	}
 }
