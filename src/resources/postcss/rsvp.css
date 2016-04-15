@@ -1,13 +1,3 @@
-/**
- * This CSS file was auto-generated via PostCSS
- *
- * Contributors should avoid editing this file, but instead edit the associated
- * src/resources/postcss/ file. For more information, check out our engineering
- * docs on how we handle CSS in our engineering docs.
- *
- * @see: http://moderntribe.github.io/products-engineering/css/
- */
-
 .tribe-tickets-meta-row {
 	display: none;
 }
@@ -43,6 +33,9 @@ table.tribe-events-tickets td {
 }
 
 .tribe-rsvp-message {
+	-khtml-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
 	border-radius: 3px;
 	border-style: solid;
 	border-width: 1px;

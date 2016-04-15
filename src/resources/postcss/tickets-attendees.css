@@ -1,13 +1,3 @@
-/**
- * This CSS file was auto-generated via PostCSS
- *
- * Contributors should avoid editing this file, but instead edit the associated
- * src/resources/postcss/ file. For more information, check out our engineering
- * docs on how we handle CSS in our engineering docs.
- *
- * @see: http://moderntribe.github.io/products-engineering/css/
- */
-
 
 #tribe-attendees-summary {
 	padding-bottom: 10px;
@@ -15,9 +5,9 @@
 }
 
 #tribe-attendees-summary .welcome-panel-column-container {
-	position: static;
 	position: initial;
 }
+
 
 #tribe-attendees-summary h3,
 #tribe-attendees-summary .about-description {
@@ -52,6 +42,47 @@
 	font-size: 1.2em;
 }
 
+@media screen and (max-width: 870px) {
+	#tribe-attendees-summary h3,
+	#tribe-attendees-summary .about-description {
+		width: 100%;
+	}
+
+
+	#tribe-attendees-summary .welcome-panel-column li {
+		display: list-item;
+	}
+
+	#tribe-attendees-summary .welcome-panel-column-container {
+		margin-bottom: 115px;
+	}
+
+	#tribe-attendees-summary .welcome-panel-last {
+		top: initial;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		border-top: 1px solid #eee;
+		border-left: 0;
+		width: 100%;
+	}
+
+	#tribe-attendees-summary .welcome-panel-last ul {
+		float: left;
+		width: 50%;
+	}
+}
+
+@media screen and (min-width: 870px) {
+	#tribe-attendees-summary .welcome-panel-last ul:first-child {
+		margin-bottom: 0;
+	}
+
+	#tribe-attendees-summary .welcome-panel-last ul:last-child {
+		margin-top: 0;
+	}
+}
+
 .tribe-attendees-page .tickets_checked td {
 	opacity: 0.7;
 	text-decoration: line-through;
@@ -82,6 +113,13 @@
 .tribe-attendees-page .email,
 .tribe-attendees-page .export {
 	margin: 1px 8px 0 0;
+}
+
+
+@media screen and (max-width: 782px) {
+	.tribe-attendees-email-message .notice-dismiss {
+		padding: 9px;
+	}
 }
 
 .tribe-attendees-email .button-primary {
@@ -129,54 +167,4 @@
 #attendees_email_wrapper select,
 #attendees_email_wrapper input[type='text']{
 	width: 285px;
-}
-
-@media screen and (max-width: 870px) {
-
-	#tribe-attendees-summary h3,
-	#tribe-attendees-summary .about-description {
-		width: 100%;
-	}
-
-	#tribe-attendees-summary .welcome-panel-column li {
-		display: list-item;
-	}
-
-	#tribe-attendees-summary .welcome-panel-column-container {
-		margin-bottom: 115px;
-	}
-
-	#tribe-attendees-summary .welcome-panel-last {
-		top: auto;
-		top: initial;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		border-top: 1px solid #eee;
-		border-left: 0;
-		width: 100%;
-	}
-
-	#tribe-attendees-summary .welcome-panel-last ul {
-		float: left;
-		width: 50%;
-	}
-}
-
-@media screen and (min-width: 870px) {
-
-	#tribe-attendees-summary .welcome-panel-last ul:first-child {
-		margin-bottom: 0;
-	}
-
-	#tribe-attendees-summary .welcome-panel-last ul:last-child {
-		margin-top: 0;
-	}
-}
-
-@media screen and (max-width: 782px) {
-
-	.tribe-attendees-email-message .notice-dismiss {
-		padding: 9px;
-	}
 }

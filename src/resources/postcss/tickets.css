@@ -1,13 +1,3 @@
-/**
- * This CSS file was auto-generated via PostCSS
- *
- * Contributors should avoid editing this file, but instead edit the associated
- * src/resources/postcss/ file. For more information, check out our engineering
- * docs on how we handle CSS in our engineering docs.
- *
- * @see: http://moderntribe.github.io/products-engineering/css/
- */
-
 /* = WooTickets Admin Styles
 =============================================*/
 
@@ -64,7 +54,6 @@ p.ticket_name {
 .ticket_form h4.ticket_form_title_edit {
 	display : none;
 }
-
 #tribe_ticket_header_preview img {
 	max-width : 95% !important;
 	height    : auto !important;
@@ -93,7 +82,6 @@ p.ticket_name {
 }
 
 /* Specific goal of this rule is to prevent the number input busting the ticket form layout under Twenty Fifteen */
-
 .tribe-theme-twentyfifteen .tribe-events-tickets input[type="number"] {
 	padding: 0.375em;
 	width: 100%;
