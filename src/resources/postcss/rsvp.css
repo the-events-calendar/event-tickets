@@ -34,9 +34,9 @@ table.tribe-events-tickets td {
 
 .tribe-rsvp-message {
 	-khtml-border-radius: 3px;
-	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
-	border-radius: 3px;
+	   -moz-border-radius: 3px;
+	        border-radius: 3px;
 	border-style: solid;
 	border-width: 1px;
 	font-family: Helvetica, Arial, sans;
@@ -46,7 +46,7 @@ table.tribe-events-tickets td {
 }
 
 .tribe-rsvp-message-success {
-	background-color: #ffffE0;
+	background-color: #ffffe0;
 	border-color: #e6db55;
 }
 

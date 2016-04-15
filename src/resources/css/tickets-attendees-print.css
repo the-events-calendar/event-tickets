@@ -9,24 +9,36 @@
  */
 
 @media print {
-    #adminmenuback, #adminmenuwrap, .tablenav, #wpfooter, .check-column, .column-check_in, #total_checkedin_wrapper, #show-settings-link, .screen-meta-toggle, h2, #icon-edit {
+    #adminmenuback,
+	#adminmenuwrap,
+	.tablenav,
+	#wpfooter,
+	.check-column,
+	.column-check_in,
+	#total_checkedin_wrapper,
+	#show-settings-link,
+	.screen-meta-toggle,
+	h2,
+	#icon-edit {
         display: none
     }
     .wrap h2 + h2 {
         display: block
     }
-    #wpcontent, #wpfooter {
+    #wpcontent,
+	#wpfooter {
         margin-left: 20px
     }
     #the-list tr {
         background: #fff;
         border: 0;
-        border-bottom: 1px solid #333333
+        border-bottom: 1px solid #333
     }
     a.row-title {
         color: #000
     }
-    .widefat thead tr th, .widefat tfoot tr th {
+    .widefat thead tr th,
+	.widefat tfoot tr th {
         background: none;
         text-shadow: none
     }
@@ -44,17 +56,17 @@
         line-height: 15px
     }
     .ticket_list tr td .totals {
-        width: 75%;
         height: 100px;
+        line-height: 30px;
         padding-top: 40px;
-        line-height: 30px
+        width: 75%
     }
     table {
         page-break-inside: auto
     }
     tr {
-        page-break-inside: avoid;
-        page-break-after: auto
+        page-break-after: auto;
+        page-break-inside: avoid
     }
     thead {
         display: table-header-group
