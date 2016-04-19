@@ -75,6 +75,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'cb'              => '<input type="checkbox" />',
 			'order_id'        => esc_html__( 'Order #', 'event-tickets' ),
 			'order_status'    => esc_html__( 'Order Status', 'event-tickets' ),
+			'purchaser_name'  => esc_html__( 'Purchaser name', 'event-tickets' ),
+			'purchaser_email' => esc_html__( 'Purchaser email', 'event-tickets' ),
 			'ticket'          => esc_html__( 'Ticket type', 'event-tickets' ),
 			'attendee_id'     => esc_html__( 'Ticket #', 'event-tickets' ),
 			'security'        => esc_html__( 'Security Code', 'event-tickets' ),
