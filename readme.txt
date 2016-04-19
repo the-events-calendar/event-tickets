@@ -179,6 +179,9 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.1.3] 2016-04-XX =
+* Tweak - Add back purchaser name and email to attendees list for all ticket types [45082]
+
 = [4.1.2] 2016-04-11 =
 
 * Fix - Removed a notice on attendees list when a non-existent email method is on a hook
