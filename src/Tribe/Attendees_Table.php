@@ -75,6 +75,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'cb'              => '<input type="checkbox" />',
 			'order_id'        => esc_html__( 'Order #', 'event-tickets' ),
 			'order_status'    => esc_html__( 'Order Status', 'event-tickets' ),
+			'purchaser_name'  => esc_html__( 'Purchaser name', 'event-tickets' ),
+			'purchaser_email' => esc_html__( 'Purchaser email', 'event-tickets' ),
 			'ticket'          => esc_html__( 'Ticket type', 'event-tickets' ),
 			'attendee_id'     => esc_html__( 'Ticket #', 'event-tickets' ),
 			'security'        => esc_html__( 'Security Code', 'event-tickets' ),
@@ -168,14 +170,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function column_ticket( $item ) {
 		ob_start();
 
-		$acquired_by_label = 'Tribe__Tickets__RSVP' === $item['provider'] ? __( 'Reserved by:', 'event-tickets' ) : __( 'Purchased by:', 'event-tickets' );
-
 		?>
 		<div class="event-tickets-ticket-name">
 			<?php echo esc_html( $item['ticket'] ); ?>
-		</div>
-		<div class="event-tickets-ticket-purchaser">
-			<?php echo esc_html( $acquired_by_label ); ?> <?php echo esc_html( $item['purchaser_name'] ); ?> (<?php echo esc_html( $item['purchaser_email'] ); ?>)
 		</div>
 		<?php
 
