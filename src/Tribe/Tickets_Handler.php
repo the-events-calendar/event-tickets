@@ -57,6 +57,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
+		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 		$this->google_event_data = new Tribe__Tickets__Google_Event_Data;

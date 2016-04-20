@@ -181,6 +181,7 @@ Our Premium Plugins:
 
 = [4.1.3] 2016-04-XX =
 * Tweak - Add back purchaser name and email to attendees list for all ticket types [45082]
+* Tweak - Fix Tickets on Custom Post Types so they save and display on the front end [44221]
 
 = [4.1.2] 2016-04-11 =
 
