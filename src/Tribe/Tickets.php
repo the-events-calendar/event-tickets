@@ -309,7 +309,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->className, array( $this, 'ajax_handler_attendee_uncheckin' ) );
 
 			// Front end
-			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'front_end_tickets_form' ), 5 );
+			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'front_end_tickets_form_in_events' ), 5 );
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ) );
 
 			// Ensure ticket prices and event costs are linked
@@ -1287,6 +1287,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $message;
 		}
 		// end Helpers
+
+		/**
+		 * Renders the front end ticket form (within single event posts) when
+		 * they are enabled.
+		 */
+		public function front_end_tickets_form_in_events() {
+			if ( $this->form_is_enabled() ) {
+				$this->front_end_tickets_form( '' );
+			}
+		}
 
 		public function front_end_tickets_form_in_content( $content ) {
 			global $post;
