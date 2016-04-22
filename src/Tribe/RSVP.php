@@ -351,6 +351,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				 */
 				do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id, $order_attendee_id );
 
+				$this->record_attendee_user_id( $attendee_id );
 				$order_attendee_id++;
 			}
 
