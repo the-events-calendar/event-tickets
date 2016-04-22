@@ -95,6 +95,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		const ATTENDEES_CACHE = 'tribe_attendees';
 
+		const ATTENDEE_USER_ID = '_tribe_tickets_attendee_user_id';
+
 		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
@@ -1287,6 +1289,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $message;
 		}
 		// end Helpers
+
+		/**
+		 * Associates an attendee record with a user, typically the purchaser.
+		 *
+		 * The $user_id param is optional and when not provided it will default to the current
+		 * user ID.
+		 *
+		 * @param int $attendee_id
+		 * @param int $user_id
+		 */
+		protected function record_attendee_user_id( $attendee_id, $user_id = null ) {
+			if ( null === $user_id ) {
+				$user_id = get_current_user_id();
+			}
+
+			update_post_meta( $attendee_id, self::ATTENDEE_USER_ID, (int) $user_id );
+		}
 
 		/**
 		 * Renders the front end ticket form (within single event posts) when
