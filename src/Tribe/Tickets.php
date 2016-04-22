@@ -1291,7 +1291,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function front_end_tickets_form_in_content( $content ) {
 			global $post;
 
-			if ( is_admin() ) {
+			if ( is_admin() || ! $this->form_is_enabled() ) {
 				return $content;
 			}
 
@@ -1323,6 +1323,42 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$content .= $form;
 
 			return $content;
+		}
+
+
+		/**
+		 * Indicates if the ticket form is enabled.
+		 *
+		 * Generally this will return true, but there may be special occasions such
+		 * as access being denied to logged out users and similar where it returns
+		 * false.
+		 *
+		 * @return bool
+		 */
+		protected function form_is_enabled() {
+			$enabled = true;
+
+			if ( ! is_user_logged_in() && $this->disable_for_logged_out_users() ) {
+				$enabled = false;
+			}
+			
+			/**
+			 * Controls whether the ticket form is enabled or not.
+			 *
+			 * @param bool $enabled
+			 * @param Tribe__Tickets__Tickets $ticket_object
+			 */
+			return apply_filters( 'tribe_tickets_frontend_ticket_form_is_enabled', $enabled, $this );
+		}
+
+		/**
+		 * If we should disable the ticket form for logged out users.
+		 * 
+		 * @return bool
+		 */
+		protected function disable_for_logged_out_users() {
+			$should_disable = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
+			return in_array( get_class( $this ), $should_disable );
 		}
 	}
 }

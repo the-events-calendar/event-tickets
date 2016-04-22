@@ -614,7 +614,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function front_end_tickets_form( $content ) {
 		static $done;
 
-		if ( $done ) {
+		if ( $done || ! $this->form_is_enabled() ) {
 			return;
 		}
 
