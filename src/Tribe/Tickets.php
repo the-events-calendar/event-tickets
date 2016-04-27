@@ -1322,7 +1322,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( $this->form_is_enabled() ) {
 				$this->front_end_tickets_form( '' );
 			} else {
-				echo $this->maybe_get_registration_link();
+				echo $this->login_or_register_advice();
 			}
 		}
 
@@ -1334,7 +1334,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( is_admin() || ! $form_is_enabled ) {
 				return $content;
 			} elseif ( ! $form_is_enabled ) {
-				return $content . $this->maybe_get_registration_link();
+				return $content . $this->login_or_register_advice();
 			}
 
 			// if this isn't a post for some reason, bail
@@ -1377,14 +1377,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string
 		 */
-		protected function maybe_get_registration_link() {
+		protected function login_or_register_advice() {
 			// We only want to display this text once (this will fire as many times as there are
 			// active ticket modules) and then only if user registration is enabled
-			if ( self::$have_displayed_reg_link || ! get_option( 'users_can_register' ) ) {
+			if ( self::$have_displayed_reg_link ) {
 				return '';
 			}
 
 			self::$have_displayed_reg_link = true;
+
+			$login_links = '<a href="' . esc_url( get_admin_url( null, 'wp-login.php') ) . '" target="_blank">' . __( 'Login', 'event-tickets' ) . '</a>';
+
+			if ( get_option( 'users_can_register' ) ) {
+				$login_links .= ' | ' . wp_register( '', '', false );
+			}
 
 			/**
 			 * Modify the text that displays when users are required to be logged in to see
@@ -1394,8 +1400,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param string $register_help_text
 			 */
 			return apply_filters( 'event_tickets_register_to_see_ticket_form_message', sprintf(
-				__( 'Only registered users can obtain tickets for this event. %s.', 'event-tickets' ),
-				wp_register( '', '', false )
+				__( 'You must be logged in to obtain tickets. %s', 'event-tickets' ),
+				$login_links
 			) );
 		}
 
