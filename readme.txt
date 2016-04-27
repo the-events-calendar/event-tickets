@@ -179,7 +179,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1.3] 2016-04-XX =
+= [4.1.3] 2016-04-27 =
 * Tweak - Add back purchaser name and email to attendees list for all ticket types [45082]
 * Tweak - Fix Tickets on Custom Post Types so they save and display on the front end [44221]
 
