@@ -180,8 +180,9 @@ Our Premium Plugins:
 == Changelog ==
 
 = [4.1.3] 2016-04-27 =
-* Tweak - Add back purchaser name and email to attendees list for all ticket types [45082]
-* Tweak - Fix Tickets on Custom Post Types so they save and display on the front end [44221]
+
+* Tweak: Added back the purchaser name and email address to the attendee reports for all tickets. We had inadvertently removed those in a previous release. #facepalm [45082]
+* Tweak: Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post. [44221]
 
 = [4.1.2] 2016-04-11 =
 
