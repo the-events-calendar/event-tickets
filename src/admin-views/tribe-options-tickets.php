@@ -59,6 +59,18 @@ $tickets_tab = array(
 				'validation_type' => 'options_multi',
 				'can_be_empty' => true,
 			),
+			'ticket-authentication-requirements-heading' => array(
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Login requirements', 'event-tickets' ) . '</h3>',
+			),
+			'ticket-authentication-requirements-advice' => array(
+				'type' => 'html',
+				'html' => '<p>' . sprintf(
+						__( 'You can require that users are logged in before they are allowed to access the ticket form. You may wish to review whether anonymous users are allowed to register for an account or not (via the %sGeneral Settings%s admin screen) before adjusting these settings.', 'event-tickets' ),
+						'<a href="' . get_admin_url( null, 'options-general.php' ) . '" target="_blank">',
+						'</a>'
+					) . '</p>',
+			),
 			'ticket-authentication-requirements' => array(
 				'type' => 'checkbox_list',
 				'label' => esc_html__( 'Remove ticket form for logged out users', 'event-tickets' ),

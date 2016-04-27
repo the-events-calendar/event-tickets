@@ -24,6 +24,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	abstract class Tribe__Tickets__Tickets {
 
 		/**
+		 * Flag used to track if the registration form link has been displayed or not.
+		 *
+		 * @var boolean
+		 */
+		private static $have_displayed_reg_link = false;
+
+		/**
 		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all child.
 		 *
 		 * @var array
@@ -1314,14 +1321,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function front_end_tickets_form_in_events() {
 			if ( $this->form_is_enabled() ) {
 				$this->front_end_tickets_form( '' );
+			} else {
+				echo $this->maybe_get_registration_link();
 			}
 		}
 
 		public function front_end_tickets_form_in_content( $content ) {
 			global $post;
 
-			if ( is_admin() || ! $this->form_is_enabled() ) {
+			$form_is_enabled = $this->form_is_enabled();
+
+			if ( is_admin() || ! $form_is_enabled ) {
 				return $content;
+			} elseif ( ! $form_is_enabled ) {
+				return $content . $this->maybe_get_registration_link();
 			}
 
 			// if this isn't a post for some reason, bail
@@ -1354,6 +1367,37 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $content;
 		}
 
+		/**
+		 * Returns a (possibly empty) string used to direct users to the new user
+		 * registration form when appropriate.
+		 *
+		 * Typically used when a requirement for users to be logged in to access the ticket
+		 * form is in effect and where registrations are allowed, but where the user is
+		 * currently logged out.
+		 *
+		 * @return string
+		 */
+		protected function maybe_get_registration_link() {
+			// We only want to display this text once (this will fire as many times as there are
+			// active ticket modules) and then only if user registration is enabled
+			if ( self::$have_displayed_reg_link || ! get_option( 'users_can_register' ) ) {
+				return '';
+			}
+
+			self::$have_displayed_reg_link = true;
+
+			/**
+			 * Modify the text that displays when users are required to be logged in to see
+			 * the ticket form but where they are currently logged out and where registration
+			 * of new user accounts is enabled.
+			 *
+			 * @param string $register_help_text
+			 */
+			return apply_filters( 'event_tickets_register_to_see_ticket_form_message', sprintf(
+				__( 'Only registered users can obtain tickets for this event. %s.', 'event-tickets' ),
+				wp_register( '', '', false )
+			) );
+		}
 
 		/**
 		 * Indicates if the ticket form is enabled.
