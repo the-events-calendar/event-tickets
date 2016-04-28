@@ -119,7 +119,7 @@ class Tribe__Tickets__Main {
 		$this->has_initialized = true;
 
 		$this->rsvp();
-		$this->my_attendance_list_shortcode();
+		$this->user_event_confirmation_list_shortcode();
 	}
 
 	/**
