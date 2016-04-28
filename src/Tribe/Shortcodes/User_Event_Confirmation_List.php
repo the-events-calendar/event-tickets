@@ -130,7 +130,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 	}
 
 	/**
-	 * Provides a n array containing the value of the ATTENDEE_EVENT_KEY class constant
+	 * Provides an array containing the value of the ATTENDEE_EVENT_KEY class constant
 	 * for each active ticketing provider.
 	 *
 	 * @return array
