@@ -45,6 +45,11 @@ class Tribe__Tickets__Main {
 	 */
 	public $legacy_provider_support;
 
+	/**
+	 * @var Tribe__Tickets__Shortcodes__User_Event_Confirmation_List
+	 */
+	private $my_attendance_list_shortcode;
+
 	private $has_initialized = false;
 
 	/**
@@ -113,8 +118,8 @@ class Tribe__Tickets__Main {
 
 		$this->has_initialized = true;
 
-		// set up the RSVP object
 		$this->rsvp();
+		$this->my_attendance_list_shortcode();
 	}
 
 	/**
@@ -401,6 +406,19 @@ class Tribe__Tickets__Main {
 	 */
 	public function rsvp() {
 		return Tribe__Tickets__RSVP::get_instance();
+	}
+
+	/**
+	 * Default attendee list shortcode handler.
+	 *
+	 * @return Tribe__Tickets__Shortcodes__User_Event_Confirmation_List
+	 */
+	public function my_attendance_list_shortcode() {
+		if ( empty( $this->my_attendance_list_shortcode ) ) {
+			$this->my_attendance_list_shortcode = new Tribe__Tickets__Shortcodes__User_Event_Confirmation_List;
+		}
+
+		return $this->my_attendance_list_shortcode;
 	}
 
 	/**
