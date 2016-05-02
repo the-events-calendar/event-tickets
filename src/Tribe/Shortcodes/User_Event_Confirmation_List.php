@@ -97,16 +97,16 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 		$query = "
 			SELECT DISTINCT( ID )
 			FROM   {$wpdb->postmeta} AS match_user
-			
-			JOIN {$wpdb->postmeta} AS match_events 
+
+			JOIN {$wpdb->postmeta} AS match_events
 			  ON match_events.post_id = match_user.post_id
-			  
-			JOIN {$wpdb->posts} AS event_list 
+
+			JOIN {$wpdb->posts} AS event_list
 			  ON match_events.meta_value = ID
-			  
+
 			JOIN {$wpdb->postmeta} AS event_end_dates
 			  ON event_end_dates.post_id = ID
-			  
+
 			WHERE (
 				-- Match the user
 				match_user.meta_key = '_tribe_tickets_attendee_user_id'
@@ -117,7 +117,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 				AND event_end_dates.meta_key = '_EventEndDateUTC'
 				AND event_end_dates.meta_value > %s
 			)
-			
+
 			ORDER BY event_end_dates.meta_value
 			$limit
 		";
@@ -139,7 +139,13 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 		$event_keys = array();
 
 		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
-			$event_keys[] = $module_class::ATTENDEE_EVENT_KEY;
+			/**
+			 * The usage of plain `$module_class::ATTENDEE_EVENT_KEY` will throw a `T_PAAMAYIM_NEKUDOTAYIM`
+			 * when using PHP 5.2, which is a fatal.
+			 *
+			 * So we have to construct the constant name using a string and use the `constant` function.
+			 */
+			$event_keys[] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 		}
 
 		return $event_keys;
