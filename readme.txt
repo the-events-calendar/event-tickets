@@ -79,6 +79,14 @@ If you’ve identified a bug and want to submit a patch, we’d welcome it at ou
 * Event Tickets 4.0 or above
 * The Events Calendar 4.0 or above (optional)
 
+== Screenshots ==
+
+1. RSVP setup
+2. Attendees report
+3. RSVP to an event
+4. Customize tickets with an image
+5. Ticket settings
+
 == Documentation ==
 
 Our <a href="http://m.tri.be/18ti">New User Primer</a> will help you get started. You can find more tutorials at http://m.tri.be/44.
