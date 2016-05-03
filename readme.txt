@@ -192,6 +192,7 @@ Our Premium Plugins:
 * Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (props to masteradhoc on GitHub for this change) [45467]
 * Tweak - Improved our JSON-LD output to include tickets [43595]
 * Tweak - Record the user ID associated with the creation of new attendee records [44347]
+* Tweak - Fixed translation domain on a few strings [46524]
 
 = [4.1.2] 2016-04-11 =
 

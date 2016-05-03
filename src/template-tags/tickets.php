@@ -218,7 +218,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		// If it is a global-stock ticket but the global stock level has not yet been set for the event
 		// then return something better than just '0' as the available stock
 		if ( $is_global && 0 === $stock && ! $global_stock->is_enabled() ) {
-			$stock = '<i>' . __( 'global inventory', 'event-tickets-plus' ) . '</i>';
+			$stock = '<i>' . __( 'global inventory', 'event-tickets' ) . '</i>';
 		}
 
 		// There may not be a fixed inventory - in which case just report the number actually sold so far

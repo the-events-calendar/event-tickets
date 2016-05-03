@@ -252,8 +252,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$export_columns = array_diff_key( $columns, $hidden );
 
 		// Add the Purchaser Information
-		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets-plus' );
-		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets-plus' );
+		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets' );
+		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets' );
 
 		/**
 		 * Used to modify what columns should be shown on the CSV export
