@@ -79,6 +79,14 @@ If you’ve identified a bug and want to submit a patch, we’d welcome it at ou
 * Event Tickets 4.0 or above
 * The Events Calendar 4.0 or above (optional)
 
+== Screenshots ==
+
+1. RSVP setup
+2. Attendees report
+3. RSVP to an event
+4. Customize tickets with an image
+5. Ticket settings
+
 == Documentation ==
 
 Our <a href="http://m.tri.be/18ti">New User Primer</a> will help you get started. You can find more tutorials at http://m.tri.be/44.
@@ -142,7 +150,7 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 * <a href="http://profiles.wordpress.org/users/jkudish">Joachim Kudish</a>
 * <a href="http://profiles.wordpress.org/users/jgadbois">John Gadbois</a>
 * <a href="http://profiles.wordpress.org/users/jonahcoyote">Jonah West</a>
-* <a href=“https://profiles.wordpress.org/justinendler/“>Justin Endler</a>
+* <a href="https://profiles.wordpress.org/justinendler/">Justin Endler</a>
 * <a href="http://profiles.wordpress.org/users/kellykathryn">Kelly Groves</a>
 * <a href="http://profiles.wordpress.org/users/kelseydamas">Kelsey Damas</a>
 * <a href="http://profiles.wordpress.org/users/kyleunzicker">Kyle Unzicker</a>
@@ -179,11 +187,6 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1.3] 2016-04-28 =
-
-* Tweak: Added back the purchaser name and email address to the attendee reports for all tickets. We had inadvertently removed those in a previous release. #facepalm [45082]
-* Tweak: Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post.
-
 = [4.2] TBD =
 
 * Feature - Add a shortcode listing those upcoming events the user has indicated they will attend [44363]
@@ -193,6 +196,11 @@ Our Premium Plugins:
 * Tweak - Improved our JSON-LD output to include tickets [43595]
 * Tweak - Record the user ID associated with the creation of new attendee records [44347]
 * Tweak - Fixed translation domain on a few strings [46524]
+
+= [4.1.3] 2016-04-28 =
+
+* Tweak: Added back the purchaser name and email address to the attendee reports for all tickets. We had inadvertently removed those in a previous release. #facepalm [45082]
+* Tweak: Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post.
 
 = [4.1.2] 2016-04-11 =
 
