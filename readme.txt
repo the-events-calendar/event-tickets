@@ -12,7 +12,7 @@ Event Tickets allows your visitors to RSVP to events on your site.  Also works s
 
 == Description ==
 
-><strong>A note about support:</strong> We’re here to help troubleshoot bugs, but should set expectations early that the support forums at WordPress.org are only checked once a week.
+><strong>A note about support:</strong> Weâ€™re here to help troubleshoot bugs, but should set expectations early that the support forums at WordPress.org are only checked once a week.
 >
 > Users looking for more timely/in-depth support are encouraged to check out <a href="http://m.tri.be/18th" target="_blank" title="[new window]">Event Tickets Plus</a>.
 
@@ -24,11 +24,11 @@ Admins are able to access RSVP information from the backend, allowing them to ch
 
 The team at Modern Tribe stands by our work and offers light support every Wednesday to the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the <a href="http://m.tri.be/18th">premium add-on plugin</a> and you get access to premium support forums with 24-48 hour response times on weekdays.
 
-Enjoy using Event Tickets, know how to get under the hood and want to make money helping people? We're growing our community team and would love to hear from you. If you’re interested, <a href="http://m.tri.be/mk">check this out!</a>
+Enjoy using Event Tickets, know how to get under the hood and want to make money helping people? We're growing our community team and would love to hear from you. If youâ€™re interested, <a href="http://m.tri.be/mk">check this out!</a>
 
 = PLUG-N-PLAY & HIGHLY CUSTOMIZABLE =
 
-Event Tickets is built to work out of the box: it doesn’t use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs within minutes.
+Event Tickets is built to work out of the box: it doesnâ€™t use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs within minutes.
 
 By developers, for developers... it's ready to be the foundation for your wildest hack sessions. Complete with a skeleton stylesheet to theme fast and efficiently, loads of tools including partial template overrides, a host of template tags, hooks and filters, <a href="http://m.tri.be/eu">careful documentation</a>, as well as a <a href="https://github.com/moderntribe">library of code snippets</a> on GitHub. Events Tickets is built FOR people who build websites.
 
@@ -60,7 +60,7 @@ Looking for something else?
 
 = SUBMITTING PATCHES =
 
-If you’ve identified a bug and want to submit a patch, we’d welcome it at our <a href="https://github.com/moderntribe/event-tickets" target="_blank">GitHub page for Event Tickets.</a> Simply cue up your proposed patch as a pull request, and we’ll review as part of our release cycle and merge into the codebase if appropriate from there. (If a pull request is rejected, we’ll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin’s changelog. For more information, check out the readme at our GitHub page. Happy coding!
+If youâ€™ve identified a bug and want to submit a patch, weâ€™d welcome it at our <a href="https://github.com/moderntribe/event-tickets" target="_blank">GitHub page for Event Tickets.</a> Simply cue up your proposed patch as a pull request, and weâ€™ll review as part of our release cycle and merge into the codebase if appropriate from there. (If a pull request is rejected, weâ€™ll do our best to tell you why). Users whose pull requests are accepted will receive credit in the pluginâ€™s changelog. For more information, check out the readme at our GitHub page. Happy coding!
 
 == Installation ==
 
@@ -78,6 +78,14 @@ If you’ve identified a bug and want to submit a patch, we’d welcome it at ou
 * jQuery 1.11.x
 * Event Tickets 4.0 or above
 * The Events Calendar 4.0 or above (optional)
+
+== Screenshots ==
+
+1. RSVP setup
+2. Attendees report
+3. RSVP to an event
+4. Customize tickets with an image
+5. Ticket settings
 
 == Documentation ==
 
@@ -142,7 +150,7 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 * <a href="http://profiles.wordpress.org/users/jkudish">Joachim Kudish</a>
 * <a href="http://profiles.wordpress.org/users/jgadbois">John Gadbois</a>
 * <a href="http://profiles.wordpress.org/users/jonahcoyote">Jonah West</a>
-* <a href=“https://profiles.wordpress.org/justinendler/“>Justin Endler</a>
+* <a href=â€œhttps://profiles.wordpress.org/justinendler/â€œ>Justin Endler</a>
 * <a href="http://profiles.wordpress.org/users/kellykathryn">Kelly Groves</a>
 * <a href="http://profiles.wordpress.org/users/kelseydamas">Kelsey Damas</a>
 * <a href="http://profiles.wordpress.org/users/kyleunzicker">Kyle Unzicker</a>
@@ -153,7 +161,7 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 
 = Translations =
 
-We don’t have any translations for this plugin yet, but you can help us! You can contribute at http://translations.theeventscalendar.com
+We donâ€™t have any translations for this plugin yet, but you can help us! You can contribute at http://translations.theeventscalendar.com
 
 == Add-Ons ==
 
@@ -183,16 +191,6 @@ Our Premium Plugins:
 
 * Tweak: Added back the purchaser name and email address to the attendee reports for all tickets. We had inadvertently removed those in a previous release. #facepalm [45082]
 * Tweak: Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post.
-
-= [4.2] TBD =
-
-* Feature - Add a shortcode listing those upcoming events the user has indicated they will attend [44363]
-* Feature - Make it possible to disable the ticket form for logged out users [44347]
-* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files [36246]
-* Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (props to masteradhoc on GitHub for this change) [45467]
-* Tweak - Improved our JSON-LD output to include tickets [43595]
-* Tweak - Record the user ID associated with the creation of new attendee records [44347]
-* Tweak - Fixed translation domain on a few strings [46524]
 
 = [4.1.2] 2016-04-11 =
 
