@@ -69,3 +69,37 @@ table.tribe-events-tickets td {
 .tickets-unavailable {
 	font-style: italic;
 }
+
+.tribe-edit-rsvp {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.tribe-edit-rsvp .tribe-rsvp-item {
+	padding: 20px;
+	border: 1px solid #ededed;
+	border-bottom: 0px;
+}
+
+.tribe-edit-rsvp .tribe-rsvp-item:last-child {
+	border-bottom: 1px solid #ededed;
+}
+
+.tribe-edit-rsvp .tribe-rsvp-item .tribe-rsvp-answer {
+	float: right;
+	display: block;
+}
+
+.tribe-edit-rsvp .tribe-rsvp-item table {
+	border: 0px;
+	margin: 0;
+}
+
+.tribe-edit-rsvp .tribe-rsvp-item td {
+	border: 0px;
+}
+
+.tribe-submit-tickets-form {
+	margin-top: 20px;
+}

@@ -68,6 +68,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_OPTOUT_KEY = '_tribe_rsvp_attendee_optout';
 
 	/**
+	 * Meta key that if this attendee rsvp status
+	 *
+	 * @var string
+	 */
+	const ATTENDEE_RSVP_KEY = '_tribe_rsvp_status';
+
+	/**
 	 * Meta key that holds the full name of the tickets RSVP "buyer"
 	 *
 	 * @var string
@@ -762,6 +769,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
 			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
 			$optout     = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
+			$status     = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
@@ -780,6 +788,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					'security'        => $security,
 					'product_id'      => $product_id,
 					'check_in'        => $checkin,
+					'order_status'    => $status,
 				)
 			);
 
@@ -823,6 +832,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'purchaser_email' => $email,
 			'provider'        => __CLASS__,
 			'provider_slug'   => 'rsvp',
+			'purchase_time'   => get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $order_id ),
 		);
 
 		/**
