@@ -1,1 +1,1 @@
-<p><?php _e( 'To see a list of events you are attending you will need to login first of all!', 'event-tickets' ); ?></p>
+<p><?php _e( 'To see a list of events you are attending you will need to login.', 'event-tickets' ); ?></p>
