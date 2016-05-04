@@ -86,10 +86,20 @@ $rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id
 				 * @param array $attendee The Attendee Data
 				 * @param int   $i        Order in Which this item appears
 				 */
-				do_action( 'tribe_tickets_user_tickets_item', $attendee, $i ); ?>
+				do_action( 'tribe_tickets_view_user_rsvp_item', $attendee, $i ); ?>
 			</li>
 		<?php endforeach; ?>
 		</ul>
+	<?php endif; ?>
+
+	<?php if ( ! empty( $ticket_orders ) ): ?>
+		<?php
+		/**
+		 * Used to Include the Ticket related Items
+		 *
+		 * @param array $ticket_orders Ticket Related Items, grouped by order ID
+		 */
+		do_action( 'tribe_tickets_view_user_tickets', $ticket_orders ); ?>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $rsvp_orders ) || ! empty( $ticket_orders ) ): ?>
