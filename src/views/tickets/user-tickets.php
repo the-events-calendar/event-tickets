@@ -16,8 +16,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $events_label_singular = tribe_get_event_label_singular();
 $event_id = get_the_ID();
-$ticket_orders = Tribe__Tickets__Tickets_View::get_event_attendees_by_order( $event_id );
-$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id );
+$user_id = get_current_user_id();
+$ticket_orders = Tribe__Tickets__Tickets_View::get_event_attendees_by_order( $event_id, $user_id );
+$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id, $user_id );
 
 ?>
 
@@ -42,21 +43,19 @@ $rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id
 		<?php endif; ?>
 	</div>
 
-	<form>
+	<form method="post">
 	<?php if ( ! empty( $rsvp_orders ) ): ?>
 		<h2><?php echo sprintf( esc_html__( 'RSVP attendees on this %s', 'event-tickets' ), $events_label_singular ); ?></h2>
 		<ul class="tribe-edit-rsvp">
-		<?php foreach ( $rsvp_orders as $key => $attendee ): ?>
+		<?php foreach ( $rsvp_orders as $i => $attendee ): var_dump( $attendee ); ?>
+			<?php $key = $attendee['order_id']; ?>
 			<li class="tribe-rsvp-item" id="attendee-<?php echo $attendee['order_id']; ?>">
 				<p>
 					<span class="tribe-rsvp-answer">
 						<?php esc_html_e( 'RSVP: ', 'event-tickets' ); ?>
-						<select name="attendee[<?php echo $key; ?>][status]">
-							<option <?php selected( $attendee['order_status'], 'yes' ); ?> value="yes"><?php esc_html_e( 'Going', 'event-tickets' ); ?></option>
-							<option <?php selected( $attendee['order_status'], 'no' ); ?> value="no"><?php esc_html_e( 'Not Going', 'event-tickets' ); ?></option>
-						</select>
+						<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'] ); ?>
 					</span>
-					<?php echo sprintf( esc_html__( 'Attendee %d (Order #%d)', 'event-tickets' ), $key + 1, $attendee['order_id'] ); ?>
+					<?php echo sprintf( esc_html__( 'Attendee %d (Order #%d)', 'event-tickets' ), $i + 1, $attendee['order_id'] ); ?>
 				</p>
 				<table>
 					<tr class="tribe-tickets-full-name-row">
@@ -88,16 +87,8 @@ $rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id
 	<?php endif; ?>
 
 	<?php if ( ! empty( $rsvp_orders ) || ! empty( $ticket_orders ) ): ?>
-		<?php
-			$what_to_update = (array) esc_html__( 'RSVP', 'event-tickets' );
-			if ( ! empty( $ticket_orders ) ) {
-				$what_to_update[] = esc_html__( 'Tickets', 'event-tickets' );
-			}
-
-			$what_to_update = implode( esc_html__( ' and ', 'event-tickets' ), $what_to_update );
-		?>
 		<div class="tribe-submit-tickets-form">
-			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $what_to_update ); ?></button>
+			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), Tribe__Tickets__Tickets_View::instance()->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?></button>
 		</div>
 	<?php endif; ?>
 

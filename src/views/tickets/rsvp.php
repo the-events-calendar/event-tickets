@@ -121,6 +121,14 @@ $now = current_time( 'timestamp' );
 								<input type="email" name="attendee[email]" id="tribe-tickets-email">
 							</td>
 						</tr>
+						<tr class="tribe-tickets-order_status-row">
+							<td>
+								<label for="tribe-tickets-order_status"><?php esc_html_e( 'RSVP', 'event-tickets' ); ?>:</label>
+							</td>
+							<td colspan="3">
+								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
+							</td>
+						</tr>
 						<tr class="tribe-tickets-attendees-list-optout">
 							<td colspan="4">
 								<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout">

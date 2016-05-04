@@ -149,6 +149,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * the wrong url because it was too early on the execution
 		 */
 		add_action( 'template_redirect', array( $this, 'generate_tickets' ) );
+		add_action( 'template_redirect', array( $this, 'update_tickets' ) );
 	}
 
 	/**
@@ -262,6 +263,77 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Update the RSVP values for this user
+	 */
+	public function update_tickets() {
+		// Now fetch the display and check it
+		$display = get_query_var( 'eventDisplay', false );
+		if ( 'tickets' !== $display ) {
+			return;
+		}
+
+		if ( empty( $_POST['process-tickets'] ) || empty( $_POST['attendee'] ) ) {
+			return;
+		}
+
+		$event_id = get_the_ID();
+		$user_id = get_current_user_id();
+		$attendees = $_POST['attendee'];
+		$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id, $user_id );
+		$rsvp_order_ids = wp_list_pluck( $rsvp_orders, 'order_id' );
+
+		foreach ( $attendees as $order_id => $data ) {
+
+			// This makes sure we don't save attendees for orders that are not from this current user and event
+			if ( ! in_array( $order_id, $rsvp_order_ids ) ) {
+				continue;
+			}
+
+			$attendee_email = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
+			$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+			$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
+			$attendee_optout = empty( $data['optout'] ) ? false : (bool) $data['optout'];
+
+			if ( empty( $data['order_status'] ) || ! Tribe__Tickets__Tickets_View::instance()->is_valid_rsvp_option( $data['order_status'] ) ) {
+				$attendee_order_status = null;
+			} else {
+				$attendee_order_status = $data['order_status'];
+			}
+
+			if ( ! is_null( $attendee_order_status ) ) {
+				update_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
+			}
+
+			update_post_meta( $order_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
+
+			if ( ! is_null( $attendee_full_name ) ) {
+				update_post_meta( $order_id, $this->full_name, $attendee_full_name );
+			}
+
+			if ( ! is_null( $attendee_email ) ) {
+				update_post_meta( $order_id, $this->email, $attendee_email );
+			}
+
+			/**
+			 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated
+			 *
+			 * @var $order_id ID of attendee ticket
+			 * @var $event_id ID of event
+			 */
+			do_action( 'event_tickets_rsvp_attendee_updated', $order_id, $event_id );
+
+		}
+
+		// After Editing the Values we Update the Transient
+		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+
+		$url = get_permalink( $event_id ) . '/tickets';
+		$url = add_query_arg( 'tribe_updated', 1, $url );
+		wp_redirect( esc_url_raw( $url ) );
+		exit;
+	}
+
+	/**
 	 * Generate and store all the attendees information for a new order.
 	 */
 	public function generate_tickets( ) {
@@ -277,6 +349,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
 		$attendee_optout = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
+
+		if ( empty( $_POST['attendee']['order_status'] ) || ! Tribe__Tickets__Tickets_View::instance()->is_valid_rsvp_option( $_POST['attendee']['order_status'] ) ) {
+			$attendee_order_status = 'yes';
+		} else {
+			$attendee_order_status = $_POST['attendee']['order_status'];
+		}
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$url = get_permalink( $event_id );
@@ -332,6 +410,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 				update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
 				update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $event_id );
+				update_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
@@ -770,6 +849,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
 			$optout     = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
 			$status     = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
+			$user_id    = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
@@ -789,6 +869,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					'product_id'      => $product_id,
 					'check_in'        => $checkin,
 					'order_status'    => $status,
+					'user_id'         => $user_id,
 				)
 			);
 

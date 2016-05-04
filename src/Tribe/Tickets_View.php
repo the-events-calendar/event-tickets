@@ -139,13 +139,21 @@ class Tribe__Tickets__Tickets_View {
 		return $file;
 	}
 
-	public function get_event_attendees_by_order( $event_id, $include_rsvp = false ) {
+	public function get_event_attendees_by_order( $event_id, $user_id = null, $include_rsvp = false ) {
 		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 		$orders = array();
 
 		foreach ( $attendees as $key => $attendee ) {
+			// Ignore RSVP if we don't tell it specifically
 			if ( 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
 				continue;
+			}
+
+			// If we have a user_id then test it and ignore the ones that don't have it
+			if ( ! is_null( $user_id ) ) {
+				if ( empty( $attendee['user_id'] ) || $attendee['user_id'] != $user_id ) {
+					continue;
+				}
 			}
 
 			$orders[ (int) $attendee['order_id'] ][] = $attendee;
@@ -154,18 +162,79 @@ class Tribe__Tickets__Tickets_View {
 		return $orders;
 	}
 
-	public function get_event_rsvp_attendees( $event_id ) {
+	public function get_event_rsvp_attendees( $event_id, $user_id = null ) {
 		$all_attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 		$attendees = array();
 
 		foreach ( $all_attendees as $key => $attendee ) {
+			// Skip Non RSVP
 			if ( 'rsvp' !== $attendee['provider_slug'] ) {
 				continue;
+			}
+
+			// If we have a user_id then test it and ignore the ones that don't have it
+			if ( ! is_null( $user_id ) ) {
+				if ( empty( $attendee['user_id'] ) || $attendee['user_id'] != $user_id ) {
+					continue;
+				}
 			}
 
 			$attendees[] = $attendee;
 		}
 
 		return $attendees;
+	}
+
+	public function get_rsvp_options() {
+		$options = array(
+			'yes' => __( 'Going', 'event-tickets' ),
+			'no' => __( 'Not Going', 'event-tickets' ),
+		);
+
+		return apply_filters( 'tribe_tickets_rsvp_options', $options );
+	}
+
+	public function is_valid_rsvp_option( $option ) {
+		return in_array( $option, array_keys( $this->get_rsvp_options() ) );
+	}
+
+	public function has_rsvp_attendees( $event_id, $user_id = null ) {
+		$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id, $user_id );
+		return ! empty( $rsvp_orders );
+	}
+
+	public function has_ticket_attendees( $event_id, $user_id = null ) {
+		$ticket_orders = Tribe__Tickets__Tickets_View::get_event_attendees_by_order( $event_id, $user_id );
+		return ! empty( $ticket_orders );
+	}
+
+	public function get_description_rsvp_ticket( $event_id, $user_id = null ) {
+		$what_to_update = array();
+
+		if ( $this->has_rsvp_attendees( $event_id, $user_id ) ) {
+			$what_to_update[] = esc_html__( 'RSVP', 'event-tickets' );
+		}
+
+		if ( $this->has_ticket_attendees( $event_id, $user_id ) ) {
+			$what_to_update[] = esc_html__( 'Tickets', 'event-tickets' );
+		}
+
+		// Just Return false if array is empty
+		if ( empty( $what_to_update ) ) {
+			return false;
+		}
+
+		return implode( esc_html__( ' and ', 'event-tickets' ), $what_to_update );
+	}
+
+	public function render_rsvp_selector( $name, $selected ) {
+		$options = $this->get_rsvp_options();
+		?>
+		<select name="<?php echo esc_attr( $name ); ?>">
+		<?php foreach ( $options as $value => $label ): ?>
+			<option <?php selected( $selected, $value ); ?> value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
+		<?php endforeach; ?>
+		</select>
+		<?php
 	}
 }
