@@ -252,15 +252,35 @@ class Tribe__Tickets__Tickets_View {
 		return apply_filters( 'tribe_tickets_rsvp_options', $options );
 	}
 
+	/**
+	 * Check if the RSVP is a valid option
+	 *
+	 * @param  string  $option Which rsvp option to check
+	 * @return boolean
+	 */
 	public function is_valid_rsvp_option( $option ) {
 		return in_array( $option, array_keys( $this->get_rsvp_options() ) );
 	}
 
+	/**
+	 * Counts the Amount of RSVP attendees
+	 *
+	 * @param  int       $event_id     The Event ID it relates to
+	 * @param  int|null  $user_id      An Optional User ID
+	 * @return int
+	 */
 	public function count_rsvp_attendees( $event_id, $user_id = null ) {
 		$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id, $user_id );
 		return count( $rsvp_orders );
 	}
 
+	/**
+	 * Counts the Amount of Tickets attendees
+	 *
+	 * @param  int       $event_id     The Event ID it relates to
+	 * @param  int|null  $user_id      An Optional User ID
+	 * @return int
+	 */
 	public function count_ticket_attendees( $event_id, $user_id = null ) {
 		$ticket_orders = Tribe__Tickets__Tickets_View::get_event_attendees_by_order( $event_id, $user_id );
 		$i = 0;
@@ -272,16 +292,38 @@ class Tribe__Tickets__Tickets_View {
 		return $i;
 	}
 
+	/**
+	 * Verifies if we have RSVP attendees for this user and event
+	 *
+	 * @param  int       $event_id     The Event ID it relates to
+	 * @param  int|null  $user_id      An Optional User ID
+	 * @return int
+	 */
 	public function has_rsvp_attendees( $event_id, $user_id = null ) {
 		$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id, $user_id );
 		return ! empty( $rsvp_orders );
 	}
 
+	/**
+	 * Verifies if we have Tickets attendees for this user and event
+	 *
+	 * @param  int       $event_id     The Event ID it relates to
+	 * @param  int|null  $user_id      An Optional User ID
+	 * @return int
+	 */
 	public function has_ticket_attendees( $event_id, $user_id = null ) {
 		$ticket_orders = Tribe__Tickets__Tickets_View::get_event_attendees_by_order( $event_id, $user_id );
 		return ! empty( $ticket_orders );
 	}
 
+	/**
+	 * Gets a String to descript which type of Tickets/RSVP we are dealign with
+	 *
+	 * @param  int       $event_id     The Event ID it relates to
+	 * @param  int|null  $user_id      An Optional User ID
+	 * @param  boolean   $plurals      Return the Strings as Plural
+	 * @return int
+	 */
 	public function get_description_rsvp_ticket( $event_id, $user_id = null, $plurals = false ) {
 		$what_to_update = array();
 
@@ -301,6 +343,14 @@ class Tribe__Tickets__Tickets_View {
 		return implode( esc_html__( ' and ', 'event-tickets' ), $what_to_update );
 	}
 
+	/**
+	 * Creates the HTML for the Select Element for RSVP options
+	 *
+	 * @param  string $name     The Name of the Field
+	 * @param  string $selected The Current selected option
+	 * @param  int    $event_id Related Event (optional)
+	 * @return void
+	 */
 	public function render_rsvp_selector( $name, $selected, $event_id = null ) {
 		$options = $this->get_rsvp_options();
 
@@ -343,12 +393,23 @@ class Tribe__Tickets__Tickets_View {
 		update_post_meta( $post_id, self::RSVP_RESTRICTIONS_KEY, $rsvp_restrictions );
 	}
 
+	/**
+	 * Verifies if the Given Event has RSVP restricted
+	 *
+	 * @param  int  $event_id  The Event to Check
+	 * @return boolean
+	 */
 	public function is_event_rsvp_restricted( $event_id ) {
 		$restriction = get_post_meta( $event_id, self::RSVP_RESTRICTIONS_KEY, true );
 
 		return false;
 	}
 
+	/**
+	 * Gets a list of the possible Restrictions
+	 *
+	 * @return array
+	 */
 	public function get_restrictions() {
 		$options = array(
 			'no-restriction' => __( 'No Restrictions', 'event-tickets' ),
@@ -358,9 +419,21 @@ class Tribe__Tickets__Tickets_View {
 			'month-before' => __( 'A Month Before', 'event-tickets' ),
 		);
 
+		/**
+		 * Allows third-parties to filter and add more restrictions
+		 * If you add a new Restriction you need to also filter on the method `is_event_rsvp_restricted`
+		 */
 		return apply_filters( 'tribe_tickets_rsvp_restrictions', $options );
 	}
 
+	/**
+	 * Creates the HTML for the Select Element for Restrictions options
+	 *
+	 * @param  string $name     The Name of the Field
+	 * @param  string $selected The Current selected option
+	 *
+	 * @return void
+	 */
 	public function render_restrictions_selector( $name, $selected ) {
 		$options = $this->get_restrictions();
 	?>
