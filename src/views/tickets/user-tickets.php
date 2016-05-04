@@ -1,8 +1,6 @@
 <?php
 /**
- * Single Event Template
- * A single event. This displays the event title, description, meta, and
- * optionally, the Google map for the event.
+ * Edit Event Tickets
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/user-tickets.php
  *
@@ -81,6 +79,14 @@ $rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id
 						</td>
 					</tr>
 				</table>
+				<?php
+				/**
+				 * Used to Include More fields to each Item
+				 *
+				 * @param array $attendee The Attendee Data
+				 * @param int   $i        Order in Which this item appears
+				 */
+				do_action( 'tribe_tickets_user_tickets_item', $attendee, $i ); ?>
 			</li>
 		<?php endforeach; ?>
 		</ul>
