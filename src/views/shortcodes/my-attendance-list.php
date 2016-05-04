@@ -17,7 +17,7 @@
 	<?php if ( empty( $event_ids ) ): ?>
 
 		<li class="event-none">
-			<?php _e( 'You have not indicated your attendance for any upcoming events.', 'event-tickets' ); ?>
+			<?php esc_html_e( 'You have not indicated your attendance for any upcoming events.', 'event-tickets' ); ?>
 		</li>
 
 	<?php endif; ?>
