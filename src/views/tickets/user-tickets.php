@@ -4,7 +4,7 @@
  * A single event. This displays the event title, description, meta, and
  * optionally, the Google map for the event.
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events//single-event.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/user-tickets.php
  *
  * @package TribeEventsCalendar
  *
@@ -45,9 +45,9 @@ $rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id
 
 	<form method="post">
 	<?php if ( ! empty( $rsvp_orders ) ): ?>
-		<h2><?php echo sprintf( esc_html__( 'RSVP attendees on this %s', 'event-tickets' ), $events_label_singular ); ?></h2>
+		<h2><?php echo sprintf( esc_html__( 'RSVP on this %s', 'event-tickets' ), $events_label_singular ); ?></h2>
 		<ul class="tribe-edit-rsvp">
-		<?php foreach ( $rsvp_orders as $i => $attendee ): var_dump( $attendee ); ?>
+		<?php foreach ( $rsvp_orders as $i => $attendee ): ?>
 			<?php $key = $attendee['order_id']; ?>
 			<li class="tribe-rsvp-item" id="attendee-<?php echo $attendee['order_id']; ?>">
 				<p>
@@ -60,24 +60,24 @@ $rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id
 				<table>
 					<tr class="tribe-tickets-full-name-row">
 						<td>
-							<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
+							<label for="tribe-tickets-full-name-<?php echo $key; ?>"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
 						</td>
 						<td colspan="3">
-							<input type="text" name="attendee[<?php echo $key; ?>][full_name]" id="tribe-tickets-full-name" value="<?php echo esc_attr( $attendee['purchaser_name'] ) ?>">
+							<input type="text" name="attendee[<?php echo $key; ?>][full_name]" id="tribe-tickets-full-name-<?php echo $key; ?>" value="<?php echo esc_attr( $attendee['purchaser_name'] ) ?>">
 						</td>
 					</tr>
 					<tr class="tribe-tickets-email-row">
 						<td>
-							<label for="tribe-tickets-email"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
+							<label for="tribe-tickets-email-<?php echo $key; ?>"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
 						</td>
 						<td colspan="3">
-							<input type="email" name="attendee[<?php echo $key; ?>][email]" id="tribe-tickets-email" value="<?php echo esc_attr( $attendee['purchaser_email'] ) ?>">
+							<input type="email" name="attendee[<?php echo $key; ?>][email]" id="tribe-tickets-email-<?php echo $key; ?>" value="<?php echo esc_attr( $attendee['purchaser_email'] ) ?>">
 						</td>
 					</tr>
 					<tr class="tribe-tickets-attendees-list-optout">
 						<td colspan="4">
-							<input type="checkbox" name="attendee[<?php echo $key; ?>][optout]" id="tribe-tickets-attendees-list-optout" <?php checked( true, $attendee['optout'] ) ?>>
-							<label for="tribe-tickets-attendees-list-optout"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+							<input type="checkbox" name="attendee[<?php echo $key; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $key; ?>" <?php checked( true, $attendee['optout'] ) ?>>
+							<label for="tribe-tickets-attendees-list-optout-<?php echo $key; ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
 						</td>
 					</tr>
 				</table>
@@ -88,7 +88,7 @@ $rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id
 
 	<?php if ( ! empty( $rsvp_orders ) || ! empty( $ticket_orders ) ): ?>
 		<div class="tribe-submit-tickets-form">
-			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), Tribe__Tickets__Tickets_View::instance()->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?></button>
+			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), Tribe__Tickets__Tickets_View::instance()->get_description_rsvp_ticket( $event_id, get_current_user_id(), true ) ); ?></button>
 		</div>
 	<?php endif; ?>
 

@@ -86,6 +86,16 @@ $modules = Tribe__Tickets__Tickets::modules();
 							</span>
 						</td>
 					</tr>
+					<tr id="tribe-tickets-restrict-rsvp-changes">
+						<td>
+							<label for="tribe-tickets-restrict-rsvp-changes">
+								<?php esc_html_e( 'Restrict RSVP changes', 'event-tickets' ); ?>
+							</label>
+						</td>
+						<td>
+							<?php Tribe__Tickets__Tickets_View::instance()->render_restrictions_selector( "tribe-tickets-restrict-rsvp-changes", get_post_meta( get_the_ID(), Tribe__Tickets__Tickets_View::RSVP_RESTRICTIONS_KEY, true ) ); ?>
+						</td>
+					</tr>
 				</table>
 			</td>
 		</tr>
