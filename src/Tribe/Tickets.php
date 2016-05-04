@@ -1386,7 +1386,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			self::$have_displayed_reg_link = true;
 
-			$login_links = '<a href="' . esc_url( get_admin_url( null, 'wp-login.php' ) ) . '" target="_blank">' . __( 'Login', 'event-tickets' ) . '</a>';
+			$login_links = '<a href="' . esc_url( get_site_url( null, 'wp-login.php' ) ) . '" target="_blank">' . __( 'Login', 'event-tickets' ) . '</a>';
 
 			if ( get_option( 'users_can_register' ) ) {
 				$login_links .= ' | ' . wp_register( '', '', false );
