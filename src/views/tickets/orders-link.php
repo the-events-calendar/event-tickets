@@ -36,7 +36,7 @@ if ( 0 !== $ticket_count ) {
 	$counters[] = sprintf( _n( '%d Ticket', '%d Tickets', $ticket_count, 'event-tickets' ), $ticket_count );
 }
 
-if ( $is_event_page ){
+if ( $is_event_page ) {
 	$link = trailingslashit( get_permalink( $event_id ) ) . 'tickets';
 } else {
 	$link = home_url( '/tickets/' . $event_id );

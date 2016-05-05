@@ -73,9 +73,10 @@ class Tribe__Tickets__Tickets_View {
 
 	/**
 	 * Add a new Query Var to allow tickets editing
-	 * @param [type] $vars [description]
+	 * @param array $vars
+	 * @return array
 	 */
-	public function add_query_vars( $vars ){
+	public function add_query_vars( $vars ) {
 		$vars[] = 'tribe-edit-orders';
 		return $vars;
 	}
@@ -147,7 +148,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Only goes to the Redirect if user is not logged in
-		if ( is_user_logged_in() ){
+		if ( is_user_logged_in() ) {
 			return;
 		}
 
