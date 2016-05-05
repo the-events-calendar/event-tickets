@@ -419,11 +419,6 @@ class Tribe__Tickets__Main {
 	 * @return Tribe__Tickets__Tickets_View
 	 */
 	public function tickets_view(){
-		// For now prevents non-tec users from using this
-		if ( ! class_exists( 'Tribe__Events__Rewrite' ) ) {
-			return;
-		}
-
 		return Tribe__Tickets__Tickets_View::hook();
 	}
 

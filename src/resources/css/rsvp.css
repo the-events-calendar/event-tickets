@@ -70,33 +70,43 @@ table.tribe-events-tickets td {
 	font-style: italic;
 }
 
-.tribe-edit-rsvp {
+.tribe-rsvp-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 }
 
-.tribe-edit-rsvp .tribe-rsvp-item {
+.tribe-rsvp-list > .tribe-item {
 	padding: 20px;
 	border: 1px solid #ededed;
 	border-bottom: 0px;
 }
 
-.tribe-edit-rsvp .tribe-rsvp-item:last-child {
+.tribe-rsvp-list > .tribe-item:last-child {
 	border-bottom: 1px solid #ededed;
 }
 
-.tribe-edit-rsvp .tribe-rsvp-item .tribe-rsvp-answer {
+.tribe-rsvp-list > .tribe-item.tribe-disabled {
+	background-color: #efefef;
+	border-color: #ddd;
+	color: #717171;
+}
+
+.tribe-rsvp-list > .tribe-item.tribe-disabled:last-child {
+	border-bottom-color: #ddd;
+}
+
+.tribe-rsvp-list > .tribe-item .tribe-answer {
 	float: right;
 	display: block;
 }
 
-.tribe-edit-rsvp .tribe-rsvp-item table {
+.tribe-rsvp-list > .tribe-item table {
 	border: 0px;
 	margin: 0;
 }
 
-.tribe-edit-rsvp .tribe-rsvp-item td {
+.tribe-rsvp-list > .tribe-item td {
 	border: 0px;
 }
 

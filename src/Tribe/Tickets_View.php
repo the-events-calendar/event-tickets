@@ -7,11 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Tribe__Tickets__Tickets_View {
 
 	/**
-	 * Key for the Restrictions on the RSVP
-	 */
-	const RSVP_RESTRICTIONS_KEY = '_tribe_events_rsvp_restrictions';
-
-	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
 	 * @static
@@ -39,22 +34,95 @@ class Tribe__Tickets__Tickets_View {
 		$main = Tribe__Tickets__Main::instance();
 
 		add_action( 'template_redirect', array( $myself, 'authorization_redirect' ) );
-		add_action( 'tribe_events_pre_rewrite', array( $myself, 'add_permalink' ) );
-		add_filter( 'tribe_events_rewrite_base_slugs', array( $myself, 'add_rewrite_base_slug' ) );
+		add_action( 'template_redirect', array( $myself, 'update_tickets' ) );
+
+		// Generate Non TEC Permalink
+		add_action( 'generate_rewrite_rules', array( $myself, 'add_non_event_permalinks' ) );
+		add_filter( 'query_vars', array( $myself, 'add_query_vars' ) );
+		add_filter( 'the_content', array( $myself, 'intercept_content' ) );
+
+		// Only Applies this to TEC users
+		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
+			add_action( 'tribe_events_pre_rewrite', array( $myself, 'add_permalink' ) );
+			add_filter( 'tribe_events_rewrite_base_slugs', array( $myself, 'add_rewrite_base_slug' ) );
+		}
 
 		// Intercept Template file for Tickets
 		add_action( 'tribe_events_template', array( $myself, 'intercept_template' ), 20, 2 );
 
 		// We will inject on the Priority 4, to be happen before RSVP
 		add_action( 'tribe_events_single_event_after_the_meta', array( $myself, 'inject_link_template' ), 4 );
-
-		// Saves all Restrictions for the Event
-		foreach ( $main->post_types() as $post_type ) {
-			add_action( 'save_post_' . $post_type, array( $myself, 'save_rsvp_restriction' ) );
-		}
+		add_filter( 'the_content', array( $myself, 'inject_link_template_the_content' ) );
 
 		return $myself;
 	}
+
+
+	/**
+	 * For non events the links will be a little bit weird, but it's the safest way
+	 *
+	 * @param WP_Rewrite $wp_rewrite
+	 */
+	public function add_non_event_permalinks( WP_Rewrite $wp_rewrite  ) {
+		$rules = array(
+			'tickets/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
+		);
+
+		$wp_rewrite->rules = $rules + $wp_rewrite->rules;
+	}
+
+	/**
+	 * Add a new Query Var to allow tickets editing
+	 * @param [type] $vars [description]
+	 */
+	public function add_query_vars( $vars ){
+		$vars[] = 'tribe-edit-orders';
+		return $vars;
+	}
+
+	/**
+	 * Update the RSVP and Tickets values for each Attendee
+	 */
+	public function update_tickets() {
+		// Now fetch the display and check it
+		$display = get_query_var( 'eventDisplay', false );
+		if ( 'tickets' !== $display ) {
+			return;
+		}
+
+		if ( empty( $_POST['process-tickets'] ) || empty( $_POST['attendee'] ) ) {
+			return;
+		}
+
+		$event_id = get_the_ID();
+		$attendees = $_POST['attendee'];
+
+		foreach ( $attendees as $order_id => $data ) {
+			/**
+			 * An Action fired after each Ticket/RSVP is Updated
+			 *
+			 * @var $order_id ID of attendee ticket
+			 * @var $event_id ID of event
+			 */
+			do_action( 'event_tickets_attendee_updated', $data, $order_id, $event_id );
+		}
+
+		/**
+		 * A way for Meta to be saved, because it's groupped in a diferent way
+		 *
+		 * @var $event_id ID of event
+		 */
+		do_action( 'event_tickets_after_attendees_update', $event_id );
+
+		// After Editing the Values we Update the Transient
+		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+
+		$url = get_permalink( $event_id ) . '/tickets';
+		$url = add_query_arg( 'tribe_updated', 1, $url );
+		wp_redirect( esc_url_raw( $url ) );
+		exit;
+	}
+
 
 	/**
 	 * Makes sure only logged users can See the Tickets page.
@@ -119,6 +187,19 @@ class Tribe__Tickets__Tickets_View {
 
 	}
 
+	public function intercept_content( $content ) {
+		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
+		if ( ! $is_correct_page ) {
+			return $content;
+		}
+
+		ob_start();
+		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
+		$content = ob_get_clean();
+
+		return $content;
+	}
+
 	/**
 	 * We need to intercept the template loading and load the correct file
 	 *
@@ -149,7 +230,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Fetch the Correct File using the Tickets Hiearchy
-		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/user-tickets.php' );
+		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
 
 		return $file;
 	}
@@ -167,9 +248,36 @@ class Tribe__Tickets__Tickets_View {
 			return;
 		}
 
-		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/link-tickets.php' );
+		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
 
 		include $file;
+	}
+
+	/**
+	 * Injects the Link to The front-end Tickets page to non Events
+	 *
+	 * @param string $content  The content form the post
+	 * @return string $content
+	 */
+	public function inject_link_template_the_content( $content ) {
+		$event_id = get_the_ID();
+		$user_id = get_current_user_id();
+
+		// If we have this we are already on the tickets page
+		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
+		if ( $is_correct_page ) {
+			return $content;
+		}
+
+		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_rsvp_attendees( $event_id, $user_id ) ) {
+			return $content;
+		}
+
+		ob_start();
+		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
+		$content .= ob_get_clean();
+
+		return $content;
 	}
 
 	/**
@@ -348,19 +456,15 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @param  string $name     The Name of the Field
 	 * @param  string $selected The Current selected option
-	 * @param  int    $event_id Related Event (optional)
+	 * @param  int  $event_id   The Event/Post ID (optional)
+	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional)
 	 * @return void
 	 */
-	public function render_rsvp_selector( $name, $selected, $event_id = null ) {
+	public function render_rsvp_selector( $name, $selected, $event_id = null, $ticket_id = null ) {
 		$options = $this->get_rsvp_options();
 
-		$is_disabled = false;
-		if ( $this->is_event_rsvp_restricted( $event_id ) ) {
-			$is_disabled = 'disabled title="' . esc_attr__( 'This RSVP is no longer active.', 'event-tickets' ) . '"';
-		}
-
 		?>
-		<select <?php echo $is_disabled; ?> name="<?php echo esc_attr( $name ); ?>">
+		<select <?php echo $this->get_restriction_attr( $event_id, $ticket_id ); ?> name="<?php echo esc_attr( $name ); ?>">
 		<?php foreach ( $options as $value => $label ): ?>
 			<option <?php selected( $selected, $value ); ?> value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
 		<?php endforeach; ?>
@@ -369,79 +473,43 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Saves the RSVP Restrictions
-	 *
-	 * @param int $post_id
-	 */
-	public function save_rsvp_restriction( $post_id ) {
-		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
-			return;
-		}
-
-		// Bail on autosaves/bulk updates
-		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
-			return;
-		}
-
-		$rsvp_restrictions = $_POST['tribe-tickets-restrict-rsvp-changes'];
-
-		$options = $this->get_restrictions();
-		if ( ! in_array( $rsvp_restrictions, array_keys( $options ) ) ) {
-			return;
-		}
-
-		update_post_meta( $post_id, self::RSVP_RESTRICTIONS_KEY, $rsvp_restrictions );
-	}
-
-	/**
 	 * Verifies if the Given Event has RSVP restricted
 	 *
-	 * @param  int  $event_id  The Event to Check
+	 * @param  int  $event_id   The Event/Post ID (optional)
+	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional)
+	 * @param  int  $user_id    An User ID (optional)
 	 * @return boolean
 	 */
-	public function is_event_rsvp_restricted( $event_id ) {
-		$restriction = get_post_meta( $event_id, self::RSVP_RESTRICTIONS_KEY, true );
-
-		return false;
-	}
-
-	/**
-	 * Gets a list of the possible Restrictions
-	 *
-	 * @return array
-	 */
-	public function get_restrictions() {
-		$options = array(
-			'no-restriction' => __( 'No Restrictions', 'event-tickets' ),
-			'before-of' => __( 'Before the Event', 'event-tickets' ),
-			'day-of' => __( 'On the day of the Event', 'event-tickets' ),
-			'week-before' => __( 'A Week Before', 'event-tickets' ),
-			'month-before' => __( 'A Month Before', 'event-tickets' ),
-		);
+	public function is_rsvp_restricted( $event_id = null, $ticket_id = null, $user_id = null ) {
+		// By default we always pass the current User
+		if ( is_null( $user_id ) ) {
+			$user_id = get_current_user_id();
+		}
 
 		/**
-		 * Allows third-parties to filter and add more restrictions
-		 * If you add a new Restriction you need to also filter on the method `is_event_rsvp_restricted`
+		 * Allow users to filter if this Event or Ticket has Restricted RSVP
+		 * @param  boolean  $restricted Is this Event or Ticket Restricted?
+		 * @param  int      $event_id   The Event/Post ID (optional)
+		 * @param  int      $ticket_id  The Ticket/RSVP ID (optional)
+		 * @param  int      $user_id    An User ID (optional)
 		 */
-		return apply_filters( 'tribe_tickets_rsvp_restrictions', $options );
+		return apply_filters( 'tribe_tickets_rsvp_restriction', false, $event_id, $ticket_id, $user_id );
 	}
 
 	/**
-	 * Creates the HTML for the Select Element for Restrictions options
+	 * Gets a HTML Attribute for input/select/textarea to be disabled
 	 *
-	 * @param  string $name     The Name of the Field
-	 * @param  string $selected The Current selected option
-	 *
-	 * @return void
+	 * @param  int  $event_id   The Event/Post ID (optional)
+	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional)
+	 * @return boolean
 	 */
-	public function render_restrictions_selector( $name, $selected ) {
-		$options = $this->get_restrictions();
-	?>
-		<select name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $name ); ?>">
-		<?php foreach ( $options as $value => $label ): ?>
-			<option <?php selected( $selected, $value ); ?> value="<?php echo esc_attr( $value ); ?>"><?php echo esc_html( $label ); ?></option>
-		<?php endforeach; ?>
-		</select>
-	<?php
+	public function get_restriction_attr( $event_id = null, $ticket_id = null ) {
+		$is_disabled = '';
+		if ( $this->is_rsvp_restricted( $event_id, $ticket_id ) ) {
+			$is_disabled = 'disabled title="' . esc_attr__( 'This RSVP is no longer active.', 'event-tickets' ) . '"';
+		}
+
+		return $is_disabled;
 	}
+
 }

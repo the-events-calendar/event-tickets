@@ -64,12 +64,12 @@ table.tribe-events-tickets td {
 	font-style: italic;
 }
 
-.tribe-edit-rsvp {
+.tribe-rsvp-list {
 	list-style: none;
 	padding: 0;
 	margin: 0;
 
-	.tribe-rsvp-item {
+	> .tribe-item {
 		padding: 20px;
 		border: 1px solid #ededed;
 		border-bottom: 0px;
@@ -78,7 +78,17 @@ table.tribe-events-tickets td {
 			border-bottom: 1px solid #ededed;
 		}
 
-		.tribe-rsvp-answer {
+		&.tribe-disabled {
+			background-color: #efefef;
+			border-color: #ddd;
+			color: #717171;
+
+			&:last-child {
+				border-bottom-color: #ddd;
+			}
+		}
+
+		.tribe-answer {
 			float: right;
 			display: block;
 		}
@@ -91,7 +101,6 @@ table.tribe-events-tickets td {
 		td {
 			border: 0px;
 		}
-
 	}
 }
 

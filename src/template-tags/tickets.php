@@ -298,3 +298,51 @@ function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src'
 
 	return $url;
 }
+
+
+/**
+ * Includes a template part, similar to the WP get template part, but looks
+ * in the correct directories for Tribe Tickets templates
+ *
+ * @param string      $slug
+ * @param null|string $name
+ * @param array       $data optional array of vars to inject into the template part
+ *
+ * @uses Tribe__Tickets__Templates::get_template_hierarchy
+ **/
+function tribe_tickets_get_template_part( $slug, $name = null, array $data = null ) {
+
+	// Execute code for this part
+	do_action( 'tribe_tickets_pre_get_template_part_' . $slug, $slug, $name, $data );
+	// Setup possible parts
+	$templates = array();
+	if ( isset( $name ) ) {
+		$templates[] = $slug . '-' . $name . '.php';
+	}
+	$templates[] = $slug . '.php';
+
+	// Allow template parts to be filtered
+	$templates = apply_filters( 'tribe_tickets_get_template_part_templates', $templates, $slug, $name );
+
+	// Make any provided variables available in the template's symbol table
+	if ( is_array( $data ) ) {
+		extract( $data );
+	}
+
+	// loop through templates, return first one found.
+	foreach ( $templates as $template ) {
+		$file = Tribe__Tickets__Templates::get_template_hierarchy( $template, array( 'disable_view_check' => true ) );
+		$file = apply_filters( 'tribe_tickets_get_template_part_path', $file, $template, $slug, $name );
+		$file = apply_filters( 'tribe_tickets_get_template_part_path_' . $template, $file, $slug, $name );
+		if ( file_exists( $file ) ) {
+			ob_start();
+			do_action( 'tribe_tickets_before_get_template_part', $template, $file, $template, $slug, $name );
+			include( $file );
+			do_action( 'tribe_tickets_after_get_template_part', $template, $file, $slug, $name );
+			$html = ob_get_clean();
+			echo apply_filters( 'tribe_tickets_get_template_part_content', $html, $template, $file, $slug, $name );
+		}
+	}
+	do_action( 'tribe_tickets_post_get_template_part_' . $slug, $slug, $name, $data );
+}
+
