@@ -99,7 +99,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @param WP_Rewrite $wp_rewrite
 	 */
 	public function add_non_event_permalinks( WP_Rewrite $wp_rewrite  ) {
-		$wp_rewrite->rules = $this->rewrite_rules_array + $wp_rewrite->rules;
+		$wp_rewrite->rules = $this->rewrite_rules_array() + $wp_rewrite->rules;
 	}
 
 	/**
