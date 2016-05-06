@@ -277,7 +277,7 @@ class Tribe__Tickets__Tickets_View {
 		$event_id = get_the_ID();
 		$user_id = get_current_user_id();
 
-		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_rsvp_attendees( $event_id, $user_id ) ) {
+		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_ticket_attendees( $event_id, $user_id ) ) {
 			return;
 		}
 
@@ -302,7 +302,7 @@ class Tribe__Tickets__Tickets_View {
 			return $content;
 		}
 
-		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_rsvp_attendees( $event_id, $user_id ) ) {
+		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_ticket_attendees( $event_id, $user_id ) ) {
 			return $content;
 		}
 
