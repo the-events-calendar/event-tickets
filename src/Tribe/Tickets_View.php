@@ -39,6 +39,7 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'generate_rewrite_rules', array( $myself, 'add_non_event_permalinks' ) );
 		add_filter( 'query_vars', array( $myself, 'add_query_vars' ) );
 		add_filter( 'the_content', array( $myself, 'intercept_content' ) );
+		add_action( 'parse_request', array( $this, 'maybe_regenerate_rewrite_rules' ) );
 
 		// Only Applies this to TEC users
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
@@ -56,6 +57,41 @@ class Tribe__Tickets__Tickets_View {
 		return $myself;
 	}
 
+	/**
+	 * Tries to Flush the Rewrite rules
+	 *
+	 * @return void
+	 */
+	public function maybe_regenerate_rewrite_rules() {
+		// if they don't have any rewrite rules, do nothing
+		// Don't try to run stuff for non-logged users (too time consuming)
+		if ( ! is_array( $GLOBALS['wp_rewrite']->rules ) || ! is_user_logged_in() ) {
+			return;
+		}
+
+		$rules = $this->rewrite_rules_array();
+
+		$diff = array_diff( $rules, $GLOBALS['wp_rewrite']->rules );
+		$key_diff = array_diff_assoc( $rules, $GLOBALS['wp_rewrite']->rules );
+
+		if ( empty( $diff ) && empty( $key_diff ) ) {
+			return;
+		}
+
+		flush_rewrite_rules();
+	}
+
+	/**
+	 * Gets the List of Rewrite rules we are using here
+	 *
+	 * @return array
+	 */
+	public function rewrite_rules_array() {
+		$rules = array(
+			'tickets/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
+		);
+		return $rules;
+	}
 
 	/**
 	 * For non events the links will be a little bit weird, but it's the safest way
@@ -63,11 +99,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @param WP_Rewrite $wp_rewrite
 	 */
 	public function add_non_event_permalinks( WP_Rewrite $wp_rewrite  ) {
-		$rules = array(
-			'tickets/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
-		);
-
-		$wp_rewrite->rules = $rules + $wp_rewrite->rules;
+		$wp_rewrite->rules = $this->rewrite_rules_array + $wp_rewrite->rules;
 	}
 
 	/**
