@@ -316,7 +316,7 @@ function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src'
 function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
 
 	/**
-	 * Files an Action before echoing the Template
+	 * Fires an Action before echoing the Template
 	 *
 	 * @param string $slug     Slug for this template
 	 * @param string $name     Template name
@@ -413,6 +413,8 @@ function tribe_tickets_get_template_part( $slug, $name = null, array $data = nul
 		if ( $echo ) {
 			echo $html;
 		}
+
+		break;
 	}
 
 	/**
