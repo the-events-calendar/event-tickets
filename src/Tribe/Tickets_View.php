@@ -422,7 +422,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_rsvp_attendees( $event_id, $user_id = null ) {
-		$rsvp_orders = $this->:get_event_rsvp_attendees( $event_id, $user_id );
+		$rsvp_orders = $this->get_event_rsvp_attendees( $event_id, $user_id );
 		return count( $rsvp_orders );
 	}
 
