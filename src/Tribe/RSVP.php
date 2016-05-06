@@ -68,6 +68,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_OPTOUT_KEY = '_tribe_rsvp_attendee_optout';
 
 	/**
+	 * Meta key that if this attendee rsvp status
+	 *
+	 * @var string
+	 */
+	const ATTENDEE_RSVP_KEY = '_tribe_rsvp_status';
+
+	/**
 	 * Meta key that holds the full name of the tickets RSVP "buyer"
 	 *
 	 * @var string
@@ -142,6 +149,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * the wrong url because it was too early on the execution
 		 */
 		add_action( 'template_redirect', array( $this, 'generate_tickets' ) );
+		add_action( 'event_tickets_attendee_updated', array( $this, 'update_attendee_data' ), 10, 3 );
 	}
 
 	/**
@@ -255,6 +263,60 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Update the RSVP values for this user
+	 */
+	public function update_attendee_data( $data, $order_id, $event_id ) {
+		$user_id = get_current_user_id();
+
+		$rsvp_orders = Tribe__Tickets__Tickets_View::instance()->get_event_rsvp_attendees( $event_id, $user_id );
+		$rsvp_order_ids = wp_list_pluck( $rsvp_orders, 'order_id' );
+
+		// This makes sure we don't save attendees for orders that are not from this current user and event
+		if ( ! in_array( $order_id, $rsvp_order_ids ) ) {
+			return;
+		}
+
+		// Get the Attendee Data, it's important for testing
+		foreach ( $rsvp_orders as $test_attendee ) {
+			if ( $order_id === $test_attendee['order_id'] ){
+				continue;
+			}
+
+			$attendee = $test_attendee;
+		}
+
+		// Dont try to Save if it's restricted
+		if ( ! isset( $attendee['product_id'] ) || Tribe__Tickets__Tickets_View::instance()->is_rsvp_restricted( $event_id, $attendee['product_id'] ) ) {
+			return;
+		}
+
+		$attendee_email = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
+		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
+		$attendee_optout = empty( $data['optout'] ) ? false : (bool) $data['optout'];
+
+		if ( empty( $data['order_status'] ) || ! Tribe__Tickets__Tickets_View::instance()->is_valid_rsvp_option( $data['order_status'] ) ) {
+			$attendee_order_status = null;
+		} else {
+			$attendee_order_status = $data['order_status'];
+		}
+
+		if ( ! is_null( $attendee_order_status ) ) {
+			update_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
+		}
+
+		update_post_meta( $order_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
+
+		if ( ! is_null( $attendee_full_name ) ) {
+			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
+		}
+
+		if ( ! is_null( $attendee_email ) ) {
+			update_post_meta( $order_id, $this->email, $attendee_email );
+		}
+	}
+
+	/**
 	 * Generate and store all the attendees information for a new order.
 	 */
 	public function generate_tickets( ) {
@@ -270,6 +332,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
 		$attendee_optout = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
+
+		if ( empty( $_POST['attendee']['order_status'] ) || ! Tribe__Tickets__Tickets_View::instance()->is_valid_rsvp_option( $_POST['attendee']['order_status'] ) ) {
+			$attendee_order_status = 'yes';
+		} else {
+			$attendee_order_status = $_POST['attendee']['order_status'];
+		}
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$url = get_permalink( $event_id );
@@ -325,6 +393,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 				update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
 				update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $event_id );
+				update_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
@@ -758,10 +827,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendees = array();
 
 		foreach ( $attendees_query->posts as $attendee ) {
-			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
-			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
-			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
-			$optout     = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
+			$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
+			$security     = get_post_meta( $attendee->ID, $this->security_code, true );
+			$product_id   = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
+			$optout       = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
+			$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
+			$status_label = Tribe__Tickets__Tickets_View::instance()->get_rsvp_options( $status );
+			$user_id      = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
@@ -774,12 +846,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee_data = array_merge(
 				$this->get_order_data( $attendee->ID ),
 				array(
-					'optout'          => $optout,
-					'ticket'          => $product_title,
-					'attendee_id'     => $attendee->ID,
-					'security'        => $security,
-					'product_id'      => $product_id,
-					'check_in'        => $checkin,
+					'optout'             => $optout,
+					'ticket'             => $product_title,
+					'attendee_id'        => $attendee->ID,
+					'security'           => $security,
+					'product_id'         => $product_id,
+					'check_in'           => $checkin,
+					'order_status'       => $status,
+					'order_status_label' => $status_label,
+					'user_id'            => $user_id,
 				)
 			);
 
@@ -823,6 +898,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'purchaser_email' => $email,
 			'provider'        => __CLASS__,
 			'provider_slug'   => 'rsvp',
+			'purchase_time'   => get_post_time( Tribe__Date_Utils::DBDATETIMEFORMAT, false, $order_id ),
 		);
 
 		/**

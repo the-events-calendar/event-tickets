@@ -119,6 +119,7 @@ class Tribe__Tickets__Main {
 		$this->has_initialized = true;
 
 		$this->rsvp();
+
 		$this->user_event_confirmation_list_shortcode();
 	}
 
@@ -399,6 +400,8 @@ class Tribe__Tickets__Main {
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 
 		$this->settings_tab();
+
+		$this->tickets_view();
 	}
 
 	/**
@@ -406,6 +409,17 @@ class Tribe__Tickets__Main {
 	 */
 	public function rsvp() {
 		return Tribe__Tickets__RSVP::get_instance();
+	}
+
+	/**
+	 * Creates the Tickets FrontEnd facing View class
+	 *
+	 * This will happen on `plugins_loaded` by default
+	 *
+	 * @return Tribe__Tickets__Tickets_View
+	 */
+	public function tickets_view() {
+		return Tribe__Tickets__Tickets_View::hook();
 	}
 
 	/**

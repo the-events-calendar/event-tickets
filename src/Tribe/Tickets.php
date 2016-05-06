@@ -96,7 +96,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var
 		 */
 		protected $pluginUrl;
-		
+
 		/**
 		 * Constant with the Transient Key for Attendees Cache
 		 */
@@ -1420,7 +1420,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! is_user_logged_in() && $this->disable_for_logged_out_users() ) {
 				$enabled = false;
 			}
-			
+
 			/**
 			 * Controls whether the ticket form is enabled or not.
 			 *
@@ -1432,7 +1432,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * If we should disable the ticket form for logged out users.
-		 * 
+		 *
 		 * @return bool
 		 */
 		protected function disable_for_logged_out_users() {
