@@ -1386,7 +1386,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			self::$have_displayed_reg_link = true;
 
-			$login_links = '<a href="' . esc_url( get_site_url( null, 'wp-login.php' ) ) . '" target="_blank">' . __( 'Login', 'event-tickets' ) . '</a>';
+			// We should include a redirect query for a good UX and because some plugins
+			// like Community Events can ban users from the admin environment (let's not
+			// leave them stranded)
+			$login_link = add_query_arg(
+				'redirect_to',
+				rawurlencode( get_permalink() ),
+				get_site_url( null, 'wp-login.php' )
+			);
+
+			$login_links = '<a href="' . esc_url( $login_link ) . '">' . __( 'Login', 'event-tickets' ) . '</a>';
 
 			if ( get_option( 'users_can_register' ) ) {
 				$login_links .= ' | ' . wp_register( '', '', false );
