@@ -31,7 +31,6 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public static function hook() {
 		$myself = self::instance();
-		$main = Tribe__Tickets__Main::instance();
 
 		add_action( 'template_redirect', array( $myself, 'authorization_redirect' ) );
 		add_action( 'template_redirect', array( $myself, 'update_tickets' ) );
@@ -48,7 +47,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Intercept Template file for Tickets
-		add_action( 'tribe_events_template', array( $myself, 'intercept_template' ), 20, 2 );
+		add_filter( 'tribe_events_template', array( $myself, 'intercept_template' ), 20, 2 );
 
 		// We will inject on the Priority 4, to be happen before RSVP
 		add_action( 'tribe_events_single_event_after_the_meta', array( $myself, 'inject_link_template' ), 4 );
@@ -379,7 +378,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_rsvp_attendees( $event_id, $user_id = null ) {
-		$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id, $user_id );
+		$rsvp_orders = $this->:get_event_rsvp_attendees( $event_id, $user_id );
 		return count( $rsvp_orders );
 	}
 
@@ -391,12 +390,10 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_ticket_attendees( $event_id, $user_id = null ) {
-		$ticket_orders = Tribe__Tickets__Tickets_View::get_event_attendees_by_order( $event_id, $user_id );
+		$ticket_orders = $this->get_event_attendees_by_order( $event_id, $user_id );
 		$i = 0;
 		foreach ( $ticket_orders as $orders ) {
-			foreach ( $orders as $attendee ) {
-				$i++;
-			}
+			$i += count( $orders );
 		}
 		return $i;
 	}
@@ -409,7 +406,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function has_rsvp_attendees( $event_id, $user_id = null ) {
-		$rsvp_orders = Tribe__Tickets__Tickets_View::get_event_rsvp_attendees( $event_id, $user_id );
+		$rsvp_orders = $this->get_event_rsvp_attendees( $event_id, $user_id );
 		return ! empty( $rsvp_orders );
 	}
 
@@ -421,7 +418,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function has_ticket_attendees( $event_id, $user_id = null ) {
-		$ticket_orders = Tribe__Tickets__Tickets_View::get_event_attendees_by_order( $event_id, $user_id );
+		$ticket_orders = $this->get_event_attendees_by_order( $event_id, $user_id );
 		return ! empty( $ticket_orders );
 	}
 
