@@ -418,7 +418,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @return Tribe__Tickets__Tickets_View
 	 */
-	public function tickets_view(){
+	public function tickets_view() {
 		return Tribe__Tickets__Tickets_View::hook();
 	}
 

@@ -39,7 +39,7 @@ class Tribe__Tickets__Tickets_View {
 		add_action( 'generate_rewrite_rules', array( $myself, 'add_non_event_permalinks' ) );
 		add_filter( 'query_vars', array( $myself, 'add_query_vars' ) );
 		add_filter( 'the_content', array( $myself, 'intercept_content' ) );
-		add_action( 'parse_request', array( $this, 'maybe_regenerate_rewrite_rules' ) );
+		add_action( 'parse_request', array( $myself, 'maybe_regenerate_rewrite_rules' ) );
 
 		// Only Applies this to TEC users
 		if ( class_exists( 'Tribe__Events__Rewrite' ) ) {
@@ -131,12 +131,13 @@ class Tribe__Tickets__Tickets_View {
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**
-			 * An Action fired after each Ticket/RSVP is Updated
+			 * An Action fired for each one of the Attendees that were posted on the Order Tickets page
 			 *
+			 * @var $data     Infomation that we are trying to save
 			 * @var $order_id ID of attendee ticket
 			 * @var $event_id ID of event
 			 */
-			do_action( 'event_tickets_attendee_updated', $data, $order_id, $event_id );
+			do_action( 'event_tickets_attendee_update', $data, $order_id, $event_id );
 		}
 
 		/**
@@ -151,7 +152,7 @@ class Tribe__Tickets__Tickets_View {
 
 		$url = get_permalink( $event_id ) . '/tickets';
 		$url = add_query_arg( 'tribe_updated', 1, $url );
-		wp_redirect( esc_url_raw( $url ) );
+		wp_safe_redirect( esc_url_raw( $url ) );
 		exit;
 	}
 
