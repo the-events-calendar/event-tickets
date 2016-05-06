@@ -345,9 +345,12 @@ class Tribe__Tickets__Tickets_View {
 
 	/**
 	 * Gets a List of Possible RSVP answers
+	 *
+	 * @param string $selected Allows users to check if an option exists or get it's label
+	 *
 	 * @return array
 	 */
-	public function get_rsvp_options() {
+	public function get_rsvp_options( $selected = null ) {
 		$options = array(
 			'yes' => __( 'Going', 'event-tickets' ),
 			'no' => __( 'Not Going', 'event-tickets' ),
@@ -356,8 +359,16 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Allow users to add more RSVP options
 		 * @param array $options
+		 * @param string $selected
 		 */
-		return apply_filters( 'tribe_tickets_rsvp_options', $options );
+		$options = apply_filters( 'tribe_tickets_rsvp_options', $options, $selected );
+
+		// If an option was passed return it's label, but if doesn't exist return false
+		if ( ! is_null( $selected ) ) {
+			return isset( $options[ $selected  ] ) ? $options[ $selected  ] : false;
+		}
+
+		return $options;
 	}
 
 	/**

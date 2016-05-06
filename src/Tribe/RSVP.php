@@ -827,12 +827,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendees = array();
 
 		foreach ( $attendees_query->posts as $attendee ) {
-			$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
-			$security   = get_post_meta( $attendee->ID, $this->security_code, true );
-			$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
-			$optout     = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
-			$status     = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
-			$user_id    = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
+			$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
+			$security     = get_post_meta( $attendee->ID, $this->security_code, true );
+			$product_id   = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
+			$optout       = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
+			$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
+			$status_label = Tribe__Tickets__Tickets_View::instance()->get_rsvp_options( $status );
+			$user_id      = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
@@ -845,14 +846,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee_data = array_merge(
 				$this->get_order_data( $attendee->ID ),
 				array(
-					'optout'          => $optout,
-					'ticket'          => $product_title,
-					'attendee_id'     => $attendee->ID,
-					'security'        => $security,
-					'product_id'      => $product_id,
-					'check_in'        => $checkin,
-					'order_status'    => $status,
-					'user_id'         => $user_id,
+					'optout'             => $optout,
+					'ticket'             => $product_title,
+					'attendee_id'        => $attendee->ID,
+					'security'           => $security,
+					'product_id'         => $product_id,
+					'check_in'           => $checkin,
+					'order_status'       => $status,
+					'order_status_label' => $status_label,
+					'user_id'            => $user_id,
 				)
 			);
 
