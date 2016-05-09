@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Event Tickets
-Description: Event Tickets allows you to sell tickets to events
+Description: Event Tickets allows your guests to RSVP from any post, page, or event.
 Version: 4.1.3
 Author: Modern Tribe, Inc.
 Author URI: http://m.tri.be/28
