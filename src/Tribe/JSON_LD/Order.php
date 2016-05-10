@@ -93,7 +93,7 @@ class Tribe__Events__JSON_LD__Order {
 	 * @param WP_Post $event
 	 * @return object
 	 */
-	protected function get_offer( $ticket, $event ) {
+	public function get_offer( $ticket, $event ) {
 		$offer = (object) array(
 			'@type'        => 'Offer',
 			'url'          => $ticket->frontend_link,
@@ -127,7 +127,7 @@ class Tribe__Events__JSON_LD__Order {
 	 * @param object  $ticket
 	 * @return string
 	 */
-	protected function get_ticket_availability( $ticket ) {
+	public function get_ticket_availability( $ticket ) {
 		$stock = $ticket->stock();
 
 		if ( $stock <= 0 && $stock !== '' ) {
