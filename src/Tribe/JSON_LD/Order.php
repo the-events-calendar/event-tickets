@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * A JSON-LD class to hook and change how Orders work on Events
  * @todo rework this class to make it standalone from The Events Calendar
  */
-class Tribe__Events__JSON_LD__Order {
+class Tribe__Tickets__JSON_LD__Order {
 
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
@@ -41,6 +41,13 @@ class Tribe__Events__JSON_LD__Order {
 	 * Setup Google Event Data for tickets.
 	 */
 	public function hook() {
+		add_filter( 'tribe_json_ld_event_object', array( $this, 'add_tickets_data' ) );
+	}
+
+	/**
+	 * Used to setup variables on this class
+	 */
+	public function __construct() {
 		/**
 		 * Allow users to change the Low inventory mark
 		 * This is the old filter
@@ -56,8 +63,6 @@ class Tribe__Events__JSON_LD__Order {
 		 * @var int
 		 */
 		$this->low_stock = apply_filters( 'tribe_tickets_json_ld_low_inventory_level', $this->low_stock );
-
-		add_filter( 'tribe_json_ld_event_object', array( $this, 'add_tickets_data' ) );
 	}
 
 	/**
