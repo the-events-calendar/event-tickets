@@ -196,9 +196,14 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function authorization_redirect() {
 		global $wp_query;
+		/**
+		 * Apply Event Filters for better TEC compatibility
+		 * @param boolean
+		 */
+		$is_event_query = apply_filters( 'tribe_query_is_event_query', ! empty( $GLOBALS['wp_query']->tribe_is_event_query ) );
 
 		// When it's not our query we don't care
-		if ( empty( $wp_query->tribe_is_event_query ) ) {
+		if ( ! $is_event_query ) {
 			return;
 		}
 
@@ -356,7 +361,6 @@ class Tribe__Tickets__Tickets_View {
 		$post_id = get_the_ID();
 		$user_id = get_current_user_id();
 
-
 		/**
 		 * Apply Event Filters for better TEC compatibility
 		 * @param boolean
@@ -364,7 +368,7 @@ class Tribe__Tickets__Tickets_View {
 		$is_event_query = apply_filters( 'tribe_query_is_event_query', ! empty( $GLOBALS['wp_query']->tribe_is_event_query ) );
 
 		// When it's not our query we don't care
-		if ( ! $is_event_query ) || ! $in_the_loop ) {
+		if ( ! $is_event_query || ! $in_the_loop ) {
 			return $content;
 		}
 
