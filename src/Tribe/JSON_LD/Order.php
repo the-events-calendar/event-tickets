@@ -49,7 +49,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	/**
 	 * Used to setup variables on this class
 	 */
-	public function __construct() {
+	protected function __construct() {
 		/**
 		 * Allow users to change the Low inventory mark
 		 * This is the old filter
