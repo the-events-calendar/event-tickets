@@ -1331,7 +1331,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$form_is_enabled = $this->form_is_enabled();
 
-			if ( is_admin() || ! $form_is_enabled ) {
+			// Prevents firing more then it needs too outside of the loop
+			$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
+
+			if ( is_admin() || ! $form_is_enabled || ! $in_the_loop ) {
 				return $content;
 			} elseif ( ! $form_is_enabled ) {
 				return $content . $this->login_or_register_advice();

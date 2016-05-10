@@ -38,6 +38,7 @@ class Tribe__Tickets__Tickets_View {
 		// Generate Non TEC Permalink
 		add_action( 'generate_rewrite_rules', array( $myself, 'add_non_event_permalinks' ) );
 		add_filter( 'query_vars', array( $myself, 'add_query_vars' ) );
+		add_action( 'parse_request', array( $myself, 'prevent_page_redirect' ) );
 		add_filter( 'the_content', array( $myself, 'intercept_content' ) );
 		add_action( 'parse_request', array( $myself, 'maybe_regenerate_rewrite_rules' ) );
 
@@ -52,9 +53,40 @@ class Tribe__Tickets__Tickets_View {
 
 		// We will inject on the Priority 4, to be happen before RSVP
 		add_action( 'tribe_events_single_event_after_the_meta', array( $myself, 'inject_link_template' ), 4 );
-		add_filter( 'the_content', array( $myself, 'inject_link_template_the_content' ) );
+		add_filter( 'the_content', array( $myself, 'inject_link_template_the_content' ), 9 );
 
 		return $myself;
+	}
+
+	/**
+	 * By default WordPress has a nasty if query_var['p'] is a page then redirect to the page
+	 * so we will change the variables accordingly
+	 *
+	 * @param  WP_Query $query The current Query
+	 * @return void
+	 */
+	public function prevent_page_redirect( $query ) {
+		$is_correct_page = isset( $query->query_vars['tribe-edit-orders'] ) && $query->query_vars['tribe-edit-orders'];
+
+		if ( ! $is_correct_page ) {
+			return;
+		}
+
+		// This has no Performance problems, since get_post uses caching and we use this method later on.
+		$post = get_post( absint( $query->query_vars['p'] ) );
+		if ( ! $post ) {
+			return;
+		}
+
+		if ( 'page' !== $post->post_type ) {
+			return;
+		}
+
+		// Unset the p variable, we dont need it anymore
+		unset( $query->query_vars['p'] );
+
+		// Set `page_id` for faster query
+		$query->query_vars['page_id'] = $post->ID;
 	}
 
 	/**
@@ -163,8 +195,15 @@ class Tribe__Tickets__Tickets_View {
 	 * @return void
 	 */
 	public function authorization_redirect() {
-		// When it's not our query we don't care
-		if ( ! tribe_is_event_query() ) {
+		global $wp_query;
+
+		/**
+		 * @todo Remove this after we implement the Rewrites in Common
+		 */
+		$is_event_query = ! empty( $GLOBALS['wp_query']->tribe_is_event_query );
+
+		// When it's not Events Query and we have TEC active we dont care
+		if ( class_exists( 'Tribe__Events__Main' ) && ! $is_event_query ) {
 			return;
 		}
 
@@ -214,15 +253,30 @@ class Tribe__Tickets__Tickets_View {
 			array(
 				Tribe__Events__Main::POSTTYPE => '%1',
 				'post_type' => Tribe__Events__Main::POSTTYPE,
-				'eventDisplay' => 'tickets'
+				'eventDisplay' => 'tickets',
+			)
+		);
+
+		// Adds the `tickets` endpoint for recurring events
+		$rewrite->single(
+			array( '(\d{4}-\d{2}-\d{2})', '{{ tickets }}' ),
+			array(
+				Tribe__Events__Main::POSTTYPE => '%1',
+				'eventDate' => '%2',
+				'post_type' => Tribe__Events__Main::POSTTYPE,
+				'eventDisplay' => 'tickets',
 			)
 		);
 
 	}
 
 	public function intercept_content( $content ) {
+		// Prevents firing more then it needs too outside of the loop
+		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
+
+		// Prevents Weird
 		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
-		if ( ! $is_correct_page ) {
+		if ( ! $is_correct_page || ! $in_the_loop ) {
 			return $content;
 		}
 
@@ -241,8 +295,15 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string           The correct File path for the tickets endpoint
 	 */
 	public function intercept_template( $old_file, $template ) {
+		global $wp_query;
+
+		/**
+		 * @todo Remove this after we implement the Rewrites in Common
+		 */
+		$is_event_query = ! empty( $wp_query->tribe_is_event_query );
+
 		// When it's not our query we don't care
-		if ( ! tribe_is_event_query() ) {
+		if ( ! $is_event_query ) {
 			return $old_file;
 		}
 
@@ -293,8 +354,21 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string $content
 	 */
 	public function inject_link_template_the_content( $content ) {
-		$event_id = get_the_ID();
+		// Prevents firing more then it needs too outside of the loop
+		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
+
+		$post_id = get_the_ID();
 		$user_id = get_current_user_id();
+
+		/**
+		 * @todo Remove this after we implement the Rewrites in Common
+		 */
+		$is_event_query = ! empty( $GLOBALS['wp_query']->tribe_is_event_query );
+
+		// When it's not our query we don't care
+		if ( ! $is_event_query || ! $in_the_loop ) {
+			return $content;
+		}
 
 		// If we have this we are already on the tickets page
 		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
@@ -302,7 +376,7 @@ class Tribe__Tickets__Tickets_View {
 			return $content;
 		}
 
-		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_ticket_attendees( $event_id, $user_id ) ) {
+		if ( ! $this->has_rsvp_attendees( $post_id, $user_id ) && ! $this->has_ticket_attendees( $post_id, $user_id ) ) {
 			return $content;
 		}
 
