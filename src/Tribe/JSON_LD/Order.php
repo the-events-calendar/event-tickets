@@ -40,8 +40,10 @@ class Tribe__Tickets__JSON_LD__Order {
 	/**
 	 * Setup Google Event Data for tickets.
 	 */
-	public function hook() {
-		add_filter( 'tribe_json_ld_event_object', array( $this, 'add_ticket_data' ), 10, 3 );
+	public static function hook() {
+		$myself = self::instance();
+
+		add_filter( 'tribe_json_ld_event_object', array( $myself, 'add_ticket_data' ), 10, 3 );
 	}
 
 	/**
