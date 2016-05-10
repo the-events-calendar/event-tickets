@@ -196,14 +196,14 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function authorization_redirect() {
 		global $wp_query;
-		/**
-		 * Apply Event Filters for better TEC compatibility
-		 * @param boolean
-		 */
-		$is_event_query = apply_filters( 'tribe_query_is_event_query', ! empty( $GLOBALS['wp_query']->tribe_is_event_query ) );
 
-		// When it's not our query we don't care
-		if ( ! $is_event_query ) {
+		/**
+		 * @todo Remove this after we implement the Rewrites in Common
+		 */
+		$is_event_query = ! empty( $GLOBALS['wp_query']->tribe_is_event_query );
+
+		// When it's not Events Query and we have TEC active we dont care
+		if ( class_exists( 'Tribe__Events__Main' ) && ! $is_event_query ) {
 			return;
 		}
 
@@ -298,10 +298,9 @@ class Tribe__Tickets__Tickets_View {
 		global $wp_query;
 
 		/**
-		 * Apply Event Filters for better TEC compatibility
-		 * @param boolean
+		 * @todo Remove this after we implement the Rewrites in Common
 		 */
-		$is_event_query = apply_filters( 'tribe_query_is_event_query', ! empty( $wp_query->tribe_is_event_query ) );
+		$is_event_query = ! empty( $wp_query->tribe_is_event_query );
 
 		// When it's not our query we don't care
 		if ( ! $is_event_query ) {
@@ -362,10 +361,9 @@ class Tribe__Tickets__Tickets_View {
 		$user_id = get_current_user_id();
 
 		/**
-		 * Apply Event Filters for better TEC compatibility
-		 * @param boolean
+		 * @todo Remove this after we implement the Rewrites in Common
 		 */
-		$is_event_query = apply_filters( 'tribe_query_is_event_query', ! empty( $GLOBALS['wp_query']->tribe_is_event_query ) );
+		$is_event_query = ! empty( $GLOBALS['wp_query']->tribe_is_event_query );
 
 		// When it's not our query we don't care
 		if ( ! $is_event_query || ! $in_the_loop ) {
