@@ -252,6 +252,17 @@ class Tribe__Tickets__Tickets_View {
 			)
 		);
 
+		// Adds the `tickets` endpoint for recurring events
+		$rewrite->single(
+			array( '(\d{4}-\d{2}-\d{2})', '{{ tickets }}' ),
+			array(
+				Tribe__Events__Main::POSTTYPE => '%1',
+				'eventDate' => '%2',
+				'post_type' => Tribe__Events__Main::POSTTYPE,
+				'eventDisplay' => 'tickets'
+			)
+		);
+
 	}
 
 	public function intercept_content( $content ) {
