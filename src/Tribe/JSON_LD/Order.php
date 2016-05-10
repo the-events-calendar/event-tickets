@@ -70,7 +70,7 @@ class Tribe__Events__JSON_LD__Order {
 	 * @return array
 	 */
 	public function add_tickets_data( $data, $args, $post ) {
-		if ( ! tribe_events_has_tickets( $post->ID ) ){
+		if ( ! tribe_events_has_tickets( $post->ID ) ) {
 			return $data;
 		}
 
