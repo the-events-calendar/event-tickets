@@ -163,8 +163,10 @@ class Tribe__Tickets__Tickets_View {
 	 * @return void
 	 */
 	public function authorization_redirect() {
+		global $wp_query;
+
 		// When it's not our query we don't care
-		if ( ! tribe_is_event_query() ) {
+		if ( empty( $wp_query->tribe_is_event_query ) ) {
 			return;
 		}
 
@@ -241,8 +243,10 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string           The correct File path for the tickets endpoint
 	 */
 	public function intercept_template( $old_file, $template ) {
+		global $wp_query;
+
 		// When it's not our query we don't care
-		if ( ! tribe_is_event_query() ) {
+		if ( empty( $wp_query->tribe_is_event_query ) ) {
 			return $old_file;
 		}
 
