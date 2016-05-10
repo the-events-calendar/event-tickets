@@ -292,8 +292,14 @@ class Tribe__Tickets__Tickets_View {
 	public function intercept_template( $old_file, $template ) {
 		global $wp_query;
 
+		/**
+		 * Apply Event Filters for better TEC compatibility
+		 * @param boolean
+		 */
+		$is_event_query = apply_filters( 'tribe_query_is_event_query', ! empty( $wp_query->tribe_is_event_query ) );
+
 		// When it's not our query we don't care
-		if ( empty( $wp_query->tribe_is_event_query ) ) {
+		if ( ! $is_event_query ) {
 			return $old_file;
 		}
 
@@ -350,8 +356,15 @@ class Tribe__Tickets__Tickets_View {
 		$post_id = get_the_ID();
 		$user_id = get_current_user_id();
 
-		// If we are dealing with a Event Query we don't display
-		if ( ! empty( $GLOBALS['wp_query']->tribe_is_event_query ) || ! $in_the_loop ) {
+
+		/**
+		 * Apply Event Filters for better TEC compatibility
+		 * @param boolean
+		 */
+		$is_event_query = apply_filters( 'tribe_query_is_event_query', ! empty( $GLOBALS['wp_query']->tribe_is_event_query ) );
+
+		// When it's not our query we don't care
+		if ( ! $is_event_query ) || ! $in_the_loop ) {
 			return $content;
 		}
 
