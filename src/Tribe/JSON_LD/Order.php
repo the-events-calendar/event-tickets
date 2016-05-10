@@ -68,8 +68,8 @@ class Tribe__Tickets__JSON_LD__Order {
 	/**
 	 * Adds the tickets data to the event Object
 	 *
-	 * @param array $data
-	 * @param array $args
+	 * @param array   $data
+	 * @param array   $args
 	 * @param WP_Post $post
 	 *
 	 * @return array
@@ -119,9 +119,9 @@ class Tribe__Tickets__JSON_LD__Order {
 		 * Allows modifications to be made to the offer object representing a specific
 		 * event ticket.
 		 *
-		 * @param object                  $offer
+		 * @param object                        $offer
 		 * @param Tribe__Tickets__Ticket_Object $ticket
-		 * @param object                  $event
+		 * @param object                        $event
 		 */
 		return (object) apply_filters( 'tribe_json_ld_offer_object', $offer, $ticket, $event );
 	}
@@ -129,7 +129,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	/**
 	 * Returns a string indicating current availability of the ticket.
 	 *
-	 * @param object  $ticket
+	 * @param  object  $ticket
 	 * @return string
 	 */
 	public function get_ticket_availability( $ticket ) {
