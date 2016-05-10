@@ -41,7 +41,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	 * Setup Google Event Data for tickets.
 	 */
 	public function hook() {
-		add_filter( 'tribe_json_ld_event_object', array( $this, 'add_tickets_data' ), 10, 3 );
+		add_filter( 'tribe_json_ld_event_object', array( $this, 'add_ticket_data' ), 10, 3 );
 	}
 
 	/**
@@ -74,7 +74,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	 *
 	 * @return array
 	 */
-	public function add_tickets_data( $data, $args, $post ) {
+	public function add_ticket_data( $data, $args, $post ) {
 		if ( ! tribe_events_has_tickets( $post->ID ) ) {
 			return $data;
 		}
