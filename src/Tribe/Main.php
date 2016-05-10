@@ -121,6 +121,9 @@ class Tribe__Tickets__Main {
 		$this->rsvp();
 
 		$this->user_event_confirmation_list_shortcode();
+
+		// Load the Hooks on JSON_LD
+		Tribe__Events__JSON_LD__Order::hook()
 	}
 
 	/**

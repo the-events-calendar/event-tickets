@@ -39,12 +39,6 @@ class Tribe__Tickets__Tickets_Handler {
 	private $attendees_table;
 
 	/**
-	 * @var Tribe__Tickets__Google_Event_Data
-	 */
-	protected $google_event_data;
-
-
-	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
@@ -60,7 +54,6 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
-		$this->google_event_data = new Tribe__Tickets__Google_Event_Data;
 	}
 
 	/**
