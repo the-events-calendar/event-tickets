@@ -99,6 +99,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	protected static $messages = array();
 
+
+	/**
+	 * Creates a Variable to prevent Double FE forms
+	 * @var boolean
+	 */
+	private $is_frontend_tickets_form_done = false;
+
 	/**
 	 * Instance of this class for use as singleton
 	 */
@@ -674,9 +681,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		return $tickets;
 	}
 
-
-	private $done = false;
-
 	/**
 	 * Shows the tickets form in the front end
 	 *
@@ -685,7 +689,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
-		if ( $this->done ) {
+		if ( $this->is_frontend_tickets_form_done ) {
 			return $content;
 		}
 
@@ -724,7 +728,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
 
 		// It's only done when it's included
-		$this->done = true;
+		$this->is_frontend_tickets_form_done = true;
 	}
 
 	/**
