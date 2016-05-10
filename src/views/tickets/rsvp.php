@@ -42,7 +42,6 @@ $now = current_time( 'timestamp' );
 
 			if ( $ticket->date_in_range( $now ) ) {
 				$is_there_any_product = true;
-
 				?>
 				<tr>
 					<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">

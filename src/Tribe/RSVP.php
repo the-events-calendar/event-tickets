@@ -674,6 +674,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		return $tickets;
 	}
 
+
+	private $done = false;
+
 	/**
 	 * Shows the tickets form in the front end
 	 *
@@ -682,13 +685,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
-		static $done;
-
-		if ( $done ) {
-			return;
+		if ( $this->done ) {
+			return $content;
 		}
-
-		$done = true;
 
 		$post = $GLOBALS['post'];
 
@@ -723,6 +722,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
+
+		// It's only done when it's included
+		$this->done = true;
 	}
 
 	/**
