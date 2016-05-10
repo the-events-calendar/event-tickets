@@ -366,7 +366,7 @@ class Tribe__Tickets__Tickets_View {
 		$is_event_query = ! empty( $GLOBALS['wp_query']->tribe_is_event_query );
 
 		// When it's not our query we don't care
-		if ( ! $is_event_query || ! $in_the_loop ) {
+		if ( ( class_exists( 'Tribe__Events__Main' ) && ! $is_event_query ) || ! $in_the_loop ) {
 			return $content;
 		}
 
