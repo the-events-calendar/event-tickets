@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2016-03-11 22:36:31+0000\n"
+"PO-Revision-Date: 2016-04-28 06:18:20+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1307,7 +1307,7 @@ msgstr "St. Helena"
 
 #: src/views/tickets/rsvp.php:55
 msgid "%1$s out of %2$s available"
-msgstr ""
+msgstr "Disponible %1$s de %2$s"
 
 #: common/src/Tribe/App_Shop.php:67 common/src/Tribe/App_Shop.php:68
 #: common/src/Tribe/App_Shop.php:91
@@ -1369,7 +1369,7 @@ msgstr "Swazilandia"
 #. Plugin Name of the plugin/theme
 #: common/src/Tribe/Admin/Help_Page.php:64
 msgid "Event Tickets"
-msgstr ""
+msgstr "Tickets del Evento"
 
 #: common/src/Tribe/Field.php:502
 msgid "No checkbox options specified"

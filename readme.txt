@@ -79,6 +79,14 @@ If you’ve identified a bug and want to submit a patch, we’d welcome it at ou
 * Event Tickets 4.0 or above
 * The Events Calendar 4.0 or above (optional)
 
+== Screenshots ==
+
+1. RSVP setup
+2. Attendees report
+3. RSVP to an event
+4. Customize tickets with an image
+5. Ticket settings
+
 == Documentation ==
 
 Our <a href="http://m.tri.be/18ti">New User Primer</a> will help you get started. You can find more tutorials at http://m.tri.be/44.
@@ -179,10 +187,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1.3] 2016-04-27 =
+= [4.1.3] 2016-04-28 =
 
 * Tweak: Added back the purchaser name and email address to the attendee reports for all tickets. We had inadvertently removed those in a previous release. #facepalm [45082]
-* Tweak: Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post. [44221]
+* Tweak: Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post.
 
 = [4.1.2] 2016-04-11 =
 
