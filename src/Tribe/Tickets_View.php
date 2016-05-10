@@ -248,7 +248,7 @@ class Tribe__Tickets__Tickets_View {
 			array(
 				Tribe__Events__Main::POSTTYPE => '%1',
 				'post_type' => Tribe__Events__Main::POSTTYPE,
-				'eventDisplay' => 'tickets'
+				'eventDisplay' => 'tickets',
 			)
 		);
 
@@ -259,7 +259,7 @@ class Tribe__Tickets__Tickets_View {
 				Tribe__Events__Main::POSTTYPE => '%1',
 				'eventDate' => '%2',
 				'post_type' => Tribe__Events__Main::POSTTYPE,
-				'eventDisplay' => 'tickets'
+				'eventDisplay' => 'tickets',
 			)
 		);
 
