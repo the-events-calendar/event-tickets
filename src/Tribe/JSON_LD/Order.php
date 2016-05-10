@@ -104,7 +104,7 @@ class Tribe__Tickets__JSON_LD__Order {
 			'url'          => $ticket->frontend_link,
 			'price'        => $ticket->price,
 			'category'     => 'primary',
-			'availability' => $this->get_ticket_availability(),
+			'availability' => $this->get_ticket_availability( $ticket ),
 		);
 
 		if ( ! empty( $ticket->start_date ) ) {
