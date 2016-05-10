@@ -297,8 +297,13 @@ class Tribe__Tickets__Tickets_View {
 	 * @return string $content
 	 */
 	public function inject_link_template_the_content( $content ) {
-		$event_id = get_the_ID();
+		$post_id = get_the_ID();
 		$user_id = get_current_user_id();
+
+		// If we are dealing with a Event Query we don't display
+		if ( ! empty( $wp_query->tribe_is_event_query ) ) {
+			return $content;
+		}
 
 		// If we have this we are already on the tickets page
 		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
@@ -306,7 +311,7 @@ class Tribe__Tickets__Tickets_View {
 			return $content;
 		}
 
-		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_ticket_attendees( $event_id, $user_id ) ) {
+		if ( ! $this->has_rsvp_attendees( $post_id, $user_id ) && ! $this->has_ticket_attendees( $post_id, $user_id ) ) {
 			return $content;
 		}
 
