@@ -156,7 +156,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * the wrong url because it was too early on the execution
 		 */
 		add_action( 'template_redirect', array( $this, 'generate_tickets' ) );
-		add_action( 'event_tickets_attendee_updated', array( $this, 'update_attendee_data' ), 10, 3 );
+		add_action( 'event_tickets_attendee_update', array( $this, 'update_attendee_data' ), 10, 3 );
 	}
 
 	/**
