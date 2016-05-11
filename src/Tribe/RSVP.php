@@ -450,6 +450,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_rsvp_tickets_generated', $order_id );
 
+		// After Adding the Values we Update the Transient
+		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+
 		if ( $has_tickets ) {
 			$this->send_tickets_email( $order_id ) ;
 		}
