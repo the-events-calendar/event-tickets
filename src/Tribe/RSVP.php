@@ -283,9 +283,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
+		$attendee = array();
+
 		// Get the Attendee Data, it's important for testing
 		foreach ( $rsvp_orders as $test_attendee ) {
-			if ( $order_id === $test_attendee['order_id'] ){
+			if ( $order_id !== $test_attendee['order_id'] ) {
 				continue;
 			}
 
