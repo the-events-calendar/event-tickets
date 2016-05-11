@@ -33,9 +33,9 @@ $options = get_option( Tribe__Main::OPTIONNAME, array() );
  *
  * @param array $ticket_systems
  */
-$ticket_addons = apply_filters( 'tribe_tickets_settings_systems_supporting_login_requirements',
-	Tribe__Tickets__Tickets::modules()
-);
+$ticket_addons = apply_filters( 'tribe_tickets_settings_systems_supporting_login_requirements', array(
+	'event-tickets_rsvp' => __( 'Require users to log in before they RSVP', 'event-tickets' ),
+) );
 
 $tickets_tab = array(
 	'priority' => 20,
@@ -66,14 +66,13 @@ $tickets_tab = array(
 			'ticket-authentication-requirements-advice' => array(
 				'type' => 'html',
 				'html' => '<p>' . sprintf(
-						__( 'You can require that users are logged in before they are allowed to access the ticket form. You may wish to review whether anonymous users are allowed to register for an account or not (via the %sGeneral Settings%s admin screen) before adjusting these settings.', 'event-tickets' ),
+						__( 'You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting.', 'event-tickets' ),
 						'<a href="' . get_admin_url( null, 'options-general.php' ) . '" target="_blank">',
 						'</a>'
 					) . '</p>',
 			),
 			'ticket-authentication-requirements' => array(
 				'type' => 'checkbox_list',
-				'label' => esc_html__( 'Remove ticket form for logged out users', 'event-tickets' ),
 				'options' => $ticket_addons,
 				'validation_type' => 'options_multi',
 				'can_be_empty' => true,

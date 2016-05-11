@@ -2,8 +2,9 @@
 /**
  * This template renders the RSVP ticket form
  *
- * @version 4.1
+ * @version 4.2
  *
+ * @var bool $must_login
  */
 
 $is_there_any_product         = false;
@@ -50,7 +51,7 @@ $now = current_time( 'timestamp' );
 						if ( $ticket->is_in_stock() ) {
 							$is_there_any_product_to_sell = true;
 							?>
-							<input type="number" class="tribe-ticket-quantity" min="0" max="<?php echo esc_attr( $ticket->remaining() ); ?>" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="0">
+							<input type="number" class="tribe-ticket-quantity" min="0" max="<?php echo esc_attr( $ticket->remaining() ); ?>" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="0" <?php disabled( $must_login ); ?> >
 							<?php
 
 							if ( $ticket->managing_stock() ) {
@@ -139,7 +140,12 @@ $now = current_time( 'timestamp' );
 			</tr>
 			<tr>
 				<td colspan="4" class="add-to-cart">
-					<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?></button>
+					<?php if ( $must_login ): ?>
+						<?php $login_url = Tribe__Tickets__Tickets::get_login_url() ?>
+						<a href="<?php echo $login_url; ?>"><?php esc_html_e( 'Login to RSVP', 'event-tickets' );?></a>
+					<?php else: ?>
+						<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?></button>
+					<?php endif; ?>
 				</td>
 			</tr>
 			<?php

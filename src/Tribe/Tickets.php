@@ -318,7 +318,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->className, array( $this, 'ajax_handler_attendee_uncheckin' ) );
 
 			// Front end
-			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'front_end_tickets_form_in_events' ), 5 );
+			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'front_end_tickets_form' ), 5 );
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ) );
 
 			// Ensure ticket prices and event costs are linked
@@ -1314,30 +1314,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			update_post_meta( $attendee_id, self::ATTENDEE_USER_ID, (int) $user_id );
 		}
 
-		/**
-		 * Renders the front end ticket form (within single event posts) when
-		 * they are enabled.
-		 */
-		public function front_end_tickets_form_in_events() {
-			if ( $this->form_is_enabled() ) {
-				$this->front_end_tickets_form( '' );
-			} else {
-				echo $this->login_or_register_advice();
-			}
-		}
-
 		public function front_end_tickets_form_in_content( $content ) {
 			global $post;
-
-			$form_is_enabled = $this->form_is_enabled();
 
 			// Prevents firing more then it needs too outside of the loop
 			$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
 			if ( is_admin() || ! $form_is_enabled || ! $in_the_loop ) {
 				return $content;
-			} elseif ( ! $form_is_enabled ) {
-				return $content . $this->login_or_register_advice();
 			}
 
 			// if this isn't a post for some reason, bail
@@ -1371,85 +1355,39 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns a (possibly empty) string used to direct users to the new user
-		 * registration form when appropriate.
+		 * Indicates if the user must be logged in in order to obtain tickets.
 		 *
-		 * Typically used when a requirement for users to be logged in to access the ticket
-		 * form is in effect and where registrations are allowed, but where the user is
-		 * currently logged out.
+		 * This should be regarded as an abstract method to be overridden by subclasses:
+		 * the reason it is not formally declared as abstract is to avoid breakages upon
+		 * update (for example, where Event Tickets is updated first but a dependent plugin
+		 * not yet implementing the abstract method remains at an earlier version).
+		 *
+		 * @return bool
+		 */
+		protected function login_required() {
+			return false;
+		}
+
+		/**
+		 * Provides a URL that can be used to direct users to the login form.
 		 *
 		 * @return string
 		 */
-		protected function login_or_register_advice() {
-			// We only want to display this text once (this will fire as many times as there are
-			// active ticket modules) and then only if user registration is enabled
-			if ( self::$have_displayed_reg_link ) {
-				return '';
-			}
+		public static function get_login_url() {
+			$post_id   = get_the_ID();
+			$login_url = get_site_url( null, 'wp-login.php' );
 
-			self::$have_displayed_reg_link = true;
-
-			// We should include a redirect query for a good UX and because some plugins
-			// like Community Events can ban users from the admin environment (let's not
-			// leave them stranded)
-			$login_link = add_query_arg(
-				'redirect_to',
-				rawurlencode( get_permalink() ),
-				get_site_url( null, 'wp-login.php' )
-			);
-
-			$login_links = '<a href="' . esc_url( $login_link ) . '">' . __( 'Login', 'event-tickets' ) . '</a>';
-
-			if ( get_option( 'users_can_register' ) ) {
-				$login_links .= ' | ' . wp_register( '', '', false );
+			if ( $post_id ) {
+				$login_url = add_query_arg( 'redirect_to', get_permalink( $post_id ), $login_url );
 			}
 
 			/**
-			 * Modify the text that displays when users are required to be logged in to see
-			 * the ticket form but where they are currently logged out and where registration
-			 * of new user accounts is enabled.
+			 * Provides an opportunity to modify the login URL used within frontend
+			 * ticket forms (typically when they need to login before they can proceed).
 			 *
-			 * @param string $register_help_text
+			 * @param string $login_url
 			 */
-			return apply_filters( 'event_tickets_register_to_see_ticket_form_message', sprintf(
-				__( 'You must be logged in to obtain tickets. %s', 'event-tickets' ),
-				$login_links
-			) );
-		}
-
-		/**
-		 * Indicates if the ticket form is enabled.
-		 *
-		 * Generally this will return true, but there may be special occasions such
-		 * as access being denied to logged out users and similar where it returns
-		 * false.
-		 *
-		 * @return bool
-		 */
-		protected function form_is_enabled() {
-			$enabled = true;
-
-			if ( ! is_user_logged_in() && $this->disable_for_logged_out_users() ) {
-				$enabled = false;
-			}
-
-			/**
-			 * Controls whether the ticket form is enabled or not.
-			 *
-			 * @param bool $enabled
-			 * @param Tribe__Tickets__Tickets $ticket_object
-			 */
-			return apply_filters( 'tribe_tickets_frontend_ticket_form_is_enabled', $enabled, $this );
-		}
-
-		/**
-		 * If we should disable the ticket form for logged out users.
-		 *
-		 * @return bool
-		 */
-		protected function disable_for_logged_out_users() {
-			$should_disable = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
-			return in_array( get_class( $this ), $should_disable );
+			return apply_filters( 'tribe_tickets_ticket_login_url', $login_url );
 		}
 	}
 }
