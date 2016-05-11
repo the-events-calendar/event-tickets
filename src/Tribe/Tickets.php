@@ -1320,7 +1320,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Prevents firing more then it needs too outside of the loop
 			$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
-			if ( is_admin() || ! $form_is_enabled || ! $in_the_loop ) {
+			if ( is_admin() || ! $in_the_loop ) {
 				return $content;
 			}
 
