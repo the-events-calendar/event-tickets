@@ -148,9 +148,11 @@ class Tribe__Tickets__Tickets_View {
 	 * Update the RSVP and Tickets values for each Attendee
 	 */
 	public function update_tickets() {
+		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
+
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display ) {
+		if ( 'tickets' !== $display && ! $is_correct_page ) {
 			return;
 		}
 
@@ -158,7 +160,7 @@ class Tribe__Tickets__Tickets_View {
 			return;
 		}
 
-		$event_id = get_the_ID();
+		$post_id = get_the_ID();
 		$attendees = $_POST['attendee'];
 
 		foreach ( $attendees as $order_id => $data ) {
@@ -167,22 +169,27 @@ class Tribe__Tickets__Tickets_View {
 			 *
 			 * @var $data     Infomation that we are trying to save
 			 * @var $order_id ID of attendee ticket
-			 * @var $event_id ID of event
+			 * @var $post_id  ID of event
 			 */
-			do_action( 'event_tickets_attendee_update', $data, $order_id, $event_id );
+			do_action( 'event_tickets_attendee_update', $data, $order_id, $post_id );
 		}
 
 		/**
 		 * A way for Meta to be saved, because it's groupped in a diferent way
 		 *
-		 * @var $event_id ID of event
+		 * @var $post_id ID of event
 		 */
-		do_action( 'event_tickets_after_attendees_update', $event_id );
+		do_action( 'event_tickets_after_attendees_update', $post_id );
 
 		// After Editing the Values we Update the Transient
-		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
-		$url = get_permalink( $event_id ) . '/tickets';
+		// If it's not events CPT
+		if ( $is_correct_page ) {
+			$url = home_url( 'tickets/' ) . $post_id;
+		} else {
+			$url = get_permalink( $post_id ) . '/tickets';
+		}
 		$url = add_query_arg( 'tribe_updated', 1, $url );
 		wp_safe_redirect( esc_url_raw( $url ) );
 		exit;
@@ -366,7 +373,7 @@ class Tribe__Tickets__Tickets_View {
 		$is_event_query = ! empty( $GLOBALS['wp_query']->tribe_is_event_query );
 
 		// When it's not our query we don't care
-		if ( ( class_exists( 'Tribe__Events__Main' ) && ! $is_event_query ) || ! $in_the_loop ) {
+		if ( ( class_exists( 'Tribe__Events__Main' ) && $is_event_query ) || ! $in_the_loop ) {
 			return $content;
 		}
 
