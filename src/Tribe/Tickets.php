@@ -1373,7 +1373,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string
 		 */
-		public static function get_login_link() {
+		public static function get_login_url() {
 			$post_id   = get_the_ID();
 			$login_url = get_site_url( null, 'wp-login.php' );
 

@@ -2,7 +2,7 @@
 /**
  * This template renders the RSVP ticket form
  *
- * @version 4.1
+ * @version 4.2
  *
  * @var bool $must_login
  */
@@ -141,7 +141,7 @@ $now = current_time( 'timestamp' );
 			<tr>
 				<td colspan="4" class="add-to-cart">
 					<?php if ( $must_login ): ?>
-						<?php $login_url = Tribe__Tickets__Tickets::get_login_link() ?>
+						<?php $login_url = Tribe__Tickets__Tickets::get_login_url() ?>
 						<a href="<?php echo $login_url; ?>"><?php esc_html_e( 'Login to RSVP', 'event-tickets' );?></a>
 					<?php else: ?>
 						<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?></button>
