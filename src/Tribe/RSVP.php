@@ -725,10 +725,22 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		}
 
+		$must_login = ! is_user_logged_in() && $this->login_required();
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
 
 		// It's only done when it's included
 		$this->is_frontend_tickets_form_done = true;
+	}
+
+	/**
+	 * Indicates if we currently require users to be logged in before they can obtain
+	 * tickets.
+	 *
+	 * @return bool
+	 */
+	protected function login_required() {
+		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
+		return in_array( 'event-tickets_rsvp', $requirements );
 	}
 
 	/**
