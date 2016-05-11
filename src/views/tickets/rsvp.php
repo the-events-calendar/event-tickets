@@ -142,9 +142,9 @@ $now = current_time( 'timestamp' );
 				</tr>
 				<tr>
 					<td colspan="4" class="add-to-cart">
-						<?php if ( $must_login ): ?>
+						<?php if ( $must_login ) : ?>
 							<?php $login_url = Tribe__Tickets__Tickets::get_login_url() ?>
-							<a href="<?php echo $login_url; ?>"><?php esc_html_e( 'Login to RSVP', 'event-tickets' );?></a>
+							<a href="<?php echo esc_url_raw( $login_url ); ?>"><?php esc_html_e( 'Login to RSVP', 'event-tickets' );?></a>
 						<?php else: ?>
 							<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?></button>
 						<?php endif; ?>
