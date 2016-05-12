@@ -24,9 +24,9 @@ class Tribe__Tickets__Attendance {
 
 	/**
 	 * Returns a Tribe__Tickets__Attendance object for the specified post ID.
-	 * 
+	 *
 	 * @param int $post_id
-	 * 
+	 *
 	 * @return Tribe__Tickets__Attendance
 	 */
 	public static function instance( $post_id ) {
