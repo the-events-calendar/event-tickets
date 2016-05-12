@@ -119,8 +119,10 @@ class Tribe__Tickets__Tickets_View {
 	 * @return array
 	 */
 	public function rewrite_rules_array() {
+		$bases = $this->add_rewrite_base_slug();
+
 		$rules = array(
-			'tickets/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
+			sanitize_title_with_dashes( $bases['tickets'] ) . '/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
 		);
 		return $rules;
 	}
@@ -241,8 +243,14 @@ class Tribe__Tickets__Tickets_View {
 	 * @param  array $bases The translatable bases
 	 * @return array
 	 */
-	public function add_rewrite_base_slug( $bases ) {
-		$bases['tickets'] = apply_filters( 'tribe_tickets_single_public_tickets_rewrite_base', array( 'tickets' ) );
+	public function add_rewrite_base_slug( $bases = array() ) {
+		/**
+		 * Allows users to filter and change the base for the order page
+		 *
+		 * @param string $slug
+		 * @param array  $bases
+		 */
+		$bases['tickets'] = (array) apply_filters( 'event_tickets_rewrite_slug_orders_page', 'tickets', $bases );
 
 		return $bases;
 	}
@@ -277,7 +285,13 @@ class Tribe__Tickets__Tickets_View {
 
 	}
 
-	public function intercept_content( $content ) {
+	/**
+	 * Intercepts the_content from the posts to include the orders structure
+	 *
+	 * @param  string $content Normally the_content of a post
+	 * @return string
+	 */
+	public function intercept_content( $content = '' ) {
 		// Prevents firing more then it needs too outside of the loop
 		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
@@ -475,7 +489,7 @@ class Tribe__Tickets__Tickets_View {
 		 * @param array $options
 		 * @param string $selected
 		 */
-		$options = apply_filters( 'tribe_tickets_rsvp_options', $options, $selected );
+		$options = apply_filters( 'event_tickets_rsvp_options', $options, $selected );
 
 		// If an option was passed return it's label, but if doesn't exist return false
 		if ( ! is_null( $selected ) ) {
@@ -616,7 +630,7 @@ class Tribe__Tickets__Tickets_View {
 		 * @param  int      $ticket_id  The Ticket/RSVP ID (optional)
 		 * @param  int      $user_id    An User ID (optional)
 		 */
-		return apply_filters( 'tribe_tickets_rsvp_restriction', false, $event_id, $ticket_id, $user_id );
+		return apply_filters( 'event_tickets_is_rsvp_restricted', false, $event_id, $ticket_id, $user_id );
 	}
 
 	/**
