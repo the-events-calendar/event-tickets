@@ -12,7 +12,7 @@ $total_pending = 0;
 $total_completed = 0;
 
 foreach ( $tickets as $ticket ) {
-	$total_sold += $ticket->qty_sold() + $ticket->qty_pending();
+	$total_sold += $ticket->qty_sold();
 	$total_pending += $ticket->qty_pending();
 }
 $total_completed   = $total_sold - $total_pending;
