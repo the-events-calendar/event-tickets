@@ -15,10 +15,11 @@ $total_completed = 0;
 foreach ( $tickets as $ticket ) {
 	$total_sold += $ticket->qty_sold();
 	$total_pending += $ticket->qty_pending();
-	$total_deleted += $ticket->qty_deleted();
 }
-$total_completed   = $total_sold - $total_pending;
-$total_attendees   = Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
+
+$total_completed = $total_sold - $total_pending;
+$total_attendees = Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
+$total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_deleted_attendees_count();
 ?>
 
 <div class="wrap tribe-attendees-page">
