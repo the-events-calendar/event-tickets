@@ -156,12 +156,12 @@ class Tribe__Tickets__Tickets_View {
 			return;
 		}
 
-		if ( empty( $_POST['process-tickets'] ) || empty( $_POST['attendee'] ) ) {
+		if ( empty( $_POST['process-tickets'] ) || ( empty( $_POST['attendee'] ) && empty( $_POST['tribe-tickets-meta'] ) ) ) {
 			return;
 		}
 
 		$post_id = get_the_ID();
-		$attendees = $_POST['attendee'];
+		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : array();
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**
