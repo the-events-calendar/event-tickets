@@ -365,18 +365,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Gets/sets the quantity of deleted units. Disallows the setting of
-		 * negative values.
-		 *
-		 * @param int|null $value
-		 *
-		 * @return int
-		 */
-		public function qty_deleted( $value = null ) {
-			return $this->qty_getter_setter( $this->qty_deleted, $value );
-		}
-
-		/**
 		 * Method to get/set protected quantity properties, disallowing illegal
 		 * things such as setting a negative value.
 		 *
