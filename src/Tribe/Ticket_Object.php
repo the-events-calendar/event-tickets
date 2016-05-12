@@ -125,14 +125,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		protected $qty_cancelled = 0;
 
 		/**
-		 * Number of units regarded as having been deleted. Getting/setting this value
-		 * should be done through the object's qty_deleted() method.
-		 *
-		 * @var int
-		 */
-		protected $qty_deleted = 0;
-
-		/**
 		 * Holds whether or not stock is being managed
 		 *
 		 * @var boolean
