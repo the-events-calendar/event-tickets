@@ -242,7 +242,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return array
 	 */
 	public function add_rewrite_base_slug( $bases ) {
-		$bases['tickets'] = apply_filters( 'tribe_tickets_single_public_tickets_rewrite_base', array( 'tickets' ) );
+		$bases['tickets'] = apply_filters( 'event_tickets_single_public_tickets_rewrite_base', array( 'tickets' ) );
 
 		return $bases;
 	}
@@ -475,7 +475,7 @@ class Tribe__Tickets__Tickets_View {
 		 * @param array $options
 		 * @param string $selected
 		 */
-		$options = apply_filters( 'tribe_tickets_rsvp_options', $options, $selected );
+		$options = apply_filters( 'event_tickets_rsvp_options', $options, $selected );
 
 		// If an option was passed return it's label, but if doesn't exist return false
 		if ( ! is_null( $selected ) ) {
@@ -616,7 +616,7 @@ class Tribe__Tickets__Tickets_View {
 		 * @param  int      $ticket_id  The Ticket/RSVP ID (optional)
 		 * @param  int      $user_id    An User ID (optional)
 		 */
-		return apply_filters( 'tribe_tickets_rsvp_restriction', false, $event_id, $ticket_id, $user_id );
+		return apply_filters( 'event_tickets_is_rsvp_restricted', false, $event_id, $ticket_id, $user_id );
 	}
 
 	/**
