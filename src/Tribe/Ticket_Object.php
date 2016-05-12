@@ -342,16 +342,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_sold( $value = null ) {
-			// If the Value was passed as numeric value overwrite
-			if ( is_numeric( $value ) ){
-				$this->qty_sold = $value;
-			}
-
-			// Prevents qty_sold from going negative
-			$this->qty_sold = max( (int) $this->qty_sold, 0 );
-
-			// return the new Qty Sold
-			return $this->qty_sold;
+			return $this->qty_getter_setter( $this->qty_sold, $value );
 		}
 
 		/**
@@ -362,16 +353,27 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_pending( $value = null ) {
-			// If the Value was passed as numeric value overwrite
-			if ( is_numeric( $value ) ){
-				$this->qty_pending = $value;
+			return $this->qty_getter_setter( $this->qty_pending, $value );
+		}
+
+		/**
+		 * Method to get/set protected quantity properties, disallowing illegal
+		 * things such as setting a negative value.
+		 *
+		 * @param int      &$property
+		 * @param int|null $value
+		 *
+		 * @return int
+		 */
+		protected function qty_getter_setter( &$property, $value = null ) {
+			if ( is_numeric( $value ) ) {
+				$property = (int) $value;
 			}
 
-			// Prevents qty_pending from going negative
-			$this->qty_pending = max( (int) $this->qty_pending, 0 );
+			// Disallow negative values (and force to zero if one is passed)
+			$property = max( (int) $property, 0 );
 
-			// return the new Qty Pending
-			return $this->qty_pending;
+			return $property;
 		}
 
 		/**
