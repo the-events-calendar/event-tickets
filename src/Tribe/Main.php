@@ -104,6 +104,12 @@ class Tribe__Tickets__Main {
 			|| ( class_exists( 'Tribe__Events__Main' ) && ! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' ) )
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
+
+			/**
+			 * Fires if Event Tickets cannot load due to compatibility or other problems.
+			 */
+			do_action( 'tribe_tickets_plugin_failed_to_load' );
+
 			return;
 		}
 
@@ -124,6 +130,11 @@ class Tribe__Tickets__Main {
 
 		// Load the Hooks on JSON_LD
 		Tribe__Tickets__JSON_LD__Order::hook();
+
+		/**
+		 * Fires once Event Tickets has completed basic setup.
+		 */
+		do_action( 'tribe_tickets_plugin_loaded' );
 	}
 
 	/**
