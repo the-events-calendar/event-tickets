@@ -266,7 +266,7 @@ class Tribe__Tickets__Main {
 		/**
 		 * @todo remove this after 4.4
 		 */
-		_deprecated_function( __CLASS__ . '::' . __METHOD__, '4.2', 'Tribe__Tickets__JSON_LD__Order' );
+		_deprecated_function( __METHOD__, '4.2', 'Tribe__Tickets__JSON_LD__Order' );
 
 		return false;
 	}
