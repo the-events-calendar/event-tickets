@@ -101,10 +101,19 @@ class Tribe__Tickets__JSON_LD__Order {
 	 * @return object
 	 */
 	public function get_offer( $ticket, $event ) {
+		$price = $ticket->price;
+		// We use `the-events-calendar` domain to make sure it's translate-able the correct way
+		$string_free = __( 'Free', 'the-events-calendar' );
+
+		// JSON-LD can't have free as a price
+		if ( strpos( strtolower( trim( $price ) ), $string_free ) !== false ) {
+			$price = 0;
+		}
+
 		$offer = (object) array(
 			'@type'        => 'Offer',
 			'url'          => $ticket->frontend_link,
-			'price'        => $ticket->price,
+			'price'        => $price,
 			'category'     => 'primary',
 			'availability' => $this->get_ticket_availability( $ticket ),
 		);
