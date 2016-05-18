@@ -191,10 +191,10 @@ Our Premium Plugins:
 
 = [4.1.4] TBD =
 
-* Fix - Improve email attendees integration with Community Events Tickets [46198]
-* Fix - Remove unneeded plugin settings when Event Tickets is operating without The Events Calendar [46645]
-* Tweak - Setting to opt out of the frontend attendee list now automatically hidden if the attendee list is also hidden [45173]
-* Tweak - Make the visibility of the delete ticket link filterable [45683]
+* Fix - Improve email attendees integration with Community Events Tickets
+* Fix - Remove unneeded plugin settings when Event Tickets is operating without The Events Calendar
+* Tweak - Setting to opt out of the frontend attendee list now automatically hidden if the attendee list is also hidden
+* Tweak - Make the visibility of the delete ticket link filterable
 
 = [4.1.3] 2016-04-28 =
 
