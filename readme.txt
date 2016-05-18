@@ -140,6 +140,8 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 * <a href="http://profiles.wordpress.org/users/shane.pearlman">Shane Pearlman</a>
 * <a href="http://profiles.wordpress.org/users/thatdudebutch">Wayne Stratton</a>
 * <a href="http://profiles.wordpress.org/users/zbtirrell">Zachary Tirrell</a>
+<a href="https://profiles.wordpress.org/aguseo">Andras Guseo</a>
+<a href="https://profiles.wordpress.org/tribecari">Caroline Tucker</a>
 
 = Past Contributors =
 
