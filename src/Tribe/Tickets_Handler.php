@@ -91,13 +91,30 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Registers the Attendees admin page
 	 */
 	public function attendees_page_register() {
+		$cap = 'edit_posts';
+		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
 
-		$this->attendees_page = add_submenu_page( null, 'Attendee list', 'Attendee list', 'edit_posts', self::$attendees_slug, array( $this, 'attendees_page_inside' ) );
+		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
+			$event = get_post( $event_id );
+
+			if ( $event instanceof WP_Post && get_current_user_id() === (int) $event->post_author ) {
+				$cap = 'read';
+			}
+		}
+
+		$this->attendees_page = add_submenu_page( null, 'Attendee list', 'Attendee list', $cap, self::$attendees_slug, array( $this, 'attendees_page_inside' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'attendees_page_load_css_js' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'attendees_page_load_pointers' ) );
 		add_action( 'load-' . $this->attendees_page, array( $this, 'attendees_page_screen_setup' ) );
 
+		/**
+		 * This is a workaround to fix the problem
+		 *
+		 * @see  https://central.tri.be/issues/46198
+		 * @todo  we need to remove this
+		 */
+		add_action( 'admin_init', array( $this, 'attendees_page_screen_setup' ), 1 );
 	}
 
 	/**
@@ -160,6 +177,22 @@ class Tribe__Tickets__Tickets_Handler {
 	 *    Setups the Attendees screen data.
 	 */
 	public function attendees_page_screen_setup() {
+		if ( is_admin() && ( empty( $_GET['page'] ) || self::$attendees_slug !== $_GET['page'] ) ) {
+			return;
+		}
+
+		/**
+		 * This is a workaround to fix the problem
+		 *
+		 * @see  https://central.tri.be/issues/46198
+		 * @todo  remove this
+		 */
+		if ( current_filter() === 'admin_init' ) {
+			$this->attendees_page_load_css_js( $this->attendees_page );
+
+			$GLOBALS['current_screen'] = WP_Screen::get( $this->attendees_page );
+		}
+
 		if ( ! empty( $_GET['action'] ) && in_array( $_GET['action'], array( 'email' ) ) ) {
 			define( 'IFRAME_REQUEST', true );
 
@@ -334,16 +367,28 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Handles the "send to email" action for the attendees list.
 	 */
 	public function send_attendee_mail_list() {
+
 		$error = new WP_Error();
 
-		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'email-attendees-list' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
-			$error->add( 'nonce-fail', esc_html__( 'Cheatin Huh?', 'event-tickets' ), array( 'type' => 'general' ) );
+		if ( empty( $_GET['event_id'] ) ) {
+			$error->add( 'no-event-id', esc_html__( 'Invalid Event ID', 'event-tickets' ), array( 'type' => 'general' ) );
 
 			return $error;
 		}
 
-		if ( empty( $_GET['event_id'] ) ) {
-			$error->add( 'no-event-id', esc_html__( 'Invalid Event ID', 'event-tickets' ), array( 'type' => 'general' ) );
+		$cap = 'edit_posts';
+		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
+
+		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
+			$event = get_post( $event_id );
+
+			if ( $event instanceof WP_Post && get_current_user_id() === (int) $event->post_author ) {
+				$cap = 'read';
+			}
+		}
+
+		if ( empty( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'email-attendees-list' ) || ! $this->user_can( $cap, $_GET['event_id'] ) ) {
+			$error->add( 'nonce-fail', esc_html__( 'Cheatin Huh?', 'event-tickets' ), array( 'type' => 'general' ) );
 
 			return $error;
 		}
