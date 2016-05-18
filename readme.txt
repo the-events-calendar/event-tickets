@@ -191,6 +191,7 @@ Our Premium Plugins:
 
 = [4.1.4] TBD =
 
+* Fix - Improve email attendees integration with Community Events Tickets [46198]
 * Tweak - Make the visibility of the delete ticket link filterable [45683]
 
 = [4.1.3] 2016-04-28 =
