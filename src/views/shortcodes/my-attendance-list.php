@@ -1,5 +1,9 @@
 <?php
 /**
+ * Renders the My Attendance list
+ *
+ * @version 4.2
+ *
  * @var array $event_ids
  */
 ?>
