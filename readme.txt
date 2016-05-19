@@ -189,7 +189,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.1.4] 2016-05-18 =
+= [4.1.4] 2016-05-19 =
 
 * Fix - Improve email attendees integration with Community Events Tickets
 * Fix - Remove unneeded plugin settings when Event Tickets is operating without The Events Calendar
