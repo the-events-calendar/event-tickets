@@ -121,6 +121,7 @@ $now = current_time( 'timestamp' );
 								<input type="email" name="attendee[email]" id="tribe-tickets-email">
 							</td>
 						</tr>
+
 						<tr class="tribe-tickets-order_status-row">
 							<td>
 								<label for="tribe-tickets-order_status"><?php esc_html_e( 'RSVP', 'event-tickets' ); ?>:</label>
@@ -129,12 +130,15 @@ $now = current_time( 'timestamp' );
 								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
 							</td>
 						</tr>
-						<tr class="tribe-tickets-attendees-list-optout">
-							<td colspan="4">
-								<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout">
-								<label for="tribe-tickets-attendees-list-optout"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
-							</td>
-						</tr>
+
+						<?php if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() ) ) : ?>
+							<tr class="tribe-tickets-attendees-list-optout">
+								<td colspan="4">
+									<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout">
+									<label for="tribe-tickets-attendees-list-optout"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+								</td>
+							</tr>
+						<?php endif; ?>
 					</table>
 				</td>
 			</tr>
