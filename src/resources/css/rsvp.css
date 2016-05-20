@@ -119,3 +119,16 @@ table.tribe-events-tickets td {
 .tribe-submit-tickets-form {
 	margin-top: 20px;
 }
+
+/* MOVE THIS TO POSTCSS WHEN GULP IS ACQUIRED */
+.tribe-tickets {
+	margin-bottom: .5em;
+}
+
+.tribe-answer select {
+	border: 1px solid #ccc;
+	background: white;
+	padding: .25em 1em;
+	margin-left: .5em;
+	width: 120px;
+}

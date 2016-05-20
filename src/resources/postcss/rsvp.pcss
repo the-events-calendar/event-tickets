@@ -34,13 +34,9 @@ table.tribe-events-tickets td {
 }
 
 .tribe-rsvp-message {
-	-khtml-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	   -moz-border-radius: 3px;
-	        border-radius: 3px;
+	border-radius: 3px; /* post-processing should take care of browser-prefixes */
 	border-style: solid;
 	border-width: 1px;
-	font-family: Helvetica, Arial, sans;
 	font-size: 12px;
 	margin: 0 0 5px;
 	padding: 0 .6em;
@@ -88,9 +84,13 @@ table.tribe-events-tickets td {
 			}
 		}
 
+		.list-attendee {
+			display: inline-block;
+		}
+
 		.tribe-answer {
 			float: right;
-			display: block;
+			display: inline-block;
 		}
 
 		table {

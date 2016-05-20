@@ -17,7 +17,10 @@ $post_id   = get_the_ID();
 $post      = get_post( $post_id );
 $post_type = get_post_type_object( $post->post_type );
 $user_id   = get_current_user_id();
+$user_info = get_userdata( $user_id );
 $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
+
+//var_dump( $attendees );
 
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
@@ -25,41 +28,32 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 ?>
 
 <h2><?php echo sprintf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
+<p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), $user_info->first_name . ' ' . $user_info->last_name ); ?></p>
 <ul class="tribe-rsvp-list">
 <?php foreach ( $attendees as $i => $attendee ): ?>
 	<?php $key = $attendee['order_id']; ?>
-	<li class="tribe-item <?php echo $view->is_rsvp_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
-		<p>
-			<span class="tribe-answer">
-				<?php esc_html_e( 'RSVP: ', 'event-tickets' ); ?>
-				<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
-			</span>
-			<?php echo sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ); ?>
-		</p>
-		<table>
-			<tr class="tribe-tickets-full-name-row">
-				<td>
-					<label for="tribe-tickets-full-name-<?php echo $key; ?>"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
-				</td>
-				<td colspan="3">
-					<input <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> type="text" name="attendee[<?php echo $key; ?>][full_name]" id="tribe-tickets-full-name-<?php echo $key; ?>" value="<?php echo esc_attr( $attendee['purchaser_name'] ) ?>">
-				</td>
-			</tr>
-			<tr class="tribe-tickets-email-row">
-				<td>
-					<label for="tribe-tickets-email-<?php echo $key; ?>"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
-				</td>
-				<td colspan="3">
-					<input <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> type="email" name="attendee[<?php echo $key; ?>][email]" id="tribe-tickets-email-<?php echo $key; ?>" value="<?php echo esc_attr( $attendee['purchaser_email'] ) ?>">
-				</td>
-			</tr>
-			<tr class="tribe-tickets-attendees-list-optout">
-				<td colspan="4">
-					<input <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> type="checkbox" name="attendee[<?php echo $key; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $key; ?>" <?php checked( true, $attendee['optout'] ) ?>>
-					<label for="tribe-tickets-attendees-list-optout-<?php echo $key; ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
-				</td>
-			</tr>
-		</table>
+	<li class="tribe-item<?php echo $view->is_rsvp_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
+		<p class="list-attendee" style="display:inline-block;text-transform: uppercase;color:#999;letter-spacing: 1px;"><?php echo sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ); ?></p>
+		<div class="tribe-answer">
+			<!-- Wrapping <label> around both the text and the <select> will implicitly associate the text with the label. -->
+			<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
+				<label>
+					<?php esc_html_e( 'RSVP: ', 'event-tickets' ); ?>
+					<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
+				</label>
+			</div>
+			<div class="tribe-tickets full-name-row">
+				<label for="tribe-tickets-full-name-<?php echo $key; ?>"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>: </label>
+				<span class="<?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?>" data-id="attendee[<?php echo $key; ?>][full_name]" id="tribe-tickets-full-name-<?php echo $key; ?>"><?php echo esc_attr( $attendee['purchaser_name'] ) ?></span>
+			</div>
+			<div class="tribe-tickets email-row">
+				<label for="tribe-tickets-email-<?php echo $key; ?>"><?php esc_html_e( 'Email', 'event-tickets' ); ?>: </label>
+				<span class="<?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?>" data-id="attendee[<?php echo $key; ?>][email]" id="tribe-tickets-email-<?php echo $key; ?>"><?php echo esc_attr( $attendee['purchaser_email'] ) ?></span>
+			</div>
+			<div class="tribe-tickets attendees-list-optout">
+				<input <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> type="checkbox" name="attendee[<?php echo $key; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $key; ?>" <?php checked( true, $attendee['optout'] ) ?>>
+				<label for="tribe-tickets-attendees-list-optout-<?php echo $key; ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+			</div>
 		<?php
 		/**
 		 * Used to Include More fields to each Item
