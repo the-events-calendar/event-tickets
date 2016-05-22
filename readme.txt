@@ -1,6 +1,6 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.5.1
@@ -140,6 +140,8 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 * <a href="http://profiles.wordpress.org/users/shane.pearlman">Shane Pearlman</a>
 * <a href="http://profiles.wordpress.org/users/thatdudebutch">Wayne Stratton</a>
 * <a href="http://profiles.wordpress.org/users/zbtirrell">Zachary Tirrell</a>
+<a href="https://profiles.wordpress.org/aguseo">Andras Guseo</a>
+<a href="https://profiles.wordpress.org/tribecari">Caroline Tucker</a>
 
 = Past Contributors =
 
@@ -197,10 +199,17 @@ Our Premium Plugins:
 * Tweak - Record the user ID associated with the creation of new attendee records [44347]
 * Tweak - Fixed translation domain on a few strings [46524]
 
+= [4.1.4] 2016-05-19 =
+
+* Fix - Improve email attendees integration with Community Events Tickets
+* Fix - Remove unneeded plugin settings when Event Tickets is operating without The Events Calendar
+* Tweak - Setting to opt out of the frontend attendee list now automatically hidden if the attendee list is also hidden
+* Tweak - Make the visibility of the delete ticket link filterable
+
 = [4.1.3] 2016-04-28 =
 
-* Tweak: Added back the purchaser name and email address to the attendee reports for all tickets. We had inadvertently removed those in a previous release. #facepalm [45082]
-* Tweak: Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post.
+* Tweak - Added back the purchaser name and email address to the attendee reports for all tickets. We had inadvertently removed those in a previous release. #facepalm [45082]
+* Tweak - Fixed an error where tickets on custom post types would not save or display on the front end. That was annoying to anyone trying to create RSVPs or tickets on anything other than a default page or post.
 
 = [4.1.2] 2016-04-11 =
 

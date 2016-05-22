@@ -309,6 +309,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			)
 		);
 
+		/**
+		 * When we use a TB_iframe link and we are not on an Admin Page we need to include it's JS
+		 */
+		if ( ! is_admin() ) {
+			add_thickbox();
+		}
+
 		$email_link = Tribe__Settings::instance()->get_url( array(
 			'page' => 'tickets-attendees',
 			'action' => 'email',
