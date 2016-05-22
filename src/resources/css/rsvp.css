@@ -43,10 +43,9 @@ table.tribe-events-tickets td {
 }
 
 .tribe-rsvp-message {
-	border-radius: 3px;
+	border-radius: 3px; /* post-processing should take care of browser-prefixes */
 	border-style: solid;
 	border-width: 1px;
-	font-family: Helvetica, Arial, sans;
 	font-size: 12px;
 	margin: 0 0 5px;
 	padding: 0 .6em;
@@ -96,9 +95,13 @@ table.tribe-events-tickets td {
 	border-bottom-color: #ddd;
 }
 
+.tribe-rsvp-list > .tribe-item .list-attendee {
+	display: inline-block;
+}
+
 .tribe-rsvp-list > .tribe-item .tribe-answer {
 	float: right;
-	display: block;
+	display: inline-block;
 }
 
 .tribe-rsvp-list > .tribe-item table {
@@ -118,17 +121,4 @@ table.tribe-events-tickets td {
 
 .tribe-submit-tickets-form {
 	margin-top: 20px;
-}
-
-/* MOVE THIS TO POSTCSS WHEN GULP IS ACQUIRED */
-.tribe-tickets {
-	margin-bottom: .5em;
-}
-
-.tribe-answer select {
-	border: 1px solid #ccc;
-	background: white;
-	padding: .25em 1em;
-	margin-left: .5em;
-	width: 120px;
 }
