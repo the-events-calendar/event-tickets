@@ -20,15 +20,16 @@ $user_id   = get_current_user_id();
 $user_info = get_userdata( $user_id );
 $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
 
-echo '<pre>';
-var_dump( $attendees );
-echo '</pre>';
+//echo '<pre>';
+//var_dump( $attendees );
+//echo '</pre>';
 
-$order_id = array_column( $attendees, 'order_id'  );
-$name = array_column( $attendees, 'purchaser_name' );
-$email = array_column( $attendees, 'purchaser_email' );
-$time = array_column( $attendees, 'purchase_time' );
-
+$order_id = wp_list_pluck( $attendees, 'order_id'  );
+$product_id = wp_list_pluck( $attendees, 'product_id'  );
+$optout = wp_list_pluck( $attendees, 'optout'  );
+$name = wp_list_pluck( $attendees, 'purchaser_name' );
+$email = wp_list_pluck( $attendees, 'purchaser_email' );
+$time = wp_list_pluck( $attendees, 'purchase_time' );
 
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
@@ -37,35 +38,67 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 
 <h2><?php echo sprintf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
 
-
+<div class="tribe-tickets attendees-list-optout">
+	<input <?php echo $view->get_restriction_attr( $post_id, $product_id[0] ); ?> type="checkbox" name="attendee[<?php echo $order_id[0]; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $order_id[0]; ?>" <?php checked( true, $optout[0] ) ?>>
+	<label for="tribe-tickets-attendees-list-optout-<?php echo $order_id[0]; ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+</div>
 <p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), $name[0] ); ?><?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( $time[0] ) ) ); ?></p>
 
 
 <ul class="tribe-rsvp-list">
-<?php foreach ( $attendees as $i => $attendee ): ?>
-	<?php $key = $attendee['order_id']; ?>
-	<li class="tribe-item<?php echo $view->is_rsvp_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
-		<p class="list-attendee" style="display:inline-block;text-transform: uppercase;color:#999;letter-spacing: 1px;"><?php echo sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ); ?></p>
-		<div class="tribe-answer">
-			<!-- Wrapping <label> around both the text and the <select> will implicitly associate the text with the label. -->
-			<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
+	<?php foreach ( $attendees as $i => $attendee ): ?>
+		<?php $key = $attendee['order_id']; ?>
+		<li class="tribe-item<?php echo $view->is_rsvp_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
+			<p class="list-attendee" style="display:inline-block;text-transform: uppercase;color:#999;letter-spacing: 1px;"><?php echo sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ); ?></p>
+			<div class="tribe-answer">
+				<!-- Wrapping <label> around both the text and the <select> will implicitly associate the text with the label. -->
+				<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
 				<label>
 					<?php esc_html_e( 'RSVP: ', 'event-tickets' ); ?>
 					<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
 				</label>
 			</div>
-			<div class="tribe-tickets attendees-list-optout">
-				<input <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> type="checkbox" name="attendee[<?php echo $key; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $key; ?>" <?php checked( true, $attendee['optout'] ) ?>>
-				<label for="tribe-tickets-attendees-list-optout-<?php echo $key; ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+			<div class="attendee-meta-row">
+			<?php
+			$meta_fields = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $attendee['product_id'] );
+			$meta_data = get_post_meta( $attendee['attendee_id'], Tribe__Tickets_Plus__Meta::META_KEY, true );
+
+			?>
+			<?php //esc_html_e( 'View details', 'event-tickets-plus' ); ?>
+
+			<a href="#" style="font-size:14px;margin-bottom:20px;display:block;"><?php esc_html_e( '- Hide complete attendee info', 'event-tickets-plus' ); ?></a>
+			<?php
+			foreach ( $meta_fields as $field ) {
+				if ( 'checkbox' === $field->type && isset( $field->extra['options'] ) ) {
+					$values = array();
+					foreach ( $field->extra['options'] as $option ) {
+						$key = $field->slug . '_' . sanitize_title( $option );
+
+						if ( isset( $meta_data[ $key ] ) ) {
+							$values[] = $meta_data[ $key ];
+						}
+					}
+
+					$value = implode( ', ', $values );
+				} elseif ( isset( $meta_data[ $field->slug ] ) ) {
+					$value = $meta_data[ $field->slug ];
+				} else {
+					continue;
+				}
+
+				if ( '' === trim( $value ) ) {
+					$value = '&nbsp;';
+				}
+
+				?>
+				<div class="attendee-meta">
+					<span class="event-tickets-meta-label <?php echo esc_attr( $field->slug ); ?>" style="font-weight:700;"><?php echo esc_html( $field->label ); ?>&nbsp;</span>
+					<span class="event-tickets-meta-data <?php echo esc_attr( $field->slug ); ?>"><?php echo $value ? esc_html( $value ) : '&nbsp;'; ?></span>
+				</div>
+				<?php
+			}
+			?>
 			</div>
-		<?php
-		/**
-		 * Used to Include More fields to each Item
-		 *
-		 * @param array $attendee The Attendee Data
-		 * @param int   $i        Order in Which this item appears
-		 */
-		do_action( 'tribe_tickets_orders_rsvp_item', $attendee, $i ); ?>
-	</li>
-<?php endforeach; ?>
+		</li>
+	<?php endforeach; ?>
 </ul>
