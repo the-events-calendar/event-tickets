@@ -20,7 +20,15 @@ $user_id   = get_current_user_id();
 $user_info = get_userdata( $user_id );
 $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
 
-//var_dump( $attendees );
+echo '<pre>';
+var_dump( $attendees );
+echo '</pre>';
+
+$order_id = array_column( $attendees, 'order_id'  );
+$name = array_column( $attendees, 'purchaser_name' );
+$email = array_column( $attendees, 'purchaser_email' );
+$time = array_column( $attendees, 'purchase_time' );
+
 
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
@@ -28,7 +36,11 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 ?>
 
 <h2><?php echo sprintf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
-<p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), $user_info->first_name . ' ' . $user_info->last_name ); ?></p>
+
+
+<p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), $name[0] ); ?><?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( $time[0] ) ) ); ?></p>
+
+
 <ul class="tribe-rsvp-list">
 <?php foreach ( $attendees as $i => $attendee ): ?>
 	<?php $key = $attendee['order_id']; ?>
@@ -41,14 +53,6 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 					<?php esc_html_e( 'RSVP: ', 'event-tickets' ); ?>
 					<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
 				</label>
-			</div>
-			<div class="tribe-tickets full-name-row">
-				<label for="tribe-tickets-full-name-<?php echo $key; ?>"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>: </label>
-				<span class="<?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?>" data-id="attendee[<?php echo $key; ?>][full_name]" id="tribe-tickets-full-name-<?php echo $key; ?>"><?php echo esc_attr( $attendee['purchaser_name'] ) ?></span>
-			</div>
-			<div class="tribe-tickets email-row">
-				<label for="tribe-tickets-email-<?php echo $key; ?>"><?php esc_html_e( 'Email', 'event-tickets' ); ?>: </label>
-				<span class="<?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?>" data-id="attendee[<?php echo $key; ?>][email]" id="tribe-tickets-email-<?php echo $key; ?>"><?php echo esc_attr( $attendee['purchaser_email'] ) ?></span>
 			</div>
 			<div class="tribe-tickets attendees-list-optout">
 				<input <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> type="checkbox" name="attendee[<?php echo $key; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $key; ?>" <?php checked( true, $attendee['optout'] ) ?>>
