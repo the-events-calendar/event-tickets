@@ -85,7 +85,10 @@
 		}
 
 		.list-attendee {
+			color: #999;
 			display: inline-block;
+			letter-spacing: 1px;
+			text-transform: uppercase;
 		}
 
 		.tribe-answer {
@@ -112,4 +115,66 @@
 
 .tribe-submit-tickets-form {
 	margin-top: 20px;
+}
+
+.attendee-meta.toggle {
+	font-size: 90%;
+	cursor: pointer;
+	display: block;
+	margin-bottom: 10px;
+}
+
+.attendee-meta.toggle {
+	&:before {
+		content: '+';
+	}
+}
+
+.attendee-meta.toggle.on {
+	&:before {
+		content: '-';
+	}
+}
+
+
+.attendee-meta-details {
+	display: none;
+}
+
+.reserved-by,
+.attendees-list-optout {
+	display: inline-block;
+	width: 50%;
+}
+
+.reserved-by {
+	float: left;
+}
+
+.attendees-list-optout {
+	float: right;
+}
+
+.user-details {
+	&:before, &:after {
+		content: '';
+		display: table;
+	}
+
+	&:after {
+		clear: both;
+	}
+}
+
+.tribe-answer {
+	select {
+		border: 1px solid #ddd;
+	}
+}
+
+#tribe-rsvp {
+	h2 {
+		margin-bottom: 20px;
+		line-height: 1.2;
+	}
 }

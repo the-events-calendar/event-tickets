@@ -62,3 +62,11 @@ var tribe_tickets_rsvp = {
 		my.init();
 	} );
 })( jQuery, tribe_tickets_rsvp );
+
+jQuery(document).ready(function( $ ) {
+    $('.toggle').hover(function() {
+        $(".attendee-meta-details", this).slideToggle('slow', function() {
+            // Animation complete.
+        });
+    });
+    });
