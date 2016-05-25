@@ -198,6 +198,7 @@ Our Premium Plugins:
 * Tweak - Improved our JSON-LD output to include tickets [43595]
 * Tweak - Record the user ID associated with the creation of new attendee records [44347]
 * Tweak - Fixed translation domain on a few strings [46524]
+* Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada, thanks Michael C! [46789]
 
 = [4.1.4] 2016-05-19 =
 
