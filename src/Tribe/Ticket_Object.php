@@ -444,7 +444,16 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_sold( $value = null ) {
-			return $this->qty_getter_setter( $this->qty_sold, $value );
+			// If the Value was passed as numeric value overwrite
+			if ( is_numeric( $value ) ){
+				$this->qty_sold = $value;
+			}
+
+			// Prevents qty_sold from going negative
+			$this->qty_sold = max( (int) $this->qty_sold, 0 );
+
+			// return the new Qty Sold
+			return $this->qty_sold;
 		}
 
 		/**
