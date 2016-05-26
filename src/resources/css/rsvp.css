@@ -78,11 +78,12 @@
 .tribe-rsvp-list > .tribe-item {
 	padding: 20px;
 	border: 1px solid #ededed;
-	border-bottom: 0px;
+	border-bottom: 0;
 }
 
 .tribe-rsvp-list > .tribe-item:last-child {
 	border-bottom: 1px solid #ededed;
+	margin-bottom: 20px;
 }
 
 .tribe-rsvp-list > .tribe-item.tribe-disabled {
@@ -95,25 +96,25 @@
 	border-bottom-color: #ddd;
 }
 
-.tribe-rsvp-list > .tribe-item .list-attendee {
-	color: #999;
-	display: inline-block;
-	letter-spacing: 1px;
-	text-transform: uppercase;
-}
-
 .tribe-rsvp-list > .tribe-item .tribe-answer {
 	float: right;
 	display: inline-block;
 }
 
 .tribe-rsvp-list > .tribe-item table {
-	border: 0px;
+	border: 0;
 	margin: 0;
 }
 
 .tribe-rsvp-list > .tribe-item td {
-	border: 0px;
+	border: 0;
+}
+
+.list-attendee {
+	color: #999;
+	display: inline-block;
+	letter-spacing: 1px;
+	text-transform: uppercase;
 }
 
 .tribe-link-tickets-message {
@@ -134,11 +135,11 @@
 }
 
 .attendee-meta.toggle:before {
-	content: '+';
+	content: '+ Show ';
 }
 
 .attendee-meta.toggle.on:before {
-	content: '-';
+	content: '- Hide ';
 }
 
 .attendee-meta-details {
@@ -157,6 +158,7 @@
 
 .attendees-list-optout {
 	float: right;
+	text-align: right;
 }
 
 .user-details:before, .user-details:after {
@@ -169,6 +171,7 @@
 }
 
 .tribe-answer select {
+	background: white;
 	border: 1px solid #ddd;
 }
 
@@ -177,9 +180,11 @@
 	line-height: 1.2;
 }
 
-#tribe-tickets-table,
-#tribe-tickets-table th,
-#tribe-tickets-table tr,
-#tribe-tickets-table td {
-	border: none;
+.ticket-meta {
+	display: inline-block;
+	float: right;
+}
+
+.event-tickets-meta-label {
+	font-weight:700;
 }

@@ -68,10 +68,11 @@
 	> .tribe-item {
 		padding: 20px;
 		border: 1px solid #ededed;
-		border-bottom: 0px;
+		border-bottom: 0;
 
 		&:last-child {
 			border-bottom: 1px solid #ededed;
+			margin-bottom: 20px;
 		}
 
 		&.tribe-disabled {
@@ -84,27 +85,27 @@
 			}
 		}
 
-		.list-attendee {
-			color: #999;
-			display: inline-block;
-			letter-spacing: 1px;
-			text-transform: uppercase;
-		}
-
 		.tribe-answer {
 			float: right;
 			display: inline-block;
 		}
 
 		table {
-			border: 0px;
+			border: 0;
 			margin: 0;
 		}
 
 		td {
-			border: 0px;
+			border: 0;
 		}
 	}
+}
+
+.list-attendee {
+	color: #999;
+	display: inline-block;
+	letter-spacing: 1px;
+	text-transform: uppercase;
 }
 
 .tribe-link-tickets-message {
@@ -126,13 +127,13 @@
 
 .attendee-meta.toggle {
 	&:before {
-		content: '+';
+		content: '+ Show ';
 	}
 }
 
 .attendee-meta.toggle.on {
 	&:before {
-		content: '-';
+		content: '- Hide ';
 	}
 }
 
@@ -153,6 +154,7 @@
 
 .attendees-list-optout {
 	float: right;
+	text-align: right;
 }
 
 .user-details {
@@ -168,6 +170,7 @@
 
 .tribe-answer {
 	select {
+		background: white;
 		border: 1px solid #ddd;
 	}
 }
@@ -179,9 +182,11 @@
 	}
 }
 
-#tribe-tickets-table,
-#tribe-tickets-table th,
-#tribe-tickets-table tr,
-#tribe-tickets-table td {
-	border: none;
+.ticket-meta {
+	display: inline-block;
+	float: right;
+}
+
+.event-tickets-meta-label {
+	font-weight:700;
 }

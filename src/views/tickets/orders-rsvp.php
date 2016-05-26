@@ -20,10 +20,6 @@ $user_id   = get_current_user_id();
 $user_info = get_userdata( $user_id );
 $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
 
-//echo '<pre>';
-//var_dump( $attendees );
-//echo '</pre>';
-
 $order_id = wp_list_pluck( $attendees, 'order_id'  );
 $product_id = wp_list_pluck( $attendees, 'product_id'  );
 $optout = wp_list_pluck( $attendees, 'optout'  );
@@ -62,7 +58,6 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 					$meta_fields = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $attendee['product_id'] );
 					$meta_data = get_post_meta( $attendee['attendee_id'], Tribe__Tickets_Plus__Meta::META_KEY, true );
 					?>
-					<a class="attendee-meta toggle"><?php esc_html_e( 'Show/Hide complete attendee info', 'event-tickets-plus' ); ?></a>
 					<?php
 					foreach ( $meta_fields as $field ) {
 						if ( 'checkbox' === $field->type && isset( $field->extra['options'] ) ) {
@@ -83,12 +78,14 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 						if ( '' === trim( $value ) ) {
 							$value = '&nbsp;';
 						}
-						?>
+					if ( '' != $value ) { ?>
+						<a class="attendee-meta toggle"><?php esc_html_e( 'complete attendee info', 'event-tickets-plus' ); ?></a>
 						<div class="attendee-meta-details">
-							<span class="event-tickets-meta-label <?php echo esc_attr( $field->slug ); ?>" style="font-weight:700;"><?php echo esc_html( $field->label ); ?>&nbsp;</span>
+							<span class="event-tickets-meta-label <?php echo esc_attr( $field->slug ); ?>"><?php echo esc_html( $field->label ); ?>&nbsp;</span>
 							<span class="event-tickets-meta-data <?php echo esc_attr( $field->slug ); ?>"><?php echo $value ? esc_html( $value ) : '&nbsp;'; ?></span>
 						</div>
 						<?php
+						}
 					}
 					?>
 				</div>
@@ -96,12 +93,3 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 		<?php endforeach; ?>
 	</ul>
 </div>
-
-<script>
-	jQuery(document).ready(function( $ ) {
-		$('.toggle').click(function() {
-			$(this).toggleClass( 'on' );
-			$(this).next('.attendee-meta-details').slideToggle();
-		});
-	});
-</script>
