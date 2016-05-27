@@ -19,11 +19,12 @@ $post_type = get_post_type_object( $post->post_type );
 $user_id   = get_current_user_id();
 $user_info = get_userdata( $user_id );
 $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
-$first_attendee = $attendees[0];
+
 
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
 }
+$first_attendee = $attendees[0];
 ?>
 <div id="tribe-rsvp">
 	<h2><?php echo sprintf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>

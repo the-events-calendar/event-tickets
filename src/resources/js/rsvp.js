@@ -57,15 +57,14 @@ var tribe_tickets_rsvp = {
 			return false;
 		}
 	};
+    $( '.attendee-meta-row .toggle' ).on( 'click', function() {
+        $( this )
+            .toggleClass( 'on' )
+            .siblings( '.attendee-meta-details' )
+            .slideToggle();
+    } );
 
 	$( function() {
 		my.init();
 	} );
 })( jQuery, tribe_tickets_rsvp );
-
-jQuery(document).ready(function( $ ) {
-    $('.toggle').click(function() {
-        $(this).toggleClass( 'on' );
-        $(this).next('.attendee-meta-details').slideToggle();
-    });
-});
