@@ -19,13 +19,7 @@ $post_type = get_post_type_object( $post->post_type );
 $user_id   = get_current_user_id();
 $user_info = get_userdata( $user_id );
 $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
-
-$order_id = wp_list_pluck( $attendees, 'order_id'  );
-$product_id = wp_list_pluck( $attendees, 'product_id'  );
-$optout = wp_list_pluck( $attendees, 'optout'  );
-$name = wp_list_pluck( $attendees, 'purchaser_name' );
-$email = wp_list_pluck( $attendees, 'purchaser_email' );
-$time = wp_list_pluck( $attendees, 'purchase_time' );
+$first_attendee = $attendees[0];
 
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
@@ -35,10 +29,10 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	<h2><?php echo sprintf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
 	<div class="user-details">
 	<div class="tribe-tickets attendees-list-optout">
-		<input <?php echo $view->get_restriction_attr( $post_id, $product_id[0] ); ?> type="checkbox" name="attendee[<?php echo $order_id[0]; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $order_id[0]; ?>" <?php checked( true, $optout[0] ) ?>>
-		<label for="tribe-tickets-attendees-list-optout-<?php echo $order_id[0]; ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+		<input <?php echo $view->get_restriction_attr( $post_id, $first_attendee['product_id'] ); ?> type="checkbox" name="attendee[<?php echo $first_attendee['order_id']; ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo $first_attendee['order_id']; ?>" <?php checked( true, $first_attendee['optout'] ) ?>>
+		<label for="tribe-tickets-attendees-list-optout-<?php echo $first_attendee['order_id']; ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
 	</div>
-	<p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), $name[0] ); ?><?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( $time[0] ) ) ); ?></p>
+	<p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), $name[0] ); ?><?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( $first_attendee['purchase_time'] ) ) ); ?></p>
 	</div>
 		<ul class="tribe-rsvp-list">
 		<?php foreach ( $attendees as $i => $attendee ): ?>
