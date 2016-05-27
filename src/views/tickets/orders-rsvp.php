@@ -28,14 +28,14 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 <div id="tribe-rsvp">
 	<h2><?php echo sprintf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
 	<div class="user-details">
-	<div class="tribe-tickets attendees-list-optout">
-		<input <?php echo $view->get_restriction_attr( $post_id, esc_attr( $first_attendee['product_id'] ) ); ?> type="checkbox" name="attendee[<?php echo esc_attr( $first_attendee['order_id'] ); ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>" <?php checked( true, esc_attr( $first_attendee['optout'] ) ) ?>>
-		<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
-	</div>
-	<p class="reserved-by">
-		<?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), esc_html( $first_attendee['purchaser_name'] ) ); ?>
-		<?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) ) ); ?>
-	</p>
+		<div class="tribe-tickets attendees-list-optout">
+			<input <?php echo $view->get_restriction_attr( $post_id, esc_attr( $first_attendee['product_id'] ) ); ?> type="checkbox" name="attendee[<?php echo esc_attr( $first_attendee['order_id'] ); ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>" <?php checked( true, esc_attr( $first_attendee['optout'] ) ) ?>>
+			<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+		</div>
+		<p class="reserved-by">
+			<?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), esc_html( $first_attendee['purchaser_name'] ) ); ?>
+			<?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) ) ); ?>
+		</p>
 	</div>
 		<ul class="tribe-rsvp-list">
 		<?php foreach ( $attendees as $i => $attendee ): ?>
