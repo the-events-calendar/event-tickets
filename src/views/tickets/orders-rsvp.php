@@ -21,8 +21,6 @@ $user_info = get_userdata( $user_id );
 $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
 $first_attendee = $attendees[0];
 
-var_dump( $first_attendee );
-
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
 }
@@ -34,7 +32,7 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 		<input <?php echo $view->get_restriction_attr( $post_id, esc_attr( $first_attendee['product_id'] ) ); ?> type="checkbox" name="attendee[<?php echo esc_attr( $first_attendee['order_id'] ); ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>" <?php checked( true, esc_attr( $first_attendee['optout'] ) ) ?>>
 		<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
 	</div>
-	<p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), $first_attendee['purchaser_name']  ); ?><?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( $first_attendee['purchase_time'] ) ) ); ?></p>
+	<p class="reserved-by"><?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), esc_attr( $first_attendee['purchaser_name'] ) ); ?><?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) ) ); ?></p>
 	</div>
 		<ul class="tribe-rsvp-list">
 		<?php foreach ( $attendees as $i => $attendee ): ?>
