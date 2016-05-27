@@ -82,10 +82,11 @@ If you’ve identified a bug and want to submit a patch, we’d welcome it at ou
 == Screenshots ==
 
 1. RSVP setup
-2. Attendees report
-3. RSVP to an event
-4. Customize tickets with an image
-5. Ticket settings
+2. RSVPs on an event
+3. RSVP on a post
+4. Attendee report
+5. Emailed ticket
+
 
 == Documentation ==
 
