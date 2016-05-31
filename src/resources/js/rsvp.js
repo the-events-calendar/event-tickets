@@ -14,6 +14,13 @@ var tribe_tickets_rsvp = {
 
 		this.$rsvp.closest( '.cart' )
 			.on( 'submit', this.event.handle_submission );
+
+        $( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta-row .toggle', function() {
+            $( this )
+                .toggleClass( 'on' )
+                .siblings( '.attendee-meta-details' )
+                .slideToggle();
+        } );
 	};
 
 	my.quantity_changed = function( $quantity ) {
@@ -60,11 +67,5 @@ var tribe_tickets_rsvp = {
 
 	$( function() {
 		my.init();
-        $( '.attendee-meta-row .toggle' ).on( 'click', function() {
-            $( this )
-                .toggleClass( 'on' )
-                .siblings( '.attendee-meta-details' )
-                .slideToggle();
-        } );
 	} );
 })( jQuery, tribe_tickets_rsvp );
