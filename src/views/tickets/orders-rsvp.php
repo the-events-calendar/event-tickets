@@ -26,23 +26,23 @@ if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 }
 $first_attendee = $attendees[0];
 ?>
-<div id="tribe-rsvp">
-	<h2><?php echo sprintf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
+<div class="tribe-rsvp">
+	<h2><?php echo printf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
 	<div class="user-details">
 		<div class="tribe-tickets attendees-list-optout">
 			<input <?php echo $view->get_restriction_attr( $post_id, esc_attr( $first_attendee['product_id'] ) ); ?> type="checkbox" name="attendee[<?php echo esc_attr( $first_attendee['order_id'] ); ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>" <?php checked( true, esc_attr( $first_attendee['optout'] ) ) ?>>
 			<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
 		</div>
 		<p class="reserved-by">
-			<?php echo sprintf( esc_html__( 'Reserved by %s', 'event-tickets' ), esc_html( $first_attendee['purchaser_name'] ) ); ?>
-			<?php echo sprintf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) ) ); ?>
+			<?php echo printf( esc_html__( 'Reserved by %s', 'event-tickets' ), esc_html( $first_attendee['purchaser_name'] ) ); ?>
+			<?php echo printf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) ) ); ?>
 		</p>
 	</div>
 		<ul class="tribe-rsvp-list">
 		<?php foreach ( $attendees as $i => $attendee ): ?>
 			<?php $key = $attendee['order_id']; ?>
 			<li class="tribe-item<?php echo $view->is_rsvp_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
-				<p class="list-attendee"><?php echo sprintf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ); ?></p>
+				<p class="list-attendee"><?php echo printf( esc_html__( 'Attendee %d', 'event-tickets' ), $i + 1 ); ?></p>
 				<div class="tribe-answer">
 					<!-- Wrapping <label> around both the text and the <select> will implicitly associate the text with the label. -->
 					<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
