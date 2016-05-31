@@ -82,10 +82,11 @@ If you’ve identified a bug and want to submit a patch, we’d welcome it at ou
 == Screenshots ==
 
 1. RSVP setup
-2. Attendees report
-3. RSVP to an event
-4. Customize tickets with an image
-5. Ticket settings
+2. RSVPs on an event
+3. RSVP on a post
+4. Attendee report
+5. Emailed ticket
+
 
 == Documentation ==
 
@@ -163,7 +164,7 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 
 = Translations =
 
-We don’t have any translations for this plugin yet, but you can help us! You can contribute at http://translations.theeventscalendar.com
+Event Tickets is translated by volunteers at https://translate.wordpress.org/projects/wp-plugins/event-tickets/stable. There you can find a list of available languages, download translation files, or help update the translations. Thank you to everyone who helps to maintain our translations!
 
 == Add-Ons ==
 
