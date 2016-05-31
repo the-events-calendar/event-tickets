@@ -24,7 +24,7 @@ $attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
 }
-$first_attendee = $attendees[0];
+$first_attendee = reset( $attendees );
 ?>
 <div class="tribe-rsvp">
 	<h2><?php printf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
@@ -77,7 +77,7 @@ $first_attendee = $attendees[0];
 							$value = '&nbsp;';
 						}
 					if ( '' != $value ) { ?>
-						<a class="attendee-meta toggle"><?php esc_html_e( 'complete attendee info', 'event-tickets-plus' ); ?></a>
+						<a class="attendee-meta toggle show"><?php esc_html_e( 'Toggle attendee info', 'event-tickets-plus' ); ?></a>
 						<div class="attendee-meta-details">
 							<span class="event-tickets-meta-label <?php echo esc_attr( $field->slug ); ?>"><?php echo esc_html( $field->label ); ?>&nbsp;</span>
 							<span class="event-tickets-meta-data <?php echo esc_attr( $field->slug ); ?>"><?php echo $value ? esc_html( $value ) : '&nbsp;'; ?></span>

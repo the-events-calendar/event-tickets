@@ -135,11 +135,11 @@
 }
 
 .attendee-meta.toggle:before {
-	content: '+ Show ';
+	content: '+ ';
 }
 
 .attendee-meta.toggle.on:before {
-	content: '- Hide ';
+	content: '- ';
 }
 
 .attendee-meta-details {
