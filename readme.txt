@@ -208,7 +208,6 @@ Our Premium Plugins:
 * Tweak - Move plugin CSS to PostCSS [39982*]
 * Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada (Thanks to Michael C!) [46789*]
 * Fix -  Corrects capabilities test in relation to editing tickets (Props to @bokorir!) [45609*]
-* Fix - TODO [45840*]
 
 = [4.1.4] 2016-05-19 =
 
