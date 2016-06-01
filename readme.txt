@@ -194,9 +194,8 @@ Our Premium Plugins:
 
 * Feature - Add a shortcode listing those upcoming events the user has indicated they will attend [44363*]
 * Feature - Make it possible to disable the ticket form for logged out users [44347*]
-* Feature - TODO [43942*]
-* Feature - TODO (Thank you Quakely for submitting this idea on UserVoice!) [33373*] 
-* Feature - TODO [38995*]
+* Feature - Added RSVP and WooCommerce tickets import via .csv file (Thank you Quakely for submitting this idea on UserVoice!) [33373*] 
+* Feature - Authenticated Attendees can control their RSVP on Events [38995*]
 * Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files (Thank you to user aafhhl for bringing this to our attention!) [36246*]
 * Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (Props to masteradhoc on GitHub for this change!) [45467*]
 * Tweak - Improved our JSON-LD output to include tickets (Big thanks to Lars for reporting this!) [43595*]
