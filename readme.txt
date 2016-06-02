@@ -192,21 +192,21 @@ Our Premium Plugins:
 
 = [4.2] TBD =
 
-* Feature - Add a shortcode listing those upcoming events the user has indicated they will attend [44363*]
-* Feature - Make it possible to disable the ticket form for logged out users [44347*]
-* Feature - Added RSVP and WooCommerce tickets import via .csv file (Thank you Quakely for submitting this idea on UserVoice!) [33373*] 
-* Feature - Authenticated Attendees can control their RSVP on Events [38995*]
-* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files (Thank you to user aafhhl for bringing this to our attention!) [36246*]
-* Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (Props to masteradhoc on GitHub for this change!) [45467*]
-* Tweak - Improved our JSON-LD output to include tickets (Big thanks to Lars for reporting this!) [43595*]
-* Tweak - Record the user ID associated with the creation of new attendee records [44347*]
-* Tweak - Fixed translation domain on a few strings (Thank you TEME for reporting the issue!) [46524*]
-* Tweak - Move plugin CSS to PostCSS [39982*]
-* Tweak - TODO [61611*]
-* Tweak - Updated plugin description on admin plugin page [46604*]
-* Tweak - Move plugin CSS to PostCSS [39982*]
-* Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada (Thanks to Michael C!) [46789*]
-* Fix -  Corrects capabilities test in relation to editing tickets (Props to @bokorir!) [45609*]
+* Feature - Add a shortcode listing those upcoming events the user has indicated they will attend
+* Feature - Make it possible to disable the ticket form for logged out users
+* Feature - Added RSVP and WooCommerce tickets import via .csv file (Thank you Quakely for submitting this idea on UserVoice!)
+* Feature - Authenticated Attendees can control their RSVP on Events
+* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files (Thank you to user aafhhl for bringing this to our attention!)
+* Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (Props to masteradhoc on GitHub for this change!)
+* Tweak - Improved our JSON-LD output to include tickets (Big thanks to Lars for reporting this!)
+* Tweak - Record the user ID associated with the creation of new attendee records
+* Tweak - Fixed translation domain on a few strings (Thank you TEME for reporting the issue!)
+* Tweak - Move plugin CSS to PostCSS
+* Tweak - Fix padding/spacing for RSVP form on single event page in TwentyFifteen
+* Tweak - Updated plugin description on admin plugin page
+* Tweak - Move plugin CSS to PostCSS
+* Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada (Thanks to Michael C!)
+* Fix -  Corrects capabilities test in relation to editing tickets (Props to @bokorir!)
 
 = [4.1.4] 2016-05-19 =
 
