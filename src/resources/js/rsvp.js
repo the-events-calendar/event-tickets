@@ -20,8 +20,8 @@ var tribe_tickets_rsvp = {
                 .toggleClass( 'on' )
                 .siblings( '.attendee-meta-details' )
                 .slideToggle();
-        } );
-	};
+        });
+    };
 
 	my.quantity_changed = function( $quantity ) {
 		var i = 0;
