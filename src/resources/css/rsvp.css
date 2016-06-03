@@ -46,7 +46,6 @@
 	border-radius: 3px;
 	border-style: solid;
 	border-width: 1px;
-	font-family: Helvetica, Arial, sans;
 	font-size: 12px;
 	margin: 0 0 5px;
 	padding: 0 .6em;
@@ -79,11 +78,12 @@
 .tribe-rsvp-list > .tribe-item {
 	padding: 20px;
 	border: 1px solid #ededed;
-	border-bottom: 0px;
+	border-bottom: 0;
 }
 
 .tribe-rsvp-list > .tribe-item:last-child {
 	border-bottom: 1px solid #ededed;
+	margin-bottom: 20px;
 }
 
 .tribe-rsvp-list > .tribe-item.tribe-disabled {
@@ -98,16 +98,23 @@
 
 .tribe-rsvp-list > .tribe-item .tribe-answer {
 	float: right;
-	display: block;
+	display: inline-block;
 }
 
 .tribe-rsvp-list > .tribe-item table {
-	border: 0px;
+	border: 0;
 	margin: 0;
 }
 
 .tribe-rsvp-list > .tribe-item td {
-	border: 0px;
+	border: 0;
+}
+
+.list-attendee {
+	color: #999;
+	display: inline-block;
+	letter-spacing: 1px;
+	text-transform: uppercase;
 }
 
 .tribe-link-tickets-message {
@@ -118,4 +125,66 @@
 
 .tribe-submit-tickets-form {
 	margin-top: 20px;
+}
+
+.attendee-meta.toggle {
+	font-size: 90%;
+	cursor: pointer;
+	display: block;
+	margin-bottom: 10px;
+}
+
+.attendee-meta.toggle:before {
+	content: '+ ';
+}
+
+.attendee-meta.toggle.on:before {
+	content: '- ';
+}
+
+.attendee-meta-details {
+	display: none;
+}
+
+.reserved-by,
+.attendees-list-optout {
+	display: inline-block;
+}
+
+.reserved-by {
+	float: left;
+}
+
+.attendees-list-optout {
+	float: right;
+	text-align: right;
+}
+
+.user-details:before, .user-details:after {
+	content: '';
+	display: table;
+}
+
+.user-details:after {
+	clear: both;
+}
+
+.tribe-answer select {
+	background: white;
+	border: 1px solid #ddd;
+}
+
+#tribe-rsvp h2 {
+	margin-bottom: 20px;
+	line-height: 1.2;
+}
+
+.ticket-meta {
+	display: inline-block;
+	float: right;
+}
+
+.event-tickets-meta-label {
+	font-weight:700;
+	margin: 0 1em 0 0;
 }

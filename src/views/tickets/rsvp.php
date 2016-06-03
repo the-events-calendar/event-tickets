@@ -104,7 +104,7 @@ $now = current_time( 'timestamp' );
 					 */
 					do_action( 'event_tickets_rsvp_before_confirmation_fields', $tickets );
 					?>
-					<table>
+					<table class="tribe-tickets-table">
 						<tr class="tribe-tickets-full-name-row">
 							<td>
 								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
