@@ -142,7 +142,7 @@
 	content: '- ';
 }
 
-.attendee-meta-details {
+.attendee-meta-row {
 	display: none;
 }
 
@@ -187,4 +187,18 @@
 .event-tickets-meta-label {
 	font-weight:700;
 	margin: 0 1em 0 0;
+}
+
+/* TwentySixteen fix for box shadow as bottom border on <a> link */
+
+.entry-content a,
+.entry-summary a,
+.taxonomy-description a,
+.logged-in-as a,
+.comment-content a,
+.pingback .comment-body > a,
+.textwidget a,
+.entry-footer a:hover,
+.site-info a:hover {
+	box-shadow: none;
 }
