@@ -51,6 +51,7 @@ $first_attendee = reset( $attendees );
 						<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
 					</label>
 				</div>
+				<a class="attendee-meta toggle show"><?php esc_html_e( 'Toggle attendee info', 'event-tickets-plus' ); ?></a>
 				<div class="attendee-meta-row">
 					<?php
 					$meta_fields = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $attendee['product_id'] );
@@ -77,10 +78,9 @@ $first_attendee = reset( $attendees );
 							$value = '&nbsp;';
 						}
 					if ( '' != $value ) { ?>
-						<a class="attendee-meta toggle show"><?php esc_html_e( 'Toggle attendee info', 'event-tickets-plus' ); ?></a>
 						<div class="attendee-meta-details">
-							<span class="event-tickets-meta-label <?php echo esc_attr( $field->slug ); ?>"><?php echo esc_html( $field->label ); ?>&nbsp;</span>
-							<span class="event-tickets-meta-data <?php echo esc_attr( $field->slug ); ?>"><?php echo $value ? esc_html( $value ) : '&nbsp;'; ?></span>
+							<span class="event-tickets-meta-label <?php echo esc_attr( $field->slug ); ?>"><?php echo esc_html( $field->label ); ?></span>
+							<span class="event-tickets-meta-data <?php echo esc_attr( $field->slug ); ?>"><?php echo esc_html( $value ); ?></span>
 						</div>
 						<?php
 						}

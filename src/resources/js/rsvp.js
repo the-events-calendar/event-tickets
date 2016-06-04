@@ -5,23 +5,20 @@ var tribe_tickets_rsvp = {
 
 (function( $, my ) {
 	'use strict';
-
+	
 	my.init = function() {
 		this.$rsvp = $( '.tribe-events-tickets-rsvp' );
 		this.attendee_template = $( document.getElementById( 'tribe-tickets-rsvp-tmpl' ) ).html();
-
 		this.$rsvp.on( 'change', '.tribe-ticket-quantity', this.event.quantity_changed );
-
-		this.$rsvp.closest( '.cart' )
-			.on( 'submit', this.event.handle_submission );
-
-        $( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta-row .toggle', function() {
-            $( this )
-                .toggleClass( 'on' )
-                .siblings( '.attendee-meta-details' )
-                .slideToggle();
-        });
-    };
+		this.$rsvp.closest( '.cart' ).on( 'submit', this.event.handle_submission );
+		
+		$( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta.toggle', function() {
+			$( this )
+				.toggleClass( 'on' )
+				.siblings( '.attendee-meta-row' )
+				.slideToggle();
+		});
+	};
 
 	my.quantity_changed = function( $quantity ) {
 		var i = 0;
