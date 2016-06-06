@@ -472,6 +472,34 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
+	 * Groups RSVP attendees by purchaser name/email
+	 *
+	 * @param int $event_id The Event ID it relates to
+	 * @param int|null $user_id An optional user ID
+	 * @return array Array with the RSVP attendees grouped by purchaser name/email
+	 */
+	public function get_event_rsvp_attendees_by_purchaser( $event_id, $user_id = null ) {
+		$attendees = $this->get_event_rsvp_attendees( $event_id, $user_id );
+
+		if ( ! $attendees ) {
+			return array();
+		}
+
+		$attendee_groups = array();
+		foreach ( $attendees as $attendee ) {
+			$key = $attendee['purchaser_name'] . '::' . $attendee['purchaser_email'];
+
+			if ( ! isset( $attendee_groups[ $key ] ) ) {
+				$attendee_groups[ $key ] = array();
+			}
+
+			$attendee_groups[ $key ][] = $attendee;
+		}
+
+		return $attendee_groups;
+	}
+
+	/**
 	 * Gets a List of Possible RSVP answers
 	 *
 	 * @param string $selected Allows users to check if an option exists or get it's label
