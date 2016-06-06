@@ -32,7 +32,7 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 		$first_attendee = reset( $attendee_group );
 		?>
 		<div class="user-details">
-			<p class="reserved-by">
+			<p>
 				<?php
 				printf(
 					esc_html__( 'Reserved by %1$s (%2$s)', 'event-tickets' ),
@@ -51,7 +51,7 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
 			</div>
 		</div>
-		<ul class="tribe-rsvp-list">
+		<ul class="tribe-rsvp-list tribe-list">
 			<?php foreach ( $attendee_group as $i => $attendee ): ?>
 				<?php $key = $attendee['order_id']; ?>
 				<li class="tribe-item<?php echo $view->is_rsvp_restricted( $post_id, $attendee['product_id'] ) ? 'tribe-disabled' : ''; ?>" <?php echo $view->get_restriction_attr( $post_id, $attendee['product_id'] ); ?> id="attendee-<?php echo $attendee['order_id']; ?>">
