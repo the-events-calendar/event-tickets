@@ -191,14 +191,23 @@
 
 /* TwentySixteen fix for box shadow as bottom border on <a> link */
 
-.entry-content a,
-.entry-summary a,
-.taxonomy-description a,
-.logged-in-as a,
-.comment-content a,
-.pingback .comment-body > a,
-.textwidget a,
-.entry-footer a:hover,
-.site-info a:hover {
+.tribe-theme-twentysixteen .entry-content a,
+	.tribe-theme-twentysixteen .entry-summary a,
+	.tribe-theme-twentysixteen .taxonomy-description a,
+	.tribe-theme-twentysixteen .logged-in-as a,
+	.tribe-theme-twentysixteen .comment-content a,
+	.tribe-theme-twentysixteen .pingback .comment-body > a,
+	.tribe-theme-twentysixteen .textwidget a,
+	.tribe-theme-twentysixteen .entry-footer a:hover,
+	.tribe-theme-twentysixteen .site-info a:hover,
+	.tribe-theme-parent-twentysixteen .entry-content a,
+	.tribe-theme-parent-twentysixteen .entry-summary a,
+	.tribe-theme-parent-twentysixteen .taxonomy-description a,
+	.tribe-theme-parent-twentysixteen .logged-in-as a,
+	.tribe-theme-parent-twentysixteen .comment-content a,
+	.tribe-theme-parent-twentysixteen .pingback .comment-body > a,
+	.tribe-theme-parent-twentysixteen .textwidget a,
+	.tribe-theme-parent-twentysixteen .entry-footer a:hover,
+	.tribe-theme-parent-twentysixteen .site-info a:hover {
 	box-shadow: none;
 }

@@ -5,7 +5,7 @@ var tribe_tickets_rsvp = {
 
 (function( $, my ) {
 	'use strict';
-	
+
 	my.init = function() {
 		this.$rsvp = $( '.tribe-events-tickets-rsvp' );
 		this.attendee_template = $( document.getElementById( 'tribe-tickets-rsvp-tmpl' ) ).html();
