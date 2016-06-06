@@ -71,7 +71,7 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 					 * @param array $attendee Attendee array
 					 * @param WP_Post $post Post object that the tickets are tied to
 					 */
-					do_action( 'event_tickets_orders_rsvp_attendee_contents', $attendee, $post );
+					do_action( 'event_tickets_orders_attendee_contents', $attendee, $post );
 					?>
 				</li>
 			<?php endforeach; ?>
