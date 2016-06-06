@@ -8,6 +8,10 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
+.tribe-rsvp {
+	padding: 20px 0;
+}
+
 .tribe-tickets-meta-row {
 	display: none;
 }
@@ -127,46 +131,18 @@
 	margin-top: 20px;
 }
 
-.attendee-meta.toggle {
-	font-size: 90%;
-	cursor: pointer;
-	display: block;
-	margin-bottom: 10px;
+.user-details {
+	-js-display: flex;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-flow: row wrap;
+	    flex-flow: row wrap;
+	margin: 0 0 1em 0;
 }
 
-.attendee-meta.toggle:before {
-	content: '+ ';
-}
-
-.attendee-meta.toggle.on:before {
-	content: '- ';
-}
-
-.attendee-meta-details {
-	display: none;
-}
-
-.reserved-by,
-.attendees-list-optout {
-	display: inline-block;
-}
-
-.reserved-by {
-	float: left;
-}
-
-.attendees-list-optout {
-	float: right;
-	text-align: right;
-}
-
-.user-details:before, .user-details:after {
-	content: '';
-	display: table;
-}
-
-.user-details:after {
-	clear: both;
+.user-details p {
+	margin: 0 0 .25em 0;
 }
 
 .tribe-answer select {
@@ -174,7 +150,7 @@
 	border: 1px solid #ddd;
 }
 
-#tribe-rsvp h2 {
+.tribe-rsvp h2 {
 	margin-bottom: 20px;
 	line-height: 1.2;
 }
@@ -187,4 +163,27 @@
 .event-tickets-meta-label {
 	font-weight:700;
 	margin: 0 1em 0 0;
+}
+
+/* TwentySixteen fix for box shadow as bottom border on <a> link */
+
+.tribe-theme-twentysixteen .entry-content a,
+	.tribe-theme-twentysixteen .entry-summary a,
+	.tribe-theme-twentysixteen .taxonomy-description a,
+	.tribe-theme-twentysixteen .logged-in-as a,
+	.tribe-theme-twentysixteen .comment-content a,
+	.tribe-theme-twentysixteen .pingback .comment-body > a,
+	.tribe-theme-twentysixteen .textwidget a,
+	.tribe-theme-twentysixteen .entry-footer a:hover,
+	.tribe-theme-twentysixteen .site-info a:hover,
+	.tribe-theme-parent-twentysixteen .entry-content a,
+	.tribe-theme-parent-twentysixteen .entry-summary a,
+	.tribe-theme-parent-twentysixteen .taxonomy-description a,
+	.tribe-theme-parent-twentysixteen .logged-in-as a,
+	.tribe-theme-parent-twentysixteen .comment-content a,
+	.tribe-theme-parent-twentysixteen .pingback .comment-body > a,
+	.tribe-theme-parent-twentysixteen .textwidget a,
+	.tribe-theme-parent-twentysixteen .entry-footer a:hover,
+	.tribe-theme-parent-twentysixteen .site-info a:hover {
+	box-shadow: none;
 }
