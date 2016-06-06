@@ -8,6 +8,10 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
+.tribe-rsvp {
+	padding: 20px 0;
+}
+
 .tribe-tickets-meta-row {
 	display: none;
 }
@@ -146,27 +150,17 @@
 	display: none;
 }
 
-.reserved-by,
-.attendees-list-optout {
-	display: inline-block;
+.user-details {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-flow: row wrap;
+	    flex-flow: row wrap;
+	margin: 0 0 1em 0;
 }
 
-.reserved-by {
-	float: left;
-}
-
-.attendees-list-optout {
-	float: right;
-	text-align: right;
-}
-
-.user-details:before, .user-details:after {
-	content: '';
-	display: table;
-}
-
-.user-details:after {
-	clear: both;
+.user-details .reserved-by {
+	margin: 0 0 .25em 0;
 }
 
 .tribe-answer select {
@@ -187,4 +181,27 @@
 .event-tickets-meta-label {
 	font-weight:700;
 	margin: 0 1em 0 0;
+}
+
+/* TwentySixteen fix for box shadow as bottom border on <a> link */
+
+.tribe-theme-twentysixteen .entry-content a,
+	.tribe-theme-twentysixteen .entry-summary a,
+	.tribe-theme-twentysixteen .taxonomy-description a,
+	.tribe-theme-twentysixteen .logged-in-as a,
+	.tribe-theme-twentysixteen .comment-content a,
+	.tribe-theme-twentysixteen .pingback .comment-body > a,
+	.tribe-theme-twentysixteen .textwidget a,
+	.tribe-theme-twentysixteen .entry-footer a:hover,
+	.tribe-theme-twentysixteen .site-info a:hover,
+	.tribe-theme-parent-twentysixteen .entry-content a,
+	.tribe-theme-parent-twentysixteen .entry-summary a,
+	.tribe-theme-parent-twentysixteen .taxonomy-description a,
+	.tribe-theme-parent-twentysixteen .logged-in-as a,
+	.tribe-theme-parent-twentysixteen .comment-content a,
+	.tribe-theme-parent-twentysixteen .pingback .comment-body > a,
+	.tribe-theme-parent-twentysixteen .textwidget a,
+	.tribe-theme-parent-twentysixteen .entry-footer a:hover,
+	.tribe-theme-parent-twentysixteen .site-info a:hover {
+	box-shadow: none;
 }

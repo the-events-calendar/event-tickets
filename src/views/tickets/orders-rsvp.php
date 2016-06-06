@@ -32,10 +32,6 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 		$first_attendee = reset( $attendee_group );
 		?>
 		<div class="user-details">
-			<div class="tribe-tickets attendees-list-optout">
-				<input <?php echo $view->get_restriction_attr( $post_id, esc_attr( $first_attendee['product_id'] ) ); ?> type="checkbox" name="attendee[<?php echo esc_attr( $first_attendee['order_id'] ); ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>" <?php checked( true, esc_attr( $first_attendee['optout'] ) ) ?>>
-				<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
-			</div>
 			<p class="reserved-by">
 				<?php
 				printf(
@@ -50,6 +46,10 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				);
 				?>
 			</p>
+			<div class="tribe-tickets attendees-list-optout">
+				<input <?php echo $view->get_restriction_attr( $post_id, esc_attr( $first_attendee['product_id'] ) ); ?> type="checkbox" name="attendee[<?php echo esc_attr( $first_attendee['order_id'] ); ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>" <?php checked( true, esc_attr( $first_attendee['optout'] ) ) ?>>
+				<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+			</div>
 		</div>
 		<ul class="tribe-rsvp-list">
 			<?php foreach ( $attendee_group as $i => $attendee ): ?>
