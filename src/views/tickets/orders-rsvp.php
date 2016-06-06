@@ -18,22 +18,12 @@ $post      = get_post( $post_id );
 $post_type = get_post_type_object( $post->post_type );
 $user_id   = get_current_user_id();
 $user_info = get_userdata( $user_id );
-$attendees = $view->get_event_rsvp_attendees( $post_id, $user_id );
 
 if ( ! $view->has_rsvp_attendees( $post_id, $user_id ) ) {
 	return;
 }
 
-$attendee_groups = array();
-foreach ( $attendees as $attendee ) {
-	$key = $attendee['purchaser_name'] . '::' . $attendee['purchaser_email'];
-
-	if ( ! isset( $attendee_groups[ $key ] ) ) {
-		$attendee_groups[ $key ] = array();
-	}
-
-	$attendee_groups[ $key ][] = $attendee;
-}
+$attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user_id );
 ?>
 <div class="tribe-rsvp">
 	<h2><?php printf( esc_html__( 'My RSVPs for This %s', 'event-tickets' ), $post_type->labels->singular_name ); ?></h2>
@@ -47,8 +37,18 @@ foreach ( $attendees as $attendee ) {
 				<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
 			</div>
 			<p class="reserved-by">
-				<?php printf( esc_html__( 'Reserved by %s', 'event-tickets' ), esc_html( $first_attendee['purchaser_name'] ) ); ?>
-				<?php printf( esc_html__( ' on %s', 'event-tickets' ), date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) ) ); ?>
+				<?php
+				printf(
+					esc_html__( 'Reserved by %1$s (%2$s)', 'event-tickets' ),
+					esc_html( $first_attendee['purchaser_name'] ),
+					'<a href="mailto:' . esc_url( $first_attendee['purchaser_email'] ) .'">' . esc_html( $first_attendee['purchaser_email'] ) . '</a>'
+				);
+
+				printf(
+					esc_html__( ' on %s', 'event-tickets' ),
+					date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) )
+				);
+				?>
 			</p>
 		</div>
 		<ul class="tribe-rsvp-list">
@@ -64,44 +64,15 @@ foreach ( $attendees as $attendee ) {
 							<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
 						</label>
 					</div>
-					<?php if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ): ?>
-						<div class="attendee-meta-row">
-							<?php
-							$meta_fields = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $attendee['product_id'] );
-							$meta_data = get_post_meta( $attendee['attendee_id'], Tribe__Tickets_Plus__Meta::META_KEY, true );
-							?>
-							<?php
-							foreach ( $meta_fields as $field ) {
-								if ( 'checkbox' === $field->type && isset( $field->extra['options'] ) ) {
-									$values = array();
-									foreach ( $field->extra['options'] as $option ) {
-										$key = $field->slug . '_' . sanitize_title( $option );
-
-										if ( isset( $meta_data[ $key ] ) ) {
-											$values[] = $meta_data[ $key ];
-										}
-									}
-									$value = implode( ', ', $values );
-								} elseif ( isset( $meta_data[ $field->slug ] ) ) {
-									$value = $meta_data[ $field->slug ];
-								} else {
-									continue;
-								}
-								if ( '' === trim( $value ) ) {
-									$value = '&nbsp;';
-								}
-							if ( '' != $value ) { ?>
-								<a class="attendee-meta toggle show"><?php esc_html_e( 'Toggle attendee info', 'event-tickets-plus' ); ?></a>
-								<div class="attendee-meta-details">
-									<span class="event-tickets-meta-label <?php echo esc_attr( $field->slug ); ?>"><?php echo esc_html( $field->label ); ?>&nbsp;</span>
-									<span class="event-tickets-meta-data <?php echo esc_attr( $field->slug ); ?>"><?php echo $value ? esc_html( $value ) : '&nbsp;'; ?></span>
-								</div>
-								<?php
-								}
-							}
-							?>
-						</div>
-					<?php endif; ?>
+					<?php
+					/**
+					 * Inject content into an RSVP attendee block on the RVSP orders page
+					 *
+					 * @param array $attendee Attendee array
+					 * @param WP_Post $post Post object that the tickets are tied to
+					 */
+					do_action( 'event_tickets_orders_rsvp_attendee_contents', $attendee, $post );
+					?>
 				</li>
 			<?php endforeach; ?>
 		</ul>
