@@ -151,6 +151,7 @@
 }
 
 .user-details {
+	-js-display: flex;
 	display: -webkit-box;
 	display: -ms-flexbox;
 	display: flex;
