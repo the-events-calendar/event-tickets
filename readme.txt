@@ -207,7 +207,8 @@ Our Premium Plugins:
 * Tweak - Updated plugin description on admin plugin page
 * Tweak - Move plugin CSS to PostCSS
 * Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada (Thanks to Michael C!)
-* Fix -  Corrects capabilities test in relation to editing tickets (Props to @bokorir!)
+* Fix - Corrects capabilities test in relation to editing tickets (Props to @bokorir!)
+* Fix - Loads thickbox for email modal in attendees list
 
 = [4.1.4] 2016-05-19 =
 
