@@ -1,6 +1,6 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari, trishasalas
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.5.1
@@ -141,8 +141,9 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 * <a href="http://profiles.wordpress.org/users/shane.pearlman">Shane Pearlman</a>
 * <a href="http://profiles.wordpress.org/users/thatdudebutch">Wayne Stratton</a>
 * <a href="http://profiles.wordpress.org/users/zbtirrell">Zachary Tirrell</a>
-<a href="https://profiles.wordpress.org/aguseo">Andras Guseo</a>
-<a href="https://profiles.wordpress.org/tribecari">Caroline Tucker</a>
+* <a href="https://profiles.wordpress.org/aguseo">Andras Guseo</a>
+* <a href="https://profiles.wordpress.org/tribecari">Caroline Tucker</a>
+* <a href="https://profiles.wordpress.org/trishasalas">Trisha Salas</a>
 
 = Past Contributors =
 
@@ -206,7 +207,8 @@ Our Premium Plugins:
 * Tweak - Updated plugin description on admin plugin page
 * Tweak - Move plugin CSS to PostCSS
 * Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada (Thanks to Michael C!)
-* Fix -  Corrects capabilities test in relation to editing tickets (Props to @bokorir!)
+* Fix - Corrects capabilities test in relation to editing tickets (Props to @bokorir!)
+* Fix - Loads thickbox for email modal in attendees list
 
 = [4.1.4] 2016-05-19 =
 
