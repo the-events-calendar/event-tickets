@@ -134,10 +134,12 @@
 .user-details {
 	-js-display: flex;
 	display: -webkit-box;
+	display: -webkit-flex;
 	display: -ms-flexbox;
 	display: flex;
-	-ms-flex-flow: row wrap;
-	    flex-flow: row wrap;
+	-webkit-flex-flow: row wrap;
+	    -ms-flex-flow: row wrap;
+	        flex-flow: row wrap;
 	margin: 0 0 1em 0;
 }
 
@@ -153,11 +155,6 @@
 .tribe-rsvp h2 {
 	margin-bottom: 20px;
 	line-height: 1.2;
-}
-
-.ticket-meta {
-	display: inline-block;
-	float: right;
 }
 
 .event-tickets-meta-label {
