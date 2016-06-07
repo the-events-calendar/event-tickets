@@ -197,13 +197,13 @@ Our Premium Plugins:
 * Feature - Make it possible to disable the ticket form for logged out users
 * Feature - Added RSVP and WooCommerce tickets import via .csv file (Thank you Quakely for submitting this idea on UserVoice!)
 * Feature - Authenticated Attendees can control their RSVP on Events
-* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files (Thank you to user aafhhl for bringing this to our attention!)
-* Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (Props to masteradhoc on GitHub for this change!)
+* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files (Thank you to user @aafhhl for bringing this to our attention!)
+* Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (Props to @masteradhoc on GitHub for this change!)
 * Tweak - Improved our JSON-LD output to include tickets (Big thanks to Lars for reporting this!)
 * Tweak - Record the user ID associated with the creation of new attendee records
-* Tweak - Fixed translation domain on a few strings (Thank you TEME for reporting the issue!)
+* Tweak - Fixed translation domain on a few strings (Thank you @TEME for reporting the issue!)
 * Tweak - Move plugin CSS to PostCSS
-* Tweak - Fix padding/spacing for RSVP form on single event page in TwentyFifteen
+* Tweak - Fix padding/spacing for RSVP form on single event page in Twenty Fifteen
 * Tweak - Updated plugin description on admin plugin page
 * Tweak - Move plugin CSS to PostCSS
 * Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada (Thanks to Michael C!)
