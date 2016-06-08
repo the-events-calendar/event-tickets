@@ -191,7 +191,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.2] 2016-06-07 =
+= [4.2] 2016-06-08 =
 
 * Feature - Add a shortcode listing those upcoming events the user has indicated they will attend
 * Feature - Make it possible to disable the ticket form for logged out users
