@@ -218,7 +218,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		// If it is a global-stock ticket but the global stock level has not yet been set for the event
 		// then return something better than just '0' as the available stock
 		if ( $is_global && 0 === $stock && ! $global_stock->is_enabled() ) {
-			$stock = '<i>' . __( 'global inventory', 'event-tickets-plus' ) . '</i>';
+			$stock = '<i>' . __( 'global inventory', 'event-tickets' ) . '</i>';
 		}
 
 		// There may not be a fixed inventory - in which case just report the number actually sold so far
@@ -298,3 +298,137 @@ function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src'
 
 	return $url;
 }
+
+
+/**
+ * Includes a template part, similar to the WP get template part, but looks
+ * in the correct directories for Tribe Tickets templates
+ *
+ * @param string      $slug The Base template name
+ * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file
+ * @param array       $data (optional) array of vars to inject into the template part
+ * @param boolean     $echo (optional) Allows the user to print or return the template
+ *
+ * @uses Tribe__Tickets__Templates::get_template_hierarchy
+ *
+ * @return string|void It will depend if it's echoing or not
+ **/
+function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
+
+	/**
+	 * Fires an Action before echoing the Template
+	 *
+	 * @param string $slug     Slug for this template
+	 * @param string $name     Template name
+	 * @param array  $data     The Data that will be used on this template
+	 */
+	do_action( 'tribe_tickets_pre_get_template_part', $slug, $name, $data );
+
+	// Setup possible parts
+	$templates = array();
+	if ( isset( $name ) ) {
+		$templates[] = $slug . '-' . $name . '.php';
+	}
+	$templates[] = $slug . '.php';
+
+	/**
+	 * Allow users to filter which templates can be included
+	 *
+	 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+	 * @param string $slug     Slug for this template
+	 * @param string $name     Template name
+	 * @param array  $data     The Data that will be used on this template
+	 */
+	$templates = apply_filters( 'tribe_tickets_get_template_part_templates', $templates, $slug, $name, $data );
+
+	// Make any provided variables available in the template's symbol table
+	if ( is_array( $data ) ) {
+		extract( $data );
+	}
+
+	// loop through templates, return first one found.
+	foreach ( $templates as $template ) {
+		$file = Tribe__Tickets__Templates::get_template_hierarchy( $template, array( 'disable_view_check' => true ) );
+
+		/**
+		 * Allow users to filter which template will be included
+		 *
+		 * @param string $file     Complete path to include the PHP File
+		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+		 * @param string $slug     Slug for this template
+		 * @param string $name     Template name
+		 * @param array  $data     The Data that will be used on this template
+		 */
+		$file = apply_filters( 'tribe_tickets_get_template_part_path', $file, $template, $slug, $name, $data );
+
+		/**
+		 * A more Specific Filter that will include the template name
+		 *
+		 * @param string $file     Complete path to include the PHP File
+		 * @param string $slug     Slug for this template
+		 * @param string $name     Template name
+		 * @param array  $data     The Data that will be used on this template
+		 */
+		$file = apply_filters( "tribe_tickets_get_template_part_path_{$template}", $file, $slug, $name, $data );
+
+		if ( ! file_exists( $file ) ) {
+			continue;
+		}
+
+		ob_start();
+		/**
+		 * Fires an Action before including the template file
+		 *
+		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+		 * @param string $file     Complete path to include the PHP File
+		 * @param string $slug     Slug for this template
+		 * @param string $name     Template name
+		 * @param array  $data     The Data that will be used on this template
+		 */
+		do_action( 'tribe_tickets_before_get_template_part', $template, $file, $slug, $name, $data );
+		include( $file );
+
+		/**
+		 * Fires an Action After including the template file
+		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+		 * @param string $file     Complete path to include the PHP File
+		 * @param string $slug     Slug for this template
+		 * @param string $name     Template name
+		 * @param array  $data     The Data that will be used on this template
+		 */
+		do_action( 'tribe_tickets_after_get_template_part', $template, $file, $slug, $name, $data );
+		$html = ob_get_clean();
+
+		/**
+		 * Allow users to filter the final HTML
+		 * @param string $html     The final HTML
+		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+		 * @param string $file     Complete path to include the PHP File
+		 * @param string $slug     Slug for this template
+		 * @param string $name     Template name
+		 * @param array  $data     The Data that will be used on this template
+		 */
+		$html = apply_filters( 'tribe_tickets_get_template_part_content', $html, $template, $file, $slug, $name, $data );
+
+		if ( $echo ) {
+			echo $html;
+		}
+
+		break;
+	}
+
+	/**
+	 * Files an Action after echoing/saving the html Template
+	 *
+	 * @param string $slug     Slug for this template
+	 * @param string $name     Template name
+	 * @param array  $data     The Data that will be used on this template
+	 */
+	do_action( 'tribe_tickets_post_get_template_part', $slug, $name, $data );
+
+	if ( ! $echo ) {
+		// Return should come at the end
+		return $html;
+	}
+}
+

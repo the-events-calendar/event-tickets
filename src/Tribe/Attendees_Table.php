@@ -101,6 +101,34 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Handler for the ticket number column
+	 *
+	 * @param array $item
+	 *
+	 * @return int|string
+	 */
+	public function column_attendee_id( $item ) {
+		$attendee_id = empty( $item['attendee_id'] ) ? '' : $item['attendee_id'];
+		if ( $attendee_id === '' ) {
+			return '';
+		}
+
+		$unique_id = get_post_meta( $attendee_id, '_unique_id', true );
+
+		if ( $unique_id === '' ) {
+			$unique_id = $attendee_id;
+		}
+
+		/**
+		 * Filters the ticket number; defaults to the ticket unique ID.
+		 *
+		 * @param string $unique_id A unique string identifier for the ticket.
+		 * @param array  $item      The item entry.
+		 */
+		return apply_filters( 'tribe_events_tickets_attendees_table_attendee_id_column', $unique_id, $item );
+	}
+
+	/**
 	 * Handler for the checkbox column
 	 *
 	 * @param $item
@@ -282,11 +310,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		);
 
 		/**
-		 * When we use a TB_iframe link and we are not on an Admin Page we need to include it's JS
+		 * Include TB_iframe JS
 		 */
-		if ( ! is_admin() ) {
-			add_thickbox();
-		}
+		add_thickbox();
 
 		$email_link = Tribe__Settings::instance()->get_url( array(
 			'page' => 'tickets-attendees',

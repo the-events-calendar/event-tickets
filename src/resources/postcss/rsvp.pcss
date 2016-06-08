@@ -1,0 +1,170 @@
+.tribe-rsvp {
+	padding: 20px 0;
+}
+
+.tribe-tickets-meta-row {
+	display: none;
+}
+
+.tribe-tickets-has-rsvp .tribe-tickets-meta-row {
+	display: table-row;
+}
+
+.tribe-tickets-attendee {
+	padding: 10px;
+}
+
+.tribe-events-tickets td {
+	padding: 8px 10px;
+}
+
+.tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee,
+.tribe-events-tickets .tribe-tickets-attendee {
+	table,
+	tr,
+	td {
+		border: 0;
+	}
+}
+
+
+.tribe-rsvp-message-display .tribe-rsvp-messages {
+	display: block;
+}
+
+.tribe-rsvp-messages {
+	display: none;
+	padding: 10px 10px 5px;
+}
+
+.tribe-rsvp-message {
+	border-radius: 3px;
+	border-style: solid;
+	border-width: 1px;
+	font-size: 12px;
+	margin: 0 0 5px;
+	padding: 0 .6em;
+}
+
+.tribe-rsvp-message-success {
+	background-color: #ffffe0;
+	border-color: #e6db55;
+}
+
+.tribe-rsvp-message-error {
+	background-color: #ffebe8;
+	border-color: #c00;
+}
+
+.tribe-ticket-quantity {
+	width: 100%;
+}
+
+.tickets-unavailable {
+	font-style: italic;
+}
+
+.tribe-rsvp-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+
+	> .tribe-item {
+		padding: 20px;
+		border: 1px solid #ededed;
+		border-bottom: 0;
+
+		&:last-child {
+			border-bottom: 1px solid #ededed;
+			margin-bottom: 20px;
+		}
+
+		&.tribe-disabled {
+			background-color: #efefef;
+			border-color: #ddd;
+			color: #717171;
+
+			&:last-child {
+				border-bottom-color: #ddd;
+			}
+		}
+
+		.tribe-answer {
+			float: right;
+			display: inline-block;
+		}
+
+		table {
+			border: 0;
+			margin: 0;
+		}
+
+		td {
+			border: 0;
+		}
+	}
+}
+
+.list-attendee {
+	color: #999;
+	display: inline-block;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+}
+
+.tribe-link-tickets-message {
+	text-align: center;
+	padding: 20px;
+	border: 1px solid #ededed;
+}
+
+.tribe-submit-tickets-form {
+	margin-top: 20px;
+}
+
+.user-details {
+	-js-display: flex;
+	display: flex;
+	flex-flow: row wrap;
+	margin: 0 0 1em 0;
+
+	p {
+		margin: 0 1em .25em 0;
+	}
+}
+
+.tribe-answer {
+	select {
+		background: white;
+		border: 1px solid #ddd;
+	}
+}
+
+.tribe-rsvp {
+	h2 {
+		margin-bottom: 20px;
+		line-height: 1.2;
+	}
+}
+
+.event-tickets-meta-label {
+	font-weight:700;
+	margin: 0 1em 0 0;
+}
+
+/* TwentySixteen fix for box shadow as bottom border on <a> link */
+
+.tribe-theme-twentysixteen,
+.tribe-theme-parent-twentysixteen {
+	.entry-content a,
+	.entry-summary a,
+	.taxonomy-description a,
+	.logged-in-as a,
+	.comment-content a,
+	.pingback .comment-body > a,
+	.textwidget a,
+	.entry-footer a:hover,
+	.site-info a:hover {
+		box-shadow: none;
+	}
+}

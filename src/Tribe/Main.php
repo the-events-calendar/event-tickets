@@ -9,12 +9,12 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.1.4';
+	const VERSION = '4.2';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '3.12.4';
+	const MIN_TEC_VERSION = '4.2';
 
 	/**
 	 * Name of the provider
@@ -44,6 +44,11 @@ class Tribe__Tickets__Main {
 	 * @var Tribe__Tickets__Legacy_Provider_Support
 	 */
 	public $legacy_provider_support;
+
+	/**
+	 * @var Tribe__Tickets__Shortcodes__User_Event_Confirmation_List
+	 */
+	private $user_event_confirmation_list_shortcode;
 
 	private $has_initialized = false;
 
@@ -99,6 +104,12 @@ class Tribe__Tickets__Main {
 			|| ( class_exists( 'Tribe__Events__Main' ) && ! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' ) )
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
+
+			/**
+			 * Fires if Event Tickets cannot load due to compatibility or other problems.
+			 */
+			do_action( 'tribe_tickets_plugin_failed_to_load' );
+
 			return;
 		}
 
@@ -107,14 +118,23 @@ class Tribe__Tickets__Main {
 		// initialize the common libraries
 		$this->common();
 
-		load_plugin_textdomain( 'event-tickets', false, $this->plugin_dir . 'lang/' );
+		Tribe__Main::instance()->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
 
 		$this->hooks();
 
 		$this->has_initialized = true;
 
-		// set up the RSVP object
 		$this->rsvp();
+
+		$this->user_event_confirmation_list_shortcode();
+
+		// Load the Hooks on JSON_LD
+		Tribe__Tickets__JSON_LD__Order::hook();
+
+		/**
+		 * Fires once Event Tickets has completed basic setup.
+		 */
+		do_action( 'tribe_tickets_plugin_loaded' );
 	}
 
 	/**
@@ -231,6 +251,35 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
 
+		// Hook to oembeds
+		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
+		add_action( 'embed_head', array( $this, 'embed_head' ) );
+
+		// CSV Import options
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );
+			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
+			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
+		}
+	}
+
+	/**
+	 * Used to add our beloved tickets to the JSON-LD markup
+	 *
+	 * @deprecated
+	 *
+	 * @param  array   $data The actual json-ld variable
+	 * @param  array   $args Arguments used to create the Markup
+	 * @param  WP_Post $post What post does this referer too
+	 * @return false
+	 */
+	public function inject_tickets_json_ld( $data, $args, $post ) {
+		/**
+		 * @todo remove this after 4.4
+		 */
+		_deprecated_function( __METHOD__, '4.2', 'Tribe__Tickets__JSON_LD__Order' );
+
+		return false;
 	}
 
 	/**
@@ -278,7 +327,6 @@ class Tribe__Tickets__Main {
 		$help->add_section_content( 'feature-box', sprintf( __( 'We are committed to helping you sell tickets for your event. Check out our handy %s to get started.', 'event-tickets' ), $link ), 20 );
 	}
 
-
 	/**
 	 * Append the text about Event Tickets to the Extra Help section on the Help page
 	 *
@@ -323,7 +371,7 @@ class Tribe__Tickets__Main {
 		$plugins[ __( 'Event Tickets', 'event-tickets' ) ] = array(
 			self::VERSION,
 			$this->plugin_path . 'src/views/tickets',
-			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets'
+			trailingslashit( get_stylesheet_directory() ) . 'tribe-events/tickets',
 		);
 
 		return $plugins;
@@ -337,6 +385,8 @@ class Tribe__Tickets__Main {
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
 
 		$this->settings_tab();
+
+		$this->tickets_view();
 	}
 
 	/**
@@ -344,6 +394,30 @@ class Tribe__Tickets__Main {
 	 */
 	public function rsvp() {
 		return Tribe__Tickets__RSVP::get_instance();
+	}
+
+	/**
+	 * Creates the Tickets FrontEnd facing View class
+	 *
+	 * This will happen on `plugins_loaded` by default
+	 *
+	 * @return Tribe__Tickets__Tickets_View
+	 */
+	public function tickets_view() {
+		return Tribe__Tickets__Tickets_View::hook();
+	}
+
+	/**
+	 * Default attendee list shortcode handler.
+	 *
+	 * @return Tribe__Tickets__Shortcodes__User_Event_Confirmation_List
+	 */
+	public function user_event_confirmation_list_shortcode() {
+		if ( empty( $this->user_event_confirmation_list_shortcode ) ) {
+			$this->user_event_confirmation_list_shortcode = new Tribe__Tickets__Shortcodes__User_Event_Confirmation_List;
+		}
+
+		return $this->user_event_confirmation_list_shortcode;
 	}
 
 	/**
@@ -416,5 +490,76 @@ class Tribe__Tickets__Main {
 	public function inject_post_types( $post_types ) {
 		$post_types = array_merge( $post_types, $this->post_types() );
 		return $post_types;
+	}
+
+	/**
+	 * Injects a buy/RSVP button into oembeds for events when necessary
+	 */
+	public function inject_buy_button_into_oembed() {
+		$event_id = get_the_ID();
+
+		if ( ! tribe_events_has_tickets( $event_id ) ) {
+			return;
+		}
+
+		$tickets      = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		$has_non_rsvp = false;
+		$available    = false;
+		$now          = current_time( 'timestamp' );
+
+		foreach ( $tickets as $ticket ) {
+			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+				$has_non_rsvp = true;
+			}
+
+			if (
+				$ticket->date_in_range( $now )
+				&& $ticket->is_in_stock()
+			) {
+				$available = true;
+			}
+		}
+
+		// if there aren't any tickets available, bail
+		if ( ! $available ) {
+			return;
+		}
+
+		$button_text = $has_non_rsvp ? __( 'Buy', 'event-tickets' ) : __( 'RSVP', 'event-tickets' );
+		/**
+		 * Filters the text that appears in the buy/rsvp button on event oembeds
+		 *
+		 * @var string The button text
+		 * @var int Event ID
+		 */
+		$button_text = apply_filters( 'event_tickets_embed_buy_button_text', $button_text, $event_id );
+
+		ob_start();
+		?>
+		<a class="tribe-event-buy" href="<?php echo esc_url( tribe_get_event_link() ); ?>" title="<?php the_title_attribute() ?>" rel="bookmark"><?php echo esc_html( $button_text ); ?></a>
+		<?php
+		$buy_button = ob_get_clean();
+
+		/**
+		 * Filters the buy button that appears on event oembeds
+		 *
+		 * @var string The button markup
+		 * @var int Event ID
+		 */
+		echo apply_filters( 'event_tickets_embed_buy_button', $buy_button, $event_id );
+	}
+
+	/**
+	 * Adds content to the embed head tag
+	 *
+	 * The embed header DOES NOT have wp_head() executed inside of it. Instead, any scripts/styles
+	 * are explicitly output
+	 */
+	public function embed_head() {
+		$css_path = Tribe__Template_Factory::getMinFile( $this->plugin_url . 'src/resources/css/tickets-embed.css', true );
+		$css_path = add_query_arg( 'ver', self::VERSION, $css_path );
+		?>
+		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
+		<?php
 	}
 }

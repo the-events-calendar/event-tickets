@@ -1,0 +1,25 @@
+/**
+ * This CSS file was auto-generated via PostCSS
+ *
+ * Contributors should avoid editing this file, but instead edit the associated
+ * src/resources/postcss/ file. For more information, check out our engineering
+ * docs on how we handle CSS in our engineering docs.
+ *
+ * @see: http://moderntribe.github.io/products-engineering/css/
+ */
+
+.tribe-embed .tribe-event-buy {
+    background: #808285;
+    color: #fff;
+    display: inline-block;
+    margin-left: 4px;
+    margin-left: .25rem;
+    padding: 4px 8px;
+    padding: .25rem .5rem;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+.tribe-embed .tribe-event-buy:hover {
+    background: #414042;
+    text-decoration: none;
+}

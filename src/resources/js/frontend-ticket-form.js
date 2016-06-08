@@ -11,7 +11,7 @@ var tribe_tickets_ticket_form = {};
 
 	my.init = function() {
 		$tickets_lists = $( '.tribe-events-tickets' );
-		$quantity_fields = $tickets_lists.find( '.quantity' ).find( 'input' );
+		$quantity_fields = $tickets_lists.find( '.quantity' ).find( '.qty' );
 		$quantity_fields.on( 'change', my.on_quantity_change );
 	};
 
@@ -219,7 +219,7 @@ var tribe_tickets_ticket_form = {};
 			switch ( tribe_tickets_stock_data.tickets[ticket_id].mode ) {
 				case 'global':
 				case 'capped':
-					total += parseInt( $tickets_lists.find( '[data-product-id=' + ticket_id + ']').find( 'input').val(), 10 );
+					total += parseInt( $tickets_lists.find( '[data-product-id=' + ticket_id + ']').find( '.qty').val(), 10 );
 				break;
 			}
 		}

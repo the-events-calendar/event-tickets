@@ -39,12 +39,6 @@ class Tribe__Tickets__Tickets_Handler {
 	private $attendees_table;
 
 	/**
-	 * @var Tribe__Tickets__Google_Event_Data
-	 */
-	protected $google_event_data;
-
-
-	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
@@ -60,7 +54,6 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
-		$this->google_event_data = new Tribe__Tickets__Google_Event_Data;
 	}
 
 	/**
@@ -285,8 +278,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$export_columns = array_diff_key( $columns, $hidden );
 
 		// Add the Purchaser Information
-		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets-plus' );
-		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets-plus' );
+		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets' );
+		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets' );
 
 		/**
 		 * Used to modify what columns should be shown on the CSV export

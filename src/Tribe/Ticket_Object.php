@@ -181,21 +181,31 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Determines if the given date is within the ticket's start/end date range
+		 * Get the ticket's start date
 		 *
-		 * @param string $datetime The date/time that we want to determine if it falls within the start/end date range
+		 * @since 4.2
 		 *
-		 * @return boolean Whether or not the provided date/time falls within the start/end date range
+		 * @return string
 		 */
-		public function date_in_range( $datetime ) {
-			if ( is_numeric( $datetime ) ) {
-				$timestamp = $datetime;
-			} else {
-				$timestamp = strtotime( $datetime );
+		public function start_date() {
+			$start_date = null;
+			if ( ! empty( $this->start_date ) ) {
+				$start_date = strtotime( $this->start_date );
 			}
 
+			return $start_date;
+		}
+
+		/**
+		 * Get the ticket's end date
+		 *
+		 * @since 4.2
+		 *
+		 * @return string
+		 */
+		public function end_date() {
 			$end_date = null;
-			if ( ! empty( $this->end_date ) ){
+			if ( ! empty( $this->end_date ) ) {
 				$end_date = strtotime( $this->end_date );
 			} else {
 				$post_id = get_the_ID();
@@ -210,12 +220,104 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$end_date = strtotime( $end_date );
 			}
 
-			$start_date = null;
-			if ( ! empty( $this->start_date ) ) {
-				$start_date = strtotime( $this->start_date );
+			return $end_date;
+		}
+
+		/**
+		 * Determines if the given date is within the ticket's start/end date range
+		 *
+		 * @param string $datetime The date/time that we want to determine if it falls within the start/end date range
+		 *
+		 * @return boolean Whether or not the provided date/time falls within the start/end date range
+		 */
+		public function date_in_range( $datetime ) {
+			if ( is_numeric( $datetime ) ) {
+				$timestamp = $datetime;
+			} else {
+				$timestamp = strtotime( $datetime );
 			}
 
+			$start_date = $this->start_date();
+			$end_date = $this->end_date();
+
 			return ( empty( $start_date ) || $timestamp > $start_date ) && ( empty( $end_date ) || $timestamp < $end_date );
+		}
+
+		/**
+		 * Determines if the given date is smaller than the ticket's start date
+		 *
+		 * @param string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
+		 *
+		 * @return boolean Whether or not the provided date/time is smaller than the ticket's start date
+		 */
+		public function date_is_earlier( $datetime ) {
+			if ( is_numeric( $datetime ) ) {
+				$timestamp = $datetime;
+			} else {
+				$timestamp = strtotime( $datetime );
+			}
+
+			$start_date = $this->start_date();
+
+			return empty( $start_date ) || $timestamp < $start_date;
+		}
+
+		/**
+		 * Determines if the given date is greater than the ticket's end date
+		 *
+		 * @param string $datetime The date/time that we want to determine if it is smaller than the ticket's start date
+		 *
+		 * @return boolean Whether or not the provided date/time is greater than the ticket's end date
+		 */
+		public function date_is_later( $datetime ) {
+			if ( is_numeric( $datetime ) ) {
+				$timestamp = $datetime;
+			} else {
+				$timestamp = strtotime( $datetime );
+			}
+
+			$end_date = $this->end_date();
+
+			return empty( $end_date ) || $timestamp > $end_date;
+		}
+
+		/**
+		 * Returns ticket availability slug
+		 *
+		 * The availability slug is used for CSS class names and filter helper strings
+		 *
+		 * @since 4.2
+		 *
+		 * @return string
+		 */
+		public function availability_slug( $datetime = null ) {
+			if ( is_numeric( $datetime ) ) {
+				$timestamp = $datetime;
+			} elseif ( $datetime ) {
+				$timestamp = strtotime( $datetime );
+			} else {
+				$timestamp = current_time( 'timestamp' );
+			}
+
+			$slug = 'available';
+
+			if ( $this->date_in_range( $timestamp ) ) {
+				$slug = 'available';
+			} elseif ( $this->date_is_earlier( $timestamp ) ) {
+				$slug = 'availability-future';
+			} elseif ( $this->date_is_later( $timestamp ) ) {
+				$slug = 'availability-past';
+			}
+
+			/**
+			 * Filters the availability slug
+			 *
+			 * @var string Slug
+			 * @var string Datetime string
+			 */
+			$slug = apply_filters( 'event_tickets_availability_slug', $slug, $datetime );
+
+			return $slug;
 		}
 
 		/**
@@ -289,7 +391,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function stock( $value = null ) {
 			// If the Value was passed as numeric value overwrite
-			if ( is_numeric( $value ) ){
+			if ( is_numeric( $value ) ) {
 				$this->stock = $value;
 			}
 

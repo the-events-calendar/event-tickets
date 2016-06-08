@@ -1,10 +1,10 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari, trishasalas
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.5.2
-Stable tag: 4.1.4
+Stable tag: 4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -141,8 +141,9 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 * <a href="http://profiles.wordpress.org/users/shane.pearlman">Shane Pearlman</a>
 * <a href="http://profiles.wordpress.org/users/thatdudebutch">Wayne Stratton</a>
 * <a href="http://profiles.wordpress.org/users/zbtirrell">Zachary Tirrell</a>
-<a href="https://profiles.wordpress.org/aguseo">Andras Guseo</a>
-<a href="https://profiles.wordpress.org/tribecari">Caroline Tucker</a>
+* <a href="https://profiles.wordpress.org/aguseo">Andras Guseo</a>
+* <a href="https://profiles.wordpress.org/tribecari">Caroline Tucker</a>
+* <a href="https://profiles.wordpress.org/trishasalas">Trisha Salas</a>
 
 = Past Contributors =
 
@@ -153,7 +154,7 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 * <a href="http://profiles.wordpress.org/users/jkudish">Joachim Kudish</a>
 * <a href="http://profiles.wordpress.org/users/jgadbois">John Gadbois</a>
 * <a href="http://profiles.wordpress.org/users/jonahcoyote">Jonah West</a>
-* <a href=“https://profiles.wordpress.org/justinendler/“>Justin Endler</a>
+* <a href="https://profiles.wordpress.org/justinendler/">Justin Endler</a>
 * <a href="http://profiles.wordpress.org/users/kellykathryn">Kelly Groves</a>
 * <a href="http://profiles.wordpress.org/users/kelseydamas">Kelsey Damas</a>
 * <a href="http://profiles.wordpress.org/users/kyleunzicker">Kyle Unzicker</a>
@@ -164,7 +165,7 @@ The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
 
 = Translations =
 
-We don’t have any translations for this plugin yet, but you can help us! You can contribute at http://translations.theeventscalendar.com
+Event Tickets is translated by volunteers at https://translate.wordpress.org/projects/wp-plugins/event-tickets/stable. There you can find a list of available languages, download translation files, or help update the translations. Thank you to everyone who helps to maintain our translations!
 
 == Add-Ons ==
 
@@ -189,6 +190,25 @@ Our Premium Plugins:
 * <a href="http://m.tri.be/18v2" target="_blank">The Events Calendar: Filter Bar</a>
 
 == Changelog ==
+
+= [4.2] 2016-06-08 =
+
+* Feature - Add a shortcode listing those upcoming events the user has indicated they will attend
+* Feature - Make it possible to disable the ticket form for logged out users
+* Feature - Added RSVP and WooCommerce tickets import via .csv file (Thank you Quakely for submitting this idea on UserVoice!)
+* Feature - Authenticated Attendees can control their RSVP on Events
+* Tweak - Language files in the `wp-content/languages/plugins` path will be loaded before attempting to load internal language files (Thank you to user @aafhhl for bringing this to our attention!)
+* Tweak - Add messaging on the RSVP form when tickets are not yet or are no longer on sale (Props to @masteradhoc on GitHub for this change!)
+* Tweak - Improved our JSON-LD output to include tickets (Big thanks to Lars for reporting this!)
+* Tweak - Record the user ID associated with the creation of new attendee records
+* Tweak - Fixed translation domain on a few strings (Thank you @TEME for reporting the issue!)
+* Tweak - Move plugin CSS to PostCSS
+* Tweak - Fix padding/spacing for RSVP form on single event page in Twenty Fifteen
+* Tweak - Updated plugin description on admin plugin page
+* Tweak - Move plugin CSS to PostCSS
+* Fix - Target specific input fields when check for remaining tickets to help with theme compatibility issues such as Avada (Thanks to Michael C!)
+* Fix - Corrects capabilities test in relation to editing tickets (Props to @bokorir!)
+* Fix - Loads thickbox for email modal in attendees list
 
 = [4.1.4] 2016-05-19 =
 
