@@ -134,12 +134,10 @@
 .user-details {
 	-js-display: flex;
 	display: -webkit-box;
-	display: -webkit-flex;
 	display: -ms-flexbox;
 	display: flex;
-	-webkit-flex-flow: row wrap;
-	    -ms-flex-flow: row wrap;
-	        flex-flow: row wrap;
+	-ms-flex-flow: row wrap;
+	    flex-flow: row wrap;
 	margin: 0 0 1em 0;
 }
 
