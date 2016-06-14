@@ -1,6 +1,6 @@
 jQuery( document ).ready( function( $ ) {
 
-	if ( AttendeesPointer ) {
+	if ( typeof AttendeesPointer !== 'undefined' && null !== AttendeesPointer ) {
 		options = $.extend( AttendeesPointer.options, {
 			close: function() {
 				$.post( ajaxurl, {

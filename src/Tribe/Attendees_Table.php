@@ -321,6 +321,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'TB_iframe' => true,
 			'width' => 410,
 			'height' => 300,
+			'parent' => 'admin.php',
 		) );
 
 		$nav = array(
