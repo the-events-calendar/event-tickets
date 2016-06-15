@@ -266,6 +266,10 @@ class Tribe__Tickets__Tickets_Handler {
 			$this->attendees_page = 'tribe_events_page_tickets-attendees';
 		}
 
+		//Add in Columns or get_column_headers() returns nothing
+		$filter_name = 'manage_' . $this->attendees_page . '_columns';
+		add_filter( $filter_name, array( $this->attendees_table, 'get_columns' ), 15 );
+
 		$items   = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 		$columns = get_column_headers( get_current_screen() );
 		$hidden  = get_hidden_columns( $this->attendees_page );
@@ -309,6 +313,13 @@ class Tribe__Tickets__Tickets_Handler {
 				// Special handling for the check_in column
 				if ( 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
 					$row[ $column_id ] = esc_html__( 'Yes', 'event-tickets' );
+				}
+
+				// Special handling for new human readable id
+				if ( 'attendee_id' === $column_id ) {
+					$ticket_unique_id  = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
+					$ticket_unique_id  = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
+					$row[ $column_id ] = esc_html( $ticket_unique_id );
 				}
 			}
 
