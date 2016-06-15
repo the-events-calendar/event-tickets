@@ -44,7 +44,13 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 	<form method="post">
 
 	<?php tribe_tickets_get_template_part( 'tickets/orders-rsvp' ); ?>
-	<?php tribe_tickets_get_template_part( 'tickets/orders-tickets' ); ?>
+
+	<?php
+	/**
+	 * Fires before the process tickets submission button is rendered
+	 */
+	do_action( 'tribe_tickets_orders_before_submit' );
+	?>
 
 	<?php if ( $view->has_rsvp_attendees( $event_id ) || $view->has_ticket_attendees( $event_id ) ): ?>
 		<div class="tribe-submit-tickets-form">
