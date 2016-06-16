@@ -43,7 +43,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 
 	<form method="post">
 
-	<?php require( 'tickets/orders-rsvp' ); ?>
+	<?php require( 'orders-rsvp.php' ); ?>
 
 	<?php
 	/**
