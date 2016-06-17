@@ -46,14 +46,12 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				);
 				?>
 			</p>
-			<?php
-			/**
-			 * Allows injection of HTML before the RSVP list
-			 *
-			 * @var array of Tribe__Tickets__Ticket_Object
-			 */
-			do_action( 'event_tickets_before_rsvp_list', $tickets );
-			?>
+			<?php if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() ) ) : ?>
+			<div class="tribe-tickets attendees-list-optout">
+				<input <?php echo $view->get_restriction_attr( $post_id, esc_attr( $first_attendee['product_id'] ) ); ?> type="checkbox" name="attendee[<?php echo esc_attr( $first_attendee['order_id'] ); ?>][optout]" id="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>" <?php checked( true, esc_attr( $first_attendee['optout'] ) ) ?>>
+				<label for="tribe-tickets-attendees-list-optout-<?php echo esc_attr( $first_attendee['order_id'] ); ?>"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+			</div>
+			<?php endif;?>
 		</div>
 		<ul class="tribe-rsvp-list tribe-list">
 			<?php foreach ( $attendee_group as $i => $attendee ): ?>
@@ -69,13 +67,13 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 						</label>
 					</div>
 					<?php
-					/**
-					 * Inject content into an RSVP attendee block on the RVSP orders page
-					 *
-					 * @param array $attendee Attendee array
-					 * @param WP_Post $post Post object that the tickets are tied to
-					 */
-					do_action( 'event_tickets_orders_attendee_contents', $attendee, $post );
+						/**
+						 * Inject content into an RSVP attendee block on the RVSP orders page
+						 *
+						 * @param array $attendee Attendee array
+						 * @param WP_Post $post Post object that the tickets are tied to
+						 */
+						do_action( 'event_tickets_orders_attendee_contents', $attendee, $post );
 					?>
 				</li>
 			<?php endforeach; ?>
