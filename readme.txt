@@ -191,6 +191,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.1] TDB =
+* Tweak - Use human readable id on csv and email export when available
+* Fix - Add back all visible columns in attendees list for csv and email export [61695]
+
 = [4.2] 2016-06-08 =
 
 * Feature - Add a shortcode listing those upcoming events the user has indicated they will attend
