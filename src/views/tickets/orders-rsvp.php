@@ -46,12 +46,12 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				);
 
 				/**
-				* Inject content into the User Details block on the orders page
+				* Inject content into the RSVP User Details block on the orders page
 				*
-				* @param array $attendee Attendee array
-				* @param WP_Post $post Post object that the tickets are tied to
+				* @param array $attendee_group Attendee array
+				* @param WP_Post $post_id Post object that the tickets are tied to
 				*/
-				do_action( 'event_tickets_after_user_details', $attendee_group, $post_id );
+				do_action( 'event_tickets_user_details_rsvp', $attendee_group, $post_id );
 				?>
 			</p>
 		</div>
