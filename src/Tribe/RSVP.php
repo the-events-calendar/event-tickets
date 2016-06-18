@@ -364,7 +364,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
 		$attendee_phonenumber = empty( $_POST['attendee']['phonenumber'] ) ? null : sanitize_text_field( $_POST['attendee']['phonenumber'] );
-		$attendee_phonenumber = filter_var($attendee_phonenumber, FILTER_SANITIZE_NUMBER_INT);
+		$attendee_phonenumber = filter_var( $attendee_phonenumber, FILTER_SANITIZE_NUMBER_INT );
 		$attendee_optout = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
 
 		if ( empty( $_POST['attendee']['order_status'] ) || ! Tribe__Tickets__Tickets_View::instance()->is_valid_rsvp_option( $_POST['attendee']['order_status'] ) ) {
@@ -411,16 +411,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$has_tickets = true;
 
 			//NEED TO CHECK IF ATTENDEE HAS A RSVP ALREADY AND JUST UPDATE IF SO.
-			$attendeeMeta = $this->get_attendee($event_id, $attendee_email);
+			$attendeeMeta = $this->get_attendee( $event_id, $attendee_email );
 			// Loop over all the attendee records that have this email address for this event to check for a duplicate.
-			foreach($attendeeMeta AS $meta) {
-				$attendee = get_post($meta['order_id']);
+			foreach ( $attendeeMeta as $meta ) {
+				$attendee = get_post( $meta['order_id'] );
 				//GET attendee post to get current qty value and update the tickets sold and tickets for this purchase properly
-				$oldQty = explode(" | ", $attendee->post_title);
+				$oldQty = explode( ' | ', $attendee->post_title );
 				$attendeeName = $oldQty[0];
-				if ((sizeof($oldQty)) > 1 && trim($attendeeName) === trim($attendee_full_name)){
+				if ( ( count( $oldQty ) ) > 1 && trim( $attendeeName ) === trim( $attendee_full_name ) ) {
 					// If there are 2 or more records in the array, get the quantity from the last one.
-					$oldQty = $oldQty[(sizeof($oldQty)-1)];
+					$oldQty = $oldQty[( count( $oldQty ) - 1 )];
 						// If a duplicate record is found, exit the loop and use that record.
 						break;
 				}
@@ -431,7 +431,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Iterate over all the amount of tickets purchased (for this product)
 			//for ( $i = 0; $i < $qty; $i ++ ) {
 
-			if ($oldQty == 0) {
+			if ( $oldQty == 0 ) {
 				$attendee = array(
 					'post_status' => 'publish',
 					'post_title'  => $attendee_full_name . ' | ' . ( $qty ),
@@ -445,10 +445,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 			// Insert/Update individual ticket purchased and the Metadata
 			$attendee_id = wp_insert_post( $attendee );
-			$attendee = get_post($attendee_id);
+			$attendee = get_post( $attendee_id );
 
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			update_post_meta( $product_id, 'total_sales', (int) ($sales+($qty-$oldQty)) );
+			update_post_meta( $product_id, 'total_sales', (int) ( $sales + ( $qty-$oldQty ) ) );
 
 			update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
 			update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $event_id );
@@ -513,7 +513,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Redirect to the same page to prevent double purchase on refresh
 		if ( ! empty( $event_id ) ) {
 			$url = get_permalink( $event_id );
-			if ($qty > 0) {
+			if ( $qty > 0 ) {
 				$url = add_query_arg( 'rsvp_sent', 1, $url );
 			}
 			wp_redirect( esc_url_raw( $url ) );
@@ -566,7 +566,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'holder_phonenumber'  => get_post_meta( $post->ID, $this->phonenumber, true ),
-				'qty'						=> get_post_meta( $post-ID, $this->quantity, true),
+				'qty'           => get_post_meta( $post->ID, $this->quantity, true ),
 				'order_id'      => $order_id,
 				'ticket_id'     => $ticket_unique_id,
 				'security_code' => get_post_meta( $post->ID, $this->security_code, true ),
@@ -693,20 +693,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
 		}
 		$product_id = get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true );
-		$product_qty = (int) get_post_meta( $ticket_id, $this->quantity, true);
+		$product_qty = (int) get_post_meta( $ticket_id, $this->quantity, true );
 		$post_to_delete = get_post( $ticket_id );
-		if (!is_numeric($product_qty) OR $product_qty == 0){
-			$product_qty = explode(" | ", $post_to_delete->post_title);
-			$product_qty = $product_qty[(sizeof($product_qty)-1)];
-			if (!is_numeric($product_qty) OR $product_qty == 0){
+		if ( ! is_numeric( $product_qty ) || $product_qty == 0 ) {
+			$product_qty = explode( ' | ', $post_to_delete->post_title );
+			$product_qty = $product_qty[( count( $product_qty ) - 1 )];
+			if ( ! is_numeric( $product_qty ) || $product_qty == 0 ) {
 				$product_qty = 1;
 			}
 		}
 
 		// Reduce the sales figure by the qty sold in the ticket.
 		$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-		$sales = ($sales-$product_qty);
-		if ($sales < 0) { // Ensure the total sales do not go negative.
+		$sales = ( $sales-$product_qty );
+		if ( $sales < 0 ) { // Ensure the total sales do not go negative.
 			$sales = 0;
 		}
 		update_post_meta( $product_id, 'total_sales', $sales );
@@ -929,7 +929,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$name       	= get_post_meta( $attendee->ID, $this->full_name, true );
 			$email      	= get_post_meta( $attendee->ID, $this->email, true );
 			$phonenumber  = get_post_meta( $attendee->ID, $this->phonenumber, true );
-			$qty        	= get_post_meta( $attendee-ID, $this->quantity, true);
+			$qty        	= get_post_meta( $attendee->ID, $this->quantity, true );
 			$optout       = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
 			$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
 			$status_label = Tribe__Tickets__Tickets_View::instance()->get_rsvp_options( $status );
@@ -1015,14 +1015,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		foreach ( $attendees_query->posts as $attendee ) {
 			/* RESTRICT results to only those that match both the email address and the event_id */
-			if ($event_id == get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true )) {
+			if ( $event_id == get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ) ) {
 				$checkin    = get_post_meta( $attendee->ID, $this->checkin_key, true );
 				$security   = get_post_meta( $attendee->ID, $this->security_code, true );
 				$product_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
 				$name       = get_post_meta( $attendee->ID, $this->full_name, true );
 				$email      = get_post_meta( $attendee->ID, $this->email, true );
 				$phonenumber      = get_post_meta( $attendee->ID, $this->phonenumber, true );
-				$qty        = get_post_meta( $attendee->ID, $this->quantity, true);
+				$qty        = get_post_meta( $attendee->ID, $this->quantity, true );
 				$optout     = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
 
 				if ( empty( $product_id ) ) {
@@ -1081,12 +1081,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$name       = get_post_meta( $order_id, $this->full_name, true );
 		$email      = get_post_meta( $order_id, $this->email, true );
 		$phonenumber      = get_post_meta( $order_id, $this->phonenumber, true );
-		$qty        = get_post_meta( $order_id, $this->quantity, true);
-		if (!is_numeric($qty) OR $qty == 0){
+		$qty        = get_post_meta( $order_id, $this->quantity, true );
+		if ( ! is_numeric($qty) || $qty == 0 ) {
 			$qty = get_post( $order_id );
-			$qty = explode(" | ", $qty->post_title);
-			$qty = $qty[(sizeof($qty)-1)];
-			if (!is_numeric($qty) OR $qty == 0){
+			$qty = explode( ' | ', $qty->post_title );
+			$qty = $qty[( count( $qty ) - 1 )];
+			if ( ! is_numeric( $qty ) || $qty == 0 ) {
 				$qty = 1;
 			}
 		}
