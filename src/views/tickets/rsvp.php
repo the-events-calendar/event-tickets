@@ -111,7 +111,7 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name" value="<?php echo $current_user->first_name.' '.$current_user->last_name ?>">
+								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name" value="<?php echo esc_attr( $current_user->first_name.' '.$current_user->last_name ) ?>">
 							</td>
 						</tr>
 						<tr class="tribe-tickets-email-row">
@@ -119,7 +119,7 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-email"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="email" name="attendee[email]" id="tribe-tickets-email" value="<?php echo $current_user->user_email ?>">
+								<input type="email" name="attendee[email]" id="tribe-tickets-email" value="<?php echo esc_attr( $current_user->user_email ) ?>">
 							</td>
 						</tr>
 						<tr class="tribe-tickets-phonenumber-row">
