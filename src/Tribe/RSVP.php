@@ -420,7 +420,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				$attendeeName = $oldQty[0];
 				if ( ( count( $oldQty ) ) > 1 && trim( $attendeeName ) === trim( $attendee_full_name ) ) {
 					// If there are 2 or more records in the array, get the quantity from the last one.
-					$oldQty = $oldQty[( count( $oldQty ) - 1 )];
+					$oldQty = $oldQty[ ( count( $oldQty ) - 1 ) ];
 						// If a duplicate record is found, exit the loop and use that record.
 						break;
 				}
@@ -448,7 +448,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee = get_post( $attendee_id );
 
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			update_post_meta( $product_id, 'total_sales', (int) ( $sales + ( $qty-$oldQty ) ) );
+			update_post_meta( $product_id, 'total_sales', (int) ( $sales + ( $qty - $oldQty ) ) );
 
 			update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
 			update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $event_id );
@@ -697,7 +697,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$post_to_delete = get_post( $ticket_id );
 		if ( ! is_numeric( $product_qty ) || $product_qty == 0 ) {
 			$product_qty = explode( ' | ', $post_to_delete->post_title );
-			$product_qty = $product_qty[( count( $product_qty ) - 1 )];
+			$product_qty = $product_qty[ ( count( $product_qty ) - 1 ) ];
 			if ( ! is_numeric( $product_qty ) || $product_qty == 0 ) {
 				$product_qty = 1;
 			}
@@ -705,7 +705,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Reduce the sales figure by the qty sold in the ticket.
 		$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-		$sales = ( $sales-$product_qty );
+		$sales = ( $sales - $product_qty );
 		if ( $sales < 0 ) { // Ensure the total sales do not go negative.
 			$sales = 0;
 		}
@@ -1082,10 +1082,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$email      = get_post_meta( $order_id, $this->email, true );
 		$phonenumber      = get_post_meta( $order_id, $this->phonenumber, true );
 		$qty        = get_post_meta( $order_id, $this->quantity, true );
-		if ( ! is_numeric($qty) || $qty == 0 ) {
+		if ( ! is_numeric( $qty ) || $qty == 0 ) {
 			$qty = get_post( $order_id );
 			$qty = explode( ' | ', $qty->post_title );
-			$qty = $qty[( count( $qty ) - 1 )];
+			$qty = $qty[ ( count( $qty ) - 1 ) ];
 			if ( ! is_numeric( $qty ) || $qty == 0 ) {
 				$qty = 1;
 			}
