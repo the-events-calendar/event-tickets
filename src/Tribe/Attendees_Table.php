@@ -79,7 +79,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'purchaser_email' => esc_html__( 'Purchaser email', 'event-tickets' ),
 			'purchaser_phonenumber' => esc_html__( 'Purchaser phone', 'event-tickets' ),
 			'ticket'          => esc_html__( 'Ticket type', 'event-tickets' ),
-			'qty'							=> esc_html__( 'Qty', 'event-tickets'),
+			'qty'							=> esc_html__( 'Qty', 'event-tickets' ),
 			'attendee_id'     => esc_html__( 'Ticket #', 'event-tickets' ),
 			'security'        => esc_html__( 'Security Code', 'event-tickets' ),
 			'check_in'        => esc_html__( 'Check in', 'event-tickets' ),
