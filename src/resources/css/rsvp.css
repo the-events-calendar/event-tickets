@@ -132,17 +132,11 @@
 }
 
 .user-details {
-	-js-display: flex;
-	display: -webkit-box;
-	display: -ms-flexbox;
-	display: flex;
-	-ms-flex-flow: row wrap;
-	    flex-flow: row wrap;
-	margin: 0 0 1em 0;
+	margin: 0 0 1.5em 0;
 }
 
 .user-details p {
-	margin: 0 1em .25em 0;
+	margin: 0 0 .5em 0;
 }
 
 .tribe-answer select {
