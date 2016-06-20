@@ -44,7 +44,9 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 					esc_html__( ' on %s', 'event-tickets' ),
 					date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) )
 				);
-
+				?>
+			</p>
+			<?php
 				/**
 				* Inject content into the RSVP User Details block on the orders page
 				*
@@ -53,7 +55,6 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				*/
 				do_action( 'event_tickets_user_details_rsvp', $attendee_group, $post_id );
 				?>
-			</p>
 		</div>
 		<ul class="tribe-rsvp-list tribe-list">
 			<?php foreach ( $attendee_group as $i => $attendee ): ?>
