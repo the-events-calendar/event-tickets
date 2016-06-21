@@ -270,9 +270,16 @@ class Tribe__Tickets__Tickets_Handler {
 		$filter_name = "manage_{$this->attendees_page}_columns";
 		add_filter( $filter_name, array( $this->attendees_table, 'get_columns' ), 15 );
 
-		$items   = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
-		$columns = get_column_headers( get_current_screen() );
-		$hidden  = get_hidden_columns( $this->attendees_page );
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+
+		//Add Handler for Community Tickets to Prevent Notices in Exports
+		if ( ! is_admin() ) {
+			$columns = apply_filters( $filter_name, array() );
+		} else {
+			$columns = get_column_headers( get_current_screen() );
+		}
+
+		$hidden = get_hidden_columns( $this->attendees_page );
 
 		// We dont want to export html inputs or private data
 		$hidden[] = 'cb';
