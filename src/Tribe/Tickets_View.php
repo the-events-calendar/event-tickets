@@ -177,7 +177,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		/**
-		 * A way for Meta to be saved, because it's groupped in a diferent way
+		 * A way for Meta to be saved, because it's grouped in a different way
 		 *
 		 * @var $post_id ID of event
 		 */
