@@ -195,6 +195,7 @@ Our Premium Plugins:
 * Tweak - Use human readable id on csv and email export when available
 * Fix - Add back all visible columns in attendees list for csv and email export [61695]
 * Fix - Ensure proper functioning of attendee meta on all pages [62398]
+* Fix - Remove notices in attendees export by CSV or Email when using Community Tickets [62507]
 
 = [4.2] 2016-06-08 =
 
