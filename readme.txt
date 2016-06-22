@@ -193,9 +193,9 @@ Our Premium Plugins:
 
 = [4.2.1] 2016-06-22 =
 * Tweak - Create a readable ID on CSV and email exports when they're available
-* Fix - Display all visible columns in attendees CSV and email export reports [61695]
-* Fix - Correct how attendee meta meta is handled on all pages [62398]
-* Fix - Remove notices in the attendees export by CSV and email when Community Tickets is activated [62507]
+* Fix - Display all visible columns in attendees CSV and email export reports
+* Fix - Correct how attendee meta meta is handled on all pages
+* Fix - Remove notices in the attendees export by CSV and email when Community Tickets is activated
 
 = [4.2] 2016-06-08 =
 
