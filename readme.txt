@@ -191,6 +191,12 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.1] 2016-06-22 =
+* Tweak - Create a readable ID on CSV and email exports when they're available
+* Fix - Display all visible columns in attendees CSV and email export reports
+* Fix - Correct how attendee meta meta is handled on all pages
+* Fix - Remove notices in the attendees export by CSV and email when Community Tickets is activated
+
 = [4.2] 2016-06-08 =
 
 * Feature - Add a shortcode listing those upcoming events the user has indicated they will attend

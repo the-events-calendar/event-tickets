@@ -513,6 +513,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'order_id'      => $order_id,
 				'ticket_id'     => $ticket_unique_id,
+				'qr_ticket_id'  => $post->ID,
 				'security_code' => get_post_meta( $post->ID, $this->security_code, true ),
 				'optout'        => (bool) get_post_meta( $post->ID, self::ATTENDEE_OPTOUT_KEY, true ),
 			);
