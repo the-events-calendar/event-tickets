@@ -39,7 +39,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 			<table class="eventtable ticket_list eventForm">
 				<tr class="tribe-tickets-image-upload">
 					<td>
-						<?php esc_html_e( 'Upload image for the ticket header', 'event-tickets' ); ?>
+						<?php esc_html_e( 'Upload image for the ticket header.', 'event-tickets' ); ?>
 						<p class="description"><?php esc_html_e( 'The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like "retina" support use an image sized to 1160px wide.', 'event-tickets' ); ?></p>
 					</td>
 					<td>

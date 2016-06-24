@@ -191,6 +191,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.2] unreleased =
+
+* Tweak - add a period to the ticket header image setting. [44797]
+
 = [4.2.1] 2016-06-22 =
 * Tweak - Create a readable ID on CSV and email exports when they're available
 * Fix - Display all visible columns in attendees CSV and email export reports
