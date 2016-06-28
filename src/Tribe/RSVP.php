@@ -30,6 +30,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_ORDER_KEY = '';
 
 	/**
+	 * Indicates if a ticket for this attendee was sent out via email.
+	 *
+	 * @var boolean
+	 */
+	const ATTENDEE_TICKET_SENT = '_tribe_rsvp_attendee_ticket_sent';
+
+	/**
 	 *Name of the CPT that holds Tickets
 	 *
 	 * @var string
@@ -157,6 +164,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		add_action( 'template_redirect', array( $this, 'generate_tickets' ) );
 		add_action( 'event_tickets_attendee_update', array( $this, 'update_attendee_data' ), 10, 3 );
+		add_action( 'event_tickets_after_attendees_update', array( $this, 'maybe_send_tickets_after_status_change' ) );
 	}
 
 	/**
@@ -270,7 +278,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Update the RSVP values for this user
+	 * Update the RSVP values for this user.
+	 *
+	 * Note that, within this method, $order_id refers to the attendee or ticket ID
+	 * (it does not refer to an "order" in the sense of a transaction that may include
+	 * multiple tickets, as is the case in some other methods for instance).
+	 *
+	 * @param array $data
+	 * @param int   $order_id
+	 * @param int   $event_id
 	 */
 	public function update_attendee_data( $data, $order_id, $event_id ) {
 		$user_id = get_current_user_id();
@@ -322,6 +338,35 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		if ( ! is_null( $attendee_email ) ) {
 			update_post_meta( $order_id, $this->email, $attendee_email );
+		}
+	}
+
+	/**
+	 * Triggers the sending of ticket emails after RSVP information is updated.
+	 *
+	 * This is useful if a user initially suggests they will not be attending
+	 * an event (in which case we do not send tickets out) but where they
+	 * incrementally amend the status of one or more of those tickets to
+	 * attending, at which point we should send tickets out for any of those
+	 * newly attending persons.
+	 *
+	 * @param $event_id
+	 */
+	public function maybe_send_tickets_after_status_change( $event_id ) {
+		$transaction_ids = array();
+
+		foreach ( $this->get_event_attendees( $event_id ) as $attendee ) {
+			$transaction = get_post_meta( $attendee[ 'attendee_id' ], $this->order_key, true );
+
+			if ( ! empty( $transaction ) ) {
+				$transaction_ids[ $transaction ] = $transaction;
+			}
+		}
+
+		foreach ( $transaction_ids as $transaction ) {
+			// This method takes care of intelligently sending out emails only when
+			// required, for attendees that have not yet received their tickets
+			$this->send_tickets_email( $transaction );
 		}
 	}
 
@@ -412,20 +457,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				/**
 				 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated
 				 *
-				 * @var $attendee_id ID of attendee ticket
-				 * @var $event_id ID of event
-				 * @var $order_id RSVP order ID
-				 * @var $product_id RSVP product ID
+				 * @param $attendee_id ID of attendee ticket
+				 * @param $event_id ID of event
+				 * @param $order_id RSVP order ID
+				 * @param $product_id RSVP product ID
 				 */
 				do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $event_id, $order_id );
 
 				/**
 				 * Action fired when an RSVP attendee ticket is created
 				 *
-				 * @var $attendee_id ID of the attendee post
-				 * @var $event_id Event post ID
-				 * @var $product_id RSVP ticket post ID
-				 * @var $order_attendee_id Attendee # for order
+				 * @param $attendee_id ID of the attendee post
+				 * @param $event_id Event post ID
+				 * @param $product_id RSVP ticket post ID
+				 * @param $order_attendee_id Attendee # for order
 				 */
 				do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $event_id, $product_id, $order_attendee_id );
 
@@ -436,9 +481,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			/**
 			 * Action fired when an RSVP has had attendee tickets generated for it
 			 *
-			 * @var $product_id RSVP ticket post ID
-			 * @var $order_id ID of the RSVP order
-			 * @var $qty Quantity ordered
+			 * @param $product_id RSVP ticket post ID
+			 * @param $order_id ID of the RSVP order
+			 * @param $qty Quantity ordered
 			 */
 			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty );
 
@@ -448,14 +493,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		/**
-		 * Action fired when an RSVP attendee tickets have been generated
+		 * Fires when an RSVP attendee tickets have been generated.
 		 *
-		 * @var $order_id ID of the RSVP order
+		 * @param int    $order_id ID of the RSVP order
+		 * @param int    $event_id ID of the event the order was placed for
+		 * @param string $attendee_order_status 'yes' if the user indicated they will attend
 		 */
-		do_action( 'event_tickets_rsvp_tickets_generated', $order_id );
+		do_action( 'event_tickets_rsvp_tickets_generated', $order_id, $event_id, $attendee_order_status );
 
-		if ( $has_tickets ) {
+		// No point sending tickets if their current intention is not to attend
+		if ( $has_tickets && 'yes' === $attendee_order_status ) {
 			$this->send_tickets_email( $order_id ) ;
+		} elseif ( $has_tickets ) {
+			$this->send_non_attendance_confirmation( $order_id, $event_id );
 		}
 
 		// Redirect to the same page to prevent double purchase on refresh
@@ -468,6 +518,69 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	public function send_tickets_email( $order_id ) {
+		$all_attendees = $this->get_attendees_by_transaction( $order_id );
+		$to_send = array();
+
+		if ( empty( $all_attendees ) ) {
+			return;
+		}
+
+		// Look at each attendee and check if a ticket was sent: in each case where a ticket
+		// has not yet been sent we should a) send the ticket out by email and b) record the
+		// fact it was sent
+		foreach ( $all_attendees as $single_attendee ) {
+			// Do not add those attendees/tickets marked as not attending (note that despite the name
+			// 'qr_ticket_id', this key is not QR code specific, it's simply the attendee post ID)
+			if ( 'yes' !== get_post_meta( $single_attendee[ 'qr_ticket_id' ], self::ATTENDEE_RSVP_KEY, true ) ) {
+				continue;
+			}
+
+			// Only add those attendees/tickets that haven't already been sent
+			if ( empty( $single_attendee[ 'ticket_sent' ] ) ) {
+				$to_send[] = $single_attendee;
+				update_post_meta( $single_attendee[ 'qr_ticket_id' ], self::ATTENDEE_TICKET_SENT, true );
+			}
+		}
+
+		/**
+		 * Controls the list of tickets which will be emailed out.
+		 *
+		 * @param array $to_send        list of tickets to be sent out by email
+		 * @param array $all_attendees  list of all attendees/tickets, including those already sent out
+		 * @param int   $order_id
+		 *
+		 */
+		$to_send = (array) apply_filters( 'tribe_tickets_rsvp_tickets_to_send', $to_send, $all_attendees, $order_id );
+
+		if ( empty( $to_send ) ) {
+			return;
+		}
+
+		// For now all ticket holders in an order share the same email
+		$to = $all_attendees['0']['holder_email'];
+
+		if ( ! is_email( $to ) ) {
+			return;
+		}
+
+		$content     = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $to_send ) );
+		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ) );
+		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
+		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
+		$subject     = apply_filters( 'tribe_rsvp_email_subject',
+			sprintf( __( 'Your tickets from %s', 'event-tickets' ), get_bloginfo( 'name' ) ) );
+
+		wp_mail( $to, $subject, $content, $headers, $attachments );
+	}
+
+	/**
+	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
+	 * in cases where they have indicated that they will *not* be attending.
+	 *
+	 * @param int $order_id
+	 * @param int $event_id
+	 */
+	public function send_non_attendance_confirmation( $order_id, $event_id ) {
 		$attendees = $this->get_attendees_by_transaction( $order_id );
 
 		if ( empty( $attendees ) ) {
@@ -481,14 +594,39 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$content     = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $attendees ) );
 		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ) );
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
 		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
-			sprintf( __( 'Your tickets from %s', 'event-tickets' ), get_bloginfo( 'name' ) ) );
+			sprintf( __( 'You confirmed you will not be attending %s', 'event-tickets' ), get_the_title( $event_id ) )
+		);
+
+		$template_data = array( 'event_id' => $event_id, 'order_id' => $order_id, 'attendees' => $attendees );
+		$content = apply_filters( 'tribe_rsvp_email_content',
+			tribe_tickets_get_template_part( 'tickets/email-non-attendance', null, $template_data, false )
+		);
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
+	}
+
+	/**
+	 * Returns content for emails confirming non-attendance at an event.
+	 *
+	 * @param int $attendees
+	 * @param int $event_id
+	 *
+	 * @return string
+	 */
+	protected function generate_non_attendance_email_content( $attendees, $event_id ) {
+		$file = $this->getTemplateHierarchy( 'tickets/email-non-attendace.php' );
+
+		if ( ! file_exists( $file ) ) {
+			return;
+		}
+
+		ob_start();
+		include $file;
+		return ob_get_clean();
 	}
 
 	protected function get_attendees_by_transaction( $order_id ) {
@@ -516,6 +654,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'qr_ticket_id'  => $post->ID,
 				'security_code' => get_post_meta( $post->ID, $this->security_code, true ),
 				'optout'        => (bool) get_post_meta( $post->ID, self::ATTENDEE_OPTOUT_KEY, true ),
+				'ticket_sent'   => (bool) get_post_meta( $post->ID, self::ATTENDEE_TICKET_SENT, true ),
 			);
 		}
 
@@ -860,6 +999,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
 			$status_label = Tribe__Tickets__Tickets_View::instance()->get_rsvp_options( $status );
 			$user_id      = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
+			$ticket_sent  = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_TICKET_SENT, true );
 
 			if ( empty( $product_id ) ) {
 				continue;
@@ -881,6 +1021,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					'order_status'       => $status,
 					'order_status_label' => $status_label,
 					'user_id'            => $user_id,
+					'ticket_sent'        => $ticket_sent,
 				)
 			);
 
