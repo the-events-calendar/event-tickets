@@ -47,13 +47,15 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				?>
 			</p>
 			<?php
+			if ( ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() ) ) {
 				/**
-				* Inject content into the RSVP User Details block on the orders page
-				*
-				* @param array $attendee_group Attendee array
-				* @param int $post_id
-				*/
+				 * Inject content into the RSVP User Details block on the orders page
+				 *
+				 * @param array $attendee_group Attendee array
+				 * @param int $post_id
+				 */
 				do_action( 'event_tickets_user_details_rsvp', $attendee_group, $post_id );
+			}
 				?>
 		</div>
 		<ul class="tribe-rsvp-list tribe-list">
