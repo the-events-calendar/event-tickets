@@ -195,6 +195,7 @@ Our Premium Plugins:
 
 * Tweak - Add a period to the ticket header image setting [44797]
 * Fix - Removed the ticket description in the admin area to allow for more room for tickets sold notes [61962]
+* Fix - Displays the name of the ticket for each attendee on the order confirmation page [62548]
 
 = [4.2.1] 2016-06-22 =
 * Tweak - Create a readable ID on CSV and email exports when they're available
