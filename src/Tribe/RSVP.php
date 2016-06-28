@@ -609,26 +609,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
 
-	/**
-	 * Returns content for emails confirming non-attendance at an event.
-	 *
-	 * @param int $attendees
-	 * @param int $event_id
-	 *
-	 * @return string
-	 */
-	protected function generate_non_attendance_email_content( $attendees, $event_id ) {
-		$file = $this->getTemplateHierarchy( 'tickets/email-non-attendace.php' );
-
-		if ( ! file_exists( $file ) ) {
-			return;
-		}
-
-		ob_start();
-		include $file;
-		return ob_get_clean();
-	}
-
 	protected function get_attendees_by_transaction( $order_id ) {
 		$attendees = array();
 		$query     = new WP_Query( array(
