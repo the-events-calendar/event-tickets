@@ -193,6 +193,7 @@ Our Premium Plugins:
 
 = [4.2.2] unreleased =
 
+* Fix - Send an email acknowledgement, rather than a set of tickets, when a user confirms they will not attend an event (RSVPs) [62549]
 * Tweak - Add a period to the ticket header image setting [44797]
 
 = [4.2.1] 2016-06-22 =
