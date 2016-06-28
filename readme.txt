@@ -3,8 +3,8 @@
 Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari, trishasalas
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
-Tested up to: 4.5.2
-Stable tag: 4.3dev
+Tested up to: 4.5.3
+Stable tag: 4.3dev1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,7 +191,12 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.1.1] 2016-06-28 =
+
+* Fix - Ensure translations load as expected with all supported versions of WordPress (thanks to @JacobALund for originally reporting this on .org forums)
+
 = [4.2.1] 2016-06-22 =
+
 * Tweak - Create a readable ID on CSV and email exports when they're available
 * Fix - Display all visible columns in attendees CSV and email export reports
 * Fix - Correct how attendee meta meta is handled on all pages
