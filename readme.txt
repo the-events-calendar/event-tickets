@@ -194,6 +194,7 @@ Our Premium Plugins:
 = [4.2.2] unreleased =
 
 * Tweak - Add a period to the ticket header image setting [44797]
+* Fix - Displays the name of the ticket for each attendee on the order confirmation page [62548]
 
 = [4.2.1] 2016-06-22 =
 * Tweak - Create a readable ID on CSV and email exports when they're available
