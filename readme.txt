@@ -194,6 +194,7 @@ Our Premium Plugins:
 = [4.2.2] unreleased =
 
 * Tweak - Add a period to the ticket header image setting [44797]
+* Fix - Fixes an issue where the 'Hide me on the public attendee list.' is visible even when the 'hide attendees list' is checked on the backend [63039]
 
 = [4.2.1] 2016-06-22 =
 * Tweak - Create a readable ID on CSV and email exports when they're available
