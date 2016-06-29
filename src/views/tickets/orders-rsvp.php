@@ -68,6 +68,7 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 							<?php esc_html_e( 'RSVP: ', 'event-tickets' ); ?>
 							<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
 						</label>
+						<div class="ticket-type"><span class="type-label"><?php esc_html_e( 'Type: ', 'event-tickets' );?></span><?php esc_html_e( $attendee['ticket'] );?></div>
 					</div>
 					<?php
 					/**
