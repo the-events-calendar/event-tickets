@@ -191,6 +191,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3] TBD
+
+* Feature - Adds a pop up dialogue to confirm ticket deletion (and help prevent accidental deletion) [46623]
+
 = [4.2.1.1] 2016-06-28 =
 
 * Fix - Ensure translations load as expected with all supported versions of WordPress (thanks to @JacobALund for originally reporting this on .org forums)
