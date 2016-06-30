@@ -193,6 +193,7 @@ Our Premium Plugins:
 
 = [4.2.2] unreleased =
 
+* Fix - Send an email acknowledgement, rather than a set of tickets, when a user confirms they will not attend an event (RSVPs) [62549]
 * Tweak - Add a period to the ticket header image setting [44797]
 * Fix - Removed the ticket description in the admin area to allow for more room for tickets sold notes [61962]
 * Fix - Displays the name of the ticket for each attendee on the order confirmation page [62548]
