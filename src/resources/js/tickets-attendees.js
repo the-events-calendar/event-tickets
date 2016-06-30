@@ -122,6 +122,11 @@ jQuery( document ).ready( function( $ ) {
 			nonce   : Attendees.uncheckin_nonce
 		};
 
+		// add event_ID information if available
+		if ( obj.attr( 'data-event-id' ) ) {
+			params.event_ID = obj.attr( 'data-event-id' );
+		}
+
 		$.post(
 			ajaxurl,
 			params,
