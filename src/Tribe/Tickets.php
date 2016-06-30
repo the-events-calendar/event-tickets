@@ -471,10 +471,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			$return = $this->checkin( $order_id );
 
-			if ( $return && ! empty( $_POST['event_ID'] ) && tribe_is_event( $_POST['event_ID'] ) ) {
-				$post_transient = Tribe__Post_Transient::instance();
-				$post_transient->delete( $_POST['event_ID'], self::ATTENDEES_CACHE );
-			}
+			$this->maybe_update_attendees_cache( $return );
 
 			$this->ajax_ok( $return );
 		}
@@ -503,6 +500,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Pass the control to the child object
 			$return = $this->uncheckin( $order_id );
+		
+			$this->maybe_update_attendees_cache( $return );
 
 			$this->ajax_ok( $return );
 		}
@@ -1393,6 +1392,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param string $login_url
 			 */
 			return apply_filters( 'tribe_tickets_ticket_login_url', $login_url );
+		}
+
+		/**
+		 * @param $return
+		 */
+		private function maybe_update_attendees_cache( $return ) {
+			if ( $return && ! empty( $_POST['event_ID'] ) && tribe_is_event( $_POST['event_ID'] ) ) {
+				$post_transient = Tribe__Post_Transient::instance();
+				$post_transient->delete( $_POST['event_ID'], self::ATTENDEES_CACHE );
+			}
 		}
 	}
 }
