@@ -658,7 +658,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendees = array();
 			if ( ! is_admin() ) {
 				$post_transient = Tribe__Post_Transient::instance();
-				
+
 				$attendees = $post_transient->get( $event_id, self::ATTENDEES_CACHE );
 				if ( ! $attendees ) {
 					$attendees = array();
