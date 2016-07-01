@@ -175,6 +175,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
 		add_action( 'trashed_post', array( $this, 'maybe_redirect_to_attendees_report' ) );
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
+		add_action( 'rsvp_checkin', array( $this, 'purge_attendees_transient' ) );
+		add_action( 'rsvp_uncheckin', array( $this, 'purge_attendees_transient' ) );
 	}
 
 	/**
@@ -986,8 +988,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 
 			$product       = get_post( $product_id );
-			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product,
-					true ) . ' ' . __( '(deleted)', 'event-tickets' );
+			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
 
 			$attendee_data = array_merge(
 				$this->get_order_data( $attendee->ID ),
@@ -1061,6 +1062,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		return $data;
 	}
 
+	/**
+	 * Remove the Post Transients when a Shopp Ticket is bought
+	 *
+	 * @param  int $attendee_id
+	 * @return void
+	 */
+	public function purge_attendees_transient( $attendee_id ) {
+		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
+		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+	}
 
 	/**
 	 * Marks an attendee as checked in for an event
