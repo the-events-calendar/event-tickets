@@ -469,11 +469,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$order_id = $_POST['order_ID'];
 
 			// Pass the control to the child object
-			$return = $this->checkin( $order_id );
+			$did_checkin = $this->checkin( $order_id );
 
-			$this->maybe_update_attendees_cache( $return );
+			$this->maybe_update_attendees_cache( $did_checkin );
 
-			$this->ajax_ok( $return );
+			$this->ajax_ok( $did_checkin );
 		}
 
 		/**
@@ -499,11 +499,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$order_id = $_POST['order_ID'];
 
 			// Pass the control to the child object
-			$return = $this->uncheckin( $order_id );
+			$did_uncheckin = $this->uncheckin( $order_id );
 		
-			$this->maybe_update_attendees_cache( $return );
+			$this->maybe_update_attendees_cache( $did_uncheckin );
 
-			$this->ajax_ok( $return );
+			$this->ajax_ok( $did_uncheckin );
 		}
 
 		/**
@@ -1395,10 +1395,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * @param $return
+		 * @param $operation_did_complete
 		 */
-		private function maybe_update_attendees_cache( $return ) {
-			if ( $return && ! empty( $_POST['event_ID'] ) && tribe_is_event( $_POST['event_ID'] ) ) {
+		private function maybe_update_attendees_cache( $operation_did_complete ) {
+			if ( $operation_did_complete && ! empty( $_POST['event_ID'] ) && tribe_is_event( $_POST['event_ID'] ) ) {
 				$post_transient = Tribe__Post_Transient::instance();
 				$post_transient->delete( $_POST['event_ID'], self::ATTENDEES_CACHE );
 			}
