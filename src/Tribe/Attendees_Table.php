@@ -259,9 +259,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 			return sprintf( $button_template, $item['order_id_link_src'], __( 'View order', 'event-tickets' ) );
 		}
-
-		$checkin   = sprintf( '<a href="#" data-attendee-id="%d" data-provider="%s" class="button-secondary tickets_checkin">%s</a>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Check in', 'event-tickets' ) );
-		$uncheckin = sprintf( '<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Undo Check in', 'event-tickets' ) );
+		if ( empty( $this->event ) ) {
+			$checkin   = sprintf( '<a href="#" data-attendee-id="%d" data-provider="%s" class="button-secondary tickets_checkin">%s</a>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Check in', 'event-tickets' ) );
+			$uncheckin = sprintf( '<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>', esc_attr( $item['attendee_id'] ), esc_attr( $item['provider'] ), esc_html__( 'Undo Check in', 'event-tickets' ) );
+		} else {
+			// add the additional `data-event-id` attribute if this is an event
+			$checkin   = sprintf( '<a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="button-secondary tickets_checkin">%s</a>', esc_attr( $item['attendee_id'] ), esc_attr($this->event->ID), esc_attr( $item['provider'] ), esc_html__( 'Check in', 'event-tickets' ) );
+			$uncheckin = sprintf( '<span class="delete"><a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>', esc_attr( $item['attendee_id'] ), esc_attr($this->event->ID), esc_attr( $item['provider'] ), esc_html__( 'Undo Check in', 'event-tickets' ) );
+		}
 
 		return $checkin . $uncheckin;
 	}
