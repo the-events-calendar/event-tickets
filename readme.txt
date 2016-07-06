@@ -4,7 +4,11 @@ Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjesse
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.5.3
+<<<<<<< HEAD
 Stable tag: 4.3dev1
+=======
+Stable tag: 4.2.2
+>>>>>>> master
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -194,6 +198,14 @@ Our Premium Plugins:
 = [4.3] unreleased =
 
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
+
+= [4.2.2] 2016-07-06 =
+
+* Fix - Send an email acknowledgement, rather than a set of tickets, when a user confirms they will not attend an event (RSVPs) [62549]
+* Tweak - Add a period to the ticket header image setting [44797]
+* Fix - Removed the ticket description in the admin area to allow for more room for tickets sold notes [61962]
+* Fix - Displays the name of the ticket for each attendee on the order confirmation page [62548]
+* Fix - Fixed issue where front-end attendees table check-in state would not show the correct value [62692]
 
 = [4.2.1.1] 2016-06-28 =
 

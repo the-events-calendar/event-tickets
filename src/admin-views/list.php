@@ -113,9 +113,6 @@
 			<td nowrap="nowrap">
 				<?php echo tribe_tickets_get_ticket_stock_message( $ticket ); ?>
 			</td>
-			<td width="40%" valign="top">
-				<?php echo esc_html( $ticket->description ); ?>
-			</td>
 		</tr>
 		<?php
 		$count ++;
