@@ -191,6 +191,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.3] unreleased =
+
+* Tweak - Add prompt for ratings on admin Event screens [63557]
+
 = [4.2.2] 2016-07-06 =
 
 * Fix - Send an email acknowledgement, rather than a set of tickets, when a user confirms they will not attend an event (RSVPs) [62549]
