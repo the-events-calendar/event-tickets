@@ -56,6 +56,15 @@
 			if ( $report ) {
 				$controls[] = $report;
 			}
+
+			$move_type_url = add_query_arg( array(
+				'dialog'         => Tribe__Tickets__Admin__Move_Ticket_Types::DIALOG_NAME,
+				'ticket_type_id' => $ticket->ID,
+				'check'          => wp_create_nonce( 'move_ticket_type' ),
+				'TB_iframe'      => 'true',
+			) );
+
+			$controls[] = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move', 'event-tickets' ) . '</a>', $move_type_url );
 		}
 
 		if ( ( $ticket->provider_class !== $provider ) || $count == 0 ) :

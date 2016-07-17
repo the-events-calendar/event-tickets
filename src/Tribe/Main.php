@@ -50,13 +50,23 @@ class Tribe__Tickets__Main {
 	 */
 	private $user_event_confirmation_list_shortcode;
 
+	/**
+	 * @var Tribe__Tickets__Admin__Move_Tickets
+	 */
+	protected $move_tickets;
+
+	/**
+	 * @var Tribe__Tickets__Admin__Move_Ticket_Types
+	 */
+	protected $move_ticket_types;
+
 	private $has_initialized = false;
 
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
 	 * @static
-	 * @return Tribe__Tickets__Woo__Main
+	 * @return Tribe__Tickets__Main
 	 */
 	public static function instance() {
 		if ( ! self::$instance ) {
@@ -125,10 +135,10 @@ class Tribe__Tickets__Main {
 		$this->has_initialized = true;
 
 		$this->rsvp();
-
 		$this->user_event_confirmation_list_shortcode();
+		$this->move_tickets();
+		$this->move_ticket_types();
 
-		// Load the Hooks on JSON_LD
 		Tribe__Tickets__JSON_LD__Order::hook();
 
 		/**
@@ -418,6 +428,28 @@ class Tribe__Tickets__Main {
 		}
 
 		return $this->user_event_confirmation_list_shortcode;
+	}
+
+	/**
+	 * @return Tribe__Tickets__Admin__Move_Tickets
+	 */
+	public function move_tickets() {
+		if ( empty( $this->move_tickets ) ) {
+			$this->move_tickets = new Tribe__Tickets__Admin__Move_Tickets;
+		}
+
+		return $this->move_tickets;
+	}
+
+	/**
+	 * @return Tribe__Tickets__Admin__Move_Ticket_Types
+	 */
+	public function move_ticket_types() {
+		if ( empty( $this->move_ticket_types ) ) {
+			$this->move_ticket_types = new Tribe__Tickets__Admin__Move_Ticket_Types;
+		}
+
+		return $this->move_ticket_types;
 	}
 
 	/**
