@@ -191,6 +191,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3] TBD =
+
+* Feature - Add ticket management facilities allowing reassignment to different posts [61724]
+
 = [4.2.1.1] 2016-06-28 =
 
 * Fix - Ensure translations load as expected with all supported versions of WordPress (thanks to @JacobALund for originally reporting this on .org forums)
