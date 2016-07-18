@@ -136,7 +136,7 @@ class Tribe__Tickets__Tickets_Handler {
 			'uncheckin_nonce' => wp_create_nonce( 'uncheckin' ),
 			'cannot_move'     => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
 			'move_url'        => add_query_arg( array(
-				'dialog'    => Tribe__Tickets__Admin__Move_Tickets::DIALOG_NAME,
+				'dialog'    => Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
 				'check'     => wp_create_nonce( 'move_tickets' ),
 				'TB_iframe' => 'true',
 			) ),

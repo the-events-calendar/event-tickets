@@ -1,66 +1,40 @@
 <?php
-class Tribe__Tickets__Admin__Move_Ticket_Types {
-	const DIALOG_NAME = 'move_ticket_types';
-
-	protected $screen;
-
+class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Move_Tickets {
+	protected $dialog_name = 'move_ticket_types';
 
 	public function __construct() {
-		add_action( 'admin_init', array( $this, 'dialog' ) );
+		parent::__construct();
 		add_action( 'wp_ajax_move_ticket_types_post_list', array( $this, 'update_post_choices' ) );
 		add_action( 'wp_ajax_move_ticket_type', array( $this, 'move_ticket_type_requests' ) );
 		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'notify_attendees' ), 100, 3 );
 		add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'expose_ticket_history' ), 100 );
+		add_filter( 'tribe_tickets_move_tickets_template_vars', array( $this, 'move_tickets_dialog_vars' ) );
+		add_filter( 'tribe_tickets_move_tickets_script_data', array( $this, 'move_tickets_dialog_data' ) );
 	}
 
-	public function dialog() {
-		if ( ! isset( $_GET[ 'dialog' ] ) || self::DIALOG_NAME !== $_GET[ 'dialog' ] ) {
-			return;
+	public function move_tickets_dialog_vars( array $vars ) {
+		if ( ! $this->is_move_tickets_dialog() ) {
+			return $vars;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['check'], 'move_ticket_type' ) ) {
-			wp_die( __( 'You do not have permission to view this screen or else you may have followed an expired link. Please refresh the screen and try again.', 'event-tickets' ) );
-		}
-
-		if ( ! isset( $_GET[ 'post' ] ) && ! isset( $_POST[ 'post' ] ) ) {
-			return;
-		}
-
-		$this->dialog_assets();
-		$post_types = $this->get_post_types_list();
-		$post_choices = $this->get_possible_matches( array(
-			'ignore' => $_GET[ 'post' ],
+		return array_merge( $vars, array(
+			'title'    => __( 'Move Ticket Types', 'event-tickets' ),
+			'mode'     => 'ticket_type_only',
 		) );
-
-		define( 'IFRAME_REQUEST', true );
-		iframe_header( __( 'Move Ticket Type', 'event-tickets' ) );
-		include EVENT_TICKETS_DIR . '/src/admin-views/move-ticket-type.php';
-		iframe_footer();
-
-		exit();
 	}
 
-	protected function dialog_assets() {
-		// Ensure common admin CSS is enqueued within this screen
-		add_filter( 'tribe_asset_enqueue_tribe-common-admin', '__return_true', 20 );
+	public function move_tickets_dialog_data( array $data ) {
+		if ( ! $this->is_move_tickets_dialog() ) {
+			return $data;
+		}
 
-		// @todo consider switching to tribe_asset() following resolution of https://github.com/moderntribe/tribe-common/pull/111#discussion_r68219366
-		$script_url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/move-ticket-type-dialog.js';
-
-		wp_enqueue_script( 'tribe-move-ticket-type-dialog', $script_url, array( 'jquery' ), false, true );
-		wp_localize_script( 'tribe-move-ticket-type-dialog', 'tribe_move_tickets_data', array(
-			'check' =>
-				wp_create_nonce( 'move_ticket_type' ),
-			'update_post_list_failure' =>
-				__( 'Unable to update the post list. Please refresh the page and try again.', 'event-tickets' ),
-			'nothing_found' =>
-				__( 'No results found - you may need to widen your search criteria.', 'event-tickets' ),
-			'unexpected_failure' =>
-				__( 'Moving the ticket type failed unexpectedly. Please close the dialog or refresh the page and try again.', 'event-tickets' ),
+		return array_merge( $data, array(
 			'ticket_type_id' =>
 				absint( $_GET[ 'ticket_type_id' ] ),
 			'src_post_id' =>
 				absint( $_GET[ 'post' ] ),
+			'mode' =>
+				'ticket_type_only'
 		) );
 	}
 
@@ -179,12 +153,12 @@ class Tribe__Tickets__Admin__Move_Ticket_Types {
 	 * Listens out for ajax requests to move a ticket type to a new post.
 	 */
 	public function move_ticket_type_requests() {
-		if ( ! wp_verify_nonce( $_POST['check' ], 'move_ticket_type' ) ) {
+		if ( ! wp_verify_nonce( $_POST['check' ], 'move_tickets' ) ) {
 			wp_send_json_error();
 		}
 
-		$ticket_type_id = absint( $_POST[ 'type_id' ] );
-		$destination_id = absint( $_POST[ 'destination' ] );
+		$ticket_type_id = absint( $_POST[ 'ticket_type_id' ] );
+		$destination_id = absint( $_POST[ 'target_post_id' ] );
 
 		if ( ! $ticket_type_id || ! $destination_id ) {
 			wp_send_json_error( array(

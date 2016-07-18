@@ -23,11 +23,11 @@ var tribe_move_tickets = ( 'object' === typeof tribe_move_tickets ) ? tribe_move
 
 
 	function init() {
-		$main = $( '#main' );
-		$errors = $( '.error' );
+		$main       = $( '#main' );
+		$errors     = $( '.error' );
 		$processing = $( '#processing' );
-		$back = $( '#back' );
-		$next = $( '#next' );
+		$back       = $( '#back' );
+		$next       = $( '#next' );
 
 		$back.add( $next ).hide();
 		$processing.hide();
@@ -39,14 +39,24 @@ var tribe_move_tickets = ( 'object' === typeof tribe_move_tickets ) ? tribe_move
 	}
 
 	function setup_stages() {
-		$stages = $( '.stage' );
-
-		move_where_stage();
+		// The "choose_event" stage is always required, regardless of mode
 		choose_event_stage();
-		choose_ticket_type_stage();
+
+		// We only need the "move_where" and "choose_ticket_type" stages in the "move_tickets" mode
+		if ( 'move_tickets' === tribe_move_tickets_data.mode ) {
+			move_where_stage();
+			choose_ticket_type_stage();
+		}
+		// In other cases the above two stages can be removed altogether
+		else {
+			$( '#move-where' ).remove();
+			$( '#choose-ticket-type' ).remove();
+		}
+
+		// Complete setup
+		$stages = $( '.stage' );
 		forward_back_handler();
 		final_stage_handler();
-
 		activate_stage( $stages.first() );
 	}
 
@@ -358,7 +368,19 @@ var tribe_move_tickets = ( 'object' === typeof tribe_move_tickets ) ? tribe_move
 	 * or further options as needed.
 	 */
 	function final_stage_handler() {
+		// Setup the final stage callback
 		$main.on( 'move-tickets-final-stage.tribe', function() {
+			switch ( tribe_move_tickets_data.mode ) {
+				case 'move_tickets': move_tickets(); break;
+				case 'ticket_type_only': move_ticket_type(); break;
+			}
+		} );
+
+		/**
+		 * Handles a move of one or more tickets within the same post or to
+		 * a different post.
+		 */
+		function move_tickets() {
 			if ( ! target_post_id || ! target_ticket_type_id ) {
 				return;
 			}
@@ -380,31 +402,57 @@ var tribe_move_tickets = ( 'object' === typeof tribe_move_tickets ) ? tribe_move
 			$.post( ajaxurl, request, function( data ) {
 				on_response( data )
 			} ).fail( on_failure );
+		}
 
-			function on_response( response ) {
-				if ( 'undefined' === typeof response.data || 'string' !== typeof response.data.message ) {
-					on_failure();
-					return;
-				}
-
-				$processing.html( response.data.message );
-
-				// Respect top window redirects if set
-				if ( 'string' === typeof response.data.redirect_top ) {
-					var delay = ( 'number' === typeof response.data.redirect_top_delay )
-						? response.data.redirect_top_delay
-						: 2000;
-
-					setTimeout( function () {
-						top.location = response.data.redirect_top;
-					}, delay );
-				}
+		/**
+		 * Handles a move of a ticket type to a different post.
+		 */
+		function move_ticket_type() {
+			if ( ! target_post_id ) {
+				return;
 			}
 
-			function on_failure() {
-				$processing.html( tribe_move_tickets_data.unexpected_failure );
+			var request = {
+				'action':         'move_ticket_type',
+				'src_post_id':    tribe_move_tickets_data.src_post_id,
+				'ticket_type_id': tribe_move_tickets_data.ticket_type_id,
+				'target_post_id': target_post_id,
+				'check':          tribe_move_tickets_data.check,
+			};
+
+			$stages.hide();
+			$back.hide();
+			$next.hide();
+			$processing.show();
+
+			$.post( ajaxurl, request, function( data ) {
+				on_response( data )
+			} ).fail( on_failure );
+		}
+
+		function on_response( response ) {
+			if ( 'undefined' === typeof response.data || 'string' !== typeof response.data.message ) {
+				on_failure();
+				return;
 			}
-		} );
+
+			$processing.html( response.data.message );
+
+			// Respect top window redirects if set
+			if ( 'string' === typeof response.data.redirect_top ) {
+				var delay = ( 'number' === typeof response.data.redirect_top_delay )
+					? response.data.redirect_top_delay
+					: 2000;
+
+				setTimeout( function () {
+					top.location = response.data.redirect_top;
+				}, delay );
+			}
+		}
+
+		function on_failure() {
+			$processing.html( tribe_move_tickets_data.unexpected_failure );
+		}
 	}
 
 	function set_target_post( id ) {

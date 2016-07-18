@@ -1,23 +1,26 @@
 <?php
 /**
- * @var array $attendees
- * @var bool  $multiple_providers
+ * @var string $title
+ * @var array  $attendees
+ * @var bool   $multiple_providers
+ * @var string $event_name
+ * @var string $mode
  */
 ?>
 <div id="tribe-dialog-wrapper">
 	<div id="heading">
-		<h1> <?php esc_html_e( 'Move Tickets', 'event-tickets' ); ?> </h1>
+		<h1> <?php echo esc_html( $title ); ?> </h1>
 	</div>
 
 	<div id="main">
 
-		<?php if ( empty( $attendees ) ): ?>
+		<?php if ( 'ticket_type_only' !== $mode && empty( $attendees ) ): ?>
 			<div class="error">
 				<p> <?php esc_html_e( 'No attendees specified! Please try again.', 'event-tickets' ); ?> </p>
 			</div>
 		<?php endif; ?>
 
-		<?php if ( $multiple_providers ): ?>
+		<?php if ( 'ticket_type_only' !== $mode && $multiple_providers ): ?>
 			<div class="error">
 				<p> <?php esc_html_e( 'You have specified a range of attendees that are managed by different providers. It is not currently possible to move these together.', 'event-tickets' ); ?> </p>
 			</div>

@@ -58,9 +58,9 @@
 			}
 
 			$move_type_url = add_query_arg( array(
-				'dialog'         => Tribe__Tickets__Admin__Move_Ticket_Types::DIALOG_NAME,
+				'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
 				'ticket_type_id' => $ticket->ID,
-				'check'          => wp_create_nonce( 'move_ticket_type' ),
+				'check'          => wp_create_nonce( 'move_tickets' ),
 				'TB_iframe'      => 'true',
 			) );
 

@@ -1,7 +1,6 @@
 <?php
 class Tribe__Tickets__Admin__Move_Tickets {
-	const DIALOG_NAME = 'move_tickets';
-
+	protected $dialog_name = 'move_tickets';
 	protected $ticket_history;
 	protected $has_multiple_providers = false;
 	protected $ticket_provider = '';
@@ -17,7 +16,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	protected $attendees = array();
 
 	public function __construct() {
-		$this->ticket_history = new Tribe__Tickets__Admin__Ticket_History;
+		$this->ticket_history();
 
 		add_action( 'admin_init', array( $this, 'dialog' ) );
 		add_action( 'tribe_events_tickets_attendees_table_bulk_actions', array( $this, 'bulk_actions' ) );
@@ -32,6 +31,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return Tribe__Tickets__Admin__Ticket_History
 	 */
 	public function ticket_history() {
+		if ( ! isset( $this->ticket_history ) ) {
+			$this->ticket_history = new Tribe__Tickets__Admin__Ticket_History;
+		};
+
 		return $this->ticket_history;
 	}
 
@@ -39,28 +42,40 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * Sets up the move tickets dialog.
 	 */
 	public function dialog() {
-		if ( ! isset( $_GET[ 'dialog' ] ) || self::DIALOG_NAME !== $_GET[ 'dialog' ] ) {
+		if ( ! $this->is_move_tickets_dialog() ) {
 			return;
 		}
 
 		if ( ! wp_verify_nonce( $_GET['check'], 'move_tickets' ) ) {
-			wp_die( __( 'You do not have permission to view this screen or else you may have followed an expired link. Please refresh the screen and try again.', 'event-tickets' ) );
+			return;
 		}
 
-		$event_id = absint( @$_GET[ 'event_id' ] );
+		$event_id = isset( $_GET[ 'event_id' ] ) ? absint( $_GET[ 'event_id' ] ) : absint( $_GET[ 'post' ] );
 		$attendee_ids = array_map( 'intval', explode( '|', @$_GET[ 'ticket_ids' ] ) );
 		$this->build_attendee_list( $attendee_ids, $event_id );
 
-		$this->dialog_assets();
+		/**
+		 * Provides an opportunity to modify the template variables used in the
+		 * move tickets dialog.
+		 *
+		 * @param array $template_vars
+		 */
+		$template_vars = (array) apply_filters( 'tribe_tickets_move_tickets_template_vars', array(
+			'title'              => __( 'Move Attendees', 'event-tickets' ),
+			'mode'               => 'move_tickets',
+			'check'              => wp_create_nonce( 'move_tickets' ),
+			'event_name'         => get_the_title( $event_id ),
+			'attendees'          => $this->attendees,
+			'multiple_providers' => $this->has_multiple_providers,
+		) );
 
 		define( 'IFRAME_REQUEST', true );
-		iframe_header( __( 'Move Attendees', 'event-tickets' ) );
+		$this->dialog_assets();
+		iframe_header( $template_vars[ 'title'] );
 
-		$event_name = get_the_title( $event_id );
-		$attendees = $this->attendees;
-		$multiple_providers = $this->has_multiple_providers;
-
+		extract( $template_vars );
 		include EVENT_TICKETS_DIR . '/src/admin-views/move-tickets.php';
+
 		iframe_footer();
 		exit();
 	}
@@ -75,8 +90,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// @todo consider switching to tribe_asset() following resolution of https://github.com/moderntribe/tribe-common/pull/111#discussion_r68219366
 		$script_url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/move-tickets-dialog.js';
 
-		wp_enqueue_script( 'tribe-move-tickets-dialog', $script_url, array( 'jquery' ), false, true );
-		wp_localize_script( 'tribe-move-tickets-dialog', 'tribe_move_tickets_data', array(
+		/**
+		 * Provides an opportunity to modify the variables passed to the move
+		 * tickets JS code.
+		 *
+		 * @param array $script_data
+		 */
+		$script_vars = apply_filters( 'tribe_tickets_move_tickets_script_data', array(
 			'check' =>
 				wp_create_nonce( 'move_tickets' ),
 			'unexpected_failure' =>
@@ -90,12 +110,34 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'loading_msg' =>
 				__( 'Loading, please wait&hellip;', 'event-tickets' ),
 			'src_post_id' =>
-				absint( $_GET[ 'event_id' ] ),
+				isset( $_GET[ 'event_id' ] ) ? absint( $_GET[ 'event_id' ] ) : absint( $_GET[ 'post' ] ),
 			'ticket_ids' =>
 				array_keys( $this->attendees ),
 			'provider' =>
 				$this->ticket_provider,
+			'mode' =>
+				'move_tickets',
 		) );
+
+		wp_enqueue_script( 'tribe-move-tickets-dialog', $script_url, array( 'jquery' ), false, true );
+		wp_localize_script( 'tribe-move-tickets-dialog', 'tribe_move_tickets_data', $script_vars );
+	}
+
+	/**
+	 * Indicates if the current request is for the "move tickets type"
+	 * dialog or not.
+	 *
+	 * @return bool
+	 */
+	protected function is_move_tickets_dialog() {
+		return ( isset( $_GET[ 'dialog' ] ) && $this->dialog_name === $_GET[ 'dialog' ] );
+	}
+
+	/**
+	 * @return string
+	 */
+	public function dialog_name() {
+		return $this->dialog_name;
 	}
 
 	/**
