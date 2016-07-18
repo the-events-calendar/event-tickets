@@ -286,7 +286,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			$attachments = apply_filters( 'tribe_tickets_ticket_type_moved_email_attachments', array() );
 
 			$content = apply_filters( 'tribe_tickets_ticket_type_moved_email_content',
-				$this->generate_email_content( $ticket_type_id, $new_post_id, $original_post_id, $num_tickets )
+				$this->generate_email_content( $ticket_type_id, $original_post_id, $new_post_id, $num_tickets )
 			);
 
 			$headers = apply_filters( 'tribe_tickets_ticket_type_moved_email_headers',
@@ -302,21 +302,21 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	}
 
 	/**
-	 * @param int $ticket_type_id
-	 * @param int $new_post_id
-	 * @param int $original_post_id
-	 * @param int $num_tickets
+	 * @param int    $tgt_ticket_type_id
+	 * @param int    $src_event_id
+	 * @param int    $tgt_event_id
+	 * @param int    $num_tickets
 	 *
-	 * @return string|void
+	 * @return string
 	 */
-	protected function generate_email_content( $ticket_type_id, $new_post_id, $original_post_id, $num_tickets ) {
+	protected function generate_email_content( $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $num_tickets ) {
 		$vars = array(
-			'original_event_id'   => $original_post_id,
-			'original_event_name' => get_the_title( $original_post_id ),
-			'new_event_id'        => $new_post_id,
-			'new_event_name'      => get_the_title( $new_post_id ),
-			'ticket_type_id'      => $ticket_type_id,
-			'ticket_type_name'    => get_the_title( $ticket_type_id ),
+			'original_event_id'   => $src_event_id,
+			'original_event_name' => get_the_title( $src_event_id ),
+			'new_event_id'        => $tgt_event_id,
+			'new_event_name'      => get_the_title( $tgt_event_id ),
+			'ticket_type_id'      => $tgt_ticket_type_id,
+			'ticket_type_name'    => get_the_title( $tgt_ticket_type_id ),
 			'num_tickets'         => $num_tickets
 		);
 

@@ -25,6 +25,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		add_action( 'wp_ajax_move_tickets_get_post_types', array( $this, 'get_post_types' ) );
 		add_action( 'wp_ajax_move_tickets_get_post_choices', array( $this, 'get_post_choices' ) );
 		add_action( 'wp_ajax_move_tickets_get_ticket_types', array( $this, 'get_ticket_types' ) );
+		add_action( 'tribe_tickets_all_tickets_moved', array( $this, 'notify_attendees' ), 10, 4 );
 	}
 
 	/**
@@ -445,6 +446,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return bool
 	 */
 	public function move_tickets( array $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id ) {
+		$ticket_ids    = array_map( 'intval', $ticket_ids );
 		$instigator_id = get_current_user_id();
 		$ticket_type   = Tribe__Tickets__Tickets::load_ticket_object( $tgt_ticket_type_id );
 
@@ -482,22 +484,118 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		foreach ( $ticket_objects as $single_ticket ) {
 			$ticket_id = $single_ticket[ 'attendee_id' ];
-			$current_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
+			$original_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
 
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
 			Tribe__Post_History::load( $ticket_id )->add_entry( sprintf(
 				__( 'Moved from ticket type %1$d (in post %2$d) to ticket type %3$d (in post %4$d) by user %5$d', 'event-tickets' ),
-				$current_ticket_type_id,
+				$original_ticket_type_id,
 				$src_event_id,
 				$tgt_ticket_type_id,
 				$tgt_event_id,
 				$instigator_id
 			) );
+
+			/**
+			 * Fires when a ticket is relocated from ticket type to another, which may be in
+			 * a different post altogether.
+			 *
+			 * @param int $ticket_id                the ticket which has been moved
+			 * @param int $original_ticket_type_id  the ticket type it belonged to originally
+			 * @param int $tgt_ticket_type_id       the ticket type it now belongs to
+			 * @param int $src_event_id             the event/post which the ticket originally belonged to
+			 * @param int $tgt_event_id             the event/post which the ticket now belongs to
+			 * @param int $instigator_id            the user who initiated the change
+			 */
+			do_action( 'tribe_tickets_ticket_moved', $ticket_id, $original_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id );
 		}
 
+		/**
+		 * Fires when all of the specified ticket IDs have been moved
+		 *
+		 * @param array $ticket_ids          each ticket ID
+		 * @param int   $tgt_ticket_type_id  the ticket type they were moved to
+		 * @param int   $src_event_id        the event they belonged to prior to the move
+		 * @param int   $tgt_event_id        the event they belong to after the move
+		 */
+		do_action( 'tribe_tickets_all_tickets_moved', $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id );
+
 		return true;
+	}
+
+	/**
+	 * Notifies the ticket owners that their tickets have been moved to a new ticket
+	 * type.
+	 *
+	 * @param array $ticket_ids
+	 * @param int   $tgt_ticket_type_id
+	 * @param int   $src_event_id
+	 * @param int   $tgt_event_id
+	 */
+	public function notify_attendees( $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id ) {
+		$to_notify = array();
+
+		// Build a list of email addresses we want to send notifications of the change to
+		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $tgt_event_id ) as $attendee ) {
+			// We're not interested in attendees who were already attending this event
+			if ( ! in_array( (int) $attendee[ 'attendee_id' ], $ticket_ids ) ) {
+				continue;
+			}
+
+			// Skip if an email address isn't available
+			if ( ! isset( $attendee[ 'purchaser_email' ] ) ) {
+				continue;
+			}
+
+			if ( ! isset( $to_notify[ $attendee[ 'purchaser_email' ] ] ) ) {
+				$to_notify[ $attendee[ 'purchaser_email' ] ] = array( $attendee );
+			} else {
+				$to_notify[ $attendee[ 'purchaser_email' ] ][] = $attendee;
+			}
+		}
+
+		foreach ( $to_notify as $email_addr => $affected_tickets) {
+			$to = apply_filters( 'tribe_tickets_ticket_type_moved_email_recipient', $email_addr );
+			$attachments = apply_filters( 'tribe_tickets_ticket_moved_email_attachments', array() );
+
+			$content = apply_filters( 'tribe_tickets_ticket_moved_email_content',
+				$this->generate_email_content( $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $affected_tickets )
+			);
+
+			$headers = apply_filters( 'tribe_tickets_ticket_moved_email_headers',
+				array( 'Content-type: text/html' )
+			);
+
+			$subject = apply_filters( 'tribe_tickets_ticket_moved_email_subject',
+				sprintf( __( 'Changes to your tickets from %s', 'event-tickets' ), get_bloginfo( 'name' ) )
+			);
+
+			wp_mail( $to, $subject, $content, $headers, $attachments );
+		}
+	}
+
+	/**
+	 * @param int   $tgt_ticket_type_id
+	 * @param int   $src_event_id
+	 * @param int   $tgt_event_id
+	 * @param array $affected_tickets
+	 *
+	 * @return string
+	 */
+	protected function generate_email_content( $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $affected_tickets ) {
+		$vars = array(
+			'original_event_id'   => $src_event_id,
+			'original_event_name' => get_the_title( $src_event_id ),
+			'new_event_id'        => $tgt_event_id,
+			'new_event_name'      => get_the_title( $tgt_event_id ),
+			'ticket_type_id'      => $tgt_ticket_type_id,
+			'ticket_type_name'    => get_the_title( $tgt_ticket_type_id ),
+			'affected_tickets'    => $affected_tickets
+		);
+
+		return tribe_tickets_get_template_part( 'tickets/email-tickets-moved', null, $vars, false );
 	}
 
 	/**
