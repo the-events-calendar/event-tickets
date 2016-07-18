@@ -88,6 +88,11 @@ jQuery( document ).ready( function( $ ) {
 			order_ID: obj.attr( 'data-attendee-id' ),
 			nonce   : Attendees.checkin_nonce
 		};
+		
+		// add event_ID information if available
+		if ( obj.attr( 'data-event-id' ) ) {
+			params.event_ID = obj.attr( 'data-event-id' );
+		}
 
 		$.post(
 			ajaxurl,
@@ -116,6 +121,11 @@ jQuery( document ).ready( function( $ ) {
 			order_ID: obj.attr( 'data-attendee-id' ),
 			nonce   : Attendees.uncheckin_nonce
 		};
+
+		// add event_ID information if available
+		if ( obj.attr( 'data-event-id' ) ) {
+			params.event_ID = obj.attr( 'data-event-id' );
+		}
 
 		$.post(
 			ajaxurl,

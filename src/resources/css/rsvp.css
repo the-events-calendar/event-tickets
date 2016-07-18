@@ -139,6 +139,18 @@
 	margin: 0 0 .5em 0;
 }
 
+.tribe-answer {
+	line-height: 2;
+}
+
+.tribe-answer .type-label {
+	padding-right: .5em;
+}
+
+.tribe-answer label {
+	display: block;
+}
+
 .tribe-answer select {
 	background: white;
 	border: 1px solid #ddd;
