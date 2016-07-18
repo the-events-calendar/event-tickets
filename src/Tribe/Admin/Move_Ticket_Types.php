@@ -355,7 +355,11 @@ class Tribe__Tickets__Admin__Move_Ticket_Types {
 	 */
 	public function expose_ticket_history() {
 		// This will only be available during edit requests for existing tickets
-		$ticket_id = @$_POST[ 'ticket_id' ];
+		if ( ! isset( $_POST[ 'ticket_id' ] ) ) {
+			return;
+		}
+
+		$ticket_id = absint( $_POST[ 'ticket_id' ] );
 		$ticket_object = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
 		if ( ! $ticket_object || ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
