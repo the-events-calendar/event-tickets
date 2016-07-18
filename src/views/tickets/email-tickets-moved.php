@@ -118,7 +118,7 @@
 
 		<ul> <?php foreach ( $affected_tickets as $attendee ): ?>
 			<li>
-				<tt #<?php echo esc_html( $attendee[ 'attendee_id' ] ); ?> </tt>
+				<tt> #<?php echo esc_html( $attendee[ 'attendee_id' ] ); ?> </tt>
 				<strong> <?php echo esc_html( $attendee[ 'ticket' ] ); ?> </strong>
 				&ndash; <?php echo esc_html( $attendee[ 'security' ] ); ?>
 			</li>
