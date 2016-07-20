@@ -88,16 +88,13 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// Ensure common admin CSS is enqueued within this screen
 		add_filter( 'tribe_asset_enqueue_tribe-common-admin', '__return_true', 20 );
 
-		// @todo consider switching to tribe_asset() following resolution of https://github.com/moderntribe/tribe-common/pull/111#discussion_r68219366
-		$script_url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/move-tickets-dialog.js';
-
 		/**
 		 * Provides an opportunity to modify the variables passed to the move
 		 * tickets JS code.
 		 *
 		 * @param array $script_data
 		 */
-		$script_vars = apply_filters( 'tribe_tickets_move_tickets_script_data', array(
+		$data = apply_filters( 'tribe_tickets_move_tickets_script_data', array(
 			'check' =>
 				wp_create_nonce( 'move_tickets' ),
 			'unexpected_failure' =>
@@ -120,8 +117,19 @@ class Tribe__Tickets__Admin__Move_Tickets {
 				'move_tickets',
 		) );
 
-		wp_enqueue_script( 'tribe-move-tickets-dialog', $script_url, array( 'jquery' ), false, true );
-		wp_localize_script( 'tribe-move-tickets-dialog', 'tribe_move_tickets_data', $script_vars );
+		tribe_asset(
+			Tribe__Tickets__Main::instance(),
+			'tribe-move-tickets-dialog',
+			'move-tickets-dialog.js',
+			array( 'jquery' ),
+			'admin_enqueue_scripts',
+			array(
+				'localize' => array(
+					'name' => 'tribe_move_tickets_data',
+					'data' => $data,
+				),
+			)
+		);
 	}
 
 	/**
