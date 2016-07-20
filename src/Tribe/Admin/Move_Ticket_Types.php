@@ -73,54 +73,6 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	}
 
 	/**
-	 * Returns a list of posts that could be possible homes for a ticket
-	 * type, given the constraints in optional array $request (if not set,
-	 * looks in $_POST for the corresponding values):
-	 *
-	 * - 'post_type': string or array of post types
-	 * - 'search_term': string used for searching posts to narrow the field
-	 *
-	 * @param array|null $request post parameters (or looks at $_POST if not set)
-	 *
-	 * @return array
-	 */
-	protected function get_possible_matches( array $request = null ) {
-		// Take the params from $request if set, else look at $_POST
-		$params = wp_parse_args( is_null( $request ) ? $_POST : $request, array(
-			'post_type' => array(),
-			'search_terms' => '',
-			'ignore' => '',
-		) );
-
-		// The post_type argument should be an array (of all possible types, if not specified)
-		$post_types = (array) $params[ 'post_type' ];
-
-		if ( empty( $post_types ) || 'all' === $params[ 'post_type' ] ) {
-			$post_types = array_keys( $this->get_post_types_list() );
-		}
-
-		/**
-		 * Controls the number of posts returned when searching for posts that
-		 * can serve as ticket hosts.
-		 *
-		 * @param int $limit
-		 */
-		$limit = (int) apply_filters( 'tribe_tickets_find_ticket_type_host_posts_limit', 100 );
-
-		$ignore_ids = is_numeric( $params[ 'ignore' ] ) ? array( absint( $params[ 'ignore' ] ) ) : array();
-
-		return $this->format_post_list( get_posts( array(
-			'post_type'      => $post_types,
-			'posts_per_page' => $limit,
-			'eventDisplay'   => 'custom',
-			'orderby'        => 'title',
-			'order'          => 'ASC',
-			's'              => $params[ 'search_terms' ],
-			'post__not_in'   => $ignore_ids,
-		) ) );
-	}
-
-	/**
 	 * Listens out for ajax requests to move a ticket type to a new post.
 	 */
 	public function move_ticket_type_requests() {
