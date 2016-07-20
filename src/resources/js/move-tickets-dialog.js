@@ -56,6 +56,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Hides the specified button element, but only if stage matches the
 	 * ID of the currently activated stage.
 	 *
+	 * @type function
+	 *
 	 * @param $btn
 	 * @param stage
 	 */
@@ -64,6 +66,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	/**
 	 * Disables the specified button element, but only if stage matches the
 	 * ID of the currently activated stage.
+	 *
+	 * @type function
 	 *
 	 * @param $btn
 	 * @param stage
@@ -74,10 +78,21 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	 * Enables the specified button element, but only if stage matches the
 	 * ID of the currently activated stage.
 	 *
+	 * @type function
+	 *
 	 * @param $btn
 	 * @param stage
 	 */
 	obj.enable_btn = enable_btn;
+
+	/**
+	 * Activates the specified stage element.
+	 *
+	 * @type function
+	 *
+	 * @param $stage_element
+	 */
+	obj.activate_stage = activate_stage;
 
 	/**
 	 * Show and hide the initial set of stages as required.
