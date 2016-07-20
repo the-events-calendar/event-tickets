@@ -6,7 +6,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		parent::__construct();
 		add_action( 'wp_ajax_move_ticket_types_post_list', array( $this, 'update_post_choices' ) );
 		add_action( 'wp_ajax_move_ticket_type', array( $this, 'move_ticket_type_requests' ) );
-		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'notify_attendees' ), 100, 3 );
+		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'notify_event_attendees' ), 100, 3 );
 		add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'expose_ticket_history' ), 100 );
 		add_filter( 'tribe_tickets_move_tickets_template_vars', array( $this, 'move_tickets_dialog_vars' ) );
 		add_filter( 'tribe_tickets_move_tickets_script_data', array( $this, 'move_tickets_dialog_data' ) );
@@ -186,7 +186,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	 * @param int $new_post_id
 	 * @param int $original_post_id
 	 */
-	public function notify_attendees( $ticket_type_id, $new_post_id, $original_post_id ) {
+	public function notify_event_attendees( $ticket_type_id, $new_post_id, $original_post_id ) {
 		$to_notify = array();
 
 		// Build a list of email addresses we want to send notifications of the change to
