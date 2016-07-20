@@ -29,7 +29,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		}
 
 		return array_merge( $data, array(
-			'ticket_type_id' =>  absint( $_GET[ 'ticket_type_id' ] ),
+			'ticket_type_id' => absint( $_GET[ 'ticket_type_id' ] ),
 			'src_post_id'    => absint( $_GET[ 'post' ] ),
 			'mode'           => 'ticket_type_only',
 		) );
