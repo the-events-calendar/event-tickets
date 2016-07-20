@@ -50,7 +50,6 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		) );
 
 		wp_send_json_success( array( 'posts' =>  $this->get_possible_matches( $args ) ) );
-		exit();
 	}
 
 	/**
