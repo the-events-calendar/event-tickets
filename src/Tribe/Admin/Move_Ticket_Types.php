@@ -29,12 +29,9 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		}
 
 		return array_merge( $data, array(
-			'ticket_type_id' =>
-				absint( $_GET[ 'ticket_type_id' ] ),
-			'src_post_id' =>
-				absint( $_GET[ 'post' ] ),
-			'mode' =>
-				'ticket_type_only'
+			'ticket_type_id' =>  absint( $_GET[ 'ticket_type_id' ] ),
+			'src_post_id'    => absint( $_GET[ 'post' ] ),
+			'mode'           => 'ticket_type_only',
 		) );
 	}
 
@@ -125,40 +122,22 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	}
 
 	/**
-	 * Given an array of WP_Post objects, returns an array containing the post title
-	 * of each (with the post ID as the index).
-	 *
-	 * @param array $query_results
-	 *
-	 * @return array
-	 */
-	protected function format_post_list( array $query_results ) {
-		$posts = array();
-
-		foreach ( $query_results as $wp_post ) {
-			$title = $wp_post->post_title;
-
-			// Append the event start date if there is one, ie for events
-			if ( $wp_post->_EventStartDate ) {
-				$title .= ' (' . tribe_get_start_date( $wp_post->ID ) . ')';
-			}
-
-			$posts[ $wp_post->ID ] = $title;
-		}
-
-		return $posts;
-	}
-
-	/**
 	 * Listens out for ajax requests to move a ticket type to a new post.
 	 */
 	public function move_ticket_type_requests() {
-		if ( ! wp_verify_nonce( $_POST['check' ], 'move_tickets' ) ) {
+		$args = wp_parse_args( $_POST, array(
+			'check'          => '',
+			'ticket_type_id' => 0,
+			'target_post_id' => 0,
+			'src_post_id'    => 0,
+		) );
+
+		if ( ! wp_verify_nonce( $args['check' ], 'move_tickets' ) ) {
 			wp_send_json_error();
 		}
 
-		$ticket_type_id = absint( $_POST[ 'ticket_type_id' ] );
-		$destination_id = absint( $_POST[ 'target_post_id' ] );
+		$ticket_type_id = absint( $args[ 'ticket_type_id' ] );
+		$destination_id = absint( $args[ 'target_post_id' ] );
 
 		if ( ! $ticket_type_id || ! $destination_id ) {
 			wp_send_json_error( array(
@@ -173,7 +152,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		}
 
 		$redirect_url = add_query_arg( array(
-				'post'   => absint( $_POST[ 'src_post_id' ] ),
+				'post'   => absint( $args[ 'src_post_id' ] ),
 				'action' => 'edit',
 			),
 			get_admin_url( null, 'post.php' )
@@ -187,8 +166,6 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			),
 			'redirect_top' => $redirect_url,
 		) );
-
-		exit();
 	}
 
 	/**
@@ -282,17 +259,43 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 		// Dispatch the emails
 		foreach ( $to_notify as $email_addr => $num_tickets ) {
+			/**
+			 * Sets the moved ticket type email address.
+			 *
+			 * @param string $email_addr
+			 */
 			$to = apply_filters( 'tribe_tickets_ticket_type_moved_email_recipient', $email_addr );
+
+			/**
+			 * Sets any attachments for the moved ticket type email address.
+			 *
+			 * @param array $attachments
+			 */
 			$attachments = apply_filters( 'tribe_tickets_ticket_type_moved_email_attachments', array() );
 
+			/**
+			 * Sets the HTML for the moved ticket type email.
+			 *
+			 * @param string $html
+			 */
 			$content = apply_filters( 'tribe_tickets_ticket_type_moved_email_content',
 				$this->generate_email_content( $ticket_type_id, $original_post_id, $new_post_id, $num_tickets )
 			);
 
+			/**
+			 * Sets any headers for the moved ticket type email.
+			 *
+			 * @param array $headers
+			 */
 			$headers = apply_filters( 'tribe_tickets_ticket_type_moved_email_headers',
 				array( 'Content-type: text/html' )
 			);
 
+			/**
+			 * Sets the subject line for the moved ticket type email.
+			 *
+			 * @param string $subject
+			 */
 			$subject = apply_filters( 'tribe_tickets_ticket_type_moved_email_subject',
 				sprintf( __( 'Changes to your tickets from %s', 'event-tickets' ), get_bloginfo( 'name' ) )
 			);

@@ -223,7 +223,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		}
 
 		wp_send_json_success( array( 'posts' => $this->get_post_types_list() ) );
-		exit();
 	}
 
 	/**
@@ -261,7 +260,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		) );
 
 		wp_send_json_success( array( 'posts' =>  $this->get_possible_matches( $args ) ) );
-		exit();
 	}
 
 	/**
@@ -352,7 +350,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		) );
 
 		wp_send_json_success( array( 'posts' =>  $this->get_ticket_type_matches( $args[ 'post_id' ], $args[ 'provider' ] ) ) );
-		exit();
 	}
 
 	/**
@@ -427,8 +424,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			),
 			'redirect_top' => $redirect_url,
 		) );
-
-		exit();
 	}
 
 	/**
@@ -557,17 +552,43 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		}
 
 		foreach ( $to_notify as $email_addr => $affected_tickets) {
-			$to = apply_filters( 'tribe_tickets_ticket_type_moved_email_recipient', $email_addr );
+			/**
+			 * Sets the moved ticket email address.
+			 *
+			 * @param string $email_addr
+			 */
+			$to = apply_filters( 'tribe_tickets_ticket_moved_email_recipient', $email_addr );
+
+			/**
+			 * Sets any attachments for the moved ticket email address.
+			 *
+			 * @param array $attachments
+			 */
 			$attachments = apply_filters( 'tribe_tickets_ticket_moved_email_attachments', array() );
 
+			/**
+			 * Sets the HTML for the moved ticket email.
+			 *
+			 * @param string $html
+			 */
 			$content = apply_filters( 'tribe_tickets_ticket_moved_email_content',
 				$this->generate_email_content( $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $affected_tickets )
 			);
 
+			/**
+			 * Sets any headers for the moved tickets email.
+			 *
+			 * @param array $headers
+			 */
 			$headers = apply_filters( 'tribe_tickets_ticket_moved_email_headers',
 				array( 'Content-type: text/html' )
 			);
 
+			/**
+			 * Sets the subject line for the moved tickets email.
+			 *
+			 * @param string $subject
+			 */
 			$subject = apply_filters( 'tribe_tickets_ticket_moved_email_subject',
 				sprintf( __( 'Changes to your tickets from %s', 'event-tickets' ), get_bloginfo( 'name' ) )
 			);

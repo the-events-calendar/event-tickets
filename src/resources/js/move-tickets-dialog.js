@@ -5,7 +5,7 @@
  * @var object tribe_move_tickets_data
  */
 
-var tribe_move_tickets = ( 'object' === typeof tribe_move_tickets ) ? tribe_move_tickets : {};
+var tribe_move_tickets = tribe_move_tickets || {};
 
 ( function( $, obj ) {
 	var $main,

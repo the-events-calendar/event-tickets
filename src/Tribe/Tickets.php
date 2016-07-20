@@ -233,20 +233,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		abstract protected function get_attendees( $event_id );
 
 		/**
-		 * Returns the email address associated with an attendee record (if any).
-		 *
-		 * Individual providers ought to override this method.
-		 *
-		 * @param int $attendee_id
-		 *
-		 * @return string|null
-		 */
-		public function get_attendee_email_address( $attendee_id ) {
-
-			return null;
-		}
-
-		/**
 		 * Mark an attendee as checked in
 		 *
 		 * @abstract
