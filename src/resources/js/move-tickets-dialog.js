@@ -9,17 +9,17 @@ var tribe_move_tickets = tribe_move_tickets || {};
 
 ( function( $, obj ) {
 	var $main,
-		$processing,
-		$errors,
-		$current_stage,
-		current_stage_name,
-		$stages,
-		$back,
-		$next,
-		last_direction,
-		skip_choose_event,
-		target_post_id,
-		target_ticket_type_id;
+	    $processing,
+	    $errors,
+	    $current_stage,
+	    current_stage_name,
+	    $stages,
+	    $back,
+	    $next,
+	    last_direction,
+	    skip_choose_event,
+	    target_post_id,
+	    target_ticket_type_id;
 
 
 	function init() {
@@ -29,6 +29,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 		$back       = $( '#back' );
 		$next       = $( '#next' );
 
+		$main.trigger( 'move-tickets-dialog-pre-init.tribe' );
+
 		$back.add( $next ).hide();
 		$processing.hide();
 
@@ -36,8 +38,50 @@ var tribe_move_tickets = tribe_move_tickets || {};
 			$next.show();
 			setup_stages();
 		}
+
+		$main.trigger( 'move-tickets-dialog-post-init.tribe' );
 	}
 
+	/**
+	 * Can be used to obtain the jQuery object representing the dialog's
+	 * #main element (useful for triggering/listening for dialog events).
+	 *
+	 * @returns object
+	 */
+	obj.get_main_element = function() {
+		return $main;
+	};
+
+	/**
+	 * Hides the specified button element, but only if stage matches the
+	 * ID of the currently activated stage.
+	 *
+	 * @param $btn
+	 * @param stage
+	 */
+	obj.hide_btn = hide_btn;
+
+	/**
+	 * Disables the specified button element, but only if stage matches the
+	 * ID of the currently activated stage.
+	 *
+	 * @param $btn
+	 * @param stage
+	 */
+	obj.disable_btn = disable_btn;
+
+	/**
+	 * Enables the specified button element, but only if stage matches the
+	 * ID of the currently activated stage.
+	 *
+	 * @param $btn
+	 * @param stage
+	 */
+	obj.enable_btn = enable_btn;
+
+	/**
+	 * Show and hide the initial set of stages as required.
+	 */
 	function setup_stages() {
 		// The "choose_event" stage is always required, regardless of mode
 		choose_event_stage();
@@ -482,6 +526,13 @@ var tribe_move_tickets = tribe_move_tickets || {};
 		}
 	}
 
+	/**
+	 * Hides the specified button element, but only if stage matches the
+	 * ID of the currently activated stage.
+	 *
+	 * @param $btn
+	 * @param stage
+	 */
 	function hide_btn( $btn, stage ) {
 		if ( stage === current_stage_name ) {
 			$btn.hide();
