@@ -195,7 +195,7 @@ Our Premium Plugins:
 
 * Tweak - Add prompt for ratings on admin Event screens
 * Fix - Provide fallback page if App Shop API fails to load
-* Fix - Events related links should appear under the Events menu (Thanks @Abby for hte original report of this on our support forums)
+* Fix - Events related links should appear under the Events menu (Thanks @Abby for the original report of this on our support forums)
 
 = [4.2.2] 2016-07-06 =
 
