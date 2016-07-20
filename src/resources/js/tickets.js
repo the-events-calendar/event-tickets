@@ -118,7 +118,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			},
 
 			/**
-			 * Scrolls to the Tickets container, to show it when required
+			 * Scrolls to the Tickets container once the ticket form receives the focus.
 			 *
 			 * @return {void}
 			 */
@@ -126,6 +126,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$body.animate( {
 					scrollTop: $tickets_container.offset().top - 50
 				}, 500 );
+			},
+
+			/**
+			 * When the edit ticket form fields have completed loading we can setup
+			 * other UI features as needed.
+			 */
+			'edit-tickets-complete.tribe': function() {
+				show_hide_ticket_type_history();
 			},
 
 			/**
@@ -302,6 +310,28 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return ( $checked_provider.length > 0 )
 				? $checked_provider[0].value
 				: "";
+		}
+
+		/**
+		 * When a ticket type is edited we should (re-)establish the UI for showing
+		 * and hiding its history, if it has one.
+		 */
+		function show_hide_ticket_type_history() {
+			var $history = $tribe_tickets.find( 'tr.ticket_advanced.history' );
+
+			if ( ! $history.length ) {
+				return;
+			}
+
+			var $toggle_link = $history.find( 'a.toggle-history' );
+			var $toggle_link_text = $toggle_link.find( 'span' );
+			var $history_list = $history.find( 'ul' );
+
+			$history.find( 'a.toggle-history' ).click( function( event ) {
+				$toggle_link_text.toggle();
+				$history_list.toggle();
+				return false;
+			} );
 		}
 
 		// Show or hide the global stock level as appropriate, both initially and thereafter
@@ -584,7 +614,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					},
 					'json'
 				).complete( function() {
-					$tribe_tickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
+					$tribe_tickets
+						.trigger( 'spin.tribe', 'stop' )
+						.trigger( 'focus.tribe' )
+						.trigger( 'edit-tickets-complete.tribe' );
 				} );
 
 			} )

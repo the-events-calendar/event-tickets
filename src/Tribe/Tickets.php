@@ -141,6 +141,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		abstract public function get_ticket( $event_id, $ticket_id );
 
 		/**
+		 * Attempts to load the specified ticket type post object.
+		 *
+		 * @param int $ticket_id
+		 *
+		 * @return Tribe__Tickets__Ticket_Object|null
+		 */
+		public static function load_ticket_object( $ticket_id ) {
+			foreach ( Tribe__Tickets__Tickets::modules() as $provider_class => $name ) {
+				$provider = call_user_func( array( $provider_class, 'get_instance' ) );
+				$event    = $provider->get_event_for_ticket( $ticket_id );
+
+				if ( ! $event ) {
+					continue;
+				}
+
+				$ticket_object = $provider->get_ticket( $event->ID, $ticket_id );
+
+				if ( $ticket_object ) {
+					return $ticket_object;
+				}
+			}
+
+			return null;
+		}
+
+		/**
 		 * Returns the event post corresponding to the possible ticket object/ticket ID.
 		 *
 		 * This is used to help differentiate between products which act as tickets for an
@@ -1205,6 +1231,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return (string) $attendee_event_key;
+		}
+
+		/**
+		 * Returns the meta key used to link ticket types with the base event.
+		 *
+		 * If the meta key cannot be determined the returned string will be empty.
+		 * Subclasses can override this if they use a key other than 'event_key'
+		 * for this purpose.
+		 *
+		 * @internal
+		 *
+		 * @return string
+		 */
+		public function get_event_key() {
+			if ( property_exists( $this, 'event_key' ) ) {
+				return $this->event_key;
+			}
+
+			return '';
 		}
 
 		/**

@@ -193,6 +193,7 @@ Our Premium Plugins:
 
 = [4.3] unreleased =
 
+* Feature - Add ticket management facilities allowing reassignment to different posts [61724]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
 
 = [4.2.2] 2016-07-06 =

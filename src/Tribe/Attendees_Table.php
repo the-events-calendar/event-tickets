@@ -183,7 +183,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 		$label = isset( $item['order_status_label'] ) ? $item['order_status_label'] : ucwords( $item['order_status'] );
 
-		return $icon . $label;
+		/**
+		 * Provides an opportunity to modify the order status text within
+		 * the attendees table.
+		 *
+		 * @param string $order_status_html
+		 * @param array  $item
+		 */
+		return apply_filters( 'tribe_tickets_attendees_table_order_status', $icon . $label, $item );
 	}
 
 	/**
