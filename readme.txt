@@ -196,6 +196,12 @@ Our Premium Plugins:
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
 
+= [4.2.3] 2016-07-20 =
+
+* Tweak - Add prompt for ratings on admin Event screens
+* Fix - Provide fallback page if App Shop API fails to load
+* Fix - Events related links should appear under the Events menu (Thanks @Abby for the original report of this on our support forums)
+
 = [4.2.2] 2016-07-06 =
 
 * Fix - Send an email acknowledgement, rather than a set of tickets, when a user confirms they will not attend an event (RSVPs) [62549]

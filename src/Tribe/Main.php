@@ -397,6 +397,8 @@ class Tribe__Tickets__Main {
 		$this->settings_tab();
 
 		$this->tickets_view();
+
+		Tribe__Credits::init();
 	}
 
 	/**
