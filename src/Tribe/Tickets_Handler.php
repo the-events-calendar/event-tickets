@@ -126,12 +126,20 @@ class Tribe__Tickets__Tickets_Handler {
 		wp_enqueue_style( self::$attendees_slug . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
 		wp_enqueue_script( self::$attendees_slug, $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
 
+		add_thickbox();
+
 		$mail_data = array(
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
 			'required'        => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
 			'sending'         => esc_html__( 'Sending...', 'event-tickets' ),
 			'checkin_nonce'   => wp_create_nonce( 'checkin' ),
 			'uncheckin_nonce' => wp_create_nonce( 'uncheckin' ),
+			'cannot_move'     => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
+			'move_url'        => add_query_arg( array(
+				'dialog'    => Tribe__Tickets__Main::instance()->move_tickets()->dialog_name(),
+				'check'     => wp_create_nonce( 'move_tickets' ),
+				'TB_iframe' => 'true',
+			) ),
 		);
 
 		wp_localize_script( self::$attendees_slug, 'Attendees', $mail_data );

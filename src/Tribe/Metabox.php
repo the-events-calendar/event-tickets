@@ -53,6 +53,7 @@ class Tribe__Tickets__Metabox {
 			return;
 		}
 
+		add_thickbox();
 		Tribe__Tickets__Tickets_Handler::instance()->do_meta_box( $post_id );
 	}
 

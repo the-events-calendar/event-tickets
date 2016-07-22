@@ -191,9 +191,25 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.3] TBD
+= [4.3] unreleased =
 
+* Feature - Add ticket management facilities allowing reassignment to different posts [61724]
+* Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
+
+= [4.2.3] 2016-07-20 =
+
+* Tweak - Add prompt for ratings on admin Event screens
+* Fix - Provide fallback page if App Shop API fails to load
+* Fix - Events related links should appear under the Events menu (Thanks @Abby for the original report of this on our support forums)
+
+= [4.2.2] 2016-07-06 =
+
+* Fix - Send an email acknowledgement, rather than a set of tickets, when a user confirms they will not attend an event (RSVPs) [62549]
+* Tweak - Add a period to the ticket header image setting [44797]
+* Fix - Removed the ticket description in the admin area to allow for more room for tickets sold notes [61962]
+* Fix - Displays the name of the ticket for each attendee on the order confirmation page [62548]
 * Feature - Adds a pop up dialogue to confirm ticket deletion (and help prevent accidental deletion) [46623]
+* Fix - Fixed issue where front-end attendees table check-in state would not show the correct value [62692]
 
 = [4.2.1.1] 2016-06-28 =
 
