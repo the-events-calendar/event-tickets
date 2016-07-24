@@ -604,8 +604,8 @@ class Tribe__Tickets__Main {
 	 * @since 4.3
 	 */
 	public function add_ticket_deletion_alert() {
-		$url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/ticket-delete-alert.js';
-		wp_enqueue_script( 'tribe_tickets_ticket_delete_alert', $url, array( 'jquery' ), Tribe__Tickets__Main::VERSION, true );
+		$url = $this->plugin_url . 'src/resources/js/ticket-delete-alert.js';
+		wp_enqueue_script( 'tribe_tickets_ticket_delete_alert', $url, array( 'jquery' ), self::VERSION, true );
 		$deletion_data = array(
 			'alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
 		);
