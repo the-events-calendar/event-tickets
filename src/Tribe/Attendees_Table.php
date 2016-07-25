@@ -72,15 +72,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'cb'              => '<input type="checkbox" />',
-			'order_id'        => esc_html__( 'Order #', 'event-tickets' ),
-			'order_status'    => esc_html__( 'Order Status', 'event-tickets' ),
-			'purchaser_name'  => esc_html__( 'Purchaser name', 'event-tickets' ),
-			'purchaser_email' => esc_html__( 'Purchaser email', 'event-tickets' ),
-			'ticket'          => esc_html__( 'Ticket type', 'event-tickets' ),
-			'attendee_id'     => esc_html__( 'Ticket #', 'event-tickets' ),
-			'security'        => esc_html__( 'Security Code', 'event-tickets' ),
-			'check_in'        => esc_html__( 'Check in', 'event-tickets' ),
+			'cb'        => '<input type="checkbox" />',
+			'ticket'    => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
+			'purchaser' => esc_html_x( 'Purchaser', 'attendee table', 'event-tickets' ),
+			'status'    => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
+			'security'  => esc_html__( 'Security Code', 'event-tickets' ),
+			'check_in'  => esc_html__( 'Check in', 'event-tickets' ),
 		);
 
 		return $columns;
@@ -101,13 +98,156 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
-	 * Handler for the ticket number column
+	 * Handler for the checkbox column
+	 *
+	 * @param $item
+	 *
+	 * @return string
+	 */
+	public function column_cb( $item ) {
+		return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" />', esc_attr( $this->_args['singular'] ), esc_attr( $item['attendee_id'] . '|' . $item['provider'] ) );
+	}
+
+	/**
+	 * Populates the purchaser column.
+	 *
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	public function column_purchaser( array $item ) {
+		$purchaser_name  = empty( $item[ 'purchaser_name' ] ) ? '' : esc_html( $item[ 'purchaser_name' ] );
+		$purchaser_email = empty( $item[ 'purchaser_email' ] ) ? '' : esc_html( $item[ 'purchaser_email' ] );
+
+		return "
+			<div class='purchaser_name'>{$purchaser_name}</div>
+			<div class='purchaser_email'>{$purchaser_email}</div>
+		";
+	}
+
+	/**
+	 * Populates the status column.
+	 *
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	public function column_status( array $item ) {
+		$icon    = '';
+		$warning = false;
+
+		// Check if the order_warning flag has been set (to indicate the order has been cancelled, refunded etc)
+		if ( isset( $item['order_warning'] ) && $item['order_warning'] ) {
+			$warning = true;
+		}
+
+		// If the warning flag is set, add the appropriate icon
+		if ( $warning ) {
+			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", esc_url( Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/warning.png' ) );
+		}
+
+		// Look for an order_status_label, fall back on the actual order_status string @todo remove fallback in 3.4.3
+		if ( empty( $item['order_status'] ) ) {
+			$item['order_status'] = '';
+		}
+
+		$label = isset( $item['order_status_label'] ) ? $item['order_status_label'] : ucwords( $item['order_status'] );
+
+		$order_id_url = $this->get_order_id_url( $item );
+
+		if ( ! empty( $order_id_url ) && ! empty( $item[ 'order_id' ] ) ) {
+			$label = '<a href="' . esc_url( $order_id_url ) . '">#' . esc_html( $item[ 'order_id' ] ) . ' &ndash; ' . $label . '</a>';
+		} elseif ( ! empty( $item[ 'order_id' ] ) ) {
+			$label = '#' . esc_html( $item[ 'order_id' ] ) . ' &ndash; ' . $label;
+		}
+
+		/**
+		 * Provides an opportunity to modify the order status text within
+		 * the attendees table.
+		 *
+		 * @param string $order_status_html
+		 * @param array  $item
+		 */
+		return apply_filters( 'tribe_tickets_attendees_table_order_status', $icon . $label, $item );
+	}
+
+	/**
+	 * Retrieves the order id for the specified table row item.
+	 *
+	 * In some cases, such as when the current item belongs to the RSVP provider, an
+	 * empty string may be returned as there is no order screen that can be linekd to.
+	 *
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	public function get_order_id_url( array $item ) {
+		// Backwards compatibility
+		if ( empty( $item['order_id_url'] ) ) {
+			$item['order_id_url'] = esc_url( get_edit_post_link( $item['order_id'], true ) );
+		}
+
+		return $item['order_id_url'];
+	}
+
+	/**
+	 * Handler for the ticket column
+	 *
+	 * @since 4.1
+	 *
+	 * @param array $item Item whose ticket data should be output
+	 *
+	 * @return string
+	 */
+	public function column_ticket( $item ) {
+		ob_start();
+
+		$attendee_id = trim( esc_html( $this->get_attendee_id( $item ) ) );
+
+		if ( ! empty( $attendee_id ) ) {
+			$attendee_id .= ' &ndash; ';
+		}
+
+		/**
+		 * Sets the row action links that display within the ticket column of the
+		 * attendee list table.
+		 *
+		 * @param array $row_actions
+		 * @param array $item
+		 */
+		$row_actions = (array) apply_filters( 'event_tickets_attendees_table_row_actions', array(), $item );
+		$row_actions = join( ' | ', $row_actions );
+		$row_actions = empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
+
+		?>
+			<div class="event-tickets-ticket-name">
+				<?php echo $attendee_id; ?>
+				<?php echo esc_html( $item['ticket'] ); ?>
+			</div>
+
+			<?php echo $row_actions; ?>
+		<?php
+
+		/**
+		 * Hook to allow for the insertion of additional content in the ticket table cell
+		 *
+		 * @var array $item Attendee row item
+		 */
+		do_action( 'event_tickets_attendees_table_ticket_column', $item );
+
+		$output = ob_get_clean();
+
+		return $output;
+	}
+
+	/**
+	 * Returns the attendee ID (or "unique ID" if set).
 	 *
 	 * @param array $item
 	 *
 	 * @return int|string
 	 */
-	public function column_attendee_id( $item ) {
+	public function get_attendee_id( $item ) {
 		$attendee_id = empty( $item['attendee_id'] ) ? '' : $item['attendee_id'];
 		if ( $attendee_id === '' ) {
 			return '';
@@ -126,101 +266,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param array  $item      The item entry.
 		 */
 		return apply_filters( 'tribe_events_tickets_attendees_table_attendee_id_column', $unique_id, $item );
-	}
-
-	/**
-	 * Handler for the checkbox column
-	 *
-	 * @param $item
-	 *
-	 * @return string
-	 */
-	public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" />', esc_attr( $this->_args['singular'] ), esc_attr( $item['attendee_id'] . '|' . $item['provider'] ) );
-	}
-
-	/**
-	 * Handler for the order id column
-	 *
-	 * @param $item
-	 *
-	 * @return string
-	 */
-	public function column_order_id( $item ) {
-
-		//back compat
-		if ( empty( $item['order_id_link'] ) ) {
-			$item['order_id_link'] = sprintf( '<a class="row-title" href="%s">%s</a>', esc_url( get_edit_post_link( $item['order_id'], true ) ), esc_html( $item['order_id'] ) );
-		}
-
-		return $item['order_id_link'];
-	}
-
-	/**
-	 * Handler for the order status column
-	 *
-	 * @param $item
-	 *
-	 * @return string
-	 */
-	public function column_order_status( $item ) {
-		$icon    = '';
-		$warning = false;
-
-		// Check if the order_warning flag has been set (to indicate the order has been cancelled, refunded etc)
-		if ( isset( $item['order_warning'] ) && $item['order_warning'] ) {
-			$warning = true;
-		}
-
-		// If the warning flag is set, add the appropriate icon
-		if ( $warning ) {
-			$icon = sprintf( "<span class='warning'><img src='%s'/></span> ", esc_url( Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/images/warning.png' ) );
-		}
-
-		// Look for an order_status_label, fall back on the actual order_status string @todo remove fallback in 3.4.3
-		if ( empty( $item['order_status'] ) ) {
-			$item['order_status'] = '';
-		}
-		$label = isset( $item['order_status_label'] ) ? $item['order_status_label'] : ucwords( $item['order_status'] );
-
-		/**
-		 * Provides an opportunity to modify the order status text within
-		 * the attendees table.
-		 *
-		 * @param string $order_status_html
-		 * @param array  $item
-		 */
-		return apply_filters( 'tribe_tickets_attendees_table_order_status', $icon . $label, $item );
-	}
-
-	/**
-	 * Handler for the ticket column
-	 *
-	 * @since 4.1
-	 *
-	 * @param array $item Item whose ticket data should be output
-	 *
-	 * @return string
-	 */
-	public function column_ticket( $item ) {
-		ob_start();
-
-		?>
-		<div class="event-tickets-ticket-name">
-			<?php echo esc_html( $item['ticket'] ); ?>
-		</div>
-		<?php
-
-		/**
-		 * Hook to allow for the insertion of additional content in the ticket table cell
-		 *
-		 * @var $item Attendee row item
-		 */
-		do_action( 'event_tickets_attendees_table_ticket_column', $item );
-
-		$output = ob_get_clean();
-
-		return $output;
 	}
 
 	/**
