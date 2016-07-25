@@ -1,6 +1,6 @@
 (function( window, $ ) {
 	'use strict';
-	$('.ticket_delete').click( function(){
-		alert( ticket_notices.alert );
+	$( '.ticket_list' ).on( 'click', '.ticket_delete', function() {
+		return confirm( tribe_ticket_notices.confirm_alert );
 	});
 })( window, jQuery );

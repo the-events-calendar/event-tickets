@@ -607,8 +607,8 @@ class Tribe__Tickets__Main {
 		$url = $this->plugin_url . 'src/resources/js/ticket-delete-alert.js';
 		wp_enqueue_script( 'tribe_tickets_ticket_delete_alert', $url, array( 'jquery' ), self::VERSION, true );
 		$deletion_data = array(
-			'alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
+			'confirm_alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
 		);
-		wp_localize_script( 'tribe_tickets_ticket_delete_alert', 'ticket_notices', $deletion_data );
+		wp_localize_script( 'tribe_tickets_ticket_delete_alert', 'tribe_ticket_notices', $deletion_data );
 	}
 }
