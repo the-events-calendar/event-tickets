@@ -7,6 +7,7 @@
  * @var bool $must_login
  */
 
+$current_user = wp_get_current_user();
 $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 
@@ -16,7 +17,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 $now = current_time( 'timestamp' );
 ?>
 <form action="" class="cart <?php echo esc_attr( $messages_class ); ?>" method="post" enctype='multipart/form-data'>
-	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'event-tickets' ) ?></h2>
+	<h2 class="tribe-events-tickets-title"><a name="rsvp"><?php esc_html_e( 'RSVP', 'event-tickets' ) ?></a></h2>
 	<div class="tribe-rsvp-messages">
 		<?php
 		if ( $messages ) {
@@ -51,7 +52,7 @@ $now = current_time( 'timestamp' );
 						if ( $ticket->is_in_stock() ) {
 							$is_there_any_product_to_sell = true;
 							?>
-							<input type="number" class="tribe-ticket-quantity" min="0" max="<?php echo esc_attr( $ticket->remaining() ); ?>" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="0" <?php disabled( $must_login ); ?> >
+							<input type="number" class="tribe-ticket-quantity" min="0" max="<?php echo esc_attr( $ticket->remaining() ); ?>" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="1">
 							<?php
 
 							if ( $ticket->managing_stock() ) {
@@ -110,7 +111,7 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name">
+								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name" value="<?php echo esc_attr( $current_user->first_name ).' '.esc_attr( $current_user->last_name ) ?>">
 							</td>
 						</tr>
 						<tr class="tribe-tickets-email-row">
@@ -118,7 +119,21 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-email"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="email" name="attendee[email]" id="tribe-tickets-email">
+								<input type="email" name="attendee[email]" id="tribe-tickets-email" value="<?php echo esc_attr( $current_user->user_email ) ?>">
+							</td>
+						</tr>
+						<tr class="tribe-tickets-phonenumber-row">
+							<td>
+								<label for="tribe-tickets-phonenumber"><?php esc_html_e( 'Phone Number:', 'event-tickets' ); ?></label>
+							</td>
+							<td colspan="3">
+								<input type="tel" name="attendee[phonenumber]" id="tribe-tickets-phonenumber">
+							</td>
+						</tr>
+						<tr class="tribe-tickets-attendees-list-optout">
+							<td colspan="4">
+								<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout">
+								<label for="tribe-tickets-attendees-list-optout"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
 							</td>
 						</tr>
 
