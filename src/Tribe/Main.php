@@ -436,6 +436,7 @@ class Tribe__Tickets__Main {
 	public function move_tickets() {
 		if ( empty( $this->move_tickets ) ) {
 			$this->move_tickets = new Tribe__Tickets__Admin__Move_Tickets;
+			$this->move_tickets->setup();
 		}
 
 		return $this->move_tickets;
@@ -447,6 +448,7 @@ class Tribe__Tickets__Main {
 	public function move_ticket_types() {
 		if ( empty( $this->move_ticket_types ) ) {
 			$this->move_ticket_types = new Tribe__Tickets__Admin__Move_Ticket_Types;
+			$this->move_ticket_types->setup();
 		}
 
 		return $this->move_ticket_types;
