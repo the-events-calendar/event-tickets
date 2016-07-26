@@ -330,6 +330,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$history.find( 'a.toggle-history' ).click( function( event ) {
 				$toggle_link_text.toggle();
 				$history_list.toggle();
+				event.stopPropagation();
 				return false;
 			} );
 		}
