@@ -208,24 +208,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$attendee_id .= ' &ndash; ';
 		}
 
-		/**
-		 * Sets the row action links that display within the ticket column of the
-		 * attendee list table.
-		 *
-		 * @param array $row_actions
-		 * @param array $item
-		 */
-		$row_actions = (array) apply_filters( 'event_tickets_attendees_table_row_actions', array(), $item );
-		$row_actions = join( ' | ', $row_actions );
-		$row_actions = empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
-
 		?>
 			<div class="event-tickets-ticket-name">
 				<?php echo $attendee_id; ?>
 				<?php echo esc_html( $item['ticket'] ); ?>
 			</div>
 
-			<?php echo $row_actions; ?>
+			<?php echo $this->get_row_actions( $item ); ?>
 		<?php
 
 		/**
@@ -238,6 +227,26 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$output = ob_get_clean();
 
 		return $output;
+	}
+
+	/**
+	 * Generates and returns the attendee table row actions.
+	 *
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	protected function get_row_actions( array $item ) {
+		/**
+		 * Sets the row action links that display within the ticket column of the
+		 * attendee list table.
+		 *
+		 * @param array $row_actions
+		 * @param array $item
+		 */
+		$row_actions = (array) apply_filters( 'event_tickets_attendees_table_row_actions', array(), $item );
+		$row_actions = join( ' | ', $row_actions );
+		return empty( $row_actions ) ? '' : '<div class="row-actions">' . $row_actions . '</div>';
 	}
 
 	/**
