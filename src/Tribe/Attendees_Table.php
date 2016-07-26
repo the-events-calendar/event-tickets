@@ -497,6 +497,18 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				do_action( 'tribe_events_tickets_attendees_table_process_bulk_action', $this->current_action() );
 				break;
 		}
+
+		// With the bulk/individual action handled, let's redirect back to the attendee list
+		// to avoid resubmissions etc
+		$attendee_list_url = add_query_arg( array(
+				'event_id' => absint( $_GET[ 'event_id' ] ),
+				'page'     => 'tickets-attendees'
+			),
+			get_admin_url( null, 'post.php' )
+		);
+
+		wp_safe_redirect( $attendee_list_url );
+		exit();
 	}
 
 	/**
