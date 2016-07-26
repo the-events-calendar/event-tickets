@@ -175,12 +175,25 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 *    Setups the Attendees screen data.
+	 * Setups the Attendees screen data.
 	 */
 	public function attendees_page_screen_setup() {
-		if ( is_admin() && ( empty( $_GET['page'] ) || self::$attendees_slug !== $_GET['page'] ) ) {
+		/* There's no reason for attendee screen setup to happen twice, but because
+		 * of a fix for bug #46198 it can indeed be called twice in the same request.
+		 * This flag variable is used to workaround that.
+		 *
+		 * @see Tribe__Tickets__Tickets_Handler::attendees_page_register() (and related @todo inside that method)
+		 * @see https://central.tri.be/issues/46198
+		 *
+		 * @todo remove the has_run check once the above workaround is dispensed with
+		 */
+		static $has_run = false;
+
+		if ( $has_run || ( is_admin() && ( empty( $_GET['page'] ) || self::$attendees_slug !== $_GET['page'] ) ) ) {
 			return;
 		}
+
+		$has_run = true;
 
 		/**
 		 * This is a workaround to fix the problem
