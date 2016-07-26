@@ -604,11 +604,24 @@ class Tribe__Tickets__Main {
 	 * @since 4.3
 	 */
 	public function add_ticket_deletion_alert() {
-		$url = $this->plugin_url . 'src/resources/js/ticket-delete-alert.js';
-		wp_enqueue_script( 'tribe_tickets_ticket_delete_alert', $url, array( 'jquery' ), self::VERSION, true );
 		$deletion_data = array(
 			'confirm_alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
 		);
-		wp_localize_script( 'tribe_tickets_ticket_delete_alert', 'tribe_ticket_notices', $deletion_data );
+		tribe_asset(
+			self::instance(),
+			'tribe_tickets_ticket_delete_alert',
+			'ticket-delete-alert.js',
+			array( 'jquery' ),
+			'admin_enqueue_scripts',
+			array(
+				'localize' => array(
+					'name' => 'tribe_tickets_notices',
+					'data' => $deletion_data,
+				),
+			)
+		);
+//		$url = $this->plugin_url . 'src/resources/js/ticket-delete-alert.js';
+//		wp_enqueue_script( 'tribe_tickets_ticket_delete_alert', $url, array( 'jquery' ), self::VERSION, true );
+//		wp_localize_script( 'tribe_tickets_ticket_delete_alert', 'tribe_ticket_notices', $deletion_data );
 	}
 }
