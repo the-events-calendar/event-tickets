@@ -615,13 +615,10 @@ class Tribe__Tickets__Main {
 			'admin_enqueue_scripts',
 			array(
 				'localize' => array(
-					'name' => 'tribe_tickets_notices',
+					'name' => 'tribe_ticket_notices',
 					'data' => $deletion_data,
 				),
 			)
 		);
-//		$url = $this->plugin_url . 'src/resources/js/ticket-delete-alert.js';
-//		wp_enqueue_script( 'tribe_tickets_ticket_delete_alert', $url, array( 'jquery' ), self::VERSION, true );
-//		wp_localize_script( 'tribe_tickets_ticket_delete_alert', 'tribe_ticket_notices', $deletion_data );
 	}
 }
