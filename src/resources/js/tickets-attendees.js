@@ -145,6 +145,20 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		} );
 
 		/**
+		 * Handle "move" requests for individual rows.
+		 */
+		$( '.row-actions' ).find( '.move-ticket' ).click( function( event ) {
+			var ticket_id = $( this ).parents( 'tr' ).find( 'input[name="attendee[]"]' ).val().match( /^[0-9]+/ );
+
+			if ( ticket_id ) {
+				create_move_ticket_modal( ticket_id );
+			}
+
+			event.stopPropagation();
+			return false;
+		} );
+
+		/**
 		 * Handle "move" bulk action requests.
 		 */
 		$( '#doaction, #doaction2' ).click( function( event ) {
@@ -173,7 +187,6 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				alert( Attendees.cannot_move );
 			} else {
 				// Add the list of selected ticket IDs to the move modal URL and trigger its appearance
-				var request_url = Attendees.move_url;
 				var ticket_list = [];
 
 				$checked_tickets.each( function() {
@@ -183,29 +196,43 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 					}
 				} );
 
-				var target_width = parseInt( $( window ).width() * 0.7 );
-				target_width = target_width > 800 ? 800 : target_width;
-
-				var target_height = parseInt( $( window ).height() * 0.9 );
-				target_height = target_height > 800 ? 800 : target_height;
-
-				var params = '&ticket_ids=' + ticket_list.join( '|' )
-					+ '&width=' + target_width + '&height=' + target_height;
-
-				/* We need to add our list of ticket IDs and other params *before* the "TB_*"
-				 * param otherwise they will be discarded by Thickbox.
-				 *
-				 * We pass the list in a pipe separated format rather than a regular [] array
-				 * style, again due to Thickbox oddities which would otherwise discard all but
-				 * the first value.
-				 */
-				request_url = request_url.replace( '&TB_', params + '&TB_' )
-				tb_show( null, request_url, false );
+				create_move_ticket_modal( ticket_list );
 			}
 
 			event.stopPropagation();
 			return false;
 		} );
+
+		/**
+		 * Triggers the creation of the move tickets dialog, passing the
+		 * provided ticket IDs across in the process.
+		 *
+		 * @param ticket_ids
+		 */
+		function create_move_ticket_modal( ticket_ids ) {
+			if ( ! $.isArray( ticket_ids ) ) {
+				ticket_ids = [ ticket_ids ];
+			}
+
+			var target_width = parseInt( $( window ).width() * 0.7 );
+			target_width = target_width > 800 ? 800 : target_width;
+
+			var target_height = parseInt( $( window ).height() * 0.9 );
+			target_height = target_height > 800 ? 800 : target_height;
+
+			var params = '&ticket_ids=' + ticket_ids.join( '|' )
+				+ '&width=' + target_width + '&height=' + target_height;
+
+			/* We need to add our list of ticket IDs and other params *before* the "TB_*"
+			 * param otherwise they will be discarded by Thickbox.
+			 *
+			 * We pass the list in a pipe separated format rather than a regular [] array
+			 * style, again due to Thickbox oddities which would otherwise discard all but
+			 * the first value.
+			 */
+			var request_url = Attendees.move_url.replace( '&TB_', params + '&TB_' )
+			tb_show( null, request_url, false );
+		}
 
 		/**
 		 * Handle ticket history show/hide requests.
