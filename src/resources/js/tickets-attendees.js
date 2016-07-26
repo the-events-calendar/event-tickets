@@ -147,7 +147,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		/**
 		 * Handle "move" requests for individual rows.
 		 */
-		$( '.row-actions' ).find( '.move-ticket' ).click( function( event ) {
+		$( 'table.wp-list-table' ).on( 'click', '.row-actions .move-ticket', function( event )  {
 			var ticket_id = $( this ).parents( 'tr' ).find( 'input[name="attendee[]"]' ).val().match( /^[0-9]+/ );
 
 			if ( ticket_id ) {
