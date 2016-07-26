@@ -187,7 +187,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function get_order_id_url( array $item ) {
 		// Backwards compatibility
 		if ( empty( $item['order_id_url'] ) ) {
-			$item['order_id_url'] = esc_url( get_edit_post_link( $item['order_id'], true ) );
+			$item['order_id_url'] = get_edit_post_link( $item['order_id'], true );
 		}
 
 		return $item['order_id_url'];
