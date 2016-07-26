@@ -5,7 +5,7 @@
  */
 class Tribe__Tickets__Admin__Ticket_History {
 	public function __construct() {
-		add_filter( 'tribe_tickets_attendees_table_order_status', array( $this, 'add_history_link' ), 10, 2 );
+		add_filter( 'event_tickets_attendees_table_row_actions', array( $this, 'add_history_link' ), 10, 2 );
 		add_action( 'wp_ajax_get_ticket_history', array( $this, 'supply_history' ) );
 	}
 
@@ -18,15 +18,15 @@ class Tribe__Tickets__Admin__Ticket_History {
 	 *
 	 * @return string
 	 */
-	public function add_history_link( $column_html, array $item ) {
+	public function add_history_link( array $row_actions, array $item ) {
 		if ( ! isset( $item[ 'attendee_id' ] ) ) {
-			return $column_html;
+			return $row_actions;
 		}
 
 		$history = Tribe__Post_History::load( $item[ 'attendee_id' ] );
 
 		if ( ! $history->has_entries() ) {
-			return $column_html;
+			return $row_actions;
 		}
 
 		$ticket_id = absint( $item[ 'attendee_id' ] );
@@ -34,14 +34,14 @@ class Tribe__Tickets__Admin__Ticket_History {
 		$view = esc_html_x( 'View history', 'attendee table', 'event-tickets' );
 		$hide = esc_html_x( 'Hide history', 'attendee table', 'event-tickets' );
 
-		$history_link = "
-			<div> 
+		$row_actions[] = "
+			<span> 
 				<a href='#' class='ticket-history' data-ticket-id='$ticket_id' data-check='$check'> $view </a>
 				<a href='#' class='hide-ticket-history'> $hide </a>
-			</div>
+			</span>
 		";
 
-		return $column_html . $history_link;
+		return $row_actions;
 	}
 
 	/**

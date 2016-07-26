@@ -90,6 +90,16 @@
 			text-decoration: line-through;
 		}
 
+		/* We don't want to strike through our row actions */
+		td.has-row-actions {
+			text-decoration: none;
+		}
+
+		/* We *do* want to strike through the ticket name however, which is in the same cell */
+		td.has-row-actions > div:nth-child(1) {
+			text-decoration: line-through;
+		}
+
 		a.tickets_checkin {
 			display: none;
 		}
