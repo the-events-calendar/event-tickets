@@ -33,6 +33,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		if ( ! empty( $_GET['event_id'] ) ) {
 			$this->event = get_post( $_GET['event_id'] );
 		}
+
+		add_filter( 'event_tickets_attendees_table_row_actions', array( $this, 'add_default_row_actions' ), 10, 2 );
+
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
 	}
 
@@ -250,6 +253,43 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Adds a set of default row actions to each item in the attendee list table.
+	 *
+	 * @param array $row_actions
+	 * @param array $item
+	 *
+	 * @return array
+	 */
+	public function add_default_row_actions( array $row_actions, array $item ) {
+		$attendee = esc_attr( $item['attendee_id'] . '|' . $item['provider'] );
+		$nonce = wp_create_nonce( 'do_item_action_' . $attendee );
+
+		$check_in_out_url = esc_url( add_query_arg( array(
+			'action'   => $item[ 'check_in' ] ? 'uncheck_in' : 'check_in',
+			'nonce'    => $nonce,
+			'attendee' => $attendee,
+		) ) );
+
+		$check_in_out_text = $item[ 'check_in' ]
+			? esc_html_x( 'Undo Check In', 'row action', 'event-tickets' )
+			: esc_html_x( 'Check In', 'row action', 'event-tickets' );
+
+		$delete_url = esc_url( add_query_arg( array(
+			'action'   => 'delete_attendee',
+			'nonce'    => $nonce,
+			'attendee' => $attendee,
+		) ) );
+
+		$default_actions = array(
+			'<span class="inline"> <a href="' . $check_in_out_url . '">' . $check_in_out_text . '</a> </span>',
+			'<span class="inline move-ticket"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>',
+			'<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>',
+		);
+
+		return array_merge( $row_actions, $default_actions );
+	}
+
+	/**
 	 * Returns the attendee ID (or "unique ID" if set).
 	 *
 	 * @param array $item
@@ -428,18 +468,30 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * @deprecated use process_actions()
+	 */
+	public function process_bulk_actions() {
+		_deprecated_function( __FUNCTION__, '4.3', __CLASS__ . '::process_actions()' );
+		$this->process_actions();
+	}
+
+	/**
 	 * Handler for the different bulk actions
 	 */
-	public function process_bulk_action() {
+	public function process_actions() {
+		if ( ! $this->validate_action_nonce() ) {
+			return;
+		}
+
 		switch ( $this->current_action() ) {
 			case 'check_in':
-				$this->bulk_check_in();
+				$this->do_check_in();
 				break;
 			case 'uncheck_in':
-				$this->bulk_uncheck_in();
+				$this->do_uncheck_in();
 				break;
 			case 'delete_attendee':
-				$this->bulk_delete();
+				$this->do_delete();
 				break;
 			default:
 				do_action( 'tribe_events_tickets_attendees_table_process_bulk_action', $this->current_action() );
@@ -447,12 +499,60 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 	}
 
-	protected function bulk_check_in() {
-		if ( ! isset( $_POST['attendee'] ) ) {
+	/**
+	 * Indicates if a valid nonce was set for the currently requested bulk or
+	 * individual action.
+	 *
+	 * @return bool
+	 */
+	protected function validate_action_nonce() {
+		// If a bulk action request was posted
+		if ( $_POST[ 'attendee' ] && wp_verify_nonce( $_POST[ '_wpnonce' ], 'bulk-attendees' ) ) {
+			return true;
+		}
+
+		// If an individual action was requested
+		if ( $_GET[ 'attendee' ] && wp_verify_nonce( $_GET[ 'nonce' ], 'do_item_action_' . $_GET[ 'attendee' ] ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Returns the list of attendee/tickets for the current bulk or individual
+	 * action.
+	 *
+	 * The format is an array where the elements represent the ticket ID and
+	 * provider in the following format:
+	 *
+	 *     [
+	 *         '123|Ticket_Provider',
+	 *         '4567|Ticket_Provider',
+	 *     ]
+	 *
+	 * @return array
+	 */
+	protected function get_action_ids() {
+		$action_ids = array();
+
+		if ( isset( $_POST[ 'attendee' ] ) ) {
+			$action_ids = (array) $_POST[ 'attendee' ];
+		} else if ( isset( $_GET[ 'attendee' ] ) ) {
+			$action_ids = (array) $_GET[ 'attendee' ];
+		}
+
+		return $action_ids;
+	}
+
+	protected function do_check_in() {
+		$attendee_ids = $this->get_action_ids();
+
+		if ( ! $attendee_ids ) {
 			return;
 		}
 
-		foreach ( (array) $_POST['attendee'] as $attendee ) {
+		foreach ( $attendee_ids as $attendee ) {
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 			if ( false === $id ) {
 				continue;
@@ -461,12 +561,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 	}
 
-	protected function bulk_uncheck_in() {
-		if ( ! isset( $_POST['attendee'] ) ) {
+	protected function do_uncheck_in() {
+		$attendee_ids = $this->get_action_ids();
+
+		if ( ! $attendee_ids ) {
 			return;
 		}
 
-		foreach ( (array) $_POST['attendee'] as $attendee ) {
+		foreach ( $attendee_ids as $attendee ) {
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 			if ( false === $id ) {
 				continue;
@@ -475,12 +577,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 	}
 
-	protected function bulk_delete() {
-		if ( ! isset( $_POST['attendee'] ) ) {
+	protected function do_delete() {
+		$attendee_ids = $this->get_action_ids();
+
+		if ( ! $attendee_ids ) {
 			return;
 		}
 
-		foreach ( (array) $_POST['attendee'] as $attendee ) {
+		foreach ( $attendee_ids as $attendee ) {
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 			if ( false === $id ) {
 				continue;
@@ -532,7 +636,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function prepare_items() {
 
-		$this->process_bulk_action();
+		$this->process_actions();
 
 		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
 
