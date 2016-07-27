@@ -6,9 +6,10 @@
  * Also has the capability to print this information as HTML, intended for
  * use in the attendee summary screen.
  *
- * Note that the various counts are determined during instantiation, therefore
- * if the status of one or more RSVPs are modified *after* creating an object
- * of this type
+ * Note that the totals are calculated upon instantiation, effectively making
+ * the object a snapshot in time. Therefore if the status of RSVPs is modified
+ * or if RSVPs are added/deleted later in the request, it would be necessary
+ * to obtain a new object of this type to get accurate results.
  */
 class Tribe__Tickets__RSVP__Attendance_Totals {
 	protected $event_id = 0;
