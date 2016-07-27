@@ -28,10 +28,15 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 		<div class="welcome-panel-content">
 			<h3><?php echo '<a href="' . get_edit_post_link( $event_id ) . '" title="' . esc_attr__( 'Edit Event', 'event-tickets' ) . '">' . wp_kses( apply_filters( 'tribe_events_tickets_attendees_event_title', $event->post_title, $event->ID ), array() ) . '</a>'; ?></h3>
 
-			<div class="event-actions">
-				<a href="<?php echo esc_url( get_edit_post_link( $event_id ) ); ?>" title="<?php echo esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ); ?>"><?php echo esc_html_x( 'Edit', 'attendee event actions', 'event-tickets' ); ?></a> |
-				<a href="<?php echo esc_url( get_permalink( $event_id ) ); ?>" title="<?php echo esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ); ?>"><?php echo esc_html_x( 'View', 'attendee event actions', 'event-tickets' ); ?></a>
-			</div>
+			<?php
+			/**
+			 * Provides an opportunity for various action links to be added below
+			 * the event name, within the attendee screen.
+			 *
+			 * @param int $event_id
+			 */
+			do_action( 'tribe_tickets_attendees_do_event_action_links', $event_id );
+			?>
 
 			<div class="welcome-panel-column-container">
 				<div class="welcome-panel-column welcome-panel-first">
