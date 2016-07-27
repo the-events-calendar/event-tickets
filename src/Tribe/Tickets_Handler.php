@@ -52,8 +52,52 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
 		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
+		add_action( 'tribe_tickets_attendees_do_event_action_links', array( $this, 'event_action_links' ) );
+		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+	}
+
+	/**
+	 * Injects action links into the attendee screen.
+	 *
+	 * @param $event_id
+	 */
+	public function event_action_links( $event_id ) {
+		$action_links = array(
+			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View', 'attendee event actions', 'event-tickets' ) . '</a>',
+		);
+
+		/**
+		 * Provides an opportunity to add and remove action links from the
+		 * attendee screen summary box.
+		 *
+		 * @param array $action_links
+		 */
+		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links );
+
+		if ( empty( $action_links ) ) {
+			return;
+		}
+
+		echo '<div class="event-actions">' . join( ' | ', $action_links ) . '</div>';
+	}
+
+	/**
+	 * Injects event meta data into the Attendees report
+	 *
+	 * @param int $event_id
+	 */
+	public function event_details_top( $event_id ) {
+		$post_type = get_post_type( $event_id );
+
+		echo '
+			<li class="post-type">
+				<strong>' . esc_html__( 'Post type', 'tribe-events' ) . ': </strong>
+				' . esc_html( $post_type ) . '
+			</li>
+		';
 	}
 
 	/**
