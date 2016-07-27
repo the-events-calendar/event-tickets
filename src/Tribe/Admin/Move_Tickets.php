@@ -15,7 +15,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 */
 	protected $attendees = array();
 
-	public function __construct() {
+	public function setup() {
 		$this->ticket_history();
 
 		add_action( 'admin_init', array( $this, 'dialog' ) );
