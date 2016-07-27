@@ -27,7 +27,12 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 	<div id="tribe-attendees-summary" class="welcome-panel">
 		<div class="welcome-panel-content">
 			<h3><?php echo '<a href="' . get_edit_post_link( $event_id ) . '" title="' . esc_attr__( 'Edit Event', 'event-tickets' ) . '">' . wp_kses( apply_filters( 'tribe_events_tickets_attendees_event_title', $event->post_title, $event->ID ), array() ) . '</a>'; ?></h3>
-			<p class="about-description"><?php echo '<a href="' . get_permalink( $event_id ) . '" title="' . esc_attr__( 'See Event Page', 'event-tickets' ) . '">' . get_permalink( $event_id ) . '</a>'; ?></p>
+
+			<div class="event-actions">
+				<a href="<?php echo esc_url( get_edit_post_link( $event_id ) ); ?>" title="<?php echo esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ); ?>"><?php echo esc_html_x( 'Edit', 'attendee event actions', 'event-tickets' ); ?></a> |
+				<a href="<?php echo esc_url( get_permalink( $event_id ) ); ?>" title="<?php echo esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ); ?>"><?php echo esc_html_x( 'View', 'attendee event actions', 'event-tickets' ); ?></a>
+			</div>
+
 			<div class="welcome-panel-column-container">
 				<div class="welcome-panel-column welcome-panel-first">
 					<h4><?php esc_html_e( 'Event Details', 'event-tickets' ); ?></h4>
@@ -41,12 +46,7 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 						 * @var $event_id
 						 */
 						do_action( 'tribe_tickets_attendees_event_details_list_top', $event_id );
-						?>
-						<li>
-							<strong><?php esc_html_e( 'Post Type:', 'event-tickets' ); ?></strong>
-							<?php echo esc_html( $post_type_object->labels->singular_name ); ?>
-						</li>
-						<?php
+
 						/**
 						 * Provides an action that allows for the injections of fields at the bottom of the event details meta ul
 						 *
