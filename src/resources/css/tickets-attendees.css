@@ -59,6 +59,10 @@
 	display: none;
 }
 
+.tribe-attendees-page h4.tickets-summary {
+	margin: 0;
+}
+
 .tribe-attendees-page .tickets_checked td {
 	opacity: .7;
 	text-decoration: line-through;
