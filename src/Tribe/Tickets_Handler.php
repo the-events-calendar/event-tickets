@@ -308,6 +308,12 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Renders the Attendees page
 	 */
 	public function attendees_page_inside() {
+		/**
+		 * Fires immediately before the content of the attendees screen
+		 * is rendered.
+		 */
+		do_action( 'tribe_tickets_attendees_page_inside' );
+
 		include $this->path . 'src/admin-views/attendees.php';
 	}
 

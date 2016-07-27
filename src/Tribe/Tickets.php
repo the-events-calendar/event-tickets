@@ -709,6 +709,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns an array of attendees for the specified event, in relation to
+		 * this ticketing provider.
+		 *
+		 * Implementation note: this is just a public wrapper around the get_attendees() method.
+		 * The reason we don't simply make that same method public is to avoid breakages in other
+		 * ticket provider plugins which have already implemented that method with protected
+		 * accessibility.
+		 *
+		 * @param $event_id
+		 *
+		 * @return array
+		 */
+		public function get_attendees_array( $event_id ) {
+			return $this->get_attendees( $event_id );
+		}
+
+		/**
 		 * Returns the total number of attendees for an event (regardless of provider).
 		 *
 		 * @param int $event_id

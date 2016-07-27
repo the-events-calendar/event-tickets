@@ -40,7 +40,6 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 
 			<div class="welcome-panel-column-container">
 				<div class="welcome-panel-column welcome-panel-first">
-					<h4><?php esc_html_e( 'Event Details', 'event-tickets' ); ?></h4>
 					<?php do_action( 'tribe_events_tickets_attendees_event_details_top', $event_id ); ?>
 
 					<ul>
@@ -63,7 +62,7 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 					<?php do_action( 'tribe_events_tickets_attendees_event_details_bottom', $event_id ); ?>
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
-					<h4><?php esc_html_e( 'Sales by Ticket', 'event-tickets' ); ?></h4>
+					<h4 class="tickets-summary"><?php echo esc_html_x( 'Tickets', 'attendee screen summary', 'event-tickets' ); ?></h4>
 					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_top', $event_id ); ?>
 
 					<ul>
@@ -78,6 +77,16 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 				</div>
 				<div class="welcome-panel-column welcome-panel-last alternate">
 					<?php do_action( 'tribe_events_tickets_attendees_totals_top', $event_id ); ?>
+
+					<?php
+					/**
+					 * Trigger for the creation of attendee totals within the
+					 * attendee screen summary box.
+					 *
+					 * @param int $event_id
+					 */
+					do_action( 'tribe_tickets_attendees_totals', $event_id );
+					?>
 					<ul>
 						<li>
 							<strong><?php esc_html_e( 'Total Sold:', 'event-tickets' ) ?></strong>
