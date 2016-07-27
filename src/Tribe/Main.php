@@ -264,6 +264,7 @@ class Tribe__Tickets__Main {
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_ticket_deletion_alert') );
 
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
@@ -438,6 +439,7 @@ class Tribe__Tickets__Main {
 	public function move_tickets() {
 		if ( empty( $this->move_tickets ) ) {
 			$this->move_tickets = new Tribe__Tickets__Admin__Move_Tickets;
+			$this->move_tickets->setup();
 		}
 
 		return $this->move_tickets;
@@ -449,6 +451,7 @@ class Tribe__Tickets__Main {
 	public function move_ticket_types() {
 		if ( empty( $this->move_ticket_types ) ) {
 			$this->move_ticket_types = new Tribe__Tickets__Admin__Move_Ticket_Types;
+			$this->move_ticket_types->setup();
 		}
 
 		return $this->move_ticket_types;
@@ -595,5 +598,29 @@ class Tribe__Tickets__Main {
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
 		<?php
+	}
+
+	/**
+	 * Enqueue and localize script for use in ticket delete alert dialogue
+	 *
+	 * @since 4.3
+	 */
+	public function add_ticket_deletion_alert() {
+		$deletion_data = array(
+			'confirm_alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
+		);
+		tribe_asset(
+			self::instance(),
+			'tribe_tickets_ticket_delete_alert',
+			'ticket-delete-alert.js',
+			array( 'jquery' ),
+			'admin_enqueue_scripts',
+			array(
+				'localize' => array(
+					'name' => 'tribe_ticket_notices',
+					'data' => $deletion_data,
+				),
+			)
+		);
 	}
 }
