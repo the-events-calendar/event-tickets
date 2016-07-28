@@ -383,23 +383,23 @@ class Tribe__Tickets__Tickets_Handler {
 			$row = array();
 
 			foreach ( $export_columns as $column_id => $column_name ) {
-				// If additional columns have been added to the attendee list table we can obtain the
-				// values by calling the table object's column_default() method - any other values
-				// should simply be passed back unmodified
-				$row[ $column_id ] = $this->attendees_table->column_default( $single_item, $column_id );
-
 				// Special handling for the check_in column
 				if ( 'check_in' === $column_id && 1 == $single_item[ $column_id ] ) {
 					$row[ $column_id ] = esc_html__( 'Yes', 'event-tickets' );
 				}
-
 				// Special handling for new human readable id
-				if ( 'attendee_id' === $column_id ) {
+				elseif ( 'attendee_id' === $column_id ) {
 					if ( isset( $single_item[ $column_id ] ) ) {
 						$ticket_unique_id  = get_post_meta( $single_item[ $column_id ], '_unique_id', true );
 						$ticket_unique_id  = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
 						$row[ $column_id ] = esc_html( $ticket_unique_id );
 					}
+				}
+				// If additional columns have been added to the attendee list table we can obtain the
+				// values by calling the table object's column_default() method - any other values
+				// should simply be passed back unmodified
+				else {
+					$row[ $column_id ] = $this->attendees_table->column_default( $single_item, $column_id );
 				}
 			}
 
