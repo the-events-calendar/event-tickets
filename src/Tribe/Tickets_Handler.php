@@ -359,7 +359,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 
-		// Add the Purchaser Information
+		// Add the Purchaser Information as two separate columns (remove the default consolidated column)
+		unset( $export_columns[ 'purchaser' ] );
 		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets' );
 		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets' );
 
@@ -394,6 +395,10 @@ class Tribe__Tickets__Tickets_Handler {
 						$ticket_unique_id  = $ticket_unique_id === '' ? $single_item[ $column_id ] : $ticket_unique_id;
 						$row[ $column_id ] = esc_html( $ticket_unique_id );
 					}
+				}
+				// Order status handling
+				elseif ( 'status' === $column_id ) {
+					$row[ $column_id ] = empty( $single_item[ 'order_status_label' ] ) ? '' : esc_html( $single_item[ 'order_status_label' ] );
 				}
 				// If additional columns have been added to the attendee list table we can obtain the
 				// values by calling the table object's column_default() method - any other values

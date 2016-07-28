@@ -129,6 +129,34 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Populates the purchaser name column.
+	 *
+	 * This column is not used by default in the attendee screen, but is used
+	 * within CSV/email exports.
+	 *
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	public function column_purchaser_name( array $item ) {
+		return empty( $item[ 'purchaser_name' ] ) ? '' : esc_html( $item[ 'purchaser_name' ] );
+	}
+
+	/**
+	 * Populates the purchaser email olumn.
+	 *
+	 * This column is not used by default in the attendee screen, but is used
+	 * within CSV/email exports.
+	 *
+	 * @param array $item
+	 *
+	 * @return string
+	 */
+	public function column_purchaser_email( array $item ) {
+		return empty( $item[ 'purchaser_email' ] ) ? '' : esc_html( $item[ 'purchaser_email' ] );
+	}
+
+	/**
 	 * Populates the status column.
 	 *
 	 * @param array $item
