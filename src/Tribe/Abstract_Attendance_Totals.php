@@ -4,7 +4,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	protected $relative_priority = 10;
 
 	/**
-	 * Determines current RSVP totals for the current or specified event.
+	 * Sets up totals for the specified event.
 	 *
 	 * @param int $event_id
 	 */
@@ -35,12 +35,12 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	}
 
 	/**
-	 * Calculate total RSVP attendance for the current event.
+	 * Calculate total attendance for the current event.
 	 */
 	abstract protected function calculate_totals();
 
 	/**
-	 * Makes the RSVP totals available within the attendee summary screen.
+	 * Makes the totals available within the attendee summary screen.
 	 */
 	public function integrate_with_attendee_screen() {
 		add_action( 'tribe_tickets_attendees_totals', array( $this, 'print_totals' ), $this->relative_priority );
