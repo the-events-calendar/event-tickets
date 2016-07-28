@@ -49,25 +49,37 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 
 			var search = jQuery( this ).val().toLowerCase();
 
-			$( '#the-list' ).find( 'tr' ).each( function( i, e ) {
+			$( '#the-list' ).find( 'tr' ).each( function() {
+				var $row = $( this );
+				var $status_column = $row.find( 'td.status' );
 
-				var row = $( e );
+				// No status column? It's probably a special hidden row (ie, used as a container
+				// for ticket meta data or similar): hide it and move on
+				if ( ! $status_column.length ) {
+					$row.hide();
+					return;
+				}
 
 				// Search by code (order, attendee and security numbers)
-				var order = row.children( 'td.order_id' ).children( 'a' ).text();
-				var attendee = row.children( 'td.attendee_id' ).text();
-				var security = row.children( 'td.security' ).text();
-				var code_found = attendee.indexOf( search ) === 0 || order.indexOf( search ) === 0 || security.indexOf( search ) === 0;
+				var order = $row.children( 'td.status' ).text().toLowerCase().trim();
+				var attendee = $row.children( 'td.ticket' ).text().toLowerCase().trim();
+				var security = $row.children( 'td.security' ).text().toLowerCase().trim();
+				var code_found = (
+					   attendee.indexOf( search ) === 0
+					|| order.indexOf( search ) === 0
+					|| order.indexOf( '#' + search ) === 0
+					|| security.indexOf( search ) === 0
+				);
 
 				// Search by name (we will also look at second/third names etc, not just the first name)
-				var name = row.children( 'td.purchaser_name').text().toLowerCase();
+				var name = $row.children( 'td.purchaser' ).text().toLowerCase().trim();
 				var name_found = name.indexOf( search ) === 0 || name.indexOf( " " + search ) > 1;
 
 				if ( code_found || name_found ) {
-					row.show();
+					$row.show();
 				}
 				else {
-					row.hide();
+					$row.hide();
 				}
 			} );
 
