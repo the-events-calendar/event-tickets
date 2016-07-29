@@ -191,6 +191,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.4] Unreleased =
+
+* Tweak - Changed "Event Add-Ons" to load faster [64286]
+
 = [4.2.3] 2016-07-20 =
 
 * Tweak - Add prompt for ratings on admin Event screens
