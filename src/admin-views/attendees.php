@@ -4,34 +4,36 @@ $this->attendees_table->prepare_items();
 $event_id = $this->attendees_table->event->ID;
 $event = $this->attendees_table->event;
 $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
-$post_type_object = get_post_type_object( $event->post_type );
-
-$checkedin = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $event_id );
-$total_sold = 0;
-$total_pending = 0;
-$total_deleted = 0;
-$total_completed = 0;
-
-foreach ( $tickets as $ticket ) {
-	$total_sold += $ticket->qty_sold();
-	$total_pending += $ticket->qty_pending();
-}
-
-$total_completed = $total_sold - $total_pending;
-$total_attendees = Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
-$total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_deleted_attendees_count();
 ?>
 
 <div class="wrap tribe-attendees-page">
 	<h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
 	<div id="tribe-attendees-summary" class="welcome-panel">
 		<div class="welcome-panel-content">
-			<h3><?php echo '<a href="' . get_edit_post_link( $event_id ) . '" title="' . esc_attr__( 'Edit Event', 'event-tickets' ) . '">' . wp_kses( apply_filters( 'tribe_events_tickets_attendees_event_title', $event->post_title, $event->ID ), array() ) . '</a>'; ?></h3>
-			<p class="about-description"><?php echo '<a href="' . get_permalink( $event_id ) . '" title="' . esc_attr__( 'See Event Page', 'event-tickets' ) . '">' . get_permalink( $event_id ) . '</a>'; ?></p>
 			<div class="welcome-panel-column-container">
+
+				<?php
+				/**
+				 * Fires before the individual panels within the attendee screen summary
+				 * are rendered.
+				 *
+				 * @param int $event_id
+				 */
+				do_action( 'tribe_events_tickets_attendees_event_details_top', $event_id );
+				?>
+
 				<div class="welcome-panel-column welcome-panel-first">
-					<h4><?php esc_html_e( 'Event Details', 'event-tickets' ); ?></h4>
-					<?php do_action( 'tribe_events_tickets_attendees_event_details_top', $event_id ); ?>
+					<h3><?php echo '<a href="' . get_edit_post_link( $event_id ) . '" title="' . esc_attr__( 'Edit Event', 'event-tickets' ) . '">' . wp_kses( apply_filters( 'tribe_events_tickets_attendees_event_title', $event->post_title, $event->ID ), array() ) . '</a>'; ?></h3>
+
+					<?php
+					/**
+					 * Provides an opportunity for various action links to be added below
+					 * the event name, within the attendee screen.
+					 *
+					 * @param int $event_id
+					 */
+					do_action( 'tribe_tickets_attendees_do_event_action_links', $event_id );
+					?>
 
 					<ul>
 						<?php
@@ -41,12 +43,7 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 						 * @var $event_id
 						 */
 						do_action( 'tribe_tickets_attendees_event_details_list_top', $event_id );
-						?>
-						<li>
-							<strong><?php esc_html_e( 'Post Type:', 'event-tickets' ); ?></strong>
-							<?php echo esc_html( $post_type_object->labels->singular_name ); ?>
-						</li>
-						<?php
+
 						/**
 						 * Provides an action that allows for the injections of fields at the bottom of the event details meta ul
 						 *
@@ -58,7 +55,7 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 					<?php do_action( 'tribe_events_tickets_attendees_event_details_bottom', $event_id ); ?>
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
-					<h4><?php esc_html_e( 'Sales by Ticket', 'event-tickets' ); ?></h4>
+					<h4 class="tickets-summary"><?php echo esc_html_x( 'Tickets', 'attendee screen summary', 'event-tickets' ); ?></h4>
 					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_top', $event_id ); ?>
 
 					<ul>
@@ -72,37 +69,29 @@ $total_deleted   = Tribe__Tickets__Attendance::instance( $event_id )->get_delete
 					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_bottom', $event_id );  ?>
 				</div>
 				<div class="welcome-panel-column welcome-panel-last alternate">
-					<?php do_action( 'tribe_events_tickets_attendees_totals_top', $event_id ); ?>
-					<ul>
-						<li>
-							<strong><?php esc_html_e( 'Total Sold:', 'event-tickets' ) ?></strong>
-							<span><?php echo esc_html( $total_sold ); ?></span>
-						</li>
+					<?php
+					/**
+					 * Fires before the main body of attendee totals are rendered.
+					 *
+					 * @param int $event_id
+					 */
+					do_action( 'tribe_events_tickets_attendees_totals_top', $event_id );
 
-						<li>
-							<strong><?php esc_html_e( 'Finalized:', 'event-tickets' ); ?></strong>
-							<span><?php echo esc_html( $total_completed ); ?></span>
-						</li>
-					</ul>
-					<ul>
-						<li>
-							<strong><?php esc_html_e( 'Awaiting review:', 'event-tickets' ); ?></strong>
-							<span><?php echo esc_html( $total_pending ); ?></span>
-						</li>
+					/**
+					 * Trigger for the creation of attendee totals within the attendee
+					 * screen summary box.
+					 *
+					 * @param int $event_id
+					 */
+					do_action( 'tribe_tickets_attendees_totals', $event_id );
 
-						<li>
-							<strong><?php esc_html_e( 'Checked in:', 'event-tickets' ); ?></strong>
-							<span id="total_checkedin"><?php echo esc_html( $checkedin ); ?></span>
-						</li>
-
-						<?php if ( $total_deleted > 0 ): ?>
-							<li>
-								<strong><?php esc_html_e( 'Deleted:', 'event-tickets' ); ?></strong>
-								<span id="total_deleted"><?php echo esc_html( $total_deleted ); ?></span>
-							</li>
-						<?php endif; ?>
-					</ul>
-					<?php do_action( 'tribe_events_tickets_attendees_totals_bottom', $event_id ); ?>
+					/**
+					 * Fires after the main body of attendee totals are rendered.
+					 *
+					 * @param int $event_id
+					 */
+					do_action( 'tribe_events_tickets_attendees_totals_bottom', $event_id );
+					?>
 				</div>
 			</div>
 		</div>

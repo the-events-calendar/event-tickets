@@ -102,10 +102,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * @var Tribe__Tickets__RSVP__Attendance_Totals
+	 */
+	protected $attendance_totals;
+
+	/**
 	 * Messages for submission
 	 */
 	protected static $messages = array();
-
 
 	/**
 	 * Creates a Variable to prevent Double FE forms
@@ -177,6 +181,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 		add_action( 'rsvp_checkin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'rsvp_uncheckin', array( $this, 'purge_attendees_transient' ) );
+		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'setup_attendance_totals' ) );
 	}
 
 	/**
@@ -277,6 +282,28 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'has_archive'     => false,
 			'hierarchical'    => true,
 		) );
+	}
+
+	/**
+	 * Adds RSVP attendance totals to the summary box of the attendance
+	 * screen.
+	 *
+	 * Expects to fire during 'tribe_tickets_attendees_page_inside', ie
+	 * before the attendee screen is rendered.
+	 */
+	public function setup_attendance_totals() {
+		$this->attendance_totals()->integrate_with_attendee_screen();
+	}
+
+	/**
+	 * @return Tribe__Tickets__RSVP__Attendance_Totals
+	 */
+	public function attendance_totals() {
+		if ( empty( $this->attendance_totals ) ) {
+			$this->attendance_totals = new Tribe__Tickets__RSVP__Attendance_Totals;
+		}
+
+		return $this->attendance_totals;
 	}
 
 	/**
