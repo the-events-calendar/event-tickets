@@ -191,7 +191,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.2.4] Unreleased =
+= [4.2.4] 2016-08-03 =
 
 * Tweak - Changed "Event Add-Ons" to load faster [64286]
 
