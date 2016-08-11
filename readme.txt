@@ -191,6 +191,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.5] unreleased =
+
+* Fix - Garbled site title in RSVP confirmation email [64778]
+
 = [4.2.4] 2016-08-03 =
 
 * Tweak - Changed "Event Add-Ons" to load faster [64286]
