@@ -157,10 +157,11 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		}
 
 		$audit_trail_msg = sprintf(
-			__( 'Ticket type was moved to post %1$d from post %2$d by user %3$d', 'event-tickets' ),
-			$destination_post_id,
-			$src_post_id,
-			$instigator_id
+			__( 'Ticket type was moved to <a href="%1$s" target="_blank">%2$s</a> from <a href="%3$s" target="_blank">%4$s</a>', 'event-tickets' ),
+			get_permalink( $destination_post_id ),
+			get_the_title( $destination_post_id ),
+			get_permalink( $src_post_id ),
+			get_the_title( $src_post_id )
 		);
 
 		Tribe__Post_History::load( $ticket_type_id )->add_entry( $audit_trail_msg );
