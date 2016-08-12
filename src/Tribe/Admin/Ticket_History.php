@@ -56,7 +56,7 @@ class Tribe__Tickets__Admin__Ticket_History {
 		$history = Tribe__Post_History::load( $_POST[ 'ticket_id' ] );
 
 		foreach ( $history->get_entries() as $entry ) {
-			$html .= '<tr> <td>' . esc_html( $entry->datetime ) . '</td> <td>' . esc_html( $entry->message ) . '</td> </tr>';
+			$html .= '<tr> <td>' . esc_html( $entry->datetime ) . '</td> <td>' . $entry->message . '</td> </tr>';
 		}
 
 		$html .= '</table>';
