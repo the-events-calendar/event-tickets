@@ -3,6 +3,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	protected $dialog_name = 'move_ticket_types';
 
 	public function setup() {
+		add_action( 'admin_init', array( $this, 'dialog' ) );
 		add_action( 'wp_ajax_move_ticket_types_post_list', array( $this, 'update_post_choices' ) );
 		add_action( 'wp_ajax_move_ticket_type', array( $this, 'move_ticket_type_requests' ) );
 		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'notify_event_attendees' ), 100, 3 );
