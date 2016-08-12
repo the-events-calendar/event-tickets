@@ -493,12 +493,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
 			Tribe__Post_History::load( $ticket_id )->add_entry( sprintf(
-				__( 'Moved from ticket type %1$d (in post %2$d) to ticket type %3$d (in post %4$d) by user %5$d', 'event-tickets' ),
-				$original_ticket_type_id,
-				$src_event_id,
-				$tgt_ticket_type_id,
-				$tgt_event_id,
-				$instigator_id
+				__( 'This ticket was moved to <a href="%1$s" target="_blank">%2$s</a> from <a href="%3$s" target="_blank">%4$s</a>', 'event-tickets' ),
+				get_the_permalink( $tgt_event_id ),
+				get_the_title( $tgt_event_id ),
+				get_the_permalink( $src_event_id ),
+				get_the_title( $src_event_id )
 			) );
 
 			/**
