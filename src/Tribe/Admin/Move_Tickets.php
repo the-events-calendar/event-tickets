@@ -1,4 +1,11 @@
 <?php
+
+
+/**
+ * Class Tribe__Tickets__Admin__Move_Tickets
+ *
+ * Handles moving attendees from a post to another.
+ */
 class Tribe__Tickets__Admin__Move_Tickets {
 	protected $dialog_name = 'move_tickets';
 	protected $ticket_history;

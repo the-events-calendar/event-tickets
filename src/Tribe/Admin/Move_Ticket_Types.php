@@ -1,4 +1,11 @@
 <?php
+
+
+/**
+ * Class Tribe__Tickets__Admin__Move_Ticket_Types
+ *
+ * Handles moving ticket types from a post to another.
+ */
 class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Move_Tickets {
 	protected $dialog_name = 'move_ticket_types';
 
