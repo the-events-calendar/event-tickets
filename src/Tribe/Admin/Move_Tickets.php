@@ -314,6 +314,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$ignore_ids = is_numeric( $params[ 'ignore' ] ) ? array( absint( $params[ 'ignore' ] ) ) : array();
 
+		$cache                 = new Tribe__Tickets__Cache();
+		$posts_without_tickets = $cache->posts_without_tickets( );
+
 		return $this->format_post_list( get_posts( array(
 			'post_type'      => $post_types,
 			'posts_per_page' => $limit,
@@ -321,7 +324,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 			's'              => $params[ 'search_terms' ],
-			'post__not_in'   => $ignore_ids,
+			'post__not_in'   => array_merge( $ignore_ids, $posts_without_tickets ),
 		) ) );
 	}
 
