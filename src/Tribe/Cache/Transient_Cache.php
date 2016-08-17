@@ -109,4 +109,15 @@ class Tribe__Tickets__Cache__Transient_Cache implements Tribe__Tickets__Cache__C
 
 		return $ids;
 	}
+
+	/**
+	 * Sets the expiration time for the cache.
+	 *
+	 * @param int $seconds
+	 *
+	 * @return void
+	 */
+	public function set_expiration_time( $seconds ) {
+		$this->expiration = $seconds;
+	}
 }

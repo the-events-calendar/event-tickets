@@ -30,4 +30,13 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 * @return array
 	 */
 	public function posts_with_tickets();
+
+	/**
+	 * Sets the expiration time for the cache.
+	 *
+	 * @param int $seconds
+	 *
+	 * @return void
+	 */
+	public function set_expiration_time( $seconds );
 }
