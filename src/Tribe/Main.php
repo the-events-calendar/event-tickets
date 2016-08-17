@@ -56,6 +56,11 @@ class Tribe__Tickets__Main {
 	protected $move_tickets;
 
 	/**
+	 * @var Tribe__Tickets__Attendance_Totals
+	 */
+	protected $attendance_totals;
+
+	/**
 	 * @var Tribe__Tickets__Admin__Move_Ticket_Types
 	 */
 	protected $move_ticket_types;
@@ -266,6 +271,9 @@ class Tribe__Tickets__Main {
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'add_ticket_deletion_alert') );
 
+		// Attendee screen enhancements
+		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'setup_attendance_totals' ), 20 );
+
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
 			add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );
@@ -439,6 +447,7 @@ class Tribe__Tickets__Main {
 	public function move_tickets() {
 		if ( empty( $this->move_tickets ) ) {
 			$this->move_tickets = new Tribe__Tickets__Admin__Move_Tickets;
+			$this->move_tickets->setup();
 		}
 
 		return $this->move_tickets;
@@ -450,9 +459,32 @@ class Tribe__Tickets__Main {
 	public function move_ticket_types() {
 		if ( empty( $this->move_ticket_types ) ) {
 			$this->move_ticket_types = new Tribe__Tickets__Admin__Move_Ticket_Types;
+			$this->move_ticket_types->setup();
 		}
 
 		return $this->move_ticket_types;
+	}
+
+	/**
+	 * Adds RSVP attendance totals to the summary box of the attendance
+	 * screen.
+	 *
+	 * Expects to fire during 'tribe_tickets_attendees_page_inside', ie
+	 * before the attendee screen is rendered.
+	 */
+	public function setup_attendance_totals() {
+		$this->attendance_totals()->integrate_with_attendee_screen();
+	}
+
+	/**
+	 * @return Tribe__Tickets__Attendance_Totals
+	 */
+	public function attendance_totals() {
+		if ( empty( $this->attendance_totals ) ) {
+			$this->attendance_totals = new Tribe__Tickets__Attendance_Totals;
+		}
+
+		return $this->attendance_totals;
 	}
 
 	/**

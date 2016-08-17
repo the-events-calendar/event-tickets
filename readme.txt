@@ -195,6 +195,7 @@ Our Premium Plugins:
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
+* Tweak - Reworked and reorganized the attendee list screen [61992]
 
 = [4.2.3] 2016-07-20 =
 

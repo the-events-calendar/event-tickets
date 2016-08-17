@@ -51,8 +51,16 @@
 	font-size: 1.2em;
 }
 
+.tribe-attendees-page .welcome-panel-content h3 {
+	margin-top: 0;
+}
+
 .tribe-attendees-page a.tickets_uncheckin {
 	display: none;
+}
+
+.tribe-attendees-page h4.tickets-summary {
+	margin: 0;
 }
 
 .tribe-attendees-page .tickets_checked td {
