@@ -75,4 +75,13 @@ class Tribe__Tickets__Cache__Central {
 
 		return $value;
 	}
+
+	/**
+	 * Returns an instance of the currently used cache.
+	 *
+	 * @return null|Tribe__Tickets__Cache__Cache_Interface|Tribe__Tickets__Cache__Transient_Cache
+	 */
+	public function get_cache() {
+		return $this->cache;
+	}
 }

@@ -314,7 +314,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$ignore_ids = is_numeric( $params[ 'ignore' ] ) ? array( absint( $params[ 'ignore' ] ) ) : array();
 
-		$cache                 = new Tribe__Tickets__Cache();
+		$cache                 = Tribe__Tickets__Cache__Central::instance()->get_cache();
 		$posts_without_tickets = $cache->posts_without_tickets( );
 
 		return $this->format_post_list( get_posts( array(
