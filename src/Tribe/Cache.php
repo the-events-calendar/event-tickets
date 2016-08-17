@@ -26,7 +26,7 @@ class Tribe__Tickets__Cache {
 	 */
 	public static function reset_all() {
 		foreach ( self::$keys as $key ) {
-			wp_cache_delete( $key, 'Tribe__Tickets__Cache' );
+			delete_transient( __CLASS__ . $key );
 		}
 	}
 
@@ -34,9 +34,9 @@ class Tribe__Tickets__Cache {
 	 * @return array An array of post IDs of posts that have no tickets assigned.
 	 */
 	public function posts_without_tickets() {
-		$ids = wp_cache_get( __METHOD__, __CLASS__, null, $found );
+		$ids = get_transient( __CLASS__ . __METHOD__ );
 
-		if ( false === $found ) {
+		if ( false === $ids ) {
 			$supported_types = tribe_get_option( 'ticket-enabled-post-types', array() );
 
 			if ( empty( $supported_types ) ) {
@@ -61,7 +61,7 @@ class Tribe__Tickets__Cache {
 
 			$ids = is_array( $ids ) ? $ids : array();
 
-			wp_cache_set( __METHOD__, $ids, __CLASS__, $this->expiration );
+			set_transient( __CLASS__ . __METHOD__, $ids, $this->expiration );
 		}
 
 		return $ids;
@@ -69,9 +69,9 @@ class Tribe__Tickets__Cache {
 
 
 	public function posts_with_tickets() {
-		$ids = wp_cache_get( __METHOD__, __CLASS__, null, $found );
+		$ids = get_transient( __CLASS__ . __METHOD__ );
 
-		if ( false === $found ) {
+		if ( false === $ids ) {
 			$supported_types = tribe_get_option( 'ticket-enabled-post-types', array() );
 
 			if ( empty( $supported_types ) ) {
@@ -93,7 +93,7 @@ class Tribe__Tickets__Cache {
 
 			$ids = is_array( $ids ) ? $ids : array();
 
-			wp_cache_set( __METHOD__, $ids, __CLASS__, $this->expiration );
+			set_transient( __CLASS__ . __METHOD__, $ids, $this->expiration );
 		}
 
 		return $ids;
