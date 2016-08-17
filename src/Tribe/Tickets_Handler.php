@@ -276,7 +276,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! is_admin() ) {
 			$columns = apply_filters( $filter_name, array() );
 		} else {
-			$columns = get_column_headers( get_current_screen() );
+			$columns = array_map( 'wp_strip_all_tags', get_column_headers( get_current_screen() ) );
 		}
 
 		$hidden = get_hidden_columns( $this->attendees_page );
@@ -330,6 +330,9 @@ class Tribe__Tickets__Tickets_Handler {
 						$row[ $column_id ] = esc_html( $ticket_unique_id );
 					}
 				}
+
+				// Handle custom columns that might have names containing HTML tags
+				$row[ $column_id ] = wp_strip_all_tags( $row[ $column_id ] );
 			}
 
 			$rows[] = array_values( $row );
