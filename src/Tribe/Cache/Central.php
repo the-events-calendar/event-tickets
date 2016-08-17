@@ -61,6 +61,14 @@ class Tribe__Tickets__Cache__Central {
 		 * reset.
 		 */
 		add_filter( 'tribe-events-save-options', array( $this, 'reset_all_filter_passthru' ) );
+
+		/**
+		 * Reset the caches when an event is updated.
+		 * Past events, even those that do have tickets assigned, will be listed among those
+		 * that have no tickets assigned. So if an event transits from future to past or viceversa
+		 * the caches should be updated.
+		 */
+		add_action( 'tribe_events_event_save', array( $this->cache, 'reset_all' ) );
 	}
 
 	/**
