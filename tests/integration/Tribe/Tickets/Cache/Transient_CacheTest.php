@@ -10,7 +10,7 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		// your set up methods here
-		Cache::reset_all();
+		(new Cache())->reset_all();
 	}
 
 	public function tearDown() {

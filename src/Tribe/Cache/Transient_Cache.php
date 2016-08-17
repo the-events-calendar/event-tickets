@@ -6,12 +6,12 @@
  *
  * Stores and return costly site-wide information.
  */
-class Tribe__Tickets__Cache__Transient_Cache {
+class Tribe__Tickets__Cache__Transient_Cache implements Tribe__Tickets__Cache__Cache_Interface {
 
 	/**
 	 * @var array
 	 */
-	protected static $keys = array(
+	protected $keys = array(
 		'posts_with_tickets',
 		'posts_without_tickets',
 	);
@@ -22,16 +22,21 @@ class Tribe__Tickets__Cache__Transient_Cache {
 	protected $expiration = 60;
 
 	/**
-	 * Resets all caches for the class.
+	 * Resets all caches.
 	 */
-	public static function reset_all() {
-		foreach ( self::$keys as $key ) {
+
+	public function reset_all() {
+		foreach ( $this->keys as $key ) {
 			delete_transient( __CLASS__ . $key );
 		}
 	}
 
 	/**
-	 * @return array An array of post IDs of posts that have no tickets assigned.
+	 * Returns array of post IDs of posts that have no tickets assigned.
+	 *
+	 * Please note that the list is aware of supported types.
+	 *
+	 * @return array
 	 */
 	public function posts_without_tickets() {
 		$ids = get_transient( __CLASS__ . __METHOD__ );
@@ -67,7 +72,13 @@ class Tribe__Tickets__Cache__Transient_Cache {
 		return $ids;
 	}
 
-
+	/**
+	 * Returns array of post IDs of posts that have at least one ticket assigned.
+	 *
+	 * Please note that the list is aware of supported types.
+	 *
+	 * @return array
+	 */
 	public function posts_with_tickets() {
 		$ids = get_transient( __CLASS__ . __METHOD__ );
 
