@@ -1,6 +1,7 @@
 <?php
 namespace Tribe\Tickets;
 
+use Tribe__Events__Main as Main;
 use Tribe__Tickets__Cache__Transient_Cache as Cache;
 
 class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
@@ -10,7 +11,7 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		// your set up methods here
-		(new Cache())->reset_all();
+		( new Cache() )->reset_all();
 	}
 
 	public function tearDown() {
@@ -28,6 +29,14 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		$sut = $this->make_instance();
 
 		$this->assertInstanceOf( Cache::class, $sut );
+	}
+
+	/**
+	 * @return Cache
+	 */
+	private function make_instance() {
+
+		return new Cache();
 	}
 
 	/**
@@ -194,10 +203,42 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * @return Cache
+	 * @test
+	 * it should exclude past events when events are supported
 	 */
-	private function make_instance() {
+	public function it_should_exclude_past_events_when_events_are_supported() {
+		register_post_type( 'supported_type_1' );
+		tribe_update_option( 'ticket-enabled-post-types', [ 'supported_type_1', Main::POSTTYPE ] );
 
-		return new Cache();
+		$with_tickets_1           = $this->factory()->post->create_many( 3, [ 'post_type' => 'supported_type_1' ] );
+		$without_tickets_1        = $this->factory()->post->create_many( 3, [ 'post_type' => 'supported_type_1' ] );
+		$events_with_tickets      = $this->factory()->post->create_many( 3,
+			[ 'post_type' => Main::POSTTYPE, 'meta_input' => [ '_EventStartDate' => date( \Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( '+10 days' ) ) ] ] );
+		$events_without_tickets   = $this->factory()->post->create_many( 3,
+			[ 'post_type' => Main::POSTTYPE, 'meta_input' => [ '_EventStartDate' => date( \Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( '+10 days' ) ) ] ] );
+		$past_events_with_tickets = $this->factory()->post->create_many( 3,
+			[ 'post_type' => Main::POSTTYPE, 'meta_input' => [ '_EventStartDate' => date( \Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( '-10 days' ) ) ] ] );
+
+		// not relevant, any post type can be related to any other post type as "a ticket"
+		$ticket_post_type_1 = 'ticket_type_1';
+		$ticket_post_type_2 = 'ticket_type_1';
+		register_post_type( $ticket_post_type_1 );
+		register_post_type( $ticket_post_type_2 );
+
+		// create a ticket for each post and relate the ticket to the post
+		// if the id of the post is even also add a ticket of the second type
+		foreach ( array_merge( $with_tickets_1, $events_with_tickets, $past_events_with_tickets ) as $id ) {
+			$ticket_id = $this->factory()->post->create( [ 'post_type' => $ticket_post_type_1 ] );
+			update_post_meta( $ticket_id, '_tribe_' . $ticket_post_type_1 . '_for_event', $id );
+			if ( $id % 2 === 0 ) {
+				$ticket_id = $this->factory()->post->create( [ 'post_type' => $ticket_post_type_1 ] );
+				update_post_meta( $ticket_id, '_tribe_' . $ticket_post_type_1 . '_for_event', $id );
+			}
+		}
+
+		$sut = $this->make_instance();
+
+		$this->assertEqualSets( array_merge( $with_tickets_1, $events_with_tickets ), $sut->posts_with_tickets() );
+		$this->assertEqualSets( array_merge( $without_tickets_1, $events_without_tickets, $past_events_with_tickets ), $sut->posts_without_tickets() );
 	}
 }

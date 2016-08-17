@@ -32,6 +32,13 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	public function posts_with_tickets();
 
 	/**
+	 * Returns an array of all past events post IDs.
+	 *
+	 * @return array
+	 */
+	public function past_events(  );
+
+	/**
 	 * Sets the expiration time for the cache.
 	 *
 	 * @param int $seconds
