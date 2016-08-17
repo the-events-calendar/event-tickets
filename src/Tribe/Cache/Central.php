@@ -42,7 +42,7 @@ class Tribe__Tickets__Cache__Central {
 	 */
 	public function hook() {
 		/**
-		 * Reset the caches when a ticket is saved.
+		 * Reset the caches when a ticket is created or updated.
 		 * This is convenient as all commerce providers and the RSVP provider will call it.
 		 */
 		add_action( 'event_tickets_after_save_ticket', array( $this->cache, 'reset_all' ) );
