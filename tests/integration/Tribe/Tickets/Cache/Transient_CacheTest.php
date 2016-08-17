@@ -1,9 +1,9 @@
 <?php
 namespace Tribe\Tickets;
 
-use Tribe__Tickets__Cache as Cache;
+use Tribe__Tickets__Cache__Transient_Cache as Cache;
 
-class CacheTest extends \Codeception\TestCase\WPTestCase {
+class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 
 	public function setUp() {
 		// before

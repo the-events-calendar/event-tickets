@@ -2,11 +2,11 @@
 
 
 /**
- * Class Tribe__Ticket__Cache
+ * Class Tribe__Ticket__Cache__Transient_Cache
  *
  * Stores and return costly site-wide information.
  */
-class Tribe__Tickets__Cache {
+class Tribe__Tickets__Cache__Transient_Cache {
 
 	/**
 	 * @var array
