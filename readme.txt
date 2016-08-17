@@ -191,7 +191,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.2.5] unreleased =
+= [4.2.5] 2016-08-17 =
 
 * Fix - Garbled site title in RSVP confirmation email [64778]
 
