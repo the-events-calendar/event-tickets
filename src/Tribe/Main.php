@@ -269,7 +269,6 @@ class Tribe__Tickets__Main {
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_ticket_deletion_alert') );
 
 		// Attendee screen enhancements
 		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'setup_attendance_totals' ), 20 );
@@ -631,27 +630,4 @@ class Tribe__Tickets__Main {
 		<?php
 	}
 
-	/**
-	 * Enqueue and localize script for use in ticket delete alert dialogue
-	 *
-	 * @since 4.3
-	 */
-	public function add_ticket_deletion_alert() {
-		$deletion_data = array(
-			'confirm_alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
-		);
-		tribe_asset(
-			self::instance(),
-			'tribe_tickets_ticket_delete_alert',
-			'ticket-delete-alert.js',
-			array( 'jquery' ),
-			'admin_enqueue_scripts',
-			array(
-				'localize' => array(
-					'name' => 'tribe_ticket_notices',
-					'data' => $deletion_data,
-				),
-			)
-		);
-	}
 }
