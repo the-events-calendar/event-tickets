@@ -36,4 +36,18 @@ class Tribe__Tickets__CSV_Importer__Rows {
 
 		return $import_options;
 	}
+
+	/**
+	 * Filters the CSV post types to add RSVP tickets
+	 *
+	 * @param array $post_types Array of post type objects
+	 *
+	 * @return array
+	 */
+	public function filter_csv_post_types( array $post_types ) {
+		$post_type = get_post_type_object( Tribe__Tickets__RSVP::get_instance()->ticket_object );
+		$post_type->labels->name = __( 'RSVPs', 'event-tickets' );
+		$post_types[] = $post_type;
+		return $post_types;
+	}
 }
