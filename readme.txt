@@ -3,7 +3,7 @@
 Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari, trishasalas
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
-Tested up to: 4.5.3
+Tested up to: 4.6
 Stable tag: 4.3dev1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -193,9 +193,18 @@ Our Premium Plugins:
 
 = [4.3] unreleased =
 
+* Tweak - Changed "Event Add-Ons" to load faster [64286]
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
 * Tweak - Reworked and reorganized the attendee list screen [61992]
+
+= [4.2.5] 2016-08-17 =
+
+* Fix - Garbled site title in RSVP confirmation email [64778]
+
+= [4.2.4] 2016-08-03 =
+
+* Tweak - Changed "Event Add-Ons" to load faster [64286]
 
 = [4.2.3] 2016-07-20 =
 
