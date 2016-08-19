@@ -78,6 +78,10 @@ class Tribe__Tickets__Metabox {
 		wp_enqueue_style( 'event-tickets', $resources_url .'/css/tickets.css', array(), Tribe__Tickets__Main::instance()->css_version() );
 		wp_enqueue_script( 'event-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), Tribe__Tickets__Main::instance()->js_version(), true );
 
+		wp_localize_script( 'event-tickets', 'tribe_ticket_notices', array(
+			'confirm_alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
+		) );
+
 		$upload_header_data = array(
 			'title'  => esc_html__( 'Ticket header image', 'event-tickets' ),
 			'button' => esc_html__( 'Set as ticket header', 'event-tickets' ),
