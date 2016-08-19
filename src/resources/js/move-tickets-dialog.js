@@ -341,7 +341,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				'action': 'move_tickets_get_ticket_types',
 				'check': tribe_move_tickets_data.check,
 				'post_id': target_post_id,
-				'provider': tribe_move_tickets_data.provider
+				'provider': tribe_move_tickets_data.provider,
+				'ticket_ids': tribe_move_tickets_data.ticket_ids
 			};
 
 			$.post( ajaxurl, request, function( response ) {

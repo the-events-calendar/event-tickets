@@ -367,7 +367,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'provider' => '',
 		) );
 
-		wp_send_json_success( array( 'posts' =>  $this->get_ticket_type_matches( $args[ 'post_id' ], $args[ 'provider' ] ) ) );
+		wp_send_json_success( array( 'posts' =>  $this->get_ticket_type_matches( $args[ 'post_id' ], $args[ 'provider' ], $args[ 'ticket_ids' ] ) ) );
 	}
 
 	/**
@@ -376,14 +376,20 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 *
 	 * @param int    $target_post_id
 	 * @param string $provider
+	 * @param array $ticket_ids
 	 *
 	 * @return array
 	 */
-	protected function get_ticket_type_matches( $target_post_id, $provider ) {
+	protected function get_ticket_type_matches( $target_post_id, $provider, $ticket_ids = array() ) {
 		$ticket_types = array();
+		$ticket_ids = array_map('absint', array_filter( $ticket_ids, 'is_numeric' ));
 
 		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $target_post_id ) as $ticket ) {
 			if ( $provider !== $ticket->provider_class ) {
+				continue;
+			}
+
+			if ( in_array( $ticket->ID, $ticket_ids ) ) {
 				continue;
 			}
 
