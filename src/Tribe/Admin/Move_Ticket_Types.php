@@ -109,20 +109,31 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			) );
 		}
 
-		$redirect_url = add_query_arg( array(
+		$refresh_url = add_query_arg( array(
 				'post'   => absint( $args[ 'src_post_id' ] ),
 				'action' => 'edit',
 			),
 			get_admin_url( null, 'post.php' )
 		);
 
+		$confirm_status = sprintf(
+			__( 'The ticket type was successfully moved to %1$sthis post%2$s.', 'event-tickets' ),
+			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">',
+			'</a>'
+		);
+
+		$next_steps = sprintf(
+			__( 'You may now close this window: if you have other changes that you have not yet saved you may wish to do this %1$swithout%2$s first refreshing the editor screen (however until you save or update it will look as if the ticket type has not actually moved).', 'event-tickets' ),
+			'<em>',
+			'</em>'
+		);
+
+		$action_buttons = '<a href="' . esc_attr( $refresh_url ) . '" class="button button-primary reload-editor">' . _x( 'Close this window and reload the editor', 'move ticket types', 'event-tickets' ) . '</a> '
+			. '<a href="#" class="button close-editor">' . _x( 'Close this window but do not reload the editor', 'move ticket types', 'event-tickets' ) . '</a>';
+
+
 		wp_send_json_success( array(
-			'message' => sprintf(
-				__( 'The ticket type was successfully moved to %1$sthis post%2$s. Please wait a moment while we refresh the editor screen.', 'event-tickets' ),
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">',
-				'</a>'
-			),
-			'redirect_top' => $redirect_url,
+			'message' => "<p>$confirm_status</p> <p>$next_steps</p> <p>$action_buttons</p>",
 		) );
 	}
 

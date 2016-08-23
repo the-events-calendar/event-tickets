@@ -314,8 +314,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$ignore_ids = is_numeric( $params[ 'ignore' ] ) ? array( absint( $params[ 'ignore' ] ) ) : array();
 
-		$cache                 = Tribe__Tickets__Cache__Central::instance()->get_cache();
-		$posts_without_tickets = $cache->posts_without_tickets( );
+		// @todo this method is used both for ticket and ticket type moves: we only need the posts_without_ticket_types for the former
+		$cache = Tribe__Tickets__Cache__Central::instance()->get_cache();
+		$posts_without_ticket_types = $cache->posts_without_ticket_types();
 
 		return $this->format_post_list( get_posts( array(
 			'post_type'      => $post_types,
@@ -324,7 +325,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 			's'              => $params[ 'search_terms' ],
-			'post__not_in'   => array_merge( $ignore_ids, $posts_without_tickets ),
+			'post__not_in'   => array_merge( $ignore_ids, $posts_without_ticket_types ),
 		) ) );
 	}
 
