@@ -515,6 +515,11 @@ var tribe_move_tickets = tribe_move_tickets || {};
 					.find( 'tr[data-ticket-type-id="' + response.data.remove_ticket_type + '"]' )
 					.remove();
 			}
+
+			// Remove the specified tickets from the attendee list
+			if ( $.isArray( response.data.remove_tickets ) ) {
+				top.tribe_event_tickets_attendees.remove_tickets( response.data.remove_tickets );
+			}
 		}
 
 		function on_failure() {

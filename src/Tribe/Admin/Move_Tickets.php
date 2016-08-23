@@ -405,7 +405,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * to another.
 	 */
 	public function move_tickets_request() {
-		if ( ! wp_verify_nonce( $_POST['check' ], 'move_tickets' ) ) {
+		if ( ! wp_verify_nonce( $_POST['check'], 'move_tickets' ) ) {
 			wp_send_json_error();
 		}
 
@@ -433,21 +433,15 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			) );
 		}
 
-		$redirect_url = add_query_arg( array(
-			'event_id' => absint( $args[ 'src_post_id' ] ),
-			'action'   => 'edit',
-			'page'     => 'tickets-attendees'
-		),
-			get_admin_url( null, 'post.php' )
-		);
+		$remove_tickets = ( $src_post_id != $target_post_id ) ? $ticket_ids : null;
 
 		wp_send_json_success( array(
 			'message' => sprintf(
-				__( 'The tickets were successfully moved and can be found within %1$sthis post%2$s. Please wait a moment while we refresh the editor screen.', 'event-tickets' ),
+				__( 'The tickets were successfully moved and can be found within %1$sthis post%2$s. You may now close this window!', 'event-tickets' ),
 				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $args[ 'target_post_id' ] . '&action=edit' ) ) . '" target="_blank">',
 				'</a>'
 			),
-			'redirect_top' => $redirect_url,
+			'remove_tickets' => $remove_tickets,
 		) );
 	}
 
