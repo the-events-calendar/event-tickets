@@ -362,9 +362,6 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				return;
 			}
 
-			console.log( ticket_ids );
-			console.log( match_id );
-
 			// Otherwise, let's remove this row
 			$this.remove();
 		} );
