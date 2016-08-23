@@ -508,6 +508,13 @@ var tribe_move_tickets = tribe_move_tickets || {};
 					top.location = response.data.redirect_top;
 				}, delay );
 			}
+
+			// If specified, try to remove the ticket type entry from the top window
+			if ( 'number' === typeof response.data.remove_ticket_type ) {
+				top.jQuery( 'table.ticket_list' )
+					.find( 'tr[data-ticket-type-id="' + response.data.remove_ticket_type + '"]' )
+					.remove();
+			}
 		}
 
 		function on_failure() {
