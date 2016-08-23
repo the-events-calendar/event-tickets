@@ -810,6 +810,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
 		do_action( 'tickets_rsvp_ticket_deleted', $ticket_id, $event_id, $product_id );
+		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		return true;
 	}
