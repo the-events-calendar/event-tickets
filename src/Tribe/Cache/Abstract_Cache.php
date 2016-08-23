@@ -33,6 +33,28 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
+	 * Returns an array of post IDs, of posts that host one or more ticket types.
+	 *
+	 * @todo complete!
+	 *
+	 * @return array
+	 */
+	protected function fetch_posts_with_ticket_types() {
+		return array();
+	}
+
+	/**
+	 * Returns an array of post IDs, of posts that do not host any ticket types.
+	 *
+	 * @todo complete!
+	 *
+	 * @return array
+	 */
+	protected function fetch_posts_without_ticket_types() {
+		return array();
+	}
+
+	/**
 	 * @return array
 	 */
 	protected function fetch_posts_with_tickets() {

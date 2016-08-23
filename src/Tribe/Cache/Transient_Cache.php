@@ -20,6 +20,42 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	}
 
 	/**
+	 * Returns an array of post IDs, of posts that host one or more ticket types.
+	 *
+	 * @todo complete!
+	 *
+	 * @return array
+	 */
+	public function posts_with_ticket_types() {
+		$ids = get_transient( __CLASS__ . 'posts_with_ticket_types' );
+
+		if ( false === $ids ) {
+			$ids = $this->fetch_posts_with_ticket_types();
+			set_transient( __CLASS__ . 'posts_with_ticket_types', $ids, $this->expiration );
+		}
+
+		return $ids;
+	}
+
+	/**
+	 * Returns an array of post IDs, of posts that do not host any ticket types.
+	 *
+	 * @todo complete!
+	 *
+	 * @return array
+	 */
+	public function posts_without_ticket_types() {
+		$ids = get_transient( __CLASS__ . 'posts_without_ticket_types' );
+
+		if ( false === $ids ) {
+			$ids = $this->fetch_posts_without_ticket_types();
+			set_transient( __CLASS__ . 'posts_without_ticket_types', $ids, $this->expiration );
+		}
+
+		return $ids;
+	}
+
+	/**
 	 * Returns array of post IDs of posts that have no tickets assigned.
 	 *
 	 * Please note that the list is aware of supported types.
