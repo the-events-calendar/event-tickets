@@ -17,7 +17,7 @@
 			<?php foreach ( $history->get_entries() as $entry ): ?>
 				<li>
 					<span class="date"><?php echo esc_html( $entry->datetime ); ?> </span>
-					<span class="details"><?php echo esc_html( $entry->message ); ?></span>
+					<span class="details"><?php echo $entry->message; // No escaping: contains HTML formatting ?></span>
 				</li>
 			<?php endforeach; ?>
 		</ul>
