@@ -314,7 +314,6 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$ignore_ids = is_numeric( $params[ 'ignore' ] ) ? array( absint( $params[ 'ignore' ] ) ) : array();
 
-		// @todo this method is used both for ticket and ticket type moves: we only need the posts_without_ticket_types for the former
 		$cache = Tribe__Tickets__Cache__Central::instance()->get_cache();
 		$posts_without_ticket_types = $cache->posts_without_ticket_types();
 
