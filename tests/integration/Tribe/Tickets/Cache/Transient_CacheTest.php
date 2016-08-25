@@ -50,7 +50,7 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		$ids_without_tickets = array_merge( $ids_without_tickets, $this->factory()->post->create_many( 3, [ 'post_type' => 'page' ] ) );
 
 		$sut = $this->make_instance();
-		$ids = $sut->posts_without_tickets();
+		$ids = $sut->posts_without_ticket_types();
 
 		$this->assertEqualSets( $ids_without_tickets, $ids );
 	}
@@ -76,7 +76,7 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		$sut = $this->make_instance();
-		$ids = $sut->posts_with_tickets();
+		$ids = $sut->posts_with_ticket_types();
 
 		$this->assertEqualSets( $posts_with_tickets, $ids );
 	}
@@ -104,7 +104,7 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		$sut = $this->make_instance();
-		$ids = $sut->posts_with_tickets();
+		$ids = $sut->posts_with_ticket_types();
 
 		$this->assertEqualSets( array_merge( $batch_1, $batch_2 ), $ids );
 	}
@@ -133,7 +133,7 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 		}
 
 		$sut = $this->make_instance();
-		$ids = $sut->posts_without_tickets();
+		$ids = $sut->posts_without_ticket_types();
 
 		$this->assertEmpty( $ids );
 	}
@@ -161,8 +161,8 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$this->assertEqualSets( $with_tickets, $sut->posts_with_tickets() );
-		$this->assertEqualSets( $without_tickets, $sut->posts_without_tickets() );
+		$this->assertEqualSets( $with_tickets, $sut->posts_with_ticket_types() );
+		$this->assertEqualSets( $without_tickets, $sut->posts_without_ticket_types() );
 	}
 
 	/**
@@ -198,8 +198,8 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$this->assertEqualSets( array_merge( $with_tickets_1, $with_tickets_2 ), $sut->posts_with_tickets() );
-		$this->assertEqualSets( array_merge( $without_tickets_1, $without_tickets_2 ), $sut->posts_without_tickets() );
+		$this->assertEqualSets( array_merge( $with_tickets_1, $with_tickets_2 ), $sut->posts_with_ticket_types() );
+		$this->assertEqualSets( array_merge( $without_tickets_1, $without_tickets_2 ), $sut->posts_without_ticket_types() );
 	}
 
 	/**
@@ -238,7 +238,7 @@ class Transient_CacheTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$this->assertEqualSets( array_merge( $with_tickets_1, $events_with_tickets ), $sut->posts_with_tickets() );
-		$this->assertEqualSets( array_merge( $without_tickets_1, $events_without_tickets, $past_events_with_tickets ), $sut->posts_without_tickets() );
+		$this->assertEqualSets( array_merge( $with_tickets_1, $events_with_tickets ), $sut->posts_with_ticket_types() );
+		$this->assertEqualSets( array_merge( $without_tickets_1, $events_without_tickets, $past_events_with_tickets ), $sut->posts_without_ticket_types() );
 	}
 }
