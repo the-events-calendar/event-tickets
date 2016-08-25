@@ -497,31 +497,40 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		foreach ( $ticket_objects as $single_ticket ) {
 			$ticket_id = $single_ticket[ 'attendee_id' ];
-			$original_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
+			$src_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
 
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
-			Tribe__Post_History::load( $ticket_id )->add_entry( sprintf(
-				__( 'This ticket was moved to <a href="%1$s" target="_blank">%2$s</a> from <a href="%3$s" target="_blank">%4$s</a>', 'event-tickets' ),
-				get_the_permalink( $tgt_event_id ),
-				get_the_title( $tgt_event_id ),
-				get_the_permalink( $src_event_id ),
-				get_the_title( $src_event_id )
-			) );
+			$history_message = sprintf(
+				__( 'This ticket was moved to %1$s %2$s to %3$s %4$s', 'event-tickets' ),
+				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . get_the_title( $tgt_event_id ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . get_the_title( $tgt_ticket_type_id ) . ')</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . get_the_title( $src_event_id ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_ticket_type_id ) ) . '" target="_blank">(' . get_the_title( $src_ticket_type_id ) . ')</a>'
+			);
+
+			$history_data = array(
+				'ticket_ids' => $ticket_ids,
+				'src_event_id' => $src_event_id,
+				'tgt_event_id' => $tgt_event_id,
+				'tgt_ticket_type_id' => $tgt_ticket_type_id,
+			);
+
+			Tribe__Post_History::load( $ticket_id )->add_entry( $history_message, $history_data );
 
 			/**
 			 * Fires when a ticket is relocated from ticket type to another, which may be in
 			 * a different post altogether.
 			 *
 			 * @param int $ticket_id                the ticket which has been moved
-			 * @param int $original_ticket_type_id  the ticket type it belonged to originally
+			 * @param int $src_ticket_type_id  the ticket type it belonged to originally
 			 * @param int $tgt_ticket_type_id       the ticket type it now belongs to
 			 * @param int $src_event_id             the event/post which the ticket originally belonged to
 			 * @param int $tgt_event_id             the event/post which the ticket now belongs to
 			 * @param int $instigator_id            the user who initiated the change
 			 */
-			do_action( 'tribe_tickets_ticket_moved', $ticket_id, $original_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id );
+			do_action( 'tribe_tickets_ticket_moved', $ticket_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id );
 		}
 
 		/**

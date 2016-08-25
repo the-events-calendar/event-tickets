@@ -156,7 +156,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			return false;
 		}
 
-		$audit_trail_msg = sprintf(
+		$history_message = sprintf(
 			__( 'Ticket type was moved to <a href="%1$s" target="_blank">%2$s</a> from <a href="%3$s" target="_blank">%4$s</a>', 'event-tickets' ),
 			get_permalink( $destination_post_id ),
 			get_the_title( $destination_post_id ),
@@ -164,7 +164,12 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			get_the_title( $src_post_id )
 		);
 
-		Tribe__Post_History::load( $ticket_type_id )->add_entry( $audit_trail_msg );
+		$history_data = array(
+			'src_event_id' => $src_post_id,
+			'tgt_event_it' => $destination_post_id,
+		);
+
+		Tribe__Post_History::load( $ticket_type_id )->add_entry( $history_message, $history_data );
 
 		/**
 		 * Fires when a ticket type is relocated from one post to another.
