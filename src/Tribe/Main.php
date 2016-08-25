@@ -269,7 +269,6 @@ class Tribe__Tickets__Main {
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'add_ticket_deletion_alert') );
 
 		// Attendee screen enhancements
 		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'setup_attendance_totals' ), 20 );
@@ -277,6 +276,7 @@ class Tribe__Tickets__Main {
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
 			add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );
+			add_filter( 'tribe_aggregator_csv_post_types', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_csv_post_types' ) );
 			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
 			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
 		}
@@ -633,27 +633,4 @@ class Tribe__Tickets__Main {
 		<?php
 	}
 
-	/**
-	 * Enqueue and localize script for use in ticket delete alert dialogue
-	 *
-	 * @since 4.3
-	 */
-	public function add_ticket_deletion_alert() {
-		$deletion_data = array(
-			'confirm_alert' => __( 'Are you sure you want to delete this ticket?', 'event-tickets' ),
-		);
-		tribe_asset(
-			self::instance(),
-			'tribe_tickets_ticket_delete_alert',
-			'ticket-delete-alert.js',
-			array( 'jquery' ),
-			'admin_enqueue_scripts',
-			array(
-				'localize' => array(
-					'name' => 'tribe_ticket_notices',
-					'data' => $deletion_data,
-				),
-			)
-		);
-	}
 }

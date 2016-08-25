@@ -597,7 +597,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
 		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
-			sprintf( __( 'Your tickets from %s', 'event-tickets' ), get_bloginfo( 'name' ) ) );
+			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ) );
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
@@ -810,6 +810,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		Tribe__Tickets__Attendance::instance( $event_id )->increment_deleted_attendees_count();
 		do_action( 'tickets_rsvp_ticket_deleted', $ticket_id, $event_id, $product_id );
+		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		return true;
 	}
