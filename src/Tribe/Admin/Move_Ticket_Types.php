@@ -149,6 +149,15 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		$provider = $ticket_type->get_provider();
 		$event_key = $provider->get_event_key();
 
+		/**
+		 * Fires immediately before a ticket type is moved.
+		 *
+		 * @param int $ticket_type_id
+		 * @param int $destination_post_id
+		 * @param int $instigator_id
+		 */
+		do_action( 'tribe_tickets_ticket_type_before_move', $ticket_type_id, $destination_post_id, $instigator_id );
+
 		$src_post_id = get_post_meta( $ticket_type_id, $event_key, true );
 		$success = update_post_meta( $ticket_type_id, $event_key, $destination_post_id );
 

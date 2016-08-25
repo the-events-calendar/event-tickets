@@ -499,6 +499,16 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$ticket_id = $single_ticket[ 'attendee_id' ];
 			$src_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
 
+			/**
+			 * Fires immediately before a ticket is moved.
+			 *
+			 * @param int $ticket_type_id
+			 * @param int $tgt_ticket_type_id
+			 * @param int $tgt_event_id
+			 * @param int $instigator_id
+			 */
+			do_action( 'tribe_tickets_ticket_before_move', $ticket_id, $tgt_ticket_type_id, $tgt_event_id, $instigator_id );
+
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
