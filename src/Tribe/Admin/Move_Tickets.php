@@ -1,9 +1,5 @@
 <?php
-
-
 /**
- * Class Tribe__Tickets__Admin__Move_Tickets
- *
  * Handles moving attendees from a post to another.
  */
 class Tribe__Tickets__Admin__Move_Tickets {
@@ -426,7 +422,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			) );
 		}
 
-		if ( ! $this->move_tickets( $ticket_ids, $target_type_id, $src_post_id, $target_post_id ) ) {
+		$moved_tickets = $this->move_tickets( $ticket_ids, $target_type_id, $src_post_id, $target_post_id );
+
+		if ( ! $moved_tickets ) {
 			wp_send_json_error( array(
 				'message' => __( 'Tickets could not be moved: there was an unexpected failure during reassignment.', 'event-tickets' )
 			) );
@@ -434,11 +432,31 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		$remove_tickets = ( $src_post_id != $target_post_id ) ? $ticket_ids : null;
 
+		// Include details of the new ticket type the tickets were reassigned to
+		$moved_to = sprintf(
+			_x( 'assigned to %s', 'moved tickets success message fragment', 'event-tickets' ),
+			'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_type_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_type_id ) . '</a>'
+		);
+
+		// If that ticket type is hosted by a different event post, prepend details of that also
+		if ( $src_post_id !== $target_post_id ) {
+			$moved_to = sprintf(
+				_x( 'moved to %s and', 'moved tickets success message fragment', 'event-tickets' ),
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $target_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $target_post_id ) . '</a>'
+			) . ' ' . $moved_to;
+		}
+
 		wp_send_json_success( array(
 			'message' => sprintf(
-				__( 'The tickets were successfully moved and can be found within %1$sthis post%2$s. You may now close this window!', 'event-tickets' ),
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $args[ 'target_post_id' ] . '&action=edit' ) ) . '" target="_blank">',
-				'</a>'
+				_n(
+					'%1$s attendee for %2$s was successfully %3$s. Please adjust stock manually as needed. This attendee will receive an email notifying them of the change.',
+					'%1$s attendees for %2$s were successfully moved to %3$s. Please adjust stock manually as needed. These attendees will receive an email notifying them of the change.',
+					$moved_tickets,
+					'event-tickets'
+				),
+				$moved_tickets,
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>',
+				$moved_to
 			),
 			'remove_tickets' => $remove_tickets,
 		) );
@@ -456,15 +474,16 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @param int   $src_event_id
 	 * @param int   $tgt_event_id
 	 *
-	 * @return bool
+	 * @return int number of successfully moved tickets (zero upon failure to move any)
 	 */
 	public function move_tickets( array $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id ) {
-		$ticket_ids    = array_map( 'intval', $ticket_ids );
-		$instigator_id = get_current_user_id();
-		$ticket_type   = Tribe__Tickets__Tickets::load_ticket_object( $tgt_ticket_type_id );
+		$ticket_ids       = array_map( 'intval', $ticket_ids );
+		$instigator_id    = get_current_user_id();
+		$ticket_type      = Tribe__Tickets__Tickets::load_ticket_object( $tgt_ticket_type_id );
+		$successful_moves = 0;
 
 		if ( ! $ticket_type ) {
-			return false;
+			return 0;
 		}
 
 		$ticket_objects = array();
@@ -479,12 +498,12 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		// We expect to have found as many tickets as were specified
 		if ( count( $ticket_objects ) !== count( $ticket_ids ) ) {
-			return false;
+			return 0;
 		}
 
 		// Check that the tickets are homogenous in relation to the ticket provider
 		if ( 1 !== count( $providers ) ) {
-			return false;
+			return 0;
 		}
 
 		$provider_class   = key( $providers );
@@ -492,7 +511,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$ticket_event_key = constant( $provider_class . '::ATTENDEE_EVENT_KEY' );
 
 		if ( empty( $ticket_type_key ) || empty( $ticket_event_key ) ) {
-			return false;
+			return 0;
 		}
 
 		foreach ( $ticket_objects as $single_ticket ) {
@@ -541,6 +560,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			 * @param int $instigator_id            the user who initiated the change
 			 */
 			do_action( 'tribe_tickets_ticket_moved', $ticket_id, $src_ticket_type_id, $tgt_ticket_type_id, $src_event_id, $tgt_event_id, $instigator_id );
+
+			$successful_moves++;
 		}
 
 		/**
@@ -553,7 +574,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		 */
 		do_action( 'tribe_tickets_all_tickets_moved', $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id );
 
-		return true;
+		return $successful_moves;
 	}
 
 	/**

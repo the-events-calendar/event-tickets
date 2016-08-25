@@ -111,9 +111,10 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 		wp_send_json_success( array(
 			'message' => sprintf(
-				'<p>' . __( 'The ticket type was successfully moved to %1$sthis post%2$s. You may now close this window!', 'event-tickets' ) . '</p>',
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">',
-				'</a>'
+				'<p>' . __( 'Ticket type %1$s for %2$s was successfully moved to %3$s. All previously sold tickets of this type have been transferred to %3$s. Please adjust stock manually as needed. %1$s ticket holders have received an email notifying them of the change. You may now close this window!', 'event-tickets' ) . '</p>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $ticket_type_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $ticket_type_id ) . '</a>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $destination_id ) . '</a>'
 			),
 			'remove_ticket_type' => $ticket_type_id,
 		) );
