@@ -361,10 +361,12 @@ class Tribe__Tickets__Tickets_Handler {
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
 
-		// Add the Purchaser Information
-		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets' );
-		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets' );
-		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee csv', 'event-tickets' );
+		// Add additional expected columns
+		$export_columns['order_id']           = esc_html_x( 'Order ID', 'attendee export', 'event-tickets' );
+		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee export', 'event-tickets' );
+		$export_columns['attendee_id']        = esc_html_x( 'Ticket #', 'attendee export', 'event-tickets' );
+		$export_columns['purchaser_name']     = esc_html_x( 'Customer Name', 'attendee export', 'event-tickets' );
+		$export_columns['purchaser_email']    = esc_html_x( 'Customer Email Address', 'attendee export', 'event-tickets' );
 
 		/**
 		 * Used to modify what columns should be shown on the CSV export
