@@ -350,11 +350,13 @@ class Tribe__Tickets__Tickets_Handler {
 			$columns = array_map( 'wp_strip_all_tags', get_column_headers( get_current_screen() ) );
 		}
 
-		$hidden = get_hidden_columns( $this->attendees_page );
-
-		// We dont want to export html inputs or private data
-		$hidden[] = 'cb';
-		$hidden[] = 'provider';
+		// We dont want HTML inputs, private data or other columns that are superfluous in a CSV export
+		$hidden = array_merge( get_hidden_columns( $this->attendees_page ), array(
+			'cb',
+			'provider',
+			'purchaser',
+			'status',
+		) );
 
 		$hidden         = array_flip( $hidden );
 		$export_columns = array_diff_key( $columns, $hidden );
@@ -362,6 +364,7 @@ class Tribe__Tickets__Tickets_Handler {
 		// Add the Purchaser Information
 		$export_columns['purchaser_name'] = esc_html__( 'Customer Name', 'event-tickets' );
 		$export_columns['purchaser_email'] = esc_html__( 'Customer Email Address', 'event-tickets' );
+		$export_columns['order_status_label'] = esc_html_x( 'Order Status', 'attendee csv', 'event-tickets' );
 
 		/**
 		 * Used to modify what columns should be shown on the CSV export
