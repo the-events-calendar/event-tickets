@@ -87,6 +87,18 @@ class Tribe__Tickets__Metabox {
 			'nav_away_msg' => __( 'It looks like you have modified your global stock settings but have not saved or updated the post.', 'event-tickets' ),
 		) );
 
+		$locale  = localeconv();
+		$decimal = isset( $locale['decimal_point'] ) ? $locale['decimal_point'] : '.';
+
+		/**
+		 * Filter the decimal point character used in the price
+		 */
+		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
+
+		wp_localize_script( 'event-tickets', 'price_format', array(
+			'decimal' => $decimal,
+			'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
+		) );
 
 		$nonces = array(
 			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
