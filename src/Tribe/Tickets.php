@@ -1284,7 +1284,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			if ( function_exists( 'tribe_is_past_event' ) && tribe_is_past_event() ) {
 				$events_label_singular_lowercase = tribe_get_event_label_singular_lowercase();
-
 				$message = sprintf( esc_html__( 'Tickets are not available as this %s has passed.', 'event-tickets' ), $events_label_singular_lowercase );
 			} elseif ( 'availability-future' === $availability_slug ) {
 				$message = __( 'Tickets are not yet available.', 'event-tickets' );
