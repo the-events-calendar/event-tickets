@@ -1,6 +1,6 @@
 {
   "name": "event-tickets",
-  "version": "4.2.6dev",
+  "version": "4.2.6",
   "repository": "git@github.com:moderntribe/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
