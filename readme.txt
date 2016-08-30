@@ -192,7 +192,7 @@ Our Premium Plugins:
 == Changelog ==
 
 = [4.2.6] TDB =
-* Add - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available[62303]
+* Add - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available[62303] (Thank you to @Jonathan here for reporting this in the forums.)
 
 = [4.2.5] 2016-08-17 =
 
