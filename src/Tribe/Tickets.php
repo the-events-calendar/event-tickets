@@ -1278,10 +1278,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function get_tickets_unavailable_message( $tickets ) {
-			$availability_slug = $this->get_availability_slug_by_collection( $tickets );
-			$message = null;
 
-			if ( 'availability-future' === $availability_slug ) {
+			$availability_slug = $this->get_availability_slug_by_collection( $tickets );
+			$message           = null;
+			$post_type = get_post_type();
+
+			if ( 'tribe_events' == $post_type && function_exists( 'tribe_is_past_event' ) && tribe_is_past_event() ) {
+				$events_label_singular_lowercase = tribe_get_event_label_singular_lowercase();
+				$message = sprintf( esc_html__( 'Tickets are not available as this %s has passed.', 'event-tickets' ), $events_label_singular_lowercase );
+			} elseif ( 'availability-future' === $availability_slug ) {
 				$message = __( 'Tickets are not yet available.', 'event-tickets' );
 			} elseif ( 'availability-past' === $availability_slug ) {
 				$message = __( 'Tickets are no longer available.', 'event-tickets' );

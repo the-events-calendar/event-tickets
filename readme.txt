@@ -191,6 +191,9 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.2.6] TDB =
+* Add - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available[62303]
+
 = [4.2.5] 2016-08-17 =
 
 * Fix - Garbled site title in RSVP confirmation email [64778]
