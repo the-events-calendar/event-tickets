@@ -9,7 +9,7 @@
  */
 
 #tribe-attendees-summary {
-	padding-bottom: 10px;
+	padding: 0;
 	position: relative;
 }
 
@@ -27,6 +27,10 @@
 	position: initial;
 }
 
+#tribe-attendees-summary .welcome-panel-column {
+	padding: 20px 10px;
+}
+
 #tribe-attendees-summary .welcome-panel-column li {
 	line-height: 1.4em;
 	margin-bottom: 2px;
@@ -34,11 +38,8 @@
 
 #tribe-attendees-summary .welcome-panel-last {
 	border-left: 1px solid #eee;
-	bottom: 0;
+	float: right;
 	padding: 10px 20px 5px;
-	position: absolute;
-	right: 0;
-	top: 0;
 	width: 200px;
 }
 

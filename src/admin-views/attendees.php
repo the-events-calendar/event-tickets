@@ -61,7 +61,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 					<ul>
 					<?php foreach ( $tickets as $ticket ) { ?>
 						<li>
-							<a href="<?php echo get_edit_post_link( $ticket->ID ); ?>" title="<?php esc_html_e( 'Edit Ticket', 'event-tickets' ); ?>"><strong><?php echo esc_html( $ticket->name ) ?>: </strong></a>
+							<strong><?php echo esc_html( $ticket->name ) ?>: </strong>
 							<?php echo tribe_tickets_get_ticket_stock_message( $ticket ); ?>
 						</li>
 					<?php } ?>

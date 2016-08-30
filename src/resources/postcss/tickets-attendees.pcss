@@ -1,5 +1,5 @@
 #tribe-attendees-summary {
-	padding-bottom: 10px;
+	padding: 0;
 	position: relative;
 
 	h3,
@@ -23,22 +23,23 @@
 		}
 	}
 
-	.welcome-panel-column li {
-		line-height: 1.4em;
-		margin-bottom: 2px;
+	.welcome-panel-column {
+		padding: 20px 10px;
 
-		@media screen and (max-width: 870px) {
-			display: list-item;
+		li {
+			line-height: 1.4em;
+			margin-bottom: 2px;
+
+			@media screen and (max-width: 870px) {
+				display: list-item;
+			}
 		}
 	}
 
 	.welcome-panel-last {
 		border-left: 1px solid #eee;
-		bottom: 0;
+		float: right;
 		padding: 10px 20px 5px;
-		position: absolute;
-		right: 0;
-		top: 0;
 		width: 200px;
 
 		@media screen and (max-width: 870px) {
