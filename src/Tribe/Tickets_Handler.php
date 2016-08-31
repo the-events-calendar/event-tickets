@@ -90,12 +90,12 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param int $event_id
 	 */
 	public function event_details_top( $event_id ) {
-		$post_type = get_post_type( $event_id );
+		$pto = get_post_type_object( get_post_type( $event_id ) );
 
 		echo '
 			<li class="post-type">
 				<strong>' . esc_html__( 'Post type', 'tribe-events' ) . ': </strong>
-				' . esc_html( $post_type ) . '
+				' . esc_html( $pto->label ) . '
 			</li>
 		';
 	}
