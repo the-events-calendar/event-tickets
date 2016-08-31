@@ -32,7 +32,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	 * @return array
 	 */
 	protected function fetch_posts_with_ticket_types() {
-		$supported_types = tribe_get_option( 'ticket-enabled-post-types', array() );
+		$supported_types = array_map( 'esc_sql', (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
 
 		if ( empty( $supported_types ) ) {
 			$ids = array();
@@ -67,7 +67,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	 * @return array
 	 */
 	protected function fetch_posts_without_ticket_types() {
-		$supported_types = tribe_get_option( 'ticket-enabled-post-types', array() );
+		$supported_types = array_map( 'esc_sql', (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
 
 		if ( empty( $supported_types ) ) {
 			$ids = array();
