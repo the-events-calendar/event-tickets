@@ -447,7 +447,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$ticket = $this->get_ticket( $event_id, $product_id );
+			$ticket_type = $this->get_ticket( $event_id, $product_id );
 
 			// if there were no RSVP tickets for the product added to the cart, continue
 			if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
@@ -457,7 +457,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$qty = max( intval( $_POST[ "quantity_{$product_id}" ] ), 0 );
 
 			// Throw an error if Qty is bigger then Remaining
-			if ( $ticket->managing_stock() && $qty > $ticket->remaining() ) {
+			if ( $ticket_type->managing_stock() && $qty > $ticket_type->remaining() ) {
 				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $event_id ) );
 				wp_redirect( esc_url_raw( $url ) );
 				die;
@@ -469,10 +469,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			* RSVP specific action fired just before a RSVP-driven attendee ticket for an event is generated
 			*
 			* @param $event_id ID of event
-			* @param $ticket Ticket of product
+			* @param $ticket_type Ticket Type object for the product
 			* @param $data post paremeters comes from RSVP Form
 			*/
-			do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $event_id, $ticket, $_POST );
+			do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $event_id, $ticket_type, $_POST );
 
 			// Iterate over all the amount of tickets purchased (for this product)
 			for ( $i = 0; $i < $qty; $i ++ ) {
