@@ -408,7 +408,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$has_tickets = $event_id = false;
-
+		/**
+		* RSVP specific action fired just before a RSVP-driven attendee ticket for an event is generated
+		* 
+		* @param $event_id ID of event
+		* @param $_POST post paremeters comes from RSVP Form
+		*/
+		do_action( 'tribe_tickets_rsvp_before_tickets_generated', $event_id, $_POST);
+		
 		$order_id = md5( time() . rand() );
 
 		$attendee_email = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
