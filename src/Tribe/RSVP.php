@@ -406,9 +406,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( empty( $_POST['tickets_process'] ) || empty( $_POST['attendee'] ) || empty( $_POST['product_id'] ) ) {
 			return;
 		}
-
 		$has_tickets = $event_id = false;
-
+		
+		do_action( 'event_tickets_rsvp_before_tickets_generated', $event_id, $_POST );
+		
 		$order_id = md5( time() . rand() );
 
 		$attendee_email = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
