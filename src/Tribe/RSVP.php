@@ -412,7 +412,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		* RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
 		*
-		* @param $data post paremeters comes from RSVP Form
+		* @param $data post Parameters comes from RSVP Form
 		*/
 		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
 
@@ -470,7 +470,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			*
 			* @param $event_id ID of event
 			* @param $ticket_type Ticket Type object for the product
-			* @param $data post paremeters comes from RSVP Form
+			* @param $data post Parameters comes from RSVP Form
 			*/
 			do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $event_id, $ticket_type, $_POST );
 
