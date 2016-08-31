@@ -196,7 +196,7 @@ Our Premium Plugins:
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
 * Tweak - Changed "Event Add-Ons" to load faster [64286]
 * Tweak - Reworked and reorganized the attendee list screen [61992]
-* Tweak - Added tribe_tickets_rsvp_before_tickets_generated action (props to @sabitertan on GitHub for this!) [65836]
+* Tweak - Added tribe_tickets_rsvp_before_order_processing and tribe_tickets_rsvp_before_attendee_ticket_creation actions (props to @sabitertan on GitHub for this!) [65836]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
 
 = [4.2.5] 2016-08-17 =

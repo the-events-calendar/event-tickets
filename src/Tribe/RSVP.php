@@ -409,6 +409,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$has_tickets = $event_id = false;
 
+		/**
+		* RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
+		*
+		* @param $data post paremeters comes from RSVP Form
+		*/
+		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
+
 		$order_id = md5( time() . rand() );
 
 		$attendee_email = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
@@ -463,9 +470,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			*
 			* @param $event_id ID of event
 			* @param $ticket Ticket of product
-			* @param $_POST post paremeters comes from RSVP Form
+			* @param $data post paremeters comes from RSVP Form
 			*/
-			do_action( 'tribe_tickets_rsvp_before_tickets_generated', $event_id, $ticket, $_POST );
+			do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $event_id, $ticket, $_POST );
 
 			// Iterate over all the amount of tickets purchased (for this product)
 			for ( $i = 0; $i < $qty; $i ++ ) {
