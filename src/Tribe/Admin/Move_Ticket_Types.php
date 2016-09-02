@@ -1,8 +1,16 @@
 <?php
+
+
+/**
+ * Class Tribe__Tickets__Admin__Move_Ticket_Types
+ *
+ * Handles moving ticket types from a post to another.
+ */
 class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Move_Tickets {
 	protected $dialog_name = 'move_ticket_types';
 
 	public function setup() {
+		add_action( 'admin_init', array( $this, 'dialog' ) );
 		add_action( 'wp_ajax_move_ticket_types_post_list', array( $this, 'update_post_choices' ) );
 		add_action( 'wp_ajax_move_ticket_type', array( $this, 'move_ticket_type_requests' ) );
 		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'notify_event_attendees' ), 100, 3 );
@@ -101,20 +109,14 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			) );
 		}
 
-		$redirect_url = add_query_arg( array(
-				'post'   => absint( $args[ 'src_post_id' ] ),
-				'action' => 'edit',
-			),
-			get_admin_url( null, 'post.php' )
-		);
-
 		wp_send_json_success( array(
 			'message' => sprintf(
-				__( 'The ticket type was successfully moved to %1$sthis post%2$s. Please wait a moment while we refresh the editor screen.', 'event-tickets' ),
-				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">',
-				'</a>'
+				'<p>' . __( 'Ticket type %1$s for %2$s was successfully moved to %3$s. All previously sold tickets of this type have been transferred to %3$s. Please adjust stock manually as needed. %1$s ticket holders have received an email notifying them of the change. You may now close this window!', 'event-tickets' ) . '</p>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $ticket_type_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $ticket_type_id ) . '</a>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>',
+				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $destination_id ) . '</a>'
 			),
-			'redirect_top' => $redirect_url,
+			'remove_ticket_type' => $ticket_type_id,
 		) );
 	}
 
@@ -148,6 +150,15 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		$provider = $ticket_type->get_provider();
 		$event_key = $provider->get_event_key();
 
+		/**
+		 * Fires immediately before a ticket type is moved.
+		 *
+		 * @param int $ticket_type_id
+		 * @param int $destination_post_id
+		 * @param int $instigator_id
+		 */
+		do_action( 'tribe_tickets_ticket_type_before_move', $ticket_type_id, $destination_post_id, $instigator_id );
+
 		$src_post_id = get_post_meta( $ticket_type_id, $event_key, true );
 		$success = update_post_meta( $ticket_type_id, $event_key, $destination_post_id );
 
@@ -155,14 +166,20 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			return false;
 		}
 
-		$audit_trail_msg = sprintf(
-			__( 'Ticket type was moved to post %1$d from post %2$d by user %3$d', 'event-tickets' ),
-			$destination_post_id,
-			$src_post_id,
-			$instigator_id
+		$history_message = sprintf(
+			__( 'Ticket type was moved to <a href="%1$s" target="_blank">%2$s</a> from <a href="%3$s" target="_blank">%4$s</a>', 'event-tickets' ),
+			get_permalink( $destination_post_id ),
+			get_the_title( $destination_post_id ),
+			get_permalink( $src_post_id ),
+			get_the_title( $src_post_id )
 		);
 
-		Tribe__Post_History::load( $ticket_type_id )->add_entry( $audit_trail_msg );
+		$history_data = array(
+			'src_event_id' => $src_post_id,
+			'tgt_event_it' => $destination_post_id,
+		);
+
+		Tribe__Post_History::load( $ticket_type_id )->add_entry( $history_message, $history_data );
 
 		/**
 		 * Fires when a ticket type is relocated from one post to another.

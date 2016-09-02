@@ -95,7 +95,7 @@
 				</h4>
 			</td>
 		<?php endif; ?>
-		<tr>
+		<tr data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
 			<td>
 				<p class="ticket_name">
 					<?php

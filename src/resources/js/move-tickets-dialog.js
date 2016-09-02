@@ -341,7 +341,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				'action': 'move_tickets_get_ticket_types',
 				'check': tribe_move_tickets_data.check,
 				'post_id': target_post_id,
-				'provider': tribe_move_tickets_data.provider
+				'provider': tribe_move_tickets_data.provider,
+				'ticket_ids': tribe_move_tickets_data.ticket_ids
 			};
 
 			$.post( ajaxurl, request, function( response ) {
@@ -506,6 +507,18 @@ var tribe_move_tickets = tribe_move_tickets || {};
 				setTimeout( function () {
 					top.location = response.data.redirect_top;
 				}, delay );
+			}
+
+			// If specified, try to remove the ticket type entry from the top window
+			if ( 'number' === typeof response.data.remove_ticket_type ) {
+				top.jQuery( 'table.ticket_list' )
+					.find( 'tr[data-ticket-type-id="' + response.data.remove_ticket_type + '"]' )
+					.remove();
+			}
+
+			// Remove the specified tickets from the attendee list
+			if ( $.isArray( response.data.remove_tickets ) ) {
+				top.tribe_event_tickets_attendees.remove_tickets( response.data.remove_tickets );
 			}
 		}
 
