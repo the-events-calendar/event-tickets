@@ -193,6 +193,8 @@ Our Premium Plugins:
 
 = [4.2.7] TBD =
 
+* Fix - Stop logic for dealing with recurring events from impacting other post types [45008]
+
 = [4.2.6] 2016-08-31 =
 
 * Add - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available (Thank you to @Jonathan here for reporting this in the forums.)
