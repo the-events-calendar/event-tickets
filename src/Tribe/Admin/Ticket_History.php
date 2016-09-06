@@ -13,7 +13,7 @@ class Tribe__Tickets__Admin__Ticket_History {
 	 * Add view/hide history links to each attendee table row where history
 	 * is available.
 	 *
-	 * @param string $column_html
+	 * @param array $row_actions
 	 * @param array  $item
 	 *
 	 * @return string

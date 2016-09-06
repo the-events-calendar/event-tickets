@@ -532,7 +532,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
 
 			$history_message = sprintf(
-				__( 'This ticket was moved to %1$s %2$s to %3$s %4$s', 'event-tickets' ),
+				__( 'This ticket was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),
 				'<a href="' . esc_url( get_the_permalink( $tgt_event_id ) ) . '" target="_blank">' . get_the_title( $tgt_event_id ) . '</a>',
 				'<a href="' . esc_url( get_the_permalink( $tgt_ticket_type_id ) ) . '" target="_blank">(' . get_the_title( $tgt_ticket_type_id ) . ')</a>',
 				'<a href="' . esc_url( get_the_permalink( $src_event_id ) ) . '" target="_blank">' . get_the_title( $src_event_id ) . '</a>',
@@ -705,14 +705,18 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			update_post_meta( $issued_ticket_id, $event_key, $destination_post_id );
 
 			// Maintain an audit trail
-			$audit_trail_msg = sprintf(
-				__( 'Ticket was moved to post %1$d from post %2$d by user %3$d', 'event-tickets' ),
-				$destination_post_id,
-				$src_post_id,
-				$instigator_id
+			$history_message = sprintf(
+				__( 'This ticket was moved to %1$s from %2$s', 'event-tickets' ),
+				'<a href="' . esc_url( get_the_permalink( $destination_post_id ) ) . '" target="_blank">' . get_the_title( $destination_post_id ) . '</a>',
+				'<a href="' . esc_url( get_the_permalink( $src_post_id ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>'
 			);
 
-			Tribe__Post_History::load( $issued_ticket_id )->add_entry( $audit_trail_msg );
+			$history_data = array(
+				'src_event_id' => $src_post_id,
+				'tgt_event_id' => $destination_post_id,
+			);
+
+			Tribe__Post_History::load( $issued_ticket_id )->add_entry( $history_message, $history_data );
 		}
 	}
 }
