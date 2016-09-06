@@ -713,7 +713,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			$history_data = array(
 				'src_event_id' => $src_post_id,
-				'tgt_event_id' => $destination_post_id
+				'tgt_event_id' => $destination_post_id,
 			);
 
 			Tribe__Post_History::load( $issued_ticket_id )->add_entry( $history_message, $history_data );
