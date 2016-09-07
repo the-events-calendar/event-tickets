@@ -16,7 +16,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 $now = current_time( 'timestamp' );
 ?>
 <form action="" class="cart <?php echo esc_attr( $messages_class ); ?>" method="post" enctype='multipart/form-data'>
-	<h2 class="tribe-events-tickets-title"><?php esc_html_e( 'RSVP', 'event-tickets' ) ?></h2>
+	<h2 class="tribe-events-tickets-title"><?php echo esc_html_x( 'RSVP', 'form heading', 'event-tickets' ) ?></h2>
 	<div class="tribe-rsvp-messages">
 		<?php
 		if ( $messages ) {
@@ -124,7 +124,7 @@ $now = current_time( 'timestamp' );
 
 						<tr class="tribe-tickets-order_status-row">
 							<td>
-								<label for="tribe-tickets-order_status"><?php esc_html_e( 'RSVP', 'event-tickets' ); ?>:</label>
+								<label for="tribe-tickets-order_status"><?php echo esc_html_x( 'RSVP', 'order status label', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
 								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
