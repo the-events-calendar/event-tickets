@@ -149,7 +149,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 
 		/* Set up some parent's vars */
-		$this->pluginName = 'RSVP';
+		$this->pluginName = _x( 'RSVP', 'module name', 'event-tickets' );
 		$this->pluginPath = $main->plugin_path;
 		$this->pluginUrl = $main->plugin_url;
 
