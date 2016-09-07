@@ -13,7 +13,7 @@
 			<span><?php esc_html_e( 'Click to view the history', 'event-tickets' ); ?></span>
 			<span style="display:none"><?php esc_html_e( 'Click to hide history', 'event-tickets' ); ?></span>
 		</a>
-		<ul class="ul-square" style="display:none">
+		<ul style="display:none">
 			<?php foreach ( $history->get_entries() as $entry ): ?>
 				<li>
 					<span class="date"><?php echo esc_html( $entry->datetime ); ?> </span>
