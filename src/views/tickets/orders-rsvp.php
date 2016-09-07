@@ -42,7 +42,7 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 
 				printf(
 					esc_html__( ' on %s', 'event-tickets' ),
-					date_i18n( 'F j, Y', strtotime( esc_attr( $first_attendee['purchase_time'] ) ) )
+					date_i18n( Tribe__Date_Utils::DATEONLYFORMAT, strtotime( esc_attr( $first_attendee['purchase_time'] ) ) )
 				);
 				?>
 			</p>

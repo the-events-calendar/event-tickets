@@ -191,10 +191,6 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.2.6] 2016-08-31 =
-
-* Add - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available (Thank you to @Jonathan here for reporting this in the forums.)
-
 = [4.3] unreleased =
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
@@ -202,6 +198,11 @@ Our Premium Plugins:
 * Tweak - Reworked and reorganized the attendee list screen [61992]
 * Tweak - Added tribe_tickets_rsvp_before_order_processing and tribe_tickets_rsvp_before_attendee_ticket_creation actions (props to @sabitertan on GitHub for this!) [65836]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
+* Fix - Made some untranslatable strings translatable (big thanks to @Petr from the support forums on this!) [62458]
+
+= [4.2.6] 2016-08-31 =
+
+* Add - Utilize new tribe_is_event_past() conditional to display better messaging when tickets are not available (Thank you to @Jonathan here for reporting this in the forums.)
 
 = [4.2.5] 2016-08-17 =
 

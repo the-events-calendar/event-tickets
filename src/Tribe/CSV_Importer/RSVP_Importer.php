@@ -218,7 +218,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			$is_recurring = tribe_is_recurring_event( $event->ID );
 
 			if ( $is_recurring ) {
-				$this->row_message = sprintf( esc_html__( 'Recurring event tickets are not supported, event %d.', 'event-tickets' ), $event->post_title );
+				$this->row_message = sprintf( esc_html__( 'Recurring event tickets are not supported, event %s.', 'event-tickets' ), $event->post_title );
 			}
 
 			return ! $is_recurring;
