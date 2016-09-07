@@ -595,7 +595,7 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		$button_text = $has_non_rsvp ? __( 'Buy', 'event-tickets' ) : __( 'RSVP', 'event-tickets' );
+		$button_text = $has_non_rsvp ? __( 'Buy', 'event-tickets' ) : _x( 'RSVP', 'button text', 'event-tickets' );
 		/**
 		 * Filters the text that appears in the buy/rsvp button on event oembeds
 		 *
