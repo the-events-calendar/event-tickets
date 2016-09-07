@@ -46,7 +46,7 @@ class Tribe__Tickets__CSV_Importer__Rows {
 	 */
 	public function filter_csv_post_types( array $post_types ) {
 		$post_type = get_post_type_object( Tribe__Tickets__RSVP::get_instance()->ticket_object );
-		$post_type->labels->name = __( 'RSVPs', 'post type label', 'event-tickets' );
+		$post_type->labels->name = _x( 'RSVPs', 'post type label', 'event-tickets' );
 		$post_types[] = $post_type;
 		return $post_types;
 	}
