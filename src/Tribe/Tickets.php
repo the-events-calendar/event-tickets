@@ -529,7 +529,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			$did_uncheckin = $this->uncheckin( $order_id );
 
-			if ( class_exists('Tribe__Events__Main') ) {
+			if ( class_exists( 'Tribe__Events__Main' ) ) {
 				$this->maybe_update_attendees_cache( $did_uncheckin );
 			}
 
