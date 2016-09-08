@@ -9,6 +9,7 @@
 
 <?php
 if ( class_exists( 'Tribe__Events__Pro__Main' ) ) {
+	$done = true;
 	if ( is_admin() ) {
 		$bumpdown = __( 'Currently, tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' );
 	} else {
@@ -20,7 +21,9 @@ if ( class_exists( 'Tribe__Events__Pro__Main' ) ) {
 		<td colspan="2" class="tribe_sectionheader updated">
 			<p>
 				<?php esc_html_e( 'Selling tickets for recurring events', 'event-tickets' ); ?>
-				<span class="tribe-bumpdown-trigger dashicons dashicons-editor-help" data-bumpdown="<?php echo esc_attr( $bumpdown ); ?>"></span>
+				<span class="tribe-bumpdown-trigger dashicons dashicons-editor-help"
+				      data-bumpdown="<?php echo esc_attr( $bumpdown ); ?>"
+				      data-bumpdown-class="<?php echo esc_attr( $this->tr_class() ); ?>"></span>
 			</p>
 		</td>
 	</tr>
