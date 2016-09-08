@@ -497,7 +497,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			$did_checkin = $this->checkin( $order_id );
 
-			$this->maybe_update_attendees_cache( $did_checkin );
+			if ( class_exists( 'Tribe__Events__Main' ) ) {
+				$this->maybe_update_attendees_cache( $did_checkin );
+			}
 
 			$this->ajax_ok( $did_checkin );
 		}
@@ -526,8 +528,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Pass the control to the child object
 			$did_uncheckin = $this->uncheckin( $order_id );
-		
-			$this->maybe_update_attendees_cache( $did_uncheckin );
+
+			if ( class_exists('Tribe__Events__Main') ) {
+				$this->maybe_update_attendees_cache( $did_uncheckin );
+			}
 
 			$this->ajax_ok( $did_uncheckin );
 		}
