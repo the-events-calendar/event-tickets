@@ -73,6 +73,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'multiple_providers' => $this->has_multiple_providers,
 		) );
 
+		set_current_screen();
 		define( 'IFRAME_REQUEST', true );
 		$this->dialog_assets();
 		iframe_header( $template_vars[ 'title'] );
