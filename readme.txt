@@ -194,6 +194,7 @@ Our Premium Plugins:
 = [4.2.7] TBD =
 
 * Fix - Stop logic for dealing with recurring events from impacting other post types [45008]
+* Tweak - Share "tickets unavailable" messaging across ticketing providers to prevent unnecessary duplication [65687]
 
 = [4.2.6] 2016-08-31 =
 
