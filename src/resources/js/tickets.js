@@ -607,8 +607,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$( '#ticket_purchase_limit' ).val( response.data.purchase_limit );
 						}
 
-						$tribe_tickets.find( '.bumpdown-trigger' ).bumpdown();
-						$tribe_tickets.find( '.bumpdown' ).hide();
+						$tribe_tickets.find( '.tribe-bumpdown-trigger' ).bumpdown();
 
 						$( 'a#ticket_form_toggle' ).hide();
 						$( '#ticket_form' ).show();
