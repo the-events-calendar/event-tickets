@@ -2,7 +2,7 @@
 /**
  * This template renders the RSVP ticket form
  *
- * @version 4.2
+ * @version 4.3
  *
  * @var bool $must_login
  */
