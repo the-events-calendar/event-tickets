@@ -2,7 +2,7 @@
 /*
 Plugin Name: Event Tickets
 Description: Event Tickets allows your guests to RSVP from any post, page, or event.
-Version: 4.3beta1
+Version: 4.3rc2
 Author: Modern Tribe, Inc.
 Author URI: http://m.tri.be/28
 License: GPLv2 or later
