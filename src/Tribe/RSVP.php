@@ -671,7 +671,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendees[] = array(
 				'event_id'      => get_post_meta( $post->ID, self::ATTENDEE_EVENT_KEY, true ),
 				'product_id'    => ! empty( $product ) ? $product->ID : false,
-				'ticket_name'   => !empty($product) ? $product->post_title : false,
+				'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
 				'holder_name'   => get_post_meta( $post->ID, $this->full_name, true ),
 				'holder_email'  => get_post_meta( $post->ID, $this->email, true ),
 				'order_id'      => $order_id,
