@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjesse
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.6
-Stable tag: 4.2.7dev1
+Stable tag: 4.2.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -191,10 +191,11 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.2.7] TBD =
+= [4.2.7] 2016-09-14 =
 
-* Fix - Stop logic for dealing with recurring events from impacting other post types [45008] (Originally reported by @Ryan on the support forums. Thanks! )
-* Tweak - Share "tickets unavailable" messaging across ticketing providers to prevent unnecessary duplication [65687]
+* Fix - Stop logic for dealing with recurring events from impacting other post types (Originally reported by @Ryan on the support forums. Thanks!)
+* Tweak - Share "tickets unavailable" messaging across ticketing providers to prevent unnecessary duplication
+* Tweak - Additional support for plugin extensions
 
 = [4.2.6] 2016-08-31 =
 
