@@ -191,7 +191,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.2.7] 2016-09-14 =
+= [4.2.7] 2016-09-15 =
 
 * Fix - Stop logic for dealing with recurring events from impacting other post types (Originally reported by @Ryan on the support forums. Thanks!)
 * Tweak - Share "tickets unavailable" messaging across ticketing providers to prevent unnecessary duplication
