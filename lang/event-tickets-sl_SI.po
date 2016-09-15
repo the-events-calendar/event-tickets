@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-02 18:12:07+0000\n"
+"PO-Revision-Date: 2016-09-14 15:53:26+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,2320 +10,757 @@ msgstr ""
 "X-Generator: GlotPress/1.0-alpha-1100\n"
 "Project-Id-Version: Event Tickets\n"
 
-#: src/Tribe/Main.php:292
-msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
+#: src/admin-views/tribe-options-tickets.php:69
+msgid "You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting."
 msgstr ""
 
-#: src/Tribe/RSVP.php:558
-msgid "You can't RSVP more than the total remaining tickets."
+#: src/template-tags/tickets.php:221
+msgid "global inventory"
 msgstr ""
 
-#: src/Tribe/RSVP.php:863
-msgid "Return to the %1$sAttendees Report%2$s."
+#: src/template-tags/tickets.php:231
+msgctxt "ticket stock message (cancelled stock)"
+msgid " cancelled: %1$d"
 msgstr ""
 
-#: src/Tribe/RSVP.php:870
-msgid "Post updated. %1$s"
+#: src/template-tags/tickets.php:236
+msgid " pending: %1$d"
 msgstr ""
 
-#: src/Tribe/RSVP.php:874
-msgid "Post published. %1$s"
+#: src/template-tags/tickets.php:241
+msgid "Sold %1$d (units remaining: %2$s%3$s%4$s)"
 msgstr ""
 
-#: src/Tribe/RSVP.php:877
-msgid "Post submitted."
+#: src/views/shortcodes/my-attendance-list-logged-out.php:8
+msgid "To see a list of events you are attending you will need to login."
 msgstr ""
 
-#: src/Tribe/RSVP.php:878
-msgid "Post scheduled."
+#: src/views/shortcodes/my-attendance-list.php:28
+msgid "You have not indicated your attendance for any upcoming events."
 msgstr ""
 
-#: src/Tribe/RSVP.php:879
-msgid "Post draft updated."
+#: src/views/tickets/email-non-attendance.php:248
+msgid "Thank you for confirming that you will not be attending the above event."
 msgstr ""
 
-#: src/Tribe/Tickets.php:532
-msgid "Editing the ticket price is currently disallowed."
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:328
-msgid "Cheatin Huh?"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:334
-msgid "Invalid Event ID"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:340
-msgid "Empty user and email"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:352
-msgid "Invalid Email"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:358 src/Tribe/Tickets_Handler.php:374
-msgid "Invalid User ID"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:395
-msgid "Error when sending the email"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:400
-msgid "Email sent successfully!"
-msgstr ""
-
-#: src/admin-views/attendees-email.php:42
-msgid "Send Email"
-msgstr ""
-
-#: src/admin-views/attendees.php:37
-msgid "Edit Event"
-msgstr ""
-
-#: src/admin-views/attendees.php:38
-msgid "See Event Page"
-msgstr ""
-
-#: src/admin-views/attendees.php:62
-msgid "Edit Venue"
-msgstr ""
-
-#: src/admin-views/attendees.php:96
-msgid "Sales by Ticket"
-msgstr ""
-
-#: src/admin-views/attendees.php:102
-msgid "Edit Ticket"
-msgstr ""
-
-#: src/admin-views/attendees.php:113
-msgid "Total Sold:"
-msgstr ""
-
-#: src/admin-views/meta-box.php:160
-msgid "When will ticket sales occur?"
-msgstr ""
-
-#: src/admin-views/meta-box.php:164
-msgid "If you don't set a start/end date for sales, tickets will be available from now until the event ends."
-msgstr ""
-
-#: src/admin-views/meta-box.php:178
-msgid "Cancel"
-msgstr "Prekliči"
-
-#: src/template-tags/tickets.php:212
-msgid "Sold all %1$d %2$s"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:35
-msgid "The details of your calendar plugin and settings is often needed for you or our staff to help troubleshoot an issue. We may ask you to share this information if you ask for support. If you post in one of our premium forums, please copy and paste this information into the System Information field and it will help us help you faster!"
-msgstr ""
-
-#: src/Tribe/Main.php:141
-msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
-msgstr ""
-
-#: src/Tribe/Main.php:237
-msgid "Support for Event Tickets"
-msgstr ""
-
-#: src/Tribe/Main.php:239
-msgid "Settings overview"
-msgstr ""
-
-#: src/Tribe/Main.php:240
-msgid "Features overview"
-msgstr ""
-
-#: src/Tribe/Main.php:241
-msgid "Troubleshooting common problems"
-msgstr ""
-
-#: src/Tribe/Main.php:242
-msgid "Customizing Event Tickets"
-msgstr ""
-
-#: src/Tribe/Main.php:259
-msgid "New User Primer"
-msgstr ""
-
-#: src/Tribe/Main.php:261
-msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
-msgstr ""
-
-#: src/Tribe/Main.php:279
-msgid "open-source forum on WordPress.org"
-msgstr ""
-
-#: src/Tribe/Main.php:280
-msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
-msgstr ""
-
-#: src/Tribe/Main.php:282
-msgid "premium support on our website"
-msgstr ""
-
-#: src/Tribe/Main.php:283
-msgid "Events Tickets Plus"
-msgstr ""
-
-#: src/Tribe/Main.php:284
-msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
-msgstr ""
-
-#: src/Tribe/Main.php:286 src/Tribe/Main.php:291
-msgid "post a thread"
-msgstr ""
-
-#: src/Tribe/Main.php:287
-msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:30
-msgid "Please note that all hands-on support is provided via the forums. You can email or tweet at us… ​but we will probably point you back to the forums "
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:31
-msgid "Read more about our support policy"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:26
-msgid "%s. There are very few issues we haven’t seen and it’s likely another user has already asked your question and gotten an answer from our support staff. While posting to the forums is open only to paid customers, they are open for anyone to search and review."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:26
-msgid "Search our support forum"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:24
-msgid "%s. All of the common (and not-so-common) answers to questions we see are here. It’s often the fastest path to finding an answer!"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:24
-msgid "Check our Knowledgebase"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:25
-msgid "%s. Testing for an existing conflict is the best start for in-depth troubleshooting. We will often ask you to follow these steps when opening a new thread, so doing this ahead of time will be super helpful."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:25
-msgid "Test for a theme or plugin conflict"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:15
-msgid "Our website’s %s is a great place to find tips and tricks for using and customizing our plugins."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:15
-msgid "Knowledgebase"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:16
-msgid "<strong>Want to dive deeper?</strong> Check out our %s for developers."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:16
-msgid "list of available functions"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:19
-msgid "Getting More Help"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:20
-msgid "While the resources above help solve a majority of the issues we see, there are times you might be looking for extra support. If you need assistance using our plugins and would like us to take a look, please follow these steps:"
-msgstr ""
-
-#: common/src/Tribe/PUE/Checker.php:440
-msgid "Thanks for setting up a valid key, it will expire on %s"
-msgstr ""
-
-#: common/src/Tribe/PUE/Checker.php:448
-msgid "Hmmm... something's wrong with this validator. Please contact %ssupport%s."
-msgstr ""
-
-#: common/src/Tribe/Validate.php:195
-msgid "%s must be a positive number or percent."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-display.php:31
-msgid "Enter the format to use for displaying dates with the year. Used when displaying a date in a future year."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-general.php:10
-msgid "Thank you for using Event Tickets! All of us at Modern Tribe sincerely appreciate your support and we're excited to see you using our plugins. Check out our handy %1$sNew User Primer%2$s to get started."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-general.php:15
-msgid "Optimize your site's event listings with %1$sThe Events Calendar%2$s, our free calendar plugin. Looking for additional functionality including recurring events, user-submission, advanced ticket sales and more? Check out our %3$spremium add-ons%4$s."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:11
-msgid "Thanks you for using %s! All of us at Modern Tribe sincerely appreciate your support and we’re excited to see you using our plugins."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:14
-msgid "Getting Support"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:52
-msgid "The Events Calendar is a carefully crafted, extensible plugin that lets you easily share your events."
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:68
-msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:80
-msgid "Advanced Post Manager"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:84
-msgid "Turbo charge your posts admin for any custom post type with sortable filters and columns, and auto-registration of metaboxes."
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:159
-msgid " and "
-msgstr "in"
-
-#: common/src/Tribe/Admin/Help_Page.php:192
-msgid "Eventbrite Tickets"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:200
-msgid "Community Events"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:208
-msgid "Facebook Events"
-msgstr "Facebook dogodki"
-
-#: common/src/Tribe/Admin/Help_Page.php:216
-msgid "Events Filter Bar"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:224
-msgid "Event Tickets Plus"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:233
-msgid "Community Tickets"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:394
-msgctxt "not available"
-msgid "n/a"
-msgstr "n/a"
-
-#: common/src/Tribe/Admin/Help_Page.php:402
-msgid "You need to upgrade!"
-msgstr "Čaka vas posodobitev!"
-
-#: common/src/Tribe/Admin/Help_Page.php:402
-#: common/src/Tribe/Admin/Help_Page.php:797
-msgid "You are up to date!"
-msgstr "Imate trenutno različico!"
-
-#: common/src/Tribe/Admin/Help_Page.php:787
-msgid "Activate %s"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:787
-msgid "Activate Plugin"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:795
-msgid "Upgrade Plugin"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:811
-msgid "Install %s"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:811
-msgid "Install Plugin"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:828
-msgid "Latest Version:"
-msgstr "Zadnja različica:"
-
-#: common/src/Tribe/Admin/Help_Page.php:831
-msgid "Requires:"
-msgstr "Zahteva:"
-
-#: common/src/Tribe/Admin/Help_Page.php:832
-msgid "WordPress "
-msgstr "WordPress"
-
-#: common/src/Tribe/Admin/Help_Page.php:834
-msgid "Active Users:"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:837
-msgid "Rating:"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:862
-msgid "Plugin Active"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:864
-msgid "Plugin Inactive"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:869
-msgid "Visit the Add-on Page"
-msgstr ""
-
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:68
-msgid "<a href=\"%s\">edit Events settings</a>."
-msgstr ""
-
-#: common/src/Tribe/PUE/Checker.php:308
-msgid "License Key"
-msgstr "Licenčni ključ"
-
-#: common/src/Tribe/PUE/Checker.php:309
-msgid "A valid license key is required for support and updates"
-msgstr "Veljaven licenčni ključ je potreben za podporo in posodobitve."
-
-#: common/src/Tribe/PUE/Checker.php:380
-msgid "License key(s) updated."
-msgstr "Licenčni ključ(i) posodobljen. "
-
-#: common/src/Tribe/PUE/Checker.php:419
-msgid "unknown date"
-msgstr "Neznani datum"
-
-#: common/src/Tribe/PUE/Checker.php:422
-msgid "Sorry, key validation server is not available."
-msgstr "Oprostite, strežnik za preverjanje ključa ni na voljo. "
-
-#: common/src/Tribe/PUE/Checker.php:424
-msgid "Sorry, this key is expired."
-msgstr "Oprostite, ta ključ je zastarel. "
-
-#: common/src/Tribe/PUE/Checker.php:427
-msgid "Sorry, this key is out of installs."
-msgstr "Oprostite, ta ključ nima več možnosti za namestitev. "
-
-#: common/src/Tribe/PUE/Checker.php:428
-msgid "Why am I seeing this message?"
-msgstr "Zakaj vidim to sporočilo?"
-
-#: common/src/Tribe/PUE/Checker.php:431
-msgid "Sorry, this key is not valid."
-msgstr "Oprostite, ta ključ ni veljaven. "
-
-#: common/src/Tribe/PUE/Checker.php:435
-msgid "Valid Key! Expires on %s"
-msgstr "Veljaven ključ! Poteče %s"
-
-#: common/src/Tribe/View_Helpers.php:123
-msgid "French Polynesia"
-msgstr "Francoska Polinezija"
-
-#: common/src/Tribe/View_Helpers.php:124
-msgid "French Southern Territories"
-msgstr "Francoski južni teritoriji"
-
-#: common/src/Tribe/View_Helpers.php:125
-msgid "Gabon"
-msgstr "Gambon"
-
-#: common/src/Tribe/View_Helpers.php:126
-msgid "Gambia"
-msgstr "Gambija"
-
-#: common/src/Tribe/View_Helpers.php:127 common/src/Tribe/View_Helpers.php:326
-msgid "Georgia"
-msgstr "Gruzija"
-
-#: common/src/Tribe/View_Helpers.php:128
-msgid "Germany"
-msgstr "Nemčija"
-
-#: common/src/Tribe/View_Helpers.php:129
-msgid "Ghana"
-msgstr "Gana"
-
-#: common/src/Tribe/View_Helpers.php:130
-msgid "Gibraltar"
-msgstr "Gibraltar"
-
-#: common/src/Tribe/View_Helpers.php:131
-msgid "Greece"
-msgstr "Grčija"
-
-#: common/src/Tribe/View_Helpers.php:132
-msgid "Greenland"
-msgstr "Grenlandija"
-
-#: common/src/Tribe/View_Helpers.php:133
-msgid "Grenada"
-msgstr "Grenada"
-
-#: common/src/Tribe/View_Helpers.php:134
-msgid "Guadeloupe"
-msgstr "Guadeloupe"
-
-#: common/src/Tribe/View_Helpers.php:135
-msgid "Guam"
-msgstr "Guam"
-
-#: common/src/Tribe/View_Helpers.php:136
-msgid "Guatemala"
-msgstr "Gvatemala"
-
-#: common/src/Tribe/View_Helpers.php:137
-msgid "Guinea"
-msgstr "Gvineja"
-
-#: common/src/Tribe/View_Helpers.php:138
-msgid "Guinea-Bissau"
-msgstr "Gvineja Bissau"
-
-#: common/src/Tribe/View_Helpers.php:139
-msgid "Guyana"
-msgstr "Gvajana"
-
-#: common/src/Tribe/View_Helpers.php:140
-msgid "Haiti"
-msgstr "Haiti"
-
-#: common/src/Tribe/View_Helpers.php:141
-msgid "Heard And Mc Donald Islands"
-msgstr "Heard And Mc Donald Islands"
-
-#: common/src/Tribe/View_Helpers.php:142
-msgid "Holy See (Vatican City State)"
-msgstr "Sveti sedež (Vatikanska mestna država)"
-
-#: common/src/Tribe/View_Helpers.php:143
-msgid "Honduras"
-msgstr "Honduras"
-
-#: common/src/Tribe/View_Helpers.php:144
-msgid "Hong Kong"
-msgstr "Hong Kong"
-
-#: common/src/Tribe/View_Helpers.php:145
-msgid "Hungary"
-msgstr "Madžarska"
-
-#: common/src/admin-views/tribe-options-help.php:60
-msgid "More..."
-msgstr "Več ..."
-
-#: common/src/Tribe/View_Helpers.php:146
-msgid "Iceland"
-msgstr "Islandija"
-
-#: common/src/Tribe/View_Helpers.php:147
-msgid "India"
-msgstr "Indija"
-
-#: common/src/Tribe/View_Helpers.php:148
-msgid "Indonesia"
-msgstr "Indonezija"
-
-#: common/src/Tribe/View_Helpers.php:149
-msgid "Iran (Islamic Republic Of)"
-msgstr "Iran (Islamska republika)"
-
-#: common/src/Tribe/View_Helpers.php:150
-msgid "Iraq"
-msgstr "Irak"
-
-#: common/src/Tribe/View_Helpers.php:151
-msgid "Ireland"
-msgstr "Irska"
-
-#: common/src/Tribe/Admin/Help_Page.php:856
-msgid "Premium Add-Ons"
-msgstr "Premium dodatki"
-
-#: common/src/Tribe/View_Helpers.php:152
-msgid "Israel"
-msgstr "Izrael"
-
-#: common/src/Tribe/View_Helpers.php:153
-msgid "Italy"
-msgstr "Italija"
-
-#: common/src/admin-views/tribe-options-help.php:54
-msgid "News and Tutorials"
-msgstr "Novice in vodiči"
-
-#: common/src/Tribe/View_Helpers.php:154
-msgid "Jamaica"
-msgstr "Jamajka"
-
-#: common/src/admin-views/tribe-options-licenses.php:13
-msgid "<p>The license key you received when completing your purchase from %1$s will grant you access to support and updates until it expires. You do not need to enter the key below for the plugins to work, but you will need to enter it to get automatic updates. <strong>Find your license keys at <a href=\"%2$s\" target=\"_blank\">%3$s</a></strong>.</p> <p>Each paid add-on has its own unique license key. Simply paste the key into its appropriate field on below, and give it a moment to validate. You know you're set when a green expiration date appears alongside a \"valid\" message.</p> <p>If you're seeing a red message telling you that your key isn't valid or is out of installs, visit <a href=\"%4$s\" target=\"_blank\">%5$s</a> to manage your installs or renew / upgrade your license.</p><p>Not seeing an update but expecting one? In WordPress, go to <a href=\"%6$s\">Dashboard > Updates</a> and click \"Check Again\".</p>"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:155
-msgid "Japan"
-msgstr "Japonska"
-
-#: common/src/admin-views/tribe-options-licenses.php:18
-msgid "%1$s Using our plugins in a multisite network? %2$s Please note that your license key will be applied to the entire network, not just this site."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:156
-msgid "Jordan"
-msgstr "Jordanija"
-
-#: common/src/admin-views/tribe-options-licenses.php:28
-msgid "Only license fields for %1$snetwork activated%2$s plugins will be listed on this screen. "
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:157
-msgid "Kazakhstan"
-msgstr "Kazakhstan"
-
-#: common/src/admin-views/tribe-options-network.php:15
-msgid "Network Settings"
-msgstr "Nastavitve omrežja"
-
-#: common/src/Tribe/View_Helpers.php:158
-msgid "Kenya"
-msgstr "Kenija"
-
-#: common/src/admin-views/tribe-options-network.php:19
-msgid "This is where all of the global network settings for Modern Tribe's The Events Calendar can be modified."
-msgstr "Tukaj lahko spreminjate vse globalne nastavitve za Modern Tribe's The Events Calendar. "
-
-#: common/src/Tribe/View_Helpers.php:159
-msgid "Kiribati"
-msgstr "Kiribati"
-
-#: common/src/admin-views/tribe-options-network.php:27
-msgid "Hide the following settings tabs on every site:"
-msgstr "Skrijte naslednje zavihke nastavitev na vsaki strani "
-
-#: common/src/Tribe/View_Helpers.php:160
-msgid "Korea, Democratic People's Republic Of"
-msgstr "Korea, Demokratična ljudska republika"
-
-#: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
-msgid "Tickets"
-msgstr "Vstopnice"
-
-#: common/src/Tribe/View_Helpers.php:161
-msgid "Korea, Republic Of"
-msgstr "Korea, Republika"
-
-#: src/Tribe/Attendees_Table.php:76
-msgid "Order #"
-msgstr "Naročilo #"
-
-#: common/src/Tribe/View_Helpers.php:162
-msgid "Kuwait"
-msgstr "Kuvajt"
-
-#: src/Tribe/Attendees_Table.php:77
-msgid "Order Status"
-msgstr "Status naročila"
-
-#: common/src/Tribe/View_Helpers.php:163
-msgid "Kyrgyzstan"
-msgstr "Kirgizistan"
-
-#: src/Tribe/Attendees_Table.php:78
-msgid "Purchaser name"
-msgstr "Ime kupca"
-
-#: common/src/Tribe/View_Helpers.php:164
-msgid "Lao People's Democratic Republic"
-msgstr "Laoška ljudska demokratična republika"
-
-#: src/Tribe/Attendees_Table.php:79
-msgid "Purchaser email"
-msgstr "Email kupca"
-
-#: common/src/Tribe/View_Helpers.php:165
-msgid "Latvia"
-msgstr "Latvija"
-
-#: src/Tribe/Attendees_Table.php:80
-msgid "Ticket type"
-msgstr "Tip vstopnice"
-
-#: common/src/Tribe/View_Helpers.php:166
-msgid "Lebanon"
-msgstr "Libanon"
-
-#: src/Tribe/Attendees_Table.php:81 src/views/tickets/email.php:321
-msgid "Ticket #"
-msgstr "Vstopnica #"
-
-#: common/src/Tribe/View_Helpers.php:167
-msgid "Lesotho"
-msgstr "Lesoto"
-
-#: src/Tribe/Attendees_Table.php:82 src/views/tickets/email.php:333
-msgid "Security Code"
-msgstr "Varnostna številka"
-
-#: common/src/Tribe/View_Helpers.php:168
-msgid "Liberia"
-msgstr "Liberija"
-
-#: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:173
-#: src/Tribe/Attendees_Table.php:254
-msgid "Check in"
-msgstr "Check in"
-
-#: common/src/Tribe/View_Helpers.php:169
-msgid "Libya"
-msgstr "Libija"
-
-#: src/Tribe/Attendees_Table.php:174 src/Tribe/Attendees_Table.php:255
-msgid "Undo Check in"
-msgstr "Razveljavi Check in"
-
-#: common/src/Tribe/View_Helpers.php:170
-msgid "Liechtenstein"
-msgstr "Lihtenštajn"
-
-#: src/Tribe/Attendees_Table.php:227
-msgid "Print"
-msgstr "Print"
-
-#: common/src/Tribe/View_Helpers.php:171
-msgid "Lithuania"
-msgstr "Litva"
-
-#: src/Tribe/Attendees_Table.php:228
-msgid "Email"
-msgstr "Email"
-
-#: common/src/Tribe/View_Helpers.php:172
-msgid "Luxembourg"
-msgstr "Luksemburg"
-
-#: src/Tribe/Attendees_Table.php:229
-msgid "Export"
-msgstr "Izvoz"
-
-#: common/src/Tribe/View_Helpers.php:173
-msgid "Macau"
-msgstr "Macau"
-
-#: src/Tribe/Attendees_Table.php:235
-msgid "Filter by purchaser name, ticket #, order # or security code"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:174
-msgid "Macedonia"
-msgstr "Makedonija"
-
-#: src/Tribe/Attendees_Table.php:256 src/admin-views/list.php:31
-msgid "Delete"
-msgstr "Izbriši"
-
-#: common/src/Tribe/View_Helpers.php:175
-msgid "Madagascar"
-msgstr "Madagaskar"
-
-#: src/Tribe/Metabox.php:81
-msgid "Ticket header image"
-msgstr "Slika glave vstopnice"
-
-#: common/src/Tribe/View_Helpers.php:176
-msgid "Malawi"
-msgstr "Malavi"
-
-#: src/Tribe/Metabox.php:82
-msgid "Set as ticket header"
-msgstr "Nastavi za glavo vstopnice"
-
-#: common/src/Tribe/View_Helpers.php:177
-msgid "Malaysia"
-msgstr "Malezija"
-
-#: src/Tribe/RSVP.php:180
-msgctxt "Attendee number"
-msgid "Attendee %1$s"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:178
-msgid "Maldives"
-msgstr "Maldivi"
-
-#: src/Tribe/RSVP.php:349
-msgid "Your tickets from %s"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:179
-msgid "Mali"
-msgstr "Mali"
-
-#: src/Tribe/RSVP.php:552
-msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:180
-msgid "Malta"
-msgstr "Malta"
-
-#: src/Tribe/RSVP.php:563
-msgid "In order to RSVP, you must enter your name and a valid email address."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:181
-msgid "Marshall Islands"
-msgstr "Marshallovi otoki"
-
-#: src/Tribe/RSVP.php:684
-msgid "(deleted)"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:182
-msgid "Martinique"
-msgstr "Martinique"
-
-#: src/Tribe/Tickets.php:336
-msgid "Your ticket has been saved."
-msgstr "Vaša vstopnica je bila shranjena"
-
-#: common/src/Tribe/View_Helpers.php:183
-msgid "Mauritania"
-msgstr "Mavretanija"
-
-#: src/Tribe/Tickets.php:478
-msgid "Your ticket has been deleted."
-msgstr "Vaša vstopnica je bila izbrisana"
-
-#: common/src/Tribe/View_Helpers.php:184
-msgid "Mauritius"
-msgstr "Mavricius"
-
-#: src/Tribe/Tickets_Handler.php:82 src/admin-views/list.php:68
-msgid "See who purchased tickets to this event"
-msgstr "Poglejte kdo je kupil vstopnice za ta dogodek"
-
-#: common/src/Tribe/View_Helpers.php:185
-msgid "Mayotte"
-msgstr "Mayotte"
-
-#: src/Tribe/Tickets_Handler.php:82 src/admin-views/attendees.php:34
-#: src/admin-views/list.php:70
-msgid "Attendees"
-msgstr "Udeleženci"
-
-#: common/src/Tribe/View_Helpers.php:186
-msgid "Mexico"
-msgstr "Mehika"
-
-#: src/Tribe/Tickets_Handler.php:119
-msgid "You need to select a user or type a valid email address"
-msgstr "Izbrati morate uporabnika ali vnesti veljaven email naslov"
-
-#: common/src/Tribe/View_Helpers.php:187
-msgid "Micronesia, Federated States Of"
-msgstr "Mikronezija (Federativne države)"
-
-#: src/Tribe/Tickets_Handler.php:120
-msgid "Sending..."
-msgstr "Pošilja..."
-
-#: common/src/Tribe/View_Helpers.php:188
-msgid "Moldova, Republic Of"
-msgstr "Moldavija, Republika"
-
-#: src/Tribe/Tickets_Handler.php:146
-msgid "Columns"
-msgstr "Stolpci"
-
-#: common/src/Tribe/View_Helpers.php:189
-msgid "Monaco"
-msgstr "Monako"
-
-#: src/Tribe/Tickets_Handler.php:146
-msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
-msgstr "Uporabite lahko možnosti zaslona, da izberete katere stolpce želite videti. Ta izbira deluje v tabeli spodaj, v emailu, pri printanju ali pri izvozu CSV. "
-
-#: common/src/Tribe/View_Helpers.php:190
-msgid "Mongolia"
-msgstr "Mongolija"
-
-#: src/Tribe/Tickets_Handler.php:270
-msgid "Yes"
-msgstr "Da"
-
-#: common/src/Tribe/View_Helpers.php:191
-msgid "Montenegro"
-msgstr "Črna Gora"
-
-#: src/Tribe/Tickets_Handler.php:302
-msgid "attendees"
-msgstr "udeleženci"
-
-#: common/src/Tribe/View_Helpers.php:192
-msgid "Montserrat"
-msgstr "Montserrat"
-
-#: src/Tribe/Tickets_Handler.php:394
-msgid "Attendee List for: %s"
-msgstr "Seznam udeležencev za: %s"
-
-#: common/src/Tribe/View_Helpers.php:193
-msgid "Morocco"
-msgstr "Maroko"
-
-#: common/src/Tribe/View_Helpers.php:194
-msgid "Mozambique"
-msgstr "Mozambik"
-
-#: src/admin-views/attendees.php:41
-msgid "Event Details"
-msgstr "Podrobnosti dogodka"
-
-#: common/src/Tribe/View_Helpers.php:195
-msgid "Myanmar"
-msgstr "Mjanmar"
-
-#: src/admin-views/attendees.php:47
-msgid "Start Date / Time:"
-msgstr "Začetni datum / čas:"
-
-#: common/src/Tribe/View_Helpers.php:196
-msgid "Namibia"
-msgstr "Namibija"
-
-#: src/admin-views/attendees.php:52
-msgid "End Date / Time:"
-msgstr "Končni datum / čas:"
-
-#: common/src/Tribe/View_Helpers.php:197
-msgid "Nauru"
-msgstr "Nauru"
-
-#: src/admin-views/attendees.php:66
-msgid "Address:"
-msgstr "Naslov:"
-
-#: common/src/Tribe/View_Helpers.php:198
-msgid "Nepal"
-msgstr "Nepal"
-
-#: src/admin-views/attendees.php:74
-msgid "Phone:"
-msgstr "Telefon:"
-
-#: common/src/Tribe/View_Helpers.php:199
-msgid "Netherlands"
-msgstr "Nizozemska"
-
-#: src/admin-views/attendees.php:83
-msgid "Website:"
-msgstr "Spletna stran:"
-
-#: common/src/Tribe/View_Helpers.php:200
-msgid "Netherlands Antilles"
-msgstr "Nizozemski Antili"
-
-#: common/src/Tribe/View_Helpers.php:201
-msgid "New Caledonia"
-msgstr "Nova Kalzedonija"
-
-#: common/src/Tribe/View_Helpers.php:202
-msgid "New Zealand"
-msgstr "Nova Zelandija"
-
-#: src/admin-views/attendees.php:118
-msgid "Finalized:"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:203
-msgid "Nicaragua"
-msgstr "Nikaragva"
-
-#: src/admin-views/attendees.php:124
-msgid "Awaiting review:"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:204
-msgid "Niger"
-msgstr "Niger"
-
-#: src/admin-views/attendees.php:129
-msgid "Checked in:"
-msgstr "Prijavljeni:"
-
-#: common/src/Tribe/View_Helpers.php:205
-msgid "Nigeria"
-msgstr "Nigerija"
-
-#: src/admin-views/attendees-email.php:3
-msgid "Send the attendee list by email"
-msgstr "Pošljite seznam udeležencev po email sporočilu."
-
-#: common/src/Tribe/View_Helpers.php:206
-msgid "Niue"
-msgstr "Niue"
-
-#: src/admin-views/attendees-email.php:9
-msgid "Select a User:"
-msgstr "Izberite uporabnika:"
-
-#: common/src/Tribe/View_Helpers.php:207
-msgid "Norfolk Island"
-msgstr "Norfolk Island"
-
-#: src/admin-views/attendees-email.php:14
-msgid "Select..."
-msgstr "Izberite ..."
-
-#: common/src/Tribe/View_Helpers.php:208
-msgid "Northern Mariana Islands"
-msgstr "Northern Mariana Islands"
-
-#: src/admin-views/attendees-email.php:19
-msgid "or"
-msgstr "ali"
-
-#: common/src/Tribe/View_Helpers.php:209
-msgid "Norway"
-msgstr "Norveška"
-
-#: src/admin-views/attendees-email.php:21
-msgid "Email Address:"
-msgstr "Email naslov:"
-
-#: common/src/Tribe/View_Helpers.php:210
-msgid "Oman"
-msgstr "Oman"
-
-#: src/admin-views/list.php:30
-msgid "Edit"
-msgstr "Uredi"
-
-#: common/src/Tribe/View_Helpers.php:211
-msgid "Pakistan"
-msgstr "Pakistan"
-
-#: src/admin-views/list.php:39
-msgid "Edit in %s"
-msgstr "Uredi v %s"
-
-#: common/src/Tribe/View_Helpers.php:212
-msgid "Palau"
-msgstr "Palau"
-
-#: src/admin-views/list.php:34
-msgid "View"
-msgstr "Ogled"
-
-#: common/src/Tribe/View_Helpers.php:213
-msgid "Panama"
-msgstr "Panama"
-
-#: src/admin-views/list.php:98
-msgid "Sold %d"
-msgstr "Prodano %d"
-
-#: common/src/Tribe/View_Helpers.php:214
-msgid "Papua New Guinea"
-msgstr "Papua Nova Gvineja"
-
-#: src/admin-views/list.php:100
-msgid "Sold %1$d of %2$d"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:215
-msgid "Paraguay"
-msgstr "Paragvaj"
-
-#: src/admin-views/meta-box.php:23
-msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
-msgstr "Ta dogodek je bil ustvarjen z uporabo 'Community Events'. Ali ste prepričani, da želite prodajati vstopnice zanj?"
-
-#: common/src/Tribe/View_Helpers.php:216
-msgid "Peru"
-msgstr "Peru"
-
-#: src/admin-views/meta-box.php:34
-msgid "Upload image for the ticket header"
-msgstr "Naložite sliko za glavo vstopnice"
-
-#: common/src/Tribe/View_Helpers.php:217
-msgid "Philippines"
-msgstr "Filipini"
-
-#: src/admin-views/meta-box.php:35
-msgid "The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like \"retina\" support use an image sized to 1160px wide."
-msgstr "Največja velikost slike v emailu je 580px širine in kakršnakoli višina, ki se prilagodi mobilnim zaslonom. Če želite uporabljati \"retina\" podporo, uporabite sliko, ki je široka vsaj 1160px."
-
-#: common/src/Tribe/View_Helpers.php:218
-msgid "Pitcairn"
-msgstr "Pitcairn"
-
-#: src/admin-views/meta-box.php:38
-msgid "Select an Image"
-msgstr "Izberite sliko"
-
-#: common/src/Tribe/View_Helpers.php:219
-msgid "Poland"
-msgstr "Poljska"
-
-#: src/admin-views/meta-box.php:46
-msgid "Remove"
-msgstr "Odstrani"
-
-#: common/src/Tribe/View_Helpers.php:220
-msgid "Portugal"
-msgstr "Portugalska"
-
-#: src/admin-views/meta-box.php:64 src/admin-views/meta-box.php:74
-msgid "Add new ticket"
-msgstr "Dodaj novo vstopnico"
-
-#: common/src/Tribe/View_Helpers.php:221
-msgid "Puerto Rico"
-msgstr "Portoriko"
-
-#: src/admin-views/meta-box.php:75
-msgid "Edit ticket"
-msgstr "Uredi vstopnico"
-
-#: common/src/Tribe/View_Helpers.php:222
-msgid "Qatar"
-msgstr "Katar"
-
-#: src/admin-views/meta-box.php:80
-msgid "Sell using:"
-msgstr "Prodaja z uporabo:"
-
-#: common/src/Tribe/View_Helpers.php:223
-msgid "Reunion"
-msgstr "Reunion"
-
-#: src/admin-views/meta-box.php:97
-msgid "Ticket Name:"
-msgstr "Ime vstopnice:"
-
-#: common/src/Tribe/View_Helpers.php:224
-msgid "Romania"
-msgstr "Romunija"
-
-#: src/admin-views/meta-box.php:104
-msgid "Ticket Description:"
-msgstr "Opis vstopnice:"
-
-#: common/src/Tribe/View_Helpers.php:225
-msgid "Russian Federation"
-msgstr "Ruska federacija"
-
-#: src/admin-views/legacy-ticket-fields.php:15
-msgid "Price:"
-msgstr "Cena:"
-
-#: common/src/Tribe/View_Helpers.php:226
-msgid "Rwanda"
-msgstr "Ruanda"
-
-#: src/admin-views/legacy-ticket-fields.php:19
-msgid "(0 or empty for free tickets)"
-msgstr "(0 ali prazno za zastonjske vstopnice)"
-
-#: common/src/Tribe/View_Helpers.php:227
-msgid "Saint Kitts And Nevis"
-msgstr "Saint Kitts And Nevis"
-
-#: src/admin-views/legacy-ticket-fields.php:24
-msgid "Sale Price:"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:228
-msgid "Saint Lucia"
-msgstr "Saint Lucia"
-
-#: src/admin-views/legacy-ticket-fields.php:28
-msgid "(Current sale price - this can be managed via the product editor)"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:229
-msgid "Saint Vincent And The Grenadines"
-msgstr "Saint Vincent And The Grenadines"
-
-#: src/admin-views/meta-box.php:113
-msgid "Start sale:"
-msgstr "Začetek prodaje:"
-
-#: common/src/Tribe/View_Helpers.php:230
-msgid "Samoa"
-msgstr "Samo"
-
-#: src/admin-views/meta-box.php:137
-msgid "End sale:"
-msgstr "Konec prodaje:"
-
-#: common/src/Tribe/View_Helpers.php:231
-msgid "San Marino"
-msgstr "San Marino"
-
-#: common/src/Tribe/View_Helpers.php:232
-msgid "Sao Tome And Principe"
-msgstr "Sao Tome And Principe"
-
-#: src/admin-views/meta-box.php:177
-msgid "Save this ticket"
-msgstr "Shrani vstopnico"
-
-#: common/src/Tribe/View_Helpers.php:233
-msgid "Saudi Arabia"
-msgstr "Savdska Arabija"
-
-#: src/admin-views/rsvp-metabox-advanced.php:2
-msgid "Stock:"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:234
-msgid "Senegal"
-msgstr "Senegal"
-
-#: src/admin-views/rsvp-metabox-advanced.php:6
-msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:235
-msgid "Serbia"
-msgstr "Srbija"
-
-#: src/admin-views/rsvp-metabox-advanced.php:16
-msgid "Selling tickets for recurring events"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:236
-msgid "Seychelles"
-msgstr "Sejšeli"
-
-#: src/admin-views/rsvp-metabox-advanced.php:20
-msgid "Currently, Tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:237
-msgid "Sierra Leone"
-msgstr "Sierra Leone"
-
-#: src/admin-views/tribe-options-tickets.php:41
-msgid "Ticket Settings"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:238
-msgid "Singapore"
-msgstr "Singapur"
-
-#: src/admin-views/tribe-options-tickets.php:45
-msgid "Post types that can have tickets"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:239
-msgid "Slovakia (Slovak Republic)"
-msgstr "Slovaška (Slovaška Republika)"
-
-#: src/template-tags/tickets.php:208
-msgid "(%d awaiting review)"
-msgid_plural "(%d awaiting review)"
+#: src/views/tickets/orders-link.php:33
+msgid "%d RSVP"
+msgid_plural "%d RSVPs"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: common/src/Tribe/View_Helpers.php:240
-msgid "Slovenia"
-msgstr "Slovenija"
+#: src/views/tickets/orders-link.php:37
+msgid "%d Ticket"
+msgid_plural "%d Tickets"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-#: common/src/Tribe/View_Helpers.php:241
-msgid "Solomon Islands"
-msgstr "Solomonovi otoki"
-
-#: src/template-tags/tickets.php:214
-msgid "Sold %1$d of %2$d %3$s"
+#: src/views/tickets/orders-link.php:45
+msgid "You have %s for this %s."
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:242
-msgid "Somalia"
-msgstr "Somalija"
+#: src/views/tickets/orders-link.php:46
+msgid "View your %s"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:29
+msgid "My RSVPs for This %s"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:38
+msgid "Reserved by %1$s (%2$s)"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:44
+msgid " on %s"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:63
+msgid "Attendee %d"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:68
+msgid "RSVP: "
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:71
+msgid "Type: "
+msgstr ""
+
+#: src/views/tickets/orders.php:26
+msgid "View %s"
+msgstr "Oglej %s"
+
+#: src/views/tickets/orders.php:57
+msgid "Update %s"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:33
+msgid "Please fill in the RSVP confirmation name and email fields."
+msgstr ""
+
+#: src/views/tickets/rsvp.php:98
+msgid "Send RSVP confirmation to:"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:138
+msgid "Don't list me on the public attendee list"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:149
+msgid "Login to RSVP"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Event Tickets allows your guests to RSVP from any post, page, or event."
+msgstr ""
+
+#: src/Tribe/Main.php:530
+msgid "Buy"
+msgstr ""
+
+#: src/Tribe/Metabox.php:87
+msgid "It looks like you have modified your global stock settings but have not saved or updated the post."
+msgstr ""
+
+#: src/Tribe/Metabox.php:100
+msgid "Please enter in without thousand separators and currency symbols."
+msgstr ""
+
+#: src/Tribe/RSVP.php:603
+msgid "You confirmed you will not be attending %s"
+msgstr ""
+
+#: src/Tribe/Tickets.php:862
+msgid "Use global stock"
+msgstr ""
+
+#: src/Tribe/Tickets.php:863
+msgid "Use global stock but cap sales"
+msgstr ""
+
+#: src/Tribe/Tickets.php:864
+msgid "Independent (do not use global stock)"
+msgstr ""
+
+#: src/Tribe/Tickets.php:1306
+msgid "Tickets are not available as this %s has passed."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1308
+msgid "Tickets are not yet available."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1310
+msgid "Tickets are no longer available."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1312
+msgid "There are no tickets available at this time."
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:292
+msgid "Customer Name"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:293
+msgid "Customer Email Address"
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:511
+msgid "Going"
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:512
+msgid "Not Going"
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:608
+msgid "Ticket"
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:674
+msgid "This RSVP is no longer active."
+msgstr ""
+
+#: src/admin-views/attendees.php:46
+msgid "Post Type:"
+msgstr ""
+
+#: src/admin-views/attendees.php:100
+msgid "Deleted:"
+msgstr ""
+
+#: src/admin-views/meta-box.php:69
+msgid "Enable global stock"
+msgstr ""
+
+#: src/admin-views/meta-box.php:79
+msgid "Global stock level"
+msgstr ""
+
+#: src/admin-views/meta-box.php:85
+msgid "(%s sold)"
+msgid_plural "(%s sold)"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#: src/admin-views/rsvp-metabox-advanced.php:24
+msgid "If you are creating a recurring event, Tickets will only show up once per Event Series, meaning that the same ticket will apper across all events. Please configure your events accordingly."
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:37
+msgid "Require users to log in before they RSVP"
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:64
+msgid "Login requirements"
+msgstr ""
+
+#: src/Tribe/Attendees_Table.php:260
+msgid "View order"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:34
+msgid "Event Name or ID or Slug"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:35
+msgid "Ticket Name"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:36
+msgid "Ticket Description"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:37
+msgid "Ticket Start Sale Date"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:38
+msgid "Ticket Start Sale Time"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:39
+msgid "Ticket End Sale Date"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:40
+msgid "Ticket End Sale Time"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:41
+msgid "Ticket Stock"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/RSVP_Importer.php:221
+msgid "Recurring event tickets are not supported, event %d."
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Rows.php:35 src/Tribe/Tickets_View.php:604
+msgid "RSVPs"
+msgstr ""
+
+#: src/Tribe/JSON_LD/Order.php:106
+msgid "Free"
+msgstr "Zastonj"
+
+#: src/Tribe/Main.php:357
+msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
+msgstr ""
+
+#: src/Tribe/RSVP.php:848
+msgid "You can't RSVP more than the total remaining tickets."
+msgstr ""
+
+#: src/Tribe/RSVP.php:1260
+msgid "Return to the %1$sAttendees Report%2$s."
+msgstr ""
+
+#: src/Tribe/RSVP.php:1267
+msgid "Post updated. %1$s"
+msgstr ""
+
+#: src/Tribe/RSVP.php:1271
+msgid "Post published. %1$s"
+msgstr ""
+
+#: src/Tribe/RSVP.php:1274
+msgid "Post submitted."
+msgstr ""
+
+#: src/Tribe/RSVP.php:1275
+msgid "Post scheduled."
+msgstr ""
+
+#: src/Tribe/RSVP.php:1276
+msgid "Post draft updated."
+msgstr ""
+
+#: src/Tribe/Tickets.php:615
+msgid "Editing the ticket price is currently disallowed."
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:407
+msgid "Cheatin Huh?"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:390
+msgid "Invalid Event ID"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:413
+msgid "Empty user and email"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:425
+msgid "Invalid Email"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:431 src/Tribe/Tickets_Handler.php:447
+msgid "Invalid User ID"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:468
+msgid "Error when sending the email"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:473
+msgid "Email sent successfully!"
+msgstr ""
+
+#: src/admin-views/attendees-email.php:43
+msgid "Send Email"
+msgstr ""
+
+#: src/admin-views/attendees.php:29
+msgid "Edit Event"
+msgstr ""
+
+#: src/admin-views/attendees.php:30
+msgid "See Event Page"
+msgstr ""
+
+#: src/admin-views/attendees.php:61
+msgid "Sales by Ticket"
+msgstr ""
+
+#: src/admin-views/attendees.php:67
+msgid "Edit Ticket"
+msgstr ""
+
+#: src/admin-views/attendees.php:78
+msgid "Total Sold:"
+msgstr ""
+
+#: src/admin-views/meta-box.php:208
+msgid "When will ticket sales occur?"
+msgstr ""
+
+#: src/admin-views/meta-box.php:212
+msgid "If you don't set a start/end date for sales, tickets will be available from now until the event ends."
+msgstr ""
+
+#: src/admin-views/meta-box.php:233
+msgid "Cancel"
+msgstr "Prekliči"
+
+#: src/Tribe/Main.php:165
+msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
+msgstr ""
+
+#: src/Tribe/Main.php:303
+msgid "Support for Event Tickets"
+msgstr ""
+
+#: src/Tribe/Main.php:305
+msgid "Settings overview"
+msgstr ""
+
+#: src/Tribe/Main.php:306
+msgid "Features overview"
+msgstr ""
+
+#: src/Tribe/Main.php:307
+msgid "Troubleshooting common problems"
+msgstr ""
+
+#: src/Tribe/Main.php:308
+msgid "Customizing Event Tickets"
+msgstr ""
+
+#: src/Tribe/Main.php:325
+msgid "New User Primer"
+msgstr ""
+
+#: src/Tribe/Main.php:327
+msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
+msgstr ""
+
+#: src/Tribe/Main.php:344
+msgid "open-source forum on WordPress.org"
+msgstr ""
+
+#: src/Tribe/Main.php:345
+msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
+msgstr ""
+
+#: src/Tribe/Main.php:347
+msgid "premium support on our website"
+msgstr ""
+
+#: src/Tribe/Main.php:348
+msgid "Events Tickets Plus"
+msgstr ""
+
+#: src/Tribe/Main.php:349
+msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
+msgstr ""
+
+#: src/Tribe/Main.php:351 src/Tribe/Main.php:356
+msgid "post a thread"
+msgstr ""
+
+#: src/Tribe/Main.php:352
+msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:616 src/views/tickets/orders-link.php:45
+msgid " and "
+msgstr "in"
+
+#: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
+#: src/Tribe/Tickets_View.php:608
+msgid "Tickets"
+msgstr "Vstopnice"
+
+#: src/Tribe/Attendees_Table.php:76
+msgid "Order #"
+msgstr "Naročilo #"
+
+#: src/Tribe/Attendees_Table.php:77
+msgid "Order Status"
+msgstr "Status naročila"
+
+#: src/Tribe/Attendees_Table.php:78
+msgid "Purchaser name"
+msgstr "Ime kupca"
+
+#: src/Tribe/Attendees_Table.php:79
+msgid "Purchaser email"
+msgstr "Email kupca"
+
+#: src/Tribe/Attendees_Table.php:80
+msgid "Ticket type"
+msgstr "Tip vstopnice"
+
+#: src/Tribe/Attendees_Table.php:81 src/views/tickets/email.php:332
+msgid "Ticket #"
+msgstr "Vstopnica #"
+
+#: src/Tribe/Attendees_Table.php:82 src/views/tickets/email.php:344
+msgid "Security Code"
+msgstr "Varnostna številka"
+
+#: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:263
+#: src/Tribe/Attendees_Table.php:267 src/Tribe/Attendees_Table.php:361
+msgid "Check in"
+msgstr "Check in"
+
+#: src/Tribe/Attendees_Table.php:264 src/Tribe/Attendees_Table.php:268
+#: src/Tribe/Attendees_Table.php:362
+msgid "Undo Check in"
+msgstr "Razveljavi Check in"
+
+#: src/Tribe/Attendees_Table.php:334
+msgid "Print"
+msgstr "Print"
+
+#: src/Tribe/Attendees_Table.php:335 src/views/tickets/rsvp.php:118
+msgid "Email"
+msgstr "Email"
+
+#: src/Tribe/Attendees_Table.php:336
+msgid "Export"
+msgstr "Izvoz"
+
+#: src/Tribe/Attendees_Table.php:342
+msgid "Filter by purchaser name, ticket #, order # or security code"
+msgstr ""
+
+#: src/Tribe/Attendees_Table.php:363 src/admin-views/list.php:43
+msgid "Delete"
+msgstr "Izbriši"
+
+#: src/Tribe/Metabox.php:81
+msgid "Ticket header image"
+msgstr "Slika glave vstopnice"
+
+#: src/Tribe/Metabox.php:82
+msgid "Set as ticket header"
+msgstr "Nastavi za glavo vstopnice"
+
+#: src/Tribe/RSVP.php:221
+msgctxt "Attendee number"
+msgid "Attendee %1$s"
+msgstr ""
+
+#: src/Tribe/RSVP.php:573
+msgid "Your tickets from %s"
+msgstr ""
+
+#: src/Tribe/RSVP.php:842
+msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
+msgstr ""
+
+#: src/Tribe/RSVP.php:853
+msgid "In order to RSVP, you must enter your name and a valid email address."
+msgstr ""
+
+#: src/Tribe/RSVP.php:992
+msgid "(deleted)"
+msgstr ""
+
+#: src/Tribe/Tickets.php:397
+msgid "Your ticket has been saved."
+msgstr "Vaša vstopnica je bila shranjena"
+
+#: src/Tribe/Tickets.php:561
+msgid "Your ticket has been deleted."
+msgstr "Vaša vstopnica je bila izbrisana"
+
+#: src/Tribe/Tickets_Handler.php:77 src/admin-views/list.php:81
+msgid "See who purchased tickets to this event"
+msgstr "Poglejte kdo je kupil vstopnice za ta dogodek"
+
+#: src/Tribe/Tickets_Handler.php:77 src/admin-views/attendees.php:26
+#: src/admin-views/list.php:83
+msgid "Attendees"
+msgstr "Udeleženci"
+
+#: src/Tribe/Tickets_Handler.php:131
+msgid "You need to select a user or type a valid email address"
+msgstr "Izbrati morate uporabnika ali vnesti veljaven email naslov"
+
+#: src/Tribe/Tickets_Handler.php:132
+msgid "Sending..."
+msgstr "Pošilja..."
+
+#: src/Tribe/Tickets_Handler.php:158
+msgid "Columns"
+msgstr "Stolpci"
+
+#: src/Tribe/Tickets_Handler.php:158
+msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
+msgstr "Uporabite lahko možnosti zaslona, da izberete katere stolpce želite videti. Ta izbira deluje v tabeli spodaj, v emailu, pri printanju ali pri izvozu CSV. "
+
+#: src/Tribe/Tickets_Handler.php:322
+msgid "Yes"
+msgstr "Da"
+
+#: src/Tribe/Tickets_Handler.php:363
+msgid "attendees"
+msgstr "udeleženci"
+
+#: src/Tribe/Tickets_Handler.php:467
+msgid "Attendee List for: %s"
+msgstr "Seznam udeležencev za: %s"
+
+#: src/admin-views/attendees.php:33
+msgid "Event Details"
+msgstr "Podrobnosti dogodka"
+
+#: src/admin-views/attendees.php:83
+msgid "Finalized:"
+msgstr ""
+
+#: src/admin-views/attendees.php:89
+msgid "Awaiting review:"
+msgstr ""
+
+#: src/admin-views/attendees.php:94
+msgid "Checked in:"
+msgstr "Prijavljeni:"
+
+#: src/admin-views/attendees-email.php:4
+msgid "Send the attendee list by email"
+msgstr "Pošljite seznam udeležencev po email sporočilu."
+
+#: src/admin-views/attendees-email.php:10
+msgid "Select a User:"
+msgstr "Izberite uporabnika:"
+
+#: src/admin-views/attendees-email.php:15
+msgid "Select..."
+msgstr "Izberite ..."
+
+#: src/admin-views/attendees-email.php:20
+msgid "or"
+msgstr "ali"
+
+#: src/admin-views/attendees-email.php:22
+msgid "Email Address:"
+msgstr "Email naslov:"
+
+#: src/admin-views/list.php:33
+msgid "Edit"
+msgstr "Uredi"
+
+#: src/admin-views/list.php:52
+msgid "Edit in %s"
+msgstr "Uredi v %s"
+
+#: src/admin-views/list.php:47
+msgid "View"
+msgstr "Ogled"
+
+#: src/template-tags/tickets.php:226
+msgid "Sold %d"
+msgstr "Prodano %d"
+
+#: src/admin-views/meta-box.php:31
+msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
+msgstr "Ta dogodek je bil ustvarjen z uporabo 'Community Events'. Ali ste prepričani, da želite prodajati vstopnice zanj?"
+
+#: src/admin-views/meta-box.php:42
+msgid "Upload image for the ticket header."
+msgstr ""
+
+#: src/admin-views/meta-box.php:43
+msgid "The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like \"retina\" support use an image sized to 1160px wide."
+msgstr "Največja velikost slike v emailu je 580px širine in kakršnakoli višina, ki se prilagodi mobilnim zaslonom. Če želite uporabljati \"retina\" podporo, uporabite sliko, ki je široka vsaj 1160px."
+
+#: src/admin-views/meta-box.php:46
+msgid "Select an Image"
+msgstr "Izberite sliko"
+
+#: src/admin-views/meta-box.php:54
+msgid "Remove"
+msgstr "Odstrani"
+
+#: src/admin-views/meta-box.php:112 src/admin-views/meta-box.php:122
+msgid "Add new ticket"
+msgstr "Dodaj novo vstopnico"
+
+#: src/admin-views/meta-box.php:123
+msgid "Edit ticket"
+msgstr "Uredi vstopnico"
+
+#: src/admin-views/meta-box.php:128
+msgid "Sell using:"
+msgstr "Prodaja z uporabo:"
+
+#: src/admin-views/meta-box.php:145
+msgid "Ticket Name:"
+msgstr "Ime vstopnice:"
+
+#: src/admin-views/meta-box.php:152
+msgid "Ticket Description:"
+msgstr "Opis vstopnice:"
+
+#: src/admin-views/legacy-ticket-fields.php:15
+msgid "Price:"
+msgstr "Cena:"
+
+#: src/admin-views/legacy-ticket-fields.php:19
+msgid "(0 or empty for free tickets)"
+msgstr "(0 ali prazno za zastonjske vstopnice)"
+
+#: src/admin-views/legacy-ticket-fields.php:24
+msgid "Sale Price:"
+msgstr ""
+
+#: src/admin-views/legacy-ticket-fields.php:28
+msgid "(Current sale price - this can be managed via the product editor)"
+msgstr ""
+
+#: src/admin-views/meta-box.php:161
+msgid "Start sale:"
+msgstr "Začetek prodaje:"
+
+#: src/admin-views/meta-box.php:185
+msgid "End sale:"
+msgstr "Konec prodaje:"
+
+#: src/admin-views/meta-box.php:232
+msgid "Save this ticket"
+msgstr "Shrani vstopnico"
+
+#: src/admin-views/rsvp-metabox-advanced.php:2
+msgid "Stock:"
+msgstr ""
+
+#: src/admin-views/rsvp-metabox-advanced.php:6
+msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
+msgstr ""
+
+#: src/admin-views/rsvp-metabox-advanced.php:16
+msgid "Selling tickets for recurring events"
+msgstr ""
+
+#: src/admin-views/rsvp-metabox-advanced.php:22
+msgid "Currently, Tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly."
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:51
+msgid "Ticket Settings"
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:55
+msgid "Post types that can have tickets"
+msgstr ""
 
 #: src/views/tickets/attendees-email.php:24
 msgid "Attendee List"
 msgstr "Seznam udeležencev"
 
-#: common/src/Tribe/View_Helpers.php:243
-msgid "South Africa"
-msgstr "Južna Afrika"
-
-#: src/views/tickets/email.php:26
+#: src/views/tickets/email-non-attendance.php:24 src/views/tickets/email.php:26
 msgid "Your tickets"
 msgstr "Vaše vstopnice"
 
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:62
-msgid "<a href=\"%s\">Edit the page slug</a>"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:244
-msgid "South Georgia, South Sandwich Islands"
-msgstr "South Georgia, South Sandwich Islands"
-
-#: src/views/tickets/email.php:325
+#: src/views/tickets/email.php:336
 msgid "Ticket Type"
 msgstr "Tip vstopnice"
 
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:63
-msgid "Ask the site administrator to edit the page slug"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:245
-msgid "Spain"
-msgstr "Španija"
-
-#: src/views/tickets/email.php:329
+#: src/views/tickets/email.php:340
 msgid "Purchaser"
 msgstr "Kupec"
 
-#: common/src/Tribe/View_Helpers.php:246
-msgid "Sri Lanka"
-msgstr "Šri Lanka"
-
-#: src/views/tickets/rsvp.php:9
+#: src/Tribe/Main.php:530 src/Tribe/Tickets_View.php:604
+#: src/views/tickets/rsvp.php:19 src/views/tickets/rsvp.php:127
 msgid "RSVP"
 msgstr ""
 
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:69
-msgid " ask the site administrator set a different Events URL slug."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:247
-msgid "St. Helena"
-msgstr "St. Helena"
-
-#: src/views/tickets/rsvp.php:55
+#: src/views/tickets/rsvp.php:61
 msgid "%1$s out of %2$s available"
 msgstr ""
 
-#: common/src/Tribe/App_Shop.php:67 common/src/Tribe/App_Shop.php:68
-#: common/src/Tribe/App_Shop.php:91
-msgid "Event Add-Ons"
-msgstr "Dodatki za dogodke"
-
-#: common/src/Tribe/View_Helpers.php:248
-msgid "St. Pierre And Miquelon"
-msgstr "St. Pierre And Miquelon"
-
-#: src/views/tickets/rsvp.php:63
+#: src/views/tickets/rsvp.php:69
 msgid "Out of stock!"
 msgstr ""
 
-#: common/src/Tribe/Credits.php:26
-msgid "This calendar is powered by The Events Calendar."
+#: src/views/tickets/rsvp.php:110
+msgid "Full Name"
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:249
-msgid "Sudan"
-msgstr "Sudan"
-
-#: src/views/tickets/rsvp.php:86
-msgid "Full Name:"
-msgstr ""
-
-#: common/src/Tribe/Credits.php:46
-msgid "Rate %3$sThe Events Calendar%4$s %1$s on %2$s to keep this plugin free.  Thanks from the friendly folks at Modern Tribe."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:250
-msgid "Suriname"
-msgstr "Suriname"
-
-#: src/views/tickets/rsvp.php:94
-msgid "Email:"
-msgstr "Email:"
-
-#: common/src/Tribe/Field.php:209
-msgid "Invalid field type specified"
-msgstr "Nepravilen tip polja"
-
-#: common/src/Tribe/View_Helpers.php:251
-msgid "Svalbard And Jan Mayen Islands"
-msgstr "Svalbard And Jan Mayen Islands"
-
-#: src/views/tickets/rsvp.php:105
+#: src/views/tickets/rsvp.php:151
 msgid "Confirm RSVP"
 msgstr ""
 
-#: common/src/Tribe/Field.php:466
-msgid "No radio options specified"
-msgstr "Ni označenih 'radio options'"
-
-#: common/src/Tribe/View_Helpers.php:252
-msgid "Swaziland"
-msgstr "Swaziland"
-
 #. Plugin Name of the plugin/theme
-#: common/src/Tribe/Admin/Help_Page.php:64
 msgid "Event Tickets"
 msgstr ""
-
-#: common/src/Tribe/Field.php:502
-msgid "No checkbox options specified"
-msgstr "Ni označenih 'checkbox options'"
-
-#: common/src/Tribe/View_Helpers.php:253
-msgid "Sweden"
-msgstr "Švedska"
-
-#. Description of the plugin/theme
-msgid "Event Tickets allows you to sell tickets to events"
-msgstr ""
-
-#: common/src/Tribe/Field.php:558
-msgid "No select options specified"
-msgstr "Nobenih določenih opcij. "
-
-#: common/src/Tribe/View_Helpers.php:254
-msgid "Switzerland"
-msgstr "Švica"
 
 #. Author of the plugin/theme
 msgid "Modern Tribe, Inc."
 msgstr ""
 
-#: common/src/Tribe/Admin/Help_Page.php:48
-msgid "The Events Calendar"
-msgstr "The Events Calendar"
-
-#: common/src/Tribe/View_Helpers.php:255
-msgid "Syrian Arab Republic"
-msgstr "Sirska Arabska Republika"
-
 #. Author URI of the plugin/theme
 msgid "http://m.tri.be/28"
 msgstr ""
-
-#: common/src/Tribe/Settings.php:148 common/src/Tribe/Settings.php:203
-#: common/src/Tribe/Settings.php:204
-msgid "Events"
-msgstr "Dogodki"
-
-#: common/src/Tribe/View_Helpers.php:256
-msgid "Taiwan"
-msgstr "Tajvan"
-
-#: common/src/Tribe/View_Helpers.php:257
-msgid "Tajikistan"
-msgstr "Tadžikistan"
-
-#: common/src/Tribe/Settings.php:215
-msgid "Settings"
-msgstr "Nastavitve"
-
-#: common/src/Tribe/View_Helpers.php:258
-msgid "Tanzania, United Republic Of"
-msgstr "Tanzanija, Združena Republika"
-
-#: common/src/Tribe/Settings.php:214 common/src/Tribe/Settings.php:235
-msgid "Events Settings"
-msgstr "Nastavitve dogodkov"
-
-#: common/src/Tribe/View_Helpers.php:259
-msgid "Thailand"
-msgstr "Tajska"
-
-#: common/src/Tribe/Settings.php:300
-msgid "%s Settings"
-msgstr "%s nastavitve"
-
-#: common/src/Tribe/View_Helpers.php:260
-msgid "Togo"
-msgstr "Togo"
-
-#: common/src/Tribe/Settings.php:314
-msgid "You've requested a non-existent tab."
-msgstr "Zahtevali ste neobstoječ zavihek."
-
-#: common/src/Tribe/View_Helpers.php:261
-msgid "Tokelau"
-msgstr "Tokelau"
-
-#: common/src/Tribe/Settings.php:322
-msgid "Save Changes"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:262
-msgid "Tonga"
-msgstr "Tonga"
-
-#: common/src/Tribe/Settings.php:370
-msgid "You don't have permission to do that."
-msgstr "Nimate dovoljenja za ta ukaz."
-
-#: common/src/Tribe/View_Helpers.php:263
-msgid "Trinidad And Tobago"
-msgstr "Trinidad in Tobago"
-
-#: common/src/Tribe/Settings.php:376
-msgid "The request was sent insecurely."
-msgstr "Ukaz je bil poslan nezavarovano."
-
-#: common/src/Tribe/View_Helpers.php:264
-msgid "Tunisia"
-msgstr "Tunizija"
-
-#: common/src/Tribe/Settings.php:382
-msgid "The request wasn't sent from this tab."
-msgstr "Ukaz ni bil poslan iz tega zavihka."
-
-#: common/src/Tribe/View_Helpers.php:265
-msgid "Turkey"
-msgstr "Turčija"
-
-#: common/src/Tribe/Settings.php:550
-msgid "Your form had the following errors:"
-msgstr "Vaš obrazec ima naslednje napake"
-
-#: common/src/Tribe/View_Helpers.php:266
-msgid "Turkmenistan"
-msgstr "Turkmenistan"
-
-#: common/src/Tribe/Settings.php:560
-msgid "None of your settings were saved. Please try again."
-msgstr "Nobena od vaših nastavitev ni bila shranjena. Prosim poizkusite znova."
-
-#: common/src/Tribe/View_Helpers.php:267
-msgid "Turks And Caicos Islands"
-msgstr "Turks And Caicos Islands"
-
-#: common/src/Tribe/Settings.php:561
-msgid "The above setting was not saved. Other settings were successfully saved."
-msgid_plural "The above settings were not saved. Other settings were successfully saved."
-msgstr[0] "Zgornja nastavitev ni bila shranjena. Ostale nastavitve so bile shranjene uspešno."
-msgstr[1] "Zgornje nastavitve niso bile shranjene. Ostale nastavitve so bile shranjene uspešno."
-msgstr[2] ""
-msgstr[3] ""
-
-#: common/src/Tribe/View_Helpers.php:268
-msgid "Tuvalu"
-msgstr "Tuvalu"
-
-#: common/src/Tribe/Settings.php:583
-msgid "Settings saved."
-msgstr "Nastavitve shranjene."
-
-#: common/src/Tribe/View_Helpers.php:269
-msgid "Uganda"
-msgstr "Uganda"
-
-#: common/src/Tribe/Settings_Manager.php:55
-msgid "General"
-msgstr "Splošno"
-
-#: common/src/Tribe/View_Helpers.php:270
-msgid "Ukraine"
-msgstr "Ukrajina"
-
-#: common/src/Tribe/Settings_Manager.php:56
-msgid "Display"
-msgstr "Pogled"
-
-#: common/src/Tribe/View_Helpers.php:271
-msgid "United Arab Emirates"
-msgstr "Združeni Arabski Emirati"
-
-#: common/src/Tribe/Settings_Manager.php:62
-#: common/src/Tribe/Settings_Manager.php:289
-msgid "Help"
-msgstr "Pomoč"
-
-#: common/src/Tribe/View_Helpers.php:272
-msgid "United Kingdom"
-msgstr "Združeno kraljestvo"
-
-#: common/src/Tribe/Settings_Manager.php:229
-msgid "Network"
-msgstr "Omrežje"
-
-#: common/src/Tribe/View_Helpers.php:273
-msgid "United States Minor Outlying Islands"
-msgstr "United States Minor Outlying Islands"
-
-#: common/src/Tribe/Settings_Manager.php:263
-#: common/src/admin-views/tribe-options-licenses.php:46
-msgid "Licenses"
-msgstr "Licence"
-
-#: common/src/Tribe/View_Helpers.php:274
-msgid "Uruguay"
-msgstr "Urugvaj"
-
-#: common/src/Tribe/Settings_Tab.php:222
-msgid "There are no fields setup for this tab yet."
-msgstr "Nobenih polj ni nastavljenih za ta zavihek."
-
-#: common/src/Tribe/View_Helpers.php:275
-msgid "Uzbekistan"
-msgstr "Uzbekistan"
-
-#: common/src/Tribe/View_Helpers.php:276
-msgid "Vanuatu"
-msgstr "Vanuatu"
-
-#: common/src/Tribe/View_Helpers.php:277
-msgid "Venezuela"
-msgstr "Venezuela"
-
-#: common/src/admin-views/tribe-options-help.php:34
-msgid "System Information"
-msgstr "Sistemske informacije"
-
-#: common/src/Tribe/View_Helpers.php:278
-msgid "Viet Nam"
-msgstr "Viet Nam"
-
-#: common/src/Tribe/Support.php:122
-msgid "Unknown or not set"
-msgstr "Neznano ali nedoločeno"
-
-#: common/src/Tribe/View_Helpers.php:279
-msgid "Virgin Islands (British)"
-msgstr "Deviški otoki (britanski)"
-
-#: common/src/Tribe/Support.php:129
-msgid "Rewrite rules were purged on load of this help page. Chances are there is a rewrite rule flush occurring in a plugin or theme!"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:280
-msgid "Virgin Islands (U.S.)"
-msgstr "Deviški otoki (ameriški)"
-
-#: common/src/Tribe/Validate.php:76 common/src/Tribe/Validate.php:117
-msgid "Invalid or incomplete field passed"
-msgstr "Neveljavno ali nedokončano polje podano"
-
-#: common/src/Tribe/View_Helpers.php:281
-msgid "Wallis And Futuna Islands"
-msgstr "Wallis And Futuna Islands"
-
-#: common/src/Tribe/Validate.php:77 common/src/Tribe/Validate.php:112
-#: common/src/Tribe/Validate.php:118
-msgid "Field ID:"
-msgstr "ID polja:"
-
-#: common/src/Tribe/View_Helpers.php:282
-msgid "Western Sahara"
-msgstr "Western Sahara"
-
-#: common/src/Tribe/Validate.php:111
-msgid "Non-existant field validation function passed"
-msgstr "Neobstoječa validacijska funkcija podana"
-
-#: common/src/Tribe/View_Helpers.php:283
-msgid "Yemen"
-msgstr "Jemen"
-
-#: common/src/Tribe/Validate.php:112
-msgctxt "non-existant function name passed for field validation"
-msgid "with function name:"
-msgstr "z funkcijskim imenom:"
-
-#: common/src/Tribe/View_Helpers.php:284
-msgid "Zambia"
-msgstr "Zambija"
-
-#: common/src/Tribe/Validate.php:135 common/src/Tribe/Validate.php:151
-msgid "%s must contain numbers and letters only"
-msgstr "%s mora vsebovati zgolj številke in črke"
-
-#: common/src/Tribe/View_Helpers.php:285
-msgid "Zimbabwe"
-msgstr "Zimbabve"
-
-#: common/src/Tribe/Validate.php:167
-msgid "%s must contain numbers, letters and dots only"
-msgstr "%s mora vsebovati številke, črke in pike"
-
-#: common/src/Tribe/View_Helpers.php:316
-msgid "Alabama"
-msgstr "Alabama"
-
-#: common/src/Tribe/Validate.php:181 common/src/Tribe/Validate.php:209
-msgid "%s must be a positive number."
-msgstr "%s mora biti pozitivno število."
-
-#: common/src/Tribe/View_Helpers.php:317
-msgid "Alaska"
-msgstr "Alaska"
-
-#: common/src/Tribe/Validate.php:224
-msgid "%s must be a valid slug (numbers, letters, dashes, and underscores)."
-msgstr "%s mora biti veljavni ključ (številke, črke, vezaji in podčrtaji)."
-
-#: common/src/Tribe/View_Helpers.php:318
-msgid "Arizona"
-msgstr "Arizona"
-
-#: common/src/Tribe/Validate.php:239
-msgid "%s must be a valid absolute URL."
-msgstr "%s mora biti veljaven absolutni URL"
-
-#: common/src/Tribe/View_Helpers.php:319
-msgid "Arkansas"
-msgstr "Arkansas"
-
-#: common/src/Tribe/Validate.php:255 common/src/Tribe/Validate.php:272
-#: common/src/Tribe/Validate.php:294
-msgid "%s must have a value that's part of its options."
-msgstr "%s mora imeti vrednost, ki je del možnosti."
-
-#: common/src/Tribe/View_Helpers.php:320
-msgid "California"
-msgstr "California"
-
-#: common/src/Tribe/Validate.php:308
-msgid "Comparison validation failed because no comparison value was provided, for field %s"
-msgstr "Primerjalno preverjanje ni uspelo, ker ni bilo podanih vrednosti za primerjavo, za polje %s"
-
-#: common/src/Tribe/View_Helpers.php:321
-msgid "Colorado"
-msgstr "Colorado"
-
-#: common/src/Tribe/Validate.php:315
-msgid "%s cannot be the same as %s."
-msgstr "%s ne more biti enak kot %s. "
-
-#: common/src/Tribe/View_Helpers.php:322
-msgid "Connecticut"
-msgstr "Connecticut"
-
-#: common/src/Tribe/Validate.php:317
-msgid "%s cannot be a duplicate"
-msgstr "%s ne more biti duplikat"
-
-#: common/src/Tribe/View_Helpers.php:323
-msgid "Delaware"
-msgstr "Delaware"
-
-#: common/src/Tribe/Validate.php:333
-msgid "%s must be a number or percentage."
-msgstr "%s mora biti število ali procent."
-
-#: common/src/Tribe/View_Helpers.php:324
-msgid "District of Columbia"
-msgstr "District of Columbia"
-
-#: common/src/Tribe/Validate.php:387
-msgid "%s must be a number between 0 and 21."
-msgstr "%s mora biti število med 0 in 21."
-
-#: common/src/Tribe/View_Helpers.php:325
-msgid "Florida"
-msgstr "Florida"
-
-#: common/src/Tribe/Validate.php:403
-msgid "%s must consist of letters, numbers, dashes, apostrophes, and spaces only."
-msgstr "%s lahko vseguje zgolj črke, številke, vezaje, apostrofe in presledke. "
-
-#: common/src/Tribe/View_Helpers.php:327
-msgid "Hawaii"
-msgstr "Hawaii"
-
-#: common/src/Tribe/Validate.php:419
-msgid "%s must consist of letters, spaces, apostrophes, and dashes."
-msgstr "%s mora biti sestavljeno iz črk, presledkov, apostrofov in vezajev. "
-
-#: common/src/Tribe/View_Helpers.php:328
-msgid "Idaho"
-msgstr "Idaho"
-
-#: common/src/Tribe/Validate.php:433
-msgid "%s must consist of 5 numbers."
-msgstr "%s mora biti sestavljeno iz 5 številk."
-
-#: common/src/Tribe/View_Helpers.php:329
-msgid "Illinois"
-msgstr "Illinois"
-
-#: common/src/Tribe/Validate.php:447
-msgid "%s must be a phone number."
-msgstr "%s mora biti telefonska številka."
-
-#: common/src/Tribe/View_Helpers.php:330
-msgid "Indiana"
-msgstr "Indiana"
-
-#: common/src/Tribe/Validate.php:463
-msgid "Country List must be formatted as one country per line in the following format: <br>US, United States <br> UK, United Kingdom."
-msgstr "Country List must be formatted as one country per line in the following format: <br>US, United States <br> UK, United Kingdom."
-
-#: common/src/Tribe/View_Helpers.php:331
-msgid "Iowa"
-msgstr "Iowa"
-
-#: common/src/Tribe/View_Helpers.php:26 common/src/Tribe/View_Helpers.php:45
-msgid "Select a Country:"
-msgstr "Izberite državo:"
-
-#: common/src/Tribe/View_Helpers.php:332
-msgid "Kansas"
-msgstr "Kansas"
-
-#: common/src/Tribe/View_Helpers.php:46
-msgid "United States"
-msgstr "Združene države"
-
-#: common/src/Tribe/View_Helpers.php:333
-msgid "Kentucky"
-msgstr "Kentucky"
-
-#: common/src/Tribe/View_Helpers.php:47
-msgid "Afghanistan"
-msgstr "Afganistan"
-
-#: common/src/Tribe/View_Helpers.php:334
-msgid "Louisiana"
-msgstr "Louisiana"
-
-#: common/src/Tribe/View_Helpers.php:48
-msgid "Albania"
-msgstr "Albanija"
-
-#: common/src/Tribe/View_Helpers.php:335
-msgid "Maine"
-msgstr "Maine"
-
-#: common/src/Tribe/View_Helpers.php:49
-msgid "Algeria"
-msgstr "Alžirija"
-
-#: common/src/Tribe/View_Helpers.php:336
-msgid "Maryland"
-msgstr "Maryland"
-
-#: common/src/Tribe/View_Helpers.php:50
-msgid "American Samoa"
-msgstr "Ameriška Samoa"
-
-#: common/src/Tribe/View_Helpers.php:337
-msgid "Massachusetts"
-msgstr "Massachusetts"
-
-#: common/src/Tribe/View_Helpers.php:51
-msgid "Andorra"
-msgstr "Andora"
-
-#: common/src/Tribe/View_Helpers.php:338
-msgid "Michigan"
-msgstr "Michigan"
-
-#: common/src/Tribe/View_Helpers.php:52
-msgid "Angola"
-msgstr "Anogla"
-
-#: common/src/Tribe/View_Helpers.php:339
-msgid "Minnesota"
-msgstr "Minnesota"
-
-#: common/src/Tribe/View_Helpers.php:53
-msgid "Anguilla"
-msgstr "Anguila"
-
-#: common/src/Tribe/View_Helpers.php:340
-msgid "Mississippi"
-msgstr "Mississippi"
-
-#: common/src/Tribe/View_Helpers.php:54
-msgid "Antarctica"
-msgstr "Antarktika"
-
-#: common/src/Tribe/View_Helpers.php:341
-msgid "Missouri"
-msgstr "Missouri"
-
-#: common/src/Tribe/View_Helpers.php:55
-msgid "Antigua And Barbuda"
-msgstr "Antigva in Barbuda"
-
-#: common/src/Tribe/View_Helpers.php:342
-msgid "Montana"
-msgstr "Montana"
-
-#: common/src/Tribe/View_Helpers.php:56
-msgid "Argentina"
-msgstr "Argentina"
-
-#: common/src/Tribe/View_Helpers.php:343
-msgid "Nebraska"
-msgstr "Nebraska"
-
-#: common/src/Tribe/View_Helpers.php:57
-msgid "Armenia"
-msgstr "Armenija"
-
-#: common/src/Tribe/View_Helpers.php:344
-msgid "Nevada"
-msgstr "Nevada"
-
-#: common/src/Tribe/View_Helpers.php:58
-msgid "Aruba"
-msgstr "Aruba"
-
-#: common/src/Tribe/View_Helpers.php:345
-msgid "New Hampshire"
-msgstr "New Hampshire"
-
-#: common/src/Tribe/View_Helpers.php:59
-msgid "Australia"
-msgstr "Avstralija"
-
-#: common/src/Tribe/View_Helpers.php:346
-msgid "New Jersey"
-msgstr "New Jersey"
-
-#: common/src/Tribe/View_Helpers.php:60
-msgid "Austria"
-msgstr "Avstrija"
-
-#: common/src/Tribe/View_Helpers.php:347
-msgid "New Mexico"
-msgstr "New Mexico"
-
-#: common/src/Tribe/View_Helpers.php:61
-msgid "Azerbaijan"
-msgstr "Azerbajdžan"
-
-#: common/src/Tribe/View_Helpers.php:348
-msgid "New York"
-msgstr "New York"
-
-#: common/src/Tribe/View_Helpers.php:62
-msgid "Bahamas"
-msgstr "Bahami"
-
-#: common/src/Tribe/View_Helpers.php:349
-msgid "North Carolina"
-msgstr "North Carolina"
-
-#: common/src/Tribe/View_Helpers.php:63
-msgid "Bahrain"
-msgstr "Bahrajn"
-
-#: common/src/Tribe/View_Helpers.php:350
-msgid "North Dakota"
-msgstr "North Dakota"
-
-#: common/src/Tribe/View_Helpers.php:64
-msgid "Bangladesh"
-msgstr "Bangladeš"
-
-#: common/src/Tribe/View_Helpers.php:351
-msgid "Ohio"
-msgstr "Ohio"
-
-#: common/src/Tribe/View_Helpers.php:65
-msgid "Barbados"
-msgstr "Barbados"
-
-#: common/src/Tribe/View_Helpers.php:352
-msgid "Oklahoma"
-msgstr "Oklahoma"
-
-#: common/src/Tribe/View_Helpers.php:66
-msgid "Belarus"
-msgstr "Belorusija"
-
-#: common/src/Tribe/View_Helpers.php:353
-msgid "Oregon"
-msgstr "Oregon"
-
-#: common/src/Tribe/View_Helpers.php:67
-msgid "Belgium"
-msgstr "Belgija"
-
-#: common/src/Tribe/View_Helpers.php:354
-msgid "Pennsylvania"
-msgstr "Pennsylvania"
-
-#: common/src/Tribe/View_Helpers.php:68
-msgid "Belize"
-msgstr "Belize"
-
-#: common/src/Tribe/View_Helpers.php:355
-msgid "Rhode Island"
-msgstr "Rhode Island"
-
-#: common/src/Tribe/View_Helpers.php:69
-msgid "Benin"
-msgstr "Benin"
-
-#: common/src/Tribe/View_Helpers.php:356
-msgid "South Carolina"
-msgstr "South Carolina"
-
-#: common/src/Tribe/View_Helpers.php:70
-msgid "Bermuda"
-msgstr "Bermuda"
-
-#: common/src/Tribe/View_Helpers.php:357
-msgid "South Dakota"
-msgstr "South Dakota"
-
-#: common/src/Tribe/View_Helpers.php:71
-msgid "Bhutan"
-msgstr "Butan"
-
-#: common/src/Tribe/View_Helpers.php:358
-msgid "Tennessee"
-msgstr "Tennessee"
-
-#: common/src/Tribe/View_Helpers.php:72
-msgid "Bolivia"
-msgstr "Bolivija"
-
-#: common/src/Tribe/View_Helpers.php:359
-msgid "Texas"
-msgstr "Texas"
-
-#: common/src/Tribe/View_Helpers.php:73
-msgid "Bosnia And Herzegowina"
-msgstr "Bosna in Hercegovina"
-
-#: common/src/Tribe/View_Helpers.php:360
-msgid "Utah"
-msgstr "Utah"
-
-#: common/src/Tribe/View_Helpers.php:74
-msgid "Botswana"
-msgstr "Bocvana"
-
-#: common/src/Tribe/View_Helpers.php:361
-msgid "Vermont"
-msgstr "Vermont"
-
-#: common/src/Tribe/View_Helpers.php:75
-msgid "Bouvet Island"
-msgstr "Bouveški otok"
-
-#: common/src/Tribe/View_Helpers.php:362
-msgid "Virginia"
-msgstr "Virginia"
-
-#: common/src/Tribe/View_Helpers.php:76
-msgid "Brazil"
-msgstr "Brazilija"
-
-#: common/src/Tribe/View_Helpers.php:363
-msgid "Washington"
-msgstr "Washington"
-
-#: common/src/Tribe/View_Helpers.php:77
-msgid "British Indian Ocean Territory"
-msgstr "Britansko-Indijski oceanski teritorij"
-
-#: common/src/Tribe/View_Helpers.php:364
-msgid "West Virginia"
-msgstr "West Virginia"
-
-#: common/src/Tribe/View_Helpers.php:78
-msgid "Brunei Darussalam"
-msgstr "Brunei Darussalam"
-
-#: common/src/Tribe/View_Helpers.php:365
-msgid "Wisconsin"
-msgstr "Wisconsin"
-
-#: common/src/Tribe/View_Helpers.php:79
-msgid "Bulgaria"
-msgstr "Bulgarija"
-
-#: common/src/Tribe/View_Helpers.php:366
-msgid "Wyoming"
-msgstr "Wyoming"
-
-#: common/src/Tribe/View_Helpers.php:80
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-
-#: common/src/admin-views/app-shop.php:4
-msgid "Tribe Event Add-Ons"
-msgstr "Tribe Event Add-Ons"
-
-#: common/src/Tribe/View_Helpers.php:81
-msgid "Burundi"
-msgstr "Burundi"
-
-#: common/src/admin-views/app-shop.php:54
-msgid "Version"
-msgstr "Različica"
-
-#: common/src/Tribe/View_Helpers.php:82
-msgid "Cambodia"
-msgstr "Kambodža"
-
-#: common/src/admin-views/app-shop.php:57
-msgid "Last Update"
-msgstr "Zadnja posodobitev"
-
-#: common/src/Tribe/View_Helpers.php:83
-msgid "Cameroon"
-msgstr "Kamerun"
-
-#: common/src/admin-views/tribe-options-display.php:22
-msgid "Date Format Settings"
-msgstr "Nastavitve formata datuma"
-
-#: common/src/Tribe/View_Helpers.php:84
-msgid "Canada"
-msgstr "Kanada"
-
-#: common/src/admin-views/tribe-options-display.php:26
-msgid "<p>The following three fields accept the date format options available to the php date() function. <a href=\"http://codex.wordpress.org/Formatting_Date_and_Time\" target=\"_blank\">Learn how to make your own date format here</a>.</p>"
-msgstr "<p>Naslednja tri polja sprejmejo format datuma med opcijami, ki so na voljo za php date() function. <a href=\"http://codex.wordpress.org/Formatting_Date_and_Time\" target=\"_blank\">Tukaj se lahko naučite kako narediti svoj format datuma</a>.</p>"
-
-#: common/src/Tribe/View_Helpers.php:85
-msgid "Cape Verde"
-msgstr "Cape Verde"
-
-#: common/src/admin-views/tribe-options-display.php:30
-msgid "Date with year"
-msgstr "Datum z letom"
-
-#: common/src/Tribe/View_Helpers.php:86
-msgid "Cayman Islands"
-msgstr "Kajmanski otoki"
-
-#: common/src/Tribe/View_Helpers.php:87
-msgid "Central African Republic"
-msgstr "Srednjeafriška republika"
-
-#: common/src/Tribe/View_Helpers.php:88
-msgid "Chad"
-msgstr "Čad"
-
-#: common/src/Tribe/View_Helpers.php:89
-msgid "Chile"
-msgstr "Čile"
-
-#: common/src/Tribe/View_Helpers.php:90
-msgid "China"
-msgstr "Kitajska"
-
-#: common/src/Tribe/View_Helpers.php:91
-msgid "Christmas Island"
-msgstr "Božični otoki"
-
-#: common/src/admin-views/tribe-options-display.php:38
-msgid "Date time separator"
-msgstr "Meja med datumom in časom"
-
-#: common/src/Tribe/View_Helpers.php:92
-msgid "Cocos (Keeling) Islands"
-msgstr "Cocos (Keeling) Islands"
-
-#: common/src/admin-views/tribe-options-display.php:39
-msgid "Enter the separator that will be placed between the date and time, when both are shown."
-msgstr "Vnesite mejo, ki bo postavljen med datumom in časom, kadar bosta prikazana oba"
-
-#: common/src/Tribe/View_Helpers.php:93
-msgid "Colombia"
-msgstr "Kolumbija"
-
-#: common/src/Tribe/View_Helpers.php:94
-msgid "Comoros"
-msgstr "Comoros"
-
-#: common/src/Tribe/View_Helpers.php:95
-msgid "Congo"
-msgstr "Kongo"
-
-#: common/src/admin-views/tribe-options-display.php:46
-msgid "Datepicker Date Format"
-msgstr "Format izbiralnika datumov"
-
-#: common/src/Tribe/View_Helpers.php:96
-msgid "Congo, The Democratic Republic Of The"
-msgstr "Kongo, Demokratična republika"
-
-#: common/src/admin-views/tribe-options-display.php:47
-msgid "Select the date format to use in datepickers"
-msgstr "Izberite format datumov za uporabo v izbiralniku datumov"
-
-#: common/src/Tribe/View_Helpers.php:97
-msgid "Cook Islands"
-msgstr "Cookovi otoki"
-
-#: common/src/admin-views/tribe-options-general.php:20
-msgid "Looking for additional functionality including recurring events, custom meta, community events, ticket sales and more?"
-msgstr "Iščete dodatno funkcionalnost kot so ponavljajoči se dogodki, meta podatki po meri, community events, prodaja vstopnic ali več? "
-
-#: common/src/Tribe/View_Helpers.php:98
-msgid "Costa Rica"
-msgstr "Kosta Rika"
-
-#: common/src/admin-views/tribe-options-general.php:20
-msgid "Check out the available add-ons"
-msgstr "Poglejte si razpoložljive dodatke"
-
-#: common/src/Tribe/View_Helpers.php:99
-msgid "Cote D'Ivoire"
-msgstr "Slonokoščena obala"
-
-#: common/src/admin-views/tribe-options-general.php:25
-msgid "We hope our plugin is helping you out."
-msgstr "Upamo, da vam je naš vtičnik v pomoč."
-
-#: common/src/Tribe/View_Helpers.php:100
-msgid "Croatia (Local Name: Hrvatska)"
-msgstr "Hrvaška"
-
-#: common/src/admin-views/tribe-options-general.php:30
-msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text-only link at the bottom of your calendar pointing to The Events Calendar project."
-msgstr "Ali si mislite \"Wau, ta vtičnik je res super, moral bi se zahvaliti Modern Tribe za njihovo trdo delo.\" Največja zahvala za katero lahko zaprosimo je prepoznavnost. Dodajte majhno tekstovno povezavo na dno vašega koledarja, ki kaže na stran projekta The Events Calendar. "
-
-#: common/src/Tribe/View_Helpers.php:101
-msgid "Cuba"
-msgstr "Kuba"
-
-#: common/src/admin-views/tribe-options-general.php:30
-#: common/src/admin-views/tribe-options-general.php:35
-msgid "See an example of the link"
-msgstr "Poglejte si primer povezave"
-
-#: common/src/Tribe/View_Helpers.php:102
-msgid "Cyprus"
-msgstr "Ciper"
-
-#: common/src/admin-views/tribe-options-general.php:35
-msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text only link at the bottom of your calendar pointing to The Events Calendar project."
-msgstr "Ali si mislite \"Wau, ta vtičnik je res super, moral bi se zahvaliti Modern Tribe za njihovo trdo delo.\" Največja zahvala za katero lahko zaprosimo je prepoznavnost. Dodajte majhno tekstovno povezavo na dno vašega koledarja, ki kaže na stran projekta The Events Calendar. "
-
-#: common/src/Tribe/View_Helpers.php:103
-msgid "Czech Republic"
-msgstr "Republika Češka"
-
-#: common/src/admin-views/tribe-options-general.php:40
-msgid "Show The Events Calendar link"
-msgstr "Prikaži The Events Calendar povezavo"
-
-#: common/src/Tribe/View_Helpers.php:104
-msgid "Denmark"
-msgstr "Danska"
-
-#: common/src/admin-views/tribe-options-general.php:55
-msgid "General Settings"
-msgstr "Splošne nastavitve"
-
-#: common/src/Tribe/View_Helpers.php:105
-msgid "Djibouti"
-msgstr "Djibouti"
-
-#: common/src/Tribe/View_Helpers.php:106
-msgid "Dominica"
-msgstr "Dominika"
-
-#: common/src/Tribe/View_Helpers.php:107
-msgid "Dominican Republic"
-msgstr "Dominikanska republika"
-
-#: common/src/admin-views/tribe-options-general.php:59
-msgid "Default currency symbol"
-msgstr "Privzeti simbol valute"
-
-#: common/src/Tribe/View_Helpers.php:108
-msgid "East Timor"
-msgstr "Zahodni Timor"
-
-#: common/src/admin-views/tribe-options-general.php:60
-msgid "Set the default currency symbol for event costs. Note that this only impacts future events, and changes made will not apply retroactively."
-msgstr "Nastavite privzeti simbol valute za cene dogodkov. Ta možnost vpliva le na prihodnje dogodke, spremembe pa ne bodo delovale retroaktivno."
-
-#: common/src/Tribe/View_Helpers.php:109
-msgid "Ecuador"
-msgstr "Ekvador"
-
-#: common/src/admin-views/tribe-options-general.php:67
-msgid "Currency symbol follows value"
-msgstr "Simbol valute sledi vrednosti"
-
-#: common/src/Tribe/View_Helpers.php:110
-msgid "Egypt"
-msgstr "Egipt"
-
-#: common/src/admin-views/tribe-options-general.php:68
-msgid "The currency symbol normally precedes the value. Enabling this option positions the symbol after the value."
-msgstr "Simbol valute je načeloma pred vrednostjo. Če boste omogočili to možnost, se bo simbol pojavljal za vrednostjo. "
-
-#: common/src/Tribe/View_Helpers.php:111
-msgid "El Salvador"
-msgstr "El Salvador"
-
-#: common/src/admin-views/tribe-options-general.php:74
-msgid "Miscellaneous Settings"
-msgstr "Razne nastavitve"
-
-#: common/src/Tribe/View_Helpers.php:112
-msgid "Equatorial Guinea"
-msgstr "Ekvatorialna Gvineja"
-
-#: common/src/Tribe/View_Helpers.php:113
-msgid "Eritrea"
-msgstr "Eritreja"
-
-#: common/src/Tribe/View_Helpers.php:114
-msgid "Estonia"
-msgstr "Estonija"
-
-#: common/src/Tribe/View_Helpers.php:115
-msgid "Ethiopia"
-msgstr "Etipoija"
-
-#: common/src/Tribe/View_Helpers.php:116
-msgid "Falkland Islands (Malvinas)"
-msgstr "Falklandski otoki (Malvinas)"
-
-#: common/src/admin-views/tribe-options-general.php:81
-msgid "Debug mode"
-msgstr "Debug način"
-
-#: common/src/Tribe/View_Helpers.php:117
-msgid "Faroe Islands"
-msgstr "Faroški otoki"
-
-#: common/src/admin-views/tribe-options-general.php:87
-msgid "Enable this option to log debug information. By default this will log to your server PHP error log. If you'd like to see the log messages in your browser, then we recommend that you install the %s and look for the \"Tribe\" tab in the debug output."
-msgstr "Omogočite to možnost za spremljanje debug informacij. Privzeto se bo to zapisalo v PHP error log vašega strežnika. Če želite pogledati te informacije v vašem brskalniku, vam priporočamo da namestite %s in poiščete \"Tribe\" zavihek v debug izpisu. "
-
-#: common/src/Tribe/View_Helpers.php:118
-msgid "Fiji"
-msgstr "Fiji"
-
-#: common/src/admin-views/tribe-options-general.php:87
-msgid "Debug Bar Plugin"
-msgstr "Debug Bar vtičnik "
-
-#: common/src/Tribe/View_Helpers.php:119
-msgid "Finland"
-msgstr "Finska"
-
-#: common/src/Tribe/Admin/Help_Page.php:183
-msgid "Events Calendar PRO"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:120
-msgid "France"
-msgstr "Francija"
-
-#: common/src/Tribe/View_Helpers.php:121
-msgid "France, Metropolitan"
-msgstr "Francija, Metropolitan"
-
-#: common/src/Tribe/View_Helpers.php:122
-msgid "French Guiana"
-msgstr "Francoska Guiana"

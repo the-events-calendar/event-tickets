@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2015-12-02 18:12:07+0000\n"
+"PO-Revision-Date: 2016-09-14 15:53:26+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -10,2316 +10,751 @@ msgstr ""
 "X-Generator: GlotPress/1.0-alpha-1100\n"
 "Project-Id-Version: Event Tickets\n"
 
-#: src/Tribe/Main.php:292
+#: src/admin-views/tribe-options-tickets.php:69
+msgid "You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting."
+msgstr ""
+
+#: src/template-tags/tickets.php:221
+msgid "global inventory"
+msgstr ""
+
+#: src/template-tags/tickets.php:231
+msgctxt "ticket stock message (cancelled stock)"
+msgid " cancelled: %1$d"
+msgstr ""
+
+#: src/template-tags/tickets.php:236
+msgid " pending: %1$d"
+msgstr ""
+
+#: src/template-tags/tickets.php:241
+msgid "Sold %1$d (units remaining: %2$s%3$s%4$s)"
+msgstr ""
+
+#: src/views/shortcodes/my-attendance-list-logged-out.php:8
+msgid "To see a list of events you are attending you will need to login."
+msgstr ""
+
+#: src/views/shortcodes/my-attendance-list.php:28
+msgid "You have not indicated your attendance for any upcoming events."
+msgstr ""
+
+#: src/views/tickets/email-non-attendance.php:248
+msgid "Thank you for confirming that you will not be attending the above event."
+msgstr ""
+
+#: src/views/tickets/orders-link.php:33
+msgid "%d RSVP"
+msgid_plural "%d RSVPs"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/views/tickets/orders-link.php:37
+msgid "%d Ticket"
+msgid_plural "%d Tickets"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/views/tickets/orders-link.php:45
+msgid "You have %s for this %s."
+msgstr ""
+
+#: src/views/tickets/orders-link.php:46
+msgid "View your %s"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:29
+msgid "My RSVPs for This %s"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:38
+msgid "Reserved by %1$s (%2$s)"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:44
+msgid " on %s"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:63
+msgid "Attendee %d"
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:68
+msgid "RSVP: "
+msgstr ""
+
+#: src/views/tickets/orders-rsvp.php:71
+msgid "Type: "
+msgstr ""
+
+#: src/views/tickets/orders.php:26
+msgid "View %s"
+msgstr "Veure %s"
+
+#: src/views/tickets/orders.php:57
+msgid "Update %s"
+msgstr "Actualitzar %s"
+
+#: src/views/tickets/rsvp.php:33
+msgid "Please fill in the RSVP confirmation name and email fields."
+msgstr ""
+
+#: src/views/tickets/rsvp.php:98
+msgid "Send RSVP confirmation to:"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:138
+msgid "Don't list me on the public attendee list"
+msgstr ""
+
+#: src/views/tickets/rsvp.php:149
+msgid "Login to RSVP"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Event Tickets allows your guests to RSVP from any post, page, or event."
+msgstr ""
+
+#: src/Tribe/Main.php:530
+msgid "Buy"
+msgstr ""
+
+#: src/Tribe/Metabox.php:87
+msgid "It looks like you have modified your global stock settings but have not saved or updated the post."
+msgstr ""
+
+#: src/Tribe/Metabox.php:100
+msgid "Please enter in without thousand separators and currency symbols."
+msgstr ""
+
+#: src/Tribe/RSVP.php:603
+msgid "You confirmed you will not be attending %s"
+msgstr ""
+
+#: src/Tribe/Tickets.php:862
+msgid "Use global stock"
+msgstr ""
+
+#: src/Tribe/Tickets.php:863
+msgid "Use global stock but cap sales"
+msgstr ""
+
+#: src/Tribe/Tickets.php:864
+msgid "Independent (do not use global stock)"
+msgstr ""
+
+#: src/Tribe/Tickets.php:1306
+msgid "Tickets are not available as this %s has passed."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1308
+msgid "Tickets are not yet available."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1310
+msgid "Tickets are no longer available."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1312
+msgid "There are no tickets available at this time."
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:292
+msgid "Customer Name"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:293
+msgid "Customer Email Address"
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:511
+msgid "Going"
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:512
+msgid "Not Going"
+msgstr ""
+
+#: src/Tribe/Tickets_View.php:608
+msgid "Ticket"
+msgstr "Tiquet"
+
+#: src/Tribe/Tickets_View.php:674
+msgid "This RSVP is no longer active."
+msgstr ""
+
+#: src/admin-views/attendees.php:46
+msgid "Post Type:"
+msgstr ""
+
+#: src/admin-views/attendees.php:100
+msgid "Deleted:"
+msgstr ""
+
+#: src/admin-views/meta-box.php:69
+msgid "Enable global stock"
+msgstr ""
+
+#: src/admin-views/meta-box.php:79
+msgid "Global stock level"
+msgstr ""
+
+#: src/admin-views/meta-box.php:85
+msgid "(%s sold)"
+msgid_plural "(%s sold)"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/admin-views/rsvp-metabox-advanced.php:24
+msgid "If you are creating a recurring event, Tickets will only show up once per Event Series, meaning that the same ticket will apper across all events. Please configure your events accordingly."
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:37
+msgid "Require users to log in before they RSVP"
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:64
+msgid "Login requirements"
+msgstr ""
+
+#: src/Tribe/Attendees_Table.php:260
+msgid "View order"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:34
+msgid "Event Name or ID or Slug"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:35
+msgid "Ticket Name"
+msgstr "Nom del tiquet"
+
+#: src/Tribe/CSV_Importer/Column_Names.php:36
+msgid "Ticket Description"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:37
+msgid "Ticket Start Sale Date"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:38
+msgid "Ticket Start Sale Time"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:39
+msgid "Ticket End Sale Date"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:40
+msgid "Ticket End Sale Time"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:41
+msgid "Ticket Stock"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/RSVP_Importer.php:221
+msgid "Recurring event tickets are not supported, event %d."
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Rows.php:35 src/Tribe/Tickets_View.php:604
+msgid "RSVPs"
+msgstr ""
+
+#: src/Tribe/JSON_LD/Order.php:106
+msgid "Free"
+msgstr "Gratis"
+
+#: src/Tribe/Main.php:357
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/RSVP.php:558
+#: src/Tribe/RSVP.php:848
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr ""
 
-#: src/Tribe/RSVP.php:863
+#: src/Tribe/RSVP.php:1260
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:870
+#: src/Tribe/RSVP.php:1267
 msgid "Post updated. %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:874
+#: src/Tribe/RSVP.php:1271
 msgid "Post published. %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:877
+#: src/Tribe/RSVP.php:1274
 msgid "Post submitted."
 msgstr ""
 
-#: src/Tribe/RSVP.php:878
+#: src/Tribe/RSVP.php:1275
 msgid "Post scheduled."
 msgstr ""
 
-#: src/Tribe/RSVP.php:879
+#: src/Tribe/RSVP.php:1276
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Tickets.php:532
+#: src/Tribe/Tickets.php:615
 msgid "Editing the ticket price is currently disallowed."
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:328
+#: src/Tribe/Tickets_Handler.php:407
 msgid "Cheatin Huh?"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:334
+#: src/Tribe/Tickets_Handler.php:390
 msgid "Invalid Event ID"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:340
+#: src/Tribe/Tickets_Handler.php:413
 msgid "Empty user and email"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:352
+#: src/Tribe/Tickets_Handler.php:425
 msgid "Invalid Email"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:358 src/Tribe/Tickets_Handler.php:374
+#: src/Tribe/Tickets_Handler.php:431 src/Tribe/Tickets_Handler.php:447
 msgid "Invalid User ID"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:395
+#: src/Tribe/Tickets_Handler.php:468
 msgid "Error when sending the email"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:400
+#: src/Tribe/Tickets_Handler.php:473
 msgid "Email sent successfully!"
 msgstr ""
 
-#: src/admin-views/attendees-email.php:42
+#: src/admin-views/attendees-email.php:43
 msgid "Send Email"
 msgstr ""
 
-#: src/admin-views/attendees.php:37
+#: src/admin-views/attendees.php:29
 msgid "Edit Event"
 msgstr ""
 
-#: src/admin-views/attendees.php:38
+#: src/admin-views/attendees.php:30
 msgid "See Event Page"
 msgstr ""
 
-#: src/admin-views/attendees.php:62
-msgid "Edit Venue"
-msgstr ""
-
-#: src/admin-views/attendees.php:96
+#: src/admin-views/attendees.php:61
 msgid "Sales by Ticket"
 msgstr ""
 
-#: src/admin-views/attendees.php:102
+#: src/admin-views/attendees.php:67
 msgid "Edit Ticket"
 msgstr ""
 
-#: src/admin-views/attendees.php:113
+#: src/admin-views/attendees.php:78
 msgid "Total Sold:"
 msgstr ""
 
-#: src/admin-views/meta-box.php:160
+#: src/admin-views/meta-box.php:208
 msgid "When will ticket sales occur?"
 msgstr ""
 
-#: src/admin-views/meta-box.php:164
+#: src/admin-views/meta-box.php:212
 msgid "If you don't set a start/end date for sales, tickets will be available from now until the event ends."
 msgstr ""
 
-#: src/admin-views/meta-box.php:178
+#: src/admin-views/meta-box.php:233
 msgid "Cancel"
 msgstr "Cancel·lar"
 
-#: src/template-tags/tickets.php:212
-msgid "Sold all %1$d %2$s"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:35
-msgid "The details of your calendar plugin and settings is often needed for you or our staff to help troubleshoot an issue. We may ask you to share this information if you ask for support. If you post in one of our premium forums, please copy and paste this information into the System Information field and it will help us help you faster!"
-msgstr ""
-
-#: src/Tribe/Main.php:141
+#: src/Tribe/Main.php:165
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:237
+#: src/Tribe/Main.php:303
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:239
+#: src/Tribe/Main.php:305
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:240
+#: src/Tribe/Main.php:306
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:241
+#: src/Tribe/Main.php:307
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:242
+#: src/Tribe/Main.php:308
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:259
+#: src/Tribe/Main.php:325
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:261
+#: src/Tribe/Main.php:327
 msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:279
+#: src/Tribe/Main.php:344
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:280
+#: src/Tribe/Main.php:345
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:282
+#: src/Tribe/Main.php:347
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:283
+#: src/Tribe/Main.php:348
 msgid "Events Tickets Plus"
 msgstr ""
 
-#: src/Tribe/Main.php:284
+#: src/Tribe/Main.php:349
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:286 src/Tribe/Main.php:291
+#: src/Tribe/Main.php:351 src/Tribe/Main.php:356
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:287
+#: src/Tribe/Main.php:352
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: common/src/admin-views/tribe-options-help.php:30
-msgid "Please note that all hands-on support is provided via the forums. You can email or tweet at us… ​but we will probably point you back to the forums "
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:31
-msgid "Read more about our support policy"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:26
-msgid "%s. There are very few issues we haven’t seen and it’s likely another user has already asked your question and gotten an answer from our support staff. While posting to the forums is open only to paid customers, they are open for anyone to search and review."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:26
-msgid "Search our support forum"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:24
-msgid "%s. All of the common (and not-so-common) answers to questions we see are here. It’s often the fastest path to finding an answer!"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:24
-msgid "Check our Knowledgebase"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:25
-msgid "%s. Testing for an existing conflict is the best start for in-depth troubleshooting. We will often ask you to follow these steps when opening a new thread, so doing this ahead of time will be super helpful."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:25
-msgid "Test for a theme or plugin conflict"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:15
-msgid "Our website’s %s is a great place to find tips and tricks for using and customizing our plugins."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:15
-msgid "Knowledgebase"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:16
-msgid "<strong>Want to dive deeper?</strong> Check out our %s for developers."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:16
-msgid "list of available functions"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:19
-msgid "Getting More Help"
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:20
-msgid "While the resources above help solve a majority of the issues we see, there are times you might be looking for extra support. If you need assistance using our plugins and would like us to take a look, please follow these steps:"
-msgstr ""
-
-#: common/src/Tribe/PUE/Checker.php:440
-msgid "Thanks for setting up a valid key, it will expire on %s"
-msgstr ""
-
-#: common/src/Tribe/PUE/Checker.php:448
-msgid "Hmmm... something's wrong with this validator. Please contact %ssupport%s."
-msgstr ""
-
-#: common/src/Tribe/Validate.php:195
-msgid "%s must be a positive number or percent."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-display.php:31
-msgid "Enter the format to use for displaying dates with the year. Used when displaying a date in a future year."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-general.php:10
-msgid "Thank you for using Event Tickets! All of us at Modern Tribe sincerely appreciate your support and we're excited to see you using our plugins. Check out our handy %1$sNew User Primer%2$s to get started."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-general.php:15
-msgid "Optimize your site's event listings with %1$sThe Events Calendar%2$s, our free calendar plugin. Looking for additional functionality including recurring events, user-submission, advanced ticket sales and more? Check out our %3$spremium add-ons%4$s."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:11
-msgid "Thanks you for using %s! All of us at Modern Tribe sincerely appreciate your support and we’re excited to see you using our plugins."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-help.php:14
-msgid "Getting Support"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:52
-msgid "The Events Calendar is a carefully crafted, extensible plugin that lets you easily share your events."
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:68
-msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:80
-msgid "Advanced Post Manager"
-msgstr "Advanced Post Manager"
-
-#: common/src/Tribe/Admin/Help_Page.php:84
-msgid "Turbo charge your posts admin for any custom post type with sortable filters and columns, and auto-registration of metaboxes."
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:159
+#: src/Tribe/Tickets_View.php:616 src/views/tickets/orders-link.php:45
 msgid " and "
 msgstr " i "
 
-#: common/src/Tribe/Admin/Help_Page.php:192
-msgid "Eventbrite Tickets"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:200
-msgid "Community Events"
-msgstr "Community Events"
-
-#: common/src/Tribe/Admin/Help_Page.php:208
-msgid "Facebook Events"
-msgstr "Facebook Events"
-
-#: common/src/Tribe/Admin/Help_Page.php:216
-msgid "Events Filter Bar"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:224
-msgid "Event Tickets Plus"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:233
-msgid "Community Tickets"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:394
-msgctxt "not available"
-msgid "n/a"
-msgstr "no disponible"
-
-#: common/src/Tribe/Admin/Help_Page.php:402
-msgid "You need to upgrade!"
-msgstr "Has d'actualitzar-te!"
-
-#: common/src/Tribe/Admin/Help_Page.php:402
-#: common/src/Tribe/Admin/Help_Page.php:797
-msgid "You are up to date!"
-msgstr "Estàs actualitzat!"
-
-#: common/src/Tribe/Admin/Help_Page.php:787
-msgid "Activate %s"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:787
-msgid "Activate Plugin"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:795
-msgid "Upgrade Plugin"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:811
-msgid "Install %s"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:811
-msgid "Install Plugin"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:828
-msgid "Latest Version:"
-msgstr "Última versió:"
-
-#: common/src/Tribe/Admin/Help_Page.php:831
-msgid "Requires:"
-msgstr "Requereix:"
-
-#: common/src/Tribe/Admin/Help_Page.php:832
-msgid "WordPress "
-msgstr "WordPress "
-
-#: common/src/Tribe/Admin/Help_Page.php:834
-msgid "Active Users:"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:837
-msgid "Rating:"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:862
-msgid "Plugin Active"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:864
-msgid "Plugin Inactive"
-msgstr ""
-
-#: common/src/Tribe/Admin/Help_Page.php:869
-msgid "Visit the Add-on Page"
-msgstr ""
-
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:68
-msgid "<a href=\"%s\">edit Events settings</a>."
-msgstr ""
-
-#: common/src/Tribe/PUE/Checker.php:308
-msgid "License Key"
-msgstr "Clau de llicència"
-
-#: common/src/Tribe/PUE/Checker.php:309
-msgid "A valid license key is required for support and updates"
-msgstr "Una clau de llicència vàlida es obligatòria per a gaudir de suport i actualitzacions"
-
-#: common/src/Tribe/PUE/Checker.php:380
-msgid "License key(s) updated."
-msgstr "Clau(s) de llicència actualitzada(es)."
-
-#: common/src/Tribe/PUE/Checker.php:419
-msgid "unknown date"
-msgstr "data desconeguda"
-
-#: common/src/Tribe/PUE/Checker.php:422
-msgid "Sorry, key validation server is not available."
-msgstr "Ho sentim, el servidor de validació de claus no està disponible."
-
-#: common/src/Tribe/PUE/Checker.php:424
-msgid "Sorry, this key is expired."
-msgstr "Ho sentim, aquesta clau ha caducat."
-
-#: common/src/Tribe/PUE/Checker.php:427
-msgid "Sorry, this key is out of installs."
-msgstr "Ho sentim, aquesta clau ja no és vàlida."
-
-#: common/src/Tribe/PUE/Checker.php:428
-msgid "Why am I seeing this message?"
-msgstr "Per què veig aquest missatge?"
-
-#: common/src/Tribe/PUE/Checker.php:431
-msgid "Sorry, this key is not valid."
-msgstr "Ho sentim, aquesta clau no és vàlida."
-
-#: common/src/Tribe/PUE/Checker.php:435
-msgid "Valid Key! Expires on %s"
-msgstr "Clau vàlida! Caduca el %s"
-
-#: common/src/Tribe/View_Helpers.php:123
-msgid "French Polynesia"
-msgstr "Polinèsia Francesa"
-
-#: common/src/Tribe/View_Helpers.php:124
-msgid "French Southern Territories"
-msgstr "Territoris Francesos del Sud"
-
-#: common/src/Tribe/View_Helpers.php:125
-msgid "Gabon"
-msgstr "Gabon"
-
-#: common/src/Tribe/View_Helpers.php:126
-msgid "Gambia"
-msgstr "Gàmbia"
-
-#: common/src/Tribe/View_Helpers.php:127 common/src/Tribe/View_Helpers.php:326
-msgid "Georgia"
-msgstr "Geòrgia"
-
-#: common/src/Tribe/View_Helpers.php:128
-msgid "Germany"
-msgstr "Alemanya"
-
-#: common/src/Tribe/View_Helpers.php:129
-msgid "Ghana"
-msgstr "Ghana"
-
-#: common/src/Tribe/View_Helpers.php:130
-msgid "Gibraltar"
-msgstr "Gibraltar"
-
-#: common/src/Tribe/View_Helpers.php:131
-msgid "Greece"
-msgstr "Grècia"
-
-#: common/src/Tribe/View_Helpers.php:132
-msgid "Greenland"
-msgstr "Groenlàndia"
-
-#: common/src/Tribe/View_Helpers.php:133
-msgid "Grenada"
-msgstr "Grenada"
-
-#: common/src/Tribe/View_Helpers.php:134
-msgid "Guadeloupe"
-msgstr "Guadalupe"
-
-#: common/src/Tribe/View_Helpers.php:135
-msgid "Guam"
-msgstr "Guam"
-
-#: common/src/Tribe/View_Helpers.php:136
-msgid "Guatemala"
-msgstr "Guatemala"
-
-#: common/src/Tribe/View_Helpers.php:137
-msgid "Guinea"
-msgstr "Guinea"
-
-#: common/src/Tribe/View_Helpers.php:138
-msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
-
-#: common/src/Tribe/View_Helpers.php:139
-msgid "Guyana"
-msgstr "Guyana"
-
-#: common/src/Tribe/View_Helpers.php:140
-msgid "Haiti"
-msgstr "Haití"
-
-#: common/src/Tribe/View_Helpers.php:141
-msgid "Heard And Mc Donald Islands"
-msgstr "Illes Heard i McDonald"
-
-#: common/src/Tribe/View_Helpers.php:142
-msgid "Holy See (Vatican City State)"
-msgstr "Santa Seu (Ciutat del Vaticà)"
-
-#: common/src/Tribe/View_Helpers.php:143
-msgid "Honduras"
-msgstr "Hondures"
-
-#: common/src/Tribe/View_Helpers.php:144
-msgid "Hong Kong"
-msgstr "Hong Kong"
-
-#: common/src/Tribe/View_Helpers.php:145
-msgid "Hungary"
-msgstr "Hongria"
-
-#: common/src/admin-views/tribe-options-help.php:60
-msgid "More..."
-msgstr "Més..."
-
-#: common/src/Tribe/View_Helpers.php:146
-msgid "Iceland"
-msgstr "Islàndia"
-
-#: common/src/Tribe/View_Helpers.php:147
-msgid "India"
-msgstr "Índia"
-
-#: common/src/Tribe/View_Helpers.php:148
-msgid "Indonesia"
-msgstr "Indonèsia"
-
-#: common/src/Tribe/View_Helpers.php:149
-msgid "Iran (Islamic Republic Of)"
-msgstr "Iran (República Islàmica de l')"
-
-#: common/src/Tribe/View_Helpers.php:150
-msgid "Iraq"
-msgstr "Iraq"
-
-#: common/src/Tribe/View_Helpers.php:151
-msgid "Ireland"
-msgstr "Irlanda"
-
-#: common/src/Tribe/Admin/Help_Page.php:856
-msgid "Premium Add-Ons"
-msgstr "Complements premium"
-
-#: common/src/Tribe/View_Helpers.php:152
-msgid "Israel"
-msgstr "Israel"
-
-#: common/src/Tribe/View_Helpers.php:153
-msgid "Italy"
-msgstr "Itàlia"
-
-#: common/src/admin-views/tribe-options-help.php:54
-msgid "News and Tutorials"
-msgstr "Notícies i tutorials"
-
-#: common/src/Tribe/View_Helpers.php:154
-msgid "Jamaica"
-msgstr "Jamaica"
-
-#: common/src/admin-views/tribe-options-licenses.php:13
-msgid "<p>The license key you received when completing your purchase from %1$s will grant you access to support and updates until it expires. You do not need to enter the key below for the plugins to work, but you will need to enter it to get automatic updates. <strong>Find your license keys at <a href=\"%2$s\" target=\"_blank\">%3$s</a></strong>.</p> <p>Each paid add-on has its own unique license key. Simply paste the key into its appropriate field on below, and give it a moment to validate. You know you're set when a green expiration date appears alongside a \"valid\" message.</p> <p>If you're seeing a red message telling you that your key isn't valid or is out of installs, visit <a href=\"%4$s\" target=\"_blank\">%5$s</a> to manage your installs or renew / upgrade your license.</p><p>Not seeing an update but expecting one? In WordPress, go to <a href=\"%6$s\">Dashboard > Updates</a> and click \"Check Again\".</p>"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:155
-msgid "Japan"
-msgstr "Japó"
-
-#: common/src/admin-views/tribe-options-licenses.php:18
-msgid "%1$s Using our plugins in a multisite network? %2$s Please note that your license key will be applied to the entire network, not just this site."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:156
-msgid "Jordan"
-msgstr "Jordània"
-
-#: common/src/admin-views/tribe-options-licenses.php:28
-msgid "Only license fields for %1$snetwork activated%2$s plugins will be listed on this screen. "
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:157
-msgid "Kazakhstan"
-msgstr "Kazakhstan"
-
-#: common/src/admin-views/tribe-options-network.php:15
-msgid "Network Settings"
-msgstr "Configuració de xarxa"
-
-#: common/src/Tribe/View_Helpers.php:158
-msgid "Kenya"
-msgstr "Kenya"
-
-#: common/src/admin-views/tribe-options-network.php:19
-msgid "This is where all of the global network settings for Modern Tribe's The Events Calendar can be modified."
-msgstr "Aquí és on es poden modificar tots els ajustos de xarxa de The Events Calendar de Modern Tribe."
-
-#: common/src/Tribe/View_Helpers.php:159
-msgid "Kiribati"
-msgstr "Kiribati"
-
-#: common/src/admin-views/tribe-options-network.php:27
-msgid "Hide the following settings tabs on every site:"
-msgstr "Amaga les següents pestanyes d'ajustos a cada web:"
-
-#: common/src/Tribe/View_Helpers.php:160
-msgid "Korea, Democratic People's Republic Of"
-msgstr "Corea, República Popular Democràtica de"
-
 #: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
+#: src/Tribe/Tickets_View.php:608
 msgid "Tickets"
 msgstr "Tiquets"
-
-#: common/src/Tribe/View_Helpers.php:161
-msgid "Korea, Republic Of"
-msgstr "Corea, República de"
 
 #: src/Tribe/Attendees_Table.php:76
 msgid "Order #"
 msgstr "Comanda #"
 
-#: common/src/Tribe/View_Helpers.php:162
-msgid "Kuwait"
-msgstr "Kuwait"
-
 #: src/Tribe/Attendees_Table.php:77
 msgid "Order Status"
 msgstr "Estat de la comanda"
-
-#: common/src/Tribe/View_Helpers.php:163
-msgid "Kyrgyzstan"
-msgstr "Kirguizistan"
 
 #: src/Tribe/Attendees_Table.php:78
 msgid "Purchaser name"
 msgstr "Nom del comprador"
 
-#: common/src/Tribe/View_Helpers.php:164
-msgid "Lao People's Democratic Republic"
-msgstr "Laos, República Democràtica Popular de"
-
 #: src/Tribe/Attendees_Table.php:79
 msgid "Purchaser email"
 msgstr "Correu electrònic del comprador"
-
-#: common/src/Tribe/View_Helpers.php:165
-msgid "Latvia"
-msgstr "Letònia"
 
 #: src/Tribe/Attendees_Table.php:80
 msgid "Ticket type"
 msgstr "Tipus de tiquet"
 
-#: common/src/Tribe/View_Helpers.php:166
-msgid "Lebanon"
-msgstr "Líban"
-
-#: src/Tribe/Attendees_Table.php:81 src/views/tickets/email.php:321
+#: src/Tribe/Attendees_Table.php:81 src/views/tickets/email.php:332
 msgid "Ticket #"
 msgstr "# de tiquet"
 
-#: common/src/Tribe/View_Helpers.php:167
-msgid "Lesotho"
-msgstr "Lesotho"
-
-#: src/Tribe/Attendees_Table.php:82 src/views/tickets/email.php:333
+#: src/Tribe/Attendees_Table.php:82 src/views/tickets/email.php:344
 msgid "Security Code"
 msgstr "Codi de seguretat"
 
-#: common/src/Tribe/View_Helpers.php:168
-msgid "Liberia"
-msgstr "Libèria"
-
-#: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:173
-#: src/Tribe/Attendees_Table.php:254
+#: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:263
+#: src/Tribe/Attendees_Table.php:267 src/Tribe/Attendees_Table.php:361
 msgid "Check in"
 msgstr "Registrar-se"
 
-#: common/src/Tribe/View_Helpers.php:169
-msgid "Libya"
-msgstr "Líbia"
-
-#: src/Tribe/Attendees_Table.php:174 src/Tribe/Attendees_Table.php:255
+#: src/Tribe/Attendees_Table.php:264 src/Tribe/Attendees_Table.php:268
+#: src/Tribe/Attendees_Table.php:362
 msgid "Undo Check in"
 msgstr "Cancel·lar el registre"
 
-#: common/src/Tribe/View_Helpers.php:170
-msgid "Liechtenstein"
-msgstr "Liechtenstein"
-
-#: src/Tribe/Attendees_Table.php:227
+#: src/Tribe/Attendees_Table.php:334
 msgid "Print"
 msgstr "Imprimir"
 
-#: common/src/Tribe/View_Helpers.php:171
-msgid "Lithuania"
-msgstr "Lituània"
-
-#: src/Tribe/Attendees_Table.php:228
+#: src/Tribe/Attendees_Table.php:335 src/views/tickets/rsvp.php:118
 msgid "Email"
 msgstr "Correu electrònic"
 
-#: common/src/Tribe/View_Helpers.php:172
-msgid "Luxembourg"
-msgstr "Luxemburg"
-
-#: src/Tribe/Attendees_Table.php:229
+#: src/Tribe/Attendees_Table.php:336
 msgid "Export"
 msgstr "Exportar"
 
-#: common/src/Tribe/View_Helpers.php:173
-msgid "Macau"
-msgstr "Macau"
-
-#: src/Tribe/Attendees_Table.php:235
+#: src/Tribe/Attendees_Table.php:342
 msgid "Filter by purchaser name, ticket #, order # or security code"
 msgstr "Filtrar per nom del comprador, # de tiquet, # de comanda o codi de seguretat"
 
-#: common/src/Tribe/View_Helpers.php:174
-msgid "Macedonia"
-msgstr "Macedònia"
-
-#: src/Tribe/Attendees_Table.php:256 src/admin-views/list.php:31
+#: src/Tribe/Attendees_Table.php:363 src/admin-views/list.php:43
 msgid "Delete"
 msgstr "Eliminar"
-
-#: common/src/Tribe/View_Helpers.php:175
-msgid "Madagascar"
-msgstr "Madagascar"
 
 #: src/Tribe/Metabox.php:81
 msgid "Ticket header image"
 msgstr "Imatge de capçalera del tiquet"
 
-#: common/src/Tribe/View_Helpers.php:176
-msgid "Malawi"
-msgstr "Malawi"
-
 #: src/Tribe/Metabox.php:82
 msgid "Set as ticket header"
 msgstr "Establir com a capçalera de tiquet"
 
-#: common/src/Tribe/View_Helpers.php:177
-msgid "Malaysia"
-msgstr "Malàisia"
-
-#: src/Tribe/RSVP.php:180
+#: src/Tribe/RSVP.php:221
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:178
-msgid "Maldives"
-msgstr "Maldives"
-
-#: src/Tribe/RSVP.php:349
+#: src/Tribe/RSVP.php:573
 msgid "Your tickets from %s"
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:179
-msgid "Mali"
-msgstr "Mali"
-
-#: src/Tribe/RSVP.php:552
+#: src/Tribe/RSVP.php:842
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:180
-msgid "Malta"
-msgstr "Malta"
-
-#: src/Tribe/RSVP.php:563
+#: src/Tribe/RSVP.php:853
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:181
-msgid "Marshall Islands"
-msgstr "Illes Marshall"
-
-#: src/Tribe/RSVP.php:684
+#: src/Tribe/RSVP.php:992
 msgid "(deleted)"
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:182
-msgid "Martinique"
-msgstr "Martinica"
-
-#: src/Tribe/Tickets.php:336
+#: src/Tribe/Tickets.php:397
 msgid "Your ticket has been saved."
 msgstr "El teu tiquet ha estat guardat."
 
-#: common/src/Tribe/View_Helpers.php:183
-msgid "Mauritania"
-msgstr "Mauritània"
-
-#: src/Tribe/Tickets.php:478
+#: src/Tribe/Tickets.php:561
 msgid "Your ticket has been deleted."
 msgstr "S'ha eliminat el teu tiquet."
 
-#: common/src/Tribe/View_Helpers.php:184
-msgid "Mauritius"
-msgstr "Maurici"
-
-#: src/Tribe/Tickets_Handler.php:82 src/admin-views/list.php:68
+#: src/Tribe/Tickets_Handler.php:77 src/admin-views/list.php:81
 msgid "See who purchased tickets to this event"
 msgstr "Veure qui ha comprat tiquets per aquest esdeveniment"
 
-#: common/src/Tribe/View_Helpers.php:185
-msgid "Mayotte"
-msgstr "Mayotte"
-
-#: src/Tribe/Tickets_Handler.php:82 src/admin-views/attendees.php:34
-#: src/admin-views/list.php:70
+#: src/Tribe/Tickets_Handler.php:77 src/admin-views/attendees.php:26
+#: src/admin-views/list.php:83
 msgid "Attendees"
 msgstr "Assistents"
 
-#: common/src/Tribe/View_Helpers.php:186
-msgid "Mexico"
-msgstr "Mèxic"
-
-#: src/Tribe/Tickets_Handler.php:119
+#: src/Tribe/Tickets_Handler.php:131
 msgid "You need to select a user or type a valid email address"
 msgstr "Has de seleccionar un usuari o introduir una adreça de correu electrònic vàlida"
 
-#: common/src/Tribe/View_Helpers.php:187
-msgid "Micronesia, Federated States Of"
-msgstr "Micronèsia, Estats Federats de"
-
-#: src/Tribe/Tickets_Handler.php:120
+#: src/Tribe/Tickets_Handler.php:132
 msgid "Sending..."
 msgstr "Enviant..."
 
-#: common/src/Tribe/View_Helpers.php:188
-msgid "Moldova, Republic Of"
-msgstr "Moldàvia, República de"
-
-#: src/Tribe/Tickets_Handler.php:146
+#: src/Tribe/Tickets_Handler.php:158
 msgid "Columns"
 msgstr "Columnes"
 
-#: common/src/Tribe/View_Helpers.php:189
-msgid "Monaco"
-msgstr "Mònaco"
-
-#: src/Tribe/Tickets_Handler.php:146
+#: src/Tribe/Tickets_Handler.php:158
 msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
 msgstr "A les opcions de pantalla pots seleccionar quines columnes vols veure. Aquestes opcions afecten el llistat de la taula següent, el que s'envia per correu, les impressions i l'exportació CSV."
 
-#: common/src/Tribe/View_Helpers.php:190
-msgid "Mongolia"
-msgstr "Mongòlia"
-
-#: src/Tribe/Tickets_Handler.php:270
+#: src/Tribe/Tickets_Handler.php:322
 msgid "Yes"
 msgstr "Sí"
 
-#: common/src/Tribe/View_Helpers.php:191
-msgid "Montenegro"
-msgstr "Montenegro"
-
-#: src/Tribe/Tickets_Handler.php:302
+#: src/Tribe/Tickets_Handler.php:363
 msgid "attendees"
 msgstr "assistents"
 
-#: common/src/Tribe/View_Helpers.php:192
-msgid "Montserrat"
-msgstr "Montserrat"
-
-#: src/Tribe/Tickets_Handler.php:394
+#: src/Tribe/Tickets_Handler.php:467
 msgid "Attendee List for: %s"
 msgstr "Llista d'assistents per: %s"
 
-#: common/src/Tribe/View_Helpers.php:193
-msgid "Morocco"
-msgstr "Marroc"
-
-#: common/src/Tribe/View_Helpers.php:194
-msgid "Mozambique"
-msgstr "Moçambic"
-
-#: src/admin-views/attendees.php:41
+#: src/admin-views/attendees.php:33
 msgid "Event Details"
 msgstr "Detalls de l'esdeveniment"
 
-#: common/src/Tribe/View_Helpers.php:195
-msgid "Myanmar"
-msgstr "Myanmar"
-
-#: src/admin-views/attendees.php:47
-msgid "Start Date / Time:"
-msgstr "Data / Hora d'inici:"
-
-#: common/src/Tribe/View_Helpers.php:196
-msgid "Namibia"
-msgstr "Namíbia"
-
-#: src/admin-views/attendees.php:52
-msgid "End Date / Time:"
-msgstr "Data / Hora de finalització"
-
-#: common/src/Tribe/View_Helpers.php:197
-msgid "Nauru"
-msgstr "Nauru"
-
-#: src/admin-views/attendees.php:66
-msgid "Address:"
-msgstr "Adreça:"
-
-#: common/src/Tribe/View_Helpers.php:198
-msgid "Nepal"
-msgstr "Nepal"
-
-#: src/admin-views/attendees.php:74
-msgid "Phone:"
-msgstr "Telèfon:"
-
-#: common/src/Tribe/View_Helpers.php:199
-msgid "Netherlands"
-msgstr "Països Baixos"
-
 #: src/admin-views/attendees.php:83
-msgid "Website:"
-msgstr "Web:"
-
-#: common/src/Tribe/View_Helpers.php:200
-msgid "Netherlands Antilles"
-msgstr "Antilles Holandeses"
-
-#: common/src/Tribe/View_Helpers.php:201
-msgid "New Caledonia"
-msgstr "Nova Caledònia"
-
-#: common/src/Tribe/View_Helpers.php:202
-msgid "New Zealand"
-msgstr "Nova Zelanda"
-
-#: src/admin-views/attendees.php:118
 msgid "Finalized:"
 msgstr "Finalitzat:"
 
-#: common/src/Tribe/View_Helpers.php:203
-msgid "Nicaragua"
-msgstr "Nicaragua"
-
-#: src/admin-views/attendees.php:124
+#: src/admin-views/attendees.php:89
 msgid "Awaiting review:"
 msgstr "En espera de revisió:"
 
-#: common/src/Tribe/View_Helpers.php:204
-msgid "Niger"
-msgstr "Níger"
-
-#: src/admin-views/attendees.php:129
+#: src/admin-views/attendees.php:94
 msgid "Checked in:"
 msgstr "Assistiran:"
 
-#: common/src/Tribe/View_Helpers.php:205
-msgid "Nigeria"
-msgstr "Nigèria"
-
-#: src/admin-views/attendees-email.php:3
+#: src/admin-views/attendees-email.php:4
 msgid "Send the attendee list by email"
 msgstr "Enviar la llista d'assistents per correu electrònic"
 
-#: common/src/Tribe/View_Helpers.php:206
-msgid "Niue"
-msgstr "Niue"
-
-#: src/admin-views/attendees-email.php:9
+#: src/admin-views/attendees-email.php:10
 msgid "Select a User:"
 msgstr "Selecciona un usuari:"
 
-#: common/src/Tribe/View_Helpers.php:207
-msgid "Norfolk Island"
-msgstr "Illa Norfolk"
-
-#: src/admin-views/attendees-email.php:14
+#: src/admin-views/attendees-email.php:15
 msgid "Select..."
 msgstr "Selecciona..."
 
-#: common/src/Tribe/View_Helpers.php:208
-msgid "Northern Mariana Islands"
-msgstr "Illes Marianes del Nord"
-
-#: src/admin-views/attendees-email.php:19
+#: src/admin-views/attendees-email.php:20
 msgid "or"
 msgstr "o"
 
-#: common/src/Tribe/View_Helpers.php:209
-msgid "Norway"
-msgstr "Noruega"
-
-#: src/admin-views/attendees-email.php:21
+#: src/admin-views/attendees-email.php:22
 msgid "Email Address:"
 msgstr "Adreça de correu electrònic:"
 
-#: common/src/Tribe/View_Helpers.php:210
-msgid "Oman"
-msgstr "Oman"
-
-#: src/admin-views/list.php:30
+#: src/admin-views/list.php:33
 msgid "Edit"
 msgstr "Editar"
 
-#: common/src/Tribe/View_Helpers.php:211
-msgid "Pakistan"
-msgstr "Pakistan"
-
-#: src/admin-views/list.php:39
+#: src/admin-views/list.php:52
 msgid "Edit in %s"
 msgstr "Editar a %s"
 
-#: common/src/Tribe/View_Helpers.php:212
-msgid "Palau"
-msgstr "Palau"
-
-#: src/admin-views/list.php:34
+#: src/admin-views/list.php:47
 msgid "View"
 msgstr "Veure"
 
-#: common/src/Tribe/View_Helpers.php:213
-msgid "Panama"
-msgstr "Panamà"
-
-#: src/admin-views/list.php:98
+#: src/template-tags/tickets.php:226
 msgid "Sold %d"
 msgstr "Venuts %d"
 
-#: common/src/Tribe/View_Helpers.php:214
-msgid "Papua New Guinea"
-msgstr "Papua Nova Guinea"
-
-#: src/admin-views/list.php:100
-msgid "Sold %1$d of %2$d"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:215
-msgid "Paraguay"
-msgstr "Paraguai"
-
-#: src/admin-views/meta-box.php:23
+#: src/admin-views/meta-box.php:31
 msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
 msgstr "Aquest esdeveniment s'ha creat utilitzant Community Events. Segur que vols vendre tiquets per a ell?"
 
-#: common/src/Tribe/View_Helpers.php:216
-msgid "Peru"
-msgstr "Perú"
+#: src/admin-views/meta-box.php:42
+msgid "Upload image for the ticket header."
+msgstr ""
 
-#: src/admin-views/meta-box.php:34
-msgid "Upload image for the ticket header"
-msgstr "Puja una imatge per utilitzar-la a la capçalera del tiquet"
-
-#: common/src/Tribe/View_Helpers.php:217
-msgid "Philippines"
-msgstr "Filipines"
-
-#: src/admin-views/meta-box.php:35
+#: src/admin-views/meta-box.php:43
 msgid "The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like \"retina\" support use an image sized to 1160px wide."
 msgstr "La mida màxima de la imatge en el correu serà de 580px d'ample, i després es redimensionarà per a dispositius mòbils. Si vols que la imatge es vegi correctament als dispositius \"retina\" utilitza una imatge de 1160px d'ample."
 
-#: common/src/Tribe/View_Helpers.php:218
-msgid "Pitcairn"
-msgstr "Illes Pitcairn"
-
-#: src/admin-views/meta-box.php:38
+#: src/admin-views/meta-box.php:46
 msgid "Select an Image"
 msgstr "Selecciona una imatge"
 
-#: common/src/Tribe/View_Helpers.php:219
-msgid "Poland"
-msgstr "Polònia"
-
-#: src/admin-views/meta-box.php:46
+#: src/admin-views/meta-box.php:54
 msgid "Remove"
 msgstr "Eliminar"
 
-#: common/src/Tribe/View_Helpers.php:220
-msgid "Portugal"
-msgstr "Portugal"
-
-#: src/admin-views/meta-box.php:64 src/admin-views/meta-box.php:74
+#: src/admin-views/meta-box.php:112 src/admin-views/meta-box.php:122
 msgid "Add new ticket"
 msgstr "Afegir nou tiquet"
 
-#: common/src/Tribe/View_Helpers.php:221
-msgid "Puerto Rico"
-msgstr "Puerto Rico"
-
-#: src/admin-views/meta-box.php:75
+#: src/admin-views/meta-box.php:123
 msgid "Edit ticket"
 msgstr "Editar tiquet"
 
-#: common/src/Tribe/View_Helpers.php:222
-msgid "Qatar"
-msgstr "Qatar"
-
-#: src/admin-views/meta-box.php:80
+#: src/admin-views/meta-box.php:128
 msgid "Sell using:"
 msgstr "Vendre utilitzant:"
 
-#: common/src/Tribe/View_Helpers.php:223
-msgid "Reunion"
-msgstr "Reunió"
-
-#: src/admin-views/meta-box.php:97
+#: src/admin-views/meta-box.php:145
 msgid "Ticket Name:"
 msgstr "Nom del tiquet:"
 
-#: common/src/Tribe/View_Helpers.php:224
-msgid "Romania"
-msgstr "Romania"
-
-#: src/admin-views/meta-box.php:104
+#: src/admin-views/meta-box.php:152
 msgid "Ticket Description:"
 msgstr "Descripció del tiquet:"
-
-#: common/src/Tribe/View_Helpers.php:225
-msgid "Russian Federation"
-msgstr "Federació Russa"
 
 #: src/admin-views/legacy-ticket-fields.php:15
 msgid "Price:"
 msgstr "Preu:"
 
-#: common/src/Tribe/View_Helpers.php:226
-msgid "Rwanda"
-msgstr "Rwanda"
-
 #: src/admin-views/legacy-ticket-fields.php:19
 msgid "(0 or empty for free tickets)"
 msgstr "(0 o buit per a tiquets gratuïts)"
-
-#: common/src/Tribe/View_Helpers.php:227
-msgid "Saint Kitts And Nevis"
-msgstr "Saint Kitts i Nevis"
 
 #: src/admin-views/legacy-ticket-fields.php:24
 msgid "Sale Price:"
 msgstr "Preu especial:"
 
-#: common/src/Tribe/View_Helpers.php:228
-msgid "Saint Lucia"
-msgstr "Saint Lucia"
-
 #: src/admin-views/legacy-ticket-fields.php:28
 msgid "(Current sale price - this can be managed via the product editor)"
 msgstr "(Preu especial actual - es pot gestionar mitjançant l'editor del producte)"
 
-#: common/src/Tribe/View_Helpers.php:229
-msgid "Saint Vincent And The Grenadines"
-msgstr "Saint Vincent i les Grenadines"
-
-#: src/admin-views/meta-box.php:113
+#: src/admin-views/meta-box.php:161
 msgid "Start sale:"
 msgstr "Inici de l'oferta:"
 
-#: common/src/Tribe/View_Helpers.php:230
-msgid "Samoa"
-msgstr "Samoa"
-
-#: src/admin-views/meta-box.php:137
+#: src/admin-views/meta-box.php:185
 msgid "End sale:"
 msgstr "Finalització de l'oferta:"
 
-#: common/src/Tribe/View_Helpers.php:231
-msgid "San Marino"
-msgstr "San Marino"
-
-#: common/src/Tribe/View_Helpers.php:232
-msgid "Sao Tome And Principe"
-msgstr "São Tomé i Príncipe"
-
-#: src/admin-views/meta-box.php:177
+#: src/admin-views/meta-box.php:232
 msgid "Save this ticket"
 msgstr "Guarda aquest tiquet"
-
-#: common/src/Tribe/View_Helpers.php:233
-msgid "Saudi Arabia"
-msgstr "Aràbia Saudita"
 
 #: src/admin-views/rsvp-metabox-advanced.php:2
 msgid "Stock:"
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:234
-msgid "Senegal"
-msgstr "Senegal"
-
 #: src/admin-views/rsvp-metabox-advanced.php:6
 msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
 msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:235
-msgid "Serbia"
-msgstr "Sèrbia"
 
 #: src/admin-views/rsvp-metabox-advanced.php:16
 msgid "Selling tickets for recurring events"
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:236
-msgid "Seychelles"
-msgstr "Seychelles"
-
-#: src/admin-views/rsvp-metabox-advanced.php:20
+#: src/admin-views/rsvp-metabox-advanced.php:22
 msgid "Currently, Tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly."
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:237
-msgid "Sierra Leone"
-msgstr "Sierra Leone"
-
-#: src/admin-views/tribe-options-tickets.php:41
+#: src/admin-views/tribe-options-tickets.php:51
 msgid "Ticket Settings"
 msgstr ""
 
-#: common/src/Tribe/View_Helpers.php:238
-msgid "Singapore"
-msgstr "Singapur"
-
-#: src/admin-views/tribe-options-tickets.php:45
+#: src/admin-views/tribe-options-tickets.php:55
 msgid "Post types that can have tickets"
 msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:239
-msgid "Slovakia (Slovak Republic)"
-msgstr "Eslovàquia (República Eslovaca)"
-
-#: src/template-tags/tickets.php:208
-msgid "(%d awaiting review)"
-msgid_plural "(%d awaiting review)"
-msgstr[0] "(%d en espera de revisió)"
-msgstr[1] "(%d en espera de revisió)"
-
-#: common/src/Tribe/View_Helpers.php:240
-msgid "Slovenia"
-msgstr "Eslovènia"
-
-#: common/src/Tribe/View_Helpers.php:241
-msgid "Solomon Islands"
-msgstr "Illes Salomó"
-
-#: src/template-tags/tickets.php:214
-msgid "Sold %1$d of %2$d %3$s"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:242
-msgid "Somalia"
-msgstr "Somàlia"
 
 #: src/views/tickets/attendees-email.php:24
 msgid "Attendee List"
 msgstr "Llista d'assistents"
 
-#: common/src/Tribe/View_Helpers.php:243
-msgid "South Africa"
-msgstr "Sud-àfrica"
-
-#: src/views/tickets/email.php:26
+#: src/views/tickets/email-non-attendance.php:24 src/views/tickets/email.php:26
 msgid "Your tickets"
 msgstr "Els teus tiquets"
 
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:62
-msgid "<a href=\"%s\">Edit the page slug</a>"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:244
-msgid "South Georgia, South Sandwich Islands"
-msgstr "Illes Geòrgia del Sud i Sandwich del Sud"
-
-#: src/views/tickets/email.php:325
+#: src/views/tickets/email.php:336
 msgid "Ticket Type"
 msgstr "Tipus de tiquet"
 
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:63
-msgid "Ask the site administrator to edit the page slug"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:245
-msgid "Spain"
-msgstr "Espanya"
-
-#: src/views/tickets/email.php:329
+#: src/views/tickets/email.php:340
 msgid "Purchaser"
 msgstr "Comprador"
 
-#: common/src/Tribe/View_Helpers.php:246
-msgid "Sri Lanka"
-msgstr "Sri Lanka"
-
-#: src/views/tickets/rsvp.php:9
+#: src/Tribe/Main.php:530 src/Tribe/Tickets_View.php:604
+#: src/views/tickets/rsvp.php:19 src/views/tickets/rsvp.php:127
 msgid "RSVP"
 msgstr ""
 
-#: common/src/Tribe/Admin/Notice/Archive_Slug_Conflict.php:69
-msgid " ask the site administrator set a different Events URL slug."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:247
-msgid "St. Helena"
-msgstr "Santa Helena"
-
-#: src/views/tickets/rsvp.php:55
+#: src/views/tickets/rsvp.php:61
 msgid "%1$s out of %2$s available"
 msgstr ""
 
-#: common/src/Tribe/App_Shop.php:67 common/src/Tribe/App_Shop.php:68
-#: common/src/Tribe/App_Shop.php:91
-msgid "Event Add-Ons"
-msgstr "Complements de l'esdeveniment"
-
-#: common/src/Tribe/View_Helpers.php:248
-msgid "St. Pierre And Miquelon"
-msgstr "Saint-Pierre i Miquelon"
-
-#: src/views/tickets/rsvp.php:63
+#: src/views/tickets/rsvp.php:69
 msgid "Out of stock!"
 msgstr ""
 
-#: common/src/Tribe/Credits.php:26
-msgid "This calendar is powered by The Events Calendar."
-msgstr "Aquest calendari està creat amb The Events Calendar."
-
-#: common/src/Tribe/View_Helpers.php:249
-msgid "Sudan"
-msgstr "Sudan"
-
-#: src/views/tickets/rsvp.php:86
-msgid "Full Name:"
+#: src/views/tickets/rsvp.php:110
+msgid "Full Name"
 msgstr ""
 
-#: common/src/Tribe/Credits.php:46
-msgid "Rate %3$sThe Events Calendar%4$s %1$s on %2$s to keep this plugin free.  Thanks from the friendly folks at Modern Tribe."
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:250
-msgid "Suriname"
-msgstr "Surinam"
-
-#: src/views/tickets/rsvp.php:94
-msgid "Email:"
-msgstr "Correu electrònic:"
-
-#: common/src/Tribe/Field.php:209
-msgid "Invalid field type specified"
-msgstr "El tipus de camp especificat és incorrecte"
-
-#: common/src/Tribe/View_Helpers.php:251
-msgid "Svalbard And Jan Mayen Islands"
-msgstr "Svalbard i Jan Mayen"
-
-#: src/views/tickets/rsvp.php:105
+#: src/views/tickets/rsvp.php:151
 msgid "Confirm RSVP"
 msgstr ""
 
-#: common/src/Tribe/Field.php:466
-msgid "No radio options specified"
-msgstr "No s'ha especificat cap opció "
-
-#: common/src/Tribe/View_Helpers.php:252
-msgid "Swaziland"
-msgstr "Swazilàndia"
-
 #. Plugin Name of the plugin/theme
-#: common/src/Tribe/Admin/Help_Page.php:64
 msgid "Event Tickets"
 msgstr ""
-
-#: common/src/Tribe/Field.php:502
-msgid "No checkbox options specified"
-msgstr "No s'ha especificat cap opció"
-
-#: common/src/Tribe/View_Helpers.php:253
-msgid "Sweden"
-msgstr "Suècia"
-
-#. Description of the plugin/theme
-msgid "Event Tickets allows you to sell tickets to events"
-msgstr ""
-
-#: common/src/Tribe/Field.php:558
-msgid "No select options specified"
-msgstr "No s'ha especificat cap opció"
-
-#: common/src/Tribe/View_Helpers.php:254
-msgid "Switzerland"
-msgstr "Suïssa"
 
 #. Author of the plugin/theme
 msgid "Modern Tribe, Inc."
 msgstr ""
 
-#: common/src/Tribe/Admin/Help_Page.php:48
-msgid "The Events Calendar"
-msgstr "The Events Calendar"
-
-#: common/src/Tribe/View_Helpers.php:255
-msgid "Syrian Arab Republic"
-msgstr "Síria"
-
 #. Author URI of the plugin/theme
 msgid "http://m.tri.be/28"
 msgstr ""
-
-#: common/src/Tribe/Settings.php:148 common/src/Tribe/Settings.php:203
-#: common/src/Tribe/Settings.php:204
-msgid "Events"
-msgstr "Esdeveniments"
-
-#: common/src/Tribe/View_Helpers.php:256
-msgid "Taiwan"
-msgstr "Taiwan"
-
-#: common/src/Tribe/View_Helpers.php:257
-msgid "Tajikistan"
-msgstr "Tajikistan"
-
-#: common/src/Tribe/Settings.php:215
-msgid "Settings"
-msgstr "Configuració"
-
-#: common/src/Tribe/View_Helpers.php:258
-msgid "Tanzania, United Republic Of"
-msgstr "Tanzània, República Unida de"
-
-#: common/src/Tribe/Settings.php:214 common/src/Tribe/Settings.php:235
-msgid "Events Settings"
-msgstr "Configuració dels esdeveniments"
-
-#: common/src/Tribe/View_Helpers.php:259
-msgid "Thailand"
-msgstr "Tailàndia"
-
-#: common/src/Tribe/Settings.php:300
-msgid "%s Settings"
-msgstr "Configuració de %s"
-
-#: common/src/Tribe/View_Helpers.php:260
-msgid "Togo"
-msgstr "Togo"
-
-#: common/src/Tribe/Settings.php:314
-msgid "You've requested a non-existent tab."
-msgstr "Has sol·licitat una pestanya inexistent."
-
-#: common/src/Tribe/View_Helpers.php:261
-msgid "Tokelau"
-msgstr "Tokelau"
-
-#: common/src/Tribe/Settings.php:322
-msgid "Save Changes"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:262
-msgid "Tonga"
-msgstr "Tonga"
-
-#: common/src/Tribe/Settings.php:370
-msgid "You don't have permission to do that."
-msgstr "No tens permís per fer això."
-
-#: common/src/Tribe/View_Helpers.php:263
-msgid "Trinidad And Tobago"
-msgstr "Trinitat i Tobago"
-
-#: common/src/Tribe/Settings.php:376
-msgid "The request was sent insecurely."
-msgstr "La sol·licitud s'ha enviat de forma insegura."
-
-#: common/src/Tribe/View_Helpers.php:264
-msgid "Tunisia"
-msgstr "Tunísia"
-
-#: common/src/Tribe/Settings.php:382
-msgid "The request wasn't sent from this tab."
-msgstr "La sol·licitud no s'ha enviat des d'aquesta pestanya."
-
-#: common/src/Tribe/View_Helpers.php:265
-msgid "Turkey"
-msgstr "Turquia"
-
-#: common/src/Tribe/Settings.php:550
-msgid "Your form had the following errors:"
-msgstr "El formulari té els errors següents:"
-
-#: common/src/Tribe/View_Helpers.php:266
-msgid "Turkmenistan"
-msgstr "Turkmenistan"
-
-#: common/src/Tribe/Settings.php:560
-msgid "None of your settings were saved. Please try again."
-msgstr "Cap ajust s'ha guardat. Si us plau, torna-ho a intentar."
-
-#: common/src/Tribe/View_Helpers.php:267
-msgid "Turks And Caicos Islands"
-msgstr "Illes Turks i Caicos"
-
-#: common/src/Tribe/Settings.php:561
-msgid "The above setting was not saved. Other settings were successfully saved."
-msgid_plural "The above settings were not saved. Other settings were successfully saved."
-msgstr[0] "L'ajust anterior no s'ha guardat. Els altres ajustos s'han guardat correctament."
-msgstr[1] "Els ajustos anteriors no s'han guardat. Els altres ajustos s'han guardat correctament."
-
-#: common/src/Tribe/View_Helpers.php:268
-msgid "Tuvalu"
-msgstr "Tuvalu"
-
-#: common/src/Tribe/Settings.php:583
-msgid "Settings saved."
-msgstr "Configuració guardada."
-
-#: common/src/Tribe/View_Helpers.php:269
-msgid "Uganda"
-msgstr "Uganda"
-
-#: common/src/Tribe/Settings_Manager.php:55
-msgid "General"
-msgstr "General"
-
-#: common/src/Tribe/View_Helpers.php:270
-msgid "Ukraine"
-msgstr "Ucraïna"
-
-#: common/src/Tribe/Settings_Manager.php:56
-msgid "Display"
-msgstr "Visualització"
-
-#: common/src/Tribe/View_Helpers.php:271
-msgid "United Arab Emirates"
-msgstr "Emirats Àrabs Units"
-
-#: common/src/Tribe/Settings_Manager.php:62
-#: common/src/Tribe/Settings_Manager.php:289
-msgid "Help"
-msgstr "Ajuda"
-
-#: common/src/Tribe/View_Helpers.php:272
-msgid "United Kingdom"
-msgstr "regne Unit"
-
-#: common/src/Tribe/Settings_Manager.php:229
-msgid "Network"
-msgstr "Xarxa"
-
-#: common/src/Tribe/View_Helpers.php:273
-msgid "United States Minor Outlying Islands"
-msgstr "Illes Perifèriques Menors dels Estats Units"
-
-#: common/src/Tribe/Settings_Manager.php:263
-#: common/src/admin-views/tribe-options-licenses.php:46
-msgid "Licenses"
-msgstr "Llicències"
-
-#: common/src/Tribe/View_Helpers.php:274
-msgid "Uruguay"
-msgstr "Uruguai"
-
-#: common/src/Tribe/Settings_Tab.php:222
-msgid "There are no fields setup for this tab yet."
-msgstr "Encara no hi ha cap configuració de camps per aquesta pestanya."
-
-#: common/src/Tribe/View_Helpers.php:275
-msgid "Uzbekistan"
-msgstr "Uzbekistan"
-
-#: common/src/Tribe/View_Helpers.php:276
-msgid "Vanuatu"
-msgstr "Vanuatu"
-
-#: common/src/Tribe/View_Helpers.php:277
-msgid "Venezuela"
-msgstr "Venezuela"
-
-#: common/src/admin-views/tribe-options-help.php:34
-msgid "System Information"
-msgstr "Informació del sistema"
-
-#: common/src/Tribe/View_Helpers.php:278
-msgid "Viet Nam"
-msgstr "Vietnam"
-
-#: common/src/Tribe/Support.php:122
-msgid "Unknown or not set"
-msgstr "Desconegut o no configurat"
-
-#: common/src/Tribe/View_Helpers.php:279
-msgid "Virgin Islands (British)"
-msgstr "Illes Verges (Britàniques)"
-
-#: common/src/Tribe/Support.php:129
-msgid "Rewrite rules were purged on load of this help page. Chances are there is a rewrite rule flush occurring in a plugin or theme!"
-msgstr "Las regles de reescriptura s'han buidat al carregar aquesta pàgina d'ajuda. El més probable és que hi hagi un buidat de regles de reescriptura en algun plugin o tema!"
-
-#: common/src/Tribe/View_Helpers.php:280
-msgid "Virgin Islands (U.S.)"
-msgstr "Illes Verges (Nord-americanes) "
-
-#: common/src/Tribe/Validate.php:76 common/src/Tribe/Validate.php:117
-msgid "Invalid or incomplete field passed"
-msgstr "El camp indicat és invàlid o incomplet"
-
-#: common/src/Tribe/View_Helpers.php:281
-msgid "Wallis And Futuna Islands"
-msgstr "Wallis i Futuna"
-
-#: common/src/Tribe/Validate.php:77 common/src/Tribe/Validate.php:112
-#: common/src/Tribe/Validate.php:118
-msgid "Field ID:"
-msgstr "ID del camp:"
-
-#: common/src/Tribe/View_Helpers.php:282
-msgid "Western Sahara"
-msgstr "Sàhara Occidental"
-
-#: common/src/Tribe/Validate.php:111
-msgid "Non-existant field validation function passed"
-msgstr "La funció de validació de camp indicada és inexistent"
-
-#: common/src/Tribe/View_Helpers.php:283
-msgid "Yemen"
-msgstr "Iemen"
-
-#: common/src/Tribe/Validate.php:112
-msgctxt "non-existant function name passed for field validation"
-msgid "with function name:"
-msgstr "amb el nom de funció:"
-
-#: common/src/Tribe/View_Helpers.php:284
-msgid "Zambia"
-msgstr "Zàmbia"
-
-#: common/src/Tribe/Validate.php:135 common/src/Tribe/Validate.php:151
-msgid "%s must contain numbers and letters only"
-msgstr "%s ha de contenir només números i lletres"
-
-#: common/src/Tribe/View_Helpers.php:285
-msgid "Zimbabwe"
-msgstr "Zimbabwe"
-
-#: common/src/Tribe/Validate.php:167
-msgid "%s must contain numbers, letters and dots only"
-msgstr "%s ha de contenir només números, lletres i punts"
-
-#: common/src/Tribe/View_Helpers.php:316
-msgid "Alabama"
-msgstr "Alabama"
-
-#: common/src/Tribe/Validate.php:181 common/src/Tribe/Validate.php:209
-msgid "%s must be a positive number."
-msgstr "%s ha de ser un número positiu."
-
-#: common/src/Tribe/View_Helpers.php:317
-msgid "Alaska"
-msgstr "Alaska"
-
-#: common/src/Tribe/Validate.php:224
-msgid "%s must be a valid slug (numbers, letters, dashes, and underscores)."
-msgstr "%s ha de ser un slug vàlid (números, lletres, guions i guions baixos)."
-
-#: common/src/Tribe/View_Helpers.php:318
-msgid "Arizona"
-msgstr "Arizona"
-
-#: common/src/Tribe/Validate.php:239
-msgid "%s must be a valid absolute URL."
-msgstr "%s ha de ser una URL absoluta vàlida."
-
-#: common/src/Tribe/View_Helpers.php:319
-msgid "Arkansas"
-msgstr "Arkansas"
-
-#: common/src/Tribe/Validate.php:255 common/src/Tribe/Validate.php:272
-#: common/src/Tribe/Validate.php:294
-msgid "%s must have a value that's part of its options."
-msgstr "%s ha de tenir un valor que sigui part de les seves opcions."
-
-#: common/src/Tribe/View_Helpers.php:320
-msgid "California"
-msgstr "Califòrnia"
-
-#: common/src/Tribe/Validate.php:308
-msgid "Comparison validation failed because no comparison value was provided, for field %s"
-msgstr "La validació per comparació ha fallat perquè no s'ha indicat el valor a comparar per al camp %s"
-
-#: common/src/Tribe/View_Helpers.php:321
-msgid "Colorado"
-msgstr "Colorado"
-
-#: common/src/Tribe/Validate.php:315
-msgid "%s cannot be the same as %s."
-msgstr "%s no pot ser el mateix que %s."
-
-#: common/src/Tribe/View_Helpers.php:322
-msgid "Connecticut"
-msgstr "Connecticut"
-
-#: common/src/Tribe/Validate.php:317
-msgid "%s cannot be a duplicate"
-msgstr "%s no pot ser un duplicat"
-
-#: common/src/Tribe/View_Helpers.php:323
-msgid "Delaware"
-msgstr "Delaware"
-
-#: common/src/Tribe/Validate.php:333
-msgid "%s must be a number or percentage."
-msgstr "%s ha de ser un número o un percentatge."
-
-#: common/src/Tribe/View_Helpers.php:324
-msgid "District of Columbia"
-msgstr "Districte de Colúmbia"
-
-#: common/src/Tribe/Validate.php:387
-msgid "%s must be a number between 0 and 21."
-msgstr "%s ha de ser un número entre 0 i 21."
-
-#: common/src/Tribe/View_Helpers.php:325
-msgid "Florida"
-msgstr "Florida"
-
-#: common/src/Tribe/Validate.php:403
-msgid "%s must consist of letters, numbers, dashes, apostrophes, and spaces only."
-msgstr "%s ha de consistir només de lletres, números, guions, apòstrofs i espais,"
-
-#: common/src/Tribe/View_Helpers.php:327
-msgid "Hawaii"
-msgstr "Hawaii"
-
-#: common/src/Tribe/Validate.php:419
-msgid "%s must consist of letters, spaces, apostrophes, and dashes."
-msgstr "%s ha de consistir només de lletres, espais, apòstrofs i guions."
-
-#: common/src/Tribe/View_Helpers.php:328
-msgid "Idaho"
-msgstr "Idaho"
-
-#: common/src/Tribe/Validate.php:433
-msgid "%s must consist of 5 numbers."
-msgstr "%s ha de contenir només 5 números."
-
-#: common/src/Tribe/View_Helpers.php:329
-msgid "Illinois"
-msgstr "Illinois"
-
-#: common/src/Tribe/Validate.php:447
-msgid "%s must be a phone number."
-msgstr "%s ha de ser un número de telèfon."
-
-#: common/src/Tribe/View_Helpers.php:330
-msgid "Indiana"
-msgstr "Indiana"
-
-#: common/src/Tribe/Validate.php:463
-msgid "Country List must be formatted as one country per line in the following format: <br>US, United States <br> UK, United Kingdom."
-msgstr "La llista de països ha de contenir només un país per línia de la següent manera: <br>US, Estats Units<br> UK, Regne Unit."
-
-#: common/src/Tribe/View_Helpers.php:331
-msgid "Iowa"
-msgstr "Iowa"
-
-#: common/src/Tribe/View_Helpers.php:26 common/src/Tribe/View_Helpers.php:45
-msgid "Select a Country:"
-msgstr "Selecciona un país:"
-
-#: common/src/Tribe/View_Helpers.php:332
-msgid "Kansas"
-msgstr "Kansas"
-
-#: common/src/Tribe/View_Helpers.php:46
-msgid "United States"
-msgstr "Estats Units"
-
-#: common/src/Tribe/View_Helpers.php:333
-msgid "Kentucky"
-msgstr "Kentucky"
-
-#: common/src/Tribe/View_Helpers.php:47
-msgid "Afghanistan"
-msgstr "Afganistan"
-
-#: common/src/Tribe/View_Helpers.php:334
-msgid "Louisiana"
-msgstr "Louisiana"
-
-#: common/src/Tribe/View_Helpers.php:48
-msgid "Albania"
-msgstr "Albània"
-
-#: common/src/Tribe/View_Helpers.php:335
-msgid "Maine"
-msgstr "Maine"
-
-#: common/src/Tribe/View_Helpers.php:49
-msgid "Algeria"
-msgstr "Algèria"
-
-#: common/src/Tribe/View_Helpers.php:336
-msgid "Maryland"
-msgstr "Maryland"
-
-#: common/src/Tribe/View_Helpers.php:50
-msgid "American Samoa"
-msgstr "Samoa Nord-americana"
-
-#: common/src/Tribe/View_Helpers.php:337
-msgid "Massachusetts"
-msgstr "Massachussets"
-
-#: common/src/Tribe/View_Helpers.php:51
-msgid "Andorra"
-msgstr "Andorra"
-
-#: common/src/Tribe/View_Helpers.php:338
-msgid "Michigan"
-msgstr "Michigan"
-
-#: common/src/Tribe/View_Helpers.php:52
-msgid "Angola"
-msgstr "Angola"
-
-#: common/src/Tribe/View_Helpers.php:339
-msgid "Minnesota"
-msgstr "Minnesota"
-
-#: common/src/Tribe/View_Helpers.php:53
-msgid "Anguilla"
-msgstr "Anguilla"
-
-#: common/src/Tribe/View_Helpers.php:340
-msgid "Mississippi"
-msgstr "Mississipí"
-
-#: common/src/Tribe/View_Helpers.php:54
-msgid "Antarctica"
-msgstr "Antàrtida"
-
-#: common/src/Tribe/View_Helpers.php:341
-msgid "Missouri"
-msgstr "Missouri"
-
-#: common/src/Tribe/View_Helpers.php:55
-msgid "Antigua And Barbuda"
-msgstr "Antigua i Barbuda"
-
-#: common/src/Tribe/View_Helpers.php:342
-msgid "Montana"
-msgstr "Montana"
-
-#: common/src/Tribe/View_Helpers.php:56
-msgid "Argentina"
-msgstr "Argentina"
-
-#: common/src/Tribe/View_Helpers.php:343
-msgid "Nebraska"
-msgstr "Nebraska"
-
-#: common/src/Tribe/View_Helpers.php:57
-msgid "Armenia"
-msgstr "Armènia"
-
-#: common/src/Tribe/View_Helpers.php:344
-msgid "Nevada"
-msgstr "Nevada"
-
-#: common/src/Tribe/View_Helpers.php:58
-msgid "Aruba"
-msgstr "Aruba"
-
-#: common/src/Tribe/View_Helpers.php:345
-msgid "New Hampshire"
-msgstr "Nou Hampshire"
-
-#: common/src/Tribe/View_Helpers.php:59
-msgid "Australia"
-msgstr "Austràlia"
-
-#: common/src/Tribe/View_Helpers.php:346
-msgid "New Jersey"
-msgstr "Nova Jersey"
-
-#: common/src/Tribe/View_Helpers.php:60
-msgid "Austria"
-msgstr "Àustria"
-
-#: common/src/Tribe/View_Helpers.php:347
-msgid "New Mexico"
-msgstr "Nou Mèxic"
-
-#: common/src/Tribe/View_Helpers.php:61
-msgid "Azerbaijan"
-msgstr "Azerbaidjan"
-
-#: common/src/Tribe/View_Helpers.php:348
-msgid "New York"
-msgstr "Nova York"
-
-#: common/src/Tribe/View_Helpers.php:62
-msgid "Bahamas"
-msgstr "Bahames"
-
-#: common/src/Tribe/View_Helpers.php:349
-msgid "North Carolina"
-msgstr "Carolina del Nord"
-
-#: common/src/Tribe/View_Helpers.php:63
-msgid "Bahrain"
-msgstr "Bahrain"
-
-#: common/src/Tribe/View_Helpers.php:350
-msgid "North Dakota"
-msgstr "Dakota del Nord"
-
-#: common/src/Tribe/View_Helpers.php:64
-msgid "Bangladesh"
-msgstr "Bangla Desh"
-
-#: common/src/Tribe/View_Helpers.php:351
-msgid "Ohio"
-msgstr "Ohio"
-
-#: common/src/Tribe/View_Helpers.php:65
-msgid "Barbados"
-msgstr "Barbados"
-
-#: common/src/Tribe/View_Helpers.php:352
-msgid "Oklahoma"
-msgstr "Oklahoma"
-
-#: common/src/Tribe/View_Helpers.php:66
-msgid "Belarus"
-msgstr "Bielorússia"
-
-#: common/src/Tribe/View_Helpers.php:353
-msgid "Oregon"
-msgstr "Oregon"
-
-#: common/src/Tribe/View_Helpers.php:67
-msgid "Belgium"
-msgstr "Bèlgica"
-
-#: common/src/Tribe/View_Helpers.php:354
-msgid "Pennsylvania"
-msgstr "Pennsilvània"
-
-#: common/src/Tribe/View_Helpers.php:68
-msgid "Belize"
-msgstr "Belize"
-
-#: common/src/Tribe/View_Helpers.php:355
-msgid "Rhode Island"
-msgstr "Rhode Island"
-
-#: common/src/Tribe/View_Helpers.php:69
-msgid "Benin"
-msgstr "Benín"
-
-#: common/src/Tribe/View_Helpers.php:356
-msgid "South Carolina"
-msgstr "Carolina del Sud"
-
-#: common/src/Tribe/View_Helpers.php:70
-msgid "Bermuda"
-msgstr "Bermudes"
-
-#: common/src/Tribe/View_Helpers.php:357
-msgid "South Dakota"
-msgstr "Dakota del Sud"
-
-#: common/src/Tribe/View_Helpers.php:71
-msgid "Bhutan"
-msgstr "Bhutan"
-
-#: common/src/Tribe/View_Helpers.php:358
-msgid "Tennessee"
-msgstr "Tennessee"
-
-#: common/src/Tribe/View_Helpers.php:72
-msgid "Bolivia"
-msgstr "Bolívia"
-
-#: common/src/Tribe/View_Helpers.php:359
-msgid "Texas"
-msgstr "Texas"
-
-#: common/src/Tribe/View_Helpers.php:73
-msgid "Bosnia And Herzegowina"
-msgstr "Bòsnia i Hercegovina"
-
-#: common/src/Tribe/View_Helpers.php:360
-msgid "Utah"
-msgstr "Utah"
-
-#: common/src/Tribe/View_Helpers.php:74
-msgid "Botswana"
-msgstr "Botswana"
-
-#: common/src/Tribe/View_Helpers.php:361
-msgid "Vermont"
-msgstr "Vermont"
-
-#: common/src/Tribe/View_Helpers.php:75
-msgid "Bouvet Island"
-msgstr "Illa Bouvet"
-
-#: common/src/Tribe/View_Helpers.php:362
-msgid "Virginia"
-msgstr "Virgínia"
-
-#: common/src/Tribe/View_Helpers.php:76
-msgid "Brazil"
-msgstr "Brasil"
-
-#: common/src/Tribe/View_Helpers.php:363
-msgid "Washington"
-msgstr "Washington"
-
-#: common/src/Tribe/View_Helpers.php:77
-msgid "British Indian Ocean Territory"
-msgstr "Territori Britànic de l'Oceà Índic"
-
-#: common/src/Tribe/View_Helpers.php:364
-msgid "West Virginia"
-msgstr "Virgínia Occidental"
-
-#: common/src/Tribe/View_Helpers.php:78
-msgid "Brunei Darussalam"
-msgstr "Brunei Darussalam"
-
-#: common/src/Tribe/View_Helpers.php:365
-msgid "Wisconsin"
-msgstr "Wisconsin"
-
-#: common/src/Tribe/View_Helpers.php:79
-msgid "Bulgaria"
-msgstr "Bulgària"
-
-#: common/src/Tribe/View_Helpers.php:366
-msgid "Wyoming"
-msgstr "Wyoming"
-
-#: common/src/Tribe/View_Helpers.php:80
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-
-#: common/src/admin-views/app-shop.php:4
-msgid "Tribe Event Add-Ons"
-msgstr "Complements de Tribe Events"
-
-#: common/src/Tribe/View_Helpers.php:81
-msgid "Burundi"
-msgstr "Burundi"
-
-#: common/src/admin-views/app-shop.php:54
-msgid "Version"
-msgstr "Versió"
-
-#: common/src/Tribe/View_Helpers.php:82
-msgid "Cambodia"
-msgstr "Cambodja"
-
-#: common/src/admin-views/app-shop.php:57
-msgid "Last Update"
-msgstr "Darrera actualització"
-
-#: common/src/Tribe/View_Helpers.php:83
-msgid "Cameroon"
-msgstr "Camerun"
-
-#: common/src/admin-views/tribe-options-display.php:22
-msgid "Date Format Settings"
-msgstr "Configuració del format de data"
-
-#: common/src/Tribe/View_Helpers.php:84
-msgid "Canada"
-msgstr "Canadà"
-
-#: common/src/admin-views/tribe-options-display.php:26
-msgid "<p>The following three fields accept the date format options available to the php date() function. <a href=\"http://codex.wordpress.org/Formatting_Date_and_Time\" target=\"_blank\">Learn how to make your own date format here</a>.</p>"
-msgstr "<p>Els tres camps següents accepten les opcions de format de data de la funció de php date(). Pots consultar les opcions vàlides per <a href=\"http://codex.wordpress.org/Formatting_Date_and_Time\" target=\"_blank\">personalitzar el format de la data</a>.</p>"
-
-#: common/src/Tribe/View_Helpers.php:85
-msgid "Cape Verde"
-msgstr "Cap Verd"
-
-#: common/src/admin-views/tribe-options-display.php:30
-msgid "Date with year"
-msgstr "Data amb any"
-
-#: common/src/Tribe/View_Helpers.php:86
-msgid "Cayman Islands"
-msgstr "Illes Caiman"
-
-#: common/src/Tribe/View_Helpers.php:87
-msgid "Central African Republic"
-msgstr "República Centreafricana"
-
-#: common/src/Tribe/View_Helpers.php:88
-msgid "Chad"
-msgstr "Txad"
-
-#: common/src/Tribe/View_Helpers.php:89
-msgid "Chile"
-msgstr "Xile"
-
-#: common/src/Tribe/View_Helpers.php:90
-msgid "China"
-msgstr "Xina"
-
-#: common/src/Tribe/View_Helpers.php:91
-msgid "Christmas Island"
-msgstr "Illa Christmas"
-
-#: common/src/admin-views/tribe-options-display.php:38
-msgid "Date time separator"
-msgstr "Separador de data i hora"
-
-#: common/src/Tribe/View_Helpers.php:92
-msgid "Cocos (Keeling) Islands"
-msgstr "Cocos (Keeling)"
-
-#: common/src/admin-views/tribe-options-display.php:39
-msgid "Enter the separator that will be placed between the date and time, when both are shown."
-msgstr "Introdueix el separador que es col·locarà entre la data i l'hora, quan es mostren totes dues."
-
-#: common/src/Tribe/View_Helpers.php:93
-msgid "Colombia"
-msgstr "Colòmbia"
-
-#: common/src/Tribe/View_Helpers.php:94
-msgid "Comoros"
-msgstr "Comores"
-
-#: common/src/Tribe/View_Helpers.php:95
-msgid "Congo"
-msgstr "Congo"
-
-#: common/src/admin-views/tribe-options-display.php:46
-msgid "Datepicker Date Format"
-msgstr "Format de data del selector de dates"
-
-#: common/src/Tribe/View_Helpers.php:96
-msgid "Congo, The Democratic Republic Of The"
-msgstr "Congo, La República Democràtica del"
-
-#: common/src/admin-views/tribe-options-display.php:47
-msgid "Select the date format to use in datepickers"
-msgstr "Selecciona el format de data a utilitzar en el selector de dates"
-
-#: common/src/Tribe/View_Helpers.php:97
-msgid "Cook Islands"
-msgstr "Illes Cook"
-
-#: common/src/admin-views/tribe-options-general.php:20
-msgid "Looking for additional functionality including recurring events, custom meta, community events, ticket sales and more?"
-msgstr "Estàs buscant funcionalitats addicionals com ara esdeveniments recurrents, metadades personalitzades, esdeveniments comunitaris, venda de tiquets i més?"
-
-#: common/src/Tribe/View_Helpers.php:98
-msgid "Costa Rica"
-msgstr "Costa Rica"
-
-#: common/src/admin-views/tribe-options-general.php:20
-msgid "Check out the available add-ons"
-msgstr "Fes una ullada als complements disponibles"
-
-#: common/src/Tribe/View_Helpers.php:99
-msgid "Cote D'Ivoire"
-msgstr "Costa d'Ivori"
-
-#: common/src/admin-views/tribe-options-general.php:25
-msgid "We hope our plugin is helping you out."
-msgstr "Esperem que el nostre plugin et sigui d'utilitat."
-
-#: common/src/Tribe/View_Helpers.php:100
-msgid "Croatia (Local Name: Hrvatska)"
-msgstr "Croàcia (Nom Local: Hrvatska)"
-
-#: common/src/admin-views/tribe-options-general.php:30
-msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text-only link at the bottom of your calendar pointing to The Events Calendar project."
-msgstr "Estàs pensant \"Vaja, aquest plugin és fantàstic! Hauria donar les gràcies a la gent de Modern Tribe per la seva feina\"? El millor agraïment que podem demanar és el reconeixement. Permet-nos afegir a la part inferior del teu calendari un petit enllaç de text al projecte The Events Calendar."
-
-#: common/src/Tribe/View_Helpers.php:101
-msgid "Cuba"
-msgstr "Cuba"
-
-#: common/src/admin-views/tribe-options-general.php:30
-#: common/src/admin-views/tribe-options-general.php:35
-msgid "See an example of the link"
-msgstr "Mira un exemple de l'enlllaç"
-
-#: common/src/Tribe/View_Helpers.php:102
-msgid "Cyprus"
-msgstr "Xipre"
-
-#: common/src/admin-views/tribe-options-general.php:35
-msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text only link at the bottom of your calendar pointing to The Events Calendar project."
-msgstr "Estàs pensant \"Vaja, aquest plugin és fantàstic! Hauria donar les gràcies a la gent de Modern Tribe per la seva feina\"? El millor agraïment que podem demanar és el reconeixement. Permet-nos afegir a la part inferior del teu calendari un petit enllaç de text al projecte The Events Calendar. "
-
-#: common/src/Tribe/View_Helpers.php:103
-msgid "Czech Republic"
-msgstr "República Txeca"
-
-#: common/src/admin-views/tribe-options-general.php:40
-msgid "Show The Events Calendar link"
-msgstr "Mostrar l'enllaç a The Events Calendar"
-
-#: common/src/Tribe/View_Helpers.php:104
-msgid "Denmark"
-msgstr "Dinamarca"
-
-#: common/src/admin-views/tribe-options-general.php:55
-msgid "General Settings"
-msgstr "Configuració general"
-
-#: common/src/Tribe/View_Helpers.php:105
-msgid "Djibouti"
-msgstr "Djibouti"
-
-#: common/src/Tribe/View_Helpers.php:106
-msgid "Dominica"
-msgstr "Dominica"
-
-#: common/src/Tribe/View_Helpers.php:107
-msgid "Dominican Republic"
-msgstr "República Dominicana"
-
-#: common/src/admin-views/tribe-options-general.php:59
-msgid "Default currency symbol"
-msgstr "Símbol monetari predeterminat"
-
-#: common/src/Tribe/View_Helpers.php:108
-msgid "East Timor"
-msgstr "Timor Oriental"
-
-#: common/src/admin-views/tribe-options-general.php:60
-msgid "Set the default currency symbol for event costs. Note that this only impacts future events, and changes made will not apply retroactively."
-msgstr "Indica el símbol monetari predeterminat per als costos dels esdeveniments. Recorda que això només afecta els esdeveniments futurs, i els canvis realitzats no s'aplicaran amb caràcter retroactiu."
-
-#: common/src/Tribe/View_Helpers.php:109
-msgid "Ecuador"
-msgstr "Equador"
-
-#: common/src/admin-views/tribe-options-general.php:67
-msgid "Currency symbol follows value"
-msgstr "Posició del símbol monetari"
-
-#: common/src/Tribe/View_Helpers.php:110
-msgid "Egypt"
-msgstr "Egipte"
-
-#: common/src/admin-views/tribe-options-general.php:68
-msgid "The currency symbol normally precedes the value. Enabling this option positions the symbol after the value."
-msgstr "El símbol monetari normalment precedeix al valor. Activant aquesta opció es col·loca el símbol darrere del valor."
-
-#: common/src/Tribe/View_Helpers.php:111
-msgid "El Salvador"
-msgstr "El Salvador"
-
-#: common/src/admin-views/tribe-options-general.php:74
-msgid "Miscellaneous Settings"
-msgstr "Configuració diversa"
-
-#: common/src/Tribe/View_Helpers.php:112
-msgid "Equatorial Guinea"
-msgstr "Guinea Equatorial"
-
-#: common/src/Tribe/View_Helpers.php:113
-msgid "Eritrea"
-msgstr "Eritrea"
-
-#: common/src/Tribe/View_Helpers.php:114
-msgid "Estonia"
-msgstr "Estònia"
-
-#: common/src/Tribe/View_Helpers.php:115
-msgid "Ethiopia"
-msgstr "Etiòpia"
-
-#: common/src/Tribe/View_Helpers.php:116
-msgid "Falkland Islands (Malvinas)"
-msgstr "Illes Malvines (Falkland)"
-
-#: common/src/admin-views/tribe-options-general.php:81
-msgid "Debug mode"
-msgstr "Mode de depuració"
-
-#: common/src/Tribe/View_Helpers.php:117
-msgid "Faroe Islands"
-msgstr "Illes Fèroe"
-
-#: common/src/admin-views/tribe-options-general.php:87
-msgid "Enable this option to log debug information. By default this will log to your server PHP error log. If you'd like to see the log messages in your browser, then we recommend that you install the %s and look for the \"Tribe\" tab in the debug output."
-msgstr "Habilita aquesta opció per mantenir una bitàcola (log) d'informació per a depuració. Per defecte aquesta informació s'envia a la bitàcola d'errors de PHP. Si vols veure aquests errors en el navegador et recomanem que instal·lis el %s i busca la pestanya \"Tribe\" a la pantalla de depuració."
-
-#: common/src/Tribe/View_Helpers.php:118
-msgid "Fiji"
-msgstr "Fiji"
-
-#: common/src/admin-views/tribe-options-general.php:87
-msgid "Debug Bar Plugin"
-msgstr "Plugin Debug Bar"
-
-#: common/src/Tribe/View_Helpers.php:119
-msgid "Finland"
-msgstr "Finlàndia"
-
-#: common/src/Tribe/Admin/Help_Page.php:183
-msgid "Events Calendar PRO"
-msgstr ""
-
-#: common/src/Tribe/View_Helpers.php:120
-msgid "France"
-msgstr "França"
-
-#: common/src/Tribe/View_Helpers.php:121
-msgid "France, Metropolitan"
-msgstr "França, Metropolitana"
-
-#: common/src/Tribe/View_Helpers.php:122
-msgid "French Guiana"
-msgstr "Guaiana Francesa"
