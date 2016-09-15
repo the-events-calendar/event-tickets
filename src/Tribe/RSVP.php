@@ -868,7 +868,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$post = $GLOBALS['post'];
 
-		if ( ! empty( $post->post_parent ) ) {
+		// For recurring events (child instances only), default to loading tickets for the parent event
+		if ( ! empty( $post->post_parent ) && function_exists( 'tribe_is_recurring_event' ) && tribe_is_recurring_event( $post->ID ) ) {
 			$post = get_post( $post->post_parent );
 		}
 
