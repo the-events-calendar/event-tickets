@@ -677,4 +677,17 @@ class Tribe__Tickets__Tickets_View {
 		return $is_disabled;
 	}
 
+	/**
+	 * Creates the HTML for the status of the  RSVP choice.
+	 *
+	 * @param  string $name     The Name of the Field
+	 * @param  string $selected The Current selected option
+	 * @param  int  $event_id   The Event/Post ID (optional)
+	 * @param  int  $ticket_id  The Ticket/RSVP ID (optional)
+	 * @return void
+	 */
+	public function render_rsvp_status( $name, $selected, $event_id = null, $ticket_id = null ) {
+		$options = $this->get_rsvp_options();
+		echo sprintf( '<span>%s</span>', esc_html( $options[ $selected ] ) );
+	}
 }

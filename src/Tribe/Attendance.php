@@ -64,4 +64,13 @@ class Tribe__Tickets__Attendance {
 		return absint( get_post_meta( $this->post_id, self::DELETED_ATTENDEES_COUNT, true ) );
 	}
 
+	/**
+	 * Deletes the attendees caches for a post.
+	 *
+	 * @param int $post_id The post `ID` field.
+	 */
+	public static function delete_attendees_caches( $post_id ) {
+		$post_transient = Tribe__Post_Transient::instance();
+		$post_transient->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+	}
 }

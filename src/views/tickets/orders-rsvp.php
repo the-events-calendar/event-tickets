@@ -66,7 +66,23 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 						<!-- See https://www.w3.org/WAI/tutorials/forms/labels/#associating-labels-implicitly -->
 						<label>
 							<?php echo esc_html_x( 'RSVP: ', 'order status label', 'event-tickets' ); ?>
-							<?php $view->render_rsvp_selector( "attendee[{$key}][order_status]", $attendee['order_status'], $post_id, $attendee['product_id'] ); ?>
+							<?php
+							if ( ! empty( $attendee['ticket_exists'] ) ) {
+								$view->render_rsvp_selector(
+									"attendee[{$key}][order_status]",
+									$attendee['order_status'],
+									$post_id,
+									$attendee['product_id']
+								);
+							} else {
+								$view->render_rsvp_status(
+									"attendee[{$key}][order_status]",
+									$attendee['order_status'],
+									$post_id,
+									$attendee['product_id']
+								);
+							}
+							?>
 						</label>
 						<div class="ticket-type"><span class="type-label"><?php esc_html_e( 'Type: ', 'event-tickets' );?></span><?php esc_html_e( $attendee['ticket'] );?></div>
 					</div>
