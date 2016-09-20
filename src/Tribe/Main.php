@@ -65,6 +65,11 @@ class Tribe__Tickets__Main {
 	 */
 	protected $move_ticket_types;
 
+	/**
+	 * @var Tribe__Admin__Activation_Page
+	 */
+	protected $activation_page;
+
 	private $has_initialized = false;
 
 	/**
@@ -102,6 +107,17 @@ class Tribe__Tickets__Main {
 		$this->maybe_set_common_lib_info();
 
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
+		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
+	}
+
+	/**
+	 * Fires when the plugin is activated.
+	 */
+	public function on_activation() {
+		// Set a transient we can use when deciding whether or not to show update/welcome splash pages
+		if ( ! is_network_admin() && ! isset( $_GET['activate-multi'] ) ) {
+			set_transient( '_tribe_tickets_activation_redirect', 1, 30 );
+		}
 	}
 
 	/**
@@ -143,6 +159,7 @@ class Tribe__Tickets__Main {
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
+		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
 
@@ -207,6 +224,25 @@ class Tribe__Tickets__Main {
 			);
 		}
 	}
+
+	/**
+	 * Set the Event Tickets version in the options table if it's not already set.
+	 */
+	public function maybe_set_et_version() {
+		if ( version_compare( Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' ), self::VERSION, '<' ) ) {
+			$previous_versions = Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
+				? Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
+				: array();
+
+			$previous_versions[] = Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
+				? Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
+				: '0';
+
+			Tribe__Settings_Manager::set_option( 'previous_event_tickets_versions', $previous_versions );
+			Tribe__Settings_Manager::set_option( 'latest_event_tickets_version', self::VERSION );
+		}
+	}
+
 
 	/**
 	 * Common library object accessor method
@@ -406,12 +442,10 @@ class Tribe__Tickets__Main {
 	public function init() {
 		// Provide continued support for legacy ticketing modules
 		$this->legacy_provider_support = new Tribe__Tickets__Legacy_Provider_Support;
-
 		$this->settings_tab();
-
 		$this->tickets_view();
-
 		Tribe__Credits::init();
+		$this->maybe_set_et_version();
 	}
 
 	/**
@@ -467,6 +501,25 @@ class Tribe__Tickets__Main {
 		}
 
 		return $this->move_ticket_types;
+	}
+
+	/**
+	 * @return Tribe__Admin__Activation_Page
+	 */
+	public function activation_page() {
+		if ( empty( $this->activation_page ) ) {
+			$this->activation_page = new Tribe__Admin__Activation_Page( array(
+				'slug'                  => 'event-tickets',
+				'version'               => self::VERSION,
+				'activation_transient'  => '_tribe_tickets_activation_redirect',
+				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
+				'version_history_slug'  => 'previous_event_tickets_versions',
+				'welcome_page_title'    => __( 'Welcome to Event Tickets', 'event-tickets' ),
+				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
+			) );
+		}
+
+		return $this->activation_page;
 	}
 
 	/**

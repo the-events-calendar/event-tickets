@@ -1,14 +1,13 @@
 <?php
-
 /**
  * The template that displays the welcome message when the plugin is first activated.
  */
-
 $video_url = 'https://vimeo.com/172163102';
-
 ?>
 
-<p class="tribe-welcome-message"><?php printf( esc_html__( 'You are running Version %s and deserve a hug :-)', 'event-tickets' ), Tribe__Tickets__Main::VERSION ); ?></p>
+<p class="tribe-welcome-message">
+	<?php printf( esc_html__( 'You are running Version %s and deserve a hug :-)', 'event-tickets' ), Tribe__Tickets__Main::VERSION ); ?>
+</p>
 
 <div class="tribe-welcome-video-wrapper">
 	<?php echo wp_oembed_get( $video_url ); ?>
@@ -25,9 +24,17 @@ $video_url = 'https://vimeo.com/172163102';
 		<h2><?php esc_html_e( 'Newsletter Signup', 'event-tickets' ); ?></h2>
 		<p><?php esc_html_e( 'Stay in touch with Event Tickets Plus. We send out periodic updates, key developer notices, and even the occasional discount.', 'event-tickets' ); ?></p>
 		<form action="http://moderntribe.createsend.com/t/r/s/athqh/" method="post">
-			<p><input id="listthkduyk" name="cm-ol-thkduyk" type="checkbox" /> <label for="listthkduyk">Developer News</label></p>
-			<p><input id="listathqh" name="cm-ol-athqh" checked type="checkbox" /> <label for="listathqh">News and Announcements</label></p>
-			<p><input id="fieldEmail" class="regular-text" name="cm-athqh-athqh" type="email" placeholder="Email" required /></p>
+			<p>
+				<input id="dev-news-field" name="cm-ol-thkduyk" type="checkbox" />
+				<label for="dev-news-field">Developer News</label>
+			</p>
+			<p>
+				<input id="news-announcements-field" name="cm-ol-athqh" checked type="checkbox" />
+				<label for="news-announcements-field">News and Announcements</label>
+			</p>
+			<p>
+				<input id="fieldEmail" class="regular-text" name="cm-athqh-athqh" type="email" placeholder="Email" required /><
+			</p>
 			<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'event-tickets' ); ?></button>
 		</form>
 	</div>

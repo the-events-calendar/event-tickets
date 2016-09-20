@@ -33,6 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'EVENT_TICKETS_DIR', dirname( __FILE__ ) );
+define( 'EVENT_TICKETS_MAIN_PLUGIN_FILE', __FILE__ );
 
 // the main plugin class
 require_once EVENT_TICKETS_DIR . '/src/Tribe/Main.php';
