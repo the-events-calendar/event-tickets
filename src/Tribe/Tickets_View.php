@@ -537,7 +537,7 @@ class Tribe__Tickets__Tickets_View {
 
 		// If an option was passed return it's label, but if doesn't exist return false
 		if ( ! is_null( $selected ) ) {
-			return isset( $options[ $selected  ] ) ? $options[ $selected  ] : false;
+			return isset( $options[ $selected  ] ) ? $options[ $selected  ]['label'] : false;
 		}
 
 		return $just_labels ?
