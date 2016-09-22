@@ -24,9 +24,6 @@ modules:
             cleanup: true
             url: 'http://tec.tri.be'
             tablePrefix: wptests_
-            checkExistence: true
-            update: true
-            reconnect: true
         WPLoader:
             wpRootFolder: ~/www/wordpress
             dbName: wordpress-tests
