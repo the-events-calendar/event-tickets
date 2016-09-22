@@ -1390,17 +1390,25 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
 
-		if ( isset( $rsvp_options[ $previous_order_status ] ) && isset( $rsvp_options[ $attendee_order_status ] ) ) {
-			$previous_order_status_stock_size = $rsvp_options[ $previous_order_status ]['decrease_stock_by'];
-			$attendee_order_status_stock_size = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
-
-			if ( $previous_order_status_stock_size != $attendee_order_status_stock_size ) {
-				$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-				$diff  = $attendee_order_status_stock_size - $previous_order_status_stock_size;
-
-				update_post_meta( $ticket_id, 'total_sales', $sales + $diff );
-			}
+		if (
+			! (
+				isset( $rsvp_options[ $previous_order_status ] )
+				&& isset( $rsvp_options[ $attendee_order_status ] )
+			)
+		) {
+			return;
 		}
+
+		$previous_order_status_stock_size = $rsvp_options[ $previous_order_status ]['decrease_stock_by'];
+		$attendee_order_status_stock_size = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
+
+		if ( $previous_order_status_stock_size == $attendee_order_status_stock_size ) {
+			return;
+		}
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		$diff  = $attendee_order_status_stock_size - $previous_order_status_stock_size;
+
+		update_post_meta( $ticket_id, 'total_sales', $sales + $diff );
 	}
 
 	/**
