@@ -10,40 +10,31 @@ settings:
     memory_limit: 1024M
 modules:
     config:
-        Db:
-            dsn: 'mysql:host=localhost;dbname=tec-tests'
-            user: root
-            password: password
-            dump: tests/_data/wordpress.sql
-            reconnect: true
         WPBrowser:
-            url: 'http://tec.tri.be'
+            url: 'http://tribe-pro.dev'
             adminUsername: admin
             adminPassword: password
             adminUrl: /wp-admin
         WPDb:
-            dsn: 'mysql:host=localhost;dbname=tec-tests'
+            dsn: 'mysql:host=127.0.0.1;dbname=tec-tests'
             user: root
             password: password
             dump: tests/_data/dump.sql
             populate: true
             cleanup: true
-            url: 'http://tec.tri.be'
+            url: 'http://tribe-pro.dev'
             tablePrefix: wptests_
-            checkExistence: true
-            update: true
-            reconnect: true
         WPLoader:
-            wpRootFolder: ~/www/wordpress
-            dbName: wordpress-tests
-            dbHost: localhost
+            wpRootFolder: /Users/Luca/Sites/tribe-pro
+            dbName: tribe-pro-tests
+            dbHost: 127.0.0.1
             dbUser: root
             dbPassword: password
             wpDebug: true
             dbCharset: utf8
             dbCollate: ''
-            tablePrefix: wptests_
-            domain: tec.tri.be
+            tablePrefix: wp_
+            domain: tribe-pro.dev
             adminEmail: admin@tec.tri.ve
             title: 'Event Tickets Tests'
             phpBinary: php
@@ -55,11 +46,11 @@ modules:
                 - the-events-calendar/the-events-calendar.php
                 - event-tickets/event-tickets.php
         WPWebDriver:
-            url: 'http://tec.tri.be'
+            url: 'http://tribe-pro.dev'
             browser: phantomjs
             port: 4444
             restart: true
             wait: 2
             adminUsername: admin
-            adminPassword: password
-            adminUrl: /wp-admin
+            adminPassword: admin
+            adminPath: /wp-admin
