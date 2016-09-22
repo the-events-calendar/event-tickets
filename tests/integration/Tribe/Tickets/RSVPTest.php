@@ -20,10 +20,10 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$this->tickets_view = new Tickets_View();
 
 		// let's avoid die()s
-		add_filter(
-			'wp_die_handler', function () {
-			return [ $this, 'dont_die' ];
-		}
+		add_filter (
+			'tribe_exit', function () {
+				return [ $this, 'dont_die' ];
+			}
 		);
 
 		// let's avoid confirmation emails

@@ -448,7 +448,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$url = get_permalink( $post_id );
 			$url = add_query_arg( 'rsvp_error', 1, $url );
 			wp_redirect( esc_url_raw( $url ) );
-			die;
+			tribe_exit();
 		}
 
 		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
@@ -487,7 +487,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			if ( $ticket_type->managing_stock() && $qty > $ticket_type->remaining() ) {
 				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
 				wp_redirect( esc_url_raw( $url ) );
-				die;
+				tribe_exit();
 			}
 
 			$has_tickets = true;
@@ -613,7 +613,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$url = get_permalink( $post_id );
 			$url = add_query_arg( 'rsvp_sent', 1, $url );
 			wp_redirect( esc_url_raw( $url ) );
-			die();
+			tribe_exit();
 		}
 	}
 
@@ -1323,7 +1323,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$url = esc_url_raw( $url );
 
 		wp_redirect( $url );
-		die;
+		tribe_exit();
 	}
 
 	/**
