@@ -42,14 +42,23 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 		$going = $this->get_total_going();
 		$not_going = $this->get_total_not_going();
 
-		// @todo: here iterate over possible stati
-		echo "
+		$html = "
 			<ul>
 				<li> <strong>$total_rsvps_label</strong> $total_rsvps </li>
 				<li> <strong>$going_label</strong> $going </li>
 				<li> <strong>$not_going_label</strong> $not_going </li>
+				$attendance_lines_after
 			</ul>
 		";
+
+		/**
+		 * Filters the HTML that should be printed to display RSVP attendance lines.
+		 *
+		 * @param string $html The default HTML code displaying going and not going data.
+		 */
+		$html = apply_filters( 'tribe_tickets_rsvp_print_totals_html', $html );
+
+		echo $html;
 	}
 
 	/**
