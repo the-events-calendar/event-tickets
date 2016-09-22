@@ -613,7 +613,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$url = get_permalink( $post_id );
 			$url = add_query_arg( 'rsvp_sent', 1, $url );
 			wp_redirect( esc_url_raw( $url ) );
-			wp_die();
+			die();
 		}
 	}
 
