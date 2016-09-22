@@ -502,12 +502,13 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Gets a List of Possible RSVP answers
 	 *
-	 * @param string $selected Allows users to check if an option exists or get it's label
+	 * @param string $selected    Allows users to check if an option exists or get it's label
+	 * @param bool   $just_labels Whether just the options labels should be returned.
 	 *
 	 * @return array|bool An array containing the RSVP states, an array containing the selected
 	 *                    option data or `false` if the selected option does not exist.
 	 */
-	public function get_rsvp_options( $selected = null ) {
+	public function get_rsvp_options( $selected = null, $just_labels = true ) {
 		$options = array(
 			'yes' => array( 'label' => __( 'Going', 'event-tickets' ), 'decrease_stock_by' => 1 ),
 			'no'  => array( 'label' => __( 'Not Going', 'event-tickets' ), 'decrease_stock_by' => 0 ),
@@ -539,7 +540,9 @@ class Tribe__Tickets__Tickets_View {
 			return isset( $options[ $selected  ] ) ? $options[ $selected  ] : false;
 		}
 
-		return $options;
+		return $just_labels ?
+			array_combine( array_keys( $options ), wp_list_pluck( $options, 'label' ) )
+			: $options;
 	}
 
 	/**
