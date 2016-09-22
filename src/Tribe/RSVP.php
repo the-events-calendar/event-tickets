@@ -346,8 +346,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Dont try to Save if it's restricted
-		if ( ! isset( $attendee['product_id'] ) || $this->tickets_view->is_rsvp_restricted( $event_id,
-		                                                                               $attendee['product_id'] ) ) {
+		if ( ! isset( $attendee['product_id'] )
+		     || $this->tickets_view->is_rsvp_restricted( $event_id, $attendee['product_id'] )
+		) {
 			return;
 		}
 
