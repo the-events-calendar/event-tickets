@@ -512,6 +512,8 @@ class Tribe__Tickets__Tickets_View {
 			'no' => __( 'Not Going', 'event-tickets' ),
 		);
 
+		// @todo: allow for this ^ format and for more like [<label>, <decrease_stock_by>, <options>]
+
 		/**
 		 * Allow users to add more RSVP options
 		 * @param array $options

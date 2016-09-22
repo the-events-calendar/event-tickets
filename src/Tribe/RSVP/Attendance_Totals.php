@@ -42,6 +42,7 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 		$going = $this->get_total_going();
 		$not_going = $this->get_total_not_going();
 
+		// @todo: here iterate over possible stati
 		echo "
 			<ul>
 				<li> <strong>$total_rsvps_label</strong> $total_rsvps </li>
