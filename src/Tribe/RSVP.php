@@ -1405,6 +1405,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( $previous_order_status_stock_size == $attendee_order_status_stock_size ) {
 			return;
 		}
+
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		$diff  = $attendee_order_status_stock_size - $previous_order_status_stock_size;
 
