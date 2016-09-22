@@ -575,7 +575,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_rsvp_tickets_generated', $order_id, $post_id, $attendee_order_status );
 
-		$send_mail_stati = array('yes');
+		$send_mail_stati = array( 'yes' );
 
 		/**
 		 * Filters whether a confirmation email should be sent or not for RSVP tickets.
