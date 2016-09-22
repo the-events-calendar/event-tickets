@@ -504,22 +504,35 @@ class Tribe__Tickets__Tickets_View {
 	 *
 	 * @param string $selected Allows users to check if an option exists or get it's label
 	 *
-	 * @return array
+	 * @return array|bool An array containing the RSVP states, an array containing the selected
+	 *                    option data or `false` if the selected option does not exist.
 	 */
 	public function get_rsvp_options( $selected = null ) {
 		$options = array(
-			'yes' => __( 'Going', 'event-tickets' ),
-			'no' => __( 'Not Going', 'event-tickets' ),
+			'yes' => array( 'label' => __( 'Going', 'event-tickets' ), 'decrease_stock_by' => 1 ),
+			'no'  => array( 'label' => __( 'Not Going', 'event-tickets' ), 'decrease_stock_by' => 0 ),
 		);
 
-		// @todo: allow for this ^ format and for more like [<label>, <decrease_stock_by>, <options>]
-
 		/**
-		 * Allow users to add more RSVP options
+		 * Allow users to add more RSVP options.
+		 *
+		 * Additional RSVP options should be specified in the following formats:
+		 *
+		 *      [
+		 *          'slug' => [ 'Option 1 label' ],
+		 *          'slug' => [ 'label' => 'Option 3 label' ],
+		 *          'slug' => [ 'label' => 'Option 2 label', 'decrease_stock_by' => 1 ],
+		 *      ]
+		 *
+		 * The `decrease_stock_by` key can be omitted and will default to `1`.
+		 *
 		 * @param array $options
 		 * @param string $selected
 		 */
 		$options = apply_filters( 'event_tickets_rsvp_options', $options, $selected );
+
+		$options = array_filter( $options, array( $this, 'has_rsvp_format' ) );
+		array_walk( $options, array( $this, 'normalize_rsvp_option' ) );
 
 		// If an option was passed return it's label, but if doesn't exist return false
 		if ( ! is_null( $selected ) ) {
@@ -691,5 +704,44 @@ class Tribe__Tickets__Tickets_View {
 	public function render_rsvp_status( $name, $selected, $event_id = null, $ticket_id = null ) {
 		$options = $this->get_rsvp_options();
 		echo sprintf( '<span>%s</span>', esc_html( $options[ $selected ] ) );
+	}
+
+	/**
+	 * Prunes RSVP options that are arrays and are not defining a label.
+	 *
+	 * @param array|string $option
+	 *
+	 * @return bool
+	 */
+	protected function has_rsvp_format( $option ) {
+		if ( ! is_array( $option ) ) {
+			return true;
+		}
+
+		// label is the bare minimum
+		if ( ! isset( $option['label'] ) ) {
+			return false;
+		}
+
+		return empty( $option['decrease_stock_by'] )
+		       || (
+					is_numeric( $option['decrease_stock_by'] )
+		            && intval( $option['decrease_stock_by'] ) == $option['decrease_stock_by']
+		            && intval( $option['decrease_stock_by'] ) >= 0
+		       );
+	}
+
+	/**
+	 * Normalizes the RSVP option conforming it to the array format.
+	 *
+	 * @param array|string $option
+	 */
+	protected function normalize_rsvp_option( &$option ) {
+		$label_only_format = ! is_array( $option );
+		if ( $label_only_format ) {
+			$option = array( 'label' => $option, 'decrease_stock_by' => 1 );
+		} else {
+			$option['decrease_stock_by'] = isset( $option['decrease_stock_by'] ) ? $option['decrease_stock_by'] : 1;
+		}
 	}
 }
