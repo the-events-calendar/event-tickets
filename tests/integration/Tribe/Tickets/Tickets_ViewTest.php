@@ -111,10 +111,10 @@ class Tickets_ViewTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		add_filter(
-			'event_tickets_rsvp_options', function ( $options ) use ( $rsvp_options ) {
-
-			return array_merge( $options, $rsvp_options );
-		}
+			'event_tickets_rsvp_options',
+			function ( $options ) use ( $rsvp_options ) {
+				return array_merge( $options, $rsvp_options );
+			}
 		);
 
 		$sut = $this->make_instance();
@@ -139,10 +139,10 @@ class Tickets_ViewTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		add_filter(
-			'event_tickets_rsvp_options', function ( $options ) use ( $rsvp_options ) {
-
-			return array_merge( $options, $rsvp_options );
-		}
+			'event_tickets_rsvp_options',
+			function ( $options ) use ( $rsvp_options ) {
+				return array_merge( $options, $rsvp_options );
+			}
 		);
 
 		$sut = $this->make_instance();
@@ -164,10 +164,10 @@ class Tickets_ViewTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		add_filter(
-			'event_tickets_rsvp_options', function ( $options ) use ( $rsvp_options ) {
-
-			return array_merge( $options, $rsvp_options );
-		}
+			'event_tickets_rsvp_options',
+			function ( $options ) use ( $rsvp_options ) {
+				return array_merge( $options, $rsvp_options );
+			}
 		);
 
 		$sut = $this->make_instance();
@@ -189,10 +189,10 @@ class Tickets_ViewTest extends \Codeception\TestCase\WPTestCase {
 		];
 
 		add_filter(
-			'event_tickets_rsvp_options', function ( $options ) use ( $rsvp_options ) {
-
-			return array_merge( $options, $rsvp_options );
-		}
+			'event_tickets_rsvp_options',
+			function ( $options ) use ( $rsvp_options ) {
+				return array_merge( $options, $rsvp_options );
+			}
 		);
 
 		$sut = $this->make_instance();
