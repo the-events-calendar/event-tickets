@@ -520,7 +520,7 @@ class Tribe__Tickets__Tickets_View {
 		 * Additional RSVP options should be specified in the following formats:
 		 *
 		 *      [
-		 *          'slug' => [ 'Option 1 label' ],
+		 *          'slug' => 'Option 1 label',
 		 *          'slug' => [ 'label' => 'Option 3 label' ],
 		 *          'slug' => [ 'label' => 'Option 2 label', 'decrease_stock_by' => 1 ],
 		 *      ]
