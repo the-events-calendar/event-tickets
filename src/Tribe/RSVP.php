@@ -471,7 +471,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			// get the RSVP status has a `decrease_stock_by` value
+			// get the RSVP status `decrease_stock_by` value
 			$status_stock_size = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
 
 			$ticket_qty = intval( $_POST["quantity_{$product_id}"] );
