@@ -856,6 +856,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( empty( $event_id ) ) {
 			$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
 		}
+
+		// Additional check (in case we were passed an invalid ticket ID and still can't determine the event)
+		if ( empty( $event_id ) ) {
+			return false;
+		}
+
 		$product_id = get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true );
 
 		// Decrement the sales figure
