@@ -307,7 +307,7 @@ class Tribe__Tickets__Main {
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
 
 		// Attendee screen enhancements
-		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'setup_attendance_totals' ), 20 );
+		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ), 20 );
 
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
