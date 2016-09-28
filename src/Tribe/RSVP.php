@@ -866,7 +866,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Adjust the sales figure if required
 		if ( $adjustment ) {
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			update_post_meta( $product_id, 'total_sales', $sales + $adjustment );
+			update_post_meta( $product_id, 'total_sales', $sales - $adjustment );
 		}
 
 		//Store name so we can still show it in the attendee list
