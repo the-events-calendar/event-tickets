@@ -6,6 +6,7 @@
   "common/readme.txt",
   "common/src/**/*",
   "common/lang/**/*",
+  "common/vendor/clipboard/*.js",
   "common/vendor/jquery/*.css",
   "common/vendor/jquery/images/*.png",
   "lang/**/*",
