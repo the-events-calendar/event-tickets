@@ -861,7 +861,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// For attendees whose status ('going' or 'not going') for whom a stock adjustment is required?
 		$rsvp_options    = $this->tickets_view->get_rsvp_options( null, false );
 		$attendee_status = get_post_meta( $ticket_id, self::ATTENDEE_RSVP_KEY, true );
-		$adjustment      = absint( $rsvp_options[ $attendee_status ]['decrease_stock_by'] );
+
+		$adjustment = isset( $rsvp_options[ $attendee_status ] )
+			? absint( $rsvp_options[ $attendee_status ]['decrease_stock_by'] )
+			: false;
 
 		// Adjust the sales figure if required
 		if ( $adjustment ) {
