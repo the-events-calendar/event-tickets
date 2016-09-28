@@ -862,7 +862,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$rsvp_options    = $this->tickets_view->get_rsvp_options( null, false );
 		$attendee_status = get_post_meta( $ticket_id, self::ATTENDEE_RSVP_KEY, true );
 
-		$adjustment = isset( $rsvp_options[ $attendee_status ] )
+		$adjustment = isset( $rsvp_options[ $attendee_status ]['decrease_stock_by']  )
 			? absint( $rsvp_options[ $attendee_status ]['decrease_stock_by'] )
 			: false;
 
