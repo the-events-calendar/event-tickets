@@ -33,7 +33,7 @@ $video_url = 'https://vimeo.com/172163102';
 				<label for="news-announcements-field">News and Announcements</label>
 			</p>
 			<p>
-				<input id="fieldEmail" class="regular-text" name="cm-athqh-athqh" type="email" placeholder="Email" required /><
+				<input id="fieldEmail" class="regular-text" name="cm-athqh-athqh" type="email" placeholder="Email" required />
 			</p>
 			<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'event-tickets' ); ?></button>
 		</form>
