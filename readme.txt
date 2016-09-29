@@ -48,15 +48,31 @@ Just getting started? Definitely watch and read through the <a href="http://m.tr
 * Extensive Template Tags for Customization
 * Hook & Filters up the wazoo
 
-Looking for something else?
+Looking for something else? We’ve got add-ons available to take your calendar to the next level.
 
+= PRO Features =
 
-* Sell tickets, collect sales, and manage attendees all from within your WordPress dashboard! Combine our <a href="http://m.tri.be/18wg">Event Tickets Plus add-on</a> with your favorite ecommerce plugin (WooCommerce, Shopp, Easy Digital Downloads, or WP E-commerce).
-* <a href="https://wordpress.org/plugins/the-events-calendar/" target="_blank">The Events Calendar</a> is the most popular calendar solution for WordPress.  Team it up with Event Tickets and see the real magic happen.
-* <a href="http://m.tri.be/2c">Events Calendar PRO</a>: recurring events, a whole range of new views ( week / map / photo / venue / organizer) & widgets (calendar / featured venue / week / event countdown), custom event attributes, default content, location search and a lot more.
-* Have so many amazing events that your users get overwhelmed? Drop some filters on them with the <a href="http://m.tri.be/52" target="_blank">Filter Bar plugin</a>.
-* Get your community involved by letting them submit events with our <a href="http://m.tri.be/18uu" target="_blank">Community Events</a> plugin.  Take it to the next level by letting them sell tickets with the <a href="http://m.tri.be/18uy" target="_blank">Community Tickets</a> add-on!
-<a href="https://www.facebook.com/theeventscalendar/" target="_blank">Join us on Facebook</a> to be part of our active community, check us out <a href="https://twitter.com/TheEventsCal" target="_blank">on Twitter</a>, and <a href="http://m.tri.be/rm">sign up for our newsletter</a> for release announcements and discounts.
+Add recurring events, a whole recurring events, a whole range of new views ( week / map / photo / venue / organizer) & widgets (calendar / featured venue / week / event countdown), custom event attributes, default content, location search, much more with <a href="http://m.tri.be/2c">Events Calendar PRO</a>
+
+= Event Ticketing =
+
+Collect free RSVPs with Event Tickets or add paid ticketing features with <a href="http://m.tri.be/18wg">Event Tickets Plus</a>, including the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard!  Works with your favorite eCommerce plugin (WooCommerce, Shopp, Easy Digital Downloads, or WP E-Commerce).
+
+= Bulk Event Import =
+
+Fill your calendar with events from your favorite sources, including Facebook, Meetup, Google Calendar, iCalendar, CSV, and ICS. Event Aggregator provides a convenient dashboard to manage scheduled imports, manual imports, filters, one-way sync, import history, and more.
+
+= User-Submitted Events =
+
+Running a community calendar? <a href="http://m.tri.be/2g">Community Events</a> lets users add events directly to your calendar without needing access to your admin.
+
+= Advanced User Search & Filters =
+
+Have so many amazing events that your users get overwhelmed? <a href="http://m.tri.be/52" target="_blank">Filter Bar</a> adds a configurable set of filters to your event pages so users can view and search for the exact events that interest them.
+
+= Integrate With Eventbrite =
+
+Connect your calendar with your Eventbrite.com account! <a href="http://m.tri.be/18wf">Eventbrite Tickets</a> allows you to import/export between The Events Calendar and Eventbrite, and incorporate ticket sales.
 
 = SUBMITTING PATCHES =
 
