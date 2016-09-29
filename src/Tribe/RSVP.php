@@ -187,7 +187,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
 		add_action( 'rsvp_checkin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'rsvp_uncheckin', array( $this, 'purge_attendees_transient' ) );
-		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'setup_attendance_totals' ) );
+		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ) );
 	}
 
 	/**
