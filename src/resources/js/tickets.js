@@ -225,11 +225,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		} );
 
-		// prompt user before deleting a ticket
-		$tribe_tickets.on( 'click', '.ticket_delete', function() {
-			return confirm( tribe_ticket_notices.confirm_alert );
-		} );
-
 		if ( $event_pickers.length ) {
 			startofweek = $event_pickers.data( 'startofweek' );
 		}
@@ -417,6 +412,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		/* "Delete Ticket" link action */
 
 		$tribe_tickets.on( 'click', '.ticket_delete', function( e ) {
+			if ( ! confirm( tribe_ticket_notices.confirm_alert ) ) {
+				return false;
+			}
 
 			e.preventDefault();
 
