@@ -153,6 +153,8 @@ class Tribe__Tickets__Main {
 
 		$this->hooks();
 
+		$this->register_active_plugin();
+
 		$this->has_initialized = true;
 
 		$this->rsvp();
@@ -167,6 +169,19 @@ class Tribe__Tickets__Main {
 		 * Fires once Event Tickets has completed basic setup.
 		 */
 		do_action( 'tribe_tickets_plugin_loaded' );
+	}
+
+	/**
+	 * Registers this plugin as being active for other tribe plugins and extensions
+	 */
+	protected function register_active_plugin() {
+		if ( class_exists( 'Tribe__Dependency' ) ) {
+			Tribe__Dependency::instance()->add_active_plugin(
+				__CLASS__,
+				self::VERSION,
+				EVENT_TICKETS_MAIN_PLUGIN_FILE
+			);
+		}
 	}
 
 	/**
