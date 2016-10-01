@@ -171,17 +171,18 @@ class Tribe__Tickets__Main {
 		do_action( 'tribe_tickets_plugin_loaded' );
 	}
 
+
 	/**
 	 * Registers this plugin as being active for other tribe plugins and extensions
+	 *
+	 * @return bool Indicates if Tribe Common wants the plugin to run
 	 */
-	protected function register_active_plugin() {
-		if ( class_exists( 'Tribe__Dependency' ) ) {
-			Tribe__Dependency::instance()->add_active_plugin(
-				__CLASS__,
-				self::VERSION,
-				EVENT_TICKETS_MAIN_PLUGIN_FILE
-			);
+	public function register_active_plugin() {
+		if ( ! function_exists( 'tribe_register_plugin' ) ) {
+			return true;
 		}
+
+		return tribe_register_plugin( EVENT_TICKETS_MAIN_PLUGIN_FILE, __CLASS__, self::VERSION );
 	}
 
 	/**
