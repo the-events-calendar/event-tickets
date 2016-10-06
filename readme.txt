@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.3] unreleased =
+= [4.3] 2016-10-12 =
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
 * Tweak - Changed "Event Add-Ons" to load faster [64286]
