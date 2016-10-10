@@ -118,7 +118,7 @@ if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
  */
 $tickets_fields = apply_filters( 'tribe_tickets_settings_tab_fields', $tickets_fields );
 
-$tickets_tab   = array(
+$tickets_tab = array(
 	'priority' => 20,
 	'fields' => $tickets_fields,
 );
