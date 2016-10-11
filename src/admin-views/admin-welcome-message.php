@@ -15,9 +15,9 @@ $video_url = 'https://vimeo.com/172163102';
 
 <div class="tribe-row">
 	<div class="tribe-half-column">
-		<h2><?php esc_html_e( 'Keep The Event Tickets  FREE', 'event-tickets' ); ?></h2>
-		<p><?php esc_html_e( "5 star ratings help us bring Event Tickets to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support.", 'event-tickets' ); ?></p>
-		<p><strong><?php esc_html_e( 'Rate it five stars today!', 'event-tickets' ); ?></strong> <a class="tribe-rating-link" href="http://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank">&#9733;&#9733;&#9733;&#9733;&#9733;</a></p>
+		<h2><?php esc_html_e( 'We Need Your Help', 'event-tickets' ); ?></h2>
+		<p><?php esc_html_e( "Your ratings help us bring The Events Calendar to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support.", 'event-tickets' ); ?></p>
+		<p><strong><?php esc_html_e( 'Rate us today!', 'event-tickets' ); ?></strong> <a class="tribe-rating-link" href="http://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank">&#9733;&#9733;&#9733;&#9733;&#9733;</a></p>
 		<a href="http://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank" class="button-primary"><?php esc_html_e( 'Rate It', 'event-tickets' ); ?></a>
 	</div>
 	<div class="tribe-half-column">
@@ -26,14 +26,14 @@ $video_url = 'https://vimeo.com/172163102';
 		<form action="http://moderntribe.createsend.com/t/r/s/athqh/" method="post">
 			<p>
 				<input id="dev-news-field" name="cm-ol-thkduyk" type="checkbox" />
-				<label for="dev-news-field">Developer News</label>
+				<label for="dev-news-field"><?php esc_html_e( 'Developer News', 'event-tickets' );?></label>
 			</p>
 			<p>
 				<input id="news-announcements-field" name="cm-ol-athqh" checked type="checkbox" />
-				<label for="news-announcements-field">News and Announcements</label>
+				<label for="news-announcements-field"><?php esc_html_e( 'News and Announcements', 'event-tickets' );?></label>
 			</p>
 			<p>
-				<input id="fieldEmail" class="regular-text" name="cm-athqh-athqh" type="email" placeholder="Email" required />
+				<input id="fieldEmail" class="regular-text" name="cm-athqh-athqh" type="email" placeholder="<?php esc_attr_e( 'Email', 'event-tickets' ); ?>" required />
 			</p>
 			<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'event-tickets' ); ?></button>
 		</form>
