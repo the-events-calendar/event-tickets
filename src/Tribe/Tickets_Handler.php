@@ -29,6 +29,11 @@ class Tribe__Tickets__Tickets_Handler {
 	public static $attendees_slug = 'tickets-attendees';
 
 	/**
+	 * @var bool
+	 */
+	protected $should_render_title = true;
+
+	/**
 	 * Hook of the admin page for attendees
 	 * @var
 	 */
@@ -114,11 +119,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 
 		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) && ! empty( $tickets ) ) {
-			$url = add_query_arg( array(
-				'post_type' => $post->post_type,
-				'page'      => self::$attendees_slug,
-				'event_id'  => $post->ID,
-			), admin_url( 'edit.php' ) );
+			$url = $this->get_attendee_report_link( $post );
 
 			$actions['tickets_attendees'] = sprintf( '<a title="%s" href="%s">%s</a>', esc_html__( 'See who purchased tickets to this event', 'event-tickets' ), esc_url( $url ), esc_html__( 'Attendees', 'event-tickets' ) );
 		}
@@ -313,15 +314,11 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Fires immediately before the content of the attendees screen
 		 * is rendered.
+		 *
+		 * @param $this Tribe__Tickets__Tickets_Handler The current ticket handler instance.
 		 */
-		do_action( 'tribe_tickets_attendees_page_inside' );
+		do_action( 'tribe_tickets_attendees_page_inside', $this );
 
-		$view = new Tribe__Tabbed_View();
-		$view->set_label( false );
-		$view->register( 'Tribe__Tickets__Tabbed_View__Attendee_Report_Tab' );
-		echo $view->render();
-
-		$show_title = false;
 		include $this->path . 'src/admin-views/attendees.php';
 	}
 
@@ -720,6 +717,41 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		return self::$instance;
+	}
+
+	/**
+	 * Returns the current post being handled.
+	 *
+	 * @return array|bool|null|WP_Post
+	 */
+	public function get_post() {
+		return $this->attendees_table->event;
+	}
+
+	/**
+	 * Whether the ticket handler should render the title in the attendees report.
+	 *
+	 * @param bool $should_render_title
+	 */
+	public function should_render_title( $should_render_title ) {
+		$this->should_render_title = $should_render_title;
+	}
+
+	/**
+	 * Returns the full URL to the attendees report page.
+	 *
+	 * @param WP_Post $post
+	 *
+	 * @return string
+	 */
+	public function get_attendee_report_link( $post ) {
+		$url = add_query_arg( array(
+			'post_type' => $post->post_type,
+			'page'      => self::$attendees_slug,
+			'event_id'  => $post->ID,
+		), admin_url( 'edit.php' ) );
+
+		return $url;
 	}
 
 }
