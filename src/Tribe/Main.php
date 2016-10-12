@@ -313,9 +313,22 @@ class Tribe__Tickets__Main {
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
 			add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );
 			add_filter( 'tribe_aggregator_csv_post_types', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_csv_post_types' ) );
-			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
-			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
+			add_filter( 'tribe_aggregator_csv_column_mapping', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_mapping' ) );
+			add_filter( 'tribe_event_import_rsvp_tickets_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
+			add_filter( 'tribe_events_import_rsvp_tickets_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
 			add_action( 'tribe_tickets_ticket_deleted', array( 'Tribe__Tickets__Attendance', 'delete_attendees_caches' ) );
+
+			/**
+			 * Hooking to "rsvp" to fetch an importer to fetch Column names is deprecated
+			 *
+			 * These are kept in place during the transition from the old CSV importer to the new importer
+			 * driven by Event Aggregator. We should remove these hooks when the old CSV interface gets
+			 * retired completely.
+			 *
+			 * @deprecated 4.3
+			 */
+			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
+			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
 		}
 
 		// Caching
