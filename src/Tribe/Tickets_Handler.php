@@ -1,4 +1,6 @@
 <?php
+
+
 class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Singleton instance of this class
@@ -314,6 +316,12 @@ class Tribe__Tickets__Tickets_Handler {
 		 */
 		do_action( 'tribe_tickets_attendees_page_inside' );
 
+		$view = new Tribe__Tabbed_View();
+		$view->set_label( false );
+		$view->register( 'Tribe__Tickets__Tabbed_View__Attendee_Report_Tab' );
+		echo $view->render();
+
+		$show_title = false;
 		include $this->path . 'src/admin-views/attendees.php';
 	}
 
