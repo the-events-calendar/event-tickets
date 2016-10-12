@@ -92,6 +92,20 @@ class Tribe__Tickets__Metabox {
 			'nav_away_msg' => __( 'It looks like you have modified your global stock settings but have not saved or updated the post.', 'event-tickets' ),
 		) );
 
+		self::localize_decimal_character();
+
+		$nonces = array(
+			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
+			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
+			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
+		);
+
+		wp_localize_script( 'event-tickets', 'TribeTickets', $nonces );
+
+		wp_enqueue_script( 'tribe-bumpdown' );
+	}
+
+	public static function localize_decimal_character() {
 		$locale  = localeconv();
 		$decimal = isset( $locale['decimal_point'] ) ? $locale['decimal_point'] : '.';
 
@@ -104,16 +118,6 @@ class Tribe__Tickets__Metabox {
 			'decimal' => $decimal,
 			'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 		) );
-
-		$nonces = array(
-			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
-			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
-			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
-		);
-
-		wp_localize_script( 'event-tickets', 'TribeTickets', $nonces );
-
-		wp_enqueue_script( 'tribe-bumpdown' );
 	}
 }
 
