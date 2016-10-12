@@ -325,7 +325,7 @@ class Tribe__Tickets__Main {
 			 * driven by Event Aggregator. We should remove these hooks when the old CSV interface gets
 			 * retired completely.
 			 *
-			 * @deprecated 4.3
+			 * @todo remove these two hooks when the old CSV interface is retired, maybe 5.0?
 			 */
 			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
 			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
