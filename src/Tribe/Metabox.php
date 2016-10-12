@@ -112,6 +112,8 @@ class Tribe__Tickets__Metabox {
 		);
 
 		wp_localize_script( 'event-tickets', 'TribeTickets', $nonces );
+
+		wp_enqueue_script( 'tribe-bumpdown' );
 	}
 }
 
