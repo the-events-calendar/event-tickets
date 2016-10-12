@@ -63,6 +63,8 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	) {
 		parent::__construct( $file_reader, $featured_image_uploader );
 		$this->rsvp_tickets = ! empty( $rsvp_tickets ) ? $rsvp_tickets : Tribe__Tickets__RSVP::get_instance();
+
+		add_action( 'tribe_aggregator_record_activity_wakeup', array( $this, 'register_rsvp_activity' ) );
 	}
 
 	/**
@@ -104,6 +106,9 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 */
 	public function update_post( $post_id, array $record ) {
 		// nothing is updated in existing tickets
+		if ( $this->is_aggregator && ! empty( $this->aggregator_record ) ) {
+			$this->aggregator_record->meta['activity']->add( 'rsvp_tickets', 'skipped', $post_id );
+		}
 	}
 
 	/**
@@ -121,6 +126,10 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		$cache_key   = $ticket_name . '-' . $event->ID;
 
 		self::$ticket_name_cache[ $cache_key ] = true;
+
+		if ( $this->is_aggregator && ! empty( $this->aggregator_record ) ) {
+			$this->aggregator_record->meta['activity']->add( 'rsvp_tickets', 'created', $ticket_id );
+		}
 
 		return $ticket_id;
 	}
@@ -235,5 +244,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 */
 	protected function get_skipped_row_message( $row ) {
 		return $this->row_message === false ? parent::get_skipped_row_message( $row ) : $this->row_message;
+	}
+
+	/**
+	 * Registers the RSVP post type as a trackable activity
+	 *
+	 * @param Tribe__Events__Aggregator__Record__Activity $activity
+	 */
+	public function register_rsvp_activity( $activity ) {
+		$activity->register( 'tribe_rsvp_tickets', array( 'rsvp', 'rsvp_tickets' ) );
 	}
 }
