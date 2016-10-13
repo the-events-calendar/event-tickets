@@ -343,9 +343,11 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.query', $query );
 
 		// View links
-		$views = new Tribe__Tickets__Admin__Views();
-		$views->hook();
-		tribe_singleton( 'tickets.admin.views', $views );
+		if ( is_admin() ) {
+			$views = new Tribe__Tickets__Admin__Views();
+			$views->hook();
+			tribe_singleton( 'tickets.admin.views', $views );
+		}
 	}
 
 	/**
