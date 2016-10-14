@@ -18,18 +18,22 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	 *
 	 * Please note that the list is aware of supported types.
 	 *
+	 * @param array $post_types An array of post types overriding the supported ones.
+	 *
 	 * @return array
 	 */
-	public function posts_without_ticket_types();
+	public function posts_without_ticket_types( array $post_types = null );
 
 	/**
 	 * Returns array of post IDs of posts that have at least one ticket assigned.
 	 *
 	 * Please note that the list is aware of supported types.
 	 *
+	 * @param array $post_types An array of post types overriding the supported ones.
+	 *
 	 * @return array
 	 */
-	public function posts_with_ticket_types();
+	public function posts_with_ticket_types( array $post_types = null );
 
 	/**
 	 * Returns an array of all past events post IDs.
