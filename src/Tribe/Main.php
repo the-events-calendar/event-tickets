@@ -332,21 +332,15 @@ class Tribe__Tickets__Main {
 		}
 
 		// Caching
-		$cache_central = new Tribe__Tickets__Cache__Central();
-		$cache_central->hook();
-		tribe_singleton( 'tickets.cache-central', $cache_central );
-		tribe_singleton( 'tickets.cache', $cache_central->get_cache() );
+		tribe_singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', array( 'hook' ) );
+		tribe_singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
 
 		// Query Vars
-		$query = new Tribe__Tickets__Query();
-		$query->hook();
-		tribe_singleton( 'tickets.query', $query );
+		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
 
 		// View links
 		if ( is_admin() ) {
-			$views = new Tribe__Tickets__Admin__Views();
-			$views->hook();
-			tribe_singleton( 'tickets.admin.views', $views );
+			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
 		}
 	}
 
