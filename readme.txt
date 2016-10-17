@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjesse
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.6.1
-Stable tag: 4.3rc4
+Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.3] unreleased =
+= [4.3] 2016-10-13 =
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
 * Tweak - Changed "Event Add-Ons" to load faster [64286]
@@ -215,6 +215,7 @@ Our Premium Plugins:
 * Tweak - Added tribe_tickets_rsvp_before_order_processing and tribe_tickets_rsvp_before_attendee_ticket_creation actions (props to @sabitertan on GitHub for this!) [65836]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
 * Fix - Made some untranslatable strings translatable (big thanks to @Petr from the support forums on this!) [62458]
+* Deprecated - The `process_bulk_actions()` method has been deprecated in `Tribe__Tickets__Attendees_Table` in favor of `process_actions()` in the same class
 
 = [4.2.7] 2016-09-15 =
 
