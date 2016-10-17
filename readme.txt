@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3.1] Unreleased =
+
+* Tweak - Registered plugin as active with Tribe Common. [66657]
+
 = [4.3] 2016-10-13 =
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
