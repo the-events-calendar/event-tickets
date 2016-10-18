@@ -53,6 +53,17 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				var $row = $( this );
 				var $status_column = $row.find( 'td.status' );
 
+				//if tickets meta row do not hide again and reset field to closed and return for that row
+				if ( $( $row ).hasClass( 'event-tickets-meta-row' ) ) {
+					$( $row ).removeClass( 'event-tickets-meta-toggle-open' );
+					return;
+				}
+
+				//remove tickets meta row open class to set back to closed state for main ticket row
+				if ( $( $row ).hasClass( 'event-tickets-meta-toggle-open' ) ) {
+					$( $row ).removeClass( 'event-tickets-meta-toggle-open' );
+				}
+
 				// No status column? It's probably a special hidden row (ie, used as a container
 				// for ticket meta data or similar): hide it and move on
 				if ( ! $status_column.length ) {
