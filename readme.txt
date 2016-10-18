@@ -213,6 +213,7 @@ Our Premium Plugins:
 * Tweak - Changed "Event Add-Ons" to load faster [64286]
 * Tweak - Reworked and reorganized the attendee list screen [61992]
 * Tweak - Added tribe_tickets_rsvp_before_order_processing and tribe_tickets_rsvp_before_attendee_ticket_creation actions (props to @sabitertan on GitHub for this!) [65836]
+* Tweak - Adjust the layout of the attendee report screen [66004]
 * Fix - Cease using GLOB_BRACE for including deprecated files due to limited server support [63172]
 * Fix - Made some untranslatable strings translatable (big thanks to @Petr from the support forums on this!) [62458]
 * Deprecated - The `process_bulk_actions()` method has been deprecated in `Tribe__Tickets__Attendees_Table` in favor of `process_actions()` in the same class
