@@ -207,6 +207,12 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3.1] Unreleased =
+
+* Tweak - Registered plugin as active with Tribe Common. [66657]
+* Fix - When searching in the attendees list the ticket meta details can still be toggled after search [61783]
+* Fix - Fixed an issue where long file names would break plugin updates on some Windows installations [62552]
+
 = [4.3] 2016-10-13 =
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
