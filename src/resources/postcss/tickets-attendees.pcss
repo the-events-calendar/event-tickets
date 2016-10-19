@@ -95,30 +95,30 @@
 
 	.tickets_checked {
 		td {
-			opacity: .7;
-			text-decoration: line-through;
+			opacity: .6;
 		}
 
-		/* We don't want to strike through our row actions */
-		td.has-row-actions {
-			text-decoration: none;
-		}
-
-		/* We *do* want to strike through the ticket name however, which is in the same cell */
-		td.has-row-actions > div:nth-child(1) {
-			text-decoration: line-through;
+		td.check_in {
+			opacity: 1;
 		}
 
 		a.tickets_checkin {
 			display: none;
 		}
 
-		td.column-check_in {
-			text-decoration: none !important;
-		}
-
 		a.tickets_uncheckin {
 			display: block;
+			opacity: 1;
+		}
+	}
+
+	.cancelled {
+		font-style: italic;
+	}
+
+	.cancelled {
+		.check_in {
+			font-style: normal;
 		}
 	}
 
