@@ -32,7 +32,6 @@ class Tribe__Tickets__Cache__Central {
 	 * @param Tribe__Tickets__Cache__Cache_Interface|null $cache An injectable cache object instance.
 	 */
 	public function __construct( Tribe__Tickets__Cache__Cache_Interface $cache = null ) {
-
 		$this->cache = $cache ? $cache : new Tribe__Tickets__Cache__Transient_Cache();
 		$this->cache->set_expiration_time( 60 );
 	}

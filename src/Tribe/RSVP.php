@@ -266,6 +266,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		register_post_type( $this->ticket_object, array(
 			'label'           => 'Tickets',
+			'labels'          => array(
+				'name'          => __( 'RSVP Tickets', 'event-tickets' ),
+				'singular_name' => __( 'RSVP Ticket', 'event-tickets' ),
+			),
 			'public'          => false,
 			'show_ui'         => false,
 			'show_in_menu'    => false,

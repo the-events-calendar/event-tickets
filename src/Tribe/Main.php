@@ -9,12 +9,12 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.3';
+	const VERSION = '4.4dev1';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.3';
+	const MIN_TEC_VERSION = '4.4dev1';
 
 	/**
 	 * Name of the provider
@@ -332,7 +332,16 @@ class Tribe__Tickets__Main {
 		}
 
 		// Caching
-		Tribe__Tickets__Cache__Central::instance()->hook();
+		tribe_singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', array( 'hook' ) );
+		tribe_singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
+
+		// Query Vars
+		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
+
+		// View links
+		if ( is_admin() ) {
+			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
+		}
 	}
 
 	/**
