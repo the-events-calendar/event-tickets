@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.4] tbd =
+
+* Tweak - Added a tabbed view support for Attendeees and Ticket Orders
+
 = [4.3] 2016-10-12 =
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
