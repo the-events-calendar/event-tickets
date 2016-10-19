@@ -776,7 +776,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public static function get_all_event_tickets( $event_id ) {
 			$tickets = array();
 
-			foreach ( self::$active_modules as $class => $module ) {
+			$modules = self::$active_modules;
+
+			foreach ( $modules as $class => $module ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
 				$tickets = array_merge( $tickets, $obj->get_tickets( $event_id ) );
 			}

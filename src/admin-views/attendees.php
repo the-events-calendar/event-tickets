@@ -7,7 +7,9 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 ?>
 
 <div class="wrap tribe-attendees-page">
-	<h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
+	<?php if ( $this->should_render_title ) : ?>
+        <h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
+	<?php endif; ?>
 	<div id="tribe-attendees-summary" class="welcome-panel">
 		<div class="welcome-panel-content">
 			<div class="welcome-panel-column-container">
