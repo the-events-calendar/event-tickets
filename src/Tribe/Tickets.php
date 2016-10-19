@@ -360,7 +360,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->className, array( $this, 'ajax_handler_attendee_uncheckin' ) );
 
 			// Front end
-			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'front_end_tickets_form' ), 5 );
+			$ticket_form_hook = $this->get_ticket_form_hook();
+			if ( ! empty( $ticket_form_hook ) ) {
+				add_action( $ticket_form_hook, array( $this, 'front_end_tickets_form' ), 5 );
+			}
 			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'show_tickets_unavailable_message' ), 6 );
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ), 11 );
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
@@ -1602,6 +1605,50 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post_transient = Tribe__Post_Transient::instance();
 				$post_transient->delete( $_POST['event_ID'], self::ATTENDEES_CACHE );
 			}
+		}
+
+		/**
+		 * Returns the action tag that should be used to print the front-end ticket form.
+		 *
+		 * This value is set in the Events > Settings > Tickets tab and is distinct between RSVP
+		 * tickets and commerce provided tickets.
+		 *
+		 * @return string
+		 */
+		protected function get_ticket_form_hook() {
+			if ( is_a( $this, 'Tribe__Tickets__RSVP' ) ) {
+				$ticket_form_hook = Tribe__Settings_Manager::get_option( 'ticket-rsvp-form-location',
+					'tribe_events_single_event_after_the_meta' );
+
+				/**
+				 * Filters the position of the RSVP tickets form.
+				 *
+				 * While this setting can be handled using the Events > Settings > Tickets > "Location of RSVP form"
+				 * setting this filter allows developers to override the general setting in particular cases.
+				 * Returning an empty value here will prevent the ticket form from printing on the page.
+				 *
+				 * @param string                  $ticket_form_hook The set action tag to print front-end RSVP tickets form.
+				 * @param Tribe__Tickets__Tickets $this             The current instance of the class that's hooking its front-end ticket form.
+				 */
+				$ticket_form_hook = apply_filters( 'tribe_tickets_rsvp_tickets_form_hook', $ticket_form_hook, $this );
+			} else {
+				$ticket_form_hook = Tribe__Settings_Manager::get_option( 'ticket-commerce-form-location',
+					'tribe_events_single_event_after_the_meta' );
+
+				/**
+				 * Filters the position of the commerce-provided tickets form.
+				 *
+				 * While this setting can be handled using the Events > Settings > Tickets > "Location of Tickets form"
+				 * setting this filter allows developers to override the general setting in particular cases.
+				 * Returning an empty value here will prevent the ticket form from printing on the page.
+				 *
+				 * @param string                  $ticket_form_hook The set action tag to print front-end commerce tickets form.
+				 * @param Tribe__Tickets__Tickets $this             The current instance of the class that's hooking its front-end ticket form.
+				 */
+				$ticket_form_hook = apply_filters( 'tribe_tickets_commerce_tickets_form_hook', $ticket_form_hook, $this );
+			}
+
+			return $ticket_form_hook;
 		}
 	}
 }

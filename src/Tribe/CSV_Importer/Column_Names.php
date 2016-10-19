@@ -43,4 +43,16 @@ class Tribe__Tickets__CSV_Importer__Column_Names {
 
 		return $column_names;
 	}
+
+	/**
+	 * Adds RSVP column mapping data to the csv_column_mapping array that gets output via JSON
+	 *
+	 * @param array $mapping Mapping data indexed by CSV import type
+	 *
+	 * @return array
+	 */
+	public function filter_rsvp_column_mapping( $mapping ) {
+		$mapping['rsvp_tickets'] = get_option( 'tribe_events_import_column_mapping_rsvp_tickets', array() );
+		return $mapping;
+	}
 }

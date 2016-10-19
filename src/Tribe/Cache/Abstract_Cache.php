@@ -1,8 +1,11 @@
 <?php
+
+
 /**
  * Implements methods common to all caches implementations.
  */
 abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__Cache__Cache_Interface {
+
 	/**
 	 * @var array
 	 */
@@ -29,10 +32,16 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
+	 * @param array $post_types An array of post types overriding the supported ones.
+	 *
 	 * @return array
 	 */
-	protected function fetch_posts_with_ticket_types() {
-		$supported_types = array_map( 'esc_sql', (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
+	protected function fetch_posts_with_ticket_types( array $post_types = null ) {
+		if ( ! empty( $post_types ) ) {
+			$supported_types = array_map( 'esc_sql', $post_types );
+		} else {
+			$supported_types = array_map( 'esc_sql', (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
+		}
 
 		if ( empty( $supported_types ) ) {
 			$ids = array();
@@ -50,10 +59,11 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 				AND pm.meta_key LIKE '_tribe_%_for_event'
 				AND pm.meta_value IS NOT NULL";
 
-		// if events are among the supported post types then exclude past events
-		if ( in_array( Tribe__Events__Main::POSTTYPE, $supported_types ) ) {
-			$past_events = '(' . implode( ',', $this->past_events() ) . ')';
-			$query .= " AND pm.meta_value NOT IN {$past_events}";
+		if ( class_exists( 'Tribe__Events__Main' ) ) { // if events are among the supported post types then exclude past events
+			if ( in_array( Tribe__Events__Main::POSTTYPE, $supported_types ) ) {
+				$past_events = '(' . implode( ',', $this->past_events() ) . ')';
+				$query .= " AND pm.meta_value NOT IN {$past_events}";
+			}
 		}
 
 		$ids = $wpdb->get_col( $query );
@@ -64,10 +74,16 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
+	 * @param array $post_types An array of post types overriding the supported ones.
+	 *
 	 * @return array
 	 */
-	protected function fetch_posts_without_ticket_types() {
-		$supported_types = array_map( 'esc_sql', (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
+	protected function fetch_posts_without_ticket_types( array $post_types = null ) {
+		if ( ! empty( $post_types ) ) {
+			$supported_types = array_map( 'esc_sql', $post_types );
+		} else {
+			$supported_types = array_map( 'esc_sql', (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
+		}
 
 		if ( empty( $supported_types ) ) {
 			$ids = array();
