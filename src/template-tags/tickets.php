@@ -20,12 +20,12 @@ if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
 	 *
 	 * @return bool
 	 */
-	function tribe_events_has_tickets( $event = null, $exclude_modules = array() ) {
+	function tribe_events_has_tickets( $event = null ) {
 		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
 			return false;
 		}
 
-		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID, $exclude_modules );
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID );
 		return ! empty( $tickets );
 	}
 }//end if

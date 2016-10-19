@@ -770,7 +770,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		public static function get_all_event_tickets( $event_id, $exclude_modules = array() ) {
+		public static function get_all_event_tickets( $event_id ) {
 			$tickets = array();
 
 			$modules = self::$active_modules;
