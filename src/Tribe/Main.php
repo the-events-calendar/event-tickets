@@ -342,7 +342,9 @@ class Tribe__Tickets__Main {
 		// View links
 		if ( is_admin() ) {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
+			tribe_singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
 			tribe( 'tickets.admin.views' );
+			tribe( 'tickets.admin.columns' );
 		}
 	}
 
