@@ -72,7 +72,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			return '—';
 		}
 
-		return '<div>' . $this->get_sold( $tickets ) . '</div>' . $this->get_percentage_string( $tickets );
+		return '<div>' . $this->get_sold( $tickets ) . '</div>' . $this->get_percentage_string( $tickets, $post_id );
 	}
 
 	/**
@@ -97,13 +97,19 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * Iterates over an array of tickets to render the percentage HTML.
 	 *
 	 * @param Tribe__Tickets__Ticket_Object[] $tickets
+	 * @param  int $post_id The current post ID.
 	 *
 	 * @return string The percentage HTML or an empty string if one of the
 	 *                post tickets has unlimited stock.
 	 */
-	protected function get_percentage_string( array $tickets = array() ) {
+	protected function get_percentage_string( array $tickets = array(), $post_id ) {
 		$sold  = 0;
 		$stock = 0;
+
+		$global_stock_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true ) ==true;
+		$global_stock = $global_stock_enabled ?
+			get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true )
+			: false;
 
 		/** @var Tribe__Tickets__Ticket_Object $ticket */
 		foreach ( $tickets as $ticket ) {
@@ -116,7 +122,9 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			}
 
 			$this_sold  = $ticket->qty_sold();
-			$this_stock = $ticket->stock() + $ticket->qty_sold() + $ticket->qty_pending();
+			$this_stock = $global_stock !== false ?
+				$global_stock
+				: $ticket->stock() + $ticket->qty_sold() + $ticket->qty_pending();
 
 			// sanity check
 			if ( $this_sold > $this_stock ) {
@@ -126,6 +134,8 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			$sold += $this_sold;
 			$stock += $this_stock;
 		}
+
+		$stock = $global_stock !== false ? $global_stock : $stock;
 
 		return ' <div><small>(' . round( $sold * 100 / $stock, 0 ) . '%)<small></div>';
 	}
