@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.3.1] 2016-10-19 =
+= [4.3.1] 2016-10-20 =
 
 * Tweak - Registered plugin as active with Tribe Common. [66657]
 * Fix - When searching in the attendees list the ticket meta details can still be toggled after search [61783]
