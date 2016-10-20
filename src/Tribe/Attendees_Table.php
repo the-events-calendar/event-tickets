@@ -75,15 +75,20 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function get_columns() {
 		$columns = array(
-			'cb'        => '<input type="checkbox" />',
-			'ticket'    => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
-			'purchaser' => esc_html_x( 'Purchaser', 'attendee table', 'event-tickets' ),
-			'status'    => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
-			'security'  => esc_html__( 'Security Code', 'event-tickets' ),
-			'check_in'  => esc_html__( 'Check in', 'event-tickets' ),
+			'cb'           => '<input type="checkbox" />',
+			'ticket'       => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
+			'primary_info' => esc_html_x( 'Primay Information', 'attendee table', 'event-tickets' ),
+			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
+			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
+			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),
 		);
 
-		return $columns;
+		/**
+		 * Controls the columns rendered within the attendee screen.
+		 *
+		 * @param array $columns
+		 */
+		return apply_filters( 'tribe_tickets_attendee_table_columns', $columns );
 	}
 
 	/**
@@ -118,7 +123,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @return string
 	 */
-	public function column_purchaser( array $item ) {
+	public function column_primary_info( array $item ) {
 		$purchaser_name  = empty( $item[ 'purchaser_name' ] ) ? '' : esc_html( $item[ 'purchaser_name' ] );
 		$purchaser_email = empty( $item[ 'purchaser_email' ] ) ? '' : esc_html( $item[ 'purchaser_email' ] );
 
