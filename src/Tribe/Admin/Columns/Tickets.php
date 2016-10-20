@@ -72,7 +72,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			return '—';
 		}
 
-		return $this->get_sold( $tickets ) . $this->get_percentage_string( $tickets );
+		return '<div>' . $this->get_sold( $tickets ) . '</div>' . $this->get_percentage_string( $tickets );
 	}
 
 	/**
@@ -127,6 +127,6 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			$stock += $this_stock;
 		}
 
-		return ' <small>(' . round( $sold * 100 / $stock, 0 ) . '%)<small>';
+		return ' <div><small>(' . round( $sold * 100 / $stock, 0 ) . '%)<small></div>';
 	}
 }
