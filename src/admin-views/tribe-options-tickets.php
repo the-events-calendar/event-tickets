@@ -37,20 +37,12 @@ $ticket_addons = apply_filters( 'tribe_tickets_settings_systems_supporting_login
 	'event-tickets_rsvp' => __( 'Require users to log in before they RSVP', 'event-tickets' ),
 ) );
 
-
-$ticket_form_location_options = array(
-	'tribe_events_single_event_after_the_meta'     => __( 'Below the event details [default]', 'event-tickets' ),
-	'tribe_events_single_event_before_the_meta'    => __( 'Above the event details', 'event-tickets' ),
-	'tribe_events_single_event_after_the_content'  => __( 'Below the event description', 'event-tickets' ),
-	'tribe_events_single_event_before_the_content' => __( 'Above the event description', 'event-tickets' ),
-);
-
 $tickets_fields = array(
-	'tribe-form-content-start' => array(
+	'tribe-form-content-start'  => array(
 		'type' => 'html',
 		'html' => '<div class="tribe-settings-form-wrap">',
 	),
-	'tickets-title' => array(
+	'tickets-title'             => array(
 		'type' => 'html',
 		'html' => '<h3>' . esc_html__( 'Ticket Settings', 'event-tickets' ) . '</h3>',
 	),
@@ -61,45 +53,65 @@ $tickets_fields = array(
 		'default'      => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 		'options'      => $all_post_types,
 		'can_be_empty' => false,
-	),
-	'ticket-rsvp-form-location' => array(
-		'type'            => 'dropdown',
-		'label'           => esc_html__( 'Location of RSVP form', 'event-tickets' ),
-		'options'         => $ticket_form_location_options,
-		'validation_type' => 'options',
-		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-		'default'         => reset( $ticket_form_location_options ),
-	),
-	'ticket-commerce-form-location' => array(
-		'type'            => 'dropdown',
-		'label'           => esc_html__( 'Location of Tickets form', 'event-tickets' ),
-		'options'         => $ticket_form_location_options,
-		'validation_type' => 'options',
-		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-		'default'         => reset( $ticket_form_location_options ),
-	),
-	'ticket-authentication-requirements-heading' => array(
-		'type' => 'html',
-		'html' => '<h3>' . __( 'Login requirements', 'event-tickets' ) . '</h3>',
-	),
-	'ticket-authentication-requirements-advice' => array(
-		'type' => 'html',
-		'html' => '<p>'
-		          . sprintf( __( 'You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting.',
-				'event-tickets' ), '<a href="' . get_admin_url( null, 'options-general.php' ) . '" target="_blank">', '</a>' )
-		          . '</p>',
-	),
-	'ticket-authentication-requirements' => array(
-		'type'            => 'checkbox_list',
-		'options'         => $ticket_addons,
-		'validation_type' => 'options_multi',
-		'can_be_empty'    => true,
-	),
-	'tribe-form-content-end' => array(
-		'type' => 'html',
-		'html' => '</div>',
-	),
+	)
 );
+
+/**
+ * If  The Events Calendar is active let's add an option to control the position
+ * of the ticket forms in the events view.
+ */
+if ( class_exists( 'Tribe__Events__Main' ) ) {
+	$ticket_form_location_options = array(
+		'tribe_events_single_event_after_the_meta'     => __( 'Below the event details [default]', 'event-tickets' ),
+		'tribe_events_single_event_before_the_meta'    => __( 'Above the event details', 'event-tickets' ),
+		'tribe_events_single_event_after_the_content'  => __( 'Below the event description', 'event-tickets' ),
+		'tribe_events_single_event_before_the_content' => __( 'Above the event description', 'event-tickets' ),
+	);
+
+	$tickets_fields = array_merge( $tickets_fields, array(
+		'ticket-rsvp-form-location'     => array(
+			'type'            => 'dropdown',
+			'label'           => esc_html__( 'Location of RSVP form', 'event-tickets' ),
+			'options'         => $ticket_form_location_options,
+			'validation_type' => 'options',
+			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+			'default'         => reset( $ticket_form_location_options ),
+		),
+		'ticket-commerce-form-location' => array(
+			'type'            => 'dropdown',
+			'label'           => esc_html__( 'Location of Tickets form', 'event-tickets' ),
+			'options'         => $ticket_form_location_options,
+			'validation_type' => 'options',
+			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+			'default'         => reset( $ticket_form_location_options ),
+		),
+	) );
+}
+
+$tickets_fields = array_merge( $tickets_fields, array(
+
+		'ticket-authentication-requirements-heading' => array(
+			'type' => 'html',
+			'html' => '<h3>' . __( 'Login requirements', 'event-tickets' ) . '</h3>',
+		),
+		'ticket-authentication-requirements-advice'  => array(
+			'type' => 'html',
+			'html' => '<p>'
+			          . sprintf( __( 'You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting.',
+					'event-tickets' ), '<a href="' . get_admin_url( null, 'options-general.php' ) . '" target="_blank">', '</a>' )
+			          . '</p>',
+		),
+		'ticket-authentication-requirements'         => array(
+			'type'            => 'checkbox_list',
+			'options'         => $ticket_addons,
+			'validation_type' => 'options_multi',
+			'can_be_empty'    => true,
+		),
+		'tribe-form-content-end'                     => array(
+			'type' => 'html',
+			'html' => '</div>',
+		),
+	) );
 
 // If Events Tickets Plus is not active there remove the related field.
 if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
