@@ -47,12 +47,13 @@ $tickets_fields = array(
 		'html' => '<h3>' . esc_html__( 'Ticket Settings', 'event-tickets' ) . '</h3>',
 	),
 	'ticket-enabled-post-types' => array(
-		'type'         => 'checkbox_list',
-		'label'        => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
+		'type'            => 'checkbox_list',
+		'label'           => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
 		// only set the default to tribe_events if the ticket-endabled-post-types index has never been saved
-		'default'      => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
-		'options'      => $all_post_types,
-		'can_be_empty' => false,
+		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
+		'options'         => $all_post_types,
+		'can_be_empty'    => false,
+		'validation_type' => 'options_multi',
 	)
 );
 
