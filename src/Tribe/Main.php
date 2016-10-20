@@ -337,10 +337,12 @@ class Tribe__Tickets__Main {
 
 		// Query Vars
 		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
+		tribe( 'tickets.query' );
 
 		// View links
 		if ( is_admin() ) {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
+			tribe( 'tickets.admin.views' );
 		}
 	}
 
