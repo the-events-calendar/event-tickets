@@ -99,7 +99,7 @@ $tickets_fields = array_merge( $tickets_fields, array(
 			'type' => 'html',
 			'html' => '<p>'
 			          . sprintf( __( 'You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting.',
-					'event-tickets' ), '<a href="' . get_admin_url( null, 'options-general.php' ) . '" target="_blank">', '</a>' )
+					'event-tickets' ), '<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">', '</a>' )
 			          . '</p>',
 		),
 		'ticket-authentication-requirements'         => array(
