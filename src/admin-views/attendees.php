@@ -25,17 +25,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 				?>
 
 				<div class="welcome-panel-column welcome-panel-first">
-					<h3><?php echo '<a href="' . get_edit_post_link( $event_id ) . '" title="' . esc_attr__( 'Edit Event', 'event-tickets' ) . '">' . wp_kses( apply_filters( 'tribe_events_tickets_attendees_event_title', $event->post_title, $event->ID ), array() ) . '</a>'; ?></h3>
-
-					<?php
-					/**
-					 * Provides an opportunity for various action links to be added below
-					 * the event name, within the attendee screen.
-					 *
-					 * @param int $event_id
-					 */
-					do_action( 'tribe_tickets_attendees_do_event_action_links', $event_id );
-					?>
+					<h3><?php echo '<a href="' . get_edit_post_link( $event_id ) . '" title="' . esc_attr__( 'Edit Event', 'event-tickets' ) . '">Event Details</a>'; ?></h3>
 
 					<ul>
 						<?php
@@ -54,10 +44,19 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 						do_action( 'tribe_tickets_attendees_event_details_list_bottom', $event_id );
 						?>
 					</ul>
+					<?php
+					/**
+					 * Provides an opportunity for various action links to be added below
+					 * the event name, within the attendee screen.
+					 *
+					 * @param int $event_id
+					 */
+					do_action( 'tribe_tickets_attendees_do_event_action_links', $event_id );
+					?>
 					<?php do_action( 'tribe_events_tickets_attendees_event_details_bottom', $event_id ); ?>
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
-					<h4 class="tickets-summary"><?php echo esc_html_x( 'Tickets', 'attendee screen summary', 'event-tickets' ); ?></h4>
+					<h4 class="tickets-summary"><?php echo esc_html_x( 'Attendees By Ticket', 'attendee screen summary', 'event-tickets' ); ?></h4>
 					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_top', $event_id ); ?>
 
 					<ul>
