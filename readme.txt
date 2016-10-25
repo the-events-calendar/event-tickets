@@ -209,7 +209,8 @@ Our Premium Plugins:
 
 = [4.4] tbd =
 
-* Tweak - Added a tabbed view support for Attendeees and Ticket Orders
+* Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
+* Tweak - Added the "Attendees" report column in admin lists of posts supporting tickets [67176]
 
 = [4.3] 2016-10-13 =
 

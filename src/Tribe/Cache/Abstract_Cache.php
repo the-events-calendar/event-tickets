@@ -95,7 +95,8 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 		$post_types = "('" . implode( "','", $supported_types ) . "')";
 
 		$query = "SELECT DISTINCT(ID) FROM {$wpdb->posts}
-				WHERE post_type IN {$post_types}";
+				WHERE post_type IN {$post_types}
+				AND post_status != 'auto-draft'";
 
 		$posts_with_tickets = $this->posts_with_ticket_types();
 

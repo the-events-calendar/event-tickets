@@ -68,6 +68,11 @@ class Tribe__Tickets__Cache__Central {
 		 * the caches should be updated.
 		 */
 		add_action( 'tribe_events_event_save', array( $this->cache, 'reset_all' ) );
+
+		/**
+		 * Reset the caches when a post is deleted.
+		 */
+		add_action( 'delete_post', array( $this->cache, 'reset_all' ) );
 	}
 
 	/**
