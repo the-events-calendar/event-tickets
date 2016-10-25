@@ -46,7 +46,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *              type is not supported.
 	 */
 	public function render_column( $column, $post_id ) {
-		if ( in_array( $column, $this->supported_columns ) ) {
+		if ( ! in_array( $column, $this->supported_columns ) ) {
 			return false;
 		}
 
