@@ -12,6 +12,11 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @var string
 	 */
 	protected $post_type;
+
+	/**
+	 * @var array A map that related supported columns to the methods used to render
+	 *            their content.
+	 */
 	protected $supported_columns = array( 'tickets' => 'render_tickets_entry' );
 
 	/**
@@ -46,7 +51,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 *              type is not supported.
 	 */
 	public function render_column( $column, $post_id ) {
-		if ( ! in_array( $column, $this->supported_columns ) ) {
+		if ( ! isset( $this->supported_columns[ $column ] ) ) {
 			return false;
 		}
 
