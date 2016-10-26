@@ -342,12 +342,14 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
 		tribe( 'tickets.query' );
 
-		// View links
+		// View links, columns and screen options
 		if ( is_admin() ) {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
 			tribe_singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
+			tribe_singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
 			tribe( 'tickets.admin.views' );
 			tribe( 'tickets.admin.columns' );
+			tribe( 'tickets.admin.screen-options' );
 		}
 	}
 
