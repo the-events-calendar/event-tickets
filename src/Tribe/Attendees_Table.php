@@ -27,6 +27,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'singular' => 'attendee',
 			'plural'   => 'attendees',
 			'ajax'     => true,
+			'screen'   => get_current_screen(),
 		) );
 
 		// Fetch the event Object
