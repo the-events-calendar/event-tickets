@@ -39,6 +39,30 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		parent::__construct( apply_filters( 'tribe_events_tickets_attendees_table_args', $args ) );
 	}
 
+	/**
+	 * Get a list of columns. The format is:
+	 * 'internal-name' => 'Title'
+	 *
+	 * @return array
+	 */
+	public static function get_table_columns() {
+		$columns = array(
+			'cb'           => '<input type="checkbox" />',
+			'ticket'       => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
+			'primary_info' => esc_html_x( 'Primay Information', 'attendee table', 'event-tickets' ),
+			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
+			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
+			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),
+		);
+
+		/**
+		 * Controls the columns rendered within the attendee screen.
+		 *
+		 * @param array $columns
+		 */
+		return apply_filters( 'tribe_tickets_attendee_table_columns', $columns );
+	}
+
 
 	/**
 	 * Display the search box.
@@ -74,21 +98,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		$columns = array(
-			'cb'           => '<input type="checkbox" />',
-			'ticket'       => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
-			'primary_info' => esc_html_x( 'Primay Information', 'attendee table', 'event-tickets' ),
-			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
-			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
-			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),
-		);
-
-		/**
-		 * Controls the columns rendered within the attendee screen.
-		 *
-		 * @param array $columns
-		 */
-		return apply_filters( 'tribe_tickets_attendee_table_columns', $columns );
+		return self::get_table_columns();
 	}
 
 	/**
