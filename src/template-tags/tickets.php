@@ -199,6 +199,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * @return string
 	 */
 	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {
+
 		$stock        = $ticket->stock();
 		$sold         = $ticket->qty_sold();
 		$cancelled    = $ticket->qty_cancelled();
@@ -221,26 +222,33 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$stock = '<i>' . __( 'global inventory', 'event-tickets' ) . '</i>';
 		}
 
+		$sold_label =  __( 'Sold', 'event-tickets' );
+		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+			$sold_label =  __( 'RSVP', 'event-tickets' );
+		}
+
 		// There may not be a fixed inventory - in which case just report the number actually sold so far
 		if ( empty( $stock ) && $stock !== 0 ) {
-			$message = sprintf( esc_html__( 'Sold %d', 'event-tickets' ), esc_html( $sold ) );
+			$message = sprintf( esc_html__( '%s %d', 'event-tickets' ), esc_html( $sold_label ), esc_html( $sold ) );
 		}
 		// If we do have a fixed stock then we can provide more information
 		else {
 			$cancelled_count = empty( $cancelled ) ? '' : esc_html( sprintf(
-				_x( ' cancelled: %1$d', 'ticket stock message (cancelled stock)', 'event-tickets' ),
+				_x( ', Cancelled: %1$d', 'ticket stock message (cancelled stock)', 'event-tickets' ),
 				(int) $cancelled
 			) );
 
 			$pending_count = $pending < 1 ? '' : esc_html( sprintf(
-				__( ' pending: %1$d', 'ticket stock message (pending stock)', 'event-tickets' ),
+				__( ', Awaiting Review: %1$d', 'ticket stock message (pending stock)', 'event-tickets' ),
 				(int) $pending
 			) );
 
 			$message = sprintf(
-				esc_html__( 'Sold %1$d (units remaining: %2$s%3$s%4$s)', 'event-tickets' ),
-				esc_html( $sold ), $stock, $cancelled_count, $pending_count
+				esc_html__( '%1$s %2$d of %3$s%4$s%5$s', 'event-tickets' ),
+				esc_html( $sold_label ), esc_html( $sold ), $stock, $cancelled_count, $pending_count
 			);
+
+
 		}
 
 		return $message;

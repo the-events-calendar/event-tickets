@@ -43,7 +43,6 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * Makes the totals available within the attendee summary screen.
 	 */
 	public function integrate_with_attendee_screen() {
-		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), $this->relative_priority );
 		add_action( 'tribe_tickets_attendees_totals', array( $this, 'print_totals' ), $this->relative_priority );
 	}
 
