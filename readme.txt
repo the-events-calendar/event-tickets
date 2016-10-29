@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3.2] TBD =
+
+* Tweak - Include more Edited data on the `edit-ticket.tribe` action on JavaScript [68557]
+
 = [4.3.1.1] 2016-10-20 =
 
 * Fix - Corrected a packaging issue from the 4.3.1 release [67936]

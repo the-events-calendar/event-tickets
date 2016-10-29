@@ -612,7 +612,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$tribe_tickets
 							.trigger( 'set-advanced-fields.tribe' )
-							.trigger( 'edit-ticket.tribe' );
+							.trigger( 'edit-ticket.tribe', response );
 
 					},
 					'json'
