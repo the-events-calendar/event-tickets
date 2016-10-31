@@ -210,6 +210,7 @@ Our Premium Plugins:
 = [4.4] tbd =
 
 * Tweak - Added a tabbed view support for Attendeees and Ticket Orders
+* Tweak - Improve the Attendee Report header with improved layout and better labels [66003]
 
 = [4.3] 2016-10-13 =
 
