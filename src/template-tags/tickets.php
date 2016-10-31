@@ -233,19 +233,35 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		}
 		// If we do have a fixed stock then we can provide more information
 		else {
-			$cancelled_count = empty( $cancelled ) ? '' : esc_html( sprintf(
-				_x( ', Cancelled: %1$d', 'ticket stock message (cancelled stock)', 'event-tickets' ),
-				(int) $cancelled
-			) );
+			$status = '';
 
-			$pending_count = $pending < 1 ? '' : esc_html( sprintf(
-				__( ', Awaiting Review: %1$d', 'ticket stock message (pending stock)', 'event-tickets' ),
+			$status_counts[] = $pending < 1 ? FALSE : esc_html( sprintf(
+				__( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ),
 				(int) $pending
 			) );
 
+			$status_counts[] = empty( $cancelled ) ? FALSE : esc_html( sprintf(
+				_x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ),
+				(int) $cancelled
+			) );
+
+			//remove empty values and prepare to display if values
+			$status_counts = array_diff( $status_counts, array( '' ) );
+			if ( array_filter( $status_counts ) ) {
+				$status = sprintf(
+					' (%1$s)',
+					implode( ', ', $status_counts )
+				);
+			}
+
+			$stock_separator = __( 'of', 'seperate sold and total stock 5 of 100', 'event-tickets' );
+			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
+				$stock_separator = __( 'from a global stock of', 'separate sold and total global stock 5 from a global stock of 100', 'event-tickets' );
+		    }
+
 			$message = sprintf(
-				esc_html__( '%1$s %2$d of %3$s%4$s%5$s', 'event-tickets' ),
-				esc_html( $sold_label ), esc_html( $sold ), $stock, $cancelled_count, $pending_count
+				esc_html__( '%1$s %2$d %3$s %4$d%5$s', 'event-tickets' ),
+				esc_html( $sold_label ), absint( $sold ), esc_html( $stock_separator ), esc_html( $stock ), esc_html( $status )
 			);
 
 
