@@ -224,7 +224,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label =  __( 'Sold', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label =  __( 'RSVP', 'event-tickets' );
+			$sold_label = '';
 		}
 
 		// There may not be a fixed inventory - in which case just report the number actually sold so far
@@ -257,6 +257,8 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$stock_separator = __( 'of', 'seperate sold and total stock 5 of 100', 'event-tickets' );
 			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
 				$stock_separator = __( 'from a global stock of', 'separate sold and total global stock 5 from a global stock of 100', 'event-tickets' );
+		    } elseif ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+				$stock_separator = __( 'RSVP\'d Going of ', 'separate going and remain RSVPs', 'event-tickets' );
 		    }
 
 			$message = sprintf(
