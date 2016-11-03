@@ -212,6 +212,20 @@ Our Premium Plugins:
 * Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
 * Tweak - Added the "Attendees" report column in admin lists of posts supporting tickets [67176]
 
+= [4.3.2] 2016-11-02 =
+
+* Tweak - Include more Edited data on the `edit-ticket.tribe` action on JavaScript [68557]
+
+= [4.3.1.1] 2016-10-20 =
+
+* Fix - Corrected a packaging issue from the 4.3.1 release [67936]
+
+= [4.3.1] 2016-10-20 =
+
+* Tweak - Registered plugin as active with Tribe Common. [66657]
+* Fix - When searching in the attendees list the ticket meta details can still be toggled after search [61783]
+* Fix - Fixed an issue where long file names would break plugin updates on some Windows installations [62552]
+
 = [4.3] 2016-10-13 =
 
 * Feature - Add ticket management facilities allowing reassignment to different posts [61724]
