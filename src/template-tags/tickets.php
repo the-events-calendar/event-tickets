@@ -224,7 +224,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label =  __( 'Sold', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = '';
+			$sold_label = __( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
 		}
 
 		// There may not be a fixed inventory - in which case just report the number actually sold so far
@@ -234,6 +234,18 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		// If we do have a fixed stock then we can provide more information
 		else {
 			$status = '';
+
+			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
+				$status_counts[] = esc_html( sprintf(
+					__( '%1$d Remaining of the global stock', 'ticket global stock message (remaining stock)', 'event-tickets' ),
+					(int) esc_html( $stock )
+				) );
+		    } else {
+				$status_counts[] = esc_html( sprintf(
+					__( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ),
+					(int) esc_html( $stock )
+				) );
+		    }
 
 			$status_counts[] = $pending < 1 ? FALSE : esc_html( sprintf(
 				__( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ),
@@ -254,16 +266,9 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 				);
 			}
 
-			$stock_separator = __( 'of', 'seperate sold and total stock 5 of 100', 'event-tickets' );
-			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
-				$stock_separator = __( 'from a global stock of', 'separate sold and total global stock 5 from a global stock of 100', 'event-tickets' );
-		    } elseif ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-				$stock_separator = __( 'RSVP\'d Going of ', 'separate going and remain RSVPs', 'event-tickets' );
-		    }
-
 			$message = sprintf(
-				esc_html__( '%1$s %2$d %3$s %4$d%5$s', 'event-tickets' ),
-				esc_html( $sold_label ), absint( $sold ), esc_html( $stock_separator ), esc_html( $stock ), esc_html( $status )
+				esc_html__( '%1$d %2$s%3$s', 'event-tickets' ),
+				absint( $sold ), esc_html( $sold_label ), esc_html( $status )
 			);
 
 

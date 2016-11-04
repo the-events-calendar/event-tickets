@@ -44,6 +44,10 @@
 	width: 200px;
 }
 
+#tribe-attendees-summary .welcome-panel-last li {
+	margin-bottom: 2px;
+}
+
 #tribe-attendees-summary .welcome-panel-last .checkin-totals h3 {
 	display: inline-block;
 	width: auto;
