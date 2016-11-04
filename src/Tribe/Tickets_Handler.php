@@ -67,7 +67,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Injects event meta data into the Attendees report
+	 * Injects event post type
 	 *
 	 * @param int $event_id
 	 */
@@ -113,7 +113,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function print_checkedin_totals() {
 		$total_checked_in_label = esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' );
-		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
+		$total_checked_in       = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
 		echo "<div class='checkin-totals'><h3>$total_checked_in_label</h3> $total_checked_in</div>";
 	}

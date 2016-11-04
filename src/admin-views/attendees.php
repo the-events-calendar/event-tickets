@@ -52,8 +52,15 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 					 * @param int $event_id
 					 */
 					do_action( 'tribe_tickets_attendees_do_event_action_links', $event_id );
-					?>
-					<?php do_action( 'tribe_events_tickets_attendees_event_details_bottom', $event_id ); ?>
+
+					/**
+					 * Provides an opportunity for various action links to be added below
+					 * the action links
+					 *
+					 * @param int $event_id
+					 */
+					do_action( 'tribe_events_tickets_attendees_event_details_bottom', $event_id ); ?>
+
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3><?php echo esc_html_x( 'Attendees By Ticket', 'attendee screen summary', 'event-tickets' ); ?></h3>
