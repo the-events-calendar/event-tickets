@@ -47,12 +47,13 @@ $tickets_fields = array(
 		'html' => '<h3>' . esc_html__( 'Ticket Settings', 'event-tickets' ) . '</h3>',
 	),
 	'ticket-enabled-post-types' => array(
-		'type'         => 'checkbox_list',
-		'label'        => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
+		'type'            => 'checkbox_list',
+		'label'           => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
 		// only set the default to tribe_events if the ticket-endabled-post-types index has never been saved
-		'default'      => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
-		'options'      => $all_post_types,
-		'can_be_empty' => false,
+		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
+		'options'         => $all_post_types,
+		'can_be_empty'    => false,
+		'validation_type' => 'options_multi',
 	)
 );
 
@@ -98,7 +99,7 @@ $tickets_fields = array_merge( $tickets_fields, array(
 			'type' => 'html',
 			'html' => '<p>'
 			          . sprintf( __( 'You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting.',
-					'event-tickets' ), '<a href="' . get_admin_url( null, 'options-general.php' ) . '" target="_blank">', '</a>' )
+					'event-tickets' ), '<a href="' . esc_url( get_admin_url( null, 'options-general.php' ) ) . '" target="_blank">', '</a>' )
 			          . '</p>',
 		),
 		'ticket-authentication-requirements'         => array(

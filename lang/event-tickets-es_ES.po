@@ -336,11 +336,11 @@ msgctxt "post type label"
 msgid "RSVPs"
 msgstr ""
 
-#: src/Tribe/Main.php:530
+#: src/Tribe/Main.php:546
 msgid "Welcome to Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:665
+#: src/Tribe/Main.php:681
 msgctxt "button text"
 msgid "RSVP"
 msgstr ""
@@ -546,7 +546,7 @@ msgstr ""
 msgid "Event Tickets allows your guests to RSVP from any post, page, or event."
 msgstr ""
 
-#: src/Tribe/Main.php:665
+#: src/Tribe/Main.php:681
 msgid "Buy"
 msgstr ""
 
@@ -680,7 +680,7 @@ msgstr ""
 msgid "Free"
 msgstr "Gratis"
 
-#: src/Tribe/Main.php:429
+#: src/Tribe/Main.php:445
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
@@ -764,63 +764,63 @@ msgstr ""
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: src/Tribe/Main.php:197
+#: src/Tribe/Main.php:213
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:375
+#: src/Tribe/Main.php:391
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:377
+#: src/Tribe/Main.php:393
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:378
+#: src/Tribe/Main.php:394
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:379
+#: src/Tribe/Main.php:395
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:380
+#: src/Tribe/Main.php:396
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:397
+#: src/Tribe/Main.php:413
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:399
+#: src/Tribe/Main.php:415
 msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:416
+#: src/Tribe/Main.php:432
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:417
+#: src/Tribe/Main.php:433
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:419
+#: src/Tribe/Main.php:435
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:420
+#: src/Tribe/Main.php:436
 msgid "Events Tickets Plus"
 msgstr ""
 
-#: src/Tribe/Main.php:421
+#: src/Tribe/Main.php:437
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:423 src/Tribe/Main.php:428
+#: src/Tribe/Main.php:439 src/Tribe/Main.php:444
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:424
+#: src/Tribe/Main.php:440
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 

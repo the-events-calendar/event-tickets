@@ -153,6 +153,8 @@ class Tribe__Tickets__Main {
 
 		$this->hooks();
 
+		$this->register_active_plugin();
+
 		$this->has_initialized = true;
 
 		$this->rsvp();
@@ -167,6 +169,20 @@ class Tribe__Tickets__Main {
 		 * Fires once Event Tickets has completed basic setup.
 		 */
 		do_action( 'tribe_tickets_plugin_loaded' );
+	}
+
+
+	/**
+	 * Registers this plugin as being active for other tribe plugins and extensions
+	 *
+	 * @return bool Indicates if Tribe Common wants the plugin to run
+	 */
+	public function register_active_plugin() {
+		if ( ! function_exists( 'tribe_register_plugin' ) ) {
+			return true;
+		}
+
+		return tribe_register_plugin( EVENT_TICKETS_MAIN_PLUGIN_FILE, __CLASS__, self::VERSION );
 	}
 
 	/**
@@ -331,16 +347,25 @@ class Tribe__Tickets__Main {
 			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
 		}
 
+		// Register singletons we might need
+		tribe_singleton( 'tickets.handler', 'Tribe__Tickets__Tickets_Handler' );
+
 		// Caching
 		tribe_singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', array( 'hook' ) );
 		tribe_singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
 
 		// Query Vars
 		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
+		tribe( 'tickets.query' );
 
-		// View links
+		// View links, columns and screen options
 		if ( is_admin() ) {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
+			tribe_singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
+			tribe_singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
+			tribe( 'tickets.admin.views' );
+			tribe( 'tickets.admin.columns' );
+			tribe( 'tickets.admin.screen-options' );
 		}
 	}
 

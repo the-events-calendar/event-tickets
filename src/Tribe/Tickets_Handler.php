@@ -722,12 +722,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return Tribe__Tickets__Tickets_Handler
 	 */
 	public static function instance() {
-		if ( ! isset( self::$instance ) ) {
-			$className      = __CLASS__;
-			self::$instance = new $className;
-		}
-
-		return self::$instance;
+		return tribe( 'tickets.handler' );
 	}
 
 	/**
