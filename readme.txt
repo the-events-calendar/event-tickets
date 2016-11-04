@@ -225,6 +225,8 @@ Our Premium Plugins:
 * Tweak - Registered plugin as active with Tribe Common. [66657]
 * Fix - When searching in the attendees list the ticket meta details can still be toggled after search [61783]
 * Fix - Fixed an issue where long file names would break plugin updates on some Windows installations [62552]
+* Tweak - Added a tabbed view support for Attendeees and Ticket Orders
+* Tweak - Improve the Attendee Report header with improved layout and better labels [66003]
 
 = [4.3] 2016-10-13 =
 
