@@ -992,7 +992,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the available tickets modules
 			 *
-			 * @var array ticket modules
+			 * @var string[] ticket modules
 			 */
 			return apply_filters( 'tribe_tickets_get_modules', self::$active_modules );
 		}
