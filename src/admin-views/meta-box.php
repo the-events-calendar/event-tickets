@@ -134,7 +134,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 							<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="ticket_provider"
 																 value="<?php echo esc_attr( $class ); ?>"
 																 class="ticket_field">
-							<span><?php echo esc_html( $module ); ?></span>
+							<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
 							<?php
 							$checked = false;
 						}
