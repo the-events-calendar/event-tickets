@@ -235,9 +235,9 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$status = '';
 
 			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
-				$status_counts[] = esc_html( sprintf( __( '%1$d Remaining of the global stock', 'ticket global stock message (remaining stock)', 'event-tickets' ), (int) esc_html( $stock ) ) );
+				$status_counts[] = esc_html( sprintf( __( '%1$d Remaining of the global stock', 'ticket global stock message (remaining stock)', 'event-tickets' ), (int) $stock ) );
 			} else {
-				$status_counts[] = esc_html( sprintf( __( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), (int) esc_html( $stock ) ) );
+				$status_counts[] = esc_html( sprintf( __( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), (int) $stock ) );
 			}
 
 			$status_counts[] = $pending < 1 ? false : esc_html( sprintf( __( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ), (int) $pending ) );
