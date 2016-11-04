@@ -224,7 +224,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label = __( 'Sold', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = __( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
+			$sold_label = _x( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
 		}
 
 		// There may not be a fixed inventory - in which case just report the number actually sold so far
@@ -235,14 +235,14 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$status = '';
 
 			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
-				$status_counts[] = esc_html( sprintf( __( '%1$d Remaining of the global stock', 'ticket global stock message (remaining stock)', 'event-tickets' ), (int) $stock ) );
+				$status_counts[] = sprintf( _x( '%1$d Remaining of the global stock', 'ticket global stock message (remaining stock)', 'event-tickets' ), (int) $stock );
 			} else {
-				$status_counts[] = esc_html( sprintf( __( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), (int) $stock ) );
+				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), (int) $stock );
 			}
 
-			$status_counts[] = $pending < 1 ? false : esc_html( sprintf( __( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ), (int) $pending ) );
+			$status_counts[] = $pending < 1 ? false : sprintf( _x( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ), (int) $pending );
 
-			$status_counts[] = empty( $cancelled ) ? false : esc_html( sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), (int) $cancelled ) );
+			$status_counts[] = empty( $cancelled ) ? false : sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), (int) $cancelled );
 
 			//remove empty values and prepare to display if values
 			$status_counts = array_diff( $status_counts, array( '' ) );
@@ -250,7 +250,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 				$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
 			}
 
-			$message = sprintf( esc_html__( '%1$d %2$s%3$s', 'event-tickets' ), absint( $sold ), esc_html( $sold_label ), esc_html( $status ) );
+			$message = sprintf( '%1$d %2$s%3$s', absint( $sold ), esc_html( $sold_label ), esc_html( $status ) );
 
 
 		}
