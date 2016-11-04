@@ -174,7 +174,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param $hook
 	 */
 	public function attendees_page_load_css_js( $hook ) {
-		if ( $hook != $this->attendees_page ) {
+
+		if ( ! in_array( $hook, apply_filters( 'tribe_filter_attendee_page_slug', array( $this->attendees_page ) ) ) ) {
 			return;
 		}
 
