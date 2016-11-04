@@ -164,7 +164,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
 		public static function load_ticket_object( $ticket_id ) {
-			foreach ( Tribe__Tickets__Tickets::modules() as $provider_class => $name ) {
+			foreach ( self::modules() as $provider_class => $name ) {
 				$provider = call_user_func( array( $provider_class, 'get_instance' ) );
 				$event    = $provider->get_event_for_ticket( $ticket_id );
 
@@ -726,7 +726,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Set the `ticket_exists` flag on attendees if the ticket they are associated with
 			// does not exist.
 			foreach ( $attendees as &$attendee ) {
-				$attendee['ticket_exists'] = !empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
+				$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
 			}
 
 			if ( ! is_admin() ) {
@@ -975,7 +975,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 
 				$data[ 'events' ][ $event_id ] = array(
-					'stock' => $global_stock->get_stock_level()
+					'stock' => $global_stock->get_stock_level(),
 				);
 			}
 
@@ -989,7 +989,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function modules() {
-			return self::$active_modules;
+			/**
+			 * Filters the available tickets modules
+			 *
+			 * @var array ticket modules
+			 */
+			return apply_filters( 'tribe_tickets_get_modules', self::$active_modules );
 		}
 
 		/**
@@ -1218,7 +1223,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_order_key = $provider_class->getConstant( 'ATTENDEE_ORDER_KEY' );
 
 			if ( empty( $attendee_order_key ) ) {
-				switch( $this->className ) {
+				switch ( $this->className ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_order';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_order';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_order'; break;
@@ -1243,7 +1248,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
 			if ( empty( $attendee_order_key ) ) {
-				switch( $this->className ) {
+				switch ( $this->className ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return 'tribe_eddticket';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return 'tribe_shoppticket'; break;
@@ -1270,7 +1275,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_event_key = $provider_class->getConstant( 'ATTENDEE_EVENT_KEY' );
 
 			if ( empty( $attendee_event_key ) ) {
-				switch( $this->className ) {
+				switch ( $this->className ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_event';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_event';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_event'; break;
