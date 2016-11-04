@@ -718,7 +718,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$obj       = call_user_func( array( $class, 'get_instance' ) );
 				$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
 			}
@@ -776,7 +776,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public static function get_all_event_tickets( $event_id ) {
 			$tickets = array();
 
-			$modules = self::$active_modules;
+			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
@@ -796,7 +796,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public static function find_matching_event( $possible_ticket ) {
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$obj   = call_user_func( array( $class, 'get_instance' ) );
 				$event = $obj->get_event_for_ticket( $possible_ticket );
 				if ( false !== $event ) return $event;
@@ -850,7 +850,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public static function global_stock_available() {
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$provider = call_user_func( array( $class, 'get_instance' ) );
 
 				if ( method_exists( $provider, 'supports_global_stock' ) && $provider->supports_global_stock() ) {
@@ -869,7 +869,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		private function module_is_valid( $module ) {
-			return array_key_exists( $module, self::$active_modules );
+			return array_key_exists( $module, self::modules() );
 		}
 
 		/**
@@ -1010,7 +1010,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$tickets = array();
 
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
 				$tickets = array_merge( $tickets, $obj->get_tickets( $event_id ) );
 			}
