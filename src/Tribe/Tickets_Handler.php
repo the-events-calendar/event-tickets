@@ -180,6 +180,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_page_load_css_js( $hook ) {
 
+		/**
+		 * Filter the Page Slugs the Attendees Page CSS and JS Loads
+		 *
+		 * @param array array( $this->attendees_page ) an array of admin slugs
+		 */
 		if ( ! in_array( $hook, apply_filters( 'tribe_filter_attendee_page_slug', array( $this->attendees_page ) ) ) ) {
 			return;
 		}
