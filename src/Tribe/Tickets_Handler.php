@@ -59,8 +59,13 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
 		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
+
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
+
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
+
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
@@ -115,7 +120,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$total_checked_in_label = esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' );
 		$total_checked_in       = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
-		echo "<div class='checkin-totals'><h3>$total_checked_in_label</h3> $total_checked_in</div>";
+		echo "<div class='totals-header'><h3>$total_checked_in_label</h3> $total_checked_in</div>";
 	}
 
 	/**
