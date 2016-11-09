@@ -389,7 +389,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				'<a href="#" data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
                 esc_attr( $item['attendee_id'] ),
                 esc_attr( $item['provider'] ),
-                esc_attr ($button_classes ),
+                esc_attr( $button_classes ),
                 esc_html__( 'Check In', 'event-tickets' )
             );
 			$uncheckin = sprintf(
@@ -402,9 +402,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$checkin   = sprintf(
 				'<a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
                 esc_attr( $item['attendee_id'] ),
-                esc_attr($this->event->ID),
+                esc_attr( $this->event->ID),
                 esc_attr( $item['provider'] ),
-				esc_attr ($button_classes ),
+				esc_attr( $button_classes ),
                 esc_html__( 'Check In', 'event-tickets' )
             );
 			$uncheckin = sprintf(
