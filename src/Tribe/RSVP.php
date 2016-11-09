@@ -188,6 +188,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		add_action( 'rsvp_checkin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'rsvp_uncheckin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ) );
+		add_filter(
+			'event_tickets_attendees_rsvp_checkin_stati',
+			array( $this, 'filter_event_tickets_attendees_rsvp_checkin_stati' )
+		);
 	}
 
 	/**
@@ -1438,5 +1442,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function set_tickets_view( Tribe__Tickets__Tickets_View $tickets_view ) {
 		$this->tickets_view = $tickets_view;
+	}
+
+	/**
+	 * Filters the array of stati that will mark an RSVP attendee as eligible for check-in.
+	 *
+	 * @param array $stati An array of stati that should mark an RSVP attendee as
+	 *                     available for check-in.
+	 *
+	 * @return array The original array plus the 'yes' status.
+	 */
+	public function filter_event_tickets_attendees_rsvp_checkin_stati( array $stati = array() ) {
+		$stati[] = 'yes';
+
+		return array_unique( $stati );
 	}
 }
