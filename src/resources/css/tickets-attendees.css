@@ -157,10 +157,6 @@
 	text-align: center;
 }
 
-.wp-list-table td.check_in .delete {
-	text-align: center;
-}
-
 @media screen and (max-width: 870px) {
 
 	#tribe-attendees-summary h3,
