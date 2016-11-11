@@ -32,8 +32,23 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var $pointer = $( AttendeesPointer.target ).pointer( options ).pointer( 'open' ).pointer( 'widget' );
 		}
 
-		$( 'input.print' ).on( 'click', function( e ) {
+		$( 'input.print' ).on( 'click', function() {
+			$( window ).trigger( 'attendees-report-before-print.tribe-tickets' );
+
+			var $table = $( 'table.wp-list-table.attendees' ),
+				$visible_columns = $table.find( 'thead th:visible' ).length,
+				$header_and_data = $table.find( 'th,td' ),
+				hidden_in_print = 2;
+
+			// make the visible columns stretch to fill the available width
+			$header_and_data.css( {'width': 100 / ($visible_columns - hidden_in_print) + '%'} );
+
 			window.print();
+
+			// reset the columns width
+			$header_and_data.css( {'width': ''} );
+
+			$( window ).trigger( 'attendees-report-after-print.tribe-tickets' );
 		} );
 
 		var $filter_attendee = $( document.getElementById( 'filter_attendee' ) );
