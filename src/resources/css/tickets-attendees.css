@@ -48,7 +48,7 @@
 	margin-bottom: 2px;
 }
 
-#tribe-attendees-summary .welcome-panel-last .checkin-totals h3 {
+#tribe-attendees-summary .welcome-panel-last .totals-header h3 {
 	display: inline-block;
 	width: auto;
 }
@@ -154,6 +154,10 @@
 	display: block;
 	font-size: 20px;
 	margin: 20px 0;
+	text-align: center;
+}
+
+.wp-list-table td.check_in .delete {
 	text-align: center;
 }
 
