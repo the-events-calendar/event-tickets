@@ -33,7 +33,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		}
 
 		$( 'input.print' ).on( 'click', function() {
-			$( window ).trigger( 'tribe-tickets.attendees-report.before-print' );
+			$( window ).trigger( 'attendees-report-before-print.tribe-tickets' );
 
 			var $table = $( 'table.wp-list-table.attendees' ),
 				$visible_columns = $table.find( 'thead th:visible' ).length,
@@ -48,7 +48,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			// reset the columns width
 			$header_and_data.css( {'width': ''} );
 
-			$( window ).trigger( 'tribe-tickets.attendees-report.after-print' );
+			$( window ).trigger( 'attendees-report-after-print.tribe-tickets' );
 		} );
 
 		var $filter_attendee = $( document.getElementById( 'filter_attendee' ) );
