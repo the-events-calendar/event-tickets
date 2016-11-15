@@ -91,6 +91,11 @@
 	opacity: 1;
 }
 
+.tribe-attendees-page .tickets_checkin {
+	min-width: 87px;
+	text-align: center;
+}
+
 .tribe-attendees-page .cancelled {
 	font-style: italic;
 }
