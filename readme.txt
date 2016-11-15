@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3.3] Unreleased =
+
+* Feature - Added Tribe Extension class and loader, to make small addons easier to build [68188]
+
 = [4.3.2] 2016-11-02 =
 
 * Tweak - Include more Edited data on the `edit-ticket.tribe` action on JavaScript [68557]
