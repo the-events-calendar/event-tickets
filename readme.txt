@@ -3,7 +3,7 @@
 Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari, trishasalas
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
-Tested up to: 4.6.1
+Tested up to: 4.6
 Stable tag: 4.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -207,9 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.3.3] Unreleased =
+= [4.3.3] 2016-11-16 =
 
 * Feature - Added Tribe Extension class and loader, to make small addons easier to build [68188]
+* Fix - Prevent HTTPS websites from pointing to Assets in HTTP [68372]
 
 = [4.3.2] 2016-11-02 =
 
