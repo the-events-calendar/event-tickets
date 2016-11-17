@@ -10,6 +10,10 @@ msgstr ""
 "X-Generator: GlotPress/1.0-alpha-1100\n"
 "Project-Id-Version: Event Tickets\n"
 
+#: src/views/tickets/email.php:365
+msgid "$venue_label"
+msgstr ""
+
 #: src/admin-views/ticket-type-history.php:9
 msgid "Ticket history:"
 msgstr ""
@@ -22,7 +26,7 @@ msgstr ""
 msgid "Click to hide history"
 msgstr ""
 
-#: src/views/tickets/email-ticket-type-moved.php:93
+#: src/views/tickets/email-ticket-type-moved.php:93,
 #: src/views/tickets/email-tickets-moved.php:95
 msgid "Important changes to your tickets"
 msgstr ""
@@ -34,7 +38,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/views/tickets/email-ticket-type-moved.php:111
+#: src/views/tickets/email-ticket-type-moved.php:111,
 #: src/views/tickets/email-tickets-moved.php:113
 msgid " (taking place on %s)"
 msgstr ""
@@ -204,7 +208,7 @@ msgstr ""
 msgid "Ticket type was moved to <a href=\"%1$s\" target=\"_blank\">%2$s</a> from <a href=\"%3$s\" target=\"_blank\">%4$s</a>"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:267
+#: src/Tribe/Admin/Move_Ticket_Types.php:267,
 #: src/Tribe/Admin/Move_Tickets.php:651
 msgid "Changes to your tickets from %s"
 msgstr ""
@@ -381,18 +385,14 @@ msgstr ""
 msgid "RSVP Ticket"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:68
+#: src/Tribe/Tickets_Handler.php:68, src/Tribe/Tickets_Handler.php:68
 msgctxt "attendee event actions"
 msgid "Edit"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:69
+#: src/Tribe/Tickets_Handler.php:69, src/Tribe/Tickets_Handler.php:69
 msgctxt "attendee event actions"
 msgid "View"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:97
-msgid "Post type"
 msgstr ""
 
 #: src/Tribe/Tickets_Handler.php:181
@@ -434,11 +434,6 @@ msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:28
 msgid "Move Ticket Types"
-msgstr ""
-
-#: src/Tribe/Admin/Move_Ticket_Types.php:72
-#: src/Tribe/Admin/Move_Tickets.php:250
-msgid "All supported types"
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:102
@@ -546,10 +541,6 @@ msgstr "Neuvádějte mě na veřejném seznamu účastníků"
 
 #: src/views/tickets/rsvp.php:149
 msgid "Login to RSVP"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid "Event Tickets allows your guests to RSVP from any post, page, or event."
 msgstr ""
 
 #: src/Tribe/Main.php:681
@@ -683,10 +674,6 @@ msgstr ""
 msgid "RSVPs"
 msgstr ""
 
-#: src/Tribe/JSON_LD/Order.php:106
-msgid "Free"
-msgstr "Zdarma"
-
 #: src/Tribe/Main.php:445
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
@@ -739,7 +726,7 @@ msgstr "Nebylo zadáno uživatelské jméno a emailová adresa"
 msgid "Invalid Email"
 msgstr "Neplatná emailová adresa"
 
-#: src/Tribe/Tickets_Handler.php:507 src/Tribe/Tickets_Handler.php:523
+#: src/Tribe/Tickets_Handler.php:507, src/Tribe/Tickets_Handler.php:523
 msgid "Invalid User ID"
 msgstr "Neplatné ID uživatele"
 
@@ -823,7 +810,7 @@ msgstr "Events Tickets Plus"
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:439 src/Tribe/Main.php:444
+#: src/Tribe/Main.php:439, src/Tribe/Main.php:444
 msgid "post a thread"
 msgstr ""
 
@@ -831,7 +818,7 @@ msgstr ""
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:634 src/views/tickets/orders-link.php:45
+#: src/Tribe/Tickets_View.php:634, src/views/tickets/orders-link.php:45
 msgid " and "
 msgstr " a "
 
@@ -839,7 +826,7 @@ msgstr " a "
 msgid "Getting Started"
 msgstr "Začínáme"
 
-#: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
+#: src/Tribe/Admin/Ticket_Settings.php:22, src/Tribe/Metabox.php:31,
 #: src/Tribe/Tickets_View.php:626
 msgid "Tickets"
 msgstr "Vstupenky"
@@ -848,16 +835,16 @@ msgstr "Vstupenky"
 msgid "Ticket #"
 msgstr "Vstupenka č."
 
-#: src/Tribe/Attendees_Table.php:82 src/views/tickets/email.php:344
+#: src/Tribe/Attendees_Table.php:82, src/views/tickets/email.php:344
 msgid "Security Code"
 msgstr "Kontrolní kód"
 
-#: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:368
-#: src/Tribe/Attendees_Table.php:372 src/Tribe/Attendees_Table.php:466
+#: src/Tribe/Attendees_Table.php:83, src/Tribe/Attendees_Table.php:368,
+#: src/Tribe/Attendees_Table.php:372, src/Tribe/Attendees_Table.php:466
 msgid "Check in"
 msgstr "Zaregistrovat"
 
-#: src/Tribe/Attendees_Table.php:369 src/Tribe/Attendees_Table.php:373
+#: src/Tribe/Attendees_Table.php:369, src/Tribe/Attendees_Table.php:373,
 #: src/Tribe/Attendees_Table.php:467
 msgid "Undo Check in"
 msgstr "Zrušit registraci"
@@ -866,8 +853,8 @@ msgstr "Zrušit registraci"
 msgid "Print"
 msgstr "Tisk"
 
-#: src/Tribe/Attendees_Table.php:440
-#: src/admin-views/admin-welcome-message.php:36 src/views/tickets/rsvp.php:118
+#: src/Tribe/Attendees_Table.php:440,
+#: src/admin-views/admin-welcome-message.php:36, src/views/tickets/rsvp.php:118
 msgid "Email"
 msgstr "Email"
 
@@ -879,7 +866,7 @@ msgstr "Exportovat"
 msgid "Filter by purchaser name, ticket #, order # or security code"
 msgstr "Filtrovat podle jména kupce, čísla vstupenky, objednávky nebo kontrolního kódu"
 
-#: src/Tribe/Attendees_Table.php:468 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:468, src/admin-views/list.php:43
 msgid "Delete"
 msgstr "Smazat"
 
@@ -920,11 +907,11 @@ msgstr "Vaše vstupenka byla uložena."
 msgid "Your ticket has been deleted."
 msgstr "Vaše vstupenka byla smazána."
 
-#: src/Tribe/Tickets_Handler.php:121 src/admin-views/list.php:90
+#: src/Tribe/Tickets_Handler.php:121, src/admin-views/list.php:90
 msgid "See who purchased tickets to this event"
 msgstr "Kdo si koupil vstupenky na tuto akci"
 
-#: src/Tribe/Tickets_Handler.php:121 src/admin-views/attendees.php:10
+#: src/Tribe/Tickets_Handler.php:121, src/admin-views/attendees.php:10,
 #: src/admin-views/list.php:92
 msgid "Attendees"
 msgstr "Účastníci"
@@ -1013,7 +1000,7 @@ msgstr "Zvolit obrázek"
 msgid "Remove"
 msgstr "Odstranit"
 
-#: src/admin-views/meta-box.php:112 src/admin-views/meta-box.php:122
+#: src/admin-views/meta-box.php:112, src/admin-views/meta-box.php:122
 msgid "Add new ticket"
 msgstr "Přidat novou vstupenku"
 
@@ -1089,9 +1076,9 @@ msgstr "Typy příspěvků, které mohou mít vstupenky"
 msgid "Attendee List"
 msgstr "Seznam účastníků"
 
-#: src/views/tickets/email-non-attendance.php:24
-#: src/views/tickets/email-ticket-type-moved.php:21
-#: src/views/tickets/email-tickets-moved.php:22 src/views/tickets/email.php:26
+#: src/views/tickets/email-non-attendance.php:24,
+#: src/views/tickets/email-ticket-type-moved.php:21,
+#: src/views/tickets/email-tickets-moved.php:22, src/views/tickets/email.php:26
 msgid "Your tickets"
 msgstr "Vaše vstupenky"
 
@@ -1123,14 +1110,6 @@ msgstr ""
 msgid "Confirm RSVP"
 msgstr "Potvrdit účast"
 
-#. Plugin Name of the plugin/theme
+#: src/Tribe/Main.php:459
 msgid "Event Tickets"
 msgstr "Event Tickets"
-
-#. Author of the plugin/theme
-msgid "Modern Tribe, Inc."
-msgstr "Modern Tribe, Inc."
-
-#. Author URI of the plugin/theme
-msgid "http://m.tri.be/28"
-msgstr "http://m.tri.be/28"

@@ -10,6 +10,10 @@ msgstr ""
 "X-Generator: GlotPress/1.0-alpha-1100\n"
 "Project-Id-Version: Event Tickets\n"
 
+#: src/views/tickets/email.php:365
+msgid "$venue_label"
+msgstr ""
+
 #: src/admin-views/ticket-type-history.php:9
 msgid "Ticket history:"
 msgstr ""
@@ -22,7 +26,7 @@ msgstr ""
 msgid "Click to hide history"
 msgstr ""
 
-#: src/views/tickets/email-ticket-type-moved.php:93
+#: src/views/tickets/email-ticket-type-moved.php:93,
 #: src/views/tickets/email-tickets-moved.php:95
 msgid "Important changes to your tickets"
 msgstr ""
@@ -33,7 +37,7 @@ msgid_plural "We wanted to let you know that your %1$s tickets for %2$s have bee
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/views/tickets/email-ticket-type-moved.php:111
+#: src/views/tickets/email-ticket-type-moved.php:111,
 #: src/views/tickets/email-tickets-moved.php:113
 msgid " (taking place on %s)"
 msgstr ""
@@ -201,7 +205,7 @@ msgstr ""
 msgid "Ticket type was moved to <a href=\"%1$s\" target=\"_blank\">%2$s</a> from <a href=\"%3$s\" target=\"_blank\">%4$s</a>"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:267
+#: src/Tribe/Admin/Move_Ticket_Types.php:267,
 #: src/Tribe/Admin/Move_Tickets.php:651
 msgid "Changes to your tickets from %s"
 msgstr ""
@@ -377,18 +381,14 @@ msgstr ""
 msgid "RSVP Ticket"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:68
+#: src/Tribe/Tickets_Handler.php:68, src/Tribe/Tickets_Handler.php:68
 msgctxt "attendee event actions"
 msgid "Edit"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:69
+#: src/Tribe/Tickets_Handler.php:69, src/Tribe/Tickets_Handler.php:69
 msgctxt "attendee event actions"
 msgid "View"
-msgstr ""
-
-#: src/Tribe/Tickets_Handler.php:97
-msgid "Post type"
 msgstr ""
 
 #: src/Tribe/Tickets_Handler.php:181
@@ -430,11 +430,6 @@ msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:28
 msgid "Move Ticket Types"
-msgstr ""
-
-#: src/Tribe/Admin/Move_Ticket_Types.php:72
-#: src/Tribe/Admin/Move_Tickets.php:250
-msgid "All supported types"
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:102
@@ -540,10 +535,6 @@ msgstr "No listarme en la lista pública de asistentes"
 
 #: src/views/tickets/rsvp.php:149
 msgid "Login to RSVP"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid "Event Tickets allows your guests to RSVP from any post, page, or event."
 msgstr ""
 
 #: src/Tribe/Main.php:681
@@ -676,10 +667,6 @@ msgstr ""
 msgid "RSVPs"
 msgstr ""
 
-#: src/Tribe/JSON_LD/Order.php:106
-msgid "Free"
-msgstr "Gratis"
-
 #: src/Tribe/Main.php:445
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
@@ -732,7 +719,7 @@ msgstr ""
 msgid "Invalid Email"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:507 src/Tribe/Tickets_Handler.php:523
+#: src/Tribe/Tickets_Handler.php:507, src/Tribe/Tickets_Handler.php:523
 msgid "Invalid User ID"
 msgstr ""
 
@@ -816,7 +803,7 @@ msgstr ""
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:439 src/Tribe/Main.php:444
+#: src/Tribe/Main.php:439, src/Tribe/Main.php:444
 msgid "post a thread"
 msgstr ""
 
@@ -824,7 +811,7 @@ msgstr ""
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:634 src/views/tickets/orders-link.php:45
+#: src/Tribe/Tickets_View.php:634, src/views/tickets/orders-link.php:45
 msgid " and "
 msgstr " y "
 
@@ -832,7 +819,7 @@ msgstr " y "
 msgid "Getting Started"
 msgstr "Como Comenzar"
 
-#: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
+#: src/Tribe/Admin/Ticket_Settings.php:22, src/Tribe/Metabox.php:31,
 #: src/Tribe/Tickets_View.php:626
 msgid "Tickets"
 msgstr "Entradas"
@@ -841,16 +828,16 @@ msgstr "Entradas"
 msgid "Ticket #"
 msgstr "# de ticket"
 
-#: src/Tribe/Attendees_Table.php:82 src/views/tickets/email.php:344
+#: src/Tribe/Attendees_Table.php:82, src/views/tickets/email.php:344
 msgid "Security Code"
 msgstr "Código de seguridad"
 
-#: src/Tribe/Attendees_Table.php:83 src/Tribe/Attendees_Table.php:368
-#: src/Tribe/Attendees_Table.php:372 src/Tribe/Attendees_Table.php:466
+#: src/Tribe/Attendees_Table.php:83, src/Tribe/Attendees_Table.php:368,
+#: src/Tribe/Attendees_Table.php:372, src/Tribe/Attendees_Table.php:466
 msgid "Check in"
 msgstr "Registrarse"
 
-#: src/Tribe/Attendees_Table.php:369 src/Tribe/Attendees_Table.php:373
+#: src/Tribe/Attendees_Table.php:369, src/Tribe/Attendees_Table.php:373,
 #: src/Tribe/Attendees_Table.php:467
 msgid "Undo Check in"
 msgstr "Cancelar el registro"
@@ -859,8 +846,8 @@ msgstr "Cancelar el registro"
 msgid "Print"
 msgstr "Imprimir"
 
-#: src/Tribe/Attendees_Table.php:440
-#: src/admin-views/admin-welcome-message.php:36 src/views/tickets/rsvp.php:118
+#: src/Tribe/Attendees_Table.php:440,
+#: src/admin-views/admin-welcome-message.php:36, src/views/tickets/rsvp.php:118
 msgid "Email"
 msgstr "Correo electrónico"
 
@@ -872,7 +859,7 @@ msgstr "Exportar"
 msgid "Filter by purchaser name, ticket #, order # or security code"
 msgstr "Filtrar por nombre de comprador, # de ticket, # de pedido o código de seguridad"
 
-#: src/Tribe/Attendees_Table.php:468 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:468, src/admin-views/list.php:43
 msgid "Delete"
 msgstr "Borrar"
 
@@ -913,11 +900,11 @@ msgstr "El ticket ha sido guardado."
 msgid "Your ticket has been deleted."
 msgstr "El ticket ha sido borrado."
 
-#: src/Tribe/Tickets_Handler.php:121 src/admin-views/list.php:90
+#: src/Tribe/Tickets_Handler.php:121, src/admin-views/list.php:90
 msgid "See who purchased tickets to this event"
 msgstr "Ver quienes adquirieron entradas para este evento"
 
-#: src/Tribe/Tickets_Handler.php:121 src/admin-views/attendees.php:10
+#: src/Tribe/Tickets_Handler.php:121, src/admin-views/attendees.php:10,
 #: src/admin-views/list.php:92
 msgid "Attendees"
 msgstr "Asistentes"
@@ -1006,7 +993,7 @@ msgstr "Seleccione una imagen"
 msgid "Remove"
 msgstr "Remover"
 
-#: src/admin-views/meta-box.php:112 src/admin-views/meta-box.php:122
+#: src/admin-views/meta-box.php:112, src/admin-views/meta-box.php:122
 msgid "Add new ticket"
 msgstr "Agregar un nuevo ticket"
 
@@ -1082,9 +1069,9 @@ msgstr ""
 msgid "Attendee List"
 msgstr "Lista de Asistentes"
 
-#: src/views/tickets/email-non-attendance.php:24
-#: src/views/tickets/email-ticket-type-moved.php:21
-#: src/views/tickets/email-tickets-moved.php:22 src/views/tickets/email.php:26
+#: src/views/tickets/email-non-attendance.php:24,
+#: src/views/tickets/email-ticket-type-moved.php:21,
+#: src/views/tickets/email-tickets-moved.php:22, src/views/tickets/email.php:26
 msgid "Your tickets"
 msgstr "Sus Entradas"
 
@@ -1116,14 +1103,6 @@ msgstr ""
 msgid "Confirm RSVP"
 msgstr ""
 
-#. Plugin Name of the plugin/theme
+#: src/Tribe/Main.php:459
 msgid "Event Tickets"
 msgstr "Tickets del Evento"
-
-#. Author of the plugin/theme
-msgid "Modern Tribe, Inc."
-msgstr "Modern Tribe, Inc."
-
-#. Author URI of the plugin/theme
-msgid "http://m.tri.be/28"
-msgstr ""
