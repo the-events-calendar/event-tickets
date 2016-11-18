@@ -33,6 +33,8 @@ class Tribe__Tickets__Admin__Views__Ticketed {
 		/** @var Tribe__Tickets__Cache__Cache_Interface $cache */
 		$cache = tribe( 'tickets.cache' );
 
+		$cache->include_past( true );
+
 		$ticketed_query_var = Tribe__Tickets__Query::$has_tickets;
 
 		$ticketed_args  = array(
@@ -42,7 +44,7 @@ class Tribe__Tickets__Admin__Views__Ticketed {
 		);
 		$ticketed_url   = add_query_arg( $ticketed_args );
 		$ticketed_label = __( 'Ticketed', 'event-tickets' );
-		$ticketed_count = count( $cache->posts_with_ticket_types( array( $this->post_type ) ) );
+		$ticketed_count = count( $cache->posts_with_ticket_types( array( $this->post_type ), true ) );
 
 		$views['tickets-ticketed'] = sprintf( '<a href="%s">%s</a> (%d)', $ticketed_url, $ticketed_label, $ticketed_count );
 
@@ -53,10 +55,12 @@ class Tribe__Tickets__Admin__Views__Ticketed {
 		);
 		$unticketed_url   = add_query_arg( $unticketed_args );
 		$unticketed_label = __( 'Unticketed', 'event-tickets' );
-		$unticketed_count = count( $cache->posts_without_ticket_types( array( $this->post_type ) ) );
+		$unticketed_count = count( $cache->posts_without_ticket_types( array( $this->post_type ), true ) );
 
 		$views['tickets-unticketed'] = sprintf( '<a href="%s">%s</a> (%d)', $unticketed_url, $unticketed_label,
 			$unticketed_count );
+
+		$cache->include_past( false );
 
 		return $views;
 	}
