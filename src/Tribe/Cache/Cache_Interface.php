@@ -56,7 +56,7 @@ interface Tribe__Tickets__Cache__Cache_Interface {
 	public function set_expiration_time( $seconds );
 
 	/**
-	 * Whether "past" post types should be included or not.
+	 * Whether "past" posts should be included or not.
 	 *
 	 * Some post types, like Events, have a notion of "past". By default the cache
 	 * will not take "past" posts into account.

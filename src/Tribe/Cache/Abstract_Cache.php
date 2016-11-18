@@ -21,7 +21,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	protected $expiration = 60;
 
 	/**
-	 * @var bool Whether "past" post types should be included or not.
+	 * @var bool Whether "past" posts should be included or not.
 	 */
 	protected $include_past = false;
 
@@ -139,7 +139,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	}
 
 	/**
-	 * Whether "past" post types should be included or not.
+	 * Whether "past" posts should be included or not.
 	 *
 	 * Some post types, like Events, have a notion of "past". By default the cache
 	 * will not take "past" posts into account.
