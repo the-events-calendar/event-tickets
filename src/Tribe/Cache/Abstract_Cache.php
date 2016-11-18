@@ -21,6 +21,11 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 	protected $expiration = 60;
 
 	/**
+	 * @var bool Whether "past" posts should be included or not.
+	 */
+	protected $include_past = false;
+
+	/**
 	 * Sets the expiration time for the cache.
 	 *
 	 * @param int $seconds
@@ -60,9 +65,12 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 				AND pm.meta_value IS NOT NULL";
 
 		if ( class_exists( 'Tribe__Events__Main' ) ) { // if events are among the supported post types then exclude past events
-			if ( in_array( Tribe__Events__Main::POSTTYPE, $supported_types ) ) {
-				$past_events = '(' . implode( ',', $this->past_events() ) . ')';
-				$query .= " AND pm.meta_value NOT IN {$past_events}";
+			if ( in_array( Tribe__Events__Main::POSTTYPE, $supported_types ) && ! $this->include_past ) {
+				$past_events = $this->past_events();
+				if ( ! empty( $past_events ) ) {
+					$past_events_interval = '(' . implode( ',', $past_events ) . ')';
+					$query .= " AND pm.meta_value NOT IN {$past_events_interval}";
+				}
 			}
 		}
 
@@ -98,7 +106,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 				WHERE post_type IN {$post_types}
 				AND post_status != 'auto-draft'";
 
-		$posts_with_tickets = $this->posts_with_ticket_types();
+		$posts_with_tickets = $this->posts_with_ticket_types( null, true );
 
 		if ( ! empty( $posts_with_tickets ) ) {
 			$excluded = '(' . implode( ',', $posts_with_tickets ) . ')';
@@ -128,5 +136,17 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 		$ids = $wpdb->get_col( $query );
 
 		return is_array( $ids ) ? $ids : array();
+	}
+
+	/**
+	 * Whether "past" posts should be included or not.
+	 *
+	 * Some post types, like Events, have a notion of "past". By default the cache
+	 * will not take "past" posts into account.
+	 *
+	 * @param bool $include_past
+	 */
+	public function include_past( $include_past ) {
+		$this->include_past = $include_past;
 	}
 }
