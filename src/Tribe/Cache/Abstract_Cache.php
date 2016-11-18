@@ -61,8 +61,11 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 
 		if ( class_exists( 'Tribe__Events__Main' ) ) { // if events are among the supported post types then exclude past events
 			if ( in_array( Tribe__Events__Main::POSTTYPE, $supported_types ) ) {
-				$past_events = '(' . implode( ',', $this->past_events() ) . ')';
-				$query .= " AND pm.meta_value NOT IN {$past_events}";
+				$past_events = $this->past_events();
+				if ( ! empty( $past_events ) ) {
+					$past_events_interval = '(' . implode( ',', $past_events ) . ')';
+					$query .= " AND pm.meta_value NOT IN {$past_events_interval}";
+				}
 			}
 		}
 
