@@ -887,7 +887,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		protected function global_stock_mode_selector( $current_option = '' ) {
-			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field'>\n";
+			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field tribe-dropdown'>\n";
 
 			// Default to using own stock unless the user explicitly specifies otherwise (important
 			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
