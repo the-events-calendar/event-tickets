@@ -106,7 +106,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 	</div>
 	<?php do_action( 'tribe_events_tickets_attendees_event_summary_table_after', $event_id ); ?>
 
-	<form id="topics-filter" method="post">
+	<form id="topics-filter" class="topics-filter" method="post">
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'event_id' : 'tribe[event_id]' ); ?>" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_type' : 'tribe[post_type]' ); ?>" value="<?php echo esc_attr( $event->post_type ); ?>" />
