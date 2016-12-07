@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3.4] 2016-12-08 =
+
+* Tweak - Tribe Common now is loaded only once across our plugin suite, improves performance on some cases [65755]
+
 = [4.3.3] 2016-11-16 =
 
 * Feature - Added Tribe Extension class and loader, to make small addons easier to build [68188]
