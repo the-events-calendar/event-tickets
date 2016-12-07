@@ -236,7 +236,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			changeYear     : true,
 			numberOfMonths : 3,
 			firstDay       : startofweek,
-			showButtonPanel: true,
+			showButtonPanel: false,
 			onChange       : function() {
 			},
 			onSelect       : function( dateText, inst ) {
@@ -261,6 +261,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 			}
 		};
+
+		$.extend( datepickerOpts, TEC ? TEC : {} );
 
 		$( '#ticket_start_date' ).datepicker( datepickerOpts ).keyup( function( e ) {
 			if ( e.keyCode === 8 || e.keyCode === 46 ) {
