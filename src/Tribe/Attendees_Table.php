@@ -500,8 +500,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$nav = apply_filters( 'tribe_events_tickets_attendees_table_nav', $nav, $which );
 
 		?>
-		<div class="alignleft actions"><?php echo implode( $nav['left'] ); ?></div>
-		<div class="alignright"><?php echo implode( $nav['right'] ) ?></div>
+		<div class="alignleft actions attendees-actions"><?php echo implode( $nav['left'] ); ?></div>
+		<div class="alignright attendees-filter"><?php echo implode( $nav['right'] ) ?></div>
 		<?php
 	}
 
