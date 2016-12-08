@@ -1,8 +1,8 @@
-# Copyright (C) 2016 Event Tickets 4.3.3
-# This file is distributed under the same license as the Event Tickets 4.3.3 package.
+# Copyright (C) 2016 Event Tickets 4.3.4
+# This file is distributed under the same license as the Event Tickets 4.3.4 package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.3.3\n"
+"Project-Id-Version: Event Tickets 4.3.4\n"
 "Report-Msgid-Bugs-To: http://m.tri.be/191x\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -51,7 +51,7 @@ msgstr ""
 msgid "News and Announcements"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:36, src/Tribe/Attendees_Table.php:440, src/views/tickets/rsvp.php:118
+#: src/admin-views/admin-welcome-message.php:36, src/Tribe/Attendees_Table.php:440, src/views/tickets/rsvp.php:109
 msgid "Email"
 msgstr ""
 
@@ -606,83 +606,83 @@ msgstr ""
 msgid "Recurring event tickets are not supported, event %s."
 msgstr ""
 
-#: src/Tribe/Main.php:213
+#: src/Tribe/Main.php:231
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:391
+#: src/Tribe/Main.php:395
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:393
+#: src/Tribe/Main.php:397
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:394
+#: src/Tribe/Main.php:398
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:395
+#: src/Tribe/Main.php:399
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:396
+#: src/Tribe/Main.php:400
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:413
+#: src/Tribe/Main.php:417
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:415
+#: src/Tribe/Main.php:419
 msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:432
+#: src/Tribe/Main.php:436
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:433
+#: src/Tribe/Main.php:437
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:435
+#: src/Tribe/Main.php:439
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:436
+#: src/Tribe/Main.php:440
 msgid "Events Tickets Plus"
 msgstr ""
 
-#: src/Tribe/Main.php:437
+#: src/Tribe/Main.php:441
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:439, src/Tribe/Main.php:444
+#: src/Tribe/Main.php:443, src/Tribe/Main.php:448
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:440
+#: src/Tribe/Main.php:444
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:445
+#: src/Tribe/Main.php:449
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:459
+#: src/Tribe/Main.php:463
 msgid "Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:546
+#: src/Tribe/Main.php:550
 msgid "Welcome to Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:681
+#: src/Tribe/Main.php:685
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Main.php:681
+#: src/Tribe/Main.php:685
 msgctxt "button text"
 msgid "RSVP"
 msgstr ""
@@ -1069,35 +1069,35 @@ msgstr ""
 msgid "Please fill in the RSVP confirmation name and email fields."
 msgstr ""
 
-#: src/views/tickets/rsvp.php:61
+#: src/views/tickets/rsvp.php:59
 msgid "%1$s out of %2$s available"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:69
+#: src/views/tickets/rsvp.php:63
 msgid "Out of stock!"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:98
+#: src/views/tickets/rsvp.php:89
 msgid "Send RSVP confirmation to:"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:110
+#: src/views/tickets/rsvp.php:101
 msgid "Full Name"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:127
+#: src/views/tickets/rsvp.php:118
 msgctxt "order status label"
 msgid "RSVP"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:138
+#: src/views/tickets/rsvp.php:129
 msgid "Don't list me on the public attendee list"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:149
+#: src/views/tickets/rsvp.php:139
 msgid "Login to RSVP"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:151
+#: src/views/tickets/rsvp.php:141
 msgid "Confirm RSVP"
 msgstr ""

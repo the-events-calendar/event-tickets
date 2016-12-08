@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2016-11-14 10:19:50+0000\n"
+"PO-Revision-Date: 2016-12-05 21:50:15+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -878,7 +878,7 @@ msgstr ""
 
 #: src/Tribe/RSVP.php:675
 msgid "Your tickets from %s"
-msgstr ""
+msgstr "Dina biljetter från %s"
 
 #: src/Tribe/RSVP.php:961
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
