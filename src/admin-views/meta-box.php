@@ -134,7 +134,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 							<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="ticket_provider"
 																 value="<?php echo esc_attr( $class ); ?>"
 																 class="ticket_field">
-							<span><?php echo esc_html( $module ); ?></span>
+							<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
 							<?php
 							$checked = false;
 						}
@@ -161,18 +161,25 @@ $modules = Tribe__Tickets__Tickets::modules();
 							for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
 					</td>
 					<td>
-						<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date"
-							   id="ticket_start_date" value="">
+						<input
+							autocomplete="off"
+							type="text"
+							class="ticket_field"
+							size='10'
+							name="ticket_start_date"
+							id="ticket_start_date"
+							value=""
+						>
 						<span class="ticket_start_time ticket_time">
 							<?php echo tribe_get_datetime_separator(); ?>
-							<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field">
+							<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field tribe-dropdown">
 								<?php echo $startHourOptions; ?>
 							</select>
-							<select name="ticket_start_minute" id="ticket_start_minute" class="ticket_field">
+							<select name="ticket_start_minute" id="ticket_start_minute" class="ticket_field tribe-dropdown">
 								<?php echo $startMinuteOptions; ?>
 							</select>
 							<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
-								<select name="ticket_start_meridian" id="ticket_start_meridian" class="ticket_field">
+								<select name="ticket_start_meridian" id="ticket_start_meridian" class="ticket_field tribe-dropdown">
 									<?php echo $startMeridianOptions; ?>
 								</select>
 							<?php endif; ?>
@@ -190,14 +197,14 @@ $modules = Tribe__Tickets__Tickets::modules();
 
 						<span class="ticket_end_time ticket_time">
 							<?php echo tribe_get_datetime_separator(); ?>
-							<select name="ticket_end_hour" id="ticket_end_hour" class="ticket_field">
+							<select name="ticket_end_hour" id="ticket_end_hour" class="ticket_field tribe-dropdown">
 								<?php echo $endHourOptions; ?>
 							</select>
-							<select name="ticket_end_minute" id="ticket_end_minute" class="ticket_field">
+							<select name="ticket_end_minute" id="ticket_end_minute" class="ticket_field tribe-dropdown">
 								<?php echo $endMinuteOptions; ?>
 							</select>
 							<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
-								<select name="ticket_end_meridian" id="ticket_end_meridian" class="ticket_field">
+								<select name="ticket_end_meridian" id="ticket_end_meridian" class="ticket_field tribe-dropdown">
 									<?php echo $endMeridianOptions; ?>
 								</select>
 							<?php endif; ?>

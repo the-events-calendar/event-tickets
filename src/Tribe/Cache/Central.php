@@ -32,7 +32,6 @@ class Tribe__Tickets__Cache__Central {
 	 * @param Tribe__Tickets__Cache__Cache_Interface|null $cache An injectable cache object instance.
 	 */
 	public function __construct( Tribe__Tickets__Cache__Cache_Interface $cache = null ) {
-
 		$this->cache = $cache ? $cache : new Tribe__Tickets__Cache__Transient_Cache();
 		$this->cache->set_expiration_time( 60 );
 	}
@@ -69,6 +68,11 @@ class Tribe__Tickets__Cache__Central {
 		 * the caches should be updated.
 		 */
 		add_action( 'tribe_events_event_save', array( $this->cache, 'reset_all' ) );
+
+		/**
+		 * Reset the caches when a post is deleted.
+		 */
+		add_action( 'delete_post', array( $this->cache, 'reset_all' ) );
 	}
 
 	/**
