@@ -12,7 +12,7 @@ if ( class_exists( 'Tribe__Events__Pro__Main' ) ) {
 	if ( is_admin() ) {
 		$bumpdown = __( 'Currently, tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' );
 	} else {
-		$bumpdown = __( 'If you are creating a recurring event, tickets will only show up once per Event Series, meaning that the same ticket will apper across all events. Please configure your events accordingly.', 'event-tickets' );
+		$bumpdown = __( 'Selling tickets for a recurring event series is not recommended. The tickets you configure will show on all instances of an event series which can be confusing to attendees. Please configure your events carefully.', 'event-tickets' );
 	}
 
 	?>

@@ -164,7 +164,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
 		public static function load_ticket_object( $ticket_id ) {
-			foreach ( Tribe__Tickets__Tickets::modules() as $provider_class => $name ) {
+			foreach ( self::modules() as $provider_class => $name ) {
 				$provider = call_user_func( array( $provider_class, 'get_instance' ) );
 				$event    = $provider->get_event_for_ticket( $ticket_id );
 
@@ -360,7 +360,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->className, array( $this, 'ajax_handler_attendee_uncheckin' ) );
 
 			// Front end
-			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'front_end_tickets_form' ), 5 );
+			$ticket_form_hook = $this->get_ticket_form_hook();
+			if ( ! empty( $ticket_form_hook ) ) {
+				add_action( $ticket_form_hook, array( $this, 'front_end_tickets_form' ), 5 );
+			}
 			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'show_tickets_unavailable_message' ), 6 );
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ), 11 );
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
@@ -715,7 +718,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$obj       = call_user_func( array( $class, 'get_instance' ) );
 				$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
 			}
@@ -723,7 +726,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Set the `ticket_exists` flag on attendees if the ticket they are associated with
 			// does not exist.
 			foreach ( $attendees as &$attendee ) {
-				$attendee['ticket_exists'] = !empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
+				$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
 			}
 
 			if ( ! is_admin() ) {
@@ -773,7 +776,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public static function get_all_event_tickets( $event_id ) {
 			$tickets = array();
 
-			foreach ( self::$active_modules as $class => $module ) {
+			$modules = self::modules();
+
+			foreach ( $modules as $class => $module ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
 				$tickets = array_merge( $tickets, $obj->get_tickets( $event_id ) );
 			}
@@ -791,7 +796,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public static function find_matching_event( $possible_ticket ) {
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$obj   = call_user_func( array( $class, 'get_instance' ) );
 				$event = $obj->get_event_for_ticket( $possible_ticket );
 				if ( false !== $event ) return $event;
@@ -845,7 +850,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public static function global_stock_available() {
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$provider = call_user_func( array( $class, 'get_instance' ) );
 
 				if ( method_exists( $provider, 'supports_global_stock' ) && $provider->supports_global_stock() ) {
@@ -864,7 +869,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		private function module_is_valid( $module ) {
-			return array_key_exists( $module, self::$active_modules );
+			return array_key_exists( $module, self::modules() );
 		}
 
 		/**
@@ -882,7 +887,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		protected function global_stock_mode_selector( $current_option = '' ) {
-			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field'>\n";
+			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field tribe-dropdown'>\n";
 
 			// Default to using own stock unless the user explicitly specifies otherwise (important
 			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
@@ -970,7 +975,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 
 				$data[ 'events' ][ $event_id ] = array(
-					'stock' => $global_stock->get_stock_level()
+					'stock' => $global_stock->get_stock_level(),
 				);
 			}
 
@@ -984,7 +989,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function modules() {
-			return self::$active_modules;
+			/**
+			 * Filters the available tickets modules
+			 *
+			 * @var string[] ticket modules
+			 */
+			return apply_filters( 'tribe_tickets_get_modules', self::$active_modules );
 		}
 
 		/**
@@ -1000,7 +1010,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$tickets = array();
 
-			foreach ( self::$active_modules as $class => $module ) {
+			foreach ( self::modules() as $class => $module ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
 				$tickets = array_merge( $tickets, $obj->get_tickets( $event_id ) );
 			}
@@ -1213,7 +1223,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_order_key = $provider_class->getConstant( 'ATTENDEE_ORDER_KEY' );
 
 			if ( empty( $attendee_order_key ) ) {
-				switch( $this->className ) {
+				switch ( $this->className ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_order';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_order';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_order'; break;
@@ -1238,7 +1248,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
 			if ( empty( $attendee_order_key ) ) {
-				switch( $this->className ) {
+				switch ( $this->className ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return 'tribe_eddticket';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return 'tribe_shoppticket'; break;
@@ -1265,7 +1275,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_event_key = $provider_class->getConstant( 'ATTENDEE_EVENT_KEY' );
 
 			if ( empty( $attendee_event_key ) ) {
-				switch( $this->className ) {
+				switch ( $this->className ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_event';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_event';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_event'; break;
@@ -1600,6 +1610,50 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post_transient = Tribe__Post_Transient::instance();
 				$post_transient->delete( $_POST['event_ID'], self::ATTENDEES_CACHE );
 			}
+		}
+
+		/**
+		 * Returns the action tag that should be used to print the front-end ticket form.
+		 *
+		 * This value is set in the Events > Settings > Tickets tab and is distinct between RSVP
+		 * tickets and commerce provided tickets.
+		 *
+		 * @return string
+		 */
+		protected function get_ticket_form_hook() {
+			if ( is_a( $this, 'Tribe__Tickets__RSVP' ) ) {
+				$ticket_form_hook = Tribe__Settings_Manager::get_option( 'ticket-rsvp-form-location',
+					'tribe_events_single_event_after_the_meta' );
+
+				/**
+				 * Filters the position of the RSVP tickets form.
+				 *
+				 * While this setting can be handled using the Events > Settings > Tickets > "Location of RSVP form"
+				 * setting this filter allows developers to override the general setting in particular cases.
+				 * Returning an empty value here will prevent the ticket form from printing on the page.
+				 *
+				 * @param string                  $ticket_form_hook The set action tag to print front-end RSVP tickets form.
+				 * @param Tribe__Tickets__Tickets $this             The current instance of the class that's hooking its front-end ticket form.
+				 */
+				$ticket_form_hook = apply_filters( 'tribe_tickets_rsvp_tickets_form_hook', $ticket_form_hook, $this );
+			} else {
+				$ticket_form_hook = Tribe__Settings_Manager::get_option( 'ticket-commerce-form-location',
+					'tribe_events_single_event_after_the_meta' );
+
+				/**
+				 * Filters the position of the commerce-provided tickets form.
+				 *
+				 * While this setting can be handled using the Events > Settings > Tickets > "Location of Tickets form"
+				 * setting this filter allows developers to override the general setting in particular cases.
+				 * Returning an empty value here will prevent the ticket form from printing on the page.
+				 *
+				 * @param string                  $ticket_form_hook The set action tag to print front-end commerce tickets form.
+				 * @param Tribe__Tickets__Tickets $this             The current instance of the class that's hooking its front-end ticket form.
+				 */
+				$ticket_form_hook = apply_filters( 'tribe_tickets_commerce_tickets_form_hook', $ticket_form_hook, $this );
+			}
+
+			return $ticket_form_hook;
 		}
 	}
 }
