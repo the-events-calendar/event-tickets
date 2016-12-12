@@ -262,7 +262,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		};
 
-		$.extend( datepickerOpts, TEC ? TEC : {} );
+		$.extend( datepickerOpts, tribe_l10n_datatables.datepicker );
 
 		$( '#ticket_start_date' ).datepicker( datepickerOpts ).keyup( function( e ) {
 			if ( e.keyCode === 8 || e.keyCode === 46 ) {
