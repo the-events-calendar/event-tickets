@@ -729,6 +729,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
+			/**
+			 * Filters the return data for event attendees.
+			 * 
+			 * @since 4.4
+			 *
+			 * @param array $attendees Array of event attendees.
+			 * @param int   $event_id  Event post ID.
+			 */
 			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $event_id );
 		}
 
