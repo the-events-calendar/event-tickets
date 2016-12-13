@@ -731,7 +731,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			/**
 			 * Filters the return data for event attendees.
-			 * 
+			 *
 			 * @since 4.4
 			 *
 			 * @param array $attendees Array of event attendees.
