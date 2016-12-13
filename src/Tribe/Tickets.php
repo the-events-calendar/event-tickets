@@ -711,7 +711,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 
 				if ( is_array( $attendees ) && count( $attendees ) > 0 ) {
-					return $attendees;
+					return apply_filters( 'tribe_tickets_event_attendees', $attendees, $event_id );
 				}
 			}
 
@@ -731,7 +731,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post_transient->set( $event_id, self::ATTENDEES_CACHE, $attendees, $expire );
 			}
 
-			return $attendees;
+			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $event_id );
 		}
 
 		/**
