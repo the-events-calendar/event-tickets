@@ -109,9 +109,10 @@
 	width: 70px;
 }
 
-.tribe-attendees-page .print,
-	.tribe-attendees-page .email,
-	.tribe-attendees-page .export {
+.tribe-attendees-page .attendees-actions input.print,
+		.tribe-attendees-page .attendees-actions a.email,
+		.tribe-attendees-page .attendees-actions a.export {
+	float: left;
 	margin: 1px 8px 0 0;
 }
 
