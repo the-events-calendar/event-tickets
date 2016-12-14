@@ -98,7 +98,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				);
 
 				// Search by name (we will also look at second/third names etc, not just the first name)
-				var name = $row.children( 'td.purchaser' ).text().toLowerCase().trim();
+				var name = $row.find( '.purchaser_name' ).text().toLowerCase().trim();
 				var name_found = name.indexOf( search ) === 0 || name.indexOf( " " + search ) > 1;
 
 				if ( code_found || name_found ) {
