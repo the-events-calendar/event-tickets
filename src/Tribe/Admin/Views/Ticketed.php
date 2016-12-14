@@ -41,6 +41,7 @@ class Tribe__Tickets__Admin__Views__Ticketed {
 			'post_type'         => $this->post_type,
 			$ticketed_query_var => '1',
 			'post_status'       => 'any',
+			'paged'             => 1,
 		);
 		$ticketed_url   = add_query_arg( $ticketed_args );
 		$ticketed_label = __( 'Ticketed', 'event-tickets' );
@@ -52,6 +53,7 @@ class Tribe__Tickets__Admin__Views__Ticketed {
 			'post_type'         => $this->post_type,
 			$ticketed_query_var => '0',
 			'post_status'       => 'any',
+			'paged'             => 1,
 		);
 		$unticketed_url   = add_query_arg( $unticketed_args );
 		$unticketed_label = __( 'Unticketed', 'event-tickets' );
