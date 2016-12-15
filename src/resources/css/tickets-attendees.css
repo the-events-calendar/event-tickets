@@ -109,6 +109,19 @@
 	width: 70px;
 }
 
+.tribe-attendees-page td.column-status {
+	font-size: 13px;
+	width: 80px;
+}
+
+.tribe-attendees-page .column-security {
+	width: 120px;
+}
+
+.tribe-attendees-page .column-check_in {
+	width: 90px;
+}
+
 .tribe-attendees-page .attendees-actions input.print,
 		.tribe-attendees-page .attendees-actions a.email,
 		.tribe-attendees-page .attendees-actions a.export {
