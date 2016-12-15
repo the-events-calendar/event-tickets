@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.3.5] TBD =
+
+* Tweak - Updated the template override instructions in a number of templates [68229]
+
 = [4.3.4.1] 2016-12-09 =
 
 * Fix - Updates Tribe Common to remove some stray characters that were impacting page layouts (props: @Aetles) [70536]
