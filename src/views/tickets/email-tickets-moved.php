@@ -4,6 +4,10 @@
  * (where they have been reassigned to another ticket type and/or to another
  * event entirely.
  *
+ * Override this template in your own theme by creating a file at:
+ *
+ *     [your-theme]/tribe-events/tickets/email-tickets-moved.php
+ *
  * @var int    $original_event_id
  * @var string $original_event_name
  * @var int    $new_event_id
