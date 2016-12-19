@@ -145,6 +145,19 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 
 		$stock = $global_stock !== false ? $global_stock : $stock;
 
-		return ' <div><small>(' . round( $sold * 100 / $stock, 0 ) . '%)<small></div>';
+		// If there have been zero sales we need not do any further arithmetic
+		if ( 0 === $sold ) {
+			$percentage = 0;
+		}
+		// If $stock is zero (and items *have* been sold per the above conditional) we can assume 100%
+		elseif ( 0 === $stock ) {
+			$percentage = 100;
+		}
+		// In all other cases, calculate the actual percentage
+		else {
+			$percentage = round( $sold * 100 / $stock, 0 );
+		}
+
+		return ' <div><small>(' . $percentage . '%)<small></div>';
 	}
 }
