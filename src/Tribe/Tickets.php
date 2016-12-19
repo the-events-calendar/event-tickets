@@ -709,29 +709,35 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( ! $attendees ) {
 					$attendees = array();
 				}
+			}
 
-				if ( is_array( $attendees ) && count( $attendees ) > 0 ) {
-					return $attendees;
+			if ( empty( $attendees ) ) {
+				foreach ( self::modules() as $class => $module ) {
+					$obj       = call_user_func( array( $class, 'get_instance' ) );
+					$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
+				}
+
+				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
+				// does not exist.
+				foreach ( $attendees as &$attendee ) {
+					$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
+				}
+
+				if ( ! is_admin() ) {
+					$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+					$post_transient->set( $event_id, self::ATTENDEES_CACHE, $attendees, $expire );
 				}
 			}
 
-			foreach ( self::$active_modules as $class => $module ) {
-				$obj       = call_user_func( array( $class, 'get_instance' ) );
-				$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
-			}
-
-			// Set the `ticket_exists` flag on attendees if the ticket they are associated with
-			// does not exist.
-			foreach ( $attendees as &$attendee ) {
-				$attendee['ticket_exists'] = !empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
-			}
-
-			if ( ! is_admin() ) {
-				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
-				$post_transient->set( $event_id, self::ATTENDEES_CACHE, $attendees, $expire );
-			}
-
-			return $attendees;
+			/**
+			 * Filters the return data for event attendees.
+			 *
+			 * @since 4.4
+			 *
+			 * @param array $attendees Array of event attendees.
+			 * @param int   $event_id  Event post ID.
+			 */
+			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $event_id );
 		}
 
 		/**
