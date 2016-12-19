@@ -158,6 +158,6 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			$percentage = round( $sold * 100 / $stock, 0 );
 		}
 
-		return ' <div><small>(' . $percentage . '%)<small></div>';
+		return ' <div><small>(' . $percentage . '%)</small></div>';
 	}
 }
