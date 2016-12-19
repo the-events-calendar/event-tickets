@@ -129,10 +129,11 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 				return '';
 			}
 
-			$this_sold  = $ticket->qty_sold();
+			$this_sold = $ticket->qty_sold();
+
 			$this_stock = $global_stock !== false ?
 				$global_stock
-				: $ticket->stock() + $ticket->qty_sold() + $ticket->qty_pending();
+				: $ticket->stock() + $ticket->qty_pending();
 
 			// sanity check
 			if ( $this_sold > $this_stock ) {
