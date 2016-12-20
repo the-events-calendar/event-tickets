@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/shortcodes/my-attendance-list-logged-out.php
  *
- * @version 4.2
+ * @version 4.3.5
  */
 ?>
 <p><?php esc_html_e( 'To see a list of events you are attending you will need to login.', 'event-tickets' ); ?></p>

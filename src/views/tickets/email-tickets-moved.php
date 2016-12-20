@@ -16,7 +16,7 @@
  * @var string $ticket_type_name
  * @var array  $affected_tickets
  *
- * @version 4.3
+ * @version 4.3.5
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
