@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.3.5] TBD =
+= [4.3.5] 2016-12-20 =
 
 * Tweak - Updated the template override instructions in a number of templates [68229]
 
