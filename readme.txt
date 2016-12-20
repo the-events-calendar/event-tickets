@@ -210,6 +210,10 @@ Our Premium Plugins:
 = [4.3.5] 2016-12-20 =
 
 * Tweak - Updated the template override instructions in a number of templates [68229]
+* Tweak - Allow better filtering for Attendees (Props to @jtsternberg) [69886]
+* Fix - Prevent JavaScript Notices related to Bumpdown [69886]
+* Fix - Assets URL on Windows Servers are fully operational again [68377]
+* Fix - JavaScript and CSS files will respect HTTPS on all pages [69561]
 
 = [4.3.4.1] 2016-12-09 =
 
