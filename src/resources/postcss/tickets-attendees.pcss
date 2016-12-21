@@ -28,7 +28,8 @@
 
 		li {
 			line-height: 1.4em;
-			margin-bottom: 2px;
+			margin-bottom: 6px;
+			padding: 0;
 
 			@media screen and (max-width: 870px) {
 				display: list-item;
@@ -42,6 +43,10 @@
 		padding: 10px 20px 5px;
 		width: 200px;
 
+		li {
+			margin-bottom: 2px;
+		}
+
 		@media screen and (max-width: 870px) {
 			border-left: 0;
 			border-top: 1px solid #eee;
@@ -52,13 +57,22 @@
 			width: 100%;
 		}
 
+		.totals-header {
+
+			h3 {
+				display: inline-block;
+				width: auto;
+			}
+
+		}
+
 		h4 {
 			font-size: 1.5em;
 			text-align: center;
 		}
 
 		li {
-			font-size: 1.2em;
+			font-size: 1.1em;
 		}
 
 		ul {
@@ -80,7 +94,7 @@
 	}
 }
 
-.tribe-attendees-page{
+.tribe-attendees-page {
 	.welcome-panel-content h3 {
 		margin-top: 0;
 	}
@@ -95,30 +109,35 @@
 
 	.tickets_checked {
 		td {
-			opacity: .7;
-			text-decoration: line-through;
+			opacity: .6;
 		}
 
-		/* We don't want to strike through our row actions */
-		td.has-row-actions {
-			text-decoration: none;
-		}
-
-		/* We *do* want to strike through the ticket name however, which is in the same cell */
-		td.has-row-actions > div:nth-child(1) {
-			text-decoration: line-through;
+		td.check_in {
+			opacity: 1;
 		}
 
 		a.tickets_checkin {
 			display: none;
 		}
 
-		td.column-check_in {
-			text-decoration: none !important;
-		}
-
 		a.tickets_uncheckin {
 			display: block;
+			opacity: 1;
+		}
+	}
+
+	.tickets_checkin {
+		min-width: 87px;
+		text-align: center;
+	}
+
+	.cancelled {
+		font-style: italic;
+	}
+
+	.cancelled {
+		.check_in {
+			font-style: normal;
 		}
 	}
 
@@ -127,10 +146,26 @@
 		width: 70px;
 	}
 
-	.print,
-	.email,
-	.export {
-		margin: 1px 8px 0 0;
+	td.column-status {
+		font-size: 13px;
+		width: 80px;
+	}
+
+	.column-security {
+		width: 120px;
+	}
+
+	.column-check_in {
+		width: 90px;
+	}
+
+	.attendees-actions {
+		input.print,
+		a.email,
+		a.export {
+			float: left;
+			margin: 1px 8px 0 0;
+		}
 	}
 }
 
@@ -188,5 +223,13 @@
 		font-size: 20px;
 		margin: 20px 0;
 		text-align: center;
+	}
+}
+
+.wp-list-table {
+	td.check_in {
+		.delete {
+			text-align: center;
+		}
 	}
 }

@@ -5,12 +5,12 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.3.5';
+	const VERSION = '4.4dev3';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.3';
+	const MIN_TEC_VERSION = '4.4dev3';
 
 	/**
 	 * Name of the provider
@@ -351,8 +351,26 @@ class Tribe__Tickets__Main {
 			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
 		}
 
+		// Register singletons we might need
+		tribe_singleton( 'tickets.handler', 'Tribe__Tickets__Tickets_Handler' );
+
 		// Caching
-		Tribe__Tickets__Cache__Central::instance()->hook();
+		tribe_singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', array( 'hook' ) );
+		tribe_singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
+
+		// Query Vars
+		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
+		tribe( 'tickets.query' );
+
+		// View links, columns and screen options
+		if ( is_admin() ) {
+			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
+			tribe_singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
+			tribe_singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
+			tribe( 'tickets.admin.views' );
+			tribe( 'tickets.admin.columns' );
+			tribe( 'tickets.admin.screen-options' );
+		}
 	}
 
 	/**
@@ -628,9 +646,9 @@ class Tribe__Tickets__Main {
 
 		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
-			$options['ticket-enabled-post-types'] = array(
-				'tribe_events',
-			);
+			$defaults                             = array( 'tribe_events' );
+			$options['ticket-enabled-post-types'] = $defaults;
+			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 
 		/**

@@ -236,7 +236,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			changeYear     : true,
 			numberOfMonths : 3,
 			firstDay       : startofweek,
-			showButtonPanel: true,
+			showButtonPanel: false,
 			onChange       : function() {
 			},
 			onSelect       : function( dateText, inst ) {
@@ -261,6 +261,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 			}
 		};
+
+		$.extend( datepickerOpts, tribe_l10n_datatables.datepicker );
 
 		$( '#ticket_start_date' ).datepicker( datepickerOpts ).keyup( function( e ) {
 			if ( e.keyCode === 8 || e.keyCode === 46 ) {
@@ -630,24 +632,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} )
 			.on( 'keyup', '#ticket_price', function ( e ) {
 				e.preventDefault();
-				console.log( 'changes here' );
-				var regex, error;
+
+				var regex;
 				var decimal_point = price_format.decimal;
-				var decimal_error = price_format.decimal_error;
 
 				regex = new RegExp( '[^\-0-9\%\\' + decimal_point + ']+', 'gi' );
 
 				var value = $( this ).val();
 				var newvalue = value.replace( regex, '' );
 
-				//todo add info message or tooltip to let people know we are removing the comma or period
+				// @todo add info message or tooltip to let people know we are removing the comma or period
 				if ( value !== newvalue ) {
-					console.log( 'new value' );
 					$( this ).val( newvalue );
-					//$( document.body ).triggerHandler( 'wc_add_error_tip', [ $( this ), decimal_error ] );
-				} else {
-					console.log( 'no change' );
-					//$( document.body ).triggerHandler( 'wc_remove_error_tip', [ $( this ), decimal_error ] );
 				}
 			} );
 

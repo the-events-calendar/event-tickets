@@ -33,7 +33,8 @@
 
 #tribe-attendees-summary .welcome-panel-column li {
 	line-height: 1.4em;
-	margin-bottom: 2px;
+	margin-bottom: 6px;
+	padding: 0;
 }
 
 #tribe-attendees-summary .welcome-panel-last {
@@ -43,13 +44,22 @@
 	width: 200px;
 }
 
+#tribe-attendees-summary .welcome-panel-last li {
+	margin-bottom: 2px;
+}
+
+#tribe-attendees-summary .welcome-panel-last .totals-header h3 {
+	display: inline-block;
+	width: auto;
+}
+
 #tribe-attendees-summary .welcome-panel-last h4 {
 	font-size: 1.5em;
 	text-align: center;
 }
 
 #tribe-attendees-summary .welcome-panel-last li {
-	font-size: 1.2em;
+	font-size: 1.1em;
 }
 
 .tribe-attendees-page .welcome-panel-content h3 {
@@ -65,32 +75,33 @@
 }
 
 .tribe-attendees-page .tickets_checked td {
-	opacity: .7;
-	text-decoration: line-through;
+	opacity: .6;
 }
 
-/* We don't want to strike through our row actions */
-
-.tribe-attendees-page .tickets_checked td.has-row-actions {
-	text-decoration: none;
-}
-
-/* We *do* want to strike through the ticket name however, which is in the same cell */
-
-.tribe-attendees-page .tickets_checked td.has-row-actions > div:nth-child(1) {
-	text-decoration: line-through;
+.tribe-attendees-page .tickets_checked td.check_in {
+	opacity: 1;
 }
 
 .tribe-attendees-page .tickets_checked a.tickets_checkin {
 	display: none;
 }
 
-.tribe-attendees-page .tickets_checked td.column-check_in {
-	text-decoration: none !important;
-}
-
 .tribe-attendees-page .tickets_checked a.tickets_uncheckin {
 	display: block;
+	opacity: 1;
+}
+
+.tribe-attendees-page .tickets_checkin {
+	min-width: 87px;
+	text-align: center;
+}
+
+.tribe-attendees-page .cancelled {
+	font-style: italic;
+}
+
+.tribe-attendees-page .cancelled .check_in {
+	font-style: normal;
 }
 
 .tribe-attendees-page .column-attendee_id,
@@ -98,9 +109,23 @@
 	width: 70px;
 }
 
-.tribe-attendees-page .print,
-	.tribe-attendees-page .email,
-	.tribe-attendees-page .export {
+.tribe-attendees-page td.column-status {
+	font-size: 13px;
+	width: 80px;
+}
+
+.tribe-attendees-page .column-security {
+	width: 120px;
+}
+
+.tribe-attendees-page .column-check_in {
+	width: 90px;
+}
+
+.tribe-attendees-page .attendees-actions input.print,
+		.tribe-attendees-page .attendees-actions a.email,
+		.tribe-attendees-page .attendees-actions a.export {
+	float: left;
 	margin: 1px 8px 0 0;
 }
 
@@ -148,6 +173,10 @@
 	display: block;
 	font-size: 20px;
 	margin: 20px 0;
+	text-align: center;
+}
+
+.wp-list-table td.check_in .delete {
 	text-align: center;
 }
 

@@ -27,17 +27,14 @@ class Tribe__Tickets__Attendance_Totals extends Tribe__Tickets__Abstract_Attenda
 	}
 
 	public function print_totals() {
-		$total_checked_in_label = esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' );
 		$total_deleted_label = esc_html_x( 'Deleted Attendees:', 'attendee summary', 'event-tickets' );
 
-		$total_checked_in = $this->get_total_checked_in();
 		$total_deleted = $this->get_total_deleted();
 
 		$deleted_list_item = $total_deleted ? "<li> <strong>$total_deleted_label</strong> $total_deleted </li>" : '';
 
 		echo "
 			<ul>
-				<li> <strong>$total_checked_in_label</strong> $total_checked_in </li>
 				$deleted_list_item
 			</ul>
 		";
