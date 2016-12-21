@@ -2,7 +2,11 @@
 /**
  * Renders the My Attendance list
  *
- * @version 4.2
+ * Override this template in your own theme by creating a file at:
+ *
+ *     [your-theme]/tribe-events/tickets/shortcodes/my-attendance-list.php
+ *
+ * @version 4.3.5
  *
  * @var array $event_ids
  */

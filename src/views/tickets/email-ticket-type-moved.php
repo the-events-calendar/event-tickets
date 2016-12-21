@@ -3,6 +3,10 @@
  * This template is used for emails informing users of a change in ticket type
  * (where it has been moved from one post to another).
  *
+ * Override this template in your own theme by creating a file at:
+ *
+ *     [your-theme]/tribe-events/tickets/email-ticket-type-moved.php
+ *
  * @var int    $original_event_id
  * @var string $original_event_name
  * @var int    $new_event_id
@@ -11,7 +15,7 @@
  * @var string $ticket_type_name
  * @var int    $num_tickets
  *
- * @version 4.3
+ * @version 4.3.5
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
