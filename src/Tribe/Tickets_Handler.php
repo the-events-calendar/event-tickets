@@ -380,6 +380,7 @@ class Tribe__Tickets__Tickets_Handler {
 		// We dont want HTML inputs, private data or other columns that are superfluous in a CSV export
 		$hidden = array_merge( get_hidden_columns( $this->attendees_page ), array(
 			'cb',
+			'meta_details',
 			'provider',
 			'purchaser',
 			'status',
