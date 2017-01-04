@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjesse
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.7
-Stable tag: 4.4RC1
+Stable tag: 4.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.4] tbd =
+= [4.4] 2016-01-04 =
 
 * Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
 * Tweak - Added the "Attendees" report column in admin lists of posts supporting tickets [67176]
