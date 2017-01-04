@@ -212,6 +212,8 @@ Our Premium Plugins:
 * Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
 * Tweak - Added the "Attendees" report column in admin lists of posts supporting tickets [67176]
 * Fix - Help page is now accessible even if The Events Calendar is not active on the site [69248]
+* Tweak - Added a tabbed view support for Attendeees and Ticket Orders
+* Tweak - Improve the Attendee Report header with improved layout and better labels [66003]
 
 = [4.3.5] 2016-12-20 =
 
@@ -247,8 +249,6 @@ Our Premium Plugins:
 * Tweak - Registered plugin as active with Tribe Common. [66657]
 * Fix - When searching in the attendees list the ticket meta details can still be toggled after search [61783]
 * Fix - Fixed an issue where long file names would break plugin updates on some Windows installations [62552]
-* Tweak - Added a tabbed view support for Attendeees and Ticket Orders
-* Tweak - Improve the Attendee Report header with improved layout and better labels [66003]
 
 = [4.3] 2016-10-13 =
 
