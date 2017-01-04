@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.4] 2016-01-04 =
+= [4.4] 2017-01-04 =
 
 * Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
 * Tweak - Added the "Attendees" report column in admin lists of posts supporting tickets [67176]
