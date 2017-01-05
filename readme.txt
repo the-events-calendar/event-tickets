@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.4] 2017-01-04 =
+= [4.4] 2017-01-09 =
 
 * Fix - Help page is now accessible even if The Events Calendar is not active on the site [69248]
 * Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
