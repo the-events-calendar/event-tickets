@@ -209,11 +209,11 @@ Our Premium Plugins:
 
 = [4.4] 2017-01-04 =
 
+* Fix - Help page is now accessible even if The Events Calendar is not active on the site [69248]
 * Tweak - Added a tabbed view support for Attendeees and Ticket Orders [66015]
 * Tweak - Added the "Attendees" report column in admin lists of posts supporting tickets [67176]
-* Fix - Help page is now accessible even if The Events Calendar is not active on the site [69248]
 * Tweak - Improve the Attendee Report header with improved layout and better labels [66003]
-* Tweak - Adjust the layout of the attendee report screen [66004]
+* Tweak - Adjust the layout of the attendee report screen [66004, 65887]
 
 = [4.3.5] 2016-12-20 =
 
