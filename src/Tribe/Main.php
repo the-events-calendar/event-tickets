@@ -5,12 +5,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.4';
+	const VERSION = '4.4.0.1';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
 	const MIN_TEC_VERSION = '4.4';
+
+	/**
+	 * Min required version of Tribe Common
+	 */
+	const MIN_COMMON_VERSION = '4.4';
 
 	/**
 	 * Name of the provider
@@ -138,6 +143,11 @@ class Tribe__Tickets__Main {
 		 * After this method we can use any `Tribe__` classes
 		 */
 		$this->init_autoloading();
+
+		// Safety check: if Tribe Common is not at a certain minimum version, bail out
+		if ( version_compare( Tribe__Main::VERSION, self::MIN_COMMON_VERSION, '<' ) ) {
+			return;
+		}
 
 		/**
 		 * We need Common to be able to load text domains correctly.
