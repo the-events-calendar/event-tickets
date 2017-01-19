@@ -209,8 +209,7 @@ Our Premium Plugins:
 
 = [4.4.1] TBD =
 
-* Tweak - Improvements to the Front End UX Tickets RSVP Styles. [72036]
-* Bug - Fix Content being cut off on check in screen on iphone, other tweaks to mobile views. [70771]
+* Fix - Use timezoned time for `tribe_events_ticket_is_on_sale()` [71959]
 
 = [4.4.0.1] 2017-01-09 =
 
