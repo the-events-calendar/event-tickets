@@ -209,7 +209,8 @@ Our Premium Plugins:
 
 = [4.4.1] TBD =
 
-* Tweak - Improvements to the Front End UX Tickets RSVP Styles [72036]
+* Tweak - Improvements to the Front End UX Tickets RSVP Styles. [72036]
+* Bug - Fix Content being cut off on check in screen on iphone, other tweaks to mobile views. [70771]
 
 = [4.4.0.1] 2017-01-09 =
 
