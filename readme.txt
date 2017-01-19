@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.4.1] TBD =
+
+* Tweak - Improvements to the Front End UX Tickets RSVP Styles [72036]
+
 = [4.4.0.1] 2017-01-09 =
 
 * Fix - Adds safety check to ensure a smooth activation process when earlier versions of Tribe Common are active
