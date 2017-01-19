@@ -177,7 +177,7 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 		}
 
 		// Timestamps for comparison purposes
-		$now    = time();
+		$now    = current_time( 'timestamp' );
 		$start  = strtotime( $ticket->start_date );
 		$finish = strtotime( $ticket->end_date );
 
