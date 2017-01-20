@@ -87,7 +87,18 @@
 		border-left: 1px solid #eee;
 		float: right;
 		padding: 10px 20px 5px;
-		width: 200px;
+		*zoom: 1;
+
+		&:before,
+		&:after {
+			content: '';
+			display: table;
+		}
+
+		&:after {
+			clear: both;
+		}
+
 
 		@media screen and (max-width: 768px) {
 			width: 100%;
@@ -95,15 +106,6 @@
 
 		li {
 			margin-bottom: 2px;
-		}
-
-		@media screen and (max-width: 870px) {
-			border-left: 0;
-			border-top: 1px solid #eee;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			top: initial;
 		}
 
 		.totals-header {
