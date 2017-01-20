@@ -223,8 +223,7 @@
 	border-radius: 3px;
 	margin-bottom: 5px;
 	padding: 5px 10px;
-	text-align: center;
-	width: 30%;
+	width: 4.375em;
 }
 
 .tribe-tickets-rsvp .tribe-tickets-remaining {
@@ -286,5 +285,22 @@
 
 .clear:after {
 	clear: both;
+}
+
+.tribe-tickets-rsvp input[type="date"],
+	.tribe-tickets-rsvp input[type="time"],
+	.tribe-tickets-rsvp input[type="datetime-local"],
+	.tribe-tickets-rsvp input[type="week"],
+	.tribe-tickets-rsvp input[type="month"],
+	.tribe-tickets-rsvp input[type="text"],
+	.tribe-tickets-rsvp input[type="email"],
+	.tribe-tickets-rsvp input[type="url"],
+	.tribe-tickets-rsvp input[type="password"],
+	.tribe-tickets-rsvp input[type="search"],
+	.tribe-tickets-rsvp input[type="tel"],
+	.tribe-tickets-rsvp input[type="number"],
+	.tribe-tickets-rsvp textarea,
+	.tribe-tickets-rsvp select {
+	background: #fff;
 }
 

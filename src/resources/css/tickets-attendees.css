@@ -52,7 +52,17 @@
 	border-left: 1px solid #eee;
 	float: right;
 	padding: 10px 20px 5px;
-	width: 200px;
+	zoom: 1;
+}
+
+#tribe-attendees-summary .welcome-panel-last:before,
+		#tribe-attendees-summary .welcome-panel-last:after {
+	content: '';
+	display: table;
+}
+
+#tribe-attendees-summary .welcome-panel-last:after {
+	clear: both;
 }
 
 #tribe-attendees-summary .welcome-panel-last li {
@@ -256,16 +266,6 @@
 
 	#tribe-attendees-summary .welcome-panel-column li {
 		display: list-item;
-	}
-
-	#tribe-attendees-summary .welcome-panel-last {
-		border-left: 0;
-		border-top: 1px solid #eee;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		top: auto;
-		top: initial;
 	}
 
 	#tribe-attendees-summary .welcome-panel-last ul {
