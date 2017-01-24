@@ -20,20 +20,55 @@
 	#show-settings-link,
 	.screen-meta-toggle,
 	h2,
-	#icon-edit {
+	#icon-edit,
+	#wpbody-content #update-nag,
+	#wpbody-content .update-nag,
+	.welcome-panel .welcome-panel-column:first-child,
+	#tribe-attendees-summary .welcome-panel-last,
+	#tribe-attendees-summary h3,
+	#tribe-attendees-summary .about-description,
+	.row-actions {
         display: none
     }
     .wrap h2 + h2 {
         display: block
     }
-    #wpcontent,
+    #wpwrap #wpcontent,
 	#wpfooter {
-        margin-left: 20px
+        margin-left: 0;
+        padding-left: 0
+    }
+    #wpwrap .wrap {
+        margin: 0
+    }
+    #wpwrap #wpbody-content {
+        padding-bottom: 0
+    }
+    #tribe-attendees-summary {
+        margin: 0;
+        border: 0;
+        box-shadow: none
+    }
+    #tribe-attendees-summary .welcome-panel-content {
+        margin-left: 0
+    }
+    #tribe-attendees-summary .welcome-panel-column {
+        width: 100%;
+        padding: 0;
+        float: none
+    }
+    table.widefat.attendees {
+        border-left: 0;
+        border-right: 0
+    }
+    #wpwrap .widefat th,
+	#wpwrap .widefat td {
+        border-bottom: 1px solid #e1e1e1;
+        padding: 0
     }
     #the-list tr {
         background: #fff;
-        border: 0;
-        border-bottom: 1px solid #333
+        border: 0
     }
     a.row-title {
         color: #000
