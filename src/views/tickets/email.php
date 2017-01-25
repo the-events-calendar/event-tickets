@@ -259,6 +259,11 @@
 						$venue_phone   = get_post_meta( $venue_id, '_VenuePhone', true );
 						$venue_address = get_post_meta( $venue_id, '_VenueAddress', true );
 						$venue_city    = get_post_meta( $venue_id, '_VenueCity', true );
+						$venue_state   = get_post_meta( $venue_id, '_VenueState', true );
+						if ( empty( $venue_state ) ) {
+							$venue_state = get_post_meta( $venue_id, '_VenueProvince', true );
+						}
+						$venue_zip     = get_post_meta( $venue_id, '_VenueZip', true );
 						$venue_web     = get_post_meta( $venue_id, '_VenueURL', true );
 					}
 				}
@@ -369,7 +374,7 @@
 																		<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; display:block; margin-bottom:5px;"><?php echo $venue_name; ?></span>
 																		<a style="color:#006caa !important; display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; text-decoration:underline;">
 																			<?php echo $venue_address; ?><br />
-																			<?php echo $venue_city; ?>
+																			<?php printf( '%s, %s %s', $venue_city, $venue_state, $venue_zip ); ?>
 																		</a>
 																	</td>
 																	<td class="ticket-venue-child" valign="top" align="left" width="100" style="padding: 0 !important; width:140px; margin:0 !important;">
