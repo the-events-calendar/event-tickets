@@ -207,7 +207,7 @@ Our Premium Plugins:
 
 == Changelog ==
 
-= [4.4.1] TBD =
+= [4.4.1] 2017-01-25 =
 
 * Fix - Resolve the Fatals related to undefined methods and Memory exhaustion [71958, 71912]
 * Fix - Use timezoned time for `tribe_events_ticket_is_on_sale()` [71959]
