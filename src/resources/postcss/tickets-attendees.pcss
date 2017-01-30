@@ -5,10 +5,6 @@
 	h3,
 	.about-description {
 		width: 66%;
-
-		@media screen and (max-width: 870px) {
-			width: 100%;
-		}
 	}
 
 	.about-description a {
@@ -17,14 +13,48 @@
 
 	.welcome-panel-column-container {
 		position: initial;
+		*zoom: 1;
 
-		@media screen and (max-width: 870px) {
-			margin-bottom: 115px;
+		&:before,
+		&:after {
+			content: '';
+			display: table;
+		}
+
+		&:after {
+			clear: both;
 		}
 	}
 
 	.welcome-panel-column {
 		padding: 20px 10px;
+
+		@media screen and (max-width: 768px) {
+			float: none;
+			padding: 20px 0;
+			width: 100%;
+		}
+
+		@media screen and (min-width: 1024px) {
+			display: inline-block;
+			float: left;
+			padding: 20px 2%;
+			width: 29%;
+			min-width: 29%;
+		}
+
+		h3 {
+			@media screen and (max-width: 768px) {
+				display: inline-block;
+				padding-left: 15px;
+			}
+		}
+
+		ul {
+			@media screen and (max-width: 768px) {
+				padding: 0 15px;
+			}
+		}
 
 		li {
 			line-height: 1.4em;
@@ -35,26 +65,47 @@
 				display: list-item;
 			}
 		}
+
+		.tribe-event-meta-note {
+			div {
+				@media screen and (max-width: 768px) {
+					padding: 0 15px;
+				}
+			}
+		}
+	}
+
+	.welcome-panel-middle {
+		> div {
+			@media screen and (max-width: 768px) {
+				padding: 0 15px;
+			}
+		}
 	}
 
 	.welcome-panel-last {
 		border-left: 1px solid #eee;
 		float: right;
 		padding: 10px 20px 5px;
-		width: 200px;
+		*zoom: 1;
+
+		&:before,
+		&:after {
+			content: '';
+			display: table;
+		}
+
+		&:after {
+			clear: both;
+		}
+
+
+		@media screen and (max-width: 768px) {
+			width: 100%;
+		}
 
 		li {
 			margin-bottom: 2px;
-		}
-
-		@media screen and (max-width: 870px) {
-			border-left: 0;
-			border-top: 1px solid #eee;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			top: initial;
-			width: 100%;
 		}
 
 		.totals-header {
@@ -230,6 +281,29 @@
 	td.check_in {
 		.delete {
 			text-align: center;
+		}
+	}
+}
+
+.welcome-panel {
+
+	.welcome-panel-content {
+		margin-left: 0;
+		*zoom: 1;
+
+		&:before,
+		&:after {
+			content: '';
+			display: table;
+		}
+
+		&:after {
+			clear: both;
+		}
+
+		@media screen and (max-width: 768px) {
+			margin-left: 0;
+			max-width: 100%;
 		}
 	}
 }

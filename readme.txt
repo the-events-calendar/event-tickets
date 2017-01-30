@@ -1,82 +1,88 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, joshlimecuda, leahkoerper, lucatume, mastromktg, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, shane.pearlman, thatdudebutch, aguseo, tribecari, trishasalas
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, leahkoerper, lucatume, peterchester, reid.peifer, shane.pearlman, trishasalas
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.7
-Stable tag: 4.4.0.1
+Stable tag: 4.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Event Tickets allows your visitors to RSVP to events on your site.  Also works seamlessly with <a href="http://m.tri.be/18tg">The Events Calendar</a>.
+Event Tickets allows your visitors to RSVP to events on your site.  Also works seamlessly with The Events Calendar.
 
 == Description ==
-
-><strong>A note about support:</strong> We’re here to help troubleshoot bugs, but should set expectations early that the support forums at WordPress.org are only checked once a week.
->
-> Users looking for more timely/in-depth support are encouraged to check out <a href="http://m.tri.be/18th" target="_blank" title="[new window]">Event Tickets Plus</a>.
 
 Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with The Events Calendar, you can add that same RSVP functionality directly to your event listings.
 
 Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
 
+<strong>Check out [Event Tickets Plus](http://m.tri.be/18th) and [other add-ons](http://m.tri.be/2a)</strong>
+
+><strong>Premium Support</strong><br>
+> We're here to help troubleshoot bugs, but should set expectations early that the support forums at WordPress.org are only checked once a week.
+>
+> Users looking for more timely/in-depth support are encouraged to check out [Event Tickets Plus](http://m.tri.be/18th).
+
 = BUILT SOLID & SUPPORTED =
 
-The team at Modern Tribe stands by our work and offers light support every Wednesday to the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the <a href="http://m.tri.be/18th">premium add-on plugin</a> and you get access to premium support forums with 24-48 hour response times on weekdays.
+The team at Modern Tribe stands by our work and offers light support every Wednesday to the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the [premium add-on plugin](http://m.tri.be/18th) and you get access to premium support forums with 24-48 hour response times on weekdays.
 
-Enjoy using Event Tickets, know how to get under the hood and want to make money helping people? We're growing our community team and would love to hear from you. If you’re interested, <a href="http://m.tri.be/mk">check this out!</a>
+Enjoy using Event Tickets, know how to get under the hood and want to make money helping people? We're growing our community team and would love to hear from you. If you're interested, [check this out!](http://m.tri.be/mk)
 
 = PLUG-N-PLAY & HIGHLY CUSTOMIZABLE =
 
-Event Tickets is built to work out of the box: it doesn’t use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs within minutes.
+Event Tickets is built to work out of the box: it doesn't use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs within minutes.
 
-By developers, for developers... it's ready to be the foundation for your wildest hack sessions. Complete with a skeleton stylesheet to theme fast and efficiently, loads of tools including partial template overrides, a host of template tags, hooks and filters, <a href="http://m.tri.be/eu">careful documentation</a>, as well as a <a href="https://github.com/moderntribe">library of code snippets</a> on GitHub. Events Tickets is built FOR people who build websites.
+By developers, for developers... it's ready to be the foundation for your wildest hack sessions. Complete with a skeleton stylesheet to theme fast and efficiently, loads of tools including partial template overrides, a host of template tags, hooks and filters, [careful documentation](http://m.tri.be/eu), as well as a [library of free extensions](http://m.tri.be/ext). Events Tickets is built FOR people who build websites.
 
 Whether your vision is big or small, we have you in mind.
 
 = FEATURES =
 
-Just getting started? Definitely watch and read through the <a href="http://m.tri.be/18ti">New User Primer</a> before going much further.
+Just getting started? Definitely watch and read through the [New User Primer](http://m.tri.be/18ti) before going much further.
 
 * Visitors can RSVP to events
 * Add RSVP to posts, pages, or any custom post type
 * Works out of the box with The Events Calendar
-* Upgrade to <a href="http://m.tri.be/18th">Tickets Plus</a> to sell tickets using WooCommerce, Shopp, Easy Digital Downloads or WP-eCommerce
+* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) to sell tickets using WooCommerce, Shopp, Easy Digital Downloads or WP-eCommerce
 * Completely responsive from mobile to tablet to desktop
 * Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
 * Internationalized & Translated
 * Extensive Template Tags for Customization
 * Hook & Filters up the wazoo
 
-Looking for something else? We’ve got add-ons available to take your calendar to the next level.
+Looking for something else? We've got add-ons available to take your calendar to the next level.
 
-= PRO Features =
+= Event Tickets Plus =
 
-Add recurring events, a whole recurring events, a whole range of new views ( week / map / photo / venue / organizer) & widgets (calendar / featured venue / week / event countdown), custom event attributes, default content, location search, much more with <a href="http://m.tri.be/2c">Events Calendar PRO</a>
+Get premium support and add paid ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard!  Works with your favorite eCommerce plugin (WooCommerce, Shopp, Easy Digital Downloads, or WP E-Commerce).
 
-= Event Ticketing =
+= The Events Calendar =
 
-Collect free RSVPs with Event Tickets or add paid ticketing features with <a href="http://m.tri.be/18wg">Event Tickets Plus</a>, including the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard!  Works with your favorite eCommerce plugin (WooCommerce, Shopp, Easy Digital Downloads, or WP E-Commerce).
+[The Events Calendar](https://wordpress.org/plugins/the-events-calendar/) lets you create and manage your calendar of events with ease. It is a carefully crafted, extensible plugin that lets you easily share your events.
+
+While The Events Calendar is a full featured plugin, you can upgrade to [Events Calendar PRO](http://m.tri.be/2c) and take it to the next level.
+Add recurring events, a whole range of new views ( week / map / photo / venue / organizer) & widgets (calendar / featured venue / week / event countdown), custom event attributes, default content, location search, much more!
 
 = Bulk Event Import =
 
-Fill your calendar with events from your favorite sources, including Facebook, Meetup, Google Calendar, iCalendar, CSV, and ICS. Event Aggregator provides a convenient dashboard to manage scheduled imports, manual imports, filters, one-way sync, import history, and more.
+Fill your calendar with events from your favorite sources, including Facebook, Meetup, Google Calendar, iCalendar, CSV, and ICS. [Event Aggregator](http://m.tri.be/197u) provides a convenient dashboard to manage scheduled imports, manual imports, filters, one-way sync, import history, and more.
 
 = User-Submitted Events =
 
-Running a community calendar? <a href="http://m.tri.be/2g">Community Events</a> lets users add events directly to your calendar without needing access to your admin.
+Running a community calendar? [Community Events](http://m.tri.be/2g) lets users add events directly to your calendar without needing access to your admin.
 
 = Advanced User Search & Filters =
 
-Have so many amazing events that your users get overwhelmed? <a href="http://m.tri.be/52" target="_blank">Filter Bar</a> adds a configurable set of filters to your event pages so users can view and search for the exact events that interest them.
+Have so many amazing events that your users get overwhelmed? [Filter Bar](http://m.tri.be/52) adds a configurable set of filters to your event pages so users can view and search for the exact events that interest them.
 
 = Integrate With Eventbrite =
 
-Connect your calendar with your Eventbrite.com account! <a href="http://m.tri.be/18wf">Eventbrite Tickets</a> allows you to import/export between The Events Calendar and Eventbrite, and incorporate ticket sales.
+Connect your calendar with your Eventbrite.com account! [Eventbrite Tickets](http://m.tri.be/18wf) allows you to import/export between The Events Calendar and Eventbrite, and incorporate ticket sales.
 
 = SUBMITTING PATCHES =
 
-If you’ve identified a bug and want to submit a patch, we’d welcome it at our <a href="https://github.com/moderntribe/event-tickets" target="_blank">GitHub page for Event Tickets.</a> Simply cue up your proposed patch as a pull request, and we’ll review as part of our release cycle and merge into the codebase if appropriate from there. (If a pull request is rejected, we’ll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin’s changelog. For more information, check out the readme at our GitHub page. Happy coding!
+If you've identified a bug and want to submit a patch, we'd welcome it at our [GitHub page for Event Tickets](https://github.com/moderntribe/event-tickets). Simply cue up your proposed patch as a pull request, and we'll review as part of our [release cycle](http://m.tri.be/release-schedule) and merge into the codebase if appropriate from there. (If a pull request is rejected, we'll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin's changelog. For more information, check out the readme at our GitHub page. Happy coding!
 
 == Installation ==
 
@@ -103,16 +109,11 @@ If you’ve identified a bug and want to submit a patch, we’d welcome it at ou
 4. Attendee report
 5. Emailed ticket
 
-
-== Documentation ==
-
-Our <a href="http://m.tri.be/18ti">New User Primer</a> will help you get started. You can find more tutorials at http://m.tri.be/44.
-
 == Frequently Asked Questions ==
 
 = Where do I go to file a bug or ask a question? =
 
-Users of the free plugin can post in the Event Tickets support forum on WordPress.org: https://wordpress.org/support/plugin/event-tickets/. Our team reviews that forum weekly to look for bug reports. If you need more in-depth help, consider purchasing a license for <a href="http://m.tri.be/18th">Tickets Plus</a>. A valid license gives you access to our <a href="http://m.tri.be/18u1">premium support forums</a> which are checked daily.
+Users of the free plugin can post in the [Event Tickets support forum on WordPress.org](https://wordpress.org/support/plugin/event-tickets/). Our team reviews that forum weekly to look for bug reports. If you need more in-depth help, consider purchasing a license for [Tickets Plus](http://m.tri.be/18th). A valid license gives you access to our [premium support forums](http://m.tri.be/18u1) which are checked daily.
 
 = Are there any troubleshooting steps you'd suggest I try that might resolve my issue before I post a new thread? =
 
@@ -124,88 +125,100 @@ Note that we aren't going to say "tough luck" if you identify a plugin/theme con
 
 = I'm still stuck. Where do I go to file a bug or ask a question? =
 
-If you're an Event Tickets Plus user, you're entitled access to our actively-monitored <a href="http://m.tri.be/18u1">forums</a> at the theeventscalendar.com website. We can provide a deeper level of support here and hit these forums on a daily basis during the work week. No post should go more than 24-48 hours during that time without a response.
+If you're an Event Tickets Plus user, you're entitled access to our actively-monitored [premium forums](http://m.tri.be/18u1) at the theeventscalendar.com website. We can provide a deeper level of support here and hit these forums on a daily basis during the work week. No post should go more than 24-48 hours during that time without a response.
 
-== Contributors ==
+== Documentation ==
 
-The plugin is produced by <a href="http://m.tri.be/18uc">Modern Tribe Inc</a>.
-
-= Current Contributors =
-
-* <a href="http://profiles.wordpress.org/users/barryhughes">Barry Hughes</a>
-* <a href="http://profiles.wordpress.org/users/brianjessee">Brian Jessee</a>
-* <a href="http://profiles.wordpress.org/users/brook-tribe">Brook Harding</a>
-* <a href="http://profiles.wordpress.org/users/geoffgraham">Geoff Graham</a>
-* <a href="http://profiles.wordpress.org/users/ggwicz">George Gecewicz</a>
-* <a href="http://profiles.wordpress.org/users/bordoni">Gustavo Bordoni</a>
-* <a href="http://profiles.wordpress.org/users/jazbek">Jessica Yazbek</a>
-* <a href="http://profiles.wordpress.org/users/jbrinley">Jonathan Brinley</a>
-* <a href="http://profiles.wordpress.org/users/joshlimecuda">Josh Mallard</a>
-* <a href="http://profiles.wordpress.org/users/leahkoerper">Leah Koerper</a>
-* <a href="http://profiles.wordpress.org/users/lucatume">Luca Tumedei</a>
-* <a href="http://profiles.wordpress.org/users/mat-lipe">Mat Lipe</a>
-* <a href="http://profiles.wordpress.org/users/borkweb">Matthew Batchelder</a>
-* <a href="http://profiles.wordpress.org/users/mdbitz">Matthew Denton</a>
-* <a href="http://profiles.wordpress.org/users/neillmcshea">Neill McShea</a>
-* <a href="http://profiles.wordpress.org/users/mastromktg">Nick Mastromattei</a>
-* <a href="http://profiles.wordpress.org/users/nicosantos">Nico Santo</a>
-* <a href="http://profiles.wordpress.org/users/peterchester">Peter Chester</a>
-* <a href="http://profiles.wordpress.org/users/roblagatta">Rob La Gatta</a>
-* <a href="http://profiles.wordpress.org/users/reid.peifer">Reid Peifer</a>
-* <a href="http://profiles.wordpress.org/users/ryancurban">Ryan Urban</a>
-* <a href="http://profiles.wordpress.org/users/faction23">Samuel Estok</a>
-* <a href="http://profiles.wordpress.org/users/shane.pearlman">Shane Pearlman</a>
-* <a href="http://profiles.wordpress.org/users/thatdudebutch">Wayne Stratton</a>
-* <a href="http://profiles.wordpress.org/users/zbtirrell">Zachary Tirrell</a>
-* <a href="https://profiles.wordpress.org/aguseo">Andras Guseo</a>
-* <a href="https://profiles.wordpress.org/tribecari">Caroline Tucker</a>
-* <a href="https://profiles.wordpress.org/trishasalas">Trisha Salas</a>
-
-= Past Contributors =
-
-* <a href="http://profiles.wordpress.org/users/caseypatrickdriscoll">Casey Driscoll</a>
-* <a href="http://profiles.wordpress.org/users/ckpicker">Casey Picker</a>
-* <a href="http://profiles.wordpress.org/users/dancameron">Dan Cameron</a>
-* <a href="http://profiles.wordpress.org/users/MZAWeb">Daniel Dvorkin</a>
-* <a href="http://profiles.wordpress.org/users/jkudish">Joachim Kudish</a>
-* <a href="http://profiles.wordpress.org/users/jgadbois">John Gadbois</a>
-* <a href="http://profiles.wordpress.org/users/jonahcoyote">Jonah West</a>
-* <a href="https://profiles.wordpress.org/justinendler/">Justin Endler</a>
-* <a href="http://profiles.wordpress.org/users/kellykathryn">Kelly Groves</a>
-* <a href="http://profiles.wordpress.org/users/kelseydamas">Kelsey Damas</a>
-* <a href="http://profiles.wordpress.org/users/kyleunzicker">Kyle Unzicker</a>
-* <a href="http://profiles.wordpress.org/users/mattwiebe">Matt Wiebe</a>
-* <a href="http://profiles.wordpress.org/users/nickciske">Nick Ciske</a>
-* <a href="http://profiles.wordpress.org/users/paulhughes01">Paul Hughes</a>
-* <a href="http://profiles.wordpress.org/users/codearachnid">Timothy Wood</a>
-
-= Translations =
-
-Event Tickets is translated by volunteers at https://translate.wordpress.org/projects/wp-plugins/event-tickets/stable. There you can find a list of available languages, download translation files, or help update the translations. Thank you to everyone who helps to maintain our translations!
+Our [New User Primer](http://m.tri.be/18ti) will help you get started. You can find more tutorials in our [knowledgebase](http://m.tri.be/44).
 
 == Add-Ons ==
 
-But wait: there's more! We've got a whole stable of plugins available to help you be awesome at what you do. Check out a full list of the products below, and over at <a href="http://m.tri.be/18uh">The Events Calendar website.</a>
+But wait: there's more! We've got a whole stable of plugins available to help you be awesome at what you do. Check out a full list of the products below, and over at [The Events Calendar website](http://m.tri.be/18uh).
 
-Our Free Plugins:
+* [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
+* [Advanced Post Manager](https://wordpress.org/extend/plugins/advanced-post-manager/)
+* [Blog Copier](https://wordpress.org/plugins/blog-copier/)
+* [GigPress](https://wordpress.org/plugins/gigpress/)
+* [Image Widget](https://wordpress.org/plugins/image-widget/)
+* [Widget Builder](https://wordpress.org/plugins/widget-builder/)
 
-* <a href="https://wordpress.org/plugins/the-events-calendar/" target="_blank">The Events Calendar</a>
-* <a href="http://wordpress.org/extend/plugins/advanced-post-manager/" target="_blank">Advanced Post Manager</a>
-* <a href="http://wordpress.org/plugins/blog-copier/" target="_blank">Blog Copier</a>
-* <a href="http://wordpress.org/plugins/image-rotation-repair/" target="_blank">Image Rotation Widget</a>
-* <a href="http://wordpress.org/plugins/widget-builder/" target="_blank">Widget Builder</a>
+Our Premium Plugins and Services:
 
-Our Premium Plugins:
+* [Event Tickets Plus](http://m.tri.be/18wk)
+* [Events Calendar PRO](http://m.tri.be/18wi)
+* [Event Aggregator](http://m.tri.be/197u) (service)
+* [The Events Calendar: Community Events](http://m.tri.be/2g)
+* [The Events Calendar: Community Tickets](http://m.tri.be/18wl)
+* [The Events Calendar: Filter Bar](http://m.tri.be/fa)
+* [The Events Calendar: Eventbrite Tickets](http://m.tri.be/2e)
 
-* <a href="http://m.tri.be/18th" target="_blank">Event Tickets Plus</a>
-* <a href="http://m.tri.be/18ul" target="_blank">The Events Calendar PRO</a>
-* <a href="http://m.tri.be/18uo" target="_blank">The Events Calendar: Eventbrite Tickets</a>
-* <a href="http://m.tri.be/18uu" target="_blank">The Events Calendar: Community Events</a>
-* <a href="http://m.tri.be/18uy" target="_blank">The Events Calendar: Community Tickets</a>
-* <a href="http://m.tri.be/18v0" target="_blank">The Events Calendar: Facebook Events</a>
-* <a href="http://m.tri.be/18v2" target="_blank">The Events Calendar: Filter Bar</a>
+== Translations ==
+
+Event Tickets is translated by volunteers at [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/event-tickets/stable). There you can find a list of available languages, download translation files, or help update the translations. Thank you to everyone who helps to maintain our translations!
+
+== Contributors ==
+
+The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
+
+= Current Contributors =
+
+* [Andras Guseo](https://profiles.wordpress.org/aguseo)
+* [Barry Hughes](https://profiles.wordpress.org/barryhughes)
+* [Brian Jessee](https://profiles.wordpress.org/brianjessee)
+* [Brook Harding](https://profiles.wordpress.org/brook-tribe)
+* [Caroline Tucker](https://profiles.wordpress.org/tribecari)
+* [Clifford Paulick](https://profiles.wordpress.org/cliffpaulick)
+* [Daniel Dvorkin](https://profiles.wordpress.org/MZAWeb)
+* [Geoff Graham](https://profiles.wordpress.org/geoffgraham)
+* [George Gecewicz](https://profiles.wordpress.org/ggwicz)
+* [Gustavo Bordoni](https://profiles.wordpress.org/bordoni)
+* [Hunter Wilson](https://profiles.wordpress.org/joinfof)
+* [Josh Mallard](https://profiles.wordpress.org/joshlimecuda)
+* [Leah Koerper](https://profiles.wordpress.org/leahkoerper)
+* [Luca Tumedei](https://profiles.wordpress.org/lucatume)
+* [Matthew Batchelder](https://profiles.wordpress.org/borkweb)
+* [Neill McShea](https://profiles.wordpress.org/neillmcshea)
+* [Nico Santos](https://profiles.wordpress.org/nicosantos)
+* [Peter Chester](https://profiles.wordpress.org/peterchester)
+* [Reid Peifer](https://profiles.wordpress.org/reid.peifer)
+* [Shane Pearlman](https://profiles.wordpress.org/shane.pearlman)
+* [Shelby Elliott](https://profiles.wordpress.org/shelbelliott)
+* [Trisha Salas](https://profiles.wordpress.org/trishasalas)
+* [Zachary Tirrell](https://profiles.wordpress.org/zbtirrell)
+
+= Past Contributors =
+
+* [Casey Driscoll](https://profiles.wordpress.org/caseypatrickdriscoll)
+* [Casey Picker](https://profiles.wordpress.org/ckpicker)
+* [Dan Cameron](https://profiles.wordpress.org/dancameron)
+* [Jessica Yazbek](https://profiles.wordpress.org/jazbek)
+* [Joachim Kudish](https://profiles.wordpress.org/jkudish)
+* [John Gadbois](https://profiles.wordpress.org/jgadbois)
+* [Jonah West](https://profiles.wordpress.org/jonahcoyote)
+* [Jonathan Brinley](https://profiles.wordpress.org/jbrinley)
+* [Justin Endler](https://profiles.wordpress.org/justinendler)
+* [Kelly Groves](https://profiles.wordpress.org/kellykathryn)
+* [Kelsey Damas](https://profiles.wordpress.org/kelseydamas)
+* [Kyle Unzicker](https://profiles.wordpress.org/kyleunzicker)
+* [Mat Lipe](https://profiles.wordpress.org/mat-lipe)
+* [Matt Wiebe](https://profiles.wordpress.org/mattwiebe)
+* [Matthew Denton](https://profiles.wordpress.org/mdbitz)
+* [Nick Ciske](https://profiles.wordpress.org/nickciske)
+* [Nick Mastromattei](https://profiles.wordpress.org/mastromktg)
+* [Paul Hughes](https://profiles.wordpress.org/paulhughes01)
+* [Rob La Gatta](https://profiles.wordpress.org/roblagatta)
+* [Ryan Urban](https://profiles.wordpress.org/ryancurban)
+* [Samuel Estok](https://profiles.wordpress.org/faction23)
+* [Timothy Wood](https://profiles.wordpress.org/codearachnid)
 
 == Changelog ==
+
+= [4.4.1] 2017-01-26 =
+
+* Fix - Resolve the Fatals related to undefined methods and Memory exhaustion [71958, 71912]
+* Fix - Use timezoned time for `tribe_events_ticket_is_on_sale()` [71959]
+* Tweak - Improvements to the Front End UX Tickets RSVP Styles. [72036]
+* Fix - Prevent content from being cut off on check in screen on iphone, other tweaks to mobile views. [70771]
 
 = [4.4.0.1] 2017-01-09 =
 

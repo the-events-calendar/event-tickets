@@ -25,6 +25,17 @@
 #tribe-attendees-summary .welcome-panel-column-container {
 	position: static;
 	position: initial;
+	zoom: 1;
+}
+
+#tribe-attendees-summary .welcome-panel-column-container:before,
+		#tribe-attendees-summary .welcome-panel-column-container:after {
+	content: '';
+	display: table;
+}
+
+#tribe-attendees-summary .welcome-panel-column-container:after {
+	clear: both;
 }
 
 #tribe-attendees-summary .welcome-panel-column {
@@ -41,7 +52,17 @@
 	border-left: 1px solid #eee;
 	float: right;
 	padding: 10px 20px 5px;
-	width: 200px;
+	zoom: 1;
+}
+
+#tribe-attendees-summary .welcome-panel-last:before,
+		#tribe-attendees-summary .welcome-panel-last:after {
+	content: '';
+	display: table;
+}
+
+#tribe-attendees-summary .welcome-panel-last:after {
+	clear: both;
 }
 
 #tribe-attendees-summary .welcome-panel-last li {
@@ -180,30 +201,71 @@
 	text-align: center;
 }
 
-@media screen and (max-width: 870px) {
+.welcome-panel .welcome-panel-content {
+	margin-left: 0;
+	zoom: 1;
+}
 
-	#tribe-attendees-summary h3,
-	#tribe-attendees-summary .about-description {
+.welcome-panel .welcome-panel-content:before,
+		.welcome-panel .welcome-panel-content:after {
+	content: '';
+	display: table;
+}
+
+.welcome-panel .welcome-panel-content:after {
+	clear: both;
+}
+
+@media screen and (max-width: 768px) {
+
+	#tribe-attendees-summary .welcome-panel-column {
+		float: none;
+		padding: 20px 0;
 		width: 100%;
 	}
 
-	#tribe-attendees-summary .welcome-panel-column-container {
-		margin-bottom: 115px;
+	#tribe-attendees-summary .welcome-panel-column h3 {
+		display: inline-block;
+		padding-left: 15px;
 	}
 
-	#tribe-attendees-summary .welcome-panel-column li {
-		display: list-item;
+	#tribe-attendees-summary .welcome-panel-column ul {
+		padding: 0 15px;
+	}
+
+	#tribe-attendees-summary .welcome-panel-column .tribe-event-meta-note div {
+		padding: 0 15px;
+	}
+
+	#tribe-attendees-summary .welcome-panel-middle > div {
+		padding: 0 15px;
 	}
 
 	#tribe-attendees-summary .welcome-panel-last {
-		border-left: 0;
-		border-top: 1px solid #eee;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		top: auto;
-		top: initial;
 		width: 100%;
+	}
+
+	.welcome-panel .welcome-panel-content {
+		margin-left: 0;
+		max-width: 100%;
+	}
+}
+
+@media screen and (min-width: 1024px) {
+
+	#tribe-attendees-summary .welcome-panel-column {
+		display: inline-block;
+		float: left;
+		padding: 20px 2%;
+		width: 29%;
+		min-width: 29%;
+	}
+}
+
+@media screen and (max-width: 870px) {
+
+	#tribe-attendees-summary .welcome-panel-column li {
+		display: list-item;
 	}
 
 	#tribe-attendees-summary .welcome-panel-last ul {

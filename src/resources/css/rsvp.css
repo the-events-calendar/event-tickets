@@ -188,3 +188,119 @@
 	.tribe-theme-parent-twentysixteen .site-info a:hover {
 	box-shadow: none;
 }
+
+/* = Tickets Front End Styles
+=============================================*/
+
+.tribe-tickets-rsvp .tribe-events-tickets-title {
+	font-family: sans-serif;
+}
+
+.tribe-tickets-rsvp .tribe-events-tickets {
+	background: #f8f8f8;
+	border-radius: 3px;
+	padding: 0;
+}
+
+.tribe-tickets-rsvp table,
+	.tribe-tickets-rsvp th,
+	.tribe-tickets-rsvp td {
+	border: 0;
+}
+
+.tribe-tickets-rsvp .add-to-cart {
+	padding: 0 10px 16px;
+}
+
+.tribe-tickets-rsvp .tribe-ticket.quantity {
+	border-bottom: 1px solid #dfdfdf;
+	display: block;
+	padding: 16px 10px 8px 10px;
+}
+
+.tribe-tickets-rsvp .tribe-ticket.quantity input.tribe-ticket-quantity {
+	background-color: #fff;
+	border-radius: 3px;
+	margin-bottom: 5px;
+	padding: 5px 10px;
+	width: 4.375em;
+}
+
+.tribe-tickets-rsvp .tribe-tickets-remaining {
+	color: #777;
+	display: block;
+	font-size: 11px;
+}
+
+.tribe-tickets-rsvp .tribe-tickets-attendees-list-optout label {
+	color: #777;
+	font-size: 13px;
+}
+
+.tribe-tickets-rsvp .tickets_name,
+	.tribe-tickets-rsvp .tickets_name p,
+	.tribe-tickets-rsvp .tickets_description {
+	border-bottom: 1px solid #dfdfdf;
+	color: #464646;
+	font-size: 15px;
+	padding: 16px 10px 8px 10px;
+}
+
+.tribe-events-style-full.tribe-events-style-theme h2.tribe-events-tickets-title {
+	font-size: 17px;
+}
+
+#tribe-events .button {
+	border: 0;
+	border-radius: 3px;
+	background: -webkit-linear-gradient( top, #009FF1, #0080DB);
+	background: linear-gradient( to bottom, #009FF1, #0080DB);
+	cursor: pointer;
+	color: #fff;
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	font-family: sans-serif;
+	letter-spacing: 1px;
+	line-height: 1;
+	height: auto;
+	margin-top: 16px;
+	margin-top: 1rem;
+	padding: 10px;
+	text-align: center;
+	-webkit-transition: all .15s ease-in-out;
+	transition: all .15s ease-in-out;
+	-webkit-font-smoothing: subpixel-antialiased;
+}
+
+.clear {
+	*zoom: 1;
+}
+
+.clear:before,
+	.clear:after {
+	content: '';
+	display: table;
+}
+
+.clear:after {
+	clear: both;
+}
+
+.tribe-tickets-rsvp input[type="date"],
+	.tribe-tickets-rsvp input[type="time"],
+	.tribe-tickets-rsvp input[type="datetime-local"],
+	.tribe-tickets-rsvp input[type="week"],
+	.tribe-tickets-rsvp input[type="month"],
+	.tribe-tickets-rsvp input[type="text"],
+	.tribe-tickets-rsvp input[type="email"],
+	.tribe-tickets-rsvp input[type="url"],
+	.tribe-tickets-rsvp input[type="password"],
+	.tribe-tickets-rsvp input[type="search"],
+	.tribe-tickets-rsvp input[type="tel"],
+	.tribe-tickets-rsvp input[type="number"],
+	.tribe-tickets-rsvp textarea,
+	.tribe-tickets-rsvp select {
+	background: #fff;
+}
+
