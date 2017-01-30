@@ -314,7 +314,7 @@
 											<tr>
 												<td valign="top" align="center" width="100%" style="padding: 0 !important; margin:0 !important;">
 													<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; text-align:left;line-height: 100%;">
-														<span style="color:#0a0a0e !important"><?php echo $event->post_title; ?></span>
+														<a style="color:#0a0a0e !important" href="<?php echo esc_url( tribe_get_event_link( $event->ID ) ); ?>"><?php echo $event->post_title; ?></a>
 													</h2>
 													<?php if ( ! empty( $start_date ) ): ?>
 														<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">
@@ -372,7 +372,7 @@
 																<tr>
 																	<td class="ticket-venue-child" valign="top" align="left" width="130" style="padding: 0 10px 0 0 !important; width:130px; margin:0 !important;">
 																		<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; display:block; margin-bottom:5px;"><?php echo $venue_name; ?></span>
-																		<a style="color:#006caa !important; display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; text-decoration:underline;">
+																		<a style="color:#006caa !important; display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; text-decoration:underline;" href="<?php echo esc_url( tribe_get_map_link( $venue_id ) ) ?>">
 																			<?php echo $venue_address; ?><br />
 																			<?php
 																				if ( $venue_city && ( $venue_state || $venue_zip ) ) :
