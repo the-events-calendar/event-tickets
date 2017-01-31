@@ -207,6 +207,10 @@ Our Premium Plugins:
 
 == Changelog ==
 
+= [4.4.2] unreleased =
+
+* Fix - Email template file: link event title to event single page, add state/province and postal code to venue information, link venue address to Google Map link if the event's Show Google Maps Link option is checked [72475]
+
 = [4.4.0.1] 2017-01-09 =
 
 * Fix - Adds safety check to ensure a smooth activation process when earlier versions of Tribe Common are active
