@@ -1,6 +1,6 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, leahkoerper, lucatume, peterchester, reid.peifer, shane.pearlman, trishasalas
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, leahkoerper, lucatume, peterchester, reid.peifer, shane.pearlman, trishasalas, tribecari
 Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
 Requires at least: 3.9
 Tested up to: 4.7
