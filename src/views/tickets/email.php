@@ -267,6 +267,18 @@
 						$venue_zip     = get_post_meta( $venue_id, '_VenueZip', true );
 						$venue_web     = get_post_meta( $venue_id, '_VenueURL', true );
 					}
+					
+					$venue_map_url = '';
+					
+					if ( true === tribe_show_google_map_link( $event->ID ) ) {
+						$venue_map_url = esc_url( tribe_get_map_link( $venue_id ) );
+					}
+					
+					if ( empty( $venue_map_url ) ) {
+						$venue_address_tag = 'span';
+					} else {
+						$venue_address_tag = 'a';
+					}
 				}
 
 				$start_date = null;
@@ -373,7 +385,7 @@
 																<tr>
 																	<td class="ticket-venue-child" valign="top" align="left" width="130" style="padding: 0 10px 0 0 !important; width:130px; margin:0 !important;">
 																		<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; display:block; margin-bottom:5px;"><?php echo $venue_name; ?></span>
-																		<a style="color:#006caa !important; display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; text-decoration:underline;" href="<?php echo esc_url( tribe_get_map_link( $venue_id ) ) ?>">
+																		<<?php echo $venue_address_tag; ?> style="color:#006caa !important; display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; text-decoration:underline;" <?php if ( 'a' === $venue_address_tag ) { printf( 'href="%s"', $venue_map_url ); } ?>>
 																			<?php echo $venue_address; ?><br />
 																			<?php
 																				if ( $venue_city && ( $venue_state || $venue_zip ) ) :
@@ -382,7 +394,7 @@
 																					echo $venue_city;
 																				endif;
 																			?>
-																		</a>
+																		</<?php echo $venue_address_tag; ?>>
 																	</td>
 																	<td class="ticket-venue-child" valign="top" align="left" width="100" style="padding: 0 !important; width:140px; margin:0 !important;">
 																		<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; display:block; margin-bottom:5px;"><?php echo $venue_phone; ?></span>
