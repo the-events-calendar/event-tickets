@@ -219,6 +219,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Use timezoned time for `tribe_events_ticket_is_on_sale()` [71959]
 * Tweak - Improvements to the Front End UX Tickets RSVP Styles. [72036]
 * Fix - Prevent content from being cut off on check in screen on iphone, other tweaks to mobile views. [70771]
+* Fix - Prevent PHP 5.2 Strict mode from throwing notices due to usage of `is_a` [72812]
 
 = [4.4.0.1] 2017-01-09 =
 
