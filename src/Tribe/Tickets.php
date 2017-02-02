@@ -1627,7 +1627,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		protected function get_ticket_form_hook() {
-			if ( is_a( $this, 'Tribe__Tickets__RSVP' ) ) {
+			if ( $this instanceof Tribe__Tickets__RSVP ) {
 				$ticket_form_hook = Tribe__Settings_Manager::get_option( 'ticket-rsvp-form-location',
 					'tribe_events_single_event_after_the_meta' );
 
