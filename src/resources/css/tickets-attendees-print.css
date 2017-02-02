@@ -19,15 +19,16 @@
 	.column-meta_details,
 	#show-settings-link,
 	.screen-meta-toggle,
-	h2,
+	.nav-tab-wrapper,
 	#icon-edit,
 	#wpbody-content #update-nag,
 	#wpbody-content .update-nag,
-	.welcome-panel .welcome-panel-column:first-child,
 	#tribe-attendees-summary .welcome-panel-last,
-	#tribe-attendees-summary h3,
+	#tribe-attendees-summary .welcome-panel-middle,
 	#tribe-attendees-summary .about-description,
-	.row-actions {
+	.row-actions,
+	.event-actions,
+	.wrap h2 + h2 {
         display: none
     }
     .wrap h2 + h2 {
@@ -70,6 +71,9 @@
         background: #fff;
         border: 0
     }
+    .wp-list-table thead tr {
+        border-bottom: 1px solid #e1e1e1
+    }
     a.row-title {
         color: #000
     }
@@ -89,11 +93,11 @@
     }
     .ticket_list tr td {
         font-size: 11px;
-        line-height: 15px
+        line-height: 1.4
     }
     .ticket_list tr td .totals {
         height: 100px;
-        line-height: 30px;
+        line-height: 2;
         padding-top: 40px;
         width: 75%
     }
