@@ -215,7 +215,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.4.2] TBD =
 
-* Tweak - More Efficient Print Styles for attendees report props @ajuliano [72772]
+* Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
 
 = [4.4.1] 2017-01-26 =
 
