@@ -213,6 +213,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.2] TBD =
+
+* Tweak - More Efficient Print Styles for attendees report props @ajuliano [72772]
+
 = [4.4.1] 2017-01-26 =
 
 * Fix - Resolve the Fatals related to undefined methods and Memory exhaustion [71958, 71912]
