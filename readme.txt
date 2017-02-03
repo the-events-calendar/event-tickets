@@ -16,9 +16,11 @@ Event Tickets provides a simple way for visitors to RSVP to your events. As a st
 
 Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
 
+<strong>Check out [Event Tickets Plus](http://m.tri.be/18th) and [other add-ons](http://m.tri.be/2a)</strong>
+
 ><strong>Sell tickets on your site!</strong>
 >Take full control of the event ticketing process and customize it to suit your needs. Event Tickets Plus uses your favorite e-commerce provider to keep users on your site from start to finish. Configure custom attendee registration forms to collect information like t-shirt size or food preferences.
->[Check out Event Ticket Plus now](http://m.tri.be/18th).
+>[Upgrade to Event Ticket Plus now](http://m.tri.be/18th).
 >
 
 = BUILT SOLID & SUPPORTED =
@@ -120,6 +122,26 @@ First, make sure that you're running the latest version of Event Tickets. If you
 The most common issues we see are either plugin or theme conflicts. You can test if a plugin or theme is conflicting by manually deactivating other plugins until just Event Tickets is running on your site. If the issue persists from there, revert to the default Twenty Fifteen theme. If the issue is resolved after deactivating a specific plugin or your theme, you'll know that is the source of the conflict.
 
 Note that we aren't going to say "tough luck" if you identify a plugin/theme conflict. While we can't guarantee 100% integration with any plugin or theme out there, we will do our best (and reach out the plugin/theme author as needed) to figure out a solution that benefits everyone.
+
+= Event Tickets Plus is just what I need! I'm sold! How can I get my hands on it? =
+
+Events Tickets Plus can be purchased directly on [our website](http://m.tri.be/18th). There are five (5) license types available, and all licenses include 1 year of access to support + updates.
+
+= I'm interested in Event Tickets Plus or another add-on, but I have a few questions before making the purchase. Can you help me get those addressed? =
+
+Absolutely. If you're not finding your questions answered on the product pages, hit up our [pre-sales forum](http://m.tri.be/2w) on our site. You can save yourself some time by reviewing the threads first to verify if your question has already been asked. If it hasn't, post a new thread as a guest. We'll get you a reply as quickly as we can, so you can make an informed decision regarding purchase.
+
+= What add-ons are available for Event Tickets, and where can I read more about them? =
+
+Currently, the following add-ons are available for Event Tickets:
+
+* [Event Tickets Plus](http://m.tri.be/18wk), for selling tickets to your events using your favorite e-commerce platform.
+* [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/), for managing a full calendar of events with ease.
+* [Events Calendar PRO](http://m.tri.be/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, shortcodes, additional fields, and more!
+* [Event Aggregator](http://m.tri.be/197u), a service that effortlessly fills your calendar with events from Facebook, Meetup, Google Calendar, iCalendar, CSV, and ICS.
+* [Community Events](http://m.tri.be/2g), for allowing frontend event submission from your readers.
+* [Community Tickets](http://m.tri.be/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
+* [Filter Bar](http://m.tri.be/fa), for adding advanced frontend filtering capabilities to your events calendar.
 
 = I'm still stuck. Where do I go to file a bug or ask a question? =
 
