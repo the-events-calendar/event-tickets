@@ -1,7 +1,7 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, leahkoerper, lucatume, peterchester, reid.peifer, shane.pearlman, trishasalas, tribecari
-Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, mdbitz, MZAWeb, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, ryancurban, shelbelliott, shane.pearlman, aguseo, tribecari, trishasalas
+Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 3.9
 Tested up to: 4.7
 Stable tag: 4.4.2dev1
@@ -16,12 +16,10 @@ Event Tickets provides a simple way for visitors to RSVP to your events. As a st
 
 Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
 
-<strong>Check out [Event Tickets Plus](http://m.tri.be/18th) and [other add-ons](http://m.tri.be/2a)</strong>
-
-><strong>Premium Support</strong><br>
-> We're here to help troubleshoot bugs, but should set expectations early that the support forums at WordPress.org are only checked once a week.
+><strong>Sell tickets on your site!</strong>
+>Take full control of the event ticketing process and customize it to suit your needs. Event Tickets Plus uses your favorite e-commerce provider to keep users on your site from start to finish. Configure custom attendee registration forms to collect information like t-shirt size or food preferences.
+>[Check out Event Ticket Plus now](http://m.tri.be/18th).
 >
-> Users looking for more timely/in-depth support are encouraged to check out [Event Tickets Plus](http://m.tri.be/18th).
 
 = BUILT SOLID & SUPPORTED =
 
@@ -173,7 +171,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [George Gecewicz](https://profiles.wordpress.org/ggwicz)
 * [Gustavo Bordoni](https://profiles.wordpress.org/bordoni)
 * [Hunter Wilson](https://profiles.wordpress.org/joinfof)
-* [Josh Mallard](https://profiles.wordpress.org/joshlimecuda)
 * [Leah Koerper](https://profiles.wordpress.org/leahkoerper)
 * [Luca Tumedei](https://profiles.wordpress.org/lucatume)
 * [Matthew Batchelder](https://profiles.wordpress.org/borkweb)
@@ -196,6 +193,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [John Gadbois](https://profiles.wordpress.org/jgadbois)
 * [Jonah West](https://profiles.wordpress.org/jonahcoyote)
 * [Jonathan Brinley](https://profiles.wordpress.org/jbrinley)
+* [Josh Mallard](https://profiles.wordpress.org/joshlimecuda)
 * [Justin Endler](https://profiles.wordpress.org/justinendler)
 * [Kelly Groves](https://profiles.wordpress.org/kellykathryn)
 * [Kelsey Damas](https://profiles.wordpress.org/kelseydamas)
