@@ -260,7 +260,10 @@
 						$venue_phone   = get_post_meta( $venue_id, '_VenuePhone', true );
 						$venue_address = get_post_meta( $venue_id, '_VenueAddress', true );
 						$venue_city    = get_post_meta( $venue_id, '_VenueCity', true );
-						$venue_state   = get_post_meta( $venue_id, '_VenueState', true );
+						$venue_state   = get_post_meta( $venue_id, '_VenueStateProvince', true );
+						if ( empty( $venue_state ) ) {
+							$venue_state = get_post_meta( $venue_id, '_VenueState', true );
+						}
 						if ( empty( $venue_state ) ) {
 							$venue_state = get_post_meta( $venue_id, '_VenueProvince', true );
 						}
