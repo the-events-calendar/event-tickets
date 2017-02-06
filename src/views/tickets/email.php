@@ -388,7 +388,7 @@
 																<tr>
 																	<td class="ticket-venue-child" valign="top" align="left" width="130" style="padding: 0 10px 0 0 !important; width:130px; margin:0 !important;">
 																		<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; display:block; margin-bottom:5px;"><?php echo $venue_name; ?></span>
-																		<<?php echo $venue_address_tag; ?> style="color:#006caa !important; display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; text-decoration:underline;" <?php if ( 'a' === $venue_address_tag ) { printf( 'href="%s"', $venue_map_url ); } ?>>
+																		<<?php echo $venue_address_tag; ?> style="<?php if ( ! empty( $venue_map_url ) ) { echo 'color:#006caa !important; text-decoration:underline; '; } ?>display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px;" <?php if ( 'a' === $venue_address_tag ) { printf( 'href="%s"', $venue_map_url ); } ?>>
 																			<?php echo $venue_address; ?><br />
 																			<?php
 																				if ( $venue_city && ( $venue_state || $venue_zip ) ) :
