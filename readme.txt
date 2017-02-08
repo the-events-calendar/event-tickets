@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.4.2] 2017-02-08 =
+= [4.4.2] 2017-02-09 =
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
 * Fix - Email template file: link event title to event single page, add state/province and postal code to venue information, link venue address to Google Map link if the event's Show Google Maps Link option is checked [72475]
