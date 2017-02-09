@@ -717,7 +717,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
 
-	protected function get_attendees_by_transaction( $order_id ) {
+	public function get_attendees_by_transaction( $order_id ) {
 		$attendees = array();
 		$query     = new WP_Query( array(
 			'post_type'      => self::ATTENDEE_OBJECT,
