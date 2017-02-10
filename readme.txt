@@ -1,10 +1,10 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, leahkoerper, lucatume, peterchester, reid.peifer, shane.pearlman, trishasalas
-Tags: events, add-on, ticket sales, tickets, calendar, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, The Events Calendar, Events Calendar PRO, ticket integration, event ticketing, RSVP, Event Tickets, Event Tickets Plus
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, mdbitz, MZAWeb, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, ryancurban, shelbelliott, shane.pearlman, aguseo, tribecari, trishasalas
+Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 3.9
-Tested up to: 4.7
-Stable tag: 4.4.1
+Tested up to: 4.7.2
+Stable tag: 4.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,10 +18,10 @@ Admins are able to access RSVP information from the backend, allowing them to ch
 
 <strong>Check out [Event Tickets Plus](http://m.tri.be/18th) and [other add-ons](http://m.tri.be/2a)</strong>
 
-><strong>Premium Support</strong><br>
-> We're here to help troubleshoot bugs, but should set expectations early that the support forums at WordPress.org are only checked once a week.
+><strong>Sell tickets on your site!</strong>
+>Take full control of the event ticketing process and customize it to suit your needs. Event Tickets Plus uses your favorite e-commerce provider to keep users on your site from start to finish. Configure custom attendee registration forms to collect information like t-shirt size or food preferences.
+>[Upgrade to Event Ticket Plus now](http://m.tri.be/18th).
 >
-> Users looking for more timely/in-depth support are encouraged to check out [Event Tickets Plus](http://m.tri.be/18th).
 
 = BUILT SOLID & SUPPORTED =
 
@@ -123,6 +123,26 @@ The most common issues we see are either plugin or theme conflicts. You can test
 
 Note that we aren't going to say "tough luck" if you identify a plugin/theme conflict. While we can't guarantee 100% integration with any plugin or theme out there, we will do our best (and reach out the plugin/theme author as needed) to figure out a solution that benefits everyone.
 
+= Event Tickets Plus is just what I need! I'm sold! How can I get my hands on it? =
+
+Events Tickets Plus can be purchased directly on [our website](http://m.tri.be/18th). There are five (5) license types available, and all licenses include 1 year of access to support + updates.
+
+= I'm interested in Event Tickets Plus or another add-on, but I have a few questions before making the purchase. Can you help me get those addressed? =
+
+Absolutely. If you're not finding your questions answered on the product pages, hit up our [pre-sales forum](http://m.tri.be/2w) on our site. You can save yourself some time by reviewing the threads first to verify if your question has already been asked. If it hasn't, post a new thread as a guest. We'll get you a reply as quickly as we can, so you can make an informed decision regarding purchase.
+
+= What add-ons are available for Event Tickets, and where can I read more about them? =
+
+Currently, the following add-ons are available for Event Tickets:
+
+* [Event Tickets Plus](http://m.tri.be/18wk), for selling tickets to your events using your favorite e-commerce platform.
+* [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/), for managing a full calendar of events with ease.
+* [Events Calendar PRO](http://m.tri.be/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, shortcodes, additional fields, and more!
+* [Event Aggregator](http://m.tri.be/197u), a service that effortlessly fills your calendar with events from Facebook, Meetup, Google Calendar, iCalendar, CSV, and ICS.
+* [Community Events](http://m.tri.be/2g), for allowing frontend event submission from your readers.
+* [Community Tickets](http://m.tri.be/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
+* [Filter Bar](http://m.tri.be/fa), for adding advanced frontend filtering capabilities to your events calendar.
+
 = I'm still stuck. Where do I go to file a bug or ask a question? =
 
 If you're an Event Tickets Plus user, you're entitled access to our actively-monitored [premium forums](http://m.tri.be/18u1) at the theeventscalendar.com website. We can provide a deeper level of support here and hit these forums on a daily basis during the work week. No post should go more than 24-48 hours during that time without a response.
@@ -173,7 +193,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [George Gecewicz](https://profiles.wordpress.org/ggwicz)
 * [Gustavo Bordoni](https://profiles.wordpress.org/bordoni)
 * [Hunter Wilson](https://profiles.wordpress.org/joinfof)
-* [Josh Mallard](https://profiles.wordpress.org/joshlimecuda)
 * [Leah Koerper](https://profiles.wordpress.org/leahkoerper)
 * [Luca Tumedei](https://profiles.wordpress.org/lucatume)
 * [Matthew Batchelder](https://profiles.wordpress.org/borkweb)
@@ -196,6 +215,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [John Gadbois](https://profiles.wordpress.org/jgadbois)
 * [Jonah West](https://profiles.wordpress.org/jonahcoyote)
 * [Jonathan Brinley](https://profiles.wordpress.org/jbrinley)
+* [Josh Mallard](https://profiles.wordpress.org/joshlimecuda)
 * [Justin Endler](https://profiles.wordpress.org/justinendler)
 * [Kelly Groves](https://profiles.wordpress.org/kellykathryn)
 * [Kelsey Damas](https://profiles.wordpress.org/kelseydamas)
@@ -213,12 +233,18 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.2] 2017-02-09 =
+
+* Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
+* Fix - Email template file: link event title to event single page, add state/province and postal code to venue information, link venue address to Google Map link if the event's Show Google Maps Link option is checked [72475]
+
 = [4.4.1] 2017-01-26 =
 
 * Fix - Resolve the Fatals related to undefined methods and Memory exhaustion [71958, 71912]
 * Fix - Use timezoned time for `tribe_events_ticket_is_on_sale()` [71959]
 * Tweak - Improvements to the Front End UX Tickets RSVP Styles. [72036]
 * Fix - Prevent content from being cut off on check in screen on iphone, other tweaks to mobile views. [70771]
+* Fix - Prevent PHP 5.2 Strict mode from throwing notices due to usage of `is_a` [72812]
 
 = [4.4.0.1] 2017-01-09 =
 

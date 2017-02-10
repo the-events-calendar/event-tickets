@@ -16,6 +16,7 @@
  *                              'security_code')
  *
  * @package TribeEventsCalendar
+ * @version 4.4.2
  *
  */
 ?>
@@ -259,8 +260,33 @@
 						$venue_phone   = get_post_meta( $venue_id, '_VenuePhone', true );
 						$venue_address = get_post_meta( $venue_id, '_VenueAddress', true );
 						$venue_city    = get_post_meta( $venue_id, '_VenueCity', true );
+						$venue_state   = get_post_meta( $venue_id, '_VenueStateProvince', true );
+						if ( empty( $venue_state ) ) {
+							$venue_state = get_post_meta( $venue_id, '_VenueState', true );
+						}
+						if ( empty( $venue_state ) ) {
+							$venue_state = get_post_meta( $venue_id, '_VenueProvince', true );
+						}
+						$venue_zip     = get_post_meta( $venue_id, '_VenueZip', true );
 						$venue_web     = get_post_meta( $venue_id, '_VenueURL', true );
 					}
+					
+					// $venue_address_style: make sure no double-quotes in the content
+					$venue_address_style = "display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px;";
+
+					$venue_map_url = '';
+					
+					if ( true === tribe_show_google_map_link( $event->ID ) ) {
+						$venue_map_url = esc_url( tribe_get_map_link( $venue_id ) );
+					}
+					
+					if ( empty( $venue_map_url ) ) {
+						$venue_address_tag = 'span';
+					} else {
+						$venue_address_tag = 'a';
+						$venue_address_style .= ' color:#006caa !important; text-decoration:underline;';
+					}
+
 				}
 
 				$start_date = null;
@@ -309,7 +335,7 @@
 											<tr>
 												<td valign="top" align="center" width="100%" style="padding: 0 !important; margin:0 !important;">
 													<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; text-align:left;line-height: 100%;">
-														<span style="color:#0a0a0e !important"><?php echo $event->post_title; ?></span>
+														<a style="color:#0a0a0e !important" href="<?php echo esc_url( tribe_get_event_link( $event->ID ) ); ?>"><?php echo $event->post_title; ?></a>
 													</h2>
 													<?php if ( ! empty( $start_date ) ): ?>
 														<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">
@@ -367,10 +393,16 @@
 																<tr>
 																	<td class="ticket-venue-child" valign="top" align="left" width="130" style="padding: 0 10px 0 0 !important; width:130px; margin:0 !important;">
 																		<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; display:block; margin-bottom:5px;"><?php echo $venue_name; ?></span>
-																		<a style="color:#006caa !important; display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; text-decoration:underline;">
+																		<<?php echo $venue_address_tag; ?> style="<?php echo esc_attr( $venue_address_style ); ?>" <?php if ( 'a' === $venue_address_tag ) { printf( 'href="%s"', $venue_map_url ); } ?>>
 																			<?php echo $venue_address; ?><br />
-																			<?php echo $venue_city; ?>
-																		</a>
+																			<?php
+																				if ( $venue_city && ( $venue_state || $venue_zip ) ) :
+																					printf( '%s, %s %s', $venue_city, $venue_state, $venue_zip );
+																				else:
+																					echo $venue_city;
+																				endif;
+																			?>
+																		</<?php echo $venue_address_tag; ?>>
 																	</td>
 																	<td class="ticket-venue-child" valign="top" align="left" width="100" style="padding: 0 !important; width:140px; margin:0 !important;">
 																		<span style="color:#0a0a0e !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px; display:block; margin-bottom:5px;"><?php echo $venue_phone; ?></span>
