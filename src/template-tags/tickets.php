@@ -109,6 +109,165 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 	}
 }//end if
 
+if ( ! function_exists( 'tribe_events_count_tickets_and_rsvp' ) ) {
+
+	/**
+	 * Returns Ticket and RSVP Count for an Event
+	 *
+	 * @param $event_id
+	 *
+	 * @return array
+	 */
+	function tribe_events_count_tickets_and_rsvp( $event_id ) {
+
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+
+		$types['tickets'] = array(
+			'count'     => 0, // count of tickets currently for sale
+			'stock'     => 0, // current stock of tickets available for sale
+			'global'    => 0, // global stock ticket
+			'unlimited' => 0, // unlimited stock tickets
+			'available' => 0, // are tickets available for sale right now
+		);
+		$types['rsvp']    = array(
+			'count'     => 0,
+			'stock'     => 0,
+			'unlimited' => 0,
+			'available' => 0,
+		);
+
+		foreach ( $tickets as $ticket ) {
+
+			// If a ticket is not current for sale do not count it
+			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+				continue;
+			}
+
+			// if ticket and not rsvp add to ticket array
+			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+				$types['tickets']['count'] ++;
+
+				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 0 === $types['tickets']['global'] ) {
+					$types['tickets']['global'] ++;
+				} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 1 === $types['tickets']['global'] ) {
+					continue;
+				}
+
+				$types['tickets']['stock'] = $types['tickets']['stock'] + $ticket->stock;
+
+				if ( 0 !== $types['tickets']['stock'] ) {
+					$types['tickets']['available'] ++;
+				}
+
+				if ( ! $ticket->manage_stock() ) {
+					$types['tickets']['unlimited'] ++;
+					$types['tickets']['available'] ++;
+				}
+
+			} else {
+				$types['rsvp']['count'] ++;
+
+				$types['rsvp']['stock'] = $types['rsvp']['stock'] + $ticket->stock;
+				if ( 0 !== $types['rsvp']['stock'] ) {
+					$types['rsvp']['available'] ++;
+				}
+
+				if ( ! $ticket->manage_stock() ) {
+					$types['rsvp']['unlimited'] ++;
+					$types['rsvp']['available'] ++;
+				}
+			}
+		}
+
+		return $types;
+	}
+}//end if
+
+
+if ( ! function_exists( 'tribe_events_display_count_and_ticket_button' ) ) {
+
+	/**
+	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
+	 *
+	 * @return string/null
+	 */
+	function tribe_events_display_count_and_ticket_button() {
+
+		$event_id = get_the_ID();
+
+		// get an array for ticket and rsvp counts
+		$types = tribe_events_count_tickets_and_rsvp( $event_id );
+
+		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out messages
+		if ( ( $types['tickets']['count'] || $types['rsvp']['count'] ) && ( ! $types['tickets']['available'] && ! $types['rsvp']['available'] ) ) {
+
+			$stock  = '<span>' . _x( 'Out of stock!', 'list view stock sold out', 'event-tickets' ) . '</span>';
+			$button = '<span>' . _x( 'Sold Out!', 'list view sold out', 'event-tickets' ) . '</span>';
+
+			/**
+			 * Filter the ticket count and purchase button
+			 *
+			 * @var $stock    . $button stock message and button to display
+			 * @var $types    the ticket and rsvp count array for event
+			 * @var $event_id the event id
+			 */
+			echo apply_filters( 'tribe_tickets_stock_and_purchase_button', $stock . $button, $types, $event_id );
+
+			return;
+		}
+
+		$rsvp = false;
+		// Determine button text and anchor link based on an events tickets
+		if ( $types['tickets']['count'] && $types['tickets']['available'] && 0 === $types['rsvp']['count'] ) {
+			// if tickets and stock with no rsvp
+			$rsvp = false;
+		} elseif ( $types['tickets']['count'] && $types['tickets']['available'] && $types['rsvp']['count'] && 0 <= $types['rsvp']['available'] ) {
+			// if tickets and rsvp with stock in both or rsvp sold out
+			$rsvp = false;
+		} elseif ( 0 === $types['tickets']['count'] && $types['rsvp']['count'] && $types['rsvp']['available'] ) {
+			// if no tickets and rsvp available
+			$rsvp = true;
+		} elseif ( $types['tickets']['count'] && 0 <= $types['tickets']['available'] && $types['rsvp']['count'] && $types['rsvp']['available'] ) {
+			// if no tickets and rsvp available
+			$rsvp = true;
+		}
+
+		$stock = $types['tickets']['stock'];
+		if ( $rsvp ) {
+			$stock = $types['rsvp']['stock'];
+		}
+
+		if ( $types['tickets']['unlimited'] || ( $types['tickets']['count'] && ! $types['tickets']['stock'] && $types['rsvp']['count'] ) || ( ! $types['tickets']['count'] && $types['rsvp']['unlimited'] ) ) {
+			// if unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count
+			$stock = false;
+		}
+
+		if ( $stock ) {
+			$stock = '<span>' . $stock . ' ' . _x( 'Tickets left', 'list view tickets left', 'event-tickets' ) . '</span>';
+		}
+
+
+		$button_label  = _x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
+		$button_anchor = '#buy-tickets';
+		if ( $rsvp ) {
+			$button_label  = _x( 'RSVP Now!', 'list view rsvp now ticket button', 'event-tickets' );
+			$button_anchor = '#rsvp-now';
+		}
+
+		$button = '<a href="' . get_the_permalink( $event_id ) . esc_attr( $button_anchor ) . '">' . '<button type="submit" name="tickets_process" value="1" class="button alt">' . $button_label . '</button>' . '</a>';
+
+		/**
+		 * Filter the ticket count and purchase button
+		 *
+		 * @var $stock    . $button stock message and button to display
+		 * @var $types    the ticket and rsvp count array for event
+		 * @var $event_id the event id
+		 */
+		echo apply_filters( 'tribe_tickets_stock_and_purchase_button', $stock . $button, $types, $event_id );
+
+	}
+}
+
 if ( ! function_exists( 'tribe_events_has_unlimited_stock_tickets' ) ) {
 	/**
 	 * Returns true if the event contains one or more tickets which are not
@@ -124,7 +283,11 @@ if ( ! function_exists( 'tribe_events_has_unlimited_stock_tickets' ) ) {
 		}
 
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock() ) return true;
+
+			// Using equal operator as identical comparison operator causes this to always be false
+			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock() ) {
+				return true;
+			}
 		}
 
 		return false;

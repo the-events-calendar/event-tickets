@@ -330,7 +330,10 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
 		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
-		add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'add_linking_archor' ), 5 );
+
+
+		// Setup Front End Display
+		add_action( 'tribe_events_inside_cost', 'tribe_events_display_count_and_ticket_button' );
 
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
@@ -400,16 +403,6 @@ class Tribe__Tickets__Main {
 		_deprecated_function( __METHOD__, '4.2', 'Tribe__Tickets__JSON_LD__Order' );
 
 		return false;
-	}
-
-	/**
-	 * Add an Anchor for users to be able to link to
-	 * The height is to make sure it links on all browsers
-	 *
-	 * @return void
-	 */
-	public function add_linking_archor() {
-		echo '<div id="buy-tickets" style="height: 1px;"></div>';
 	}
 
 	/**
