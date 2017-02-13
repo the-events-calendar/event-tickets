@@ -233,6 +233,8 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.3] unreleased =
+
 = [4.4.2] 2017-02-09 =
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
