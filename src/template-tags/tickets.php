@@ -10,6 +10,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( '-1' );
 }
 
+if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
+	/**
+	 * Returns the current post object that can have tickets attached to it
+	 *
+	 * Optionally the post object or ID of a post can be passed in and,
+	 * again, the post object will be returned if possible
+	 *
+	 * @param int|WP_Post $data
+	 * @return null|WP_Post
+	 */
+	function tribe_tickets_parent_post( $data ) {
+		global $post;
+
+		if ( null === $data ) {
+			return $post;
+		}
+
+		$post_types = Tribe__Tickets__Main::instance()->post_types();
+
+		if (
+			$data instanceof WP_Post
+			&& in_array( get_post_type( $data ), $post_types )
+		) {
+			return $data;
+		}
+
+		if ( is_numeric( $data ) && intval( $data ) === $data ) {
+			$data = get_post( $data );
+
+			if (
+				null !== $data
+				&& in_array( get_post_type( $data ), $post_types )
+			) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+}
 
 if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
 	/**
@@ -21,7 +61,7 @@ if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
 	 * @return bool
 	 */
 	function tribe_events_has_tickets( $event = null ) {
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return false;
 		}
 
@@ -64,7 +104,7 @@ if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
 	 * @return bool
 	 */
 	function tribe_events_partially_soldout( $event = null ) {
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return false;
 		}
 
@@ -97,7 +137,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 	function tribe_events_count_available_tickets( $event = null ) {
 		$count = 0;
 
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return 0;
 		}
 
@@ -119,7 +159,7 @@ if ( ! function_exists( 'tribe_events_has_unlimited_stock_tickets' ) ) {
 	 * @return bool
 	 */
 	function tribe_events_has_unlimited_stock_tickets( $event = null ) {
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return 0;
 		}
 
