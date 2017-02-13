@@ -108,7 +108,7 @@
 				$original_event = '<a href="' . esc_url( get_permalink( $original_event_id ) ) . '">' . esc_html( $original_event_name ) . '</a>';
 				$new_event = '<a href="' . esc_url( get_permalink( $new_event_id ) ) . '">' . esc_html( $new_event_name ) . '</a>';
 
-				$start_date = tribe_get_start_date( $new_event_id );
+				$start_date = function_exists( 'tribe_get_start_date' ) ? tribe_get_start_date( $new_event_id ) : null;
 				$new_event_date = '';
 
 				if ( $start_date ) {

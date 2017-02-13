@@ -235,6 +235,8 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.4.3] unreleased =
 
+* Fix - Avoid using TEC functions if TEC isn't activated [72499]
+
 = [4.4.2] 2017-02-09 =
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
