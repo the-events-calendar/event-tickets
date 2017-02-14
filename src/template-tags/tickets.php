@@ -202,7 +202,7 @@ if ( ! function_exists( 'tribe_events_display_count_and_ticket_button' ) ) {
 		if ( ( $types['tickets']['count'] || $types['rsvp']['count'] ) && ( ! $types['tickets']['available'] && ! $types['rsvp']['available'] ) ) {
 
 			$stock  = '<span class="tribe-out-of-stock">' . _x( 'Out of stock!', 'list view stock sold out', 'event-tickets' ) . '</span>';
-			$button = '<button class="button">' . _x( 'Sold Out!', 'list view sold out', 'event-tickets' ) . '</button>';
+			$button = '<button class="tribe-button">' . _x( 'Sold Out!', 'list view sold out', 'event-tickets' ) . '</button>';
 
 			/**
 			 * Filter the ticket count and purchase button
@@ -254,7 +254,7 @@ if ( ! function_exists( 'tribe_events_display_count_and_ticket_button' ) ) {
 			$button_anchor = '#rsvp-now';
 		}
 
-		$button = '<form method="get" action="' . get_the_permalink( $event_id ) . esc_attr( $button_anchor ) . '"><button type="submit" name="tickets_process" class="button button-events-list">' . $button_label . '</button></form>';
+		$button = '<form method="get" action="' . get_the_permalink( $event_id ) . esc_attr( $button_anchor ) . '"><button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button></form>';
 
 		/**
 		 * Filter the ticket count and purchase button

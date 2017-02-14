@@ -100,7 +100,7 @@ p.ticket_name {
 	width: 100%;
 }
 
-#tribe-events .button {
+.tribe-button {
 	border: 0;
 	border-radius: 3px;
 	background: -webkit-linear-gradient( top, #009FF1, #0080DB);
