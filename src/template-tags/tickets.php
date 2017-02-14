@@ -27,11 +27,9 @@ if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
 			return $post;
 		}
 
-		$post_types = Tribe__Tickets__Main::instance()->post_types();
-
 		if (
 			$data instanceof WP_Post
-			&& in_array( get_post_type( $data ), $post_types )
+			&& tribe_tickets_post_type_enabled( get_post_type( $data ) )
 		) {
 			return $data;
 		}
@@ -41,7 +39,7 @@ if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
 
 			if (
 				null !== $data
-				&& in_array( get_post_type( $data ), $post_types )
+				&& tribe_tickets_post_type_enabled( get_post_type( $data ) )
 			) {
 				return $data;
 			}
@@ -351,7 +349,6 @@ function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src'
 	return $url;
 }
 
-
 /**
  * Includes a template part, similar to the WP get template part, but looks
  * in the correct directories for Tribe Tickets templates
@@ -484,3 +481,17 @@ function tribe_tickets_get_template_part( $slug, $name = null, array $data = nul
 	}
 }
 
+
+if ( ! function_exists( 'tribe_tickets_post_type_enabled' ) ) {
+	/**
+	 * Returns whether or not the provided post type allows tickets to be attached
+	 *
+	 * @param string $post_type
+	 * @return boolean
+	 */
+	function tribe_tickets_post_type_enabled( $post_type ) {
+		$post_types = Tribe__Tickets__Main::instance()->post_types();
+
+		return in_array( $post_type, $post_types );
+	}
+}
