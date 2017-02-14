@@ -95,3 +95,38 @@ p.ticket_name {
 	padding: .375em;
 	width: 100%;
 }
+
+#tribe-events {
+	.button {
+		border: 0;
+		border-radius: 3px;
+		background: linear-gradient( to bottom, #009FF1, #0080DB);
+		cursor: pointer;
+		color: #fff;
+		display: inline-block;
+		font-size: 100%;
+		font-weight: 400;
+		letter-spacing: 1px;
+		line-height: 1;
+		height: auto;
+		margin-top: 1rem;
+		padding: 10px;
+		text-align: center;
+		transition: all .15s ease-in-out;
+		-webkit-font-smoothing: subpixel-antialiased;
+	}
+}
+
+.clear {
+	*zoom: 1;
+
+	&:before,
+	&:after {
+		content: '';
+		display: table;
+	}
+
+	&:after {
+		clear: both;
+	}
+}

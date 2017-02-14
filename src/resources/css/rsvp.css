@@ -250,43 +250,6 @@
 	font-size: 17px;
 }
 
-#tribe-events .button {
-	border: 0;
-	border-radius: 3px;
-	background: -webkit-linear-gradient( top, #009FF1, #0080DB);
-	background: linear-gradient( to bottom, #009FF1, #0080DB);
-	cursor: pointer;
-	color: #fff;
-	display: inline-block;
-	font-size: 14px;
-	font-weight: 400;
-	font-family: sans-serif;
-	letter-spacing: 1px;
-	line-height: 1;
-	height: auto;
-	margin-top: 16px;
-	margin-top: 1rem;
-	padding: 10px;
-	text-align: center;
-	-webkit-transition: all .15s ease-in-out;
-	transition: all .15s ease-in-out;
-	-webkit-font-smoothing: subpixel-antialiased;
-}
-
-.clear {
-	*zoom: 1;
-}
-
-.clear:before,
-	.clear:after {
-	content: '';
-	display: table;
-}
-
-.clear:after {
-	clear: both;
-}
-
 .tribe-tickets-rsvp input[type="date"],
 	.tribe-tickets-rsvp input[type="time"],
 	.tribe-tickets-rsvp input[type="datetime-local"],
