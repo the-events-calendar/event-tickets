@@ -92,7 +92,7 @@ $now = current_time( 'timestamp' );
 		}
 		?>
 
-		<?php if ( $are_any_products_on_sale ): ?>
+		<?php if ( $are_any_products_on_sale ) : ?>
 			<tr class="tribe-tickets-meta-row">
 				<td colspan="4" class="tribe-tickets-attendees">
 					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets' ); ?></header>
