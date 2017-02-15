@@ -13,7 +13,7 @@
 
 $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
-$are_any_products_on_sale     = false;
+$are_products_available       = false;
 
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
@@ -54,7 +54,7 @@ $now = current_time( 'timestamp' );
 			$is_there_any_product_to_sell = $ticket->is_in_stock();
 
 			if ( $is_there_any_product_to_sell ) {
-				$are_any_products_on_sale = true;
+				$are_products_available = true;
 			}
 		?>
 		<tr>
@@ -92,7 +92,7 @@ $now = current_time( 'timestamp' );
 		}
 		?>
 
-		<?php if ( $are_any_products_on_sale ) : ?>
+		<?php if ( $are_products_available ) : ?>
 			<tr class="tribe-tickets-meta-row">
 				<td colspan="4" class="tribe-tickets-attendees">
 					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets' ); ?></header>
