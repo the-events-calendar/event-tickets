@@ -237,6 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Fix - Avoid using TEC functions if TEC isn't activated [72499]
 * Fix - Fixed bug where the ticket page link template filter on the_content was being executed on every post type regardless of whether the post type had tickets enabled (props to nichestudio on our forums) [70485]
+* Fix - Ensure the Confirm RSVP button is always visible when ticket stock is available [73539]
 
 = [4.4.2] 2017-02-09 =
 
