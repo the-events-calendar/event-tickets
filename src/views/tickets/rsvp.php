@@ -68,7 +68,7 @@ $now = current_time( 'timestamp' );
 				<tr>
 					<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
 						<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket->ID ); ?>">
-						<?php if ( $is_there_any_product_to_sell ): ?>
+						<?php if ( $is_there_any_product_to_sell ) : ?>
 							<input
 								type="number"
 								class="tribe-ticket-quantity"
@@ -77,7 +77,7 @@ $now = current_time( 'timestamp' );
 								name="quantity_<?php echo absint( $ticket->ID ); ?>"
 								value="0" <?php disabled( $must_login ); ?>
 							>
-							<?php if ( $ticket->managing_stock() ): ?>
+							<?php if ( $ticket->managing_stock() ) : ?>
 								<span class="tribe-tickets-remaining">
 						<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->remaining(), $ticket->original_stock() ); ?>
 					</span>
@@ -106,7 +106,7 @@ $now = current_time( 'timestamp' );
 			}
 			?>
 
-			<?php if ( $is_there_any_product_to_sell ): ?>
+			<?php if ( $is_there_any_product_to_sell ) : ?>
 				<tr class="tribe-tickets-meta-row">
 					<td colspan="4" class="tribe-tickets-attendees">
 						<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets' ); ?></header>
@@ -164,7 +164,7 @@ $now = current_time( 'timestamp' );
 				</tr>
 				<tr>
 					<td colspan="4" class="add-to-cart">
-						<?php if ( $must_login ): ?>
+						<?php if ( $must_login ) : ?>
 							<a href="<?php echo Tribe__Tickets__Tickets::get_login_url(); ?>">
 								<?php esc_html_e( 'Login to RSVP', 'event-tickets' );?>
 							</a>

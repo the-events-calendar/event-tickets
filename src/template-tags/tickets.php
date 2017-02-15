@@ -163,7 +163,6 @@ if ( ! function_exists( 'tribe_events_count_tickets_and_rsvp' ) ) {
 					$types['tickets']['unlimited'] ++;
 					$types['tickets']['available'] ++;
 				}
-
 			} else {
 				$types['rsvp']['count'] ++;
 
