@@ -8,11 +8,11 @@ Stable tag: 4.4.3dev1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Event Tickets allows your visitors to RSVP to events on your site.  Also works seamlessly with [The Events Calendar](http://m.tri.be/18tg).
+Event Tickets allows your visitors to RSVP to events on your site.  Also works seamlessly with The Events Calendar.
 
 == Description ==
 
-Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with The Events Calendar, you can add that same RSVP functionality directly to your event listings.
+Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same RSVP functionality directly to your event listings.
 
 Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
 
