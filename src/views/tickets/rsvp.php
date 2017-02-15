@@ -165,7 +165,7 @@ $now = current_time( 'timestamp' );
 				<tr>
 					<td colspan="4" class="add-to-cart">
 						<?php if ( $must_login ) : ?>
-							<a href="<?php echo Tribe__Tickets__Tickets::get_login_url(); ?>">
+							<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url() ); ?>">
 								<?php esc_html_e( 'Login to RSVP', 'event-tickets' );?>
 							</a>
 						<?php else: ?>
