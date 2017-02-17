@@ -331,9 +331,8 @@ class Tribe__Tickets__Main {
 		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 
-
 		// Setup Front End Display
-		add_action( 'tribe_events_inside_cost', 'tribe_events_display_count_and_ticket_button' );
+		add_action( 'tribe_events_inside_cost', 'tribe_tickets_display_count_and_ticket_button' );
 
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );

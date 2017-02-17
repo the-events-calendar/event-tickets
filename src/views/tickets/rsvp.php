@@ -75,7 +75,8 @@ $now = current_time( 'timestamp' );
 								min="0"
 								max="<?php echo esc_attr( $ticket->remaining() ); ?>"
 								name="quantity_<?php echo absint( $ticket->ID ); ?>"
-								value="0" <?php disabled( $must_login ); ?>
+								value="0"
+								<?php disabled( $must_login ); ?>
 							>
 							<?php if ( $ticket->managing_stock() ) : ?>
 								<span class="tribe-tickets-remaining">

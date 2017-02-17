@@ -289,7 +289,7 @@ var tribe_tickets_ticket_form = {};
 	} );
 
 	// Listen for any clicks on an element in the document with the `link` class
-	$( window ).on( 'click', '.button-events-list', function( e ) {
+	$( document ).on( 'click', '.button-events-list', function( e ) {
 		// Prevent the default action (e.g. submit the form)
 		e.preventDefault();
 
