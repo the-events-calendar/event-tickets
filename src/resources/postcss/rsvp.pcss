@@ -1,3 +1,10 @@
+:root {
+	--text-light-color: #777;
+	--text-dark-color: #464646;
+	--border-color: #dfdfdf;
+	--table-background-color: #f8f8f8;
+}
+
 .tribe-rsvp {
 	padding: 20px 0;
 }
@@ -170,5 +177,111 @@
 	.entry-footer a:hover,
 	.site-info a:hover {
 		box-shadow: none;
+	}
+}
+
+/* = Tickets & RSVP Modules Front End Styles
+=============================================*/
+
+/* Title */
+
+.tribe-events-tickets-title.tribe--rsvp {
+	margin: 0;
+}
+
+
+.tribe-events-style-full.tribe-events-style-theme {
+	h2.tribe-events-tickets-title {
+		font-size: 90%;
+	}
+}
+
+/* Tickets Table */
+.tribe-events-tickets {
+	background: var(--table-background-color);
+	border: 0;
+	border-radius: 3px;
+
+	table,
+	th,
+	td,
+	.woocommerce.add-to-cart {
+		border: 0;
+	}
+
+	.woocommerce.add-to-cart {
+		padding: 16px;
+	}
+
+	.woocommerce,
+	.tickets_name,
+	.tickets_description,
+	.tickets_price {
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	.woocommerce {
+		.quantity {
+			input {
+				background-color: #fff;
+				border-radius: 3px;
+				margin-bottom: 5px;
+				padding: 5px 10px;
+				text-align: left;
+				width: 4.375em;
+			}
+		}
+	}
+
+	.tribe-tickets-remaining {
+		color: var(--text-light-color);
+		display: block;
+		font-size: 11px;
+	}
+
+	.tribe-tickets-attendees-list-optout label {
+		color: var(--text-light-color);
+		font-size: 13px;
+	}
+
+	.tickets_name,
+	.tickets_name p,
+	.tickets_description,
+	.tickets_price {
+		border-bottom: 1px solid var(--border-color);
+		color: var(--text-dark-color);
+		font-size: 15px;
+		padding: 16px 10px;
+	}
+
+	input[type="date"],
+	input[type="time"],
+	input[type="datetime-local"],
+	input[type="week"],
+	input[type="month"],
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="tel"],
+	input[type="number"],
+	textarea,
+	select {
+		background: #fff;
+	}
+}
+
+/* RSVP Table (differences only) */
+.tribe-events-tickets-rsvp {
+
+	.tribe-ticket.quantity {
+		border-bottom: 1px solid var(--border-color);
+
+		input {
+			margin-bottom: 5px;
+			padding: 5px 10px;
+			width: 4.375em;
+		}
 	}
 }
