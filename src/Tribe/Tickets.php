@@ -948,6 +948,77 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns Ticket and RSVP Count for an Event
+		 *
+		 * @param $event_id
+		 *
+		 * @return array
+		 */
+		public static function get_ticket_counts( $event_id ) {
+
+			$tickets = self::get_all_event_tickets( $event_id );
+
+			$types['tickets'] = array(
+				'count'     => 0, // count of tickets currently for sale
+				'stock'     => 0, // current stock of tickets available for sale
+				'global'    => 0, // global stock ticket
+				'unlimited' => 0, // unlimited stock tickets
+				'available' => 0, // are tickets available for sale right now
+			);
+			$types['rsvp']    = array(
+				'count'     => 0,
+				'stock'     => 0,
+				'unlimited' => 0,
+				'available' => 0,
+			);
+
+			foreach ( $tickets as $ticket ) {
+
+				// If a ticket is not current for sale do not count it
+				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+					continue;
+				}
+
+				// if ticket and not rsvp add to ticket array
+				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+					$types['tickets']['count'] ++;
+
+					if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 0 === $types['tickets']['global'] ) {
+						$types['tickets']['global'] ++;
+					} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 1 === $types['tickets']['global'] ) {
+						continue;
+					}
+
+					$types['tickets']['stock'] = $types['tickets']['stock'] + $ticket->stock;
+
+					if ( 0 !== $types['tickets']['stock'] ) {
+						$types['tickets']['available'] ++;
+					}
+
+					if ( ! $ticket->manage_stock() ) {
+						$types['tickets']['unlimited'] ++;
+						$types['tickets']['available'] ++;
+					}
+				} else {
+					$types['rsvp']['count'] ++;
+
+					$types['rsvp']['stock'] = $types['rsvp']['stock'] + $ticket->stock;
+					if ( 0 !== $types['rsvp']['stock'] ) {
+						$types['rsvp']['available'] ++;
+					}
+
+					if ( ! $ticket->manage_stock() ) {
+						$types['rsvp']['unlimited'] ++;
+						$types['rsvp']['available'] ++;
+					}
+				}
+			}
+
+			return $types;
+
+		}
+
+		/**
 		 * Takes any global stock data and makes it available via a wp_localize_script() call.
 		 */
 		public static function enqueue_frontend_stock_data() {
