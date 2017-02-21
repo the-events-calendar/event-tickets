@@ -233,6 +233,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.5dev1] TBD =
+* Add - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
+
 = [4.4.2] 2017-02-09 =
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
