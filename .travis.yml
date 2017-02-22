@@ -59,8 +59,10 @@ before_script:
 
   # clone the-events-calendar
   - cd wp-content/plugins
-  - git clone --recursive git@github.com:moderntribe/the-events-calendar.git
+  - git clone git://github.com/moderntribe/the-events-calendar.git
   - cd the-events-calendar
+  - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
   - git checkout $TRAVIS_BRANCH
 
   # activate the plugin in WordPress
