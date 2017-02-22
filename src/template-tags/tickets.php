@@ -123,9 +123,9 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 		// get an array for ticket and rsvp counts
 		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
-		// if no rsvp or tickets do not show
+		// if no rsvp or tickets return
 		if ( ! $types ) {
-			return;
+			return null;
 		}
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out messages
