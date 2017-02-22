@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.4.3] unreleased =
+= [4.4.3] 2017-02-22 =
 
 * Fix - Avoid using TEC functions if TEC isn't activated (thanks for reporting @Liesbet) [72499]
 * Fix - Fixed bug where the ticket page link template filter on the_content was being executed on every post type regardless of whether the post type had tickets enabled (props to nichestudio on our forums) [70485]
