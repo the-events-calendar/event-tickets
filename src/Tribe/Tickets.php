@@ -958,6 +958,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$tickets = self::get_all_event_tickets( $event_id );
 
+			if ( ! $tickets ) {
+				return array();
+			}
+
 			$types['tickets'] = array(
 				'count'     => 0, // count of tickets currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
