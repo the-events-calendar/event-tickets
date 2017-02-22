@@ -22,7 +22,7 @@ cache:
     - $HOME/.composer/cache
 
 env:
-  - wpDbName=test wpLoaderDbName=wploader wpDbPrefix=wp_ wpUrl=tec.tri.be wpAdminUsername=admin wpAdminPassword=admin
+  - wpDbName=test wpLoaderDbName=wploader wpDbPrefix=wp_ wpUrl=tec.tri.be wpAdminUsername=admin wpAdminPassword=admin plugin=event-tickets
 
 before_install:
   - mysql -e "create database IF NOT EXISTS $wpDbName;" -uroot
@@ -54,8 +54,8 @@ before_script:
   - cd /tmp/wordpress
 
   # move the plugin into WordPress folder
-  - mv $TRAVIS_BUILD_DIR /tmp/wordpress/wp-content/plugins/event-tickets
-  - export PLUGIN_DIR="/tmp/wordpress/wp-content/plugins/event-tickets
+  - mv $TRAVIS_BUILD_DIR /tmp/wordpress/wp-content/plugins/$plugin
+  - export PLUGIN_DIR="/tmp/wordpress/wp-content/plugins/$plugin
 
   # clone the-events-calendar
   - cd wp-content/plugins
@@ -64,7 +64,7 @@ before_script:
   - git checkout $TRAVIS_BRANCH
 
   # activate the plugin in WordPress
-  - wp plugin activate event-tickets
+  - wp plugin activate $plugin
 
   # flush rewrite rules
   - printf  "apache_modules:\n\t- mod_rewrite" > /tmp/wordpress/wp-cli.yml
