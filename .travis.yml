@@ -55,7 +55,7 @@ before_script:
 
   # move the plugin into WordPress folder
   - mv $TRAVIS_BUILD_DIR /tmp/wordpress/wp-content/plugins/$plugin
-  - export PLUGIN_DIR="/tmp/wordpress/wp-content/plugins/$plugin
+  - export PLUGIN_DIR="/tmp/wordpress/wp-content/plugins/$plugin"
 
   # clone the-events-calendar
   - cd wp-content/plugins
