@@ -12,10 +12,10 @@
  * @var int   $order_id
  * @var array $attendees
  *
- * @version 4.2.2
+ * @version 4.4.3
  */
 
-$start_date = tribe_get_start_date( $event_id );
+$start_date = function_exists( 'tribe_get_start_date' ) ? tribe_get_start_date( $event_id ) : null;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

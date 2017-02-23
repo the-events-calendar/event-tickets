@@ -10,6 +10,44 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit( '-1' );
 }
 
+if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
+	/**
+	 * Returns the current post object that can have tickets attached to it
+	 *
+	 * Optionally the post object or ID of a ticket post can be passed in and, again, the
+	 * parent (event) post object will be returned if possible
+	 *
+	 * @param int|WP_Post $data
+	 * @return null|WP_Post
+	 */
+	function tribe_tickets_parent_post( $data ) {
+		global $post;
+
+		if ( null === $data ) {
+			return $post;
+		}
+
+		if (
+			$data instanceof WP_Post
+			&& tribe_tickets_post_type_enabled( get_post_type( $data ) )
+		) {
+			return $data;
+		}
+
+		if ( is_numeric( $data ) && intval( $data ) === $data ) {
+			$data = get_post( $data );
+
+			if (
+				null !== $data
+				&& tribe_tickets_post_type_enabled( get_post_type( $data ) )
+			) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+}
 
 if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
 	/**
@@ -21,7 +59,7 @@ if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
 	 * @return bool
 	 */
 	function tribe_events_has_tickets( $event = null ) {
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return false;
 		}
 
@@ -64,7 +102,7 @@ if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
 	 * @return bool
 	 */
 	function tribe_events_partially_soldout( $event = null ) {
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return false;
 		}
 
@@ -97,7 +135,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 	function tribe_events_count_available_tickets( $event = null ) {
 		$count = 0;
 
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return 0;
 		}
 
@@ -119,7 +157,7 @@ if ( ! function_exists( 'tribe_events_has_unlimited_stock_tickets' ) ) {
 	 * @return bool
 	 */
 	function tribe_events_has_unlimited_stock_tickets( $event = null ) {
-		if ( null === ( $event = tribe_events_get_event( $event ) ) ) {
+		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
 			return 0;
 		}
 
@@ -311,7 +349,6 @@ function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src'
 	return $url;
 }
 
-
 /**
  * Includes a template part, similar to the WP get template part, but looks
  * in the correct directories for Tribe Tickets templates
@@ -444,3 +481,17 @@ function tribe_tickets_get_template_part( $slug, $name = null, array $data = nul
 	}
 }
 
+
+if ( ! function_exists( 'tribe_tickets_post_type_enabled' ) ) {
+	/**
+	 * Returns whether or not the provided post type allows tickets to be attached
+	 *
+	 * @param string $post_type
+	 * @return boolean
+	 */
+	function tribe_tickets_post_type_enabled( $post_type ) {
+		$post_types = Tribe__Tickets__Main::instance()->post_types();
+
+		return in_array( $post_type, $post_types );
+	}
+}

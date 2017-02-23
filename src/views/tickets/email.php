@@ -16,7 +16,7 @@
  *                              'security_code')
  *
  * @package TribeEventsCalendar
- * @version 4.4.2
+ * @version 4.4.3
  *
  */
 ?>
@@ -270,16 +270,16 @@
 						$venue_zip     = get_post_meta( $venue_id, '_VenueZip', true );
 						$venue_web     = get_post_meta( $venue_id, '_VenueURL', true );
 					}
-					
+
 					// $venue_address_style: make sure no double-quotes in the content
 					$venue_address_style = "display:block; margin:0; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-size:13px;";
 
 					$venue_map_url = '';
-					
+
 					if ( true === tribe_show_google_map_link( $event->ID ) ) {
 						$venue_map_url = esc_url( tribe_get_map_link( $venue_id ) );
 					}
-					
+
 					if ( empty( $venue_map_url ) ) {
 						$venue_address_tag = 'span';
 					} else {
@@ -306,6 +306,8 @@
 				if ( function_exists( 'tribe_get_organizer_ids' ) ) {
 					$organizers = tribe_get_organizer_ids( $event->ID );
 				}
+
+				$event_link = function_exists( 'tribe_get_event_link' ) ? tribe_get_event_link( $event->ID ) : get_post_permalink( $event->ID );
 
 				?>
 				<table class="content" align="center" width="620" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="margin:0 auto; padding:0;<?php echo $break; ?>">
@@ -335,7 +337,7 @@
 											<tr>
 												<td valign="top" align="center" width="100%" style="padding: 0 !important; margin:0 !important;">
 													<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; text-align:left;line-height: 100%;">
-														<a style="color:#0a0a0e !important" href="<?php echo esc_url( tribe_get_event_link( $event->ID ) ); ?>"><?php echo $event->post_title; ?></a>
+														<a style="color:#0a0a0e !important" href="<?php echo esc_url( $event_link ); ?>"><?php echo $event->post_title; ?></a>
 													</h2>
 													<?php if ( ! empty( $start_date ) ): ?>
 														<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">

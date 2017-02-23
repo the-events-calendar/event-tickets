@@ -12,7 +12,7 @@ Event Tickets allows your visitors to RSVP to events on your site.  Also works s
 
 == Description ==
 
-Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with The Events Calendar, you can add that same RSVP functionality directly to your event listings.
+Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same RSVP functionality directly to your event listings.
 
 Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
 
@@ -233,10 +233,17 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.3] 2017-02-22 =
+
+* Fix - Avoid using TEC functions if TEC isn't activated (thanks for reporting @Liesbet) [72499]
+* Fix - Fixed bug where the ticket page link template filter on the_content was being executed on every post type regardless of whether the post type had tickets enabled (props to nichestudio on our forums) [70485]
+* Fix - Ensure the Confirm RSVP button is always visible when ticket stock is available (thank you @Terry for the report in our forums) [73539]
+
 = [4.4.2] 2017-02-09 =
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
 * Fix - Email template file: link event title to event single page, add state/province and postal code to venue information, link venue address to Google Map link if the event's Show Google Maps Link option is checked [72475]
+* Fix - Resolved an issue where attendees would always attempt to be fetched and set in tranients - even when an un-expired transient held an empty attendee list. (props to nichestudio on our forums) [70485]
 
 = [4.4.1] 2017-01-26 =
 
