@@ -114,7 +114,7 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 	/**
 	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
 	 *
-	 * @return string/null
+	 * @return null
 	 */
 	function tribe_tickets_display_count_and_ticket_button() {
 
