@@ -1,10 +1,10 @@
-=== Event Tickets ===
+ === Event Tickets ===
 
 Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, mdbitz, MZAWeb, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, ryancurban, shelbelliott, shane.pearlman, aguseo, tribecari, trishasalas
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 3.9
 Tested up to: 4.7.2
-Stable tag: 4.4.3
+Stable tag: 4.4.4dev1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -232,6 +232,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Timothy Wood](https://profiles.wordpress.org/codearachnid)
 
 == Changelog ==
+
+= [4.4.4] UNRELEASED =
+
 
 = [4.4.3] 2017-02-22 =
 
