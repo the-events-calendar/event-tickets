@@ -277,32 +277,32 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
+		$default_actions = array();
+
+		if ( is_object( $this->event ) && isset(  $this->event->ID ) ) {
+			$default_actions[] = sprintf(
+				'<span class="inline">
+					<a href="#" class="tickets_checkin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Check In', 'row action', 'event-tickets' ) . '</a>
+					<a href="#" class="tickets_uncheckin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Undo Check In', 'row action', 'event-tickets' ) . '</a>
+				</span>',
+				esc_attr( $item['attendee_id'] ),
+				esc_attr( $this->event->ID ),
+				esc_attr( $item['provider'] )
+			);
+		}
+
+		if ( is_admin() ) {
+			$default_actions[] = '<span class="inline move-ticket"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>';
+		}
+
 		$attendee = esc_attr( $item['attendee_id'] . '|' . $item['provider'] );
 		$nonce = wp_create_nonce( 'do_item_action_' . $attendee );
-
-		$check_in_out_url = esc_url( add_query_arg( array(
-			'action'   => $item[ 'check_in' ] ? 'uncheck_in' : 'check_in',
-			'nonce'    => $nonce,
-			'attendee' => $attendee,
-		) ) );
-
-		$check_in_out_text = $item[ 'check_in' ]
-			? esc_html_x( 'Undo Check In', 'row action', 'event-tickets' )
-			: esc_html_x( 'Check In', 'row action', 'event-tickets' );
 
 		$delete_url = esc_url( add_query_arg( array(
 			'action'   => 'delete_attendee',
 			'nonce'    => $nonce,
 			'attendee' => $attendee,
 		) ) );
-
-		$default_actions = array(
-			'<span class="inline"> <a href="' . $check_in_out_url . '">' . $check_in_out_text . '</a> </span>',
-		);
-
-		if ( is_admin() ) {
-			$default_actions[] = '<span class="inline move-ticket"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>';
-		}
 
 		$default_actions[] = '<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>';
 
@@ -592,7 +592,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		if ( isset( $_POST[ 'attendee' ] ) ) {
 			$action_ids = (array) $_POST[ 'attendee' ];
-		} else if ( isset( $_GET[ 'attendee' ] ) ) {
+		} elseif ( isset( $_GET[ 'attendee' ] ) ) {
 			$action_ids = (array) $_GET[ 'attendee' ];
 		}
 
