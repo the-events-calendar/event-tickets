@@ -233,7 +233,8 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.4.4] UNRELEASED =
+= [4.4.4] 2017-03-08 =
+
 * Fix - Fixed a bug that casued an incosistency with the check-in/undo check-in button (thanks to @joe for the report in the forums) [68414]
 * Fix - Fixed a bug that displayed an error message even for succesful check-ins via QR code [68416]
 
