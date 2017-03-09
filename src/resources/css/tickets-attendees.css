@@ -112,6 +112,10 @@
 	opacity: 1;
 }
 
+.tribe-attendees-page .tickets_checked .inline a.tickets_uncheckin {
+	display: inline;
+}
+
 .tribe-attendees-page .tickets_checkin {
 	min-width: 87px;
 	text-align: center;
