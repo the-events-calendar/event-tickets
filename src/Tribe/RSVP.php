@@ -9,6 +9,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_OBJECT   = 'tribe_rsvp_attendees';
 
 	/**
+	 * Name of the CPT that holds Orders
+	 */
+	const ORDER_OBJECT = 'tribe_rsvp_attendees';
+
+	/**
 	 * Meta key that relates Attendees and Events.
 	 *
 	 * @var string
@@ -887,7 +892,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		//Store name so we can still show it in the attendee list
-		$attendees      = $this->get_attendees( $event_id );
+		$attendees      = $this->get_attendees_by_event_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
 
 		foreach ( (array) $attendees as $attendee ) {
@@ -1062,7 +1067,118 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get all the attendees for an event. It returns an array with the
+	 * Get attendees by id and associated post type
+	 * or default to using $post_id
+	 *
+	 * @param      $post_id
+	 * @param null $post_type
+	 *
+	 * @return array|mixed
+	 */
+	public function get_attendees_by_id( $post_id, $post_type = null ) {
+
+		if ( $post_type ) {
+			$post_type = get_post_type( $post_id );
+		}
+
+		switch ( $post_type ) {
+
+			case self::ATTENDEE_OBJECT :
+
+				return $this->get_attendees_by_attendee_id( $post_id );
+
+				break;
+
+			case self::ORDER_OBJECT :
+
+				return $this->get_attendees_by_order_id( $post_id );
+
+				break;
+			default :
+
+				return $this->get_attendees_by_post_id( $post_id );
+
+				break;
+		}
+
+	}
+
+	/**
+	 * Get RSVP Tickets Attendees for an Post by id
+	 *
+	 * @param $post_id
+	 *
+	 * @return array
+	 */
+	protected function get_attendees_by_post_id( $post_id ) {
+
+		$attendees_query = new WP_Query( array(
+			'posts_per_page' => - 1,
+			'post_type'      => self::ATTENDEE_OBJECT,
+			'meta_key'       => self::ATTENDEE_EVENT_KEY,
+			'meta_value'     => $post_id,
+			'orderby'        => 'ID',
+			'order'          => 'DESC',
+		) );
+
+		if ( ! $attendees_query->have_posts() ) {
+			return array();
+		}
+
+		return $this->get_attendees( $attendees_query, $post_id );
+
+	}
+
+	/**
+	 * Get Attendees by ticket/attendee ID
+	 *
+	 * @param $attendee_id
+	 *
+	 * @return array
+	 */
+	protected function get_attendees_by_attendee_id( $attendee_id ) {
+
+		$attendees_query = new WP_Query( array(
+			'p'         => $attendee_id,
+			'post_type' => self::ATTENDEE_OBJECT,
+		) );
+
+		if ( ! $attendees_query->have_posts() ) {
+			return array();
+		}
+
+		return $this->get_attendees( $attendees_query, $attendee_id );
+
+	}
+
+	/**
+	 * Get attendees by order id
+	 *
+	 * @param $order_id
+	 *
+	 * @return array
+	 */
+	protected function get_attendees_by_order_id( $order_id ) {
+
+		$attendees_query = new WP_Query( array(
+			'posts_per_page' => - 1,
+			'post_type'      => self::ATTENDEE_OBJECT,
+			'meta_key'       => self::ATTENDEE_ORDER_KEY,
+			'meta_value'     => $order_id,
+			'orderby'        => 'ID',
+			'order'          => 'DESC',
+		) );
+
+		if ( ! $attendees_query->have_posts() ) {
+			return array();
+		}
+
+		return $this->get_attendees( $attendees_query, $order_id );
+
+	}
+
+	/**
+	 * Get all the attendees for post type. It returns an array with the
 	 * following fields:
 	 *
 	 *     order_id
@@ -1077,23 +1193,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *     check_in
 	 *     provider
 	 *
-	 * @param $event_id
+	 * @param $attendees_query
+	 * @param $post_id
 	 *
 	 * @return array
 	 */
-	protected function get_attendees( $event_id ) {
-		$attendees_query = new WP_Query( array(
-			'posts_per_page' => - 1,
-			'post_type'      => self::ATTENDEE_OBJECT,
-			'meta_key'       => self::ATTENDEE_EVENT_KEY,
-			'meta_value'     => $event_id,
-			'orderby'        => 'ID',
-			'order'          => 'DESC',
-		) );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
+	protected function get_attendees( WP_Query $attendees_query, $post_id ) {
 
 		$attendees = array();
 
@@ -1114,21 +1219,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$product       = get_post( $product_id );
 			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
 
-			$attendee_data = array_merge(
-				$this->get_order_data( $attendee->ID ),
-				array(
-					'optout'             => $optout,
-					'ticket'             => $product_title,
-					'attendee_id'        => $attendee->ID,
-					'security'           => $security,
-					'product_id'         => $product_id,
-					'check_in'           => $checkin,
-					'order_status'       => $status,
-					'order_status_label' => $status_label,
-					'user_id'            => $user_id,
-					'ticket_sent'        => $ticket_sent,
-				)
-			);
+			$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
+				'optout'             => $optout,
+				'ticket'             => $product_title,
+				'attendee_id'        => $attendee->ID,
+				'security'           => $security,
+				'product_id'         => $product_id,
+				'check_in'           => $checkin,
+				'order_status'       => $status,
+				'order_status_label' => $status_label,
+				'user_id'            => $user_id,
+				'ticket_sent'        => $ticket_sent,
+			) );
 
 			/**
 			 * Allow users to filter the Attendee Data
@@ -1136,10 +1238,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 * @var array An associative array with the Information of the Attendee
 			 * @var string What Provider is been used
 			 * @var WP_Post Attendee Object
-			 * @var int Event ID
+			 * @var int Post ID
 			 *
 			 */
-			$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'rsvp', $attendee, $event_id );
+			$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'rsvp', $attendee, $post_id );
 
 			$attendees[] = $attendee_data;
 		}

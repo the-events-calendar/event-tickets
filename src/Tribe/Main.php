@@ -499,6 +499,8 @@ class Tribe__Tickets__Main {
 		$this->tickets_view();
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
+
+		Tribe__Tickets__Detection::init();
 	}
 
 	/**
