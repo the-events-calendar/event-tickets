@@ -391,7 +391,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function stock( $value = null ) {
 			// If the Value was passed as numeric value overwrite
-			if ( is_numeric( $value ) ) {
+			if ( is_numeric( $value ) || $value === self::UNLIMITED_STOCK ) {
 				$this->stock = $value;
 			}
 
