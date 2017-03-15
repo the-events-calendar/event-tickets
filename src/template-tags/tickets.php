@@ -162,7 +162,9 @@ if ( ! function_exists( 'tribe_events_has_unlimited_stock_tickets' ) ) {
 		}
 
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock() ) return true;
+			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock() ) {
+				return true;
+			}
 		}
 
 		return false;
