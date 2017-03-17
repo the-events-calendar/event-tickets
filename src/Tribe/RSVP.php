@@ -633,7 +633,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function send_tickets_email( $order_id ) {
 
 
-		$all_attendees = $this->get_attendees_by_id( $order_id);
+		$all_attendees = $this->get_attendees_by_id( $order_id );
 
 		$to_send = array();
 
@@ -1072,7 +1072,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 				break;
 			default :
-				log_me('default');
+
 				return $this->get_attendees_by_post_id( $post_id );
 
 				break;
@@ -1199,6 +1199,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket_unique_id = get_post_meta( $attendee->ID, '_unique_id', true );
 			$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
 
+			$meta = '';
+			if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+				$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
+			}
+
 			$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
 				'optout'             => $optout,
 				'ticket'             => $product_title,
@@ -1221,6 +1226,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'qr_ticket_id'  => $attendee->ID,
 				'security_code' => $security,
 
+			    // Attendee Meta
+				'attendee_meta' => $meta,
 			) );
 
 			/**

@@ -47,7 +47,7 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 				}
 				if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $module_class ) {
 					$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::$event_key;
-//					$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::get_instance()->event_key;
+					//					$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::get_instance()->event_key;
 				} else {
 					$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::get_instance()->event_key;
 				}
@@ -63,15 +63,23 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 		/**
 		 * Detect what is available in the custom post type by the id passed to it
 		 *
-		 * @param $id
+		 * @param $post_id
 		 *
 		 * @return array|bool array includes infomation available and the tribe_tickets_tickets class to use
 		 */
 		public function detect_by_id( $post_id ) {
 
-			$post_id = absint( $post_id );
+			if ( ! is_numeric( $post_id ) ) {
+				$post_id = esc_attr( $post_id );
 
-			$cpt = get_post_type( $post_id );
+				$cpt = $this->check_rsvp_order_hash( $post_id );
+
+			} else {
+				$post_id = absint( $post_id );
+
+				$cpt = get_post_type( $post_id );
+
+			}
 
 			// if no custom post type
 			if ( ! $cpt ) {
@@ -103,6 +111,26 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 
 		}
 
+		//todo enable this to support returning a post id
+		public function check_rsvp_order_hash( $order_hash ) {
+
+			$attendees_query = new WP_Query( array(
+				'posts_per_page' => - 1,
+				'post_type'      => Tribe__Tickets__RSVP::ATTENDEE_OBJECT,
+				'meta_key'       => Tribe__Tickets__RSVP::get_instance()->order_key,
+				'meta_value'     => esc_attr( $order_hash ),
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+			) );
+
+			if ( ! $attendees_query->have_posts() ) {
+				return '';
+			}
+
+			return Tribe__Tickets__RSVP::ATTENDEE_OBJECT;
+
+		}
+
 		/**
 		 * Return Array of Event IDs when pass Order, Ticket, or Attendee ID
 		 *
@@ -110,12 +138,10 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 		 *
 		 * @return array
 		 */
+		 //todo add support for rsvp order hash
 		public function get_event_ids( $post_id ) {
 
-			$post_id = absint( $post_id );
-
-			$services = Tribe__Tickets__Detection::get_instance()->detect_by_id( $post_id );
-//			log_me( $services );
+			$services = $this->detect_by_id( $post_id );
 
 			// if this id is not an order id or a ticket id return
 			if ( empty( array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services ) ) ) {
@@ -133,7 +159,7 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 
 			if ( ! empty( array_intersect( array( 'product' ), $services ) ) ) {
 				$tribe_for_event = $this->ticket_class[ $module_class ]['tribe_for_event'];
-				$event_ids[] = get_post_meta( $post_id, $tribe_for_event, true );
+				$event_ids[]     = get_post_meta( $post_id, $tribe_for_event, true );
 
 				return $event_ids;
 			}
@@ -173,8 +199,6 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 		}
 
 
-
-
 		/**
 		 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID
 		 *
@@ -184,9 +208,7 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 		 */
 		public function get_ticket_provider( $post_id ) {
 
-			$post_id = absint( $post_id );
-
-			$services = Tribe__Tickets__Detection::get_instance()->detect_by_id( $post_id );
+			$services = $this->detect_by_id( $post_id );
 
 			// if no module class return
 			if ( empty( $services['class'] ) ) {
@@ -201,13 +223,37 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 
 		}
 
+		//todo add context
 		public function get_attendees_by_id( $post_id ) {
 
-			$post_id = absint( $post_id );
-
-			$services = Tribe__Tickets__Detection::get_instance()->detect_by_id( $post_id );
+			$services = $this->detect_by_id( $post_id );
 
 			return $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
+
+		}
+
+
+		//todo add context
+		public function attendees_has_meta_data( $post_id ) {
+
+			$services = $this->detect_by_id( $post_id );
+
+			$attendees = $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
+
+			if ( ! is_array( $attendees ) ) {
+				return false;
+			}
+
+			$has_meta = false;
+
+			foreach( $attendees as $attendee ) {
+
+				if ( isset( $attendee[ 'attendee_meta' ] ) && ! empty( $attendee[ 'attendee_meta' ] )  ) {
+					$has_meta = true;
+				}
+			}
+
+			return $has_meta;
 
 		}
 
