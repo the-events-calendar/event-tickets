@@ -233,9 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.4.5] TBD =
+= [4.4.5] 2017-03-23 =
 
 * Fix - Improve handling of unlimited ticket stock (props: @jtsternberg) [74123]
+* Fix - A PHP error rendered the help tab broken [75544]
 
 = [4.4.4] 2017-03-08 =
 
