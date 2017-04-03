@@ -1,9 +1,9 @@
 <?php
 
-if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
+if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 
 
-	class Tribe__Tickets__Detection {
+	class Tribe__Tickets__Data_API {
 
 		protected $active_modules;
 		protected $ticket_types = array();
@@ -13,12 +13,13 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 		 * Class constructor
 		 */
 		public function __construct() {
-
 			$this->active_modules = Tribe__Tickets__Tickets::modules();
 			$this->setup_data();
-
 		}
 
+		/**
+		 * Setup activate ticket classes and field for data api
+		 */
 		protected function setup_data() {
 
 			foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
@@ -69,16 +70,13 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 		 */
 		public function detect_by_id( $post_id ) {
 
+			// only the rsvp order key is non numeric
 			if ( ! is_numeric( $post_id ) ) {
 				$post_id = esc_attr( $post_id );
-
-				$cpt = $this->check_rsvp_order_hash( $post_id );
-
+				$cpt     = $this->check_rsvp_order_key_exists( $post_id );
 			} else {
 				$post_id = absint( $post_id );
-
-				$cpt = get_post_type( $post_id );
-
+				$cpt     = get_post_type( $post_id );
 			}
 
 			// if no custom post type
@@ -86,48 +84,22 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 				return false;
 			}
 
-			//$cpt_arr[$cpt] = array();
-			$cpt_arr = array();
-
+			$cpt_arr              = array();
 			$cpt_arr['post_type'] = $cpt;
 
 			foreach ( $this->ticket_types as $type => $cpts ) {
-
 				if ( in_array( $cpt, $cpts ) ) {
 					$cpt_arr[] = $type;
 				}
-
 			}
 
 			foreach ( $this->ticket_class as $classes => $cpts ) {
-
 				if ( in_array( $cpt, $cpts ) ) {
 					$cpt_arr['class'] = $classes;
 				}
-
 			}
 
 			return $cpt_arr;
-
-		}
-
-		//todo enable this to support returning a post id
-		public function check_rsvp_order_hash( $order_hash ) {
-
-			$attendees_query = new WP_Query( array(
-				'posts_per_page' => - 1,
-				'post_type'      => Tribe__Tickets__RSVP::ATTENDEE_OBJECT,
-				'meta_key'       => Tribe__Tickets__RSVP::get_instance()->order_key,
-				'meta_value'     => esc_attr( $order_hash ),
-				'orderby'        => 'ID',
-				'order'          => 'ASC',
-			) );
-
-			if ( ! $attendees_query->have_posts() ) {
-				return '';
-			}
-
-			return Tribe__Tickets__RSVP::ATTENDEE_OBJECT;
 
 		}
 
@@ -138,11 +110,9 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 		 *
 		 * @return array
 		 */
-		 //todo add support for rsvp order hash
 		public function get_event_ids( $post_id ) {
 
 			$services = $this->detect_by_id( $post_id );
-
 			// if this id is not an order id or a ticket id return
 			if ( empty( array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services ) ) ) {
 				return array();
@@ -154,6 +124,13 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 			}
 
 			$module_class = $services['class'];
+			/**
+			 * if we have a rsvp order has and in order context
+			 * change $post_id to the first rsvp post's id
+			 */
+			if ( ! is_numeric( $post_id ) && 'Tribe__Tickets__RSVP' === $module_class ) {
+				$post_id = $this->get_rsvp_post_id_from_order_key( $post_id );
+			}
 			$event_id_key = $this->ticket_class[ $module_class ]['event_id_key'];
 			$event_ids    = array();
 
@@ -170,7 +147,6 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 				$event_ids[] = get_post_meta( $post_id, $event_id_key, true );
 
 				return $event_ids;
-
 			}
 
 			$ticket_cpt   = $this->ticket_class[ $module_class ]['ticket'];
@@ -179,6 +155,7 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 			if ( ! $order_id_key ) {
 				return array();
 			}
+
 			$order_tickets = get_posts( array(
 				'post_type'      => $ticket_cpt,
 				'meta_key'       => $order_id_key,
@@ -223,37 +200,195 @@ if ( ! class_exists( 'Tribe__Tickets__Detection' ) ) {
 
 		}
 
-		//todo add context
-		public function get_attendees_by_id( $post_id ) {
+		/**
+		 * Get attendee(s) by id
+		 *
+		 * @param      $post_id
+		 * @param null $context
+		 *
+		 * @return mixed
+		 */
+		public function get_attendees_by_id( $post_id, $context = null ) {
+
+			return $this->get_attendees( $post_id, $context );
+
+		}
+
+		/**
+		 * Return if attendee(s) have meta fields with data
+		 *
+		 * @param      $post_id
+		 * @param null $context
+		 *
+		 * @return bool
+		 */
+		public function attendees_has_meta_data( $post_id, $context = null ) {
+
+			$attendees = $this->get_attendees( $post_id, $context );
+			if ( ! is_array( $attendees ) ) {
+				return false;
+			}
+
+			return $this->attendees_meta_check( false, $attendees, false );
+
+		}
+
+		/**
+		 * Return if attendee(s) have meta fields
+		 *
+		 * @param      $post_id
+		 * @param null $context
+		 *
+		 * @return bool
+		 */
+		public function attendees_has_meta_fields( $post_id, $context = null ) {
+
+			$attendees = $this->get_attendees( $post_id, $context );
+			if ( ! is_array( $attendees ) ) {
+				return false;
+			}
+
+			return $this->attendees_meta_check( false, $attendees, true );
+
+		}
+
+		/**
+		 * Get attendees from any id
+		 *
+		 * @param $post_id
+		 * @param $context
+		 *
+		 * @return mixed
+		 */
+		protected function get_attendees( $post_id, $context ) {
 
 			$services = $this->detect_by_id( $post_id );
+			/**
+			 * if a post id is passed with rsvp order context
+			 * get the order key to return all attendees by the key
+			 */
+			if ( 'rsvp_order' === $context && is_numeric( $post_id ) ) {
+				$post_id = $this->get_rsvp_order_key( $post_id );
+			}
 
 			return $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
 
 		}
 
+		/**
+		 * Check if attendee(s) have meta data or meta fields
+		 *
+		 * @param $has_meta
+		 * @param $attendees
+		 * @param $has_meta_fields
+		 *
+		 * @return bool
+		 */
+		protected function attendees_meta_check( $has_meta, $attendees, $has_meta_fields ) {
 
-		//todo add context
-		public function attendees_has_meta_data( $post_id ) {
-
-			$services = $this->detect_by_id( $post_id );
-
-			$attendees = $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
-
-			if ( ! is_array( $attendees ) ) {
-				return false;
-			}
-
-			$has_meta = false;
-
-			foreach( $attendees as $attendee ) {
-
-				if ( isset( $attendee[ 'attendee_meta' ] ) && ! empty( $attendee[ 'attendee_meta' ] )  ) {
-					$has_meta = true;
+			foreach ( $attendees as $attendee ) {
+				if ( $has_meta_fields ) {
+					if ( isset( $attendee['attendee_meta'] ) ) {
+						$has_meta = true;
+					}
+				} else {
+					if ( isset( $attendee['attendee_meta'] ) && ! empty( $attendee['attendee_meta'] ) ) {
+						$has_meta = true;
+					}
 				}
 			}
 
 			return $has_meta;
+
+		}
+
+
+		/**
+		 * Check if a order key passed exists and return attendee object name
+		 *
+		 * @param $order_key
+		 *
+		 * @return string
+		 */
+		protected function check_rsvp_order_key_exists( $order_key ) {
+
+			$attendees_query = $this->query_by_rsvp_order_key( $order_key );
+			if ( ! $attendees_query->have_posts() ) {
+				return '';
+			}
+
+			return Tribe__Tickets__RSVP::ATTENDEE_OBJECT;
+
+		}
+
+		/**
+		 * Get the rsvp order key from a post id
+		 *
+		 * @param $post_id
+		 *
+		 * @return mixed
+		 */
+		protected function get_rsvp_order_key( $post_id ) {
+
+			$order_key = get_post_meta( $post_id, Tribe__Tickets__RSVP::get_instance()->order_key, true );
+			if ( ! $order_key ) {
+				return $post_id;
+			}
+
+			return $order_key;
+
+		}
+
+		/**
+		 * Get a post id when passing a rsvp order key
+		 * Since all rsvp orders will be from one post,
+		 * we only need to return the first match
+		 *
+		 * @param $order_key
+		 *
+		 * @return false|int|string
+		 */
+		protected function get_rsvp_post_id_from_order_key( $order_key ) {
+
+			$attendees_query = $this->query_by_rsvp_order_key( $order_key, 1 );
+			if ( ! $attendees_query->have_posts() ) {
+				return '';
+			}
+
+			$post_id = '';
+
+			while ( $attendees_query->have_posts() ) {
+				$attendees_query->the_post();
+				$post_id = get_the_ID();
+			}
+
+			wp_reset_postdata();
+
+			return $post_id;
+
+		}
+
+
+		/**
+		 * Query RSVP Orders by the Order Key
+		 *
+		 * @param        $order_key
+		 * @param string $post_per_page
+		 *
+		 * @return WP_Query
+		 */
+		protected function query_by_rsvp_order_key( $order_key, $post_per_page = '-1' ) {
+
+			$attendees_query = new WP_Query( array(
+				'posts_per_page' => $post_per_page,
+				'post_type'      => Tribe__Tickets__RSVP::ATTENDEE_OBJECT,
+				'meta_key'       => Tribe__Tickets__RSVP::get_instance()->order_key,
+				'meta_value'     => esc_attr( $order_key ),
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+			) );
+
+			return $attendees_query;
 
 		}
 
