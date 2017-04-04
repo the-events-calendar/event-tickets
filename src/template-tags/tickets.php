@@ -204,7 +204,7 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 		}
 
 		if ( $stock ) {
-			$stock = '<span class="tribe-tickets-left">' . $stock . ' ' . esc_html_x( 'Tickets left', 'list view tickets left', 'event-tickets' ) . '</span>';
+			$stock = '<span class="tribe-tickets-left">' . $stock . ' ' . esc_html_x( 'tickets left', 'list view tickets left', 'event-tickets' ) . '</span>';
 		}
 
 
