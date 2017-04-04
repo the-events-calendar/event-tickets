@@ -104,7 +104,7 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 		}
 
 		/**
-		 * Return Array of Event IDs when pass Order, Ticket, or Attendee ID
+		 * Return Array of Event IDs when passed an Order, Ticket, or Attendee ID
 		 *
 		 * @param $post_id
 		 *
@@ -229,31 +229,33 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 				return false;
 			}
 
-			return $this->attendees_meta_check( false, $attendees, false );
+			return $this->attendees_meta_check( false, $attendees );
 
 		}
 
 		/**
-		 * Return if attendee(s) have meta fields
+		 * Return if tickets have meta fields
 		 *
 		 * @param      $post_id
 		 * @param null $context
 		 *
 		 * @return bool
 		 */
-		public function attendees_has_meta_fields( $post_id, $context = null ) {
+		public function ticket_has_meta_fields( $post_id, $context = null ) {
 
 			$attendees = $this->get_attendees( $post_id, $context );
 			if ( ! is_array( $attendees ) ) {
 				return false;
 			}
 
-			return $this->attendees_meta_check( false, $attendees, true );
+			return true;
+
+			//return $this->attendees_meta_check( false, $attendees, false );
 
 		}
 
 		/**
-		 * Get attendees from any id
+		 * Get attendee(s) from any id
 		 *
 		 * @param $post_id
 		 * @param $context
@@ -271,6 +273,11 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 				$post_id = $this->get_rsvp_order_key( $post_id );
 			}
 
+			// if no provider class, use the passed id to return attendee(s)
+			if ( ! isset( $services['class'] ) ) {
+				return Tribe__Tickets__Tickets::get_event_attendees( $post_id );
+			}
+
 			return $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
 
 		}
@@ -284,18 +291,15 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 		 *
 		 * @return bool
 		 */
-		protected function attendees_meta_check( $has_meta, $attendees, $has_meta_fields ) {
+		protected function attendees_meta_check( $has_meta, $attendees ) {
 
 			foreach ( $attendees as $attendee ) {
-				if ( $has_meta_fields ) {
-					if ( isset( $attendee['attendee_meta'] ) ) {
-						$has_meta = true;
-					}
-				} else {
-					if ( isset( $attendee['attendee_meta'] ) && ! empty( $attendee['attendee_meta'] ) ) {
-						$has_meta = true;
-					}
+				if ( isset( $attendee['attendee_meta'] ) && ! empty( $attendee['attendee_meta'] ) ) {
+					log_me( $attendee );
+					$has_meta = true;
+
 				}
+
 			}
 
 			return $has_meta;

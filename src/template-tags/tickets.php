@@ -568,3 +568,91 @@ function tribe_tickets_get_template_part( $slug, $name = null, array $data = nul
 	}
 }
 
+
+if ( ! function_exists( 'tribe_tickets_get_event_ids' ) ) {
+
+	/**
+	 * Gets an array of event ids when passing an id
+	 *
+	 * @param integer /string $id a rsvp order key, order id, attendee id, ticket id, or product id
+	 *
+	 * @return array
+	 */
+	function tribe_tickets_get_event_ids( $id ) {
+		return Tribe__Tickets__Data_API::get_instance()->get_event_ids( $id );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
+
+	/**
+	 * Gets the ticket provider class when passed an id
+	 *
+	 * @param integer /string $id a rsvp order key, order id, attendee id, ticket id, or product id
+	 *
+	 * @return bool/object
+	 */
+	function tribe_tickets_get_ticket_provider( $id ) {
+		return Tribe__Tickets__Data_API::get_instance()->get_ticket_provider( $id );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
+
+	/**
+	 * Get attendee(s) by an id
+	 *
+	 * @param $id  integer/string $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param $context null use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 *
+	 * @return array()
+	 */
+	function tribe_tickets_get_attendees( $id, $context = null ) {
+		return Tribe__Tickets__Data_API::get_instance()->get_attendees_by_id( $id, $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_get_meta' ) ) {
+
+	/**
+	 * Get attendee(s) meta data by an id
+	 *
+	 * @param $id  integer/string $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param $context null use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 *
+	 * @return array()
+	 */
+	function tribe_tickets_get_meta( $id, $context = null ) {
+		return Tribe__Tickets__Data_API::get_instance()->get_attendees_by_id( $id, $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_has_meta_data' ) ) {
+
+	/**
+	 * Return true or false if a given id has meta data
+	 *
+	 * @param $id  integer/string $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param $context null use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 *
+	 * @return bool
+	 */
+	function tribe_tickets_has_meta_data( $id, $context = null ) {
+		return Tribe__Tickets__Data_API::get_instance()->attendees_has_meta_data( $id, $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
+
+	/**
+	 * Return true or false if a given id has meta fields
+	 *
+	 * @param $id  integer/string $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param $context null use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 *
+	 * @return bool
+	 */
+	function tribe_tickets_has_meta_fields( $id, $context = null ) {
+		return Tribe__Tickets__Data_API::get_instance()->ticket_has_meta_fields( $id, $context );
+	}
+}
