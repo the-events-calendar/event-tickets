@@ -365,9 +365,9 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 			}
 
 			// if no provider class, use the passed id to return attendee(s)
-			if ( ! isset( $services['class'] ) && is_numeric( $post_id )  ) {
+			if ( ! isset( $services['class'] ) && is_numeric( $post_id ) ) {
 				return Tribe__Tickets__Tickets::get_event_attendees( $post_id );
-			} elseif ( ! isset( $services['class'] ) && ! is_numeric( $post_id )) {
+			} elseif ( ! isset( $services['class'] ) && ! is_numeric( $post_id ) ) {
 				return array();
 			}
 
