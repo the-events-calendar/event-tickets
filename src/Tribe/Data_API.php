@@ -114,7 +114,8 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 
 			$services = $this->detect_by_id( $post_id );
 			// if this id is not an order id or a ticket id return
-			if ( empty( array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services ) ) ) {
+			$is_ticket_related = array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services );
+			if ( ! $is_ticket_related ) {
 				return array();
 			}
 
@@ -134,7 +135,8 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 			$event_id_key = $this->ticket_class[ $module_class ]['event_id_key'];
 			$event_ids    = array();
 
-			if ( ! empty( array_intersect( array( 'product' ), $services ) ) ) {
+			$is_product = array_intersect( array( 'product' ), $services );
+			if ( $is_product ) {
 				$tribe_for_event = $this->ticket_class[ $module_class ]['tribe_for_event'];
 				$event_ids[]     = get_post_meta( $post_id, $tribe_for_event, true );
 
@@ -143,7 +145,8 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 
 
 			// if rsvp or a ticket id get the connected id field
-			if ( 'Tribe__Tickets__RSVP' === $module_class || ! empty( array_intersect( array( 'ticket', 'attendee' ), $services ) ) ) {
+			$is_ticket_attendee = array_intersect( array( 'ticket', 'attendee' ), $services );
+			if ( 'Tribe__Tickets__RSVP' === $module_class || $is_ticket_attendee ) {
 				$event_ids[] = get_post_meta( $post_id, $event_id_key, true );
 
 				return $event_ids;
@@ -188,11 +191,7 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 			$services = $this->detect_by_id( $post_id );
 
 			// if no module class return
-			if ( empty( $services['class'] ) ) {
-				return false;
-			}
-
-			if ( ! class_exists( $services['class'] ) ) {
+			if ( empty( $services['class'] ) || ! class_exists( $services['class'] ) ) {
 				return false;
 			}
 
@@ -243,15 +242,96 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 		 */
 		public function ticket_has_meta_fields( $post_id, $context = null ) {
 
-			$attendees = $this->get_attendees( $post_id, $context );
-			if ( ! is_array( $attendees ) ) {
+			$services        = $this->detect_by_id( $post_id );
+			$has_meta_fields = false;
+			$products        = '';
+
+			// if no class then look for tickets by event/post id
+			if ( ! isset( $services['class'] ) ) {
+				$products = $this->get_product_ids_from_tickets( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
+			}
+
+			// if no product ids and id is not ticket related return false
+			$is_ticket_related = array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services );
+			if ( ! $products && ! $is_ticket_related ) {
 				return false;
 			}
 
-			return true;
+			// if the id is a product add the id to the array
+			$is_product = array_intersect( array( 'product' ), $services );
+			if ( ! $products && $is_product ) {
+				$products[] = absint( $post_id );
+			}
 
-			//return $this->attendees_meta_check( false, $attendees, false );
+			//elseif handle order id ticket&attendee
+			$is_order_ticket_attendee = array_intersect( array( 'order', 'ticket', 'attendee' ), $services );
+			if ( ! $products && $is_order_ticket_attendee ) {
+				$products = $this->get_product_ids_from_attendees( $this->get_attendees( $post_id, $context, $services ) );
+			}
 
+			if ( is_array( $products ) ) {
+				$has_meta_fields = $this->check_for_meta_fields_by_product_id( $products );
+			}
+
+			return $has_meta_fields;
+
+		}
+
+		/**
+		 * Return an array of product ids from an array of ticket objects
+		 *
+		 * @param $tickets array an array of ticket objects
+		 *
+		 * @return array
+		 */
+		protected function get_product_ids_from_tickets( $tickets ) {
+			$product_ids = array();
+			foreach ( $tickets as $ticket ) {
+				if ( isset( $ticket->ID ) && ! in_array( $ticket->ID, $product_ids ) ) {
+					$product_ids[] = $ticket->ID;
+				}
+			}
+
+			return $product_ids;
+
+		}
+
+		/**
+		 * Return an array of product ids from an array of attendee(s)
+		 *
+		 * @param $attendees array an array of attendee(s)
+		 *
+		 * @return array
+		 */
+		protected function get_product_ids_from_attendees( $attendees ) {
+			$product_ids = array();
+			foreach ( $attendees as $attendee ) {
+				if ( isset( $attendee['product_id'] ) && ! in_array( $attendee['product_id'], $product_ids ) ) {
+					$product_ids[] = $attendee['product_id'];
+				}
+			}
+
+			return $product_ids;
+		}
+
+		/**
+		 * Return true if meta enabled and fields are
+		 *
+		 * @param $products array an array of product ids
+		 *
+		 * @return bool
+		 */
+		protected function check_for_meta_fields_by_product_id( $products ) {
+			$has_meta_fields = false;
+			foreach ( $products as $product_id ) {
+				$meta_enabled = get_post_meta( $product_id, '_tribe_tickets_meta_enabled', true );
+				$meta_fields  = get_post_meta( $product_id, '_tribe_tickets_meta', true );
+				if ( $meta_enabled && $meta_fields ) {
+					$has_meta_fields = true;
+				}
+			}
+
+			return $has_meta_fields;
 		}
 
 		/**
@@ -262,9 +342,11 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 		 *
 		 * @return mixed
 		 */
-		protected function get_attendees( $post_id, $context ) {
+		protected function get_attendees( $post_id, $context, $services = false ) {
 
-			$services = $this->detect_by_id( $post_id );
+			if ( ! $services ) {
+				$services = $this->detect_by_id( $post_id );
+			}
 			/**
 			 * if a post id is passed with rsvp order context
 			 * get the order key to return all attendees by the key
@@ -283,7 +365,7 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 		}
 
 		/**
-		 * Check if attendee(s) have meta data or meta fields
+		 * Check if attendee(s) have meta data
 		 *
 		 * @param $has_meta
 		 * @param $attendees
@@ -295,11 +377,8 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 
 			foreach ( $attendees as $attendee ) {
 				if ( isset( $attendee['attendee_meta'] ) && ! empty( $attendee['attendee_meta'] ) ) {
-					log_me( $attendee );
 					$has_meta = true;
-
 				}
-
 			}
 
 			return $has_meta;

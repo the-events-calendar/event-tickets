@@ -698,7 +698,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function send_non_attendance_confirmation( $order_id, $event_id ) {
 
-		$attendees = $this->get_attendees_by_id( $order_id);
+		$attendees = $this->get_attendees_by_id( $order_id );
 
 		if ( empty( $attendees ) ) {
 			return;
