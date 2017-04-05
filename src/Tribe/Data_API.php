@@ -113,6 +113,10 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 		public function get_event_ids( $post_id ) {
 
 			$services = $this->detect_by_id( $post_id );
+			if ( ! is_array( $services ) ) {
+				$services = array();
+			}
+
 			// if this id is not an order id or a ticket id return
 			$is_ticket_related = array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services );
 			if ( ! $is_ticket_related ) {
@@ -242,7 +246,11 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 		 */
 		public function ticket_has_meta_fields( $post_id, $context = null ) {
 
-			$services        = $this->detect_by_id( $post_id );
+			$services = $this->detect_by_id( $post_id );
+			if ( ! is_array( $services ) ) {
+				$services = array();
+			}
+
 			$has_meta_fields = false;
 			$products        = '';
 
@@ -347,6 +355,7 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 			if ( ! $services ) {
 				$services = $this->detect_by_id( $post_id );
 			}
+
 			/**
 			 * if a post id is passed with rsvp order context
 			 * get the order key to return all attendees by the key
@@ -356,8 +365,10 @@ if ( ! class_exists( 'Tribe__Tickets__Data_API' ) ) {
 			}
 
 			// if no provider class, use the passed id to return attendee(s)
-			if ( ! isset( $services['class'] ) ) {
+			if ( ! isset( $services['class'] ) && is_numeric( $post_id )  ) {
 				return Tribe__Tickets__Tickets::get_event_attendees( $post_id );
+			} elseif ( ! isset( $services['class'] ) && ! is_numeric( $post_id )) {
+				return array();
 			}
 
 			return $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
