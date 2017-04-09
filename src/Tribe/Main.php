@@ -374,6 +374,9 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
 		tribe( 'tickets.query' );
 
+		// Tribe__Tickets__Data_API::init();
+		tribe_singleton( 'tickets.data_api', 'Tribe__Tickets__Data_API' );
+
 		// View links, columns and screen options
 		if ( is_admin() ) {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
@@ -499,7 +502,6 @@ class Tribe__Tickets__Main {
 		$this->tickets_view();
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
-		Tribe__Tickets__Data_API::init();
 	}
 
 	/**
