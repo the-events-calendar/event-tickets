@@ -71,7 +71,6 @@ class Tribe__Tickets__Data_API {
 	 * @return array|bool array includes infomation available and the tribe_tickets_tickets class to use
 	 */
 	public function detect_by_id( $post_id ) {
-
 		// only the rsvp order key is non numeric
 		if ( ! is_numeric( $post_id ) ) {
 			$post_id = esc_attr( $post_id );
@@ -102,7 +101,6 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return $cpt_arr;
-
 	}
 
 	/**
@@ -113,7 +111,6 @@ class Tribe__Tickets__Data_API {
 	 * @return array
 	 */
 	public function get_event_ids( $post_id ) {
-
 		$services = $this->detect_by_id( $post_id );
 		if ( ! is_array( $services ) ) {
 			$services = array();
@@ -193,7 +190,6 @@ class Tribe__Tickets__Data_API {
 	 * @return bool/object
 	 */
 	public function get_ticket_provider( $post_id ) {
-
 		$services = $this->detect_by_id( $post_id );
 
 		// if no module class return
@@ -202,7 +198,6 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return $services['class']::get_instance();
-
 	}
 
 	/**
@@ -214,9 +209,7 @@ class Tribe__Tickets__Data_API {
 	 * @return mixed
 	 */
 	public function get_attendees_by_id( $post_id, $context = null ) {
-
 		return $this->get_attendees( $post_id, $context );
-
 	}
 
 	/**
@@ -228,14 +221,12 @@ class Tribe__Tickets__Data_API {
 	 * @return bool
 	 */
 	public function attendees_has_meta_data( $post_id, $context = null ) {
-
 		$attendees = $this->get_attendees( $post_id, $context );
 		if ( ! is_array( $attendees ) ) {
 			return false;
 		}
 
 		return $this->attendees_meta_check( false, $attendees );
-
 	}
 
 	/**
@@ -247,7 +238,6 @@ class Tribe__Tickets__Data_API {
 	 * @return bool
 	 */
 	public function ticket_has_meta_fields( $post_id, $context = null ) {
-
 		$services = $this->detect_by_id( $post_id );
 		if ( ! is_array( $services ) ) {
 			$services = array();
@@ -302,7 +292,6 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return $product_ids;
-
 	}
 
 	/**
@@ -352,7 +341,6 @@ class Tribe__Tickets__Data_API {
 	 * @return mixed
 	 */
 	protected function get_attendees( $post_id, $context, $services = false ) {
-
 		if ( ! $services ) {
 			$services = $this->detect_by_id( $post_id );
 		}
@@ -386,7 +374,6 @@ class Tribe__Tickets__Data_API {
 	 * @return bool
 	 */
 	protected function attendees_meta_check( $has_meta, $attendees ) {
-
 		foreach ( $attendees as $attendee ) {
 			if ( isset( $attendee['attendee_meta'] ) && ! empty( $attendee['attendee_meta'] ) ) {
 				$has_meta = true;
@@ -394,7 +381,6 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return $has_meta;
-
 	}
 
 
@@ -413,7 +399,6 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return Tribe__Tickets__RSVP::ATTENDEE_OBJECT;
-
 	}
 
 	/**
@@ -424,14 +409,12 @@ class Tribe__Tickets__Data_API {
 	 * @return mixed
 	 */
 	protected function get_rsvp_order_key( $post_id ) {
-
 		$order_key = get_post_meta( $post_id, Tribe__Tickets__RSVP::get_instance()->order_key, true );
 		if ( ! $order_key ) {
 			return $post_id;
 		}
 
 		return $order_key;
-
 	}
 
 	/**
@@ -444,7 +427,6 @@ class Tribe__Tickets__Data_API {
 	 * @return false|int|string
 	 */
 	protected function get_rsvp_post_id_from_order_key( $order_key ) {
-
 		$attendees_query = $this->query_by_rsvp_order_key( $order_key, 1 );
 		if ( ! $attendees_query->have_posts() ) {
 			return '';
@@ -460,7 +442,6 @@ class Tribe__Tickets__Data_API {
 		wp_reset_postdata();
 
 		return $post_id;
-
 	}
 
 
@@ -473,7 +454,6 @@ class Tribe__Tickets__Data_API {
 	 * @return WP_Query
 	 */
 	protected function query_by_rsvp_order_key( $order_key, $post_per_page = '-1' ) {
-
 		$attendees_query = new WP_Query( array(
 			'posts_per_page' => $post_per_page,
 			'post_type'      => Tribe__Tickets__RSVP::ATTENDEE_OBJECT,
@@ -484,7 +464,6 @@ class Tribe__Tickets__Data_API {
 		) );
 
 		return $attendees_query;
-
 	}
 
 }
