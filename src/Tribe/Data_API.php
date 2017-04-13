@@ -284,7 +284,6 @@ class Tribe__Tickets__Data_API {
 		}
 
 		return $has_meta_fields;
-
 	}
 
 	/**
