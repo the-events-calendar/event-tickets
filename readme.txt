@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.4.6] 2017-04-17 =
+= [4.4.6] 2017-04-19 =
 
 * Tweak — Some corrections on and tweaks of the welcome screen. [75575]
 
