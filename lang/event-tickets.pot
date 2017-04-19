@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.4.5\n"
+"Project-Id-Version: Event Tickets 4.4.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2017-03-23 18:30:24+00:00\n"
+"POT-Creation-Date: 2017-04-19 14:02:00+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-03-23 18:30\n"
+"PO-Revision-Date: 2017-04-19 14:02\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
@@ -413,51 +413,51 @@ msgstr ""
 msgid "RSVP Ticket"
 msgstr ""
 
-#: src/Tribe/RSVP.php:679
+#: src/Tribe/RSVP.php:704
 msgid "Your tickets from %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:709
+#: src/Tribe/RSVP.php:734
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:965
+#: src/Tribe/RSVP.php:990
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr ""
 
-#: src/Tribe/RSVP.php:971
+#: src/Tribe/RSVP.php:996
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr ""
 
-#: src/Tribe/RSVP.php:976
+#: src/Tribe/RSVP.php:1001
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1115
+#: src/Tribe/RSVP.php:1140
 msgid "(deleted)"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1383
+#: src/Tribe/RSVP.php:1408
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1390
+#: src/Tribe/RSVP.php:1415
 msgid "Post updated. %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1394
+#: src/Tribe/RSVP.php:1419
 msgid "Post published. %1$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1397
+#: src/Tribe/RSVP.php:1422
 msgid "Post submitted."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1398
+#: src/Tribe/RSVP.php:1423
 msgid "Post scheduled."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1399
+#: src/Tribe/RSVP.php:1424
 msgid "Post draft updated."
 msgstr ""
 
@@ -656,7 +656,7 @@ msgid "We Need Your Help"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:19
-msgid "Your ratings help us bring The Events Calendar to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support."
+msgid "Your ratings help us bring Event Tickets to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support."
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:20
@@ -672,7 +672,7 @@ msgid "Newsletter Signup"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:25
-msgid "Stay in touch with Event Tickets Plus. We send out periodic updates, key developer notices, and even the occasional discount."
+msgid "Stay in touch with Event Tickets. We send out periodic updates, key developer notices, and even the occasional discount."
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:29
