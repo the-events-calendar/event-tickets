@@ -675,7 +675,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ) );
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
 		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
-		$subject     = apply_filters( 'tribe_rsvp_email_subject',
+		$subject     = apply_filters( 'tribe_rsvp_email_subject_send_tickets',
 			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ) );
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
@@ -705,7 +705,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ) );
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
 		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
-		$subject     = apply_filters( 'tribe_rsvp_email_subject',
+		$subject     = apply_filters( 'tribe_rsvp_email_subject_send_non_attendance',
 			sprintf( __( 'You confirmed you will not be attending %s', 'event-tickets' ), get_the_title( $event_id ) )
 		);
 
