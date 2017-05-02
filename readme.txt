@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.7] TBD =
+
+* Fix — Fixed "Email attendees" modal window display on mobile devices [72558]
+
 = [4.4.6] 2017-04-19 =
 
 * Tweak — Some corrections on and tweaks of the welcome screen [75575]
