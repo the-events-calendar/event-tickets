@@ -192,7 +192,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Geoff Graham](https://profiles.wordpress.org/geoffgraham)
 * [George Gecewicz](https://profiles.wordpress.org/ggwicz)
 * [Gustavo Bordoni](https://profiles.wordpress.org/bordoni)
-* [Hunter Wilson](https://profiles.wordpress.org/joinfof)
 * [Leah Koerper](https://profiles.wordpress.org/leahkoerper)
 * [Luca Tumedei](https://profiles.wordpress.org/lucatume)
 * [Matthew Batchelder](https://profiles.wordpress.org/borkweb)
