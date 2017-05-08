@@ -504,7 +504,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							var start_hour = parseInt( response.data.start_date.substring( 11, 13 ) );
 							var start_meridian = 'am';
 
-							if ( start_hour > 12 && $start_meridian.length ) {
+							if ( start_hour > 12 ) {
 								start_meridian = 'pm';
 								start_hour = parseInt( start_hour ) - 12;
 								start_hour = ( '0' + start_hour ).slice( - 2 );
@@ -522,8 +522,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								start_hour = '0' + start_hour;
 							}
 
-							$( '#ticket_start_hour' ).val( start_hour );
-							$( '#ticket_start_meridian' ).val( start_meridian );
+							$( '#ticket_start_hour' ).val( start_hour ).trigger( "change" );
+							$( '#ticket_start_minute' ).val( response.data.start_date.substring( 14, 16 ) ).trigger( "change" );
+							$( '#ticket_start_meridian' ).val( start_meridian ).trigger( "change" );
 
 							$( '.ticket_start_time' ).show();
 						}
@@ -551,11 +552,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								end_hour = '0' + end_hour;
 							}
 
-							$( '#ticket_end_hour' ).val( end_hour );
-							$( '#ticket_end_meridian' ).val( end_meridian );
-
-							$( '#ticket_start_minute' ).val( response.data.start_date.substring( 14, 16 ) );
-							$( '#ticket_end_minute' ).val( response.data.end_date.substring( 14, 16 ) );
+							$( '#ticket_end_hour' ).val( end_hour ).trigger( "change" );
+							$( '#ticket_end_minute' ).val( response.data.end_date.substring( 14, 16 ) ).trigger( "change" );
+							$( '#ticket_end_meridian' ).val( end_meridian ).trigger( "change" );
 
 							$( '.ticket_end_time' ).show();
 						}

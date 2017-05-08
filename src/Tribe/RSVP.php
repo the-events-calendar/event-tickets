@@ -268,7 +268,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function register_types() {
 
-		register_post_type( $this->ticket_object, array(
+		$ticket_post_args = array(
 			'label'           => 'Tickets',
 			'labels'          => array(
 				'name'          => __( 'RSVP Tickets', 'event-tickets' ),
@@ -282,10 +282,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'capability_type' => 'post',
 			'has_archive'     => false,
 			'hierarchical'    => true,
-		) );
+		);
 
-
-		register_post_type( self::ATTENDEE_OBJECT, array(
+		$attendee_post_args = array(
 			'label'           => 'Attendees',
 			'public'          => false,
 			'show_ui'         => false,
@@ -295,7 +294,33 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'capability_type' => 'post',
 			'has_archive'     => false,
 			'hierarchical'    => true,
-		) );
+		);
+
+		/**
+		 * Filter the arguments that craft the ticket post type.
+		 *
+		 * @since 4.4.6
+		 *
+		 * @see register_post_type
+		 *
+		 * @param array $ticket_post_args Post type arguments, passed to register_post_type()
+		 */
+		$ticket_post_args = apply_filters( 'tribe_tickets_register_ticket_post_type_args', $ticket_post_args );
+
+		register_post_type( $this->ticket_object, $ticket_post_args );
+
+		/**
+		 * Filter the arguments that craft the attendee post type.
+		 *
+		 * @since 4.4.6
+		 *
+		 * @see register_post_type
+		 *
+		 * @param array $attendee_post_args Post type arguments, passed to register_post_type()
+		 */
+		$attendee_post_args = apply_filters( 'tribe_tickets_register_attendee_post_type_args', $attendee_post_args );
+
+		register_post_type( self::ATTENDEE_OBJECT, $attendee_post_args );
 	}
 
 	/**

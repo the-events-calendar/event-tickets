@@ -704,17 +704,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_event_attendees( $event_id ) {
-			$attendees = array();
+			$attendees_from_cache = false;
+			$attendees            = array();
+
 			if ( ! is_admin() ) {
 				$post_transient = Tribe__Post_Transient::instance();
 
-				$attendees = $post_transient->get( $event_id, self::ATTENDEES_CACHE );
-				if ( ! $attendees ) {
-					$attendees = array();
+				$attendees_from_cache = $post_transient->get( $event_id, self::ATTENDEES_CACHE );
+
+				// if there is a valid transient, we'll use the value from that and note
+				// that we have fetched from cache
+				if ( false !== $attendees_from_cache ) {
+					$attendees            = empty( $attendees_from_cache ) ? array() : $attendees_from_cache;
+					$attendees_from_cache = true;
 				}
 			}
 
-			if ( empty( $attendees ) ) {
+			// if we haven't grabbed attendees from cache, then attempt to fetch attendees
+			if ( false === $attendees_from_cache && empty( $attendees ) ) {
 				foreach ( self::modules() as $class => $module ) {
 					$obj       = call_user_func( array( $class, 'get_instance' ) );
 					$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );

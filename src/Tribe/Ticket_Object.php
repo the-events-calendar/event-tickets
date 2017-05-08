@@ -384,14 +384,19 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Method to manage the protected `stock` propriety of the Object
-		 * Prevents setting `stock` lower then zero
+		 * Prevents setting `stock` lower then zero.
+		 *
+		 * Returns the current ticket stock level: either an integer or an
+		 * empty string (Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK)
+		 * if stock is unlimited.
 		 *
 		 * @param int|null $value This will overwrite the old value
-		 * @return int
+		 *
+		 * @return int|string
 		 */
 		public function stock( $value = null ) {
 			// If the Value was passed as numeric value overwrite
-			if ( is_numeric( $value ) ) {
+			if ( is_numeric( $value ) || $value === self::UNLIMITED_STOCK ) {
 				$this->stock = $value;
 			}
 

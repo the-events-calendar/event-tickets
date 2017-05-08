@@ -1,9 +1,9 @@
-=== Event Tickets ===
+ === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, mdbitz, MZAWeb, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, ryancurban, shelbelliott, shane.pearlman, aguseo, tribecari, trishasalas
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, mdbitz, MZAWeb, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, ryancurban, shelbelliott, shane.pearlman, aguseo, tribecari, trishasalas, courane01, GeoffBel, vicskf
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 3.9
-Tested up to: 4.7.2
+Tested up to: 4.7.4
 Stable tag: 4.5dev1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -12,7 +12,7 @@ Event Tickets allows your visitors to RSVP to events on your site.  Also works s
 
 == Description ==
 
-Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with The Events Calendar, you can add that same RSVP functionality directly to your event listings.
+Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same RSVP functionality directly to your event listings.
 
 Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
 
@@ -192,7 +192,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Geoff Graham](https://profiles.wordpress.org/geoffgraham)
 * [George Gecewicz](https://profiles.wordpress.org/ggwicz)
 * [Gustavo Bordoni](https://profiles.wordpress.org/bordoni)
-* [Hunter Wilson](https://profiles.wordpress.org/joinfof)
 * [Leah Koerper](https://profiles.wordpress.org/leahkoerper)
 * [Luca Tumedei](https://profiles.wordpress.org/lucatume)
 * [Matthew Batchelder](https://profiles.wordpress.org/borkweb)
@@ -234,12 +233,39 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 == Changelog ==
 
 = [4.5dev1] TBD =
+
 * Add - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
+
+= [4.4.7] 2017-05-04 =
+
+* Fix — Fixed "Email attendees" modal window display on mobile devices [72558]
+
+= [4.4.6] 2017-04-19 =
+
+* Tweak — Some corrections on and tweaks of the welcome screen [75575]
+* Tweak - Added filters for adjusting the register post type arguments
+
+= [4.4.5] 2017-03-23 =
+
+* Fix - Improve handling of unlimited ticket stock (props: @jtsternberg) [74123]
+* Fix - A PHP error rendered the help tab broken [75544]
+
+= [4.4.4] 2017-03-08 =
+
+* Fix - Fixed a bug that casued an inconsistency with the check-in/undo check-in button (thanks to @joe for the report in the forums) [68414]
+* Fix - Fixed a bug that displayed an error message even for successful check-ins via QR code [68416]
+
+= [4.4.3] 2017-02-22 =
+
+* Fix - Avoid using TEC functions if TEC isn't activated (thanks for reporting @Liesbet) [72499]
+* Fix - Fixed bug where the ticket page link template filter on the_content was being executed on every post type regardless of whether the post type had tickets enabled (props to nichestudio on our forums) [70485]
+* Fix - Ensure the Confirm RSVP button is always visible when ticket stock is available (thank you @Terry for the report in our forums) [73539]
 
 = [4.4.2] 2017-02-09 =
 
 * Tweak - Print styles for the attendees report are now more efficient (props @ajuliano) [72772]
 * Fix - Email template file: link event title to event single page, add state/province and postal code to venue information, link venue address to Google Map link if the event's Show Google Maps Link option is checked [72475]
+* Fix - Resolved an issue where attendees would always attempt to be fetched and set in tranients - even when an un-expired transient held an empty attendee list. (props to nichestudio on our forums) [70485]
 
 = [4.4.1] 2017-01-26 =
 

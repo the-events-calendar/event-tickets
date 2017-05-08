@@ -6,13 +6,14 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.4.1
+ * @version 4.4.3
  *
  * @var bool $must_login
  */
 
 $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
+$are_products_available       = false;
 
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();

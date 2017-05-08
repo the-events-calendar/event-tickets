@@ -381,6 +381,11 @@ class Tribe__Tickets__Tickets_View {
 		$post_id = get_the_ID();
 		$user_id = get_current_user_id();
 
+		// if the current post type doesn't have tickets enabled for it, bail
+		if ( ! tribe_tickets_post_type_enabled( get_post_type( $post_id ) ) ) {
+			return $content;
+		}
+
 		/**
 		 * @todo Remove this after we implement the Rewrites in Common
 		 */

@@ -81,7 +81,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		echo '
 			<li class="post-type">
-				<strong>' . esc_html__( 'Post type', 'tribe-events' ) . ': </strong>
+				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
 				' . esc_html( $pto->label ) . '
 			</li>
 		';

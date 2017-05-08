@@ -140,7 +140,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				params,
 				function( response ) {
 					if ( response.success ) {
-						obj.parent( 'td' ).parent( 'tr' ).addClass( 'tickets_checked' );
+						obj.closest( 'tr' ).addClass( 'tickets_checked' );
 
 						$( '#total_checkedin' ).text( parseInt( $( '#total_checkedin' ).text() ) + 1 );
 					}
@@ -172,7 +172,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 				params,
 				function( response ) {
 					if ( response.success ) {
-						obj.parent( 'span' ).parent( 'td' ).parent( 'tr' ).removeClass( 'tickets_checked' );
+						obj.closest( 'tr' ).removeClass( 'tickets_checked' );
 						$( '#total_checkedin' ).text( parseInt( $( '#total_checkedin' ).text() ) - 1 );
 					}
 				},

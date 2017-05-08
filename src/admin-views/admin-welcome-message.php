@@ -16,13 +16,13 @@ $video_url = 'https://vimeo.com/172163102';
 <div class="tribe-row">
 	<div class="tribe-half-column">
 		<h2><?php esc_html_e( 'We Need Your Help', 'event-tickets' ); ?></h2>
-		<p><?php esc_html_e( "Your ratings help us bring The Events Calendar to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support.", 'event-tickets' ); ?></p>
+		<p><?php esc_html_e( "Your ratings help us bring Event Tickets to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support.", 'event-tickets' ); ?></p>
 		<p><strong><?php esc_html_e( 'Rate us today!', 'event-tickets' ); ?></strong> <a class="tribe-rating-link" href="http://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank">&#9733;&#9733;&#9733;&#9733;&#9733;</a></p>
 		<a href="http://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank" class="button-primary"><?php esc_html_e( 'Rate It', 'event-tickets' ); ?></a>
 	</div>
 	<div class="tribe-half-column">
 		<h2><?php esc_html_e( 'Newsletter Signup', 'event-tickets' ); ?></h2>
-		<p><?php esc_html_e( 'Stay in touch with Event Tickets Plus. We send out periodic updates, key developer notices, and even the occasional discount.', 'event-tickets' ); ?></p>
+		<p><?php esc_html_e( 'Stay in touch with Event Tickets. We send out periodic updates, key developer notices, and even the occasional discount.', 'event-tickets' ); ?></p>
 		<form action="http://moderntribe.createsend.com/t/r/s/athqh/" method="post">
 			<p>
 				<input id="dev-news-field" name="cm-ol-thkduyk" type="checkbox" />
