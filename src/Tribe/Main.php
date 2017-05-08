@@ -374,6 +374,9 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
 		tribe( 'tickets.query' );
 
+		// Tribe Data API Init
+		tribe_singleton( 'tickets.data_api', 'Tribe__Tickets__Data_API' );
+
 		// View links, columns and screen options
 		if ( is_admin() ) {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );

@@ -239,14 +239,55 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		abstract protected function get_tickets( $event_id );
 
 		/**
+		 * Get attendees by id and associated post type
+		 * or default to using $post_id
+		 *
+		 * @param      $post_id
+		 * @param null $post_type
+		 *
+		 * @return array|mixed
+		 */
+		abstract public function get_attendees_by_id( $post_id );
+
+		/**
 		 * Get all the attendees (sold tickets) for an event
+		 *
 		 * @abstract
 		 *
-		 * @param $event_id
+		 * @param $post_id
 		 *
 		 * @return mixed
 		 */
-		abstract protected function get_attendees( $event_id );
+		abstract protected function get_attendees_by_post_id( $post_id );
+
+		/**
+		 * Get Attendees by ticket/attendee ID
+		 *
+		 * @param $attendee_id
+		 *
+		 * @return array
+		 */
+		abstract protected function get_attendees_by_attendee_id( $attendee_id );
+
+		/**
+		 * Get attendees by order id
+		 *
+		 * @param $order_id
+		 *
+		 * @return array
+		 */
+		abstract protected function get_attendees_by_order_id( $order_id );
+
+
+		/**
+		 * Get attendees from provided query
+		 *
+		 * @param WP_Query $attendees_query
+		 * @param          $post_id
+		 *
+		 * @return mixed
+		 */
+		abstract protected function get_attendees( WP_Query $attendees_query, $post_id );
 
 		/**
 		 * Mark an attendee as checked in
@@ -724,7 +765,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( false === $attendees_from_cache && empty( $attendees ) ) {
 				foreach ( self::modules() as $class => $module ) {
 					$obj       = call_user_func( array( $class, 'get_instance' ) );
-					$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
+					$attendees = array_merge( $attendees, $obj->get_attendees_by_post_id( $event_id ) );
 				}
 
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
@@ -764,7 +805,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_attendees_array( $event_id ) {
-			return $this->get_attendees( $event_id );
+			return $this->get_attendees_by_post_id( $event_id );
 		}
 
 		/**
