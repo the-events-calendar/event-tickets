@@ -415,10 +415,9 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Add an Anchor for users to be able to link to
-	 * The height is to make sure it links on all browsers
+	 * Prints a div with an ID that can be used to link to the ticket form location.
 	 *
-	 * @return void
+	 * The height is specified inline to ensure this works x-browser.
 	 */
 	public function add_linking_anchor() {
 		echo '<div id="buy-tickets" style="height: 1px;"></div>';
