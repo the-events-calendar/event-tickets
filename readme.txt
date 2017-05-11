@@ -232,6 +232,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.8] TBD =
+
+* Tweak - Now uses tribe_tickets_get_template_part() to load the email/tickets template for increased flexibility [69660]
+
 = [4.4.7] 2017-05-04 =
 
 * Fix — Fixed "Email attendees" modal window display on mobile devices [72558]

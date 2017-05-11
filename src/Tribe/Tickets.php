@@ -1081,16 +1081,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function generate_tickets_email_content( $tickets ) {
-			ob_start();
-			$file = $this->getTemplateHierarchy( 'tickets/email.php' );
-
-			if ( ! file_exists( $file ) ) {
-				$file = Tribe__Tickets__Main::instance()->plugin_path . 'src/views/tickets/email.php';
-			}
-
-			include $file;
-
-			return ob_get_clean();
+			return tribe_tickets_get_template_part( 'tickets/email', null, array( 'tickets' => $tickets ), false );
 		}
 
 		/**
