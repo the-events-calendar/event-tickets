@@ -361,9 +361,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Front end
 			$ticket_form_hook = $this->get_ticket_form_hook();
+
 			if ( ! empty( $ticket_form_hook ) ) {
+				add_action( $ticket_form_hook, array( Tribe__Tickets__Main::instance(), 'add_linking_anchor' ), 4 );
 				add_action( $ticket_form_hook, array( $this, 'front_end_tickets_form' ), 5 );
 			}
+
 			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'show_tickets_unavailable_message' ), 6 );
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ), 11 );
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
@@ -1081,16 +1084,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function generate_tickets_email_content( $tickets ) {
-			ob_start();
-			$file = $this->getTemplateHierarchy( 'tickets/email.php' );
-
-			if ( ! file_exists( $file ) ) {
-				$file = Tribe__Tickets__Main::instance()->plugin_path . 'src/views/tickets/email.php';
-			}
-
-			include $file;
-
-			return ob_get_clean();
+			return tribe_tickets_get_template_part( 'tickets/email', null, array( 'tickets' => $tickets ), false );
 		}
 
 		/**
