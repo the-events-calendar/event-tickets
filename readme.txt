@@ -234,8 +234,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.4.8] TBD =
 
+* Fix - Remove undefined and unneeded template variable [77421]
 * Fix - Location of the #buy-tickets anchor should respect the ticket form location (our thanks to Hans for reporting this) [77992]
 * Tweak - Language and text changes [68432]
+* Tweak - Now uses tribe_tickets_get_template_part() to load the email/tickets template for increased flexibility [69660]
 
 = [4.4.7] 2017-05-04 =
 
