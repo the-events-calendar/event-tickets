@@ -12,7 +12,7 @@
  * @var int   $order_id
  * @var array $attendees
  *
- * @version 4.4.3
+ * @version 4.4.8
  */
 
 $start_date = function_exists( 'tribe_get_start_date' ) ? tribe_get_start_date( $event_id ) : null;
@@ -229,7 +229,7 @@ $start_date = function_exists( 'tribe_get_start_date' ) ? tribe_get_start_date( 
 		do_action( 'tribe_tickets_ticket_email_top' );
 		?>
 
-		<table class="content" align="center" width="620" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="margin:0 auto; padding:0;<?php echo $break; ?>;">
+		<table class="content" align="center" width="620" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="margin:0 auto; padding:0;">
 			<tr>
 				<td align="center" valign="top" class="wrapper" width="620">
 					<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; line-height: 100%; text-align:left;">
