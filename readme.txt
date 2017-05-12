@@ -234,6 +234,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.4.8] TBD =
 
+* Fix - Location of the #buy-tickets anchor should respect the ticket form location (our thanks to Hans for reporting this) [77992]
 * Tweak - Language and text changes [68432]
 
 = [4.4.7] 2017-05-04 =
