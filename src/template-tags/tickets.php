@@ -246,10 +246,36 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 			$stock = false;
 		}
 
+		$stock_html = '';
 		if ( $stock ) {
-			$stock = '<span class="tribe-tickets-left">' . $stock . ' ' . esc_html_x( 'tickets left', 'list view tickets left', 'event-tickets' ) . '</span>';
+			$stock_html = '<span class="tribe-tickets-left">';
+			if ( $rsvp ) {
+				$stock_html .= esc_html(
+					sprintf(
+						_n(
+							'%s spot left',
+							'%s spots left',
+							$stock,
+							'event-tickets'
+						),
+						$stock
+					)
+				);
+			} else {
+				$stock_html .= esc_html(
+					sprintf(
+						_n(
+							'%s ticket left',
+							'%s tickets left',
+							$stock,
+							'event-tickets'
+						),
+						$stock
+					)
+				);
+			}
+			$stock_html .= '</span>';
 		}
-
 
 		$button_label  = esc_html_x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
 		$button_anchor = '#buy-tickets';
@@ -267,7 +293,7 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 		 * @var $types    the ticket and rsvp count array for event
 		 * @var $event_id the event id
 		 */
-		echo apply_filters( 'tribe_tickets_stock_and_purchase_button', $stock . $button, $types, $event_id );
+		echo apply_filters( 'tribe_tickets_stock_and_purchase_button', $stock_html . $button, $types, $event_id );
 	}
 }
 
