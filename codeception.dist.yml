@@ -11,32 +11,32 @@ settings:
 modules:
     config:
         WPBrowser:
-            url: 'http://tribe-pro.dev'
+            url: 'http://tec.tri.be'
             adminUsername: admin
-            adminPassword: password
+            adminPassword: admin
             adminUrl: /wp-admin
         WPDb:
-            dsn: 'mysql:host=127.0.0.1;dbname=tec-tests'
+            dsn: 'mysql:host=localhost;dbname=test'
             user: root
-            password: password
+            password: ''
             dump: tests/_data/dump.sql
             populate: true
             cleanup: true
-            url: 'http://tribe-pro.dev'
-            tablePrefix: wptests_
+            url: 'http://tec.tri.be'
+            tablePrefix: wp_
         WPLoader:
-            wpRootFolder: /Users/Luca/Sites/tribe-pro
-            dbName: tribe-pro-tests
-            dbHost: 127.0.0.1
+            wpRootFolder: /tmp/wordpress
+            dbName: wploader
+            dbHost: localhost
             dbUser: root
-            dbPassword: password
+            dbPassword: ''
             wpDebug: true
             dbCharset: utf8
             dbCollate: ''
             tablePrefix: wp_
-            domain: tribe-pro.dev
-            adminEmail: admin@tec.tri.ve
-            title: 'Event Tickets Tests'
+            domain: tec.tri.be
+            adminEmail: admin@tec.tri.be
+            title: 'Event Ticket Tests'
             phpBinary: php
             language: ''
             plugins:
@@ -46,11 +46,12 @@ modules:
                 - the-events-calendar/the-events-calendar.php
                 - event-tickets/event-tickets.php
         WPWebDriver:
-            url: 'http://tribe-pro.dev'
+            url: 'http://tec.tri.be'
             browser: phantomjs
             port: 4444
             restart: true
-            wait: 2
+            wait: 0
             adminUsername: admin
             adminPassword: admin
-            adminPath: /wp-admin
+            adminUrl: /wp-admin
+            windowSize: 1200x100

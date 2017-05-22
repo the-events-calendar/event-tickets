@@ -1,10 +1,10 @@
  === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, mdbitz, MZAWeb, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, ryancurban, shelbelliott, shane.pearlman, aguseo, tribecari, trishasalas, courane01
+Contributors: ModernTribe, borkweb, zbtirrell, barry.hughes, bordoni, brianjessee, brook-tribe, faction23, geoffgraham, ggwicz, jazbek, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, mdbitz, MZAWeb, neillmcshea, nicosantos, peterchester, reid.peifer, roblagatta, ryancurban, shelbelliott, shane.pearlman, aguseo, tribecari, trishasalas, courane01, GeoffBel, vicskf
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 3.9
-Tested up to: 4.7.3
-Stable tag: 4.4.7
+Tested up to: 4.7.5
+Stable tag: 4.4.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -192,7 +192,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Geoff Graham](https://profiles.wordpress.org/geoffgraham)
 * [George Gecewicz](https://profiles.wordpress.org/ggwicz)
 * [Gustavo Bordoni](https://profiles.wordpress.org/bordoni)
-* [Hunter Wilson](https://profiles.wordpress.org/joinfof)
 * [Leah Koerper](https://profiles.wordpress.org/leahkoerper)
 * [Luca Tumedei](https://profiles.wordpress.org/lucatume)
 * [Matthew Batchelder](https://profiles.wordpress.org/borkweb)
@@ -232,6 +231,17 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Timothy Wood](https://profiles.wordpress.org/codearachnid)
 
 == Changelog ==
+
+= [4.4.8] 2017-05-17 =
+
+* Fix - Remove undefined and unneeded template variable [77421]
+* Fix - Location of the #buy-tickets anchor should respect the ticket form location (our thanks to Hans for reporting this) [77992]
+* Tweak - Language and text changes [68432]
+* Tweak - Now uses tribe_tickets_get_template_part() to load the email/tickets template for increased flexibility [69660]
+
+= [4.4.7] 2017-05-04 =
+
+* Fix — Fixed "Email attendees" modal window display on mobile devices [72558]
 
 = [4.4.6] 2017-04-19 =
 

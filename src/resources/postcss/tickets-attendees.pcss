@@ -311,3 +311,20 @@
 		}
 	}
 }
+
+/*
+ * Preserves utility of modal windows in mobile view. !important declarations
+ * are unfortunately needed to override Thickbox's inline styles.
+ */
+@media screen and ( max-width: 440px ) {
+	
+	#TB_window {
+		left: 0 !important;
+		margin-left: 0 !important;
+		width: 100% !important;
+	}
+
+	#TB_iframeContent {
+		width: 100% !important;
+	}
+}
