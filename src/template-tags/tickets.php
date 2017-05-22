@@ -173,7 +173,7 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 
 		$cta_html = '';
 
-		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out messages
+		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
 		if ( ( $types['tickets']['count'] || $types['rsvp']['count'] ) && ( ! $types['tickets']['available'] && ! $types['rsvp']['available'] ) ) {
 
 			$cta_html = '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
@@ -248,7 +248,7 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 								$stock,
 								'event-tickets'
 							),
-							$stock
+							number_format_i18n( $stock )
 						)
 					);
 				} else {
@@ -260,7 +260,7 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 								$stock,
 								'event-tickets'
 							),
-							$stock
+							number_format_i18n( $stock )
 						)
 					);
 				}
