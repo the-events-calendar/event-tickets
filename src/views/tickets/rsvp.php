@@ -82,24 +82,6 @@ $now = current_time( 'timestamp' );
 		</tr>
 
 		<?php
-			if ( $meta->meta_enabled( $ticket->ID ) ) {
-				?>
-				<noscript>
-					<tr>
-						<p class="tribe-link-tickets-message">
-							<?php esc_html_e( 'Please enable JavaScript to obtain tickets.', 'tribe-extension' ); ?>
-						</p>
-						<style>
-							.tribe-rsvp-ticket-row-<?php echo absint( $ticket->ID ); ?> {
-								display: none;
-							}
-						</style>
-					</tr>
-				</noscript>
-				<?php
-			}
-
-
 			/**
 			 * Allows injection of HTML after an RSVP ticket table row
 			 *
@@ -170,6 +152,14 @@ $now = current_time( 'timestamp' );
 				</td>
 			</tr>
 		<?php endif; ?>
+
+		<noscript>
+			<tr>
+				<td class="tribe-link-tickets-message">
+					<div class="no-javascript-msg"><?php esc_html_e( 'You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser.', 'event-tickets' ); ?></div>
+				</td>
+			</tr>
+		</noscript>
 	</table>
 </form>
 
