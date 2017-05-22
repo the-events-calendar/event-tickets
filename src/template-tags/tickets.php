@@ -158,6 +158,11 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 
 		$event_id = get_the_ID();
 
+		// check if there are any tickets on sale
+		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
+			return null;
+		}
+
 		// get an array for ticket and rsvp counts
 		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
 
@@ -263,7 +268,6 @@ if ( ! function_exists( 'tribe_tickets_display_count_and_ticket_button' ) ) {
 		 * @var $event_id the event id
 		 */
 		echo apply_filters( 'tribe_tickets_stock_and_purchase_button', $stock . $button, $types, $event_id );
-
 	}
 }
 
@@ -351,6 +355,25 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 	}
 }//end if
 
+if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
+	/**
+	 * Checks if the event has any tickets on sale
+	 *
+	 * @param int $event_id
+	 *
+	 * @return bool
+	 */
+	function tribe_events_has_tickets_on_sale( $event_id ) {
+		$has_tickets_on_sale = false;
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		foreach ( $tickets as $ticket ) {
+			$has_tickets_on_sale = ( $has_tickets_on_sale || tribe_events_ticket_is_on_sale( $ticket ) );
+		}
+
+		return $has_tickets_on_sale;
+	}
+}
+
 if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	/**
 	 * Gets the "tickets sold" message for a given ticket
@@ -412,8 +435,6 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			}
 
 			$message = sprintf( '%1$d %2$s%3$s', absint( $sold ), esc_html( $sold_label ), esc_html( $status ) );
-
-
 		}
 
 		return $message;
