@@ -141,7 +141,7 @@ class Tribe__Tickets__Data_API {
 		$is_product = array_intersect( array( 'product' ), $services );
 		if ( $is_product ) {
 			$tribe_for_event = $this->ticket_class[ $module_class ]['tribe_for_event'];
-			$event_ids[]     = get_post_meta( $post_id, $tribe_for_event, true );
+			$event_ids[]     = (int) get_post_meta( $post_id, $tribe_for_event, true );
 
 			return $event_ids;
 		}
@@ -150,7 +150,7 @@ class Tribe__Tickets__Data_API {
 		// if rsvp or a ticket id get the connected id field
 		$is_ticket_attendee = array_intersect( array( 'ticket', 'attendee' ), $services );
 		if ( 'Tribe__Tickets__RSVP' === $module_class || $is_ticket_attendee ) {
-			$event_ids[] = get_post_meta( $post_id, $event_id_key, true );
+			$event_ids[] = (int) get_post_meta( $post_id, $event_id_key, true );
 
 			return $event_ids;
 		}
@@ -174,7 +174,7 @@ class Tribe__Tickets__Data_API {
 			$event_id = get_post_meta( $ticket->ID, $event_id_key, true );
 
 			if ( ! in_array( $event_id, $event_ids ) ) {
-				$event_ids[] = $event_id;
+				$event_ids[] = (int) $event_id;
 			}
 		}
 
