@@ -1309,8 +1309,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Given a valid order ID, returns the event ID it relates to or else boolean false
+		 * Given a valid order ID, returns a single event ID it relates to or else boolean false
 		 * if it cannot be determined.
+		 *
+		 * @see Use tribe_tickets_get_event_ids() to return an array of all event ids for an order
 		 *
 		 * @param  int   $order_id
 		 * @return mixed int|bool
