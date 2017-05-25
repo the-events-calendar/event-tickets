@@ -70,7 +70,6 @@ class Tribe__Tickets__Data_API {
 	 *
 	 * @return array|bool array includes infomation available and the tribe_tickets_tickets class to use
 	 */
-
 	public function detect_by_id( $post = null ) {
 
 		// only the rsvp order key is non numeric
