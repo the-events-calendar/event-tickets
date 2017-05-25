@@ -1227,6 +1227,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$meta = '';
 			if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
 				$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
+
+				// Process Meta to include value, slug, and label
+				if ( ! empty( $meta ) ) {
+					$meta = $this->process_attendee_meta( $product_id, $meta );
+				}
 			}
 
 			$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(

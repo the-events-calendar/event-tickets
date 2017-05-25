@@ -66,18 +66,22 @@ class Tribe__Tickets__Data_API {
 	/**
 	 * Detect what is available in the custom post type by the id passed to it
 	 *
-	 * @param $post_id
+	 * @param null $post id or post object
 	 *
 	 * @return array|bool array includes infomation available and the tribe_tickets_tickets class to use
 	 */
-	public function detect_by_id( $post_id ) {
+	public function detect_by_id( $post = null ) {
+
 		// only the rsvp order key is non numeric
-		if ( ! is_numeric( $post_id ) ) {
-			$post_id = esc_attr( $post_id );
-			$cpt     = $this->check_rsvp_order_key_exists( $post_id );
+		if ( is_object( $post ) && ! empty( $post->ID ) ) {
+			$post = (int) $post->ID;
+			$cpt  = get_post_type( $post->ID );
+		} elseif ( ! is_numeric( $post ) ) {
+			$post = esc_attr( $post );
+			$cpt  = $this->check_rsvp_order_key_exists( $post );
 		} else {
-			$post_id = absint( $post_id );
-			$cpt     = get_post_type( $post_id );
+			$post = absint( $post );
+			$cpt  = get_post_type( $post );
 		}
 
 		// if no custom post type
@@ -128,8 +132,9 @@ class Tribe__Tickets__Data_API {
 		}
 
 		$module_class = $services['class'];
+
 		/**
-		 * if we have a rsvp order has and in order context
+		 * if we have a rsvp order with a unique rsvp order key
 		 * change $post_id to the first rsvp post's id
 		 */
 		if ( ! is_numeric( $post_id ) && 'Tribe__Tickets__RSVP' === $module_class ) {

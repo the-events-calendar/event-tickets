@@ -1419,6 +1419,56 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Process the attendee meta into an array with value, slug, and label
+		 *
+		 * @param $product_id
+		 * @param $meta
+		 *
+		 * @return array
+		 */
+		public function process_attendee_meta( $product_id, $meta ) {
+
+			$meta_vals = array();
+
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+				return $meta_vals;
+			}
+
+			$meta_field_objs = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $product_id );
+
+			foreach ( $meta_field_objs as $field ) {
+				$value = null;
+
+				if ( 'checkbox' === $field->type ) {
+					$field_prefix = $field->slug . '_';
+					$value        = array();
+
+					foreach ( $meta as $full_key => $check_value ) {
+						if ( 0 === strpos( $full_key, $field_prefix ) ) {
+							$short_key           = substr( $full_key, strlen( $field_prefix ) );
+							$value[ $short_key ] = $check_value;
+						}
+					}
+
+					if ( empty( $value ) ) {
+						$value = null;
+					}
+				} elseif ( isset( $meta[ $field->slug ] ) ) {
+					$value = $meta[ $field->slug ];
+				}
+
+				$meta_vals[ $field->slug ] = array(
+					'slug'  => $field->slug,
+					'label' => $field->label,
+					'value' => $value,
+				);
+			}
+
+			return $meta_vals;
+
+		}
+
+		/**
 		 * Returns the meta key used to link ticket types with the base event.
 		 *
 		 * If the meta key cannot be determined the returned string will be empty.
