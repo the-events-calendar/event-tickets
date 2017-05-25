@@ -74,12 +74,12 @@ class Tribe__Tickets__Data_API {
 	public function detect_by_id( $post = null ) {
 
 		// only the rsvp order key is non numeric
-		if ( ! is_numeric( $post ) ) {
-			$post = esc_attr( $post );
-			$cpt  = $this->check_rsvp_order_key_exists( $post );
-		} elseif ( is_object( $post ) && ! empty( $post->ID ) ) {
+		if ( is_object( $post ) && ! empty( $post->ID ) ) {
 			$post = (int) $post->ID;
 			$cpt  = get_post_type( $post->ID );
+		} elseif ( ! is_numeric( $post ) ) {
+			$post = esc_attr( $post );
+			$cpt  = $this->check_rsvp_order_key_exists( $post );
 		} else {
 			$post = absint( $post );
 			$cpt  = get_post_type( $post );

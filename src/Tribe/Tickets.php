@@ -1448,9 +1448,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						}
 					}
 
-					if ( empty ( $value ) ) {
+					if ( empty( $value ) ) {
 						$value = null;
 					}
+
 				} elseif ( isset( $meta[ $field->slug ] ) ) {
 					$value = $meta[ $field->slug ];
 				}
