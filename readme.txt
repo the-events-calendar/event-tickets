@@ -232,6 +232,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.9] TBD =
+* Add - Overlay over ticket fields when javascript is disabled to prevent ticket orders [63912]
+
 = [4.4.8] 2017-05-17 =
 
 * Fix - Remove undefined and unneeded template variable [77421]
