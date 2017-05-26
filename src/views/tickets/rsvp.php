@@ -14,7 +14,6 @@
 $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 $are_products_available       = false;
-$meta                         = Tribe__Tickets_Plus__Main::instance()->meta();
 
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
