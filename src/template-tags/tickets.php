@@ -689,7 +689,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
 
 	/**
-	 * Get attendee(s) by an id,
+	 * Get attendee(s) by an id
 	 *
 	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
 	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
