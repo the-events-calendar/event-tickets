@@ -36,6 +36,8 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		 *
 		 *     add_filter( 'tribe_tickets_supported_admin_columns', '__return_empty_array' );
 		 *
+		 * @since 4.4.9
+		 *
 		 * @param array $supported_columns
 		 */
 		$this->supported_columns = (array) apply_filters( 'tribe_tickets_supported_admin_columns', $this->supported_columns );
