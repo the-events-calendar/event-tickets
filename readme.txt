@@ -232,6 +232,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.9] TBD =
+
+* Performance - Allow ticket providers to defer expensive calculations until it's necessary to run them [79683]
+* Tweak - Introduce a new hook making it easier to disable the additional "Attendees" column [79683]
+
 = [4.4.8] 2017-05-17 =
 
 * Fix - Remove undefined and unneeded template variable [77421]
