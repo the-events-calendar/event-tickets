@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.4.3
+ * @version 4.4.9
  *
  * @var bool $must_login
  */
@@ -57,7 +57,7 @@ $now = current_time( 'timestamp' );
 				$are_products_available = true;
 			}
 		?>
-		<tr>
+		<tr class="tribe-rsvp-ticket-row-<?php echo absint( $ticket->ID ); ?>">
 			<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
 				<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket->ID ); ?>">
 				<?php if ( $is_there_any_product_to_sell ): ?>
@@ -79,8 +79,8 @@ $now = current_time( 'timestamp' );
 				<?php echo esc_html( $ticket->description ); ?>
 			</td>
 		</tr>
-		<?php
 
+		<?php
 			/**
 			 * Allows injection of HTML after an RSVP ticket table row
 			 *
@@ -130,7 +130,6 @@ $now = current_time( 'timestamp' );
 								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
 							</td>
 						</tr>
-
 						<?php if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() ) ) : ?>
 							<tr class="tribe-tickets-attendees-list-optout">
 								<td colspan="4">
@@ -152,6 +151,14 @@ $now = current_time( 'timestamp' );
 				</td>
 			</tr>
 		<?php endif; ?>
+
+		<noscript>
+			<tr>
+				<td class="tribe-link-tickets-message">
+					<div class="no-javascript-msg"><?php esc_html_e( 'You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser.', 'event-tickets' ); ?></div>
+				</td>
+			</tr>
+		</noscript>
 	</table>
 </form>
 

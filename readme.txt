@@ -234,6 +234,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.4.9] TBD =
 
+* Feature - Overlay over ticket fields when javascript is disabled to prevent ticket orders [63912]
 * Performance - Allow ticket providers to defer expensive calculations until it's necessary to run them [79683]
 * Tweak - Introduce a new hook making it easier to disable the additional "Attendees" column [79683]
 
