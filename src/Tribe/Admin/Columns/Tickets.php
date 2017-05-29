@@ -26,6 +26,21 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 */
 	public function __construct( $post_type = 'post' ) {
 		$this->post_type = $post_type;
+
+		/**
+		 * Provides a convenient way to control additional ticket specific admin
+		 * columns used in the WP Post list tables.
+		 *
+		 * To remove all currently supported columns (currently, there is only the
+		 * "attendees" column) for instance once can then do:
+		 *
+		 *     add_filter( 'tribe_tickets_supported_admin_columns', '__return_empty_array' );
+		 *
+		 * @since 4.4.9
+		 *
+		 * @param array $supported_columns
+		 */
+		$this->supported_columns = (array) apply_filters( 'tribe_tickets_supported_admin_columns', $this->supported_columns );
 	}
 
 	/**
@@ -36,9 +51,13 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @return array
 	 */
 	public function filter_manage_post_columns( array $columns = array() ) {
-		$columns['tickets'] = __( 'Attendees', 'event-tickets' );
+		$additional_columns = array();
 
-		return $columns;
+		if ( isset( $this->supported_columns['tickets'] ) ) {
+			$additional_columns['tickets'] = __( 'Attendees', 'event-tickets' );
+		}
+
+		return $columns + $additional_columns;
 	}
 
 	/**
