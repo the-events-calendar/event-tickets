@@ -10,6 +10,10 @@ msgstr ""
 "X-Generator: GlotPress/1.0-alpha-1100\n"
 "Project-Id-Version: Event Tickets\n"
 
+#: src/views/tickets/rsvp.php:158
+msgid "You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser."
+msgstr ""
+
 #: src/template-tags/tickets.php:280
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d Remaining"
@@ -360,8 +364,8 @@ msgid "moved to %s and"
 msgstr ""
 
 #: src/Tribe/Admin/Move_Tickets.php:452
-msgid "%1$d attendee for %2$s was successfully moved to %3$s. Please adjust stock manually as needed. This attendee will receive an email notifying them of the change."
-msgid_plural "%1$d attendees for %2$s were successfully moved to %3$s. Please adjust stock manually as needed. These attendees will receive an email notifying them of the change."
+msgid "%1$d attendee for %2$s was successfully %3$s. Please adjust stock manually as needed. This attendee will receive an email notifying them of the change."
+msgid_plural "%1$d attendees for %2$s were successfully %3$s. Please adjust stock manually as needed. These attendees will receive an email notifying them of the change."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -630,11 +634,11 @@ msgstr ""
 msgid "Send RSVP confirmation to:"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:138
+#: src/views/tickets/rsvp.php:137
 msgid "Don't list me on the public attendee list"
 msgstr "Neuvádějte mě na veřejném seznamu účastníků"
 
-#: src/views/tickets/rsvp.php:148
+#: src/views/tickets/rsvp.php:147
 msgid "Login to RSVP"
 msgstr ""
 
@@ -1004,7 +1008,7 @@ msgstr "Vaše vstupenka byla smazána."
 msgid "See who purchased tickets to this event"
 msgstr "Kdo si koupil vstupenky na tuto akci"
 
-#: src/Tribe/Admin/Columns/Tickets.php:39
+#: src/Tribe/Admin/Columns/Tickets.php:57
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
 #: src/Tribe/Tickets_Handler.php:140 src/admin-views/attendees.php:11
 #: src/admin-views/list.php:92
@@ -1197,11 +1201,11 @@ msgstr "Není skladem!"
 msgid "Full Name"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:150
+#: src/views/tickets/rsvp.php:149
 msgid "Confirm RSVP"
 msgstr "Potvrdit účast"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.4.8)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.4.9)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:502
 msgid "Event Tickets"
