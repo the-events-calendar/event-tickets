@@ -232,7 +232,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.4.9] 2017-05-31 =
+= [4.4.9] 2017-06-01 =
 
 * Feature - Overlay over ticket fields when javascript is disabled to prevent ticket orders [63912]
 * Performance - Allow ticket providers to defer expensive calculations until it's necessary to run them [79683]
