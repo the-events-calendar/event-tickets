@@ -237,6 +237,19 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Add - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
 * Add - An API to get ticket, attendee, event, and order infomation from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
 
+= [4.4.9] 2017-06-01 =
+
+* Feature - Overlay over ticket fields when javascript is disabled to prevent ticket orders [63912]
+* Performance - Allow ticket providers to defer expensive calculations until it's necessary to run them [79683]
+* Tweak - Introduce a new hook making it easier to disable the additional "Attendees" column [79683]
+
+= [4.4.8] 2017-05-17 =
+
+* Fix - Remove undefined and unneeded template variable [77421]
+* Fix - Location of the #buy-tickets anchor should respect the ticket form location (our thanks to Hans for reporting this) [77992]
+* Tweak - Language and text changes [68432]
+* Tweak - Now uses tribe_tickets_get_template_part() to load the email/tickets template for increased flexibility [69660]
+
 = [4.4.7] 2017-05-04 =
 
 * Fix — Fixed "Email attendees" modal window display on mobile devices [72558]
