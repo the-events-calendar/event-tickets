@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.4.9
+ * @version 4.5
  *
  * @var bool $must_login
  */
@@ -183,47 +183,15 @@ $now = current_time( 'timestamp' );
 					</td>
 				</tr>
 			<?php endif; ?>
+			<noscript>
+				<tr>
+					<td class="tribe-link-tickets-message">
+						<div class="no-javascript-msg"><?php esc_html_e( 'You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser.', 'event-tickets' ); ?></div>
+					</td>
+				</tr>
+			</noscript>
 		</table>
 	</form>
-						<tr class="tribe-tickets-order_status-row">
-							<td>
-								<label for="tribe-tickets-order_status"><?php echo esc_html_x( 'RSVP', 'order status label', 'event-tickets' ); ?>:</label>
-							</td>
-							<td colspan="3">
-								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
-							</td>
-						</tr>
-						<?php if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() ) ) : ?>
-							<tr class="tribe-tickets-attendees-list-optout">
-								<td colspan="4">
-									<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout">
-									<label for="tribe-tickets-attendees-list-optout"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
-								</td>
-							</tr>
-						<?php endif; ?>
-					</table>
-				</td>
-			</tr>
-			<tr>
-				<td colspan="4" class="add-to-cart">
-					<?php if ( $must_login ): ?>
-						<a href="<?php echo Tribe__Tickets__Tickets::get_login_url(); ?>"><?php esc_html_e( 'Login to RSVP', 'event-tickets' );?></a>
-					<?php else: ?>
-						<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?></button>
-					<?php endif; ?>
-				</td>
-			</tr>
-		<?php endif; ?>
-
-		<noscript>
-			<tr>
-				<td class="tribe-link-tickets-message">
-					<div class="no-javascript-msg"><?php esc_html_e( 'You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser.', 'event-tickets' ); ?></div>
-				</td>
-			</tr>
-		</noscript>
-	</table>
-</form>
 
 <?php
 $content = ob_get_clean();
