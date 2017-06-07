@@ -417,16 +417,17 @@ class Tribe__Tickets__Main {
 	 */
 	public function add_linking_archor() {
 		_deprecated_function( __METHOD__, '4.4.8', 'Tribe__Tickets__Main::add_linking_anchor' );
-		$this->add_linking_anchor();
 	}
 
 	/**
 	 * Prints a div with an ID that can be used to link to the ticket form location.
 	 *
 	 * The height is specified inline to ensure this works x-browser.
+	 *
+	 * @deprecated 4.6
 	 */
 	public function add_linking_anchor() {
-		echo '<div id="buy-tickets" style="height: 1px;"></div>';
+		_deprecated_function( __METHOD__, '4.5' );
 	}
 
 	/**

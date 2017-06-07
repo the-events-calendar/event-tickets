@@ -404,7 +404,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket_form_hook = $this->get_ticket_form_hook();
 
 			if ( ! empty( $ticket_form_hook ) ) {
-				add_action( $ticket_form_hook, array( Tribe__Tickets__Main::instance(), 'add_linking_anchor' ), 4 );
 				add_action( $ticket_form_hook, array( $this, 'front_end_tickets_form' ), 5 );
 			}
 
