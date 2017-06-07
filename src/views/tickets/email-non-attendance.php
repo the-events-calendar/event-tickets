@@ -12,7 +12,7 @@
  * @var int   $order_id
  * @var array $attendees
  *
- * @version 4.4.3
+ * @version 4.4.8
  */
 
 $start_date = function_exists( 'tribe_get_start_date' ) ? tribe_get_start_date( $event_id ) : null;

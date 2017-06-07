@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.4.3
+ * @version 4.5
  *
  * @var bool $must_login
  */
@@ -183,6 +183,13 @@ $now = current_time( 'timestamp' );
 					</td>
 				</tr>
 			<?php endif; ?>
+			<noscript>
+				<tr>
+					<td class="tribe-link-tickets-message">
+						<div class="no-javascript-msg"><?php esc_html_e( 'You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser.', 'event-tickets' ); ?></div>
+					</td>
+				</tr>
+			</noscript>
 		</table>
 	</form>
 

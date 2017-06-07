@@ -24,6 +24,30 @@
 	padding: 10px;
 }
 
+.tribe-events-tickets {
+	position: relative;
+
+}
+
+.tribe-events-tickets .tribe-link-tickets-message {
+	background: rgba(200, 200, 200, .8);
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: 0;
+}
+
+.tribe-events-tickets .tribe-link-tickets-message .no-javascript-msg {
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	        transform: translate(-50%, -50%);
+	width: 90%;
+}
+
 .tribe-events-tickets td {
 	padding: 8px 10px;
 }
@@ -119,12 +143,6 @@
 	display: inline-block;
 	letter-spacing: 1px;
 	text-transform: uppercase;
-}
-
-.tribe-link-tickets-message {
-	text-align: center;
-	padding: 20px;
-	border: 1px solid #ededed;
 }
 
 .tribe-submit-tickets-form {
