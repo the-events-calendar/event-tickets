@@ -400,6 +400,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$this->stock = $value;
 			}
 
+			// if stock is negative, force it to 0
+			$this->stock = 0 >= $this->stock ? 0 : $this->stock;
+
 			// return the new Stock
 			return $this->stock;
 		}
