@@ -180,7 +180,6 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		$data['ticket_start_date']  = $this->get_value_by_key( $record, 'ticket_start_sale_date' );
 		$data['ticket_end_date']    = $this->get_value_by_key( $record, 'ticket_end_sale_date' );
 
-
 		$ticket_start_sale_time = $this->get_value_by_key( $record, 'ticket_start_sale_time' );
 
 		if ( ! empty( $data['ticket_start_date'] ) && ! empty( $ticket_start_sale_time ) ) {
