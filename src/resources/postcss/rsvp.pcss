@@ -21,33 +21,6 @@
 	padding: 10px;
 }
 
-.tribe-events-tickets {
-	position: relative;
-
-	.tribe-link-tickets-message {
-		background: rgba(200, 200, 200, .8);
-		bottom: 0;
-		left: 0;
-		position: absolute;
-		right: 0;
-		text-align: center;
-		top: 0;
-
-		.no-javascript-msg {
-			left: 50%;
-			position: absolute;
-			top: 50%;
-			transform: translate(-50%, -50%);
-			width: 90%;
-		}
-	}
-
-}
-
-.tribe-events-tickets td {
-	padding: 8px 10px;
-}
-
 .tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee,
 .tribe-events-tickets .tribe-tickets-attendee {
 	table,
@@ -218,12 +191,18 @@
 	background: var(--table-background-color);
 	border: 0;
 	border-radius: 3px;
+	position: relative;
+
 
 	table,
 	th,
 	td,
 	.woocommerce.add-to-cart {
 		border: 0;
+	}
+
+	td {
+		padding: 8px 10px;
 	}
 
 	.woocommerce.add-to-cart {
@@ -247,6 +226,24 @@
 				text-align: left;
 				width: 4.375em;
 			}
+		}
+	}
+
+	.tribe-link-tickets-message {
+		background: rgba(200, 200, 200, .8);
+		bottom: 0;
+		left: 0;
+		position: absolute;
+		right: 0;
+		text-align: center;
+		top: 0;
+
+		.no-javascript-msg {
+			left: 50%;
+			position: absolute;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			width: 90%;
 		}
 	}
 
@@ -287,13 +284,19 @@
 	select {
 		background: #fff;
 	}
+
+	header {
+		height: auto;
+	}
 }
+
 
 /* RSVP Table (differences only) */
 .tribe-events-tickets-rsvp {
 
 	.tribe-ticket.quantity {
 		border-bottom: 1px solid var(--border-color);
+		width: 192px;
 
 		input {
 			margin-bottom: 5px;

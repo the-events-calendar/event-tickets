@@ -24,34 +24,6 @@
 	padding: 10px;
 }
 
-.tribe-events-tickets {
-	position: relative;
-
-}
-
-.tribe-events-tickets .tribe-link-tickets-message {
-	background: rgba(200, 200, 200, .8);
-	bottom: 0;
-	left: 0;
-	position: absolute;
-	right: 0;
-	text-align: center;
-	top: 0;
-}
-
-.tribe-events-tickets .tribe-link-tickets-message .no-javascript-msg {
-	left: 50%;
-	position: absolute;
-	top: 50%;
-	-webkit-transform: translate(-50%, -50%);
-	        transform: translate(-50%, -50%);
-	width: 90%;
-}
-
-.tribe-events-tickets td {
-	padding: 8px 10px;
-}
-
 .tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee table,
 	.tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee tr,
 	.tribe-events-style-full .tribe-events-tickets .tribe-tickets-attendee td,
@@ -226,6 +198,7 @@
 	background: #f8f8f8;
 	border: 0;
 	border-radius: 3px;
+	position: relative;
 }
 
 .tribe-events-tickets table,
@@ -233,6 +206,10 @@
 	.tribe-events-tickets td,
 	.tribe-events-tickets .woocommerce.add-to-cart {
 	border: 0;
+}
+
+.tribe-events-tickets td {
+	padding: 8px 10px;
 }
 
 .tribe-events-tickets .woocommerce.add-to-cart {
@@ -253,6 +230,25 @@
 	padding: 5px 10px;
 	text-align: left;
 	width: 4.375em;
+}
+
+.tribe-events-tickets .tribe-link-tickets-message {
+	background: rgba(200, 200, 200, .8);
+	bottom: 0;
+	left: 0;
+	position: absolute;
+	right: 0;
+	text-align: center;
+	top: 0;
+}
+
+.tribe-events-tickets .tribe-link-tickets-message .no-javascript-msg {
+	left: 50%;
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	        transform: translate(-50%, -50%);
+	width: 90%;
 }
 
 .tribe-events-tickets .tribe-tickets-remaining {
@@ -293,10 +289,15 @@
 	background: #fff;
 }
 
+.tribe-events-tickets header {
+	height: auto;
+}
+
 /* RSVP Table (differences only) */
 
 .tribe-events-tickets-rsvp .tribe-ticket.quantity {
 	border-bottom: 1px solid #dfdfdf;
+	width: 192px;
 }
 
 .tribe-events-tickets-rsvp .tribe-ticket.quantity input {
