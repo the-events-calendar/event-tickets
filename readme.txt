@@ -232,6 +232,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.4.10] TBD =
+
+* Fix - Allow importing of RSVP tickets with sale dates, even when time is not specified [77608]
+
 = [4.4.9] 2017-06-01 =
 
 * Feature - Overlay over ticket fields when javascript is disabled to prevent ticket orders [63912]
