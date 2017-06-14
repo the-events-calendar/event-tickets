@@ -135,8 +135,8 @@
 }
 
 .tribe-answer .type-label {
-	padding-right: .5em;
 	margin-bottom: 0;
+	padding-right: .5em;
 }
 
 .tribe-answer label {
@@ -146,9 +146,9 @@
 .tribe-answer select {
 	background: white;
 	border: 1px solid #ddd;
+	height: 30px;
 	line-height: 1;
 	margin-left: 5px;
-	height: 30px;
 }
 
 .tribe-rsvp h2 {
