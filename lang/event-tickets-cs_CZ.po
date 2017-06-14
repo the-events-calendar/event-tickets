@@ -662,31 +662,31 @@ msgstr ""
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:934
+#: src/Tribe/Tickets.php:946
 msgid "Use global stock"
 msgstr ""
 
-#: src/Tribe/Tickets.php:935
+#: src/Tribe/Tickets.php:947
 msgid "Use global stock but cap sales"
 msgstr ""
 
-#: src/Tribe/Tickets.php:936
+#: src/Tribe/Tickets.php:948
 msgid "Independent (do not use global stock)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1393
+#: src/Tribe/Tickets.php:1405
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1395
+#: src/Tribe/Tickets.php:1407
 msgid "Tickets are not yet available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1397
+#: src/Tribe/Tickets.php:1409
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1399
+#: src/Tribe/Tickets.php:1411
 msgid "There are no tickets available at this time."
 msgstr ""
 
@@ -765,7 +765,7 @@ msgstr "Čas ukončení prodeje vstupenky"
 msgid "Ticket Stock"
 msgstr "Zásoby vstupenek"
 
-#: src/Tribe/CSV_Importer/RSVP_Importer.php:230
+#: src/Tribe/CSV_Importer/RSVP_Importer.php:229
 msgid "Recurring event tickets are not supported, event %s."
 msgstr ""
 
@@ -809,7 +809,7 @@ msgstr "Příspěvek bude automaticky publikován."
 msgid "Post draft updated."
 msgstr "Koncept příspěvku byl uložen."
 
-#: src/Tribe/Tickets.php:649
+#: src/Tribe/Tickets.php:661
 msgid "Editing the ticket price is currently disallowed."
 msgstr "Upravovaní ceny vstupenky není aktuálně povoleno."
 
@@ -1000,7 +1000,7 @@ msgstr "(smazáno)"
 msgid "Your ticket has been saved."
 msgstr "Vaše vstupenka byla uložena."
 
-#: src/Tribe/Tickets.php:595
+#: src/Tribe/Tickets.php:607
 msgid "Your ticket has been deleted."
 msgstr "Vaše vstupenka byla smazána."
 
@@ -1205,7 +1205,7 @@ msgstr ""
 msgid "Confirm RSVP"
 msgstr "Potvrdit účast"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.4.9)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.4.10)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:502
 msgid "Event Tickets"

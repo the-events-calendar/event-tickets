@@ -656,31 +656,31 @@ msgstr ""
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:934
+#: src/Tribe/Tickets.php:946
 msgid "Use global stock"
 msgstr ""
 
-#: src/Tribe/Tickets.php:935
+#: src/Tribe/Tickets.php:947
 msgid "Use global stock but cap sales"
 msgstr ""
 
-#: src/Tribe/Tickets.php:936
+#: src/Tribe/Tickets.php:948
 msgid "Independent (do not use global stock)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1393
+#: src/Tribe/Tickets.php:1405
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1395
+#: src/Tribe/Tickets.php:1407
 msgid "Tickets are not yet available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1397
+#: src/Tribe/Tickets.php:1409
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1399
+#: src/Tribe/Tickets.php:1411
 msgid "There are no tickets available at this time."
 msgstr ""
 
@@ -758,7 +758,7 @@ msgstr "Karten Verkaufsendzeit"
 msgid "Ticket Stock"
 msgstr "Ticketbestand"
 
-#: src/Tribe/CSV_Importer/RSVP_Importer.php:230
+#: src/Tribe/CSV_Importer/RSVP_Importer.php:229
 msgid "Recurring event tickets are not supported, event %s."
 msgstr ""
 
@@ -802,7 +802,7 @@ msgstr ""
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Tickets.php:649
+#: src/Tribe/Tickets.php:661
 msgid "Editing the ticket price is currently disallowed."
 msgstr ""
 
@@ -993,7 +993,7 @@ msgstr "(gelöscht)"
 msgid "Your ticket has been saved."
 msgstr "Ihre Karte wurde gespeichert."
 
-#: src/Tribe/Tickets.php:595
+#: src/Tribe/Tickets.php:607
 msgid "Your ticket has been deleted."
 msgstr "Ihre Karte wurde gelöscht."
 
@@ -1198,7 +1198,7 @@ msgstr ""
 msgid "Confirm RSVP"
 msgstr "RSVP bestätigen"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.4.9)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.4.10)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:502
 msgid "Event Tickets"
