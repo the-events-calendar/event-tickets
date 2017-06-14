@@ -76,6 +76,7 @@
 }
 
 .tribe-rsvp-list > .tribe-item {
+	min-height: 105px;
 	padding: 20px;
 	border: 1px solid #ededed;
 	border-bottom: 0;
@@ -135,6 +136,7 @@
 
 .tribe-answer .type-label {
 	padding-right: .5em;
+	margin-bottom: 0;
 }
 
 .tribe-answer label {
@@ -144,6 +146,9 @@
 .tribe-answer select {
 	background: white;
 	border: 1px solid #ddd;
+	line-height: 1;
+	margin-left: 5px;
+	height: 30px;
 }
 
 .tribe-rsvp h2 {
@@ -260,6 +265,11 @@
 .tribe-events-tickets .tribe-tickets-attendees-list-optout label {
 	color: #777;
 	font-size: 13px;
+}
+
+.tribe-events-tickets .tribe-tickets-attendees-list-optout input[type="radio"] + label,
+		.tribe-events-tickets .tribe-tickets-attendees-list-optout input[type="checkbox"] + label {
+	display: inline-block;
 }
 
 .tribe-events-tickets .tickets_name,

@@ -72,6 +72,7 @@
 	margin: 0;
 
 	> .tribe-item {
+		min-height: 105px;
 		padding: 20px;
 		border: 1px solid #ededed;
 		border-bottom: 0;
@@ -130,14 +131,20 @@
 	line-height: 2;
 
 	.type-label {
+		margin-bottom: 0;
 		padding-right: .5em;
 	}
+
 	label {
 		display: block;
 	}
+
 	select {
 		background: white;
 		border: 1px solid #ddd;
+		height: 30px;
+		line-height: 1;
+		margin-left: 5px;
 	}
 }
 
@@ -253,9 +260,16 @@
 		font-size: 11px;
 	}
 
-	.tribe-tickets-attendees-list-optout label {
-		color: var(--text-light-color);
-		font-size: 13px;
+	.tribe-tickets-attendees-list-optout {
+		label {
+			color: var( --text-light-color );
+			font-size: 13px;
+		}
+
+		input[type="radio"] + label,
+		input[type="checkbox"] + label {
+			display: inline-block;
+		}
 	}
 
 	.tickets_name,
