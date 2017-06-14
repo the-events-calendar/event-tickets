@@ -152,6 +152,8 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	/**
 	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
 	 *
+	 * @since  F17.5
+	 *
 	 * @return null
 	 */
 	function tribe_tickets_buy_button() {
@@ -173,6 +175,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 		$cta_html = '';
 
+		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
 		foreach ( $types as $type => $data ) {
 			if ( ! $data['count'] ) {
 				continue;
@@ -220,16 +223,16 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			}
 		}
 
-		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
-
 		/**
 		 * Filter the ticket count and purchase button
 		 *
-		 * @var $stock    . $button stock message and button to display
-		 * @var $types    the ticket and rsvp count array for event
-		 * @var $event_id the event id
+		 * @since  F17.5
+		 *
+		 * @param  $stock    $button stock message and button to display
+		 * @param  $types    the ticket and rsvp count array for event
+		 * @param  $event_id the event id
 		 */
-		echo apply_filters( 'tribe_tickets_stock_and_purchase_button', $cta_html, $types, $event_id );
+		echo apply_filters( 'tribe_tickets_buy_button', $cta_html, $types, $event_id );
 	}
 }
 
