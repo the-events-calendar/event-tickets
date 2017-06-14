@@ -5,7 +5,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.4.10';
+	const VERSION = '4.5.1';
 
 	/**
 	 * Min required The Events Calendar version
