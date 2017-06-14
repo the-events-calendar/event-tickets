@@ -181,14 +181,11 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				continue;
 			}
 
-			if ( $data['count'] && ! $data['available'] ) {
+			if ( ! $data['available'] ) {
 				$cta_html .= '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
 			} else {
 				$stock = $data['stock'];
-				if (
-					$data['unlimited'] ||
-					( $data['count'] && ! $data['stock'] )
-				) {
+				if ( $data['unlimited'] || ! $data['stock'] ) {
 					// if unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count
 					$stock = false;
 				}
@@ -202,9 +199,9 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 						$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
 					}
 
-					$stock_html = '<span class="tribe-tickets-left">';
-					$stock_html .= esc_html( sprintf( $text, $number ) );
-					$stock_html .= '</span>';
+					$stock_html = '<span class="tribe-tickets-left">'
+						. esc_html( sprintf( $text, $number ) )
+						. '</span>';
 				}
 
 				if ( 'rsvp' === $type ) {
@@ -215,9 +212,9 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					$button_anchor = '#buy-tickets';
 				}
 
-				$button = '<form method="get" action="' . esc_url( get_the_permalink( $event_id ) . $button_anchor ) . '">';
-				$button .= '<button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button>';
-				$button .= '</form>';
+				$button = '<form method="get" action="' . esc_url( get_the_permalink( $event_id ) . $button_anchor ) . '">'
+					. '<button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button>'
+					. '</form>';
 
 				$cta_html .= $stock_html . $button;
 			}
