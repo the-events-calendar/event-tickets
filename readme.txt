@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.4.10] TBD 2017-06-14 =
+= [4.4.10] 2017-06-14 =
 
 * Fix - Allow importing of RSVP tickets with sale dates, even when time is not specified [77608]
 
