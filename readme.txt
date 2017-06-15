@@ -237,6 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Feature - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
 * Feature - An API to get ticket, attendee, event, and order infomation from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
+* Fix - Resolve Thunderbird for Windows rendering of Tickets email
 * Tweak - Added filters: `tribe_tickets_buy_button`
 * Tweak - Changed views: `tickets/rsvp`, `tickets/email`
 * Language - 5 new strings added, 65 updated, 0 fuzzied, and 0 obsoleted [event-tickets]
