@@ -233,7 +233,7 @@
 				$count ++;
 
 				if ( $count == 2 ) {
-					$break = 'page-break-before: always !important;';
+					$break = 'page-break-before:always !important;';
 				}
 
 				$event      = get_post( $ticket['event_id'] );
