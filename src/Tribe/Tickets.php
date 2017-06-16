@@ -471,13 +471,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
-				$meridian           = ! empty( $data['ticket_start_meridian'] ) ? ' ' . $data['ticket_start_meridian'] : '';
-				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $data['ticket_start_date'] . ' ' . $data['ticket_start_hour'] . ':' . $data['ticket_start_minute'] . ':00' . $meridian ) );
+				$start_datetime = sprintf(
+					'%s %s:%s:00%s',
+					$data['ticket_start_date'],
+					Tribe__Utils__Array::get( $data, 'ticket_start_hour', '00' ),
+					Tribe__Utils__Array::get( $data, 'ticket_start_minute', '00' ),
+					Tribe__Utils__Array::get( $data, 'ticket_start_meridian', '' )
+				);
+				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_datetime ) );
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
-				$meridian         = ! empty( $data['ticket_end_meridian'] ) ? ' ' . $data['ticket_end_meridian'] : '';
-				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $data['ticket_end_date'] . ' ' . $data['ticket_end_hour'] . ':' . $data['ticket_end_minute'] . ':00' . $meridian ) );
+				$end_datetime = sprintf(
+					'%s %s:%s:00%s',
+					$data['ticket_end_date'],
+					Tribe__Utils__Array::get( $data, 'ticket_end_hour', '23' ),
+					Tribe__Utils__Array::get( $data, 'ticket_end_minute', '59' ),
+					Tribe__Utils__Array::get( $data, 'ticket_end_meridian', '' )
+				);
+				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
 			}
 
 			$ticket->provider_class = $this->className;
