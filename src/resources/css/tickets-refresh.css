@@ -1,0 +1,50 @@
+/**
+ * This CSS file was auto-generated via PostCSS
+ *
+ * Contributors should avoid editing this file, but instead edit the associated
+ * src/resources/postcss/ file. For more information, check out our engineering
+ * docs on how we handle CSS in our engineering docs.
+ *
+ * @see: http://moderntribe.github.io/products-engineering/css/
+ */
+
+#event_tickets {
+	overflow: hidden;
+	position: relative;
+}
+
+/* Panels */
+
+.ticket_panel {
+	position: absolute;
+	width: 100%;
+}
+
+.ticket_panel.panel_base {
+	position: relative;
+}
+
+.ticket_panel.panel_edit {
+	left: 100%;
+}
+
+.ticket_panel.panel_settings {
+	top: 100%;
+}
+
+/* Base Panel Toggle Buttons */
+
+.ticket_form_toggle_text:before,
+.settings_form_toggle_text:before {
+	font-family: 'dashicons';
+}
+
+.ticket_form_toggle_text:before {
+	content: '\f132';
+	vertical-align: middle;
+}
+
+.settings_form_toggle_text:before {
+	content: '\f111';
+	vertical-align: bottom;
+}

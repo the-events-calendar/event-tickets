@@ -76,6 +76,8 @@ class Tribe__Tickets__Metabox {
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
 		wp_enqueue_style( 'event-tickets', $resources_url .'/css/tickets.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( 'event-tickets-refresh', $resources_url .'/css/tickets-refresh.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+
 		wp_enqueue_script( 'event-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), Tribe__Tickets__Main::instance()->js_version(), true );
 
 		wp_localize_script( 'event-tickets', 'tribe_ticket_notices', array(
@@ -120,4 +122,3 @@ class Tribe__Tickets__Metabox {
 		) );
 	}
 }
-
