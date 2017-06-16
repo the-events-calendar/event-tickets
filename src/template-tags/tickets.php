@@ -154,7 +154,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	 *
 	 * @since  4.5
 	 *
-	 * @param bool $echo Wether or not we should print
+	 * @param bool $echo Whether or not we should print
 	 *
 	 * @return string
 	 */
