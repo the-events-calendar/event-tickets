@@ -152,12 +152,13 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 	/**
 	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
 	 *
-	 * @since  F17.5
+	 * @since  4.5
 	 *
-	 * @return null
+	 * @param bool $echo Wether or not we should print
+	 *
+	 * @return string
 	 */
-	function tribe_tickets_buy_button() {
-
+	function tribe_tickets_buy_button( $echo = true ) {
 		$event_id = get_the_ID();
 
 		// check if there are any tickets on sale
@@ -173,7 +174,8 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			return null;
 		}
 
-		$cta_html = '';
+		$html = array();
+		$parts = array();
 
 		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
 		foreach ( $types as $type => $data ) {
@@ -182,7 +184,12 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			}
 
 			if ( ! $data['available'] ) {
-				$cta_html .= '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
+				$parts[ $type . '-stock' ] = '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
+
+				// Only re-aply if we don't have a stock yet
+				if ( empty( $html['stock'] ) ) {
+					$html['stock'] = $parts[ $type . '-stock' ];
+				}
 			} else {
 				$stock = $data['stock'];
 				if ( $data['unlimited'] || ! $data['stock'] ) {
@@ -204,6 +211,8 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 						. '</span>';
 				}
 
+				$parts[ $type . '-stock' ] = $html['stock'] = $stock_html;
+
 				if ( 'rsvp' === $type ) {
 					$button_label  = esc_html_x( 'RSVP Now!', 'list view rsvp now ticket button', 'event-tickets' );
 					$button_anchor = '#rsvp-now';
@@ -216,20 +225,28 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					. '<button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button>'
 					. '</form>';
 
-				$cta_html .= $stock_html . $button;
+				$parts[ $type . '-button' ] = $html['button'] = $button;
 			}
 		}
 
 		/**
 		 * Filter the ticket count and purchase button
 		 *
-		 * @since  F17.5
+		 * @since  4.5
 		 *
-		 * @param  $stock    $button stock message and button to display
-		 * @param  $types    the ticket and rsvp count array for event
-		 * @param  $event_id the event id
+		 * @param array $html     An array with the final HTML
+		 * @param array $parts    An array with all the possible parts of the HTMl button
+		 * @param array $types    Ticket and RSVP count array for event
+		 * @param int   $event_id Post Event ID
 		 */
-		echo apply_filters( 'tribe_tickets_buy_button', $cta_html, $types, $event_id );
+		$html = apply_filters( 'tribe_tickets_buy_button', $html, $parts, $types, $event_id );
+		$html = implode( "\n", $html );
+
+		if ( $echo ) {
+			echo $html;
+		}
+
+		return $html;
 	}
 }
 
