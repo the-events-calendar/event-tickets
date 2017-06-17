@@ -124,6 +124,36 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Get a count of all the tickets for an event. Queries all active modules/providers.
+	 *
+	 * @static
+	 *
+	 * @param $event_id
+	 *
+	 * @return int number of tickets ( 0 means unlimited )
+	 */
+	public function get_event_tickets_count( $post_id ) {
+		global $post;
+		$tickets_count = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				$stock = $ticket->original_stock();
+
+				if ( empty( $stock ) ) {
+					return -1;
+				}
+
+				$tickets_count += $stock;
+			}
+		}
+
+		return $tickets_count;
+	}
+
+	/**
 	 * Adds the "attendees" link in the admin list row actions for each event.
 	 *
 	 * @param $actions

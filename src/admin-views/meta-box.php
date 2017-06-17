@@ -9,8 +9,8 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
-
-$header_id = get_post_meta( get_the_ID(), $this->image_header_field, true );
+$post_id = get_the_ID();
+$header_id = get_post_meta( $post_id, $this->image_header_field, true );
 $header_id = ! empty( $header_id ) ? $header_id : '';
 $header_img = '';
 if ( ! empty( $header_id ) ) {
@@ -18,34 +18,64 @@ if ( ! empty( $header_id ) ) {
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
+$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_event_tickets_count( $post_id );
+
 ?>
 
 <div id="event_tickets" class="eventtable">
 	<?php
 	wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' );
-	?>
 
-	<?php // the main panel ?>
+	// the main panel ?>
 	<div id="panel_base" class="ticket_panel panel_base">
 		<div class="tribe_sectionheader ticket_list_container">
+			<div class="ticket_table_intro">
+				<span class="ticket_form_total_capacity">
+					Total Event Capacity:
+					<span id="ticket_form_total_capacity_value">
+						<?php if ( 0 < $total_tickets ) {
+							echo absint( $total_tickets );
+						} else {
+							esc_html_e( 'unlimited' );
+						}?>
+					</span>
+				</span>
+				<?php
+				/**
+				 * Allows for the insertion of additional elements into the main ticket admin panel "header"
+				 *
+				 * @param Post ID
+				 * @since TBD
+				 */
+				do_action( 'tribe_events_tickets_post_capcity', $post_id );
+				// Move view orders to ET+, use "tribe_events_tickets_post_capcity" action
+				?>
+				<a id="ticket_form_view_orders" href="<?php echo admin_url( 'edit.php?post_type=shop_order' ); ?>" class="ticket_form_view_orders"><?php esc_html_e( 'View Orders', 'event-tickets' ); ?></a>
+				<?php
+					$url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
+
+				?>
+				<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
+			</div>
+
 			<?php
 			/**
-			 * Fired to allow for the insertion of additional content into the main ticket admin panel before the tickets listing
+			 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
 			 *
 			 * @param Post ID
 			 * @since TBD
 			 */
-			do_action( 'tribe_events_tickets_ticket_list_pre', get_the_ID() );
+			do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
 
 			$this->ticket_list_markup( $tickets );
 
 			/**
-			 * Fired to allow for the insertion of additional content into the main ticket admin panel after the tickets listing
+			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 			 *
 			 * @param Post ID
 			 * @since TBD
 			 */
-			do_action( 'tribe_events_tickets_ticket_list_post', get_the_ID() ); ?>
+			do_action( 'tribe_events_tickets_post_ticket_list', $post_id ); ?>
 
 		</div>
 		<button id="ticket_form_toggle" class="button-secondary ticket_form_toggle"><span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new ticket' ); ?>"><?php esc_html_e( 'New ticket', 'event-tickets' ); ?></span></button>
@@ -55,7 +85,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 
 	<?php // the add/edit panel ?>
 	<div id="panel_edit" class="ticket_panel panel_edit">
-		<?php if ( get_post_meta( get_the_ID(), '_EventOrigin', true ) === 'community-events' ) {
+		<?php if ( get_post_meta( $post_id, '_EventOrigin', true ) === 'community-events' ) {
 			?>
 			<div>
 				<div class="tribe_sectionheader updated">
@@ -78,6 +108,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 					foreach ( $modules as $class => $module ) {
 						?>
 						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider"
+															id="<?php echo esc_attr( $class . '_radio' ); ?>"
 															value="<?php echo esc_attr( $class ); ?>"
 															class="ticket_field ticket_provider">
 						<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
@@ -146,12 +177,12 @@ $modules = Tribe__Tickets__Tickets::modules();
 
 				<?php
 				/**
-				 * Fired to allow for the insertion of additional content into the ticket admin form
+				 * Allows for the insertion of additional content into the ticket admin form
 				 *
 				 * @var Post ID
 				 * @var null Ticket ID
 				 */
-				do_action( 'tribe_events_tickets_metabox_advanced', get_the_ID(), null ); ?>
+				do_action( 'tribe_events_tickets_metabox_advanced', $post_id, null ); ?>
 
 				<div class="ticket bottom">
 						<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" value="" />

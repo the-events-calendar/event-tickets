@@ -54,7 +54,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 	};
 
-
 	$( document ).ready( function() {
 		$tribe_tickets.on( {
 			/**
@@ -340,45 +339,28 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} );
 		}
 
-		function show_hide_base_panel( direction ) {
+		function show_hide_panel( $panel, direction ) {
 			var anim = {};
 
-			if ( 'absolute' !== $base_panel.css( 'position' ) ) {
-				anim[direction] = '-100%';
+			if ( 'absolute' !== $panel.css( 'position' ) ) {
+				if ( 'bottom' === direction && $panel === $base_panel ) {
+					anim[direction] = '100%';
+				} else {
+					anim[direction] = '-100%';
+				}
 
-				$base_panel.animate( anim ).css({
+				anim['opacity'] = '0';
+
+				$panel.animate( anim ).css({
 					'position': 'absolute'
 				});
 			} else {
 				anim[direction] = '0';
+				anim['opacity'] = '1';
 
-				$base_panel.css({
+				$panel.css({
 					'position': 'relative'
 				}).animate( anim );
-			}
-		}
-
-		function show_hide_edit_panel() {
-			if ( 'absolute' !== $edit_panel.css( 'position' ) ) {
-				$edit_panel.animate( { 'left': '100%' } ).css({
-					'position': 'absolute'
-				});
-			} else {
-				$edit_panel.css({
-					'position': 'relative'
-				}).animate( { 'left': '0' } );
-			}
-		}
-
-		function show_hide_settings_panel() {
-			if ( 'absolute' !== $settings_panel.css( 'position' ) ) {
-				$settings_panel.animate( { 'top': '100%' } ).css({
-					'position': 'absolute'
-				});
-			} else {
-				$settings_panel.css({
-					'position': 'relative'
-				}).animate( { 'top': '0' } );
 			}
 		}
 
@@ -401,24 +383,30 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		/* "Settings" button action */
-		$( document.getElementById( 'settings_form_toggle' ) ).click( function( e ) {
-			show_hide_base_panel( 'top' );
-			show_hide_settings_panel();
+		$( document.getElementById( 'settings_form_toggle' ) ).on( 'click', function( e ) {
+			show_hide_panel( $base_panel, 'bottom' );
+			show_hide_panel( $settings_panel, 'bottom' );
 			e.preventDefault();
 		} );
 
 		/* Settings "Cancel" button action */
-		$( document.getElementById( 'settings_form_cancel' ) ).click( function( e ) {
-			show_hide_base_panel( 'top' );
-			show_hide_settings_panel();
+		$( document.getElementById( 'settings_form_cancel' ) ).on( 'click', function( e ) {
+			show_hide_panel( $settings_panel, 'bottom' );
+			show_hide_panel( $base_panel, 'bottom' );
 			e.preventDefault();
 		} );
 
 
 		/* "Add a ticket" link action */
-		$( '.ticket_form_toggle' ).click( function( e ) {
-			show_hide_base_panel( 'left' );
-			show_hide_edit_panel();
+		$( '.ticket_form_toggle' ).on( 'click', function( e ) {
+			show_hide_panel( $base_panel, 'left' );
+			show_hide_panel( $edit_panel, 'left' );
+
+			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) ) {
+				$( '#Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ).prop( 'checked', true );
+			} else {
+				$( '#Tribe__Tickets__RSVP_radio' ).prop( 'checked', true );
+			}
 
 			$tribe_tickets
 				.trigger( 'clear.tribe' )
@@ -430,9 +418,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		/* "Cancel" button action */
-		$( document.getElementById( 'ticket_form_cancel' ) ).click( function() {
-			show_hide_edit_panel();
-			show_hide_base_panel( 'left' );
+		$( document.getElementById( 'ticket_form_cancel' ) ).on( 'click', function( e ) {
+			show_hide_panel( $edit_panel, 'left' );
+			show_hide_panel( $base_panel, 'left' );
 
 			$tribe_tickets
 				.trigger( 'clear.tribe' )
