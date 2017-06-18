@@ -38,27 +38,45 @@
 	float: right;
 }
 
-.ticket_form_toggle_text:before,
-.settings_form_toggle_text:before {
+.ticket_form_toggle_text::before, .settings_form_toggle_text::before {
 	font-family: 'dashicons';
 }
 
-.ticket_form_toggle_text:before {
+.ticket_form_toggle_text::before {
 	content: '\f132';
 	vertical-align: middle;
 }
 
-.settings_form_toggle_text:before {
+.settings_form_toggle_text::before {
 	content: '\f111';
 	vertical-align: bottom;
 }
 
 /* Styles for */
 
-.ticket_table_intro {
-	text-align: right;
+.ticket_table_intro .ticket_form_total_capacity {
+	display: block;
+	margin-bottom: .5em;
 }
 
-.ticket_table_intro .ticket_form_total_capacity {
-	float: left;
+.ticket_table_intro .ticket_form_view_attendees {
+	margin-left: 1em;
+}
+
+@media (min-width: 782px) {
+
+	.ticket_table_intro .ticket_form_total_capacity {
+		float: left;
+	}
+
+	.ticket_table_intro {
+		text-align: right;
+	}
+}
+
+@media (max-width: 400px) {
+
+	.ticket_table_intro .ticket_form_view_attendees {
+		float: right;
+	}
 }

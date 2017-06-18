@@ -9,27 +9,19 @@
  */
 
 /* = WooTickets Admin Styles
-=============================================*/
-
-
+============================================= */
 
 #ticket_form {
 	display: none;
 }
 
-
-
 #ticket_form input[type=radio] {
 	margin-right: 5px;
 }
 
-
-
 #ticket_form span {
 	margin-right: 10px;
 }
-
-
 
 .ticket_list h4 {
 	border-bottom: 1px solid #e5e5e5;
@@ -37,84 +29,57 @@
 	text-transform: uppercase;
 }
 
-
-
 .ticket_list h4 a {
 	font-size: 11px;
 	font-weight: normal;
 	text-transform: none;
 }
 
-
-
 .ticket_list tr:hover td div.ticket_controls {
 	visibility: visible;
 }
-
-
 
 .ticket_list tr td {
 	padding: 4px 7px 2px;
 	vertical-align: top;
 }
 
-
-
 .ticket_list tr td div.ticket_controls {
 	visibility: hidden;
 }
 
-
-
-p.ticket_name {
-	font-size: 13px;
+.ticket_name p:first-child {
 	font-weight: bold;
 }
-
-
 
 .ticket_form p.description {
 	display: inline;
 }
 
-
-
 .ticket_form p.description.detailed-description {
 	display: block;
 }
 
-
-
 .ticket_form h4.ticket_form_title_edit {
 	display: none;
 }
-
-
 
 #tribe_ticket_header_preview img {
 	height: auto !important;
 	max-width: 95% !important;
 }
 
-
-
 #tribe_ticket_header_remove {
 	display: none;
 }
-
-
 
 .ticket_time {
 	display: none;
 }
 
-
-
 .tribe-tickets-remaining {
 	font-size: 10px;
 }
-
-
 
 .eventtable {
 	margin: 0;
@@ -122,18 +87,12 @@ p.ticket_name {
 	width: 100%;
 }
 
-
-
 #event_tickets,
 .eventtable.ticket_list.eventForm {
 	table-layout: fixed;
 }
 
-
-
 /* Specific goal of this rule is to prevent the number input busting the ticket form layout under Twenty Fifteen */
-
-
 
 .tribe-theme-twentyfifteen .tribe-events-tickets input[type='number'] {
 	padding: .375em;

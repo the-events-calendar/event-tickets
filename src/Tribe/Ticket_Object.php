@@ -383,6 +383,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
+		 * Method to display the total `stock` propriety of the Object.
+		 *
+		 * Returns the current ticket total capacity: either an integer or a
+		 * string if stock is unlimited.
+		 *
+		 * @return int|string
+		 */
+		public function display_original_stock() {
+			$orginal_stock = $this->original_stock();
+
+			if ( empty( $orginal_stock ) ) {
+				$orginal_stock = 'unlimited';
+			}
+
+			return $orginal_stock;
+		}
+
+		/**
 		 * Method to manage the protected `stock` propriety of the Object
 		 * Prevents setting `stock` lower then zero.
 		 *

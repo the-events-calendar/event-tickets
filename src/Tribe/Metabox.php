@@ -76,9 +76,13 @@ class Tribe__Tickets__Metabox {
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
 		wp_enqueue_style( 'event-tickets', $resources_url .'/css/tickets.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		// new styles
 		wp_enqueue_style( 'event-tickets-refresh', $resources_url .'/css/tickets-refresh.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( 'event-tickets-tables', $resources_url .'/css/tickets-tables.css', array(), Tribe__Tickets__Main::instance()->css_version() );
 
 		wp_enqueue_script( 'event-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), Tribe__Tickets__Main::instance()->js_version(), true );
+		// new js
+		wp_enqueue_script( 'event-tickets-tables', $resources_url .'/js/tickets-tables.js', array(), Tribe__Tickets__Main::instance()->js_version(), true );
 
 		wp_localize_script( 'event-tickets', 'tribe_ticket_notices', array(
 			'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),

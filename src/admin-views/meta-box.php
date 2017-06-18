@@ -198,28 +198,26 @@ $total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_event_tickets_
 
 		<?php if ( $show_global_stock ): ?>
 			<div id="tribe-global-stock-settings" class="event-wide-settings">
-				<div class="eventtable ticket_list eventForm">
-					<div>
-						<label for="tribe-tickets-enable-global-stock">
-							<?php esc_html_e( 'Enable global stock', 'event-tickets' ); ?>
+				<div>
+					<label for="tribe-tickets-enable-global-stock">
+						<?php esc_html_e( 'Enable global stock', 'event-tickets' ); ?>
+					</label>
+					<input type="checkbox" name="tribe-tickets-enable-global-stock" id="tribe-tickets-enable-global-stock" value="1" <?php checked( $global_stock->is_enabled() ); ?> />
+				</div>
+				<div id="tribe-tickets-global-stock-level">
+						<label for="tribe-tickets-global-stock">
+							<?php esc_html_e( 'Global stock level', 'event-tickets' ); ?>
 						</label>
-						<input type="checkbox" name="tribe-tickets-enable-global-stock" id="tribe-tickets-enable-global-stock" value="1" <?php checked( $global_stock->is_enabled() ); ?> />
-					</div>
-					<div id="tribe-tickets-global-stock-level">
-							<label for="tribe-tickets-global-stock">
-								<?php esc_html_e( 'Global stock level', 'event-tickets' ); ?>
-							</label>
-							<input type="number" name="tribe-tickets-global-stock" id="tribe-tickets-global-stock" value="<?php echo esc_attr( $global_stock->get_stock_level() ); ?>" />
-							<span class="tribe-tickets-global-sales">
-								<?php echo esc_html( sprintf( _n( '(%s sold)', '(%s sold)', $global_stock->tickets_sold(), 'event-tickets' ), $global_stock->tickets_sold() ) ); ?>
-							</span>
-					</div>
+						<input type="number" name="tribe-tickets-global-stock" id="tribe-tickets-global-stock" value="<?php echo esc_attr( $global_stock->get_stock_level() ); ?>" />
+						<span class="tribe-tickets-global-sales">
+							<?php echo esc_html( sprintf( _n( '(%s sold)', '(%s sold)', $global_stock->tickets_sold(), 'event-tickets' ), $global_stock->tickets_sold() ) ); ?>
+						</span>
 				</div>
 			</div>
 		<?php endif; ?>
 
 
-		<div class="eventtable ticket_list eventForm">
+		<div>
 			<div class="tribe-tickets-image-upload">
 				<?php esc_html_e( 'Upload image for the ticket header.', 'event-tickets' ); ?>
 				<p class="description"><?php esc_html_e( 'The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like "retina" support use an image sized to 1160px wide.', 'event-tickets' ); ?></p>
