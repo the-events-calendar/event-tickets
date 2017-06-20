@@ -9,8 +9,8 @@
  */
 
 .eventtable.ticket_list.eventForm {
-	border-radius: 5px;
 	border: 1px solid #ccc;
+	border-radius: 5px;
 	margin: 20px 0;
 }
 .eventtable.ticket_list.eventForm thead {
@@ -20,8 +20,8 @@
 	border-bottom: 0;
 }
 .eventtable.ticket_list.eventForm tbody {
-	border-right: 10px solid transparent;
 	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
 }
 .eventtable.ticket_list.eventForm tbody tr:not(:last-child) {
 	box-shadow: 0 9px 3px -8px rgba(204, 204, 204, 1);
@@ -37,7 +37,7 @@
 .eventtable.ticket_list.eventForm .ui-sortable-handle a *, .eventtable.ticket_list.eventForm .ui-sortable-handle button * {
 	cursor: pointer;
 }
-/* Specific cells - remember that these classes exist int he header too! */
+/* Specific cells - remember that these classes exist in the header too! */
 .eventtable.ticket_list.eventForm .ticket_name {
 	white-space: nowrap;
 }
@@ -49,11 +49,13 @@
 	margin-right: .5em;
 	vertical-align: bottom;
 }
-.eventtable.ticket_list.eventForm .ticket_name.Tribe__Tickets__RSVP p:first-child::before {
+.eventtable.ticket_list.eventForm .ticket_name.Tribe__Tickets__RSVP p::before {
+	color: #000;
 	content: '\f110';
 }
 .eventtable.ticket_list.eventForm .ticket_edit {
 	vertical-align: top;
+	width: 100px;
 }
 /* Edit button style - separate for portability */
 .eventtable.ticket_list.eventForm .ticket_edit_button {
@@ -65,13 +67,13 @@
 .eventtable.ticket_list.eventForm .ticket_edit_button:hover {
 	color: #00a0d2;
 }
-.eventtable.ticket_list.eventForm .ticket_edit_text {
+.eventtable.ticket_list.eventForm .ticket_edit_button .ticket_edit_text {
 	font-size: 0;
 }
-.eventtable.ticket_list.eventForm .ticket_edit_text::before {
+.eventtable.ticket_list.eventForm .ticket_edit_button .ticket_edit_text::before {
+	content: '\f464';
 	font-family: 'dashicons';
 	font-size: x-large;
-	content: '\f464';
 	vertical-align: top;
 }
 @media (max-width: 782px) {
@@ -97,8 +99,8 @@
 		padding-top: .75em;
 	}
 	.eventtable.ticket_list.eventForm .ticket_edit {
-		margin-top: -2.5em;
 		float: right;
+		margin-top: -2.5em;
 	}
 }
 @media (min-width: 782px) {
