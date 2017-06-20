@@ -50,7 +50,7 @@ $total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_event_tickets_
 				do_action( 'tribe_events_tickets_post_capcity', $post_id );
 				// Move view orders to ET+, use "tribe_events_tickets_post_capcity" action
 				?>
-				<a id="ticket_form_view_orders" href="<?php echo admin_url( 'edit.php?post_type=shop_order' ); ?>" class="ticket_form_view_orders"><?php esc_html_e( 'View Orders', 'event-tickets' ); ?></a>
+				<a id="ticket_form_view_orders" href="<?php echo esc_url( admin_url( 'edit.php?post_type=shop_order' ) ); ?>" class="ticket_form_view_orders"><?php esc_html_e( 'View Orders', 'event-tickets' ); ?></a>
 				<?php
 					$url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
 
@@ -196,7 +196,7 @@ $total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_event_tickets_
 	<?php // the settings panel ?>
 	<div id="panel_settings" class="ticket_panel panel_settings">
 
-		<?php if ( $show_global_stock ): ?>
+		<?php if ( $show_global_stock ) : ?>
 			<div id="tribe-global-stock-settings" class="event-wide-settings">
 				<div class="eventtable ticket_list eventForm">
 					<div>

@@ -132,7 +132,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @return int number of tickets ( 0 means unlimited )
 	 */
-	public function get_event_tickets_count( $post_id ) {
+	public function get_event_tickets_count() {
 		global $post;
 		$tickets_count = 0;
 
