@@ -239,14 +239,55 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		abstract protected function get_tickets( $event_id );
 
 		/**
+		 * Get attendees by id and associated post type
+		 * or default to using $post_id
+		 *
+		 * @param      $post_id
+		 * @param null $post_type
+		 *
+		 * @return array|mixed
+		 */
+		abstract public function get_attendees_by_id( $post_id );
+
+		/**
 		 * Get all the attendees (sold tickets) for an event
+		 *
 		 * @abstract
 		 *
-		 * @param $event_id
+		 * @param $post_id
 		 *
 		 * @return mixed
 		 */
-		abstract protected function get_attendees( $event_id );
+		abstract protected function get_attendees_by_post_id( $post_id );
+
+		/**
+		 * Get Attendees by ticket/attendee ID
+		 *
+		 * @param $attendee_id
+		 *
+		 * @return array
+		 */
+		abstract protected function get_attendees_by_attendee_id( $attendee_id );
+
+		/**
+		 * Get attendees by order id
+		 *
+		 * @param $order_id
+		 *
+		 * @return array
+		 */
+		abstract protected function get_attendees_by_order_id( $order_id );
+
+
+		/**
+		 * Get attendees from provided query
+		 *
+		 * @param WP_Query $attendees_query
+		 * @param          $post_id
+		 *
+		 * @return mixed
+		 */
+		abstract protected function get_attendees( WP_Query $attendees_query, $post_id );
 
 		/**
 		 * Mark an attendee as checked in
@@ -363,7 +404,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket_form_hook = $this->get_ticket_form_hook();
 
 			if ( ! empty( $ticket_form_hook ) ) {
-				add_action( $ticket_form_hook, array( Tribe__Tickets__Main::instance(), 'add_linking_anchor' ), 4 );
 				add_action( $ticket_form_hook, array( $this, 'front_end_tickets_form' ), 5 );
 			}
 
@@ -738,7 +778,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( false === $attendees_from_cache && empty( $attendees ) ) {
 				foreach ( self::modules() as $class => $module ) {
 					$obj       = call_user_func( array( $class, 'get_instance' ) );
-					$attendees = array_merge( $attendees, $obj->get_attendees( $event_id ) );
+					$attendees = array_merge( $attendees, $obj->get_attendees_by_post_id( $event_id ) );
 				}
 
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
@@ -778,7 +818,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_attendees_array( $event_id ) {
-			return $this->get_attendees( $event_id );
+			return $this->get_attendees_by_post_id( $event_id );
 		}
 
 		/**
@@ -966,6 +1006,82 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			self::$frontend_ticket_data += $tickets;
+		}
+
+		/**
+		 * Returns Ticket and RSVP Count for an Event
+		 *
+		 * @param $event_id
+		 *
+		 * @return array
+		 */
+		public static function get_ticket_counts( $event_id ) {
+
+			$tickets = self::get_all_event_tickets( $event_id );
+
+			// if no tickets or rsvp return empty array
+			if ( ! $tickets ) {
+				return array();
+			}
+
+			$types['tickets'] = array(
+				'count'     => 0, // count of tickets currently for sale
+				'stock'     => 0, // current stock of tickets available for sale
+				'global'    => 0, // global stock ticket
+				'unlimited' => 0, // unlimited stock tickets
+				'available' => 0, // are tickets available for sale right now
+			);
+			$types['rsvp']    = array(
+				'count'     => 0,
+				'stock'     => 0,
+				'unlimited' => 0,
+				'available' => 0,
+			);
+
+			foreach ( $tickets as $ticket ) {
+
+				// If a ticket is not current for sale do not count it
+				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+					continue;
+				}
+
+				// if ticket and not rsvp add to ticket array
+				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+					$types['tickets']['count'] ++;
+
+					if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 0 === $types['tickets']['global'] ) {
+						$types['tickets']['global'] ++;
+					} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 1 === $types['tickets']['global'] ) {
+						continue;
+					}
+
+					$types['tickets']['stock'] = $types['tickets']['stock'] + $ticket->stock;
+
+					if ( 0 !== $types['tickets']['stock'] ) {
+						$types['tickets']['available'] ++;
+					}
+
+					if ( ! $ticket->manage_stock() ) {
+						$types['tickets']['unlimited'] ++;
+						$types['tickets']['available'] ++;
+					}
+				} else {
+					$types['rsvp']['count'] ++;
+
+					$types['rsvp']['stock'] = $types['rsvp']['stock'] + $ticket->stock;
+					if ( 0 !== $types['rsvp']['stock'] ) {
+						$types['rsvp']['available'] ++;
+					}
+
+					if ( ! $ticket->manage_stock() ) {
+						$types['rsvp']['unlimited'] ++;
+						$types['rsvp']['available'] ++;
+					}
+				}
+			}
+
+			return $types;
+
 		}
 
 		/**
@@ -1197,8 +1313,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Given a valid order ID, returns the event ID it relates to or else boolean false
+		 * Given a valid order ID, returns a single event ID it relates to or else boolean false
 		 * if it cannot be determined.
+		 *
+		 * @see Use tribe_tickets_get_event_ids() to return an array of all event ids for an order
 		 *
 		 * @param  int   $order_id
 		 * @return mixed int|bool
@@ -1302,6 +1420,56 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return (string) $attendee_event_key;
+		}
+
+		/**
+		 * Process the attendee meta into an array with value, slug, and label
+		 *
+		 * @param $product_id
+		 * @param $meta
+		 *
+		 * @return array
+		 */
+		public function process_attendee_meta( $product_id, $meta ) {
+
+			$meta_vals = array();
+
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+				return $meta_vals;
+			}
+
+			$meta_field_objs = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $product_id );
+
+			foreach ( $meta_field_objs as $field ) {
+				$value = null;
+
+				if ( 'checkbox' === $field->type ) {
+					$field_prefix = $field->slug . '_';
+					$value        = array();
+
+					foreach ( $meta as $full_key => $check_value ) {
+						if ( 0 === strpos( $full_key, $field_prefix ) ) {
+							$short_key           = substr( $full_key, strlen( $field_prefix ) );
+							$value[ $short_key ] = $check_value;
+						}
+					}
+
+					if ( empty( $value ) ) {
+						$value = null;
+					}
+				} elseif ( isset( $meta[ $field->slug ] ) ) {
+					$value = $meta[ $field->slug ];
+				}
+
+				$meta_vals[ $field->slug ] = array(
+					'slug'  => $field->slug,
+					'label' => $field->label,
+					'value' => $value,
+				);
+			}
+
+			return $meta_vals;
+
 		}
 
 		/**
