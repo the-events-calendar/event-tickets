@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.4.9
+ * @version 4.5
  *
  * @var bool $must_login
  */
@@ -20,8 +20,18 @@ $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 $now = current_time( 'timestamp' );
 ?>
-<form action="" class="tribe-tickets-rsvp cart <?php echo esc_attr( $messages_class ); ?>" method="post" enctype='multipart/form-data'>
-	<h2 class="tribe-events-tickets-title"><?php echo esc_html_x( 'RSVP', 'form heading', 'event-tickets' ) ?></h2>
+
+<form
+	id="rsvp-now"
+	action=""
+	class="tribe-tickets-rsvp cart <?php echo esc_attr( $messages_class ); ?>"
+	method="post"
+	enctype='multipart/form-data'
+>
+	<h2 class="tribe-events-tickets-title tribe--rsvp">
+		<?php echo esc_html_x( 'RSVP', 'form heading', 'event-tickets' ) ?>
+	</h2>
+
 	<div class="tribe-rsvp-messages">
 		<?php
 		if ( $messages ) {
@@ -34,11 +44,14 @@ $now = current_time( 'timestamp' );
 			}//end foreach
 		}//end if
 		?>
-		<div class="tribe-rsvp-message tribe-rsvp-message-error tribe-rsvp-message-confirmation-error" style="display:none;">
+
+		<div
+			class="tribe-rsvp-message tribe-rsvp-message-error tribe-rsvp-message-confirmation-error" style="display:none;">
 			<?php esc_html_e( 'Please fill in the RSVP confirmation name and email fields.', 'event-tickets' ); ?>
 		</div>
 	</div>
-	<table width="100%" class="tribe-events-tickets tribe-events-tickets-rsvp">
+
+	<table class="tribe-events-tickets tribe-events-tickets-rsvp">
 		<?php
 		foreach ( $tickets as $ticket ) {
 			// if the ticket isn't an RSVP ticket, then let's skip it
@@ -52,35 +65,38 @@ $now = current_time( 'timestamp' );
 
 			$is_there_any_product = true;
 			$is_there_any_product_to_sell = $ticket->is_in_stock();
-
-			if ( $is_there_any_product_to_sell ) {
-				$are_products_available = true;
-			}
-		?>
-		<tr class="tribe-rsvp-ticket-row-<?php echo absint( $ticket->ID ); ?>">
-			<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
-				<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket->ID ); ?>">
-				<?php if ( $is_there_any_product_to_sell ): ?>
-					<input type="number" class="tribe-ticket-quantity" min="0" max="<?php echo esc_attr( $ticket->remaining() ); ?>" name="quantity_<?php echo absint( $ticket->ID ); ?>" value="0" <?php disabled( $must_login ); ?> >
-
-					<?php if ( $ticket->managing_stock() ): ?>
-					<span class="tribe-tickets-remaining">
-						<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->remaining(), $ticket->original_stock() ); ?>
-					</span>
+			?>
+			<tr>
+				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
+					<input type="hidden" name="product_id[]" value="<?php echo absint( $ticket->ID ); ?>">
+					<?php if ( $is_there_any_product_to_sell ) : ?>
+						<input
+							type="number"
+							class="tribe-ticket-quantity"
+							min="0"
+							max="<?php echo esc_attr( $ticket->remaining() ); ?>"
+							name="quantity_<?php echo absint( $ticket->ID ); ?>"
+							value="0"
+							<?php disabled( $must_login ); ?>
+						>
+						<?php if ( $ticket->managing_stock() ) : ?>
+							<span class="tribe-tickets-remaining">
+					<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->remaining(), $ticket->original_stock() ); ?>
+				</span>
+						<?php endif; ?>
+					<?php else: ?>
+						<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
 					<?php endif; ?>
-				<?php else: ?>
-					<span class="tickets_nostock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
-				<?php endif; ?>
-			</td>
-			<td class="tickets_name">
-				<?php echo esc_html( $ticket->name ); ?>
-			</td>
-			<td class="tickets_description" colspan="2">
-				<?php echo esc_html( $ticket->description ); ?>
-			</td>
-		</tr>
+				</td>
+				<td class="tickets_name">
+					<?php echo esc_html( $ticket->name ); ?>
+				</td>
+				<td class="tickets_description" colspan="2">
+					<?php echo esc_html( $ticket->description ); ?>
+				</td>
+			</tr>
+			<?php
 
-		<?php
 			/**
 			 * Allows injection of HTML after an RSVP ticket table row
 			 *
@@ -92,7 +108,7 @@ $now = current_time( 'timestamp' );
 		}
 		?>
 
-		<?php if ( $are_products_available ) : ?>
+		<?php if ( $is_there_any_product_to_sell ) : ?>
 			<tr class="tribe-tickets-meta-row">
 				<td colspan="4" class="tribe-tickets-attendees">
 					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets' ); ?></header>
@@ -130,11 +146,18 @@ $now = current_time( 'timestamp' );
 								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
 							</td>
 						</tr>
+
 						<?php if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() ) ) : ?>
 							<tr class="tribe-tickets-attendees-list-optout">
 								<td colspan="4">
-									<input type="checkbox" name="attendee[optout]" id="tribe-tickets-attendees-list-optout">
-									<label for="tribe-tickets-attendees-list-optout"><?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?></label>
+									<input
+										type="checkbox"
+										name="attendee[optout]"
+										id="tribe-tickets-attendees-list-optout"
+									>
+									<label for="tribe-tickets-attendees-list-optout">
+										<?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?>
+									</label>
 								</td>
 							</tr>
 						<?php endif; ?>
@@ -143,15 +166,23 @@ $now = current_time( 'timestamp' );
 			</tr>
 			<tr>
 				<td colspan="4" class="add-to-cart">
-					<?php if ( $must_login ): ?>
-						<a href="<?php echo Tribe__Tickets__Tickets::get_login_url(); ?>"><?php esc_html_e( 'Login to RSVP', 'event-tickets' );?></a>
+					<?php if ( $must_login ) : ?>
+						<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url() ); ?>">
+							<?php esc_html_e( 'Login to RSVP', 'event-tickets' );?>
+						</a>
 					<?php else: ?>
-						<button type="submit" name="tickets_process" value="1" class="button alt"><?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?></button>
+						<button
+							type="submit"
+							name="tickets_process"
+							value="1"
+							class="tribe-button tribe-button--rsvp"
+						>
+							<?php esc_html_e( 'Confirm RSVP', 'event-tickets' );?>
+						</button>
 					<?php endif; ?>
 				</td>
 			</tr>
 		<?php endif; ?>
-
 		<noscript>
 			<tr>
 				<td class="tribe-link-tickets-message">

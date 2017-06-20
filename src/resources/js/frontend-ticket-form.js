@@ -287,4 +287,14 @@ var tribe_tickets_ticket_form = {};
 	$( function() {
 		my.init();
 	} );
+
+	// Listen for any clicks on an element in the document with the `link` class
+	$( document ).on( 'click', '.button-events-list', function( e ) {
+		// Prevent the default action (e.g. submit the form)
+		e.preventDefault();
+
+		// Get the URL specified in the form
+		var url = e.target.parentElement.action;
+		window.location = url;
+	} );
 } )( jQuery, tribe_tickets_ticket_form );

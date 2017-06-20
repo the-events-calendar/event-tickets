@@ -5,17 +5,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.4.10';
+	const VERSION = '4.5rc1';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.4';
+	const MIN_TEC_VERSION = '4.5.6rc';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.4';
+	const MIN_COMMON_VERSION = '4.5.6rc';
 
 	/**
 	 * Name of the provider
@@ -331,6 +331,9 @@ class Tribe__Tickets__Main {
 		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 
+		// Setup Front End Display
+		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button' );
+
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
@@ -370,6 +373,9 @@ class Tribe__Tickets__Main {
 		// Query Vars
 		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
 		tribe( 'tickets.query' );
+
+		// Tribe Data API Init
+		tribe_singleton( 'tickets.data_api', 'Tribe__Tickets__Data_API' );
 
 		// View links, columns and screen options
 		if ( is_admin() ) {
@@ -411,16 +417,17 @@ class Tribe__Tickets__Main {
 	 */
 	public function add_linking_archor() {
 		_deprecated_function( __METHOD__, '4.4.8', 'Tribe__Tickets__Main::add_linking_anchor' );
-		$this->add_linking_anchor();
 	}
 
 	/**
 	 * Prints a div with an ID that can be used to link to the ticket form location.
 	 *
 	 * The height is specified inline to ensure this works x-browser.
+	 *
+	 * @deprecated 4.6
 	 */
 	public function add_linking_anchor() {
-		echo '<div id="buy-tickets" style="height: 1px;"></div>';
+		_deprecated_function( __METHOD__, '4.5' );
 	}
 
 	/**

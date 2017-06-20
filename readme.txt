@@ -3,8 +3,8 @@
 Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, brook-tribe, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, leahkoerper, lucatume, mastromktg, mat-lipe, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, shelbelliott, tribecari, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 3.9
+Stable tag: 4.5rc1
 Tested up to: 4.8
-Stable tag: 4.4.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -232,6 +232,17 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Trisha Salas](https://profiles.wordpress.org/trishasalas)
 
 == Changelog ==
+
+= [4.5] TBD =
+
+* Feature - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
+* Feature - An API to get ticket, attendee, event, and order infomation from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
+* Fix - Resolved issue where the Meta Chunker attempted to inappropriately chunk meta for post post_types [80857]
+* Fix - Resolve Thunderbird for Windows rendering of Tickets email
+* Tweak - Added filters: `tribe_tickets_buy_button`
+* Tweak - Changed views: `tickets/rsvp`, `tickets/email`
+* Language - 5 new strings added, 65 updated, 0 fuzzied, and 0 obsoleted [event-tickets]
+* Language - 0 new strings added, 0 updated, 1 fuzzied, and 0 obsoleted [tribe-common]
 
 = [4.4.10] 2017-06-14 =
 

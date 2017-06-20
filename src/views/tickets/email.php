@@ -16,7 +16,7 @@
  *                              'security_code')
  *
  * @package TribeEventsCalendar
- * @version 4.4.3
+ * @version 4.5
  *
  */
 ?>
@@ -233,7 +233,7 @@
 				$count ++;
 
 				if ( $count == 2 ) {
-					$break = 'page-break-before: always !important;';
+					$break = 'page-break-before:always !important;';
 				}
 
 				$event      = get_post( $ticket['event_id'] );
