@@ -1,6 +1,6 @@
 .eventtable.ticket_list.eventForm {
-	border-radius: 5px;
 	border: 1px solid #ccc;
+	border-radius: 5px;
 	margin: 20px 0;
 
 	thead {
@@ -21,8 +21,8 @@
 	}
 
 	tbody {
-		border-right: 10px solid transparent;
 		border-left: 10px solid transparent;
+		border-right: 10px solid transparent;
 
 		td {
 			@media (min-width: 782px) {
@@ -71,7 +71,7 @@
 		}
 	}
 
-	/* Specific cells - remember that these classes exist int he header too! */
+	/* Specific cells - remember that these classes exist in the header too! */
 	.ticket_name {
 		white-space: nowrap;
 
@@ -95,8 +95,9 @@
 		}
 
 		&.Tribe__Tickets__RSVP {
-			p:first-child {
+			p {
 				&::before {
+					color: #000;
 					content: '\f110';
 				}
 			}
@@ -125,10 +126,11 @@
 
 	.ticket_edit {
 		vertical-align: top;
+		width: 100px;
 
 		@media (max-width: 782px) {
-			margin-top: -2.5em;
 			float: right;
+			margin-top: -2.5em;
 		}
 	}
 
@@ -142,16 +144,16 @@
 		&:hover {
 			color: #00a0d2;
 		}
-	}
 
-	.ticket_edit_text {
-		font-size: 0;
+		.ticket_edit_text {
+			font-size: 0;
 
-		&::before {
-			font-family: 'dashicons';
-			font-size: x-large;
-			content: '\f464';
-			vertical-align: top;
+			&::before {
+				content: '\f464';
+				font-family: 'dashicons';
+				font-size: x-large;
+				vertical-align: top;
+			}
 		}
 	}
 }

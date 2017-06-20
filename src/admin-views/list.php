@@ -63,7 +63,7 @@
 			<td class="ticket_edit">
 				<?php
 				printf(
-					"<button attr-provider='%s' attr-ticket-id='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
+					"<button data-provider='%s' data-ticket-id='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
 					esc_attr( $ticket->provider_class ),
 					esc_attr( $ticket->ID ),
 					esc_html( $ticket->name )
@@ -86,22 +86,28 @@
 		</th>
 	</thead>
 	<?php
-	foreach ($tickets as $key => $ticket) {
+
+	foreach ( $tickets as $key => $ticket ) {
 		if ( strpos( $ticket->provider_class, "RSVP" ) !== false ) {
 			$rsvp[] = $ticket;
-			unset( $tickets[ $key ] );
+		} else {
+			$nonRSVP[] = $ticket;
 		}
 	}
 
 	?>
 	<tbody>
 		<?php
-		foreach ($tickets as $ticket) {
-			render_ticket_row( $ticket );
+		if ( !empty( $nonRSVP ) ) {
+			foreach ($nonRSVP as $ticket) {
+				render_ticket_row( $ticket );
+			}
 		}
 
-		foreach ($rsvp as $ticket) {
-			render_ticket_row( $ticket );
+		if ( !empty( $rsvp ) ) {
+			foreach ($rsvp as $ticket) {
+				render_ticket_row( $ticket );
+			}
 		}
 		?>
 	</tbody>

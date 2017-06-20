@@ -83,6 +83,7 @@ class Tribe__Tickets__Metabox {
 		wp_enqueue_script( 'event-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), Tribe__Tickets__Main::instance()->js_version(), true );
 		// new js
 		wp_enqueue_script( 'event-tickets-tables', $resources_url .'/js/tickets-tables.js', array(), Tribe__Tickets__Main::instance()->js_version(), true );
+		wp_enqueue_script( 'event-tickets-accordion', $resources_url .'/js/accordion.js', array(), Tribe__Tickets__Main::instance()->js_version(), true );
 
 		wp_localize_script( 'event-tickets', 'tribe_ticket_notices', array(
 			'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),

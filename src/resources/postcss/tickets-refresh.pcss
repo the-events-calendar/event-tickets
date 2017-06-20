@@ -5,19 +5,36 @@
 
 /* Panels */
 .ticket_panel {
-	position: absolute;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+	padding: 16px;
+	position: relative;
+	transition: .5s cubic-bezier(.68, -.55, .265, 1.55);
 	width: 100%;
+	will-change: transform;
+
+	&[aria-hidden='true'] {
+		position: absolute;
+		transition: .5s cubic-bezier(.68, -.55, .265, 1.55);
+		visibility: hidden;
+	}
 
 	&.panel_base {
-		position: relative;
+		border: 0;
+
+		&[aria-hidden='true'] {
+			right: 100%;
+			transform: translateX(-100%);
+		}
 	}
 
-	&.panel_edit {
-		left: 100%;
-	}
-
+	&.panel_edit,
 	&.panel_settings {
-		top: 100%;
+		&[aria-hidden='true'] {
+			margin-top: 6px;
+			transform: translateX(100%);
+		}
 	}
 }
 
@@ -47,7 +64,7 @@
 	}
 }
 
-/* Styles for */
+/* Styles for INitial View */
 .ticket_table_intro {
 	.ticket_form_total_capacity {
 		display: block;
@@ -69,4 +86,82 @@
 			float: right;
 		}
 	}
+}
+
+/* Form styles */
+
+.input_block {
+	margin-bottom: 1em;
+	position: relative;
+
+	.ticket_form_label {
+		box-sizing: border-box;
+		float: left;
+		padding-right: 1em;
+		width: 132px;
+	}
+
+	.input_block,
+	p.description {
+		display: block;
+		margin-left: 132px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+/* Accordion Styles */
+.accordion-header {
+	background: none;
+	border: 0;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 500;
+	padding: 10px 10px 10px 20px;
+	position: relative;
+	text-align: left;
+	width: 100%;
+
+	&::before {
+		background-color: #000;
+		border-radius: 100%;
+		box-sizing: border-box;
+		color: #fff;
+		content: '\f132';
+		font-family: 'dashicons';
+		font-size: 16px;
+		font-weight: 400;
+		height: 16px;
+		left: 0;
+		padding-top: 1px;
+		position: absolute;
+		top: 10px;
+		width: 16px;
+	}
+
+	&.is-active {
+		&::before {
+			content: '\f460';
+		}
+	}
+}
+
+.accordion-content {
+	display: none;
+
+	&.is-active {
+		display: block;
+	}
+}
+
+/* Edit form styles */
+.ticket_bottom {
+	margin-top: 1em;
+}
+
+/* Testing */
+.tribe_preview {
+	cursor: pointer;
 }
