@@ -19,7 +19,7 @@ if ( ! empty( $header_id ) ) {
 
 $modules = Tribe__Tickets__Tickets::modules();
 $total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
-
+$attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
 ?>
 
 <div id="event_tickets" class="eventtable">
@@ -60,10 +60,10 @@ $total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_ca
 				?>
 				<a id="ticket_form_view_orders" href="<?php echo esc_url( admin_url( 'edit.php?post_type=shop_order' ) ); ?>" class="ticket_form_view_orders"><?php esc_html_e( 'View Orders', 'event-tickets' ); ?></a>
 				<?php
-					$url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
+
 
 				?>
-				<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
+				<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $attendees_url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
 			</div>
 
 			<?php
