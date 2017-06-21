@@ -3,17 +3,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 (function( window, $, undefined ) {
 	'use strict';
 
-	var $event_pickers = $( document.getElementById( 'tribe-event-datepickers' ) ),
-		$tribe_tickets = $( document.getElementById( 'tribetickets' ) ),
-		$tickets_container = $( document.getElementById( 'event_tickets' ) ),
-		$enable_global_stock = $( document.getElementById( 'tribe-tickets-enable-global-stock' ) ),
-		$global_stock_level = $( document.getElementById( 'tribe-tickets-global-stock-level' ) ),
-		global_stock_setting_changed = false,
-		$body = $( 'html, body' ),
-		startofweek = 0,
-		$base_panel = $( document.getElementById( 'panel_base' ) ),
-		$edit_panel = $( document.getElementById( 'panel_edit' ) ),
-		$settings_panel = $( document.getElementById( 'panel_settings' ) );
+	var $event_pickers               = $( document.getElementById( 'tribe-event-datepickers' ) );
+	var $tribe_tickets               = $( document.getElementById( 'tribetickets' ) );
+	var $tickets_container           = $( document.getElementById( 'event_tickets' ) );
+	var $enable_global_stock         = $( document.getElementById( 'tribe-tickets-enable-global-stock' ) );
+	var $global_stock_level          = $( document.getElementById( 'tribe-tickets-global-stock-level' ) );
+	var global_stock_setting_changed = false;
+	var $body                        = $( 'html, body' );
+	var startofweek                  = 0;
+	var $base_panel                  = $( document.getElementById( 'panel_base' ) );
+	var $edit_panel                  = $( document.getElementById( 'panel_edit' ) );
+	var $settings_panel              = $( document.getElementById( 'panel_settings' ) );
 
 	ticketHeaderImage = {
 
@@ -85,9 +85,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 * @return {void}
 			 */
 			'clear.tribe': function() {
-				var $this = $( this ),
-					$ticket_form = $this.find( '#ticket_form'),
-					$ticket_settings = $ticket_form.find( "tr:not(.event-wide-settings)" );
+				var $this            = $( this );
+				var $ticket_form     = $this.find( '#ticket_form');
+				var $ticket_settings = $ticket_form.find( "tr:not(.event-wide-settings)" );
 
 				$this.find( 'a#ticket_form_toggle' ).show();
 
@@ -145,8 +145,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 * @return {void}
 			 */
 			'set-advanced-fields.tribe': function() {
-				var $this = $( this );
-				var $ticket_form = $this.find( '#ticket_form' );
+				var $this            = $( this );
+				var $ticket_form     = $this.find( '#ticket_form' );
 				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced:not(.ticket_advanced_meta)' ).find( 'input, select, textarea' );
 				var provider = $ticket_form.find( '.ticket_provider:checked' ).val();
 
@@ -327,9 +327,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				return;
 			}
 
-			var $toggle_link = $history.find( 'a.toggle-history' );
+			var $toggle_link      = $history.find( 'a.toggle-history' );
 			var $toggle_link_text = $toggle_link.find( 'span' );
-			var $history_list = $history.find( 'ul' );
+			var $history_list     = $history.find( 'ul' );
 
 			$history.find( 'a.toggle-history' ).click( function( event ) {
 				$toggle_link_text.toggle();
@@ -431,9 +431,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		/* "Save Ticket" button action */
 		$( '#ticket_form_save' ).click( function( e ) {
-			var $form = $( '#ticket_form_table' ),
-				type = $form.find( '.ticket_provider:checked' ).val(),
-				$rows = $form.find( '.ticket, .ticket_advanced_meta, .ticket_advanced_' + type );
+			var $form = $( '#ticket_form_table' );
+			var type  = $form.find( '.ticket_provider:checked' ).val();
+			var $rows = $form.find( '.ticket, .ticket_advanced_meta, .ticket_advanced_' + type );
 
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
@@ -549,8 +549,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( '#ticket_start_date' ).val( start_date );
 						$( '#ticket_end_date' ).val( end_date );
 
-						var $start_meridian = $( document.getElementById( 'ticket_start_meridian' ) ),
-						      $end_meridian = $( document.getElementById( 'ticket_end_meridian' ) );
+						var $start_meridian = $( document.getElementById( 'ticket_start_meridian' ) );
+						var $end_meridian   = $( document.getElementById( 'ticket_end_meridian' ) );
 
 						if ( response.data.start_date ) {
 							var start_hour = parseInt( response.data.start_date.substring( 11, 13 ) );
@@ -583,7 +583,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						if ( response.data.end_date ) {
 
-							var end_hour = parseInt( response.data.end_date.substring( 11, 13 ) );
+							var end_hour     = parseInt( response.data.end_date.substring( 11, 13 ) );
 							var end_meridian = 'am';
 
 							if ( end_hour > 12 && $end_meridian.length ) {
@@ -684,13 +684,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			.on( 'keyup', '#ticket_price', function ( e ) {
 				e.preventDefault();
 
-				var regex;
 				var decimal_point = price_format.decimal;
-
-				regex = new RegExp( '[^\-0-9\%\\' + decimal_point + ']+', 'gi' );
-
-				var value = $( this ).val();
-				var newvalue = value.replace( regex, '' );
+				var regex         = new RegExp( '[^\-0-9\%\\' + decimal_point + ']+', 'gi' );
+				var value         = $( this ).val();
+				var newvalue      = value.replace( regex, '' );
 
 				// @todo add info message or tooltip to let people know we are removing the comma or period
 				if ( value !== newvalue ) {
@@ -699,7 +696,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} );
 
 
-		var $remove = $( '#tribe_ticket_header_remove' );
+		var $remove  = $( '#tribe_ticket_header_remove' );
 		var $preview = $( '#tribe_ticket_header_preview' );
 
 		if ( $preview.find( 'img' ).length ) {

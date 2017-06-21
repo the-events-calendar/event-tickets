@@ -18,7 +18,7 @@ if ( ! empty( $header_id ) ) {
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
-$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_event_tickets_count( $post_id );
+$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
 
 ?>
 
@@ -33,11 +33,19 @@ $total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_event_tickets_
 				<span class="ticket_form_total_capacity">
 					Total Event Capacity:
 					<span id="ticket_form_total_capacity_value">
-						<?php if ( 0 < $total_tickets ) {
-							echo absint( $total_tickets );
-						} else {
-							esc_html_e( 'unlimited' );
-						}?>
+						<?php
+						switch ( $total_tickets ) {
+							case -1:
+								?><i><?php esc_html_e( 'unlimited', 'event-tickets' ); ?></i><?php
+								break;
+							case 0:
+								?><i><?php esc_html_e( 'No tickets created yet', 'event-tickets' ); ?></i><?php
+								break;
+							default:
+								echo absint( $total_tickets );
+								break;
+						}
+						?>
 					</span>
 				</span>
 				<?php
