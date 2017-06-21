@@ -126,33 +126,44 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get a count of all the tickets for an event. Queries all active modules/providers.
+	 * Get the total capacity event.
 	 *
-	 * @static
+	 * @param $event_id int (null)
 	 *
-	 * @param $event_id
+	 * @since TBD
 	 *
-	 * @return int number of tickets ( 0 means unlimited )
+	 * @return int number of tickets ( -1 means unlimited )
 	 */
-	public function get_event_tickets_count( $post_id ) {
-		global $post;
-		$tickets_count = 0;
+	public function get_total_event_capacity( $event_id = null ) {
+		if ( null === $event_id ) {
+			global $post;
+			$event_id = $post->ID;
+		}
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
 				$stock = $ticket->original_stock();
 
+				// Empty original stock means unlimited tickets, so we return -1 as a flag.
 				if ( empty( $stock ) ) {
+					// If one ticket is unlimited, total capacity is unlimited - bail with flag value
 					return -1;
 				}
 
-				$tickets_count += $stock;
+				$capacity += $stock;
 			}
 		}
 
-		return $tickets_count;
+		/**
+		 * Allow templates to filter the returned value
+		 */
+		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $event_id, $tickets );
+
+		return $capacity;
 	}
 
 	/**
