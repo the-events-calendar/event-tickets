@@ -55,9 +55,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 				 * @param Post ID
 				 * @since TBD
 				 */
-				do_action( 'tribe_events_tickets_post_content', $post_id );
-
-				$url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
+				do_action( 'tribe_events_tickets_post_capacity', $post_id );
 				?>
 				<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $attendees_url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
 			</div>
