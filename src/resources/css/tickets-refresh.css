@@ -48,6 +48,10 @@
 	        transform: translateX(100%);
 }
 
+.ticket_list_container {
+	margin-bottom: 20px;
+}
+
 /* Base Panel Toggle Buttons */
 
 #settings_form_toggle {
