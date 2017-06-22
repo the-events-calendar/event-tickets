@@ -75,14 +75,23 @@ class Tribe__Tickets__Metabox {
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( 'event-tickets', $resources_url .'/css/tickets.css', array(), Tribe__Tickets__Main::instance()->css_version() );
-		wp_enqueue_style( 'event-tickets-refresh', $resources_url .'/css/tickets-refresh.css', array(), Tribe__Tickets__Main::instance()->css_version() );
-
-		wp_enqueue_script( 'event-tickets', $resources_url .'/js/tickets.js', array( 'jquery-ui-datepicker' ), Tribe__Tickets__Main::instance()->js_version(), true );
-
-		wp_localize_script( 'event-tickets', 'tribe_ticket_notices', array(
-			'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),
-		) );
+		tribe_assets(
+			Tribe__Tickets__Main::instance(),
+			array(
+				array( 'event-tickets-css', 'tickets.css' ),
+				array( 'event-tickets-refresh-css', 'tickets-refresh.css', array( 'event-tickets-css' ) ),
+				array( 'event-tickets-js', 'tickets.js', array( 'jquery-ui-datepicker' ) ),
+			),
+			'admin_enqueue_scripts',
+			array(
+				'localize' => array(
+					'name' => 'tribe_ticket_notices',
+					'data' => array(
+						'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),
+					)
+				)
+			)
+		);
 
 		$upload_header_data = array(
 			'title'  => esc_html__( 'Ticket header image', 'event-tickets' ),
