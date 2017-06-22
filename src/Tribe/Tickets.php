@@ -21,7 +21,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 *
 	 *     ATTENDEE_OBJECT
 	 */
-	abstract class Tribe__Tickets__Tickets {
+	class Tribe__Tickets__Tickets {
 
 		/**
 		 * Flag used to track if the registration form link has been displayed or not.
@@ -129,7 +129,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function get_event_reports_link( $event_id );
+		public function get_event_reports_link( $event_id ) {
+
+		}
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
@@ -142,7 +144,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function get_ticket_reports_link( $event_id, $ticket_id );
+		public function get_ticket_reports_link( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Returns a single ticket
@@ -154,7 +158,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function get_ticket( $event_id, $ticket_id );
+		public function get_ticket( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Attempts to load the specified ticket type post object.
@@ -212,7 +218,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function delete_ticket( $event_id, $ticket_id );
+		public function delete_ticket( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Saves a ticket
@@ -225,7 +233,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function save_ticket( $event_id, $ticket, $raw_data = array() );
+		public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+
+		}
 
 		/**
 		 * Get all the tickets for an event
@@ -236,7 +246,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array mixed
 		 */
-		abstract protected function get_tickets( $event_id );
+		protected function get_tickets( $event_id ) {
+
+		}
 
 		/**
 		 * Get attendees by id and associated post type
@@ -247,7 +259,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array|mixed
 		 */
-		abstract public function get_attendees_by_id( $post_id );
+		public function get_attendees_by_id( $post_id ) {
+
+		}
 
 		/**
 		 * Get all the attendees (sold tickets) for an event
@@ -258,7 +272,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract protected function get_attendees_by_post_id( $post_id );
+		protected function get_attendees_by_post_id( $post_id ) {
+
+		}
 
 		/**
 		 * Get Attendees by ticket/attendee ID
@@ -267,7 +283,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		abstract protected function get_attendees_by_attendee_id( $attendee_id );
+		protected function get_attendees_by_attendee_id( $attendee_id ) {
+
+		}
 
 		/**
 		 * Get attendees by order id
@@ -276,8 +294,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		abstract protected function get_attendees_by_order_id( $order_id );
+		protected function get_attendees_by_order_id( $order_id ) {
 
+		}
 
 		/**
 		 * Get attendees from provided query
@@ -287,7 +306,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract protected function get_attendees( WP_Query $attendees_query, $post_id );
+		protected function get_attendees( $attendees_query, $post_id ) {
+
+		}
 
 		/**
 		 * Mark an attendee as checked in
@@ -299,7 +320,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function checkin( $attendee_id );
+		public function checkin( $attendee_id ) {
+
+		}
 
 		/**
 		 * Mark an attendee as not checked in
@@ -310,8 +333,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function uncheckin( $attendee_id );
+		public function uncheckin( $attendee_id ) {
 
+		}
 
 		/**
 		 * Renders the advanced fields in the new/edit ticket form.
@@ -325,7 +349,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function do_metabox_advanced_options( $event_id, $ticket_id );
+		public function do_metabox_advanced_options( $event_id, $ticket_id );
 
 		/**
 		 * Renders the front end form for selling tickets in the event single page
@@ -336,7 +360,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function front_end_tickets_form( $content );
+		public function front_end_tickets_form( $content ) {
+
+		}
 
 		/**
 		 * Returns the markup for the price field
