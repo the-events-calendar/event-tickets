@@ -88,9 +88,9 @@ class Tribe__Tickets__Metabox {
 					'name' => 'tribe_ticket_notices',
 					'data' => array(
 						'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),
-					)
-				)
-			),
+					),
+				),
+			)
 		);
 
 		$upload_header_data = array(
