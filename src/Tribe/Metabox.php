@@ -84,13 +84,13 @@ class Tribe__Tickets__Metabox {
 			),
 			'admin_enqueue_scripts',
 			array(
-				'localize' => array(
+				'localize' => (object) array(
 					'name' => 'tribe_ticket_notices',
 					'data' => array(
 						'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),
 					)
 				)
-			)
+			),
 		);
 
 		$upload_header_data = array(
@@ -98,8 +98,8 @@ class Tribe__Tickets__Metabox {
 			'button' => esc_html__( 'Set as ticket header', 'event-tickets' ),
 		);
 
-		wp_localize_script( 'event-tickets', 'HeaderImageData', $upload_header_data );
-		wp_localize_script( 'event-tickets', 'tribe_global_stock_admin_ui', array(
+		wp_localize_script( 'event-tickets-js', 'HeaderImageData', $upload_header_data );
+		wp_localize_script( 'event-tickets-js', 'tribe_global_stock_admin_ui', array(
 			'nav_away_msg' => __( 'It looks like you have modified your global stock settings but have not saved or updated the post.', 'event-tickets' ),
 		) );
 
@@ -111,7 +111,7 @@ class Tribe__Tickets__Metabox {
 			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
 		);
 
-		wp_localize_script( 'event-tickets', 'TribeTickets', $nonces );
+		wp_localize_script( 'event-tickets-js', 'TribeTickets', $nonces );
 
 		wp_enqueue_script( 'tribe-bumpdown' );
 	}
@@ -125,7 +125,7 @@ class Tribe__Tickets__Metabox {
 		 */
 		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 
-		wp_localize_script( 'event-tickets', 'price_format', array(
+		wp_localize_script( 'event-tickets-js', 'price_format', array(
 			'decimal' => $decimal,
 			'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 		) );
