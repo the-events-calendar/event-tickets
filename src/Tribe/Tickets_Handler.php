@@ -134,36 +134,47 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @return int number of tickets ( -1 means unlimited )
 	 */
-	public function get_total_event_capacity( $event_id = null ) {
-		if ( null === $event_id ) {
+	public function get_total_event_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		if ( ! $post_id ) {
 			global $post;
-			$event_id = $post->ID;
+			if ( $post instanceof WP_Post ) {
+				$post_id = $post->ID;
+			} else {
+				return;
+			}
 		}
 
 		$capacity = 0;
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
 				$stock = $ticket->original_stock();
 
-				// Empty original stock means unlimited tickets, so we return -1 as a flag.
-				if ( empty( $stock ) ) {
-					// If one ticket is unlimited, total capacity is unlimited - bail with flag value
-					return -1;
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
 				}
-
-				$capacity += $stock;
 			}
 		}
 
 		/**
 		 * Allow templates to filter the returned value
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 *
+		 * @since TDB
 		 */
-		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $event_id, $tickets );
-
-		return $capacity;
+		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id, $tickets );
 	}
 
 	/**
