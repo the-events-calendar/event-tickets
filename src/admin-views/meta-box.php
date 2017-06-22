@@ -119,7 +119,6 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 		?>
 
 		<div id="ticket_form" class="ticket_form tribe_sectionheader">
-
 			<div id="ticket_form_table" class="eventtable ticket_form">
 				<?php // @TODO: Do these need to get renamed for RSVPs? ?>
 				<h4 class="ticket_form_title_add"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>

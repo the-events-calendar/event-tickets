@@ -33,16 +33,15 @@
 				<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
 			</td>
 
-			<td class="ticket_price" valign="top">
-				<span class="ticket_cell_label">Price:</span>
-				<?php
-				if ( $provider_obj->get_price_html( $ticket->ID ) ) {
-					echo $provider_obj->get_price_html( $ticket->ID );
-				} else {
-					esc_html_e( 'Free', 'event-tickets' );
-				}
-				?>
-			</td>
+			<?php
+			/**
+			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
+			 *
+			 * @param Post ID
+			 * @since TBD
+			 */
+			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
+			?>
 
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label">Capacity:</span>
@@ -79,7 +78,15 @@
 	<thead>
 		<tr class="table-header">
 			<th class="ticket_name">Tickets</th>
-			<th class="ticket_price">Price</th>
+			<?php
+			/**
+			 * Allows for the insertion of additional columns into the ticket table header
+			 *
+			 * @param Post ID
+			 * @since TBD
+			 */
+			do_action( 'tribe_events_tickets_ticket_table_add_header_column' );
+			?>
 			<th class="ticket_capacity">Capacity</th>
 			<th class="ticket_available">Available</th>
 			<th class="ticket_edit"></th>
