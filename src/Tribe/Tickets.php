@@ -2,7 +2,7 @@
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
-	 * Abstract class with the API definition and common functionality
+	 * Class with the API definition and common functionality
 	 * for Tribe Tickets Pro. Providers for this functionality need to
 	 * extend this class. For a functional example of how this works
 	 * see Tribe WooTickets.
@@ -20,6 +20,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 * made available via:
 	 *
 	 *     ATTENDEE_OBJECT
+	 *
+	 *
+	 * @since  4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
+	 *                 we changed this from an Abstract to a normal parent Class
 	 */
 	class Tribe__Tickets__Tickets {
 
@@ -123,6 +127,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
+		 *
 		 * @abstract
 		 *
 		 * @param $event_id
@@ -349,7 +354,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function do_metabox_advanced_options( $event_id, $ticket_id );
+		public function do_metabox_advanced_options( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Renders the front end form for selling tickets in the event single page
