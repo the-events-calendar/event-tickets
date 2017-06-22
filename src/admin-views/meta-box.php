@@ -80,17 +80,19 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 			do_action( 'tribe_events_tickets_post_ticket_list', $post_id ); ?>
 
 		</div>
-		<?php
-		/**
-		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
-		 *
-		 * @param Post ID
-		 * @since TBD
-		 */
-		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
-		?>
-		<button id="rsvp_form_toggle" class="button-secondary ticket_form_toggle"><span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new RSVP' ); ?>"><?php esc_html_e( 'New RSVP', 'event-tickets' ); ?></span></button>
-		<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text"><?php esc_html_e( 'Settings', 'event-tickets' ); ?></span></button>
+		<div>
+			<?php
+			/**
+			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
+			 *
+			 * @param Post ID
+			 * @since TBD
+			 */
+			do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
+			?>
+			<button id="rsvp_form_toggle" class="button-secondary ticket_form_toggle"><span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new RSVP' ); ?>"><?php esc_html_e( 'New RSVP', 'event-tickets' ); ?></span></button>
+			<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text"><?php esc_html_e( 'Settings', 'event-tickets' ); ?></span></button>
+		</div>
 	</div><!-- #panel_base -->
 
 	<?php // the add/edit panel ?>
@@ -117,7 +119,6 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 		?>
 
 		<div id="ticket_form" class="ticket_form tribe_sectionheader">
-
 			<div id="ticket_form_table" class="eventtable ticket_form">
 				<?php // @TODO: Do these need to get renamed for RSVPs? ?>
 				<h4 class="ticket_form_title_add"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
