@@ -135,15 +135,6 @@ class Tribe__Tickets__Tickets_Handler {
 	public function get_total_event_capacity( $post = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 
-		if ( ! $post_id ) {
-			global $post;
-			if ( $post instanceof WP_Post ) {
-				$post_id = $post->ID;
-			} else {
-				return;
-			}
-		}
-
 		$capacity = 0;
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
