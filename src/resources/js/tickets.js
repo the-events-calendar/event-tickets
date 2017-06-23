@@ -339,10 +339,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		/**
 		 * Show or hide a panel based on it's current state.
-		 * @param obj the panel to be moved
-		 * @direction string the direction to move it (up, down, left, right)
+		 * @param e the event that triggered the change
+		 * @param $panel obj the panel to be moved
 		 *
-		* @since TBD
+		 * @since TBD
 		 */
 		function show_hide_panel( e, $panel ) {
 			e.preventDefault();
@@ -350,17 +350,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			if ( undefined !== $panel.attr( 'aria-hidden' ) && 'false' !== $panel.attr( 'aria-hidden' ) ) {
 				// we're showing another panel, hide the base first
 				if ( $base_panel !== $panel ) {
-					show_hide_panel( e, $base_panel );
+					$base_panel.attr( 'aria-hidden', 'true' );
 
 				}
+
 				$panel.attr( 'aria-hidden', 'false' );
+
 			} else {
 
 				$panel.attr( 'aria-hidden', 'true' );
 
 				// we're hiding another panel, show the base afterward
 				if ( $base_panel !== $panel ) {
-					show_hide_panel( e, $base_panel );
+					$base_panel.attr( 'aria-hidden', 'false' );
 				}
 			}
 		}
