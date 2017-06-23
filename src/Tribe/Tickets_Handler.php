@@ -124,6 +124,49 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Get the total capacity event.
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @since TBD
+	 *
+	 * @return int number of tickets ( -1 means unlimited )
+	 */
+	public function get_total_event_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				$stock = $ticket->original_stock();
+
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 *
+		 * @since TDB
+		 */
+		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
 	 * Adds the "attendees" link in the admin list row actions for each event.
 	 *
 	 * @param $actions

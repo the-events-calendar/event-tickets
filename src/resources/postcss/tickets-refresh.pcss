@@ -1,0 +1,51 @@
+#event_tickets {
+	overflow: hidden;
+	position: relative;
+}
+
+/* Panels */
+.ticket_panel {
+	position: absolute;
+	width: 100%;
+
+	&.panel_base {
+		position: relative;
+	}
+
+	&.panel_edit {
+		left: 100%;
+	}
+
+	&.panel_settings {
+		top: 100%;
+	}
+}
+
+/* Base Panel Toggle Buttons */
+#settings_form_toggle {
+	float: right;
+}
+
+.ticket_form_toggle_text:before,
+.settings_form_toggle_text:before {
+	font-family: 'dashicons';
+}
+
+.ticket_form_toggle_text:before {
+	content: '\f132';
+	vertical-align: middle;
+}
+
+.settings_form_toggle_text:before {
+	content: '\f111';
+	vertical-align: bottom;
+}
+
+/* Styles for */
+.ticket_table_intro {
+	text-align: right;
+
+	.ticket_form_total_capacity {
+		float: left;
+	}
+}

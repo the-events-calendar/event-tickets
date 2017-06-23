@@ -25,6 +25,8 @@
   },
   "devDependencies": {
     "archiver": "^0.10.1",
+    "eslint": "^4.0.0",
+    "eslint-config-products": "github:moderntribe/eslint-config-products",
     "glob": "~4.0.5",
     "gulp": "^3.9.1",
     "product-taskmaster": "git+https://github.com/moderntribe/product-taskmaster.git",
