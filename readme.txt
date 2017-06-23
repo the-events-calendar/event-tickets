@@ -237,6 +237,25 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Tweak - Spelling and related language fixes (with thanks to @garrett-eclipse) [77196]
 
+= [4.5.0.2] 2017-06-22 =
+
+* Fix - Prevent warnings on Strict mode for PHP 5.3 and for PHP 7
+
+= [4.5.0.1] 2017-06-22 =
+
+* Fix - Prevent fatals involving Commerce Classes and Tribe__Tickets__Tickets
+
+= [4.5] 2017-06-22 =
+
+* Feature - Show remaining ticket count, buy now or rsvp now buttons in list views of The Events Calendar [71092 & 71094]
+* Feature - An API to get ticket, attendee, event, and order infomation from a post id for RSVP, EDD, and WooCommerce Tickets [74363]
+* Fix - Resolved issue where the Meta Chunker attempted to inappropriately chunk meta for post post_types [80857]
+* Fix - Resolve Thunderbird for Windows rendering of Tickets email
+* Tweak - Added filters: `tribe_tickets_buy_button`
+* Tweak - Changed views: `tickets/rsvp`, `tickets/email`
+* Language - 5 new strings added, 65 updated, 0 fuzzied, and 0 obsoleted [event-tickets]
+* Language - 0 new strings added, 0 updated, 1 fuzzied, and 0 obsoleted [tribe-common]
+
 = [4.4.10] 2017-06-14 =
 
 * Fix - Allow importing of RSVP tickets with sale dates, even when time is not specified [77608]

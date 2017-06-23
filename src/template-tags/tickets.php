@@ -147,7 +147,110 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 	}
 }//end if
 
-if ( ! function_exists( 'tribe_events_has_unlimited_stock_tickets' ) ) {
+if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
+
+	/**
+	 * Echos Remaining Ticket Count and Purchase Buttons for an Event
+	 *
+	 * @since  4.5
+	 *
+	 * @param bool $echo Whether or not we should print
+	 *
+	 * @return string
+	 */
+	function tribe_tickets_buy_button( $echo = true ) {
+		$event_id = get_the_ID();
+
+		// check if there are any tickets on sale
+		if ( ! tribe_events_has_tickets_on_sale( $event_id ) ) {
+			return null;
+		}
+
+		// get an array for ticket and rsvp counts
+		$types = Tribe__Tickets__Tickets::get_ticket_counts( $event_id );
+
+		// if no rsvp or tickets return
+		if ( ! $types ) {
+			return null;
+		}
+
+		$html = array();
+		$parts = array();
+
+		// If we have tickets or RSVP, but everything is Sold Out then display the Sold Out message
+		foreach ( $types as $type => $data ) {
+			if ( ! $data['count'] ) {
+				continue;
+			}
+
+			if ( ! $data['available'] ) {
+				$parts[ $type . '-stock' ] = '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
+
+				// Only re-aply if we don't have a stock yet
+				if ( empty( $html['stock'] ) ) {
+					$html['stock'] = $parts[ $type . '-stock' ];
+				}
+			} else {
+				$stock = $data['stock'];
+				if ( $data['unlimited'] || ! $data['stock'] ) {
+					// if unlimited tickets, tickets with no stock and rsvp, or no tickets and rsvp unlimited - hide the remaining count
+					$stock = false;
+				}
+
+				$stock_html = '';
+				if ( $stock ) {
+					$number = number_format_i18n( $stock );
+					if ( 'rsvp' === $type ) {
+						$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
+					} else {
+						$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
+					}
+
+					$stock_html = '<span class="tribe-tickets-left">'
+						. esc_html( sprintf( $text, $number ) )
+						. '</span>';
+				}
+
+				$parts[ $type . '-stock' ] = $html['stock'] = $stock_html;
+
+				if ( 'rsvp' === $type ) {
+					$button_label  = esc_html_x( 'RSVP Now!', 'list view rsvp now ticket button', 'event-tickets' );
+					$button_anchor = '#rsvp-now';
+				} else {
+					$button_label  = esc_html_x( 'Buy Now!', 'list view buy now ticket button', 'event-tickets' );
+					$button_anchor = '#buy-tickets';
+				}
+
+				$button = '<form method="get" action="' . esc_url( get_the_permalink( $event_id ) . $button_anchor ) . '">'
+					. '<button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button>'
+					. '</form>';
+
+				$parts[ $type . '-button' ] = $html['button'] = $button;
+			}
+		}
+
+		/**
+		 * Filter the ticket count and purchase button
+		 *
+		 * @since  4.5
+		 *
+		 * @param array $html     An array with the final HTML
+		 * @param array $parts    An array with all the possible parts of the HTMl button
+		 * @param array $types    Ticket and RSVP count array for event
+		 * @param int   $event_id Post Event ID
+		 */
+		$html = apply_filters( 'tribe_tickets_buy_button', $html, $parts, $types, $event_id );
+		$html = implode( "\n", $html );
+
+		if ( $echo ) {
+			echo $html;
+		}
+
+		return $html;
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_has_unlimited_stock_tickets' ) ) {
 	/**
 	 * Returns true if the event contains one or more tickets which are not
 	 * subject to any inventory limitations.
@@ -162,6 +265,7 @@ if ( ! function_exists( 'tribe_events_has_unlimited_stock_tickets' ) ) {
 		}
 
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
+			// Using equal operator as identical comparison operator causes this to always be false
 			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock() ) {
 				return true;
 			}
@@ -230,6 +334,25 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 	}
 }//end if
 
+if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
+	/**
+	 * Checks if the event has any tickets on sale
+	 *
+	 * @param int $event_id
+	 *
+	 * @return bool
+	 */
+	function tribe_events_has_tickets_on_sale( $event_id ) {
+		$has_tickets_on_sale = false;
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $event_id );
+		foreach ( $tickets as $ticket ) {
+			$has_tickets_on_sale = ( $has_tickets_on_sale || tribe_events_ticket_is_on_sale( $ticket ) );
+		}
+
+		return $has_tickets_on_sale;
+	}
+}
+
 if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	/**
 	 * Gets the "tickets sold" message for a given ticket
@@ -291,8 +414,6 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			}
 
 			$message = sprintf( '%1$d %2$s%3$s', absint( $sold ), esc_html( $sold_label ), esc_html( $status ) );
-
-
 		}
 
 		return $message;
@@ -483,7 +604,6 @@ function tribe_tickets_get_template_part( $slug, $name = null, array $data = nul
 	}
 }
 
-
 if ( ! function_exists( 'tribe_tickets_post_type_enabled' ) ) {
 	/**
 	 * Returns whether or not the provided post type allows tickets to be attached
@@ -495,5 +615,78 @@ if ( ! function_exists( 'tribe_tickets_post_type_enabled' ) ) {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
 
 		return in_array( $post_type, $post_types );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_get_event_ids' ) ) {
+
+	/**
+	 * Gets an array of event ids when passing an id
+	 *
+	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
+	 *
+	 * @return array
+	 */
+	function tribe_tickets_get_event_ids( $id ) {
+		return tribe( 'tickets.data_api' )->get_event_ids( $id );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
+
+	/**
+	 * Gets the ticket provider class when passed an id
+	 *
+	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
+	 *
+	 * @return bool|object
+	 */
+	function tribe_tickets_get_ticket_provider( $id ) {
+		return tribe( 'tickets.data_api' )->get_ticket_provider( $id );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_get_attendees' ) ) {
+
+	/**
+	 * Get attendee(s) by an id
+	 *
+	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 *
+	 * @return array() an array of all attendee(s) data including custom attendee meta for a given id
+	 */
+	function tribe_tickets_get_attendees( $id, $context = null ) {
+		return tribe( 'tickets.data_api' )->get_attendees_by_id( $id, $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_has_meta_data' ) ) {
+
+	/**
+	 * Return true or false if a given id has meta data
+	 *
+	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 *
+	 * @return bool
+	 */
+	function tribe_tickets_has_meta_data( $id, $context = null ) {
+		return tribe( 'tickets.data_api' )->attendees_has_meta_data( $id, $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
+
+	/**
+	 * Return true or false if a given id has meta fields
+	 *
+	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or event id
+	 * @param null $context use 'rsvp_order' to get all rsvp tickets from an order based off the post id and not the order key
+	 *
+	 * @return bool
+	 */
+	function tribe_tickets_has_meta_fields( $id, $context = null ) {
+		return tribe( 'tickets.data_api' )->ticket_has_meta_fields( $id, $context );
 	}
 }
