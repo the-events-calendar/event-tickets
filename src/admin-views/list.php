@@ -75,23 +75,6 @@
 					echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $modules[ $ticket->provider_class ], $ticket->provider_class ) );
 					echo $provider_obj->get_event_reports_link( $post_id );
 					?>
-					<small>&nbsp;|&nbsp;</small>
-					<?php
-					$attendees_url = add_query_arg(
-						array(
-							'post_type' => $post_type,
-							'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
-							'event_id' => $post_id,
-						),
-						admin_url( 'edit.php' )
-					);
-
-					echo sprintf(
-						"<small><a title='" . esc_attr__( 'See who purchased tickets to this event', 'event-tickets' ) . "' href='%s'>%s</a></small>",
-						esc_url( apply_filters( 'tribe_events_tickets_attendees_url', $attendees_url, $post_id ) ),
-						esc_html__( 'Attendees', 'event-tickets' )
-					);
-					?>
 				</h4>
 			</td>
 		<?php endif; ?>
