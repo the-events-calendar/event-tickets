@@ -73,16 +73,6 @@ class Tribe__Tickets__Metabox {
 			return;
 		}
 
-		tribe_assets(
-			Tribe__Tickets__Main::instance(),
-			array(
-				array( 'event-tickets-css', 'tickets.css' ),
-				array( 'event-tickets-refresh-css', 'tickets-refresh.css', array( 'event-tickets-css' ) ),
-				array( 'event-tickets-tables-css', 'tickets-tables.css', array( 'event-tickets-css' ) ),
-			),
-			'admin_enqueue_scripts'
-		);
-
 		$upload_header_data = array(
 			'title'  => esc_html__( 'Ticket header image', 'event-tickets' ),
 			'button' => esc_html__( 'Set as ticket header', 'event-tickets' ),
@@ -102,11 +92,16 @@ class Tribe__Tickets__Metabox {
 		 */
 		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 
-		tribe_asset(
+		tribe_assets(
 			Tribe__Tickets__Main::instance(),
-			'event-tickets-js',
-			'tickets.js',
-			array( 'jquery-ui-datepicker' ),
+			array(
+				array( 'event-tickets-css', 'tickets.css' ),
+				array( 'event-tickets-refresh-css', 'tickets-refresh.css', array( 'event-tickets-css' ) ),
+				array( 'event-tickets-tables-css', 'tickets-tables.css', array( 'event-tickets-css' ) ),
+				array( 'event-tickets-js', 'tickets.js', array( 'jquery-ui-datepicker' ) ),
+				array( 'event-tickets-tables-js', 'tickets-tables.js', array( 'event-tickets-js' ) ),
+				array( 'event-tickets-accordion', 'accordion.js', array( 'event-tickets-js' ) ),
+			),
 			'admin_enqueue_scripts',
 			array(
 				'localize' => array(
@@ -131,24 +126,8 @@ class Tribe__Tickets__Metabox {
 							'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
 						)
 					)
-				),
+				)
 			)
-		);
-
-		tribe_asset(
-			Tribe__Tickets__Main::instance(),
-			'event-tickets-tables-js',
-			'tickets-tables.js',
-			array( 'event-tickets-js' ),
-			'admin_enqueue_scripts'
-		);
-
-		tribe_asset(
-			Tribe__Tickets__Main::instance(),
-			'event-tickets-accordion-js',
-			'accordion.js',
-			array(),
-			'admin_enqueue_scripts'
 		);
 
 		wp_enqueue_script( 'tribe-bumpdown' );
