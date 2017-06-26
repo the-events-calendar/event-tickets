@@ -238,7 +238,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 
 	<?php // the settings panel ?>
 	<div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
-		<h4><?php esc_html_e( 'Ticket Settings', 'event-tickets'); ?></h4>
+		<h4><?php esc_html_e( 'Ticket Settings', 'event-tickets' ); ?></h4>
 
 		<section class="settings_main">
 			<?php

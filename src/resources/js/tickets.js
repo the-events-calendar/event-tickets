@@ -179,7 +179,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				// Also reset each time the global stock mode selector is changed
 				$( '#ticket_global_stock' ).change( function() {
 					$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
-				});
+				} );
 			},
 
 			'set-global-stock-fields.tribe': function() {
@@ -337,13 +337,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} );
 		}
 
+		/**
+		 * Show or hide a panel based on it's current state.
+		 * @param e the event that triggered the change
+		 * @param $panel obj the panel to be moved
+		 *
+		 * @since TBD
+		 */
 		function show_hide_panel( e, $panel ) {
 			e.preventDefault();
 
 			if ( undefined !== $panel.attr( 'aria-hidden' ) && 'false' !== $panel.attr( 'aria-hidden' ) ) {
 				// we're showing another panel, hide the base first
 				if ( $base_panel !== $panel ) {
-					show_hide_panel( e, $base_panel );
+					$base_panel.attr( 'aria-hidden', 'true' );
+
 				}
 
 				$panel.attr( 'aria-hidden', 'false' );
@@ -354,7 +362,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 				// we're hiding another panel, show the base afterward
 				if ( $base_panel !== $panel ) {
-					show_hide_panel( e, $base_panel );
+					$base_panel.attr( 'aria-hidden', 'false' );
 				}
 			}
 		}
@@ -768,4 +776,4 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 	} );
 
-})( window, jQuery );
+} )( window, jQuery );

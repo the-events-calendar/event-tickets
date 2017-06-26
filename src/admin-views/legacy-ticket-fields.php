@@ -10,7 +10,7 @@
 $field_id = esc_attr( $legacy_identifier );
 ?>
 
-<div class="ticket_advanced ticket_advanced_<?php echo $field_id; ?>">
+<div class="ticket_advanced ticket_advanced_<?php echo absint( $field_id ); ?>">
 	<div>
 		<label for="ticket_price"><?php esc_html_e( 'Price:', 'event-tickets' ); ?></label>
 	</div>
@@ -19,7 +19,7 @@ $field_id = esc_attr( $legacy_identifier );
 		<p class="description"><?php esc_html_e( '(0 or empty for free tickets)', 'event-tickets' ) ?></p>
 	</div>
 </div>
-<div class="ticket_advanced ticket_advanced_<?php echo $field_id; ?>">
+<div class="ticket_advanced ticket_advanced_<?php echo absint( $field_id ); ?>">
 	<div>
 		<label for="ticket_sale_price"><?php esc_html_e( 'Sale Price:', 'event-tickets' ) ?></label>
 	</div>

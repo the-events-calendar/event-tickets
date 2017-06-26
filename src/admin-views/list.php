@@ -45,7 +45,10 @@
 
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label">Capacity:</span>
-				<?php echo $ticket->display_original_stock(); ?>
+				<?php
+				// escaping handled in function
+				echo $ticket->display_original_stock();
+				?>
 			</td>
 
 			<td class="ticket_available">
@@ -95,7 +98,7 @@
 	<?php
 
 	foreach ( $tickets as $key => $ticket ) {
-		if ( strpos( $ticket->provider_class, "RSVP" ) !== false ) {
+		if ( strpos( $ticket->provider_class, 'RSVP' ) !== false ) {
 			$rsvp[] = $ticket;
 		} else {
 			$nonRSVP[] = $ticket;
@@ -105,14 +108,14 @@
 	?>
 	<tbody>
 		<?php
-		if ( !empty( $nonRSVP ) ) {
-			foreach ($nonRSVP as $ticket) {
+		if ( ! empty( $nonRSVP ) ) {
+			foreach ( $nonRSVP as $ticket ) {
 				render_ticket_row( $ticket );
 			}
 		}
 
-		if ( !empty( $rsvp ) ) {
-			foreach ($rsvp as $ticket) {
+		if ( ! empty( $rsvp ) ) {
+			foreach ( $rsvp as $ticket ) {
 				render_ticket_row( $ticket );
 			}
 		}

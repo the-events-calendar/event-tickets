@@ -137,15 +137,6 @@ class Tribe__Tickets__Tickets_Handler {
 	public function get_total_event_capacity( $post = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 
-		if ( ! $post_id ) {
-			global $post;
-			if ( $post instanceof WP_Post ) {
-				$post_id = $post->ID;
-			} else {
-				return;
-			}
-		}
-
 		$capacity = 0;
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
@@ -832,7 +823,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public function ajax_handler_save_settings() {
 		$params = array();
 		$id = $_POST['post_ID'];
-		parse_str($_POST['formdata'], $params);
+		parse_str( $_POST['formdata'], $params );
 
 		/**
 		 * Allow other plugins to hook into this to add settings
@@ -841,13 +832,13 @@ class Tribe__Tickets__Tickets_Handler {
 		do_action( 'tribe_events_save_tickets_settings', $params );
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id']);
-			wp_send_json_success($params);
+			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
+			wp_send_json_success( $params );
 		} else {
-			delete_post_meta( $id, '_tribe_ticket_header');
-			wp_send_json_success($params);
+			delete_post_meta( $id, '_tribe_ticket_header' );
+			wp_send_json_success( $params );
 		}
 
-		wp_send_json_error($params);
+		wp_send_json_error( $params );
 	}
 }

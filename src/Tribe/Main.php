@@ -5,17 +5,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.5rc1';
+	const VERSION = '4.5.0.2';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.5.6rc';
+	const MIN_TEC_VERSION = '4.5.6';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.5.6rc';
+	const MIN_COMMON_VERSION = '4.5.6';
 
 	/**
 	 * Name of the provider
@@ -332,7 +332,7 @@ class Tribe__Tickets__Main {
 		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
 
 		// Setup Front End Display
-		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button' );
+		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
 
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
