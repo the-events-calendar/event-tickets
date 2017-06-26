@@ -48,6 +48,10 @@
 	        transform: translateX(100%);
 }
 
+.ticket_panel h4 {
+	text-transform: uppercase;
+}
+
 .ticket_list_container {
 	margin-bottom: 20px;
 }

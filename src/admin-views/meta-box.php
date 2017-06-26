@@ -18,7 +18,7 @@ if ( ! empty( $header_id ) ) {
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
-$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
+
 $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
 ?>
 
@@ -50,7 +50,15 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 				</span>
 				<?php
 				/**
-				 * Allows for the insertion of additional elements into the main ticket admin panel "header"
+				 * Allows for the insertion of total capacity element into the main ticket admin panel "header"
+				 *
+				 * @param Post ID
+				 * @since TBD
+				 */
+				do_action( 'tribe_events_tickets_capacity', $post_id );
+
+				/**
+				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header"
 				 *
 				 * @param int $post_id the id of the post
 				 * @since TBD
