@@ -833,7 +833,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
 			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
-			wp_send_json_success($params);
+			wp_send_json_success( $params );
 		} else {
 			delete_post_meta( $id, '_tribe_ticket_header' );
 			wp_send_json_success( $params );
