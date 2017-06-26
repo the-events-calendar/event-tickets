@@ -2,7 +2,7 @@
 
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
-	 * Abstract class with the API definition and common functionality
+	 * Class with the API definition and common functionality
 	 * for Tribe Tickets Pro. Providers for this functionality need to
 	 * extend this class. For a functional example of how this works
 	 * see Tribe WooTickets.
@@ -20,8 +20,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 * made available via:
 	 *
 	 *     ATTENDEE_OBJECT
+	 *
+	 *
+	 * @since  4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
+	 *                 we changed this from an Abstract to a normal parent Class
 	 */
-	abstract class Tribe__Tickets__Tickets {
+	class Tribe__Tickets__Tickets {
 
 		/**
 		 * Flag used to track if the registration form link has been displayed or not.
@@ -123,13 +127,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
+		 *
 		 * @abstract
 		 *
 		 * @param $event_id
 		 *
 		 * @return mixed
 		 */
-		abstract public function get_event_reports_link( $event_id );
+		public function get_event_reports_link( $event_id ) {
+
+		}
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
@@ -142,7 +149,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function get_ticket_reports_link( $event_id, $ticket_id );
+		public function get_ticket_reports_link( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Returns a single ticket
@@ -154,7 +163,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function get_ticket( $event_id, $ticket_id );
+		public function get_ticket( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Attempts to load the specified ticket type post object.
@@ -212,7 +223,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function delete_ticket( $event_id, $ticket_id );
+		public function delete_ticket( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Saves a ticket
@@ -225,7 +238,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function save_ticket( $event_id, $ticket, $raw_data = array() );
+		public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+
+		}
 
 		/**
 		 * Get all the tickets for an event
@@ -236,7 +251,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array mixed
 		 */
-		abstract protected function get_tickets( $event_id );
+		protected function get_tickets( $event_id ) {
+
+		}
 
 		/**
 		 * Get attendees by id and associated post type
@@ -247,7 +264,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array|mixed
 		 */
-		abstract public function get_attendees_by_id( $post_id );
+		public function get_attendees_by_id( $post_id ) {
+
+		}
 
 		/**
 		 * Get all the attendees (sold tickets) for an event
@@ -258,7 +277,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract protected function get_attendees_by_post_id( $post_id );
+		protected function get_attendees_by_post_id( $post_id ) {
+
+		}
 
 		/**
 		 * Get Attendees by ticket/attendee ID
@@ -267,7 +288,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		abstract protected function get_attendees_by_attendee_id( $attendee_id );
+		protected function get_attendees_by_attendee_id( $attendee_id ) {
+
+		}
 
 		/**
 		 * Get attendees by order id
@@ -276,8 +299,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		abstract protected function get_attendees_by_order_id( $order_id );
+		protected function get_attendees_by_order_id( $order_id ) {
 
+		}
 
 		/**
 		 * Get attendees from provided query
@@ -287,7 +311,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract protected function get_attendees( WP_Query $attendees_query, $post_id );
+		protected function get_attendees( $attendees_query, $post_id ) {
+
+		}
 
 		/**
 		 * Mark an attendee as checked in
@@ -299,7 +325,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function checkin( $attendee_id );
+		public function checkin( $attendee_id ) {
+
+		}
 
 		/**
 		 * Mark an attendee as not checked in
@@ -310,8 +338,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function uncheckin( $attendee_id );
+		public function uncheckin( $attendee_id ) {
 
+		}
 
 		/**
 		 * Renders the advanced fields in the new/edit ticket form.
@@ -325,7 +354,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function do_metabox_advanced_options( $event_id, $ticket_id );
+		public function do_metabox_advanced_options( $event_id, $ticket_id ) {
+
+		}
 
 		/**
 		 * Renders the front end form for selling tickets in the event single page
@@ -336,7 +367,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		abstract public function front_end_tickets_form( $content );
+		public function front_end_tickets_form( $content ) {
+
+		}
 
 		/**
 		 * Returns the markup for the price field
@@ -1025,6 +1058,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return array();
 			}
 
+			/**
+			 * This order is important so we that tickets overwrite RSVP on
+			 * the Buy Now Button on the front-end
+			 */
+			$types['rsvp']    = array(
+				'count'     => 0,
+				'stock'     => 0,
+				'unlimited' => 0,
+				'available' => 0,
+			);
 			$types['tickets'] = array(
 				'count'     => 0, // count of tickets currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
@@ -1032,15 +1075,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'unlimited' => 0, // unlimited stock tickets
 				'available' => 0, // are tickets available for sale right now
 			);
-			$types['rsvp']    = array(
-				'count'     => 0,
-				'stock'     => 0,
-				'unlimited' => 0,
-				'available' => 0,
-			);
 
 			foreach ( $tickets as $ticket ) {
-
 				// If a ticket is not current for sale do not count it
 				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
 					continue;
@@ -1082,7 +1118,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $types;
-
 		}
 
 		/**
