@@ -21,14 +21,14 @@
 	box-sizing: border-box;
 	padding: 16px;
 	position: relative;
-	transition: .5s cubic-bezier(0.550, 0.085, 0.680, 0.530); ;
+	transition: .5s cubic-bezier(.55, .085, .68, .53);
 	width: 100%;
 	will-change: transform;
 }
 
 .ticket_panel[aria-hidden='true'] {
 	position: absolute;
-	transition: .5s cubic-bezier(0.550, 0.085, 0.680, 0.530);
+	transition: .5s cubic-bezier(.55, .085, .68, .53);
 	visibility: hidden;
 }
 
@@ -46,6 +46,10 @@
 	margin-top: 6px;
 	-webkit-transform: translateX(100%);
 	        transform: translateX(100%);
+}
+
+.ticket_panel h4 {
+	text-transform: uppercase;
 }
 
 .ticket_list_container {

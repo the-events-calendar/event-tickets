@@ -18,7 +18,7 @@ if ( ! empty( $header_id ) ) {
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
-$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
+
 $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
 ?>
 
@@ -30,27 +30,17 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 	<div id="tribe_panel_base" class="ticket_panel panel_base" aria-hidden="false">
 		<div class="tribe_sectionheader ticket_list_container">
 			<div class="ticket_table_intro">
-				<span class="ticket_form_total_capacity">
-					Total Event Capacity:
-					<span id="ticket_form_total_capacity_value">
-						<?php
-						switch ( $total_tickets ) {
-							case -1:
-								?><i><?php esc_html_e( 'unlimited', 'event-tickets' ); ?></i><?php
-								break;
-							case 0:
-								?><i><?php esc_html_e( 'No tickets created yet', 'event-tickets' ); ?></i><?php
-								break;
-							default:
-								echo absint( $total_tickets );
-								break;
-						}
-						?>
-					</span>
-				</span>
 				<?php
 				/**
-				 * Allows for the insertion of additional elements into the main ticket admin panel "header"
+				 * Allows for the insertion of total capacity element into the main ticket admin panel "header"
+				 *
+				 * @param Post ID
+				 * @since TBD
+				 */
+				do_action( 'tribe_events_tickets_capacity', $post_id );
+
+				/**
+				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header"
 				 *
 				 * @param Post ID
 				 * @since TBD
