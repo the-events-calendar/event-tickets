@@ -105,8 +105,14 @@ class Tribe__Tickets__Metabox {
 			'admin_enqueue_scripts',
 			array(
 				'localize' => array(
-					array( 'name' => 'HeaderImageData', 'data' => $upload_header_data ),
-					array( 'name' => 'TribeTickets', 'data' => $nonces ),
+					array(
+						'name' => 'HeaderImageData',
+						'data' => $upload_header_data,
+					),
+					array(
+						'name' => 'TribeTickets',
+						'data' => $nonces,
+					),
 					array(
 						'name' => 'tribe_ticket_notices',
 						'data' => array(
@@ -124,9 +130,9 @@ class Tribe__Tickets__Metabox {
 						'data' => array(
 							'decimal' => $decimal,
 							'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
-						)
-					)
-				)
+						),
+					),
+				),
 			)
 		);
 
