@@ -25,7 +25,7 @@ class Tribe__Tickets__Legacy_Provider_Support {
 			return;
 		}
 
-		add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'add_fields' ), 5 );
+		add_action( 'tribe_events_tickets_metabox_edit_advanced', array( $this, 'add_fields' ), 5 );
 		add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'add_fields_ajax' ) );
 	}
 

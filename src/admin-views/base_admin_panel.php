@@ -40,7 +40,7 @@
 		 */
 		do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
 
-		$this->ticket_list_markup( $tickets );
+		$this->ticket_list_markup( $post_id, $tickets );
 
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing

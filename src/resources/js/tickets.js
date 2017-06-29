@@ -87,7 +87,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			'clear.tribe': function() {
 				var $this            = $( this );
 				var $ticket_form     = $this.find( '#ticket_form');
-				var $ticket_settings = $ticket_form.find( "tr:not(.event-wide-settings)" );
+				var $ticket_settings = $ticket_form.find( "div:not(.event-wide-settings)" );
 
 				$ticket_settings.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
 				$ticket_settings.find( 'input:checkbox' ).attr( 'checked', false );
@@ -113,8 +113,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 				$('#tribe-tickets-attendee-sortables').empty();
 				$('.tribe-tickets-attendee-saved-fields').show();
-
-				$ticket_form.hide();
 			},
 
 			/**
@@ -410,7 +408,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.trigger( 'clear.tribe' )
 				.trigger( 'set-advanced-fields.tribe' )
 				.trigger( 'focus.tribe' );
-			$( '#ticket_form' ).show();
 			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
 		} );
 
@@ -656,7 +653,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$tribe_tickets.find( '.tribe-bumpdown-trigger' ).bumpdown();
 
-						$( '#ticket_form' ).show();
+						$( 'a#ticket_form_toggle' ).hide();
 
 						$tribe_tickets
 							.trigger( 'set-advanced-fields.tribe' )

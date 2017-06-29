@@ -40,7 +40,8 @@
 						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider"
 															id="<?php echo esc_attr( $class . '_radio' ); ?>"
 															value="<?php echo esc_attr( $class ); ?>"
-															class="ticket_field ticket_provider">
+															class="ticket_field ticket_provider"
+															tabindex="-1">
 						<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
 						<?php
 						$checked = false;
@@ -124,23 +125,34 @@
 					 * @var Post ID
 					 * @var null Ticket ID
 					 */
-					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null ); ?>
+					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null );
+					?>
 				</section><!-- #ticket_form_advanced -->
 				<?php
 				/**
-				 * Allows for the insertion of additional elements into the main ticket edit panel below the advanced section
+				 * Allows for the insertion of additional content section into the ticket edit form accordion
 				 *
-				 * @param Post ID
-				 * @since TBD
+				 * @var Post ID
+				 * @var null Ticket ID
 				 */
-				do_action( 'tribe_events_tickets_post_advanced', $post_id );
+				do_action( 'tribe_events_tickets_metabox_edit_accordion_content', $post_id, null );
 				?>
-				<div class="ticket_bottom">
-						<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" value="" />
-						<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
-						<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
-				</div>
 			</div> <!-- //.accordion -->
+
+			<?php
+			/**
+			 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion section
+			 *
+			 * @param Post ID
+			 * @since TBD
+			 */
+			do_action( 'tribe_events_tickets_post_accordion', $post_id );
+			?>
+			<div class="ticket_bottom">
+					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" value="" />
+					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
+					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
+			</div>
 
 		</div><!-- #ticket_form_table -->
 	</div><!-- #ticket_form -->

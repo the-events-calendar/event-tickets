@@ -10,7 +10,6 @@
 	} else {
 		$post_id = $_POST['post_ID'];
 
-
 		if ( ! empty( $_POST['post_type'] ) ) {
 			$post_type = $_POST['post_type'];
 		} elseif ( ! empty( $_GET['post_type'] ) ) {
@@ -122,4 +121,4 @@
 		?>
 	</tbody>
 </table>
-<input type="hidden" name="tickets_order" id="tickets_order" >
+<?php do_action( 'tribe_ticket_order_field', $post_id );

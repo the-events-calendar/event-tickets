@@ -23,6 +23,12 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $image_header_field = '_tribe_ticket_header';
 
 	/**
+	 * Post Meta key for the ticket order
+	 * @var string
+	 */
+	protected $tickets_order_field = '_tribe_tickets_order';
+
+	/**
 	 * Slug of the admin page for attendees
 	 * @var string
 	 */
@@ -54,6 +60,7 @@ class Tribe__Tickets__Tickets_Handler {
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
 			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_tickets_order' ) );
 		}
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
@@ -67,6 +74,8 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
+
+		add_action( 'tribe_ticket_order_field', array( $this, 'tickets_order_input' ) );
 
 		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
 
@@ -692,8 +701,15 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @param array $tickets
 	 */
-	public function ticket_list_markup( $tickets = array() ) {
+	public function ticket_list_markup( $post_id, $tickets = array() ) {
 		if ( ! empty( $tickets ) ) {
+			$ticket_order = get_post_meta( $post_id, $this->tickets_order_field, true );
+			$ticket_order = str_ireplace ( 'order_' , '' , $ticket_order );
+			$ticket_order = explode(",", $ticket_order);
+			usort( $tickets, function( $a, $b ) use ( $ticket_order ) {
+				return array_search( $a->ID, $ticket_order ) - array_search( $b->ID, $ticket_order );
+			});
+
 			include $this->path . 'src/admin-views/list.php';
 		}
 	}
@@ -771,6 +787,32 @@ class Tribe__Tickets__Tickets_Handler {
 		$post_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 		$post_global_stock->enable( $enable );
 		$post_global_stock->set_stock_level( $stock );
+	}
+
+	public function save_tickets_order( $post_id ) {
+		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+			return;
+		}
+
+		// don't do anything on autosave, auto-draft, or massupdates
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		if ( empty( $_POST['tribe_tickets_order'] ) ) {
+			delete_post_meta( $post_id, $this->tickets_order_field );
+		} else {
+			update_post_meta( $post_id, $this->tickets_order_field, $_POST['tribe_tickets_order'] );
+		}
+
+		return;
+	}
+
+	public function tickets_order_input( $post_id ) {
+		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
+		?>
+		<input type="hidden" name="tribe_tickets_order" id="tribe_tickets_order" value="<?php echo esc_html( $tickets_order ); ?>">
+		<?php
 	}
 
 	/**

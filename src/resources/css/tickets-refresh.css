@@ -21,14 +21,14 @@
 	box-sizing: border-box;
 	padding: 16px;
 	position: relative;
-	transition: .5s cubic-bezier(0.550, 0.085, 0.680, 0.530); ;
+	transition: .5s cubic-bezier(.55, .085, .68, .53);
 	width: 100%;
 	will-change: transform;
 }
 
 .ticket_panel[aria-hidden='true'] {
 	position: absolute;
-	transition: .5s cubic-bezier(0.550, 0.085, 0.680, 0.530);
+	transition: .5s cubic-bezier(.55, .085, .68, .53);
 	visibility: hidden;
 }
 
@@ -128,18 +128,27 @@
 	color: #fff;
 	content: '\f132';
 	font-family: 'dashicons';
-	font-size: 16px;
+	font-size: 14px;
 	font-weight: 400;
-	height: 16px;
+	height: 14px;
 	left: 0;
 	padding-top: 1px;
 	position: absolute;
 	top: 10px;
-	width: 16px;
+	width: 14px;
 }
 
 .accordion-header.is-active::before {
 	content: '\f460';
+	padding-top: 0;
+}
+
+.accordion-header:focus {
+	outline: 1px solid #5b9dd9;
+}
+
+.accordion-label:focus {
+	outline: none;
 }
 
 .accordion-content {

@@ -135,20 +135,34 @@
 		color: #fff;
 		content: '\f132';
 		font-family: 'dashicons';
-		font-size: 16px;
+		font-size: 14px;
 		font-weight: 400;
-		height: 16px;
+		height: 14px;
 		left: 0;
 		padding-top: 1px;
 		position: absolute;
 		top: 10px;
-		width: 16px;
+		width: 14px;
 	}
 
 	&.is-active {
 		&::before {
 			content: '\f460';
+			padding-top: 0;
 		}
+	}
+}
+
+
+.accordion-header {
+	&:focus {
+		outline: 1px solid #5b9dd9;
+	}
+}
+
+.accordion-label {
+	&:focus {
+		outline: none;
 	}
 }
 
