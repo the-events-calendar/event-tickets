@@ -10,31 +10,31 @@ msgstr ""
 "X-Generator: GlotPress/1.0-alpha-1100\n"
 "Project-Id-Version: Event Tickets\n"
 
-#: src/template-tags/tickets.php:185
+#: src/template-tags/tickets.php:187
 msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
 
-#: src/template-tags/tickets.php:197
+#: src/template-tags/tickets.php:204
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/template-tags/tickets.php:199
+#: src/template-tags/tickets.php:206
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/template-tags/tickets.php:208
+#: src/template-tags/tickets.php:217
 msgctxt "list view rsvp now ticket button"
 msgid "RSVP Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:211
+#: src/template-tags/tickets.php:220
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
@@ -43,12 +43,12 @@ msgstr ""
 msgid "You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser."
 msgstr ""
 
-#: src/template-tags/tickets.php:386
+#: src/template-tags/tickets.php:403
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d Remaining"
 msgstr ""
 
-#: src/template-tags/tickets.php:389
+#: src/template-tags/tickets.php:406
 msgctxt "ticket stock message (pending stock)"
 msgid "%1$d Awaiting Review"
 msgstr ""
@@ -133,20 +133,20 @@ msgstr ""
 msgid "Location of Tickets form"
 msgstr ""
 
-#: src/template-tags/tickets.php:371
+#: src/template-tags/tickets.php:388
 msgid "Sold"
 msgstr ""
 
-#: src/template-tags/tickets.php:373
+#: src/template-tags/tickets.php:390
 msgctxt "separate going and remain RSVPs"
 msgid "RSVP'd Going"
 msgstr ""
 
-#: src/template-tags/tickets.php:378
+#: src/template-tags/tickets.php:395
 msgid "%s %d"
 msgstr ""
 
-#: src/template-tags/tickets.php:384
+#: src/template-tags/tickets.php:401
 msgctxt "ticket global stock message (remaining stock)"
 msgid "%1$d Remaining of the global stock"
 msgstr ""
@@ -169,8 +169,8 @@ msgid "Important changes to your tickets"
 msgstr ""
 
 #: src/views/tickets/email-ticket-type-moved.php:101
-msgid "We wanted to let you know that your ticket for %2$s has been transfered to %3$s%4$s. Your ticket remains valid and no further action is needed on your part."
-msgid_plural "We wanted to let you know that your %1$s tickets for %2$s have been transfered to %3$s%4$s. Your existing tickets remain valid and no further action is needed on your part."
+msgid "We wanted to let you know that your ticket for %2$s has been transferred to %3$s%4$s. Your ticket remains valid and no further action is needed on your part."
+msgid_plural "We wanted to let you know that your %1$s tickets for %2$s have been transferred to %3$s%4$s. Your existing tickets remain valid and no further action is needed on your part."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -181,8 +181,8 @@ msgid " (taking place on %s)"
 msgstr ""
 
 #: src/views/tickets/email-tickets-moved.php:103
-msgid "We wanted to let you know that a ticket you purchased for %2$s has been transfered to %3$s%4$s. Your ticket remains valid and no further action is needed on your part:"
-msgid_plural "We wanted to let you know that the following %1$s tickets for %2$s have been transfered to %3$s%4$s. Your existing tickets remain valid and no further action is needed on your part:"
+msgid "We wanted to let you know that a ticket you purchased for %2$s has been transferred to %3$s%4$s. Your ticket remains valid and no further action is needed on your part:"
+msgid_plural "We wanted to let you know that the following %1$s tickets for %2$s have been transferred to %3$s%4$s. Your existing tickets remain valid and no further action is needed on your part:"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -584,11 +584,11 @@ msgstr ""
 msgid "You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting."
 msgstr ""
 
-#: src/template-tags/tickets.php:368
+#: src/template-tags/tickets.php:385
 msgid "global inventory"
 msgstr ""
 
-#: src/template-tags/tickets.php:391
+#: src/template-tags/tickets.php:408
 msgctxt "ticket stock message (cancelled stock)"
 msgid "%1$d Cancelled"
 msgstr ""
@@ -691,31 +691,31 @@ msgstr ""
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/Tickets.php:986
+#: src/Tribe/Tickets.php:1019
 msgid "Use global stock"
 msgstr ""
 
-#: src/Tribe/Tickets.php:987
+#: src/Tribe/Tickets.php:1020
 msgid "Use global stock but cap sales"
 msgstr ""
 
-#: src/Tribe/Tickets.php:988
+#: src/Tribe/Tickets.php:1021
 msgid "Independent (do not use global stock)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1573
+#: src/Tribe/Tickets.php:1608
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1575
+#: src/Tribe/Tickets.php:1610
 msgid "Tickets are not yet available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1577
+#: src/Tribe/Tickets.php:1612
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1579
+#: src/Tribe/Tickets.php:1614
 msgid "There are no tickets available at this time."
 msgstr ""
 
@@ -838,7 +838,7 @@ msgstr "Příspěvek bude automaticky publikován."
 msgid "Post draft updated."
 msgstr "Koncept příspěvku byl uložen."
 
-#: src/Tribe/Tickets.php:701
+#: src/Tribe/Tickets.php:734
 msgid "Editing the ticket price is currently disallowed."
 msgstr "Upravovaní ceny vstupenky není aktuálně povoleno."
 
@@ -1025,11 +1025,11 @@ msgstr "Pro potvrzení účasti musíte zadat své jméno a platnou emailovou ad
 msgid "(deleted)"
 msgstr "(smazáno)"
 
-#: src/Tribe/Tickets.php:469
+#: src/Tribe/Tickets.php:502
 msgid "Your ticket has been saved."
 msgstr "Vaše vstupenka byla uložena."
 
-#: src/Tribe/Tickets.php:647
+#: src/Tribe/Tickets.php:680
 msgid "Your ticket has been deleted."
 msgstr "Vaše vstupenka byla smazána."
 
@@ -1234,7 +1234,7 @@ msgstr ""
 msgid "Confirm RSVP"
 msgstr "Potvrdit účast"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5dev1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:509
 msgid "Event Tickets"
