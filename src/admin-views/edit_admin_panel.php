@@ -1,0 +1,147 @@
+<div id="tribe_panel_edit" class="ticket_panel panel_edit" aria-hidden="true" >
+	<?php
+	/**
+	 * Allows for the insertion of additional elements into the main ticket edit panel
+	 *
+	 * @param Post ID
+	 * @since TBD
+	 */
+	do_action( 'tribe_events_tickets_pre_edit', $post_id );
+	?>
+	<?php if ( get_post_meta( $post_id, '_EventOrigin', true ) === 'community-events' ) {
+		?>
+		<?php // @TODO: this should get moved to Community Events? Use tribe_events_tickets_pre_edit ?>
+		<div>
+			<div class="tribe_sectionheader updated">
+				<p class="error-message"><?php esc_html_e( 'This event was created using Community Events. Are you sure you want to sell tickets for it?', 'event-tickets' ); ?></p>
+			</div>
+		</div>
+	<?php
+	}
+	?>
+
+	<div id="ticket_form" class="ticket_form tribe_sectionheader">
+		<div id="ticket_form_table" class="eventtable ticket_form">
+			<?php // @TODO: Do these need to get renamed for RSVPs? ?>
+			<h4 class="ticket_form_title_add"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
+			<h4 class="ticket_form_title_edit"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			<section id="ticket_form_main" class="main">
+				<div class="input_block">
+					<label class="ticket_form_label" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
+					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
+				</div>
+				<?php // @TODO: should this get moved to ET+ ?>
+				<fieldset class="input_block screen-reader-text">
+					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
+					<?php
+					$checked = true;
+					foreach ( $modules as $class => $module ) {
+						?>
+						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider"
+															id="<?php echo esc_attr( $class . '_radio' ); ?>"
+															value="<?php echo esc_attr( $class ); ?>"
+															class="ticket_field ticket_provider">
+						<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
+						<?php
+						$checked = false;
+					}
+					?>
+				</fieldset>
+				<?php
+				/**
+				 * Allows for the insertion of additional content into the ticket edit form - main section
+				 *
+				 * @var Post ID
+				 * @var null Ticket ID
+				 */
+				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null ); ?>
+			</section>
+			<div class="accordion">
+				<button class="accordion-header" type="button">
+					<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
+				</button>
+				<section id="ticket_form_advanced" class="advanced accordion-content">
+					<h4 class="accordion-label"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
+					<div class="input_block">
+						<label class="ticket_form_label" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
+						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
+									id="ticket_description"></textarea>
+						<div class="input_block">
+							<label><input type="checkbox" name="tribe_show_description" value="1"> Show description on front end and emailed tickets.</label>
+						</div>
+					</div>
+					<div class="input_block">
+						<label class="ticket_form_label" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
+						<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date" value="" >
+						<span class="ticket_start_time ticket_time">
+							<?php echo tribe_get_datetime_separator(); ?>
+							<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field tribe-dropdown">
+								<?php echo $startHourOptions; ?>
+							</select>
+							<select name="ticket_start_minute" id="ticket_start_minute" class="ticket_field tribe-dropdown">
+								<?php echo $startMinuteOptions; ?>
+							</select>
+							<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
+								<select name="ticket_start_meridian" id="ticket_start_meridian" class="ticket_field tribe-dropdown">
+									<?php echo $startMeridianOptions; ?>
+								</select>
+							<?php endif; ?>
+						</span>
+					</div>
+					<div class="input_block">
+						<label class="ticket_form_label" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
+						<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date" value="">
+
+						<span class="ticket_end_time ticket_time">
+							<?php echo tribe_get_datetime_separator(); ?>
+							<select name="ticket_end_hour" id="ticket_end_hour" class="ticket_field tribe-dropdown">
+								<?php echo $endHourOptions; ?>
+							</select>
+							<select name="ticket_end_minute" id="ticket_end_minute" class="ticket_field tribe-dropdown">
+								<?php echo $endMinuteOptions; ?>
+							</select>
+							<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
+								<select name="ticket_end_meridian" id="ticket_end_meridian" class="ticket_field tribe-dropdown">
+									<?php echo $endMeridianOptions; ?>
+								</select>
+							<?php endif; ?>
+						</span>
+
+						<p class="description">
+							<?php esc_html_e( 'When will ticket sales occur?', 'event-tickets' ); ?>
+							<?php
+							// Why break in and out of PHP? because I want the space between the phrases without including them in the translations
+							if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post ) ) {
+								esc_html_e( "If you don't set a start/end date for sales, tickets will be available from now until the event ends.", 'event-tickets' );
+							}
+							?>
+						</p>
+					</div>
+					<?php
+					/**
+					 * Allows for the insertion of additional content into the ticket edit form - advanced section
+					 *
+					 * @var Post ID
+					 * @var null Ticket ID
+					 */
+					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null ); ?>
+				</section><!-- #ticket_form_advanced -->
+				<?php
+				/**
+				 * Allows for the insertion of additional elements into the main ticket edit panel below the advanced section
+				 *
+				 * @param Post ID
+				 * @since TBD
+				 */
+				do_action( 'tribe_events_tickets_post_advanced', $post_id );
+				?>
+				<div class="ticket_bottom">
+						<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" value="" />
+						<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
+						<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
+				</div>
+			</div> <!-- //.accordion -->
+
+		</div><!-- #ticket_form_table -->
+	</div><!-- #ticket_form -->
+</div><!-- #tribe_panel_edit -->
