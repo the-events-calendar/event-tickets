@@ -18,10 +18,14 @@
 		}
 	}
 
+	/**
+	 * Render the ticket row into the ticket table
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @since TBD
+	 */
 	function render_ticket_row( $ticket ) {
-		/**
-		 * @var Tribe__Tickets__Ticket_Object $ticket
-		 */
 		$provider     = $ticket->provider_class;
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
 		?>
@@ -85,7 +89,6 @@
 			/**
 			 * Allows for the insertion of additional columns into the ticket table header
 			 *
-			 * @param Post ID
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_ticket_table_add_header_column' );
@@ -101,15 +104,15 @@
 		if ( strpos( $ticket->provider_class, 'RSVP' ) !== false ) {
 			$rsvp[] = $ticket;
 		} else {
-			$nonRSVP[] = $ticket;
+			$non_rsvp[] = $ticket;
 		}
 	}
 
 	?>
 	<tbody>
 		<?php
-		if ( ! empty( $nonRSVP ) ) {
-			foreach ( $nonRSVP as $ticket ) {
+		if ( ! empty( $non_rsvp ) ) {
+			foreach ( $non_rsvp as $ticket ) {
 				render_ticket_row( $ticket );
 			}
 		}

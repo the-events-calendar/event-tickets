@@ -1,4 +1,4 @@
-(function( window, $ ) {
+( function( window, $ ) {
 	var $table = $( '.eventtable.ticket_list.eventForm tbody' ),
 		enable_width = '400px';
 
@@ -10,7 +10,7 @@
 			forcePlaceholderSize: true,
 			update: function() {
 				data = $(this).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
-				console.log( 'data: ' + data);
+
 				document.getElementById( 'tickets_order' ).value = data;
 			}
 		});
@@ -26,14 +26,14 @@
 		}
 	);
 
-	$(document).ready(function () {
+	$( document ).ready( function () {
 		// init if we're not on small screens
 		if ( window.matchMedia( '( min-width: 400px )' ).matches ) {
 			 make_sortable( $table );
 		}
 
 		// disable/init depending on screen size
-		$(window).on( 'resize', function() {
+		$( window ).on( 'resize', function() {
 			if ( window.matchMedia( '( min-width: 400px )' ).matches ) {
 				if ( ! $( $table ).hasClass( 'ui-sortable' ) ) {
 					make_sortable( $table );
