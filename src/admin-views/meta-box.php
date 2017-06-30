@@ -157,7 +157,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 							<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
 										id="ticket_description"></textarea>
 							<div class="input_block">
-								<label><input type="checkbox" name="tribe_show_description" value="1"> <?php esc_html_e( 'Show description on front end and emailed tickets.', 'event-ticket'); ?> </label>
+								<label><input type="checkbox" name="tribe_show_description" value="1"> <?php esc_html_e( 'Show description on front end and emailed tickets.', 'event-ticket' ); ?> </label>
 							</div>
 						</div>
 						<div class="input_block">
