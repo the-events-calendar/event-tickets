@@ -3,17 +3,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 (function( window, $, undefined ) {
 	'use strict';
 
-	var $event_pickers               = $( document.getElementById( 'tribe-event-datepickers' ) ),
-		$tribe_tickets               = $( document.getElementById( 'tribetickets' ) ),
-		$tickets_container           = $( document.getElementById( 'event_tickets' ) ),
-		$enable_global_stock         = $( document.getElementById( 'tribe-tickets-enable-global-stock' ) ),
-		$global_stock_level          = $( document.getElementById( 'tribe-tickets-global-stock-level' ) ),
-		global_stock_setting_changed = false,
-		$body                        = $( 'html, body' ),
-		startofweek                  = 0,
-		$base_panel                  = $( document.getElementById( 'tribe_panel_base' ) ),
-		$edit_panel                  = $( document.getElementById( 'tribe_panel_edit' ) ),
-		$settings_panel              = $( document.getElementById( 'tribe_panel_settings' ) );
+	var $event_pickers               = $( document.getElementById( 'tribe-event-datepickers' ) );
+	var $tribe_tickets               = $( document.getElementById( 'tribetickets' ) );
+	var $tickets_container           = $( document.getElementById( 'event_tickets' ) );
+	var $enable_global_stock         = $( document.getElementById( 'tribe-tickets-enable-global-stock' ) );
+	var $global_stock_level          = $( document.getElementById( 'tribe-tickets-global-stock-level' ) );
+	var global_stock_setting_changed = false;
+	var $body                        = $( 'html, body' );
+	var startofweek                  = 0;
+	var $base_panel                  = $( document.getElementById( 'tribe_panel_base' ) );
+	var $edit_panel                  = $( document.getElementById( 'tribe_panel_edit' ) );
+	var $settings_panel              = $( document.getElementById( 'tribe_panel_settings' ) );
 
 	ticketHeaderImage = {
 
@@ -309,9 +309,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 */
 		function currently_selected_provider() {
 			var $checked_provider = $( 'input[name="ticket_provider"]:checked' );
-			return ( $checked_provider.length > 0 )
-				? $checked_provider[0].value
-				: "";
+			return ( $checked_provider.length > 0 ) ? $checked_provider[0].value : "";
 		}
 
 		/**
@@ -710,11 +708,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					},
 					'json'
 				);
-			} )
-			;
-
-
-
+			} );
 
 		var $remove  = $( '#tribe_ticket_header_remove' );
 		var $preview = $( '#tribe_ticket_header_preview' );
