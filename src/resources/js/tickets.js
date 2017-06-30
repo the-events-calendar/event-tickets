@@ -113,6 +113,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 				$('#tribe-tickets-attendee-sortables').empty();
 				$('.tribe-tickets-attendee-saved-fields').show();
+
+				$ticket_form.find( '.accordion-header, .accordion-content' ).removeClass( 'is-active' );
 			},
 
 			/**

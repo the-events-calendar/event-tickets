@@ -354,7 +354,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function do_metabox_advanced_options( $event_id, $ticket_id ) {
+		public function do_metabox_capacity_options( $event_id, $ticket_id ) {
 
 		}
 
@@ -424,7 +424,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			self::$active_modules[ $this->className ] = $this->pluginName;
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
-			add_action( 'tribe_events_tickets_metabox_edit_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
+			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 10, 2 );
 
 			// Admin AJAX actions for each provider
 			add_action( 'wp_ajax_tribe-ticket-add-' . $this->className, array( $this, 'ajax_handler_ticket_add' ) );

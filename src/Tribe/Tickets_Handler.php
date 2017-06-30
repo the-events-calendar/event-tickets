@@ -703,13 +703,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function ticket_list_markup( $post_id, $tickets = array() ) {
 		if ( ! empty( $tickets ) ) {
-			$ticket_order = get_post_meta( $post_id, $this->tickets_order_field, true );
-			$ticket_order = str_ireplace ( 'order_' , '' , $ticket_order );
-			$ticket_order = explode(",", $ticket_order);
-			usort( $tickets, function( $a, $b ) use ( $ticket_order ) {
-				return array_search( $a->ID, $ticket_order ) - array_search( $b->ID, $ticket_order );
-			});
-
 			include $this->path . 'src/admin-views/list.php';
 		}
 	}
@@ -799,10 +792,17 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		if ( empty( $_POST['tribe_tickets_order'] ) ) {
-			delete_post_meta( $post_id, $this->tickets_order_field );
-		} else {
-			update_post_meta( $post_id, $this->tickets_order_field, $_POST['tribe_tickets_order'] );
+		if ( ! empty($_POST['tribe_tickets_order'] ) ) {
+			$ticket_order = str_ireplace ( 'order_' , '' , $_POST['tribe_tickets_order'] );
+			$ticket_order = explode(",", $ticket_order);
+			$ticket_order = array_flip( $ticket_order );
+
+			foreach ( $ticket_order as $id => $order ) {
+				wp_update_post( array(
+					'ID'           => absint( $id ),
+					'menu_order'   => absint( $order ),
+				) );
+			}
 		}
 
 		return;
