@@ -128,11 +128,12 @@
 	color: #fff;
 	content: '\f132';
 	font-family: 'dashicons';
-	font-size: 14px;
+	font-size: 10px;
 	font-weight: 400;
 	height: 14px;
 	left: 0;
-	padding-top: 1px;
+	padding-left: 2px;
+	padding-top: 3px;
 	position: absolute;
 	top: 10px;
 	width: 14px;
@@ -140,7 +141,8 @@
 
 .accordion-header.is-active::before {
 	content: '\f460';
-	padding-top: 0;
+	padding-left: 2px;
+	padding-top: 2px;
 }
 
 .accordion-header:focus {
