@@ -8,11 +8,15 @@
 	border-radius: 5px;
 	border: 1px solid #ccc;
 	box-sizing: border-box;
-	padding: 16px;
 	position: relative;
+	padding: 8px;
 	transition: .5s cubic-bezier(.55, .085, .68, .53);
 	width: 100%;
 	will-change: transform;
+
+	@media (min-width: 782px) {
+		padding: 16px;
+	}
 
 	&[aria-hidden='true'] {
 		position: absolute;
@@ -22,6 +26,7 @@
 
 	&.panel_base {
 		border: 0;
+		padding: 0;
 
 		&[aria-hidden='true'] {
 			right: 100%;
@@ -44,7 +49,12 @@
 
 /* Base Panel Toggle Buttons */
 #settings_form_toggle {
-	float: right;
+	margin-top: 1em;
+
+	@media (min-width: 400px) {
+		float: right;
+		margin-top: 0;
+	}
 }
 
 .ticket_form_toggle_text,
@@ -102,13 +112,32 @@
 		box-sizing: border-box;
 		float: left;
 		padding-right: 1em;
-		width: 132px;
+
+		@media (min-width: 782px) {
+			width: 132px;
+		}
+	}
+
+	input,
+	textarea {
+		max-width: 100%;
+	}
+
+	.ticket_field {
+		&.hasDatepicker {
+			border-radius: 3px;
+			font-size: 13px;
+			margin-bottom: 0;
+		}
 	}
 
 	.input_block,
 	p.description {
 		display: block;
-		margin-left: 132px;
+
+		@media (min-width: 782px) {
+			margin-left: 132px;
+		}
 
 		&:last-child {
 			margin-bottom: 0;
@@ -154,7 +183,6 @@
 		}
 	}
 }
-
 
 .accordion-header {
 	&:focus {

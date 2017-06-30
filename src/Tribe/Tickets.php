@@ -748,6 +748,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @var $ticket_id Ticket ID
 			 */
 			do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, $ticket_id );
+
 			$extra = ob_get_contents();
 			ob_end_clean();
 
