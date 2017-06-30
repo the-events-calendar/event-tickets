@@ -2,7 +2,12 @@
 	var $table = $( '.eventtable.ticket_list.eventForm tbody' ),
 		enable_width = '400px';
 
-	// For drag-n-drop
+	/**
+	* Implemnts jQuery drag-n-drop for the ticket table.
+	* Stores order in the #tickets_order field.
+	*
+	* @param jQuery object $element parent element to make sortable ( var $table above )
+	*/
 	function make_sortable( $element ) {
 		$element.sortable({
 			cursor: 'move',

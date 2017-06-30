@@ -1,52 +1,57 @@
-(function( window, $ ) {
+( function( window, $ ) {
 	var accordions = document.getElementsByClassName( 'accordion' );
 
-	var accordionIndex = ( undefined === accordionIndex ) ? 0 : accordionIndex++;
+	var accordion_index = ( undefined === accordion_index ) ? 0 : accordion_index++;
 
 	for ( var i = 0, aLen = accordions.length; i < aLen; i++ ) {
-		var accordion = accordions[i],
-			accordionContent = accordion.getElementsByClassName( 'accordion-content' ),
-			accordionHeaders  = accordion.getElementsByClassName( 'accordion-header' );
+		var accordion = accordions[i];
+		var accordion_content = accordion.getElementsByClassName( 'accordion-content' );
+		var accordion_headers  = accordion.getElementsByClassName( 'accordion-header' );
 
-			for ( var t = 0, hLen = accordionHeaders.length; t < hLen; t++ ) {
-				var header = accordionHeaders[t]
-				header.setAttribute( 'id', 'tab' + accordionIndex + '-' + t );
+			for ( var t = 0, hLen = accordion_headers.length; t < hLen; t++ ) {
+				var header = accordion_headers[t]
+				header.setAttribute( 'id', 'tab' + accordion_index + '-' + t );
 				header.setAttribute( 'aria-selected', 'false' );
 				header.setAttribute( 'aria-expanded', 'false' );
-				header.setAttribute( 'aria-controls', 'panel' + accordionIndex + '-' + t );
+				header.setAttribute( 'aria-controls', 'panel' + accordion_index + '-' + t );
 				header.setAttribute( 'role', 'tab' );
 
-				header.addEventListener( 'click', handleAccordion );
+				header.addEventListener( 'click', handle_accordion );
 
-				function handleAccordion() {
-					var nextPanel = header.nextElementSibling,
-					nextPanelLabel = nextPanel.querySelector( '.accordion-label' );
+				/**
+				 * Handles the changes (both visual and aria) for the accordion clicks
+				 *
+				 * @since TBD
+				 */
+				function handle_accordion() {
+					var next_panel = header.nextElementSibling,
+					next_panel_label = next_panel.querySelector( '.accordion-label' );
 
 					header.classList.toggle( 'is-active' );
-					nextPanel.classList.toggle( 'is-active' );
-					nextPanelLabel.setAttribute( 'tabindex', -1 );
-					nextPanelLabel.focus();
+					next_panel.classList.toggle( 'is-active' );
+					next_panel_label.setAttribute( 'tabindex', -1 );
+					next_panel_label.focus();
 
 
-					if ( nextPanel.classList.contains( 'is-active' ) ) {
+					if ( next_panel.classList.contains( 'is-active' ) ) {
 						header.setAttribute( 'aria-selected', 'true' );
 						header.setAttribute( 'aria-expanded', 'true' );
-						nextPanel.setAttribute( 'aria-hidden', 'false' );
+						next_panel.setAttribute( 'aria-hidden', 'false' );
 					} else {
 						header.setAttribute( 'aria-selected', 'false' );
 						header.setAttribute( 'aria-expanded', 'false' );
-						nextPanel.setAttribute( 'aria-hidden', 'true' );
+						next_panel.setAttribute( 'aria-hidden', 'true' );
 					}
 				}
 			}
-	}
 
-	for ( var s = 0, cLen = accordionContent.length; s < cLen; s++ ) {
-		var content = accordionContent[s];
-		// Set ARIA and ID attributes
-		content.setAttribute( 'id', 'panel' + accordionIndex + '-' + s );
-		content.setAttribute( 'aria-hidden', 'true' );
-		content.setAttribute( 'aria-labelledby', 'tab' + accordionIndex + '-' + s );
-		content.setAttribute( 'role', 'tabpanel' );
+			for ( var s = 0, cLen = accordion_content.length; s < cLen; s++ ) {
+				var content = accordion_content[s];
+				// Set ARIA and ID attributes
+				content.setAttribute( 'id', 'panel' + accordion_index + '-' + s );
+				content.setAttribute( 'aria-hidden', 'true' );
+				content.setAttribute( 'aria-labelledby', 'tab' + accordion_index + '-' + s );
+				content.setAttribute( 'role', 'tabpanel' );
+			}
 	}
 })( window, jQuery );
