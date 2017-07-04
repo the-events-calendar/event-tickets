@@ -5,7 +5,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.5.0.2';
+	const VERSION = '4.7dev1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -169,6 +169,7 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
+		$this->bind_implementations();
 		$this->hooks();
 
 		$this->register_active_plugin();
@@ -187,6 +188,17 @@ class Tribe__Tickets__Main {
 		 * Fires once Event Tickets has completed basic setup.
 		 */
 		do_action( 'tribe_tickets_plugin_loaded' );
+	}
+
+	/**
+	 * Registers the implementations in the container
+	 *
+	 * @since TBD
+	 */
+	public function bind_implementations() {
+		tribe_singleton( 'tickets.commerce.paypal', 'Tribe__Tickets__Commerce__PayPal__Main', array( 'load', 'hook' ) );
+
+		tribe( 'tickets.commerce.paypal' );
 	}
 
 	/**
