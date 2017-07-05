@@ -123,11 +123,11 @@
 }
 
 .user-details {
-	margin: 0 0 1.5em 0;
+	margin: 0 0 1.5em;
 }
 
 .user-details p {
-	margin: 0 0 .5em 0;
+	margin: 0 0 .5em;
 }
 
 .tribe-answer {
@@ -157,7 +157,7 @@
 }
 
 .event-tickets-meta-label {
-	font-weight:700;
+	font-weight: 700;
 	margin: 0 1em 0 0;
 }
 

@@ -765,7 +765,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$this->ajax_ok( $return );
 		}
 
-
 		/**
 		 * Returns the markup for a notice in the admin
 		 *

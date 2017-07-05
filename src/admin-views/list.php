@@ -1,9 +1,7 @@
-<table class="eventtable ticket_list eventForm">
+<table class="eventtable ticket_list eventForm wp-list-table widefat fixed">
 	<?php
-	$provider = null;
-	$count    = 0;
 	global $post;
-
+	$provider = null;
 	$post_type = 'post';
 
 	if ( $post ) {
@@ -20,93 +18,111 @@
 		}
 	}
 
-	$modules = Tribe__Tickets__Tickets::modules();
-
-	foreach ( $tickets as $ticket ) {
-		/**
-		 * @var Tribe__Tickets__Ticket_Object $ticket
-		 */
-		$controls     = array();
+	/**
+	 * Render the ticket row into the ticket table
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @since TBD
+	 */
+	function render_ticket_row( $ticket ) {
 		$provider     = $ticket->provider_class;
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
+		?>
+		<tr class="<?php echo esc_attr( $provider ); ?>" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
+			<!-- (handle, name), price, capacity, available, editlink -->
+			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?></span>
+				<p><?php echo esc_html( $ticket->name ); ?></p>
+				<button type="button" class="toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'event-tickets' ); ?></span></button>
+			</td>
 
-		$controls[] = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_edit_%2$s" class="ticket_edit">' . esc_html__( 'Edit', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
-
-		/**
-		 * Determines whether or not the current user can delete a specific ticket.
-		 *
-		 * @param bool   $user_can_delete_tickets
-		 * @param int    $ticket_id
-		 * @param string $ticket_provider
-		 */
-		if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
-			$controls[] = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">' . esc_html__( 'Delete', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
-		}
-
-		if ( $ticket->frontend_link && get_post_status( $post_id ) == 'publish' ) {
-			$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'View', 'event-tickets' ) . '</a></span>', esc_url( $ticket->frontend_link ) );
-		}
-
-		if ( is_admin() ) {
-			if ( $ticket->admin_link ) {
-				$controls[] = sprintf( "<span><a href='%s'>" . esc_html__( 'Edit in %s', 'event-tickets' ) . '</a></span>', esc_url( $ticket->admin_link ), $modules[ $ticket->provider_class ] );
-			}
-
-			$report = $provider_obj->get_ticket_reports_link( $post_id, $ticket->ID );
-			if ( $report ) {
-				$controls[] = $report;
-			}
-
-			$move_type_url = add_query_arg( array(
-				'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
-				'ticket_type_id' => $ticket->ID,
-				'check'          => wp_create_nonce( 'move_tickets' ),
-				'TB_iframe'      => 'true',
-			) );
-
-			$controls[] = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move', 'event-tickets' ) . '</a>', $move_type_url );
-		}
-
-		if ( ( $ticket->provider_class !== $provider ) || $count == 0 ) :
+			<?php
+			/**
+			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
+			 *
+			 * @param Post ID
+			 * @since TBD
+			 */
+			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
 			?>
-			<td colspan="4" class="titlewrap">
-				<h4 class="tribe_sectionheader">
-					<?php
-					echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $modules[ $ticket->provider_class ], $ticket->provider_class ) );
-					echo $provider_obj->get_event_reports_link( $post_id );
-					?>
-				</h4>
-			</td>
-		<?php endif; ?>
-		<tr data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
-			<td>
-				<p class="ticket_name">
-					<?php
-					printf(
-						"<a href='#' attr-provider='%s' attr-ticket-id='%s' class='ticket_edit'>%s</a>",
-						esc_attr( $ticket->provider_class ),
-						esc_attr( $ticket->ID ),
-						esc_html( $ticket->name )
-					);
-					do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket );
-					?>
-				</p>
 
-				<div class="ticket_controls">
-					<?php echo join( ' | ', $controls ); ?>
-				</div>
-
+			<td class="ticket_capacity">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
+				<?php
+				// escaping handled in function
+				echo $ticket->display_original_stock();
+				?>
 			</td>
 
-			<td valign="top">
-				<?php echo $provider_obj->get_price_html( $ticket->ID ); ?>
+			<td class="ticket_available">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
+				<?php
+				if ( 'own' === $ticket->global_stock_mode() ) {
+					echo absint( $ticket->remaining() );
+				} else {
+					echo '(' . absint( $ticket->remaining() ) . ')';
+				}
+				?>
 			</td>
 
-			<td nowrap="nowrap">
-				<?php echo tribe_tickets_get_ticket_stock_message( $ticket ); ?>
+			<td class="ticket_edit">
+				<?php
+				printf(
+					"<button data-provider='%s' data-ticket-id='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
+					esc_attr( $ticket->provider_class ),
+					esc_attr( $ticket->ID ),
+					esc_html( $ticket->name )
+				);
+				?>
 			</td>
 		</tr>
 		<?php
-		$count ++;
-	} ?>
+	}
+
+	$modules = Tribe__Tickets__Tickets::modules();
+	?>
+	<thead>
+		<tr class="table-header">
+			<th class="ticket_name"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></th>
+			<?php
+			/**
+			 * Allows for the insertion of additional columns into the ticket table header
+			 *
+			 * @since TBD
+			 */
+			do_action( 'tribe_events_tickets_ticket_table_add_header_column' );
+			?>
+			<th class="ticket_capacity"><?php esc_html_e( 'Capacity', 'event-tickets' ); ?></th>
+			<th class="ticket_available"><?php esc_html_e( 'Available', 'event-tickets' ); ?></th>
+			<th class="ticket_edit"></th>
+		</th>
+	</thead>
+	<?php
+
+	foreach ( $tickets as $key => $ticket ) {
+		if ( strpos( $ticket->provider_class, 'RSVP' ) !== false ) {
+			$rsvp[] = $ticket;
+		} else {
+			$non_rsvp[] = $ticket;
+		}
+	}
+
+	?>
+	<tbody>
+		<?php
+		if ( ! empty( $non_rsvp ) ) {
+			foreach ( $non_rsvp as $ticket ) {
+				render_ticket_row( $ticket );
+			}
+		}
+
+		if ( ! empty( $rsvp ) ) {
+			foreach ( $rsvp as $ticket ) {
+				render_ticket_row( $ticket );
+			}
+		}
+		?>
+	</tbody>
 </table>
+<input type="hidden" name="tickets_order" id="tickets_order" >

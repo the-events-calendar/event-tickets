@@ -68,6 +68,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 
+		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
+
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
 
@@ -815,4 +817,29 @@ class Tribe__Tickets__Tickets_Handler {
 		return $url;
 	}
 
+	/**
+	 * Saves the chosen image via ajax
+	 */
+	public function ajax_handler_save_settings() {
+		$params = array();
+		$id = $_POST['post_ID'];
+		parse_str( $_POST['formdata'], $params );
+
+		/**
+		 * Allow other plugins to hook into this to add settings
+		 * @since TBD
+		 * @param array $params the array of parameters to filter
+		 */
+		do_action( 'tribe_events_save_tickets_settings', $params );
+
+		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
+			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
+			wp_send_json_success( $params );
+		} else {
+			delete_post_meta( $id, '_tribe_ticket_header' );
+			wp_send_json_success( $params );
+		}
+
+		wp_send_json_error( $params );
+	}
 }

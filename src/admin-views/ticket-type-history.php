@@ -4,11 +4,11 @@
  * @var string $provider
  */
 ?>
-<tr class="ticket_advanced ticket_advanced_<?php echo esc_attr( $provider ); ?> history">
-	<td valign="top">
+<div class="ticket_advanced ticket_advanced_<?php echo esc_attr( $provider ); ?> history">
+	<div>
 		<label for="ticket_history"> <?php esc_html_e( 'Ticket history:', 'event-tickets' ) ?> </label>
-	</td>
-	<td valign="top">
+	</div>
+	<div>
 		<a href="#" class="toggle-history">
 			<span><?php esc_html_e( 'Click to view the history', 'event-tickets' ); ?></span>
 			<span style="display:none"><?php esc_html_e( 'Click to hide history', 'event-tickets' ); ?></span>
@@ -21,5 +21,5 @@
 				</li>
 			<?php endforeach; ?>
 		</ul>
-	</td>
-</tr>
+	</div>
+</div>
