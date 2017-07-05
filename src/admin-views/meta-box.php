@@ -31,7 +31,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 		<div class="tribe_sectionheader ticket_list_container">
 			<div class="ticket_table_intro">
 				<span class="ticket_form_total_capacity">
-					Total Event Capacity:
+					<?php esc_html_e( 'Total Event Capacity:', 'event-tickets' ); ?>
 					<span id="ticket_form_total_capacity_value">
 						<?php
 						switch ( $total_tickets ) {
