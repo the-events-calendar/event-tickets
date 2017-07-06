@@ -233,6 +233,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.5.2] TBD =
+* Tweak - In 'user event confirmations' shortcode, add shorcode name to shortcode_atts function call to give more customization options [66141]
+
 = [4.5.1] 2017-06-28 =
 
 * Tweak - Spelling and related language fixes (with thanks to @garrett-eclipse) [77196]
