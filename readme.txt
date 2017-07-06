@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.5.2] TBD =
 
-* ...
+* Fix - Hide others users from attendee managers email options [77050]
 
 = [4.5.1] 2017-06-28 =
 
