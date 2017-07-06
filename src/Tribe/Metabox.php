@@ -89,6 +89,9 @@ class Tribe__Tickets__Metabox {
 
 		/**
 		 * Filter the decimal point character used in the price
+		 * @param string $decimal the decimal character to filter
+		 *
+		 * @since TBD
 		 */
 		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 

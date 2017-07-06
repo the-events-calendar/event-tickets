@@ -870,6 +870,7 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allow other plugins to hook into this to add settings
 		 * @since TBD
+		 * @param array $params the array of parameters to filter
 		 */
 		do_action( 'tribe_events_save_tickets_settings', $params );
 

@@ -1,8 +1,13 @@
-(function( window, $ ) {
+( function( window, $ ) {
 	var $table = $( '.eventtable.ticket_list.eventForm tbody' ),
 		enable_width = '400px';
 
-	// For drag-n-drop
+	/**
+	* Implemnts jQuery drag-n-drop for the ticket table.
+	* Stores order in the #tickets_order field.
+	*
+	* @param jQuery object $element parent element to make sortable ( var $table above )
+	*/
 	function make_sortable( $element ) {
 		$element.sortable({
 			cursor: 'move',
@@ -26,14 +31,14 @@
 		}
 	);
 
-	$(document).ready(function () {
+	$( document ).ready( function () {
 		// init if we're not on small screens
 		if ( window.matchMedia( '( min-width: 400px )' ).matches ) {
 			 make_sortable( $table );
 		}
 
 		// disable/init depending on screen size
-		$(window).on( 'resize', function() {
+		$( window ).on( 'resize', function() {
 			if ( window.matchMedia( '( min-width: 400px )' ).matches ) {
 				if ( ! $( $table ).hasClass( 'ui-sortable' ) ) {
 					make_sortable( $table );
