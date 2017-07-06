@@ -15,6 +15,7 @@ if ( ! current_user_can( 'list_users' ) ) {
  * Filters the args for the Email Users Dropdown menu
  *
  * @see wp_dropdown_users()
+ * @since TBD
  *
  * @param array $users_args Args that get passed to wp_dropdown_users()
  */
