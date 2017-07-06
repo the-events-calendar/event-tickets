@@ -16,24 +16,22 @@
  *     [tribe-user-event-confirmations limit="16"]
  */
 class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
+	protected $shortcode_name = 'tribe-user-event-confirmations';
 	protected $params = array();
 
 	/**
-	 * Registers a user event confirmation list shortcode using the specified
-	 * name (or else defaults to "tribe-user-event-confirmations").
-	 *
-	 * @param string $shortcode_name
+	 * Registers a user event confirmation list shortcode
 	 */
-	public function __construct( $shortcode_name = 'tribe-user-event-confirmations' ) {
+	public function __construct( ) {
 		/**
 		 * Provides an opportunity to modify the registered shortcode name
 		 * for the frontend attendee list.
 		 *
 		 * @param string $shortcode_name
 		 */
-		$shortcode_name = apply_filters( 'tribe_tickets_shortcodes_attendee_list_name', $shortcode_name );
+		$this->shortcode_name = apply_filters( 'tribe_tickets_shortcodes_attendee_list_name', $this->shortcode_name );
 
-		add_shortcode( $shortcode_name, array( $this, 'generate' ) );
+		add_shortcode( $this->shortcode_name, array( $this, 'generate' ) );
 	}
 
 	/**
@@ -67,7 +65,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 		$this->params = shortcode_atts( array(
 			'limit' => -1,
 			'user'  => get_current_user_id()
-		), $params );
+		), $params, $this->shortcode_name );
 	}
 
 	/**
