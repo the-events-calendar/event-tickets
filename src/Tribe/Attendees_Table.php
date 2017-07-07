@@ -138,11 +138,19 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$purchaser_name  = empty( $item[ 'purchaser_name' ] ) ? '' : esc_html( $item[ 'purchaser_name' ] );
 		$purchaser_email = empty( $item[ 'purchaser_email' ] ) ? '' : esc_html( $item[ 'purchaser_email' ] );
 
-		return "
+		$output = "
 			<div class='purchaser_name'>{$purchaser_name}</div>
 			<div class='purchaser_email'>{$purchaser_email}</div>
 		";
-	}
+
+		/**
+		 * Provides an opportunity to modify the Primary Info column content in
+		 * the attendees table.
+		 *
+		 * @param string $output
+		 * @param array  $item
+		 */
+		return apply_filters( 'event_tickets_attendees_table_primary_info_column', $output, $item );
 
 	/**
 	 * Populates the status column.
