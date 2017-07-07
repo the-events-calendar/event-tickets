@@ -236,7 +236,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.5.2] TBD =
 
 * Fix - Hide others users from attendee managers email options [77050]
-* Tweak - Added filter to modify the Primary Info column of the Attendees Table [69538]
+* Tweak - Added a filter to modify the Primary Info column of the Attendees Table [69538]
 
 = [4.5.1] 2017-06-28 =
 
