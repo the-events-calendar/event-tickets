@@ -237,6 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Fix - Hide others users from attendee managers email options [77050]
 * Tweak - Added a filter to modify the Primary Info column of the Attendees Table [69538]
+* Tweak - Added a filter to hide the attendee optout option in the tickets form [46087]
 
 = [4.5.1] 2017-06-28 =
 
