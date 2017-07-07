@@ -151,13 +151,13 @@ $now = current_time( 'timestamp' );
 						/**
 						 * Use this to filter and hide the Attendees List Optout
 						 *
-						 * @param bool 
+						 * @param bool
 						 * @since TBD
 						 */
 						$show_attendee_list_optout = apply_filters( 'tribe_tickets_plus_hide_attendees_list_optout', true );
 						if ( $show_attendee_list_optout
 							 && class_exists( 'Tribe__Tickets_Plus__Attendees_List' )
-							 && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() ) 
+							 && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() )
 						) : ?>
 							<tr class="tribe-tickets-attendees-list-optout">
 								<td colspan="4">
