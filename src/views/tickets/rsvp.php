@@ -149,7 +149,7 @@ $now = current_time( 'timestamp' );
 
 						<?php
 						/**
-						 * Use this to filter and hide the Attendees List Optout for all tickets
+						 * Use this to filter and hide the Attendees List Optout
 						 *
 						 * @param bool 
 						 * @since TBD
