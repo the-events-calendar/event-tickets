@@ -21,6 +21,8 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 
 	/**
 	 * Registers a user event confirmation list shortcode
+	 * @since TBD moved the $shortcode_name parameter to a protected propiety
+	 * as it's needs to be used in other methods
 	 */
 	public function __construct( ) {
 		/**
