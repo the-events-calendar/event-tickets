@@ -445,7 +445,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		foreach ( $transaction_ids as $transaction ) {
 			// This method takes care of intelligently sending out emails only when
 			// required, for attendees that have not yet received their tickets
-			$this->send_tickets_email( $transaction );
+			$this->send_tickets_email( $transaction, $event_id );
 		}
 	}
 
@@ -640,7 +640,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			);
 			// No point sending tickets if their current intention is not to attend
 			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati ) ) {
-				$this->send_tickets_email( $order_id );
+				$this->send_tickets_email( $order_id, $post_id );
 			} elseif ( $has_tickets ) {
 				$this->send_non_attendance_confirmation( $order_id, $post_id );
 			}
@@ -655,7 +655,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 	}
 
-	public function send_tickets_email( $order_id ) {
+	/**
+	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
+	 * including the tickets.
+	 *
+	 * @param int $order_id
+	 * @param int $event_id
+	 * @since TBD added $event_id parameter
+	 */
+	public function send_tickets_email( $order_id, $event_id ) {
 
 
 		$all_attendees = $this->get_attendees_by_id( $order_id );
@@ -705,11 +713,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$content     = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $to_send ) );
-		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ) );
-		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
-		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
+
+		/**
+		 * Filters for RSVP tickets email
+		 * @since TBD added new parameters $event_id and $order_id to the filters below
+		 */
+		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ), $event_id, $order_id );
+		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array(), $event_id, $order_id );
+		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to, $event_id, $order_id );
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
-			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ) );
+			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ),
+			$event_id,
+			$order_id );
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
@@ -736,11 +751,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ) );
-		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array() );
-		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to );
+		/**
+		 * Filters for RSVP non attendance confirmation email
+		 * @since TBD added new parameters $event_id and $order_id to the filters below
+		 */
+
+		$headers     = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ), $event_id, $order_id );
+		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array(), $event_id, $order_id );
+		$to          = apply_filters( 'tribe_rsvp_email_recipient', $to, $event_id, $order_id );
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
-			sprintf( __( 'You confirmed you will not be attending %s', 'event-tickets' ), get_the_title( $event_id ) )
+			sprintf( __( 'You confirmed you will not be attending %s', 'event-tickets' ), get_the_title( $event_id ) ),
+			$event_id,
+			$order_id 
 		);
 
 		$template_data = array( 'event_id' => $event_id, 'order_id' => $order_id, 'attendees' => $attendees );
