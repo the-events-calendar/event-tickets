@@ -762,7 +762,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
 			sprintf( __( 'You confirmed you will not be attending %s', 'event-tickets' ), get_the_title( $event_id ) ),
 			$event_id,
-			$order_id 
+			$order_id
 		);
 
 		$template_data = array( 'event_id' => $event_id, 'order_id' => $order_id, 'attendees' => $attendees );
