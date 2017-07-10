@@ -659,9 +659,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * including the tickets.
 	 *
+	 * @since TBD added $event_id parameter
+	 *
 	 * @param int $order_id
 	 * @param int $event_id
-	 * @since TBD added $event_id parameter
 	 */
 	public function send_tickets_email( $order_id, $event_id ) {
 
@@ -712,7 +713,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$content     = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $to_send ) );
+		$content     = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $to_send ), $event_id, $order_id );
 
 		/**
 		 * Filters for RSVP tickets email
@@ -724,7 +725,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
 			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ),
 			$event_id,
-			$order_id );
+			$order_id
+		);
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
