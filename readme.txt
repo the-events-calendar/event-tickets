@@ -234,9 +234,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 == Changelog ==
 
 = [4.5.2] TBD =
-
 * Fix - Hide others users from attendee managers email options [77050]
+* Tweak - In 'user event confirmations' shortcode, add shorcode name to shortcode_atts function call to give more customization options [66141]
 * Tweak - Added a filter to modify the Primary Info column of the Attendees Table [69538]
+* Tweak - Added a filter to hide the attendee optout option in the tickets form [46087]
 * Tweak - Added new parameters to RSVP email filters [64172]
 
 = [4.5.1] 2017-06-28 =
