@@ -153,7 +153,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 */
 		return apply_filters( 'event_tickets_attendees_table_primary_info_column', $output, $item );
 	}
-	
+
 	/**
 	 * Populates the status column.
 	 *
