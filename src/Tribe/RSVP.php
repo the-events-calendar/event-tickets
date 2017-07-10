@@ -719,7 +719,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param array  email headers
-		 * @param int    $event_id 
+		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
 		$headers = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ), $event_id, $order_id );
@@ -730,7 +730,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param array  attachments
-		 * @param int    $event_id 
+		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array(), $event_id, $order_id );
@@ -741,7 +741,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param string  $to
-		 * @param int     $event_id 
+		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
 		$to = apply_filters( 'tribe_rsvp_email_recipient', $to, $event_id, $order_id );
@@ -752,7 +752,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param string
-		 * @param int     $event_id 
+		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
@@ -767,7 +767,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param string  email content
-		 * @param int     $event_id 
+		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
 		$content = apply_filters( 'tribe_rsvp_email_content', $this->generate_tickets_email_content( $to_send ), $event_id, $order_id );
@@ -803,7 +803,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param array  email headers
-		 * @param int    $event_id 
+		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
 		$headers = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ), $event_id, $order_id );
@@ -814,7 +814,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param array  attachments
-		 * @param int    $event_id 
+		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array(), $event_id, $order_id );
@@ -825,7 +825,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param string  $to
-		 * @param int     $event_id 
+		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
 		$to = apply_filters( 'tribe_rsvp_email_recipient', $to, $event_id, $order_id );
@@ -836,7 +836,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param string
-		 * @param int     $event_id 
+		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
 		$subject = apply_filters( 'tribe_rsvp_email_subject',
@@ -853,7 +853,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @since TBD added new parameters $event_id and $order_id
 		 *
 		 * @param string  email content
-		 * @param int     $event_id 
+		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
 		$content = apply_filters( 'tribe_rsvp_email_content',
