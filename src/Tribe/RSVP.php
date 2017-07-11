@@ -1140,7 +1140,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
-		$return->stock( get_post_meta( $ticket_id, '_stock', true ) - $qty );
+		$return->stock( (int) get_post_meta( $ticket_id, '_stock', true ) - $qty );
 		$return->qty_sold( $qty );
 
 		return $return;
