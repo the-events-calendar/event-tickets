@@ -659,7 +659,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Dispatches a confirmation email that acknowledges the user has RSVP'd
 	 * including the tickets.
 	 *
-	 * @since TBD added $event_id parameter
+	 * @since 4.5.2 added $event_id parameter
 	 *
 	 * @param int $order_id
 	 * @param int $event_id
@@ -716,7 +716,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email headers
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param array  email headers
 		 * @param int    $event_id
@@ -727,7 +727,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email attachments
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param array  attachments
 		 * @param int    $event_id
@@ -738,7 +738,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email recepient
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param string  $to
 		 * @param int     $event_id
@@ -749,7 +749,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email subject
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param string
 		 * @param int     $event_id
@@ -764,7 +764,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email content
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param string  email content
 		 * @param int     $event_id
@@ -800,7 +800,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email headers
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param array  email headers
 		 * @param int    $event_id
@@ -811,7 +811,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email attachments
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param array  attachments
 		 * @param int    $event_id
@@ -822,7 +822,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email recepient
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param string  $to
 		 * @param int     $event_id
@@ -833,7 +833,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email subject
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param string
 		 * @param int     $event_id
@@ -850,7 +850,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the RSVP tickets email content
 		 *
-		 * @since TBD added new parameters $event_id and $order_id
+		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *
 		 * @param string  email content
 		 * @param int     $event_id

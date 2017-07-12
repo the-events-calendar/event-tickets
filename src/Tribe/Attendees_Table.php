@@ -147,9 +147,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * Provides an opportunity to modify the Primary Info column content in
 		 * the attendees table.
 		 *
+		 * @since 4.5.2
+		 *
 		 * @param string $output
 		 * @param array  $item
-		 * @since TBD
 		 */
 		return apply_filters( 'event_tickets_attendees_table_primary_info_column', $output, $item );
 	}

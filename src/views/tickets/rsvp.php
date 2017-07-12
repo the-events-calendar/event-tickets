@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.5
+ * @version 4.5.2
  *
  * @var bool $must_login
  */
@@ -151,8 +151,9 @@ $now = current_time( 'timestamp' );
 						/**
 						 * Use this filter to hide the Attendees List Optout
 						 *
+						 * @since 4.5.2
+						 *
 						 * @param bool
-						 * @since TBD
 						 */
 						$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', false );
 						if ( ! $hide_attendee_list_optout
