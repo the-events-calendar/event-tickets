@@ -1433,7 +1433,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function do_metabox_capacity_options( $event_id, $ticket_id ) {
 
-
 		$stock = '';
 
 		if ( ! empty( $ticket_id ) ) {

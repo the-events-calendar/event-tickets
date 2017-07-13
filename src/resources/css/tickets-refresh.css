@@ -59,6 +59,10 @@
 	margin-top: 1em;
 }
 
+.ticket_form_toggle + .ticket_form_toggle {
+	margin-left: 1em;
+}
+
 .ticket_form_toggle_text::before, .settings_form_toggle_text::before {
 	font-family: 'dashicons';
 }

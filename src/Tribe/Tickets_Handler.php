@@ -762,20 +762,23 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Save the current global stock properties for this event.
 	 *
+	 * @since TBD
+	 * Can come from ticket creation or settings edit. No longer tied to event save.
+	 *
 	 * @param int $post_id
 	 */
 	public function save_global_stock( $post_id ) {
-		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
-			return;
-		}
-
 		// Bail on autosaves/bulk updates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
 		}
 
-		$enable = ! empty( $_POST[ 'tribe-tickets-enable-global-stock' ] );
-		$stock  = (int) @$_POST[ 'tribe-tickets-global-stock' ];
+		//if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+		//	return;
+		//}
+
+		$enable = ! empty( $_POST[ 'ticket_global_stock' ] );
+		$stock  = (int) @$_POST[ 'ticket_global_stock' ];
 
 		$post_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 		$post_global_stock->enable( $enable );
@@ -881,6 +884,9 @@ class Tribe__Tickets__Tickets_Handler {
 			delete_post_meta( $id, '_tribe_ticket_header' );
 			wp_send_json_success( $params );
 		}
+
+		// #TODO: placeholder
+		$this->save_global_stock( $id );
 
 		wp_send_json_error( $params );
 	}

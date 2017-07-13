@@ -14,6 +14,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $base_panel                  = $( document.getElementById( 'tribe_panel_base' ) );
 	var $edit_panel                  = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel              = $( document.getElementById( 'tribe_panel_settings' ) );
+	var $edit_titles                 = $( '.ticket_form_title_edit' );
+	var $add_titles                  = $( '.ticket_form_title_add' );
 
 	ticketHeaderImage = {
 
@@ -112,6 +114,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$('#tribe-tickets-attendee-sortables').empty();
 				$('.tribe-tickets-attendee-saved-fields').show();
 
+				$edit_titles.hide();
+				$add_titles.show();
+
 				$ticket_form.find( '.accordion-header, .accordion-content' ).removeClass( 'is-active' );
 			},
 
@@ -146,7 +151,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced:not(.ticket_advanced_meta)' ).find( 'input, select, textarea' );
 				var provider = $ticket_form.find( '.ticket_provider:checked' ).val();
 
-				// for each advanded ticket input, select, and textarea, relocate the name and id fields a bit
+				// for each advanced ticket input, select, and textarea, relocate the name and id fields a bit
 				$ticket_advanced.each( function() {
 					var $el = $( this );
 
@@ -167,56 +172,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						} );
 					}
 				} );
-
-				// (Re-)set the global stock fields
-				$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
-
-				// Also reset each time the global stock mode selector is changed
-				$( document.getElementById( 'ticket_global_stock' ) ).change( function() {
-					$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
-				} );
-			},
-
-			'set-global-stock-fields.tribe': function() {
-				var provider_class   = currently_selected_provider();
-				var $provider_fields = $( this ).find( '#ticket_form').find( '.ticket_advanced_' + provider_class );
-
-				if ( $provider_fields.length < 1 ) {
-					return;
-				}
-
-				var $normal_stock_field  = $provider_fields.filter( '.stock' );
-				var $global_stock_fields = $provider_fields.filter( '.global-stock-mode' );
-				var $sales_cap_field     = $global_stock_fields.filter( '.sales-cap-field' );
-
-				var mode     = $( document.getElementById( 'ticket_global_stock' ) ).val();
-				var enabled  = global_stock_enabled();
-
-				// Show or hide global (and normal, "per-ticket") stock settings as appropriate
-				$global_stock_level.toggle( enabled );
-				$global_stock_fields.toggle( global_stock_enabled() );
-				$normal_stock_field.toggle( ! enabled );
-
-				// If global stock is not enabled we need go no further
-				if ( ! enabled ) {
-					return;
-				}
-
-				// Otherwise, toggle on and off the relevant stock quantity fields
-				switch ( mode ) {
-					case "global":
-						$sales_cap_field.hide();
-						$normal_stock_field.hide();
-						break;
-					case "capped":
-						$sales_cap_field.show();
-						$normal_stock_field.hide();
-						break;
-					case "own":
-						$sales_cap_field.hide();
-						$normal_stock_field.show();
-						break;
-				}
 			}
 		} );
 
@@ -269,23 +224,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$.datepicker._clearDate( this );
 			}
 		} );
-
-		/**
-		 * Indicates if the "enable global stock" field has been checked.
-		 *
-		 * @returns boolean
-		 */
-		function global_stock_enabled() {
-			return $enable_global_stock.prop( "checked" );
-		}
-
-		/**
-		 * Show or hide global stock fields and settings as appropriate.
-		 */
-		function show_hide_global_stock() {
-			global_stock_setting_changed = true;
-			$tribe_tickets.trigger( 'set-global-stock-fields.tribe' );
-		}
 
 		/**
 		 * Show or hide the appropriate set of provider-specific fields.
@@ -360,24 +298,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		}
 
-		// Show or hide the global stock level as appropriate, both initially and thereafter
-		$enable_global_stock.change( show_hide_global_stock );
-		$enable_global_stock.trigger( 'change' );
-
-		// Triggering a change event will falsely set the global_stock_setting_changed flag to
-		// true - undo this as it is a one-time false positive
-		global_stock_setting_changed = false;
-
-		/* Show the advanced metabox for the selected provider and hide the others on selection change */
-		$( 'input[name=ticket_provider]:radio' ).change( function() {
-			show_hide_advanced_fields();
-		} );
-
-		/* Show the advanced metabox for the selected provider and hide the others at ready */
-		$( 'input[name=ticket_provider]:checked' ).each( function() {
-			show_hide_advanced_fields();
-		} );
-
 		/* "Settings" button action */
 		$( document.getElementById( 'settings_form_toggle' ) ).on( 'click', function( e ) {
 			show_hide_panel( e, $settings_panel);
@@ -387,7 +307,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( document.getElementById( 'tribe_settings_form_cancel' ) ).on( 'click', function( e ) {
 			show_hide_panel( e, $settings_panel);
 		} );
-
 
 		/* "Add a ticket" link action */
 		$( '.ticket_form_toggle' ).on( 'click', function( e ) {
@@ -416,17 +335,31 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.trigger( 'focus.tribe' );
 		} );
 
+		/* Change global stock type if we put a value in #ticket_woo_global_stock_cap */
+		$( document.getElementById( 'ticket_woo_global_stock_cap' ) ).on( 'blur', function( e ) {
+			var $global = $( document.getElementById( 'global' ) );
+			if ( 0 < $( this ).val() ) {
+				$global.val( 'capped' );
+			} else {
+				$global.val( 'global' );
+			}
+		} );
+
 		/* "Save Ticket" button action */
 		$( document.getElementById( 'ticket_form_save' ) ).click( function( e ) {
 			var $form = $( document.getElementById( 'ticket_form_table' ) );
 			var type  = $form.find( '.ticket_provider:checked' ).val();
-			var $rows = $form.find( '.ticket, .ticket_advanced_meta, .ticket_advanced_' + type );
+			//var $rows = $form.find( 'input' );
 
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
+			var form_data = $form.find( '.ticket_field' ).serialize();
+
+			console.log(form_data);
+
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
-				formdata: $rows.find( '.ticket_field' ).serialize(),
+				formdata: form_data,
 				post_ID : $( document.getElementById( 'post_ID' ) ).val(),
 				nonce   : TribeTickets.add_ticket_nonce
 			};
@@ -436,11 +369,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				params,
 				function( response ) {
 					$tribe_tickets.trigger( 'saved-ticket.tribe', response );
-
-					if ( response.success ) {
-						$tribe_tickets.trigger( 'clear.tribe' );
-						$( 'td.ticket_list_container' ).empty().html( response.data.html );
-					}
 				},
 				'json'
 			).complete( function() {
@@ -510,6 +438,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							return;
 						}
 
+						console.log(response.data);
+
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
 						var onSale       = false;
@@ -518,15 +448,37 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							onSale       = true;
 							regularPrice = response.data.regular_price;
 						}
-						console.log(response.data);
+
+						if ( response.data.ID ) {
+							$edit_titles.show();
+							$add_titles.hide();
+						}
+
+						if ( response.data.global_stock_mode ) {
+							switch ( response.data.global_stock_mode ) {
+								case 'global':
+									$( document.getElementById( 'global' ) ).prop( 'checked', true );
+									$( document.querySelectorAll( '.global_stock_cap' ) ).val( response.data.global_stock_cap );
+									// this one is _not_ working :(
+									$( document.getElementById( 'tribe-tickets-global-stock-input' ) ).val( response.data.total_global_stock );
+									break;
+								case 'own':
+									$( document.getElementById( 'own' ) ).prop( 'checked', true );
+									$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.stock );
+									break;
+								default:
+									$( document.getElementById( 'unlimited' ) ).prop( 'checked', true );
+							}
+						} else {
+							$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.stock );
+						}
 
 						$( document.getElementById( 'ticket_id' ) ).val( response.data.ID );
 						$( document.getElementById( 'ticket_name' ) ).val( response.data.name );
 						$( document.getElementById( 'ticket_description' ) ).val( response.data.description );
 
-						if ( onSale ) {
-							$( '.ticket_advanced_' + response.data.provider_class + '.sale_price' ).show();
-						}
+						$( document.getElementById( 'tribe-tickets-global-stock' ) ).val( response.data.global_stock );
+						$( document.getElementById( 'ticket_woo_global_stock_cap' ) ).val( response.data.global_stock_cap );
 
 						var start_date = response.data.start_date.substring( 0, 10 );
 						var end_date = response.data.end_date.substring( 0, 10 );
@@ -626,15 +578,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$ticket_price.siblings( '.no-update-message' ).hide();
 						}
 
-						var $sale_field = $tribe_tickets.find( '#ticket_sale_price' );
+						var $sale_field = $( document.getElementById( 'ticket_sale_price' ) );
 
 						if ( onSale ) {
-							$sale_field
-								.val( salePrice )
-								.closest( 'tr' )
-								.show();
-						} else {
-							$sale_field.closest( 'tr' ).hide();
+							$sale_field.prop( 'readonly', false ).val( salePrice ).prop( 'readonly', true );
 						}
 
 						if ( 'undefined' !== typeof response.data.purchase_limit && response.data.purchase_limit ) {
