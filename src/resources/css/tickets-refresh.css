@@ -26,6 +26,10 @@
 	will-change: transform;
 }
 
+.ticket_panel section {
+	margin: 2em 0;
+}
+
 .ticket_panel[aria-hidden='true'] {
 	position: absolute;
 	transition: .5s cubic-bezier(.55, .085, .68, .53);
@@ -49,6 +53,11 @@
 }
 
 .ticket_panel h4 {
+	text-transform: uppercase;
+}
+
+.ticket_title {
+	margin-top: 0;
 	text-transform: uppercase;
 }
 
@@ -76,7 +85,24 @@
 	vertical-align: bottom;
 }
 
-/* Styles for INitial View */
+.tribe-tickets-image-preview {
+	max-width: 200px;
+}
+
+#tribe_tickets_image_preview_filename {
+	font-weight: bold;
+	margin-left: 2em;
+}
+
+#tribe_tickets_image_preview_filename .dashicons {
+	vertical-align: text-bottom;
+}
+
+#tribe_tickets_image_preview_filename .filename {
+	margin-left: .5em;
+}
+
+/* Styles for Initial View */
 
 .ticket_table_intro .ticket_form_total_capacity {
 	display: block;
@@ -94,20 +120,22 @@
 	position: relative;
 }
 
-.input_block .ticket_form_label {
+.input_block .ticket_form_left {
 	box-sizing: border-box;
 	float: left;
+	margin: 0;
+	padding-left: 0;
 	padding-right: 1em;
 	width: 132px;
 }
 
 .input_block .input_block,
-	.input_block p.description {
+	.input_block .ticket_form_right {
 	display: block;
 	margin-left: 132px;
 }
 
-.input_block .input_block:last-child, .input_block p.description:last-child {
+.input_block .input_block:last-child, .input_block .ticket_form_right:last-child {
 	margin-bottom: 0;
 }
 
