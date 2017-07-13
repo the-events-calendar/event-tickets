@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.5.2] 2017-07-12 =
+= [4.5.2] 2017-07-13 =
 
 * Fix - Hide others users from attendee managers email options [77050]
 * Tweak - In 'user event confirmations' shortcode, add shortcode name to shortcode_atts function call to give more customization options [66141]
