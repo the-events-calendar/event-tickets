@@ -1,4 +1,27 @@
-<div id="tribe-loading"><span></span></div>
+<?php
+
+$users_args = array(
+	'name'             => 'email_to_user',
+	'id'               => 'email_to_user',
+	'show_option_none' => esc_html__( 'Select...', 'event-tickets' ),
+	'selected'         => '',
+);
+
+if ( ! current_user_can( 'list_users' ) ) {
+	$users_args['include'] = get_current_user_id();
+}
+
+/**
+ * Filters the args for the Email Users Dropdown menu
+ *
+ * @see wp_dropdown_users()
+ * @since 4.5.2
+ *
+ * @param array $users_args Args that get passed to wp_dropdown_users()
+ */
+$users_args = apply_filters( 'tribe_event_tickets_email_attendee_list_dropdown', $users_args );
+
+?><div id="tribe-loading"><span></span></div>
 <form method="POST" class="tribe-attendees-email">
 	<div id="plugin-information-title">
 		<?php esc_html_e( 'Send the attendee list by email', 'event-tickets' ); ?>
@@ -8,14 +31,7 @@
 		<?php wp_nonce_field( 'email-attendees-list' ); ?>
 		<label for="email_to_user">
 			<span><?php esc_html_e( 'Select a User:', 'event-tickets' ); ?></span>
-			<?php wp_dropdown_users(
-				array(
-					'name'             => 'email_to_user',
-					'id'               => 'email_to_user',
-					'show_option_none' => esc_html__( 'Select...', 'event-tickets' ),
-					'selected'         => '',
-				)
-			); ?>
+			<?php wp_dropdown_users( $users_args ); ?>
 		</label>
 		<span class="attendees_or"><?php esc_html_e( 'or', 'event-tickets' ); ?></span>
 		<label for="email_to_address">
