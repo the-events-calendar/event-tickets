@@ -15,6 +15,7 @@ $header_id = ! empty( $header_id ) ? $header_id : '';
 $header_img = '';
 if ( ! empty( $header_id ) ) {
 	$header_img = wp_get_attachment_image( $header_id, 'full' );
+	$header_filename = basename ( get_attached_file( $header_id ) );
 }
 
 $modules = Tribe__Tickets__Tickets::modules();

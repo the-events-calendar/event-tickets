@@ -42,9 +42,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		},
 		// Output Image preview and populate widget form.
 		render  : function( attachment ) {
-			$( document.getElementById( 'tribe_ticket_header_preview' ) ).html( ticketHeaderImage.imgHTML( attachment ) );
-			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( attachment.id );
-			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
+			$( '#tribe_ticket_header_preview' ).html( ticketHeaderImage.imgHTML( attachment ) );
+			$( '#tribe_ticket_header_image_id' ).val( attachment.id );
+			$( '#tribe_ticket_header_remove' ).show();
+			$( '#tribe_tickets_image_preview_filename .filename' ).text( attachment.filename );
+			$( '#tribe_tickets_image_preview_filename' ).show();
 		},
 		// Render html for the image.
 		imgHTML : function( attachment ) {
