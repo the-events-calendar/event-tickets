@@ -10,7 +10,6 @@
 	} else {
 		$post_id = $_POST['post_ID'];
 
-
 		if ( ! empty( $_POST['post_type'] ) ) {
 			$post_type = $_POST['post_type'];
 		} elseif ( ! empty( $_GET['post_type'] ) ) {
@@ -58,7 +57,9 @@
 			<td class="ticket_available">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
-				if ( 'own' === $ticket->global_stock_mode() ) {
+				if (  'unlimited' === $ticket->global_stock_mode()  ) {
+					esc_html_e( 'unlimited', 'event-tickets' );
+				} elseif ( 'own' === $ticket->global_stock_mode() ) {
 					echo absint( $ticket->remaining() );
 				} else {
 					echo '(' . absint( $ticket->remaining() ) . ')';
@@ -125,4 +126,4 @@
 		?>
 	</tbody>
 </table>
-<input type="hidden" name="tickets_order" id="tickets_order" >
+<?php do_action( 'tribe_ticket_order_field', $post_id );
