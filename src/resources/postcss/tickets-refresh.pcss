@@ -18,6 +18,10 @@
 		margin: 2em 0;
 	}
 
+	button + button {
+		margin-left: 2em;
+	}
+
 	&[aria-hidden='true'] {
 		position: absolute;
 		transition: .5s cubic-bezier(.55, .085, .68, .53);
@@ -78,12 +82,16 @@
 }
 
 .tribe-tickets-image-preview {
+	margin-top: 2em;
 	max-width: 200px;
+}
+
+#tribe_ticket_header_image {
+	margin-right: 2em;
 }
 
 #tribe_tickets_image_preview_filename {
 	font-weight: bold;
-	margin-left: 2em;
 
 	.dashicons {
 		vertical-align: text-bottom;
@@ -137,10 +145,19 @@
 	.ticket_form_right {
 		display: block;
 		margin-left: 132px;
+		margin-top: 0;
 
 		&:last-child {
 			margin-bottom: 0;
 		}
+	}
+
+	label.ticket_form_right {
+		margin-bottom: 1em;
+	}
+
+	.tribe_block_label {
+		display: block;
 	}
 }
 
