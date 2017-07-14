@@ -313,7 +313,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			show_hide_panel( e, $edit_panel );
 
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) ) {
-				$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
+				// uncheck them all!
+				$( '.ticket_provider' ).each( function() {
+					$(this).prop( 'checked', true ).removeAttr( 'checked' );
+				});
+				if ( $( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
+					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ).prop( 'checked', true );
+				} else {
+					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
+				}
+
 			} else {
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
 			}

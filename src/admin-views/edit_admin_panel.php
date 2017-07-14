@@ -34,8 +34,11 @@
 				<fieldset class="input_block">
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php
-					$checked = true;
+					$checked = false;
 					foreach ( $modules as $class => $module ) {
+						if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $class ) {
+							$checked = true;
+						}
 						?>
 						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider"
 															id="<?php echo esc_attr( $class . '_radio' ); ?>"
