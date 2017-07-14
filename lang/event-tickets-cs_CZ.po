@@ -39,7 +39,7 @@ msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:189
+#: src/views/tickets/rsvp.php:201
 msgid "You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser."
 msgstr ""
 
@@ -76,12 +76,12 @@ msgctxt "attendee table"
 msgid "Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:393 src/Tribe/Attendees_Table.php:402
-#: src/Tribe/Attendees_Table.php:413 src/Tribe/Attendees_Table.php:422
+#: src/Tribe/Attendees_Table.php:404 src/Tribe/Attendees_Table.php:413
+#: src/Tribe/Attendees_Table.php:424 src/Tribe/Attendees_Table.php:433
 msgid "Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:401 src/Tribe/Attendees_Table.php:421
+#: src/Tribe/Attendees_Table.php:412 src/Tribe/Attendees_Table.php:432
 msgid "Undo"
 msgstr ""
 
@@ -441,22 +441,22 @@ msgctxt "attendee table"
 msgid "Status"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:286
+#: src/Tribe/Attendees_Table.php:297
 msgctxt "row action"
 msgid "Undo Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:285
+#: src/Tribe/Attendees_Table.php:296
 msgctxt "row action"
 msgid "Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:295
+#: src/Tribe/Attendees_Table.php:306
 msgctxt "row action"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:307
+#: src/Tribe/Attendees_Table.php:318
 msgctxt "row action"
 msgid "Delete"
 msgstr ""
@@ -663,11 +663,11 @@ msgstr ""
 msgid "Send RSVP confirmation to:"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:159
+#: src/views/tickets/rsvp.php:171
 msgid "Don't list me on the public attendee list"
 msgstr "Neuvádějte mě na veřejném seznamu účastníků"
 
-#: src/views/tickets/rsvp.php:171
+#: src/views/tickets/rsvp.php:183
 msgid "Login to RSVP"
 msgstr ""
 
@@ -687,7 +687,7 @@ msgstr ""
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
-#: src/Tribe/RSVP.php:743
+#: src/Tribe/RSVP.php:843
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
@@ -758,7 +758,7 @@ msgstr ""
 msgid "Login requirements"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:381
+#: src/Tribe/Attendees_Table.php:392
 msgid "View order"
 msgstr ""
 
@@ -810,31 +810,31 @@ msgstr "Zdarma"
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/RSVP.php:973
+#: src/Tribe/RSVP.php:1087
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr "Nemůžete potvrdit účast pro více než kolik je k dispozici zbývajících vstupenek."
 
-#: src/Tribe/RSVP.php:1513
+#: src/Tribe/RSVP.php:1631
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr "Zpět na %1$spřehled účastníků%2$s."
 
-#: src/Tribe/RSVP.php:1520
+#: src/Tribe/RSVP.php:1638
 msgid "Post updated. %1$s"
 msgstr "Příspěvek byl aktualizován. %1$s"
 
-#: src/Tribe/RSVP.php:1524
+#: src/Tribe/RSVP.php:1642
 msgid "Post published. %1$s"
 msgstr "Příspěvek byl publikován. %1$s"
 
-#: src/Tribe/RSVP.php:1527
+#: src/Tribe/RSVP.php:1645
 msgid "Post submitted."
 msgstr "Příspěvek byl odeslán ke schválení."
 
-#: src/Tribe/RSVP.php:1528
+#: src/Tribe/RSVP.php:1646
 msgid "Post scheduled."
 msgstr "Příspěvek bude automaticky publikován."
 
-#: src/Tribe/RSVP.php:1529
+#: src/Tribe/RSVP.php:1647
 msgid "Post draft updated."
 msgstr "Koncept příspěvku byl uložen."
 
@@ -870,7 +870,7 @@ msgstr "Došlo k chybě při odesílání emailu"
 msgid "Email sent successfully!"
 msgstr "Email byl úspěšně odeslán!"
 
-#: src/admin-views/attendees-email.php:43
+#: src/admin-views/attendees-email.php:59
 msgid "Send Email"
 msgstr "Poslat email"
 
@@ -967,32 +967,32 @@ msgstr "Vstupenka č."
 msgid "Security Code"
 msgstr "Kontrolní kód"
 
-#: src/Tribe/Attendees_Table.php:516
+#: src/Tribe/Attendees_Table.php:527
 msgid "Check in"
 msgstr "Zaregistrovat"
 
-#: src/Tribe/Attendees_Table.php:517
+#: src/Tribe/Attendees_Table.php:528
 msgid "Undo Check in"
 msgstr "Zrušit registraci"
 
-#: src/Tribe/Attendees_Table.php:489
+#: src/Tribe/Attendees_Table.php:500
 msgid "Print"
 msgstr "Tisk"
 
-#: src/Tribe/Attendees_Table.php:490
+#: src/Tribe/Attendees_Table.php:501
 #: src/admin-views/admin-welcome-message.php:36 src/views/tickets/rsvp.php:134
 msgid "Email"
 msgstr "Email"
 
-#: src/Tribe/Attendees_Table.php:491
+#: src/Tribe/Attendees_Table.php:502
 msgid "Export"
 msgstr "Exportovat"
 
-#: src/Tribe/Attendees_Table.php:497
+#: src/Tribe/Attendees_Table.php:508
 msgid "Filter by purchaser name, ticket #, order # or security code"
 msgstr "Filtrovat podle jména kupce, čísla vstupenky, objednávky nebo kontrolního kódu"
 
-#: src/Tribe/Attendees_Table.php:518 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:529 src/admin-views/list.php:43
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1009,19 +1009,19 @@ msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr "Účastník %1$s"
 
-#: src/Tribe/RSVP.php:712
+#: src/Tribe/RSVP.php:759
 msgid "Your tickets from %s"
 msgstr "Vaše vstupenky z webu %s"
 
-#: src/Tribe/RSVP.php:967
+#: src/Tribe/RSVP.php:1081
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr "Vaše potvrzení účasti bylo přijato. Zkontrolujte prosím emailovou schránku, kam byl odeslán kontrolní email."
 
-#: src/Tribe/RSVP.php:978
+#: src/Tribe/RSVP.php:1092
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr "Pro potvrzení účasti musíte zadat své jméno a platnou emailovou adresu."
 
-#: src/Tribe/RSVP.php:1222
+#: src/Tribe/RSVP.php:1336
 msgid "(deleted)"
 msgstr "(smazáno)"
 
@@ -1072,23 +1072,23 @@ msgstr "ucastnici"
 msgid "Attendee List for: %s"
 msgstr "Seznam účastníků na: %s"
 
-#: src/admin-views/attendees-email.php:4
+#: src/admin-views/attendees-email.php:27
 msgid "Send the attendee list by email"
 msgstr "Poslat seznam účastníků emailem"
 
-#: src/admin-views/attendees-email.php:10
+#: src/admin-views/attendees-email.php:33
 msgid "Select a User:"
 msgstr "Vybrat uživatele:"
 
-#: src/admin-views/attendees-email.php:15
+#: src/admin-views/attendees-email.php:6
 msgid "Select..."
 msgstr "Vybrat"
 
-#: src/admin-views/attendees-email.php:20
+#: src/admin-views/attendees-email.php:36
 msgid "or"
 msgstr "nebo"
 
-#: src/admin-views/attendees-email.php:22
+#: src/admin-views/attendees-email.php:38
 msgid "Email Address:"
 msgstr "Emailová adresa:"
 
@@ -1230,11 +1230,11 @@ msgstr "Není skladem!"
 msgid "Full Name"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:180
+#: src/views/tickets/rsvp.php:192
 msgid "Confirm RSVP"
 msgstr "Potvrdit účast"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.2)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:509
 msgid "Event Tickets"
