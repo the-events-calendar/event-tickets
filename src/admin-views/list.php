@@ -18,19 +18,23 @@
 		}
 	}
 
+	/**
+	 * Render the ticket row into the ticket table
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @since TBD
+	 */
 	function render_ticket_row( $ticket ) {
-		/**
-		 * @var Tribe__Tickets__Ticket_Object $ticket
-		 */
 		$provider     = $ticket->provider_class;
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
 		?>
 		<tr class="<?php echo esc_attr( $provider ); ?>" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
 			<!-- (handle, name), price, capacity, available, editlink -->
 			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>">
-				<span class="ticket_cell_label">Ticket Type:</span>
+				<span class="ticket_cell_label"><?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?></span>
 				<p><?php echo esc_html( $ticket->name ); ?></p>
-				<button type="button" class="toggle-row"><span class="screen-reader-text">Show more details</span></button>
+				<button type="button" class="toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'event-tickets' ); ?></span></button>
 			</td>
 
 			<?php
@@ -44,7 +48,7 @@
 			?>
 
 			<td class="ticket_capacity">
-				<span class="ticket_cell_label">Capacity:</span>
+				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
 				<?php
 				// escaping handled in function
 				echo $ticket->display_original_stock();
@@ -52,7 +56,7 @@
 			</td>
 
 			<td class="ticket_available">
-				<span class="ticket_cell_label">Available:</span>
+				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
 				if ( 'own' === $ticket->global_stock_mode() ) {
 					echo absint( $ticket->remaining() );
@@ -80,18 +84,17 @@
 	?>
 	<thead>
 		<tr class="table-header">
-			<th class="ticket_name">Tickets</th>
+			<th class="ticket_name"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></th>
 			<?php
 			/**
 			 * Allows for the insertion of additional columns into the ticket table header
 			 *
-			 * @param Post ID
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_ticket_table_add_header_column' );
 			?>
-			<th class="ticket_capacity">Capacity</th>
-			<th class="ticket_available">Available</th>
+			<th class="ticket_capacity"><?php esc_html_e( 'Capacity', 'event-tickets' ); ?></th>
+			<th class="ticket_available"><?php esc_html_e( 'Available', 'event-tickets' ); ?></th>
 			<th class="ticket_edit"></th>
 		</th>
 	</thead>
@@ -101,15 +104,15 @@
 		if ( strpos( $ticket->provider_class, 'RSVP' ) !== false ) {
 			$rsvp[] = $ticket;
 		} else {
-			$nonRSVP[] = $ticket;
+			$non_rsvp[] = $ticket;
 		}
 	}
 
 	?>
 	<tbody>
 		<?php
-		if ( ! empty( $nonRSVP ) ) {
-			foreach ( $nonRSVP as $ticket ) {
+		if ( ! empty( $non_rsvp ) ) {
+			foreach ( $non_rsvp as $ticket ) {
 				render_ticket_row( $ticket );
 			}
 		}

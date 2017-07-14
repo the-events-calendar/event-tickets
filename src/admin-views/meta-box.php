@@ -30,6 +30,24 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 	<div id="tribe_panel_base" class="ticket_panel panel_base" aria-hidden="false">
 		<div class="tribe_sectionheader ticket_list_container">
 			<div class="ticket_table_intro">
+				<span class="ticket_form_total_capacity">
+					<?php esc_html_e( 'Total Event Capacity:', 'event-tickets' ); ?>
+					<span id="ticket_form_total_capacity_value">
+						<?php
+						switch ( $total_tickets ) {
+							case -1:
+								?><i><?php esc_html_e( 'unlimited', 'event-tickets' ); ?></i><?php
+								break;
+							case 0:
+								?><i><?php esc_html_e( 'No tickets created yet', 'event-tickets' ); ?></i><?php
+								break;
+							default:
+								echo absint( $total_tickets );
+								break;
+						}
+						?>
+					</span>
+				</span>
 				<?php
 				/**
 				 * Allows for the insertion of total capacity element into the main ticket admin panel "header"
@@ -42,7 +60,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 				/**
 				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header"
 				 *
-				 * @param Post ID
+				 * @param int $post_id the id of the post
 				 * @since TBD
 				 */
 				do_action( 'tribe_events_tickets_post_capacity', $post_id );
@@ -54,7 +72,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 			/**
 			 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
 			 *
-			 * @param Post ID
+			 * @param int $post_id the id of the post
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
@@ -64,7 +82,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 			/**
 			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 			 *
-			 * @param Post ID
+			 * @param int $post_id the id of the post
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_post_ticket_list', $post_id ); ?>
@@ -75,7 +93,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 			/**
 			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 			 *
-			 * @param Post ID
+			 * @param int $post_id the id of the post
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
@@ -91,7 +109,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 		/**
 		 * Allows for the insertion of additional elements into the main ticket edit panel
 		 *
-		 * @param Post ID
+		 * @param int $post_id the id of the post
 		 * @since TBD
 		 */
 		do_action( 'tribe_events_tickets_pre_edit', $post_id );
@@ -147,7 +165,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 							<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
 										id="ticket_description"></textarea>
 							<div class="input_block">
-								<label><input type="checkbox" name="tribe_show_description" value="1"> Show description on front end and emailed tickets.</label>
+								<label><input type="checkbox" name="tribe_show_description" value="1"> <?php esc_html_e( 'Show description on front end and emailed tickets.', 'event-ticket' ); ?> </label>
 							</div>
 						</div>
 						<div class="input_block">
@@ -201,8 +219,8 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 						/**
 						 * Allows for the insertion of additional content into the ticket edit form - advanced section
 						 *
-						 * @var Post ID
-						 * @var null Ticket ID
+						 * @param Post ID
+						 * @param null Ticket ID (for backwards compatibility)
 						 */
 						do_action( 'tribe_events_tickets_metabox_advanced', $post_id, null ); ?>
 					</section><!-- #ticket_form_advanced -->
@@ -210,7 +228,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 					/**
 					 * Allows for the insertion of additional elements into the main ticket edit panel below the advances section
 					 *
-					 * @param Post ID
+					 * @param int $post_id the id of the post
 					 * @since TBD
 					 */
 					do_action( 'tribe_events_tickets_post_advanced', $post_id );
@@ -235,7 +253,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 			/**
 			 * Allows for the insertion of additional elements into the ticket settings admin panel below the ticket table
 			 *
-			 * @param Post ID
+			 * @param int $post_id the id of the post
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_settings_content', $post_id );
