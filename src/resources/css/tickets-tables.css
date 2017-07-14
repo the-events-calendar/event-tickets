@@ -57,24 +57,44 @@
 	vertical-align: top;
 	width: 100px;
 }
-/* Edit button style - separate for portability */
-.eventtable.ticket_list .ticket_edit_button {
+/* Edit button styles - separate for portability */
+.eventtable.ticket_list .ticket_edit_button,
+	.eventtable.ticket_list .global_capacity_edit_button {
 	background: none;
 	border: 0;
 	color: #ccc;
 	cursor: pointer;
 }
-.eventtable.ticket_list .ticket_edit_button:hover {
+.eventtable.ticket_list .ticket_edit_button:hover, .eventtable.ticket_list .global_capacity_edit_button:hover {
 	color: #00a0d2;
 }
-.eventtable.ticket_list .ticket_edit_button .ticket_edit_text {
+.eventtable.ticket_list .ticket_edit_button .ticket_edit_text,
+		.eventtable.ticket_list .ticket_edit_button .global_capacity_edit_text,
+		.eventtable.ticket_list .global_capacity_edit_button .ticket_edit_text,
+		.eventtable.ticket_list .global_capacity_edit_button .global_capacity_edit_text {
 	font-size: 0;
 }
-.eventtable.ticket_list .ticket_edit_button .ticket_edit_text::before {
+.eventtable.ticket_list .ticket_edit_button .ticket_edit_text::before, .eventtable.ticket_list .ticket_edit_button .global_capacity_edit_text::before, .eventtable.ticket_list .global_capacity_edit_button .ticket_edit_text::before, .eventtable.ticket_list .global_capacity_edit_button .global_capacity_edit_text::before {
 	content: '\f464';
 	font-family: 'dashicons';
 	font-size: x-large;
 	vertical-align: top;
+}
+.eventtable.ticket_list .global_capacity_edit_button {
+	vertical-align: middle;
+}
+.eventtable.ticket_list .global_capacity_edit_button .global_capacity_edit_text::before {
+	font-size: 18px;
+}
+/* Expanded capacity table */
+#tribe_panel_settings .eventtable.ticket_list tbody tr:nth-last-child(2) {
+	box-shadow: none;
+}
+#tribe_panel_settings .eventtable.ticket_list tbody tr:last-child td {
+	border-top: 1px dashed #ccc;
+}
+.eventtable.ticket_list .tribe_capacity_table_ticket_list {
+	color: #ccc;
 }
 @media (max-width: 782px) {
 	.eventtable.ticket_list th.ticket_price,

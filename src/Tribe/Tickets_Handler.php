@@ -126,7 +126,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get the total capacity event.
+	 * Get the total event capacity.
 	 *
 	 * @param $event_id int (null)
 	 *
@@ -166,6 +166,158 @@ class Tribe__Tickets__Tickets_Handler {
 		 * @since TDB
 		 */
 		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
+	 * Get the total event independent capacity.
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @since TBD
+	 *
+	 * @return int number of tickets ( -1 means unlimited )
+	 */
+	public function get_total_event_independent_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' != $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$stock = $ticket->original_stock();
+
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 *
+		 * @since TDB
+		 */
+		return apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
+	 * Get an array list of independent ticket names for an event.
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @since TBD
+	 *
+	 * @return string list of tickets
+	 */
+	public function get_total_event_independent_tickets( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		$ticket_list = array();
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' != $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$ticket_list[] = $ticket->name;
+			}
+		}
+
+		return $ticket_list;
+	}
+
+	/**
+	 * Get the total event shared capacity.
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @since TBD
+	 *
+	 * @return int number of tickets ( -1 means unlimited )
+	 */
+	public function get_total_event_shared_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' === $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$stock = $ticket->original_stock();
+
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 *
+		 * @since TDB
+		 */
+		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
+	 * Get an array list of shared ticket names for an event.
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @since TBD
+	 *
+	 * @return array list of tickets
+	 */
+	public function get_total_event_shared_tickets( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		$ticket_list = array();
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' == $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$ticket_list[] = $ticket->name;
+			}
+		}
+
+		return $ticket_list;
 	}
 
 	/**
