@@ -121,6 +121,12 @@
 	margin-bottom: 0;
 }
 
+/* Capacity Radio Buttons */
+
+.input_block .tribe_stock_block.tribe-active {
+	padding-top: 1em;
+}
+
 /* Accordion Styles */
 
 .accordion-header {

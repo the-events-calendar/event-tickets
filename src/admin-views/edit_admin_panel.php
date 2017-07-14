@@ -31,7 +31,7 @@
 					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
 				</div>
 				<?php // @TODO: should this get moved to ET+ ?>
-				<fieldset class="input_block screen-reader-text">
+				<fieldset class="input_block">
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php
 					$checked = true;
