@@ -16,7 +16,7 @@
  * @var string $ticket_type_name
  * @var array  $affected_tickets
  *
- * @version 4.3.5
+ * @version 4.5.1
  */
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -101,8 +101,8 @@
 		<p>
 			<?php
 			$message = _n(
-				'We wanted to let you know that a ticket you purchased for %2$s has been transfered to %3$s%4$s. Your ticket remains valid and no further action is needed on your part:',
-				'We wanted to let you know that the following %1$s tickets for %2$s have been transfered to %3$s%4$s. Your existing tickets remain valid and no further action is needed on your part:',
+				'We wanted to let you know that a ticket you purchased for %2$s has been transferred to %3$s%4$s. Your ticket remains valid and no further action is needed on your part:',
+				'We wanted to let you know that the following %1$s tickets for %2$s have been transferred to %3$s%4$s. Your existing tickets remain valid and no further action is needed on your part:',
 				count( $affected_tickets ),
 				'event-tickets'
 			);
