@@ -4,7 +4,7 @@ Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 3.9
 Tested up to: 4.8
-Stable tag: 4.5.1
+Stable tag: 4.5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -232,6 +232,14 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Trisha Salas](https://profiles.wordpress.org/trishasalas)
 
 == Changelog ==
+
+= [4.5.2] 2017-07-13 =
+
+* Fix - Hide others users from attendee managers email options [77050]
+* Tweak - In 'user event confirmations' shortcode, add shortcode name to shortcode_atts function call to give more customization options [66141]
+* Tweak - Added a filter to modify the Primary Info column of the Attendees Table [69538]
+* Tweak - Added a filter to hide the attendee optout option in the tickets form [46087]
+* Tweak - Added new parameters to RSVP email filters [64172]
 
 = [4.5.1] 2017-06-28 =
 
