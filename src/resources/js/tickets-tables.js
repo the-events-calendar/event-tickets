@@ -1,5 +1,5 @@
 ( function( window, $ ) {
-	var $table = $( '.eventtable.ticket_list.eventForm tbody' ),
+	var $table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' ),
 		enable_width = '400px';
 
 	/**
