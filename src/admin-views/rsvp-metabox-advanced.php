@@ -1,7 +1,7 @@
 <div class="input_block <?php $this->tr_class(); ?>">
-	<label for="ticket_rsvp_stock" class="ticket_form_label"><?php esc_html_e( 'Stock:', 'event-tickets' ); ?></label>
+	<label for="ticket_rsvp_stock" class="ticket_form_left"><?php esc_html_e( 'Stock:', 'event-tickets' ); ?></label>
 	<input type='text' id='ticket_rsvp_stock' name='ticket_rsvp_stock' class="ticket_field" size='7' value='<?php echo esc_attr( $stock ); ?>'/>
-	<p class="description"><?php esc_html_e( "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)", 'event-tickets' ); ?></p>
+	<p class="ticket_form_right"><?php esc_html_e( "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)", 'event-tickets' ); ?></p>
 </div>
 
 <?php
