@@ -327,6 +327,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
 			}
 
+			$( document.getElementById( 'ticket_form_main' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
+
 			$tribe_tickets
 				.trigger( 'clear.tribe' )
 				.trigger( 'set-advanced-fields.tribe' )
