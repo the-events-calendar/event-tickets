@@ -46,7 +46,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( '#tribe_ticket_header_remove' ).show();
 			$( '#tribe_tickets_image_preview_filename .filename' ).text( attachment.filename );
 			$( '#tribe_tickets_image_preview_filename' ).show();
-			$( '#tribe_ticket_header_image' ).hide();
 		},
 		// Render html for the image.
 		imgHTML : function( attachment ) {
