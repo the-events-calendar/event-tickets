@@ -795,9 +795,9 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		if ( ! empty($_POST['tribe_tickets_order'] ) ) {
-			$ticket_order = str_ireplace ( 'order_' , '' , $_POST['tribe_tickets_order'] );
-			$ticket_order = explode(",", $ticket_order);
+		if ( ! empty( $_POST['tribe_tickets_order'] ) ) {
+			$ticket_order = str_ireplace ( 'order_', '' , $_POST['tribe_tickets_order'] );
+			$ticket_order = explode( ',', $ticket_order );
 			$ticket_order = array_flip( $ticket_order );
 
 			foreach ( $ticket_order as $id => $order ) {
