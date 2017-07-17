@@ -368,8 +368,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			var form_data = $form.find( '.ticket_field' ).serialize();
 
-			console.log(form_data);
-
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
 				formdata: form_data,
@@ -483,7 +481,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 									$( document.getElementById( 'unlimited' ) ).prop( 'checked', true );
 							}
 						} else {
-							$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.stock );
+							$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.original_stock );
+							$( document.querySelectorAll( '.ticket_stock_total_value' ) ).text( response.data.stock );
 						}
 
 						$( document.getElementById( 'ticket_id' ) ).val( response.data.ID );

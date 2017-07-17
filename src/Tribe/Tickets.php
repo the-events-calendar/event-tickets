@@ -756,6 +756,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$return['advanced_fields'] = $extra;
 
 			$return['stock'] = $ticket->stock;
+			$return['original_stock'] = $ticket->original_stock();
 
 			/**
 			 * Provides an opportunity for final adjustments to the data used to populate

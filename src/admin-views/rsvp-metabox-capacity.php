@@ -1,6 +1,6 @@
 <div class="input_block ticket_advanced_Tribe__Tickets__RSVP tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked>
 	<label for="ticket_rsvp_stock" class="ticket_form_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></label>
-	<input type='text' id='ticket_rsvp_stock' name='ticket_rsvp_stock' class="ticket_field ticket_stock" size='7' value='<?php echo esc_attr( $stock ); ?>'/>
+	<input type='text' id='ticket_rsvp_stock' name='ticket_rsvp_stock' class="ticket_field ticket_stock" size='7' value='<?php echo esc_attr( $stock ); ?>'/><span class="ticket_stock_total">(remaining: <span class="ticket_stock_total_value"><?php echo esc_html( $stock ); ?></span>)</span>
 	<p class="description"><?php esc_html_e( "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)", 'event-tickets' ); ?></p>
 </div>
 

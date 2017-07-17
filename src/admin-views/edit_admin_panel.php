@@ -45,7 +45,18 @@
 															value="<?php echo esc_attr( $class ); ?>"
 															class="ticket_field ticket_provider"
 															tabindex="-1">
-						<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
+						<span>
+							<?php
+							/**
+							 * Filter the name of the module
+							 *
+							 * @since  TBD
+							 *
+							 * @param string $module the module name
+							 */
+							 echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) );
+							 ?>
+						 </span>
 						<?php
 						$checked = false;
 					}
@@ -71,7 +82,7 @@
 						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
 									id="ticket_description"></textarea>
 						<div class="input_block">
-							<label><input type="checkbox" name="tribe_show_description" value="1"> Show description on front end and emailed tickets.</label>
+							<label><input type="checkbox" class="ticket_field" name="tribe_show_description" value="1"> Show description on front end and emailed tickets.</label>
 						</div>
 					</div>
 					<div class="input_block">

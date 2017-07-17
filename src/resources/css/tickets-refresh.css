@@ -172,6 +172,18 @@
 	display: block;
 }
 
+/* Capacity Fields/admin display */
+
+.input_block .ticket_stock_total {
+	color: #666;
+	font-style: italic;
+	margin-left: 1em;
+}
+
+#ticket_form .input_block .ticket_stock_total_value {
+	margin-right: 0;
+}
+
 /* Accordion Styles */
 
 .accordion-header {
