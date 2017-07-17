@@ -169,14 +169,13 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
-		$this->bind_implementations();
 		$this->hooks();
 
 		$this->register_active_plugin();
 
 		$this->has_initialized = true;
 
-		$this->rsvp();
+		$this->bind_implementations();
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
@@ -196,9 +195,8 @@ class Tribe__Tickets__Main {
 	 * @since TBD
 	 */
 	public function bind_implementations() {
-		tribe_singleton( 'tickets.commerce.paypal', 'Tribe__Tickets__Commerce__PayPal__Main', array( 'load', 'hook' ) );
-
-		tribe( 'tickets.commerce.paypal' );
+		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
+		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 	}
 
 	/**
@@ -543,7 +541,7 @@ class Tribe__Tickets__Main {
 	 * rsvp ticket object accessor
 	 */
 	public function rsvp() {
-		return Tribe__Tickets__RSVP::get_instance();
+		return tribe( 'tickets.rsvp' );
 	}
 
 	/**
