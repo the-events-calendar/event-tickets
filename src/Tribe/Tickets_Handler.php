@@ -699,9 +699,10 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Echoes the markup for the tickets list in the tickets metabox
 	 *
+	 *@param int $unused_post_id event ID
 	 * @param array $tickets
 	 */
-	public function ticket_list_markup( $post_id, $tickets = array() ) {
+	public function ticket_list_markup( $unused_post_id, $tickets = array() ) {
 		if ( ! empty( $tickets ) ) {
 			include $this->path . 'src/admin-views/list.php';
 		}
