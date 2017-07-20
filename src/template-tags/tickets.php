@@ -131,7 +131,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 	 * @param null $event
 	 *
 	 * @return int
-	 */ 
+	 */
 	function tribe_events_count_available_tickets( $event = null ) {
 
 		$count = 0;
@@ -141,8 +141,8 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 		}
 
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-			
-			$global_stock_mode = $ticket->global_stock_mode();		
+
+			$global_stock_mode = $ticket->global_stock_mode();	
 
 			if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ) {
 				continue;
@@ -154,7 +154,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 		$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
-		$count += $global_stock; 
+		$count += $global_stock;
 
 		return $count;
 	}
