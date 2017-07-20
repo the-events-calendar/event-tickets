@@ -142,7 +142,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
 
-			$global_stock_mode = $ticket->global_stock_mode();	
+			$global_stock_mode = $ticket->global_stock_mode();
 
 			if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ) {
 				continue;
