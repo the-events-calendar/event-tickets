@@ -1051,35 +1051,35 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function get_ticket_counts( $event_id ) {
 
-		    	$tickets = self::get_all_event_tickets( $event_id );
+			$tickets = self::get_all_event_tickets( $event_id );
 
-		    	// if no tickets or rsvp return empty array
-		    	if ( ! $tickets ) {
+			// if no tickets or rsvp return empty array
+			if ( ! $tickets ) {
 				return array();
-		    	}
+			}
 
-		    	/**
+			/**
 		     	 * This order is important so we that tickets overwrite RSVP on
 		    	 * the Buy Now Button on the front-end
 		    	 */
-		    	$types['rsvp']    = array(
+			$types['rsvp']    = array(
 				'count'     => 0,
 				'stock'     => 0,
 				'unlimited' => 0,
 				'available' => 0,
-		    	);
-		   	$types['tickets'] = array(
+			);
+			$types['tickets'] = array(
 				'count'     => 0, // count of tickets currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
 				'global'    => 0, // global stock ticket
 				'unlimited' => 0, // unlimited stock tickets
 				'available' => 0, // are tickets available for sale right now
-		    	);
+			);
 
-		    	foreach ( $tickets as $ticket ) {
+			foreach ( $tickets as $ticket ) {
 				// If a ticket is not current for sale do not count it
 				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
-			    		continue;
+					continue;
 				}
 
 				// if ticket and not rsvp add to ticket array
