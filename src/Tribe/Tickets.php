@@ -1051,87 +1051,85 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function get_ticket_counts( $event_id ) {
 
-		    $tickets = self::get_all_event_tickets( $event_id );
+		    	$tickets = self::get_all_event_tickets( $event_id );
 
-		    // if no tickets or rsvp return empty array
-		    if ( ! $tickets ) {
-			return array();
-		    }
+		    	// if no tickets or rsvp return empty array
+		    	if ( ! $tickets ) {
+				return array();
+		    	}
 
-		    /**
-		     * This order is important so we that tickets overwrite RSVP on
-		     * the Buy Now Button on the front-end
-		     */
-		    $types['rsvp']    = array(
-			'count'     => 0,
-			'stock'     => 0,
-			'unlimited' => 0,
-			'available' => 0,
-		    );
-		    $types['tickets'] = array(
-			'count'     => 0, // count of tickets currently for sale
-			'stock'     => 0, // current stock of tickets available for sale
-			'global'    => 0, // global stock ticket
-			'unlimited' => 0, // unlimited stock tickets
-			'available' => 0, // are tickets available for sale right now
-		    );
+		    	/**
+		     	 * This order is important so we that tickets overwrite RSVP on
+		    	 * the Buy Now Button on the front-end
+		    	 */
+		    	$types['rsvp']    = array(
+				'count'     => 0,
+				'stock'     => 0,
+				'unlimited' => 0,
+				'available' => 0,
+		    	);
+		   	$types['tickets'] = array(
+				'count'     => 0, // count of tickets currently for sale
+				'stock'     => 0, // current stock of tickets available for sale
+				'global'    => 0, // global stock ticket
+				'unlimited' => 0, // unlimited stock tickets
+				'available' => 0, // are tickets available for sale right now
+		    	);
 
-		    foreach ( $tickets as $ticket ) {
-			// If a ticket is not current for sale do not count it
-			if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
-			    continue;
-			}
+		    	foreach ( $tickets as $ticket ) {
+				// If a ticket is not current for sale do not count it
+				if ( ! tribe_events_ticket_is_on_sale( $ticket ) ) {
+			    		continue;
+				}
 
-			// if ticket and not rsvp add to ticket array
-			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
-			    $types['tickets']['count'] ++;
+				// if ticket and not rsvp add to ticket array
+				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+			    		$types['tickets']['count'] ++;
 
-			    $global_stock_mode = $ticket->global_stock_mode();
+			    		$global_stock_mode = $ticket->global_stock_mode();
 
-			    if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 0 === $types['tickets']['global'] ) {
-				$types['tickets']['global'] ++;
-			    } elseif ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 1 === $types['tickets']['global'] ) {
-				continue;
-			    }
+			    		if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 0 === $types['tickets']['global'] ) {
+						$types['tickets']['global'] ++;
+			    		} elseif ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 1 === $types['tickets']['global'] ) {
+						continue;
+			    		}
 
-			    if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
-				continue;
-			    }
+			    		if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+						continue;
+			    		}
 
-			    $stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode
-				? $ticket->global_stock_cap
-				: $ticket->stock;
+			    		$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->stock;
 
-			    $types['tickets']['stock'] += $stock_level;
+			    		$types['tickets']['stock'] += $stock_level;
 
-			    if ( 0 !== $types['tickets']['stock'] ) {
-				$types['tickets']['available'] ++;
-			    }
+			    		if ( 0 !== $types['tickets']['stock'] ) {
+						$types['tickets']['available'] ++;
+			    		}
 
-			    if ( ! $ticket->manage_stock() ) {
-				$types['tickets']['unlimited'] ++;
-				$types['tickets']['available'] ++;
-			    }
-			} else {
-			    $types['rsvp']['count'] ++;
+			    		if ( ! $ticket->manage_stock() ) {
+						$types['tickets']['unlimited'] ++;
+						$types['tickets']['available'] ++;
+			    		}
+				} else {
+			    		$types['rsvp']['count'] ++;
 
-			    $types['rsvp']['stock'] += $stock_level;
-			    if ( 0 !== $types['rsvp']['stock'] ) {
-				$types['rsvp']['available'] ++;
-			    }
+			    		$types['rsvp']['stock'] += $stock_level;
+			    		if ( 0 !== $types['rsvp']['stock'] ) {
+						$types['rsvp']['available'] ++;
+			    		}
 
-			    if ( ! $ticket->manage_stock() ) {
-				$types['rsvp']['unlimited'] ++;
-				$types['rsvp']['available'] ++;
-			    }
-			}
-		    }
+			    		if ( ! $ticket->manage_stock() ) {
+						$types['rsvp']['unlimited'] ++;
+						$types['rsvp']['available'] ++;
+			    		}
+				}
+		    	}
 
-		    $global_stock = new Tribe__Tickets__Global_Stock( $event_id );
-		    $global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
-		    $types['tickets']['stock'] += $global_stock;
+		    	$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+		    	$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+		    	$types['tickets']['stock'] += $global_stock;
 
-		    return $types;
+		    	return $types;
 		}
 
 		/**
