@@ -1059,9 +1059,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			/**
-		     	 * This order is important so we that tickets overwrite RSVP on
-		    	 * the Buy Now Button on the front-end
-		    	 */
+			 * This order is important so we that tickets overwrite RSVP on
+			 * the Buy Now Button on the front-end
+			 */
 			$types['rsvp']    = array(
 				'count'     => 0,
 				'stock'     => 0,
