@@ -1,0 +1,159 @@
+.eventtable.ticket_list.eventForm {
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	margin: 20px 0;
+
+	thead {
+		background-color: #ccc;
+	}
+
+	th {
+		border-bottom: 0;
+
+		@media (max-width: 782px) {
+			&.ticket_price,
+			&.ticket_capacity,
+			&.ticket_available,
+			&.ticket_edit {
+				display: none;
+			}
+		}
+	}
+
+	tbody {
+		border-left: 10px solid transparent;
+		border-right: 10px solid transparent;
+
+		td {
+			@media (min-width: 782px) {
+				padding: 18px 8px;
+			}
+		}
+	}
+
+	tbody tr:not(:last-child) {
+		box-shadow: 0 9px 3px -8px rgba(204, 204, 204, 1);
+	}
+
+	tr.is-expanded {
+		/* overrides default wp percentage padding */
+		td.column-primary ~ td:not(.ticket_name) {
+			@media (max-width: 782px) {
+				padding-left: 8px;
+			}
+		}
+	}
+
+	@media (max-width: 782px) {
+		tr:not(.is-expanded) {
+			td.column-primary {
+				padding-bottom: .5em;
+			}
+		}
+	}
+
+	.ui-sortable-handle * {
+		cursor: move;
+	}
+
+	.ui-sortable-handle a,
+	.ui-sortable-handle button {
+		cursor: pointer;
+
+		* {
+			cursor: pointer;
+		}
+	}
+
+	td .ticket_cell_label {
+		@media (min-width: 782px) {
+			display: none;
+		}
+	}
+
+	/* Specific cells - remember that these classes exist in the header too! */
+	.ticket_name {
+		white-space: nowrap;
+
+		p {
+			&::before {
+				font-family: 'dashicons';
+				font-size: 1.5em;
+				color: #ccc;
+				content: '\f180';
+				margin-right: .5em;
+				vertical-align: bottom;
+
+				@media (max-width: 782px) {
+					display: none;
+				}
+			}
+
+			@media (max-width: 782px) {
+				display: inline;
+			}
+		}
+
+		&.Tribe__Tickets__RSVP {
+			p {
+				&::before {
+					color: #000;
+					content: '\f110';
+				}
+			}
+		}
+
+		&.column-primary {
+			@media (max-width: 782px) {
+				padding-top: .75em;
+			}
+		}
+	}
+
+	.ticket_available,
+	.ticket_capacity,
+	.ticket_edit {
+		@media (min-width: 782px) {
+			text-align: center;
+		}
+	}
+
+	.ticket_price {
+		@media (min-width: 782px) {
+			text-align: right;
+		}
+	}
+
+	.ticket_edit {
+		vertical-align: top;
+		width: 100px;
+
+		@media (max-width: 782px) {
+			float: right;
+			margin-top: -2.5em;
+		}
+	}
+
+	/* Edit button style - separate for portability */
+	.ticket_edit_button {
+		background: none;
+		border: 0;
+		color: #ccc;
+		cursor: pointer;
+
+		&:hover {
+			color: #00a0d2;
+		}
+
+		.ticket_edit_text {
+			font-size: 0;
+
+			&::before {
+				content: '\f464';
+				font-family: 'dashicons';
+				font-size: x-large;
+				vertical-align: top;
+			}
+		}
+	}
+}

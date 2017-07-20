@@ -1,0 +1,171 @@
+#event_tickets {
+	overflow: hidden;
+	position: relative;
+}
+
+/* Panels */
+.ticket_panel {
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	box-sizing: border-box;
+	padding: 16px;
+	position: relative;
+	transition: .5s cubic-bezier(.55, .085, .68, .53);
+	width: 100%;
+	will-change: transform;
+
+	&[aria-hidden='true'] {
+		position: absolute;
+		transition: .5s cubic-bezier(.55, .085, .68, .53);
+		visibility: hidden;
+	}
+
+	&.panel_base {
+		border: 0;
+
+		&[aria-hidden='true'] {
+			right: 100%;
+			transform: translateX(-100%);
+		}
+	}
+
+	&.panel_edit,
+	&.panel_settings {
+		&[aria-hidden='true'] {
+			margin-top: 6px;
+			transform: translateX(100%);
+		}
+	}
+}
+
+.ticket_list_container {
+	margin-bottom: 20px;
+}
+
+/* Base Panel Toggle Buttons */
+#settings_form_toggle {
+	float: right;
+}
+
+.ticket_form_toggle_text,
+.settings_form_toggle_text {
+	&::before {
+		font-family: 'dashicons';
+	}
+}
+
+.ticket_form_toggle_text {
+	&::before {
+		content: '\f132';
+		vertical-align: middle;
+	}
+}
+
+.settings_form_toggle_text {
+	&::before {
+		content: '\f111';
+		vertical-align: bottom;
+	}
+}
+
+/* Styles for INitial View */
+.ticket_table_intro {
+	.ticket_form_total_capacity {
+		display: block;
+		margin-bottom: .5em;
+
+		@media (min-width: 782px) {
+			float: left;
+		}
+	}
+
+	@media (min-width: 782px) {
+		text-align: right;
+	}
+
+	.ticket_form_view_attendees {
+		margin-left: 1em;
+
+		@media (max-width: 400px) {
+			float: right;
+		}
+	}
+}
+
+/* Form styles */
+
+.input_block {
+	margin-bottom: 1em;
+	position: relative;
+
+	.ticket_form_label {
+		box-sizing: border-box;
+		float: left;
+		padding-right: 1em;
+		width: 132px;
+	}
+
+	.input_block,
+	p.description {
+		display: block;
+		margin-left: 132px;
+
+		&:last-child {
+			margin-bottom: 0;
+		}
+	}
+}
+
+/* Accordion Styles */
+.accordion-header {
+	background: none;
+	border: 0;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 500;
+	padding: 10px 10px 10px 20px;
+	position: relative;
+	text-align: left;
+	width: 100%;
+
+	&::before {
+		background-color: #000;
+		border-radius: 100%;
+		box-sizing: border-box;
+		color: #fff;
+		content: '\f132';
+		font-family: 'dashicons';
+		font-size: 16px;
+		font-weight: 400;
+		height: 16px;
+		left: 0;
+		padding-top: 1px;
+		position: absolute;
+		top: 10px;
+		width: 16px;
+	}
+
+	&.is-active {
+		&::before {
+			content: '\f460';
+		}
+	}
+}
+
+.accordion-content {
+	display: none;
+
+	&.is-active {
+		display: block;
+	}
+}
+
+/* Edit form styles */
+.ticket_bottom {
+	margin-top: 1em;
+}
+
+/* Testing */
+.tribe_preview {
+	cursor: pointer;
+}

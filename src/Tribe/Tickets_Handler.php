@@ -68,6 +68,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 
+		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
+
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
 
@@ -121,6 +123,49 @@ class Tribe__Tickets__Tickets_Handler {
 		$total_checked_in       = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
 		echo "<div class='totals-header'><h3>$total_checked_in_label</h3> $total_checked_in</div>";
+	}
+
+	/**
+	 * Get the total capacity event.
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @since TBD
+	 *
+	 * @return int number of tickets ( -1 means unlimited )
+	 */
+	public function get_total_event_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				$stock = $ticket->original_stock();
+
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 *
+		 * @since TDB
+		 */
+		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id, $tickets );
 	}
 
 	/**
@@ -772,4 +817,29 @@ class Tribe__Tickets__Tickets_Handler {
 		return $url;
 	}
 
+	/**
+	 * Saves the chosen image via ajax
+	 */
+	public function ajax_handler_save_settings() {
+		$params = array();
+		$id = $_POST['post_ID'];
+		parse_str( $_POST['formdata'], $params );
+
+		/**
+		 * Allow other plugins to hook into this to add settings
+		 * @since TBD
+		 * @param array $params the array of parameters to filter
+		 */
+		do_action( 'tribe_events_save_tickets_settings', $params );
+
+		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
+			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
+			wp_send_json_success( $params );
+		} else {
+			delete_post_meta( $id, '_tribe_ticket_header' );
+			wp_send_json_success( $params );
+		}
+
+		wp_send_json_error( $params );
+	}
 }

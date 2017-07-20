@@ -9,7 +9,7 @@
  */
 
 /* = WooTickets Admin Styles
-=============================================*/
+============================================= */
 
 #ticket_form {
 	display: none;
@@ -48,8 +48,7 @@
 	visibility: hidden;
 }
 
-p.ticket_name {
-	font-size: 13px;
+.ticket_name p:first-child {
 	font-weight: bold;
 }
 
