@@ -1088,9 +1088,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			    $global_stock_mode = $ticket->global_stock_mode();
 
-			    if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode && 0 === $types['tickets']['global'] ) {
+			    if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 0 === $types['tickets']['global'] ) {
 				$types['tickets']['global'] ++;
-			    } elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode && 1 === $types['tickets']['global'] ) {
+			    } elseif ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 1 === $types['tickets']['global'] ) {
 				continue;
 			    }
 
