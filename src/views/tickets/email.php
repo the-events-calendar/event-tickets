@@ -276,7 +276,7 @@
 
 					$venue_map_url = '';
 
-					if ( true === tribe_show_google_map_link( $event->ID ) ) {
+					if ( true === tribe_show_google_map_link( $event->ID ) && $venue_id ) {
 						$venue_map_url = esc_url( tribe_get_map_link( $venue_id ) );
 					}
 

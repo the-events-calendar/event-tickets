@@ -237,6 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Fix - Improved get_ticket_counts() to account for tickets with global stock enabled  [82684]
 * Fix - Improved tribe_events_count_available_tickets() to account for tickets with global stock enabled (thanks to Florian for reporting this) [81967]
+* Fix — Fixed some PHP notices that would show up when buying EDD tickets. [83277]
 
 = [4.5.2] 2017-07-13 =
 
