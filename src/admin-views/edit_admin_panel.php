@@ -72,8 +72,7 @@
 					<h4 class="accordion-label"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 					<div class="input_block">
 						<label class="ticket_form_label" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
-						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
-									id="ticket_description"></textarea>
+						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field" id="ticket_description"></textarea>
 						<div class="input_block">
 							<label><input type="checkbox" name="tribe_show_description" value="1"> Show description on front end and emailed tickets.</label>
 						</div>
