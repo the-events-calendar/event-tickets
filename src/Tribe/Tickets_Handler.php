@@ -454,9 +454,9 @@ class Tribe__Tickets__Tickets_Handler {
 		 * Used to modify what columns should be shown on the CSV export
 		 * The column name should be the Array Index and the Header is the array Value
 		 *
-		 * @var array Columns, associative array
-		 * @var array Items to be exported
-		 * @var int   Event ID
+		 * @param array Columns, associative array
+		 * @param array Items to be exported
+		 * @param int   Event ID
 		 */
 		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
 
@@ -699,7 +699,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Echoes the markup for the tickets list in the tickets metabox
 	 *
-	 *@param int $unused_post_id event ID
+	 * @param int $unused_post_id event ID
 	 * @param array $tickets
 	 */
 	public function ticket_list_markup( $unused_post_id, $tickets = array() ) {
@@ -762,21 +762,17 @@ class Tribe__Tickets__Tickets_Handler {
 
 	/**
 	 * Save the current global stock properties for this event.
-	 *
-	 * @since TBD
 	 * Can come from ticket creation or settings edit. No longer tied to event save.
 	 *
 	 * @param int $post_id
+	 *
+	 * @since TBD
 	 */
 	public function save_global_stock( $post_id ) {
 		// Bail on autosaves/bulk updates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-
-		//if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
-		//	return;
-		//}
 
 		$enable = ! empty( $_POST[ 'ticket_global_stock' ] );
 		$stock  = (int) @$_POST[ 'ticket_global_stock' ];
@@ -786,6 +782,14 @@ class Tribe__Tickets__Tickets_Handler {
 		$post_global_stock->set_stock_level( $stock );
 	}
 
+	/**
+	 * Save the the drag-n-drop ticket order
+	 *
+	 * @param int $post_id
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function save_tickets_order( $post_id ) {
 		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
 			return;
@@ -811,7 +815,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		return;
 	}
-
+	/**
+	 * Adds the hidden input to store the drag-n-drop ticket order
+	 */
 	public function tickets_order_input( $post_id ) {
 		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
 		?>

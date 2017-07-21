@@ -23,7 +23,7 @@
 			/**
 			 * Allows for the insertion of additional elements into the main ticket admin panel "header"
 			 *
-			 * @param Post ID
+			 * @param int Post ID
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_post_capacity', $post_id );
@@ -35,7 +35,7 @@
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
 		 *
-		 * @param Post ID
+		 * @param int Post ID
 		 * @since TBD
 		 */
 		do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
@@ -45,7 +45,7 @@
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @param Post ID
+		 * @param int Post ID
 		 * @since TBD
 		 */
 		do_action( 'tribe_events_tickets_post_ticket_list', $post_id ); ?>
@@ -56,12 +56,12 @@
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @param Post ID
+		 * @param int Post ID
 		 * @since TBD
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
 		?>
-		<button id="rsvp_form_toggle" class="button-secondary ticket_form_toggle"><span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new RSVP' ); ?>"><?php esc_html_e( 'New RSVP', 'event-tickets' ); ?></span></button>
+		<button id="rsvp_form_toggle" class="button-secondary ticket_form_toggle"><span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new RSVP', 'event-tickets' ); ?>"><?php esc_html_e( 'New RSVP', 'event-tickets' ); ?></span></button>
 		<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text"><?php esc_html_e( 'Settings', 'event-tickets' ); ?></span></button>
 	</div>
 </div><!-- #panel_base -->

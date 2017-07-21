@@ -37,12 +37,19 @@
 					$checked = true;
 					foreach ( $modules as $class => $module ) {
 						?>
-						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider"
-															id="<?php echo esc_attr( $class . '_radio' ); ?>"
-															value="<?php echo esc_attr( $class ); ?>"
-															class="ticket_field ticket_provider"
-															tabindex="-1">
-						<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
+						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider" tabindex="-1">
+						<span>
+							<?php
+							/**
+							 * Allows for the editing fo the module name before output
+							 *
+							 * @param string $module the module name
+							 *
+							 * @since TBD
+							 */
+							echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) );
+							?>
+						</span>
 						<?php
 						$checked = false;
 					}
@@ -52,8 +59,8 @@
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form - main section
 				 *
-				 * @var Post ID
-				 * @var null Ticket ID
+				 * @param Post ID
+				 * @param null Ticket ID
 				 */
 				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null ); ?>
 			</section>
@@ -122,8 +129,8 @@
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form - advanced section
 					 *
-					 * @var Post ID
-					 * @var null Ticket ID
+					 * @param Post ID
+					 * @param null Ticket ID
 					 */
 					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null );
 					?>
@@ -132,8 +139,8 @@
 				/**
 				 * Allows for the insertion of additional content section into the ticket edit form accordion
 				 *
-				 * @var Post ID
-				 * @var null Ticket ID
+				 * @param Post ID
+				 * @param null Ticket ID
 				 */
 				do_action( 'tribe_events_tickets_metabox_edit_accordion_content', $post_id, null );
 				?>

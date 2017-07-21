@@ -993,7 +993,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function global_stock_mode_selector( $current_option = '' ) {
 			$output = "<fieldset id='ticket_global_stock' class='input_block' >";
 			$output .= "<legend class='ticket_form_label'>Capacity:</legend>";
-			// name='ticket_global_stock'
 
 			// Default to using own stock unless the user explicitly specifies otherwise (important
 			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
@@ -1002,10 +1001,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
-				$identifier = esc_html( $identifier );
-				$name = esc_html( $name );
-				$selected = selected( $identifier === $current_option, true, false );
-				$output .= "<label for='$identifier' class='ticket_field'><input type='radio' id='$identifier' class='' name='ticket_global_stock' value='$identifier' $selected> $name </label>\n";
+				$output .= "<label for='" . esc_attr( $identifier ) . "' class='ticket_field'><input type='radio' id='" . esc_attr( $identifier ) . "' class='' name='ticket_global_stock' value='" . esc_attr( $identifier ) . "' " . selected( $identifier === $current_option ) . "> " . esc_html( $name ) . " </label>\n";
 			}
 
 			return $output;
