@@ -424,6 +424,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			self::$active_modules[ $this->className ] = $this->pluginName;
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
+			/**
+			 * Priority set to 11 to force a specific display order
+			 * @since TBD
+			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
 
 			// Admin AJAX actions for each provider

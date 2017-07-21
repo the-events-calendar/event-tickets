@@ -588,6 +588,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$( document.getElementById( 'ticket_purchase_limit' ) ).val( response.data.purchase_limit );
 						}
 
+						if ( response.data.sku ) {
+							$( document.querySelectorAll( '.sku_input' ) ).val( response.data.sku );
+						}
+
 						$tribe_tickets.find( '.tribe-bumpdown-trigger' ).bumpdown();
 
 						$( 'a#ticket_form_toggle' ).hide();
