@@ -3,21 +3,10 @@
 	/**
 	 * Allows for the insertion of additional elements into the main ticket edit panel
 	 *
-	 * @param Post ID
+	 * @param int Post ID
 	 * @since TBD
 	 */
 	do_action( 'tribe_events_tickets_pre_edit', $post_id );
-	?>
-	<?php if ( get_post_meta( $post_id, '_EventOrigin', true ) === 'community-events' ) {
-		?>
-		<?php // @TODO: this should get moved to Community Events? Use tribe_events_tickets_pre_edit ?>
-		<div>
-			<div class="tribe_sectionheader updated">
-				<p class="error-message"><?php esc_html_e( 'This event was created using Community Events. Are you sure you want to sell tickets for it?', 'event-tickets' ); ?></p>
-			</div>
-		</div>
-	<?php
-	}
 	?>
 
 	<div id="ticket_form" class="ticket_form tribe_sectionheader">
@@ -30,7 +19,6 @@
 					<label class="ticket_form_label" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
 					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
 				</div>
-				<?php // @TODO: should this get moved to ET+ ?>
 				<fieldset class="input_block">
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php
@@ -41,7 +29,7 @@
 						<span>
 							<?php
 							/**
-							 * Allows for the editing fo the module name before output
+							 * Allows for the editing of the module name before output
 							 *
 							 * @param string $module the module name
 							 *
@@ -59,7 +47,7 @@
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form - main section
 				 *
-				 * @param Post ID
+				 * @param int Post ID
 				 * @param null Ticket ID
 				 */
 				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null ); ?>
@@ -128,7 +116,7 @@
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form - advanced section
 					 *
-					 * @param Post ID
+					 * @param int Post ID
 					 * @param null Ticket ID
 					 */
 					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null );
@@ -138,7 +126,7 @@
 				/**
 				 * Allows for the insertion of additional content section into the ticket edit form accordion
 				 *
-				 * @param Post ID
+				 * @param int Post ID
 				 * @param null Ticket ID
 				 */
 				do_action( 'tribe_events_tickets_metabox_edit_accordion_content', $post_id, null );
@@ -149,7 +137,7 @@
 			/**
 			 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion section
 			 *
-			 * @param Post ID
+			 * @param int Post ID
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_post_accordion', $post_id );
