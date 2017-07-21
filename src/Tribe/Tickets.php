@@ -1001,7 +1001,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
-				$output .= "<label for='" . esc_attr( $identifier ) . "' class='ticket_field'><input type='radio' id='" . esc_attr( $identifier ) . "' class='' name='ticket_global_stock' value='" . esc_attr( $identifier ) . "' " . selected( $identifier === $current_option ) . "> " . esc_html( $name ) . " </label>\n";
+				$output .= '<label for="' . esc_attr( $identifier ) . '" class="ticket_field"><input type="radio" id="' . esc_attr( $identifier ) . '" class=" name="ticket_global_stock" value="' . esc_attr( $identifier ) . '" ' . selected( $identifier === $current_option ) . '> ' . esc_html( $name ) . " </label>\n";
 			}
 
 			return $output;
