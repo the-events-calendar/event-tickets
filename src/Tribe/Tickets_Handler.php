@@ -24,9 +24,10 @@ class Tribe__Tickets__Tickets_Handler {
 
 	/**
 	 * Post Meta key for the ticket order
-	 * @var string
 	 *
 	 * @since TBD
+	 *
+	 * @var string
 	 */
 	protected $tickets_order_field = '_tribe_tickets_order';
 
