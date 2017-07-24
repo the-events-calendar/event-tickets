@@ -122,13 +122,14 @@
 					 * @deprecated TBD
 					 */
 					do_action( 'tribe_events_tickets_metabox_advanced', $post_id, null );
+
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form - advanced section
 					 *
+					 * @since TBD
+					 *
 					 * @param int Post ID
 					 * @param null Ticket ID
-					 *
-					 * @since TBD
 					 */
 					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null );
 					?>
