@@ -37,16 +37,18 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 				/**
 				 * Allows for the insertion of total capacity element into the main ticket admin panel "header"
 				 *
-				 * @param Post ID
 				 * @since TBD
+				 *
+				 * @param Post ID
 				 */
 				do_action( 'tribe_events_tickets_capacity', $post_id );
 
 				/**
 				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header"
 				 *
-				 * @param int $post_id the id of the post
 				 * @since TBD
+				 *
+				 * @param int $post_id the id of the post
 				 */
 				do_action( 'tribe_events_tickets_post_capacity', $post_id );
 				?>
