@@ -491,15 +491,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
-			$return = $this->ticket_add( $post_id, $data );
+			$ticket_id = $this->ticket_add( $post_id, $data );
 
 			// Successful?
-			if ( $return ) {
-				// Let's create a tickets list markup to return
-				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
-
-				$return = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) ) . $return;
+			if ( $ticket_id ) {
 
 				/**
 				 * Fire action when a ticket has been added
@@ -509,7 +504,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
 
-			$return = array( 'html' => $return );
+			parse_str ( $_POST['formdata'] , $post_data );
+
+			$ticket = $this->get_ticket( $post_id, $ticket_id );
+			$post_data['ticket_stock'] = $ticket->stock;
+			$post_data['ticket_capacity'] = $ticket->original_stock();
+
+			$return = array( 'html' => $return, 'data' => json_encode( $post_data, JSON_FORCE_OBJECT ) );
 
 			/**
 			 * Filters the return data for ticket add

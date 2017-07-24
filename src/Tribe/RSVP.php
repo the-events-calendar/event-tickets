@@ -925,9 +925,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		if ( trim( $raw_data['ticket_rsvp_stock'] ) !== '' ) {
 			$stock = (int) $raw_data['ticket_rsvp_stock'];
-			$stocker = update_post_meta( $ticket->ID, '_stock', $stock );
 			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
-			$stocker2 = update_post_meta( $ticket->ID, '_stock', $stock );
+			update_post_meta( $ticket->ID, '_stock', $stock );
 		} else {
 			delete_post_meta( $ticket->ID, '_stock_status' );
 			update_post_meta( $ticket->ID, '_manage_stock', 'no' );

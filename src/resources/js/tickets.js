@@ -363,7 +363,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $form = $( document.getElementById( 'ticket_form_table' ) );
 			var type  = $form.find( '.ticket_provider:checked' ).val();
 			//var $rows = $form.find( 'input' );
-
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
 			var form_data = $form.find( '.ticket_field' ).serialize();
@@ -380,9 +379,24 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				params,
 				function( response ) {
 					$tribe_tickets.trigger( 'saved-ticket.tribe', response );
+
+					if ( response.success ) {
+						var responseData = JSON.parse( response.data.data );
+
+						// Get the original (pre-save) capacity 'field' in the ticket table and set it to our new capacity
+						var original_capacity_base = $( document.getElementById( 'original_capacity__' + responseData.ticket_id ) );
+						original_capacity_base.text( responseData.ticket_capacity );
+						// Get the original (pre-save) available capacity 'field' in the ticket table and set it to our new available capacity
+						var available_capacity_base = $( document.getElementById( 'available_capacity__' + responseData.ticket_id ) );
+						available_capacity_base.text( responseData.ticket_stock );
+						// Change the available capacity in the editor
+						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
+					}
 				},
 				'json'
 			).complete( function() {
+
+
 				$tribe_tickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
 			} );
 
@@ -449,8 +463,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							return;
 						}
 
-						console.log(response.data);
-
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
 						var onSale       = false;
@@ -491,6 +503,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( document.getElementById( 'tribe-tickets-global-stock' ) ).val( response.data.global_stock );
 						$( document.getElementById( 'ticket_woo_global_stock_cap' ) ).val( response.data.global_stock_cap );
+						$( document.getElementById( 'ticket_edd_global_stock_cap' ) ).val( response.data.global_stock_cap );
 
 						var start_date = response.data.start_date.substring( 0, 10 );
 						var end_date = response.data.end_date.substring( 0, 10 );
@@ -529,7 +542,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						}
 
 						if ( response.data.end_date ) {
-
 							var end_hour     = parseInt( response.data.end_date.substring( 11, 13 ) );
 							var end_meridian = 'am';
 

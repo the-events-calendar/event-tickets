@@ -1,4 +1,4 @@
-<table class="eventtable ticket_list eventForm wp-list-table widefat fixed">
+<table id="ticket_list" class="eventtable ticket_list eventForm wp-list-table widefat fixed">
 	<?php
 	global $post;
 	$provider = null;
@@ -48,23 +48,27 @@
 
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
-				<?php
-				// escaping handled in function
-				echo $ticket->display_original_stock();
-				?>
+				<span id="original_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
+					<?php
+					// escaping handled in function - could be string|int
+					echo $ticket->display_original_stock();
+					?>
+				</span>
 			</td>
 
 			<td class="ticket_available">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
-				<?php
-				if (  'unlimited' === $ticket->global_stock_mode()  ) {
-					esc_html_e( 'unlimited', 'event-tickets' );
-				} elseif ( 'own' === $ticket->global_stock_mode() ) {
-					echo absint( $ticket->remaining() );
-				} else {
-					echo '(' . absint( $ticket->remaining() ) . ')';
-				}
-				?>
+				<span id="available_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
+					<?php
+					if (  'unlimited' === $ticket->global_stock_mode()  ) {
+						esc_html_e( 'unlimited', 'event-tickets' );
+					} elseif ( 'own' === $ticket->global_stock_mode() ) {
+						echo absint( $ticket->remaining() );
+					} else {
+						echo '(' . absint( $ticket->remaining() ) . ')';
+					}
+					?>
+				</span>
 			</td>
 
 			<td class="ticket_edit">
