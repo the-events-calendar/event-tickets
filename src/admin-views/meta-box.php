@@ -15,6 +15,7 @@ $header_id = ! empty( $header_id ) ? $header_id : '';
 $header_img = '';
 if ( ! empty( $header_id ) ) {
 	$header_img = wp_get_attachment_image( $header_id, 'full' );
+	$header_filename = basename ( get_attached_file( $header_id ) );
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
@@ -125,26 +126,9 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 				<h4 class="ticket_form_title_edit"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
 				<section id="ticket_form_main" class="main">
 					<div class="input_block">
-						<label class="ticket_form_label" for="ticket_name"><?php esc_html_e( 'Ticket Name:', 'event-tickets' ); ?></label>
+						<label class="ticket_form_left" for="ticket_name"><?php esc_html_e( 'Ticket Name:', 'event-tickets' ); ?></label>
 						<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
 					</div>
-					<?php // @TODO: this should get moved to ET+ ?>
-					<fieldset class="input_block">
-						<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
-						<?php
-						$checked = true;
-						foreach ( $modules as $class => $module ) {
-							?>
-							<input <?php checked( $checked ); ?> type="radio" name="ticket_provider"
-																id="<?php echo esc_attr( $class . '_radio' ); ?>"
-																value="<?php echo esc_attr( $class ); ?>"
-																class="ticket_field ticket_provider">
-							<span><?php echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) ); ?></span>
-							<?php
-							$checked = false;
-						}
-						?>
-					</fieldset>
 				</section>
 				<div class="accordion">
 					<button class="accordion-header" type="button">
@@ -153,7 +137,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 					<section id="ticket_form_advanced" class="advanced accordion-content">
 						<h4 class="accordion-label"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 						<div class="input_block">
-							<label class="ticket_form_label" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
+							<label class="ticket_form_left" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
 							<textarea rows="5" cols="40" name="ticket_description" class="ticket_field"
 										id="ticket_description"></textarea>
 							<div class="input_block">
@@ -161,7 +145,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 							</div>
 						</div>
 						<div class="input_block">
-							<label class="ticket_form_label" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
+							<label class="ticket_form_left" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
 							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date" value="" >
 							<span class="ticket_start_time ticket_time">
 								<?php echo tribe_get_datetime_separator(); ?>
@@ -179,7 +163,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 							</span>
 						</div>
 						<div class="input_block">
-							<label class="ticket_form_label" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
+							<label class="ticket_form_left" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
 							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date" value="">
 
 							<span class="ticket_end_time ticket_time">
@@ -197,7 +181,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 								<?php endif; ?>
 							</span>
 
-							<p class="description">
+							<p class="ticket_form_right">
 								<?php esc_html_e( 'When will ticket sales occur?', 'event-tickets' ); ?>
 								<?php
 								// Why break in and out of PHP? because I want the space between the phrases without including them in the translations
@@ -238,7 +222,7 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 
 	<?php // the settings panel ?>
 	<div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
-		<h4><?php esc_html_e( 'Ticket Settings', 'event-tickets' ); ?></h4>
+		<h4 class="ticket_title"><?php esc_html_e( 'Ticket Settings', 'event-tickets' ); ?></h4>
 
 		<section class="settings_main">
 			<?php
@@ -251,22 +235,29 @@ $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_repor
 			do_action( 'tribe_events_tickets_settings_content', $post_id );
 			?>
 		</section>
+		<?php // the ticket image section ?>
 		<section id="tribe-tickets-image">
 			<div class="tribe-tickets-image-upload">
 				<div class="input_block">
-					<span class="ticket_form_label"><?php esc_html_e( 'Ticket header image:', 'event-tickets' ); ?></span>
-					<p class="description"><?php esc_html_e( 'Select an image from your media library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'event-tickets' ); ?></p>
-				</div>
-				<input type="button" class="button" name="tribe_ticket_header_image" id="tribe_ticket_header_image" value="<?php esc_html_e( 'Select an Image', 'event-tickets' ); ?>" />
-			</div>
-			<div class="tribe-tickets-image-preview">
-					<a class="tribe_preview" id="tribe_ticket_header_preview">
-						<?php echo $header_img; ?>
-					</a>
-					<p class="description"><a href="#" id="tribe_ticket_header_remove"><?php esc_html_e( 'Remove', 'event-tickets' ); ?></a></p>
+					<span class="ticket_form_left"><?php esc_html_e( 'Ticket header image:', 'event-tickets' ); ?></span>
+					<p class="ticket_form_right"><?php esc_html_e( 'Select an image from your media library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'event-tickets' ); ?></p>
 
-					<input type="hidden" id="tribe_ticket_header_image_id" class="settings_field" name="tribe_ticket_header_image_id" value="<?php echo esc_attr( $header_id ); ?>" />
+					<div class="ticket_form_right">
+						<input type="button" class="button" name="tribe_ticket_header_image" id="tribe_ticket_header_image" value="<?php esc_html_e( 'Select an Image', 'event-tickets' ); ?>" />
+						<span id="tribe_tickets_image_preview_filename" <?php if ( empty( $header_filename  ) ) { echo 'style="display: none"'; } ?>><span class="dashicons dashicons-format-image"></span><span class="filename"><?php echo esc_html( $header_filename ); ?></span></span>
+					</div>
+
+					<div class="ticket_form_right tribe-tickets-image-preview">
+							<a class="tribe_preview" id="tribe_ticket_header_preview">
+								<?php echo $header_img; ?>
+							</a>
+							<a href="#" id="tribe_ticket_header_remove"><?php esc_html_e( 'Remove', 'event-tickets' ); ?></a>
+
+							<input type="hidden" id="tribe_ticket_header_image_id" class="settings_field" name="tribe_ticket_header_image_id" value="<?php echo esc_attr( $header_id ); ?>" />
+					</div>
+				</div>
 			</div>
+
 		</section>
 
 		<input type="button" id="tribe_settings_form_cancel" name="tribe_settings_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
