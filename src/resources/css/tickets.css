@@ -48,11 +48,11 @@
 	font-weight: bold;
 }
 
-.ticket_form p.description {
+.ticket_form p.ticket_form_right {
 	display: inline;
 }
 
-.ticket_form p.description.detailed-description {
+.ticket_form p.ticket_form_right.detailed-description {
 	display: block;
 }
 
