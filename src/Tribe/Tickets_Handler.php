@@ -128,9 +128,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the total event capacity.
 	 *
-	 * @param $event_id int (null)
-	 *
 	 * @since TBD
+	 *
+	 * @param $event_id int (null)
 	 *
 	 * @return int number of tickets ( -1 means unlimited )
 	 */
@@ -159,11 +159,11 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allow templates to filter the returned value
 		 *
+		 * @since TDB
+		 *
 		 * @param (int) $capacity Total capacity value
 		 * @param (int) $post Post ID tickets are attached to
 		 * @param (array) $tickets array of all tickets
-		 *
-		 * @since TDB
 		 */
 		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id, $tickets );
 	}
@@ -171,9 +171,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the total event independent capacity.
 	 *
-	 * @param $event_id int (null)
-	 *
 	 * @since TBD
+	 *
+	 * @param $event_id int (null)
 	 *
 	 * @return int number of tickets ( -1 means unlimited )
 	 */
@@ -186,7 +186,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' != $ticket->global_stock_mode() ) {
+				if ( 'own' !== $ticket->global_stock_mode() ) {
 					continue;
 				}
 
@@ -206,11 +206,11 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allow templates to filter the returned value
 		 *
+		 * @since TDB
+		 *
 		 * @param (int) $capacity Total capacity value
 		 * @param (int) $post Post ID tickets are attached to
 		 * @param (array) $tickets array of all tickets
-		 *
-		 * @since TDB
 		 */
 		return apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
 	}
@@ -218,9 +218,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get an array list of independent ticket names for an event.
 	 *
-	 * @param $event_id int (null)
-	 *
 	 * @since TBD
+	 *
+	 * @param $event_id int (null)
 	 *
 	 * @return string list of tickets
 	 */
@@ -247,9 +247,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the total event shared capacity.
 	 *
-	 * @param $event_id int (null)
-	 *
 	 * @since TBD
+	 *
+	 * @param $event_id int (null)
 	 *
 	 * @return int number of tickets ( -1 means unlimited )
 	 */
@@ -282,11 +282,11 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allow templates to filter the returned value
 		 *
+		 * @since TDB
+		 *
 		 * @param (int) $capacity Total capacity value
 		 * @param (int) $post Post ID tickets are attached to
 		 * @param (array) $tickets array of all tickets
-		 *
-		 * @since TDB
 		 */
 		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id, $tickets );
 	}
@@ -294,9 +294,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get an array list of shared ticket names for an event.
 	 *
-	 * @param $event_id int (null)
-	 *
 	 * @since TBD
+	 *
+	 * @param $event_id int (null)
 	 *
 	 * @return array list of tickets
 	 */
@@ -979,7 +979,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		/**
 		 * Allow other plugins to hook into this to add settings
+		 *
 		 * @since TBD
+		 *
 		 * @param array $params the array of parameters to filter
 		 */
 		do_action( 'tribe_events_save_tickets_settings', $params );
