@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.5.3] TBD =
+= [4.5.3] 2017-07-26 =
 
 * Fix - Improved get_ticket_counts() to account for tickets with global stock enabled  [82684]
 * Fix - Improved tribe_events_count_available_tickets() to account for tickets with global stock enabled (thanks to Florian for reporting this) [81967]
