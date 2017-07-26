@@ -1127,6 +1127,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
 			$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+
+			$types['tickets']['available'] += $global_stock;
 			$types['tickets']['stock'] += $global_stock;
 
 			return $types;
