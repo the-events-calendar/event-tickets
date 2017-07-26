@@ -86,6 +86,13 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 			'default'         => reset( $ticket_form_location_options ),
 		),
+		'ticket-enable-qr-codes' => array(
+			'type'            => 'checkbox_bool',
+			'label'           => esc_html__( 'Enable QR codes for tickets?', 'event-tickets' ),
+			'default'         => true,
+			'validation_type' => 'boolean',
+			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+		)
 	) );
 }
 
