@@ -72,6 +72,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $provider_class;
 
 		/**
+		 * Holds the SKU for the ticket
+		 *
+		 * @var string
+		 */
+		public $sku;
+
+		/**
 		 * @var Tribe__Tickets__Tickets
 		 */
 		protected $provider;

@@ -11,10 +11,6 @@
 /* = WooTickets Admin Styles
 ============================================= */
 
-#ticket_form {
-	display: none;
-}
-
 #ticket_form input[type=radio] {
 	margin-right: 5px;
 }

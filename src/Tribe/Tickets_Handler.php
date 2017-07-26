@@ -23,6 +23,15 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $image_header_field = '_tribe_ticket_header';
 
 	/**
+	 * Post Meta key for the ticket order
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $tickets_order_field = '_tribe_tickets_order';
+
+	/**
 	 * Slug of the admin page for attendees
 	 * @var string
 	 */
@@ -54,6 +63,7 @@ class Tribe__Tickets__Tickets_Handler {
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
 			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_tickets_order' ) );
 		}
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
@@ -67,6 +77,8 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
+
+		add_action( 'tribe_ticket_order_field', array( $this, 'tickets_order_input' ) );
 
 		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
 
@@ -597,9 +609,9 @@ class Tribe__Tickets__Tickets_Handler {
 		 * Used to modify what columns should be shown on the CSV export
 		 * The column name should be the Array Index and the Header is the array Value
 		 *
-		 * @var array Columns, associative array
-		 * @var array Items to be exported
-		 * @var int   Event ID
+		 * @param array Columns, associative array
+		 * @param array Items to be exported
+		 * @param int   Event ID
 		 */
 		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
 
@@ -842,9 +854,10 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Echoes the markup for the tickets list in the tickets metabox
 	 *
+	 * @param int $unused_post_id event ID
 	 * @param array $tickets
 	 */
-	public function ticket_list_markup( $tickets = array() ) {
+	public function ticket_list_markup( $unused_post_id, $tickets = array() ) {
 		if ( ! empty( $tickets ) ) {
 			include $this->path . 'src/admin-views/list.php';
 		}
@@ -904,25 +917,67 @@ class Tribe__Tickets__Tickets_Handler {
 
 	/**
 	 * Save the current global stock properties for this event.
+	 * Can come from ticket creation or settings edit. No longer tied to event save.
 	 *
 	 * @param int $post_id
+	 *
+	 * @since TBD
 	 */
 	public function save_global_stock( $post_id ) {
-		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
-			return;
-		}
-
 		// Bail on autosaves/bulk updates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
 		}
 
-		$enable = ! empty( $_POST[ 'tribe-tickets-enable-global-stock' ] );
-		$stock  = (int) @$_POST[ 'tribe-tickets-global-stock' ];
+		$enable = ! empty( $_POST[ 'ticket_global_stock' ] );
+		$stock  = (int) @$_POST[ 'ticket_global_stock' ];
 
 		$post_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 		$post_global_stock->enable( $enable );
 		$post_global_stock->set_stock_level( $stock );
+	}
+
+	/**
+	 * Save the the drag-n-drop ticket order
+	 *
+	 * @param int $post_id
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function save_tickets_order( $post_id ) {
+		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+			return;
+		}
+
+		// don't do anything on autosave, auto-draft, or massupdates
+		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		if ( ! empty( $_POST['tribe_tickets_order'] ) ) {
+			$ticket_order = str_ireplace ( 'order_', '', $_POST['tribe_tickets_order'] );
+			$ticket_order = explode( ',', $ticket_order );
+			$ticket_order = array_flip( $ticket_order );
+
+			foreach ( $ticket_order as $id => $order ) {
+				wp_update_post( array(
+					'ID'           => absint( $id ),
+					'menu_order'   => absint( $order ),
+				) );
+			}
+		}
+
+		return;
+	}
+	/**
+	 * Adds the hidden input to store the drag-n-drop ticket order
+	 */
+	public function tickets_order_input( $post_id ) {
+		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
+		?>
+		<input type="hidden" name="tribe_tickets_order" id="tribe_tickets_order" value="<?php echo esc_html( $tickets_order ); ?>">
+		<?php
 	}
 
 	/**
@@ -993,6 +1048,9 @@ class Tribe__Tickets__Tickets_Handler {
 			delete_post_meta( $id, '_tribe_ticket_header' );
 			wp_send_json_success( $params );
 		}
+
+		// #TODO: placeholder
+		$this->save_global_stock( $id );
 
 		wp_send_json_error( $params );
 	}

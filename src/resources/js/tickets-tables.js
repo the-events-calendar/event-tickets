@@ -15,8 +15,7 @@
 			forcePlaceholderSize: true,
 			update: function() {
 				data = $(this).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
-
-				document.getElementById( 'tickets_order' ).value = data;
+				document.getElementById( 'tribe_tickets_order' ).value = data;
 			}
 		});
 		$element.disableSelection();

@@ -8,8 +8,8 @@
 	border-radius: 5px;
 	border: 1px solid #ccc;
 	box-sizing: border-box;
-	padding: 16px;
 	position: relative;
+	padding: 8px;
 	transition: .5s cubic-bezier(.55, .085, .68, .53);
 	width: 100%;
 	will-change: transform;
@@ -30,6 +30,7 @@
 
 	&.panel_base {
 		border: 0;
+		padding: 0;
 
 		&[aria-hidden='true'] {
 			right: 100%;
@@ -71,7 +72,18 @@
 
 /* Base Panel Toggle Buttons */
 #settings_form_toggle {
-	float: right;
+	margin-top: 1em;
+
+	@media (min-width: 400px) {
+		float: right;
+		margin-top: 0;
+	}
+}
+
+.ticket_form_toggle {
+	+ .ticket_form_toggle {
+		margin-left: 1em;
+	}
 }
 
 .ticket_form_toggle_text,
@@ -152,18 +164,41 @@
 		margin: 0;
 		padding-left: 0;
 		padding-right: 1em;
-		width: 132px;
+
+		@media (min-width: 782px) {
+			width: 132px;
+		}
+	}
+
+	input,
+	textarea {
+		max-width: 100%;
+	}
+
+	.ticket_field {
+		&.hasDatepicker {
+			border-radius: 3px;
+			font-size: 13px;
+			margin-bottom: 0;
+		}
 	}
 
 	.input_block,
 	.ticket_form_right {
 		display: block;
-		margin-left: 132px;
-		margin-top: 0;
+
+		@media (min-width: 782px) {
+			margin-left: 132px;
+		}
 
 		&:last-child {
 			margin-bottom: 0;
 		}
+	}
+
+	/* Capacity Radio Buttons */
+	.tribe_stock_block.tribe-active {
+		padding-top: 1em;
 	}
 
 	label.ticket_form_right {
@@ -194,20 +229,35 @@
 		color: #fff;
 		content: '\f132';
 		font-family: 'dashicons';
-		font-size: 16px;
+		font-size: 10px;
 		font-weight: 400;
-		height: 16px;
+		height: 14px;
 		left: 0;
-		padding-top: 1px;
+		padding-left: 2px;
+		padding-top: 3px;
 		position: absolute;
 		top: 10px;
-		width: 16px;
+		width: 14px;
 	}
 
 	&.is-active {
 		&::before {
 			content: '\f460';
+			padding-left: 2px;
+			padding-top: 2px;
 		}
+	}
+}
+
+.accordion-header {
+	&:focus {
+		outline: 1px solid #5b9dd9;
+	}
+}
+
+.accordion-label {
+	&:focus {
+		outline: none;
 	}
 }
 
