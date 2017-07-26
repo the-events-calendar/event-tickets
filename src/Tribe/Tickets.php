@@ -311,7 +311,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		protected function get_attendees( WP_Query $attendees_query, $post_id ) {
+		protected function get_attendees( $attendees_query, $post_id ) {
 
 		}
 

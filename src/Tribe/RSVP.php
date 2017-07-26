@@ -1314,7 +1314,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array
 	 */
-	protected function get_attendees( WP_Query $attendees_query, $post_id ) {
+	protected function get_attendees( $attendees_query, $post_id ) {
 
 		$attendees = array();
 
