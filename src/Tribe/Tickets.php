@@ -1113,7 +1113,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				} else {
 					$types['rsvp']['count'] ++;
 
-					$types['rsvp']['stock'] += $stock_level;
+					$types['rsvp']['stock'] += $ticket->stock;
 					if ( 0 !== $types['rsvp']['stock'] ) {
 						$types['rsvp']['available'] ++;
 					}
