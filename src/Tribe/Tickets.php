@@ -311,7 +311,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		protected function get_attendees( $attendees_query, $post_id ) {
+		protected function get_attendees( WP_Query $attendees_query, $post_id ) {
 
 		}
 
@@ -354,7 +354,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function do_metabox_advanced_options( $event_id, $ticket_id ) {
+		public function do_metabox_capacity_options( $event_id, $ticket_id ) {
 
 		}
 
@@ -424,7 +424,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			self::$active_modules[ $this->className ] = $this->pluginName;
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
-			add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
+			/**
+			 * Priority set to 11 to force a specific display order
+			 * @since TBD
+			 */
+			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
 
 			// Admin AJAX actions for each provider
 			add_action( 'wp_ajax_tribe-ticket-add-' . $this->className, array( $this, 'ajax_handler_ticket_add' ) );
@@ -714,6 +718,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
 
 			$return = get_object_vars( $ticket );
+			$return['post_id'] = $post_id;
 			/**
 			 * Allow for the prevention of updating ticket price on update.
 			 *
@@ -734,7 +739,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$return['disallow_update_price_message'] = apply_filters( 'tribe_tickets_disallow_update_ticket_price_message', esc_html__( 'Editing the ticket price is currently disallowed.', 'event-tickets' ), $ticket );
 			}
 
-			// Prevent HTML elements from been escaped
+			// Prevent HTML elements from being escaped
 			$return['name'] = html_entity_decode( $return['name'], ENT_QUOTES );
 			$return['name'] = htmlspecialchars_decode( $return['name'] );
 			$return['description'] = html_entity_decode( $return['description'], ENT_QUOTES );
@@ -747,11 +752,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @var $post_id Post ID
 			 * @var $ticket_id Ticket ID
 			 */
-			do_action( 'tribe_events_tickets_metabox_advanced', $post_id, $ticket_id );
+			do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, $ticket_id );
+
 			$extra = ob_get_contents();
 			ob_end_clean();
 
 			$return['advanced_fields'] = $extra;
+
+			$return['stock'] = $ticket->stock;
 
 			/**
 			 * Provides an opportunity for final adjustments to the data used to populate
@@ -976,18 +984,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Echos the class for the <tr> in the tickets list admin
 		 */
 		protected function tr_class() {
-			echo 'ticket_advanced ticket_advanced_' . $this->className;
+			echo 'ticket_advanced_' . $this->className;
 		}
 
 		/**
-		 * Generates a select element listing the available global stock mode options.
+		 * Generates a set of radio buttons listing the available global stock mode options.
 		 *
 		 * @param string $current_option
 		 *
 		 * @return string
 		 */
 		protected function global_stock_mode_selector( $current_option = '' ) {
-			$output = "<select id='ticket_global_stock' name='ticket_global_stock' class='ticket_field tribe-dropdown'>\n";
+			$output = "<fieldset id='ticket_global_stock' class='input_block' >";
+			$output .= "<legend class='ticket_form_label'>Capacity:</legend>";
 
 			// Default to using own stock unless the user explicitly specifies otherwise (important
 			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
@@ -996,17 +1005,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
-				$identifier = esc_html( $identifier );
-				$name = esc_html( $name );
-				$selected = selected( $identifier === $current_option, true, false );
-				$output .= "\t<option value='$identifier' $selected> $name </option>\n";
+				$output .= '<label for="' . esc_attr( $identifier ) . '" class="ticket_field"><input type="radio" id="' . esc_attr( $identifier ) . '" class=" name="ticket_global_stock" value="' . esc_attr( $identifier ) . '" ' . selected( $identifier === $current_option ) . '> ' . esc_html( $name ) . " </label>\n";
 			}
 
-			return "$output</select>";
+			return $output;
 		}
 
 		/**
-		 * Returns an array of standard global stock mode options that can be
+		 * Returns an array of standard stock mode options that can be
 		 * reused by implementations.
 		 *
 		 * Format is: [ 'identifier' => 'Localized name', ... ]
@@ -1015,9 +1021,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function global_stock_mode_options() {
 			return array(
-				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Use global stock', 'event-tickets' ),
-				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE => __( 'Use global stock but cap sales', 'event-tickets' ),
-				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Independent (do not use global stock)', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE    => __( 'Shared capacity with other tickets', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE       => __( 'Set capacity for this ticket only', 'event-tickets' ),
 			);
 		}
 
@@ -1058,7 +1063,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			/**
-			 * This order is important so we that tickets overwrite RSVP on
+			 * This order is important so that tickets overwrite RSVP on
 			 * the Buy Now Button on the front-end
 			 */
 			$types['rsvp']    = array(

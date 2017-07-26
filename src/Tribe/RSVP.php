@@ -1314,7 +1314,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array
 	 */
-	protected function get_attendees( $attendees_query, $post_id ) {
+	protected function get_attendees( WP_Query $attendees_query, $post_id ) {
 
 		$attendees = array();
 
@@ -1531,6 +1531,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'posts_per_page' => - 1,
 			'fields'         => 'ids',
 			'post_status'    => 'publish',
+			'order_by'       => 'menu_order',
+			'order'          => 'ASC',
 		) );
 
 		return $query->posts;
@@ -1547,8 +1549,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return mixed
 	 */
-	public function do_metabox_advanced_options( $event_id, $ticket_id ) {
-
+	public function do_metabox_capacity_options( $event_id, $ticket_id ) {
 
 		$stock = '';
 
@@ -1559,7 +1560,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-advanced.php';
+		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/rsvp-metabox-capacity.php';
 	}
 
 	public function get_messages() {

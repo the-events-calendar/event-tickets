@@ -1,57 +1,97 @@
-( function( window, $ ) {
-	var accordions = document.getElementsByClassName( 'accordion' );
+( function() {
+	'use strict';
 
-	var accordion_index = ( undefined === accordion_index ) ? 0 : accordion_index++;
+	// This is our global accordion index to keep unique ids
+	var topIndex = 0;
 
-	for ( var i = 0, aLen = accordions.length; i < aLen; i++ ) {
-		var accordion = accordions[i];
-		var accordion_content = accordion.getElementsByClassName( 'accordion-content' );
-		var accordion_headers  = accordion.getElementsByClassName( 'accordion-header' );
+	var MTAccordion = function( options, callback ) {
+		if ( 'undefined' === typeof options.target ) {
+			return false;
+		}
 
-			for ( var t = 0, hLen = accordion_headers.length; t < hLen; t++ ) {
-				var header = accordion_headers[t]
-				header.setAttribute( 'id', 'tab' + accordion_index + '-' + t );
-				header.setAttribute( 'aria-selected', 'false' );
-				header.setAttribute( 'aria-expanded', 'false' );
-				header.setAttribute( 'aria-controls', 'panel' + accordion_index + '-' + t );
-				header.setAttribute( 'role', 'tab' );
+		var accordion = document.querySelector( options.target );
 
-				header.addEventListener( 'click', handle_accordion );
+		if ( ! accordion ) {
+			return;
+		}
 
-				/**
-				 * Handles the changes (both visual and aria) for the accordion clicks
-				 *
-				 * @since TBD
-				 */
-				function handle_accordion() {
-					var next_panel = header.nextElementSibling,
-					next_panel_label = next_panel.querySelector( '.accordion-label' );
+		// Simple iterator for reuse
+		var forEach = function( array, callback, scope ) {
+			for ( var i = 0, imax = array.length; i < imax; i++ ) {
+				callback.call( scope, i, array[i] ); // passes back stuff we need
+			}
+		};
 
-					header.classList.toggle( 'is-active' );
-					next_panel.classList.toggle( 'is-active' );
-					next_panel_label.setAttribute( 'tabindex', -1 );
-					next_panel_label.focus();
+		var accordionContent = accordion.getElementsByClassName( 'accordion-content' );
+		var accordionHeader  = accordion.getElementsByClassName( 'accordion-header' );
 
+		topIndex++;
 
-					if ( next_panel.classList.contains( 'is-active' ) ) {
-						header.setAttribute( 'aria-selected', 'true' );
-						header.setAttribute( 'aria-expanded', 'true' );
-						next_panel.setAttribute( 'aria-hidden', 'false' );
-					} else {
-						header.setAttribute( 'aria-selected', 'false' );
-						header.setAttribute( 'aria-expanded', 'false' );
-						next_panel.setAttribute( 'aria-hidden', 'true' );
-					}
+		forEach( accordionHeader, function( index, value ) {
+			var head  = value;
+			index++;
+
+			// Set ARIA and ID attributes
+			head.setAttribute( 'id', 'tab' + topIndex + '-' + index );
+			head.setAttribute( 'aria-selected', 'false' );
+			head.setAttribute( 'aria-expanded', 'false' );
+			head.setAttribute( 'aria-controls', 'panel' + topIndex + '-' + index );
+			head.setAttribute( 'role', 'tab' );
+
+			head.addEventListener( 'click', accordionHandle );
+
+			function accordionHandle() {
+
+				var nextPanel = value.nextElementSibling;
+				var nextPanelLabel = nextPanel.getElementsByClassName( 'accordion-label' )[0];
+
+				value.classList.toggle( 'is-active' );
+
+				nextPanel.classList.toggle( 'is-active' );
+
+				nextPanelLabel.setAttribute( 'tabindex', -1 );
+				nextPanelLabel.focus();
+
+				if ( nextPanel.classList.contains( 'is-active' ) ) {
+
+					head.setAttribute( 'aria-selected', 'true' );
+					head.setAttribute( 'aria-expanded', 'true' );
+					nextPanel.setAttribute( 'aria-hidden', 'false' );
+
+				} else {
+
+					head.setAttribute( 'aria-selected', 'false' );
+					head.setAttribute( 'aria-expanded', 'false' );
+					nextPanel.setAttribute( 'aria-hidden', 'true' );
+
 				}
 			}
+		});
 
-			for ( var s = 0, cLen = accordion_content.length; s < cLen; s++ ) {
-				var content = accordion_content[s];
-				// Set ARIA and ID attributes
-				content.setAttribute( 'id', 'panel' + accordion_index + '-' + s );
-				content.setAttribute( 'aria-hidden', 'true' );
-				content.setAttribute( 'aria-labelledby', 'tab' + accordion_index + '-' + s );
-				content.setAttribute( 'role', 'tabpanel' );
-			}
+		forEach( accordionContent, function( index, value ) {
+			var content = value;
+			index++;
+
+			// Set ARIA and ID attributes
+			content.setAttribute( 'id', 'panel' + topIndex + '-' + index );
+			content.setAttribute( 'aria-hidden', 'true' );
+			content.setAttribute( 'aria-labelledby', 'tab' + topIndex + '-' + index );
+			content.setAttribute( 'role', 'tabpanel' );
+			//content.setAttribute( 'tabindex', '-1' );
+		});
+
+		// Execute the callback function
+		if ( typeof callback === 'function' ) {
+			callback.call();
+		}
 	}
-})( window, jQuery );
+
+	// IE8 compatible alternative to DOMContentLoaded
+	document.onreadystatechange = function () {
+		if (document.readyState == "interactive") {
+			MTAccordion( {
+				target: '.accordion', // ID (or class) of accordion container
+			} );
+		}
+	}
+} )();
