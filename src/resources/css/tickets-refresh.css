@@ -57,6 +57,20 @@
 	        transform: translateX(100%);
 }
 
+.ticket_panel h4 {
+	text-transform: uppercase;
+}
+
+.ticket_title {
+	margin-top: 0;
+	text-transform: uppercase;
+}
+
+.ticket_title {
+	margin-top: 0;
+	text-transform: uppercase;
+}
+
 .ticket_title {
 	margin-top: 0;
 	text-transform: uppercase;

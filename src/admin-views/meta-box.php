@@ -13,13 +13,14 @@ $post_id = get_the_ID();
 $header_id = get_post_meta( $post_id, $this->image_header_field, true );
 $header_id = ! empty( $header_id ) ? $header_id : '';
 $header_img = '';
+$header_filename = '';
 if ( ! empty( $header_id ) ) {
 	$header_img = wp_get_attachment_image( $header_id, 'full' );
 	$header_filename = basename ( get_attached_file( $header_id ) );
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
-$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
+
 $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
 ?>
 

@@ -1,4 +1,4 @@
-<table class="eventtable ticket_list eventForm wp-list-table widefat fixed">
+<table id="tribe_ticket_list_table" class="eventtable ticket_list eventForm wp-list-table widefat fixed">
 	<?php
 	global $post;
 	$provider = null;
