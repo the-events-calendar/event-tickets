@@ -92,7 +92,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 			'default'         => true,
 			'validation_type' => 'boolean',
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-		)
+		),
 	) );
 }
 
