@@ -17,7 +17,7 @@
 
 .ticket_panel {
 	border-radius: 5px;
-	border: 1px solid #ccc;
+	border: 1px solid #a3a3a3;
 	box-sizing: border-box;
 	position: relative;
 	padding: 8px;
@@ -30,9 +30,30 @@
 	margin: 2em 0;
 }
 
-.ticket_panel button + button {
-	margin-left: 2em;
+/* Button styles */
+
+.ticket_panel .button-primary {
+	background: none;
+	background-color: #ccc;
+	border-color: #a3a3a3;
+	box-shadow: 0 1px 0 #a3a3a3;
+	color: #555;
+	text-shadow: none;
 }
+
+.ticket_panel .button-primary:hover {
+	background: none;
+	background-color: #ddd;
+	border-color: #a3a3a3;
+	color: #555;
+}
+
+.ticket_panel .button-primary + .button-primary,
+		.ticket_panel .button-primary + .button-secondary {
+	margin-left: 1em;
+}
+
+/* hidden fields */
 
 .ticket_panel[aria-hidden='true'] {
 	position: absolute;
@@ -171,6 +192,10 @@
 	margin-bottom: 0;
 }
 
+.input_block .input_block {
+	margin-top: 1em;
+}
+
 /* Capacity Radio Buttons */
 
 .input_block .tribe_stock_block.tribe-active {
@@ -183,6 +208,28 @@
 
 .input_block .tribe_block_label {
 	display: block;
+}
+
+/* Adjust font size for entire form */
+
+#ticket_form {
+	font-size: 12px;
+}
+
+[class^='ticket_form_title_'] {
+	font-size: 1.2em;
+}
+
+/* Ensure radios and checkboxes have some space to the right of them when inside a label */
+
+#ticket_form input[type=radio],
+#ticket_form input[type=checkbox] {
+	margin-right: .4em;
+}
+
+.tribe_soft_note,
+p.description {
+	color: #a3a3a3;
 }
 
 /* Accordion Styles */
@@ -269,7 +316,8 @@
 		text-align: right;
 	}
 
-	.input_block .ticket_form_left {
+	.input_block .ticket_form_leftinput,
+			.input_block .ticket_form_lefttextarea {
 		width: 132px;
 	}
 

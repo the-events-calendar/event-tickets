@@ -16,16 +16,17 @@
 			<h4 class="ticket_form_title_edit"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
 			<section id="ticket_form_main" class="main">
 				<div class="input_block">
-					<label class="ticket_form_label" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
-					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field" size='25' value='' />
+					<label class="ticket_form_label ticket_form_left" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
+					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field ticket_form_right" size='25' value='' />
+					<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Ticket type name shows on the front end and emailed tickets', 'event-tickets' ); ?></span>
 				</div>
 				<fieldset class="input_block">
-					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
+					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using (visible for testing):', 'event-tickets' ); ?></legend>
 					<?php
 					$checked = true;
 					foreach ( $modules as $class => $module ) {
 						?>
-						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider" tabindex="-1">
+						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider " tabindex="-1">
 						<span>
 							<?php
 							/**
@@ -59,50 +60,53 @@
 				<section id="ticket_form_advanced" class="advanced accordion-content">
 					<h4 class="accordion-label"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 					<div class="input_block">
-						<label class="ticket_form_label" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
-						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field" id="ticket_description"></textarea>
+						<label class="ticket_form_label" for="ticket_description" class="ticket_form_left"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
+						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field ticket_form_right" id="ticket_description"></textarea>
 						<div class="input_block">
-							<label><input type="checkbox" name="tribe_show_description" value="1"> Show description on front end and emailed tickets.</label>
+							<label class="tribe_soft_note"><input type="checkbox" name="tribe_show_description" value="1" class="ticket_form_left"> Show description on front end and emailed tickets.</label>
 						</div>
 					</div>
 					<div class="input_block">
-						<label class="ticket_form_label" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
-						<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date" value="" >
-						<span class="ticket_start_time ticket_time">
-							<?php echo tribe_get_datetime_separator(); ?>
-							<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field tribe-dropdown">
-								<?php echo $startHourOptions; ?>
-							</select>
-							<select name="ticket_start_minute" id="ticket_start_minute" class="ticket_field tribe-dropdown">
-								<?php echo $startMinuteOptions; ?>
-							</select>
-							<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
-								<select name="ticket_start_meridian" id="ticket_start_meridian" class="ticket_field tribe-dropdown">
-									<?php echo $startMeridianOptions; ?>
+						<label class="ticket_form_label ticket_form_left" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
+						<div class="ticket_form_right">
+							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date" value="" >
+							<span class="ticket_start_time ticket_time">
+								<?php echo tribe_get_datetime_separator(); ?>
+								<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field tribe-dropdown">
+									<?php echo $startHourOptions; ?>
 								</select>
-							<?php endif; ?>
-						</span>
+								<select name="ticket_start_minute" id="ticket_start_minute" class="ticket_field tribe-dropdown">
+									<?php echo $startMinuteOptions; ?>
+								</select>
+								<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
+									<select name="ticket_start_meridian" id="ticket_start_meridian" class="ticket_field tribe-dropdown">
+										<?php echo $startMeridianOptions; ?>
+									</select>
+								<?php endif; ?>
+							</span>
+						</div>
 					</div>
 					<div class="input_block">
-						<label class="ticket_form_label" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
-						<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date" value="">
+						<label class="ticket_form_label ticket_form_left" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
+						<div class="ticket_form_right">
+							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date" value="">
 
-						<span class="ticket_end_time ticket_time">
-							<?php echo tribe_get_datetime_separator(); ?>
-							<select name="ticket_end_hour" id="ticket_end_hour" class="ticket_field tribe-dropdown">
-								<?php echo $endHourOptions; ?>
-							</select>
-							<select name="ticket_end_minute" id="ticket_end_minute" class="ticket_field tribe-dropdown">
-								<?php echo $endMinuteOptions; ?>
-							</select>
-							<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
-								<select name="ticket_end_meridian" id="ticket_end_meridian" class="ticket_field tribe-dropdown">
-									<?php echo $endMeridianOptions; ?>
+							<span class="ticket_end_time ticket_time">
+								<?php echo tribe_get_datetime_separator(); ?>
+								<select name="ticket_end_hour" id="ticket_end_hour" class="ticket_field tribe-dropdown">
+									<?php echo $endHourOptions; ?>
 								</select>
-							<?php endif; ?>
-						</span>
-
-						<p class="description">
+								<select name="ticket_end_minute" id="ticket_end_minute" class="ticket_field tribe-dropdown">
+									<?php echo $endMinuteOptions; ?>
+								</select>
+								<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
+									<select name="ticket_end_meridian" id="ticket_end_meridian" class="ticket_field tribe-dropdown">
+										<?php echo $endMeridianOptions; ?>
+									</select>
+								<?php endif; ?>
+							</span>
+						</div>
+						<p class="description ticket_form_right">
 							<?php esc_html_e( 'When will ticket sales occur?', 'event-tickets' ); ?>
 							<?php
 							// Why break in and out of PHP? because I want the space between the phrases without including them in the translations
