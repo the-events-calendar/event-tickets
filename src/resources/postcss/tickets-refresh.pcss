@@ -58,7 +58,7 @@
 
 	&.panel_base {
 		border: 0;
-		padding: 0;
+		padding: 1em 0 0;
 
 		&[aria-hidden='true'] {
 			right: 100%;
@@ -167,9 +167,28 @@
 	.ticket_form_total_capacity {
 		display: block;
 		margin-bottom: .5em;
+		position: relative;
 
 		@media (min-width: 782px) {
 			float: left;
+		}
+
+		.tooltip {
+			border-radius: 3px;
+			border: 1px solid #a3a3a3;
+			display: none;
+			left: 100%;
+			margin-left: .5em;
+			padding: .5em;
+			position: absolute;
+			top: -.75em;
+			white-space: nowrap;
+		}
+
+		&:hover {
+			.tooltip {
+				display: block;
+			}
 		}
 	}
 
