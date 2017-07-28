@@ -57,7 +57,8 @@
 			<td class="ticket_available">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
-				if (  empty($ticket->original_stock()) || 'unlimited' === $ticket->global_stock_mode()  ) {
+				$original_stock = $ticket->original_stock();
+				if (  empty( $original_stock ) || 'unlimited' === $ticket->global_stock_mode()  ) {
 					esc_html_e( 'unlimited', 'event-tickets' );
 				} elseif ( 'own' === $ticket->global_stock_mode() ) {
 					echo absint( $ticket->remaining() );
