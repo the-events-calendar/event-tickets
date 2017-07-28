@@ -32,6 +32,11 @@
 
 /* Button styles */
 
+.ticket_panel .button-primary,
+	.ticket_panel .button-secondary {
+	height: 2.5em;
+}
+
 .ticket_panel .button-primary {
 	background: none;
 	background-color: #ccc;
@@ -51,6 +56,10 @@
 .ticket_panel .button-primary + .button-primary,
 		.ticket_panel .button-primary + .button-secondary {
 	margin-left: 1em;
+}
+
+.ticket_panel #settings_form_toggle {
+	background-color: #fff;
 }
 
 /* hidden fields */
@@ -117,11 +126,17 @@
 
 .ticket_form_toggle_text::before {
 	content: '\f132';
+	font-size: 1.25em;
+	left: -.25em;
+	position: relative;
 	vertical-align: middle;
 }
 
 .settings_form_toggle_text::before {
 	content: '\f111';
+	font-size: 1.25em;
+	left: -.25em;
+	position: relative;
 	vertical-align: bottom;
 }
 
@@ -196,6 +211,10 @@
 	margin-top: 1em;
 }
 
+.input_block legend + .input_block {
+	margin-top: 0;
+}
+
 /* Capacity Radio Buttons */
 
 .input_block .tribe_stock_block.tribe-active {
@@ -212,7 +231,7 @@
 
 /* Adjust font size for entire form */
 
-#ticket_form {
+#event_tickets {
 	font-size: 12px;
 }
 
@@ -230,6 +249,7 @@
 .tribe_soft_note,
 p.description {
 	color: #a3a3a3;
+	font-size: inherit;
 }
 
 /* Accordion Styles */
