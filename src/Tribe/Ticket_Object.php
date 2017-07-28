@@ -390,7 +390,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Method to display the total `stock` propriety of the Object.
+		 * Method to display the total `stock` property of the Object.
 		 *
 		 * Returns the current ticket total capacity: either an integer or a
 		 * string if stock is unlimited.
@@ -407,28 +407,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			return $orginal_stock;
 		}
 
-
 		/**
-		 * Method to display the available `stock` propriety of the Object.
-		 *
-		 * Returns the current ticket available capacity: either an integer or a
-		 * string if stock is unlimited.
-		 *
-		 * @return int|string
-		 */
-		public function display_available_stock() {
-			$orginal_stock = $this->original_stock();
-			$available_stock = $this->available_stock();
-
-			if ( empty( $orginal_stock ) ) {
-				$available_stock = 'unlimited';
-			}
-
-			return $available_stock;
-		}
-
-		/**
-		 * Method to manage the protected `stock` propriety of the Object
+		 * Method to manage the protected `stock` property of the Object
 		 * Prevents setting `stock` lower then zero.
 		 *
 		 * Returns the current ticket stock level: either an integer or an
@@ -490,7 +470,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Method to manage the protected `qty_sold` propriety of the Object
+		 * Method to manage the protected `qty_sold` property of the Object
 		 * Prevents setting `qty_sold` lower then zero
 		 *
 		 * @param int|null $value This will overwrite the old value
@@ -501,7 +481,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Method to manage the protected `qty_pending` propriety of the Object
+		 * Method to manage the protected `qty_pending` property of the Object
 		 * Prevents setting `qty_pending` lower then zero
 		 *
 		 * @param int|null $value This will overwrite the old value
@@ -598,7 +578,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Method to manage the protected `qty_cancelled` propriety of the Object
+		 * Method to manage the protected `qty_cancelled` property of the Object
 		 * Prevents setting `qty_cancelled` lower then zero
 		 *
 		 * @param int|null $value This will overwrite the old value

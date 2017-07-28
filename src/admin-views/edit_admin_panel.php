@@ -26,7 +26,7 @@
 					$checked = true;
 					foreach ( $modules as $class => $module ) {
 						?>
-						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider " tabindex="-1">
+						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider" tabindex="-1">
 						<span>
 							<?php
 							/**
@@ -60,7 +60,7 @@
 				<section id="ticket_form_advanced" class="advanced accordion-content">
 					<h4 class="accordion-label"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 					<div class="input_block">
-						<label class="ticket_form_label ticket_form_left" for="ticket_description" ><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
+						<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
 						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field ticket_form_right" id="ticket_description"></textarea>
 						<div class="input_block">
 							<label class="tribe_soft_note"><input type="checkbox" name="tribe_show_description" value="1" class="ticket_form_left"> Show description on front end and emailed tickets.</label>
@@ -69,7 +69,7 @@
 					<div class="input_block">
 						<label class="ticket_form_label ticket_form_left" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
 						<div class="ticket_form_right">
-							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date" value="" >
+							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date">
 							<span class="ticket_start_time ticket_time">
 								<?php echo tribe_get_datetime_separator(); ?>
 								<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field tribe-dropdown">
@@ -89,7 +89,7 @@
 					<div class="input_block">
 						<label class="ticket_form_label ticket_form_left" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
 						<div class="ticket_form_right">
-							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date" value="">
+							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date">
 
 							<span class="ticket_end_time ticket_time">
 								<?php echo tribe_get_datetime_separator(); ?>
@@ -159,7 +159,7 @@
 			do_action( 'tribe_events_tickets_post_accordion', $post_id );
 			?>
 			<div class="ticket_bottom">
-					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" value="" />
+					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
 					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
 					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
 			</div>
