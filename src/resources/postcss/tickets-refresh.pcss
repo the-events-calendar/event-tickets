@@ -6,7 +6,7 @@
 /* Panels */
 .ticket_panel {
 	border-radius: 5px;
-	border: 1px solid #ccc;
+	border: 1px solid #a3a3a3;
 	box-sizing: border-box;
 	position: relative;
 	padding: 8px;
@@ -18,10 +18,38 @@
 		margin: 2em 0;
 	}
 
-	button + button {
-		margin-left: 2em;
+	/* Button styles */
+	.button-primary,
+	.button-secondary {
+		height: 2.5em;
 	}
 
+	.button-primary {
+		background: none;
+		background-color: #ccc;
+		border-color: #a3a3a3;
+		box-shadow: 0 1px 0 #a3a3a3;
+		color: #555;
+		text-shadow: none;
+
+		&:hover {
+			background: none;
+			background-color: #ddd;
+			border-color: #a3a3a3;
+			color: #555;
+		}
+
+		+ .button-primary,
+		+ .button-secondary {
+			margin-left: 1em;
+		}
+	}
+
+	#settings_form_toggle {
+		background-color: #fff;
+	}
+
+	/* hidden fields */
 	&[aria-hidden='true'] {
 		position: absolute;
 		transition: .5s cubic-bezier(.55, .085, .68, .53);
@@ -96,6 +124,9 @@
 .ticket_form_toggle_text {
 	&::before {
 		content: '\f132';
+		font-size: 1.25em;
+		left: -.25em;
+		position: relative;
 		vertical-align: middle;
 	}
 }
@@ -103,6 +134,9 @@
 .settings_form_toggle_text {
 	&::before {
 		content: '\f111';
+		font-size: 1.25em;
+		left: -.25em;
+		position: relative;
 		vertical-align: bottom;
 	}
 }
@@ -166,7 +200,10 @@
 		padding-right: 1em;
 
 		@media (min-width: 782px) {
-			width: 132px;
+			&input,
+			&textarea {
+				width: 132px;
+			}
 		}
 	}
 
@@ -196,6 +233,14 @@
 		}
 	}
 
+	.input_block {
+		margin-top: 1em;
+	}
+
+	legend + .input_block {
+		margin-top: 0;
+	}
+
 	/* Capacity Radio Buttons */
 	.tribe_stock_block.tribe-active {
 		padding-top: 1em;
@@ -208,6 +253,27 @@
 	.tribe_block_label {
 		display: block;
 	}
+}
+
+/* Adjust font size for entire form */
+#event_tickets {
+	font-size: 12px;
+}
+
+[class^='ticket_form_title_'] {
+	font-size: 1.2em;
+}
+
+/* Ensure radios and checkboxes have some space to the right of them when inside a label */
+#ticket_form input[type=radio],
+#ticket_form input[type=checkbox] {
+	margin-right: .4em;
+}
+
+.tribe_soft_note,
+p.description {
+	color: #a3a3a3;
+	font-size: inherit;
 }
 
 /* Accordion Styles */
