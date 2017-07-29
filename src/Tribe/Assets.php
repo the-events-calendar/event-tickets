@@ -10,6 +10,8 @@ class Tribe__Tickets__Assets {
 			Tribe__Tickets__Main::instance(),
 			array(
 				array( 'event-tickets-tickets-css', 'tickets.css', array( 'dashicons' ) ),
+				array( 'event-tickets-tickets-rsvp-css', 'rsvp.css', array() ),
+				array( 'event-tickets-tickets-rsvp-js', 'rsvp.js', array( 'jquery', 'jquery-ui-datepicker' ) ),
 				array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery' ) ),
 			),
 			'enqueue_scripts'
