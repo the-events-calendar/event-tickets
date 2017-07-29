@@ -9,6 +9,11 @@
 	* @param jQuery object $element parent element to make sortable ( var $table above )
 	*/
 	function make_sortable( $element ) {
+		// If we don't have at least 2 sortable items, don't sort.
+		if ( 2 > $element.find( 'tr:not(.Tribe__Tickets__RSVP)' ).length ) {
+			return;
+		}
+
 		$element.sortable({
 			cursor: 'move',
 			items: 'tr:not(.Tribe__Tickets__RSVP)',

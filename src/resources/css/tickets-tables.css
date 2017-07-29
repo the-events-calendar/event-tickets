@@ -48,10 +48,15 @@
 	content: '\f180';
 	margin-right: .5em;
 	vertical-align: bottom;
+	visibility: hidden;
 }
 .eventtable.ticket_list .ticket_name.Tribe__Tickets__RSVP p::before {
 	color: #000;
 	content: '\f110';
+	visibility: visible;
+}
+.eventtable.ticket_list .ui-sortable-handle .ticket_name p::before {
+	visibility: visible;
 }
 .eventtable.ticket_list .ticket_edit {
 	vertical-align: top;
