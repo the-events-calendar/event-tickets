@@ -94,52 +94,6 @@ class Tribe__Tickets__Metabox {
 		 * @since TBD
 		 */
 		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
-
-		tribe_assets(
-			Tribe__Tickets__Main::instance(),
-			array(
-				array( 'event-tickets-css', 'tickets.css' ),
-				array( 'event-tickets-refresh-css', 'tickets-refresh.css', array( 'event-tickets-css' ) ),
-				array( 'event-tickets-tables-css', 'tickets-tables.css', array( 'event-tickets-css' ) ),
-				array( 'event-tickets-js', 'tickets.js', array( 'jquery-ui-datepicker' ) ),
-				array( 'event-tickets-tables-js', 'tickets-tables.js', array( 'event-tickets-js' ) ),
-				array( 'event-tickets-accordion', 'accordion.js', array( 'event-tickets-js' ) ),
-			),
-			'admin_enqueue_scripts',
-			array(
-				'localize' => array(
-					array(
-						'name' => 'HeaderImageData',
-						'data' => $upload_header_data,
-					),
-					array(
-						'name' => 'TribeTickets',
-						'data' => $nonces,
-					),
-					array(
-						'name' => 'tribe_ticket_notices',
-						'data' => array(
-							'confirm_alert' => __( 'Are you sure you want to delete this ticket? This cannot be undone.', 'event-tickets' ),
-						),
-					),
-					array(
-						'name' => 'tribe_global_stock_admin_ui',
-						'data' => array(
-							'nav_away_msg' => __( 'It looks like you have modified your global stock settings but have not saved or updated the post.', 'event-tickets' ),
-						),
-					),
-					array(
-						'name' => 'price_format',
-						'data' => array(
-							'decimal' => $decimal,
-							'decimal_error' => __( 'Please enter in without thousand separators and currency symbols.', 'event-tickets' ),
-						),
-					),
-				),
-			)
-		);
-
-		wp_enqueue_script( 'tribe-bumpdown' );
 	}
 
 	// leaving this alone for now as Community Tickets uses it
