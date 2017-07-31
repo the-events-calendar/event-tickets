@@ -36,11 +36,15 @@
 		color: #555;
 		text-shadow: none;
 
-		&:hover {
+		&:hover,
+		&:active,
+		&:focus {
 			background: none;
 			background-color: #ddd;
 			border-color: #a3a3a3;
+			box-shadow: 0 1px 0 #a3a3a3;
 			color: #555;
+			text-shadow: none;
 		}
 
 		+ .button-primary,

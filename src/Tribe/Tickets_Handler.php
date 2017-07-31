@@ -1025,12 +1025,15 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Saves the chosen image via ajax
+	 * Saves the event ticket settings image via ajax
+	 *
+	 * @since TBD
 	 */
 	public function ajax_handler_save_settings() {
 		$params = array();
 		$id = $_POST['post_ID'];
 		parse_str( $_POST['formdata'], $params );
+		$unset_params = $params;
 
 		/**
 		 * Allow other plugins to hook into this to add settings
@@ -1043,15 +1046,32 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
 			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
-			wp_send_json_success( $params );
 		} else {
 			delete_post_meta( $id, '_tribe_ticket_header' );
-			wp_send_json_success( $params );
 		}
 
-		// #TODO: placeholder
+		// We reversed this logic on the back end
+		if ( ! empty( $params['tribe_show_attendees'] ) ) {
+			delete_post_meta( $id, '_tribe_show_attendees' );
+		} else {
+			update_post_meta( $id, '_tribe_show_attendees', 1 );
+		}
+
+
+		if ( ! empty( $params['default_ticket_provider'] ) ) {
+			update_post_meta( $id, '_default_ticket_provider', $params['default_ticket_provider'] );
+		} else {
+			delete_post_meta( $id, '_default_ticket_provider' );
+		}
+
+		// #TODO: placeholder for capacity
+		if ( ! empty( $params['global_stock'] ) ) {
+			update_post_meta( $id, '_global_stock', $params['global_stock'] );
+		} else {
+			delete_post_meta( $id, '_global_stock' );
+		}
 		$this->save_global_stock( $id );
 
-		wp_send_json_error( $params );
+		wp_send_json_success( $params );
 	}
 }

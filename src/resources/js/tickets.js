@@ -362,7 +362,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( document.getElementById( 'ticket_form_save' ) ).click( function( e ) {
 			var $form = $( document.getElementById( 'ticket_form_table' ) );
 			var type  = $form.find( '.ticket_provider:checked' ).val();
-			//var $rows = $form.find( 'input' );
+
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
 			var form_data = $form.find( '.ticket_field' ).serialize();
@@ -381,6 +381,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					$tribe_tickets.trigger( 'saved-ticket.tribe', response );
 
 					if ( response.success ) {
+						console.log('SUCCESS');
 						var responseData = JSON.parse( response.data.data );
 
 						// Get the original (pre-save) capacity 'field' in the ticket table and set it to our new capacity
@@ -391,6 +392,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						available_capacity_base.text( responseData.ticket_stock );
 						// Change the available capacity in the editor
 						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
+
+						show_hide_panel( e, $edit_panel );
+					} else {
+						console.log('FAIL');
 					}
 				},
 				'json'
@@ -477,6 +482,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$add_titles.hide();
 						}
 
+						// Capacity/Stock
 						if ( response.data.global_stock_mode ) {
 							switch ( response.data.global_stock_mode ) {
 								case 'global':
@@ -508,9 +514,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						var start_date = response.data.start_date.substring( 0, 10 );
 						var end_date = response.data.end_date.substring( 0, 10 );
 
+						// handle all the date stuff
 						$( document.getElementById( 'ticket_start_date' ) ).val( start_date );
 						$( document.getElementById( 'ticket_end_date' ) ).val( end_date );
 
+						// @TODO: it's "meridiem" not "meridian"
 						var $start_meridian = $( document.getElementById( 'ticket_start_meridian' ) );
 						var $end_meridian   = $( document.getElementById( 'ticket_end_meridian' ) );
 
@@ -626,13 +634,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					},
 					'json'
-				).complete( function() {
+				).complete( function( response ) {
+					console.log(response);
 					$tribe_tickets
 						.trigger( 'spin.tribe', 'stop' )
 						.trigger( 'focus.tribe' )
 						.trigger( 'edit-tickets-complete.tribe' );
 
-					show_hide_panel( e, $edit_panel);
+					show_hide_panel( e, $edit_panel );
 				} );
 
 			} )
@@ -656,10 +665,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			.on( 'click', '#tribe_settings_form_save', function( e ) {
 				e.preventDefault();
 				var $settings_form = $( document.getElementById( 'tribe_panel_settings' ) );
+				var form_data = $settings_form.find( '.settings_field' ).serialize();
 
 				var params = {
 					action  : 'tribe-ticket-save-settings',
-					formdata: $settings_form.find( '.settings_field' ).serialize(),
+					formdata: form_data,
 					post_ID : $( document.getElementById( 'post_ID' ) ).val(),
 					nonce   : TribeTickets.add_ticket_nonce
 				};
@@ -669,6 +679,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					params,
 					function( response ) {
 						$tribe_tickets.trigger( 'saved-image.tribe', response );
+						if ( response.success ) {
+							show_hide_panel( e, $settings_panel );
+						}
 					},
 					'json'
 				);

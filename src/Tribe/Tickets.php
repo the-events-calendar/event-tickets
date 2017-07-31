@@ -35,11 +35,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		private static $have_displayed_reg_link = false;
 
 		/**
-		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all child.
+		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all children.
 		 *
 		 * @var array
 		 */
 		protected static $active_modules = array();
+
+		/**
+		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all children.
+		 *
+		 * @var array
+		 */
+		protected static $default_module = '';
 
 		/**
 		 * Indicates if the frontend ticket form script has already been enqueued (or not).
@@ -424,6 +431,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			self::$active_modules[ $this->className ] = $this->pluginName;
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
+			add_filter( 'tribe_events_tickets_default_module', array( $this, 'default_module' ) );
 			/**
 			 * Priority set to 11 to force a specific display order
 			 * @since TBD
@@ -1194,6 +1202,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @var string[] ticket modules
 			 */
 			return apply_filters( 'tribe_tickets_get_modules', self::$active_modules );
+		}
+
+		/**
+		 * Returns the slug of the default module/provider.
+		 *
+		 * @since TBD
+		 *
+		 * @static
+		 * @return string
+		 */
+		public static function default_module() {
+			self::$default_module = 'Tribe__Tickets__RSVP';
+			/**
+			 * Filters the default tickets module
+			 *
+			 * @var string default ticket module class name
+			 */
+			return apply_filters( 'tribe_tickets_get_default_module', self::$default_module );
 		}
 
 		/**

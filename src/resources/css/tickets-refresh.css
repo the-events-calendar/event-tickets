@@ -46,11 +46,15 @@
 	text-shadow: none;
 }
 
-.ticket_panel .button-primary:hover {
+.ticket_panel .button-primary:hover,
+		.ticket_panel .button-primary:active,
+		.ticket_panel .button-primary:focus {
 	background: none;
 	background-color: #ddd;
 	border-color: #a3a3a3;
+	box-shadow: 0 1px 0 #a3a3a3;
 	color: #555;
+	text-shadow: none;
 }
 
 .ticket_panel .button-primary + .button-primary,
