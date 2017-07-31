@@ -83,6 +83,7 @@
 				content: '\f180';
 				margin-right: .5em;
 				vertical-align: bottom;
+				visibility: hidden;
 
 				@media (max-width: 782px) {
 					display: none;
@@ -99,6 +100,7 @@
 				&::before {
 					color: #000;
 					content: '\f110';
+					visibility: visible;
 				}
 			}
 		}
@@ -106,6 +108,14 @@
 		&.column-primary {
 			@media (max-width: 782px) {
 				padding-top: .75em;
+			}
+		}
+	}
+
+	.ui-sortable-handle .ticket_name {
+		p {
+			&::before {
+				visibility: visible;
 			}
 		}
 	}
