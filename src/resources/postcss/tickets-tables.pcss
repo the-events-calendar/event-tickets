@@ -1,4 +1,4 @@
-.eventtable.ticket_list.eventForm {
+.eventtable.ticket_list {
 	border: 1px solid #ccc;
 	border-radius: 5px;
 	margin: 20px 0;
@@ -83,6 +83,7 @@
 				content: '\f180';
 				margin-right: .5em;
 				vertical-align: bottom;
+				visibility: hidden;
 
 				@media (max-width: 782px) {
 					display: none;
@@ -99,6 +100,7 @@
 				&::before {
 					color: #000;
 					content: '\f110';
+					visibility: visible;
 				}
 			}
 		}
@@ -106,6 +108,14 @@
 		&.column-primary {
 			@media (max-width: 782px) {
 				padding-top: .75em;
+			}
+		}
+	}
+
+	.ui-sortable-handle .ticket_name {
+		p {
+			&::before {
+				visibility: visible;
 			}
 		}
 	}
@@ -134,8 +144,9 @@
 		}
 	}
 
-	/* Edit button style - separate for portability */
-	.ticket_edit_button {
+	/* Edit button styles - separate for portability */
+	.ticket_edit_button,
+	.global_capacity_edit_button {
 		background: none;
 		border: 0;
 		color: #ccc;
@@ -145,7 +156,8 @@
 			color: #00a0d2;
 		}
 
-		.ticket_edit_text {
+		.ticket_edit_text,
+		.global_capacity_edit_text {
 			font-size: 0;
 
 			&::before {
@@ -155,5 +167,28 @@
 				vertical-align: top;
 			}
 		}
+	}
+
+	.global_capacity_edit_button {
+		vertical-align: middle;
+
+		.global_capacity_edit_text::before {
+			font-size: 18px;
+		}
+	}
+
+	/* Expanded capacity table */
+	#tribe_panel_settings & {
+		tbody tr:nth-last-child(2) {
+			box-shadow: none;
+		}
+
+		tbody tr:last-child td {
+			border-top: 1px dashed #ccc;
+		}
+	}
+
+	.tribe_capacity_table_ticket_list {
+		color: #ccc;
 	}
 }

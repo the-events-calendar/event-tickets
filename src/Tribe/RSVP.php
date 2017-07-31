@@ -1314,7 +1314,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array
 	 */
-	protected function get_attendees( WP_Query $attendees_query, $post_id ) {
+	protected function get_attendees( $attendees_query, $post_id ) {
 
 		$attendees = array();
 
@@ -1531,8 +1531,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'posts_per_page' => - 1,
 			'fields'         => 'ids',
 			'post_status'    => 'publish',
-			'order_by'       => 'meunu_order',
-			'order' => 'ASC',
+			'order_by'       => 'menu_order',
+			'order'          => 'ASC',
 		) );
 
 		return $query->posts;

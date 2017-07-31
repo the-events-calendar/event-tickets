@@ -4,7 +4,7 @@
 	// This is our global accordion index to keep unique ids
 	var topIndex = 0;
 
-	var MT_accordion = function( options, callback ) {
+	var MTAccordion = function( options, callback ) {
 		if ( 'undefined' === typeof options.target ) {
 			return false;
 		}
@@ -22,14 +22,14 @@
 			}
 		};
 
-		var accordionContent = accordion.getElementsByClassName( 'accordion-content' ),
-			accordionHeader  = accordion.getElementsByClassName( 'accordion-header' );
+		var accordionContent = accordion.getElementsByClassName( 'accordion-content' );
+		var accordionHeader  = accordion.getElementsByClassName( 'accordion-header' );
 
 		topIndex++;
 
 		forEach( accordionHeader, function( index, value ) {
-			var head  = value,
-				index = index + 1;
+			var head  = value;
+			index++;
 
 			// Set ARIA and ID attributes
 			head.setAttribute( 'id', 'tab' + topIndex + '-' + index );
@@ -42,8 +42,8 @@
 
 			function accordionHandle() {
 
-				var nextPanel = value.nextElementSibling,
-				nextPanelLabel = nextPanel.getElementsByClassName( 'accordion-label' )[0];
+				var nextPanel = value.nextElementSibling;
+				var nextPanelLabel = nextPanel.getElementsByClassName( 'accordion-label' )[0];
 
 				value.classList.toggle( 'is-active' );
 
@@ -69,8 +69,8 @@
 		});
 
 		forEach( accordionContent, function( index, value ) {
-			var content = value,
-				index   = index + 1;
+			var content = value;
+			index++;
 
 			// Set ARIA and ID attributes
 			content.setAttribute( 'id', 'panel' + topIndex + '-' + index );
@@ -89,7 +89,7 @@
 	// IE8 compatible alternative to DOMContentLoaded
 	document.onreadystatechange = function () {
 		if (document.readyState == "interactive") {
-			MT_accordion( {
+			MTAccordion( {
 				target: '.accordion', // ID (or class) of accordion container
 			} );
 		}

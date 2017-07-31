@@ -42,11 +42,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		},
 		// Output Image preview and populate widget form.
 		render  : function( attachment ) {
-			$( '#tribe_ticket_header_preview' ).html( ticketHeaderImage.imgHTML( attachment ) );
-			$( '#tribe_ticket_header_image_id' ).val( attachment.id );
-			$( '#tribe_ticket_header_remove' ).show();
+			$( document.getElementById( 'tribe_ticket_header_preview' ) ).html( ticketHeaderImage.imgHTML( attachment ) );
+			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( attachment.id );
+			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
 			$( '#tribe_tickets_image_preview_filename .filename' ).text( attachment.filename );
-			$( '#tribe_tickets_image_preview_filename' ).show();
+			$( document.getElementById( '#tribe_tickets_image_preview_filename' ) ).show();
 		},
 		// Render html for the image.
 		imgHTML : function( attachment ) {
@@ -610,6 +610,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						if ( 'undefined' !== typeof response.data.purchase_limit && response.data.purchase_limit ) {
 							$( document.getElementById( 'ticket_purchase_limit' ) ).val( response.data.purchase_limit );
+						}
+
+						if ( response.data.sku ) {
+							$( document.querySelectorAll( '.sku_input' ) ).val( response.data.sku );
 						}
 
 						$tribe_tickets.find( '.tribe-bumpdown-trigger' ).bumpdown();

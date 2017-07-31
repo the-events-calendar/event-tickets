@@ -24,6 +24,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 	/**
 	 * Post Meta key for the ticket order
+	 *
+	 * @since TBD
+	 *
 	 * @var string
 	 */
 	protected $tickets_order_field = '_tribe_tickets_order';
@@ -135,11 +138,11 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get the total capacity event.
-	 *
-	 * @param $event_id int (null)
+	 * Get the total event capacity.
 	 *
 	 * @since TBD
+	 *
+	 * @param $event_id int (null)
 	 *
 	 * @return int number of tickets ( -1 means unlimited )
 	 */
@@ -168,13 +171,165 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allow templates to filter the returned value
 		 *
+		 * @since TDB
+		 *
 		 * @param (int) $capacity Total capacity value
 		 * @param (int) $post Post ID tickets are attached to
 		 * @param (array) $tickets array of all tickets
-		 *
-		 * @since TDB
 		 */
 		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
+	 * Get the total event independent capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @return int number of tickets ( -1 means unlimited )
+	 */
+	public function get_total_event_independent_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' !== $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$stock = $ticket->original_stock();
+
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @since TDB
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 */
+		return apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
+	 * Get an array list of independent ticket names for an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @return string list of tickets
+	 */
+	public function get_total_event_independent_tickets( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		$ticket_list = array();
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' != $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$ticket_list[] = $ticket->name;
+			}
+		}
+
+		return $ticket_list;
+	}
+
+	/**
+	 * Get the total event shared capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @return int number of tickets ( -1 means unlimited )
+	 */
+	public function get_total_event_shared_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' === $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$stock = $ticket->original_stock();
+
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @since TDB
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 */
+		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
+	 * Get an array list of shared ticket names for an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @return array list of tickets
+	 */
+	public function get_total_event_shared_tickets( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		$ticket_list = array();
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'own' == $ticket->global_stock_mode() ) {
+					continue;
+				}
+
+				$ticket_list[] = $ticket->name;
+			}
+		}
+
+		return $ticket_list;
 	}
 
 	/**
@@ -454,9 +609,9 @@ class Tribe__Tickets__Tickets_Handler {
 		 * Used to modify what columns should be shown on the CSV export
 		 * The column name should be the Array Index and the Header is the array Value
 		 *
-		 * @var array Columns, associative array
-		 * @var array Items to be exported
-		 * @var int   Event ID
+		 * @param array Columns, associative array
+		 * @param array Items to be exported
+		 * @param int   Event ID
 		 */
 		$export_columns = apply_filters( 'tribe_events_tickets_attendees_csv_export_columns', $export_columns, $items, $event_id );
 
@@ -699,9 +854,10 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Echoes the markup for the tickets list in the tickets metabox
 	 *
+	 * @param int $unused_post_id event ID
 	 * @param array $tickets
 	 */
-	public function ticket_list_markup( $post_id, $tickets = array() ) {
+	public function ticket_list_markup( $unused_post_id, $tickets = array() ) {
 		if ( ! empty( $tickets ) ) {
 			include $this->path . 'src/admin-views/list.php';
 		}
@@ -761,21 +917,17 @@ class Tribe__Tickets__Tickets_Handler {
 
 	/**
 	 * Save the current global stock properties for this event.
-	 *
-	 * @since TBD
 	 * Can come from ticket creation or settings edit. No longer tied to event save.
 	 *
 	 * @param int $post_id
+	 *
+	 * @since TBD
 	 */
 	public function save_global_stock( $post_id ) {
 		// Bail on autosaves/bulk updates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
 		}
-
-		//if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
-		//	return;
-		//}
 
 		$enable = ! empty( $_POST[ 'ticket_global_stock' ] );
 		$stock  = (int) @$_POST[ 'ticket_global_stock' ];
@@ -785,6 +937,14 @@ class Tribe__Tickets__Tickets_Handler {
 		$post_global_stock->set_stock_level( $stock );
 	}
 
+	/**
+	 * Save the the drag-n-drop ticket order
+	 *
+	 * @param int $post_id
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function save_tickets_order( $post_id ) {
 		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
 			return;
@@ -796,7 +956,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( ! empty( $_POST['tribe_tickets_order'] ) ) {
-			$ticket_order = str_ireplace ( 'order_', '' , $_POST['tribe_tickets_order'] );
+			$ticket_order = str_ireplace ( 'order_', '', $_POST['tribe_tickets_order'] );
 			$ticket_order = explode( ',', $ticket_order );
 			$ticket_order = array_flip( $ticket_order );
 
@@ -810,7 +970,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		return;
 	}
-
+	/**
+	 * Adds the hidden input to store the drag-n-drop ticket order
+	 */
 	public function tickets_order_input( $post_id ) {
 		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
 		?>
@@ -872,7 +1034,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		/**
 		 * Allow other plugins to hook into this to add settings
+		 *
 		 * @since TBD
+		 *
 		 * @param array $params the array of parameters to filter
 		 */
 		do_action( 'tribe_events_save_tickets_settings', $params );

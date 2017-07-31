@@ -311,7 +311,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		protected function get_attendees( WP_Query $attendees_query, $post_id ) {
+		protected function get_attendees( $attendees_query, $post_id ) {
 
 		}
 
@@ -424,6 +424,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			self::$active_modules[ $this->className ] = $this->pluginName;
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
+			/**
+			 * Priority set to 11 to force a specific display order
+			 * @since TBD
+			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
 
 			// Admin AJAX actions for each provider
@@ -995,7 +999,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function global_stock_mode_selector( $current_option = '' ) {
 			$output = "<fieldset id='ticket_global_stock' class='input_block' >";
 			$output .= "<legend class='ticket_form_label'>Capacity:</legend>";
-			// name='ticket_global_stock'
 
 			// Default to using own stock unless the user explicitly specifies otherwise (important
 			// to avoid assuming global stock mode if global stock is enabled/disabled accidentally etc)
@@ -1004,10 +1007,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			foreach ( $this->global_stock_mode_options() as $identifier => $name ) {
-				$identifier = esc_html( $identifier );
-				$name = esc_html( $name );
-				$selected = selected( $identifier === $current_option, true, false );
-				$output .= "<label for='$identifier' class='ticket_field'><input type='radio' id='$identifier' class='' name='ticket_global_stock' value='$identifier' $selected> $name </label>\n";
+				$output .= '<label for="' . esc_attr( $identifier ) . '" class="ticket_field"><input type="radio" id="' . esc_attr( $identifier ) . '" class=" name="ticket_global_stock" value="' . esc_attr( $identifier ) . '" ' . selected( $identifier === $current_option ) . '> ' . esc_html( $name ) . " </label>\n";
 			}
 
 			return $output;
@@ -1092,13 +1092,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
 					$types['tickets']['count'] ++;
 
-					if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 0 === $types['tickets']['global'] ) {
+					$global_stock_mode = $ticket->global_stock_mode();
+
+					if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 0 === $types['tickets']['global'] ) {
 						$types['tickets']['global'] ++;
-					} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && 1 === $types['tickets']['global'] ) {
+					} elseif ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE && 1 === $types['tickets']['global'] ) {
 						continue;
 					}
 
-					$types['tickets']['stock'] = $types['tickets']['stock'] + $ticket->stock;
+					if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+						continue;
+					}
+
+					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->stock;
+
+					$types['tickets']['stock'] += $stock_level;
 
 					if ( 0 !== $types['tickets']['stock'] ) {
 						$types['tickets']['available'] ++;
@@ -1111,7 +1119,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				} else {
 					$types['rsvp']['count'] ++;
 
-					$types['rsvp']['stock'] = $types['rsvp']['stock'] + $ticket->stock;
+					$types['rsvp']['stock'] += $ticket->stock;
 					if ( 0 !== $types['rsvp']['stock'] ) {
 						$types['rsvp']['available'] ++;
 					}
@@ -1122,6 +1130,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 				}
 			}
+
+			$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+			$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+
+			$types['tickets']['available'] += $global_stock;
+			$types['tickets']['stock'] += $global_stock;
 
 			return $types;
 		}

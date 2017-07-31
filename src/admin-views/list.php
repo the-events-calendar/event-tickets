@@ -1,4 +1,4 @@
-<table id="ticket_list" class="eventtable ticket_list eventForm wp-list-table widefat fixed">
+<table id="tribe_ticket_list_table" class="eventtable ticket_list eventForm wp-list-table widefat fixed">
 	<?php
 	global $post;
 	$provider = null;
@@ -58,17 +58,16 @@
 
 			<td class="ticket_available">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
-				<span id="available_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
-					<?php
-					if (  'unlimited' === $ticket->global_stock_mode()  ) {
-						esc_html_e( 'unlimited', 'event-tickets' );
-					} elseif ( 'own' === $ticket->global_stock_mode() ) {
-						echo absint( $ticket->remaining() );
-					} else {
-						echo '(' . absint( $ticket->remaining() ) . ')';
-					}
-					?>
-				</span>
+				<?php
+				$original_stock = $ticket->original_stock();
+				if (  empty( $original_stock ) || 'unlimited' === $ticket->global_stock_mode()  ) {
+					esc_html_e( 'unlimited', 'event-tickets' );
+				} elseif ( 'own' === $ticket->global_stock_mode() ) {
+					echo absint( $ticket->remaining() );
+				} else {
+					echo '(' . absint( $ticket->remaining() ) . ')';
+				}
+				?>
 			</td>
 
 			<td class="ticket_edit">
