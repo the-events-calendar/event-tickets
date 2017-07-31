@@ -26,6 +26,13 @@ class Tribe__Tickets__Assets {
 	public function admin_enqueue_scripts() {
 		global $post;
 
+		/**
+		 * Filter the array of module names.
+		 *
+		 * @since TBD
+		 *
+		 * See event-tickets/src/Tribe/Tickets.php->modules()
+		 */
 		$modules = apply_filters( 'tribe_events_tickets_modules', null );
 
 		// For the metabox
