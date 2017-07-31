@@ -516,7 +516,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
 
-			parse_str ( $_POST['formdata'] , $post_data );
+			parse_str ( $_POST['formdata'], $post_data );
 
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
 			$post_data['ticket_stock'] = $ticket->stock;
