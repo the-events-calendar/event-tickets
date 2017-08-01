@@ -19,8 +19,15 @@
 			 * @param int $post_id the id of the post
 			 */
 			do_action( 'tribe_events_tickets_post_capacity', $post_id );
+
+			$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
+			// only show if there are tickets
+			if ( ! empty( $total_tickets ) ) {
+				?>
+				<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $attendees_url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
+				<?php
+			}
 			?>
-			<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $attendees_url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
 		</div>
 
 		<?php
