@@ -51,7 +51,7 @@
 				<span id="original_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
 					<?php
 					// escaping handled in function - could be string|int
-					echo $ticket->display_original_stock();
+					$ticket->display_original_stock( true );
 					?>
 				</span>
 			</td>

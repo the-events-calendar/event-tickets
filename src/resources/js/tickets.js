@@ -381,8 +381,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					$tribe_tickets.trigger( 'saved-ticket.tribe', response );
 
 					if ( response.success ) {
-						console.log('SUCCESS');
-						var responseData = JSON.parse( response.data.data );
+						var responseData = response.data.data ;
 
 						// Get the original (pre-save) capacity 'field' in the ticket table and set it to our new capacity
 						var original_capacity_base = $( document.getElementById( 'original_capacity__' + responseData.ticket_id ) );
@@ -394,8 +393,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
 
 						show_hide_panel( e, $edit_panel );
-					} else {
-						console.log('FAIL');
 					}
 				},
 				'json'
@@ -635,7 +632,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					},
 					'json'
 				).complete( function( response ) {
-					console.log(response);
 					$tribe_tickets
 						.trigger( 'spin.tribe', 'stop' )
 						.trigger( 'focus.tribe' )

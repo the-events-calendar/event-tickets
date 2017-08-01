@@ -32,10 +32,40 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $tickets_order_field = '_tribe_tickets_order';
 
 	/**
+	 * Post Meta key for showing attendees on the front end
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $show_attendees_field = '_tribe_show_attendees';
+
+
+	/**
+	 * Post Meta key for event ecommerce provider
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $ticket_provider_field = '_tribe_ticket_provider';
+
+	/**
+	 * Post Meta key for global stock/capacity amount
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $global_stock_field = '_tribe_ticket_global_stock_level';
+
+	/**
 	 * Slug of the admin page for attendees
 	 * @var string
 	 */
 	public static $attendees_slug = 'tickets-attendees';
+
+
 
 	/**
 	 * @var bool
@@ -1045,31 +1075,32 @@ class Tribe__Tickets__Tickets_Handler {
 		do_action( 'tribe_events_save_tickets_settings', $params );
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
+			update_post_meta( $id, $image_header_field, $params['tribe_ticket_header_image_id'] );
 		} else {
-			delete_post_meta( $id, '_tribe_ticket_header' );
+			delete_post_meta( $id, $image_header_field );
 		}
 
 		// We reversed this logic on the back end
 		if ( ! empty( $params['tribe_show_attendees'] ) ) {
-			delete_post_meta( $id, '_tribe_show_attendees' );
+			delete_post_meta( $id, $this->show_attendees_field );
 		} else {
-			update_post_meta( $id, '_tribe_show_attendees', 1 );
+			update_post_meta( $id, $this->show_attendees_field, 1 );
 		}
 
 
 		if ( ! empty( $params['default_ticket_provider'] ) ) {
-			update_post_meta( $id, '_default_ticket_provider', $params['default_ticket_provider'] );
+			update_post_meta( $id, $ticket_provider_field, $params['default_ticket_provider'] );
 		} else {
-			delete_post_meta( $id, '_default_ticket_provider' );
+			delete_post_meta( $id, $ticket_provider_field );
 		}
 
-		// #TODO: placeholder for capacity
+		/**
+		 *  @TODO: placeholder for global capacity, not working correctly yet
+		 */
 		if ( ! empty( $params['global_stock'] ) ) {
-			update_post_meta( $id, '_global_stock', $params['global_stock'] );
-		} else {
-			delete_post_meta( $id, '_global_stock' );
+			update_post_meta( $id, $global_stock_field, $params['global_stock'] );
 		}
+
 		$this->save_global_stock( $id );
 
 		wp_send_json_success( $params );

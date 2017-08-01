@@ -17,7 +17,9 @@ if ( class_exists( 'Tribe__Events__Pro__Main' ) ) {
 	<div class="<?php $this->tr_class(); ?>">
 		<p>
 			<?php esc_html_e( 'Selling tickets for recurring events', 'event-tickets' ); ?>
-			<span class="tribe-bumpdown-trigger dashicons dashicons-editor-help" data-bumpdown="<?php echo esc_attr( $bumpdown ); ?>" data-bumpdown-class="<?php echo esc_attr( $this->tr_class() ); ?>"></span>
+			<span class="tribe-bumpdown-trigger dashicons dashicons-editor-help"
+			      data-bumpdown="<?php echo esc_attr( $bumpdown ); ?>"
+			      data-bumpdown-class="<?php echo esc_attr( $this->tr_class() ); ?>"></span>
 		</p>
 	<?php
 }

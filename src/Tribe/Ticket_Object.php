@@ -390,14 +390,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Method to display the total `stock` property of the Object.
+		 * Method to get the total `stock` property of the Object.
 		 *
 		 * Returns the current ticket total capacity: either an integer or a
 		 * string if stock is unlimited.
 		 *
 		 * @return int|string
 		 */
-		public function display_original_stock() {
+		public function get_original_stock() {
 			$orginal_stock = $this->original_stock();
 
 			if ( empty( $orginal_stock ) ) {
@@ -405,6 +405,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			return $orginal_stock;
+		}
+
+		/**
+		 * Method to display the total `stock` property of the Object.
+		 *
+		 * Returns the current ticket total capacity: either an integer or a
+		 * string if stock is unlimited.
+		 *
+		 * @param bool (true) $display whether to echo or return the value
+		 *
+		 * @return string - escaped
+		 */
+		public function display_original_stock( $display = true ) {
+			if ( empty( $display ) ) {
+				return esc_html( $this->get_original_stock() );
+			}
+
+			echo esc_html( $this->get_original_stock() );
 		}
 
 		/**
