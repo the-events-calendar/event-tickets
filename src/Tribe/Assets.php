@@ -63,6 +63,8 @@ class Tribe__Tickets__Assets {
 			 * @param string $decimal the decimal character to filter
 			 *
 			 * @since TBD
+			 *
+			 * @param array the array of modules
 			 */
 			$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 
