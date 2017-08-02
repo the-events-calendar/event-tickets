@@ -1548,7 +1548,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function do_metabox_advanced_options() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__RSVP::do_metabox_advanced_options' );
+		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__RSVP::do_metabox_capacity_options' );
 	}
 
 	/**
