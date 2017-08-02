@@ -906,7 +906,7 @@ class Tribe__Tickets__Tickets_Handler {
 			/**
 			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 			 *
-			 * @param Post ID
+			 * @param obj ticket object
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
