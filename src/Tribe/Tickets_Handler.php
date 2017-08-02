@@ -32,10 +32,40 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $tickets_order_field = '_tribe_tickets_order';
 
 	/**
+	 * Post Meta key for showing attendees on the front end
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $show_attendees_field = '_tribe_show_attendees';
+
+
+	/**
+	 * Post Meta key for event ecommerce provider
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $ticket_provider_field = '_tribe_ticket_provider';
+
+	/**
+	 * Post Meta key for global stock/capacity amount
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $global_stock_field = '_tribe_ticket_global_stock_level';
+
+	/**
 	 * Slug of the admin page for attendees
 	 * @var string
 	 */
 	public static $attendees_slug = 'tickets-attendees';
+
+
 
 	/**
 	 * @var bool
@@ -851,6 +881,75 @@ class Tribe__Tickets__Tickets_Handler {
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
+
+	/**
+	 * Render the ticket row into the ticket table
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @since TBD
+	 */
+	public function render_ticket_row( $ticket ) {
+		$provider     = $ticket->provider_class;
+		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
+		?>
+		<tr class="<?php echo esc_attr( $provider ); ?>" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
+			<!-- (handle, name), price, capacity, available, editlink -->
+			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?></span>
+				<p><?php echo esc_html( $ticket->name ); ?></p>
+				<button type="button" class="toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'event-tickets' ); ?></span></button>
+			</td>
+
+			<?php
+			/**
+			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
+			 *
+			 * @param Tribe__Tickets__Ticket_Object $ticket
+			 * @param obj ecommerce provider object
+			 * @since TBD
+			 */
+			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
+			?>
+
+			<td class="ticket_capacity">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
+				<span id="original_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
+					<?php
+					// escaping handled in function - could be string|int
+					$ticket->display_original_stock( true );
+					?>
+				</span>
+			</td>
+
+			<td class="ticket_available">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
+				<?php
+				$original_stock = $ticket->original_stock();
+				if (  empty( $original_stock ) || 'unlimited' === $ticket->global_stock_mode()  ) {
+					esc_html_e( 'unlimited', 'event-tickets' );
+				} elseif ( 'own' === $ticket->global_stock_mode() ) {
+					echo absint( $ticket->remaining() );
+				} else {
+					echo '(' . absint( $ticket->remaining() ) . ')';
+				}
+				?>
+			</td>
+
+			<td class="ticket_edit">
+				<?php
+				printf(
+					"<button data-provider='%s' data-ticket-id='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
+					esc_attr( $ticket->provider_class ),
+					esc_attr( $ticket->ID ),
+					esc_html( $ticket->name )
+				);
+				?>
+			</td>
+		</tr>
+		<?php
+	}
+
 	/**
 	 * Echoes the markup for the tickets list in the tickets metabox
 	 *
@@ -871,9 +970,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function get_ticket_list_markup( $tickets = array() ) {
-
 		ob_start();
-		$this->ticket_list_markup( $tickets );
+		$this->ticket_list_markup( null, $tickets );
 		$return = ob_get_contents();
 		ob_end_clean();
 
@@ -1025,7 +1123,9 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Saves the chosen image via ajax
+	 * Saves the event ticket settings image via ajax
+	 *
+	 * @since TBD
 	 */
 	public function ajax_handler_save_settings() {
 		$params = array();
@@ -1042,16 +1142,34 @@ class Tribe__Tickets__Tickets_Handler {
 		do_action( 'tribe_events_save_tickets_settings', $params );
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
-			wp_send_json_success( $params );
+			update_post_meta( $id, $image_header_field, $params['tribe_ticket_header_image_id'] );
 		} else {
-			delete_post_meta( $id, '_tribe_ticket_header' );
-			wp_send_json_success( $params );
+			delete_post_meta( $id, $image_header_field );
 		}
 
-		// #TODO: placeholder
+		// We reversed this logic on the back end
+		if ( ! empty( $params['tribe_show_attendees'] ) ) {
+			delete_post_meta( $id, $this->show_attendees_field );
+		} else {
+			update_post_meta( $id, $this->show_attendees_field, 1 );
+		}
+
+
+		if ( ! empty( $params['default_ticket_provider'] ) ) {
+			update_post_meta( $id, $ticket_provider_field, $params['default_ticket_provider'] );
+		} else {
+			delete_post_meta( $id, $ticket_provider_field );
+		}
+
+		/**
+		 *  @TODO: placeholder for global capacity, not working correctly yet
+		 */
+		if ( ! empty( $params['global_stock'] ) ) {
+			update_post_meta( $id, $global_stock_field, $params['global_stock'] );
+		}
+
 		$this->save_global_stock( $id );
 
-		wp_send_json_error( $params );
+		wp_send_json_success( $params );
 	}
 }

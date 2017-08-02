@@ -925,8 +925,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		if ( trim( $raw_data['ticket_rsvp_stock'] ) !== '' ) {
 			$stock = (int) $raw_data['ticket_rsvp_stock'];
-			update_post_meta( $ticket->ID, '_stock', $stock );
 			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
+			update_post_meta( $ticket->ID, '_stock', $stock );
 		} else {
 			delete_post_meta( $ticket->ID, '_stock_status' );
 			update_post_meta( $ticket->ID, '_manage_stock', 'no' );
@@ -1539,6 +1539,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	* Renders the advanced fields in the new/edit ticket form.
+	* Using the method, providers can add as many fields as
+	* they want, specific to their implementation.
+	 *
+	 * @deprecated TBD
+	 *
+	 * @return void
+	 */
+	public function do_metabox_advanced_options() {
+		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__RSVP::do_metabox_capacity_options' );
+	}
+
+	/**
 	 * Renders the advanced fields in the new/edit ticket form.
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
@@ -1547,12 +1560,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param $event_id
 	 * @param $ticket_id
 	 *
+	 * @since TBD
+	 *
 	 * @return mixed
 	 */
 	public function do_metabox_capacity_options( $event_id, $ticket_id ) {
 
 		$stock = '';
-
+		// This returns the original stock
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
 			if ( ! empty( $ticket ) ) {
