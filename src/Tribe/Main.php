@@ -416,7 +416,7 @@ class Tribe__Tickets__Main {
 	 * @return void
 	 */
 	public function add_linking_archor() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Main::add_linking_anchor' );
+		_deprecated_function( __METHOD__, '4.4.8', 'Tribe__Tickets__Main::add_linking_anchor' );
 	}
 
 	/**

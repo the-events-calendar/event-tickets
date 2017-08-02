@@ -901,9 +901,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function get_ticket_list_markup( $tickets = array() ) {
-
 		ob_start();
-		$this->ticket_list_markup( $tickets );
+		$this->ticket_list_markup( null, $tickets );
 		$return = ob_get_contents();
 		ob_end_clean();
 
@@ -1063,7 +1062,6 @@ class Tribe__Tickets__Tickets_Handler {
 		$params = array();
 		$id = $_POST['post_ID'];
 		parse_str( $_POST['formdata'], $params );
-		$unset_params = $params;
 
 		/**
 		 * Allow other plugins to hook into this to add settings

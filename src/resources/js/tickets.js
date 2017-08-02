@@ -317,7 +317,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) ) {
 				// uncheck them all!
 				$( '.ticket_provider' ).each( function() {
-					$(this).prop( 'checked', true ).removeAttr( 'checked' );
+					$( this ).prop( 'checked', true ).removeAttr( 'checked' );
 				});
 				if ( $( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
 					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ).prop( 'checked', true );
@@ -391,6 +391,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						available_capacity_base.text( responseData.ticket_stock );
 						// Change the available capacity in the editor
 						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
+
+						// remove old ticket table
+						var ticketTable = document.getElementById('ticket_list_wrapper');
+						ticketTable.innerHTML = '';
+						// create new ticket table (and notice)
+						var newTable = document.createElement('div');
+						newTable.innerHTML = response.data.html;
+
+						// insert new ticket table
+						ticketTable.appendChild( newTable );
 
 						show_hide_panel( e, $edit_panel );
 					}

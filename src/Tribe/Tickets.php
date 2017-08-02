@@ -30,14 +30,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Flag used to track if the registration form link has been displayed or not.
 		 *
-		 * @param boolean
+		 * @var boolean
 		 */
 		private static $have_displayed_reg_link = false;
 
 		/**
 		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all children.
 		 *
-		 * @param array
+		 * @var array
 		 */
 		protected static $active_modules = array();
 
@@ -45,14 +45,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Default Tribe__Tickets__Tickets ecommerce module.
 		 * It's static, so it's shared across all children.
 		 *
-		 * @param string
+		 * @var string
 		 */
 		protected static $default_module = 'Tribe__Tickets__RSVP';
 
 		/**
 		 * Indicates if the frontend ticket form script has already been enqueued (or not).
 		 *
-		 * @param bool
+		 * @var bool
 		 */
 		protected static $frontend_script_enqueued = false;
 
@@ -60,25 +60,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Collection of ticket objects for which we wish to make global stock data available
 		 * on the frontend.
 		 *
-		 * @param array
+		 * @var array
 		 */
 		protected static $frontend_ticket_data = array();
 
 		/**
 		 * Name of this class. Note that it refers to the child class.
-		 * @param string
+		 * @var string
 		 */
 		public $className;
 
 		/**
 		 * Path of the parent class
-		 * @param string
+		 * @var string
 		 */
 		private $parentPath;
 
 		/**
 		 * URL of the parent class
-		 * @param string
+		 * @var string
 		 */
 		private $parentUrl;
 
@@ -86,7 +86,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Records batches of tickets that are currently unavailable (used for
 		 * displaying the correct "tickets are unavailable" message).
 		 *
-		 * @param array
+		 * @var array
 		 */
 		protected static $currently_unavailable_tickets = array();
 
@@ -94,7 +94,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Records posts for which tickets *are* available (used to determine if
 		 * a "tickets are unavailable" message should even display).
 		 *
-		 * @param array
+		 * @var array
 		 */
 		protected static $posts_with_available_tickets = array();
 
@@ -103,25 +103,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Name of the provider
-		 * @param
+		 * @var
 		 */
 		public $pluginName;
 
 		/**
 		 * The name of the post type representing a ticket.
-		 * @param string
+		 * @var string
 		 */
 		public $ticket_object = '';
 
 		/**
 		 * Path of the child class
-		 * @param
+		 * @var
 		 */
 		protected $pluginPath;
 
 		/**
 		 * URL of the child class
-		 * @param
+		 * @var
 		 */
 		protected $pluginUrl;
 
@@ -505,6 +505,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Successful?
 			if ( $ticket_id ) {
+				// Let's create a tickets list markup to return
+				$tickets = $this->get_event_tickets( $post_id );
+
+				$html = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) );
+				$html .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
 				/**
 				 * Fire action when a ticket has been added
@@ -521,9 +526,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_data['ticket_capacity'] = $ticket->original_stock();
 
 			$return = array(
-				'html' => $return,
 				'data' => json_encode( $post_data, JSON_FORCE_OBJECT ),
 			);
+
+			if ( ! empty( $html ) ) {
+				$return['html'] = $html;
+			}
 
 			/**
 			 * Filters the return data for ticket add
