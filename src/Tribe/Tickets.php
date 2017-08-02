@@ -536,7 +536,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the return data for ticket add
 			 *
-			 * @param array Array of data to return to the ajax call
+			 * @param array $return Array of data to return to the ajax call
+			 * @param int $post_id WP_Post ID the ticket is attached to
 			 */
 			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
 
