@@ -886,6 +886,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Render the ticket row into the ticket table
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 * @param object ticekt provider object
 	 *
 	 * @since TBD
 	 */
