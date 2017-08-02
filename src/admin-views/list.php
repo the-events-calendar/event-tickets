@@ -1,4 +1,4 @@
-<?php if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
+<?php if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
 <div id="ticket_list_wrapper">
 <?php endif; ?>
 	<table id="tribe_ticket_list_table" class="eventtable ticket_list eventForm wp-list-table widefat fixed">
@@ -134,6 +134,7 @@
 	</table>
 	<?php do_action( 'tribe_ticket_order_field', $post_id );
 
-	if( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
+	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
 </div>
-<?php endif; ?>
+<?php
+endif;
