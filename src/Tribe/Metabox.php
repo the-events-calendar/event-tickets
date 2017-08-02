@@ -64,36 +64,7 @@ class Tribe__Tickets__Metabox {
 	 * @param $hook
 	 */
 	public static function add_admin_scripts( $hook ) {
-		global $post;
-
-		$modules = apply_filters( 'tribe_events_tickets_modules', null );
-
-		/* Only load the resources in the event edit screen, and if there's a provider available */
-		if ( ( $hook != 'post-new.php' && $hook != 'post.php' ) || ! in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) || empty( $modules ) ) {
-			return;
-		}
-
-		$upload_header_data = array(
-			'title'  => esc_html__( 'Ticket header image', 'event-tickets' ),
-			'button' => esc_html__( 'Set as ticket header', 'event-tickets' ),
-		);
-
-		$nonces = array(
-			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
-			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
-			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
-		);
-
-		$locale  = localeconv();
-		$decimal = isset( $locale['decimal_point'] ) ? $locale['decimal_point'] : '.';
-
-		/**
-		 * Filter the decimal point character used in the price
-		 * @param string $decimal the decimal character to filter
-		 *
-		 * @since TBD
-		 */
-		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
+		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );
 	}
 
 	// leaving this alone for now as Community Tickets uses it
