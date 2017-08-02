@@ -33,14 +33,15 @@ class Tribe__Tickets__Assets {
 		 *
 		 * @param array the array of modules
 		 *
-		 * See event-tickets/src/Tribe/Tickets.php->modules()
+		 * @see event-tickets/src/Tribe/Tickets.php->modules()
 		 */
 		$modules = apply_filters( 'tribe_events_tickets_modules', null );
 
 		// For the metabox
-		if ( ! empty( $post ) &&
-			 ! empty( $modules ) &&
-			 in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() )
+		if (
+			! empty( $post )
+			&& ! empty( $modules )
+			&& in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() )
 		 ) {
 			// Set up some data for our localize scripts
 
@@ -64,7 +65,7 @@ class Tribe__Tickets__Assets {
 			 *
 			 * @since TBD
 			 *
-			 * @param array the array of modules
+			 * @param string $decimal
 			 */
 			$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 
