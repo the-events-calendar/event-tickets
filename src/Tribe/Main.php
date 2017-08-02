@@ -321,7 +321,6 @@ class Tribe__Tickets__Main {
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'add_meta_boxes', array( 'Tribe__Tickets__Metabox', 'maybe_add_meta_box' ) );
-		add_action( 'admin_enqueue_scripts', array( 'Tribe__Tickets__Metabox', 'add_admin_scripts' ) );
 		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
 
 		// Setup Help Tab texting
@@ -386,6 +385,8 @@ class Tribe__Tickets__Main {
 			tribe( 'tickets.admin.columns' );
 			tribe( 'tickets.admin.screen-options' );
 		}
+
+		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
 	}
 
 	/**
@@ -766,4 +767,15 @@ class Tribe__Tickets__Main {
 		<?php
 	}
 
+
+	/**
+	 * Instantiates all classes that should be built at `plugins_loaded` time.
+	 *
+	 * Classes are bound using the `tribe_singleton` function before and then
+	 * built calling the `tribe` function.
+	 * @since TBD
+	 */
+	public function on_plugins_loaded() {
+		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
+	}
 }
