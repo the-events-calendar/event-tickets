@@ -886,7 +886,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Render the ticket row into the ticket table
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param object ticekt provider object
 	 *
 	 * @since TBD
 	 */
@@ -906,7 +905,8 @@ class Tribe__Tickets__Tickets_Handler {
 			/**
 			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 			 *
-			 * @param obj ticket object
+			 * @param Tribe__Tickets__Ticket_Object $ticket
+			 * @param obj ecommerce provider object
 			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
