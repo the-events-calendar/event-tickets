@@ -1065,7 +1065,6 @@ class Tribe__Tickets__Tickets_Handler {
 			$ticket_order = explode( ',', $ticket_order );
 			$ticket_order = array_flip( $ticket_order );
 
-
 			foreach ( $ticket_order as $id => $order ) {
 				wp_update_post( array(
 					'ID'           => absint( $id ),
