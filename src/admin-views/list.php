@@ -43,16 +43,18 @@
 		foreach ( $tickets as $key => $ticket ) {
 			if ( strpos( $ticket->provider_class, 'RSVP' ) !== false ) {
 				$rsvp[] = $ticket;
-			} else {
-				$non_rsvp[] = $ticket;
+				unset( $tickets[ $key ] );
+				continue;
 			}
 		}
+
+		$tickets = Tribe__Tickets__Tickets_Handler::instance()->sort_tickets_by_menu_order( $tickets );
 
 		?>
 		<tbody>
 			<?php
-			if ( ! empty( $non_rsvp ) ) {
-				foreach ( $non_rsvp as $ticket ) {
+			if ( ! empty( $tickets ) ) {
+				foreach ( $tickets as $ticket ) {
 					Tribe__Tickets__Tickets_Handler::instance()->render_ticket_row( $ticket );
 				}
 			}

@@ -1,6 +1,5 @@
 <?php
 
-
 class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Singleton instance of this class
@@ -40,7 +39,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	protected $show_attendees_field = '_tribe_show_attendees';
 
-
 	/**
 	 * Post Meta key for event ecommerce provider
 	 *
@@ -64,8 +62,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @var string
 	 */
 	public static $attendees_slug = 'tickets-attendees';
-
-
 
 	/**
 	 * @var bool
@@ -161,10 +157,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Print Check In Totals at top of Column
 	 */
 	public function print_checkedin_totals() {
-		$total_checked_in_label = esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' );
-		$total_checked_in       = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
+		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
-		echo "<div class='totals-header'><h3>$total_checked_in_label</h3> $total_checked_in</div>";
+		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
 	}
 
 	/**
@@ -414,6 +409,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
+	 *
+	 * @TODO: this needs to move to Assets.php
 	 *
 	 * @param $hook
 	 */
@@ -995,7 +992,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param int $post_id
 	 */
 	public function save_image_header( $post_id ) {
-		if ( ! ( isset($_POST[ 'tribe-tickets-post-settings' ])  && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+		if ( ! ( isset ($_POST[ 'tribe-tickets-post-settings' ] )  && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
 			return;
 		}
 
@@ -1044,7 +1041,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 */
 	public function save_tickets_order( $post_id ) {
-		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+		if (
+			! ( isset( $_POST[ 'tribe-tickets-post-settings' ] )
+			&& wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) )
+		) {
 			return;
 		}
 
@@ -1054,9 +1054,17 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( ! empty( $_POST['tribe_tickets_order'] ) ) {
-			$ticket_order = str_ireplace ( 'order_', '', $_POST['tribe_tickets_order'] );
+			$ticket_order =  $_POST['tribe_tickets_order'];
+
+			update_post_meta(
+				$post_id,
+				$this->tickets_order_field,
+				$ticket_order
+			);
+
 			$ticket_order = explode( ',', $ticket_order );
 			$ticket_order = array_flip( $ticket_order );
+
 
 			foreach ( $ticket_order as $id => $order ) {
 				wp_update_post( array(
@@ -1068,14 +1076,43 @@ class Tribe__Tickets__Tickets_Handler {
 
 		return;
 	}
+
 	/**
 	 * Adds the hidden input to store the drag-n-drop ticket order
+	 *
+	 * @param int $post_id
+	 *
+	 * @since TBD
 	 */
 	public function tickets_order_input( $post_id ) {
 		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
 		?>
 		<input type="hidden" name="tribe_tickets_order" id="tribe_tickets_order" value="<?php echo esc_html( $tickets_order ); ?>">
 		<?php
+	}
+
+	/**
+	 * Sorts tickets according to stored menu_order
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets array of ticket objects
+	 *
+	 * @return array - sorted array of ticket objects
+	 */
+	public function sort_tickets_by_menu_order( $tickets ) {
+		// our sort function
+		function sortTicketsByMenuOrder( $a, $b ) {
+			return $a->menu_order - $b->menu_order;
+		}
+
+		// make sure they are ordered correctly
+		$orderpost = get_post( $ticket->ID );
+		$ticket->menu_order = $orderpost->menu_order;
+
+		usort( $tickets, 'sortTicketsByMenuOrder' );
+
+		return $tickets;
 	}
 
 	/**
@@ -1123,7 +1160,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Saves the event ticket settings image via ajax
+	 * Saves the event ticket settings via ajax
 	 *
 	 * @since TBD
 	 */
