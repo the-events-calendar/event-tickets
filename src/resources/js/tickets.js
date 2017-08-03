@@ -401,8 +401,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							ticketTable.setAttribute('id', 'ticket_list_wrapper');
 							container.append( ticketTable );
 
-							if (container.classList.contains('_blank')) {
-								container.classList.remove('_blank');
+							if (container.classList.contains('tribe_no_capacity')) {
+								container.classList.remove('tribe_no_capacity');
 							}
 						}
 						ticketTable.innerHTML = '';

@@ -100,7 +100,7 @@ class Tribe__Tickets__Tickets_Handler {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
 		}
 
-		add_action( 'save_post_tribe_events', array( $this, 'save_tickets_order' ) );
+		add_action( 'save_post_' . Tribe__Events__Main::POSTTYPE, array( $this, 'save_tickets_order' ) );
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
@@ -1101,6 +1101,10 @@ class Tribe__Tickets__Tickets_Handler {
 		<?php
 	}
 
+	protected function sort_by_menu_order( $a, $b ) {
+		return $a->menu_order - $b->menu_order;
+}
+
 	/**
 	 * Sorts tickets according to stored menu_order
 	 *
@@ -1111,18 +1115,13 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return array - sorted array of ticket objects
 	 */
 	public function sort_tickets_by_menu_order( $tickets ) {
-		// our sort function
-		function sortTicketsByMenuOrder( $a, $b ) {
-			return $a->menu_order - $b->menu_order;
-		}
-
 		foreach ( $tickets as $key => $ticket ) {
 			// make sure they are ordered correctly
 			$orderpost = get_post( $ticket->ID );
 			$ticket->menu_order = $orderpost->menu_order;
 		}
 
-		usort( $tickets, 'sortTicketsByMenuOrder' );
+		usort( $tickets, array( $this, 'sort_by_menu_order' ) );
 
 		return $tickets;
 	}

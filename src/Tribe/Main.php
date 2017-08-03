@@ -389,25 +389,6 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Used to add our beloved tickets to the JSON-LD markup
-	 *
-	 * @deprecated
-	 *
-	 * @param  array   $data The actual json-ld variable
-	 * @param  array   $args Arguments used to create the Markup
-	 * @param  WP_Post $post What post does this referer too
-	 * @return false
-	 */
-	public function inject_tickets_json_ld( $unused_data, $unused_args, $unused_post ) {
-		/**
-		 * @todo remove this after 4.4
-		 */
-		_deprecated_function( __METHOD__, '4.2', 'Tribe__Tickets__JSON_LD__Order' );
-
-		return false;
-	}
-
-	/**
 	 * Add an Anchor for users to be able to link to
 	 * The height is to make sure it links on all browsers
 	 *

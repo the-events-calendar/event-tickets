@@ -1,7 +1,7 @@
 <?php
 	$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
 	$container_class = 'tribe_sectionheader ticket_list_container';
-	$container_class .= ( empty( $total_tickets ) ) ? ' _blank' : '' ;
+	$container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 ?>
 <div id="tribe_panel_base" class="ticket_panel panel_base" aria-hidden="false">
 	<div class="<?php echo esc_attr( $container_class ); ?>">
@@ -16,7 +16,7 @@
 				 *
 				 * @since TBD
 				 *
-				 * @param Post ID
+				 * @param int $post_id the id of the post
 				 */
 				do_action( 'tribe_events_tickets_capacity', $post_id );
 
@@ -38,7 +38,7 @@
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
 		 *
-		 * @param int Post ID
+		 * @param int $post_id the id of the post
 		 * @since TBD
 		 */
 		do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
@@ -48,7 +48,7 @@
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @param int Post ID
+		 * @param int $post_id the id of the post
 		 * @since TBD
 		 */
 		do_action( 'tribe_events_tickets_post_ticket_list', $post_id );
@@ -59,7 +59,7 @@
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @param int Post ID
+		 * @param int $post_id the id of the post
 		 * @since TBD
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
