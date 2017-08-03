@@ -149,7 +149,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( empty( $action_links ) ) {
 			return;
 		}
-
+		// can't escape, mixed HTML
 		echo '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>';
 	}
 
@@ -556,7 +556,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @return string
 	 */
-	public function attendees_admin_title( $admin_title, $title ) {
+	public function attendees_admin_title( $admin_title, $unused_title ) {
 		if ( ! empty( $_GET['event_id'] ) ) {
 			$event       = get_post( $_GET['event_id'] );
 			$admin_title = sprintf( '%s - Attendee list', $event->post_title );
@@ -992,7 +992,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param int $post_id
 	 */
 	public function save_image_header( $post_id ) {
-		if ( ! ( isset ($_POST[ 'tribe-tickets-post-settings' ] )  && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] )  && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
 			return;
 		}
 
@@ -1054,7 +1054,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( ! empty( $_POST['tribe_tickets_order'] ) ) {
-			$ticket_order =  $_POST['tribe_tickets_order'];
+			$ticket_order = $_POST['tribe_tickets_order'];
 
 			update_post_meta(
 				$post_id,

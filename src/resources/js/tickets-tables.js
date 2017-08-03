@@ -21,7 +21,7 @@
 			update: function() {
 				data = $(this).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
 
-				// Strip the text .sortable() requires
+				// Strip the text .sortable() requires to reduce thrash later
 				for ( i = 0, len = data.length; i < data.length; i++ ) {
 					data[i] = data[i].replace( 'order_', '');
 				}
