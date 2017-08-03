@@ -22,7 +22,10 @@
 		</div>
 		<div class="tribe-tickets-image-preview">
 				<a class="tribe_preview" id="tribe_ticket_header_preview">
-					<?php echo $header_img; ?>
+					<?php
+					// Can't escape - mixed html
+					echo $header_img;
+					?>
 				</a>
 				<p class="description"><a href="#" id="tribe_ticket_header_remove"><?php esc_html_e( 'Remove', 'event-tickets' ); ?></a></p>
 

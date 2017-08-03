@@ -16,6 +16,26 @@
 .eventtable.ticket_list thead {
 	background-color: #ccc;
 }
+.eventtable.ticket_list tr:first-child {
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.eventtable.ticket_list tr:first-child td:first-child {
+	border-top-left-radius: 5px;
+}
+.eventtable.ticket_list tr:first-child td:last-child {
+	border-top-right-radius: 5px;
+}
+.eventtable.ticket_list tr:last-child {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+.eventtable.ticket_list tr:last-child td:first-child {
+	border-bottom-left-radius: 5px;
+}
+.eventtable.ticket_list tr:last-child td:last-child {
+	border-bottom-right-radius: 5px;
+}
 .eventtable.ticket_list th {
 	border-bottom: 0;
 }
@@ -92,8 +112,15 @@
 	font-size: 18px;
 }
 /* Expanded capacity table */
-#tribe_panel_settings .eventtable.ticket_list tbody tr:nth-last-child(2) {
+#tribe_panel_settings .eventtable.ticket_list tbody tr {
 	box-shadow: none;
+}
+#tribe_panel_settings .eventtable.ticket_list tbody tr td {
+	border-bottom: 1px solid #ccc;
+}
+#tribe_panel_settings .eventtable.ticket_list tbody tr:nth-last-child(2) td,
+		#tribe_panel_settings .eventtable.ticket_list tbody tr:last-child td {
+	border-bottom: 0;
 }
 #tribe_panel_settings .eventtable.ticket_list tbody tr:last-child td {
 	border-top: 1px dashed #ccc;
