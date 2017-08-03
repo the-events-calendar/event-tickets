@@ -1,5 +1,4 @@
 <?php
-
 class Tribe__Tickets__Main {
 
 	/**
@@ -399,7 +398,7 @@ class Tribe__Tickets__Main {
 	 * @param  WP_Post $post What post does this referer too
 	 * @return false
 	 */
-	public function inject_tickets_json_ld( $data, $args, $post ) {
+	public function inject_tickets_json_ld( $unused_data, $unused_args, $unused_post ) {
 		/**
 		 * @todo remove this after 4.4
 		 */
