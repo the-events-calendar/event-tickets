@@ -1105,9 +1105,11 @@ class Tribe__Tickets__Tickets_Handler {
 			return $a->menu_order - $b->menu_order;
 		}
 
-		// make sure they are ordered correctly
-		$orderpost = get_post( $ticket->ID );
-		$ticket->menu_order = $orderpost->menu_order;
+		foreach ( $tickets as $key => $ticket ) {
+			// make sure they are ordered correctly
+			$orderpost = get_post( $ticket->ID );
+			$ticket->menu_order = $orderpost->menu_order;
+		}
 
 		usort( $tickets, 'sortTicketsByMenuOrder' );
 
