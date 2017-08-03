@@ -394,6 +394,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						// remove old ticket table
 						var ticketTable = document.getElementById('ticket_list_wrapper');
+						if ( null === ticketTable ) {
+							// if it's not there, create it :(
+							var container = document.querySelector('.tribe_sectionheader.ticket_list_container');
+							var ticketTable = document.createElement('div');
+							ticketTable.setAttribute('id', 'ticket_list_wrapper');
+							container.append( ticketTable );
+
+							if (container.classList.contains('_blank')) {
+								container.classList.remove('_blank');
+							}
+						}
 						ticketTable.innerHTML = '';
 						// create new ticket table (and notice)
 						var newTable = document.createElement('div');
