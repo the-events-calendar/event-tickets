@@ -31,6 +31,15 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $tickets_order_field = '_tribe_tickets_order';
 
 	/**
+	 * Emergency brake for saving the order meta - prevents infinte looping
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected $saving_order = false;
+
+	/**
 	 * Post Meta key for showing attendees on the front end
 	 *
 	 * @since TBD
@@ -89,8 +98,9 @@ class Tribe__Tickets__Tickets_Handler {
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
 			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
-			add_action( 'save_post_' . $post_type, array( $this, 'save_tickets_order' ) );
 		}
+
+		add_action( 'save_post_tribe_events', array( $this, 'save_tickets_order' ) );
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
@@ -480,7 +490,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Setups the Attendees screen data.
+	 * Sets up the Attendees screen data.
 	 */
 	public function attendees_page_screen_setup() {
 		/* There's no reason for attendee screen setup to happen twice, but because
@@ -1010,6 +1020,8 @@ class Tribe__Tickets__Tickets_Handler {
 		return;
 	}
 
+	/* Capacity */
+
 	/**
 	 * Save the current global stock properties for this event.
 	 * Can come from ticket creation or settings edit. No longer tied to event save.
@@ -1041,10 +1053,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 */
 	public function save_tickets_order( $post_id ) {
-		if (
-			! ( isset( $_POST[ 'tribe-tickets-post-settings' ] )
-			&& wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) )
-		) {
+		if ( empty( $_POST[ 'tribe-tickets-post-settings' ] ) || ! empty( $this->saving_order ) ) {
 			return;
 		}
 
@@ -1053,25 +1062,27 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		if ( ! empty( $_POST['tribe_tickets_order'] ) ) {
-			$ticket_order = $_POST['tribe_tickets_order'];
+		$this->saving_order = true;
 
-			update_post_meta(
-				$post_id,
-				$this->tickets_order_field,
-				$ticket_order
-			);
+		$ticket_order = $_POST['tribe_tickets_order'];
 
-			$ticket_order = explode( ',', $ticket_order );
-			$ticket_order = array_flip( $ticket_order );
+		update_post_meta(
+			$post_id,
+			$this->tickets_order_field,
+			$ticket_order
+		);
 
-			foreach ( $ticket_order as $id => $order ) {
-				wp_update_post( array(
-					'ID'           => absint( $id ),
-					'menu_order'   => absint( $order ),
-				) );
-			}
+		$ticket_order = explode( ',', $ticket_order );
+		$ticket_order = array_flip( $ticket_order );
+
+		foreach ( $ticket_order as $id => $order ) {
+			wp_update_post( array(
+				'ID'           => absint( $id ),
+				'menu_order'   => absint( $order ),
+			) );
 		}
+
+		$this->saving_order = false;
 
 		return;
 	}
