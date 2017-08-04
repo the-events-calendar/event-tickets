@@ -562,7 +562,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Uses the event title.
 	 *
 	 * @param $admin_title
-	 * @param $title
+	 * @param $unused_title
 	 *
 	 * @return string
 	 */
@@ -892,9 +892,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Render the ticket row into the ticket table
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 *
 	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 */
 	public function render_ticket_row( $ticket ) {
 		$provider     = $ticket->provider_class;
@@ -912,9 +912,10 @@ class Tribe__Tickets__Tickets_Handler {
 			/**
 			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 			 *
+			 * @since TBD
+			 *
 			 * @param Tribe__Tickets__Ticket_Object $ticket
 			 * @param obj ecommerce provider object
-			 * @since TBD
 			 */
 			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
 			?>
@@ -1026,9 +1027,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Save the current global stock properties for this event.
 	 * Can come from ticket creation or settings edit. No longer tied to event save.
 	 *
-	 * @param int $post_id
-	 *
 	 * @since TBD
+	 *
+	 * @param int $post_id
 	 */
 	public function save_global_stock( $post_id ) {
 		// Bail on autosaves/bulk updates
@@ -1047,9 +1048,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Save the the drag-n-drop ticket order
 	 *
-	 * @param int $post_id
-	 *
 	 * @since TBD
+	 *
+	 * @param int $post_id
 	 *
 	 */
 	public function save_tickets_order( $post_id ) {
@@ -1084,8 +1085,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 		foreach ( $ticket_order as $id => $order ) {
 			wp_update_post( array(
-				'ID'           => absint( $id ),
-				'menu_order'   => absint( $order ),
+				'ID'         => absint( $id ),
+				'menu_order' => absint( $order ),
 			) );
 		}
 
@@ -1097,9 +1098,9 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Adds the hidden input to store the drag-n-drop ticket order
 	 *
-	 * @param int $post_id
-	 *
 	 * @since TBD
+	 *
+	 * @param int $post_id
 	 */
 	public function tickets_order_input( $post_id ) {
 		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
@@ -1110,7 +1111,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 	protected function sort_by_menu_order( $a, $b ) {
 		return $a->menu_order - $b->menu_order;
-}
+	}
 
 	/**
 	 * Sorts tickets according to stored menu_order
@@ -1124,7 +1125,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public function sort_tickets_by_menu_order( $tickets ) {
 		foreach ( $tickets as $key => $ticket ) {
 			// make sure they are ordered correctly
-			$orderpost = get_post( $ticket->ID );
+			$orderpost          = get_post( $ticket->ID );
 			$ticket->menu_order = $orderpost->menu_order;
 		}
 
