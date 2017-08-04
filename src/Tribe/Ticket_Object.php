@@ -79,6 +79,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $sku;
 
 		/**
+		 * Holds the menu order for the ticket
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $menu_order;
+
+		/**
 		 * @var Tribe__Tickets__Tickets
 		 */
 		protected $provider;
