@@ -1,6 +1,5 @@
 ( function( window, $ ) {
-	var $table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' ),
-		enable_width = '400px';
+	var $table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' );
 
 	/**
 	* Implemnts jQuery drag-n-drop for the ticket table.
@@ -21,7 +20,7 @@
 			update: function() {
 				data = $(this).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
 
-				// Strip the text .sortable() requires to reduce thrash later
+				// Strip the text .sortable() requires - to reduce thrash later
 				for ( i = 0, len = data.length; i < data.length; i++ ) {
 					data[i] = data[i].replace( 'order_', '');
 				}
@@ -34,26 +33,29 @@
 		$element.sortable( 'option', 'disabled', false );
 	}
 
-	$( document ).ready( function () {
-		// init if we're not on small screens
-		if ( window.matchMedia( '( min-width: 400px )' ).matches ) {
-			 make_sortable( $table );
-		}
+	function tribe_toggle_sortable() {
 
-		// disable/init depending on screen size
-		$( window ).on( 'resize', function() {
-			if ( window.matchMedia( '( min-width: 400px )' ).matches ) {
-				if ( ! $( $table ).hasClass( 'ui-sortable' ) ) {
-					make_sortable( $table );
-				}
+		console.log('debounce');
+
+		if ( window.matchMedia( '( min-width: 786px )' ).matches ) {
+			if ( ! $( $table ).hasClass( 'ui-sortable' ) ) {
+				make_sortable( $table );
 			} else {
-				if ( $( $table ).hasClass( 'ui-sortable' ) ) {
-					$( $table ).sortable( 'option', 'disabled', true );
-				}
+				$( $table ).sortable( "enable" );
 			}
-		});
+		} else {
+			if ( $( $table ).hasClass( 'ui-sortable' ) ) {
+				$( $table ).sortable( 'disable' );
+			}
+		}
+	}
+
+	$( document ).ready( function () {
+		// disable/init depending on screen size
+		var maybeSortable = _.debounce( tribe_toggle_sortable, 300 );
+		$( window ).resize( maybeSortable );
+
+		// trigger once at start
+		tribe_toggle_sortable();
 	});
-
-
-
 })( window, jQuery );

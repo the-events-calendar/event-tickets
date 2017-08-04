@@ -1053,12 +1053,19 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 */
 	public function save_tickets_order( $post_id ) {
-		if ( empty( $_POST[ 'tribe-tickets-post-settings' ] ) || ! empty( $this->saving_order ) ) {
-			return;
-		}
+		// We're calling this during post save, so the save nonce has already been checked.
 
 		// don't do anything on autosave, auto-draft, or massupdates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+
+		// If our data is missing or we're already in the middle of saving, bail
+		if (
+			empty( $_POST[ 'tribe_tickets_order' ] ) ||
+			$this->saving_order ||
+			! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) )
+		) {
 			return;
 		}
 
