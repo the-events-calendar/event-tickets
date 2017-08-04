@@ -1063,7 +1063,7 @@ class Tribe__Tickets__Tickets_Handler {
 		// If our data is missing or we're already in the middle of saving, bail
 		if (
 			empty( $_POST[ 'tribe_tickets_order' ] ) ||
-			$this->saving_order ||
+			! empty( $this->saving_order ) ||
 			! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) )
 		) {
 			return;
