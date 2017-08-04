@@ -61,7 +61,9 @@ class Tribe__Tickets__Metabox {
 	 * Enqueue the tickets metabox JS and CSS
 	 * @static
 	 *
-	 * @param $hook
+	 * @deprecated TBD
+	 *
+	 * @param $unused_hook
 	 */
 	public static function add_admin_scripts( $unused_hook ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );
