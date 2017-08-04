@@ -63,7 +63,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @deprecated TBD
 	 *
-	 * @param $hook
+	 * @param $unused_hook
 	 */
 	public static function add_admin_scripts( $unused_hook ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );
