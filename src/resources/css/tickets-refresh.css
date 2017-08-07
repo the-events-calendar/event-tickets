@@ -46,11 +46,15 @@
 	text-shadow: none;
 }
 
-.ticket_panel .button-primary:hover {
+.ticket_panel .button-primary:hover,
+		.ticket_panel .button-primary:active,
+		.ticket_panel .button-primary:focus {
 	background: none;
 	background-color: #ddd;
 	border-color: #a3a3a3;
+	box-shadow: 0 1px 0 #a3a3a3;
 	color: #555;
+	text-shadow: none;
 }
 
 .ticket_panel .button-primary + .button-primary,
@@ -67,7 +71,6 @@
 .ticket_panel[aria-hidden='true'] {
 	position: absolute;
 	transition: .5s cubic-bezier(.55, .085, .68, .53);
-	visibility: hidden;
 }
 
 .ticket_panel.panel_base {
@@ -218,6 +221,7 @@
 .input_block .input_block,
 	.input_block .ticket_form_right {
 	display: block;
+	margin-top: 0;
 }
 
 .input_block .input_block:last-child, .input_block .ticket_form_right:last-child {
@@ -244,6 +248,18 @@
 
 .input_block .tribe_block_label {
 	display: block;
+}
+
+/* Capacity Fields/admin display */
+
+.input_block .ticket_stock_total {
+	color: #666;
+	font-style: italic;
+	margin-left: 1em;
+}
+
+#ticket_form .input_block .ticket_stock_total_value {
+	margin-right: 0;
 }
 
 /* Adjust font size for entire form */
@@ -335,15 +351,11 @@ p.description {
 	cursor: pointer;
 }
 
-@media (min-width: 400px) {
-
-	#settings_form_toggle {
-		float: right;
-		margin-top: 0;
-	}
-}
-
 @media (min-width: 782px) {
+
+	.ticket_panel {
+		padding: 16px;
+	}
 
 	.ticket_table_intro .ticket_form_total_capacity {
 		float: left;
@@ -361,6 +373,14 @@ p.description {
 	.input_block .input_block,
 	.input_block .ticket_form_right {
 		margin-left: 132px;
+	}
+}
+
+@media (min-width: 400px) {
+
+	#settings_form_toggle {
+		float: right;
+		margin-top: 0;
 	}
 }
 

@@ -1,6 +1,5 @@
 <?php
 
-
 class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Singleton instance of this class
@@ -30,6 +29,42 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @var string
 	 */
 	protected $tickets_order_field = '_tribe_tickets_order';
+
+	/**
+	 * Emergency brake for saving the order meta - prevents infinte looping
+	 *
+	 * @since TBD
+	 *
+	 * @var bool
+	 */
+	protected $saving_order = false;
+
+	/**
+	 * Post Meta key for showing attendees on the front end
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $show_attendees_field = '_tribe_show_attendees';
+
+	/**
+	 * Post Meta key for event ecommerce provider
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $ticket_provider_field = '_tribe_ticket_provider';
+
+	/**
+	 * Post Meta key for global stock/capacity amount
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	protected $global_stock_field = '_tribe_ticket_global_stock_level';
 
 	/**
 	 * Slug of the admin page for attendees
@@ -63,8 +98,9 @@ class Tribe__Tickets__Tickets_Handler {
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
 			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
-			add_action( 'save_post_' . $post_type, array( $this, 'save_tickets_order' ) );
 		}
+
+		add_action( 'save_post_' . Tribe__Events__Main::POSTTYPE, array( $this, 'save_tickets_order' ) );
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
@@ -123,7 +159,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( empty( $action_links ) ) {
 			return;
 		}
-
+		// can't escape, mixed HTML
 		echo '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>';
 	}
 
@@ -131,10 +167,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Print Check In Totals at top of Column
 	 */
 	public function print_checkedin_totals() {
-		$total_checked_in_label = esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' );
-		$total_checked_in       = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
+		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
-		echo "<div class='totals-header'><h3>$total_checked_in_label</h3> $total_checked_in</div>";
+		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
 	}
 
 	/**
@@ -385,6 +420,8 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
+	 * @TODO: this needs to move to Assets.php
+	 *
 	 * @param $hook
 	 */
 	public function attendees_page_load_css_js( $hook ) {
@@ -453,7 +490,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Setups the Attendees screen data.
+	 * Sets up the Attendees screen data.
 	 */
 	public function attendees_page_screen_setup() {
 		/* There's no reason for attendee screen setup to happen twice, but because
@@ -525,11 +562,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Uses the event title.
 	 *
 	 * @param $admin_title
-	 * @param $title
+	 * @param $unused_title
 	 *
 	 * @return string
 	 */
-	public function attendees_admin_title( $admin_title, $title ) {
+	public function attendees_admin_title( $admin_title, $unused_title ) {
 		if ( ! empty( $_GET['event_id'] ) ) {
 			$event       = get_post( $_GET['event_id'] );
 			$admin_title = sprintf( '%s - Attendee list', $event->post_title );
@@ -851,6 +888,76 @@ class Tribe__Tickets__Tickets_Handler {
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
+
+	/**
+	 * Render the ticket row into the ticket table
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 */
+	public function render_ticket_row( $ticket ) {
+		$provider     = $ticket->provider_class;
+		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
+		?>
+		<tr class="<?php echo esc_attr( $provider ); ?>" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
+			<!-- (handle, name), price, capacity, available, editlink -->
+			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?></span>
+				<p><?php echo esc_html( $ticket->name ); ?></p>
+				<button type="button" class="toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'event-tickets' ); ?></span></button>
+			</td>
+
+			<?php
+			/**
+			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
+			 *
+			 * @since TBD
+			 *
+			 * @param Tribe__Tickets__Ticket_Object $ticket
+			 * @param obj ecommerce provider object
+			 */
+			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
+			?>
+
+			<td class="ticket_capacity">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
+				<span id="original_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
+					<?php
+					// escaping handled in function - could be string|int
+					$ticket->display_original_stock( true );
+					?>
+				</span>
+			</td>
+
+			<td class="ticket_available">
+				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
+				<?php
+				$original_stock = $ticket->original_stock();
+				if (  empty( $original_stock ) || 'unlimited' === $ticket->global_stock_mode()  ) {
+					esc_html_e( 'unlimited', 'event-tickets' );
+				} elseif ( 'own' === $ticket->global_stock_mode() ) {
+					echo absint( $ticket->remaining() );
+				} else {
+					echo '(' . absint( $ticket->remaining() ) . ')';
+				}
+				?>
+			</td>
+
+			<td class="ticket_edit">
+				<?php
+				printf(
+					"<button data-provider='%s' data-ticket-id='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
+					esc_attr( $ticket->provider_class ),
+					esc_attr( $ticket->ID ),
+					esc_html( $ticket->name )
+				);
+				?>
+			</td>
+		</tr>
+		<?php
+	}
+
 	/**
 	 * Echoes the markup for the tickets list in the tickets metabox
 	 *
@@ -871,9 +978,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function get_ticket_list_markup( $tickets = array() ) {
-
 		ob_start();
-		$this->ticket_list_markup( $tickets );
+		$this->ticket_list_markup( null, $tickets );
 		$return = ob_get_contents();
 		ob_end_clean();
 
@@ -897,7 +1003,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param int $post_id
 	 */
 	public function save_image_header( $post_id ) {
-		if ( ! ( isset($_POST[ 'tribe-tickets-post-settings' ])  && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
+		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
 			return;
 		}
 
@@ -915,13 +1021,15 @@ class Tribe__Tickets__Tickets_Handler {
 		return;
 	}
 
+	/* Capacity */
+
 	/**
 	 * Save the current global stock properties for this event.
 	 * Can come from ticket creation or settings edit. No longer tied to event save.
 	 *
-	 * @param int $post_id
-	 *
 	 * @since TBD
+	 *
+	 * @param int $post_id
 	 */
 	public function save_global_stock( $post_id ) {
 		// Bail on autosaves/bulk updates
@@ -940,44 +1048,90 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Save the the drag-n-drop ticket order
 	 *
-	 * @param int $post_id
-	 *
 	 * @since TBD
+	 *
+	 * @param int $post_id
 	 *
 	 */
 	public function save_tickets_order( $post_id ) {
-		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
-			return;
-		}
+		// We're calling this during post save, so the save nonce has already been checked.
 
 		// don't do anything on autosave, auto-draft, or massupdates
 		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
 			return;
 		}
 
-		if ( ! empty( $_POST['tribe_tickets_order'] ) ) {
-			$ticket_order = str_ireplace ( 'order_', '', $_POST['tribe_tickets_order'] );
-			$ticket_order = explode( ',', $ticket_order );
-			$ticket_order = array_flip( $ticket_order );
-
-			foreach ( $ticket_order as $id => $order ) {
-				wp_update_post( array(
-					'ID'           => absint( $id ),
-					'menu_order'   => absint( $order ),
-				) );
-			}
+		// If our data is missing or we're already in the middle of saving, bail
+		if (
+			empty( $_POST[ 'tribe_tickets_order' ] ) ||
+			! empty( $this->saving_order ) ||
+			! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) )
+		) {
+			return;
 		}
+
+		$this->saving_order = true;
+
+		$ticket_order = $_POST['tribe_tickets_order'];
+
+		update_post_meta(
+			$post_id,
+			$this->tickets_order_field,
+			$ticket_order
+		);
+
+		$ticket_order = explode( ',', $ticket_order );
+		$ticket_order = array_flip( $ticket_order );
+
+		foreach ( $ticket_order as $id => $order ) {
+			wp_update_post( array(
+				'ID'         => absint( $id ),
+				'menu_order' => absint( $order ),
+			) );
+		}
+
+		$this->saving_order = false;
 
 		return;
 	}
+
 	/**
 	 * Adds the hidden input to store the drag-n-drop ticket order
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
 	 */
 	public function tickets_order_input( $post_id ) {
 		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
 		?>
 		<input type="hidden" name="tribe_tickets_order" id="tribe_tickets_order" value="<?php echo esc_html( $tickets_order ); ?>">
 		<?php
+	}
+
+	protected function sort_by_menu_order( $a, $b ) {
+		return $a->menu_order - $b->menu_order;
+	}
+
+	/**
+	 * Sorts tickets according to stored menu_order
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets array of ticket objects
+	 *
+	 * @return array - sorted array of ticket objects
+	 */
+	public function sort_tickets_by_menu_order( $tickets ) {
+		foreach ( $tickets as $key => $ticket ) {
+			// make sure they are ordered correctly
+			$orderpost          = get_post( $ticket->ID );
+			$ticket->menu_order = $orderpost->menu_order;
+		}
+
+		usort( $tickets, array( $this, 'sort_by_menu_order' ) );
+
+		return $tickets;
 	}
 
 	/**
@@ -1025,7 +1179,9 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Saves the chosen image via ajax
+	 * Saves the event ticket settings via ajax
+	 *
+	 * @since TBD
 	 */
 	public function ajax_handler_save_settings() {
 		$params = array();
@@ -1042,16 +1198,34 @@ class Tribe__Tickets__Tickets_Handler {
 		do_action( 'tribe_events_save_tickets_settings', $params );
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, '_tribe_ticket_header', $params['tribe_ticket_header_image_id'] );
-			wp_send_json_success( $params );
+			update_post_meta( $id, $image_header_field, $params['tribe_ticket_header_image_id'] );
 		} else {
-			delete_post_meta( $id, '_tribe_ticket_header' );
-			wp_send_json_success( $params );
+			delete_post_meta( $id, $image_header_field );
 		}
 
-		// #TODO: placeholder
+		// We reversed this logic on the back end
+		if ( ! empty( $params['tribe_show_attendees'] ) ) {
+			delete_post_meta( $id, $this->show_attendees_field );
+		} else {
+			update_post_meta( $id, $this->show_attendees_field, 1 );
+		}
+
+
+		if ( ! empty( $params['default_ticket_provider'] ) ) {
+			update_post_meta( $id, $ticket_provider_field, $params['default_ticket_provider'] );
+		} else {
+			delete_post_meta( $id, $ticket_provider_field );
+		}
+
+		/**
+		 *  @TODO: placeholder for global capacity, not working correctly yet
+		 */
+		if ( ! empty( $params['global_stock'] ) ) {
+			update_post_meta( $id, $global_stock_field, $params['global_stock'] );
+		}
+
 		$this->save_global_stock( $id );
 
-		wp_send_json_error( $params );
+		wp_send_json_success( $params );
 	}
 }

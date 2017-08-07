@@ -23,10 +23,11 @@
 				<fieldset class="input_block">
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using (visible for testing):', 'event-tickets' ); ?></legend>
 					<?php
-					$checked = true;
+					$default_module = Tribe__Tickets__Tickets::get_default_module();
+
 					foreach ( $modules as $class => $module ) {
 						?>
-						<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider" tabindex="-1">
+						<input <?php checked( $default_module, $class ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider" tabindex="-1">
 						<span>
 							<?php
 							/**

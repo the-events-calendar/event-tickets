@@ -35,11 +35,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		private static $have_displayed_reg_link = false;
 
 		/**
-		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all child.
+		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all children.
 		 *
 		 * @var array
 		 */
 		protected static $active_modules = array();
+
+		/**
+		 * Default Tribe__Tickets__Tickets ecommerce module.
+		 * It's static, so it's shared across all children.
+		 *
+		 * @var string
+		 */
+		protected static $default_module = 'Tribe__Tickets__RSVP';
 
 		/**
 		 * Indicates if the frontend ticket form script has already been enqueued (or not).
@@ -473,11 +481,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		final public function ajax_handler_ticket_add() {
 
-			if ( ! isset( $_POST['formdata'] ) ) {
+			if ( ! isset( $_POST['formdata'] ) || ! isset( $_POST['post_ID'] ) ) {
 				$this->ajax_error( 'Bad post' );
 			}
-			if ( ! isset( $_POST['post_ID'] ) )
-				$this->ajax_error( 'Bad post' );
 
 			/*
 			 This is needed because a provider can implement a dynamic set of fields.
@@ -495,15 +501,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad module' );
 			}
 
-			$return = $this->ticket_add( $post_id, $data );
+			$ticket_id = $this->ticket_add( $post_id, $data );
 
 			// Successful?
-			if ( $return ) {
+			if ( $ticket_id ) {
 				// Let's create a tickets list markup to return
 				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
-				$return = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) ) . $return;
+				$html = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) );
+				$html .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
 				/**
 				 * Fire action when a ticket has been added
@@ -513,12 +519,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
 
-			$return = array( 'html' => $return );
+			parse_str ( $_POST['formdata'], $post_data );
+
+			$ticket = $this->get_ticket( $post_id, $ticket_id );
+			$post_data['ticket_stock'] = $ticket->stock;
+			$post_data['ticket_capacity'] = $ticket->original_stock();
+
+			$return = array(
+				'data' => json_encode( $post_data, JSON_FORCE_OBJECT ),
+			);
+
+			if ( ! empty( $html ) ) {
+				$return['html'] = $html;
+			}
 
 			/**
 			 * Filters the return data for ticket add
 			 *
-			 * @var array Array of data to return to the ajax call
+			 * @param array $return Array of data to return to the ajax call
+			 * @param int $post_id WP_Post ID the ticket is attached to
 			 */
 			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
 
@@ -574,9 +593,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fired once a ticket has been created and added to a post
 			 *
-			 * @var $post_id Post ID
-			 * @var $ticket Ticket object
-			 * @var $data Submitted post data
+			 * @param $post_id Post ID
+			 * @param $ticket Ticket object
+			 * @param $data Submitted post data
 			 */
 			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
 
@@ -722,8 +741,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allow for the prevention of updating ticket price on update.
 			 *
-			 * @var boolean
-			 * @var WP_Post
+			 * @param boolean
+			 * @param WP_Post
 			 */
 			$can_update_price = apply_filters( 'tribe_tickets_can_update_ticket_price', true, $ticket );
 
@@ -733,8 +752,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Filter the no-update message that is displayed when updating the price is disallowed
 				 *
-				 * @var string
-				 * @var WP_Post
+				 * @param string
+				 * @param WP_Post
 				 */
 				$return['disallow_update_price_message'] = apply_filters( 'tribe_tickets_disallow_update_ticket_price_message', esc_html__( 'Editing the ticket price is currently disallowed.', 'event-tickets' ), $ticket );
 			}
@@ -749,8 +768,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fired to allow for the insertion of extra form data in the ticket admin form
 			 *
-			 * @var $post_id Post ID
-			 * @var $ticket_id Ticket ID
+			 * @param $post_id Post ID
+			 * @param $ticket_id Ticket ID
 			 */
 			do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, $ticket_id );
 
@@ -760,13 +779,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$return['advanced_fields'] = $extra;
 
 			$return['stock'] = $ticket->stock;
+			$return['original_stock'] = $ticket->original_stock();
 
 			/**
 			 * Provides an opportunity for final adjustments to the data used to populate
 			 * the edit-ticket form.
 			 *
-			 * @var array $return data returned to the client
-			 * @var Tribe__Events__Tickets $ticket_object
+			 * @param array $return data returned to the client
+			 * @param Tribe__Events__Tickets $ticket_object
 			 */
 			$return = (array) apply_filters( 'tribe_events_tickets_ajax_ticket_edit', $return, $this );
 
@@ -1149,7 +1169,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
 				/**
-				 * @var Tribe__Tickets__Ticket_Object $ticket
+				 * @param Tribe__Tickets__Ticket_Object $ticket
 				 */
 				$event_id = $ticket->get_event()->ID;
 				$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
@@ -1189,9 +1209,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the available tickets modules
 			 *
-			 * @var string[] ticket modules
+			 * @param string[] ticket modules
 			 */
 			return apply_filters( 'tribe_tickets_get_modules', self::$active_modules );
+		}
+
+		/**
+		 * Returns the class name of the default module/provider.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		public static function get_default_module() {
+			$modules = array_keys( self::modules() );
+
+			/**
+			 * Filters the default tickets module class name
+			 *
+			 * @since TBD
+			 *
+			 * @param string default ticket module class name
+			 * @param array array of ticket module class names
+			 */
+			return apply_filters( 'tribe_tickets_get_default_module', self::$default_module, $modules );
 		}
 
 		/**
@@ -1599,9 +1640,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the availability slug for a collection of tickets
 			 *
-			 * @var string Availability slug
-			 * @var array Collection of tickets
-			 * @var string Datetime string
+			 * @param string Availability slug
+			 * @param array Collection of tickets
+			 * @param string Datetime string
 			 */
 			return apply_filters( 'event_tickets_availability_slug_by_collection', $collection_availability_slug, $tickets, $datetime );
 		}
@@ -1635,8 +1676,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the unavailability message for a ticket collection
 			 *
-			 * @var string Unavailability message
-			 * @var array Collection of tickets
+			 * @param string Unavailability message
+			 * @param array Collection of tickets
 			 */
 			$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
 

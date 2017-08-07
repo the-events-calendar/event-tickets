@@ -315,10 +315,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			show_hide_panel( e, $edit_panel );
 
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) ) {
-				$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
+				// uncheck them all!
+				$( '.ticket_provider' ).each( function() {
+					$( this ).prop( 'checked', true ).removeAttr( 'checked' );
+				});
+				if ( $( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
+					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ).prop( 'checked', true );
+				} else {
+					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
+				}
+
 			} else {
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
 			}
+
+			$( document.getElementById( 'ticket_form_main' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 			$tribe_tickets
 				.trigger( 'clear.tribe' )
@@ -351,13 +362,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( document.getElementById( 'ticket_form_save' ) ).click( function( e ) {
 			var $form = $( document.getElementById( 'ticket_form_table' ) );
 			var type  = $form.find( '.ticket_provider:checked' ).val();
-			//var $rows = $form.find( 'input' );
 
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
 			var form_data = $form.find( '.ticket_field' ).serialize();
-
-			console.log(form_data);
 
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
@@ -371,9 +379,36 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				params,
 				function( response ) {
 					$tribe_tickets.trigger( 'saved-ticket.tribe', response );
+
+					if ( response.success ) {
+						var responseData = response.data.data ;
+
+						// Get the original (pre-save) capacity 'field' in the ticket table and set it to our new capacity
+						var original_capacity_base = $( document.getElementById( 'original_capacity__' + responseData.ticket_id ) );
+						original_capacity_base.text( responseData.ticket_capacity );
+						// Get the original (pre-save) available capacity 'field' in the ticket table and set it to our new available capacity
+						var available_capacity_base = $( document.getElementById( 'available_capacity__' + responseData.ticket_id ) );
+						available_capacity_base.text( responseData.ticket_stock );
+						// Change the available capacity in the editor
+						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
+
+						// remove old ticket table
+						var ticketTable = document.getElementById('ticket_list_wrapper');
+						ticketTable.innerHTML = '';
+						// create new ticket table (and notice)
+						var newTable = document.createElement('div');
+						newTable.innerHTML = response.data.html;
+
+						// insert new ticket table
+						ticketTable.appendChild( newTable );
+
+						show_hide_panel( e, $edit_panel );
+					}
 				},
 				'json'
 			).complete( function() {
+
+
 				$tribe_tickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
 			} );
 
@@ -440,8 +475,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							return;
 						}
 
-						console.log(response.data);
-
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
 						var onSale       = false;
@@ -456,6 +489,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$add_titles.hide();
 						}
 
+						// Capacity/Stock
 						if ( response.data.global_stock_mode ) {
 							switch ( response.data.global_stock_mode ) {
 								case 'global':
@@ -472,7 +506,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 									$( document.getElementById( 'unlimited' ) ).prop( 'checked', true );
 							}
 						} else {
-							$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.stock );
+							$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.original_stock );
+							$( document.querySelectorAll( '.ticket_stock_total_value' ) ).text( response.data.stock );
 						}
 
 						$( document.getElementById( 'ticket_id' ) ).val( response.data.ID );
@@ -481,13 +516,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( document.getElementById( 'tribe-tickets-global-stock' ) ).val( response.data.global_stock );
 						$( document.getElementById( 'ticket_woo_global_stock_cap' ) ).val( response.data.global_stock_cap );
+						$( document.getElementById( 'ticket_edd_global_stock_cap' ) ).val( response.data.global_stock_cap );
 
 						var start_date = response.data.start_date.substring( 0, 10 );
 						var end_date = response.data.end_date.substring( 0, 10 );
 
+						// handle all the date stuff
 						$( document.getElementById( 'ticket_start_date' ) ).val( start_date );
 						$( document.getElementById( 'ticket_end_date' ) ).val( end_date );
 
+						// @TODO: it's "meridiem" not "meridian"
 						var $start_meridian = $( document.getElementById( 'ticket_start_meridian' ) );
 						var $end_meridian   = $( document.getElementById( 'ticket_end_meridian' ) );
 
@@ -519,7 +557,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						}
 
 						if ( response.data.end_date ) {
-
 							var end_hour     = parseInt( response.data.end_date.substring( 11, 13 ) );
 							var end_meridian = 'am';
 
@@ -604,13 +641,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					},
 					'json'
-				).complete( function() {
+				).complete( function( response ) {
 					$tribe_tickets
 						.trigger( 'spin.tribe', 'stop' )
 						.trigger( 'focus.tribe' )
 						.trigger( 'edit-tickets-complete.tribe' );
 
-					show_hide_panel( e, $edit_panel);
+					show_hide_panel( e, $edit_panel );
 				} );
 
 			} )
@@ -634,10 +671,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			.on( 'click', '#tribe_settings_form_save', function( e ) {
 				e.preventDefault();
 				var $settings_form = $( document.getElementById( 'tribe_panel_settings' ) );
+				var form_data = $settings_form.find( '.settings_field' ).serialize();
 
 				var params = {
 					action  : 'tribe-ticket-save-settings',
-					formdata: $settings_form.find( '.settings_field' ).serialize(),
+					formdata: form_data,
 					post_ID : $( document.getElementById( 'post_ID' ) ).val(),
 					nonce   : TribeTickets.add_ticket_nonce
 				};
@@ -647,6 +685,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					params,
 					function( response ) {
 						$tribe_tickets.trigger( 'saved-image.tribe', response );
+						if ( response.success ) {
+							show_hide_panel( e, $settings_panel );
+						}
 					},
 					'json'
 				);
