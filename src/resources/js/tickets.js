@@ -393,25 +393,26 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
 
 						// remove old ticket table
-						var ticketTable = document.getElementById('ticket_list_wrapper');
-						if ( null === ticketTable ) {
-							// if it's not there, create it :(
-							var container = document.querySelector('.tribe_sectionheader.ticket_list_container');
-							var ticketTable = document.createElement('div');
-							ticketTable.setAttribute('id', 'ticket_list_wrapper');
-							container.append( ticketTable );
+						var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
 
-							if (container.classList.contains('tribe_no_capacity')) {
-								container.classList.remove('tribe_no_capacity');
+						if ( 0 === $ticket_table.length ) {
+							// if it's not there, create it :(
+							var $container = $( '.tribe_sectionheader.ticket_list_container' );
+							$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
+							container.append( ticket_table );
+
+							if ( container.hasClass( 'tribe_no_capacity' ) ) {
+								container.removeClass( 'tribe_no_capacity' );
 							}
 						}
-						ticketTable.innerHTML = '';
+
+						$ticket_table.empty();
 						// create new ticket table (and notice)
-						var newTable = document.createElement('div');
-						newTable.innerHTML = response.data.html;
+						var $new_table = $( '<div>' );
+						$new_table.html( response.data.html );
 
 						// insert new ticket table
-						ticketTable.appendChild( newTable );
+						$ticket_table.append( $new_table );
 
 						show_hide_panel( e, $edit_panel );
 					}
