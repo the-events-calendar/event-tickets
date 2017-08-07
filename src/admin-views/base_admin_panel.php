@@ -82,7 +82,6 @@
 		?>
 
 	</div>
-
 	<?php
 	/**
 	 * Allows for the insertion of content at the end of the new ticket admin panel
