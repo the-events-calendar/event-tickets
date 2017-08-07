@@ -57,12 +57,42 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @param int $post_id the id of the post
 		 * @since TBD
+		 *
+		 * @param int $post_id the id of the post
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
 		?>
-		<button id="rsvp_form_toggle" class="button-secondary ticket_form_toggle"><span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new RSVP', 'event-tickets' ); ?>"><?php esc_html_e( 'New RSVP', 'event-tickets' ); ?></span></button>
-		<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text"><?php esc_html_e( 'Settings', 'event-tickets' ); ?></span></button>
+		<button id="rsvp_form_toggle" class="button-secondary ticket_form_toggle">
+			<span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new RSVP', 'event-tickets' ); ?>"><?php esc_html_e( 'New RSVP', 'event-tickets' ); ?></span>
+		</button>
+
+
+		<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text">
+			<?php esc_html_e( 'Settings', 'event-tickets' ); ?></span>
+		</button>
+
+		<?php
+		/**
+		 * Allows for the insertion of warnings before the seeings
+		 *
+		 * @since TBD
+		 *
+		 * @param int Post ID
+		 */
+		do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id );
+		?>
+
 	</div>
+	<?php
+	/**
+	 * Allows for the insertion of content at the end of the new ticket admin panel
+	 *
+	 * @since TBD
+	 *
+	 * @param int Post ID
+	 */
+	do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
+	?>
+
 </div><!-- #panel_base -->
