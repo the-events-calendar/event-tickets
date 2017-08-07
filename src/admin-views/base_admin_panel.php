@@ -31,8 +31,8 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 				?>
 				<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $attendees_url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
 			</div>
-		<?php endif;
-
+		<?php endif; ?>
+		<?php
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
 		 *
