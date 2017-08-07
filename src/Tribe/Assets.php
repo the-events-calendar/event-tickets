@@ -12,7 +12,7 @@ class Tribe__Tickets__Assets {
 				array( 'event-tickets-tickets-css', 'tickets.css', array( 'dashicons' ) ),
 				array( 'event-tickets-tickets-rsvp-css', 'rsvp.css', array() ),
 				array( 'event-tickets-tickets-rsvp-js', 'rsvp.js', array( 'jquery', 'jquery-ui-datepicker' ) ),
-				array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery' ) ),
+				array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery', 'bumpdown' ) ),
 			),
 			'enqueue_scripts'
 		);

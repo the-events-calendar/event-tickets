@@ -34,9 +34,6 @@
 	}
 
 	function tribe_toggle_sortable() {
-
-		console.log('debounce');
-
 		if ( window.matchMedia( '( min-width: 786px )' ).matches ) {
 			if ( ! $( $table ).hasClass( 'ui-sortable' ) ) {
 				make_sortable( $table );
