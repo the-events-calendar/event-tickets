@@ -163,6 +163,12 @@
 					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
 					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
 					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
+
+					<?php do_action( 'tribe_events_tickets_bottom', $post_id ); ?>
+
+					<div id="ticket_bottom_right">
+						<?php do_action( 'tribe_events_tickets_bottom_right', $post_id ); ?>
+					</div>
 			</div>
 
 		</div><!-- #ticket_form_table -->

@@ -116,6 +116,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$('#tribe-tickets-attendee-sortables').empty();
 				$('.tribe-tickets-attendee-saved-fields').show();
 
+				$('#ticket_bottom_right').empty();
+
 				$edit_titles.hide();
 				$add_titles.show();
 
@@ -419,8 +421,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				},
 				'json'
 			).complete( function() {
-
-
 				$tribe_tickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
 			} );
 
@@ -436,10 +436,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$tribe_tickets.trigger( 'delete-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
+			var deleted_ticket_id = $( this ).attr( 'attr-ticket-id' );
+
 			var params = {
 				action   : 'tribe-ticket-delete-' + $( this ).attr( 'attr-provider' ),
 				post_ID  : $( document.getElementById( 'post_ID' ) ).val(),
-				ticket_id: $( this ).attr( 'attr-ticket-id' ),
+				ticket_id: deleted_ticket_id,
 				nonce    : TribeTickets.remove_ticket_nonce
 			};
 
@@ -450,8 +452,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					$tribe_tickets.trigger( 'deleted-ticket.tribe', response );
 
 					if ( response.success ) {
-						$tribe_tickets.trigger( 'clear.tribe' );
-						$( 'td.ticket_list_container' ).empty().html( response.data );
+						// remove deleted ticket fromt table
+						var $deleted_row = $( '#tribe_ticket_list_table' ).find( '[data-ticket-order-id="order_' + deleted_ticket_id + '"]' );
+						$deleted_row.remove();
+
+						show_hide_panel( e, $edit_panel );
 					}
 				},
 				'json'
@@ -641,6 +646,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						if ( response.data.sku ) {
 							$( document.querySelectorAll( '.sku_input' ) ).val( response.data.sku );
+						}
+
+						if ( 'undefined' !== typeof response.data.controls && response.data.controls ) {
+							$( document.getElementById( 'ticket_bottom_right' ) ).html( response.data.controls );
 						}
 
 						$tribe_tickets.find( '.tribe-bumpdown-trigger' ).bumpdown();

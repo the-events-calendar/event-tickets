@@ -117,6 +117,14 @@
 	margin: 0;
 }
 
+.ticket_delete {
+	color: #a00;
+}
+
+.ticket_delete:hover {
+	color: #dc3232;
+}
+
 /* Base Panel Toggle Buttons */
 
 #settings_form_toggle {
@@ -171,25 +179,30 @@
 /* Styles for Initial View */
 
 .ticket_table_intro .ticket_form_total_capacity {
+	position: relative;
 	display: block;
 	margin-bottom: .5em;
-	position: relative;
 }
 
 .ticket_table_intro .ticket_form_total_capacity .tooltip {
 	border-radius: 3px;
 	border: 1px solid #a3a3a3;
 	display: none;
-	left: 100%;
 	margin-left: .5em;
 	padding: .5em;
 	position: absolute;
-	top: -.75em;
-	white-space: nowrap;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	        transform: translateY(-50%);
 }
 
 .ticket_table_intro .ticket_form_total_capacity:hover .tooltip {
 	display: block;
+}
+
+.ticket_table_intro .ticket_form_total_capacity .tooltip {
+	left: 100%;
+	white-space: nowrap;
 }
 
 .ticket_table_intro .ticket_form_view_attendees {
@@ -377,6 +390,10 @@ p.description {
 	.input_block .input_block,
 	.input_block .ticket_form_right {
 		margin-left: 132px;
+	}
+
+	#ticket_bottom_right {
+		float: right;
 	}
 }
 
