@@ -20,8 +20,8 @@
 					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field ticket_form_right" size='25' value='' />
 					<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Ticket type name shows on the front end and emailed tickets', 'event-tickets' ); ?></span>
 				</div>
-				<fieldset class="input_block">
-					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using (visible for testing):', 'event-tickets' ); ?></legend>
+				<fieldset class="input_block" aria-hidden="true" >
+					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php
 					$default_module = Tribe__Tickets__Tickets::get_default_module();
 
