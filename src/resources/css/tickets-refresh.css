@@ -8,6 +8,10 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
+#poststuff .inside {
+	margin-top: 12px;
+}
+
 #event_tickets {
 	overflow: hidden;
 	position: relative;
@@ -75,7 +79,7 @@
 
 .ticket_panel.panel_base {
 	border: 0;
-	padding: 1em 0 0;
+	padding: .5em 0 0;
 }
 
 .ticket_panel.panel_base[aria-hidden='true'] {
@@ -88,6 +92,14 @@
 	margin-top: 6px;
 	-webkit-transform: translateX(100%);
 	        transform: translateX(100%);
+}
+
+.ticket_panel.panel_settings h4 {
+	margin: 0;
+}
+
+.ticket_panel.panel_settings .settings_main {
+	margin-top: 0;
 }
 
 .ticket_panel h4 {
