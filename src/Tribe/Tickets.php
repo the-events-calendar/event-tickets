@@ -187,8 +187,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			/**
+			 * Allows for the filtering and testing if a user can delete tickets
+			 *
+			 * @since TBD
+			 *
+			 * @param int ticket post ID
+			 * @param string ticket provider class
+			 */
 			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
-				$delete_link = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">' . esc_html__( 'Delete Ticket', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
+				$delete_link = sprintf(
+					'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">%3$s</a></span>',
+					$ticket->provider_class,
+					$ticket->ID,
+					esc_html__( 'Delete Ticket', 'event-tickets' )
+				);
 
 				return $delete_link;
 			}
