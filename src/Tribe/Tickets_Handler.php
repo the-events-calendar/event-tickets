@@ -31,15 +31,6 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $tickets_order_field = '_tribe_tickets_order';
 
 	/**
-	 * Emergency brake for saving the order meta - prevents infinte looping
-	 *
-	 * @since TBD
-	 *
-	 * @var bool
-	 */
-	protected $saving_order = false;
-
-	/**
 	 * Post Meta key for showing attendees on the front end
 	 *
 	 * @since TBD
@@ -98,9 +89,8 @@ class Tribe__Tickets__Tickets_Handler {
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
 			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_tickets_order' ) );
 		}
-
-		add_action( 'save_post_' . Tribe__Events__Main::POSTTYPE, array( $this, 'save_tickets_order' ) );
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
@@ -1063,14 +1053,14 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// If our data is missing or we're already in the middle of saving, bail
 		if (
-			empty( $_POST[ 'tribe_tickets_order' ] ) ||
-			! empty( $this->saving_order ) ||
-			! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) )
+			empty( $_POST[ 'tribe_tickets_order' ] )
+			|| ! (
+				isset( $_POST[ 'tribe-tickets-post-settings' ] )
+				&& wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' )
+			)
 		) {
 			return;
 		}
-
-		$this->saving_order = true;
 
 		$ticket_order = $_POST['tribe_tickets_order'];
 
@@ -1089,8 +1079,6 @@ class Tribe__Tickets__Tickets_Handler {
 				'menu_order' => absint( $order ),
 			) );
 		}
-
-		$this->saving_order = false;
 
 		return;
 	}
