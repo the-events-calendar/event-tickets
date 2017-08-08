@@ -3,8 +3,9 @@
 	/**
 	 * Allows for the insertion of additional elements into the main ticket edit panel
 	 *
-	 * @param int Post ID
 	 * @since TBD
+	 *
+	 * @param int Post ID
 	 */
 	do_action( 'tribe_events_tickets_pre_edit', $post_id );
 	?>
@@ -33,9 +34,9 @@
 							/**
 							 * Allows for the editing of the module name before output
 							 *
-							 * @param string $module the module name
-							 *
 							 * @since TBD
+							 *
+							 * @param string $module the module name
 							 */
 							echo esc_html( apply_filters( 'tribe_events_tickets_module_name', $module ) );
 							?>
@@ -48,6 +49,8 @@
 				<?php
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form - main section
+				 *
+				 * @since TBD
 				 *
 				 * @param int Post ID
 				 * @param null Ticket ID
@@ -121,6 +124,8 @@
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form - advanced section
 					 *
+					 * @since TBD
+					 *
 					 * @param int Post ID
 					 * @param null Ticket ID
 					 *
@@ -141,7 +146,9 @@
 				</section><!-- #ticket_form_advanced -->
 				<?php
 				/**
-				 * Allows for the insertion of additional content section into the ticket edit form accordion
+				 * Allows for the insertion of additional content sections into the ticket edit form accordion
+				 *
+				 * @since TBD
 				 *
 				 * @param int Post ID
 				 * @param null Ticket ID
@@ -154,8 +161,9 @@
 			/**
 			 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion section
 			 *
-			 * @param int Post ID
 			 * @since TBD
+			 *
+			 * @param int Post ID
 			 */
 			do_action( 'tribe_events_tickets_post_accordion', $post_id );
 			?>
@@ -164,10 +172,28 @@
 					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
 					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
 
-					<?php do_action( 'tribe_events_tickets_bottom', $post_id ); ?>
+					<?php
+					/**
+					 * Allows for the insertion of additional content into the ticket edit form bottom (buttons) section
+					 *
+					 * @since TBD
+					 *
+					 * @param int Post ID
+					 */
+					do_action( 'tribe_events_tickets_bottom', $post_id );
+					?>
 
 					<div id="ticket_bottom_right">
-						<?php do_action( 'tribe_events_tickets_bottom_right', $post_id ); ?>
+						<?php
+						/**
+						 * Allows for the insertion of additional content into the ticket edit form bottom (links on right) section
+						 *
+						 * @since TBD
+						 *
+						 * @param int Post ID
+						 */
+						do_action( 'tribe_events_tickets_bottom_right', $post_id );
+						?>
 					</div>
 			</div>
 
