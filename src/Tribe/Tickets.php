@@ -1658,7 +1658,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_event_key() {
 			if ( property_exists( $this, 'event_key' ) ) {
-				return $this->event_key;
+				// Seriously?!?!
+				$prop = new ReflectionProperty( $this, 'event_key' );
+				if ( $prop->isStatic() ) {
+					return $this::$event_key;
+				} else {
+					return $this->event_key;
+				}
 			}
 
 			return '';

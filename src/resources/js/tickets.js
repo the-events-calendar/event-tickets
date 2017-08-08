@@ -452,7 +452,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					$tribe_tickets.trigger( 'deleted-ticket.tribe', response );
 
 					if ( response.success ) {
-						// remove deleted ticket fromt table
+						// remove deleted ticket from table
 						var $deleted_row = $( '#tribe_ticket_list_table' ).find( '[data-ticket-order-id="order_' + deleted_ticket_id + '"]' );
 						$deleted_row.remove();
 
