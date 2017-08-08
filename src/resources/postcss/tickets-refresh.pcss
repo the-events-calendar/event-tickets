@@ -30,6 +30,10 @@
 	width: 1px;
 }
 
+#poststuff .inside {
+	margin-top: 12px;
+}
+
 #event_tickets {
 	overflow: hidden;
 	position: relative;
@@ -97,7 +101,7 @@
 
 	&.panel_base {
 		border: 0;
-		padding: 1em 0 0;
+		padding: .5em 0 0;
 
 		&[aria-hidden='true'] {
 			right: 100%;
@@ -115,6 +119,16 @@
 
 	&.panel_edit {
 		border: 0;
+	}
+
+	&.panel_settings {
+		h4 {
+			margin: 0;
+		}
+
+		.settings_main {
+			margin-top: 0;
+		}
 	}
 
 	h4 {
