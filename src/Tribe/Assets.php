@@ -76,8 +76,9 @@ class Tribe__Tickets__Assets {
 					array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css' ) ),
 					array( 'event-tickets-admin-tables-css', 'tickets-tables.css', array( 'event-tickets-admin-css' ) ),
 					array( 'event-tickets-admin-js', 'tickets.js', array( 'jquery-ui-datepicker' ) ),
-					array( 'event-tickets-admin-tables-js', 'tickets-tables.js', array() ),
+					array( 'event-tickets-admin-tables-js', 'tickets-tables.js', array( 'underscore' ) ),
 					array( 'event-tickets-admin-accordion-js', 'accordion.js', array() ),
+					array( 'bumpdown', 'bumpdown.js', array( 'jquery', 'underscore', 'hoverIntent' ) ),
 				),
 				'admin_enqueue_scripts',
 				array(
