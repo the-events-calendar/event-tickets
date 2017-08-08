@@ -19,6 +19,11 @@
 	}
 }
 
+
+#poststuff .inside {
+	margin-top: 12px;
+}
+
 #event_tickets {
 	overflow: hidden;
 	position: relative;
@@ -86,7 +91,7 @@
 
 	&.panel_base {
 		border: 0;
-		padding: 1em 0 0;
+		padding: .5em 0 0;
 
 		&[aria-hidden='true'] {
 			right: 100%;
@@ -99,6 +104,16 @@
 		&[aria-hidden='true'] {
 			margin-top: 6px;
 			transform: translateX(100%);
+		}
+	}
+
+	&.panel_settings {
+		h4 {
+			margin: 0;
+		}
+
+		.settings_main {
+			margin-top: 0;
 		}
 	}
 
