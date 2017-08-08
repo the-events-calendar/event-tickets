@@ -177,6 +177,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Returns the html for the delete ticket link
+		 *
+		 * @since TBD
+		 *
+		 * @param obj $ticket Ticket object
 		 */
 		public function get_ticket_delete_link( $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -184,7 +188,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
-				$delete_link = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">' . esc_html__( 'Delete Ticket', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
+				$delete_link = sprintf(
+					'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">'
+					. esc_html__( 'Delete Ticket', 'event-tickets' ) . '</a></span>',
+					$ticket->provider_class,
+					$ticket->ID
+				);
 
 				return $delete_link;
 			}
@@ -194,6 +203,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Returns the url for the move ticket link
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id the id of the parent post/event
+		 * @param obj $ticket Ticket object
+		 *
+		 * @return string HTML link
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) || empty( $post_id ) ) {
@@ -217,6 +233,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Returns the html for the move ticket link
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id the id of the parent post/event
+		 * @param obj $ticket Ticket object
+		 *
+		 * @return string HTML link
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -234,6 +257,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return;
 		}
 
+		/*
+		 * Get the controls (move, delete) as a string and add ot our ajax return
+		 *
+		 * @since TBD
+		 *
+		 * @param array $return the ajax return data
+		 */
 		public function ajax_ticket_edit_controls( $return ) {
 			$ticket = $this->get_ticket( $return[ 'post_id' ], $return[ 'ID' ] );
 
@@ -636,7 +666,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->ID             = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name           = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
 			$ticket->description    = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
-			$ticket->price          = ! empty( $data['ticket_price'] ) ? trim( $data['ticket_price'] ) : 0;
+			$ticket->price          = ! empty( $data['ticket_price'] ) ? esc_html( trim( $data['ticket_price'] ) ) : 0;
 			$ticket->purchase_limit = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit' ] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 
 			if ( ! empty( $ticket->price ) ) {
@@ -1658,7 +1688,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_event_key() {
 			if ( property_exists( $this, 'event_key' ) ) {
-				// Seriously?!?!
+				// EDD module uses a static event_key so we need to check for it or we fatal
 				$prop = new ReflectionProperty( $this, 'event_key' );
 				if ( $prop->isStatic() ) {
 					return $this::$event_key;

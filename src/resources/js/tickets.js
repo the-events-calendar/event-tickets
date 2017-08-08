@@ -528,13 +528,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 									$( document.getElementById( response.data.provider_class + '_capacity' ) ).val( response.data.stock );
 									break;
 								default:
-								// Just in case
+									// Just in case
 									$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
 							}
 						} else {
 							$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
 							$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.original_stock );
-							//$( document.querySelectorAll( '.ticket_stock_total_value' ) ).text( response.data.stock );
 						}
 
 						$( 'input[name=ticket_global_stock]:radio' ).change();
