@@ -116,6 +116,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$('#tribe-tickets-attendee-sortables').empty();
 				$('.tribe-tickets-attendee-saved-fields').show();
 
+				$('#ticket_bottom_right').empty();
+
 				$edit_titles.hide();
 				$add_titles.show();
 
@@ -319,11 +321,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( '.ticket_provider' ).each( function() {
 					$( this ).prop( 'checked', true ).removeAttr( 'checked' );
 				});
-				if ( $( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
+
+				if ( $( document.getElementById( 'provider_Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
 					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ).prop( 'checked', true );
 				} else {
-					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
+					$( document.getElementById( 'provider_Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
 				}
+
 
 			} else {
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
@@ -367,16 +371,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			var form_data = $form.find( '.ticket_field' ).serialize();
 
-			console.log(form_data);
-
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
 				formdata: form_data,
 				post_ID : $( document.getElementById( 'post_ID' ) ).val(),
 				nonce   : TribeTickets.add_ticket_nonce
 			};
-
-			console.log(params);
 
 			$.post(
 				ajaxurl,
@@ -396,35 +396,35 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						// Change the available capacity in the editor
 						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
 
-						// remove old ticket table
-						var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
+						if ( response.data.html && '' != response.data.html ) {
+							// remove old ticket table
+							var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
 
-						if ( 0 === $ticket_table.length ) {
-							// if it's not there, create it :(
-							var $container = $( '.tribe_sectionheader.ticket_list_container' );
-							$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
-							container.append( ticket_table );
+							if ( 0 === $ticket_table.length ) {
+								// if it's not there, create it :(
+								var $container = $( '.tribe_sectionheader.ticket_list_container' );
+								$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
+								container.append( ticket_table );
 
-							if ( container.hasClass( 'tribe_no_capacity' ) ) {
-								container.removeClass( 'tribe_no_capacity' );
+								if ( container.hasClass( 'tribe_no_capacity' ) ) {
+									container.removeClass( 'tribe_no_capacity' );
+								}
 							}
+
+							$ticket_table.empty();
+							// create new ticket table (and notice)
+							var $new_table = $( '<div>' );
+							$new_table.html( response.data.html );
+
+							// insert new ticket table
+							$ticket_table.append( $new_table );
 						}
-
-						$ticket_table.empty();
-						// create new ticket table (and notice)
-						var $new_table = $( '<div>' );
-						$new_table.html( response.data.html );
-
-						// insert new ticket table
-						$ticket_table.append( $new_table );
 
 						show_hide_panel( e, $edit_panel );
 					}
 				},
 				'json'
 			).complete( function() {
-
-
 				$tribe_tickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
 			} );
 
@@ -440,10 +440,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$tribe_tickets.trigger( 'delete-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
+			var deleted_ticket_id = $( this ).attr( 'attr-ticket-id' );
+
 			var params = {
 				action   : 'tribe-ticket-delete-' + $( this ).attr( 'attr-provider' ),
 				post_ID  : $( document.getElementById( 'post_ID' ) ).val(),
-				ticket_id: $( this ).attr( 'attr-ticket-id' ),
+				ticket_id: deleted_ticket_id,
 				nonce    : TribeTickets.remove_ticket_nonce
 			};
 
@@ -454,8 +456,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					$tribe_tickets.trigger( 'deleted-ticket.tribe', response );
 
 					if ( response.success ) {
-						$tribe_tickets.trigger( 'clear.tribe' );
-						$( 'td.ticket_list_container' ).empty().html( response.data );
+						// remove deleted ticket from table
+						var $deleted_row = $( '#tribe_ticket_list_table' ).find( '[data-ticket-order-id="order_' + deleted_ticket_id + '"]' );
+						$deleted_row.remove();
+
+						show_hide_panel( e, $edit_panel );
 					}
 				},
 				'json'
@@ -647,6 +652,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						if ( response.data.sku ) {
 							$( document.querySelectorAll( '.sku_input' ) ).val( response.data.sku );
+						}
+
+						if ( 'undefined' !== typeof response.data.controls && response.data.controls ) {
+							$( document.getElementById( 'ticket_bottom_right' ) ).html( response.data.controls );
 						}
 
 						$tribe_tickets.find( '.tribe-bumpdown-trigger' ).bumpdown();

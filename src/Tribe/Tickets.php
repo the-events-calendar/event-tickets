@@ -176,6 +176,83 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns the html for the delete ticket link
+		 */
+		public function get_ticket_delete_link( $ticket = null ) {
+			if ( empty( $ticket ) ) {
+				return;
+			}
+
+			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
+				$delete_link = sprintf( '<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">' . esc_html__( 'Delete Ticket', 'event-tickets' ) . '</a></span>', $ticket->provider_class, $ticket->ID );
+
+				return $delete_link;
+			}
+
+			return;
+		}
+
+		/**
+		 * Returns the url for the move ticket link
+		 */
+		public function get_ticket_move_url( $post_id, $ticket = null ) {
+			if ( empty( $ticket ) || empty( $post_id ) ) {
+				return;
+			}
+
+			$post_url = get_edit_post_link( $post_id, 'admin' );
+
+			$move_type_url = add_query_arg(
+				array(
+					'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
+					'ticket_type_id' => $ticket->ID,
+					'check'          => wp_create_nonce( 'move_tickets' ),
+					'TB_iframe'      => 'true',
+				),
+				$post_url
+			);
+
+			return $move_type_url;
+		}
+
+		/**
+		 * Returns the html for the move ticket link
+		 */
+		public function get_ticket_move_link( $post_id, $ticket = null ) {
+			if ( empty( $ticket ) ) {
+				return;
+			}
+
+			$move_url = $this->get_ticket_move_url( $post_id, $ticket );
+
+			if ( ! empty( $move_url ) ) {
+				$move_link = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move Ticket', 'event-tickets' ) . '</a>', $move_url );
+
+				return $move_link;
+			}
+
+			return;
+		}
+
+		public function ajax_ticket_edit_controls( $return ) {
+			$ticket = $this->get_ticket( $return[ 'post_id' ], $return[ 'ID' ] );
+
+			if ( empty( $ticket ) ) {
+				return $return;
+			}
+
+			$controls   = array();
+			$controls[] = $this->get_ticket_move_link( $return[ 'post_id' ], $ticket );
+			$controls[] = $this->get_ticket_delete_link( $ticket );
+
+			if ( ! empty( $controls ) ) {
+				$return['controls'] = join( '  |  ', $controls );
+			}
+
+			return $return;
+		}
+
+		/**
 		 * Attempts to load the specified ticket type post object.
 		 *
 		 * @param int $ticket_id
@@ -437,6 +514,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since TBD
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
+			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
 
 			// Admin AJAX actions for each provider
 			add_action( 'wp_ajax_tribe-ticket-add-' . $this->className, array( $this, 'ajax_handler_ticket_add' ) );
@@ -555,10 +633,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		final public function ticket_add( $post_id, $data ) {
 			$ticket = new Tribe__Tickets__Ticket_Object();
 
-			$ticket->ID          = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
-			$ticket->name        = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
-			$ticket->description = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
-			$ticket->price       = ! empty( $data['ticket_price'] ) ? trim( $data['ticket_price'] ) : 0;
+			$ticket->ID             = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
+			$ticket->name           = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
+			$ticket->description    = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
+			$ticket->price          = ! empty( $data['ticket_price'] ) ? trim( $data['ticket_price'] ) : 0;
 			$ticket->purchase_limit = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit' ] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 
 			if ( ! empty( $ticket->price ) ) {
@@ -1580,7 +1658,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_event_key() {
 			if ( property_exists( $this, 'event_key' ) ) {
-				return $this->event_key;
+				// Seriously?!?!
+				$prop = new ReflectionProperty( $this, 'event_key' );
+				if ( $prop->isStatic() ) {
+					return $this::$event_key;
+				} else {
+					return $this->event_key;
+				}
 			}
 
 			return '';
@@ -1697,7 +1781,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post_id = get_the_ID();
 			}
 
-			$existing_tickets = ! empty( self::$currently_unavailable_tickets[ (int) $post_id ] )
+			$unavailable_tickets = self::$currently_unavailable_tickets[ (int) $post_id ];
+
+			$existing_tickets = ! empty( $unavailable_tickets )
 				? self::$currently_unavailable_tickets[ (int) $post_id ]
 				: array();
 
@@ -1731,7 +1817,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if no ticket providers reported that all their tickets for the event were unavailable
-			if ( empty( self::$currently_unavailable_tickets[ $post_id ] ) ) {
+			$unavailable_tickets = self::$currently_unavailable_tickets[ $post_id ];
+			if ( empty( $unavailable_tickets ) ) {
 				return;
 			}
 
