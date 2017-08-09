@@ -103,7 +103,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Name of the provider
-		 * @var
+		 * @var string
 		 */
 		public $pluginName;
 
@@ -115,13 +115,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Path of the child class
-		 * @var
+		 * @var string
 		 */
 		protected $pluginPath;
 
 		/**
 		 * URL of the child class
-		 * @var
+		 * @var string
 		 */
 		protected $pluginUrl;
 
@@ -180,7 +180,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param obj $ticket Ticket object
+		 * @param object $ticket Ticket object
 		 */
 		public function get_ticket_delete_link( $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -189,10 +189,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
 				$delete_link = sprintf(
-					'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">'
-					. esc_html__( 'Delete Ticket', 'event-tickets' ) . '</a></span>',
+					'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">%3$s</a></span>',
 					$ticket->provider_class,
-					$ticket->ID
+					$ticket->ID,
+					esc_html__( 'Delete Ticket', 'event-tickets' )
 				);
 
 				return $delete_link;
@@ -207,7 +207,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since TBD
 		 *
 		 * @param int $post_id the id of the parent post/event
-		 * @param obj $ticket Ticket object
+		 * @param object $ticket Ticket object
 		 *
 		 * @return string HTML link
 		 */
@@ -237,7 +237,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since TBD
 		 *
 		 * @param int $post_id the id of the parent post/event
-		 * @param obj $ticket Ticket object
+		 * @param object $ticket Ticket object
 		 *
 		 * @return string HTML link
 		 */
