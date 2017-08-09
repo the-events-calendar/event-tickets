@@ -180,7 +180,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param obj $ticket Ticket object
+		 * @param object $ticket Ticket object
 		 */
 		public function get_ticket_delete_link( $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -192,6 +192,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @since TBD
 			 *
+			 * @param bool true
 			 * @param int ticket post ID
 			 * @param string ticket provider class
 			 */
@@ -215,9 +216,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since TBD
 		 *
 		 * @param int $post_id the id of the parent post/event
-		 * @param obj $ticket Ticket object
+		 * @param object $ticket Ticket object
 		 *
-		 * @return string HTML link
+		 * @return string HTML link | void
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) || empty( $post_id ) ) {
@@ -245,9 +246,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since TBD
 		 *
 		 * @param int $post_id the id of the parent post/event
-		 * @param obj $ticket Ticket object
+		 * @param object $ticket Ticket object
 		 *
-		 * @return string HTML link
+		 * @return string HTML link | void
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -269,7 +270,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/*
-		 * Get the controls (move, delete) as a string and add ot our ajax return
+		 * Get the controls (move, delete) as a string and add to our ajax return
 		 *
 		 * @since TBD
 		 *
@@ -678,7 +679,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->ID             = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name           = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
 			$ticket->description    = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
-			$ticket->price          = ! empty( $data['ticket_price'] ) ? trim( $data['ticket_price'] ) : 0;
+			$ticket->price          = ! empty( $data['ticket_price'] ) ? absint( trim( $data['ticket_price'] ) ) : 0;
 			$ticket->purchase_limit = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit' ] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 
 			if ( ! empty( $ticket->price ) ) {
@@ -1703,7 +1704,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// EDD module uses a static event_key so we need to check for it or we fatal
 				$prop = new ReflectionProperty( $this, 'event_key' );
 				if ( $prop->isStatic() ) {
-					return $this::$event_key;
+
+					return $prop->get_value();
 				} else {
 					return $this->event_key;
 				}
