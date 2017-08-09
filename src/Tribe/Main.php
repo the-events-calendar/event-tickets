@@ -18,25 +18,25 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Name of the provider
-	 * @var
+	 * @var string
 	 */
 	public $plugin_name;
 
 	/**
 	 * Directory of the plugin
-	 * @var
+	 * @var string
 	 */
 	public $plugin_dir;
 
 	/**
 	 * Path of the plugin
-	 * @var
+	 * @var string
 	 */
 	public $plugin_path;
 
 	/**
 	 * URL of the plugin
-	 * @var
+	 * @var string
 	 */
 	public $plugin_url;
 

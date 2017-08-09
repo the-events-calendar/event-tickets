@@ -218,7 +218,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id the id of the parent post/event
 		 * @param object $ticket Ticket object
 		 *
-		 * @return string HTML link | void
+		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) || empty( $post_id ) ) {
@@ -248,7 +248,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id the id of the parent post/event
 		 * @param object $ticket Ticket object
 		 *
-		 * @return string HTML link | void
+		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) ) {
