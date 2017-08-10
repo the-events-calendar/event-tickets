@@ -321,11 +321,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( '.ticket_provider' ).each( function() {
 					$( this ).prop( 'checked', true ).removeAttr( 'checked' );
 				});
-				if ( $( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
+
+				if ( $( document.getElementById( 'provider_Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
 					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ).prop( 'checked', true );
 				} else {
-					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
+					$( document.getElementById( 'provider_Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
 				}
+
 
 			} else {
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
@@ -394,27 +396,29 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						// Change the available capacity in the editor
 						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
 
-						// remove old ticket table
-						var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
+						if ( response.data.html && '' != response.data.html ) {
+							// remove old ticket table
+							var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
 
-						if ( 0 === $ticket_table.length ) {
-							// if it's not there, create it :(
-							var $container = $( '.tribe_sectionheader.ticket_list_container' );
-							$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
-							container.append( ticket_table );
+							if ( 0 === $ticket_table.length ) {
+								// if it's not there, create it :(
+								var $container = $( '.tribe_sectionheader.ticket_list_container' );
+								$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
+								container.append( ticket_table );
 
-							if ( container.hasClass( 'tribe_no_capacity' ) ) {
-								container.removeClass( 'tribe_no_capacity' );
+								if ( container.hasClass( 'tribe_no_capacity' ) ) {
+									container.removeClass( 'tribe_no_capacity' );
+								}
 							}
+
+							$ticket_table.empty();
+							// create new ticket table (and notice)
+							var $new_table = $( '<div>' );
+							$new_table.html( response.data.html );
+
+							// insert new ticket table
+							$ticket_table.append( $new_table );
 						}
-
-						$ticket_table.empty();
-						// create new ticket table (and notice)
-						var $new_table = $( '<div>' );
-						$new_table.html( response.data.html );
-
-						// insert new ticket table
-						$ticket_table.append( $new_table );
 
 						show_hide_panel( e, $edit_panel );
 					}
@@ -506,34 +510,39 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$add_titles.hide();
 						}
 
+						// trigger a change event on the provider radio input so the advanced fields can be re-initialized
+						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
+						$( 'input[name=ticket_provider]:radio' ).change();
+
 						// Capacity/Stock
 						if ( response.data.global_stock_mode ) {
 							switch ( response.data.global_stock_mode ) {
 								case 'global':
-									$( document.getElementById( 'global' ) ).prop( 'checked', true );
+									$( document.getElementById( response.data.provider_class + '_global' ) ).prop( 'checked', true );
 									$( document.querySelectorAll( '.global_stock_cap' ) ).val( response.data.global_stock_cap );
 									// this one is _not_ working :(
 									$( document.getElementById( 'tribe-tickets-global-stock-input' ) ).val( response.data.total_global_stock );
 									break;
 								case 'own':
-									$( document.getElementById( 'own' ) ).prop( 'checked', true );
-									$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.stock );
+									$( document.getElementById( response.data.provider_class + '_own' ) ).prop( 'checked', true );
+									$( document.getElementById( response.data.provider_class + '_capacity' ) ).val( response.data.stock );
 									break;
 								default:
-									$( document.getElementById( 'unlimited' ) ).prop( 'checked', true );
+									// Just in case
+									$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
 							}
 						} else {
+							$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
 							$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.original_stock );
-							$( document.querySelectorAll( '.ticket_stock_total_value' ) ).text( response.data.stock );
 						}
+
+						$( 'input[name=ticket_global_stock]:radio' ).change();
 
 						$( document.getElementById( 'ticket_id' ) ).val( response.data.ID );
 						$( document.getElementById( 'ticket_name' ) ).val( response.data.name );
 						$( document.getElementById( 'ticket_description' ) ).val( response.data.description );
 
-						$( document.getElementById( 'tribe-tickets-global-stock' ) ).val( response.data.global_stock );
-						$( document.getElementById( 'ticket_woo_global_stock_cap' ) ).val( response.data.global_stock_cap );
-						$( document.getElementById( 'ticket_edd_global_stock_cap' ) ).val( response.data.global_stock_cap );
+						$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
 
 						var start_date = response.data.start_date.substring( 0, 10 );
 						var end_date = response.data.end_date.substring( 0, 10 );
@@ -609,10 +618,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						} );
 						$( 'tr.ticket_advanced' ).remove();
 						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
-
-						// trigger a change event on the provider radio input so the advanced fields can be re-initialized
-						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
-						$( 'input[name=ticket_provider]:radio' ).change();
 
 						// set the prices after the advanced fields have been added to the form
 						var $ticket_price = $tribe_tickets.find( '#ticket_price' );
