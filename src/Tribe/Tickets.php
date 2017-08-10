@@ -66,18 +66,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Name of this class. Note that it refers to the child class.
+		 *
 		 * @var string
 		 */
 		public $className;
 
 		/**
 		 * Path of the parent class
+		 *
 		 * @var string
 		 */
 		private $parentPath;
 
 		/**
 		 * URL of the parent class
+		 *
 		 * @var string
 		 */
 		private $parentUrl;
@@ -103,24 +106,28 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		/**
 		 * Name of the provider
+		 *
 		 * @var string
 		 */
 		public $pluginName;
 
 		/**
 		 * The name of the post type representing a ticket.
+		 *
 		 * @var string
 		 */
 		public $ticket_object = '';
 
 		/**
 		 * Path of the child class
+		 *
 		 * @var string
 		 */
 		protected $pluginPath;
 
 		/**
 		 * URL of the child class
+		 *
 		 * @var string
 		 */
 		protected $pluginUrl;
@@ -187,18 +194,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
-				$delete_link = sprintf(
-					'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">%3$s</a></span>',
-					$ticket->provider_class,
-					$ticket->ID,
-					esc_html__( 'Delete Ticket', 'event-tickets' )
-				);
-
-				return $delete_link;
+			if ( ! apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
+				return;
 			}
 
-			return;
+			$delete_link = sprintf(
+				'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">%3$s</a></span>',
+				$ticket->provider_class,
+				$ticket->ID,
+				esc_html__( 'Delete Ticket', 'event-tickets' )
+			);
+
+			return $delete_link;
 		}
 
 		/**
@@ -209,7 +216,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id the id of the parent post/event
 		 * @param object $ticket Ticket object
 		 *
-		 * @return string HTML link
+		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) || empty( $post_id ) ) {
@@ -239,7 +246,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id the id of the parent post/event
 		 * @param object $ticket Ticket object
 		 *
-		 * @return string HTML link
+		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -248,16 +255,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$move_url = $this->get_ticket_move_url( $post_id, $ticket );
 
-			if ( ! empty( $move_url ) ) {
-				$move_link = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move Ticket', 'event-tickets' ) . '</a>', $move_url );
-
-				return $move_link;
+			if ( empty( $move_url ) ) {
+				return;
 			}
 
-			return;
+			$move_link = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move Ticket', 'event-tickets' ) . '</a>', $move_url );
+
+			return $move_link;
 		}
 
-		/*
+		/**
 		 * Get the controls (move, delete) as a string and add ot our ajax return
 		 *
 		 * @since TBD
@@ -1688,13 +1695,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_event_key() {
 			if ( property_exists( $this, 'event_key' ) ) {
-				// EDD module uses a static event_key so we need to check for it or we fatal
+				// EDD module uses a static event_key so we need to check for it or we'll fatal
 				$prop = new ReflectionProperty( $this, 'event_key' );
 				if ( $prop->isStatic() ) {
-					return $this::$event_key;
-				} else {
-					return $this->event_key;
+					return $prop->get_value();
 				}
+
+				return $this->event_key;
 			}
 
 			return '';
