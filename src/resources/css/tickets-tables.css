@@ -146,7 +146,7 @@
 }
 
 #tribe_panel_settings .eventtable.ticket_list tbody tr td {
-	border-bottom: 1px solid --border-color;
+	border-bottom: 1px solid #dfdfdf;
 }
 
 #tribe_panel_settings .eventtable.ticket_list tbody tr:nth-last-child(2) td,
@@ -155,7 +155,7 @@
 }
 
 #tribe_panel_settings .eventtable.ticket_list tbody tr:last-child td {
-	border-top: 1px dashed --border-color;
+	border-top: 1px dashed #dfdfdf;
 }
 
 .eventtable.ticket_list .tribe_capacity_table_ticket_list {
