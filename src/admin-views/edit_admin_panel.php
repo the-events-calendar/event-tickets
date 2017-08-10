@@ -20,8 +20,8 @@
 					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field ticket_form_right" size='25' value='' />
 					<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Ticket type name shows on the front end and emailed tickets', 'event-tickets' ); ?></span>
 				</div>
-				<fieldset class="input_block">
-					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using (visible for testing):', 'event-tickets' ); ?></legend>
+				<fieldset class="input_block tribe_ticket_provider" aria-hidden="true" >
+					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php
 					$default_module = Tribe__Tickets__Tickets::get_default_module();
 
@@ -161,8 +161,14 @@
 			?>
 			<div class="ticket_bottom">
 					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
-					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save this ticket', 'event-tickets' ); ?>" class="button-primary" />
+					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>" class="button-primary" />
 					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
+
+					<?php do_action( 'tribe_events_tickets_bottom', $post_id ); ?>
+
+					<div id="ticket_bottom_right">
+						<?php do_action( 'tribe_events_tickets_bottom_right', $post_id ); ?>
+					</div>
 			</div>
 
 		</div><!-- #ticket_form_table -->

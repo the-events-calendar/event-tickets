@@ -1,3 +1,35 @@
+@define-mixin tribe-ticket-tooltip {
+	position: relative;
+
+	.tooltip {
+		border-radius: 3px;
+		border: 1px solid #a3a3a3;
+		display: none;
+		margin-left: .5em;
+		padding: .5em;
+		position: absolute;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	&:hover {
+		.tooltip {
+			display: block;
+		}
+	}
+}
+
+@define-mixin screen-reader-text {
+	clip: rect(0 0 0 0);
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+}
+
 #poststuff .inside {
 	margin-top: 12px;
 }
@@ -85,6 +117,10 @@
 		}
 	}
 
+	&.panel_edit {
+		border: 0;
+	}
+
 	&.panel_settings {
 		h4 {
 			margin: 0;
@@ -121,6 +157,14 @@
 
 .tribe_no_capacity {
 	margin: 0;
+}
+
+.ticket_delete {
+	color: #a00;
+
+	&:hover {
+		color: #dc3232;
+	}
 }
 
 /* Base Panel Toggle Buttons */
@@ -190,30 +234,18 @@
 /* Styles for Initial View */
 .ticket_table_intro {
 	.ticket_form_total_capacity {
+		@mixin tribe-ticket-tooltip;
+
 		display: block;
 		margin-bottom: .5em;
-		position: relative;
-
-		@media (min-width: 782px) {
-			float: left;
-		}
 
 		.tooltip {
-			border-radius: 3px;
-			border: 1px solid #a3a3a3;
-			display: none;
 			left: 100%;
-			margin-left: .5em;
-			padding: .5em;
-			position: absolute;
-			top: -.75em;
 			white-space: nowrap;
 		}
 
-		&:hover {
-			.tooltip {
-				display: block;
-			}
+		@media (min-width: 782px) {
+			float: left;
 		}
 	}
 
@@ -235,6 +267,10 @@
 .input_block {
 	margin-bottom: 1em;
 	position: relative;
+
+	&.tribe_ticket_provider {
+		@mixin screen-reader-text;
+	}
 
 	.ticket_form_left {
 		box-sizing: border-box;
@@ -330,6 +366,7 @@
 p.description {
 	color: #a3a3a3;
 	font-size: inherit;
+	font-style: normal;
 }
 
 /* Accordion Styles */
@@ -399,4 +436,14 @@ p.description {
 /* Testing */
 .tribe_preview {
 	cursor: pointer;
+}
+
+#ticket_bottom_right {
+	@media (max-width: 782px) {
+		margin-top: 1em;
+	}
+
+	@media (min-width: 782px) {
+		float: right;
+	}
 }

@@ -36,8 +36,9 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
 		 *
-		 * @param int $post_id the id of the post
 		 * @since TBD
+		 *
+		 * @param int $post_id the id of the post
 		 */
 		do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
 
@@ -46,8 +47,9 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @param int $post_id the id of the post
 		 * @since TBD
+		 *
+		 * @param int $post_id the id of the post
 		 */
 		do_action( 'tribe_events_tickets_post_ticket_list', $post_id );
 		?>

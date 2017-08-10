@@ -863,7 +863,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param WP_Post $post
 	 */
 	public function do_meta_box( $post ) {
-
 		$startMinuteOptions   = Tribe__View_Helpers::getMinuteOptions( null );
 		$endMinuteOptions     = Tribe__View_Helpers::getMinuteOptions( null );
 		$startHourOptions     = Tribe__View_Helpers::getHourOptions( null, true );
