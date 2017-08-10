@@ -194,8 +194,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			if ( ! apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
-				return;
+			/**
+			 * Allows for the filtering and testing if a user can delete tickets
+			 *
+			 * @since TBD
+			 *
+			 * @param bool true
+			 * @param int ticket post ID
+			 * @param string ticket provider class
+			 */
+			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
+				$delete_link = sprintf(
+					'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">%3$s</a></span>',
+					$ticket->provider_class,
+					$ticket->ID,
+					esc_html__( 'Delete Ticket', 'event-tickets' )
+				);
+
+				return $delete_link;
 			}
 
 			$delete_link = sprintf(
@@ -264,8 +280,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $move_link;
 		}
 
-		/**
-		 * Get the controls (move, delete) as a string and add ot our ajax return
+		/*
+		 * Get the controls (move, delete) as a string and add to our ajax return
 		 *
 		 * @since TBD
 		 *
@@ -548,6 +564,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
 			/**
 			 * Priority set to 11 to force a specific display order
+			 *
 			 * @since TBD
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );

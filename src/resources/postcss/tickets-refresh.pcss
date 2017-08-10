@@ -1,9 +1,15 @@
+:root {
+	--border-light-color: #a3a3a3;
+	--button-text-color: #555;
+}
+
+
 @define-mixin tribe-ticket-tooltip {
 	position: relative;
 
 	.tooltip {
 		border-radius: 3px;
-		border: 1px solid #a3a3a3;
+		border: 1px solid var(--border-light-color);
 		display: none;
 		margin-left: .5em;
 		padding: .5em;
@@ -41,8 +47,8 @@
 
 /* Panels */
 .ticket_panel {
+	border: 1px solid var(--border-light-color);
 	border-radius: 5px;
-	border: 1px solid #a3a3a3;
 	box-sizing: border-box;
 	position: relative;
 	padding: 8px;
@@ -67,9 +73,9 @@
 	.button-primary {
 		background: none;
 		background-color: #ccc;
-		border-color: #a3a3a3;
-		box-shadow: 0 1px 0 #a3a3a3;
-		color: #555;
+		border-color: var(--border-light-color);
+		box-shadow: 0 1px 0 var(--border-light-color);
+		color: var(--button-text-color);
 		text-shadow: none;
 
 		&:hover,
@@ -77,9 +83,9 @@
 		&:focus {
 			background: none;
 			background-color: #ddd;
-			border-color: #a3a3a3;
-			box-shadow: 0 1px 0 #a3a3a3;
-			color: #555;
+			border-color: var(--border-light-color);
+			box-shadow: 0 1px 0 var(--border-light-color);
+			color: var(--button-text-color);
 			text-shadow: none;
 		}
 

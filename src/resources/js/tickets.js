@@ -45,7 +45,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( document.getElementById( 'tribe_ticket_header_preview' ) ).html( ticketHeaderImage.imgHTML( attachment ) );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( attachment.id );
 			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
-			$( '#tribe_tickets_image_preview_filename .filename' ).text( attachment.filename );
+			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).find( '.filename' ).text( attachment.filename );
 			$( document.getElementById( '#tribe_tickets_image_preview_filename' ) ).show();
 		},
 		// Render html for the image.
@@ -90,7 +90,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 */
 			'clear.tribe': function() {
 				var $this            = $( this );
-				var $ticket_form     = $this.find( '#ticket_form');
+				var $ticket_form     = $this.find( '#ticket_form' );
 				var $ticket_settings = $ticket_form.find( "div:not(.event-wide-settings)" );
 
 				$ticket_settings.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
@@ -113,10 +113,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					.siblings( '.no-update-message' ).html( '' ).hide()
 					.end().siblings( '.description' ).show();
 
-				$('#tribe-tickets-attendee-sortables').empty();
-				$('.tribe-tickets-attendee-saved-fields').show();
+				$( document.getElementById( 'tribe-tickets-attendee-sortables' ) ).empty();
+				$( '.tribe-tickets-attendee-saved-fields' ).show();
 
-				$('#ticket_bottom_right').empty();
+				$( document.getElementById( 'ticket_bottom_right' ) ).empty();
 
 				$edit_titles.hide();
 				$add_titles.show();
@@ -457,7 +457,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					if ( response.success ) {
 						// remove deleted ticket from table
-						var $deleted_row = $( '#tribe_ticket_list_table' ).find( '[data-ticket-order-id="order_' + deleted_ticket_id + '"]' );
+						var $deleted_row = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( '[data-ticket-order-id="order_' + deleted_ticket_id + '"]' );
 						$deleted_row.remove();
 
 						show_hide_panel( e, $edit_panel );
@@ -760,7 +760,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		} );
 
-		$('body').on( 'click', '#tribe_ticket_header_remove', function( e ) {
+		$( 'body' ).on( 'click', '#tribe_ticket_header_remove', function( e ) {
 
 			e.preventDefault();
 			$preview.html( '' );
