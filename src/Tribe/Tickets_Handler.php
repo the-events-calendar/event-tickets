@@ -253,7 +253,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get an array list of independent ticket names for an event.
+	 * Get an array list of independent tickets for an event.
 	 *
 	 * @since TBD
 	 *
@@ -270,11 +270,88 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' != $ticket->global_stock_mode() ) {
+				if ( 'own' != $ticket->global_stock_mode() || 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 					continue;
 				}
 
-				$ticket_list[] = $ticket->name;
+				$ticket_list[] = $ticket;
+			}
+		}
+
+		return $ticket_list;
+	}
+
+
+	/**
+	 * Get the total event independent capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @return int number of tickets ( -1 means unlimited )
+	 */
+	public function get_total_event_rsvp_capacity( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$capacity = 0;
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+					continue;
+				}
+
+				$stock = $ticket->original_stock();
+
+				// Empty original stock means unlimited tickets, let's not add infinity!
+				if ( ! empty( $stock ) ) {
+					$capacity += $stock;
+				} else {
+					// If one ticket is unlimited, so is total capacity - break out with flag value
+					$capacity = -1;
+					break;
+				}
+			}
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @since TDB
+		 *
+		 * @param (int) $capacity Total capacity value
+		 * @param (int) $post Post ID tickets are attached to
+		 * @param (array) $tickets array of all tickets
+		 */
+		return apply_filters( 'tribe_tickets_total_event_rsvp_capacity', $capacity, $post_id, $tickets );
+	}
+
+	/**
+	 * Get an array list of RSVPs for an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id int (null)
+	 *
+	 * @return string list of tickets
+	 */
+	public function get_total_event_rsvp_tickets( $post = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		$ticket_list = array();
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+					continue;
+				}
+
+				$ticket_list[] = $ticket;
 			}
 		}
 
@@ -329,7 +406,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get an array list of shared ticket names for an event.
+	 * Get an array list of shared capacity tickets for an event.
 	 *
 	 * @since TBD
 	 *
@@ -350,7 +427,7 @@ class Tribe__Tickets__Tickets_Handler {
 					continue;
 				}
 
-				$ticket_list[] = $ticket->name;
+				$ticket_list[] = $ticket;
 			}
 		}
 
