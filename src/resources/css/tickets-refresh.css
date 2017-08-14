@@ -12,15 +12,12 @@
 	margin-top: 12px;
 }
 
-
 #event_tickets {
 	overflow: hidden;
 	position: relative;
 }
 
-
 /* Panels */
-
 
 .ticket_panel {
 	border: 1px solid #a3a3a3;
@@ -33,20 +30,20 @@
 	will-change: transform;
 }
 
-
 .ticket_panel section {
 	margin: 2em 0;
 }
 
+.ticket_panel #tribe-tickets-image {
+	margin-top: .5em;
+}
 
 /* Button styles */
-
 
 .ticket_panel .button-primary,
 	.ticket_panel .button-secondary {
 	height: 2.5em;
 }
-
 
 .ticket_panel .button-primary {
 	background: none;
@@ -56,7 +53,6 @@
 	color: #555;
 	text-shadow: none;
 }
-
 
 .ticket_panel .button-primary:hover,
 		.ticket_panel .button-primary:active,
@@ -69,32 +65,26 @@
 	text-shadow: none;
 }
 
-
 .ticket_panel .button-primary + .button-primary,
 		.ticket_panel .button-primary + .button-secondary {
 	margin-left: 1em;
 }
 
-
 .ticket_panel #settings_form_toggle {
 	background-color: #fff;
 }
 
-
 /* hidden fields */
-
 
 .ticket_panel[aria-hidden='true'] {
 	position: absolute;
 	transition: .5s cubic-bezier(.55, .085, .68, .53);
 }
 
-
 .ticket_panel.panel_base {
 	border: 0;
 	padding: .5em 0 0;
 }
-
 
 .ticket_panel.panel_base[aria-hidden='true'] {
 	right: 100%;
@@ -102,89 +92,73 @@
 	        transform: translateX(-100%);
 }
 
-
 .ticket_panel.panel_edit[aria-hidden='true'], .ticket_panel.panel_settings[aria-hidden='true'] {
 	margin-top: 6px;
 	-webkit-transform: translateX(100%);
 	        transform: translateX(100%);
 }
 
-
 .ticket_panel.panel_edit {
 	border: 0;
 }
-
 
 .ticket_panel.panel_settings h4 {
 	margin: 0;
 }
 
-
 .ticket_panel.panel_settings .settings_main {
+	margin-bottom: 0;
 	margin-top: 0;
 }
-
 
 .ticket_panel h4 {
 	text-transform: uppercase;
 }
 
+.ticket_title {
+	margin-top: 0;
+	text-transform: uppercase;
+}
 
 .ticket_title {
 	margin-top: 0;
 	text-transform: uppercase;
 }
 
-
 .ticket_title {
 	margin-top: 0;
 	text-transform: uppercase;
 }
-
-
-.ticket_title {
-	margin-top: 0;
-	text-transform: uppercase;
-}
-
 
 .ticket_list_container {
 	margin-bottom: 20px;
 }
 
-
 .tribe_no_capacity {
 	margin: 0;
 }
-
 
 .ticket_delete {
 	color: #a00;
 }
 
-
 .ticket_delete:hover {
 	color: #dc3232;
 }
 
-
 /* Base Panel Toggle Buttons */
-
 
 #settings_form_toggle {
 	margin-top: 1em;
 }
 
-
 .ticket_form_toggle + .ticket_form_toggle {
 	margin-left: 1em;
 }
 
-
 .ticket_form_toggle_text::before, .settings_form_toggle_text::before {
 	font-family: 'dashicons';
 }
-
 
 .ticket_form_toggle_text::before {
 	content: '\f132';
@@ -194,7 +168,6 @@
 	vertical-align: middle;
 }
 
-
 .settings_form_toggle_text::before {
 	content: '\f111';
 	font-size: 1.25em;
@@ -203,42 +176,34 @@
 	vertical-align: bottom;
 }
 
-
 .tribe-tickets-image-preview {
 	margin-top: 2em;
 	max-width: 200px;
 }
 
-
 #tribe_ticket_header_image {
 	margin-right: 2em;
 }
-
 
 #tribe_tickets_image_preview_filename {
 	font-weight: bold;
 }
 
-
 #tribe_tickets_image_preview_filename .dashicons {
 	vertical-align: text-bottom;
 }
-
 
 #tribe_tickets_image_preview_filename .filename {
 	margin-left: .5em;
 }
 
-
 /* Styles for Initial View */
-
 
 .ticket_table_intro .ticket_form_total_capacity {
 	position: relative;
 	display: block;
 	margin-bottom: .5em;
 }
-
 
 .ticket_table_intro .ticket_form_total_capacity .tooltip {
 	border-radius: 3px;
@@ -252,31 +217,25 @@
 	        transform: translateY(-50%);
 }
 
-
 .ticket_table_intro .ticket_form_total_capacity:hover .tooltip {
 	display: block;
 }
-
 
 .ticket_table_intro .ticket_form_total_capacity .tooltip {
 	left: 100%;
 	white-space: nowrap;
 }
 
-
 .ticket_table_intro .ticket_form_view_attendees {
 	margin-left: 1em;
 }
 
-
 /* Form styles */
-
 
 .input_block {
 	margin-bottom: 1em;
 	position: relative;
 }
-
 
 .input_block.tribe_ticket_provider {
 	clip: rect(0 0 0 0);
@@ -289,7 +248,6 @@
 	width: 1px;
 }
 
-
 .input_block .ticket_form_left {
 	box-sizing: border-box;
 	float: left;
@@ -298,12 +256,10 @@
 	padding-right: 1em;
 }
 
-
 .input_block input,
 	.input_block textarea {
 	max-width: 100%;
 }
-
 
 .input_block .ticket_field.hasDatepicker {
 	border-radius: 3px;
@@ -311,49 +267,39 @@
 	margin-bottom: 0;
 }
 
-
 .input_block .input_block,
 	.input_block .ticket_form_right {
 	display: block;
 	margin-top: 0;
 }
 
-
 .input_block .input_block:last-child, .input_block .ticket_form_right:last-child {
 	margin-bottom: 0;
 }
-
 
 .input_block .input_block {
 	margin-top: 1em;
 }
 
-
 .input_block legend + .input_block {
 	margin-top: 0;
 }
 
-
 /* Capacity Radio Buttons */
-
 
 .input_block .tribe_stock_block.tribe-active {
 	padding-top: 1em;
 }
 
-
 .input_block label.ticket_form_right {
 	margin-bottom: 1em;
 }
-
 
 .input_block .tribe_block_label {
 	display: block;
 }
 
-
 /* Capacity Fields/admin display */
-
 
 .input_block .ticket_stock_total {
 	color: #666;
@@ -361,33 +307,26 @@
 	margin-left: 1em;
 }
 
-
 #ticket_form .input_block .ticket_stock_total_value {
 	margin-right: 0;
 }
 
-
 /* Adjust font size for entire form */
-
 
 #event_tickets {
 	font-size: 12px;
 }
 
-
 [class^='ticket_form_title_'] {
 	font-size: 1.2em;
 }
 
-
 /* Ensure radios and checkboxes have some space to the right of them when inside a label */
-
 
 #ticket_form input[type=radio],
 #ticket_form input[type=checkbox] {
 	margin-right: .4em;
 }
-
 
 .tribe_soft_note,
 p.description {
@@ -396,9 +335,7 @@ p.description {
 	font-style: normal;
 }
 
-
 /* Accordion Styles */
-
 
 .accordion-header {
 	background: none;
@@ -411,7 +348,6 @@ p.description {
 	text-align: left;
 	width: 100%;
 }
-
 
 .accordion-header::before {
 	background-color: #000;
@@ -431,88 +367,70 @@ p.description {
 	width: 14px;
 }
 
-
 .accordion-header.is-active::before {
 	content: '\f460';
 	padding-left: 2px;
 	padding-top: 2px;
 }
 
-
 .accordion-header:focus {
 	outline: 1px solid #5b9dd9;
 }
-
 
 .accordion-label:focus {
 	outline: none;
 }
 
-
 .accordion-content {
 	display: none;
 }
-
 
 .accordion-content.is-active {
 	display: block;
 }
 
-
 /* Edit form styles */
-
 
 .ticket_bottom {
 	margin-top: 1em;
 }
 
-
 /* Testing */
-
 
 .tribe_preview {
 	cursor: pointer;
 }
 
-
 @media (min-width: 782px) {
-
 
 	.ticket_panel {
 		padding: 16px;
 	}
 
-
 	.ticket_table_intro .ticket_form_total_capacity {
 		float: left;
 	}
 
-
 	.ticket_table_intro {
 		text-align: right;
 	}
-
 
 	.input_block .ticket_form_leftinput,
 			.input_block .ticket_form_lefttextarea {
 		width: 132px;
 	}
 
-
 	.input_block .input_block,
 	.input_block .ticket_form_right {
 		margin-left: 132px;
 	}
-
 
 	#ticket_bottom_right {
 		float: right;
 	}
 }
 
-
 @media (min-width: 400px) {
-
 
 	#settings_form_toggle {
 		float: right;
@@ -520,18 +438,14 @@ p.description {
 	}
 }
 
-
 @media (max-width: 400px) {
-
 
 	.ticket_table_intro .ticket_form_view_attendees {
 		float: right;
 	}
 }
 
-
 @media (max-width: 782px) {
-
 
 	#ticket_bottom_right {
 		margin-top: 1em;
