@@ -908,8 +908,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$extra = ob_get_contents();
 			ob_end_clean();
 
-			error_log(print_r($extra, true));
-
 			$return['advanced_fields'] = $extra;
 
 			$return['stock'] = $ticket->stock;
