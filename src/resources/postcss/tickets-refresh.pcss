@@ -381,65 +381,6 @@ p.description {
 	font-style: normal;
 }
 
-/* Accordion Styles */
-.accordion-header {
-	background: none;
-	border: 0;
-	cursor: pointer;
-	font-size: 16px;
-	font-weight: 500;
-	padding: 10px 10px 10px 20px;
-	position: relative;
-	text-align: left;
-	width: 100%;
-
-	&::before {
-		background-color: #000;
-		border-radius: 100%;
-		box-sizing: border-box;
-		color: #fff;
-		content: '\f132';
-		font-family: 'dashicons';
-		font-size: 10px;
-		font-weight: 400;
-		height: 14px;
-		left: 0;
-		padding-left: 2px;
-		padding-top: 3px;
-		position: absolute;
-		top: 10px;
-		width: 14px;
-	}
-
-	&.is-active {
-		&::before {
-			content: '\f460';
-			padding-left: 2px;
-			padding-top: 2px;
-		}
-	}
-}
-
-.accordion-header {
-	&:focus {
-		outline: 1px solid #5b9dd9;
-	}
-}
-
-.accordion-label {
-	&:focus {
-		outline: none;
-	}
-}
-
-.accordion-content {
-	display: none;
-
-	&.is-active {
-		display: block;
-	}
-}
-
 #ticket_form .ticket_advanced.history {
 	.toggle-history {
 		span:nth-child(2) {

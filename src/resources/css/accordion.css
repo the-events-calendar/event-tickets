@@ -1,0 +1,56 @@
+/**
+ * This CSS file was auto-generated via PostCSS
+ *
+ * Contributors should avoid editing this file, but instead edit the associated
+ * src/resources/postcss/ file. For more information, check out our engineering
+ * docs on how we handle CSS in our engineering docs.
+ *
+ * @see: http://moderntribe.github.io/products-engineering/css/
+ */
+
+/* Accordion Styles */
+.accordion-header {
+	background: none;
+	border: 0;
+	cursor: pointer;
+	font-size: 13px;
+	font-weight: 500;
+	padding: 10px 10px 10px 20px;
+	position: relative;
+	text-align: left;
+	width: 100%;
+}
+.accordion-header::before {
+	background-color: #000;
+	border-radius: 100%;
+	box-sizing: border-box;
+	color: #fff;
+	content: '\f132';
+	font-family: 'dashicons';
+	font-size: 10px;
+	font-weight: 400;
+	height: 14px;
+	left: 0;
+	padding-left: 2px;
+	padding-top: 3px;
+	position: absolute;
+	top: 10px;
+	width: 14px;
+}
+.accordion-header.is-active::before {
+	content: '\f460';
+	padding-left: 2px;
+	padding-top: 2px;
+}
+.accordion-header:focus {
+	outline: 1px solid #5b9dd9;
+}
+.accordion-label:focus {
+	outline: none;
+}
+.accordion-content {
+	display: none;
+}
+.accordion-content.is-active {
+	display: block;
+}
