@@ -8,6 +8,17 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
+.screen_reader_text {
+	clip: rect(0 0 0 0);
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+}
+
 #poststuff .inside {
 	margin-top: 12px;
 }
