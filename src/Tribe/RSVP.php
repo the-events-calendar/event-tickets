@@ -158,15 +158,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function __construct() {
 		$main = Tribe__Tickets__Main::instance();
 		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
-
-		/* Set up some parent's vars (deprecated for snake_case) */
-		$this->pluginName = _x( 'RSVP', 'ticket provider', 'event-tickets' );
-		$this->pluginPath = $main->plugin_path;
-		$this->pluginUrl = $main->plugin_url;
 		/* Set up parent vars */
-		$this->plugin_name = _x( 'RSVP', 'ticket provider', 'event-tickets' );
-		$this->plugin_path = $main->plugin_path;
-		$this->plugin_url = $main->plugin_url;
+		$this->plugin_name = $this->pluginName = _x( 'RSVP', 'ticket provider', 'event-tickets' );
+		$this->plugin_path = $this->pluginPath = $main->plugin_path;
+		$this->plugin_url  = $this->pluginUrl  = $main->plugin_url;
 
 		parent::__construct();
 

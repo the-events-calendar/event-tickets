@@ -607,10 +607,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			Tribe__Tickets__Tickets_Handler::instance();
 
 			// As this is an abstract class, we want to know which child instantiated it
-			$this->class_name = get_class( $this );
+			$this->class_name = $this->className = get_class( $this );
 
-			$this->parent_path = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
-			$this->parent_url  = trailingslashit( plugins_url( '', $this->parent_path ) );
+			$this->parent_path = $this->parentPath = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
+			$this->parent_url  = $this->parentUrl  = trailingslashit( plugins_url( '', $this->parent_path ) );
 
 			// Register all Tribe__Tickets__Tickets api consumers
 			self::$active_modules[ $this->class_name ] = $this->plugin_name;
