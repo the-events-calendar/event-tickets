@@ -1190,7 +1190,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Echos the class for the <tr> in the tickets list admin
 		 */
 		protected function tr_class() {
-			echo 'ticket_advanced_' . $this->class_name;
+			echo 'ticket_advanced_' . sanitize_html_class( $this->class_name );
 		}
 
 		/**
