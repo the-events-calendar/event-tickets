@@ -241,7 +241,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * and hiding its history, if it has one.
 		 */
 		function show_hide_ticket_type_history() {
-			var $history = $tribe_tickets.find( 'tr.ticket_advanced.history' );
+			var $history = $tribe_tickets.find( '.ticket_advanced.history' );
 
 			if ( ! $history.length ) {
 				return;
@@ -251,11 +251,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $toggle_link_text = $toggle_link.find( 'span' );
 			var $history_list     = $history.find( 'ul' );
 
-			$history.find( 'a.toggle-history' ).click( function( event ) {
-				$toggle_link_text.toggle();
-				$history_list.toggle();
-				event.stopPropagation();
-				return false;
+			$history.on( 'click', '.toggle-history', function( e ) {
+				e.preventDefault();
+				if ( $history.hasClass( '_show' ) ) {
+					$history.removeClass( '_show' );
+				} else {
+					$history.addClass( '_show' );
+				}
+
 			} );
 		}
 
@@ -619,9 +622,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								start_hour = '0' + start_hour;
 							}
 
-							$( document.getElementById( 'ticket_start_hour' ) ).val( start_hour ).trigger( "change" );
-							$( document.getElementById( 'ticket_start_minute' ) ).val( response.data.start_date.substring( 14, 16 ) ).trigger( "change" );
-							$( document.getElementById( 'ticket_start_meridian' ) ).val( start_meridian ).trigger( "change" );
+							$( document.getElementById( 'ticket_start_hour' ) ).val( start_hour ).trigger( 'change' );
+							$( document.getElementById( 'ticket_start_minute' ) ).val( response.data.start_date.substring( 14, 16 ) ).trigger( 'change' );
+							$( document.getElementById( 'ticket_start_meridian' ) ).val( start_meridian ).trigger( 'change' );
 						}
 
 						if ( response.data.end_date ) {
@@ -646,14 +649,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								end_hour = '0' + end_hour;
 							}
 
-							$( document.getElementById( 'ticket_end_hour' ) ).val( end_hour ).trigger( "change" );
-							$( document.getElementById( 'ticket_end_minute' ) ).val( response.data.end_date.substring( 14, 16 ) ).trigger( "change" );
-							$( document.getElementById( 'ticket_end_meridian' ) ).val( end_meridian ).trigger( "change" );
+							$( document.getElementById( 'ticket_end_hour' ) ).val( end_hour ).trigger( 'change' );
+							$( document.getElementById( 'ticket_end_minute' ) ).val( response.data.end_date.substring( 14, 16 ) ).trigger( 'change' );
+							$( document.getElementById( 'ticket_end_meridian' ) ).val( end_meridian ).trigger( 'change' );
 
 							$( '.ticket_end_time' ).show();
 						}
 
-						$( response.data.provider_class + '_advanced' ).replaceWith( response.data.advanced_fields );
+						$( document.getElementById( response.data.provider_class + '_advanced' ) ).replaceWith( response.data.advanced_fields );
 
 						// set the prices after the advanced fields have been added to the form
 						var $ticket_price = $tribe_tickets.find( '#ticket_price' );
@@ -699,6 +702,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$tribe_tickets
 							.trigger( 'edit-ticket.tribe', response );
+
+						$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 					},
 					'json'

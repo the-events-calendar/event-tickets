@@ -210,6 +210,7 @@
 	top: 50%;
 	-webkit-transform: translateY(-50%);
 	        transform: translateY(-50%);
+	z-index: 1;
 }
 
 .ticket_table_intro .ticket_form_total_capacity:hover .tooltip {
@@ -385,16 +386,64 @@ p.description {
 	display: block;
 }
 
+#ticket_form .ticket_advanced.history .toggle-history span:nth-child(2) {
+	display: none;
+}
+
+#ticket_form .ticket_advanced.history ul {
+	display: none;
+}
+
+#ticket_form .ticket_advanced.history._show span:first-child {
+	display: none;
+}
+
+#ticket_form .ticket_advanced.history._show span:nth-child(2) {
+	display: inline;
+}
+
+#ticket_form .ticket_advanced.history._show ul {
+	display: block;
+}
+
 /* Edit form styles */
 
 .ticket_bottom {
 	margin-top: 1em;
 }
 
-/* Testing */
-
 .tribe_preview {
 	cursor: pointer;
+}
+
+#ticket_form .tooltip_container {
+	position: relative;
+
+	display: inline-block;
+}
+
+#ticket_form .tooltip_container .tooltip {
+	border-radius: 3px;
+	border: 1px solid #a3a3a3;
+	display: none;
+	margin-left: .5em;
+	padding: .5em;
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	        transform: translateY(-50%);
+	z-index: 1;
+}
+
+#ticket_form .tooltip_container:hover .tooltip {
+	display: block;
+}
+
+#ticket_form .tooltip_container .tooltip {
+	background-color: #fff;
+	left: 100%;
+	margin: 0;
+	width: 200px;
 }
 
 @media (min-width: 782px) {

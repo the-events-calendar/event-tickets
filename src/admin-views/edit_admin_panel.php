@@ -90,6 +90,12 @@
 									</select>
 								<?php endif; ?>
 							</span>
+							<span class="tooltip_container">
+								<span class="dashicons dashicons-editor-help"></span>
+								<span class="tooltip">
+									<?php esc_html_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>
+								</span>
+							</span>
 						</div>
 					</div>
 					<div class="input_block">
@@ -111,16 +117,15 @@
 									</select>
 								<?php endif; ?>
 							</span>
+							<span class="tooltip_container">
+								<span class="dashicons dashicons-editor-help"></span>
+								<span class="tooltip">
+									<?php esc_html_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>
+								</span>
+							</span>
 						</div>
-						<p class="description ticket_form_right">
-							<?php esc_html_e( 'When will ticket sales occur?', 'event-tickets' ); ?>
-							<?php
-							// Why break in and out of PHP? because I want the space between the phrases without including them in the translations
-							if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post ) ) {
-								esc_html_e( "If you don't set a start/end date for sales, tickets will be available from now until the event ends.", 'event-tickets' );
-							}
-							?>
-						</p>
+
+
 					</div>
 					<?php
 					/**

@@ -15,6 +15,7 @@
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
+		z-index: 1;
 	}
 
 	&:hover {
@@ -434,12 +435,37 @@ p.description {
 	}
 }
 
+#ticket_form .ticket_advanced.history {
+	.toggle-history {
+		span:nth-child(2) {
+			display: none;
+		}
+	}
+
+	ul {
+		display: none;
+	}
+
+	&._show {
+		span:first-child {
+			display: none;
+		}
+
+		span:nth-child(2) {
+			display: inline;
+		}
+
+		ul {
+			display: block;
+		}
+	}
+}
+
 /* Edit form styles */
 .ticket_bottom {
 	margin-top: 1em;
 }
 
-/* Testing */
 .tribe_preview {
 	cursor: pointer;
 }
@@ -451,5 +477,18 @@ p.description {
 
 	@media (min-width: 782px) {
 		float: right;
+	}
+}
+
+#ticket_form .tooltip_container {
+	@mixin tribe-ticket-tooltip;
+
+	display: inline-block;
+
+	.tooltip {
+		background-color: #fff;
+		left: 100%;
+		margin: 0;
+		width: 200px;
 	}
 }
