@@ -184,6 +184,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.gateway', new Tribe__Tickets__Commerce__PayPal__Gateway );
 	}
 
 	/**
@@ -206,11 +207,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		add_action( 'init', array( $this, 'init' ) );
 
-		/**
-		 * Whenever we are dealing with Redirects we cannot do stuff on `init`
-		 * Use: `template_redirect`
-		 */
-		add_action( 'template_redirect', array( $this, 'generate_tickets' ) );
 		add_action( 'event_tickets_attendee_update', array( $this, 'update_attendee_data' ), 10, 3 );
 		add_action( 'event_tickets_after_attendees_update', array( $this, 'maybe_send_tickets_after_status_change' ) );
 	}
@@ -786,6 +782,24 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			update_post_meta( $ticket->ID, '_ticket_end_date', $ticket->end_date );
 		} else {
 			delete_post_meta( $ticket->ID, '_ticket_end_date' );
+		}
+
+		/**
+		 * Toggle filter to allow skipping the automatic SKU generation.
+		 *
+		 * @param bool $should_default_ticket_sku
+		 */
+		$should_default_ticket_sku = apply_filters( 'tribe_tickets_should_default_ticket_sku', true );
+		if ( $should_default_ticket_sku ) {
+			// make sure the SKU is set to the correct value
+			if ( ! empty( $raw_data['ticket_sku'] ) ) {
+				$sku = $raw_data['ticket_sku'];
+			} else {
+				$post_author            = get_post( $ticket->ID )->post_author;
+				$sku                    = "{$ticket->ID}-{$post_author}-" . sanitize_title( $ticket->name );
+				$raw_data['ticket_sku'] = $sku;
+			}
+			update_post_meta( $ticket->ID, '_sku', $sku );
 		}
 
 		/**
@@ -1393,7 +1407,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_cart_url() {
-		// @todo finish this
-		return '';
+		return tribe( 'tickets.commerce.paypal.gateway' )->get_cart_url();
 	}
+
 }

@@ -776,4 +776,25 @@ class Tribe__Tickets__Main {
 		<?php
 	}
 
+	/**
+	 * Gets the view from the plugin's folder, or from the user's theme if found.
+	 *
+	 * @param $template
+	 *
+	 * @return mixed|void
+	 */
+	public function get_template_hierarchy( $template ) {
+
+		if ( substr( $template, - 4 ) != '.php' ) {
+			$template .= '.php';
+		}
+
+		if ( $theme_file = locate_template( array( 'tribe-events/' . $template ) ) ) {
+			$file = $theme_file;
+		} else {
+			$file = $this->plugin_path . 'src/views/' . $template;
+		}
+
+		return apply_filters( 'tribe_events_tickets_template_' . $template, $file );
+	}
 }
