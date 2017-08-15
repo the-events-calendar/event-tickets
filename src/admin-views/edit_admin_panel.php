@@ -13,8 +13,10 @@
 	<div id="ticket_form" class="ticket_form tribe_sectionheader">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<?php // @TODO: Do these need to get renamed for RSVPs? ?>
-			<h4 class="ticket_form_title_add"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
-			<h4 class="ticket_form_title_edit"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			<h4 id="ticket_title_add" class="ticket_form_title"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
+			<h4 id="ticket_title_edit" class="ticket_form_title"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			<h4 id="rsvp_title_add" class="ticket_form_title"><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
+			<h4 id="rsvp_title_edit" class="ticket_form_title"><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
 			<section id="ticket_form_main" class="main">
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
@@ -128,18 +130,6 @@
 					 *
 					 * @param int Post ID
 					 * @param null Ticket ID
-					 *
-					 * @deprecated TBD
-					 */
-					do_action( 'tribe_events_tickets_metabox_advanced', $post_id, null );
-
-					/**
-					 * Allows for the insertion of additional content into the ticket edit form - advanced section
-					 *
-					 * @since TBD
-					 *
-					 * @param int Post ID
-					 * @param null Ticket ID
 					 */
 					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null );
 					?>
@@ -170,6 +160,7 @@
 			<div class="ticket_bottom">
 					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
 					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>" class="button-primary" />
+					<input type="button" id="rsvp_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save RSVP', 'event-tickets' ); ?>" class="button-primary" />
 					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
 
 					<?php
