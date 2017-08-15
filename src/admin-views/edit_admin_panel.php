@@ -13,8 +13,10 @@
 	<div id="ticket_form" class="ticket_form tribe_sectionheader">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<?php // @TODO: Do these need to get renamed for RSVPs? ?>
-			<h4 class="ticket_form_title_add"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
-			<h4 class="ticket_form_title_edit"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			<h4 id="ticket_title_add" class="ticket_form_title"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
+			<h4 id="ticket_title_edit" class="ticket_form_title"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			<h4 id="rsvp_title_add" class="ticket_form_title"><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
+			<h4 id="rsvp_title_edit" class="ticket_form_title"><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
 			<section id="ticket_form_main" class="main">
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
@@ -58,11 +60,11 @@
 				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null ); ?>
 			</section>
 			<div class="accordion">
-				<button class="accordion-header" type="button">
+				<button class="accordion-header tribe_advanced_meta" type="button">
 					<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
 				</button>
 				<section id="ticket_form_advanced" class="advanced accordion-content">
-					<h4 class="accordion-label"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
+					<h4 class="accordion-label screen_reader_text"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 					<div class="input_block">
 						<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
 						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field ticket_form_right" id="ticket_description"></textarea>
@@ -88,6 +90,12 @@
 									</select>
 								<?php endif; ?>
 							</span>
+							<span class="tooltip_container">
+								<span class="dashicons dashicons-editor-help"></span>
+								<span class="tooltip">
+									<?php esc_html_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>
+								</span>
+							</span>
 						</div>
 					</div>
 					<div class="input_block">
@@ -109,30 +117,17 @@
 									</select>
 								<?php endif; ?>
 							</span>
+							<span class="tooltip_container">
+								<span class="dashicons dashicons-editor-help"></span>
+								<span class="tooltip">
+									<?php esc_html_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>
+								</span>
+							</span>
 						</div>
-						<p class="description ticket_form_right">
-							<?php esc_html_e( 'When will ticket sales occur?', 'event-tickets' ); ?>
-							<?php
-							// Why break in and out of PHP? because I want the space between the phrases without including them in the translations
-							if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post ) ) {
-								esc_html_e( "If you don't set a start/end date for sales, tickets will be available from now until the event ends.", 'event-tickets' );
-							}
-							?>
-						</p>
+
+
 					</div>
 					<?php
-					/**
-					 * Allows for the insertion of additional content into the ticket edit form - advanced section
-					 *
-					 * @since TBD
-					 *
-					 * @param int Post ID
-					 * @param null Ticket ID
-					 *
-					 * @deprecated TBD
-					 */
-					do_action( 'tribe_events_tickets_metabox_advanced', $post_id, null );
-
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form - advanced section
 					 *
@@ -170,6 +165,7 @@
 			<div class="ticket_bottom">
 					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
 					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>" class="button-primary" />
+					<input type="button" id="rsvp_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save RSVP', 'event-tickets' ); ?>" class="button-primary" />
 					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
 
 					<?php

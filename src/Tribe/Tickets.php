@@ -67,23 +67,50 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Name of this class. Note that it refers to the child class.
 		 *
+		 * @deprecated use $class_name
+		 *
 		 * @var string
 		 */
 		public $className;
 
 		/**
+		 * Name of this class. Note that it refers to the child class.
+		 *
+		 * @var string
+		 */
+		public $class_name;
+
+		/**
 		 * Path of the parent class
+		 *
+		 * @deprecated use $parent_path
 		 *
 		 * @var string
 		 */
 		private $parentPath;
 
 		/**
+		 * Path of the parent class
+		 *
+		 * @var string
+		 */
+		private $parent_path;
+
+		/**
 		 * URL of the parent class
+		 *
+		 * @deprecated use $parent_url
 		 *
 		 * @var string
 		 */
 		private $parentUrl;
+
+		/**
+		 * URL of the parent class
+		 *
+		 * @var string
+		 */
+		private $parent_url;
 
 		/**
 		 * Records batches of tickets that are currently unavailable (used for
@@ -107,9 +134,50 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Name of the provider
 		 *
+		 * @deprecated use $plugin_name
+		 *
 		 * @var string
 		 */
 		public $pluginName;
+
+		/**
+		 * Name of the provider
+		 *
+		 * @var string
+		 */
+		public $plugin_name;
+
+		/**
+		 * Path of the child class
+		 *
+		 * @deprecated use $plugin_path
+		 *
+		 * @var string
+		 */
+		protected $pluginPath;
+
+		/**
+		 * Path of the child class
+		 *
+		 * @var string
+		 */
+		protected $plugin_path;
+
+		/**
+		 * URL of the child class
+		 *
+		 * @deprecated use $plugin_url
+		 *
+		 * @var string
+		 */
+		protected $pluginUrl;
+
+		/**
+		 * URL of the child class
+		 *
+		 * @var string
+		 */
+		protected $plugin_url;
 
 		/**
 		 * The name of the post type representing a ticket.
@@ -117,20 +185,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $ticket_object = '';
-
-		/**
-		 * Path of the child class
-		 *
-		 * @var string
-		 */
-		protected $pluginPath;
-
-		/**
-		 * URL of the child class
-		 *
-		 * @var string
-		 */
-		protected $pluginUrl;
 
 		/**
 		 * Constant with the Transient Key for Attendees Cache
@@ -553,13 +607,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			Tribe__Tickets__Tickets_Handler::instance();
 
 			// As this is an abstract class, we want to know which child instantiated it
-			$this->className = get_class( $this );
+			$this->class_name = $this->className = get_class( $this );
 
-			$this->parentPath = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
-			$this->parentUrl  = trailingslashit( plugins_url( '', $this->parentPath ) );
+			$this->parent_path = $this->parentPath = trailingslashit( dirname( dirname( dirname( __FILE__ ) ) ) );
+			$this->parent_url  = $this->parentUrl  = trailingslashit( plugins_url( '', $this->parent_path ) );
 
 			// Register all Tribe__Tickets__Tickets api consumers
-			self::$active_modules[ $this->className ] = $this->pluginName;
+			self::$active_modules[ $this->class_name ] = $this->plugin_name;
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
 			/**
@@ -571,11 +625,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
 
 			// Admin AJAX actions for each provider
-			add_action( 'wp_ajax_tribe-ticket-add-' . $this->className, array( $this, 'ajax_handler_ticket_add' ) );
-			add_action( 'wp_ajax_tribe-ticket-delete-' . $this->className, array( $this, 'ajax_handler_ticket_delete' ) );
-			add_action( 'wp_ajax_tribe-ticket-edit-' . $this->className, array( $this, 'ajax_handler_ticket_edit' ) );
-			add_action( 'wp_ajax_tribe-ticket-checkin-' . $this->className, array( $this, 'ajax_handler_attendee_checkin' ) );
-			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->className, array( $this, 'ajax_handler_attendee_uncheckin' ) );
+			add_action( 'wp_ajax_tribe-ticket-add-' . $this->class_name, array( $this, 'ajax_handler_ticket_add' ) );
+			add_action( 'wp_ajax_tribe-ticket-delete-' . $this->class_name, array( $this, 'ajax_handler_ticket_delete' ) );
+			add_action( 'wp_ajax_tribe-ticket-edit-' . $this->class_name, array( $this, 'ajax_handler_ticket_edit' ) );
+			add_action( 'wp_ajax_tribe-ticket-checkin-' . $this->class_name, array( $this, 'ajax_handler_attendee_checkin' ) );
+			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->class_name, array( $this, 'ajax_handler_attendee_uncheckin' ) );
 
 			// Front end
 			$ticket_form_hook = $this->get_ticket_form_hook();
@@ -720,7 +774,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
 			}
 
-			$ticket->provider_class = $this->className;
+			$ticket->provider_class = $this->class_name;
 
 			/**
 			 * Fired once a ticket has been created and added to a post
@@ -1136,7 +1190,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Echos the class for the <tr> in the tickets list admin
 		 */
 		protected function tr_class() {
-			echo 'ticket_advanced_' . $this->className;
+			echo 'ticket_advanced_' . sanitize_html_class( $this->class_name );
 		}
 
 		/**
@@ -1457,7 +1511,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( $theme_file = locate_template( array( 'tribe-events/' . $template ) ) ) {
 				$file = $theme_file;
 			} else {
-				$file = $this->pluginPath . 'src/views/' . $template;
+				$file = $this->plugin_path . 'src/views/' . $template;
 			}
 
 			return apply_filters( 'tribe_events_tickets_template_' . $template, $file );
@@ -1586,7 +1640,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_order_key = $provider_class->getConstant( 'ATTENDEE_ORDER_KEY' );
 
 			if ( empty( $attendee_order_key ) ) {
-				switch ( $this->className ) {
+				switch ( $this->class_name ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_order';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_order';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_order'; break;
@@ -1611,7 +1665,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
 			if ( empty( $attendee_order_key ) ) {
-				switch ( $this->className ) {
+				switch ( $this->class_name ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return 'tribe_eddticket';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return 'tribe_shoppticket'; break;
@@ -1638,7 +1692,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendee_event_key = $provider_class->getConstant( 'ATTENDEE_EVENT_KEY' );
 
 			if ( empty( $attendee_event_key ) ) {
-				switch ( $this->className ) {
+				switch ( $this->class_name ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_event';   break;
 					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_event';   break;
 					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_event'; break;

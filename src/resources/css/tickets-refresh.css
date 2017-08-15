@@ -8,6 +8,17 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
+.screen_reader_text {
+	clip: rect(0 0 0 0);
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+}
+
 #poststuff .inside {
 	margin-top: 12px;
 }
@@ -215,6 +226,7 @@
 	top: 50%;
 	-webkit-transform: translateY(-50%);
 	        transform: translateY(-50%);
+	z-index: 1;
 }
 
 .ticket_table_intro .ticket_form_total_capacity:hover .tooltip {
@@ -317,8 +329,9 @@
 	font-size: 12px;
 }
 
-[class^='ticket_form_title_'] {
+h4.ticket_form_title {
 	font-size: 1.2em;
+	margin-top: 0;
 }
 
 /* Ensure radios and checkboxes have some space to the right of them when inside a label */
@@ -335,57 +348,23 @@ p.description {
 	font-style: normal;
 }
 
-/* Accordion Styles */
-
-.accordion-header {
-	background: none;
-	border: 0;
-	cursor: pointer;
-	font-size: 16px;
-	font-weight: 500;
-	padding: 10px 10px 10px 20px;
-	position: relative;
-	text-align: left;
-	width: 100%;
-}
-
-.accordion-header::before {
-	background-color: #000;
-	border-radius: 100%;
-	box-sizing: border-box;
-	color: #fff;
-	content: '\f132';
-	font-family: 'dashicons';
-	font-size: 10px;
-	font-weight: 400;
-	height: 14px;
-	left: 0;
-	padding-left: 2px;
-	padding-top: 3px;
-	position: absolute;
-	top: 10px;
-	width: 14px;
-}
-
-.accordion-header.is-active::before {
-	content: '\f460';
-	padding-left: 2px;
-	padding-top: 2px;
-}
-
-.accordion-header:focus {
-	outline: 1px solid #5b9dd9;
-}
-
-.accordion-label:focus {
-	outline: none;
-}
-
-.accordion-content {
+#ticket_form .ticket_advanced.history .toggle-history span:nth-child(2) {
 	display: none;
 }
 
-.accordion-content.is-active {
+#ticket_form .ticket_advanced.history ul {
+	display: none;
+}
+
+#ticket_form .ticket_advanced.history._show span:first-child {
+	display: none;
+}
+
+#ticket_form .ticket_advanced.history._show span:nth-child(2) {
+	display: inline;
+}
+
+#ticket_form .ticket_advanced.history._show ul {
 	display: block;
 }
 
@@ -395,10 +374,38 @@ p.description {
 	margin-top: 1em;
 }
 
-/* Testing */
-
 .tribe_preview {
 	cursor: pointer;
+}
+
+#ticket_form .tooltip_container {
+	position: relative;
+
+	display: inline-block;
+}
+
+#ticket_form .tooltip_container .tooltip {
+	border-radius: 3px;
+	border: 1px solid #a3a3a3;
+	display: none;
+	margin-left: .5em;
+	padding: .5em;
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	        transform: translateY(-50%);
+	z-index: 1;
+}
+
+#ticket_form .tooltip_container:hover .tooltip {
+	display: block;
+}
+
+#ticket_form .tooltip_container .tooltip {
+	background-color: #fff;
+	left: 100%;
+	margin: 0;
+	width: 200px;
 }
 
 @media (min-width: 782px) {

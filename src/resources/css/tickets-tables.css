@@ -111,6 +111,7 @@
 	border: 0;
 	color: #ccc;
 	cursor: pointer;
+	padding: 0;
 }
 
 .eventtable.ticket_list .ticket_edit_button:hover, .eventtable.ticket_list .global_capacity_edit_button:hover {
@@ -160,6 +161,17 @@
 
 .eventtable.ticket_list .tribe_capacity_table_ticket_list {
 	color: #ccc;
+}
+
+.eventtable.ticket_list .settings_total_global_stock {
+	font-size: inherit;
+	margin-left: -5px;
+}
+
+.eventtable.ticket_list .settings_total_global_stock:disabled {
+	background: none;
+	border: 0;
+	box-shadow: none;
 }
 
 @media (max-width: 782px) {

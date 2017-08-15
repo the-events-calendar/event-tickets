@@ -14,8 +14,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $base_panel                  = $( document.getElementById( 'tribe_panel_base' ) );
 	var $edit_panel                  = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel              = $( document.getElementById( 'tribe_panel_settings' ) );
-	var $edit_titles                 = $( '.ticket_form_title_edit' );
-	var $add_titles                  = $( '.ticket_form_title_add' );
 
 	ticketHeaderImage = {
 
@@ -61,7 +59,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	$( document ).ready( function() {
 		$tribe_tickets.on( {
 			/**
-			 * Makes a Visual Spining thingy appear on the Tickets metabox.
+			 * Makes a Visual Spinning thingy appear on the Tickets metabox.
 			 * Also prevents user Action on the metabox elements.
 			 *
 			 * @param  {jQuery.event} event  The jQuery event
@@ -117,9 +115,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( '.tribe-tickets-attendee-saved-fields' ).show();
 
 				$( document.getElementById( 'ticket_bottom_right' ) ).empty();
-
-				$edit_titles.hide();
-				$add_titles.show();
 
 				$ticket_form.find( '.accordion-header, .accordion-content' ).removeClass( 'is-active' );
 			},
@@ -230,17 +225,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		/**
-		 * Show or hide the appropriate set of provider-specific fields.
-		 */
-		function show_hide_advanced_fields() {
-			$( 'tr.ticket_advanced' ).hide();
-			$( 'tr.ticket_advanced_' + currently_selected_provider() + ':not(.sale_price)' ).show();
-			$tribe_tickets.trigger( 'set-advanced-fields.tribe' );
-			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
-		}
-
-		/**
 		 * Returns the currently selected ticketing provider.
+		 *
+		 * @since TBD
 		 *
 		 * @return string
 		 */
@@ -254,7 +241,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * and hiding its history, if it has one.
 		 */
 		function show_hide_ticket_type_history() {
-			var $history = $tribe_tickets.find( 'tr.ticket_advanced.history' );
+			var $history = $tribe_tickets.find( '.ticket_advanced.history' );
 
 			if ( ! $history.length ) {
 				return;
@@ -264,11 +251,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $toggle_link_text = $toggle_link.find( 'span' );
 			var $history_list     = $history.find( 'ul' );
 
-			$history.find( 'a.toggle-history' ).click( function( event ) {
-				$toggle_link_text.toggle();
-				$history_list.toggle();
-				event.stopPropagation();
-				return false;
+			$history.on( 'click', '.toggle-history', function( e ) {
+				e.preventDefault();
+				if ( $history.hasClass( '_show' ) ) {
+					$history.removeClass( '_show' );
+				} else {
+					$history.addClass( '_show' );
+				}
+
 			} );
 		}
 
@@ -302,6 +292,59 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		}
 
+		function change_edit_options( e, $ticket_id ) {
+			var is_ticket                    = false;
+			var is_edit                      = false;
+			var $edit_ticket_title           = $( document.getElementById( 'ticket_title_edit' ) );
+			var $add_ticket_title            = $( document.getElementById( 'ticket_title_add' ) );
+			var $edit_rsvp_title             = $( document.getElementById( 'rsvp_title_edit' ) );
+			var $add_rsvp_title              = $( document.getElementById( 'rsvp_title_add' ) );
+			var $ticket_save                 = $( document.getElementById( 'ticket_form_save' ) );
+			var $rsvp_save                   = $( document.getElementById( 'rsvp_form_save' ) );
+			var $button                      = $( e.target ).closest( 'button' );
+			var $ecommerce                   = $( '.ecommerce_row' );
+
+			if ( undefined === $ticket_id ) {
+				if ( 'ticket_form_toggle' === $button.attr( 'id' ) ) {
+					is_ticket = true;
+				}
+			} else {
+				is_edit = true;
+
+				if ( 'Tribe__Tickets__RSVP' !== $button.attr( 'data-provider' ) ) {
+					is_ticket = true;
+				}
+			}
+
+			if ( is_ticket ) {
+				$edit_rsvp_title.hide();
+				$add_rsvp_title.hide();
+				$rsvp_save.hide();
+				$ticket_save.show();
+
+				if ( is_edit ) {
+					$edit_ticket_title.show();
+					$add_ticket_title.hide();
+				} else {
+					$add_ticket_title.show();
+					$edit_ticket_title.hide();
+				}
+			} else {
+				$edit_ticket_title.hide();
+				$add_ticket_title.hide();
+				$ticket_save.hide();
+				$rsvp_save.show();
+
+				if ( is_edit ) {
+					$edit_rsvp_title.show();
+					$add_rsvp_title.hide();
+				} else {
+					$add_rsvp_title.show();
+					$edit_rsvp_title.hide();
+				}
+			}
+		}
+
 		/* "Settings" button action */
 		$( document.getElementById( 'settings_form_toggle' ) ).on( 'click', function( e ) {
 			show_hide_panel( e, $settings_panel);
@@ -314,7 +357,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		/* "Add a ticket" link action */
 		$( '.ticket_form_toggle' ).on( 'click', function( e ) {
+			$tribe_tickets
+				.trigger( 'clear.tribe' )
+				.trigger( 'set-advanced-fields.tribe' )
+				.trigger( 'focus.tribe' );
+
 			show_hide_panel( e, $edit_panel );
+
+			change_edit_options( e );
 
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) ) {
 				// uncheck them all!
@@ -323,9 +373,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				});
 
 				if ( $( document.getElementById( 'provider_Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
-					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ).prop( 'checked', true );
+					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
 				} else {
-					$( document.getElementById( 'provider_Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
+					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
 				}
 
 
@@ -333,12 +383,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
 			}
 
-			$( document.getElementById( 'ticket_form_main' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
+			$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
-			$tribe_tickets
-				.trigger( 'clear.tribe' )
-				.trigger( 'set-advanced-fields.tribe' )
-				.trigger( 'focus.tribe' );
 			$( document.getElementById( 'tribetickets' ) ).trigger( 'ticket-provider-changed.tribe' );
 		} );
 
@@ -363,7 +409,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		/* "Save Ticket" button action */
-		$( document.getElementById( 'ticket_form_save' ) ).click( function( e ) {
+		$( document.getElementById( 'ticket_form_save' ) ).add( $( document.getElementById( 'rsvp_form_save' ) ) ).on( 'click', function( e ) {
 			var $form = $( document.getElementById( 'ticket_form_table' ) );
 			var type  = $form.find( '.ticket_provider:checked' ).val();
 
@@ -476,12 +522,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 				$tribe_tickets.trigger( 'spin.tribe', 'start' );
 
+				var ticket_id = this.getAttribute( 'data-ticket-id' );
+
 				var params = {
 					action   : 'tribe-ticket-edit-' + this.getAttribute( 'data-provider' ),
 					post_ID  : $( document.getElementById( 'post_ID' ) ).val(),
-					ticket_id: this.getAttribute( 'data-ticket-id' ),
+					ticket_id: ticket_id,
 					nonce    : TribeTickets.edit_ticket_nonce
 				};
+
+				change_edit_options( e, ticket_id );
 
 				$.post(
 					ajaxurl,
@@ -503,11 +553,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						if ( 'undefined' !== typeof response.data.on_sale && response.data.on_sale ) {
 							onSale       = true;
 							regularPrice = response.data.regular_price;
-						}
-
-						if ( response.data.ID ) {
-							$edit_titles.show();
-							$add_titles.hide();
 						}
 
 						// trigger a change event on the provider radio input so the advanced fields can be re-initialized
@@ -577,9 +622,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								start_hour = '0' + start_hour;
 							}
 
-							$( document.getElementById( 'ticket_start_hour' ) ).val( start_hour ).trigger( "change" );
-							$( document.getElementById( 'ticket_start_minute' ) ).val( response.data.start_date.substring( 14, 16 ) ).trigger( "change" );
-							$( document.getElementById( 'ticket_start_meridian' ) ).val( start_meridian ).trigger( "change" );
+							$( document.getElementById( 'ticket_start_hour' ) ).val( start_hour ).trigger( 'change' );
+							$( document.getElementById( 'ticket_start_minute' ) ).val( response.data.start_date.substring( 14, 16 ) ).trigger( 'change' );
+							$( document.getElementById( 'ticket_start_meridian' ) ).val( start_meridian ).trigger( 'change' );
 						}
 
 						if ( response.data.end_date ) {
@@ -604,20 +649,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								end_hour = '0' + end_hour;
 							}
 
-							$( document.getElementById( 'ticket_end_hour' ) ).val( end_hour ).trigger( "change" );
-							$( document.getElementById( 'ticket_end_minute' ) ).val( response.data.end_date.substring( 14, 16 ) ).trigger( "change" );
-							$( document.getElementById( 'ticket_end_meridian' ) ).val( end_meridian ).trigger( "change" );
+							$( document.getElementById( 'ticket_end_hour' ) ).val( end_hour ).trigger( 'change' );
+							$( document.getElementById( 'ticket_end_minute' ) ).val( response.data.end_date.substring( 14, 16 ) ).trigger( 'change' );
+							$( document.getElementById( 'ticket_end_meridian' ) ).val( end_meridian ).trigger( 'change' );
 
 							$( '.ticket_end_time' ).show();
 						}
 
-						var $ticket_advanced = $( 'tr.ticket_advanced input' );
-						$ticket_advanced.data( 'name', $ticket_advanced.attr( 'name' ) ).attr( {
-							'name': '',
-							'id': ''
-						} );
-						$( 'tr.ticket_advanced' ).remove();
-						$( 'tr.ticket.bottom' ).before( response.data.advanced_fields );
+						$( document.getElementById( response.data.provider_class + '_advanced' ) ).replaceWith( response.data.advanced_fields );
 
 						// set the prices after the advanced fields have been added to the form
 						var $ticket_price = $tribe_tickets.find( '#ticket_price' );
@@ -662,8 +701,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( 'a#ticket_form_toggle' ).hide();
 
 						$tribe_tickets
-							.trigger( 'set-advanced-fields.tribe' )
 							.trigger( 'edit-ticket.tribe', response );
+
+						$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 					},
 					'json'
@@ -672,6 +712,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						.trigger( 'spin.tribe', 'stop' )
 						.trigger( 'focus.tribe' )
 						.trigger( 'edit-tickets-complete.tribe' );
+
+					$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 					show_hide_panel( e, $edit_panel );
 				} );

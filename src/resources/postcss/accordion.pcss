@@ -1,0 +1,82 @@
+:root {
+	--base-font-size: 12px;
+}
+
+/* Accordion Styles */
+.accordion-header {
+	background: none;
+	border: 0;
+	cursor: pointer;
+	font-size: var(--base-font-size);
+	font-weight: 500;
+	padding: 10px 10px 10px 20px;
+	position: relative;
+	text-align: left;
+	width: 100%;
+
+	&::before {
+		background-color: #000;
+		border-radius: 100%;
+		box-sizing: border-box;
+		color: #fff;
+		content: '\f132';
+		font-family: 'dashicons';
+		font-size: calc(var(--base-font-size) - 2px);
+		font-weight: 400;
+		height: var(--base-font-size);
+		left: 0;
+		padding-left: 1px;
+		padding-top: 2px;
+		position: absolute;
+		top: 11px;
+		width: var(--base-font-size);
+	}
+
+	&::after {
+		content: '';
+		border-bottom: 1px solid #ddd;
+		position: absolute;
+		right: 0;
+		width: 80%;
+		top: 50%;
+		transform: translateY(-50%);
+	}
+
+	&.is-active {
+		&::before {
+			content: '\f460';
+			padding-left: 1px;
+			padding-top: 1px;
+		}
+	}
+
+	&:focus {
+		outline: 1px solid #5b9dd9;
+	}
+}
+
+.tribe_attendee_meta::after {
+	width: calc(100% - 170px);
+}
+
+.tribe_advanced_meta::after {
+	width: calc(100% - 105px);
+}
+
+.accordion-label {
+	&:focus {
+		outline: none;
+	}
+}
+
+.accordion-content {
+	display: none;
+
+	.ticket_panel & {
+		margin: 1em 0 2em;
+	}
+
+	&.is-active {
+		display: block;
+	}
+}

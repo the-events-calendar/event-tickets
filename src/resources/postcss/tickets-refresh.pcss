@@ -15,6 +15,7 @@
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
+		z-index: 1;
 	}
 
 	&:hover {
@@ -33,6 +34,10 @@
 	padding: 0;
 	position: absolute;
 	width: 1px;
+}
+
+.screen_reader_text {
+	@mixin screen-reader-text;
 }
 
 #poststuff .inside {
@@ -362,8 +367,9 @@
 	font-size: 12px;
 }
 
-[class^='ticket_form_title_'] {
+h4.ticket_form_title {
 	font-size: 1.2em;
+	margin-top: 0;
 }
 
 /* Ensure radios and checkboxes have some space to the right of them when inside a label */
@@ -379,62 +385,29 @@ p.description {
 	font-style: normal;
 }
 
-/* Accordion Styles */
-.accordion-header {
-	background: none;
-	border: 0;
-	cursor: pointer;
-	font-size: 16px;
-	font-weight: 500;
-	padding: 10px 10px 10px 20px;
-	position: relative;
-	text-align: left;
-	width: 100%;
-
-	&::before {
-		background-color: #000;
-		border-radius: 100%;
-		box-sizing: border-box;
-		color: #fff;
-		content: '\f132';
-		font-family: 'dashicons';
-		font-size: 10px;
-		font-weight: 400;
-		height: 14px;
-		left: 0;
-		padding-left: 2px;
-		padding-top: 3px;
-		position: absolute;
-		top: 10px;
-		width: 14px;
-	}
-
-	&.is-active {
-		&::before {
-			content: '\f460';
-			padding-left: 2px;
-			padding-top: 2px;
+#ticket_form .ticket_advanced.history {
+	.toggle-history {
+		span:nth-child(2) {
+			display: none;
 		}
 	}
-}
 
-.accordion-header {
-	&:focus {
-		outline: 1px solid #5b9dd9;
+	ul {
+		display: none;
 	}
-}
 
-.accordion-label {
-	&:focus {
-		outline: none;
-	}
-}
+	&._show {
+		span:first-child {
+			display: none;
+		}
 
-.accordion-content {
-	display: none;
+		span:nth-child(2) {
+			display: inline;
+		}
 
-	&.is-active {
-		display: block;
+		ul {
+			display: block;
+		}
 	}
 }
 
@@ -443,7 +416,6 @@ p.description {
 	margin-top: 1em;
 }
 
-/* Testing */
 .tribe_preview {
 	cursor: pointer;
 }
@@ -455,5 +427,18 @@ p.description {
 
 	@media (min-width: 782px) {
 		float: right;
+	}
+}
+
+#ticket_form .tooltip_container {
+	@mixin tribe-ticket-tooltip;
+
+	display: inline-block;
+
+	.tooltip {
+		background-color: #fff;
+		left: 100%;
+		margin: 0;
+		width: 200px;
 	}
 }
