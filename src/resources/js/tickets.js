@@ -88,11 +88,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 */
 			'clear.tribe': function() {
 				var $this            = $( this );
-				var $ticket_form     = $this.find( '#ticket_form' );
+				var $ticket_form     = $this.find( '#ticket_form_main' );
 				var $ticket_settings = $ticket_form.find( "div:not(.event-wide-settings)" );
 
 				$ticket_settings.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
-				$ticket_settings.find( 'input:checkbox' ).attr( 'checked', false );
+				$ticket_settings.find( 'input:checkbox, input:radio' ).attr( 'checked', false );
 				$ticket_settings.find( '#ticket_id' ).val( '' );
 
 				$this.find( '#ticket_form input[name="show_attendee_info"]' ).prop( 'checked', false ).change();
@@ -112,7 +112,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					.end().siblings( '.description' ).show();
 
 				$( document.getElementById( 'tribe-tickets-attendee-sortables' ) ).empty();
+
 				$( '.tribe-tickets-attendee-saved-fields' ).show();
+
+				$( '.accordion-content.is-active' ).removeClass( 'is-active' );
 
 				$( document.getElementById( 'ticket_bottom_right' ) ).empty();
 
@@ -141,6 +144,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			/**
 			 * Sets/Swaps out the name & id attributes on Advanced ticket meta fields so we don't have (or submit)
 			 * duplicate fields
+			 *
+			 * We now load these via ajax and there is no need to change field names/IDs
+			 *
+			 * @deprecated TBD
 			 *
 			 * @return {void}
 			 */
@@ -231,9 +238,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 *
 		 * @return string
 		 */
-		function currently_selected_provider() {
-			var $checked_provider = $( 'input[name="ticket_provider"]:checked' );
-			return ( $checked_provider.length > 0 ) ? $checked_provider[0].value : "";
+		function get_default_provider() {
+			var $checked_provider = $( 'input[name="default_ticket_provider"]:checked' );
+			return ( $checked_provider.length > 0 ) ? $checked_provider[0].value : '';
+		}
+
+		/**
+		 * Returns the currently global capacity (via the settings panel.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		function get_global_cap() {
+			var $global_cap = $( document.getElementById( 'settings_global_capacity_edit' ) )
+			return ( $global_cap.length > 0 ) ? $global_cap.val() : '';
 		}
 
 		/**
@@ -302,7 +321,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $ticket_save                 = $( document.getElementById( 'ticket_form_save' ) );
 			var $rsvp_save                   = $( document.getElementById( 'rsvp_form_save' ) );
 			var $button                      = $( e.target ).closest( 'button' );
-			var $ecommerce                   = $( '.ecommerce_row' );
 
 			if ( undefined === $ticket_id ) {
 				if ( 'ticket_form_toggle' === $button.attr( 'id' ) ) {
@@ -368,15 +386,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) ) {
 				// uncheck them all!
-				$( '.ticket_provider' ).each( function() {
-					$( this ).prop( 'checked', true ).removeAttr( 'checked' );
+				$( '[name="default_ticket_provider"]' ).each( function() {
+					$( this ).prop( 'checked', false ).removeAttr( 'checked' );
 				});
 
-				if ( $( document.getElementById( 'provider_Tribe__Tickets_Plus__Commerce__EDD__Main_radio' ) ) ) {
-					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
-				} else {
-					$( document.getElementById( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio' ) ).prop( 'checked', true );
-				}
+				var $default_provider = get_default_provider();
+
+				$( document.getElementById( $default_provider.val() + '_radio' ) ).prop( 'checked', true );
+				$( document.getElementById( $default_provider.val() + '_global_capacity' ) ).val( get_global_cap() );
 
 
 			} else {
@@ -398,14 +415,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.trigger( 'focus.tribe' );
 		} );
 
-		/* Change global stock type if we put a value in #ticket_woo_global_stock_cap */
-		$( document.getElementById( 'ticket_woo_global_stock_cap' ) ).on( 'blur', function( e ) {
-			var $global = $( document.getElementById( 'global' ) );
-			if ( 0 < $( this ).val() ) {
-				$global.val( 'capped' );
-			} else {
-				$global.val( 'global' );
+		/* Change global stock type if we put a value in global_stock_cap */
+		$( document ).on( 'blur', '[name="global_stock_cap"]', function( e ) {
+			var $this = $( this );
+			var $global_field = $this.closest( 'fieldset' ).find( '[name="ticket_global_stock"]' );
+			var global_field_val = 'global';
+
+			if ( 0 < $this.val() ) {
+				global_field_val = 'capped';
 			}
+
+			$global_field.val( global_field_val );
 		} );
 
 		/* "Save Ticket" button action */
@@ -436,9 +456,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						// Get the original (pre-save) capacity 'field' in the ticket table and set it to our new capacity
 						var original_capacity_base = $( document.getElementById( 'original_capacity__' + responseData.ticket_id ) );
 						original_capacity_base.text( responseData.ticket_capacity );
-						// Get the original (pre-save) available capacity 'field' in the ticket table and set it to our new available capacity
-						var available_capacity_base = $( document.getElementById( 'available_capacity__' + responseData.ticket_id ) );
-						available_capacity_base.text( responseData.ticket_stock );
 						// Change the available capacity in the editor
 						$( document.getElementById( 'rsvp_ticket_stock_total_value' ) ).text( responseData.ticket_stock );
 
@@ -537,10 +554,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					ajaxurl,
 					params,
 					function( response ) {
-						$tribe_tickets
-							.trigger( 'clear.tribe' )
-							.trigger( 'set-advanced-fields.tribe' )
-							.trigger( 'edit-ticket.tribe', response );
 
 						if ( ! response ) {
 							return;
@@ -559,14 +572,23 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 						$( 'input[name=ticket_provider]:radio' ).change();
 
+						console.log(response.data);
+
 						// Capacity/Stock
 						if ( response.data.global_stock_mode ) {
 							switch ( response.data.global_stock_mode ) {
 								case 'global':
+								case 'capped':
 									$( document.getElementById( response.data.provider_class + '_global' ) ).prop( 'checked', true );
-									$( document.querySelectorAll( '.global_stock_cap' ) ).val( response.data.global_stock_cap );
-									// this one is _not_ working :(
-									$( document.getElementById( 'tribe-tickets-global-stock-input' ) ).val( response.data.total_global_stock );
+									$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop('disabled', true);
+
+									if ( undefined !== response.data.global_stock_cap && 0 < response.data.global_stock_cap ) {
+										$( document.getElementById( response.data.provider_class + '_global' ) ).val( 'capped' );
+										$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
+									} else {
+										$( document.getElementById( response.data.provider_class + '_global' ) ).val( 'global' );
+										$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( '' );
+									}
 									break;
 								case 'own':
 									$( document.getElementById( response.data.provider_class + '_own' ) ).prop( 'checked', true );
@@ -575,6 +597,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								default:
 									// Just in case
 									$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
+									$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( '' );
 							}
 						} else {
 							$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
@@ -700,20 +723,20 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						$( 'a#ticket_form_toggle' ).hide();
 
-						$tribe_tickets
-							.trigger( 'edit-ticket.tribe', response );
-
 						$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
-
 					},
 					'json'
-				).complete( function( response ) {
+				).always( function( response ) {
 					$tribe_tickets
 						.trigger( 'spin.tribe', 'stop' )
 						.trigger( 'focus.tribe' )
 						.trigger( 'edit-tickets-complete.tribe' );
 
 					$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
+
+					if ( response.data.total_global_stock ) {
+						$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop('disabled', true);
+					}
 
 					show_hide_panel( e, $edit_panel );
 				} );

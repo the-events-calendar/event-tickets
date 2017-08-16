@@ -173,18 +173,14 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return void|int|string void if no capacity, string for display if unlimited, else int
 	 */
 	public function convert_unlimited_capacity( $capacity, $context = 'display' ) {
-		// If we don't have capacity, we've got nothin'
-		if ( empty( $capacity ) ) {
-			return;
-		}
-
 		// If it's a positive number, just return it
 		if ( is_numeric( $capacity ) && 0 < $capacity ) {
 			$capacity = absint( $capacity );
 		}
 
-		// Try and handle the unlimiteds
-		if ( is_string( $capacity ) || -1 === $capacity ) {
+		// Try and handle the unlimiteds - note it was stored as an empty string, now as -1
+		if ( is_string( $capacity ) || -1 === $capacity || '' === $capacity ) {
+			// if it's for display, we want the text representation
 			if ( 'display' === $context ) {
 				$capacity = esc_html__( 'unlimited', 'event-tickets' );
 			} else {
@@ -1024,11 +1020,12 @@ class Tribe__Tickets__Tickets_Handler {
 			<td class="ticket_available">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
-				$original_stock = $ticket->original_stock();
-				if (  empty( $original_stock ) || 'unlimited' === $ticket->global_stock_mode()  ) {
-					esc_html_e( 'unlimited', 'event-tickets' );
-				} elseif ( 'own' === $ticket->global_stock_mode() ) {
+				$global_stock_mode = $ticket->global_stock_mode();
+
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
 					echo absint( $ticket->remaining() );
+				} elseif ( empty( $global_stock_mode ) || 'unlimited' === $global_stock_mode ) {
+					 esc_html_e( 'unlimited', 'event-tickets' );
 				} else {
 					echo '(' . absint( $ticket->remaining() ) . ')';
 				}

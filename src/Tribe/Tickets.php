@@ -67,15 +67,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Name of this class. Note that it refers to the child class.
 		 *
-		 * @deprecated use $class_name
-		 *
-		 * @var string
-		 */
-		public $className;
-
-		/**
-		 * Name of this class. Note that it refers to the child class.
-		 *
 		 * @var string
 		 */
 		public $class_name;
@@ -83,27 +74,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Path of the parent class
 		 *
-		 * @deprecated use $parent_path
-		 *
-		 * @var string
-		 */
-		private $parentPath;
-
-		/**
-		 * Path of the parent class
-		 *
 		 * @var string
 		 */
 		private $parent_path;
-
-		/**
-		 * URL of the parent class
-		 *
-		 * @deprecated use $parent_url
-		 *
-		 * @var string
-		 */
-		private $parentUrl;
 
 		/**
 		 * URL of the parent class
@@ -134,15 +107,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Name of the provider
 		 *
-		 * @deprecated use $plugin_name
-		 *
-		 * @var string
-		 */
-		public $pluginName;
-
-		/**
-		 * Name of the provider
-		 *
 		 * @var string
 		 */
 		public $plugin_name;
@@ -150,27 +114,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Path of the child class
 		 *
-		 * @deprecated use $plugin_path
-		 *
-		 * @var string
-		 */
-		protected $pluginPath;
-
-		/**
-		 * Path of the child class
-		 *
 		 * @var string
 		 */
 		protected $plugin_path;
-
-		/**
-		 * URL of the child class
-		 *
-		 * @deprecated use $plugin_url
-		 *
-		 * @var string
-		 */
-		protected $pluginUrl;
 
 		/**
 		 * URL of the child class
@@ -185,6 +131,68 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $ticket_object = '';
+
+		/* Deprecated vars */
+
+		/**
+		 * Name of this class. Note that it refers to the child class.
+		 * deprecated - use $class_name
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		public $className;
+
+		/**
+		 * Path of the parent class
+		 * deprecated - use $parent_path
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		private $parentPath;
+
+		/**
+		 * URL of the parent class
+		 * deprecated - use $parent_url
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		private $parentUrl;
+
+		/**
+		 * Name of the provider
+		 * deprecated - use $plugin_name
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		public $pluginName;
+
+		/**
+		 * Path of the child class
+		 * deprecated - use $plugin_path
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		protected $pluginPath;
+
+		/**
+		 * URL of the child class
+		 * deprecated - use $plugin_url
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		protected $pluginUrl;
 
 		/**
 		 * Constant with the Transient Key for Attendees Cache
@@ -2003,6 +2011,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * The $user_id param is optional and when not provided it will default to the current
 		 * user ID.
+		 *
 		 *
 		 * @param int $attendee_id
 		 * @param int $user_id

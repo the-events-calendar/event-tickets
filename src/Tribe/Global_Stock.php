@@ -31,6 +31,16 @@ class Tribe__Tickets__Global_Stock {
 	const OWN_STOCK_MODE = 'own';
 
 	/**
+	 * Post meta key used to store the ticket global stock mode.
+	 */
+	const TICKET_STOCK_MODE = '_global_stock_mode';
+
+	/**
+	 * Post meta key used to store the ticket global stock cap.
+	 */
+	const TICKET_STOCK_CAP = '_global_stock_cap';
+
+	/**
 	 * @var int $post_id
 	 */
 	protected $post_id;
