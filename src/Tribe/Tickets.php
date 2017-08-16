@@ -623,6 +623,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
 			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
+			add_filter( 'wp_ajax_tribe-events-edit-global-capacity', array( $this, 'edit_global_capacity_level' ) );
 
 			// Admin AJAX actions for each provider
 			add_action( 'wp_ajax_tribe-ticket-add-' . $this->class_name, array( $this, 'ajax_handler_ticket_add' ) );
@@ -666,7 +667,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *  and calls the child save_ticket function.
 		 */
 		final public function ajax_handler_ticket_add() {
-
 			if ( ! isset( $_POST['formdata'] ) || ! isset( $_POST['post_ID'] ) ) {
 				$this->ajax_error( 'Bad post' );
 			}
@@ -739,12 +739,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return boolean
 		 */
 		final public function ticket_add( $post_id, $data ) {
-			$ticket = new Tribe__Tickets__Ticket_Object();
-
+			$ticket                 = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID             = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name           = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
 			$ticket->description    = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
-			$ticket->price          = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) ) : 0;
+			$ticket->price          = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
 			$ticket->purchase_limit = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit' ] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 
 			if ( ! empty( $ticket->price ) ) {
@@ -788,7 +787,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			return $this->save_ticket( $post_id, $ticket, $data );
 		}
-
 
 		/**
 		 * Handles the check-in ajax call, and calls the checkin method.
@@ -1253,6 +1251,36 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 *
+		 */
+		public function edit_global_capacity_level() {
+			$capacity = tribe_get_request_var( 'capacity' );
+			$post_id = tribe_get_request_var( 'post_ID' );
+
+			if ( empty( $post_id ) ) {
+				return $this->ajax_error( 'Missing required post ID.' );
+			}
+
+			if ( empty( $capacity ) ) {
+				return $this->ajax_error( 'Missing required capacity.' );
+			}
+
+			if ( ! is_numeric( $capacity ) ) {
+				if ( 'unlimited' !== strtolower( trim( $capacity ) ) ) {
+					return $this->ajax_error( 'Bad capacity data.' );
+				}
+
+				$capacity = -1;
+			}
+
+			// We ensure that GLOBAL_STOCK_ENABLED is set as well since we've removed the checkbox
+			$meta = update_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+			$meta = update_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, $capacity );
+
+			return $this->ajax_ok( 'Global capacity updated. New level set to ' . $capacity );
+		}
+
+		/**
 		 * Returns Ticket and RSVP Count for an Event
 		 *
 		 * @param $event_id
@@ -1260,7 +1288,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_ticket_counts( $event_id ) {
-
 			$tickets = self::get_all_event_tickets( $event_id );
 
 			// if no tickets or rsvp return empty array

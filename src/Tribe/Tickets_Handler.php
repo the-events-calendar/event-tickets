@@ -149,8 +149,8 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( empty( $action_links ) ) {
 			return;
 		}
-		// can't escape, mixed HTML
-		echo '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>';
+
+		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
 	}
 
 	/**
@@ -160,6 +160,39 @@ class Tribe__Tickets__Tickets_Handler {
 		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
 		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
+	}
+
+	/**
+	 * Handles switching unlimited capacity between -1 and 'unlimited'
+	 *
+	 * @since TBD*
+	 *
+	 * @param int capacity
+	 * @param string ('display') context determines direction of conversion
+	 *
+	 * @return void|int|string void if no capacity, string for display if unlimited, else int
+	 */
+	public function convert_unlimited_capacity( $capacity, $context = 'display' ) {
+		// If we don't have capacity, we've got nothin'
+		if ( empty( $capacity ) ) {
+			return;
+		}
+
+		// If it's a positive number, just return it
+		if ( is_numeric( $capacity ) && 0 < $capacity ) {
+			$capacity = absint( $capacity );
+		}
+
+		// Try and handle the unlimiteds
+		if ( is_string( $capacity ) || -1 === $capacity ) {
+			if ( 'display' === $context ) {
+				$capacity = esc_html__( 'unlimited', 'event-tickets' );
+			} else {
+				$capacity = -1;
+			}
+		}
+
+		return $capacity;
 	}
 
 	/**
@@ -206,7 +239,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get the total event independent capacity.
+	 * Get the total event independent capacity. For display
 	 *
 	 * @since TBD
 	 *
@@ -239,6 +272,8 @@ class Tribe__Tickets__Tickets_Handler {
 				}
 			}
 		}
+
+		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -281,9 +316,8 @@ class Tribe__Tickets__Tickets_Handler {
 		return $ticket_list;
 	}
 
-
 	/**
-	 * Get the total event independent capacity.
+	 * Get the total event independent capacity. For display
 	 *
 	 * @since TBD
 	 *
@@ -316,6 +350,8 @@ class Tribe__Tickets__Tickets_Handler {
 				}
 			}
 		}
+
+		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -359,7 +395,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get the total event shared capacity.
+	 * Get the total event shared capacity. For display
 	 *
 	 * @since TBD
 	 *
@@ -372,26 +408,16 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$capacity = 0;
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$global_capacity_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true );
+		$capacity = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 
-		if ( ! empty( $tickets ) ) {
-			foreach ( $tickets as $ticket ) {
-				if ( 'own' === $ticket->global_stock_mode() ) {
-					continue;
-				}
-
-				$stock = $ticket->original_stock();
-
-				// Empty original stock means unlimited tickets, let's not add infinity!
-				if ( ! empty( $stock ) ) {
-					$capacity += $stock;
-				} else {
-					// If one ticket is unlimited, so is total capacity - break out with flag value
-					$capacity = -1;
-					break;
-				}
-			}
+		if ( ! $global_capacity_enabled ) {
+			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED );
+			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
+			$capacity = 0;
 		}
+
+		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -400,9 +426,8 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @param (int) $capacity Total capacity value
 		 * @param (int) $post Post ID tickets are attached to
-		 * @param (array) $tickets array of all tickets
 		 */
-		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id, $tickets );
+		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id );
 	}
 
 	/**

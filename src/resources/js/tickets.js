@@ -802,6 +802,30 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		} );
 
+		/* Handle editing global capacity from the settings panel */
+		$( document ).on( 'click', '.global_capacity_edit_button', function( e ) {
+			e.preventDefault();
+			$( document.getElementById( 'settings_global_capacity_edit' ) ).prop( 'disabled', false ).focus();
+		} );
+
+		$( document ).on( 'blur', '#settings_global_capacity_edit', function() {
+			var capacity = $( this ).val();
+
+			var params = {
+				action   : 'tribe-events-edit-global-capacity',
+				post_ID  : $( document.getElementById( 'post_ID' ) ).val(),
+				capacity : capacity,
+				nonce    : TribeTickets.edit_ticket_nonce
+			};
+
+			$.post(
+				ajaxurl,
+				params,
+				function( response ) {
+					console.log(response);
+				} );
+		} );
+
 		$( 'body' ).on( 'click', '#tribe_ticket_header_remove', function( e ) {
 
 			e.preventDefault();
