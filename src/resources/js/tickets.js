@@ -411,10 +411,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							// if it's not there, create it :(
 							var $container = $( '.tribe_sectionheader.ticket_list_container' );
 							$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
-							container.append( ticket_table );
+							$container.append( $ticket_table );
 
-							if ( container.hasClass( 'tribe_no_capacity' ) ) {
-								container.removeClass( 'tribe_no_capacity' );
+							if ( $container.hasClass( 'tribe_no_capacity' ) ) {
+								$container.removeClass( 'tribe_no_capacity' );
 							}
 						}
 

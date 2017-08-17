@@ -740,6 +740,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$ticket_id = $this->ticket_add( $post_id, $data );
+			error_log($ticket_id);
 
 			// Successful?
 			if ( $ticket_id ) {
@@ -755,6 +756,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			parse_str ( $_POST['formdata'], $post_data );
 
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
+			error_log(print_r($ticket, true));
 			$post_data['ticket_stock'] = $ticket->stock;
 			$post_data['ticket_capacity'] = $ticket->original_stock();
 
