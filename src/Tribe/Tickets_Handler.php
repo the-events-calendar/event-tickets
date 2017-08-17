@@ -1009,12 +1009,10 @@ class Tribe__Tickets__Tickets_Handler {
 
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
-				<span id="original_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
-					<?php
-					// escaping handled in function - could be string|int
-					$ticket->display_original_stock( true );
-					?>
-				</span>
+				<?php
+				// escaping handled in function - could be string|int
+				$ticket->display_original_stock( true );
+				?>
 			</td>
 
 			<td class="ticket_available">
@@ -1022,10 +1020,14 @@ class Tribe__Tickets__Tickets_Handler {
 				<?php
 				$global_stock_mode = $ticket->global_stock_mode();
 
-				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
-					echo absint( $ticket->remaining() );
-				} elseif ( empty( $global_stock_mode ) || 'unlimited' === $global_stock_mode ) {
+				if (
+					empty( $global_stock_mode ) ||
+					'unlimited' === $global_stock_mode  ||
+					( 'Tribe__Tickets__RSVP' === $ticket->provider_class && 0 >= $ticket->global_stock_cap() )
+				) {
 					 esc_html_e( 'unlimited', 'event-tickets' );
+				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
+					echo absint( $ticket->remaining() );
 				} else {
 					echo '(' . absint( $ticket->remaining() ) . ')';
 				}

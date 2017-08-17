@@ -740,11 +740,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$ticket_id = $this->ticket_add( $post_id, $data );
-			error_log($ticket_id);
 
 			// Successful?
 			if ( $ticket_id ) {
-
 				/**
 				 * Fire action when a ticket has been added
 				 *
@@ -756,7 +754,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			parse_str ( $_POST['formdata'], $post_data );
 
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
-			error_log(print_r($ticket, true));
+
 			$post_data['ticket_stock'] = $ticket->stock;
 			$post_data['ticket_capacity'] = $ticket->original_stock();
 
@@ -992,8 +990,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Prevent HTML elements from being escaped
-			$return['name'] = html_entity_decode( $return['name'], ENT_QUOTES );
-			$return['name'] = htmlspecialchars_decode( $return['name'] );
+			$return['name']        = html_entity_decode( $return['name'], ENT_QUOTES );
+			$return['name']        = htmlspecialchars_decode( $return['name'] );
 			$return['description'] = html_entity_decode( $return['description'], ENT_QUOTES );
 			$return['description'] = htmlspecialchars_decode( $return['description'] );
 
@@ -1011,8 +1009,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$return['advanced_fields'] = $extra;
 
-			$return['stock'] = $ticket->stock;
+			$return['stock']          = $ticket->stock;
 			$return['original_stock'] = $ticket->original_stock();
+
+			$global_stock_mode             = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
+			$return[ 'global_stock_mode' ] = $global_stock_mode;
+
+			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
+				$global_stock_cap = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true );
+				$return[ 'global_stock_cap' ]   = $global_stock_cap;
+				$return[ 'total_global_stock' ] = $this->global_stock_level( $return[ 'post_id' ] );
+			}
 
 			/**
 			 * Provides an opportunity for final adjustments to the data used to populate

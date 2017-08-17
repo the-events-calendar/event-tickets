@@ -617,6 +617,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 						$( 'input[name=ticket_provider]:radio' ).change();
 
+						console.log(response.data);
+
 						// Capacity/Stock
 						if ( response.data.global_stock_mode ) {
 							switch ( response.data.global_stock_mode ) {
