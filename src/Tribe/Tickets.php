@@ -632,6 +632,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
 			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
 			add_filter( 'wp_ajax_tribe-events-edit-global-capacity', array( $this, 'edit_global_capacity_level' ) );
+			add_action( 'wp_ajax_tribe-ticket-refresh-panels', array( $this, 'ajax_refresh_panels' ) );
 
 			// Admin AJAX actions for each provider
 			add_action( 'wp_ajax_tribe-ticket-add-' . $this->class_name, array( $this, 'ajax_handler_ticket_add' ) );
@@ -671,6 +672,49 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/* AJAX Handlers */
 
 		/**
+		 * Refreshes panels after ajax calls that change data
+		 *
+		 * @since TBD
+		 *
+		 * @return string html content of the panels
+		 */
+		public function ajax_refresh_panels() {
+			// Didn't get a post id to work with - bail
+			if ( empty( $_POST[ 'post_ID'] ) ) {
+				return;
+			}
+			$post_id = $_POST[ 'post_ID'];
+
+			// Let's create a tickets list markup to return
+			$tickets = $this->get_event_tickets( $post_id );
+
+			$notice_type = ! empty( $_POST['notice'] ) ? $_POST['notice'] : '';
+			$ticket_table = '';
+
+			switch ( $notice_type ) {
+				case 'settings' :
+					$ticket_table .= $this->notice( esc_html__( 'Your settings have been saved.', 'event-tickets' ) );
+					break;
+				case 'ticket':
+					$ticket_table .= $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) );
+					break;
+				case 'delete':
+					$ticket_table .= $this->notice( esc_html__( 'Your ticket has been deleted.', 'event-tickets' ) );
+					break;
+				default:
+					// Don't add a notice if we didn't get a notice type
+			}
+
+			$ticket_table .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+
+			$return['ticket_table'] = $ticket_table;
+
+			$return = apply_filters( 'tribe_tickets_ajax_refresh_tables', $return, $post_id );
+
+			$this->ajax_ok( $return );
+		}
+
+		/**
 		 *    Sanitizes the data for the new/edit ticket ajax call,
 		 *  and calls the child save_ticket function.
 		 */
@@ -699,11 +743,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Successful?
 			if ( $ticket_id ) {
-				// Let's create a tickets list markup to return
-				$tickets = $this->get_event_tickets( $post_id );
-
-				$html = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) );
-				$html .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
 
 				/**
 				 * Fire action when a ticket has been added

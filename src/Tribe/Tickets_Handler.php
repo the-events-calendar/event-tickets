@@ -1284,9 +1284,9 @@ class Tribe__Tickets__Tickets_Handler {
 		do_action( 'tribe_events_save_tickets_settings', $params );
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, $image_header_field, $params['tribe_ticket_header_image_id'] );
+			update_post_meta( $id, $this->image_header_field, $params['tribe_ticket_header_image_id'] );
 		} else {
-			delete_post_meta( $id, $image_header_field );
+			delete_post_meta( $id, $this->image_header_field );
 		}
 
 		// We reversed this logic on the back end
@@ -1296,18 +1296,16 @@ class Tribe__Tickets__Tickets_Handler {
 			update_post_meta( $id, $this->show_attendees_field, 1 );
 		}
 
-
+		// Change the default ticket provider
 		if ( ! empty( $params['default_ticket_provider'] ) ) {
-			update_post_meta( $id, $ticket_provider_field, $params['default_ticket_provider'] );
+			update_post_meta( $id, $this->ticket_provider_field, $params['default_ticket_provider'] );
 		} else {
-			delete_post_meta( $id, $ticket_provider_field );
+			delete_post_meta( $id, $this->ticket_provider_field );
 		}
 
-		/**
-		 *  @TODO: placeholder for global capacity, not working correctly yet
-		 */
+		// Change the global stock if we're passed it (shouldn't be, just in case)
 		if ( ! empty( $params['global_stock'] ) ) {
-			update_post_meta( $id, $global_stock_field, $params['global_stock'] );
+			update_post_meta( $id, $this->global_stock_field, $params['global_stock'] );
 		}
 
 		$this->save_global_stock( $id );
