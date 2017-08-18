@@ -461,6 +461,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( $default_provider + '_radio' ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global' ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
+				$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
 
 			} else {
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
@@ -626,8 +627,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								case 'capped':
 									$( document.getElementById( response.data.provider_class + '_global' ) ).prop( 'checked', true );
 									$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop('disabled', true);
+									$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
 
-									if ( undefined !== response.data.global_stock_cap && 0 < response.data.global_stock_cap ) {
+									if ( undefined !== response.data.global_stock_cap && $.isNumeric( response.data.global_stock_cap ) && 0 < response.data.global_stock_cap ) {
 										$( document.getElementById( response.data.provider_class + '_global' ) ).val( 'capped' );
 										$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
 									} else {
@@ -654,8 +656,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( document.getElementById( 'ticket_id' ) ).val( response.data.ID );
 						$( document.getElementById( 'ticket_name' ) ).val( response.data.name );
 						$( document.getElementById( 'ticket_description' ) ).val( response.data.description );
-
-						$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
 
 						var start_date = response.data.start_date.substring( 0, 10 );
 						var end_date = response.data.end_date.substring( 0, 10 );

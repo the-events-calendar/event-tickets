@@ -77,7 +77,7 @@
 						<div class="ticket_form_right">
 							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date">
 							<span class="ticket_start_time ticket_time">
-								<?php echo tribe_get_datetime_separator(); ?>
+								&nbsp;at&nbsp;
 								<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field tribe-dropdown">
 									<?php echo $startHourOptions; ?>
 								</select>
@@ -104,7 +104,7 @@
 							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date">
 
 							<span class="ticket_end_time ticket_time">
-								<?php echo tribe_get_datetime_separator(); ?>
+								&nbsp;at&nbsp;
 								<select name="ticket_end_hour" id="ticket_end_hour" class="ticket_field tribe-dropdown">
 									<?php echo $endHourOptions; ?>
 								</select>
