@@ -165,7 +165,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Handles switching unlimited capacity between -1 and 'unlimited'
 	 *
-	 * @since TBD*
+	 * @since TBD
 	 *
 	 * @param int capacity
 	 * @param string ('display') context determines direction of conversion
@@ -252,7 +252,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' !== $ticket->global_stock_mode() ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $ticket->global_stock_mode() ) {
 					continue;
 				}
 
@@ -301,7 +301,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' != $ticket->global_stock_mode() || 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE != $ticket->global_stock_mode() || 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 					continue;
 				}
 
@@ -400,12 +400,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int number of tickets ( -1 means unlimited )
 	 */
 	public function get_total_event_shared_capacity( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-
-		$capacity = 0;
-
+		$post_id                 = Tribe__Main::post_id_helper( $post );
+		$capacity                = 0;
 		$global_capacity_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true );
-		$capacity = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
+		$capacity                = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 
 		if ( ! $global_capacity_enabled ) {
 			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED );
@@ -444,7 +442,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' == $ticket->global_stock_mode() ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE == $ticket->global_stock_mode() ) {
 					continue;
 				}
 
