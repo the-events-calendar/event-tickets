@@ -408,8 +408,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function get_original_stock() {
 			$orginal_stock = $this->original_stock();
+			$global_stock_mode = $this->global_stock_mode();
 
-			if ( empty( $orginal_stock ) ) {
+			if ( empty( $global_stock_mode ) || empty( $orginal_stock ) ) {
 				$orginal_stock = 'unlimited';
 			}
 
@@ -473,7 +474,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return string
 		 */
 		public function global_stock_mode( $mode = null ) {
-			if ( is_string( $mode ) ) {
+			if ( ! is_null( $mode ) ) {
 				$this->global_stock_mode = $mode;
 			}
 

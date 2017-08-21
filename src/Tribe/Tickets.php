@@ -67,15 +67,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Name of this class. Note that it refers to the child class.
 		 *
-		 * @deprecated use $class_name
-		 *
-		 * @var string
-		 */
-		public $className;
-
-		/**
-		 * Name of this class. Note that it refers to the child class.
-		 *
 		 * @var string
 		 */
 		public $class_name;
@@ -83,27 +74,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Path of the parent class
 		 *
-		 * @deprecated use $parent_path
-		 *
-		 * @var string
-		 */
-		private $parentPath;
-
-		/**
-		 * Path of the parent class
-		 *
 		 * @var string
 		 */
 		private $parent_path;
-
-		/**
-		 * URL of the parent class
-		 *
-		 * @deprecated use $parent_url
-		 *
-		 * @var string
-		 */
-		private $parentUrl;
 
 		/**
 		 * URL of the parent class
@@ -134,15 +107,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Name of the provider
 		 *
-		 * @deprecated use $plugin_name
-		 *
-		 * @var string
-		 */
-		public $pluginName;
-
-		/**
-		 * Name of the provider
-		 *
 		 * @var string
 		 */
 		public $plugin_name;
@@ -150,27 +114,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Path of the child class
 		 *
-		 * @deprecated use $plugin_path
-		 *
-		 * @var string
-		 */
-		protected $pluginPath;
-
-		/**
-		 * Path of the child class
-		 *
 		 * @var string
 		 */
 		protected $plugin_path;
-
-		/**
-		 * URL of the child class
-		 *
-		 * @deprecated use $plugin_url
-		 *
-		 * @var string
-		 */
-		protected $pluginUrl;
 
 		/**
 		 * URL of the child class
@@ -185,6 +131,68 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $ticket_object = '';
+
+		/* Deprecated vars */
+
+		/**
+		 * Name of this class. Note that it refers to the child class.
+		 * deprecated - use $class_name
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		public $className;
+
+		/**
+		 * Path of the parent class
+		 * deprecated - use $parent_path
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		private $parentPath;
+
+		/**
+		 * URL of the parent class
+		 * deprecated - use $parent_url
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		private $parentUrl;
+
+		/**
+		 * Name of the provider
+		 * deprecated - use $plugin_name
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		public $pluginName;
+
+		/**
+		 * Path of the child class
+		 * deprecated - use $plugin_path
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		protected $pluginPath;
+
+		/**
+		 * URL of the child class
+		 * deprecated - use $plugin_url
+		 *
+		 * @deprecated TBD
+		 *
+		 * @var string
+		 */
+		protected $pluginUrl;
 
 		/**
 		 * Constant with the Transient Key for Attendees Cache
@@ -342,14 +350,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $return the ajax return data
 		 */
 		public function ajax_ticket_edit_controls( $return ) {
-			$ticket = $this->get_ticket( $return[ 'post_id' ], $return[ 'ID' ] );
+			$ticket = $this->get_ticket( $return['post_id'], $return['ID'] );
 
 			if ( empty( $ticket ) ) {
 				return $return;
 			}
 
 			$controls   = array();
-			$controls[] = $this->get_ticket_move_link( $return[ 'post_id' ], $ticket );
+			$controls[] = $this->get_ticket_move_link( $return['post_id'], $ticket );
 			$controls[] = $this->get_ticket_delete_link( $ticket );
 
 			if ( ! empty( $controls ) ) {
@@ -623,6 +631,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
 			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
+			add_filter( 'wp_ajax_tribe-events-edit-global-capacity', array( $this, 'edit_global_capacity_level' ) );
+			add_action( 'wp_ajax_tribe-ticket-refresh-panels', array( $this, 'ajax_refresh_panels' ) );
 
 			// Admin AJAX actions for each provider
 			add_action( 'wp_ajax_tribe-ticket-add-' . $this->class_name, array( $this, 'ajax_handler_ticket_add' ) );
@@ -662,11 +672,61 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/* AJAX Handlers */
 
 		/**
+		 * Refreshes panels after ajax calls that change data
+		 *
+		 * @since TBD
+		 *
+		 * @return string html content of the panels
+		 */
+		public function ajax_refresh_panels() {
+			// Didn't get a post id to work with - bail
+			if ( empty( $_POST['post_ID'] ) ) {
+				return;
+			}
+			$post_id = $_POST['post_ID'];
+
+			// Let's create a tickets list markup to return
+			$tickets = $this->get_event_tickets( $post_id );
+
+			$notice_type  = ! empty( $_POST['notice'] ) ? $_POST['notice'] : '';
+			$ticket_table = '';
+
+			switch ( $notice_type ) {
+				case 'settings' :
+					$ticket_table .= $this->notice( esc_html__( 'Your settings have been saved.', 'event-tickets' ) );
+					break;
+				case 'ticket':
+					$ticket_table .= $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) );
+					break;
+				case 'delete':
+					$ticket_table .= $this->notice( esc_html__( 'Your ticket has been deleted.', 'event-tickets' ) );
+					break;
+				default:
+					// Don't add a notice if we didn't get a notice type
+			}
+
+			$ticket_table .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+
+			$return['ticket_table'] = $ticket_table;
+
+			/**
+			 * Allows filtering the data by other plugins/ecommerce solutions©
+			 *
+			 * @since TBD
+			 *
+			 * @param array the return data
+			 * @param int the post/event id
+			 */
+			$return = apply_filters( 'tribe_tickets_ajax_refresh_tables', $return, $post_id );
+
+			$this->ajax_ok( $return );
+		}
+
+		/**
 		 *    Sanitizes the data for the new/edit ticket ajax call,
 		 *  and calls the child save_ticket function.
 		 */
 		final public function ajax_handler_ticket_add() {
-
 			if ( ! isset( $_POST['formdata'] ) || ! isset( $_POST['post_ID'] ) ) {
 				$this->ajax_error( 'Bad post' );
 			}
@@ -691,12 +751,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Successful?
 			if ( $ticket_id ) {
-				// Let's create a tickets list markup to return
-				$tickets = $this->get_event_tickets( $post_id );
-
-				$html = $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) );
-				$html .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
-
 				/**
 				 * Fire action when a ticket has been added
 				 *
@@ -708,6 +762,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			parse_str ( $_POST['formdata'], $post_data );
 
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
+
 			$post_data['ticket_stock'] = $ticket->stock;
 			$post_data['ticket_capacity'] = $ticket->original_stock();
 
@@ -739,13 +794,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return boolean
 		 */
 		final public function ticket_add( $post_id, $data ) {
-			$ticket = new Tribe__Tickets__Ticket_Object();
-
+			$ticket                 = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID             = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name           = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
 			$ticket->description    = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
-			$ticket->price          = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) ) : 0;
-			$ticket->purchase_limit = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit' ] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
+			$ticket->price          = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
+			$ticket->purchase_limit = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit'] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
@@ -788,7 +842,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Pass the control to the child object
 			return $this->save_ticket( $post_id, $ticket, $data );
 		}
-
 
 		/**
 		 * Handles the check-in ajax call, and calls the checkin method.
@@ -945,8 +998,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Prevent HTML elements from being escaped
-			$return['name'] = html_entity_decode( $return['name'], ENT_QUOTES );
-			$return['name'] = htmlspecialchars_decode( $return['name'] );
+			$return['name']        = html_entity_decode( $return['name'], ENT_QUOTES );
+			$return['name']        = htmlspecialchars_decode( $return['name'] );
 			$return['description'] = html_entity_decode( $return['description'], ENT_QUOTES );
 			$return['description'] = htmlspecialchars_decode( $return['description'] );
 
@@ -962,10 +1015,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$extra = ob_get_contents();
 			ob_end_clean();
 
-			$return['advanced_fields'] = $extra;
+			$return['advanced_fields']   = $extra;
+			$return['stock']             = $ticket->stock;
+			$return['original_stock']    = $ticket->original_stock();
+			$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
+			$return['global_stock_mode'] = $global_stock_mode;
 
-			$return['stock'] = $ticket->stock;
-			$return['original_stock'] = $ticket->original_stock();
+			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
+				$global_stock_cap             = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true );
+				$return['global_stock_cap']   = $global_stock_cap;
+				$return['total_global_stock'] = $this->global_stock_level( $return['post_id'] );
+			}
 
 			/**
 			 * Provides an opportunity for final adjustments to the data used to populate
@@ -1221,14 +1281,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns an array of standard stock mode options that can be
 		 * reused by implementations.
 		 *
-		 * Format is: [ 'identifier' => 'Localized name', ... ]
+		 * Format is: ['identifier' => 'Localized name', ... ]
 		 *
 		 * @return array
 		 */
 		protected function global_stock_mode_options() {
 			return array(
-				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE    => __( 'Shared capacity with other tickets', 'event-tickets' ),
-				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE       => __( 'Set capacity for this ticket only', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Shared capacity with other tickets', 'event-tickets' ),
+				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Set capacity for this ticket only', 'event-tickets' ),
 			);
 		}
 
@@ -1253,6 +1313,36 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 *
+		 */
+		public function edit_global_capacity_level() {
+			$capacity = tribe_get_request_var( 'capacity' );
+			$post_id  = tribe_get_request_var( 'post_ID' );
+
+			if ( empty( $post_id ) ) {
+				return $this->ajax_error( 'Missing required post ID.' );
+			}
+
+			if ( empty( $capacity ) ) {
+				return $this->ajax_error( 'Missing required capacity.' );
+			}
+
+			if ( ! is_numeric( $capacity ) ) {
+				if ( 'unlimited' !== strtolower( trim( $capacity ) ) ) {
+					return $this->ajax_error( 'Bad capacity data.' );
+				}
+
+				$capacity = -1;
+			}
+
+			// We ensure that GLOBAL_STOCK_ENABLED is set as well since we've removed the checkbox
+			$meta = update_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
+			$meta = update_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, $capacity );
+
+			return $this->ajax_ok( 'Global capacity updated. New level set to ' . $capacity );
+		}
+
+		/**
 		 * Returns Ticket and RSVP Count for an Event
 		 *
 		 * @param $event_id
@@ -1260,7 +1350,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_ticket_counts( $event_id ) {
-
 			$tickets = self::get_all_event_tickets( $event_id );
 
 			// if no tickets or rsvp return empty array
@@ -1349,8 +1438,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function enqueue_frontend_stock_data() {
 			$data = array(
-				'tickets'  => array(),
-				'events'   => array(),
+				'tickets' => array(),
+				'events'  => array(),
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
@@ -1361,23 +1450,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
 				$stock_mode = $ticket->global_stock_mode();
 
-				$data[ 'tickets' ][ $ticket->ID ] = array(
+				$data['tickets'][ $ticket->ID ] = array(
 					'event_id' => $event_id,
-					'mode' => $stock_mode,
+					'mode'     => $stock_mode,
 				);
 
 				if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode ) {
-					$data[ 'tickets' ][ $ticket->ID ][ 'cap' ] = $ticket->global_stock_cap();
+					$data['tickets'][ $ticket->ID ]['cap'] = $ticket->global_stock_cap();
 				}
 
 				if (
 					Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
 					&& $ticket->managing_stock()
 				) {
-					$data[ 'tickets' ][ $ticket->ID ][ 'stock' ] = $ticket->stock();
+					$data['tickets'][ $ticket->ID ]['stock'] = $ticket->stock();
 				}
 
-				$data[ 'events' ][ $event_id ] = array(
+				$data['events'][ $event_id ] = array(
 					'stock' => $global_stock->get_stock_level(),
 				);
 			}
@@ -1976,6 +2065,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * The $user_id param is optional and when not provided it will default to the current
 		 * user ID.
+		 *
 		 *
 		 * @param int $attendee_id
 		 * @param int $user_id

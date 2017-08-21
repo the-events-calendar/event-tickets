@@ -389,10 +389,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$attendee_email = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
-		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
+		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout = empty( $data['optout'] ) ? false : (bool) $data['optout'];
+		$attendee_optout    = empty( $data['optout'] ) ? false : (bool) $data['optout'];
 
 		if ( empty( $data['order_status'] ) || ! $this->tickets_view->is_valid_rsvp_option( $data['order_status'] ) ) {
 			$attendee_order_status = null;
@@ -434,7 +434,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$transaction_ids = array();
 
 		foreach ( $this->get_event_attendees( $event_id ) as $attendee ) {
-			$transaction = get_post_meta( $attendee[ 'attendee_id' ], $this->order_key, true );
+			$transaction = get_post_meta( $attendee['attendee_id'], $this->order_key, true );
 
 			if ( ! empty( $transaction ) ) {
 				$transaction_ids[ $transaction ] = $transaction;
@@ -467,10 +467,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$order_id = md5( time() . rand() );
 
-		$attendee_email = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
-		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_email     = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
+		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
-		$attendee_optout = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
+		$attendee_optout    = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
 
 		if (
 			empty( $_POST['attendee']['order_status'] )
@@ -511,7 +511,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// get the RSVP status `decrease_stock_by` value
 			$status_stock_size = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
 
-			$ticket_qty = intval( $_POST["quantity_{$product_id}"] );
+			$ticket_qty = intval( $_POST[ "quantity_{$product_id}" ] );
 
 			// to avoid tickets from not being created on a status stock size of 0
 			// let's take the status stock size into account and create a number of tickets
@@ -621,7 +621,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 *
 		 * @param bool $send_mail Defaults to `true`.
 		 */
-		$send_mail = apply_filters('tribe_tickets_rsvp_send_mail', true);
+		$send_mail = apply_filters( 'tribe_tickets_rsvp_send_mail', true );
 
 		if ( $send_mail ) {
 			/**
@@ -680,14 +680,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		foreach ( $all_attendees as $single_attendee ) {
 			// Do not add those attendees/tickets marked as not attending (note that despite the name
 			// 'qr_ticket_id', this key is not QR code specific, it's simply the attendee post ID)
-			if ( 'yes' !== get_post_meta( $single_attendee[ 'qr_ticket_id' ], self::ATTENDEE_RSVP_KEY, true ) ) {
+			if ( 'yes' !== get_post_meta( $single_attendee['qr_ticket_id'], self::ATTENDEE_RSVP_KEY, true ) ) {
 				continue;
 			}
 
 			// Only add those attendees/tickets that haven't already been sent
-			if ( empty( $single_attendee[ 'ticket_sent' ] ) ) {
+			if ( empty( $single_attendee['ticket_sent'] ) ) {
 				$to_send[] = $single_attendee;
-				update_post_meta( $single_attendee[ 'qr_ticket_id' ], self::ATTENDEE_TICKET_SENT, true );
+				update_post_meta( $single_attendee['qr_ticket_id'], self::ATTENDEE_TICKET_SENT, true );
 			}
 		}
 
@@ -922,13 +922,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 
-		if ( trim( $raw_data['ticket_rsvp_stock'] ) !== '' ) {
-			$stock = (int) $raw_data['ticket_rsvp_stock'];
+		if ( isset( $raw_data['ticket_stock'] ) && trim( $raw_data['ticket_stock'] ) !== '' ) {
+			$stock = (int) $raw_data['ticket_stock'];
 			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
 			update_post_meta( $ticket->ID, '_stock', $stock );
 		} else {
+			// unlimited stock
 			delete_post_meta( $ticket->ID, '_stock_status' );
 			update_post_meta( $ticket->ID, '_manage_stock', 'no' );
+			delete_post_meta( $ticket->ID, '_stock' );
+			update_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, '' );
 		}
 
 		if ( isset( $ticket->start_date ) ) {
@@ -1126,8 +1129,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return null;
 		}
 
-		$return = new Tribe__Tickets__Ticket_Object();
-		$qty    = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		$return            = new Tribe__Tickets__Ticket_Object();
+		$qty               = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		$global_stock_mode = get_post_meta( $ticket_id, '_global_stock_mode', true );
 
 		$return->description    = $product->post_excerpt;
 		$return->ID             = $ticket_id;
@@ -1139,6 +1143,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
+		$return->global_stock_mode = ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) ? Tribe__Tickets__Global_Stock::OWN_STOCK_MODE : '';
+
 		$return->stock( (int) get_post_meta( $ticket_id, '_stock', true ) - $qty );
 		$return->qty_sold( $qty );
 

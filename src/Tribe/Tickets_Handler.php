@@ -149,8 +149,8 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( empty( $action_links ) ) {
 			return;
 		}
-		// can't escape, mixed HTML
-		echo '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>';
+
+		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
 	}
 
 	/**
@@ -160,6 +160,35 @@ class Tribe__Tickets__Tickets_Handler {
 		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
 		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
+	}
+
+	/**
+	 * Handles switching unlimited capacity between -1 and 'unlimited'
+	 *
+	 * @since TBD
+	 *
+	 * @param int capacity
+	 * @param string ('display') context determines direction of conversion
+	 *
+	 * @return void|int|string void if no capacity, string for display if unlimited, else int
+	 */
+	public function convert_unlimited_capacity( $capacity, $context = 'display' ) {
+		// If it's a positive number, just return it
+		if ( is_numeric( $capacity ) && 0 < $capacity ) {
+			$capacity = absint( $capacity );
+		}
+
+		// Try and handle the unlimiteds - note it was stored as an empty string, now as -1
+		if ( is_string( $capacity ) || -1 === $capacity || '' === $capacity ) {
+			// if it's for display, we want the text representation
+			if ( 'display' === $context ) {
+				$capacity = esc_html__( 'unlimited', 'event-tickets' );
+			} else {
+				$capacity = -1;
+			}
+		}
+
+		return $capacity;
 	}
 
 	/**
@@ -206,7 +235,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get the total event independent capacity.
+	 * Get the total event independent capacity. For display
 	 *
 	 * @since TBD
 	 *
@@ -223,7 +252,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' !== $ticket->global_stock_mode() ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $ticket->global_stock_mode() ) {
 					continue;
 				}
 
@@ -239,6 +268,8 @@ class Tribe__Tickets__Tickets_Handler {
 				}
 			}
 		}
+
+		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -270,7 +301,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' != $ticket->global_stock_mode() || 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE != $ticket->global_stock_mode() || 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 					continue;
 				}
 
@@ -281,9 +312,8 @@ class Tribe__Tickets__Tickets_Handler {
 		return $ticket_list;
 	}
 
-
 	/**
-	 * Get the total event independent capacity.
+	 * Get the total event independent capacity. For display
 	 *
 	 * @since TBD
 	 *
@@ -316,6 +346,8 @@ class Tribe__Tickets__Tickets_Handler {
 				}
 			}
 		}
+
+		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -359,7 +391,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get the total event shared capacity.
+	 * Get the total event shared capacity. For display
 	 *
 	 * @since TBD
 	 *
@@ -368,30 +400,18 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int number of tickets ( -1 means unlimited )
 	 */
 	public function get_total_event_shared_capacity( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
+		$post_id                 = Tribe__Main::post_id_helper( $post );
+		$capacity                = 0;
+		$global_capacity_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true );
+		$capacity                = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 
-		$capacity = 0;
-
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-
-		if ( ! empty( $tickets ) ) {
-			foreach ( $tickets as $ticket ) {
-				if ( 'own' === $ticket->global_stock_mode() ) {
-					continue;
-				}
-
-				$stock = $ticket->original_stock();
-
-				// Empty original stock means unlimited tickets, let's not add infinity!
-				if ( ! empty( $stock ) ) {
-					$capacity += $stock;
-				} else {
-					// If one ticket is unlimited, so is total capacity - break out with flag value
-					$capacity = -1;
-					break;
-				}
-			}
+		if ( ! $global_capacity_enabled ) {
+			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED );
+			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
+			$capacity = 0;
 		}
+
+		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -400,9 +420,8 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @param (int) $capacity Total capacity value
 		 * @param (int) $post Post ID tickets are attached to
-		 * @param (array) $tickets array of all tickets
 		 */
-		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id, $tickets );
+		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id );
 	}
 
 	/**
@@ -423,7 +442,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'own' == $ticket->global_stock_mode() ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE == $ticket->global_stock_mode() ) {
 					continue;
 				}
 
@@ -988,21 +1007,24 @@ class Tribe__Tickets__Tickets_Handler {
 
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
-				<span id="original_capacity__<?php echo esc_attr( $ticket->ID ); ?>">
-					<?php
-					// escaping handled in function - could be string|int
-					$ticket->display_original_stock( true );
-					?>
-				</span>
+				<?php
+				// escaping handled in function - could be string|int
+				$ticket->display_original_stock( true );
+				?>
 			</td>
 
 			<td class="ticket_available">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
-				$original_stock = $ticket->original_stock();
-				if (  empty( $original_stock ) || 'unlimited' === $ticket->global_stock_mode()  ) {
-					esc_html_e( 'unlimited', 'event-tickets' );
-				} elseif ( 'own' === $ticket->global_stock_mode() ) {
+				$global_stock_mode = $ticket->global_stock_mode();
+
+				if (
+					empty( $global_stock_mode ) ||
+					'unlimited' === $global_stock_mode  ||
+					( 'Tribe__Tickets__RSVP' === $ticket->provider_class && 0 >= $ticket->global_stock_cap() )
+				) {
+					 esc_html_e( 'unlimited', 'event-tickets' );
+				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
 					echo absint( $ticket->remaining() );
 				} else {
 					echo '(' . absint( $ticket->remaining() ) . ')';
@@ -1262,9 +1284,9 @@ class Tribe__Tickets__Tickets_Handler {
 		do_action( 'tribe_events_save_tickets_settings', $params );
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, $image_header_field, $params['tribe_ticket_header_image_id'] );
+			update_post_meta( $id, $this->image_header_field, $params['tribe_ticket_header_image_id'] );
 		} else {
-			delete_post_meta( $id, $image_header_field );
+			delete_post_meta( $id, $this->image_header_field );
 		}
 
 		// We reversed this logic on the back end
@@ -1274,18 +1296,16 @@ class Tribe__Tickets__Tickets_Handler {
 			update_post_meta( $id, $this->show_attendees_field, 1 );
 		}
 
-
+		// Change the default ticket provider
 		if ( ! empty( $params['default_ticket_provider'] ) ) {
-			update_post_meta( $id, $ticket_provider_field, $params['default_ticket_provider'] );
+			update_post_meta( $id, $this->ticket_provider_field, $params['default_ticket_provider'] );
 		} else {
-			delete_post_meta( $id, $ticket_provider_field );
+			delete_post_meta( $id, $this->ticket_provider_field );
 		}
 
-		/**
-		 *  @TODO: placeholder for global capacity, not working correctly yet
-		 */
+		// Change the global stock if we're passed it (shouldn't be, just in case)
 		if ( ! empty( $params['global_stock'] ) ) {
-			update_post_meta( $id, $global_stock_field, $params['global_stock'] );
+			update_post_meta( $id, $this->global_stock_field, $params['global_stock'] );
 		}
 
 		$this->save_global_stock( $id );

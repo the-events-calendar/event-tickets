@@ -408,6 +408,20 @@ p.description {
 	width: 200px;
 }
 
+#settings_global_capacity_edit {
+	background-color: #fff;
+	border: 1px solid #b4b9be;
+	font-size: inherit;
+	margin-left: -5px;
+}
+
+#settings_global_capacity_edit:disabled {
+	background-color: transparent;
+	border: 0;
+	box-shadow: none;
+	color: #555;
+}
+
 @media (min-width: 782px) {
 
 	.ticket_panel {
