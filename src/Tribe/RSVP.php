@@ -946,6 +946,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			delete_post_meta( $ticket->ID, '_ticket_end_date' );
 		}
 
+		if ( isset( $raw_data['ticket_show_description'] ) ) {
+			update_post_meta( $ticket->ID, '_ticket_show_description', 1 );
+		} else {
+			update_post_meta( $ticket->ID, '_ticket_show_description', 0 );
+		}
+
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
@@ -1133,14 +1139,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$qty               = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		$global_stock_mode = get_post_meta( $ticket_id, '_global_stock_mode', true );
 
-		$return->description    = $product->post_excerpt;
-		$return->ID             = $ticket_id;
-		$return->name           = $product->post_title;
-		$return->price          = get_post_meta( $ticket_id, '_price', true );
-		$return->provider_class = get_class( $this );
-		$return->admin_link     = '';
-		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$return->description      = $product->post_excerpt;
+		$return->ID               = $ticket_id;
+		$return->name             = $product->post_title;
+		$return->price            = get_post_meta( $ticket_id, '_price', true );
+		$return->provider_class   = get_class( $this );
+		$return->admin_link       = '';
+		$return->start_date       = get_post_meta( $ticket_id, '_ticket_start_date', true );
+		$return->end_date         = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$return->show_description = get_post_meta( $ticket_id, '_ticket_show_description', true );
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
 		$return->global_stock_mode = ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) ? Tribe__Tickets__Global_Stock::OWN_STOCK_MODE : '';

@@ -325,6 +325,15 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		}
 
+		/**
+		 * Shows/hides items based on if we're editing a ticket or RSVP
+		 *
+		 * @since TBD
+		 *
+		 * @param e the event that triggered the change
+		 * @param int ticket post ID
+		 * @return void
+		 */
 		function change_edit_options( e, $ticket_id ) {
 			var is_ticket                    = false;
 			var is_edit                      = false;
@@ -384,7 +393,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 *
 		 * @param string optional notice to prepend to the ticket table
 		 * @param bool (true) flag for panel swap
-		 *
 		 * @return void
 		 */
 		function refresh_panels( notice, swap ) {
@@ -468,6 +476,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 
 			$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
+
+			$( document.getElementById( 'tribe_show_ticket_description' ) ).prop( 'checked', true );
 
 			$tribe_tickets.trigger( 'ticket-provider-changed.tribe' );
 
@@ -656,6 +666,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( document.getElementById( 'ticket_id' ) ).val( response.data.ID );
 						$( document.getElementById( 'ticket_name' ) ).val( response.data.name );
 						$( document.getElementById( 'ticket_description' ) ).val( response.data.description );
+
+						// Compare against 0 for backwards compatibility.
+						if ( 0 === parseInt( response.data.show_description ) ) {
+							$( document.getElementById( 'tribe_show_ticket_description' ) ).prop( 'checked', true );
+						} else {
+							$( document.getElementById( 'tribe_show_ticket_description' ) ).removeAttr( 'checked' );
+						}
+
 
 						var start_date = response.data.start_date.substring( 0, 10 );
 						var end_date = response.data.end_date.substring( 0, 10 );

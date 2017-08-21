@@ -29,6 +29,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $description;
 
 		/**
+		 * Whether to show the description on the front end and in emails
+		 *
+		 * @since TBD
+		 *
+		 * @var boolean
+		 */
+		public $show_description = true;
+
+		/**
+		 * Meta data key we store show_description under
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $show_description_key = '_ticket_show_description';
+
+		/**
 		 * Current sale price, without any sign. Just a float.
 		 *
 		 * @var float
@@ -659,6 +677,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			return null;
+		}
+
+		/**
+		 *
+		 */
+		public function show_description() {
+				$show = ( metadata_exists( 'post', $this->ID, $this->show_description_key ) ) ?
+				get_post_meta( $this->ID, $this->show_description_key, true ) :
+				true;
+
+				return apply_filters( 'tribe_show_ticket_description', $show );
 		}
 	}
 }
