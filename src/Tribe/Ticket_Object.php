@@ -166,19 +166,39 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		protected $manage_stock = false;
 
 		/**
-		 * When the ticket should be put on sale
-		 * @var
+		 * Date the ticket should be put on sale
+		 *
+		 * @var string
 		 */
 		public $start_date;
 
 		/**
-		 * When the ticket should be stop being sold
-		 * @var
+		 * Time the ticket should be put on sale
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $start_time;
+
+		/**
+		 * Date the ticket should be stop being sold
+		 * @var string
 		 */
 		public $end_date;
 
 		/**
+		 * Time the ticket should be stop being sold
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $end_time;
+
+		/**
 		 * Purchase limite for the ticket
+		 *
 		 * @var
 		 */
 		public $purchase_limit;

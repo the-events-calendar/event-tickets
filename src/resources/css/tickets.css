@@ -19,6 +19,10 @@
 	margin-right: 10px;
 }
 
+#ticket_form span.datetime_seperator {
+	margin-right: 0;
+}
+
 .ticket_list h4 {
 	border-bottom: 1px solid #e5e5e5;
 	padding-bottom: 6px;

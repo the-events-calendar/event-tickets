@@ -811,22 +811,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
 				$start_datetime = sprintf(
-					'%s %s:%s:00%s',
+					'%s %s',
 					$data['ticket_start_date'],
-					Tribe__Utils__Array::get( $data, 'ticket_start_hour', '00' ),
-					Tribe__Utils__Array::get( $data, 'ticket_start_minute', '00' ),
-					Tribe__Utils__Array::get( $data, 'ticket_start_meridian', '' )
+					$data['ticket_start_time']
 				);
 				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_datetime ) );
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
 				$end_datetime = sprintf(
-					'%s %s:%s:00%s',
+					'%s %s',
 					$data['ticket_end_date'],
-					Tribe__Utils__Array::get( $data, 'ticket_end_hour', '23' ),
-					Tribe__Utils__Array::get( $data, 'ticket_end_minute', '59' ),
-					Tribe__Utils__Array::get( $data, 'ticket_end_meridian', '' )
+					$data['ticket_end_time']
 				);
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
 			}
@@ -1039,7 +1035,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param Tribe__Events__Tickets $ticket_object
 			 */
 			$return = (array) apply_filters( 'tribe_events_tickets_ajax_ticket_edit', $return, $this );
-error_log( print_r( $return, true ) );
 			$this->ajax_ok( $return );
 		}
 

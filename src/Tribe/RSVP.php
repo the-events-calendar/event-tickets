@@ -934,10 +934,30 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, '' );
 		}
 
+		if ( isset( $raw_data['ticket_start_date'] ) ) {
+			$start_date = $raw_data['ticket_start_date'];
+
+			if ( isset( $raw_data['ticket_start_time'] ) ) {
+				$start_date .= ' ' . $raw_data['ticket_start_time'];
+			}
+
+			$ticket->start_date = date( 'Y-m-d g:i A', strtotime( $start_date ) );
+		}
+
 		if ( isset( $ticket->start_date ) ) {
 			update_post_meta( $ticket->ID, '_ticket_start_date', $ticket->start_date );
 		} else {
 			delete_post_meta( $ticket->ID, '_ticket_start_date' );
+		}
+
+		if ( isset( $raw_data['ticket_end_date'] ) ) {
+			$end_date = $raw_data['ticket_end_date'];
+
+			if ( isset( $raw_data['ticket_end_time'] ) ) {
+				$end_date .= ' ' . $raw_data['ticket_end_time'];
+			}
+
+			$ticket->end_date = date( 'Y-m-d g:i A', strtotime( $end_date ) );
 		}
 
 		if ( isset( $ticket->end_date ) ) {
@@ -1145,9 +1165,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
-		$return->start_date       = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$return->end_date         = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->show_description = get_post_meta( $ticket_id, '_ticket_show_description', true );
+
+		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
+		if ( ! empty( $start_date ) ) {
+			$return->start_date       = date( 'Y-m-d', strtotime( Tribe__Date_Utils::date_only( $start_date, false ) ) );
+			$return->start_time       = date( 'h:ma', strtotime( Tribe__Date_Utils::time_only( $start_date, false ) . ' ' . Tribe__Date_Utils::meridian_only( $start_date, false ) ) );
+		}
+
+		$end_date                 = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		if ( ! empty( $end_date ) ) {
+			$return->end_date         = date( 'Y-m-d', strtotime( Tribe__Date_Utils::date_only( $end_date, false ) ) );
+			$return->end_time         = date( 'h:ma', strtotime( Tribe__Date_Utils::time_only( $end_date, false ) . ' ' . Tribe__Date_Utils::meridian_only( $end_date, false ) ) );
+		}
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
 		$return->global_stock_mode = ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) ? Tribe__Tickets__Global_Stock::OWN_STOCK_MODE : '';
