@@ -959,12 +959,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param WP_Post $post
 	 */
 	public function do_meta_box( $post ) {
-		$startMinuteOptions   = Tribe__View_Helpers::getMinuteOptions( null );
-		$endMinuteOptions     = Tribe__View_Helpers::getMinuteOptions( null );
-		$startHourOptions     = Tribe__View_Helpers::getHourOptions( null, true );
-		$endHourOptions       = Tribe__View_Helpers::getHourOptions( null, false );
-		$startMeridianOptions = Tribe__View_Helpers::getMeridianOptions( null, true );
-		$endMeridianOptions   = Tribe__View_Helpers::getMeridianOptions( null );
+		$start_date = date( 'Y-m-d H:00:00' );
+		$end_date   = date( 'Y-m-d H:00:00' );
+		$start_time = Tribe__Date_Utils::time_only( $start_date, false );
+		$end_time   = Tribe__Date_Utils::time_only( $start_date, false );
 
 		$show_global_stock = Tribe__Tickets__Tickets::global_stock_available();
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );

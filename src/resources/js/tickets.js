@@ -101,8 +101,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				} );
 
 				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
-				$ticket_panel.find( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null );
-				$ticket_panel.find( '#ticket_end_date' ).datepicker( 'option', 'minDate', null );
+				$( document.getElementById( 'ticket_start_date' ) ).datepicker( 'option', 'maxDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
+				$( document.getElementById( 'ticket_start_time' ) ).val( $( document.getElementById( 'EventStartTime' ) ).val() ).trigger('change');
+				$( document.getElementById( 'ticket_end_date' ) ).datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
+				$( document.getElementById( 'ticket_end_time' ) ).val( $( document.getElementById( 'EventEndTime' ) ).val() ).trigger('change');
 
 				$ticket_panel.find( '#ticket_price' ).removeProp( 'disabled' )
 					.siblings( '.no-update-message' ).html( '' ).hide()
@@ -194,33 +196,24 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				var the_date = $.datepicker.parseDate( 'yy-mm-dd', dateText );
 				if ( inst.id === 'ticket_start_date' ) {
 					$( document.getElementById( 'ticket_end_date' ) ).datepicker( 'option', 'minDate', the_date );
-					if ( the_date ) {
-						$( '.ticket_start_time' ).show();
-					}
-					else {
-						$( '.ticket_start_time' ).hide();
-					}
 				}
 				else {
 					$( document.getElementById( 'ticket_start_date' ) ).datepicker( 'option', 'maxDate', the_date );
-					if ( the_date ) {
-						$( '.ticket_end_time' ).show();
-					}
-					else {
-						$( '.ticket_end_time' ).hide();
-					}
 				}
 			}
 		};
 
 		$.extend( datepickerOpts, tribe_l10n_datatables.datepicker );
 
-		$( document.getElementById( 'ticket_start_date' ) ).datepicker( datepickerOpts ).keyup( function( e ) {
+		var $timepickers = $tribe_tickets.find( '.tribe-timepicker:not(.ui-timepicker-input)' );
+		tribe_timepickers.setup_timepickers( $timepickers );
+
+		$( document.getElementById( 'ticket_start_date' ) ).datepicker( datepickerOpts ).datepicker( "option", "defaultDate", $( document.getElementById( 'EventStartDate' ) ).val() ).keyup( function( e ) {
 			if ( e.keyCode === 8 || e.keyCode === 46 ) {
 				$.datepicker._clearDate( this );
 			}
 		} );
-		$( document.getElementById( 'ticket_end_date' ) ).datepicker( datepickerOpts ).keyup( function( e ) {
+		$( document.getElementById( 'ticket_end_date' ) ).datepicker( datepickerOpts ).datepicker( "option", "defaultDate", $( document.getElementById( 'EventEndDate' ) ).val() ).keyup( function( e ) {
 			if ( e.keyCode === 8 || e.keyCode === 46 ) {
 				$.datepicker._clearDate( this );
 			}
@@ -294,37 +287,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		/**
-		 * Show or hide a panel based on it's current state.
-		 * @param e the event that triggered the change
-		 * @param $panel obj the panel to be moved
+		 * Shows/hides items based on if we're editing a ticket or RSVP
 		 *
 		 * @since TBD
+		 *
+		 * @param e the event that triggered the change
+		 * @param int ticket post ID
+		 * @return void
 		 */
-		function show_hide_panel( e, $panel ) {
-			if ( e ) {
-				e.preventDefault();
-			}
-
-			if ( undefined !== $panel.attr( 'aria-hidden' ) && 'false' !== $panel.attr( 'aria-hidden' ) ) {
-				// we're showing another panel, hide the base first
-				if ( $base_panel !== $panel ) {
-					$base_panel.attr( 'aria-hidden', 'true' );
-
-				}
-
-				$panel.attr( 'aria-hidden', 'false' );
-
-			} else {
-
-				$panel.attr( 'aria-hidden', 'true' );
-
-				// we're hiding another panel, show the base afterward
-				if ( $base_panel !== $panel ) {
-					$base_panel.attr( 'aria-hidden', 'false' );
-				}
-			}
-		}
-
 		function change_edit_options( e, $ticket_id ) {
 			var is_ticket                    = false;
 			var is_edit                      = false;
@@ -384,7 +354,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 *
 		 * @param string optional notice to prepend to the ticket table
 		 * @param bool (true) flag for panel swap
-		 *
 		 * @return void
 		 */
 		function refresh_panels( notice, swap ) {
@@ -461,6 +430,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( $default_provider + '_radio' ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global' ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
+				$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
 
 			} else {
 				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
@@ -468,12 +438,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
+			$( document.getElementById( 'tribe_tickets_show_description' ) ).prop( 'checked', true );
+
 			$tribe_tickets.trigger( 'ticket-provider-changed.tribe' );
 
-			// WE have to trigger this after the verify.dependency
+			// We have to trigger this after the verify.dependency
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) && undefined !== global_cap && 0 < global_cap ) {
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).prop( 'disabled', true );
 			}
+			$(document.getElementById( 'ticket_start_date' ) ).trigger( 'change' );
+			$(document.getElementById( 'ticket_start_time' ) ).trigger( 'change' );
+			$(document.getElementById( 'ticket_end_date' ) ).trigger( 'change' );
+			$(document.getElementById( 'ticket_end_time' ) ).trigger( 'change' );
 
 			change_edit_options( e );
 
@@ -579,7 +555,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		/* "Edit Ticket" link action */
 		$tribe_tickets.on( 'click', '.ticket_edit_button', function( e ) {
-
 				e.preventDefault();
 
 				$tribe_tickets.trigger( 'spin.tribe', 'start' );
@@ -607,6 +582,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
 						var onSale       = false;
+						var start_date;
+						var start_time;
+						var end_date;
+						var end_time;
 
 						if ( 'undefined' !== typeof response.data.on_sale && response.data.on_sale ) {
 							onSale       = true;
@@ -617,8 +596,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 						$( 'input[name=ticket_provider]:radio' ).change();
 
-						console.log(response.data);
-
 						// Capacity/Stock
 						if ( response.data.global_stock_mode ) {
 							switch ( response.data.global_stock_mode ) {
@@ -626,8 +603,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								case 'capped':
 									$( document.getElementById( response.data.provider_class + '_global' ) ).prop( 'checked', true );
 									$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop('disabled', true);
+									$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
 
-									if ( undefined !== response.data.global_stock_cap && 0 < response.data.global_stock_cap ) {
+									if ( undefined !== response.data.global_stock_cap && $.isNumeric( response.data.global_stock_cap ) && 0 < response.data.global_stock_cap ) {
 										$( document.getElementById( response.data.provider_class + '_global' ) ).val( 'capped' );
 										$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
 									} else {
@@ -655,74 +633,36 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( document.getElementById( 'ticket_name' ) ).val( response.data.name );
 						$( document.getElementById( 'ticket_description' ) ).val( response.data.description );
 
-						$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
+						// Compare against 0 for backwards compatibility.
+						if ( 0 === parseInt( response.data.show_description ) ) {
+							$( document.getElementById( 'tribe_tickets_show_description' ) ).prop( 'checked', true );
+						} else {
+							$( document.getElementById( 'tribe_tickets_show_description' ) ).removeAttr( 'checked' );
+						}
 
-						var start_date = response.data.start_date.substring( 0, 10 );
-						var end_date = response.data.end_date.substring( 0, 10 );
+						// $ticket_panel.find( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null ).datepicker(  'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
+						// $ticket_panel.find( '#ticket_end_date' ).datepicker( 'option', 'minDate', null ).datepicker(  'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
 
 						// handle all the date stuff
-						$( document.getElementById( 'ticket_start_date' ) ).val( start_date );
-						$( document.getElementById( 'ticket_end_date' ) ).val( end_date );
-
-						// @TODO: it's "meridiem" not "meridian"
-						var $start_meridian = $( document.getElementById( 'ticket_start_meridian' ) );
-						var $end_meridian   = $( document.getElementById( 'ticket_end_meridian' ) );
-
 						if ( response.data.start_date ) {
-							var start_hour = parseInt( response.data.start_date.substring( 11, 13 ) );
-							var start_meridian = 'am';
-
-							if ( start_hour > 12 ) {
-								start_meridian = 'pm';
-								start_hour = parseInt( start_hour ) - 12;
-								start_hour = ( '0' + start_hour ).slice( - 2 );
-							}
-							if ( 12 === start_hour ) {
-								start_meridian = 'pm';
-							}
-							if ( 0 === start_hour && 'am' === start_meridian ) {
-								start_hour = 12;
-							}
-
-							// Return the start hour to a 0-padded string
-							start_hour = start_hour.toString();
-							if ( 1 === start_hour.length ) {
-								start_hour = '0' + start_hour;
-							}
-
-							$( document.getElementById( 'ticket_start_hour' ) ).val( start_hour ).trigger( 'change' );
-							$( document.getElementById( 'ticket_start_minute' ) ).val( response.data.start_date.substring( 14, 16 ) ).trigger( 'change' );
-							$( document.getElementById( 'ticket_start_meridian' ) ).val( start_meridian ).trigger( 'change' );
+							start_date = response.data.start_date;
+							start_time = response.data.start_time;
+						} else {
+							start_date = $( document.getElementById( 'EventStartDate' ) ).val();
+							start_time = $( document.getElementById( 'EventStartTime' ) ).val();
 						}
+						$( document.getElementById( 'ticket_start_date' ) ).val( start_date ).trigger( 'change' );
+						$( document.getElementById( 'ticket_start_time' ) ).val( start_time ).trigger( 'change' );
 
 						if ( response.data.end_date ) {
-							var end_hour     = parseInt( response.data.end_date.substring( 11, 13 ) );
-							var end_meridian = 'am';
-
-							if ( end_hour > 12 && $end_meridian.length ) {
-								end_meridian = 'pm';
-								end_hour = parseInt( end_hour ) - 12;
-								end_hour = ( '0' + end_hour ).slice( - 2 );
-							}
-							if ( end_hour === 12 ) {
-								end_meridian = 'pm';
-							}
-							if ( 0 === end_hour && 'am' === end_meridian ) {
-								end_hour = 12;
-							}
-
-							// Return the end hour to a 0-padded string
-							end_hour = end_hour.toString();
-							if ( 1 === end_hour.length ) {
-								end_hour = '0' + end_hour;
-							}
-
-							$( document.getElementById( 'ticket_end_hour' ) ).val( end_hour ).trigger( 'change' );
-							$( document.getElementById( 'ticket_end_minute' ) ).val( response.data.end_date.substring( 14, 16 ) ).trigger( 'change' );
-							$( document.getElementById( 'ticket_end_meridian' ) ).val( end_meridian ).trigger( 'change' );
-
-							$( '.ticket_end_time' ).show();
+							end_date = response.data.end_date;
+							end_time = response.data.end_time;
+						} else {
+							end_date = $( document.getElementById( 'EventEndDate' ) ).val();
+							end_time = $( document.getElementById( 'EventEndTime' ) ).val();
 						}
+						$( document.getElementById( 'ticket_end_date' ) ).val( end_date ).trigger( 'change' );
+						$( document.getElementById( 'ticket_end_time' ) ).val( end_time ).trigger( 'change' );
 
 						$( document.getElementById( response.data.provider_class + '_advanced' ) ).replaceWith( response.data.advanced_fields );
 
@@ -905,7 +845,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		$( 'body' ).on( 'click', '#tribe_ticket_header_remove', function( e ) {
-
 			e.preventDefault();
 			$preview.html( '' );
 			$remove.hide();

@@ -29,6 +29,24 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $description;
 
 		/**
+		 * Whether to show the description on the front end and in emails
+		 *
+		 * @since TBD
+		 *
+		 * @var boolean
+		 */
+		public $show_description = true;
+
+		/**
+		 * Meta data key we store show_description under
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $show_description_key = '_ticket_show_description';
+
+		/**
 		 * Current sale price, without any sign. Just a float.
 		 *
 		 * @var float
@@ -148,19 +166,39 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		protected $manage_stock = false;
 
 		/**
-		 * When the ticket should be put on sale
-		 * @var
+		 * Date the ticket should be put on sale
+		 *
+		 * @var string
 		 */
 		public $start_date;
 
 		/**
-		 * When the ticket should be stop being sold
-		 * @var
+		 * Time the ticket should be put on sale
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $start_time;
+
+		/**
+		 * Date the ticket should be stop being sold
+		 * @var string
 		 */
 		public $end_date;
 
 		/**
+		 * Time the ticket should be stop being sold
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		public $end_time;
+
+		/**
 		 * Purchase limite for the ticket
+		 *
 		 * @var
 		 */
 		public $purchase_limit;
@@ -229,8 +267,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				/**
 				 * Set a default end date for tickets if the end date wasn't specified in the registration form
 				 *
-				 * @var $date End date for the tickets (defaults to tomorrow ... which means registrations will not end)
-				 * @var $post_id Post id for the post that tickets are attached to
+				 * @param $date End date for the tickets (defaults to tomorrow ... which means registrations will not end)
+				 * @param $post_id Post id for the post that tickets are attached to
 				 */
 				$end_date = apply_filters( 'tribe_tickets_default_end_date', date( 'Y-m-d G:i', strtotime( '+1 day' ) ), $post_id );
 				$end_date = strtotime( $end_date );
@@ -328,8 +366,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			/**
 			 * Filters the availability slug
 			 *
-			 * @var string Slug
-			 * @var string Datetime string
+			 * @param string Slug
+			 * @param string Datetime string
 			 */
 			$slug = apply_filters( 'event_tickets_availability_slug', $slug, $datetime );
 
@@ -659,6 +697,31 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			return null;
+		}
+
+		/**
+		 * Returns whether the ticket description should show on
+		 * the front page and in emails defaults to true
+		 *
+		 * @since TBD
+		 *
+		 * @return boolean
+		 */
+		public function show_description() {
+			$show = true;
+			if ( metadata_exists( 'post', $this->ID, $this->show_description_key ) ) {
+				$show = get_post_meta( $this->ID, $this->show_description_key, true );
+			}
+
+			/**
+			 * Allows filtering of the value so we can for example, disable it for a theme/site
+			 *
+			 * @since TBD
+			 *
+			 * @param boolean whether to show the description or not
+			 * @param int ticket ID
+			 */
+			return apply_filters( 'tribe_tickets_show_description', $show, $this->ID );
 		}
 	}
 }

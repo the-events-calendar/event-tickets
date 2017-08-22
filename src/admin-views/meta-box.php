@@ -24,7 +24,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
 ?>
 
-<div id="event_tickets" class="eventtable"  aria-live="polite">
+<div id="event_tickets" class="eventtable" aria-live="polite">
 	<?php
 	wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' );
 

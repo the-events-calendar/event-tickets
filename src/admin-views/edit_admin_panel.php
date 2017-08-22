@@ -1,3 +1,14 @@
+<?php
+$date = date( 'Y-m-d H:00:00' );
+
+$ticket_start_date = Tribe__Date_Utils::date_only( $date, false );
+$ticket_end_date = Tribe__Date_Utils::date_only( $date, false );
+$ticket_start_time = Tribe__Date_Utils::time_only( $ticket_start_date, false );
+$ticket_end_time   = Tribe__Date_Utils::time_only( $ticket_end_date, false );
+$timepicker_step = 30;
+$timepicker_round = '00:00:00';
+?>
+
 <div id="tribe_panel_edit" class="ticket_panel panel_edit" aria-hidden="true" >
 	<?php
 	/**
@@ -66,30 +77,39 @@
 				<section id="ticket_form_advanced" class="advanced accordion-content">
 					<h4 class="accordion-label screen_reader_text"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 					<div class="input_block">
-						<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Ticket Description:', 'event-tickets' ); ?></label>
+						<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
 						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field ticket_form_right" id="ticket_description"></textarea>
 						<div class="input_block">
-							<label class="tribe_soft_note"><input type="checkbox" name="tribe_show_description" value="1" class="ticket_form_left"> Show description on front end and emailed tickets.</label>
+							<label class="tribe_soft_note"><input type="checkbox" id="tribe_tickets_show_description" name="ticket_show_description" value="1" class="ticket_form_left" checked> Show description on front end and emailed tickets.</label>
 						</div>
 					</div>
 					<div class="input_block">
 						<label class="ticket_form_label ticket_form_left" for="ticket_start_date"><?php esc_html_e( 'Start sale:', 'event-tickets' ); ?></label>
 						<div class="ticket_form_right">
-							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_start_date" id="ticket_start_date">
-							<span class="ticket_start_time ticket_time">
-								<?php echo tribe_get_datetime_separator(); ?>
-								<select name="ticket_start_hour" id="ticket_start_hour" class="ticket_field tribe-dropdown">
-									<?php echo $startHourOptions; ?>
-								</select>
-								<select name="ticket_start_minute" id="ticket_start_minute" class="ticket_field tribe-dropdown">
-									<?php echo $startMinuteOptions; ?>
-								</select>
-								<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
-									<select name="ticket_start_meridian" id="ticket_start_meridian" class="ticket_field tribe-dropdown">
-										<?php echo $startMeridianOptions; ?>
-									</select>
-								<?php endif; ?>
-							</span>
+							<input
+								autocomplete="off"
+								tabindex="<?php tribe_events_tab_index(); ?>"
+								type="text"
+								class="tribe-datepicker tribe-field-start_date ticket_field"
+								name="ticket_start_date"
+								id="ticket_start_date"
+								value="<?php echo esc_attr( $ticket_start_date ) ?>"
+							/>
+							<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
+							<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
+							<input
+								autocomplete="off"
+								tabindex="<?php tribe_events_tab_index(); ?>"
+								type="text"
+								class="tribe-timepicker tribe-field-start_time ticket_field"
+								name="ticket_start_time"
+								id="ticket_start_time"
+								<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
+								data-step="<?php echo esc_attr( $timepicker_step ); ?>"
+								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
+								value="<?php echo esc_attr( $ticket_start_time ) ?>"
+							/>
+							<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 							<span class="tooltip_container">
 								<span class="dashicons dashicons-editor-help"></span>
 								<span class="tooltip">
@@ -101,22 +121,30 @@
 					<div class="input_block">
 						<label class="ticket_form_label ticket_form_left" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
 						<div class="ticket_form_right">
-							<input autocomplete="off" type="text" class="ticket_field" size='10' name="ticket_end_date" id="ticket_end_date">
 
-							<span class="ticket_end_time ticket_time">
-								<?php echo tribe_get_datetime_separator(); ?>
-								<select name="ticket_end_hour" id="ticket_end_hour" class="ticket_field tribe-dropdown">
-									<?php echo $endHourOptions; ?>
-								</select>
-								<select name="ticket_end_minute" id="ticket_end_minute" class="ticket_field tribe-dropdown">
-									<?php echo $endMinuteOptions; ?>
-								</select>
-								<?php if ( ! strstr( get_option( 'time_format', Tribe__Date_Utils::TIMEFORMAT ), 'H' ) ) : ?>
-									<select name="ticket_end_meridian" id="ticket_end_meridian" class="ticket_field tribe-dropdown">
-										<?php echo $endMeridianOptions; ?>
-									</select>
-								<?php endif; ?>
-							</span>
+							<input
+								autocomplete="off"
+								type="text"
+								class="tribe-datepicker tribe-field-end_date ticket_field"
+								name="ticket_end_date"
+								id="ticket_end_date"
+								value="<?php echo esc_attr( $ticket_end_date ); ?>"
+							/>
+							<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
+							<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
+							<input
+								autocomplete="off"
+								type="text"
+								class="tribe-timepicker tribe-field-end_time ticket_field"
+								name="ticket_end_time"
+								id="ticket_end_time"
+								<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
+								data-step="<?php echo esc_attr( $timepicker_step ); ?>"
+								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
+								value="<?php echo esc_attr( $ticket_end_time ); ?>"
+							/>
+							<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
+
 							<span class="tooltip_container">
 								<span class="dashicons dashicons-editor-help"></span>
 								<span class="tooltip">
