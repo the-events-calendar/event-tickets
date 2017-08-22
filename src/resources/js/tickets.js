@@ -438,7 +438,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
-			$( document.getElementById( 'tribe_show_ticket_description' ) ).prop( 'checked', true );
+			$( document.getElementById( 'tribe_tickets_show_description' ) ).prop( 'checked', true );
 
 			$tribe_tickets.trigger( 'ticket-provider-changed.tribe' );
 
@@ -635,9 +635,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						// Compare against 0 for backwards compatibility.
 						if ( 0 === parseInt( response.data.show_description ) ) {
-							$( document.getElementById( 'tribe_show_ticket_description' ) ).prop( 'checked', true );
+							$( document.getElementById( 'tribe_tickets_show_description' ) ).prop( 'checked', true );
 						} else {
-							$( document.getElementById( 'tribe_show_ticket_description' ) ).removeAttr( 'checked' );
+							$( document.getElementById( 'tribe_tickets_show_description' ) ).removeAttr( 'checked' );
 						}
 
 						// $ticket_panel.find( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null ).datepicker(  'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');

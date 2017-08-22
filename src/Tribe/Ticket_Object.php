@@ -267,8 +267,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				/**
 				 * Set a default end date for tickets if the end date wasn't specified in the registration form
 				 *
-				 * @var $date End date for the tickets (defaults to tomorrow ... which means registrations will not end)
-				 * @var $post_id Post id for the post that tickets are attached to
+				 * @param $date End date for the tickets (defaults to tomorrow ... which means registrations will not end)
+				 * @param $post_id Post id for the post that tickets are attached to
 				 */
 				$end_date = apply_filters( 'tribe_tickets_default_end_date', date( 'Y-m-d G:i', strtotime( '+1 day' ) ), $post_id );
 				$end_date = strtotime( $end_date );
@@ -366,8 +366,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			/**
 			 * Filters the availability slug
 			 *
-			 * @var string Slug
-			 * @var string Datetime string
+			 * @param string Slug
+			 * @param string Datetime string
 			 */
 			$slug = apply_filters( 'event_tickets_availability_slug', $slug, $datetime );
 
@@ -700,14 +700,28 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
+		 * Returns whether the ticket description should show on
+		 * the front page and in emails defaults to true
 		 *
+		 * @since TBD
+		 *
+		 * @return boolean
 		 */
 		public function show_description() {
-				$show = ( metadata_exists( 'post', $this->ID, $this->show_description_key ) ) ?
-				get_post_meta( $this->ID, $this->show_description_key, true ) :
-				true;
+			$show = true;
+			if ( metadata_exists( 'post', $this->ID, $this->show_description_key ) ) {
+				$show = get_post_meta( $this->ID, $this->show_description_key, true );
+			}
 
-				return apply_filters( 'tribe_show_ticket_description', $show );
+			/**
+			 * Allows filtering of the value so we can for example, disable it for a theme/site
+			 *
+			 * @since TBD
+			 *
+			 * @param boolean whether to show the description or not
+			 * @param int ticket ID
+			 */
+			return apply_filters( 'tribe_tickets_show_description', $show, $this->ID );
 		}
 	}
 }
