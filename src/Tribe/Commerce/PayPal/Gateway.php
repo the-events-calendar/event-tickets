@@ -12,12 +12,23 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	public $sandbox_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
 
 	/**
+	 * @var string
+	 */
+	protected $identity_token;
+
+	/**
+	 * @var array
+	 */
+	protected $transaction_data;
+
+	/**
 	 * Tribe__Tickets__Commerce__PayPal__Gateway constructor.
 	 *
 	 * @since TBD
 	 */
 	public function __construct() {
 		$this->hook();
+		$this->identity_token = '9pGVCp7_-utziQz8XlMmc8-2a-_hCI28hE0408PClSC7-PmzCyjADUzRjCi';
 	}
 
 	/**
@@ -27,6 +38,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 */
 	public function hook() {
 		add_action( 'template_redirect', array( $this, 'add_to_cart' ) );
+		add_action( 'template_redirect', array( $this, 'finalize_order' ) );
 	}
 
 	/**
@@ -58,7 +70,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'notify_url'    => urlencode( $notify_url ),
 			'shopping_url'  => urlencode( $post_url ),
 			'currency_code' => 'USD',
-			'invoice'       => 'user_id=' . get_current_user_id(),
+			'custom'        => 'user_id=' . get_current_user_id(),
 		);
 
 		foreach ( $_POST['product_id'] as $ticket_id ) {
@@ -88,10 +100,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 				continue;
 			}
 
-			$args['custom']    = "ticket_id={$ticket->ID}";
-			$args['quantity']  = $quantity;
-			$args['amount']    = $ticket->price;
-			$args['item_name'] = urlencode( $this->get_product_name( $ticket, $post ) );
+			$args['quantity']    = $quantity;
+			$args['amount']      = $ticket->price;
+			$args['item_number'] = "{$post->ID}:{$ticket->ID}";
+			$args['item_name']   = urlencode( $this->get_product_name( $ticket, $post ) );
 
 			// we can only submit one product at a time. Bail if we get to here because we have a product
 			// with a requested quantity
@@ -122,6 +134,166 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		die;
 	}
 
+	public function finalize_order() {
+
+		if ( ! isset( $_GET['tx'] ) ) {
+			return;
+		}
+
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
+		$results = $this->validate_transaction( $_GET['tx'] );
+		$results = $this->parse_transaction( $results );
+
+		$this->set_transaction_data( $results );
+
+		$paypal->generate_tickets();
+
+		do_action( 'debug_robot', 'results :: ' . print_r( $results, true ) );
+	}
+
+	/**
+	 * Validates a PayPal transaction ensuring that it is authentic
+	 *
+	 * @since TBD
+	 *
+	 * @param $transaction
+	 *
+	 * @return array|bool
+	 */
+	public function validate_transaction( $transaction ) {
+		$args = array(
+			'body' => array(
+				'cmd' => '_notify-synch',
+				'tx' => $transaction,
+				'at' => $this->identity_token,
+			),
+			'httpversion' => '1.1',
+			'timeout' => 60,
+			'user-agent' => 'EventTickets/' .Tribe__Tickets__Main::VERSION,
+		);
+
+		$response = wp_safe_remote_post( $this->get_cart_url(), $args );
+
+		if (
+			is_wp_error( $response )
+			|| ! ( 0 === strpos( $response['body'], "SUCCESS" ) )
+		) {
+			return false;
+		}
+
+		$results = array();
+		$body    = array_map(
+			'tribe_clean',
+			array_map(
+				'urldecode',
+				explode( "\n", $response['body'] )
+			)
+		);
+
+		foreach ( $body as $line ) {
+			if ( ! trim( $line ) ) {
+				continue;
+			}
+
+			$line                = explode( '=', $line );
+			$var                 = array_shift( $line );
+			$results[ $var ]     = implode( '=', $line );
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Parses PayPal transaction data into a more organized structure
+	 *
+	 * @param array $transaction Transaction data from PayPal in key/value pairs
+	 *
+	 * @return array
+	 */
+	public function parse_transaction( $transaction ) {
+		$item_indexes = array(
+			'item_number',
+			'item_name',
+			'quantity',
+			'mc_handling',
+			'mc_shipping',
+			'tax',
+			'mc_gross_',
+		);
+
+		$item_indexes_regex = '/(' . implode( '|', $item_indexes ) . ')(\d)/';
+
+		$data = array(
+			'items' => array(),
+		);
+
+		foreach ( $transaction as $key => $value ) {
+			if ( ! preg_match( $item_indexes_regex, $key, $matches ) ) {
+				$data[ $key ] = $value;
+				continue;
+			}
+
+			$index = $matches[2];
+			$name = trim( $matches[1], '_' );
+
+			if ( ! isset( $data['items'][ $index ] ) ) {
+				$data['items'][ $index ] = array();
+			}
+
+			$data['items'][ $index ][ $name ] = $value;
+		}
+
+		foreach ( $data['items'] as &$item ) {
+			if ( ! isset( $item['item_number'] ) ) {
+				continue;
+			}
+
+			list( $item['post_id'], $item['ticket_id'] ) = explode( ':', $item['item_number'] );
+
+			$item['ticket'] = tribe( 'tickets.commerce.paypal' )->get_ticket( $item['post_id'], $item['ticket_id'] );
+		}
+
+		return $data;
+	}
+
+	/**
+	 * Sets transaction data from PayPal as a class property
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data
+	 */
+	public function set_transaction_data( $data ) {
+		/**
+		 * Filters the transaction data as it is being set
+		 *
+		 * @since TBD
+		 *
+		 * @param array $data
+		 */
+		$this->transaction_data = apply_filters( 'tribe_tickets_commerce_paypal_set_transaction_data', $data );
+	}
+
+	/**
+	 * Gets PayPal transaction data
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data
+	 */
+	public function get_transaction_data() {
+
+		/**
+		 * Filters the transaction data as it is being retrieved
+		 *
+		 * @since TBD
+		 *
+		 * @param array $transaction_data
+		 */
+		return apply_filters( 'tribe_tickets_commerce_paypal_get_transaction_data', $this->transaction_data );
+	}
+
 	/**
 	 * Gets the full PayPal product name
 	 *
@@ -136,11 +308,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$title = get_the_title( $post->ID );
 		$name  = $ticket->name;
 
-		// we need a unique string per ticket that isn't 100 obvious that it is an ID so that PayPal can associate
-		// different ticket additions to the cart as distinct even if the ticket name/event name collide
-		$hash = substr( md5( $ticket->ID ), 0, 8 );
-
-		$product_name = "{$title} - {$name} [{$hash}]";
+		$product_name = "{$name} - {$title}";
 
 		/**
 		 * Filters the product name for PayPal's cart

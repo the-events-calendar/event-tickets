@@ -408,15 +408,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
 		$attendee_full_name    = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
 		$attendee_optout       = empty( $data['optout'] ) ? false : (bool) $data['optout'];
-		$attendee_order_status = empty( $data['order_status'] ) ? null : $data['order_status'];
 
 		$product_id  = $attendee['product_id'];
-
-		$this->update_sales_by_order_status( $order_id, $attendee_order_status, $product_id );
-
-		if ( ! is_null( $attendee_order_status ) ) {
-			update_post_meta( $order_id, $this->attendee_tpp_key, $attendee_order_status );
-		}
 
 		update_post_meta( $order_id, $this->attendee_optout_key, (bool) $attendee_optout );
 
@@ -465,8 +458,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 */
-	public function generate_tickets( ) {
-		if ( empty( $_POST['tickets_process'] ) || empty( $_POST['attendee'] ) || empty( $_POST['product_id'] ) ) {
+	public function generate_tickets() {
+		$transaction_data = tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_data();
+
+		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
 			return;
 		}
 
@@ -477,18 +472,26 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @since TBD
 		 *
-		 * @param array $data post Parameters comes from PayPal Ticket Form
+		 * @param array $transaction_data PayPal payment data
 		 */
-		do_action( 'tribe_tickets_tpp_before_order_processing', $_POST );
+		do_action( 'tribe_tickets_tpp_before_order_processing', $transaction_data );
 
-		$order_id = md5( time() . rand() );
+		$order_id = $item['txn_id'];
 
-		$attendee_email = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
-		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
-		$attendee_optout = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
+		$attendee_id        = empty( $transaction_data['custom']['user_id'] ) ? null : absint( $transaction_data['custom']['user_id'] );
 
-		$attendee_order_status = empty( $_POST['attendee']['order_status'] ) ? 'yes' : $_POST['attendee']['order_status'];
+		if ( empty( $attendee_id ) ) {
+			$attendee_email     = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
+			$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
+			$attendee_full_name = empty( $transaction_data['first_name'] ) && empty( $transaction_data['last_name'] ) ? null : sanitize_text_field( "{$transaction_data['first_name']} {$transaction_data['last_name']}" );
+		} else {
+			$attendee           = get_user_by( 'ID', $attendee_id );
+			$attendee_email     = $attendee->user_email;
+			$attendee_full_name = "{$attendee->first_name} {$attendee->last_name}";
+		}
+
+		// @TODO: figure out how to handle optout
+		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$url = get_permalink( $post_id );
@@ -498,27 +501,34 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		// Iterate over each product
-		foreach ( (array) $_POST['product_id'] as $product_id ) {
+		foreach ( (array) $transaction_data['items'] as $item ) {
 			$order_attendee_id = 0;
 
-			// Get the event this tickets is for
-			$post_id = get_post_meta( $product_id, $this->event_key, true );
-
-			if ( empty( $post_id ) ) {
+			if ( empty( $item['ticket'] ) ) {
 				continue;
 			}
 
-			$ticket_type = $this->get_ticket( $post_id, $product_id );
+			$ticket_type = $item['ticket'];
+			$product_id  = $ticket_type->ID;
+
+			// Get the event this tickets is for
+			$post = $ticket_type->get_event();
+
+			if ( empty( $post ) ) {
+				continue;
+			}
+
+			$post_id = $post->ID;
 
 			// if there were no PayPal tickets for the product added to the cart, continue
-			if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
+			if ( empty( $item['quantity'] ) ) {
 				continue;
 			}
 
 			// get the PayPal status `decrease_stock_by` value
 			$status_stock_size = 1;
 
-			$ticket_qty = intval( $_POST["quantity_{$product_id}"] );
+			$ticket_qty = (int) $item['quantity'];
 
 			// to avoid tickets from not being created on a status stock size of 0
 			// let's take the status stock size into account and create a number of tickets
@@ -543,9 +553,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 *
 			 * @param int $post_id ID of event
 			 * @param string $ticket_type Ticket Type object for the product
-			 * @param array $data post Parameters comes from PayPal Form
+			 * @param array $data Parsed PayPal transaction data
 			 */
-			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $_POST );
+			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $transaction_data );
 
 			// Iterate over all the amount of tickets purchased (for this product)
 			for ( $i = 0; $i < $qty; $i ++ ) {
@@ -567,7 +577,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
 				update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
-				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $order_id, $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
@@ -625,9 +634,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param int    $order_id              ID of the PayPal order
 		 * @param int    $post_id               ID of the post the order was placed for
-		 * @param string $attendee_order_status 'yes' if the user indicated they will attend
 		 */
-		do_action( 'event_tickets_tpp_tickets_generated', $order_id, $post_id, $attendee_order_status );
+		do_action( 'event_tickets_tpp_tickets_generated', $order_id, $post_id );
 
 		$send_mail_stati = array( 'yes' );
 
@@ -1047,7 +1055,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * following fields:
 	 *
 	 *     order_id
-	 *     order_status
 	 *     purchaser_name
 	 *     purchaser_email
 	 *     optout

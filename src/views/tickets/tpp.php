@@ -14,9 +14,6 @@
 $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 $are_products_available       = false;
-if ( isset( $_GET['bacon'] ) ) {
-	do_action( 'debug_robot', 'posted data :: ' . print_r( $_POST, true ) );
-}
 
 ob_start();
 $commerce       = tribe( 'tickets.commerce.paypal' );
