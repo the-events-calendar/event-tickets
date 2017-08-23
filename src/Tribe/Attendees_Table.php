@@ -436,7 +436,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 
 		$checked = '';
-		if ( intval( $item['check_in'] ) === 1 ) {
+		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
 		}
 

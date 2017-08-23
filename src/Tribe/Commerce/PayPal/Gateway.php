@@ -183,13 +183,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		$results = array();
-		$body    = array_map(
-			'tribe_clean',
-			array_map(
-				'urldecode',
-				explode( "\n", $response['body'] )
-			)
-		);
+		$body    = explode( "\n", $response['body'] );
+		do_action( 'debug_robot', 'body :: ' . print_r( $body, true ) );
+		//$body    = array_map( 'tribe_clean', $body );
+		//do_action( 'debug_robot', 'body :: ' . print_r( $body, true ) );
 
 		foreach ( $body as $line ) {
 			if ( ! trim( $line ) ) {
@@ -198,7 +195,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 			$line                = explode( '=', $line );
 			$var                 = array_shift( $line );
-			$results[ $var ]     = implode( '=', $line );
+			$results[ $var ]     = urldecode( implode( '=', $line ) );
 		}
 
 		return $results;
@@ -227,6 +224,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$data = array(
 			'items' => array(),
 		);
+
+		do_action( 'debug_robot', 'transaction :: ' . print_r( $transaction, true ) );
 
 		foreach ( $transaction as $key => $value ) {
 			if ( ! preg_match( $item_indexes_regex, $key, $matches ) ) {
