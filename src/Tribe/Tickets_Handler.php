@@ -81,10 +81,20 @@ class Tribe__Tickets__Tickets_Handler {
 	private $attendees_table;
 
 	/**
+	 * String to represent unlimited tickets
+	 * translated in the constructor
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private $unlimited_term = 'unlimited';
+
+	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
 		$main = Tribe__Tickets__Main::instance();
+		$this->unlimited_term = __( 'unlimited', 'event-tickets' );
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
@@ -182,7 +192,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( is_string( $capacity ) || -1 === $capacity || '' === $capacity ) {
 			// if it's for display, we want the text representation
 			if ( 'display' === $context ) {
-				$capacity = esc_html__( 'unlimited', 'event-tickets' );
+				$capacity = $this->unlimited_term;
 			} else {
 				$capacity = -1;
 			}
@@ -1018,12 +1028,12 @@ class Tribe__Tickets__Tickets_Handler {
 				<?php
 				$global_stock_mode = $ticket->global_stock_mode();
 
-				if ( 'unlimited' === $ticket->display_original_stock( false ) ) {
+				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
 					$ticket->display_original_stock( true );
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
-					echo $this->convert_unlimited_capacity( $ticket->remaining() );
+					echo esc_html( $this->convert_unlimited_capacity( $ticket->remaining() ) );
 				} else {
-					echo '(' . $this->convert_unlimited_capacity( $ticket->remaining() ) . ')';
+					echo '(' . esc_html( $this->convert_unlimited_capacity( $ticket->remaining() ) ) . ')';
 				}
 				?>
 			</td>

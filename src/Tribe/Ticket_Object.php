@@ -449,7 +449,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$global_stock_mode = $this->global_stock_mode();
 
 			if ( empty( $global_stock_mode ) || empty( $orginal_stock ) ) {
-				$orginal_stock = 'unlimited';
+				$orginal_stock = esc_html__( 'unlimited', 'event-tickets' );
 			}
 
 			return $orginal_stock;
