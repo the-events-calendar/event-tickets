@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.5.4] TBD =
+
+* Tweak - Removed WP API adjustments [85996]
+
 = [4.5.3] 2017-07-26 =
 
 * Fix - Improved get_ticket_counts() to account for tickets with global stock enabled  [82684]
