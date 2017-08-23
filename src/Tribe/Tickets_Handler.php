@@ -222,6 +222,8 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 		}
 
+		$capacity = $this->convert_unlimited_capacity( $capacity );
+
 		/**
 		 * Allow templates to filter the returned value
 		 *
@@ -248,11 +250,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$capacity = 0;
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = $this->get_total_event_independent_tickets( $post_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $ticket->global_stock_mode() ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $ticket->global_stock_mode()  ) {
 					continue;
 				}
 
@@ -280,7 +282,9 @@ class Tribe__Tickets__Tickets_Handler {
 		 * @param (int) $post Post ID tickets are attached to
 		 * @param (array) $tickets array of all tickets
 		 */
-		return apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
+		$capacity = apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
+
+		return $capacity;
 	}
 
 	/**
@@ -1016,16 +1020,12 @@ class Tribe__Tickets__Tickets_Handler {
 				<?php
 				$global_stock_mode = $ticket->global_stock_mode();
 
-				if (
-					empty( $global_stock_mode ) ||
-					'unlimited' === $global_stock_mode  ||
-					( 'Tribe__Tickets__RSVP' === $ticket->provider_class && 0 >= $ticket->global_stock_cap() )
-				) {
-					 esc_html_e( 'unlimited', 'event-tickets' );
+				if ( 'unlimited' === $ticket->display_original_stock( false ) ) {
+					$ticket->display_original_stock( true );
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
-					echo absint( $ticket->remaining() );
+					echo $this->convert_unlimited_capacity( $ticket->remaining() );
 				} else {
-					echo '(' . absint( $ticket->remaining() ) . ')';
+					echo '(' . $this->convert_unlimited_capacity( $ticket->remaining() ) . ')';
 				}
 				?>
 			</td>
