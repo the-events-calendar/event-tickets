@@ -282,9 +282,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 * @param (int) $post Post ID tickets are attached to
 		 * @param (array) $tickets array of all tickets
 		 */
-		$capacity = apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
-
-		return $capacity;
+		return apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
 	}
 
 	/**
