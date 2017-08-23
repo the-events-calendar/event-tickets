@@ -81,10 +81,20 @@ class Tribe__Tickets__Tickets_Handler {
 	private $attendees_table;
 
 	/**
+	 * String to represent unlimited tickets
+	 * translated in the constructor
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	private $unlimited_term = 'unlimited';
+
+	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
 		$main = Tribe__Tickets__Main::instance();
+		$this->unlimited_term = __( 'unlimited', 'event-tickets' );
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
@@ -182,7 +192,7 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( is_string( $capacity ) || -1 === $capacity || '' === $capacity ) {
 			// if it's for display, we want the text representation
 			if ( 'display' === $context ) {
-				$capacity = esc_html__( 'unlimited', 'event-tickets' );
+				$capacity = $this->unlimited_term;
 			} else {
 				$capacity = -1;
 			}
@@ -222,6 +232,8 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 		}
 
+		$capacity = $this->convert_unlimited_capacity( $capacity );
+
 		/**
 		 * Allow templates to filter the returned value
 		 *
@@ -248,7 +260,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$capacity = 0;
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = $this->get_total_event_independent_tickets( $post_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
@@ -1016,16 +1028,12 @@ class Tribe__Tickets__Tickets_Handler {
 				<?php
 				$global_stock_mode = $ticket->global_stock_mode();
 
-				if (
-					empty( $global_stock_mode ) ||
-					'unlimited' === $global_stock_mode  ||
-					( 'Tribe__Tickets__RSVP' === $ticket->provider_class && 0 >= $ticket->global_stock_cap() )
-				) {
-					 esc_html_e( 'unlimited', 'event-tickets' );
+				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
+					$ticket->display_original_stock( true );
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
-					echo absint( $ticket->remaining() );
+					echo esc_html( $this->convert_unlimited_capacity( $ticket->remaining() ) );
 				} else {
-					echo '(' . absint( $ticket->remaining() ) . ')';
+					echo '(' . esc_html( $this->convert_unlimited_capacity( $ticket->remaining() ) ) . ')';
 				}
 				?>
 			</td>
