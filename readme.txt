@@ -233,10 +233,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.5.4] TBD =
+= [4.5.4] 2017-08-24 =
 
 * Tweak - Removed WP API adjustments [85996]
 * Compatibility - Minimum supported version of WordPress is now 4.5
+* Language - 0 new strings added, 18 updated, 0 fuzzied, and 0 obsoleted [event-tickets]
 
 = [4.5.3] 2017-07-26 =
 
