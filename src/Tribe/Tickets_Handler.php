@@ -335,7 +335,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$cap = $this->convert_unlimited_capacity( $cap );
 
 			// Found one - no need to check the rest
-			if ( 'unlimited' === $cap || empty( $cap ) ) {
+			if ( 'unlimited' === $cap || -1 === $cap ) {
 				return apply_filters( 'tribe_tickets_total_event_capacity', $cap, $post_id );
 			}
 
@@ -1415,13 +1415,6 @@ class Tribe__Tickets__Tickets_Handler {
 		} else {
 			delete_post_meta( $id, $this->ticket_provider_field );
 		}
-
-		// Change the global stock if we're passed it (shouldn't be, just in case)
-		if ( ! empty( $params['global_stock'] ) ) {
-			update_post_meta( $id, $this->global_stock_field, $params['global_stock'] );
-		}
-
-		$this->save_global_stock( $id );
 
 		wp_send_json_success( $params );
 	}

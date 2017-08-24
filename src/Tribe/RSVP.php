@@ -931,7 +931,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			delete_post_meta( $ticket->ID, '_stock_status' );
 			update_post_meta( $ticket->ID, '_manage_stock', 'no' );
 			delete_post_meta( $ticket->ID, '_stock' );
-			update_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, '' );
+			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
+			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
 		}
 
 		if ( isset( $raw_data['ticket_start_date'] ) ) {

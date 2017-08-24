@@ -101,10 +101,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				} );
 
 				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
-				$( document.getElementById( 'ticket_start_date' ) ).datepicker( 'option', 'maxDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
-				$( document.getElementById( 'ticket_start_time' ) ).val( $( document.getElementById( 'EventStartTime' ) ).val() ).trigger('change');
-				$( document.getElementById( 'ticket_end_date' ) ).datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
-				$( document.getElementById( 'ticket_end_time' ) ).val( $( document.getElementById( 'EventEndTime' ) ).val() ).trigger('change');
+				// today, now
+				$( document.getElementById( 'ticket_start_date' ) ).datepicker( 'option', 'maxDate', null ).val( $.datepicker.formatDate( 'mm/dd/yy', new Date() ) ).trigger( 'change' );
+				$( document.getElementById( 'ticket_start_time' ) ).val( new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' } ).format( new Date() ) ).trigger( 'change' );
+				// event end date, time
+				$( document.getElementById( 'ticket_end_date' ) ).datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
+				$( document.getElementById( 'ticket_end_time' ) ).val( $( document.getElementById( 'EventEndTime' ) ).val() ).trigger( 'change' );
 
 				$ticket_panel.find( '#ticket_price' ).removeProp( 'disabled' )
 					.siblings( '.no-update-message' ).html( '' ).hide()
@@ -228,7 +230,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * @return string
 		 */
 		function get_default_provider() {
-			var $checked_provider = $( '#tribe_panel_settings input[name=default_ticket_provider]' ).filter(':checked');
+			var $checked_provider = $( '#tribe_panel_settings input[name=default_ticket_provider]' ).filter( ':checked' );
 			return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
 		}
 
@@ -631,7 +633,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								case 'global':
 								case 'capped':
 									$( document.getElementById( response.data.provider_class + '_global' ) ).prop( 'checked', true );
-									$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop('disabled', true);
+									$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
 									$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
 
 									if ( undefined !== response.data.global_stock_cap && $.isNumeric( response.data.global_stock_cap ) && 0 < response.data.global_stock_cap ) {
@@ -669,8 +671,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$( document.getElementById( 'tribe_tickets_show_description' ) ).removeAttr( 'checked' );
 						}
 
-						// $ticket_panel.find( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null ).datepicker(  'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
-						// $ticket_panel.find( '#ticket_end_date' ).datepicker( 'option', 'minDate', null ).datepicker(  'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).trigger('change');
+						// $ticket_panel.find( '#ticket_start_date' ).datepicker( 'option', 'maxDate', null ).datepicker(  'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
+						// $ticket_panel.find( '#ticket_end_date' ).datepicker( 'option', 'minDate', null ).datepicker(  'option', 'defaultDate', $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
 
 						// handle all the date stuff
 						if ( response.data.start_date ) {
@@ -753,7 +755,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					$( document.getElementById( 'tribe_panel_edit' ) ).find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 					if ( response.data.total_global_stock ) {
-						$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop('disabled', true);
+						$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop( 'disabled', true);
 					}
 
 					show_panel( e, $edit_panel );
@@ -779,14 +781,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} )
 			.on( 'click', '#tribe_settings_form_save', function( e ) {
 				e.preventDefault();
-				var $settings_form = $( document.getElementById( 'tribe_panel_settings' ) );
-				var form_data = $settings_form.find( '.settings_field' ).serialize();
-				var $global_capacity = $( document.getElementById( 'settings_global_capacity_edit' ) );
 
+				// Do this first to prevent weirdness with global capacity
+				var $global_capacity = $( document.getElementById( 'settings_global_capacity_edit' ) );
 				if ( false === $global_capacity.prop( 'disabled' ) ) {
 					$global_capacity.blur();
 					$global_capacity.prop( 'disabled', true );
 				}
+
+				var $settings_form = $( document.getElementById( 'tribe_panel_settings' ) );
+				var form_data = $settings_form.find( '.settings_field' ).serialize();
 
 				var params = {
 					action  : 'tribe-ticket-save-settings',
@@ -806,8 +810,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					},
 					'json'
 				);
-			} )
-			;
+			} );
 
 		var $remove  = $( document.getElementById( 'tribe_ticket_header_remove' ) );
 		var $preview = $( document.getElementById( 'tribe_ticket_header_preview' ) );
