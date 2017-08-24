@@ -1977,10 +1977,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post_id = get_the_ID();
 			}
 
-			$unavailable_tickets = self::$currently_unavailable_tickets[ (int) $post_id ];
+			$unavailable_tickets = self::$currently_unavailable_tickets;
 
-			$existing_tickets = ! empty( $unavailable_tickets )
-				? self::$currently_unavailable_tickets[ (int) $post_id ]
+			$existing_tickets = ! empty( $unavailable_tickets[ (int) $post_id ] )
+				? $unavailable_tickets[ (int) $post_id ]
 				: array();
 
 			self::$currently_unavailable_tickets[ (int) $post_id ] = array_merge( $existing_tickets, $tickets );
