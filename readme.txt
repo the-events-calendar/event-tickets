@@ -2,9 +2,9 @@
 
 Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, brook-tribe, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, mat-lipe, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, shelbelliott, tribecari, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 3.9
+Requires at least: 4.5
 Tested up to: 4.8
-Stable tag: 4.5.3
+Stable tag: 4.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -236,6 +236,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.5.4] TBD =
 
 * Tweak - Removed WP API adjustments [85996]
+* Compatibility - Minimum supported version of WordPress is now 4.5
 
 = [4.5.3] 2017-07-26 =
 
