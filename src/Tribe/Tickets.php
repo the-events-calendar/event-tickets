@@ -1977,9 +1977,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post_id = get_the_ID();
 			}
 
-			$unavailable_tickets = self::$currently_unavailable_tickets[ (int) $post_id ];
-
-			$existing_tickets = ! empty( $unavailable_tickets )
+			// Note: this is not php 5.2 compatible
+			$existing_tickets = ! empty( self::$currently_unavailable_tickets[ (int) $post_id ] )
 				? self::$currently_unavailable_tickets[ (int) $post_id ]
 				: array();
 
