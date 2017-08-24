@@ -53,8 +53,10 @@
 		var maybeSortable = _.debounce( tribe_toggle_sortable, 300 );
 		$( window ).resize( maybeSortable );
 
-		$tribe_tickets.on( 'saved-ticket.tribe', function( data ) {
-			console.log( data );
+		$tribe_tickets.on( 'tribe-tickets-refresh-tables', function( data ) {
+			$table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' );
+			// trigger on table refresh
+			tribe_toggle_sortable();
 		});
 
 		// trigger once at start

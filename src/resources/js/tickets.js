@@ -401,6 +401,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$( document.getElementById( 'tribe_expanded_capacity_table' ) ).replaceWith( response.data.capacity_table );
 					}
 
+					// Total Capacity line
+					if ( 'undefined' !== response.data.total_capacity ) {
+						$( document.getElementById( 'ticket_form_total_capacity' ) ).replaceWith( response.data.total_capacity );
+					}
+
 					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
 				} ).complete( function( response ) {
 					if ( swap ) {
@@ -483,7 +488,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$global_field.val( global_field_val );
 		} );
 
-		/* Change stock cap placeholder (or value) if we've change the value in ticket_global_stock */
+		/* Change stock cap placeholder (or value) if we change the value in ticket_global_stock */
 		$( document ).on( 'blur', '[name="ticket_global_stock"]', function( e ) {
 			var $this = $( this );
 			var global_cap = $this.val();

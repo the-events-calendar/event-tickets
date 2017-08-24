@@ -131,16 +131,6 @@
 	text-transform: uppercase;
 }
 
-.ticket_title {
-	margin-top: 0;
-	text-transform: uppercase;
-}
-
-.ticket_title {
-	margin-top: 0;
-	text-transform: uppercase;
-}
-
 .ticket_list_container {
 	margin-bottom: 20px;
 }
@@ -210,13 +200,13 @@
 
 /* Styles for Initial View */
 
-.ticket_table_intro .ticket_form_total_capacity {
+.ticket_table_intro #ticket_form_total_capacity {
 	position: relative;
 	display: block;
 	margin-bottom: .5em;
 }
 
-.ticket_table_intro .ticket_form_total_capacity .tooltip {
+.ticket_table_intro #ticket_form_total_capacity .tooltip {
 	border-radius: 3px;
 	border: 1px solid #a3a3a3;
 	display: none;
@@ -229,11 +219,11 @@
 	z-index: 1;
 }
 
-.ticket_table_intro .ticket_form_total_capacity:hover .tooltip {
+.ticket_table_intro #ticket_form_total_capacity:hover .tooltip {
 	display: block;
 }
 
-.ticket_table_intro .ticket_form_total_capacity .tooltip {
+.ticket_table_intro #ticket_form_total_capacity .tooltip {
 	left: 100%;
 	white-space: nowrap;
 }
@@ -297,6 +287,10 @@
 	margin-top: 0;
 }
 
+.input_block .tribe_stock_block {
+	padding-left: calc(20px + .4em);
+}
+
 /* Capacity Radio Buttons */
 
 .input_block .tribe_stock_block.tribe-active {
@@ -321,6 +315,12 @@
 
 #ticket_form .input_block .ticket_stock_total_value {
 	margin-right: 0;
+}
+
+/* Date/Time fields */
+
+.input_block .tribe-timepicker {
+	width: 6em;
 }
 
 /* Adjust font size for entire form */
@@ -428,7 +428,7 @@ p.description {
 		padding: 16px;
 	}
 
-	.ticket_table_intro .ticket_form_total_capacity {
+	.ticket_table_intro #ticket_form_total_capacity {
 		float: left;
 	}
 
