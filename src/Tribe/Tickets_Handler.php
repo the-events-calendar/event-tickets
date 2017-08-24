@@ -87,7 +87,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @var string
 	 */
-	private $unlimited_term = 'unlimited';
+	public $unlimited_term = 'unlimited';
 
 	/**
 	 *    Class constructor.
@@ -202,48 +202,148 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Returns whether a ticket has unlimited capacity
+	 *
+	 * @since TBD
+	 *
+	 * @param int|object $post Post or Post ID tickets are attached to
+	 */
+	 public function is_unlimited_ticket( $post_id, $ticket ) {
+		switch ( $ticket->global_stock_mode() ) {
+			case Tribe__Tickets__Global_Stock::OWN_STOCK_MODE:
+			case Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE:
+			case Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE:
+				return false;
+			default:
+				return true;
+		}
+	 }
+
+	/**
+	 * Checks if there are any unlimited tickets, optionally by stock mode or ticket type
+	 *
+	 * @since TBD
+	 *
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
+	 * @param string (null) the stock mode we're concerned with
+	 *			can be one of the following:
+	 *				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ('global')
+	 *				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ('capped')
+	 *				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE ('own')
+	 * @param string (null) $provider_class the ticket provider class ex: Tribe__Tickets__RSVP
+	 * @return boolean whether there is a ticket (within the provided parameters) with an unlimited stock
+	 */
+	 public function has_unlimited_stock( $post = null, $stock_mode = null, $provider_class = null ) {
+		$post_id   = Tribe__Main::post_id_helper( $post );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		foreach ( $tickets as $index => $ticket ) {
+			// Eliminate tickets by stock mode
+			if ( ! is_null( $stock_mode ) && $ticket->global_stock_mode() !== $stock_mode ) {
+				unset( $tickets[ $ticket ] );
+				continue;
+			}
+
+			// Eliminate tickets by provider class
+			if ( ! is_null( $provider_class ) && $ticket->provider_class !== $provider_class ) {
+				unset( $tickets[ $ticket ] );
+				continue;
+			}
+
+			if ( $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	 }
+
+	/**
+	 * Get an array list of unlimited tickets for an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
+	 * @param boolean (true) exclude RSVPs from list
+	 *
+	 * @return array list of tickets
+	 */
+	public function get_event_unlimited_tickets( $post = null, $exclude_rsvp = true ) {
+		$post_id = Tribe__Main::post_id_helper( $post );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		$ticket_list = array();
+
+		if ( ! empty( $tickets ) ) {
+			foreach ( $tickets as $ticket ) {
+				if ( ! $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+					continue;
+				}
+
+				if ( $exclude_rsvp && 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+					continue;
+				}
+
+				$ticket_list[] = $ticket;
+			}
+		}
+
+		return $ticket_list;
+	}
+
+	/**
 	 * Get the total event capacity.
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id int (null)
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return int number of tickets ( -1 means unlimited )
+	 * @return int|string number of tickets ( or string 'unlimited' )
 	 */
 	public function get_total_event_capacity( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
+		$capacity  = 0;
+		$post_id   = Tribe__Main::post_id_helper( $post );
 
-		$capacity = 0;
-
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-
-		if ( ! empty( $tickets ) ) {
-			foreach ( $tickets as $ticket ) {
-				$stock = $ticket->original_stock();
-
-				// Empty original stock means unlimited tickets, let's not add infinity!
-				if ( ! empty( $stock ) ) {
-					$capacity += $stock;
-				} else {
-					// If one ticket is unlimited, so is total capacity - break out with flag value
-					$capacity = -1;
-					break;
-				}
-			}
+		// short circuit unlimited stock
+		if ( $this->has_unlimited_stock( $post ) ) {
+			/**
+			 * Allow templates to filter the returned value
+			 *
+			 * @since TDB
+			 *
+			 * @param int|string $capacity Total capacity value (string 'unlimited' for unlimited capacity)
+			 * @param int $post Post ID tickets are attached to
+			 */
+			return apply_filters( 'tribe_tickets_total_event_capacity', 'unlimited', $post_id );
 		}
 
-		$capacity = $this->convert_unlimited_capacity( $capacity );
+		$cap_array = array(
+			$this->get_total_event_shared_capacity( $post_id ),
+			$this->get_total_event_independent_capacity( $post_id ),
+			$this->get_total_event_rsvp_capacity( $post_id ),
+		);
 
-		/**
-		 * Allow templates to filter the returned value
-		 *
-		 * @since TDB
-		 *
-		 * @param (int) $capacity Total capacity value
-		 * @param (int) $post Post ID tickets are attached to
-		 * @param (array) $tickets array of all tickets
-		 */
-		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id, $tickets );
+		// Something happend and we got nothing, return 0
+		if ( empty( $cap_array ) ) {
+			return apply_filters( 'tribe_tickets_total_event_capacity', 0, $post_id );
+		}
+
+		// loop through, checking for unlimited caps
+		foreach ( $cap_array as $cap ) {
+			$cap = $this->convert_unlimited_capacity( $cap );
+
+			// Found one - no need to check the rest
+			if ( 'unlimited' === $cap || empty( $cap ) ) {
+				return apply_filters( 'tribe_tickets_total_event_capacity', $cap, $post_id );
+			}
+
+			// Add it up...
+			$capacity += $cap;
+		}
+
+		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id );
 	}
 
 	/**
@@ -251,32 +351,28 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id int (null)
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return int number of tickets ( -1 means unlimited )
+	 * @return int|string number of tickets ( or string 'unlimited' )
 	 */
 	public function get_total_event_independent_capacity( $post = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 
 		$capacity = 0;
 
-		$tickets = $this->get_total_event_independent_tickets( $post_id );
+		$tickets = $this->get_event_independent_tickets( $post_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $ticket->global_stock_mode() ) {
-					continue;
-				}
-
 				$stock = $ticket->original_stock();
 
-				// Empty original stock means unlimited tickets, let's not add infinity!
-				if ( ! empty( $stock ) ) {
-					$capacity += $stock;
-				} else {
+				// Failsafe - empty original stock means unlimited tickets, let's not add infinity!
+				if ( empty( $stock ) ) {
 					// If one ticket is unlimited, so is total capacity - break out with flag value
 					$capacity = -1;
 					break;
+				} else {
+					$capacity += $stock;
 				}
 			}
 		}
@@ -288,9 +384,9 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since TDB
 		 *
-		 * @param (int) $capacity Total capacity value
-		 * @param (int) $post Post ID tickets are attached to
-		 * @param (array) $tickets array of all tickets
+		 * @param int $capacity Total capacity value
+		 * @param int $post Post ID tickets are attached to
+		 * @param array $tickets array of all tickets
 		 */
 		return apply_filters( 'tribe_tickets_total_event_independent_capacity', $capacity, $post_id, $tickets );
 	}
@@ -300,11 +396,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id int (null)
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return string list of tickets
+	 * @return array list of tickets
 	 */
-	public function get_total_event_independent_tickets( $post = null ) {
+	public function get_event_independent_tickets( $post = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
@@ -317,6 +413,11 @@ class Tribe__Tickets__Tickets_Handler {
 					continue;
 				}
 
+				// Failsafe - should not include unlimited tickets
+				if ( $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+					continue;
+				}
+
 				$ticket_list[] = $ticket;
 			}
 		}
@@ -325,36 +426,32 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Get the total event independent capacity. For display
+	 * Get the total event RSVP capacity. For display
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id int (null)
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return int number of tickets ( -1 means unlimited )
+	 * @return int|string number of tickets ( or string 'unlimited' )
 	 */
 	public function get_total_event_rsvp_capacity( $post = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 
 		$capacity = 0;
 
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$tickets = $this->get_event_rsvp_tickets( $post_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
-					continue;
-				}
-
 				$stock = $ticket->original_stock();
 
-				// Empty original stock means unlimited tickets, let's not add infinity!
-				if ( ! empty( $stock ) ) {
-					$capacity += $stock;
-				} else {
+				// Failsafe - empty original stock means unlimited tickets, let's not add infinity!
+				if ( empty( $stock ) ) {
 					// If one ticket is unlimited, so is total capacity - break out with flag value
 					$capacity = -1;
 					break;
+				} else {
+					$capacity += $stock;
 				}
 			}
 		}
@@ -366,9 +463,9 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since TDB
 		 *
-		 * @param (int) $capacity Total capacity value
-		 * @param (int) $post Post ID tickets are attached to
-		 * @param (array) $tickets array of all tickets
+		 * @param int $capacity Total capacity value
+		 * @param int $post Post ID tickets are attached to
+		 * @param array $tickets array of all tickets
 		 */
 		return apply_filters( 'tribe_tickets_total_event_rsvp_capacity', $capacity, $post_id, $tickets );
 	}
@@ -378,11 +475,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id int (null)
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
 	 * @return string list of tickets
 	 */
-	public function get_total_event_rsvp_tickets( $post = null ) {
+	public function get_event_rsvp_tickets( $post = null, $exclude_unlimited = false ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
@@ -392,6 +489,10 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
 				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+					continue;
+				}
+
+				if ( $exclude_unlimited && $this->is_unlimited_ticket( $post_id, $ticket ) ) {
 					continue;
 				}
 
@@ -407,9 +508,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id int (null)
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return int number of tickets ( -1 means unlimited )
+	 * @return int|string number of tickets ( or string 'unlimited' )
 	 */
 	public function get_total_event_shared_capacity( $post = null ) {
 		$post_id                 = Tribe__Main::post_id_helper( $post );
@@ -430,8 +531,8 @@ class Tribe__Tickets__Tickets_Handler {
 		 *
 		 * @since TDB
 		 *
-		 * @param (int) $capacity Total capacity value
-		 * @param (int) $post Post ID tickets are attached to
+		 * @param int $capacity Total capacity value
+		 * @param int $post Post ID tickets are attached to
 		 */
 		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id );
 	}
@@ -441,11 +542,11 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id int (null)
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
 	 * @return array list of tickets
 	 */
-	public function get_total_event_shared_tickets( $post = null ) {
+	public function get_event_shared_tickets( $post = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
@@ -454,7 +555,13 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE == $ticket->global_stock_mode() ) {
+				$stock_mode = $ticket->global_stock_mode();
+				if ( empty( $stock_mode ) || Tribe__Tickets__Global_Stock::OWN_STOCK_MODE == $stock_mode ) {
+					continue;
+				}
+
+				// Failsafe - should not include unlimited tickets
+				if ( $this->is_unlimited_ticket( $post_id, $ticket ) ) {
 					continue;
 				}
 
