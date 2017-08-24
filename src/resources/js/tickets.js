@@ -495,7 +495,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			if ( 'undefined' === cap_val ) {
 				$cap_field.val( global_cap );
 			} else if ( 0 < cap_val ) {
-				var new_val = max( global_cap, cap_val );
+				var new_val = Math.max( global_cap, cap_val );
 			}
 		} );
 
