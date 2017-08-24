@@ -470,7 +470,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.trigger( 'focus.tribe' );
 		} );
 
-		/* Change global stock type if we put a value in global_stock_cap */
+		/* Change global stock type if we've put a value in global_stock_cap */
 		$( document ).on( 'blur', '[name="global_stock_cap"]', function( e ) {
 			var $this = $( this );
 			var $global_field = $this.closest( 'fieldset' ).find( '[name="ticket_global_stock"]' );
@@ -481,6 +481,26 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 
 			$global_field.val( global_field_val );
+		} );
+
+		/* Change stock cap placeholder (or value) if we've change the value in ticket_global_stock */
+		$( document ).on( 'blur', '[name="ticket_global_stock"]', function( e ) {
+			var $this = $( this );
+			var global_cap = $this.val();
+
+			// if we haven't actually changed the value, don't do anything
+			if ( $this.prop( 'disabled' ) || 0 === global_cap ) {
+				return;
+			}
+
+			var $cap_field = $this.closest( 'fieldset' ).find( '[name="global_stock_cap"]' );
+			var cap_val = $cap_field.val();
+
+			if ( 'undefined' === cap_val ) {
+				$cap_field.val( global_cap );
+			} else if ( 0 < cap_val ) {
+				var new_val = Math.max( global_cap, cap_val );
+			}
 		} );
 
 		/* "Save Ticket" button action */

@@ -20,7 +20,7 @@
 }
 
 #ticket_form span.datetime_seperator {
-	margin-right: 0;
+	margin-left: 10px;
 }
 
 .ticket_list h4 {
