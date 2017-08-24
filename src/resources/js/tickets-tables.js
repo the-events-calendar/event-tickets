@@ -1,5 +1,6 @@
 ( function( window, $ ) {
-	var $table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' );
+	var $table         = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' );
+	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
 
 	/**
 	* Implemnts jQuery drag-n-drop for the ticket table.
@@ -51,6 +52,10 @@
 		// disable/init depending on screen size
 		var maybeSortable = _.debounce( tribe_toggle_sortable, 300 );
 		$( window ).resize( maybeSortable );
+
+		$tribe_tickets.on( 'saved-ticket.tribe', function( data ) {
+			console.log( data );
+		});
 
 		// trigger once at start
 		tribe_toggle_sortable();

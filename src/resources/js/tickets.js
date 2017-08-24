@@ -396,13 +396,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$ticket_table.append( $new_table );
 					}
 
+					// Settings table
+					if ( 'undefined' !== response.data.capacity_table ) {
+						$( document.getElementById( 'tribe_expanded_capacity_table' ) ).replaceWith( response.data.capacity_table );
+					}
+
 					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
 				} ).complete( function( response ) {
 					if ( swap ) {
 						show_panel();
 					}
-				}
-				);
+				} );
 		}
 
 		/* "Settings" button action */
