@@ -89,9 +89,8 @@
 }
 
 .eventtable.ticket_list .ticket_name.Tribe__Tickets__RSVP p::before {
-	color: #000;
-	content: '\f110';
-	visibility: visible;
+	content: '';
+	margin-right: 30px;
 }
 
 .eventtable.ticket_list .ui-sortable-handle .ticket_name p::before {
