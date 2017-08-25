@@ -273,10 +273,6 @@
 	margin-bottom: 1em;
 	position: relative;
 
-	&.tribe_ticket_provider {
-		@mixin screen-reader-text;
-	}
-
 	.ticket_form_left {
 		box-sizing: border-box;
 		float: left;
@@ -359,6 +355,10 @@
 	.tribe-timepicker {
 		width: 6em;
 	}
+}
+
+#tribe_ticket_provider_wrapper {
+	@mixin screen-reader-text;
 }
 
 /* Adjust font size for entire form */

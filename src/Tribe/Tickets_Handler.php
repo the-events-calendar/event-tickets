@@ -98,7 +98,6 @@ class Tribe__Tickets__Tickets_Handler {
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
-			add_action( 'save_post_' . $post_type, array( $this, 'save_global_stock' ) );
 			add_action( 'save_post_' . $post_type, array( $this, 'save_tickets_order' ) );
 		}
 
@@ -1220,30 +1219,6 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		return;
-	}
-
-	/* Capacity */
-
-	/**
-	 * Save the current global stock properties for this event.
-	 * Can come from ticket creation or settings edit. No longer tied to event save.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id
-	 */
-	public function save_global_stock( $post_id ) {
-		// Bail on autosaves/bulk updates
-		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
-			return;
-		}
-
-		$enable = ! empty( $_POST[ 'ticket_global_stock' ] );
-		$stock  = (int) @$_POST[ 'ticket_global_stock' ];
-
-		$post_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-		$post_global_stock->enable( $enable );
-		$post_global_stock->set_stock_level( $stock );
 	}
 
 	/**
