@@ -205,9 +205,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param int|object $post Post or Post ID tickets are attached to
+	 * @param object Tribe__Tickets__Ticket_Object
 	 */
-	 public function is_unlimited_ticket( $post_id, $ticket ) {
+	 public function is_unlimited_ticket( $ticket ) {
 		switch ( $ticket->global_stock_mode() ) {
 			case Tribe__Tickets__Global_Stock::OWN_STOCK_MODE:
 			case Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE:
@@ -250,7 +250,7 @@ class Tribe__Tickets__Tickets_Handler {
 				continue;
 			}
 
-			if ( $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+			if ( $this->is_unlimited_ticket( $ticket ) ) {
 				return true;
 			}
 		}
@@ -277,7 +277,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				if ( ! $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+				if ( ! $this->is_unlimited_ticket( $ticket ) ) {
 					continue;
 				}
 
@@ -413,7 +413,7 @@ class Tribe__Tickets__Tickets_Handler {
 				}
 
 				// Failsafe - should not include unlimited tickets
-				if ( $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+				if ( $this->is_unlimited_ticket( $ticket ) ) {
 					continue;
 				}
 
@@ -491,7 +491,7 @@ class Tribe__Tickets__Tickets_Handler {
 					continue;
 				}
 
-				if ( $exclude_unlimited && $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+				if ( $exclude_unlimited && $this->is_unlimited_ticket( $ticket ) ) {
 					continue;
 				}
 
@@ -560,7 +560,7 @@ class Tribe__Tickets__Tickets_Handler {
 				}
 
 				// Failsafe - should not include unlimited tickets
-				if ( $this->is_unlimited_ticket( $post_id, $ticket ) ) {
+				if ( $this->is_unlimited_ticket( $ticket ) ) {
 					continue;
 				}
 
