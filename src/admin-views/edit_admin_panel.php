@@ -23,11 +23,14 @@ $timepicker_round = '00:00:00';
 
 	<div id="ticket_form" class="ticket_form tribe_sectionheader">
 		<div id="ticket_form_table" class="eventtable ticket_form">
-			<?php // @TODO: Do these need to get renamed for RSVPs? ?>
-			<h4 id="ticket_title_add" class="ticket_form_title tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
-			<h4 id="ticket_title_edit" class="ticket_form_title tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
-			<h4 id="rsvp_title_add" class="ticket_form_title tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
-			<h4 id="rsvp_title_edit" class="ticket_form_title tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
+			<div class="tribe-dependent"  data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
+				<h4 id="ticket_title_add" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-empty><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
+				<h4 id="ticket_title_edit" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-not-empty><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			</div>
+			<div class="tribe-dependent"  data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked>
+				<h4 id="rsvp_title_add" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-empty><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
+				<h4 id="rsvp_title_edit" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-not-empty><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
+			</div>
 			<section id="ticket_form_main" class="main">
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>

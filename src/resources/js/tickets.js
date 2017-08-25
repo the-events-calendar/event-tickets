@@ -400,7 +400,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$tribe_tickets.trigger( 'ticket-provider-changed.tribe' );
 
-			// We have to trigger this after the verify.dependency
+			// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) && undefined !== global_cap && 0 < global_cap ) {
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).prop( 'disabled', true );
 			}
