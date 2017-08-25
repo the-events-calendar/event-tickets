@@ -23,18 +23,21 @@ $timepicker_round = '00:00:00';
 
 	<div id="ticket_form" class="ticket_form tribe_sectionheader">
 		<div id="ticket_form_table" class="eventtable ticket_form">
-			<?php // @TODO: Do these need to get renamed for RSVPs? ?>
-			<h4 id="ticket_title_add" class="ticket_form_title"><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
-			<h4 id="ticket_title_edit" class="ticket_form_title"><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
-			<h4 id="rsvp_title_add" class="ticket_form_title"><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
-			<h4 id="rsvp_title_edit" class="ticket_form_title"><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
+			<div class="tribe-dependent"  data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
+				<h4 id="ticket_title_add" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-empty><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
+				<h4 id="ticket_title_edit" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-not-empty><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			</div>
+			<div class="tribe-dependent"  data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked>
+				<h4 id="rsvp_title_add" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-empty><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
+				<h4 id="rsvp_title_edit" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-not-empty><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
+			</div>
 			<section id="ticket_form_main" class="main">
 				<div class="input_block">
 					<label class="ticket_form_label ticket_form_left" for="ticket_name"><?php esc_html_e( 'Type:', 'event-tickets' ); ?></label>
 					<input type='text' id='ticket_name' name='ticket_name' class="ticket_field ticket_form_right" size='25' value='' />
 					<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Ticket type name shows on the front end and emailed tickets', 'event-tickets' ); ?></span>
 				</div>
-				<fieldset class="input_block tribe_ticket_provider" aria-hidden="true" >
+				<fieldset id="tribe_ticket_provider_wrapper" class="input_block" aria-hidden="true" >
 					<legend class="ticket_form_label"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></legend>
 					<?php
 					$default_module = Tribe__Tickets__Tickets::get_default_module();
@@ -192,8 +195,8 @@ $timepicker_round = '00:00:00';
 			?>
 			<div class="ticket_bottom">
 					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
-					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>" class="button-primary" />
-					<input type="button" id="rsvp_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save RSVP', 'event-tickets' ); ?>" class="button-primary" />
+					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>" class="button-primary tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked />
+					<input type="button" id="rsvp_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save RSVP', 'event-tickets' ); ?>" class="button-primary tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked />
 					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
 
 					<?php

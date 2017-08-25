@@ -156,16 +156,6 @@
 	text-transform: uppercase;
 }
 
-.ticket_title {
-	margin-top: 0;
-	text-transform: uppercase;
-}
-
-.ticket_title {
-	margin-top: 0;
-	text-transform: uppercase;
-}
-
 .ticket_list_container {
 	margin-bottom: 20px;
 }
@@ -248,7 +238,7 @@
 
 /* Styles for Initial View */
 .ticket_table_intro {
-	.ticket_form_total_capacity {
+	#ticket_form_total_capacity {
 		@mixin tribe-ticket-tooltip;
 
 		display: block;
@@ -282,10 +272,6 @@
 .input_block {
 	margin-bottom: 1em;
 	position: relative;
-
-	&.tribe_ticket_provider {
-		@mixin screen-reader-text;
-	}
 
 	.ticket_form_left {
 		box-sizing: border-box;
@@ -337,6 +323,10 @@
 		margin-top: 0;
 	}
 
+	.tribe_stock_block {
+		padding-left: calc(20px + .4em);
+	}
+
 	/* Capacity Radio Buttons */
 	.tribe_stock_block.tribe-active {
 		padding-top: 1em;
@@ -360,6 +350,15 @@
 	#ticket_form & .ticket_stock_total_value {
 		margin-right: 0;
 	}
+
+	/* Date/Time fields */
+	.tribe-timepicker {
+		width: 6em;
+	}
+}
+
+#tribe_ticket_provider_wrapper {
+	@mixin screen-reader-text;
 }
 
 /* Adjust font size for entire form */
