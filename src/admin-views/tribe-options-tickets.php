@@ -189,22 +189,19 @@ $tickets_fields = array_merge(
 			'validation_type' => 'options',
 			'options'         => $currency_code_options,
 		),
-		'ticket-currency-symbol' => array(
+		'defaultCurrencySymbol' => array(
 			'type'            => 'text',
 			'label'           => esc_html__( 'Symbol', 'event-tickets' ),
 			'size'            => 'small',
 			'default'         => '$',
 			'validation_type' => 'html',
 		),
-		'ticket-currency-symbol-position' => array(
-			'type'            => 'dropdown',
-			'label'           => esc_html__( 'Symbol Position', 'event-tickets' ),
-			'default'         => 'prefix',
-			'validation_type' => 'options',
-			'options'         => array(
-				'prefix' => __( 'Before cost', 'event-tickets' ),
-				'suffix' => __( 'After cost', 'event-tickets' ),
-			),
+		'reverseCurrencyPosition' => array(
+			'type'            => 'checkbox_bool',
+			'label'           => esc_html__( 'Symbol Follows Value', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'The currency symbol normally precedes the value. Enabling this option positions the symbol after the value.', 'event-tickets' ),
+			'default'         => false,
+			'validation_type' => 'boolean',
 		),
 		'ticket-currency-decimal' => array(
 			'type'            => 'text',
