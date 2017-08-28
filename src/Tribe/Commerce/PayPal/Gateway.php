@@ -55,10 +55,13 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			return;
 		}
 
-		$url        = $this->get_cart_url( '_cart' );
-		$now        = time();
-		$post_url   = get_permalink( $post );
-		$notify_url = add_query_arg( array( 'bacon' => 1 ), get_permalink( $post ) );
+		$url           = $this->get_cart_url( '_cart' );
+		$now           = time();
+		$post_url      = get_permalink( $post );
+		$currency_code = tribe_get_option( 'ticket-paypal-currency-code' );
+
+		// @TODO: set to the success page
+		$notify_url    = add_query_arg( array( 'bacon' => 1 ), get_permalink( $post ) );
 
 		$args = array(
 			'cmd'           => '_cart',
@@ -67,7 +70,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( $notify_url ),
 			'shopping_url'  => urlencode( $post_url ),
-			'currency_code' => 'USD',
+			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => 'user_id=' . get_current_user_id(),
 		);
 
