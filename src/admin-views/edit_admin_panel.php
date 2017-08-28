@@ -23,13 +23,41 @@ $timepicker_round = '00:00:00';
 
 	<div id="ticket_form" class="ticket_form tribe_sectionheader">
 		<div id="ticket_form_table" class="eventtable ticket_form">
-			<div class="tribe-dependent"  data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked>
-				<h4 id="ticket_title_add" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-empty><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
-				<h4 id="ticket_title_edit" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-not-empty><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
+			<div
+				class="tribe-dependent"
+				data-depends="#Tribe__Tickets__RSVP_radio"
+				data-condition-is-not-checked
+			>
+				<h4
+					id="ticket_title_add"
+					class="ticket_form_title tribe-dependent"
+					data-depends="#ticket_id"
+					data-condition-is-empty
+				><?php esc_html_e( 'Add new ticket', 'event-tickets' ); ?></h4>
+				<h4
+					id="ticket_title_edit"
+					class="ticket_form_title tribe-dependent"
+					data-depends="#ticket_id"
+					data-condition-is-not-empty
+				><?php esc_html_e( 'Edit ticket', 'event-tickets' ); ?></h4>
 			</div>
-			<div class="tribe-dependent"  data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked>
-				<h4 id="rsvp_title_add" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-empty><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
-				<h4 id="rsvp_title_edit" class="ticket_form_title tribe-dependent" data-depends="#ticket_id" data-condition-is-not-empty><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
+			<div
+				class="tribe-dependent"
+				data-depends="#Tribe__Tickets__RSVP_radio"
+				data-condition-is-checked
+			>
+				<h4
+					id="rsvp_title_add"
+					class="ticket_form_title tribe-dependent"
+					data-depends="#ticket_id"
+					data-condition-is-empty
+				><?php esc_html_e( 'Add new RSVP', 'event-tickets' ); ?></h4>
+				<h4
+					id="rsvp_title_edit"
+					class="ticket_form_title tribe-dependent"
+					data-depends="#ticket_id"
+					data-condition-is-not-empty
+				><?php esc_html_e( 'Edit RSVP', 'event-tickets' ); ?></h4>
 			</div>
 			<section id="ticket_form_main" class="main">
 				<div class="input_block">
@@ -195,9 +223,25 @@ $timepicker_round = '00:00:00';
 			?>
 			<div class="ticket_bottom">
 					<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
-					<input type="button" id="ticket_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>" class="button-primary tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-not-checked />
-					<input type="button" id="rsvp_form_save" name="ticket_form_save" value="<?php esc_attr_e( 'Save RSVP', 'event-tickets' ); ?>" class="button-primary tribe-dependent" data-depends="#Tribe__Tickets__RSVP_radio" data-condition-is-checked />
-					<input type="button" id="ticket_form_cancel" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" class="button-secondary" />
+					<input
+						type="button"
+						id="ticket_form_save"
+						class="button-primary tribe-dependent"
+						name="ticket_form_save"
+						value="<?php esc_attr_e( 'Save ticket', 'event-tickets' ); ?>"
+						data-depends="#Tribe__Tickets__RSVP_radio"
+						data-condition-is-not-checked
+					/>
+					<input
+						type="button"
+						id="rsvp_form_save"
+						class="button-primary tribe-dependent"
+						name="ticket_form_save"
+						value="<?php esc_attr_e( 'Save RSVP', 'event-tickets' ); ?>"
+						data-depends="#Tribe__Tickets__RSVP_radio"
+						data-condition-is-checked
+					/>
+					<input type="button" id="ticket_form_cancel" class="button-secondary" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" />
 
 					<?php
 					/**
