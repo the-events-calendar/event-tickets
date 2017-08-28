@@ -26,7 +26,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 
 		$results = $this->validate_transaction( $_GET['tx'] );
 		$results = $gateway->parse_transaction( $results );
-
+		do_action( 'debug_robot', 'results :: ' . print_r( $results, true ) );
 		$gateway->set_transaction_data( $results );
 
 		$paypal->generate_tickets();
@@ -64,10 +64,23 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 			return false;
 		}
 
+		return $this->parse_transaction_body( $response['body'] );
+	}
+
+	/**
+	 * Parses flat transaction text
+	 *
+	 * @since TBD
+	 *
+	 * @param string $transaction
+	 *
+	 * @return array
+	 */
+	public function parse_transaction_body( $transaction ) {
 		$results = array();
-		$body    = explode( "\n", $response['body'] );
+
+		$body    = explode( "\n", $transaction );
 		//$body    = array_map( 'tribe_clean', $body );
-		//do_action( 'debug_robot', 'body :: ' . print_r( $body, true ) );
 
 		foreach ( $body as $line ) {
 			if ( ! trim( $line ) ) {
