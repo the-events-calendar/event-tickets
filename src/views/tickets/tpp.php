@@ -76,7 +76,7 @@ $cart_url       = '';
 					<?php if ( $is_there_any_product_to_sell ) : ?>
 						<input
 							type="number"
-							class="tribe-ticket-quantity"
+							class="tribe-ticket-quantity qty"
 							min="0"
 							max="<?php echo esc_attr( $ticket->remaining() ); ?>"
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"

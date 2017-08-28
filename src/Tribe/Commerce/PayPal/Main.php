@@ -927,6 +927,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
+		Tribe__Tickets__Tickets::add_frontend_stock_data( $tickets );
+
 		$ticket_sent = empty( $_GET['tpp_sent'] ) ? false : true;
 		$ticket_error = empty( $_GET['tpp_error'] ) ? false : intval( $_GET['tpp_error'] );
 
