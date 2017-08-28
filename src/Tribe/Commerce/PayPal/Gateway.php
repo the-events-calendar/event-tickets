@@ -4,7 +4,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * @var string
 	 */
-	protected $identity_token;
+	public $identity_token;
 
 	/**
 	 * @var array
@@ -18,7 +18,15 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 */
 	public function __construct() {
 		$this->hook();
-		$this->identity_token = '9pGVCp7_-utziQz8XlMmc8-2a-_hCI28hE0408PClSC7-PmzCyjADUzRjCi';
+		$this->identity_token = tribe_get_option( 'ticket-paypal-identity-token' );
+
+		if ( $this->identity_token ) {
+			// if there's an identity token set, we handle payment confirmation with PDT
+			tribe( 'tickets.commerce.paypal.handler.pdt' );
+		} else {
+			// if there isn't an identity token set, we use IPN
+			tribe( 'tickets.commerce.paypal.handler.ipn' );
+		}
 	}
 
 	/**
@@ -28,7 +36,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 */
 	public function hook() {
 		add_action( 'template_redirect', array( $this, 'add_to_cart' ) );
-		add_action( 'template_redirect', array( $this, 'finalize_order' ) );
 	}
 
 	/**
@@ -123,73 +130,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		wp_redirect( $url );
 		die;
-	}
-
-	public function finalize_order() {
-
-		if ( ! isset( $_GET['tx'] ) ) {
-			return;
-		}
-
-		$paypal = tribe( 'tickets.commerce.paypal' );
-
-		$results = $this->validate_transaction( $_GET['tx'] );
-		$results = $this->parse_transaction( $results );
-
-		$this->set_transaction_data( $results );
-
-		$paypal->generate_tickets();
-
-		do_action( 'debug_robot', 'results :: ' . print_r( $results, true ) );
-	}
-
-	/**
-	 * Validates a PayPal transaction ensuring that it is authentic
-	 *
-	 * @since TBD
-	 *
-	 * @param $transaction
-	 *
-	 * @return array|bool
-	 */
-	public function validate_transaction( $transaction ) {
-		$args = array(
-			'body' => array(
-				'cmd' => '_notify-synch',
-				'tx' => $transaction,
-				'at' => $this->identity_token,
-			),
-			'httpversion' => '1.1',
-			'timeout' => 60,
-			'user-agent' => 'EventTickets/' .Tribe__Tickets__Main::VERSION,
-		);
-
-		$response = wp_safe_remote_post( $this->get_cart_url(), $args );
-
-		if (
-			is_wp_error( $response )
-			|| ! ( 0 === strpos( $response['body'], "SUCCESS" ) )
-		) {
-			return false;
-		}
-
-		$results = array();
-		$body    = explode( "\n", $response['body'] );
-		do_action( 'debug_robot', 'body :: ' . print_r( $body, true ) );
-		//$body    = array_map( 'tribe_clean', $body );
-		//do_action( 'debug_robot', 'body :: ' . print_r( $body, true ) );
-
-		foreach ( $body as $line ) {
-			if ( ! trim( $line ) ) {
-				continue;
-			}
-
-			$line                = explode( '=', $line );
-			$var                 = array_shift( $line );
-			$results[ $var ]     = urldecode( implode( '=', $line ) );
-		}
-
-		return $results;
 	}
 
 	/**
