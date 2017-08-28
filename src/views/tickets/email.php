@@ -311,7 +311,7 @@
 				$include_event_date = apply_filters( 'event_tickets_email_include_start_date', false, $event->ID );
 
 				if ( $include_event_date && function_exists( 'tribe_events_event_schedule_details' ) ) {
-					$start_date = tribe_events_event_schedule_details( $event, true );
+					$start_date = tribe_events_event_schedule_details( $event );
 				}
 
 				if ( function_exists( 'tribe_get_organizer_ids' ) ) {
