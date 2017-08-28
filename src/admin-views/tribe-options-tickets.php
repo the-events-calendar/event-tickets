@@ -1,5 +1,40 @@
 <?php
 
+$currency_code_options = array(
+	'AUD' => __( 'Australian Dollar (AUD)', 'event-tickets' ),
+	'BRL' => __( 'Brazilian Real  (BRL)', 'event-tickets' ),
+	'CAD' => __( 'Canadian Dollar (CAD)', 'event-tickets' ),
+	'CZK' => __( 'Czech Koruna (CZK)', 'event-tickets' ),
+	'DKK' => __( 'Danish Krone (DKK)', 'event-tickets' ),
+	'EUR' => __( 'Euro (EUR)', 'event-tickets' ),
+	'HKD' => __( 'Hong Kong Dollar (HKD)', 'event-tickets' ),
+	'HUF' => __( 'Hungarian Forint (HUF)', 'event-tickets' ),
+	'ILS' => __( 'Israeli New Sheqel (ILS)', 'event-tickets' ),
+	'JPY' => __( 'Japanese Yen (JPY)', 'event-tickets' ),
+	'MYR' => __( 'Malaysian Ringgit (MYR)', 'event-tickets' ),
+	'MXN' => __( 'Mexican Peso (MXN)', 'event-tickets' ),
+	'NOK' => __( 'Norwegian Krone (NOK)', 'event-tickets' ),
+	'NZD' => __( 'New Zealand Dollar (NZD)', 'event-tickets' ),
+	'PHP' => __( 'Philippine Peso (PHP)', 'event-tickets' ),
+	'PLN' => __( 'Polish Zloty (PLN)', 'event-tickets' ),
+	'GBP' => __( 'Pound Sterling (GBP)', 'event-tickets' ),
+	'SGD' => __( 'Singapore Dollar (SGD)', 'event-tickets' ),
+	'SEK' => __( 'Swedish Krona (SEK)', 'event-tickets' ),
+	'CHF' => __( 'Swiss Franc (CHF)', 'event-tickets' ),
+	'TWD' => __( 'Taiwan New Dollar (TWD)', 'event-tickets' ),
+	'THB' => __( 'Thai Baht (THB)', 'event-tickets' ),
+	'USD' => __( 'U.S. Dollar (USD)', 'event-tickets' ),
+);
+
+/**
+ * Filters the available currency code options for PayPal
+ *
+ * @since TBD
+ *
+ * @param array $currency_code_options
+ */
+$currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', $currency_code_options );
+
 $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_list', array(
 	'attachment',
 ) );
@@ -35,6 +70,7 @@ $options = get_option( Tribe__Main::OPTIONNAME, array() );
  */
 $ticket_addons = apply_filters( 'tribe_tickets_settings_systems_supporting_login_requirements', array(
 	'event-tickets_rsvp' => __( 'Require users to log in before they RSVP', 'event-tickets' ),
+	'event-tickets_all'  => __( 'Require users to log in before they purchase tickets', 'event-tickets' ),
 ) );
 
 $tickets_fields = array(
@@ -93,7 +129,7 @@ $tickets_fields = array_merge( $tickets_fields, array(
 
 		'ticket-authentication-requirements-heading' => array(
 			'type' => 'html',
-			'html' => '<h3>' . __( 'Login requirements', 'event-tickets' ) . '</h3>',
+			'html' => '<h3>' . __( 'Login Requirements', 'event-tickets' ) . '</h3>',
 		),
 		'ticket-authentication-requirements-advice'  => array(
 			'type' => 'html',
@@ -108,16 +144,91 @@ $tickets_fields = array_merge( $tickets_fields, array(
 			'validation_type' => 'options_multi',
 			'can_be_empty'    => true,
 		),
-		'tribe-form-content-end'                     => array(
-			'type' => 'html',
-			'html' => '</div>',
-		),
-	) );
+	)
+);
 
-// If Events Tickets Plus is not active there remove the related field.
-if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-	unset( $tickets_fields['ticket-commerce-form-location'] );
-}
+$tickets_fields = array_merge(
+	$tickets_fields,
+	array(
+		'ticket-paypal-heading' => array(
+			'type' => 'html',
+			'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
+		),
+		'ticket-paypal-email' => array(
+			'type'            => 'text',
+			'label'           => esc_html__( 'PayPal Email', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'Email address that will receive PayPal payments.', 'event-tickets' ),
+			'size'            => 'medium',
+			'default'         => '',
+			'validation_type' => 'html',
+		),
+		'ticket-paypal-sandbox' => array(
+			'type'            => 'checkbox_bool',
+			'label'           => esc_html__( 'PayPal Sandbox', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'Enables PayPal Sandbox mode for testing.', 'event-tickets' ),
+			'default'         => false,
+			'validation_type' => 'boolean',
+		),
+		'ticket-paypal-identity-token' => array(
+			'type'            => 'text',
+			'label'           => esc_html__( 'PayPal Identity Token', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'This is an optional field that will allow you to identify pending and successful payments without the need for PayPal IPN. To obtain your identifier, log into your PayPal account, click on Profile, then click on Website Payment Preferences. Here, enable Payment Data Transfer. You will then see your PayPal Identity Token displayed.', 'event-tickets' ),
+			'size'            => 'medium',
+			'default'         => '',
+			'validation_type' => 'html',
+		),
+		'ticket-currency-heading' => array(
+			'type' => 'html',
+			'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
+		),
+		'ticket-paypal-currency-code' => array(
+			'type'            => 'dropdown',
+			'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'The currency that will be used for PayPal purchases.', 'event-tickets' ),
+			'default'         => 'USD',
+			'validation_type' => 'options',
+			'options'         => $currency_code_options,
+		),
+		'ticket-currency-symbol' => array(
+			'type'            => 'text',
+			'label'           => esc_html__( 'Symbol', 'event-tickets' ),
+			'size'            => 'small',
+			'default'         => '$',
+			'validation_type' => 'html',
+		),
+		'ticket-currency-symbol-position' => array(
+			'type'            => 'dropdown',
+			'label'           => esc_html__( 'Symbol Position', 'event-tickets' ),
+			'default'         => 'prefix',
+			'validation_type' => 'options',
+			'options'         => array(
+				'prefix' => __( 'Before cost', 'event-tickets' ),
+				'suffix' => __( 'After cost', 'event-tickets' ),
+			),
+		),
+		'ticket-currency-decimal' => array(
+			'type'            => 'text',
+			'label'           => esc_html__( 'Decimal Separator', 'event-tickets' ),
+			'size'            => 'small',
+			'default'         => '.',
+			'validation_type' => 'html',
+		),
+		'ticket-currency-thousands' => array(
+			'type'            => 'text',
+			'label'           => esc_html__( 'Thousands Separator', 'event-tickets' ),
+			'size'            => 'small',
+			'default'         => ',',
+			'validation_type' => 'html',
+		),
+	)
+);
+
+$tickets_fields = array_merge( $tickets_fields, array(
+	'tribe-form-content-end'                     => array(
+		'type' => 'html',
+		'html' => '</div>',
+	),
+) );
 
 /**
  * Filters the fields to be registered in the Events > Settings > Tickets tab.

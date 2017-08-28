@@ -209,6 +209,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		add_action( 'event_tickets_attendee_update', array( $this, 'update_attendee_data' ), 10, 3 );
 		add_action( 'event_tickets_after_attendees_update', array( $this, 'maybe_send_tickets_after_status_change' ) );
+		add_filter(
+			'event_tickets_attendees_tpp_checkin_stati',
+			array( $this, 'filter_event_tickets_attendees_tpp_checkin_stati' )
+		);
 	}
 
 	/**
@@ -578,8 +582,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					update_post_meta( $product_id, 'total_sales', ++ $sales );
 				}
 
+				$attendee_order_status = 'completed';
+
 				update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
 				update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
+				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
 				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $order_id, $attendee_id ) );
 				update_post_meta( $attendee_id, $this->order_key, $order_id );
 				update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
@@ -1084,6 +1091,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$security     = get_post_meta( $attendee->ID, $this->security_code, true );
 			$product_id   = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
 			$optout       = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
+			$status       = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
 			$user_id      = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
 			$ticket_sent  = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
 
@@ -1114,6 +1122,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				'security'           => $security,
 				'product_id'         => $product_id,
 				'check_in'           => $checkin,
+				'order_status'       => $status,
 				'user_id'            => $user_id,
 				'ticket_sent'        => $ticket_sent,
 
@@ -1407,6 +1416,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 */
 		return apply_filters( 'tribe_tickets_tpp_ticket_price_html', $price_html, $product, $attendee );
+	}
+
+	/**
+	 * Filters the array of stati that will mark an ticket attendee as eligible for check-in.
+	 *
+	 * @param array $stati An array of stati that should mark an ticket attendee as
+	 *                     available for check-in.
+	 *
+	 * @return array The original array plus the 'yes' status.
+	 */
+	public function filter_event_tickets_attendees_tpp_checkin_stati( array $stati = array() ) {
+		$stati[] = 'completed';
+
+		return array_unique( $stati );
 	}
 
 	/**

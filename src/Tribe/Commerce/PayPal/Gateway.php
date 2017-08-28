@@ -4,16 +4,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * @var string
 	 */
-	public $paypal_url  = 'https://www.paypal.com/cgi-bin/webscr';
-
-	/**
-	 * @var string
-	 */
-	public $sandbox_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
-
-	/**
-	 * @var string
-	 */
 	protected $identity_token;
 
 	/**
@@ -66,7 +56,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$args = array(
 			'cmd'           => '_cart',
 			'add'           => 1,
-			'business'      => urlencode( 'borkweb+tpp@gmail.com' ),
+			'business'      => urlencode( tribe_get_option( 'ticket-paypal-email' ) ),
+			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( $notify_url ),
 			'shopping_url'  => urlencode( $post_url ),
 			'currency_code' => 'USD',
@@ -225,8 +216,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'items' => array(),
 		);
 
-		do_action( 'debug_robot', 'transaction :: ' . print_r( $transaction, true ) );
-
 		foreach ( $transaction as $key => $value ) {
 			if ( ! preg_match( $item_indexes_regex, $key, $matches ) ) {
 				$data[ $key ] = $value;
@@ -328,8 +317,13 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return string
 	 */
 	public function get_cart_url() {
-		// @TODO: toggle between sandbox based on settings
-		return $this->sandbox_url;
-		return $this->paypal_url;
+		$paypal_url  = 'https://www.paypal.com/cgi-bin/webscr';
+		$sandbox_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+
+		if ( tribe_get_option( 'ticket-paypal-sandbox' ) ) {
+			return $sandbox_url;
+		}
+
+		return $paypal_url;
 	}
 }
