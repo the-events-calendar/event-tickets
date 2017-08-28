@@ -16,7 +16,7 @@
  *                              'security_code')
  *
  * @package TribeEventsCalendar
- * @version 4.5.3
+ * @version TBD
  *
  */
 ?>
@@ -286,21 +286,32 @@
 						$venue_address_tag = 'a';
 						$venue_address_style .= ' color:#006caa !important; text-decoration:underline;';
 					}
-
 				}
 
 				$start_date = null;
 
 				/**
-				 * Filters whether or not the event start date should be included in the ticket email
+				 * Filters whether or not the event date should be included in the ticket email.
 				 *
-				 * @var boolean Include start date? Defaults to false
-				 * @var int Event ID
+				 * @since TBD
+				 *
+				 * @var bool Include event date? Defaults to false.
+				 * @var int  Event ID
 				 */
-				$include_start_date = apply_filters( 'event_tickets_email_include_start_date', false, $event->ID );
+				$include_event_date = apply_filters( 'event_tickets_email_include_event_date', false, $event->ID );
 
-				if ( $include_start_date && function_exists( 'tribe_get_start_date' ) ) {
-					$start_date = tribe_get_start_date( $event, true );
+				/**
+				 * Filters whether or not the event date should be included in the ticket email.
+				 *
+				 * @deprecated TBD Use `event_tickets_email_include_event_date` instead.
+				 *
+				 * @var bool Include event date? Defaults to false.
+				 * @var int  Event ID
+				 */
+				$include_event_date = apply_filters( 'event_tickets_email_include_start_date', false, $event->ID );
+
+				if ( $include_event_date && function_exists( 'tribe_events_event_schedule_details' ) ) {
+					$start_date = tribe_events_event_schedule_details( $event, true );
 				}
 
 				if ( function_exists( 'tribe_get_organizer_ids' ) ) {
