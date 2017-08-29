@@ -14,7 +14,7 @@ include dirname( __FILE__ ) . '/price-fields.php';
 		<td><label for="ticket_tpp_global_stock_cap"><?php esc_html_e( 'Cap sales:', 'event-tickets' ); ?></label></td>
 		<td>
 			<input type='text' id='ticket_tpp_global_stock_cap' name='ticket_tpp_global_stock_cap' class="ticket_field" size='7'
-				value='<?php echo esc_attr( $global_stock_cap); ?>'/>
+				value='<?php echo esc_attr( $global_stock_cap ); ?>'/>
 			<p class="description"><?php esc_html_e( '(This is the maximum allowed number of sales for this ticket.)', 'event-tickets' ); ?></p>
 		</td>
 	</tr>
