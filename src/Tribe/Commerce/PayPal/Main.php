@@ -657,7 +657,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @param bool $send_mail Defaults to `true`.
 		 */
-		$send_mail = apply_filters('tribe_tickets_tpp_send_mail', true);
+		$send_mail = apply_filters( 'tribe_tickets_tpp_send_mail', true );
 
 		if ( $send_mail && $has_tickets ) {
 			$this->send_tickets_email( $order_id );

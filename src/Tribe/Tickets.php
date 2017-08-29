@@ -2023,7 +2023,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function purge_attendees_transient( $attendee_id ) {
 			$event_id = get_post_meta( $attendee_id, $this->attendee_event_key, true );
-			Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+			Tribe__Post_Transient::instance()->delete( $event_id, self::ATTENDEES_CACHE );
 		}
 	}
 }

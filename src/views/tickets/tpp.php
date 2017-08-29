@@ -102,7 +102,7 @@ $cart_url       = '';
 					<?php echo esc_html( $ticket->description ); ?>
 				</td>
 				<td class="tickets_submit">
-					<?php if ( ! $must_login ): ?>
+					<?php if ( ! $must_login ) : ?>
 						<button type="submit" class="tpp-submit tribe-button"><?php esc_html_e( 'Buy now', 'event-tickets' );?></button>
 					<?php endif; ?>
 				</td>
@@ -123,7 +123,7 @@ $cart_url       = '';
 		<?php if ( $is_there_any_product_to_sell ) : ?>
 			<tr>
 				<td colspan="5" class="tpp-add">
-					<?php if ( $must_login ): ?>
+					<?php if ( $must_login ) : ?>
 						<?php include Tribe__Tickets__Main::instance()->get_template_hierarchy( 'login-to-purchase' ); ?>
 					<?php endif; ?>
 				</td>

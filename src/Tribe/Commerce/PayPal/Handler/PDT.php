@@ -58,7 +58,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 
 		if (
 			is_wp_error( $response )
-			|| ! ( 0 === strpos( $response['body'], "SUCCESS" ) )
+			|| ! ( 0 === strpos( $response['body'], 'SUCCESS' ) )
 		) {
 			return false;
 		}

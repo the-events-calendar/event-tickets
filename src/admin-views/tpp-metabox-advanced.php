@@ -2,7 +2,7 @@
 include dirname( __FILE__ ) . '/price-fields.php';
 ?>
 
-<?php if ( $this->supports_global_stock() ): ?>
+<?php if ( $this->supports_global_stock() ) : ?>
 	<tr class="<?php $this->tr_class(); ?> global-stock-mode">
 		<td><label for="ticket_tpp_global_stock"><?php esc_html_e( 'Global stock mode:', 'event-tickets' ); ?></label></td>
 		<td>
@@ -15,7 +15,7 @@ include dirname( __FILE__ ) . '/price-fields.php';
 		<td>
 			<input type='text' id='ticket_tpp_global_stock_cap' name='ticket_tpp_global_stock_cap' class="ticket_field" size='7'
 				value='<?php echo esc_attr( $global_stock_cap); ?>'/>
-			<p class="description"><?php esc_html_e( "(This is the maximum allowed number of sales for this ticket.)", 'event-tickets' ); ?></p>
+			<p class="description"><?php esc_html_e( '(This is the maximum allowed number of sales for this ticket.)', 'event-tickets' ); ?></p>
 		</td>
 	</tr>
 <?php endif; ?>
