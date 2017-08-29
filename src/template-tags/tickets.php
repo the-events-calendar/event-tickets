@@ -133,6 +133,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 	 * @return int
 	 */
 	function tribe_events_count_available_tickets( $event = null ) {
+
 		$count = 0;
 
 		if ( null === ( $event = tribe_tickets_parent_post( $event ) ) ) {
@@ -140,8 +141,20 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 		}
 
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-			$count += $ticket->stock();
+
+			$global_stock_mode = $ticket->global_stock_mode();
+
+			if ( $global_stock_mode === Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE ) {
+				continue;
+			}
+
+			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
+			$count += $stock_level;
 		}
+
+		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
+		$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
+		$count += $global_stock;
 
 		return $count;
 	}
