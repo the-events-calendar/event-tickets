@@ -572,12 +572,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	protected function validate_action_nonce() {
 		// If a bulk action request was posted
-		if ( @$_POST[ 'attendee' ] && wp_verify_nonce( $_POST[ '_wpnonce' ], 'bulk-attendees' ) ) {
+		if ( isset( $_POST['attendee'], $_POST['_wpnonce'] ) && wp_verify_nonce( $_POST['_wpnonce'], 'bulk-attendees' ) ) {
 			return true;
 		}
 
 		// If an individual action was requested
-		if ( @$_GET[ 'attendee' ] && wp_verify_nonce( $_GET[ 'nonce' ], 'do_item_action_' . $_GET[ 'attendee' ] ) ) {
+		if ( isset( $_GET['attendee'], $_GET['nonce'] ) && wp_verify_nonce( $_GET['nonce'], 'do_item_action_' . $_GET['attendee'] ) ) {
 			return true;
 		}
 
