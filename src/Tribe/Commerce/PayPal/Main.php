@@ -496,8 +496,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$attendee_full_name = "{$attendee->first_name} {$attendee->last_name}";
 		}
 
-		do_action( 'debug_robot', 'attendee full name :: ' . print_r( $attendee_full_name, true ) );
-
 		// @TODO: figure out how to handle optout
 		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
 
@@ -511,7 +509,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// Iterate over each product
 		foreach ( (array) $transaction_data['items'] as $item ) {
 			$order_attendee_id = 0;
-			do_action( 'debug_robot', 'item :: ' . print_r( $item, true ) );
 
 			if ( empty( $item['ticket'] ) ) {
 				continue;
@@ -565,7 +562,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 * @param array $data Parsed PayPal transaction data
 			 */
 			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $transaction_data );
-			do_action( 'debug_robot', 'qty :: ' . print_r( $qty, true ) );
+
 			// Iterate over all the amount of tickets purchased (for this product)
 			for ( $i = 0; $i < $qty; $i ++ ) {
 

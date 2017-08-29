@@ -26,7 +26,6 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 
 		$results = $this->validate_transaction( $_GET['tx'] );
 		$results = $gateway->parse_transaction( $results );
-		do_action( 'debug_robot', 'results :: ' . print_r( $results, true ) );
 		$gateway->set_transaction_data( $results );
 
 		$paypal->generate_tickets();
