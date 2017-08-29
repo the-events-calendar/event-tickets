@@ -288,7 +288,7 @@
 					}
 				}
 
-				$start_date = null;
+				$event_date = null;
 
 				/**
 				 * Filters whether or not the event date should be included in the ticket email.
@@ -311,7 +311,7 @@
 				$include_event_date = apply_filters( 'event_tickets_email_include_start_date', false, $event->ID );
 
 				if ( $include_event_date && function_exists( 'tribe_events_event_schedule_details' ) ) {
-					$start_date = tribe_events_event_schedule_details( $event );
+					$event_date = tribe_events_event_schedule_details( $event );
 				}
 
 				if ( function_exists( 'tribe_get_organizer_ids' ) ) {
@@ -350,9 +350,9 @@
 													<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; text-align:left;line-height: 100%;">
 														<a style="color:#0a0a0e !important" href="<?php echo esc_url( $event_link ); ?>"><?php echo $event->post_title; ?></a>
 													</h2>
-													<?php if ( ! empty( $start_date ) ): ?>
+													<?php if ( ! empty( $event_date ) ): ?>
 														<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">
-															<span style="color:#0a0a0e !important"><?php echo $start_date; ?></span>
+															<span style="color:#0a0a0e !important"><?php echo $event_date; ?></span>
 														</h4>
 													<?php endif; ?>
 												</td>
