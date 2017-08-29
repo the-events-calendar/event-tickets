@@ -250,7 +250,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * @return string
 		 */
 		function get_global_cap() {
-			return ( $global_capacity_edit.length > 0 ) ? $global_capacity_edit.val() : '';
+			return ( 0 <$global_capacity_edit.length && 0 <$global_capacity_edit.val() ) ? $global_capacity_edit.val() : '';
 		}
 
 		/**
@@ -549,6 +549,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						if ( ! response ) {
 							return;
 						}
+
+						console.log(response.data);
 
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
