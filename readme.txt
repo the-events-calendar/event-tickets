@@ -2,9 +2,9 @@
 
 Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, brook-tribe, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, mat-lipe, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, shelbelliott, tribecari, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 3.9
-Tested up to: 4.8
-Stable tag: 4.5.3
+Requires at least: 4.5
+Tested up to: 4.8.1
+Stable tag: 4.5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -239,6 +239,12 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * New — Introduced new filters allowing fine-grained insertion into the ticket editor: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_ticket_order_field`.
 * Deprecated - filter `tribe_events_tickets_metabox_advanced` for `tribe_events_tickets_metabox_edit_advanced`
 
+
+= [4.5.4] 2017-08-24 =
+
+* Tweak - Removed WP API adjustments [85996]
+* Compatibility - Minimum supported version of WordPress is now 4.5
+* Language - 0 new strings added, 18 updated, 0 fuzzied, and 0 obsoleted [event-tickets]
 
 = [4.5.3] 2017-07-26 =
 
