@@ -81,7 +81,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			// skip if the ticket in no longer in stock or is not sellable
 			if (
 				! $ticket->is_in_stock()
-			|| ! $ticket->date_in_range( $now )
+				|| ! $ticket->date_in_range( $now )
 			) {
 				continue;
 			}
@@ -114,7 +114,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		// If there isn't a quantity at all, then there's nothing to purchase. Redirect with an error
 		if ( empty( $args['quantity'] ) ) {
 			// @TODO: add an error for display
-			wp_redirect( $post_url );
+			wp_safe_redirect( $post_url );
 			die;
 		}
 
@@ -137,6 +137,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 	/**
 	 * Parses PayPal transaction data into a more organized structure
+	 *
+	 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
 	 *
 	 * @param array $transaction Transaction data from PayPal in key/value pairs
 	 *
@@ -214,7 +216,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @param array $data
 	 */
 	public function get_transaction_data() {
-
 		/**
 		 * Filters the transaction data as it is being retrieved
 		 *

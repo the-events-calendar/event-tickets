@@ -30,7 +30,13 @@ include dirname( __FILE__ ) . '/price-fields.php';
 </tr>
 
 <?php
-if ( apply_filters( 'tribe_tickets_default_purchase_limit', 0 ) ) {
+/**
+ * Filters the purchase limit value
+ *
+ * @param int $default_purchase_limit
+ */
+$default_purchase_limit = apply_filters( 'tribe_tickets_default_purchase_limit', 0 );
+if ( $default_purchase_limit ) {
 	?>
 	<tr class="<?php $this->tr_class(); ?>">
 		<td><label for="ticket_purchase_limit"><?php esc_html_e( 'Purchase limit:', 'event-tickets' ); ?></label></td>
@@ -42,7 +48,16 @@ if ( apply_filters( 'tribe_tickets_default_purchase_limit', 0 ) ) {
 	<?php
 }
 
-if ( apply_filters( 'tribe_events_tickets_tpp_display_sku', true ) ) {
+/**
+ * Filters the boolean value that controls whether a sku is displayed or not
+ *
+ * @since TBD
+ *
+ * @param boolean $display_sku
+ */
+$display_sku = apply_filters( 'tribe_events_tickets_tpp_display_sku', true );
+
+if ( $display_sku ) {
 	?>
 	<tr class="<?php $this->tr_class(); ?>">
 		<td><label for="ticket_tpp_sku"><?php esc_html_e( 'SKU:', 'event-tickets' ); ?></label></td>

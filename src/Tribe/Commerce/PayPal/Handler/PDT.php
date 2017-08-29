@@ -44,14 +44,14 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$args = array(
-			'body' => array(
-				'cmd' => '_notify-synch',
-				'tx' => $transaction,
-				'at' => $gateway->identity_token,
-			),
 			'httpversion' => '1.1',
-			'timeout' => 60,
-			'user-agent' => 'EventTickets/' . Tribe__Tickets__Main::VERSION,
+			'timeout'     => 60,
+			'user-agent'  => 'EventTickets/' . Tribe__Tickets__Main::VERSION,
+			'body'        => array(
+				'cmd' => '_notify-synch',
+				'tx'  => $transaction,
+				'at'  => $gateway->identity_token,
+			),
 		);
 
 		$response = wp_safe_remote_post( $gateway->get_cart_url(), $args );
@@ -79,16 +79,15 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 		$results = array();
 
 		$body    = explode( "\n", $transaction );
-		//$body    = array_map( 'tribe_clean', $body );
 
 		foreach ( $body as $line ) {
 			if ( ! trim( $line ) ) {
 				continue;
 			}
 
-			$line                = explode( '=', $line );
-			$var                 = array_shift( $line );
-			$results[ $var ]     = urldecode( implode( '=', $line ) );
+			$line            = explode( '=', $line );
+			$var             = array_shift( $line );
+			$results[ $var ] = urldecode( implode( '=', $line ) );
 		}
 
 		return $results;

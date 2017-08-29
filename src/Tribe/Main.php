@@ -795,6 +795,11 @@ class Tribe__Tickets__Main {
 			$file = $this->plugin_path . 'src/views/' . $template;
 		}
 
+		/**
+		 * Filters the template file
+		 *
+		 * @param string $file
+		 */
 		return apply_filters( 'tribe_events_tickets_template_' . $template, $file );
 	}
 }

@@ -54,12 +54,12 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN {
 		$body['cmd'] = '_notify-validate';
 
 		$args = array(
-			'body' => $body,
+			'body'        => $body,
 			'httpversion' => '1.1',
-			'timeout' => 60,
+			'timeout'     => 60,
 			'compress'    => false,
 			'decompress'  => false,
-			'user-agent' => 'EventTickets/' . Tribe__Tickets__Main::VERSION,
+			'user-agent'  => 'EventTickets/' . Tribe__Tickets__Main::VERSION,
 		);
 
 		$response = wp_safe_remote_post( $gateway->get_cart_url(), $args );
