@@ -49,11 +49,8 @@ class Tribe__Tickets__Data_API {
 				$this->ticket_class[ $module_class ][ $key ] = $value;
 
 			}
-			if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $module_class ) {
-				$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::$event_key;
-			} else {
-				$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::get_instance()->event_key;
-			}
+
+			$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::get_instance()->event_key;
 
 			$this->ticket_class[ $module_class ]['event_id_key'] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			$this->ticket_class[ $module_class ]['order_id_key'] = constant( "$module_class::ATTENDEE_ORDER_KEY" );
