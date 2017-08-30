@@ -16,6 +16,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public $event = false;
 
 	/**
+	 * @var string The user option that will be used to store the numberof attendees per page to show.
+	 */
+	protected $per_page_option;
+
+	/**
 	 * Class constructor
 	 *
 	 * @param array $args  additional arguments/overrides
@@ -23,11 +28,20 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @see WP_List_Table::__construct()
 	 */
 	public function __construct( $args = array() ) {
-		$args = wp_parse_args( $args, array(
+		$screen = get_current_screen();
+
+		$args   = wp_parse_args( $args, array(
 			'singular' => 'attendee',
 			'plural'   => 'attendees',
 			'ajax'     => true,
-			'screen'   => get_current_screen(),
+			'screen'   => $screen,
+		) );
+
+		$this->per_page_option = Tribe__Tickets__Admin__Screen_Options__Attendees::$per_page_user_option;
+
+		$screen->add_option( 'per_page', array(
+			'label'  => __( 'Number of attendees per page:', 'event-tickets' ),
+			'option' => $this->per_page_option,
 		) );
 
 		// Fetch the event Object
@@ -53,7 +67,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'primary_info' => esc_html_x( 'Primary Information', 'attendee table', 'event-tickets' ),
 			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
 			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
-			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),
+			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),''
 		);
 
 		/**
@@ -67,6 +81,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Display the search box.
+	 *
 	 * We don't want Core's search box, because we implemented our own jQuery based filter,
 	 * so this function overrides the parent's one and returns empty.
 	 *
@@ -74,15 +89,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param string $input_id The search input id
 	 */
 	public function search_box( $text, $input_id ) {
-		return;
-	}
-
-	/**
-	 * Display the pagination.
-	 * We are not paginating the attendee list, so it returns empty.
-	 */
-	public function pagination( $which ) {
-		return '';
 	}
 
 	/**
@@ -712,20 +718,18 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
+		$total_items = count( $items );
 
-		$this->items = $items;
-		$total_items = count( $this->items );
-		$per_page    = $total_items;
+		$per_page = $this->get_items_per_page( $this->per_page_option );
+
+		$current_page = $this->get_pagenum();
+		$this->items  = array_slice( $items, ( $current_page - 1 ) * $per_page, $per_page );
 
 		$this->set_pagination_args(
-			 array(
-				 'total_items' => $total_items,
-				 'per_page'    => $per_page,
-				 'total_pages' => 1,
-			 )
+			array(
+				'total_items' => $total_items,
+				'per_page'    => $per_page,
+			)
 		);
-
 	}
-
-
 }
