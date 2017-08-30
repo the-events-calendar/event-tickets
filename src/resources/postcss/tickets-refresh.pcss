@@ -238,6 +238,22 @@
 
 /* Styles for Initial View */
 .ticket_table_intro {
+
+
+	&:only-child {
+		margin-bottom: 1em;
+	}
+
+	&::after {
+		clear: both;
+		content: '';
+		display: table;
+	}
+
+	@media (min-width: 782px) {
+		text-align: right;
+	}
+
 	#ticket_form_total_capacity {
 		@mixin tribe-ticket-tooltip;
 
@@ -252,10 +268,6 @@
 		@media (min-width: 782px) {
 			float: left;
 		}
-	}
-
-	@media (min-width: 782px) {
-		text-align: right;
 	}
 
 	.ticket_form_view_attendees {

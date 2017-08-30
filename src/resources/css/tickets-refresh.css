@@ -200,6 +200,16 @@
 
 /* Styles for Initial View */
 
+.ticket_table_intro:only-child {
+	margin-bottom: 1em;
+}
+
+.ticket_table_intro::after {
+	clear: both;
+	content: '';
+	display: table;
+}
+
 .ticket_table_intro #ticket_form_total_capacity {
 	position: relative;
 	display: block;
@@ -428,12 +438,12 @@ p.description {
 		padding: 16px;
 	}
 
-	.ticket_table_intro #ticket_form_total_capacity {
-		float: left;
-	}
-
 	.ticket_table_intro {
 		text-align: right;
+	}
+
+	.ticket_table_intro #ticket_form_total_capacity {
+		float: left;
 	}
 
 	.input_block .ticket_form_leftinput,

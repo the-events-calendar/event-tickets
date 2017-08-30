@@ -238,8 +238,27 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * @return string
 		 */
 		function get_default_provider() {
-			var $checked_provider = $( '#tribe_panel_settings input[name=default_ticket_provider]' ).filter( ':checked' );
+			var $checked_provider = $( 'input[name=default_ticket_provider]', '#tribe_panel_settings' ).filter( ':checked' );
 			return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
+		}
+
+		/**
+		 * Sets the ticket edit form provider to the currently selected default ticketing provider.
+		 * Defaults to RSVP if something fails
+		 *
+		 * @since TBD
+		 *
+		 * @return void
+		 */
+		function set_default_provider_radio() {
+			var $checked_provider = $( 'input[name="default_ticket_provider"]', '#tribe_panel_settings' ).filter( ':checked' );
+			var provider_id = 'Tribe__Tickets__RSVP_radio';
+
+			if ( $checked_provider.length > 0 ) {
+				provider_id = $checked_provider.val() + '_radio';
+			 }
+
+			$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger('change');
 		}
 
 		/**
@@ -354,8 +373,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					// Total Capacity line
 					if ( 'undefined' !== response.data.total_capacity ) {
-						$( document.getElementById( 'ticket_form_total_capacity' ) ).replaceWith( response.data.total_capacity );
+						var $current_cap_line = $( document.getElementById( 'ticket_form_total_capacity' ) );
+						if ( 0 < $current_cap_line.length ) {
+							console.log('found');
+							$current_cap_line.replaceWith( response.data.total_capacity );
+						} else {
+							console.log('insert');
+							var $wrap = $( '<div class="ticket_table_intro">' );
+							$wrap.append( response.data.total_capacity );
+							$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
+						}
+
 					}
+
+					// Set Provider radio on ticket form
+					set_default_provider_radio();
 
 					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
 				} ).complete( function( response ) {
@@ -375,8 +407,40 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			show_panel( e );
 		} );
 
+		/* "Save Settings" button action */
+		$( document.getElementById( 'tribe_settings_form_save' ) ).on( 'click', function( e ) {
+			e.preventDefault();
+
+			// Do this first to prevent weirdness with global capacity
+			if ( false === $global_capacity_edit.prop( 'disabled' ) ) {
+				$global_capacity_edit.blur();
+				$global_capacity_edit.prop( 'disabled', true );
+			}
+
+			var form_data = $settings_panel.find( '.settings_field' ).serialize();
+			var params    = {
+				action  : 'tribe-ticket-save-settings',
+				formdata: form_data,
+				post_ID : $post_id.val(),
+				nonce   : TribeTickets.add_ticket_nonce
+			};
+
+			$.post(
+				ajaxurl,
+				params,
+				function( response ) {
+					$tribe_tickets.trigger( 'saved-image.tribe', response );
+					if ( response.success ) {
+						refresh_panels( 'settings' );
+					}
+				},
+				'json'
+			);
+		} );
+
 		/* "Add ticket" button action */
 		$( '.ticket_form_toggle' ).on( 'click', function( e ) {
+			e.preventDefault();
 			var $default_provider = get_default_provider();
 			var global_cap = get_global_cap();
 
@@ -384,21 +448,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				.trigger( 'clear.tribe' )
 				.trigger( 'focus.tribe' );
 
-			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) ) {
+			set_default_provider_radio();
+
+			if ( 'rsvp_form_toggle' !== $( this ).closest( 'button' ).attr( 'id' ) ) {
 				// Only want to do this if we're setting up a ticket - as opposed to an RSVP
-				$( document.getElementById( $default_provider + '_radio' ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global' ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
 				$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
-			} else {
-				$( document.getElementById( 'Tribe__Tickets__RSVP_radio' ) ).prop( 'checked', true );
 			}
 
 			$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 			$ticket_show_description.prop( 'checked', true );
 
-			$tribe_tickets.trigger( 'ticket-provider-changed.tribe' );
 
 			// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
 			if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) && undefined !== global_cap && 0 < global_cap ) {
@@ -718,41 +780,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			.on( 'click', '#tribe_ticket_header_image, #tribe_ticket_header_preview', function( e ) {
 				e.preventDefault();
 				ticketHeaderImage.uploader( '', '' );
-			} )
-			.on( 'click', '#tribe_settings_form_save', function( e ) {
-				e.preventDefault();
-
-				// Do this first to prevent weirdness with global capacity
-				if ( false === $global_capacity_edit.prop( 'disabled' ) ) {
-					$global_capacity_edit.blur();
-					$global_capacity_edit.prop( 'disabled', true );
-				}
-
-				var form_data = $settings_panel.find( '.settings_field' ).serialize();
-				var params    = {
-					action  : 'tribe-ticket-save-settings',
-					formdata: form_data,
-					post_ID : $post_id.val(),
-					nonce   : TribeTickets.add_ticket_nonce
-				};
-
-				$.post(
-					ajaxurl,
-					params,
-					function( response ) {
-						$tribe_tickets.trigger( 'saved-image.tribe', response );
-						if ( response.success ) {
-							refresh_panels( 'settings' );
-						}
-					},
-					'json'
-				);
 			} );
 
-		var $remove  = $( document.getElementById( 'tribe_ticket_header_remove' ) );
-
 		if ( $ticket_image_preview.find( 'img' ).length ) {
-			$remove.show();
+			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
 		}
 
 		/**
@@ -812,7 +843,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				} );
 		} );
 
-		$( 'body' ).on( 'click', '#tribe_ticket_header_remove', function( e ) {
+		$( document ).on( 'click', '#tribe_ticket_header_remove', function( e ) {
 			e.preventDefault();
 			$preview.html( '' );
 			$remove.hide();

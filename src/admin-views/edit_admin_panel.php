@@ -72,7 +72,7 @@ $timepicker_round = '00:00:00';
 
 					foreach ( $modules as $class => $module ) {
 						?>
-						<input <?php checked( $default_module, $class ); ?> type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider" tabindex="-1">
+						<input type="radio" name="ticket_provider" id="<?php echo esc_attr( $class . '_radio' ); ?>" value="<?php echo esc_attr( $class ); ?>" class="ticket_field ticket_provider" tabindex="-1">
 						<span>
 							<?php
 							/**
