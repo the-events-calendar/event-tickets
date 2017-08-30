@@ -375,10 +375,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					if ( 'undefined' !== response.data.total_capacity ) {
 						var $current_cap_line = $( document.getElementById( 'ticket_form_total_capacity' ) );
 						if ( 0 < $current_cap_line.length ) {
-							console.log('found');
 							$current_cap_line.replaceWith( response.data.total_capacity );
 						} else {
-							console.log('insert');
 							var $wrap = $( '<div class="ticket_table_intro">' );
 							$wrap.append( response.data.total_capacity );
 							$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
