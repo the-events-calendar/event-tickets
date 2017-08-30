@@ -451,11 +451,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 
 		$checked = '';
-		if ( intval( $item['check_in'] ) === 1 ) {
+		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
 		}
 
-		echo '<tr class="' . esc_attr( $checked . $item['order_status'] ) . '">';
+		$status = 'complete';
+		if ( ! empty( $item['order_status'] ) ) {
+			$status = $item['order_status'];
+		}
+
+		echo '<tr class="' . esc_attr( $checked . $status ) . '">';
 		$this->single_row_columns( $item );
 		echo '</tr>';
 

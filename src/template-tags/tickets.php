@@ -703,3 +703,16 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 		return tribe( 'tickets.data_api' )->ticket_has_meta_fields( $id, $context );
 	}
 }
+
+if ( ! function_exists( 'tribe_tickets_get_currency_symbol' ) ) {
+	/**
+	 * Returns the configured currency symbol
+	 *
+	 * @since TBD
+	 *
+	 * @return mixed
+	 */
+	function tribe_tickets_get_currency_symbol() {
+		return tribe_get_option( 'defaultCurrencySymbol', '$' );
+	}
+}

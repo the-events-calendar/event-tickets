@@ -5,7 +5,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.5.5';
+	const VERSION = '4.7dev1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -175,7 +175,7 @@ class Tribe__Tickets__Main {
 
 		$this->has_initialized = true;
 
-		$this->rsvp();
+		$this->bind_implementations();
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
@@ -187,6 +187,16 @@ class Tribe__Tickets__Main {
 		 * Fires once Event Tickets has completed basic setup.
 		 */
 		do_action( 'tribe_tickets_plugin_loaded' );
+	}
+
+	/**
+	 * Registers the implementations in the container
+	 *
+	 * @since TBD
+	 */
+	public function bind_implementations() {
+		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
+		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 	}
 
 	/**
@@ -531,7 +541,7 @@ class Tribe__Tickets__Main {
 	 * rsvp ticket object accessor
 	 */
 	public function rsvp() {
-		return Tribe__Tickets__RSVP::get_instance();
+		return tribe( 'tickets.rsvp' );
 	}
 
 	/**
@@ -766,4 +776,30 @@ class Tribe__Tickets__Main {
 		<?php
 	}
 
+	/**
+	 * Gets the view from the plugin's folder, or from the user's theme if found.
+	 *
+	 * @param $template
+	 *
+	 * @return mixed|void
+	 */
+	public function get_template_hierarchy( $template ) {
+
+		if ( substr( $template, - 4 ) != '.php' ) {
+			$template .= '.php';
+		}
+
+		if ( $theme_file = locate_template( array( 'tribe-events/' . $template ) ) ) {
+			$file = $theme_file;
+		} else {
+			$file = $this->plugin_path . 'src/views/' . $template;
+		}
+
+		/**
+		 * Filters the template file
+		 *
+		 * @param string $file
+		 */
+		return apply_filters( 'tribe_events_tickets_template_' . $template, $file );
+	}
 }
