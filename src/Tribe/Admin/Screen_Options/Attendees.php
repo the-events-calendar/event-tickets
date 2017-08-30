@@ -7,6 +7,10 @@
  * Handles the Attendees report table screen options.
  */
 class Tribe__Tickets__Admin__Screen_Options__Attendees {
+	/**
+	 * @var string The user option that will store how many attendees should be shown per page.
+	 */
+	public static $per_page_user_option = 'event_tickets_attendees_per_page';
 
 	/**
 	 * @var string The screen id these screen options should render on.
@@ -59,5 +63,25 @@ class Tribe__Tickets__Admin__Screen_Options__Attendees {
 	 */
 	public function filter_manage_columns( array $columns ) {
 		return Tribe__Tickets__Attendees_Table::get_table_columns();
+	}
+
+	/**
+	 * Filters the save operations of screen options to save the ones the class manages.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $status Whether the option should be saved or not.
+	 * @param string $option The user option slug.
+	 * @param mixed $value The user option value.
+	 *
+	 * @return bool|mixed Either `false` if the user option is not one managed by the class or the user
+	 *                    option value to save.
+	 */
+	public function filter_set_screen_options( $status, $option, $value ) {
+		if ( $option === self::$per_page_user_option ) {
+			return $value;
+		}
+
+		return $status;
 	}
 }
