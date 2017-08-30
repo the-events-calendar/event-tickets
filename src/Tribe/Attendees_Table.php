@@ -705,18 +705,21 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Prepares the list of items for displaying.
 	 */
 	public function prepare_items() {
-
 		$this->process_actions();
 
 		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
 
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id, true );
+
+		$search = isset( $_REQUEST['s'] ) ? esc_attr( $_REQUEST['s'] ) : false;
+		if ( ! empty( $search ) ) {
+			$items = $this->filter_attendees_by_string( $search, $items );
+		}
 
 		$total_items = count( $items );
 
-		$per_page = $this->get_items_per_page( $this->per_page_option );
-
 		$current_page = $this->get_pagenum();
+		$per_page = $this->get_items_per_page( $this->per_page_option );
 		$this->items  = array_slice( $items, ( $current_page - 1 ) * $per_page, $per_page );
 
 		$this->set_pagination_args(
@@ -725,5 +728,38 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				'per_page'    => $per_page,
 			)
 		);
+	}
+
+	/**
+	 * Filters the attendees by a search string if available.
+	 *
+	 * @since TBD
+	 *
+	 * @param       string $search The string to filter attendees by.
+	 * @param array        $items  The attendees list.
+	 *
+	 * @return array
+	 */
+	protected function filter_attendees_by_string( $search, array $items ) {
+		if ( empty( $items ) ) {
+			return $items;
+		}
+
+		$matching = array();
+
+		foreach ( $items as $item ) {
+			$matches =
+				false !== stripos( $item['purchaser_name'], $search )
+				|| false !== stripos( $item['ticket_name'], $search )
+				|| false !== stripos( $item['product_id'], $search )
+				|| false !== stripos( $item['order_id'], $search )
+				|| false !== stripos( $item['security_code'], $search );
+
+			if ( $matches ) {
+				$matching[] = $item;
+			}
+		}
+
+		return $matching;
 	}
 }
