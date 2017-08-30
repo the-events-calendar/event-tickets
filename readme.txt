@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.5.5] TBD =
 
-* 
+* Tweak - allow pagination and screen options on the Attendees list [64516]
 
 = [4.5.4] 2017-08-24 =
 
