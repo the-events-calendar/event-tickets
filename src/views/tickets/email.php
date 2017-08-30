@@ -298,12 +298,12 @@
 				 * @var bool Include event date? Defaults to false.
 				 * @var int  Event ID
 				 */
-				$include_event_date = apply_filters( 'event_tickets_email_include_event_date', false, $event->ID );
+				$include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', false, $event->ID );
 
 				/**
 				 * Filters whether or not the event date should be included in the ticket email.
 				 *
-				 * @deprecated TBD Use `event_tickets_email_include_event_date` instead.
+				 * @deprecated TBD Use `tribe_tickets_email_include_event_date` instead.
 				 *
 				 * @var bool Include event date? Defaults to false.
 				 * @var int  Event ID
@@ -350,7 +350,7 @@
 													<h2 style="color:#0a0a0e; margin:0 0 10px 0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:28px; letter-spacing:normal; text-align:left;line-height: 100%;">
 														<a style="color:#0a0a0e !important" href="<?php echo esc_url( $event_link ); ?>"><?php echo $event->post_title; ?></a>
 													</h2>
-													<?php if ( ! empty( $event_date ) ): ?>
+													<?php if ( ! empty( $event_date ) ) : ?>
 														<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; text-align:left;line-height: 100%;">
 															<span style="color:#0a0a0e !important"><?php echo $event_date; ?></span>
 														</h4>
