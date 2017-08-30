@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.5.5] TBD =
+
+* Tweak - allow pagination and screen options on the Attendees list [64516]
+
 = [4.5.4] 2017-08-24 =
 
 * Tweak - Removed WP API adjustments [85996]
