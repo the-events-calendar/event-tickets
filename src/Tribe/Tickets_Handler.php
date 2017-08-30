@@ -102,20 +102,16 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
-		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
-		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
-
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
-
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
-
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
-
 		add_action( 'tribe_ticket_order_field', array( $this, 'tickets_order_input' ) );
-
 		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
+
+		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
+		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
@@ -172,35 +168,6 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Handles switching unlimited capacity between -1 and 'unlimited'
-	 *
-	 * @since TBD
-	 *
-	 * @param int capacity
-	 * @param string ('display') context determines direction of conversion
-	 *
-	 * @return void|int|string void if no capacity, string for display if unlimited, else int
-	 */
-	public function convert_unlimited_capacity( $capacity, $context = 'display' ) {
-		// If it's a positive number, just return it
-		if ( is_numeric( $capacity ) && 0 < $capacity ) {
-			$capacity = absint( $capacity );
-		}
-
-		// Try and handle the unlimiteds - note it was stored as an empty string, now as -1
-		if ( is_string( $capacity ) || -1 === $capacity || '' === $capacity ) {
-			// if it's for display, we want the text representation
-			if ( 'display' === $context ) {
-				$capacity = $this->unlimited_term;
-			} else {
-				$capacity = -1;
-			}
-		}
-
-		return $capacity;
-	}
-
-	/**
 	 * Returns whether a ticket has unlimited capacity
 	 *
 	 * @since TBD
@@ -233,8 +200,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return boolean whether there is a ticket (within the provided parameters) with an unlimited stock
 	 */
 	 public function has_unlimited_stock( $post = null, $stock_mode = null, $provider_class = null ) {
-		$post_id   = Tribe__Main::post_id_helper( $post );
-
+		$post_id = Tribe__Main::post_id_helper( $post );
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 
 		foreach ( $tickets as $index => $ticket ) {
@@ -269,10 +235,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return array list of tickets
 	 */
 	public function get_event_unlimited_tickets( $post = null, $exclude_rsvp = true ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-
+		$post_id     = Tribe__Main::post_id_helper( $post );
+		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$ticket_list = array();
 
 		if ( ! empty( $tickets ) ) {
@@ -302,8 +266,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int|string number of tickets ( or string 'unlimited' )
 	 */
 	public function get_total_event_capacity( $post = null ) {
-		$capacity  = 0;
-		$post_id   = Tribe__Main::post_id_helper( $post );
+		$capacity = 0;
+		$post_id  = Tribe__Main::post_id_helper( $post );
 
 		// short circuit unlimited stock
 		if ( $this->has_unlimited_stock( $post ) ) {
@@ -315,7 +279,7 @@ class Tribe__Tickets__Tickets_Handler {
 			 * @param int|string $capacity Total capacity value (string 'unlimited' for unlimited capacity)
 			 * @param int $post Post ID tickets are attached to
 			 */
-			return apply_filters( 'tribe_tickets_total_event_capacity', 'unlimited', $post_id );
+			return apply_filters( 'tribe_tickets_total_event_capacity', $this->unlimited_term, $post_id );
 		}
 
 		$cap_array = array(
@@ -324,23 +288,13 @@ class Tribe__Tickets__Tickets_Handler {
 			$this->get_total_event_rsvp_capacity( $post_id ),
 		);
 
-		// Something happend and we got nothing, return 0
+		// Something bad happend and we got nothing, return 0
 		if ( empty( $cap_array ) ) {
 			return apply_filters( 'tribe_tickets_total_event_capacity', 0, $post_id );
 		}
 
-		// loop through, checking for unlimited caps
-		foreach ( $cap_array as $cap ) {
-			$cap = $this->convert_unlimited_capacity( $cap );
-
-			// Found one - no need to check the rest
-			if ( 'unlimited' === $cap || -1 === $cap ) {
-				return apply_filters( 'tribe_tickets_total_event_capacity', $cap, $post_id );
-			}
-
-			// Add it up...
-			$capacity += $cap;
-		}
+		// Add it up...
+		$capacity = array_sum( $cap_array );
 
 		return apply_filters( 'tribe_tickets_total_event_capacity', $capacity, $post_id );
 	}
@@ -355,28 +309,16 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int|string number of tickets ( or string 'unlimited' )
 	 */
 	public function get_total_event_independent_capacity( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-
+		$post_id  = Tribe__Main::post_id_helper( $post );
+		$tickets  = $this->get_event_independent_tickets( $post_id );
 		$capacity = 0;
-
-		$tickets = $this->get_event_independent_tickets( $post_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
-				$stock = $ticket->original_stock();
-
-				// Failsafe - empty original stock means unlimited tickets, let's not add infinity!
-				if ( empty( $stock ) ) {
-					// If one ticket is unlimited, so is total capacity - break out with flag value
-					$capacity = -1;
-					break;
-				} else {
-					$capacity += $stock;
-				}
+				$stock    = $ticket->original_stock();
+				$capacity += $stock;
 			}
 		}
-
-		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -400,10 +342,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return array list of tickets
 	 */
 	public function get_event_independent_tickets( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-
+		$post_id     = Tribe__Main::post_id_helper( $post );
+		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$ticket_list = array();
 
 		if ( ! empty( $tickets ) ) {
@@ -434,11 +374,9 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int|string number of tickets ( or string 'unlimited' )
 	 */
 	public function get_total_event_rsvp_capacity( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-
+		$post_id  = Tribe__Main::post_id_helper( $post );
+		$tickets  = $this->get_event_rsvp_tickets( $post_id );
 		$capacity = 0;
-
-		$tickets = $this->get_event_rsvp_tickets( $post_id );
 
 		if ( ! empty( $tickets ) ) {
 			foreach ( $tickets as $ticket ) {
@@ -447,15 +385,13 @@ class Tribe__Tickets__Tickets_Handler {
 				// Failsafe - empty original stock means unlimited tickets, let's not add infinity!
 				if ( empty( $stock ) ) {
 					// If one ticket is unlimited, so is total capacity - break out with flag value
-					$capacity = -1;
+					$capacity = $this->unlimited_term;
 					break;
 				} else {
 					$capacity += $stock;
 				}
 			}
 		}
-
-		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -479,10 +415,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string list of tickets
 	 */
 	public function get_event_rsvp_tickets( $post = null, $exclude_unlimited = false ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-
+		$post_id     = Tribe__Main::post_id_helper( $post );
+		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$ticket_list = array();
 
 		if ( ! empty( $tickets ) ) {
@@ -517,13 +451,12 @@ class Tribe__Tickets__Tickets_Handler {
 		$global_capacity_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true );
 		$capacity                = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 
+		// If we've got $capacity but no $global_capacity_enabled, do some housecleaning
 		if ( ! $global_capacity_enabled ) {
 			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED );
 			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
 			$capacity = 0;
 		}
-
-		$capacity = $this->convert_unlimited_capacity( $capacity );
 
 		/**
 		 * Allow templates to filter the returned value
@@ -546,10 +479,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return array list of tickets
 	 */
 	public function get_event_shared_tickets( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-
+		$post_id     = Tribe__Main::post_id_helper( $post );
+		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$ticket_list = array();
 
 		if ( ! empty( $tickets ) ) {
@@ -585,7 +516,12 @@ class Tribe__Tickets__Tickets_Handler {
 		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) && ! empty( $tickets ) ) {
 			$url = $this->get_attendee_report_link( $post );
 
-			$actions['tickets_attendees'] = sprintf( '<a title="%s" href="%s">%s</a>', esc_html__( 'See who purchased tickets to this event', 'event-tickets' ), esc_url( $url ), esc_html__( 'Attendees', 'event-tickets' ) );
+			$actions['tickets_attendees'] = sprintf(
+				'<a title="%s" href="%s">%s</a>',
+				esc_html__( 'See who purchased tickets to this event', 'event-tickets' ),
+				esc_url( $url ),
+				esc_html__( 'Attendees', 'event-tickets' )
+			);
 		}
 
 		return $actions;
@@ -595,7 +531,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Registers the Attendees admin page
 	 */
 	public function attendees_page_register() {
-		$cap = 'edit_posts';
+		$cap      = 'edit_posts';
 		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
 
 		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
@@ -629,7 +565,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param $hook
 	 */
 	public function attendees_page_load_css_js( $hook ) {
-
 		/**
 		 * Filter the Page Slugs the Attendees Page CSS and JS Loads
 		 *
@@ -912,7 +847,6 @@ class Tribe__Tickets__Tickets_Handler {
 		$event = get_post( $_GET['event_id'] );
 
 		if ( ! empty( $items ) ) {
-
 			$charset  = get_option( 'blog_charset' );
 			$filename = sanitize_file_name( $event->post_title . '-' . __( 'attendees', 'event-tickets' ) );
 
@@ -937,7 +871,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Handles the "send to email" action for the attendees list.
 	 */
 	public function send_attendee_mail_list() {
-
 		$error = new WP_Error();
 
 		if ( empty( $_GET['event_id'] ) ) {
@@ -1083,8 +1016,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$end_time   = Tribe__Date_Utils::time_only( $start_date, false );
 
 		$show_global_stock = Tribe__Tickets__Tickets::global_stock_available();
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
-		$global_stock = new Tribe__Tickets__Global_Stock( $post->ID );
+		$tickets           = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+		$global_stock      = new Tribe__Tickets__Global_Stock( $post->ID );
 
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
@@ -1137,9 +1070,9 @@ class Tribe__Tickets__Tickets_Handler {
 				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
 					$ticket->display_original_stock( true );
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
-					echo esc_html( $this->convert_unlimited_capacity( $ticket->remaining() ) );
+					echo esc_html( $ticket->remaining() );
 				} else {
-					echo '(' . esc_html( $this->convert_unlimited_capacity( $ticket->remaining() ) ) . ')';
+					echo '(' . esc_html( $ticket->remaining() ) . ')';
 				}
 				?>
 			</td>
@@ -1180,8 +1113,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public function get_ticket_list_markup( $tickets = array() ) {
 		ob_start();
 		$this->ticket_list_markup( null, $tickets );
-		$return = ob_get_contents();
-		ob_end_clean();
+		$return = ob_get_clean();
 
 		return $return;
 	}
@@ -1277,7 +1209,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param int $post_id
 	 */
 	public function tickets_order_input( $post_id ) {
-		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true )
+		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true );
 		?>
 		<input type="hidden" name="tribe_tickets_order" id="tribe_tickets_order" value="<?php echo esc_html( $tickets_order ); ?>">
 		<?php

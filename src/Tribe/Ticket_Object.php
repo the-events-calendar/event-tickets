@@ -292,7 +292,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			$start_date = $this->start_date();
-			$end_date = $this->end_date();
+			$end_date   = $this->end_date();
 
 			return ( empty( $start_date ) || $timestamp > $start_date ) && ( empty( $end_date ) || $timestamp < $end_date );
 		}
@@ -355,9 +355,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$slug = 'available';
 
-			if ( $this->date_in_range( $timestamp ) ) {
-				$slug = 'available';
-			} elseif ( $this->date_is_earlier( $timestamp ) ) {
+			if ( $this->date_is_earlier( $timestamp ) ) {
 				$slug = 'availability-future';
 			} elseif ( $this->date_is_later( $timestamp ) ) {
 				$slug = 'availability-past';
@@ -449,7 +447,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$global_stock_mode = $this->global_stock_mode();
 
 			if ( empty( $global_stock_mode ) || empty( $orginal_stock ) ) {
-				$orginal_stock = esc_html__( 'unlimited', 'event-tickets' );
+				$orginal_stock = Tribe__Tickets__Tickets_Handler::instance()->unlimited_term;
 			}
 
 			return $orginal_stock;
@@ -701,7 +699,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Returns whether the ticket description should show on
-		 * the front page and in emails defaults to true
+		 * the front page and in emails. Defaults to true.
 		 *
 		 * @since TBD
 		 *

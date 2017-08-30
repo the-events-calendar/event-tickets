@@ -96,7 +96,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 			return '—';
 		}
 
-		$content = sprintf( '<div>%s</div>%s', $this->get_sold( $tickets ), $this->get_percentage_string( $tickets, $post_id ) );
+		$content = sprintf( '<div>%s</div>%s', $this->get_sold( $tickets ), $this->get_percentage_string( $post_id, $tickets ) );
 		$attendees_link = tribe( 'tickets.handler' )->get_attendee_report_link( get_post( $post_id ) );
 
 		return sprintf( '<a href="%s" target="_blank">%s</a>', $attendees_link, $content );
@@ -123,17 +123,17 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	/**
 	 * Iterates over an array of tickets to render the percentage HTML.
 	 *
-	 * @param Tribe__Tickets__Ticket_Object[] $tickets
 	 * @param  int $post_id The current post ID.
+	 * @param Tribe__Tickets__Ticket_Object[] $tickets
 	 *
 	 * @return string The percentage HTML or an empty string if one of the
 	 *                post tickets has unlimited stock.
 	 */
-	protected function get_percentage_string( array $tickets = array(), $post_id ) {
+	protected function get_percentage_string( $post_id, array $tickets = array() ) {
 		$sold  = 0;
 		$stock = 0;
 
-		$global_stock_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true ) ==true;
+		$global_stock_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true ) == true;
 		$global_stock = $global_stock_enabled ?
 			get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true )
 			: false;
@@ -158,7 +158,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 				$this_sold = $this_stock;
 			}
 
-			$sold += $this_sold;
+			$sold  += $this_sold;
 			$stock += $this_stock;
 		}
 
