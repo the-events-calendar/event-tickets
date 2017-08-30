@@ -798,48 +798,52 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		/**
-		 * Filters the RSVP tickets email headers
+		 * Filters the non attending RSVP tickets email headers
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
+		 * @since 4.5.5 changed filter name to be unique to non attendace emails
 		 *
 		 * @param array  email headers
 		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
-		$headers = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ), $event_id, $order_id );
+		$headers = apply_filters( 'tribe_rsvp_non_attendance_email_headers', array( 'Content-type: text/html' ), $event_id, $order_id );
 
 		/**
-		 * Filters the RSVP tickets email attachments
+		 * Filters the non attending RSVP tickets email attachments
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
+		 * @since 4.5.5 changed filter name to be unique to non attendace emails
 		 *
 		 * @param array  attachments
 		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
-		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array(), $event_id, $order_id );
+		$attachments = apply_filters( 'tribe_rsvp_non_attendance_email_attachments', array(), $event_id, $order_id );
 
 		/**
-		 * Filters the RSVP tickets email recepient
+		 * Filters the non attending RSVP tickets email recepient
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
+		 * @since 4.5.5 changed filter name to be unique to non attendace emails
 		 *
 		 * @param string  $to
 		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
-		$to = apply_filters( 'tribe_rsvp_email_recipient', $to, $event_id, $order_id );
+		$to = apply_filters( 'tribe_rsvp_non_attendance_email_recipient', $to, $event_id, $order_id );
 
 		/**
-		 * Filters the RSVP tickets email subject
+		 * Filters the non attending RSVP tickets email subject
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
+		 * @since 4.5.5 changed filter name to be unique to non attendace emails
 		 *
 		 * @param string
 		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
-		$subject = apply_filters( 'tribe_rsvp_email_subject',
+		$subject = apply_filters( 'tribe_rsvp_non_attendance_email_subject',
 			sprintf( __( 'You confirmed you will not be attending %s', 'event-tickets' ), get_the_title( $event_id ) ),
 			$event_id,
 			$order_id
@@ -848,15 +852,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$template_data = array( 'event_id' => $event_id, 'order_id' => $order_id, 'attendees' => $attendees );
 
 		/**
-		 * Filters the RSVP tickets email content
+		 * Filters the non attending RSVP tickets email content
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
+		 * @since 4.5.5 changed filter name to be unique to non attendace emails
 		 *
 		 * @param string  email content
 		 * @param int     $event_id
 		 * @param int     $order_id
 		 */
-		$content = apply_filters( 'tribe_rsvp_email_content',
+		$content = apply_filters( 'tribe_rsvp_non_attendance_email_content',
 			tribe_tickets_get_template_part( 'tickets/email-non-attendance', null, $template_data, false ),
 			$event_id,
 			$order_id
