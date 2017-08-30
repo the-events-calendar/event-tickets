@@ -392,6 +392,7 @@ p.description {
 	position: relative;
 
 	display: inline-block;
+	vertical-align: middle;
 }
 
 #ticket_form .tooltip_container .tooltip {
