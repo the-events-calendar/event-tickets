@@ -82,13 +82,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Display the search box.
 	 *
-	 * We don't want Core's search box, because we implemented our own jQuery based filter,
-	 * so this function overrides the parent's one and returns empty.
-	 *
 	 * @param string $text     The search button text
 	 * @param string $input_id The search input id
 	 */
 	public function search_box( $text, $input_id ) {
+		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/attendees-search-box.php';
 	}
 
 	/**
@@ -514,10 +512,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			),
 			'right' => array(),
 		);
-
-		if ( 'top' == $which ) {
-			$nav['right']['filter_box'] = sprintf( '%s: <input type="text" name="filter_attendee" id="filter_attendee" value="">', esc_html__( 'Filter by purchaser name, ticket #, order # or security code', 'event-tickets' ) );
-		}
 
 		$nav = apply_filters( 'tribe_events_tickets_attendees_table_nav', $nav, $which );
 

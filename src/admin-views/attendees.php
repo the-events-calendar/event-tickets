@@ -110,6 +110,10 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'event_id' : 'tribe[event_id]' ); ?>" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_type' : 'tribe[post_type]' ); ?>" value="<?php echo esc_attr( $event->post_type ); ?>" />
+		<?php $this->attendees_table->search_box(
+			esc_html__( 'Filter by purchaser name, ticket #, order # or security code', 'event-tickets' ),
+			'filter_attendee'
+		); ?>
 		<?php $this->attendees_table->display(); ?>
 	</form>
 </div>
