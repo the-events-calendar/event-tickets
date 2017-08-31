@@ -235,6 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.5.5] TBD =
 
+* Tweak - RSVP non attendance email filters names are now unique [74412]
 * Tweak - Include full event start and end date in Tickets Email. Thank you @pagan11460 for the suggestion. [73885]
 
 = [4.5.4] 2017-08-24 =
