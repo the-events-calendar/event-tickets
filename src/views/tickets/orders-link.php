@@ -15,19 +15,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-$view = Tribe__Tickets__Tickets_View::instance();
-$event_id = get_the_ID();
-$event = get_post( $event_id );
+$view      = Tribe__Tickets__Tickets_View::instance();
+$event_id  = get_the_ID();
+$event     = get_post( $event_id );
 $post_type = get_post_type_object( $event->post_type );
-
-$user_id = get_current_user_id();
+$user_id   = get_current_user_id();
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type ? true : false;
 
 $events_label_singular = $post_type->labels->singular_name;
-$counters = array();
-$rsvp_count = $view->count_rsvp_attendees( $event_id, $user_id );
-$ticket_count = $view->count_ticket_attendees( $event_id, $user_id );
+$counters              = array();
+$rsvp_count            = $view->count_rsvp_attendees( $event_id, $user_id );
+$ticket_count          = $view->count_ticket_attendees( $event_id, $user_id );
 
 if ( 0 !== $rsvp_count ) {
 	$counters[] = sprintf( _n( '%d RSVP', '%d RSVPs', $rsvp_count, 'event-tickets' ), $rsvp_count );
@@ -38,11 +37,22 @@ if ( 0 !== $ticket_count ) {
 }
 
 if ( $is_event_page ) {
+
+	// The "Events" post type.
 	$link = trailingslashit( get_permalink( $event_id ) ) . 'tickets';
+
+} elseif ( isset( $post_type->_builtin ) && true !== $post_type->_builtin ) {
+
+	// Custom post types.
+	$link = trailingslashit( get_permalink( $event_id ) ) . '?tribe-edit-orders=1';
+
 } else {
+
+	// Core post types (e.g. posts).
 	$link = home_url( '/tickets/' . $event_id );
 }
-$message = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
+
+$message  = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
 $message .= ' <a href="' . esc_url( $link ) . '">' . sprintf( esc_html__( 'View your %s', 'event-tickets' ), $this->get_description_rsvp_ticket( $event_id, $user_id, true ) ) . '</a>';
 ?>
 
