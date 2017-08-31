@@ -1079,7 +1079,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$rsvp_sent = empty( $_GET['rsvp_sent'] ) ? false : true;
+		$rsvp_sent  = empty( $_GET['rsvp_sent'] ) ? false : true;
 		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : intval( $_GET['rsvp_error'] );
 
 		if ( $rsvp_sent ) {
@@ -1100,6 +1100,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		$must_login = ! is_user_logged_in() && $this->login_required();
+
+		/**
+		 * Allow for the addition of content (namely the "Who's Attening?" list) above the ticket form.
+		 *
+		 * @since TBD
+		 */
+		do_action( 'tribe_tickets_before_front_end_ticket_form' );
+
 		include $this->getTemplateHierarchy( 'tickets/rsvp' );
 
 		// It's only done when it's included
