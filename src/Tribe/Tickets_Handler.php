@@ -133,7 +133,7 @@ class Tribe__Tickets__Tickets_Handler {
 	public function attendees_row_action( $actions ) {
 		global $post;
 
-		// Only proceed if we're on a tickets-enabled post type.
+		// Only proceed if we're viewing a tickets-enabled post type.
 		if ( ! in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
 			return $actions;
 		}
