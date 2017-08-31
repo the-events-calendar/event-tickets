@@ -882,18 +882,44 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param $event_id
+		 * @param $post_id
 		 *
 		 * @return array
 		 */
-		public static function get_event_attendees( $event_id ) {
+		public static function get_event_attendees( $post_id ) {
+			/**
+			 * Filters the cache expiration when this function is called from an admin screen.
+			 *
+			 * Returning a falsy value here will force a refetch each time.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
+			 * @param int $post_id      The ID of the post attendees are being fetched for.
+			 */
+			$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
+
+			/**
+			 * Filters the cache expiration when this function is called from a non admin screen.
+			 *
+			 * Returning a falsy value here will force a refetch each time.
+			 *
+			 * @since TBD
+			 *
+			 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
+			 * @param int $post_id      The ID of the post attendees are being fetched for.
+			 */
+			$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+
+			$expire = is_admin() ? (int) $admin_expire : (int) $expire;
+
 			$attendees_from_cache = false;
 			$attendees            = array();
 
-			if ( ! is_admin() ) {
+			if ( 0 !== $expire ) {
 				$post_transient = Tribe__Post_Transient::instance();
 
-				$attendees_from_cache = $post_transient->get( $event_id, self::ATTENDEES_CACHE );
+				$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
 
 				// if there is a valid transient, we'll use the value from that and note
 				// that we have fetched from cache
@@ -907,7 +933,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( false === $attendees_from_cache && empty( $attendees ) ) {
 				foreach ( self::modules() as $class => $module ) {
 					$obj       = call_user_func( array( $class, 'get_instance' ) );
-					$attendees = array_merge( $attendees, $obj->get_attendees_by_post_id( $event_id ) );
+					$attendees = array_merge( $attendees, $obj->get_attendees_by_post_id( $post_id ) );
 				}
 
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
@@ -916,9 +942,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
 				}
 
-				if ( ! is_admin() ) {
-					$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
-					$post_transient->set( $event_id, self::ATTENDEES_CACHE, $attendees, $expire );
+				if ( 0 !== $expire ) {
+					$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
 				}
 			}
 
@@ -928,9 +953,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since 4.4
 			 *
 			 * @param array $attendees Array of event attendees.
-			 * @param int   $event_id  Event post ID.
+			 * @param int   $post_id   Event post ID.
 			 */
-			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $event_id );
+			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id );
 		}
 
 		/**
