@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.5.5] TBD =
 
-* Fix - Fixed issue where RSVP options would ften fail to show up on custom post types. [73052]
+* Fix - Fixed issue where RSVP options would often fail to show up on custom post types. [73052]
 * Fix - Confirm RSVP button not showing when last ticket was out of stock [86616]
 * Tweak - RSVP non attendance email filters names are now unique [74412]
 * Tweak - Include full event start and end date in Tickets Email. Thank you @pagan11460 for the suggestion. [73885]
