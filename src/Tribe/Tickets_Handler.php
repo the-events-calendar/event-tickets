@@ -132,13 +132,27 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_row_action( $actions ) {
 		global $post;
+
+		// Only proceed if we're viewing a tickets-enabled post type.
+		if ( ! in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
+			return $actions;
+		}
+
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 
-		if ( in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) && ! empty( $tickets ) ) {
-			$url = $this->get_attendee_report_link( $post );
-
-			$actions['tickets_attendees'] = sprintf( '<a title="%s" href="%s">%s</a>', esc_html__( 'See who purchased tickets to this event', 'event-tickets' ), esc_url( $url ), esc_html__( 'Attendees', 'event-tickets' ) );
+		// Only proceed if there are tickets.
+		if ( empty( $tickets ) ) {
+			return $actions;
 		}
+
+		$url = $this->get_attendee_report_link( $post );
+
+		$actions['tickets_attendees'] = sprintf(
+			'<a title="%s" href="%s">%s</a>',
+			esc_html__( 'See who purchased tickets to this event', 'event-tickets' ),
+			esc_url( $url ),
+			esc_html__( 'Attendees', 'event-tickets' )
+		);
 
 		return $actions;
 	}
