@@ -73,7 +73,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// This has no Performance problems, since get_post uses caching and we use this method later on.
-		$post = get_post( absint( $query->query_vars['p'] ) );
+		$post = isset( $query->query_vars['p'] ) ? get_post( absint( $query->query_vars['p'] ) ) : 0;
 		if ( ! $post ) {
 			return;
 		}
