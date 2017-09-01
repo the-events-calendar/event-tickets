@@ -482,7 +482,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'tribe_tickets_tpp_before_order_processing', $transaction_data );
 
-		$order_id = $item['txn_id'];
+		$order_id = $transaction_data['txn_id'];
 
 		$attendee_id        = empty( $transaction_data['custom']['user_id'] ) ? null : absint( $transaction_data['custom']['user_id'] );
 
