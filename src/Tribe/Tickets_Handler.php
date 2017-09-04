@@ -1052,22 +1052,28 @@ class Tribe__Tickets__Tickets_Handler {
 			 * @param obj ecommerce provider object
 			 */
 			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
+
+			$global_stock_mode = $ticket->global_stock_mode();
 			?>
 
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
 				<?php
-				// escaping handled in function - could be string|int
+				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+					echo '(';
+				}
 				$ticket->display_original_stock( true );
+				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+					echo ')';
+				}
 				?>
 			</td>
 
 			<td class="ticket_available">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
-				$global_stock_mode = $ticket->global_stock_mode();
-
 				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
+					// escaping handled in function - could be string|int
 					$ticket->display_original_stock( true );
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
 					echo esc_html( $ticket->remaining() );
