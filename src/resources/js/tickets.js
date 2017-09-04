@@ -56,7 +56,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$ticket_image_preview.html( ticketHeaderImage.imgHTML( attachment ) );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( attachment.id );
 			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
-			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).find( '.filename' ).text( attachment.filename ).show();
+			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).text( attachment.filename ).show();
 		},
 		// Render html for the image.
 		imgHTML : function( attachment ) {
@@ -69,124 +69,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	};
 
 	$( document ).ready( function() {
-		$tribe_tickets.on( {
-			/**
-			 * Makes a Visual Spinning thingy appear on the Tickets metabox.
-			 * Also prevents user Action on the metabox elements.
-			 *
-			 * @param  {jQuery.event} event  The jQuery event
-			 * @param  {string} action You can use `start` or `stop`
-			 * @return {void}
-			 */
-			'spin.tribe': function( event, action ) {
-				if ( typeof action === 'undefined' || $.inArray( action, [ 'start', 'stop' ] ) ){
-					action = 'stop';
-				}
-
-				if ( 'stop' === action ) {
-					$tickets_container.css( 'opacity', '1' )
-						.find( '#tribe-loading' ).hide();
-				} else {
-					$tickets_container.css( 'opacity', '0.5' )
-						.find( '#tribe-loading' ).show();
-				}
-			},
-
-			/**
-			 * Clears the Form fields the correct way
-			 *
-			 * @return {void}
-			 */
-			'clear.tribe': function() {
-				$edit_panel.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
-				$edit_panel.find( 'input:checkbox, input:radio' ).prop( 'checked', false );
-				$edit_panel.find( '#ticket_id' ).val( '' );
-
-				// some fields may have a default value we don't want to lose after clearing the form
-				$edit_panel.find( 'input[data-default-value]' ).each( function() {
-					var $current_field = $( this );
-					$current_field.val( $current_field.data( 'default-value' ) );
-				} );
-
-				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
-				$ticket_start_date.datepicker( 'option', 'maxDate', null ).val( $.datepicker.formatDate( 'mm/dd/yy', new Date() ) ).trigger( 'change' );
-				$ticket_start_time.val( new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' } ).format( new Date() ) ).trigger( 'change' );
-				// event end date, time
-				$ticket_end_date.datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
-				$ticket_end_time.val( $( document.getElementById( 'EventEndTime' ) ).val() ).trigger( 'change' );
-
-				$edit_panel.find( '#ticket_price' ).removeProp( 'disabled' )
-					.siblings( '.no-update-message' ).html( '' ).hide()
-					.end().siblings( '.description' ).show();
-
-				$( document.getElementById( 'tribe-tickets-attendee-sortables' ) ).empty();
-
-				$( '.accordion-content.is-active' ).removeClass( 'is-active' );
-
-				$( document.getElementById( 'ticket_bottom_right' ) ).empty();
-
-				$edit_panel.find( '.accordion-header, .accordion-content' ).removeClass( 'is-active' );
-			},
-
-			/**
-			 * Scrolls to the Tickets container once the ticket form receives the focus.
-			 *
-			 * @return {void}
-			 */
-			'focus.tribe': function() {
-				$body.animate( {
-					scrollTop: $tickets_container.offset().top - 50
-				}, 500 );
-			},
-
-			/**
-			 * When the edit ticket form fields have completed loading we can setup
-			 * other UI features as needed.
-			 */
-			'edit-tickets-complete.tribe': function() {
-				show_hide_ticket_type_history();
-			},
-
-			/**
-			 * Sets/Swaps out the name & id attributes on Advanced ticket meta fields so we don't have (or submit)
-			 * duplicate fields
-			 *
-			 * We now load these via ajax and there is no need to change field names/IDs
-			 *
-			 * @deprecated TBD
-			 *
-			 * @return {void}
-			 */
-			'set-advanced-fields.tribe': function() {
-				var $this            = $( this );
-				var $ticket_form     = $this.find( '#ticket_form' );
-				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced:not(.ticket_advanced_meta)' ).find( 'input, select, textarea' );
-				var provider = $ticket_form.find( '.ticket_provider:checked' ).val();
-
-				// for each advanced ticket input, select, and textarea, relocate the name and id fields a bit
-				$ticket_advanced.each( function() {
-					var $el = $( this );
-
-					// if there's a value in the name attribute, move it to the data attribute then clear out the id as well
-					if ( $el.attr( 'name' ) ) {
-						$el.data( 'name', $el.attr( 'name' ) ).attr( {
-							'name': '',
-							'id': ''
-						} );
-					}
-
-					// if the field is for the currently selected provider, make sure the name and id fields are populated
-					if (
-						$el.closest( 'tr' ).hasClass( 'ticket_advanced_' + provider ) && $el.data( 'name' ) && 0 === $el.attr( 'name' ).length ) {
-						$el.attr( {
-							'name': $el.data( 'name' ),
-							'id': $el.data( 'name' )
-						} );
-					}
-				} );
-			}
-		} );
-
 		if ( $event_pickers.length ) {
 			startofweek = $event_pickers.data( 'startofweek' );
 		}
@@ -402,8 +284,126 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				} );
 		}
 
+		/* Add some trigger actions */
+		$tribe_tickets.on( {
+			/**
+			 * Makes a Visual Spinning thingy appear on the Tickets metabox.
+			 * Also prevents user Action on the metabox elements.
+			 *
+			 * @param  {jQuery.event} event  The jQuery event
+			 * @param  {string} action You can use `start` or `stop`
+			 * @return {void}
+			 */
+			'spin.tribe': function( event, action ) {
+				if ( typeof action === 'undefined' || $.inArray( action, [ 'start', 'stop' ] ) ){
+					action = 'stop';
+				}
+
+				if ( 'stop' === action ) {
+					$tickets_container.css( 'opacity', '1' )
+						.find( '#tribe-loading' ).hide();
+				} else {
+					$tickets_container.css( 'opacity', '0.5' )
+						.find( '#tribe-loading' ).show();
+				}
+			},
+
+			/**
+			 * Clears the Form fields the correct way
+			 *
+			 * @return {void}
+			 */
+			'clear.tribe': function() {
+				$edit_panel.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
+				$edit_panel.find( 'input:checkbox, input:radio' ).prop( 'checked', false );
+				$edit_panel.find( '#ticket_id' ).val( '' );
+
+				// some fields may have a default value we don't want to lose after clearing the form
+				$edit_panel.find( 'input[data-default-value]' ).each( function() {
+					var $current_field = $( this );
+					$current_field.val( $current_field.data( 'default-value' ) );
+				} );
+
+				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
+				$ticket_start_date.datepicker( 'option', 'maxDate', null ).val( $.datepicker.formatDate( 'mm/dd/yy', new Date() ) ).trigger( 'change' );
+				$ticket_start_time.val( new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' } ).format( new Date() ) ).trigger( 'change' );
+				// event end date, time
+				$ticket_end_date.datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
+				$ticket_end_time.val( $( document.getElementById( 'EventEndTime' ) ).val() ).trigger( 'change' );
+
+				$edit_panel.find( '#ticket_price' ).removeProp( 'disabled' )
+					.siblings( '.no-update-message' ).html( '' ).hide()
+					.end().siblings( '.description' ).show();
+
+				$( document.getElementById( 'tribe-tickets-attendee-sortables' ) ).empty();
+
+				$( '.accordion-content.is-active' ).removeClass( 'is-active' );
+
+				$( document.getElementById( 'ticket_bottom_right' ) ).empty();
+
+				$edit_panel.find( '.accordion-header, .accordion-content' ).removeClass( 'is-active' );
+			},
+
+			/**
+			 * Scrolls to the Tickets container once the ticket form receives the focus.
+			 *
+			 * @return {void}
+			 */
+			'focus.tribe': function() {
+				$body.animate( {
+					scrollTop: $tickets_container.offset().top - 50
+				}, 500 );
+			},
+
+			/**
+			 * When the edit ticket form fields have completed loading we can setup
+			 * other UI features as needed.
+			 */
+			'edit-tickets-complete.tribe': function() {
+				show_hide_ticket_type_history();
+			},
+
+			/**
+			 * Sets/Swaps out the name & id attributes on Advanced ticket meta fields so we don't have (or submit)
+			 * duplicate fields
+			 *
+			 * We now load these via ajax and there is no need to change field names/IDs
+			 *
+			 * @deprecated TBD
+			 *
+			 * @return {void}
+			 */
+			'set-advanced-fields.tribe': function() {
+				var $this            = $( this );
+				var $ticket_form     = $this.find( '#ticket_form' );
+				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced:not(.ticket_advanced_meta)' ).find( 'input, select, textarea' );
+				var provider = $ticket_form.find( '.ticket_provider:checked' ).val();
+
+				// for each advanced ticket input, select, and textarea, relocate the name and id fields a bit
+				$ticket_advanced.each( function() {
+					var $el = $( this );
+
+					// if there's a value in the name attribute, move it to the data attribute then clear out the id as well
+					if ( $el.attr( 'name' ) ) {
+						$el.data( 'name', $el.attr( 'name' ) ).attr( {
+							'name': '',
+							'id': ''
+						} );
+					}
+
+					// if the field is for the currently selected provider, make sure the name and id fields are populated
+					if (
+						$el.closest( 'tr' ).hasClass( 'ticket_advanced_' + provider ) && $el.data( 'name' ) && 0 === $el.attr( 'name' ).length ) {
+						$el.attr( {
+							'name': $el.data( 'name' ),
+							'id': $el.data( 'name' )
+						} );
+					}
+				} );
+			}
+		} )
 		/* "Settings" button action */
-		$tribe_tickets.on( 'click', '#settings_form_toggle', function( e ) {
+		.on( 'click', '#settings_form_toggle', function( e ) {
 			show_panel( e, $settings_panel);
 		} )
 		/* Settings "Cancel" button action */
@@ -841,8 +841,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		/* Remove header image action */
 		.on( 'click', '#tribe_ticket_header_remove', function( e ) {
 			e.preventDefault();
-			$preview.html( '' );
-			$remove.hide();
+			$( document.getElementById( 'tribe_ticket_header_preview' ) ).html( '' );
+			$( document.getElementById( 'tribe_ticket_header_remove' ) ).hide();
+			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).text( '' );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
 
 		} );

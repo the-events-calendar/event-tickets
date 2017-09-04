@@ -122,6 +122,10 @@
 	margin-top: 0;
 }
 
+.ticket_panel.panel_settings .settings_main p {
+	font-size: inherit;
+}
+
 .ticket_panel h4 {
 	text-transform: uppercase;
 }
@@ -184,6 +188,7 @@
 
 #tribe_ticket_header_image {
 	margin-right: 2em;
+	vertical-align: middle;
 }
 
 #tribe_tickets_image_preview_filename {
