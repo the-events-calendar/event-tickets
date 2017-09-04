@@ -56,7 +56,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$ticket_image_preview.html( ticketHeaderImage.imgHTML( attachment ) );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( attachment.id );
 			$( document.getElementById( 'tribe_ticket_header_remove' ) ).show();
-			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).text( attachment.filename ).show();
+			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).show().find( '.filename' ).text( attachment.filename );
 		},
 		// Render html for the image.
 		imgHTML : function( attachment ) {
@@ -843,7 +843,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			e.preventDefault();
 			$( document.getElementById( 'tribe_ticket_header_preview' ) ).html( '' );
 			$( document.getElementById( 'tribe_ticket_header_remove' ) ).hide();
-			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).text( '' );
+			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).hide().find( '.filename' ).text( '' );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
 
 		} );
