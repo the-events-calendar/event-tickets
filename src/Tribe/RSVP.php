@@ -930,11 +930,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Generates the validation code that will be printed in the ticket.
 	 * It purpose is to be used to validate the ticket at the door of an event.
 	 *
+	 * @param int $order_id
 	 * @param int $attendee_id
 	 *
 	 * @return string
 	 */
-	public function generate_security_code( $attendee_id ) {
+	public function generate_security_code( $order_id, $attendee_id ) {
 		return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
 	}
 

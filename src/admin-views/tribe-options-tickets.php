@@ -203,20 +203,6 @@ $tickets_fields = array_merge(
 			'default'         => false,
 			'validation_type' => 'boolean',
 		),
-		'ticket-currency-decimal' => array(
-			'type'            => 'text',
-			'label'           => esc_html__( 'Decimal Separator', 'event-tickets' ),
-			'size'            => 'small',
-			'default'         => '.',
-			'validation_type' => 'html',
-		),
-		'ticket-currency-thousands' => array(
-			'type'            => 'text',
-			'label'           => esc_html__( 'Thousands Separator', 'event-tickets' ),
-			'size'            => 'small',
-			'default'         => ',',
-			'validation_type' => 'html',
-		),
 	)
 );
 
