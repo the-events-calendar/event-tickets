@@ -237,6 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Fix - Fixed issue where RSVP options would often fail to show up on custom post types. [73052]
 * Fix - Confirm RSVP button not showing when last ticket was out of stock [86616]
+* Fix - Fixed issue where email address links were getting http:// prepended in the RSVP list [85556]
 * Tweak - RSVP non attendance email filters names are now unique [74412]
 * Tweak - Include full event start and end date in Tickets Email. Thank you @pagan11460 for the suggestion. [73885]
 * Tweak - Improve performance of the addition of the "Attendees" row action link in wp-admin list tables. [72126] 
