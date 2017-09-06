@@ -242,7 +242,8 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Added check to see if log directory is readable before listing logs within it (thank you @rodrigochallengeday-org and @richmondmom for reporting this) [86091]
 * Tweak - RSVP non attendance email filters names are now unique (thanks to solwebsolutions for reporting this!) [74412]
 * Tweak - Include full event start and end date in Tickets Email (thank you @pagan11460 for the suggestion!) [73885]
-* Tweak - Improve performance of the addition of the "Attendees" row action link in wp-admin list tables (props to pixeldesigns for reporting this!) [72126] 
+* Tweak - Improve performance of the addition of the "Attendees" row action link in wp-admin list tables (props to pixeldesigns for reporting this!) [72126]
+* Tweak - Changed views: `tickets/email.php`, `tickets/orders-link.php`, `tickets/orders-rsvp.php`, and `tickets/rsvp.php`
 
 = [4.5.4] 2017-08-24 =
 
