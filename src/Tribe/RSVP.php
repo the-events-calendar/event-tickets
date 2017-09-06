@@ -1104,7 +1104,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow for the addition of content (namely the "Who's Attening?" list) above the ticket form.
 		 *
-		 * @since TBD
+		 * @since 4.5.5
 		 */
 		do_action( 'tribe_tickets_before_front_end_ticket_form' );
 

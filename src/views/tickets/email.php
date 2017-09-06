@@ -16,7 +16,7 @@
  *                              'security_code')
  *
  * @package TribeEventsCalendar
- * @version TBD
+ * @version 4.5.5
  *
  */
 ?>
@@ -293,7 +293,7 @@
 				/**
 				 * Filters whether or not the event date should be included in the ticket email.
 				 *
-				 * @since TBD
+				 * @since 4.5.11
 				 *
 				 * @var bool Include event date? Defaults to false.
 				 * @var int  Event ID
@@ -303,7 +303,7 @@
 				/**
 				 * Filters whether or not the event date should be included in the ticket email.
 				 *
-				 * @deprecated TBD Use `tribe_tickets_email_include_event_date` instead.
+				 * @deprecated 4.5.11 Use `tribe_tickets_email_include_event_date` instead.
 				 *
 				 * @var bool Include event date? Defaults to false.
 				 * @var int  Event ID
