@@ -801,7 +801,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the non attending RSVP tickets email headers
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
-		 * @since 4.5.5 changed filter name to be unique to non attendace emails
+		 * @since 4.5.5 changed filter name to be unique to non attendance emails
 		 *
 		 * @param array  email headers
 		 * @param int    $event_id
@@ -813,7 +813,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the non attending RSVP tickets email attachments
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
-		 * @since 4.5.5 changed filter name to be unique to non attendace emails
+		 * @since 4.5.5 changed filter name to be unique to non attendance emails
 		 *
 		 * @param array  attachments
 		 * @param int    $event_id
@@ -825,7 +825,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the non attending RSVP tickets email recepient
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
-		 * @since 4.5.5 changed filter name to be unique to non attendace emails
+		 * @since 4.5.5 changed filter name to be unique to non attendance emails
 		 *
 		 * @param string  $to
 		 * @param int     $event_id
@@ -837,7 +837,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the non attending RSVP tickets email subject
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
-		 * @since 4.5.5 changed filter name to be unique to non attendace emails
+		 * @since 4.5.5 changed filter name to be unique to non attendance emails
 		 *
 		 * @param string
 		 * @param int     $event_id
@@ -855,7 +855,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the non attending RSVP tickets email content
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
-		 * @since 4.5.5 changed filter name to be unique to non attendace emails
+		 * @since 4.5.5 changed filter name to be unique to non attendance emails
 		 *
 		 * @param string  email content
 		 * @param int     $event_id
