@@ -33,11 +33,12 @@ class Tribe__Tickets__Data_API {
 			 *
 			 * So we have to construct the constant name using a string and use the `constant` function.
 			 */
+			$instance = $module_class->get_instance();
 			$types['order']   = constant( "$module_class::ORDER_OBJECT" );
-			$types['product'] = $module_class::get_instance()->ticket_object;
+			$types['product'] = $instance->ticket_object;
 			$types['ticket']  = constant( "$module_class::ATTENDEE_OBJECT" );
 			if ( 'Tribe__Tickets__RSVP' === $module_class ) {
-				$types['ticket'] = $module_class::get_instance()->ticket_object;
+				$types['ticket'] = $instance->ticket_object;
 			}
 			$types['attendee'] = constant( "$module_class::ATTENDEE_OBJECT" );
 
@@ -50,7 +51,7 @@ class Tribe__Tickets__Data_API {
 
 			}
 
-			$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::get_instance()->event_key;
+			$this->ticket_class[ $module_class ]['tribe_for_event'] = $instance->event_key;
 
 			$this->ticket_class[ $module_class ]['event_id_key'] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			$this->ticket_class[ $module_class ]['order_id_key'] = constant( "$module_class::ATTENDEE_ORDER_KEY" );
@@ -199,7 +200,7 @@ class Tribe__Tickets__Data_API {
 			return false;
 		}
 
-		return $services['class']::get_instance();
+		return $services['class']->get_instance();
 	}
 
 	/**
@@ -362,7 +363,7 @@ class Tribe__Tickets__Data_API {
 			return array();
 		}
 
-		return $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
+		return $services['class']->get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
 
 	}
 
