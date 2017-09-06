@@ -16,7 +16,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public $event = false;
 
 	/**
-	 * @var string The user option that will be used to store the numberof attendees per page to show.
+	 * @var string The user option that will be used to store the number of attendees per page to show.
 	 */
 	protected $per_page_option;
 
