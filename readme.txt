@@ -247,6 +247,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Tweak - Added filters: `tribe_events_set_notice`, `tribe_rsvp_non_attendance_email_headers`, `tribe_rsvp_non_attendance_email_attachments`, `tribe_rsvp_non_attendance_email_recipient`, `tribe_rsvp_non_attendance_email_subject`, and `tribe_rsvp_non_attendance_email_content`
 * Tweak - Added filters: `tribe_event_tickets_plus_email_meta_fields`
 * Tweak - Added actions: `tribe_tickets_before_front_end_ticket_form`
+* Language - 0 new strings added, 53 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.5.4] 2017-08-24 =
 
