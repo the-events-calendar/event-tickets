@@ -1784,7 +1784,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// if this isn't a supported post type, bail
-			if ( ! in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) ) {
+			if ( ! tribe_tickets_post_type_enabled( $post->post_type ) ) {
+				return false;
+			}
+
+			//  User is currently viewing/editing their existing tickets.
+			if ( Tribe__Tickets__Tickets_View::instance()->is_edit_page() ) {
 				return false;
 			}
 
