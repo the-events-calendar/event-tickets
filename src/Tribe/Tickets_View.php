@@ -356,19 +356,21 @@ class Tribe__Tickets__Tickets_View {
 	 * @return void
 	 */
 	public function inject_link_template() {
-		$event_id = get_the_ID();
-		$user_id  = get_current_user_id();
-
 		/**
 		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
 		 *
 		 * @since TBD
+		 *
+		 * @param boolean $already_rendered
 		 */
 		$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
 
 		if ( $already_rendered ) {
 			return;
 		}
+
+		$event_id = get_the_ID();
+		$user_id  = get_current_user_id();
 
 		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_ticket_attendees( $event_id, $user_id ) ) {
 			return;

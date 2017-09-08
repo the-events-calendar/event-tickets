@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.5.6] TBD =
 
-* Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). [87429]
+* Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
 
 = [4.5.5] 2017-09-06 =
 
