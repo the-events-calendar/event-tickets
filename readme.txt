@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.5.6] TBD =
+
+* Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
+
 = [4.5.5] 2017-09-06 =
 
 * Fix - Fixed issue where RSVP options would often fail to show up on custom post types (thanks to tvtap for reporting this issue!) [73052]
