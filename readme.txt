@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.5.6] TBD =
+
+* Fix - Prevent occasional issue with email content-type not being reset after Tickets emails were sent. Props to @jappleton in the forums for reporting this! [62976]
+
 = [4.5.5] 2017-09-06 =
 
 * Fix - Fixed issue where RSVP options would often fail to show up on custom post types (thanks to tvtap for reporting this issue!) [73052]
