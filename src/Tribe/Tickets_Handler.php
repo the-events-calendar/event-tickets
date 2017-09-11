@@ -1059,11 +1059,12 @@ class Tribe__Tickets__Tickets_Handler {
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
 				<?php
-				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+				$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode;
+				if ( $show_parens ) {
 					echo '(';
 				}
 				$ticket->display_original_stock( true );
-				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+				if ( $show_parens ) {
 					echo ')';
 				}
 				?>
