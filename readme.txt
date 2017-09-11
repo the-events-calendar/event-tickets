@@ -4,7 +4,7 @@ Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.1
-Stable tag: 4.5.5
+Stable tag: 4.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -236,6 +236,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.5.6] TBD =
 
 * Fix - Prevent occasional issue with email content-type not being reset after Tickets emails were sent. Props to @jappleton in the forums for reporting this! [62976]
+* Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
 
 = [4.5.5] 2017-09-06 =
 
