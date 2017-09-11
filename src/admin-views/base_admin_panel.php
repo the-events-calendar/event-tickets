@@ -70,6 +70,9 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		</button>
 
 
+		<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text">
+			<?php esc_html_e( 'Settings', 'event-tickets' ); ?></span>
+		</button>
 
 		<?php
 		/**
@@ -81,10 +84,6 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_warnings', $post_id );
 		?>
-
-		<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text">
-			<?php esc_html_e( 'Settings', 'event-tickets' ); ?></span>
-		</button>
 
 	</div>
 	<?php
