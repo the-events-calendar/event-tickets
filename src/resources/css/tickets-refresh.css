@@ -188,7 +188,7 @@
 
 #tribe_ticket_header_image {
 	margin-right: 2em;
-	vertical-align: middle;
+	vertical-align: baseline;
 }
 
 #tribe_tickets_image_preview_filename {
