@@ -226,7 +226,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function get_ticket_reports_link( $event_id, $ticket_id ) {
+		public function get_ticket_reports_link( $ticket_id ) {
 
 		}
 
@@ -256,6 +256,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) ? __( 'Delete RSVP', 'event-tickets' ) : __( 'Delete Ticket', 'event-tickets' ) ;
+
 			/**
 			 * Allows for the filtering and testing if a user can delete tickets
 			 *
@@ -270,7 +272,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">%3$s</a></span>',
 					$ticket->provider_class,
 					$ticket->ID,
-					esc_html__( 'Delete Ticket', 'event-tickets' )
+					esc_html( $button_text )
 				);
 
 				return $delete_link;
@@ -280,7 +282,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'<span><a href="#" attr-provider="%1$s" attr-ticket-id="%2$s" id="ticket_delete_%2$s" class="ticket_delete">%3$s</a></span>',
 				$ticket->provider_class,
 				$ticket->ID,
-				esc_html__( 'Delete Ticket', 'event-tickets' )
+				esc_html__( $button_text )
 			);
 
 			return $delete_link;
@@ -331,13 +333,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) ? __( 'Move RSVP', 'event-tickets' ) : __( 'Move Ticket', 'event-tickets' ) ;
+
 			$move_url = $this->get_ticket_move_url( $post_id, $ticket );
 
 			if ( empty( $move_url ) ) {
 				return;
 			}
 
-			$move_link = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move Ticket', 'event-tickets' ) . '</a>', $move_url );
+			$move_link = sprintf( '<a href="%1$s" class="thickbox">' . esc_html( $button_text ) . '</a>', $move_url );
 
 			return $move_link;
 		}
