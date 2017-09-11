@@ -486,20 +486,20 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		add_thickbox();
 
 		$email_link = Tribe__Settings::instance()->get_url( array(
-			'page' => 'tickets-attendees',
-			'action' => 'email',
-			'event_id' => $this->event->ID,
+			'page'      => 'tickets-attendees',
+			'action'    => 'email',
+			'event_id'  => $this->event->ID,
 			'TB_iframe' => true,
-			'width' => 410,
-			'height' => 300,
-			'parent' => 'admin.php',
+			'width'     => 410,
+			'height'    => 300,
+			'parent'    => 'admin.php',
 		) );
 
 		$nav = array(
 			'left' => array(
-				'print' => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
-				'email' => '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>',
-				'export' => sprintf( '<a href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
+				'print'  => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
+				'email'  => '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>',
+				'export' => sprintf( '<a target="_blank" href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
 			),
 			'right' => array(),
 		);
