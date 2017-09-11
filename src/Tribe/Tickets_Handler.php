@@ -510,7 +510,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return $error;
 		}
 
-		$cap = 'edit_posts';
+		$cap      = 'edit_posts';
 		$event_id = absint( ! empty( $_GET['event_id'] ) && is_numeric( $_GET['event_id'] ) ? $_GET['event_id'] : 0 );
 
 		if ( ! current_user_can( 'edit_posts' ) && $event_id ) {
@@ -582,11 +582,14 @@ class Tribe__Tickets__Tickets_Handler {
 		$content = ob_get_clean();
 
 		add_filter( 'wp_mail_content_type', array( $this, 'set_contenttype' ) );
+
 		if ( ! wp_mail( $email, sprintf( esc_html__( 'Attendee List for: %s', 'event-tickets' ), $event->post_title ), $content ) ) {
 			$error->add( 'email-error', esc_html__( 'Error when sending the email', 'event-tickets' ), array( 'type' => 'general' ) );
 
 			return $error;
 		}
+
+		remove_filter( 'wp_mail_content_type', array( $this, 'set_contenttype' ) );
 
 		return esc_html__( 'Email sent successfully!', 'event-tickets' );
 	}
@@ -650,8 +653,8 @@ class Tribe__Tickets__Tickets_Handler {
 		$endMeridianOptions   = Tribe__View_Helpers::getMeridianOptions( null );
 
 		$show_global_stock = Tribe__Tickets__Tickets::global_stock_available();
-		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
-		$global_stock = new Tribe__Tickets__Global_Stock( $post->ID );
+		$tickets           = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
+		$global_stock      = new Tribe__Tickets__Global_Stock( $post->ID );
 
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
