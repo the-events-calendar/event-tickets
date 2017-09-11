@@ -104,6 +104,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$.datepicker._clearDate( this );
 			}
 		} );
+
 		$ticket_end_date.datepicker( datepickerOpts ).datepicker( "option", "defaultDate", $( document.getElementById( 'EventEndDate' ) ).val() ).keyup( function( e ) {
 			if ( e.keyCode === 8 || e.keyCode === 46 ) {
 				$.datepicker._clearDate( this );
@@ -497,22 +498,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$global_field.val( global_field_val );
 		} )
 		/* Change stock cap placeholder (or value) if we change the value in ticket_global_stock */
-		.on( 'blur', '[name="ticket_global_stock"]', function( e ) {
-			var $this = $( this );
-			var global_cap = $this.val();
+		.on( 'blur', '[name="ticket_global_stock"][value="own"]', function( e ) {
+			var $this= $( this );
 
-			// if we haven't actually changed the value, don't do anything
-			if ( $this.prop( 'disabled' ) || 0 === global_cap ) {
-				return;
-			}
+			var $stock_field = $this.closest( '.input_block' ).find( '[name="ticket_stock"]' );
 
-			var $cap_field = $this.closest( 'fieldset' ).find( '[name="global_stock_cap"]' );
-			var cap_val = $cap_field.val();
-
-			if ( 'undefined' === cap_val ) {
-				$cap_field.val( global_cap );
-			} else if ( 0 < cap_val ) {
-				var new_val = Math.max( global_cap, cap_val );
+			if ( undefined === $stock_field.val() || '' === $stock_field.val() || 0 < $stock_field.val() ) {
+				$stock_field.val( '0' );
 			}
 		} )
 		/* "Save Ticket" button action */
@@ -804,16 +796,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					refresh_panels( null, false );
 				} );
 		} )
-		/**
-		 * Track changes to the global stock level on the ticket edit form.
-		 */
+		/* Track changes to the global stock level on the ticket edit form. */
 		.on( 'blur', '[name=tribe-tickets-global-stock]', function() {
 			$tribe_tickets.trigger( 'tribe_tickets_global_capacity_setting_changed', $( this ).attr( 'id' ) );
 		} )
-		/**
-		 * Track changes to the global stock level on the Settings form. Changes to the global stock
-		 * checkbox itself is handled elsewhere.
-		 */
+		/** Track changes to the global stock level on the Settings form.  */
 		.on( 'change', '#tribe-tickets-global-stock-level', function() {
 			$tribe_tickets.trigger( 'tribe_tickets_global_capacity_setting_changed', $( this ).attr( 'id' ) );
 		} )
