@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.5.6] TBD =
 
-* Fix - Prevent occasional issue with email content-type not being reset after Tickets emails were sent. Props to @jappleton in the forums for reporting this! [62976]
+* Fix - Prevent occasional issue with email content-type not being reset after ticket emails were sent. Props to @jappleton in the forums for reporting this! [62976]
 * Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
 
 = [4.5.5] 2017-09-06 =
