@@ -497,7 +497,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$global_field.val( global_field_val );
 		} )
-		/* Change stock cap placeholder (or value) if we change the value in ticket_global_stock */
+		/* Change stock cap value if we change the value in ticket_global_stock */
 		.on( 'blur', '[name="ticket_global_stock"][value="own"]', function( e ) {
 			var $this= $( this );
 
@@ -505,6 +505,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			if ( undefined === $stock_field.val() || '' === $stock_field.val() || 0 < $stock_field.val() ) {
 				$stock_field.val( '0' );
+			}
+		} )
+		/* Change stock cap value if we forget to set a value */
+		.on ( 'blur', '[name="ticket_stock"]', function( e ) {
+			var $this= $( this );
+
+			if ( undefined === $this.val() || '' === $this.val() || 0 < $this.val() ) {
+				$this.val( '0' );
 			}
 		} )
 		/* "Save Ticket" button action */
