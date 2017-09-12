@@ -227,7 +227,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function get_ticket_reports_link( $ticket_id, $event_id_deprecated = null ) {
+		public function get_ticket_reports_link( $event_id_deprecated, $ticket_id ) {
 
 		}
 
