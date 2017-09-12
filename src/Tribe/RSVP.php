@@ -1555,11 +1555,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * As of TBD we reversed the params and deprecated $event_id as it was never used
 	 *
 	 * @param deprecated $event_id
-	 * @param int $ticket_id
+	 * @param int $unused_ticket_id
 	 *
 	 * @return string
 	 */
-	public function get_ticket_reports_link( $ticket_id, $event_id_deprecated = null ) {
+	public function get_ticket_reports_link( $unused_ticket_id, $event_id_deprecated = null ) {
 		if ( ! empty( $event_id_deprecated ) ) {
 			_deprecated_argument( __METHOD__, 'TBD' );
 		}
