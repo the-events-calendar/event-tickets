@@ -238,6 +238,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Prevent occasional issue with email content-type not being reset after ticket emails were sent. Props to @jappleton in the forums for reporting this! [62976]
 * Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
 * Fix - Open the exportable CSV file of Attendees in a new tab to accommodate Google Chrome's strict handling of file and MIME types, preventing some console errors and notices in Chrome. [70750]
+* Fix - Fix some layout issues with the "Email Attendees" modal in the Attendees list admin view, especially when viewed on phones or tablets. Props to @event-control for reporting this! [80975]
 
 = [4.5.5] 2017-09-06 =
 
