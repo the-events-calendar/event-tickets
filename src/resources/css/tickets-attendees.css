@@ -221,6 +221,12 @@
 }
 
 /*
+ * Preserves utility of modal windows, especially the "Email Attendees" modal, in views above the 
+ * mobile view but under the upper limits of "tablet" views. The weird class names and !important declarations
+ * are unfortunately needed to override Thickbox's inline styles.
+ */
+
+/*
  * Preserves utility of modal windows in mobile view. !important declarations
  * are unfortunately needed to override Thickbox's inline styles.
  */
@@ -298,6 +304,22 @@
 
 	.tribe-attendees-email-message .notice-dismiss {
 		padding: 9px;
+	}
+}
+
+@media screen and ( max-width: 782px ) {
+
+	#TB_window {
+		height: 100% !important;
+	}
+
+	#plugin-information-title {
+		height: auto !important;
+		overflow: hidden !important;
+	}
+
+	#plugin-information-footer {
+		position: relative !important;
 	}
 }
 
