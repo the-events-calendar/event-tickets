@@ -183,20 +183,20 @@ $timepicker_round = '00:00:00';
 								</span>
 							</span>
 						</div>
-
-
 					</div>
-					<?php
-					/**
-					 * Allows for the insertion of additional content into the ticket edit form - advanced section
-					 *
-					 * @since TBD
-					 *
-					 * @param int Post ID
-					 * @param null Ticket ID
-					 */
-					do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null );
-					?>
+					<div id="advanced_fields">
+						<?php
+						/**
+						 * Allows for the insertion of additional content into the ticket edit form - advanced section
+						 *
+						 * @since TBD
+						 *
+						 * @param int Post ID
+						 * @param null Ticket ID
+						 */
+						do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, null );
+						?>
+					</div>
 				</section><!-- #ticket_form_advanced -->
 				<?php
 				/**
