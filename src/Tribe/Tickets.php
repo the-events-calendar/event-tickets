@@ -218,15 +218,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
 		 * null if the provider doesn't have reporting capabilities.
+		 * As of TBD we reversed the params and deprecated $event_id as it was never used
 		 *
 		 * @abstract
 		 *
-		 * @param $event_id
-		 * @param $ticket_id
+		 * @param deprecated $event_id_deprecated
+		 * @param int $ticket_id
 		 *
 		 * @return mixed
 		 */
-		public function get_ticket_reports_link( $ticket_id ) {
+		public function get_ticket_reports_link( $ticket_id, $event_id_deprecated = null ) {
 
 		}
 
