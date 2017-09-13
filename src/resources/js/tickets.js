@@ -104,6 +104,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$.datepicker._clearDate( this );
 			}
 		} );
+
 		$ticket_end_date.datepicker( datepickerOpts ).datepicker( "option", "defaultDate", $( document.getElementById( 'EventEndDate' ) ).val() ).keyup( function( e ) {
 			if ( e.keyCode === 8 || e.keyCode === 46 ) {
 				$.datepicker._clearDate( this );
@@ -361,45 +362,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 */
 			'edit-tickets-complete.tribe': function() {
 				show_hide_ticket_type_history();
-			},
-
-			/**
-			 * Sets/Swaps out the name & id attributes on Advanced ticket meta fields so we don't have (or submit)
-			 * duplicate fields
-			 *
-			 * We now load these via ajax and there is no need to change field names/IDs
-			 *
-			 * @deprecated TBD
-			 *
-			 * @return {void}
-			 */
-			'set-advanced-fields.tribe': function() {
-				var $this            = $( this );
-				var $ticket_form     = $this.find( '#ticket_form' );
-				var $ticket_advanced = $ticket_form.find( 'tr.ticket_advanced:not(.ticket_advanced_meta)' ).find( 'input, select, textarea' );
-				var provider = $ticket_form.find( '.ticket_provider:checked' ).val();
-
-				// for each advanced ticket input, select, and textarea, relocate the name and id fields a bit
-				$ticket_advanced.each( function() {
-					var $el = $( this );
-
-					// if there's a value in the name attribute, move it to the data attribute then clear out the id as well
-					if ( $el.attr( 'name' ) ) {
-						$el.data( 'name', $el.attr( 'name' ) ).attr( {
-							'name': '',
-							'id': ''
-						} );
-					}
-
-					// if the field is for the currently selected provider, make sure the name and id fields are populated
-					if (
-						$el.closest( 'tr' ).hasClass( 'ticket_advanced_' + provider ) && $el.data( 'name' ) && 0 === $el.attr( 'name' ).length ) {
-						$el.attr( {
-							'name': $el.data( 'name' ),
-							'id': $el.data( 'name' )
-						} );
-					}
-				} );
 			}
 		} )
 		/* "Settings" button action */
@@ -496,23 +458,22 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$global_field.val( global_field_val );
 		} )
-		/* Change stock cap placeholder (or value) if we change the value in ticket_global_stock */
-		.on( 'blur', '[name="ticket_global_stock"]', function( e ) {
-			var $this = $( this );
-			var global_cap = $this.val();
+		/* Change stock cap value if we change the value in ticket_global_stock */
+		.on( 'blur', '[name="ticket_global_stock"][value="own"]', function( e ) {
+			var $this= $( this );
 
-			// if we haven't actually changed the value, don't do anything
-			if ( $this.prop( 'disabled' ) || 0 === global_cap ) {
-				return;
+			var $stock_field = $this.closest( '.input_block' ).find( '[name="ticket_stock"]' );
+
+			if ( undefined === $stock_field.val() || '' === $stock_field.val() || 0 < $stock_field.val() ) {
+				$stock_field.val( '0' );
 			}
+		} )
+		/* Change stock cap value if we forget to set a value */
+		.on ( 'blur', '[name="ticket_stock"]', function( e ) {
+			var $this= $( this );
 
-			var $cap_field = $this.closest( 'fieldset' ).find( '[name="global_stock_cap"]' );
-			var cap_val = $cap_field.val();
-
-			if ( 'undefined' === cap_val ) {
-				$cap_field.val( global_cap );
-			} else if ( 0 < cap_val ) {
-				var new_val = Math.max( global_cap, cap_val );
+			if ( undefined === $this.val() || '' === $this.val() || 0 < $this.val() ) {
+				$this.val( '0' );
 			}
 		} )
 		/* "Save Ticket" button action */
@@ -611,6 +572,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						var regularPrice = response.data.price;
 						var salePrice    = regularPrice;
 						var onSale       = false;
+						var provider_class = response.data.provider_class;
 						var start_date;
 						var start_time;
 						var end_date;
@@ -625,26 +587,26 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							switch ( response.data.global_stock_mode ) {
 								case 'global':
 								case 'capped':
-									$( document.getElementById( response.data.provider_class + '_global' ) ).prop( 'checked', true );
-									$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
-									$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
+									$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true );
+									$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
+									$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
 
 									if ( undefined !== response.data.global_stock_cap && $.isNumeric( response.data.global_stock_cap ) && 0 < response.data.global_stock_cap ) {
-										$( document.getElementById( response.data.provider_class + '_global' ) ).val( 'capped' );
-										$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
+										$( document.getElementById( provider_class + '_global' ) ).val( 'capped' );
+										$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
 									} else {
-										$( document.getElementById( response.data.provider_class + '_global' ) ).val( 'global' );
-										$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( '' );
+										$( document.getElementById( provider_class + '_global' ) ).val( 'global' );
+										$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
 									}
 									break;
 								case 'own':
-									$( document.getElementById( response.data.provider_class + '_own' ) ).prop( 'checked', true );
-									$( document.getElementById( response.data.provider_class + '_capacity' ) ).val( response.data.stock );
+									$( document.getElementById( provider_class + '_own' ) ).prop( 'checked', true );
+									$( document.getElementById( provider_class + '_capacity' ) ).val( response.data.stock );
 									break;
 								default:
 									// Just in case
-									$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
-									$( document.getElementById( response.data.provider_class + '_global_stock_cap' ) ).val( '' );
+									$( document.getElementById( provider_class + '_unlimited' ) ).prop( 'checked', true );
+									$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
 							}
 						} else {
 							$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
@@ -687,7 +649,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$ticket_end_date.val( end_date ).trigger( 'change' );
 						$ticket_end_time.val( end_time ).trigger( 'change' );
 
-						$( document.getElementById( response.data.provider_class + '_advanced' ) ).replaceWith( response.data.advanced_fields );
+						$( document.getElementById( 'advanced_fields' ) ).empty( '' ).append( response.data.advanced_fields );
 
 						// set the prices
 						if ( 'undefined' !== typeof response.data.on_sale && response.data.on_sale ) {
@@ -801,16 +763,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					refresh_panels( null, false );
 				} );
 		} )
-		/**
-		 * Track changes to the global stock level on the ticket edit form.
-		 */
+		/* Track changes to the global stock level on the ticket edit form. */
 		.on( 'blur', '[name=tribe-tickets-global-stock]', function() {
 			$tribe_tickets.trigger( 'tribe_tickets_global_capacity_setting_changed', $( this ).attr( 'id' ) );
 		} )
-		/**
-		 * Track changes to the global stock level on the Settings form. Changes to the global stock
-		 * checkbox itself is handled elsewhere.
-		 */
+		/** Track changes to the global stock level on the Settings form.  */
 		.on( 'change', '#tribe-tickets-global-stock-level', function() {
 			$tribe_tickets.trigger( 'tribe_tickets_global_capacity_setting_changed', $( this ).attr( 'id' ) );
 		} )

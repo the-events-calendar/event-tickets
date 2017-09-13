@@ -36,7 +36,7 @@
 				<th class="ticket_capacity"><?php esc_html_e( 'Capacity', 'event-tickets' ); ?></th>
 				<th class="ticket_available"><?php esc_html_e( 'Available', 'event-tickets' ); ?></th>
 				<th class="ticket_edit"></th>
-			</th>
+			</tr>
 		</thead>
 		<?php
 

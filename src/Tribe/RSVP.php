@@ -1166,6 +1166,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
+		$return->report_link      = '';
 		$return->show_description = get_post_meta( $ticket_id, '_ticket_show_description', true );
 
 		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
@@ -1541,7 +1542,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Links to sales report for all tickets for this event.
 	 *
-	 * @param $event_id
+	 * @param int $event_id
 	 *
 	 * @return string
 	 */
@@ -1551,16 +1552,27 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Links to the sales report for this product.
+	 * As of TBD we reversed the params and deprecated $event_id as it was never used
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param deprecated $event_id
+	 * @param int $unused_ticket_id
 	 *
 	 * @return string
 	 */
-	public function get_ticket_reports_link( $event_id, $ticket_id ) {
+	public function get_ticket_reports_link( $unused_ticket_id, $event_id_deprecated = null ) {
+		if ( ! empty( $event_id_deprecated ) ) {
+			_deprecated_argument( __METHOD__, 'TBD' );
+		}
+
 		return '';
 	}
 
+	/**
+	 * Get an array of ticket IDs associated with an event
+	 *
+	 * @param  int $event_id   ID of the event in question
+	 * @return array           array of ticket IDs
+	 */
 	public function get_tickets_ids( $event_id ) {
 		if ( is_object( $event_id ) ) {
 			$event_id = $event_id->ID;
@@ -1599,11 +1611,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
+	 * @since TBD
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
-	 *
-	 * @since TBD
 	 *
 	 * @return mixed
 	 */
