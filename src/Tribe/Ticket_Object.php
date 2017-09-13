@@ -77,6 +77,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $admin_link;
 
 		/**
+		 * Link to the report screen for this ticket in the provider system,
+		 * or null if the provider doesn't have any sales reports.
+		 * @var string
+		 */
+		public $report_link;
+
+		/**
 		 * Link to the front end of this ticket, if the providers has single view
 		 * for this ticket.
 		 * @var string
