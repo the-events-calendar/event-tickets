@@ -428,6 +428,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return '';
 			}
 
+			$global_stock_mode = $this->global_stock_mode();
+
+			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
+				return $global_stock_obj->get_stock_level() + $global_stock_obj->tickets_sold();
+			} elseif( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
+				return $this->global_stock_cap() +  $this->qty_sold();
+			}
+
 			$stock = $this->stock();
 
 			// if the stock is less than 0, that means we've sold more than what we want in stock. If stock
@@ -472,7 +481,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function display_original_stock( $display = true ) {
 			if ( empty( $display ) ) {
-				return esc_html( $this->get_original_stock() );
+				return $this->get_original_stock();
 			}
 
 			echo esc_html( $this->get_original_stock() );

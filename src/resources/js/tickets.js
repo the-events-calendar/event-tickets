@@ -586,18 +586,23 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						if ( response.data.global_stock_mode ) {
 							switch ( response.data.global_stock_mode ) {
 								case 'global':
+									$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'global' );
+									$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
+									$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
+									$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
+
+									break;
 								case 'capped':
-									$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true );
+									$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'capped' );
 									$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
 									$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
 
 									if ( undefined !== response.data.global_stock_cap && $.isNumeric( response.data.global_stock_cap ) && 0 < response.data.global_stock_cap ) {
-										$( document.getElementById( provider_class + '_global' ) ).val( 'capped' );
 										$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
 									} else {
-										$( document.getElementById( provider_class + '_global' ) ).val( 'global' );
-										$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
+										$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( 0 );
 									}
+
 									break;
 								case 'own':
 									$( document.getElementById( provider_class + '_own' ) ).prop( 'checked', true );
