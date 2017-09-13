@@ -518,15 +518,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		/* "Save Ticket" button action */
 		.on( 'click', '[name="ticket_form_save"]', function( e ) {
 			var $form = $( document.getElementById( 'ticket_form_table' ) );
-			var type  = $form.find( '.ticket_provider:checked' ).val();
 
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
-			var form_data = $form.find( '.ticket_field' ).serialize();
-
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
-				formdata: form_data,
+				formdata: $form.find( '.ticket_field' ).serialize(),
 				post_ID : $post_id.val(),
 				nonce   : TribeTickets.add_ticket_nonce
 			};
