@@ -104,15 +104,16 @@
 
 	/* Specific cells - remember that these classes exist in the header too! */
 	.ticket_name {
-		white-space: nowrap;
-
 		p {
+			padding-left: 20px;
+
 			&::before {
 				font-family: 'dashicons';
 				font-size: 1.5em;
 				color: #ccc;
 				content: '\f180';
-				margin-right: .5em;
+				left: 5px;
+				position: absolute;
 				vertical-align: bottom;
 				visibility: hidden;
 
