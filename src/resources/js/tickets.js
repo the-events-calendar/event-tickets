@@ -28,6 +28,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	// misc ticket elements
 	var $ticket_image_preview            = $( document.getElementById( 'tribe_ticket_header_preview' ) );
 	var $ticket_show_description         = $( document.getElementById( 'tribe_tickets_show_description' ) );
+	var date_format                      = 'mm/dd/yy';
 
 	ticketHeaderImage = {
 		// Call this from the upload button to initiate the upload frame.
@@ -67,6 +68,224 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return img_html;
 		}
 	};
+
+	function format_date(date) {
+		if ( undefined === date) {
+			date = new Date();
+		}
+
+		var d = date.getDate();
+		var m = date.getMonth() + 1;
+		var y = date.getFullYear();
+
+		return '' + ( m <= 9 ? '0' + m : m ) + '/' + ( d <= 9 ? '0' + d : d ) + '/' + y;
+	}
+
+	function format_time( date ) {
+		if ( undefined === date ) {
+			date = Date.now();
+		} else if ( ! ( date instanceof Date ) ) {
+			if ( date.endsWith( 'm' ) ) {
+				var meridiem = date.slice( -2 );
+				var time     = date.slice( 0, -2 ).split(':');
+			} else {
+				var time     = date.split(':');
+			}
+			var date     = new Date();
+
+			if ( undefined !== meridiem && 'pm' == meridiem ) {
+				time[0] = time[0] + 12;
+			}
+
+			date.setHours( parseInt( time[0], 10 ), parseInt( time[1], 10 ) );
+		}
+
+		var h        = date.getHours();
+		var m        = date.getMinutes();
+		var meridiem = "AM";
+
+		if( h > 12 ) {
+			h -= 12;
+			meridiem = "PM";
+		}
+
+		return '' + h + ':' + (m <= 9 ? '0' + m : m) + meridiem;
+	}
+
+	/**
+	 * Returns the currently selected default ticketing provider.
+	 * Defaults to RSVP if something fails
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	function get_default_provider() {
+		var $checked_provider = $( 'input[name=default_ticket_provider]', '#tribe_panel_settings' ).filter( ':checked' );
+		return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
+	}
+
+	/**
+	 * Sets the ticket edit form provider to the currently selected default ticketing provider.
+	 * Defaults to RSVP if something fails
+	 *
+	 * @since TBD
+	 *
+	 * @param boolean force selection to RSVP
+	 * @return void
+	 */
+	function set_default_provider_radio( force_rsvp ) {
+		force_rsvp = undefined === force_rsvp ? false : true;
+		var $checked_provider = $( 'input[name="default_ticket_provider"]', '#tribe_panel_settings' ).filter( ':checked' );
+		var provider_id = 'Tribe__Tickets__RSVP_radio';
+
+		if ( ! force_rsvp && $checked_provider.length > 0 ) {
+			provider_id = $checked_provider.val() + '_radio';
+		 }
+
+		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger('change');
+	}
+
+	/**
+	 * Returns the current global capacity (via the settings panel.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	function get_global_cap() {
+		return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : '';
+	}
+
+	/**
+	 * When a ticket type is edited we should (re-)establish the UI for showing
+	 * and hiding its history, if it has one.
+	 */
+	function show_hide_ticket_type_history() {
+		var $history = $tribe_tickets.find( '.ticket_advanced.history' );
+
+		if ( ! $history.length ) {
+			return;
+		}
+
+		var $toggle_link      = $history.find( 'a.toggle-history' );
+		var $toggle_link_text = $toggle_link.find( 'span' );
+		var $history_list     = $history.find( 'ul' );
+
+		$history.on( 'click', '.toggle-history', function( e ) {
+			e.preventDefault();
+			if ( $history.hasClass( '_show' ) ) {
+				$history.removeClass( '_show' );
+			} else {
+				$history.addClass( '_show' );
+			}
+
+		} );
+	}
+
+	/**
+	 * Switch from one panel to another
+	 * @param  event e      triggering event
+	 * @param  object ($base_panel) $panel jQuery object containing the panel we want to switch to
+	 * @return void
+	 */
+	function show_panel( e, $panel ) {
+		if ( e ) {
+			e.preventDefault();
+		}
+
+		// this way if we don't pass a panel, it works like a 'reset'
+		if ( undefined == $panel ) {
+			$panel = $base_panel;
+		}
+
+		// First, hide them all!
+		$panels.each( function() {
+			$(this).attr( 'aria-hidden', true );
+		} );
+
+		// then show the one we want
+		$panel.attr( 'aria-hidden', false );
+	}
+
+	/**
+	 * Refreshes the base and settings panels when we've changed something
+	 *
+	 * @since TBD
+	 *
+	 * @param string optional notice to prepend to the ticket table
+	 * @param bool (true) flag for panel swap
+	 * @return void
+	 */
+	function refresh_panels( notice, swap ) {
+		// make sure we have this for later (default to true)
+		swap = undefined === swap ? true : false;
+
+		var params = {
+			action  : 'tribe-ticket-refresh-panels',
+			notice: notice,
+			post_ID : $post_id.val(),
+			nonce   : TribeTickets.add_ticket_nonce
+		};
+
+		$.post(
+			ajaxurl,
+			params,
+			function( response ) {
+				// Ticket table
+				if ( response.data.ticket_table && '' != response.data.ticket_table ) {
+					// remove old ticket table
+					var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
+
+					if ( 0 === $ticket_table.length ) {
+						// if it's not there, create it :(
+						var $container = $( '.tribe_sectionheader.ticket_list_container' );
+						$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
+						$container.append( $ticket_table );
+
+						if ( $container.hasClass( 'tribe_no_capacity' ) ) {
+							$container.removeClass( 'tribe_no_capacity' );
+						}
+					}
+
+					$ticket_table.empty();
+					// create new ticket table (and notice)
+					var $new_table = $( '<div>' );
+					$new_table.html( response.data.ticket_table );
+
+					// insert new ticket table
+					$ticket_table.append( $new_table );
+				}
+
+				// Settings table
+				if ( 'undefined' !== response.data.capacity_table ) {
+					$( document.getElementById( 'tribe_expanded_capacity_table' ) ).replaceWith( response.data.capacity_table );
+				}
+
+				// Total Capacity line
+				if ( 'undefined' !== response.data.total_capacity ) {
+					var $current_cap_line = $( document.getElementById( 'ticket_form_total_capacity' ) );
+					if ( 0 < $current_cap_line.length ) {
+						$current_cap_line.replaceWith( response.data.total_capacity );
+					} else {
+						var $wrap = $( '<div class="ticket_table_intro">' );
+						$wrap.append( response.data.total_capacity );
+						$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
+					}
+
+				}
+
+				// Set Provider radio on ticket form
+				set_default_provider_radio();
+
+				$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
+			} ).complete( function( response ) {
+				if ( swap ) {
+					show_panel();
+				}
+			} );
+	}
+
 
 	$( document ).ready( function() {
 		if ( $event_pickers.length ) {
@@ -111,180 +330,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		} );
 
-		/**
-		 * Returns the currently selected default ticketing provider.
-		 * Defaults to RSVP if something fails
-		 *
-		 * @since TBD
-		 *
-		 * @return string
-		 */
-		function get_default_provider() {
-			var $checked_provider = $( 'input[name=default_ticket_provider]', '#tribe_panel_settings' ).filter( ':checked' );
-			return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
-		}
-
-		/**
-		 * Sets the ticket edit form provider to the currently selected default ticketing provider.
-		 * Defaults to RSVP if something fails
-		 *
-		 * @since TBD
-		 *
-		 * @param boolean force selection to RSVP
-		 * @return void
-		 */
-		function set_default_provider_radio( force_rsvp ) {
-			force_rsvp = undefined === force_rsvp ? false : true;
-			var $checked_provider = $( 'input[name="default_ticket_provider"]', '#tribe_panel_settings' ).filter( ':checked' );
-			var provider_id = 'Tribe__Tickets__RSVP_radio';
-
-			if ( ! force_rsvp && $checked_provider.length > 0 ) {
-				provider_id = $checked_provider.val() + '_radio';
-			 }
-
-			$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger('change');
-		}
-
-		/**
-		 * Returns the current global capacity (via the settings panel.
-		 *
-		 * @since TBD
-		 *
-		 * @return string
-		 */
-		function get_global_cap() {
-			return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : '';
-		}
-
-		/**
-		 * When a ticket type is edited we should (re-)establish the UI for showing
-		 * and hiding its history, if it has one.
-		 */
-		function show_hide_ticket_type_history() {
-			var $history = $tribe_tickets.find( '.ticket_advanced.history' );
-
-			if ( ! $history.length ) {
-				return;
-			}
-
-			var $toggle_link      = $history.find( 'a.toggle-history' );
-			var $toggle_link_text = $toggle_link.find( 'span' );
-			var $history_list     = $history.find( 'ul' );
-
-			$history.on( 'click', '.toggle-history', function( e ) {
-				e.preventDefault();
-				if ( $history.hasClass( '_show' ) ) {
-					$history.removeClass( '_show' );
-				} else {
-					$history.addClass( '_show' );
-				}
-
-			} );
-		}
-
-		/**
-		 * Switch from one panel to another
-		 * @param  event e      triggering event
-		 * @param  object ($base_panel) $panel jQuery object containing the panel we want to switch to
-		 * @return void
-		 */
-		function show_panel( e, $panel ) {
-			if ( e ) {
-				e.preventDefault();
-			}
-
-			// this way if we don't pass a panel, it works like a 'reset'
-			if ( undefined == $panel ) {
-				$panel = $base_panel;
-			}
-
-			// First, hide them all!
-			$panels.each( function() {
-				$(this).attr( 'aria-hidden', true );
-			} );
-
-			// then show the one we want
-			$panel.attr( 'aria-hidden', false );
-		}
-
-		/**
-		 * Refreshes the base and settings panels when we've changed something
-		 *
-		 * @since TBD
-		 *
-		 * @param string optional notice to prepend to the ticket table
-		 * @param bool (true) flag for panel swap
-		 * @return void
-		 */
-		function refresh_panels( notice, swap ) {
-			// make sure we have this for later (default to true)
-			swap = undefined === swap ? true : false;
-
-			var params = {
-				action  : 'tribe-ticket-refresh-panels',
-				notice: notice,
-				post_ID : $post_id.val(),
-				nonce   : TribeTickets.add_ticket_nonce
-			};
-
-			$.post(
-				ajaxurl,
-				params,
-				function( response ) {
-					// Ticket table
-					if ( response.data.ticket_table && '' != response.data.ticket_table ) {
-						// remove old ticket table
-						var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
-
-						if ( 0 === $ticket_table.length ) {
-							// if it's not there, create it :(
-							var $container = $( '.tribe_sectionheader.ticket_list_container' );
-							$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
-							$container.append( $ticket_table );
-
-							if ( $container.hasClass( 'tribe_no_capacity' ) ) {
-								$container.removeClass( 'tribe_no_capacity' );
-							}
-						}
-
-						$ticket_table.empty();
-						// create new ticket table (and notice)
-						var $new_table = $( '<div>' );
-						$new_table.html( response.data.ticket_table );
-
-						// insert new ticket table
-						$ticket_table.append( $new_table );
-					}
-
-					// Settings table
-					if ( 'undefined' !== response.data.capacity_table ) {
-						$( document.getElementById( 'tribe_expanded_capacity_table' ) ).replaceWith( response.data.capacity_table );
-					}
-
-					// Total Capacity line
-					if ( 'undefined' !== response.data.total_capacity ) {
-						var $current_cap_line = $( document.getElementById( 'ticket_form_total_capacity' ) );
-						if ( 0 < $current_cap_line.length ) {
-							$current_cap_line.replaceWith( response.data.total_capacity );
-						} else {
-							var $wrap = $( '<div class="ticket_table_intro">' );
-							$wrap.append( response.data.total_capacity );
-							$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
-						}
-
-					}
-
-					// Set Provider radio on ticket form
-					set_default_provider_radio();
-
-					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
-				} ).complete( function( response ) {
-					if ( swap ) {
-						show_panel();
-					}
-				} );
-		}
-
 		/* Add some trigger actions */
 		$tribe_tickets.on( {
 			/**
@@ -326,7 +371,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				} );
 
 				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
-				$ticket_start_date.datepicker( 'option', 'maxDate', null ).val( $.datepicker.formatDate( 'mm/dd/yy', new Date() ) ).trigger( 'change' );
+				$ticket_start_date.datepicker( 'option', 'maxDate', null ).val( $.datepicker.formatDate( date_format, new Date() ) ).trigger( 'change' );
 				$ticket_start_time.val( new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' } ).format( new Date() ) ).trigger( 'change' );
 				// event end date, time
 				$ticket_end_date.datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
@@ -407,6 +452,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			e.preventDefault();
 			var $default_provider = get_default_provider();
 			var global_cap = get_global_cap();
+			var start_date;
+			var start_time;
+			var end_date;
+			var end_time;
 
 			$tribe_tickets
 				.trigger( 'clear.tribe' )
@@ -434,7 +483,36 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).prop( 'disabled', true );
 			}
 
-			$( $ticket_start_date, $ticket_end_date, $ticket_start_time, $ticket_end_time ).trigger( 'change' );
+			var now = new Date();
+
+			// handle all the date stuff
+			if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
+				start_date = $.datepicker.formatDate( date_format, new Date( $( document.getElementById( 'EventStartDate' ) ).val() ) );
+			} else {
+				start_date = $.datepicker.formatDate( date_format, now );
+			}
+			$ticket_start_date.val( start_date ).trigger( 'change' );
+
+			if ( undefined !== $( document.getElementById( 'EventStartTime' ) ).val() ) {
+				start_time = $( document.getElementById( 'EventStartTime' ) ).val();
+			} else {
+				start_time = format_time( now );
+			}
+			$ticket_start_time.val( start_time ).trigger( 'change' );
+
+			if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
+				end_date = $.datepicker.formatDate(date_format, new Date( $( document.getElementById( 'EventEndDate' ) ).val() ) );
+			} else {
+				end_date = '';
+			}
+			$ticket_end_date.val( end_date ).trigger( 'change' );
+
+			if ( undefined !== $( document.getElementById( 'EventEndTime' ) ).val() ) {
+				end_time = format_time( $( document.getElementById( 'EventEndTime' ) ).val() );
+			} else {
+				end_time = '';
+			}
+			$ticket_end_time.val( end_time ).trigger( 'change' );
 
 			show_panel( e, $edit_panel );
 		} )
@@ -469,7 +547,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		} )
 		/* Change stock cap value if we forget to set a value */
-		.on ( 'blur', '[name="ticket_stock"]', function( e ) {
+		.on ( 'blur', '.global_capacity-wrapper input[name="ticket_stock"]', function( e ) {
 			var $this= $( this );
 
 			if ( undefined === $this.val() || '' === $this.val() || 0 < $this.val() ) {
@@ -630,12 +708,22 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						}
 
 						// handle all the date stuff
+						var now = Date.now();
+
 						if ( response.data.start_date ) {
 							start_date = response.data.start_date;
-							start_time = response.data.start_time;
-						} else {
+						} else if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
 							start_date = $( document.getElementById( 'EventStartDate' ) ).val();
-							start_time = $( document.getElementById( 'EventStartTime' ) ).val();
+						} else {
+							start_date = now;
+						}
+
+						if ( response.data.start_time ) {
+							start_time = format_time( response.data.start_time );
+						} else if ( undefined !== $( document.getElementById( 'EventStartTime' ) ).val() ) {
+							start_time = format_time( $( document.getElementById( 'EventStartTime' ) ).val() );
+						} else {
+							start_time = format_time( now );
 						}
 
 						$ticket_start_date.val( start_date ).trigger( 'change' );
@@ -643,10 +731,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						if ( response.data.end_date ) {
 							end_date = response.data.end_date;
-							end_time = response.data.end_time;
-						} else {
+						} else if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
 							end_date = $( document.getElementById( 'EventEndDate' ) ).val();
-							end_time = $( document.getElementById( 'EventEndTime' ) ).val();
+						} else {
+							end_date = '';
+						}
+
+						if ( response.data.end_time ) {
+							end_time = format_time( response.data.end_time );
+						} else if ( undefined !== $( document.getElementById( 'EventEndTime' ) ).val() ) {
+							end_time = format_time( $( document.getElementById( 'EventEndTime' ) ).val() );
+						} else {
+							end_time = '';
 						}
 
 						$ticket_end_date.val( end_date ).trigger( 'change' );
