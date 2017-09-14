@@ -811,15 +811,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} );
 
 		/**
-		 * Unset the global stock settings changed flag if the post is being
-		 * saved/updated (no need to trigger a confirmation dialog in these
-		 * cases).
- 		*/
-		$( 'input[type="submit"]' ).click( function() {
-			// global_capacity_setting_changed = false;
-		} );
-
-		/**
 		 * If the user attempts to nav away without saving global stock setting
 		 * changes then try to bring this to their attention!
 		 */
