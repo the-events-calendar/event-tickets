@@ -87,7 +87,8 @@
 	margin-top: 0;
 }
 
-.tribe-attendees-page a.tickets_uncheckin {
+.tribe-attendees-page span.tickets_uncheckin,
+	.tribe-attendees-page a.tickets_uncheckin {
 	display: none;
 }
 
@@ -107,7 +108,8 @@
 	display: none;
 }
 
-.tribe-attendees-page .tickets_checked a.tickets_uncheckin {
+.tribe-attendees-page .tickets_checked span.tickets_uncheckin,
+		.tribe-attendees-page .tickets_checked a.tickets_uncheckin {
 	display: block;
 	opacity: 1;
 }

@@ -288,6 +288,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
+
+		if ( ! $this->check_capability_on_display() ) {
+			return $row_actions;
+		}
+
 		$default_actions = array();
 
 		if ( is_object( $this->event ) && isset(  $this->event->ID ) ) {
@@ -395,7 +400,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$button_classes = ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati ) ?
 			'button-primary' : 'button-primary button-disabled';
 
-		if ( empty( $this->event ) ) {
+		if ( ! $this->check_capability_on_display() ) {
+			$checkin = '';
+			$uncheckin =  sprintf(
+				'<span class="tickets_uncheckin">%s</span>',
+				esc_html__( 'Checked In', 'event-tickets' )
+			);
+		} elseif ( empty( $this->event ) ) {
 			$checkin   = sprintf(
 				'<a href="#" data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
 				esc_attr( $item['attendee_id'] ),
@@ -444,7 +455,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
-
 
 		$checked = '';
 		if ( intval( $item['check_in'] ) === 1 ) {
@@ -529,6 +539,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
+
+		if ( ! $this->check_capability_on_display() ) {
+			return array();
+		}
+
 		$actions = array(
 			'check_in'        => esc_attr__( 'Check in', 'event-tickets' ),
 			'uncheck_in'      => esc_attr__( 'Undo Check in', 'event-tickets' ),
@@ -625,6 +640,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Process the checking-in of selected attendees from the Attendees table.
 	 */
 	protected function do_check_in() {
+
+		$this->check_capability_on_action();
+
 		$attendee_ids = $this->get_action_ids();
 
 		if ( ! $attendee_ids ) {
@@ -646,6 +664,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Process the undoing of a check-in of selected attendees from the Attendees table.
 	 */
 	protected function do_uncheck_in() {
+
+		$this->check_capability_on_action();
+
 		$attendee_ids = $this->get_action_ids();
 
 		if ( ! $attendee_ids ) {
@@ -668,6 +689,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Process the deletion of selected attendees from the Attendees table.
 	 */
 	protected function do_delete() {
+
+		$this->check_capability_on_action();
+
 		$attendee_ids = $this->get_action_ids();
 
 		if ( ! $attendee_ids ) {
@@ -750,6 +774,23 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				 'total_pages' => 1,
 			 )
 		);
+	}
+
+	public function check_capability_on_display() {
+
+		if ( current_user_can( 'edit_others_tribe_events' ) ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function check_capability_on_action() {
+
+		if ( ! current_user_can( 'edit_others_tribe_events' ) ) {
+			wp_die( '<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' . '<p>' . __( 'Sorry, you are not allowed to manage Attendees.', 'event-tickets' ) . '</p>', 403 );
+		}
+
 	}
 
 }
