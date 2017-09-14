@@ -443,6 +443,10 @@ p.description {
 	color: #555;
 }
 
+#ticket_form .original_stock_cap span {
+	margin-right: 0;
+}
+
 @media (min-width: 782px) {
 
 	.ticket_panel {
