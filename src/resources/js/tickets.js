@@ -417,7 +417,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} else {
 				set_default_provider_radio();
 				// Only want to do this if we're setting up a ticket - as opposed to an RSVP
-				$( document.getElementById( $default_provider + '_global' ) ).prop( 'checked', true );
+				$( document.getElementById( $default_provider + '_' + tribe_ticket_vars.stock_mode ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
 				$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
 			}
