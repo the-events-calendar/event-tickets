@@ -16,10 +16,10 @@
 		<div class="tribe-tickets-image-upload">
 			<div class="input_block">
 				<span class="ticket_form_label"><?php esc_html_e( 'Ticket header image:', 'event-tickets' ); ?></span>
-				<p class="description"><?php esc_html_e( 'Select an image from your media library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'event-tickets' ); ?></p>
+				<p class="description"><?php esc_html_e( 'Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'event-tickets' ); ?></p>
 			</div>
 			<input type="button" class="button" name="tribe_ticket_header_image" id="tribe_ticket_header_image" value="<?php esc_html_e( 'Select an Image', 'event-tickets' ); ?>" />
-			<span id="tribe_tickets_image_preview_filename"><span class="dashicons dashicons-format-image"></span><span class="filename"><?php echo esc_html( $header_filename ); ?></span></span>
+			<span id="tribe_tickets_image_preview_filename" class="<?php echo ! empty( $header_filename )? esc_attr( "-active" ): ''; ?>"><span class="dashicons dashicons-format-image"></span><span class="filename"><?php echo esc_html( $header_filename ); ?></span></span>
 		</div>
 		<div class="tribe-tickets-image-preview">
 				<a class="tribe_preview" id="tribe_ticket_header_preview">
