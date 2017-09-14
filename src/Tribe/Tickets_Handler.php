@@ -283,7 +283,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$cap_array = array(
-			$this->get_total_event_shared_capacity( $post_id ),
+			$this->get_total_original_event_shared_capacity( $post_id ),
 			$this->get_total_event_independent_capacity( $post_id ),
 			$this->get_total_event_rsvp_capacity( $post_id ),
 		);
@@ -451,11 +451,59 @@ class Tribe__Tickets__Tickets_Handler {
 		$global_capacity_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true );
 		$capacity                = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 
-		// If we've got $capacity but no $global_capacity_enabled, do some housecleaning
+		// If we don't have $global_capacity_enabled, do some housecleaning
 		if ( ! $global_capacity_enabled ) {
 			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED );
 			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
 			$capacity = 0;
+		}
+
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @since TDB
+		 *
+		 * @param int $capacity Total capacity value
+		 * @param int $post Post ID tickets are attached to
+		 */
+		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id );
+	}
+
+	/**
+	 * Get the total event shared capacity. For display
+	 *
+	 * @since TBD
+	 *
+	 * @param int|object (null) $post Post or Post ID tickets are attached to
+	 *
+	 * @return int|string number of tickets ( or string 'unlimited' )
+	 */
+	public function get_total_original_event_shared_capacity( $post = null ) {
+		$post_id                 = Tribe__Main::post_id_helper( $post );
+		$capacity                = 0;
+		$global_capacity_enabled = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, true );
+
+		// If we don't have $global_capacity_enabled, do some housecleaning
+		if ( ! $global_capacity_enabled ) {
+			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED );
+			delete_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
+
+			/**
+			 * Allow templates to filter the returned value
+			 *
+			 * @since TDB
+			 *
+			 * @param int $capacity Total capacity value
+			 * @param int $post Post ID tickets are attached to
+			 */
+			return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id );
+		}
+
+		$capacity       = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
+		$shared_tickets = $this->get_event_shared_tickets( $post_id );
+
+		foreach ( $shared_tickets as $shared_ticket ) {
+			$capacity += $shared_ticket->qty_sold();
 		}
 
 		/**
@@ -1059,11 +1107,12 @@ class Tribe__Tickets__Tickets_Handler {
 			<td class="ticket_capacity">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
 				<?php
-				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+				$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode;
+				if ( $show_parens ) {
 					echo '(';
 				}
-				$ticket->display_original_stock( true );
-				if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
+				$ticket->display_original_stock();
+				if ( $show_parens ) {
 					echo ')';
 				}
 				?>
@@ -1074,7 +1123,7 @@ class Tribe__Tickets__Tickets_Handler {
 				<?php
 				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
 					// escaping handled in function - could be string|int
-					$ticket->display_original_stock( true );
+					$ticket->display_original_stock();
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
 					echo esc_html( $ticket->remaining() );
 				} else {
