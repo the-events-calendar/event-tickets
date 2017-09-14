@@ -4,7 +4,7 @@ Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.1
-Stable tag: 4.5.5
+Stable tag: 4.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -233,9 +233,28 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.5.5] TBD =
+= [4.5.6] TBD =
 
-* 
+* Fix - Prevent occasional issue with email content-type not being reset after ticket emails were sent. Props to @jappleton in the forums for reporting this! [62976]
+* Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
+* Fix - Open the exportable CSV file of Attendees in a new tab to accommodate Google Chrome's strict handling of file and MIME types, preventing some console errors and notices in Chrome. [70750]
+* Fix - Fix some layout issues with the "Email Attendees" modal in the Attendees list admin view, especially when viewed on phones or tablets. Props to @event-control for reporting this! [80975]
+
+= [4.5.5] 2017-09-06 =
+
+* Fix - Fixed issue where RSVP options would often fail to show up on custom post types (thanks to tvtap for reporting this issue!) [73052]
+* Fix - Confirm RSVP button not showing when last ticket was out of stock [86616]
+* Fix - Fixed issue where email address links were getting http:// prepended in the RSVP list (thank you to @petemorelli for reporting this!) [85556]
+* Fix - Resolved issue where tribe_events_count_available_tickets() sometimes returned the wrong stock count (props to Florian for reporting this) [81967]
+* Fix - Added check to see if log directory is readable before listing logs within it (thank you @rodrigochallengeday-org and @richmondmom for reporting this) [86091]
+* Tweak - RSVP non attendance email filters names are now unique (thanks to solwebsolutions for reporting this!) [74412]
+* Tweak - Include full event start and end date in Tickets Email (thank you @pagan11460 for the suggestion!) [73885]
+* Tweak - Improve performance of the addition of the "Attendees" row action link in wp-admin list tables (props to pixeldesigns for reporting this!) [72126]
+* Tweak - Changed views: `tickets/email.php`, `tickets/orders-link.php`, `tickets/orders-rsvp.php`, and `tickets/rsvp.php`
+* Tweak - Added filters: `tribe_events_set_notice`, `tribe_rsvp_non_attendance_email_headers`, `tribe_rsvp_non_attendance_email_attachments`, `tribe_rsvp_non_attendance_email_recipient`, `tribe_rsvp_non_attendance_email_subject`, and `tribe_rsvp_non_attendance_email_content`
+* Tweak - Added filters: `tribe_event_tickets_plus_email_meta_fields`
+* Tweak - Added actions: `tribe_tickets_before_front_end_ticket_form`
+* Language - 0 new strings added, 53 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.5.4] 2017-08-24 =
 

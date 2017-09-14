@@ -73,7 +73,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// This has no Performance problems, since get_post uses caching and we use this method later on.
-		$post = get_post( absint( $query->query_vars['p'] ) );
+		$post = isset( $query->query_vars['p'] ) ? get_post( absint( $query->query_vars['p'] ) ) : 0;
 		if ( ! $post ) {
 			return;
 		}
@@ -372,8 +372,21 @@ class Tribe__Tickets__Tickets_View {
 	 * @return void
 	 */
 	public function inject_link_template() {
+		/**
+		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $already_rendered
+		 */
+		$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+		if ( $already_rendered ) {
+			return;
+		}
+
 		$event_id = get_the_ID();
-		$user_id = get_current_user_id();
+		$user_id  = get_current_user_id();
 
 		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_ticket_attendees( $event_id, $user_id ) ) {
 			return;
@@ -386,6 +399,8 @@ class Tribe__Tickets__Tickets_View {
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
 
 		include $file;
+
+		add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 	}
 
 	/**
