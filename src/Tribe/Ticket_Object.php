@@ -433,8 +433,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
 				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
 				return $global_stock_obj->get_stock_level() + $global_stock_obj->tickets_sold();
-			} elseif( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-				return $this->global_stock_cap() +  $this->qty_sold();
+			} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
+				return $this->global_stock_cap() + $this->qty_sold();
 			}
 
 			$stock = $this->stock();

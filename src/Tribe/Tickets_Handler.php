@@ -502,10 +502,18 @@ class Tribe__Tickets__Tickets_Handler {
 		$capacity       = get_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
 		$shared_tickets = $this->get_event_shared_tickets( $post_id );
 
-		foreach( $shared_tickets as $shared_ticket ) {
+		foreach ( $shared_tickets as $shared_ticket ) {
 			$capacity += $shared_ticket->qty_sold();
 		}
 
+		/**
+		 * Allow templates to filter the returned value
+		 *
+		 * @since TDB
+		 *
+		 * @param int $capacity Total capacity value
+		 * @param int $post Post ID tickets are attached to
+		 */
 		return apply_filters( 'tribe_tickets_total_event_shared_capacity', $capacity, $post_id );
 	}
 
