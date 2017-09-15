@@ -1855,12 +1855,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Clears the attendees cache for a given post
 		 *
-		 * @param string $post_id The Post ID, can also be a WP_Post
+		 * @param int|WP_Post $post The parent post or ID
 		 *
 		 * @return bool Was the operation successful?
 		 */
-		public function clear_attendees_cache( $post_id ) {
-			return Tribe__Post_Transient::instance()->delete( $post_id, self::ATTENDEES_CACHE );
+		public function clear_attendees_cache( $post ) {
+			return Tribe__Post_Transient::instance()->delete( $post, self::ATTENDEES_CACHE );
 		}
 
 		/**
