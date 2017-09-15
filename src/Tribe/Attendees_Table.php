@@ -547,7 +547,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function get_bulk_actions() {
 
 		$actions = array();
-
 		if ( $this->capabilities->check_checkin_capability() ) {
 			$actions = array(
 				'check_in'   => esc_attr__( 'Check in', 'event-tickets' ),
@@ -650,7 +649,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	protected function do_check_in() {
 
 		$this->capabilities->check_checkin_capability( true );
-
 		$attendee_ids = $this->get_action_ids();
 
 		if ( ! $attendee_ids ) {
@@ -674,7 +672,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	protected function do_uncheck_in() {
 
 		$this->capabilities->check_checkin_capability( true );
-
 		$attendee_ids = $this->get_action_ids();
 
 		if ( ! $attendee_ids ) {
@@ -699,7 +696,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	protected function do_delete() {
 
 		$this->capabilities->check_manage_capability( true );
-
 		$attendee_ids = $this->get_action_ids();
 
 		if ( ! $attendee_ids ) {
