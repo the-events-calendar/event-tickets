@@ -1020,6 +1020,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			ob_end_clean();
 
 			$return['advanced_fields']   = $extra;
+
+			/**
+			 * Allows for the insertion of the attendee meta fields into the ticket admin form
+			 *
+			 * @param int $post_id Post ID
+			 * @param int $ticket_id Ticket ID
+			 */
+			$return['attendee_fields']   = apply_filters( 'tribe_events_tickets_metabox_edit_attendee', $post_id, $ticket_id );
+
 			$return['stock']             = $ticket->stock;
 			$return['original_stock']    = $ticket->original_stock();
 			$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
