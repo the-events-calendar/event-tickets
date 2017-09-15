@@ -17,7 +17,7 @@ class Tribe__Tickets__Metabox {
 	 * @param $post_type
 	 */
 	public static function maybe_add_meta_box( $post_type ) {
-		$modules = apply_filters( 'tribe_events_tickets_modules', null );
+		$modules = Tribe__Tickets__Tickets::modules();
 		if ( empty( $modules ) ) {
 			return;
 		}
@@ -48,7 +48,7 @@ class Tribe__Tickets__Metabox {
 	 */
 	public static function do_modules_metaboxes( $post_id ) {
 
-		$modules = apply_filters( 'tribe_events_tickets_modules', null );
+		$modules = Tribe__Tickets__Tickets::modules();
 		if ( empty( $modules ) ) {
 			return;
 		}
@@ -66,7 +66,7 @@ class Tribe__Tickets__Metabox {
 	public static function add_admin_scripts( $hook ) {
 		global $post;
 
-		$modules = apply_filters( 'tribe_events_tickets_modules', null );
+		$modules = Tribe__Tickets__Tickets::modules();
 
 		/* Only load the resources in the event edit screen, and if there's a provider available */
 		if ( ( $hook != 'post-new.php' && $hook != 'post.php' ) || ! in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() ) || empty( $modules ) ) {
