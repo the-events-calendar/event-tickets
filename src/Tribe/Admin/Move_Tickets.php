@@ -27,7 +27,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	public function setup() {
 		$this->ticket_history();
 
-		$this->capabilities =  new Tribe__Tickets__Capabilities();
+		$this->capabilities = new Tribe__Tickets__Capabilities();
 		if ( ! $this->capabilities->check_manage_capability() ) {
 			return false;
 		}

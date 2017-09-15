@@ -85,11 +85,9 @@ class Tribe__Tickets__Capabilities {
 	 */
 	public function remove_all_caps() {
 		foreach ( array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ) as $role ) {
-
 			foreach ( $this->cap_aliases[ $role ] as $alias ) {
 				$role->remove_cap( $alias );
 			}
-
 		}
 	}
 

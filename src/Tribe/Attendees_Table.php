@@ -36,7 +36,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'screen'   => get_current_screen(),
 		) );
 
-		$this->capabilities =  new Tribe__Tickets__Capabilities();
+		$this->capabilities = new Tribe__Tickets__Capabilities();
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
@@ -408,7 +408,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		if ( ! $this->capabilities->check_checkin_capability() ) {
 			$checkin = '';
-			$uncheckin =  sprintf(
+			$uncheckin = sprintf(
 				'<span class="tickets_uncheckin">%s</span>',
 				esc_html__( 'Checked In', 'event-tickets' )
 			);
