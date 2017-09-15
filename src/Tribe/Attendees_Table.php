@@ -16,6 +16,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public $event = false;
 
 	/**
+	 * Capabilities Class
+	 * @var Tribe__Tickets__Capabilities $capabilities
+	 */
+	protected $capabilities;
+
+	/**
 	 * Class constructor
 	 *
 	 * @param array $args  additional arguments/overrides
@@ -29,6 +35,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'ajax'     => true,
 			'screen'   => get_current_screen(),
 		) );
+
+		$this->capabilities =  new Tribe__Tickets__Capabilities();
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
@@ -289,13 +297,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
 
-		if ( ! $this->check_capability_on_display() ) {
-			return $row_actions;
-		}
-
 		$default_actions = array();
 
-		if ( is_object( $this->event ) && isset(  $this->event->ID ) ) {
+		if ( is_object( $this->event ) && isset(  $this->event->ID ) && $this->check_checkin_capability() ) {
 			$default_actions[] = sprintf(
 				'<span class="inline">
 					<a href="#" class="tickets_checkin" data-attendee-id="%1$d" data-event-id="%2$d" data-provider="%3$s">' . esc_html_x( 'Check In', 'row action', 'event-tickets' ) . '</a>
@@ -307,20 +311,22 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			);
 		}
 
-		if ( is_admin() ) {
+		if ( is_admin() && $this->capabilities->check_manage_capability() ) {
 			$default_actions[] = '<span class="inline move-ticket"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>';
 		}
 
-		$attendee = esc_attr( $item['attendee_id'] . '|' . $item['provider'] );
-		$nonce = wp_create_nonce( 'do_item_action_' . $attendee );
+		if ( $this->capabilities->check_manage_capability() ) {
+			$attendee = esc_attr( $item['attendee_id'] . '|' . $item['provider'] );
+			$nonce    = wp_create_nonce( 'do_item_action_' . $attendee );
 
-		$delete_url = esc_url( add_query_arg( array(
-			'action'   => 'delete_attendee',
-			'nonce'    => $nonce,
-			'attendee' => $attendee,
-		) ) );
+			$delete_url = esc_url( add_query_arg( array(
+				'action'   => 'delete_attendee',
+				'nonce'    => $nonce,
+				'attendee' => $attendee,
+			) ) );
 
-		$default_actions[] = '<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>';
+			$default_actions[] = '<span class="trash"><a href="' . $delete_url . '">' . esc_html_x( 'Delete', 'row action', 'event-tickets' ) . '</a></span>';
+		}
 
 		return array_merge( $row_actions, $default_actions );
 	}
@@ -400,7 +406,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$button_classes = ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati ) ?
 			'button-primary' : 'button-primary button-disabled';
 
-		if ( ! $this->check_capability_on_display() ) {
+		if ( ! $this->capabilities->check_checkin_capability() ) {
 			$checkin = '';
 			$uncheckin =  sprintf(
 				'<span class="tickets_uncheckin">%s</span>',
@@ -540,15 +546,17 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 
-		if ( ! $this->check_capability_on_display() ) {
-			return array();
-		}
+		$actions = array();
 
-		$actions = array(
-			'check_in'        => esc_attr__( 'Check in', 'event-tickets' ),
-			'uncheck_in'      => esc_attr__( 'Undo Check in', 'event-tickets' ),
-			'delete_attendee' => esc_attr__( 'Delete', 'event-tickets' ),
-		);
+		if ( $this->capabilities->check_checkin_capability() ) {
+			$actions = array(
+				'check_in'   => esc_attr__( 'Check in', 'event-tickets' ),
+				'uncheck_in' => esc_attr__( 'Undo Check in', 'event-tickets' ),
+			);
+		}
+		if ( $this->capabilities->check_manage_capability() ) {
+			$actions['delete_attendee'] = esc_attr__( 'Delete', 'event-tickets' );
+		}
 
 		return (array) apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', $actions );
 	}
@@ -641,7 +649,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	protected function do_check_in() {
 
-		$this->check_capability_on_action();
+		$this->capabilities->check_checkin_capability( true );
 
 		$attendee_ids = $this->get_action_ids();
 
@@ -665,7 +673,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	protected function do_uncheck_in() {
 
-		$this->check_capability_on_action();
+		$this->capabilities->check_checkin_capability( true );
 
 		$attendee_ids = $this->get_action_ids();
 
@@ -690,7 +698,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	protected function do_delete() {
 
-		$this->check_capability_on_action();
+		$this->capabilities->check_manage_capability( true );
 
 		$attendee_ids = $this->get_action_ids();
 
@@ -774,23 +782,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				 'total_pages' => 1,
 			 )
 		);
-	}
-
-	public function check_capability_on_display() {
-
-		if ( current_user_can( 'edit_others_tribe_events' ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	public function check_capability_on_action() {
-
-		if ( ! current_user_can( 'edit_others_tribe_events' ) ) {
-			wp_die( '<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' . '<p>' . __( 'Sorry, you are not allowed to manage Attendees.', 'event-tickets' ) . '</p>', 403 );
-		}
-
 	}
 
 }
