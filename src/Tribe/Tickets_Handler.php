@@ -793,7 +793,9 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Sets the `$typenow` var to the post_type, which will cause that post type to be highlight in admin menus
+	 * Sets the `$typenow` var to the post_type
+	 *
+	 * Causes parent post type to be highlighted in admin menus.
 	 *
 	 * @see `admin_head` action
 	 */
