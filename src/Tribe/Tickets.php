@@ -1848,9 +1848,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		private function maybe_update_attendees_cache( $operation_did_complete ) {
 			if ( $operation_did_complete && ! empty( $_POST['event_ID'] ) ) {
-				$post_transient = Tribe__Post_Transient::instance();
-				$post_transient->delete( $_POST['event_ID'], self::ATTENDEES_CACHE );
+				$this->clear_attendees_cache( $_POST['event_ID'] );
 			}
+		}
+
+		/**
+		 * Clears the attendees cache for a given post
+		 *
+		 * @param int|WP_Post $post The parent post or ID
+		 *
+		 * @return bool Was the operation successful?
+		 */
+		public function clear_attendees_cache( $post ) {
+			return Tribe__Post_Transient::instance()->delete( $post, self::ATTENDEES_CACHE );
 		}
 
 		/**
