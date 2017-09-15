@@ -319,6 +319,9 @@ class Tribe__Tickets__Tickets_Handler {
 			add_filter( 'admin_title', array( $this, 'attendees_admin_title' ), 10, 2 );
 			add_filter( 'admin_body_class', array( $this, 'attendees_admin_body_class' ) );
 		}
+
+		// Set the post type to get highlighed in the admin menu.
+		add_filter( 'admin_head', array( $this, 'set_typenow' ) );
 	}
 
 	public function attendees_admin_body_class( $body_classes ) {
@@ -789,4 +792,13 @@ class Tribe__Tickets__Tickets_Handler {
 		return $url;
 	}
 
+	/**
+	 * Sets the `$typenow` var to the post_type, which will cause that post type to be highlight in admin menus
+	 *
+	 * @see `admin_head` action
+	 */
+	public function set_typenow() {
+		global $typenow;
+		$typenow = $_REQUEST['post_type'];
+	}
 }
