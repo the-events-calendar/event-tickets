@@ -693,11 +693,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Save ticket order
 			if ( ! empty( $_POST['ticket_order'] ) ) {
 				$ticket_order = $_POST['ticket_order'];
-				update_post_meta(
-					$post_id,
-					'_tribe_tickets_order',
-					$ticket_order
-				);
+				update_post_meta( $post_id, '_tribe_tickets_order', $ticket_order );
 
 				$ticket_order = explode( ',', $ticket_order );
 				$ticket_order = array_flip( $ticket_order );
