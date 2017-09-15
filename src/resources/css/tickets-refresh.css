@@ -222,6 +222,7 @@
 }
 
 .ticket_table_intro #ticket_form_total_capacity .tooltip {
+	background-color: #efefef;
 	border-radius: 3px;
 	border: 1px solid #a3a3a3;
 	display: none;
@@ -240,6 +241,7 @@
 
 .ticket_table_intro #ticket_form_total_capacity .tooltip {
 	left: 100%;
+	top: 53%;
 	white-space: nowrap;
 }
 
@@ -401,6 +403,7 @@ p.description {
 }
 
 #ticket_form .tooltip_container .tooltip {
+	background-color: #efefef;
 	border-radius: 3px;
 	border: 1px solid #a3a3a3;
 	display: none;
@@ -418,7 +421,7 @@ p.description {
 }
 
 #ticket_form .tooltip_container .tooltip {
-	background-color: #fff;
+	background-color: #efefef;
 	left: 100%;
 	margin: 0;
 	width: 200px;
