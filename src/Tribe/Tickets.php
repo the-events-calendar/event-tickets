@@ -423,7 +423,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Register all Tribe__Tickets__Tickets api consumers
 			self::$active_modules[ $this->className ] = $this->pluginName;
 
-			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
 			add_action( 'tribe_events_tickets_metabox_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
 
 			// Admin AJAX actions for each provider
@@ -1179,13 +1178,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns the array of active modules/providers.
 		 *
 		 * @static
-		 * @return array
+		 *
+		 * @return array $active_modules {
+		 *      Ticket modules
+		 *
+		 *      @param mixed $module A class which extends this one, acts as a ticket provider.
+		 * }
 		 */
 		public static function modules() {
 			/**
 			 * Filters the available tickets modules
 			 *
-			 * @var string[] ticket modules
+			 * @param array $active_modules {
+			 *      Ticket modules
+			 *
+			 *      @param mixed $module A class which extends this one, acts as a ticket provider.
+			 * }
 			 */
 			return apply_filters( 'tribe_tickets_get_modules', self::$active_modules );
 		}

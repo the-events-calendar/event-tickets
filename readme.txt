@@ -242,6 +242,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Added "View Tickets" link to Custom Post Types when appropriate. Thank you @19ideas for helping identify this. [67570]
 * Fix - Fix some layout issues with the "Email Attendees" modal in the Attendees list admin view, especially when viewed on phones or tablets. Props to @event-control for reporting this! [80975]
 * Fix - Avoid notice-level errors when calling ticket stock functions in relation to events with unlimited stock (props to Lou Anne for highlighting this) [78685]
+* Tweak - Documenter filter for available Ticket Modules, and used its method in more place [66421]
 
 = [4.5.5] 2017-09-06 =
 
