@@ -801,6 +801,10 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function set_typenow() {
 		global $typenow;
-		$typenow = $_REQUEST['post_type'];
+
+		if ( ! empty( $_REQUEST['post_type'] ) ) {
+			// $typenow gets compared against a whitelist of post types, no security concern.
+			$typenow = $_REQUEST['post_type'];
+		}
 	}
 }
