@@ -565,6 +565,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$successful_moves++;
 		}
 
+		// Clear attendee cache now that the attendees have moved.
+		$provider_class->clear_attendees_cache( $src_event_id );
+		$provider_class->clear_attendees_cache( $tgt_event_id );
+
 		/**
 		 * Fires when all of the specified ticket IDs have been moved
 		 *
