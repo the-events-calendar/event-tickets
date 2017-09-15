@@ -3,6 +3,7 @@
 
 /**
  * Run schema updates on plugin activation or updates
+ * Based off The Events Calendar Updater Class
  *
  * @since TBD
  *
@@ -23,12 +24,20 @@ class Tribe__Tickets__Updater {
 	 * alloptions caches getting out of sync with the DB,
 	 * forcing an eternal update cycle
 	 *
+	 * @since TBD
+	 *
 	 */
 	protected function clear_option_caches() {
 		wp_cache_delete( 'notoptions', 'options' );
 		wp_cache_delete( 'alloptions', 'options' );
 	}
 
+	/**
+	 * Look for Updates and Run Them
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function do_updates() {
 		$this->clear_option_caches();
 		$updates = $this->get_update_callbacks();
@@ -52,6 +61,13 @@ class Tribe__Tickets__Updater {
 		}
 	}
 
+	/**
+	 * Update Version number in Option
+	 *
+	 * @since TBD
+	 *
+	 * @param $new_version
+	 */
 	public function update_version_option( $new_version ) {
 		Tribe__Settings_Manager::set_option( $this->version_option, $new_version );
 	}
@@ -61,6 +77,8 @@ class Tribe__Tickets__Updater {
 	 * Any key higher than the version recorded in the DB
 	 * and lower than $this->current_version will have its
 	 * callback called.
+	 *
+	 * @since TBD
 	 *
 	 * @return array
 	 */
@@ -72,11 +90,12 @@ class Tribe__Tickets__Updater {
 	 * Returns an array of callbacks that should be called
 	 * every time the version is updated
 	 *
+	 * @since TBD
+	 *
 	 * @return array
 	 */
 	public function get_constant_update_callbacks() {
 		return array(
-			array( $this, 'flush_rewrites' ),
 			array( $this, 'set_capabilities' ),
 		);
 	}
@@ -87,6 +106,8 @@ class Tribe__Tickets__Updater {
 
 	/**
 	 * Returns true if the version in the DB is less than the provided version
+	 *
+	 * @since TBD
 	 *
 	 * @return boolean
 	 */
@@ -100,17 +121,20 @@ class Tribe__Tickets__Updater {
 	/**
 	 * Returns true if an update is required
 	 *
+	 * @since TBD
+	 *
 	 * @return boolean
 	 */
 	public function update_required() {
 		return $this->is_version_in_db_less_than( $this->current_version );
 	}
 
-	public function flush_rewrites() {
-		// run after 'init' to ensure that all CPTs are registered
-		add_action( 'wp_loaded', 'flush_rewrite_rules' );
-	}
-
+	/**
+	 * Set Capabilities
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function set_capabilities() {
 		$this->capabilities = new Tribe__Tickets__Capabilities();
 		add_action( 'wp_loaded', array( $this->capabilities, 'set_initial_caps' ) );
@@ -119,6 +143,8 @@ class Tribe__Tickets__Updater {
 
 	/**
 	 * Reset the $current_user global after capabilities have been changed
+	 *
+	 * @since TBD
 	 *
 	 */
 	public function reload_current_user() {
@@ -133,6 +159,8 @@ class Tribe__Tickets__Updater {
 	/**
 	 * Reset update flags. All updates past $this->reset_version will
 	 * run again on the next page load
+	 *
+	 * @since TBD
 	 *
 	 */
 	public function reset() {

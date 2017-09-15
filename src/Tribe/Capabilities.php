@@ -11,6 +11,11 @@ class Tribe__Tickets__Capabilities {
 
 	public $set_initial_caps = false;
 
+	/**
+	 * Capabilities for Ticket Attendees
+	 *
+	 * @var array
+	 */
 	private $cap_aliases = array(
 		'editor' => array( // full permissions to a post type
 		                   'manage_attendees',
@@ -22,7 +27,9 @@ class Tribe__Tickets__Capabilities {
 	);
 
 	/**
-	 * Grant caps for the given post type to the given role
+	 * Grant caps for tickets for a given role
+	 *
+	 * @since TBD
 	 *
 	 * @param string $role_id The role receiving the caps
 	 * @param string $level   The capability level to grant (see the list of caps above)
@@ -55,27 +62,9 @@ class Tribe__Tickets__Capabilities {
 	}
 
 	/**
-	 * Remove all caps for the given post type from the given role
+	 * Set the initial capabilities for tickets on default roles
 	 *
-	 * @param string $post_type The post type to remove caps for
-	 * @param string $role_id   The role which is losing caps
-	 *
-	 * @return bool false if the action failed for some reason, otherwise true
-	 */
-	public function remove_post_type_caps( $role_id ) {
-		$role = get_role( $role_id );
-		if ( ! $role ) {
-			return false;
-		}
-		foreach ( $role->capabilities as $cap => $has ) {
-			$role->remove_cap( $cap );
-		}
-
-		return true;
-	}
-
-	/**
-	 * Set the initial capabilities for events and related post types on default roles
+	 * @since TBD
 	 *
 	 * @return void
 	 */
@@ -88,13 +77,19 @@ class Tribe__Tickets__Capabilities {
 	}
 
 	/**
-	 * Remove capabilities for events and related post types from default roles
+	 * Remove capabilities for tickets from default roles
+	 *
+	 * @since TBD
 	 *
 	 * @return void
 	 */
 	public function remove_all_caps() {
 		foreach ( array( 'administrator', 'editor', 'author', 'contributor', 'subscriber' ) as $role ) {
-			//	$this->remove_post_type_caps( $role );
+
+			foreach ( $this->cap_aliases[ $role ] as $alias ) {
+				$role->remove_cap( $alias );
+			}
+
 		}
 	}
 
@@ -108,7 +103,11 @@ class Tribe__Tickets__Capabilities {
 	public function check_manage_capability( $action = false ) {
 
 		if ( $action && ! current_user_can( 'manage_attendees' ) ) {
-			wp_die( '<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' . '<p>' . __( 'Sorry, you are not allowed to manage Attendees.', 'event-tickets' ) . '</p>', 403 );
+			wp_die(
+				'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+				'<p>' . __( 'Sorry, you are not allowed to manage Attendees.', 'event-tickets' 	) . '</p>',
+				403
+			);
 		}
 
 		if ( current_user_can( 'manage_attendees' ) ) {
@@ -128,7 +127,11 @@ class Tribe__Tickets__Capabilities {
 	public function check_checkin_capability( $action = false ) {
 
 		if ( $action && ! current_user_can( 'checkin_attendees' ) && ! current_user_can( 'manage_attendees' ) ) {
-			wp_die( '<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' . '<p>' . __( 'Sorry, you are not allowed to manage Attendees.', 'event-tickets' ) . '</p>', 403 );
+			wp_die(
+				'<h1>' . __( 'Cheatin&#8217; uh?' ) . '</h1>' .
+				'<p>' . __( 'Sorry, you are not allowed to Check In Attendees.', 'event-tickets' 	) . '</p>',
+				403
+			);
 		}
 
 		if ( current_user_can( 'checkin_attendees' ) || current_user_can( 'manage_attendees' ) ) {

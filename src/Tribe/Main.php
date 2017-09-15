@@ -769,7 +769,7 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Make necessary database updates on admin_init
+	 * Make necessary database updates on init
 	 *
 	 * @since TBD
 	 *
@@ -781,7 +781,6 @@ class Tribe__Tickets__Main {
 		}
 
 		$updater = new Tribe__Tickets__Updater( self::VERSION );
-		//$updater->reset();
 		if ( $updater->update_required() ) {
 			$updater->do_updates();
 		}
