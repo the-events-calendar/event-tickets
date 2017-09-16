@@ -44,8 +44,8 @@
 .ticket_panel[aria-hidden='true'] {
 	opacity: 0;
 	position: absolute;
-	visibility: hidden;
 	right: -100%;
+	visibility: hidden;
 }
 
 .ticket_panel section {
