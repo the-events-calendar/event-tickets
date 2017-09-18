@@ -439,6 +439,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			$( $ticket_start_date, $ticket_end_date, $ticket_start_time, $ticket_end_time ).trigger( 'change' );
 
+			$( '.tribe-tickets-attendee-saved-fields' ).show();
+
 			show_panel( e, $edit_panel );
 		} )
 		/* Ticket "Cancel" button action */
@@ -700,6 +702,15 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 						if ( response.data.sku ) {
 							$( document.querySelectorAll( '.sku_input' ) ).val( response.data.sku );
+						}
+
+						$( document.getElementById( 'tribe-tickets-attendee-sortables' ) ).empty();
+
+						if ( 'undefined' !== typeof response.data.attendee_fields && response.data.attendee_fields ) {
+							$( document.getElementById( 'tribe-tickets-attendee-sortables' ) ).html( response.data.attendee_fields );
+							$( '.tribe-tickets-attendee-saved-fields' ).hide();
+						} else {
+							$( '.tribe-tickets-attendee-saved-fields' ).show();
 						}
 
 						if ( 'undefined' !== typeof response.data.controls && response.data.controls ) {
