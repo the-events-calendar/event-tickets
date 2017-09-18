@@ -184,6 +184,10 @@
 	font-weight: bold;
 }
 
+#tribe_tickets_image_preview_filename.-active {
+	display: inline;
+}
+
 #tribe_tickets_image_preview_filename .dashicons {
 	vertical-align: text-bottom;
 }
