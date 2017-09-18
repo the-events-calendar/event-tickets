@@ -727,7 +727,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		.on ( 'blur', '.global_capacity-wrapper input[name="ticket_stock"]', function( e ) {
 			var $this= $( this );
 
-			if ( undefined === $this.val() || '' === $this.val() || 0 < $this.val() ) {
+			if ( undefined === $this.val() || '' === $this.val() || 0 >  $this.val() ) {
 				$this.val( '0' );
 			}
 		} )
