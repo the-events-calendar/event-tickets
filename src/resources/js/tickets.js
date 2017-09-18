@@ -25,7 +25,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	// misc ticket elements
 	var $ticket_image_preview            = $( document.getElementById( 'tribe_ticket_header_preview' ) );
 	var $ticket_show_description         = $( document.getElementById( 'tribe_tickets_show_description' ) );
-	var date_format                      = 'mm/dd/yy';
+	var date_format                      = 'MM/DD/YYYY';
+	var time_format                      = 'HH:mmA';
 
 	ticketHeaderImage = {
 		// Call this from the upload button to initiate the upload frame.
@@ -67,45 +68,25 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 	function format_date(date) {
 		if ( undefined === date) {
-			date = new Date();
+			// An empty string will give us now() below
+			date = '';
 		}
 
-		var d = date.getDate();
-		var m = date.getMonth() + 1;
-		var y = date.getFullYear();
-
-		return '' + ( m <= 9 ? '0' + m : m ) + '/' + ( d <= 9 ? '0' + d : d ) + '/' + y;
+		// This is a bit sketchy,
+		// moment.js is deprecating use of strings in any format other than ISO (YYYY-MM-DD).
+		// But they allow you to use js Date() to do the parsing for you.
+		return moment( new Date( date ) ).format( date_format );
 	}
 
 	function format_time( date ) {
 		if ( undefined === date ) {
-			date = Date.now();
-		} else if ( ! ( date instanceof Date ) ) {
-			if ( date.endsWith( 'm' ) ) {
-				var meridiem = date.slice( -2 );
-				var time     = date.slice( 0, -2 ).split(':');
-			} else {
-				var time     = date.split(':');
-			}
-			var date     = new Date();
-
-			if ( undefined !== meridiem && 'pm' == meridiem ) {
-				time[0] = time[0] + 12;
-			}
-
-			date.setHours( parseInt( time[0], 10 ), parseInt( time[1], 10 ) );
+			// An empty string will give us now() below
+			date = '';
 		}
 
-		var h        = date.getHours();
-		var m        = date.getMinutes();
-		var meridiem = "AM";
-
-		if( h > 12 ) {
-			h -= 12;
-			meridiem = "PM";
-		}
-
-		return '' + h + ':' + (m <= 9 ? '0' + m : m) + meridiem;
+		// Passing in the format allows us to only provide a time portion
+		// (no need fo a Date() object) but this does make it a bit brittle
+		return moment( date, time_format ).format( time_format );
 	}
 
 	/**
