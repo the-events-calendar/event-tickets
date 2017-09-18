@@ -475,7 +475,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		.on ( 'blur', '[name="ticket_stock"]', function( e ) {
 			var $this= $( this );
 
-			if ( undefined === $this.val() || '' === $this.val() || 0 < $this.val() ) {
+			if ( undefined === $this.val() || '' === $this.val() || 0 >  $this.val() ) {
 				$this.val( '0' );
 			}
 		} )
