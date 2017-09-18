@@ -14,9 +14,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $edit_panel                      = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel                  = $( document.getElementById( 'tribe_panel_settings' ) );
 	// stock elements
-	var $enable_global_stock             = $( document.getElementById( 'tribe-tickets-enable-global-stock' ) );
-	var $global_stock_level              = $( document.getElementById( 'tribe-tickets-global-stock-level' ) );
-	var $global_capacity_edit            = $( document.getElementById('settings_global_capacity_edit') );
 	var global_capacity_setting_changed  = false;
 	// date elements
 	var $event_pickers                   = $( document.getElementById( 'tribe-event-datepickers' ) );
@@ -33,7 +30,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	ticketHeaderImage = {
 		// Call this from the upload button to initiate the upload frame.
 		uploader: function() {
-
 			var frame = wp.media( {
 				title   : HeaderImageData.title,
 				multiple: false,
@@ -330,6 +326,181 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		} );
 
+		/**
+		 * Returns the currently selected default ticketing provider.
+		 * Defaults to RSVP if something fails
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		function get_default_provider() {
+			var $checked_provider = $( 'input[name=default_ticket_provider]', '#tribe_panel_settings' ).filter( ':checked' );
+			return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
+		}
+
+		/**
+		 * Sets the ticket edit form provider to the currently selected default ticketing provider.
+		 * Defaults to RSVP if something fails
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean force selection to RSVP
+		 * @return void
+		 */
+		function set_default_provider_radio( force_rsvp ) {
+			force_rsvp = undefined === force_rsvp ? false : true;
+			var $checked_provider = $( 'input[name="default_ticket_provider"]', '#tribe_panel_settings' ).filter( ':checked' );
+			var provider_id = 'Tribe__Tickets__RSVP_radio';
+
+			if ( ! force_rsvp && $checked_provider.length > 0 ) {
+				provider_id = $checked_provider.val() + '_radio';
+			 }
+
+			$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger('change');
+		}
+
+		/**
+		 * Returns the current global capacity (via the settings panel.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		function get_global_cap() {
+			var $global_capacity_edit = $( document.getElementById('settings_global_capacity_edit') )
+			return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : '';
+		}
+
+		/**
+		 * When a ticket type is edited we should (re-)establish the UI for showing
+		 * and hiding its history, if it has one.
+		 */
+		function show_hide_ticket_type_history() {
+			var $history = $tribe_tickets.find( '.ticket_advanced.history' );
+
+			if ( ! $history.length ) {
+				return;
+			}
+
+			var $toggle_link      = $history.find( 'a.toggle-history' );
+			var $toggle_link_text = $toggle_link.find( 'span' );
+			var $history_list     = $history.find( 'ul' );
+
+			$history.on( 'click', '.toggle-history', function( e ) {
+				e.preventDefault();
+				if ( $history.hasClass( '_show' ) ) {
+					$history.removeClass( '_show' );
+				} else {
+					$history.addClass( '_show' );
+				}
+
+			} );
+		}
+
+		/**
+		 * Switch from one panel to another
+		 * @param  event e      triggering event
+		 * @param  object ($base_panel) $panel jQuery object containing the panel we want to switch to
+		 * @return void
+		 */
+		function show_panel( e, $panel ) {
+			if ( e ) {
+				e.preventDefault();
+			}
+
+			// this way if we don't pass a panel, it works like a 'reset'
+			if ( undefined == $panel ) {
+				$panel = $base_panel;
+			}
+
+			// First, hide them all!
+			$panels.each( function() {
+				$(this).attr( 'aria-hidden', true );
+			} );
+
+			// then show the one we want
+			$panel.attr( 'aria-hidden', false );
+		}
+
+		/**
+		 * Refreshes the base and settings panels when we've changed something
+		 *
+		 * @since TBD
+		 *
+		 * @param string optional notice to prepend to the ticket table
+		 * @param bool (true) flag for panel swap
+		 * @return void
+		 */
+		function refresh_panels( notice, swap ) {
+			// make sure we have this for later (default to true)
+			swap = undefined === swap ? true : false;
+
+			var params = {
+				action  : 'tribe-ticket-refresh-panels',
+				notice: notice,
+				post_ID : $post_id.val(),
+				nonce   : TribeTickets.add_ticket_nonce
+			};
+
+			$.post(
+				ajaxurl,
+				params,
+				function( response ) {
+					// Ticket table
+					if ( response.data.ticket_table && '' != response.data.ticket_table ) {
+						// remove old ticket table
+						var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
+
+						if ( 0 === $ticket_table.length ) {
+							// if it's not there, create it :(
+							var $container = $( '.tribe_sectionheader.ticket_list_container' );
+							$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
+							$container.append( $ticket_table );
+
+							if ( $container.hasClass( 'tribe_no_capacity' ) ) {
+								$container.removeClass( 'tribe_no_capacity' );
+							}
+						}
+
+						$ticket_table.empty();
+						// create new ticket table (and notice)
+						var $new_table = $( '<div>' );
+						$new_table.html( response.data.ticket_table );
+
+						// insert new ticket table
+						$ticket_table.append( $new_table );
+					}
+
+					// Settings table
+					if ( 'undefined' !== response.data.capacity_table ) {
+						$( document.getElementById( 'tribe_expanded_capacity_table' ) ).replaceWith( response.data.capacity_table );
+					}
+
+					// Total Capacity line
+					if ( 'undefined' !== response.data.total_capacity ) {
+						var $current_cap_line = $( document.getElementById( 'ticket_form_total_capacity' ) );
+						if ( 0 < $current_cap_line.length ) {
+							$current_cap_line.replaceWith( response.data.total_capacity );
+						} else {
+							var $wrap = $( '<div class="ticket_table_intro">' );
+							$wrap.append( response.data.total_capacity );
+							$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
+						}
+
+					}
+
+					// Set Provider radio on ticket form
+					set_default_provider_radio();
+
+					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
+				} ).complete( function( response ) {
+					if ( swap ) {
+						show_panel();
+					}
+				} );
+		}
+
 		/* Add some trigger actions */
 		$tribe_tickets.on( {
 			/**
@@ -422,6 +593,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			e.preventDefault();
 
 			// Do this first to prevent weirdness with global capacity
+			var $global_capacity_edit = $( document.getElementById('settings_global_capacity_edit') )
 			if ( false === $global_capacity_edit.prop( 'disabled' ) ) {
 				$global_capacity_edit.blur();
 				$global_capacity_edit.prop( 'disabled', true );
@@ -468,6 +640,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				// Only want to do this if we're setting up a ticket - as opposed to an RSVP
 				$( document.getElementById( $default_provider + '_' + tribe_ticket_vars.stock_mode ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
+				if ( undefined !== global_cap && '' !== global_cap ) {
+					$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).addClass('screen-reader-text');
+				} else {
+					$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).removeClass('screen-reader-text');
+				}
 				$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
 			}
 
@@ -901,15 +1078,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).hide().find( '.filename' ).text( '' );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
 
-		} );
-
-		/**
-		 * Unset the global stock settings changed flag if the post is being
-		 * saved/updated (no need to trigger a confirmation dialog in these
-		 * cases).
- 		*/
-		$( 'input[type="submit"]' ).click( function() {
-			global_capacity_setting_changed = false;
 		} );
 
 		/**
