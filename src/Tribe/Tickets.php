@@ -207,27 +207,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
-		public function get_event_reports_link( $event_id ) {
+		public function get_event_reports_link( $post_id ) {
 
 		}
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
 		 * null if the provider doesn't have reporting capabilities.
-		 * As of TBD we reversed the params and deprecated $event_id as it was never used
+		 * As of TBD we reversed the params and deprecated $post_id as it was never used
 		 *
 		 * @abstract
 		 *
-		 * @param deprecated $event_id_deprecated
-		 * @param int $ticket_id
-		 *
+		 * @param deprecated $post_id ID of parent "event" post
+		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function get_ticket_reports_link( $event_id_deprecated, $ticket_id ) {
+		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {
 
 		}
 
@@ -236,12 +234,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param $event_id
-		 * @param $ticket_id
-		 *
+		 * @param int $post_id ID of parent "event" post
+		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function get_ticket( $event_id, $ticket_id ) {
+		public function get_ticket( $post_id, $ticket_id ) {
 
 		}
 
@@ -251,6 +248,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since TBD
 		 *
 		 * @param object $ticket Ticket object
+		 * @return string HTMl link
 		 */
 		public function get_ticket_delete_link( $ticket = null ) {
 			if ( empty( $ticket ) ) {
@@ -266,7 +264,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param bool true
 			 * @param int ticket post ID
-			 * @param string ticket provider class
+			 * @return string HTML link | void HTML link
 			 */
 			if ( apply_filters( 'tribe_tickets_current_user_can_delete_ticket', true, $ticket->ID, $ticket->provider_class ) ) {
 				$delete_link = sprintf(
@@ -294,9 +292,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param int $post_id the id of the parent post/event
+		 * @param int $post_id ID of parent "event" post
 		 * @param object $ticket Ticket object
-		 *
 		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_url( $post_id, $ticket = null ) {
@@ -324,9 +321,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param int $post_id the id of the parent post/event
+		 * @param int $post_id ID of parent "event" post
 		 * @param object $ticket Ticket object
-		 *
 		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
@@ -347,12 +343,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $move_link;
 		}
 
-		/*
+		/**
 		 * Get the controls (move, delete) as a string and add to our ajax return
 		 *
 		 * @since TBD
 		 *
 		 * @param array $return the ajax return data
+		 * @return array $return modified data
 		 */
 		public function ajax_ticket_edit_controls( $return ) {
 			$ticket = $this->get_ticket( $return['post_id'], $return['ID'] );
@@ -375,8 +372,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Attempts to load the specified ticket type post object.
 		 *
-		 * @param int $ticket_id
-		 *
+		 * @param int $ticket_id ID of ticket post
 		 * @return Tribe__Tickets__Ticket_Object|null
 		 */
 		public static function load_ticket_object( $ticket_id ) {
@@ -411,7 +407,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @todo convert to abstract method in 4.0
 		 *
 		 * @param $possible_ticket
-		 *
 		 * @return bool|WP_Post
 		 */
 		public function get_event_for_ticket( $possible_ticket ) {
@@ -423,12 +418,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param $event_id
-		 * @param $ticket_id
-		 *
+		 * @param int $post_id ID of parent "event" post
+		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function delete_ticket( $event_id, $ticket_id ) {
+		public function delete_ticket( $post_id, $ticket_id ) {
 
 		}
 
@@ -437,13 +431,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param int   $event_id
+		 * @param int   $post_id
 		 * @param int   $ticket
 		 * @param array $raw_data
-		 *
 		 * @return mixed
 		 */
-		public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 
 		}
 
@@ -452,11 +445,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param int $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return array mixed
 		 */
-		protected function get_tickets( $event_id ) {
+		protected function get_tickets( $post_id ) {
 
 		}
 
@@ -464,9 +456,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Get attendees by id and associated post type
 		 * or default to using $post_id
 		 *
-		 * @param      $post_id
+		 * @param int $post_id ID of parent "event" post
 		 * @param null $post_type
-		 *
 		 * @return array|mixed
 		 */
 		public function get_attendees_by_id( $post_id ) {
@@ -478,8 +469,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param $post_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
 		protected function get_attendees_by_post_id( $post_id ) {
@@ -489,8 +479,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get Attendees by ticket/attendee ID
 		 *
-		 * @param $attendee_id
-		 *
+		 * @param int $attendee_id
 		 * @return array
 		 */
 		protected function get_attendees_by_attendee_id( $attendee_id ) {
@@ -500,8 +489,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get attendees by order id
 		 *
-		 * @param $order_id
-		 *
+		 * @param int $order_id
 		 * @return array
 		 */
 		protected function get_attendees_by_order_id( $order_id ) {
@@ -512,8 +500,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Get attendees from provided query
 		 *
 		 * @param WP_Query $attendees_query
-		 * @param          $post_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
 		protected function get_attendees( $attendees_query, $post_id ) {
@@ -525,9 +512,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param $attendee_id
+		 * @param int $attendee_id
 		 * @param $qr true if from QR checkin process
-		 *
 		 * @return mixed
 		 */
 		public function checkin( $attendee_id ) {
@@ -539,8 +525,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param $attendee_id
-		 *
+		 * @param int $attendee_id
 		 * @return mixed
 		 */
 		public function uncheckin( $attendee_id ) {
@@ -554,12 +539,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @abstract
 		 *
-		 * @param $event_id
-		 * @param $ticket_id
-		 *
+		 * @param int $post_id ID of parent "event" post
+		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function do_metabox_capacity_options( $event_id, $ticket_id ) {
+		public function do_metabox_capacity_options( $post_id, $ticket_id ) {
 
 		}
 
@@ -569,7 +553,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @abstract
 		 *
 		 * @param $content
-		 *
 		 * @return mixed
 		 */
 		public function front_end_tickets_form( $content ) {
@@ -581,7 +564,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * (it may contain the user selected currency, etc)
 		 *
 		 * @param object|int $product
-		 *
 		 * @return string
 		 */
 		public function get_price_html( $product ) {
@@ -662,6 +644,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 
+		/**
+		 * test if the nonce is correct and the current user has the correct permissions
+		 * @param  WP_Post  $post
+		 * @param  array  $data
+		 * @param  string  $nonce_action
+		 * @return boolean
+		 */
 		public function has_permission( $post, $data, $nonce_action ) {
 			if ( ! $post instanceof WP_Post ) {
 				if ( ! is_numeric( $post ) ) {
@@ -744,8 +733,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 *    Sanitizes the data for the new/edit ticket ajax call,
-		 *  and calls the child save_ticket function.
+		 * Sanitizes the data for the new/edit ticket ajax call,
+		 * and calls the child save_ticket function.
 		 */
 		final public function ajax_handler_ticket_add() {
 			if ( ! isset( $_POST['formdata'] ) || ! isset( $_POST['post_ID'] ) ) {
@@ -775,7 +764,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Fire action when a ticket has been added
 				 *
-				 * @param $post_id
+				 * @param int $post_id ID of parent "event" post
 				 */
 				do_action( 'tribe_tickets_ticket_added', $post_id );
 			}
@@ -799,7 +788,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Filters the return data for ticket add
 			 *
 			 * @param array $return Array of data to return to the ajax call
-			 * @param int $post_id WP_Post ID the ticket is attached to
+			 * @param int $post_id ID of parent "event" post
 			 */
 			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
 
@@ -809,9 +798,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Creates a ticket object and calls the child save_ticket function
 		 *
-		 * @param int $post_id WP_Post ID the ticket is being attached to
+		 * @param int $post_id ID of parent "event" post
 		 * @param array $data Raw post data
-		 *
 		 * @return boolean
 		 */
 		final public function ticket_add( $post_id, $data ) {
@@ -853,9 +841,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fired once a ticket has been created and added to a post
 			 *
-			 * @param $post_id Post ID
-			 * @param $ticket Ticket object
-			 * @param $data Submitted post data
+			 * @param int $post_id ID of parent "event" post
+			 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object
+			 * @param array $data Submitted post data
 			 */
 			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
 
@@ -896,7 +884,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Handles the check-in ajax call, and calls the uncheckin method.
 		 *
-		 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
+		 * @TODO use of 'order_id' in this method is misleading (we're working with the attendee id)
 		 *       we should consider revising in a back-compat minded way
 		 */
 		final public function ajax_handler_attendee_uncheckin() {
@@ -929,7 +917,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Sanitizes the data for the delete ticket ajax call, and calls the child delete_ticket
 		 * function.
 		 *
-		 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
+		 * @TODO use of 'order_id' in this method is misleading (we're working with the attendee id)
 		 *       we should consider revising in a back-compat minded way
 		 */
 		final public function ajax_handler_ticket_delete() {
@@ -964,7 +952,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Fire action when a ticket has been deleted
 				 *
-				 * @param $post_id
+				 * @param int $post_id ID of parent "event" post
 				 */
 				do_action( 'tribe_tickets_ticket_deleted', $post_id );
 			}
@@ -975,6 +963,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the data from a single ticket to populate
 		 * the edit form.
+		 *
+		 * @return array $return array of ticket data
 		 */
 		final public function ajax_handler_ticket_edit() {
 
@@ -1025,10 +1015,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			ob_start();
 			/**
-			 * Fired to allow for the insertion of extra form data in the ticket admin form
+			 * Fired to allow for the insertion of extra form data in the ticket int admin form
 			 *
-			 * @param $post_id Post ID
-			 * @param $ticket_id Ticket ID
+			 * @param int $post_id ID of parent "event" post
+			 * @param int $ticket_id ID of ticket post
 			 */
 			do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, $ticket_id );
 
@@ -1036,6 +1026,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			ob_end_clean();
 
 			$return['advanced_fields']   = $extra;
+
+			/**
+			 * Allows for the insertion of the attendee meta fields into the ticket admin form
+			 *
+			 * @since TBD
+			 *
+			 * @param int $post_id ID of parent "event" post
+			 * @param int $ticket_id ID of ticket post
+			 */
+			$return['attendee_fields']   = apply_filters( 'tribe_events_tickets_metabox_edit_attendee', $post_id, $ticket_id );
+
 			$return['stock']             = $ticket->stock;
 			$return['original_stock']    = $ticket->original_stock();
 			$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
@@ -1063,7 +1064,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns the markup for a notice in the admin
 		 *
 		 * @param string $msg Text for the notice
-		 *
 		 * @return string Notice with markup
 		 */
 		protected function notice( $msg ) {
@@ -1080,18 +1080,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return array
 		 */
-		public static function get_event_attendees( $event_id ) {
+		public static function get_event_attendees( $post_id ) {
 			$attendees_from_cache = false;
 			$attendees            = array();
 
 			if ( ! is_admin() ) {
 				$post_transient = Tribe__Post_Transient::instance();
 
-				$attendees_from_cache = $post_transient->get( $event_id, self::ATTENDEES_CACHE );
+				$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
 
 				// if there is a valid transient, we'll use the value from that and note
 				// that we have fetched from cache
@@ -1105,7 +1104,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( false === $attendees_from_cache && empty( $attendees ) ) {
 				foreach ( self::modules() as $class => $module ) {
 					$obj       = call_user_func( array( $class, 'get_instance' ) );
-					$attendees = array_merge( $attendees, $obj->get_attendees_by_post_id( $event_id ) );
+					$attendees = array_merge( $attendees, $obj->get_attendees_by_post_id( $post_id ) );
 				}
 
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
@@ -1116,7 +1115,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				if ( ! is_admin() ) {
 					$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
-					$post_transient->set( $event_id, self::ATTENDEES_CACHE, $attendees, $expire );
+					$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
 				}
 			}
 
@@ -1126,9 +1125,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since 4.4
 			 *
 			 * @param array $attendees Array of event attendees.
-			 * @param int   $event_id  Event post ID.
+			 * @param int $post_id ID of parent "event" post
 			 */
-			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $event_id );
+			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id );
 		}
 
 		/**
@@ -1140,41 +1139,38 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * ticket provider plugins which have already implemented that method with protected
 		 * accessibility.
 		 *
-		 * @param $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return array
 		 */
-		public function get_attendees_array( $event_id ) {
-			return $this->get_attendees_by_post_id( $event_id );
+		public function get_attendees_array( $post_id ) {
+			return $this->get_attendees_by_post_id( $post_id );
 		}
 
 		/**
 		 * Returns the total number of attendees for an event (regardless of provider).
 		 *
-		 * @param int $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return int
 		 */
-		public static function get_event_attendees_count( $event_id ) {
-			$attendees = self::get_event_attendees( $event_id );
+		public static function get_event_attendees_count( $post_id ) {
+			$attendees = self::get_event_attendees( $post_id );
 			return count( $attendees );
 		}
 
 		/**
 		 * Returns all tickets for an event (all providers are queried for this information).
 		 *
-		 * @param $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return array
 		 */
-		public static function get_all_event_tickets( $event_id ) {
+		public static function get_all_event_tickets( $post_id ) {
 			$tickets = array();
 
 			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
-				$tickets = array_merge( $tickets, $obj->get_tickets( $event_id ) );
+				$tickets = array_merge( $tickets, $obj->get_tickets( $post_id ) );
 			}
 
 			return $tickets;
@@ -1186,7 +1182,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * All registered providers are asked to perform this test.
 		 *
-		 * @param $possible_ticket
+		 * @param object|int $possible_ticket
 		 * @return bool
 		 */
 		public static function find_matching_event( $possible_ticket ) {
@@ -1204,12 +1200,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
-		final public static function get_event_checkedin_attendees_count( $event_id ) {
-			$checkedin = self::get_event_attendees( $event_id );
+		final public static function get_event_checkedin_attendees_count( $post_id ) {
+			$checkedin = self::get_event_attendees( $post_id );
 
 			return array_reduce( $checkedin, array( 'Tribe__Tickets__Tickets', '_checkedin_attendees_array_filter' ), 0 );
 		}
@@ -1221,9 +1216,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param $result
-		 * @param $item
-		 *
+		 * @param int $result
+		 * @param array $item
 		 * @return mixed
 		 */
 		private static function _checkedin_attendees_array_filter( $result, $item ) {
@@ -1258,8 +1252,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns whether a class name is a valid active module/provider.
 		 *
-		 * @param $module
-		 *
+		 * @param string $module class name of module
 		 * @return bool
 		 */
 		private function module_is_valid( $module ) {
@@ -1276,8 +1269,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Generates a set of radio buttons listing the available global stock mode options.
 		 *
-		 * @param string $current_option
-		 *
+		 * @param string (empty string) $current_option
 		 * @return string
 		 */
 		protected function global_stock_mode_selector( $current_option = '' ) {
@@ -1333,7 +1325,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Check and set global capacity options for the "event" post
 		 *
+		 * @return object ajax success object
 		 */
 		public function edit_global_capacity_level() {
 			$capacity = tribe_get_request_var( 'capacity' );
@@ -1365,12 +1359,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns Ticket and RSVP Count for an Event
 		 *
-		 * @param $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return array
 		 */
-		public static function get_ticket_counts( $event_id ) {
-			$tickets = self::get_all_event_tickets( $event_id );
+		public static function get_ticket_counts( $post_id ) {
+			$tickets = self::get_all_event_tickets( $post_id );
 
 			// if no tickets or rsvp return empty array
 			if ( ! $tickets ) {
@@ -1444,7 +1437,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+			$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 			$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
 
 			$types['tickets']['available'] += $global_stock;
@@ -1466,12 +1459,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * @param Tribe__Tickets__Ticket_Object $ticket
 				 */
-				$event_id = $ticket->get_event()->ID;
-				$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+				$post_id = $ticket->get_event()->ID;
+				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 				$stock_mode = $ticket->global_stock_mode();
 
 				$data['tickets'][ $ticket->ID ] = array(
-					'event_id' => $event_id,
+					'event_id' => $post_id,
 					'mode'     => $stock_mode,
 				);
 
@@ -1486,7 +1479,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$data['tickets'][ $ticket->ID ]['stock'] = $ticket->stock();
 				}
 
-				$data['events'][ $event_id ] = array(
+				$data['events'][ $post_id ] = array(
 					'stock' => $global_stock->get_stock_level(),
 				);
 			}
@@ -1535,17 +1528,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param $event_id
-		 *
+		 * @param int $post_id ID of parent "event" post
 		 * @return array
 		 */
-		final public static function get_event_tickets( $event_id ) {
+		final public static function get_event_tickets( $post_id ) {
 
 			$tickets = array();
 
 			foreach ( self::modules() as $class => $module ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
-				$tickets = array_merge( $tickets, $obj->get_tickets( $event_id ) );
+				$tickets = array_merge( $tickets, $obj->get_tickets( $post_id ) );
 			}
 
 			return $tickets;
@@ -1571,7 +1563,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Sets an AJAX response, returns a JSON array and ends the execution.
 		 *
-		 * @param $data
+		 * @param mixed $data
 		 */
 		final protected function ajax_ok( $data ) {
 			$return = array();
@@ -1596,8 +1588,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Generates and returns the email template for a group of attendees.
 		 *
-		 * @param $tickets
-		 *
+		 * @param array $tickets
 		 * @return string
 		 */
 		public function generate_tickets_email_content( $tickets ) {
@@ -1607,8 +1598,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Gets the view from the plugin's folder, or from the user's theme if found.
 		 *
-		 * @param $template
-		 *
+		 * @param string $template
 		 * @return mixed|void
 		 */
 		public function getTemplateHierarchy( $template ) {
@@ -1631,13 +1621,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * event and ensures those costs are included in the $costs array.
 		 *
 		 * @param  array $prices
-		 * @param  int   $event_id
-		 *
+		 * @param  int   $post_id
 		 * @return array
 		 */
-		public function get_ticket_prices( array $prices, $event_id ) {
+		public function get_ticket_prices( array $prices, $post_id ) {
 			// Iterate through all tickets from all providers
-			foreach ( self::get_all_event_tickets( $event_id ) as $ticket ) {
+			foreach ( self::get_all_event_tickets( $post_id ) as $ticket ) {
 				// No need to add the pricepoint if it is already in the array
 				if ( in_array( $ticket->price, $prices ) ) {
 					continue;
@@ -1662,6 +1651,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * "edit_bananas" or whatever is appropriate.
 		 *
 		 * @internal for internal plugin use only (in spite of having public visibility)
+		 *
 		 * @see Tribe__Tickets__Tickets_Handler::user_can()
 		 *
 		 * @param  string $generic_cap
@@ -1669,13 +1659,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return boolean
 		 */
 		public function user_can( $generic_cap, $attendee_id ) {
-			$event_id = $this->get_event_id_from_attendee_id( $attendee_id );
+			$post_id = $this->get_event_id_from_attendee_id( $attendee_id );
 
-			if ( empty( $event_id ) ) {
+			if ( empty( $post_id ) ) {
 				return false;
 			}
 
-			return Tribe__Tickets__Tickets_Handler::instance()->user_can( $generic_cap, $event_id );
+			return Tribe__Tickets__Tickets_Handler::instance()->user_can( $generic_cap, $post_id );
 		}
 
 		/**
@@ -1693,13 +1683,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			$event_id = get_post_meta( $attendee_id, $attendee_event_key, true );
+			$post_id = get_post_meta( $attendee_id, $attendee_event_key, true );
 
-			if ( empty( $event_id ) ) {
+			if ( empty( $post_id ) ) {
 				return false;
 			}
 
-			return (int) $event_id;
+			return (int) $post_id;
 		}
 
 		/**
@@ -1815,9 +1805,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Process the attendee meta into an array with value, slug, and label
 		 *
-		 * @param $product_id
-		 * @param $meta
-		 *
+		 * @param int $product_id
+		 * @param array $meta
 		 * @return array
 		 */
 		public function process_attendee_meta( $product_id, $meta ) {
@@ -1896,7 +1885,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @param array $tickets Collection of tickets
 		 * @param string $datetime Datetime string
-		 *
 		 * @return string
 		 */
 		public function get_availability_slug_by_collection( $tickets, $datetime = null ) {
@@ -1954,7 +1942,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.2
 		 *
 		 * @param array $tickets Collection of tickets
-		 *
 		 * @return string
 		 */
 		public function get_tickets_unavailable_message( $tickets ) {
@@ -1991,7 +1978,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * the "tickets unavailable" message should be displayed.
 		 *
 		 * @param array $tickets
-		 * @param int $post_id = null (defaults to the current post)
+		 * @param int $post_id ID of parent "event" post (defaults to the current post)
 		 */
 		public function maybe_show_tickets_unavailable_message( $tickets, $post_id = null ) {
 			if ( null === $post_id ) {
@@ -2062,7 +2049,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * (where the template settings require such an approach).
 		 *
 		 * @param string $content
-		 *
 		 * @return string
 		 */
 		public function show_tickets_unavailable_message_in_content( $content ) {
@@ -2189,7 +2175,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * @param $operation_did_complete
+		 * @param bool $operation_did_complete
 		 */
 		private function maybe_update_attendees_cache( $operation_did_complete ) {
 			if ( $operation_did_complete && ! empty( $_POST['event_ID'] ) ) {
