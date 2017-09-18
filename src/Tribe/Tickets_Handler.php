@@ -178,6 +178,9 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'admin_enqueue_scripts', array( $this, 'attendees_page_load_pointers' ) );
 		add_action( 'load-' . $this->attendees_page, array( $this, 'attendees_page_screen_setup' ) );
 
+		// Set the post type to get highlighted in the admin menu.
+		add_filter( 'admin_head', array( $this, 'set_typenow' ) );
+
 		/**
 		 * This is a workaround to fix the problem
 		 *
@@ -258,6 +261,17 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Checks if this is the attendees page.
+	 *
+	 * @return bool
+	 */
+	public function is_attendees_page() {
+		$has_query_var = Tribe__Utils__Array::get( $_GET, 'page' ) === self::$attendees_slug;
+
+		return is_admin() && $has_query_var;
+	}
+
+	/**
 	 * Setups the Attendees screen data.
 	 */
 	public function attendees_page_screen_setup() {
@@ -272,7 +286,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 */
 		static $has_run = false;
 
-		if ( $has_run || ( is_admin() && ( empty( $_GET['page'] ) || self::$attendees_slug !== $_GET['page'] ) ) ) {
+		if ( $has_run || ! $this->is_attendees_page() ) {
 			return;
 		}
 
@@ -319,9 +333,6 @@ class Tribe__Tickets__Tickets_Handler {
 			add_filter( 'admin_title', array( $this, 'attendees_admin_title' ), 10, 2 );
 			add_filter( 'admin_body_class', array( $this, 'attendees_admin_body_class' ) );
 		}
-
-		// Set the post type to get highlighed in the admin menu.
-		add_filter( 'admin_head', array( $this, 'set_typenow' ) );
 	}
 
 	public function attendees_admin_body_class( $body_classes ) {
@@ -793,18 +804,16 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Sets the `$typenow` var to the post_type
-	 *
-	 * Causes parent post type to be highlighted in admin menus.
+	 * Set post type highlighted in admin menus when viewing the attendees page.
 	 *
 	 * @see `admin_head` action
 	 */
 	public function set_typenow() {
 		global $typenow;
 
-		if ( ! empty( $_REQUEST['post_type'] ) ) {
-			// $typenow gets compared against a whitelist of post types, no security concern.
-			$typenow = $_REQUEST['post_type'];
+		if ( $this->is_attendees_page() ) {
+			// Set to the parent post type.
+			$typenow = tribe_get_request_var( 'post_type' );
 		}
 	}
 }
