@@ -14,9 +14,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $edit_panel                      = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel                  = $( document.getElementById( 'tribe_panel_settings' ) );
 	// stock elements
-	var $enable_global_stock             = $( document.getElementById( 'tribe-tickets-enable-global-stock' ) );
-	var $global_stock_level              = $( document.getElementById( 'tribe-tickets-global-stock-level' ) );
-	var $global_capacity_edit            = $( document.getElementById('settings_global_capacity_edit') );
 	var global_capacity_setting_changed  = false;
 	// date elements
 	var $event_pickers                   = $( document.getElementById( 'tribe-event-datepickers' ) );
@@ -32,7 +29,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	ticketHeaderImage = {
 		// Call this from the upload button to initiate the upload frame.
 		uploader: function() {
-
 			var frame = wp.media( {
 				title   : HeaderImageData.title,
 				multiple: false,
@@ -153,6 +149,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * @return string
 		 */
 		function get_global_cap() {
+			var $global_capacity_edit = $( document.getElementById('settings_global_capacity_edit') )
 			return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : '';
 		}
 
@@ -377,6 +374,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			e.preventDefault();
 
 			// Do this first to prevent weirdness with global capacity
+			var $global_capacity_edit = $( document.getElementById('settings_global_capacity_edit') )
 			if ( false === $global_capacity_edit.prop( 'disabled' ) ) {
 				$global_capacity_edit.blur();
 				$global_capacity_edit.prop( 'disabled', true );
@@ -419,6 +417,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				// Only want to do this if we're setting up a ticket - as opposed to an RSVP
 				$( document.getElementById( $default_provider + '_' + tribe_ticket_vars.stock_mode ) ).prop( 'checked', true );
 				$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
+				if ( undefined !== global_cap && '' !== global_cap ) {
+					$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).addClass('screen-reader-text');
+				} else {
+					$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).removeClass('screen-reader-text');
+				}
 				$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
 			}
 
@@ -805,15 +808,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).hide().find( '.filename' ).text( '' );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
 
-		} );
-
-		/**
-		 * Unset the global stock settings changed flag if the post is being
-		 * saved/updated (no need to trigger a confirmation dialog in these
-		 * cases).
- 		*/
-		$( 'input[type="submit"]' ).click( function() {
-			global_capacity_setting_changed = false;
 		} );
 
 		/**
