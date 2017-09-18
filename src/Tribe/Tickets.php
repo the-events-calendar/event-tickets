@@ -690,7 +690,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 			$post_id = $_POST['post_ID'];
 
-			// Let's create a tickets list markup to return
+			// Save ticket order
+			if ( ! empty( $_POST['ticket_order'] ) ) {
+				$ticket_order = $_POST['ticket_order'];
+				update_post_meta( $post_id, '_tribe_tickets_order', $ticket_order );
+
+				$ticket_order = explode( ',', $ticket_order );
+				$ticket_order = array_flip( $ticket_order );
+
+				foreach ( $ticket_order as $id => $order ) {
+					wp_update_post( array(
+						'ID'         => absint( $id ),
+						'menu_order' => absint( $order ),
+					) );
+				}
+			}
+
+			// Let's create tickets list markup to return
 			$tickets = $this->get_event_tickets( $post_id );
 
 			$notice_type  = ! empty( $_POST['notice'] ) ? $_POST['notice'] : '';

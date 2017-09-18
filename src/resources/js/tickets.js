@@ -302,8 +302,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				var the_date = $.datepicker.parseDate( 'yy-mm-dd', dateText );
 				if ( inst.id === 'ticket_start_date' ) {
 					$ticket_end_date.datepicker( 'option', 'minDate', the_date );
-				}
-				else {
+				} else {
 					$ticket_start_date.datepicker( 'option', 'maxDate', the_date );
 				}
 			}
@@ -437,10 +436,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			swap = undefined === swap ? true : false;
 
 			var params = {
-				action  : 'tribe-ticket-refresh-panels',
-				notice: notice,
-				post_ID : $post_id.val(),
-				nonce   : TribeTickets.add_ticket_nonce
+				action       : 'tribe-ticket-refresh-panels',
+				notice       : notice,
+				post_ID      : $post_id.val(),
+				ticket_order : $( document.getElementById( 'tribe_tickets_order' ) ).val(),
+				nonce        : TribeTickets.add_ticket_nonce
 			};
 
 			$.post(
@@ -492,9 +492,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					// Set Provider radio on ticket form
 					set_default_provider_radio();
-
-					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
 				} ).complete( function( response ) {
+					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
+
 					if ( swap ) {
 						show_panel();
 					}

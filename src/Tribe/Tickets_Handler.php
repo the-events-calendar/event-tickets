@@ -1083,11 +1083,10 @@ class Tribe__Tickets__Tickets_Handler {
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
 		?>
 		<tr class="<?php echo esc_attr( $provider ); ?>" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
-			<!-- (handle, name), price, capacity, available, editlink -->
 			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>">
 				<span class="ticket_cell_label"><?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?></span>
 				<p><?php echo esc_html( $ticket->name ); ?></p>
-				<button type="button" class="toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'event-tickets' ); ?></span></button>
+				<button type="button" class="tribe-toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'event-tickets' ); ?></span></button>
 			</td>
 
 			<?php
