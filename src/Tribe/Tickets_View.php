@@ -375,7 +375,7 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
 		 *
-		 * @since TBD
+		 * @since 4.5.6
 		 *
 		 * @param boolean $already_rendered
 		 */

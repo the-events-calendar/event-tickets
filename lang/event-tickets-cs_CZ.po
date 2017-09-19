@@ -11,31 +11,31 @@ msgstr ""
 "Language: cs_CZ\n"
 "Project-Id-Version: Event Tickets\n"
 
-#: src/template-tags/tickets.php:233
+#: src/template-tags/tickets.php:237
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:230
+#: src/template-tags/tickets.php:234
 msgctxt "list view rsvp now ticket button"
 msgid "RSVP Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:219
+#: src/template-tags/tickets.php:223
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/template-tags/tickets.php:217
+#: src/template-tags/tickets.php:221
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/template-tags/tickets.php:200
+#: src/template-tags/tickets.php:204
 msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
@@ -44,31 +44,31 @@ msgstr ""
 msgid "You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser."
 msgstr ""
 
-#: src/template-tags/tickets.php:419
+#: src/template-tags/tickets.php:423
 msgctxt "ticket stock message (pending stock)"
 msgid "%1$d Awaiting Review"
 msgstr ""
 
-#: src/template-tags/tickets.php:416
+#: src/template-tags/tickets.php:420
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d Remaining"
 msgstr ""
 
-#: src/template-tags/tickets.php:414
+#: src/template-tags/tickets.php:418
 msgctxt "ticket global stock message (remaining stock)"
 msgid "%1$d Remaining of the global stock"
 msgstr ""
 
-#: src/template-tags/tickets.php:408
+#: src/template-tags/tickets.php:412
 msgid "%s %d"
 msgstr ""
 
-#: src/template-tags/tickets.php:403
+#: src/template-tags/tickets.php:407
 msgctxt "separate going and remain RSVPs"
 msgid "RSVP'd Going"
 msgstr ""
 
-#: src/template-tags/tickets.php:401
+#: src/template-tags/tickets.php:405
 msgid "Sold"
 msgstr ""
 
@@ -489,7 +489,7 @@ msgctxt "attendee table"
 msgid "View history"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:710
+#: src/Tribe/Admin/Move_Tickets.php:714
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -551,12 +551,12 @@ msgstr ""
 msgid "Move Attendees"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:267
-#: src/Tribe/Admin/Move_Tickets.php:651
+#: src/Tribe/Admin/Move_Ticket_Types.php:270
+#: src/Tribe/Admin/Move_Tickets.php:655
 msgid "Changes to your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:170
+#: src/Tribe/Admin/Move_Ticket_Types.php:173
 msgid "Ticket type was moved to <a href=\"%1$s\" target=\"_blank\">%2$s</a> from <a href=\"%3$s\" target=\"_blank\">%4$s</a>"
 msgstr ""
 
@@ -663,12 +663,12 @@ msgstr ""
 msgid "To see a list of events you are attending you will need to login."
 msgstr ""
 
-#: src/template-tags/tickets.php:421
+#: src/template-tags/tickets.php:425
 msgctxt "ticket stock message (cancelled stock)"
 msgid "%1$d Cancelled"
 msgstr ""
 
-#: src/template-tags/tickets.php:398
+#: src/template-tags/tickets.php:402
 msgid "global inventory"
 msgstr ""
 
@@ -699,47 +699,47 @@ msgstr ""
 msgid "Enable global stock"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:697
+#: src/Tribe/Tickets_View.php:731
 msgid "This RSVP is no longer active."
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:631
+#: src/Tribe/Tickets_View.php:665
 msgid "Ticket"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:519
+#: src/Tribe/Tickets_View.php:553
 msgid "Not Going"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:518
+#: src/Tribe/Tickets_View.php:552
 msgid "Going"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1628
+#: src/Tribe/Tickets.php:1640
 msgid "There are no tickets available at this time."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1626
+#: src/Tribe/Tickets.php:1638
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1624
+#: src/Tribe/Tickets.php:1636
 msgid "Tickets are not yet available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1622
+#: src/Tribe/Tickets.php:1634
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1021
+#: src/Tribe/Tickets.php:1024
 msgid "Independent (do not use global stock)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1020
+#: src/Tribe/Tickets.php:1023
 msgid "Use global stock but cap sales"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1019
+#: src/Tribe/Tickets.php:1022
 msgid "Use global stock"
 msgstr ""
 
@@ -763,7 +763,7 @@ msgstr ""
 msgid "Free"
 msgstr "Zdarma"
 
-#: src/Tribe/Tickets_View.php:627
+#: src/Tribe/Tickets_View.php:661
 msgid "RSVPs"
 msgstr ""
 
@@ -823,11 +823,11 @@ msgstr "Kdy nastane prodej vstupenek?"
 msgid "Send Email"
 msgstr "Poslat email"
 
-#: src/Tribe/Tickets_Handler.php:591
+#: src/Tribe/Tickets_Handler.php:594
 msgid "Email sent successfully!"
 msgstr "Email byl úspěšně odeslán!"
 
-#: src/Tribe/Tickets_Handler.php:586
+#: src/Tribe/Tickets_Handler.php:587
 msgid "Error when sending the email"
 msgstr "Došlo k chybě při odesílání emailu"
 
@@ -851,7 +851,7 @@ msgstr "Neplatné ID akce"
 msgid "Cheatin Huh?"
 msgstr "Co zkúšáš, jak zkúšáš?"
 
-#: src/Tribe/Tickets.php:734
+#: src/Tribe/Tickets.php:737
 msgid "Editing the ticket price is currently disallowed."
 msgstr "Upravovaní ceny vstupenky není aktuálně povoleno."
 
@@ -947,7 +947,7 @@ msgstr ""
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:639 src/views/tickets/orders-link.php:55
+#: src/Tribe/Tickets_View.php:673 src/views/tickets/orders-link.php:55
 msgid " and "
 msgstr " a "
 
@@ -959,7 +959,7 @@ msgstr "http://m.tri.be/28"
 msgid "Modern Tribe, Inc."
 msgstr "Modern Tribe, Inc."
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.5)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.6)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:509
 msgid "Event Tickets"
@@ -981,7 +981,7 @@ msgstr "Není skladem!"
 msgid "%1$s out of %2$s available"
 msgstr "%1$s z celkem %2$s k dispozici"
 
-#: src/Tribe/Tickets_View.php:627
+#: src/Tribe/Tickets_View.php:661
 msgid "RSVP"
 msgstr "Potvrzení účasti"
 
@@ -1127,7 +1127,7 @@ msgstr "Vybrat uživatele:"
 msgid "Send the attendee list by email"
 msgstr "Poslat seznam účastníků emailem"
 
-#: src/Tribe/Tickets_Handler.php:585
+#: src/Tribe/Tickets_Handler.php:586
 msgid "Attendee List for: %s"
 msgstr "Seznam účastníků na: %s"
 
@@ -1166,11 +1166,11 @@ msgstr "Účastníci"
 msgid "See who purchased tickets to this event"
 msgstr "Kdo si koupil vstupenky na tuto akci"
 
-#: src/Tribe/Tickets.php:680
+#: src/Tribe/Tickets.php:683
 msgid "Your ticket has been deleted."
 msgstr "Vaše vstupenka byla smazána."
 
-#: src/Tribe/Tickets.php:502
+#: src/Tribe/Tickets.php:505
 msgid "Your ticket has been saved."
 msgstr "Vaše vstupenka byla uložena."
 
@@ -1203,7 +1203,7 @@ msgstr "Použít jako obrázek v záhlaví vstupenky"
 msgid "Ticket header image"
 msgstr "Obrázek v záhlaví vstupenky"
 
-#: src/Tribe/Attendees_Table.php:529 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:535 src/admin-views/list.php:43
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1224,11 +1224,11 @@ msgstr "Email"
 msgid "Print"
 msgstr "Tisk"
 
-#: src/Tribe/Attendees_Table.php:528
+#: src/Tribe/Attendees_Table.php:534
 msgid "Undo Check in"
 msgstr "Zrušit registraci"
 
-#: src/Tribe/Attendees_Table.php:527
+#: src/Tribe/Attendees_Table.php:533
 msgid "Check in"
 msgstr "Zaregistrovat"
 
@@ -1241,7 +1241,7 @@ msgid "Ticket #"
 msgstr "Vstupenka č."
 
 #: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
-#: src/Tribe/Tickets_View.php:631
+#: src/Tribe/Tickets_View.php:665
 msgid "Tickets"
 msgstr "Vstupenky"
 

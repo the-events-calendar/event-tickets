@@ -233,17 +233,17 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.5.6] TBD =
+= [4.5.6] 2017-09-20 =
 
-* Fix - Prevent occasional issue with email content-type not being reset after ticket emails were sent. Props to @jappleton in the forums for reporting this! [62976]
-* Fix - Hide unused Back button when moving Tickets to another post [80604]
-* Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
+* Fix - Prevent occasional issue with email content-type not being reset after ticket emails were sent (props to @jappleton in the forums for reporting this!) [62976]
+* Fix - Hide unused 'back' button when moving tickets to another post [80604]
+* Fix - Prevent multiple instances of the 'View your RSVPs and Tickets' link from showing on single events (or other ticket-enabled post types - props to @svkg in the forums for reporting this) [87429]
 * Fix - Clear attendee cache when a ticket gets moved to another post [80200]
-* Fix - Open the exportable CSV file of Attendees in a new tab to accommodate Google Chrome's strict handling of file and MIME types, preventing some console errors and notices in Chrome. [70750]
-* Fix - Added "View Tickets" link to Custom Post Types when appropriate. Thank you @19ideas for helping identify this. [67570]
-* Fix - Fix some layout issues with the "Email Attendees" modal in the Attendees list admin view, especially when viewed on phones or tablets. Props to @event-control for reporting this! [80975]
+* Fix - Open the exportable CSV file of attendees in a new tab to accommodate Google Chrome's strict handling of file and MIME types, preventing some console errors and notices in Chrome [70750]
+* Fix - Added "View Tickets" link to Custom Post Types when appropriate (thank you @19ideas for helping identify this) [67570]
+* Fix - Fix some layout issues with the "Email Attendees" modal in the Attendees list admin view, especially when viewed on phones or tablets (props to @event-control for reporting this!) [80975]
 * Fix - Avoid notice-level errors when calling ticket stock functions in relation to events with unlimited stock (props to Lou Anne for highlighting this) [78685]
-* Tweak - Documented filter for available Ticket Modules, and used its method instead more places[66421]
+* Tweak - Documented filter for available Ticket Modules, and used its method instead more places [66421]
 
 = [4.5.5] 2017-09-06 =
 
