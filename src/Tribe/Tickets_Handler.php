@@ -178,8 +178,8 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'admin_enqueue_scripts', array( $this, 'attendees_page_load_pointers' ) );
 		add_action( 'load-' . $this->attendees_page, array( $this, 'attendees_page_screen_setup' ) );
 
-		// Set the post type to get highlighted in the admin menu.
-		add_filter( 'admin_head', array( $this, 'set_typenow' ) );
+		// Set the current screen in WP Admin to the attendees page.
+		add_filter( 'current_screen', array( $this, 'set_screen' ) );
 
 		/**
 		 * This is a workaround to fix the problem
@@ -300,8 +300,6 @@ class Tribe__Tickets__Tickets_Handler {
 		 */
 		if ( current_filter() === 'admin_init' ) {
 			$this->attendees_page_load_css_js( $this->attendees_page );
-
-			$GLOBALS['current_screen'] = WP_Screen::get( $this->attendees_page );
 		}
 
 		if ( ! empty( $_GET['action'] ) && in_array( $_GET['action'], array( 'email' ) ) ) {
@@ -804,16 +802,24 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Set post type highlighted in admin menus when viewing the attendees page.
+	 * Set the WP Screen object to the attendees page when viewing it.
 	 *
-	 * @see `admin_head` action
+	 * Note: Sets `$typenow` global as \WP_Screen::set_current_screen() might misset it.
+	 *
+	 * @see `current_screen` action
 	 */
-	public function set_typenow() {
+	public function set_screen( $current_screen ) {
 		global $typenow;
 
 		if ( $this->is_attendees_page() ) {
-			// Set to the parent post type.
-			$typenow = tribe_get_request_var( 'post_type' );
+			$current_screen = WP_Screen::get( $this->attendees_page );
 		}
+
+		// `_wp_menu_output()` expects `$typenow` to be empty for 'post' post_type.
+		if ( 'post' === $current_screen->post_type ) {
+			$typenow = '';
+		}
+
+		return $current_screen;
 	}
 }
