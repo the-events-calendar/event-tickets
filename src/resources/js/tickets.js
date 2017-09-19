@@ -25,7 +25,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	// misc ticket elements
 	var $ticket_image_preview            = $( document.getElementById( 'tribe_ticket_header_preview' ) );
 	var $ticket_show_description         = $( document.getElementById( 'tribe_tickets_show_description' ) );
-	var date_format                      = 'MM/DD/YYYY';
+	var date_format                      = 'YYYY-MM-DD';
 	var time_format                      = 'HH:mmA';
 
 	ticketHeaderImage = {
@@ -71,6 +71,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			// An empty string will give us now() below
 			date = '';
 		}
+
+		// tribe_datepicker uses 'YY' for full year, moment uses 'YYYY'
+		date_format = ( undefined !== tribe_dynamic_help_text.datepicker_format ) ? tribe_datepicker_opts.dateFormat.toUpperCase().replace( 'YY', 'YYYY' ) : 'YYYY-MM-DD';
 
 		// This is a bit sketchy,
 		// moment.js is deprecating use of strings in any format other than ISO (YYYY-MM-DD).
@@ -270,7 +273,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		var datepickerOpts = {
-			dateFormat     : 'yy-mm-dd',
+			dateFormat     : date_format,
 			showAnim       : 'fadeIn',
 			changeMonth    : true,
 			changeYear     : true,
@@ -290,6 +293,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		};
 
 		$.extend( datepickerOpts, tribe_l10n_datatables.datepicker );
+		// Use TEC format if set
+		date_format = ( undefined !== tribe_dynamic_help_text.datepicker_format ) ? tribe_dynamic_help_text.datepicker_format : 'YYYY-MM-DD';
+		datepickerOpts.dateFormat = date_format;
 
 		var $timepickers = $tribe_tickets.find( '.tribe-timepicker:not(.ui-timepicker-input)' );
 		tribe_timepickers.setup_timepickers( $timepickers );
@@ -415,6 +421,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		function refresh_panels( notice, swap ) {
 			// make sure we have this for later (default to true)
 			swap = undefined === swap ? true : false;
+
 
 			var params = {
 				action       : 'tribe-ticket-refresh-panels',
@@ -645,21 +652,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			// handle all the date stuff
 			if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
-				start_date = $.datepicker.formatDate( date_format, new Date( $( document.getElementById( 'EventStartDate' ) ).val() ) );
+				start_date = format_date( new Date( $( document.getElementById( 'EventStartDate' ) ).val() ) );
 			} else {
-				start_date = $.datepicker.formatDate( date_format, now );
+				start_date = format_date( now );
 			}
 			$ticket_start_date.val( start_date ).trigger( 'change' );
 
 			if ( undefined !== $( document.getElementById( 'EventStartTime' ) ).val() ) {
-				start_time = $( document.getElementById( 'EventStartTime' ) ).val();
+				start_time = format_time( $( document.getElementById( 'EventStartTime' ) ).val() );
 			} else {
 				start_time = format_time( now );
 			}
 			$ticket_start_time.val( start_time ).trigger( 'change' );
 
 			if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
-				end_date = $.datepicker.formatDate(date_format, new Date( $( document.getElementById( 'EventEndDate' ) ).val() ) );
+				end_date = format_date( new Date( $( document.getElementById( 'EventEndDate' ) ).val() ) );
 			} else {
 				end_date = '';
 			}
@@ -873,11 +880,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						var now = Date.now();
 
 						if ( response.data.start_date ) {
-							start_date = response.data.start_date;
+							start_date = format_date( response.data.start_date );
 						} else if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
-							start_date = $( document.getElementById( 'EventStartDate' ) ).val();
+							start_date = format_date( $( document.getElementById( 'EventStartDate' ) ).val() );
 						} else {
-							start_date = now;
+							start_date = format_date( now );
 						}
 
 						if ( response.data.start_time ) {
@@ -892,9 +899,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$ticket_start_time.val( start_time ).trigger( 'change' );
 
 						if ( response.data.end_date ) {
-							end_date = response.data.end_date;
+							end_date = format_date( response.data.end_date );
 						} else if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
-							end_date = $( document.getElementById( 'EventEndDate' ) ).val();
+							end_date = format_date( $( document.getElementById( 'EventEndDate' ) ).val() );
 						} else {
 							end_date = '';
 						}
