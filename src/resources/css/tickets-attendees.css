@@ -309,9 +309,8 @@
 
 @media screen and ( max-width: 782px ) {
 
-	#TB_window,
-	#TB_iframeContent {
-		height: 100% !important;
+	#TB_window {
+		height: auto !important;
 	}
 
 	#plugin-information-title {
