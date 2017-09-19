@@ -968,9 +968,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		if ( isset( $raw_data['ticket_show_description'] ) ) {
-			update_post_meta( $ticket->ID, '_ticket_show_description', 1 );
-		} else {
 			update_post_meta( $ticket->ID, '_ticket_show_description', 0 );
+		} else {
+			update_post_meta( $ticket->ID, '_ticket_show_description', 1 );
 		}
 
 		/**

@@ -1,10 +1,4 @@
 <?php
-$date = date( 'Y-m-d H:00:00' );
-
-$ticket_start_date = Tribe__Date_Utils::date_only( $date, false );
-$ticket_end_date = Tribe__Date_Utils::date_only( $date, false );
-$ticket_start_time = Tribe__Date_Utils::time_only( $ticket_start_date, false );
-$ticket_end_time   = Tribe__Date_Utils::time_only( $ticket_end_date, false );
 $timepicker_step = 30;
 $timepicker_round = '00:00:00';
 ?>
@@ -111,7 +105,7 @@ $timepicker_round = '00:00:00';
 						<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
 						<textarea rows="5" cols="40" name="ticket_description" class="ticket_field ticket_form_right" id="ticket_description"></textarea>
 						<div class="input_block">
-							<label class="tribe_soft_note"><input type="checkbox" id="tribe_tickets_show_description" name="ticket_show_description" value="1" class="ticket_form_left" checked> Show description on front end and emailed tickets.</label>
+							<label class="tribe_soft_note"><input type="checkbox" id="tribe_tickets_show_description" name="ticket_show_description" value="1" class="ticket_field ticket_form_left" checked> <?php esc_html_e( 'Show description on front end and emailed tickets.', 'event-tickets' ); ?></label>
 						</div>
 					</div>
 					<div class="input_block">
@@ -124,7 +118,7 @@ $timepicker_round = '00:00:00';
 								class="tribe-datepicker tribe-field-start_date ticket_field"
 								name="ticket_start_date"
 								id="ticket_start_date"
-								value="<?php echo esc_attr( $ticket_start_date ) ?>"
+								value=""
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
 							<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
@@ -138,7 +132,7 @@ $timepicker_round = '00:00:00';
 								<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
 								data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-								value="<?php echo esc_attr( $ticket_start_time ) ?>"
+								value=""
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 							<span class="tooltip_container">
@@ -159,7 +153,7 @@ $timepicker_round = '00:00:00';
 								class="tribe-datepicker tribe-field-end_date ticket_field"
 								name="ticket_end_date"
 								id="ticket_end_date"
-								value="<?php echo esc_attr( $ticket_end_date ); ?>"
+								value=""
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
 							<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
@@ -172,7 +166,7 @@ $timepicker_round = '00:00:00';
 								<?php echo Tribe__View_Helpers::is_24hr_format() ? 'data-format="H:i"' : '' ?>
 								data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
-								value="<?php echo esc_attr( $ticket_end_time ); ?>"
+								value=""
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 

@@ -24,7 +24,6 @@
 }
 
 #event_tickets {
-	overflow: hidden;
 	position: relative;
 }
 
@@ -34,11 +33,19 @@
 	border: 1px solid #a3a3a3;
 	border-radius: 5px;
 	box-sizing: border-box;
+	opacity: 1;
 	position: relative;
 	padding: 8px;
-	transition: .5s cubic-bezier(.55, .085, .68, .53);
+	visibility: visible;
 	width: 100%;
 	will-change: transform;
+}
+
+.ticket_panel[aria-hidden='true'] {
+	opacity: 0;
+	position: absolute;
+	right: -100%;
+	visibility: hidden;
 }
 
 .ticket_panel section {
@@ -85,28 +92,9 @@
 	background-color: #fff;
 }
 
-/* hidden fields */
-
-.ticket_panel[aria-hidden='true'] {
-	position: absolute;
-	transition: .5s cubic-bezier(.55, .085, .68, .53);
-}
-
 .ticket_panel.panel_base {
 	border: 0;
 	padding: .5em 0 0;
-}
-
-.ticket_panel.panel_base[aria-hidden='true'] {
-	right: 100%;
-	-webkit-transform: translateX(-100%);
-	        transform: translateX(-100%);
-}
-
-.ticket_panel.panel_edit[aria-hidden='true'], .ticket_panel.panel_settings[aria-hidden='true'] {
-	margin-top: 6px;
-	-webkit-transform: translateX(100%);
-	        transform: translateX(100%);
 }
 
 .ticket_panel.panel_edit {
