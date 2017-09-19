@@ -87,6 +87,7 @@
 	margin-top: 0;
 }
 
+.tribe-attendees-page span.tickets_uncheckin,
 .tribe-attendees-page a.tickets_uncheckin {
 	display: none;
 }
@@ -107,6 +108,7 @@
 	display: none;
 }
 
+.tribe-attendees-page .tickets_checked span.tickets_uncheckin,
 .tribe-attendees-page .tickets_checked a.tickets_uncheckin {
 	display: block;
 	opacity: 1;
@@ -221,6 +223,12 @@
 }
 
 /*
+ * Preserves utility of modal windows, especially the "Email Attendees" modal, in views above the 
+ * mobile view but under the upper limits of "tablet" views. The weird class names and !important declarations
+ * are unfortunately needed to override Thickbox's inline styles.
+ */
+
+/*
  * Preserves utility of modal windows in mobile view. !important declarations
  * are unfortunately needed to override Thickbox's inline styles.
  */
@@ -298,6 +306,22 @@
 
 	.tribe-attendees-email-message .notice-dismiss {
 		padding: 9px;
+	}
+}
+
+@media screen and ( max-width: 782px ) {
+
+	#TB_window {
+		height: 100% !important;
+	}
+
+	#plugin-information-title {
+		height: auto !important;
+		overflow: hidden !important;
+	}
+
+	#plugin-information-footer {
+		position: relative !important;
 	}
 }
 

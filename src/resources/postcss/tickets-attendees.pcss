@@ -150,6 +150,7 @@
 		margin-top: 0;
 	}
 
+	span.tickets_uncheckin,
 	a.tickets_uncheckin {
 		display: none;
 	}
@@ -171,6 +172,7 @@
 			display: none;
 		}
 
+		span.tickets_uncheckin,
 		a.tickets_uncheckin {
 			display: block;
 			opacity: 1;
@@ -309,6 +311,27 @@
 			margin-left: 0;
 			max-width: 100%;
 		}
+	}
+}
+
+/*
+ * Preserves utility of modal windows, especially the "Email Attendees" modal, in views above the 
+ * mobile view but under the upper limits of "tablet" views. The weird class names and !important declarations
+ * are unfortunately needed to override Thickbox's inline styles.
+ */
+@media screen and ( max-width: 782px ) {
+
+	#TB_window {
+		height: 100% !important;
+	}
+
+	#plugin-information-title {
+		height: auto !important;
+		overflow: hidden !important;
+	}
+
+	#plugin-information-footer {
+		position: relative !important;
 	}
 }
 

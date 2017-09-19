@@ -9,6 +9,12 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	protected $ticket_provider = '';
 
 	/**
+	 * Capabilities Class
+	 * @var Tribe__Tickets__Capabilities $capabilities
+	 */
+	protected $capabilities;
+
+	/**
 	 * The attendees currently being operated on.
 	 *
 	 * Structure is an array indexed by attendee ID, with each value being
@@ -20,6 +26,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 	public function setup() {
 		$this->ticket_history();
+
+		$this->capabilities = new Tribe__Tickets__Capabilities();
+		if ( ! $this->capabilities->check_manage_capability() ) {
+			return false;
+		}
 
 		add_action( 'admin_init', array( $this, 'dialog' ) );
 		add_action( 'tribe_events_tickets_attendees_table_bulk_actions', array( $this, 'bulk_actions' ) );

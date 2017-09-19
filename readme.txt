@@ -4,7 +4,7 @@ Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.1
-Stable tag: 4.5.5
+Stable tag: 4.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -232,6 +232,14 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Trisha Salas](https://profiles.wordpress.org/trishasalas)
 
 == Changelog ==
+
+= [4.5.6] TBD =
+
+* Add - Add manage_attendees (move, delete, check in) and checkin_attendees (check in) capability and restrict actions to new capabilities. Admin and Editor have manage_attendees and Author's checkin_attendees [68831]
+* Fix - Prevent occasional issue with email content-type not being reset after ticket emails were sent. Props to @jappleton in the forums for reporting this! [62976]
+* Fix - Prevent multiple instances of the "View your RSVPs and Tickets" link from showing on single events (or other ticket-enabled post types). Props to @svkg in the forums for reporting this. [87429]
+* Fix - Open the exportable CSV file of Attendees in a new tab to accommodate Google Chrome's strict handling of file and MIME types, preventing some console errors and notices in Chrome. [70750]
+* Fix - Fix some layout issues with the "Email Attendees" modal in the Attendees list admin view, especially when viewed on phones or tablets. Props to @event-control for reporting this! [80975]
 
 = [4.5.5] 2017-09-06 =
 

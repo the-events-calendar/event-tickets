@@ -5,7 +5,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.5.5';
+	const VERSION = '4.5.6';
 
 	/**
 	 * Min required The Events Calendar version
@@ -114,6 +114,8 @@ class Tribe__Tickets__Main {
 
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
+
+		add_action( 'init', array( $this, 'run_updates' ), 10, 0 );
 	}
 
 	/**
@@ -764,6 +766,24 @@ class Tribe__Tickets__Main {
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
 		<?php
+	}
+
+	/**
+	 * Make necessary database updates on init
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function run_updates() {
+
+		if ( ! is_admin() ) {
+			return;
+		}
+
+		$updater = new Tribe__Tickets__Updater( self::VERSION );
+		if ( $updater->update_required() ) {
+			$updater->do_updates();
+		}
 	}
 
 }
