@@ -244,6 +244,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Fix some layout issues with the "Email Attendees" modal in the Attendees list admin view, especially when viewed on phones or tablets (props to @event-control for reporting this!) [80975]
 * Fix - Avoid notice-level errors when calling ticket stock functions in relation to events with unlimited stock (props to Lou Anne for highlighting this) [78685]
 * Tweak - Documented filter for available Ticket Modules, and used its method instead more places [66421]
+* Tweak - The `tribe_events_tickets_modules` filter has now been deprecated and should not be used
 
 = [4.5.5] 2017-09-06 =
 
