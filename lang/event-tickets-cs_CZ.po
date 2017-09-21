@@ -11,64 +11,64 @@ msgstr ""
 "Language: cs_CZ\n"
 "Project-Id-Version: Event Tickets\n"
 
-#: src/template-tags/tickets.php:233
+#: src/template-tags/tickets.php:237
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:230
+#: src/template-tags/tickets.php:234
 msgctxt "list view rsvp now ticket button"
 msgid "RSVP Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:219
+#: src/template-tags/tickets.php:223
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/template-tags/tickets.php:217
+#: src/template-tags/tickets.php:221
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/template-tags/tickets.php:200
+#: src/template-tags/tickets.php:204
 msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:201
+#: src/views/tickets/rsvp.php:206
 msgid "You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser."
 msgstr ""
 
-#: src/template-tags/tickets.php:419
+#: src/template-tags/tickets.php:423
 msgctxt "ticket stock message (pending stock)"
 msgid "%1$d Awaiting Review"
 msgstr ""
 
-#: src/template-tags/tickets.php:416
+#: src/template-tags/tickets.php:420
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d Remaining"
 msgstr ""
 
-#: src/template-tags/tickets.php:414
+#: src/template-tags/tickets.php:418
 msgctxt "ticket global stock message (remaining stock)"
 msgid "%1$d Remaining of the global stock"
 msgstr ""
 
-#: src/template-tags/tickets.php:408
+#: src/template-tags/tickets.php:412
 msgid "%s %d"
 msgstr ""
 
-#: src/template-tags/tickets.php:403
+#: src/template-tags/tickets.php:407
 msgctxt "separate going and remain RSVPs"
 msgid "RSVP'd Going"
 msgstr ""
 
-#: src/template-tags/tickets.php:401
+#: src/template-tags/tickets.php:405
 msgid "Sold"
 msgstr ""
 
@@ -152,7 +152,7 @@ msgstr ""
 msgid "Ticketed"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:143
+#: src/views/tickets/rsvp.php:148
 msgctxt "order status label"
 msgid "RSVP"
 msgstr ""
@@ -341,32 +341,32 @@ msgstr ""
 msgid "You are running Version %s and deserve a hug :-)"
 msgstr "Používáte verzi %s a zasloužíte si obejmout  :-)"
 
-#: src/Tribe/Tickets_Handler.php:397
+#: src/Tribe/Tickets_Handler.php:411
 msgctxt "attendee export"
 msgid "Customer Email Address"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:396
+#: src/Tribe/Tickets_Handler.php:410
 msgctxt "attendee export"
 msgid "Customer Name"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:395
+#: src/Tribe/Tickets_Handler.php:409
 msgctxt "attendee export"
 msgid "Ticket #"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:394
+#: src/Tribe/Tickets_Handler.php:408
 msgctxt "attendee export"
 msgid "Order Status"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:393
+#: src/Tribe/Tickets_Handler.php:407
 msgctxt "attendee export"
 msgid "Order ID"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:206
+#: src/Tribe/Tickets_Handler.php:220
 msgid "You must first select one or more tickets before you can move them!"
 msgstr ""
 
@@ -489,7 +489,7 @@ msgctxt "attendee table"
 msgid "View history"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:710
+#: src/Tribe/Admin/Move_Tickets.php:714
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -551,12 +551,12 @@ msgstr ""
 msgid "Move Attendees"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:267
-#: src/Tribe/Admin/Move_Tickets.php:651
+#: src/Tribe/Admin/Move_Ticket_Types.php:270
+#: src/Tribe/Admin/Move_Tickets.php:655
 msgid "Changes to your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:170
+#: src/Tribe/Admin/Move_Ticket_Types.php:173
 msgid "Ticket type was moved to <a href=\"%1$s\" target=\"_blank\">%2$s</a> from <a href=\"%3$s\" target=\"_blank\">%4$s</a>"
 msgstr ""
 
@@ -585,15 +585,15 @@ msgstr ""
 msgid "Event Tickets allows your guests to RSVP from any post, page, or event."
 msgstr ""
 
-#: src/views/tickets/rsvp.php:183
+#: src/views/tickets/rsvp.php:188
 msgid "Login to RSVP"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:171
+#: src/views/tickets/rsvp.php:176
 msgid "Don't list me on the public attendee list"
 msgstr "Neuvádějte mě na veřejném seznamu účastníků"
 
-#: src/views/tickets/rsvp.php:114
+#: src/views/tickets/rsvp.php:119
 msgid "Send RSVP confirmation to:"
 msgstr ""
 
@@ -629,22 +629,22 @@ msgstr ""
 msgid "My RSVPs for This %s"
 msgstr ""
 
-#: src/views/tickets/orders-link.php:46
+#: src/views/tickets/orders-link.php:56
 msgid "View your %s"
 msgstr ""
 
-#: src/views/tickets/orders-link.php:45
+#: src/views/tickets/orders-link.php:55
 msgid "You have %s for this %s."
 msgstr ""
 
-#: src/views/tickets/orders-link.php:37
+#: src/views/tickets/orders-link.php:36
 msgid "%d Ticket"
 msgid_plural "%d Tickets"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/views/tickets/orders-link.php:33
+#: src/views/tickets/orders-link.php:32
 msgid "%d RSVP"
 msgid_plural "%d RSVPs"
 msgstr[0] ""
@@ -663,12 +663,12 @@ msgstr ""
 msgid "To see a list of events you are attending you will need to login."
 msgstr ""
 
-#: src/template-tags/tickets.php:421
+#: src/template-tags/tickets.php:425
 msgctxt "ticket stock message (cancelled stock)"
 msgid "%1$d Cancelled"
 msgstr ""
 
-#: src/template-tags/tickets.php:398
+#: src/template-tags/tickets.php:402
 msgid "global inventory"
 msgstr ""
 
@@ -699,51 +699,51 @@ msgstr ""
 msgid "Enable global stock"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:697
+#: src/Tribe/Tickets_View.php:731
 msgid "This RSVP is no longer active."
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:631
+#: src/Tribe/Tickets_View.php:665
 msgid "Ticket"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:519
+#: src/Tribe/Tickets_View.php:553
 msgid "Not Going"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:518
+#: src/Tribe/Tickets_View.php:552
 msgid "Going"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1628
+#: src/Tribe/Tickets.php:1640
 msgid "There are no tickets available at this time."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1626
+#: src/Tribe/Tickets.php:1638
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1624
+#: src/Tribe/Tickets.php:1636
 msgid "Tickets are not yet available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1622
+#: src/Tribe/Tickets.php:1634
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1021
+#: src/Tribe/Tickets.php:1024
 msgid "Independent (do not use global stock)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1020
+#: src/Tribe/Tickets.php:1023
 msgid "Use global stock but cap sales"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1019
+#: src/Tribe/Tickets.php:1022
 msgid "Use global stock"
 msgstr ""
 
-#: src/Tribe/RSVP.php:843
+#: src/Tribe/RSVP.php:847
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
@@ -763,7 +763,7 @@ msgstr ""
 msgid "Free"
 msgstr "Zdarma"
 
-#: src/Tribe/Tickets_View.php:627
+#: src/Tribe/Tickets_View.php:661
 msgid "RSVPs"
 msgstr ""
 
@@ -823,63 +823,63 @@ msgstr "Kdy nastane prodej vstupenek?"
 msgid "Send Email"
 msgstr "Poslat email"
 
-#: src/Tribe/Tickets_Handler.php:577
+#: src/Tribe/Tickets_Handler.php:594
 msgid "Email sent successfully!"
 msgstr "Email byl úspěšně odeslán!"
 
-#: src/Tribe/Tickets_Handler.php:572
+#: src/Tribe/Tickets_Handler.php:587
 msgid "Error when sending the email"
 msgstr "Došlo k chybě při odesílání emailu"
 
-#: src/Tribe/Tickets_Handler.php:535 src/Tribe/Tickets_Handler.php:551
+#: src/Tribe/Tickets_Handler.php:549 src/Tribe/Tickets_Handler.php:565
 msgid "Invalid User ID"
 msgstr "Neplatné ID uživatele"
 
-#: src/Tribe/Tickets_Handler.php:529
+#: src/Tribe/Tickets_Handler.php:543
 msgid "Invalid Email"
 msgstr "Neplatná emailová adresa"
 
-#: src/Tribe/Tickets_Handler.php:517
+#: src/Tribe/Tickets_Handler.php:531
 msgid "Empty user and email"
 msgstr "Nebylo zadáno uživatelské jméno a emailová adresa"
 
-#: src/Tribe/Tickets_Handler.php:494
+#: src/Tribe/Tickets_Handler.php:508
 msgid "Invalid Event ID"
 msgstr "Neplatné ID akce"
 
-#: src/Tribe/Tickets_Handler.php:511
+#: src/Tribe/Tickets_Handler.php:525
 msgid "Cheatin Huh?"
 msgstr "Co zkúšáš, jak zkúšáš?"
 
-#: src/Tribe/Tickets.php:734
+#: src/Tribe/Tickets.php:737
 msgid "Editing the ticket price is currently disallowed."
 msgstr "Upravovaní ceny vstupenky není aktuálně povoleno."
 
-#: src/Tribe/RSVP.php:1647
+#: src/Tribe/RSVP.php:1660
 msgid "Post draft updated."
 msgstr "Koncept příspěvku byl uložen."
 
-#: src/Tribe/RSVP.php:1646
+#: src/Tribe/RSVP.php:1659
 msgid "Post scheduled."
 msgstr "Příspěvek bude automaticky publikován."
 
-#: src/Tribe/RSVP.php:1645
+#: src/Tribe/RSVP.php:1658
 msgid "Post submitted."
 msgstr "Příspěvek byl odeslán ke schválení."
 
-#: src/Tribe/RSVP.php:1642
+#: src/Tribe/RSVP.php:1655
 msgid "Post published. %1$s"
 msgstr "Příspěvek byl publikován. %1$s"
 
-#: src/Tribe/RSVP.php:1638
+#: src/Tribe/RSVP.php:1651
 msgid "Post updated. %1$s"
 msgstr "Příspěvek byl aktualizován. %1$s"
 
-#: src/Tribe/RSVP.php:1631
+#: src/Tribe/RSVP.php:1644
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr "Zpět na %1$spřehled účastníků%2$s."
 
-#: src/Tribe/RSVP.php:1087
+#: src/Tribe/RSVP.php:1092
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr "Nemůžete potvrdit účast pro více než kolik je k dispozici zbývajících vstupenek."
 
@@ -947,7 +947,7 @@ msgstr ""
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:639 src/views/tickets/orders-link.php:45
+#: src/Tribe/Tickets_View.php:673 src/views/tickets/orders-link.php:55
 msgid " and "
 msgstr " a "
 
@@ -959,37 +959,37 @@ msgstr "http://m.tri.be/28"
 msgid "Modern Tribe, Inc."
 msgstr "Modern Tribe, Inc."
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.4)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.6)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:509
 msgid "Event Tickets"
 msgstr "Event Tickets"
 
-#: src/views/tickets/rsvp.php:192
+#: src/views/tickets/rsvp.php:197
 msgid "Confirm RSVP"
 msgstr "Potvrdit účast"
 
-#: src/views/tickets/rsvp.php:126
+#: src/views/tickets/rsvp.php:131
 msgid "Full Name"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:88
+#: src/views/tickets/rsvp.php:93
 msgid "Out of stock!"
 msgstr "Není skladem!"
 
-#: src/views/tickets/rsvp.php:84
+#: src/views/tickets/rsvp.php:89
 msgid "%1$s out of %2$s available"
 msgstr "%1$s z celkem %2$s k dispozici"
 
-#: src/Tribe/Tickets_View.php:627
+#: src/Tribe/Tickets_View.php:661
 msgid "RSVP"
 msgstr "Potvrzení účasti"
 
-#: src/views/tickets/email.php:368
+#: src/views/tickets/email.php:379
 msgid "Purchaser"
 msgstr "Kupující"
 
-#: src/views/tickets/email.php:364
+#: src/views/tickets/email.php:375
 msgid "Ticket Type"
 msgstr "Typ vstupenky"
 
@@ -1127,62 +1127,62 @@ msgstr "Vybrat uživatele:"
 msgid "Send the attendee list by email"
 msgstr "Poslat seznam účastníků emailem"
 
-#: src/Tribe/Tickets_Handler.php:571
+#: src/Tribe/Tickets_Handler.php:586
 msgid "Attendee List for: %s"
 msgstr "Seznam účastníků na: %s"
 
-#: src/Tribe/Tickets_Handler.php:467
+#: src/Tribe/Tickets_Handler.php:481
 msgid "attendees"
 msgstr "ucastnici"
 
-#: src/Tribe/Tickets_Handler.php:426
+#: src/Tribe/Tickets_Handler.php:440
 msgid "Yes"
 msgstr "Ano"
 
-#: src/Tribe/Tickets_Handler.php:235
+#: src/Tribe/Tickets_Handler.php:249
 msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
 msgstr "Pomocí záložky &#8222;Nastavení zobrazených informací&#8220; si můžete vybrat, které sloupce chcete zobrazit. Tento výběr se projeví při výpisu, při odesílání emailem, při tisku a při exportu do CSV souboru."
 
-#: src/Tribe/Tickets_Handler.php:235
+#: src/Tribe/Tickets_Handler.php:249
 msgid "Columns"
 msgstr "Sloupce"
 
-#: src/Tribe/Tickets_Handler.php:203
+#: src/Tribe/Tickets_Handler.php:217
 msgid "Sending..."
 msgstr "Odesílání..."
 
-#: src/Tribe/Tickets_Handler.php:202
+#: src/Tribe/Tickets_Handler.php:216
 msgid "You need to select a user or type a valid email address"
 msgstr "Je třeba vybrat uživatele nebo zadat platnou emailovou adresu"
 
 #: src/Tribe/Admin/Columns/Tickets.php:57
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
-#: src/Tribe/Tickets_Handler.php:140 src/admin-views/attendees.php:11
+#: src/Tribe/Tickets_Handler.php:154 src/admin-views/attendees.php:11
 #: src/admin-views/list.php:92
 msgid "Attendees"
 msgstr "Účastníci"
 
-#: src/Tribe/Tickets_Handler.php:140 src/admin-views/list.php:90
+#: src/Tribe/Tickets_Handler.php:152 src/admin-views/list.php:90
 msgid "See who purchased tickets to this event"
 msgstr "Kdo si koupil vstupenky na tuto akci"
 
-#: src/Tribe/Tickets.php:680
+#: src/Tribe/Tickets.php:683
 msgid "Your ticket has been deleted."
 msgstr "Vaše vstupenka byla smazána."
 
-#: src/Tribe/Tickets.php:502
+#: src/Tribe/Tickets.php:505
 msgid "Your ticket has been saved."
 msgstr "Vaše vstupenka byla uložena."
 
-#: src/Tribe/RSVP.php:1336
+#: src/Tribe/RSVP.php:1349
 msgid "(deleted)"
 msgstr "(smazáno)"
 
-#: src/Tribe/RSVP.php:1092
+#: src/Tribe/RSVP.php:1097
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr "Pro potvrzení účasti musíte zadat své jméno a platnou emailovou adresu."
 
-#: src/Tribe/RSVP.php:1081
+#: src/Tribe/RSVP.php:1086
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr "Vaše potvrzení účasti bylo přijato. Zkontrolujte prosím emailovou schránku, kam byl odeslán kontrolní email."
 
@@ -1203,7 +1203,7 @@ msgstr "Použít jako obrázek v záhlaví vstupenky"
 msgid "Ticket header image"
 msgstr "Obrázek v záhlaví vstupenky"
 
-#: src/Tribe/Attendees_Table.php:529 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:535 src/admin-views/list.php:43
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1216,7 +1216,7 @@ msgid "Export"
 msgstr "Exportovat"
 
 #: src/Tribe/Attendees_Table.php:501
-#: src/admin-views/admin-welcome-message.php:36 src/views/tickets/rsvp.php:134
+#: src/admin-views/admin-welcome-message.php:36 src/views/tickets/rsvp.php:139
 msgid "Email"
 msgstr "Email"
 
@@ -1224,24 +1224,24 @@ msgstr "Email"
 msgid "Print"
 msgstr "Tisk"
 
-#: src/Tribe/Attendees_Table.php:528
+#: src/Tribe/Attendees_Table.php:534
 msgid "Undo Check in"
 msgstr "Zrušit registraci"
 
-#: src/Tribe/Attendees_Table.php:527
+#: src/Tribe/Attendees_Table.php:533
 msgid "Check in"
 msgstr "Zaregistrovat"
 
-#: src/views/tickets/email.php:372
+#: src/views/tickets/email.php:383
 msgid "Security Code"
 msgstr "Kontrolní kód"
 
-#: src/views/tickets/email.php:360
+#: src/views/tickets/email.php:371
 msgid "Ticket #"
 msgstr "Vstupenka č."
 
 #: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
-#: src/Tribe/Tickets_View.php:631
+#: src/Tribe/Tickets_View.php:665
 msgid "Tickets"
 msgstr "Vstupenky"
 

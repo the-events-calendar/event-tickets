@@ -35,7 +35,7 @@ class Tribe__Tickets__Assets {
 		 *
 		 * @see event-tickets/src/Tribe/Tickets.php->modules()
 		 */
-		$modules = apply_filters( 'tribe_events_tickets_modules', null );
+		$modules = Tribe__Tickets__Tickets::modules();
 
 		// For the metabox
 		if (

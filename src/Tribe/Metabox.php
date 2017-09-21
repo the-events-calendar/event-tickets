@@ -17,7 +17,7 @@ class Tribe__Tickets__Metabox {
 	 * @param $post_type
 	 */
 	public static function maybe_add_meta_box( $post_type ) {
-		$modules = apply_filters( 'tribe_events_tickets_modules', null );
+		$modules = Tribe__Tickets__Tickets::modules();
 		if ( empty( $modules ) ) {
 			return;
 		}
@@ -47,8 +47,7 @@ class Tribe__Tickets__Metabox {
 	 * @param $post_id
 	 */
 	public static function do_modules_metaboxes( $post_id ) {
-
-		$modules = apply_filters( 'tribe_events_tickets_modules', null );
+		$modules = Tribe__Tickets__Tickets::modules();
 		if ( empty( $modules ) ) {
 			return;
 		}
@@ -59,7 +58,6 @@ class Tribe__Tickets__Metabox {
 
 	/**
 	 * Enqueue the tickets metabox JS and CSS
-	 * @static
 	 *
 	 * @deprecated TBD
 	 *
