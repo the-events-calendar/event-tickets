@@ -307,9 +307,6 @@
 	}
 }
 
-<<<<<<< HEAD
-@media screen and (max-width: 440px) {
-=======
 @media screen and ( max-width: 782px ) {
 
 	#TB_window {
@@ -326,8 +323,7 @@
 	}
 }
 
-@media screen and ( max-width: 440px ) {
->>>>>>> 4.5.6
+@media screen and (max-width: 440px) {
 
 	#TB_window {
 		left: 0 !important;
