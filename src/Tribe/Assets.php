@@ -84,10 +84,10 @@ class Tribe__Tickets__Assets {
 			tribe_assets(
 				Tribe__Tickets__Main::instance(),
 				array(
-					array( 'event-tickets-admin-css', 'tickets.css' ),
+					array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style' ) ),
 					array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css' ) ),
 					array( 'event-tickets-admin-tables-css', 'tickets-tables.css', array( 'event-tickets-admin-css' ) ),
-					array( 'event-tickets-admin-js', 'tickets.js', array( 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-moment' ) ),
+					array( 'event-tickets-admin-js', 'tickets.js', array( 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-moment', 'tribe-validation' ) ),
 					array( 'event-tickets-admin-tables-js', 'tickets-tables.js', array( 'underscore' ) ),
 					array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery' ) ),
 					array( 'event-tickets-admin-accordion-js', 'accordion.js', array() ),

@@ -725,6 +725,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		.on( 'click', '[name="ticket_form_save"]', function( e ) {
 			var $form = $( document.getElementById( 'ticket_form_table' ) );
 
+			// Prevent anything from happening when there are errors
+			if ( tribe.validation.hasErrors( $form ) ) {
+				return;
+			}
+
 			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
 
 			var params = {
