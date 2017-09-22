@@ -197,13 +197,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * @param bool (true) flag for panel swap
 	 * @return void
 	 */
-	function refresh_panels( notice, swap ) {
+	function refresh_panels( notice, swap, callback ) {
 		// make sure we have this for later (default to true)
 		swap = undefined === swap ? true : false;
 
 		var params = {
 			action  : 'tribe-ticket-refresh-panels',
-			notice: notice,
+			notice  : notice,
 			post_ID : $post_id.val(),
 			nonce   : TribeTickets.add_ticket_nonce
 		};
@@ -252,18 +252,23 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						$wrap.append( response.data.total_capacity );
 						$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
 					}
-
 				}
 
 				// Set Provider radio on ticket form
 				set_default_provider_radio();
 
 				$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
-			} ).complete( function( response ) {
-				if ( swap ) {
-					show_panel();
-				}
-			} );
+			}
+		).complete( function( response ) {
+			if ( swap ) {
+				show_panel();
+			}
+
+			// If a callback was passed we call it after the end
+			if ( callback && _.isFunction( callback ) ) {
+				callback( response );
+			}
+		} );
 	}
 
 
@@ -402,7 +407,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			// First, hide them all!
 			$panels.each( function() {
-				$(this).attr( 'aria-hidden', true );
+				$( this ).attr( 'aria-hidden', true );
 			} );
 
 			// then show the one we want
@@ -421,7 +426,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		function refresh_panels( notice, swap ) {
 			// make sure we have this for later (default to true)
 			swap = undefined === swap ? true : false;
-
 
 			var params = {
 				action       : 'tribe-ticket-refresh-panels',
@@ -452,6 +456,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 						}
 
 						$ticket_table.empty();
+
 						// create new ticket table (and notice)
 						var $new_table = $( '<div>' );
 						$new_table.html( response.data.ticket_table );
@@ -475,7 +480,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$wrap.append( response.data.total_capacity );
 							$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
 						}
-
 					}
 
 					// Set Provider radio on ticket form
@@ -519,9 +523,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 * @return {void}
 			 */
 			'clear.tribe': function() {
-				$edit_panel.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' ).val( '' );
-				$edit_panel.find( 'input:checkbox, input:radio' ).prop( 'checked', false );
-				$edit_panel.find( '#ticket_id' ).val( '' );
+				var $textFields = $edit_panel.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' );
+				var $checkFields = edit_panel.find( 'input:checkbox, input:radio' );
+				var $idField = $edit_panel.find( '#ticket_id' );
 
 				// some fields may have a default value we don't want to lose after clearing the form
 				$edit_panel.find( 'input[data-default-value]' ).each( function() {
@@ -532,6 +536,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
 				$ticket_start_date.datepicker( 'option', 'maxDate', null ).val( $.datepicker.formatDate( date_format, new Date() ) ).trigger( 'change' );
 				$ticket_start_time.val( new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: 'numeric' } ).format( new Date() ) ).trigger( 'change' );
+
 				// event end date, time
 				$ticket_end_date.datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
 				$ticket_end_time.val( $( document.getElementById( 'EventEndTime' ) ).val() ).trigger( 'change' );
@@ -547,6 +552,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( 'ticket_bottom_right' ) ).empty();
 
 				$edit_panel.find( '.accordion-header, .accordion-content' ).removeClass( 'is-active' );
+
+				$textFields.val( '' );
+				$checkFields.prop( 'checked', false );
+				$idField.val( '' );
 			},
 
 			/**
@@ -570,7 +579,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} )
 		/* "Settings" button action */
 		.on( 'click', '#settings_form_toggle', function( e ) {
-			show_panel( e, $settings_panel);
+			show_panel( e, $settings_panel );
 		} )
 		/* Settings "Cancel" button action */
 		.on( 'click', '#tribe_settings_form_cancel', function( e ) {
@@ -683,14 +692,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			show_panel( e, $edit_panel );
 		} )
+
 		/* Ticket "Cancel" button action */
 		.on( 'click', '#ticket_form_cancel', function( e ) {
 			refresh_panels();
-
-			$tribe_tickets
-				.trigger( 'clear.tribe' )
-				.trigger( 'focus.tribe' );
+			$tribe_tickets.trigger( 'clear.tribe' );
+			$tribe_tickets.trigger( 'focus.tribe' );
 		} )
+
 		/* Change global stock type if we've put a value in global_stock_cap */
 		.on( 'blur', '[name="global_stock_cap"]', function( e ) {
 			var $this = $( this );
