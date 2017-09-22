@@ -1,6 +1,15 @@
 <?php
 $timepicker_step = 30;
 $timepicker_round = '00:00:00';
+
+$start_date_errors = array(
+	'is-required' => __( 'Start sale date cannot be empty.', 'event-tickets' ),
+	'is-greater-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
+);
+$end_date_errors = array(
+	'is-required' => __( 'End sale date cannot be empty.', 'event-tickets' ),
+	'is-greater-or-equal-to' => __( 'End sale date cannot be less than Start sale date', 'event-tickets' ),
+);
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true">
@@ -139,7 +148,7 @@ $timepicker_round = '00:00:00';
 								data-validation-is-required
 								data-validation-type="datepicker"
 								data-validation-is-less-or-equal-to="#ticket_end_date"
-								data-validation-error="ERROR DATE START"
+								data-validation-error="<?php echo esc_attr( json_encode( $start_date_errors ) ) ?>"
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
 							<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
@@ -155,7 +164,7 @@ $timepicker_round = '00:00:00';
 								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 								value=""
 								data-validation-is-required
-								data-validation-error="ERROR TIME START"
+								data-validation-error="<?php esc_attr_e( 'Start sale time cannot be empty.', 'event-tickets' ) ?>"
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 							<span class="tooltip_container">
@@ -180,7 +189,7 @@ $timepicker_round = '00:00:00';
 								data-validation-is-required
 								data-validation-type="datepicker"
 								data-validation-is-greater-or-equal-to="#ticket_start_date"
-								data-validation-error="ERROR DATE END"
+								data-validation-error="<?php echo esc_attr( json_encode( $end_date_errors ) ) ?>"
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
 							<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
@@ -195,7 +204,7 @@ $timepicker_round = '00:00:00';
 								data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 								value=""
 								data-validation-is-required
-								data-validation-error="ERROR TIME END"
+								data-validation-error="<?php esc_attr_e( 'End sale time cannot be empty.', 'event-tickets' ) ?>"
 							/>
 							<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 
