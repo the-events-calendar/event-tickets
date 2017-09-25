@@ -776,22 +776,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * @param int $post_id ID of parent "event" post
 				 */
 				do_action( 'tribe_tickets_ticket_added', $post_id );
+			} else {
+				$this->ajax_error( __( 'Failed to Add the Ticket', 'event-tickets' ) );
 			}
-
-			parse_str ( $_POST['formdata'], $post_data );
 
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
 
-			$post_data['ticket_stock'] = $ticket->stock;
-			$post_data['ticket_capacity'] = $ticket->original_stock();
+			$data['ticket_stock'] = $ticket->stock;
+			$data['ticket_capacity'] = $ticket->original_stock();
 
 			$return = array(
-				'data' => json_encode( $post_data, JSON_FORCE_OBJECT ),
+				'data' => json_encode( $data, JSON_FORCE_OBJECT ),
 			);
-
-			if ( ! empty( $html ) ) {
-				$return['html'] = $html;
-			}
 
 			/**
 			 * Filters the return data for ticket add
