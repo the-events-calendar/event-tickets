@@ -220,11 +220,10 @@
 		padding-left: 0;
 		padding-right: 1em;
 
-		@media (min-width: 782px) {
-			&input,
-			&textarea {
-				width: 132px;
-			}
+		@media screen and ( max-width: 782px ) {
+			float: none;
+			display: inline-block;
+			padding: 0 0 6px;
 		}
 	}
 
@@ -265,11 +264,20 @@
 
 	.tribe_stock_block {
 		padding-left: calc(20px + .4em);
+
+		@media screen and ( max-width: 782px ) {
+			padding-left: 36px;
+		}
 	}
 
 	/* Capacity Radio Buttons */
 	.tribe_stock_block.tribe-active {
 		padding-top: 1em;
+
+		@media screen and ( max-width: 782px ) {
+			padding-top: 5px;
+		}
+
 	}
 
 	label.ticket_form_right {

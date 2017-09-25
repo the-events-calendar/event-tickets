@@ -393,11 +393,6 @@ p.description {
 		padding: 16px;
 	}
 
-	.input_block .ticket_form_leftinput,
-			.input_block .ticket_form_lefttextarea {
-		width: 132px;
-	}
-
 	.input_block .input_block,
 	.input_block .ticket_form_right {
 		margin-left: 132px;
@@ -413,6 +408,23 @@ p.description {
 	#settings_form_toggle {
 		float: right;
 		margin-top: 0;
+	}
+}
+
+@media screen and ( max-width: 782px ) {
+
+	.input_block .ticket_form_left {
+		float: none;
+		display: inline-block;
+		padding: 0 0 6px;
+	}
+
+	.input_block .tribe_stock_block {
+		padding-left: 36px;
+	}
+
+	.input_block .tribe_stock_block.tribe-active {
+		padding-top: 5px;
 	}
 }
 
