@@ -1095,7 +1095,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
 		?>
 		<tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
-			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>">
+			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>"  data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
 				<?php echo esc_html( $ticket->name ); ?>
 			</td>
 
@@ -1113,8 +1113,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$global_stock_mode = $ticket->global_stock_mode();
 			?>
 
-			<td class="ticket_capacity">
-				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
+			<td class="ticket_capacity" data-label="<?php esc_html_e( 'Capacity:', 'event-tickets' ); ?>">
 				<?php
 				$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode;
 				if ( $show_parens ) {
@@ -1127,8 +1126,7 @@ class Tribe__Tickets__Tickets_Handler {
 				?>
 			</td>
 
-			<td class="ticket_available">
-				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
+			<td class="ticket_available" data-label="<?php esc_html_e( 'Available:', 'event-tickets' ); ?>">
 				<?php
 				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
 					// escaping handled in function - could be string|int
