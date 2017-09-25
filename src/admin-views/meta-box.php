@@ -128,8 +128,15 @@ $modules = Tribe__Tickets__Tickets::modules();
 					<td width="20%"><label for="ticket_provider"><?php esc_html_e( 'Sell using:', 'event-tickets' ); ?></label></td>
 					<td>
 						<?php
-						$checked = true;
+						$checked        = true;
+						$default_module = null;
+
+						if ( method_exists( 'Tribe__Tickets__Tickets', 'get_default_module' ) ) {
+							$default_module = Tribe__Tickets__Tickets::get_default_module();
+						}
+
 						foreach ( $modules as $class => $module ) {
+							$checked = null !== $default_module ? $default_module === $module : $checked;
 							?>
 							<input <?php checked( $checked ); ?> type="radio" name="ticket_provider" id="ticket_provider"
 																 value="<?php echo esc_attr( $class ); ?>"
