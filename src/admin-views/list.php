@@ -1,7 +1,8 @@
 <?php if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
 <div id="ticket_list_wrapper">
 <?php endif; ?>
-	<table id="tribe_ticket_list_table" class="eventtable ticket_list eventForm wp-list-table widefat fixed">
+
+	<table id="tribe_ticket_list_table" class="tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
 		<?php
 		global $post;
 		$provider = null;
@@ -24,7 +25,7 @@
 		?>
 		<thead>
 			<tr class="table-header">
-				<th class="ticket_name"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></th>
+				<th class="ticket_name column-primary"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></th>
 				<?php
 				/**
 				 * Allows for the insertion of additional columns into the ticket table header
@@ -67,9 +68,8 @@
 			?>
 		</tbody>
 	</table>
-	<?php do_action( 'tribe_ticket_order_field', $post_id );
+<?php do_action( 'tribe_ticket_order_field', $post_id ); ?>
 
-	if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
+<?php if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
 </div>
-<?php
-endif;
+<?php endif;

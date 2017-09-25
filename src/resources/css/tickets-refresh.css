@@ -56,42 +56,6 @@
 	margin-top: .5em;
 }
 
-/* Button styles */
-
-.ticket_panel .button-primary,
-	.ticket_panel .button-secondary {
-	height: 2.5em;
-}
-
-.ticket_panel .button-primary {
-	background: none;
-	background-color: #ccc;
-	border-color: #a3a3a3;
-	box-shadow: 0 1px 0 #a3a3a3;
-	color: #555;
-	text-shadow: none;
-}
-
-.ticket_panel .button-primary:hover,
-		.ticket_panel .button-primary:active,
-		.ticket_panel .button-primary:focus {
-	background: none;
-	background-color: #ddd;
-	border-color: #a3a3a3;
-	box-shadow: 0 1px 0 #a3a3a3;
-	color: #555;
-	text-shadow: none;
-}
-
-.ticket_panel .button-primary + .button-primary,
-		.ticket_panel .button-primary + .button-secondary {
-	margin-left: 1em;
-}
-
-.ticket_panel #settings_form_toggle {
-	background-color: #fff;
-}
-
 .ticket_panel.panel_base {
 	border: 0;
 	padding: .5em 0 0;
@@ -145,28 +109,21 @@
 	margin-top: 1em;
 }
 
-.ticket_form_toggle + .ticket_form_toggle {
-	margin-left: 1em;
-}
-
-.ticket_form_toggle_text::before, .settings_form_toggle_text::before {
+.tribe-button-icon::before {
 	font-family: 'dashicons';
-}
-
-.ticket_form_toggle_text::before {
-	content: '\f132';
 	font-size: 1.25em;
 	left: -.25em;
 	position: relative;
 	vertical-align: middle;
 }
 
-.settings_form_toggle_text::before {
+.tribe-button-icon.tribe-button-icon-plus::before {
+	content: '\f132';
+}
+
+.tribe-button-icon.tribe-button-icon-settings::before {
 	content: '\f111';
-	font-size: 1.25em;
-	left: -.25em;
-	position: relative;
-	vertical-align: bottom;
+	top: -2px;
 }
 
 .tribe-tickets-image-preview {
@@ -198,20 +155,16 @@
 
 /* Styles for Initial View */
 
-.ticket_table_intro:only-child {
-	margin-bottom: 1em;
-}
-
-.ticket_table_intro::after {
-	clear: both;
-	content: '';
-	display: table;
+.ticket_table_intro .button-secondary {
+	float: right;
+	margin-left: 5px;
 }
 
 .ticket_table_intro #ticket_form_total_capacity {
 	position: relative;
-	display: block;
-	margin-bottom: .5em;
+	display: inline-block;
+	line-height: 28px;
+	position: relative;
 }
 
 .ticket_table_intro #ticket_form_total_capacity .tooltip {
@@ -236,10 +189,6 @@
 	left: 100%;
 	top: 53%;
 	white-space: nowrap;
-}
-
-.ticket_table_intro .ticket_form_view_attendees {
-	margin-left: 1em;
 }
 
 /* Form styles */
@@ -444,14 +393,6 @@ p.description {
 		padding: 16px;
 	}
 
-	.ticket_table_intro {
-		text-align: right;
-	}
-
-	.ticket_table_intro #ticket_form_total_capacity {
-		float: left;
-	}
-
 	.input_block .ticket_form_leftinput,
 			.input_block .ticket_form_lefttextarea {
 		width: 132px;
@@ -472,13 +413,6 @@ p.description {
 	#settings_form_toggle {
 		float: right;
 		margin-top: 0;
-	}
-}
-
-@media (max-width: 400px) {
-
-	.ticket_table_intro .ticket_form_view_attendees {
-		float: right;
 	}
 }
 

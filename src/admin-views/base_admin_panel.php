@@ -29,7 +29,12 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 				 */
 				do_action( 'tribe_events_tickets_post_capacity', $post_id );
 				?>
-				<a id="ticket_form_view_attendees" class="ticket_form_view_attendees" href="<?php echo esc_url( $attendees_url ); ?>"><?php esc_html_e( 'View Attendees', 'event-tickets' ); ?></a>
+				<a
+					class="button-secondary"
+					href="<?php echo esc_url( $attendees_url ); ?>"
+				>
+					<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
+				</a>
 			</div>
 		<?php endif; ?>
 		<?php
@@ -65,13 +70,17 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
 		?>
-		<button id="rsvp_form_toggle" class="button-secondary ticket_form_toggle">
-			<span class="ticket_form_toggle_text" aria-label="<?php esc_attr_e( 'Add a new RSVP', 'event-tickets' ); ?>"><?php esc_html_e( 'New RSVP', 'event-tickets' ); ?></span>
+		<button
+			id="rsvp_form_toggle"
+			class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+			aria-label="<?php esc_attr_e( 'Add a new RSVP', 'event-tickets' ); ?>"
+		>
+			<?php esc_html_e( 'New RSVP', 'event-tickets' ); ?>
 		</button>
 
 
-		<button id="settings_form_toggle" class="button-secondary"><span class="settings_form_toggle_text">
-			<?php esc_html_e( 'Settings', 'event-tickets' ); ?></span>
+		<button id="settings_form_toggle" class="button-secondary tribe-button-icon tribe-button-icon-settings">
+			<?php esc_html_e( 'Settings', 'event-tickets' ); ?>
 		</button>
 
 		<?php
