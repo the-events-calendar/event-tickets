@@ -122,9 +122,9 @@ $end_date_errors = array(
 				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null ); ?>
 			</section>
 			<div class="accordion">
-				<div class="accordion-header tribe_advanced_meta">
+				<button class="accordion-header tribe_advanced_meta">
 					<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
-				</div>
+				</button>
 				<section id="ticket_form_advanced" class="advanced accordion-content">
 					<h4 class="accordion-label screen_reader_text"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 					<div class="input_block">
