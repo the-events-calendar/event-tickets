@@ -14,8 +14,10 @@
 	}
 
 	tr {
-		border-bottom: 1px solid var(--border-color);
+	}
 
+	tr td {
+		border-bottom: 1px solid var(--border-color);
 	}
 
 	tr:first-child {
@@ -41,6 +43,13 @@
 
 		td:last-child {
 			border-bottom-right-radius: var(--border-radius);
+		}
+	}
+
+	.tribe-mobile-only {
+		display: none;
+		@media screen and ( max-width: 782px ) {
+			display: inline-block;
 		}
 	}
 
@@ -210,6 +219,7 @@
 
 		tr {
 			position: relative;
+			border-bottom: 1px solid var(--border-color);
 		}
 
 		th.column-primary ~ th {
@@ -231,6 +241,7 @@
 			width: 50%;
 			box-sizing: border-box;
 			float: left;
+			border: 0;
 		}
 
 		.is-expanded {

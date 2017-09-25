@@ -40,8 +40,7 @@
 
 			head.addEventListener( 'click', accordionHandle );
 
-			function accordionHandle() {
-
+			function accordionHandle( event ) {
 				var nextPanel = value.nextElementSibling;
 				var nextPanelLabel = nextPanel.getElementsByClassName( 'accordion-label' )[0];
 
@@ -53,18 +52,16 @@
 				nextPanelLabel.focus();
 
 				if ( nextPanel.classList.contains( 'is-active' ) ) {
-
 					head.setAttribute( 'aria-selected', 'true' );
 					head.setAttribute( 'aria-expanded', 'true' );
 					nextPanel.setAttribute( 'aria-hidden', 'false' );
-
 				} else {
-
 					head.setAttribute( 'aria-selected', 'false' );
 					head.setAttribute( 'aria-expanded', 'false' );
 					nextPanel.setAttribute( 'aria-hidden', 'true' );
-
 				}
+
+				event.preventDefault();
 			}
 		});
 
@@ -88,7 +85,7 @@
 
 	// IE8 compatible alternative to DOMContentLoaded
 	document.onreadystatechange = function () {
-		if (document.readyState == "interactive") {
+		if ( "interactive" == document.readyState ) {
 			MTAccordion( {
 				target: '.accordion', // ID (or class) of accordion container
 			} );

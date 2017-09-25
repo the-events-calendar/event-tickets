@@ -19,7 +19,9 @@
 	border-bottom: 1px solid #cccccc;
 }
 
-.tribe-tickets-editor-table tr {
+.tribe-tickets-editor-table tr {}
+
+.tribe-tickets-editor-table tr td {
 	border-bottom: 1px solid #cccccc;
 }
 
@@ -47,6 +49,10 @@
 
 .tribe-tickets-editor-table tr:last-child td:last-child {
 	border-bottom-right-radius: 3px;
+}
+
+.tribe-tickets-editor-table .tribe-mobile-only {
+	display: none;
 }
 
 .tribe-tickets-editor-table .ui-sortable-handle * {
@@ -186,21 +192,11 @@
 	top: -5px;
 }
 
-@media (max-width: 782px) {
-
-	.tribe-tickets-editor-table .ticket_name p {
-		display: inline;
-	}
-}
-
-@media screen and (max-width: 782px) {
-
-	.tribe-tickets-editor-table button.tribe-toggle-row {
-		display: block;
-	}
-}
-
 @media screen and ( max-width: 782px ) {
+
+	.tribe-tickets-editor-table .tribe-mobile-only {
+		display: inline-block;
+	}
 
 	.tribe-tickets-editor-table td.ticket_edit {
 		position: absolute;
@@ -211,6 +207,7 @@
 
 	.tribe-tickets-editor-table tr {
 		position: relative;
+		border-bottom: 1px solid #cccccc;
 	}
 
 	.tribe-tickets-editor-table th.column-primary ~ th {
@@ -234,6 +231,7 @@
 		width: 50%;
 		box-sizing: border-box;
 		float: left;
+		border: 0;
 	}
 
 	.tribe-tickets-editor-table .is-expanded {
@@ -241,5 +239,19 @@
 		overflow: hidden;
 
 		/* clearfix */
+	}
+}
+
+@media (max-width: 782px) {
+
+	.tribe-tickets-editor-table .ticket_name p {
+		display: inline;
+	}
+}
+
+@media screen and (max-width: 782px) {
+
+	.tribe-tickets-editor-table button.tribe-toggle-row {
+		display: block;
 	}
 }

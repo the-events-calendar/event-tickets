@@ -524,7 +524,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 */
 			'clear.tribe': function() {
 				var $textFields = $edit_panel.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' );
-				var $checkFields = edit_panel.find( 'input:checkbox, input:radio' );
+				var $checkFields = $edit_panel.find( 'input:checkbox, input:radio' );
 				var $idField = $edit_panel.find( '#ticket_id' );
 
 				// some fields may have a default value we don't want to lose after clearing the form

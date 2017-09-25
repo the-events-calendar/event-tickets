@@ -1113,7 +1113,8 @@ class Tribe__Tickets__Tickets_Handler {
 			$global_stock_mode = $ticket->global_stock_mode();
 			?>
 
-			<td class="ticket_capacity" data-label="<?php esc_html_e( 'Capacity:', 'event-tickets' ); ?>">
+			<td class="ticket_capacity">
+				<span class='tribe-mobile-only'><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
 				<?php
 				$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode;
 				if ( $show_parens ) {
@@ -1126,7 +1127,8 @@ class Tribe__Tickets__Tickets_Handler {
 				?>
 			</td>
 
-			<td class="ticket_available" data-label="<?php esc_html_e( 'Available:', 'event-tickets' ); ?>">
+			<td class="ticket_available">
+				<span class='tribe-mobile-only'><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
 				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
 					// escaping handled in function - could be string|int
