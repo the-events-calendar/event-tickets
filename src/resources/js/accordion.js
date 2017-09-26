@@ -85,7 +85,7 @@
 
 	// IE8 compatible alternative to DOMContentLoaded
 	document.onreadystatechange = function () {
-		if ( "interactive" == document.readyState ) {
+		if ( 'interactive' === document.readyState ) {
 			MTAccordion( {
 				target: '.accordion', // ID (or class) of accordion container
 			} );

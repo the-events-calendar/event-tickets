@@ -352,8 +352,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				nonce        : TribeTickets.add_ticket_nonce
 			};
 
-			console.log( notice );
-
 			if ( 'settings-cancel' === notice ) {
 				params.action = 'tribe-ticket-refresh-settings';
 			}
@@ -395,8 +393,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					// Settings table
 					if ( 'undefined' !== typeof response.data.settings_panel ) {
-						$( document.getElementById( 'tribe_panel_settings' ) ).replaceWith( response.data.settings_panel );
-						$settings_panel = $( document.getElementById( 'tribe_panel_settings' ) );
+						var $newSettingsPanel = $( response.data.settings_panel );
+						$settings_panel.replaceWith( $newSettingsPanel );
+
+						// replaces the global variable
+						$settings_panel = $newSettingsPanel;
 					}
 
 					// Total Capacity line
