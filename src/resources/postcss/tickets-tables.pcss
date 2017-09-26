@@ -1,15 +1,23 @@
 :root {
-	--border-radius: 5px;
-	--border-color: #dfdfdf;
+	--border-radius: 3px;
+	--border-color: #ccc;
 }
 
-.eventtable.ticket_list {
+.tribe-tickets-editor-table {
 	border: 1px solid var(--border-color);
 	border-radius: var(--border-radius);
 	margin: 20px 0;
 
 	thead {
-		background-color: #ccc;
+		background-color: #f9f9f9;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	tr {
+	}
+
+	tr td {
+		border-bottom: 1px solid var(--border-color);
 	}
 
 	tr:first-child {
@@ -38,48 +46,11 @@
 		}
 	}
 
-	th {
-		border-bottom: 0;
+	.tribe-mobile-only {
+		display: none;
 
-		@media (max-width: 782px) {
-			&.ticket_price,
-			&.ticket_capacity,
-			&.ticket_available,
-			&.ticket_edit {
-				display: none;
-			}
-		}
-	}
-
-	tbody {
-		border-left: 10px solid transparent;
-		border-right: 10px solid transparent;
-
-		td {
-			@media (min-width: 782px) {
-				padding: 18px 8px;
-			}
-		}
-	}
-
-	tbody tr:not(:last-child) {
-		box-shadow: 0 9px 3px -8px rgba(204, 204, 204, 1);
-	}
-
-	tr.is-expanded {
-		/* overrides default wp percentage padding */
-		td.column-primary ~ td:not(.ticket_name) {
-			@media (max-width: 782px) {
-				padding-left: 8px;
-			}
-		}
-	}
-
-	@media (max-width: 782px) {
-		tr:not(.is-expanded) {
-			td.column-primary {
-				padding-bottom: .5em;
-			}
+		@media screen and ( max-width: 782px ) {
+			display: inline-block;
 		}
 	}
 
@@ -96,17 +67,9 @@
 		}
 	}
 
-	td .ticket_cell_label {
-		@media (min-width: 782px) {
-			display: none;
-		}
-	}
-
 	/* Specific cells - remember that these classes exist in the header too! */
 	.ticket_name {
 		p {
-			padding-left: 20px;
-
 			&::before {
 				font-family: 'dashicons';
 				font-size: 1.5em;
@@ -116,10 +79,6 @@
 				position: absolute;
 				vertical-align: bottom;
 				visibility: hidden;
-
-				@media (max-width: 782px) {
-					display: none;
-				}
 			}
 
 			@media (max-width: 782px) {
@@ -135,12 +94,6 @@
 				}
 			}
 		}
-
-		&.column-primary {
-			@media (max-width: 782px) {
-				padding-top: .75em;
-			}
-		}
 	}
 
 	.ui-sortable-handle .ticket_name {
@@ -151,28 +104,8 @@
 		}
 	}
 
-	.ticket_available,
-	.ticket_capacity,
 	.ticket_edit {
-		@media (min-width: 782px) {
-			text-align: center;
-		}
-	}
-
-	.ticket_price {
-		@media (min-width: 782px) {
-			text-align: right;
-		}
-	}
-
-	.ticket_edit {
-		vertical-align: top;
 		width: 100px;
-
-		@media (max-width: 782px) {
-			float: right;
-			margin-top: -2.5em;
-		}
 	}
 
 	/* Edit button styles - separate for portability */
@@ -203,10 +136,6 @@
 
 	.global_capacity_edit_button {
 		vertical-align: middle;
-
-		.global_capacity_edit_text::before {
-			font-size: 18px;
-		}
 	}
 
 	/* Expanded capacity table */
@@ -244,49 +173,40 @@
 		}
 	}
 
-
-	button.tribe-toggle-row {
-		background: rgba(0, 0, 0, 0);
-		border: none;
-		display: none;
-		height: 40px;
-		outline: none;
-		padding: 0;
-		position: absolute;
-		right: 8px;
-		top: 10px;
-		width: 40px;
-
-		@media screen and (max-width: 782px) {
-			display: block;
-		}
-
-		&:hover {
-			cursor: pointer;
-		}
-
-		&::before {
-			-webkit-border-radius: 50%;
-			border-radius: 50%;
-			color: #444;
-			content: '\f140';
-			display: block;
-			font: normal 20px/1 dashicons;
-			left: 10px;
-			line-height: 1;
-			padding: 1px 2px 1px 0;
+	@media screen and ( max-width: 782px ) {
+		td.ticket_edit {
 			position: absolute;
-			speak: none;
-			top: -5px;
+			right: 0;
+			top: 0;
+			width: 37px;
+		}
+
+		tr {
+			position: relative;
+			border-bottom: 1px solid var(--border-color);
+		}
+
+		th:not( .column-primary ) {
+			display: none;
+		}
+
+		thead th.column-primary {
+			width: 100%;
+		}
+
+		tr td {
+			position: relative;
+			display: block;
+			padding: 6px;
+			width: 50%;
+			box-sizing: border-box;
+			float: left;
+			border: 0;
+		}
+
+		.is-expanded {
+			display: block;
+			overflow: hidden; /* clearfix */
 		}
 	}
-
-	.is-expanded {
-		.tribe-toggle-row {
-			&::before {
-				content: '\f142';
-			}
-		}
-	}
-
 }

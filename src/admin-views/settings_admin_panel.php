@@ -1,3 +1,15 @@
+<?php
+$header_id = get_post_meta( $post_id, $this->image_header_field, true );
+$header_id = ! empty( $header_id ) ? $header_id : '';
+$header_img = '';
+$header_filename = '';
+
+if ( ! empty( $header_id ) ) {
+	$header_img = wp_get_attachment_image( $header_id, 'full' );
+	$header_filename = basename ( get_attached_file( $header_id ) );
+}
+?>
+
 <div id="tribe_panel_settings" class="ticket_panel panel_settings" aria-hidden="true" >
 	<h4><?php esc_html_e( 'Ticket Settings', 'event-tickets' ); ?></h4>
 

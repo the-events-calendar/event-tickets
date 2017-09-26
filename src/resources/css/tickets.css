@@ -40,8 +40,8 @@
 }
 
 .ticket_list tr td {
-	padding: 4px 7px 2px;
-	vertical-align: top;
+	padding: 10px;
+	vertical-align: middle;
 }
 
 .ticket_list tr td div.ticket_controls {

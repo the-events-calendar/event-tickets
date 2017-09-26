@@ -13,6 +13,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $base_panel                      = $( document.getElementById( 'tribe_panel_base' ) );
 	var $edit_panel                      = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel                  = $( document.getElementById( 'tribe_panel_settings' ) );
+
 	// stock elements
 	var global_capacity_setting_changed  = false;
 	// date elements
@@ -123,7 +124,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			provider_id = $checked_provider.val() + '_radio';
 		 }
 
-		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger('change');
+		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger( 'change' );
 	}
 
 	/**
@@ -187,90 +188,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// then show the one we want
 		$panel.attr( 'aria-hidden', false );
 	}
-
-	/**
-	 * Refreshes the base and settings panels when we've changed something
-	 *
-	 * @since TBD
-	 *
-	 * @param string optional notice to prepend to the ticket table
-	 * @param bool (true) flag for panel swap
-	 * @return void
-	 */
-	function refresh_panels( notice, swap, callback ) {
-		// make sure we have this for later (default to true)
-		swap = undefined === swap ? true : false;
-
-		var params = {
-			action  : 'tribe-ticket-refresh-panels',
-			notice  : notice,
-			post_ID : $post_id.val(),
-			nonce   : TribeTickets.add_ticket_nonce
-		};
-
-		$.post(
-			ajaxurl,
-			params,
-			function( response ) {
-				// Ticket table
-				if ( response.data.ticket_table && '' != response.data.ticket_table ) {
-					// remove old ticket table
-					var $ticket_table = $( document.getElementById( 'ticket_list_wrapper' ) );
-
-					if ( 0 === $ticket_table.length ) {
-						// if it's not there, create it :(
-						var $container = $( '.tribe_sectionheader.ticket_list_container' );
-						$ticket_table = $( '<div>', {id: "ticket_list_wrapper"});
-						$container.append( $ticket_table );
-
-						if ( $container.hasClass( 'tribe_no_capacity' ) ) {
-							$container.removeClass( 'tribe_no_capacity' );
-						}
-					}
-
-					$ticket_table.empty();
-					// create new ticket table (and notice)
-					var $new_table = $( '<div>' );
-					$new_table.html( response.data.ticket_table );
-
-					// insert new ticket table
-					$ticket_table.append( $new_table );
-				}
-
-				// Settings table
-				if ( 'undefined' !== response.data.capacity_table ) {
-					$( document.getElementById( 'tribe_expanded_capacity_table' ) ).replaceWith( response.data.capacity_table );
-				}
-
-				// Total Capacity line
-				if ( 'undefined' !== response.data.total_capacity ) {
-					var $current_cap_line = $( document.getElementById( 'ticket_form_total_capacity' ) );
-					if ( 0 < $current_cap_line.length ) {
-						$current_cap_line.replaceWith( response.data.total_capacity );
-					} else {
-						var $wrap = $( '<div class="ticket_table_intro">' );
-						$wrap.append( response.data.total_capacity );
-						$( '.ticket_list_container' ).removeClass( 'tribe_no_capacity' ).prepend( $wrap );
-					}
-				}
-
-				// Set Provider radio on ticket form
-				set_default_provider_radio();
-
-				$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
-			}
-		).complete( function( response ) {
-			if ( swap ) {
-				show_panel();
-			}
-
-			// If a callback was passed we call it after the end
-			if ( callback && _.isFunction( callback ) ) {
-				callback( response );
-			}
-		} );
-	}
-
 
 	$( document ).ready( function() {
 		if ( $event_pickers.length ) {
@@ -435,6 +352,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				nonce        : TribeTickets.add_ticket_nonce
 			};
 
+			if ( 'settings-cancel' === notice ) {
+				params.action = 'tribe-ticket-refresh-settings';
+			}
+
 			$.post(
 				ajaxurl,
 				params,
@@ -466,12 +387,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					}
 
 					// Settings table
-					if ( 'undefined' !== response.data.capacity_table ) {
+					if ( 'undefined' !== typeof response.data.capacity_table ) {
 						$( document.getElementById( 'tribe_expanded_capacity_table' ) ).replaceWith( response.data.capacity_table );
 					}
 
+					// Settings table
+					if ( 'undefined' !== typeof response.data.settings_panel ) {
+						var $newSettingsPanel = $( response.data.settings_panel );
+						$settings_panel.replaceWith( $newSettingsPanel );
+
+						// replaces the global variable
+						$settings_panel = $newSettingsPanel;
+					}
+
 					// Total Capacity line
-					if ( 'undefined' !== response.data.total_capacity ) {
+					if ( 'undefined' !== typeof response.data.total_capacity ) {
 						var $current_cap_line = $( document.getElementById( 'ticket_form_total_capacity' ) );
 						if ( 0 < $current_cap_line.length ) {
 							$current_cap_line.replaceWith( response.data.total_capacity );
@@ -484,13 +414,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 					// Set Provider radio on ticket form
 					set_default_provider_radio();
-				} ).complete( function( response ) {
-					$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
+				}
+			).complete( function( response ) {
+				$tribe_tickets.trigger( 'tribe-tickets-refresh-tables', response.data );
 
-					if ( swap ) {
-						show_panel();
-					}
-				} );
+				if ( swap ) {
+					show_panel();
+				}
+			} );
 		}
 
 		/* Add some trigger actions */
@@ -524,7 +455,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 */
 			'clear.tribe': function() {
 				var $textFields = $edit_panel.find( 'input:not(:button):not(:radio):not(:checkbox):not([type="hidden"]), textarea' );
-				var $checkFields = edit_panel.find( 'input:checkbox, input:radio' );
+				var $checkFields = $edit_panel.find( 'input:checkbox, input:radio' );
 				var $idField = $edit_panel.find( '#ticket_id' );
 
 				// some fields may have a default value we don't want to lose after clearing the form
@@ -583,7 +514,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} )
 		/* Settings "Cancel" button action */
 		.on( 'click', '#tribe_settings_form_cancel', function( e ) {
-			refresh_panels();
+			refresh_panels( 'settings-cancel' );
 		} )
 		/* "Save Settings" button action */
 		.on( 'click', '#tribe_settings_form_save', function( e ) {

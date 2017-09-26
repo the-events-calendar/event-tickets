@@ -1094,11 +1094,9 @@ class Tribe__Tickets__Tickets_Handler {
 		$provider     = $ticket->provider_class;
 		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
 		?>
-		<tr class="<?php echo esc_attr( $provider ); ?>" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
-			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>">
-				<span class="ticket_cell_label"><?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?></span>
-				<p><?php echo esc_html( $ticket->name ); ?></p>
-				<button type="button" class="tribe-toggle-row"><span class="screen-reader-text"><?php esc_html_e( 'Show more details', 'event-tickets' ); ?></span></button>
+		<tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
+			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>"  data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
+				<?php echo esc_html( $ticket->name ); ?>
 			</td>
 
 			<?php
@@ -1116,7 +1114,7 @@ class Tribe__Tickets__Tickets_Handler {
 			?>
 
 			<td class="ticket_capacity">
-				<span class="ticket_cell_label"><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
+				<span class='tribe-mobile-only'><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
 				<?php
 				$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode;
 				if ( $show_parens ) {
@@ -1130,7 +1128,7 @@ class Tribe__Tickets__Tickets_Handler {
 			</td>
 
 			<td class="ticket_available">
-				<span class="ticket_cell_label"><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
+				<span class='tribe-mobile-only'><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php
 				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
 					// escaping handled in function - could be string|int
@@ -1179,6 +1177,21 @@ class Tribe__Tickets__Tickets_Handler {
 	public function get_ticket_list_markup( $tickets = array() ) {
 		ob_start();
 		$this->ticket_list_markup( null, $tickets );
+		$return = ob_get_clean();
+
+		return $return;
+	}
+
+	/**
+	 * Returns the markup for the Settings Panel for Tickets
+	 *
+	 * @param  int    $post_id
+	 *
+	 * @return string
+	 */
+	public function get_settings_panel( $post_id ) {
+		ob_start();
+		include $this->path . 'src/admin-views/settings_admin_panel.php';
 		$return = ob_get_clean();
 
 		return $return;
