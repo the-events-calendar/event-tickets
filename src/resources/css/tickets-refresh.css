@@ -339,7 +339,7 @@ p.description {
 #ticket_form .tooltip_container {
 	position: relative;
 
-	display: inline-block;
+	display: inline;
 	vertical-align: middle;
 }
 
@@ -412,6 +412,16 @@ p.description {
 
 @media screen and ( max-width: 782px ) {
 
+	.ticket_table_intro #ticket_form_total_capacity .tooltip {
+		left: auto;
+		top: auto;
+		width: 100%;
+		position: relative;
+		margin-top: 5px;
+		-webkit-transform: none;
+		transform: none;
+	}
+
 	.input_block .ticket_form_left {
 		float: none;
 		display: inline-block;
@@ -425,11 +435,28 @@ p.description {
 	.input_block .tribe_stock_block.tribe-active {
 		padding-top: 5px;
 	}
+
+	#ticket_form .tooltip_container .tooltip {
+		left: auto;
+		top: auto;
+		width: 100%;
+		position: relative;
+		margin-top: 5px;
+		-webkit-transform: none;
+		transform: none;
+	}
 }
 
 @media (max-width: 782px) {
 
 	#ticket_bottom_right {
 		margin-top: 1em;
+	}
+}
+
+@media screen and ( max-width: 390px ) {
+
+	#ticket_form .tooltip_container {
+		display: none;
 	}
 }

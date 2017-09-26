@@ -161,37 +161,6 @@
 	box-shadow: none;
 }
 
-.tribe-tickets-editor-table button.tribe-toggle-row {
-	background: rgba(0, 0, 0, 0);
-	border: none;
-	display: none;
-	height: 40px;
-	outline: none;
-	padding: 0;
-	position: absolute;
-	right: 8px;
-	top: 10px;
-	width: 40px;
-}
-
-.tribe-tickets-editor-table button.tribe-toggle-row:hover {
-	cursor: pointer;
-}
-
-.tribe-tickets-editor-table button.tribe-toggle-row::before {
-	border-radius: 50%;
-	color: #444;
-	content: '\f140';
-	display: block;
-	font: normal 20px/1 dashicons;
-	left: 10px;
-	line-height: 1;
-	padding: 1px 2px 1px 0;
-	position: absolute;
-	speak: none;
-	top: -5px;
-}
-
 @media screen and ( max-width: 782px ) {
 
 	.tribe-tickets-editor-table .tribe-mobile-only {
@@ -246,12 +215,5 @@
 
 	.tribe-tickets-editor-table .ticket_name p {
 		display: inline;
-	}
-}
-
-@media screen and (max-width: 782px) {
-
-	.tribe-tickets-editor-table button.tribe-toggle-row {
-		display: block;
 	}
 }

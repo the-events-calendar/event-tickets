@@ -202,6 +202,16 @@
 			left: 100%;
 			top: 53%;
 			white-space: nowrap;
+
+			@media screen and ( max-width: 782px ) {
+				left: auto;
+				top: auto;
+				width: 100%;
+				position: relative;
+				margin-top: 5px;
+				-webkit-transform: none;
+				transform: none;
+			}
 		}
 	}
 }
@@ -379,14 +389,30 @@ p.description {
 #ticket_form .tooltip_container {
 	@mixin tribe-ticket-tooltip;
 
-	display: inline-block;
+	display: inline;
 	vertical-align: middle;
+
+	@media screen and ( max-width: 390px ) {
+		display: none;
+	}
 
 	.tooltip {
 		background-color: #efefef;
 		left: 100%;
 		margin: 0;
 		width: 200px;
+
+		@media screen and ( max-width: 782px ) {
+			left: auto;
+			top: auto;
+			width: 100%;
+			position: relative;
+			margin-top: 5px;
+			-webkit-transform: none;
+			transform: none;
+		}
+
+
 	}
 }
 

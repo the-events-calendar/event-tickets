@@ -48,25 +48,10 @@
 		}
 	}
 
-	function tribe_make_rows_toggleable() {
-		if ( window.matchMedia( '( max-width: 782px )' ).matches ) {
-			// Toggle list table rows
-			$table.on( 'click', '.tribe-toggle-row', function() {
-				var $tr = $( this ).closest( 'tr' );
-				if ( ! $tr.hasClass( 'is-expanded' ) ) {
-					$tr.addClass( 'is-expanded' );
-				} else {
-					$tr.removeClass( 'is-expanded' );
-				}
-
-			});
-		}
-	}
 
 	$( document ).ready( function () {
 		// trigger once at start
 		tribe_toggle_sortable();
-		tribe_make_rows_toggleable();
 
 		// disable/init depending on screen size
 		var maybeSortable = _.debounce( tribe_toggle_sortable, 300 );
@@ -76,7 +61,6 @@
 			$table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' );
 			// trigger on table refresh
 			tribe_toggle_sortable();
-			tribe_make_rows_toggleable()
 		});
 	});
 })( window, jQuery );
