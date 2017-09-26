@@ -1,6 +1,6 @@
 :root {
 	--border-radius: 3px;
-	--border-color: #cccccc;
+	--border-color: #ccc;
 }
 
 .tribe-tickets-editor-table {
@@ -176,8 +176,8 @@
 	@media screen and ( max-width: 782px ) {
 		td.ticket_edit {
 			position: absolute;
-			top: 0;
 			right: 0;
+			top: 0;
 			width: 37px;
 		}
 
@@ -186,16 +186,12 @@
 			border-bottom: 1px solid var(--border-color);
 		}
 
-		th.column-primary ~ th {
+		th:not( .column-primary ) {
 			display: none;
 		}
 
 		thead th.column-primary {
 			width: 100%;
-		}
-
-		td.column-primary {
-			padding-right: 50px; /* space for toggle button */
 		}
 
 		tr td {

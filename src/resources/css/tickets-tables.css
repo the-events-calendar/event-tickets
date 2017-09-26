@@ -9,20 +9,20 @@
  */
 
 .tribe-tickets-editor-table {
-	border: 1px solid #cccccc;
+	border: 1px solid #ccc;
 	border-radius: 3px;
 	margin: 20px 0;
 }
 
 .tribe-tickets-editor-table thead {
 	background-color: #f9f9f9;
-	border-bottom: 1px solid #cccccc;
+	border-bottom: 1px solid #ccc;
 }
 
 .tribe-tickets-editor-table tr {}
 
 .tribe-tickets-editor-table tr td {
-	border-bottom: 1px solid #cccccc;
+	border-bottom: 1px solid #ccc;
 }
 
 .tribe-tickets-editor-table tr:first-child {
@@ -134,7 +134,7 @@
 }
 
 #tribe_panel_settings .tribe-tickets-editor-table tbody tr td {
-	border-bottom: 1px solid #cccccc;
+	border-bottom: 1px solid #ccc;
 }
 
 #tribe_panel_settings .tribe-tickets-editor-table tbody tr:nth-last-child(2) td,
@@ -143,7 +143,7 @@
 }
 
 #tribe_panel_settings .tribe-tickets-editor-table tbody tr:last-child td {
-	border-top: 1px dashed #cccccc;
+	border-top: 1px dashed #ccc;
 }
 
 .tribe-tickets-editor-table .tribe_capacity_table_ticket_list {
@@ -169,28 +169,22 @@
 
 	.tribe-tickets-editor-table td.ticket_edit {
 		position: absolute;
-		top: 0;
 		right: 0;
+		top: 0;
 		width: 37px;
 	}
 
 	.tribe-tickets-editor-table tr {
 		position: relative;
-		border-bottom: 1px solid #cccccc;
+		border-bottom: 1px solid #ccc;
 	}
 
-	.tribe-tickets-editor-table th.column-primary ~ th {
+	.tribe-tickets-editor-table th:not(.column-primary) {
 		display: none;
 	}
 
 	.tribe-tickets-editor-table thead th.column-primary {
 		width: 100%;
-	}
-
-	.tribe-tickets-editor-table td.column-primary {
-		padding-right: 50px;
-
-		/* space for toggle button */
 	}
 
 	.tribe-tickets-editor-table tr td {

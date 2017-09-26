@@ -429,11 +429,11 @@ p.description {
 @media screen and ( max-width: 782px ) {
 
 	.ticket_table_intro #ticket_form_total_capacity .tooltip {
-		-webkit-transform: none;
 		left: auto;
 		margin-top: 5px;
 		position: relative;
 		top: auto;
+		-webkit-transform: none;
 		transform: none;
 		width: 100%;
 	}
@@ -453,11 +453,11 @@ p.description {
 	}
 
 	#ticket_form .tooltip_container .tooltip {
-		-webkit-transform: none;
 		left: auto;
 		margin-top: 5px;
 		position: relative;
 		top: auto;
+		-webkit-transform: none;
 		transform: none;
 		width: 100%;
 	}
