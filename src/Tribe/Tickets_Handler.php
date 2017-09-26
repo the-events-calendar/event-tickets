@@ -1183,7 +1183,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Returns the markup for the tickets list in the tickets metabox
+	 * Returns the markup for the Settings Panel for Tickets
 	 *
 	 * @param  int    $post_id
 	 *
