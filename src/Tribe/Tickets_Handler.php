@@ -1183,6 +1183,21 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Returns the markup for the tickets list in the tickets metabox
+	 *
+	 * @param  int    $post_id
+	 *
+	 * @return string
+	 */
+	public function get_settings_panel( $post_id ) {
+		ob_start();
+		include $this->path . 'src/admin-views/settings_admin_panel.php';
+		$return = ob_get_clean();
+
+		return $return;
+	}
+
+	/**
 	 * Returns the attachment ID for the header image for a event.
 	 *
 	 * @param $event_id

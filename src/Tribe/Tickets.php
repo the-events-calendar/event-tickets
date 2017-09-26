@@ -620,6 +620,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
 			add_filter( 'wp_ajax_tribe-events-edit-global-capacity', array( $this, 'edit_global_capacity_level' ) );
 			add_action( 'wp_ajax_tribe-ticket-refresh-panels', array( $this, 'ajax_refresh_panels' ) );
+			add_action( 'wp_ajax_tribe-ticket-refresh-settings', array( $this, 'ajax_refresh_settings' ) );
 
 			/**
 			 * @deprecated TBD `tribe_events_tickets_modules` should no longer be used and direct
@@ -737,6 +738,37 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int the post/event id
 			 */
 			$return = apply_filters( 'tribe_tickets_ajax_refresh_tables', $return, $post_id );
+
+			$this->ajax_ok( $return );
+		}
+
+		/**
+		 * Refreshes panel settings after canceling saving
+		 *
+		 * @since TBD
+		 *
+		 * @return string html content of the panel settings
+		 */
+		public function ajax_refresh_settings() {
+			$return = array();
+
+			// Didn't get a post id to work with - bail
+			if ( empty( $_POST['post_ID'] ) ) {
+				$this->ajax_error( __( 'No Post ID was provided.', 'event-tickets' ) );
+			}
+			$post_id = absint( $_POST['post_ID'] );
+
+			$html = tribe( 'tickets.handler' )->get_settings_panel( $post_id );
+
+			/**
+			 * Allows filtering the data by other plugins/ecommerce solutions
+			 *
+			 * @since TBD
+			 *
+			 * @param array the return data
+			 * @param int the post/event id
+			 */
+			$return['settings_panel'] = apply_filters( 'tribe_tickets_ajax_refresh_settings', $html, $post_id );
 
 			$this->ajax_ok( $return );
 		}

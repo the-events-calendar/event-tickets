@@ -108,6 +108,14 @@
 	margin-top: 1em;
 }
 
+.global_capacity_edit_button {
+	background: none;
+	border: 0;
+	color: #ccc;
+	cursor: pointer;
+	padding: 0;
+}
+
 .tribe-button-icon::before {
 	font-family: 'dashicons';
 	font-size: 1.25em;
@@ -116,8 +124,16 @@
 	vertical-align: middle;
 }
 
+.tribe-button-icon .tribe-hidden {
+	display: none;
+}
+
 .tribe-button-icon.tribe-button-icon-plus::before {
 	content: '\f132';
+}
+
+.tribe-button-icon.tribe-button-icon-edit::before {
+	content: '\f464';
 }
 
 .tribe-button-icon.tribe-button-icon-settings::before {

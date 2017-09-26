@@ -139,6 +139,14 @@
 	}
 }
 
+.global_capacity_edit_button {
+	background: none;
+	border: 0;
+	color: #ccc;
+	cursor: pointer;
+	padding: 0;
+}
+
 .tribe-button-icon {
 	&::before {
 		font-family: 'dashicons';
@@ -148,9 +156,18 @@
 		vertical-align: middle;
 	}
 
+	.tribe-hidden {
+		display: none;
+	}
+
 	&.tribe-button-icon-plus::before {
 		content: '\f132';
 	}
+
+	&.tribe-button-icon-edit::before {
+		content: '\f464';
+	}
+
 	&.tribe-button-icon-settings::before {
 		content: '\f111';
 		top: -2px;
