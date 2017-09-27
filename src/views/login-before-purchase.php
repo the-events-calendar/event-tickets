@@ -28,4 +28,4 @@ if ( ! $users_can_register ) {
 
 <?php if ( $users_can_register ) : ?>
 	or <a href="<?php echo esc_attr( $registration_url ); ?>"><?php echo esc_html( $register_message ); ?></a> before purchasing
-<?php endif ?>
+<?php endif;
