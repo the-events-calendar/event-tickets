@@ -37,6 +37,9 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN {
 
 		if ( 'completed' === trim( strtolower( $data['payment_status'] ) ) ) {
 			$paypal->generate_tickets();
+
+			// since the purchase has completed, reset the invoice number
+			$gateway->reset_invoice_number();
 		}
 	}
 
