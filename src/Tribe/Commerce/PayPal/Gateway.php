@@ -12,6 +12,11 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	protected $transaction_data;
 
 	/**
+	 * @var string
+	 */
+	public static $invoice_cookie_name = 'event-tickets-tpp-invoice';
+
+	/**
 	 * Tribe__Tickets__Commerce__PayPal__Gateway constructor.
 	 *
 	 * @since TBD
@@ -72,6 +77,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'shopping_url'  => urlencode( $post_url ),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => 'user_id=' . get_current_user_id(),
+			'invoice'       => $this->get_invoice_number(),
 		);
 
 		foreach ( $_POST['product_id'] as $ticket_id ) {
@@ -251,6 +257,37 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @param Tribe__Tickets__Ticket_Object
 		 */
 		return apply_filters( 'tribe_tickets_commerce_paypal_product_name', $product_name, $ticket );
+	}
+
+	/**
+	 * Retrieves an invoice number (generating it if one doesn't exist)
+	 */
+	public function get_invoice_number() {
+		$invoice_length = 127;
+
+		if (
+			! empty( $_COOKIE[ self::$invoice_cookie_name ] )
+			&& strlen( $_COOKIE[ self::$invoice_cookie_name ] ) === $invoice_length
+		) {
+			$invoice = $_COOKIE[ self::$invoice_cookie_name ];
+		} else {
+			$invoice = wp_generate_password( $invoice_length, false );
+		}
+
+		// set the cookie (if it was already set, it'll extend the lifetime)
+		setcookie( self::$invoice_cookie_name, $invoice, DAY_IN_SECONDS );
+	}
+
+	/**
+	 * Purges an invoice cookie
+	 */
+	public function reset_invoice_number() {
+		if ( empty( $_COOKIE[ self::$invoice_cookie_name ] ) ) {
+			return;
+		}
+
+		unset( $_COOKIE[ self::$invoice_cookie_name ] );
+		setcookie( self::$invoice_cookie_name, null, -1 );
 	}
 
 	/**

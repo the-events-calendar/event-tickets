@@ -29,6 +29,9 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 		$gateway->set_transaction_data( $results );
 
 		$paypal->generate_tickets();
+
+		// since the purchase has completed, reset the invoice number
+		$gateway->reset_invoice_number();
 	}
 
 	/**
