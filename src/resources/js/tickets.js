@@ -8,6 +8,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $tribe_tickets                   = $( document.getElementById( 'tribetickets' ) );
 	var $tickets_container               = $( document.getElementById( 'event_tickets' ) );
 	var $post_id                         = $( document.getElementById( 'post_ID' ) );
+
+	var $metabox                         = $tribe_tickets.find( '.inside' );
+	var $metaboxBlocker                  = $metabox.find( '.tribe-tickets-editor-blocker' );
+	var $spinner                         = $metabox.find( '.spinner' );
+
 	// panels
 	var $panels                          = $( document.getElementById( 'event_tickets' ) ).find( '.ticket_panel' );
 	var $base_panel                      = $( document.getElementById( 'tribe_panel_base' ) );
@@ -28,6 +33,22 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $ticket_show_description         = $( document.getElementById( 'tribe_tickets_show_description' ) );
 	var date_format                      = 'YYYY-MM-DD';
 	var time_format                      = 'HH:mmA';
+
+	$( document ).ajaxSend( function( event, jqxhr, settings ) {
+		if ( -1 === settings.data.indexOf( 'action=tribe-ticket' ) ) {
+			return;
+		}
+
+		$tribe_tickets.trigger( 'spin.tribe', 'start' );
+	} );
+
+	$( document ).ajaxComplete( function( event, jqxhr, settings ) {
+		if ( -1 === settings.data.indexOf( 'action=tribe-ticket' ) ) {
+			return;
+		}
+
+		$tribe_tickets.trigger( 'spin.tribe', 'stop' );
+	} );
 
 	ticketHeaderImage = {
 		// Call this from the upload button to initiate the upload frame.
@@ -162,31 +183,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 
 		} );
-	}
-
-	/**
-	 * Switch from one panel to another
-	 * @param  event e      triggering event
-	 * @param  object ($base_panel) $panel jQuery object containing the panel we want to switch to
-	 * @return void
-	 */
-	function show_panel( e, $panel ) {
-		if ( e ) {
-			e.preventDefault();
-		}
-
-		// this way if we don't pass a panel, it works like a 'reset'
-		if ( undefined == $panel ) {
-			$panel = $base_panel;
-		}
-
-		// First, hide them all!
-		$panels.each( function() {
-			$(this).attr( 'aria-hidden', true );
-		} );
-
-		// then show the one we want
-		$panel.attr( 'aria-hidden', false );
 	}
 
 	$( document ).ready( function() {
@@ -329,6 +325,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			// then show the one we want
 			$panel.attr( 'aria-hidden', false );
+
+			if ( ! $panel.is( $base_panel ) ) {
+				$( window ).on( 'beforeunload.tribe', beforeUnload );
+			} else {
+				$( window ).off( 'beforeunload.tribe' );
+			}
 		}
 
 		/**
@@ -424,6 +426,26 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} );
 		}
 
+		/**
+		 * If the user attempts to nav away without saving global stock setting
+		 * changes then try to bring this to their attention!
+		 */
+		var beforeUnload = function( event ) {
+			var returnValue = false;
+
+			// If we are not on the base panel we alert the user about leaving
+			if ( $metabox.find( '.ticket_panel' ).filter( '[aria-hidden="false"]' ).is( $base_panel ) ) {
+				returnValue = tribe_global_stock_admin_ui.nav_away_msg;
+			}
+
+			event.returnValue = returnValue;
+
+
+			// We can't trigger a confirm() dialog from within this action but returning
+			// a string should achieve effectively the same result
+			return returnValue;
+		};
+
 		/* Add some trigger actions */
 		$tribe_tickets.on( {
 			/**
@@ -440,11 +462,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				if ( 'stop' === action ) {
-					$tickets_container.css( 'opacity', '1' )
-						.find( '#tribe-loading' ).hide();
+					$metaboxBlocker.hide();
+					$spinner.removeClass( 'is-active' );
 				} else {
-					$tickets_container.css( 'opacity', '0.5' )
-						.find( '#tribe-loading' ).show();
+					$metaboxBlocker.show();
+					$spinner.addClass( 'is-active' );
 				}
 			},
 
@@ -670,7 +692,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				return;
 			}
 
-			$tribe_tickets.trigger( 'save-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
+			$tribe_tickets.trigger( 'save-ticket.tribe', e );
 
 			var params = {
 				action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
@@ -691,7 +713,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				},
 				'json'
 			).complete( function() {
-				$tribe_tickets.trigger( 'spin.tribe', 'stop' ).trigger( 'focus.tribe' );
+				$tribe_tickets.trigger( 'focus.tribe' );
 			} );
 
 		} )
@@ -703,7 +725,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			e.preventDefault();
 
-			$tribe_tickets.trigger( 'delete-ticket.tribe', e ).trigger( 'spin.tribe', 'start' );
+			$tribe_tickets.trigger( 'delete-ticket.tribe', e );
 
 			var deleted_ticket_id = $( this ).attr( 'attr-ticket-id' );
 
@@ -731,15 +753,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					}
 				},
 				'json'
-			).complete( function() {
-				$tribe_tickets.trigger( 'spin.tribe', 'stop' );
-			} );
+			);
 		} )
 		/* "Edit Ticket" link action */
 		.on( 'click', '.ticket_edit_button', function( e ) {
 				e.preventDefault();
-
-				$tribe_tickets.trigger( 'spin.tribe', 'start' );
 
 				var ticket_id = this.getAttribute( 'data-ticket-id' );
 
@@ -929,7 +947,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					'json'
 				).always( function( response ) {
 					$tribe_tickets
-						.trigger( 'spin.tribe', 'stop' )
 						.trigger( 'focus.tribe' )
 						.trigger( 'edit-tickets-complete.tribe' );
 
@@ -1021,22 +1038,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( document.getElementById( 'tribe_ticket_header_remove' ) ).hide();
 			$( document.getElementById( 'tribe_tickets_image_preview_filename' ) ).hide().find( '.filename' ).text( '' );
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
-
-		} );
-
-		/**
-		 * If the user attempts to nav away without saving global stock setting
-		 * changes then try to bring this to their attention!
-		 */
-		$( window ).on( 'beforeunload', function() {
-			// If the global stock settings have not changed, do not interfere
-			if ( ! global_capacity_setting_changed ) {
-				return;
-			}
-
-			// We can't trigger a confirm() dialog from within this action but returning
-			// a string should achieve effectively the same result
-			return tribe_global_stock_admin_ui.nav_away_msg;
 
 		} );
 
