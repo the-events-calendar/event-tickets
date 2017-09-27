@@ -10,7 +10,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $post_id                         = $( document.getElementById( 'post_ID' ) );
 
 	var $metabox                         = $tribe_tickets.find( '.inside' );
-	var $metaboxBlocker                  = $metabox.find( '.tribe-tickets-editor-block' );
+	var $metaboxBlocker                  = $metabox.find( '.tribe-tickets-editor-blocker' );
 	var $spinner                         = $metabox.find( '.spinner' );
 
 	// panels
@@ -327,9 +327,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$panel.attr( 'aria-hidden', false );
 
 			if ( ! $panel.is( $base_panel ) ) {
-				$( window ).on( 'beforeunload', beforeUnload );
+				$( window ).on( 'beforeunload.tribe', beforeUnload );
 			} else {
-				$( window ).off( 'beforeunload' );
+				$( window ).off( 'beforeunload.tribe' );
 			}
 		}
 

@@ -16,7 +16,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 $attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
 ?>
 
-<div class="tribe-tickets-editor-block">
+<div class="tribe-tickets-editor-blocker">
 	<span class="spinner"></span>
 </div>
 
