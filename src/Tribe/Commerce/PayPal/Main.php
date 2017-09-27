@@ -947,6 +947,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$must_login = ! is_user_logged_in() && $this->login_required();
+		$can_login = true;
 		include $this->getTemplateHierarchy( 'tickets/tpp' );
 
 		// It's only done when it's included

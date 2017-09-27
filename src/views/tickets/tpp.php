@@ -9,6 +9,7 @@
  * @version 4.5
  *
  * @var bool $must_login
+ * @var bool $can_login
  */
 
 $is_there_any_product         = false;
@@ -128,6 +129,16 @@ $cart_url       = '';
 					<?php endif; ?>
 				</td>
 			</tr>
+
+			<?php if ( ! $must_login && $can_login ) : ?>
+				<tr>
+					<td colspan="5" class="tpp-add">
+						<?php if ( $can_login ) : ?>
+							<?php include Tribe__Tickets__Main::instance()->get_template_hierarchy( 'login-before-purchase' ); ?>
+						<?php endif; ?>
+					</td>
+				</tr>
+			<?php endif ?>
 		<?php endif ?>
 
 		<noscript>
