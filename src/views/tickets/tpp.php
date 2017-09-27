@@ -127,18 +127,11 @@ $cart_url       = '';
 					<?php if ( $must_login ) : ?>
 						<?php include Tribe__Tickets__Main::instance()->get_template_hierarchy( 'login-to-purchase' ); ?>
 					<?php endif; ?>
+					<?php if ( ! $must_login && $can_login ) : ?>
+						<?php include Tribe__Tickets__Main::instance()->get_template_hierarchy( 'login-before-purchase' ); ?>
+					<?php endif; ?>
 				</td>
 			</tr>
-
-			<?php if ( ! $must_login && $can_login ) : ?>
-				<tr>
-					<td colspan="5" class="tpp-add">
-						<?php if ( $can_login ) : ?>
-							<?php include Tribe__Tickets__Main::instance()->get_template_hierarchy( 'login-before-purchase' ); ?>
-						<?php endif; ?>
-					</td>
-				</tr>
-			<?php endif ?>
 		<?php endif ?>
 
 		<noscript>
