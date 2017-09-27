@@ -484,7 +484,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$export_url = add_query_arg(
 			array(
-				'attendees_csv' => true,
+				'attendees_csv'       => true,
 				'attendees_csv_nonce' => wp_create_nonce( 'attendees_csv_nonce' ),
 			)
 		);
@@ -495,24 +495,34 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		add_thickbox();
 
 		$email_link = Tribe__Settings::instance()->get_url( array(
-			'page' => 'tickets-attendees',
-			'action' => 'email',
-			'event_id' => $this->event->ID,
+			'page'      => 'tickets-attendees',
+			'action'    => 'email',
+			'event_id'  => $this->event->ID,
 			'TB_iframe' => true,
-			'width' => 410,
-			'height' => 300,
-			'parent' => 'admin.php',
+			'width'     => 410,
+			'height'    => 300,
+			'parent'    => 'admin.php',
 		) );
 
 		$nav = array(
 			'left' => array(
-				'print' => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
-				'email' => '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>',
-				'export' => sprintf( '<a href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
+				'print'  => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
+				'email'  => '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>',
+				'export' => sprintf( '<a target="_blank" href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
 			),
 			'right' => array(),
 		);
 
+		if ( 'top' == $which ) {
+			$nav['right']['filter_box'] = sprintf( '%s: <input type="text" name="filter_attendee" id="filter_attendee" value="">', esc_html__( 'Filter by purchaser name, ticket #, order # or security code', 'event-tickets' ) );
+		}
+
+		/**
+		 * Allows for customzing the buttons/options available above and below the Attendees table.
+		 *
+		 * @param array $nav The array of items in the nav, where keys are the name of the item and values are the HTML of the buttons/inputs.
+		 * @param string $which Either 'top' or 'bottom'; the location of the current nav items being filtered.
+		 */
 		$nav = apply_filters( 'tribe_events_tickets_attendees_table_nav', $nav, $which );
 
 		?>
@@ -564,6 +574,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				$this->do_delete();
 				break;
 			default:
+				/**
+				 * Allow for customizing the generic/default action to perform on selected Attendees.
+				 *
+				 * @param $current_action The action currently being done on the selection of Attendees.
+				 */
 				do_action( 'tribe_events_tickets_attendees_table_process_bulk_action', $this->current_action() );
 				break;
 		}
@@ -615,6 +630,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		return $action_ids;
 	}
 
+	/**
+	 * Process the checking-in of selected attendees from the Attendees table.
+	 */
 	protected function do_check_in() {
 		$attendee_ids = $this->get_action_ids();
 
@@ -624,13 +642,18 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		foreach ( $attendee_ids as $attendee ) {
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
+
 			if ( false === $id ) {
 				continue;
 			}
+
 			$addon->checkin( $id );
 		}
 	}
 
+	/**
+	 * Process the undoing of a check-in of selected attendees from the Attendees table.
+	 */
 	protected function do_uncheck_in() {
 		$attendee_ids = $this->get_action_ids();
 
@@ -639,14 +662,20 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		foreach ( $attendee_ids as $attendee ) {
+
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
+
 			if ( false === $id ) {
 				continue;
 			}
+
 			$addon->uncheckin( $id );
 		}
 	}
 
+	/**
+	 * Process the deletion of selected attendees from the Attendees table.
+	 */
 	protected function do_delete() {
 		$attendee_ids = $this->get_action_ids();
 
@@ -655,10 +684,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		foreach ( $attendee_ids as $attendee ) {
+
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
+
 			if ( false === $id ) {
 				continue;
 			}
+
 			$addon->delete_ticket( null, $id );
 		}
 	}
@@ -679,21 +711,25 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	protected function attendee_reference( $reference ) {
 		$failed = array( false, false );
+
 		if ( false === strpos( $reference, '|' ) ) {
 			return $failed;
 		}
 
 		$parts = explode( '|', $reference );
+
 		if ( count( $parts ) < 2 ) {
 			return $failed;
 		}
 
 		$id = absint( $parts[0] );
+
 		if ( $id <= 0 ) {
 			return $failed;
 		}
 
 		$addon = call_user_func( array( $parts[1], 'get_instance' ) );
+
 		if ( ! is_subclass_of( $addon, 'Tribe__Tickets__Tickets' ) ) {
 			return $failed;
 		}

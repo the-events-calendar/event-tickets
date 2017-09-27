@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.5.2
+ * @version 4.5.5
  *
  * @var bool $must_login
  */
@@ -65,6 +65,11 @@ $now = current_time( 'timestamp' );
 
 			$is_there_any_product = true;
 			$is_there_any_product_to_sell = $ticket->is_in_stock();
+
+			if ( $is_there_any_product_to_sell ) {
+				$are_products_available = true;
+			}
+
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
@@ -108,7 +113,7 @@ $now = current_time( 'timestamp' );
 		}
 		?>
 
-		<?php if ( $is_there_any_product_to_sell ) : ?>
+		<?php if ( $are_products_available ) : ?>
 			<tr class="tribe-tickets-meta-row">
 				<td colspan="4" class="tribe-tickets-attendees">
 					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets' ); ?></header>

@@ -21,7 +21,6 @@ var tribe_move_tickets = tribe_move_tickets || {};
 	    target_post_id,
 	    target_ticket_type_id;
 
-
 	function init() {
 		$main       = $( '#main' );
 		$errors     = $( '.error' );
@@ -180,7 +179,6 @@ var tribe_move_tickets = tribe_move_tickets || {};
 		    populating = false;
 
 		$main.on( 'activate-choose-event.tribe', function() {
-			enable_btn( $back, this_stage );
 			disable_btn( $next, this_stage );
 
 			// If a destination post has already been selected, advance a stage
@@ -320,7 +318,6 @@ var tribe_move_tickets = tribe_move_tickets || {};
 		    $type_choices = $choose_type.find( '.select-single-container' );
 
 		$main.on( 'activate-choose-ticket-type.tribe', function() {
-			enable_btn( $back, this_stage );
 			disable_btn( $next, this_stage );
 
 			// If a destination post has not been selected, move back to the start
@@ -413,7 +410,7 @@ var tribe_move_tickets = tribe_move_tickets || {};
 
 		function move( direction ) {
 			last_direction = direction;
-			var $stage = $current_stage[ direction ]( '.stage' );
+			var $stage     = $current_stage[ direction ]( '.stage' );
 
 			if ( $stage.length ) {
 				activate_stage( $stage );

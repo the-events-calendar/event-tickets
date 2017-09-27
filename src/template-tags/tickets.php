@@ -110,11 +110,15 @@ if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
 		$some_have_soldout = false;
 
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
-			if ( ! $stock_is_available && 0 < $ticket->stock() ) {
+			$ticket_stock    = $ticket->stock();
+			$unlimited_stock = $ticket_stock === '';
+			$has_stock       = (int) $ticket_stock > 0 || $unlimited_stock;
+
+			if ( ! $stock_is_available && $has_stock ) {
 				$stock_is_available = true;
 			}
 
-			if ( ! $some_have_soldout && 0 == $ticket->stock() ) {
+			if ( ! $some_have_soldout && ! $has_stock ) {
 				$some_have_soldout = true;
 			}
 		}
@@ -149,7 +153,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			}
 
 			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
-			$count += $stock_level;
+			$count += (int) $stock_level; // Explicit cast needed because it's possible $stock_level will be an empty string (unlimited stock)
 		}
 
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );

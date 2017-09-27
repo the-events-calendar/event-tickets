@@ -166,6 +166,9 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			return false;
 		}
 
+		$provider->clear_attendees_cache( $src_post_id );
+		$provider->clear_attendees_cache( $destination_post_id );
+
 		$history_message = sprintf(
 			__( 'Ticket type was moved to <a href="%1$s" target="_blank">%2$s</a> from <a href="%3$s" target="_blank">%4$s</a>', 'event-tickets' ),
 			get_permalink( $destination_post_id ),

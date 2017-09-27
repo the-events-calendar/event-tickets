@@ -73,20 +73,25 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// This has no Performance problems, since get_post uses caching and we use this method later on.
-		$post = get_post( absint( $query->query_vars['p'] ) );
+		$post = isset( $query->query_vars['p'] ) ? get_post( absint( $query->query_vars['p'] ) ) : 0;
 		if ( ! $post ) {
 			return;
 		}
 
-		if ( 'page' !== $post->post_type ) {
+		if ( ! tribe_tickets_post_type_enabled( $post->post_type ) ) {
 			return;
 		}
 
-		// Unset the p variable, we dont need it anymore
-		unset( $query->query_vars['p'] );
+		$query->query_vars['post_type'] = $post->post_type;
 
-		// Set `page_id` for faster query
-		$query->query_vars['page_id'] = $post->ID;
+		if ( 'page' === $post->post_type ) {
+			// Unset the p variable, we dont need it anymore
+			unset( $query->query_vars['p'] );
+
+			// Set `page_id` for faster query
+			$query->query_vars['page_id'] = $post->ID;
+		}
+
 	}
 
 	/**
@@ -150,7 +155,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Update the RSVP and Tickets values for each Attendee
 	 */
 	public function update_tickets() {
-		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
+		$is_correct_page = $this->is_edit_page();
 
 		// Now fetch the display and check it
 		$display = get_query_var( 'eventDisplay', false );
@@ -253,6 +258,18 @@ class Tribe__Tickets__Tickets_View {
 		return $bases;
 	}
 
+
+	/**
+	 * Checks if this is the ticket page based on the current query var
+	 *
+	 * This only works after parse_query has run.
+	 *
+	 * @return bool
+	 */
+	public function is_edit_page() {
+		return false !== get_query_var( 'tribe-edit-orders', false );
+	}
+
 	/**
 	 * Adds the Permalink for the tickets end point
 	 *
@@ -294,8 +311,7 @@ class Tribe__Tickets__Tickets_View {
 		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
 		// Prevents Weird
-		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
-		if ( ! $is_correct_page || ! $in_the_loop ) {
+		if ( ! $this->is_edit_page() || ! $in_the_loop ) {
 			return $content;
 		}
 
@@ -354,16 +370,35 @@ class Tribe__Tickets__Tickets_View {
 	 * @return void
 	 */
 	public function inject_link_template() {
+		/**
+		 * A flag we can set via filter, e.g. at the end of this method, to ensure this template only shows once.
+		 *
+		 * @since 4.5.6
+		 *
+		 * @param boolean $already_rendered
+		 */
+		$already_rendered = apply_filters( 'tribe_tickets_order_link_template_already_rendered', false );
+
+		if ( $already_rendered ) {
+			return;
+		}
+
 		$event_id = get_the_ID();
-		$user_id = get_current_user_id();
+		$user_id  = get_current_user_id();
 
 		if ( ! $this->has_rsvp_attendees( $event_id, $user_id ) && ! $this->has_ticket_attendees( $event_id, $user_id ) ) {
+			return;
+		}
+
+		if ( $this->is_edit_page() ) {
 			return;
 		}
 
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
 
 		include $file;
+
+		add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
 	}
 
 	/**
@@ -395,8 +430,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// If we have this we are already on the tickets page
-		$is_correct_page = get_query_var( 'tribe-edit-orders', false );
-		if ( $is_correct_page ) {
+		if ( $this->is_edit_page() ) {
 			return $content;
 		}
 

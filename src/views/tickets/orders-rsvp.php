@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-rsvp.php
  *
  * @package TribeEventsCalendar
- * @version 4.3
+ * @version 4.5.5
  *
  */
 
@@ -37,7 +37,7 @@ $attendee_groups = $view->get_event_rsvp_attendees_by_purchaser( $post_id, $user
 				printf(
 					esc_html__( 'Reserved by %1$s (%2$s)', 'event-tickets' ),
 					esc_html( $first_attendee['purchaser_name'] ),
-					'<a href="mailto:' . esc_url( $first_attendee['purchaser_email'] ) .'">' . esc_html( $first_attendee['purchaser_email'] ) . '</a>'
+					'<a href="' . esc_url( 'mailto:' . $first_attendee['purchaser_email'] ) .'">' . esc_html( $first_attendee['purchaser_email'] ) . '</a>'
 				);
 
 				printf(
