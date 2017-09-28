@@ -187,6 +187,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'hook', 'build_handler' ) );
+		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
 		tribe( 'tickets.commerce.paypal.gateway' );
 	}
 
@@ -216,6 +217,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'event_tickets_attendees_tpp_checkin_stati',
 			array( $this, 'filter_event_tickets_attendees_tpp_checkin_stati' )
 		);
+
+		add_action('init', array(tribe('tickets.commerce.paypal.notices'),'hook'));
 	}
 
 	/**
