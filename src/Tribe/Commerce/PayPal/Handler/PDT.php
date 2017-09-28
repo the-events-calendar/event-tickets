@@ -1,6 +1,6 @@
 <?php
 
-class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
+class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 
 	/**
 	 * Set up hooks for PDT transaction handling
@@ -25,6 +25,11 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$results = $this->validate_transaction( $_GET['tx'] );
+
+		if ( false === $results ) {
+			return false;
+		}
+
 		$results = $gateway->parse_transaction( $results );
 		$gateway->set_transaction_data( $results );
 
@@ -39,11 +44,11 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 	 *
 	 * @since TBD
 	 *
-	 * @param $transaction
+	 * @param string $transaction
 	 *
 	 * @return array|bool
 	 */
-	public function validate_transaction( $transaction ) {
+	public function validate_transaction( $transaction = null ) {
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$args = array(
@@ -78,7 +83,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT {
 	 *
 	 * @return array
 	 */
-	public function parse_transaction_body( $transaction ) {
+	protected function parse_transaction_body( $transaction ) {
 		$results = array();
 
 		$body    = explode( "\n", $transaction );

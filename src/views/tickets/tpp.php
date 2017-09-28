@@ -119,9 +119,11 @@ $cart_url       = '';
 			do_action( 'event_tickets_tpp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
 
 		}
+
+		$is_therea_any_message_to_show = ! is_user_logged_in() && ( $must_login || $can_login );
 		?>
 
-		<?php if ( $is_there_any_product_to_sell ) : ?>
+		<?php if ( $is_there_any_product_to_sell && $is_therea_any_message_to_show ) : ?>
 			<tr>
 				<td colspan="5" class="tpp-add">
 					<?php if ( $must_login ) : ?>

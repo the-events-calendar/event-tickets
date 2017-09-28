@@ -17,21 +17,25 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	public static $invoice_cookie_name = 'event-tickets-tpp-invoice';
 
 	/**
+	 * @var Tribe__Tickets__Commerce__Paypal__Notices
+	 */
+	protected $notices;
+
+	/**
+	 * @var \Tribe__Tickets__Commerce__PayPal__Handler__Interface
+	 */
+	protected $handler;
+
+	/**
 	 * Tribe__Tickets__Commerce__PayPal__Gateway constructor.
 	 *
 	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Commerce__PayPal__Notices $notices
 	 */
-	public function __construct() {
-		$this->hook();
+	public function __construct( Tribe__Tickets__Commerce__Paypal__Notices $notices ) {
 		$this->identity_token = tribe_get_option( 'ticket-paypal-identity-token' );
-
-		if ( $this->identity_token ) {
-			// if there's an identity token set, we handle payment confirmation with PDT
-			tribe( 'tickets.commerce.paypal.handler.pdt' );
-		} else {
-			// if there isn't an identity token set, we use IPN
-			tribe( 'tickets.commerce.paypal.handler.ipn' );
-		}
+		$this->notices = $notices;
 	}
 
 	/**
@@ -151,6 +155,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return array
 	 */
 	public function parse_transaction( $transaction ) {
+		if ( $this->handler instanceof Tribe__Tickets__Commerce__PayPal__Handler__Invalid){
+			return false;
+		}
+
 		$item_indexes = array(
 			'item_number',
 			'item_name',
@@ -306,5 +314,31 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		return $paypal_url;
+	}
+
+	/**
+	 * Builds the correct handler depending on the request type and options.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Tickets__Commerce__PayPal__Handler__Interface The handler instance.
+	 */
+	public function build_handler() {
+		if ( ! empty( $_GET['tx'] ) ) {
+			// looks like a PDT request
+			if ( ! empty( $this->identity_token ) ) {
+				// if there's an identity token set we handle payment confirmation with PDT
+				$this->handler = tribe( 'tickets.commerce.paypal.handler.pdt' );
+			} else {
+				$this->notices->show_missing_identity_token_notice();
+
+				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid();
+			}
+		} else {
+			// if there isn't an identity token set, we use IPN
+			$this->handler = tribe( 'tickets.commerce.paypal.handler.ipn' );
+		}
+
+		return $this->handler;
 	}
 }

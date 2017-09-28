@@ -1,6 +1,6 @@
 <?php
 
-class Tribe__Tickets__Commerce__PayPal__Handler__IPN {
+class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__Commerce__PayPal__Handler__Interface{
 
 	/**
 	 * Set up hooks for IPN transaction communication
@@ -48,9 +48,11 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN {
 	 *
 	 * @since TBD
 	 *
+	 * @param string $transaction
+	 *
 	 * @return bool
 	 */
-	public function valid_transaction() {
+	public function validate_transaction( $transaction = null ) {
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$body        = wp_unslash( $_POST );
