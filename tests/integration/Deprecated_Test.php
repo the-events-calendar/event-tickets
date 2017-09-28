@@ -1,4 +1,7 @@
 <?php
+
+use Codeception\TestCase\WPTestCase;
+
 /**
  * Test that things are deprecated properly
  *
@@ -6,7 +9,13 @@
  *
  * @package Tribe__Tickets__Main
  */
-class Tribe_Deprecated_Test extends Tribe__Tickets__WP_UnitTestCase {
+class Tribe_Deprecated_Test extends WPTestCase {
+
+	public function setUp() {
+		parent::setUp();
+		add_action( 'deprecated_file_included', array( $this, 'deprecated_function_run' ) );
+		add_filter('deprecated_file_trigger_error','__return_false');
+	}
 
 	public function deprecated_classes_4_0() {
 		return array(
@@ -38,7 +47,8 @@ class Tribe_Deprecated_Test extends Tribe__Tickets__WP_UnitTestCase {
 			$this->markTestSkipped( $class . 'was already loaded' );
 		}
 
-		$this->expected_deprecated_file[] = dirname( dirname( dirname( __FILE__ ) ) ) . '/src/deprecated/' . $class . '.php';
+		$file_path = codecept_root_dir( "src/deprecated/{$class}.php" );
+		$this->setExpectedDeprecated($file_path);
 		$this->assertTrue( class_exists( $class ), 'Class "' . $class . '" does not exist.' );
 	}
 
@@ -52,7 +62,8 @@ class Tribe_Deprecated_Test extends Tribe__Tickets__WP_UnitTestCase {
 			$this->markTestSkipped( $class . 'was already loaded' );
 		}
 
-		$this->expected_deprecated_file[] = dirname( dirname( dirname( __FILE__ ) ) ) . '/src/deprecated/' . $class . '.php';
+		$file_path = codecept_root_dir( "src/deprecated/{$class}.php" );
+		$this->setExpectedDeprecated($file_path);
 		$this->assertTrue( class_exists( $class ), 'Class "' . $class . '" does not exist.' );
 	}
 }

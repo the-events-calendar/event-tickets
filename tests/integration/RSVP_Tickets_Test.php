@@ -117,7 +117,7 @@ class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
 		$this->assertTrue( $ticket->is_in_stock(), 'RSVP ticket is in stock after selling 100000 tickets' );
 
 		// switch to stock-tracking tickets
-		$data['ticket_rsvp_stock'] = 100;
+		$data['ticket_rsvp_stock'] = 100100;
 		$rsvp->save_ticket( 1, $ticket, $data );
 		$tickets = $rsvp->get_event_tickets( 1 );
 		$ticket = $tickets[0];
