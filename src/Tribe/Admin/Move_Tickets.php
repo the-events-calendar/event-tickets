@@ -309,20 +309,23 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		 */
 		$limit = (int) apply_filters( 'tribe_tickets_find_ticket_type_host_posts_limit', 100 );
 
-		$ignore_ids = is_numeric( $params[ 'ignore' ] ) ? array( absint( $params[ 'ignore' ] ) ) : array();
+		$ignore_ids = (array) $params['ignore'];
+		$ignore_ids = array_map( 'absint', $ignore_ids );
+		$ignore_ids = array_filter( $ignore_ids );
 
-		$cache = Tribe__Tickets__Cache__Central::instance()->get_cache();
-		$posts_without_ticket_types = $cache->posts_without_ticket_types();
-
-		return $this->format_post_list( get_posts( array(
+		$query_args = array(
 			'post_type'      => $post_types,
 			'posts_per_page' => $limit,
 			'eventDisplay'   => 'custom',
 			'orderby'        => 'title',
 			'order'          => 'ASC',
 			's'              => $params[ 'search_terms' ],
-			'post__not_in'   => array_merge( $ignore_ids, $posts_without_ticket_types ),
-		) ) );
+			'post__not_in'   => $ignore_ids,
+		);
+
+		$posts = get_posts( $query_args );
+
+		return $this->format_post_list( $posts );
 	}
 
 	/**

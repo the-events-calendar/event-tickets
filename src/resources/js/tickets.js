@@ -509,6 +509,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$textFields.val( '' );
 				$checkFields.prop( 'checked', false );
 				$idField.val( '' );
+				$edit_panel.find( '.tribe-tickets-editor-history-container' ).remove();
 			},
 
 			/**
@@ -905,6 +906,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$ticket_price.removeProp( 'disabled' );
 							$ticket_price.siblings( '.description' ).show();
 							$ticket_price.siblings( '.no-update-message' ).hide();
+						}
+
+						// History Content
+						if ( 'undefined' !== typeof response.data.history ) {
+							var $historyContent = $( response.data.history );
+
+							$edit_panel.find( '.accordion' ).append( $historyContent );
+							window.MTAccordion( {
+								target: '.accordion', // ID (or class) of accordion container
+							} );
+						} else {
+							$edit_panel.find( '.tribe-tickets-editor-history-container' ).remove();
 						}
 
 						var $sale_field     = $( document.getElementById( 'ticket_sale_price' ) );

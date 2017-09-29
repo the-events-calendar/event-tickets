@@ -1062,7 +1062,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$extra = ob_get_contents();
 			ob_end_clean();
 
-			$return['advanced_fields']   = $extra;
+			$return['advanced_fields'] = $extra;
+
+			$return['history'] = tribe( 'tickets.handler' )->get_history_content( $post_id, $ticket->ID );
 
 			/**
 			 * Allows for the insertion of the attendee meta fields into the ticket admin form
