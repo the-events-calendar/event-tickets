@@ -50,6 +50,12 @@ class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__T
 		$transaction_object = new Tribe__Tickets__Commerce__PayPal__Transaction( $this->transaction );
 		$transaction_object->set_status( Tribe__Tickets__Commerce__PayPal__Transaction::$unregistered_status );
 		$transaction_object->set_data( 'handler', 'PDT' );
+
+		foreach ( array( 'amt', 'cc', 'cm', 'st' ) as $key ) {
+			$value = Tribe__Utils__Array::get( $_GET, $key, '' );
+			$transaction_object->set_data( $key, $value );
+		}
+
 		$transaction_object->save();
 	}
 }

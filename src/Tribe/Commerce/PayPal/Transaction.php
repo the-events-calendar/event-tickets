@@ -164,4 +164,15 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	protected function get_option_name() {
 		return self::$option . '-' . $this->transaction_id;
 	}
+
+	/**
+	 * Returns the transaction ID.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_id() {
+		return $this->transaction_id;
+	}
 }

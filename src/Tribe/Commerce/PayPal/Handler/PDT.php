@@ -83,7 +83,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	 *
 	 * @return array
 	 */
-	protected function parse_transaction_body( $transaction ) {
+	public function parse_transaction_body( $transaction ) {
 		$results = array();
 
 		$body    = explode( "\n", $transaction );
