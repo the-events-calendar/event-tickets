@@ -23,7 +23,7 @@
 	margin-top: 12px;
 }
 
-.tribe-tickets-editor-blocker	 {
+.tribe-tickets-editor-blocker {
 	background: rgba(255, 255, 255, .7);
 	bottom: 0;
 	display: none;
@@ -41,6 +41,10 @@
 	position: absolute;
 	top: 50%;
 	z-index: 100404;
+}
+
+.tribe-tickets-editor-history-list {
+	margin-left: 20px;
 }
 
 #event_tickets {

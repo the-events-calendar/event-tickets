@@ -907,6 +907,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$ticket_price.siblings( '.no-update-message' ).hide();
 						}
 
+						// History Content
+						if ( 'undefined' !== typeof response.data.history ) {
+							var $historyContent = $( response.data.history );
+
+							$edit_panel.find( '.accordion' ).append( $historyContent );
+							window.MTAccordion( {
+								target: '.accordion', // ID (or class) of accordion container
+							} );
+						}
+
 						var $sale_field     = $( document.getElementById( 'ticket_sale_price' ) );
 						var $sale_container = $sale_field.closest( '.input_block' )
 

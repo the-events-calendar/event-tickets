@@ -1198,6 +1198,21 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Returns the markup for the History for a Given Ticket
+	 *
+	 * @param  int    $ticket_id
+	 *
+	 * @return string
+	 */
+	public function get_history_content( $post_id, $ticket ) {
+		ob_start();
+		include $this->path . 'src/admin-views/tickets-history.php';
+		$return = ob_get_clean();
+
+		return $return;
+	}
+
+	/**
 	 * Returns the attachment ID for the header image for a event.
 	 *
 	 * @param $event_id
