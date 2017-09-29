@@ -3,7 +3,7 @@
 namespace Tribe\Tickets\Commerce\PayPal;
 
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
-use Tribe__Tickets__Commerce__PayPal__Handler__Invalid as Invalid;
+use Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT as Invalid;
 use Tribe__Tickets__Commerce__PayPal__Handler__IPN as IPN;
 use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
 use Tribe__Tickets__Commerce__Paypal__Notices as Notices;

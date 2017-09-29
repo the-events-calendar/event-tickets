@@ -155,7 +155,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return array
 	 */
 	public function parse_transaction( $transaction ) {
-		if ( $this->handler instanceof Tribe__Tickets__Commerce__PayPal__Handler__Invalid){
+		if ( $this->handler instanceof Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT ) {
+			$this->handler->validate_transaction( $transaction );
 			return false;
 		}
 
@@ -332,7 +333,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			} else {
 				$this->notices->show_missing_identity_token_notice();
 
-				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid();
+				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT( $_GET['tx'] );
+				$this->handler->save_transaction();
 			}
 		} else {
 			// if there isn't an identity token set, we use IPN

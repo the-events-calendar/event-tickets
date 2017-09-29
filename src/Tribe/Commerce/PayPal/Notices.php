@@ -27,9 +27,10 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	}
 
 	public function should_render_missing_identity_token_notice() {
-		$transient = get_transient( $this->slug( 'show-missing-identity-token' ) );
+		$transient      = get_transient( $this->slug( 'show-missing-identity-token' ) );
+		$identity_token = tribe_get_option( 'ticket-paypal-identity-token' );
 
-		return ! empty( $transient );
+		return ! empty( $transient ) && empty( $identity_token );
 	}
 
 	protected function slug( $string ) {
