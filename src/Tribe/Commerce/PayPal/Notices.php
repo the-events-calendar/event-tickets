@@ -21,7 +21,7 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 			sprintf( '%s, <a href="%s" target="_blank">%s</a>.',
 				esc_html__( 'PayPal is using PDT data but you have not set the PDT identity token', 'event-tickets' ),
 				esc_attr( admin_url() . '?page=tribe-common&tab=event-tickets#tribe-field-ticket-paypal-identity-token' ),
-				esc_html__( 'set it here.', 'event-tickets' )
+				esc_html__( 'set it here', 'event-tickets' )
 			)
 		);
 	}

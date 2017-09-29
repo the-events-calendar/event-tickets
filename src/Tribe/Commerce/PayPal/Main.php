@@ -218,7 +218,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			array( $this, 'filter_event_tickets_attendees_tpp_checkin_stati' )
 		);
 
-		add_action('init', array(tribe('tickets.commerce.paypal.notices'),'hook'));
+		add_action( 'init', array( tribe( 'tickets.commerce.paypal.notices' ), 'hook' ) );
 	}
 
 	/**
