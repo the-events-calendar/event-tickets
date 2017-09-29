@@ -509,6 +509,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$textFields.val( '' );
 				$checkFields.prop( 'checked', false );
 				$idField.val( '' );
+				$edit_panel.find( '.tribe-tickets-editor-history-container' ).remove();
 			},
 
 			/**
@@ -915,6 +916,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							window.MTAccordion( {
 								target: '.accordion', // ID (or class) of accordion container
 							} );
+						} else {
+							$edit_panel.find( '.tribe-tickets-editor-history-container' ).remove();
 						}
 
 						var $sale_field     = $( document.getElementById( 'ticket_sale_price' ) );
