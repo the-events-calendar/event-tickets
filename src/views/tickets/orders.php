@@ -45,7 +45,11 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 
 	<?php tribe_tickets_get_template_part( 'tickets/orders-rsvp' ); ?>
 
-	<?php tribe_tickets_get_template_part( 'tickets/orders-pp-tickets' ); ?>
+	<?php
+	if ( ! class_exists( 'Tribe__Tickets_Plus__Commerce__PayPal__Meta' ) ) {
+		tribe_tickets_get_template_part( 'tickets/orders-pp-tickets' );
+	}
+	?>
 
 	<?php
 	/**
