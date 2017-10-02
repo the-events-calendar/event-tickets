@@ -207,12 +207,17 @@
 	.button-secondary {
 		float: right;
 		margin-left: 5px;
+		margin-bottom: 15px;
 	}
 
 	#ticket_form_total_capacity {
 		position: relative;
 		display: inline-block;
 		line-height: 28px;
+
+		@media screen and ( max-width: 520px ) {
+			width: 100%;
+		}
 
 		@mixin tribe-ticket-tooltip;
 		.tooltip {

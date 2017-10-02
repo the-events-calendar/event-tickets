@@ -173,6 +173,7 @@
 .ticket_table_intro .button-secondary {
 	float: right;
 	margin-left: 5px;
+	margin-bottom: 15px;
 }
 
 .ticket_table_intro #ticket_form_total_capacity {
@@ -423,6 +424,13 @@ p.description {
 	#settings_form_toggle {
 		float: right;
 		margin-top: 0;
+	}
+}
+
+@media screen and ( max-width: 520px ) {
+
+	.ticket_table_intro #ticket_form_total_capacity {
+		width: 100%;
 	}
 }
 
