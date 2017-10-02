@@ -411,7 +411,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// Adjust if using global stock with a sales cap
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
-				$remaining = min( $remaining, $this->global_stock_cap() );
+				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
+				$remaining = min( $remaining, $this->global_stock_cap() - $global_stock_obj->tickets_sold() );
 			}
 
 			// Prevents Negative
