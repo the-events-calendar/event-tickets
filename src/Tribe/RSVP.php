@@ -1180,7 +1180,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
 		$return->report_link      = '';
-		$return->show_description = get_post_meta( $ticket_id, '_ticket_show_description', true );
+		$return->show_description = ! get_post_meta( $ticket_id, '_ticket_show_description', true );
 
 		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$start_date_unix          = strtotime( $start_date );
