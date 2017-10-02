@@ -172,8 +172,8 @@
 
 .ticket_table_intro .button-secondary {
 	float: right;
-	margin-left: 5px;
 	margin-bottom: 15px;
+	margin-left: 5px;
 }
 
 .ticket_table_intro #ticket_form_total_capacity {
