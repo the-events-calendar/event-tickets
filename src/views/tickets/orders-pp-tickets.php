@@ -69,11 +69,7 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 						<label>
 							<?php echo esc_html_x( 'Payment status: ', 'order status label', 'event-tickets' ); ?>
 							<?php
-								$view->render_ticket_status(
-									$attendee['order_status'],
-									$attendee['product_id'],
-									$post_id
-								);
+								$view->render_ticket_status( $attendee['order_status'] );
 							?>
 						</label>
 						<div class="ticket-type"><span class="type-label"><?php esc_html_e( 'Type: ', 'event-tickets' );?></span><?php esc_html_e( $attendee['ticket'] );?></div>

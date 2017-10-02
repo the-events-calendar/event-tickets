@@ -127,19 +127,38 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 	 *
 	 * @since TBD
 	 *
-	 * @param  string $status    The ticket order status
-	 * @param  int    $ticket_id The Ticket ID (optional)
-	 * @param  int    $post_id   The Post ID (optional)
+	 * @param  string $status The ticket order status
 	 *
 	 * @return void
 	 */
-	public function render_ticket_status( $status = null, $ticket_id = null, $post_id = null ) {
-		$ticket_status = __( 'Status unavailable', 'event-tickets' );
-
-		if ( ! empty( $status ) ) {
-			$ticket_status = $status;
-		}
+	public function render_ticket_status( $status = null ) {
+		$ticket_status = $this->get_ticket_status( $status );
 
 		echo sprintf( '<span>%s</span>', esc_html( $ticket_status ) );
+	}
+
+	/**
+	 * Returns the ticket status corresponding to the ticket status slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $status
+	 *
+	 * @return string
+	 */
+	public function get_ticket_status( $status ) {
+		$ticket_status = __( 'unavailable', 'event-tickets' );
+
+		if ( ! empty( $status ) ) {
+			$status_strings = array(
+				'undefined'  => __( 'not available', 'event-tickets' ),
+				'completed'  => __( 'completed', 'event-tickets' ),
+				'processing' => __( 'processing', 'event-tickets' ),
+			);
+
+			$ticket_status = Tribe__Utils__Array::get( $status_strings, $status, reset( $status_strings ) );
+		}
+
+		return $ticket_status;
 	}
 }
