@@ -276,8 +276,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * @return string
 		 */
 		function get_global_cap() {
-			var $global_capacity_edit = $( document.getElementById('settings_global_capacity_edit') )
-			return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : '';
+			var $global_capacity_edit = $( document.getElementById( 'settings_global_capacity_edit' ) )
+			return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : 0;
 		}
 
 		/**
@@ -302,7 +302,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				} else {
 					$history.addClass( '_show' );
 				}
-
 			} );
 		}
 
@@ -521,7 +520,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			e.preventDefault();
 
 			// Do this first to prevent weirdness with global capacity
-			var $global_capacity_edit = $( document.getElementById('settings_global_capacity_edit') )
+			var $global_capacity_edit = $( document.getElementById( 'settings_global_capacity_edit' ) )
 			if ( false === $global_capacity_edit.prop( 'disabled' ) ) {
 				$global_capacity_edit.blur();
 				$global_capacity_edit.prop( 'disabled', true );
@@ -968,7 +967,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		} )
 		/* Handle saving changes to capacity from Settings form */
 		.on( 'blur', '#settings_global_capacity_edit', function() {
-			var capacity = $( this ).val();
+			var $capacity = $( this );
+			var capacity = $capacity.val();
+
+			if ( '' === capacity ) {
+				$capacity.val( 0 );
+				capacity = 0;
+			}
 
 			var params = {
 				action   : 'tribe-events-edit-global-capacity',
@@ -983,7 +988,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				function( response ) {
 					$( document.getElementById('settings_global_capacity_edit') ).prop( 'disabled', true );
 					refresh_panels( null, false );
-				} );
+				}
+			);
 		} )
 		/* Track changes to the global stock level on the ticket edit form. */
 		.on( 'blur', '[name=tribe-tickets-global-stock]', function() {
