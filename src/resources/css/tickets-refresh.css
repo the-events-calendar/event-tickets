@@ -248,7 +248,7 @@
 
 .input_block input,
 	.input_block textarea {
-	max-width: 100%;
+	max-width: calc( 100% - 132px );
 }
 
 .input_block .ticket_field.hasDatepicker {
