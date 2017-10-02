@@ -167,6 +167,10 @@
 		display: inline-block;
 	}
 
+	.tribe-tickets-editor-table .tribe-mobile-hidden {
+		display: none;
+	}
+
 	.tribe-tickets-editor-table td.ticket_edit {
 		position: absolute;
 		right: 0;
@@ -187,6 +191,11 @@
 		width: 100%;
 	}
 
+	.tribe-tickets-editor-table.capacity_list td:first-child,
+			.tribe-tickets-editor-table.capacity_list td[colspan="2"] {
+		width: 100%;
+	}
+
 	.tribe-tickets-editor-table tr td {
 		position: relative;
 		display: block;
@@ -195,6 +204,7 @@
 		box-sizing: border-box;
 		float: left;
 		border: 0;
+		min-height: 36px;
 	}
 
 	.tribe-tickets-editor-table .is-expanded {
