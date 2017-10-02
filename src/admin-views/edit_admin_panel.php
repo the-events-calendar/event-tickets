@@ -178,7 +178,6 @@ $end_date_errors = array(
 					<div class="input_block">
 						<label class="ticket_form_label ticket_form_left" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
 						<div class="ticket_form_right">
-
 							<input
 								autocomplete="off"
 								type="text"
