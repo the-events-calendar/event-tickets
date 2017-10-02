@@ -4,7 +4,7 @@
 	// This is our global accordion index to keep unique ids
 	var topIndex = 0;
 
-	var MTAccordion = function( options, callback ) {
+	window.MTAccordion = function( options, callback ) {
 		if ( 'undefined' === typeof options.target ) {
 			return false;
 		}
@@ -28,8 +28,13 @@
 		topIndex++;
 
 		forEach( accordionHeader, function( index, value ) {
-			var head  = value;
+			var head = value;
 			index++;
+
+			// Prevent Reconfiguring Accordion
+			if ( 'tab' === head.getAttribute( 'role' ) ) {
+				return;
+			}
 
 			// Set ARIA and ID attributes
 			head.setAttribute( 'id', 'tab' + topIndex + '-' + index );
@@ -69,6 +74,11 @@
 			var content = value;
 			index++;
 
+			// Prevent Reconfiguring Accordion
+			if ( 'tabpanel' === content.getAttribute( 'role' ) ) {
+				return;
+			}
+
 			// Set ARIA and ID attributes
 			content.setAttribute( 'id', 'panel' + topIndex + '-' + index );
 			content.setAttribute( 'aria-hidden', 'true' );
@@ -86,7 +96,7 @@
 	// IE8 compatible alternative to DOMContentLoaded
 	document.onreadystatechange = function () {
 		if ( 'interactive' === document.readyState ) {
-			MTAccordion( {
+			window.MTAccordion( {
 				target: '.accordion', // ID (or class) of accordion container
 			} );
 		}
