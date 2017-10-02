@@ -1091,8 +1091,16 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 */
 	public function render_ticket_row( $ticket ) {
-		$provider     = $ticket->provider_class;
-		$provider_obj = call_user_func( array( $provider, 'get_instance' ) );
+		$provider      = $ticket->provider_class;
+		$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
+		$remaining     = $ticket->remaining();
+		$needs_warning = false;
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class ) {
+			$product = wc_get_product( $ticket->ID );
+			$needs_warning = absint( $product->get_stock_quantity() ) !== absint( $remaining );
+		}
+
 		?>
 		<tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
 			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>"  data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
@@ -1129,14 +1137,18 @@ class Tribe__Tickets__Tickets_Handler {
 
 			<td class="ticket_available">
 				<span class='tribe-mobile-only'><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
+				<?php if ( $needs_warning ) : ?>
+					<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'Your Available number does not match the stock in WooCommerce. Please check the ticket product and Attendees list to correct the discrepancy.', 'event-tickets' ) ?>"></span>
+				<?php endif; ?>
+
 				<?php
 				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
 					// escaping handled in function - could be string|int
 					$ticket->display_original_stock();
 				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
-					echo esc_html( $ticket->remaining() );
+					echo esc_html( $remaining );
 				} else {
-					echo '(' . esc_html( $ticket->remaining() ) . ')';
+					echo '(' . esc_html( $remaining ) . ')';
 				}
 				?>
 			</td>
