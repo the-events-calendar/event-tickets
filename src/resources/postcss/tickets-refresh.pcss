@@ -231,6 +231,7 @@
 
 	.button-secondary {
 		float: right;
+		margin-bottom: 15px;
 		margin-left: 5px;
 	}
 
@@ -238,6 +239,10 @@
 		position: relative;
 		display: inline-block;
 		line-height: 28px;
+
+		@media screen and ( max-width: 520px ) {
+			width: 100%;
+		}
 
 		@mixin tribe-ticket-tooltip;
 		.tooltip {
