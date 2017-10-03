@@ -160,18 +160,18 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return array|false The parsed transaction data or `false` if the transaction could not be processed for any reason.
 	 */
 	public function parse_transaction( array $transaction ) {
-		if ( $this->handler instanceof Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT ) {
-			$this->handler->validate_transaction( $transaction );
-
-			return false;
-		}
-
 		if ( ! empty( $transaction['custom'] ) ) {
 			$decoded_custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction['custom'], true );
 
 			if ( empty( $decoded_custom['tribe_handler'] ) || 'tpp' !== $decoded_custom['tribe_handler'] ) {
 				return false;
 			}
+		}
+
+		if ( $this->handler instanceof Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT ) {
+			$this->handler->save_transaction();
+
+			return false;
 		}
 
 		$item_indexes = array(
@@ -347,9 +347,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 				$this->handler = tribe( 'tickets.commerce.paypal.handler.pdt' );
 			} else {
 				$this->notices->show_missing_identity_token_notice();
-
 				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT( $_GET['tx'] );
-				$this->handler->save_transaction();
 			}
 		} else {
 			// if there isn't an identity token set, we use IPN
