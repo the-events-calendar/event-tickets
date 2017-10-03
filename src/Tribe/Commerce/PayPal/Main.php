@@ -395,7 +395,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function update_attendee_data( $data, $order_id, $event_id ) {
 		$user_id = get_current_user_id();
 
-		$ticket_orders    = $this->tickets_view->get_event_attendees( $event_id, $user_id );
+		$ticket_orders    = $this->tickets_view->get_post_ticket_attendees( $event_id, $user_id );
 		$ticket_order_ids = wp_list_pluck( $ticket_orders, 'order_id' );
 
 		// This makes sure we don't save attendees for orders that are not from this current user and event
