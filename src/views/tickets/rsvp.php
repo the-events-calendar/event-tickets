@@ -97,7 +97,7 @@ $now = current_time( 'timestamp' );
 					<?php echo esc_html( $ticket->name ); ?>
 				</td>
 				<td class="tickets_description" colspan="2">
-					<?php echo esc_html( $ticket->description ); ?>
+					<?php echo esc_html( ( $ticket->show_description() ? $ticket->description : '' ) ); ?>
 				</td>
 			</tr>
 			<?php
