@@ -115,6 +115,9 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			$args['amount']      = $ticket->price;
 			$args['item_number'] = "{$post->ID}:{$ticket->ID}";
 			$args['item_name']   = urlencode( $this->get_product_name( $ticket, $post ) );
+			$args['custom']      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( array(
+				'tribe_handler' => 'tpp',
+			) );
 
 			// we can only submit one product at a time. Bail if we get to here because we have a product
 			// with a requested quantity
@@ -148,16 +151,27 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Parses PayPal transaction data into a more organized structure
 	 *
+	 * @since TBD
+	 *
 	 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
 	 *
 	 * @param array $transaction Transaction data from PayPal in key/value pairs
 	 *
-	 * @return array
+	 * @return array|false The parsed transaction data or `false` if the transaction could not be processed for any reason.
 	 */
-	public function parse_transaction( $transaction ) {
+	public function parse_transaction( array $transaction ) {
 		if ( $this->handler instanceof Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT ) {
 			$this->handler->validate_transaction( $transaction );
+
 			return false;
+		}
+
+		if ( ! empty( $transaction['custom'] ) ) {
+			$decoded_custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction['custom'], true );
+
+			if ( empty( $decoded_custom['tribe_handler'] ) || 'tpp' !== $decoded_custom['tribe_handler'] ) {
+				return false;
+			}
 		}
 
 		$item_indexes = array(
@@ -175,6 +189,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$data = array(
 			'items' => array(),
 		);
+
 
 		foreach ( $transaction as $key => $value ) {
 			if ( ! preg_match( $item_indexes_regex, $key, $matches ) ) {
