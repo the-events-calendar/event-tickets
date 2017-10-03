@@ -1,6 +1,6 @@
 <?php
 
-class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__Commerce__PayPal__Handler__Interface{
+class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 
 	/**
 	 * Set up hooks for IPN transaction communication

@@ -52,6 +52,8 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Builds a new instance from data stored in the database or from default data.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $transaction_id
 	 *
 	 * @return \Tribe__Tickets__Commerce__PayPal__Transaction

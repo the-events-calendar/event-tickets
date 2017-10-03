@@ -120,10 +120,10 @@ $cart_url       = '';
 
 		}
 
-		$is_therea_any_message_to_show = ! is_user_logged_in() && ( $must_login || $can_login );
+		$is_there_any_message_to_show = ! is_user_logged_in() && ( $must_login || $can_login );
 		?>
 
-		<?php if ( $is_there_any_product_to_sell && $is_therea_any_message_to_show ) : ?>
+		<?php if ( $is_there_any_product_to_sell && $is_there_any_message_to_show ) : ?>
 			<tr>
 				<td colspan="5" class="tpp-add">
 					<?php if ( $must_login ) : ?>

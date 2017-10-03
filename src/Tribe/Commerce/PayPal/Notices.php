@@ -1,11 +1,27 @@
 <?php
 
+/**
+ * Class Tribe__Tickets__Commerce__PayPal__Notices
+ *
+ * @since TBD
+ */
 class Tribe__Tickets__Commerce__PayPal__Notices {
 
+	/**
+	 * Triggers the display of the missing PDT identity token notice.
+	 *
+	 * @since TBD
+	 */
 	public function show_missing_identity_token_notice() {
 		set_transient( $this->slug( 'show-missing-identity-token' ), '1', DAY_IN_SECONDS );
 	}
 
+	/**
+	 * Hooks the class method to relevant filters and actions.
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function hook() {
 		tribe_notice(
 			$this->slug( 'pdt-missing-identity-token' ),
@@ -15,6 +31,11 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 		);
 	}
 
+	/**
+	 * Renders (echoes) the missing PDT identity token admin notice.
+	 *
+	 * @since TBD
+	 */
 	public function render_missing_identity_token_notice() {
 		Tribe__Admin__Notices::instance()->render_paragraph(
 			$this->slug( 'pdt-missing-identity-token' ),
@@ -26,6 +47,13 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 		);
 	}
 
+	/**
+	 * Whether the missing PDT identity token notice should be rendered or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
 	public function should_render_missing_identity_token_notice() {
 		$transient      = get_transient( $this->slug( 'show-missing-identity-token' ) );
 		$identity_token = tribe_get_option( 'ticket-paypal-identity-token' );
@@ -33,6 +61,15 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 		return ! empty( $transient ) && empty( $identity_token );
 	}
 
+	/**
+	 * Builds a slug used by the class.
+	 *
+	 * @since TBD
+	 *
+	 * @param $string
+	 *
+	 * @return string
+	 */
 	protected function slug( $string ) {
 		return 'tickets-commerce-' . $string;
 	}
