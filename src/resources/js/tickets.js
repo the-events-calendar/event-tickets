@@ -35,6 +35,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var time_format                      = 'HH:mmA';
 
 	$( document ).ajaxSend( function( event, jqxhr, settings ) {
+		if ( 'string' !== $.type( settings.data ) ) {
+			return;
+		}
+
 		if ( -1 === settings.data.indexOf( 'action=tribe-ticket' ) ) {
 			return;
 		}
@@ -43,6 +47,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	$( document ).ajaxComplete( function( event, jqxhr, settings ) {
+		if ( 'string' !== $.type( settings.data ) ) {
+			return;
+		}
+
 		if ( -1 === settings.data.indexOf( 'action=tribe-ticket' ) ) {
 			return;
 		}
