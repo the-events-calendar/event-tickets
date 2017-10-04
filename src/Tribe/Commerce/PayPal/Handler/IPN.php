@@ -19,9 +19,8 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 	public function check_response() {
 		if (
 			empty( $_POST )
-			|| ! isset( $_POST['txn_id'] )
-			|| ! isset( $_POST['payer_email'] )
-			|| ! $this->valid_transaction()
+			|| ! isset( $_POST['txn_id'], $_POST['payer_email'] )
+			|| ! $this->validate_transaction()
 		) {
 			return;
 		}
