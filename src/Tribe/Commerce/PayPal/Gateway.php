@@ -69,8 +69,14 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$post_url      = get_permalink( $post );
 		$currency_code = tribe_get_option( 'ticket-paypal-currency-code' );
 
-		// @TODO: set to the success page
-		$notify_url    = add_query_arg( array( 'bacon' => 1 ), get_permalink( $post ) );
+		/**
+		 * The `notify_url` argument is an IPN only argument specifying the URL PayPal should
+		 * use to POST the payment information.
+		 *
+		 * @see  \Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
+		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
+		 */
+		$notify_url = get_permalink( $post );
 
 		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
