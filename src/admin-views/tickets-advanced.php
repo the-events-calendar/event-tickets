@@ -62,10 +62,6 @@
 				name="ticket_end_date"
 				id="ticket_end_date"
 				value=""
-				data-validation-is-required
-				data-validation-type="datepicker"
-				data-validation-is-greater-or-equal-to="#ticket_start_date"
-				data-validation-error="<?php echo esc_attr( json_encode( $end_date_errors ) ) ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'YYYY-MM-DD', 'event-tickets' ) ?></span>
 			<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
@@ -79,8 +75,6 @@
 				data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 				data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 				value=""
-				data-validation-is-required
-				data-validation-error="<?php esc_attr_e( 'End sale time cannot be empty.', 'event-tickets' ) ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 
