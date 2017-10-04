@@ -2096,5 +2096,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$event_id = get_post_meta( $attendee_id, $this->attendee_event_key, true );
 			Tribe__Post_Transient::instance()->delete( $event_id, self::ATTENDEES_CACHE );
 		}
+
+
+		/**
+		 * Provides a URL that can be used to direct users to the login form.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		public static function get_registration_url(  ) {
+			$post_id          = get_the_ID();
+			$registration_url = wp_registration_url();
+
+			if ( $post_id ) {
+				$registration_url = add_query_arg( 'tribe_tickets_redirect_to', get_permalink( $post_id ), $registration_url );
+			}
+
+			/**
+			 * Provides an opportunity to modify the registration URL used within frontend
+			 * ticket forms (typically when they need to register before they can proceed).
+			 *
+			 * @param string $registration_url
+			 */
+			return apply_filters( 'tribe_tickets_ticket_registration_url', $registration_url );
+		}
 	}
 }

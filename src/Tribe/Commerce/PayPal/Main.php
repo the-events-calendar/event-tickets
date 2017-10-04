@@ -186,7 +186,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
-		tribe_singleton( 'tickets.commerce.paypal.gateway', new Tribe__Tickets__Commerce__PayPal__Gateway );
+		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'hook', 'build_handler' ) );
+		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
+		tribe( 'tickets.commerce.paypal.gateway' );
 	}
 
 	/**
@@ -215,6 +217,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'event_tickets_attendees_tpp_checkin_stati',
 			array( $this, 'filter_event_tickets_attendees_tpp_checkin_stati' )
 		);
+
+		add_action( 'init', array( tribe( 'tickets.commerce.paypal.notices' ), 'hook' ) );
 	}
 
 	/**
@@ -391,7 +395,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function update_attendee_data( $data, $order_id, $event_id ) {
 		$user_id = get_current_user_id();
 
-		$ticket_orders    = $this->tickets_view->get_event_attendees( $event_id, $user_id );
+		$ticket_orders    = $this->tickets_view->get_post_ticket_attendees( $event_id, $user_id );
 		$ticket_order_ids = wp_list_pluck( $ticket_orders, 'order_id' );
 
 		// This makes sure we don't save attendees for orders that are not from this current user and event
@@ -946,11 +950,25 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		$must_login = ! is_user_logged_in();
+		$must_login = ! is_user_logged_in() && $this->login_required();
+		$can_login = true;
 		include $this->getTemplateHierarchy( 'tickets/tpp' );
 
 		// It's only done when it's included
 		$this->is_frontend_tickets_form_done = true;
+	}
+
+	/**
+	 * Indicates if we currently require users to be logged in before they can obtain
+	 * tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function login_required() {
+		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
+		return in_array( 'event-tickets_all', $requirements, true );
 	}
 
 	/**
@@ -1444,4 +1462,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		return tribe( 'tickets.commerce.paypal.gateway' )->get_cart_url();
 	}
 
+	/**
+	 * Returns the value of a key defined by the class.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key
+	 *
+	 * @return string The key value or an empty string if not defined.
+	 */
+	public static function get_key( $key ) {
+		$instance = self::get_instance();
+		$key      = strtolower( $key );
+
+		$constant_map = array(
+			'attendee_event_key'   => $instance->attendee_event_key,
+			'attendee_product_key' => $instance->attendee_product_key,
+			'attendee_order_key'   => $instance->attendee_order_key,
+			'attendee_optout_key'  => $instance->attendee_optout_key,
+			'attendee_tpp_key'     => $instance->attendee_tpp_key,
+			'event_key'            => $instance->event_key,
+			'checkin_key'          => $instance->checkin_key,
+			'order_key'            => $instance->order_key,
+		);
+
+		return Tribe__Utils__Array::get( $constant_map, $key, '' );
+	}
 }

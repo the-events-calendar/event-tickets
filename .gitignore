@@ -8,18 +8,11 @@ node_modules
 compiler.jar
 *.ps1
 
+# local Codeception files
 codeception.yml
-tests/_bootstrap.php
-tests/_output/
+.env.local
 tests/_output/*
-tests/_support/_generated/*
-tests/acceptance/_bootstrap.php
-tests/functional/_bootstrap.php
-tests/unit/_bootstrap.php
-tests/acceptance.suite.yml
-tests/functional.suite.yml
-tests/unit.suite.yml
-phpunit.xml
+tests/*.suite.yml
 
 vendor/
 vendor/badcow
