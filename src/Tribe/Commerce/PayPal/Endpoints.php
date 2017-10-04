@@ -10,7 +10,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 	/**
 	 * @var array
 	 */
-	protected $template_data  =array();
+	protected $template_data = array();
 
 	/**
 	 * Hooks the class to actions and filters.
