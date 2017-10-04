@@ -17,21 +17,25 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	public static $invoice_cookie_name = 'event-tickets-tpp-invoice';
 
 	/**
+	 * @var Tribe__Tickets__Commerce__Paypal__Notices
+	 */
+	protected $notices;
+
+	/**
+	 * @var \Tribe__Tickets__Commerce__PayPal__Handler__Interface
+	 */
+	protected $handler;
+
+	/**
 	 * Tribe__Tickets__Commerce__PayPal__Gateway constructor.
 	 *
 	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Commerce__PayPal__Notices $notices
 	 */
-	public function __construct() {
-		$this->hook();
+	public function __construct( Tribe__Tickets__Commerce__Paypal__Notices $notices ) {
 		$this->identity_token = tribe_get_option( 'ticket-paypal-identity-token' );
-
-		if ( $this->identity_token ) {
-			// if there's an identity token set, we handle payment confirmation with PDT
-			tribe( 'tickets.commerce.paypal.handler.pdt' );
-		} else {
-			// if there isn't an identity token set, we use IPN
-			tribe( 'tickets.commerce.paypal.handler.ipn' );
-		}
+		$this->notices = $notices;
 	}
 
 	/**
@@ -111,6 +115,9 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			$args['amount']      = $ticket->price;
 			$args['item_number'] = "{$post->ID}:{$ticket->ID}";
 			$args['item_name']   = urlencode( $this->get_product_name( $ticket, $post ) );
+			$args['custom']      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( array(
+				'tribe_handler' => 'tpp',
+			) );
 
 			// we can only submit one product at a time. Bail if we get to here because we have a product
 			// with a requested quantity
@@ -144,13 +151,29 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Parses PayPal transaction data into a more organized structure
 	 *
+	 * @since TBD
+	 *
 	 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
 	 *
 	 * @param array $transaction Transaction data from PayPal in key/value pairs
 	 *
-	 * @return array
+	 * @return array|false The parsed transaction data or `false` if the transaction could not be processed for any reason.
 	 */
-	public function parse_transaction( $transaction ) {
+	public function parse_transaction( array $transaction ) {
+		if ( ! empty( $transaction['custom'] ) ) {
+			$decoded_custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction['custom'], true );
+
+			if ( empty( $decoded_custom['tribe_handler'] ) || 'tpp' !== $decoded_custom['tribe_handler'] ) {
+				return false;
+			}
+		}
+
+		if ( $this->handler instanceof Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT ) {
+			$this->handler->save_transaction();
+
+			return false;
+		}
+
 		$item_indexes = array(
 			'item_number',
 			'item_name',
@@ -166,6 +189,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$data = array(
 			'items' => array(),
 		);
+
 
 		foreach ( $transaction as $key => $value ) {
 			if ( ! preg_match( $item_indexes_regex, $key, $matches ) ) {
@@ -306,5 +330,30 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		return $paypal_url;
+	}
+
+	/**
+	 * Builds the correct handler depending on the request type and options.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Tickets__Commerce__PayPal__Handler__Interface The handler instance.
+	 */
+	public function build_handler() {
+		if ( ! empty( $_GET['tx'] ) ) {
+			// looks like a PDT request
+			if ( ! empty( $this->identity_token ) ) {
+				// if there's an identity token set we handle payment confirmation with PDT
+				$this->handler = tribe( 'tickets.commerce.paypal.handler.pdt' );
+			} else {
+				$this->notices->show_missing_identity_token_notice();
+				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT( $_GET['tx'] );
+			}
+		} else {
+			// if there isn't an identity token set, we use IPN
+			$this->handler = tribe( 'tickets.commerce.paypal.handler.ipn' );
+		}
+
+		return $this->handler;
 	}
 }

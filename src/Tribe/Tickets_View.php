@@ -708,6 +708,7 @@ class Tribe__Tickets__Tickets_View {
 
 		/**
 		 * Allow users to filter if this Event or Ticket has Restricted RSVP
+		 *
 		 * @param  boolean  $restricted Is this Event or Ticket Restricted?
 		 * @param  int      $event_id   The Event/Post ID (optional)
 		 * @param  int      $ticket_id  The Ticket/RSVP ID (optional)

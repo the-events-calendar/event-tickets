@@ -1,11 +1,8 @@
 <?php
+
 namespace Tribe\Tickets\Commerce\PayPal;
 
-use Prophecy\Argument;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
-use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
-use Tribe__Tickets__Commerce__PayPal__Handler__IPN as IPN;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class TransactionTest extends \Codeception\TestCase\WPTestCase {
@@ -23,7 +20,7 @@ class TransactionTest extends \Codeception\TestCase\WPTestCase {
 		$this->tickets_view = new Tickets_View();
 
 		// let's avoid die()s
-		add_filter (
+		add_filter(
 			'tribe_exit', function () {
 			return [ $this, 'dont_die' ];
 		}
@@ -68,7 +65,7 @@ class TransactionTest extends \Codeception\TestCase\WPTestCase {
 	protected function make_ticket( $event_id, $price ) {
 		$ticket_id = $this->factory()->post->create(
 			[
-				'post_type' => tribe( 'tickets.commerce.paypal' )->ticket_object,
+				'post_type'  => tribe( 'tickets.commerce.paypal' )->ticket_object,
 				'meta_input' => [
 					'_tribe_tpp_for_event' => $event_id,
 					'_price'               => $price,

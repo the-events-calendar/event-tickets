@@ -68,4 +68,4 @@ var tribe_tickets_tpp = {
 	$( function() {
 		my.init();
 	} );
-})( jQuery, tribe_tickets_rsvp );
+})( jQuery, tribe_tickets_tpp );

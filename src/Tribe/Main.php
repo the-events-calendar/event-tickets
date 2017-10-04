@@ -387,6 +387,10 @@ class Tribe__Tickets__Main {
 		// Tribe Data API Init
 		tribe_singleton( 'tickets.data_api', new Tribe__Tickets__Data_API );
 
+		// Redirections
+		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections', array( 'hook' ) );
+		tribe( 'tickets.redirections' );
+
 		// View links, columns and screen options
 		if ( is_admin() ) {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
