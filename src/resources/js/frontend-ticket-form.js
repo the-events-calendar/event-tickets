@@ -10,7 +10,7 @@ var tribe_tickets_ticket_form = {};
 	var $quantity_fields;
 
 	my.init = function() {
-		$tickets_lists = $( '.tribe-events-tickets' );
+		$tickets_lists = $( '.tribe-events-tickets-tpp' );
 		$quantity_fields = $tickets_lists.find( '.quantity' ).find( '.qty' );
 		$quantity_fields.on( 'change', my.on_quantity_change );
 	};
