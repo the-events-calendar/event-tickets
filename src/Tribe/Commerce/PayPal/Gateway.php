@@ -72,7 +72,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		// @TODO: set to the success page
 		$notify_url    = add_query_arg( array( 'bacon' => 1 ), get_permalink( $post ) );
 
-		$args = array(
+		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
+		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
+
+		$args   = array(
 			'cmd'           => '_cart',
 			'add'           => 1,
 			'business'      => urlencode( tribe_get_option( 'ticket-paypal-email' ) ),
@@ -80,7 +83,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'notify_url'    => urlencode( $notify_url ),
 			'shopping_url'  => urlencode( $post_url ),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
-			'custom'        => 'user_id=' . get_current_user_id(),
+			'custom'        => $custom,
 			'invoice'       => $this->get_invoice_number(),
 		);
 
@@ -115,9 +118,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			$args['amount']      = $ticket->price;
 			$args['item_number'] = "{$post->ID}:{$ticket->ID}";
 			$args['item_name']   = urlencode( $this->get_product_name( $ticket, $post ) );
-			$args['custom']      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( array(
-				'tribe_handler' => 'tpp',
-			) );
 
 			// we can only submit one product at a time. Bail if we get to here because we have a product
 			// with a requested quantity

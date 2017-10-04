@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Commerce\PayPal;
 
+use Tribe__Tickets__Commerce__PayPal__Custom_Argument as Custom_Argument;
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
 use Tribe__Tickets__Commerce__PayPal__Notices as Notices;
 use Tribe__Tickets__Commerce__PayPal__Transaction as Transaction;
@@ -37,9 +38,13 @@ class UnregisteredPDTTransactionTest extends \Codeception\TestCase\WPTestCase {
 		// no PDT identity token set
 		tribe_update_option( 'ticket-paypal-identity-token', '' );
 		// this is a PDT GET request
-		$this->go_to( home_url( "?amt=3.00&cc=USD&cm=user_id%3D0&st=Completed&tx={$transaction_id}" ) );
+		$url = home_url( "?amt=3.00&cc=USD&cm=user_id%3D0&st=Completed&tx={$transaction_id}" );
+		$url = add_query_arg( [ 'custom' => Custom_Argument::encode( [ 'tribe_handler' => 'tpp' ] ) ], $url );
+		$this->go_to( $url );
 
-		$gateway = (new Gateway( new Notices() ))->build_handler();
+		$gateway = new Gateway( new Notices() );
+		$gateway->build_handler();
+		$gateway->parse_transaction( [ 'foo' => 'bar' ] );
 
 		$saved_transaction = Transaction::build_from_id( $transaction_id );
 
