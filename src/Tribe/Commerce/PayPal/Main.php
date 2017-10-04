@@ -183,12 +183,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 */
 	public function bind_implementations() {
-		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View' );
 		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'hook', 'build_handler' ) );
 		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
+		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints', array( 'hook' ) );
+
 		tribe( 'tickets.commerce.paypal.gateway' );
+		tribe( 'tickets.commerce.paypal.endpoints' );
 	}
 
 	/**
@@ -670,8 +673,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// Redirect to the same page to prevent double purchase on refresh
 		if ( ! empty( $post_id ) ) {
-			$url = get_permalink( $post_id );
-			$url = add_query_arg( 'tpp_sent', 1, $url );
+			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
+			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
+			$url       = $endpoints->success_url( $order_id );
+			$url       = add_query_arg( array( 'tpp_sent' => 1 ), $url );
 			wp_redirect( esc_url_raw( $url ) );
 			tribe_exit();
 		}
@@ -1488,5 +1493,35 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		return Tribe__Utils__Array::get( $constant_map, $key, '' );
+	}
+
+	/**
+	 * Returns the ID of the post associated with a PayPal order if any.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order
+	 *
+	 * @return int|false Either the ID of the post associated with the order or `false` on failure.
+	 */
+	public function get_post_id_from_order( $order ) {
+		if ( empty( $order ) ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$post_id = $wpdb->get_var( $wpdb->prepare(
+			"SELECT m2.meta_value
+			FROM {$wpdb->postmeta} m1
+			JOIN {$wpdb->postmeta} m2
+			ON m1.post_id = m2.post_id
+			WHERE m1.meta_key = %s
+			AND m1.meta_value = %s
+			AND m2.meta_key = %s",
+			$this->order_key, $order, $this->attendee_event_key )
+		);
+
+		return empty( $post_id ) ? false : $post_id;
 	}
 }
