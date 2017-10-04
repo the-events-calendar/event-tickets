@@ -488,7 +488,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$order_id = $transaction_data['txn_id'];
 
-		$attendee_id        = empty( $transaction_data['custom']['user_id'] ) ? null : absint( $transaction_data['custom']['user_id'] );
+		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
+		$attendee_id = empty( $custom['user_id'] ) ? null : absint( $custom['user_id'] );
 
 		if ( empty( $attendee_id ) ) {
 			$attendee_email     = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
