@@ -6,10 +6,6 @@ $start_date_errors = array(
 	'is-required' => __( 'Start sale date cannot be empty.', 'event-tickets' ),
 	'is-greater-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
 );
-$end_date_errors = array(
-	'is-required' => __( 'End sale date cannot be empty.', 'event-tickets' ),
-	'is-greater-or-equal-to' => __( 'End sale date cannot be less than Start sale date', 'event-tickets' ),
-);
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true">
