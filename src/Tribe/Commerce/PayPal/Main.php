@@ -478,7 +478,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$has_tickets = $post_id = false;
 
 		/**
-		 * PayPale Ticket specific action fired just before a PayPalTicket-driven attendee tickets for an order are generated
+		 * PayPal Ticket specific action fired just before a PayPalTicket-driven attendee tickets for an order are generated
 		 *
 		 * @since TBD
 		 *
