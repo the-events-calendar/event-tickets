@@ -737,8 +737,10 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		$enable = ! empty( $_POST[ 'tribe-tickets-enable-global-stock' ] );
-		$stock  = (int) @$_POST[ 'tribe-tickets-global-stock' ];
+		$enable = ! empty( $_POST['tribe-tickets-enable-global-stock'] );
+		$stock  = isset( $_POST['tribe-tickets-global-stock'] )
+			? $_POST['tribe-tickets-global-stock']
+			: 0;
 
 		$post_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 		$post_global_stock->enable( $enable );
