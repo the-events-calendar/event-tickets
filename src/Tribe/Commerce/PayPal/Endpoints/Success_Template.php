@@ -104,7 +104,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		}
 
 		ob_start();
-		include Tribe__Tickets__Templates::get_template_hierarchy( "tickets/tpp-success.php" );
+		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/tpp-success.php' );
 
 		return ob_get_clean();
 	}
