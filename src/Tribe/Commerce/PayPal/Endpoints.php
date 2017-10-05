@@ -125,12 +125,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 
 		$template = $this->build_template_for( $slug );
 		$template->enqueue_resources();
-
-		extract( $template->get_template_data( $this->template_data ), EXTR_OVERWRITE );
-
-		ob_start();
-		include Tribe__Tickets__Templates::get_template_hierarchy( "tickets/tpp-{$slug}.php" );
-		$content = ob_get_clean();
+		$content = $template->render( $this->template_data );
 
 		return $content;
 	}

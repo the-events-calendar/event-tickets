@@ -7,9 +7,9 @@
  * @package TribeEventsCalendar
  * @version TBD
  *
+ * @var bool    $order_is_valid Whether the current order is a valid one or not.
  * @var string  $purchaser_name
  * @var string  $purchaser_email
- * @var bool    $order_is_valid Whether the current order is a valid one or not.
  * @var bool    $is_event Whether the post the tickets are associated with is an event or not.
  * @var array   $tickets {
  *      @type string $name     The ticket name
@@ -34,7 +34,7 @@ $post_type = get_post_type_object( $event->post_type );
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type ? true : false;
 ?>
 
-<div id="tribe-events-content" class="tribe-events-single tpp-success">
+<div class="tribe-events-single tpp-success">
 	<?php if ( ! $order_is_valid ) : ?>
 		<div class="order-recap invalid">
 			<p>

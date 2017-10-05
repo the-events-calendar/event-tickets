@@ -79,4 +79,33 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	public function enqueue_resources() {
 		Tribe__Tickets__RSVP::get_instance()->enqueue_resources();
 	}
+
+	/**
+	 * Renders and returns the template rendered contents.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $template_data
+	 *
+	 * @return string
+	 */
+	public function render( array $template_data = array() ) {
+		$template_data = $this->get_template_data( $template_data );
+
+		$order_is_valid = $template_data['order_is_valid'];
+
+		if ( $order_is_valid ) {
+			$post_id         = $template_data['post_id'];
+			$purchaser_name  = $template_data['purchaser_name'];
+			$purchaser_email = $template_data['purchaser_email'];
+			$is_event        = $template_data['is_event'];
+			$tickets         = $template_data['tickets'];
+			$order           = $template_data['order'];
+		}
+
+		ob_start();
+		include Tribe__Tickets__Templates::get_template_hierarchy( "tickets/tpp-success.php" );
+
+		return ob_get_clean();
+	}
 }
