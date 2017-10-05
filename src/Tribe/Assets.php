@@ -66,7 +66,7 @@ class Tribe__Tickets__Assets {
 			Tribe__Tickets__Main::instance(),
 			array(
 				array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style' ) ),
-				array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css' ) ),
+				array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css', 'common' ) ),
 				array( 'event-tickets-admin-tables-css', 'tickets-tables.css', array( 'event-tickets-admin-css' ) ),
 				array( 'event-tickets-admin-tables-js', 'tickets-tables.js', array( 'underscore' ) ),
 				array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery' ) ),
