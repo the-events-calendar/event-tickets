@@ -72,8 +72,10 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 						<div class="ticket-name">
 							<?php echo $ticket['name'] ?>
 						</div>
-						<div class="post-title">
-							<?php the_title() ?>
+						<div class="post-permalink">
+							<a href="<?php the_permalink( $post_id ) ?>">
+								<?php esc_html( the_title() ) ?>
+							</a>
 						</div>
 						<?php if ( $is_event ) : ?>
 							<span class="post-date"> - <?php echo tribe_get_start_date( $post_id, false ) ?></span>
