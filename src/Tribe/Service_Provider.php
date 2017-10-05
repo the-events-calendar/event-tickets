@@ -29,10 +29,9 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 	 * @since TBD
 	 */
 	protected function hook() {
-		add_action( 'wp_enqueue_scripts', tribe_callback( 'events-tickets.assets', 'enqueue_scripts' ) );
-		add_action( 'admin_enqueue_scripts', tribe_callback( 'events-tickets.assets', 'admin_enqueue_scripts' ) );
+		tribe( 'events-tickets.assets' )->enqueue_scripts();
+		tribe( 'events-tickets.assets' )->admin_enqueue_scripts();
 	}
-
 
 	/**
 	 * Binds and sets up implementations at boot time.

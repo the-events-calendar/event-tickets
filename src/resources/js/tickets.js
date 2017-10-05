@@ -35,7 +35,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var date_format                      = 'YYYY-MM-DD';
 	var time_format                      = 'HH:mmA';
 
-	function format_date(date) {
+	function format_date( date ) {
 		if ( undefined === date) {
 			// An empty string will give us now() below
 			date = '';
