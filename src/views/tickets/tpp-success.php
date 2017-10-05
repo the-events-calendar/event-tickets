@@ -47,10 +47,10 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 				<?php esc_html_e( 'Thank you for your purchase! You will receive your receipt and tickets via email.', 'event-tickets' ); ?>
 			</p>
 			<p>
-				<strong><?php esc_html_e( 'Purchaser Name', 'event-tickets' ) ?>:</strong> <?php echo $purchaser_name ?>
+				<strong><?php esc_html_e( 'Purchaser Name', 'event-tickets' ) ?>:</strong> <?php echo esc_html( $purchaser_name ) ?>
 			</p>
 			<p>
-				<strong><?php esc_html_e( 'Purchaser Email', 'event-tickets' ) ?>:</strong> <?php echo antispambot( $purchaser_email ) ?>
+				<strong><?php esc_html_e( 'Purchaser Email', 'event-tickets' ) ?>:</strong> <?php echo esc_html( antispambot( $purchaser_email ) ) ?>
 			</p>
 		</div>
 		<table class="tickets">
@@ -70,7 +70,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 							<?php the_post_thumbnail( 'thumbnail' ) ?>
 						</div>
 						<div class="ticket-name">
-							<?php echo $ticket['name'] ?>
+							<?php echo esc_html( $ticket['name'] ) ?>
 						</div>
 						<div class="post-permalink">
 							<a href="<?php the_permalink( $post_id ) ?>">
@@ -78,22 +78,22 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 							</a>
 						</div>
 						<?php if ( $is_event ) : ?>
-							<span class="post-date"> - <?php echo tribe_get_start_date( $post_id, false ) ?></span>
+							<span class="post-date"> - <?php echo esc_html( tribe_get_start_date( $post_id, false ) ) ?></span>
 						<?php endif; ?>
 					</td>
 					<td class="ticket-price">
 						<div>
-							<?php echo tribe_format_currency( $ticket['price'], $post_id ) ?>
+							<?php echo esc_html( tribe_format_currency( $ticket['price'], $post_id ) ) ?>
 						</div>
 					</td>
 					<td class="ticket-quantity">
 						<div>
-							<?php echo $ticket['quantity'] ?>
+							<?php echo esc_html( $ticket['quantity'] ) ?>
 						</div>
 					</td>
 					<td class="ticket-subtotal">
 						<div>
-							<?php echo tribe_format_currency( $ticket['subtotal'], $post_id ) ?>
+							<?php echo esc_html( tribe_format_currency( $ticket['subtotal'], $post_id ) ) ?>
 						</div>
 					</td>
 				</tr>
@@ -104,10 +104,10 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 					<strong><?php esc_html_e( 'Order Total', 'event-tickets' ) ?></strong>
 				</td>
 				<td class="quantity">
-					<div><?php echo $order['quantity'] ?></div>
+					<div><?php echo esc_html( $order['quantity'] ) ?></div>
 				</td>
 				<td class="total">
-					<div><?php echo tribe_format_currency( $order['total'], $post_id ) ?></div>
+					<div><?php echo esc_html( tribe_format_currency( $order['total'], $post_id ) ) ?></div>
 				</td>
 			</tr>
 			</tbody>

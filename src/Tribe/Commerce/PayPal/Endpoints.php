@@ -184,9 +184,9 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 	 * @return Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface
 	 */
 	protected function build_template_for( $slug ) {
-		switch ($slug) {
+		switch ( $slug ) {
 			case 'success':
-				$template      = tribe( 'tickets.commerce.paypal.endpoints.templates.success' );
+				$template = tribe( 'tickets.commerce.paypal.endpoints.templates.success' );
 				break;
 		}
 
