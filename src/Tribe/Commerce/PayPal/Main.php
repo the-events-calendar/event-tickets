@@ -189,6 +189,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'hook', 'build_handler' ) );
 		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
 		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
 
 		tribe( 'tickets.commerce.paypal.gateway' );
 		tribe( 'tickets.commerce.paypal.endpoints' );
@@ -676,7 +677,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
 			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
 			$url       = $endpoints->success_url( $order_id );
-			$url       = add_query_arg( array( 'tpp_sent' => 1 ), $url );
 			wp_redirect( esc_url_raw( $url ) );
 			tribe_exit();
 		}
@@ -1500,7 +1500,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $order
+	 * @param string $order The alphanumeric order identification string.
 	 *
 	 * @return int|false Either the ID of the post associated with the order or `false` on failure.
 	 */
@@ -1523,5 +1523,32 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		return empty( $post_id ) ? false : $post_id;
+	}
+
+	/**
+	 * Returns a list of attendees for an order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order The alphanumeric order identification string.
+	 *
+	 * @return array An array of WP_Post attendee objects.
+	 */
+	public function get_attendees_by_order( $order ) {
+		if ( empty( $order ) ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$attendees = $wpdb->get_col( $wpdb->prepare(
+			"SELECT DISTINCT( m.post_id )
+			FROM {$wpdb->postmeta} m
+			WHERE m.meta_key = %s
+			AND m.meta_value = %s",
+			$this->order_key, $order )
+		);
+
+		return empty( $attendees ) ? array() : array_map( 'get_post', $attendees );
 	}
 }

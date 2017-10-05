@@ -81,7 +81,8 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 	 * @return array
 	 */
 	public function filter_query_vars( $vars ) {
-		$vars[] = 'tribe-tpp-page'; $vars[] = 'tribe-tpp-order';
+		$vars[] = 'tribe-tpp-page';
+		$vars[] = 'tribe-tpp-order';
 
 		return $vars;
 	}
@@ -122,17 +123,10 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 			return $content;
 		}
 
-		$this->enqueue_resources_for( $slug );
+		$template = $this->build_template_for( $slug );
+		$template->enqueue_resources();
 
-		// @TODO pass these params
-		// name
-		// email
-		// product id for each ticket
-		// post ID
-		// price
-		// quantity
-		// total
-		// subtotal
+		extract( $template->get_template_data( $this->template_data ), EXTR_OVERWRITE );
 
 		ob_start();
 		include Tribe__Tickets__Templates::get_template_hierarchy( "tickets/tpp-{$slug}.php" );
@@ -174,24 +168,28 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 		$paypal  = tribe( 'tickets.commerce.paypal' );
 		$post_id = $paypal->get_post_id_from_order( $order );
 
-		$query->parse_query( array( 'p' => $post_id ) );
+		$query->parse_query( array( 'p' => $post_id, 'tribe-tpp-page' => 'success', 'tribe-tpp-order' => $order ) );
 
-		$this->template_data['post_id'] = $post_id;
-		$this->template_data['order'] = $order;
+		$this->template_data['post_id']      = $post_id;
+		$this->template_data['order_number'] = $order;
 	}
 
 	/**
-	 * Enqueues the resources needed by a particular endpoint.
+	 * Builds the correct template class to handle a template.
 	 *
 	 * @since TBD
 	 *
 	 * @param string $slug
+	 *
+	 * @return Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface
 	 */
-	protected function enqueue_resources_for( $slug ) {
-		switch ( $slug ) {
-			case 'success' :
-				Tribe__Tickets__RSVP::get_instance()->enqueue_resources();
+	protected function build_template_for( $slug ) {
+		switch ($slug) {
+			case 'success':
+				$template      = tribe( 'tickets.commerce.paypal.endpoints.templates.success' );
 				break;
 		}
+
+		return $template;
 	}
 }
