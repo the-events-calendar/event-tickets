@@ -46,15 +46,15 @@
 
 .tribe-tpp-list {
 	list-style: none;
-	padding: 0;
 	margin: 0;
+	padding: 0;
 }
 
 .tribe-tpp-list > .tribe-item {
-	min-height: 105px;
-	padding: 20px;
 	border: 1px solid #ededed;
 	border-bottom: 0;
+	min-height: 105px;
+	padding: 20px;
 }
 
 .tribe-tpp-list > .tribe-item:last-child {
@@ -73,8 +73,8 @@
 }
 
 .tribe-tpp-list > .tribe-item .tribe-answer {
-	float: right;
 	display: inline-block;
+	float: right;
 }
 
 .tribe-tpp-list > .tribe-item table {
@@ -87,8 +87,8 @@
 }
 
 .tribe-tpp h2 {
-	margin-bottom: 20px;
 	line-height: 1.2;
+	margin-bottom: 20px;
 }
 
 /* = Tickets & Tribe Commerce PayPal Modules Front End Styles
