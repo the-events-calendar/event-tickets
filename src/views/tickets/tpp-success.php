@@ -66,9 +66,17 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 			<?php foreach ( $tickets as $ticket ) : ?>
 				<tr class="ticket">
 					<td class="post-details">
-						<div class="thumbnail">
-							<?php the_post_thumbnail( 'thumbnail' ) ?>
-						</div>
+						<?php if ( ! empty( $ticket['header_image_id'] ) ) : ?>
+							<div class="thumbnail">
+								<?php echo get_image_tag(
+									$ticket['header_image_id'],
+									__( 'Ticket header image', 'event-tickets' ),
+									get_the_title( $post_id ),
+									'none',
+									'thumbnail'
+								); ?>
+							</div>
+						<?php endif; ?>
 						<div class="ticket-name">
 							<?php echo esc_html( $ticket['name'] ) ?>
 						</div>
