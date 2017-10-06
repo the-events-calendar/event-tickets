@@ -1242,20 +1242,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param $post_id
+	 * @param $event_id
 	 *
 	 * @return string
 	 */
-	public function get_event_reports_link( $post_id ) {
-		$ticket_ids = (array) $this->get_tickets_ids( $post_id );
+	public function get_event_reports_link( $event_id ) {
+		$ticket_ids = (array) $this->get_tickets_ids( $event_id );
 		if ( empty( $ticket_ids ) ) {
 			return '';
 		}
 
 		$query = array(
-			'post_type' => 'tribe_events',
 			'page'      => 'tpp-orders',
-			'post_id'  => $post_id,
+			'post_id'  => $event_id,
 		);
 
 		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
@@ -1264,12 +1263,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * Filter the PayPal Ticket Orders (Sales) Report URL
 		 *
 		 * @var string $report_url Report URL
-		 * @var int $post_id The post ID
-		 * @var array $ticket_ids An array of ticket IDs
+		 * @var int    $event_id   The post ID
+		 * @var array  $ticket_ids An array of ticket IDs
 		 *
 		 * @return string
 		 */
-		$report_url = apply_filters( 'tribe_tickets_paypal_report_url', $report_url, $post_id, $ticket_ids );
+		$report_url = apply_filters( 'tribe_tickets_paypal_report_url', $report_url, $event_id, $ticket_ids );
 
 		return '<small> <a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Sales report', 'event-tickets' ) . '</a> </small>';
 	}
@@ -1285,7 +1284,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
-		return '';
+		if ( empty( $ticket_id ) ) {
+			return '';
+		}
+
+		$query = array(
+			'page'      => 'tpp-orders',
+			'product_ids' => $ticket_id,
+			'post_id' => $event_id,
+		);
+
+		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
+
+		return '<span><a href="' . esc_url( $report_url ) . '">' . __( 'Report', 'event-tickets-plus' ) . '</a></span>';
 	}
 
 	/**
