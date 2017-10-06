@@ -404,17 +404,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		},
 
 		/**
-		 * Scrolls to the Tickets container once the ticket form receives the focus.
-		 *
-		 * @return {void}
-		 */
-		'focus.tribe': function() {
-			$body.animate( {
-				scrollTop: $tickets_container.offset().top - 50
-			}, 500 );
-		},
-
-		/**
 		 * When the edit ticket form fields have completed loading we can setup
 		 * other UI features as needed.
 		 */
@@ -475,9 +464,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var end_date;
 		var end_time;
 
-		$tribe_tickets
-			.trigger( 'clear.tribe' )
-			.trigger( 'focus.tribe' );
+		$tribe_tickets.trigger( 'clear.tribe' );
 
 		if ( 'rsvp_form_toggle' === $( this ).closest( 'button' ).attr( 'id' ) ) {
 			set_default_provider_radio( true );
@@ -548,7 +535,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	$document.on( 'click', '#ticket_form_cancel', function( e ) {
 		refresh_panels();
 		$tribe_tickets.trigger( 'clear.tribe' );
-		$tribe_tickets.trigger( 'focus.tribe' );
 	} );
 
 	/* Change global stock type if we've put a value in global_stock_cap */
@@ -613,9 +599,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 			},
 			'json'
-		).complete( function() {
-			$tribe_tickets.trigger( 'focus.tribe' );
-		} );
+		);
 	} );
 
 	/* "Delete Ticket" link action */
@@ -859,9 +843,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			},
 			'json'
 		).always( function( response ) {
-			$tribe_tickets
-				.trigger( 'focus.tribe' )
-				.trigger( 'edit-tickets-complete.tribe' );
+			$tribe_tickets.trigger( 'edit-tickets-complete.tribe' );
 
 			// re-trigger all dependencies
 			$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );

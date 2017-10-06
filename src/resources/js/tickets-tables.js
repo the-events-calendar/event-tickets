@@ -16,8 +16,9 @@
 
 		var fixHelper = function( e, ui ) {
 			ui.children().each( function() {
-				$( this ).width( $( this ).width() );
+				$( this ).width( $( this ).outerWidth( true ) );
 			} );
+
 			return ui;
 		};
 
@@ -29,15 +30,14 @@
 			cursor: 'move',
 			items: 'tr:not(.Tribe__Tickets__RSVP)',
 			forcePlaceholderSize: true,
-			forceHelperSize: true,
 			handle: '.tribe-handle',
 			helper: fixHelper,
-			update: function() {
-				data = $(this).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
+			update: function( event, ui ) {
+				var data = $( this ).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
 
 				// Strip the text .sortable() requires - to reduce thrash later
 				for ( i = 0, len = data.length; i < data.length; i++ ) {
-					data[i] = data[i].replace( 'order_', '');
+					data[ i ] = data[ i ].replace( 'order_', '' );
 				}
 
 				document.getElementById( 'tribe_tickets_order' ).value = data;
@@ -50,18 +50,17 @@
 
 	function tribe_toggle_sortable() {
 		if ( window.matchMedia( '( min-width: 786px )' ).matches ) {
-			if ( ! $( $table ).hasClass( 'ui-sortable' ) ) {
+			if ( ! $table.hasClass( 'ui-sortable' ) ) {
 				make_sortable( $table );
 			} else {
-				$( $table ).sortable( "enable" );
+				$table.sortable( 'enable' );
 			}
 		} else {
-			if ( $( $table ).hasClass( 'ui-sortable' ) ) {
-				$( $table ).sortable( 'disable' );
+			if ( $table.hasClass( 'ui-sortable' ) ) {
+				$table.sortable( 'disable' );
 			}
 		}
 	}
-
 
 	$( document ).ready( function () {
 		// trigger once at start
@@ -72,7 +71,7 @@
 		$( window ).resize( maybeSortable );
 
 		$tribe_tickets.on( 'tribe-tickets-refresh-tables', function( data ) {
-			$table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' );
+			$table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( '.tribe-tickets-editor-table-tickets-body' );
 			// trigger on table refresh
 			tribe_toggle_sortable();
 		});
