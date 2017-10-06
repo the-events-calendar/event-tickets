@@ -9,8 +9,9 @@
  */
 
 .tribe-tickets-editor-table {
-	border: 1px solid #ccc;
 	border-radius: 3px;
+	border-spacing: 0;
+	border: 1px solid #ccc;
 	margin: 20px 0;
 }
 
@@ -19,7 +20,9 @@
 	border-bottom: 1px solid #ccc;
 }
 
-.tribe-tickets-editor-table tr {}
+.tribe-tickets-editor-table tr {
+	background-color: #fff;
+}
 
 .tribe-tickets-editor-table tr td {
 	border-bottom: 1px solid #ccc;
@@ -51,43 +54,20 @@
 	border-bottom-right-radius: 3px;
 }
 
-.tribe-tickets-editor-table .tribe-mobile-only {
+.tribe-tickets-editor-table td.column-primary .tribe-handle {
+	color: #ccc;
+	cursor: pointer;
+	font-size: 1.8em;
+	margin-right: 10px;
+	position: relative;
+}
+
+.tribe-tickets-editor-table .Tribe__Tickets__RSVP .tribe-handle {
 	display: none;
 }
 
-.tribe-tickets-editor-table .ui-sortable-handle * {
-	cursor: move;
-}
-
-.tribe-tickets-editor-table .ui-sortable-handle a,
-	.tribe-tickets-editor-table .ui-sortable-handle button {
-	cursor: pointer;
-}
-
-.tribe-tickets-editor-table .ui-sortable-handle a *, .tribe-tickets-editor-table .ui-sortable-handle button * {
-	cursor: pointer;
-}
-
-/* Specific cells - remember that these classes exist in the header too! */
-
-.tribe-tickets-editor-table .ticket_name p::before {
-	font-family: 'dashicons';
-	font-size: 1.5em;
-	color: #ccc;
-	content: '\f180';
-	left: 5px;
-	position: absolute;
-	vertical-align: bottom;
-	visibility: hidden;
-}
-
-.tribe-tickets-editor-table .ticket_name.Tribe__Tickets__RSVP p::before {
-	content: '';
-	margin-right: 30px;
-}
-
-.tribe-tickets-editor-table .ui-sortable-handle .ticket_name p::before {
-	visibility: visible;
+.tribe-tickets-editor-table .tribe-mobile-only {
+	display: none;
 }
 
 .tribe-tickets-editor-table .ticket_edit {
@@ -212,12 +192,5 @@
 		overflow: hidden;
 
 		/* clearfix */
-	}
-}
-
-@media (max-width: 782px) {
-
-	.tribe-tickets-editor-table .ticket_name p {
-		display: inline;
 	}
 }

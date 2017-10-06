@@ -4,8 +4,9 @@
 }
 
 .tribe-tickets-editor-table {
-	border: 1px solid var(--border-color);
 	border-radius: var(--border-radius);
+	border-spacing: 0;
+	border: 1px solid var(--border-color);
 	margin: 20px 0;
 
 	thead {
@@ -14,6 +15,7 @@
 	}
 
 	tr {
+		background-color: #fff;
 	}
 
 	tr td {
@@ -46,61 +48,27 @@
 		}
 	}
 
+	td.column-primary {
+		.tribe-handle {
+			color: #ccc;
+			cursor: pointer;
+			font-size: 1.8em;
+			margin-right: 10px;
+			position: relative;
+		}
+	}
+
+	.Tribe__Tickets__RSVP {
+		.tribe-handle {
+			display: none;
+		}
+	}
+
 	.tribe-mobile-only {
 		display: none;
 
 		@media screen and ( max-width: 782px ) {
 			display: inline-block;
-		}
-	}
-
-	.ui-sortable-handle * {
-		cursor: move;
-	}
-
-	.ui-sortable-handle a,
-	.ui-sortable-handle button {
-		cursor: pointer;
-
-		* {
-			cursor: pointer;
-		}
-	}
-
-	/* Specific cells - remember that these classes exist in the header too! */
-	.ticket_name {
-		p {
-			&::before {
-				font-family: 'dashicons';
-				font-size: 1.5em;
-				color: #ccc;
-				content: '\f180';
-				left: 5px;
-				position: absolute;
-				vertical-align: bottom;
-				visibility: hidden;
-			}
-
-			@media (max-width: 782px) {
-				display: inline;
-			}
-		}
-
-		&.Tribe__Tickets__RSVP {
-			p {
-				&::before {
-					content: '';
-					margin-right: 30px;
-				}
-			}
-		}
-	}
-
-	.ui-sortable-handle .ticket_name {
-		p {
-			&::before {
-				visibility: visible;
-			}
 		}
 	}
 

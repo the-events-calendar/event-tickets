@@ -35,13 +35,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var time_format                      = 'HH:mmA';
 
 	function format_date( date ) {
-		if ( undefined === date) {
+		if ( 'undefined' === typeof date ) {
 			// An empty string will give us now() below
 			date = '';
 		}
 
 		// tribe_datepicker uses 'YY' for full year, moment uses 'YYYY'
-		date_format = ( undefined !== tribe_dynamic_help_text.datepicker_format ) ? tribe_datepicker_opts.dateFormat.toUpperCase().replace( 'YY', 'YYYY' ) : 'YYYY-MM-DD';
+		date_format = ( 'undefined' !== typeof tribe_dynamic_help_text.datepicker_format ) ? tribe_datepicker_opts.dateFormat.toUpperCase().replace( 'YY', 'YYYY' ) : 'YYYY-MM-DD';
 
 		// This is a bit sketchy,
 		// moment.js is deprecating use of strings in any format other than ISO (YYYY-MM-DD).
@@ -50,7 +50,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	}
 
 	function format_time( date ) {
-		if ( undefined === date ) {
+		if ( 'undefined' === typeof date ) {
 			// An empty string will give us now() below
 			date = '';
 		}
@@ -83,7 +83,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * @return void
 	 */
 	function set_default_provider_radio( force_rsvp ) {
-		force_rsvp = undefined === force_rsvp ? false : true;
+		force_rsvp = 'undefined' !== typeof force_rsvp;
 		var $checked_provider = $( 'input[name="default_ticket_provider"]', '#tribe_panel_settings' ).filter( ':checked' );
 		var provider_id = 'Tribe__Tickets__RSVP_radio';
 
@@ -95,17 +95,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	}
 
 	/**
-	 * Returns the current global capacity (via the settings panel.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	function get_global_cap() {
-		return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : '';
-	}
-
-	/**
 	 * When a ticket type is edited we should (re-)establish the UI for showing
 	 * and hiding its history, if it has one.
 	 */
@@ -116,10 +105,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
-		var $toggle_link      = $history.find( 'a.toggle-history' );
-		var $toggle_link_text = $toggle_link.find( 'span' );
-		var $history_list     = $history.find( 'ul' );
-
 		$history.on( 'click', '.toggle-history', function( e ) {
 			e.preventDefault();
 			if ( $history.hasClass( '_show' ) ) {
@@ -127,84 +112,24 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			} else {
 				$history.addClass( '_show' );
 			}
-
 		} );
 	}
 
 	/**
-	 * Returns the currently selected default ticketing provider.
-	 * Defaults to RSVP if something fails
+	 * Returns the current global capacity (via the settings panel)
 	 *
 	 * @since TBD
 	 *
-	 * @return string
-	 */
-	function get_default_provider() {
-		var $checked_provider = $( 'input[name=default_ticket_provider]', '#tribe_panel_settings' ).filter( ':checked' );
-		return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
-	}
-
-	/**
-	 * Sets the ticket edit form provider to the currently selected default ticketing provider.
-	 * Defaults to RSVP if something fails
-	 *
-	 * @since TBD
-	 *
-	 * @param boolean force selection to RSVP
-	 * @return void
-	 */
-	function set_default_provider_radio( force_rsvp ) {
-		force_rsvp = undefined === force_rsvp ? false : true;
-		var $checked_provider = $( 'input[name="default_ticket_provider"]', '#tribe_panel_settings' ).filter( ':checked' );
-		var provider_id = 'Tribe__Tickets__RSVP_radio';
-
-		if ( ! force_rsvp && $checked_provider.length > 0 ) {
-			provider_id = $checked_provider.val() + '_radio';
-		 }
-
-		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger('change');
-	}
-
-	/**
-	 * Returns the current global capacity (via the settings panel.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
+	 * @return {number}
 	 */
 	function get_global_cap() {
-		var $global_capacity_edit = $( document.getElementById( 'settings_global_capacity_edit' ) )
+		var $global_capacity_edit = $( document.getElementById( 'settings_global_capacity_edit' ) );
 		return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : 0;
 	}
 
 	/**
-	 * When a ticket type is edited we should (re-)establish the UI for showing
-	 * and hiding its history, if it has one.
-	 */
-	function show_hide_ticket_type_history() {
-		var $history = $tribe_tickets.find( '.ticket_advanced.history' );
-
-		if ( ! $history.length ) {
-			return;
-		}
-
-		var $toggle_link      = $history.find( 'a.toggle-history' );
-		var $toggle_link_text = $toggle_link.find( 'span' );
-		var $history_list     = $history.find( 'ul' );
-
-		$history.on( 'click', '.toggle-history', function( e ) {
-			e.preventDefault();
-			if ( $history.hasClass( '_show' ) ) {
-				$history.removeClass( '_show' );
-			} else {
-				$history.addClass( '_show' );
-			}
-		} );
-	}
-
-	/**
 	 * Switch from one panel to another
-	 * @param  event e      triggering event
+	 * @param  event  e      triggering event
 	 * @param  object ($base_panel) $panel jQuery object containing the panel we want to switch to
 	 * @return void
 	 */
@@ -214,7 +139,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		// this way if we don't pass a panel, it works like a 'reset'
-		if ( undefined == $panel ) {
+		if ( 'undefined' === typeof $panel ) {
 			$panel = $base_panel;
 		}
 
@@ -244,7 +169,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 */
 	function refresh_panels( notice, swap ) {
 		// make sure we have this for later (default to true)
-		swap = undefined === swap ? true : false;
+		swap = 'undefined' === typeof swap;
 
 		var params = {
 			action       : 'tribe-ticket-refresh-panels',
@@ -340,7 +265,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		event.returnValue = returnValue;
 
-
 		// We can't trigger a confirm() dialog from within this action but returning
 		// a string should achieve effectively the same result
 		return returnValue;
@@ -419,7 +343,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 * @return {void}
 		 */
 		'spin.tribe': function( event, action ) {
-			if ( typeof action === 'undefined' || $.inArray( action, [ 'start', 'stop' ] ) ){
+			if ( 'undefined' === typeof action || $.inArray( action, [ 'start', 'stop' ] ) ){
 				action = 'stop';
 			}
 
@@ -562,11 +486,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			// Only want to do this if we're setting up a ticket - as opposed to an RSVP
 			$( document.getElementById( $default_provider + '_' + tribe_ticket_vars.stock_mode ) ).prop( 'checked', true );
 			$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
-			if ( undefined !== global_cap && '' !== global_cap ) {
-				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).addClass('screen-reader-text');
+
+			if ( 0 !== global_cap && '' !== global_cap ) {
+				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).addClass( 'screen-reader-text' );
 			} else {
-				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).removeClass('screen-reader-text');
+				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).removeClass( 'screen-reader-text' );
 			}
+
 			$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
 		}
 
@@ -578,7 +504,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( document.getElementById( 'ticket_sale_price' ) ).closest( '.input_block' ).hide();
 
 		// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
-		if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) && undefined !== global_cap && 0 < global_cap ) {
+		if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) &&  0 < global_cap ) {
 			$( document.getElementById( $default_provider + '_global_capacity' ) ).prop( 'disabled', true );
 		}
 
