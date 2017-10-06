@@ -8,6 +8,11 @@
 class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface {
 
 	/**
+	 * @var string The PayPal order identification string.
+	 */
+	protected $order_number;
+
+	/**
 	 * Registers the resources this template will need to correctly render.
 	 */
 	public function register_resources() {
@@ -27,7 +32,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal                          = tribe( 'tickets.commerce.paypal' );
 		$template_data['order_is_valid'] = true;
-		$order_number                    = $template_data['order_number'];
+		$order_number                    = Tribe__Utils__Array::get( $_GET, 'tribe-tpp-order', false );
 		$attendees                       = $paypal->get_attendees_by_order( $order_number );
 		if ( empty( $attendees ) ) {
 			// weird...
