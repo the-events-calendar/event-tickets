@@ -188,11 +188,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
-		 * @param $event_id
+		 * @param $post_id
 		 *
 		 * @return mixed
 		 */
-		public function get_event_reports_link( $event_id ) {}
+		public function get_event_reports_link( $post_id ) {}
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
