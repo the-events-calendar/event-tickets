@@ -24,8 +24,8 @@
 		.tribe-tickets-editor-table tbody.ui-sortable:after {
 	content: '';
 	display: table-row;
-	width: 100%;
 	height: 2px;
+	width: 100%;
 }
 
 .tribe-tickets-editor-table tr {
