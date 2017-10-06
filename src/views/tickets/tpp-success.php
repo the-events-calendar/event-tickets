@@ -38,7 +38,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 	<?php if ( ! $order_is_valid ) : ?>
 		<div class="order-recap invalid">
 			<p>
-				<?php esc_html__( 'The order appears not be a valid one. Please contact the site owner.', 'event-tickets' ) ?>
+				<?php esc_html__( 'Whoops! It looks like there was a problem with your order. Please contact the site owner for assistance.', 'event-tickets' ); ?>
 			</p>
 		</div>
 	<?php else : ?>
