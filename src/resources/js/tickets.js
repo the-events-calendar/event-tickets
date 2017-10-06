@@ -35,7 +35,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var date_format                      = 'YYYY-MM-DD';
 	var time_format                      = 'HH:mmA';
 
-	function format_date(date) {
+	function format_date( date ) {
 		if ( 'undefined' === typeof date ) {
 			// An empty string will give us now() below
 			date = '';
@@ -489,11 +489,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			// Only want to do this if we're setting up a ticket - as opposed to an RSVP
 			$( document.getElementById( $default_provider + '_' + tribe_ticket_vars.stock_mode ) ).prop( 'checked', true );
 			$( document.getElementById( $default_provider + '_global_capacity' ) ).val( global_cap );
-			if ( undefined !== global_cap && '' !== global_cap ) {
-				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).addClass('screen-reader-text');
+
+			if ( 0 !== global_cap && '' !== global_cap ) {
+				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).addClass( 'screen-reader-text' );
 			} else {
-				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).removeClass('screen-reader-text');
+				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).removeClass( 'screen-reader-text' );
 			}
+
 			$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
 		}
 
@@ -505,7 +507,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( document.getElementById( 'ticket_sale_price' ) ).closest( '.input_block' ).hide();
 
 		// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
-		if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) && undefined !== global_cap && 0 < global_cap ) {
+		if ( 'ticket_form_toggle' === $( this ).attr( 'id' ) &&  0 < global_cap ) {
 			$( document.getElementById( $default_provider + '_global_capacity' ) ).prop( 'disabled', true );
 		}
 

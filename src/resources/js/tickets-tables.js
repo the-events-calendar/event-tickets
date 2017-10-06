@@ -1,5 +1,5 @@
 ( function( window, $ ) {
-	var $table         = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( ' tbody' );
+	var $table         = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( '.tribe-tickets-editor-table-tickets-body' );
 	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
 
 	/**
@@ -14,10 +14,24 @@
 			return;
 		}
 
-		$element.sortable({
+		var fixHelper = function( e, ui ) {
+			ui.children().each( function() {
+				$( this ).width( $( this ).width() );
+			} );
+			return ui;
+		};
+
+		$element.sortable( {
+			axis: 'y',
+			containment: 'parent',
+			opacity: 0.7,
+			tolerance: 'cursor',
 			cursor: 'move',
 			items: 'tr:not(.Tribe__Tickets__RSVP)',
 			forcePlaceholderSize: true,
+			forceHelperSize: true,
+			handle: '.tribe-handle',
+			helper: fixHelper,
 			update: function() {
 				data = $(this).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
 
@@ -28,7 +42,7 @@
 
 				document.getElementById( 'tribe_tickets_order' ).value = data;
 			}
-		});
+		} );
 		$element.disableSelection();
 		$element.find( '.table-header' ).disableSelection();
 		$element.sortable( 'option', 'disabled', false );
