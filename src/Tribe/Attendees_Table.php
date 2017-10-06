@@ -513,12 +513,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'right' => array(),
 		);
 
-		if ( 'top' == $which ) {
-			$nav['right']['filter_box'] = sprintf( '%s: <input type="text" name="filter_attendee" id="filter_attendee" value="">', esc_html__( 'Filter by purchaser name, ticket #, order # or security code', 'event-tickets' ) );
-		}
-
 		/**
-		 * Allows for customzing the buttons/options available above and below the Attendees table.
+		 * Allows for customization of the buttons/options available above and below the Attendees table.
 		 *
 		 * @param array $nav The array of items in the nav, where keys are the name of the item and values are the HTML of the buttons/inputs.
 		 * @param string $which Either 'top' or 'bottom'; the location of the current nav items being filtered.
