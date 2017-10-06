@@ -191,7 +191,7 @@ $tickets_fields = array_merge(
 			'size'            => 'medium',
 			'validation_type' => 'options',
 			'options'         => $pages,
-			'required'        => true
+			'required'        => true,
 		),
 		'ticket-currency-heading' => array(
 			'type' => 'html',

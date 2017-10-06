@@ -41,8 +41,6 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 			return;
 		}
 
-		$template_data['post_id'] = Tribe__Utils__Array::get( $template_data, 'post_id', $paypal->get_post_id_from_order( $order_number ) );
-
 		// the purchaser details will be the same for all the attendees, so we fetch it from the first
 		$first                            = reset( $attendees );
 		$template_data['purchaser_name']  = get_post_meta( $first->ID, $paypal->full_name, true );
@@ -107,7 +105,6 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		$order_is_valid = $template_data['order_is_valid'];
 
 		if ( $order_is_valid ) {
-			$post_id         = $template_data['post_id'];
 			$purchaser_name  = $template_data['purchaser_name'];
 			$purchaser_email = $template_data['purchaser_email'];
 			$is_event        = $template_data['is_event'];
