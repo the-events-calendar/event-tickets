@@ -52,14 +52,18 @@
 		$tickets = Tribe__Tickets__Tickets_Handler::instance()->sort_tickets_by_menu_order( $tickets );
 
 		?>
-		<tbody>
+		<tbody class="tribe-tickets-editor-table-tickets-body">
 			<?php
 			if ( ! empty( $tickets ) ) {
 				foreach ( $tickets as $ticket ) {
 					Tribe__Tickets__Tickets_Handler::instance()->render_ticket_row( $ticket );
 				}
 			}
+			?>
+		</tbody>
 
+		<tbody>
+			<?php
 			if ( ! empty( $rsvp ) ) {
 				foreach ( $rsvp as $ticket ) {
 					Tribe__Tickets__Tickets_Handler::instance()->render_ticket_row( $ticket );

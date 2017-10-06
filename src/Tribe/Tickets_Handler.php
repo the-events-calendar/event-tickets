@@ -1103,7 +1103,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 		?>
 		<tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
-			<td class=" column-primary ticket_name <?php echo esc_attr( $provider ); ?>"  data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
+			<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
+				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
 				<?php echo esc_html( $ticket->name ); ?>
 			</td>
 

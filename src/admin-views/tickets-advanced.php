@@ -43,18 +43,12 @@
 				data-validation-error="<?php esc_attr_e( 'Start sale time cannot be empty.', 'event-tickets' ) ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
-			<span class="tooltip_container">
-				<span class="dashicons dashicons-editor-help"></span>
-				<span class="tooltip">
-					<?php esc_html_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>
-				</span>
-			</span>
+			<span class="dashicons dashicons-editor-help" title="<?php esc_attr_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>"></span>
 		</div>
 	</div>
 	<div class="input_block">
 		<label class="ticket_form_label ticket_form_left" for="ticket_end_date"><?php esc_html_e( 'End sale:', 'event-tickets' ); ?></label>
 		<div class="ticket_form_right">
-
 			<input
 				autocomplete="off"
 				type="text"
@@ -77,13 +71,7 @@
 				value=""
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
-
-			<span class="tooltip_container">
-				<span class="dashicons dashicons-editor-help"></span>
-				<span class="tooltip">
-					<?php esc_html_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>
-				</span>
-			</span>
+			<span class="dashicons dashicons-editor-help" title="<?php esc_attr_e( 'If you don\'t set a start/end date for sales, tickets will be available from now until the event ends.', 'event-tickets' ); ?>"></span>
 		</div>
 	</div>
 	<div id="advanced_fields">
