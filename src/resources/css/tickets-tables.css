@@ -9,10 +9,10 @@
  */
 
 .tribe-tickets-editor-table {
-	border: 1px solid #ccc;
 	border-radius: 3px;
+	border-spacing: 0;
+	border: 1px solid #ccc;
 	margin: 20px 0;
-    border-spacing: 0;
 }
 
 .tribe-tickets-editor-table thead {
@@ -55,11 +55,11 @@
 }
 
 .tribe-tickets-editor-table td.column-primary .tribe-handle {
-	font-size: 1.8em;
 	color: #ccc;
-	position: relative;
-	margin-right: 10px;
 	cursor: pointer;
+	font-size: 1.8em;
+	margin-right: 10px;
+	position: relative;
 }
 
 .tribe-tickets-editor-table .Tribe__Tickets__RSVP .tribe-handle {
