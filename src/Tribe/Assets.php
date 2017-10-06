@@ -117,6 +117,13 @@ class Tribe__Tickets__Assets {
 		);
 	}
 
+	/**
+	 * Check if we should add the Admin Assets into a Page
+	 *
+	 * @since  TBD
+	 *
+	 * @return bool
+	 */
 	public function should_enqueue_admin() {
 		global $post;
 
