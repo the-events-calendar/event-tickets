@@ -1469,11 +1469,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Links to sales report for all tickets for this event.
 	 *
-	 * @param $post_id
+	 * @param $event_id
 	 *
 	 * @return string
 	 */
-	public function get_event_reports_link( $post_id ) {
+	public function get_event_reports_link( $event_id ) {
 		return '';
 	}
 
