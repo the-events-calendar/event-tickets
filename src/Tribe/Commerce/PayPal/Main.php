@@ -188,9 +188,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'hook', 'build_handler' ) );
 		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
-		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints' );
 		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
 		tribe_singleton( 'tickets.commerce.paypal.orders.report', 'Tribe__Tickets__Commerce__PayPal__Orders__Report', array( 'hook' ) );
+
+		tribe()->tag( array(
+			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
+		), 'tpp-shortcodes' );
+
+		/** @var \Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface $shortcode */
+		foreach ( tribe()->tagged( 'tpp-shortcodes' ) as $shortcode ) {
+			add_shortcode( $shortcode->tag(), array( $shortcode, 'render' ) );
+		}
 
 		tribe( 'tickets.commerce.paypal.gateway' );
 		tribe( 'tickets.commerce.paypal.endpoints' );

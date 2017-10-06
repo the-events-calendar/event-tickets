@@ -26,6 +26,13 @@ $currency_code_options = array(
 	'USD' => __( 'U.S. Dollar (USD)', 'event-tickets' ),
 );
 
+$pages        = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
+$pages        = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
+$page_ids     = array_keys( $pages );
+$default_page = reset( $pages );
+
+$tpp_success_shortcode = 'tribe-tpp-success';
+
 /**
  * Filters the available currency code options for PayPal
  *
@@ -176,6 +183,15 @@ $tickets_fields = array_merge(
 			'size'            => 'medium',
 			'default'         => '',
 			'validation_type' => 'html',
+		),
+		'ticket-paypal-success-page' => array(
+			'type'            => 'dropdown',
+			'label'           => esc_html__( 'Success page', 'event-tickets' ),
+			'tooltip'         => esc_html__( "After a successful PayPal order users will be redirected to this page; use the [{$tpp_success_shortcode}] shortcode to display the order confirmation to the user in the page content.", 'event-tickets' ),
+			'size'            => 'medium',
+			'validation_type' => 'options',
+			'options'         => $pages,
+			'required'        => true,
 		),
 		'ticket-currency-heading' => array(
 			'type' => 'html',
