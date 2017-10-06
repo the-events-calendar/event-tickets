@@ -10,9 +10,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $tickets_container               = $( document.getElementById( 'event_tickets' ) );
 	var $post_id                         = $( document.getElementById( 'post_ID' ) );
 
-	var $metabox                         = $tribe_tickets.find( '.inside' );
-	var $metaboxBlocker                  = $metabox.find( '.tribe-tickets-editor-blocker' );
-	var $spinner                         = $metabox.find( '.spinner' );
+	var $metaboxBlocker                  = $tribe_tickets.find( '.tribe-tickets-editor-blocker' );
+	var $spinner                         = $tribe_tickets.find( '.spinner' );
 
 	// panels
 	var $panels                          = $( document.getElementById( 'event_tickets' ) ).find( '.ticket_panel' );
@@ -260,7 +259,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var returnValue = false;
 
 		// If we are not on the base panel we alert the user about leaving
-		if ( $metabox.find( '.ticket_panel' ).filter( '[aria-hidden="false"]' ).is( $base_panel ) ) {
+		if ( $tribe_tickets.find( '.ticket_panel' ).filter( '[aria-hidden="false"]' ).is( $base_panel ) ) {
 			returnValue = tribe_global_stock_admin_ui.nav_away_msg;
 		}
 
