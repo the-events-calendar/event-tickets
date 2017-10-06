@@ -1,7 +1,6 @@
 <table class="eventtable ticket_list eventForm">
 	<?php
 	$provider = null;
-	$count    = 0;
 	global $post;
 
 	$post_type = 'post';
@@ -68,7 +67,7 @@
 			$controls[] = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move', 'event-tickets' ) . '</a>', $move_type_url );
 		}
 
-		if ( ( ! in_array( $provider, $printed_providers ) ) ) :
+		if ( ( ! in_array( $provider, $printed_providers, true ) ) ) :
 			$printed_providers[] = $provider;
 			?>
 			<td colspan="4" class="titlewrap">
@@ -126,6 +125,5 @@
 			</td>
 		</tr>
 		<?php
-		$count ++;
 	} ?>
 </table>
