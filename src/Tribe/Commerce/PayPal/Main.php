@@ -202,7 +202,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		tribe( 'tickets.commerce.paypal.gateway' );
-		tribe( 'tickets.commerce.paypal.endpoints' );
 		tribe( 'tickets.commerce.paypal.orders.report' );
 	}
 
