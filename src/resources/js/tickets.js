@@ -106,8 +106,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
-		var $toggle_link = $history.find( 'a.toggle-history' );
-
 		$history.on( 'click', '.toggle-history', function( e ) {
 			e.preventDefault();
 			if ( $history.hasClass( '_show' ) ) {
