@@ -25,8 +25,7 @@ interface Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface {
 	 *
 	 * @since TBD
 	 */
-	public function
-	enqueue_resources();
+	public function enqueue_resources();
 
 	/**
 	 * Renders and returns the template rendered contents.
