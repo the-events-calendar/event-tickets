@@ -10,12 +10,14 @@
  * @var bool    $order_is_valid Whether the current order is a valid one or not.
  * @var string  $purchaser_name
  * @var string  $purchaser_email
- * @var bool    $is_event Whether the post the tickets are associated with is an event or not.
  * @var array   $tickets {
  *      @type string $name     The ticket name
  *      @type int    $price    The ticket unit price
  *      @type int    $quantity The number of tickets of this type purchased by the user
  *      @type int    $subtotal The  ticket subtotal
+ *      @type int    $post_id The ID of the post associated with the ticket
+ *      @type bool   $is_event Whether the post the ticket is associated with is an event or not
+ *      @type int    $header_image_id The ID of the attachment set as the ticket header if any
  *      }
  * @var array   $order {
  *      @type int $quantity The total number or purchased tickets
@@ -27,10 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 $view      = Tribe__Tickets__Tickets_View::instance();
-$event     = get_post( $ticket_post_id );
-$post_type = get_post_type_object( $event->post_type );
-
-$is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type ? true : false;
 ?>
 
 <div class="tribe-events-single tpp-success">
@@ -63,7 +61,10 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 			</thead>
 			<tbody>
 			<?php foreach ( $tickets as $ticket ) : ?>
-				<?php $ticket_post_id = $ticket['post_id'] ?>
+				<?php
+				$ticket_post_id = $ticket['post_id'];
+				$is_event = $ticket['is_event'];
+				?>
 				<tr class="ticket">
 					<td class="post-details">
 						<?php if ( ! empty( $ticket['header_image_id'] ) ) : ?>

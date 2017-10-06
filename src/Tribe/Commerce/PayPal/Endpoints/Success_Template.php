@@ -69,6 +69,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 					'quantity'        => 1,
 					'subtotal'        => $ticket_price,
 					'post_id'         => $ticket_post_id,
+					'is_event'        => function_exists( 'tribe_is_event' ) && tribe_is_event( $ticket_post_id ),
 					'header_image_id' => $header_image_id,
 				);
 			}
@@ -76,7 +77,6 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 
 		$template_data['order']    = array( 'quantity' => $order_quantity, 'total' => $order_total );
 		$template_data['tickets']  = $tickets;
-		$template_data['is_event'] = function_exists( 'tribe_is_event' ) && tribe_is_event( $template_data['post_id'] );
 
 		return $template_data;
 	}
@@ -107,7 +107,6 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		if ( $order_is_valid ) {
 			$purchaser_name  = $template_data['purchaser_name'];
 			$purchaser_email = $template_data['purchaser_email'];
-			$is_event        = $template_data['is_event'];
 			$tickets         = $template_data['tickets'];
 			$order           = $template_data['order'];
 		}
