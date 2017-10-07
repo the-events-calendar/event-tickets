@@ -538,36 +538,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	/* Change global stock type if we've put a value in global_stock_cap */
-	$document.on( 'blur', '[name="global_stock_cap"]', function( e ) {
+	$document.on( 'change', '.tribe-ticket-field-stock-cap', function( e ) {
 		var $this = $( this );
-		var $global_field = $this.closest( 'fieldset' ).find( '[name="ticket_global_stock"]' );
-		var global_field_val = 'global';
+		var $globalField = $this.parents( '.input_block' ).eq( 0 ).find( '.tribe-ticket-field-mode' );
 
-		if ( 0 < $this.val() ) {
-			global_field_val = 'capped';
+		// Bail if we have any value on Stock Cap
+		if ( ! $this.val() ) {
+			return;
 		}
 
-		$global_field.val( global_field_val );
-	} );
-
-	/* Change stock cap value if we change the value in ticket_global_stock */
-	$document.on( 'blur', '[name="ticket_global_stock"][value="own"]', function( e ) {
-		var $this= $( this );
-
-		var $stock_field = $this.closest( '.input_block' ).find( '[name="ticket_stock"]' );
-
-		if ( undefined === $stock_field.val() || '' === $stock_field.val() || 0 < $stock_field.val() ) {
-			$stock_field.val( '0' );
-		}
-	} );
-
-	/* Change stock cap value if we forget to set a value */
-	$document.on( 'blur', '.global_capacity-wrapper input[name="ticket_stock"]', function( e ) {
-		var $this= $( this );
-
-		if ( undefined === $this.val() || '' === $this.val() || 0 > $this.val() ) {
-			$this.val( '0' );
-		}
+		$globalField.val( 'capped' );
 	} );
 
 	/* "Save Ticket" button action */

@@ -53,9 +53,18 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @var string
+	 * @var   string
 	 */
 	protected $global_stock_field = '_tribe_ticket_global_stock_level';
+
+	/**
+	 * Post meta key for the ticket capacty
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_capacity = '_tribe_ticket_capacity';
 
 	/**
 	 * Slug of the admin page for attendees
