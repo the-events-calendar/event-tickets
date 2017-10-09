@@ -83,6 +83,10 @@ class Tribe__Tickets__Global_Stock {
 	public $post_id;
 
 	/**
+	 * Creates an instance for a given Event
+	 *
+	 * @since  4.1
+	 *
 	 * @param int $post_id
 	 */
 	public function __construct( $post_id ) {
@@ -137,22 +141,35 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Sets the global stock level for the current post.
 	 *
-	 * @param int $quantity
+	 * @since  4.1
+	 * @since  TBD  Added a Return
+	 *
+	 * @param  int $quantity
+	 *
+	 * @return bool
 	 */
 	public function set_stock_level( $quantity ) {
-		update_post_meta( $this->post_id, self::GLOBAL_STOCK_LEVEL, (int) $quantity );
+		$status = update_post_meta( $this->post_id, self::GLOBAL_STOCK_LEVEL, (int) $quantity );
 
 		/**
 		 * Fires when the global stock level is set/changed.
 		 *
-		 * @param int $post_id
-		 * @param int $quantity
+		 * @since  4.1
+		 * @since  TBD Added $status param
+		 *
+		 * @param  int  $post_id
+		 * @param  int  $quantity
+		 * @param  bool $status
 		 */
-		do_action( 'tribe_tickets_global_stock_level_changed', $this->post_id, $quantity );
+		do_action( 'tribe_tickets_global_stock_level_changed', $this->post_id, $quantity, $status );
+
+		return $status;
 	}
 
 	/**
 	 * Returns the post's global stock.
+	 *
+	 * @since  4.1
 	 *
 	 * @return int
 	 */
@@ -163,12 +180,15 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Returns a count of the number of global ticket sales for this event.
 	 *
+	 * @since  4.1
+	 *
 	 * @return int
 	 */
 	public function tickets_sold() {
 		$sales = 0;
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $this->post_id );
 
-		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $this->post_id ) as $ticket ) {
+		foreach ( $tickets as $ticket ) {
 			/**
 			 * @var Tribe__Tickets__Ticket_Object $ticket
 			 */

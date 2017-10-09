@@ -1204,7 +1204,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function get_all_event_tickets( $post_id ) {
 			$tickets = array();
-
 			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
