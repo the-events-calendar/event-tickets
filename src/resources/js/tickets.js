@@ -571,8 +571,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	/* "Save Ticket" button action */
-	$document.on( 'click', '[name="ticket_form_save"]', function( e ) {
+	$document.on( 'click.tribe', '[name="ticket_form_save"]', function( e ) {
 		var $form = $( document.getElementById( 'ticket_form_table' ) );
+
+		// Makes sure we have validation
+		$form.trigger( 'validation.tribe' );
 
 		// Prevent anything from happening when there are errors
 		if ( tribe.validation.hasErrors( $form ) ) {
