@@ -1,17 +1,34 @@
 <?php
+/**
+ * Management for Global Stock for tickets
+ *
+ * @since  4.1
+ */
 class Tribe__Tickets__Global_Stock {
 	/**
 	 * Post meta key used to store the global stock flag.
+	 *
+	 * @since 4.1
+	 *
+	 * @var   string
 	 */
 	const GLOBAL_STOCK_ENABLED = '_tribe_ticket_use_global_stock';
 
 	/**
 	 * Post meta key used to store the actual global stock level.
+	 *
+	 * @since 4.1
+	 *
+	 * @var   string
 	 */
 	const GLOBAL_STOCK_LEVEL = '_tribe_ticket_global_stock_level';
 
 	/**
 	 * Flag used to indicate that a ticket will use the global stock.
+	 *
+	 * @since 4.1
+	 *
+	 * @var   string
 	 */
 	const GLOBAL_STOCK_MODE = 'global';
 
@@ -19,6 +36,10 @@ class Tribe__Tickets__Global_Stock {
 	 * Flag used to indicate that a ticket will use the global stock,
 	 * but that a cap has been placed on the total number of sales for
 	 * this ticket type.
+	 *
+	 * @since 4.1
+	 *
+	 * @var   string
 	 */
 	const CAPPED_STOCK_MODE = 'capped';
 
@@ -27,6 +48,10 @@ class Tribe__Tickets__Global_Stock {
 	 * an event, the specific ticket this flag is applied to will
 	 * maintain it's own inventory rather than draw from the global
 	 * pool.
+	 *
+	 * @since 4.1
+	 *
+	 * @var   string
 	 */
 	const OWN_STOCK_MODE = 'own';
 
@@ -34,6 +59,8 @@ class Tribe__Tickets__Global_Stock {
 	 * Post meta key used to store the ticket global stock mode.
 	 *
 	 * @since TBD
+	 *
+	 * @var   string
 	 */
 	const TICKET_STOCK_MODE = '_global_stock_mode';
 
@@ -41,13 +68,19 @@ class Tribe__Tickets__Global_Stock {
 	 * Post meta key used to store the ticket global stock cap.
 	 *
 	 * @since TBD
+	 *
+	 * @var   string
 	 */
 	const TICKET_STOCK_CAP = '_global_stock_cap';
 
 	/**
-	 * @var int $post_id
+	 * Which post we are dealing with for this instance of stock
+	 *
+	 * @since TBD
+	 *
+	 * @var   int $post_id
 	 */
-	protected $post_id;
+	public $post_id;
 
 	/**
 	 * @param int $post_id
@@ -62,10 +95,15 @@ class Tribe__Tickets__Global_Stock {
 	 * As a convenience, false can be passed to this method to disable rather
 	 * than enable global stock.
 	 *
-	 * @param bool $yes
+	 * @since  4.1
+	 * @since  TBD Added a return so we can check if it was enabled correctly
+	 *
+	 * @param  bool $yes
+	 *
+	 * @return bool
 	 */
 	public function enable( $yes = true ) {
-		update_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, (bool) $yes );
+		return update_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, tribe_is_truthy( $yes ) );
 	}
 
 	/**
@@ -74,19 +112,26 @@ class Tribe__Tickets__Global_Stock {
 	 * As a convenience, false can be passed to this method to enable rather
 	 * than disable global stock.
 	 *
-	 * @var bool $yes
+	 * @since  4.1
+	 * @since  TBD Added a return so we can check if it was enabled correctly
+	 *
+	 * @param  bool $yes
+	 *
+	 * @return bool
 	 */
 	public function disable( $yes = true ) {
-		update_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, ! (bool) $yes );
+		return update_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, ! tribe_is_truthy( $yes ) );
 	}
 
 	/**
 	 * Indicates if global stock is enabled for this post.
 	 *
+	 * @since  4.1
+	 *
 	 * @return bool
 	 */
 	public function is_enabled() {
-		return (bool) get_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, true );
+		return tribe_is_truthy( get_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, true ) );
 	}
 
 	/**
