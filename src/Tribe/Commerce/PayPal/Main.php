@@ -1242,11 +1242,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id
+	 * @param int  $event_id
+	 * @param bool $url_only
 	 *
 	 * @return string
 	 */
-	public function get_event_reports_link( $event_id ) {
+	public function get_event_reports_link( $event_id, $url_only = false ) {
 		$ticket_ids = (array) $this->get_tickets_ids( $event_id );
 		if ( empty( $ticket_ids ) ) {
 			return '';
@@ -1270,7 +1271,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		$report_url = apply_filters( 'tribe_tickets_paypal_report_url', $report_url, $event_id, $ticket_ids );
 
-		return '<small> <a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Sales report', 'event-tickets' ) . '</a> </small>';
+		return $url_only
+			? $report_url
+			: '<small> <a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Sales report', 'event-tickets' ) . '</a> </small>';
 	}
 
 	/**
