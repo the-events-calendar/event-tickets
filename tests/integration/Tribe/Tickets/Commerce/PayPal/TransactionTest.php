@@ -46,14 +46,6 @@ class TransactionTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
-	private function make_instance() {
-		/** @var RSVP $instance */
-		$instance = ( new \ReflectionClass( PayPal::class ) )->newInstanceWithoutConstructor();
-		$instance->set_tickets_view( $this->tickets_view );
-
-		return $instance;
-	}
-
 	/**
 	 * Generates a ticket
 	 *
@@ -117,7 +109,7 @@ first_name=Test
 mc_fee=0.36
 address_country_code=US
 address_name=Test+Buyer
-custom=user_id%3D1
+custom=%7B%22user_id%22%3A1%2C%22tribe_handler%22%3A%22tpp%22%7D
 payer_status=verified
 business=seller%40paypalsandbox.com
 address_country=United+States
@@ -147,7 +139,6 @@ shipping_method=Default
 transaction_subject=
 payment_gross=2.00
 EOT;
-
 
 		$data = tribe( 'tickets.commerce.paypal.handler.pdt' )->parse_transaction_body( $body );
 
@@ -211,7 +202,7 @@ first_name=Test
 mc_fee=0.36
 address_country_code=US
 address_name=Test+Buyer
-custom=user_id%3D1
+custom=%7B%22user_id%22%3A1%2C%22tribe_handler%22%3A%22tpp%22%7D
 payer_status=verified
 business=seller%40paypalsandbox.com
 address_country=United+States
@@ -326,7 +317,7 @@ first_name=Test
 mc_fee=0.36
 address_country_code=US
 address_name=Test+Buyer
-custom=user_id%3D1
+custom=%7B%22user_id%22%3A1%2C%22tribe_handler%22%3A%22tpp%22%7D
 payer_status=verified
 business=seller%40paypalsandbox.com
 address_country=United+States

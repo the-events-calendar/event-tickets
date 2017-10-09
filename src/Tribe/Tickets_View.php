@@ -129,6 +129,7 @@ class Tribe__Tickets__Tickets_View {
 		$rules = array(
 			sanitize_title_with_dashes( $bases['tickets'][0] ) . '/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
 		);
+
 		return $rules;
 	}
 

@@ -51,6 +51,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 	}
 	?>
 
+
 	<?php
 	/**
 	 * Fires before the process tickets submission button is rendered

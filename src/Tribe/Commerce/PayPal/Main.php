@@ -183,11 +183,23 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 */
 	public function bind_implementations() {
-		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View' );
 		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.gateway', 'Tribe__Tickets__Commerce__PayPal__Gateway', array( 'hook', 'build_handler' ) );
 		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
+		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints' );
+		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
+
+		tribe()->tag( array(
+			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
+		), 'tpp-shortcodes' );
+
+		/** @var \Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface $shortcode */
+		foreach ( tribe()->tagged( 'tpp-shortcodes' ) as $shortcode ) {
+			add_shortcode( $shortcode->tag(), array( $shortcode, 'render' ) );
+		}
+
 		tribe( 'tickets.commerce.paypal.gateway' );
 	}
 
@@ -478,7 +490,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$has_tickets = $post_id = false;
 
 		/**
-		 * PayPale Ticket specific action fired just before a PayPalTicket-driven attendee tickets for an order are generated
+		 * PayPal Ticket specific action fired just before a PayPalTicket-driven attendee tickets for an order are generated
 		 *
 		 * @since TBD
 		 *
@@ -488,7 +500,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$order_id = $transaction_data['txn_id'];
 
-		$attendee_id        = empty( $transaction_data['custom']['user_id'] ) ? null : absint( $transaction_data['custom']['user_id'] );
+		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
+		$attendee_id = empty( $custom['user_id'] ) ? null : absint( $custom['user_id'] );
 
 		if ( empty( $attendee_id ) ) {
 			$attendee_email     = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
@@ -669,8 +682,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// Redirect to the same page to prevent double purchase on refresh
 		if ( ! empty( $post_id ) ) {
-			$url = get_permalink( $post_id );
-			$url = add_query_arg( 'tpp_sent', 1, $url );
+			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
+			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
+			$url       = $endpoints->success_url( $order_id );
 			wp_redirect( esc_url_raw( $url ) );
 			tribe_exit();
 		}
@@ -1487,5 +1501,62 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		return Tribe__Utils__Array::get( $constant_map, $key, '' );
+	}
+
+	/**
+	 * Returns the ID of the post associated with a PayPal order if any.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order The alphanumeric order identification string.
+	 *
+	 * @return int|false Either the ID of the post associated with the order or `false` on failure.
+	 */
+	public function get_post_id_from_order( $order ) {
+		if ( empty( $order ) ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$post_id = $wpdb->get_var( $wpdb->prepare(
+			"SELECT m2.meta_value
+			FROM {$wpdb->postmeta} m1
+			JOIN {$wpdb->postmeta} m2
+			ON m1.post_id = m2.post_id
+			WHERE m1.meta_key = %s
+			AND m1.meta_value = %s
+			AND m2.meta_key = %s",
+			$this->order_key, $order, $this->attendee_event_key )
+		);
+
+		return empty( $post_id ) ? false : $post_id;
+	}
+
+	/**
+	 * Returns a list of attendees for an order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order The alphanumeric order identification string.
+	 *
+	 * @return array An array of WP_Post attendee objects.
+	 */
+	public function get_attendees_by_order( $order ) {
+		if ( empty( $order ) ) {
+			return false;
+		}
+
+		global $wpdb;
+
+		$attendees = $wpdb->get_col( $wpdb->prepare(
+			"SELECT DISTINCT( m.post_id )
+			FROM {$wpdb->postmeta} m
+			WHERE m.meta_key = %s
+			AND m.meta_value = %s",
+			$this->order_key, $order )
+		);
+
+		return empty( $attendees ) ? array() : array_map( 'get_post', $attendees );
 	}
 }
