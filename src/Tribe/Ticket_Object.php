@@ -54,6 +54,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $price;
 
 		/**
+		 * Ticket Capacity
+		 *
+		 * @since  TBD
+		 *
+		 * @var    int
+		 */
+		public $capacity;
+
+		/**
 		 * Regular price (if the ticket is not on a special sale this will be identical to
 		 * $price).
 		 *
@@ -406,13 +415,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return false;
 			}
 
+			// If capacity is unlimited we just return this
+			if ( $this->unlimited_term === $this->capacity() ) {
+				return $this->unlimited_term;
+			}
+
 			// Do the math!
-			$remaining = $this->original_stock() - $this->qty_sold() - $this->qty_pending();
+			$remaining = $this->capacity() - $this->qty_sold() - $this->qty_pending();
 
 			// Adjust if using global stock with a sales cap
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
 				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				$remaining = min( $remaining, $this->global_stock_cap() - $global_stock_obj->tickets_sold() );
+				$remaining = min( $remaining, $this->capacity() - $global_stock_obj->tickets_sold() );
 			}
 
 			// Prevents Negative
@@ -421,6 +435,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Provides the quantity of original stock of tickets
+		 *
+		 * @todo  re-strcture this method if it's used elsewhere
 		 *
 		 * @return int
 		 */
@@ -486,6 +502,33 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			echo esc_html( $this->get_original_stock() );
+		}
+
+		/**
+		 * Gets the Capacity for the Ticket
+		 *
+		 *	@since  TBD
+		 *
+		 * @return string|int
+		 */
+		public function capacity() {
+			$stock_mode = $this->global_stock_mode();
+
+			// Unlimited is always unlimited
+			if ( -1 === (int) $this->capacity ) {
+				return tribe( 'tickets.handler' )->unlimited_term;
+			}
+
+			// If Capped or we used the local Capacity
+			if (
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode
+				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+				return (int) $this->capacity;
+			}
+
+			$event_capacity = get_post_meta( $this->get_event()->ID, tribe( 'tickets.handler' )->key_capacity, true );
+
+			return (int) $event_capacity;
 		}
 
 		/**

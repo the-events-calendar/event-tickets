@@ -49,15 +49,6 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $ticket_provider_field = '_tribe_ticket_provider';
 
 	/**
-	 * Post Meta key for global stock/capacity amount
-	 *
-	 * @since TBD
-	 *
-	 * @var   string
-	 */
-	protected $global_stock_field = '_tribe_ticket_global_stock_level';
-
-	/**
 	 * Post meta key for the ticket capacty
 	 *
 	 * @since  TBD
@@ -175,6 +166,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
 	}
+
 
 	/**
 	 * Returns whether a ticket has unlimited capacity
@@ -1103,11 +1095,15 @@ class Tribe__Tickets__Tickets_Handler {
 		$provider      = $ticket->provider_class;
 		$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
 		$remaining     = $ticket->remaining();
+		$capacity      = $ticket->capacity();
 		$needs_warning = false;
 
-		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class ) {
+		if (
+			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class
+			&& $this->unlimited_term !== $capacity
+		) {
 			$product = wc_get_product( $ticket->ID );
-			$needs_warning = absint( $product->get_stock_quantity() ) !== absint( $remaining );
+			$needs_warning = (int) $capacity < (int) $remaining;
 		}
 
 		?>
@@ -1138,7 +1134,7 @@ class Tribe__Tickets__Tickets_Handler {
 				if ( $show_parens ) {
 					echo '(';
 				}
-				$ticket->display_original_stock();
+				echo esc_html( $capacity );
 				if ( $show_parens ) {
 					echo ')';
 				}
@@ -1152,10 +1148,7 @@ class Tribe__Tickets__Tickets_Handler {
 				<?php endif; ?>
 
 				<?php
-				if ( $this->unlimited_term === $ticket->display_original_stock( false ) ) {
-					// escaping handled in function - could be string|int
-					$ticket->display_original_stock();
-				} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
+				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
 					echo esc_html( $remaining );
 				} else {
 					echo '(' . esc_html( $remaining ) . ')';

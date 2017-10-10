@@ -660,18 +660,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					switch ( response.data.global_stock_mode ) {
 						case 'global':
 							$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'global' );
-							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
-							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
+							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.event_capacity ).prop( 'disabled', true);
+							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.capacity );
 							$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
 
 							break;
 						case 'capped':
 							$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'capped' );
-							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
-							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
+							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.event_capacity ).prop( 'disabled', true);
+							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.capacity );
 
-							if ( undefined !== response.data.global_stock_cap && $.isNumeric( response.data.global_stock_cap ) && 0 < response.data.global_stock_cap ) {
-								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
+							if ( undefined !== response.data.capacity && $.isNumeric( response.data.capacity ) && 0 < response.data.capacity ) {
+								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.capacity );
 							} else {
 								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( 0 );
 							}
@@ -679,7 +679,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							break;
 						case 'own':
 							$( document.getElementById( provider_class + '_own' ) ).prop( 'checked', true );
-							$( document.getElementById( provider_class + '_capacity' ) ).val( response.data.stock );
+							$( document.getElementById( provider_class + '_capacity' ) ).val( response.data.capacity );
 							break;
 						default:
 							// Just in case
@@ -915,7 +915,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		// may as well set this here just in case
-		$( '[name="global_stock_cap"]' ).attr( 'placeholder', cap_val );
+		$( '[name="tribe-tickets[capacity]"]' ).attr( 'placeholder', cap_val );
 
 		// change the global variable for checks later
 		global_capacity_setting_changed = true;
