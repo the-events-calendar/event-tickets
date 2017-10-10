@@ -1095,15 +1095,17 @@ class Tribe__Tickets__Tickets_Handler {
 		$provider      = $ticket->provider_class;
 		$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
 		$remaining     = $ticket->remaining();
+		$total         = $remaining + $ticket->qty_sold() + $ticket->qty_pending();
 		$capacity      = $ticket->capacity();
 		$needs_warning = false;
+		$mode          = $ticket->global_stock_mode();
 
 		if (
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class
 			&& $this->unlimited_term !== $capacity
 		) {
 			$product = wc_get_product( $ticket->ID );
-			$needs_warning = (int) $capacity < (int) $remaining;
+			$needs_warning = (int) $capacity !== (int) $total;
 		}
 
 		?>
@@ -1123,22 +1125,11 @@ class Tribe__Tickets__Tickets_Handler {
 			 * @param obj ecommerce provider object
 			 */
 			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
-
-			$global_stock_mode = $ticket->global_stock_mode();
 			?>
 
 			<td class="ticket_capacity">
 				<span class='tribe-mobile-only'><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
-				<?php
-				$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode;
-				if ( $show_parens ) {
-					echo '(';
-				}
-				echo esc_html( $capacity );
-				if ( $show_parens ) {
-					echo ')';
-				}
-				?>
+				<?php echo $ticket->get_readable_format( $capacity, $mode ); ?>
 			</td>
 
 			<td class="ticket_available">
@@ -1147,13 +1138,7 @@ class Tribe__Tickets__Tickets_Handler {
 					<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'Your Available number does not match the stock in WooCommerce. Please check the ticket product and Attendees list to correct the discrepancy.', 'event-tickets' ) ?>"></span>
 				<?php endif; ?>
 
-				<?php
-				if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) {
-					echo esc_html( $remaining );
-				} else {
-					echo '(' . esc_html( $remaining ) . ')';
-				}
-				?>
+				<?php echo $ticket->get_readable_format( $remaining, $mode ); ?>
 			</td>
 
 			<td class="ticket_edit">

@@ -389,51 +389,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Determines if there is any stock for purchasing
-		 *
-		 * @return boolean
-		 */
-		public function is_in_stock() {
-			// if we aren't tracking stock, then always assume it is in stock
-			if ( ! $this->managing_stock() ) {
-				return true;
-			}
-
-			$remaining = $this->remaining();
-
-			return false === $remaining || $remaining > 0;
-		}
-
-		/**
-		 * Provides the quantity of remaining tickets
-		 *
-		 * @return int
-		 */
-		public function remaining() {
-			// if we aren't tracking stock, then always assume it is in stock
-			if ( ! $this->managing_stock() ) {
-				return false;
-			}
-
-			// If capacity is unlimited we just return this
-			if ( $this->unlimited_term === $this->capacity() ) {
-				return $this->unlimited_term;
-			}
-
-			// Do the math!
-			$remaining = $this->capacity() - $this->qty_sold() - $this->qty_pending();
-
-			// Adjust if using global stock with a sales cap
-			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
-				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				$remaining = min( $remaining, $this->capacity() - $global_stock_obj->tickets_sold() );
-			}
-
-			// Prevents Negative
-			return max( $remaining, 0 );
-		}
-
-		/**
 		 * Provides the quantity of original stock of tickets
 		 *
 		 * @todo  re-strcture this method if it's used elsewhere
@@ -505,18 +460,89 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
+		 * Determines if there is any stock for purchasing
+		 *
+		 * @return boolean
+		 */
+		public function is_in_stock() {
+			// if we aren't tracking stock, then always assume it is in stock
+			if ( ! $this->managing_stock() ) {
+				return true;
+			}
+
+			$remaining = $this->remaining();
+
+			return false === $remaining || $remaining > 0;
+		}
+
+		/**
+		 * Turns a Stock, Remaining or Capacity into a Human Readable Format
+		 *
+		 * @since  TBD
+		 *
+		 * @param  string|int $number Which you are tring to convert
+		 * @param  string     $mode   Mode this post is on
+		 *
+		 * @return string
+		 */
+		public function get_readable_format( $number, $mode = 'own' ) {
+			$html = array();
+
+			$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode;
+			if ( $show_parens ) {
+				$html[] = '(';
+			}
+
+			if ( -1 === (int) $number || self::UNLIMITED_STOCK === $number ) {
+				$html[] = esc_html( ucfirst( tribe( 'tickets.handler' )->unlimited_term ) );
+			} else {
+				$html[] = esc_html( $number );
+			}
+
+			if ( $show_parens ) {
+				$html[] = ')';
+			}
+
+			return implode( '', $html );
+		}
+
+		/**
+		 * Provides the quantity of remaining tickets
+		 *
+		 * @return int
+		 */
+		public function remaining() {
+			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+				return -1;
+			}
+
+			// Do the math!
+			$remaining = $this->stock() - $this->qty_sold() - $this->qty_pending();
+
+			// Adjust if using global stock with a sales cap
+			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
+				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
+				$remaining = min( $remaining, $this->capacity() - $global_stock_obj->tickets_sold() );
+			}
+
+			// Prevents Negative
+			return max( $remaining, 0 );
+		}
+
+		/**
 		 * Gets the Capacity for the Ticket
 		 *
 		 *	@since  TBD
 		 *
 		 * @return string|int
 		 */
-		public function capacity() {
+		public function capacity( ) {
 			$stock_mode = $this->global_stock_mode();
 
 			// Unlimited is always unlimited
 			if ( -1 === (int) $this->capacity ) {
-				return tribe( 'tickets.handler' )->unlimited_term;
+				return (int) $this->capacity;
 			}
 
 			// If Capped or we used the local Capacity

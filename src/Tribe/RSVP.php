@@ -927,10 +927,39 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 
-		if ( isset( $raw_data['ticket_stock'] ) && trim( $raw_data['ticket_stock'] ) !== '' ) {
-			$stock = (int) $raw_data['ticket_stock'];
+		$data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+
+		$default_capacity = -1;
+
+		// Fetch capacity field, if we don't have it use default (defined above)
+		$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
+
+		// If empty we need to modify to -1
+		if ( '' === $data['capacity'] ) {
+			$data['capacity'] = -1;
+		}
+
+		// The only available value lower than zero is -1 which is unlimited
+		if ( 0 > $data['capacity'] ) {
+			$data['capacity'] = -1;
+		}
+
+		// Fetch the stock if defined, otherwise use Capacity field
+		$data['stock'] = Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] );
+
+		// If empty we need to modify to -1
+		if ( '' === $data['stock'] ) {
+			$data['capacity'] = -1;
+		}
+
+		// The only available value lower than zero is -1 which is unlimited
+		if ( 0 > $data['stock'] ) {
+			$data['stock'] = -1;
+		}
+
+		if ( -1 !== $data['capacity'] ) {
 			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
-			update_post_meta( $ticket->ID, '_stock', $stock );
+			update_post_meta( $ticket->ID, '_stock', $data['stock'] );
 		} else {
 			// unlimited stock
 			delete_post_meta( $ticket->ID, '_stock_status' );
@@ -939,6 +968,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
 			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
 		}
+
+		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
 
 		if ( isset( $raw_data['ticket_start_date'] ) ) {
 			$start_date = $raw_data['ticket_start_date'];
@@ -1201,6 +1232,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$return->stock( (int) get_post_meta( $ticket_id, '_stock', true ) - $qty );
 		$return->qty_sold( $qty );
+		$return->capacity = (int) get_post_meta( $ticket_id, tribe( 'tickets.handler' )->key_capacity, true );
 
 		return $return;
 	}
@@ -1634,13 +1666,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_capacity_options( $event_id, $ticket_id ) {
-
 		$stock = '';
+		$capacity = '';
+
 		// This returns the original stock
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
 			if ( ! empty( $ticket ) ) {
 				$stock = $ticket->original_stock();
+				$capacity = $ticket->capacity();
 			}
 		}
 
