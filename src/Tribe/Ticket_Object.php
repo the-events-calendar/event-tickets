@@ -391,35 +391,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of original stock of tickets
 		 *
-		 * @todo  re-strcture this method if it's used elsewhere
+		 * @deprecated TBD
 		 *
 		 * @return int
 		 */
 		public function original_stock() {
-			if ( ! $this->managing_stock() ) {
-				return '';
-			}
-
-			$global_stock_mode = $this->global_stock_mode();
-
-			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
-				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				return $global_stock_obj->get_stock_level() + $global_stock_obj->tickets_sold();
-			} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-				return $this->global_stock_cap() + $this->qty_sold();
-			}
-
-			$stock = $this->stock();
-
-			// if the stock is less than 0, that means we've sold more than what we want in stock. If stock
-			// holds a value greater than 0, then we want the original stock to be greater than the number
-			// sold by the new stock amount. We do that with some simple math to offset the negative stock
-			// with the quantity sold
-			if ( 0 > $stock ) {
-				$stock += $this->qty_sold();
-			}
-
-			return $stock + $this->qty_sold() + $this->qty_pending();
+			return $this->capacity();
 		}
 
 		/**

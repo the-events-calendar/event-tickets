@@ -1666,14 +1666,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_capacity_options( $event_id, $ticket_id ) {
-		$stock = '';
 		$capacity = '';
 
 		// This returns the original stock
 		if ( ! empty( $ticket_id ) ) {
 			$ticket = $this->get_ticket( $event_id, $ticket_id );
 			if ( ! empty( $ticket ) ) {
-				$stock = $ticket->original_stock();
 				$capacity = $ticket->capacity();
 			}
 		}

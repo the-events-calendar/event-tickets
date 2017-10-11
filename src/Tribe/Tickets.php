@@ -1074,7 +1074,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$return['stock']             = $ticket->stock;
 			$return['capacity']          = $ticket->capacity;
-			$return['original_stock']    = $ticket->original_stock();
 			$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
 			$return['global_stock_mode'] = $global_stock_mode;
 			$return['show_description']  = $ticket->show_description;
