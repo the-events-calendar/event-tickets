@@ -1232,7 +1232,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$return->stock( (int) get_post_meta( $ticket_id, '_stock', true ) - $qty );
 		$return->qty_sold( $qty );
-		$return->capacity = (int) get_post_meta( $ticket_id, tribe( 'tickets.handler' )->key_capacity, true );
+		$return->capacity = tribe_tickets_get_capacity( $ticket_id );
 
 		return $return;
 	}

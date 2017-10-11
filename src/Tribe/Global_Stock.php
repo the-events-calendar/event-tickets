@@ -149,7 +149,15 @@ class Tribe__Tickets__Global_Stock {
 	 * @return bool
 	 */
 	public function set_stock_level( $quantity ) {
-		$status = update_post_meta( $this->post_id, self::GLOBAL_STOCK_LEVEL, (int) $quantity );
+		$capacity = tribe_tickets_get_capacity( $this->post_id );
+		$quantity = (int) $quantity;
+
+		// When we are dealing with non-unlimited capacities verify before updating the Post
+		if ( $capacity >= 0 && $quantity > $capacity ) {
+			$quantity = $capacity;
+		}
+
+		$status = update_post_meta( $this->post_id, self::GLOBAL_STOCK_LEVEL, $quantity );
 
 		/**
 		 * Fires when the global stock level is set/changed.

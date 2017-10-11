@@ -423,43 +423,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Method to get the total `stock` property of the Object.
-		 *
-		 * Returns the current ticket total capacity: either an integer or a
-		 * string if stock is unlimited.
-		 *
-		 * @return int|string
-		 */
-		public function get_original_stock() {
-			$orginal_stock = $this->original_stock();
-			$global_stock_mode = $this->global_stock_mode();
-
-			if ( empty( $global_stock_mode ) || empty( $orginal_stock ) ) {
-				$orginal_stock = Tribe__Tickets__Tickets_Handler::instance()->unlimited_term;
-			}
-
-			return $orginal_stock;
-		}
-
-		/**
-		 * Method to display the total `stock` property of the Object.
-		 *
-		 * Returns the current ticket total capacity: either an integer or a
-		 * string if stock is unlimited.
-		 *
-		 * @param bool (true) $display whether to echo or return the value
-		 *
-		 * @return string - escaped
-		 */
-		public function display_original_stock( $display = true ) {
-			if ( empty( $display ) ) {
-				return $this->get_original_stock();
-			}
-
-			echo esc_html( $this->get_original_stock() );
-		}
-
-		/**
 		 * Determines if there is any stock for purchasing
 		 *
 		 * @return boolean
@@ -473,37 +436,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$remaining = $this->remaining();
 
 			return false === $remaining || $remaining > 0;
-		}
-
-		/**
-		 * Turns a Stock, Remaining or Capacity into a Human Readable Format
-		 *
-		 * @since  TBD
-		 *
-		 * @param  string|int $number Which you are tring to convert
-		 * @param  string     $mode   Mode this post is on
-		 *
-		 * @return string
-		 */
-		public function get_readable_format( $number, $mode = 'own' ) {
-			$html = array();
-
-			$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode;
-			if ( $show_parens ) {
-				$html[] = '(';
-			}
-
-			if ( -1 === (int) $number || self::UNLIMITED_STOCK === $number ) {
-				$html[] = esc_html( ucfirst( tribe( 'tickets.handler' )->unlimited_term ) );
-			} else {
-				$html[] = esc_html( $number );
-			}
-
-			if ( $show_parens ) {
-				$html[] = ')';
-			}
-
-			return implode( '', $html );
 		}
 
 		/**
@@ -535,9 +467,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 *	@since  TBD
 		 *
-		 * @return string|int
+		 * @return  string|int
 		 */
-		public function capacity( ) {
+		public function capacity() {
 			$stock_mode = $this->global_stock_mode();
 
 			// Unlimited is always unlimited
@@ -552,7 +484,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return (int) $this->capacity;
 			}
 
-			$event_capacity = get_post_meta( $this->get_event()->ID, tribe( 'tickets.handler' )->key_capacity, true );
+			$event_capacity = tribe_tickets_get_capacity( $this->get_event() );
 
 			return (int) $event_capacity;
 		}

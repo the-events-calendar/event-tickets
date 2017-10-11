@@ -597,10 +597,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 */
 		public function __construct() {
-
-			// Start the singleton with the generic functionality to all providers.
-			Tribe__Tickets__Tickets_Handler::instance();
-
 			// As this is an abstract class, we want to know which child instantiated it
 			$this->class_name = $this->className = get_class( $this );
 
@@ -725,7 +721,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					// Don't add a notice if we didn't get a notice type
 			}
 
-			$ticket_table .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+			$ticket_table .= tribe( 'tickets.handler' )->get_ticket_list_markup( $tickets );
 
 			$return['ticket_table'] = $ticket_table;
 
@@ -982,7 +978,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( $return ) {
 				// Let's create a tickets list markup to return
 				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+				$return  = tribe( 'tickets.handler' )->get_ticket_list_markup( $tickets );
 
 				$return = $this->notice( esc_html__( 'Your ticket has been deleted.', 'event-tickets' ) ) . $return;
 
@@ -1084,7 +1080,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$return['show_description']  = $ticket->show_description;
 
 			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-				$return['event_capacity'] = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, true );
+				$return['event_capacity'] = tribe_tickets_get_capacity( $post_id );
 			}
 
 			/**
@@ -1736,7 +1732,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			return Tribe__Tickets__Tickets_Handler::instance()->user_can( $generic_cap, $post_id );
+			return tribe( 'tickets.handler' )->user_can( $generic_cap, $post_id );
 		}
 
 		/**

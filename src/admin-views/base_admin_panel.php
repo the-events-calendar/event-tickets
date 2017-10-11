@@ -1,14 +1,11 @@
 <?php
-$total_tickets = Tribe__Tickets__Tickets_Handler::instance()->get_total_event_capacity( $post_id );
+$total_tickets   = tribe( 'tickets.handler' )->get_total_event_capacity( $post_id );
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 ?>
 <div id="tribe_panel_base" class="ticket_panel panel_base" aria-hidden="false">
 	<div class="<?php echo esc_attr( $container_class ); ?>">
-		<?php
-		// only show if there are tickets
-		if ( ! empty( $total_tickets ) ) :
-			?>
+		<?php if ( ! empty( $total_tickets ) ) : ?>
 			<div class="ticket_table_intro">
 				<?php
 				/**

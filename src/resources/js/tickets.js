@@ -7,6 +7,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $body                            = $( 'html, body' );
 	var $document                        = $( document );
 	var $tribe_tickets                   = $( document.getElementById( 'tribetickets' ) );
+
+	// Bail if we don't have what we need
+	if ( 0 === $tribe_tickets.length ) {
+		return;
+	}
+
 	var $tickets_container               = $( document.getElementById( 'event_tickets' ) );
 	var $post_id                         = $( document.getElementById( 'post_ID' ) );
 
