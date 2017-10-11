@@ -83,6 +83,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * String to represent unlimited tickets
 	 * translated in the constructor
+	 *
 	 * @since TBD
 	 *
 	 * @var string
