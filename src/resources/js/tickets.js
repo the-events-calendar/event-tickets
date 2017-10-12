@@ -570,7 +570,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	/* Change global stock type if we've put a value in global_stock_cap */
-	$document.on( 'change', '.tribe-ticket-field-stock-cap', function( e ) {
+	$document.on( 'change', '.tribe-ticket-field-capacity', function( e ) {
 		var $this = $( this );
 		var $globalField = $this.parents( '.input_block' ).eq( 0 ).find( '.tribe-ticket-field-mode' );
 
@@ -865,7 +865,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			if ( response.data.event_capacity ) {
 				$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop( 'disabled', true );
-
 			}
 
 			show_panel( e, $edit_panel );
