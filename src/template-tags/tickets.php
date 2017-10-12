@@ -765,7 +765,7 @@ function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = f
 	}
 
 	if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
-		$html[] = esc_html( ucfirst( tribe( 'tickets.handler' )->unlimited_term ) );
+		$html[] = esc_html( tribe( 'tickets.handler' )->unlimited_term );
 	} else {
 		$html[] = esc_html( $number );
 	}

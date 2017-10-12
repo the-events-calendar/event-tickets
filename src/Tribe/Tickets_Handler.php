@@ -88,14 +88,14 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @var string
 	 */
-	public $unlimited_term = 'unlimited';
+	public $unlimited_term = 'Unlimited';
 
 	/**
 	 *    Class constructor.
 	 */
 	public function __construct() {
 		$main = Tribe__Tickets__Main::instance();
-		$this->unlimited_term = __( 'unlimited', 'event-tickets' );
+		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
