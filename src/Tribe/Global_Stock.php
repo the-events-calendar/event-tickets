@@ -153,7 +153,11 @@ class Tribe__Tickets__Global_Stock {
 		$quantity = (int) $quantity;
 
 		// When we are dealing with non-unlimited capacities verify before updating the Post
-		if ( $capacity >= 0 && $quantity > $capacity ) {
+		if (
+			! is_null( $capacity ) // We need to verify null to prevent capacity check when it doesn't exist
+			&& $capacity >= 0
+			&& $quantity > $capacity
+		) {
 			$quantity = $capacity;
 		}
 

@@ -25,8 +25,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $edit_panel                      = $( document.getElementById( 'tribe_panel_edit' ) );
 	var $settings_panel                  = $( document.getElementById( 'tribe_panel_settings' ) );
 
-	// stock elements
-	var global_capacity_setting_changed  = false;
 	// date elements
 	var $event_pickers                   = $( document.getElementById( 'tribe-event-datepickers' ) );
 	var $ticket_start_date               = $( document.getElementById( 'ticket_start_date' ) );
@@ -55,6 +53,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	];
 	var dateFormat = datepickerFormats[0];
 	var time_format = 'HH:mmA';
+
+	var changeEventCapacity = function( event ) {
+		var $this = $( this );
+		var eventCapacity = $this.val();
+
+		if ( undefined === eventCapacity ) {
+			return
+		}
+
+		// may as well set this here just in case
+		$( '[name="tribe-ticket[capacity]"]' ).attr( 'placeholder', eventCapacity );
+	};
 
 	function format_date( date ) {
 		if ( 'undefined' === typeof date ) {
@@ -855,6 +865,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			if ( response.data.event_capacity ) {
 				$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop( 'disabled', true );
+
 			}
 
 			show_panel( e, $edit_panel );
@@ -914,37 +925,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	/* Track changes to the global stock level on the ticket edit form. */
-	$document.on( 'blur', '[name=tribe-tickets-global-stock]', function() {
-		$tribe_tickets.trigger( 'tribe_tickets_global_capacity_setting_changed', $( this ).attr( 'id' ) );
-	} );
+	$document.on( 'blur', '[name="tribe-ticket[event_capacity]"]', changeEventCapacity );
 
 	/** Track changes to the global stock level on the Settings form.  */
-	$document.on( 'change', '#tribe-tickets-global-stock-level', function() {
-		$tribe_tickets.trigger( 'tribe_tickets_global_capacity_setting_changed', $( this ).attr( 'id' ) );
-	} );
-
-	/**
-	 * React to changes in global stock
-	 * @param string - id of element where the change occurred
-	 */
-	$document.on( 'tribe_tickets_global_capacity_setting_changed', function( event, location ) {
-		// without a location, there's no point
-		if ( undefined === location ) {
-			return;
-		}
-
-		var cap_val = $( document.getElementById( location ) ).val();
-
-		if ( undefined === cap_val ) {
-			return
-		}
-
-		// may as well set this here just in case
-		$( '[name="tribe-tickets[capacity]"]' ).attr( 'placeholder', cap_val );
-
-		// change the global variable for checks later
-		global_capacity_setting_changed = true;
-	} );
+	$document.on( 'change', '#tribe-tickets-global-stock-level', changeEventCapacity );
 
 	/* Remove header image action */
 	$document.on( 'click', '#tribe_ticket_header_remove', function( e ) {

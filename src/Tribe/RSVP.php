@@ -934,9 +934,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Fetch capacity field, if we don't have it use default (defined above)
 		$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
 
-		// If empty we need to modify to -1
+		// If empty we need to modify to the default
 		if ( '' === $data['capacity'] ) {
-			$data['capacity'] = -1;
+			$data['capacity'] = $default_capacity;
 		}
 
 		// The only available value lower than zero is -1 which is unlimited
@@ -947,9 +947,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Fetch the stock if defined, otherwise use Capacity field
 		$data['stock'] = trim( Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] ) );
 
-		// If empty we need to modify to -1
+		// If empty we need to modify to what every capacity was
 		if ( '' === $data['stock'] ) {
-			$data['capacity'] = -1;
+			$data['stock'] = $data['capacity'];
 		}
 
 		// The only available value lower than zero is -1 which is unlimited
