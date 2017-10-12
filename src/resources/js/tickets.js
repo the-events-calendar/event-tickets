@@ -39,7 +39,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $ticket_show_description         = $( document.getElementById( 'tribe_tickets_show_description' ) );
 
 	// Datepicker and Timepicker variables
-	var datepicker_formats = [
+	var datepickerFormats = [
 		'yy-mm-dd',
 		'm/d/yy',
 		'mm/dd/yy',
@@ -53,7 +53,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		'mm.dd.yy',
 		'dd.mm.yy'
 	];
-	var dateFormat = datepicker_formats[ 0 ];
+	var dateFormat = datepickerFormats[0];
 	var time_format = 'HH:mmA';
 
 	function format_date( date ) {
@@ -960,7 +960,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 		if ( 'undefined' !== typeof tribe_dynamic_help_text ) {
 			var indexDatepickerFormat =  $.isNumeric( tribe_dynamic_help_text.datepicker_format_index ) ? tribe_dynamic_help_text.datepicker_format_index : 0;
-			dateFormat = datepicker_formats[ indexDatepickerFormat ];
+			dateFormat = datepickerFormats[ indexDatepickerFormat ];
 		}
 
 		var datepickerOpts = {

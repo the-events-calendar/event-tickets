@@ -104,7 +104,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @param  bool $yes
 	 *
-	 * @return bool
+	 * @return bool|int
 	 */
 	public function enable( $yes = true ) {
 		return update_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, tribe_is_truthy( $yes ) );
@@ -121,7 +121,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @param  bool $yes
 	 *
-	 * @return bool
+	 * @return bool|int
 	 */
 	public function disable( $yes = true ) {
 		return update_post_meta( $this->post_id, self::GLOBAL_STOCK_ENABLED, ! tribe_is_truthy( $yes ) );
@@ -146,7 +146,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @param  int $quantity
 	 *
-	 * @return bool
+	 * @return bool|int
 	 */
 	public function set_stock_level( $quantity ) {
 		$capacity = tribe_tickets_get_capacity( $this->post_id );

@@ -945,7 +945,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		// Fetch the stock if defined, otherwise use Capacity field
-		$data['stock'] = Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] );
+		$data['stock'] = trim( Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] ) );
 
 		// If empty we need to modify to -1
 		if ( '' === $data['stock'] ) {

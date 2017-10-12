@@ -442,9 +442,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Gets the Capacity for the Ticket
 		 *
-		 *	@since  TBD
+		 * @since   TBD
 		 *
-		 * @return  string|int
+		 * @return  int
 		 */
 		public function capacity() {
 			$stock_mode = $this->global_stock_mode();
