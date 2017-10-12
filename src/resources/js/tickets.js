@@ -173,8 +173,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		if ( ! $panel.is( $base_panel ) ) {
 			$( window ).on( 'beforeunload.tribe', beforeUnload );
+			$( document.getElementById( 'publish' ) ).prop( 'disabled', true );
 		} else {
 			$( window ).off( 'beforeunload.tribe' );
+			$( document.getElementById( 'publish' ) ).prop( 'disabled', false );
 		}
 	}
 
