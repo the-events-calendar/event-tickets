@@ -707,3 +707,78 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 		return tribe( 'tickets.data_api' )->ticket_has_meta_fields( $id, $context );
 	}
 }
+
+/**
+ * Returns the capacity for a given Post
+ *
+ * @since  TBD
+ *
+ * @param  int  $post  Post We are trying to fetch capacity
+ *
+ * @return int|null
+ */
+function tribe_tickets_get_capacity( $post ) {
+	// When not dealing with a Instance of Post try to set it up
+	if ( ! $post instanceof WP_Post ) {
+		$post = get_post( $post );
+	}
+
+	// Bail when it's not a post or ID is 0
+	if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
+		return null;
+	}
+
+	$key = tribe( 'tickets.handler' )->key_capacity;
+
+	// Return Null for when we don't have the Capacity Data
+	if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
+		return null;
+	}
+
+	// Fetch the value
+	$value = get_post_meta( $post->ID, $key, true );
+
+	// When dealing with an empty string we assume it's unlimited
+	if ( '' === $value ) {
+		$value = -1;
+	}
+
+	return (int) $value;
+}
+
+/**
+ * Turns a Stock, Remaining or Capacity into a Human Readable Format
+ *
+ * @since  TBD
+ *
+ * @param  string|int $number Which you are tring to convert
+ * @param  string     $mode   Mode this post is on
+ *
+ * @return string
+ */
+function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = false ) {
+	$html = array();
+
+	$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode;
+	if ( $show_parens ) {
+		$html[] = '(';
+	}
+
+	if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
+		$html[] = esc_html( tribe( 'tickets.handler' )->unlimited_term );
+	} else {
+		$html[] = esc_html( $number );
+	}
+
+	if ( $show_parens ) {
+		$html[] = ')';
+	}
+
+	$html = implode( '', $html );
+
+	if ( true === $display ) {
+		echo $html;
+	}
+
+	return $html;
+}

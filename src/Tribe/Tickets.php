@@ -597,10 +597,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 */
 		public function __construct() {
-
-			// Start the singleton with the generic functionality to all providers.
-			Tribe__Tickets__Tickets_Handler::instance();
-
 			// As this is an abstract class, we want to know which child instantiated it
 			$this->class_name = $this->className = get_class( $this );
 
@@ -725,7 +721,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					// Don't add a notice if we didn't get a notice type
 			}
 
-			$ticket_table .= Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+			$ticket_table .= tribe( 'tickets.handler' )->get_ticket_list_markup( $tickets );
 
 			$return['ticket_table'] = $ticket_table;
 
@@ -815,7 +811,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
 
 			$data['ticket_stock'] = $ticket->stock;
-			$data['ticket_capacity'] = $ticket->original_stock();
+			$data['ticket_capacity'] = $ticket->capacity();
 
 			$return = array(
 				'data' => json_encode( $data, JSON_FORCE_OBJECT ),
@@ -982,7 +978,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( $return ) {
 				// Let's create a tickets list markup to return
 				$tickets = $this->get_event_tickets( $post_id );
-				$return  = Tribe__Tickets__Tickets_Handler::instance()->get_ticket_list_markup( $tickets );
+				$return  = tribe( 'tickets.handler' )->get_ticket_list_markup( $tickets );
 
 				$return = $this->notice( esc_html__( 'Your ticket has been deleted.', 'event-tickets' ) ) . $return;
 
@@ -1077,15 +1073,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$return['attendee_fields']   = apply_filters( 'tribe_events_tickets_metabox_edit_attendee', $post_id, $ticket_id );
 
 			$return['stock']             = $ticket->stock;
-			$return['original_stock']    = $ticket->original_stock();
+			$return['capacity']          = $ticket->capacity;
 			$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
 			$return['global_stock_mode'] = $global_stock_mode;
 			$return['show_description']  = $ticket->show_description;
 
 			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-				$global_stock_cap             = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true );
-				$return['global_stock_cap']   = $global_stock_cap;
-				$return['total_global_stock'] = $this->global_stock_level( $return['post_id'] );
+				$return['event_capacity'] = tribe_tickets_get_capacity( $post_id );
 			}
 
 			/**
@@ -1204,7 +1198,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function get_all_event_tickets( $post_id ) {
 			$tickets = array();
-
 			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
@@ -1373,26 +1366,51 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_id  = tribe_get_request_var( 'post_ID' );
 
 			if ( empty( $post_id ) ) {
-				return $this->ajax_error( 'Missing required post ID.' );
+				return $this->ajax_error( __( 'Missing required post ID.', 'event-tickets' ) );
 			}
 
 			if ( empty( $capacity ) ) {
-				return $this->ajax_error( 'Missing required capacity.' );
+				return $this->ajax_error( __( 'Missing required capacity.', 'event-tickets' ) );
 			}
 
 			if ( ! is_numeric( $capacity ) ) {
 				if ( 'unlimited' !== strtolower( trim( $capacity ) ) ) {
-					return $this->ajax_error( 'Bad capacity data.' );
+					return $this->ajax_error( __( 'Bad capacity data.', 'event-tickets' ) );
 				}
 
 				$capacity = -1;
 			}
 
-			// We ensure that GLOBAL_STOCK_ENABLED is set as well since we've removed the checkbox
-			$meta = update_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_ENABLED, 1 );
-			$meta = update_post_meta( $post_id, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, $capacity );
+			$event_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 
-			return $this->ajax_ok( 'Global capacity updated. New level set to ' . $capacity );
+			$event_global_stock->enable();
+			$event_global_stock->set_stock_level( $capacity );
+
+			// Only update the Global Capacity of the Event in here or when the first Global Capacity happens
+			update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, $capacity );
+
+			$tickets = self::get_all_event_tickets( $post_id );
+			foreach ( $tickets as $ticket ) {
+				// When Global Capacity is higher than local ticket one's we bail
+				if ( $capacity >= $ticket->capacity  ) {
+					continue;
+				}
+
+				$mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+				// Skip any more that is not event managed
+				if (
+					Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE !== $mode
+					&& Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE !== $mode
+				) {
+					continue;
+				}
+
+				// Otherwise we update tickets required
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $capacity );
+			}
+
+			return $this->ajax_ok( sprintf( __( 'Global capacity updated. New level set to %n', 'event-tickets' ), $capacity ) );
 		}
 
 		/**
@@ -1713,7 +1731,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			return Tribe__Tickets__Tickets_Handler::instance()->user_can( $generic_cap, $post_id );
+			return tribe( 'tickets.handler' )->user_can( $generic_cap, $post_id );
 		}
 
 		/**

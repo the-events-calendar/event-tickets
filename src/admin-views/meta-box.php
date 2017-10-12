@@ -13,7 +13,7 @@ $post_id = get_the_ID();
 
 $modules = Tribe__Tickets__Tickets::modules();
 
-$attendees_url = Tribe__Tickets__Tickets_Handler::instance()->get_attendee_report_link( get_post( $post_id ) );
+$attendees_url = tribe( 'tickets.handler' )->get_attendee_report_link( get_post( $post_id ) );
 ?>
 
 <div class="tribe-tickets-editor-blocker">

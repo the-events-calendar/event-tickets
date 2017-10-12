@@ -54,6 +54,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $price;
 
 		/**
+		 * Ticket Capacity
+		 *
+		 * @since  TBD
+		 *
+		 * @var    int
+		 */
+		public $capacity;
+
+		/**
 		 * Regular price (if the ticket is not on a special sale this will be identical to
 		 * $price).
 		 *
@@ -380,6 +389,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
+		 * Provides the quantity of original stock of tickets
+		 *
+		 * @deprecated TBD
+		 *
+		 * @return int
+		 */
+		public function original_stock() {
+			return $this->capacity();
+		}
+
+		/**
 		 * Determines if there is any stock for purchasing
 		 *
 		 * @return boolean
@@ -401,18 +421,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function remaining() {
-			// if we aren't tracking stock, then always assume it is in stock
-			if ( ! $this->managing_stock() ) {
-				return false;
+			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+				return -1;
 			}
 
 			// Do the math!
-			$remaining = $this->original_stock() - $this->qty_sold() - $this->qty_pending();
+			$remaining = $this->stock() - $this->qty_sold() - $this->qty_pending();
 
 			// Adjust if using global stock with a sales cap
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
 				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				$remaining = min( $remaining, $this->global_stock_cap() - $global_stock_obj->tickets_sold() );
+				$remaining = min( $remaining, $this->capacity() - $global_stock_obj->tickets_sold() );
 			}
 
 			// Prevents Negative
@@ -420,72 +440,30 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Provides the quantity of original stock of tickets
+		 * Gets the Capacity for the Ticket
 		 *
-		 * @return int
+		 * @since   TBD
+		 *
+		 * @return  int
 		 */
-		public function original_stock() {
-			if ( ! $this->managing_stock() ) {
-				return '';
+		public function capacity() {
+			$stock_mode = $this->global_stock_mode();
+
+			// Unlimited is always unlimited
+			if ( -1 === (int) $this->capacity ) {
+				return (int) $this->capacity;
 			}
 
-			$global_stock_mode = $this->global_stock_mode();
-
-			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode ) {
-				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				return $global_stock_obj->get_stock_level() + $global_stock_obj->tickets_sold();
-			} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-				return $this->global_stock_cap() + $this->qty_sold();
+			// If Capped or we used the local Capacity
+			if (
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode
+				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+				return (int) $this->capacity;
 			}
 
-			$stock = $this->stock();
+			$event_capacity = tribe_tickets_get_capacity( $this->get_event() );
 
-			// if the stock is less than 0, that means we've sold more than what we want in stock. If stock
-			// holds a value greater than 0, then we want the original stock to be greater than the number
-			// sold by the new stock amount. We do that with some simple math to offset the negative stock
-			// with the quantity sold
-			if ( 0 > $stock ) {
-				$stock += $this->qty_sold();
-			}
-
-			return $stock + $this->qty_sold() + $this->qty_pending();
-		}
-
-		/**
-		 * Method to get the total `stock` property of the Object.
-		 *
-		 * Returns the current ticket total capacity: either an integer or a
-		 * string if stock is unlimited.
-		 *
-		 * @return int|string
-		 */
-		public function get_original_stock() {
-			$orginal_stock = $this->original_stock();
-			$global_stock_mode = $this->global_stock_mode();
-
-			if ( empty( $global_stock_mode ) || empty( $orginal_stock ) ) {
-				$orginal_stock = Tribe__Tickets__Tickets_Handler::instance()->unlimited_term;
-			}
-
-			return $orginal_stock;
-		}
-
-		/**
-		 * Method to display the total `stock` property of the Object.
-		 *
-		 * Returns the current ticket total capacity: either an integer or a
-		 * string if stock is unlimited.
-		 *
-		 * @param bool (true) $display whether to echo or return the value
-		 *
-		 * @return string - escaped
-		 */
-		public function display_original_stock( $display = true ) {
-			if ( empty( $display ) ) {
-				return $this->get_original_stock();
-			}
-
-			echo esc_html( $this->get_original_stock() );
+			return (int) $event_capacity;
 		}
 
 		/**

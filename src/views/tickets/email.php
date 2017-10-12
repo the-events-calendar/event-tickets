@@ -237,7 +237,7 @@
 				}
 
 				$event      = get_post( $ticket['event_id'] );
-				$header_id  = Tribe__Tickets__Tickets_Handler::instance()->get_header_image_id( $ticket['event_id'] );
+				$header_id  = tribe( 'tickets.handler' )->get_header_image_id( $ticket['event_id'] );
 				$header_img = false;
 				if ( ! empty( $header_id ) ) {
 					$header_img = wp_get_attachment_image_src( $header_id, 'full' );

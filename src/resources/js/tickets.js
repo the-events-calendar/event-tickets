@@ -7,6 +7,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var $body                            = $( 'html, body' );
 	var $document                        = $( document );
 	var $tribe_tickets                   = $( document.getElementById( 'tribetickets' ) );
+
+	// Bail if we don't have what we need
+	if ( 0 === $tribe_tickets.length ) {
+		return;
+	}
+
 	var $tickets_container               = $( document.getElementById( 'event_tickets' ) );
 	var $post_id                         = $( document.getElementById( 'post_ID' ) );
 
@@ -31,8 +37,24 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	// misc ticket elements
 	var $ticket_image_preview            = $( document.getElementById( 'tribe_ticket_header_preview' ) );
 	var $ticket_show_description         = $( document.getElementById( 'tribe_tickets_show_description' ) );
-	var date_format                      = 'YYYY-MM-DD';
-	var time_format                      = 'HH:mmA';
+
+	// Datepicker and Timepicker variables
+	var datepickerFormats = [
+		'yy-mm-dd',
+		'm/d/yy',
+		'mm/dd/yy',
+		'd/m/yy',
+		'dd/mm/yy',
+		'm-d-yy',
+		'mm-dd-yy',
+		'd-m-yy',
+		'dd-mm-yy',
+		'yy.mm.dd',
+		'mm.dd.yy',
+		'dd.mm.yy'
+	];
+	var dateFormat = datepickerFormats[0];
+	var time_format = 'HH:mmA';
 
 	function format_date( date ) {
 		if ( 'undefined' === typeof date ) {
@@ -41,12 +63,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		// tribe_datepicker uses 'YY' for full year, moment uses 'YYYY'
-		date_format = ( 'undefined' !== typeof tribe_dynamic_help_text.datepicker_format ) ? tribe_datepicker_opts.dateFormat.toUpperCase().replace( 'YY', 'YYYY' ) : 'YYYY-MM-DD';
-
 		// This is a bit sketchy,
 		// moment.js is deprecating use of strings in any format other than ISO (YYYY-MM-DD).
 		// But they allow you to use js Date() to do the parsing for you.
-		return moment( new Date( date ) ).format( date_format );
+		return moment( new Date( date ) ).format( dateFormat.toUpperCase().replace( 'YY', 'YYYY' ) );
 	}
 
 	function format_time( date ) {
@@ -374,7 +394,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
 			$ticket_start_date.datepicker( 'option', 'maxDate', null )
-			$ticket_start_date.val( $.datepicker.formatDate( date_format, new Date() ) )
+			$ticket_start_date.val( $.datepicker.formatDate( dateFormat, new Date() ) )
 			$ticket_start_date.trigger( 'change' );
 
 			var startDateTime = new Intl.DateTimeFormat( 'en-US', { hour: 'numeric', minute: 'numeric' } ).format( new Date() );
@@ -538,36 +558,16 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	/* Change global stock type if we've put a value in global_stock_cap */
-	$document.on( 'blur', '[name="global_stock_cap"]', function( e ) {
+	$document.on( 'change', '.tribe-ticket-field-stock-cap', function( e ) {
 		var $this = $( this );
-		var $global_field = $this.closest( 'fieldset' ).find( '[name="ticket_global_stock"]' );
-		var global_field_val = 'global';
+		var $globalField = $this.parents( '.input_block' ).eq( 0 ).find( '.tribe-ticket-field-mode' );
 
-		if ( 0 < $this.val() ) {
-			global_field_val = 'capped';
+		// Bail if we have any value on Stock Cap
+		if ( ! $this.val() ) {
+			return;
 		}
 
-		$global_field.val( global_field_val );
-	} );
-
-	/* Change stock cap value if we change the value in ticket_global_stock */
-	$document.on( 'blur', '[name="ticket_global_stock"][value="own"]', function( e ) {
-		var $this= $( this );
-
-		var $stock_field = $this.closest( '.input_block' ).find( '[name="ticket_stock"]' );
-
-		if ( undefined === $stock_field.val() || '' === $stock_field.val() || 0 < $stock_field.val() ) {
-			$stock_field.val( '0' );
-		}
-	} );
-
-	/* Change stock cap value if we forget to set a value */
-	$document.on( 'blur', '.global_capacity-wrapper input[name="ticket_stock"]', function( e ) {
-		var $this= $( this );
-
-		if ( undefined === $this.val() || '' === $this.val() || 0 > $this.val() ) {
-			$this.val( '0' );
-		}
+		$globalField.val( 'capped' );
 	} );
 
 	/* "Save Ticket" button action */
@@ -683,18 +683,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					switch ( response.data.global_stock_mode ) {
 						case 'global':
 							$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'global' );
-							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
-							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
+							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.event_capacity ).prop( 'disabled', true );
+							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.capacity );
 							$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
 
 							break;
 						case 'capped':
 							$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'capped' );
-							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.total_global_stock ).prop( 'disabled', true);
-							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.total_global_stock);
+							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.event_capacity ).prop( 'disabled', true );
+							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.capacity );
 
-							if ( undefined !== response.data.global_stock_cap && $.isNumeric( response.data.global_stock_cap ) && 0 < response.data.global_stock_cap ) {
-								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.global_stock_cap );
+							if ( undefined !== response.data.capacity && $.isNumeric( response.data.capacity ) && 0 < response.data.capacity ) {
+								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.capacity );
 							} else {
 								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( 0 );
 							}
@@ -702,7 +702,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							break;
 						case 'own':
 							$( document.getElementById( provider_class + '_own' ) ).prop( 'checked', true );
-							$( document.getElementById( provider_class + '_capacity' ) ).val( response.data.stock );
+							$( document.getElementById( provider_class + '_capacity' ) ).val( response.data.capacity );
 							break;
 						default:
 							// Just in case
@@ -851,12 +851,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			// re-trigger all dependencies
 			$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
-			if ( response.data.total_global_stock ) {
-				$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop( 'disabled', true);
+			if ( response.data.event_capacity ) {
+				$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop( 'disabled', true );
 			}
 
 			show_panel( e, $edit_panel );
 		} );
+	} );
+
+	/* Handle editing global capacity from the settings panel */
+	$document.on( 'click', '#global_capacity_edit_button', function( e ) {
+		e.preventDefault();
+		$( document.getElementById( 'settings_global_capacity_edit' ) ).prop( 'disabled', false ).focus();
 	} );
 
 	$document.on( 'keyup', '#ticket_price', function ( e ) {
@@ -876,12 +882,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	$document.on( 'click', '#tribe_ticket_header_image, #tribe_ticket_header_preview', function( e ) {
 		e.preventDefault();
 		ticketHeaderImage.uploader( '', '' );
-	} );
-
-	/* Handle editing global capacity from the settings panel */
-	$document.on( 'click', '#global_capacity_edit_button', function( e ) {
-		e.preventDefault();
-		$( document.getElementById( 'settings_global_capacity_edit' ) ).prop( 'disabled', false ).focus();
 	} );
 
 	/* Handle saving changes to capacity from Settings form */
@@ -938,7 +938,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		// may as well set this here just in case
-		$( '[name="global_stock_cap"]' ).attr( 'placeholder', cap_val );
+		$( '[name="tribe-tickets[capacity]"]' ).attr( 'placeholder', cap_val );
 
 		// change the global variable for checks later
 		global_capacity_setting_changed = true;
@@ -958,9 +958,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		if ( $event_pickers.length ) {
 			startofweek = $event_pickers.data( 'startofweek' );
 		}
+		if ( 'undefined' !== typeof tribe_dynamic_help_text ) {
+			var indexDatepickerFormat =  $.isNumeric( tribe_dynamic_help_text.datepicker_format_index ) ? tribe_dynamic_help_text.datepicker_format_index : 0;
+			dateFormat = datepickerFormats[ indexDatepickerFormat ];
+		}
 
 		var datepickerOpts = {
-			dateFormat     : date_format,
+			dateFormat     : dateFormat,
 			showAnim       : 'fadeIn',
 			changeMonth    : true,
 			changeYear     : true,
@@ -980,10 +984,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		};
 
 		$.extend( datepickerOpts, tribe_l10n_datatables.datepicker );
-
-		// Use TEC format if set
-		date_format = ( undefined !== tribe_dynamic_help_text.datepicker_format ) ? tribe_dynamic_help_text.datepicker_format : 'YYYY-MM-DD';
-		datepickerOpts.dateFormat = date_format;
 
 		var $timepickers = $tribe_tickets.find( '.tribe-timepicker:not(.ui-timepicker-input)' );
 		tribe_timepickers.setup_timepickers( $timepickers );

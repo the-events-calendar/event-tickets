@@ -168,6 +168,9 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
+		// Intialize the Service Provider for Tickets
+		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
+
 		$this->hooks();
 
 		$this->register_active_plugin();
@@ -327,7 +330,7 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_featured_content' ) );
 		add_action( 'tribe_help_pre_get_sections', array( $this, 'add_help_section_extra_content' ) );
 		add_filter( 'tribe_support_registered_template_systems', array( $this, 'add_template_updates_check' ) );
-		add_action( 'plugins_loaded', array( 'Tribe__Support', 'getInstance' ) );
+		add_action( 'tribe_tickets_plugin_loaded', array( 'Tribe__Support', 'getInstance' ) );
 
 		// Setup Front End Display
 		add_action( 'tribe_events_inside_cost', 'tribe_tickets_buy_button', 10, 0 );
@@ -360,32 +363,6 @@ class Tribe__Tickets__Main {
 			add_filter( 'tribe_events_import_rsvp_importer', array( 'Tribe__Tickets__CSV_Importer__RSVP_Importer', 'instance' ), 10, 2 );
 			add_filter( 'tribe_event_import_rsvp_column_names', array( Tribe__Tickets__CSV_Importer__Column_Names::instance(), 'filter_rsvp_column_names' ) );
 		}
-
-		// Register singletons we might need
-		tribe_singleton( 'tickets.handler', 'Tribe__Tickets__Tickets_Handler' );
-
-		// Caching
-		tribe_singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', array( 'hook' ) );
-		tribe_singleton( 'tickets.cache', tribe( 'tickets.cache-central' )->get_cache() );
-
-		// Query Vars
-		tribe_singleton( 'tickets.query', 'Tribe__Tickets__Query', array( 'hook' ) );
-		tribe( 'tickets.query' );
-
-		// Tribe Data API Init
-		tribe_singleton( 'tickets.data_api', 'Tribe__Tickets__Data_API' );
-
-		// View links, columns and screen options
-		if ( is_admin() ) {
-			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
-			tribe_singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
-			tribe_singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
-			tribe( 'tickets.admin.views' );
-			tribe( 'tickets.admin.columns' );
-			tribe( 'tickets.admin.screen-options' );
-		}
-
-		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
 	}
 
 	/**
@@ -745,17 +722,5 @@ class Tribe__Tickets__Main {
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
 		<?php
-	}
-
-
-	/**
-	 * Instantiates all classes that should be built at `plugins_loaded` time.
-	 *
-	 * Classes are bound using the `tribe_singleton` function before and then
-	 * built calling the `tribe` function.
-	 * @since TBD
-	 */
-	public function on_plugins_loaded() {
-		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 	}
 }
