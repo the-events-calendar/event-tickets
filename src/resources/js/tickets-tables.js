@@ -33,14 +33,13 @@
 			handle: '.tribe-handle',
 			helper: fixHelper,
 			update: function( event, ui ) {
-				var data = $( this ).sortable( 'toArray', { key: 'order[]', attribute: 'data-ticket-order-id' } );
+				var $tbody = $( this );
+				var $items = $tbody.children( 'tr' );
 
-				// Strip the text .sortable() requires - to reduce thrash later
-				for ( i = 0, len = data.length; i < data.length; i++ ) {
-					data[ i ] = data[ i ].replace( 'order_', '' );
-				}
-
-				document.getElementById( 'tribe_tickets_order' ).value = data;
+				$items.each( function( k, item ) {
+					var $item = $( item );
+					$item.find( '.tribe-ticket-field-order' ).val( k );
+				} );
 			}
 		} );
 		$element.disableSelection();
