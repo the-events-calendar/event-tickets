@@ -65,7 +65,7 @@ class Tribe__Tickets__Assets {
 		tribe_assets(
 			Tribe__Tickets__Main::instance(),
 			array(
-				array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style' ) ),
+				array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style', 'tribe-jquery-timepicker-css' ) ),
 				array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css', 'common' ) ),
 				array( 'event-tickets-admin-tables-css', 'tickets-tables.css', array( 'event-tickets-admin-css' ) ),
 				array( 'event-tickets-admin-tables-js', 'tickets-tables.js', array( 'underscore' ) ),
