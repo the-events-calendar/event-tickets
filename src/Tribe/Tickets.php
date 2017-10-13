@@ -686,7 +686,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_id = $_POST['post_ID'];
 
 			// Saves the new order
-			tribe( 'tickets.handler' )->save_order( $post_id );
+			tribe( 'tickets.handler' )->save_order( $post_id, Tribe__Utils__Array::get( $_POST, array( 'tribe-tickets' ), null ) );
 
 			// Let's create tickets list markup to return
 			$tickets = $this->get_event_tickets( $post_id );
