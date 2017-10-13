@@ -15,7 +15,6 @@
 		<div class="ticket_form_right">
 			<input
 				autocomplete="off"
-				tabindex="<?php tribe_events_tab_index(); ?>"
 				type="text"
 				class="tribe-datepicker tribe-field-start_date ticket_field"
 				name="ticket_start_date"
@@ -30,7 +29,6 @@
 			<span class="datetime_seperator"> <?php esc_html_e( 'at', 'event-tickets' ); ?> </span>
 			<input
 				autocomplete="off"
-				tabindex="<?php tribe_events_tab_index(); ?>"
 				type="text"
 				class="tribe-timepicker tribe-field-start_time ticket_field"
 				name="ticket_start_time"
