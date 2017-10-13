@@ -451,6 +451,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 				// Handle custom columns that might have names containing HTML tags
 				$row[ $column_id ] = wp_strip_all_tags( $row[ $column_id ] );
+				// Remove line breaks (e.g. from multi-line text field) for valid CSV format. Double quotes necessary here.
+				$row[ $column_id ] = str_replace( array( "\r", "\n" ), ' ', $row[ $column_id ] );
 			}
 
 			$rows[] = array_values( $row );
@@ -472,7 +474,13 @@ class Tribe__Tickets__Tickets_Handler {
 			return;
 		}
 
-		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->generate_filtered_attendees_list( $_GET['event_id'] ) );;
+		/**
+		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
+		 *
+		 * @param array $items The array of attendees that will be exported in this CSV file.
+		 * @param int $event_id The ID of the event these attendees are associated with.
+		 */
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->generate_filtered_attendees_list( $_GET['event_id'] ), $_GET['event_id'] );
 		$event = get_post( $_GET['event_id'] );
 
 		if ( ! empty( $items ) ) {
