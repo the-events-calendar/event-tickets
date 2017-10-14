@@ -5,9 +5,25 @@
 	<h4 class="accordion-label screen_reader_text"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 	<div class="input_block">
 		<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
-		<textarea rows="5" cols="40" name="ticket_description" class="ticket_field ticket_form_right" id="ticket_description"></textarea>
+		<textarea
+			rows="5"
+			cols="40"
+			name="ticket_description"
+			class="ticket_field ticket_form_right"
+			id="ticket_description"
+		></textarea>
 		<div class="input_block">
-			<label class="tribe_soft_note"><input type="checkbox" id="tribe_tickets_show_description" name="ticket_show_description" value="1" class="ticket_field ticket_form_left" checked> <?php esc_html_e( 'Show description on front end and emailed tickets.', 'event-tickets' ); ?></label>
+			<label class="tribe_soft_note">
+				<input
+					type="checkbox"
+					id="tribe_tickets_show_description"
+					name="ticket_show_description"
+					value="1"
+					class="ticket_field ticket_form_left"
+					checked
+				>
+				<?php esc_html_e( 'Show description on front end and emailed tickets.', 'event-tickets' ); ?>
+			</label>
 		</div>
 	</div>
 	<div class="input_block">
