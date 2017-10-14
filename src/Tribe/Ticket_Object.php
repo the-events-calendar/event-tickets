@@ -509,6 +509,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$this->global_stock_mode = $mode;
 			}
 
+			if ( empty( $this->global_stock_mode ) ) {
+				$this->global_stock_mode = get_post_meta( $this->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+			}
+
 			return $this->global_stock_mode;
 		}
 

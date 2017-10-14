@@ -246,6 +246,14 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		foreach ( $tickets as $ticket ) {
+			// Skip shared cap Tickets as it's added when we fetch the total
+			if (
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode()
+				|| Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode()
+			) {
+				continue;
+			}
+
 			$capacity = $ticket->capacity();
 
 			if ( -1 === $capacity ) {
