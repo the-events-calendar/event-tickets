@@ -379,7 +379,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		foreach ( $tickets as $ticket ) {
 			$stock_mode = $ticket->global_stock_mode();
-			if ( empty( $stock_mode ) || Tribe__Tickets__Global_Stock::OWN_STOCK_MODE == $stock_mode ) {
+			if ( empty( $stock_mode ) || Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
 				continue;
 			}
 

@@ -193,22 +193,22 @@ class Tribe__Tickets__Global_Stock {
 	 * Returns a count of the number of global ticket sales for this event.
 	 *
 	 * @since  4.1
+	 * @since  TBD  Introduced $pending Param
+	 *
+	 * @param  bool  $pending  Includes Pending Tickets on the Sales total
 	 *
 	 * @return int
 	 */
-	public function tickets_sold() {
+	public function tickets_sold( $pending = false ) {
 		$sales = 0;
-		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $this->post_id );
+		$tickets = tribe( 'tickets.handler' )->get_event_shared_tickets( $this->post_id );
 
 		foreach ( $tickets as $ticket ) {
-			/**
-			 * @var Tribe__Tickets__Ticket_Object $ticket
-			 */
-			switch ( $ticket->global_stock_mode() ) {
-				case self::CAPPED_STOCK_MODE:
-				case self::GLOBAL_STOCK_MODE:
-					$sales += (int) $ticket->qty_sold();
-				break;
+			$sales += (int) $ticket->qty_sold();
+
+			// Allow for fetching the pending with the Sold ones
+			if ( true === (bool) $pending ) {
+				$sales += (int) $ticket->qty_pending();
 			}
 		}
 

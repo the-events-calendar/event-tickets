@@ -427,12 +427,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			// Do the math!
-			$remaining = $this->stock() - $this->qty_sold() - $this->qty_pending();
+			$remaining = $this->capacity() - $this->qty_sold() - $this->qty_pending();
 
 			// Adjust if using global stock with a sales cap
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
-				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				$remaining = min( $remaining, $this->capacity() - $global_stock_obj->tickets_sold() );
+				$event_capacity = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
+				$remaining = min( $remaining, $this->capacity() - $event_capacity->tickets_sold( true ) );
 			}
 
 			// Prevents Negative
