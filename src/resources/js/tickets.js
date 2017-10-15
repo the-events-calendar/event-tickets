@@ -34,7 +34,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var startofweek                      = 0;
 	// misc ticket elements
 	var $ticket_image_preview            = $( document.getElementById( 'tribe_ticket_header_preview' ) );
-	var $ticket_show_description         = $( document.getElementById( 'tribe_tickets_show_description' ) );
 
 	// Datepicker and Timepicker variables
 	var datepickerFormats = [
@@ -518,7 +517,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
-		$ticket_show_description.prop( 'checked', true );
+		$( document.getElementById( 'tribe_tickets_show_description' ) ).prop( 'checked', true );
 
 		// Hide the sale price field - it doesn't apply for new tickets
 		$( document.getElementById( 'ticket_sale_price' ) ).closest( '.input_block' ).hide();
@@ -571,7 +570,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	} );
 
 	/* Change global stock type if we've put a value in global_stock_cap */
-	$document.on( 'change', '.tribe-ticket-field-stock-cap', function( e ) {
+	$document.on( 'change', '.tribe-ticket-field-capacity', function( e ) {
 		var $this = $( this );
 		var $globalField = $this.parents( '.input_block' ).eq( 0 ).find( '.tribe-ticket-field-mode' );
 
@@ -735,10 +734,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( 'ticket_description' ) ).val( response.data.description );
 
 				// Compare against 0 for backwards compatibility.
-				if ( 0 === parseInt( response.data.show_description ) ) {
-					$ticket_show_description.prop( 'checked', true );
+				if ( response.data.show_description || 1 === parseInt( response.data.show_description, 10 ) ) {
+					$( document.getElementById( 'tribe_tickets_show_description' ) ).prop( 'checked', true );
 				} else {
-					$ticket_show_description.removeAttr( 'checked' );
+					$( document.getElementById( 'tribe_tickets_show_description' ) ).removeAttr( 'checked' );
 				}
 
 				// handle all the date stuff
@@ -867,7 +866,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			if ( response.data.event_capacity ) {
 				$( document.getElementById( response.data.provider_class + '_global_capacity' ) ).prop( 'disabled', true );
-
 			}
 
 			show_panel( e, $edit_panel );
