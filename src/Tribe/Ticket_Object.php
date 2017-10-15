@@ -462,6 +462,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function available() {
+			// If we dont have the probivider or the method we fetch from inventory
+			if ( is_null( $this->provider ) || ! method_exists( $this->provider, 'get_attendees_by_id' ) ) {
+				return $this->inventory();
+			}
+
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
