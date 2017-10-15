@@ -99,7 +99,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		foreach ( $main->post_types() as $post_type ) {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
-			add_action( 'save_post_' . $post_type, array( $this, 'save_tickets_order' ) );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_order' ) );
 		}
 
 		add_action( 'admin_menu', array( $this, 'attendees_page_register' ) );
@@ -956,6 +956,13 @@ class Tribe__Tickets__Tickets_Handler {
 		<tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
 			<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
 				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
+				<input
+					type="hidden"
+					class="tribe-ticket-field-order"
+					name="tribe-tickets[<?php echo esc_attr( $ticket->ID ); ?>][order]"
+					value="<?php echo esc_attr( $ticket->menu_order ); ?>"
+					<?php echo 'Tribe__Tickets__RSVP' === $ticket->provider_class ? 'disabled' : ''; ?>
+				>
 				<?php echo esc_html( $ticket->name ); ?>
 			</td>
 
@@ -1096,61 +1103,50 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id
+	 * @param int $post
 	 *
 	 */
-	public function save_tickets_order( $post_id ) {
+	public function save_order( $post, $tickets = null ) {
 		// We're calling this during post save, so the save nonce has already been checked.
 
 		// don't do anything on autosave, auto-draft, or massupdates
-		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
-			return;
+		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
+			return false;
 		}
 
-		// If our data is missing or we're already in the middle of saving, bail
-		if (
-			empty( $_POST[ 'tribe_tickets_order' ] )
-			|| ! (
-				isset( $_POST[ 'tribe-tickets-post-settings' ] )
-				&& wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' )
-			)
-		) {
-			return;
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post_id );
 		}
 
-		$ticket_order = $_POST['tribe_tickets_order'];
+		// Bail on Invalid post
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
 
-		update_post_meta(
-			$post_id,
-			$this->tickets_order_field,
-			$ticket_order
-		);
+		// If we didn't get any Ticket data we fetch from the $_POST
+		if ( is_null( $tickets ) ) {
+			$tickets = Tribe__Utils__Array::get( $_POST, array( 'tribe-tickets' ), null );
+		}
 
-		$ticket_order = explode( ',', $ticket_order );
-		$ticket_order = array_flip( $ticket_order );
+		if ( empty( $tickets ) ) {
+			return false;
+		}
 
-		foreach ( $ticket_order as $id => $order ) {
-			wp_update_post( array(
+		foreach ( $tickets as $id => $ticket ) {
+			if ( ! isset( $ticket['order'] ) ) {
+				continue;
+			}
+
+			$args = array(
 				'ID'         => absint( $id ),
-				'menu_order' => absint( $order ),
-			) );
+				'menu_order' => (int) $ticket['order'],
+			);
+
+			$updated[] = wp_update_post( $args );
 		}
 
-		return;
-	}
-
-	/**
-	 * Adds the hidden input to store the drag-n-drop ticket order
-	 *
-	 * @since TBD
-	 *
-	 * @param int $post_id
-	 */
-	public function tickets_order_input( $post_id ) {
-		$tickets_order = get_post_meta( $post_id, $this->tickets_order_field, true );
-		?>
-		<input type="hidden" name="tribe_tickets_order" id="tribe_tickets_order" value="<?php echo esc_html( $tickets_order ); ?>">
-		<?php
+		// Verify if any failed
+		return ! in_array( 0, $updated );
 	}
 
 	protected function sort_by_menu_order( $a, $b ) {

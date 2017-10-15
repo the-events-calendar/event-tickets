@@ -202,12 +202,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// make sure we have this for later (default to true)
 		swap = 'undefined' === typeof swap;
 
+		var $orders = $base_panel.find( '.tribe-ticket-field-order' );
 		var params = {
-			action       : 'tribe-ticket-refresh-panels',
-			notice       : notice,
-			post_ID      : $post_id.val(),
-			ticket_order : $( document.getElementById( 'tribe_tickets_order' ) ).val(),
-			nonce        : TribeTickets.add_ticket_nonce
+			action  : 'tribe-ticket-refresh-panels',
+			notice  : notice,
+			post_ID : $post_id.val(),
+			data    : $orders.serialize(),
+			nonce   : TribeTickets.add_ticket_nonce
 		};
 
 		if ( 'settings-cancel' === notice ) {
@@ -594,12 +595,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		$tribe_tickets.trigger( 'save-ticket.tribe', e );
-
+		var $orders = $base_panel.find( '.tribe-ticket-field-order' );
 		var params = {
-			action  : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
-			formdata: $form.find( '.ticket_field' ).serialize(),
-			post_ID : $post_id.val(),
-			nonce   : TribeTickets.add_ticket_nonce
+			action    : 'tribe-ticket-add-' + $( 'input[name=ticket_provider]:checked' ).val(),
+			formdata  : $form.find( '.ticket_field' ).serialize(),
+			post_ID   : $post_id.val(),
+			nonce     : TribeTickets.add_ticket_nonce,
+			menu_order: $orders.length
 		};
 
 		$.post(
