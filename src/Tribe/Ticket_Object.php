@@ -416,11 +416,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Provides the quantity of remaining tickets
+		 * Provides the Inventory of the Ticket which should match the Commerce Stock
+		 *
+		 * @since  TBD
 		 *
 		 * @return int
 		 */
-		public function remaining() {
+		public function inventory() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
@@ -434,6 +436,42 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$event_capacity = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
 				$remaining = min( $remaining, $this->capacity() - $event_capacity->tickets_sold( true ) );
 			}
+
+			// Prevents Negative
+			return max( $remaining, 0 );
+		}
+
+		/**
+		 * Provides the quantity of remaining tickets
+		 *
+		 * @deprecated   TBD  We are now using inventory as the new Remaining
+		 *
+		 * @return int
+		 */
+		public function remaining() {
+			return $this->inventory();
+		}
+
+		/**
+		 * Provides the quantity of Avaiable tickets based on the Attendees number
+		 *
+		 * @todo   Create a way to get the Available for an Event (currenty impossible)
+		 *
+		 * @since  TBD
+		 *
+		 * @return int
+		 */
+		public function available() {
+			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+				return -1;
+			}
+
+			// Fetch the Attendees
+			$attendees = $this->provider->get_attendees_by_id( $this->ID );
+
+			// Do the math!
+			$available = $this->capacity() - count( $attendees );
 
 			// Prevents Negative
 			return max( $remaining, 0 );

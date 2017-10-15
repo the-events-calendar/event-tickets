@@ -939,6 +939,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$provider      = $ticket->provider_class;
 		$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
 		$remaining     = $ticket->remaining();
+		$available     = $ticket->available();
 		$total         = $remaining + $ticket->qty_sold() + $ticket->qty_pending();
 		$capacity      = $ticket->capacity();
 		$needs_warning = false;
