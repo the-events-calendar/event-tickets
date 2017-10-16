@@ -34,7 +34,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
 		$this->container->singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
 
-		$this->hook();
+		$this->load();
 	}
 
 	/**
@@ -44,12 +44,9 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * @since TBD
 	 */
-	protected function hook() {
+	protected function load() {
 		tribe( 'tickets.query' );
 		tribe( 'tickets.handler' );
-
-		tribe( 'tickets.assets' )->enqueue_scripts();
-		tribe( 'tickets.assets' )->admin_enqueue_scripts();
 
 		if ( is_admin() ) {
 			tribe( 'tickets.admin.views' );
