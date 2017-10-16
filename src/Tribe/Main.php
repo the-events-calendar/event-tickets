@@ -396,9 +396,11 @@ class Tribe__Tickets__Main {
 			tribe_singleton( 'tickets.admin.views', 'Tribe__Tickets__Admin__Views', array( 'hook' ) );
 			tribe_singleton( 'tickets.admin.columns', 'Tribe__Tickets__Admin__Columns', array( 'hook' ) );
 			tribe_singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
+			tribe_singleton( 'tickets.commerce.orders-tabbed-view', 'Tribe__Tickets__Commerce__Orders_Tabbed_View', array( 'hook' ) );
 			tribe( 'tickets.admin.views' );
 			tribe( 'tickets.admin.columns' );
 			tribe( 'tickets.admin.screen-options' );
+			tribe( 'tickets.commerce.orders-tabbed-view' );
 		}
 	}
 
