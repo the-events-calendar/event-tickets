@@ -503,7 +503,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $src_event_id ) as $issued_ticket ) {
 			if ( in_array( absint( $issued_ticket['attendee_id'] ), $ticket_ids ) ) {
 				$ticket_objects[] = $issued_ticket;
-				$providers[ $issued_ticket['provider'] ] = true;
+				$providers[ $issued_ticket['provider'] ] = call_user_func( array( $issued_ticket['provider'], 'get_instance' ) );
 			}
 		}
 
@@ -610,8 +610,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		}
 
 		// Clear attendee cache now that the attendees have moved.
-		$provider_class->clear_attendees_cache( $src_event_id );
-		$provider_class->clear_attendees_cache( $tgt_event_id );
+		foreach ( $providers as $provider ) {
+			$provider->clear_attendees_cache( $src_event_id );
+			$provider->clear_attendees_cache( $tgt_event_id );
+		}
 
 		/**
 		 * Fires when all of the specified ticket IDs have been moved
