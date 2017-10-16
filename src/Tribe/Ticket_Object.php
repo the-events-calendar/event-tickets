@@ -479,7 +479,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$available = $this->capacity() - count( $attendees );
 
 			// Prevents Negative
-			return max( $remaining, 0 );
+			return max( $available, 0 );
 		}
 
 		/**
