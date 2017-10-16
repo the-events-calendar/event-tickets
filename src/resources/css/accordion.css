@@ -13,9 +13,10 @@
 .accordion-header {
 	background: none;
 	border: 0;
+    color: inherit;
 	cursor: pointer;
 	font-size: 12px;
-	font-weight: 500;
+	font-weight: bold;
 	padding: 10px 20px;
 	box-sizing: border-box;
 	position: relative;
@@ -61,6 +62,10 @@
 
 .accordion-header:focus {
 	outline: 1px solid #5b9dd9;
+}
+
+.accordion-header:hover {
+	background: none;
 }
 
 .tribe-tickets-editor-history::after {

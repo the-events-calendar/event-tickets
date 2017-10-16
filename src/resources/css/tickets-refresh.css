@@ -51,6 +51,24 @@
 	position: relative;
 }
 
+#event_tickets fieldset {
+	border: 0;
+	padding: 0;
+	margin: 0;
+}
+
+#event_tickets .ticket_form_left {
+	font-weight: bold;
+}
+
+#event_tickets label {
+	font-weight: normal;
+}
+
+#event_tickets input[type="text"].ticket_form_right, #event_tickets input[type="email"].ticket_form_right, #event_tickets input[type="url"].ticket_form_right, #event_tickets input[type="password"].ticket_form_right, #event_tickets input[type="search"].ticket_form_right, #event_tickets input[type="number"].ticket_form_right, #event_tickets input[type="tel"].ticket_form_right, #event_tickets input[type="range"].ticket_form_right, #event_tickets input[type="date"].ticket_form_right, #event_tickets input[type="month"].ticket_form_right, #event_tickets input[type="week"].ticket_form_right, #event_tickets input[type="time"].ticket_form_right, #event_tickets input[type="datetime"].ticket_form_right, #event_tickets input[type="datetime-local"].ticket_form_right, #event_tickets input[type="color"].ticket_form_right, #event_tickets textarea.ticket_form_right, #event_tickets label.ticket_form_right {
+	display: block;
+}
+
 /* Panels */
 
 .ticket_panel {
@@ -239,6 +257,7 @@
 }
 
 .input_block .ticket_form_left {
+	display: block;
 	box-sizing: border-box;
 	float: left;
 	margin: 0;

@@ -72,6 +72,42 @@
 
 #event_tickets {
 	position: relative;
+
+	fieldset {
+		border: 0;
+		padding: 0;
+		margin: 0;
+	}
+
+	.ticket_form_left {
+		font-weight: bold;
+	}
+
+	label {
+		font-weight: normal;
+	}
+
+	input[type="text"],
+	input[type="email"],
+	input[type="url"],
+	input[type="password"],
+	input[type="search"],
+	input[type="number"],
+	input[type="tel"],
+	input[type="range"],
+	input[type="date"],
+	input[type="month"],
+	input[type="week"],
+	input[type="time"],
+	input[type="datetime"],
+	input[type="datetime-local"],
+	input[type="color"],
+	textarea,
+	label {
+		&.ticket_form_right {
+			display: block;
+		}
+	}
 }
 
 /* Panels */
@@ -269,6 +305,7 @@
 	position: relative;
 
 	.ticket_form_left {
+		display: block;
 		box-sizing: border-box;
 		float: left;
 		margin: 0;
