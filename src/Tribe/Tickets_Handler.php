@@ -229,8 +229,13 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int|null
 	 */
 	public function get_total_event_capacity( $post = null ) {
-		$post_id = Tribe__Main::post_id_helper( $post );
-		$total   = tribe_tickets_get_capacity( $post_id );
+		$post_id            = Tribe__Main::post_id_helper( $post );
+		$has_shared_tickets = 0 !== count( $this->get_event_shared_tickets( $post_id ) );
+		$total              = 0;
+
+		if ( $has_shared_tickets ) {
+			$total = tribe_tickets_get_capacity( $post_id );
+		}
 
 		// short circuit unlimited stock
 		if ( -1 === $total ) {
