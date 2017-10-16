@@ -166,6 +166,37 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			return false;
 		}
 
+		$src_event_cap = new Tribe__Tickets__Global_Stock( $src_post_id );
+		$tgt_event_cap = new Tribe__Tickets__Global_Stock( $destination_post_id );
+
+		$src_mode = get_post_meta( $ticket_type_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+		// When the Mode is not `own` we have to check and modify some stuff
+		if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $src_mode ) {
+			// If we have Source cap and not on Target, we set it up
+			if ( ! $tgt_event_cap->is_enabled() ) {
+				$src_event_capacity = tribe_tickets_get_capacity( $src_post_id );
+
+				// Activate Shared Capacity on the Ticket
+				$tgt_event_cap->enable();
+
+				// Setup the Stock level to match Source capacity
+				$tgt_event_cap->set_stock_level( $src_event_capacity );
+
+				// Update the Target event with the Capacity from the Source
+				update_post_meta( $destination_post_id, tribe( 'tickets.handler' )->key_capacity, $src_event_capacity );
+			} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode ) {
+				// Check if we have capped to avoid ticket cap over event cap
+				$src_ticket_capacity = tribe_tickets_get_capacity( $ticket_type_id );
+				$tgt_event_capacity = tribe_tickets_get_capacity( $destination_post_id );
+
+				// Don't allow ticket capacity to be bigger than Target Event Cap
+				if ( $src_ticket_capacity > $tgt_event_capacity ) {
+					update_post_meta( $ticket_type_id, tribe( 'tickets.handler' )->key_capacity, $tgt_event_capacity );
+				}
+			}
+		}
+
 		$provider->clear_attendees_cache( $src_post_id );
 		$provider->clear_attendees_cache( $destination_post_id );
 
