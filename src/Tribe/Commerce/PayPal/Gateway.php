@@ -123,7 +123,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			$args['quantity']    = $quantity;
 			$args['amount']      = $ticket->price;
 			$args['item_number'] = "{$post->ID}:{$ticket->ID}";
-			$args['item_name']   = urlencode( $this->get_product_name( $ticket, $post ) );
+			$args['item_name']   = urlencode( wp_kses_decode_entities( $this->get_product_name( $ticket, $post ) ) );
 
 			// we can only submit one product at a time. Bail if we get to here because we have a product
 			// with a requested quantity
