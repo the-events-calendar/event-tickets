@@ -185,7 +185,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 				// Update the Target event with the Capacity from the Source
 				update_post_meta( $destination_post_id, tribe( 'tickets.handler' )->key_capacity, $src_event_capacity );
-			} else if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode ) {
+			} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode ) {
 				// Check if we have capped to avoid ticket cap over event cap
 				$src_ticket_capacity = tribe_tickets_get_capacity( $ticket_type_id );
 				$tgt_event_capacity = tribe_tickets_get_capacity( $destination_post_id );
