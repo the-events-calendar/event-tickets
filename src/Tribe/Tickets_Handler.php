@@ -1115,7 +1115,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( ! $post instanceof WP_Post ) {
-			$post = get_post( $post_id );
+			$post = get_post( $post );
 		}
 
 		// Bail on Invalid post
