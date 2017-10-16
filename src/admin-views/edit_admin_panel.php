@@ -77,7 +77,7 @@ $start_date_errors = array(
 						size='25'
 						value=''
 						data-validation-is-required
-						data-validation-error="<?php esc_attr_e( 'Ticket Type cannot be empty.', 'event-tickets' ); ?>"
+						data-validation-error="<?php esc_attr_e( 'Ticket Type is a required field.', 'event-tickets' ); ?>"
 					/>
 					<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Ticket type name shows on the front end and emailed tickets', 'event-tickets' ); ?></span>
 				</div>
