@@ -8,22 +8,53 @@
 class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 
 	/**
-	 * @var int
+	 * @var string Whether a tab should be set to active and which one.
 	 */
-	protected $post_id;
+	public $active_tab_slug = false;
 
 	/**
-	 * Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View constructor.
+	 * Adds the WooCommerce orders tab slug to the tab slug map.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id
+	 * @param array $tab_map
+	 *
+	 * @return array
 	 */
-	public function __construct( $post_id ) {
-		$this->post_id = $post_id;
+	public function filter_tribe_tickets_orders_tabbed_view_tab_map( array $tab_map = array() ) {
+		$tab_map[Tribe__Tickets__Commerce__PayPal__Orders__Report::$orders_slug] = Tribe__Tickets__Commerce__PayPal__Orders__Report::$tab_slug;
+
+		return $tab_map;
 	}
 
-	public function render() {
-		echo 'Hello there!';
+	/**
+	 * Registers the PayPal orders tab among those the tabbed view should render.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tabbed_View $tabbed_view
+	 * @param WP_Post            $post
+	 */
+	public function register_orders_tab( Tribe__Tabbed_View $tabbed_view, WP_Post $post ) {
+		$orders_report     = new Tribe__Tickets__Commerce__PayPal__Orders__Tab(  $tabbed_view );
+		$orders_report_url = Tribe__Tickets__Commerce__PayPal__Orders__Report::get_tickets_report_link( $post );
+		$orders_report->set_url( $orders_report_url );
+		$tabbed_view->register( $orders_report );
+		if ( $this->active_tab_slug ) {
+			$tabbed_view->set_active( $this->active_tab_slug );
+		}
+	}
+
+	/**
+	 * Renders the tabbed view for the current post.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $active_tab_slug Whether this tab should be set to active or not.
+	 */
+	public function register( $active_tab_slug = false ) {
+		add_filter( 'tribe_tickets_orders_tabbed_view_tab_map', array( $this, 'filter_tribe_tickets_orders_tabbed_view_tab_map' ) );
+		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', array( $this, 'register_orders_tab' ), 10, 2 );
+		$this->active_tab_slug = $active_tab_slug;
 	}
 }
