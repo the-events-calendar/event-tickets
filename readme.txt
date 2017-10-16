@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.5.7] TBD =
+
+* Tweak - Improved compatibility of the "Attendees Export" CSV with Excel and other programs by removing line breaks from multi-line fields in the CSV (props: @twodoplhins) [80563]
+
 = [4.5.6] 2017-09-20 =
 
 * Fix - Prevent occasional issue with email content-type not being reset after ticket emails were sent (props to @jappleton in the forums for reporting this!) [62976]
