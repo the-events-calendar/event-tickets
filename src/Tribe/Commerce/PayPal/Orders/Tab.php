@@ -11,6 +11,6 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tab extends Tribe__Tabbed_View__
 	}
 
 	public function get_label() {
-		return __( 'Orders', 'event-tickets-plus' );
+		return __( 'PayPal Orders', 'event-tickets' );
 	}
 }
