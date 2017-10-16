@@ -108,7 +108,6 @@ class Tribe__Tickets__Tickets_Handler {
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
-		add_action( 'tribe_ticket_order_field', array( $this, 'tickets_order_input' ) );
 		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
 
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
