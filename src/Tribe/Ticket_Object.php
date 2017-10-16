@@ -416,24 +416,67 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Provides the quantity of remaining tickets
+		 * Provides the Inventory of the Ticket which should match the Commerce Stock
+		 *
+		 * @since  TBD
 		 *
 		 * @return int
 		 */
-		public function remaining() {
+		public function inventory() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
 			}
 
 			// Do the math!
-			$remaining = $this->stock() - $this->qty_sold() - $this->qty_pending();
+			$remaining = $this->capacity() - $this->qty_sold() - $this->qty_pending();
 
 			// Adjust if using global stock with a sales cap
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
-				$global_stock_obj = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				$remaining = min( $remaining, $this->capacity() - $global_stock_obj->tickets_sold() );
+				$event_capacity = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
+				$remaining = min( $remaining, $this->capacity() - $event_capacity->tickets_sold( true ) );
 			}
+
+			// Prevents Negative
+			return max( $remaining, 0 );
+		}
+
+		/**
+		 * Provides the quantity of remaining tickets
+		 *
+		 * @deprecated   TBD  We are now using inventory as the new Remaining
+		 *
+		 * @return int
+		 */
+		public function remaining() {
+			return $this->inventory();
+		}
+
+		/**
+		 * Provides the quantity of Avaiable tickets based on the Attendees number
+		 *
+		 * @todo   Create a way to get the Available for an Event (currenty impossible)
+		 *
+		 * @since  TBD
+		 *
+		 * @return int
+		 */
+		public function available() {
+			// If we dont have the probivider or the method we fetch from inventory
+			if ( is_null( $this->provider ) || ! method_exists( $this->provider, 'get_attendees_by_id' ) ) {
+				return $this->inventory();
+			}
+
+			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+				return -1;
+			}
+
+			// Fetch the Attendees
+			$attendees = $this->provider->get_attendees_by_id( $this->ID );
+
+			// Do the math!
+			$available = $this->capacity() - count( $attendees );
 
 			// Prevents Negative
 			return max( $remaining, 0 );

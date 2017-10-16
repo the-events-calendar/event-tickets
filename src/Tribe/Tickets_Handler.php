@@ -379,7 +379,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		foreach ( $tickets as $ticket ) {
 			$stock_mode = $ticket->global_stock_mode();
-			if ( empty( $stock_mode ) || Tribe__Tickets__Global_Stock::OWN_STOCK_MODE == $stock_mode ) {
+			if ( empty( $stock_mode ) || Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
 				continue;
 			}
 
@@ -938,8 +938,8 @@ class Tribe__Tickets__Tickets_Handler {
 	public function render_ticket_row( $ticket ) {
 		$provider      = $ticket->provider_class;
 		$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
-		$remaining     = $ticket->remaining();
-		$total         = $remaining + $ticket->qty_sold() + $ticket->qty_pending();
+		$inventory     = $ticket->inventory();
+		$available     = $ticket->available();
 		$capacity      = $ticket->capacity();
 		$needs_warning = false;
 		$mode          = $ticket->global_stock_mode();
@@ -949,7 +949,7 @@ class Tribe__Tickets__Tickets_Handler {
 			&& $this->unlimited_term !== $capacity
 		) {
 			$product = wc_get_product( $ticket->ID );
-			$needs_warning = (int) $capacity !== (int) $total;
+			$needs_warning = (int) $available !== (int) $inventory;
 		}
 
 		?>
@@ -986,10 +986,10 @@ class Tribe__Tickets__Tickets_Handler {
 			<td class="ticket_available">
 				<span class='tribe-mobile-only'><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
 				<?php if ( $needs_warning ) : ?>
-					<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'Your Available number does not match the stock in WooCommerce. Please check the ticket product and Attendees list to correct the discrepancy.', 'event-tickets' ) ?>"></span>
+					<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'The number of Complete ticket sales does not match the number of attendees. Please check the Attendees list and adjust ticket stock in WooCommerce as needed.', 'event-tickets' ) ?>"></span>
 				<?php endif; ?>
 
-				<?php tribe_tickets_get_readable_amount( $remaining, $mode, true ); ?>
+				<?php tribe_tickets_get_readable_amount( $inventory, $mode, true ); ?>
 			</td>
 
 			<td class="ticket_edit">
