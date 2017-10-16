@@ -462,8 +462,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function available() {
-			// If we dont have the probivider or the method we fetch from inventory
-			if ( is_null( $this->provider ) || ! method_exists( $this->provider, 'get_attendees_by_id' ) ) {
+			// Fetch provider
+			$provider = $this->get_provider();
+
+			// If we dont have the provider we fetch from inventory
+			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
 				return $this->inventory();
 			}
 
