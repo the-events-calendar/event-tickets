@@ -19,7 +19,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	 * @since TBD
 	 */
 	public function hook() {
-		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render' ) );
+		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render' ), 20 );
 	}
 
 	/**
