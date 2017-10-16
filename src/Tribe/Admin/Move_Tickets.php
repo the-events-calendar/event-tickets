@@ -54,8 +54,17 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			return;
 		}
 
-		$event_id = isset( $_GET[ 'event_id' ] ) ? absint( $_GET[ 'event_id' ] ) : absint( $_GET[ 'post' ] );
-		$attendee_ids = array_map( 'intval', explode( '|', @$_GET[ 'ticket_ids' ] ) );
+		$event_id = absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) );
+
+		// Bail when we dont have the event
+		if ( 0 === $event_id ) {
+			return;
+		}
+
+		$attendee_ids = tribe_get_request_var( 'ticket_ids', '' );
+		$attendee_ids = array_map( 'intval', explode( '|', $attendee_ids ) );
+		$attendee_ids = array_filter( $attendee_ids );
+
 		$this->build_attendee_list( $attendee_ids, $event_id );
 
 		/**
@@ -76,7 +85,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		set_current_screen();
 		define( 'IFRAME_REQUEST', true );
 		$this->dialog_assets();
-		iframe_header( $template_vars[ 'title'] );
+		iframe_header( $template_vars['title'] );
 
 		extract( $template_vars );
 		include EVENT_TICKETS_DIR . '/src/admin-views/move-tickets.php';
@@ -99,26 +108,16 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		 * @param array $script_data
 		 */
 		$data = apply_filters( 'tribe_tickets_move_tickets_script_data', array(
-			'check' =>
-				wp_create_nonce( 'move_tickets' ),
-			'unexpected_failure' =>
-				'<p>' . __( 'Woops! We could not complete the requested operation due to an unforeseen problem.', 'event-tickets' ) . '</p>',
-			'update_post_list_failure' =>
-				__( 'Unable to update the post list. Please refresh the page and try again.', 'event-tickets' ),
-			'no_posts_found' =>
-				__( 'No results found - you may need to widen your search criteria.', 'event-tickets' ),
-			'no_ticket_types_found' =>
-				__( 'No ticket types were found for this post.', 'event-tickets' ),
-			'loading_msg' =>
-				__( 'Loading, please wait&hellip;', 'event-tickets' ),
-			'src_post_id' =>
-				isset( $_GET[ 'event_id' ] ) ? absint( $_GET[ 'event_id' ] ) : absint( $_GET[ 'post' ] ),
-			'ticket_ids' =>
-				array_keys( $this->attendees ),
-			'provider' =>
-				$this->ticket_provider,
-			'mode' =>
-				'move_tickets',
+			'check' => wp_create_nonce( 'move_tickets' ),
+			'unexpected_failure' => '<p>' . __( 'Woops! We could not complete the requested operation due to an unforeseen problem.', 'event-tickets' ) . '</p>',
+			'update_post_list_failure' => __( 'Unable to update the post list. Please refresh the page and try again.', 'event-tickets' ),
+			'no_posts_found' => __( 'No results found - you may need to widen your search criteria.', 'event-tickets' ),
+			'no_ticket_types_found' => __( 'No ticket types were found for this post.', 'event-tickets' ),
+			'loading_msg' => __( 'Loading, please wait&hellip;', 'event-tickets' ),
+			'src_post_id' => absint( tribe_get_request_var( 'event_id', tribe_get_request_var( 'post', 0 ) ) ),
+			'ticket_ids' => array_keys( $this->attendees ),
+			'provider' => $this->ticket_provider,
+			'mode' => 'move_tickets',
 		) );
 
 		tribe_asset(
@@ -143,7 +142,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return bool
 	 */
 	protected function is_move_tickets_dialog() {
-		return ( isset( $_GET[ 'dialog' ] ) && $this->dialog_name === $_GET[ 'dialog' ] );
+		return ( isset( $_GET['dialog'] ) && $this->dialog_name === $_GET['dialog'] );
 	}
 
 	/**
@@ -167,7 +166,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$this->has_multiple_providers = false;
 
 		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $event_id ) as $attendee ) {
-			$attendee_id = (int) $attendee[ 'attendee_id' ];
+			$attendee_id = (int) $attendee['attendee_id'];
 
 			if ( ! in_array( $attendee_id, $ticket_ids ) ) {
 				continue;
@@ -193,11 +192,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return string|null
 	 */
 	protected function get_ticket_provider( array $attendee ) {
-		if ( ! isset( $attendee[ 'product_id' ] ) ) {
+		if ( ! isset( $attendee['product_id'] ) ) {
 			return null;
 		}
 
-		$ticket_type = Tribe__Tickets__Tickets::load_ticket_object( $attendee[ 'product_id' ] );
+		$ticket_type = Tribe__Tickets__Tickets::load_ticket_object( $attendee['product_id'] );
 
 		if ( ! $ticket_type ) {
 			return null;
@@ -222,7 +221,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @return array
 	 */
 	public function bulk_actions( array $actions ) {
-		$actions[ 'move' ] = _x( 'Move', 'attendee screen bulk actions', 'event-tickets' );
+		$actions['move'] = _x( 'Move', 'attendee screen bulk actions', 'event-tickets' );
 		return $actions;
 	}
 
@@ -271,7 +270,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'ignore'       => '',
 		) );
 
-		wp_send_json_success( array( 'posts' =>  $this->get_possible_matches( $args ) ) );
+		wp_send_json_success(
+			array(
+				'posts' => $this->get_possible_matches( $args ),
+			)
+		);
 	}
 
 	/**
@@ -295,9 +298,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		) );
 
 		// The post_type argument should be an array (of all possible types, if not specified)
-		$post_types = array_filter( (array) $params[ 'post_type' ] );
+		$post_types = array_filter( (array) $params['post_type'] );
 
-		if ( empty( $post_types ) || 'all' === $params[ 'post_type' ] ) {
+		if ( empty( $post_types ) || 'all' === $params['post_type'] ) {
 			$post_types = array_keys( $this->get_post_types_list() );
 		}
 
@@ -319,7 +322,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'eventDisplay'   => 'custom',
 			'orderby'        => 'title',
 			'order'          => 'ASC',
-			's'              => $params[ 'search_terms' ],
+			's'              => $params['search_terms'],
 			'post__not_in'   => $ignore_ids,
 		);
 
@@ -367,7 +370,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'provider' => '',
 		) );
 
-		wp_send_json_success( array( 'posts' =>  $this->get_ticket_type_matches( $args[ 'post_id' ], $args[ 'provider' ], $args[ 'ticket_ids' ] ) ) );
+		wp_send_json_success(
+			array(
+				'posts' => $this->get_ticket_type_matches( $args['post_id'], $args['provider'], $args['ticket_ids'] ),
+			)
+		);
 	}
 
 	/**
@@ -382,7 +389,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 */
 	protected function get_ticket_type_matches( $target_post_id, $provider, $ticket_ids = array() ) {
 		$ticket_types = array();
-		$ticket_ids = array_map('absint', array_filter( $ticket_ids, 'is_numeric' ));
+		$ticket_ids = array_map( 'absint', array_filter( $ticket_ids, 'is_numeric' ) );
 
 		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $target_post_id ) as $ticket ) {
 			if ( $provider !== $ticket->provider_class ) {
@@ -412,17 +419,17 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'ticket_ids'     => '',
 			'target_type_id' => '',
 			'src_post_id'    => '',
-			'target_post_id' => ''
+			'target_post_id' => '',
 		) );
 
-		$src_post_id    = absint( $args[ 'src_post_id' ] );
-		$ticket_ids     = array_map( 'intval', (array) $args[ 'ticket_ids' ] );
-		$target_type_id = absint( $args[ 'target_type_id' ] );
-		$target_post_id = absint( $args[ 'target_post_id' ] );
+		$src_post_id    = absint( $args['src_post_id' ] );
+		$ticket_ids     = array_map( 'intval', (array) $args['ticket_ids' ] );
+		$target_type_id = absint( $args['target_type_id'] );
+		$target_post_id = absint( $args['target_post_id'] );
 
 		if ( ! $ticket_ids || ! $target_type_id ) {
 			wp_send_json_error( array(
-				'message' => __( 'Tickets could not be moved: valid ticket IDs or a destination ID were not provided.', 'event-tickets' )
+				'message' => __( 'Tickets could not be moved: valid ticket IDs or a destination ID were not provided.', 'event-tickets' ),
 			) );
 		}
 
@@ -430,7 +437,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		if ( ! $moved_tickets ) {
 			wp_send_json_error( array(
-				'message' => __( 'Tickets could not be moved: there was an unexpected failure during reassignment.', 'event-tickets' )
+				'message' => __( 'Tickets could not be moved: there was an unexpected failure during reassignment.', 'event-tickets' ),
 			) );
 		}
 
@@ -494,9 +501,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$providers = array();
 
 		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $src_event_id ) as $issued_ticket ) {
-			if ( in_array( absint( $issued_ticket[ 'attendee_id' ] ), $ticket_ids ) ) {
+			if ( in_array( absint( $issued_ticket['attendee_id'] ), $ticket_ids ) ) {
 				$ticket_objects[] = $issued_ticket;
-				$providers[ $issued_ticket[ 'provider' ] ] = true;
+				$providers[ $issued_ticket['provider'] ] = true;
 			}
 		}
 
@@ -518,8 +525,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			return 0;
 		}
 
-		foreach ( $ticket_objects as $single_ticket ) {
-			$ticket_id = $single_ticket[ 'attendee_id' ];
+		foreach ( $ticket_objects as $ticket ) {
+			$ticket_id = $ticket['attendee_id'];
 			$src_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
 
 			/**
@@ -531,6 +538,40 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			 * @param int $instigator_id
 			 */
 			do_action( 'tribe_tickets_ticket_before_move', $ticket_id, $tgt_ticket_type_id, $tgt_event_id, $instigator_id );
+
+			/**
+			 * Actual moving happens
+			 */
+			$src_event_cap = new Tribe__Tickets__Global_Stock( $src_event_id );
+			$tgt_event_cap = new Tribe__Tickets__Global_Stock( $tgt_event_id );
+
+			$src_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+			// When the Mode is not `own` we have to check and modify some stuff
+			if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $src_mode ) {
+				// If we have Source cap and not on Target, we set it up
+				if ( ! $tgt_event_cap->is_enabled() ) {
+					$src_event_capacity = tribe_tickets_get_capacity( $src_event_id );
+
+					// Activate Shared Capacity on the Ticket
+					$tgt_event_cap->enable();
+
+					// Setup the Stock level to match Source capacity
+					$tgt_event_cap->set_stock_level( $src_event_capacity );
+
+					// Update the Target event with the Capacity from the Source
+					update_post_meta( $tgt_event_id, tribe( 'tickets.handler' )->key_capacity, $src_event_capacity );
+				} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode ) {
+					// Check if we have capped to avoid ticket cap over event cap
+					$src_ticket_capacity = tribe_tickets_get_capacity( $ticket_id );
+					$tgt_event_capacity = tribe_tickets_get_capacity( $tgt_event_id );
+
+					// Don't allow ticket capacity to be bigger than Target Event Cap
+					if ( $src_ticket_capacity > $tgt_event_capacity ) {
+						update_post_meta( $ticket_id, tribe( 'tickets.handler' )->key_capacity, $tgt_event_capacity );
+					}
+				}
+			}
 
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
@@ -557,7 +598,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			 * a different post altogether.
 			 *
 			 * @param int $ticket_id                the ticket which has been moved
-			 * @param int $src_ticket_type_id  the ticket type it belonged to originally
+			 * @param int $src_ticket_type_id       the ticket type it belonged to originally
 			 * @param int $tgt_ticket_type_id       the ticket type it now belongs to
 			 * @param int $src_event_id             the event/post which the ticket originally belonged to
 			 * @param int $tgt_event_id             the event/post which the ticket now belongs to
@@ -600,23 +641,23 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		// Build a list of email addresses we want to send notifications of the change to
 		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $tgt_event_id ) as $attendee ) {
 			// We're not interested in attendees who were already attending this event
-			if ( ! in_array( (int) $attendee[ 'attendee_id' ], $ticket_ids ) ) {
+			if ( ! in_array( (int) $attendee['attendee_id'], $ticket_ids ) ) {
 				continue;
 			}
 
 			// Skip if an email address isn't available
-			if ( ! isset( $attendee[ 'purchaser_email' ] ) ) {
+			if ( ! isset( $attendee['purchaser_email'] ) ) {
 				continue;
 			}
 
-			if ( ! isset( $to_notify[ $attendee[ 'purchaser_email' ] ] ) ) {
-				$to_notify[ $attendee[ 'purchaser_email' ] ] = array( $attendee );
+			if ( ! isset( $to_notify[ $attendee['purchaser_email'] ] ) ) {
+				$to_notify[ $attendee['purchaser_email'] ] = array( $attendee );
 			} else {
-				$to_notify[ $attendee[ 'purchaser_email' ] ][] = $attendee;
+				$to_notify[ $attendee['purchaser_email'] ][] = $attendee;
 			}
 		}
 
-		foreach ( $to_notify as $email_addr => $affected_tickets) {
+		foreach ( $to_notify as $email_addr => $affected_tickets ) {
 			/**
 			 * Sets the moved ticket email address.
 			 *
@@ -678,7 +719,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			'new_event_name'      => get_the_title( $tgt_event_id ),
 			'ticket_type_id'      => $tgt_ticket_type_id,
 			'ticket_type_name'    => get_the_title( $tgt_ticket_type_id ),
-			'affected_tickets'    => $affected_tickets
+			'affected_tickets'    => $affected_tickets,
 		);
 
 		return tribe_tickets_get_template_part( 'tickets/email-tickets-moved', null, $vars, false );
@@ -698,18 +739,18 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	public function move_all_tickets_for_type( $ticket_type_id, $destination_post_id, $src_post_id, $instigator_id ) {
 		foreach (  Tribe__Tickets__Tickets::get_event_attendees( $src_post_id ) as $issued_ticket ) {
 			// We're only interested in tickets of the specified type
-			if ( (int) $ticket_type_id !== (int) $issued_ticket[ 'product_id' ] ) {
+			if ( (int) $ticket_type_id !== (int) $issued_ticket['product_id'] ) {
 				continue;
 			}
 
-			if ( ! class_exists( $issued_ticket[ 'provider' ] ) ) {
+			if ( ! class_exists( $issued_ticket['provider'] ) ) {
 				continue;
 			}
 
-			$issued_ticket_id = $issued_ticket[ 'attendee_id' ];
+			$issued_ticket_id = $issued_ticket['attendee_id'];
 
 			// Move the ticket to the destination post
-			$event_key = constant( $issued_ticket[ 'provider' ] . '::ATTENDEE_EVENT_KEY' );
+			$event_key = constant( $issued_ticket['provider'] . '::ATTENDEE_EVENT_KEY' );
 			update_post_meta( $issued_ticket_id, $event_key, $destination_post_id );
 
 			// Maintain an audit trail
