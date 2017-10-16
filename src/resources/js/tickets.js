@@ -71,11 +71,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			date = '';
 		}
 
-		// tribe_datepicker uses 'YY' for full year, moment uses 'YYYY'
-		// This is a bit sketchy,
-		// moment.js is deprecating use of strings in any format other than ISO (YYYY-MM-DD).
-		// But they allow you to use js Date() to do the parsing for you.
-		return moment( new Date( date ) ).format( dateFormat.toUpperCase().replace( 'YY', 'YYYY' ) );
+		var localFormat = dateFormat.toUpperCase().replace( 'YY', 'YYYY' );
+
+		return moment( date, localFormat ).format( localFormat );
 	}
 
 	function format_time( date ) {

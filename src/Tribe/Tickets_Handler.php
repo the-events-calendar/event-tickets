@@ -946,10 +946,10 @@ class Tribe__Tickets__Tickets_Handler {
 
 		if (
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class
-			&& $this->unlimited_term !== $capacity
+			&& -1 !== $capacity
 		) {
 			$product = wc_get_product( $ticket->ID );
-			$needs_warning = (int) $available !== (int) $inventory;
+			$needs_warning = (int) $available !== (int) $ticket->stock();
 		}
 
 		?>
