@@ -839,20 +839,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
-				$start_datetime = sprintf(
-					'%s %s',
-					$data['ticket_start_date'],
-					$data['ticket_start_time']
-				);
+				$start_datetime = $data['ticket_start_date'];
+
+				if ( ! empty( $data['ticket_start_time'] ) ) {
+					$start_datetime .= ' ' . $data['ticket_start_time'];
+				}
+
 				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_datetime ) );
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
-				$end_datetime = sprintf(
-					'%s %s',
-					$data['ticket_end_date'],
-					$data['ticket_end_time']
-				);
+				$end_datetime = $data['ticket_end_date'];
+
+				if ( ! empty( $data['ticket_end_time'] ) ) {
+					$end_datetime .= ' ' . $data['ticket_end_time'];
+				}
+
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
 			}
 
