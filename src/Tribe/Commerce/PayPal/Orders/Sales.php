@@ -249,6 +249,15 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		return $ticket->qty_sold() > 0;
 	}
 
+	/**
+	 * Returns the ticket breakdown for the provided tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets
+	 *
+	 * @return array
+	 */
 	public function get_tickets_breakdown_for( array $tickets ) {
 		$breakdown = array(
 			__( 'Completed', 'event-tickets' )     => array(
@@ -262,6 +271,31 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		);
 
 		return $breakdown;
+	}
+
+	/**
+	 * Returns a list of orders for the post.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 *
+	 * @return array
+	 */
+	public function get_orders_for_post( $post_id ) {
+		$cached = $this->cache["{$post_id}-orders"];
+
+		if ( false !== $cached ) {
+			return $cached;
+		}
+
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
+		$orders = $paypal->get_orders_by_post_id( $post_id );
+
+		$this->cache["{$post_id}-orders"] = $orders;
+
+		return $orders;
 	}
 
 	/**
@@ -314,5 +348,30 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 */
 	protected function get_ticket_not_completed_qty( Tribe__Tickets__Ticket_Object $ticket ) {
 		return $ticket->qty_pending();
+	}
+
+	/**
+	 * Returns a map that counts attendees by a key.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendees
+	 * @param      string $group_by Count and group results by this key
+	 *
+	 * @return array An associative array in the format [ <group_by> => <count> ]
+	 */
+	public function count_attendees_by( array $attendees, $group_by ) {
+		$tickets = array();
+
+		foreach ( $attendees as $attendee ) {
+			$ticket_name = $attendee[ $group_by ];
+			if ( empty( $tickets[ $ticket_name ] ) ) {
+				$tickets[ $ticket_name ] = 1;
+			} else {
+				$tickets[ $ticket_name ] ++;
+			}
+		}
+
+		return $tickets;
 	}
 }

@@ -153,7 +153,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	}
 
 	public function attendees_page_screen_setup(){
-//		$this->orders_table = new Tribe__Tickets__Commerce__PayPal__Orders__Table();
+		$this->orders_table = new Tribe__Tickets__Commerce__PayPal__Orders__Table();
 		wp_enqueue_script( 'jquery-ui-dialog' );
 
 		add_filter( 'admin_title', array( $this, 'orders_admin_title' ), 10, 2 );
@@ -194,28 +194,6 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$tabbed_view->set_active( self::$tab_slug );
 		$tabbed_view->render();
 
-		/**
-		 * Filters whether or not fees are being passed to the end user (purchaser)
-		 *
-		 * @var boolean $pass_fees Whether or not to pass fees to user
-		 * @var int $post_id Event post ID
-		 */
-//		Tribe__Tickets_Plus__Commerce__WooCommerce__Orders__Table::$pass_fees_to_user = apply_filters( 'tribe_tickets_pass_fees_to_user', true, $event_id );
-
-		/**
-		 * Filters the fee percentage to apply to a ticket/order
-		 *
-		 * @var float $fee_percent Fee percentage
-		 */
-//		Tribe__Tickets_Plus__Commerce__WooCommerce__Orders__Table::$fee_percent = apply_filters( 'tribe_tickets_fee_percent', 0, $event_id );
-
-		/**
-		 * Filters the flat fee to apply to a ticket/order
-		 *
-		 * @var float $fee_flat Flat fee
-		 */
-//		Tribe__Tickets_Plus__Commerce__WooCommerce__Orders__Table::$fee_flat = apply_filters( 'tribe_tickets_fee_flat', 0, $event_id );
-
 		$author = get_user_by( 'id', $post->post_author );
 
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
@@ -246,16 +224,13 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$post_singular_label = $post_type_object->labels->singular_name;
 
-		// Render the table
-		//		$this->orders_table->prepare_items();
-		//
-		//		ob_start();
-		//		$this->orders_table->display();
-		//		$table = ob_get_clean();
+		// Render the table buffering its output; it will be used in the template below
+		$this->orders_table->prepare_items();
 
-		$table = 'Not a table yet';
+		ob_start();
+		$this->orders_table->display();
+		$table = ob_get_clean();
 
 		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-orders.php';
-
 	}
 }
