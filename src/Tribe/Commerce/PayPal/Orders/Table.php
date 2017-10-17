@@ -43,7 +43,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 			'option' => $this->per_page_option,
 		) );
 
-		$this->sales = tribe('tickets.commerce.paypal.orders.sales');
+		$this->sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
 		parent::__construct( $args );
 	}
@@ -160,9 +160,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	public function column_order( $item ) {
 		$order_number = $item['number'];
 
-		$order_url = 'http://google.com';
-
-		$order_number_link = '<a href="' . esc_url( $order_url ) . '" target="_blank">' . $order_number . '</a>';
+		$order_number_link = '<a href="' . esc_url( $item['url'] ) . '" target="_blank">' . $order_number . '</a>';
 
 		$output = sprintf( esc_html__( '%1$s', 'event-tickets' ), $order_number_link );
 
@@ -216,7 +214,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$total_items = count( $items );
 
-		$per_page    = $this->get_items_per_page( $this->per_page_option );
+		$per_page = $this->get_items_per_page( $this->per_page_option );
 
 		$current_page = $this->get_pagenum();
 

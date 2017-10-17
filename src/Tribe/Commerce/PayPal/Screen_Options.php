@@ -6,10 +6,20 @@
  * @since TBD
  */
 class Tribe__Tickets__Commerce__PayPal__Screen_Options {
+
 	/**
 	 * @var string The user option that will be used to store the number of orders per page to show.
 	 */
 	public static $per_page_user_option = 'event_tickets_paypal_orders_per_page';
+
+	/**
+	 * Hooks the actions and filters required by the class
+	 *
+	 * @since TBD
+	 */
+	public function hook() {
+		add_filter( 'set-screen-option', array( $this, 'filter_set_screen_options' ), 10, 3 );
+	}
 
 	/**
 	 * Filters the save operations of screen options to save the ones the class manages.

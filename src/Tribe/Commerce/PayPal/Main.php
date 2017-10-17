@@ -192,6 +192,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
 		tribe_singleton( 'tickets.commerce.paypal.orders.report', 'Tribe__Tickets__Commerce__PayPal__Orders__Report', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
+		tribe_singleton( 'ticket.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
+
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -204,6 +206,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		tribe( 'tickets.commerce.paypal.gateway' );
 		tribe( 'tickets.commerce.paypal.orders.report' );
+		tribe( 'ticket.commerce.paypal.screen-options' );
 	}
 
 	/**
@@ -1642,6 +1645,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			if ( ! isset( $orders[ $order_number ] ) ) {
 				$orders[ $order_number ] = array(
+					'url'             => $this->get_order_url( $order_number ),
 					'number'          => $order_number,
 					'status'          => $attendee['order_status'],
 					'status_label'    => Tribe__Utils__Array::get( $stati, $attendee['order_status'], $undefined ),
@@ -1686,5 +1690,21 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @return array An associative array in the [ <slug> => <label> ] format.
 		 */
 		return apply_filters( 'tribe_tickets_commerce_paypal_order_stati', $order_stati );
+	}
+
+	/**
+	 * Returns the URL to a PayPal order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_number
+	 *
+	 * @return string
+	 */
+	protected function get_order_url( $order_number ) {
+		return add_query_arg( array(
+			'cmd' => '_view-a-trans',
+			'id'  => $order_number,
+		), $this->get_cart_url() );
 	}
 }
