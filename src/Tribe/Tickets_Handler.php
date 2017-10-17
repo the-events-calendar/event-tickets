@@ -100,7 +100,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$view_text = sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $pto->labels->singular_name );
 		$action_links = array(
 			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html( $edit_text ) . '</a>',
-			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html($view_text ) . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html( $view_text ) . '</a>',
 		);
 
 		/**

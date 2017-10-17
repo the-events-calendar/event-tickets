@@ -6,6 +6,7 @@
  * @since TBD
  */
 class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
+
 	/**
 	 * Adds the WooCommerce orders tab slug to the tab slug map.
 	 *
@@ -16,7 +17,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 * @return array
 	 */
 	public function filter_tribe_tickets_orders_tabbed_view_tab_map( array $tab_map = array() ) {
-		$tab_map[Tribe__Tickets__Commerce__PayPal__Orders__Report::$orders_slug] = Tribe__Tickets__Commerce__PayPal__Orders__Report::$tab_slug;
+		$tab_map[ Tribe__Tickets__Commerce__PayPal__Orders__Report::$orders_slug ] = Tribe__Tickets__Commerce__PayPal__Orders__Report::$tab_slug;
 
 		return $tab_map;
 	}
@@ -30,7 +31,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 * @param WP_Post            $post
 	 */
 	public function register_orders_tab( Tribe__Tabbed_View $tabbed_view, WP_Post $post ) {
-		$orders_report     = new Tribe__Tickets__Commerce__PayPal__Orders__Tab(  $tabbed_view );
+		$orders_report     = new Tribe__Tickets__Commerce__PayPal__Orders__Tab( $tabbed_view );
 		$orders_report_url = Tribe__Tickets__Commerce__PayPal__Orders__Report::get_tickets_report_link( $post );
 		$orders_report->set_url( $orders_report_url );
 		$tabbed_view->register( $orders_report );
@@ -41,7 +42,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	 *
 	 * @since TBD
 	 */
-	public function register(  ) {
+	public function register() {
 		add_filter( 'tribe_tickets_orders_tabbed_view_tab_map', array( $this, 'filter_tribe_tickets_orders_tabbed_view_tab_map' ) );
 		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', array( $this, 'register_orders_tab' ), 10, 2 );
 	}
