@@ -6,12 +6,6 @@
  * @since TBD
  */
 class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
-
-	/**
-	 * @var string Whether a tab should be set to active and which one.
-	 */
-	public $active_tab_slug = false;
-
 	/**
 	 * Adds the WooCommerce orders tab slug to the tab slug map.
 	 *
@@ -40,21 +34,15 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 		$orders_report_url = Tribe__Tickets__Commerce__PayPal__Orders__Report::get_tickets_report_link( $post );
 		$orders_report->set_url( $orders_report_url );
 		$tabbed_view->register( $orders_report );
-		if ( $this->active_tab_slug ) {
-			$tabbed_view->set_active( $this->active_tab_slug );
-		}
 	}
 
 	/**
 	 * Renders the tabbed view for the current post.
 	 *
 	 * @since TBD
-	 *
-	 * @param bool $active_tab_slug Whether this tab should be set to active or not.
 	 */
-	public function register( $active_tab_slug = false ) {
+	public function register(  ) {
 		add_filter( 'tribe_tickets_orders_tabbed_view_tab_map', array( $this, 'filter_tribe_tickets_orders_tabbed_view_tab_map' ) );
 		add_action( 'tribe_tickets_orders_tabbed_view_register_tab_right', array( $this, 'register_orders_tab' ), 10, 2 );
-		$this->active_tab_slug = $active_tab_slug;
 	}
 }

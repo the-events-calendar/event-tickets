@@ -52,6 +52,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		add_filter( 'post_row_actions', array( $this, 'add_orders_row_action' ), 10, 2 );
 		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render_tabbed_view' ) );
 		add_action( 'admin_menu', array( $this, 'register_orders_page' ) );
+
+		// register the tabbed view
+		$paypal_tabbed_view = new Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
+		$paypal_tabbed_view->register( );
 	}
 
 	public function add_orders_row_action( array $actions, $post ) {
@@ -178,17 +182,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * Renders the order page
 	 */
 	public function orders_page_inside(  ) {
-//		$this->orders_table->prepare_items();
-//
-//		$post_id = isset( $_GET['post_id'] ) ? (int) $_GET['post_id'] : 0;
-//		$post   = get_post( $post_id );
-
-		// register this tabbed view
-		$paypal_tabbed_view = new Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
-		$paypal_tabbed_view->register( self::$tab_slug );
-
 		// Build and render the tabbed view from Event Tickets and set this as the active tab
 		$tabbed_view = new Tribe__Tickets__Commerce__Orders_Tabbed_View();
+		$tabbed_view->set_active( self::$tab_slug );
 		$tabbed_view->render();
 
 //

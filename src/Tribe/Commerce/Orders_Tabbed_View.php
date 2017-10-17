@@ -7,6 +7,11 @@
 class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 
 	/**
+	 * @var string
+	 */
+	public $active_tab_slug;
+
+	/**
 	 * @var array A map that binds requested pages to tabs.
 	 */
 	protected $tab_map = array(
@@ -91,6 +96,10 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 			return;
 		}
 
+		if ( null !== $this->active_tab_slug ) {
+			$tabbed_view->set_active( $this->active_tab_slug );
+		}
+
 		echo $tabbed_view->render();
 	}
 
@@ -113,5 +122,16 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		$tab_map = apply_filters( 'tribe_tickets_orders_tabbed_view_tab_map', $tab_map );
 
 		return $tab_map;
+	}
+
+	/**
+	 * Sets the currently active tab slug.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $tab_slug
+	 */
+	public function set_active( $tab_slug ) {
+		$this->active_tab_slug = $tab_slug;
 	}
 }
