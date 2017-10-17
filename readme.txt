@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.5.7] TBD =
+= [4.5.7] 2017-10-18 =
 
 * Tweak - Improved compatibility of the "Attendees Export" CSV with Excel and other programs by removing line breaks from multi-line fields in the CSV (props: @twodoplhins) [80563]
 
