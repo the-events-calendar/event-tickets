@@ -132,8 +132,7 @@
 					}; ?>
 
 					<div class="totals-header">
-						<h3><?php echo sprintf( __( 'Total Sales: %s %s', 'event-tickets-plus' ),
-								esc_html( tribe_format_currency( number_format( $post_revenue, 2 ), $post_id ) ), $total_sold ); ?></h3>
+						<h3><?php echo esc_html( sprintf( __( 'Total Sales: %s %s', 'event-tickets-plus' ), esc_html( tribe_format_currency( number_format( $post_revenue, 2 ), $post_id ) ), $total_sold ) ); ?></h3>
 					</div>
 
 					<div id="sales_breakdown_wrapper" class="tribe-event-meta-note">
