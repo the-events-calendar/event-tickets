@@ -202,7 +202,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$paypal = tribe( 'tickets.commerce.paypal' );
 
 		/** @var \Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
-		$sales = tribe( 'tickets.commerce.paypal.orders.sales');
+		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
 		$paypal_tickets = array_filter( $tickets, array( $paypal, 'is_paypal_ticket' ) );
 
@@ -220,7 +220,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			$paypal_tickets = $filtered;
 		}
 
-		$attendees = $paypal->get_attendees_by_id($post_id);
+		$attendees = $paypal->get_attendees_by_id( $post_id );
 		$tickets_sold = $sales->filter_sold_tickets( $paypal_tickets );
 
 		$post_revenue = $sales->get_revenue_for_attendees( $attendees );
@@ -230,7 +230,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$tickets_breakdown = $sales->get_tickets_breakdown_for( $paypal_tickets );
 
-		$post_type_object = get_post_type_object($post->post_type);
+		$post_type_object = get_post_type_object( $post->post_type );
 
 		$post_singular_label = $post_type_object->labels->singular_name;
 
