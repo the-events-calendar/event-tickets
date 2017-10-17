@@ -283,12 +283,12 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @return array
 	 */
-	public function get_orders_for_post( $post_id , array $ticket_ids = null ) {
+	public function get_orders_for_post( $post_id, array $ticket_ids = null ) {
 		$ticket_ids_string = implode( ',', $ticket_ids );
 
 		$cache_key = "{$post_id}-{$ticket_ids_string}-orders";
 
-		$cached    = $this->cache[ $cache_key ];
+		$cached = $this->cache[ $cache_key ];
 
 		if ( false !== $cached ) {
 			return $cached;
@@ -298,61 +298,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 
 		$orders = $paypal->get_orders_by_post_id( $post_id, $ticket_ids );
 
-		$this->cache[$cache_key] = $orders;
+		$this->cache[ $cache_key ] = $orders;
 
 		return $orders;
-	}
-
-	/**
-	 * Returns the total revenue from completed orders for the ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 *
-	 * @return int
-	 */
-	protected function get_ticket_completed_total(Tribe__Tickets__Ticket_Object $ticket){
-		return (int)$ticket->qty_sold()	* (int)$ticket->price;
-	}
-
-	/**
-	 * Returns the total number of completed orders for the ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 *
-	 * @return int
-	 */
-	protected function get_ticket_completed_qty(Tribe__Tickets__Ticket_Object $ticket){
-		return $ticket->qty_sold();
-	}
-
-	/**
-	 * Returns the total revenue from not completed orders for the ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 *
-	 * @return int
-	 */
-	protected function get_ticket_not_completed_total(Tribe__Tickets__Ticket_Object $ticket){
-		return (int)$ticket->qty_pending() * (int)$ticket->price;
-	}
-
-	/**
-	 * Returns the total number of not completed orders for the ticket.
-	 *
-	 * @since TBD
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 *
-	 * @return int
-	 */
-	protected function get_ticket_not_completed_qty( Tribe__Tickets__Ticket_Object $ticket ) {
-		return $ticket->qty_pending();
 	}
 
 	/**
@@ -360,7 +308,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attendees
+	 * @param array       $attendees
 	 * @param      string $group_by Count and group results by this key
 	 *
 	 * @return array An associative array in the format [ <group_by> => <count> ]
@@ -378,5 +326,57 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		}
 
 		return $tickets;
+	}
+
+	/**
+	 * Returns the total revenue from completed orders for the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @return int
+	 */
+	protected function get_ticket_completed_total( Tribe__Tickets__Ticket_Object $ticket ) {
+		return (int) $ticket->qty_sold() * (int) $ticket->price;
+	}
+
+	/**
+	 * Returns the total number of completed orders for the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @return int
+	 */
+	protected function get_ticket_completed_qty( Tribe__Tickets__Ticket_Object $ticket ) {
+		return $ticket->qty_sold();
+	}
+
+	/**
+	 * Returns the total revenue from not completed orders for the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @return int
+	 */
+	protected function get_ticket_not_completed_total( Tribe__Tickets__Ticket_Object $ticket ) {
+		return (int) $ticket->qty_pending() * (int) $ticket->price;
+	}
+
+	/**
+	 * Returns the total number of not completed orders for the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @return int
+	 */
+	protected function get_ticket_not_completed_qty( Tribe__Tickets__Ticket_Object $ticket ) {
+		return $ticket->qty_pending();
 	}
 }
