@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Class Tribe__Tickets__Commerce__PayPal__Orders__Report
+ *
+ * @since TBD
+ */
 class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 	/**
@@ -13,9 +18,19 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @var string
 	 */
 	public static $tab_slug = 'tribe-tickets-paypal-orders-report';
+	/**
+	 * @var string The menu slug of the orders page
+	 */
+	public $orders_page;
+	/**
+	 * @var Tribe__Tickets__Commerce__PayPal__Orders__Table
+	 */
+	public $orders_table;
 
 	/**
 	 * Returns the link to the "Orders" report for this post.
+	 *
+	 * @since TBD
 	 *
 	 * @param WP_Post $post
 	 *
@@ -25,29 +40,17 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$url = add_query_arg( array(
 			'post_type' => $post->post_type,
 			'page'      => self::$orders_slug,
-			'post_id'  => $post->ID,
+			'post_id'   => $post->ID,
 		), admin_url( 'edit.php' ) );
 
 		return $url;
 	}
 
 	/**
-	 * @param string $orders_page
+	 * Hooks the actions and filter required by the class.
+	 *
+	 * @since TBD
 	 */
-	public function setOrdersPage( $orders_page ) {
-		$this->orders_page = $orders_page;
-	}
-
-	/**
-	 * @var string The menu slug of the orders page
-	 */
-	public $orders_page;
-
-	/**
-	 * @var Tribe__Tickets__Commerce__PayPal__Orders__Table
-	 */
-	public $orders_table;
-
 	public function hook() {
 		add_filter( 'post_row_actions', array( $this, 'add_orders_row_action' ), 10, 2 );
 		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render_tabbed_view' ) );
@@ -55,9 +58,19 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		// register the tabbed view
 		$paypal_tabbed_view = new Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
-		$paypal_tabbed_view->register( );
+		$paypal_tabbed_view->register();
 	}
 
+	/**
+	 * Adds order related actions to the available row actions for the post.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $actions
+	 * @param       $post
+	 *
+	 * @return array
+	 */
 	public function add_orders_row_action( array $actions, $post ) {
 		$post_id = Tribe__Main::post_id_helper( $post );
 		$post    = get_post( $post_id );
@@ -93,6 +106,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Renders the tabbed view header before the report.
 	 *
+	 * @since TBD
+	 *
 	 * @param Tribe__Tickets__Tickets_Handler $handler
 	 */
 	public function render_tabbed_view( Tribe__Tickets__Tickets_Handler $handler ) {
@@ -112,8 +127,13 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$tabbed_view->register();
 	}
 
-	public function register_orders_page(  ) {
-		$cap = 'edit_posts';
+	/**
+	 * Registers the PayPal orders page as a plugin options page.
+	 *
+	 * @since TBD
+	 */
+	public function register_orders_page() {
+		$cap     = 'edit_posts';
 		$post_id = absint( ! empty( $_GET['post_id'] ) && is_numeric( $_GET['post_id'] ) ? $_GET['post_id'] : 0 );
 
 		if ( ! current_user_can( 'edit_posts' ) && $post_id ) {
@@ -143,12 +163,15 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Filter the page slugs that the attendee resources will load to add the order page
 	 *
+	 * @since TBD
+	 *
 	 * @param $slugs
 	 *
 	 * @return array
 	 */
 	public function add_attendee_resources_page_slug( $slugs ) {
 		$slugs[] = $this->orders_page;
+
 		return $slugs;
 	}
 
@@ -170,7 +193,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @since TBD
 	 *
 	 * @param $admin_title
-	 e*
+	 *
+	 *
 	 * @return string
 	 */
 	public function orders_admin_title( $admin_title ) {
@@ -184,8 +208,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 	/**
 	 * Renders the order page
+	 *
+	 * @since TBD
 	 */
-	public function orders_page_inside(  ) {
+	public function orders_page_inside() {
 		$post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', 0 ) );
 		$post    = get_post( $post_id );
 
@@ -220,12 +246,12 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			$paypal_tickets = $filtered;
 		}
 
-		$attendees = $paypal->get_attendees_by_id( $post_id );
+		$attendees    = $paypal->get_attendees_by_id( $post_id );
 		$tickets_sold = $sales->filter_sold_tickets( $paypal_tickets );
 
-		$post_revenue = $sales->get_revenue_for_attendees( $attendees );
-		$total_sold   = $sales->get_sales_for_attendees( $attendees );
-		$total_completed = count( $sales->filter_completed( $attendees ) );
+		$post_revenue        = $sales->get_revenue_for_attendees( $attendees );
+		$total_sold          = $sales->get_sales_for_attendees( $attendees );
+		$total_completed     = count( $sales->filter_completed( $attendees ) );
 		$total_not_completed = count( $sales->filter_not_completed( $attendees ) );
 
 		$tickets_breakdown = $sales->get_tickets_breakdown_for( $paypal_tickets );

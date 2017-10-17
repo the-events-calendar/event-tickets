@@ -99,7 +99,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item
+	 * @param array $item
 	 * @param $column
 	 *
 	 * @return string
@@ -115,7 +115,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item
+	 * @param array $item
 	 *
 	 * @return string
 	 */
@@ -130,7 +130,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item
+	 * @param array $item
 	 *
 	 * @return string
 	 */
@@ -153,7 +153,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item
+	 * @param array $item
 	 *
 	 * @return string
 	 */
@@ -178,7 +178,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item
+	 * @param array $item
 	 *
 	 * @return string
 	 */
@@ -191,7 +191,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item The current item
+	 * @param array $item The current item
 	 */
 	public function single_row( $item ) {
 		echo '<tr class="' . esc_attr( $item['status'] ) . '">';
@@ -239,7 +239,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item The current item.
+	 * @param array $item The current item.
 	 *
 	 * @return string
 	 */
@@ -252,7 +252,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item The current item.
+	 * @param array $item The current item.
 	 *
 	 * @return string
 	 */
@@ -265,7 +265,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param $item
+	 * @param array $item
 	 *
 	 * @return string
 	 */

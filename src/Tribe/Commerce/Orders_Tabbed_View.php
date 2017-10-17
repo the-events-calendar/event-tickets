@@ -103,6 +103,15 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		echo $tabbed_view->render();
 	}
 
+	/**
+	 * Returns the attendee and orders tabbed view tabs to map the tab request slug to
+	 * the registered tabs.
+	 *
+	 * @since TBD
+	 *
+	 * @return array $tab_map An associative array in the [ <query_var> => <tab_slug> ] format.
+	 *
+	 */
 	protected function get_tab_map() {
 		$tab_map = array(
 			'tickets-attendees' => 'tribe-tickets-attendance-report',

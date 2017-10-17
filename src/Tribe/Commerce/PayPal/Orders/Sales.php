@@ -217,17 +217,6 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	}
 
 	/**
-	 * Whether the current ticket is a PayPal one or not.
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 *
-	 * @return bool
-	 */
-	public function is_paypal_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
-		return $ticket->provider_class === 'Tribe__Tickets__Commerce__PayPal__Main';
-	}
-
-	/**
 	 * Filters an array of tickets to return only those that have least one sale.
 	 *
 	 * @since TBD
@@ -241,6 +230,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	}
 
 	/**
+	 * Whether the ticket has at least one sale.
+	 *
+	 * @since TBD
+	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
 	 * @return bool

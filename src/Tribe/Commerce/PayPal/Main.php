@@ -194,7 +194,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
 		tribe_singleton( 'ticket.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
 
-
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
 		), 'tpp-shortcodes' );
@@ -1707,9 +1706,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	protected function get_order_url( $order_number ) {
-		return add_query_arg( array(
-			'cmd' => '_view-a-trans',
-			'id'  => $order_number,
-		), $this->get_cart_url() );
+		return add_query_arg( array( 'cmd' => '_view-a-trans', 'id' => $order_number ), $this->get_cart_url() );
 	}
 }
