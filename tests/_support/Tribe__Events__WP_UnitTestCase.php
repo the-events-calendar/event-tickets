@@ -1,9 +1,6 @@
 <?php
 
-class Tribe__Tickets__WP_UnitTestCase extends \Codeception\TestCase\WPTestCase {
-
-	// avoid errors with singletons and closures
-	protected $backupGlobals = false;
+class Tribe__Events__WP_UnitTestCase extends \Codeception\TestCase\WPTestCase {
 
 	// array of deprecated files we expect to encounter
 	protected $expected_deprecated_file = [];
@@ -11,16 +8,9 @@ class Tribe__Tickets__WP_UnitTestCase extends \Codeception\TestCase\WPTestCase {
 	// array of deprecated files we caught encounter
 	protected $caught_deprecated_file = [];
 
-	/**
-	 * Gets the path to the _data folder without trailing slash.
-	 *
-	 * @return string
-	 */
-	public function get_data_folder_path() {
-		return dirname( dirname( __FILE__ ) ) . DIRECTORY_SEPARATOR . '_data';
-	}
-
 	public function setUp() {
+		// reload capabilities after install, see https://core.trac.wordpress.org/ticket/28374
+		$GLOBALS['wp_roles'] = new WP_Roles;
 		parent::setUp();
 	}
 
@@ -32,6 +22,8 @@ class Tribe__Tickets__WP_UnitTestCase extends \Codeception\TestCase\WPTestCase {
 	}
 
 	public function deprecated_file_run( $file ) {
+		$file = str_replace( Tribe__Tickets__Main::instance()->plugin_path, '', $file );
+
 		if ( in_array( $file, $this->caught_deprecated_file ) ) {
 			return;
 		}

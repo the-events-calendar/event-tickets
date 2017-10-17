@@ -1,6 +1,6 @@
 <?php
 
-class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
+class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * When a ticket has a stock value, make sure the object returns expected value druing the life of
 	 * the in-stock values
@@ -19,7 +19,9 @@ class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
 			'ticket_end_date' => date( 'Y-m-d', $end ),
 			'ticket_end_hour' => date( 'H', $end ),
 			'ticket_end_minute' => date( 'i', $end ),
-			'ticket_rsvp_stock' => 10,
+			'tribe-ticket' => [
+				'capacity' => 10,
+			],
 		];
 
 		$rsvp = Tribe__Tickets__RSVP::get_instance();
@@ -54,7 +56,7 @@ class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
 		$this->assertFalse( $ticket->is_in_stock(), 'RSVP ticket is not in stock after selling 10 tickets' );
 
 		// switch to stock-less tickets
-		$data['ticket_rsvp_stock'] = '';
+		$data['_stock'] = '';
 		$rsvp->save_ticket( 1, $ticket, $data );
 		$tickets = $rsvp->get_event_tickets( 1 );
 		$ticket = $tickets[0];
@@ -82,7 +84,9 @@ class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
 			'ticket_end_date' => date( 'Y-m-d', $end ),
 			'ticket_end_hour' => date( 'H', $end ),
 			'ticket_end_minute' => date( 'i', $end ),
-			'ticket_rsvp_stock' => '',
+			'tribe-ticket' => [
+				'capacity' => '',
+			],
 		];
 
 		$rsvp = Tribe__Tickets__RSVP::get_instance();
@@ -117,12 +121,14 @@ class RSVP_Tickets_Test extends Tribe__Tickets__WP_UnitTestCase {
 		$this->assertTrue( $ticket->is_in_stock(), 'RSVP ticket is in stock after selling 100000 tickets' );
 
 		// switch to stock-tracking tickets
-		$data['ticket_rsvp_stock'] = 100;
+		$data['tribe-ticket'] = [
+			'capacity' => 100,
+		];
 		$rsvp->save_ticket( 1, $ticket, $data );
 		$tickets = $rsvp->get_event_tickets( 1 );
 		$ticket = $tickets[0];
 		$this->assertTrue( $ticket->managing_stock(), 'RSVP ticket is now managing stock' );
-		$this->assertEquals( 100100, $ticket->original_stock(), 'RSVP ticket is now managing stock, so original stock should be blank' );
+		$this->assertEquals( 100, $ticket->original_stock(), 'RSVP ticket is now managing stock, so original stock should be blank' );
 		$this->assertEquals( 100, $ticket->remaining(), 'RSVP ticket has the appropriate remaining stock amount' );
 		$this->assertTrue( $ticket->is_in_stock(), 'RSVP ticket that is now managing stock should be report that it is in stock' );
 	}
