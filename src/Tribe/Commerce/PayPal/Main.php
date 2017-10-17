@@ -1622,11 +1622,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id
+	 * @param int   $post_id
+	 * @param array $ticket_ids An optional array of ticket IDs to limit the orders by.
 	 *
 	 * @return array An associative array in the format [ <order_number> => <order_details> ]
 	 */
-	public function get_orders_by_post_id( $post_id ) {
+	public function get_orders_by_post_id( $post_id, array $ticket_ids = null ) {
 		$attendees = $this->get_attendees_by_id( $post_id );
 
 		if ( empty( $attendees ) ) {
@@ -1641,6 +1642,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$orders = array();
 
 		foreach ( $attendees as $attendee ) {
+			if ( ! empty( $ticket_ids ) && ! in_array( $attendee['product_id'], $ticket_ids ) ) {
+				continue;
+			}
+
 			$order_number = get_post_meta( $attendee['attendee_id'], $this->order_key, true );
 
 			if ( ! isset( $orders[ $order_number ] ) ) {

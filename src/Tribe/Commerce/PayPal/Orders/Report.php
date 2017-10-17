@@ -152,24 +152,28 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		return $slugs;
 	}
 
-	public function attendees_page_screen_setup(){
+	/**
+	 * Sets up the attendees page screen.
+	 *
+	 * @since TBD
+	 */
+	public function attendees_page_screen_setup() {
 		$this->orders_table = new Tribe__Tickets__Commerce__PayPal__Orders__Table();
 		wp_enqueue_script( 'jquery-ui-dialog' );
 
-		add_filter( 'admin_title', array( $this, 'orders_admin_title' ), 10, 2 );
+		add_filter( 'admin_title', array( $this, 'orders_admin_title' ) );
 	}
 
 	/**
 	 * Sets the browser title for the Orders admin page.
 	 *
-	 * Uses the post title.
+	 * @since TBD
 	 *
 	 * @param $admin_title
-	 * @param $title
 	 e*
 	 * @return string
 	 */
-	public function orders_admin_title( $admin_title, $title ) {
+	public function orders_admin_title( $admin_title ) {
 		if ( ! empty( $_GET['post_id'] ) ) {
 			$event       = get_post( $_GET['post_id'] );
 			$admin_title = sprintf( esc_html_x( '%s - PayPal Orders', 'Browser title', 'event-tickets' ), $event->post_title );
@@ -184,10 +188,6 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	public function orders_page_inside(  ) {
 		$post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', 0 ) );
 		$post    = get_post( $post_id );
-
-		if ( ! $post instanceof WP_Post ) {
-			// @TODO handle the case where the post is not valid
-		}
 
 		// Build and render the tabbed view from Event Tickets and set this as the active tab
 		$tabbed_view = new Tribe__Tickets__Commerce__Orders_Tabbed_View();
@@ -206,8 +206,18 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$paypal_tickets = array_filter( $tickets, array( $paypal, 'is_paypal_ticket' ) );
 
-		if ( empty( $paypal_tickets ) ) {
-			// @TODO handle the case where there are no PayPal tickets for this post
+		$ticket_ids = Tribe__Utils__Array::get( $_GET, 'product_ids', false );
+
+		if ( false !== $ticket_ids ) {
+			$ticket_ids = explode( ',', $ticket_ids );
+			$filtered   = array();
+			/** @var \Tribe__Tickets__Ticket_Object $paypal_ticket */
+			foreach ( $paypal_tickets as $paypal_ticket ) {
+				if ( in_array( $paypal_ticket->ID, $ticket_ids ) ) {
+					$filtered[] = $paypal_ticket;
+				}
+			}
+			$paypal_tickets = $filtered;
 		}
 
 		$attendees = $paypal->get_attendees_by_id($post_id);

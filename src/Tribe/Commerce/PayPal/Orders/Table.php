@@ -210,7 +210,13 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		/** @var \Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
 		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
-		$items = $sales->get_orders_for_post( $this->post_id );
+		$product_ids = Tribe__Utils__Array::get( $_GET, 'product_ids', null );
+
+		if ( false !== $product_ids ) {
+			$product_ids = explode( ',', $product_ids );
+		}
+
+		$items       = $sales->get_orders_for_post( $this->post_id, $product_ids );
 
 		$total_items = count( $items );
 

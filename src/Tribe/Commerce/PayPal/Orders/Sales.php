@@ -278,12 +278,17 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $post_id
+	 * @param int   $post_id
+	 * @param array $ticket_ids An optional array of ticket IDs to limit the table items.
 	 *
 	 * @return array
 	 */
-	public function get_orders_for_post( $post_id ) {
-		$cached = $this->cache["{$post_id}-orders"];
+	public function get_orders_for_post( $post_id , array $ticket_ids = null ) {
+		$ticket_ids_string = implode( ',', $ticket_ids );
+
+		$cache_key = "{$post_id}-{$ticket_ids_string}-orders";
+
+		$cached    = $this->cache[ $cache_key ];
 
 		if ( false !== $cached ) {
 			return $cached;
@@ -291,9 +296,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 
 		$paypal = tribe( 'tickets.commerce.paypal' );
 
-		$orders = $paypal->get_orders_by_post_id( $post_id );
+		$orders = $paypal->get_orders_by_post_id( $post_id, $ticket_ids );
 
-		$this->cache["{$post_id}-orders"] = $orders;
+		$this->cache[$cache_key] = $orders;
 
 		return $orders;
 	}
