@@ -1599,4 +1599,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		return empty( $attendees ) ? array() : array_map( 'get_post', $attendees );
 	}
+
+	/**
+	 * Whether the ticket is a PayPal one or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @return bool
+	 */
+	public function is_paypal_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
+		return $ticket->provider_class === __CLASS__;
+	}
 }
