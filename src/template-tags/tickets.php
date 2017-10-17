@@ -732,7 +732,7 @@ function tribe_tickets_get_capacity( $post ) {
 
 	// Return Null for when we don't have the Capacity Data
 	if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
-		return null;
+		return tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
 	}
 
 	// Fetch the value
