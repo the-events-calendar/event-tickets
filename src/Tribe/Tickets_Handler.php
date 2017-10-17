@@ -62,9 +62,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 

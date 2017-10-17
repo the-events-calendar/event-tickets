@@ -182,22 +182,80 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * Renders the order page
 	 */
 	public function orders_page_inside(  ) {
+		$post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', 0 ) );
+		$post    = get_post( $post_id );
+
+		if ( ! $post instanceof WP_Post ) {
+			// @TODO handle the case where the post is not valid
+		}
+
 		// Build and render the tabbed view from Event Tickets and set this as the active tab
 		$tabbed_view = new Tribe__Tickets__Commerce__Orders_Tabbed_View();
 		$tabbed_view->set_active( self::$tab_slug );
 		$tabbed_view->render();
 
-//
-//		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-//
-//		ob_start();
-//		$this->orders_table->display();
-//		$table = ob_get_clean();
+		/**
+		 * Filters whether or not fees are being passed to the end user (purchaser)
+		 *
+		 * @var boolean $pass_fees Whether or not to pass fees to user
+		 * @var int $post_id Event post ID
+		 */
+//		Tribe__Tickets_Plus__Commerce__WooCommerce__Orders__Table::$pass_fees_to_user = apply_filters( 'tribe_tickets_pass_fees_to_user', true, $event_id );
 
-		// some ticket report stuff
+		/**
+		 * Filters the fee percentage to apply to a ticket/order
+		 *
+		 * @var float $fee_percent Fee percentage
+		 */
+//		Tribe__Tickets_Plus__Commerce__WooCommerce__Orders__Table::$fee_percent = apply_filters( 'tribe_tickets_fee_percent', 0, $event_id );
 
+		/**
+		 * Filters the flat fee to apply to a ticket/order
+		 *
+		 * @var float $fee_flat Flat fee
+		 */
+//		Tribe__Tickets_Plus__Commerce__WooCommerce__Orders__Table::$fee_flat = apply_filters( 'tribe_tickets_fee_flat', 0, $event_id );
 
-		// include the template to show it all
-//		include Tribe__Tickets_Plus__Main::instance()->plugin_path . 'src/admin-views/woocommerce-orders.php';
+		$author = get_user_by( 'id', $post->post_author );
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
+		/** @var \Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
+		$sales = tribe( 'tickets.commerce.paypal.orders.sales');
+
+		$paypal_tickets = array_filter( $tickets, array( $paypal, 'is_paypal_ticket' ) );
+
+		if ( empty( $paypal_tickets ) ) {
+			// @TODO handle the case where there are no PayPal tickets for this post
+		}
+
+		$attendees = $paypal->get_attendees_by_id($post_id);
+		$tickets_sold = $sales->filter_sold_tickets( $paypal_tickets );
+
+		$post_revenue = $sales->get_revenue_for_attendees( $attendees );
+		$total_sold   = $sales->get_sales_for_attendees( $attendees );
+		$total_completed = count( $sales->filter_completed( $attendees ) );
+		$total_not_completed = count( $sales->filter_not_completed( $attendees ) );
+
+		$tickets_breakdown = $sales->get_tickets_breakdown_for( $paypal_tickets );
+
+		$post_type_object = get_post_type_object($post->post_type);
+
+		$post_singular_label = $post_type_object->labels->singular_name;
+
+		// Render the table
+		//		$this->orders_table->prepare_items();
+		//
+		//		ob_start();
+		//		$this->orders_table->display();
+		//		$table = ob_get_clean();
+
+		$table = 'Not a table yet';
+
+		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-orders.php';
+
 	}
 }
