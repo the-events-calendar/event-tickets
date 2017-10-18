@@ -730,9 +730,14 @@ function tribe_tickets_get_capacity( $post ) {
 
 	$key = tribe( 'tickets.handler' )->key_capacity;
 
+	// When we have a legacy ticket we migrate it
+	if ( ! tribe( 'tickets.version' )->is_legacy() ) {
+		return tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
+	}
+
 	// Return Null for when we don't have the Capacity Data
 	if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
-		return tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
+		return null;
 	}
 
 	// Fetch the value

@@ -18,6 +18,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( 'tickets.assets', new Tribe__Tickets__Assets() );
 		$this->container->singleton( 'tickets.handler', 'Tribe__Tickets__Tickets_Handler' );
+		$this->container->singleton( 'tickets.version', new Tribe__Tickets__Version );
 
 		// Caching
 		$this->container->singleton( 'tickets.cache-central', 'Tribe__Tickets__Cache__Central', array( 'hook' ) );

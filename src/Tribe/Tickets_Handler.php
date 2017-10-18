@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Handles most actions related to a Ticket or Multiple ones
+ *
+ * @container tickets.handler
+ */
 class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Singleton instance of this class
@@ -184,6 +189,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Bail when we already have the MetaKey saved
 		if ( metadata_exists( 'post', $object_id, $meta_key ) ) {
+			return $value;
+		}
+
+		// Bail when we don't have a legacy version
+		if ( ! tribe( 'tickets.version' )->is_legacy( $object_id ) ) {
 			return $value;
 		}
 
