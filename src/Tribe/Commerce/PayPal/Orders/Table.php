@@ -160,7 +160,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	public function column_order( $item ) {
 		$order_number = $item['number'];
 
-		$order_number_link = '<a href="' . esc_url( $item['url'] ) . '" target="_blank">' . $order_number . '</a>';
+		$order_number_link = '<a href="' . esc_url( $item['url'] ) . '" target="_blank">' . esc_html( $order_number ) . '</a>';
 
 		$output = sprintf( esc_html__( '%1$s', 'event-tickets' ), $order_number_link );
 

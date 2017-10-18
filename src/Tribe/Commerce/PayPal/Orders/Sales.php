@@ -93,7 +93,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	public function is_order_completed( array $attendee ) {
 		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', false );
 
-		if ( false === $order_status || ! in_array( $order_status, $this->get_revenue_generating_order_stati(), true ) ) {
+		if ( false === $order_status || ! in_array( $order_status, $this->get_revenue_generating_order_statuses(), true ) ) {
 			return false;
 		}
 
@@ -101,23 +101,23 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	}
 
 	/**
-	 * Returns the filtered list of ticket stati that should be taken into account when calculating revenue.
+	 * Returns the filtered list of ticket statuses that should be taken into account when calculating revenue.
 	 *
 	 * @since TBD
 	 *
 	 * @return array
 	 */
-	protected function get_revenue_generating_order_stati() {
-		$revenue_generating_order_stati = array( 'completed' );
+	protected function get_revenue_generating_order_statuses() {
+		$revenue_generating_order_statuses = array( 'completed' );
 
 		/**
-		 * Filters the list of ticket stati that should be taken into account when calculating revenue.
+		 * Filters the list of ticket statuses that should be taken into account when calculating revenue.
 		 *
 		 * @since TBD
 		 *
-		 * @param  array $revenue_generating_order_stati
+		 * @param  array $revenue_generating_order_statuses
 		 */
-		return apply_filters( 'tribe_tickets_commerce_paypal_revenue_generating_order_stati', $revenue_generating_order_stati );
+		return apply_filters( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', $revenue_generating_order_statuses );
 	}
 
 	/**
@@ -301,8 +301,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @since TBD
 	 *
-	 * @param array       $attendees
-	 * @param      string $group_by Count and group results by this key
+	 * @param array  $attendees
+	 * @param string $group_by Count and group results by this key
 	 *
 	 * @return array An associative array in the format [ <group_by> => <count> ]
 	 */

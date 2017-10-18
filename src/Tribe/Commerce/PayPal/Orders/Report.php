@@ -18,10 +18,12 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @var string
 	 */
 	public static $tab_slug = 'tribe-tickets-paypal-orders-report';
+
 	/**
 	 * @var string The menu slug of the orders page
 	 */
 	public $orders_page;
+
 	/**
 	 * @var Tribe__Tickets__Commerce__PayPal__Orders__Table
 	 */
