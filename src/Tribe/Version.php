@@ -2,7 +2,6 @@
 /**
  * Handling of Ticket Versioning
  *
- * @container tickets.version
  * @since  TBD
  */
 class Tribe__Tickets__Version {
@@ -24,18 +23,6 @@ class Tribe__Tickets__Version {
 	 * @var    string
 	 */
 	public $meta_key = '_tribe_ticket_version';
-
-	public function __construct( $hook = true ) {
-		if ( ! $hook ) {
-			return;
-		}
-
-		add_action( 'tribe_tickets_ticket_add', array( $this, 'on_load' ) );
-	}
-
-	public function on_load() {
-
-	}
 
 	/**
 	 * Checks if the Post meta exists
@@ -162,5 +149,22 @@ class Tribe__Tickets__Version {
 	 */
 	public function is_outdated( $ticket ) {
 		return $this->compare( $ticket, Tribe__Tickets__Main::VERSION, '<' );
+	}
+
+	/**
+	 * Will remove or add actions for Version Control
+	 *
+	 * @since  TBD
+	 *
+	 * @param  boolean  $add  Should add the Actions when false will remove actions
+	 *
+	 * @return void
+	 */
+	public function hook( $add = true ) {
+		if ( $add ) {
+			add_action( 'tribe_tickets_ticket_add', array( $this, 'update' ), 10, 1 );
+		} else {
+			remove_action( 'tribe_tickets_ticket_add', array( $this, 'update' ), 10 );
+		}
 	}
 }

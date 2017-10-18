@@ -2,8 +2,6 @@
 
 /**
  * Handles most actions related to a Ticket or Multiple ones
- *
- * @container tickets.handler
  */
 class Tribe__Tickets__Tickets_Handler {
 	/**
