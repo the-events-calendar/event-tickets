@@ -26,6 +26,7 @@ class Tribe__Tickets__Data_API {
 	protected function setup_data() {
 
 		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
+			$provider = call_user_func( array( $module_class, 'get_instance' ) );
 
 			/**
 			 * The usage of plain `$module_class::ATTENDEE_EVENT_KEY` will throw a `T_PAAMAYIM_NEKUDOTAYIM`
@@ -43,18 +44,13 @@ class Tribe__Tickets__Data_API {
 
 			$this->ticket_class[ $module_class ] = array();
 
-			foreach ( $types as $key => $value ) {
 
+			foreach ( $types as $key => $value ) {
 				$this->ticket_types[ $key ][]                = $value;
 				$this->ticket_class[ $module_class ][ $key ] = $value;
-
-			}
-			if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $module_class ) {
-				$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::$event_key;
-			} else {
-				$this->ticket_class[ $module_class ]['tribe_for_event'] = $module_class::get_instance()->event_key;
 			}
 
+			$this->ticket_class[ $module_class ]['tribe_for_event'] = $provider->event_key;
 			$this->ticket_class[ $module_class ]['event_id_key'] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
 			$this->ticket_class[ $module_class ]['order_id_key'] = constant( "$module_class::ATTENDEE_ORDER_KEY" );
 		}

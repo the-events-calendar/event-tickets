@@ -256,8 +256,8 @@ class Tribe__Tickets__Tickets_Handler {
 		);
 
 		if ( $provider instanceof Tribe__Tickets_Plus__Commerce__EDD__Main ) {
-			$totals['sold']    = $provider->stock_control->get_purchased_inventory( $ticket->ID, array( 'publish' ) );
-			$totals['pending'] = $provider->stock_control->count_incomplete_order_items( $ticket->ID );
+			$totals['sold']    = $provider->stock()->get_purchased_inventory( $ticket->ID, array( 'publish' ) );
+			$totals['pending'] = $provider->stock()->count_incomplete_order_items( $ticket->ID );
 		} elseif ( $provider instanceof Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
 			$totals['sold']    = get_post_meta( $ticket->ID, 'total_sales', true );
 			$totals['pending'] = $provider->get_qty_pending( $ticket->ID, true );
