@@ -39,7 +39,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		$screen = get_current_screen();
 
 		$screen->add_option( 'per_page', array(
-			'label'  => __( 'Number of orders per page:', 'event-tickets-plus' ),
+			'label'  => __( 'Number of orders per page:', 'event-tickets' ),
 			'option' => $this->per_page_option,
 		) );
 

@@ -97,9 +97,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$actions['tickets_orders'] = sprintf(
 			'<a title="%s" href="%s">%s</a>',
-			sprintf( esc_html__( 'See PayPal purchases for this %s', 'event-tickets-plus' ), $post_type ),
+			sprintf( esc_html__( 'See PayPal purchases for this %s', 'event-tickets' ), $post_type ),
 			esc_url( $url ),
-			esc_html__( 'PayPal Orders', 'event-tickets-plus' )
+			esc_html__( 'PayPal Orders', 'event-tickets' )
 		);
 
 		return $actions;
