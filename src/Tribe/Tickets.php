@@ -850,7 +850,7 @@ class Tribe__Tickets__Tickets {
 
 		$ticket = $this->get_ticket( $post_id, $ticket_id );
 
-		$data['ticket_stock'] = $ticket->stock;
+		$data['ticket_stock'] = $ticket->stock();
 		$data['ticket_capacity'] = $ticket->capacity();
 
 		$return = array(
