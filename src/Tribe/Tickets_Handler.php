@@ -117,6 +117,7 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
 
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
+		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
@@ -157,6 +158,47 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * On update of the Event Capacity we will update all shared capacity Stock to match
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int     $meta_id         MID
+	 * @param  int     $object_id       Which Post we are dealing with
+	 * @param  string  $meta_key        Which meta key we are fetching
+	 * @param  int     $event_capacity  To which value the event Capacity was update to
+	 *
+	 * @return int
+	 */
+	public function update_shared_tickets_capacity( $meta_id, $object_id, $meta_key, $event_capacity ) {
+		// Bail on non-capacity
+		if ( $this->key_capacity !== $meta_key ) {
+			return false;
+		}
+
+		$event_types = Tribe__Tickets__Main::instance()->post_types();
+
+		// Bail on non event like post type
+		if ( ! in_array( get_post_type( $object_id ), $event_types ) ) {
+			return false;
+		}
+
+		$tickets = $this->get_tickets_ids( $object_id );
+
+		foreach ( $tickets as $ticket ) {
+			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE !== $mode ) {
+				continue;
+			}
+
+			$totals = $this->get_ticket_totals( $ticket );
+
+			$stock = $event_capacity - $totals['pending'] - $totals['sold'];
+			update_post_meta( $ticket, '_stock', $stock );
+		}
+	}
+
+	/**
 	 * Allows us to create capacity when none is defined for an older ticket
 	 * It will define the new Capacity based on Stock + Tickets Pending + Tickets Sold
 	 *
@@ -187,7 +229,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Bail when we already have the MetaKey saved
 		if ( metadata_exists( 'post', $object_id, $meta_key ) ) {
-			return $value;
+			return get_post_meta( $object_id, $meta_key, true );
 		}
 
 		// Bail when we don't have a legacy version
@@ -318,14 +360,14 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function has_shared_capacity( $ticket ) {
 		if ( ! $ticket instanceof WP_Post ) {
-			$post = get_post( $post );
+			$ticket = get_post( $ticket );
 		}
 
 		if ( ! $ticket instanceof WP_Post ) {
 			return false;
 		}
 
-		$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+		$mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode;
 	}

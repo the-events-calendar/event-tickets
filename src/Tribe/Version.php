@@ -122,7 +122,7 @@ class Tribe__Tickets__Version {
 	public function compare( $ticket, $version, $compare = '>' ) {
 		$ticket_version = $this->get( $ticket );
 
-		return version_compare( $version, $ticket_version, $compare );
+		return version_compare( $ticket_version, $version, $compare );
 	}
 
 	/**
