@@ -1145,6 +1145,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$inventory     = $ticket->inventory();
 		$available     = $ticket->available();
 		$capacity      = $ticket->capacity();
+		$stock         = $ticket->stock();
 		$needs_warning = false;
 		$mode          = $ticket->global_stock_mode();
 
@@ -1153,7 +1154,7 @@ class Tribe__Tickets__Tickets_Handler {
 			&& -1 !== $capacity
 		) {
 			$product = wc_get_product( $ticket->ID );
-			$needs_warning = (int) $available !== (int) $ticket->stock();
+			$needs_warning = (int) $inventory !== (int) $stock;
 		}
 
 		?>
@@ -1193,7 +1194,7 @@ class Tribe__Tickets__Tickets_Handler {
 					<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'The number of Complete ticket sales does not match the number of attendees. Please check the Attendees list and adjust ticket stock in WooCommerce as needed.', 'event-tickets' ) ?>"></span>
 				<?php endif; ?>
 
-				<?php tribe_tickets_get_readable_amount( $inventory, $mode, true ); ?>
+				<?php tribe_tickets_get_readable_amount( $available, $mode, true ); ?>
 			</td>
 
 			<td class="ticket_edit">

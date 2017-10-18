@@ -423,22 +423,27 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function inventory() {
+			// Fetch provider
+			$provider = $this->get_provider();
+
+			// If we dont have the provider we fetch from inventory
+			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
+				return $this->capacity() - $this->qty_sold() - $this->qty_pending();
+			}
+
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
 			}
 
-			// Do the math!
-			$remaining = $this->capacity() - $this->qty_sold() - $this->qty_pending();
+			// Fetch the Attendees
+			$attendees = $this->provider->get_attendees_by_id( $this->ID );
 
-			// Adjust if using global stock with a sales cap
-			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
-				$event_capacity = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				$remaining = min( $remaining, $this->capacity() - $event_capacity->tickets_sold( true ) );
-			}
+			// Do the math!
+			$inventory = $this->capacity() - count( $attendees );
 
 			// Prevents Negative
-			return max( $remaining, 0 );
+			return max( $inventory, 0 );
 		}
 
 		/**
@@ -462,24 +467,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function available() {
-			// Fetch provider
-			$provider = $this->get_provider();
-
-			// If we dont have the provider we fetch from inventory
-			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
-				return $this->inventory();
-			}
-
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
 			}
 
-			// Fetch the Attendees
-			$attendees = $this->provider->get_attendees_by_id( $this->ID );
+			$inventory = $this->inventory();
+			$stock     = $this->stock();
+			$capacity  = $this->capacity();
 
-			// Do the math!
-			$available = $this->capacity() - count( $attendees );
+			// What ever is the lowest we use it
+			$available = min( $stock, $capacity, $inventory );
 
 			// Prevents Negative
 			return max( $available, 0 );
