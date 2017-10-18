@@ -456,9 +456,8 @@ class Tribe__Tickets__Tickets {
 	 * This stub method should be treated as if it were an abstract method - ie, the
 	 * concrete class ought to provide the implementation.
 	 *
-	 * @todo convert to abstract method in 4.0
-	 *
 	 * @param $possible_ticket
+	 *
 	 * @return bool|WP_Post
 	 */
 	public function get_event_for_ticket( $possible_ticket ) {
