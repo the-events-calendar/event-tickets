@@ -1187,7 +1187,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$inventory     = $ticket->inventory();
 		$available     = $ticket->available();
 		$capacity      = $ticket->capacity();
-		$stock         = $ticket->stock( null, false );
+		$stock         = $ticket->stock();
 		$needs_warning = false;
 		$mode          = $ticket->global_stock_mode();
 
