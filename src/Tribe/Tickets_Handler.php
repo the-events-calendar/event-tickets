@@ -62,9 +62,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 
@@ -82,7 +84,7 @@ class Tribe__Tickets__Tickets_Handler {
 		echo '
 			<li class="post-type">
 				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( $pto->label ) . '
+				' . esc_html( $pto->labels->singular_name ) . '
 			</li>
 		';
 	}
@@ -93,9 +95,12 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param $event_id
 	 */
 	public function event_action_links( $event_id ) {
+		$pto       = get_post_type_object( get_post( $event_id )->post_type );
+		$edit_text = sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $pto->labels->singular_name );
+		$view_text = sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $pto->labels->singular_name );
 		$action_links = array(
-			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
-			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html( $edit_text ) . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html( $view_text ) . '</a>',
 		);
 
 		/**

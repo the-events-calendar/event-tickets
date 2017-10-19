@@ -1,4 +1,5 @@
 <?php
+
 if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 	/**
 	 *    Generic object to hold information about a single ticket
@@ -70,6 +71,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @var
 		 */
 		public $provider_class;
+
+		/**
+		 * The SKU assigned to this ticket if any.
+		 * @var string
+		 */
+		protected $sku;
 
 		/**
 		 * @var Tribe__Tickets__Tickets
@@ -607,5 +614,29 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			return null;
 		}
+
+		/**
+		 * Sets or gets the ticket SKU.
+		 *
+		 * @since TBD
+		 *
+		 * @param null $sku
+		 *
+		 * @return string The SKU string.
+		 */
+		public function sku( $sku = null ) {
+			if ( null === $sku ) {
+				if ( null === $this->sku ) {
+					$this->sku = get_post_meta( $this->ID, '_sku', true );
+				}
+
+				return $this->sku;
+			}
+
+			$this->sku = $sku;
+
+			return $this->sku;
+		}
 	}
+
 }

@@ -190,6 +190,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.notices', 'Tribe__Tickets__Commerce__PayPal__Notices' );
 		tribe_singleton( 'tickets.commerce.paypal.endpoints', 'Tribe__Tickets__Commerce__PayPal__Endpoints' );
 		tribe_singleton( 'tickets.commerce.paypal.endpoints.templates.success', 'Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template' );
+		tribe_singleton( 'tickets.commerce.paypal.orders.report', 'Tribe__Tickets__Commerce__PayPal__Orders__Report', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
+		tribe_singleton( 'ticket.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -201,6 +204,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		tribe( 'tickets.commerce.paypal.gateway' );
+		tribe( 'tickets.commerce.paypal.orders.report' );
+		tribe( 'ticket.commerce.paypal.screen-options' );
 	}
 
 	/**
@@ -663,7 +668,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_tpp_tickets_generated', $order_id, $post_id );
 
-		$send_mail_stati = array( 'yes' );
+		$send_mail_statuses = array( 'yes' );
 
 		/**
 		 * Filters whether a confirmation email should be sent or not for PayPal tickets.
@@ -1240,12 +1245,38 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param $event_id
+	 * @param int  $event_id
+	 * @param bool $url_only
 	 *
 	 * @return string
 	 */
-	public function get_event_reports_link( $event_id ) {
-		return '';
+	public function get_event_reports_link( $event_id, $url_only = false ) {
+		$ticket_ids = (array) $this->get_tickets_ids( $event_id );
+		if ( empty( $ticket_ids ) ) {
+			return '';
+		}
+
+		$query = array(
+			'page'    => 'tpp-orders',
+			'post_id' => $event_id,
+		);
+
+		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
+
+		/**
+		 * Filter the PayPal Ticket Orders (Sales) Report URL
+		 *
+		 * @var string $report_url Report URL
+		 * @var int    $event_id   The post ID
+		 * @var array  $ticket_ids An array of ticket IDs
+		 *
+		 * @return string
+		 */
+		$report_url = apply_filters( 'tribe_tickets_paypal_report_url', $report_url, $event_id, $ticket_ids );
+
+		return $url_only
+			? $report_url
+			: '<small> <a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Sales report', 'event-tickets' ) . '</a> </small>';
 	}
 
 	/**
@@ -1259,7 +1290,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return string
 	 */
 	public function get_ticket_reports_link( $event_id, $ticket_id ) {
-		return '';
+		if ( empty( $ticket_id ) ) {
+			return '';
+		}
+
+		$query = array(
+			'page'        => 'tpp-orders',
+			'product_ids' => $ticket_id,
+			'post_id'     => $event_id,
+		);
+
+		$report_url = add_query_arg( $query, admin_url( 'admin.php' ) );
+
+		return '<span><a href="' . esc_url( $report_url ) . '">' . esc_html__( 'Report', 'event-tickets' ) . '</a></span>';
 	}
 
 	/**
@@ -1452,17 +1495,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Filters the array of stati that will mark an ticket attendee as eligible for check-in.
+	 * Filters the array of statuses that will mark an ticket attendee as eligible for check-in.
 	 *
-	 * @param array $stati An array of stati that should mark an ticket attendee as
+	 * @since TBD
+	 *
+	 * @param array $statuses An array of statuses that should mark an ticket attendee as
 	 *                     available for check-in.
 	 *
 	 * @return array The original array plus the 'yes' status.
 	 */
-	public function filter_event_tickets_attendees_tpp_checkin_stati( array $stati = array() ) {
-		$stati[] = 'completed';
+	public function filter_event_tickets_attendees_tpp_checkin_stati( array $statuses = array() ) {
+		$statuses[] = 'completed';
 
-		return array_unique( $stati );
+		return array_unique( $statuses );
 	}
 
 	/**
@@ -1558,5 +1603,111 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		return empty( $attendees ) ? array() : array_map( 'get_post', $attendees );
+	}
+
+	/**
+	 * Whether the ticket is a PayPal one or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @return bool
+	 */
+	public function is_paypal_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
+		return $ticket->provider_class === __CLASS__;
+	}
+
+	/**
+	 * Returns a list of attendees grouped by order.
+	 *
+	 * @since TBD
+	 *
+	 * @param int   $post_id
+	 * @param array $ticket_ids An optional array of ticket IDs to limit the orders by.
+	 *
+	 * @return array An associative array in the format [ <order_number> => <order_details> ]
+	 */
+	public function get_orders_by_post_id( $post_id, array $ticket_ids = null ) {
+		$attendees = $this->get_attendees_by_id( $post_id );
+
+		if ( empty( $attendees ) ) {
+			return array();
+		}
+
+		$statuses  = $this->get_order_statuses();
+		$undefined = Tribe__Utils__Array::get( $statuses, 'undefined', reset( $statuses ) );
+		/** @var Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
+		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
+
+		$orders = array();
+
+		foreach ( $attendees as $attendee ) {
+			if ( ! empty( $ticket_ids ) && ! in_array( $attendee['product_id'], $ticket_ids ) ) {
+				continue;
+			}
+
+			$order_number = get_post_meta( $attendee['attendee_id'], $this->order_key, true );
+
+			if ( ! isset( $orders[ $order_number ] ) ) {
+				$orders[ $order_number ] = array(
+					'url'             => $this->get_order_url( $order_number ),
+					'number'          => $order_number,
+					'status'          => $attendee['order_status'],
+					'status_label'    => Tribe__Utils__Array::get( $statuses, $attendee['order_status'], $undefined ),
+					'purchaser_name'  => $attendee['purchaser_name'],
+					'purchaser_email' => $attendee['purchaser_email'],
+					'purchase_time'   => $attendee['purchase_time'],
+					'attendees'       => array( $attendee ),
+				);
+			} else {
+				$orders[ $order_number ]['attendees'][] = $attendee;
+			}
+		}
+
+		foreach ( $orders as &$order ) {
+			$order['line_total'] = $sales->get_revenue_for_attendees( $order['attendees'] );
+		}
+
+		return $orders;
+	}
+
+	/**
+	 * Returns the list of PayPal tickets order stati.
+	 *
+	 * @since TBD
+	 *
+	 * @return array An associative array in the [ <slug> => <label> ] format.
+	 */
+	public function get_order_statuses() {
+		$order_statuses = array(
+			'undefined'     => _x( 'Undefined', 'a PayPal ticket order status', 'event-tickets' ),
+			'completed'     => _x( 'Completed', 'a PayPal ticket order status', 'event-tickets' ),
+			'not-completed' => _x( 'Not Completed', 'a PayPal ticket order status', 'event-tickets' ),
+		);
+
+		/**
+		 * Filters the list of PayPal tickets order stati.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $order_statuses
+		 *
+		 * @return array An associative array in the [ <slug> => <label> ] format.
+		 */
+		return apply_filters( 'tribe_tickets_commerce_paypal_order_stati', $order_statuses );
+	}
+
+	/**
+	 * Returns the URL to a PayPal order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $order_number
+	 *
+	 * @return string
+	 */
+	protected function get_order_url( $order_number ) {
+		return add_query_arg( array( 'cmd' => '_view-a-trans', 'id' => $order_number ), $this->get_cart_url() );
 	}
 }

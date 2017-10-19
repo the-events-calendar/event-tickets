@@ -1,7 +1,6 @@
 <table class="eventtable ticket_list eventForm">
 	<?php
 	$provider = null;
-	$count    = 0;
 	global $post;
 
 	$post_type = 'post';
@@ -21,6 +20,7 @@
 	}
 
 	$modules = Tribe__Tickets__Tickets::modules();
+	$printed_providers = array();
 
 	foreach ( $tickets as $ticket ) {
 		/**
@@ -67,7 +67,8 @@
 			$controls[] = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move', 'event-tickets' ) . '</a>', $move_type_url );
 		}
 
-		if ( ( $ticket->provider_class !== $provider ) || $count == 0 ) :
+		if ( ( ! in_array( $provider, $printed_providers, true ) ) ) :
+			$printed_providers[] = $provider;
 			?>
 			<td colspan="4" class="titlewrap">
 				<h4 class="tribe_sectionheader">
@@ -124,6 +125,5 @@
 			</td>
 		</tr>
 		<?php
-		$count ++;
 	} ?>
 </table>
