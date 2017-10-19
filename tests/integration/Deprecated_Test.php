@@ -6,7 +6,7 @@
  *
  * @package Tribe__Tickets__Main
  */
-class Tribe_Deprecated_Test extends Tribe__Tickets__WP_UnitTestCase {
+class Tribe_Deprecated_Test extends Tribe__Events__WP_UnitTestCase {
 
 	public function deprecated_classes_4_0() {
 		return array(
@@ -38,7 +38,7 @@ class Tribe_Deprecated_Test extends Tribe__Tickets__WP_UnitTestCase {
 			$this->markTestSkipped( $class . 'was already loaded' );
 		}
 
-		$this->expected_deprecated_file[] = dirname( dirname( dirname( __FILE__ ) ) ) . '/src/deprecated/' . $class . '.php';
+		$this->expected_deprecated_file[] = 'src/deprecated/' . $class . '.php';
 		$this->assertTrue( class_exists( $class ), 'Class "' . $class . '" does not exist.' );
 	}
 
@@ -52,7 +52,7 @@ class Tribe_Deprecated_Test extends Tribe__Tickets__WP_UnitTestCase {
 			$this->markTestSkipped( $class . 'was already loaded' );
 		}
 
-		$this->expected_deprecated_file[] = dirname( dirname( dirname( __FILE__ ) ) ) . '/src/deprecated/' . $class . '.php';
+		$this->expected_deprecated_file[] = 'src/deprecated/' . $class . '.php';
 		$this->assertTrue( class_exists( $class ), 'Class "' . $class . '" does not exist.' );
 	}
 }

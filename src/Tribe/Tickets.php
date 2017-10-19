@@ -1,5 +1,4 @@
 <?php
-
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
 	 * Class with the API definition and common functionality
@@ -243,6 +242,60 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Retrieve the Query args to fetch all the Tickets related to a post
+		 *
+		 * @since  TBD
+		 *
+		 * @param  int|WP_Post $post
+		 *
+		 * @return array
+		 */
+		public function get_tickets_query_args( $post ) {
+			$args = array(
+				'post_type'      => array( $this->ticket_object ),
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'post_status'    => 'publish',
+				'order_by'       => 'menu_order',
+				'order'          => 'ASC',
+				'meta_query'     => array(
+					array(
+						'key'     => $this->event_key,
+						'value'   => $post,
+						'compare' => '=',
+					),
+				),
+			);
+
+			return $args;
+		}
+
+		/**
+		 * Retrieve the ID numbers of all tickets of an event
+		 *
+		 * @since  TBD
+		 *
+		 * @param  int|WP_Post $post
+		 *
+		 * @return array
+		 */
+		public function get_tickets_ids( $post ) {
+			if ( ! $post instanceof WP_Post ) {
+				$post = get_post( $post );
+			}
+
+			if ( ! $post instanceof WP_Post ) {
+				return false;
+			}
+
+			$args = $this->get_tickets_query_args( $post->ID );
+			$query = new WP_Query( $args );
+
+			return $query->posts;
+		}
+
+
+		/**
 		 * Returns the html for the delete ticket link
 		 *
 		 * @since TBD
@@ -404,9 +457,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * This stub method should be treated as if it were an abstract method - ie, the
 		 * concrete class ought to provide the implementation.
 		 *
-		 * @todo convert to abstract method in 4.0
-		 *
 		 * @param $possible_ticket
+		 *
 		 * @return bool|WP_Post
 		 */
 		public function get_event_for_ticket( $possible_ticket ) {
@@ -607,6 +659,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			self::$active_modules[ $this->class_name ] = $this->plugin_name;
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
+
 			/**
 			 * Priority set to 11 to force a specific display order
 			 *
@@ -797,7 +850,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$ticket = $this->get_ticket( $post_id, $ticket_id );
 
-			$data['ticket_stock'] = $ticket->stock;
+			$data['ticket_stock'] = $ticket->stock();
 			$data['ticket_capacity'] = $ticket->capacity();
 
 			$return = array(
@@ -839,20 +892,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
-				$start_datetime = sprintf(
-					'%s %s',
-					$data['ticket_start_date'],
-					$data['ticket_start_time']
-				);
+				$start_datetime = $data['ticket_start_date'];
+
+				if ( ! empty( $data['ticket_start_time'] ) ) {
+					$start_datetime .= ' ' . $data['ticket_start_time'];
+				}
+
 				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_datetime ) );
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
-				$end_datetime = sprintf(
-					'%s %s',
-					$data['ticket_end_date'],
-					$data['ticket_end_time']
-				);
+				$end_datetime = $data['ticket_end_date'];
+
+				if ( ! empty( $data['ticket_end_time'] ) ) {
+					$end_datetime .= ' ' . $data['ticket_end_time'];
+				}
+
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
 			}
 
@@ -1500,32 +1555,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
-				/**
-				 * @param Tribe__Tickets__Ticket_Object $ticket
-				 */
 				$post_id = $ticket->get_event()->ID;
 				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 				$stock_mode = $ticket->global_stock_mode();
 
-				$data['tickets'][ $ticket->ID ] = array(
+				$ticket_data = array(
 					'event_id' => $post_id,
 					'mode'     => $stock_mode,
+					'cap'      => $ticket->capacity(),
 				);
 
-				if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode ) {
-					$data['tickets'][ $ticket->ID ]['cap'] = $ticket->global_stock_cap();
-				}
-
-				if (
-					Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
-					&& $ticket->managing_stock()
-				) {
-					$data['tickets'][ $ticket->ID ]['stock'] = $ticket->stock();
+				if ( $ticket->managing_stock() ) {
+					$ticket_data['stock'] = $ticket->stock();
 				}
 
 				$data['events'][ $post_id ] = array(
 					'stock' => $global_stock->get_stock_level(),
 				);
+
+				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
 
 			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );

@@ -423,22 +423,27 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function inventory() {
+			// Fetch provider
+			$provider = $this->get_provider();
+
+			// If we dont have the provider we fetch from inventory
+			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
+				return $this->capacity() - $this->qty_sold() - $this->qty_pending();
+			}
+
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
 			}
 
-			// Do the math!
-			$remaining = $this->capacity() - $this->qty_sold() - $this->qty_pending();
+			// Fetch the Attendees
+			$attendees = $this->provider->get_attendees_by_id( $this->ID );
 
-			// Adjust if using global stock with a sales cap
-			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode() ) {
-				$event_capacity = new Tribe__Tickets__Global_Stock( $this->get_event()->ID );
-				$remaining = min( $remaining, $this->capacity() - $event_capacity->tickets_sold( true ) );
-			}
+			// Do the math!
+			$inventory = $this->capacity() - count( $attendees );
 
 			// Prevents Negative
-			return max( $remaining, 0 );
+			return max( $inventory, 0 );
 		}
 
 		/**
@@ -462,24 +467,22 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function available() {
-			// Fetch provider
-			$provider = $this->get_provider();
-
-			// If we dont have the provider we fetch from inventory
-			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
-				return $this->inventory();
-			}
-
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
 			}
 
-			// Fetch the Attendees
-			$attendees = $this->provider->get_attendees_by_id( $this->ID );
+			$stock_mode = $this->global_stock_mode();
 
-			// Do the math!
-			$available = $this->capacity() - count( $attendees );
+			$values[] = $this->inventory();
+			$values[] = $this->capacity();
+
+			if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+				$values[] = $this->stock();
+			}
+
+			// What ever is the lowest we use it
+			$available = min( $values );
 
 			// Prevents Negative
 			return max( $available, 0 );
@@ -503,7 +506,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// If Capped or we used the local Capacity
 			if (
 				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode
-				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
+			) {
 				return (int) $this->capacity;
 			}
 
@@ -524,7 +528,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @return int|string
 		 */
-		public function stock( $value = null ) {
+		public function stock( $value = null, $global = true ) {
+			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+				return -1;
+			}
+
 			// If the Value was passed as numeric value overwrite
 			if ( is_numeric( $value ) || $value === self::UNLIMITED_STOCK ) {
 				$this->stock = $value;
@@ -533,8 +542,21 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// if stock is negative, force it to 0
 			$this->stock = 0 >= $this->stock ? 0 : $this->stock;
 
+			$stock[] = $this->stock;
+
+			if ( true !== (bool) $global ) {
+				return min( $stock );
+			}
+
+			if (
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
+				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
+			) {
+				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
+			}
+
 			// return the new Stock
-			return $this->stock;
+			return min( $stock );
 		}
 
 		/**

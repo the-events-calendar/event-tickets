@@ -728,15 +728,40 @@ function tribe_tickets_get_capacity( $post ) {
 		return null;
 	}
 
+	$event_types = Tribe__Tickets__Main::instance()->post_types();
 	$key = tribe( 'tickets.handler' )->key_capacity;
+
+	// When we have a legacy ticket we migrate it
+	if ( ! in_array( $post->post_type, $event_types ) && tribe( 'tickets.version' )->is_legacy( $post->ID ) ) {
+		return tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
+	}
+
+	// Defaults to the ticket ID
+	$post_id = $post->ID;
 
 	// Return Null for when we don't have the Capacity Data
 	if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
-		return null;
+		$mode = get_post_meta( $post->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+		$shared_modes = array( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE );
+
+		// When we are in a Ticket Post Type update where we get the value from Event
+		if (
+			! in_array( $post->post_type, $event_types )
+			&& in_array( $mode, $shared_modes )
+		) {
+			$event_id = tribe_tickets_get_event_ids( $post->ID );
+
+			// It will return an array of Events
+			if ( ! empty( $event_id ) ) {
+				$post_id = current( $event_id );
+			}
+		} else {
+			return null;
+		}
 	}
 
 	// Fetch the value
-	$value = get_post_meta( $post->ID, $key, true );
+	$value = get_post_meta( $post_id, $key, true );
 
 	// When dealing with an empty string we assume it's unlimited
 	if ( '' === $value ) {

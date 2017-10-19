@@ -1650,32 +1650,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get an array of ticket IDs associated with an event
-	 *
-	 * @param  int $event_id   ID of the event in question
-	 * @return array           array of ticket IDs
-	 */
-	public function get_tickets_ids( $event_id ) {
-		if ( is_object( $event_id ) ) {
-			$event_id = $event_id->ID;
-		}
-
-		$query = new WP_Query( array(
-			'post_type'      => $this->ticket_object,
-			'meta_key'       => $this->event_key,
-			'meta_value'     => $event_id,
-			'meta_compare'   => '=',
-			'posts_per_page' => - 1,
-			'fields'         => 'ids',
-			'post_status'    => 'publish',
-			'order_by'       => 'menu_order',
-			'order'          => 'ASC',
-		) );
-
-		return $query->posts;
-	}
-
-	/**
 	* Renders the advanced fields in the new/edit ticket form.
 	* Using the method, providers can add as many fields as
 	* they want, specific to their implementation.

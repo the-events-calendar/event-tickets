@@ -76,6 +76,10 @@ var tribe_tickets_ticket_form = {};
 		var available_stock = my.get_single_stock( ticket_id );
 		var remaining;
 
+		if ( ! $.isNumeric( available_stock ) ) {
+			return;
+		}
+
 		// Keep in check (should be handled for us by numeric inputs in most browsers, but let's be safe)
 		if ( new_quantity > available_stock ) {
 			new_quantity = available_stock;
@@ -214,15 +218,23 @@ var tribe_tickets_ticket_form = {};
 	my.currently_requested_global_event_stock = function( event_id ) {
 		var total   = 0;
 		var tickets = my.get_tickets_of( event_id );
+		var $ticketStocks = $tickets_lists.find( '.available-stock' );
 
-		for ( var ticket_id in tickets ) {
-			switch ( tribe_tickets_stock_data.tickets[ticket_id].mode ) {
-				case 'global':
-				case 'capped':
-					total += parseInt( $tickets_lists.find( '[data-product-id=' + ticket_id + ']').find( '.qty').val(), 10 );
-				break;
+		$ticketStocks.each( function( i, ticket ) {
+			var $ticket = $( ticket );
+			var ticketID = $ticket.data( 'productId' );
+			var modes = [ 'global', 'capped' ];
+			var mode = tribe_tickets_stock_data.tickets[ ticketID ].mode;
+
+			if ( -1 === modes.indexOf( mode ) ) {
+				return;
 			}
-		}
+
+			var $quantity = $ticket.parents( 'tr' ).eq( 0 ).find( '.qty' );
+			var quantity = parseInt( $quantity.val(), 10 );
+
+			total += quantity;
+		} );
 
 		return total;
 	};

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Handles most actions related to a Ticket or Multiple ones
+ */
 class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Singleton instance of this class
@@ -113,58 +116,201 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'post_row_actions', array( $this, 'attendees_row_action' ) );
 		add_filter( 'page_row_actions', array( $this, 'attendees_row_action' ) );
 
+		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
+		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
+
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
 
 	/**
-	 * Injects event post type
+	 * Gets the Tickets from a Post
 	 *
-	 * @param int $event_id
-	 */
-	public function event_details_top( $event_id ) {
-		$pto = get_post_type_object( get_post_type( $event_id ) );
-
-		echo '
-			<li class="post-type">
-				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( $pto->label ) . '
-			</li>
-		';
-	}
-
-	/**
-	 * Injects action links into the attendee screen.
+	 * @since  TBD
 	 *
-	 * @param $event_id
+	 * @param  int|WP_Post  $post
+	 * @return array
 	 */
-	public function event_action_links( $event_id ) {
-		$action_links = array(
-			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
-			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+	public function get_tickets_ids( $post = null ) {
+		$modules = Tribe__Tickets__Tickets::modules();
+		$args = array(
+			'post_type'      => array(),
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'post_status'    => 'publish',
+			'order_by'       => 'menu_order',
+			'order'          => 'ASC',
+			'meta_query'     => array(
+				'relation' => 'OR',
+			),
 		);
 
-		/**
-		 * Provides an opportunity to add and remove action links from the
-		 * attendee screen summary box.
-		 *
-		 * @param array $action_links
-		 */
-		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links );
+		foreach ( $modules as $provider_class => $name ) {
+			$provider = call_user_func( array( $provider_class, 'get_instance' ) );
+			$module_args = $provider->get_tickets_query_args( $post );
 
-		if ( empty( $action_links ) ) {
-			return;
+			$args['post_type'] = array_merge( $args['post_type'], $module_args['post_type'] );
+			$args['meta_query'] = array_merge( $args['meta_query'], $module_args['meta_query'] );
 		}
 
-		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
+		$query = new WP_Query( $args );
+
+		return $query->posts;
 	}
 
 	/**
-	 * Print Check In Totals at top of Column
+	 * On update of the Event Capacity we will update all shared capacity Stock to match
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int     $meta_id         MID
+	 * @param  int     $object_id       Which Post we are dealing with
+	 * @param  string  $meta_key        Which meta key we are fetching
+	 * @param  int     $event_capacity  To which value the event Capacity was update to
+	 *
+	 * @return int
 	 */
-	public function print_checkedin_totals() {
-		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
+	public function update_shared_tickets_capacity( $meta_id, $object_id, $meta_key, $event_capacity ) {
+		// Bail on non-capacity
+		if ( $this->key_capacity !== $meta_key ) {
+			return false;
+		}
 
-		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
+		$event_types = Tribe__Tickets__Main::instance()->post_types();
+
+		// Bail on non event like post type
+		if ( ! in_array( get_post_type( $object_id ), $event_types ) ) {
+			return false;
+		}
+
+		$tickets = $this->get_tickets_ids( $object_id );
+
+		foreach ( $tickets as $ticket ) {
+			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE !== $mode ) {
+				continue;
+			}
+
+			$totals = $this->get_ticket_totals( $ticket );
+
+			$stock = $event_capacity - $totals['pending'] - $totals['sold'];
+			update_post_meta( $ticket, '_stock', $stock );
+		}
+	}
+
+	/**
+	 * Allows us to create capacity when none is defined for an older ticket
+	 * It will define the new Capacity based on Stock + Tickets Pending + Tickets Sold
+	 *
+	 * Important to note that we cannot use `get_ticket()` or `new Ticket_Object` in here
+	 * due to triggering of a Infinite loop
+	 *
+	 * @since  TBD
+	 *
+	 * @param  mixed   $value      Previous value set
+	 * @param  int     $object_id  Which Post we are dealing with
+	 * @param  string  $meta_key   Which meta key we are fetching
+	 *
+	 * @return int
+	 */
+	public function filter_capacity_support( $value, $object_id, $meta_key ) {
+		// Something has been already set
+		if ( ! is_null( $value ) ) {
+			return $value;
+		}
+
+		// We only care about Capacity Key
+		if ( $this->key_capacity !== $meta_key ) {
+			return $value;
+		}
+
+		// We remove the Check to allow a fair usage of `metadata_exists`
+		remove_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15 );
+
+		// Bail when we already have the MetaKey saved
+		if ( metadata_exists( 'post', $object_id, $meta_key ) ) {
+			return get_post_meta( $object_id, $meta_key, true );
+		}
+
+		// Bail when we don't have a legacy version
+		if ( ! tribe( 'tickets.version' )->is_legacy( $object_id ) ) {
+			return $value;
+		}
+
+		$post_type = get_post_type( $object_id );
+
+		if ( tribe_tickets_post_type_enabled( $post_type ) ) {
+			$global_stock = new Tribe__Tickets__Global_Stock( $object_id );
+			$capacity     = $global_stock->get_stock_level();
+			$tickets      = $this->get_tickets_ids( $object_id );
+
+			foreach ( $tickets as $ticket ) {
+				if ( $this->has_shared_capacity( $ticket ) ) {
+					continue;
+				}
+				$totals = $this->get_ticket_totals( $ticket );
+
+				$capacity += $totals['sold'] + $totals['pending'];
+			}
+		} else {
+			if ( $this->is_ticket_managing_stock( $object_id ) ) {
+				$totals = $this->get_ticket_totals( $object_id );
+
+				// Do the math
+				$capacity = array_sum( $totals );
+			} else {
+				$capacity = -1;
+			}
+		}
+
+		update_post_meta( $object_id, $this->key_capacity, $capacity );
+
+		// Hook it back up
+		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
+
+		return $capacity;
+	}
+
+	/**
+	 * Gets the Total of Stock, Sold and Pending for a given ticket
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int|WP_Post  $ticket  Which ticket
+	 *
+	 * @return array
+	 */
+	public function get_ticket_totals( $ticket ) {
+		if ( ! $ticket instanceof WP_Post ) {
+			$ticket = get_post( $ticket );
+		}
+
+		if ( ! $ticket instanceof WP_Post ) {
+			return false;
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $ticket->ID );
+
+		$totals = array(
+			'stock'   => get_post_meta( $ticket->ID, '_stock', true ),
+			'sold'    => 0,
+			'pending' => 0,
+		);
+
+		if ( $provider instanceof Tribe__Tickets_Plus__Commerce__EDD__Main ) {
+			$totals['sold']    = $provider->stock()->get_purchased_inventory( $ticket->ID, array( 'publish' ) );
+			$totals['pending'] = $provider->stock()->count_incomplete_order_items( $ticket->ID );
+		} elseif ( $provider instanceof Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
+			$totals['sold']    = get_post_meta( $ticket->ID, 'total_sales', true );
+			$totals['pending'] = $provider->get_qty_pending( $ticket->ID, true );
+		}
+
+		$totals = array_map( 'intval', $totals );
+
+		// Remove Pending from total
+		$totals['sold'] -= $totals['pending'];
+
+		return $totals;
 	}
 
 	/**
@@ -172,12 +318,58 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since   TBD
 	 *
-	 * @param   object Tribe__Tickets__Ticket_Object
+	 * @param   int|WP_Post|object  $ticket
+	 *
+	 * @return  bool
+	 */
+	public function is_ticket_managing_stock( $ticket ) {
+		if ( ! $ticket instanceof WP_Post ) {
+			$ticket = get_post( $ticket );
+		}
+
+		if ( ! $ticket instanceof WP_Post ) {
+			return false;
+		}
+
+		$manage_stock = get_post_meta( $ticket->ID, '_manage_stock', true );
+
+		return tribe_is_truthy( $manage_stock );
+	}
+
+	/**
+	 * Returns whether a ticket has unlimited capacity
+	 *
+	 * @since   TBD
+	 *
+	 * @param   int|WP_Post|object  $ticket
 	 *
 	 * @return  bool
 	 */
 	public function is_unlimited_ticket( $ticket ) {
 		return -1 === tribe_tickets_get_capacity( $ticket->ID );
+	}
+
+	/**
+	 * Returns whether a ticket uses Shared Capacity
+	 *
+	 * @since   TBD
+	 *
+	 * @param   int|WP_Post|object  $ticket
+	 *
+	 * @return  bool
+	 */
+	public function has_shared_capacity( $ticket ) {
+		if ( ! $ticket instanceof WP_Post ) {
+			$ticket = get_post( $ticket );
+		}
+
+		if ( ! $ticket instanceof WP_Post ) {
+			return false;
+		}
+
+		$mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode;
 	}
 
 	/**
@@ -397,6 +589,57 @@ class Tribe__Tickets__Tickets_Handler {
 
 
 		return $ticket_list;
+	}
+
+	/**
+	 * Injects event post type
+	 *
+	 * @param int $event_id
+	 */
+	public function event_details_top( $event_id ) {
+		$pto = get_post_type_object( get_post_type( $event_id ) );
+
+		echo '
+			<li class="post-type">
+				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
+				' . esc_html( $pto->label ) . '
+			</li>
+		';
+	}
+
+	/**
+	 * Injects action links into the attendee screen.
+	 *
+	 * @param $event_id
+	 */
+	public function event_action_links( $event_id ) {
+		$action_links = array(
+			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+		);
+
+		/**
+		 * Provides an opportunity to add and remove action links from the
+		 * attendee screen summary box.
+		 *
+		 * @param array $action_links
+		 */
+		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links );
+
+		if ( empty( $action_links ) ) {
+			return;
+		}
+
+		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
+	}
+
+	/**
+	 * Print Check In Totals at top of Column
+	 */
+	public function print_checkedin_totals() {
+		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
+
+		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
 	}
 
 	/**
@@ -931,7 +1174,6 @@ class Tribe__Tickets__Tickets_Handler {
 		include $this->path . 'src/admin-views/meta-box.php';
 	}
 
-
 	/**
 	 * Render the ticket row into the ticket table
 	 *
@@ -945,6 +1187,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$inventory     = $ticket->inventory();
 		$available     = $ticket->available();
 		$capacity      = $ticket->capacity();
+		$stock         = $ticket->stock( null, false );
 		$needs_warning = false;
 		$mode          = $ticket->global_stock_mode();
 
@@ -953,7 +1196,7 @@ class Tribe__Tickets__Tickets_Handler {
 			&& -1 !== $capacity
 		) {
 			$product = wc_get_product( $ticket->ID );
-			$needs_warning = (int) $available !== (int) $ticket->stock();
+			$needs_warning = (int) $inventory !== (int) $stock;
 		}
 
 		?>
@@ -993,7 +1236,7 @@ class Tribe__Tickets__Tickets_Handler {
 					<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'The number of Complete ticket sales does not match the number of attendees. Please check the Attendees list and adjust ticket stock in WooCommerce as needed.', 'event-tickets' ) ?>"></span>
 				<?php endif; ?>
 
-				<?php tribe_tickets_get_readable_amount( $inventory, $mode, true ); ?>
+				<?php tribe_tickets_get_readable_amount( $available, $mode, true ); ?>
 			</td>
 
 			<td class="ticket_edit">
