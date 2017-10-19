@@ -472,12 +472,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return -1;
 			}
 
-			$inventory = $this->inventory();
-			$stock     = $this->stock();
-			$capacity  = $this->capacity();
+			$stock_mode = $this->global_stock_mode();
+
+			$values[] = $this->inventory();
+			$values[] = $this->capacity();
+
+			if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+				$values[] = $this->stock();
+			}
 
 			// What ever is the lowest we use it
-			$available = min( $stock, $capacity, $inventory );
+			$available = min( $values );
 
 			// Prevents Negative
 			return max( $available, 0 );
@@ -501,7 +506,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// If Capped or we used the local Capacity
 			if (
 				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode
-				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
+				|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
+			) {
 				return (int) $this->capacity;
 			}
 
@@ -522,7 +528,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @return int|string
 		 */
-		public function stock( $value = null ) {
+		public function stock( $value = null, $global = true ) {
+			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
+			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+				return -1;
+			}
+
 			// If the Value was passed as numeric value overwrite
 			if ( is_numeric( $value ) || $value === self::UNLIMITED_STOCK ) {
 				$this->stock = $value;
@@ -531,8 +542,21 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// if stock is negative, force it to 0
 			$this->stock = 0 >= $this->stock ? 0 : $this->stock;
 
+			$stock[] = $this->stock;
+
+			if ( true !== (bool) $global ) {
+				return min( $stock );
+			}
+
+			if (
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
+				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
+			) {
+				$stock[] = (int) get_post_meta( $this->get_event()->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL, true );
+			}
+
 			// return the new Stock
-			return $this->stock;
+			return min( $stock );
 		}
 
 		/**

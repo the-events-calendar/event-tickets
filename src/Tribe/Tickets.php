@@ -1554,32 +1554,25 @@ class Tribe__Tickets__Tickets {
 		);
 
 		foreach ( self::$frontend_ticket_data as $ticket ) {
-			/**
-			 * @param Tribe__Tickets__Ticket_Object $ticket
-			 */
 			$post_id = $ticket->get_event()->ID;
 			$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 			$stock_mode = $ticket->global_stock_mode();
 
-			$data['tickets'][ $ticket->ID ] = array(
+			$ticket_data = array(
 				'event_id' => $post_id,
 				'mode'     => $stock_mode,
+				'cap'      => $ticket->capacity(),
 			);
 
-			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $stock_mode ) {
-				$data['tickets'][ $ticket->ID ]['cap'] = $ticket->global_stock_cap();
-			}
-
-			if (
-				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode
-				&& $ticket->managing_stock()
-			) {
-				$data['tickets'][ $ticket->ID ]['stock'] = $ticket->stock();
+			if ( $ticket->managing_stock() ) {
+				$ticket_data['stock'] = $ticket->stock();
 			}
 
 			$data['events'][ $post_id ] = array(
 				'stock' => $global_stock->get_stock_level(),
 			);
+
+			$data['tickets'][ $ticket->ID ] = $ticket_data;
 		}
 
 		wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
