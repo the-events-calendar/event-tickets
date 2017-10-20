@@ -821,10 +821,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$this->ajax_error( 'Bad post' );
 			}
 
-			/*
-			 This is needed because a provider can implement a dynamic set of fields.
-			 Each provider is responsible for sanitizing these values.
-			*/
+			/**
+			 * This is needed because a provider can implement a dynamic set of fields.
+			 * Each provider is responsible for sanitizing these values.
+			 */
 			$data = wp_parse_args( $_POST['formdata'] );
 
 			$post_id = $_POST['post_ID'];
