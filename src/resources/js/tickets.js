@@ -599,7 +599,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			formdata  : $form.find( '.ticket_field' ).serialize(),
 			post_ID   : $post_id.val(),
 			nonce     : TribeTickets.add_ticket_nonce,
-			menu_order: $orders.length
+			menu_order: $orders.length,
+			is_admin  : $( 'body' ).hasClass( 'wp-admin' )
 		};
 
 		$.post(
@@ -665,7 +666,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			action   : 'tribe-ticket-edit-' + this.getAttribute( 'data-provider' ),
 			post_ID  : $post_id.val(),
 			ticket_id: ticket_id,
-			nonce    : TribeTickets.edit_ticket_nonce
+			nonce    : TribeTickets.edit_ticket_nonce,
+			is_admin  : $( 'body' ).hasClass( 'wp-admin' )
 		};
 
 		$.post(
