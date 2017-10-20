@@ -38,15 +38,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $show_description = true;
 
 		/**
-		 * Meta data key we store show_description under
-		 *
-		 * @since TBD
-		 *
-		 * @var string
-		 */
-		public $show_description_key = '_ticket_show_description';
-
-		/**
 		 * Current sale price, without any sign. Just a float.
 		 *
 		 * @var float
@@ -220,37 +211,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $purchase_limit;
 
 		/**
-		 * Returns whether or not the ticket is managing stock
-		 *
-		 * @param boolean $manages_stock Boolean to set stock management state
-		 * @return boolean
-		 */
-		public function manage_stock( $manages_stock = null ) {
-
-			if ( null !== $manages_stock ) {
-
-				// let's catch a truthy string and consider it false
-				if ( 'no' === $manages_stock ) {
-					$manages_stock = false;
-				}
-
-				$this->manage_stock = (bool) $manages_stock;
-			}
-
-			return $this->manage_stock;
-		}
-
-		/**
-		 * Returns whether or not the ticket is managing stock. Alias method with a friendlier name for fetching state.
-		 *
-		 * @param boolean $manages_stock Boolean to set stock management state
-		 * @return boolean
-		 */
-		public function managing_stock( $manages_stock = null ) {
-			return $this->manage_stock( $manages_stock );
-		}
-
-		/**
 		 * Get the ticket's start date
 		 *
 		 * @since 4.2
@@ -416,6 +376,30 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
+		 * Returns whether or not the ticket is managing stock
+		 *
+		 * @param boolean $manages_stock Boolean to set stock management state
+		 * @return boolean
+		 */
+		public function manage_stock( $manages_stock = null ) {
+			if ( null !== $manages_stock ) {
+				$this->manage_stock = tribe_is_truthy( $manages_stock );
+			}
+
+			return $this->manage_stock;
+		}
+
+		/**
+		 * Returns whether or not the ticket is managing stock. Alias method with a friendlier name for fetching state.
+		 *
+		 * @param boolean $manages_stock Boolean to set stock management state
+		 * @return boolean
+		 */
+		public function managing_stock( $manages_stock = null ) {
+			return $this->manage_stock( $manages_stock );
+		}
+
+		/**
 		 * Provides the Inventory of the Ticket which should match the Commerce Stock
 		 *
 		 * @since  TBD
@@ -425,14 +409,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function inventory() {
 			// Fetch provider
 			$provider = $this->get_provider();
+			$capacity = $this->capacity();
 
 			// If we dont have the provider we fetch from inventory
 			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
-				return $this->capacity() - $this->qty_sold() - $this->qty_pending();
+				return $capacity - $this->qty_sold() - $this->qty_pending();
 			}
 
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
-			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+			if ( ! $this->managing_stock() || -1 === $capacity ) {
 				return -1;
 			}
 
@@ -440,7 +425,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$attendees = $this->provider->get_attendees_by_id( $this->ID );
 
 			// Do the math!
-			$inventory = $this->capacity() - count( $attendees );
+			$inventory[] = $capacity - count( $attendees );
+
+			// Calculate and verify the Event Inventory
+			if (
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
+				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
+			) {
+				$event_attendees = $this->provider->get_attendees_by_id( $this->get_event()->ID );
+				$inventory[] = tribe_tickets_get_capacity( $this->get_event()->ID ) - count( $event_attendees );
+			}
+
+			$inventory = min( $inventory );
 
 			// Prevents Negative
 			return max( $inventory, 0 );
@@ -476,10 +472,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$values[] = $this->inventory();
 			$values[] = $this->capacity();
-
-			if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $stock_mode ) {
-				$values[] = $this->stock();
-			}
+			$values[] = $this->stock();
 
 			// What ever is the lowest we use it
 			$available = min( $values );
@@ -528,7 +521,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @return int|string
 		 */
-		public function stock( $value = null, $global = true ) {
+		public function stock( $value = null ) {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
@@ -543,10 +536,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$this->stock = 0 >= $this->stock ? 0 : $this->stock;
 
 			$stock[] = $this->stock;
-
-			if ( true !== (bool) $global ) {
-				return min( $stock );
-			}
 
 			if (
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
@@ -773,9 +762,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean
 		 */
 		public function show_description() {
+			$key = tribe( 'tickets.handler' )->key_show_description;
+
 			$show = true;
-			if ( metadata_exists( 'post', $this->ID, $this->show_description_key ) ) {
-				$show = get_post_meta( $this->ID, $this->show_description_key, true );
+			if ( metadata_exists( 'post', $this->ID, $key ) ) {
+				$show = get_post_meta( $this->ID, $key, true );
 			}
 
 			/**
