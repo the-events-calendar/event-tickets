@@ -777,7 +777,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			 * @param boolean whether to show the description or not
 			 * @param int ticket ID
 			 */
-			return apply_filters( 'tribe_tickets_show_description', $show, $this->ID );
+			$show = apply_filters( 'tribe_tickets_show_description', $show, $this->ID );
+
+			// Make sure we have the correct value
+			return tribe_is_truthy( $show );
 		}
 	}
 }

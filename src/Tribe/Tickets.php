@@ -882,9 +882,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->description      = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
 			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
 			$ticket->purchase_limit   = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit'] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
-
-			$show_description = isset( $data['ticket_show_description'] ) ? absint( $data['ticket_show_description'] ) : 0;
-			$ticket->show_description = $ticket->show_description();
+			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
+			$ticket->provider_class   = $this->class_name;
 
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
@@ -910,8 +909,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
 			}
-
-			$ticket->provider_class = $this->class_name;
 
 			/**
 			 * Fired once a ticket has been created and added to a post
@@ -1118,7 +1115,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$return['capacity']          = $ticket->capacity;
 			$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
 			$return['global_stock_mode'] = $global_stock_mode;
-			$return['show_description']  = $ticket->show_description;
+			$return['show_description']  = $ticket->show_description();
 
 			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
 				$return['event_capacity'] = tribe_tickets_get_capacity( $post_id );
