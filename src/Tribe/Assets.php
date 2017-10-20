@@ -102,7 +102,7 @@ class Tribe__Tickets__Assets {
 					array(
 						'name' => 'tribe_global_stock_admin_ui',
 						'data' => array(
-							'nav_away_msg' => __( 'It looks like you have modified your global stock settings but have not saved or updated the post.', 'event-tickets' ),
+							'nav_away_msg' => __( 'It looks like you have modified your shared capacity setting but have not saved or updated the post.', 'event-tickets' ),
 						),
 					),
 					array(
