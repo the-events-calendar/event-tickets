@@ -61,6 +61,15 @@ class Tribe__Tickets__Tickets_Handler {
 	public $key_capacity = '_tribe_ticket_capacity';
 
 	/**
+	 * Meta data key we store show_description under
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $key_show_description = '_tribe_ticket_show_description';
+
+	/**
 	 * Slug of the admin page for attendees
 	 * @var string
 	 */

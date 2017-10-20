@@ -38,15 +38,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $show_description = true;
 
 		/**
-		 * Meta data key we store show_description under
-		 *
-		 * @since TBD
-		 *
-		 * @var string
-		 */
-		public $show_description_key = '_ticket_show_description';
-
-		/**
 		 * Current sale price, without any sign. Just a float.
 		 *
 		 * @var float
@@ -391,15 +382,8 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean
 		 */
 		public function manage_stock( $manages_stock = null ) {
-
 			if ( null !== $manages_stock ) {
-
-				// let's catch a truthy string and consider it false
-				if ( 'no' === $manages_stock ) {
-					$manages_stock = false;
-				}
-
-				$this->manage_stock = (bool) $manages_stock;
+				$this->manage_stock = tribe_is_truthy( $manages_stock );
 			}
 
 			return $this->manage_stock;
@@ -778,9 +762,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return boolean
 		 */
 		public function show_description() {
+			$key = tribe( 'tickets.handler' )->key_show_description;
+
 			$show = true;
-			if ( metadata_exists( 'post', $this->ID, $this->show_description_key ) ) {
-				$show = get_post_meta( $this->ID, $this->show_description_key, true );
+			if ( metadata_exists( 'post', $this->ID, $key ) ) {
+				$show = get_post_meta( $this->ID, $key, true );
 			}
 
 			/**
