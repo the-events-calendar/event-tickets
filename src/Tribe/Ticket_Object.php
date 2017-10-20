@@ -489,6 +489,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return  int
 		 */
 		public function capacity() {
+			if ( is_null( $this->capacity ) ) {
+				$this->capacity = tribe_tickets_get_capacity( $this->ID );
+			}
+
 			$stock_mode = $this->global_stock_mode();
 
 			// Unlimited is always unlimited
@@ -522,6 +526,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int|string
 		 */
 		public function stock( $value = null ) {
+			if ( is_null( $value ) ) {
+				$value = (int) get_post_meta( $this->ID, '_stock', true );
+			}
+
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
 				return -1;
