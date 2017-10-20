@@ -1206,13 +1206,19 @@ class Tribe__Tickets__Tickets_Handler {
 		$stock         = $ticket->stock();
 		$needs_warning = false;
 		$mode          = $ticket->global_stock_mode();
+		$event         = $ticket->get_event();
+
+		// If we don't have an event we should even continue
+		if ( ! $event ) {
+			return;
+		}
 
 		if (
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class
 			&& -1 !== $capacity
 		) {
 			$product = wc_get_product( $ticket->ID );
-			$shared_stock = new Tribe__Tickets__Global_Stock( $ticket->get_event()->ID );
+			$shared_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 
 			// We only verify if event Stock isn't smaller than local Stock
 			if ( $stock < $shared_stock->get_stock_level() ) {
