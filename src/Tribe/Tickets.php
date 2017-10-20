@@ -379,11 +379,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string HTML link | void HTML link
 		 */
 		public function get_ticket_move_link( $post_id, $ticket = null ) {
-			// Prevents showing on Community Tickets
-			if ( ! is_admin() ) {
-				return;
-			}
-
 			if ( empty( $ticket ) ) {
 				return;
 			}
@@ -417,7 +412,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$controls   = array();
-			$controls[] = $this->get_ticket_move_link( $return['post_id'], $ticket );
+
+			if ( tribe_is_truthy( tribe_get_request_var( 'is_admin' ) ) ) {
+				$controls[] = $this->get_ticket_move_link( $return['post_id'], $ticket );
+			}
 			$controls[] = $this->get_ticket_delete_link( $ticket );
 
 			if ( ! empty( $controls ) ) {

@@ -599,7 +599,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			formdata  : $form.find( '.ticket_field' ).serialize(),
 			post_ID   : $post_id.val(),
 			nonce     : TribeTickets.add_ticket_nonce,
-			menu_order: $orders.length
+			menu_order: $orders.length,
+			is_admin  : $( 'body' ).hasClass( 'wp-admin' )
 		};
 
 		$.post(
