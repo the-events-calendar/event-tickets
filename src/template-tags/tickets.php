@@ -415,7 +415,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$status = '';
 
 			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
-				$status_counts[] = sprintf( _x( '%1$d Remaining of the global stock', 'ticket global stock message (remaining stock)', 'event-tickets' ), (int) $stock );
+				$status_counts[] = sprintf( _x( '%1$d Remaining of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), (int) $stock );
 			} else {
 				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), (int) $stock );
 			}
