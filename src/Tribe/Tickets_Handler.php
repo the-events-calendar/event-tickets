@@ -191,6 +191,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
+		$completes = array();
 		$tickets = $this->get_tickets_ids( $object_id );
 
 		foreach ( $tickets as $ticket ) {
@@ -201,10 +202,16 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 
 			$totals = $this->get_ticket_totals( $ticket );
+			$completes[] = $complete = $totals['pending'] + $totals['sold'];
 
-			$stock = $event_capacity - $totals['pending'] - $totals['sold'];
+			$stock = $event_capacity - $complete;
 			update_post_meta( $ticket, '_stock', $stock );
 		}
+
+		// Make sure we are updating the Global Stock when we update it's capacity
+		$shared_stock = new Tribe__Tickets__Global_Stock( $object_id );
+		$shared_stock_level = $event_capacity - array_sum( $completes );
+		$shared_stock->set_stock_level( $shared_stock_level );
 	}
 
 	/**
@@ -1199,13 +1206,24 @@ class Tribe__Tickets__Tickets_Handler {
 		$stock         = $ticket->stock();
 		$needs_warning = false;
 		$mode          = $ticket->global_stock_mode();
+		$event         = $ticket->get_event();
+
+		// If we don't have an event we should even continue
+		if ( ! $event ) {
+			return;
+		}
 
 		if (
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class
 			&& -1 !== $capacity
 		) {
 			$product = wc_get_product( $ticket->ID );
-			$needs_warning = (int) $inventory !== (int) $stock;
+			$shared_stock = new Tribe__Tickets__Global_Stock( $event->ID );
+
+			// We only verify if event Stock isn't smaller than local Stock
+			if ( $stock < $shared_stock->get_stock_level() ) {
+				$needs_warning = (int) $inventory !== (int) $stock;
+			}
 		}
 
 		?>
