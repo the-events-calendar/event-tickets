@@ -191,6 +191,7 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
+		$completes = array();
 		$tickets = $this->get_tickets_ids( $object_id );
 
 		foreach ( $tickets as $ticket ) {
