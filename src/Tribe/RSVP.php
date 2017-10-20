@@ -926,6 +926,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
+		// Updates if we should show Description
+		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
+		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_show_description, $ticket->show_description );
+
+		// Adds RSVP price
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 
 		$data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
@@ -1002,12 +1007,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $ticket->ID, '_ticket_end_date', $ticket->end_date );
 		} else {
 			delete_post_meta( $ticket->ID, '_ticket_end_date' );
-		}
-
-		if ( isset( $raw_data['ticket_show_description'] ) ) {
-			update_post_meta( $ticket->ID, '_ticket_show_description', 0 );
-		} else {
-			update_post_meta( $ticket->ID, '_ticket_show_description', 1 );
 		}
 
 		/**
@@ -1212,7 +1211,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
 		$return->report_link      = '';
-		$return->show_description = ! get_post_meta( $ticket_id, '_ticket_show_description', true );
+		$return->show_description = $return->show_description();
 
 		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$start_date_unix          = strtotime( $start_date );
