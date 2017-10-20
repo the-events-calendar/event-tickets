@@ -22,7 +22,7 @@
 					class="ticket_field ticket_form_left"
 					checked
 				>
-				<?php esc_html_e( 'Show description on front end and emailed tickets.', 'event-tickets' ); ?>
+				<?php esc_html_e( 'Show description on front end ticket form.', 'event-tickets' ); ?>
 			</label>
 		</div>
 	</div>
