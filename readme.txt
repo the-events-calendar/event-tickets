@@ -44,7 +44,7 @@ Just getting started? Definitely watch and read through the [New User Primer](ht
 * Visitors can RSVP to events
 * Add RSVP to posts, pages, or any custom post type
 * Works out of the box with The Events Calendar
-* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) to sell tickets using WooCommerce, Shopp, Easy Digital Downloads or WP-eCommerce
+* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) to sell tickets using WooCommerce and Easy Digital Downloads 
 * Completely responsive from mobile to tablet to desktop
 * Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
 * Internationalized & Translated
@@ -55,7 +55,7 @@ Looking for something else? We've got add-ons available to take your calendar to
 
 = Event Tickets Plus =
 
-Get premium support and add paid ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard!  Works with your favorite eCommerce plugin (WooCommerce, Shopp, Easy Digital Downloads, or WP E-Commerce).
+Get premium support and add paid ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard! We currently support WooCommerce or Easy Digital Downloads. 
 
 = The Events Calendar =
 
@@ -125,7 +125,7 @@ Note that we aren't going to say "tough luck" if you identify a plugin/theme con
 
 = Event Tickets Plus is just what I need! I'm sold! How can I get my hands on it? =
 
-Events Tickets Plus can be purchased directly on [our website](http://m.tri.be/18th). There are five (5) license types available, and all licenses include 1 year of access to support + updates.
+Events Tickets Plus can be purchased directly on [our website](http://m.tri.be/18th). There are five (5) license types available, and all licenses include access to premium support, new feature releases, and regular maintenance updates.
 
 = I'm interested in Event Tickets Plus or another add-on, but I have a few questions before making the purchase. Can you help me get those addressed? =
 
