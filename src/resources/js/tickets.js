@@ -666,7 +666,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			action   : 'tribe-ticket-edit-' + this.getAttribute( 'data-provider' ),
 			post_ID  : $post_id.val(),
 			ticket_id: ticket_id,
-			nonce    : TribeTickets.edit_ticket_nonce
+			nonce    : TribeTickets.edit_ticket_nonce,
+			is_admin  : $( 'body' ).hasClass( 'wp-admin' )
 		};
 
 		$.post(
