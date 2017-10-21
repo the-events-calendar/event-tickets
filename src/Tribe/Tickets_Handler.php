@@ -1219,10 +1219,11 @@ class Tribe__Tickets__Tickets_Handler {
 		) {
 			$product = wc_get_product( $ticket->ID );
 			$shared_stock = new Tribe__Tickets__Global_Stock( $event->ID );
+			$needs_warning = (int) $inventory !== (int) $stock;
 
-			// We only verify if event Stock isn't smaller than local Stock
-			if ( $stock < $shared_stock->get_stock_level() ) {
-				$needs_warning = (int) $inventory !== (int) $stock;
+			// We remove the warning flag when shared stock is used
+			if ( $shared_stock->is_enabled() && $stock > $shared_stock->get_stock_level() ) {
+				$needs_warning = false;
 			}
 		}
 
