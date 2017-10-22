@@ -978,13 +978,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
 
 		if ( isset( $raw_data['ticket_start_date'] ) ) {
-			$start_date = $raw_data['ticket_start_date'];
+			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );
 
 			if ( isset( $raw_data['ticket_start_time'] ) ) {
 				$start_date .= ' ' . $raw_data['ticket_start_time'];
 			}
 
-			$ticket->start_date = date( 'Y-m-d g:i A', strtotime( $start_date ) );
+			$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_date ) );
 		}
 
 		if ( isset( $ticket->start_date ) ) {
@@ -994,13 +994,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		if ( isset( $raw_data['ticket_end_date'] ) ) {
-			$end_date = $raw_data['ticket_end_date'];
+			$end_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_end_date'] );
 
 			if ( isset( $raw_data['ticket_end_time'] ) ) {
 				$end_date .= ' ' . $raw_data['ticket_end_time'];
 			}
 
-			$ticket->end_date = date( 'Y-m-d g:i A', strtotime( $end_date ) );
+			$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_date ) );
 		}
 
 		if ( isset( $ticket->end_date ) ) {

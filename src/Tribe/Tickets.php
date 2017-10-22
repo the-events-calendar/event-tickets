@@ -887,6 +887,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->purchase_limit   = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit'] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
 			$ticket->provider_class   = $this->class_name;
+			$ticket->start_date       = null;
+			$ticket->end_date         = null;
 
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
@@ -894,7 +896,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
-				$start_datetime = $data['ticket_start_date'];
+				$start_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_start_date'] );
 
 				if ( ! empty( $data['ticket_start_time'] ) ) {
 					$start_datetime .= ' ' . $data['ticket_start_time'];
@@ -904,7 +906,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
-				$end_datetime = $data['ticket_end_date'];
+				$end_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_end_date'] );
 
 				if ( ! empty( $data['ticket_end_time'] ) ) {
 					$end_datetime .= ' ' . $data['ticket_end_time'];

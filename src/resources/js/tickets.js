@@ -65,13 +65,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$( '[name="tribe-ticket[capacity]"]' ).attr( 'placeholder', eventCapacity );
 	};
 
-	function format_date( date ) {
+	function format_date( date, use_base_format ) {
 		if ( 'undefined' === typeof date ) {
 			// An empty string will give us now() below
 			date = '';
 		}
 
-		var localFormat = dateFormat.toUpperCase().replace( 'YY', 'YYYY' );
+		var localFormat = dateFormat;
+		if ( true === use_base_format ) {
+			localFormat = datepickerFormats[0];
+		}
+
+		localFormat = localFormat.toUpperCase().replace( 'YY', 'YYYY' );
 
 		return moment( date, localFormat ).format( localFormat );
 	}
@@ -529,7 +534,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		// handle all the date stuff
 		if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
-			start_date = format_date( new Date( $( document.getElementById( 'EventStartDate' ) ).val() ) );
+			start_date = format_date( $( document.getElementById( 'EventStartDate' ) ).val() );
 		} else {
 			start_date = format_date( now );
 		}
@@ -543,7 +548,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$ticket_start_time.val( start_time ).trigger( 'change' );
 
 		if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
-			end_date = format_date( new Date( $( document.getElementById( 'EventEndDate' ) ).val() ) );
+			end_date = format_date( $( document.getElementById( 'EventEndDate' ) ).val() );
 		} else {
 			end_date = '';
 		}
@@ -744,7 +749,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				var now = Date.now();
 
 				if ( response.data.start_date ) {
-					start_date = format_date( response.data.start_date );
+					start_date = format_date( response.data.start_date, true );
 				} else if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
 					start_date = format_date( $( document.getElementById( 'EventStartDate' ) ).val() );
 				} else {
@@ -763,7 +768,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$ticket_start_time.val( start_time ).trigger( 'change' );
 
 				if ( response.data.end_date ) {
-					end_date = format_date( response.data.end_date );
+					end_date = format_date( response.data.end_date, true );
 				} else if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
 					end_date = format_date( $( document.getElementById( 'EventEndDate' ) ).val() );
 				} else {
@@ -944,6 +949,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		if ( $event_pickers.length ) {
 			startofweek = $event_pickers.data( 'startofweek' );
 		}
+
 		if ( 'undefined' !== typeof tribe_dynamic_help_text ) {
 			var indexDatepickerFormat =  $.isNumeric( tribe_dynamic_help_text.datepicker_format_index ) ? tribe_dynamic_help_text.datepicker_format_index : 0;
 			dateFormat = datepickerFormats[ indexDatepickerFormat ];
@@ -960,7 +966,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			onChange       : function() {
 			},
 			onSelect       : function( dateText, inst ) {
-				var the_date = $.datepicker.parseDate( 'yy-mm-dd', dateText );
+				var the_date = $.datepicker.parseDate( dateFormat, dateText );
+
 				if ( inst.id === 'ticket_start_date' ) {
 					$ticket_end_date.datepicker( 'option', 'minDate', the_date );
 				} else {

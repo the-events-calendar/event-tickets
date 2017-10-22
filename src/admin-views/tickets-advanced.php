@@ -1,7 +1,7 @@
 <button class="accordion-header tribe_advanced_meta">
 	<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
 </button>
-<section id="ticket_form_advanced" class="advanced accordion-content">
+<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="<?php echo esc_attr( tribe_get_option( 'datepickerFormat' ) ); ?>">
 	<h4 class="accordion-label screen_reader_text"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 	<div class="input_block">
 		<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
