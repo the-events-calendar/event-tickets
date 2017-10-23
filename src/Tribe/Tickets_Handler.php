@@ -289,6 +289,17 @@ class Tribe__Tickets__Tickets_Handler {
 		return true;
 	}
 
+	/**
+	 * Updates the Start date of all non-modified tickets when an Ticket supported Post is saved
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int      $post_id  Which post we are updating here
+	 * @param  WP_Post  $post     Object of the current post updating
+	 * @param  boolean  $update   If we are updating or creating a post
+	 *
+	 * @return boolean
+	 */
 	public function update_start_date( $post_id, $post, $update ) {
 		// Bail on Revision
 		if ( wp_is_post_revision( $post_id ) ) {
