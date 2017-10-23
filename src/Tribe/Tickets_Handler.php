@@ -61,6 +61,33 @@ class Tribe__Tickets__Tickets_Handler {
 	public $key_capacity = '_tribe_ticket_capacity';
 
 	/**
+	 * Post meta key for the ticket start date
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_start_date = '_ticket_start_date';
+
+	/**
+	 * Post meta key for the ticket end date
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_end_date = '_ticket_end_date';
+
+	/**
+	 * Post meta key for the manual updated meta keys
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_manual_updated = '_tribe_ticket_manual_updated';
+
+	/**
 	 * Meta data key we store show_description under
 	 *
 	 * @since TBD
@@ -128,7 +155,139 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
 		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
 
+		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
+
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+	}
+
+	/**
+	 * On updating a few meta keys we flag that it was manually updated so we can do
+	 * fancy matching for the updating of the event start and end date
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int     $meta_id         MID
+	 * @param  int     $object_id       Which Post we are dealing with
+	 * @param  string  $meta_key        Which meta key we are fetching
+	 * @param  int     $event_capacity  To which value the event Capacity was update to
+	 *
+	 * @return int
+	 */
+	public function flag_manual_update( $meta_id, $object_id, $meta_key, $date ) {
+		$keys = array(
+			$this->key_start_date,
+			$this->key_end_date,
+		);
+
+		// Bail on not Date meta updates
+		if ( ! in_array( $meta_key, $keys ) ) {
+			return;
+		}
+
+		$updated = get_post_meta( $object_id, $this->key_manual_updated );
+
+		// Bail if it was ever manually updated
+		if ( in_array( $meta_key, $updated ) ) {
+			return;
+		}
+
+		// the updated metakey to the list
+		add_post_meta( $object_id, $this->key_manual_updated, $meta_key );
+
+		return;
+	}
+
+	/**
+	 * Verify if we have Manual Changes for a given Meta Key
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int|WP_Post  $ticket  Which ticket/post we are dealing with here
+	 * @param  string|null  $for     If we are looking for one specific key or any
+	 *
+	 * @return boolean
+	 */
+	public function has_manual_update( $ticket, $for = null ) {
+		if ( ! $ticket instanceof WP_Post ) {
+			$ticket = get_post( $ticket );
+		}
+
+		if ( ! $ticket instanceof WP_Post ) {
+			return false;
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $ticket->ID );
+		$updated = get_post_meta( $ticket->ID, $this->key_manual_updated );
+
+		if ( is_null( $for ) ) {
+			return ! empty( $updated );
+		}
+
+		return in_array( $for, $updated );
+	}
+
+	/**
+	 * Allow us to Toggle flaging the update of Date Meta
+	 *
+	 * @since   TBD
+	 *
+	 * @param   boolean  $toggle  Should activate or not?
+	 *
+	 * @return  void
+	 */
+	public function toggle_manual_update_flag( $toggle = true ) {
+		if ( true === (bool) $toggle ) {
+			add_filter( 'updated_postmeta', array( $this, 'flag_manual_update' ), 15, 4 );
+		} else {
+			remove_filter( 'updated_postmeta', array( $this, 'flag_manual_update' ), 15 );
+		}
+	}
+
+	/**
+	 * On update of the Event Start or End date we update the ticket start or end date
+	 * if it wasn't manually updated
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int     $meta_id    MID
+	 * @param  int     $object_id  Which Post we are dealing with
+	 * @param  string  $meta_key   Which meta key we are fetching
+	 * @param  string  $date       Value save on the DB
+	 *
+	 * @return boolean
+	 */
+	public function update_meta_date( $meta_id, $object_id, $meta_key, $date ) {
+		$meta_map = array(
+			'_EventStartDate' => $this->key_start_date,
+			'_EventEndDate' => $this->key_end_date,
+		);
+
+		// Bail when it's not on the Map Meta
+		if ( ! isset( $meta_map[ $meta_key ] ) ) {
+			return false;
+		}
+
+		$event_types = Tribe__Tickets__Main::instance()->post_types();
+		$post_type = get_post_type( $object_id );
+
+		// Bail on non event like post type
+		if ( ! in_array( $post_type, $event_types ) ) {
+			return false;
+		}
+
+		$update_meta = $meta_map[ $meta_key ];
+		$tickets = $this->get_tickets_ids( $object_id );
+
+		foreach ( $tickets as $ticket ) {
+			// Skip tickets with manual updates to that meta
+			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+				continue;
+			}
+
+			update_post_meta( $ticket, $update_meta, $date );
+		}
+
+		return true;
 	}
 
 	/**

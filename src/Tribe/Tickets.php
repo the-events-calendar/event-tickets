@@ -890,6 +890,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->start_date       = null;
 			$ticket->end_date         = null;
 
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( true );
+
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
 				$ticket->price = preg_replace( '/[^0-9\.\,]/Uis', '', $ticket->price );
@@ -925,7 +927,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
 
 			// Pass the control to the child object
-			return $this->save_ticket( $post_id, $ticket, $data );
+			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
+
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
+
+			return $save_ticket;
 		}
 
 		/**

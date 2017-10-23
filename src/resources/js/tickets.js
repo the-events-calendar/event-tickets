@@ -78,7 +78,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 		localFormat = localFormat.toUpperCase().replace( 'YY', 'YYYY' );
 
-		return moment( date, localFormat ).format( localFormat );
+		return moment( date, localFormat ).format( dateFormat.toUpperCase().replace( 'YY', 'YYYY' ) );
 	}
 
 	function format_time( date ) {
