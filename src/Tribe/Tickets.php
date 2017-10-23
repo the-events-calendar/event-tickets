@@ -931,6 +931,26 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
 
+			$post = get_post( $post_id );
+			if ( empty( $data['ticket_start_date'] ) ) {
+				// 30 min in seconds
+				$round = 1800;
+				if ( class_exists( 'Tribe__Events__Main' ) ) {
+					$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' ) * 60;
+				}
+
+				$date = strtotime( $post->post_date );
+				$date = round( $date / $round ) * $round;
+				$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
+
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $date );
+			}
+
+			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
+				$event_end = get_post_meta( $post_id, '_EventEndDate', true );
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $event_end );
+			}
+
 			return $save_ticket;
 		}
 

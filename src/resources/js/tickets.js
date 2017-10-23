@@ -530,37 +530,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( document.getElementById( $default_provider + '_global_capacity' ) ).prop( 'disabled', true );
 		}
 
-		var now = new Date();
-
-		// handle all the date stuff
-		if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
-			start_date = format_date( $( document.getElementById( 'EventStartDate' ) ).val() );
-		} else {
-			start_date = format_date( now );
-		}
-		$ticket_start_date.val( start_date ).trigger( 'change' );
-
-		if ( undefined !== $( document.getElementById( 'EventStartTime' ) ).val() ) {
-			start_time = format_time( $( document.getElementById( 'EventStartTime' ) ).val() );
-		} else {
-			start_time = format_time( now );
-		}
-		$ticket_start_time.val( start_time ).trigger( 'change' );
-
-		if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
-			end_date = format_date( $( document.getElementById( 'EventEndDate' ) ).val() );
-		} else {
-			end_date = '';
-		}
-		$ticket_end_date.val( end_date ).trigger( 'change' );
-
-		if ( undefined !== $( document.getElementById( 'EventEndTime' ) ).val() ) {
-			end_time = format_time( $( document.getElementById( 'EventEndTime' ) ).val() );
-		} else {
-			end_time = '';
-		}
-		$ticket_end_time.val( end_time ).trigger( 'change' );
-
 		$( '.tribe-tickets-attendee-saved-fields' ).show();
 
 		show_panel( e, $edit_panel );

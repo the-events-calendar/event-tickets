@@ -156,6 +156,7 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
 
 		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
+		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
 
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
@@ -216,7 +217,6 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$provider = tribe_tickets_get_ticket_provider( $ticket->ID );
 		$updated = get_post_meta( $ticket->ID, $this->key_manual_updated );
 
 		if ( is_null( $for ) ) {
@@ -244,7 +244,7 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * On update of the Event Start or End date we update the ticket start or end date
+	 * On update of the Event End date we update the ticket end date
 	 * if it wasn't manually updated
 	 *
 	 * @since  TBD
@@ -258,7 +258,6 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function update_meta_date( $meta_id, $object_id, $meta_key, $date ) {
 		$meta_map = array(
-			'_EventStartDate' => $this->key_start_date,
 			'_EventEndDate' => $this->key_end_date,
 		);
 
@@ -283,6 +282,42 @@ class Tribe__Tickets__Tickets_Handler {
 			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
 				continue;
 			}
+
+			update_post_meta( $ticket, $update_meta, $date );
+		}
+
+		return true;
+	}
+
+	public function update_start_date( $post_id, $post, $update ) {
+		// Bail on Revision
+		if ( wp_is_post_revision( $post_id ) ) {
+			return false;
+		}
+
+		// Bail if the CPT doens't accept tickets
+		if ( ! tribe_tickets_post_type_enabled( $post->post_type ) ) {
+			return false;
+		}
+
+		$update_meta = $this->key_start_date;
+		$tickets = $this->get_tickets_ids( $post_id );
+
+		foreach ( $tickets as $ticket ) {
+			// Skip tickets with manual updates to that meta
+			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+				continue;
+			}
+
+			// 30 min in seconds
+			$round = 1800;
+			if ( class_exists( 'Tribe__Events__Main' ) ) {
+				$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' ) * 60;
+			}
+
+			$date = strtotime( $post->post_date );
+			$date = round( $date / $round ) * $round;
+			$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
 
 			update_post_meta( $ticket, $update_meta, $date );
 		}

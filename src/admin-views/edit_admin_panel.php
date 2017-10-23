@@ -1,5 +1,9 @@
 <?php
 $timepicker_step = 30;
+if ( class_exists( 'Tribe__Events__Main' ) ) {
+	$timepicker_step = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
+}
+
 $timepicker_round = '00:00:00';
 
 $start_date_errors = array(
