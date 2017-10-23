@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.5.5\n"
+"Project-Id-Version: Event Tickets 4.5.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2017-09-06 14:36:10+00:00\n"
+"POT-Creation-Date: 2017-10-17 20:52:32+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2017-09-06 14:36\n"
+"PO-Revision-Date: 2017-10-17 20:52\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
@@ -46,14 +46,14 @@ msgid ""
 "them of the change. You may now close this window!"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:170
+#: src/Tribe/Admin/Move_Ticket_Types.php:173
 msgid ""
 "Ticket type was moved to <a href=\"%1$s\" target=\"_blank\">%2$s</a> from <a "
 "href=\"%3$s\" target=\"_blank\">%4$s</a>"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:267
-#: src/Tribe/Admin/Move_Tickets.php:651
+#: src/Tribe/Admin/Move_Ticket_Types.php:270
+#: src/Tribe/Admin/Move_Tickets.php:655
 msgid "Changes to your tickets from %s"
 msgstr ""
 
@@ -125,7 +125,7 @@ msgstr[1] ""
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:710
+#: src/Tribe/Admin/Move_Tickets.php:714
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgid "No history available"
 msgstr ""
 
 #: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
-#: src/Tribe/Tickets_View.php:631
+#: src/Tribe/Tickets_View.php:665
 msgid "Tickets"
 msgstr ""
 
@@ -236,15 +236,15 @@ msgstr ""
 msgid "Filter by purchaser name, ticket #, order # or security code"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:527
+#: src/Tribe/Attendees_Table.php:533
 msgid "Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:528
+#: src/Tribe/Attendees_Table.php:534
 msgid "Undo Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:529 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:535 src/admin-views/list.php:43
 msgid "Delete"
 msgstr ""
 
@@ -378,7 +378,7 @@ msgid ""
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.5)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.7)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:509
 msgid "Event Tickets"
@@ -501,43 +501,43 @@ msgstr ""
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Tickets.php:502
+#: src/Tribe/Tickets.php:510
 msgid "Your ticket has been saved."
 msgstr ""
 
-#: src/Tribe/Tickets.php:680
+#: src/Tribe/Tickets.php:688
 msgid "Your ticket has been deleted."
 msgstr ""
 
-#: src/Tribe/Tickets.php:734
+#: src/Tribe/Tickets.php:742
 msgid "Editing the ticket price is currently disallowed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1019
+#: src/Tribe/Tickets.php:1027
 msgid "Use global stock"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1020
+#: src/Tribe/Tickets.php:1028
 msgid "Use global stock but cap sales"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1021
+#: src/Tribe/Tickets.php:1029
 msgid "Independent (do not use global stock)"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1622
+#: src/Tribe/Tickets.php:1639
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1624
+#: src/Tribe/Tickets.php:1641
 msgid "Tickets are not yet available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1626
+#: src/Tribe/Tickets.php:1643
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1628
+#: src/Tribe/Tickets.php:1645
 msgid "There are no tickets available at this time."
 msgstr ""
 
@@ -626,67 +626,67 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:481
+#: src/Tribe/Tickets_Handler.php:489
 msgid "attendees"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:508
+#: src/Tribe/Tickets_Handler.php:516
 msgid "Invalid Event ID"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:525
+#: src/Tribe/Tickets_Handler.php:533
 msgid "Cheatin Huh?"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:531
+#: src/Tribe/Tickets_Handler.php:539
 msgid "Empty user and email"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:543
+#: src/Tribe/Tickets_Handler.php:551
 msgid "Invalid Email"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:549 src/Tribe/Tickets_Handler.php:565
+#: src/Tribe/Tickets_Handler.php:557 src/Tribe/Tickets_Handler.php:573
 msgid "Invalid User ID"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:585
+#: src/Tribe/Tickets_Handler.php:594
 msgid "Attendee List for: %s"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:586
+#: src/Tribe/Tickets_Handler.php:595
 msgid "Error when sending the email"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:591
+#: src/Tribe/Tickets_Handler.php:602
 msgid "Email sent successfully!"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:518
+#: src/Tribe/Tickets_View.php:552
 msgid "Going"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:519
+#: src/Tribe/Tickets_View.php:553
 msgid "Not Going"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:627
+#: src/Tribe/Tickets_View.php:661
 msgid "RSVPs"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:627
+#: src/Tribe/Tickets_View.php:661
 msgid "RSVP"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:631
+#: src/Tribe/Tickets_View.php:665
 msgid "Ticket"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:639 src/views/tickets/orders-link.php:55
+#: src/Tribe/Tickets_View.php:673 src/views/tickets/orders-link.php:55
 msgid " and "
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:697
+#: src/Tribe/Tickets_View.php:731
 msgid "This RSVP is no longer active."
 msgstr ""
 
@@ -1078,66 +1078,66 @@ msgid ""
 "General Settings admin screen) before adjusting this setting."
 msgstr ""
 
-#: src/template-tags/tickets.php:200
+#: src/template-tags/tickets.php:204
 msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
 
-#: src/template-tags/tickets.php:217
+#: src/template-tags/tickets.php:221
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/template-tags/tickets.php:219
+#: src/template-tags/tickets.php:223
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/template-tags/tickets.php:230
+#: src/template-tags/tickets.php:234
 msgctxt "list view rsvp now ticket button"
 msgid "RSVP Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:233
+#: src/template-tags/tickets.php:237
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:398
+#: src/template-tags/tickets.php:402
 msgid "global inventory"
 msgstr ""
 
-#: src/template-tags/tickets.php:401
+#: src/template-tags/tickets.php:405
 msgid "Sold"
 msgstr ""
 
-#: src/template-tags/tickets.php:403
+#: src/template-tags/tickets.php:407
 msgctxt "separate going and remain RSVPs"
 msgid "RSVP'd Going"
 msgstr ""
 
-#: src/template-tags/tickets.php:408
+#: src/template-tags/tickets.php:412
 msgid "%s %d"
 msgstr ""
 
-#: src/template-tags/tickets.php:414
+#: src/template-tags/tickets.php:418
 msgctxt "ticket global stock message (remaining stock)"
 msgid "%1$d Remaining of the global stock"
 msgstr ""
 
-#: src/template-tags/tickets.php:416
+#: src/template-tags/tickets.php:420
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d Remaining"
 msgstr ""
 
-#: src/template-tags/tickets.php:419
+#: src/template-tags/tickets.php:423
 msgctxt "ticket stock message (pending stock)"
 msgid "%1$d Awaiting Review"
 msgstr ""
 
-#: src/template-tags/tickets.php:421
+#: src/template-tags/tickets.php:425
 msgctxt "ticket stock message (cancelled stock)"
 msgid "%1$d Cancelled"
 msgstr ""

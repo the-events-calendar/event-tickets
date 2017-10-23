@@ -4,7 +4,7 @@ Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.2
-Stable tag: 4.5.6
+Stable tag: 4.5.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -238,6 +238,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * New - Filter default capacity type with tribe_tickets_default_ticket_capacity_type [80629]
 * New — Introduced new filters allowing fine-grained insertion into the ticket editor: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_ticket_order_field`.
 * Deprecated - filter `tribe_events_tickets_metabox_advanced` for `tribe_events_tickets_metabox_edit_advanced`
+
+= [4.5.7] 2017-10-18 =
+
+* Tweak - Improved compatibility of the "Attendees Export" CSV with Excel and other programs by removing line breaks from multi-line fields in the CSV (props: @twodoplhins) [80563]
 
 = [4.5.6] 2017-09-20 =
 
