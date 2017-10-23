@@ -978,33 +978,37 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
 
 		if ( isset( $raw_data['ticket_start_date'] ) ) {
-			$start_date = $raw_data['ticket_start_date'];
+			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );
 
 			if ( isset( $raw_data['ticket_start_time'] ) ) {
 				$start_date .= ' ' . $raw_data['ticket_start_time'];
 			}
 
-			$ticket->start_date = date( 'Y-m-d g:i A', strtotime( $start_date ) );
-		}
+			$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_date ) );
+			$previous_start_date = get_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, true );
 
-		if ( isset( $ticket->start_date ) ) {
-			update_post_meta( $ticket->ID, '_ticket_start_date', $ticket->start_date );
+			// Only update when we are modifying
+			if ( $ticket->start_date !== $previous_start_date ) {
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $ticket->start_date );
+			}
 		} else {
 			delete_post_meta( $ticket->ID, '_ticket_start_date' );
 		}
 
 		if ( isset( $raw_data['ticket_end_date'] ) ) {
-			$end_date = $raw_data['ticket_end_date'];
+			$end_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_end_date'] );
 
 			if ( isset( $raw_data['ticket_end_time'] ) ) {
 				$end_date .= ' ' . $raw_data['ticket_end_time'];
 			}
 
-			$ticket->end_date = date( 'Y-m-d g:i A', strtotime( $end_date ) );
-		}
+			$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_date ) );
+			$previous_end_date = get_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, true );
 
-		if ( isset( $ticket->end_date ) ) {
-			update_post_meta( $ticket->ID, '_ticket_end_date', $ticket->end_date );
+			// Only update when we are modifying
+			if ( $ticket->end_date !== $previous_end_date ) {
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $ticket->end_date );
+			}
 		} else {
 			delete_post_meta( $ticket->ID, '_ticket_end_date' );
 		}

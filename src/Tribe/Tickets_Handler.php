@@ -61,6 +61,33 @@ class Tribe__Tickets__Tickets_Handler {
 	public $key_capacity = '_tribe_ticket_capacity';
 
 	/**
+	 * Post meta key for the ticket start date
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_start_date = '_ticket_start_date';
+
+	/**
+	 * Post meta key for the ticket end date
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_end_date = '_ticket_end_date';
+
+	/**
+	 * Post meta key for the manual updated meta keys
+	 *
+	 * @since  TBD
+	 *
+	 * @var    string
+	 */
+	public $key_manual_updated = '_tribe_ticket_manual_updated';
+
+	/**
 	 * Meta data key we store show_description under
 	 *
 	 * @since TBD
@@ -128,7 +155,185 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
 		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
 
+		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
+		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
+
 		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
+	}
+
+	/**
+	 * On updating a few meta keys we flag that it was manually updated so we can do
+	 * fancy matching for the updating of the event start and end date
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int     $meta_id         MID
+	 * @param  int     $object_id       Which Post we are dealing with
+	 * @param  string  $meta_key        Which meta key we are fetching
+	 * @param  int     $event_capacity  To which value the event Capacity was update to
+	 *
+	 * @return int
+	 */
+	public function flag_manual_update( $meta_id, $object_id, $meta_key, $date ) {
+		$keys = array(
+			$this->key_start_date,
+			$this->key_end_date,
+		);
+
+		// Bail on not Date meta updates
+		if ( ! in_array( $meta_key, $keys ) ) {
+			return;
+		}
+
+		$updated = get_post_meta( $object_id, $this->key_manual_updated );
+
+		// Bail if it was ever manually updated
+		if ( in_array( $meta_key, $updated ) ) {
+			return;
+		}
+
+		// the updated metakey to the list
+		add_post_meta( $object_id, $this->key_manual_updated, $meta_key );
+
+		return;
+	}
+
+	/**
+	 * Verify if we have Manual Changes for a given Meta Key
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int|WP_Post  $ticket  Which ticket/post we are dealing with here
+	 * @param  string|null  $for     If we are looking for one specific key or any
+	 *
+	 * @return boolean
+	 */
+	public function has_manual_update( $ticket, $for = null ) {
+		if ( ! $ticket instanceof WP_Post ) {
+			$ticket = get_post( $ticket );
+		}
+
+		if ( ! $ticket instanceof WP_Post ) {
+			return false;
+		}
+
+		$updated = get_post_meta( $ticket->ID, $this->key_manual_updated );
+
+		if ( is_null( $for ) ) {
+			return ! empty( $updated );
+		}
+
+		return in_array( $for, $updated );
+	}
+
+	/**
+	 * Allow us to Toggle flaging the update of Date Meta
+	 *
+	 * @since   TBD
+	 *
+	 * @param   boolean  $toggle  Should activate or not?
+	 *
+	 * @return  void
+	 */
+	public function toggle_manual_update_flag( $toggle = true ) {
+		if ( true === (bool) $toggle ) {
+			add_filter( 'updated_postmeta', array( $this, 'flag_manual_update' ), 15, 4 );
+		} else {
+			remove_filter( 'updated_postmeta', array( $this, 'flag_manual_update' ), 15 );
+		}
+	}
+
+	/**
+	 * On update of the Event End date we update the ticket end date
+	 * if it wasn't manually updated
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int     $meta_id    MID
+	 * @param  int     $object_id  Which Post we are dealing with
+	 * @param  string  $meta_key   Which meta key we are fetching
+	 * @param  string  $date       Value save on the DB
+	 *
+	 * @return boolean
+	 */
+	public function update_meta_date( $meta_id, $object_id, $meta_key, $date ) {
+		$meta_map = array(
+			'_EventEndDate' => $this->key_end_date,
+		);
+
+		// Bail when it's not on the Map Meta
+		if ( ! isset( $meta_map[ $meta_key ] ) ) {
+			return false;
+		}
+
+		$event_types = Tribe__Tickets__Main::instance()->post_types();
+		$post_type = get_post_type( $object_id );
+
+		// Bail on non event like post type
+		if ( ! in_array( $post_type, $event_types ) ) {
+			return false;
+		}
+
+		$update_meta = $meta_map[ $meta_key ];
+		$tickets = $this->get_tickets_ids( $object_id );
+
+		foreach ( $tickets as $ticket ) {
+			// Skip tickets with manual updates to that meta
+			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+				continue;
+			}
+
+			update_post_meta( $ticket, $update_meta, $date );
+		}
+
+		return true;
+	}
+
+	/**
+	 * Updates the Start date of all non-modified tickets when an Ticket supported Post is saved
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int      $post_id  Which post we are updating here
+	 * @param  WP_Post  $post     Object of the current post updating
+	 * @param  boolean  $update   If we are updating or creating a post
+	 *
+	 * @return boolean
+	 */
+	public function update_start_date( $post_id, $post, $update ) {
+		// Bail on Revision
+		if ( wp_is_post_revision( $post_id ) ) {
+			return false;
+		}
+
+		// Bail if the CPT doens't accept tickets
+		if ( ! tribe_tickets_post_type_enabled( $post->post_type ) ) {
+			return false;
+		}
+
+		$update_meta = $this->key_start_date;
+		$tickets = $this->get_tickets_ids( $post_id );
+
+		foreach ( $tickets as $ticket ) {
+			// Skip tickets with manual updates to that meta
+			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+				continue;
+			}
+
+			// 30 min in seconds
+			$round = 1800;
+			if ( class_exists( 'Tribe__Events__Main' ) ) {
+				$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' ) * 60;
+			}
+
+			$date = strtotime( $post->post_date );
+			$date = round( $date / $round ) * $round;
+			$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
+
+			update_post_meta( $ticket, $update_meta, $date );
+		}
+
+		return true;
 	}
 
 	/**
@@ -1230,7 +1435,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$needs_warning = (int) $inventory !== (int) $stock;
 
 			// We remove the warning flag when shared stock is used
-			if ( $shared_stock->is_enabled() && $stock > $shared_stock->get_stock_level() ) {
+			if ( $shared_stock->is_enabled() && (int) $stock > (int) $shared_stock->get_stock_level() ) {
 				$needs_warning = false;
 			}
 		}

@@ -1,7 +1,7 @@
 <button class="accordion-header tribe_advanced_meta">
 	<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
 </button>
-<section id="ticket_form_advanced" class="advanced accordion-content">
+<section id="ticket_form_advanced" class="advanced accordion-content" data-datepicker_format="<?php echo esc_attr( tribe_get_option( 'datepickerFormat' ) ); ?>">
 	<h4 class="accordion-label screen_reader_text"><?php esc_html_e( 'Advanced Settings', 'event-tickets' ); ?></h4>
 	<div class="input_block">
 		<label class="ticket_form_label ticket_form_left" for="ticket_description"><?php esc_html_e( 'Description:', 'event-tickets' ); ?></label>
@@ -36,7 +36,6 @@
 				name="ticket_start_date"
 				id="ticket_start_date"
 				value=""
-				data-validation-is-required
 				data-validation-type="datepicker"
 				data-validation-is-less-or-equal-to="#ticket_end_date"
 				data-validation-error="<?php echo esc_attr( json_encode( $start_date_errors ) ) ?>"
@@ -53,8 +52,6 @@
 				data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 				data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 				value=""
-				data-validation-is-required
-				data-validation-error="<?php esc_attr_e( 'Start sale time cannot be empty.', 'event-tickets' ) ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 			<span class="dashicons dashicons-editor-help" title="<?php esc_attr_e( 'If you do not set a start sale date, tickets will be available immediately.', 'event-tickets' ); ?>"></span>

@@ -887,6 +887,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->purchase_limit   = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit'] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
 			$ticket->provider_class   = $this->class_name;
+			$ticket->start_date       = null;
+			$ticket->end_date         = null;
+
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( true );
 
 			if ( ! empty( $ticket->price ) ) {
 				// remove non-money characters
@@ -894,7 +898,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_start_date'] ) ) {
-				$start_datetime = $data['ticket_start_date'];
+				$start_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_start_date'] );
 
 				if ( ! empty( $data['ticket_start_time'] ) ) {
 					$start_datetime .= ' ' . $data['ticket_start_time'];
@@ -904,7 +908,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
-				$end_datetime = $data['ticket_end_date'];
+				$end_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_end_date'] );
 
 				if ( ! empty( $data['ticket_end_time'] ) ) {
 					$end_datetime .= ' ' . $data['ticket_end_time'];
@@ -923,7 +927,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
 
 			// Pass the control to the child object
-			return $this->save_ticket( $post_id, $ticket, $data );
+			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
+
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
+
+			$post = get_post( $post_id );
+			if ( empty( $data['ticket_start_date'] ) ) {
+				// 30 min in seconds
+				$round = 1800;
+				if ( class_exists( 'Tribe__Events__Main' ) ) {
+					$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' ) * 60;
+				}
+
+				$date = strtotime( $post->post_date );
+				$date = round( $date / $round ) * $round;
+				$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
+
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $date );
+			}
+
+			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
+				$event_end = get_post_meta( $post_id, '_EventEndDate', true );
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $event_end );
+			}
+
+			return $save_ticket;
 		}
 
 		/**
