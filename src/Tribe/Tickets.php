@@ -933,11 +933,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$post = get_post( $post_id );
 			if ( empty( $data['ticket_start_date'] ) ) {
-				// 30 min in seconds
-				$round = 1800;
+				// 30 min
+				$round = 30;
 				if ( class_exists( 'Tribe__Events__Main' ) ) {
-					$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' ) * 60;
+					$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
 				}
+				// Convert to seconds
+				$round *= MINUTE_IN_SECONDS;
 
 				$date = strtotime( $post->post_date );
 				$date = round( $date / $round ) * $round;
