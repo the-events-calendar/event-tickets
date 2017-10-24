@@ -34,15 +34,6 @@ class Tribe__Tickets__Tickets_Handler {
 	protected $tickets_order_field = '_tribe_tickets_order';
 
 	/**
-	 * Post Meta key for showing attendees on the front end
-	 *
-	 * @since TBD
-	 *
-	 * @var string
-	 */
-	protected $show_attendees_field = '_tribe_show_attendees';
-
-	/**
 	 * Post Meta key for event ecommerce provider
 	 *
 	 * @since TBD
@@ -320,11 +311,13 @@ class Tribe__Tickets__Tickets_Handler {
 				continue;
 			}
 
-			// 30 min in seconds
-			$round = 1800;
+			// 30 min
+			$round = 30;
 			if ( class_exists( 'Tribe__Events__Main' ) ) {
-				$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' ) * 60;
+				$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
 			}
+			// Convert to seconds
+			$round *= MINUTE_IN_SECONDS;
 
 			$date = strtotime( $post->post_date );
 			$date = round( $date / $round ) * $round;
@@ -1724,11 +1717,8 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		// We reversed this logic on the back end
-		if ( ! empty( $params['tribe_show_attendees'] ) ) {
-			delete_post_meta( $id, $this->show_attendees_field );
-		} else {
-			update_post_meta( $id, $this->show_attendees_field, 1 );
-		}
+		update_post_meta( $id, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, ! empty( $params['tribe_show_attendees'] ) );
+
 
 		// Change the default ticket provider
 		if ( ! empty( $params['default_ticket_provider'] ) ) {
