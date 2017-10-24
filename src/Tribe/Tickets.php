@@ -675,8 +675,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'wp_ajax_tribe-ticket-refresh-settings', array( $this, 'ajax_refresh_settings' ) );
 
 			/**
-			 * @deprecated TBD `tribe_events_tickets_modules` should no longer be used and direct
-			 *                 calls to Tribe__Tickets__Tickets::modules() are now preferred
+			 * @deprecated 4.5.7 `tribe_events_tickets_modules` should no longer be used and direct
+			 *             calls to Tribe__Tickets__Tickets::modules() are now preferred
 			 *
 			 * @todo remove in 4.6. This only exists because version =<4.5.10 of TEC runs apply_filter()
 			 *       instead of calling this method directly.
