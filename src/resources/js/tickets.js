@@ -61,8 +61,20 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return
 		}
 
+		var $maxCapacity = $( '.tribe-ticket-capacity-max' );
+		var $capacityValue = $maxCapacity.find( '.tribe-ticket-capacity-value' );
+		var $capacity = $( '[name="tribe-ticket[capacity]"]' );
+
 		// may as well set this here just in case
-		$( '[name="tribe-ticket[capacity]"]' ).attr( 'placeholder', eventCapacity );
+		$capacity.attr( 'placeholder', eventCapacity );
+
+		if ( ! eventCapacity ) {
+			eventCapacity = 0;
+		} else {
+			$capacity.attr( 'max', eventCapacity );
+		}
+
+		$capacityValue.text( eventCapacity );
 	};
 
 	function format_date( date, use_base_format ) {
@@ -661,6 +673,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				var end_date;
 				var end_time;
 
+				var $maxCapacity = $( '.tribe-ticket-capacity-max' );
+				var $capacityValue = $maxCapacity.find( '.tribe-ticket-capacity-value' );
+
 				// trigger a change event on the provider radio input so the advanced fields can be re-initialized
 				$( 'input:radio[name=ticket_provider]' ).filter( '[value=' + response.data.provider_class + ']' ).click();
 				$( 'input[name=ticket_provider]:radio' ).change();
@@ -669,22 +684,37 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				if ( response.data.global_stock_mode ) {
 					switch ( response.data.global_stock_mode ) {
 						case 'global':
-							$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'global' );
-							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.event_capacity ).prop( 'disabled', true );
-							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.capacity );
-							$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
+							$( document.getElementById( provider_class + '_global' ) )
+								.prop( 'checked', true )
+								.val( 'global' );
+
+							$( document.getElementById( provider_class + '_global_capacity' ) )
+								.attr( 'placeholder', response.data.event_capacity )
+								.val( response.data.event_capacity )
+								.prop( 'disabled', true );
+
+							$( document.getElementById( provider_class + '_global_stock_cap' ) )
+								.attr( 'placeholder', response.data.event_capacity )
+								.val( '' );
+
+							$capacityValue.text( response.data.event_capacity );
 
 							break;
 						case 'capped':
-							$( document.getElementById( provider_class + '_global' ) ).prop( 'checked', true ).val( 'capped' );
-							$( document.getElementById( provider_class + '_global_capacity' ) ).val( response.data.event_capacity ).prop( 'disabled', true );
-							$( document.getElementById( provider_class + '_global_stock_cap' ) ).attr( 'placeholder', response.data.capacity );
+							$( document.getElementById( provider_class + '_global' ) )
+								.prop( 'checked', true )
+								.val( 'capped' );
 
-							if ( undefined !== response.data.capacity && $.isNumeric( response.data.capacity ) && 0 < response.data.capacity ) {
-								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.capacity );
-							} else {
-								$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( 0 );
-							}
+							$( document.getElementById( provider_class + '_global_capacity' ) )
+								.attr( 'placeholder', response.data.event_capacity )
+								.val( response.data.event_capacity )
+								.prop( 'disabled', true );
+
+							$( document.getElementById( provider_class + '_global_stock_cap' ) )
+								.attr( 'placeholder', response.data.event_capacity )
+								.val( response.data.capacity );
+
+							$capacityValue.text( response.data.event_capacity );
 
 							break;
 						case 'own':
@@ -696,6 +726,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							$( document.getElementById( provider_class + '_unlimited' ) ).prop( 'checked', true );
 							$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
 					}
+
+
 				} else {
 					$( document.getElementById( response.data.provider_class + '_unlimited' ) ).prop( 'checked', true );
 					$( document.querySelectorAll( '.ticket_stock' ) ).val( response.data.original_stock );
@@ -714,46 +746,45 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 					$( document.getElementById( 'tribe_tickets_show_description' ) ).removeAttr( 'checked' );
 				}
 
-				// handle all the date stuff
-				var now = Date.now();
-
 				if ( response.data.start_date ) {
 					start_date = format_date( response.data.start_date, true );
 				} else if ( undefined !== $( document.getElementById( 'EventStartDate' ) ).val() ) {
 					start_date = format_date( $( document.getElementById( 'EventStartDate' ) ).val() );
-				} else {
-					start_date = format_date( now );
 				}
 
 				if ( response.data.start_time ) {
 					start_time = format_time( response.data.start_time );
 				} else if ( undefined !== $( document.getElementById( 'EventStartTime' ) ).val() ) {
 					start_time = format_time( $( document.getElementById( 'EventStartTime' ) ).val() );
-				} else {
-					start_time = format_time( now );
 				}
 
-				$ticket_start_date.val( start_date ).trigger( 'change' );
-				$ticket_start_time.val( start_time ).trigger( 'change' );
+				if ( start_date ) {
+					$ticket_start_date.val( start_date ).trigger( 'change' );
+				}
+
+				if ( start_time ) {
+					$ticket_start_time.val( start_time ).trigger( 'change' );
+				}
 
 				if ( response.data.end_date ) {
 					end_date = format_date( response.data.end_date, true );
 				} else if ( undefined !== $( document.getElementById( 'EventEndDate' ) ).val() ) {
 					end_date = format_date( $( document.getElementById( 'EventEndDate' ) ).val() );
-				} else {
-					end_date = '';
 				}
 
 				if ( response.data.end_time ) {
 					end_time = format_time( response.data.end_time );
 				} else if ( undefined !== $( document.getElementById( 'EventEndTime' ) ).val() ) {
 					end_time = format_time( $( document.getElementById( 'EventEndTime' ) ).val() );
-				} else {
-					end_time = '';
 				}
 
-				$ticket_end_date.val( end_date ).trigger( 'change' );
-				$ticket_end_time.val( end_time ).trigger( 'change' );
+				if ( end_date ) {
+					$ticket_end_date.val( end_date ).trigger( 'change' );
+				}
+
+				if ( end_time ) {
+					$ticket_end_time.val( end_time ).trigger( 'change' );
+				}
 
 				$( document.getElementById( 'advanced_fields' ) ).empty( '' ).append( response.data.advanced_fields );
 
@@ -900,6 +931,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 	/* Track changes to the global stock level on the ticket edit form. */
 	$document.on( 'blur', '[name="tribe-ticket[event_capacity]"]', changeEventCapacity );
+
+	/**
+	 * Track changes to Capacity to avoid going over the max
+	 */
+	$document.on( 'change', '[name="tribe-ticket[capacity]"]', function( event ) {
+		var $field = $( this );
+		var max = $field.attr( 'max' );
+		var value = $field.val();
+
+		if ( max && max < value ) {
+			$field.val( max );
+		}
+	} );
 
 	/** Track changes to the global stock level on the Settings form.  */
 	$document.on( 'change', '#tribe-tickets-global-stock-level', changeEventCapacity );
