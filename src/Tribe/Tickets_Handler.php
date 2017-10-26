@@ -40,7 +40,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @var string
 	 */
-	protected $ticket_provider_field = '_tribe_ticket_provider';
+	public $key_provider_field = '_tribe_default_ticket_provider';
 
 	/**
 	 * Post meta key for the ticket capacty
@@ -1706,8 +1706,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function ajax_handler_save_settings() {
 		$params = array();
-		$id = $_POST['post_ID'];
-		parse_str( $_POST['formdata'], $params );
+		$id = absint( $_POST['post_ID'] );
+		$params = wp_parse_args( $_POST['formdata'], $params );
 
 		/**
 		 * Allow other plugins to hook into this to add settings
@@ -1730,9 +1730,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Change the default ticket provider
 		if ( ! empty( $params['default_ticket_provider'] ) ) {
-			update_post_meta( $id, $this->ticket_provider_field, $params['default_ticket_provider'] );
+			update_post_meta( $id, $this->key_provider_field, $params['default_ticket_provider'] );
 		} else {
-			delete_post_meta( $id, $this->ticket_provider_field );
+			delete_post_meta( $id, $this->key_provider_field );
 		}
 
 		wp_send_json_success( $params );
