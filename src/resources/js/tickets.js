@@ -53,14 +53,17 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	var dateFormat = datepickerFormats[0];
 	var time_format = 'HH:mmA';
 
-	var changeEventCapacity = function( event ) {
-		var $this = $( this );
-		var eventCapacity = $this.val();
-
-		if ( undefined === eventCapacity ) {
-			return
+	var changeEventCapacity = function( event, eventCapacity ) {
+		if ( 'undefined' === typeof eventCapacity ) {
+			var $element = $( this );
+			eventCapacity = $element.val();
 		}
 
+		if ( undefined === eventCapacity ) {
+			return;
+		}
+
+		eventCapacity = parseInt( eventCapacity, 10 );
 		var $maxCapacity = $( '.tribe-ticket-capacity-max' );
 		var $capacityValue = $maxCapacity.find( '.tribe-ticket-capacity-value' );
 		var $capacity = $( '[name="tribe-ticket[capacity]"]' );
@@ -508,6 +511,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var start_time;
 		var end_date;
 		var end_time;
+		var $maxCapacity = $( '.tribe-ticket-capacity-max' );
+		var $capacityValue = $maxCapacity.find( '.tribe-ticket-capacity-value' );
 
 		$tribe_tickets.trigger( 'clear.tribe' );
 
@@ -525,7 +530,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$( document.getElementById( $default_provider + '_global_stock_block') ).find(  '.global_capacity-wrapper' ).removeClass( 'screen-reader-text' );
 			}
 
-			$( document.getElementById( $default_provider + '_global_stock_cap' ) ).attr( 'placeholder', global_cap );
+			changeEventCapacity( e, global_cap );
 		}
 
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
@@ -691,11 +696,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								.val( response.data.event_capacity )
 								.prop( 'disabled', true );
 
-							$( document.getElementById( provider_class + '_global_stock_cap' ) )
-								.attr( 'placeholder', response.data.event_capacity )
-								.val( '' );
+							$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( '' );
 
-							$capacityValue.text( response.data.event_capacity );
+							changeEventCapacity( e, response.data.event_capacity );
 
 							break;
 						case 'capped':
@@ -708,11 +711,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 								.val( response.data.event_capacity )
 								.prop( 'disabled', true );
 
-							$( document.getElementById( provider_class + '_global_stock_cap' ) )
-								.attr( 'placeholder', response.data.event_capacity )
-								.val( response.data.capacity );
+							$( document.getElementById( provider_class + '_global_stock_cap' ) ).val( response.data.capacity );
 
-							$capacityValue.text( response.data.event_capacity );
+							changeEventCapacity( e, response.data.event_capacity );
 
 							break;
 						case 'own':
@@ -935,8 +936,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 */
 	$document.on( 'change', '[name="tribe-ticket[capacity]"]', function( event ) {
 		var $field = $( this );
-		var max = $field.attr( 'max' );
-		var value = $field.val();
+		var max = parseInt( $field.attr( 'max' ), 10 );
+		var value = parseInt( $field.val(), 10 );
 
 		if ( max && max < value ) {
 			$field.val( max );
