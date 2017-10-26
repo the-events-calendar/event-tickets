@@ -977,10 +977,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
 
-		if ( isset( $raw_data['ticket_start_date'] ) ) {
+		if ( ! empty( $raw_data['ticket_start_date'] ) ) {
 			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );
 
-			if ( isset( $raw_data['ticket_start_time'] ) ) {
+			if ( ! empty( $raw_data['ticket_start_time'] ) ) {
 				$start_date .= ' ' . $raw_data['ticket_start_time'];
 			}
 
@@ -995,14 +995,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			delete_post_meta( $ticket->ID, '_ticket_start_date' );
 		}
 
-		if ( isset( $raw_data['ticket_end_date'] ) ) {
+		if ( ! empty( $raw_data['ticket_end_date'] ) ) {
 			$end_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_end_date'] );
 
-			if ( isset( $raw_data['ticket_end_time'] ) ) {
+			if ( ! empty( $raw_data['ticket_end_time'] ) ) {
 				$end_date .= ' ' . $raw_data['ticket_end_time'];
 			}
 
-			$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_date ) );
+			$end_date = strtotime( $end_date );
+
+			$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $end_date );
 			$previous_end_date = get_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, true );
 
 			// Only update when we are modifying
