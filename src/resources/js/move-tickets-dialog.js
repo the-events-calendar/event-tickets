@@ -513,6 +513,8 @@ var tribe_move_tickets = tribe_move_tickets || {};
 					.remove();
 			}
 
+			top.jQuery( '#ticket_form_cancel' ).trigger( 'click' );
+
 			// Remove the specified tickets from the attendee list
 			if ( $.isArray( response.data.remove_tickets ) ) {
 				top.tribe_event_tickets_attendees.remove_tickets( response.data.remove_tickets );
