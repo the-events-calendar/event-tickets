@@ -9,7 +9,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.7beta';
+	const MIN_TEC_VERSION = '4.6.3beta';
 
 	/**
 	 * Min required version of Tribe Common
