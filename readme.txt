@@ -4,7 +4,7 @@ Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.2
-Stable tag: 4.5.7
+Stable tag: 4.6beta1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,7 +44,7 @@ Just getting started? Definitely watch and read through the [New User Primer](ht
 * Visitors can RSVP to events
 * Add RSVP to posts, pages, or any custom post type
 * Works out of the box with The Events Calendar
-* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) to sell tickets using WooCommerce and Easy Digital Downloads 
+* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) to sell tickets using WooCommerce and Easy Digital Downloads
 * Completely responsive from mobile to tablet to desktop
 * Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
 * Internationalized & Translated
@@ -55,7 +55,7 @@ Looking for something else? We've got add-ons available to take your calendar to
 
 = Event Tickets Plus =
 
-Get premium support and add paid ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard! We currently support WooCommerce or Easy Digital Downloads. 
+Get premium support and add paid ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard! We currently support WooCommerce or Easy Digital Downloads.
 
 = The Events Calendar =
 
@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= TBD =
+= [4.6] TBD =
 
 * New - Filter default capacity type with tribe_tickets_default_ticket_capacity_type [80629]
 * New — Introduced new filters allowing fine-grained insertion into the ticket editor: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_ticket_order_field`.
