@@ -733,7 +733,7 @@ function tribe_tickets_get_capacity( $post ) {
 
 	// When we have a legacy ticket we migrate it
 	if ( ! in_array( $post->post_type, $event_types ) && tribe( 'tickets.version' )->is_legacy( $post->ID ) ) {
-		return tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
+		return (int) tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
 	}
 
 	// Defaults to the ticket ID
