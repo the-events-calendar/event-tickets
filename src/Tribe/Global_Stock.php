@@ -62,7 +62,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @var   string
 	 */
-	const TICKET_STOCK_MODE = '_tribe_ticket_global_stock_mode';
+	const TICKET_STOCK_MODE = '_global_stock_mode';
 
 	/**
 	 * Post meta key used to store the ticket global stock cap.
@@ -71,7 +71,7 @@ class Tribe__Tickets__Global_Stock {
 	 *
 	 * @var   string
 	 */
-	const TICKET_STOCK_CAP = '_tribe_ticket_global_stock_cap';
+	const TICKET_STOCK_CAP = '_global_stock_cap';
 
 	/**
 	 * Which post we are dealing with for this instance of stock

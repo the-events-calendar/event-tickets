@@ -63,6 +63,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			return;
 		}
 
+		// Make sure we don't have NaN
+		if ( ! eventCapacity ) {
+			eventCapacity = 0;
+		}
+
 		eventCapacity = parseInt( eventCapacity, 10 );
 		var $maxCapacity = $( '.tribe-ticket-capacity-max' );
 		var $capacityValue = $maxCapacity.find( '.tribe-ticket-capacity-value' );

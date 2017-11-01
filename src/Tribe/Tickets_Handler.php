@@ -452,32 +452,63 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$post_type = get_post_type( $object_id );
+		$global_stock = new Tribe__Tickets__Global_Stock( $object_id );
 
 		if ( tribe_tickets_post_type_enabled( $post_type ) ) {
-			$global_stock = new Tribe__Tickets__Global_Stock( $object_id );
-			$capacity     = $global_stock->get_stock_level();
-			$tickets      = $this->get_tickets_ids( $object_id );
+			$capacity = $global_stock->get_stock_level();
+			$tickets  = $this->get_tickets_ids( $object_id );
 
 			foreach ( $tickets as $ticket ) {
 				if ( $this->has_shared_capacity( $ticket ) ) {
 					continue;
 				}
+
 				$totals = $this->get_ticket_totals( $ticket );
 
 				$capacity += $totals['sold'] + $totals['pending'];
 			}
 		} else {
-			if ( $this->is_ticket_managing_stock( $object_id ) ) {
-				$totals = $this->get_ticket_totals( $object_id );
+			// In here we deal with Tickets migration from legacy
+			$is_local_capped = false;
+			$ticket_local_cap = trim( get_post_meta( $object_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
+			$totals = $this->get_ticket_totals( $object_id );
 
-				// Do the math
+			if (
+				! empty( $ticket_local_cap )
+				&& is_numeric( $ticket_local_cap )
+				&& 0 !== $ticket_local_cap
+			) {
+				$is_local_capped = true;
+				$capacity = (int) $ticket_local_cap;
+			} elseif ( $this->is_ticket_managing_stock( $object_id ) ) {
 				$capacity = array_sum( $totals );
 			} else {
 				$capacity = -1;
 			}
+
+			// Fetch ticket event ID for Updating capacity on event
+			$event_id = tribe_tickets_get_event_ids( $object_id );
+
+			// It will return an array of Events
+			if ( ! empty( $event_id ) ) {
+				$event_id = current( $event_id );
+				$event_capacity = $capacity;
+
+				// If we had local Cap we overwrite to the event total
+				if ( $is_local_capped ) {
+					$event_capacity = array_sum( $totals );
+				}
+
+				update_post_meta( $event_id, $this->key_capacity, $event_capacity );
+			}
 		}
 
-		update_post_meta( $object_id, $this->key_capacity, $capacity );
+		$updated = update_post_meta( $object_id, $this->key_capacity, $capacity );
+
+		// If we updated the Capacity for legacy update the version
+		if ( $updated ) {
+			tribe( 'tickets.version' )->update( $object_id );
+		}
 
 		// Hook it back up
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
@@ -1476,9 +1507,10 @@ class Tribe__Tickets__Tickets_Handler {
 			<td class="ticket_edit">
 				<?php
 				printf(
-					"<button data-provider='%s' data-ticket-id='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
+					"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
 					esc_attr( $ticket->provider_class ),
 					esc_attr( $ticket->ID ),
+					esc_attr( sprintf( __( '( Ticket ID: %d )', 'tribe-tickets' ), $ticket->ID ) ),
 					esc_html( $ticket->name )
 				);
 				?>
