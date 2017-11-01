@@ -487,7 +487,7 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 
 			// Fetch ticket event ID for Updating capacity on event
-			$event_id = tribe_tickets_get_event_ids( $post->ID );
+			$event_id = tribe_tickets_get_event_ids( $object_id );
 
 			// It will return an array of Events
 			if ( ! empty( $event_id ) ) {
@@ -1507,9 +1507,10 @@ class Tribe__Tickets__Tickets_Handler {
 			<td class="ticket_edit">
 				<?php
 				printf(
-					"<button data-provider='%s' data-ticket-id='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
+					"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
 					esc_attr( $ticket->provider_class ),
 					esc_attr( $ticket->ID ),
+					sprintf( __( '( Ticket ID: %d )', 'tribe-tickets' ), esc_attr( $ticket->ID ) ),
 					esc_html( $ticket->name )
 				);
 				?>
