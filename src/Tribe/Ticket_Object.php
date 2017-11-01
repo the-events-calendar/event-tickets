@@ -433,7 +433,26 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
 			) {
 				$event_attendees = $this->provider->get_attendees_by_id( $this->get_event()->ID );
-				$inventory[] = tribe_tickets_get_capacity( $this->get_event()->ID ) - count( $event_attendees );
+				$event_attendees_count = 0;
+
+				foreach ( $event_attendees as $attendee ) {
+					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['product_id'] );
+					$attendee_ticket_stock_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+
+					// On all cases of indy stock we don't add
+					if (
+						! $attendee_ticket_stock->is_enabled()
+						|| empty( $attendee_ticket_stock_mode )
+						|| Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $attendee_ticket_stock_mode
+					) {
+						continue;
+					}
+
+					// All the others we add to the count
+					$event_attendees_count++;
+				}
+
+				$inventory[] = tribe_tickets_get_capacity( $this->get_event()->ID ) - $event_attendees_count;
 			}
 
 			$inventory = min( $inventory );
