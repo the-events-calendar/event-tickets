@@ -452,9 +452,10 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$post_type = get_post_type( $object_id );
+		$global_stock = new Tribe__Tickets__Global_Stock( $object_id );
+
 
 		if ( tribe_tickets_post_type_enabled( $post_type ) ) {
-			$global_stock = new Tribe__Tickets__Global_Stock( $object_id );
 			$capacity     = $global_stock->get_stock_level();
 			$tickets      = $this->get_tickets_ids( $object_id );
 
@@ -467,13 +468,35 @@ class Tribe__Tickets__Tickets_Handler {
 				$capacity += $totals['sold'] + $totals['pending'];
 			}
 		} else {
-			if ( $this->is_ticket_managing_stock( $object_id ) ) {
-				$totals = $this->get_ticket_totals( $object_id );
+			// In here we deal with Tickets migration from legacy
+			$is_local_capped = false;
+			$ticket_local_cap = trim( get_post_meta( $object_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
+			$totals = $this->get_ticket_totals( $object_id );
 
+			if ( is_numeric( $ticket_local_cap ) && 0 !== $ticket_local_cap ) {
+				$is_local_capped = true;
+				$capacity = (int) $ticket_local_cap;
+			} elseif ( $this->is_ticket_managing_stock( $object_id ) ) {
 				// Do the math
 				$capacity = array_sum( $totals );
 			} else {
 				$capacity = -1;
+			}
+
+			// Fetch ticket event ID for Updating capacity on event
+			$event_id = tribe_tickets_get_event_ids( $post->ID );
+
+			// It will return an array of Events
+			if ( ! empty( $event_id ) ) {
+				$event_id = current( $event_id );
+				$event_capacity = $capacity;
+
+				// If we had local Cap we overwrite to the event total
+				if ( $is_local_capped ) {
+					$event_capacity = array_sum( $totals );
+				}
+
+				update_post_meta( $event_id, $this->key_capacity, $event_capacity );
 			}
 		}
 
