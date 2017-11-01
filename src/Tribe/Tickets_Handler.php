@@ -1510,7 +1510,7 @@ class Tribe__Tickets__Tickets_Handler {
 					"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
 					esc_attr( $ticket->provider_class ),
 					esc_attr( $ticket->ID ),
-					sprintf( esc_attr__( '( Ticket ID: %d )', 'tribe-tickets' ), esc_attr( $ticket->ID ) ),
+					esc_attr( sprintf( __( '( Ticket ID: %d )', 'tribe-tickets' ), $ticket->ID ) ),
 					esc_html( $ticket->name )
 				);
 				?>
