@@ -454,15 +454,15 @@ class Tribe__Tickets__Tickets_Handler {
 		$post_type = get_post_type( $object_id );
 		$global_stock = new Tribe__Tickets__Global_Stock( $object_id );
 
-
 		if ( tribe_tickets_post_type_enabled( $post_type ) ) {
-			$capacity     = $global_stock->get_stock_level();
-			$tickets      = $this->get_tickets_ids( $object_id );
+			$capacity = $global_stock->get_stock_level();
+			$tickets  = $this->get_tickets_ids( $object_id );
 
 			foreach ( $tickets as $ticket ) {
 				if ( $this->has_shared_capacity( $ticket ) ) {
 					continue;
 				}
+
 				$totals = $this->get_ticket_totals( $ticket );
 
 				$capacity += $totals['sold'] + $totals['pending'];
@@ -473,11 +473,14 @@ class Tribe__Tickets__Tickets_Handler {
 			$ticket_local_cap = trim( get_post_meta( $object_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
 			$totals = $this->get_ticket_totals( $object_id );
 
-			if ( is_numeric( $ticket_local_cap ) && 0 !== $ticket_local_cap ) {
+			if (
+				! empty( $ticket_local_cap )
+				&& is_numeric( $ticket_local_cap )
+				&& 0 !== $ticket_local_cap
+			) {
 				$is_local_capped = true;
 				$capacity = (int) $ticket_local_cap;
 			} elseif ( $this->is_ticket_managing_stock( $object_id ) ) {
-				// Do the math
 				$capacity = array_sum( $totals );
 			} else {
 				$capacity = -1;
