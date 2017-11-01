@@ -1208,7 +1208,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$return            = new Tribe__Tickets__Ticket_Object();
 		$qty               = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		$global_stock_mode = get_post_meta( $ticket_id, '_global_stock_mode', true );
+		$global_stock_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
