@@ -477,7 +477,12 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 		}
 
-		update_post_meta( $object_id, $this->key_capacity, $capacity );
+		$updated = update_post_meta( $object_id, $this->key_capacity, $capacity );
+
+		// If we updated the Capacity for legacy update the version
+		if ( $updated ) {
+			tribe( 'tickets.version' )->update( $object_id );
+		}
 
 		// Hook it back up
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
