@@ -65,6 +65,7 @@ $now = current_time( 'timestamp' );
 
 			$is_there_any_product = true;
 			$is_there_any_product_to_sell = $ticket->is_in_stock();
+			$remaining = $ticket->remaining();
 
 			if ( $is_there_any_product_to_sell ) {
 				$are_products_available = true;
@@ -79,7 +80,9 @@ $now = current_time( 'timestamp' );
 							type="number"
 							class="tribe-ticket-quantity"
 							min="0"
-							max="<?php echo esc_attr( $ticket->remaining() ); ?>"
+							<?php if ( -1 !== $remaining ) : ?>
+								max="<?php echo esc_attr( $remaining ); ?>"
+							<?php endif; ?>
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
