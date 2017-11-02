@@ -548,6 +548,8 @@ class Tribe__Tickets__Tickets_Handler {
 		} elseif ( $provider instanceof Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
 			$totals['sold']    = get_post_meta( $ticket->ID, 'total_sales', true );
 			$totals['pending'] = $provider->get_qty_pending( $ticket->ID, true );
+		} else {
+			$totals['sold'] = get_post_meta( $ticket->ID, 'total_sales', true );
 		}
 
 		$totals = array_map( 'intval', $totals );
@@ -576,7 +578,13 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$manage_stock = get_post_meta( $ticket->ID, '_manage_stock', true );
+		// Defaults to managing Stock so we don't have Unlimited
+		$manage_stock = true;
+
+		// If it exists we use it
+		if ( metadata_exists( 'post', $ticket->ID, '_manage_stock' ) ) {
+			$manage_stock = get_post_meta( $ticket->ID, '_manage_stock', true );
+		}
 
 		return tribe_is_truthy( $manage_stock );
 	}
