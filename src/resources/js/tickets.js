@@ -427,16 +427,19 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			// Reset the min/max datepicker settings so that they aren't inherited by the next ticket that is edited
 			$ticket_start_date.datepicker( 'option', 'maxDate', null )
-			$ticket_start_date.val( $.datepicker.formatDate( dateFormat, new Date() ) )
+			$ticket_start_date.val( '' )
 			$ticket_start_date.trigger( 'change' );
 
-			var startDateTime = new Intl.DateTimeFormat( 'en-US', { hour: 'numeric', minute: 'numeric' } ).format( new Date() );
-			$ticket_start_time.val( startDateTime );
+			$ticket_start_time.val( '' );
 			$ticket_start_time.trigger( 'change' );
 
 			// event end date, time
-			$ticket_end_date.datepicker( 'option', 'minDate', null ).val(  $( document.getElementById( 'EventStartDate' ) ).val() ).trigger( 'change' );
-			$ticket_end_time.val( $( document.getElementById( 'EventEndTime' ) ).val() ).trigger( 'change' );
+			$ticket_end_date.datepicker( 'option', 'minDate', null );
+			$ticket_end_date.val( '' );
+			$ticket_end_date.trigger( 'change' );
+
+			$ticket_end_time.val( '' );
+			$ticket_end_time.trigger( 'change' );
 
 			$edit_panel.find( '#ticket_price' ).removeProp( 'disabled' )
 				.siblings( '.no-update-message' ).html( '' ).hide()
