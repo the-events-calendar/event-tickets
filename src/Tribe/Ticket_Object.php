@@ -437,7 +437,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 				foreach ( $event_attendees as $attendee ) {
 					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['product_id'] );
-					$attendee_ticket_stock_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+					$attendee_ticket_stock_mode = get_post_meta( $this->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 					// On all cases of indy stock we don't add
 					if (
