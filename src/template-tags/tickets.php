@@ -379,63 +379,58 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 * @return string
 	 */
 	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {
-
-		$stock        = $ticket->stock();
-		$sold         = $ticket->qty_sold();
-		$cancelled    = $ticket->qty_cancelled();
-		$pending      = $ticket->qty_pending();
 		$event        = Tribe__Tickets__Tickets::find_matching_event( $ticket );
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 
-		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode();
-		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode();
+		$stock        = $ticket->stock();
+		$available    = $ticket->available();
+		$sold         = (int) $ticket->qty_sold();
+		$cancelled    = (int) $ticket->qty_cancelled();
+		$pending      = (int) $ticket->qty_pending();
+		$status       = '';
+
+		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
+		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
 		$stock_cap = $ticket->global_stock_cap();
 
-		// If ticket sales are capped, do not suggest that more than the cap amount are available
-		if ( $is_capped && $stock > $stock_cap ) {
-			$stock = $stock_cap;
-		}
-
-		// If it is a global-stock ticket but the global stock level has not yet been set for the event
-		// then return something better than just '0' as the available stock
-		if ( $is_global && 0 === $stock && ! $global_stock->is_enabled() ) {
-			$stock = '<i>' . __( 'global inventory', 'event-tickets' ) . '</i>';
-		}
+		$event_cap  = tribe_tickets_get_capacity( $event->ID );
+		$ticket_cap = tribe_tickets_get_capacity( $ticket->ID );
 
 		$sold_label = __( 'Sold', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 			$sold_label = _x( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
 		}
 
-		// There may not be a fixed inventory - in which case just report the number actually sold so far
-		if ( empty( $stock ) && $stock !== 0 ) {
-			$message = sprintf( esc_html__( '%s %d', 'event-tickets' ), esc_html( $sold_label ), esc_html( $sold ) );
-		} // If we do have a fixed stock then we can provide more information
-		else {
-			$status = '';
-
-			if ( $is_global && 0 < $stock && $global_stock->is_enabled() ) {
-				$status_counts[] = sprintf( _x( '%1$d Remaining of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), (int) $stock );
+		// Base message
+		if ( 0 !== $sold ) {
+			if ( -1 === $available ) {
+				$status_counts[] = sprintf( esc_html__( '%s %d', 'event-tickets' ), esc_html( $sold_label ), esc_html( $sold ) );
+			} elseif ( $is_global ) {
+				$status_counts[] = sprintf( _x( '%1$d Remaining of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), $available );
 			} else {
-				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), (int) $stock );
+				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), $available );
 			}
-
-			$status_counts[] = $pending < 1 ? false : sprintf( _x( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ), (int) $pending );
-
-			$status_counts[] = empty( $cancelled ) ? false : sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), (int) $cancelled );
-
-			//remove empty values and prepare to display if values
-			$status_counts = array_diff( $status_counts, array( '' ) );
-			if ( array_filter( $status_counts ) ) {
-				$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
-			}
-
-			$message = sprintf( '%1$d %2$s%3$s', absint( $sold ), esc_html( $sold_label ), esc_html( $status ) );
 		}
+
+		if ( $pending < 1 ) {
+			$status_counts[] = sprintf( _x( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ), $pending );
+		}
+
+		if ( empty( $cancelled ) ) {
+			$status_counts[] = sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), $cancelled );
+		}
+
+		//remove empty values and prepare to display if values
+		$status_counts = array_diff( $status_counts, array( '' ) );
+		if ( array_filter( $status_counts ) ) {
+			$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
+		}
+
+		$message = sprintf( '%1$d %2$s%3$s', absint( $sold ), esc_html( $sold_label ), esc_html( $status ) );
 
 		return $message;
 	}
-}//end if
+}
 
 /**
  * Returns or echoes a url to a file in the Event Tickets plugin resources directory
