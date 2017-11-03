@@ -412,11 +412,11 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			}
 		}
 
-		if ( $pending < 1 ) {
+		if ( $pending > 0 ) {
 			$status_counts[] = sprintf( _x( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ), $pending );
 		}
 
-		if ( empty( $cancelled ) ) {
+		if ( ! empty( $cancelled ) ) {
 			$status_counts[] = sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), $cancelled );
 		}
 
