@@ -723,7 +723,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 							break;
 						case 'own':
 							$( document.getElementById( provider_class + '_own' ) ).prop( 'checked', true );
-							$( document.getElementById( provider_class + '_capacity' ) ).val( response.data.capacity );
+							if ( -1 != response.data.capacity ) {
+								$( document.getElementById( provider_class + '_capacity' ) ).val( response.data.capacity );
+							}
 							break;
 						default:
 							// Just in case
