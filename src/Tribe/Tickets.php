@@ -2152,8 +2152,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// Bail if no ticket providers reported that all their tickets for the event were unavailable
-			$unavailable_tickets = self::$currently_unavailable_tickets[ $post_id ];
-			if ( empty( $unavailable_tickets ) ) {
+			if ( empty( self::$currently_unavailable_tickets[ $post_id ] ) ) {
 				return;
 			}
 

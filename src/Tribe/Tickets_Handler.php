@@ -446,17 +446,42 @@ class Tribe__Tickets__Tickets_Handler {
 			return get_post_meta( $object_id, $meta_key, true );
 		}
 
-		// Bail when we don't have a legacy version
-		if ( ! tribe( 'tickets.version' )->is_legacy( $object_id ) ) {
-			return $value;
+		// Do the migration
+		$capacity = $this->migrate_object_capacity( $object_id );
+
+		// Hook it back up
+		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
+
+		return $capacity;
+	}
+
+	/**
+	 * Migrates a given Post Object capacity from Legacy Version
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int|WP_Post  $object  Which Post ID
+	 *
+	 * @return bool|int
+	 */
+	public function migrate_object_capacity( $object ) {
+		if ( ! $object instanceof WP_Post ) {
+			$object = get_post( $object );
 		}
 
-		$post_type = get_post_type( $object_id );
-		$global_stock = new Tribe__Tickets__Global_Stock( $object_id );
+		if ( ! $object instanceof WP_Post ) {
+			return false;
+		}
 
-		if ( tribe_tickets_post_type_enabled( $post_type ) ) {
-			$capacity = $global_stock->get_stock_level();
-			$tickets  = $this->get_tickets_ids( $object_id );
+		// Bail when we don't have a legacy version
+		if ( ! tribe( 'tickets.version' )->is_legacy( $object->ID ) ) {
+			return false;
+		}
+
+		if ( tribe_tickets_post_type_enabled( $object->post_type ) ) {
+			$event_stock_obj = new Tribe__Tickets__Global_Stock( $object->ID );
+			$capacity        = $event_stock_obj->get_stock_level();
+			$tickets         = $this->get_tickets_ids( $object->ID );
 
 			foreach ( $tickets as $ticket ) {
 				if ( $this->has_shared_capacity( $ticket ) ) {
@@ -470,8 +495,8 @@ class Tribe__Tickets__Tickets_Handler {
 		} else {
 			// In here we deal with Tickets migration from legacy
 			$is_local_capped = false;
-			$ticket_local_cap = trim( get_post_meta( $object_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
-			$totals = $this->get_ticket_totals( $object_id );
+			$ticket_local_cap = trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
+			$totals = $this->get_ticket_totals( $object->ID );
 
 			if (
 				! empty( $ticket_local_cap )
@@ -480,38 +505,27 @@ class Tribe__Tickets__Tickets_Handler {
 			) {
 				$is_local_capped = true;
 				$capacity = (int) $ticket_local_cap;
-			} elseif ( $this->is_ticket_managing_stock( $object_id ) ) {
+			} elseif ( $this->is_ticket_managing_stock( $object->ID ) ) {
 				$capacity = array_sum( $totals );
 			} else {
 				$capacity = -1;
 			}
 
 			// Fetch ticket event ID for Updating capacity on event
-			$event_id = tribe_tickets_get_event_ids( $object_id );
+			$event_id = tribe_events_get_ticket_event( $object->ID );
 
-			// It will return an array of Events
+			// Apply to the Event
 			if ( ! empty( $event_id ) ) {
-				$event_id = current( $event_id );
-				$event_capacity = $capacity;
-
-				// If we had local Cap we overwrite to the event total
-				if ( $is_local_capped ) {
-					$event_capacity = array_sum( $totals );
-				}
-
-				update_post_meta( $event_id, $this->key_capacity, $event_capacity );
+				$this->migrate_object_capacity( $event_id );
 			}
 		}
 
-		$updated = update_post_meta( $object_id, $this->key_capacity, $capacity );
+		$updated = update_post_meta( $object->ID, $this->key_capacity, $capacity );
 
 		// If we updated the Capacity for legacy update the version
 		if ( $updated ) {
-			tribe( 'tickets.version' )->update( $object_id );
+			tribe( 'tickets.version' )->update( $object->ID );
 		}
-
-		// Hook it back up
-		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
 
 		return $capacity;
 	}
@@ -548,6 +562,8 @@ class Tribe__Tickets__Tickets_Handler {
 		} elseif ( $provider instanceof Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
 			$totals['sold']    = get_post_meta( $ticket->ID, 'total_sales', true );
 			$totals['pending'] = $provider->get_qty_pending( $ticket->ID, true );
+		} else {
+			$totals['sold'] = get_post_meta( $ticket->ID, 'total_sales', true );
 		}
 
 		$totals = array_map( 'intval', $totals );
@@ -576,7 +592,13 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$manage_stock = get_post_meta( $ticket->ID, '_manage_stock', true );
+		// Defaults to managing Stock so we don't have Unlimited
+		$manage_stock = true;
+
+		// If it exists we use it
+		if ( metadata_exists( 'post', $ticket->ID, '_manage_stock' ) ) {
+			$manage_stock = get_post_meta( $ticket->ID, '_manage_stock', true );
+		}
 
 		return tribe_is_truthy( $manage_stock );
 	}
