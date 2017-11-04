@@ -953,6 +953,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $event_end );
 			}
 
+			tribe( 'tickets.version' )->update( $ticket->ID );
+
 			return $save_ticket;
 		}
 

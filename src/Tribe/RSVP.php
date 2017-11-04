@@ -1035,6 +1035,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
 
+		tribe( 'tickets.version' )->update( $ticket->ID );
+
 		return $ticket->ID;
 	}
 
