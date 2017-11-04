@@ -420,10 +420,12 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$status_counts[] = sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), $cancelled );
 		}
 
-		//remove empty values and prepare to display if values
-		$status_counts = array_diff( $status_counts, array( '' ) );
-		if ( array_filter( $status_counts ) ) {
-			$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
+		if ( ! empty( $status_counts ) ) {
+			//remove empty values and prepare to display if values
+			$status_counts = array_diff( $status_counts, array( '' ) );
+			if ( array_filter( $status_counts ) ) {
+				$status = sprintf( ' (%1$s)', implode( ', ', $status_counts ) );
+			}
 		}
 
 		$message = sprintf( '%1$d %2$s%3$s', absint( $sold ), esc_html( $sold_label ), esc_html( $status ) );
