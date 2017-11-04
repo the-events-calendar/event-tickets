@@ -478,13 +478,19 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
+		// Defaults to null
+		$capacity = null;
+
 		if ( tribe_tickets_post_type_enabled( $object->post_type ) ) {
 			$event_stock_obj = new Tribe__Tickets__Global_Stock( $object->ID );
-			$capacity        = $event_stock_obj->get_stock_level();
-			$tickets         = $this->get_tickets_ids( $object->ID );
+
+			// Fetches the Current Stock Level
+			$capacity = $event_stock_obj->get_stock_level();
+			$tickets  = $this->get_tickets_ids( $object->ID );
 
 			foreach ( $tickets as $ticket ) {
-				if ( $this->has_shared_capacity( $ticket ) ) {
+				// Indy tickets don't get added to the Event
+				if ( ! $this->has_shared_capacity( $ticket ) ) {
 					continue;
 				}
 
@@ -494,18 +500,13 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 		} else {
 			// In here we deal with Tickets migration from legacy
-			$is_local_capped = false;
-			$ticket_local_cap = trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
+			$mode = get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 			$totals = $this->get_ticket_totals( $object->ID );
 
-			if (
-				! empty( $ticket_local_cap )
-				&& is_numeric( $ticket_local_cap )
-				&& 0 !== $ticket_local_cap
-			) {
-				$is_local_capped = true;
-				$capacity = (int) $ticket_local_cap;
-			} elseif ( $this->is_ticket_managing_stock( $object->ID ) ) {
+			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
+				$capacity = (int) trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
+				$capacity += $totals['sold'] + $totals['pending'];
+			} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $mode  ) {
 				$capacity = array_sum( $totals );
 			} else {
 				$capacity = -1;
@@ -518,6 +519,14 @@ class Tribe__Tickets__Tickets_Handler {
 			if ( ! empty( $event_id ) ) {
 				$this->migrate_object_capacity( $event_id );
 			}
+		}
+
+		// Bail when we didn't have a capacity
+		if ( is_null( $capacity ) ) {
+			// Also still update the version, so we don't hit this method all the time
+			tribe( 'tickets.version' )->update( $object->ID );
+
+			return false;
 		}
 
 		$updated = update_post_meta( $object->ID, $this->key_capacity, $capacity );

@@ -176,11 +176,11 @@ var tribe_tickets_ticket_form = {};
 		var ticket = tribe_tickets_stock_data.tickets[ ticket_id ];
 
 		// If we don't have any data for this ticket we can assume it doesn't use global stock
-		if ( "undefined" === tribe_tickets_stock_data.tickets[ ticket_id ] ) {
+		if ( "undefined" === typeof tribe_tickets_stock_data.tickets[ ticket_id ] ) {
 			return false;
 		}
 
-		return ticket[property];
+		return ticket[ property ];
 	};
 
 	/**
