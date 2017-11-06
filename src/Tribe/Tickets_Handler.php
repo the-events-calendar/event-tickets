@@ -506,6 +506,9 @@ class Tribe__Tickets__Tickets_Handler {
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
 				$capacity = (int) trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
 				$capacity += $totals['sold'] + $totals['pending'];
+			} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode  ) {
+				// When using Global we don't set a ticket cap
+				$capacity = null;
 			} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $mode  ) {
 				$capacity = array_sum( $totals );
 			} else {
