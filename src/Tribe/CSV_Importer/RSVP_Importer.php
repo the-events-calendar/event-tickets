@@ -59,7 +59,9 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	 * @param Tribe__Tickets__RSVP|null                             $rsvp_tickets
 	 */
 	public function __construct(
-		Tribe__Events__Importer__File_Reader $file_reader, Tribe__Events__Importer__Featured_Image_Uploader $featured_image_uploader = null, Tribe__Tickets__RSVP $rsvp_tickets = null
+		Tribe__Events__Importer__File_Reader $file_reader,
+		Tribe__Events__Importer__Featured_Image_Uploader $featured_image_uploader = null,
+		Tribe__Tickets__RSVP $rsvp_tickets = null
 	) {
 		parent::__construct( $file_reader, $featured_image_uploader );
 		$this->rsvp_tickets = ! empty( $rsvp_tickets ) ? $rsvp_tickets : Tribe__Tickets__RSVP::get_instance();
@@ -200,7 +202,15 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			$data['ticket_end_minute']   = $end_date->format( 'i' );
 		}
 
-		$data['ticket_rsvp_stock'] = $this->get_value_by_key( $record, 'ticket_stock' );
+		$stock = $this->get_value_by_key( $record, 'ticket_stock' );
+		$capacity = $this->get_value_by_key( $record, 'ticket_capacity' );
+
+		if ( empty( $capacity ) ) {
+			$capacity = $stock;
+		}
+
+		$data['tribe-ticket']['capacity'] = $capacity;
+		$data['tribe-ticket']['stock'] = $stock;
 
 		return $data;
 	}
