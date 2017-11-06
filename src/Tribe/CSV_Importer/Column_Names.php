@@ -39,6 +39,7 @@ class Tribe__Tickets__CSV_Importer__Column_Names {
 				'ticket_end_sale_date'   => esc_html__( 'Ticket End Sale Date', 'event-tickets' ),
 				'ticket_end_sale_time'   => esc_html__( 'Ticket End Sale Time', 'event-tickets' ),
 				'ticket_stock'           => esc_html__( 'Ticket Stock', 'event-tickets' ),
+				'ticket_capacity'        => esc_html__( 'Ticket Capacity', 'event-tickets' ),
 			) );
 
 		return $column_names;
