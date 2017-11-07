@@ -1,6 +1,6 @@
  === Event Tickets ===
 
-Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, tribecari, vicskf, zbtirrell
+Contributors: ModernTribe, borkweb, aguseo, barry.hughes, bordoni, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, tribecari, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.4
@@ -95,11 +95,11 @@ If you've identified a bug and want to submit a patch, we'd welcome it at our [G
 
 = Requirements =
 
-* PHP 5.2.4 or greater (recommended: PHP 5.4 or greater)
-* WordPress 3.9 or above
+* PHP 5.2.4 or greater (recommended: PHP 7.0 or greater)
+* WordPress 4.5 or above
 * jQuery 1.11.x
-* Event Tickets 4.0 or above
-* The Events Calendar 4.0 or above (optional)
+* Event Tickets 4.6 or above
+* The Events Calendar 4.6 or above (optional)
 
 == Screenshots ==
 
