@@ -30,7 +30,7 @@
 				/**
 				 * Allows for the insertion of additional columns into the ticket table header
 				 *
-				 * @since TBD
+				 * @since 4.6
 				 */
 				do_action( 'tribe_events_tickets_ticket_table_add_header_column' );
 				?>

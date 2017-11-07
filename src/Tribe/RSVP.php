@@ -1327,7 +1327,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get RSVP Tickets Attendees for an Post by id
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  $post_id
 	 *
@@ -1641,7 +1641,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Links to the sales report for this product.
-	 * As of TBD we reversed the params and deprecated $event_id as it was never used
+	 * As of 4.6 we reversed the params and deprecated $event_id as it was never used
 	 *
 	 * @param deprecated $event_id
 	 * @param int $unused_ticket_id
@@ -1650,7 +1650,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function get_ticket_reports_link( $unused_ticket_id, $event_id_deprecated = null ) {
 		if ( ! empty( $event_id_deprecated ) ) {
-			_deprecated_argument( __METHOD__, 'TBD' );
+			_deprecated_argument( __METHOD__, '4.6' );
 		}
 
 		return '';
@@ -1661,12 +1661,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	* Using the method, providers can add as many fields as
 	* they want, specific to their implementation.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6
 	 *
 	 * @return void
 	 */
 	public function do_metabox_advanced_options() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__RSVP::do_metabox_capacity_options' );
+		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__RSVP::do_metabox_capacity_options' );
 	}
 
 	/**
@@ -1674,7 +1674,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param $event_id
 	 * @param $ticket_id

@@ -19,7 +19,7 @@ if ( ! empty( $header_id ) ) {
 		 * Allows for the insertion of additional elements into the ticket settings admin panel below the ticket table
 		 *
 		 * @param Post ID
-		 * @since TBD
+		 * @since 4.6
 		 */
 		do_action( 'tribe_events_tickets_settings_content', $post_id );
 		?>

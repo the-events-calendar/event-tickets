@@ -31,7 +31,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Whether to show the description on the front end and in emails
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @var boolean
 		 */
@@ -47,7 +47,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Ticket Capacity
 		 *
-		 * @since  TBD
+		 * @since  4.6
 		 *
 		 * @var    int
 		 */
@@ -106,7 +106,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Holds the menu order for the ticket
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @var string
 		 */
@@ -182,7 +182,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Time the ticket should be put on sale
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @var string
 		 */
@@ -197,7 +197,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Time the ticket should be stop being sold
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @var string
 		 */
@@ -351,7 +351,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of original stock of tickets
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6
 		 *
 		 * @return int
 		 */
@@ -402,7 +402,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the Inventory of the Ticket which should match the Commerce Stock
 		 *
-		 * @since  TBD
+		 * @since  4.6
 		 *
 		 * @return int
 		 */
@@ -464,7 +464,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Provides the quantity of remaining tickets
 		 *
-		 * @deprecated   TBD  We are now using inventory as the new Remaining
+		 * @deprecated   4.6  We are now using inventory as the new Remaining
 		 *
 		 * @return int
 		 */
@@ -477,7 +477,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @todo   Create a way to get the Available for an Event (currenty impossible)
 		 *
-		 * @since  TBD
+		 * @since  4.6
 		 *
 		 * @return int
 		 */
@@ -503,7 +503,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Gets the Capacity for the Ticket
 		 *
-		 * @since   TBD
+		 * @since   4.6
 		 *
 		 * @return  int
 		 */
@@ -784,7 +784,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Returns whether the ticket description should show on
 		 * the front page and in emails. Defaults to true.
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @return boolean
 		 */
@@ -799,7 +799,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			/**
 			 * Allows filtering of the value so we can for example, disable it for a theme/site
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param boolean whether to show the description or not
 			 * @param int ticket ID

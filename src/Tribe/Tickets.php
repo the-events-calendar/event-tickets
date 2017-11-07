@@ -137,7 +137,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Name of this class. Note that it refers to the child class.
 		 * deprecated - use $class_name
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6
 		 *
 		 * @var string
 		 */
@@ -147,7 +147,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Path of the parent class
 		 * deprecated - use $parent_path
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6
 		 *
 		 * @var string
 		 */
@@ -157,7 +157,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * URL of the parent class
 		 * deprecated - use $parent_url
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6
 		 *
 		 * @var string
 		 */
@@ -167,7 +167,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Name of the provider
 		 * deprecated - use $plugin_name
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6
 		 *
 		 * @var string
 		 */
@@ -177,7 +177,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Path of the child class
 		 * deprecated - use $plugin_path
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6
 		 *
 		 * @var string
 		 */
@@ -187,7 +187,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * URL of the child class
 		 * deprecated - use $plugin_url
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6
 		 *
 		 * @var string
 		 */
@@ -216,7 +216,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
 		 * null if the provider doesn't have reporting capabilities.
-		 * As of TBD we reversed the params and deprecated $post_id as it was never used
+		 * As of 4.6 we reversed the params and deprecated $post_id as it was never used
 		 *
 		 * @abstract
 		 *
@@ -244,7 +244,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Retrieve the Query args to fetch all the Tickets related to a post
 		 *
-		 * @since  TBD
+		 * @since  4.6
 		 *
 		 * @param  int|WP_Post $post
 		 *
@@ -273,7 +273,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Retrieve the ID numbers of all tickets of an event
 		 *
-		 * @since  TBD
+		 * @since  4.6
 		 *
 		 * @param  int|WP_Post $post
 		 *
@@ -298,7 +298,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the html for the delete ticket link
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param object $ticket Ticket object
 		 * @return string HTMl link
@@ -313,7 +313,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allows for the filtering and testing if a user can delete tickets
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param bool true
 			 * @param int ticket post ID
@@ -343,7 +343,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the url for the move ticket link
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param int $post_id ID of parent "event" post
 		 * @param object $ticket Ticket object
@@ -372,7 +372,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the html for the move ticket link
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param int $post_id ID of parent "event" post
 		 * @param object $ticket Ticket object
@@ -399,7 +399,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get the controls (move, delete) as a string and add to our ajax return
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param array $return the ajax return data
 		 * @return array $return modified data
@@ -666,7 +666,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Priority set to 11 to force a specific display order
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
 			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
@@ -730,7 +730,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Refreshes panels after ajax calls that change data
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @return string html content of the panels
 		 */
@@ -771,7 +771,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allows filtering the data by other plugins/ecommerce solutions©
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param array the return data
 			 * @param int the post/event id
@@ -784,7 +784,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Refreshes panel settings after canceling saving
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @return string html content of the panel settings
 		 */
@@ -802,7 +802,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allows filtering the data by other plugins/ecommerce solutions
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param array the return data
 			 * @param int the post/event id
@@ -1139,7 +1139,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Allows for the insertion of the attendee meta fields into the ticket admin form
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param int $post_id ID of parent "event" post
 			 * @param int $ticket_id ID of ticket post
@@ -1638,7 +1638,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the class name of the default module/provider.
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @return string
 		 */
@@ -1648,7 +1648,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the default tickets module class name
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param string default ticket module class name
 			 * @param array array of ticket module class names

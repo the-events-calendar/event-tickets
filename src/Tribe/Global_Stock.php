@@ -58,7 +58,7 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Post meta key used to store the ticket global stock mode.
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @var   string
 	 */
@@ -67,7 +67,7 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Post meta key used to store the ticket global stock cap.
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @var   string
 	 */
@@ -76,7 +76,7 @@ class Tribe__Tickets__Global_Stock {
 	/**
 	 * Which post we are dealing with for this instance of stock
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @var   int $post_id
 	 */
@@ -100,7 +100,7 @@ class Tribe__Tickets__Global_Stock {
 	 * than enable global stock.
 	 *
 	 * @since  4.1
-	 * @since  TBD Added a return so we can check if it was enabled correctly
+	 * @since  4.6 Added a return so we can check if it was enabled correctly
 	 *
 	 * @param  bool $yes
 	 *
@@ -117,7 +117,7 @@ class Tribe__Tickets__Global_Stock {
 	 * than disable global stock.
 	 *
 	 * @since  4.1
-	 * @since  TBD Added a return so we can check if it was enabled correctly
+	 * @since  4.6 Added a return so we can check if it was enabled correctly
 	 *
 	 * @param  bool $yes
 	 *
@@ -142,7 +142,7 @@ class Tribe__Tickets__Global_Stock {
 	 * Sets the global stock level for the current post.
 	 *
 	 * @since  4.1
-	 * @since  TBD  Added a Return
+	 * @since  4.6  Added a Return
 	 *
 	 * @param  int $quantity
 	 *
@@ -167,7 +167,7 @@ class Tribe__Tickets__Global_Stock {
 		 * Fires when the global stock level is set/changed.
 		 *
 		 * @since  4.1
-		 * @since  TBD Added $status param
+		 * @since  4.6 Added $status param
 		 *
 		 * @param  int  $post_id
 		 * @param  int  $quantity
@@ -193,7 +193,7 @@ class Tribe__Tickets__Global_Stock {
 	 * Returns a count of the number of global ticket sales for this event.
 	 *
 	 * @since  4.1
-	 * @since  TBD  Introduced $pending Param
+	 * @since  4.6  Introduced $pending Param
 	 *
 	 * @param  bool  $pending  Includes Pending Tickets on the Sales total
 	 *

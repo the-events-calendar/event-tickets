@@ -708,7 +708,7 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 /**
  * Returns the capacity for a given Post
  *
- * @since  TBD
+ * @since  4.6
  *
  * @param  int  $post  Post We are trying to fetch capacity
  *
@@ -774,7 +774,7 @@ function tribe_tickets_get_capacity( $post ) {
 /**
  * Turns a Stock, Remaining or Capacity into a Human Readable Format
  *
- * @since  TBD
+ * @since  4.6
  *
  * @param  string|int $number Which you are tring to convert
  * @param  string     $mode   Mode this post is on

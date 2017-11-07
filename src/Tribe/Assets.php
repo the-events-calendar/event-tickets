@@ -3,7 +3,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Enqueue scripts for front end
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 */
 	public function enqueue_scripts() {
 		tribe_assets(
@@ -21,7 +21,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Enqueue scripts for admin views
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 */
 	public function admin_enqueue_scripts() {
 		// Set up some data for our localize scripts
@@ -44,7 +44,7 @@ class Tribe__Tickets__Assets {
 		 * Filter the decimal point character used in the price
 		 * @param string $decimal the decimal character to filter
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param string $decimal
 		 */
@@ -53,7 +53,7 @@ class Tribe__Tickets__Assets {
 		/**
 		 *  Filter Default Ticket Capacity Type
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param string 'global'
 		 *
@@ -120,7 +120,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Check if we should add the Admin Assets into a Page
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @return bool
 	 */
@@ -130,7 +130,7 @@ class Tribe__Tickets__Assets {
 		/**
 		 * Filter the array of module names.
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param array the array of modules
 		 *

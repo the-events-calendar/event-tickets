@@ -97,7 +97,7 @@
 		/**
 		 * Allows for the insertion of additional content into the ticket edit form - advanced section
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param int Post ID
 		 * @param null Ticket ID

@@ -59,12 +59,12 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Enqueue the tickets metabox JS and CSS
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6
 	 *
 	 * @param $unused_hook
 	 */
 	public static function add_admin_scripts( $unused_hook ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );
+		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__Assets::admin_enqueue_scripts' );
 	}
 
 	// leaving this alone for now as Community Tickets uses it

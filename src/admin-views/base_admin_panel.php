@@ -11,7 +11,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 				/**
 				 * Allows for the insertion of total capacity element into the main ticket admin panel "header"
 				 *
-				 * @since TBD
+				 * @since 4.6
 				 *
 				 * @param int $post_id the id of the post
 				 */
@@ -20,7 +20,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 				/**
 				 * Allows for the insertion of additional elements (buttons/links) into the main ticket admin panel "header"
 				 *
-				 * @since TBD
+				 * @since 4.6
 				 *
 				 * @param int $post_id the id of the post
 				 */
@@ -38,7 +38,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param int $post_id the id of the post
 		 */
@@ -49,7 +49,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param int $post_id the id of the post
 		 */
@@ -61,7 +61,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param int $post_id the id of the post
 		 */
@@ -84,7 +84,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		/**
 		 * Allows for the insertion of warnings before the settings button
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param int Post ID
 		 */
@@ -96,7 +96,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 	/**
 	 * Allows for the insertion of content at the end of the new ticket admin panel
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int Post ID
 	 */

@@ -27,7 +27,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post Meta key for the ticket order
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @var string
 	 */
@@ -36,7 +36,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post Meta key for event ecommerce provider
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @var string
 	 */
@@ -45,7 +45,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post meta key for the ticket capacty
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @var    string
 	 */
@@ -54,7 +54,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post meta key for the ticket start date
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @var    string
 	 */
@@ -63,7 +63,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post meta key for the ticket end date
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @var    string
 	 */
@@ -72,7 +72,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post meta key for the manual updated meta keys
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @var    string
 	 */
@@ -81,7 +81,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Meta data key we store show_description under
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @var string
 	 */
@@ -114,7 +114,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * String to represent unlimited tickets
 	 * translated in the constructor
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @var string
 	 */
@@ -156,7 +156,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * On updating a few meta keys we flag that it was manually updated so we can do
 	 * fancy matching for the updating of the event start and end date
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int     $meta_id         MID
 	 * @param  int     $object_id       Which Post we are dealing with
@@ -192,7 +192,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Verify if we have Manual Changes for a given Meta Key
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int|WP_Post  $ticket  Which ticket/post we are dealing with here
 	 * @param  string|null  $for     If we are looking for one specific key or any
@@ -220,7 +220,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Allow us to Toggle flaging the update of Date Meta
 	 *
-	 * @since   TBD
+	 * @since   4.6
 	 *
 	 * @param   boolean  $toggle  Should activate or not?
 	 *
@@ -238,7 +238,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * On update of the Event End date we update the ticket end date
 	 * if it wasn't manually updated
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int     $meta_id    MID
 	 * @param  int     $object_id  Which Post we are dealing with
@@ -283,7 +283,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Updates the Start date of all non-modified tickets when an Ticket supported Post is saved
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int      $post_id  Which post we are updating here
 	 * @param  WP_Post  $post     Object of the current post updating
@@ -332,7 +332,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Gets the Tickets from a Post
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int|WP_Post  $post
 	 * @return array
@@ -367,7 +367,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * On update of the Event Capacity we will update all shared capacity Stock to match
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int     $meta_id         MID
 	 * @param  int     $object_id       Which Post we are dealing with
@@ -419,7 +419,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Important to note that we cannot use `get_ticket()` or `new Ticket_Object` in here
 	 * due to triggering of a Infinite loop
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  mixed   $value      Previous value set
 	 * @param  int     $object_id  Which Post we are dealing with
@@ -458,7 +458,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Migrates a given Post Object capacity from Legacy Version
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int|WP_Post  $object  Which Post ID
 	 *
@@ -545,7 +545,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Gets the Total of Stock, Sold and Pending for a given ticket
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int|WP_Post  $ticket  Which ticket
 	 *
@@ -589,7 +589,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a ticket has unlimited capacity
 	 *
-	 * @since   TBD
+	 * @since   4.6
 	 *
 	 * @param   int|WP_Post|object  $ticket
 	 *
@@ -618,7 +618,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a ticket has unlimited capacity
 	 *
-	 * @since   TBD
+	 * @since   4.6
 	 *
 	 * @param   int|WP_Post|object  $ticket
 	 *
@@ -631,7 +631,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a ticket uses Shared Capacity
 	 *
-	 * @since   TBD
+	 * @since   4.6
 	 *
 	 * @param   int|WP_Post|object  $ticket
 	 *
@@ -654,7 +654,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Checks if there are any unlimited tickets, optionally by stock mode or ticket type
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 * @param string (null) the stock mode we're concerned with
@@ -693,7 +693,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get the total event capacity.
 	 *
-	 * @since  TBD
+	 * @since  4.6
 	 *
 	 * @param  int|object (null) $post Post or Post ID tickets are attached to
 	 *
@@ -745,7 +745,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get an array list of unlimited tickets for an event.
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
@@ -774,7 +774,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get an array list of independent tickets for an event.
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
@@ -808,7 +808,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get an array list of RSVPs for an event.
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
@@ -837,7 +837,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Get an array list of shared capacity tickets for an event.
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
@@ -1464,7 +1464,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Render the ticket row into the ticket table
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 */
@@ -1516,7 +1516,7 @@ class Tribe__Tickets__Tickets_Handler {
 			/**
 			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param Tribe__Tickets__Ticket_Object $ticket
 			 * @param obj ecommerce provider object
@@ -1648,7 +1648,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Save the the drag-n-drop ticket order
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int $post
 	 *
@@ -1703,7 +1703,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Sorts tickets according to stored menu_order
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param array $tickets array of ticket objects
 	 *
@@ -1768,7 +1768,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Saves the event ticket settings via ajax
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 */
 	public function ajax_handler_save_settings() {
 		$params = array();
@@ -1778,7 +1778,7 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allow other plugins to hook into this to add settings
 		 *
-		 * @since TBD
+		 * @since 4.6
 		 *
 		 * @param array $params the array of parameters to filter
 		 */

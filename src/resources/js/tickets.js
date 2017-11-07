@@ -116,7 +116,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * Returns the currently selected default ticketing provider.
 	 * Defaults to RSVP if something fails
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @return string
 	 */
@@ -129,7 +129,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * Sets the ticket edit form provider to the currently selected default ticketing provider.
 	 * Defaults to RSVP if something fails
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param boolean force selection to RSVP
 	 * @return void
@@ -170,7 +170,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	/**
 	 * Returns the current global capacity (via the settings panel)
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @return {number}
 	 */
@@ -213,7 +213,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	/**
 	 * Refreshes the base and settings panels when we've changed something
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param string optional notice to prepend to the ticket table
 	 * @param bool (true) flag for panel swap

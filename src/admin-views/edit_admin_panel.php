@@ -17,7 +17,7 @@ $start_date_errors = array(
 	/**
 	 * Allows for the insertion of additional elements into the main ticket edit panel
 	 *
-	 * @since TBD
+	 * @since 4.6
 	 *
 	 * @param int Post ID
 	 */
@@ -101,7 +101,7 @@ $start_date_errors = array(
 							/**
 							 * Allows for the editing of the module name before output
 							 *
-							 * @since TBD
+							 * @since 4.6
 							 *
 							 * @param string $module the module name
 							 */
@@ -114,7 +114,7 @@ $start_date_errors = array(
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form - main section
 				 *
-				 * @since TBD
+				 * @since 4.6
 				 *
 				 * @param int Post ID
 				 * @param null Ticket ID
@@ -129,7 +129,7 @@ $start_date_errors = array(
 				/**
 				 * Allows for the insertion of additional content sections into the ticket edit form accordion
 				 *
-				 * @since TBD
+				 * @since 4.6
 				 *
 				 * @param int Post ID
 				 * @param null Ticket ID
@@ -142,7 +142,7 @@ $start_date_errors = array(
 			/**
 			 * Allows for the insertion of additional elements into the main ticket edit panel below the accordion section
 			 *
-			 * @since TBD
+			 * @since 4.6
 			 *
 			 * @param int Post ID
 			 */
@@ -174,7 +174,7 @@ $start_date_errors = array(
 				/**
 				 * Allows for the insertion of additional content into the ticket edit form bottom (buttons) section
 				 *
-				 * @since TBD
+				 * @since 4.6
 				 *
 				 * @param int Post ID
 				 */
@@ -186,7 +186,7 @@ $start_date_errors = array(
 					/**
 					 * Allows for the insertion of additional content into the ticket edit form bottom (links on right) section
 					 *
-					 * @since TBD
+					 * @since 4.6
 					 *
 					 * @param int Post ID
 					 */
