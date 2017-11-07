@@ -1,6 +1,6 @@
  === Event Tickets ===
 
-Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, brook-tribe, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, mat-lipe, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, shelbelliott, tribecari, vicskf, zbtirrell
+Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, tribecari, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.4
@@ -185,7 +185,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Andras Guseo](https://profiles.wordpress.org/aguseo)
 * [Barry Hughes](https://profiles.wordpress.org/barryhughes)
 * [Brian Jessee](https://profiles.wordpress.org/brianjessee)
-* [Brook Harding](https://profiles.wordpress.org/brook-tribe)
 * [Caroline Tucker](https://profiles.wordpress.org/tribecari)
 * [Clifford Paulick](https://profiles.wordpress.org/cliffpaulick)
 * [Daniel Dvorkin](https://profiles.wordpress.org/MZAWeb)
@@ -201,11 +200,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Peter Chester](https://profiles.wordpress.org/peterchester)
 * [Reid Peifer](https://profiles.wordpress.org/reid.peifer)
 * [Shane Pearlman](https://profiles.wordpress.org/shane.pearlman)
-* [Shelby Elliott](https://profiles.wordpress.org/shelbelliott)
 * [Zachary Tirrell](https://profiles.wordpress.org/zbtirrell)
 
 = Past Contributors =
 
+* [Brook Harding](https://profiles.wordpress.org/brook-tribe)
 * [Casey Driscoll](https://profiles.wordpress.org/caseypatrickdriscoll)
 * [Casey Picker](https://profiles.wordpress.org/ckpicker)
 * [Dan Cameron](https://profiles.wordpress.org/dancameron)
@@ -228,6 +227,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Rob La Gatta](https://profiles.wordpress.org/roblagatta)
 * [Ryan Urban](https://profiles.wordpress.org/ryancurban)
 * [Samuel Estok](https://profiles.wordpress.org/faction23)
+* [Shelby Elliott](https://profiles.wordpress.org/shelbelliott)
 * [Timothy Wood](https://profiles.wordpress.org/codearachnid)
 * [Trisha Salas](https://profiles.wordpress.org/trishasalas)
 
@@ -235,8 +235,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.6] 2017-11-09 =
 
+* New - Fully redesigned ticket editor interface
+* New - Ticket description is now optional for frontend display
 * New - Filter default capacity type with tribe_tickets_default_ticket_capacity_type [80629]
 * New — Introduced new filters allowing fine-grained insertion into the ticket editor: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_ticket_order_field`.
+* Tweak - Renamed "stock" to "capacity"
 * Tweak - Added filters: `tribe_event_ticket_decimal_point`, `tribe_tickets_default_ticket_capacity_type`, `tribe_tickets_rsvp_send_mail`, `tribe_tickets_show_description`, `tribe_tickets_ajax_refresh_tables`, `tribe_tickets_ajax_refresh_settings`, `tribe_events_tickets_metabox_edit_attendee`, `tribe_tickets_get_default_module`, `tribe_tickets_total_event_capacity`
 * Tweak - Removed filters: `tribe_events_tickets_attendees_url`
 * Tweak - Added actions: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_ticket_table_add_tbody_column`, `tribe_events_save_tickets_settings`, `tribe_events_tickets_capacity`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_new_ticket_warnings`, `tribe_events_tickets_after_new_ticket_panel`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_events_tickets_bottom`, `tribe_events_tickets_bottom_right`, `tribe_events_tickets_ticket_table_add_header_column`, `tribe_ticket_order_field`, `tribe_events_tickets_settings_content`, `tribe_events_tickets_metabox_edit_advanced`
