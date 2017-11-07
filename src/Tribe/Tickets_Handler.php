@@ -1493,7 +1493,7 @@ class Tribe__Tickets__Tickets_Handler {
 			$needs_warning = (int) $inventory !== (int) $stock;
 
 			// We remove the warning flag when shared stock is used
-			if ( $shared_stock->is_enabled() && (int) $stock > (int) $shared_stock->get_stock_level() ) {
+			if ( $shared_stock->is_enabled() && (int) $stock >= (int) $shared_stock->get_stock_level() ) {
 				$needs_warning = false;
 			}
 		}
