@@ -4,7 +4,7 @@ Contributors: ModernTribe, aguseo, borkweb, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.8.4
-Stable tag: 4.6rc1
+Stable tag: 4.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -233,11 +233,16 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.6] TBD =
+= [4.6] 2017-11-09 =
 
 * New - Filter default capacity type with tribe_tickets_default_ticket_capacity_type [80629]
 * New — Introduced new filters allowing fine-grained insertion into the ticket editor: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_ticket_order_field`.
-* Deprecated - filter `tribe_events_tickets_metabox_advanced` for `tribe_events_tickets_metabox_edit_advanced`
+* Tweak - Added filters: `tribe_event_ticket_decimal_point`, `tribe_tickets_default_ticket_capacity_type`, `tribe_tickets_rsvp_send_mail`, `tribe_tickets_show_description`, `tribe_tickets_ajax_refresh_tables`, `tribe_tickets_ajax_refresh_settings`, `tribe_events_tickets_metabox_edit_attendee`, `tribe_tickets_get_default_module`, `tribe_tickets_total_event_capacity`
+* Tweak - Removed filters: `tribe_events_tickets_attendees_url`
+* Tweak - Added actions: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_ticket_table_add_tbody_column`, `tribe_events_save_tickets_settings`, `tribe_events_tickets_capacity`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_new_ticket_warnings`, `tribe_events_tickets_after_new_ticket_panel`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_events_tickets_bottom`, `tribe_events_tickets_bottom_right`, `tribe_events_tickets_ticket_table_add_header_column`, `tribe_ticket_order_field`, `tribe_events_tickets_settings_content`, `tribe_events_tickets_metabox_edit_advanced`
+* Tweak - Removed actions: `tribe_events_tickets_metabox_advanced`, `event_tickets_ticket_list_after_ticket_name`, `tribe_events_tickets_metabox_pre`
+* Tweak - Changed views: `tickets/email`, `tickets/rsvp`
+* Language - 50 new strings added, 123 updated, 4 fuzzied, and 25 obsoleted
 
 = [4.5.7] 2017-10-18 =
 
