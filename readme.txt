@@ -238,6 +238,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * New - Fully redesigned ticket editor interface
 * New - Ticket description is now optional for frontend display
 * New - Updated time pickers for start and end sale
+* New - Improved clarity around ticket availability
 * New - Filter default capacity type with tribe_tickets_default_ticket_capacity_type [80629]
 * New — Introduced new filters allowing fine-grained insertion into the ticket editor: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_ticket_order_field`.
 * Tweak - Renamed "stock" to "capacity"
@@ -246,6 +247,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Tweak - Added actions: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_ticket_table_add_tbody_column`, `tribe_events_save_tickets_settings`, `tribe_events_tickets_capacity`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_new_ticket_warnings`, `tribe_events_tickets_after_new_ticket_panel`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_events_tickets_bottom`, `tribe_events_tickets_bottom_right`, `tribe_events_tickets_ticket_table_add_header_column`, `tribe_ticket_order_field`, `tribe_events_tickets_settings_content`, `tribe_events_tickets_metabox_edit_advanced`
 * Tweak - Removed actions: `tribe_events_tickets_metabox_advanced`, `event_tickets_ticket_list_after_ticket_name`, `tribe_events_tickets_metabox_pre`
 * Tweak - Changed views: `tickets/email`, `tickets/rsvp`
+* Tweak - Changed minimum supported version of WordPress to 4.5
 * Language - 50 new strings added, 123 updated, 4 fuzzied, and 25 obsoleted
 
 = [4.5.7] 2017-10-18 =
