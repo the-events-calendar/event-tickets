@@ -388,6 +388,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$cancelled    = (int) $ticket->qty_cancelled();
 		$pending      = (int) $ticket->qty_pending();
 		$status       = '';
+		$status_counts = array();
 
 		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
 		$is_capped = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
