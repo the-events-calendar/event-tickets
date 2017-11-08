@@ -15,6 +15,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 	var $tickets_container               = $( document.getElementById( 'event_tickets' ) );
 	var $post_id                         = $( document.getElementById( 'post_ID' ) );
+	var $publish                         = $( document.getElementById( 'publish' ) );
 
 	var $metaboxBlocker                  = $tribe_tickets.find( '.tribe-tickets-editor-blocker' );
 	var $spinner                         = $tribe_tickets.find( '.spinner' );
@@ -312,7 +313,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var returnValue = false;
 
 		// If we are not on the base panel we alert the user about leaving
-		if ( $tribe_tickets.find( '.ticket_panel' ).filter( '[aria-hidden="false"]' ).is( $base_panel ) ) {
+		// NOTE: This custom message will only work for Chrome < 51, Opera < 38, Firefox < 44, and Safari < 9.1
+		if ( 'true' === $base_panel.attr( 'aria-hidden' ) ) {
 			returnValue = tribe_global_stock_admin_ui.nav_away_msg;
 		}
 
@@ -1025,6 +1027,18 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				$tiximg.css( 'width', '95%' );
 			}
 		}
+
+		// prompt user to save changes in ticket meta box if ticket meta box is not showing the base panel
+		$publish.on( 'click.tribe-ticket-editing-in-progress', function( e ) {
+			if (
+				'true' === $base_panel.attr( 'aria-hidden' )
+				&& ! confirm( $base_panel.data( 'save-prompt' ) )
+			) {
+				return false;
+			}
+
+			$( window ).off( 'beforeunload.tribe' );
+		} );
 	} );
 
 } )( window, jQuery );
