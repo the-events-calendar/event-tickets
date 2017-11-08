@@ -857,7 +857,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$data['ticket_capacity'] = $ticket->capacity();
 
 			$return = array(
-				'data' => json_encode( $data, JSON_FORCE_OBJECT ),
+				'data' => json_encode( (object) $data ),
 			);
 
 			/**

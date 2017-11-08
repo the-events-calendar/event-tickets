@@ -35,10 +35,10 @@ class Tribe__Tickets__Data_API {
 			 * So we have to construct the constant name using a string and use the `constant` function.
 			 */
 			$types['order']   = constant( "$module_class::ORDER_OBJECT" );
-			$types['product'] = $module_class::get_instance()->ticket_object;
+			$types['product'] = $provider->ticket_object;
 			$types['ticket']  = constant( "$module_class::ATTENDEE_OBJECT" );
 			if ( 'Tribe__Tickets__RSVP' === $module_class ) {
-				$types['ticket'] = $module_class::get_instance()->ticket_object;
+				$types['ticket'] = $provider->ticket_object;
 			}
 			$types['attendee'] = constant( "$module_class::ATTENDEE_OBJECT" );
 
@@ -198,7 +198,7 @@ class Tribe__Tickets__Data_API {
 			return false;
 		}
 
-		return $services['class']::get_instance();
+		return call_user_func( array( $services['class'], 'get_instance' ) );
 	}
 
 	/**
@@ -361,8 +361,9 @@ class Tribe__Tickets__Data_API {
 			return array();
 		}
 
-		return $services['class']::get_instance()->get_attendees_by_id( $post_id, $services['post_type'] );
+		$provider = call_user_func( array( $services['class'], 'get_instance' ) );
 
+		return $provider->get_attendees_by_id( $post_id, $services['post_type'] );
 	}
 
 	/**
@@ -383,7 +384,6 @@ class Tribe__Tickets__Data_API {
 
 		return $has_meta;
 	}
-
 
 	/**
 	 * Check if a order key passed exists and return attendee object name
