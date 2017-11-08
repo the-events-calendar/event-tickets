@@ -198,11 +198,7 @@ class Tribe__Tickets__Data_API {
 			return false;
 		}
 
-		return call_user_func( array( $services['class']
-
-
-
-			, 'get_instance' ) );
+		return call_user_func( array( $services['class'], 'get_instance' ) );
 	}
 
 	/**
