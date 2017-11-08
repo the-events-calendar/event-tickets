@@ -1791,8 +1791,9 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		// We reversed this logic on the back end
-		update_post_meta( $id, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, ! empty( $params['tribe_show_attendees'] ) );
-
+		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
+			update_post_meta( $id, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, ! empty( $params['tribe_show_attendees'] ) );
+		}
 
 		// Change the default ticket provider
 		if ( ! empty( $params['default_ticket_provider'] ) ) {
