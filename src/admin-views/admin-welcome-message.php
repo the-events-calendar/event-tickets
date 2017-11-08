@@ -2,15 +2,41 @@
 /**
  * The template that displays the welcome message when the plugin is first activated.
  */
-$video_url = 'https://vimeo.com/172163102';
+$support_forums_url = '<a href="http://m.tri.be/19sh" target="_blank">' . esc_html__( 'our support forums', 'event-tickets' ) . '</a>';
 ?>
 
-<p class="tribe-welcome-message">
-	<?php printf( esc_html__( 'You are running Version %s and deserve a hug :-)', 'event-tickets' ), Tribe__Tickets__Main::VERSION ); ?>
-</p>
+<div class="tribe-row">
+	<p class="tribe-welcome-message">
+		<?php printf( esc_html__( 'You are running Version %s and deserve a hug :-)', 'event-tickets' ), Tribe__Tickets__Main::VERSION ); ?>
+	</p>
 
-<div class="tribe-welcome-video-wrapper">
-	<?php echo wp_oembed_get( $video_url ); ?>
+	<h2><?php esc_html_e( 'Welcome to Event Tickets!', 'event-tickets' ); ?></h2>
+	<p><?php esc_html_e( 'Giving you the best experience with our plugin is our top goal. Check out the resources below for a step-by-step introduction to your new features or head straight to the Events section in your admin to create your first ticket.', 'event-tickets' ); ?></p>
+	<p><strong><?php printf( __( 'If you need a little help, hit us up in %s.', 'event-tickets' ), $support_forums_url ); ?></strong></p>
+</div>
+
+<hr/>
+
+<div class="tribe-row tribe-welcome-links">
+	<div class="tribe-half-column">
+		<h4><?php esc_html_e( 'Getting Started', 'event-tickets' ); ?></h4>
+		<p><a href="http://m.tri.be/19sf" target="_blank"><?php esc_html_e( 'New User Primer', 'event-tickets' ); ?></a></p>
+		<p><a target="_blank" href="http://m.tri.be/19se"><?php esc_html_e( 'Settings Overview', 'event-tickets' ); ?></a></p>
+		<p><a target="_blank" href="http://m.tri.be/19sg"><?php esc_html_e( 'Event Tickets Features', 'event-tickets' ); ?></a></p>
+
+		<h4><?php esc_html_e( 'Support Resources', 'event-tickets' ); ?></h4>
+		<p><a href="http://m.tri.be/1953" target="_blank"><?php esc_html_e( 'FAQs, Documentation, Tutorials and Forums', 'event-tickets' ); ?></a></p>
+	</div>
+	<div class="tribe-half-column">
+		<h4><?php esc_html_e( 'Looking for More Features?', 'event-tickets' ); ?></h4>
+		<p><a href="http://m.tri.be/1952" target="_blank"><?php esc_html_e( 'Addons for creating tickets, custom registration, events and more.', 'event-tickets' ); ?></a></p>
+
+		<h4><?php esc_html_e( 'Release Notes', 'event-tickets' ); ?></h4>
+		<p><a href="http://m.tri.be/1954" target="_blank"><?php esc_html_e( 'Get the Skinny on the Latest Updates', 'event-tickets' ); ?></a></p>
+
+		<h4><?php esc_html_e( 'News For Events Users', 'event-tickets' ); ?></h4>
+		<p><a href="http://m.tri.be/1955" target="_blank"><?php esc_html_e( 'Product Releases, Tutorials and Community Activity', 'event-tickets' ); ?></a></p>
+	</div>
 </div>
 
 <div class="tribe-row">
@@ -37,27 +63,5 @@ $video_url = 'https://vimeo.com/172163102';
 			</p>
 			<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'event-tickets' ); ?></button>
 		</form>
-	</div>
-</div>
-
-<hr/>
-
-<div class="tribe-row tribe-welcome-links">
-	<div class="tribe-half-column">
-		<h4><?php esc_html_e( 'Getting Started', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1951" target="_blank"><?php esc_html_e( 'Check out the New User Primer &amp; Tutorials', 'event-tickets' ); ?></a></p>
-
-		<h4><?php esc_html_e( 'Looking for More Features?', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1952" target="_blank"><?php esc_html_e( 'Addons for creating tickets, custom registration, events and more.', 'event-tickets' ); ?></a></p>
-
-		<h4><?php esc_html_e( 'Support Resources', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1953" target="_blank"><?php esc_html_e( 'FAQs, Documentation, Tutorials and Forums', 'event-tickets' ); ?></a></p>
-	</div>
-	<div class="tribe-half-column">
-		<h4><?php esc_html_e( 'Release Notes', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1954" target="_blank"><?php esc_html_e( 'Get the Skinny on the Latest Updates', 'event-tickets' ); ?></a></p>
-
-		<h4><?php esc_html_e( 'News For Events Users', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1955" target="_blank"><?php esc_html_e( 'Product Releases, Tutorials and Community Activity', 'event-tickets' ); ?></a></p>
 	</div>
 </div>
