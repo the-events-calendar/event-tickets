@@ -11,6 +11,239 @@ msgstr ""
 "Language: cs_CZ\n"
 "Project-Id-Version: Event Tickets\n"
 
+#: src/admin-views/base_admin_panel.php:6
+msgid "You have unsaved changes to your tickets. Discard those changes?"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:25
+msgid "Event Tickets Features"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:24
+msgid "Settings Overview"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:15
+msgid "If you need a little help, hit us up in %s."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:14
+msgid "Giving you the best experience with our plugin is our top goal. Check out the resources below for a step-by-step introduction to your new features or head straight to the Events section in your admin to create your first ticket."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:13
+msgid "Welcome to Event Tickets!"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:5
+msgid "our support forums"
+msgstr ""
+
+#: src/template-tags/tickets.php:410
+msgctxt "ticket shared capacity message (remaining stock)"
+msgid "%1$d Remaining of shared capacity"
+msgstr ""
+
+#: src/admin-views/tickets-history.php:22
+msgid "Ti"
+msgstr ""
+
+#: src/admin-views/tickets-history.php:19
+msgid "History"
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:90
+msgid "If you do not set an end sale date, tickets sales will never end."
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:88
+msgid "If you do not set an end sale date, tickets will be available until the event begins."
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:57
+msgid "If you do not set a start sale date, tickets will be available immediately."
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:56
+#: src/admin-views/tickets-advanced.php:84
+msgid "HH:MM"
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:44
+#: src/admin-views/tickets-advanced.php:72
+msgid "at"
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:43
+#: src/admin-views/tickets-advanced.php:71
+msgid "YYYY-MM-DD"
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:25
+msgid "Show description on front end ticket form."
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:7
+msgid "Description:"
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:5
+msgid "Advanced Settings"
+msgstr ""
+
+#: src/admin-views/tickets-advanced.php:2
+msgid "Advanced"
+msgstr ""
+
+#: src/admin-views/settings_admin_panel.php:49
+msgid "Save settings"
+msgstr ""
+
+#: src/admin-views/settings_admin_panel.php:31
+msgid "Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide."
+msgstr ""
+
+#: src/admin-views/settings_admin_panel.php:30
+msgid "Ticket header image:"
+msgstr ""
+
+#: src/admin-views/rsvp-metabox-capacity.php:19
+msgid "Leave blank for unlimited"
+msgstr ""
+
+#: src/admin-views/list.php:38
+msgid "Available"
+msgstr ""
+
+#: src/admin-views/list.php:37
+msgid "Capacity"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:167
+msgid "Save RSVP"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:158
+msgid "Save ticket"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:86
+msgid "Ticket type name shows on the front end and emailed tickets"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:84
+msgid "Ticket Type is a required field."
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:75
+msgid "Type:"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:70
+msgid "Edit RSVP"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:62
+msgid "Add new RSVP"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:11
+msgid "Start sale date cannot be greater than End Sale date"
+msgstr ""
+
+#: src/admin-views/edit_admin_panel.php:10
+msgid "Start sale date cannot be empty."
+msgstr ""
+
+#: src/admin-views/base_admin_panel.php:75
+msgid "New RSVP"
+msgstr ""
+
+#: src/admin-views/base_admin_panel.php:73
+msgid "Add a new RSVP"
+msgstr ""
+
+#: src/admin-views/base_admin_panel.php:33
+msgid "View Attendees"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:1547
+msgid "( Ticket ID: %d )"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:1535
+msgid "The number of Complete ticket sales does not match the number of attendees. Please check the Attendees list and adjust ticket stock in WooCommerce as needed."
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:1533
+msgid "Available:"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:1528
+#: src/admin-views/rsvp-metabox-capacity.php:10
+msgid "Capacity:"
+msgstr ""
+
+#: src/Tribe/Tickets_Handler.php:128
+msgid "Unlimited"
+msgstr ""
+
+#: src/Tribe/Tickets.php:1487
+msgid "Global capacity updated. New level set to %n"
+msgstr ""
+
+#: src/Tribe/Tickets.php:1452
+msgid "Bad capacity data."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1447
+msgid "Missing required capacity."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1443
+msgid "Missing required post ID."
+msgstr ""
+
+#: src/Tribe/Tickets.php:1409
+msgid "Set capacity for this ticket only"
+msgstr ""
+
+#: src/Tribe/Tickets.php:1408
+msgid "Shared capacity with other tickets"
+msgstr ""
+
+#: src/Tribe/Tickets.php:851
+msgid "Failed to Add the Ticket"
+msgstr ""
+
+#: src/Tribe/Tickets.php:796
+msgid "No Post ID was provided."
+msgstr ""
+
+#: src/Tribe/Tickets.php:755
+msgid "Your settings have been saved."
+msgstr ""
+
+#: src/Tribe/Tickets.php:386
+msgid "Move Ticket"
+msgstr ""
+
+#: src/Tribe/Tickets.php:386
+msgid "Move RSVP"
+msgstr ""
+
+#: src/Tribe/Tickets.php:311
+msgid "Delete Ticket"
+msgstr ""
+
+#: src/Tribe/Tickets.php:311
+msgid "Delete RSVP"
+msgstr ""
+
+#: src/Tribe/CSV_Importer/Column_Names.php:42
+msgid "Ticket Capacity"
+msgstr ""
+
 #: src/template-tags/tickets.php:237
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
@@ -40,35 +273,30 @@ msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:206
+#: src/views/tickets/rsvp.php:209
 msgid "You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser."
 msgstr ""
 
-#: src/template-tags/tickets.php:423
+#: src/template-tags/tickets.php:417
 msgctxt "ticket stock message (pending stock)"
 msgid "%1$d Awaiting Review"
 msgstr ""
 
-#: src/template-tags/tickets.php:420
+#: src/template-tags/tickets.php:412
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d Remaining"
 msgstr ""
 
-#: src/template-tags/tickets.php:418
-msgctxt "ticket global stock message (remaining stock)"
-msgid "%1$d Remaining of the global stock"
-msgstr ""
-
-#: src/template-tags/tickets.php:412
+#: src/template-tags/tickets.php:408
 msgid "%s %d"
 msgstr ""
 
-#: src/template-tags/tickets.php:407
+#: src/template-tags/tickets.php:402
 msgctxt "separate going and remain RSVPs"
 msgid "RSVP'd Going"
 msgstr ""
 
-#: src/template-tags/tickets.php:405
+#: src/template-tags/tickets.php:400
 msgid "Sold"
 msgstr ""
 
@@ -96,10 +324,6 @@ msgstr ""
 msgid "Below the event details [default]"
 msgstr ""
 
-#: src/admin-views/rsvp-metabox-advanced.php:15
-msgid "Selling tickets for a recurring event series is not recommended. The tickets you configure will show on all instances of an event series which can be confusing to attendees. Please configure your events carefully."
-msgstr "Prodej vstupenek na opakující se akce nedoporučujeme. Vstupenky, které nastavíte, se objeví u všech opakování dané události, což může být ro některé účastníky matoucí. Nastavujte své akce opatrně."
-
 #: src/admin-views/attendees.php:66
 msgctxt "attendee screen summary"
 msgid "Attendees By Ticket"
@@ -110,12 +334,12 @@ msgctxt "attendee screen summary"
 msgid "Event Details"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:98
+#: src/Tribe/Tickets_Handler.php:897
 msgctxt "attendee event actions"
 msgid "View Event"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:97
+#: src/Tribe/Tickets_Handler.php:896
 msgctxt "attendee event actions"
 msgid "Edit Event"
 msgstr ""
@@ -152,7 +376,7 @@ msgstr ""
 msgid "Ticketed"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:148
+#: src/views/tickets/rsvp.php:151
 msgctxt "order status label"
 msgid "RSVP"
 msgstr ""
@@ -191,15 +415,15 @@ msgstr[2] ""
 msgid "Important changes to your tickets"
 msgstr ""
 
-#: src/admin-views/ticket-type-history.php:14
+#: src/admin-views/ticket-type-history.php:15
 msgid "Click to hide history"
 msgstr ""
 
-#: src/admin-views/ticket-type-history.php:13
+#: src/admin-views/ticket-type-history.php:14
 msgid "Click to view the history"
 msgstr ""
 
-#: src/admin-views/ticket-type-history.php:9
+#: src/admin-views/ticket-type-history.php:10
 msgid "Ticket history:"
 msgstr ""
 
@@ -261,138 +485,130 @@ msgstr ""
 msgid "No attendees specified! Please try again."
 msgstr ""
 
-#: src/admin-views/list.php:67
-msgid "Move"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:61
+#: src/admin-views/admin-welcome-message.php:38
 msgid "Product Releases, Tutorials and Community Activity"
 msgstr "Zprávy o produktech, návody a činnost uživatelské komunity"
 
-#: src/admin-views/admin-welcome-message.php:60
+#: src/admin-views/admin-welcome-message.php:37
 msgid "News For Events Users"
 msgstr "Novinky pro uživatele Akcí"
 
-#: src/admin-views/admin-welcome-message.php:58
+#: src/admin-views/admin-welcome-message.php:35
 msgid "Get the Skinny on the Latest Updates"
 msgstr "Prozkoumejte interní informace o posledních aktualizacích"
 
-#: src/admin-views/admin-welcome-message.php:57
+#: src/admin-views/admin-welcome-message.php:34
 msgid "Release Notes"
 msgstr "Poznámky k verzi"
 
-#: src/admin-views/admin-welcome-message.php:54
+#: src/admin-views/admin-welcome-message.php:28
 msgid "FAQs, Documentation, Tutorials and Forums"
 msgstr "Časté dotazy, dokumentace, návody a fóra"
 
-#: src/admin-views/admin-welcome-message.php:53
+#: src/admin-views/admin-welcome-message.php:27
 msgid "Support Resources"
 msgstr "Podpůrné zdroje informací"
 
-#: src/admin-views/admin-welcome-message.php:51
+#: src/admin-views/admin-welcome-message.php:32
 msgid "Addons for creating tickets, custom registration, events and more."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:50
+#: src/admin-views/admin-welcome-message.php:31
 msgid "Looking for More Features?"
 msgstr "Hledáte další funkce?"
 
-#: src/admin-views/admin-welcome-message.php:48
-msgid "Check out the New User Primer &amp; Tutorials"
-msgstr "Přečtěte si příručku nového uživatele a návody"
-
-#: src/admin-views/admin-welcome-message.php:38
+#: src/admin-views/admin-welcome-message.php:64
 msgid "Sign Up"
 msgstr "Přihlásit k odběru"
 
-#: src/admin-views/admin-welcome-message.php:33
+#: src/admin-views/admin-welcome-message.php:59
 msgid "News and Announcements"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:29
+#: src/admin-views/admin-welcome-message.php:55
 msgid "Developer News"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:25
+#: src/admin-views/admin-welcome-message.php:51
 msgid "Stay in touch with Event Tickets. We send out periodic updates, key developer notices, and even the occasional discount."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:24
+#: src/admin-views/admin-welcome-message.php:50
 msgid "Newsletter Signup"
 msgstr "Emailový zpravodaj"
 
-#: src/admin-views/admin-welcome-message.php:21
+#: src/admin-views/admin-welcome-message.php:47
 msgid "Rate It"
 msgstr "Ohodnotit"
 
-#: src/admin-views/admin-welcome-message.php:20
+#: src/admin-views/admin-welcome-message.php:46
 msgid "Rate us today!"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:19
+#: src/admin-views/admin-welcome-message.php:45
 msgid "Your ratings help us bring Event Tickets to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:18
+#: src/admin-views/admin-welcome-message.php:44
 msgid "We Need Your Help"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:9
+#: src/admin-views/admin-welcome-message.php:10
 msgid "You are running Version %s and deserve a hug :-)"
 msgstr "Používáte verzi %s a zasloužíte si obejmout  :-)"
 
-#: src/Tribe/Tickets_Handler.php:411
+#: src/Tribe/Tickets_Handler.php:1210
 msgctxt "attendee export"
 msgid "Customer Email Address"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:410
+#: src/Tribe/Tickets_Handler.php:1209
 msgctxt "attendee export"
 msgid "Customer Name"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:409
+#: src/Tribe/Tickets_Handler.php:1208
 msgctxt "attendee export"
 msgid "Ticket #"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:408
+#: src/Tribe/Tickets_Handler.php:1207
 msgctxt "attendee export"
 msgid "Order Status"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:407
+#: src/Tribe/Tickets_Handler.php:1206
 msgctxt "attendee export"
 msgid "Order ID"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:220
+#: src/Tribe/Tickets_Handler.php:1019
 msgid "You must first select one or more tickets before you can move them!"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:84
+#: src/Tribe/Tickets_Handler.php:883
 msgid "Post type"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:98
+#: src/Tribe/Tickets_Handler.php:897
 msgctxt "attendee event actions"
 msgid "View"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:97
+#: src/Tribe/Tickets_Handler.php:896
 msgctxt "attendee event actions"
 msgid "Edit"
 msgstr ""
 
-#: src/Tribe/RSVP.php:280
+#: src/Tribe/RSVP.php:279
 msgid "RSVP Ticket"
 msgstr ""
 
-#: src/Tribe/RSVP.php:279
+#: src/Tribe/RSVP.php:278
 msgid "RSVP Tickets"
 msgstr ""
 
-#: src/Tribe/RSVP.php:163
+#: src/Tribe/RSVP.php:162
 msgctxt "ticket provider"
 msgid "RSVP"
 msgstr ""
@@ -412,16 +628,16 @@ msgctxt "attendee summary"
 msgid "Total RSVPs:"
 msgstr ""
 
-#: src/Tribe/Metabox.php:82
+#: src/Tribe/Assets.php:99
 msgid "Are you sure you want to delete this ticket? This cannot be undone."
 msgstr ""
 
-#: src/Tribe/Main.php:731
+#: src/Tribe/Main.php:693
 msgctxt "button text"
 msgid "RSVP"
 msgstr ""
 
-#: src/Tribe/Main.php:596
+#: src/Tribe/Main.php:558
 msgid "Welcome to Event Tickets"
 msgstr ""
 
@@ -470,7 +686,7 @@ msgctxt "attendee summary"
 msgid "Deleted Attendees:"
 msgstr ""
 
-#: src/Tribe/Tickets_Handler.php:120
+#: src/Tribe/Tickets_Handler.php:921
 msgctxt "attendee summary"
 msgid "Checked in:"
 msgstr ""
@@ -489,79 +705,79 @@ msgctxt "attendee table"
 msgid "View history"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:714
+#: src/Tribe/Admin/Move_Tickets.php:760
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:536
+#: src/Tribe/Admin/Move_Tickets.php:580
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:452
-msgid "%1$d attendee for %2$s was successfully %3$s. Please adjust stock manually as needed. This attendee will receive an email notifying them of the change."
-msgid_plural "%1$d attendees for %2$s were successfully %3$s. Please adjust stock manually as needed. These attendees will receive an email notifying them of the change."
+#: src/Tribe/Admin/Move_Tickets.php:462
+msgid "%1$d attendee for %2$s was successfully %3$s. Please adjust capacity and stock manually as needed. This attendee will receive an email notifying them of the change."
+msgid_plural "%1$d attendees for %2$s were successfully %3$s. Please adjust capacity and stock manually as needed. These attendees will receive an email notifying them of the change."
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: src/Tribe/Admin/Move_Tickets.php:445
+#: src/Tribe/Admin/Move_Tickets.php:455
 msgctxt "moved tickets success message fragment"
 msgid "moved to %s and"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:438
+#: src/Tribe/Admin/Move_Tickets.php:448
 msgctxt "moved tickets success message fragment"
 msgid "assigned to %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:430
+#: src/Tribe/Admin/Move_Tickets.php:440
 msgid "Tickets could not be moved: there was an unexpected failure during reassignment."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:422
+#: src/Tribe/Admin/Move_Tickets.php:432
 msgid "Tickets could not be moved: valid ticket IDs or a destination ID were not provided."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:225
+#: src/Tribe/Admin/Move_Tickets.php:224
 msgctxt "attendee screen bulk actions"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:113
+#: src/Tribe/Admin/Move_Tickets.php:116
 msgid "Loading, please wait&hellip;"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:111
+#: src/Tribe/Admin/Move_Tickets.php:115
 msgid "No ticket types were found for this post."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:109
+#: src/Tribe/Admin/Move_Tickets.php:114
 msgid "No results found - you may need to widen your search criteria."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:107
+#: src/Tribe/Admin/Move_Tickets.php:113
 msgid "Unable to update the post list. Please refresh the page and try again."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:105
+#: src/Tribe/Admin/Move_Tickets.php:112
 msgid "Woops! We could not complete the requested operation due to an unforeseen problem."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:68
+#: src/Tribe/Admin/Move_Tickets.php:77
 msgid "Move Attendees"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:270
-#: src/Tribe/Admin/Move_Tickets.php:655
+#: src/Tribe/Admin/Move_Ticket_Types.php:301
+#: src/Tribe/Admin/Move_Tickets.php:701
 msgid "Changes to your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Ticket_Types.php:173
+#: src/Tribe/Admin/Move_Ticket_Types.php:204
 msgid "Ticket type was moved to <a href=\"%1$s\" target=\"_blank\">%2$s</a> from <a href=\"%3$s\" target=\"_blank\">%4$s</a>"
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:114
-msgid "Ticket type %1$s for %2$s was successfully moved to %3$s. All previously sold tickets of this type have been transferred to %3$s. Please adjust stock manually as needed. %1$s ticket holders have received an email notifying them of the change. You may now close this window!"
+msgid "Ticket type %1$s for %2$s was successfully moved to %3$s. All previously sold tickets of this type have been transferred to %3$s. Please adjust capacity and stock manually as needed. %1$s ticket holders have received an email notifying them of the change. You may now close this window!"
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:108
@@ -573,7 +789,7 @@ msgid "Ticket type could not be moved: the ticket type or destination post was i
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:72
-#: src/Tribe/Admin/Move_Tickets.php:250
+#: src/Tribe/Admin/Move_Tickets.php:249
 msgid "All supported types"
 msgstr ""
 
@@ -585,15 +801,15 @@ msgstr ""
 msgid "Event Tickets allows your guests to RSVP from any post, page, or event."
 msgstr ""
 
-#: src/views/tickets/rsvp.php:188
+#: src/views/tickets/rsvp.php:191
 msgid "Login to RSVP"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:176
+#: src/views/tickets/rsvp.php:179
 msgid "Don't list me on the public attendee list"
 msgstr "Neuvádějte mě na veřejném seznamu účastníků"
 
-#: src/views/tickets/rsvp.php:119
+#: src/views/tickets/rsvp.php:122
 msgid "Send RSVP confirmation to:"
 msgstr ""
 
@@ -663,13 +879,9 @@ msgstr ""
 msgid "To see a list of events you are attending you will need to login."
 msgstr ""
 
-#: src/template-tags/tickets.php:425
+#: src/template-tags/tickets.php:421
 msgctxt "ticket stock message (cancelled stock)"
 msgid "%1$d Cancelled"
-msgstr ""
-
-#: src/template-tags/tickets.php:402
-msgid "global inventory"
 msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:101
@@ -682,21 +894,6 @@ msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:37
 msgid "Require users to log in before they RSVP"
-msgstr ""
-
-#: src/admin-views/meta-box.php:85
-msgid "(%s sold)"
-msgid_plural "(%s sold)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#: src/admin-views/meta-box.php:79
-msgid "Global stock level"
-msgstr ""
-
-#: src/admin-views/meta-box.php:69
-msgid "Enable global stock"
 msgstr ""
 
 #: src/Tribe/Tickets_View.php:731
@@ -715,47 +912,35 @@ msgstr ""
 msgid "Going"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1640
+#: src/Tribe/Tickets.php:2094
 msgid "There are no tickets available at this time."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1638
+#: src/Tribe/Tickets.php:2092
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1636
+#: src/Tribe/Tickets.php:2090
 msgid "Tickets are not yet available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1634
+#: src/Tribe/Tickets.php:2088
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1024
-msgid "Independent (do not use global stock)"
-msgstr ""
-
-#: src/Tribe/Tickets.php:1023
-msgid "Use global stock but cap sales"
-msgstr ""
-
-#: src/Tribe/Tickets.php:1022
-msgid "Use global stock"
-msgstr ""
-
-#: src/Tribe/RSVP.php:847
+#: src/Tribe/RSVP.php:846
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/Tribe/Metabox.php:119
+#: src/Tribe/Assets.php:112 src/Tribe/Metabox.php:82
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
-#: src/Tribe/Metabox.php:92
-msgid "It looks like you have modified your global stock settings but have not saved or updated the post."
+#: src/Tribe/Assets.php:105
+msgid "It looks like you have modified your shared capacity setting but have not saved or updated the post."
 msgstr ""
 
-#: src/Tribe/Main.php:731
+#: src/Tribe/Main.php:693
 msgid "Buy"
 msgstr ""
 
@@ -767,7 +952,7 @@ msgstr "Zdarma"
 msgid "RSVPs"
 msgstr ""
 
-#: src/Tribe/CSV_Importer/RSVP_Importer.php:229
+#: src/Tribe/CSV_Importer/RSVP_Importer.php:239
 msgid "Recurring event tickets are not supported, event %s."
 msgstr ""
 
@@ -807,143 +992,136 @@ msgstr "Název, ID nebo Název v URL akce"
 msgid "View order"
 msgstr ""
 
-#: src/admin-views/meta-box.php:240
+#: src/admin-views/edit_admin_panel.php:171
+#: src/admin-views/settings_admin_panel.php:50
 msgid "Cancel"
 msgstr "Zrušit"
-
-#: src/admin-views/meta-box.php:219
-msgid "If you don't set a start/end date for sales, tickets will be available from now until the event ends."
-msgstr "Pokud nenastavíte začátek a konec prodeje, budou vstupenky k dispozici od této chvíle až do ukončení akce."
-
-#: src/admin-views/meta-box.php:215
-msgid "When will ticket sales occur?"
-msgstr "Kdy nastane prodej vstupenek?"
 
 #: src/admin-views/attendees-email.php:59
 msgid "Send Email"
 msgstr "Poslat email"
 
-#: src/Tribe/Tickets_Handler.php:594
+#: src/Tribe/Tickets_Handler.php:1399
 msgid "Email sent successfully!"
 msgstr "Email byl úspěšně odeslán!"
 
-#: src/Tribe/Tickets_Handler.php:587
+#: src/Tribe/Tickets_Handler.php:1392
 msgid "Error when sending the email"
 msgstr "Došlo k chybě při odesílání emailu"
 
-#: src/Tribe/Tickets_Handler.php:549 src/Tribe/Tickets_Handler.php:565
+#: src/Tribe/Tickets_Handler.php:1354 src/Tribe/Tickets_Handler.php:1370
 msgid "Invalid User ID"
 msgstr "Neplatné ID uživatele"
 
-#: src/Tribe/Tickets_Handler.php:543
+#: src/Tribe/Tickets_Handler.php:1348
 msgid "Invalid Email"
 msgstr "Neplatná emailová adresa"
 
-#: src/Tribe/Tickets_Handler.php:531
+#: src/Tribe/Tickets_Handler.php:1336
 msgid "Empty user and email"
 msgstr "Nebylo zadáno uživatelské jméno a emailová adresa"
 
-#: src/Tribe/Tickets_Handler.php:508
+#: src/Tribe/Tickets_Handler.php:1313
 msgid "Invalid Event ID"
 msgstr "Neplatné ID akce"
 
-#: src/Tribe/Tickets_Handler.php:525
+#: src/Tribe/Tickets_Handler.php:1330
 msgid "Cheatin Huh?"
 msgstr "Co zkúšáš, jak zkúšáš?"
 
-#: src/Tribe/Tickets.php:737
+#: src/Tribe/Tickets.php:1114
 msgid "Editing the ticket price is currently disallowed."
 msgstr "Upravovaní ceny vstupenky není aktuálně povoleno."
 
-#: src/Tribe/RSVP.php:1660
+#: src/Tribe/RSVP.php:1780
 msgid "Post draft updated."
 msgstr "Koncept příspěvku byl uložen."
 
-#: src/Tribe/RSVP.php:1659
+#: src/Tribe/RSVP.php:1779
 msgid "Post scheduled."
 msgstr "Příspěvek bude automaticky publikován."
 
-#: src/Tribe/RSVP.php:1658
+#: src/Tribe/RSVP.php:1778
 msgid "Post submitted."
 msgstr "Příspěvek byl odeslán ke schválení."
 
-#: src/Tribe/RSVP.php:1655
+#: src/Tribe/RSVP.php:1775
 msgid "Post published. %1$s"
 msgstr "Příspěvek byl publikován. %1$s"
 
-#: src/Tribe/RSVP.php:1651
+#: src/Tribe/RSVP.php:1771
 msgid "Post updated. %1$s"
 msgstr "Příspěvek byl aktualizován. %1$s"
 
-#: src/Tribe/RSVP.php:1644
+#: src/Tribe/RSVP.php:1764
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr "Zpět na %1$spřehled účastníků%2$s."
 
-#: src/Tribe/RSVP.php:1092
+#: src/Tribe/RSVP.php:1160
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr "Nemůžete potvrdit účast pro více než kolik je k dispozici zbývajících vstupenek."
 
-#: src/Tribe/Main.php:495
+#: src/Tribe/Main.php:457
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:490
+#: src/Tribe/Main.php:452
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:489 src/Tribe/Main.php:494
+#: src/Tribe/Main.php:451 src/Tribe/Main.php:456
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:487
+#: src/Tribe/Main.php:449
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:486
+#: src/Tribe/Main.php:448
 msgid "Events Tickets Plus"
 msgstr "Events Tickets Plus"
 
-#: src/Tribe/Main.php:485
+#: src/Tribe/Main.php:447
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:483
+#: src/Tribe/Main.php:445
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:482
+#: src/Tribe/Main.php:444
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:465
+#: src/Tribe/Main.php:427
 msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:463
+#: src/Tribe/Main.php:425 src/admin-views/admin-welcome-message.php:23
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:446
+#: src/Tribe/Main.php:408
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:445
+#: src/Tribe/Main.php:407
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:444
+#: src/Tribe/Main.php:406
 msgid "Features overview"
 msgstr "Přehled funkcí"
 
-#: src/Tribe/Main.php:443
+#: src/Tribe/Main.php:405
 msgid "Settings overview"
 msgstr "Přehled nastavení"
 
-#: src/Tribe/Main.php:441
+#: src/Tribe/Main.php:403
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:241
+#: src/Tribe/Main.php:243
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
@@ -959,25 +1137,25 @@ msgstr "http://m.tri.be/28"
 msgid "Modern Tribe, Inc."
 msgstr "Modern Tribe, Inc."
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.5.6)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.6)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: src/Tribe/Main.php:509
+#: src/Tribe/Main.php:471
 msgid "Event Tickets"
 msgstr "Event Tickets"
 
-#: src/views/tickets/rsvp.php:197
+#: src/views/tickets/rsvp.php:200
 msgid "Confirm RSVP"
 msgstr "Potvrdit účast"
 
-#: src/views/tickets/rsvp.php:131
+#: src/views/tickets/rsvp.php:134
 msgid "Full Name"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:93
+#: src/views/tickets/rsvp.php:96
 msgid "Out of stock!"
 msgstr "Není skladem!"
 
-#: src/views/tickets/rsvp.php:89
+#: src/views/tickets/rsvp.php:92
 msgid "%1$s out of %2$s available"
 msgstr "%1$s z celkem %2$s k dispozici"
 
@@ -1007,35 +1185,16 @@ msgstr "Seznam účastníků"
 msgid "Post types that can have tickets"
 msgstr "Typy příspěvků, které mohou mít vstupenky"
 
+#: src/admin-views/settings_admin_panel.php:14
 #: src/admin-views/tribe-options-tickets.php:47
 msgid "Ticket Settings"
 msgstr "Nastavení pro vstupenky"
 
-#: src/admin-views/rsvp-metabox-advanced.php:13
-msgid "Currently, tickets will only show up on the frontend once per full event. For PRO users this means the same ticket will appear across all events in the series. Please configure your events accordingly."
-msgstr ""
-
-#: src/admin-views/rsvp-metabox-advanced.php:22
-msgid "Selling tickets for recurring events"
-msgstr "Prodej vstupenek na opakující se akce"
-
-#: src/admin-views/rsvp-metabox-advanced.php:6
-msgid "(Total available # of this ticket type. Once they're gone, ticket type is sold out.)"
-msgstr "(Celkový počet vstupenek tohoto typu k dispozici. Jakmile jsou pryč, tento typ je vyprodán.)"
-
-#: src/admin-views/rsvp-metabox-advanced.php:2
-msgid "Stock:"
-msgstr "Skladem:"
-
-#: src/admin-views/meta-box.php:239
-msgid "Save this ticket"
-msgstr "Uložit vstupenku"
-
-#: src/admin-views/meta-box.php:192
+#: src/admin-views/tickets-advanced.php:61
 msgid "End sale:"
 msgstr "Konec prodeje:"
 
-#: src/admin-views/meta-box.php:161
+#: src/admin-views/tickets-advanced.php:30
 msgid "Start sale:"
 msgstr "Začátek prodeje:"
 
@@ -1055,57 +1214,25 @@ msgstr "(pro vstupné zdarma ponechte prázdné nebo zadejte 0)"
 msgid "Price:"
 msgstr "Cena:"
 
-#: src/admin-views/meta-box.php:152
-msgid "Ticket Description:"
-msgstr "Popis vstupenky:"
-
-#: src/admin-views/meta-box.php:145
-msgid "Ticket Name:"
-msgstr "Název vstupenky:"
-
-#: src/admin-views/meta-box.php:128
+#: src/admin-views/edit_admin_panel.php:89
 msgid "Sell using:"
 msgstr "Prodej pomocí:"
 
-#: src/admin-views/meta-box.php:123
+#: src/admin-views/edit_admin_panel.php:48
 msgid "Edit ticket"
 msgstr "Upravit vstupenku"
 
-#: src/admin-views/meta-box.php:112 src/admin-views/meta-box.php:122
+#: src/admin-views/edit_admin_panel.php:40
 msgid "Add new ticket"
 msgstr "Přidat novou vstupenku"
 
-#: src/admin-views/meta-box.php:54
+#: src/admin-views/settings_admin_panel.php:43
 msgid "Remove"
 msgstr "Odstranit"
 
-#: src/admin-views/meta-box.php:46
+#: src/admin-views/settings_admin_panel.php:33
 msgid "Select an Image"
 msgstr "Zvolit obrázek"
-
-#: src/admin-views/meta-box.php:43
-msgid "The maximum image size in the email will be 580px wide by any height, and then scaled for mobile. If you would like \"retina\" support use an image sized to 1160px wide."
-msgstr "Maximální velikost obrázku v emailu bude 580 pixelů na šířku s volnou výškou a pro mobilní zařízení bude obrázek následně zmenšen. Pokud chcete mít podporu pro \"Retina\" displej, použijte obrázek široký 1160 pixelů."
-
-#: src/admin-views/meta-box.php:42
-msgid "Upload image for the ticket header."
-msgstr ""
-
-#: src/admin-views/meta-box.php:31
-msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
-msgstr "Tato akce byla vytvořena jako komunitní akce. Opravdu si přejete prodávat vstupenky na tuto akci?"
-
-#: src/admin-views/list.php:47
-msgid "View"
-msgstr "Zobrazit"
-
-#: src/admin-views/list.php:52
-msgid "Edit in %s"
-msgstr "Upravit v %s"
-
-#: src/admin-views/list.php:33
-msgid "Edit"
-msgstr "Upravit"
 
 #: src/admin-views/attendees-email.php:38
 msgid "Email Address:"
@@ -1127,83 +1254,82 @@ msgstr "Vybrat uživatele:"
 msgid "Send the attendee list by email"
 msgstr "Poslat seznam účastníků emailem"
 
-#: src/Tribe/Tickets_Handler.php:586
+#: src/Tribe/Tickets_Handler.php:1391
 msgid "Attendee List for: %s"
 msgstr "Seznam účastníků na: %s"
 
-#: src/Tribe/Tickets_Handler.php:481
+#: src/Tribe/Tickets_Handler.php:1287
 msgid "attendees"
 msgstr "ucastnici"
 
-#: src/Tribe/Tickets_Handler.php:440
+#: src/Tribe/Tickets_Handler.php:1239
 msgid "Yes"
 msgstr "Ano"
 
-#: src/Tribe/Tickets_Handler.php:249
+#: src/Tribe/Tickets_Handler.php:1048
 msgid "You can use Screen Options to select which columns you want to see. The selection works in the table below, in the email, for print and for the CSV export."
 msgstr "Pomocí záložky &#8222;Nastavení zobrazených informací&#8220; si můžete vybrat, které sloupce chcete zobrazit. Tento výběr se projeví při výpisu, při odesílání emailem, při tisku a při exportu do CSV souboru."
 
-#: src/Tribe/Tickets_Handler.php:249
+#: src/Tribe/Tickets_Handler.php:1048
 msgid "Columns"
 msgstr "Sloupce"
 
-#: src/Tribe/Tickets_Handler.php:217
+#: src/Tribe/Tickets_Handler.php:1016
 msgid "Sending..."
 msgstr "Odesílání..."
 
-#: src/Tribe/Tickets_Handler.php:216
+#: src/Tribe/Tickets_Handler.php:1015
 msgid "You need to select a user or type a valid email address"
 msgstr "Je třeba vybrat uživatele nebo zadat platnou emailovou adresu"
 
 #: src/Tribe/Admin/Columns/Tickets.php:57
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
-#: src/Tribe/Tickets_Handler.php:154 src/admin-views/attendees.php:11
-#: src/admin-views/list.php:92
+#: src/Tribe/Tickets_Handler.php:952 src/admin-views/attendees.php:11
 msgid "Attendees"
 msgstr "Účastníci"
 
-#: src/Tribe/Tickets_Handler.php:152 src/admin-views/list.php:90
+#: src/Tribe/Tickets_Handler.php:950
 msgid "See who purchased tickets to this event"
 msgstr "Kdo si koupil vstupenky na tuto akci"
 
-#: src/Tribe/Tickets.php:683
+#: src/Tribe/Tickets.php:761 src/Tribe/Tickets.php:1057
 msgid "Your ticket has been deleted."
 msgstr "Vaše vstupenka byla smazána."
 
-#: src/Tribe/Tickets.php:505
+#: src/Tribe/Tickets.php:758
 msgid "Your ticket has been saved."
 msgstr "Vaše vstupenka byla uložena."
 
-#: src/Tribe/RSVP.php:1349
+#: src/Tribe/RSVP.php:1469
 msgid "(deleted)"
 msgstr "(smazáno)"
 
-#: src/Tribe/RSVP.php:1097
+#: src/Tribe/RSVP.php:1165
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr "Pro potvrzení účasti musíte zadat své jméno a platnou emailovou adresu."
 
-#: src/Tribe/RSVP.php:1086
+#: src/Tribe/RSVP.php:1154
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr "Vaše potvrzení účasti bylo přijato. Zkontrolujte prosím emailovou schránku, kam byl odeslán kontrolní email."
 
-#: src/Tribe/RSVP.php:759
+#: src/Tribe/RSVP.php:758
 msgid "Your tickets from %s"
 msgstr "Vaše vstupenky z webu %s"
 
-#: src/Tribe/RSVP.php:241
+#: src/Tribe/RSVP.php:240
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr "Účastník %1$s"
 
-#: src/Tribe/Metabox.php:87
+#: src/Tribe/Assets.php:31
 msgid "Set as ticket header"
 msgstr "Použít jako obrázek v záhlaví vstupenky"
 
-#: src/Tribe/Metabox.php:86
+#: src/Tribe/Assets.php:30
 msgid "Ticket header image"
 msgstr "Obrázek v záhlaví vstupenky"
 
-#: src/Tribe/Attendees_Table.php:535 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:535
 msgid "Delete"
 msgstr "Smazat"
 
@@ -1216,7 +1342,7 @@ msgid "Export"
 msgstr "Exportovat"
 
 #: src/Tribe/Attendees_Table.php:501
-#: src/admin-views/admin-welcome-message.php:36 src/views/tickets/rsvp.php:139
+#: src/admin-views/admin-welcome-message.php:62 src/views/tickets/rsvp.php:142
 msgid "Email"
 msgstr "Email"
 
@@ -1240,11 +1366,19 @@ msgstr "Kontrolní kód"
 msgid "Ticket #"
 msgstr "Vstupenka č."
 
+#: src/Tribe/Tickets_Handler.php:1503
+msgid "Ticket Type:"
+msgstr ""
+
 #: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:31
-#: src/Tribe/Tickets_View.php:665
+#: src/Tribe/Tickets_View.php:665 src/admin-views/list.php:28
 msgid "Tickets"
 msgstr "Vstupenky"
 
-#: src/admin-views/admin-welcome-message.php:47
+#: src/admin-views/admin-welcome-message.php:22
 msgid "Getting Started"
 msgstr "Začínáme"
+
+#: src/admin-views/base_admin_panel.php:80
+msgid "Settings"
+msgstr "Nastavení"
