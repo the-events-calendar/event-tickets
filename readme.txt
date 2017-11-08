@@ -248,7 +248,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Tweak - Removed actions: `tribe_events_tickets_metabox_advanced`, `event_tickets_ticket_list_after_ticket_name`, `tribe_events_tickets_metabox_pre`
 * Tweak - Changed views: `tickets/email`, `tickets/rsvp`
 * Tweak - Changed minimum supported version of WordPress to 4.5
-* Language - 50 new strings added, 123 updated, 4 fuzzied, and 25 obsoleted
+* Language - 57 new strings added, 152 updated, 4 fuzzied, and 26 obsoleted
 
 = [4.5.7] 2017-10-18 =
 
