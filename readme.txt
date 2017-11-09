@@ -103,8 +103,8 @@ If you've identified a bug and want to submit a patch, we'd welcome it at our [G
 
 == Screenshots ==
 
-1. RSVP setup
-2. RSVPs on an event
+1. RSVP metabox
+2. Add New RSVP
 3. RSVP on a post
 4. Attendee report
 5. Emailed ticket
