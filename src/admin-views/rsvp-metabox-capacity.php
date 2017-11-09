@@ -12,7 +12,7 @@
 	<input
 		type='text' id='Tribe__Tickets__RSVP_capacity'
 		name='tribe-ticket[capacity]'
-		class="ticket_field tribe-ticket-field-capacity ticket_form_right"
+		class="ticket_field tribe-rsvp-field-capacity  ticket_form_right"
 		size='7'
 		value='<?php echo esc_attr( -1 === (int) $capacity ? '' : $capacity ); ?>'
 	/>

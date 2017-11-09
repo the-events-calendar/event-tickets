@@ -72,7 +72,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		eventCapacity = parseInt( eventCapacity, 10 );
 		var $maxCapacity = $( '.tribe-ticket-capacity-max' );
 		var $capacityValue = $maxCapacity.find( '.tribe-ticket-capacity-value' );
-		var $capacity = $( '[name="tribe-ticket[capacity]"]' );
+		var $capacity = $( '.tribe-ticket-field-capacity[name="tribe-ticket[capacity]"]' );
 
 		// may as well set this here just in case
 		$capacity.attr( 'placeholder', eventCapacity );
