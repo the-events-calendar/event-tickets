@@ -239,8 +239,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * New - Ticket description is now optional for frontend display
 * New - Updated time pickers for start and end sale
 * New - Improved clarity around ticket availability
-* New - Filter default capacity type with tribe_tickets_default_ticket_capacity_type [80629]
-* New — Introduced new filters allowing fine-grained insertion into the ticket editor: `tribe_events_tickets_metabox_edit_advanced`, `tribe_events_tickets_post_capacity`, `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`, `tribe_events_tickets_new_ticket_buttons`, `tribe_events_tickets_pre_edit`, `tribe_events_tickets_metabox_edit_main`, `tribe_events_tickets_metabox_edit_accordion_content`, `tribe_events_tickets_post_accordion`, `tribe_ticket_order_field`.
 * Tweak - Renamed "stock" to "capacity"
 * Tweak - Added filters: `tribe_event_ticket_decimal_point`, `tribe_tickets_default_ticket_capacity_type`, `tribe_tickets_rsvp_send_mail`, `tribe_tickets_show_description`, `tribe_tickets_ajax_refresh_tables`, `tribe_tickets_ajax_refresh_settings`, `tribe_events_tickets_metabox_edit_attendee`, `tribe_tickets_get_default_module`, `tribe_tickets_total_event_capacity`
 * Tweak - Removed filters: `tribe_events_tickets_attendees_url`

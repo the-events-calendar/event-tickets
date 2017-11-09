@@ -72,7 +72,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		eventCapacity = parseInt( eventCapacity, 10 );
 		var $maxCapacity = $( '.tribe-ticket-capacity-max' );
 		var $capacityValue = $maxCapacity.find( '.tribe-ticket-capacity-value' );
-		var $capacity = $( '[name="tribe-ticket[capacity]"]' );
+		var $capacity = $( '.tribe-ticket-field-capacity[name="tribe-ticket[capacity]"]' );
 
 		// may as well set this here just in case
 		$capacity.attr( 'placeholder', eventCapacity );
@@ -988,6 +988,35 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			firstDay       : startofweek,
 			showButtonPanel: false,
 			onChange       : function() {
+			},
+			beforeShow     : function( element, object ) {
+				object.input.data( 'prevDate', object.input.datepicker( 'getDate' ) );
+
+				// Capture the datepicker div here; it's dynamically generated so best to grab here instead of elsewhere.
+				var $dpDiv = $( object.dpDiv );
+
+				// "Namespace" our CSS a bit so that our custom jquery-ui-datepicker styles don't interfere with other plugins'/themes'.
+				$dpDiv.addClass( 'tribe-ui-datepicker' );
+
+				// @todo Look into making this also compatible with ACF
+				// $event_details.trigger( 'tribe.ui-datepicker-div-beforeshow', [ object ] );
+
+				$dpDiv.attrchange({
+					trackValues : true,
+					callback    : function( attr ) {
+						// This is a non-ideal, but very reliable way to look for the closing of the ui-datepicker box,
+						// since onClose method is often included by other plugins, including Events Calender PRO.
+						if (
+							attr.newValue.indexOf( 'display: none' ) >= 0 ||
+							attr.newValue.indexOf( 'display:none' ) >= 0
+						) {
+							$dpDiv.removeClass( 'tribe-ui-datepicker' );
+
+							// @todo Look into making this also compatible with ACF
+							// $event_details.trigger( 'tribe.ui-datepicker-div-closed', [ object ] );
+						}
+					}
+				});
 			},
 			onSelect       : function( dateText, inst ) {
 				var the_date = $.datepicker.parseDate( dateFormat, dateText );
