@@ -998,21 +998,21 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				// "Namespace" our CSS a bit so that our custom jquery-ui-datepicker styles don't interfere with other plugins'/themes'.
 				$dpDiv.addClass( 'tribe-ui-datepicker' );
 
-				// Look into making this also compatible with ACF
+				// @todo Look into making this also compatible with ACF
 				// $event_details.trigger( 'tribe.ui-datepicker-div-beforeshow', [ object ] );
 
 				$dpDiv.attrchange({
 					trackValues : true,
 					callback    : function( attr ) {
 						// This is a non-ideal, but very reliable way to look for the closing of the ui-datepicker box,
-						// since onClose method is often occluded by other plugins, including Events Calender PRO.
+						// since onClose method is often included by other plugins, including Events Calender PRO.
 						if (
 							attr.newValue.indexOf( 'display: none' ) >= 0 ||
 							attr.newValue.indexOf( 'display:none' ) >= 0
 						) {
 							$dpDiv.removeClass( 'tribe-ui-datepicker' );
 
-							// Look into making this also compatible with ACF
+							// @todo Look into making this also compatible with ACF
 							// $event_details.trigger( 'tribe.ui-datepicker-div-closed', [ object ] );
 						}
 					}
