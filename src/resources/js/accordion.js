@@ -21,6 +21,8 @@
 				callback.call( scope, i, array[i] ); // passes back stuff we need
 			}
 		};
+		// set ARIA role
+		accordion.setAttribute( 'role', 'tablist' );
 
 		var accordionContent = accordion.getElementsByClassName( 'accordion-content' );
 		var accordionHeader  = accordion.getElementsByClassName( 'accordion-header' );
