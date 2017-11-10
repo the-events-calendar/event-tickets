@@ -52,6 +52,7 @@
 				data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 				data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 				value=""
+				aria-label="Ticket start date"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 			<span class="dashicons dashicons-editor-help" title="<?php esc_attr_e( 'If you do not set a start sale date, tickets will be available immediately.', 'event-tickets' ); ?>"></span>
@@ -80,6 +81,7 @@
 				data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 				data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 				value=""
+				aria-label="Ticket end date"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 			<span
