@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Class Tribe__Tickets__Admin__Views
  *
@@ -35,6 +33,57 @@ class Tribe__Tickets__Admin__Views {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Allows for a Ticket Admin Views include or Render
+	 *
+	 * @since  TBD
+	 *
+	 * @param  string $name    Which template we are dealing with
+	 * @param  array  $context Context to e Extracted (some views depende on variables)
+	 *
+	 * @return string
+	 */
+	public function template( $name, $context = array() ) {
+		$base = trailingslashit( Tribe__Tickets__Main::instance()->plugin_path ) . 'src/admin-views';
+		$base = (array) explode( '/', $name );
+
+		// If name is String make it an Array
+		if ( is_string( $name ) ) {
+			$name = (array) explode( '/', $name );
+		}
+
+		// Clean this Variable
+		$name = array_map( 'sanitize_title_with_dashes', $name );
+
+		// Apply the .php to the last item on the name
+		$name[ count( $name ) - 1 ] .= '.php';
+
+		// Build the File Path
+		$file = implode( DIRECTORY_SEPARATOR, array_merge( (array) $base, $name ) );
+
+		if ( ! file_exists( $file ) ) {
+			return false;
+		}
+
+		ob_start();
+
+		// Only do this if really needed (by default it wont)
+		if ( ! empty( $context ) ) {
+			// Make any provided variables available in the template variable scope
+			extract( $context );
+		}
+
+		include $file;
+
+		$html = ob_get_clean();
+
+		if ( $echo ) {
+			echo $html;
+		}
+
+		return $html;
 	}
 
 	public function hook() {

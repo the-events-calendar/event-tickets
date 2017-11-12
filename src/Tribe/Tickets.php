@@ -1798,7 +1798,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			return tribe( 'tickets.handler' )->user_can( $generic_cap, $post_id );
+			return tribe( 'tickets.attendees' )->user_can( $generic_cap, $post_id );
 		}
 
 		/**

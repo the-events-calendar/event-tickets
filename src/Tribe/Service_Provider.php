@@ -18,6 +18,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 	public function register() {
 		$this->container->singleton( 'tickets.assets', new Tribe__Tickets__Assets() );
 		$this->container->singleton( 'tickets.handler', 'Tribe__Tickets__Tickets_Handler' );
+		$this->container->singleton( 'tickets.attendees', 'Tribe__Tickets__Attendees', array( 'hook' ) );
 		$this->container->singleton( 'tickets.version', 'Tribe__Tickets__Version', array( 'hook' ) );
 
 		// Caching
@@ -48,6 +49,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 	protected function load() {
 		tribe( 'tickets.query' );
 		tribe( 'tickets.handler' );
+		tribe( 'tickets.attendees' );
 		tribe( 'tickets.version' );
 
 		if ( is_admin() ) {

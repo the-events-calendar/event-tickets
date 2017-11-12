@@ -1720,7 +1720,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$args = array(
 			'post_type' => 'tribe_events',
-			'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
+			'page' => tribe( 'tickets.attendees' )->slug(),
 			'event_id' => get_post_meta( $post_id, '_tribe_rsvp_event', true ),
 		);
 
@@ -1754,7 +1754,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendees_report_url = add_query_arg(
 			array(
 				'post_type' => $event->post_type,
-				'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
+				'page' => tribe( 'tickets.attendees' )->slug(),
 				'event_id' => $event->ID,
 			),
 			admin_url( 'edit.php' )

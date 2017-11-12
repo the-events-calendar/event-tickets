@@ -4,10 +4,20 @@ $this->attendees_table->prepare_items();
 $event_id = $this->attendees_table->event->ID;
 $event = $this->attendees_table->event;
 $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
+
+/**
+ * Wether or not we should display attendees title
+ *
+ * @since  TBD
+ *
+ * @param  boolean                          $show_title
+ * @param  Tribe__Tickets__Tickets_Handler  $handler
+ */
+$show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $this );
 ?>
 
 <div class="wrap tribe-attendees-page">
-	<?php if ( $this->should_render_title ) : ?>
+	<?php if ( $show_title ) : ?>
         <h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
 	<?php endif; ?>
 	<div id="tribe-attendees-summary" class="welcome-panel">
