@@ -5,18 +5,12 @@
 class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Post Meta key for the ticket header
-	 * @var string
-	 */
-	protected $image_header_field = '_tribe_ticket_header';
-
-	/**
-	 * Post Meta key for the ticket order
 	 *
 	 * @since 4.6
 	 *
 	 * @var string
 	 */
-	protected $tickets_order_field = '_tribe_tickets_order';
+	public $key_image_header = '_tribe_ticket_header';
 
 	/**
 	 * Post Meta key for event ecommerce provider
@@ -94,12 +88,7 @@ class Tribe__Tickets__Tickets_Handler {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_order' ) );
 		}
 
-		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
-		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
-		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
-		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
-
 
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
 		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
@@ -826,48 +815,6 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Injects event post type
-	 *
-	 * @param int $event_id
-	 */
-	public function event_details_top( $event_id ) {
-		$pto = get_post_type_object( get_post_type( $event_id ) );
-
-		echo '
-			<li class="post-type">
-				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( $pto->label ) . '
-			</li>
-		';
-	}
-
-	/**
-	 * Injects action links into the attendee screen.
-	 *
-	 * @param $event_id
-	 */
-	public function event_action_links( $event_id ) {
-		$action_links = array(
-			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
-			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
-		);
-
-		/**
-		 * Provides an opportunity to add and remove action links from the
-		 * attendee screen summary box.
-		 *
-		 * @param array $action_links
-		 */
-		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links );
-
-		if ( empty( $action_links ) ) {
-			return;
-		}
-
-		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
-	}
-
-	/**
 	 * Includes the tickets metabox inside the Event edit screen
 	 *
 	 * @param WP_Post $post
@@ -882,156 +829,18 @@ class Tribe__Tickets__Tickets_Handler {
 		$tickets           = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 		$global_stock      = new Tribe__Tickets__Global_Stock( $post->ID );
 
-		include $this->path . 'src/admin-views/meta-box.php';
-	}
+		$context = array(
+			'post' => $post,
+			'start_date' => $start_date,
+			'end_date' => $end_date,
+			'start_time' => $start_time,
+			'end_time' => $end_time,
+			'show_global_stock' => $show_global_stock,
+			'tickets' => $tickets,
+			'global_stock' => $global_stock,
+		);
 
-	/**
-	 * Render the ticket row into the ticket table
-	 *
-	 * @since 4.6
-	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 */
-	public function render_ticket_row( $ticket ) {
-		$provider      = $ticket->provider_class;
-		$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
-		$inventory     = $ticket->inventory();
-		$available     = $ticket->available();
-		$capacity      = $ticket->capacity();
-		$stock         = $ticket->stock();
-		$needs_warning = false;
-		$mode          = $ticket->global_stock_mode();
-		$event         = $ticket->get_event();
-
-		// If we don't have an event we should even continue
-		if ( ! $event ) {
-			return;
-		}
-
-		if (
-			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class
-			&& -1 !== $capacity
-		) {
-			$product = wc_get_product( $ticket->ID );
-			$shared_stock = new Tribe__Tickets__Global_Stock( $event->ID );
-			$needs_warning = (int) $inventory !== (int) $stock;
-
-			// We remove the warning flag when shared stock is used
-			if ( $shared_stock->is_enabled() && (int) $stock >= (int) $shared_stock->get_stock_level() ) {
-				$needs_warning = false;
-			}
-		}
-
-		?>
-		<tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
-			<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
-				<span class="dashicons dashicons-screenoptions tribe-handle"></span>
-				<input
-					type="hidden"
-					class="tribe-ticket-field-order"
-					name="tribe-tickets[<?php echo esc_attr( $ticket->ID ); ?>][order]"
-					value="<?php echo esc_attr( $ticket->menu_order ); ?>"
-					<?php echo 'Tribe__Tickets__RSVP' === $ticket->provider_class ? 'disabled' : ''; ?>
-				>
-				<?php echo esc_html( $ticket->name ); ?>
-			</td>
-
-			<?php
-			/**
-			 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
-			 *
-			 * @since 4.6
-			 *
-			 * @param Tribe__Tickets__Ticket_Object $ticket
-			 * @param obj ecommerce provider object
-			 */
-			do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
-			?>
-
-			<td class="ticket_capacity">
-				<span class='tribe-mobile-only'><?php esc_html_e( 'Capacity:', 'event-tickets' ); ?></span>
-				<?php tribe_tickets_get_readable_amount( $capacity, $mode, true ); ?>
-			</td>
-
-			<td class="ticket_available">
-				<span class='tribe-mobile-only'><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
-				<?php if ( $needs_warning ) : ?>
-					<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'The number of Complete ticket sales does not match the number of attendees. Please check the Attendees list and adjust ticket stock in WooCommerce as needed.', 'event-tickets' ) ?>"></span>
-				<?php endif; ?>
-
-				<?php tribe_tickets_get_readable_amount( $available, $mode, true ); ?>
-			</td>
-
-			<td class="ticket_edit">
-				<?php
-				printf(
-					"<button data-provider='%s' data-ticket-id='%s' title='%s' class='ticket_edit_button'><span class='ticket_edit_text'>%s</span></a>",
-					esc_attr( $ticket->provider_class ),
-					esc_attr( $ticket->ID ),
-					esc_attr( sprintf( __( '( Ticket ID: %d )', 'tribe-tickets' ), $ticket->ID ) ),
-					esc_html( $ticket->name )
-				);
-				?>
-			</td>
-		</tr>
-		<?php
-	}
-
-	/**
-	 * Echoes the markup for the tickets list in the tickets metabox
-	 *
-	 * @param int $unused_post_id event ID
-	 * @param array $tickets
-	 */
-	public function ticket_list_markup( $unused_post_id, $tickets = array() ) {
-		if ( ! empty( $tickets ) ) {
-			include $this->path . 'src/admin-views/list.php';
-		}
-	}
-
-	/**
-	 * Returns the markup for the tickets list in the tickets metabox
-	 *
-	 * @param array $tickets
-	 *
-	 * @return string
-	 */
-	public function get_ticket_list_markup( $tickets = array() ) {
-		ob_start();
-		$this->ticket_list_markup( null, $tickets );
-		$return = ob_get_clean();
-
-		return $return;
-	}
-
-	/**
-	 * Returns the markup for the Settings Panel for Tickets
-	 *
-	 * @param  int    $post_id
-	 *
-	 * @return string
-	 */
-	public function get_settings_panel( $post_id ) {
-		ob_start();
-		include $this->path . 'src/admin-views/settings_admin_panel.php';
-		$return = ob_get_clean();
-
-		return $return;
-	}
-
-	/**
-	 * Returns the markup for the History for a Given Ticket
-	 *
-	 * @param  int    $ticket_id
-	 *
-	 * @return string
-	 */
-	public function get_history_content( $post_id, $ticket ) {
-		ob_start();
-		include $this->path . 'src/admin-views/tickets-history.php';
-		$return = ob_get_clean();
-
-		return $return;
+		return tribe( 'tickets.admin.views' )->template( 'meta-box', $context );
 	}
 
 	/**
@@ -1042,7 +851,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return mixed
 	 */
 	public function get_header_image_id( $event_id ) {
-		return get_post_meta( $event_id, $this->image_header_field, true );
+		return get_post_meta( $event_id, $this->key_image_header, true );
 	}
 
 	/**
@@ -1061,9 +870,9 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		if ( empty( $_POST['tribe_ticket_header_image_id'] ) ) {
-			delete_post_meta( $post_id, $this->image_header_field );
+			delete_post_meta( $post_id, $this->key_image_header );
 		} else {
-			update_post_meta( $post_id, $this->image_header_field, $_POST['tribe_ticket_header_image_id'] );
+			update_post_meta( $post_id, $this->key_image_header, $_POST['tribe_ticket_header_image_id'] );
 		}
 
 		return;
@@ -1120,6 +929,16 @@ class Tribe__Tickets__Tickets_Handler {
 		return ! in_array( 0, $updated );
 	}
 
+	/**
+	 * Sorts tickets according to stored menu_order
+	 *
+	 * @since  4.6
+	 *
+	 * @param  object  $a  First  Compare item
+	 * @param  object  $b  Second Compare item
+	 *
+	 * @return array
+	 */
 	protected function sort_by_menu_order( $a, $b ) {
 		return $a->menu_order - $b->menu_order;
 	}
@@ -1165,9 +984,9 @@ class Tribe__Tickets__Tickets_Handler {
 		do_action( 'tribe_events_save_tickets_settings', $params );
 
 		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, $this->image_header_field, $params['tribe_ticket_header_image_id'] );
+			update_post_meta( $id, $this->key_image_header, $params['tribe_ticket_header_image_id'] );
 		} else {
-			delete_post_meta( $id, $this->image_header_field );
+			delete_post_meta( $id, $this->key_image_header );
 		}
 
 		// We reversed this logic on the back end
@@ -1210,6 +1029,77 @@ class Tribe__Tickets__Tickets_Handler {
 	public static $attendees_slug = 'tickets-attendees';
 
 	/**
+	 * Render the ticket row into the ticket table
+	 *
+	 * @deprecated TBD
+	 *
+	 * @since 4.6
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 */
+	public function render_ticket_row( $ticket ) {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ) )" );
+		tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ), array( 'ticket' => $ticket ) );
+	}
+
+	/**
+	 * Returns the markup for the History for a Given Ticket
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param  int    $ticket_id
+	 *
+	 * @return string
+	 */
+	public function get_history_content( $post_id, $ticket ) {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'settings_admin_panel' )" );
+		return tribe( 'tickets.admin.views' )->template( 'tickets-history', array( 'post_id' => $post_id, 'ticket' => $ticket ), false );
+	}
+
+	/**
+	 * Returns the markup for the Settings Panel for Tickets
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param  int    $post_id
+	 *
+	 * @return string
+	 */
+	public function get_settings_panel( $post_id ) {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'settings_admin_panel' )" );
+		return tribe( 'tickets.admin.views' )->template( 'settings_admin_panel', array( 'post_id' => $post_id ), false );
+	}
+
+	/**
+	 * Echoes the markup for the tickets list in the tickets metabox
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param int   $deprecated event ID
+	 * @param array $tickets
+	 */
+	public function ticket_list_markup( $deprecated, $tickets = array() ) {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'list' )" );
+
+		tribe( 'tickets.admin.views' )->template( 'list', array( 'tickets' => $tickets ) );
+	}
+
+	/**
+	 * Returns the markup for the tickets list in the tickets metabox
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param array $tickets
+	 *
+	 * @return string
+	 */
+	public function get_ticket_list_markup( $tickets = array() ) {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'list' )" );
+
+		return tribe( 'tickets.admin.views' )->template( 'list', array( 'tickets' => $tickets ), false );
+	}
+
+	/**
 	 * Whether the ticket handler should render the title in the attendees report.
 	 *
 	 * @deprecated TBD
@@ -1218,6 +1108,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function should_render_title( $deprecated ) {
 		_deprecated_function( __METHOD__, 'TBD', 'add_filter( \'tribe_tickets_attendees_show_title\', \'_return_false\' );' );
+		return true;
 	}
 
 	/**
@@ -1229,6 +1120,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function get_post() {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::get_post' );
+		return tribe( 'tickets.attendees' )->get_post();
 	}
 
 	/**
@@ -1239,6 +1131,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function print_checkedin_totals() {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::print_checkedin_totals' );
+		tribe( 'tickets.attendees' )->print_checkedin_totals();
 	}
 
 	/**
@@ -1252,6 +1145,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function get_attendee_report_link( $post ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::get_report_link' );
+		return tribe( 'tickets.attendees' )->get_report_link( $post );
 	}
 
 	/**
@@ -1265,6 +1159,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_row_action( $actions ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::filter_admin_row_actions' );
+		return tribe( 'tickets.attendees' )->filter_admin_row_actions( $actions );
 	}
 
 	/**
@@ -1272,6 +1167,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_page_register() {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::register_page' );
+		tribe( 'tickets.attendees' )->register_page();
 	}
 
 	/**
@@ -1283,6 +1179,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_page_load_css_js( $hook ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::enqueue_assets' );
+		tribe( 'tickets.attendees' )->enqueue_assets( $hook );
 	}
 
 	/**
@@ -1294,6 +1191,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_page_load_pointers( $hook ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::load_pointers' );
+		tribe( 'tickets.attendees' )->load_pointers( $hook );
 	}
 
 	/**
@@ -1304,6 +1202,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_page_screen_setup() {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::screen_setup' );
+		tribe( 'tickets.attendees' )->screen_setup();
 	}
 
 	/**
@@ -1311,6 +1210,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_admin_body_class( $body_classes ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::filter_admin_body_class' );
+		tribe( 'tickets.attendees' )->filter_admin_body_class( $body_classes );
 	}
 
 	/**
@@ -1326,6 +1226,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_admin_title( $admin_title, $unused_title ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::filter_admin_title' );
+		tribe( 'tickets.attendees' )->filter_admin_title( $admin_title, $unused_title );
 	}
 
 	/**
@@ -1335,6 +1236,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function attendees_page_inside() {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::render' );
+		tribe( 'tickets.attendees' )->render();
 	}
 
 	/**
@@ -1349,6 +1251,8 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	private function generate_filtered_attendees_list( $event_id ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::generate_filtered_list' );
+
+		tribe( 'tickets.attendees' )->generate_filtered_list( $event_id );
 	}
 
 	/**
@@ -1359,6 +1263,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function maybe_generate_attendees_csv() {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::maybe_generate_csv' );
+		tribe( 'tickets.attendees' )->maybe_generate_csv();
 	}
 
 	/**
@@ -1368,6 +1273,27 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function send_attendee_mail_list() {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::send_mail_list' );
+		tribe( 'tickets.attendees' )->send_mail_list();
+	}
+
+	/**
+	 * Injects event post type
+	 *
+	 * @deprecated TBD
+	 */
+	public function event_details_top() {
+		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::event_details_top' );
+		tribe( 'tickets.attendees' )->event_details_top();
+	}
+
+	/**
+	 * Injects action links into the attendee screen.
+	 *
+	 * @deprecated TBD
+	 */
+	public function event_action_links() {
+		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::event_action_links' );
+		tribe( 'tickets.attendees' )->event_action_links();
 	}
 
 	/**

@@ -1,5 +1,5 @@
 <?php
-$header_id = get_post_meta( $post_id, $this->image_header_field, true );
+$header_id = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_image_header, true );
 $header_id = ! empty( $header_id ) ? $header_id : '';
 $header_img = '';
 $header_filename = '';

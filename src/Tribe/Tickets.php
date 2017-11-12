@@ -797,7 +797,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 			$post_id = absint( $_POST['post_ID'] );
 
-			$html = tribe( 'tickets.handler' )->get_settings_panel( $post_id );
+			$html = tribe( 'tickets.admin.views' )->template( 'settings_admin_panel', array( 'post_id' => $post_id ), false );
 
 			/**
 			 * Allows filtering the data by other plugins/ecommerce solutions
@@ -1133,8 +1133,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			ob_end_clean();
 
 			$return['advanced_fields'] = $extra;
-
-			$return['history'] = tribe( 'tickets.handler' )->get_history_content( $post_id, $ticket->ID );
+			$return['history'] = tribe( 'tickets.admin.views' )->template( 'tickets-history', array( 'post_id' => $post_id, 'ticket' => $ticket->ID ), false );
 
 			/**
 			 * Allows for the insertion of the attendee meta fields into the ticket admin form

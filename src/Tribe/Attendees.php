@@ -32,9 +32,14 @@ class Tribe__Tickets__Attendees {
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
+		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
+		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 
-		add_filter( 'post_row_actions', array( $this, 'admin_row_actions' ) );
-		add_filter( 'page_row_actions', array( $this, 'admin_row_actions' ) );
+		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
+		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
+
+		add_filter( 'post_row_actions', array( $this, 'filter_admin_row_actions' ) );
+		add_filter( 'page_row_actions', array( $this, 'filter_admin_row_actions' ) );
 	}
 
 	/**
@@ -58,6 +63,53 @@ class Tribe__Tickets__Attendees {
 	public function get_post() {
 		return $this->attendees_table->event;
 	}
+
+	/**
+	 * Injects event post type
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id
+	 */
+	public function event_details_top( $event_id ) {
+		$pto = get_post_type_object( get_post_type( $event_id ) );
+
+		echo '
+			<li class="post-type">
+				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
+				' . esc_html( $pto->label ) . '
+			</li>
+		';
+	}
+
+	/**
+	 * Injects action links into the attendee screen.
+	 *
+	 * @since TBD
+	 *
+	 * @param $event_id
+	 */
+	public function event_action_links( $event_id ) {
+		$action_links = array(
+			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+		);
+
+		/**
+		 * Provides an opportunity to add and remove action links from the
+		 * attendee screen summary box.
+		 *
+		 * @param array $action_links
+		 */
+		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links );
+
+		if ( empty( $action_links ) ) {
+			return;
+		}
+
+		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
+	}
+
 
 	/**
 	 * Print Check In Totals at top of Column

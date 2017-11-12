@@ -44,7 +44,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		 */
 		do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
 
-		$this->ticket_list_markup( $post_id, $tickets );
+		tribe( 'tickets.admin.views' )->template( 'list', array( 'tickets' => $tickets ) );
 
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing

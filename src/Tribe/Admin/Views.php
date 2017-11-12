@@ -42,12 +42,13 @@ class Tribe__Tickets__Admin__Views {
 	 *
 	 * @param  string $name    Which template we are dealing with
 	 * @param  array  $context Context to e Extracted (some views depende on variables)
+	 * @param  bool   $echo    Show print the tempalte or just return it
 	 *
 	 * @return string
 	 */
-	public function template( $name, $context = array() ) {
+	public function template( $name, $context = array(), $echo = true ) {
 		$base = trailingslashit( Tribe__Tickets__Main::instance()->plugin_path ) . 'src/admin-views';
-		$base = (array) explode( '/', $name );
+		$base = (array) explode( '/', $base );
 
 		// If name is String make it an Array
 		if ( is_string( $name ) ) {
