@@ -123,8 +123,10 @@ $start_date_errors = array(
 			</section>
 
 			<div class="accordion">
-				<?php require_once( 'tickets-advanced.php' ); ?>
-				<?php require_once( 'tickets-history.php' ); ?>
+				<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'fieldset', 'advanced' ), get_defined_vars() ); ?>
+
+				<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'fieldset', 'history' ), get_defined_vars() ); ?>
+
 				<?php
 				/**
 				 * Allows for the insertion of additional content sections into the ticket edit form accordion

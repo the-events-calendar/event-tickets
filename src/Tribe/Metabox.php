@@ -77,7 +77,7 @@ class Tribe__Tickets__Metabox {
 		$tickets           = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
 		$global_stock      = new Tribe__Tickets__Global_Stock( $post->ID );
 
-		return tribe( 'tickets.admin.views' )->template( 'meta-box', get_defined_vars() );
+		return tribe( 'tickets.admin.views' )->template( array( 'editor', 'metabox' ), get_defined_vars() );
 	}
 
 	/**

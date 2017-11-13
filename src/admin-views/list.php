@@ -56,7 +56,7 @@
 			<?php
 			if ( ! empty( $tickets ) ) {
 				foreach ( $tickets as $ticket ) {
-					tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ), array( 'ticket' => $ticket ) );
+					tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
 				}
 			}
 			?>
@@ -66,7 +66,7 @@
 			<?php
 			if ( ! empty( $rsvp ) ) {
 				foreach ( $rsvp as $ticket ) {
-					tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ), array( 'ticket' => $ticket ) );
+					tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
 				}
 			}
 			?>

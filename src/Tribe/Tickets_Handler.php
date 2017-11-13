@@ -1028,7 +1028,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function render_ticket_row( $ticket ) {
 		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ) )" );
-		tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ), array( 'ticket' => $ticket ) );
+		tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
 	}
 
 	/**

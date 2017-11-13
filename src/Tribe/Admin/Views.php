@@ -72,11 +72,21 @@ class Tribe__Tickets__Admin__Views {
 
 		// Only do this if really needed (by default it wont)
 		if ( ! empty( $context ) ) {
+			// Prevents Breaking
+			if ( isset( $context['file'] ) ) {
+				unset( $context['file'] );
+			}
+
+			// Prevents Breaking
+			if ( isset( $context['echo'] ) ) {
+				unset( $context['echo'] );
+			}
+
 			// Make any provided variables available in the template variable scope
 			extract( $context ); // @codingStandardsIgnoreLine
 		}
 
-		include $file;
+		require_once $file;
 
 		$html = ob_get_clean();
 

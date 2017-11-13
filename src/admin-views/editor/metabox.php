@@ -19,16 +19,12 @@ $attendees_url = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_
 </div>
 
 <div id="event_tickets" class="eventtable" aria-live="polite">
-	<?php
-	wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' );
+	<?php wp_nonce_field( 'tribe-tickets-meta-box', 'tribe-tickets-post-settings' ); ?>
 
-	// the main panel
-	require_once( 'base_admin_panel.php' );
+	<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'panel', 'list' ), get_defined_vars() ); ?>
 
-	// the add/edit panel
-	require_once( 'edit_admin_panel.php' );
+	<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'panel', 'ticket' ), get_defined_vars() ); ?>
 
-	// the settings panel
-	require_once( 'settings_admin_panel.php' );
-	?>
+	<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'panel', 'settings' ), get_defined_vars() ); ?>
+
 </div>
