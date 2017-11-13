@@ -978,6 +978,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *  Deprecated Methods  *
 	 *                      *
 	 ************************/
+	// @codingStandardsIgnoreStart
 
 	/**
 	 * Slug of the admin page for attendees
@@ -1316,4 +1317,6 @@ class Tribe__Tickets__Tickets_Handler {
 	public function user_can( $generic_cap, $event_id ) {
 		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::user_can' );
 	}
+
+	// @codingStandardsIgnoreEnd
 }

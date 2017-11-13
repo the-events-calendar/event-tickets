@@ -73,7 +73,7 @@ class Tribe__Tickets__Admin__Views {
 		// Only do this if really needed (by default it wont)
 		if ( ! empty( $context ) ) {
 			// Make any provided variables available in the template variable scope
-			extract( $context );
+			extract( $context ); // @codingStandardsIgnoreLine
 		}
 
 		include $file;
