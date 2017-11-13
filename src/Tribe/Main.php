@@ -322,7 +322,6 @@ class Tribe__Tickets__Main {
 	 */
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ) );
-		add_action( 'add_meta_boxes', array( 'Tribe__Tickets__Metabox', 'maybe_add_meta_box' ) );
 		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
 
 		// Setup Help Tab texting

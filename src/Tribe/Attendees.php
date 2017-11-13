@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @var Tribe__Tickets__Attendees_Table
 	 */
-	private $attendees_table;
+	public $attendees_table;
 
 	/**
 	 * Hooks all the required actions and filters in WordPress
@@ -308,7 +308,16 @@ class Tribe__Tickets__Attendees {
 		 */
 		static $has_run = false;
 
-		if ( $has_run || ( is_admin() && ( empty( $_GET['page'] ) || $this->slug() !== $_GET['page'] ) ) ) {
+		$page = tribe_get_request_var( 'page', false );
+		$action = tribe_get_request_var( 'action', false );
+
+		/// Prevents from running twice
+		if ( $has_run ) {
+			return;
+		}
+
+		// When on the admin and not on the correct page bail
+		if ( is_admin() && $this->slug() !== $page ) {
 			return;
 		}
 
@@ -326,7 +335,8 @@ class Tribe__Tickets__Attendees {
 			$GLOBALS['current_screen'] = WP_Screen::get( $this->page_id );
 		}
 
-		if ( ! empty( $_GET['action'] ) && in_array( $_GET['action'], array( 'email' ) ) ) {
+
+		if ( 'email' === $action ) {
 			define( 'IFRAME_REQUEST', true );
 
 			// Use iFrame Header -- WP Method
@@ -339,8 +349,7 @@ class Tribe__Tickets__Attendees {
 				$status = false;
 			}
 
-			$which_tmpl = sanitize_file_name( $_GET['action'] );
-			include $main->plugin_path . 'src/admin-views/attendees-' . $which_tmpl . '.php';
+			tribe( 'tickets.admin.views' )->template( 'attendees-email' );
 
 			// Use iFrame Footer -- WP Method
 			iframe_footer();
@@ -400,7 +409,7 @@ class Tribe__Tickets__Attendees {
 		 */
 		do_action( 'tribe_tickets_attendees_page_inside', $this );
 
-		include $this->path . 'src/admin-views/attendees.php';
+		tribe( 'tickets.admin.views' )->template( 'attendees' );
 	}
 
 	/**

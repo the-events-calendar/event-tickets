@@ -3,7 +3,12 @@ $total_tickets   = tribe( 'tickets.handler' )->get_total_event_capacity( $post_i
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 ?>
-<div id="tribe_panel_base" class="ticket_panel panel_base" aria-hidden="false" data-save-prompt="<?php echo esc_attr( __( 'You have unsaved changes to your tickets. Discard those changes?', 'event-tickets' ) ); ?>">
+<div
+	id="tribe_panel_base"
+	class="ticket_panel panel_base"
+	aria-hidden="false"
+	data-save-prompt="<?php echo esc_attr( __( 'You have unsaved changes to your tickets. Discard those changes?', 'event-tickets' ) ); ?>"
+>
 	<div class="<?php echo esc_attr( $container_class ); ?>">
 		<?php if ( ! empty( $total_tickets ) ) : ?>
 			<div class="ticket_table_intro">

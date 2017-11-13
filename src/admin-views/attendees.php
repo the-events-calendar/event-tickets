@@ -1,8 +1,8 @@
 <?php
-$this->attendees_table->prepare_items();
+tribe( 'tickets.attendees' )->attendees_table->prepare_items();
 
-$event_id = $this->attendees_table->event->ID;
-$event = $this->attendees_table->event;
+$event_id = tribe( 'tickets.attendees' )->attendees_table->event->ID;
+$event = tribe( 'tickets.attendees' )->attendees_table->event;
 $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 
 /**
@@ -13,7 +13,7 @@ $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
  * @param  boolean                          $show_title
  * @param  Tribe__Tickets__Tickets_Handler  $handler
  */
-$show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $this );
+$show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, tribe( 'tickets.attendees' ) );
 ?>
 
 <div class="wrap tribe-attendees-page">
@@ -120,6 +120,6 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, $this )
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'page' : 'tribe[page]' ); ?>" value="<?php echo esc_attr( isset( $_GET['page'] ) ? $_GET['page'] : '' ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'event_id' : 'tribe[event_id]' ); ?>" id="event_id" value="<?php echo esc_attr( $event_id ); ?>" />
 		<input type="hidden" name="<?php echo esc_attr( is_admin() ? 'post_type' : 'tribe[post_type]' ); ?>" value="<?php echo esc_attr( $event->post_type ); ?>" />
-		<?php $this->attendees_table->display(); ?>
+		<?php tribe( 'tickets.attendees' )->attendees_table->display(); ?>
 	</form>
 </div>

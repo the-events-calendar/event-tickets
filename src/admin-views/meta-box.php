@@ -11,8 +11,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 $post_id = get_the_ID();
 
-$modules = Tribe__Tickets__Tickets::modules();
-
 $attendees_url = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
 ?>
 

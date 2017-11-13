@@ -815,46 +815,6 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Includes the tickets metabox inside the Event edit screen
-	 *
-	 * @param WP_Post $post
-	 */
-	public function do_meta_box( $post ) {
-		$start_date = date( 'Y-m-d H:00:00' );
-		$end_date   = date( 'Y-m-d H:00:00' );
-		$start_time = Tribe__Date_Utils::time_only( $start_date, false );
-		$end_time   = Tribe__Date_Utils::time_only( $start_date, false );
-
-		$show_global_stock = Tribe__Tickets__Tickets::global_stock_available();
-		$tickets           = Tribe__Tickets__Tickets::get_event_tickets( $post->ID );
-		$global_stock      = new Tribe__Tickets__Global_Stock( $post->ID );
-
-		$context = array(
-			'post' => $post,
-			'start_date' => $start_date,
-			'end_date' => $end_date,
-			'start_time' => $start_time,
-			'end_time' => $end_time,
-			'show_global_stock' => $show_global_stock,
-			'tickets' => $tickets,
-			'global_stock' => $global_stock,
-		);
-
-		return tribe( 'tickets.admin.views' )->template( 'meta-box', $context );
-	}
-
-	/**
-	 * Returns the attachment ID for the header image for a event.
-	 *
-	 * @param $event_id
-	 *
-	 * @return mixed
-	 */
-	public function get_header_image_id( $event_id ) {
-		return get_post_meta( $event_id, $this->key_image_header, true );
-	}
-
-	/**
 	 * Save or delete the image header for tickets on an event
 	 *
 	 * @param int $post_id
@@ -1027,6 +987,34 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @var string
 	 */
 	public static $attendees_slug = 'tickets-attendees';
+
+	/**
+	 * Includes the tickets metabox inside the Event edit screen
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param  WP_Post $post
+	 *
+	 * @return string
+	 */
+	public function do_meta_box( $post ) {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.metabox' )->render( \$post )" );
+		return tribe( 'tickets.metabox' )->render( $post );
+	}
+
+	/**
+	 * Returns the attachment ID for the header image for a event.
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param $event_id
+	 *
+	 * @return mixed
+	 */
+	public function get_header_image_id( $event_id ) {
+		_deprecated_function( __METHOD__, 'TBD', "get_post_meta( \$event_id, tribe( 'tickets.handler' )->key_image_header, true );" );
+		return get_post_meta( $event_id, tribe( 'tickets.handler' )->key_image_header, true );
+	}
 
 	/**
 	 * Render the ticket row into the ticket table
