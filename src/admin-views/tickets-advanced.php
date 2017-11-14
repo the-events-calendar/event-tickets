@@ -81,7 +81,7 @@
 				data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 				data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 				value=""
-				aria-label="aria-label="<?php esc_html_e( 'Ticket end date', 'event-tickets' ); ?>""
+				aria-label="<?php esc_html_e( 'Ticket end date', 'event-tickets' ); ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 			<span
