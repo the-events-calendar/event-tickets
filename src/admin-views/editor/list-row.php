@@ -9,7 +9,7 @@ $needs_warning = false;
 $mode          = $ticket->global_stock_mode();
 $event         = $ticket->get_event();
 
-// If we don't have an event we should even continue
+// If we don't have an event we should't even continue
 if ( ! $event ) {
 	return;
 }

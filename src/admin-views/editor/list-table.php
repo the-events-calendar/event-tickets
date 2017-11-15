@@ -7,7 +7,7 @@ if ( ! $post_id ) {
 	$post_id = tribe_get_request_var( 'post_id', 0 );
 }
 
-// Makes sure we are dealing int
+// Makes sure we are dealing an int
 $post_id = (int) $post_id;
 
 if ( 0 === $post_id ) {

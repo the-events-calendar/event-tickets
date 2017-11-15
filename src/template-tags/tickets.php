@@ -716,15 +716,15 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
  * @return int|false
  */
 function tribe_tickets_update_capacity( $object, $capacity ) {
+	if ( ! is_numeric( $capacity ) ) {
+		return false;
+	}
+
 	if ( ! $object instanceof WP_Post ) {
 		$object = get_post( $object );
 	}
 
 	if ( ! $object instanceof WP_Post ) {
-		return false;
-	}
-
-	if ( ! is_numeric( $capacity ) ) {
 		return false;
 	}
 
