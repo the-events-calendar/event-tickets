@@ -975,7 +975,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
 		}
 
-		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
+		tribe_tickets_update_capacity( $ticket, $data['capacity'] );
 
 		if ( ! empty( $raw_data['ticket_start_date'] ) ) {
 			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );

@@ -294,7 +294,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $query->posts;
 		}
 
-
 		/**
 		 * Returns the html for the delete ticket link
 		 *
@@ -669,26 +668,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since 4.6
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
-			add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
-			add_filter( 'wp_ajax_tribe-events-edit-global-capacity', array( $this, 'edit_global_capacity_level' ) );
-			add_action( 'wp_ajax_tribe-ticket-refresh-panels', array( $this, 'ajax_refresh_panels' ) );
-			add_action( 'wp_ajax_tribe-ticket-refresh-settings', array( $this, 'ajax_refresh_settings' ) );
-
-			/**
-			 * @deprecated 4.5.7 `tribe_events_tickets_modules` should no longer be used and direct
-			 *             calls to Tribe__Tickets__Tickets::modules() are now preferred
-			 *
-			 * @todo remove in 4.6. This only exists because version =<4.5.10 of TEC runs apply_filter()
-			 *       instead of calling this method directly.
-			 */
-			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
-
-			// Admin AJAX actions for each provider
-			add_action( 'wp_ajax_tribe-ticket-add-' . $this->class_name, array( $this, 'ajax_handler_ticket_add' ) );
-			add_action( 'wp_ajax_tribe-ticket-delete-' . $this->class_name, array( $this, 'ajax_handler_ticket_delete' ) );
-			add_action( 'wp_ajax_tribe-ticket-edit-' . $this->class_name, array( $this, 'ajax_handler_ticket_edit' ) );
-			add_action( 'wp_ajax_tribe-ticket-checkin-' . $this->class_name, array( $this, 'ajax_handler_attendee_checkin' ) );
-			add_action( 'wp_ajax_tribe-ticket-uncheckin-' . $this->class_name, array( $this, 'ajax_handler_attendee_uncheckin' ) );
 
 			// Front end
 			$ticket_form_hook = $this->get_ticket_form_hook();
@@ -704,480 +683,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Ensure ticket prices and event costs are linked
 			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
 		}
-
-
-		/**
-		 * test if the nonce is correct and the current user has the correct permissions
-		 * @param  WP_Post  $post
-		 * @param  array  $data
-		 * @param  string  $nonce_action
-		 * @return boolean
-		 */
-		public function has_permission( $post, $data, $nonce_action ) {
-			if ( ! $post instanceof WP_Post ) {
-				if ( ! is_numeric( $post ) ) {
-					return false;
-				}
-
-				$post = get_post( $post );
-			}
-
-			return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
-		}
-
-		/* AJAX Handlers */
-
-		/**
-		 * Refreshes panels after ajax calls that change data
-		 *
-		 * @since 4.6
-		 *
-		 * @return string html content of the panels
-		 */
-		public function ajax_refresh_panels() {
-			// Didn't get a post id to work with - bail
-			if ( empty( $_POST['post_ID'] ) ) {
-				return;
-			}
-			$post_id = $_POST['post_ID'];
-
-			// Saves the new order
-			tribe( 'tickets.handler' )->save_order( $post_id, Tribe__Utils__Array::get( $_POST, array( 'tribe-tickets' ), null ) );
-
-			// Let's create tickets list markup to return
-			$tickets = $this->get_event_tickets( $post_id );
-
-			$notice_type  = ! empty( $_POST['notice'] ) ? $_POST['notice'] : '';
-			$ticket_table = '';
-
-			switch ( $notice_type ) {
-				case 'settings' :
-					$ticket_table .= $this->notice( esc_html__( 'Your settings have been saved.', 'event-tickets' ) );
-					break;
-				case 'ticket':
-					$ticket_table .= $this->notice( esc_html__( 'Your ticket has been saved.', 'event-tickets' ) );
-					break;
-				case 'delete':
-					$ticket_table .= $this->notice( esc_html__( 'Your ticket has been deleted.', 'event-tickets' ) );
-					break;
-				default:
-					// Don't add a notice if we didn't get a notice type
-			}
-
-			$ticket_table .= tribe( 'tickets.handler' )->get_ticket_list_markup( $tickets );
-
-			$return['ticket_table'] = $ticket_table;
-
-			/**
-			 * Allows filtering the data by other plugins/ecommerce solutions©
-			 *
-			 * @since 4.6
-			 *
-			 * @param array the return data
-			 * @param int the post/event id
-			 */
-			$return = apply_filters( 'tribe_tickets_ajax_refresh_tables', $return, $post_id );
-
-			$this->ajax_ok( $return );
-		}
-
-		/**
-		 * Refreshes panel settings after canceling saving
-		 *
-		 * @since 4.6
-		 *
-		 * @return string html content of the panel settings
-		 */
-		public function ajax_refresh_settings() {
-			$return = array();
-
-			// Didn't get a post id to work with - bail
-			if ( empty( $_POST['post_ID'] ) ) {
-				$this->ajax_error( __( 'No Post ID was provided.', 'event-tickets' ) );
-			}
-			$post_id = absint( $_POST['post_ID'] );
-
-			$html = tribe( 'tickets.admin.views' )->template( 'settings_admin_panel', array( 'post_id' => $post_id ), false );
-
-			/**
-			 * Allows filtering the data by other plugins/ecommerce solutions
-			 *
-			 * @since 4.6
-			 *
-			 * @param array the return data
-			 * @param int the post/event id
-			 */
-			$return['settings_panel'] = apply_filters( 'tribe_tickets_ajax_refresh_settings', $html, $post_id );
-
-			$this->ajax_ok( $return );
-		}
-
-		/**
-		 * Sanitizes the data for the new/edit ticket ajax call,
-		 * and calls the child save_ticket function.
-		 */
-		final public function ajax_handler_ticket_add() {
-			if ( ! isset( $_POST['formdata'] ) || ! isset( $_POST['post_ID'] ) ) {
-				$this->ajax_error( 'Bad post' );
-			}
-
-			/**
-			 * This is needed because a provider can implement a dynamic set of fields.
-			 * Each provider is responsible for sanitizing these values.
-			 */
-			$data = wp_parse_args( $_POST['formdata'] );
-
-			$post_id = $_POST['post_ID'];
-
-			if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
-				$this->ajax_error( "Cheatin' huh?" );
-			}
-
-			if ( ! isset( $data['ticket_provider'] ) || ! $this->module_is_valid( $data['ticket_provider'] ) ) {
-				$this->ajax_error( 'Bad module' );
-			}
-
-			$ticket_id = $this->ticket_add( $post_id, $data );
-
-			// Successful?
-			if ( $ticket_id ) {
-				/**
-				 * Fire action when a ticket has been added
-				 *
-				 * @param int $post_id ID of parent "event" post
-				 */
-				do_action( 'tribe_tickets_ticket_added', $post_id );
-			} else {
-				$this->ajax_error( __( 'Failed to Add the Ticket', 'event-tickets' ) );
-			}
-
-			$ticket = $this->get_ticket( $post_id, $ticket_id );
-
-			$data['ticket_stock'] = $ticket->stock();
-			$data['ticket_capacity'] = $ticket->capacity();
-
-			$return = array(
-				'data' => json_encode( (object) $data ),
-			);
-
-			/**
-			 * Filters the return data for ticket add
-			 *
-			 * @param array $return Array of data to return to the ajax call
-			 * @param int $post_id ID of parent "event" post
-			 */
-			$return = apply_filters( 'event_tickets_ajax_ticket_add_data', $return, $post_id );
-
-			$this->ajax_ok( $return );
-		}
-
-		/**
-		 * Creates a ticket object and calls the child save_ticket function
-		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param array $data Raw post data
-		 * @return boolean
-		 */
-		final public function ticket_add( $post_id, $data ) {
-			$ticket                   = new Tribe__Tickets__Ticket_Object();
-			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
-			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
-			$ticket->description      = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
-			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
-			$ticket->purchase_limit   = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit'] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
-			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
-			$ticket->provider_class   = $this->class_name;
-			$ticket->start_date       = null;
-			$ticket->end_date         = null;
-
-			tribe( 'tickets.handler' )->toggle_manual_update_flag( true );
-
-			if ( ! empty( $ticket->price ) ) {
-				// remove non-money characters
-				$ticket->price = preg_replace( '/[^0-9\.\,]/Uis', '', $ticket->price );
-			}
-
-			if ( ! empty( $data['ticket_start_date'] ) ) {
-				$start_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_start_date'] );
-
-				if ( ! empty( $data['ticket_start_time'] ) ) {
-					$start_datetime .= ' ' . $data['ticket_start_time'];
-				}
-
-				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_datetime ) );
-			}
-
-			if ( ! empty( $data['ticket_end_date'] ) ) {
-				$end_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_end_date'] );
-
-				if ( ! empty( $data['ticket_end_time'] ) ) {
-					$end_datetime .= ' ' . $data['ticket_end_time'];
-				}
-
-				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
-			}
-
-			/**
-			 * Fired once a ticket has been created and added to a post
-			 *
-			 * @param int $post_id ID of parent "event" post
-			 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object
-			 * @param array $data Submitted post data
-			 */
-			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
-
-			// Pass the control to the child object
-			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
-
-			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
-
-			$post = get_post( $post_id );
-			if ( empty( $data['ticket_start_date'] ) ) {
-				// 30 min
-				$round = 30;
-				if ( class_exists( 'Tribe__Events__Main' ) ) {
-					$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
-				}
-				// Convert to seconds
-				$round *= MINUTE_IN_SECONDS;
-
-				$date = strtotime( $post->post_date );
-				$date = round( $date / $round ) * $round;
-				$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
-
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $date );
-			}
-
-			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
-				$event_end = get_post_meta( $post_id, '_EventEndDate', true );
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $event_end );
-			}
-
-			tribe( 'tickets.version' )->update( $ticket->ID );
-
-			return $save_ticket;
-		}
-
-		/**
-		 * Handles the check-in ajax call, and calls the checkin method.
-		 *
-		 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
-		 *       we should consider revising in a back-compat minded way
-		 */
-		final public function ajax_handler_attendee_checkin() {
-
-			if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
-				$this->ajax_error( 'Bad post' );
-			}
-
-			if ( ! isset( $_POST['provider'] ) || ! $this->module_is_valid( $_POST['provider'] ) ) {
-				$this->ajax_error( 'Bad module' );
-			}
-
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
-				$this->ajax_error( "Cheatin' huh?" );
-			}
-
-			$order_id = $_POST['order_ID'];
-
-			// Pass the control to the child object
-			$did_checkin = $this->checkin( $order_id );
-
-			$this->maybe_update_attendees_cache( $did_checkin );
-
-			$this->ajax_ok( $did_checkin );
-		}
-
-		/**
-		 * Handles the check-in ajax call, and calls the uncheckin method.
-		 *
-		 * @TODO use of 'order_id' in this method is misleading (we're working with the attendee id)
-		 *       we should consider revising in a back-compat minded way
-		 */
-		final public function ajax_handler_attendee_uncheckin() {
-
-			if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
-				$this->ajax_error( 'Bad post' );
-			}
-
-			if ( ! isset( $_POST['provider'] ) || ! $this->module_is_valid( $_POST['provider'] ) ) {
-				$this->ajax_error( 'Bad module' );
-			}
-
-			if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
-				$this->ajax_error( "Cheatin' huh?" );
-			}
-
-			$order_id = $_POST['order_ID'];
-
-			// Pass the control to the child object
-			$did_uncheckin = $this->uncheckin( $order_id );
-
-			if ( class_exists( 'Tribe__Events__Main' ) ) {
-				$this->maybe_update_attendees_cache( $did_uncheckin );
-			}
-
-			$this->ajax_ok( $did_uncheckin );
-		}
-
-		/**
-		 * Sanitizes the data for the delete ticket ajax call, and calls the child delete_ticket
-		 * function.
-		 *
-		 * @TODO use of 'order_id' in this method is misleading (we're working with the attendee id)
-		 *       we should consider revising in a back-compat minded way
-		 */
-		final public function ajax_handler_ticket_delete() {
-
-			if ( ! isset( $_POST['post_ID'] ) ) {
-				$this->ajax_error( 'Bad post' );
-			}
-
-			if ( ! isset( $_POST['ticket_id'] ) ) {
-				$this->ajax_error( 'Bad post' );
-			}
-
-			$post_id = $_POST['post_ID'];
-
-			if ( ! $this->has_permission( $post_id, $_POST, 'remove_ticket_nonce' ) ) {
-				$this->ajax_error( "Cheatin' huh?" );
-			}
-
-			$ticket_id = $_POST['ticket_id'];
-
-			// Pass the control to the child object
-			$return = $this->delete_ticket( $post_id, $ticket_id );
-
-			// Successfully deleted?
-			if ( $return ) {
-				// Let's create a tickets list markup to return
-				$tickets = $this->get_event_tickets( $post_id );
-				$return  = tribe( 'tickets.handler' )->get_ticket_list_markup( $tickets );
-
-				$return = $this->notice( esc_html__( 'Your ticket has been deleted.', 'event-tickets' ) ) . $return;
-
-				/**
-				 * Fire action when a ticket has been deleted
-				 *
-				 * @param int $post_id ID of parent "event" post
-				 */
-				do_action( 'tribe_tickets_ticket_deleted', $post_id );
-			}
-
-			$this->ajax_ok( $return );
-		}
-
-		/**
-		 * Returns the data from a single ticket to populate
-		 * the edit form.
-		 *
-		 * @return array $return array of ticket data
-		 */
-		final public function ajax_handler_ticket_edit() {
-
-			if ( ! isset( $_POST['post_ID'] ) ) {
-				$this->ajax_error( 'Bad post' );
-			}
-
-			if ( ! isset( $_POST['ticket_id'] ) ) {
-				$this->ajax_error( 'Bad post' );
-			}
-
-			$post_id = $_POST['post_ID'];
-
-			if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
-				$this->ajax_error( "Cheatin' huh?" );
-			}
-
-			$ticket_id = $_POST['ticket_id'];
-			$ticket = $this->get_ticket( $post_id, $ticket_id );
-
-			$return = get_object_vars( $ticket );
-			$return['post_id'] = $post_id;
-			/**
-			 * Allow for the prevention of updating ticket price on update.
-			 *
-			 * @param boolean
-			 * @param WP_Post
-			 */
-			$can_update_price = apply_filters( 'tribe_tickets_can_update_ticket_price', true, $ticket );
-
-			$return['can_update_price'] = $can_update_price;
-
-			if ( ! $can_update_price ) {
-				/**
-				 * Filter the no-update message that is displayed when updating the price is disallowed
-				 *
-				 * @param string
-				 * @param WP_Post
-				 */
-				$return['disallow_update_price_message'] = apply_filters( 'tribe_tickets_disallow_update_ticket_price_message', esc_html__( 'Editing the ticket price is currently disallowed.', 'event-tickets' ), $ticket );
-			}
-
-			// Prevent HTML elements from being escaped
-			$return['name']        = html_entity_decode( $return['name'], ENT_QUOTES );
-			$return['name']        = htmlspecialchars_decode( $return['name'] );
-			$return['description'] = html_entity_decode( $return['description'], ENT_QUOTES );
-			$return['description'] = htmlspecialchars_decode( $return['description'] );
-
-			ob_start();
-			/**
-			 * Fired to allow for the insertion of extra form data in the ticket int admin form
-			 *
-			 * @param int $post_id ID of parent "event" post
-			 * @param int $ticket_id ID of ticket post
-			 */
-			do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, $ticket_id );
-
-			$extra = ob_get_contents();
-			ob_end_clean();
-
-			$return['advanced_fields'] = $extra;
-			$return['history'] = tribe( 'tickets.admin.views' )->template( 'tickets-history', array( 'post_id' => $post_id, 'ticket' => $ticket->ID ), false );
-
-			/**
-			 * Allows for the insertion of the attendee meta fields into the ticket admin form
-			 *
-			 * @since 4.6
-			 *
-			 * @param int $post_id ID of parent "event" post
-			 * @param int $ticket_id ID of ticket post
-			 */
-			$return['attendee_fields']   = apply_filters( 'tribe_events_tickets_metabox_edit_attendee', $post_id, $ticket_id );
-
-			$return['stock']             = $ticket->stock;
-			$return['capacity']          = $ticket->capacity;
-			$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
-			$return['global_stock_mode'] = $global_stock_mode;
-			$return['show_description']  = $ticket->show_description();
-
-			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-				$return['event_capacity'] = tribe_tickets_get_capacity( $post_id );
-			}
-
-			/**
-			 * Provides an opportunity for final adjustments to the data used to populate
-			 * the edit-ticket form.
-			 *
-			 * @param array $return data returned to the client
-			 * @param Tribe__Events__Tickets $ticket_object
-			 */
-			$return = (array) apply_filters( 'tribe_events_tickets_ajax_ticket_edit', $return, $this );
-			$this->ajax_ok( $return );
-		}
-
-		/**
-		 * Returns the markup for a notice in the admin
-		 *
-		 * @param string $msg Text for the notice
-		 * @return string Notice with markup
-		 */
-		protected function notice( $msg ) {
-			return sprintf( '<div class="wrap"><div class="updated"><p>%s</p></div></div>', $msg );
-		}
-
-
-		// end AJAX Handlers
 
 		// start Attendees
 
@@ -1355,16 +860,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns whether a class name is a valid active module/provider.
-		 *
-		 * @param string $module class name of module
-		 * @return bool
-		 */
-		private function module_is_valid( $module ) {
-			return array_key_exists( $module, self::modules() );
-		}
-
-		/**
 		 * Echos the class for the <tr> in the tickets list admin
 		 */
 		protected function tr_class() {
@@ -1427,63 +922,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			self::$frontend_ticket_data += $tickets;
-		}
-
-		/**
-		 * Check and set global capacity options for the "event" post
-		 *
-		 * @return object ajax success object
-		 */
-		public function edit_global_capacity_level() {
-			$capacity = tribe_get_request_var( 'capacity' );
-			$post_id  = tribe_get_request_var( 'post_ID' );
-
-			if ( empty( $post_id ) ) {
-				return $this->ajax_error( __( 'Missing required post ID.', 'event-tickets' ) );
-			}
-
-			if ( empty( $capacity ) ) {
-				return $this->ajax_error( __( 'Missing required capacity.', 'event-tickets' ) );
-			}
-
-			if ( ! is_numeric( $capacity ) ) {
-				if ( 'unlimited' !== strtolower( trim( $capacity ) ) ) {
-					return $this->ajax_error( __( 'Bad capacity data.', 'event-tickets' ) );
-				}
-
-				$capacity = -1;
-			}
-
-			$event_global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-
-			$event_global_stock->enable();
-			$event_global_stock->set_stock_level( $capacity );
-
-			// Only update the Global Capacity of the Event in here or when the first Global Capacity happens
-			update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, $capacity );
-
-			$tickets = self::get_all_event_tickets( $post_id );
-			foreach ( $tickets as $ticket ) {
-				// When Global Capacity is higher than local ticket one's we bail
-				if ( $capacity >= $ticket->capacity  ) {
-					continue;
-				}
-
-				$mode = get_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-
-				// Skip any more that is not event managed
-				if (
-					Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE !== $mode
-					&& Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE !== $mode
-				) {
-					continue;
-				}
-
-				// Otherwise we update tickets required
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $capacity );
-			}
-
-			return $this->ajax_ok( sprintf( __( 'Global capacity updated. New level set to %n', 'event-tickets' ), $capacity ) );
 		}
 
 		/**
@@ -1673,48 +1111,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return $tickets;
-		}
-
-		/**
-		 * Sets an AJAX error, returns a JSON array and ends the execution.
-		 *
-		 * @param string $message
-		 */
-		final protected function ajax_error( $message = '' ) {
-			header( 'Content-type: application/json' );
-
-			echo json_encode(
-				array(
-					'success' => false,
-					'message' => $message,
-				)
-			);
-			exit;
-		}
-
-		/**
-		 * Sets an AJAX response, returns a JSON array and ends the execution.
-		 *
-		 * @param mixed $data
-		 */
-		final protected function ajax_ok( $data ) {
-			$return = array();
-			if ( is_object( $data ) ) {
-				$return = get_object_vars( $data );
-			} elseif ( is_array( $data ) || is_string( $data ) ) {
-				$return = $data;
-			} elseif ( is_bool( $data ) && ! $data ) {
-				$this->ajax_error( 'Something went wrong' );
-			}
-
-			header( 'Content-type: application/json' );
-			echo json_encode(
-				array(
-					'success' => true,
-					'data'    => $return,
-				)
-			);
-			exit;
 		}
 
 		/**
@@ -2373,5 +1769,140 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			return $ticket_form_hook;
 		}
+
+		/**
+		 * Creates a ticket object and calls the child save_ticket function
+		 *
+		 * @param int $post_id ID of parent "event" post
+		 * @param array $data Raw post data
+		 *
+		 * @return boolean
+		 */
+		public function ticket_add( $post_id, $data ) {
+			$ticket                   = new Tribe__Tickets__Ticket_Object();
+			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
+			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
+			$ticket->description      = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
+			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
+			$ticket->purchase_limit   = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit'] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
+			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
+			$ticket->provider_class   = $this->class_name;
+			$ticket->start_date       = null;
+			$ticket->end_date         = null;
+
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( true );
+
+			if ( ! empty( $ticket->price ) ) {
+				// remove non-money characters
+				$ticket->price = preg_replace( '/[^0-9\.\,]/Uis', '', $ticket->price );
+			}
+
+			if ( ! empty( $data['ticket_start_date'] ) ) {
+				$start_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_start_date'] );
+
+				if ( ! empty( $data['ticket_start_time'] ) ) {
+					$start_datetime .= ' ' . $data['ticket_start_time'];
+				}
+
+				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_datetime ) );
+			}
+
+			if ( ! empty( $data['ticket_end_date'] ) ) {
+				$end_datetime = Tribe__Date_Utils::maybe_format_from_datepicker( $data['ticket_end_date'] );
+
+				if ( ! empty( $data['ticket_end_time'] ) ) {
+					$end_datetime .= ' ' . $data['ticket_end_time'];
+				}
+
+				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
+			}
+
+			/**
+			 * Fired once a ticket has been created and added to a post
+			 *
+			 * @param int $post_id ID of parent "event" post
+			 * @param Tribe__Tickets__Ticket_Object $ticket Ticket object
+			 * @param array $data Submitted post data
+			 */
+			do_action( 'tribe_tickets_ticket_add', $post_id, $ticket, $data );
+
+			// Pass the control to the child object
+			$save_ticket = $this->save_ticket( $post_id, $ticket, $data );
+
+			tribe( 'tickets.handler' )->toggle_manual_update_flag( false );
+
+			$post = get_post( $post_id );
+			if ( empty( $data['ticket_start_date'] ) ) {
+				// 30 min
+				$round = 30;
+				if ( class_exists( 'Tribe__Events__Main' ) ) {
+					$round = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
+				}
+				// Convert to seconds
+				$round *= MINUTE_IN_SECONDS;
+
+				$date = strtotime( $post->post_date );
+				$date = round( $date / $round ) * $round;
+				$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
+
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $date );
+			}
+
+			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
+				$event_end = get_post_meta( $post_id, '_EventEndDate', true );
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_end_date, $event_end );
+			}
+
+			tribe( 'tickets.version' )->update( $ticket->ID );
+
+			return $save_ticket;
+		}
+
+
+		/************************
+		 *                      *
+		 *  Deprecated Methods  *
+		 *                      *
+		 ************************/
+		// @codingStandardsIgnoreStart
+
+		/**
+		 * Check and set global capacity options for the "event" post
+		 *
+		 * @deprecated TBD
+		 * @since  4.6
+		 *
+		 * @return object ajax success object
+		 */
+		public function edit_global_capacity_level() {
+			_deprecated_function( __METHOD__, 'TBD', 'tribe_tickets_update_capacity' );
+		}
+
+		/**
+		 * Sets an AJAX error, returns a JSON array and ends the execution.
+		 *
+		 * @deprecated TBD
+		 *
+		 * @param string $message
+		 */
+		final protected function ajax_error( $message = '' ) {
+			_deprecated_function( __METHOD__, 'TBD', 'wp_send_json_error()' );
+			wp_send_json_error( $message );
+		}
+
+		/**
+		 * Sets an AJAX response, returns a JSON array and ends the execution.
+		 *
+		 * @deprecated TBD
+		 *
+		 * @param mixed $data
+		 */
+		final protected function ajax_ok( $data ) {
+			_deprecated_function( __METHOD__, 'TBD', 'wp_send_json_success()' );
+			wp_send_json_success( $data );
+		}
+
+		// @codingStandardsIgnoreEnd
+
 	}
 }

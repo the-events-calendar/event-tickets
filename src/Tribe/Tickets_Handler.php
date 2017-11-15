@@ -88,8 +88,6 @@ class Tribe__Tickets__Tickets_Handler {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_order' ) );
 		}
 
-		add_action( 'wp_ajax_tribe-ticket-save-settings', array( $this, 'ajax_handler_save_settings' ) );
-
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
 		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
 
@@ -310,7 +308,10 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * On update of the Event Capacity we will update all shared capacity Stock to match
+	 * On the Update of a Object (Event, Page, Post...) we need to do some other actions:
+	 * - Object needs to have Shared Stock Enabled
+	 * - Object needs a Shared Stock level to be set
+	 * - Shared tickets have their capacity and stock updated
 	 *
 	 * @since  4.6
 	 *
@@ -319,7 +320,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @param  string  $meta_key        Which meta key we are fetching
 	 * @param  int     $event_capacity  To which value the event Capacity was update to
 	 *
-	 * @return int
+	 * @return boolean
 	 */
 	public function update_shared_tickets_capacity( $meta_id, $object_id, $meta_key, $event_capacity ) {
 		// Bail on non-capacity
@@ -334,14 +335,42 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
+		// We don't accept any non-numeric values here
+		if ( ! is_numeric( $event_capacity ) ) {
+			return false;
+		}
+
+		// Make sure we are updating the Shared Stock when we update it's capacity
+		$object_stock = new Tribe__Tickets__Global_Stock( $object_id );
+
+		// Make sure that we have stock enabled (backwards compatibility)
+		$object_stock->enable();
+
 		$completes = array();
+
+		// Get all Tickets
 		$tickets = $this->get_tickets_ids( $object_id );
 
 		foreach ( $tickets as $ticket ) {
 			$mode = get_post_meta( $ticket, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
-			if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE !== $mode ) {
+			// Skip any tickets that are not Shared
+			if (
+				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE !== $mode
+				&& Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE !== $mode
+			) {
 				continue;
+			}
+
+			$capacity = tribe_tickets_get_capacity( $ticket );
+
+			// When Global Capacity is higher than local ticket one's we bail
+			if (
+				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode
+				&& $event_capacity < $capacity
+			) {
+				// Otherwise we update tickets required
+				tribe_tickets_update_capacity( $ticket, $capacity );
 			}
 
 			$totals = $this->get_ticket_totals( $ticket );
@@ -351,10 +380,11 @@ class Tribe__Tickets__Tickets_Handler {
 			update_post_meta( $ticket, '_stock', $stock );
 		}
 
-		// Make sure we are updating the Global Stock when we update it's capacity
-		$shared_stock = new Tribe__Tickets__Global_Stock( $object_id );
-		$shared_stock_level = $event_capacity - array_sum( $completes );
-		$shared_stock->set_stock_level( $shared_stock_level );
+		// Setup the Stock level
+		$new_object_stock = $event_capacity - array_sum( $completes );
+		$object_stock->set_stock_level( $new_object_stock );
+
+		return true;
 	}
 
 	/**
@@ -815,6 +845,27 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Gets the Default mode in which tickets will be generated
+	 *
+	 * @since  TBD
+	 *
+	 * @return string
+	 */
+	public function get_default_capacity_mode() {
+		/**
+		 * Filter Default Ticket Capacity Type
+		 *
+		 * @since 4.6
+		 *
+		 * @param string 'global'
+		 *
+		 * @return string ('global','capped','own','')
+		 *
+		 */
+		return apply_filters( 'tribe_tickets_default_ticket_capacity_type', 'global' );
+	}
+
+	/**
 	 * Save or delete the image header for tickets on an event
 	 *
 	 * @param int $post_id
@@ -836,6 +887,62 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		return;
+	}
+
+	public function save_settings( $post, $data ) {
+		// don't do anything on autosave, auto-draft, or massupdates
+		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
+			return false;
+		}
+
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post );
+		}
+
+		// Bail on Invalid post
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		// If we didn't get any Ticket data we fetch from the $_POST
+		if ( is_null( $data ) ) {
+			$data = tribe_get_request_var( array( 'tribe-tickets', 'settings' ), null );
+		}
+
+		if ( empty( $data ) ) {
+			return false;
+		}
+
+		/**
+		 * Allow other plugins to hook into this to add settings
+		 *
+		 * @since 4.6
+		 *
+		 * @param array $data the array of parameters to filter
+		 */
+		do_action( 'tribe_events_save_tickets_settings', $data );
+
+		if ( isset( $data['event_capacity'] ) && is_numeric( $data['event_capacity'] ) ) {
+			tribe_tickets_update_capacity( $post, $data['event_capacity'] );
+		}
+
+		if ( ! empty( $data['header_image_id'] ) ) {
+			update_post_meta( $post->ID, $this->key_image_header, $data['header_image_id'] );
+		} else {
+			delete_post_meta( $post->ID, $this->key_image_header );
+		}
+
+		// We reversed this logic on the back end
+		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
+			update_post_meta( $post->ID, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, ! empty( $data['show_attendees'] ) );
+		}
+
+		// Change the default ticket provider
+		if ( ! empty( $data['default_provider'] ) ) {
+			update_post_meta( $post->ID, $this->key_provider_field, $data['default_provider'] );
+		} else {
+			delete_post_meta( $post->ID, $this->key_provider_field );
+		}
 	}
 
 	/**
@@ -865,7 +972,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// If we didn't get any Ticket data we fetch from the $_POST
 		if ( is_null( $tickets ) ) {
-			$tickets = Tribe__Utils__Array::get( $_POST, array( 'tribe-tickets' ), null );
+			$tickets = tribe_get_request_var( array( 'tribe-tickets', 'list' ), null );
 		}
 
 		if ( empty( $tickets ) ) {
@@ -925,46 +1032,6 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Saves the event ticket settings via ajax
-	 *
-	 * @since 4.6
-	 */
-	public function ajax_handler_save_settings() {
-		$params = array();
-		$id = absint( $_POST['post_ID'] );
-		$params = wp_parse_args( $_POST['formdata'], $params );
-
-		/**
-		 * Allow other plugins to hook into this to add settings
-		 *
-		 * @since 4.6
-		 *
-		 * @param array $params the array of parameters to filter
-		 */
-		do_action( 'tribe_events_save_tickets_settings', $params );
-
-		if ( ! empty( $params['tribe_ticket_header_image_id'] ) ) {
-			update_post_meta( $id, $this->key_image_header, $params['tribe_ticket_header_image_id'] );
-		} else {
-			delete_post_meta( $id, $this->key_image_header );
-		}
-
-		// We reversed this logic on the back end
-		if ( class_exists( 'Tribe__Tickets_Plus__Attendees_List' ) ) {
-			update_post_meta( $id, Tribe__Tickets_Plus__Attendees_List::HIDE_META_KEY, ! empty( $params['tribe_show_attendees'] ) );
-		}
-
-		// Change the default ticket provider
-		if ( ! empty( $params['default_ticket_provider'] ) ) {
-			update_post_meta( $id, $this->key_provider_field, $params['default_ticket_provider'] );
-		} else {
-			delete_post_meta( $id, $this->key_provider_field );
-		}
-
-		wp_send_json_success( $params );
-	}
-
-	/**
 	 * Static Singleton Factory Method
 	 *
 	 * @return Tribe__Tickets__Tickets_Handler
@@ -988,6 +1055,20 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @var string
 	 */
 	public static $attendees_slug = 'tickets-attendees';
+
+
+	/**
+	 * Saves the event ticket settings via ajax
+	 *
+	 * @deprecated TBD
+	 *
+	 * @since 4.6
+	 */
+	public function ajax_handler_save_settings() {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.metabox' )->ajax_settings()" );
+		return tribe( 'tickets.metabox' )->ajax_settings();
+
+	}
 
 	/**
 	 * Includes the tickets metabox inside the Event edit screen

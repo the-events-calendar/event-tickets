@@ -707,6 +707,32 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 }
 
 /**
+ * Updates a given Object Capacity
+ *
+ * @since  TBD
+ *
+ * @param  int  $object  Post We are trying to save capacity
+ *
+ * @return int|false
+ */
+function tribe_tickets_update_capacity( $object, $capacity ) {
+	if ( ! $object instanceof WP_Post ) {
+		$object = get_post( $object );
+	}
+
+	if ( ! $object instanceof WP_Post ) {
+		return false;
+	}
+
+	if ( ! is_numeric( $capacity ) ) {
+		return false;
+	}
+
+	// Do the actual Updating of the Meta value
+	return update_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity, $capacity );
+}
+
+/**
  * Returns the capacity for a given Post
  *
  * @since  4.6

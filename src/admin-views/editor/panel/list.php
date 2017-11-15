@@ -1,4 +1,5 @@
 <?php
+$attendees_url   = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
 $total_tickets   = tribe( 'tickets.handler' )->get_total_event_capacity( $post_id );
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
@@ -39,27 +40,8 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 				</a>
 			</div>
 		<?php endif; ?>
-		<?php
-		/**
-		 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
-		 *
-		 * @since 4.6
-		 *
-		 * @param int $post_id the id of the post
-		 */
-		do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
 
-		tribe( 'tickets.admin.views' )->template( 'list', array( 'tickets' => $tickets ) );
-
-		/**
-		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
-		 *
-		 * @since 4.6
-		 *
-		 * @param int $post_id the id of the post
-		 */
-		do_action( 'tribe_events_tickets_post_ticket_list', $post_id );
-		?>
+		<?php tribe( 'tickets.admin.views' )->template( 'editor/list-table', array( 'tickets' => $tickets ) ); ?>
 	</div>
 	<div>
 		<?php
@@ -108,4 +90,4 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 	do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
 	?>
 
-</div><!-- #panel_base -->
+</div>

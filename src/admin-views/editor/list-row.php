@@ -35,7 +35,7 @@ if (
 		<input
 			type="hidden"
 			class="tribe-ticket-field-order"
-			name="tribe-tickets[<?php echo esc_attr( $ticket->ID ); ?>][order]"
+			name="tribe-tickets[list][<?php echo esc_attr( $ticket->ID ); ?>][order]"
 			value="<?php echo esc_attr( $ticket->menu_order ); ?>"
 			<?php echo 'Tribe__Tickets__RSVP' === $ticket->provider_class ? 'disabled' : ''; ?>
 		>

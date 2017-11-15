@@ -1,15 +1,11 @@
 <?php
-$timepicker_step = 30;
-if ( class_exists( 'Tribe__Events__Main' ) ) {
-	$timepicker_step = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
+if ( ! isset( $post_id ) ) {
+	$post_id = get_the_ID();
 }
-
-$timepicker_round = '00:00:00';
-
-$start_date_errors = array(
-	'is-required' => __( 'Start sale date cannot be empty.', 'event-tickets' ),
-	'is-greater-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
-);
+if ( ! isset( $ticket_id ) ) {
+	$ticket_id = null;
+}
+$modules = Tribe__Tickets__Tickets::modules();
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true">
@@ -117,15 +113,15 @@ $start_date_errors = array(
 				 * @since 4.6
 				 *
 				 * @param int Post ID
-				 * @param null Ticket ID
+				 * @param int Ticket ID
 				 */
-				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null ); ?>
+				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id ); ?>
 			</section>
 
 			<div class="accordion">
-				<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'fieldset', 'advanced' ), get_defined_vars() ); ?>
+				<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'fieldset', 'advanced' ), array( 'post_id' => $post_id ) ); ?>
 
-				<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'fieldset', 'history' ), get_defined_vars() ); ?>
+				<?php tribe( 'tickets.admin.views' )->template( array( 'editor', 'fieldset', 'history' ), array( 'post_id' => $post_id ) ); ?>
 
 				<?php
 				/**
@@ -134,9 +130,9 @@ $start_date_errors = array(
 				 * @since 4.6
 				 *
 				 * @param int Post ID
-				 * @param null Ticket ID
+				 * @param int Ticket ID
 				 */
-				do_action( 'tribe_events_tickets_metabox_edit_accordion_content', $post_id, null );
+				do_action( 'tribe_events_tickets_metabox_edit_accordion_content', $post_id, $ticket_id );
 				?>
 			</div>
 
@@ -199,4 +195,4 @@ $start_date_errors = array(
 
 		</div><!-- #ticket_form_table -->
 	</div><!-- #ticket_form -->
-</div><!-- #tribe_panel_edit -->
+</div>

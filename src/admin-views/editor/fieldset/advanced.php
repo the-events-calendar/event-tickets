@@ -1,3 +1,16 @@
+<?php
+$timepicker_step = 30;
+if ( class_exists( 'Tribe__Events__Main' ) ) {
+	$timepicker_step = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
+}
+
+$timepicker_round = '00:00:00';
+
+$start_date_errors = array(
+	'is-required' => __( 'Start sale date cannot be empty.', 'event-tickets' ),
+	'is-greater-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
+);
+?>
 <button class="accordion-header tribe_advanced_meta">
 	<?php esc_html_e( 'Advanced', 'event-tickets' ); ?>
 </button>

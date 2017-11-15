@@ -10,8 +10,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 $post_id = get_the_ID();
-
-$attendees_url = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
 ?>
 
 <div class="tribe-tickets-editor-blocker">
