@@ -241,7 +241,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data, swapTo );
-			}
+			},
+			'json'
 		);
 	};
 
@@ -419,15 +420,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		},
 	} );
 
-	// prompt user to save changes in ticket meta box if ticket meta box is not showing the base panel
-	$publish.on( 'click.tribe-ticket-editing-in-progress', function( e ) {
-		if (
-			'true' === $base_panel.attr( 'aria-hidden' )
-			&& ! confirm( $base_panel.data( 'save-prompt' ) )
-		) {
-			return false;
-		}
-
+	/**
+	 * When Hitting the Publish button we remove our beforeunload
+	 */
+	$publish.on( 'click', function ( event ) {
 		$( window ).off( 'beforeunload.tribe' );
 	} );
 
@@ -520,7 +516,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data, 'ticket' );
-			}
+			},
+			'json'
 		);
 
 		// Make it safe that it wont submit
@@ -560,7 +557,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data );
-			}
+			},
+			'json'
 		);
 	} );
 
@@ -593,7 +591,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data );
-			}
+			},
+			'json'
 		);
 	} );
 

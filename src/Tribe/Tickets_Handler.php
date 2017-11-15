@@ -84,8 +84,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$this->unlimited_term = __( 'Unlimited', 'event-tickets' );
 
 		foreach ( $main->post_types() as $post_type ) {
-			add_action( 'save_post_' . $post_type, array( $this, 'save_image_header' ) );
-			add_action( 'save_post_' . $post_type, array( $this, 'save_order' ) );
+			add_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
 		}
 
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
@@ -367,10 +366,14 @@ class Tribe__Tickets__Tickets_Handler {
 			// When Global Capacity is higher than local ticket one's we bail
 			if (
 				Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode
-				&& $event_capacity < $capacity
 			) {
+				$capped_capacity = $capacity;
+				if ( $event_capacity < $capacity ) {
+					$capped_capacity = $event_capacity;
+				}
+
 				// Otherwise we update tickets required
-				tribe_tickets_update_capacity( $ticket, $capacity );
+				tribe_tickets_update_capacity( $ticket, $capped_capacity );
 			}
 
 			$totals = $this->get_ticket_totals( $ticket );
@@ -626,6 +629,16 @@ class Tribe__Tickets__Tickets_Handler {
 		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode;
 	}
 
+	/**
+	 * Returns whether a given object has the correct Provider for a Post or Ticket
+	 *
+	 * @since   TBD
+	 *
+	 * @param   int|WP_Post  $ticket
+	 * @param   mixed        $provider
+	 *
+	 * @return  bool
+	 */
 	public function is_correct_provider( $post, $provider ) {
 		if ( ! $post instanceof WP_Post ) {
 			$post = get_post( $post );
@@ -643,7 +656,11 @@ class Tribe__Tickets__Tickets_Handler {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
 		}
 
-		return $default_provider === $provider;
+		if ( ! is_string( $default_provider ) ) {
+			$default_provider = get_class( $default_provider );
+		}
+
+		return $default_provider === $provider_class;
 	}
 
 	/**
@@ -886,30 +903,68 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Save or delete the image header for tickets on an event
+	 * Saves the Ticket Editor related tickets on Save of the Parent Post
 	 *
-	 * @param int $post_id
+	 * Due to how we can have multiple Post Types where we can attach tickets we have one place where
+	 * all panels will save, because `save_post_$post_type` requires a loop
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int  $post  Post that will be saved
+	 *
+	 * @return string
 	 */
-	public function save_image_header( $post_id ) {
-		if ( ! ( isset( $_POST[ 'tribe-tickets-post-settings' ] ) && wp_verify_nonce( $_POST[ 'tribe-tickets-post-settings' ], 'tribe-tickets-meta-box' ) ) ) {
-			return;
+	public function save_post( $post ) {
+		// We're calling this during post save, so the save nonce has already been checked.
+
+		// don't do anything on autosave, auto-draft, or massupdates
+		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
+			return false;
 		}
 
-		// don't do anything on autosave or auto-draft either or massupdates
-		if ( wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
-			return;
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post );
 		}
 
-		if ( empty( $_POST['tribe_ticket_header_image_id'] ) ) {
-			delete_post_meta( $post_id, $this->key_image_header );
-		} else {
-			update_post_meta( $post_id, $this->key_image_header, $_POST['tribe_ticket_header_image_id'] );
+		// Bail on Invalid post
+		if ( ! $post instanceof WP_Post ) {
+			return false;
 		}
 
-		return;
+		$provider = tribe_get_request_var( 'ticket_provider', false );
+
+		if ( $provider && tribe( 'tickets.metabox' )->module_is_valid( $provider ) ) {
+			// Get the Provider
+			$provider = call_user_func( array( $provider, 'get_instance' ) );
+
+			// Sve the actual ticket
+			$ticket_id = $provider->ticket_add( $post->ID, $_POST );
+		}
+
+		$this->save_form_settings( $post );
+		$this->save_order( $post );
+
+		/**
+		 * Allows us to Run any actions related to a Post that has Tickets
+		 *
+		 * @since  TBD
+		 *
+		 * @param  WP_Post $post Which post we are saving
+		 */
+		do_action( 'tribe_tickets_save_post', $post );
 	}
 
-	public function save_settings( $post, $data ) {
+	/**
+	 * Saves the Ticket Editor settings form
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int   $post  Post that will be saved
+	 * @param  array $data  Params that will be used to save
+	 *
+	 * @return string
+	 */
+	public function save_form_settings( $post, $data = null ) {
 		// don't do anything on autosave, auto-draft, or massupdates
 		if ( wp_is_post_autosave( $post ) || wp_is_post_revision( $post ) ) {
 			return false;
@@ -1076,6 +1131,16 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public static $attendees_slug = 'tickets-attendees';
 
+	/**
+	 * Save or delete the image header for tickets on an event
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param int $post_id
+	 */
+	public function save_image_header( $post_id ) {
+		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.handler' )->save_settings()" );
+	}
 
 	/**
 	 * Saves the event ticket settings via ajax

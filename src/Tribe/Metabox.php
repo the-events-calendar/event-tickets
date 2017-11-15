@@ -118,7 +118,7 @@ class Tribe__Tickets__Metabox {
 		// Save if the info was passed
 		if ( ! empty( $data ) ) {
 			tribe( 'tickets.handler' )->save_order( $post->ID, isset( $data['list'] ) ? $data['list'] : null );
-			tribe( 'tickets.handler' )->save_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
+			tribe( 'tickets.handler' )->save_form_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
 		}
 
 		$return = $this->get_panels( $post );
@@ -315,7 +315,7 @@ class Tribe__Tickets__Metabox {
 		}
 
 		// Pass the control to the child object
-		$return = $this->delete_ticket( $post_id, $ticket_id );
+		$return = $provider->delete_ticket( $post_id, $ticket_id );
 
 		// Successfully deleted?
 		if ( $return ) {
