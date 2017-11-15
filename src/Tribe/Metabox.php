@@ -416,10 +416,14 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @return string
 	 */
-	public function get_ticket_controls( $post_id, $ticket_id, $echo = true ) {
+	public function get_ticket_controls( $post_id, $ticket_id = null, $echo = true ) {
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
 		if ( ! $provider ) {
+			return false;
+		}
+
+		if ( ! $ticket_id ) {
 			return false;
 		}
 

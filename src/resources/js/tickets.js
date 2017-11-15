@@ -363,7 +363,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		}
 
-		$tribe_tickets.find( tribe.validation.selector.item ).validation();
+		$tribe_tickets.find( tribe.validation.selectors.item ).validation();
 
 		// Make sure we display the correct Fields and things
 		$tribe_tickets.find( '.tribe-dependent' ).dependency();
