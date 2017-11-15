@@ -1756,6 +1756,19 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function get_attendee_report_link( $post ) {
+
+		if (
+			class_exists( 'Tribe__Events__Community__Main' )
+			&& class_exists( 'Tribe__Events__Community__Tickets__Main' )
+			&& tribe_is_community_edit_event_page()
+			) {
+
+			$routes = Tribe__Events__Community__Tickets__Main::instance()->routes;
+			$url = $routes['attendees-report']->url( $post->ID );
+
+			return $url;
+		}
+
 		$url = add_query_arg( array(
 			'post_type' => $post->post_type,
 			'page'      => self::$attendees_slug,
