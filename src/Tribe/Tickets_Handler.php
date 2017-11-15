@@ -626,6 +626,26 @@ class Tribe__Tickets__Tickets_Handler {
 		return Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode;
 	}
 
+	public function is_correct_provider( $post, $provider ) {
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post );
+		}
+
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		$provider_class = get_class( $provider );
+
+		if ( tribe_tickets_post_type_enabled( $post->post_type ) ) {
+			$default_provider = Tribe__Tickets_Plus__Tickets::get_event_ticket_provider( $post->ID );
+		} else {
+			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
+		}
+
+		return $default_provider === $provider;
+	}
+
 	/**
 	 * Checks if there are any unlimited tickets, optionally by stock mode or ticket type
 	 *

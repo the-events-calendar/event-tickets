@@ -1225,14 +1225,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$start_date_unix          = strtotime( $start_date );
 		if ( ! empty( $start_date ) ) {
 			$return->start_date = date( 'Y-m-d', $start_date_unix );
-			$return->start_time = date( 'h:ia', $start_date_unix );
+			$return->start_time = Tribe__Date_Utils::time_only( $start_date_unix );
 		}
 
 		$end_date                 = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$end_date_unix            = strtotime( $end_date );
 		if ( ! empty( $end_date ) ) {
 			$return->end_date = date( 'Y-m-d', $end_date_unix );
-			$return->end_time = date( 'h:ia', $end_date_unix );
+			$return->end_time = Tribe__Date_Utils::time_only( $end_date_unix );
 		}
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );

@@ -398,6 +398,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get the controls (move, delete) as a string and add to our ajax return
 		 *
+		 * @deprecated TBD
 		 * @since 4.6
 		 *
 		 * @param array $return the ajax return data

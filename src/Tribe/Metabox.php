@@ -17,14 +17,14 @@ class Tribe__Tickets__Metabox {
 	public function hook() {
 		add_action( 'add_meta_boxes', array( $this, 'configure' ) );
 
-
-		add_filter( 'tribe_events_tickets_ajax_ticket_edit', array( $this, 'ajax_ticket_edit_controls' ) );
+		add_action( 'tribe_events_tickets_bottom_right', array( $this, 'get_ticket_controls' ), 10, 2 );
 
 		add_action( 'wp_ajax_tribe-ticket-panels', array( $this, 'ajax_panels' ) );
 
 		add_action( 'wp_ajax_tribe-ticket-add', array( $this, 'ajax_ticket_add' ) );
-		add_action( 'wp_ajax_tribe-ticket-delete', array( $this, 'ajax_ticket_delete' ) );
 		add_action( 'wp_ajax_tribe-ticket-edit', array( $this, 'ajax_ticket_edit' ) );
+		add_action( 'wp_ajax_tribe-ticket-delete', array( $this, 'ajax_ticket_delete' ) );
+
 		add_action( 'wp_ajax_tribe-ticket-checkin', array( $this, 'ajax_attendee_checkin' ) );
 		add_action( 'wp_ajax_tribe-ticket-uncheckin', array( $this, 'ajax_attendee_uncheckin' ) );
 	}
@@ -94,7 +94,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Refreshes panels after ajax calls that change data
 	 *
-	 * @since 4.6
+	 * @since  TBD
 	 *
 	 * @return string html content of the panels
 	 */
@@ -121,9 +121,8 @@ class Tribe__Tickets__Metabox {
 			tribe( 'tickets.handler' )->save_settings( $post->ID, isset( $data['settings'] ) ? $data['settings'] : null );
 		}
 
+		$return = $this->get_panels( $post );
 		$return['notice'] = $this->notice( $notice );
-
-		$return = array_merge( $return, $this->get_panels( $post ) );
 
 		/**
 		 * Allows filtering the data by other plugins/ecommerce solutions©
@@ -138,7 +137,17 @@ class Tribe__Tickets__Metabox {
 		wp_send_json_success( $return );
 	}
 
-	public function get_panels( $post, $ticket = null ) {
+	/**
+	 * Get the Panels for a given
+	 *
+	 * @since  TBD
+	 *
+	 * @param int|WP_Post $post
+	 * @param int         $ticket_id
+	 *
+	 * @return array
+	 */
+	public function get_panels( $post, $ticket_id = null ) {
 		if ( ! $post instanceof WP_Post ) {
 			$post = get_post( $post );
 		}
@@ -157,7 +166,7 @@ class Tribe__Tickets__Metabox {
 		$panels = array(
 			'list' => tribe( 'tickets.admin.views' )->template( 'editor/panel/list', array( 'post_id' => $post->ID, 'tickets' => $tickets ), false ),
 			'settings' => tribe( 'tickets.admin.views' )->template( 'editor/panel/settings', array( 'post_id' => $post->ID ), false ),
-			'ticket' => tribe( 'tickets.admin.views' )->template( 'editor/panel/ticket', array( 'post_id' => $post->ID, 'ticket_id' => $ticket ), false ),
+			'ticket' => tribe( 'tickets.admin.views' )->template( 'editor/panel/ticket', array( 'post_id' => $post->ID, 'ticket_id' => $ticket_id ), false ),
 		);
 
 		return $panels;
@@ -166,11 +175,13 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Sanitizes the data for the new/edit ticket ajax call,
 	 * and calls the child save_ticket function.
+	 *
+	 * @since  TBD
 	 */
 	public function ajax_ticket_add() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
 
-		if ( ! isset( $_POST['post_id'] ) ) {
+		if ( ! $post_id ) {
 			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
 		}
 
@@ -185,10 +196,10 @@ class Tribe__Tickets__Metabox {
 		}
 
 		if ( ! isset( $data['ticket_provider'] ) || ! $this->module_is_valid( $data['ticket_provider'] ) ) {
-			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
+			wp_send_json_error( esc_html__( 'Commerce Provider invalid', 'event-tickets' ) );
 		}
 
-		// Get the Module
+		// Get the Provider
 		$module = call_user_func( array( $data['ticket_provider'], 'get_instance' ) );
 
 		// Do the actual adding
@@ -206,8 +217,8 @@ class Tribe__Tickets__Metabox {
 			wp_send_json_error( esc_html__( 'Failed to Add the Ticket', 'event-tickets' ) );
 		}
 
-		$return['notice'] = $this->notice( 'ticket-add' );
 		$return = $this->get_panels( $post_id );
+		$return['notice'] = $this->notice( 'ticket-add' );
 
 		/**
 		 * Filters the return data for ticket add
@@ -221,99 +232,95 @@ class Tribe__Tickets__Metabox {
 	}
 
 	/**
-	 * Handles the check-in ajax call, and calls the checkin method.
+	 * Returns the data from a single ticket to populate
+	 * the edit form.
 	 *
-	 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
-	 *       we should consider revising in a back-compat minded way
-	 */
-	public function ajax_handler_attendee_checkin() {
-
-		if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
-			wp_send_json_error( 'Bad post' );
-		}
-
-		if ( ! isset( $_POST['provider'] ) || ! $this->module_is_valid( $_POST['provider'] ) ) {
-			wp_send_json_error( 'Bad module' );
-		}
-
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
-			wp_send_json_error( "Cheatin' huh?" );
-		}
-
-		$order_id = $_POST['order_ID'];
-
-		// Pass the control to the child object
-		$did_checkin = $this->checkin( $order_id );
-
-		$this->maybe_update_attendees_cache( $did_checkin );
-
-		wp_send_json_success( $did_checkin );
-	}
-
-	/**
-	 * Handles the check-in ajax call, and calls the uncheckin method.
+	 * @since  TBD
 	 *
-	 * @TODO use of 'order_id' in this method is misleading (we're working with the attendee id)
-	 *       we should consider revising in a back-compat minded way
+	 * @return array $return array of ticket data
 	 */
-	public function ajax_handler_attendee_uncheckin() {
+	public function ajax_ticket_edit() {
+		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
 
-		if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
-			wp_send_json_error( 'Bad post' );
+		if ( ! $post_id ) {
+			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
 		}
 
-		if ( ! isset( $_POST['provider'] ) || ! $this->module_is_valid( $_POST['provider'] ) ) {
-			wp_send_json_error( 'Bad module' );
+		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
+
+		if ( ! $ticket_id ) {
+			wp_send_json_error( esc_html__( 'Invalid Ticket', 'event-tickets' ) );
 		}
 
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
-			wp_send_json_error( "Cheatin' huh?" );
+		/**
+		 * This is needed because a provider can implement a dynamic set of fields.
+		 * Each provider is responsible for sanitizing these values.
+		 */
+		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
+
+		if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
+			wp_send_json_error( esc_html__( 'Failed to Edit the Ticket, Refresh the Page to try again.', 'event-tickets' ) );
 		}
 
-		$order_id = $_POST['order_ID'];
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		// Pass the control to the child object
-		$did_uncheckin = $this->uncheckin( $order_id );
-
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$this->maybe_update_attendees_cache( $did_uncheckin );
+		if ( ! $provider ) {
+			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
-		wp_send_json_success( $did_uncheckin );
+		// Get the Ticket Object
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
+		$return = $this->get_panels( $post_id, $ticket_id );
+
+		/**
+		 * Provides an opportunity for final adjustments to the data used to populate
+		 * the edit-ticket form.
+		 *
+		 * @param array $return     Data for the JSON response
+		 * @param int   $post_id    Post ID
+		 * @param int   $ticket_id  Ticket ID
+		 */
+		$return = (array) apply_filters( 'tribe_events_tickets_ajax_ticket_edit', $return, $post_id, $ticket_id );
+
+		wp_send_json_success( $return );
 	}
 
 	/**
 	 * Sanitizes the data for the delete ticket ajax call, and calls the child delete_ticket
 	 * function.
+	 *
+	 * @since  TBD
 	 */
-	public function ajax_handler_ticket_delete() {
+	public function ajax_ticket_delete() {
+		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
 
-		if ( ! isset( $_POST['post_ID'] ) ) {
-			wp_send_json_error( 'Bad post' );
+		if ( ! $post_id ) {
+			wp_send_json_error( esc_html__( 'Invalid parent Post', 'event-tickets' ) );
 		}
 
-		if ( ! isset( $_POST['ticket_id'] ) ) {
-			wp_send_json_error( 'Bad post' );
-		}
+		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
-		$post_id = $_POST['post_ID'];
+		if ( ! $ticket_id ) {
+			wp_send_json_error( esc_html__( 'Invalid Ticket', 'event-tickets' ) );
+		}
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'remove_ticket_nonce' ) ) {
-			wp_send_json_error( "Cheatin' huh?" );
+			wp_send_json_error( esc_html__( 'Failed to Delete the Ticket, Refresh the Page to try again.', 'event-tickets' ) );
 		}
 
-		$ticket_id = $_POST['ticket_id'];
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider ) {
+			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
+		}
 
 		// Pass the control to the child object
 		$return = $this->delete_ticket( $post_id, $ticket_id );
 
 		// Successfully deleted?
 		if ( $return ) {
-			// Let's create a tickets list markup to return
-			$tickets = $this->get_event_tickets( $post_id );
-			$return  = tribe( 'tickets.handler' )->get_ticket_list_markup( $tickets );
-
-			$return = $this->notice( esc_html__( 'Your ticket has been deleted.', 'event-tickets' ) ) . $return;
+			$return = $this->get_panels( $post_id );
+			$return['notice'] = $this->notice( $notice );
 
 			/**
 			 * Fire action when a ticket has been deleted
@@ -325,105 +332,117 @@ class Tribe__Tickets__Metabox {
 
 		wp_send_json_success( $return );
 	}
-
 	/**
-	 * Returns the data from a single ticket to populate
-	 * the edit form.
+	 * Handles the check-in ajax call, and calls the checkin method.
 	 *
-	 * @return array $return array of ticket data
+	 * @since  TBD
+	 *
+	 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
+	 *       we should consider revising in a back-compat minded way
 	 */
-	public function ajax_handler_ticket_edit() {
+	public function ajax_attendee_checkin() {
 
-		if ( ! isset( $_POST['post_ID'] ) ) {
+		if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
 			wp_send_json_error( 'Bad post' );
 		}
 
-		if ( ! isset( $_POST['ticket_id'] ) ) {
-			wp_send_json_error( 'Bad post' );
+		$provider = $_POST['provider'];
+
+		if ( ! $this->module_is_valid( $provider ) ) {
+			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
-		$post_id = $_POST['post_ID'];
+		$provider = call_user_func( array( $provider, 'get_instance' ) );
 
-		if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
 			wp_send_json_error( "Cheatin' huh?" );
 		}
 
-		$ticket_id = $_POST['ticket_id'];
-		$ticket = $this->get_ticket( $post_id, $ticket_id );
+		$order_id = $_POST['order_ID'];
 
-		$return = get_object_vars( $ticket );
-		$return['post_id'] = $post_id;
-		/**
-		 * Allow for the prevention of updating ticket price on update.
-		 *
-		 * @param boolean
-		 * @param WP_Post
-		 */
-		$can_update_price = apply_filters( 'tribe_tickets_can_update_ticket_price', true, $ticket );
+		// Pass the control to the child object
+		$did_checkin = $provider->checkin( $order_id );
 
-		$return['can_update_price'] = $can_update_price;
+		$provider->maybe_update_attendees_cache( $did_checkin );
 
-		if ( ! $can_update_price ) {
-			/**
-			 * Filter the no-update message that is displayed when updating the price is disallowed
-			 *
-			 * @param string
-			 * @param WP_Post
-			 */
-			$return['disallow_update_price_message'] = apply_filters( 'tribe_tickets_disallow_update_ticket_price_message', esc_html__( 'Editing the ticket price is currently disallowed.', 'event-tickets' ), $ticket );
+		wp_send_json_success( $did_checkin );
+	}
+
+	/**
+	 * Handles the check-in ajax call, and calls the uncheckin method.
+	 *
+	 * @since  TBD
+	 *
+	 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
+	 *       we should consider revising in a back-compat minded way
+	 */
+	public function ajax_attendee_uncheckin() {
+
+		if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
+			wp_send_json_error( 'Bad post' );
 		}
 
-		// Prevent HTML elements from being escaped
-		$return['name']        = html_entity_decode( $return['name'], ENT_QUOTES );
-		$return['name']        = htmlspecialchars_decode( $return['name'] );
-		$return['description'] = html_entity_decode( $return['description'], ENT_QUOTES );
-		$return['description'] = htmlspecialchars_decode( $return['description'] );
+		$provider = $_POST['provider'];
 
-		ob_start();
-		/**
-		 * Fired to allow for the insertion of extra form data in the ticket int admin form
-		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param int $ticket_id ID of ticket post
-		 */
-		do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, $ticket_id );
-
-		$extra = ob_get_contents();
-		ob_end_clean();
-
-		$return['advanced_fields'] = $extra;
-		$return['history'] = tribe( 'tickets.admin.views' )->template( 'tickets-history', array( 'post_id' => $post_id, 'ticket' => $ticket->ID ), false );
-
-		/**
-		 * Allows for the insertion of the attendee meta fields into the ticket admin form
-		 *
-		 * @since 4.6
-		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @param int $ticket_id ID of ticket post
-		 */
-		$return['attendee_fields']   = apply_filters( 'tribe_events_tickets_metabox_edit_attendee', $post_id, $ticket_id );
-
-		$return['stock']             = $ticket->stock;
-		$return['capacity']          = $ticket->capacity;
-		$global_stock_mode           = ( isset( $ticket ) ) ? $ticket->global_stock_mode() : '';
-		$return['global_stock_mode'] = $global_stock_mode;
-		$return['show_description']  = $ticket->show_description();
-
-		if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $global_stock_mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ) {
-			$return['event_capacity'] = tribe_tickets_get_capacity( $post_id );
+		if ( ! $this->module_is_valid( $provider ) ) {
+			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
-		/**
-		 * Provides an opportunity for final adjustments to the data used to populate
-		 * the edit-ticket form.
-		 *
-		 * @param array $return data returned to the client
-		 * @param Tribe__Events__Tickets $ticket_object
-		 */
-		$return = (array) apply_filters( 'tribe_events_tickets_ajax_ticket_edit', $return, $this );
+		$provider = call_user_func( array( $provider, 'get_instance' ) );
 
-		wp_send_json_success( $return );
+		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
+			wp_send_json_error( "Cheatin' huh?" );
+		}
+
+		$order_id = $_POST['order_ID'];
+
+		// Pass the control to the child object
+		$did_uncheckin = $provider->uncheckin( $order_id );
+
+		if ( class_exists( 'Tribe__Events__Main' ) ) {
+			$provider->maybe_update_attendees_cache( $did_uncheckin );
+		}
+
+		wp_send_json_success( $did_uncheckin );
+	}
+
+	/**
+	 * Get the controls (move, delete) as a string
+	 *
+	 * @since  TBD
+	 *
+	 * @param  array  $post_id
+	 * @param  array  $ticket_id
+	 *
+	 * @return string
+	 */
+	public function get_ticket_controls( $post_id, $ticket_id, $echo = true ) {
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider ) {
+			return false;
+		}
+
+		$ticket = $provider->get_ticket( $post_id, $ticket_id );
+
+		if ( empty( $ticket ) ) {
+			return false;
+		}
+
+		$controls = array();
+
+		if ( tribe_is_truthy( tribe_get_request_var( 'is_admin', true ) ) ) {
+			$controls[] = $provider->get_ticket_move_link( $post_id, $ticket );
+		}
+		$controls[] = $provider->get_ticket_delete_link( $ticket );
+
+		$html = join( ' | ', $controls );
+
+		if ( $html )  {
+			echo $html;
+		}
+
+		return $html;
 	}
 
 	/**
