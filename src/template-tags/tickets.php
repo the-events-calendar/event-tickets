@@ -715,6 +715,46 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
  *
  * @return int|false
  */
+function tribe_tickets_delete_capacity( $object ) {
+
+	if ( ! $object instanceof WP_Post ) {
+		$object = get_post( $object );
+	}
+
+	if ( ! $object instanceof WP_Post ) {
+		return false;
+	}
+
+	$deleted = delete_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity );
+
+	if ( ! $deleted ) {
+		return $deleted;
+	}
+
+	// We only apply these when we are talking about event-like posts
+	if ( tribe_tickets_post_type_enabled( $object->post_type ) ) {
+		$shared_cap_object = new Tribe__Tickets__Global_Stock( $object->ID );
+		$shared_cap_object->disable();
+
+		// This is mostly to make sure
+		delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
+		delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
+		delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
+	}
+
+	return $deleted;
+}
+
+/**
+ * Updates a given Object Capacity
+ *
+ * @since  TBD
+ *
+ * @param  int  $object   Post We are trying to save capacity
+ * @param  int  $capacty  How much we are trying to update the capacity to
+ *
+ * @return int|false
+ */
 function tribe_tickets_update_capacity( $object, $capacity ) {
 	if ( ! is_numeric( $capacity ) ) {
 		return false;
