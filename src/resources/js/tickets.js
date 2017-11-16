@@ -75,19 +75,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	};
 
 	/**
-	 * Returns the currently selected default ticketing provider.
-	 * Defaults to RSVP if something fails
-	 *
-	 * @since 4.6
-	 *
-	 * @return string
-	 */
-	function get_default_provider() {
-		var $checked_provider = $tribe_tickets.find( '.tribe-ticket-editor-field-default_provider' ).filter( ':checked' );
-		return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
-	}
-
-	/**
 	 * Sets the ticket edit form provider to the currently selected default ticketing provider.
 	 * Defaults to RSVP if something fails
 	 *
@@ -482,7 +469,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 		// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
-		$edit_panel.find( '.tribe-ticket-field-event-capacity' ).prop( 'disabled', true );
+		if ( $( '#settings_global_capacity_edit' ).val() ) {
+			$edit_panel.find( '.tribe-ticket-field-event-capacity' ).prop( 'disabled', true );
+		}
 
 		obj.swapPanel( 'ticket' );
 
@@ -688,9 +677,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$field.val( max );
 		}
 	} );
-
-	/** Track changes to the global stock level on the Settings form.  */
-	$document.on( 'change', '#tribe-tickets-global-stock-level', changeEventCapacity );
 
 	/* Remove header image action */
 	$document.on( 'click', '#tribe_ticket_header_remove', function( e ) {
