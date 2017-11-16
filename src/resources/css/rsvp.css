@@ -197,6 +197,10 @@
 	font-size: 90%;
 }
 
+.tribe-link-view-attendee {
+	margin: 15px 0;
+}
+
 /* Tickets Table */
 
 .tribe-events-tickets {
