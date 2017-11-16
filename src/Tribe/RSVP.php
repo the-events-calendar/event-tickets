@@ -975,7 +975,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
 		}
 
-		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
+		tribe_tickets_update_capacity( $ticket, $data['capacity'] );
 
 		if ( ! empty( $raw_data['ticket_start_date'] ) ) {
 			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );
@@ -1222,17 +1222,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->show_description = $return->show_description();
 
 		$start_date               = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$start_date_unix          = strtotime( $start_date );
+		$end_date                 = get_post_meta( $ticket_id, '_ticket_end_date', true );
+
 		if ( ! empty( $start_date ) ) {
-			$return->start_date = date( 'Y-m-d', $start_date_unix );
-			$return->start_time = date( 'h:ia', $start_date_unix );
+			$start_date_unix    = strtotime( $start_date );
+			$return->start_date = Tribe__Date_Utils::date_only( $start_date_unix, true );
+			$return->start_time = Tribe__Date_Utils::time_only( $start_date_unix );
 		}
 
-		$end_date                 = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$end_date_unix            = strtotime( $end_date );
 		if ( ! empty( $end_date ) ) {
-			$return->end_date = date( 'Y-m-d', $end_date_unix );
-			$return->end_time = date( 'h:ia', $end_date_unix );
+			$end_date_unix    = strtotime( $end_date );
+			$return->end_date = Tribe__Date_Utils::date_only( $end_date_unix, true );
+			$return->end_time = Tribe__Date_Utils::time_only( $end_date_unix );
 		}
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
@@ -1720,7 +1721,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$args = array(
 			'post_type' => 'tribe_events',
-			'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
+			'page' => tribe( 'tickets.attendees' )->slug(),
 			'event_id' => get_post_meta( $post_id, '_tribe_rsvp_event', true ),
 		);
 
@@ -1754,7 +1755,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendees_report_url = add_query_arg(
 			array(
 				'post_type' => $event->post_type,
-				'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
+				'page' => tribe( 'tickets.attendees' )->slug(),
 				'event_id' => $event->ID,
 			),
 			admin_url( 'edit.php' )

@@ -124,7 +124,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var obj = jQuery( this );
 
 			var params = {
-				action  : 'tribe-ticket-checkin-' + obj.attr( 'data-provider' ),
+				action  : 'tribe-ticket-checkin',
 				provider: obj.attr( 'data-provider' ),
 				order_ID: obj.attr( 'data-attendee-id' ),
 				nonce   : Attendees.checkin_nonce
@@ -156,7 +156,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var obj = jQuery( this );
 
 			var params = {
-				action  : 'tribe-ticket-uncheckin-' + obj.attr( 'data-provider' ),
+				action  : 'tribe-ticket-uncheckin',
 				provider: obj.attr( 'data-provider' ),
 				order_ID: obj.attr( 'data-attendee-id' ),
 				nonce   : Attendees.uncheckin_nonce

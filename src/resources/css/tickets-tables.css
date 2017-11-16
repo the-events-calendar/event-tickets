@@ -179,8 +179,8 @@
 		width: 100%;
 	}
 
-	.tribe-tickets-editor-table.capacity_list td:first-child,
-			.tribe-tickets-editor-table.capacity_list td[colspan="2"] {
+	.tribe-tickets-editor-table.tribe-tickets-editor-capacity-table td:first-child,
+			.tribe-tickets-editor-table.tribe-tickets-editor-capacity-table td[colspan="2"] {
 		width: 100%;
 	}
 
