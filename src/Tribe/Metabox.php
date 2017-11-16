@@ -411,8 +411,9 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @since  TBD
 	 *
-	 * @param  array  $post_id
-	 * @param  array  $ticket_id
+	 * @param  array   $post_id
+	 * @param  array   $ticket_id
+	 * @param  boolean $echo
 	 *
 	 * @return string
 	 */
@@ -442,7 +443,7 @@ class Tribe__Tickets__Metabox {
 
 		$html = join( ' | ', $controls );
 
-		if ( $html )  {
+		if ( $echo )  {
 			echo $html;
 		}
 
