@@ -50,17 +50,7 @@ class Tribe__Tickets__Assets {
 		 */
 		$decimal = apply_filters( 'tribe_event_ticket_decimal_point', $decimal );
 
-		/**
-		 *  Filter Default Ticket Capacity Type
-		 *
-		 * @since 4.6
-		 *
-		 * @param string 'global'
-		 *
-		 * @return string (global,own,unlimited)
-		 *
-		 */
-		$global_stock_mode = apply_filters( 'tribe_tickets_default_ticket_capacity_type', 'global' );
+		$global_stock_mode = tribe( 'tickets.handler' )->get_default_capacity_mode();
 
 		tribe_assets(
 			Tribe__Tickets__Main::instance(),

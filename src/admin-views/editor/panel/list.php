@@ -1,9 +1,15 @@
 <?php
+$attendees_url   = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
 $total_tickets   = tribe( 'tickets.handler' )->get_total_event_capacity( $post_id );
 $container_class = 'tribe_sectionheader ticket_list_container';
 $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 ?>
-<div id="tribe_panel_base" class="ticket_panel panel_base" aria-hidden="false" data-save-prompt="<?php echo esc_attr( __( 'You have unsaved changes to your tickets. Discard those changes?', 'event-tickets' ) ); ?>">
+<div
+	id="tribe_panel_base"
+	class="ticket_panel panel_base"
+	aria-hidden="false"
+	data-save-prompt="<?php echo esc_attr( __( 'You have unsaved changes to your tickets. Discard those changes?', 'event-tickets' ) ); ?>"
+>
 	<div class="<?php echo esc_attr( $container_class ); ?>">
 		<?php if ( ! empty( $total_tickets ) ) : ?>
 			<div class="ticket_table_intro">
@@ -34,27 +40,8 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 				</a>
 			</div>
 		<?php endif; ?>
-		<?php
-		/**
-		 * Allows for the insertion of additional content into the main ticket admin panel before the tickets listing
-		 *
-		 * @since 4.6
-		 *
-		 * @param int $post_id the id of the post
-		 */
-		do_action( 'tribe_events_tickets_pre_ticket_list', $post_id );
 
-		$this->ticket_list_markup( $post_id, $tickets );
-
-		/**
-		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing
-		 *
-		 * @since 4.6
-		 *
-		 * @param int $post_id the id of the post
-		 */
-		do_action( 'tribe_events_tickets_post_ticket_list', $post_id );
-		?>
+		<?php tribe( 'tickets.admin.views' )->template( 'editor/list-table', array( 'tickets' => $tickets ) ); ?>
 	</div>
 	<div>
 		<?php
@@ -103,4 +90,4 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 	do_action( 'tribe_events_tickets_after_new_ticket_panel', $post_id );
 	?>
 
-</div><!-- #panel_base -->
+</div>

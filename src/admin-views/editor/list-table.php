@@ -1,28 +1,30 @@
+<?php
+if ( ! isset( $post_id ) ) {
+	$post_id = get_the_ID();
+}
+
+if ( ! $post_id ) {
+	$post_id = tribe_get_request_var( 'post_id', 0 );
+}
+
+// Makes sure we are dealing an int
+$post_id = (int) $post_id;
+
+if ( 0 === $post_id ) {
+	$post_type = tribe_get_request_var( 'post_type', 'post' );
+} else {
+	$post_type = get_post_type( $post_id );
+}
+
+$modules = Tribe__Tickets__Tickets::modules();
+?>
+
+
 <?php if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) : ?>
 <div id="ticket_list_wrapper">
 <?php endif; ?>
 
 	<table id="tribe_ticket_list_table" class="tribe-tickets-editor-table eventtable ticket_list eventForm widefat fixed">
-		<?php
-		global $post;
-		$provider = null;
-		$post_type = 'post';
-
-		if ( $post ) {
-			$post_id = get_the_ID();
-			$post_type = $post->post_type;
-		} else {
-			$post_id = $_POST['post_ID'];
-
-			if ( ! empty( $_POST['post_type'] ) ) {
-				$post_type = $_POST['post_type'];
-			} elseif ( ! empty( $_GET['post_type'] ) ) {
-				$post_type = $_GET['post_type'];
-			}
-		}
-
-		$modules = Tribe__Tickets__Tickets::modules();
-		?>
 		<thead>
 			<tr class="table-header">
 				<th class="ticket_name column-primary"><?php esc_html_e( 'Tickets', 'event-tickets' ); ?></th>
@@ -56,7 +58,7 @@
 			<?php
 			if ( ! empty( $tickets ) ) {
 				foreach ( $tickets as $ticket ) {
-					tribe( 'tickets.handler' )->render_ticket_row( $ticket );
+					tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
 				}
 			}
 			?>
@@ -66,7 +68,7 @@
 			<?php
 			if ( ! empty( $rsvp ) ) {
 				foreach ( $rsvp as $ticket ) {
-					tribe( 'tickets.handler' )->render_ticket_row( $ticket );
+					tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
 				}
 			}
 			?>

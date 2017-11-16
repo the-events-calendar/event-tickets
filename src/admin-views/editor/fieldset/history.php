@@ -1,7 +1,15 @@
 <?php
-// If we don't have an Ticket ID we bail
-if ( empty( $ticket ) ) {
-	return;
+if ( ! isset( $post_id ) ) {
+	$post_id = get_the_ID();
+}
+
+if ( ! isset( $ticket_id ) ) {
+	$provider = null;
+	$ticket_id = null;
+	$ticket = null;
+} else {
+	$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+	$ticket = $provider->get_ticket( $post_id, $ticket_id );
 }
 
 $history = Tribe__Post_History::load( $ticket );

@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * Class Tribe__Tickets__Admin__Views
  *
@@ -12,12 +10,31 @@
  *
  * @link https://make.wordpress.org/docs/plugin-developer-handbook/10-plugin-components/custom-list-table-columns/#views
  */
-class Tribe__Tickets__Admin__Views {
+class Tribe__Tickets__Admin__Views extends Tribe__Template {
 
 	/**
-	 * @var Tribe__Tickets__Admin__Views__Ticketed
+	 * Building of the Class template configuration
+	 *
+	 * @since  TBD
 	 */
-	protected $ticketed;
+	public function __construct() {
+		$this->set_template_origin( Tribe__Tickets__Main::instance() );
+		$this->set_template_folder( 'src/admin-views' );
+
+		// Configures this templating class extract variables
+		$this->set_template_context_extract( true );
+	}
+
+	/**
+	 * Hook the necessary Filters and Actions
+	 *
+	 * @since  4.6
+	 *
+	 * @return void
+	 */
+	public function hook() {
+		$this->add_view_links( (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
+	}
 
 	/**
 	 * Adds the view links on supported post types admin  lists.
@@ -35,9 +52,5 @@ class Tribe__Tickets__Admin__Views {
 		}
 
 		return true;
-	}
-
-	public function hook() {
-		$this->add_view_links( (array) tribe_get_option( 'ticket-enabled-post-types', array() ) );
 	}
 }

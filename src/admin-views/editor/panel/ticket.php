@@ -1,15 +1,20 @@
 <?php
-$timepicker_step = 30;
-if ( class_exists( 'Tribe__Events__Main' ) ) {
-	$timepicker_step = (int) tribe( 'tec.admin.event-meta-box' )->get_timepicker_step( 'start' );
+if ( ! isset( $post_id ) ) {
+	$post_id = get_the_ID();
 }
 
-$timepicker_round = '00:00:00';
+if ( ! isset( $ticket_id ) ) {
+	$provider = null;
+	$provider_class = null;
+	$ticket_id = null;
+	$ticket = null;
+} else {
+	$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+	$provider_class = get_class( $provider );
+	$ticket = $provider->get_ticket( $post_id, $ticket_id );
+}
 
-$start_date_errors = array(
-	'is-required' => __( 'Start sale date cannot be empty.', 'event-tickets' ),
-	'is-greater-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
-);
+$modules = Tribe__Tickets__Tickets::modules();
 ?>
 
 <div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true">
@@ -20,8 +25,9 @@ $start_date_errors = array(
 	 * @since 4.6
 	 *
 	 * @param int Post ID
+	 * @param int Ticket ID
 	 */
-	do_action( 'tribe_events_tickets_pre_edit', $post_id );
+	do_action( 'tribe_events_tickets_pre_edit', $post_id, $ticket_id );
 	?>
 
 	<div id="ticket_form" class="ticket_form tribe_sectionheader">
@@ -79,7 +85,7 @@ $start_date_errors = array(
 						name='ticket_name'
 						class="ticket_field ticket_form_right"
 						size='25'
-						value=''
+						value="<?php echo esc_attr( $ticket ? $ticket->name : null ); ?>"
 						data-validation-is-required
 						data-validation-error="<?php esc_attr_e( 'Ticket Type is a required field.', 'event-tickets' ); ?>"
 					/>
@@ -95,6 +101,7 @@ $start_date_errors = array(
 							value="<?php echo esc_attr( $class ); ?>"
 							class="ticket_field ticket_provider"
 							tabindex="-1"
+							<?php checked( true, $provider_class ? $provider_class === $class : false ); ?>
 						>
 						<span>
 							<?php
@@ -117,14 +124,16 @@ $start_date_errors = array(
 				 * @since 4.6
 				 *
 				 * @param int Post ID
-				 * @param null Ticket ID
+				 * @param int Ticket ID
 				 */
-				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, null ); ?>
+				do_action( 'tribe_events_tickets_metabox_edit_main', $post_id, $ticket_id ); ?>
 			</section>
 
 			<div class="accordion">
-				<?php require_once( 'tickets-advanced.php' ); ?>
-				<?php require_once( 'tickets-history.php' ); ?>
+				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/advanced', array( 'post_id' => $post_id, 'ticket_id' => $ticket_id ) ); ?>
+
+				<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/history', array( 'post_id' => $post_id, 'ticket_id' => $ticket_id ) ); ?>
+
 				<?php
 				/**
 				 * Allows for the insertion of additional content sections into the ticket edit form accordion
@@ -132,9 +141,9 @@ $start_date_errors = array(
 				 * @since 4.6
 				 *
 				 * @param int Post ID
-				 * @param null Ticket ID
+				 * @param int Ticket ID
 				 */
-				do_action( 'tribe_events_tickets_metabox_edit_accordion_content', $post_id, null );
+				do_action( 'tribe_events_tickets_metabox_edit_accordion_content', $post_id, $ticket_id );
 				?>
 			</div>
 
@@ -145,11 +154,18 @@ $start_date_errors = array(
 			 * @since 4.6
 			 *
 			 * @param int Post ID
+			 * @param int Ticket ID
 			 */
-			do_action( 'tribe_events_tickets_post_accordion', $post_id );
+			do_action( 'tribe_events_tickets_post_accordion', $post_id, $ticket_id );
 			?>
 			<div class="ticket_bottom">
-				<input type="hidden" name="ticket_id" id="ticket_id" class="ticket_field" />
+				<input
+					type="hidden"
+					name="ticket_id"
+					id="ticket_id"
+					class="ticket_field"
+					value="<?php echo esc_attr( $ticket_id ); ?>"
+				/>
 				<input
 					type="button"
 					id="ticket_form_save"
@@ -168,7 +184,13 @@ $start_date_errors = array(
 					data-depends="#Tribe__Tickets__RSVP_radio"
 					data-condition-is-checked
 				/>
-				<input type="button" id="ticket_form_cancel" class="button-secondary" name="ticket_form_cancel" value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>" />
+				<input
+					type="button"
+					id="ticket_form_cancel"
+					class="button-secondary"
+					name="ticket_form_cancel"
+					value="<?php esc_attr_e( 'Cancel', 'event-tickets' ); ?>"
+				/>
 
 				<?php
 				/**
@@ -177,8 +199,9 @@ $start_date_errors = array(
 				 * @since 4.6
 				 *
 				 * @param int Post ID
+				 * @param int Ticket ID
 				 */
-				do_action( 'tribe_events_tickets_bottom', $post_id );
+				do_action( 'tribe_events_tickets_bottom', $post_id, $ticket_id );
 				?>
 
 				<div id="ticket_bottom_right">
@@ -189,12 +212,12 @@ $start_date_errors = array(
 					 * @since 4.6
 					 *
 					 * @param int Post ID
+					 * @param int Ticket ID
 					 */
-					do_action( 'tribe_events_tickets_bottom_right', $post_id );
+					do_action( 'tribe_events_tickets_bottom_right', $post_id, $ticket_id );
 					?>
 				</div>
 			</div>
-
-		</div><!-- #ticket_form_table -->
-	</div><!-- #ticket_form -->
-</div><!-- #tribe_panel_edit -->
+		</div>
+	</div>
+</div>
