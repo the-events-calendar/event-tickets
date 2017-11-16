@@ -469,8 +469,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 		// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
-		if ( $( '#settings_global_capacity_edit' ).val() ) {
-			$edit_panel.find( '.tribe-ticket-field-event-capacity' ).prop( 'disabled', true );
+		if ( '' == $( '#settings_global_capacity_edit' ).val() ) {
+			$edit_panel.find( '.tribe-ticket-field-event-capacity' ).prop( 'disabled', true ).hide();
 		}
 
 		obj.swapPanel( 'ticket' );
