@@ -11,7 +11,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 	data-save-prompt="<?php echo esc_attr( __( 'You have unsaved changes to your tickets. Discard those changes?', 'event-tickets' ) ); ?>"
 >
 	<div class="<?php echo esc_attr( $container_class ); ?>">
-		<?php if ( ! empty( $total_tickets ) ) : ?>
+		<?php if ( ! empty( $tickets ) ) : ?>
 			<div class="ticket_table_intro">
 				<?php
 				/**
@@ -39,9 +39,8 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 					<?php esc_html_e( 'View Attendees', 'event-tickets' ); ?>
 				</a>
 			</div>
+			<?php tribe( 'tickets.admin.views' )->template( 'editor/list-table', array( 'tickets' => $tickets ) ); ?>
 		<?php endif; ?>
-
-		<?php tribe( 'tickets.admin.views' )->template( 'editor/list-table', array( 'tickets' => $tickets ) ); ?>
 	</div>
 	<div>
 		<?php

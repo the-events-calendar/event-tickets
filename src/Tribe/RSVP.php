@@ -598,7 +598,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 */
 			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty );
 
-
 			// After Adding the Values we Update the Transient
 			Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
@@ -664,8 +663,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param int $event_id
 	 */
 	public function send_tickets_email( $order_id, $event_id = null ) {
-
-
 		$all_attendees = $this->get_attendees_by_id( $order_id );
 
 		$to_send = array();
@@ -1080,10 +1077,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$post_to_delete = get_post( $ticket_id );
 
 		foreach ( (array) $attendees as $attendee ) {
-			if ( $attendee['product_id'] == $ticket_id ) {
-				update_post_meta( $attendee['attendee_id'], $this->deleted_product,
-					esc_html( $post_to_delete->post_title ) );
+			if ( (int) $attendee['product_id'] !== (int) $ticket_id ) {
+				continue;
 			}
+
+			update_post_meta( $attendee['attendee_id'], $this->deleted_product, esc_html( $post_to_delete->post_title ) );
 		}
 
 		// Try to kill the actual ticket/attendee post

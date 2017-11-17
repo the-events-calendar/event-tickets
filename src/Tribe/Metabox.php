@@ -320,7 +320,7 @@ class Tribe__Tickets__Metabox {
 		// Successfully deleted?
 		if ( $return ) {
 			$return = $this->get_panels( $post_id );
-			$return['notice'] = $this->notice( $notice );
+			$return['notice'] = $this->notice( 'ticket-delete' );
 
 			/**
 			 * Fire action when a ticket has been deleted
