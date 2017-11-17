@@ -68,10 +68,11 @@
 	font-size: 1.8em;
 	margin-right: 10px;
 	position: relative;
+	display: none;
 }
 
-.tribe-tickets-editor-table .Tribe__Tickets__RSVP .tribe-handle {
-	display: none;
+.tribe-tickets-editor-table .ui-sortable td.column-primary .tribe-handle {
+	display: block;
 }
 
 .tribe-tickets-editor-table .tribe-mobile-only {
