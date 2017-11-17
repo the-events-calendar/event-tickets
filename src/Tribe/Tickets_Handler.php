@@ -486,6 +486,11 @@ class Tribe__Tickets__Tickets_Handler {
 			$mode = get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 			$totals = $this->get_ticket_totals( $object->ID );
 
+			// When migrating we might get Tickets/RSVP without a mode so we set it to Indy Ticket
+			if ( ! metadata_exists( 'post', $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE ) ) {
+				$mode = 'own';
+			}
+
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
 				$capacity = (int) trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
 				$capacity += $totals['sold'] + $totals['pending'];
