@@ -89,12 +89,12 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @return string The column HTML.
 	 */
 	protected function render_tickets_entry( $post_id ) {
-		$output = '&mdash;';
 		$post = get_post( $post_id );
 		$totals = tribe( 'tickets.handler' )->get_post_totals( $post );
 
+		// Bail with —
 		if ( 0 === $totals['tickets'] ) {
-			return $output;
+			return '&mdash;';
 		}
 
 		$content = sprintf( '<div>%s</div>%s', $totals['sold'], $this->get_percentage_string( $post->ID ) );
@@ -104,38 +104,17 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	}
 
 	/**
-	 * Iterates over an array of tickets to fetch the sale total.
-	 *
-	 * @deprecated TBD
-	 *
-	 * @param Tribe__Tickets__Ticket_Object[] $tickets
-	 *
-	 * @return int The sale total.
-	 */
-	protected function get_sold( $tickets ) {
-		_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.handler" )->get_ticket_totals()' );
-		$sold = 0;
-
-		/** @var Tribe__Tickets__Ticket_Object $ticket */
-		foreach ( $tickets as $ticket ) {
-			$sold += $ticket->qty_sold();
-		}
-
-		return $sold;
-	}
-
-	/**
 	 * Gets the HTML for the percentage string for Attendees Column
 	 *
 	 * @since  TBD  Deprecated the Second Param
 	 *
-	 * @param  int                             $post_id    The current post ID.
-	 * @param  Tribe__Tickets__Ticket_Object[] $deprecated
+	 * @param  int  $post_id    The current post ID.
+	 * @param  null $deprecated
 	 *
 	 * @return string The percentage HTML or an empty string if one of the
 	 *                post tickets has unlimited stock.
 	 */
-	protected function get_percentage_string( $post_id, array $deprecated = array() ) {
+	protected function get_percentage_string( $post_id, $deprecated = null ) {
 		$totals = tribe( 'tickets.handler' )->get_post_totals( $post_id );
 
 		// Bail early for unlimited
@@ -164,4 +143,34 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 
 		return ' <div><small>(' . $percentage . '%)</small></div>';
 	}
+
+	/************************
+	 *                      *
+	 *  Deprecated Methods  *
+	 *                      *
+	 ************************/
+	// @codingStandardsIgnoreStart
+
+	/**
+	 * Iterates over an array of tickets to fetch the sale total.
+	 *
+	 * @deprecated TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object[] $tickets
+	 *
+	 * @return int The sale total.
+	 */
+	protected function get_sold( $tickets ) {
+		_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.handler" )->get_ticket_totals()' );
+		$sold = 0;
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
+		foreach ( $tickets as $ticket ) {
+			$sold += $ticket->qty_sold();
+		}
+
+		return $sold;
+	}
+	// @codingStandardsIgnoreEnd
+
 }
