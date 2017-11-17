@@ -272,11 +272,10 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * The simplest way to grab all the relationships from Any Ticket related objects
+	 * Returns which possible connections an Object might have
 	 *
-	 * On RSVPs Attendees and Orders are the same Post
+	 * @since  TBD
 	 *
-	 * @param  int|WP_Post  $object  Which object you are trying to figure out
 	 * @return object
 	 *         {
 	 *             'provider' => (mixed|null)
@@ -286,7 +285,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *             'order_item' => (int|null)
 	 *         }
 	 */
-	public function get_object_connections( $object ) {
+	public function get_connections_template() {
 		// If you add any new Items here, update the Docblock
 		$connections = (object) array(
 			'provider' => null,
@@ -295,6 +294,25 @@ class Tribe__Tickets__Tickets_Handler {
 			'order' => null,
 			'order_item' => null,
 		);
+
+		return $connections;
+	}
+
+	/**
+	 * The simplest way to grab all the relationships from Any Ticket related objects
+	 *
+	 * On RSVPs Attendees and Orders are the same Post
+	 *
+	 * @since  TBD
+	 *
+	 * @see    self::get_connections_template
+	 *
+	 * @param  int|WP_Post  $object  Which object you are trying to figure out
+	 *
+	 * @return object
+	 */
+	public function get_object_connections( $object ) {
+		$connections = $this->get_connections_template();
 
 		if ( ! $object instanceof WP_Post ) {
 			$object = get_post( $object );

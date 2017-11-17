@@ -476,7 +476,7 @@ class Tribe__Tickets__Metabox {
 	 * the attendee object relates to.
 	 *
 	 * For example, if the attendee was generated for a ticket set up in relation to a
-	 * post of the banana type, the generic capability "edit_posts" will be mapped to
+	 * post of the `banana` type, the generic capability "edit_posts" will be mapped to
 	 * "edit_bananas" or whatever is appropriate.
 	 *
 	 * @internal for internal plugin use only (in spite of having public visibility)
