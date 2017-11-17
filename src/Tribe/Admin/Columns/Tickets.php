@@ -125,7 +125,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	}
 
 	/**
-	 * Iterates over an array of tickets to render the percentage HTML.
+	 * Gets the HTML for the percentage string for Attendees Column
 	 *
 	 * @since  TBD  Deprecated the Second Param
 	 *
