@@ -132,8 +132,8 @@ $start_date_errors = array(
 		 *
 		 * @since 4.6
 		 *
-		 * @param int Post ID
-		 * @param null Ticket ID
+		 * @param int      $post_id  Post ID
+		 * @param int|null $ticket_id  Ticket ID
 		 */
 		do_action( 'tribe_events_tickets_metabox_edit_advanced', $post_id, $ticket_id );
 		?>
