@@ -237,6 +237,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Tweak - Only display admin links in Community Tickets if user is able to access the admin [79565]
 
+= [4.6.1] TBD =
+* Tweak - spacing of message to logged in users to view attendees [92550]
+
 = [4.6] 2017-11-09 =
 
 * New - Fully redesigned ticket editor interface

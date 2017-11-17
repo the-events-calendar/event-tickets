@@ -1,29 +1,35 @@
+// For compatibility purposes we add this
+if ( 'undefined' === typeof tribe.tickets ) {
+	tribe.tickets = {};
+}
+
+tribe.tickets.editor = {};
+
 var ticketHeaderImage = window.ticketHeaderImage || {};
 
 (function( window, $, obj ) {
 	'use strict';
 
 	// base elements
-	var $body                            = $( 'html, body' );
-	var $document                        = $( document );
-	var $tribe_tickets                   = $( document.getElementById( 'tribetickets' ) );
+	var $body          = $( 'html, body' );
+	var $document      = $( document );
+	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
 		return;
 	}
 
-	var $tickets_container               = $( document.getElementById( 'event_tickets' ) );
-	var $post_id                         = $( document.getElementById( 'post_ID' ) );
-	var $publish                         = $( document.getElementById( 'publish' ) );
-
-	var $metaboxBlocker                  = $tribe_tickets.find( '.tribe-tickets-editor-blocker' );
-	var $spinner                         = $tribe_tickets.find( '.spinner' );
+	var $tickets_container = $( document.getElementById( 'event_tickets' ) );
+	var $post_id           = $( document.getElementById( 'post_ID' ) );
+	var $publish           = $( document.getElementById( 'publish' ) );
+	var $metaboxBlocker    = $tribe_tickets.find( '.tribe-tickets-editor-blocker' );
+	var $spinner           = $tribe_tickets.find( '.spinner' );
 
 	// panels
-	var $base_panel                      = $( document.getElementById( 'tribe_panel_base' ) );
-	var $edit_panel                      = $( document.getElementById( 'tribe_panel_edit' ) );
-	var $settings_panel                  = $( document.getElementById( 'tribe_panel_settings' ) );
+	var $base_panel        = $( document.getElementById( 'tribe_panel_base' ) );
+	var $edit_panel        = $( document.getElementById( 'tribe_panel_edit' ) );
+	var $settings_panel    = $( document.getElementById( 'tribe_panel_settings' ) );
 
 	// Datepicker and Timepicker variables
 	var datepickerFormats = [
@@ -75,19 +81,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	};
 
 	/**
-	 * Returns the currently selected default ticketing provider.
-	 * Defaults to RSVP if something fails
-	 *
-	 * @since 4.6
-	 *
-	 * @return string
-	 */
-	function get_default_provider() {
-		var $checked_provider = $tribe_tickets.find( '.tribe-ticket-editor-field-default_provider' ).filter( ':checked' );
-		return ( $checked_provider.length > 0 ) ? $checked_provider.val() : 'Tribe__Tickets__RSVP';
-	}
-
-	/**
 	 * Sets the ticket edit form provider to the currently selected default ticketing provider.
 	 * Defaults to RSVP if something fails
 	 *
@@ -111,22 +104,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	}
 
 	/**
-	 * Returns the current global capacity (via the settings panel)
-	 *
-	 * @since 4.6
-	 *
-	 * @return {number}
-	 */
-	function get_global_cap() {
-		var $global_capacity_edit = $( document.getElementById( 'settings_global_capacity_edit' ) );
-		return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : 0;
-	}
-
-	/**
 	 * If the user attempts to nav away without saving global stock setting
 	 * changes then try to bring this to their attention!
 	 */
-	var beforeUnload = function( event ) {
+	obj.beforeUnload = function( event ) {
 		var returnValue = false;
 
 		// If we are not on the base panel we alert the user about leaving
@@ -212,7 +193,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$panel.attr( 'aria-hidden', false );
 
 		if ( ! $panel.is( $base_panel ) ) {
-			$( window ).on( 'beforeunload.tribe', beforeUnload );
+			$( window ).on( 'beforeunload.tribe', obj.beforeUnload );
 		} else {
 			$( window ).off( 'beforeunload.tribe' );
 		}
@@ -364,6 +345,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		}
 
+		// Setup Drag and Drop
+		if (
+			tribe.tickets.table
+			&& 0 !== $base_panel.find( 'tribe-tickets-editor-table-tickets-body tr' ).length
+		) {
+			tribe.tickets.table.toggle_sortable();
+		}
+
 		$tribe_tickets.find( tribe.validation.selectors.item ).validation();
 
 		// Make sure we display the correct Fields and things
@@ -482,7 +471,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 		// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
-		$edit_panel.find( '.tribe-ticket-field-event-capacity' ).prop( 'disabled', true );
+		if ( '' === $( '#settings_global_capacity_edit' ).val() ) {
+			$edit_panel.find( '.tribe-ticket-field-event-capacity' ).prop( 'disabled', true ).hide();
+		}
 
 		obj.swapPanel( 'ticket' );
 
@@ -689,9 +680,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 	} );
 
-	/** Track changes to the global stock level on the Settings form.  */
-	$document.on( 'change', '#tribe-tickets-global-stock-level', changeEventCapacity );
-
 	/* Remove header image action */
 	$document.on( 'click', '#tribe_ticket_header_remove', function( e ) {
 		e.preventDefault();
@@ -705,4 +693,4 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		obj.setupPanels();
 	} );
 
-} )( window, jQuery, {} );
+} )( window, jQuery, tribe.tickets.editor );

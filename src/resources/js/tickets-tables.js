@@ -1,14 +1,17 @@
-( function( window, $ ) {
-	var $table         = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( '.tribe-tickets-editor-table-tickets-body' );
-	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
+// For compatibility purposes we add this
+if ( 'undefined' === typeof tribe.tickets ) {
+	tribe.tickets = {};
+}
 
+tribe.tickets.table = {};
+( function( window, $, obj ) {
 	/**
 	* Implemnts jQuery drag-n-drop for the ticket table.
 	* Stores order in the #tickets_order field.
 	*
 	* @param jQuery object $element parent element to make sortable ( var $table above )
 	*/
-	function make_sortable( $element ) {
+	obj.make_sortable = function( $element ) {
 		// If we don't have at least 2 sortable items, don't sort.
 		if ( 2 > $element.find( 'tr:not(.Tribe__Tickets__RSVP)' ).length ) {
 			return;
@@ -33,6 +36,10 @@
 			handle: '.tribe-handle',
 			helper: fixHelper,
 			update: function( event, ui ) {
+				if ( tribe.tickets.editor ) {
+					$( window ).off( 'beforeunload.tribe' );
+				}
+
 				var $tbody = $( this );
 				var $items = $tbody.children( 'tr' );
 
@@ -40,39 +47,39 @@
 					var $item = $( item );
 					$item.find( '.tribe-ticket-field-order' ).val( k );
 				} );
+
+				if ( tribe.tickets.editor ) {
+					$( window ).on( 'beforeunload.tribe', tribe.tickets.editor.beforeUnload );
+				}
 			}
 		} );
+
 		$element.disableSelection();
 		$element.find( '.table-header' ).disableSelection();
 		$element.sortable( 'option', 'disabled', false );
-	}
+	};
 
-	function tribe_toggle_sortable() {
+	obj.toggle_sortable = function() {
+		var $table         = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( '.tribe-tickets-editor-table-tickets-body' );
+		var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
+
 		if ( window.matchMedia( '( min-width: 786px )' ).matches ) {
 			if ( ! $table.hasClass( 'ui-sortable' ) ) {
-				make_sortable( $table );
+				obj.make_sortable( $table );
 			} else {
 				$table.sortable( 'enable' );
 			}
-		} else {
-			if ( $table.hasClass( 'ui-sortable' ) ) {
-				$table.sortable( 'disable' );
-			}
+		} else if ( $table.hasClass( 'ui-sortable' ) ) {
+			$table.sortable( 'disable' );
 		}
-	}
+	};
 
 	$( document ).ready( function () {
 		// trigger once at start
-		tribe_toggle_sortable();
+		obj.toggle_sortable();
 
 		// disable/init depending on screen size
-		var maybeSortable = _.debounce( tribe_toggle_sortable, 300 );
+		var maybeSortable = _.debounce( obj.toggle_sortable, 300 );
 		$( window ).resize( maybeSortable );
-
-		$tribe_tickets.on( 'tribe-tickets-refresh-tables', function( data ) {
-			$table = $( document.getElementById( 'tribe_ticket_list_table' ) ).find( '.tribe-tickets-editor-table-tickets-body' );
-			// trigger on table refresh
-			tribe_toggle_sortable();
-		});
-	});
-})( window, jQuery );
+	} );
+} )( window, jQuery, tribe.tickets.table );
