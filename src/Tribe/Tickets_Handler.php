@@ -708,6 +708,49 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Gets the Total of Stock, Sold and Pending for a given Post
+	 * And if there is any Unlimited
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int|WP_Post  $post  Which ticket
+	 *
+	 * @return array
+	 */
+	public function get_post_totals( $post ) {
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post );
+		}
+
+		if ( ! $post instanceof WP_Post ) {
+			return false;
+		}
+
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
+		$totals  = array(
+			'has_unlimited' => false,
+			'tickets' => count( $tickets ),
+			'sold' => 0,
+			'pending' => 0,
+			'stock' => 0,
+		);
+
+		foreach ( $tickets as $ticket ) {
+			$ticket_totals = $this->get_ticket_totals( $ticket->ID );
+			$totals['sold'] += $ticket_totals['sold'];
+			$totals['pending'] += $ticket_totals['pending'];
+			$totals['stock'] += $ticket_totals['stock'];
+
+			// check if we have any unlimited tickets
+			if ( ! $totals['has_unlimited'] ) {
+				$totals['has_unlimited'] = -1 === tribe_tickets_get_capacity( $ticket->ID );
+			}
+		}
+
+		return $totals;
+	}
+
+	/**
 	 * Returns whether a ticket has unlimited capacity
 	 *
 	 * @since   4.6
