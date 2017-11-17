@@ -1,3 +1,10 @@
+// For compatibility purposes we add this
+if ( 'undefined' === typeof tribe.tickets ) {
+	tribe.tickets = {};
+}
+
+tribe.tickets.editor = {};
+
 var ticketHeaderImage = window.ticketHeaderImage || {};
 
 (function( window, $, obj ) {
@@ -126,7 +133,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	 * If the user attempts to nav away without saving global stock setting
 	 * changes then try to bring this to their attention!
 	 */
-	var beforeUnload = function( event ) {
+	obj.beforeUnload = function( event ) {
 		var returnValue = false;
 
 		// If we are not on the base panel we alert the user about leaving
@@ -212,7 +219,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$panel.attr( 'aria-hidden', false );
 
 		if ( ! $panel.is( $base_panel ) ) {
-			$( window ).on( 'beforeunload.tribe', beforeUnload );
+			$( window ).on( 'beforeunload.tribe', obj.beforeUnload );
 		} else {
 			$( window ).off( 'beforeunload.tribe' );
 		}
@@ -362,6 +369,14 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			if ( $tribe_tickets.width() < $tiximg.width() ) {
 				$tiximg.css( 'width', '95%' );
 			}
+		}
+
+		// Setup Drag and Drop
+		if (
+			tribe.tickets.table
+			&& 0 !== $base_panel.find( 'tribe-tickets-editor-table-tickets-body tr' ).length
+		) {
+			tribe.tickets.table.toggle_sortable();
 		}
 
 		$tribe_tickets.find( tribe.validation.selectors.item ).validation();
@@ -705,4 +720,4 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		obj.setupPanels();
 	} );
 
-} )( window, jQuery, {} );
+} )( window, jQuery, tribe.tickets.editor );
