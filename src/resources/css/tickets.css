@@ -8,8 +8,9 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
-/* = WooTickets Admin Styles
-============================================= */
+.tribe-tickets-column-attendees-link {
+	display: inline-block;
+}
 
 #ticket_form input[type=radio] {
 	margin-right: 5px;

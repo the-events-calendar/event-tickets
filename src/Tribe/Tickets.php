@@ -1172,32 +1172,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Tests if the user has the specified capability in relation to whatever post type
-		 * the attendee object relates to.
-		 *
-		 * For example, if the attendee was generated for a ticket set up in relation to a
-		 * post of the banana type, the generic capability "edit_posts" will be mapped to
-		 * "edit_bananas" or whatever is appropriate.
-		 *
-		 * @internal for internal plugin use only (in spite of having public visibility)
-		 *
-		 * @see Tribe__Tickets__Tickets_Handler::user_can()
-		 *
-		 * @param  string $generic_cap
-		 * @param  int    $attendee_id
-		 * @return boolean
-		 */
-		public function user_can( $generic_cap, $attendee_id ) {
-			$post_id = $this->get_event_id_from_attendee_id( $attendee_id );
-
-			if ( empty( $post_id ) ) {
-				return false;
-			}
-
-			return tribe( 'tickets.attendees' )->user_can( $generic_cap, $post_id );
-		}
-
-		/**
 		 * Given a valid attendee ID, returns the event ID it relates to or else boolean false
 		 * if it cannot be determined.
 		 *
@@ -1866,6 +1840,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *                      *
 		 ************************/
 		// @codingStandardsIgnoreStart
+
+		/**
+		 * Tests if the user has the specified capability in relation to whatever post type
+		 * the attendee object relates to.
+		 *
+		 * For example, if the attendee was generated for a ticket set up in relation to a
+		 * post of the banana type, the generic capability "edit_posts" will be mapped to
+		 * "edit_bananas" or whatever is appropriate.
+		 *
+		 * @internal for internal plugin use only (in spite of having public visibility)
+		 *
+		 * @deprecated  TBD
+		 *
+		 * @see    tribe( 'tickets.attendees' )->user_can
+		 *
+		 * @param  string $generic_cap
+		 * @param  int    $attendee_id
+		 *
+		 * @return boolean
+		 */
+		public function user_can( $generic_cap, $attendee_id ) {
+			_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.metabox" )->user_can( $generic_cap, $attendee_id )' );
+			return tribe( 'tickets.metabox' )->user_can( $generic_cap, $attendee_id );
+		}
 
 		/**
 		 * Check and set global capacity options for the "event" post

@@ -272,6 +272,121 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * The simplest way to grab all the relationships from Any Ticket related objects
+	 *
+	 * On RSVPs Attendees and Orders are the same Post
+	 *
+	 * @param  int|WP_Post  $object  Which object you are trying to figure out
+	 * @return object
+	 *         {
+	 *             'provider' => (mixed|null)
+	 *             'event' => (int|null)
+	 *             'product' => (int|null)
+	 *             'order' => (int|string|null)
+	 *             'order_item' => (int|null)
+	 *         }
+	 */
+	public function get_object_connections( $object ) {
+		// If you add any new Items here, update the Docblock
+		$connections = (object) array(
+			'provider' => null,
+			'event' => null,
+			'product' => null,
+			'order' => null,
+			'order_item' => null,
+		);
+
+		if ( ! $object instanceof WP_Post ) {
+			$object = get_post( $object );
+		}
+
+		if ( ! $object instanceof WP_Post ) {
+			return $connections;
+		}
+
+		$provider_index = array(
+			'rsvp' => 'Tribe__Tickets__RSVP',
+			'woo' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			'edd' => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+		);
+
+		$relationships = array(
+			'event' => array(
+				// RSVP
+				'_tribe_rsvp_event' => 'rsvp',
+				'_tribe_rsvp_for_event' => 'rsvp',
+
+				// EDD
+				'_tribe_eddticket_event' => 'edd',
+				'_tribe_eddticket_for_event' => 'edd',
+
+				// Woo
+				'_tribe_wooticket_event' => 'woo',
+				'_tribe_wooticket_for_event' => 'woo',
+			),
+			'product' => array(
+				// RSVP
+				'_tribe_rsvp_product' => 'rsvp',
+
+				// EDD
+				'_tribe_eddticket_product' => 'edd',
+
+				// Woo
+				'_tribe_wooticket_product' => 'woo',
+			),
+			'order' => array(
+				// RSVP
+				'_tribe_rsvp_order' => 'rsvp',
+
+				// EDD
+				'_tribe_eddticket_order' => 'edd',
+
+				// Woo
+				'_tribe_wooticket_order' => 'woo',
+
+			),
+			'order_item' => array(
+				// Woo
+				'_tribe_wooticket_order_item' => 'woo',
+			),
+		);
+
+		foreach ( $relationships as $what => $keys ) {
+			foreach ( $keys as $key => $provider ) {
+				// Skip any key that doens't exist
+				if ( ! metadata_exists( 'post', $object->ID, $key ) ) {
+					continue;
+				}
+
+				// When we don't have a provider yet we test and fetch it
+				if ( ! $connections->provider && isset( $provider_index[ $provider ] ) ) {
+					$connections->provider = $provider_index[ $provider ];
+				}
+
+				// Fetch it
+				$meta = get_post_meta( $object->ID, $key, true );
+
+				// Makes sure we have clean data
+				if ( empty( $meta ) ) {
+					$meta = null;
+				} elseif ( is_numeric( $meta ) ) {
+					$meta = (int) $meta;
+				}
+
+				// The meta value as a connection
+				$connections->{$what} = $meta;
+			}
+		}
+
+		// If we have a valid provider get it
+		if ( $connections->provider && class_exists( $connections->provider ) ) {
+			$connections->provider = call_user_func( array( $connections->provider, 'get_instance' ) );
+		}
+
+		return $connections;
+	}
+
+	/**
 	 * Gets the Tickets from a Post
 	 *
 	 * @since  4.6

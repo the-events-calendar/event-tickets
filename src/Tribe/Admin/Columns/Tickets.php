@@ -99,7 +99,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		$content = sprintf( '<div>%s</div>%s', $this->get_sold( $tickets ), $this->get_percentage_string( $post_id, $tickets ) );
 		$attendees_link = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
 
-		return sprintf( '<a href="%s" target="_blank">%s</a>', $attendees_link, $content );
+		return sprintf( '<a href="%s" target="_blank" class="tribe-tickets-column-attendees-link">%s</a>', $attendees_link, $content );
 	}
 
 	/**
