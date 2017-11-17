@@ -4,7 +4,7 @@
 	data-condition-is-checked
 >
 	<label
-		for="Tribe__Tickets__RSVP_stock"
+		for="Tribe__Tickets__RSVP_capacity"
 		class="ticket_form_label ticket_form_left"
 	>
 		<?php esc_html_e( 'Capacity:', 'event-tickets' ); ?>
