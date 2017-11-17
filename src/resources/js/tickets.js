@@ -4,26 +4,25 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 	'use strict';
 
 	// base elements
-	var $body                            = $( 'html, body' );
-	var $document                        = $( document );
-	var $tribe_tickets                   = $( document.getElementById( 'tribetickets' ) );
+	var $body          = $( 'html, body' );
+	var $document      = $( document );
+	var $tribe_tickets = $( document.getElementById( 'tribetickets' ) );
 
 	// Bail if we don't have what we need
 	if ( 0 === $tribe_tickets.length ) {
 		return;
 	}
 
-	var $tickets_container               = $( document.getElementById( 'event_tickets' ) );
-	var $post_id                         = $( document.getElementById( 'post_ID' ) );
-	var $publish                         = $( document.getElementById( 'publish' ) );
-
-	var $metaboxBlocker                  = $tribe_tickets.find( '.tribe-tickets-editor-blocker' );
-	var $spinner                         = $tribe_tickets.find( '.spinner' );
+	var $tickets_container = $( document.getElementById( 'event_tickets' ) );
+	var $post_id           = $( document.getElementById( 'post_ID' ) );
+	var $publish           = $( document.getElementById( 'publish' ) );
+	var $metaboxBlocker    = $tribe_tickets.find( '.tribe-tickets-editor-blocker' );
+	var $spinner           = $tribe_tickets.find( '.spinner' );
 
 	// panels
-	var $base_panel                      = $( document.getElementById( 'tribe_panel_base' ) );
-	var $edit_panel                      = $( document.getElementById( 'tribe_panel_edit' ) );
-	var $settings_panel                  = $( document.getElementById( 'tribe_panel_settings' ) );
+	var $base_panel        = $( document.getElementById( 'tribe_panel_base' ) );
+	var $edit_panel        = $( document.getElementById( 'tribe_panel_edit' ) );
+	var $settings_panel    = $( document.getElementById( 'tribe_panel_settings' ) );
 
 	// Datepicker and Timepicker variables
 	var datepickerFormats = [
@@ -95,18 +94,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		 }
 
 		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger( 'change' );
-	}
-
-	/**
-	 * Returns the current global capacity (via the settings panel)
-	 *
-	 * @since 4.6
-	 *
-	 * @return {number}
-	 */
-	function get_global_cap() {
-		var $global_capacity_edit = $( document.getElementById( 'settings_global_capacity_edit' ) );
-		return ( 0 < $global_capacity_edit.length && 0 < $global_capacity_edit.val() ) ? $global_capacity_edit.val() : 0;
 	}
 
 	/**
@@ -469,7 +456,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		$edit_panel.find( '.tribe-dependency' ).trigger( 'verify.dependency' );
 
 		// We have to trigger this after verify.dependency, as it enables this field and we want it disabled
-		if ( '' == $( '#settings_global_capacity_edit' ).val() ) {
+		if ( '' === $( '#settings_global_capacity_edit' ).val() ) {
 			$edit_panel.find( '.tribe-ticket-field-event-capacity' ).prop( 'disabled', true ).hide();
 		}
 
