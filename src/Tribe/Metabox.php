@@ -363,7 +363,7 @@ class Tribe__Tickets__Metabox {
 		// Pass the control to the child object
 		$did_checkin = $provider->checkin( $order_id );
 
-		$provider->maybe_update_attendees_cache( $did_checkin );
+		$provider->clear_attendees_cache( $did_checkin );
 
 		wp_send_json_success( $did_checkin );
 	}
@@ -399,9 +399,7 @@ class Tribe__Tickets__Metabox {
 		// Pass the control to the child object
 		$did_uncheckin = $provider->uncheckin( $order_id );
 
-		if ( class_exists( 'Tribe__Events__Main' ) ) {
-			$provider->maybe_update_attendees_cache( $did_uncheckin );
-		}
+		$provider->clear_attendees_cache( $did_uncheckin );
 
 		wp_send_json_success( $did_uncheckin );
 	}
@@ -472,6 +470,36 @@ class Tribe__Tickets__Metabox {
 
 		return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
 	}
+
+	/**
+	 * Tests if the user has the specified capability in relation to whatever post type
+	 * the attendee object relates to.
+	 *
+	 * For example, if the attendee was generated for a ticket set up in relation to a
+	 * post of the `banana` type, the generic capability "edit_posts" will be mapped to
+	 * "edit_bananas" or whatever is appropriate.
+	 *
+	 * @internal for internal plugin use only (in spite of having public visibility)
+	 *
+	 * @since  TBD
+	 *
+	 * @see    tribe( 'tickets.attendees' )->user_can
+	 *
+	 * @param  string $generic_cap
+	 * @param  int    $attendee_id
+	 *
+	 * @return boolean
+	 */
+	public function user_can( $generic_cap, $attendee_id ) {
+		$connections = tribe( 'tickets.handler' )->get_object_connections( $attendee_id );
+
+		if ( ! $connections->event ) {
+			return false;
+		}
+
+		return tribe( 'tickets.attendees' )->user_can( $generic_cap, $connections->event );
+	}
+
 
 	/**
 	 * Returns whether a class name is a valid active module/provider.
