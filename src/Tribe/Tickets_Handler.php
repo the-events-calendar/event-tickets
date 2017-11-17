@@ -586,6 +586,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
 		$totals  = array(
 			'has_unlimited' => false,
+			'tickets' => count( $tickets ),
 			'sold' => 0,
 			'pending' => 0,
 			'stock' => 0,

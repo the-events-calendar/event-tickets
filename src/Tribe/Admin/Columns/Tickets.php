@@ -90,14 +90,15 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 */
 	protected function render_tickets_entry( $post_id ) {
 		$output = '&mdash;';
+		$post = get_post( $post );
+		$totals = tribe( 'tickets.handler' )->get_post_totals( $post );
 
-		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
-		if ( empty( $tickets ) ) {
+		if ( 0 === $totals['tickets'] ) {
 			return $output;
 		}
 
-		$content = sprintf( '<div>%s</div>%s', $this->get_sold( $tickets ), $this->get_percentage_string( $post_id ) );
-		$attendees_link = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
+		$content = sprintf( '<div>%s</div>%s', $totals['sold'], $this->get_percentage_string( $post->ID ) );
+		$attendees_link = tribe( 'tickets.attendees' )->get_report_link( $post );
 
 		return sprintf( '<a href="%s" target="_blank">%s</a>', $attendees_link, $content );
 	}
