@@ -90,7 +90,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 */
 	protected function render_tickets_entry( $post_id ) {
 		$output = '&mdash;';
-		$post = get_post( $post );
+		$post = get_post( $post_id );
 		$totals = tribe( 'tickets.handler' )->get_post_totals( $post );
 
 		if ( 0 === $totals['tickets'] ) {
