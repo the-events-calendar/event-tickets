@@ -3,8 +3,8 @@
 Contributors: ModernTribe, borkweb, aguseo, barry.hughes, bordoni, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, tribecari, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
-Tested up to: 4.8.4
-Stable tag: 4.6
+Tested up to: 4.9
+Stable tag: 4.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -232,6 +232,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * [Trisha Salas](https://profiles.wordpress.org/trishasalas)
 
 == Changelog ==
+
+= [4.6.1] TBD =
+* Tweak - spacing of message to logged in users to view attendees [92550]
 
 = [4.6] 2017-11-09 =
 
