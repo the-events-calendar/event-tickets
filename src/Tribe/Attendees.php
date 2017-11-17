@@ -140,6 +140,16 @@ class Tribe__Tickets__Attendees {
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
 
+		/**
+		 * Filter the Attendee Report Url
+		 *
+		 * @since TDB
+		 *
+		 * @param string $url  a url to attendee report
+		 * @param int    $post ->ID post id
+		 */
+		$url = apply_filters( 'tribe_ticket_filter_attendee_report_link', $url, $post->ID );
+
 		return $url;
 	}
 
