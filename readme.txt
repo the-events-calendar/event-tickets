@@ -235,8 +235,15 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.6.1] TDB =
 
+* Tweak - Prevents unnecessary AJAX requests when using tickets editor [88642]
+* Tweak - Removes weird clearing of fields when canceling or saving Tickets [88642]
+* Tweak - Allow saving of Ticket Editor contents when Updating the Event [91760]
+* Tweak - Included more hooks via the new Template class for the Ticket Editor: `tribe_template_file`, `tribe_template_before_include`, `tribe_template_after_include` and `tribe_template_html` [91760]
 * Tweak - Only display admin links in Community Tickets if user is able to access the admin [79565]
 * Tweak - spacing of message to logged in users to view attendees [92550]
+* Fix - RSVP and Tickets migration from pre-4.6 updates capacity corretly for all cases now (props to Uwe Matern) [93231]
+* Fix - Attendees column for events display correctly the percentages now [92287]
+* Fix - Tickets Editor now has more support for Accessibility [80651]
 
 = [4.6] 2017-11-09 =
 
