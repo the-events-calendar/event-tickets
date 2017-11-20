@@ -138,7 +138,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		}
 		// In all other cases, calculate the actual percentage
 		else {
-			$percentage = round( $totals['sold'] * 100 / $stock, 0 );
+			$percentage = round( ( 100 / $totals['capacity'] ) * $totals['sold'], 0 );
 		}
 
 		return ' <div><small>(' . $percentage . '%)</small></div>';

@@ -730,6 +730,7 @@ class Tribe__Tickets__Tickets_Handler {
 		$totals  = array(
 			'has_unlimited' => false,
 			'tickets' => count( $tickets ),
+			'capacity' => $this->get_total_event_capacity( $post ),
 			'sold' => 0,
 			'pending' => 0,
 			'stock' => 0,
