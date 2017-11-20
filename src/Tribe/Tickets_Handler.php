@@ -618,6 +618,7 @@ class Tribe__Tickets__Tickets_Handler {
 			// In here we deal with Tickets migration from legacy
 			$mode = get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 			$totals = $this->get_ticket_totals( $object->ID );
+			$connections = $this->get_object_connections( $object );
 
 			// When migrating we might get Tickets/RSVP without a mode so we set it to Indy Ticket
 			if ( ! metadata_exists( 'post', $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE ) ) {
@@ -627,11 +628,19 @@ class Tribe__Tickets__Tickets_Handler {
 			if ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode ) {
 				$capacity = (int) trim( get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true ) );
 				$capacity += $totals['sold'] + $totals['pending'];
-			} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode  ) {
+			} elseif ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode ) {
 				// When using Global we don't set a ticket cap
 				$capacity = null;
-			} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $mode  ) {
-				$capacity = array_sum( $totals );
+			} elseif ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $mode ) {
+				/**
+				 * Due to a bug in version 4.5.6 of our code RSVP doesnt lower the Stock
+				 * so when setting up the capacity we need to avoid counting solds
+				 */
+				if ( 'Tribe__Tickets__RSVP' === get_class( $connections->provider ) ) {
+					$capacity = $totals['stock'];
+				} else {
+					$capacity = array_sum( $totals );
+				}
 			} else {
 				$capacity = -1;
 			}
