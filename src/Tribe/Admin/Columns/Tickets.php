@@ -129,7 +129,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		$stock = $global_stock_enabled ? $global_stock : $totals['stock'];
 
 		// If there have been zero sales we need not do any further arithmetic
-		if ( 0 === $totals['sold'] ) {
+		if ( 0 === $totals['sold'] || 0 === $totals['capacity'] ) {
 			$percentage = 0;
 		}
 		// If $stock is zero (and items *have* been sold per the above conditional) we can assume 100%
