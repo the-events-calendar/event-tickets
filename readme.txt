@@ -249,6 +249,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Tweak - Added actions: `tribe_tickets_save_post`
 * Tweak - Removed actions: `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`
 * Tweak - Changed views: `tickets/email`, `tickets/orders-link`
+* Language - 10 new strings added, 132 updated, 0 fuzzied, and 9 obsoleted
 
 = [4.6] 2017-11-09 =
 
