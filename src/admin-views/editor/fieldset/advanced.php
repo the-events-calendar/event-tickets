@@ -13,8 +13,17 @@ if ( ! isset( $ticket_id ) ) {
 	$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 	$ticket = $provider->get_ticket( $post_id, $ticket_id );
 
-	$start_date = Tribe__Date_Utils::date_only( $ticket->start_date, false, $datepicker_format );
-	$end_date = Tribe__Date_Utils::date_only( $ticket->end_date, false, $datepicker_format );
+	if ( $ticket->end_date ) {
+		$start_date = Tribe__Date_Utils::date_only( $ticket->start_date, false, $datepicker_format );
+	} else {
+		$start_date = null;
+	}
+
+	if ( $ticket->end_date ) {
+		$end_date = Tribe__Date_Utils::date_only( $ticket->end_date, false, $datepicker_format );
+	} else {
+		$end_date = null;
+	}
 }
 
 $timepicker_step = 30;
@@ -26,7 +35,7 @@ $timepicker_round = '00:00:00';
 
 $start_date_errors = array(
 	'is-required' => __( 'Start sale date cannot be empty.', 'event-tickets' ),
-	'is-greater-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
+	'is-less-or-equal-to' => __( 'Start sale date cannot be greater than End Sale date', 'event-tickets' ),
 );
 ?>
 <button class="accordion-header tribe_advanced_meta">
