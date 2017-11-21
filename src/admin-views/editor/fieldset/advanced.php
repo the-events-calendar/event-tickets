@@ -13,7 +13,7 @@ if ( ! isset( $ticket_id ) ) {
 	$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 	$ticket = $provider->get_ticket( $post_id, $ticket_id );
 
-	if ( $ticket->end_date ) {
+	if ( $ticket->start_date ) {
 		$start_date = Tribe__Date_Utils::date_only( $ticket->start_date, false, $datepicker_format );
 	} else {
 		$start_date = null;
