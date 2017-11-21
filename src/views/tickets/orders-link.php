@@ -6,9 +6,7 @@
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-link.php
  *
- * @package TribeEventsCalendar
- * @version 4.5.5
- *
+ * @version 4.6.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

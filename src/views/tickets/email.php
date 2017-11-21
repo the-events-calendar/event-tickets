@@ -15,8 +15,7 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @package TribeEventsCalendar
- * @version 4.6
+ * @version 4.6.1
  *
  */
 ?>

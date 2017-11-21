@@ -244,6 +244,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - RSVP and Tickets migration from pre-4.6 updates capacity corretly for all cases now (props to Uwe Matern) [93231]
 * Fix - Attendees column for events display correctly the percentages now [92287]
 * Fix - Tickets Editor now has more support for Accessibility [80651]
+* Tweak - Added filters: `tribe_ticket_filter_attendee_report_link`, `tribe_tickets_attendees_show_title`
+* Tweak - Removed filters: `tribe_tickets_default_end_date`, `tribe_tickets_ajax_refresh_settings`, `tribe_tickets_can_update_ticket_price`, `tribe_tickets_disallow_update_ticket_price_message`, `tribe_events_tickets_metabox_edit_attendee`
+* Tweak - Added actions: `tribe_tickets_save_post`
+* Tweak - Removed actions: `tribe_events_tickets_pre_ticket_list`, `tribe_events_tickets_post_ticket_list`
+* Tweak - Changed views: `tickets/email`, `tickets/orders-link`
 
 = [4.6] 2017-11-09 =
 
