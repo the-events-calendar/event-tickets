@@ -1724,6 +1724,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			update_post_meta( $attendee_id, $this->attendee_user_id, (int) $user_id );
 		}
 
+		/**
+		 * Prints the front-end tickets form in the post content.
+		 *
+		 * @param string $content The post original content.
+		 *
+		 * @return string The updated content.
+		 */
 		public function front_end_tickets_form_in_content( $content ) {
 			if ( ! $this->should_inject_ticket_form_into_post_content() ) {
 				return $content;
