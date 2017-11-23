@@ -145,11 +145,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return Tribe__Tickets__RSVP
 	 */
 	public static function get_instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self;
-		}
-
-		return self::$instance;
+		return tribe( 'tickets.rsvp' );
 	}
 
 	/**
