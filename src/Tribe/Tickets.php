@@ -269,7 +269,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
-		public function get_event_reports_link( $post_id ) {
+		public function get_event_reports_link( $post_id ) {}
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
@@ -282,7 +282,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {
+		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
 
 		/**
 		 * Returns a single ticket
@@ -293,7 +293,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function get_ticket( $post_id, $ticket_id ) {
+		public function get_ticket( $post_id, $ticket_id ) {}
 
 		/**
 		 * Retrieve the Query args to fetch all the Tickets related to a post
@@ -549,7 +549,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function delete_ticket( $post_id, $ticket_id ) {
+		public function delete_ticket( $post_id, $ticket_id ) {}
 
 		/**
 		 * Saves a ticket
@@ -561,7 +561,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $raw_data
 		 * @return mixed
 		 */
-		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
+		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {}
 
 		/**
 		 * Returns all the tickets for an event
@@ -721,7 +721,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $ticket_id ID of ticket post
 		 * @return mixed
 		 */
-		public function do_metabox_capacity_options( $post_id, $ticket_id ) {
+		public function do_metabox_capacity_options( $post_id, $ticket_id ) {}
 
 		/**
 		 * Renders the front end form for selling tickets in the event single page
