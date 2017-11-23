@@ -220,7 +220,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public function start_date() {
 			$start_date = null;
 			if ( ! empty( $this->start_date ) ) {
-				$start_date = strtotime( $this->start_date );
+				$start_date = $this->start_date;
+
+				if ( ! empty( $this->start_time ) ) {
+					$start_date .= ' ' . $this->start_time;
+				}
+
+				$start_date = strtotime( $start_date );
 			}
 
 			return $start_date;
@@ -235,8 +241,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function end_date() {
 			$end_date = null;
+
 			if ( ! empty( $this->end_date ) ) {
-				$end_date = strtotime( $this->end_date );
+				$end_date = $this->end_date;
+
+				if ( ! empty( $this->end_time ) ) {
+					$end_date .= ' ' . $this->end_time;
+				}
+
+				$end_date = strtotime( $end_date );
 			}
 
 			return $end_date;
