@@ -29,11 +29,9 @@ $currency_code_options = array(
 $pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
 if ( ! empty( $pages ) ) {
 	$pages        = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
-	$page_ids     = array_keys( $pages );
 	$default_page = reset( $pages );
 } else {
-	$pages        = array();
-	$page_ids     = array();
+	$pages        = array( 0 => __( 'There are no published pages', 'event-tickets' ) );
 	$default_page = null;
 }
 
