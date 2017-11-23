@@ -53,6 +53,15 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
 		?>
+
+		<button
+			id="ticket_form_toggle"
+			class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+			aria-label="<?php esc_attr_e( 'Add a new ticket', 'event-tickets' ); ?>"
+		>
+			<?php esc_html_e( 'New ticket', 'event-tickets-plus' ); ?>
+		</button>
+
 		<button
 			id="rsvp_form_toggle"
 			class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
