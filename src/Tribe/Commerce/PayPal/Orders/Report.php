@@ -157,8 +157,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		);
 
 		add_filter( 'tribe_filter_attendee_page_slug', array( $this, 'add_attendee_resources_page_slug' ) );
-		add_action( 'admin_enqueue_scripts', array( tribe( 'tickets.handler' ), 'attendees_page_load_css_js' ) );
-		add_action( 'admin_enqueue_scripts', array( tribe( 'tickets.handler' ), 'attendees_page_load_pointers' ) );
+		add_action( 'admin_enqueue_scripts', array( tribe( 'tickets.attendees' ), 'enqueue_assets' ) );
+		add_action( 'admin_enqueue_scripts', array( tribe( 'tickets.attendees' ), 'load_pointers' ) );
 		add_action( 'load-' . $this->orders_page, array( $this, 'attendees_page_screen_setup' ) );
 	}
 
