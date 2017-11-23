@@ -26,10 +26,16 @@ $currency_code_options = array(
 	'USD' => __( 'U.S. Dollar (USD)', 'event-tickets' ),
 );
 
-$pages        = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
-$pages        = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
-$page_ids     = array_keys( $pages );
-$default_page = reset( $pages );
+$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
+if ( ! empty( $pages ) ) {
+	$pages        = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
+	$page_ids     = array_keys( $pages );
+	$default_page = reset( $pages );
+} else {
+	$pages        = array();
+	$page_ids     = array();
+	$default_page = null;
+}
 
 $tpp_success_shortcode = 'tribe-tpp-success';
 
