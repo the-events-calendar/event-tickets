@@ -367,7 +367,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		$attendee_post_args = apply_filters( 'tribe_tickets_register_attendee_post_type_args', $attendee_post_args );
 
-		register_post_type( $this->attendee_object, $attendee_post_args );
+		register_post_type( self::ATTENDEE_OBJECT, $attendee_post_args );
 	}
 
 	/**
