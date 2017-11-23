@@ -24,7 +24,6 @@ class Tribe__Tickets__Data_API {
 	 * Setup activate ticket classes and field for data api
 	 */
 	protected function setup_data() {
-
 		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
 			$provider = call_user_func( array( $module_class, 'get_instance' ) );
 
@@ -34,7 +33,6 @@ class Tribe__Tickets__Data_API {
 			 *
 			 * So we have to construct the constant name using a string and use the `constant` function.
 			 */
-			$instance = $module_class->get_instance();
 			$types['order']   = constant( "$module_class::ORDER_OBJECT" );
 			$types['product'] = $provider->ticket_object;
 			$types['ticket']  = constant( "$module_class::ATTENDEE_OBJECT" );

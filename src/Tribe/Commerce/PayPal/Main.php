@@ -13,33 +13,33 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @var string
 	 */
-	public $attendee_object = 'tribe_tpp_attendees';
+	const ATTENDEE_OBJECT = 'tribe_tpp_attendees';
 
 	/**
 	 * Name of the CPT that holds Orders
 	 */
-	public $order_object = 'tribe_tpp_attendees';
+	const ORDER_OBJECT = 'tribe_tpp_attendees';
 
 	/**
 	 * Meta key that relates Attendees and Events.
 	 *
 	 * @var string
 	 */
-	public $attendee_event_key = '_tribe_tpp_event';
+	const ATTENDEE_EVENT_KEY = '_tribe_tpp_event';
 
 	/**
 	 * Meta key that relates Attendees and Products.
 	 *
 	 * @var string
 	 */
-	public $attendee_product_key = '_tribe_tpp_product';
+	const ATTENDEE_PRODUCT_KEY = '_tribe_tpp_product';
 
 	/**
 	 * Currently unused for this provider, but defined per the Tribe__Tickets__Tickets spec.
 	 *
 	 * @var string
 	 */
-	public $attendee_order_key = '';
+	const ATTENDEE_ORDER_KEY = '';
 
 	/**
 	 * Indicates if a ticket for this attendee was sent out via email.

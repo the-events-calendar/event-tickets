@@ -569,29 +569,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @abstract
 		 *
 		 * @param int $post_id ID of parent "event" post
+		 *
 		 * @return array mixed
 		 */
-		protected function get_tickets( $post_id ) {
-
-			if ( ! $ticket_ids ) {
-				return array();
-			}
-
-			$tickets = array();
-
-			foreach ( $ticket_ids as $post ) {
-				$tickets[] = $this->get_ticket( $event_id, $post );
-			}
-
-			return $tickets;
-		}
+		protected function get_tickets( $post_id ) {}
 
 		/**
 		 * Get attendees by id and associated post type
 		 * or default to using $post_id
 		 *
 		 * @param int $post_id ID of parent "event" post
-		 * @param null $post_type
+		 *
 		 * @return array|mixed
 		 */
 		public function get_attendees_by_id( $post_id ) {}
@@ -896,11 +884,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
-				$obj     = call_user_func( array( $class, 'get_instance' ) );
-				$tickets = array_merge( $tickets, $obj->get_tickets( $post_id ) );
+				$obj              = call_user_func( array( $class, 'get_instance' ) );
+				$provider_tickets = $obj->get_tickets( $post_id );
+				if ( is_array( $provider_tickets ) ) {
+					$tickets[] = $provider_tickets;
+				}
 			}
 
-			return $tickets;
+			return call_user_func_array( 'array_merge', $tickets );
 		}
 
 		/**
@@ -1219,15 +1210,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		final public static function get_event_tickets( $post_id ) {
-
 			$tickets = array();
 
 			foreach ( self::modules() as $class => $module ) {
-				$obj     = call_user_func( array( $class, 'get_instance' ) );
-				$tickets = array_merge( $tickets, $obj->get_tickets( $post_id ) );
+				$obj              = call_user_func( array( $class, 'get_instance' ) );
+				$provider_tickets = $obj->get_tickets( $post_id );
+				if ( is_array( $provider_tickets ) ) {
+					$tickets[] = $provider_tickets;
+				}
 			}
 
-			return $tickets;
+			return call_user_func_array( 'array_merge', $tickets );
 		}
 
 		/**
