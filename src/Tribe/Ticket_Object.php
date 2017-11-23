@@ -1,4 +1,5 @@
 <?php
+
 if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 	/**
 	 *    Generic object to hold information about a single ticket
@@ -810,4 +811,5 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			return tribe_is_truthy( $show );
 		}
 	}
+
 }

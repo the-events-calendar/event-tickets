@@ -10,7 +10,7 @@ var tribe_tickets_ticket_form = {};
 	var $quantity_fields;
 
 	my.init = function() {
-		$tickets_lists = $( '.tribe-events-tickets' );
+		$tickets_lists = $( '.tribe-events-tickets-tpp' );
 		$quantity_fields = $tickets_lists.find( '.quantity' ).find( '.qty' );
 		$quantity_fields.on( 'change', my.on_quantity_change );
 	};
@@ -28,6 +28,25 @@ var tribe_tickets_ticket_form = {};
 			my.global_stock_quantity_changed( $this, ticket_id );
 		} else {
 			my.normal_stock_quantity_changed( $this, ticket_id );
+		}
+
+		var new_quantity = $this.val();
+		var $form = $this.closest( 'form' );
+
+		if ( new_quantity > 0 ) {
+			$form
+				.find( 'td[data-product-id]:not([data-product-id="' + ticket_id + '"])' )
+				.closest( 'tr' )
+				.find( 'input, button' )
+				.attr( 'disabled', 'disabled' )
+				.closest( 'tr' )
+				.addClass( 'tribe-tickets-purchase-disabled' );
+		} else {
+			$form
+				.find( 'input, button' )
+				.removeAttr( 'disabled' )
+				.closest( 'tr' )
+				.removeClass( 'tribe-tickets-purchase-disabled' );
 		}
 	};
 

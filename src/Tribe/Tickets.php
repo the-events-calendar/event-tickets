@@ -198,7 +198,67 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		const ATTENDEES_CACHE = 'tribe_attendees';
 
+		/**
+		 * Meta key that contains the user id
+		 *
+		 * @deprecated TBD Use the $attendee_user_id variable instead
+		 *
+		 * @var string
+		 */
 		const ATTENDEE_USER_ID = '_tribe_tickets_attendee_user_id';
+
+		/**
+		 * Meta key that contains the user id
+		 *
+		 * @var string
+		 */
+		public $attendee_user_id = '_tribe_tickets_attendee_user_id';
+		/**
+		 * Name of the CPT that holds Attendees (tickets holders).
+		 *
+		 * @var string
+		 */
+		public $attendee_object = '';
+
+		/**
+		 * Name of the CPT that holds Orders
+		 */
+		public $order_object = '';
+
+		/**
+		 * Meta key that relates Attendees and Events.
+		 *
+		 * @var string
+		 */
+		public $attendee_event_key = '';
+
+		/**
+		 * Meta key that relates Attendees and Products.
+		 *
+		 * @var string
+		 */
+		public $attendee_product_key = '';
+
+		/**
+		 * Currently unused for this provider, but defined per the Tribe__Tickets__Tickets spec.
+		 *
+		 * @var string
+		 */
+		public $attendee_order_key = '';
+
+		/**
+		 * Indicates if a ticket for this attendee was sent out via email.
+		 *
+		 * @var boolean
+		 */
+		public $attendee_ticket_sent = '';
+
+		/**
+		 * Meta key that if this attendee wants to show on the attendee list
+		 *
+		 * @var string
+		 */
+		public $attendee_optout_key = '';
 
 		/**
 		 * Returns link to the report interface for sales for an event or
@@ -210,8 +270,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		public function get_event_reports_link( $post_id ) {
-
-		}
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
@@ -226,8 +284,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {
 
-		}
-
 		/**
 		 * Returns a single ticket
 		 *
@@ -238,8 +294,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		public function get_ticket( $post_id, $ticket_id ) {
-
-		}
 
 		/**
 		 * Retrieve the Query args to fetch all the Tickets related to a post
@@ -464,7 +518,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return bool|WP_Post
 		 */
-		public function get_event_for_ticket( $possible_ticket ) {
+		public function get_event_for_ticket( $ticket_product ) {
+			if ( is_object( $ticket_product ) && isset( $ticket_product->ID ) ) {
+				$ticket_product = $ticket_product->ID;
+			}
+
+			if ( null === ( $product = get_post( $ticket_product ) ) ) {
+				return false;
+			}
+
+			$event_id = get_post_meta( $ticket_product, $this->event_key, true );
+
+			if ( ! $event_id && '' === ( $event_id = get_post_meta( $ticket_product, $this->attendee_event_key, true ) ) ) {
+				return false;
+			}
+
+			if ( in_array( get_post_type( $event_id ), Tribe__Tickets__Main::instance()->post_types() ) ) {
+				return get_post( $event_id );
+			}
+
 			return false;
 		}
 
@@ -479,8 +551,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function delete_ticket( $post_id, $ticket_id ) {
 
-		}
-
 		/**
 		 * Saves a ticket
 		 *
@@ -493,10 +563,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 
-		}
-
 		/**
-		 * Get all the tickets for an event
+		 * Returns all the tickets for an event
 		 *
 		 * @abstract
 		 *
@@ -505,6 +573,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function get_tickets( $post_id ) {
 
+			if ( ! $ticket_ids ) {
+				return array();
+			}
+
+			$tickets = array();
+
+			foreach ( $ticket_ids as $post ) {
+				$tickets[] = $this->get_ticket( $event_id, $post );
+			}
+
+			return $tickets;
 		}
 
 		/**
@@ -515,9 +594,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param null $post_type
 		 * @return array|mixed
 		 */
-		public function get_attendees_by_id( $post_id ) {
-
-		}
+		public function get_attendees_by_id( $post_id ) {}
 
 		/**
 		 * Get all the attendees (sold tickets) for an event
@@ -528,7 +605,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		protected function get_attendees_by_post_id( $post_id ) {
+			$attendees_query = new WP_Query( array(
+				'posts_per_page' => - 1,
+				'post_type'      => $this->attendee_object,
+				'meta_key'       => $this->attendee_event_key,
+				'meta_value'     => $post_id,
+				'orderby'        => 'ID',
+				'order'          => 'ASC',
+			) );
 
+			if ( ! $attendees_query->have_posts() ) {
+				return array();
+			}
+
+			return $this->get_attendees( $attendees_query, $post_id );
 		}
 
 		/**
@@ -538,7 +628,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		protected function get_attendees_by_attendee_id( $attendee_id ) {
+			$attendees_query = new WP_Query( array(
+				'p'         => $attendee_id,
+				'post_type' => $this->attendee_object,
+			) );
 
+			if ( ! $attendees_query->have_posts() ) {
+				return array();
+			}
+
+			return $this->get_attendees( $attendees_query, $attendee_id );
 		}
 
 		/**
@@ -547,9 +646,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $order_id
 		 * @return array
 		 */
-		protected function get_attendees_by_order_id( $order_id ) {
-
-		}
+		protected function get_attendees_by_order_id( $order_id ) {}
 
 		/**
 		 * Get attendees from provided query
@@ -558,9 +655,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
-		protected function get_attendees( $attendees_query, $post_id ) {
-
-		}
+		protected function get_attendees( $attendees_query, $post_id ) {}
 
 		/**
 		 * Mark an attendee as checked in
@@ -571,8 +666,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param $qr true if from QR checkin process
 		 * @return mixed
 		 */
-		public function checkin( $attendee_id ) {
+		public function checkin( $attendee_id, $qr = false ) {
+			update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
+			if ( $qr ) {
+				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
+			}
+
+			/**
+			 * Fires a checkin action
+			 *
+			 * @since TBD
+			 *
+			 * @param int       $attendee_id
+			 * @param bool|null $qr
+			 */
+			do_action( 'event_tickets_checkin', $attendee_id, $qr );
+
+			return true;
 		}
 
 		/**
@@ -584,7 +695,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		public function uncheckin( $attendee_id ) {
+			delete_post_meta( $attendee_id, $this->checkin_key );
+			delete_post_meta( $attendee_id, '_tribe_qr_status' );
 
+			/**
+			 * Fires an uncheckin action
+			 *
+			 * @since TBD
+			 *
+			 * @param int $attendee_id
+			 */
+			do_action( 'event_tickets_uncheckin', $attendee_id );
+
+			return true;
 		}
 
 		/**
@@ -600,19 +723,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function do_metabox_capacity_options( $post_id, $ticket_id ) {
 
-		}
-
 		/**
 		 * Renders the front end form for selling tickets in the event single page
-		 *
-		 * @abstract
 		 *
 		 * @param $content
 		 * @return mixed
 		 */
-		public function front_end_tickets_form( $content ) {
-
-		}
+		public function front_end_tickets_form( $content ) {}
 
 		/**
 		 * Returns the markup for the price field
@@ -641,7 +758,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns instance of the child class (singleton)
 		 *
 		 * @static
-		 * @abstract
 		 * @return mixed
 		 */
 		public static function get_instance() {}
@@ -699,7 +815,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendees_from_cache = false;
 			$attendees            = array();
 
-			if ( ! is_admin() ) {
+			if ( 0 !== $expire ) {
 				$post_transient = Tribe__Post_Transient::instance();
 
 				$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
@@ -1583,7 +1699,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$user_id = get_current_user_id();
 			}
 
-			update_post_meta( $attendee_id, self::ATTENDEE_USER_ID, (int) $user_id );
+			update_post_meta( $attendee_id, $this->attendee_user_id, (int) $user_id );
 		}
 
 		public function front_end_tickets_form_in_content( $content ) {
