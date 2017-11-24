@@ -1710,4 +1710,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	protected function get_order_url( $order_number ) {
 		return add_query_arg( array( 'cmd' => '_view-a-trans', 'id' => $order_number ), $this->get_cart_url() );
 	}
+
+	/**
+	 * Returns all the tickets for an event
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 *
+	 * @return array
+	 */
+	protected function get_tickets( $post_id ) {
+		$ticket_ids = $this->get_tickets_ids( $post_id );
+
+		if ( ! $ticket_ids ) {
+			return array();
+		}
+
+		$tickets = array();
+
+		foreach ( $ticket_ids as $post ) {
+			$tickets[] = $this->get_ticket( $post_id, $post );
+		}
+
+		return $tickets;
+	}
+
 }
