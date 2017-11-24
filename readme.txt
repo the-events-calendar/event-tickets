@@ -236,7 +236,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.6.1.1] 2017-11-24 =
 
 * Fix - Respect Start and End time for Ticket sales (props to Scott) [93439]
-* Fix - Ensure attendee fields remain visible within the admin environment [94142]
+* Fix - Ensure attendee fields remain visible within the admin environment (compatibility fix for Event Tickets Plus) [94142]
 
 = [4.6.1] 2017-11-21 =
 
