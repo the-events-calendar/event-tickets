@@ -1244,7 +1244,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			foreach ( self::modules() as $class => $module ) {
 				$obj              = call_user_func( array( $class, 'get_instance' ) );
 				$provider_tickets = $obj->get_tickets( $post_id );
-				if ( is_array( $provider_tickets ) ) {
+				if ( ! empty( $provider_tickets ) && is_array( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
 				}
 			}
