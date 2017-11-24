@@ -961,6 +961,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		if ( -1 !== $data['capacity'] ) {
+			if ( 'update' === $save_type ) {
+				$totals = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
+				$data['stock'] -= $totals['pending'] + $totals['sold'];
+			}
+
 			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
 			update_post_meta( $ticket->ID, '_stock', $data['stock'] );
 		} else {
