@@ -345,6 +345,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			}
 		}
 
+		// When we have Meta fields for Attendees
+		if ( 'undefined' !== typeof tribe_event_tickets_plus && 'undefined' !== typeof tribe_event_tickets_plus.meta ) {
+			tribe_event_tickets_plus.meta.admin.init_ticket_fields();
+		}
+
 		// Setup Drag and Drop
 		if (
 			tribe.tickets.table
