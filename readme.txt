@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.6.2] TBD =
+
+* Fix - Improve CSS for Capacity Table on Mobile [90907]
+
 = [4.6.1] 2017-11-21 =
 
 * Tweak - Prevents unnecessary AJAX requests when using tickets editor [88642]
