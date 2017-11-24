@@ -156,6 +156,30 @@
 		display: inline-block;
 	}
 
+	#tribe_panel_settings .tribe-tickets-editor-table tbody tr {
+		border-bottom: 1px solid #ccc;
+		display: block;
+	}
+
+	#tribe_panel_settings .tribe-tickets-editor-table tbody tr:before,
+				#tribe_panel_settings .tribe-tickets-editor-table tbody tr:after {
+		content: "";
+		display: table;
+	}
+
+	#tribe_panel_settings .tribe-tickets-editor-table tbody tr:after {
+		clear: both;
+	}
+
+	#tribe_panel_settings .tribe-tickets-editor-table tbody tr td:nth-last-child(2),
+				#tribe_panel_settings .tribe-tickets-editor-table tbody tr td:last-child {
+		border-bottom: 0;
+	}
+
+	#tribe_panel_settings .tribe-tickets-editor-table tbody tr.tribe-tickets-editor-table-row-capacity-independent td:first-child {
+		display: none;
+	}
+
 	.tribe-tickets-editor-table .tribe-mobile-hidden {
 		display: none;
 	}

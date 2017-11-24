@@ -124,6 +124,32 @@
 		tbody tr {
 			box-shadow: none;
 
+
+			@media screen and ( max-width: 782px ) {
+				border-bottom: 1px solid var(--border-color);
+				display: block;
+
+				&:before,
+				&:after {
+					content: "";
+					display: table;
+				}
+				&:after {
+					clear: both;
+				}
+
+				td:nth-last-child(2),
+				td:last-child {
+					border-bottom: 0;
+				}
+
+				&.tribe-tickets-editor-table-row-capacity-independent {
+					td:first-child {
+						display: none;
+					}
+				}
+			}
+
 			td {
 				border-bottom: 1px solid var(--border-color);
 			}

@@ -237,6 +237,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Tweak - allow pagination and screen options on the Attendees list [64516]
 
+= [4.6.2] TBD =
+
+* Fix - Improve CSS for Capacity Table on Mobile [90907]
+* Fix - Respect Start and End time for Ticket sales (props to Scott) [93439]
+
 = [4.6.1] 2017-11-21 =
 
 * Tweak - Prevents unnecessary AJAX requests when using tickets editor [88642]
