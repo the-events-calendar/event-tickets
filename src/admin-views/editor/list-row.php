@@ -48,8 +48,8 @@ if (
 	 *
 	 * @since 4.6
 	 *
-	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param obj ecommerce provider object
+	 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object
+	 * @param object $provider_obj The provider object
 	 */
 	do_action( 'tribe_events_tickets_ticket_table_add_tbody_column', $ticket, $provider_obj );
 	?>
