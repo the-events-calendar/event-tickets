@@ -346,7 +346,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		}
 
 		// When we have Meta fields for Attendees
-		if ( 'undefined' !== typeof tribe_event_tickets_plus && 'undefined' !== typeof tribe_event_tickets_plus.meta ) {
+		if (
+			'undefined' !== typeof tribe_event_tickets_plus
+			&& $.isPlainObject( tribe_event_tickets_plus )
+			&& $.isPlainObject( tribe_event_tickets_plus.meta )
+			&& $.isPlainObject( tribe_event_tickets_plus.meta.admin )
+			&& $.isFunction( tribe_event_tickets_plus.meta.admin.init_ticket_fields )
+		) {
 			tribe_event_tickets_plus.meta.admin.init_ticket_fields();
 		}
 
