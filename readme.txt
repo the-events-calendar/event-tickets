@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, aguseo, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9
-Stable tag: 4.6.1
+Stable tag: 4.6.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -236,6 +236,13 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.6.2] TBD =
 
 * Fix - Make sure Stock is updated accordingly based on total sales when updating capacity [93601]
+* Fix - Improve CSS for Capacity Table on Mobile [90907]
+
+= [4.6.1.1] 2017-11-24 =
+
+* Fix - Respect Start and End time for Ticket sales (props to Scott) [93439]
+* Fix - Ensure attendee fields remain visible within the admin environment (compatibility fix for Event Tickets Plus) [94142]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.6.1] 2017-11-21 =
 
