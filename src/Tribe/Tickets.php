@@ -851,7 +851,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					}
 				}
 
-				$attendees = call_user_func_array('array_merge',$attendees);
+				$attendees = ! empty( $attendees ) ? call_user_func_array( 'array_merge', $attendees ) : array();
 
 				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
 				// does not exist.
@@ -920,7 +920,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return call_user_func_array( 'array_merge', $tickets );
+			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : array();
 		}
 
 		/**
@@ -1249,7 +1249,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return call_user_func_array( 'array_merge', $tickets );
+			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : array();
 		}
 
 		/**
