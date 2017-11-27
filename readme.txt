@@ -239,8 +239,14 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.6.2] TBD =
 
+* Fix - Make sure Stock is updated accordingly based on total sales when updating capacity [93601]
 * Fix - Improve CSS for Capacity Table on Mobile [90907]
+
+= [4.6.1.1] 2017-11-24 =
+
 * Fix - Respect Start and End time for Ticket sales (props to Scott) [93439]
+* Fix - Ensure attendee fields remain visible within the admin environment (compatibility fix for Event Tickets Plus) [94142]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.6.1] 2017-11-21 =
 
