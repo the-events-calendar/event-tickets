@@ -723,12 +723,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 	$document.ready( function() {
 		obj.setupPanels();
-//		$( '#ticket_bottom_right .thickbox' ).on( 'click', function() {
-//			console.log( 'clicked' )
-//		} );
-//		jQuery( '#TB_window' ).on( "tb_unload", function() {
-//			alert( 'Triggered!' );
-//		} );
 	} );
 
 } )( window, jQuery, tribe.tickets.editor );
