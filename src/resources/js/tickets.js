@@ -227,6 +227,31 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		);
 	};
 
+	obj.startWatchingMoveLinkIn = function() {
+		$tickets_container.find( '.tribe-ticket-move-link' ).one( 'click', function() {
+			// give ThickBox some time to load, in ms
+			window.setTimeout( obj.listentToThickboxEvents, 250 );
+		} )
+	};
+
+	obj.listentToThickboxEvents = function() {
+		/**
+		 * ThickBox id from its source code.
+		 *
+		 * @see /wp-includes/js/thickbox/thickbox.js
+		 */
+		var $tbWindow = $( '#TB_window' );
+
+		if ( $tbWindow.length === 0 ) {
+			return;
+		}
+
+		// refetch the panels when the ThickBox closes and swap to the ticket list
+		$tbWindow.one( 'tb_unload', function() {
+			obj.fetchPanels( null, 'list' );
+		} );
+	};
+
 	obj.refreshPanels = function ( panels, swapTo ) {
 		// After this point is safe to assume we have a valid set of panels
 		$base_panel = $( panels.list );
@@ -513,6 +538,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data, 'ticket' );
+				obj.startWatchingMoveLinkIn( '#event_tickets' )
 			},
 			'json'
 		);
@@ -697,6 +723,12 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 	$document.ready( function() {
 		obj.setupPanels();
+//		$( '#ticket_bottom_right .thickbox' ).on( 'click', function() {
+//			console.log( 'clicked' )
+//		} );
+//		jQuery( '#TB_window' ).on( "tb_unload", function() {
+//			alert( 'Triggered!' );
+//		} );
 	} );
 
 } )( window, jQuery, tribe.tickets.editor );
