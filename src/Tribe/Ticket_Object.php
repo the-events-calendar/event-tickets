@@ -123,7 +123,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @var mixed
 		 */
-		protected $stock = 0;
+		protected $stock;
 
 		/**
 		 * The mode of stock handling to be used for the ticket when global stock
@@ -558,8 +558,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int|string
 		 */
 		public function stock( $value = null ) {
-			if ( is_null( $value ) ) {
-				$value = (int) get_post_meta( $this->ID, '_stock', true );
+			if ( null === $value ) {
+				$value = null === $this->stock
+					? (int) get_post_meta( $this->ID, '_stock', true )
+					: $this->stock;
 			}
 
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
