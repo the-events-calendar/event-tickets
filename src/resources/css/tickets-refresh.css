@@ -449,6 +449,10 @@ p.description {
 	color: #555;
 }
 
+#settings_global_capacity_edit:enabled {
+	margin-right: 7px;
+}
+
 #ticket_form .original_stock_cap span {
 	margin-right: 0;
 }
