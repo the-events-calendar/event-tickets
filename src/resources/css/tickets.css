@@ -77,6 +77,10 @@
 	table-layout: fixed;
 }
 
+.tribe-strong-label {
+	font-weight: bold;
+}
+
 /* Specific goal of this rule is to prevent the number input busting the ticket form layout under Twenty Fifteen */
 
 .tribe-theme-twentyfifteen .tribe-events-tickets input[type='number'] {
