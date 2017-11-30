@@ -280,6 +280,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.5.7] 2017-10-18 =
 
 * Tweak - Improved compatibility of the "Attendees Export" CSV with Excel and other programs by removing line breaks from multi-line fields in the CSV (props: @twodoplhins) [80563]
+* Tweak - Improve contrast on labels for ticket settings [93919]
 
 = [4.5.6] 2017-09-20 =
 
