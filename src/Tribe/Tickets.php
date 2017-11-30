@@ -390,7 +390,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$move_link = sprintf( '<a href="%1$s" class="thickbox">' . esc_html( $button_text ) . '</a>', $move_url );
+			$move_link = sprintf( '<a href="%1$s" class="thickbox tribe-ticket-move-link">' . esc_html( $button_text ) . '</a>', $move_url );
 
 			return $move_link;
 		}
