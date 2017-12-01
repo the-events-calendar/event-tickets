@@ -27,7 +27,7 @@ if ( ! empty( $header_id ) ) {
 	<section id="tribe-tickets-image">
 		<div class="tribe-tickets-image-upload">
 			<div class="input_block">
-				<span class="ticket_form_label"><?php esc_html_e( 'Ticket header image:', 'event-tickets' ); ?></span>
+				<span class="ticket_form_label tribe-strong-label"><?php esc_html_e( 'Ticket header image:', 'event-tickets' ); ?></span>
 				<p class="description">
 					<?php esc_html_e( 'Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.', 'event-tickets' ); ?>
 				</p>
