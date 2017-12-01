@@ -27,9 +27,9 @@ tribe.tickets.table = {};
 
 		$element.sortable( {
 			axis: 'y',
-			containment: 'parent',
+			containment: '#tribe_panel_base',
 			opacity: 0.7,
-			tolerance: 'cursor',
+			tolerance: 'intersect',
 			cursor: 'move',
 			items: 'tr:not(.Tribe__Tickets__RSVP)',
 			forcePlaceholderSize: true,
