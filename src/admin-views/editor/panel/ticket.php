@@ -1,4 +1,6 @@
 <?php
+$is_admin = tribe_is_truthy( tribe_get_request_var( 'is_admin', is_admin() ) );
+
 if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
 }
@@ -8,6 +10,10 @@ if ( ! isset( $ticket_id ) ) {
 	$provider_class = null;
 	$ticket_id = null;
 	$ticket = null;
+
+	if ( ! $is_admin ) {
+		$provider_class = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
+	}
 } else {
 	$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 	$provider_class = get_class( $provider );
