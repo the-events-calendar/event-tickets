@@ -7,7 +7,7 @@ tribe.tickets.editor = {};
 
 var ticketHeaderImage = window.ticketHeaderImage || {};
 
-(function( window, $, obj ) {
+(function( window, $, _, obj ) {
 	'use strict';
 
 	// base elements
@@ -680,8 +680,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var nonSharedCapacity = $capacity.data( 'nonSharedCapacity' );
 
 		// Prevent Fails with empty stuff
-		if ( '' === capacity || 0 > capacity ) {
-			$capacity.val( 0 );
+		if ( '' === capacity || 0 > capacity || _.isNaN( capacity ) ) {
 			capacity = 0;
 		}
 
@@ -725,4 +724,4 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		obj.setupPanels();
 	} );
 
-} )( window, jQuery, tribe.tickets.editor );
+} )( window, jQuery, _, tribe.tickets.editor );
