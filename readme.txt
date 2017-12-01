@@ -236,6 +236,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.6.2] TBD =
 
 * Tweak - Make sure on front-end we only allow WooCommerce as a provider [91758]
+* Fix - Sorting for Tickets now allows moving them to the first and last position of the ordering [92558]
 * Fix - Make sure Stock is updated accordingly based on total sales when updating capacity [93601]
 * Fix - Improve CSS for Capacity Table on Mobile [90907]
 
