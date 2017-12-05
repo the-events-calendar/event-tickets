@@ -750,7 +750,7 @@ function tribe_tickets_delete_capacity( $object ) {
  *
  * @since  TBD
  *
- * @param  int  $object   Post We are trying to save capacity
+ * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
  * @param  int  $capacty  How much we are trying to update the capacity to
  *
  * @return int|false
