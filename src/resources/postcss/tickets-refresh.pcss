@@ -76,7 +76,7 @@
 	fieldset {
 		border: 0;
 		padding: 0;
-		margin: 0;
+		margin: 0 0 1em 0;
 	}
 
 	.ticket_form_left {
@@ -507,13 +507,17 @@ p.description {
 	border: 1px solid #b4b9be;
 	float: left;
 	font-size: inherit;
-	margin-left: -5px;
+	margin-right: 10px;
 
 	&:disabled {
 		background-color: transparent;
 		border: 0;
 		box-shadow: none;
 		color: #555;
+	}
+
+	&:enabled {
+		margin-right: 7px;
 	}
 }
 

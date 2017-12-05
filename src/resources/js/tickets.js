@@ -7,7 +7,7 @@ tribe.tickets.editor = {};
 
 var ticketHeaderImage = window.ticketHeaderImage || {};
 
-(function( window, $, obj ) {
+(function( window, $, _, obj ) {
 	'use strict';
 
 	// base elements
@@ -225,6 +225,31 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			},
 			'json'
 		);
+	};
+
+	obj.startWatchingMoveLinkIn = function() {
+		$tickets_container.find( '.tribe-ticket-move-link' ).one( 'click', function() {
+			// give ThickBox some time to load, in ms
+			window.setTimeout( obj.listentToThickboxEvents, 250 );
+		} )
+	};
+
+	obj.listentToThickboxEvents = function() {
+		/**
+		 * ThickBox id from its source code.
+		 *
+		 * @see /wp-includes/js/thickbox/thickbox.js
+		 */
+		var $tbWindow = $( '#TB_window' );
+
+		if ( $tbWindow.length === 0 ) {
+			return;
+		}
+
+		// refetch the panels when the ThickBox closes and swap to the ticket list
+		$tbWindow.one( 'tb_unload', function() {
+			obj.fetchPanels( null, 'list' );
+		} );
 	};
 
 	obj.refreshPanels = function ( panels, swapTo ) {
@@ -513,6 +538,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				}
 
 				obj.refreshPanels( response.data, 'ticket' );
+				obj.startWatchingMoveLinkIn( '#event_tickets' )
 			},
 			'json'
 		);
@@ -654,8 +680,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		var nonSharedCapacity = $capacity.data( 'nonSharedCapacity' );
 
 		// Prevent Fails with empty stuff
-		if ( '' === capacity || 0 > capacity ) {
-			$capacity.val( 0 );
+		if ( '' === capacity || 0 > capacity || _.isNaN( capacity ) ) {
 			capacity = 0;
 		}
 
@@ -699,4 +724,4 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		obj.setupPanels();
 	} );
 
-} )( window, jQuery, tribe.tickets.editor );
+} )( window, jQuery, _, tribe.tickets.editor );

@@ -20,14 +20,6 @@
 	border-bottom: 1px solid #ccc;
 }
 
-.tribe-tickets-editor-table tbody.ui-sortable:before,
-		.tribe-tickets-editor-table tbody.ui-sortable:after {
-	content: '';
-	display: table-row;
-	height: 2px;
-	width: 100%;
-}
-
 .tribe-tickets-editor-table tr {
 	background-color: #fff;
 }
@@ -68,6 +60,7 @@
 	font-size: 1.8em;
 	margin-right: 10px;
 	position: relative;
+	float: left;
 	display: none;
 }
 

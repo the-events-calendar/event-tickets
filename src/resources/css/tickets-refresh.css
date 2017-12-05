@@ -54,7 +54,7 @@
 #event_tickets fieldset {
 	border: 0;
 	padding: 0;
-	margin: 0;
+	margin: 0 0 1em 0;
 }
 
 #event_tickets .ticket_form_left {
@@ -439,7 +439,7 @@ p.description {
 	border: 1px solid #b4b9be;
 	float: left;
 	font-size: inherit;
-	margin-left: -5px;
+	margin-right: 10px;
 }
 
 #settings_global_capacity_edit:disabled {
@@ -447,6 +447,10 @@ p.description {
 	border: 0;
 	box-shadow: none;
 	color: #555;
+}
+
+#settings_global_capacity_edit:enabled {
+	margin-right: 7px;
 }
 
 #ticket_form .original_stock_cap span {

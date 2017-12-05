@@ -39,7 +39,30 @@ if (
 			value="<?php echo esc_attr( $ticket->menu_order ); ?>"
 			<?php echo 'Tribe__Tickets__RSVP' === $ticket->provider_class ? 'disabled' : ''; ?>
 		>
+
+		<?php
+		/**
+		 * Fires before the ticket name is printed in the tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
+		 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
+		 */
+		do_action( 'event_tickets_ticket_list_before_ticket_name', $ticket, $provider_obj ); ?>
+
 		<?php echo esc_html( $ticket->name ); ?>
+
+		<?php
+		/**
+		 * Fires after the ticket name is printed in the tickets table.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
+		 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
+		 */
+		do_action( 'event_tickets_ticket_list_after_ticket_name', $ticket, $provider_obj ); ?>
 	</td>
 
 	<?php
