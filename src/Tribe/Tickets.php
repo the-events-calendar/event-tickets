@@ -1219,15 +1219,26 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public static function get_default_module() {
 			$modules = array_keys( self::modules() );
 
+			if ( 1 === count( $modules ) ) {
+				// There's only one, just return it.
+				Tribe__Tickets__Tickets::$default_module = array_shift( $modules );
+			} else {
+				// Remove RSVP for this part
+				unset( $modules[ array_search( 'Tribe__Tickets__RSVP', $modules ) ] );
+
+				// We just return the first, so we don't show favoritism
+				Tribe__Tickets__Tickets::$default_module = array_shift( $modules );
+			}
+
 			/**
-			 * Filters the default tickets module class name
+			 * Filters the default commerce module (provider)
 			 *
 			 * @since 4.6
 			 *
 			 * @param string default ticket module class name
 			 * @param array array of ticket module class names
 			 */
-			return apply_filters( 'tribe_tickets_get_default_module', self::$default_module, $modules );
+			return apply_filters( 'tribe_tickets_get_default_module', Tribe__Tickets__Tickets::$default_module, $modules );
 		}
 
 		/**
@@ -2044,6 +2055,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		final protected function ajax_ok( $data ) {
 			_deprecated_function( __METHOD__, 'TBD', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
+		}
+
+		/**
+		 * Get the saved or default ticket provider
+		 *
+		 * @since TBD
+		 *
+		 * @param int $event_id - the post id of the event the ticket is attached to.
+		 *
+		 * @return string ticket module class name
+		 */
+		public static function get_event_ticket_provider( $event_id = null ) {
+
+			// if  post ID is set, and a value has been saved, return the saved value
+			if ( ! empty( $event_id ) ) {
+				$saved = get_post_meta( $event_id, tribe( 'tickets.handler' )->key_provider_field, true );
+
+				if ( ! empty( $saved ) ) {
+					return $saved;
+				}
+			}
+
+			// otherwise just return the default
+			return self::get_default_module();
 		}
 
 		// @codingStandardsIgnoreEnd

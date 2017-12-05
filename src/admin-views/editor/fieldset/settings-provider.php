@@ -4,7 +4,7 @@ $post_id = get_the_ID();
 // Go ahead and get the necessary values
 // Set up default provider
 $modules        = Tribe__Tickets__Tickets::modules();
-$default_module = Tribe__Tickets_Plus__Tickets::get_event_ticket_provider( $post_id );
+$default_module = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
 // We don't need this one here - RSVP and tickets are different now.
 unset( $modules['Tribe__Tickets__RSVP'] );
