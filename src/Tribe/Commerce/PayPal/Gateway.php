@@ -81,10 +81,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
 
-		$args   = array(
+		$args = array(
 			'cmd'           => '_cart',
 			'add'           => 1,
-			'business'      => urlencode( tribe_get_option( 'ticket-paypal-email' ) ),
+			'business'      => urlencode( trim( tribe_get_option( 'ticket-paypal-email' ) ) ),
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( $notify_url ),
 			'shopping_url'  => urlencode( $post_url ),
