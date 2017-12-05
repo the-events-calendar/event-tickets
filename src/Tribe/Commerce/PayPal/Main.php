@@ -803,14 +803,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 
-		if ( trim( $raw_data['ticket_tpp_stock'] ) !== '' ) {
-			$stock = (int) $raw_data['ticket_tpp_stock'];
-			update_post_meta( $ticket->ID, '_stock', $stock );
-			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
-		} else {
-			delete_post_meta( $ticket->ID, '_stock_status' );
-			update_post_meta( $ticket->ID, '_manage_stock', 'no' );
-		}
+		$ticket_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+		$this->update_capacity( $ticket, $ticket_data, $save_type );
 
 		if ( isset( $ticket->start_date ) ) {
 			update_post_meta( $ticket->ID, '_ticket_start_date', $ticket->start_date );
@@ -1736,4 +1730,29 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		return $tickets;
 	}
 
+	/**
+	 * Renders the advanced fields in the new/edit ticket form.
+	 * Using the method, providers can add as many fields as
+	 * they want, specific to their implementation.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 * @param int $ticket_id
+	 *
+	 * @return mixed
+	 */
+	public function do_metabox_capacity_options( $post_id, $ticket_id ) {
+		$capacity = '';
+
+		// This returns the original stock
+		if ( ! empty( $ticket_id ) ) {
+			$ticket = $this->get_ticket( $post_id, $ticket_id );
+			if ( ! empty( $ticket ) ) {
+				$capacity = $ticket->capacity();
+			}
+		}
+
+		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-metabox-capacity.php';
+	}
 }
