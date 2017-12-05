@@ -100,8 +100,9 @@ class Tribe__Tickets__Attendees {
 		 * attendee screen summary box.
 		 *
 		 * @param array $action_links
+		 * @param int $event_id
 		 */
-		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links );
+		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links, $event_id );
 
 		if ( empty( $action_links ) ) {
 			return;
