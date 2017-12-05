@@ -17,6 +17,7 @@ $is_there_any_product_to_sell = false;
 $are_products_available       = false;
 
 ob_start();
+/** @var Tribe__Tickets__Commerce__PayPal__Main $commerce */
 $commerce       = tribe( 'tickets.commerce.paypal' );
 $messages       = $commerce->get_messages();
 $messages_class = $messages ? 'tribe-tpp-message-display' : '';
