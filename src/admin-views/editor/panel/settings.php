@@ -14,6 +14,10 @@ if ( ! empty( $header_id ) ) {
 	<h4><?php esc_html_e( 'Ticket Settings', 'event-tickets' ); ?></h4>
 
 	<section class="settings_main">
+		<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/settings-capacity' ); ?>
+
+		<?php tribe( 'tickets.admin.views' )->template( 'editor/fieldset/settings-provider' ); ?>
+
 		<?php
 		/**
 		 * Allows for the insertion of additional elements into the ticket settings admin panel below the ticket table

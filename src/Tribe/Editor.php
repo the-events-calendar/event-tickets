@@ -17,11 +17,14 @@ class Tribe__Tickets__Editor {
 	public function hook() {
 		add_action( 'tribe_events_tickets_post_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/button-view-orders' ) );
 		add_action( 'tribe_events_tickets_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/total-capacity' ) );
-		add_action( 'tribe_events_tickets_settings_content', tribe_callback( 'tickets.admin.views', 'template', 'editor/panel/settings' ) );
+
+		/**
+		 * @todo Luca: move this into Plus, or move Attendees code into Tickets
+		 */
+		add_action( 'tribe_events_tickets_settings_content', tribe_callback( 'tickets-plus.admin.views', 'template', 'editor/settings-attendees' ) );
 
 		add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'filter_get_price_fields' ), 10, 2 );
-		add_action( 'tribe_events_tickets_ticket_table_add_header_column',
-			tribe_callback( 'tickets-plus.admin.views', 'template', 'editor/column-head-price' ) );
+		add_action( 'tribe_events_tickets_ticket_table_add_header_column', tribe_callback( 'tickets.admin.views', 'template', 'editor/column-head-price' ) );
 
 		add_action( 'tribe_events_tickets_ticket_table_add_tbody_column', array( $this, 'add_column_content_price' ), 10, 2 );
 	}
@@ -42,7 +45,7 @@ class Tribe__Tickets__Editor {
 			'ticket_id' => $ticket_id,
 		);
 
-		return tribe( 'tickets-plus.admin.views' )->template( 'editor/field-price', $context );
+		return tribe( 'tickets.admin.views' )->template( 'editor/fieldset/price', $context );
 	}
 
 	/**
@@ -61,6 +64,6 @@ class Tribe__Tickets__Editor {
 			'provider_obj' => $provider_obj,
 		);
 
-		return tribe( 'tickets-plus.admin.views' )->template( 'editor/column-body-price', $context );
+		return tribe( 'tickets.admin.views' )->template( 'editor/column-body-price', $context );
 	}
 }
