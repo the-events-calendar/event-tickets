@@ -1838,6 +1838,68 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Adds or updates the capacity for a ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|int $ticket
+		 * @param array       $raw_data
+		 * @param string      $save_type
+		 */
+		protected function update_capacity( $ticket, $data, $save_type ) {
+			if ( empty( $data ) ) {
+				return;
+			}
+
+			$default_capacity = - 1;
+
+			// Fetch capacity field, if we don't have it use default (defined above)
+			$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
+
+			// If empty we need to modify to the default
+			if ( '' === $data['capacity'] ) {
+				$data['capacity'] = $default_capacity;
+			}
+
+			// The only available value lower than zero is -1 which is unlimited
+			if ( 0 > $data['capacity'] ) {
+				$data['capacity'] = - 1;
+			}
+
+			// Fetch the stock if defined, otherwise use Capacity field
+			$data['stock'] = trim( Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] ) );
+
+			// If empty we need to modify to what every capacity was
+			if ( '' === $data['stock'] ) {
+				$data['stock'] = $data['capacity'];
+			}
+
+			// The only available value lower than zero is -1 which is unlimited
+			if ( 0 > $data['stock'] ) {
+				$data['stock'] = - 1;
+			}
+
+			if ( - 1 !== $data['capacity'] ) {
+				if ( 'update' === $save_type ) {
+					$totals        = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
+					$data['stock'] -= $totals['pending'] + $totals['sold'];
+				}
+
+				update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
+				update_post_meta( $ticket->ID, '_stock', $data['stock'] );
+			} else {
+				// unlimited stock
+				delete_post_meta( $ticket->ID, '_stock_status' );
+				update_post_meta( $ticket->ID, '_manage_stock', 'no' );
+				delete_post_meta( $ticket->ID, '_stock' );
+				delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
+				delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
+			}
+
+			tribe_tickets_update_capacity( $ticket, $data['capacity'] );
+		}
+
+		/**
 		 * @param bool $operation_did_complete
 		 */
 		private function maybe_update_attendees_cache( $operation_did_complete ) {
