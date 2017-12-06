@@ -237,6 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * New - Introduced the `tribe_tickets_event_action_links_edit_url` filter for more granular control over "edit event" links in various views [93339]
 * Tweak - Make sure on front-end we only allow WooCommerce as a provider [91758]
+* Fix - RSVP ticket sales when using Aggregator CSV are now working properly [92936]
 * Fix - Prevent non escaped underscores to get into the final SQL for LIKE queries (Props to @misenhower) [GH#567]
 * Fix - Sorting for Tickets now allows moving them to the first and last position of the ordering [92558]
 * Fix - Make sure Stock is updated accordingly based on total sales when updating capacity [93601]
