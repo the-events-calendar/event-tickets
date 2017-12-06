@@ -90,14 +90,24 @@ class Tribe__Tickets__Attendees {
 	 * @param $event_id
 	 */
 	public function event_action_links( $event_id ) {
+
+		/**
+		 * Allows for control of the specific "edit post" URLs used for event Sales and Attendees Reports.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $link The deafult "edit post" URL.
+		 * @param int $event_id The Post ID of the event.
+		 */
+		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id ); 
+
 		$action_links = array(
-			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
 			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
 		);
 
 		/**
-		 * Provides an opportunity to add and remove action links from the
-		 * attendee screen summary box.
+		 * Provides an opportunity to add and remove action links from the attendee screen summary box.
 		 *
 		 * @param array $action_links
 		 * @param int $event_id
