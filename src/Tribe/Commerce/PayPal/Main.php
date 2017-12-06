@@ -512,14 +512,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
 		$attendee_id = empty( $custom['user_id'] ) ? null : absint( $custom['user_id'] );
 
+		$attendee_full_name = empty( $transaction_data['first_name'] ) && empty( $transaction_data['last_name'] )
+			? ''
+			: sanitize_text_field( "{$transaction_data['first_name']} {$transaction_data['last_name']}" );
+
 		if ( empty( $attendee_id ) ) {
-			$attendee_email     = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
-			$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-			$attendee_full_name = empty( $transaction_data['first_name'] ) && empty( $transaction_data['last_name'] ) ? null : sanitize_text_field( "{$transaction_data['first_name']} {$transaction_data['last_name']}" );
+			$attendee_email = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
+			$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
 		} else {
-			$attendee           = get_user_by( 'ID', $attendee_id );
-			$attendee_email     = $attendee->user_email;
-			$attendee_full_name = "{$attendee->first_name} {$attendee->last_name}";
+			$attendee       = get_user_by( 'ID', $attendee_id );
+			$attendee_email = $attendee->user_email;
+			$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
+			if ( ! empty( $user_full_name ) ) {
+				$attendee_full_name = $user_full_name;
+			}
 		}
 
 		// @TODO: figure out how to handle optout
