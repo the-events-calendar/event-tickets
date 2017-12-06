@@ -1766,4 +1766,25 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-metabox-capacity.php';
 	}
+
+	/**
+	 * Gets the product price value
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int|WP_Post $product
+	 *
+	 * @return string
+	 */
+	public function get_price_value( $product ) {
+		if ( ! $product instanceof WP_Post ) {
+			$product = get_post( $product );
+		}
+
+		if ( ! $product instanceof WP_Post ) {
+			return false;
+		}
+
+		return get_post_meta( $product->ID, '_price', true );
+	}
 }
