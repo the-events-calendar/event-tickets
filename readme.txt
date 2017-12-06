@@ -235,14 +235,15 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.6.2] TBD =
 
-* New - Introduced the `tribe_tickets_event_action_links_edit_url` filter for more granular control over "edit event" links in various views [93339]
 * Fix - Fixed broken RSVP ticket sales when using Aggregator CSV [92936]
 * Fix - Prevent non-escaped underscores from getting into the final SQL for LIKE queries (Props to @misenhower) [GH#567]
 * Fix - Fixed sorting for Tickets so that moving them to the first and last position of the order is allowed [92558]
 * Fix - Improved handling of Stock to ensure it's updated accordingly based on total sales when updating capacity [93601]
 * Fix - Improved CSS for Capacity Table on mobile [90907]
 * Fix - Fixed some bugs with attendees management that prevented check-in features from working in Community Tickets front-end views (props @musician4you and several other folks for highlighting this issue) [81629]
+* Tweak - Introduced the `tribe_tickets_event_action_links_edit_url` filter for more granular control over "edit event" links in various views [93339]
 * Tweak - Prevent EDD from being a provider for front-end Community Tickets, as only WooCommerce is allowed for that [91758]
+* Tweak - Added actions: `event_tickets_ticket_list_before_ticket_name`, `event_tickets_ticket_list_after_ticket_name`
 
 = [4.6.1.1] 2017-11-24 =
 
