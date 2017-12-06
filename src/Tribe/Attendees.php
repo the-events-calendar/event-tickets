@@ -99,7 +99,7 @@ class Tribe__Tickets__Attendees {
 		 * @param string $link The deafult "edit post" URL.
 		 * @param int $event_id The Post ID of the event.
 		 */
-		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id ); 
+		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
 
 		$action_links = array(
 			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
