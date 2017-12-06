@@ -34,6 +34,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		$template_data['order_is_valid'] = true;
 		$order_number                    = Tribe__Utils__Array::get( $_GET, 'tribe-tpp-order', false );
 		$attendees                       = $paypal->get_attendees_by_order( $order_number );
+
 		if ( empty( $attendees ) ) {
 			// weird...
 			$template_data['order_is_valid'] = false;
