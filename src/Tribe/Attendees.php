@@ -121,7 +121,7 @@ class Tribe__Tickets__Attendees {
 	public function print_checkedin_totals() {
 		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
-		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
+		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> <span id="total_checkedin">' . absint( $total_checked_in ) . '</span></div>';
 	}
 
 	/**
