@@ -168,6 +168,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// mirror some properties from the class constants
 		$this->attendee_event_key   = self::ATTENDEE_EVENT_KEY;
 		$this->attendee_product_key = self::ATTENDEE_PRODUCT_KEY;
+		$this->attendee_object      = self::ATTENDEE_OBJECT;
 
 		parent::__construct();
 
