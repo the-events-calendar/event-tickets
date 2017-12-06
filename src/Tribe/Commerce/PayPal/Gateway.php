@@ -356,7 +356,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT( $_GET['tx'] );
 			}
 		} else {
-			// if there isn't an identity token set, we use IPN
+			// we use IPN otherwise
 			$this->handler = tribe( 'tickets.commerce.paypal.handler.ipn' );
 		}
 

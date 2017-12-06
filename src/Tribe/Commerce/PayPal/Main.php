@@ -165,6 +165,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$this->plugin_path = $main->plugin_path;
 		$this->plugin_url  = $main->plugin_url;
 
+		// mirror some properties from the class constants
+		$this->attendee_event_key   = self::ATTENDEE_EVENT_KEY;
+		$this->attendee_product_key = self::ATTENDEE_PRODUCT_KEY;
+
 		parent::__construct();
 
 		$this->bind_implementations();

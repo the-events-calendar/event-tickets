@@ -51,25 +51,25 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 
 		foreach ( $attendees as $attendee ) {
 			$order_quantity ++;
-			$ticket_id      = get_post_meta( $attendee->ID, $paypal->attendee_product_key, true );
-			$ticket_post_id = get_post_meta( $attendee->ID, $paypal->attendee_event_key, true );
-			$ticket_price   = (int) get_post_meta( $ticket_id, '_price', true );
-			$order_total    += $ticket_price;
+			$ticket_id    = get_post_meta( $attendee->ID, $paypal->attendee_product_key, true );
+			$post_id      = get_post_meta( $attendee->ID, $paypal->attendee_event_key, true );
+			$ticket_price = (int) get_post_meta( $ticket_id, '_price', true );
+			$order_total  += $ticket_price;
 
 			if ( array_key_exists( $ticket_id, $tickets ) ) {
 				$tickets[ $ticket_id ]['quantity'] += 1;
 				$tickets[ $ticket_id ]['subtotal'] = $tickets[ $ticket_id ]['quantity'] * $ticket_price;
 			} else {
-				$header_image_id       = ! empty( $ticket_post_id )
-					? tribe( 'tickets.handler' )->get_header_image_id( $ticket_post_id )
+				$header_image_id       = ! empty( $post_id )
+					? tribe( 'tickets.handler' )->get_header_image_id( $post_id )
 					: false;
 				$tickets[ $ticket_id ] = array(
 					'name'            => get_the_title( $ticket_id ),
 					'price'           => $ticket_price,
 					'quantity'        => 1,
 					'subtotal'        => $ticket_price,
-					'post_id'         => $ticket_post_id,
-					'is_event'        => function_exists( 'tribe_is_event' ) && tribe_is_event( $ticket_post_id ),
+					'post_id'         => $post_id,
+					'is_event'        => function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id ),
 					'header_image_id' => $header_image_id,
 				);
 			}
