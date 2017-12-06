@@ -90,18 +90,29 @@ class Tribe__Tickets__Attendees {
 	 * @param $event_id
 	 */
 	public function event_action_links( $event_id ) {
+
+		/**
+		 * Allows for control of the specific "edit post" URLs used for event Sales and Attendees Reports.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $link The deafult "edit post" URL.
+		 * @param int $event_id The Post ID of the event.
+		 */
+		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
+
 		$action_links = array(
-			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
 			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
 		);
 
 		/**
-		 * Provides an opportunity to add and remove action links from the
-		 * attendee screen summary box.
+		 * Provides an opportunity to add and remove action links from the attendee screen summary box.
 		 *
 		 * @param array $action_links
+		 * @param int $event_id
 		 */
-		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links );
+		$action_links = (array) apply_filters( 'tribe_tickets_attendees_event_action_links', $action_links, $event_id );
 
 		if ( empty( $action_links ) ) {
 			return;
@@ -257,6 +268,7 @@ class Tribe__Tickets__Attendees {
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
 			'required'        => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
 			'sending'         => esc_html__( 'Sending...', 'event-tickets' ),
+			'ajaxurl'         => admin_url( 'admin-ajax.php' ),
 			'checkin_nonce'   => wp_create_nonce( 'checkin' ),
 			'uncheckin_nonce' => wp_create_nonce( 'uncheckin' ),
 			'cannot_move'     => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),

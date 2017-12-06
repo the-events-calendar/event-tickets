@@ -6,7 +6,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 		if ( typeof AttendeesPointer !== 'undefined' && null !== AttendeesPointer ) {
 			options = $.extend( AttendeesPointer.options, {
 				close: function() {
-					$.post( ajaxurl, {
+					$.post( Attendees.ajaxurl, {
 						pointer: AttendeesPointer.pointer_id,
 						action : 'dismiss-wp-pointer'
 					} );
@@ -136,7 +136,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			}
 
 			$.post(
-				ajaxurl,
+				Attendees.ajaxurl,
 				params,
 				function( response ) {
 					if ( response.success ) {
@@ -168,7 +168,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			}
 
 			$.post(
-				ajaxurl,
+				Attendees.ajaxurl,
 				params,
 				function( response ) {
 					if ( response.success ) {
@@ -312,7 +312,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 						'ticket_id': ticket_id
 					};
 
-					$.post( ajaxurl, request, function( response ) {
+					$.post( Attendees.ajaxurl, request, function( response ) {
 						if ( 'undefined' === typeof response.data || 'string' !== typeof response.data.html ) {
 							return;
 						}

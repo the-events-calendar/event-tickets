@@ -61,7 +61,7 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 				LEFT JOIN {$wpdb->posts} p
 				ON pm.meta_value = p.ID
 				WHERE p.post_type IN {$post_types}
-				AND pm.meta_key LIKE '_tribe_%_for_event'
+				AND pm.meta_key LIKE '\\_tribe\\_%\\_for\\_event'
 				AND pm.meta_value IS NOT NULL";
 
 		if ( class_exists( 'Tribe__Events__Main' ) ) { // if events are among the supported post types then exclude past events
