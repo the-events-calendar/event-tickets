@@ -110,10 +110,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__Tickets__Tickets_Handler $handler
+	 * @param Tribe__Tickets__Attendees $attendees
 	 */
-	public function render_tabbed_view( Tribe__Tickets__Tickets_Handler $handler ) {
-		$post = $handler->get_post();
+	public function render_tabbed_view( Tribe__Tickets__Attendees $attendees ) {
+		$post = $attendees->get_post();
 
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal = tribe( 'tickets.commerce.paypal' );
@@ -123,7 +123,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			return;
 		}
 
-		$handler->should_render_title( false );
+		// @todo: where did this go?!
+		// $attendees->should_render_title( false );
 
 		$tabbed_view = new Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
 		$tabbed_view->register();
