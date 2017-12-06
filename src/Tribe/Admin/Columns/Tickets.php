@@ -106,7 +106,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	/**
 	 * Gets the HTML for the percentage string for Attendees Column
 	 *
-	 * @since  TBD  Deprecated the Second Param
+	 * @since  4.6.2  Deprecated the Second Param
 	 *
 	 * @param  int  $post_id    The current post ID.
 	 * @param  null $deprecated
@@ -154,14 +154,14 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	/**
 	 * Iterates over an array of tickets to fetch the sale total.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param Tribe__Tickets__Ticket_Object[] $tickets
 	 *
 	 * @return int The sale total.
 	 */
 	protected function get_sold( $tickets ) {
-		_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.handler" )->get_ticket_totals()' );
+		_deprecated_function( __METHOD__, '4.6.2', 'tribe( "tickets.handler" )->get_ticket_totals()' );
 		$sold = 0;
 
 		/** @var Tribe__Tickets__Ticket_Object $ticket */

@@ -8,7 +8,7 @@ $tickets  = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 /**
  * Wether or not we should display attendees title
  *
- * @since  TBD
+ * @since  4.6.2
  *
  * @param  boolean                          $show_title
  * @param  Tribe__Tickets__Tickets_Handler  $handler

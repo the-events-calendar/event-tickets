@@ -15,7 +15,7 @@ class Tribe__Tickets__Admin__Views extends Tribe__Template {
 	/**
 	 * Building of the Class template configuration
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 */
 	public function __construct() {
 		$this->set_template_origin( Tribe__Tickets__Main::instance() );

@@ -32,7 +32,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Configures the Tickets Editor into a Post Type
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  string $post_type Which post type we are trying to configure
 	 *
@@ -64,7 +64,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Render the actual Metabox
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  int   $post_id  Which post we are dealing with
 	 *
@@ -94,7 +94,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Refreshes panels after ajax calls that change data
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @return string html content of the panels
 	 */
@@ -140,7 +140,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Get the Panels for a given
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param int|WP_Post $post
 	 * @param int         $ticket_id
@@ -176,7 +176,7 @@ class Tribe__Tickets__Metabox {
 	 * Sanitizes the data for the new/edit ticket ajax call,
 	 * and calls the child save_ticket function.
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 */
 	public function ajax_ticket_add() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -235,7 +235,7 @@ class Tribe__Tickets__Metabox {
 	 * Returns the data from a single ticket to populate
 	 * the edit form.
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @return array $return array of ticket data
 	 */
@@ -289,7 +289,7 @@ class Tribe__Tickets__Metabox {
 	 * Sanitizes the data for the delete ticket ajax call, and calls the child delete_ticket
 	 * function.
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 */
 	public function ajax_ticket_delete() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -335,7 +335,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Handles the check-in ajax call, and calls the checkin method.
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
 	 *       we should consider revising in a back-compat minded way
@@ -371,7 +371,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Handles the check-in ajax call, and calls the uncheckin method.
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
 	 *       we should consider revising in a back-compat minded way
@@ -407,7 +407,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Get the controls (move, delete) as a string
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  array   $post_id
 	 * @param  array   $ticket_id
@@ -451,7 +451,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * test if the nonce is correct and the current user has the correct permissions
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  WP_Post  $post
 	 * @param  array   $data
@@ -481,7 +481,7 @@ class Tribe__Tickets__Metabox {
 	 *
 	 * @internal for internal plugin use only (in spite of having public visibility)
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @see    tribe( 'tickets.attendees' )->user_can
 	 *
@@ -504,7 +504,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Returns whether a class name is a valid active module/provider.
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  string  $module  class name of module
 	 *
@@ -517,7 +517,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Returns the markup for a notice in the admin
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  string $msg Text for the notice
 	 *
@@ -560,7 +560,7 @@ class Tribe__Tickets__Metabox {
 	/**
 	 * Refreshes panel settings after canceling saving
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 * @since 4.6
 	 *
 	 * @return string html content of the panel settings
@@ -570,7 +570,7 @@ class Tribe__Tickets__Metabox {
 	}
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @return void
 	 */
@@ -582,7 +582,7 @@ class Tribe__Tickets__Metabox {
 	 * Registers the tickets metabox if there's at least
 	 * one Tribe Tickets module (provider) enabled
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $post_type
 	 */
@@ -594,7 +594,7 @@ class Tribe__Tickets__Metabox {
 	 * Loads the content of the tickets metabox if there's at
 	 * least one Tribe Tickets module (provider) enabled
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $post_id
 	 */
