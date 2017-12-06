@@ -66,7 +66,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var params = {
 				action  : 'tribe-ticket-checkin',
 				provider: obj.attr( 'data-provider' ),
-				order_ID: obj.attr( 'data-attendee-id' ),
+				attendee_id: obj.attr( 'data-attendee-id' ),
 				nonce   : Attendees.checkin_nonce
 			};
 
@@ -98,7 +98,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var params = {
 				action  : 'tribe-ticket-uncheckin',
 				provider: obj.attr( 'data-provider' ),
-				order_ID: obj.attr( 'data-attendee-id' ),
+				attendee_id: obj.attr( 'data-attendee-id' ),
 				nonce   : Attendees.uncheckin_nonce
 			};
 

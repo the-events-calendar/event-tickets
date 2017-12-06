@@ -328,8 +328,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$provider_index = array(
 			'rsvp' => 'Tribe__Tickets__RSVP',
-			'woo' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
-			'edd' => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+			'tpp'  => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
 		);
 
 		$relationships = array(
@@ -337,6 +338,10 @@ class Tribe__Tickets__Tickets_Handler {
 				// RSVP
 				'_tribe_rsvp_event' => 'rsvp',
 				'_tribe_rsvp_for_event' => 'rsvp',
+
+				// PayPal tickets
+				'_tribe_tpp_event' => 'tpp',
+				'_tribe_twpp_for_event' => 'tpp',
 
 				// EDD
 				'_tribe_eddticket_event' => 'edd',
@@ -350,6 +355,9 @@ class Tribe__Tickets__Tickets_Handler {
 				// RSVP
 				'_tribe_rsvp_product' => 'rsvp',
 
+				// PayPal tickets
+				'_tribe_tpp_product' => 'tpp',
+
 				// EDD
 				'_tribe_eddticket_product' => 'edd',
 
@@ -360,6 +368,9 @@ class Tribe__Tickets__Tickets_Handler {
 				// RSVP
 				'_tribe_rsvp_order' => 'rsvp',
 
+				// PayPal tickets
+				'_tribe_tpp_order' => 'tpp',
+
 				// EDD
 				'_tribe_eddticket_order' => 'edd',
 
@@ -368,6 +379,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 			),
 			'order_item' => array(
+				// PayPal tickets
+				'_tribe_tpp_order' => 'tpp',
+
 				// Woo
 				'_tribe_wooticket_order_item' => 'woo',
 			),
