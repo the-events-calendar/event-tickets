@@ -237,7 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * New - Introduced the `tribe_tickets_event_action_links_edit_url` filter for more granular control over "edit event" links in various views [93339]
 * Fix - Fixed broken RSVP ticket sales when using Aggregator CSV [92936]
-* Fix - Prevent non-escaped underscores to get into the final SQL for LIKE queries (Props to @misenhower) [GH#567]
+* Fix - Prevent non-escaped underscores from getting into the final SQL for LIKE queries (Props to @misenhower) [GH#567]
 * Fix - Fixed sorting for Tickets so that moving them to the first and last position of the order is allowed [92558]
 * Fix - Improved handling of Stock to ensure it's updated accordingly based on total sales when updating capacity [93601]
 * Fix - Improved CSS for Capacity Table on mobile [90907]
@@ -246,7 +246,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.6.1.1] 2017-11-24 =
 
-* Fix - Fixed some issues to ensure Start and End Time for Ticket sales (props to Scott) [93439]
+* Fix - Fixed some issues to ensure Start and End Time for Ticket sales work correctly (props to Scott) [93439]
 * Fix - Ensure attendee fields remain visible within the admin environment (compatibility fix for Event Tickets Plus) [94142]
 * Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
