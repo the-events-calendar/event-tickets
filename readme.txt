@@ -253,7 +253,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.6.1] 2017-11-21 =
 
 * Fix - RSVP and Tickets migration from pre-4.6 updates capacity corretly for all cases now (props to Uwe Matern) [93231]
-* Fix - Attendees column for events display correctly the percentages now [92287]
+* Fix - Ensure Attendees column for events displays the correct percentages [92287]
 * Fix - Tickets Editor now has more support for Accessibility [80651]
 * Tweak - Prevent unnecessary AJAX requests when using tickets editor [88642]
 * Tweak - Removes weird clearing of fields when canceling or saving Tickets [88642]
