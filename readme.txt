@@ -240,6 +240,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Sorting for Tickets now allows moving them to the first and last position of the ordering [92558]
 * Fix - Make sure Stock is updated accordingly based on total sales when updating capacity [93601]
 * Fix - Improve CSS for Capacity Table on Mobile [90907]
+* Fix - Fixed some bugs with attendees management that prevented check-in features from working in Community Tickets front-end views (props @musician4you and several other folks for highlighting this issue) [81629]
 
 = [4.6.1.1] 2017-11-24 =
 
