@@ -87,7 +87,7 @@ $cart_url       = '';
 						>
 						<?php if ( $ticket->managing_stock() ) : ?>
 							<span class="tribe-tickets-remaining">
-								<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->remaining(), $ticket->original_stock() ); ?>
+								<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->available(), $ticket->original_stock() ); ?>
 							</span>
 						<?php endif; ?>
 					<?php else: ?>
