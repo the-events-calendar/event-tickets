@@ -384,7 +384,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		// Setup Drag and Drop
 		if (
 			tribe.tickets.table
-			&& 0 !== $base_panel.find( 'tribe-tickets-editor-table-tickets-body tr' ).length
+			&& 0 !== $base_panel.find( '.tribe-tickets-editor-table-tickets-body tr' ).length
 		) {
 			tribe.tickets.table.toggle_sortable();
 		}
