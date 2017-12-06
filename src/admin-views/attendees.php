@@ -2,8 +2,8 @@
 tribe( 'tickets.attendees' )->attendees_table->prepare_items();
 
 $event_id = tribe( 'tickets.attendees' )->attendees_table->event->ID;
-$event = tribe( 'tickets.attendees' )->attendees_table->event;
-$tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
+$event    = tribe( 'tickets.attendees' )->attendees_table->event;
+$tickets  = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
 
 /**
  * Wether or not we should display attendees title
