@@ -123,9 +123,6 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			return;
 		}
 
-		// @todo: where did this go?!
-		// $attendees->should_render_title( false );
-
 		$tabbed_view = new Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View();
 		$tabbed_view->register();
 	}
