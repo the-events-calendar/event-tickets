@@ -1223,11 +1223,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// There's only one, just return it.
 				Tribe__Tickets__Tickets::$default_module = array_shift( $modules );
 			} else {
-				// Remove RSVP for this part
-				unset( $modules[ array_search( 'Tribe__Tickets__RSVP', $modules ) ] );
+				// Remove RSVP and PayPal tickets for this part
+				unset(
+					$modules[ array_search( 'Tribe__Tickets__RSVP', $modules ) ],
+					$modules[ array_search( 'Tribe__Tickets__Commerce__PayPal__Main', $modules ) ]
+				);
 
-				// We just return the first, so we don't show favoritism
-				Tribe__Tickets__Tickets::$default_module = array_shift( $modules );
+				if ( ! empty( $modules ) ) {
+					// We just return the first, so we don't show favoritism
+					Tribe__Tickets__Tickets::$default_module = array_shift( $modules );
+				} else {
+					// use PayPal tickets
+					Tribe__Tickets__Tickets::$default_module = 'Tribe__Tickets__Commerce__PayPal__Main';
+				}
 			}
 
 			/**
