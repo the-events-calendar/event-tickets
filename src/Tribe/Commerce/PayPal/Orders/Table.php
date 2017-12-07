@@ -212,9 +212,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$product_ids = Tribe__Utils__Array::get( $_GET, 'product_ids', null );
 
-		if ( false !== $product_ids ) {
-			$product_ids = explode( ',', $product_ids );
-		}
+		$product_ids = ! empty( $product_ids ) ? explode( ',', $product_ids ) : null;
 
 		$items       = $sales->get_orders_for_post( $this->post_id, $product_ids );
 

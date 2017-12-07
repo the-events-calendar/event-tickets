@@ -1015,7 +1015,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$return = new Tribe__Tickets__Ticket_Object();
-		$qty    = (int) get_post_meta( $ticket_id, 'total_sales', true );
+
+		$qty = (int) get_post_meta( $ticket_id, 'total_sales', true );
 
 		$return->description    = $product->post_excerpt;
 		$return->ID             = $ticket_id;
@@ -1025,6 +1026,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->admin_link     = '';
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$return->sku            = get_post_meta( $ticket_id, 'sku', true );
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
 		$return->stock( get_post_meta( $ticket_id, '_stock', true ) - $qty );
@@ -1529,6 +1531,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Gets a transaction URL
+	 *
+	 * @since TBD
+	 *
+	 * @param $transaction
+	 *
+	 * @return string
+	 */
+	public function get_transaction_url( $transaction ) {
+		return tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_url( $transaction );
+	}
+
+	/**
 	 * Returns the value of a key defined by the class.
 	 *
 	 * @since TBD
@@ -1658,7 +1673,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			if ( ! isset( $orders[ $order_number ] ) ) {
 				$orders[ $order_number ] = array(
-					'url'             => $this->get_order_url( $order_number ),
+					'url'             => $this->get_transaction_url( $order_number ),
 					'number'          => $order_number,
 					'status'          => $attendee['order_status'],
 					'status_label'    => Tribe__Utils__Array::get( $statuses, $attendee['order_status'], $undefined ),
@@ -1703,19 +1718,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @return array An associative array in the [ <slug> => <label> ] format.
 		 */
 		return apply_filters( 'tribe_tickets_commerce_paypal_order_stati', $order_statuses );
-	}
-
-	/**
-	 * Returns the URL to a PayPal order.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $order_number
-	 *
-	 * @return string
-	 */
-	protected function get_order_url( $order_number ) {
-		return add_query_arg( array( 'cmd' => '_view-a-trans', 'id' => $order_number ), $this->get_cart_url() );
 	}
 
 	/**

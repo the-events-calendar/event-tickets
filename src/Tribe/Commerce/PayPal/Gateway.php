@@ -1,6 +1,26 @@
 <?php
 
 class Tribe__Tickets__Commerce__PayPal__Gateway {
+
+	/**
+	 * @var string
+	 */
+	public $base_url = 'https://www.paypal.com';
+	/**
+	 * @var string
+	 */
+	public $cart_url = 'https://www.paypal.com/cgi-bin/webscr';
+
+	/**
+	 * @var string
+	 */
+	public $sandbox_base_url = 'https://www.sandbox.paypal.com';
+
+	/**
+	 * @var string
+	 */
+	public $sandbox_cart_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+
 	/**
 	 * @var string
 	 */
@@ -321,21 +341,50 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	}
 
 	/**
-	 * Returns a PayPal URL
+	 * Returns the PayPal cart URL
 	 *
 	 * @since TBD
 	 *
+	 * @param string $path An optional path to append to the URL
+	 *
 	 * @return string
 	 */
-	public function get_cart_url() {
-		$paypal_url  = 'https://www.paypal.com/cgi-bin/webscr';
-		$sandbox_url = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+	public function get_cart_url( $path = '' ) {
+		$path = '/' . ltrim( $path, '/' );
 
-		if ( tribe_get_option( 'ticket-paypal-sandbox' ) ) {
-			return $sandbox_url;
-		}
+		return tribe_get_option( 'ticket-paypal-sandbox' )
+			? $this->sandbox_cart_url . $path
+			: $this->cart_url . $path;
+	}
 
-		return $paypal_url;
+	/**
+	 * Returns the PyaPal base URL
+	 *
+	 * @since TBD
+	 *
+	 * @param string $path An optional path to append to the URL
+	 *
+	 * @return string
+	 */
+	public function get_base_url( $path = '' ) {
+		$path = '/' . ltrim( $path, '/' );
+
+		return tribe_get_option( 'ticket-paypal-sandbox' )
+			? $this->sandbox_base_url . $path
+			: $this->base_url . $path;
+	}
+
+	/**
+	 * Returns the PayPal URL to a transaction details.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $transaction The transaction alpha-numeric identifier
+	 *
+	 * @return string
+	 */
+	public function get_transaction_url( $transaction ) {
+		return $this->get_base_url( "activity/payment/{$transaction}" );
 	}
 
 	/**

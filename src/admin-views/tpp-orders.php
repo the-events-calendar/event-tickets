@@ -111,7 +111,7 @@
 							<strong><?php echo esc_html( $ticket_sold->name . $price ); ?>:</strong>
 							<?php
 							echo esc_html( $sold_message );
-							if ( $ticket_sold->sku() ) {
+							if ( $ticket_sold->sku ) {
 								?>
 								<div class="tribe-event-meta-note tribe-event-ticket-sku">
 									<?php printf( esc_html__( 'SKU: (%s)', 'event-tickets' ), esc_html( $ticket_sold->sku() ) ); ?>

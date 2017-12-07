@@ -277,9 +277,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return array
 	 */
 	public function get_orders_for_post( $post_id, array $ticket_ids = null ) {
-		$ticket_ids_string = implode( ',', $ticket_ids );
-
-		$cache_key = "{$post_id}-{$ticket_ids_string}-orders";
+		$cache_key = ! empty( $ticket_ids )
+			? sprintf( "{$post_id}-%s-orders", implode( '|', $ticket_ids ) )
+			: "{$post_id}-orders";
 
 		$cached = $this->cache[ $cache_key ];
 
