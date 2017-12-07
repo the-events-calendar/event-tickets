@@ -852,6 +852,10 @@ class Tribe__Tickets__Tickets_Handler {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
 		}
 
+		if ( ! $default_provider ) {
+			$default_provider = class_exists( 'Tribe__Tickets_Plus__Main' ) ? 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' : 'Tribe__Tickets__RSVP';
+		}
+
 		if ( ! is_string( $default_provider ) ) {
 			$default_provider = get_class( $default_provider );
 		}
