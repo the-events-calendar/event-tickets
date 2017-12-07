@@ -93,12 +93,24 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 		if ( 'undefined' === typeof force_rsvp ) {
 			force_rsvp = true;
 		}
-		var $checked_provider = $tribe_tickets.find( '.tribe-ticket-editor-field-default_provider' ).filter( ':checked' );
-		var provider_id = 'Tribe__Tickets__RSVP_radio';
+		var $checkedProvider = $tribe_tickets.find( '.tribe-ticket-editor-field-default_provider' );
 
-		if ( ! force_rsvp && $checked_provider.length > 0 ) {
-			provider_id = $checked_provider.val() + '_radio';
-		 }
+		if ( $checkedProvider.is( ':radio' ) ) {
+			$checkedProvider = $checkedProvider.filter( ':checked' );
+		}
+
+		var provider_id;
+
+		if ( force_rsvp ) {
+			provider_id = 'Tribe__Tickets__RSVP_radio';
+		} else {
+			// Allows default to WooCommerce
+			provider_id = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main_radio';
+		}
+
+		if ( ! force_rsvp && $checkedProvider.length > 0 ) {
+			provider_id = $checkedProvider.val() + '_radio';
+		}
 
 		$( document.getElementById( provider_id ) ).prop( 'checked', true ).trigger( 'change' );
 	}
