@@ -233,7 +233,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.6.2] TBD =
+= [4.6.2] 2017-12-07 =
 
 * Fix - Fixed broken RSVP ticket sales when using Aggregator CSV [92936]
 * Fix - Prevent non-escaped underscores from getting into the final SQL for LIKE queries (Props to @misenhower) [GH#567]
@@ -244,6 +244,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Tweak - Introduced the `tribe_tickets_event_action_links_edit_url` filter for more granular control over "edit event" links in various views [93339]
 * Tweak - Prevent EDD from being a provider for front-end Community Tickets, as only WooCommerce is allowed for that [91758]
 * Tweak - Added actions: `event_tickets_ticket_list_before_ticket_name`, `event_tickets_ticket_list_after_ticket_name`
+* Language - 0 new strings added, 54 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.6.1.1] 2017-11-24 =
 
