@@ -26,7 +26,7 @@ if ( ! isset( $ticket_id ) ) {
 	data-condition-is-not-checked
 >
 	<div class="input_block">
-		<label for="ticket_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Price:', 'event-tickets-plus' ); ?></label>
+		<label for="ticket_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Price:', 'event-tickets' ); ?></label>
 		<input
 			type="text"
 			id="ticket_price"
@@ -35,12 +35,12 @@ if ( ! isset( $ticket_id ) ) {
 			size="7"
 			value="<?php echo esc_attr( $ticket ? $price : null ); ?>"
 		/>
-		<p class="description ticket_form_right"><?php esc_html_e( 'Leave blank for free tickets', 'event-tickets-plus' ) ?></p>
+		<p class="description ticket_form_right"><?php esc_html_e( 'Leave blank for free tickets', 'event-tickets' ) ?></p>
 	</div>
 
 	<?php if ( $ticket && $ticket->on_sale ) : ?>
 	<div class="input_block">
-		<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Sale Price:', 'event-tickets-plus' ) ?></label>
+		<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Sale Price:', 'event-tickets' ) ?></label>
 		<input
 			type="text"
 			id="ticket_sale_price"
@@ -50,7 +50,7 @@ if ( ! isset( $ticket_id ) ) {
 			value="<?php echo esc_attr( $ticket ? $sale_price : null ); ?>"
 			readonly
 		/>
-		<p class="description ticket_form_right"><?php esc_html_e( 'Current sale price - this can be managed via the product editor', 'event-tickets-plus' ) ?></p>
+		<p class="description ticket_form_right"><?php esc_html_e( 'Current sale price - this can be managed via the product editor', 'event-tickets' ) ?></p>
 	</div>
 	<?php endif; ?>
 </div>

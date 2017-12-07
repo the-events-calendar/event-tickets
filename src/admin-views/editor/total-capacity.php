@@ -8,15 +8,15 @@ if ( empty( $total_tickets ) ) {
 }
 ?>
 <span id="ticket_form_total_capacity">
-	<?php esc_html_e( 'Total Event Capacity:', 'event-tickets-plus' ); ?>
-	<span id="ticket_form_total_capacity_value" title="<?php esc_attr_e( 'The total number of possible attendees for this event', 'event-tickets-plus' ); ?>">
+	<?php esc_html_e( 'Total Event Capacity:', 'event-tickets' ); ?>
+	<span id="ticket_form_total_capacity_value" title="<?php esc_attr_e( 'The total number of possible attendees for this event', 'event-tickets' ); ?>">
 		<?php
 		switch ( $total_tickets ) {
 			case -1:
 				?><i><?php echo esc_html( tribe( 'tickets.handler' )->unlimited_term ); ?></i><?php
 				break;
 			case 0:
-				?><i><?php esc_html_e( 'No tickets created yet', 'event-tickets-plus' ); ?></i><?php
+				?><i><?php esc_html_e( 'No tickets created yet', 'event-tickets' ); ?></i><?php
 				break;
 			default:
 				echo absint( $total_tickets );

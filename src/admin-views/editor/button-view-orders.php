@@ -30,5 +30,5 @@ $url = apply_filters( 'tribe_filter_attendee_order_link', $url, $post->ID );
 	href="<?php echo esc_url( $url ); ?>"
 	class="button-secondary"
 >
-	<?php esc_html_e( 'View Orders', 'event-tickets-plus' ); ?>
+	<?php esc_html_e( 'View Orders', 'event-tickets' ); ?>
 </a>

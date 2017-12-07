@@ -29,8 +29,8 @@ $fieldset_class   = $multiple_modules ? 'input_block' : 'screen-reader-text';
 			<?php endforeach; ?>
 		<?php else : ?>
 			<section style="margin-bottom: 0;">
-				<legend id="default_ticket_provider_legend" class="ticket_form_left"><?php esc_html_e( 'Sell tickets using:', 'event-tickets-plus' ); ?></legend>
-				<p class="ticket_form_right"><?php esc_attr_e( 'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event.' ); ?> <em><?php esc_attr_e( 'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.', 'event-tickets-plus' ); ?></em></p>
+				<legend id="default_ticket_provider_legend" class="ticket_form_left"><?php esc_html_e( 'Sell tickets using:', 'event-tickets' ); ?></legend>
+				<p class="ticket_form_right"><?php esc_attr_e( 'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event.' ); ?> <em><?php esc_attr_e( 'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin.', 'event-tickets' ); ?></em></p>
 				<?php foreach ( $modules as $class => $module ) : ?>
 					<label class="ticket_form_right" for="provider_<?php echo esc_attr( $class . '_radio' ); ?>">
 						<input

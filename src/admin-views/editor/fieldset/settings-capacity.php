@@ -10,7 +10,7 @@ $total_shared_tickets    = tribe_tickets_get_capacity( $post_id );
 ?>
 <table id="tribe_expanded_capacity_table" summary="capacity table" class="eventtable ticket_list tribe-tickets-editor-capacity-table eventForm tribe-tickets-editor-table striped fixed">
 	<tr class="tribe-tickets-editor-table-row tribe-tickets-editor-table-row-capacity-shared">
-		<td><?php esc_html_e( 'Shared Capacity:', 'event-tickets-plus' ); ?></td>
+		<td><?php esc_html_e( 'Shared Capacity:', 'event-tickets' ); ?></td>
 		<td>
 			<input
 				id="settings_global_capacity_edit"
@@ -18,13 +18,13 @@ $total_shared_tickets    = tribe_tickets_get_capacity( $post_id );
 				size="8"
 				name="tribe-tickets[settings][event_capacity]"
 				value="<?php echo esc_attr( $total_shared_tickets ); ?>"
-				aria-label="<?php esc_html_e( 'Global Shared Capacity field', 'event-tickets-plus' ); ?>"
+				aria-label="<?php esc_html_e( 'Global Shared Capacity field', 'event-tickets' ); ?>"
 				<?php echo esc_attr( ! is_null( $total_shared_tickets ) ? 'disabled' : '' ); ?>
 			/>
 			<button
 				id="global_capacity_edit_button"
 				class="global_capacity_edit_button tribe-button-icon tribe-button-icon-edit"
-				title="<?php esc_attr_e( 'Edit Shared Capacity', 'event-tickets-plus' ) ?>"
+				title="<?php esc_attr_e( 'Edit Shared Capacity', 'event-tickets' ) ?>"
 				aria-controls="settings_global_capacity_edit"
 			></button>
 		</td>
@@ -37,7 +37,7 @@ $total_shared_tickets    = tribe_tickets_get_capacity( $post_id );
 
 	<?php if ( empty( $independent_ticket_list ) ) : ?>
 	<tr class="tribe-tickets-editor-table-row tribe-tickets-editor-table-row-capacity-independent">
-		<td><?php esc_html_e( 'Independent Capacity:', 'event-tickets-plus' ); ?></td>
+		<td><?php esc_html_e( 'Independent Capacity:', 'event-tickets' ); ?></td>
 		<td colspan="2">0</td>
 	</tr>
 	<?php endif; ?>
@@ -47,7 +47,7 @@ $total_shared_tickets    = tribe_tickets_get_capacity( $post_id );
 		<td>
 			<?php
 			if ( 0 === $index ) {
-				esc_html_e( 'Independent Capacity:', 'event-tickets-plus' );
+				esc_html_e( 'Independent Capacity:', 'event-tickets' );
 			}
 			?>
 		</td>
@@ -62,7 +62,7 @@ $total_shared_tickets    = tribe_tickets_get_capacity( $post_id );
 
 	<?php if ( -1 === $total_capacity ) : ?>
 	<tr class="tribe-tickets-editor-table-row tribe-tickets-editor-table-row-capacity-unlimited">
-		<td><?php esc_html_e( 'Unlimited Capacity:', 'event-tickets-plus' ); ?></td>
+		<td><?php esc_html_e( 'Unlimited Capacity:', 'event-tickets' ); ?></td>
 		<td>
 			<?php echo esc_html( tribe( 'tickets.handler' )->unlimited_term ); ?>
 		</td>
@@ -83,7 +83,7 @@ $total_shared_tickets    = tribe_tickets_get_capacity( $post_id );
 		<td>
 			<?php
 			if ( 0 === $index ) {
-				esc_html_e( 'RSVPs:', 'event-tickets-plus' );
+				esc_html_e( 'RSVPs:', 'event-tickets' );
 			}
 			?>
 		</td>
@@ -97,11 +97,11 @@ $total_shared_tickets    = tribe_tickets_get_capacity( $post_id );
 	<?php endforeach; ?>
 
 	<tr class="tribe-tickets-editor-table-row tribe-tickets-editor-table-row-capacity-total" data-total-capacity="<?php echo esc_attr( $total_capacity ); ?>">
-		<td><?php esc_html_e( 'Total Capacity:', 'event-tickets-plus' ); ?></td>
+		<td><?php esc_html_e( 'Total Capacity:', 'event-tickets' ); ?></td>
 		<td colspan="2" class="tribe-tickets-editor-total-capacity">
 			<?php
 			if ( ! $total_capacity ) {
-				esc_html_e( 'Create a ticket to add event capacity', 'event-tickets-plus' );
+				esc_html_e( 'Create a ticket to add event capacity', 'event-tickets' );
 			} else {
 				tribe_tickets_get_readable_amount( $total_capacity, null, true );
 			}

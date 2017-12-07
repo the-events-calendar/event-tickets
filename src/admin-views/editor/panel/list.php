@@ -59,7 +59,7 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 			class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
 			aria-label="<?php esc_attr_e( 'Add a new ticket', 'event-tickets' ); ?>"
 		>
-			<?php esc_html_e( 'New ticket', 'event-tickets-plus' ); ?>
+			<?php esc_html_e( 'New ticket', 'event-tickets' ); ?>
 		</button>
 
 		<button
