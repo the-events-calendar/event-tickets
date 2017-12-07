@@ -19,15 +19,6 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	);
 
 	/**
-	 * Hooks the actions and filters needed by the class.
-	 *
-	 * @since TBD
-	 */
-	public function hook() {
-		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render' ), 20 );
-	}
-
-	/**
 	 * Renders the tabbed view for the current post.
 	 *
 	 * @since TBD

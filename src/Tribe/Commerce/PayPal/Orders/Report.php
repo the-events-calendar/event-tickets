@@ -133,13 +133,17 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @since TBD
 	 */
 	public function register_orders_page() {
+		$candidate_post_id = Tribe__Utils__Array::get( $_GET, 'post_id', Tribe__Utils__Array::get( $_GET, 'event_id', 0 ) );
+
+		if ( ( $post_id = absint( $candidate_post_id ) ) != $candidate_post_id ) {
+			return;
+		}
+
 		$cap     = 'edit_posts';
-		$post_id = absint( ! empty( $_GET['post_id'] ) && is_numeric( $_GET['post_id'] ) ? $_GET['post_id'] : 0 );
-
 		if ( ! current_user_can( 'edit_posts' ) && $post_id ) {
-			$event = get_post( $post_id );
+			$post = get_post( $post_id );
 
-			if ( $event instanceof WP_Post && get_current_user_id() === (int) $event->post_author ) {
+			if ( $post instanceof WP_Post && get_current_user_id() === (int) $post->post_author ) {
 				$cap = 'read';
 			}
 		}
