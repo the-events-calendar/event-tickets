@@ -4,7 +4,8 @@ tribe( 'tickets.attendees' )->attendees_table->prepare_items();
 $event_id = tribe( 'tickets.attendees' )->attendees_table->event->ID;
 $event = tribe( 'tickets.attendees' )->attendees_table->event;
 $tickets = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
-
+$post_type_object = get_post_type_object( $event->post_type );
+$singular = $post_type_object->labels->singular_name;
 /**
  * Wether or not we should display attendees title
  *
@@ -35,7 +36,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, tribe( 
 				?>
 
 				<div class="welcome-panel-column welcome-panel-first">
-					<h3><?php echo esc_html_x( 'Event Details', 'attendee screen summary', 'event-tickets' ); ?></h3>
+					<h3><?php echo esc_html( sprintf( _x( '%s Details', 'attendee screen summary', 'event-tickets' ), $singular ) ); ?></h3>
 
 					<ul>
 						<?php

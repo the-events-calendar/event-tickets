@@ -91,9 +91,16 @@ class Tribe__Tickets__Attendees {
 	 * @param $event_id
 	 */
 	public function event_action_links( $event_id ) {
+		$post             = get_post( $event_id );
+		$post_type_object = get_post_type_object( $post->post_type );
+		$singular         = $post_type_object->labels->singular_name;
+
+		$edit         = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+		$view         = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+
 		$action_links = array(
-			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
-			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . $edit . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . $view . '</a>',
 		);
 
 		/**
