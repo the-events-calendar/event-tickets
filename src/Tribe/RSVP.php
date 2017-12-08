@@ -865,13 +865,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Saves a given ticket (WooCommerce product)
 	 *
-	 * @param int                                   $event_id
+	 * @param int                           $post_id
 	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param array                                 $raw_data
+	 * @param array                         $raw_data
 	 *
 	 * @return int The updated/created ticket post ID
 	 */
-	public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 		// assume we are updating until we find out otherwise
 		$save_type = 'update';
 
@@ -891,7 +891,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket->ID = wp_insert_post( $args );
 
 			// Relate event <---> ticket
-			add_post_meta( $ticket->ID, $this->event_key, $event_id );
+			add_post_meta( $ticket->ID, $this->event_key, $post_id );
 
 		} else {
 			$args = array(
@@ -963,7 +963,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @var array Ticket data
 		 * @var string Commerce engine class
 		 */
-		do_action( 'event_tickets_after_' . $save_type . '_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_' . $save_type . '_ticket', $post_id, $ticket, $raw_data, __CLASS__ );
 
 		/**
 		 * Generic action fired after saving a ticket
@@ -973,7 +973,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @var array Ticket data
 		 * @var string Commerce engine class
 		 */
-		do_action( 'event_tickets_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, __CLASS__ );
 
 		tribe( 'tickets.version' )->update( $ticket->ID );
 

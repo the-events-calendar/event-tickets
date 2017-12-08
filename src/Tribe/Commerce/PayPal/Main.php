@@ -769,17 +769,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Saves a given ticket (WooCommerce product)
+	 * Saves a ticket
 	 *
 	 * @since TBD
 	 *
-	 * @param int                                   $event_id
+	 * @param int                           $post_id
 	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param array                                 $raw_data
+	 * @param array                         $raw_data
 	 *
 	 * @return int The updated/created ticket post ID
 	 */
-	public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 		// assume we are updating until we find out otherwise
 		$save_type = 'update';
 
@@ -798,7 +798,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$ticket->ID = wp_insert_post( $args );
 
 			// Relate event <---> ticket
-			add_post_meta( $ticket->ID, $this->event_key, $event_id );
+			add_post_meta( $ticket->ID, $this->event_key, $post_id );
 
 		} else {
 			$args = array(
@@ -849,29 +849,141 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			update_post_meta( $ticket->ID, '_sku', $sku );
 		}
 
+		// Fetches all Ticket Form Datas
+		$data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+
+		// Fetch the Global stock Instance for this Event
+		$event_stock = new Tribe__Tickets__Global_Stock( $post_id );
+
+		// Only need to do this if we haven't already set one - they shouldn't be able to edit it from here otherwise
+		if ( ! $event_stock->is_enabled() ) {
+			if ( isset( $data['event_capacity'] ) ) {
+				$data['event_capacity'] = trim( filter_var( $data['event_capacity'], FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_HIGH ) );
+
+				// If empty we need to modify to -1
+				if ( '' === $data['event_capacity'] ) {
+					$data['event_capacity'] = -1;
+				}
+
+				// Makes sure it's an Int after this point
+				$data['event_capacity'] = (int) $data['event_capacity'];
+
+				// We need to update event post meta - if we've set a global stock
+				$event_stock->enable();
+				$event_stock->set_stock_level( $data['event_capacity'] );
+
+				// Update Event capacity
+				update_post_meta( $post_id, tribe( 'tickets.handler' )->key_capacity, $data['event_capacity'] );
+			}
+		} else {
+			// If the Global Stock is configured we pull it from the Event
+			$data['event_capacity'] = tribe_tickets_get_capacity( $post_id );
+		}
+
+		// Default Capacity will be 0
+		$default_capacity = 0;
+		$is_capacity_passed = true;
+
+		// If we have Event Global stock we fetch that Stock
+		if ( $event_stock->is_enabled() ) {
+			$default_capacity = $data['event_capacity'];
+		}
+
+		// Fetch capacity field, if we don't have it use default (defined above)
+		$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
+
+		// If empty we need to modify to the default
+		if ( '' !== $data['capacity'] ) {
+			// Makes sure it's an Int after this point
+			$data['capacity'] = (int) $data['capacity'];
+
+			// The only available value lower than zero is -1 which is unlimited
+			if ( 0 > $data['capacity'] ) {
+				$data['capacity'] = -1;
+			}
+
+			$default_capacity = $data['capacity'];
+		}
+
+		// Fetch the stock if defined, otherwise use Capacity field
+		$data['stock'] = trim( Tribe__Utils__Array::get( $data, 'stock', $default_capacity ) );
+
+		// If empty we need to modify to what every capacity was
+		if ( '' === $data['stock'] ) {
+			$data['stock'] = $default_capacity;
+		}
+
+		// Makes sure it's an Int after this point
+		$data['stock'] = (int) $data['stock'];
+
+		if ( '' !== $data['mode'] ) {
+			if ( 'update' === $save_type ) {
+				$totals = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
+				$data['stock'] -= $totals['pending'] + $totals['sold'];
+			}
+
+			// In here is safe to check because we don't have unlimted = -1
+			$status = ( 0 < $data['stock'] ) ? 'instock' : 'outofstock';
+
+			update_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, $data['mode'] );
+			update_post_meta( $ticket->ID, '_stock', $data['stock'] );
+			update_post_meta( $ticket->ID, '_stock_status', $status );
+			update_post_meta( $ticket->ID, '_backorders', 'no' );
+			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
+
+			// Prevent Ticket Capacity from going higher then Event Capacity
+			if (
+				$event_stock->is_enabled()
+				&& Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $data['mode']
+				&& '' !== $data['capacity']
+				&& $data['capacity'] > $data['event_capacity']
+			) {
+				$data['capacity'] = $data['event_capacity'];
+			}
+		} else {
+			// Unlimited Tickets
+			// Besides setting _manage_stock to "no" we should remove the associated stock fields if set previously
+			update_post_meta( $ticket->ID, '_manage_stock', 'no' );
+			delete_post_meta( $ticket->ID, '_stock_status' );
+			delete_post_meta( $ticket->ID, '_stock' );
+			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
+			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
+
+			// Set Capacity -1 when we don't have a stock mode, which means unlimited
+			$data['capacity'] = -1;
+		}
+
+		if ( '' !== $data['capacity'] ) {
+			// Update Ticket capacity
+			update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
+		}
+
+		// Delete total Stock cache
+		delete_transient( 'wc_product_total_stock_' . $ticket->ID );
+
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
 		 * @since TBD
 		 *
-		 * @param int                           $event_id Post ID of post the ticket is tied to
+		 * @param int                           $post_id  Post ID of post the ticket is tied to
 		 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
 		 * @param array                         $raw_data Ticket data
 		 * @param string                        $class    Commerce engine class
 		 */
-		do_action( 'event_tickets_after_' . $save_type . '_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_' . $save_type . '_ticket', $post_id, $ticket, $raw_data, __CLASS__ );
 
 		/**
 		 * Generic action fired after saving a ticket
 		 *
 		 * @since TBD
 		 *
-		 * @param int                           $event_id Post ID of post the ticket is tied to
+		 * @param int                           $post_id  Post ID of post the ticket is tied to
 		 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
 		 * @param array                         $raw_data Ticket data
 		 * @param string                        $class    Commerce engine class
 		 */
-		do_action( 'event_tickets_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, __CLASS__ );
 
 		return $ticket->ID;
 	}
@@ -957,7 +1069,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		Tribe__Tickets__Tickets::add_frontend_stock_data( $tickets );
 
 		$ticket_sent = empty( $_GET['tpp_sent'] ) ? false : true;
-		$ticket_error = empty( $_GET['tpp_error'] ) ? false : intval( $_GET['tpp_error'] );
+		$ticket_error = empty( $_GET['tpp_error'] ) ? false : (int) $_GET['tpp_error'];
 
 		if ( $ticket_sent ) {
 			$this->add_message( __( 'Your PayPal Ticket has been received! Check your email for your PayPal Ticket confirmation.', 'event-tickets' ), 'success' );
@@ -1016,7 +1128,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$return = new Tribe__Tickets__Ticket_Object();
 
-		$qty = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
 
 		$return->description    = $product->post_excerpt;
 		$return->ID             = $ticket_id;
@@ -1028,9 +1140,57 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->sku            = get_post_meta( $ticket_id, 'sku', true );
 
+		// If the quantity sold wasn't set, default to zero
+		$qty_sold = $qty_sold ? $qty_sold : 0;
+
+		// Ticket stock is a simple reflection of remaining inventory for this item...
+		$stock = (int) get_post_meta( $ticket_id, '_stock', true );
+
+		// If we don't have a stock value, then stock should be considered 'unlimited'
+		if ( null === $stock ) {
+			$stock = - 1;
+		}
+
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
-		$return->stock( get_post_meta( $ticket_id, '_stock', true ) - $qty );
-		$return->qty_sold( $qty );
+		$return->stock( $stock );
+		$return->global_stock_mode( get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true ) );
+		$capped = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP, true );
+
+		if ( '' !== $capped ) {
+			$return->global_stock_cap( $capped );
+		}
+
+		$return->qty_sold( $qty_sold );
+
+		// review this when/if the Cancelled ticket status is supported in PayPal tickets
+		$return->qty_cancelled( 0 );
+
+		// review this when/if the Pending ticket status is supported in PayPal tickets
+		$return->qty_pending( 0 );
+
+		if ( empty( $return->purchase_limit ) && 0 !== (int) $return->purchase_limit ) {
+			/**
+			 * Filter the default purchase limit for the ticket
+			 *
+			 * @since TBD
+			 *
+			 * @param int
+			 *
+			 * @return int
+			 */
+			$return->purchase_limit = apply_filters( 'tribe_tickets_default_purchase_limit', 0 );
+		}
+
+		/**
+		 * Use this Filter to change any information you want about this ticket
+		 *
+		 * @since TBD
+		 *
+		 * @param object $ticket
+		 * @param int    $post_id
+		 * @param int    $ticket_id
+		 */
+		$ticket = apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $post_id, $ticket_id );
 
 		return $return;
 	}
@@ -1758,14 +1918,49 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return mixed
 	 */
 	public function do_metabox_capacity_options( $post_id, $ticket_id ) {
-		$capacity = '';
+		$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $post_id, $this );
 
-		// This returns the original stock
+		$url               = '';
+		$stock             = '';
+		$global_stock_mode = tribe( 'tickets.handler' )->get_default_capacity_mode();
+		$global_stock_cap  = 0;
+		$ticket_capacity   = null;
+		$post_capacity     = null;
+
+		$stock_object = new Tribe__Tickets__Global_Stock( $post_id );
+
+		if ( $stock_object->is_enabled() ) {
+			$post_capacity = tribe_tickets_get_capacity( $post_id );
+		}
+
+		/**
+		 * Filter the default purchase limit for the ticket
+		 *
+		 * @param int
+		 *
+		 * @return int
+		 */
+		$purchase_limit = apply_filters( 'tribe_tickets_default_purchase_limit', 0 );
+
 		if ( ! empty( $ticket_id ) ) {
-			$ticket = $this->get_ticket( $post_id, $ticket_id );
+			$ticket              = $this->get_ticket( $post_id, $ticket_id );
+			$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $ticket_id, $this );
+
 			if ( ! empty( $ticket ) ) {
-				$capacity = $ticket->capacity();
+				$stock             = $ticket->managing_stock() ? $ticket->stock() : '';
+				$ticket_capacity   = tribe_tickets_get_capacity( $ticket->ID );
+				$global_stock_mode = ( method_exists( $ticket, 'global_stock_mode' ) ) ? $ticket->global_stock_mode() : '';
+				$global_stock_cap  = ( method_exists( $ticket, 'global_stock_cap' ) ) ? $ticket->global_stock_cap() : 0;
+
+				if ( metadata_exists( 'post', $ticket->ID, '_ticket_purchase_limit' ) ) {
+					$purchase_limit = get_post_meta( $ticket->ID, '_ticket_purchase_limit', true );
+				}
 			}
+		}
+
+		// Bail when we are not dealing with this provider
+		if ( ! $is_correct_provider ) {
+			return;
 		}
 
 		$file = Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-metabox-capacity.php';
@@ -1776,9 +1971,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @since TBD
 		 *
 		 * @param string     $file The absolute path to the file containing the metabox capacity HTML
-		 * @param int|string $capacity
+		 * @param int|string $ticket_capacity
+		 * @param int|string $post_capacity
 		 */
-		$file = apply_filters( 'tribe_tickets_tpp_metabox_capacity_file', $file, $capacity );
+		$file = apply_filters( 'tribe_tickets_tpp_metabox_capacity_file', $file, $ticket_capacity, $post_capacity );
 
 		if ( file_exists( $file ) ) {
 			include $file;

@@ -17,10 +17,8 @@ class Tribe__Tickets__Editor {
 	public function hook() {
 		add_action( 'tribe_events_tickets_post_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/button-view-orders' ) );
 		add_action( 'tribe_events_tickets_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/total-capacity' ) );
-
 		add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'filter_get_price_fields' ), 10, 2 );
 		add_action( 'tribe_events_tickets_ticket_table_add_header_column', tribe_callback( 'tickets.admin.views', 'template', 'editor/column-head-price' ) );
-
 		add_action( 'tribe_events_tickets_ticket_table_add_tbody_column', array( $this, 'add_column_content_price' ), 10, 2 );
 	}
 
@@ -46,7 +44,7 @@ class Tribe__Tickets__Editor {
 	/**
 	 * Prints and returns the Body for the Price Column
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  Tribe__Tickets__Ticket_Object $ticket        Ticket object
 	 * @param  mixed                         $provider_obj  The ticket provider object
