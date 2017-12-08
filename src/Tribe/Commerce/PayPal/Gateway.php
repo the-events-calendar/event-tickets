@@ -311,6 +311,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 	/**
 	 * Retrieves an invoice number (generating it if one doesn't exist)
+	 *
+	 * @return string The invoice alpha-numeric identifier
 	 */
 	public function get_invoice_number() {
 		$invoice_length = 127;
