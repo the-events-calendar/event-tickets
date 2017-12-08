@@ -63,8 +63,8 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 
 		// register the Attendees tab
 		$attendees_report = new Tribe__Tickets__Tabbed_View__Attendee_Report_Tab( $tabbed_view );
-		$tickets_handler  = tribe( 'tickets.handler' );
-		$attendees_report->set_url( $tickets_handler->get_attendee_report_link( $post ) );
+		$tickets_handler  = tribe( 'tickets.attendees' );
+		$attendees_report->set_url( $tickets_handler->get_report_link( $post ) );
 		$tabbed_view->register( $attendees_report );
 
 		/**

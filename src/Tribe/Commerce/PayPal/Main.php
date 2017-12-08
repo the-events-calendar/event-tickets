@@ -958,8 +958,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
 		}
 
-		// Delete total Stock cache
-		delete_transient( 'wc_product_total_stock_' . $ticket->ID );
+		// Default Purchase Limit
+		if ( ! isset( $ticket->purchase_limit ) ) {
+			$ticket->purchase_limit = '';
+		}
+
+		$ticket->purchase_limit = trim( Tribe__Utils__Array::get( $raw_data, 'ticket_purchase_limit', $ticket->purchase_limit ) );
+
+		if ( '' !== $ticket->purchase_limit ) {
+			update_post_meta( $ticket->ID, '_ticket_purchase_limit', absint( $ticket->purchase_limit ) );
+		} else {
+			delete_post_meta( $ticket->ID, '_ticket_purchase_limit' );
+		}
 
 		/**
 		 * Generic action fired after saving a ticket (by type)
@@ -1190,7 +1200,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param int    $post_id
 		 * @param int    $ticket_id
 		 */
-		$ticket = apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $post_id, $ticket_id );
+		$ticket = apply_filters( 'tribe_tickets_tpp_get_ticket', $return, $event_id, $ticket_id );
 
 		return $return;
 	}
