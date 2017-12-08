@@ -1768,7 +1768,21 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-metabox-capacity.php';
+		$file = Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-metabox-capacity.php';
+
+		/**
+		 * Filters the absolute path to the file containing the metabox capacity HTML.
+		 *
+		 * @since TBD
+		 *
+		 * @param string     $file The absolute path to the file containing the metabox capacity HTML
+		 * @param int|string $capacity
+		 */
+		$file = apply_filters( 'tribe_tickets_tpp_metabox_capacity_file', $file, $capacity );
+
+		if (file_exists($file)) {
+			include $file;
+		}
 	}
 
 	/**
