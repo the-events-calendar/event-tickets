@@ -4,8 +4,9 @@ tribe( 'tickets.attendees' )->attendees_table->prepare_items();
 $event_id = tribe( 'tickets.attendees' )->attendees_table->event->ID;
 $event    = tribe( 'tickets.attendees' )->attendees_table->event;
 $tickets  = Tribe__Tickets__Tickets::get_event_tickets( $event_id );
-$post_type_object = get_post_type_object( $event->post_type );
-$singular = $post_type_object->labels->singular_name;
+$pto      = get_post_type_object( $event->post_type );
+$singular = $pto->labels->singular_name;
+
 /**
  * Wether or not we should display attendees title
  *
