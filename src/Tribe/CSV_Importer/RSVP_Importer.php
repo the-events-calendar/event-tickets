@@ -188,8 +188,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			$start_date = new DateTime( $data['ticket_start_date'] . ' ' . $ticket_start_sale_time );
 
 			$data['ticket_start_meridian'] = $start_date->format( 'A' );
-			$data['ticket_start_hour']     = $start_date->format( 'h' );
-			$data['ticket_start_minute']   = $start_date->format( 'i' );
+			$data['ticket_start_time']     = $start_date->format( 'H:i:00' );
 		}
 
 		$ticket_end_sale_time = $this->get_value_by_key( $record, 'ticket_end_sale_time' );
@@ -198,8 +197,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 			$end_date = new DateTime( $data['ticket_end_date'] . ' ' . $ticket_end_sale_time );
 
 			$data['ticket_end_meridian'] = $end_date->format( 'A' );
-			$data['ticket_end_hour']     = $end_date->format( 'h' );
-			$data['ticket_end_minute']   = $end_date->format( 'i' );
+			$data['ticket_end_time']     = $end_date->format( 'H:i:00' );
 		}
 
 		$stock = $this->get_value_by_key( $record, 'ticket_stock' );

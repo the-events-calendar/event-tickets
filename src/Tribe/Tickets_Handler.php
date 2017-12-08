@@ -276,7 +276,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns which possible connections an Object might have
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @return object
 	 *         {
@@ -305,7 +305,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * On RSVPs Attendees and Orders are the same Post
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @see    self::get_connections_template
 	 *
@@ -736,7 +736,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Gets the Total of Stock, Sold and Pending for a given Post
 	 * And if there is any Unlimited
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  int|WP_Post  $post  Which ticket
 	 *
@@ -844,7 +844,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns whether a given object has the correct Provider for a Post or Ticket
 	 *
-	 * @since   TBD
+	 * @since   4.6.2
 	 *
 	 * @param   int|WP_Post  $ticket
 	 * @param   mixed        $provider
@@ -866,6 +866,10 @@ class Tribe__Tickets__Tickets_Handler {
 			$default_provider = Tribe__Tickets_Plus__Tickets::get_event_ticket_provider( $post->ID );
 		} else {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
+		}
+
+		if ( ! $default_provider ) {
+			$default_provider = class_exists( 'Tribe__Tickets_Plus__Main' ) ? 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' : 'Tribe__Tickets__RSVP';
 		}
 
 		if ( ! is_string( $default_provider ) ) {
@@ -1096,7 +1100,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Gets the Default mode in which tickets will be generated
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @return string
 	 */
@@ -1120,7 +1124,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Due to how we can have multiple Post Types where we can attach tickets we have one place where
 	 * all panels will save, because `save_post_$post_type` requires a loop
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  int  $post  Post that will be saved
 	 *
@@ -1159,7 +1163,7 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allows us to Run any actions related to a Post that has Tickets
 		 *
-		 * @since  TBD
+		 * @since  4.6.2
 		 *
 		 * @param  WP_Post $post Which post we are saving
 		 */
@@ -1169,7 +1173,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Saves the Ticket Editor settings form
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @param  int   $post  Post that will be saved
 	 * @param  array $data  Params that will be used to save
@@ -1337,7 +1341,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Slug of the admin page for attendees
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @var string
 	 */
@@ -1346,23 +1350,23 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Save or delete the image header for tickets on an event
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param int $post_id
 	 */
 	public function save_image_header( $post_id ) {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.handler' )->save_settings()" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.handler' )->save_settings()" );
 	}
 
 	/**
 	 * Saves the event ticket settings via ajax
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @since 4.6
 	 */
 	public function ajax_handler_save_settings() {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.metabox' )->ajax_settings()" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.metabox' )->ajax_settings()" );
 		return tribe( 'tickets.metabox' )->ajax_settings();
 
 	}
@@ -1370,83 +1374,83 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Includes the tickets metabox inside the Event edit screen
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param  WP_Post $post
 	 *
 	 * @return string
 	 */
 	public function do_meta_box( $post ) {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.metabox' )->render( \$post )" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.metabox' )->render( \$post )" );
 		return tribe( 'tickets.metabox' )->render( $post );
 	}
 
 	/**
 	 * Returns the attachment ID for the header image for a event.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $event_id
 	 *
 	 * @return mixed
 	 */
 	public function get_header_image_id( $event_id ) {
-		_deprecated_function( __METHOD__, 'TBD', "get_post_meta( \$event_id, tribe( 'tickets.handler' )->key_image_header, true );" );
+		_deprecated_function( __METHOD__, '4.6.2', "get_post_meta( \$event_id, tribe( 'tickets.handler' )->key_image_header, true );" );
 		return get_post_meta( $event_id, tribe( 'tickets.handler' )->key_image_header, true );
 	}
 
 	/**
 	 * Render the ticket row into the ticket table
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @since 4.6
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 */
 	public function render_ticket_row( $ticket ) {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ) )" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.admin.views' )->template( array( 'editor', 'ticket-row' ) )" );
 		tribe( 'tickets.admin.views' )->template( array( 'editor', 'list-row' ), array( 'ticket' => $ticket ) );
 	}
 
 	/**
 	 * Returns the markup for the History for a Given Ticket
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param  int    $ticket_id
 	 *
 	 * @return string
 	 */
 	public function get_history_content( $post_id, $ticket ) {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'settings_admin_panel' )" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.admin.views' )->template( 'settings_admin_panel' )" );
 		return tribe( 'tickets.admin.views' )->template( 'tickets-history', array( 'post_id' => $post_id, 'ticket' => $ticket ), false );
 	}
 
 	/**
 	 * Returns the markup for the Settings Panel for Tickets
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param  int    $post_id
 	 *
 	 * @return string
 	 */
 	public function get_settings_panel( $post_id ) {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'settings_admin_panel' )" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.admin.views' )->template( 'settings_admin_panel' )" );
 		return tribe( 'tickets.admin.views' )->template( 'settings_admin_panel', array( 'post_id' => $post_id ), false );
 	}
 
 	/**
 	 * Echoes the markup for the tickets list in the tickets metabox
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param int   $deprecated event ID
 	 * @param array $tickets
 	 */
 	public function ticket_list_markup( $deprecated, $tickets = array() ) {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'list' )" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.admin.views' )->template( 'list' )" );
 
 		tribe( 'tickets.admin.views' )->template( 'list', array( 'tickets' => $tickets ) );
 	}
@@ -1454,14 +1458,14 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Returns the markup for the tickets list in the tickets metabox
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param array $tickets
 	 *
 	 * @return string
 	 */
 	public function get_ticket_list_markup( $tickets = array() ) {
-		_deprecated_function( __METHOD__, 'TBD', "tribe( 'tickets.admin.views' )->template( 'list' )" );
+		_deprecated_function( __METHOD__, '4.6.2', "tribe( 'tickets.admin.views' )->template( 'list' )" );
 
 		return tribe( 'tickets.admin.views' )->template( 'list', array( 'tickets' => $tickets ), false );
 	}
@@ -1469,63 +1473,63 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Whether the ticket handler should render the title in the attendees report.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param bool $should_render_title
 	 */
 	public function should_render_title( $deprecated ) {
-		_deprecated_function( __METHOD__, 'TBD', 'add_filter( \'tribe_tickets_attendees_show_title\', \'_return_false\' );' );
+		_deprecated_function( __METHOD__, '4.6.2', 'add_filter( \'tribe_tickets_attendees_show_title\', \'_return_false\' );' );
 		return true;
 	}
 
 	/**
 	 * Returns the current post being handled.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @return array|bool|null|WP_Post
 	 */
 	public function get_post() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::get_post' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::get_post' );
 		return tribe( 'tickets.attendees' )->get_post();
 	}
 
 	/**
 	 * Print Check In Totals at top of Column
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 */
 	public function print_checkedin_totals() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::print_checkedin_totals' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::print_checkedin_totals' );
 		tribe( 'tickets.attendees' )->print_checkedin_totals();
 	}
 
 	/**
 	 * Returns the full URL to the attendees report page.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param WP_Post $post
 	 *
 	 * @return string
 	 */
 	public function get_attendee_report_link( $post ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::get_report_link' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::get_report_link' );
 		return tribe( 'tickets.attendees' )->get_report_link( $post );
 	}
 
 	/**
 	 * Adds the "attendees" link in the admin list row actions for each event.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $actions
 	 *
 	 * @return array
 	 */
 	public function attendees_row_action( $actions ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::filter_admin_row_actions' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::filter_admin_row_actions' );
 		return tribe( 'tickets.attendees' )->filter_admin_row_actions( $actions );
 	}
 
@@ -1533,50 +1537,50 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Registers the Attendees admin page
 	 */
 	public function attendees_page_register() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::register_page' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::register_page' );
 		tribe( 'tickets.attendees' )->register_page();
 	}
 
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $hook
 	 */
 	public function attendees_page_load_css_js( $hook ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::enqueue_assets' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::enqueue_assets' );
 		tribe( 'tickets.attendees' )->enqueue_assets( $hook );
 	}
 
 	/**
 	 * Loads the WP-Pointer for the Attendees screen
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $hook
 	 */
 	public function attendees_page_load_pointers( $hook ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::load_pointers' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::load_pointers' );
 		tribe( 'tickets.attendees' )->load_pointers( $hook );
 	}
 
 	/**
 	 * Sets up the Attendees screen data.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 */
 	public function attendees_page_screen_setup() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::screen_setup' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::screen_setup' );
 		tribe( 'tickets.attendees' )->screen_setup();
 	}
 
 	/**
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 */
 	public function attendees_admin_body_class( $body_classes ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::filter_admin_body_class' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::filter_admin_body_class' );
 		tribe( 'tickets.attendees' )->filter_admin_body_class( $body_classes );
 	}
 
@@ -1584,7 +1588,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Sets the browser title for the Attendees admin page.
 	 * Uses the event title.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $admin_title
 	 * @param $unused_title
@@ -1592,17 +1596,17 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return string
 	 */
 	public function attendees_admin_title( $admin_title, $unused_title ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::filter_admin_title' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::filter_admin_title' );
 		tribe( 'tickets.attendees' )->filter_admin_title( $admin_title, $unused_title );
 	}
 
 	/**
 	 * Renders the Attendees page
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 */
 	public function attendees_page_inside() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::render' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::render' );
 		tribe( 'tickets.attendees' )->render();
 	}
 
@@ -1610,14 +1614,14 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Generates a list of attendees taking into account the Screen Options.
 	 * It's used both for the Email functionality, as for the CSV export.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $event_id
 	 *
 	 * @return array
 	 */
 	private function generate_filtered_attendees_list( $event_id ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::generate_filtered_list' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::generate_filtered_list' );
 
 		tribe( 'tickets.attendees' )->generate_filtered_list( $event_id );
 	}
@@ -1626,40 +1630,40 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 */
 	public function maybe_generate_attendees_csv() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::maybe_generate_csv' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::maybe_generate_csv' );
 		tribe( 'tickets.attendees' )->maybe_generate_csv();
 	}
 
 	/**
 	 * Handles the "send to email" action for the attendees list.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 */
 	public function send_attendee_mail_list() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::send_mail_list' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::send_mail_list' );
 		tribe( 'tickets.attendees' )->send_mail_list();
 	}
 
 	/**
 	 * Injects event post type
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 */
 	public function event_details_top() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::event_details_top' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::event_details_top' );
 		tribe( 'tickets.attendees' )->event_details_top();
 	}
 
 	/**
 	 * Injects action links into the attendee screen.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 */
 	public function event_action_links() {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::event_action_links' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::event_action_links' );
 		tribe( 'tickets.attendees' )->event_action_links();
 	}
 
@@ -1667,14 +1671,14 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Sets the content type for the attendees to email functionality.
 	 * Allows for sending an HTML email.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @param $content_type
 	 *
 	 * @return string
 	 */
 	public function set_contenttype( $content_type ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::set_contenttype' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::set_contenttype' );
 	}
 
 	/**
@@ -1684,7 +1688,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * For example, if tickets are created for the banana post type, the generic capability
 	 * "edit_posts" will be mapped to "edit_bananas" or whatever is appropriate.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.6.2
 	 *
 	 * @internal for internal plugin use only (in spite of having public visibility)
 	 *
@@ -1693,7 +1697,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return boolean
 	 */
 	public function user_can( $generic_cap, $event_id ) {
-		_deprecated_function( __METHOD__, 'TBD', 'Tribe__Tickets__Attendees::user_can' );
+		_deprecated_function( __METHOD__, '4.6.2', 'Tribe__Tickets__Attendees::user_can' );
 	}
 
 	// @codingStandardsIgnoreEnd

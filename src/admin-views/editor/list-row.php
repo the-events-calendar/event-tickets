@@ -44,7 +44,7 @@ if (
 		/**
 		 * Fires before the ticket name is printed in the tickets table.
 		 *
-		 * @since TBD
+		 * @since 4.6.2
 		 *
 		 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
 		 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.
@@ -57,7 +57,7 @@ if (
 		/**
 		 * Fires after the ticket name is printed in the tickets table.
 		 *
-		 * @since TBD
+		 * @since 4.6.2
 		 *
 		 * @param Tribe__Tickets__Ticket_Object $ticket       The current ticket object.
 		 * @param Tribe__Tickets__Tickets       $provider_obj The current ticket provider object.

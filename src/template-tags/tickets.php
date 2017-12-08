@@ -709,7 +709,7 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 /**
  * Updates a given Object Capacity
  *
- * @since  TBD
+ * @since  4.6.2
  *
  * @param  int  $object  Post We are trying to save capacity
  *
@@ -748,7 +748,7 @@ function tribe_tickets_delete_capacity( $object ) {
 /**
  * Updates a given Object Capacity
  *
- * @since  TBD
+ * @since  4.6.2
  *
  * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
  * @param  int  $capacty  How much we are trying to update the capacity to

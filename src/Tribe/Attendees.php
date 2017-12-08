@@ -6,7 +6,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Hook of the admin page for attendees
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @var string
 	 */
@@ -15,7 +15,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * WP_Post_List children for Attendees
 	 *
-	 * @since  TBD
+	 * @since  4.6.2
 	 *
 	 * @var Tribe__Tickets__Attendees_Table
 	 */
@@ -24,7 +24,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Hooks all the required actions and filters in WordPress
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @return void
 	 */
@@ -46,7 +46,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Returns the Attendees Post Type Slug (mostly used for RSVP)
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @return string
 	 */
@@ -57,7 +57,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Returns the current post being handled.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @return array|bool|null|WP_Post
 	 */
@@ -68,7 +68,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Injects event post type
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @param int $event_id
 	 */
@@ -86,26 +86,36 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Injects action links into the attendee screen.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @param $event_id
 	 */
 	public function event_action_links( $event_id ) {
-		$post             = get_post( $event_id );
-		$post_type_object = get_post_type_object( $post->post_type );
-		$singular         = $post_type_object->labels->singular_name;
+
+		/**
+		 * Allows for control of the specific "edit post" URLs used for event Sales and Attendees Reports.
+		 *
+		 * @since 4.6.2
+		 *
+		 * @param string $link The deafult "edit post" URL.
+		 * @param int $event_id The Post ID of the event.
+		 */
+		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
+
+		$post     = get_post( $event_id );
+		$pto      = get_post_type_object( $post->post_type );
+		$singular = $pto->labels->singular_name;
 
 		$edit         = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
 		$view         = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
 
 		$action_links = array(
-			'<a href="' . esc_url( get_edit_post_link( $event_id ) ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . $edit . '</a>',
+			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . $edit . '</a>',
 			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . $view . '</a>',
 		);
 
 		/**
-		 * Provides an opportunity to add and remove action links from the
-		 * attendee screen summary box.
+		 * Provides an opportunity to add and remove action links from the attendee screen summary box.
 		 *
 		 * @param array $action_links
 		 * @param int $event_id
@@ -116,14 +126,14 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
+		echo wp_kses_post( '<li class="event-actions">' . implode( ' | ', $action_links ) . '</li>' );
 	}
 
 
 	/**
 	 * Print Check In Totals at top of Column
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 */
 	public function print_checkedin_totals() {
 		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
@@ -134,7 +144,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Returns the full URL to the attendees report page.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @param WP_Post $post
 	 *
@@ -199,7 +209,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Registers the Attendees admin page
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 */
 	public function register_page() {
 		$cap      = 'edit_posts';
@@ -238,7 +248,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Enqueues the JS and CSS for the attendees page in the admin
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @todo this needs to use tribe_assets()
 	 *
@@ -266,6 +276,7 @@ class Tribe__Tickets__Attendees {
 			'nonce'           => wp_create_nonce( 'email-attendee-list' ),
 			'required'        => esc_html__( 'You need to select a user or type a valid email address', 'event-tickets' ),
 			'sending'         => esc_html__( 'Sending...', 'event-tickets' ),
+			'ajaxurl'         => admin_url( 'admin-ajax.php' ),
 			'checkin_nonce'   => wp_create_nonce( 'checkin' ),
 			'uncheckin_nonce' => wp_create_nonce( 'uncheckin' ),
 			'cannot_move'     => esc_html__( 'You must first select one or more tickets before you can move them!', 'event-tickets' ),
@@ -282,7 +293,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Loads the WP-Pointer for the Attendees screen
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @param $hook
 	 */
@@ -313,7 +324,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Sets up the Attendees screen data.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 */
 	public function screen_setup() {
 		/* There's no reason for attendee screen setup to happen twice, but because
@@ -388,7 +399,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Add admin body class
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 */
 	public function filter_admin_body_class( $body_classes ) {
 		return $body_classes . ' plugins-php';
@@ -398,7 +409,7 @@ class Tribe__Tickets__Attendees {
 	 * Sets the browser title for the Attendees admin page.
 	 * Uses the event title.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @param $admin_title
 	 * @param $unused_title
@@ -417,7 +428,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Renders the Attendees page
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 */
 	public function render() {
 		/**
@@ -435,7 +446,7 @@ class Tribe__Tickets__Attendees {
 	 * Generates a list of attendees taking into account the Screen Options.
 	 * It's used both for the Email functionality, as for the CSV export.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @param $event_id
 	 *
@@ -540,7 +551,7 @@ class Tribe__Tickets__Attendees {
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 */
 	public function maybe_generate_csv() {
@@ -585,7 +596,7 @@ class Tribe__Tickets__Attendees {
 	/**
 	 * Handles the "send to email" action for the attendees list.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 */
 	public function send_mail_list() {
@@ -685,7 +696,7 @@ class Tribe__Tickets__Attendees {
 	 * Sets the content type for the attendees to email functionality.
 	 * Allows for sending an HTML email.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @param $content_type
 	 *
@@ -702,7 +713,7 @@ class Tribe__Tickets__Attendees {
 	 * For example, if tickets are created for the banana post type, the generic capability
 	 * "edit_posts" will be mapped to "edit_bananas" or whatever is appropriate.
 	 *
-	 * @since TBD
+	 * @since 4.6.2
 	 *
 	 * @internal for internal plugin use only (in spite of having public visibility)
 	 *

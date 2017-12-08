@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, aguseo, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Stable tag: 4.7dev1
-Tested up to: 4.9
+Tested up to: 4.9.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -237,30 +237,36 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Tweak - allow pagination and screen options on the Attendees list [64516]
 
-= [4.6.2] TBD =
+= [4.6.2] 2017-12-07 =
 
-* Tweak - Make sure on front-end we only allow WooCommerce as a provider [91758]
-* Fix - Sorting for Tickets now allows moving them to the first and last position of the ordering [92558]
-* Fix - Make sure Stock is updated accordingly based on total sales when updating capacity [93601]
-* Fix - Improve CSS for Capacity Table on Mobile [90907]
+* Fix - Fixed broken RSVP ticket sales when using Aggregator CSV [92936]
+* Fix - Prevent non-escaped underscores from getting into the final SQL for LIKE queries (Props to @misenhower) [GH#567]
+* Fix - Fixed sorting for Tickets so that moving them to the first and last position of the order is allowed [92558]
+* Fix - Improved handling of Stock to ensure it's updated accordingly based on total sales when updating capacity [93601]
+* Fix - Improved CSS for Capacity Table on mobile [90907]
+* Fix - Fixed some bugs with attendees management that prevented check-in features from working in Community Tickets front-end views (props @musician4you and several other folks for highlighting this issue) [81629]
+* Tweak - Introduced the `tribe_tickets_event_action_links_edit_url` filter for more granular control over "edit event" links in various views [93339]
+* Tweak - Prevent EDD from being a provider for front-end Community Tickets, as only WooCommerce is allowed for that [91758]
+* Tweak - Added actions: `event_tickets_ticket_list_before_ticket_name`, `event_tickets_ticket_list_after_ticket_name`
+* Language - 0 new strings added, 54 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.6.1.1] 2017-11-24 =
 
-* Fix - Respect Start and End time for Ticket sales (props to Scott) [93439]
+* Fix - Fixed some issues to ensure Start and End Time for Ticket sales work correctly (props to Scott) [93439]
 * Fix - Ensure attendee fields remain visible within the admin environment (compatibility fix for Event Tickets Plus) [94142]
 * Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.6.1] 2017-11-21 =
 
-* Tweak - Prevents unnecessary AJAX requests when using tickets editor [88642]
+* Fix - RSVP and Tickets migration from pre-4.6 updates capacity corretly for all cases now (props to Uwe Matern) [93231]
+* Fix - Ensure Attendees column for events displays the correct percentages [92287]
+* Fix - Tickets Editor now has more support for Accessibility [80651]
+* Tweak - Prevent unnecessary AJAX requests when using tickets editor [88642]
 * Tweak - Removes weird clearing of fields when canceling or saving Tickets [88642]
 * Tweak - Allow saving of Ticket Editor contents when Updating the Event [91760]
 * Tweak - Included more hooks via the new Template class for the Ticket Editor: `tribe_template_file`, `tribe_template_before_include`, `tribe_template_after_include` and `tribe_template_html` [91760]
 * Tweak - Only display admin links in Community Tickets if user is able to access the admin [79565]
 * Tweak - spacing of message to logged in users to view attendees [92550]
-* Fix - RSVP and Tickets migration from pre-4.6 updates capacity corretly for all cases now (props to Uwe Matern) [93231]
-* Fix - Attendees column for events display correctly the percentages now [92287]
-* Fix - Tickets Editor now has more support for Accessibility [80651]
 * Tweak - Added filters: `tribe_ticket_filter_attendee_report_link`, `tribe_tickets_attendees_show_title`
 * Tweak - Removed filters: `tribe_tickets_default_end_date`, `tribe_tickets_ajax_refresh_settings`, `tribe_tickets_can_update_ticket_price`, `tribe_tickets_disallow_update_ticket_price_message`, `tribe_events_tickets_metabox_edit_attendee`
 * Tweak - Added actions: `tribe_tickets_save_post`

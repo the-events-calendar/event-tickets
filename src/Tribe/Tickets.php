@@ -452,7 +452,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get the controls (move, delete) as a string and add to our ajax return
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6.2
 		 * @since 4.6
 		 *
 		 * @param array $return the ajax return data
@@ -2089,7 +2089,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @internal for internal plugin use only (in spite of having public visibility)
 		 *
-		 * @deprecated  TBD
+		 * @deprecated  4.6.2
 		 *
 		 * @see    tribe( 'tickets.attendees' )->user_can
 		 *
@@ -2099,43 +2099,43 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return boolean
 		 */
 		public function user_can( $generic_cap, $attendee_id ) {
-			_deprecated_function( __METHOD__, 'TBD', 'tribe( "tickets.metabox" )->user_can( $generic_cap, $attendee_id )' );
+			_deprecated_function( __METHOD__, '4.6.2', 'tribe( "tickets.metabox" )->user_can( $generic_cap, $attendee_id )' );
 			return tribe( 'tickets.metabox' )->user_can( $generic_cap, $attendee_id );
 		}
 
 		/**
 		 * Check and set global capacity options for the "event" post
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6.2
 		 * @since  4.6
 		 *
 		 * @return object ajax success object
 		 */
 		public function edit_global_capacity_level() {
-			_deprecated_function( __METHOD__, 'TBD', 'tribe_tickets_update_capacity' );
+			_deprecated_function( __METHOD__, '4.6.2', 'tribe_tickets_update_capacity' );
 		}
 
 		/**
 		 * Sets an AJAX error, returns a JSON array and ends the execution.
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6.2
 		 *
 		 * @param string $message
 		 */
 		final protected function ajax_error( $message = '' ) {
-			_deprecated_function( __METHOD__, 'TBD', 'wp_send_json_error()' );
+			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_error()' );
 			wp_send_json_error( $message );
 		}
 
 		/**
 		 * Sets an AJAX response, returns a JSON array and ends the execution.
 		 *
-		 * @deprecated TBD
+		 * @deprecated 4.6.2
 		 *
 		 * @param mixed $data
 		 */
 		final protected function ajax_ok( $data ) {
-			_deprecated_function( __METHOD__, 'TBD', 'wp_send_json_success()' );
+			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
 		}
 
