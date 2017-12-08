@@ -166,12 +166,12 @@ $tickets_fields = array_merge(
 			'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
 		),
 		'ticket-paypal-email' => array(
-			'type'            => 'text',
+			'type'            => 'email',
 			'label'           => esc_html__( 'PayPal Email', 'event-tickets' ),
 			'tooltip'         => esc_html__( 'Email address that will receive PayPal payments.', 'event-tickets' ),
 			'size'            => 'medium',
 			'default'         => '',
-			'validation_type' => 'html',
+			'validation_type' => 'email',
 		),
 		'ticket-paypal-sandbox' => array(
 			'type'            => 'checkbox_bool',
