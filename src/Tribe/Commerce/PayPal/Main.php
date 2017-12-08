@@ -1780,9 +1780,26 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		$file = apply_filters( 'tribe_tickets_tpp_metabox_capacity_file', $file, $capacity );
 
-		if (file_exists($file)) {
+		if ( file_exists( $file ) ) {
 			include $file;
 		}
+	}
+
+	/**
+	 * Indicates if global stock support is enabled for this provider.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function supports_global_stock() {
+		/**
+		 * Allows the declaration of global stock support for WooCommerce tickets
+		 * to be overridden.
+		 *
+		 * @param bool $enable_global_stock_support
+		 */
+		return (bool) apply_filters( 'tribe_tickets_tpp_enable_global_stock', true );
 	}
 
 	/**
