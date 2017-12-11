@@ -12,7 +12,7 @@ if ( ! isset( $ticket_id ) ) {
 	$ticket = null;
 
 	if ( ! $is_admin ) {
-		$provider_class = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
+		$provider_class = 'Tribe__Tickets__Commerce__PayPal__Main';
 	}
 } else {
 	$provider = tribe_tickets_get_ticket_provider( $ticket_id );

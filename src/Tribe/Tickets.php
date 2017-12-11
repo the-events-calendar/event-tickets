@@ -1470,16 +1470,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function process_attendee_meta( $product_id, $meta ) {
-
-			$meta_vals = array();
+			$meta_values = array();
 
 			if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
-				return $meta_vals;
+				return $meta_values;
 			}
 
-			$meta_field_objs = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $product_id );
+			$meta_field_objects = Tribe__Tickets_Plus__Main::instance()->meta()->get_meta_fields_by_ticket( $product_id );
 
-			foreach ( $meta_field_objs as $field ) {
+			foreach ( $meta_field_objects as $field ) {
 				$value = null;
 
 				if ( 'checkbox' === $field->type ) {
@@ -1500,15 +1499,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$value = $meta[ $field->slug ];
 				}
 
-				$meta_vals[ $field->slug ] = array(
+				$meta_values[ $field->slug ] = array(
 					'slug'  => $field->slug,
 					'label' => $field->label,
 					'value' => $value,
 				);
 			}
 
-			return $meta_vals;
-
+			return $meta_values;
 		}
 
 		/**

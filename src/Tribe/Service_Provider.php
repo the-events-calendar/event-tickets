@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Tribe__Tickets_Plus__Service_Provider
+ * Class Tribe__Tickets__Service_Provider
  *
  * Provides the Events Tickets Plus service.
  *

@@ -862,7 +862,10 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$provider_class = get_class( $provider );
 
-		if ( tribe_tickets_post_type_enabled( $post->post_type ) ) {
+		if (
+			tribe_tickets_post_type_enabled( $post->post_type )
+			&& class_exists( 'Tribe__Tickets_Plus__Tickets' )
+		) {
 			$default_provider = Tribe__Tickets_Plus__Tickets::get_event_ticket_provider( $post->ID );
 		} else {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
