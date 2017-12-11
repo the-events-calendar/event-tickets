@@ -58,11 +58,10 @@ class Tribe__Tickets__Assets {
 				array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style', 'tribe-jquery-timepicker-css' ) ),
 				array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css', 'common' ) ),
 				array( 'event-tickets-admin-tables-css', 'tickets-tables.css', array( 'event-tickets-admin-css' ) ),
-				array( 'event-tickets-admin-tables-js', 'tickets-tables.js', array( 'underscore', 'jquery', 'tribe-common' ) ),
 				array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery' ) ),
 				array( 'event-tickets-admin-accordion-js', 'accordion.js', array() ),
 				array( 'event-tickets-admin-accordion-css', 'accordion.css', array() ),
-				array( 'event-tickets-admin-js', 'tickets.js', array( 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'event-tickets-admin-tables-js', 'tribe-timepicker' ) ),
+				array( 'event-tickets-admin-js', 'tickets.js', array( 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ) ),
 			),
 			'admin_enqueue_scripts',
 			array(
