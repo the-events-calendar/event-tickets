@@ -310,7 +310,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'posts_per_page' => -1,
 				'fields'         => 'ids',
 				'post_status'    => 'publish',
-				'order_by'       => 'menu_order',
+				'orderby'       => 'menu_order',
 				'order'          => 'ASC',
 				'meta_query'     => array(
 					array(
