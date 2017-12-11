@@ -1810,15 +1810,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Indicates if the user must be logged in in order to obtain tickets.
 		 *
-		 * This should be regarded as an abstract method to be overridden by subclasses:
-		 * the reason it is not formally declared as abstract is to avoid breakages upon
-		 * update (for example, where Event Tickets is updated first but a dependent plugin
-		 * not yet implementing the abstract method remains at an earlier version).
+		 * @since TBD
 		 *
 		 * @return bool
 		 */
 		protected function login_required() {
-			return false;
+			$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
+
+			return in_array( 'event-tickets-all', $requirements );
 		}
 
 		/**
