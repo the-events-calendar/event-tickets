@@ -373,9 +373,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return true;
 			}
 
-			$remaining = $this->remaining();
+			$remaining = $this->inventory();
 
-			return false === $remaining || $remaining > 0;
+			$is_unlimited = $remaining === - 1;
+
+			return false === $remaining || $remaining > 0 || $is_unlimited;
 		}
 
 		/**

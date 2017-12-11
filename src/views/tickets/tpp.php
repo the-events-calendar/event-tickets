@@ -80,14 +80,19 @@ $cart_url       = '';
 							type="number"
 							class="tribe-ticket-quantity qty"
 							min="0"
-							max="<?php echo esc_attr( $ticket->remaining() ); ?>"
+							max="<?php echo esc_attr( $ticket->inventory() ); ?>"
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
 						<?php if ( $ticket->managing_stock() ) : ?>
 							<span class="tribe-tickets-remaining">
-								<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->available(), $ticket->original_stock() ); ?>
+							<?php
+							$readable_amount = tribe_tickets_get_readable_amount( $ticket->available(), null, false );
+							echo sprintf( esc_html__( '%1$s available', 'event-tickets-plus' ),
+								'<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>'
+							);
+							?>
 							</span>
 						<?php endif; ?>
 					<?php else: ?>
