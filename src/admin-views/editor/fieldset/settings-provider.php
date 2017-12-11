@@ -58,16 +58,10 @@ $fieldset_class   = $multiple_modules ? 'input_block' : 'screen-reader-text';
 		<?php endif; ?>
 	</fieldset>
 <?php else: ?>
-	<?php
-	/**
-	 * @todo Luca: Consider maybe changing the default Provider
-	 *       if so, also look for Tribe__Tickets_Plus__Tickets::get_event_ticket_provider() and tribe( 'tickets.handler' )->is_correct_provider()
-	 */
-	?>
 	<input
 		type="hidden"
 		name="tribe-tickets[settings][default_provider]"
-		value="Tribe__Tickets_Plus__Commerce__WooCommerce__Main"
+		value="<?php echo $default_module ?>"
 		class="tribe-ticket-editor-field-default_provider settings_field ticket_field"
 	>
 <?php endif;
