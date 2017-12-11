@@ -746,6 +746,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns instance of the child class (singleton)
 		 *
 		 * @static
+		 *
 		 * @return mixed
 		 */
 		public static function get_instance() {}

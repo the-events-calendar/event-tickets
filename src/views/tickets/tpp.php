@@ -128,10 +128,10 @@ $cart_url       = '';
 			<tr>
 				<td colspan="5" class="tpp-add">
 					<?php if ( $must_login ) : ?>
-						<?php include Tribe__Tickets__Main::instance()->get_template_hierarchy( 'login-to-purchase' ); ?>
+						<?php include tribe( 'tickets.commerce.paypal' )->getTemplateHierarchy( 'login-to-purchase' ); ?>
 					<?php endif; ?>
 					<?php if ( ! $must_login && $can_login ) : ?>
-						<?php include Tribe__Tickets__Main::instance()->get_template_hierarchy( 'login-before-purchase' ); ?>
+						<?php include tribe( 'tickets.commerce.paypal' )->getTemplateHierarchy( 'login-before-purchase' ); ?>
 					<?php endif; ?>
 				</td>
 			</tr>
