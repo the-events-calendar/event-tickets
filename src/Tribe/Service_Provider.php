@@ -41,6 +41,8 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		// Editor
 		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor', array( 'hook' ) );
 
+		$this->container->singleton( 'tickets.admin.notices', 'Tribe__Tickets__Admin__Notices', array( 'hook' ) );
+
 		$this->load();
 	}
 
@@ -63,6 +65,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 			tribe( 'tickets.admin.views' );
 			tribe( 'tickets.admin.columns' );
 			tribe( 'tickets.admin.screen-options' );
+			tribe( 'tickets.admin.notices' );
 		}
 	}
 
