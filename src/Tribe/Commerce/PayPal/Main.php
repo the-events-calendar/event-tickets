@@ -243,6 +243,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		add_action( 'init', array( tribe( 'tickets.commerce.paypal.notices' ), 'hook' ) );
 		add_action( 'tribe_tickets_attendees_page_inside', tribe_callback( 'tickets.commerce.paypal.orders.tabbed-view', 'render' ) );
+		add_action( 'tribe_events_tickets_metabox_edit_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
 	}
 
 	/**
@@ -1486,32 +1487,66 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Add the sku field in the admin's new/edit ticket metabox
+	 *
+	 * @since TBD
+	 *
+	 * @param $post_id int id of the event post
+	 * @param int $ticket_id (null) id of the ticket
+	 *
+	 * @return void
+	 */
+	public function do_metabox_sku_options( $post_id, $ticket_id = null ) {
+		$sku = '';
+		$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $post_id, $this );
+
+		if ( ! empty( $ticket_id ) ) {
+			$ticket = $this->get_ticket( $post_id, $ticket_id );
+			$is_correct_provider = tribe( 'tickets.handler' )->is_correct_provider( $ticket_id, $this );
+
+			if ( ! empty( $ticket ) ) {
+				$sku = get_post_meta( $ticket_id, '_sku', true );
+			}
+		}
+
+		// Bail when we are not dealing with this provider
+		if ( ! $is_correct_provider ) {
+			return;
+		}
+
+		include $this->plugin_path . 'src/admin-views/tpp-metabox-sku.php';
+	}
+
+	/**
 	 * Renders the advanced fields in the new/edit ticket form.
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
 	 * @since TBD
 	 *
-	 * @param int $event_id
+	 * @param int $post_id
 	 * @param int $ticket_id
 	 */
-	public function do_metabox_advanced_options( $event_id, $ticket_id ) {
-		$url = $stock = $sku = '';
+	public function do_metabox_advanced_options( $post_id, $ticket_id ) {
+		$provider = __CLASS__;
 
-		if ( ! empty( $ticket_id ) ) {
-			$ticket = $this->get_ticket( $event_id, $ticket_id );
-			if ( ! empty( $ticket ) ) {
-				$stock          = $ticket->original_stock();
-				$sku            = get_post_meta( $ticket_id, '_sku', true );
-				$purchase_limit = $ticket->purchase_limit;
-			}
+		echo '<div id="' . sanitize_html_class( $provider ) . '_advanced" class="tribe-dependent" data-depends="#' . sanitize_html_class( $provider ) . '_radio" data-condition-is-checked>';
+
+		if ( ! tribe_is_frontend() ) {
+			$this->do_metabox_sku_options( $post_id, $ticket_id );
 		}
 
-		$global_stock_mode = ( isset( $ticket ) && method_exists( $ticket, 'global_stock_mode' ) ) ? $ticket->global_stock_mode() : '';
+		/**
+		 * Allows for the insertion of additional content into the ticket edit form - advanced section
+		 *
+		 * @since 4.6
+		 *
+		 * @param int Post ID
+		 * @param string the provider class name
+		 */
+		do_action( 'tribe_events_tickets_metabox_edit_ajax_advanced', $post_id, $provider );
 
-		$global_stock_cap = ( isset( $ticket ) && method_exists( $ticket, 'global_stock_cap' ) ) ? $ticket->global_stock_cap() : 0;
-
-		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-metabox-advanced.php';
+		echo '</div>';
 	}
 
 	/**
