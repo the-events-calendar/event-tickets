@@ -99,6 +99,11 @@ var tribe_tickets_ticket_form = {};
 			return;
 		}
 
+		// if the stock is unlimited then there is nothing to change
+		if ( - 1 === available_stock ) {
+			return;
+		}
+
 		// Keep in check (should be handled for us by numeric inputs in most browsers, but let's be safe)
 		if ( new_quantity > available_stock ) {
 			new_quantity = available_stock;

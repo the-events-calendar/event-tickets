@@ -69,8 +69,10 @@ $cart_url       = '';
 				continue;
 			}
 
-			$is_there_any_product = true;
+			$is_there_any_product         = true;
 			$is_there_any_product_to_sell = $ticket->is_in_stock();
+			$inventory                    = (int) $ticket->inventory();
+			$max_quantity                 = $inventory > 0 ? $inventory : '';
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
@@ -80,7 +82,7 @@ $cart_url       = '';
 							type="number"
 							class="tribe-ticket-quantity qty"
 							min="0"
-							max="<?php echo esc_attr( $ticket->inventory() ); ?>"
+							<?php if ( $max_quantity ) { echo 'max="'.esc_attr($max_quantity).'"'; } ?>
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
@@ -89,9 +91,7 @@ $cart_url       = '';
 							<span class="tribe-tickets-remaining">
 							<?php
 							$readable_amount = tribe_tickets_get_readable_amount( $ticket->available(), null, false );
-							echo sprintf( esc_html__( '%1$s available', 'event-tickets-plus' ),
-								'<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>'
-							);
+							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
 							?>
 							</span>
 						<?php endif; ?>

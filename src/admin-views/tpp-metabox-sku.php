@@ -27,6 +27,6 @@ if ( ! $display_sku ) {
 		value="<?php echo esc_attr( $sku ); ?>"
 	>
 	<p class="description ticket_form_right">
-		<?php esc_html_e( 'A unique identifying code for each ticket type you\'re selling', 'event-tickets-plus' ); ?>
+		<?php esc_html_e( 'A unique identifying code for each ticket type you\'re selling', 'event-tickets' ); ?>
 	</p>
 </div>
