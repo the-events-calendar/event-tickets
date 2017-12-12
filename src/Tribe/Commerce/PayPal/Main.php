@@ -1081,27 +1081,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		Tribe__Tickets__Tickets::add_frontend_stock_data( $tickets );
 
 		$ticket_sent = empty( $_GET['tpp_sent'] ) ? false : true;
-		$ticket_error = empty( $_GET['tpp_error'] ) ? false : (int) $_GET['tpp_error'];
 
 		if ( $ticket_sent ) {
 			$this->add_message( __( 'Your PayPal Ticket has been received! Check your email for your PayPal Ticket confirmation.', 'event-tickets' ), 'success' );
 		}
 
-		if ( $ticket_error ) {
-			switch ( $ticket_error ) {
-				case 2:
-					$this->add_message( __( 'You can\'t PayPal Ticket more than the total remaining tickets.', 'event-tickets' ), 'error' );
-					break;
+		$ticket_error = empty( $_GET['tpp_error'] ) ? false : (int) $_GET['tpp_error'];
 
-				case 1:
-				default:
-					$this->add_message( __( 'In order to PayPal Ticket, you must enter your name and a valid email address.', 'event-tickets' ), 'error' );
-					break;
-			}
+		if ( $ticket_error ) {
+			$this->add_error_message( $ticket_error );
 		}
 
 		$must_login = ! is_user_logged_in() && $this->login_required();
 		$can_login = true;
+
 		include $this->getTemplateHierarchy( 'tickets/tpp' );
 
 		// It's only done when it's included
@@ -2063,5 +2056,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return get_post_meta( $product->ID, '_price', true );
+	}
+
+	/**
+	 * Displays a localized error message for the specified error code.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_error
+	 */
+	protected function add_error_message( $ticket_error ) {
+		switch ( $ticket_error ) {
+			case 3:
+				$this->add_message( __( 'You should add at least one ticket.', 'event-tickets' ), 'error' );
+				break;
+
+			case 2:
+				$this->add_message( __( 'You can\'t add more tickets than the total remaining tickets.', 'event-tickets' ), 'error' );
+				break;
+
+			case 1:
+			default:
+				$this->add_message( __( 'In order to purchase tickets, you must enter your name and a valid email address.', 'event-tickets' ),
+					'error' );
+				break;
+		}
 	}
 }

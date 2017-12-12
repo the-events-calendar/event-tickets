@@ -151,9 +151,11 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		// If there isn't a quantity at all, then there's nothing to purchase. Redirect with an error
-		if ( empty( $args['quantity'] ) ) {
-			// @TODO: add an error for display
-			wp_safe_redirect( $post_url );
+		if ( empty( $args['quantity'] ) || ! is_numeric( $args['quantity'] ) || (int) $args['quantity'] < 1 ) {
+			/**
+			 * @see Tribe__Tickets__Commerce__PayPal__Main::add_error_message for error codes
+			 */
+			wp_safe_redirect( add_query_arg( array( 'tpp_error' => 3 ), $post_url ) );
 			die;
 		}
 
