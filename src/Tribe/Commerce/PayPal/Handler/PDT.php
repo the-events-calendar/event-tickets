@@ -21,7 +21,9 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 			return;
 		}
 
-		$paypal  = tribe( 'tickets.commerce.paypal' );
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$results = $this->validate_transaction( $_GET['tx'] );

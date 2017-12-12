@@ -110,7 +110,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'shopping_url'  => urlencode( $post_url ),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
-			'invoice'       => $this->get_invoice_number(),
+			'invoice'       => $this->set_invoice_number(),
 		);
 
 		foreach ( $_POST['product_id'] as $ticket_id ) {
@@ -125,9 +125,12 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 				continue;
 			}
 
+			$inventory    = $ticket->inventory();
+			$is_unlimited = $inventory === - 1;
+
 			// if the requested amount is greater than remaining, use remaining instead
-			if ( $quantity > $ticket->remaining() ) {
-				$quantity = $ticket->remaining();
+			if ( ! $is_unlimited && $quantity > $inventory ) {
+				$quantity = $inventory;
 			}
 
 			// enforce purchase limit
@@ -312,28 +315,25 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	}
 
 	/**
-	 * Retrieves an invoice number (generating it if one doesn't exist)
+	 * Sets an invoice number (generating it if one doesn't exist) in the cookies.
+	 *
+	 * @since TBD
 	 *
 	 * @return string The invoice alpha-numeric identifier
 	 */
-	public function get_invoice_number() {
-		$invoice_length = 127;
-
-		if (
-			! empty( $_COOKIE[ self::$invoice_cookie_name ] )
-			&& strlen( $_COOKIE[ self::$invoice_cookie_name ] ) === $invoice_length
-		) {
-			$invoice = $_COOKIE[ self::$invoice_cookie_name ];
-		} else {
-			$invoice = wp_generate_password( $invoice_length, false );
-		}
+	public function set_invoice_number() {
+		$invoice = $this->get_invoice_number();
 
 		// set the cookie (if it was already set, it'll extend the lifetime)
 		setcookie( self::$invoice_cookie_name, $invoice, DAY_IN_SECONDS );
+
+		return $invoice;
 	}
 
 	/**
 	 * Purges an invoice cookie
+	 *
+	 * @since TBD
 	 */
 	public function reset_invoice_number() {
 		if ( empty( $_COOKIE[ self::$invoice_cookie_name ] ) ) {
@@ -414,5 +414,27 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		return $this->handler;
+	}
+
+	/**
+	 * Returns the invoice number reading it from the cookie or generating a new one.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_invoice_number() {
+		$invoice_length = 127;
+
+		if (
+			! empty( $_COOKIE[ self::$invoice_cookie_name ] )
+			&& strlen( $_COOKIE[ self::$invoice_cookie_name ] ) === $invoice_length
+		) {
+			$invoice = $_COOKIE[ self::$invoice_cookie_name ];
+		} else {
+			$invoice = wp_generate_password( $invoice_length, false );
+		}
+
+		return $invoice;
 	}
 }

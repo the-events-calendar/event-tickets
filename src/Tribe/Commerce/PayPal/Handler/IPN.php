@@ -25,7 +25,9 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 			return;
 		}
 
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal  = tribe( 'tickets.commerce.paypal' );
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$data = wp_unslash( $_POST );
