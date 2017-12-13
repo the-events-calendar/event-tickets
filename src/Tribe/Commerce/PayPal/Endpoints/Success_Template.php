@@ -44,14 +44,16 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		$order_is_valid         = $template_data['order_is_valid'];
 		$order_is_not_completed = $template_data['order_is_not_completed'];
 
-		if ( $order_is_not_completed ) {
-			$order  = $template_data['order'];
-			$status = $template_data['status'];
-		} elseif ( $order_is_valid ) {
-			$purchaser_name  = $template_data['purchaser_name'];
-			$purchaser_email = $template_data['purchaser_email'];
-			$tickets         = $template_data['tickets'];
-			$order           = $template_data['order'];
+		if ( ! $is_just_visiting ) {
+			if ( $order_is_not_completed ) {
+				$order  = $template_data['order'];
+				$status = $template_data['status'];
+			} elseif ( $order_is_valid ) {
+				$purchaser_name  = $template_data['purchaser_name'];
+				$purchaser_email = $template_data['purchaser_email'];
+				$tickets         = $template_data['tickets'];
+				$order           = $template_data['order'];
+			}
 		}
 
 		ob_start();
