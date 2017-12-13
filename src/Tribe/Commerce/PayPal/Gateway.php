@@ -88,15 +88,24 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$now           = time();
 		$post_url      = get_permalink( $post );
 		$currency_code = tribe_get_option( 'ticket-paypal-currency-code' );
+		$product_ids   = $_POST['product_id'];
 
 		/**
+		 * Filters the notify URL.
+		 *
 		 * The `notify_url` argument is an IPN only argument specifying the URL PayPal should
 		 * use to POST the payment information.
 		 *
+		 * @since TBD
+		 *
 		 * @see  \Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
 		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
+		 *
+		 * @param string $notify_url
+		 * @param WP_Post $post The post tickets are associated with
+		 * @param array $product_ids An array of ticket post IDs that are being added to the cart
 		 */
-		$notify_url = get_permalink( $post );
+		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', home_url(), $post, $product_ids );
 
 		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
@@ -113,7 +122,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'invoice'       => $this->set_invoice_number(),
 		);
 
-		foreach ( $_POST['product_id'] as $ticket_id ) {
+		foreach ( $product_ids as $ticket_id ) {
 			$ticket   = tribe( 'tickets.commerce.paypal' )->get_ticket( $post->ID, $ticket_id );
 			$quantity = absint( $_POST[ "quantity_{$ticket_id}" ] );
 
