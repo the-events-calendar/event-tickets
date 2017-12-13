@@ -181,6 +181,7 @@ $tickets_fields = array_merge(
 			'validation_type' => 'boolean',
 		),
 		'ticket-paypal-identity-token' => array(
+			'conditional'     => 'pdt' === tribe( 'tickets.commerce.paypal.gateway' )->get_handler_slug(),
 			'type'            => 'text',
 			'label'           => esc_html__( 'PayPal Identity Token', 'event-tickets' ),
 			'tooltip'         => esc_html__( 'This is an optional field that will allow you to identify pending and successful payments without the need for PayPal IPN. To obtain your identifier, log into your PayPal account, click on Profile, then click on Website Payment Preferences. Here, enable Payment Data Transfer. You will then see your PayPal Identity Token displayed.', 'event-tickets' ),

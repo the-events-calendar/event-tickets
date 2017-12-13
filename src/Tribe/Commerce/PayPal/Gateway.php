@@ -408,16 +408,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return Tribe__Tickets__Commerce__PayPal__Handler__Interface The handler instance.
 	 */
 	public function build_handler() {
-		/**
-		 * Filters which PayPal payment method should be used.
-		 *
-		 * @since TBD
-		 *
-		 * @param string $handler One of `pdt` or `ipn`
-		 */
-		$handler = apply_filters( 'tribe_tickets_commerce_paypal_handler', 'ipn' );
-
-		$handler = in_array( $handler, array( 'pdt', 'ipn' ) ) ? $handler : 'ipn';
+		$handler = $this->get_handler_slug();
 
 		if ( $handler === 'pdt' && ! empty( $_GET['tx'] ) ) {
 			// looks like a PDT request
@@ -457,5 +448,27 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		return $invoice;
+	}
+
+	/**
+	 * Returns the slug of the default payment handler.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_handler_slug() {
+		/**
+		 * Filters which PayPal payment method should be used.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $handler One of `pdt` or `ipn`
+		 */
+		$handler = apply_filters( 'tribe_tickets_commerce_paypal_handler', 'ipn' );
+
+		$handler = in_array( $handler, array( 'pdt', 'ipn' ) ) ? $handler : 'ipn';
+
+		return $handler;
 	}
 }
