@@ -1338,6 +1338,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array
 	 */
 	public function get_attendees_by_order_id( $order_id ) {
+		if ( empty( $order_id ) ) {
+			return array();
+		}
+
 		$attendees_query = new WP_Query( array(
 			'posts_per_page' => - 1,
 			'post_type'      => $this->attendee_object,

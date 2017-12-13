@@ -7,9 +7,13 @@
  * @package TribeEventsCalendar
  * @version TBD
  *
+ * @var bool    $is_just_visiting Whether the current user might just have stumbled on the page or not.
  * @var bool    $order_is_valid Whether the current order is a valid one or not.
+ * @var bool    $order_is_not_complete Whether the current order is complete or not.
  * @var string  $purchaser_name
  * @var string  $purchaser_email
+ * @var string  $order The order number
+ * @var string  $status The order status
  * @var array   $tickets {
  *      @type string $name     The ticket name
  *      @type int    $price    The ticket unit price
@@ -32,10 +36,28 @@ $view      = Tribe__Tickets__Tickets_View::instance();
 ?>
 
 <div class="tribe-events-single tpp-success">
-	<?php if ( ! $order_is_valid ) : ?>
+	<?php if ( $is_just_visiting ) : ?>
 		<div class="order-recap invalid">
 			<p>
-				<?php esc_html__( 'Whoops! It looks like there was a problem with your order. Please contact the site owner for assistance.', 'event-tickets' ); ?>
+				<?php esc_html_e( "If you had placed an order you would see a confirmation message here. It looks like you didn't.", 'event-tickets' ); ?>
+			</p>
+		</div>
+	<?php elseif ( ! $order_is_valid ) : ?>
+		<div class="order-recap invalid">
+			<p>
+				<?php esc_html_e( 'Whoops! It looks like there was a problem with your order. Please contact the site owner for assistance.', 'event-tickets' ); ?>
+			</p>
+		</div>
+	<?php elseif ( $order_is_not_completed ) : ?>
+		<div class="order-recap not-completed">
+			<p>
+				<?php echo esc_html(
+					sprintf(
+						__( 'Thank you for your purchase! Your order (%1$s) is %2$s, you will receive a confirmation soon.', 'event-tickets' ),
+						$order,
+						$status
+					)
+				); ?>
 			</p>
 		</div>
 	<?php else : ?>

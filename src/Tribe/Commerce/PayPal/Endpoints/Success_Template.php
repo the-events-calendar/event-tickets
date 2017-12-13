@@ -20,6 +20,47 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	}
 
 	/**
+	 * Enqueues the resources needed by this template to correctly render.
+	 *
+	 * @since TBD
+	 */
+	public function enqueue_resources() {
+		Tribe__Tickets__RSVP::get_instance()->enqueue_resources();
+	}
+
+	/**
+	 * Renders and returns the template rendered contents.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $template_data
+	 *
+	 * @return string
+	 */
+	public function render( array $template_data = array() ) {
+		$template_data = $this->get_template_data( $template_data );
+
+		$is_just_visiting       = $template_data['is_just_visiting'];
+		$order_is_valid         = $template_data['order_is_valid'];
+		$order_is_not_completed = $template_data['order_is_not_completed'];
+
+		if ( $order_is_not_completed ) {
+			$order  = $template_data['order'];
+			$status = $template_data['status'];
+		} elseif ( $order_is_valid ) {
+			$purchaser_name  = $template_data['purchaser_name'];
+			$purchaser_email = $template_data['purchaser_email'];
+			$tickets         = $template_data['tickets'];
+			$order           = $template_data['order'];
+		}
+
+		ob_start();
+		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/tpp-success.php' );
+
+		return ob_get_clean();
+	}
+
+	/**
 	 * Builds and returns the date needed by this template.
 	 *
 	 * @since TBD
@@ -30,13 +71,35 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	 */
 	public function get_template_data( array $template_data = array() ) {
 		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
-		$paypal                          = tribe( 'tickets.commerce.paypal' );
-		$template_data['order_is_valid'] = true;
-		$order_number                    = Tribe__Utils__Array::get( $_GET, 'tribe-tpp-order', false );
-		$attendees                       = $paypal->get_attendees_by_order_id( $order_number );
+		$paypal                                  = tribe( 'tickets.commerce.paypal' );
+		$template_data['is_just_visiting']       = false;
+		$template_data['order_is_valid']         = true;
+		$template_data['order_is_not_completed'] = false;
+		$order_number                            = Tribe__Utils__Array::get( $_GET, 'tribe-tpp-order', false );
+		$attendees                               = $paypal->get_attendees_by_order_id( $order_number );
 
 		if ( empty( $attendees ) ) {
-			// weird...
+			// the order might have not been processed yet
+			if ( ! isset( $_GET['tx'], $_GET['st'] ) ) {
+				// this might just be someone visiting the page, all the pieces are missing
+				$template_data['is_just_visiting'] = true;
+
+				return $template_data;
+			}
+
+			if ( isset( $_GET['tx'], $_GET['st'] ) ) {
+				// transaction and status details are set
+				$defaults = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
+				$custom   = wp_parse_args( (array) json_decode( Tribe__Utils__Array::get( $_GET, 'cm', array() ), true ), $defaults );
+
+				$template_data['order_is_not_completed'] = true;
+				$template_data['order']                  = $_GET['tx'];
+				$template_data['status']                 = trim( strtolower( $_GET['st'] ) );
+
+				return $template_data;
+			}
+
+			// we are missing one of the pieces...
 			$template_data['order_is_valid'] = false;
 
 			return $template_data;
@@ -76,45 +139,9 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 			}
 		}
 
-		$template_data['order']    = array( 'quantity' => $order_quantity, 'total' => $order_total );
-		$template_data['tickets']  = $tickets;
+		$template_data['order']   = array( 'quantity' => $order_quantity, 'total' => $order_total );
+		$template_data['tickets'] = $tickets;
 
 		return $template_data;
-	}
-
-	/**
-	 * Enqueues the resources needed by this template to correctly render.
-	 *
-	 * @since TBD
-	 */
-	public function enqueue_resources() {
-		Tribe__Tickets__RSVP::get_instance()->enqueue_resources();
-	}
-
-	/**
-	 * Renders and returns the template rendered contents.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $template_data
-	 *
-	 * @return string
-	 */
-	public function render( array $template_data = array() ) {
-		$template_data = $this->get_template_data( $template_data );
-
-		$order_is_valid = $template_data['order_is_valid'];
-
-		if ( $order_is_valid ) {
-			$purchaser_name  = $template_data['purchaser_name'];
-			$purchaser_email = $template_data['purchaser_email'];
-			$tickets         = $template_data['tickets'];
-			$order           = $template_data['order'];
-		}
-
-		ob_start();
-		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/tpp-success.php' );
-
-		return ob_get_clean();
 	}
 }
