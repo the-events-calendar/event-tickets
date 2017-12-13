@@ -39,7 +39,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 			// weird...
 			$template_data['order_is_valid'] = false;
 
-			return;
+			return $template_data;
 		}
 
 		// the purchaser details will be the same for all the attendees, so we fetch it from the first
