@@ -31,8 +31,7 @@ class Tribe__Tickets__Commerce__PayPal__Shortcodes__Success implements Tribe__Ti
 	public function render( $attributes, $content ) {
 		$template = tribe( 'tickets.commerce.paypal.endpoints.templates.success' );
 		$template->enqueue_resources();
-		$rendered = $template->render();
 
-		return $rendered;
+		return $template->render();
 	}
 }
