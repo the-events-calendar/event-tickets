@@ -550,6 +550,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
+			/** @var \Tribe__Tickets__Ticket_Object $ticket_type */
 			$ticket_type = $item['ticket'];
 			$product_id  = $ticket_type->ID;
 
@@ -580,10 +581,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$qty = max( $ticket_qty, 0 );
 
 			// Throw an error if Qty is bigger then Remaining
-			if ( $ticket_type->managing_stock() && $qty > $ticket_type->remaining() ) {
-				$url = add_query_arg( 'tpp_error', 2, get_permalink( $post_id ) );
-				wp_redirect( esc_url_raw( $url ) );
-				tribe_exit();
+			if ( $ticket_type->managing_stock() ) {
+				$inventory = (int) $ticket_type->inventory();
+				if ( - 1 !== $inventory && $qty > $inventory ) {
+					$url = add_query_arg( 'tpp_error', 2, get_permalink( $post_id ) );
+					wp_redirect( esc_url_raw( $url ) );
+					tribe_exit();
+				}
 			}
 
 			$has_tickets = true;
