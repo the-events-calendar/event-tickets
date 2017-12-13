@@ -17,11 +17,11 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 	 * @since TBD
 	 */
 	public function check_response() {
-		if (
-			empty( $_POST )
-			|| ! isset( $_POST['txn_id'], $_POST['payer_email'] )
-			|| ! $this->validate_transaction()
-		) {
+		if ( empty( $_POST ) || ! isset( $_POST['txn_id'], $_POST['payer_email'] ) ) {
+			return;
+		}
+
+		if ( ! $this->validate_transaction() ) {
 			return;
 		}
 
@@ -36,7 +36,9 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 
 		$gateway->set_transaction_data( $results );
 
-		if ( 'completed' === trim( strtolower( $data['payment_status'] ) ) ) {
+		$payment_status = trim( strtolower( $data['payment_status'] ) );
+
+		if ( 'completed' === $payment_status ) {
 			$paypal->generate_tickets();
 
 			// since the purchase has completed, reset the invoice number
