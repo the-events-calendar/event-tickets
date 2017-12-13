@@ -114,6 +114,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public $deleted_product = '_tribe_deleted_product_name';
 
 	/**
+	 * @var array An array cache to store pending attendees per ticket.
+	 */
+	public $pending_attendees_by_ticket = array();
+
+	/**
 	 * @var Tribe__Tickets__Commerce__PayPal__Attendance_Totals
 	 */
 	protected $attendance_totals;
@@ -603,71 +608,145 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 */
 			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $transaction_data );
 
+			$existing_attendees = $this->get_attendees_by_order_id( $order_id );
+
+			if ( ! empty( $existing_attendees ) ) {
+				$existing_attendees = array_filter( array_map( 'get_post', wp_list_pluck( $existing_attendees, 'attendee_id' ) ) );
+			}
+
+			$has_generated_new_tickets = false;
+
 			// Iterate over all the amount of tickets purchased (for this product)
 			for ( $i = 0; $i < $qty; $i ++ ) {
+				$updating_attendee = false;
 
-				$attendee = array(
-					'post_status' => 'publish',
-					'post_title'  => $attendee_full_name . ' | ' . ( $i + 1 ),
-					'post_type'   => $this->attendee_object,
-					'ping_status' => 'closed',
-				);
+				// check if we already have an attendee or not
+				$post_title = $attendee_full_name . ' | ' . ( $i + 1 );
+				$existing_attendee = wp_list_filter( $existing_attendees, array( 'post_title' => $post_title ) );
 
-				// Insert individual ticket purchased
-				$attendee_id = wp_insert_post( $attendee );
+				if ( ! empty( $existing_attendee ) ) {
+					$existing_attendee = reset( $existing_attendee );
+					$updating_attendee = true;
+					$attendee_id       = $existing_attendee->ID;
+				} else {
+					$attendee = array(
+						'post_status' => 'publish',
+						'post_title'  => $post_title,
+						'post_type'   => $this->attendee_object,
+						'ping_status' => 'closed',
+					);
+
+					// Insert individual ticket purchased
+					$attendee_id = wp_insert_post( $attendee );
+
+					// since we are creating at least one
+					$has_generated_new_tickets = true;
+				}
 
 				if ( $status_stock_size > 0 ) {
 					$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 					update_post_meta( $product_id, 'total_sales', ++ $sales );
 				}
 
-				$attendee_order_status = 'completed';
+				$attendee_order_status = trim( strtolower( $transaction_data['payment_status'] ) );
 
-				update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
-				update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
+				if ( ! $updating_attendee ) {
+					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
+					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
+					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $order_id, $attendee_id ) );
+					update_post_meta( $attendee_id, $this->order_key, $order_id );
+					update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
+					update_post_meta( $attendee_id, $this->email, $attendee_email );
+					update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
+				}
+
 				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
-				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $order_id, $attendee_id ) );
-				update_post_meta( $attendee_id, $this->order_key, $order_id );
-				update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
-				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
-				update_post_meta( $attendee_id, $this->email, $attendee_email );
 
+				if ( ! $updating_attendee ) {
+					/**
+					 * PayPal specific action fired when a PayPal-driven attendee ticket for an event is generated
+					 *
+					 * @since TBD
+					 *
+					 * @param int    $attendee_id    ID of attendee ticket
+					 * @param int    $post_id        ID of event
+					 * @param int    $order_id       PayPal order ID
+					 * @param int    $product_id     PayPal product ID
+					 * @param string $payment_status The payment status for this attendee
+					 */
+					do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $post_id, $order_id, $attendee_order_status );
+					/**
+					 * Action fired when an PayPal attendee ticket is created
+					 *
+					 * @since TBD
+					 *
+					 * @param int    $attendee_id       ID of the attendee post
+					 * @param int    $post_id           Event post ID
+					 * @param int    $product_id        PayPal ticket post ID
+					 * @param int    $order_attendee_id Attendee # for order
+					 * @param string $payment_status    The payment status for this attendee
+					 */
+					do_action( 'event_tickets_tpp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id, $attendee_order_status );
+				}
 				/**
-				 * PayPal specific action fired when a PayPal-driven attendee ticket for an event is generated
+				 * PayPal specific action fired when a PayPal-driven attendee ticket for an event is updated
+				 *
+				 * This will fire even when creating attendees; if you need to hook on the creation process only use
+				 * the 'event_tickets_tpp_attendee_created' action.
 				 *
 				 * @since TBD
 				 *
-				 * @param int $attendee_id ID of attendee ticket
-				 * @param int $post_id ID of event
-				 * @param int $order_id PayPal order ID
-				 * @param int $product_id PayPal product ID
+				 * @param int    $attendee_id    ID of attendee ticket
+				 * @param int    $post_id        ID of event
+				 * @param int    $order_id       PayPal order ID
+				 * @param int    $product_id     PayPal product ID
+				 * @param string $payment_status The payment status for this attendee
 				 */
-				do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $post_id, $order_id );
-
+				do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $post_id, $order_id, $attendee_order_status );
 				/**
-				 * Action fired when an PayPal attendee ticket is created
+				 * Action fired when an PayPal attendee ticket is updated
+				 *
+				 * This will fire even when creating attendees; if you need to hook on the creation process only use
+				 * the 'event_tickets_tpp_ticket_created' action.
 				 *
 				 * @since TBD
 				 *
-				 * @param int $attendee_id ID of the attendee post
-				 * @param int $post_id Event post ID
-				 * @param int $product_id PayPal ticket post ID
-				 * @param int $order_attendee_id Attendee # for order
+				 * @param int    $attendee_id       ID of the attendee post
+				 * @param int    $post_id           Event post ID
+				 * @param int    $product_id        PayPal ticket post ID
+				 * @param int    $order_attendee_id Attendee # for order
+				 * @param string $payment_status    The payment status for this attendee
 				 */
-				do_action( 'event_tickets_tpp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id );
+				do_action( 'event_tickets_tpp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id, $attendee_order_status );
 
 				$this->record_attendee_user_id( $attendee_id );
 				$order_attendee_id++;
 			}
 
+			if ( $has_generated_new_tickets ) {
+				/**
+				 * Action fired when a PayPal has had attendee tickets generated for it.
+				 *
+				 * @since TBD
+				 *
+				 * @param int $product_id PayPal ticket post ID
+				 * @param int $order_id   ID of the PayPal order
+				 * @param int $qty        Quantity ordered
+				 */
+				do_action( 'event_tickets_tpp_tickets_generated_for_product', $product_id, $order_id, $qty );
+			}
+
 			/**
-			 * Action fired when a PayPal has had attendee tickets generated for it
+			 * Action fired when a PayPal has had attendee tickets updated for it.
+			 *
+			 * This will fire even when tickets are initially craeted; if you need to hook on the
+			 * creation process only use the 'event_tickets_tpp_tickets_generated_for_product' action.
 			 *
 			 * @since TBD
 			 *
 			 * @param int $product_id PayPal ticket post ID
-			 * @param int $order_id ID of the PayPal order
-			 * @param int $qty Quantity ordered
+			 * @param int $order_id   ID of the PayPal order
+			 * @param int $qty        Quantity ordered
 			 */
 			do_action( 'event_tickets_tpp_tickets_generated_for_product', $product_id, $order_id, $qty );
 
@@ -1174,8 +1253,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// review this when/if the Cancelled ticket status is supported in PayPal tickets
 		$return->qty_cancelled( 0 );
 
-		// review this when/if the Pending ticket status is supported in PayPal tickets
-		$return->qty_pending( 0 );
+		$pending = $this->get_qty_pending( $ticket_id );
+
+		$return->qty_pending( $pending );
 
 		if ( empty( $return->purchase_limit ) && 0 !== (int) $return->purchase_limit ) {
 			/**
@@ -1257,8 +1337,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array
 	 */
-	protected function get_attendees_by_order_id( $order_id ) {
-
+	public function get_attendees_by_order_id( $order_id ) {
 		$attendees_query = new WP_Query( array(
 			'posts_per_page' => - 1,
 			'post_type'      => $this->attendee_object,
@@ -1273,7 +1352,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return $this->get_attendees( $attendees_query, $order_id );
-
 	}
 
 	/**
@@ -1908,6 +1986,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$order_statuses = array(
 			'undefined'     => _x( 'Undefined', 'a PayPal ticket order status', 'event-tickets' ),
 			'completed'     => _x( 'Completed', 'a PayPal ticket order status', 'event-tickets' ),
+			'pending'       => _x( 'Pending', 'a PayPal ticket order status', 'event-tickets' ),
 			'not-completed' => _x( 'Not Completed', 'a PayPal ticket order status', 'event-tickets' ),
 		);
 
@@ -2085,5 +2164,40 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'error' );
 				break;
 		}
+	}
+
+	/**
+	 * Returns the number of pending attendees by ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $ticket_id The ticket post ID
+	 * @param bool $refresh   Whether to try and use the cached value or not.
+	 *
+	 * @return int
+	 */
+	public function get_qty_pending( $ticket_id, $refresh = false ) {
+		if ( $refresh || empty( $this->pending_attendees_by_ticket[ $ticket_id ] ) ) {
+			$pending_query = new WP_Query( array(
+				'fields'     => 'ids',
+				'per_page'   => 1,
+				'post_type'  => self::ATTENDEE_OBJECT,
+				'meta_query' => array(
+					array(
+						'key'   => self::ATTENDEE_PRODUCT_KEY,
+						'value' => $ticket_id,
+					),
+					'relation' => 'AND',
+					array(
+						'key'   => $this->attendee_tpp_key,
+						'value' => 'pending',
+					),
+				),
+			) );
+
+			$this->pending_attendees_by_ticket[ $ticket_id ] = $pending_query->found_posts;
+		}
+
+		return $this->pending_attendees_by_ticket[ $ticket_id ];
 	}
 }
