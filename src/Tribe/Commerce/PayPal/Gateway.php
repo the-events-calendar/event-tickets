@@ -408,12 +408,24 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @return Tribe__Tickets__Commerce__PayPal__Handler__Interface The handler instance.
 	 */
 	public function build_handler() {
-		if ( ! empty( $_GET['tx'] ) ) {
+		/**
+		 * Filters which PayPal payment method should be used.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $handler One of `pdt` or `ipn`
+		 */
+		$handler = apply_filters( 'tribe_tickets_commerce_paypal_handler', 'ipn' );
+
+		$handler = in_array( $handler, array( 'pdt', 'ipn' ) ) ? $handler : 'ipn';
+
+		if ( $handler === 'pdt' && ! empty( $_GET['tx'] ) ) {
 			// looks like a PDT request
 			if ( ! empty( $this->identity_token ) ) {
 				// if there's an identity token set we handle payment confirmation with PDT
 				$this->handler = tribe( 'tickets.commerce.paypal.handler.pdt' );
 			} else {
+				// if there is not an identity token set we log a missed transaction and show a notice
 				$this->notices->show_missing_identity_token_notice();
 				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT( $_GET['tx'] );
 			}
