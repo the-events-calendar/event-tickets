@@ -183,7 +183,7 @@ $tickets_fields = array_merge(
 		'ticket-paypal-notify-url' => array(
 			'type'            => 'text',
 			'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'Override the default IPN notify URL with this value; leave blank not to override.', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (Profile and Settings > My selling tools > Instant Payment Notification > Update).', 'event-tickets' ),
 			'default'         => home_url(),
 			'validation_type' => 'html',
 		),
