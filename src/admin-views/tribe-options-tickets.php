@@ -184,7 +184,7 @@ $tickets_fields = array_merge(
 			'type'            => 'text',
 			'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
 			'tooltip'         => esc_html__( 'Override the default IPN notify URL with this value; leave blank not to override.', 'event-tickets' ),
-			'default'         => false,
+			'default'         => home_url(),
 			'validation_type' => 'html',
 		),
 		'ticket-paypal-identity-token' => array(
