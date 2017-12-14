@@ -90,6 +90,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$currency_code = tribe_get_option( 'ticket-paypal-currency-code' );
 		$product_ids   = $_POST['product_id'];
 
+		$notify_url = tribe_get_option( 'ticket-paypal-notify-url', home_url() );
+
 		/**
 		 * Filters the notify URL.
 		 *
@@ -105,7 +107,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * @param WP_Post $post The post tickets are associated with
 		 * @param array $product_ids An array of ticket post IDs that are being added to the cart
 		 */
-		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', home_url(), $post, $product_ids );
+		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', $notify_url, $post, $product_ids );
 
 		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
