@@ -496,9 +496,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
+	 * @param  bool $redirect Whether the client should be redirected or not.
+	 *
 	 * @since TBD
 	 */
-	public function generate_tickets() {
+	public function generate_tickets( $redirect = true ) {
 		$transaction_data = tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
@@ -543,7 +545,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$url = get_permalink( $post_id );
 			$url = add_query_arg( 'tpp_error', 1, $url );
-			wp_redirect( esc_url_raw( $url ) );
+			if ( $redirect ) {
+				wp_redirect( esc_url_raw( $url ) );
+			}
 			tribe_exit();
 		}
 
@@ -590,7 +594,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$inventory = (int) $ticket_type->inventory();
 				if ( - 1 !== $inventory && $qty > $inventory ) {
 					$url = add_query_arg( 'tpp_error', 2, get_permalink( $post_id ) );
-					wp_redirect( esc_url_raw( $url ) );
+					if ( $redirect ) {
+						wp_redirect( esc_url_raw( $url ) );
+					}
 					tribe_exit();
 				}
 			}
@@ -783,11 +789,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		// Redirect to the same page to prevent double purchase on refresh
-		if ( ! empty( $post_id ) ) {
+		if ( ! empty( $post_id )  ) {
 			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
 			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
 			$url       = $endpoints->success_url( $order_id );
-			wp_redirect( esc_url_raw( $url ) );
+			if ( $redirect ) {
+				wp_redirect( esc_url_raw( $url ) );
+			}
 			tribe_exit();
 		}
 	}

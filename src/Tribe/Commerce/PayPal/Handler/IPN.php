@@ -38,12 +38,12 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 
 		$payment_status = trim( strtolower( $data['payment_status'] ) );
 
-		$paypal->generate_tickets();
-
 		if ( 'completed' === $payment_status ) {
 			// since the purchase has completed, reset the invoice number
 			$gateway->reset_invoice_number();
 		}
+
+		$paypal->generate_tickets( false );
 	}
 
 	/**
