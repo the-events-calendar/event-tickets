@@ -87,7 +87,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$url           = $this->get_cart_url( '_cart' );
 		$now           = time();
 		$post_url      = get_permalink( $post );
-		$currency_code = tribe_get_option( 'ticket-paypal-currency-code' );
+		$currency_code = trim( tribe_get_option( 'ticket-paypal-currency-code' ) );
 		$product_ids   = $_POST['product_id'];
 
 		$notify_url = tribe_get_option( 'ticket-paypal-notify-url', home_url() );
@@ -117,7 +117,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'add'           => 1,
 			'business'      => urlencode( trim( tribe_get_option( 'ticket-paypal-email' ) ) ),
 			'bn'            => 'ModernTribe_SP',
-			'notify_url'    => urlencode( $notify_url ),
+			'notify_url'    => urlencode( trim( $notify_url ) ),
 			'shopping_url'  => urlencode( $post_url ),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
