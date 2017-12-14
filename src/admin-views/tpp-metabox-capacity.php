@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string|int $ticket_capacity
+ */
+?>
+
 <div
 	class="input_block ticket_advanced_Tribe__Tickets__Commerce__PayPal__Main tribe-dependent"
 	data-depends="#Tribe__Tickets__Commerce__PayPal__Main_radio"
@@ -14,7 +20,7 @@
 		name='tribe-ticket[capacity]'
 		class="ticket_field tribe-tpp-field-capacity ticket_form_right"
 		size='7'
-		value='<?php echo esc_attr( -1 === (int) $capacity ? '' : $capacity ); ?>'
+		value='<?php echo esc_attr( - 1 === (int) $ticket_capacity ? '' : $ticket_capacity ); ?>'
 	/>
 	<span class="tribe_soft_note ticket_form_right"><?php esc_html_e( 'Leave blank for unlimited', 'event-tickets' ); ?></span>
 </div>
