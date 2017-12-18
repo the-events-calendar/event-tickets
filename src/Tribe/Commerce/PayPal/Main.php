@@ -792,7 +792,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( ! empty( $post_id )  ) {
 			/** @var \Tribe__Tickets__Commerce__PayPal__Endpoints $endpoints */
 			$endpoints = tribe( 'tickets.commerce.paypal.endpoints' );
-			$url       = $endpoints->success_url( $order_id );
+			$url       = $endpoints->success_url( $order_id, $post_id );
 			if ( $redirect ) {
 				wp_redirect( esc_url_raw( $url ) );
 			}
