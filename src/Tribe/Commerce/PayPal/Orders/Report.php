@@ -268,6 +268,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$this->orders_table->prepare_items();
 
 		ob_start();
+		$this->orders_table->search_box( __( 'Search', 'event-tickets' ), 'tpp-orders' );
 		$this->orders_table->display();
 		$table = ob_get_clean();
 

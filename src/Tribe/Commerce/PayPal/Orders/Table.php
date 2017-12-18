@@ -49,19 +49,6 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	}
 
 	/**
-	 * Displays the search box.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $text     The 'submit' button label.
-	 * @param string $input_id ID attribute value for the search input field.
-	 */
-	public function search_box( $text, $input_id ) {
-		// do not display the search box
-		return;
-	}
-
-	/**
 	 * Checks the current user's permissions
 	 *
 	 * @since TBD
@@ -216,6 +203,11 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$items       = $sales->get_orders_for_post( $this->post_id, $product_ids );
 
+		if ( ! empty( $_GET['s'] ) ) {
+			$s     = trim( $_GET['s'] );
+			$items = $this->search_items_by( $items, $s );
+		}
+
 		$total_items = count( $items );
 
 		$per_page = $this->get_items_per_page( $this->per_page_option );
@@ -230,6 +222,15 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 				'per_page'    => $per_page,
 			)
 		);
+	}
+
+	/**
+	 * Message to be displayed when there are no items
+	 *
+	 * @since TBD
+	 */
+	public function no_items() {
+		_e( 'No matching orders found.', 'event-tickets' );
 	}
 
 	/**
@@ -269,5 +270,44 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 */
 	public function column_status( $item ) {
 		return esc_html( $item['status_label'] );
+	}
+
+	/**
+	 * Filters the items by a search string.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $items An array of candidate items.
+	 * @param string $s The string to look for
+	 *
+	 * @return array An array of filtered items.
+	 */
+	protected function search_items_by( $items, $s ) {
+		// we search orders by number, status slug and label, purchaser name and email, purchase time
+		$search_keys = array( 'number', 'status', 'status_label', 'purchaser_name', 'purchaser_email', 'purchase_time' );
+
+		/**
+		 * Filters the item keys that should be used to filter orders while searching them.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $search_keys The keys that should be used to search orders
+		 * @param array  $items The orders list
+		 * @param string $s The current search string.
+		 */
+		$search_keys = apply_filters( 'tribe_tickets_commerce_paypal_search_orders_by', $search_keys, $items, $s );
+
+		$filtered = array();
+		foreach ( $items as $order_number => $order_data ) {
+			$keys = array_intersect( array_keys( $order_data ), $search_keys );
+			foreach ( $keys as $key ) {
+				if ( ! empty( $order_data[ $key ] ) && false !== stripos( $order_data[ $key ], $s ) ) {
+					$filtered[ $order_number ] = $order_data;
+					break;
+				}
+			}
+		}
+
+		return $filtered;
 	}
 }
