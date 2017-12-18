@@ -203,9 +203,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$items       = $sales->get_orders_for_post( $this->post_id, $product_ids );
 
-		if ( ! empty( $_GET['s'] ) ) {
-			$s     = trim( $_GET['s'] );
-			$items = $this->search_items_by( $items, $s );
+		$search = isset( $_REQUEST['s'] ) ? esc_attr( trim($_REQUEST['s']) ) : false;
+		if ( ! empty( $search ) ) {
+			$items = $this->filter_orders_by_string( $search, $items );
 		}
 
 		$total_items = count( $items );
@@ -277,13 +277,16 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $items An array of candidate items.
-	 * @param string $s The string to look for
+	 * @param array  $items  An array of candidate items.
+	 * @param string $search The string to look for
 	 *
 	 * @return array An array of filtered items.
 	 */
-	protected function search_items_by( $items, $s ) {
-		// we search orders by number, status slug and label, purchaser name and email, purchase time
+	protected function filter_orders_by_string( $search, array $items ) {
+		if ( empty( $items ) ) {
+			return $items;
+		}
+
 		$search_keys = array( 'number', 'status', 'status_label', 'purchaser_name', 'purchaser_email', 'purchase_time' );
 
 		/**
@@ -292,16 +295,16 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		 * @since TBD
 		 *
 		 * @param array  $search_keys The keys that should be used to search orders
-		 * @param array  $items The orders list
-		 * @param string $s The current search string.
+		 * @param array  $items       The orders list
+		 * @param string $search      The current search string.
 		 */
-		$search_keys = apply_filters( 'tribe_tickets_commerce_paypal_search_orders_by', $search_keys, $items, $s );
+		$search_keys = apply_filters( 'tribe_tickets_commerce_paypal_search_orders_by', $search_keys, $items, $search );
 
 		$filtered = array();
 		foreach ( $items as $order_number => $order_data ) {
 			$keys = array_intersect( array_keys( $order_data ), $search_keys );
 			foreach ( $keys as $key ) {
-				if ( ! empty( $order_data[ $key ] ) && false !== stripos( $order_data[ $key ], $s ) ) {
+				if ( ! empty( $order_data[ $key ] ) && false !== stripos( $order_data[ $key ], $search ) ) {
 					$filtered[ $order_number ] = $order_data;
 					break;
 				}

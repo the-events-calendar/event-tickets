@@ -78,17 +78,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		return apply_filters( 'tribe_tickets_attendee_table_columns', $columns );
 	}
 
-
-	/**
-	 * Display the search box.
-	 *
-	 * @param string $text     The search button text
-	 * @param string $input_id The search input id
-	 */
-	public function search_box( $text, $input_id ) {
-		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/attendees-search-box.php';
-	}
-
 	/**
 	 * Checks the current user's permissions
 	 */
@@ -743,7 +732,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id, true );
 
-		$search = isset( $_REQUEST['s'] ) ? esc_attr( $_REQUEST['s'] ) : false;
+		$search = isset( $_REQUEST['s'] ) ? esc_attr( trim( $_REQUEST['s'] ) ) : false;
 		if ( ! empty( $search ) ) {
 			$items = $this->filter_attendees_by_string( $search, $items );
 		}
@@ -763,6 +752,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Message to be displayed when there are no items
+	 *
+	 * @since TBD
+	 */
+	public function no_items() {
+		_e( 'No matching attendees found.', 'event-tickets' );
+	}
+
+	/**
 	 * Filters the attendees by a search string if available.
 	 *
 	 * @since TBD
@@ -777,21 +775,30 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			return $items;
 		}
 
-		$matching = array();
+		$search_keys = array( 'purchaser_name', 'purchaser_email', 'purchase_time', 'order_status', 'ticket_name', 'product_id', 'security_code' );
 
-		foreach ( $items as $item ) {
-			$matches =
-				false !== stripos( $item['purchaser_name'], $search )
-				|| false !== stripos( $item['ticket_name'], $search )
-				|| false !== stripos( $item['product_id'], $search )
-				|| false !== stripos( $item['order_id'], $search )
-				|| false !== stripos( $item['security_code'], $search );
+		/**
+		 * Filters the item keys that should be used to filter attendees while searching them.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $search_keys The keys that should be used to search attendees
+		 * @param array  $items       The attendees list
+		 * @param string $s           The current search string.
+		 */
+		$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, $items, $search );
 
-			if ( $matches ) {
-				$matching[] = $item;
+		$filtered = array();
+		foreach ( $items as $order_number => $order_data ) {
+			$keys = array_intersect( array_keys( $order_data ), $search_keys );
+			foreach ( $keys as $key ) {
+				if ( ! empty( $order_data[ $key ] ) && false !== stripos( $order_data[ $key ], $search ) ) {
+					$filtered[ $order_number ] = $order_data;
+					break;
+				}
 			}
 		}
 
-		return $matching;
+		return $filtered;
 	}
 }
