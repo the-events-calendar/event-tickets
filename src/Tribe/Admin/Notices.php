@@ -42,7 +42,8 @@ class Tribe__Tickets__Admin__Notices {
 			}
 
 			$message = sprintf(
-				__( 'Event Tickets does not allow selling tickets with %1$s; if you need that functionality install %2$s.' ),
+
+				__( 'Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s.' ),
 				$provider,
 				$plus
 			);
