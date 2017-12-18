@@ -70,13 +70,19 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 	$all_post_types[ $post_type ] = $post_type_object->labels->singular_name;
 }
 
-$all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
+$all_post_types                     = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
 $paypal_ipn_notify_url_setting_link = add_query_arg(
 	array( 'cmd' => '_profile-ipn-notify' ),
 	tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 );
+$ipn_notification_settings_link     = '<a href="' . $paypal_ipn_notify_url_setting_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update','event-tickets' ) . '</a>';
 
-$ipn_notification_link = '<a href="' . $paypal_ipn_notify_url_setting_link . '" target="_blank">' . esc_html__( '(Profile and Settings > My selling tools > Instant Payment Notification > Update)','event-tickets' ) . '</a>';
+$paypal_ipn_notification_history_link = add_query_arg(
+	array( 'cmd' => '_display-ipns-history' ),
+	tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
+);
+$ipn_notification_history_link = '<a href="' . $paypal_ipn_notification_history_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page','event-tickets' ) . '</a>';
+
 $options = get_option( Tribe__Main::OPTIONNAME, array() );
 
 /**
@@ -186,10 +192,17 @@ $tickets_fields        = array_merge(
 			'default'         => false,
 			'validation_type' => 'boolean',
 		),
+		'ticket-paypal-notify-history' => array(
+			'type'            => 'wrapped_html',
+			'label'           => esc_html__( 'See your IPN Notification history', 'event-tickets' ),
+			'html'            => '<p>' . sprintf( esc_html__( 'You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s).', 'event-tickets' ), $ipn_notification_history_link ) . '</p>',
+			'size'            => 'medium',
+			'validation_type' => 'html',
+		),
 		'ticket-paypal-notify-url' => array(
 			'type'            => 'text',
 			'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
-			'tooltip'         => sprintf( esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area %s.', 'event-tickets' ), $ipn_notification_link ),
+			'tooltip'         => sprintf( esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s).', 'event-tickets' ), $ipn_notification_settings_link ),
 			'default'         => home_url(),
 			'validation_type' => 'html',
 		),
