@@ -71,6 +71,12 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 }
 
 $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
+$paypal_ipn_notify_url_setting_link = add_query_arg(
+	array( 'cmd' => '_profile-ipn-notify' ),
+	tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
+);
+
+$ipn_notification_link = '<a href="' . $paypal_ipn_notify_url_setting_link . '" target="_blank">' . esc_html__( '(Profile and Settings > My selling tools > Instant Payment Notification > Update)','event-tickets' ) . '</a>';
 $options = get_option( Tribe__Main::OPTIONNAME, array() );
 
 /**
@@ -158,7 +164,7 @@ $tickets_fields = array_merge( $tickets_fields, array(
 	)
 );
 
-$tickets_fields = array_merge(
+$tickets_fields        = array_merge(
 	$tickets_fields,
 	array(
 		'ticket-paypal-heading' => array(
@@ -183,7 +189,7 @@ $tickets_fields = array_merge(
 		'ticket-paypal-notify-url' => array(
 			'type'            => 'text',
 			'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (Profile and Settings > My selling tools > Instant Payment Notification > Update).', 'event-tickets' ),
+			'tooltip'         => sprintf( esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area %s.', 'event-tickets' ), $ipn_notification_link ),
 			'default'         => home_url(),
 			'validation_type' => 'html',
 		),

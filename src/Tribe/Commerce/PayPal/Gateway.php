@@ -473,4 +473,17 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		return $handler;
 	}
+
+	/**
+	 * Returns the URL to the PayPal Settings page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $path
+	 *
+	 * @return string
+	 */
+	public function get_settings_url( $path = '' ) {
+		return $this->get_base_url( '/customerprofileweb' . ltrim( $path, '/' ) );
+	}
 }
