@@ -2013,9 +2013,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				if ( ! empty( $data['ticket_start_time'] ) ) {
 					$start_datetime .= ' ' . $data['ticket_start_time'];
+					$ticket->start_time = date( Tribe__Date_Utils::DBTIMEFORMAT, strtotime( ( $start_datetime ) ) );
 				}
 
-				$ticket->start_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $start_datetime ) );
+				$ticket->start_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $start_datetime ) );
 			}
 
 			if ( ! empty( $data['ticket_end_date'] ) ) {
@@ -2023,9 +2024,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				if ( ! empty( $data['ticket_end_time'] ) ) {
 					$end_datetime .= ' ' . $data['ticket_end_time'];
+					$ticket->end_time = date( Tribe__Date_Utils::DBTIMEFORMAT, strtotime( ( $end_datetime ) ) );
 				}
 
-				$ticket->end_date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, strtotime( $end_datetime ) );
+				$ticket->end_date = date( Tribe__Date_Utils::DBDATEFORMAT, strtotime( $end_datetime ) );
 			}
 
 			/**

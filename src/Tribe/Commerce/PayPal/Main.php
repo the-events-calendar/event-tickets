@@ -912,16 +912,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$ticket_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 		$this->update_capacity( $ticket, $ticket_data, $save_type );
 
-		if ( isset( $ticket->start_date ) ) {
-			update_post_meta( $ticket->ID, '_ticket_start_date', $ticket->start_date );
-		} else {
-			delete_post_meta( $ticket->ID, '_ticket_start_date' );
-		}
-
-		if ( isset( $ticket->end_date ) ) {
-			update_post_meta( $ticket->ID, '_ticket_end_date', $ticket->end_date );
-		} else {
-			delete_post_meta( $ticket->ID, '_ticket_end_date' );
+		foreach ( array( 'start_date', 'start_time', 'end_date', 'end_time' ) as $time_key ) {
+			if ( isset( $ticket->{$time_key} ) ) {
+				update_post_meta( $ticket->ID, "_ticket_{$time_key}", $ticket->{$time_key} );
+			} else {
+				delete_post_meta( $ticket->ID, "_ticket_{$time_key}" );
+			}
 		}
 
 		/**
@@ -1234,6 +1230,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->admin_link     = '';
 		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
 		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$return->start_time     = get_post_meta( $ticket_id, '_ticket_start_time', true );
+		$return->end_time       = get_post_meta( $ticket_id, '_ticket_end_time', true );
 		$return->sku            = get_post_meta( $ticket_id, 'sku', true );
 
 		// If the quantity sold wasn't set, default to zero
