@@ -198,7 +198,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
-		if ( true === tribe_get_option( 'ticket-paypal-enable', true ) ) {
+		if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 			tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		}
 	}

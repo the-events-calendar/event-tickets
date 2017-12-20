@@ -157,7 +157,7 @@ $tickets_fields        = array_merge(
 	)
 );
 
-if ( true === tribe_get_option( 'ticket-paypal-enable', true ) ) {
+if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 	$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
 	if ( ! empty( $pages ) ) {
 		$pages = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
