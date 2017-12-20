@@ -190,6 +190,8 @@ if ( ! $paypal_disabled ) {
 	);
 	$ipn_notification_history_link = '<a href="' . $paypal_ipn_notification_history_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page','event-tickets' ) . '</a>';
 
+	$current_user = get_user_by( 'id', get_current_user_id() );
+
 	$tickets_fields = array_merge(
 		$tickets_fields,
 		array(
@@ -239,6 +241,32 @@ if ( ! $paypal_disabled ) {
 				'validation_type' => 'options',
 				'options'         => $pages,
 				'required'        => true,
+			),
+			'ticket-paypal-confirmation-email-sender-email' => array(
+				'type'            => 'email',
+				'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Email address PayPal tickets customers will receive confirmation from.', 'event-tickets' ),
+				'size'            => 'medium',
+				'default'         => $current_user->user_email,
+				'validation_type' => 'email',
+			),
+			'ticket-paypal-confirmation-email-sender-name' => array(
+				'type'                => 'text',
+				'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Sender name of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
+				'size'                => 'medium',
+				'default'             => $current_user->user_nicename,
+				'validation_callback' => 'is_string',
+				'validation_type'     => 'textarea',
+			),
+			'ticket-paypal-confirmation-email-subject' => array(
+				'type'                => 'text',
+				'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
+				'tooltip'             => esc_html__( 'Subject of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
+				'size'                => 'large',
+				'default'             => 'You have tickets!',
+				'validation_callback' => 'is_string',
+				'validation_type'     => 'textarea',
 			),
 			'ticket-currency-heading' => array(
 				'type' => 'html',
