@@ -771,8 +771,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_tpp_tickets_generated', $order_id, $post_id );
 
-		$send_mail_statuses = array( 'yes' );
-
 		/**
 		 * Filters whether a confirmation email should be sent or not for PayPal tickets.
 		 *
@@ -784,7 +782,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		$send_mail = apply_filters( 'tribe_tickets_tpp_send_mail', true );
 
-		if ( $send_mail && $has_tickets ) {
+		if ( $send_mail && $has_tickets && $attendee_order_status === 'completed' ) {
 			$this->send_tickets_email( $order_id );
 		}
 
@@ -850,12 +848,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$content     = apply_filters( 'tribe_tpp_email_content', $this->generate_tickets_email_content( $to_send ) );
-		$headers     = apply_filters( 'tribe_tpp_email_headers', array( 'Content-type: text/html' ) );
+		$content = apply_filters( 'tribe_tpp_email_content', $this->generate_tickets_email_content( $to_send ) );
+		$headers = array( 'Content-type: text/html' );
+		$from = apply_filters( 'tribe_tpp_email_from_name', tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ) );
+		$from_email = apply_filters( 'tribe_tpp_email_from_email', tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ) );
+		if ( ! empty( $from ) && ! empty( $from_email ) ) {
+			$headers[] = sprintf( 'From: %s <%s>', filter_var( $from, FILTER_SANITIZE_STRING ), filter_var( $from_email, FILTER_SANITIZE_EMAIL ) );
+		}
+		$headers = apply_filters( 'tribe_tpp_email_headers', $headers );
 		$attachments = apply_filters( 'tribe_tpp_email_attachments', array() );
-		$to          = apply_filters( 'tribe_tpp_email_recipient', $to );
-		$subject     = apply_filters( 'tribe_tpp_email_subject',
-			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ) );
+		$to = apply_filters( 'tribe_tpp_email_recipient', $to );
+		$site_name = stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
+		$default_subject = sprintf( __( 'Your tickets from %s', 'event-tickets' ), $site_name );
+		$subject = apply_filters( 'tribe_tpp_email_subject', tribe_get_option( 'ticket-paypal-confirmation-email-subject', $default_subject ) );
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
