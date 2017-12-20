@@ -1,8 +1,9 @@
 <?php
-$attendees_url   = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
-$total_tickets   = tribe( 'tickets.handler' )->get_total_event_capacity( $post_id );
+$attendees_url = tribe( 'tickets.attendees' )->get_report_link( get_post( $post_id ) );
+$total_tickets = tribe( 'tickets.handler' )->get_total_event_capacity( $post_id );
 $container_class = 'tribe_sectionheader ticket_list_container';
-$container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
+$container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '';
+$ticket_providing_modules = array_diff_key( Tribe__Tickets__Tickets::modules(), array( 'Tribe__Tickets__RSVP' => true ) );
 ?>
 <div
 	id="tribe_panel_base"
@@ -52,15 +53,15 @@ $container_class .= ( empty( $total_tickets ) ) ? ' tribe_no_capacity' : '' ;
 		 * @param int $post_id the id of the post
 		 */
 		do_action( 'tribe_events_tickets_new_ticket_buttons', $post_id );
-		?>
-
-		<button
-			id="ticket_form_toggle"
-			class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
-			aria-label="<?php esc_attr_e( 'Add a new ticket', 'event-tickets' ); ?>"
-		>
-			<?php esc_html_e( 'New ticket', 'event-tickets' ); ?>
-		</button>
+		if ( ! empty( $ticket_providing_modules ) ) : ?>
+			<button
+				id="ticket_form_toggle"
+				class="button-secondary ticket_form_toggle tribe-button-icon tribe-button-icon-plus"
+				aria-label="<?php esc_attr_e( 'Add a new ticket', 'event-tickets' ); ?>"
+			>
+				<?php esc_html_e( 'New ticket', 'event-tickets' ); ?>
+			</button>
+		<?php endif; ?>
 
 		<button
 			id="rsvp_form_toggle"
