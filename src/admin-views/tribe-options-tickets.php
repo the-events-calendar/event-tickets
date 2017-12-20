@@ -146,18 +146,18 @@ $tickets_fields        = array_merge(
 			'type' => 'html',
 			'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
 		),
-		'ticket-paypal-disable' => array(
+		'ticket-paypal-enable' => array(
 			'type'            => 'checkbox_bool',
-			'label'           => esc_html__( 'Disable Tribe Commerce ', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'All fucntionalities provided by Tribe Commerce will be disabled.', 'event-tickets' ),
+			'label'           => esc_html__( 'Enable Tribe Commerce ', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'Enable all functions provided by Tribe Commerce.', 'event-tickets' ),
 			'size'            => 'medium',
-			'default'         => '0',
+			'default'         => '1',
 			'validation_type' => 'boolean',
 		),
 	)
 );
 
-if ( false === tribe_get_option( 'ticket-paypal-disable', false ) ) {
+if ( true === tribe_get_option( 'ticket-paypal-enable', true ) ) {
 	$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
 	if ( ! empty( $pages ) ) {
 		$pages = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
