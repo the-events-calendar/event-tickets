@@ -26,26 +26,6 @@ $currency_code_options = array(
 	'USD' => __( 'U.S. Dollar (USD)', 'event-tickets' ),
 );
 
-$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
-if ( ! empty( $pages ) ) {
-	$pages        = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
-	$default_page = reset( $pages );
-} else {
-	$pages        = array( 0 => __( 'There are no published pages', 'event-tickets' ) );
-	$default_page = null;
-}
-
-$tpp_success_shortcode = 'tribe-tpp-success';
-
-/**
- * Filters the available currency code options for PayPal
- *
- * @since TBD
- *
- * @param array $currency_code_options
- */
-$currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', $currency_code_options );
-
 $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_list', array(
 	'attachment',
 ) );
@@ -70,18 +50,7 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 	$all_post_types[ $post_type ] = $post_type_object->labels->singular_name;
 }
 
-$all_post_types                     = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
-$paypal_ipn_notify_url_setting_link = add_query_arg(
-	array( 'cmd' => '_profile-ipn-notify' ),
-	tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
-);
-$ipn_notification_settings_link     = '<a href="' . $paypal_ipn_notify_url_setting_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update','event-tickets' ) . '</a>';
-
-$paypal_ipn_notification_history_link = add_query_arg(
-	array( 'cmd' => '_display-ipns-history' ),
-	tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
-);
-$ipn_notification_history_link = '<a href="' . $paypal_ipn_notification_history_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page','event-tickets' ) . '</a>';
+$all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_types );
 
 $options = get_option( Tribe__Main::OPTIONNAME, array() );
 
@@ -177,81 +146,129 @@ $tickets_fields        = array_merge(
 			'type' => 'html',
 			'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
 		),
-		'ticket-paypal-email' => array(
-			'type'            => 'email',
-			'label'           => esc_html__( 'PayPal Email', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'Email address that will receive PayPal payments.', 'event-tickets' ),
-			'size'            => 'medium',
-			'default'         => '',
-			'validation_type' => 'email',
-		),
-		'ticket-paypal-sandbox' => array(
+		'ticket-paypal-disable' => array(
 			'type'            => 'checkbox_bool',
-			'label'           => esc_html__( 'PayPal Sandbox', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'Enables PayPal Sandbox mode for testing.', 'event-tickets' ),
-			'default'         => false,
-			'validation_type' => 'boolean',
-		),
-		'ticket-paypal-notify-history' => array(
-			'type'            => 'wrapped_html',
-			'label'           => esc_html__( 'See your IPN Notification history', 'event-tickets' ),
-			'html'            => '<p>' . sprintf( esc_html__( 'You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s).', 'event-tickets' ), $ipn_notification_history_link ) . '</p>',
+			'label'           => esc_html__( 'Disable Tribe Commerce ', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'All fucntionalities provided by Tribe Commerce will be disabled.', 'event-tickets' ),
 			'size'            => 'medium',
-			'validation_type' => 'html',
-		),
-		'ticket-paypal-notify-url' => array(
-			'type'            => 'text',
-			'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
-			'tooltip'         => sprintf( esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s).', 'event-tickets' ), $ipn_notification_settings_link ),
-			'default'         => home_url(),
-			'validation_type' => 'html',
-		),
-		'ticket-paypal-identity-token' => array(
-			'conditional'     => 'pdt' === tribe( 'tickets.commerce.paypal.gateway' )->get_handler_slug(),
-			'type'            => 'text',
-			'label'           => esc_html__( 'PayPal Identity Token', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'This is an optional field that will allow you to identify pending and successful payments without the need for PayPal IPN. To obtain your identifier, log into your PayPal account, click on Profile, then click on Website Payment Preferences. Here, enable Payment Data Transfer. You will then see your PayPal Identity Token displayed.', 'event-tickets' ),
-			'size'            => 'medium',
-			'default'         => '',
-			'validation_type' => 'html',
-		),
-		'ticket-paypal-success-page' => array(
-			'type'            => 'dropdown',
-			'label'           => esc_html__( 'Success page', 'event-tickets' ),
-			'tooltip'         => esc_html__( "After a successful PayPal order users will be redirected to this page; use the [{$tpp_success_shortcode}] shortcode to display the order confirmation to the user in the page content.", 'event-tickets' ),
-			'size'            => 'medium',
-			'validation_type' => 'options',
-			'options'         => $pages,
-			'required'        => true,
-		),
-		'ticket-currency-heading' => array(
-			'type' => 'html',
-			'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
-		),
-		'ticket-paypal-currency-code' => array(
-			'type'            => 'dropdown',
-			'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'The currency that will be used for PayPal transactions.', 'event-tickets' ),
-			'default'         => 'USD',
-			'validation_type' => 'options',
-			'options'         => $currency_code_options,
-		),
-		'defaultCurrencySymbol' => array(
-			'type'            => 'text',
-			'label'           => esc_html__( 'Symbol', 'event-tickets' ),
-			'size'            => 'small',
-			'default'         => '$',
-			'validation_type' => 'html',
-		),
-		'reverseCurrencyPosition' => array(
-			'type'            => 'checkbox_bool',
-			'label'           => esc_html__( 'Symbol Follows Value', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'The currency symbol normally precedes the value. Enabling this option positions the symbol after the value.', 'event-tickets' ),
-			'default'         => false,
+			'default'         => '0',
 			'validation_type' => 'boolean',
 		),
 	)
 );
+
+$paypal_disabled = tribe_get_option('ticket-paypal-disable',false);
+
+if ( ! $paypal_disabled ) {
+	$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
+	if ( ! empty( $pages ) ) {
+		$pages = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
+		$default_page = reset( $pages );
+	} else {
+		$pages = array( 0 => __( 'There are no published pages', 'event-tickets' ) );
+		$default_page = null;
+	}
+	$tpp_success_shortcode = 'tribe-tpp-success';
+	/**
+	 * Filters the available currency code options for PayPal
+	 *
+	 * @since TBD
+	 *
+	 * @param array $currency_code_options
+	 */
+	$currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', $currency_code_options );
+
+	$paypal_ipn_notify_url_setting_link = add_query_arg(
+		array( 'cmd' => '_profile-ipn-notify' ),
+		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
+	);
+	$ipn_notification_settings_link     = '<a href="' . $paypal_ipn_notify_url_setting_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update','event-tickets' ) . '</a>';
+
+	$paypal_ipn_notification_history_link = add_query_arg(
+		array( 'cmd' => '_display-ipns-history' ),
+		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
+	);
+	$ipn_notification_history_link = '<a href="' . $paypal_ipn_notification_history_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page','event-tickets' ) . '</a>';
+
+	$tickets_fields = array_merge(
+		$tickets_fields,
+		array(
+			'ticket-paypal-email' => array(
+				'type'            => 'email',
+				'label'           => esc_html__( 'PayPal Email', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Email address that will receive PayPal payments.', 'event-tickets' ),
+				'size'            => 'medium',
+				'default'         => '',
+				'validation_type' => 'email',
+			),
+			'ticket-paypal-sandbox' => array(
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html__( 'PayPal Sandbox', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'Enables PayPal Sandbox mode for testing.', 'event-tickets' ),
+				'default'         => false,
+				'validation_type' => 'boolean',
+			),
+			'ticket-paypal-notify-history' => array(
+				'type'            => 'wrapped_html',
+				'label'           => esc_html__( 'See your IPN Notification history', 'event-tickets' ),
+				'html'            => '<p>' . sprintf( esc_html__( 'You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s).', 'event-tickets' ), $ipn_notification_history_link ) . '</p>',
+				'size'            => 'medium',
+				'validation_type' => 'html',
+			),
+			'ticket-paypal-notify-url' => array(
+				'type'            => 'text',
+				'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
+				'tooltip'         => sprintf( esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s).', 'event-tickets' ), $ipn_notification_settings_link ),
+				'default'         => home_url(),
+				'validation_type' => 'html',
+			),
+			'ticket-paypal-identity-token' => array(
+				'conditional'     => 'pdt' === tribe( 'tickets.commerce.paypal.gateway' )->get_handler_slug(),
+				'type'            => 'text',
+				'label'           => esc_html__( 'PayPal Identity Token', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'This is an optional field that will allow you to identify pending and successful payments without the need for PayPal IPN. To obtain your identifier, log into your PayPal account, click on Profile, then click on Website Payment Preferences. Here, enable Payment Data Transfer. You will then see your PayPal Identity Token displayed.', 'event-tickets' ),
+				'size'            => 'medium',
+				'default'         => '',
+				'validation_type' => 'html',
+			),
+			'ticket-paypal-success-page' => array(
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Success page', 'event-tickets' ),
+				'tooltip'         => esc_html__( "After a successful PayPal order users will be redirected to this page; use the [{$tpp_success_shortcode}] shortcode to display the order confirmation to the user in the page content.", 'event-tickets' ),
+				'size'            => 'medium',
+				'validation_type' => 'options',
+				'options'         => $pages,
+				'required'        => true,
+			),
+			'ticket-currency-heading' => array(
+				'type' => 'html',
+				'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
+			),
+			'ticket-paypal-currency-code' => array(
+				'type'            => 'dropdown',
+				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The currency that will be used for PayPal transactions.', 'event-tickets' ),
+				'default'         => 'USD',
+				'validation_type' => 'options',
+				'options'         => $currency_code_options,
+			),
+			'defaultCurrencySymbol' => array(
+				'type'            => 'text',
+				'label'           => esc_html__( 'Symbol', 'event-tickets' ),
+				'size'            => 'small',
+				'default'         => '$',
+				'validation_type' => 'html',
+			),
+			'reverseCurrencyPosition' => array(
+				'type'            => 'checkbox_bool',
+				'label'           => esc_html__( 'Symbol Follows Value', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The currency symbol normally precedes the value. Enabling this option positions the symbol after the value.', 'event-tickets' ),
+				'default'         => false,
+				'validation_type' => 'boolean',
+			),
+		)
+	);
+}
 
 $tickets_fields = array_merge( $tickets_fields, array(
 	'tribe-form-content-end'                     => array(
