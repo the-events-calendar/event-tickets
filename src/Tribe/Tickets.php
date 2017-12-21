@@ -1914,14 +1914,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string
 		 */
-		protected function generate_security_code( $attendee_id ) {
+		public function generate_security_code( $attendee_id ) {
 			return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
 		}
 
 		/**
 		 * @param bool $operation_did_complete
 		 */
-		private function maybe_update_attendees_cache( $operation_did_complete ) {
+		protected function maybe_update_attendees_cache( $operation_did_complete ) {
 			if ( $operation_did_complete && ! empty( $_POST['event_ID'] ) ) {
 				$this->clear_attendees_cache( $_POST['event_ID'] );
 			}
