@@ -336,7 +336,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$invoice = $this->get_invoice_number();
 
 		// set the cookie (if it was already set, it'll extend the lifetime)
-		setcookie( self::$invoice_cookie_name, $invoice, DAY_IN_SECONDS );
+		setcookie( self::$invoice_cookie_name, $invoice, 900);
 
 		return $invoice;
 	}

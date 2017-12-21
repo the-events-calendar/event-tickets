@@ -45,6 +45,10 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 		$order_is_not_completed = $template_data['order_is_not_completed'];
 
 		if ( ! $is_just_visiting ) {
+			/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+			$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+			$gateway->reset_invoice_number();
+
 			if ( $order_is_not_completed ) {
 				$order  = $template_data['order'];
 				$status = $template_data['status'];
