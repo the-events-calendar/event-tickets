@@ -121,8 +121,9 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'shopping_url'  => urlencode( $post_url ),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
-			'invoice'       => $this->set_invoice_number(),
 		);
+
+		$this->set_invoice_number();
 
 		foreach ( $product_ids as $ticket_id ) {
 			$ticket   = tribe( 'tickets.commerce.paypal' )->get_ticket( $post->ID, $ticket_id );
