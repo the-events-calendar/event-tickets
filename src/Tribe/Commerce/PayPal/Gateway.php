@@ -37,7 +37,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	public static $invoice_cookie_name = 'event-tickets-tpp-invoice';
 
 	/**
-	 * @var Tribe__Tickets__Commerce__Paypal__Notices
+	 * @var Tribe__Tickets__Commerce__PayPal__Notices
 	 */
 	protected $notices;
 
@@ -53,7 +53,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 *
 	 * @param Tribe__Tickets__Commerce__PayPal__Notices $notices
 	 */
-	public function __construct( Tribe__Tickets__Commerce__Paypal__Notices $notices ) {
+	public function __construct( Tribe__Tickets__Commerce__PayPal__Notices $notices ) {
 		$this->identity_token = tribe_get_option( 'ticket-paypal-identity-token' );
 		$this->notices = $notices;
 	}
