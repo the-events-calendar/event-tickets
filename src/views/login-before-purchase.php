@@ -22,7 +22,7 @@ if ( ! is_user_logged_in() ) {
 	} else {
 		$login_message    = _x( 'Login', 'Login link on Tribe Commerce checkout page, shown as an alternative to the registration link', 'event-tickets' );
 		$register_message = _x( 'create an account', 'Registration link on Tribe Commerce checkout page, shown as an alternative the login link', 'event-tickets' );
-		$registration_url = Tribe__Tickets__Tickets::get_registration_url();
+		$registration_url = wp_registration_url();
 	}
 }
 ?>
