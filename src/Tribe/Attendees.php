@@ -729,4 +729,43 @@ class Tribe__Tickets__Attendees {
 
 		return false;
 	}
+
+	public function user_can_manage_attendees( $user_id = 0 ) {
+
+		$user_id  = 0 === $user_id ? get_current_user_id() : $user_id;
+		$user_obj = get_user_by( 'ID', $user_id );
+
+		if ( empty( $user_obj ) || ! isset( $user_obj->roles ) ) {
+			return false;
+		}
+
+		$allowed_roles = apply_filters( 'tribe_tickets_roles_can_manage_attendees', array(
+			'administrator',
+			'editor'
+		) );
+
+		$required_caps = apply_filters( 'tribe_tickets_caps_can_manage_attendees', array(
+			'edit_posts',
+			'edit_others_posts'
+		) );
+
+		$allowed = false;
+
+		// First make sure the user is of an allowed role.
+		foreach ( $allowed_roles as $role ) {
+			if ( in_array( $role, $user_obj->roles ) ) {
+				$allowed = true;
+			}
+		}
+
+		// Next make sure the user has proper caps in their role.
+		foreach ( $required_caps as $cap ) {
+			if ( ! user_can( $user_obj, $cap ) ) {
+				$allowed = false;
+			}
+		}
+
+		// Will be true if the specified user has an allowed role *and*  the required caps.
+		return $allowed;
+	}
 }
