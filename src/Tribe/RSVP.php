@@ -1158,7 +1158,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// should show on the front-end.
 		$expired_tickets = 0;
 
-		foreach( $tickets as $ticket ) {
+		foreach ( $tickets as $ticket ) {
 			if ( ! $ticket->date_in_range( current_time( 'timestamp' ) ) ) {
 				$expired_tickets++;
 			}
