@@ -1154,6 +1154,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
+		// Check to see if all available tickets' end-sale dates have passed, in which case no form
+		// should show on the front-end.
+		$expired_tickets = 0;
+
+		foreach( $tickets as $ticket ) {
+			if ( ! $ticket->date_in_range( current_time( 'timestamp' ) ) ) {
+				$expired_tickets++;
+			}
+		}
+
+		if ( $expired_tickets >= count( $tickets ) ) {
+			return;
+		}
+
 		$rsvp_sent  = empty( $_GET['rsvp_sent'] ) ? false : true;
 		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : intval( $_GET['rsvp_error'] );
 
