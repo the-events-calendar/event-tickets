@@ -53,6 +53,10 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 	 * @see   Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode
 	 */
 	public static function decode( $encoded, $assoc_array = false ) {
+		if ( strpos( $encoded, '\"' ) ) {
+			$encoded = str_replace( '\"', '"', $encoded );
+		}
+
 		$decoded = json_decode( urldecode_deep( $encoded ), $assoc_array );
 
 		if ( null === $decoded ) {
