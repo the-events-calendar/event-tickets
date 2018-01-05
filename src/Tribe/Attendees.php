@@ -753,10 +753,11 @@ class Tribe__Tickets__Attendees {
 		 * @since TBD
 		 *
 		 * @param array $default_caps The caps a user must have to be allowed to manage attendees.
+		 * @param int $user_id The ID of the user whose capabilities are being checked.
 		 */
 		$required_caps = apply_filters( 'tribe_tickets_caps_can_manage_attendees', array(
 			'edit_others_posts',
-		) );
+		), $user_id );
 
 		// Next make sure the user has proper caps in their role.
 		foreach ( $required_caps as $cap ) {
