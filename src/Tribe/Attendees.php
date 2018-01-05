@@ -732,7 +732,7 @@ class Tribe__Tickets__Attendees {
 
 	/**
 	 * Determines if the current user (or an ID-specified one) is allowed to delete, check-in, and
-	 * undo check-in attendees. Has to be an allowed role *and* have certain caps.
+	 * undo check-in attendees.
 	 *
 	 * @since TBD
 	 *
@@ -741,24 +741,11 @@ class Tribe__Tickets__Attendees {
 	 */
 	public function user_can_manage_attendees( $user_id = 0 ) {
 
-		$user_id  = 0 === $user_id ? get_current_user_id() : $user_id;
-		$user_obj = get_user_by( 'ID', $user_id );
+		$user_id = 0 === $user_id ? get_current_user_id() : $user_id;
 
-		if ( empty( $user_obj ) || ! isset( $user_obj->roles ) ) {
+		if ( ! $user_id ) {
 			return false;
 		}
-
-		/**
-		 * Allows customizing the roles a user can be while allowed to manage attendees.
-		 *
-		 * @since TBD
-		 *
-		 * @param array $default_roles The roles a user can be while allowed to manage attendees.
-		 */
-		$allowed_roles = apply_filters( 'tribe_tickets_roles_can_manage_attendees', array(
-			'administrator',
-			'editor',
-		) );
 
 		/**
 		 * Allows customizing the caps a user must have to be allowed to manage attendees.
@@ -768,27 +755,16 @@ class Tribe__Tickets__Attendees {
 		 * @param array $default_caps The caps a user must have to be allowed to manage attendees.
 		 */
 		$required_caps = apply_filters( 'tribe_tickets_caps_can_manage_attendees', array(
-			'edit_posts',
 			'edit_others_posts',
 		) );
 
-		$allowed = false;
-
-		// First make sure the user is of an allowed role.
-		foreach ( $allowed_roles as $role ) {
-			if ( in_array( $role, $user_obj->roles ) ) {
-				$allowed = true;
-			}
-		}
-
 		// Next make sure the user has proper caps in their role.
 		foreach ( $required_caps as $cap ) {
-			if ( ! user_can( $user_obj, $cap ) ) {
-				$allowed = false;
+			if ( ! user_can( $user_id, $cap ) ) {
+				return false;
 			}
 		}
 
-		// Will be true if the specified user has an allowed role *and* the required caps.
-		return $allowed;
+		return true;
 	}
 }
