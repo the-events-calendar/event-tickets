@@ -757,7 +757,7 @@ class Tribe__Tickets__Attendees {
 		 */
 		$allowed_roles = apply_filters( 'tribe_tickets_roles_can_manage_attendees', array(
 			'administrator',
-			'editor'
+			'editor',
 		) );
 
 		/**
@@ -769,7 +769,7 @@ class Tribe__Tickets__Attendees {
 		 */
 		$required_caps = apply_filters( 'tribe_tickets_caps_can_manage_attendees', array(
 			'edit_posts',
-			'edit_others_posts'
+			'edit_others_posts',
 		) );
 
 		$allowed = false;

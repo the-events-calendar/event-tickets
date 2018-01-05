@@ -270,11 +270,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
-		
+
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return false;
 		}
-		
+
 		/**
 		 * Sets the row action links that display within the ticket column of the
 		 * attendee list table.
