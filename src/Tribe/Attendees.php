@@ -788,7 +788,7 @@ class Tribe__Tickets__Attendees {
 			}
 		}
 
-		// Will be true if the specified user has an allowed role *and*  the required caps.
+		// Will be true if the specified user has an allowed role *and* the required caps.
 		return $allowed;
 	}
 }
