@@ -233,6 +233,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.6.3] TBD =
+
+* Fix - Ensured that only users of the editor or administrator roles can delete, check-in, and undo check-ins on tickets (props to @skamath for reporting this!) [68831]
+* New - Introduced `tribe_tickets_roles_can_manage_attendees` and `tribe_tickets_caps_can_manage_attendees` filters for customizing what users are allowed to manage attendees [68831]
+
 = [4.6.2] 2017-12-07 =
 
 * Fix - Fixed broken RSVP ticket sales when using Aggregator CSV [92936]

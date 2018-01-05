@@ -730,6 +730,15 @@ class Tribe__Tickets__Attendees {
 		return false;
 	}
 
+	/**
+	 * Determines if the current user (or an ID-specified one) is allowed to delete, check-in, and
+	 * undo check-in attendees. Has to be an allowed role *and* have certain caps.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $user_id Optional. The ID of the user whose access we're checking.
+	 * @return boolean
+	 */
 	public function user_can_manage_attendees( $user_id = 0 ) {
 
 		$user_id  = 0 === $user_id ? get_current_user_id() : $user_id;
@@ -739,11 +748,25 @@ class Tribe__Tickets__Attendees {
 			return false;
 		}
 
+		/**
+		 * Allows customizing the roles a user can be while allowed to manage attendees.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $default_roles The roles a user can be while allowed to manage attendees.
+		 */
 		$allowed_roles = apply_filters( 'tribe_tickets_roles_can_manage_attendees', array(
 			'administrator',
 			'editor'
 		) );
 
+		/**
+		 * Allows customizing the caps a user must have to be allowed to manage attendees.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $default_caps The caps a user must have to be allowed to manage attendees.
+		 */
 		$required_caps = apply_filters( 'tribe_tickets_caps_can_manage_attendees', array(
 			'edit_posts',
 			'edit_others_posts'
