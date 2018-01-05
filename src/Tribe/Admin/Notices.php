@@ -29,7 +29,14 @@ class Tribe__Tickets__Admin__Notices {
 			return;
 		}
 
-		$plus_link = 'https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_source=addonspage&utm_medium=wordpress-event-tickets-plus&utm_content=appstoreembedded-1';
+		$plus_link = add_query_arg(
+			array(
+				'utm_source'   => 'plugin-install',
+				'utm_medium'   => 'plugin-event-tickets',
+				'utm_campaign' => 'in-app',
+			),
+			'https://theeventscalendar.com/product/wordpress-event-tickets-plus/'
+		);
 		$plus      = sprintf( '<a target="_blank" href="%s">%s</a>', esc_attr( $plus_link ), esc_html( 'Event Tickets Plus', 'tribe-common' ) );
 
 		$plus_commerce_providers = array(
