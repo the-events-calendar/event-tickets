@@ -93,14 +93,14 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 				return $template_data;
 			}
 
-			if ( isset( $_GET['tx'], $_GET['st'] ) ) {
+			if ( isset( $_GET['tx'], $_GET['st'] ) || isset( $_GET['tribe-tpp-order'] ) ) {
 				// transaction and status details are set
 				$defaults = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
 				$custom   = wp_parse_args( (array) json_decode( Tribe__Utils__Array::get( $_GET, 'cm', array() ), true ), $defaults );
 
 				$template_data['order_is_not_completed'] = true;
-				$template_data['order']                  = $_GET['tx'];
-				$template_data['status']                 = trim( strtolower( $_GET['st'] ) );
+				$template_data['order'] = Tribe__Utils__Array::get( $_GET, 'tx', Tribe__Utils__Array::get( $_GET, 'tribe-tpp-order' ), false );
+				$template_data['status'] = trim( strtolower( $_GET['st'] ) );
 
 				return $template_data;
 			}
