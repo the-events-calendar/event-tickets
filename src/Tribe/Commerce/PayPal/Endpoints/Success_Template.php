@@ -113,16 +113,21 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 
 		// the purchaser details will be the same for all the attendees, so we fetch it from the first
 		$first                            = reset( $attendees );
-		$template_data['purchaser_name']  = get_post_meta( $first->ID, $paypal->full_name, true );
-		$template_data['purchaser_email'] = get_post_meta( $first->ID, $paypal->email, true );
+		$template_data['purchaser_name']  = Tribe__Utils__Array::get( $first, 'purchaser_name', '' );
+		$template_data['purchaser_email'] = Tribe__Utils__Array::get( $first, 'purchaser_email', '' );
 
 		$order_quantity = $order_total = 0;
 		$tickets        = array();
 
 		foreach ( $attendees as $attendee ) {
 			$order_quantity ++;
-			$ticket_id    = get_post_meta( $attendee->ID, $paypal->attendee_product_key, true );
-			$post_id      = get_post_meta( $attendee->ID, $paypal->attendee_event_key, true );
+			$ticket_id = Tribe__Utils__Array::get( $attendee, 'product_id', '' );
+			$post_id = Tribe__Utils__Array::get( $attendee, 'event_id', '' );
+
+			if ( empty( $ticket_id ) ) {
+				continue;
+			}
+
 			$ticket_price = (int) get_post_meta( $ticket_id, '_price', true );
 			$order_total  += $ticket_price;
 
@@ -130,9 +135,10 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 				$tickets[ $ticket_id ]['quantity'] += 1;
 				$tickets[ $ticket_id ]['subtotal'] = $tickets[ $ticket_id ]['quantity'] * $ticket_price;
 			} else {
-				$header_image_id       = ! empty( $post_id )
-					? tribe( 'tickets.handler' )->get_header_image_id( $post_id )
+				$header_image_id = ! empty( $post_id )
+					? get_post_meta( $post_id, tribe( 'tickets.handler' )->key_image_header, true )
 					: false;
+
 				$tickets[ $ticket_id ] = array(
 					'name'            => get_the_title( $ticket_id ),
 					'price'           => $ticket_price,
