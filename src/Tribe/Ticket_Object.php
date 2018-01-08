@@ -503,8 +503,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return -1;
 			}
 
-			$stock_mode = $this->global_stock_mode();
-
 			$values[] = $this->inventory();
 			$values[] = $this->capacity();
 			$values[] = $this->stock();
