@@ -2266,4 +2266,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		return $this->get_attendees( $attendees_query, $ticket_id );
 	}
+
+	/**
+	 * Whether a specific attendee is valid toward inventory decrease or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee
+	 *
+	 * @return bool
+	 */
+	public function attendee_decreases_inventory( array $attendee ) {
+		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
+
+		return self::$payment_status_completed === $order_status;
+	}
 }

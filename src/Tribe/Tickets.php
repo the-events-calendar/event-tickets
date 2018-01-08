@@ -610,6 +610,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Whether a specific attendee is valid toward inventory decrease or not.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $attendee
+		 *
+		 * @return bool
+		 */
+		public function attendee_decreases_inventory( array $attendee ) {
+			return true;
+		}
+
+		/**
 		 * Get Attendees by ticket/attendee ID
 		 *
 		 * @param int $attendee_id

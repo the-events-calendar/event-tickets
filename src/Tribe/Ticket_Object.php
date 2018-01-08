@@ -437,6 +437,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					continue;
 				}
 
+				// allow providers to decide if an attendee will count toward inventory decrease or not
+				if ( ! $this->provider->attendee_decreases_inventory( $attendee ) ) {
+					continue;
+				}
+
 				$attendees_count++;
 			}
 
