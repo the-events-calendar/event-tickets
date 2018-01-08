@@ -2216,4 +2216,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		return $this->pending_attendees_by_ticket[ $ticket_id ];
 	}
+
+	/**
+	 * Returns all the attendees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array An array of attendees for the ticket.
+	 */
+	public function get_attendees_by_ticket_id( $ticket_id ) {
+		$attendees_query = new WP_Query( array(
+			'posts_per_page' => - 1,
+			'post_type'      => $this->attendee_object,
+			'meta_key'       => self::ATTENDEE_PRODUCT_KEY,
+			'meta_value'     => $ticket_id,
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		) );
+
+		if ( ! $attendees_query->have_posts() ) {
+			return array();
+		}
+
+		return $this->get_attendees( $attendees_query, $ticket_id );
+	}
 }
