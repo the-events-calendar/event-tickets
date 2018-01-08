@@ -31,7 +31,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 			$this->total_pending += $ticket->qty_pending();
 		}
 
-		$this->total_complete = $this->total_sold - $this->total_pending;
+		$this->total_complete = $this->total_sold;
 	}
 
 	/**
