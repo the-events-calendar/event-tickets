@@ -520,7 +520,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 */
-	public function generate_tickets( $payment_status = 'completed' ,  $redirect = true ) {
+	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
 		$transaction_data = tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
@@ -669,7 +669,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$has_generated_new_tickets = true;
 				}
 
-				if ( $status_stock_size > 0 && self::$payment_status_completed === $payment_status) {
+				if ( $status_stock_size > 0 && self::$payment_status_completed === $payment_status ) {
 					$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 					update_post_meta( $product_id, 'total_sales', ++ $sales );
 				}
