@@ -39,7 +39,7 @@ $view      = Tribe__Tickets__Tickets_View::instance();
 	<?php if ( $is_just_visiting ) : ?>
 		<div class="order-recap invalid">
 			<p>
-				<?php esc_html_e( "If you had placed an order you would see a confirmation message here. It looks like you didn't.", 'event-tickets' ); ?>
+				<?php esc_html_e( "No order confirmation is available because no purchase was made.", 'event-tickets' ); ?>
 			</p>
 		</div>
 	<?php elseif ( ! $order_is_valid ) : ?>
