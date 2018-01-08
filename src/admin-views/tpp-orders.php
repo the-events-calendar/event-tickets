@@ -97,10 +97,15 @@
 						}
 
 						if ( ! $ticket_sold->managing_stock() ) {
-							$sold_message = sprintf( __( 'Sold %d %s', 'event-tickets' ), esc_html( $ticket_sold->qty_sold() ), $pending );
+							$sold_message = sprintf( __( 'Sold %d %s', 'event-tickets' ),
+								esc_html( $ticket_sold->qty_sold() ),
+								$pending
+							);
 						} else {
-							$sold_message = sprintf( __( 'Sold %d of %d %s', 'event-tickets' ), esc_html( $ticket_sold->qty_sold() ),
-								esc_html( $ticket_sold->qty_sold() + absint( $ticket_sold->stock() ) ), $pending );
+							$sold_message = sprintf( __( 'Sold %d %s', 'event-tickets' ),
+								esc_html( $ticket_sold->qty_sold() ),
+								$pending
+							);
 						}
 
 						if ( $ticket_sold->price ) {
