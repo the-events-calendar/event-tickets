@@ -43,7 +43,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 			$gateway->reset_invoice_number();
 		}
 
-		$paypal->generate_tickets( false );
+		$paypal->generate_tickets( $payment_status, false );
 	}
 
 	/**
