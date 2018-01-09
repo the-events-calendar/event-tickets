@@ -201,7 +201,11 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$product_ids = ! empty( $product_ids ) ? explode( ',', $product_ids ) : null;
 
-		$items       = $sales->get_orders_for_post( $this->post_id, $product_ids );
+		// in the context of this report some order statuses that normally dont't should should
+		// show a non 0 line total
+		add_filter( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', array( $this, 'filter_revenue_generating_order_statuses' ) );
+		$items = $sales->get_orders_for_post( $this->post_id, $product_ids );
+		remove_filter( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', array( $this, 'filter_revenue_generating_order_statuses' ) );
 
 		$search = isset( $_REQUEST['s'] ) ? esc_attr( trim($_REQUEST['s']) ) : false;
 		if ( ! empty( $search ) ) {
@@ -312,5 +316,24 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		}
 
 		return $filtered;
+	}
+
+	/**
+	 * Filters the order statuses that are considered to generate revenue.
+	 *
+	 * While in other contexts some order statuses, like "pending", should correctly
+	 * generate a line total of 0, in the context of this table the line total for
+	 * some statuses should show as not 0.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $statuses
+	 *
+	 * @return array
+	 */
+	public function filter_revenue_generating_order_statuses( array $statuses = array() ) {
+		$statuses[] = Tribe__Tickets__Commerce__PayPal__Main::$payment_status_pending;
+
+		return $statuses;
 	}
 }
