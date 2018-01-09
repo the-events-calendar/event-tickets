@@ -709,6 +709,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					 * @param string $payment_status The payment status for this attendee
 					 */
 					do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $post_id, $order_id, $attendee_order_status );
+
 					/**
 					 * Action fired when an PayPal attendee ticket is created
 					 *
@@ -736,7 +737,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				 * @param int    $product_id     PayPal product ID
 				 * @param string $payment_status The payment status for this attendee
 				 */
-				do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $post_id, $order_id, $attendee_order_status );
+				do_action( 'event_tickets_tpp_attendee_updated', $attendee_id, $post_id, $order_id, $attendee_order_status );
 				/**
 				 * Action fired when an PayPal attendee ticket is updated
 				 *
@@ -751,7 +752,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				 * @param int    $order_attendee_id Attendee # for order
 				 * @param string $payment_status    The payment status for this attendee
 				 */
-				do_action( 'event_tickets_tpp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id, $attendee_order_status );
+				do_action( 'event_tickets_tpp_ticket_updated', $attendee_id, $post_id, $product_id, $order_attendee_id, $attendee_order_status );
 
 				$this->record_attendee_user_id( $attendee_id, $attendee_user_id );
 				$order_attendee_id++;
