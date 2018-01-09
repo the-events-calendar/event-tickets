@@ -457,7 +457,7 @@ class Tribe__Tickets__Attendees {
 		}
 
 		//Add in Columns or get_column_headers() returns nothing
-		$filter_name = "manage_{$this->page_id}_columns";
+		$filter_name = "manage_{$this->page_id}_post_columns";
 		add_filter( $filter_name, array( $this->page_id, 'get_columns' ), 15 );
 
 		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
