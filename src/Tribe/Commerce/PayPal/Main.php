@@ -723,6 +723,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					 */
 					do_action( 'event_tickets_tpp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id, $attendee_order_status );
 				}
+
 				/**
 				 * PayPal specific action fired when a PayPal-driven attendee ticket for an event is updated
 				 *
