@@ -200,6 +200,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return array A list of attendees with not completed orders.
 	 */
 	public function filter_not_completed( array $attendees ) {
+		if ( empty( $attendees ) ) {
+			return array();
+		}
+
 		return array_diff( $attendees, $this->filter_completed( $attendees ) );
 	}
 
@@ -213,6 +217,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return array A list of attendees with completed orders.
 	 */
 	public function filter_completed( array $attendees ) {
+		if ( empty( $attendees ) ) {
+			return array();
+		}
+
 		return array_filter( $attendees, array( $this, 'is_order_completed' ) );
 	}
 

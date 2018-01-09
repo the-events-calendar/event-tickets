@@ -78,7 +78,7 @@ class Tribe__Tickets__Attendees {
 		echo '
 			<li class="post-type">
 				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( $pto->name ) . '
+				' . esc_html( strtolower( $pto->labels->singular_name ) ) . '
 			</li>
 		';
 	}

@@ -42,6 +42,24 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	const ATTENDEE_ORDER_KEY = '';
 
 	/**
+	 * The string representing the slug for a completed payment status.
+	 * @var string
+	 */
+	public static $payment_status_completed = 'completed';
+
+	/**
+	 * The string representing the slug for a pending payment status.
+	 * @var string
+	 */
+	public static $payment_status_pending = 'pending';
+
+	/**
+	 * The string representing the slug for a canceled payment status.
+	 * @var string
+	 */
+	public static $payment_status_cancelled = 'cancelled';
+
+	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
 	 *
 	 * @var boolean
@@ -497,11 +515,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 *
-	 * @param  bool $redirect Whether the client should be redirected or not.
+	 * @param string $payment_status The tickets payment status, defaults to completed.
+	 * @param  bool  $redirect       Whether the client should be redirected or not.
 	 *
 	 * @since TBD
 	 */
-	public function generate_tickets( $redirect = true ) {
+	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
 		$transaction_data = tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
@@ -650,7 +669,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$has_generated_new_tickets = true;
 				}
 
-				if ( $status_stock_size > 0 ) {
+				if ( $status_stock_size > 0 && self::$payment_status_completed === $payment_status ) {
 					$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 					update_post_meta( $product_id, 'total_sales', ++ $sales );
 				}
@@ -1329,6 +1348,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			case 'tpp_order_hash' :
 
 				return $this->get_attendees_by_order_id( $post_id );
+
+				break;
+			case $this->ticket_object:
+
+				return $this->get_attendees_by_ticket_id( $post_id );
 
 				break;
 			default :
@@ -2206,7 +2230,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'relation' => 'AND',
 					array(
 						'key'   => $this->attendee_tpp_key,
-						'value' => 'pending',
+						'value' => self::$payment_status_pending,
 					),
 				),
 			) );
@@ -2215,5 +2239,46 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return $this->pending_attendees_by_ticket[ $ticket_id ];
+	}
+
+	/**
+	 * Returns all the attendees for a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return array An array of attendees for the ticket.
+	 */
+	public function get_attendees_by_ticket_id( $ticket_id ) {
+		$attendees_query = new WP_Query( array(
+			'posts_per_page' => - 1,
+			'post_type'      => $this->attendee_object,
+			'meta_key'       => self::ATTENDEE_PRODUCT_KEY,
+			'meta_value'     => $ticket_id,
+			'orderby'        => 'ID',
+			'order'          => 'ASC',
+		) );
+
+		if ( ! $attendees_query->have_posts() ) {
+			return array();
+		}
+
+		return $this->get_attendees( $attendees_query, $ticket_id );
+	}
+
+	/**
+	 * Whether a specific attendee is valid toward inventory decrease or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee
+	 *
+	 * @return bool
+	 */
+	public function attendee_decreases_inventory( array $attendee ) {
+		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
+
+		return self::$payment_status_completed === $order_status;
 	}
 }
