@@ -233,11 +233,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [4.6.3] TBD =
+= [4.6.3] 2018-01-10 =
 
-* New - Introduced the `tribe_tickets_caps_can_manage_attendees` filter for customizing what user capabilities are requred for managing attendees [68831]
 * Fix - Ensured that only users of the editor or administrator roles can delete, check-in, and undo check-ins on tickets (props to @skamath for reporting this!) [68831]
 * Tweak - Addressed some issues where the ticket form would sometimes show up even when all tickets' end-sale dates had passed (props to @reckling and others for reporting this!) [94724]
+* Tweak - Introduced the `tribe_tickets_caps_can_manage_attendees` filter for customizing what user capabilities are requred for managing attendees [68831]
 
 = [4.6.2] 2017-12-07 =
 

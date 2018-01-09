@@ -734,9 +734,10 @@ class Tribe__Tickets__Attendees {
 	 * Determines if the current user (or an ID-specified one) is allowed to delete, check-in, and
 	 * undo check-in attendees.
 	 *
-	 * @since TBD
+	 * @since 4.6.3
 	 *
 	 * @param int $user_id Optional. The ID of the user whose access we're checking.
+	 *
 	 * @return boolean
 	 */
 	public function user_can_manage_attendees( $user_id = 0 ) {
@@ -750,7 +751,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Allows customizing the caps a user must have to be allowed to manage attendees.
 		 *
-		 * @since TBD
+		 * @since 4.6.3
 		 *
 		 * @param array $default_caps The caps a user must have to be allowed to manage attendees.
 		 * @param int $user_id The ID of the user whose capabilities are being checked.
