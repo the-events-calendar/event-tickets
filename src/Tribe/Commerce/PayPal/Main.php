@@ -698,62 +698,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				if ( ! $updating_attendee ) {
 					/**
-					 * PayPal specific action fired when a PayPal-driven attendee ticket for an event is generated
-					 *
-					 * @since TBD
-					 *
-					 * @param int    $attendee_id    ID of attendee ticket
-					 * @param int    $post_id        ID of event
-					 * @param int    $order_id       PayPal order ID
-					 * @param int    $product_id     PayPal product ID
-					 * @param string $payment_status The payment status for this attendee
-					 */
-					do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $post_id, $order_id, $attendee_order_status );
-
-					/**
 					 * Action fired when an PayPal attendee ticket is created
 					 *
 					 * @since TBD
 					 *
-					 * @param int    $attendee_id       ID of the attendee post
-					 * @param int    $post_id           Event post ID
-					 * @param int    $product_id        PayPal ticket post ID
-					 * @param int    $order_attendee_id Attendee # for order
-					 * @param string $payment_status    The payment status for this attendee
+					 * @param int    $attendee_id           Attendee post ID
+					 * @param int    $order_id              PayPal Order ID
+					 * @param int    $product_id            PayPal ticket post ID
+					 * @param int    $order_attendee_id     Attendee number in submitted order
+					 * @param string $attendee_order_status The order status for the attendee.
 					 */
-					do_action( 'event_tickets_tpp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id, $attendee_order_status );
+					do_action( 'event_tickets_tpp_attendee_created', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
 				}
 
 				/**
-				 * PayPal specific action fired when a PayPal-driven attendee ticket for an event is updated
+				 * Action fired when an PayPal attendee ticket is updated.
 				 *
-				 * This will fire even when creating attendees; if you need to hook on the creation process only use
-				 * the 'event_tickets_tpp_attendee_created' action.
-				 *
-				 * @since TBD
-				 *
-				 * @param int    $attendee_id    ID of attendee ticket
-				 * @param int    $post_id        ID of event
-				 * @param int    $order_id       PayPal order ID
-				 * @param int    $product_id     PayPal product ID
-				 * @param string $payment_status The payment status for this attendee
-				 */
-				do_action( 'event_tickets_tpp_attendee_updated', $attendee_id, $post_id, $order_id, $attendee_order_status );
-				/**
-				 * Action fired when an PayPal attendee ticket is updated
-				 *
-				 * This will fire even when creating attendees; if you need to hook on the creation process only use
-				 * the 'event_tickets_tpp_ticket_created' action.
+				 * This action will fire both when the attendee is created and
+				 * when the attendee is updated.
+				 * Hook into the `event_tickets_tpp_attendee_created` action to
+				 * only act on the attendee creation.
 				 *
 				 * @since TBD
 				 *
-				 * @param int    $attendee_id       ID of the attendee post
-				 * @param int    $post_id           Event post ID
-				 * @param int    $product_id        PayPal ticket post ID
-				 * @param int    $order_attendee_id Attendee # for order
-				 * @param string $payment_status    The payment status for this attendee
+				 * @param int    $attendee_id           Attendee post ID
+				 * @param int    $order_id              PayPal Order ID
+				 * @param int    $product_id            PayPal ticket post ID
+				 * @param int    $order_attendee_id     Attendee number in submitted order
+				 * @param string $attendee_order_status The order status for the attendee.
 				 */
-				do_action( 'event_tickets_tpp_ticket_updated', $attendee_id, $post_id, $product_id, $order_attendee_id, $attendee_order_status );
+				do_action( 'event_tickets_tpp_attendee_updated', $attendee_id, $order_id, $product_id, $order_attendee_id, $attendee_order_status );
 
 				$this->record_attendee_user_id( $attendee_id, $attendee_user_id );
 				$order_attendee_id++;
