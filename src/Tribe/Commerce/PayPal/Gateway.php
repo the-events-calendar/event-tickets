@@ -110,6 +110,18 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', $notify_url, $post, $product_ids );
 
 		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
+
+		/**
+		 * Filters the custom arguments that will be sent ot PayPal.
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $custom_args
+		 * @param WP_Post $post        The post tickets are associated with
+		 * @param array   $product_ids An array of ticket post IDs that are being added to the cart
+		 */
+		$custom_args = apply_filters( 'tribe_tickets_commerce_paypal_custom_args', $custom_args, $post, $product_ids );
+
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
 
 		$args = array(
