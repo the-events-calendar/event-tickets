@@ -999,6 +999,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			return false;
+		}
+
 		$product_id = get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true );
 
 		// For attendees whose status ('going' or 'not going') for whom a stock adjustment is required?
@@ -1085,6 +1089,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$tickets = $this->get_tickets( $post->ID );
 
 		if ( empty( $tickets ) ) {
+			return;
+		}
+
+		// Check to see if all available tickets' end-sale dates have passed, in which case no form
+		// should show on the front-end.
+		$expired_tickets = 0;
+
+		foreach ( $tickets as $ticket ) {
+			if ( ! $ticket->date_in_range( current_time( 'timestamp' ) ) ) {
+				$expired_tickets++;
+			}
+		}
+
+		if ( $expired_tickets >= count( $tickets ) ) {
 			return;
 		}
 
@@ -1536,6 +1554,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function checkin( $attendee_id, $qr = null ) {
+		$qr = null;
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			return false;
+		}
+
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
 		if ( func_num_args() > 1 && $qr = func_get_arg( 1 ) ) {
@@ -1561,6 +1585,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function uncheckin( $attendee_id ) {
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			return false;
+		}
+
 		delete_post_meta( $attendee_id, $this->checkin_key );
 		delete_post_meta( $attendee_id, '_tribe_qr_status' );
 		do_action( 'rsvp_uncheckin', $attendee_id );
