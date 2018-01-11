@@ -151,10 +151,21 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$output = sprintf( esc_html__( '%1$s', 'event-tickets' ), $order_number_link );
 
-		if ( Tribe__Tickets__Commerce__PayPal__Stati::$completed !== $item['status'] ) {
-			$output .= '<div class="order-status order-status-' . esc_attr( $item['status'] ) . '">' . esc_html(
-					ucwords( $item['status_label'] )
-				) . '</div>';
+		switch ( $item['status'] ) {
+			case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
+				$refund_order_number      = $item['refund_number'];
+				$refund_order_number_link = '<a href="' . esc_url( $item['refund_url'] ) . '" target="_blank">' . esc_html( $refund_order_number ) . '</a>';
+				$output                   .= '<div class="order-status order-status-' . esc_attr( $item['status'] ) . '">';
+				$output                   .= sprintf( esc_html__( 'Refunded with %s', 'event-tickets' ), $refund_order_number_link );
+				$output                   .= '</div>';
+				break;
+			case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
+				break;
+			default:
+				$output .= '<div class="order-status order-status-' . esc_attr( $item['status'] ) . '">';
+				$output .= esc_html( ucwords( $item['status_label'] ) );
+				$output .= '</div>';
+				break;
 		}
 
 		return $output;

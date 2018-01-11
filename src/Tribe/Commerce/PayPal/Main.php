@@ -88,6 +88,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public $order_key = '_tribe_tpp_order';
 
 	/**
+	 * Meta key that ties attendees together by refunded order
+	 * @var string
+	 */
+	public $refund_order_key = '_tribe_tpp_refund_order';
+
+	/**
 	 * Meta key that holds the security code that's printed in the tickets
 	 * @var string
 	 */
@@ -691,6 +697,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				}
 
 				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
+
+				if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
+					$refund_order_id = Tribe__Utils__Array::get( $transaction_data, 'txn_id', '' );
+					update_post_meta( $attendee_id, $this->refund_order_key, $refund_order_id );
+				}
 
 				if ( ! $updating_attendee ) {
 					/**
@@ -1974,10 +1985,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$order_number = get_post_meta( $attendee['attendee_id'], $this->order_key, true );
+			$order_number        = get_post_meta( $attendee['attendee_id'], $this->order_key, true );
+			$refund_order_number = get_post_meta( $attendee['attendee_id'], $this->refund_order_key, true );
 
 			if ( ! isset( $orders[ $order_number ] ) ) {
-				$orders[ $order_number ] = array(
+				$order_data              = array(
 					'url'             => $this->get_transaction_url( $order_number ),
 					'number'          => $order_number,
 					'status'          => $attendee['order_status'],
@@ -1987,6 +1999,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'purchase_time'   => $attendee['purchase_time'],
 					'attendees'       => array( $attendee ),
 				);
+
+				if ( ! empty( $refund_order_number ) ) {
+					$order_data['refund_number'] = $refund_order_number;
+					$order_data['refund_url']    = $this->get_transaction_url( $refund_order_number );
+				}
+
+				$orders[ $order_number ] = $order_data;
 			} else {
 				$orders[ $order_number ]['attendees'][] = $attendee;
 			}
