@@ -70,6 +70,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),''
 		);
 
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			$columns['check_in'] = esc_html_x( 'Check in', 'attendee table', 'event-tickets' );
+		}
+
 		/**
 		 * Controls the columns rendered within the attendee screen.
 		 *
@@ -260,6 +264,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			return false;
+		}
+
 		/**
 		 * Sets the row action links that display within the ticket column of the
 		 * attendee list table.
@@ -281,6 +290,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			return;
+		}
+
 		$default_actions = array();
 
 		if ( is_object( $this->event ) && isset(  $this->event->ID ) ) {
@@ -349,6 +363,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_check_in( $item ) {
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+			return false;
+		}
+
 		$default_checkin_stati = array();
 		$provider              = $item['provider_slug'];
 		$order_id = $item['order_id'];
