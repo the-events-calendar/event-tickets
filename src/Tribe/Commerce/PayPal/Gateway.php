@@ -124,13 +124,14 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
 
-		$args = array(
+		$args         = array(
 			'cmd'           => '_cart',
 			'add'           => 1,
 			'business'      => urlencode( trim( tribe_get_option( 'ticket-paypal-email' ) ) ),
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( trim( $notify_url ) ),
 			'shopping_url'  => urlencode( $post_url ),
+			'return'        => $this->get_success_page_url(),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
 		);
@@ -498,5 +499,28 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 */
 	public function get_settings_url( $path = '' ) {
 		return $this->get_base_url( '/customerprofileweb' . ltrim( $path, '/' ) );
+	}
+
+	/**
+	 * Returns the success page URL.
+	 *
+	 * Will default to the `home_url` if the Success page is not set or wrong.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function get_success_page_url() {
+		$success_page_id = tribe_get_option( 'ticket-paypal-success-page', false );
+
+		if ( empty( $success_page_id ) ) {
+			return home_url();
+		}
+		$success_page = get_post( $success_page_id );
+		if ( ! $success_page instanceof WP_Post || 'page' !== $success_page->post_type ) {
+			return home_url();
+		}
+
+		return get_permalink( $success_page->ID );
 	}
 }
