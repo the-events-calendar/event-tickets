@@ -528,7 +528,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$order_id = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
 		}
 
-		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
+		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
 
 		/*
 		 * This method might run during a POST (IPN) PayPal request hence the
