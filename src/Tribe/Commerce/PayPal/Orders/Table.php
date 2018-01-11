@@ -151,7 +151,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$output = sprintf( esc_html__( '%1$s', 'event-tickets' ), $order_number_link );
 
-		if ( 'completed' !== $item['status'] ) {
+		if ( Tribe__Tickets__Commerce__PayPal__Stati::$completed !== $item['status'] ) {
 			$output .= '<div class="order-status order-status-' . esc_attr( $item['status'] ) . '">' . esc_html(
 					ucwords( $item['status_label'] )
 				) . '</div>';
@@ -201,7 +201,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$product_ids = ! empty( $product_ids ) ? explode( ',', $product_ids ) : null;
 
-		// in the context of this report some order statuses that normally dont't should should
+		// in the context of this report some order statuses that normally don't should should
 		// show a non 0 line total
 		add_filter( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', array( $this, 'filter_revenue_generating_order_statuses' ) );
 		$items = $sales->get_orders_for_post( $this->post_id, $product_ids );
@@ -332,7 +332,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function filter_revenue_generating_order_statuses( array $statuses = array() ) {
-		$statuses[] = Tribe__Tickets__Commerce__PayPal__Main::$payment_status_pending;
+		$statuses[] = Tribe__Tickets__Commerce__PayPal__Stati::$pending;
+		$statuses[] = Tribe__Tickets__Commerce__PayPal__Stati::$refunded;
 
 		return $statuses;
 	}

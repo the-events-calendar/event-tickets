@@ -42,24 +42,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	const ATTENDEE_ORDER_KEY = '';
 
 	/**
-	 * The string representing the slug for a completed payment status.
-	 * @var string
-	 */
-	public static $payment_status_completed = 'completed';
-
-	/**
-	 * The string representing the slug for a pending payment status.
-	 * @var string
-	 */
-	public static $payment_status_pending = 'pending';
-
-	/**
-	 * The string representing the slug for a canceled payment status.
-	 * @var string
-	 */
-	public static $payment_status_cancelled = 'cancelled';
-
-	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
 	 *
 	 * @var boolean
@@ -222,6 +204,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.orders.report', 'Tribe__Tickets__Commerce__PayPal__Orders__Report', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
 		tribe_singleton( 'ticket.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
+		tribe_singleton( 'ticket.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -540,6 +523,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$order_id = $transaction_data['txn_id'];
 
+		if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
+			// if the parent transaction ID is missing let's, at least, track the transaction with its ID
+			$order_id = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
+		}
+
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
 
 		/*
@@ -677,12 +665,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$has_generated_new_tickets = true;
 				}
 
-				if ( $status_stock_size > 0 && self::$payment_status_completed === $payment_status ) {
-					$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-					update_post_meta( $product_id, 'total_sales', ++ $sales );
+				if ( $status_stock_size > 0 ) {
+					switch ( $payment_status ) {
+						case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
+							$this->increase_ticket_sales_by( $product_id, 1 );
+							break;
+						case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
+							$this->decrease_ticket_sales_by( $product_id, 1 );
+							break;
+						default:
+							break;
+					}
 				}
 
-				$attendee_order_status = trim( strtolower( $transaction_data['payment_status'] ) );
+				$attendee_order_status = trim( strtolower( $payment_status ) );
 
 				if ( ! $updating_attendee ) {
 					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
@@ -786,7 +782,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 */
 		$send_mail = apply_filters( 'tribe_tickets_tpp_send_mail', true );
 
-		if ( $send_mail && $has_tickets && $attendee_order_status === 'completed' ) {
+		if (
+			$send_mail
+			&& $has_tickets
+			&& $attendee_order_status === Tribe__Tickets__Commerce__PayPal__Stati::$completed
+		) {
 			$this->send_tickets_email( $order_id );
 		}
 
@@ -1265,7 +1265,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$return->qty_sold( $qty_sold );
 
-		// review this when/if the Cancelled ticket status is supported in PayPal tickets
+		// @todo: review this when/if the Cancelled ticket status is supported in PayPal tickets
 		$return->qty_cancelled( 0 );
 
 		$pending = $this->get_qty_pending( $ticket_id );
@@ -2008,10 +2008,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function get_order_statuses() {
 		$order_statuses = array(
-			'undefined'     => _x( 'Undefined', 'a PayPal ticket order status', 'event-tickets' ),
-			'completed'     => _x( 'Completed', 'a PayPal ticket order status', 'event-tickets' ),
-			'pending'       => _x( 'Pending', 'a PayPal ticket order status', 'event-tickets' ),
-			'not-completed' => _x( 'Not Completed', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$undefined     => _x( 'Undefined', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$completed     => _x( 'Completed', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$pending       => _x( 'Pending', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$refunded      => _x( 'Refunded', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$not_completed => _x( 'Not Completed', 'a PayPal ticket order status', 'event-tickets' ),
 		);
 
 		/**
@@ -2214,7 +2215,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'relation' => 'AND',
 					array(
 						'key'   => $this->attendee_tpp_key,
-						'value' => self::$payment_status_pending,
+						'value' => Tribe__Tickets__Commerce__PayPal__Stati::$pending,
 					),
 				),
 			) );
@@ -2263,6 +2264,38 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function attendee_decreases_inventory( array $attendee ) {
 		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
 
-		return self::$payment_status_completed === $order_status;
+		return Tribe__Tickets__Commerce__PayPal__Stati::$completed === $order_status;
+	}
+
+	/**
+	 * Increases the sales for a ticket by an amount.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID
+	 * @param int $qty
+	 *
+	 * @return int
+	 */
+	protected function increase_ticket_sales_by( $ticket_id, $qty = 1 ) {
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
+
+		return $sales;
+	}
+
+	/**
+	 * Decreases the sales for a ticket by an amount.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID
+	 * @param int $qty
+	 *
+	 * @return int
+	 */
+	protected function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
+		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
+		update_post_meta( $ticket_id, 'total_sales', min( $sales - $qty, 0 ) );
 	}
 }
