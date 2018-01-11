@@ -18,9 +18,9 @@ $registration_url   = null;
 
 if ( ! is_user_logged_in() ) {
 	if ( ! $users_can_register ) {
-		$login_message = _x( 'Login before purchasing', 'Login link on Tribe Commerce checkout page', 'event-tickets' );
+		$login_message = _x( 'Log in before purchasing', 'Login link on Tribe Commerce checkout page', 'event-tickets' );
 	} else {
-		$login_message    = _x( 'Login', 'Login link on Tribe Commerce checkout page, shown as an alternative to the registration link', 'event-tickets' );
+		$login_message    = _x( 'Log in', 'Login link on Tribe Commerce checkout page, shown as an alternative to the registration link', 'event-tickets' );
 		$register_message = _x( 'create an account', 'Registration link on Tribe Commerce checkout page, shown as an alternative the login link', 'event-tickets' );
 		$registration_url = wp_registration_url();
 	}

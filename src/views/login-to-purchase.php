@@ -13,4 +13,4 @@
 $login_url = Tribe__Tickets__Tickets::get_login_url();
 ?>
 
-<a href="<?php echo esc_attr( $login_url ); ?>"><?php esc_html_e( 'Login to purchase', 'event-tickets' ); ?></a>
+<a href="<?php echo esc_attr( $login_url ); ?>"><?php esc_html_e( 'Log in to purchase', 'event-tickets' ); ?></a>
