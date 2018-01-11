@@ -124,7 +124,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
 
-		$args         = array(
+		$args = array(
 			'cmd'           => '_cart',
 			'add'           => 1,
 			'business'      => urlencode( trim( tribe_get_option( 'ticket-paypal-email' ) ) ),
