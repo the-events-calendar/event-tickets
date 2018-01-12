@@ -585,9 +585,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		// create/get the order
-		$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
-		$order->update_with( $transaction_data );
+		$order = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
+		if ( $order ) {
+			$order->hydrate_from_transaction_data( $transaction_data );
+		} else {
+			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
+		}
 
 		// @TODO: figure out how to handle optout
 		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];

@@ -8,6 +8,12 @@
 class Tribe__Tickets__Commerce__PayPal__Order {
 
 	/**
+	 * The meta key that stores the order PayPal ID (hash).
+	 * @var string
+	 */
+	public static $order_id_key = 'paypal_order_id';
+
+	/**
 	 * Either builds an Order object from a PayPal transaction data and returns it
 	 * or fetches an existing Order information.
 	 *
@@ -18,9 +24,23 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @return Tribe__Tickets__Commerce__PayPal__Order
 	 */
 	public static function from_transaction_data( array $transaction_data ) {
-		throw new Exception( __METHOD__ . ' not implemented' );
+		$order_id = Tribe__Utils__Array::get( $transaction_data, 'txn_id', false );
 
-		return new self();
+		if ( false === $order_id ) {
+			throw new InvalidArgumentException( __( 'Order id parameter (`txn_id`) is missing from the transaction data', 'event-tickets' ) );
+		}
+
+		unset( $transaction_data['txn_id'] );
+
+		$order = self::from_order_id( $order_id );
+
+		if ( ! $order ) {
+			$order = new self();
+		}
+
+		$order->hydrate_from_transaction_data( $transaction_data );
+
+		return $order;
 	}
 
 	/**
@@ -40,6 +60,35 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public static function find_by( array $args  = array() ) {
 		throw new Exception( __METHOD__ . ' not implemented' );
+	}
+
+	/**
+	 * Searches for an Order by PayPal order ID (hash) and builds it if found.
+	 *
+	 * @since TBD
+	 *
+	 * @param $order_id
+	 */
+	public static function from_order_id( $order_id ) {
+		global $wpdb;
+
+		$order_post_id = $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT post_id from {$wpdb->postmeta} WHERE meta_key = %s AND meta_value = %s",
+				self::$order_id_key,
+				$order_id
+			)
+		);
+
+		if ( empty( $order_post_id ) ) {
+			return false;
+		}
+
+		$order = new self();
+
+		$order->hydrate_from_post( $order_post_id );
+
+		return $order;
 	}
 
 	/**
@@ -104,5 +153,43 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public function get_attendees() {
 		throw new Exception( __METHOD__ . ' not implemented' );
+	}
+
+	/**
+	 * Sets a meta key value on the Order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 */
+	public function set_meta( $key, $value ) {
+	}
+
+	/**
+	 * Fills an order information from a post stored fields and meta.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $order_post_id The Order post ID.
+	 */
+	public function hydrate_from_post( $order_post_id ) {
+		$order_post = get_post( $order_post_id );
+
+		if ( empty( $order_post ) || Tribe__Tickets__Commerce__PayPal__Main::ORDER_OBJECT === $order_post->post_type ) {
+			return;
+		}
+
+		$post_meta = get_post_meta($order_post_id)
+	}
+
+	/**
+	 * Fills an order information from a transaction data array.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $transaction_data
+	 */
+	public function hydrate_from_transaction_data( array $transaction_data ) {
 	}
 }
