@@ -1997,14 +1997,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the format [ <order_number> => <order_details> ]
 	 */
 	public function get_orders_by_post_id( $post_id, array $ticket_ids = null ) {
-		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by(array('post_id' => $post_id, 'ticket_id' => $ticket_ids));
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array( 'post_id' => $post_id, 'ticket_id' => $ticket_ids ) );
 
 		$attendees_by_order = array();
 
-		if(!empty($orders)){
+		if ( ! empty( $orders ) ) {
 			/** @var Tribe__Tickets__Commerce__PayPal__Order $order */
-			foreach ($orders as $order) {
-				$attendees_by_order[$order->paypal_id()] = $order->get_attendees();
+			foreach ( $orders as $order ) {
+				$attendees_by_order[ $order->paypal_id() ] = $order->get_attendees();
 			}
 		}
 
