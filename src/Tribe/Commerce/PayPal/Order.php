@@ -180,7 +180,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 			return;
 		}
 
-		$post_meta = get_post_meta($order_post_id)
+		// @todo here read meta and use it to fill
 	}
 
 	/**
