@@ -1128,11 +1128,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$product_id = get_post_meta( $ticket_id, $this->attendee_product_key, true );
 
-		// For attendees whose status ('going' or 'not going') for whom a stock adjustment is required?
-		$attendee_status = get_post_meta( $ticket_id, $this->attendee_tpp_key, true );
-
-		$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-		update_post_meta( $product_id, 'total_sales', $sales );
+		// @todo: should deleting an attendee replenish a ticket stock?
 
 		// Store name so we can still show it in the attendee list
 		$attendees      = $this->get_attendees_by_id( $event_id );
