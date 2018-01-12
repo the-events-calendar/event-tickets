@@ -349,7 +349,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'rewrite'         => false,
 			'capability_type' => 'post',
 			'has_archive'     => false,
-			'hierarchical'    => true,
+			'hierarchical'    => false,
 		);
 
 		$attendee_post_args = array(
@@ -361,7 +361,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'rewrite'         => false,
 			'capability_type' => 'post',
 			'has_archive'     => false,
-			'hierarchical'    => true,
+			'hierarchical'    => false,
 		);
 
 		/**
