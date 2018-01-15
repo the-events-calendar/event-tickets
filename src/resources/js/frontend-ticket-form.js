@@ -143,8 +143,9 @@ var tribe_tickets_ticket_form = {};
 
 			if ( 'capped' === ticket.mode ) {
 				// If x units of global stock have been requested, the effective cap is the actual cap less value x
-				var effective_cap       = Math.min( remaining, ticket.cap );
-				var requested_stock     = parseInt( $( '[data-product-id=' + ticket_id + ']' ).find( 'input' ).val(), 10 );
+				var effective_cap = Math.min( remaining, ticket.cap );
+				var qty_input = $( '[data-product-id=' + ticket_id + ']' ).find( 'input.tribe-ticket-quantity' );
+				var requested_stock = parseInt( qty_input.val(), 10 );
 				var remaining_under_cap = ticket.cap - requested_stock;
 
 				// As with all other ticket types, capped tickets should not have a sub-zero count either
