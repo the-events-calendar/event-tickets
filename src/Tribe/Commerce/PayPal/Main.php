@@ -414,6 +414,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$order_post_args = apply_filters( 'tribe_tickets_register_order_post_type_args', $order_post_args );
 
 		register_post_type( self::ORDER_OBJECT, $order_post_args );
+
+		Tribe__Tickets__Commerce__PayPal__Stati::register_order_stati();
 	}
 
 	/**
@@ -585,12 +587,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		$order = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
-		if ( $order ) {
-			$order->hydrate_from_transaction_data( $transaction_data );
-		} else {
-			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
-		}
+		$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 
 		// @TODO: figure out how to handle optout
 		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
@@ -735,9 +732,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					update_post_meta( $attendee_id, $this->refund_order_key, $refund_order_id );
 				}
 
-				$order->add_ticket_id( $product_id );
-				$order->add_post_id( $post_id );
-
 				if ( ! $updating_attendee ) {
 					/**
 					 * Action fired when an PayPal attendee ticket is created
@@ -808,6 +802,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			// After Adding the Values we Update the Transient
 			Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
+
+		$order->update();
 
 		/**
 		 * Fires when an PayPal attendee tickets have been generated.
@@ -1445,80 +1441,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array
 	 */
 	protected function get_attendees( $attendees_query, $post_id ) {
-
 		$attendees = array();
 
 		foreach ( $attendees_query->posts as $attendee ) {
-			$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
-			$security     = get_post_meta( $attendee->ID, $this->security_code, true );
-			$product_id   = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
-			$optout       = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
-			$status       = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
-			$user_id      = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
-			$ticket_sent  = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
-
-			if ( empty( $product_id ) ) {
-				continue;
-			}
-
-			$product       = get_post( $product_id );
-			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
-
-			$ticket_unique_id = get_post_meta( $attendee->ID, '_unique_id', true );
-			$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
-
-			$meta = '';
-			if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
-				$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
-
-				// Process Meta to include value, slug, and label
-				if ( ! empty( $meta ) ) {
-					$meta = $this->process_attendee_meta( $product_id, $meta );
-				}
-			}
-
-			$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
-				'optout'             => $optout,
-				'ticket'             => $product_title,
-				'attendee_id'        => $attendee->ID,
-				'security'           => $security,
-				'product_id'         => $product_id,
-				'check_in'           => $checkin,
-				'order_status'       => $status,
-				'user_id'            => $user_id,
-				'ticket_sent'        => $ticket_sent,
-
-				// Fields for Email Tickets
-				'event_id'      => get_post_meta( $attendee->ID, $this->attendee_event_key, true ),
-				'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
-				'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
-				'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
-				'order_id'      => $attendee->ID,
-				'ticket_id'     => $ticket_unique_id,
-				'qr_ticket_id'  => $attendee->ID,
-				'security_code' => $security,
-
-				// Attendee Meta
-				'attendee_meta' => $meta,
-			) );
-
-			/**
-			 * Allow users to filter the Attendee Data
-			 *
-			 * @since TBD
-			 *
-			 * @param array   $attendee_data An associative array with the Information of the Attendee
-			 * @param string  $provider      What Provider is been used
-			 * @param WP_Post $attendee      Attendee Object
-			 * @param int     $post_id       Post ID
-			 *
-			 */
-			$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'tpp', $attendee, $post_id );
-
-			$attendees[] = $attendee_data;
+			$attendees[] = $this->get_attendee($attendee);
 		}
 
-		return $attendees;
+		return array_filter( $attendees );
 	}
 
 	/**
@@ -2003,66 +1932,31 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array( 'post_id' => $post_id, 'ticket_id' => $ticket_ids ) );
 
 		$attendees_by_order = array();
+		$statuses           = $this->get_order_statuses();
+		/** @var Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
+		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
 		if ( ! empty( $orders ) ) {
 			/** @var Tribe__Tickets__Commerce__PayPal__Order $order */
 			foreach ( $orders as $order ) {
-				$attendees_by_order[ $order->paypal_id() ] = $order->get_attendees();
+				$order_id                        = $order->paypal_id();
+				$status                          = $order->get_status();
+				$attendees                       = $order->get_attendees();
+				$attendees_by_order[ $order_id ] = array(
+					'url'             => $this->get_transaction_url( $order_id ),
+					'number'          => $order_id,
+					'status'          => $status,
+					'status_label'    => Tribe__Utils__Array::get( $statuses, $status, Tribe__Tickets__Commerce__PayPal__Stati::$undefined ),
+					'purchaser_name'  => $order->get_meta( 'address_name' ),
+					'purchaser_email' => $order->get_meta( 'payer_email' ),
+					'purchase_time'   => $order->get_meta( 'payment_date' ),
+					'attendees'       => $attendees,
+					'line_total'      => $sales->get_revenue_for_attendees( $attendees ),
+				);
 			}
 		}
 
 		return $attendees_by_order;
-
-		// @todo move this to the Order::get_attendees method
-//		$attendees = $this->get_attendees_by_id( $post_id );
-//
-//		if ( empty( $attendees ) ) {
-//			return array();
-//		}
-//
-//		$statuses  = $this->get_order_statuses();
-//		$undefined = Tribe__Utils__Array::get( $statuses, 'undefined', reset( $statuses ) );
-//		/** @var Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
-//		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
-//
-//		$orders = array();
-//
-//		foreach ( $attendees as $attendee ) {
-//			if ( ! empty( $ticket_ids ) && ! in_array( $attendee['product_id'], $ticket_ids ) ) {
-//				continue;
-//			}
-//
-//			$order_number        = get_post_meta( $attendee['attendee_id'], $this->order_key, true );
-//			$refund_order_number = get_post_meta( $attendee['attendee_id'], $this->refund_order_key, true );
-//
-//			if ( ! isset( $orders[ $order_number ] ) ) {
-//				$order_data              = array(
-//					'url'             => $this->get_transaction_url( $order_number ),
-//					'number'          => $order_number,
-//					'status'          => $attendee['order_status'],
-//					'status_label'    => Tribe__Utils__Array::get( $statuses, $attendee['order_status'], $undefined ),
-//					'purchaser_name'  => $attendee['purchaser_name'],
-//					'purchaser_email' => $attendee['purchaser_email'],
-//					'purchase_time'   => $attendee['purchase_time'],
-//					'attendees'       => array( $attendee ),
-//				);
-//
-//				if ( ! empty( $refund_order_number ) ) {
-//					$order_data['refund_number'] = $refund_order_number;
-//					$order_data['refund_url']    = $this->get_transaction_url( $refund_order_number );
-//				}
-//
-//				$orders[ $order_number ] = $order_data;
-//			} else {
-//				$orders[ $order_number ]['attendees'][] = $attendee;
-//			}
-//		}
-//
-//		foreach ( $orders as &$order ) {
-//			$order['line_total'] = $sales->get_revenue_for_attendees( $order['attendees'] );
-//		}
-//
-//		return $orders;
 	}
 
 	/**
@@ -2363,5 +2257,93 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	protected function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', min( $sales - $qty, 0 ) );
+	}
+
+	/**
+	 * Returns the data for an attendee.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post $attendee An attendee post object or post ID.
+	 *
+	 * @return array|false Either an array of Attendee information or `false`
+	 *                     if the attendee could not be found.
+	 */
+	public function get_attendee( $attendee ) {
+		if ( is_numeric( $attendee ) ) {
+			$attendee = get_post( $attendee );
+		}
+
+		if ( ! $attendee instanceof WP_Post || self::ATTENDEE_OBJECT !== $attendee->post_type ) {
+			return false;
+		}
+
+		$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
+		$security     = get_post_meta( $attendee->ID, $this->security_code, true );
+		$product_id   = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
+		$optout       = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
+		$status       = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
+		$user_id      = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
+		$ticket_sent  = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
+
+		if ( empty( $product_id ) ) {
+			return false;
+		}
+
+		$product       = get_post( $product_id );
+		$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
+
+		$ticket_unique_id = get_post_meta( $attendee->ID, '_unique_id', true );
+		$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
+
+		$meta = '';
+		if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+			$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
+
+			// Process Meta to include value, slug, and label
+			if ( ! empty( $meta ) ) {
+				$meta = $this->process_attendee_meta( $product_id, $meta );
+			}
+		}
+
+		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
+			'optout'             => $optout,
+			'ticket'             => $product_title,
+			'attendee_id'        => $attendee->ID,
+			'security'           => $security,
+			'product_id'         => $product_id,
+			'check_in'           => $checkin,
+			'order_status'       => $status,
+			'user_id'            => $user_id,
+			'ticket_sent'        => $ticket_sent,
+
+			// Fields for Email Tickets
+			'event_id'      => get_post_meta( $attendee->ID, $this->attendee_event_key, true ),
+			'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
+			'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
+			'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
+			'order_id'      => $attendee->ID,
+			'ticket_id'     => $ticket_unique_id,
+			'qr_ticket_id'  => $attendee->ID,
+			'security_code' => $security,
+
+			// Attendee Meta
+			'attendee_meta' => $meta,
+		) );
+
+		/**
+		 * Allow users to filter the Attendee Data
+		 *
+		 * @since TBD
+		 *
+		 * @param array   $attendee_data An associative array with the Information of the Attendee
+		 * @param string  $provider      What Provider is been used
+		 * @param WP_Post $attendee      Attendee Object
+		 * @param int     $post_id       Post ID
+		 *
+		 */
+		$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'tpp', $attendee, $post_id );
+
+		return $attendee_data;
 	}
 }
