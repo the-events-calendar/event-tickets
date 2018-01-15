@@ -1,6 +1,4 @@
 <?php
-// @todo: add filters here and there
-
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Order
  *
@@ -485,7 +483,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		foreach ( $this->meta as $key => $value ) {
 			if ( in_array( $key, $this->searchable_meta_keys ) ) {
 				$key                 = self::$meta_prefix . $key;
-				$meta_input [ $key ] = $value;
+				$meta_input[ $key ] = $value;
 			} else {
 				$meta_input[ $this->hashed_meta_key ][ $key ] = $value;
 			}

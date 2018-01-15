@@ -1446,7 +1446,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendees = array();
 
 		foreach ( $attendees_query->posts as $attendee ) {
-			$attendees[] = $this->get_attendee($attendee);
+			$attendees[] = $this->get_attendee( $attendee );
 		}
 
 		return array_filter( $attendees );
