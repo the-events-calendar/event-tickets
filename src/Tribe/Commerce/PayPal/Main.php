@@ -1381,7 +1381,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				break;
 			default :
 
-				return $this->get_orders_by_post_id( $post_id );
+				return $this->get_attendees_by_post_id( $post_id );
 
 				break;
 		}
@@ -1951,7 +1951,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'purchaser_email' => $order->get_meta( 'payer_email' ),
 					'purchase_time'   => $order->get_meta( 'payment_date' ),
 					'attendees'       => $attendees,
-					'line_total'      => $sales->get_revenue_for_attendees( $attendees ),
+					'items'           => $order->get_meta( 'items' ),
+					'line_total'      => $order->get_revenue(),
 				);
 			}
 		}

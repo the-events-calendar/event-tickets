@@ -308,31 +308,6 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	}
 
 	/**
-	 * Returns a map that counts attendees by a key.
-	 *
-	 * @since TBD
-	 *
-	 * @param array  $attendees
-	 * @param string $group_by Count and group results by this key
-	 *
-	 * @return array An associative array in the format [ <group_by> => <count> ]
-	 */
-	public function count_attendees_by( array $attendees, $group_by ) {
-		$tickets = array();
-
-		foreach ( $attendees as $attendee ) {
-			$ticket_name = $attendee[ $group_by ];
-			if ( empty( $tickets[ $ticket_name ] ) ) {
-				$tickets[ $ticket_name ] = 1;
-			} else {
-				$tickets[ $ticket_name ] ++;
-			}
-		}
-
-		return $tickets;
-	}
-
-	/**
 	 * Returns the total revenue from completed orders for the ticket.
 	 *
 	 * @since TBD
