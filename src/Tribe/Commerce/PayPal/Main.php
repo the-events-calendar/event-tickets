@@ -557,8 +557,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$order_id = $transaction_data['txn_id'];
 
 		if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
-			// if the parent transaction ID is missing let's, at least, track the transaction with its ID
-			$order_id = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
+			$refund_order_id = $order_id;
+			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
+			$order = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
+			$order->refund_with( $refund_order_id );
+		} else {
+			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 		}
 
 		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
@@ -586,8 +590,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$attendee_full_name = $user_full_name;
 			}
 		}
-
-		$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 
 		// @TODO: figure out how to handle optout
 		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
@@ -1933,8 +1935,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$attendees_by_order = array();
 		$statuses           = $this->get_order_statuses();
-		/** @var Tribe__Tickets__Commerce__PayPal__Orders__Sales $sales */
-		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
 		if ( ! empty( $orders ) ) {
 			/** @var Tribe__Tickets__Commerce__PayPal__Order $order */
@@ -1942,6 +1942,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$order_id                        = $order->paypal_id();
 				$status                          = $order->get_status();
 				$attendees                       = $order->get_attendees();
+				$refund_order_id = $order->get_refund_order_id();
+
 				$attendees_by_order[ $order_id ] = array(
 					'url'             => $this->get_transaction_url( $order_id ),
 					'number'          => $order_id,
@@ -1954,6 +1956,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'items'           => $order->get_meta( 'items' ),
 					'line_total'      => $order->get_revenue(),
 				);
+
+				if ( ! empty( $refund_order_id ) ) {
+					$attendees_by_order[ $order_id ]['refund_number'] = $refund_order_id;
+					$attendees_by_order[ $order_id ]['refund_url']    = $this->get_transaction_url( $refund_order_id );
+				}
 			}
 		}
 

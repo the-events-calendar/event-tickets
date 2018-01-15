@@ -563,4 +563,27 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	public function get_revenue() {
 		return ! empty( $this->meta['mc_gross'] ) ? (int) $this->meta['mc_gross'] : 0;
 	}
+
+	/**
+	 * Relates an order with a refund order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $refund_order_id A PayPal order ID (hash).
+	 */
+	public function refund_with( $refund_order_id ) {
+		$this->status                  = Tribe__Tickets__Commerce__PayPal__Stati::$refunded;
+		$this->meta['refund_order_id'] = $refund_order_id;
+	}
+
+	/**
+	 * Returns the refund order PayPal ID (hash) if any.
+	 *
+	 * @since TBD
+	 *
+	 * @return string|null
+	 */
+	public function get_refund_order_id() {
+		return $this->meta['refund_order_id'];
+	}
 }
