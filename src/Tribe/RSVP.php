@@ -714,6 +714,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int    $event_id
 		 * @param int    $order_id
 		 */
+		$from       = apply_filters( 'tribe_rsvp_email_from_name', tribe_get_option( 'ticket-confirmation-email-sender-name', false ) );
+ 		$from_email = apply_filters( 'tribe_rsvp_email_from_email', tribe_get_option( 'ticket-confirmation-email-sender-email', false ) );
+ 		if ( ! empty( $from ) && ! empty( $from_email ) ) {
+ 			$headers[] = sprintf( 'From: %s <%s>', filter_var( $from, FILTER_SANITIZE_STRING ), filter_var( $from_email, FILTER_SANITIZE_EMAIL ) );
+ 		}
 		$headers = apply_filters( 'tribe_rsvp_email_headers', array( 'Content-type: text/html' ), $event_id, $order_id );
 
 		/**
@@ -748,7 +753,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int     $order_id
 		 */
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
-			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ),
+			tribe_get_option( 'rsvp-confirmation-email-subject', $default_subject ),
 			$event_id,
 			$order_id
 		);
