@@ -231,7 +231,7 @@
  * are unfortunately needed to override Thickbox's inline styles.
  */
 
-table.orders tr.refunded, table.orders tr.cancelled, table.orders tr.pending {
+table.orders tr.refunded, table.orders tr.denied, table.orders tr.pending {
 	font-style: italic;
 }
 
