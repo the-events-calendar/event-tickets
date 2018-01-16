@@ -337,7 +337,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public function register_types() {
 
 		$ticket_post_args = array(
-			'label'           => 'Tickets',
+			'label'           => __( 'Tickets', 'event-tickets' ),
 			'labels'          => array(
 				'name'          => __( 'Tribe Commerce Tickets', 'event-tickets' ),
 				'singular_name' => __( 'Tribe Commerce Ticket', 'event-tickets' ),
@@ -353,7 +353,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		$attendee_post_args = array(
-			'label'           => 'Attendees',
+			'label'           => __( 'Attendees', 'event-tickets' ),
 			'public'          => false,
 			'show_ui'         => false,
 			'show_in_menu'    => false,
@@ -365,7 +365,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		$order_post_args = array(
-			'label'           => 'Orders',
+			'label'           => __( 'Orders', 'event-tickets' ),
 			'public'          => false,
 			'show_ui'         => false,
 			'show_in_menu'    => false,
