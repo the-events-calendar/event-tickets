@@ -26,7 +26,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 *
 	 * @var string
 	 */
-	public static $cancelled = 'cancelled';
+	public static $denied = 'denied';
 
 	/**
 	 * The string representing the slug for a refunded payment status.
@@ -64,7 +64,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 			self::$not_completed,
 			self::$pending,
 			self::$refunded,
-			self::$cancelled,
+			self::$denied,
 		);
 
 		return in_array( $payment_status, $legit ) ? $payment_status : self::$undefined;
@@ -107,13 +107,13 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 			'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'event-tickets' ),
 		) );
 
-		register_post_status( self::$cancelled, array(
-			'label'                     => _x( 'Cancelled', 'A PayPal order status', 'event-tickets' ),
+		register_post_status( self::$denied, array(
+			'label'                     => _x( 'Denied', 'A PayPal order status', 'event-tickets' ),
 			'public'                    => true,
 			'exclude_from_search'       => false,
 			'show_in_admin_all_list'    => true,
 			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop( 'Cancelled <span class="count">(%s)</span>', 'Cancelled <span class="count">(%s)</span>', 'event-tickets' ),
+			'label_count'               => _n_noop( 'Denied <span class="count">(%s)</span>', 'Denied <span class="count">(%s)</span>', 'event-tickets' ),
 		) );
 	}
 
@@ -121,7 +121,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * Whether a PayPal payment status will mark a transaction as completed one way or another.
 	 *
 	 * A transaction might be completed because it successfully completed, because it
-	 * was refunded or cancelled.
+	 * was refunded or denied.
 	 *
 	 * @since TBD
 	 *

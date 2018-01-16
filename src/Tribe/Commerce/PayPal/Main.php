@@ -1309,7 +1309,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$return->qty_sold( $qty_sold );
 
-		// @todo: review this when/if the Cancelled ticket status is supported in PayPal tickets
+		// @todo: review this when/if the Denied ticket status is supported in PayPal tickets
 		$return->qty_cancelled( 0 );
 
 		$pending = $this->get_qty_pending( $ticket_id );
