@@ -144,4 +144,30 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 
 		return in_array( $payment_status, $statuses );
 	}
+
+	/**
+	 * Whether a PayPal payment status will mark a transaction as generating revenue or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_status
+	 *
+	 * @return bool
+	 */
+	public function is_revenue_generating_status( $payment_status ) {
+		$statuses = array( self::$completed );
+
+		/**
+		 * Filters the statuses that will mark a PayPal transaction as generating
+		 * revenue.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $statuses
+		 * @param string $payment_status
+		 */
+		$statuses = apply_filters( 'tribe_tickets_commerce_paypal_revenue_generating_statuses', $statuses, $payment_status );
+
+		return in_array( $payment_status, $statuses );
+	}
 }
