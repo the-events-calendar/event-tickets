@@ -2315,6 +2315,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	protected function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		update_post_meta( $ticket_id, 'total_sales', min( $sales - $qty, 0 ) );
+		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
 	}
 }
