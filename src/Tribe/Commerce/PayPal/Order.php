@@ -256,7 +256,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @type int    $ticket_id ID, or array of IDs, of the ticket(s) Orders should be related to.
 	 * }
 	 *
-	 * @return \Tribe__Tickets__Commerce__PayPal__Order[] $criteria
+	 * @return Tribe__Tickets__Commerce__PayPal__Order[] $criteria
 	 */
 	public static function find_by( array $args = array() ) {
 		$args = wp_parse_args( $args, array(
@@ -583,5 +583,32 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public function get_refund_order_id() {
 		return $this->meta['refund_order_id'];
+	}
+
+	/**
+	 * Returns the quantity of tickets part of the Order.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|null $ticket_id An optional ticket post ID; if this
+	 *                            parameter is passed then the method will
+	 *                            return the quantity of specific tickets part
+	 *                            of the Order.
+	 *
+	 * @return float|int Either the total quantity of tickets part of the Order
+	 *                   or the quantity of a specific ticket part of the Order.
+	 */
+	public function get_item_quantity( $ticket_id = null ) {
+		$items = $this->meta['items'];
+
+		if ( null !== $ticket_id ) {
+			$items = wp_list_filter( $items, array( 'ticket_id' => $ticket_id ) );
+		}
+
+		$quantities = array_filter( wp_list_pluck( $items, 'quantity' ), 'is_numeric' );
+
+		return ! empty( $quantities )
+			? array_sum( array_map( 'intval', $quantities ) )
+			: 0;
 	}
 }

@@ -1309,8 +1309,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$return->qty_sold( $qty_sold );
 
-		// @todo: review this when/if the Denied ticket status is supported in PayPal tickets
-		$return->qty_cancelled( 0 );
+		$return->qty_cancelled( $this->get_cancelled( $ticket_id ) );
 
 		$pending = $this->get_qty_pending( $ticket_id );
 
@@ -1980,8 +1979,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$order_statuses = array(
 			Tribe__Tickets__Commerce__PayPal__Stati::$undefined     => _x( 'Undefined', 'a PayPal ticket order status', 'event-tickets' ),
 			Tribe__Tickets__Commerce__PayPal__Stati::$completed     => _x( 'Completed', 'a PayPal ticket order status', 'event-tickets' ),
-			Tribe__Tickets__Commerce__PayPal__Stati::$pending       => _x( 'Pending', 'a PayPal ticket order status', 'event-tickets' ),
 			Tribe__Tickets__Commerce__PayPal__Stati::$refunded      => _x( 'Refunded', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$pending       => _x( 'Pending', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$denied        => _x( 'Denied', 'a PayPal ticket order status', 'event-tickets' ),
 			Tribe__Tickets__Commerce__PayPal__Stati::$not_completed => _x( 'Not Completed', 'a PayPal ticket order status', 'event-tickets' ),
 		);
 
@@ -2354,5 +2354,28 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'tpp', $attendee );
 
 		return $attendee_data;
+	}
+
+	/**
+	 * Returns the total number of cancelled tickets.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id The ticket post ID.
+	 *
+	 * @return int
+	 */
+	protected function get_cancelled( $ticket_id ) {
+		$denied_orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array(
+			'ticket_id'   => $ticket_id,
+			'post_status' => Tribe__Tickets__Commerce__PayPal__Stati::$denied,
+		) );
+
+		$denied = 0;
+		foreach ( $denied_orders as $denied_order ) {
+			$denied += $denied_order->get_item_quantity( $ticket_id );
+		}
+
+		return max( 0, $denied );
 	}
 }
