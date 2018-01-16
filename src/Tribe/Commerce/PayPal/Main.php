@@ -2349,10 +2349,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param array   $attendee_data An associative array with the Information of the Attendee
 		 * @param string  $provider      What Provider is been used
 		 * @param WP_Post $attendee      Attendee Object
-		 * @param int     $post_id       Post ID
 		 *
 		 */
-		$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'tpp', $attendee, $post_id );
+		$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'tpp', $attendee );
 
 		return $attendee_data;
 	}
