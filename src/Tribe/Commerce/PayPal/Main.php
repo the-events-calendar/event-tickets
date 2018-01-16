@@ -561,6 +561,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
 			$order->refund_with( $refund_order_id );
+			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
+			$order->hydrate_from_transaction_data( $transaction_data );
 		} else {
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 		}
