@@ -209,8 +209,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.orders.tabbed-view', 'Tribe__Tickets__Commerce__Orders_Tabbed_View' );
 		tribe_singleton( 'tickets.commerce.paypal.orders.report', 'Tribe__Tickets__Commerce__PayPal__Orders__Report', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
-		tribe_singleton( 'ticket.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
-		tribe_singleton( 'ticket.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
+		tribe_singleton( 'tickets.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -223,7 +223,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		tribe( 'tickets.commerce.paypal.gateway' );
 		tribe( 'tickets.commerce.paypal.orders.report' );
-		tribe( 'ticket.commerce.paypal.screen-options' );
+		tribe( 'tickets.commerce.paypal.screen-options' );
 		tribe( 'tickets.commerce.paypal.endpoints' );
 	}
 
@@ -556,10 +556,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$order_id = $transaction_data['txn_id'];
 
-		if ( Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status ) {
+		$is_refund = Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status
+		             || 'refund' === Tribe__Utils__Array::get( $transaction_data, 'reason_code', '' );
+		if ( $is_refund ) {
+			$transaction_data['payment_status'] = $payment_status = Tribe__Tickets__Commerce__PayPal__Stati::$refunded;
 			$refund_order_id = $order_id;
 			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
-			$order = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
+			$order           = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
 			$order->refund_with( $refund_order_id );
 			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
 			$order->hydrate_from_transaction_data( $transaction_data );
@@ -605,6 +608,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			tribe_exit();
 		}
 
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Stati $stati */
+		$stati = tribe('tickets.commerce.paypal.stati');
+
 		// Iterate over each product
 		foreach ( (array) $transaction_data['items'] as $item ) {
 			$order_attendee_id = 0;
@@ -644,7 +651,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$qty = max( $ticket_qty, 0 );
 
 			// Throw an error if Qty is bigger then Remaining
-			if ( $ticket_type->managing_stock() ) {
+			if ( $ticket_type->managing_stock() && $payment_status === Tribe__Tickets__Commerce__PayPal__Stati::$completed ) {
 				$inventory = (int) $ticket_type->inventory();
 				if ( - 1 !== $inventory && $qty > $inventory ) {
 					$url = add_query_arg( 'tpp_error', 2, get_permalink( $post_id ) );
@@ -1955,7 +1962,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					'purchase_time'   => $order->get_meta( 'payment_date' ),
 					'attendees'       => $attendees,
 					'items'           => $order->get_meta( 'items' ),
-					'line_total'      => $order->get_revenue(),
+					'line_total'      => $order->get_line_total(),
 				);
 
 				if ( ! empty( $refund_order_id ) ) {
@@ -2266,7 +2273,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	protected function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		update_post_meta( $ticket_id, 'total_sales', min( $sales - $qty, 0 ) );
+		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
 	}
 
 	/**

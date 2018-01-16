@@ -559,7 +559,48 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @return int
 	 */
 	public function get_revenue() {
-		return ! empty( $this->meta['mc_gross'] ) ? (int) $this->meta['mc_gross'] : 0;
+		/** @var Tribe__Tickets__Commerce__PayPal__Stati $stati */
+		$stati = tribe( 'tickets.commerce.paypal.stati' );
+
+		if ( $stati->is_revenue_generating_status( $this->status ) ) {
+			return ! empty( $this->meta['mc_gross'] ) ? (int) $this->meta['mc_gross'] : 0;
+		}
+
+		return 0;
+	}
+
+	/**
+	 * Returns the line total for this Order.
+	 *
+	 * Note that the line total might be non-zero when the ticket revenue is, instead,
+	 * zero (e.g. pending orders).
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function get_line_total() {
+		$statuses = array(
+			Tribe__Tickets__Commerce__PayPal__Stati::$completed,
+			Tribe__Tickets__Commerce__PayPal__Stati::$pending,
+			Tribe__Tickets__Commerce__PayPal__Stati::$denied,
+		);
+
+		/**
+		 * Filters the Order statuses that should display a non-zero line total.
+		 *
+		 * @since TBD
+		 *
+		 * @param array                                   $statuses
+		 * @param Tribe__Tickets__Commerce__PayPal__Order $this
+		 */
+		$statuses = apply_filters( 'tribe_tickets_tpp_order_line_total_statuses', $statuses, $this );
+
+		if ( in_array( $this->status, $statuses ) ) {
+			return ! empty( $this->meta['mc_gross'] ) ? (int) $this->meta['mc_gross'] : 0;
+		}
+
+		return 0;
 	}
 
 	/**
