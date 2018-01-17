@@ -180,13 +180,13 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 		array( 'cmd' => '_profile-ipn-notify' ),
 		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 	);
-	$ipn_notification_settings_link     = '<a href="' . $paypal_ipn_notify_url_setting_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update', 'event-tickets' ) . '</a>';
+	$ipn_notification_settings_link     = '<a href="' . esc_url( $paypal_ipn_notify_url_setting_link ) . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update', 'event-tickets' ) . '</a>';
 
 	$paypal_ipn_notification_history_link = add_query_arg(
 		array( 'cmd' => '_display-ipns-history' ),
 		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 	);
-	$ipn_notification_history_link = '<a href="' . $paypal_ipn_notification_history_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page', 'event-tickets' ) . '</a>';
+	$ipn_notification_history_link = '<a href="' . esc_url( $paypal_ipn_notification_history_link ) . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page', 'event-tickets' ) . '</a>';
 
 	$current_user = get_user_by( 'id', get_current_user_id() );
 
@@ -271,7 +271,7 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 }
 
 $site_name = stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
-$tickets_fields        = array_merge(
+$tickets_fields = array_merge(
 	$tickets_fields,
 	array(
 		'ticket-email-heading' => array(
@@ -324,7 +324,7 @@ $tickets_fields        = array_merge(
 );
 
 $tickets_fields = array_merge( $tickets_fields, array(
-	'tribe-form-content-end'                     => array(
+	'tribe-form-content-end' => array(
 		'type' => 'html',
 		'html' => '</div>',
 	),
