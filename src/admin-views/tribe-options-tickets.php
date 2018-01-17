@@ -302,12 +302,12 @@ if ( ! $is_tickets_plus_available ) {
 		'html' => '<p class="contained">' .
 		          sprintf(
 			          __(
-				          'Want to collect custom information from attendees, scan QR codes for event check-in, share stock between tickets, or integrate with other commerce providers? Check out %s!.',
+				          'Looking to collect custom information for attendees, check users in via QR codes, share stock between tickets, or integrate with other commerce providers? %s!.',
 				          'event-tickets'
 			          ),
 			          sprintf(
 				          '<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
-				          __( 'Events Tickets Plus', 'tribe-common' )
+				          __( 'Check out Events Tickets Plus', 'tribe-common' )
 			          )
 		          )
 		          . '</p>',
