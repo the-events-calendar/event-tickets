@@ -150,11 +150,11 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 
 		if ( ! empty( $status ) ) {
 			$status_strings = array(
-				Tribe__Tickets__Commerce__PayPal__Stati::$undefined                => __( 'undefined', 'event-tickets' ),
-				Tribe__Tickets__Commerce__PayPal__Stati::$completed                => __( 'completed', 'event-tickets' ),
-				Tribe__Tickets__Commerce__PayPal__Stati::$pending                  => __( 'pending', 'event-tickets' ),
-				Tribe__Tickets__Commerce__PayPal__Stati::$refunded                 => __( 'refunded', 'event-tickets' ),
-				Tribe__Tickets__Commerce__PayPal__Stati::$payment_status_cancelled => __( 'cancelled', 'event-tickets' ),
+				Tribe__Tickets__Commerce__PayPal__Stati::$undefined => __( 'undefined', 'event-tickets' ),
+				Tribe__Tickets__Commerce__PayPal__Stati::$completed => __( 'completed', 'event-tickets' ),
+				Tribe__Tickets__Commerce__PayPal__Stati::$pending   => __( 'pending', 'event-tickets' ),
+				Tribe__Tickets__Commerce__PayPal__Stati::$refunded  => __( 'refunded', 'event-tickets' ),
+				Tribe__Tickets__Commerce__PayPal__Stati::$denied    => __( 'cancelled', 'event-tickets' ),
 			);
 
 			$ticket_status = Tribe__Utils__Array::get( $status_strings, $status, reset( $status_strings ) );

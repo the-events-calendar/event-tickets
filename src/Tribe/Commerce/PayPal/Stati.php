@@ -22,11 +22,11 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	public static $pending = 'pending';
 
 	/**
-	 * The string representing the slug for a canceled payment status.
+	 * The string representing the slug for a denied payment status.
 	 *
 	 * @var string
 	 */
-	public static $payment_status_cancelled = 'cancelled';
+	public static $denied = 'denied';
 
 	/**
 	 * The string representing the slug for a refunded payment status.

@@ -2030,6 +2030,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			Tribe__Tickets__Commerce__PayPal__Stati::$undefined     => _x( 'Undefined', 'a PayPal ticket order status', 'event-tickets' ),
 			Tribe__Tickets__Commerce__PayPal__Stati::$completed     => _x( 'Completed', 'a PayPal ticket order status', 'event-tickets' ),
 			Tribe__Tickets__Commerce__PayPal__Stati::$pending       => _x( 'Pending', 'a PayPal ticket order status', 'event-tickets' ),
+			Tribe__Tickets__Commerce__PayPal__Stati::$denied        => _x( 'Denied', 'a PayPal ticket order status', 'event-tickets' ),
 			Tribe__Tickets__Commerce__PayPal__Stati::$refunded      => _x( 'Refunded', 'a PayPal ticket order status', 'event-tickets' ),
 			Tribe__Tickets__Commerce__PayPal__Stati::$not_completed => _x( 'Not Completed', 'a PayPal ticket order status', 'event-tickets' ),
 		);
