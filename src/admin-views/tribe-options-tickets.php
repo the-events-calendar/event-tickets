@@ -151,20 +151,17 @@ $available_plugins         = get_plugins();
 $is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_plugins );
 
 if ( ! $is_tickets_plus_available ) {
+	$plus_link = sprintf(
+		'<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
+		__( 'Events Tickets Plus', 'tribe-common' )
+	);
+	$plus_message = sprintf(
+		__( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you\'re looking for more advanced features, please consider %s.', 'event-tickets' ),
+		$plus_link
+	);
 	$tickets_fields['ticket-paypal-et-plus-header'] = array(
 		'type' => 'html',
-		'html' => '<p>' .
-		          sprintf(
-			          __(
-			          	'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you\'re looking for more advanced features, please consider %s.',
-			            'event-tickets'
-			          ),
-			          sprintf(
-				          '<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
-				          __( 'Events Tickets Plus', 'tribe-common' )
-			          )
-		          )
-		          . '</p>',
+		'html' => '<p>' . $plus_message . '</p>',
 	);
 }
 
@@ -200,15 +197,20 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 		array( 'cmd' => '_profile-ipn-notify' ),
 		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 	);
-	$ipn_notification_settings_link     = '<a href="' . $paypal_ipn_notify_url_setting_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update',
-			'event-tickets' ) . '</a>';
+	$ipn_notification_settings_link = '<a href="'
+	                                  . $paypal_ipn_notify_url_setting_link
+	                                  . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update', 'event-tickets' )
+	                                  . '</a>';
 
 	$paypal_ipn_notification_history_link = add_query_arg(
 		array( 'cmd' => '_display-ipns-history' ),
 		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 	);
-	$ipn_notification_history_link        = '<a href="' . $paypal_ipn_notification_history_link . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page',
-			'event-tickets' ) . '</a>';
+	$ipn_notification_history_link = '<a href="'
+	                                 . $paypal_ipn_notification_history_link
+	                                 . '" target="_blank">'
+	                                 . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page', 'event-tickets' )
+	                                 . '</a>';
 
 	$current_user = get_user_by( 'id', get_current_user_id() );
 
@@ -297,20 +299,17 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 }
 
 if ( ! $is_tickets_plus_available ) {
+	$plus_link = sprintf(
+		'<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
+		__( 'Check out Events Tickets Plus', 'tribe-common' )
+	);
+	$plus_message = sprintf(
+		__( 'Looking to collect custom information for attendees, check users in via QR codes, share stock between tickets, or integrate with other commerce providers? %s!.', 'event-tickets' ),
+		$plus_link
+	);
 	$tickets_fields['ticket-paypal-et-plus-footer'] = array(
 		'type' => 'html',
-		'html' => '<p class="contained">' .
-		          sprintf(
-			          __(
-				          'Looking to collect custom information for attendees, check users in via QR codes, share stock between tickets, or integrate with other commerce providers? %s!.',
-				          'event-tickets'
-			          ),
-			          sprintf(
-				          '<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
-				          __( 'Check out Events Tickets Plus', 'tribe-common' )
-			          )
-		          )
-		          . '</p>',
+		'html' => '<p class="contained">' . $plus_message . '</p>',
 	);
 }
 
