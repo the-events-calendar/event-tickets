@@ -70,6 +70,11 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 		return in_array( $payment_status, $legit ) ? $payment_status : self::$undefined;
 	}
 
+	/**
+	 * Registers the post stati with WordPress.
+	 *
+	 * @since TBD
+	 */
 	public static function register_order_stati() {
 		register_post_status( self::$completed, array(
 			'label'                     => _x( 'Completed', 'A PayPal order status', 'event-tickets' ),
