@@ -1,37 +1,16 @@
 <?php
 
-$currency_code_options = array(
-	'AUD' => __( 'Australian Dollar (AUD)', 'event-tickets' ),
-	'BRL' => __( 'Brazilian Real  (BRL)', 'event-tickets' ),
-	'CAD' => __( 'Canadian Dollar (CAD)', 'event-tickets' ),
-	'CZK' => __( 'Czech Koruna (CZK)', 'event-tickets' ),
-	'DKK' => __( 'Danish Krone (DKK)', 'event-tickets' ),
-	'EUR' => __( 'Euro (EUR)', 'event-tickets' ),
-	'HKD' => __( 'Hong Kong Dollar (HKD)', 'event-tickets' ),
-	'HUF' => __( 'Hungarian Forint (HUF)', 'event-tickets' ),
-	'ILS' => __( 'Israeli New Sheqel (ILS)', 'event-tickets' ),
-	'JPY' => __( 'Japanese Yen (JPY)', 'event-tickets' ),
-	'MYR' => __( 'Malaysian Ringgit (MYR)', 'event-tickets' ),
-	'MXN' => __( 'Mexican Peso (MXN)', 'event-tickets' ),
-	'NOK' => __( 'Norwegian Krone (NOK)', 'event-tickets' ),
-	'NZD' => __( 'New Zealand Dollar (NZD)', 'event-tickets' ),
-	'PHP' => __( 'Philippine Peso (PHP)', 'event-tickets' ),
-	'PLN' => __( 'Polish Zloty (PLN)', 'event-tickets' ),
-	'GBP' => __( 'Pound Sterling (GBP)', 'event-tickets' ),
-	'SGD' => __( 'Singapore Dollar (SGD)', 'event-tickets' ),
-	'SEK' => __( 'Swedish Krona (SEK)', 'event-tickets' ),
-	'CHF' => __( 'Swiss Franc (CHF)', 'event-tickets' ),
-	'TWD' => __( 'Taiwan New Dollar (TWD)', 'event-tickets' ),
-	'THB' => __( 'Thai Baht (THB)', 'event-tickets' ),
-	'USD' => __( 'U.S. Dollar (USD)', 'event-tickets' ),
-);
-
+/**
+ * Filter to allow users to add/alter ignored post types
+ *
+ * @since TBD
+ */
 $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_list', array(
 	'attachment',
 ) );
 
 $all_post_type_objects = get_post_types( array( 'public' => true ), 'objects' );
-$all_post_types = array();
+$all_post_types        = array();
 
 foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 	$should_ignore = false;
@@ -168,13 +147,13 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 	}
 	$tpp_success_shortcode = 'tribe-tpp-success';
 	/**
-	 * Filters the available currency code options for PayPal
+	 * Filters the available currency code options for TPP
 	 *
 	 * @since TBD
 	 *
 	 * @param array $currency_code_options
 	 */
-	$currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', $currency_code_options );
+	$paypal_currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', Tribe__Tickets__Commerce__PayPal__Main::get_instance()->generate_currency_code_options() );
 
 	$paypal_ipn_notify_url_setting_link = add_query_arg(
 		array( 'cmd' => '_profile-ipn-notify' ),
@@ -266,38 +245,20 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			),
-			'ticket-currency-heading' => array(
-				'type' => 'html',
-				'html' => '<h3>' . __( 'Currency', 'event-tickets' ) . '</h3>',
-			),
 			'ticket-paypal-currency-code' => array(
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The currency that will be used for PayPal transactions.', 'event-tickets' ),
+				'tooltip'         => esc_html__( 'The currency that will be used for Tribe Commerce transactions.', 'event-tickets' ),
 				'default'         => 'USD',
 				'validation_type' => 'options',
-				'options'         => $currency_code_options,
-			),
-			'defaultCurrencySymbol' => array(
-				'type'            => 'text',
-				'label'           => esc_html__( 'Symbol', 'event-tickets' ),
-				'size'            => 'small',
-				'default'         => '$',
-				'validation_type' => 'html',
-			),
-			'reverseCurrencyPosition' => array(
-				'type'            => 'checkbox_bool',
-				'label'           => esc_html__( 'Symbol Follows Value', 'event-tickets' ),
-				'tooltip'         => esc_html__( 'The currency symbol normally precedes the value. Enabling this option positions the symbol after the value.', 'event-tickets' ),
-				'default'         => false,
-				'validation_type' => 'boolean',
+				'options'         => $paypal_currency_code_options,
 			),
 		)
 	);
 }
 
 $tickets_fields = array_merge( $tickets_fields, array(
-	'tribe-form-content-end'                     => array(
+	'tribe-form-content-end' => array(
 		'type' => 'html',
 		'html' => '</div>',
 	),

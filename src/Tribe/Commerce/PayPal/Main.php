@@ -124,6 +124,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public $pending_attendees_by_ticket = array();
 
+	/* Currency mapping code to symbol and position */
+	public $currency_code_options_map = array();
+
 	/**
 	 * @var Tribe__Tickets__Commerce__PayPal__Attendance_Totals
 	 */
@@ -186,6 +189,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$this->bind_implementations();
 
 		$this->tickets_view = tribe( 'tickets.commerce.paypal.view' );
+
+		$this->generate_default_currency_map();
 
 		$this->register_resources();
 		$this->hooks();
@@ -1802,7 +1807,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$price = get_post_meta( $product_id, '_price', true );
-		$price = tribe_format_currency( $price, $product_id );
+		$price = $this->format_currency( $price, $product_id );
 
 		$price_html = '<span class="tribe-tickets-price-amount amount">' . $price . '</span>';
 
@@ -2316,5 +2321,167 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	protected function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', min( $sales - $qty, 0 ) );
+	}
+
+	public function format_currency( $cost, $post_id = null ) {
+		$post_id = Tribe__Main::post_id_helper( $post_id );
+		$currency_code = tribe_get_option( 'ticket-paypal-currency-code', 'USD' );
+
+		/**
+		 * Filter the displayed currency symbol
+		 * @since TBD
+		 */
+		$currency_symbol   = apply_filters(
+			'tribe_tickets_tpp_currency_symbol',
+			$this->currency_code_options_map[ $currency_code ]['symbol'],
+			$post_id
+		);
+
+		// if no currency symbol was passed let's get the default currency symbol
+		if ( ! $currency_symbol ) {
+			$currency_symbol = tribe_get_option( 'defaultCurrencySymbol', '$' );
+		}
+
+		if ( empty( $this->currency_code_options_map[$currency_code]['position'] ) ) {
+			$currency_position = 'before';
+		} else {
+			$currency_position = $this->currency_code_options_map[$currency_code]['position'];
+		}
+
+		/**
+		 * Filter the displayed currency symbol position
+		 * @since TBD
+		 */
+		$currency_position = apply_filters(
+			'tribe_tickets_tpp_currency_position',
+			$currency_position,
+			$post_id
+		);
+
+		$cost = $currency_position === 'after' ? $cost . $currency_symbol : $currency_symbol . $cost;
+
+		return $cost;
+
+	}
+
+	public function generate_default_currency_map() {
+		$default_map = array(
+			'AUD' => array(
+				'name'   => __( 'Australian Dollar (AUD)', 'event-tickets' ),
+				'symbol' => '&#x41;&#x24;',
+			),
+			'BRL' => array(
+				'name'   => __( 'Brazilian Real  (BRL)', 'event-tickets' ),
+				'symbol' => '&#82;&#x24;',
+			),
+			'CAD' => array(
+				'name'   => __( 'Canadian Dollar (CAD)', 'event-tickets' ),
+				'symbol' => '&#x24;',
+			),
+			'CHF' => array(
+				'name'   => __( 'Swiss Franc (CHF)', 'event-tickets' ),
+				'symbol' => '&#x43;&#x48;&#x46;',
+			),
+			'CZK' => array(
+				'name'     => __( 'Czech Koruna (CZK)', 'event-tickets' ),
+				'symbol'   => '&#x4b;&#x10d;',
+				'position' => 'after'
+			),
+			'DKK' => array(
+				'name'   => __( 'Danish Krone (DKK)', 'event-tickets' ),
+				'symbol' => '&#107;&#114;',
+			),
+			'EUR' => array(
+				'name'   => __( 'Euro (EUR)', 'event-tickets' ),
+				'symbol' => '&#8364;',
+			),
+			'GBP' => array(
+				'name'   => __( 'Pound Sterling (GBP)', 'event-tickets' ),
+				'symbol' => '&#163;',
+			),
+			'HKD' => array(
+				'name'   => __( 'Hong Kong Dollar (HKD)', 'event-tickets' ),
+				'symbol' => '&#x24;',
+			),
+			'HUF' => array(
+				'name'   => __( 'Hungarian Forint (HUF)', 'event-tickets' ),
+				'symbol' => '&#x46;&#x74;',
+			),
+			'ILS' => array(
+				'name'   => __( 'Israeli New Sheqel (ILS)', 'event-tickets' ),
+				'symbol' => '&#x20aa;',
+			),
+			'JPY' => array(
+				'name'   => __( 'Japanese Yen (JPY)', 'event-tickets' ),
+				'symbol' => '&#165;',
+			),
+			'MYR' => array(
+				'name'   => __( 'Malaysian Ringgit (MYR)', 'event-tickets' ),
+				'symbol' => '&#82;&#77;',
+			),
+			'MXN' => array(
+				'name'   => __( 'Mexican Peso (MXN)', 'event-tickets' ),
+				'symbol' => '&#x24;',
+			),
+			'NOK' => array(
+				'name'   => __( 'Norwegian Krone (NOK)', 'event-tickets' ),
+				'symbol' => '',
+			),
+			'NZD' => array(
+				'name'   => __( 'New Zealand Dollar (NZD)', 'event-tickets' ),
+				'symbol' => '&#x24;',
+			),
+			'PHP' => array(
+				'name'   => __( 'Philippine Peso (PHP)', 'event-tickets' ),
+				'symbol' => '',
+			),
+			'PLN' => array(
+				'name'   => __( 'Polish Zloty (PLN)', 'event-tickets' ),
+				'symbol' => '',
+			),
+			'SEK' => array(
+				'name'   => __( 'Swedish Krona (SEK)', 'event-tickets' ),
+				'symbol' => '&#x6b;&#x72;',
+			),
+			'SGD' => array(
+				'name'   => __( 'Singapore Dollar (SGD)', 'event-tickets' ),
+				'symbol' => '&#x53;&#x24;',
+			),
+			'THB' => array(
+				'name'   => __( 'Thai Baht (THB)', 'event-tickets' ),
+				'symbol' => '&#x0e3f;',
+			),
+			'TWD' => array(
+				'name'   => __( 'Taiwan New Dollar (TWD)', 'event-tickets' ),
+				'symbol' => '&#x4e;&#x54;&#x24;',
+			),
+			'USD' => array(
+				'name'   => __( 'U.S. Dollar (USD)', 'event-tickets' ),
+				'symbol' => '&#x24;',
+			),
+		);
+
+		$this->currency_code_options_map = apply_filters(
+			'tribe_tickets_tpp_currency_code_options_map',
+			$default_map
+		);
+	}
+
+	function generate_currency_code_options() {
+		// For our drop-downs, we only need the code=>name
+		return array_map(
+			function( $a ) {
+				return array_reduce(
+					array_keys($a),
+					function ($carry, $key) use ($a) {
+						if ( 'name' === $key ) {
+							$carry = $a[$key];
+						}
+						return $carry;
+					}
+				);
+			},
+			$this->currency_code_options_map
+		);
 	}
 }
