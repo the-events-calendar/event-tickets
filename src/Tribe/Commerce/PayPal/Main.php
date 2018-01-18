@@ -2410,10 +2410,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$currency_symbol = tribe_get_option( 'defaultCurrencySymbol', '$' );
 		}
 
-		if ( empty( $this->currency_code_options_map[$currency_code]['position'] ) ) {
+		if ( empty( $this->currency_code_options_map[ $currency_code ]['position'] ) ) {
 			$currency_position = 'before';
 		} else {
-			$currency_position = $this->currency_code_options_map[$currency_code]['position'];
+			$currency_position = $this->currency_code_options_map[ $currency_code ]['position'];
 		}
 
 		/**
@@ -2453,7 +2453,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'CZK' => array(
 				'name'     => __( 'Czech Koruna (CZK)', 'event-tickets' ),
 				'symbol'   => '&#x4b;&#x10d;',
-				'position' => 'after'
+				'position' => 'after',
 			),
 			'DKK' => array(
 				'name'   => __( 'Danish Krone (DKK)', 'event-tickets' ),
@@ -2501,11 +2501,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			),
 			'PHP' => array(
 				'name'   => __( 'Philippine Peso (PHP)', 'event-tickets' ),
-				'symbol' => '',
+				'symbol' => '&#x20b1;',
 			),
 			'PLN' => array(
 				'name'   => __( 'Polish Zloty (PLN)', 'event-tickets' ),
-				'symbol' => '',
+				'symbol' => '&#x7a;&#x142;',
 			),
 			'SEK' => array(
 				'name'   => __( 'Swedish Krona (SEK)', 'event-tickets' ),
@@ -2535,7 +2535,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 	}
 
-	function generate_currency_code_options() {
+	public function generate_currency_code_options() {
 		// For our drop-downs, we only need the code=>name
 		return array_map(
 			function( $a ) {
@@ -2543,7 +2543,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					array_keys($a),
 					function ($carry, $key) use ($a) {
 						if ( 'name' === $key ) {
-							$carry = $a[$key];
+							$carry = $a[ $key ];
 						}
 						return $carry;
 					}
