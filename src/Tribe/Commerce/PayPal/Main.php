@@ -2432,6 +2432,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 	}
 
+	/**
+	 * Generates the default map and allows for filtering
+	 * @since TBD
+	 */
 	public function generate_default_currency_map() {
 		$default_map = array(
 			'AUD' => array(
@@ -2535,8 +2539,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 	}
 
+	/**
+	 * Creates the array for a currency drop-down using only code & name
+	 * @since TBD
+	 * @return array
+	 */
 	public function generate_currency_code_options() {
-		// For our drop-downs, we only need the code=>name
 		return array_map(
 			function( $a ) {
 				return array_reduce(
