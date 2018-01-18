@@ -52,6 +52,24 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	 * @return array|bool
 	 */
 	public function validate_transaction( $transaction = null ) {
+		/**
+		 * Allows short-circuiting the validation of a transaction with the PayPal server.
+		 *
+		 * Returning a non `null` value in  this will prevent any request for validation to
+		 * the PayPal server from being sent.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool        $validated
+		 * @param string|null $transaction The transaction ID (hash) if available; the transaction data
+		 *                                 might be in the $_GET superglobal.
+		 */
+		$validated = apply_filters( 'tribe_tickets_commerce_paypal_validate_transaction', null, $transaction );
+
+		if ( null !== $validated ) {
+			return $validated;
+		}
+
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$args = array(

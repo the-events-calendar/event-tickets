@@ -38,7 +38,10 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 
 		$payment_status = trim( strtolower( $data['payment_status'] ) );
 
-		if ( 'completed' === $payment_status ) {
+		/** @var Tribe__Tickets__Commerce__PayPal__Stati $stati */
+		$stati = tribe( 'ticket.commerce.paypal.stati' );
+
+		if ( $stati->is_complete_transaction_status( $payment_status ) ) {
 			// since the purchase has completed, reset the invoice number
 			$gateway->reset_invoice_number();
 		}
@@ -56,6 +59,24 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 	 * @return bool
 	 */
 	public function validate_transaction( $transaction = null ) {
+		/**
+		 * Allows short-circuiting the validation of a transaction with the PayPal server.
+		 *
+		 * Returning a non `null` value in  this will prevent any request for validation to
+		 * the PayPal server from being sent.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool       $validated
+		 * @param array|null $transaction The transaction data if available; the transaction data
+		 *                                might be in the $_POST superglobal.
+		 */
+		$validated = apply_filters( 'tribe_tickets_commerce_paypal_validate_transaction', null, $transaction );
+
+		if ( null !== $validated ) {
+			return $validated;
+		}
+
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$body        = wp_unslash( $_POST );

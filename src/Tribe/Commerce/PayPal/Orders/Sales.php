@@ -109,7 +109,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 */
 	protected function get_revenue_generating_order_statuses() {
 		$revenue_generating_order_statuses = array(
-			Tribe__Tickets__Commerce__PayPal__Main::$payment_status_completed
+			Tribe__Tickets__Commerce__PayPal__Stati::$completed
 		);
 
 		/**
