@@ -124,11 +124,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	public function column_purchased( $item ) {
 		$output = '';
 
-		$tickets = $this->sales->count_attendees_by( $item['attendees'], 'ticket' );
-
-		foreach ( $tickets as $_name => $_quantity ) {
-			$name     = esc_html( $_name );
-			$quantity = esc_html( $_quantity );
+		foreach ( $item['items'] as $i ) {
+			$name     = esc_html( $i['item_name'] );
+			$quantity = esc_html( (int) $i['quantity'] );
 			$output   .= "<div class='tribe-line-item'>{$quantity} - {$name}</div>";
 		}
 
