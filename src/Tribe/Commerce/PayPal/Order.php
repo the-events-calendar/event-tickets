@@ -723,7 +723,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		do_action( 'tribe_tickets_tpp_after_before_delete', $this->post_id, $delete_attendees, $force_delete, $this );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
-		$paypal = tribe('tickets.commerce.paypal');
+		$paypal = tribe( 'tickets.commerce.paypal' );
 
 		foreach ( $this->attendees as $attendee ) {
 			if ( $delete_attendees ) {
