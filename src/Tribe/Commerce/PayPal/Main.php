@@ -2549,7 +2549,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			function( $a ) {
 				return array_reduce(
 					array_keys($a),
-					function ($carry, $key) use ($a) {
+					function ( $carry, $key ) use ( $a ) {
 						if ( 'name' === $key ) {
 							$carry = $a[ $key ];
 						}
