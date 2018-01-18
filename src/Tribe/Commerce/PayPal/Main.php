@@ -1939,7 +1939,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the format [ <order_number> => <order_details> ]
 	 */
 	public function get_orders_by_post_id( $post_id, array $ticket_ids = null ) {
-		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array( 'post_id' => $post_id, 'ticket_id' => $ticket_ids ) );
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array( 'post_id' => $post_id, 'ticket_id' => $ticket_ids, 'posts_per_page' => - 1 ) );
 
 		$attendees_by_order = array();
 		$statuses           = $this->get_order_statuses();
@@ -2254,7 +2254,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return int
 	 */
-	protected function increase_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function increase_ticket_sales_by( $ticket_id, $qty = 1 ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
 
@@ -2271,7 +2271,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return int
 	 */
-	protected function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
 	}
@@ -2376,6 +2376,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$denied_orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array(
 			'ticket_id'   => $ticket_id,
 			'post_status' => Tribe__Tickets__Commerce__PayPal__Stati::$denied,
+			'posts_per_page' => -1,
 		) );
 
 		$denied = 0;

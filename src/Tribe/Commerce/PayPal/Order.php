@@ -17,39 +17,39 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @var array
 	 */
-	public $attendees = array();
+	protected $attendees = array();
 	/**
 	 * The PayPal Order ID (hash).
 	 *
 	 * @var string
 	 */
-	public $paypal_order_id = '';
+	protected $paypal_order_id = '';
 	/**
 	 * The order post ID in the WordPress database.
 	 *
 	 * @var int
 	 */
-	public $post_id;
+	protected $post_id;
 	/**
 	 * The order post status.
 	 *
 	 * @var string
 	 */
-	public $status = '';
+	protected $status = '';
 
 	/**
 	 * All the ticket post IDs related to the Order.
 	 *
 	 * @var array
 	 */
-	public $ticket_ids = array();
+	protected $ticket_ids = array();
 
 	/**
 	 * All the post IDs related to the Order.
 	 *
 	 * @var array
 	 */
-	public $post_ids;
+	protected $post_ids;
 
 	/**
 	 * The meta key that stores the order PayPal hashed meta.
@@ -256,13 +256,20 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @type int    $ticket_id ID, or array of IDs, of the ticket(s) Orders should be related to.
 	 * }
 	 *
-	 * @return Tribe__Tickets__Commerce__PayPal__Order[] $criteria
+	 * @return Tribe__Tickets__Commerce__PayPal__Order[]
 	 */
 	public static function find_by( array $args = array() ) {
 		$args = wp_parse_args( $args, array(
 			'post_type'   => Tribe__Tickets__Commerce__PayPal__Main::ORDER_OBJECT,
 			'post_status' => 'any',
 		) );
+
+		$cache = new Tribe__Cache;
+		$cache_key = self::cache_prefix( 'find_by_' . $cache->make_key( $args ) );
+
+		if ( false !== $cached = $cache[ $cache_key ] ) {
+			return $cached;
+		}
 
 		$meta_query = isset( $args['meta_query'] )
 			? $args['meta_query']
@@ -305,7 +312,20 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 			$orders = array();
 		}
 
+		$cache[ $cache_key ] = $orders;
+
 		return $orders;
+	}
+
+	/**
+	 * Returns a prefixed cache key.
+	 *
+	 * @param string $key
+	 *
+	 * @return string
+	 */
+	public static function cache_prefix( $key ) {
+		return __CLASS__ . $key;
 	}
 
 	/**
@@ -408,7 +428,9 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 			return $this->meta;
 		}
 
-		return isset( $this->meta[ $key ] ) ? $this->meta[ $key ] : null;
+		return isset( $this->meta[ $key ] )
+			? $this->meta[ $key ]
+			: get_post_meta( $this->post_id, $key, true );
 	}
 
 	/**
@@ -651,5 +673,90 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		return ! empty( $quantities )
 			? array_sum( array_map( 'intval', $quantities ) )
 			: 0;
+	}
+
+	/**
+	 * Returns the post IDs related ot this Order.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_type Only return post IDs for
+	 *                          this post type.
+	 *
+	 * @return array
+	 */
+	public function get_related_post_ids( $post_type = null ) {
+		$post_ids = $this->post_ids;
+
+		if ( null !== $post_type ) {
+			$candidates = array_map( 'get_post', $post_ids );
+			$filtered   = wp_list_filter( $candidates, [ 'post_type' => $post_type ] );
+			$post_ids   = wp_list_pluck( $filtered, 'ID' );
+		}
+
+		return $post_ids;
+	}
+
+	/**
+	 * Deletes an Order and its related data from the database.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $delete_attendees Whether Attendees for the order should be deleted or not.
+	 * @param bool $force_delete     Whether the Order deletion should be forced or not.
+	 *
+	 * @return false|null|\WP_Post The delete operation exit status.
+	 *
+	 * @see   wp_delete_post()
+	 */
+	public function delete( $delete_attendees = true, $force_delete = false ) {
+		/**
+		 * Fires before an Order, and its related data, is deleted.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|false|null $post_id          The Order post ID
+		 * @param bool               $delete_attendees Whether attendees should be deleted or not
+		 * @param bool               $force_delete     Whether the Order deletion should be forced or not
+		 * @param Tribe__Tickets__Commerce__PayPal__Order This Order object
+		 */
+		do_action( 'tribe_tickets_tpp_after_before_delete', $this->post_id, $delete_attendees, $force_delete, $this );
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe('tickets.commerce.paypal');
+
+		foreach ( $this->attendees as $attendee ) {
+			if ( $delete_attendees ) {
+				$paypal->delete_ticket( (int) $attendee['event_id'], (int) $attendee['attendee_id'] );
+			}
+			$this->remove_attendee( (int) $attendee['attendee_id'] );
+		}
+
+		$deleted = wp_delete_post( $this->post_id, $force_delete );
+
+		/**
+		 * Fires after an Order, and its related data, is deleted.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|false|null $deleted          The exit status of the delete operation
+		 * @param bool               $delete_attendees Whether attendees have been deleted or not
+		 * @param bool               $force_delete     Whether the Order deletion was forced or not
+		 * @param Tribe__Tickets__Commerce__PayPal__Order This Order object
+		 */
+		do_action( 'tribe_tickets_tpp_after_after_delete', $deleted, $delete_attendees, $force_delete, $this );
+
+		return $deleted;
+	}
+
+	/**
+	 * Returns the post IDs of the tickets related to this Order.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_ticket_ids() {
+		return $this->ticket_ids;
 	}
 }
