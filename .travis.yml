@@ -83,7 +83,7 @@ before_script:
   - cd the-events-calendar
   - git fetch
   # if the plugin has the current branch as a remote use that
-  - if [ $(git branch -r | grep $CURRENT_BRANCH) ]; then $(git checkout $CURRENT_BRANCH -v); fi
+  - if [ ! -z $(git branch -r | grep $CURRENT_BRANCH) ]; then $(git checkout $CURRENT_BRANCH -v); fi
   - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 
