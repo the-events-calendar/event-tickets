@@ -12,19 +12,6 @@ class Tribe__Tickets__Commerce__Currency {
 	/* Currency mapping code to symbol and position */
 	public $currency_code_options_map = array();
 
-
-	/**
-	 * Get (and instantiate, if necessary) the instance of the class
-	 *
-	 * @since TBD
-	 *
-	 * @static
-	 * @return Tribe__Tickets__Commerce__Currency
-	 */
-	public static function get_instance() {
-		return tribe( 'tickets.commerce.currency' );
-	}
-
 	/**
 	 * Class constructor
 	 *
@@ -56,7 +43,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	public function filter_currency_symbol( $unused_currency_symbol, $unused_post_id = null ) {
+	public function filter_currency_symbol( $unused_currency_symbol, $post_id = null ) {
 		return $this->get_currency_symbol( $post_id );
 	}
 
@@ -82,7 +69,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	public function reverse_currency_symbol_position( $unused_reverse_position, $unused_post_id = null ) {
+	public function reverse_currency_symbol_position( $unused_reverse_position, $post_id = null ) {
 
 		return $this->get_currency_symbol_position( $post_id ) !== 'prefix';
 	}

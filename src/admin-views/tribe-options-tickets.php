@@ -173,7 +173,7 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 	 *
 	 * @since TBD
 	 */
-	$paypal_currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', Tribe__Tickets__Commerce__Currency::get_instance()->generate_currency_code_options() );
+	$paypal_currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', tribe_callback( 'tickets.commerce.currency', 'generate_currency_code_options' ) );
 
 	$paypal_ipn_notify_url_setting_link = add_query_arg(
 		array( 'cmd' => '_profile-ipn-notify' ),
