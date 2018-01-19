@@ -25,8 +25,8 @@ addons:
     - tribe.localhost
 
 # disable the default submodule logic
-#git:
-#  submodules: false
+git:
+  submodules: false
 
 cache:
   directories:
@@ -52,7 +52,7 @@ before_install:
   - mysql -e "create database IF NOT EXISTS $TEST_DB_NAME;" -uroot
 
   # tweak git to correctly work with submodules
-  #  - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
+  - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 
 install:
@@ -79,6 +79,7 @@ before_script:
   - cd wp-content/plugins
   - git clone --branch=$TEC_BRANCH https://github.com/moderntribe/the-events-calendar.git the-events-calendar
   - cd the-events-calendar
+  - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 
   # get back to the build folder
