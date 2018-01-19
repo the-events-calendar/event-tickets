@@ -35,8 +35,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 		$this->currency_code = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 
-		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol') );
-		add_filter( 'tribe_reverse_currency_position', array( $this, 'get_currency_symbol_position') );
+		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol'), 10, 2 );
+		add_filter( 'tribe_reverse_currency_position', array( $this, 'reverse_currency_symbol_position'), 10, 2 );
 	}
 
 	/**
@@ -51,15 +51,40 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
+	 * Get and allow filtering of the currency symbol
+	 * @param int|null $post_id
+	 *
+	 * @return string
+	 */
+	public function filter_currency_symbol( $currency_symbol, $post_id = null ) {
+		return $this->get_currency_symbol( $post_id );
+	}
+
+	/**
 	 * Get and allow filtering of the currency symbol position
 	 * @param int|null $post_id
 	 *
 	 * @return string
 	 */
 	public function get_currency_symbol_position( $post_id = null ) {
-		$currency_position = isset( $this->currency_code_options_map[ $this->currency_code ]['position'] );
+		if ( ! isset( $this->currency_code_options_map[ $this->currency_code ]['position'] ) ) {
+			$currency_position = 'prefix';
+		} else {
+			$currency_position = $this->currency_code_options_map[ $this->currency_code ]['position'];
+		}
 
 		return apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
+	}
+
+	/**
+	 * Filters of the currency symbol position on event displays
+	 * @param int|null $post_id
+	 *
+	 * @return string
+	 */
+	public function reverse_currency_symbol_position( $reverse_position, $post_id = null ) {
+
+		return $this->get_currency_symbol_position( $post_id ) !== 'prefix';
 	}
 
 	/**
@@ -74,7 +99,7 @@ class Tribe__Tickets__Commerce__Currency {
 		$currency_symbol   = $this->get_currency_symbol( $post_id );
 		$currency_position = $this->get_currency_symbol_position( $post_id );
 
-		$cost = $currency_position === 'after' ? $cost . $currency_symbol : $currency_symbol . $cost;
+		$cost = $currency_position === 'prefix' ? $currency_symbol . $cost : $cost . $currency_symbolcd;
 
 		return $cost;
 	}
@@ -105,7 +130,7 @@ class Tribe__Tickets__Commerce__Currency {
 			'CZK' => array(
 				'name'     => __( 'Czech Koruna (CZK)', 'event-tickets' ),
 				'symbol'   => '&#x4b;&#x10d;',
-				'position' => 'after',
+				'position' => 'postfix',
 			),
 			'DKK' => array(
 				'name'   => __( 'Danish Krone (DKK)', 'event-tickets' ),
