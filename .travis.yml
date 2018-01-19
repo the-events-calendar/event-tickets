@@ -64,7 +64,7 @@ before_script:
   - mkdir -p /tmp/tools $WP_ROOT_FOLDER
 
   # get the current branch name
-  - export CURRENT_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+  - export CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && echo "Current Branch is $CURRENT_BRANCH"
 
   # install wp-cli
   - wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P /tmp/tools/
@@ -82,8 +82,8 @@ before_script:
   - git clone --branch=master https://github.com/moderntribe/the-events-calendar.git the-events-calendar
   - cd the-events-calendar
   - git fetch
-  # if the plugin has the current branch use that
-  - if [ $(git branch -r | grep $CURRENT_BRANCH) ]; then $(git checkout $CURRENT_BRANCH); fi
+  # if the plugin has the current branch as a remote use that
+  - if [ $(git branch -r | grep $CURRENT_BRANCH) ]; then $(git checkout $CURRENT_BRANCH -v); fi
   - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 
