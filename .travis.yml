@@ -90,8 +90,8 @@ before_script:
   - sudo ln -s /etc/nginx/sites-available/$WP_DOMAIN /etc/nginx/sites-enabled/
 
   # move the plugin into WordPress folder
-  - mv $TRAVIS_BUILD_DIR $WP_ROOT_FOLDER/wp-content/plugins/the-events-calendar
-  - export PLUGIN_DIR="$WP_ROOT_FOLDER/wp-content/plugins/the-events-calendar"
+  - mv $TRAVIS_BUILD_DIR $WP_ROOT_FOLDER/wp-content/plugins/event-tickets
+  - export PLUGIN_DIR="$WP_ROOT_FOLDER/wp-content/plugins/event-tickets"
 
   # activate the plugins in WordPress
   - cd $WP_ROOT_FOLDER
