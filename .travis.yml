@@ -76,7 +76,7 @@ before_script:
   - wp core install --url="$WP_URL" --title="TEC Tests" --admin_user="$WP_ADMIN_USERNAME" --admin_password="$WP_ADMIN_PASSWORD" --admin_email="admin@$WP_DOMAIN" --skip-email
 
   # clone The Events Calendar in the plugins folder
-  - (cd $WP_ROOT_FOLDER/wp-content/plugins; git clone --depth=50 --branch=$TEC_BRANCH https://github.com/moderntribe/the-events-calendar.git the-events-calendar)
+  - (cd $WP_ROOT_FOLDER/wp-content/plugins; git clone --branch=$TEC_BRANCH https://github.com/moderntribe/the-events-calendar.git the-events-calendar; git submodule update --init --recursive)
 
   # get back to the build folder
   - cd $TRAVIS_BUILD_DIR
