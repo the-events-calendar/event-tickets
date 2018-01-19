@@ -67,10 +67,11 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * it should increase sales by 1 when an attendee is going
 	 */
 	public function it_should_increase_sales_by_1_when_an_attendee_is_going() {
-		$ticket_id = $this->setup_POST( 'yes', 10 );
+		$post_id   = $this->factory->post->create();
+		$ticket_id = $this->make_ticket( 10, $post_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets();
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details(['order_status' => 'yes']) );
 
 		$this->assertEquals( 11, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -80,10 +81,11 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * it should not increase sales when an attendee is not going
 	 */
 	public function it_should_not_increase_sales_when_an_attendee_is_not_going() {
-		$ticket_id = $this->setup_POST( 'no', 10 );
+		$post_id   = $this->factory->post->create();
+		$ticket_id = $this->make_ticket( 10, $post_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets();
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
 
 		$this->assertEquals( 10, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -188,16 +190,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'order_status' => $status
 		];
 		$post_id                        = $this->factory()->post->create();
-		$ticket_id                      = $_POST['product_id'] = $this->factory()->post->create(
-			[
-				'post_type'   => 'tribe_rsvp_tickets',
-				'post_status' => 'publish',
-				'meta_input'  => [
-					'total_sales'           => $sales,
-					'_tribe_rsvp_for_event' => $post_id,
-				]
-			]
-		);
+		$ticket_id                      = $this->make_ticket( $sales, $post_id );
 		$_POST["quantity_{$ticket_id}"] = 1;
 
 		return $ticket_id;
@@ -262,4 +255,28 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		return [ $data, $ticket_id, $order_id, $post_id ];
 	}
 
+	protected function make_ticket( $sales, $post_id ) {
+		$ticket_id = $_POST['product_id'] = $this->factory()->post->create(
+			[
+				'post_type'   => 'tribe_rsvp_tickets',
+				'post_status' => 'publish',
+				'meta_input'  => [
+					'total_sales'           => $sales,
+					'_tribe_rsvp_for_event' => $post_id,
+				]
+			]
+		);
+
+		return $ticket_id;
+	}
+
+	protected function fake_attendee_details(array $overrides = array()) {
+		return array_merge( array(
+			'full_name'    => 'Jane Doe',
+			'email'        => 'jane@doe.com',
+			'order_status' => 'yes',
+			'optout'       => 'no',
+			'order_id'     => RSVP::generate_order_id(),
+		), $overrides );
+	}
 }
