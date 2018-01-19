@@ -82,7 +82,7 @@ before_script:
   - git clone --branch=master https://github.com/moderntribe/the-events-calendar.git the-events-calendar
   - cd the-events-calendar
   - git fetch
-  # if the plugin has the current branch as a remote use that
+  # if the plugin has the current branch use that
   - if [ $(git branch -r | grep $CURRENT_BRANCH) ]; then $(git checkout $CURRENT_BRANCH); fi
   - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
