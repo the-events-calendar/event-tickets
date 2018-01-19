@@ -39,7 +39,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 		$payment_status = trim( strtolower( $data['payment_status'] ) );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Stati $stati */
-		$stati = tribe( 'ticket.commerce.paypal.stati' );
+		$stati = tribe( 'tickets.commerce.paypal.stati' );
 
 		if ( $stati->is_complete_transaction_status( $payment_status ) ) {
 			// since the purchase has completed, reset the invoice number

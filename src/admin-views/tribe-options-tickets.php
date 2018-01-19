@@ -82,7 +82,7 @@ $tickets_fields = array(
 		'options'         => $all_post_types,
 		'can_be_empty'    => false,
 		'validation_type' => 'options_multi',
-	)
+	),
 );
 
 /**
@@ -345,6 +345,59 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 		)
 	);
 }
+
+$site_name = stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
+$tickets_fields = array_merge(
+	$tickets_fields,
+	array(
+		'ticket-email-heading' => array(
+			'type' => 'html',
+			'html' => '<h3>' . __( 'Emails', 'event-tickets' ) . '</h3>',
+		),
+		'ticket-email-advice'  => array(
+			'type' => 'html',
+			'html' => '<p>' . apply_filters(
+				'tribe_tickets_settings_email_advice',
+				__( 'These settings control the emails sent when an attendee RSVPs or purchases a ticket for an event.', 'event-tickets' )
+			) . '</p>',
+		),
+		'ticket-confirmation-email-sender-email' => array(
+			'type'            => 'email',
+			'label'           => esc_html__( 'Sender email address', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'Sender email address for the email sent to attendees.', 'event-tickets' ),
+			'size'            => 'medium',
+			'default'         => $current_user->user_email,
+			'validation_type' => 'email',
+		),
+		'ticket-confirmation-email-sender-name' => array(
+			'type'                => 'text',
+			'label'               => esc_html__( 'Sender name', 'event-tickets' ),
+			'tooltip'             => esc_html__( 'Sender name for the email sent to attendees.', 'event-tickets' ),
+			'size'                => 'medium',
+			'default'             => $current_user->user_nicename,
+			'validation_callback' => 'is_string',
+			'validation_type'     => 'textarea',
+		),
+		'ticket-confirmation-email-subject' => array(
+			'type'                => 'text',
+			'label'               => esc_html__( 'Ticket email subject line', 'event-tickets' ),
+			'tooltip'             => esc_html__( 'Subject line for the ticket email sent to attendees.', 'event-tickets' ),
+			'size'                => 'large',
+			'default'             => 'Your tickets from ' . $site_name . '!',
+			'validation_callback' => 'is_string',
+			'validation_type'     => 'textarea',
+		),
+		'rsvp-confirmation-email-subject' => array(
+			'type'                => 'text',
+			'label'               => esc_html__( 'RSVP email subject line', 'event-tickets' ),
+			'tooltip'             => esc_html__( 'Subject line for the RSVP email sent to attendees.', 'event-tickets' ),
+			'size'                => 'large',
+			'default'             => 'Your RSVPs from ' . $site_name . '!',
+			'validation_callback' => 'is_string',
+			'validation_type'     => 'textarea',
+		),
+	)
+);
 
 $tickets_fields = array_merge( $tickets_fields, array(
 	'tribe-form-content-end' => array(
