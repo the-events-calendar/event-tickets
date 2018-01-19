@@ -35,8 +35,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 		$this->currency_code = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 
-		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol'), 10, 2 );
-		add_filter( 'tribe_reverse_currency_position', array( $this, 'reverse_currency_symbol_position'), 10, 2 );
+		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol' ), 10, 2 );
+		add_filter( 'tribe_reverse_currency_position', array( $this, 'reverse_currency_symbol_position' ), 10, 2 );
 	}
 
 	/**
@@ -56,7 +56,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	public function filter_currency_symbol( $currency_symbol, $post_id = null ) {
+	public function filter_currency_symbol( $unused_currency_symbol, $unused_post_id = null ) {
 		return $this->get_currency_symbol( $post_id );
 	}
 
@@ -82,7 +82,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	public function reverse_currency_symbol_position( $reverse_position, $post_id = null ) {
+	public function reverse_currency_symbol_position( $unused_reverse_position, $unused_post_id = null ) {
 
 		return $this->get_currency_symbol_position( $post_id ) !== 'prefix';
 	}
