@@ -1918,10 +1918,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *             any other case.
 	 */
 	protected function parse_ticket_quantity( $product_id ) {
-		if ( empty( $_POST["quantity_{$product_id}"] ) ) {
+		if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
 			return 0;
 		}
 
-		return (int) $_POST["quantity_{$product_id}"];
+		return (int) $_POST[ "quantity_{$product_id}" ];
 	}
 }
