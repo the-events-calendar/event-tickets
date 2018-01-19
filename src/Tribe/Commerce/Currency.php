@@ -35,8 +35,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 		$this->currency_code = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 
-		add_filter( 'tribe_events_cost_utils_formatted_events_cost_symbol', array( $this, 'get_currency_symbol') );
-		add_filter( 'tribe_events_cost_utils_formatted_events_cost_symbol_position', array( $this, 'get_currency_symbol_position') );
+		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol') );
+		add_filter( 'tribe_reverse_currency_position', array( $this, 'get_currency_symbol_position') );
 	}
 
 	/**
@@ -46,14 +46,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_currency_symbol( $post_id = null ) {
-		$code = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 		$symbol = $this->currency_code_options_map[ $this->currency_code ]['symbol'];
-	error_log(
-		print_r(
-			$code,
-			true
-		)
-	);
 		return apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
 	}
 
@@ -64,15 +57,18 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function get_currency_symbol_position( $post_id = null ) {
-		if ( isset( $this->currency_code_options_map[ $this->currency_code ]['position'] ) ) {
-			$currency_position = $this->currency_code_options_map[ $this->currency_code ]['position'];
-		} else {
-			$currency_position = 'prefix';
-		}
+		$currency_position = isset( $this->currency_code_options_map[ $this->currency_code ]['position'] );
 
 		return apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
 	}
 
+	/**
+	 * Format the currency using the currency_code_options_map
+	 * @param      $cost
+	 * @param null $post_id
+	 *
+	 * @return string
+	 */
 	public function format_currency( $cost, $post_id = null ) {
 		$post_id = Tribe__Main::post_id_helper( $post_id );
 		$currency_symbol   = $this->get_currency_symbol( $post_id );
@@ -215,5 +211,4 @@ class Tribe__Tickets__Commerce__Currency {
 			$this->currency_code_options_map
 		);
 	}
-
 }
