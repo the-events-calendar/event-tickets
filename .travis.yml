@@ -44,7 +44,6 @@ env:
     - TEST_DB_NAME="test"
     - WP_ADMIN_USERNAME="admin"
     - WP_ADMIN_PASSWORD="password"
-    - TEC_BRANCH="master"
 
 before_install:
   # create the databases needed for the tests
@@ -64,6 +63,9 @@ before_script:
   # set up folders
   - mkdir -p /tmp/tools $WP_ROOT_FOLDER
 
+  # get the current branch name
+  - export CURRENT_BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
+
   # install wp-cli
   - wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P /tmp/tools/
   - chmod +x /tmp/tools/wp-cli.phar && mv /tmp/tools/wp-cli.phar /tmp/tools/wp
@@ -77,8 +79,11 @@ before_script:
 
   # clone The Events Calendar in the plugins folder
   - cd wp-content/plugins
-  - git clone --branch=$TEC_BRANCH https://github.com/moderntribe/the-events-calendar.git the-events-calendar
+  - git clone --branch=master https://github.com/moderntribe/the-events-calendar.git the-events-calendar
   - cd the-events-calendar
+  - git fetch
+  # if the plugin has the current branch as a remote use that
+  - if [ $(git branch -r | grep $CURRENT_BRANCH) ]; then $(git checkout $CURRENT_BRANCH); fi
   - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 
