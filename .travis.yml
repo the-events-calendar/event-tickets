@@ -64,7 +64,7 @@ before_script:
   - mkdir -p /tmp/tools $WP_ROOT_FOLDER
 
   # get the current branch name
-  - export CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD) && echo "Current Branch is $CURRENT_BRANCH"
+  - export CURRENT_BRANCH=$(git branch | grep \* | cut -d ' ' -f 2) && echo "Current Branch is $CURRENT_BRANCH"
 
   # install wp-cli
   - wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar -P /tmp/tools/
