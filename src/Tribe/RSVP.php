@@ -1749,8 +1749,14 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		);
 
 		foreach ( $required_details as $required_detail ) {
-			if ( empty( $attendee_details[ $required_detail ] ) ) {
+			if ( ! isset( $attendee_details[ $required_detail ] ) ) {
 				return false;
+			}
+			if ( $required_detail !== 'optout' ) {
+				// some details should not be empty
+				if ( empty( $attendee_details[ $required_detail ] ) ) {
+					return false;
+				}
 			}
 		}
 
