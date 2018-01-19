@@ -134,10 +134,12 @@ if ( ! $is_tickets_plus_available ) {
 		'<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
 		__( 'Events Tickets Plus', 'tribe-common' )
 	);
+
 	$plus_message = sprintf(
 		__( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you\'re looking for more advanced features, please consider %s.', 'event-tickets' ),
 		$plus_link
 	);
+
 	$tickets_fields['ticket-paypal-et-plus-header'] = array(
 		'type' => 'html',
 		'html' => '<p>' . $plus_message . '</p>',
@@ -155,6 +157,7 @@ $tickets_fields['ticket-paypal-enable'] = array(
 
 if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 	$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
+
 	if ( ! empty( $pages ) ) {
 		$pages        = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
 		$default_page = reset( $pages );
@@ -162,20 +165,21 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 		$pages        = array( 0 => __( 'There are no published pages', 'event-tickets' ) );
 		$default_page = null;
 	}
+
 	$tpp_success_shortcode = 'tribe-tpp-success';
+
 	/**
-	 * Filters the available currency code options for TPP
+	 * Filters the available Tribe__Tickets__Commerce__Currency currency code options for TPP
 	 *
 	 * @since TBD
-	 *
-	 * @param array $currency_code_options
 	 */
-	$paypal_currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', Tribe__Tickets__Commerce__PayPal__Main::get_instance()->generate_currency_code_options() );
+	$paypal_currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', Tribe__Tickets__Commerce__Currency::get_instance()->generate_currency_code_options() );
 
 	$paypal_ipn_notify_url_setting_link = add_query_arg(
 		array( 'cmd' => '_profile-ipn-notify' ),
 		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 	);
+
 	$ipn_notification_settings_link = '<a href="'
 	                                  . $paypal_ipn_notify_url_setting_link
 	                                  . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update', 'event-tickets' )
@@ -185,6 +189,7 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 		array( 'cmd' => '_display-ipns-history' ),
 		tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 	);
+
 	$ipn_notification_history_link = '<a href="'
 	                                 . $paypal_ipn_notification_history_link
 	                                 . '" target="_blank">'
@@ -273,7 +278,7 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 				'validation_callback' => 'is_string',
 				'validation_type'     => 'textarea',
 			),
-			'ticket-paypal-currency-code' => array(
+			'ticket-commerce-currency-code' => array(
 				'type'            => 'dropdown',
 				'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
 				'tooltip'         => esc_html__( 'The currency that will be used for Tribe Commerce transactions.', 'event-tickets' ),
