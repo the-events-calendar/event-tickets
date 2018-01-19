@@ -608,10 +608,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			tribe_exit();
 		}
 
-
-		/** @var Tribe__Tickets__Commerce__PayPal__Stati $stati */
-		$stati = tribe('tickets.commerce.paypal.stati');
-
 		// Iterate over each product
 		foreach ( (array) $transaction_data['items'] as $item ) {
 			$order_attendee_id = 0;
@@ -675,7 +671,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 */
 			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $transaction_data );
 
-			$existing_attendees = $this->get_attendees_by_order_id( $order_id );
+			$existing_attendees = $this->get_attendees_by_order_id( $order_id, $product_id );
 
 			if ( ! empty( $existing_attendees ) ) {
 				$existing_attendees = array_filter( array_map( 'get_post', wp_list_pluck( $existing_attendees, 'attendee_id' ) ) );
@@ -1399,27 +1395,42 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get attendees by order id
+	 * Get attendees by order id and, optionally, ticket ID.
 	 *
 	 * @since TBD
 	 *
-	 * @param $order_id
+	 * @param int $order_id An Order PayPal ID (hash)
+	 * @param int $product_id A ticket post ID
 	 *
 	 * @return array
 	 */
-	public function get_attendees_by_order_id( $order_id ) {
+	public function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
 		if ( empty( $order_id ) ) {
 			return array();
 		}
 
-		$attendees_query = new WP_Query( array(
+		$args = array(
 			'posts_per_page' => - 1,
 			'post_type'      => $this->attendee_object,
-			'meta_key'       => $this->order_key,
-			'meta_value'     => esc_attr( $order_id ),
+			'meta_query'     => array(
+				array(
+
+					'key'   => $this->order_key,
+					'value' => esc_attr( $order_id ),
+				),
+			),
 			'orderby'        => 'ID',
 			'order'          => 'ASC',
-		) );
+		);
+
+		if ( null !== $ticket_id ) {
+			$args['meta_query'][] = array(
+				'key'   => $this->attendee_product_key,
+				'value' => $ticket_id,
+			);
+		}
+
+		$attendees_query = new WP_Query( $args );
 
 		if ( ! $attendees_query->have_posts() ) {
 			return array();

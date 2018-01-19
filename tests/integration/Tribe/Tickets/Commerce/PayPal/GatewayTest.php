@@ -114,7 +114,7 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_use_the_sandbox_url_when_sandbox_is_enabled() {
 		tribe_update_option( 'ticket-paypal-sandbox', 1 );
 
-		$this->assertEquals( 'https://www.sandbox.paypal.com/cgi-bin/webscr', tribe( 'tickets.commerce.paypal.gateway' )->get_cart_url(), 'The sandbox URL should be present' );
+		$this->assertEquals( 'https://www.sandbox.paypal.com/cgi-bin/webscr/', tribe( 'tickets.commerce.paypal.gateway' )->get_cart_url(), 'The sandbox URL should be present' );
 	}
 
 	/**
@@ -125,6 +125,6 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_use_the_production_url_when_sandbox_is_disabled() {
 		tribe_update_option( 'ticket-paypal-sandbox', 0 );
 
-		$this->assertEquals( 'https://www.paypal.com/cgi-bin/webscr', tribe( 'tickets.commerce.paypal.gateway' )->get_cart_url(), 'The sandbox URL should be present' );
+		$this->assertEquals( 'https://www.paypal.com/cgi-bin/webscr/', tribe( 'tickets.commerce.paypal.gateway' )->get_cart_url(), 'The sandbox URL should be present' );
 	}
 }
