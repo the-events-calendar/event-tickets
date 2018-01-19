@@ -86,7 +86,7 @@ class Tribe__Tickets__Commerce__Currency {
 		$currency_symbol   = $this->get_currency_symbol( $post_id );
 		$currency_position = $this->get_currency_symbol_position( $post_id );
 
-		$cost = $currency_position === 'prefix' ? $currency_symbol . $cost : $cost . $currency_symbolcd;
+		$cost = $currency_position === 'prefix' ? $currency_symbol . $cost : $cost . $currency_symbol;
 
 		return $cost;
 	}
