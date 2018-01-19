@@ -211,6 +211,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.orders.sales', 'Tribe__Tickets__Commerce__PayPal__Orders__Sales' );
 		tribe_singleton( 'tickets.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
+		tribe_singleton( 'tickets.commerce.paypal.currency', 'Tribe__Tickets__Commerce__Currency' );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -1774,7 +1775,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$price = get_post_meta( $product_id, '_price', true );
-		$price = tribe_format_currency( $price, $product_id );
+		$price = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $price, $product_id );
 
 		$price_html = '<span class="tribe-tickets-price-amount amount">' . $price . '</span>';
 
@@ -2386,4 +2387,5 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		return max( 0, $denied );
 	}
+
 }
