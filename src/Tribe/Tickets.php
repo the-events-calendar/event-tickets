@@ -296,53 +296,60 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function get_ticket( $post_id, $ticket_id ) {}
 
 		/**
-		 * Retrieve the Query args to fetch all the Tickets related to a post
+		 * Retrieve the Query args to fetch all the Tickets.
 		 *
 		 * @since  4.6
 		 *
-		 * @param  int|WP_Post $post
+		 * @param  int|WP_Post $post_id Build the args to query only
+		 *                           for tickets related to this post ID.
 		 *
 		 * @return array
 		 */
-		public function get_tickets_query_args( $post ) {
+		public function get_tickets_query_args( $post_id = null ) {
 			$args = array(
 				'post_type'      => array( $this->ticket_object ),
-				'posts_per_page' => -1,
+				'posts_per_page' => - 1,
 				'fields'         => 'ids',
 				'post_status'    => 'publish',
-				'orderby'       => 'menu_order',
+				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
-				'meta_query'     => array(
+			);
+
+			if ( ! empty( $post_id ) ) {
+				$args['meta_query'] = array(
 					array(
 						'key'     => $this->event_key,
-						'value'   => $post,
+						'value'   => $post_id,
 						'compare' => '=',
 					),
-				),
-			);
+				);
+			}
 
 			return $args;
 		}
 
 		/**
-		 * Retrieve the ID numbers of all tickets of an event
+		 * Retrieve the ID numbers of all tickets assigned to an event.
 		 *
 		 * @since  4.6
 		 *
-		 * @param  int|WP_Post $post
+		 * @param  int|WP_Post $post Only get tickets assigned to this post ID.
 		 *
 		 * @return array
 		 */
-		public function get_tickets_ids( $post ) {
-			if ( ! $post instanceof WP_Post ) {
-				$post = get_post( $post );
+		public function get_tickets_ids( $post = null ) {
+			if ( ! empty( $post ) ) {
+				if ( ! $post instanceof WP_Post ) {
+					$post = get_post( $post );
+				}
+				if ( ! $post instanceof WP_Post ) {
+					return false;
+				}
+				$args = $this->get_tickets_query_args( $post->ID );
+			} else {
+				$args = $this->get_tickets_query_args();
 			}
 
-			if ( ! $post instanceof WP_Post ) {
-				return false;
-			}
-
-			$args = $this->get_tickets_query_args( $post->ID );
 			$query = new WP_Query( $args );
 
 			return $query->posts;
