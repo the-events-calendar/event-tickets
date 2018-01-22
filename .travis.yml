@@ -83,8 +83,9 @@ before_script:
   - cd the-events-calendar
   - git fetch
   # if the plugin has the current branch as a remote use that
-  - export HAS_BRANCH=$(git branch -r | grep $CURRENT_BRANCH) && echo "found branch - $HAS_BRANCH"
-  - if [ ! -z $HAS_BRANCH ]; then $(git checkout $CURRENT_BRANCH >/dev/null); fi
+  - export HAS_BRANCH=$(git branch -r | grep $CURRENT_BRANCH) && echo "Found current branch - $HAS_BRANCH"
+  - export HAS_TRAVIS_BRANCH=$(git branch -r | grep $TRAVIS_BRANCH) && echo "Found Travis Branch - $TRAVIS_BRANCH"
+  - if [ ! -z $HAS_BRANCH ]; then $(git checkout $CURRENT_BRANCH >/dev/null); else if [ ! -z $HAS_TRAVIS_BRANCH ]; then $(git checkout $TRAVIS_BRANCH >/dev/null); fi; fi
   - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
 
