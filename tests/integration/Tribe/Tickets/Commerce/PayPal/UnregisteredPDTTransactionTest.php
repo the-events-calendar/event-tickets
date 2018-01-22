@@ -34,6 +34,10 @@ class UnregisteredPDTTransactionTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_save_pdt_transaction_infoormation_to_database_when_no_identity_token_is_set() {
+		add_filter( 'tribe_tickets_commerce_paypal_handler', function () {
+			return 'pdt';
+		} );
+
 		$transaction_id = "1HA93120AS9545244";
 		// no PDT identity token set
 		tribe_update_option( 'ticket-paypal-identity-token', '' );

@@ -60,6 +60,7 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_instance_pdt_handler_if_identity_token_set_and_request_looks_like_pdt_request() {
+		$this->set_pdt_as_default_payment_gateway();
 		$_GET['tx']           = '223423424234234';
 		$this->identity_token = 'foobar';
 
@@ -88,6 +89,7 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_show_admin_notice_if_request_looks_like_pdt_but_identity_token_not_set() {
+		$this->set_pdt_as_default_payment_gateway();
 		$_GET['tx']           = '223423424234234';
 		$this->identity_token = '';
 		$this->notices->show_missing_identity_token_notice()->shouldBeCalled();
@@ -95,5 +97,11 @@ class GatewayTest extends \Codeception\TestCase\WPTestCase {
 		$sut = $this->make_instance();
 
 		$this->assertInstanceOf( Invalid::class, $sut->build_handler() );
+	}
+
+	protected function set_pdt_as_default_payment_gateway() {
+		add_filter( 'tribe_tickets_commerce_paypal_handler', function () {
+			return 'pdt';
+		} );
 	}
 }

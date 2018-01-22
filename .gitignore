@@ -8,11 +8,13 @@ node_modules
 compiler.jar
 *.ps1
 
-# local Codeception files
+# Tests - local config files
 codeception.yml
-.env.local
-tests/_output/*
 tests/*.suite.yml
+.env.local
+
+# Tests - local output files
+tests/_output
 
 vendor/
 vendor/badcow

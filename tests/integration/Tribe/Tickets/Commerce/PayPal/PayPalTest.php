@@ -1,11 +1,6 @@
 <?php
 namespace Tribe\Tickets\Commerce\PayPal;
 
-use Prophecy\Argument;
-use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
-use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
-use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
-use Tribe__Tickets__Commerce__PayPal__Handler__IPN as IPN;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
@@ -47,14 +42,6 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
-	private function make_instance() {
-		/** @var RSVP $instance */
-		$instance = ( new \ReflectionClass( PayPal::class ) )->newInstanceWithoutConstructor();
-		$instance->set_tickets_view( $this->tickets_view );
-
-		return $instance;
-	}
-
 	/**
 	 * Generates a ticket
 	 *
@@ -69,12 +56,14 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 				'post_title' => "Test Ticket for {$event_id}",
 				'post_type'  => tribe( 'tickets.commerce.paypal' )->ticket_object,
 				'meta_input' => [
-					'_tribe_tpp_for_event' => $event_id,
-					'_price'               => $price,
-					'_stock'               => 100,
-					'_manage_stock'        => 'yes',
-					'_ticket_start_date'   => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
-					'_ticket_end_date'     => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
+					'_tribe_tpp_for_event'                          => $event_id,
+					'_price'                                        => $price,
+					'_stock'                                        => 100,
+					'_capacity'                                     => 100,
+					'_manage_stock'                                 => 'yes',
+					'_ticket_start_date'                            => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
+					'_ticket_end_date'                              => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
+					\Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE => 'own',
 				],
 			]
 		);
@@ -83,11 +72,15 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * It should generate attendees for all tickets in transaction
+	 * It should generate attendees for all tickets in PDT transaction
 	 *
 	 * @test
 	 */
-	public function it_should_generate_attendees_for_all_tickets_in_transaction() {
+	public function it_should_generate_attendees_for_all_tickets_in_PDT_transaction() {
+		add_filter( 'tribe_tickets_commerce_paypal_handler', function () {
+			return 'pdt';
+		} );
+
 		$event_1_id = $this->factory()->post->create(
 			[
 				'meta_input' => [

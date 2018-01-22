@@ -147,7 +147,7 @@ EOT;
 		$this->assertArrayHasKey( 'items', $parsed_transaction, 'Transaction array has items' );
 		$this->assertCount( 1, $parsed_transaction['items'], 'Transaction should have 1 item' );
 
-		$item = current( $parsed_transaction['items'] );
+		$item = reset( $parsed_transaction['items'] );
 
 		$this->assertArrayHasKey( 'quantity', $item, 'Item has quantity' );
 		$this->assertArrayHasKey( 'item_name', $item, 'Item has name' );
@@ -244,7 +244,7 @@ EOT;
 		$this->assertArrayHasKey( 'items', $parsed_transaction, 'Transaction array has items' );
 		$this->assertCount( 2, $parsed_transaction['items'], 'Transaction should have 1 item' );
 
-		$item = current( $parsed_transaction['items'] );
+		$item = reset( $parsed_transaction['items'] );
 
 		$this->assertArrayHasKey( 'quantity', $item, 'Item has quantity' );
 		$this->assertArrayHasKey( 'item_name', $item, 'Item has name' );
@@ -359,7 +359,7 @@ EOT;
 		$this->assertArrayHasKey( 'items', $parsed_transaction, 'Transaction array has items' );
 		$this->assertCount( 2, $parsed_transaction['items'], 'Transaction should have 1 item' );
 
-		$item = current( $parsed_transaction['items'] );
+		$item = reset( $parsed_transaction['items'] );
 
 		$this->assertArrayHasKey( 'quantity', $item, 'Item has quantity' );
 		$this->assertArrayHasKey( 'item_name', $item, 'Item has name' );

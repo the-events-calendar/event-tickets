@@ -527,6 +527,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return  int
 		 */
 		public function capacity() {
+			if ( ! $this->managing_stock() ) {
+				return '';
+			}
+
 			if ( is_null( $this->capacity ) ) {
 				$this->capacity = tribe_tickets_get_capacity( $this->ID );
 			}
