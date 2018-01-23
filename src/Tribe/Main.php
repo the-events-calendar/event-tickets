@@ -200,7 +200,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
 		if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 			tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
-			tribe_singleton( 'tickets.commerce.currency', new Tribe__Tickets__Commerce__Currency );
+			tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
 		}
 	}
 
