@@ -168,11 +168,6 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 
 	$tpp_success_shortcode = 'tribe-tpp-success';
 
-	/**
-	 * Filters the available Tribe__Tickets__Commerce__Currency currency code options for TPP
-	 *
-	 * @since TBD
-	 */
 	$paypal_currency_code_options = tribe( 'tickets.commerce.currency' )->generate_currency_code_options();
 
 	$paypal_ipn_notify_url_setting_link = add_query_arg(
