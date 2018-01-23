@@ -1,12 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: camwyn
- * Date: 1/18/18
- * Time: 3:35 PM
- */
-
 class Tribe__Tickets__Commerce__Currency {
+
+	/**
+	 * @var string
+	 */
 	public $currency_code;
 
 	/* Currency mapping code to symbol and position */
@@ -18,10 +15,16 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @since TBD
 	 */
 	public function __construct() {
-		$this->generate_default_currency_map();
-
 		$this->currency_code = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
+		$this->generate_default_currency_map();
+	}
 
+	/**
+	 * Hooks the actions and filters required by the class.
+	 *
+	 * @since TBD
+	 */
+	public function hook(  ) {
 		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol' ), 10, 2 );
 		add_filter( 'tribe_reverse_currency_position', array( $this, 'reverse_currency_symbol_position' ), 10, 2 );
 	}
@@ -193,10 +196,15 @@ class Tribe__Tickets__Commerce__Currency {
 			),
 		);
 
-		$this->currency_code_options_map = apply_filters(
-			'tribe_tickets_commerce_currency_code_options_map',
-			$default_map
-		);
+		/**
+		 * Filters the currency code options map.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $default_map An associative array mapping currency codes
+		 *                           to their respective name and symbol.
+		 */
+		$this->currency_code_options_map = apply_filters( 'tribe_tickets_commerce_currency_code_options_map', $default_map );
 	}
 
 	/**
@@ -208,19 +216,29 @@ class Tribe__Tickets__Commerce__Currency {
 	 */
 	public function generate_currency_code_options() {
 		// Filtered in generate_default_currency_map() above and in specific implementations.
-		return array_map(
-			function( $a ) {
+		$options = array_map(
+			function ( $a ) {
 				return array_reduce(
 					array_keys( $a ),
 					function ( $carry, $key ) use ( $a ) {
 						if ( 'name' === $key ) {
 							$carry = $a[ $key ];
 						}
+
 						return $carry;
 					}
 				);
 			},
 			$this->currency_code_options_map
 		);
+
+		/**
+		 * Filters the currency code options shown to the user in the settings.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $options
+		 */
+		return apply_filters( 'tribe_tickets_commerce_currency_code_options', $options );
 	}
 }

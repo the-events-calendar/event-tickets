@@ -16,7 +16,7 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 	$should_ignore = false;
 
 	foreach ( $post_types_to_ignore as $ignore ) {
-		if ( preg_match( '/' . preg_quote( $ignore ) . '/', $post_type ) ) {
+		if ( preg_match( '/' . preg_quote( $ignore , '/' ) . '/', $post_type ) ) {
 			$should_ignore = true;
 			break;
 		}
@@ -173,7 +173,7 @@ if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 	 *
 	 * @since TBD
 	 */
-	$paypal_currency_code_options = apply_filters( 'tribe_tickets_paypal_currency_code_options', tribe_callback( 'tickets.commerce.currency', 'generate_currency_code_options' ) );
+	$paypal_currency_code_options = tribe( 'tickets.commerce.currency' )->generate_currency_code_options();
 
 	$paypal_ipn_notify_url_setting_link = add_query_arg(
 		array( 'cmd' => '_profile-ipn-notify' ),
