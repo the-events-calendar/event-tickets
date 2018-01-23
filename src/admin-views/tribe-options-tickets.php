@@ -16,7 +16,7 @@ foreach ( $all_post_type_objects as $post_type => $post_type_object ) {
 	$should_ignore = false;
 
 	foreach ( $post_types_to_ignore as $ignore ) {
-		if ( preg_match( '/' . preg_quote( $ignore , '/' ) . '/', $post_type ) ) {
+		if ( preg_match( '/' . preg_quote( $ignore, '/' ) . '/', $post_type ) ) {
 			$should_ignore = true;
 			break;
 		}
