@@ -53,9 +53,8 @@ $view      = Tribe__Tickets__Tickets_View::instance();
 			<p>
 				<?php echo esc_html(
 					sprintf(
-						__( 'Thank you for your purchase! Your order (%1$s) is %2$s, you will receive a confirmation soon.', 'event-tickets' ),
-						$order,
-						$status
+						__( "Your order (#%s) is currently pending. Once completed, you'll receive your ticket(s) in an email.", 'event-tickets' ),
+						$order
 					)
 				); ?>
 			</p>
