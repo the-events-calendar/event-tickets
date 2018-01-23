@@ -2067,8 +2067,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$post = get_post( $post_id );
 			if ( empty( $data['ticket_start_date'] ) ) {
-				$event_start = get_post_meta( $post_id, '_EventStartDate', true );
-				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $event_start );
+				$date = strtotime( $post->post_date );
+				$date = date( 'Y-m-d 00:00:00', $date );
+
+				update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_start_date, $date );
 			}
 
 			if ( empty( $data['ticket_end_date'] ) && 'tribe_events' === $post->post_type ) {
