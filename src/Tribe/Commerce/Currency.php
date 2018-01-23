@@ -215,21 +215,9 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return array
 	 */
 	public function generate_currency_code_options() {
-		// Filtered in generate_default_currency_map() above and in specific implementations.
-		$options = array_map(
-			function ( $a ) {
-				return array_reduce(
-					array_keys( $a ),
-					function ( $carry, $key ) use ( $a ) {
-						if ( 'name' === $key ) {
-							$carry = $a[ $key ];
-						}
-
-						return $carry;
-					}
-				);
-			},
-			$this->currency_code_options_map
+		$options = array_combine(
+			array_keys( $this->currency_code_options_map ),
+			wp_list_pluck( $this->currency_code_options_map, 'name' )
 		);
 
 		/**
