@@ -36,13 +36,13 @@ if ( ! isset( $ticket_id ) ) {
 			value="<?php echo esc_attr( $ticket ? $price : null ); ?>"
 			<?php if ( $provider instanceof Tribe__Tickets__Commerce__PayPal__Main ) {
 				echo 'data-validation-is-greater-than="0"',
-					'data-validation-error="' . esc_attr__( 'PayPal tickets require a non 0 price', 'event-tickets' ) . '"';
+					'data-validation-error="' . esc_attr__( 'PayPal tickets require a nonzero price', 'event-tickets' ) . '"';
 			} ?>
 		/>
 		<p class="description ticket_form_right">
 			<?php
 			echo $provider instanceof Tribe__Tickets__Commerce__PayPal__Main
-				? esc_html__( 'PayPal tickets require a non 0 price', 'event-tickets' )
+				? esc_html__( 'PayPal tickets require a nonzero price', 'event-tickets' )
 				: esc_html__( 'Leave blank for free tickets', 'event-tickets' ); ?>
 		</p>
 	</div>
