@@ -104,6 +104,10 @@ class Tribe__Tickets__Assets {
 				),
 			)
 		);
+
+		if ( $this->is_editing_ticketable_post() ) {
+			wp_enqueue_script( 'tribe-validation' );
+		}
 	}
 
 	/**
@@ -128,6 +132,20 @@ class Tribe__Tickets__Assets {
 		$modules = Tribe__Tickets__Tickets::modules();
 
 		// For the metabox
-		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() );
+		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types() );
+	}
+
+	/**
+	 * Whether we are currently editing or creating a ticket-able post.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	protected function is_editing_ticketable_post() {
+		$context    = tribe( 'context' );
+		$post_types = tribe( 'tickets.main' )->post_types();
+
+		return $context->is_editing_post( $post_types );
 	}
 }

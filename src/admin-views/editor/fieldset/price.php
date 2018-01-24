@@ -34,8 +34,17 @@ if ( ! isset( $ticket_id ) ) {
 			class="ticket_field ticket_form_right"
 			size="7"
 			value="<?php echo esc_attr( $ticket ? $price : null ); ?>"
+			<?php if ( $provider instanceof Tribe__Tickets__Commerce__PayPal__Main ) {
+				echo 'data-validation-is-greater-than="0"',
+					'data-validation-error="' . __( 'PayPal tickets require a non 0 price', 'event-tickets' ) . '"';
+			} ?>
 		/>
-		<p class="description ticket_form_right"><?php esc_html_e( 'Leave blank for free tickets', 'event-tickets' ) ?></p>
+		<p class="description ticket_form_right">
+			<?php
+			echo $provider instanceof Tribe__Tickets__Commerce__PayPal__Main
+				? esc_html__( 'PayPal tickets require a non 0 price', 'event-tickets' )
+				: esc_html__( 'Leave blank for free tickets', 'event-tickets' ); ?>
+		</p>
 	</div>
 
 	<?php if ( $ticket && $ticket->on_sale ) : ?>

@@ -197,6 +197,7 @@ class Tribe__Tickets__Main {
 	 * @since TBD
 	 */
 	public function bind_implementations() {
+		tribe_singleton( 'tickets.main', $this );
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
 		if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
 			tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
