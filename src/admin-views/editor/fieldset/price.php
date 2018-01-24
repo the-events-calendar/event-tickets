@@ -36,7 +36,7 @@ if ( ! isset( $ticket_id ) ) {
 			value="<?php echo esc_attr( $ticket ? $price : null ); ?>"
 			<?php if ( $provider instanceof Tribe__Tickets__Commerce__PayPal__Main ) {
 				echo 'data-validation-is-greater-than="0"',
-					'data-validation-error="' . __( 'PayPal tickets require a non 0 price', 'event-tickets' ) . '"';
+					'data-validation-error="' . esc_attr__( 'PayPal tickets require a non 0 price', 'event-tickets' ) . '"';
 			} ?>
 		/>
 		<p class="description ticket_form_right">
