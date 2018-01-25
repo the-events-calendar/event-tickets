@@ -150,7 +150,7 @@ if ( ! $is_tickets_plus_available ) {
 $tickets_fields['ticket-paypal-enable'] = array(
 	'type'            => 'checkbox_bool',
 	'label'           => esc_html__( 'Enable Tribe Commerce ', 'event-tickets' ),
-	'tooltip'         => esc_html__( 'Enable all functions provided by Tribe Commerce.', 'event-tickets' ),
+	'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tribe Commerce functionality', 'event-tickets' ),
 	'size'            => 'medium',
 	'default'         => '1',
 	'validation_type' => 'boolean',
