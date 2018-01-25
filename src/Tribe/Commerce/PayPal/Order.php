@@ -690,7 +690,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		if ( null !== $post_type ) {
 			$candidates = array_map( 'get_post', $post_ids );
-			$filtered   = wp_list_filter( $candidates, [ 'post_type' => $post_type ] );
+			$filtered   = wp_list_filter( $candidates, array( 'post_type' => $post_type ) );
 			$post_ids   = wp_list_pluck( $filtered, 'ID' );
 		}
 
