@@ -36,7 +36,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	do_action( 'tribe_events_tickets_pre_edit', $post_id, $ticket_id );
 	?>
 
-	<div id="ticket_form" class="ticket_form tribe_sectionheader">
+	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<div
 				class="tribe-dependent"

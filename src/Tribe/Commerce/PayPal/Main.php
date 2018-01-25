@@ -968,6 +968,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
+		// let's make sure float price values are formatted to "0.xyz"
+		if ( is_numeric( $ticket->price ) ) {
+			$ticket->price = (string) (int) $ticket->price === $ticket->price
+				? (int) $ticket->price
+				: (float) $ticket->price;
+		}
+
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 
 		$ticket_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
