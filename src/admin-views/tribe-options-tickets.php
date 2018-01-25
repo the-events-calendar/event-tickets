@@ -194,7 +194,21 @@ $ipn_notification_history_link = '<a href="'
 
 $current_user = get_user_by( 'id', get_current_user_id() );
 
-$commerce_fields = array(
+// @todo fill this in with the correct KB link
+$paypal_setup_kb_url  = 'https://theeventscalendar.com';
+$paypal_setup_kb_link = '<a href="' . $paypal_setup_kb_url . '">' . esc_html__( 'these instructions', 'event-tickets' ) . '</a>';
+$paypal_setup_note    = sprintf(
+	esc_html__( 'In order to use Tribe Commerce to sell tickets, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %s', 'event-tickets' ),
+	$paypal_setup_kb_link
+);
+
+$paypal_fields        = array(
+	'ticket-paypal-configure' => array(
+		'type'            => 'wrapped_html',
+		'label'           => esc_html__( 'Configure PayPal:', 'event-tickets' ),
+		'html'            => '<p>' . $paypal_setup_note . '</p>',
+		'validation_type' => 'html',
+	),
 	'ticket-paypal-email'                           => array(
 		'type'            => 'email',
 		'label'           => esc_html__( 'PayPal Email', 'event-tickets' ),
@@ -282,8 +296,8 @@ $commerce_fields = array(
 	),
 );
 
-foreach ( $commerce_fields as $key => &$commerce_field ) {
-	$commerce_field['class']               = 'tribe-dependent';
+foreach ( $paypal_fields as $key => &$commerce_field ) {
+	$commerce_field['class'] = 'tribe-dependent';
 	$commerce_field['fieldset_attributes'] = array(
 		'data-depends'              => '#ticket-paypal-enable-input',
 		'data-condition-is-checked' => '',
@@ -294,7 +308,7 @@ unset( $commerce_field );
 
 $tickets_fields  = array_merge(
 	$tickets_fields,
-	$commerce_fields
+	$paypal_fields
 );
 
 if ( ! $is_tickets_plus_available ) {

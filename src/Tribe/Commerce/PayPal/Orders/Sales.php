@@ -206,7 +206,18 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 			return array();
 		}
 
-		return array_diff( $attendees, $this->filter_completed( $attendees ) );
+		$completed     = $this->filter_completed( $attendees );
+		$completed_ids = wp_list_pluck( $completed, 'attendee_id' );
+
+		$not_completed = array();
+		foreach ( $attendees as $attendee ) {
+			if ( in_array( $attendee['attendee_id'], $completed_ids ) ) {
+				continue;
+			}
+			$not_completed[] = $attendee;
+		}
+
+		return $not_completed;
 	}
 
 	/**

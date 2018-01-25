@@ -645,7 +645,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @return string|null
 	 */
 	public function get_refund_order_id() {
-		return $this->meta['refund_order_id'];
+		return Tribe__Utils__Array::get( $this->meta, 'refund_order_id', null );
 	}
 
 	/**
