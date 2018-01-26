@@ -13,7 +13,8 @@
     "lucatume/wp-browser": "~1.6",
     "lucatume/function-mocker": "^1.0",
     "vlucas/phpdotenv": "^2.4",
-    "lucatume/function-mocker-le": "^1.0"
+    "lucatume/function-mocker-le": "^1.0",
+    "spatie/phpunit-snapshot-assertions": "^1.2"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
