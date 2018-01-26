@@ -104,4 +104,42 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 
 		return false;
 	}
+
+	/**
+	 * Returns the configuration status of the handler.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $field Which configuration status field to return, either `slug` or `label`
+	 * @param string  $slug Optionally return the specified field for the specified status.
+	 *
+	 * @return bool|string The current, or specified, configuration status slug or label
+	 *                     or `false` if the specified field or slug was not found.
+	 */
+	public function get_config_status( $field = 'slug', $slug = null ) {
+		$config_ok = '' !== tribe_get_option( 'ticket-paypal-email', '' )
+		             && 'yes' === tribe_get_option( 'ticket-paypal-ipn-enabled', 'no' )
+		             && 'yes' === tribe_get_option( 'ticket-paypal-ipn-address-set', 'no' );
+
+		$map = array(
+			'complete'   => array(
+				'label' => _x( 'complete', 'a PayPal configuration status', 'event-tickets' ),
+				'slug'  => 'complete',
+			),
+			'incomplete' => array(
+				'label' => _x( 'incomplete', 'a PayPal configuration status', 'event-tickets' ),
+				'slug'  => 'incomplete',
+			),
+		);
+
+		if ( null !== $slug ) {
+			$found = Tribe__Utils__Array::get( $map, $slug, false );
+
+			return $found ? Tribe__Utils__Array::get( $map, array( $slug, $field ), false ) : false;
+		}
+
+		return $config_ok
+			? Tribe__Utils__Array::get( $map, array( 'complete', $field ), false )
+			: Tribe__Utils__Array::get( $map, array( 'incomplete', $field ), false );
+	}
 }
