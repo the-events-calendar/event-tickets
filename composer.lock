@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "320b0c0e4fe7735423cfbeab9637a3a5",
+    "content-hash": "1c3de4ee96d78c272df3b084fada8b3f",
     "packages": [],
     "packages-dev": [
         {
@@ -671,54 +671,6 @@
             "time": "2015-06-14T21:17:01+00:00"
         },
         {
-            "name": "eventviva/php-image-resize",
-            "version": "1.6.8",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/eventviva/php-image-resize.git",
-                "reference": "10c3ca9f58298713599600f358e35fc29599a9d4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/eventviva/php-image-resize/zipball/10c3ca9f58298713599600f358e35fc29599a9d4",
-                "reference": "10c3ca9f58298713599600f358e35fc29599a9d4",
-                "shasum": ""
-            },
-            "require": {
-                "ext-gd": "*",
-                "php": ">=5.3.0"
-            },
-            "suggest": {
-                "ext-exif": "Auto-rotate jpeg files"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "lib"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Aditya Patadia",
-                    "homepage": "http://aditya.patadia.org/"
-                }
-            ],
-            "description": "PHP class to re-size and scale images",
-            "homepage": "https://github.com/eventviva/php-image-resize",
-            "keywords": [
-                "image",
-                "php",
-                "resize",
-                "scale"
-            ],
-            "abandoned": "gumlet/php-image-resize",
-            "time": "2017-09-09T04:37:46+00:00"
-        },
-        {
             "name": "facebook/webdriver",
             "version": "1.5.0",
             "source": {
@@ -772,6 +724,53 @@
                 "webdriver"
             ],
             "time": "2017-11-15T11:08:09+00:00"
+        },
+        {
+            "name": "gumlet/php-image-resize",
+            "version": "1.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gumlet/php-image-resize.git",
+                "reference": "23b4e1e4b429c69b3025b050b8564065cbe18cda"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gumlet/php-image-resize/zipball/23b4e1e4b429c69b3025b050b8564065cbe18cda",
+                "reference": "23b4e1e4b429c69b3025b050b8564065cbe18cda",
+                "shasum": ""
+            },
+            "require": {
+                "ext-gd": "*",
+                "php": ">=5.3.0"
+            },
+            "suggest": {
+                "ext-exif": "Auto-rotate jpeg files"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aditya Patadia",
+                    "homepage": "http://aditya.patadia.org/"
+                }
+            ],
+            "description": "PHP class to re-size and scale images",
+            "homepage": "https://github.com/gumlet/php-image-resize",
+            "keywords": [
+                "image",
+                "php",
+                "resize",
+                "scale"
+            ],
+            "time": "2018-01-14T09:22:51+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -1293,32 +1292,73 @@
             "time": "2017-09-12T11:55:15+00:00"
         },
         {
-            "name": "lucatume/wp-browser",
-            "version": "1.21.26",
+            "name": "lucatume/function-mocker-le",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "d23464b7d1925b5b066698222d9185facfe49396"
+                "url": "https://github.com/lucatume/function-mocker-le.git",
+                "reference": "20e12ae2e6350c5b11a6bdbe763c749f7f88603e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/d23464b7d1925b5b066698222d9185facfe49396",
-                "reference": "d23464b7d1925b5b066698222d9185facfe49396",
+                "url": "https://api.github.com/repos/lucatume/function-mocker-le/zipball/20e12ae2e6350c5b11a6bdbe763c749f7f88603e",
+                "reference": "20e12ae2e6350c5b11a6bdbe763c749f7f88603e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.3"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/function-mocker-le.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "theAverageDev (Luca Tumedei)",
+                    "email": "luca@theaveragedev.com"
+                }
+            ],
+            "description": "A lightweight function mocking solution.",
+            "time": "2017-09-02T10:37:47+00:00"
+        },
+        {
+            "name": "lucatume/wp-browser",
+            "version": "1.22.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/lucatume/wp-browser.git",
+                "reference": "eae7bb424c8d1e2d2734c5ee6709a914da1e0b08"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/eae7bb424c8d1e2d2734c5ee6709a914da1e0b08",
+                "reference": "eae7bb424c8d1e2d2734c5ee6709a914da1e0b08",
                 "shasum": ""
             },
             "require": {
                 "antecedent/patchwork": "^2.0",
                 "codeception/codeception": "^2.3",
-                "eventviva/php-image-resize": "^1.6",
+                "gumlet/php-image-resize": "^1.6",
                 "lucatume/codeception-setup-local": "~1.0",
                 "lucatume/wp-browser-commons": "^1.2.5",
                 "symfony/process": ">=2.7 <5.0",
                 "wp-cli/wp-cli": "^1.1"
             },
             "require-dev": {
+                "electrolinux/phpquery": "^0.9.6",
                 "mikey179/vfsstream": "^1.6",
                 "ofbeaton/console-tester": "^1.1",
                 "site5/phantoman": "^1.1",
+                "spatie/phpunit-snapshot-assertions": "^1.2",
                 "vlucas/phpdotenv": "^2.4"
             },
             "bin": [
@@ -1352,7 +1392,7 @@
                 "codeception",
                 "wordpress"
             ],
-            "time": "2018-01-15T10:14:16+00:00"
+            "time": "2018-01-26T13:26:56+00:00"
         },
         {
             "name": "lucatume/wp-browser-commons",
@@ -3254,16 +3294,16 @@
         },
         {
             "name": "seld/jsonlint",
-            "version": "1.7.0",
+            "version": "1.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/jsonlint.git",
-                "reference": "9b355654ea99460397b89c132b5c1087b6bf4473"
+                "reference": "d15f59a67ff805a44c50ea0516d2341740f81a38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/9b355654ea99460397b89c132b5c1087b6bf4473",
-                "reference": "9b355654ea99460397b89c132b5c1087b6bf4473",
+                "url": "https://api.github.com/repos/Seldaek/jsonlint/zipball/d15f59a67ff805a44c50ea0516d2341740f81a38",
+                "reference": "d15f59a67ff805a44c50ea0516d2341740f81a38",
                 "shasum": ""
             },
             "require": {
@@ -3299,7 +3339,7 @@
                 "parser",
                 "validator"
             ],
-            "time": "2018-01-03T12:13:57+00:00"
+            "time": "2018-01-24T12:46:19+00:00"
         },
         {
             "name": "seld/phar-utils",
@@ -4412,21 +4452,21 @@
         },
         {
             "name": "wp-cli/checksum-command",
-            "version": "v1.0.5",
+            "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-cli/checksum-command.git",
-                "reference": "a2719a5ba84ffd7d47511967433da7211e0da55a"
+                "reference": "c96d43de04e32d84a20e75a34ac80ccf2e125a94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-cli/checksum-command/zipball/a2719a5ba84ffd7d47511967433da7211e0da55a",
-                "reference": "a2719a5ba84ffd7d47511967433da7211e0da55a",
+                "url": "https://api.github.com/repos/wp-cli/checksum-command/zipball/c96d43de04e32d84a20e75a34ac80ccf2e125a94",
+                "reference": "c96d43de04e32d84a20e75a34ac80ccf2e125a94",
                 "shasum": ""
             },
             "require-dev": {
                 "behat/behat": "~2.5",
-                "wp-cli/wp-cli": "*"
+                "wp-cli/wp-cli": "^1.5"
             },
             "type": "wp-cli-package",
             "extra": {
@@ -4435,7 +4475,8 @@
                 },
                 "bundled": true,
                 "commands": [
-                    "checksum core"
+                    "checksum core",
+                    "checksum plugin"
                 ]
             },
             "autoload": {
@@ -4459,7 +4500,7 @@
             ],
             "description": "Verifies file integrity by comparing to published checksums.",
             "homepage": "https://github.com/wp-cli/checksum-command",
-            "time": "2017-12-08T15:12:46+00:00"
+            "time": "2018-01-22T21:23:15+00:00"
         },
         {
             "name": "wp-cli/config-command",

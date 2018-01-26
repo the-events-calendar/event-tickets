@@ -12,7 +12,8 @@
   "require-dev": {
     "lucatume/wp-browser": "~1.6",
     "lucatume/function-mocker": "^1.0",
-    "vlucas/phpdotenv": "^2.4"
+    "vlucas/phpdotenv": "^2.4",
+    "lucatume/function-mocker-le": "^1.0"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
