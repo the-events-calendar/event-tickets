@@ -202,7 +202,16 @@ $paypal_setup_note    = sprintf(
 	$paypal_setup_kb_link
 );
 
-$paypal_fields        = array(
+$ipn_setup_line           = sprintf(
+	'<span class="clear">%s</span><span class="clear">%s</span>',
+	esc_html__( "Have you entered this site's address in the Notification URL field in IPN Settings?", 'event-tickets' ),
+	sprintf(
+		esc_html__( "Your site address is: %s", 'event-tickets' ),
+		'<a href="' . esc_attr( home_url() ) . '" target="_blank">' . esc_html( home_url() ) . '</a>'
+	)
+);
+
+$paypal_fields            = array(
 	'ticket-paypal-configure' => array(
 		'type'            => 'wrapped_html',
 		'label'           => esc_html__( 'Configure PayPal:', 'event-tickets' ),
@@ -211,45 +220,60 @@ $paypal_fields        = array(
 	),
 	'ticket-paypal-email'                           => array(
 		'type'            => 'email',
-		'label'           => esc_html__( 'PayPal Email', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'Email address that will receive PayPal payments.', 'event-tickets' ),
-		'size'            => 'medium',
+		'label'           => esc_html__( 'PayPal email to receive payments:', 'event-tickets' ),
+		'size'            => 'large',
 		'default'         => '',
 		'validation_type' => 'email',
+		'class'           => 'indent light-bordered',
 	),
-	'ticket-paypal-sandbox'                         => array(
-		'type'            => 'checkbox_bool',
-		'label'           => esc_html__( 'PayPal Sandbox', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'Enables PayPal Sandbox mode for testing.', 'event-tickets' ),
-		'default'         => false,
-		'validation_type' => 'boolean',
+	'ticket-paypal-ipn-enabled'                           => array(
+		'type'            => 'radio',
+		'label'           => esc_html__( "Have you enabled instant payment notifications (IPN) in your PayPal account's Selling Tools?", 'event-tickets' ),
+		'options' => array(
+			'yes' => __('Yes','event-tickets'),
+			'no' => __('No','event-tickets'),
+		),
+		'size'            => 'large',
+		'default'         => 'no',
+		'validation_type' => 'options',
+		'class'           => 'indent light-bordered',
 	),
-	'ticket-paypal-notify-history'                  => array(
+	'ticket-paypal-ipn-address-set'                           => array(
+		'type'            => 'radio',
+		'label'           => $ipn_setup_line,
+		'options' => array(
+			'yes' => __('Yes','event-tickets'),
+			'no' => __('No','event-tickets'),
+		),
+		'size'            => 'large',
+		'default'         => 'no',
+		'validation_type' => 'options',
+		'class'           => 'indent light-bordered',
+	),
+	'ticket-paypal-ipn-config-status'                           => array(
 		'type'            => 'wrapped_html',
-		'label'           => esc_html__( 'See your IPN Notification history', 'event-tickets' ),
-		'html'            => '<p>' . sprintf( esc_html__( 'You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s).',
-				'event-tickets' ), $ipn_notification_history_link ) . '</p>',
-		'size'            => 'medium',
+		'html'            => sprintf(
+			'<strong>%s</strong> <span id="paypal-ipn-config-status" data-status="%s">%s</span>',
+			esc_html__( 'PayPal configuration status:' ),
+			esc_html( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label' ) ),
+			esc_attr( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) )
+		),
+		'options'         => array(
+			'yes' => __( 'Yes', 'event-tickets' ),
+			'no'  => __( 'No', 'event-tickets' ),
+		),
 		'validation_type' => 'html',
+		'class'           => 'indent light-bordered',
 	),
-	'ticket-paypal-notify-url'                      => array(
-		'type'            => 'text',
-		'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
-		'tooltip'         => sprintf( esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s).',
-			'event-tickets' ), $ipn_notification_settings_link ),
-		'default'         => home_url(),
-		'validation_type' => 'html',
+	'ticket-commerce-currency-code'                 => array(
+		'type'            => 'dropdown',
+		'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'The currency that will be used for Tribe Commerce transactions.', 'event-tickets' ),
+		'default'         => 'USD',
+		'validation_type' => 'options',
+		'options'         => $paypal_currency_code_options,
 	),
-	'ticket-paypal-identity-token'                  => array(
-		'conditional'     => 'pdt' === tribe( 'tickets.commerce.paypal.gateway' )->get_handler_slug(),
-		'type'            => 'text',
-		'label'           => esc_html__( 'PayPal Identity Token', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'This is an optional field that will allow you to identify pending and successful payments without the need for PayPal IPN. To obtain your identifier, log into your PayPal account, click on Profile, then click on Website Payment Preferences. Here, enable Payment Data Transfer. You will then see your PayPal Identity Token displayed.',
-			'event-tickets' ),
-		'size'            => 'medium',
-		'default'         => '',
-		'validation_type' => 'html',
-	),
+	// @todo add stock handling here
 	'ticket-paypal-success-page'                    => array(
 		'type'            => 'dropdown',
 		'label'           => esc_html__( 'Success page', 'event-tickets' ),
@@ -260,48 +284,42 @@ $paypal_fields        = array(
 		'options'         => $pages,
 		'required'        => true,
 	),
-	'ticket-paypal-confirmation-email-sender-email' => array(
-		'type'            => 'email',
-		'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'Email address PayPal tickets customers will receive confirmation from.', 'event-tickets' ),
-		'size'            => 'medium',
-		'default'         => $current_user->user_email,
-		'validation_type' => 'email',
+	'ticket-paypal-sandbox'                         => array(
+		'type'            => 'checkbox_bool',
+		'label'           => esc_html__( 'PayPal Sandbox', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'Enables PayPal Sandbox mode for testing.', 'event-tickets' ),
+		'default'         => false,
+		'validation_type' => 'boolean',
 	),
-	'ticket-paypal-confirmation-email-sender-name'  => array(
-		'type'                => 'text',
-		'label'               => esc_html__( 'Confirmation email sender name', 'event-tickets' ),
-		'tooltip'             => esc_html__( 'Sender name of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
-		'size'                => 'medium',
-		'default'             => $current_user->user_nicename,
-		'validation_callback' => 'is_string',
-		'validation_type'     => 'textarea',
-	),
-	'ticket-paypal-confirmation-email-subject'      => array(
-		'type'                => 'text',
-		'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
-		'tooltip'             => esc_html__( 'Subject of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
-		'size'                => 'large',
-		'default'             => 'You have tickets!',
-		'validation_callback' => 'is_string',
-		'validation_type'     => 'textarea',
-	),
-	'ticket-commerce-currency-code'                 => array(
-		'type'            => 'dropdown',
-		'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'The currency that will be used for Tribe Commerce transactions.', 'event-tickets' ),
-		'default'         => 'USD',
-		'validation_type' => 'options',
-		'options'         => $paypal_currency_code_options,
-	),
+	// @todo activate these when WP_DEBUG == true?
+	//	'ticket-paypal-notify-history'                  => array(
+	//		'type'            => 'wrapped_html',
+	//		'label'           => esc_html__( 'See your IPN Notification history', 'event-tickets' ),
+	//		'html'            => '<p>' . sprintf( esc_html__( 'You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s).',
+	//				'event-tickets' ), $ipn_notification_history_link ) . '</p>',
+	//		'size'            => 'medium',
+	//		'validation_type' => 'html',
+	//	),
+	//	'ticket-paypal-notify-url'                      => array(
+	//		'type'            => 'text',
+	//		'label'           => esc_html__( 'IPN Notify URL', 'event-tickets' ),
+	//		'tooltip'         => sprintf( esc_html__( 'Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s).',
+	//			'event-tickets' ), $ipn_notification_settings_link ),
+	//		'default'         => home_url(),
+	//		'validation_type' => 'html',
+	//	),
 );
 
 foreach ( $paypal_fields as $key => &$commerce_field ) {
-	$commerce_field['class'] = 'tribe-dependent';
-	$commerce_field['fieldset_attributes'] = array(
-		'data-depends'              => '#ticket-paypal-enable-input',
-		'data-condition-is-checked' => '',
-	);
+	$field_classes = (array) Tribe__Utils__Array::get( $commerce_field, 'class', array() );
+	array_push( $field_classes, 'tribe-dependent' );
+	$commerce_field['class']               = implode( ' ', $field_classes );
+	$existing_field_attributes             = Tribe__Utils__Array::get( $commerce_field, 'fieldset_attributes', array() );
+	$commerce_field['fieldset_attributes'] = array_merge( $existing_field_attributes,
+		array(
+			'data-depends'              => '#ticket-paypal-enable-input',
+			'data-condition-is-checked' => '',
+		) );
 }
 
 unset( $commerce_field );
