@@ -14,8 +14,7 @@ class LinksTest extends \Codeception\TestCase\WPTestCase {
 
 	public static function setUpBeforeClass() {
 		parent::setUpBeforeClass();
-		self::$driver = new WPHtmlOutputDriver( home_url() );
-		self::$driver->setUrlAttributes([]);
+		self::$driver = new WPHtmlOutputDriver( home_url(), 'http://commerce.dev' );
 	}
 
 	/**

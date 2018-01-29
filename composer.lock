@@ -1372,16 +1372,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "1.22.1",
+            "version": "1.22.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "940d3cf423810ef8b340f2e54db6525d8b191493"
+                "reference": "9ba0d7ddf52e721c8a0e9919f909f3c67a4aedeb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/940d3cf423810ef8b340f2e54db6525d8b191493",
-                "reference": "940d3cf423810ef8b340f2e54db6525d8b191493",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/9ba0d7ddf52e721c8a0e9919f909f3c67a4aedeb",
+                "reference": "9ba0d7ddf52e721c8a0e9919f909f3c67a4aedeb",
                 "shasum": ""
             },
             "require": {
@@ -1432,7 +1432,7 @@
                 "codeception",
                 "wordpress"
             ],
-            "time": "2018-01-26T16:59:30+00:00"
+            "time": "2018-01-27T09:01:51+00:00"
         },
         {
             "name": "lucatume/wp-browser-commons",
