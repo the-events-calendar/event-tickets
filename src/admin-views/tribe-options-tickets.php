@@ -203,7 +203,7 @@ $paypal_fields            = array(
 		'size'            => 'large',
 		'default'         => '',
 		'validation_type' => 'email',
-		'class'           => 'indent light-bordered checkmark',
+		'class'           => 'indent light-bordered checkmark checkmark-right checkmark-hide ipn-required',
 	),
 	'ticket-paypal-ipn-enabled'       => array(
 		'type'            => 'radio',
@@ -215,7 +215,7 @@ $paypal_fields            = array(
 		'size'            => 'large',
 		'default'         => 'no',
 		'validation_type' => 'options',
-		'class'           => 'indent light-bordered',
+		'class'           => 'indent light-bordered checkmark checkmark-right checkmark-hide ipn-required',
 	),
 	'ticket-paypal-ipn-address-set'   => array(
 		'type'            => 'radio',
@@ -227,12 +227,12 @@ $paypal_fields            = array(
 		'size'            => 'large',
 		'default'         => 'no',
 		'validation_type' => 'options',
-		'class'           => 'indent light-bordered',
+		'class'           => 'indent light-bordered checkmark checkmark-right checkmark-hide ipn-required',
 	),
 	'ticket-paypal-ipn-config-status' => array(
 		'type'            => 'wrapped_html',
 		'html'            => sprintf(
-			'<strong>%1$s<span id="paypal-ipn-config-status" data-status="%2$s" class="%2$s"> %3$s</span></strong> ',
+			'<strong>%1$s <span id="paypal-ipn-config-status" data-status="%2$s"></span></strong> ',
 			esc_html__( 'PayPal configuration status:' ),
 			esc_attr( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) ),
 			esc_html( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label' ) )

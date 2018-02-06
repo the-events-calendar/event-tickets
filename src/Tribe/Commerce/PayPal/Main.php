@@ -305,10 +305,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				),
 			)
 		);
+
+		// Admin assets
+		tribe_assets(
+			$main,
+			array(
+				array(
+					'event-tickets-tpp-admin-js',
+					'tpp-admin.js',
+					array(
+						'jquery',
+						'underscore',
+					),
+				),
+			),
+			'admin_enqueue_scripts',
+			array(
+				'conditionals' => 'is_admin',
+				'localize' => (object) array(
+					'name' => 'tribe_tickets_tpp_admin_strings',
+					'data' => array(
+						'complete'   => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'complete' ),
+						'incomplete' => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'incomplete' ),
+					),
+				),
+			)
+		);
 	}
 
 	/**
-	 * Enqueue the plugin stylesheet(s).
+	 * Enqueue the plugin admin stylesheet(s) and JS.
 	 *
 	 * @since  TBD
 	 */
