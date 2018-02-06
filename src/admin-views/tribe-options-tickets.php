@@ -203,14 +203,14 @@ $paypal_fields            = array(
 		'size'            => 'large',
 		'default'         => '',
 		'validation_type' => 'email',
-		'class'           => 'indent light-bordered',
+		'class'           => 'indent light-bordered checkmark',
 	),
 	'ticket-paypal-ipn-enabled'       => array(
 		'type'            => 'radio',
 		'label'           => esc_html__( "Have you enabled instant payment notifications (IPN) in your PayPal account's Selling Tools?", 'event-tickets' ),
 		'options'         => array(
 			'yes' => __( 'Yes', 'event-tickets' ),
-			'no'  => __( 'No', 'event-tickets' ),
+			'no'  => __( 'No', 'event-tic->valuekets' ),
 		),
 		'size'            => 'large',
 		'default'         => 'no',
@@ -232,10 +232,10 @@ $paypal_fields            = array(
 	'ticket-paypal-ipn-config-status' => array(
 		'type'            => 'wrapped_html',
 		'html'            => sprintf(
-			'<strong>%s</strong> <span id="paypal-ipn-config-status" data-status="%s">%s</span>',
+			'<strong>%1$s<span id="paypal-ipn-config-status" data-status="%2$s" class="%2$s"> %3$s</span></strong> ',
 			esc_html__( 'PayPal configuration status:' ),
-			esc_html( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label' ) ),
-			esc_attr( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) )
+			esc_attr( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) ),
+			esc_html( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label' ) )
 		),
 		'validation_type' => 'html',
 		'class'           => 'indent light-bordered',
@@ -316,6 +316,7 @@ foreach ( $paypal_fields as $key => &$commerce_field ) {
 			'data-depends'              => '#ticket-paypal-enable-input',
 			'data-condition-is-checked' => '',
 		) );
+	$commerce_field['validate_if'] = new Tribe__Field_Conditional( 'ticket-paypal-enable', 'tribe_is_truthy' );
 }
 
 unset( $commerce_field );
