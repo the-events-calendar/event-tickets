@@ -49,13 +49,13 @@ var tribe_tickets_tpp_admin = {
 			return;
 		}
 
-		var value = $( input ).val();
 		var ok = false;
 		var map = my.checkmarkValidationMap();
 
 		if ( $parent.hasClass( 'tribe-field-email' ) ) {
-			ok = map['email']( value );
-		} else if ( $parent.hasClass( 'tribe-field-radio' ) || $parent.hasClass( 'tribe-field-checkbox_bool' ) ) {
+			ok = map['email']( input.value );
+		} else if ( $parent.hasClass( 'tribe-field-radio' ) ) {
+			var value = $( input ).closest( '.tribe-field-wrap' ).find( 'input:checked' ).val();
 			ok = map['radio']( value );
 		} else {
 			ok = true
@@ -74,7 +74,7 @@ var tribe_tickets_tpp_admin = {
 			$parent.addClass( 'no-checkmark' );
 		}
 
-		my.updatePayPalIpnStatus( ok );
+		my.updatePayPalIpnStatus( );
 	};
 
 	my.init = function() {
