@@ -851,7 +851,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendees            = array();
 
 			if ( 0 !== $expire ) {
-				$post_transient = Tribe__Post_Transient::instance();
+				$post_transient = tribe( 'post-transient' );
 
 				$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
 
