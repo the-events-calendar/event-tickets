@@ -12,6 +12,16 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @var string
 	 */
 	public static $meta_prefix = '_paypal_';
+
+	/**
+	 * @var string The date this Order post has been originally created, format is `Y-m-d H:i:s`
+	 */
+	protected $created;
+
+	/**
+	 * @var string The date this Order post has been last updated, format is `Y-m-d H:i:s`
+	 */
+	protected $modified;
 	/**
 	 * A list of attendees for the order.
 	 *
@@ -118,9 +128,13 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @since TBD
 	 *
 	 * @param $order_id
+	 *
+	 * @return bool|\Tribe__Tickets__Commerce__PayPal__Order The Order object if found or
+	 *                                                       `false` if the Order could not be
+	 *                                                       found.
 	 */
 	public static function from_order_id( $order_id ) {
-		$order_post_id = self::find_by_order_id( $order_id );
+		$order_post_id = self::find_by_order_id( $order_id, true );
 
 		if ( empty( $order_post_id ) ) {
 			return false;
@@ -139,15 +153,21 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @since TBD
 	 *
 	 * @param string $order_id The PayPal order ID (hash).
+	 * @param bool   $use_post_id Whether the `order_id` parameter should be used as
+	 *                            a PayPal Order ID (hash) or as a post ID
 	 *
 	 * @return int|false Either an existing order post ID or `false` if not found.
 	 */
-	public static function find_by_order_id( $order_id ) {
+	public static function find_by_order_id( $order_id, $use_post_id = false ) {
 		global $wpdb;
+
+		$query = $use_post_id
+			? "SELECT ID from {$wpdb->posts} WHERE ID = %d AND post_type = %s"
+			: "SELECT ID from {$wpdb->posts} WHERE post_title = %s AND post_type = %s";
 
 		$order_post_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT ID from {$wpdb->posts} WHERE post_title = %s AND post_type = %s",
+				$query,
 				trim( $order_id ),
 				Tribe__Tickets__Commerce__PayPal__Main::ORDER_OBJECT
 			)
@@ -184,6 +204,8 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		$this->paypal_order_id = $order_post->post_title;
 		$this->post_id         = $order_post_id;
 		$this->status          = $order_post->post_status;
+		$this->created         = $order_post->post_date;
+		$this->modified        = $order_post->post_modified;
 
 		$hashed_meta = get_post_meta( $order_post_id, $this->hashed_meta_key, true );
 
@@ -326,6 +348,34 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public static function cache_prefix( $key ) {
 		return __CLASS__ . $key;
+	}
+
+	/**
+	 * Either builds an Order object from a PayPal transaction data and returns it
+	 * or fetches an existing Order information.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id An Attendee post ID
+	 *
+	 * @return Tribe__Tickets__Commerce__PayPal__Order|false Either an existing or new order or `false` on
+	 *                                                       failure.
+	 */
+	public static function from_attendee_id( $attendee_id ) {
+		$order_post_id = get_post_meta( $attendee_id, Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_ORDER_KEY, true );
+
+		// validate it
+		$order_post_id = self::find_by_order_id( $order_post_id );
+
+		if ( empty( $order_post_id ) ) {
+			return false;
+		}
+
+		$order = new self();
+
+		$order->hydrate_from_post( $order_post_id );
+
+		return $order;
 	}
 
 	/**
@@ -758,5 +808,27 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public function get_ticket_ids() {
 		return $this->ticket_ids;
+	}
+
+	/**
+	 * Returns the local date and time this Order post was originally created.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_creation_date( $format = 'Y-m-d H:i:s' ) {
+		return $this->created;
+	}
+
+	/**
+	 * Returns the local date and time this Order post was last updated.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_modified_date( $format = null, $timezone_string = null ) {
+		return $this->modified;
 	}
 }
