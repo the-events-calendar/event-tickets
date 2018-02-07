@@ -210,8 +210,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
 		$product_ids = ! empty( $product_ids ) ? explode( ',', $product_ids ) : null;
 
-		// in the context of this report some order statuses that normally don't should should
-		// show a non 0 line total
+		// in the context of this report some order statuses that normally don't should show a non 0 line total
 		add_filter( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', array( $this, 'filter_revenue_generating_order_statuses' ) );
 		$items = $sales->get_orders_for_post( $this->post_id, $product_ids );
 		remove_filter( 'tribe_tickets_commerce_paypal_revenue_generating_order_statuses', array( $this, 'filter_revenue_generating_order_statuses' ) );
