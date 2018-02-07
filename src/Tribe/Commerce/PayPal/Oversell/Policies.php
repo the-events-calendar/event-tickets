@@ -50,6 +50,18 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 			$policy = $ticket_policy;
 		}
 
+		/**
+		 * Filters the oversell policy after the general, post and ticket ones have been taken into account.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $policy    The slug of the policy to use.
+		 * @param int    $post_id   The current post ID
+		 * @param int    $ticket_id The current ticket post ID
+		 * @param string $order_id  The current Order PayPal ID (hash)
+		 */
+		$policy = apply_filters( 'tribe_tickets_commerce_paypal_oversell_policy', $policy, $post_id, $ticket_id, $order_id );
+
 		$map = array(
 			'no-oversell'    => 'Tribe__Tickets__Commerce__PayPal__Oversell__No_Oversell',
 			'sell-available' => 'Tribe__Tickets__Commerce__PayPal__Oversell__Sell_Available',

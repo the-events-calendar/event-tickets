@@ -369,4 +369,24 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	protected function get_ticket_not_completed_qty( Tribe__Tickets__Ticket_Object $ticket ) {
 		return $ticket->qty_pending();
 	}
+
+	/**
+	 * Filters the available value to allow coherent value when overselling.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                            $available
+	 * @param \Tribe__Tickets__Ticket_Object $ticket
+	 * @param   int                          $sold
+	 * @param      int                       $stock
+	 *
+	 * @return int
+	 */
+	public function filter_available( $available, Tribe__Tickets__Ticket_Object $ticket, $sold, $stock ) {
+		if ( $ticket->provider_class !== 'Tribe__Tickets__Commerce__PayPal__Main' ) {
+			return $available;
+		}
+
+		return $stock - $sold;
+	}
 }

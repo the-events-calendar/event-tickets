@@ -10,11 +10,6 @@
 class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator implements Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 
 	/**
-	 * @var string
-	 */
-	public static $show_notice_meta_key = '_tribe-commmerce-paypal-oversell-show-notice';
-
-	/**
 	 * @var Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface
 	 */
 	protected $policy;
@@ -68,16 +63,13 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			)
 		);
 
-		tribe_update_option( self::$show_notice_meta_key, '1' );
-
-		tribe_notice(
-			"tribe-commerce-paypal-oversell-{$this->get_post_id()}",
+		/** @var Tribe__Tickets__Commerce__PayPal__Notices $notices */
+		$notices = tribe( 'tickets.commerce.paypal.notices' );
+		$notices->register_transient_notice(
+			"oversell-{$this->get_order_id()}-{$this->get_post_id()}",
 			$output,
-			'dismiss=1&type=warning',
-			array( $this, 'should_show_notice' )
+			'dismiss=1&type=warning'
 		);
-
-		// @todo fix the notice
 
 		return $modified;
 	}
@@ -124,18 +116,5 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	 */
 	public function get_ticket_id() {
 		return $this->policy->get_ticket_id();
-	}
-
-	/**
-	 * Whether the notice should show or not.
-	 *
-	 * @since TBD
-	 *
-	 * @return bool
-	 */
-	public function should_show_notice() {
-		$meta_key = implode('_', self::$show_notice_meta_key,$this->get);
-
-		return (bool) get_post_meta($this->get_post_id(), $meta_key, true );
 	}
 }
