@@ -284,7 +284,13 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		$args = wp_parse_args( $args, array(
 			'post_type'   => Tribe__Tickets__Commerce__PayPal__Main::ORDER_OBJECT,
 			'post_status' => 'any',
+			'meta_key'    => self::$meta_prefix . 'payment_date',
+			'meta_type'   => 'DATETIME',
+			'order'       => 'DESC',
+			'orderby'     => 'meta_value',
 		) );
+
+		global $wpdb;
 
 		$cache = new Tribe__Cache;
 		$cache_key = self::cache_prefix( 'find_by_' . $cache->make_key( $args ) );
@@ -524,6 +530,10 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 				$this->meta['items'] = $value;
 				$this->ticket_ids    = wp_list_pluck( $value, 'ticket_id' );
 				$this->post_ids      = wp_list_pluck( $value, 'post_id' );
+
+				return;
+			case 'payment_date':
+				$this->meta['payment_date'] = Tribe__Date_Utils::reformat( $value, Tribe__Date_Utils::DBDATETIMEFORMAT );
 
 				return;
 			default:
