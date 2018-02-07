@@ -311,7 +311,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
 		$paypal = tribe( 'tickets.commerce.paypal' );
 
-		$orders = $paypal->get_orders_by_post_id( $post_id, $ticket_ids );
+		$orders = $paypal->get_orders_by_post_id( $post_id, $ticket_ids, array( 'posts_per_page' => - 1 ) );
 
 		$this->cache[ $cache_key ] = $orders;
 
