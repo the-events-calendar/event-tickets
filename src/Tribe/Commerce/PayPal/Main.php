@@ -35,11 +35,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	const ATTENDEE_PRODUCT_KEY = '_tribe_tpp_product';
 
 	/**
-	 * Currently unused for this provider, but defined per the Tribe__Tickets__Tickets spec.
+	 * Meta key that relates Attendees and Orders.
 	 *
 	 * @var string
 	 */
-	const ATTENDEE_ORDER_KEY = '';
+	const ATTENDEE_ORDER_KEY = '_tribe_tpp_order';
 
 	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
@@ -2278,6 +2278,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Whether a specific attendee is valid toward inventory decrease or not.
 	 *
+	 * By default only attendees generated as part of a Completed order will count toward
+	 * an inventory decrease but, if the option to reserve stock for Pending Orders is activated,
+	 * then those attendees generated as part of a Pending Order will, for a limited time after the
+	 * order creation, cause the inventory to be decreased.
+	 *
 	 * @since TBD
 	 *
 	 * @param array $attendee
@@ -2286,6 +2291,37 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function attendee_decreases_inventory( array $attendee ) {
 		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
+		$order_id = Tribe__Utils__Array::get( $attendee, 'order_id', false );
+
+		if (
+			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
+			&& Tribe__Tickets__Commerce__PayPal__Stati::$pending === $order_status
+			&& false !== $order_id
+			&& false !== $order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $order_id )
+		) {
+			/** @var \Tribe__Tickets__Commerce__PayPal__Order $order */
+			$order_creation_timestamp = Tribe__Date_Utils::wp_strtotime( $order->get_creation_date() );
+
+			/**
+			 * Filters the amount of time a part of the stock will be reserved by a pending Order.
+			 *
+			 * The time applies from the Order creation time.
+			 * In the unlikely scenario that an Order goes from Completed to Pending then, if the
+			 * reservation time allows it, a part of the stock will be reserved for it.
+			 *
+			 * @since TBD
+			 *
+			 * @param int                                      $pending_stock_reservation_time The amount of seconds, from the Order creation time,
+			 *                                                                                 part of the stock will be reserved for the Order;
+			 *                                                                                 defaults to 30 minutes.
+			 * @param array                                    $attendee                       An array of data defining the current Attendee
+			 * @param Tribe__Tickets__Commerce__PayPal__Order $order                          The object representing the Order that generated
+			 *                                                                                 the Attendee
+			 */
+			$pending_stock_reservation_time = (int) apply_filters( 'tribe_tickets_tpp_tickets_to_send', 30 * 60, $attendee, $order );
+
+			return current_time( 'timestamp' ) <= ( $order_creation_timestamp + $pending_stock_reservation_time );
+		}
 
 		return Tribe__Tickets__Commerce__PayPal__Stati::$completed === $order_status;
 	}
@@ -2295,8 +2331,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket post ID
-	 * @param int $qty
+	 * @param int  $ticket_id The ticket post ID
+	 * @param int  $qty
 	 *
 	 * @return int
 	 */
