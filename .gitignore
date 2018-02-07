@@ -16,6 +16,9 @@ tests/*.suite.yml
 # Tests - local output files
 tests/_output
 
+# Some people makes...
+Makefile
+
 vendor/
 vendor/badcow
 vendor/bin
