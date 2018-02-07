@@ -123,18 +123,18 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	}
 
 	/**
-	 * Searches for an Order by PayPal order ID (hash), builds and hydrates it if found.
+	 * Searches for an Order by the Order PayPal ID (hash) or post ID, builds and hydrates it if found.
 	 *
 	 * @since TBD
 	 *
 	 * @param $order_id
 	 *
-	 * @return bool|\Tribe__Tickets__Commerce__PayPal__Order The Order object if found or
+	 * @return bool|Tribe__Tickets__Commerce__PayPal__Order The Order object if found or
 	 *                                                       `false` if the Order could not be
 	 *                                                       found.
 	 */
-	public static function from_order_id( $order_id ) {
-		$order_post_id = self::find_by_order_id( $order_id, true );
+	public static function from_order_id( $order_id, $use_post_id = false ) {
+		$order_post_id = self::find_by_order_id( $order_id, $use_post_id );
 
 		if ( empty( $order_post_id ) ) {
 			return false;

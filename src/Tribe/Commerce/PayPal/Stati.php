@@ -71,6 +71,22 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	}
 
 	/**
+	 * Validates a PayPal payment status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $payment_status
+	 *
+	 * @return false|string The validated status string or `false` if the
+	 *                   status is not valid.
+	 */
+	public static function validate_payment_status( $payment_status ) {
+		$cast = self::cast_payment_status( $payment_status );
+
+		return self::$undefined !== $cast ? $cast : false;
+	}
+
+	/**
 	 * Registers the post stati with WordPress.
 	 *
 	 * @since TBD
