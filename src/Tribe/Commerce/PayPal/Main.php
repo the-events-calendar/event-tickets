@@ -125,6 +125,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	public $pending_attendees_by_ticket = array();
 
 	/**
+	 * @var bool Whether pending stock logic should be ignored or not no matter the Settings.
+	 *           This is an internal property. Use the `tribe_tickets_tpp_pending_stock_ignore`
+	 *           filter or the accessor method to manipulate this value from another class.
+	 */
+	protected $ignore_pending_stock_logic = false;
+
+	/**
 	 * @var Tribe__Tickets__Commerce__PayPal__Attendance_Totals
 	 */
 	protected $attendance_totals;
@@ -565,7 +572,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 */
 	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
-		$transaction_data = tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_data();
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway          = tribe( 'tickets.commerce.paypal.gateway' );
+
+		$transaction_data = $gateway->get_transaction_data();
+		$raw_transaction_data = $gateway->get_raw_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
 			return;
@@ -598,6 +609,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 		}
 
+		$order->set_meta( 'transaction_data', $raw_transaction_data );
+
 		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
 
 		/*
@@ -628,12 +641,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
-			$url = get_permalink( $post_id );
-			$url = add_query_arg( 'tpp_error', 1, $url );
-			if ( $redirect ) {
-				wp_redirect( esc_url_raw( $url ) );
-			}
-			tribe_exit();
+			$this->redirect_after_error( 1, $redirect, $post_id );
 		}
 
 		// Iterate over each product
@@ -676,14 +684,29 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			// Throw an error if Qty is bigger then Remaining
 			if ( $ticket_type->managing_stock() && $payment_status === Tribe__Tickets__Commerce__PayPal__Stati::$completed ) {
+				$this->ignore_pending_stock_logic( true );
 				$inventory = (int) $ticket_type->inventory();
-				if ( - 1 !== $inventory && $qty > $inventory ) {
-					$url = add_query_arg( 'tpp_error', 2, get_permalink( $post_id ) );
-					if ( $redirect ) {
-						wp_redirect( esc_url_raw( $url ) );
+				$this->ignore_pending_stock_logic( false );
+
+				$inventory_is_not_unlimited = - 1 !== $inventory;
+
+				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
+					if ( ! $order->was_pending() ) {
+						$this->redirect_after_error( 2, $redirect, $post_id );
 					}
-					tribe_exit();
+
+					$oversell_policy = Tribe__Tickets__Commerce__PayPal__Oversell__Policies::for_post_ticket_order( $post_id, $ticket_type->ID, $order_id );
+
+					if ( ! $oversell_policy->allows_overselling() ) {
+						$this->redirect_after_error( 2, $redirect, $post_id );
+					}
+
+					$qty = $oversell_policy->modify_quantity( $qty, $inventory );
 				}
+			}
+
+			if ( $qty === 0 ) {
+				$this->redirect_after_error( 3, $redirect, $post_id );
 			}
 
 			$has_tickets = true;
@@ -753,7 +776,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				if ( ! $updating_attendee ) {
 					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
 					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
-					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $order_id, $attendee_id ) );
+					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 					update_post_meta( $attendee_id, $this->order_key, $order_id );
 					update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
 					update_post_meta( $attendee_id, $this->email, $attendee_email );
@@ -860,6 +883,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param bool $send_mail Defaults to `true`.
 		 */
 		$send_mail = apply_filters( 'tribe_tickets_tpp_send_mail', true );
+
+		// @todo use oversell policy here to decide if emails should be sent or not
 
 		if (
 			$send_mail
@@ -1984,11 +2009,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array An associative array in the format [ <order_number> => <order_details> ]
 	 */
-	public function get_orders_by_post_id( $post_id, array $ticket_ids = null ) {
-		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array( 'post_id' => $post_id, 'ticket_id' => $ticket_ids, 'posts_per_page' => - 1 ) );
+	public function get_orders_by_post_id( $post_id, array $ticket_ids = null, $args = array() ) {
+		$find_by_args = wp_parse_args( $args, array(
+			'post_id'        => $post_id,
+			'ticket_id'      => $ticket_ids,
+		) );
 
-		$attendees_by_order = array();
-		$statuses           = $this->get_order_statuses();
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
+
+		$found    = array();
+		$statuses = $this->get_order_statuses();
 
 		if ( ! empty( $orders ) ) {
 			/** @var Tribe__Tickets__Commerce__PayPal__Order $order */
@@ -1998,7 +2028,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$attendees                       = $order->get_attendees();
 				$refund_order_id = $order->get_refund_order_id();
 
-				$attendees_by_order[ $order_id ] = array(
+				$found[ $order_id ] = array(
 					'url'             => $this->get_transaction_url( $order_id ),
 					'number'          => $order_id,
 					'status'          => $status,
@@ -2012,13 +2042,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				);
 
 				if ( ! empty( $refund_order_id ) ) {
-					$attendees_by_order[ $order_id ]['refund_number'] = $refund_order_id;
-					$attendees_by_order[ $order_id ]['refund_url']    = $this->get_transaction_url( $refund_order_id );
+					$found[ $order_id ]['refund_number'] = $refund_order_id;
+					$found[ $order_id ]['refund_url']    = $this->get_transaction_url( $refund_order_id );
 				}
 			}
 		}
 
-		return $attendees_by_order;
+		return $found;
 	}
 
 	/**
@@ -2293,8 +2323,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
 		$order_id = Tribe__Utils__Array::get( $attendee, 'order_id', false );
 
+		/**
+		 * Whether the pending Order stock reserve logic should be ignored completely or not.
+		 *
+		 * If set to `true` then the behaviour chosen in the Settings will apply, if `false`
+		 * only Completed tickets will count to decrease the inventory. This is useful when
+		 *
+		 * @since TBD
+		 *
+		 * @param bool  $ignore_pending
+		 * @param array $attendee An array of data defining the current Attendee
+		 */
+		$ignore_pending = apply_filters( 'tribe_tickets_tpp_pending_stock_ignore', $this->ignore_pending_stock_logic );
+
 		if (
 			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
+			&& ! $ignore_pending
 			&& Tribe__Tickets__Commerce__PayPal__Stati::$pending === $order_status
 			&& false !== $order_id
 			&& false !== $order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $order_id )
@@ -2318,7 +2362,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 * @param Tribe__Tickets__Commerce__PayPal__Order $order                          The object representing the Order that generated
 			 *                                                                                 the Attendee
 			 */
-			$pending_stock_reservation_time = (int) apply_filters( 'tribe_tickets_tpp_tickets_to_send', 30 * 60, $attendee, $order );
+			$pending_stock_reservation_time = (int) apply_filters( 'tribe_tickets_tpp_pending_stock_reserve_time', 30 * 60, $attendee, $order );
 
 			return current_time( 'timestamp' ) <= ( $order_creation_timestamp + $pending_stock_reservation_time );
 		}
@@ -2469,4 +2513,38 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		return max( 0, $denied );
 	}
 
+	/**
+	 * Whether the Pending Order stock reservation logic should be ignored or
+	 * not, no matter the Settings.
+	 *
+	 * This is useful when trying to get the "true" inventory of a ticket.
+	 *
+	 * @param bool $ignore_pending_stock_logic
+	 *
+	 * @see Tribe__Tickets__Commerce__PayPal__Main::attendee_decreases_inventory
+	 */
+	public function ignore_pending_stock_logic( $ignore_pending_stock_logic ) {
+		$this->ignore_pending_stock_logic = (bool) $ignore_pending_stock_logic;
+	}
+
+	/**
+	 * Redirects to the source post after a recoverable (logic) error.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $error_code The current error code
+	 * @param bool $redirect   Whether to really redirect or not.
+	 * @param int  $post_id    A post ID
+	 *
+	 * @return string
+	 *
+	 * @see Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 */
+	protected function redirect_after_error( $error_code = -1, $redirect, $post_id ) {
+		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
+		if ( $redirect ) {
+			wp_redirect( esc_url_raw( $url ) );
+		}
+		tribe_exit();
+	}
 }

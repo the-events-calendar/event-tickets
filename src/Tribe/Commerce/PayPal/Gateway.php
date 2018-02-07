@@ -29,6 +29,11 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * @var array
 	 */
+	protected $raw_transaction_data = array();
+
+	/**
+	 * @var array
+	 */
 	protected $transaction_data;
 
 	/**
@@ -522,5 +527,27 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		return get_permalink( $success_page->ID );
+	}
+
+	/**
+	 * Sets the raw transaction data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data
+	 */
+	public function set_raw_transaction_data( array $data ) {
+		$this->raw_transaction_data = $data;
+	}
+
+	/**
+	 * Returns the raw transaction data.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_raw_transaction_data() {
+		return $this->raw_transaction_data;
 	}
 }

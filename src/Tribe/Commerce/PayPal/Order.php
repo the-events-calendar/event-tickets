@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Order
  *
@@ -11,7 +12,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @var string
 	 */
-	public static $meta_prefix = '_paypal_';
+	public static $meta_prefix = '_tribe_paypal_';
 
 	/**
 	 * @var string The date this Order post has been originally created, format is `Y-m-d H:i:s`
@@ -22,6 +23,12 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @var string The date this Order post has been last updated, format is `Y-m-d H:i:s`
 	 */
 	protected $modified;
+
+	/**
+	 * @var bool Whether the order previous status was pending or not.
+	 */
+	protected $was_pending = false;
+
 	/**
 	 * A list of attendees for the order.
 	 *
@@ -84,6 +91,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		'payment_status',
 		'payer_email',
 		'attendees',
+		'transaction_data',
 	);
 
 	/**
@@ -113,11 +121,16 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		$order = self::from_order_id( $order_id );
 
+		$prev_status = null;
+
 		if ( ! $order ) {
 			$order = new self();
+		} else {
+			$prev_status = $order->status;
 		}
 
 		$order->hydrate_from_transaction_data( $transaction_data );
+		$order->was_pending = $prev_status === Tribe__Tickets__Commerce__PayPal__Stati::$pending;
 
 		return $order;
 	}
@@ -152,7 +165,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $order_id The PayPal order ID (hash).
+	 * @param string $order_id    The PayPal order ID (hash).
 	 * @param bool   $use_post_id Whether the `order_id` parameter should be used as
 	 *                            a PayPal Order ID (hash) or as a post ID
 	 *
@@ -292,7 +305,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		global $wpdb;
 
-		$cache = new Tribe__Cache;
+		$cache     = new Tribe__Cache;
 		$cache_key = self::cache_prefix( 'find_by_' . $cache->make_key( $args ) );
 
 		if ( false !== $cached = $cache[ $cache_key ] ) {
@@ -458,7 +471,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return array An array of attendee information.
 	 *
-	 * @see Tribe__Tickets__Commerce__PayPal__Main::get_attendee() for the attendee format.
+	 * @see   Tribe__Tickets__Commerce__PayPal__Main::get_attendee() for the attendee format.
 	 */
 	public function get_attendees() {
 		return $this->attendees;
@@ -564,7 +577,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		foreach ( $this->meta as $key => $value ) {
 			if ( in_array( $key, $this->searchable_meta_keys ) ) {
-				$key                 = self::$meta_prefix . $key;
+				$key                = self::$meta_prefix . $key;
 				$meta_input[ $key ] = $value;
 			} else {
 				$meta_input[ $this->hashed_meta_key ][ $key ] = $value;
@@ -840,5 +853,16 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public function get_modified_date( $format = null, $timezone_string = null ) {
 		return $this->modified;
+	}
+
+	/**
+	 * Whether the Order previous status was pending or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function was_pending() {
+		return $this->was_pending;
 	}
 }

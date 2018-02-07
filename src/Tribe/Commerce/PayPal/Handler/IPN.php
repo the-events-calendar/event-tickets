@@ -32,8 +32,9 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 
 		$data = wp_unslash( $_POST );
 
-		$results = $gateway->parse_transaction( $data );
+		$gateway->set_raw_transaction_data( $data );
 
+		$results = $gateway->parse_transaction( $data );
 		$gateway->set_transaction_data( $results );
 
 		$payment_status = trim( strtolower( $data['payment_status'] ) );
