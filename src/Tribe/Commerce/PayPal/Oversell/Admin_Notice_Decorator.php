@@ -93,13 +93,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			)
 		);
 
-		/** @var Tribe__Tickets__Commerce__PayPal__Notices $notices */
-		$notices = tribe( 'tickets.commerce.paypal.notices' );
-		$notices->register_transient_notice(
-			$this->notice_slug(),
-			$output,
-			'dismiss=1&type=warning'
-		);
+		tribe_transient_notice( $this->notice_slug(), $output, 'dismiss=1&type=warning' );
 
 		return $modified;
 	}
@@ -180,7 +174,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	 * @return string
 	 */
 	protected function notice_slug() {
-		return "oversell-{$this->get_order_id()}-{$this->get_post_id()}";
+		return "tickets-paypal-oversell-{$this->get_order_id()}-{$this->get_post_id()}";
 	}
 
 	/**

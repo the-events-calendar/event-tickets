@@ -29,8 +29,6 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 			array(),
 			array( $this, 'should_render_missing_identity_token_notice' )
 		);
-
-		$this->show_transient_notices();
 	}
 
 	/**
@@ -74,64 +72,5 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	 */
 	protected function slug( $string ) {
 		return 'tickets-commerce-paypal-' . $string;
-	}
-
-	/**
-	 * Registers a notice to be displayed even if the registering class is not loaded.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug
-	 * @param string $html
-	 * @param array $args
-	 */
-	public function register_transient_notice( $slug, $html, $args = array() ) {
-		$transient = $this->slug( 'notices' );
-		$notices   = get_transient( $transient );
-		$notices   = is_array( $notices ) ? $notices : array();
-		$notices   = array_merge( $notices, array( $slug => array( time(), $html, $args ) ) );
-		set_transient( $transient, $notices, WEEK_IN_SECONDS );
-	}
-
-	/**
-	 * Shows notices based on a transient array.
-	 *
-	 * @since TBD
-	 */
-	protected function show_transient_notices() {
-		$notices = get_transient( $this->slug( 'notices' ) );
-		$notices = is_array( $notices ) ? $notices : array();
-
-		foreach ( $notices as $key => $data ) {
-			list ( $timestamp, $output, $args ) = $data;
-
-			if ( ( $timestamp + WEEK_IN_SECONDS ) > time() ) {
-				tribe_notice(
-					$this->slug( $key ),
-					$output,
-					$args
-				);
-			} else {
-				unset( $notices[ $key ] );
-			}
-		}
-
-		set_transient( $this->slug( 'notices' ), $notices );
-	}
-
-	/**
-	 * Removes a transient notice.
-	 *
-	 * The notice will not be displayed to any other user.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $slug
-	 */
-	public function remove_transient_notice( $slug ) {
-		$notices = get_transient( $this->slug( 'notices' ) );
-		$notices = is_array( $notices ) ? $notices : array();
-		unset( $notices[ $slug ] );
-		set_transient( $this->slug( 'notices' ), $notices );
 	}
 }
