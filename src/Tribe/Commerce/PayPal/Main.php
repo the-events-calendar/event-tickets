@@ -829,6 +829,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				$this->record_attendee_user_id( $attendee_id, $attendee_user_id );
 				$order_attendee_id++;
+
+				if ( ! empty( $existing_attendee ) ) {
+					$existing_attendees = wp_list_filter( $existing_attendees, array( 'attendee_id' => $existing_attendee['attendee_id'] ), 'NOT' );
+				}
+			}
+
+			if ( ! ( empty( $existing_attendees ) || empty( $oversell_policy ) ) ) {
+				// an oversell policy applied: what to do with existing oversold attendees?
+				$oversell_policy->handle_oversold_attendees( $existing_attendees );
 			}
 
 			if ( $has_generated_new_tickets ) {
@@ -885,8 +894,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @param bool $send_mail Defaults to `true`.
 		 */
 		$send_mail = apply_filters( 'tribe_tickets_tpp_send_mail', true );
-
-		// @todo use oversell policy here to decide if emails should be sent or not
 
 		if (
 			$send_mail

@@ -64,4 +64,13 @@ interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 	 * @return string
 	 */
 	public function get_name();
+
+	/**
+	 * Handles existing oversold attendees generated from an oversell.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $oversold_attendees
+	 */
+	public function handle_oversold_attendees( array $oversold_attendees );
 }

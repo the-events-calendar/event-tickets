@@ -69,4 +69,24 @@ abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy {
 	public function get_order_id() {
 		return $this->order_id;
 	}
+
+	/**
+	 * Handles surplus attendees generated from an oversell.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $oversold_attendees
+	 */
+	public function handle_oversold_attendees( array $oversold_attendees ) {
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
+		foreach ( $oversold_attendees as $attendee ) {
+			if ( empty( $attendee['attendee_id'] ) ) {
+				continue;
+			}
+
+			$paypal->delete_ticket( $attendee['event_id'], $attendee['attendee_id'] );
+		}
+	}
 }

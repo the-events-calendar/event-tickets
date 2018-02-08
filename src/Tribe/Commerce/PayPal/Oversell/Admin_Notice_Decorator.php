@@ -175,4 +175,17 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	protected function notice_slug() {
 		return "oversell-{$this->get_order_id()}-{$this->get_post_id()}";
 	}
+
+	/**
+	 * Handles surplus attendees generated from an oversell.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $oversold_attendees
+	 *
+	 * @return array A list of deleted attendees post IDs if any.
+	 */
+	public function handle_oversold_attendees( array $oversold_attendees ) {
+		return $this->policy->handle_oversold_attendees( $oversold_attendees );
+	}
 }
