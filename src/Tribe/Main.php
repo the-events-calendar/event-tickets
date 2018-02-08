@@ -199,10 +199,8 @@ class Tribe__Tickets__Main {
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
-		if ( tribe_get_option( 'ticket-paypal-enable', true ) ) {
-			tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
-			tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
-		}
+		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 	}
 
 	/**
@@ -380,6 +378,7 @@ class Tribe__Tickets__Main {
 		// Load our assets
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 	}
 
 	/**

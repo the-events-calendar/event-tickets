@@ -71,6 +71,6 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	 * @return string
 	 */
 	protected function slug( $string ) {
-		return 'tickets-commerce-' . $string;
+		return 'tickets-commerce-paypal-' . $string;
 	}
 }

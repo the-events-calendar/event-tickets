@@ -1,6 +1,9 @@
 <?php
 namespace Tribe\Tickets\Commerce\PayPal;
 
+use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
+use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
+use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
@@ -166,11 +169,15 @@ payment_gross=9.00
 EOT;
 
 		tribe( 'tickets.data_api' );
+		/** @var PayPal $paypal */
 		$paypal  = tribe( 'tickets.commerce.paypal' );
+		/** @var Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
-		$pdt     = tribe( 'tickets.commerce.paypal.handler.pdt' );
+		/** @var PDT $pdt */
+		$pdt = tribe( 'tickets.commerce.paypal.handler.pdt' );
 
-		$data               = $pdt->parse_transaction_body( $body );
+		$data = $pdt->parse_transaction_body( $body );
+		$gateway->set_raw_transaction_data( $data );
 		$parsed_transaction = $gateway->parse_transaction( $data );
 
 		$gateway->set_transaction_data( $parsed_transaction );

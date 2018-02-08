@@ -851,7 +851,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$attendees            = array();
 
 			if ( 0 !== $expire ) {
-				$post_transient = Tribe__Post_Transient::instance();
+				$post_transient = tribe( 'post-transient' );
 
 				$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
 
@@ -1182,9 +1182,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
-				$post_id = $ticket->get_event()->ID;
+				$post = $ticket->get_event();
+
+				if ( empty( $post ) ) {
+					continue;
+				}
+
+				$post_id      = $post->ID;
 				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-				$stock_mode = $ticket->global_stock_mode();
+				$stock_mode   = $ticket->global_stock_mode();
 
 				$ticket_data = array(
 					'event_id' => $post_id,

@@ -27,6 +27,7 @@ class Tribe__Tickets__Commerce__Currency {
 	public function hook(  ) {
 		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol' ), 10, 2 );
 		add_filter( 'tribe_reverse_currency_position', array( $this, 'reverse_currency_symbol_position' ), 10, 2 );
+		add_filter( 'get_post_metadata', array( $this, 'filter_cost_meta' ), 10, 4 );
 	}
 
 	/**
@@ -228,5 +229,97 @@ class Tribe__Tickets__Commerce__Currency {
 		 * @param array $options
 		 */
 		return apply_filters( 'tribe_tickets_commerce_currency_code_options', $options );
+	}
+
+	/**
+	 * Filters the symbol and symbol position meta to use the Tickets currency code when an event
+	 * has tickets.
+	 *
+	 * @param null|mixed $meta      The original meta value.
+	 * @param int        $object_id The current post ID
+	 * @param string     $meta_key  The requested meta key.
+	 * @param bool       $single    Whether this is a request to fetch only one meta value or all.
+	 *
+	 * @return string
+	 */
+	public function filter_cost_meta( $meta, $object_id, $meta_key, $single ) {
+		if ( ! in_array( $meta_key, array( '_EventCurrencySymbol', '_EventCurrencyPosition' ), true ) ) {
+			return $meta;
+		}
+
+		if ( ! tribe_events_has_tickets( $object_id ) ) {
+			return $meta;
+		}
+
+		if ( $single ) {
+			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $object_id );
+
+			switch ( $meta_key ) {
+				case '_EventCurrencySymbol':
+					return $this->get_provider_symbol( $default_provider, $object_id );
+				case '_EventCurrencyPosition':
+					return $this->get_provider_symbol_position( $default_provider, $object_id );
+			}
+		}
+
+		return $meta;
+	}
+
+	/**
+	 * Returns the currency symbol depending on the provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider  The ticket provider class name
+	 * @param int    $object_id The post ID
+	 *
+	 * @return string
+	 */
+	protected function get_provider_symbol( $provider, $object_id ) {
+		if ( ! class_exists( $provider ) ) {
+			return $this->get_currency_symbol( $object_id );
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
+			return get_woocommerce_currency_symbol();
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
+			return edd_currency_symbol();
+		}
+
+		return $this->get_currency_symbol( $object_id );
+	}
+
+	/**
+	 * Returns the currency symbol position depending on the provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider  The ticket provider class name
+	 * @param int    $object_id The post ID
+	 *
+	 * @return string
+	 */
+	protected function get_provider_symbol_position( $provider, $object_id ) {
+		if ( ! class_exists( $provider ) ) {
+			return $this->get_currency_symbol( $object_id );
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
+			$position = get_option( 'woocommerce_currency_pos' );
+
+			return in_array( $position, array( 'left', 'left_space' ) )
+				? 'prefix'
+				: 'postfix';
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
+			$position = edd_get_option( 'currency_position', 'before' );
+
+			return 'before' === $position ? 'prefix' : 'postfix';
+		}
+
+		return $this->get_currency_symbol( $object_id );
 	}
 }

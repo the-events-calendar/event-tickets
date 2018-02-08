@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Order
  *
@@ -11,25 +12,44 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @var string
 	 */
-	public static $meta_prefix = '_paypal_';
+	public static $meta_prefix = '_tribe_paypal_';
+
+	/**
+	 * @var string The date this Order post has been originally created, format is `Y-m-d H:i:s`
+	 */
+	protected $created;
+
+	/**
+	 * @var string The date this Order post has been last updated, format is `Y-m-d H:i:s`
+	 */
+	protected $modified;
+
+	/**
+	 * @var bool Whether the order previous status was pending or not.
+	 */
+	protected $was_pending = false;
+
 	/**
 	 * A list of attendees for the order.
 	 *
 	 * @var array
 	 */
 	protected $attendees = array();
+
 	/**
 	 * The PayPal Order ID (hash).
 	 *
 	 * @var string
 	 */
 	protected $paypal_order_id = '';
+
 	/**
 	 * The order post ID in the WordPress database.
 	 *
 	 * @var int
 	 */
 	protected $post_id;
+
 	/**
 	 * The order post status.
 	 *
@@ -74,6 +94,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		'payment_status',
 		'payer_email',
 		'attendees',
+		'transaction_data',
 	);
 
 	/**
@@ -103,24 +124,33 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		$order = self::from_order_id( $order_id );
 
+		$prev_status = null;
+
 		if ( ! $order ) {
 			$order = new self();
+		} else {
+			$prev_status = $order->status;
 		}
 
 		$order->hydrate_from_transaction_data( $transaction_data );
+		$order->was_pending = $prev_status === Tribe__Tickets__Commerce__PayPal__Stati::$pending;
 
 		return $order;
 	}
 
 	/**
-	 * Searches for an Order by PayPal order ID (hash), builds and hydrates it if found.
+	 * Searches for an Order by the Order PayPal ID (hash) or post ID, builds and hydrates it if found.
 	 *
 	 * @since TBD
 	 *
 	 * @param $order_id
+	 *
+	 * @return bool|Tribe__Tickets__Commerce__PayPal__Order The Order object if found or
+	 *                                                       `false` if the Order could not be
+	 *                                                       found.
 	 */
-	public static function from_order_id( $order_id ) {
-		$order_post_id = self::find_by_order_id( $order_id );
+	public static function from_order_id( $order_id, $use_post_id = false ) {
+		$order_post_id = self::find_by_order_id( $order_id, $use_post_id );
 
 		if ( empty( $order_post_id ) ) {
 			return false;
@@ -138,16 +168,22 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $order_id The PayPal order ID (hash).
+	 * @param string $order_id    The PayPal order ID (hash).
+	 * @param bool   $use_post_id Whether the `order_id` parameter should be used as
+	 *                            a PayPal Order ID (hash) or as a post ID
 	 *
 	 * @return int|false Either an existing order post ID or `false` if not found.
 	 */
-	public static function find_by_order_id( $order_id ) {
+	public static function find_by_order_id( $order_id, $use_post_id = false ) {
 		global $wpdb;
+
+		$query = $use_post_id
+			? "SELECT ID from {$wpdb->posts} WHERE ID = %d AND post_type = %s"
+			: "SELECT ID from {$wpdb->posts} WHERE post_title = %s AND post_type = %s";
 
 		$order_post_id = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT ID from {$wpdb->posts} WHERE post_title = %s AND post_type = %s",
+				$query,
 				trim( $order_id ),
 				Tribe__Tickets__Commerce__PayPal__Main::ORDER_OBJECT
 			)
@@ -184,6 +220,8 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		$this->paypal_order_id = $order_post->post_title;
 		$this->post_id         = $order_post_id;
 		$this->status          = $order_post->post_status;
+		$this->created         = $order_post->post_date;
+		$this->modified        = $order_post->post_modified;
 
 		$hashed_meta = get_post_meta( $order_post_id, $this->hashed_meta_key, true );
 
@@ -262,9 +300,15 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		$args = wp_parse_args( $args, array(
 			'post_type'   => Tribe__Tickets__Commerce__PayPal__Main::ORDER_OBJECT,
 			'post_status' => 'any',
+			'meta_key'    => self::$meta_prefix . 'payment_date',
+			'meta_type'   => 'DATETIME',
+			'order'       => 'DESC',
+			'orderby'     => 'meta_value',
 		) );
 
-		$cache = new Tribe__Cache;
+		global $wpdb;
+
+		$cache     = new Tribe__Cache;
 		$cache_key = self::cache_prefix( 'find_by_' . $cache->make_key( $args ) );
 
 		if ( false !== $cached = $cache[ $cache_key ] ) {
@@ -326,6 +370,34 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public static function cache_prefix( $key ) {
 		return __CLASS__ . $key;
+	}
+
+	/**
+	 * Either builds an Order object from a PayPal transaction data and returns it
+	 * or fetches an existing Order information.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id An Attendee post ID
+	 *
+	 * @return Tribe__Tickets__Commerce__PayPal__Order|false Either an existing or new order or `false` on
+	 *                                                       failure.
+	 */
+	public static function from_attendee_id( $attendee_id ) {
+		$order_post_id = get_post_meta( $attendee_id, Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_ORDER_KEY, true );
+
+		// validate it
+		$order_post_id = self::find_by_order_id( $order_post_id );
+
+		if ( empty( $order_post_id ) ) {
+			return false;
+		}
+
+		$order = new self();
+
+		$order->hydrate_from_post( $order_post_id );
+
+		return $order;
 	}
 
 	/**
@@ -402,7 +474,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return array An array of attendee information.
 	 *
-	 * @see Tribe__Tickets__Commerce__PayPal__Main::get_attendee() for the attendee format.
+	 * @see   Tribe__Tickets__Commerce__PayPal__Main::get_attendee() for the attendee format.
 	 */
 	public function get_attendees() {
 		return $this->attendees;
@@ -476,6 +548,10 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 				$this->post_ids      = wp_list_pluck( $value, 'post_id' );
 
 				return;
+			case 'payment_date':
+				$this->meta['payment_date'] = Tribe__Date_Utils::reformat( $value, Tribe__Date_Utils::DBDATETIMEFORMAT );
+
+				return;
 			default:
 				$this->meta[ $key ] = $value;
 
@@ -504,7 +580,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 
 		foreach ( $this->meta as $key => $value ) {
 			if ( in_array( $key, $this->searchable_meta_keys ) ) {
-				$key                 = self::$meta_prefix . $key;
+				$key                = self::$meta_prefix . $key;
 				$meta_input[ $key ] = $value;
 			} else {
 				$meta_input[ $this->hashed_meta_key ][ $key ] = $value;
@@ -758,5 +834,54 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public function get_ticket_ids() {
 		return $this->ticket_ids;
+	}
+
+	/**
+	 * Returns the local date and time this Order post was originally created.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_creation_date() {
+		return $this->created;
+	}
+
+	/**
+	 * Returns the local date and time this Order post was last updated.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function get_modified_date() {
+		return $this->modified;
+	}
+
+	/**
+	 * Whether the Order previous status was pending or not.
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function was_pending() {
+		return $this->was_pending;
+	}
+
+	/**
+	 * Returns the Order post ID.
+	 *
+	 * Please note that the returned post ID is the Order one,
+	 * not that of related posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return int This Order post ID
+	 *
+	 * @see \Tribe__Tickets__Commerce__PayPal__Order::get_related_post_ids()
+	 */
+	public function get_post_id() {
+		return $this->post_id;
 	}
 }

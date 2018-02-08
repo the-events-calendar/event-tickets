@@ -104,10 +104,6 @@ class Tribe__Tickets__Assets {
 				),
 			)
 		);
-
-		if ( $this->is_editing_ticketable_post() ) {
-			wp_enqueue_script( 'tribe-validation' );
-		}
 	}
 
 	/**
@@ -147,5 +143,16 @@ class Tribe__Tickets__Assets {
 		$post_types = tribe( 'tickets.main' )->post_types();
 
 		return $context->is_editing_post( $post_types );
+	}
+
+	/**
+	 * Enqueues scripts and styles that might be needed in the post editor area.
+	 *
+	 * @since TBD
+	 */
+	public function enqueue_editor_scripts() {
+		if ( $this->is_editing_ticketable_post() ) {
+			tribe_asset_enqueue( 'tribe-validation' );
+		}
 	}
 }

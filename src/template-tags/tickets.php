@@ -385,6 +385,19 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$stock        = $ticket->stock();
 		$available    = $ticket->available();
 		$sold         = (int) $ticket->qty_sold();
+
+		/**
+		 * Allows filtering the available number that will be displayed.
+		 *
+		 * @since TBD
+		 *
+		 * @param int                           $available
+		 * @param Tribe__Tickets__Ticket_Object $ticket
+		 * @param int                           $sold
+		 * @param int                           $stock
+		 */
+		$available = apply_filters( 'tribe_tickets_stock_message_available_quantity', $available, $ticket, $sold, $stock );
+
 		$cancelled    = (int) $ticket->qty_cancelled();
 		$pending      = (int) $ticket->qty_pending();
 		$status       = '';

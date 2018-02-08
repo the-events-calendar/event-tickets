@@ -35,11 +35,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	const ATTENDEE_PRODUCT_KEY = '_tribe_tpp_product';
 
 	/**
-	 * Currently unused for this provider, but defined per the Tribe__Tickets__Tickets spec.
+	 * Meta key that relates Attendees and Orders.
 	 *
 	 * @var string
 	 */
-	const ATTENDEE_ORDER_KEY = '';
+	const ATTENDEE_ORDER_KEY = '_tribe_tpp_order';
 
 	/**
 	 * Indicates if a ticket for this attendee was sent out via email.
@@ -123,6 +123,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @var array An array cache to store pending attendees per ticket.
 	 */
 	public $pending_attendees_by_ticket = array();
+
+	/**
+	 * @var bool Whether pending stock logic should be ignored or not no matter the Settings.
+	 *           This is an internal property. Use the `tribe_tickets_tpp_pending_stock_ignore`
+	 *           filter or the accessor method to manipulate this value from another class.
+	 */
+	protected $ignore_pending_stock_logic = false;
 
 	/**
 	 * @var Tribe__Tickets__Commerce__PayPal__Attendance_Totals
@@ -212,6 +219,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.screen-options', 'Tribe__Tickets__Commerce__PayPal__Screen_Options', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
 		tribe_singleton( 'tickets.commerce.paypal.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal.links', 'Tribe__Tickets__Commerce__PayPal__Links' );
+		tribe_singleton( 'tickets.commerce.paypal.oversell.policies', 'Tribe__Tickets__Commerce__PayPal__Oversell__Policies' );
+		tribe_singleton( 'tickets.commerce.paypal.oversell.request', 'Tribe__Tickets__Commerce__PayPal__Oversell__Request' );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -226,6 +236,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe( 'tickets.commerce.paypal.orders.report' );
 		tribe( 'tickets.commerce.paypal.screen-options' );
 		tribe( 'tickets.commerce.paypal.endpoints' );
+		tribe( 'tickets.commerce.paypal.currency' );
 	}
 
 	/**
@@ -258,6 +269,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'init', array( tribe( 'tickets.commerce.paypal.notices' ), 'hook' ) );
 		add_action( 'tribe_tickets_attendees_page_inside', tribe_callback( 'tickets.commerce.paypal.orders.tabbed-view', 'render' ) );
 		add_action( 'tribe_events_tickets_metabox_edit_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
+		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
+		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
 	}
 
 	/**
@@ -304,10 +317,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				),
 			)
 		);
+
+		// Admin assets
+		tribe_assets(
+			$main,
+			array(
+				array(
+					'event-tickets-tpp-admin-js',
+					'tpp-admin.js',
+					array(
+						'jquery',
+						'underscore',
+					),
+				),
+			),
+			'admin_enqueue_scripts',
+			array(
+				'conditionals' => 'is_admin',
+				'localize' => (object) array(
+					'name' => 'tribe_tickets_tpp_admin_strings',
+					'data' => array(
+						'complete'   => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'complete' ),
+						'incomplete' => tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label', 'incomplete' ),
+					),
+				),
+			)
+		);
 	}
 
 	/**
-	 * Enqueue the plugin stylesheet(s).
+	 * Enqueue the plugin admin stylesheet(s) and JS.
 	 *
 	 * @since  TBD
 	 */
@@ -538,7 +577,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 */
 	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
-		$transaction_data = tribe( 'tickets.commerce.paypal.gateway' )->get_transaction_data();
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway          = tribe( 'tickets.commerce.paypal.gateway' );
+
+		$transaction_data = $gateway->get_transaction_data();
+		$raw_transaction_data = $gateway->get_raw_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
 			return;
@@ -571,6 +614,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 		}
 
+		$order->set_meta( 'transaction_data', $raw_transaction_data );
+
 		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
 
 		/*
@@ -579,7 +624,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * Let's fallback on the current user ID for GET requests (PDT); it will be always `0`
 		 * during a PayPal POST (IPN) request.
 		 */
-		$attendee_user_id = empty( $custom['user_id'] ) ? get_current_user_id() : absint( $custom['user_id'] );
+		$attendee_user_id = ! isset( $custom['user_id'] ) ? get_current_user_id() : absint( $custom['user_id'] );
 
 		$attendee_full_name = empty( $transaction_data['first_name'] ) && empty( $transaction_data['last_name'] )
 			? ''
@@ -601,12 +646,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
-			$url = get_permalink( $post_id );
-			$url = add_query_arg( 'tpp_error', 1, $url );
-			if ( $redirect ) {
-				wp_redirect( esc_url_raw( $url ) );
-			}
-			tribe_exit();
+			$this->redirect_after_error( 1, $redirect, $post_id );
+			return;
 		}
 
 		// Iterate over each product
@@ -649,14 +690,35 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			// Throw an error if Qty is bigger then Remaining
 			if ( $ticket_type->managing_stock() && $payment_status === Tribe__Tickets__Commerce__PayPal__Stati::$completed ) {
+				$this->ignore_pending_stock_logic( true );
 				$inventory = (int) $ticket_type->inventory();
-				if ( - 1 !== $inventory && $qty > $inventory ) {
-					$url = add_query_arg( 'tpp_error', 2, get_permalink( $post_id ) );
-					if ( $redirect ) {
-						wp_redirect( esc_url_raw( $url ) );
+				$this->ignore_pending_stock_logic( false );
+
+				$inventory_is_not_unlimited = - 1 !== $inventory;
+
+				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
+					if ( ! $order->was_pending() ) {
+						$this->redirect_after_error( 2, $redirect, $post_id );
+						return;
 					}
-					tribe_exit();
+
+					/** @var Tribe__Tickets__Commerce__PayPal__Oversell__Policies $oversell_policies */
+					$oversell_policies = tribe( 'tickets.commerce.paypal.oversell.policies' );
+					$oversell_policy   = $oversell_policies->for_post_ticket_order( $post_id, $ticket_type->ID, $order_id );
+
+					$qty = $oversell_policy->modify_quantity( $qty, $inventory );
+
+					if ( ! $oversell_policy->allows_overselling() ) {
+						$oversell_policy->handle_oversold_attendees( $this->get_attendees_by_order_id( $order_id ) );
+						$this->redirect_after_error( 2, $redirect, $post_id );
+						return;
+					}
 				}
+			}
+
+			if ( $qty === 0 ) {
+				$this->redirect_after_error( 3, $redirect, $post_id );
+				return;
 			}
 
 			$has_tickets = true;
@@ -672,11 +734,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 */
 			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $transaction_data );
 
-			$existing_attendees = $this->get_attendees_by_order_id( $order_id, $product_id );
-
-			if ( ! empty( $existing_attendees ) ) {
-				$existing_attendees = array_filter( array_map( 'get_post', wp_list_pluck( $existing_attendees, 'attendee_id' ) ) );
-			}
+			$existing_attendees = $this->get_attendees_by_order_id( $order_id );
 
 			$has_generated_new_tickets = false;
 
@@ -686,13 +744,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$updating_attendee = false;
 
 				// check if we already have an attendee or not
-				$post_title = $attendee_full_name . ' | ' . ( $i + 1 );
-				$existing_attendee = wp_list_filter( $existing_attendees, array( 'post_title' => $post_title ) );
+				$post_title        = $attendee_full_name . ' | ' . ( $i + 1 );
+				$criteria          = array( 'post_title' => $post_title, 'ticket_id' => $product_id, 'event_id' => $post_id );
+				$existing_attendee = wp_list_filter( $existing_attendees, $criteria );
 
 				if ( ! empty( $existing_attendee ) ) {
 					$existing_attendee = reset( $existing_attendee );
 					$updating_attendee = true;
-					$attendee_id       = $existing_attendee->ID;
+					$attendee_id       = $existing_attendee['attendee_id'];
 				} else {
 					$attendee = array(
 						'post_status' => 'publish',
@@ -726,7 +785,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				if ( ! $updating_attendee ) {
 					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
 					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
-					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $order_id, $attendee_id ) );
+					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 					update_post_meta( $attendee_id, $this->order_key, $order_id );
 					update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
 					update_post_meta( $attendee_id, $this->email, $attendee_email );
@@ -777,6 +836,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				$this->record_attendee_user_id( $attendee_id, $attendee_user_id );
 				$order_attendee_id++;
+
+				if ( ! empty( $existing_attendee ) ) {
+					$existing_attendees = wp_list_filter( $existing_attendees, array( 'attendee_id' => $existing_attendee['attendee_id'] ), 'NOT' );
+				}
+			}
+
+			if ( ! ( empty( $existing_attendees ) || empty( $oversell_policy ) ) ) {
+				// an oversell policy applied: what to do with existing oversold attendees?
+				$oversell_policy->handle_oversold_attendees( $existing_attendees );
 			}
 
 			if ( $has_generated_new_tickets ) {
@@ -1957,11 +2025,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array An associative array in the format [ <order_number> => <order_details> ]
 	 */
-	public function get_orders_by_post_id( $post_id, array $ticket_ids = null ) {
-		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( array( 'post_id' => $post_id, 'ticket_id' => $ticket_ids, 'posts_per_page' => - 1 ) );
+	public function get_orders_by_post_id( $post_id, array $ticket_ids = null, $args = array() ) {
+		$find_by_args = wp_parse_args( $args, array(
+			'post_id'        => $post_id,
+			'ticket_id'      => $ticket_ids,
+		) );
 
-		$attendees_by_order = array();
-		$statuses           = $this->get_order_statuses();
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
+
+		$found    = array();
+		$statuses = $this->get_order_statuses();
 
 		if ( ! empty( $orders ) ) {
 			/** @var Tribe__Tickets__Commerce__PayPal__Order $order */
@@ -1971,7 +2044,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$attendees                       = $order->get_attendees();
 				$refund_order_id = $order->get_refund_order_id();
 
-				$attendees_by_order[ $order_id ] = array(
+				$found[ $order_id ] = array(
 					'url'             => $this->get_transaction_url( $order_id ),
 					'number'          => $order_id,
 					'status'          => $status,
@@ -1985,13 +2058,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				);
 
 				if ( ! empty( $refund_order_id ) ) {
-					$attendees_by_order[ $order_id ]['refund_number'] = $refund_order_id;
-					$attendees_by_order[ $order_id ]['refund_url']    = $this->get_transaction_url( $refund_order_id );
+					$found[ $order_id ]['refund_number'] = $refund_order_id;
+					$found[ $order_id ]['refund_url']    = $this->get_transaction_url( $refund_order_id );
 				}
 			}
 		}
 
-		return $attendees_by_order;
+		return $found;
 	}
 
 	/**
@@ -2251,6 +2324,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Whether a specific attendee is valid toward inventory decrease or not.
 	 *
+	 * By default only attendees generated as part of a Completed order will count toward
+	 * an inventory decrease but, if the option to reserve stock for Pending Orders is activated,
+	 * then those attendees generated as part of a Pending Order will, for a limited time after the
+	 * order creation, cause the inventory to be decreased.
+	 *
 	 * @since TBD
 	 *
 	 * @param array $attendee
@@ -2259,6 +2337,51 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function attendee_decreases_inventory( array $attendee ) {
 		$order_status = Tribe__Utils__Array::get( $attendee, 'order_status', 'undefined' );
+		$order_id = Tribe__Utils__Array::get( $attendee, 'order_id', false );
+
+		/**
+		 * Whether the pending Order stock reserve logic should be ignored completely or not.
+		 *
+		 * If set to `true` then the behaviour chosen in the Settings will apply, if `false`
+		 * only Completed tickets will count to decrease the inventory. This is useful when
+		 *
+		 * @since TBD
+		 *
+		 * @param bool  $ignore_pending
+		 * @param array $attendee An array of data defining the current Attendee
+		 */
+		$ignore_pending = apply_filters( 'tribe_tickets_tpp_pending_stock_ignore', $this->ignore_pending_stock_logic );
+
+		if (
+			'on-pending' === tribe_get_option( 'ticket-paypal-stock-handling', 'on-complete' )
+			&& ! $ignore_pending
+			&& Tribe__Tickets__Commerce__PayPal__Stati::$pending === $order_status
+			&& false !== $order_id
+			&& false !== $order = Tribe__Tickets__Commerce__PayPal__Order::from_attendee_id( $order_id )
+		) {
+			/** @var \Tribe__Tickets__Commerce__PayPal__Order $order */
+			$order_creation_timestamp = Tribe__Date_Utils::wp_strtotime( $order->get_creation_date() );
+
+			/**
+			 * Filters the amount of time a part of the stock will be reserved by a pending Order.
+			 *
+			 * The time applies from the Order creation time.
+			 * In the unlikely scenario that an Order goes from Completed to Pending then, if the
+			 * reservation time allows it, a part of the stock will be reserved for it.
+			 *
+			 * @since TBD
+			 *
+			 * @param int                                      $pending_stock_reservation_time The amount of seconds, from the Order creation time,
+			 *                                                                                 part of the stock will be reserved for the Order;
+			 *                                                                                 defaults to 30 minutes.
+			 * @param array                                    $attendee                       An array of data defining the current Attendee
+			 * @param Tribe__Tickets__Commerce__PayPal__Order $order                          The object representing the Order that generated
+			 *                                                                                 the Attendee
+			 */
+			$pending_stock_reservation_time = (int) apply_filters( 'tribe_tickets_tpp_pending_stock_reserve_time', 30 * 60, $attendee, $order );
+
+			return current_time( 'timestamp' ) <= ( $order_creation_timestamp + $pending_stock_reservation_time );
+		}
 
 		return Tribe__Tickets__Commerce__PayPal__Stati::$completed === $order_status;
 	}
@@ -2268,8 +2391,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id The ticket post ID
-	 * @param int $qty
+	 * @param int  $ticket_id The ticket post ID
+	 * @param int  $qty
 	 *
 	 * @return int
 	 */
@@ -2343,15 +2466,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
-			'optout'             => $optout,
-			'ticket'             => $product_title,
-			'attendee_id'        => $attendee->ID,
-			'security'           => $security,
-			'product_id'         => $product_id,
-			'check_in'           => $checkin,
-			'order_status'       => $status,
-			'user_id'            => $user_id,
-			'ticket_sent'        => $ticket_sent,
+			'optout'       => $optout,
+			'ticket'       => $product_title,
+			'attendee_id'  => $attendee->ID,
+			'security'     => $security,
+			'product_id'   => $product_id,
+			'check_in'     => $checkin,
+			'order_status' => $status,
+			'user_id'      => $user_id,
+			'ticket_sent'  => $ticket_sent,
+
+			// this is used to find existing attendees
+			'post_title'   => $attendee->post_title,
 
 			// Fields for Email Tickets
 			'event_id'      => get_post_meta( $attendee->ID, $this->attendee_event_key, true ),
@@ -2406,4 +2532,38 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		return max( 0, $denied );
 	}
 
+	/**
+	 * Whether the Pending Order stock reservation logic should be ignored or
+	 * not, no matter the Settings.
+	 *
+	 * This is useful when trying to get the "true" inventory of a ticket.
+	 *
+	 * @param bool $ignore_pending_stock_logic
+	 *
+	 * @see Tribe__Tickets__Commerce__PayPal__Main::attendee_decreases_inventory
+	 */
+	public function ignore_pending_stock_logic( $ignore_pending_stock_logic ) {
+		$this->ignore_pending_stock_logic = (bool) $ignore_pending_stock_logic;
+	}
+
+	/**
+	 * Redirects to the source post after a recoverable (logic) error.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $error_code The current error code
+	 * @param bool $redirect   Whether to really redirect or not.
+	 * @param int  $post_id    A post ID
+	 *
+	 * @return string
+	 *
+	 * @see Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
+	 */
+	protected function redirect_after_error( $error_code, $redirect, $post_id ) {
+		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
+		if ( $redirect ) {
+			wp_redirect( esc_url_raw( $url ) );
+		}
+		tribe_exit();
+	}
 }
