@@ -843,7 +843,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return string
 	 */
-	public function get_creation_date( $format = 'Y-m-d H:i:s' ) {
+	public function get_creation_date() {
 		return $this->created;
 	}
 
@@ -854,7 +854,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return string
 	 */
-	public function get_modified_date( $format = null, $timezone_string = null ) {
+	public function get_modified_date() {
 		return $this->modified;
 	}
 
@@ -865,7 +865,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return bool
 	 */
-	public function was_pending( $was_pending = null ) {
+	public function was_pending() {
 		return $this->was_pending;
 	}
 

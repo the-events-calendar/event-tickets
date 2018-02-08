@@ -2557,7 +2557,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @see Tribe__Tickets__Commerce__PayPal__Errors for error codes translations.
 	 */
-	protected function redirect_after_error( $error_code = -1, $redirect, $post_id ) {
+	protected function redirect_after_error( $error_code = - 1, $redirect, $post_id ) {
 		$url = add_query_arg( 'tpp_error', $error_code, get_permalink( $post_id ) );
 		if ( $redirect ) {
 			wp_redirect( esc_url_raw( $url ) );

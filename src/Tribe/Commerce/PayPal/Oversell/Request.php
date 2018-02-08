@@ -59,7 +59,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
-		$data = $order->get_meta( 'transaction_data' );
+		$data         = $order->get_meta( 'transaction_data' );
 		$retry_status = $order->get_status();
 
 		// put back the order status to pending
@@ -72,13 +72,8 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 		$paypal->generate_tickets( $retry_status, false );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Notices $notices */
-		$notices = tribe('tickets.commerce.paypal.notices');
+		$notices = tribe( 'tickets.commerce.paypal.notices' );
 		$notices->remove_transient_notice( $_GET['tpp_slug'] );
-
-		/** @var Tribe__Tickets__Commerce__PayPal__Orders__Report $orders_report */
-		$post_ids = $order->get_related_post_ids();
-		$post     = get_post( reset( $post_ids ) );
-		wp_safe_redirect( Tribe__Tickets__Commerce__PayPal__Orders__Report::get_tickets_report_link( $post ) );
 
 		// whatever the choice the order is not Completed
 		$order->set_meta( 'payment_status', 'completed' );
@@ -86,6 +81,10 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 
 		remove_filter( 'tribe_exit', array( $this, 'do_not_exit' ), 10 );
 
+		/** @var Tribe__Tickets__Commerce__PayPal__Orders__Report $orders_report */
+		$post_ids = $order->get_related_post_ids();
+		$post     = get_post( reset( $post_ids ) );
+		wp_safe_redirect( Tribe__Tickets__Commerce__PayPal__Orders__Report::get_tickets_report_link( $post ) );
 		tribe_exit();
 	}
 
