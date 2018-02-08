@@ -53,6 +53,8 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 
 		add_filter( 'tribe_tickets_commerce_paypal_oversell_policy', array( $this, 'filter_policy' ), 10, 4 );
 		add_filter( 'tribe_tickets_commerce_paypal_oversell_generates_notice', '__return_false' );
+		add_filter( 'tribe_tickets_commerce_paypal_oversell_policy_object', array( $this, 'filter_policy_object' ), 10, 5 );
+		add_filter( 'tribe_exit', array( $this, 'do_not_exit' ), 10, 2 );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
@@ -78,10 +80,64 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 		$post     = get_post( reset( $post_ids ) );
 		wp_safe_redirect( Tribe__Tickets__Commerce__PayPal__Orders__Report::get_tickets_report_link( $post ) );
 
+		// whatever the choice the order is not Completed
+		$order->set_meta( 'payment_status', 'completed' );
+		$order->update();
+
+		remove_filter( 'tribe_exit', array( $this, 'do_not_exit' ), 10 );
+
 		tribe_exit();
 	}
 
+	/**
+	 * Filters the policy slug to return the one the user has chosen.
+	 *
+	 * @since TBD
+	 *
+	 * @param $policy
+	 * @param $post_id
+	 * @param $ticket_id
+	 * @param $order_id
+	 *
+	 * @return string
+	 */
 	public function filter_policy( $policy, $post_id, $ticket_id, $order_id ) {
-		return $order_id == $this->order_id ? $this->policy : $policy;
+		if ( $order_id == $this->order_id ) {
+			return $this->policy;
+		}
+
+		return $policy;
+	}
+
+	/**
+	 * Filters the policy object to wrap it in an oversold attendee handling decorator.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface $policy_object
+	 *
+	 * @return Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface
+	 */
+	public function filter_policy_object( $policy_object, $policy, $post_id, $ticket_id, $order_id ) {
+		if ( ! $policy_object instanceof Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface ) {
+			return $policy_object;
+		}
+
+		if ( $order_id == $this->order_id ) {
+			return new Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator( $policy_object );
+		}
+
+		return $policy_object;
+	}
+
+	/**
+	 * Filters the `tribe_exit` function to avoid redirection in mid-process.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public function do_not_exit() {
+		return '__return_true';
 	}
 }

@@ -77,12 +77,19 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			__( 'generate attendees only for available tickets and not oversell', 'event-tickets' )
 		);
 
-		$output .= sprintf(
+		$no_oversell_link = sprintf(
+			'<a href="%s">%s</a>',
+			$this->oversell_url( 'no-oversell' ),
+			__( 'delete generated attendees and send no emails', 'event-tickets' )
+		);
+
+		$output           .= sprintf(
 			'<p>%s</p>',
 			sprintf(
-				esc_html__( 'You can %s, %s, or just dismiss this notice and not send any email or sell any ticket.', 'event-tickets' ),
+				esc_html__( 'You can %s, %s, or %s.', 'event-tickets' ),
 				$sell_all_link,
-				$sell_available_link
+				$sell_available_link,
+				$no_oversell_link
 			)
 		);
 

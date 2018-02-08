@@ -104,6 +104,19 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 			$instance = new Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator( $instance );
 		}
 
+		/**
+		 * Filters the oversell policy object before returning it.
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface $instance  The policy object.
+		 * @param string                                                       $policy    The slug of the policy to use.
+		 * @param int                                                          $post_id   The current post ID
+		 * @param int                                                          $ticket_id The current ticket post ID
+		 * @param string                                                       $order_id  The current Order PayPal ID (hash)
+		 */
+		$instance = apply_filters( 'tribe_tickets_commerce_paypal_oversell_policy_object', $instance, $policy, $post_id, $ticket_id, $order_id );
+
 		return $instance;
 	}
 }

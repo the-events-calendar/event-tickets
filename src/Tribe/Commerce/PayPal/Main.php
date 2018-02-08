@@ -646,6 +646,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$this->redirect_after_error( 1, $redirect, $post_id );
+			return;
 		}
 
 		// Iterate over each product
@@ -697,6 +698,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
 					if ( ! $order->was_pending() ) {
 						$this->redirect_after_error( 2, $redirect, $post_id );
+						return;
 					}
 
 					/** @var Tribe__Tickets__Commerce__PayPal__Oversell__Policies $oversell_policies */
@@ -706,13 +708,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$qty = $oversell_policy->modify_quantity( $qty, $inventory );
 
 					if ( ! $oversell_policy->allows_overselling() ) {
+						$oversell_policy->handle_oversold_attendees( $this->get_attendees_by_order_id( $order_id ) );
 						$this->redirect_after_error( 2, $redirect, $post_id );
+						return;
 					}
 				}
 			}
 
 			if ( $qty === 0 ) {
 				$this->redirect_after_error( 3, $redirect, $post_id );
+				return;
 			}
 
 			$has_tickets = true;
@@ -910,8 +915,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$url       = $endpoints->success_url( $order_id, $post_id );
 			if ( $redirect ) {
 				wp_redirect( esc_url_raw( $url ) );
-				tribe_exit();
 			}
+			tribe_exit();
 		}
 	}
 
