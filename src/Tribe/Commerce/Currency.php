@@ -280,11 +280,11 @@ class Tribe__Tickets__Commerce__Currency {
 			return $this->get_currency_symbol( $object_id );
 		}
 
-		if ( $provider === 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
 			return get_woocommerce_currency_symbol();
 		}
 
-		if ( $provider === 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
 			return edd_currency_symbol();
 		}
 
@@ -306,7 +306,7 @@ class Tribe__Tickets__Commerce__Currency {
 			return $this->get_currency_symbol( $object_id );
 		}
 
-		if ( $provider === 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
 			$position = get_option( 'woocommerce_currency_pos' );
 
 			return in_array( $position, array( 'left', 'left_space' ) )
@@ -314,7 +314,7 @@ class Tribe__Tickets__Commerce__Currency {
 				: 'postfix';
 		}
 
-		if ( $provider === 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
 			$position = edd_get_option( 'currency_position', 'before' );
 
 			return 'before' === $position ? 'prefix' : 'postfix';

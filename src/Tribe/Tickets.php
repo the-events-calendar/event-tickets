@@ -1182,7 +1182,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
-				$post         = $ticket->get_event();
+				$post = $ticket->get_event();
 
 				if ( empty( $post ) ) {
 					continue;

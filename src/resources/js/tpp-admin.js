@@ -36,10 +36,10 @@ var tribe_tickets_tpp_admin = {
 		}
 
 		var newStatus = _.reduce( $dependsOn, function( currentStatusBool, el ) {
-			return currentStatusBool && !$( el ).hasClass( 'no-checkmark' );
+			return currentStatusBool && ! $( el ).hasClass( 'no-checkmark' );
 		}, true );
 		var newStatusSlug = my.castBoolToStatus( newStatus );
-		$find.text( my.l10n[newStatusSlug] ).attr( 'data-status', newStatusSlug );
+		$find.text( my.l10n[ newStatusSlug ] ).attr( 'data-status', newStatusSlug );
 	};
 
 	my.isOkInput = function( input ) {

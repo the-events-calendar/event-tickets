@@ -15,7 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 			tribe( 'tickets.commerce.paypal.gateway' )->get_settings_url()
 		);
 		$tag  = '<a href="'
-		        . $link
+		        . esc_attr( $link )
 		        . '" target="_blank">'
 		        . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > IPN History Page', 'event-tickets' )
 		        . '</a>';
@@ -34,7 +34,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 		);
 
 		$tag = '<a href="'
-		       . $link
+		       . esc_attr( $link )
 		       . '" target="_blank">' . esc_html__( 'Profile and Settings > My selling tools > Instant Payment Notification > Update', 'event-tickets' )
 		       . '</a>';
 
