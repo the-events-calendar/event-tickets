@@ -1182,9 +1182,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
-				$post_id = $ticket->get_event()->ID;
+				$post         = $ticket->get_event();
+
+				if ( empty( $post ) ) {
+					continue;
+				}
+
+				$post_id      = $post->ID;
 				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
-				$stock_mode = $ticket->global_stock_mode();
+				$stock_mode   = $ticket->global_stock_mode();
 
 				$ticket_data = array(
 					'event_id' => $post_id,
