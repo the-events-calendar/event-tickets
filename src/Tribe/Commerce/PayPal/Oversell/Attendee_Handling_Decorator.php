@@ -3,6 +3,8 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator
  *
+ * Decorates an oversell policy object to handle oversold attendees.
+ *
  * @since TBD
  */
 class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator implements Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
