@@ -75,7 +75,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 		$notices = tribe( 'tickets.commerce.paypal.notices' );
 		$notices->remove_transient_notice( $_GET['tpp_slug'] );
 
-		// whatever the choice the order is not Completed
+		// whatever the choice the order is now Completed
 		$order->set_meta( 'payment_status', 'completed' );
 		$order->update();
 
