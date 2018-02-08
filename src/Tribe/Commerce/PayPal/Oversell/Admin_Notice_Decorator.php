@@ -54,13 +54,12 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			'<p>%s</p>',
 			sprintf(
 				esc_html__(
-					'PayPal Order %1$s caused a possible oversell of tickets: %2$d available, %3$d requested, %4$d sold (oversell policy is %5$s).',
+					'PayPal Order %1$s caused a possible oversell of tickets: %2$d available, %3$d requested; oversell policy is %4$s.',
 					'event-tickets'
 				),
 				$this->get_order_id(),
 				$inventory,
 				$qty,
-				$modified,
 				strtolower( $this->policy->get_name() )
 			)
 		);
