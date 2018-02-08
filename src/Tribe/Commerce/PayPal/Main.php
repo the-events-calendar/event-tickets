@@ -220,6 +220,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.stati', 'Tribe__Tickets__Commerce__PayPal__Stati' );
 		tribe_singleton( 'tickets.commerce.paypal.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.links', 'Tribe__Tickets__Commerce__PayPal__Links' );
+		tribe_singleton( 'tickets.commerce.paypal.oversell.policies', 'Tribe__Tickets__Commerce__PayPal__Oversell__Policies' );
+		tribe_singleton( 'tickets.commerce.paypal.oversell.request', 'Tribe__Tickets__Commerce__PayPal__Oversell__Request' );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -267,6 +269,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tribe_tickets_attendees_page_inside', tribe_callback( 'tickets.commerce.paypal.orders.tabbed-view', 'render' ) );
 		add_action( 'tribe_events_tickets_metabox_edit_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
 		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
+		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
 	}
 
 	/**
@@ -620,7 +623,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * Let's fallback on the current user ID for GET requests (PDT); it will be always `0`
 		 * during a PayPal POST (IPN) request.
 		 */
-		$attendee_user_id = empty( $custom['user_id'] ) ? get_current_user_id() : absint( $custom['user_id'] );
+		$attendee_user_id = ! isset( $custom['user_id'] ) ? get_current_user_id() : absint( $custom['user_id'] );
 
 		$attendee_full_name = empty( $transaction_data['first_name'] ) && empty( $transaction_data['last_name'] )
 			? ''
@@ -696,13 +699,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 						$this->redirect_after_error( 2, $redirect, $post_id );
 					}
 
-					$oversell_policy = Tribe__Tickets__Commerce__PayPal__Oversell__Policies::for_post_ticket_order( $post_id, $ticket_type->ID, $order_id );
+					/** @var Tribe__Tickets__Commerce__PayPal__Oversell__Policies $oversell_policies */
+					$oversell_policies = tribe( 'tickets.commerce.paypal.oversell.policies' );
+					$oversell_policy   = $oversell_policies->for_post_ticket_order( $post_id, $ticket_type->ID, $order_id );
+
+					$qty = $oversell_policy->modify_quantity( $qty, $inventory );
 
 					if ( ! $oversell_policy->allows_overselling() ) {
 						$this->redirect_after_error( 2, $redirect, $post_id );
 					}
-
-					$qty = $oversell_policy->modify_quantity( $qty, $inventory );
 				}
 			}
 
@@ -723,11 +728,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 */
 			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $transaction_data );
 
-			$existing_attendees = $this->get_attendees_by_order_id( $order_id, $product_id );
-
-			if ( ! empty( $existing_attendees ) ) {
-				$existing_attendees = array_filter( array_map( 'get_post', wp_list_pluck( $existing_attendees, 'attendee_id' ) ) );
-			}
+			$existing_attendees = $order->get_attendees();
 
 			$has_generated_new_tickets = false;
 
@@ -743,7 +744,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				if ( ! empty( $existing_attendee ) ) {
 					$existing_attendee = reset( $existing_attendee );
 					$updating_attendee = true;
-					$attendee_id       = $existing_attendee->ID;
+					$attendee_id       = $existing_attendee['attendee_id'];
 				} else {
 					$attendee = array(
 						'post_status' => 'publish',
@@ -902,8 +903,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$url       = $endpoints->success_url( $order_id, $post_id );
 			if ( $redirect ) {
 				wp_redirect( esc_url_raw( $url ) );
+				tribe_exit();
 			}
-			tribe_exit();
 		}
 	}
 
@@ -2451,15 +2452,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
-			'optout'             => $optout,
-			'ticket'             => $product_title,
-			'attendee_id'        => $attendee->ID,
-			'security'           => $security,
-			'product_id'         => $product_id,
-			'check_in'           => $checkin,
-			'order_status'       => $status,
-			'user_id'            => $user_id,
-			'ticket_sent'        => $ticket_sent,
+			'optout'       => $optout,
+			'ticket'       => $product_title,
+			'attendee_id'  => $attendee->ID,
+			'security'     => $security,
+			'product_id'   => $product_id,
+			'check_in'     => $checkin,
+			'order_status' => $status,
+			'user_id'      => $user_id,
+			'ticket_sent'  => $ticket_sent,
+
+			// this is used to find existing attendees
+			'post_title'   => $attendee->post_title,
 
 			// Fields for Email Tickets
 			'event_id'      => get_post_meta( $attendee->ID, $this->attendee_event_key, true ),

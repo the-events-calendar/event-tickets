@@ -100,7 +100,6 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	 */
 	protected function show_transient_notices() {
 		$notices = get_transient( $this->slug( 'notices' ) );
-
 		$notices = is_array( $notices ) ? $notices : array();
 
 		foreach ( $notices as $key => $data ) {
@@ -117,6 +116,22 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 			}
 		}
 
+		set_transient( $this->slug( 'notices' ), $notices );
+	}
+
+	/**
+	 * Removes a transient notice.
+	 *
+	 * The notice will not be displayed to any other user.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $slug
+	 */
+	public function remove_transient_notice( $slug ) {
+		$notices = get_transient( $this->slug( 'notices' ) );
+		$notices = is_array( $notices ) ? $notices : array();
+		unset( $notices[ $slug ] );
 		set_transient( $this->slug( 'notices' ), $notices );
 	}
 }

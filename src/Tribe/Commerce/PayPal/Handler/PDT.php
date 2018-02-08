@@ -32,8 +32,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 			return false;
 		}
 
-		$results = $gateway->parse_transaction( $results );
-		$gateway->set_transaction_data( $results );
+		$gateway->set_transaction_data( $gateway->parse_transaction( $results ) );
 
 		// since the purchase has completed, reset the invoice number
 		$gateway->reset_invoice_number();

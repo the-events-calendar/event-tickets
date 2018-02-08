@@ -35,18 +35,21 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @var array
 	 */
 	protected $attendees = array();
+
 	/**
 	 * The PayPal Order ID (hash).
 	 *
 	 * @var string
 	 */
 	protected $paypal_order_id = '';
+
 	/**
 	 * The order post ID in the WordPress database.
 	 *
 	 * @var int
 	 */
 	protected $post_id;
+
 	/**
 	 * The order post status.
 	 *
@@ -862,7 +865,23 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 *
 	 * @return bool
 	 */
-	public function was_pending() {
+	public function was_pending( $was_pending = null ) {
 		return $this->was_pending;
+	}
+
+	/**
+	 * Returns the Order post ID.
+	 *
+	 * Please note that the returned post ID is the Order one,
+	 * not that of related posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return int This Order post ID
+	 *
+	 * @see \Tribe__Tickets__Commerce__PayPal__Order::get_related_post_ids()
+	 */
+	public function get_post_id() {
+		return $this->post_id;
 	}
 }

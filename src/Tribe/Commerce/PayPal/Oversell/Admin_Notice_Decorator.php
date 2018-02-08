@@ -50,11 +50,13 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	public function modify_quantity( $qty, $inventory ) {
 		$modified = $this->policy->modify_quantity( $qty, $inventory );
 
-		$output = sprintf( '<p>%s</p>',
-			sprintf( esc_html__(
-				'PayPal Order %1$s caused a possible oversell of tickets when it was completed: %2$d available, %3$d requested, %4$d sold (oversell policy is %5$s).',
-				'event-tickets'
-			),
+		$output = sprintf(
+			'<p>%s</p>',
+			sprintf(
+				esc_html__(
+					'PayPal Order %1$s caused a possible oversell of tickets: %2$d available, %3$d requested, %4$d sold (oversell policy is %5$s).',
+					'event-tickets'
+				),
 				$this->get_order_id(),
 				$inventory,
 				$qty,
@@ -63,10 +65,31 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			)
 		);
 
+		$sell_all_link = sprintf(
+			'<a href="%s">%s</a>',
+			$this->oversell_url( 'sell-all' ),
+			__( 'generate all requested attendees and oversell', 'event-tickets' )
+		);
+
+		$sell_available_link = sprintf(
+			'<a href="%s">%s</a>',
+			$this->oversell_url( 'sell-available' ),
+			__( 'generate attendees only for available tickets and not oversell', 'event-tickets' )
+		);
+
+		$output .= sprintf(
+			'<p>%s</p>',
+			sprintf(
+				esc_html__( 'You can %s, %s, or just dismiss this notice and not send any email or sell any ticket.', 'event-tickets' ),
+				$sell_all_link,
+				$sell_available_link
+			)
+		);
+
 		/** @var Tribe__Tickets__Commerce__PayPal__Notices $notices */
 		$notices = tribe( 'tickets.commerce.paypal.notices' );
 		$notices->register_transient_notice(
-			"oversell-{$this->get_order_id()}-{$this->get_post_id()}",
+			$this->notice_slug(),
 			$output,
 			'dismiss=1&type=warning'
 		);
@@ -116,5 +139,40 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	 */
 	public function get_ticket_id() {
 		return $this->policy->get_ticket_id();
+	}
+
+	/**
+	 * Returns the URL that will be used to trigger an oversell for the Order from the admin UI.
+	 *
+	 * Note there is no nonce as the order might be generated during a POST request where the user
+	 * is `0`.
+	 *
+	 * @param string $policy
+	 *
+	 * @return string
+	 */
+	protected function oversell_url( $policy ) {
+		$order_id = $this->get_order_id();
+
+		return add_query_arg(
+			array(
+				'tpp_action'   => Tribe__Tickets__Commerce__PayPal__Oversell__Request::$oversell_action,
+				'tpp_policy'   => $policy,
+				'tpp_order_id' => $order_id,
+				'tpp_slug'     => $this->notice_slug(),
+			),
+			admin_url()
+		);
+	}
+
+	/**
+	 * Returns the notice slug for this decorator.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	protected function notice_slug() {
+		return "oversell-{$this->get_order_id()}-{$this->get_post_id()}";
 	}
 }

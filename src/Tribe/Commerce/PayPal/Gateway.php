@@ -286,7 +286,10 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $data
+	 * @param array $data An array of parsed transaction data.
+	 *
+	 * @see \Tribe__Tickets__Commerce__PayPal__Gateway::parse_transaction()
+	 * @see \Tribe__Tickets__Commerce__PayPal__Gateway::set_raw_transaction_data()
 	 */
 	public function set_transaction_data( $data ) {
 		/**

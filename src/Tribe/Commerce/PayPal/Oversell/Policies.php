@@ -39,8 +39,8 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 	 *
 	 * @returns Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface
 	 */
-	public static function for_post_ticket_order( $post_id, $ticket_id, $order_id ) {
-		$policy = tribe_get_option( self::$option_name, 'sell-available' );
+	public function for_post_ticket_order( $post_id, $ticket_id, $order_id ) {
+		$policy = tribe_get_option( self::$option_name, 'no-oversell' );
 
 		if ( $post_policy = get_post_meta( $post_id, self::$meta_key, true ) ) {
 			$policy = $post_policy;
@@ -86,7 +86,21 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 		$instance = $class instanceof Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface
 			? $class : new $class( $post_id, $ticket_id, $order_id );
 
-		if ( tribe_get_option( self::$notice_option_name, true ) ) {
+		$generate_admin_notice = tribe_get_option( self::$notice_option_name, true );
+
+		/**
+		 * Whether overselling should generate an admin notice or not.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool   $generate_admin_notice
+		 * @param int    $post_id   The current post ID
+		 * @param int    $ticket_id The current ticket post ID
+		 * @param string $order_id  The current Order PayPal ID (hash)
+		 */
+		$generate_admin_notice = apply_filters( 'tribe_tickets_commerce_paypal_oversell_generates_notice', $generate_admin_notice, $post_id, $ticket_id, $order_id );
+
+		if ( $generate_admin_notice ) {
 			$instance = new Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator( $instance );
 		}
 
