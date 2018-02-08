@@ -734,7 +734,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 */
 			do_action( 'tribe_tickets_tpp_before_attendee_ticket_creation', $post_id, $ticket_type, $transaction_data );
 
-			$existing_attendees = $order->get_attendees();
+			$existing_attendees = $this->get_attendees_by_order_id( $order_id );
 
 			$has_generated_new_tickets = false;
 
@@ -744,8 +744,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$updating_attendee = false;
 
 				// check if we already have an attendee or not
-				$post_title = $attendee_full_name . ' | ' . ( $i + 1 );
-				$existing_attendee = wp_list_filter( $existing_attendees, array( 'post_title' => $post_title ) );
+				$post_title        = $attendee_full_name . ' | ' . ( $i + 1 );
+				$criteria          = array( 'post_title' => $post_title, 'ticket_id' => $product_id, 'event_id' => $post_id );
+				$existing_attendee = wp_list_filter( $existing_attendees, $criteria );
 
 				if ( ! empty( $existing_attendee ) ) {
 					$existing_attendee = reset( $existing_attendee );
