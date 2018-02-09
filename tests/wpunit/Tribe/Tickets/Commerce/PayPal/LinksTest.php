@@ -53,4 +53,16 @@ class LinksTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertMatchesSnapshot( $links->ipn_notification_settings( 'link' ), self::$driver );
 		$this->assertMatchesSnapshot( $links->ipn_notification_settings( 'tag' ), self::$driver );
 	}
+
+	/**
+	 * Test order_link snapshot
+	 */
+	public function test_order_link_snapshot() {
+		$links = $this->make_instance();
+		$this->assertEmpty( $links->order_link( 'bar' ) );
+		$this->assertMatchesSnapshot( $links->order_link( 'link', 'foo-bar-some' ), self::$driver );
+		$this->assertMatchesSnapshot( $links->order_link( 'tag', 'foo-bar-some' ), self::$driver );
+		$this->assertMatchesSnapshot( $links->order_link( 'tag', 'foo-bar-some', 'See Order' ), self::$driver );
+	}
+
 }
