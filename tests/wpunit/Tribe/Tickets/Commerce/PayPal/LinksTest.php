@@ -54,15 +54,23 @@ class LinksTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertMatchesSnapshot( $links->ipn_notification_settings( 'tag' ), self::$driver );
 	}
 
+	public function order_link_inputs() {
+		return [
+			[ 'bar', 'foo-bar-some' ],
+			[ 'link', 'foo-bar-some' ],
+			[ 'tag', 'foo-bar-some' ],
+			[ 'tag', 'foo-bar-some', 'See Order' ],
+		];
+	}
+
 	/**
 	 * Test order_link snapshot
+	 *
+	 * @dataProvider order_link_inputs
 	 */
-	public function test_order_link_snapshot() {
+	public function test_order_link_snapshot( $what, $order_id, $text = null ) {
 		$links = $this->make_instance();
-		$this->assertEmpty( $links->order_link( 'bar', 'foo-bar-some' ) );
-		$this->assertMatchesSnapshot( $links->order_link( 'link', 'foo-bar-some' ), self::$driver );
-		$this->assertMatchesSnapshot( $links->order_link( 'tag', 'foo-bar-some' ), self::$driver );
-		$this->assertMatchesSnapshot( $links->order_link( 'tag', 'foo-bar-some', 'See Order' ), self::$driver );
+		$this->assertMatchesSnapshot( $links->order_link( $what, $order_id, $text ), self::$driver );
 	}
 
 }
