@@ -59,7 +59,7 @@ class LinksTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function test_order_link_snapshot() {
 		$links = $this->make_instance();
-		$this->assertEmpty( $links->order_link( 'bar' ) );
+		$this->assertEmpty( $links->order_link( 'bar', 'foo-bar-some' ) );
 		$this->assertMatchesSnapshot( $links->order_link( 'link', 'foo-bar-some' ), self::$driver );
 		$this->assertMatchesSnapshot( $links->order_link( 'tag', 'foo-bar-some' ), self::$driver );
 		$this->assertMatchesSnapshot( $links->order_link( 'tag', 'foo-bar-some', 'See Order' ), self::$driver );
