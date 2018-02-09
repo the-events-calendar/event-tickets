@@ -92,7 +92,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			)
 		);
 
-		tribe_transient_notice( $this->notice_slug(), $output, 'dismiss=1&type=warning' );
+		tribe_transient_notice( $this->notice_slug(), $output, 'type=warning' );
 
 		return $modified;
 	}
