@@ -118,7 +118,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 				ucwords( $post_type_label ),
 				sprintf(
 					'<a href="%s">%s</a>',
-					esc_attr( $edit_link ),
+					esc_url( $edit_link ),
 					apply_filters( 'the_title', $post->post_title, $post_id )
 				),
 				$post_id
@@ -241,7 +241,6 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 				'<div class="tribe-tickets-paypal-oversell-radio"><input type="radio" radiogroup="order-%1$s-actions" value="%2$s" name="tpp_policy" '
 				. checked( $default, $policy, false )
 				. '><label >%3$s</label></div>',
-
 				$this->get_order_id(),
 				$policy,
 				$label
