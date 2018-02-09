@@ -56,7 +56,7 @@ abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy {
 	 * @return int
 	 */
 	public function get_ticket_id() {
-		return $this->ticket_id_id;
+		return $this->ticket_id;
 	}
 
 	/**

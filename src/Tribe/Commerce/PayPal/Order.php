@@ -884,4 +884,17 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	public function get_post_id() {
 		return $this->post_id;
 	}
+
+	/**
+	 * Returns the link to an Order (aka "transaction") link on PayPal.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $paypal_order_id The Order PayPal ID (hash).
+	 */
+	public static function get_order_link( $paypal_order_id ) {
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+		return $gateway->get_transaction_url( $paypal_order_id );
+	}
 }
