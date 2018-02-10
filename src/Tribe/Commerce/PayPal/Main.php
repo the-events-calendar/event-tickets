@@ -974,11 +974,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$content = apply_filters( 'tribe_tpp_email_content', $this->generate_tickets_email_content( $to_send ) );
 		$headers = array( 'Content-type: text/html' );
-		$from = apply_filters( 'tribe_tpp_email_from_name', tribe_get_option( 'ticket-confirmation-email-sender-name', false ) );
-		$from_email = apply_filters( 'tribe_tpp_email_from_email', tribe_get_option( 'ticket-confirmation-email-sender-email', false ) );
+		$from = apply_filters( 'tribe_tpp_email_from_name', tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ) );
+		$from_email = apply_filters( 'tribe_tpp_email_from_email', tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ) );
+
 		if ( ! empty( $from ) && ! empty( $from_email ) ) {
 			$headers[] = sprintf( 'From: %s <%s>', filter_var( $from, FILTER_SANITIZE_STRING ), filter_var( $from_email, FILTER_SANITIZE_EMAIL ) );
 		}
+
 		$headers = apply_filters( 'tribe_tpp_email_headers', $headers );
 		$attachments = apply_filters( 'tribe_tpp_email_attachments', array() );
 		$to = apply_filters( 'tribe_tpp_email_recipient', $to );
