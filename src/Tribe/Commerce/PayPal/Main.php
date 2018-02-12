@@ -209,6 +209,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function is_active() {
+		/**
+		 * Filters the check for the active status of the PayPal tickets module.
+		 *
+		 * Returning a non `null` value in this filter will override the default checks.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool                                   $is_active
+		 * @param Tribe__Tickets__Commerce__PayPal__Main $this
+		 */
+		$is_active = apply_filters( 'tribe_tickets_commerce_paypal_is_active', null, $this );
+
+		if ( null !== $is_active ) {
+			return (bool) $is_active;
+		}
+
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 		/** @var Tribe__Tickets__Commerce__PayPal__Handler__Interface $handler */
@@ -942,7 +958,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 			tribe_exit();
 		}
-	}
+}
 
 	/**
 	 * Sends ticket email

@@ -118,6 +118,22 @@ class Tribe__Tickets__Commerce__PayPal__Handler__IPN implements Tribe__Tickets__
 	 *                     or `false` if the specified field or slug was not found.
 	 */
 	public function get_config_status( $field = 'slug', $slug = null ) {
+		/**
+		 * Filters whether the IPN handler is correctly configured or not.
+		 *
+		 * Returning a non `null` value here will short-circuit the check
+		 *
+		 * @since TBD
+		 *
+		 * @param string                                            $config_status
+		 * @param    Tribe__Tickets__Commerce__PayPal__Handler__IPN $this
+		 */
+		$config_status = apply_filters( 'tribe_tickets_commerce_paypal_ipn_config_status', null, $this );
+
+		if ( null !== $config_status ) {
+			return (bool) $config_status;
+		}
+
 		$config_ok = '' !== tribe_get_option( 'ticket-paypal-email', '' )
 		             && 'yes' === tribe_get_option( 'ticket-paypal-ipn-enabled', 'no' )
 		             && 'yes' === tribe_get_option( 'ticket-paypal-ipn-address-set', 'no' );
