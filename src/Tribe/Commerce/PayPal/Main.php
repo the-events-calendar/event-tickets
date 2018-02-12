@@ -192,12 +192,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$this->bind_implementations();
 
+		if ( ! $this->is_active() ) {
+			unset( parent::$active_modules['Tribe__Tickets__Commerce__PayPal__Main'] );
+		}
+
 		$this->tickets_view = tribe( 'tickets.commerce.paypal.view' );
 
 		$this->register_resources();
 		$this->hooks();
 
 		$this->is_loaded = true;
+	}
+
+	/**
+	 * Whether PayPal tickets will be available as a provider or not.
+	 *
+	 * This will take into account the enable/disable option and the
+	 * configuration status of the current payment handler (IPN or PDT).
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function is_active() {
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+		/** @var Tribe__Tickets__Commerce__PayPal__Handler__Interface $handler */
+		$handler = $gateway->build_handler();
+
+		return tribe_is_truthy( tribe_get_option( 'ticket-paypal-enable', false ) )
+		       && 'complete' === $handler->get_config_status();
 	}
 
 	/**
