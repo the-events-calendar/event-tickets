@@ -18,7 +18,7 @@ if ( ! isset( $ticket_id ) ) {
 	$price_description = $is_paypal_ticket
 		? ''
 		: esc_html__( 'Leave blank for free tickets', 'event-tickets' );
-	if($is_paypal_ticket){
+	if ( $is_paypal_ticket ) {
 		$validation_attrs[] = 'data-required';
 		$validation_attrs[] = 'data-validation-is-greater-than="0"';
 
