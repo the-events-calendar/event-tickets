@@ -32,6 +32,12 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 			'tribe_events',
 			'post',
 		] );
+
+		add_filter( 'tribe_tickets_get_modules', function ( array $modules ) {
+			$modules[ \Tribe__Tickets__Commerce__PayPal__Main::class ] = 'Tribe Commerce';
+
+			return $modules;
+		} );
 	}
 
 	public function dont_die() {
