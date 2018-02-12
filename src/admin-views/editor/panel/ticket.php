@@ -21,9 +21,10 @@ if ( ! isset( $ticket_id ) ) {
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
+$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 ?>
 
-<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true">
+<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_provider ) ?>">
 	<?php
 	/**
 	 * Allows for the insertion of additional elements into the main ticket edit panel
