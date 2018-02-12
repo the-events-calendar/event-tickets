@@ -1850,7 +1850,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$price = get_post_meta( $product_id, '_price', true );
 		$price = tribe( 'tickets.commerce.paypal.currency' )->format_currency( $price, $product_id );
 
-		$price_html = '<span class="tribe-tickets-price-amount amount">' . $price . '</span>';
+		$price_html = '<span class="tribe-tickets-price-amount amount">' . esc_html( $price ) . '</span>';
 
 		/**
 		 * Allow filtering of the Price HTML
