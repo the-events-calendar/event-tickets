@@ -147,12 +147,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	protected $tickets_view;
 
 	/**
-	 * Creates a Variable to prevent Double FE forms
-	 * @var boolean
-	 */
-	private $is_frontend_tickets_form_done = false;
-
-	/**
 	 * A variable holder if PayPal is loaded
 	 * @var boolean
 	 */
@@ -230,6 +224,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 */
 	public function bind_implementations() {
+		// some classes will require an instance of this class as a dependency so we alias it here
+		tribe_singleton( 'Tribe__Tickets__Commerce__PayPal__Main', $this );
+
 		tribe_singleton( 'tickets.commerce.paypal.view', 'Tribe__Tickets__Commerce__PayPal__Tickets_View' );
 		tribe_singleton( 'tickets.commerce.paypal.handler.ipn', 'Tribe__Tickets__Commerce__PayPal__Handler__IPN', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal.handler.pdt', 'Tribe__Tickets__Commerce__PayPal__Handler__PDT', array( 'hook' ) );
@@ -246,6 +243,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.links', 'Tribe__Tickets__Commerce__PayPal__Links' );
 		tribe_singleton( 'tickets.commerce.paypal.oversell.policies', 'Tribe__Tickets__Commerce__PayPal__Oversell__Policies' );
 		tribe_singleton( 'tickets.commerce.paypal.oversell.request', 'Tribe__Tickets__Commerce__PayPal__Oversell__Request' );
+		tribe_singleton( 'tickets.commerce.paypal.frontend.tickets-form', 'Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form' );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
@@ -670,7 +668,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
-			$this->redirect_after_error( 1, $redirect, $post_id );
+			$this->redirect_after_error( 101, $redirect, $post_id );
 			return;
 		}
 
@@ -722,7 +720,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
 					if ( ! $order->was_pending() ) {
-						$this->redirect_after_error( 2, $redirect, $post_id );
+						$this->redirect_after_error( 102, $redirect, $post_id );
 						return;
 					}
 
@@ -734,14 +732,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 					if ( ! $oversell_policy->allows_overselling() ) {
 						$oversell_policy->handle_oversold_attendees( $this->get_attendees_by_order_id( $order_id ) );
-						$this->redirect_after_error( 2, $redirect, $post_id );
+						$this->redirect_after_error( 102, $redirect, $post_id );
 						return;
 					}
 				}
 			}
 
 			if ( $qty === 0 ) {
-				$this->redirect_after_error( 3, $redirect, $post_id );
+				$this->redirect_after_error( 103, $redirect, $post_id );
 				return;
 			}
 
@@ -1304,44 +1302,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return void
 	 */
 	public function front_end_tickets_form( $content ) {
-		if ( $this->is_frontend_tickets_form_done ) {
-			return $content;
-		}
-
-		$post = $GLOBALS['post'];
-
-		// For recurring events (child instances only), default to loading tickets for the parent event
-		if ( ! empty( $post->post_parent ) && function_exists( 'tribe_is_recurring_event' ) && tribe_is_recurring_event( $post->ID ) ) {
-			$post = get_post( $post->post_parent );
-		}
-
-		$tickets = $this->get_tickets( $post->ID );
-
-		if ( empty( $tickets ) ) {
-			return;
-		}
-
-		Tribe__Tickets__Tickets::add_frontend_stock_data( $tickets );
-
-		$ticket_sent = empty( $_GET['tpp_sent'] ) ? false : true;
-
-		if ( $ticket_sent ) {
-			$this->add_message( __( 'Your PayPal Ticket has been received! Check your email for your PayPal Ticket confirmation.', 'event-tickets' ), 'success' );
-		}
-
-		$ticket_error = empty( $_GET['tpp_error'] ) ? false : (int) $_GET['tpp_error'];
-
-		if ( $ticket_error ) {
-			$this->add_error_message( $ticket_error );
-		}
-
-		$must_login = ! is_user_logged_in() && $this->login_required();
-		$can_login = true;
-
-		include $this->getTemplateHierarchy( 'tickets/tpp' );
-
-		// It's only done when it's included
-		$this->is_frontend_tickets_form_done = true;
+		/** @var Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form $form */
+		$form = tribe( 'tickets.commerce.paypal.frontend.tickets-form' );
+		$form->render( $content );
 	}
 
 	/**
@@ -1352,7 +1315,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return bool
 	 */
-	protected function login_required() {
+	public function login_required() {
 		$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
 		return in_array( 'event-tickets_all', $requirements, true );
 	}
@@ -2129,7 +2092,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array
 	 */
-	protected function get_tickets( $post_id ) {
+	public function get_tickets( $post_id ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id );
 
 		if ( ! $ticket_ids ) {
@@ -2257,31 +2220,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return get_post_meta( $product->ID, '_price', true );
-	}
-
-	/**
-	 * Displays a localized error message for the specified error code.
-	 *
-	 * @since TBD
-	 *
-	 * @param int $ticket_error
-	 */
-	protected function add_error_message( $ticket_error ) {
-		switch ( $ticket_error ) {
-			case 3:
-				$this->add_message( __( 'You should add at least one ticket.', 'event-tickets' ), 'error' );
-				break;
-
-			case 2:
-				$this->add_message( __( 'You can\'t add more tickets than the total remaining tickets.', 'event-tickets' ), 'error' );
-				break;
-
-			case 1:
-			default:
-				$this->add_message( __( 'In order to purchase tickets, you must enter your name and a valid email address.', 'event-tickets' ),
-					'error' );
-				break;
-		}
 	}
 
 	/**
