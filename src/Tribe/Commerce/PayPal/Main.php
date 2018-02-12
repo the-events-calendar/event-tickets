@@ -1141,7 +1141,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// Makes sure it's an Int after this point
 		$data['stock'] = (int) $data['stock'];
 
-		if ( '' !== $data['mode'] ) {
+		if ( isset( $data['mode'] ) && '' !== $data['mode'] ) {
 			if ( 'update' === $save_type ) {
 				$totals = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
 				$data['stock'] -= $totals['pending'] + $totals['sold'];

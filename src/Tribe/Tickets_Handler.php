@@ -966,6 +966,8 @@ class Tribe__Tickets__Tickets_Handler {
 				break;
 			}
 
+			$capacity = is_numeric( $capacity ) ? (int) $capacity : 0;
+
 			$total += $capacity;
 		}
 
