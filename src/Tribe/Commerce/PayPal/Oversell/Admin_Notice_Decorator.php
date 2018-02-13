@@ -104,40 +104,25 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	protected function header_html( $qty, $inventory ) {
 		$post_id         = $this->get_post_id();
 		$post            = get_post( $post_id );
-		$post_type       = ! empty( $post ) ? get_post_type_object( $post->post_type ) : null;
-		$post_type_label = null !== $post_type
-			? strtolower( $post_type->labels->singular_name )
-			: _x( 'event', 'a generic name used to indicate any post type that has tickets assigned', 'event-tickets' );
+		$post_type       = empty( $post ) ? null : get_post_type_object( $post->post_type );
 
-		if ( ! empty( $post ) ) {
+		if ( empty( $post ) ) {
+			$post_title = __( 'An event', 'event-tickets' );
+		} else {
 			$edit_link  = $this->get_user_insensible_edit_link( $post_type, $post_id );
 			$post_title = sprintf(
-				__(
-					'%s "%s" (ID %d)',
-					'event-tickets' ),
-				ucwords( $post_type_label ),
-				sprintf(
-					'<a href="%s">%s</a>',
-					esc_url( $edit_link ),
-					apply_filters( 'the_title', $post->post_title, $post_id )
-				),
-				$post_id
+				'<a href="%s">%s</a>',
+				esc_url( $edit_link ),
+				apply_filters( 'the_title', $post->post_title, $post_id )
 			);
-		} else {
-			$post_title = __( 'An event', 'event-tickets' );
 		}
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Links $links */
 		$links             = tribe( 'tickets.commerce.paypal.links' );
 		$order_paypal_link = $links->order_link( 'tag', $this->get_order_id(), __( 'in your PayPal account', 'event-tickets' ) );
 
-		$lines   = array();
-		$lines[] = esc_html__(
-			'%1$s  is oversold: there are more tickets sold than the available %2$s capacity. This can occur when PayPal does not complete transactions immediately, delaying the decrease in %2$s capacity.',
-			'event-tickets'
-		);
-		$lines[] = esc_html__(
-			'Order %3$s includes %4$s ticket(s). There are only %5$s ticket(s) left for this %2$s. Ticket emails have not yet been sent for this order. Choose how to process this order from the options below. You may also want to adjust or refund the order %6$s.',
+		$message = esc_html__(
+			'%1$s is oversold: there are more tickets sold than the available capacity. This can occur when the PayPal transaction is not completed immediately, delaying the decrease in ticket availability. Order %2$s includes %3$s ticket(s). There are only %4$s ticket(s) left. Ticket emails have not yet been sent for this order. Choose how to process this order from the options below.',
 			'event-tickets'
 		);
 
@@ -147,13 +132,11 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 		return sprintf(
 			'<p class="tribe-tickets-paypal-oversell-header">%s</p>',
 			sprintf(
-				implode( "\n", $lines ),
+				$message,
 				$post_title,
-				$post_type_label,
-				$this->get_order_id(),
+				esc_html( $this->get_order_id() ),
 				"<strong>{$qty}</strong>",
-				"<strong>{$inventory}</strong>",
-				$order_paypal_link
+				"<strong>{$inventory}</strong>"
 			)
 		);
 	}
@@ -230,10 +213,17 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			$form_inside .= sprintf( '<input type="hidden" name="%s" value="%s">', esc_attr( $name ), esc_attr( $value ) );
 		}
 
-		$options = array(
-			'sell-all'       => __( 'Confirm attendee records and send emails for all tickets in this order (overselling the event)', 'event-tickets' ),
-			'sell-available' => __( 'Confirm attendee records and send emails for some tickets in this order without overselling the event', 'event-tickets' ),
-			'no-oversell'    => __( 'Delete all attendees for this order and do not send any email', 'event-tickets' ),
+		$options = array();
+		$options['sell-all']          = __( 'Create attendee records and send emails for all tickets in this order (overselling the event).', 'event-tickets' );
+		// This option seems like an edge case, so, we are removing it for now
+		// $options['sell-available'] = __( 'Create attendee records and send emails for some tickets in this order without overselling the event', 'event-tickets' );
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Links $links */
+		$links             = tribe( 'tickets.commerce.paypal.links' );
+		$options['no-oversell']       = sprintf(
+			__( 'Delete all attendees for this order and do not email tickets. You may also want to refund the order %1$sin your PayPal account%2$s.', 'event-tickets' ),
+			'<a href="' . esc_url( $links->order_link( 'link', $this->get_order_id() ) ). '">',
+			'</a>'
 		);
 
 		foreach ( $options as $policy => $label ) {

@@ -1179,7 +1179,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// Makes sure it's an Int after this point
 		$data['stock'] = (int) $data['stock'];
 
-		if ( '' !== $data['mode'] ) {
+		$mode = isset( $data['mode'] ) ? $data['mode'] : '';
+
+		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
 				$totals = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
 				$data['stock'] -= $totals['pending'] + $totals['sold'];
@@ -1188,7 +1190,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			// In here is safe to check because we don't have unlimted = -1
 			$status = ( 0 < $data['stock'] ) ? 'instock' : 'outofstock';
 
-			update_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, $data['mode'] );
+			update_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, $mode );
 			update_post_meta( $ticket->ID, '_stock', $data['stock'] );
 			update_post_meta( $ticket->ID, '_stock_status', $status );
 			update_post_meta( $ticket->ID, '_backorders', 'no' );
@@ -1197,7 +1199,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			// Prevent Ticket Capacity from going higher then Event Capacity
 			if (
 				$event_stock->is_enabled()
-				&& Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $data['mode']
+				&& Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $mode
 				&& '' !== $data['capacity']
 				&& $data['capacity'] > $data['event_capacity']
 			) {
