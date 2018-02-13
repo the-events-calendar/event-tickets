@@ -16,7 +16,6 @@ $is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
 $are_products_available       = false;
 
-ob_start();
 /** @var Tribe__Tickets__Commerce__PayPal__Main $commerce */
 $commerce       = tribe( 'tickets.commerce.paypal' );
 $messages       = $commerce->get_messages();
@@ -151,18 +150,3 @@ $cart_url       = '';
 		</noscript>
 	</table>
 </form>
-
-<?php
-$content = ob_get_clean();
-if ( $is_there_any_product ) {
-	echo $content;
-
-	// If we have rendered tickets there is generally no need to display a 'tickets unavailable' message
-	// for this post
-	$this->main->do_not_show_tickets_unavailable_message();
-} else {
-	// Indicate that we did not render any tickets, so a 'tickets unavailable' message may be
-	// appropriate (depending on whether other ticket providers are active and have a similar
-	// result)
-	$this->main->maybe_show_tickets_unavailable_message( $tickets );
-}

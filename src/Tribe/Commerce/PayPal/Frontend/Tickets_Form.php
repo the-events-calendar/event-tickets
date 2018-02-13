@@ -35,14 +35,20 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $content The post content
+	 * @return void The method will echo in the context of a buffered output.
+	 *
+	 * @see   Tribe__Tickets__Tickets::front_end_tickets_form_in_content
 	 */
-	public function render( $content ) {
+	public function render() {
 		if ( $this->has_rendered || ! $this->main->is_active() ) {
-			return $content;
+			return;
 		}
 
-		$post = $GLOBALS['post'];
+		$post = get_post();
+
+		if ( empty( $post ) ) {
+			return;
+		}
 
 		// For recurring events (child instances only), default to loading tickets for the parent event
 		if ( ! empty( $post->post_parent ) && function_exists( 'tribe_is_recurring_event' ) && tribe_is_recurring_event( $post->ID ) ) {
@@ -72,9 +78,52 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		$must_login = ! is_user_logged_in() && $this->main->login_required();
 		$can_login  = true;
 
-		include $this->main->getTemplateHierarchy( 'tickets/tpp' );
+		$form = '';
+
+		$currently_available_tickets = array_filter( $tickets, array( $this, 'is_currently_available' ) );
+
+		if ( count( $currently_available_tickets ) > 0 ) {
+			ob_start();
+			include $this->main->getTemplateHierarchy( 'tickets/tpp' );
+			$form = ob_get_clean();
+
+			// If we have rendered tickets there is generally no need to display a 'tickets unavailable' message
+			// for this post
+			$this->main->do_not_show_tickets_unavailable_message();
+		} else {
+			// Indicate that we did not render any tickets, so a 'tickets unavailable' message may be
+			// appropriate (depending on whether other ticket providers are active and have a similar
+			// result)
+			$this->main->maybe_show_tickets_unavailable_message( $tickets );
+		}
 
 		// It's only done when it's included
 		$this->has_rendered = true;
+
+		echo $form;
+	}
+
+	/**
+	 * Sets whether the form rendered already or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $has_rendered
+	 */
+	public function has_rendered( $has_rendered ) {
+		$this->has_rendered = (bool) $has_rendered;
+	}
+
+	/**
+	 * A utility method to filter the list of tickets by their currently available status.
+	 *
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Ticket_Object $ticket
+	 *
+	 * @return bool
+	 */
+	protected function is_currently_available( Tribe__Tickets__Ticket_Object $ticket ) {
+		return $ticket->date_in_range( current_time( 'timestamp' ) );
 	}
 }
