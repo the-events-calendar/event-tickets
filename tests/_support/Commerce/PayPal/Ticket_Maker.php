@@ -19,7 +19,7 @@ trait Ticket_Maker {
 			throw new \RuntimeException( 'This trait should be used in classes that extend the \\Codeception\\TestCase\\WPTestCase class' );
 		}
 
-		$meta_input = is_array( $overrides['meta_input'] ) ? $overrides['meta_input'] : array();
+		$meta_input = isset( $overrides['meta_input'] ) && is_array( $overrides['meta_input'] ) ? $overrides['meta_input'] : array();
 		unset( $overrides['meta_input'] );
 
 		$ticket_id = $this->factory()->post->create( array_merge(
