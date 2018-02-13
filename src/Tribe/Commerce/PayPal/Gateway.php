@@ -186,9 +186,9 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		// If there isn't a quantity at all, then there's nothing to purchase. Redirect with an error
 		if ( empty( $args['quantity'] ) || ! is_numeric( $args['quantity'] ) || (int) $args['quantity'] < 1 ) {
 			/**
-			 * @see Tribe__Tickets__Commerce__PayPal__Main::add_error_message for error codes
+			 * @see Tribe__Tickets__Commerce__PayPal__Errors::error_code_to_message for error codes
 			 */
-			wp_safe_redirect( add_query_arg( array( 'tpp_error' => 3 ), $post_url ) );
+			wp_safe_redirect( add_query_arg( array( 'tpp_error' => 103 ), $post_url ) );
 			die;
 		}
 
@@ -434,19 +434,21 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	public function build_handler() {
 		$handler = $this->get_handler_slug();
 
-		if ( $handler === 'pdt' && ! empty( $_GET['tx'] ) ) {
-			// looks like a PDT request
-			if ( ! empty( $this->identity_token ) ) {
-				// if there's an identity token set we handle payment confirmation with PDT
-				$this->handler = tribe( 'tickets.commerce.paypal.handler.pdt' );
+		if ( null === $this->handler ) {
+			if ( $handler === 'pdt' && ! empty( $_GET['tx'] ) ) {
+				// looks like a PDT request
+				if ( ! empty( $this->identity_token ) ) {
+					// if there's an identity token set we handle payment confirmation with PDT
+					$this->handler = tribe( 'tickets.commerce.paypal.handler.pdt' );
+				} else {
+					// if there is not an identity token set we log a missed transaction and show a notice
+					$this->notices->show_missing_identity_token_notice();
+					$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT( $_GET['tx'] );
+				}
 			} else {
-				// if there is not an identity token set we log a missed transaction and show a notice
-				$this->notices->show_missing_identity_token_notice();
-				$this->handler = new Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT( $_GET['tx'] );
+				// we use IPN otherwise
+				$this->handler = tribe( 'tickets.commerce.paypal.handler.ipn' );
 			}
-		} else {
-			// we use IPN otherwise
-			$this->handler = tribe( 'tickets.commerce.paypal.handler.ipn' );
 		}
 
 		return $this->handler;

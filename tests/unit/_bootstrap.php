@@ -33,3 +33,11 @@ $autoloader->register_autoloader();
 ], function ( $input ) {
 	return $input;
 } );
+
+// override the `do_action` function with default behaviours
+\tad\FunctionMockerLe\define( 'apply_filters', function ( $tag, $value ) {
+	return $value;
+} );
+\tad\FunctionMockerLe\define( 'do_action', function () {
+	// no-op
+} );

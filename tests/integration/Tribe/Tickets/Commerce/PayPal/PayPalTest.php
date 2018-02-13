@@ -1,12 +1,15 @@
 <?php
 namespace Tribe\Tickets\Commerce\PayPal;
 
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
 use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
+
+	use Ticket_Maker;
 
 	/**
 	 * @var Tickets_View
@@ -32,6 +35,12 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 			'tribe_events',
 			'post',
 		] );
+
+		add_filter( 'tribe_tickets_get_modules', function ( array $modules ) {
+			$modules[ \Tribe__Tickets__Commerce__PayPal__Main::class ] = 'Tribe Commerce';
+
+			return $modules;
+		} );
 	}
 
 	public function dont_die() {
@@ -45,34 +54,6 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
-	/**
-	 * Generates a ticket
-	 *
-	 * @param $event_id
-	 * @param $price
-	 *
-	 * @return mixed
-	 */
-	protected function make_ticket( $event_id, $price ) {
-		$ticket_id = $this->factory()->post->create(
-			[
-				'post_title' => "Test Ticket for {$event_id}",
-				'post_type'  => tribe( 'tickets.commerce.paypal' )->ticket_object,
-				'meta_input' => [
-					'_tribe_tpp_for_event'                          => $event_id,
-					'_price'                                        => $price,
-					'_stock'                                        => 100,
-					'_capacity'                                     => 100,
-					'_manage_stock'                                 => 'yes',
-					'_ticket_start_date'                            => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
-					'_ticket_end_date'                              => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
-					\Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE => 'own',
-				],
-			]
-		);
-
-		return $ticket_id;
-	}
 
 	/**
 	 * It should generate attendees for all tickets in PDT transaction
