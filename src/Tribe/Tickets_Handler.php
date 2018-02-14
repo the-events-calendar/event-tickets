@@ -961,7 +961,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 			$capacity = $ticket->capacity();
 
-			if ( -1 === $capacity ) {
+			if ( -1 === $capacity || '' === $capacity ) {
 				$total = -1;
 				break;
 			}
