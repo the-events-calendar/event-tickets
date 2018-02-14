@@ -90,7 +90,27 @@ class Tribe__Tickets__Commerce__Currency {
 		$currency_symbol   = $this->get_currency_symbol( $post_id );
 		$currency_position = $this->get_currency_symbol_position( $post_id );
 
-		$cost = number_format_i18n( $cost, 2 );
+		/**
+		 * Whether the currency own locale should be used to format the price.
+		 *
+		 * @since TBD
+		 *
+		 * @param bool             $use_currency_locale If `true` then the currency own locale will override the site one.
+		 * @param string|int|float $cost                Teh cost to format without the symbol.
+		 * @param int              $post_id             The current post ID if any.
+		 */
+		$use_currency_locale = apply_filters( 'tribe_tickets_commerce_price_format_use_currency_locale', false, $cost, $post_id );
+
+		if ( ! $use_currency_locale ) {
+			$cost = number_format_i18n( $cost, 2 );
+		} else {
+			$cost = number_format(
+				$cost,
+				2,
+				$this->get_currency_locale( 'decimal_point' ),
+				$this->get_currency_locale( 'thousands_sep' )
+			);
+		}
 
 		$cost = $currency_position === 'prefix'
 			? $currency_symbol . $cost
@@ -103,101 +123,149 @@ class Tribe__Tickets__Commerce__Currency {
 	 * Generates the default map and allows for filtering
 	 *
 	 * @since TBD
+	 *
+	 * @see https://en.wikipedia.org/wiki/Decimal_separator for separators informmation
 	 */
 	public function generate_default_currency_map() {
 		$default_map = array(
 			'AUD' => array(
-				'name'   => __( 'Australian Dollar (AUD)', 'event-tickets' ),
-				'symbol' => '&#x41;&#x24;',
+				'name'          => __( 'Australian Dollar (AUD)', 'event-tickets' ),
+				'symbol'        => '&#x41;&#x24;',
+				'thousands_sep' => ',',
+				'decimal_point' => '.',
 			),
 			'BRL' => array(
 				'name'   => __( 'Brazilian Real  (BRL)', 'event-tickets' ),
 				'symbol' => '&#82;&#x24;',
+				'thousands_sep' => '.',
+				'decimal_point' => ',',
 			),
 			'CAD' => array(
 				'name'   => __( 'Canadian Dollar (CAD)', 'event-tickets' ),
 				'symbol' => '&#x24;',
+				'thousands_sep' => ',',
+				'decimal_point' => '.',
 			),
 			'CHF' => array(
 				'name'   => __( 'Swiss Franc (CHF)', 'event-tickets' ),
 				'symbol' => '&#x43;&#x48;&#x46;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'CZK' => array(
 				'name'     => __( 'Czech Koruna (CZK)', 'event-tickets' ),
 				'symbol'   => '&#x4b;&#x10d;',
 				'position' => 'postfix',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'DKK' => array(
 				'name'   => __( 'Danish Krone (DKK)', 'event-tickets' ),
 				'symbol' => '&#107;&#114;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'EUR' => array(
 				'name'   => __( 'Euro (EUR)', 'event-tickets' ),
 				'symbol' => '&#8364;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'GBP' => array(
 				'name'   => __( 'Pound Sterling (GBP)', 'event-tickets' ),
 				'symbol' => '&#163;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'HKD' => array(
 				'name'   => __( 'Hong Kong Dollar (HKD)', 'event-tickets' ),
 				'symbol' => '&#x24;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'HUF' => array(
 				'name'   => __( 'Hungarian Forint (HUF)', 'event-tickets' ),
 				'symbol' => '&#x46;&#x74;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'ILS' => array(
 				'name'   => __( 'Israeli New Sheqel (ILS)', 'event-tickets' ),
 				'symbol' => '&#x20aa;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'JPY' => array(
 				'name'   => __( 'Japanese Yen (JPY)', 'event-tickets' ),
 				'symbol' => '&#165;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'MYR' => array(
 				'name'   => __( 'Malaysian Ringgit (MYR)', 'event-tickets' ),
 				'symbol' => '&#82;&#77;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'MXN' => array(
 				'name'   => __( 'Mexican Peso (MXN)', 'event-tickets' ),
 				'symbol' => '&#x24;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'NOK' => array(
 				'name'   => __( 'Norwegian Krone (NOK)', 'event-tickets' ),
 				'symbol' => '',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'NZD' => array(
 				'name'   => __( 'New Zealand Dollar (NZD)', 'event-tickets' ),
 				'symbol' => '&#x24;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'PHP' => array(
 				'name'   => __( 'Philippine Peso (PHP)', 'event-tickets' ),
 				'symbol' => '&#x20b1;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'PLN' => array(
 				'name'   => __( 'Polish Zloty (PLN)', 'event-tickets' ),
 				'symbol' => '&#x7a;&#x142;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'SEK' => array(
 				'name'   => __( 'Swedish Krona (SEK)', 'event-tickets' ),
 				'symbol' => '&#x6b;&#x72;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.',
 			),
 			'SGD' => array(
 				'name'   => __( 'Singapore Dollar (SGD)', 'event-tickets' ),
 				'symbol' => '&#x53;&#x24;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'THB' => array(
 				'name'   => __( 'Thai Baht (THB)', 'event-tickets' ),
 				'symbol' => '&#x0e3f;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'TWD' => array(
 				'name'   => __( 'Taiwan New Dollar (TWD)', 'event-tickets' ),
 				'symbol' => '&#x4e;&#x54;&#x24;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'USD' => array(
 				'name'   => __( 'U.S. Dollar (USD)', 'event-tickets' ),
 				'symbol' => '&#x24;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 		);
 
@@ -325,5 +393,24 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		return $this->get_currency_symbol( $object_id );
+	}
+
+	/**
+	 * Returns a locale information associated with the current currency or the specified one.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $key
+	 * @param string $currency_code
+	 *
+	 * @return string
+	 */
+	public function get_currency_locale( $key,$currency_code = null ) {
+		$currency_code = null === $currency_code ? $this->currency_code : strtoupper( $currency_code );
+
+		$default       = reset( $this->currency_code_options_map );
+		$currency_data = Tribe__Utils__Array::get( $this->currency_code_options_map, $currency_code, $default );
+
+		return Tribe__Utils__Array::get( $currency_data, $key, '' );
 	}
 }
