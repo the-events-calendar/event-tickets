@@ -1181,7 +1181,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// Makes sure it's an Int after this point
 		$data['stock'] = (int) $data['stock'];
 
-		$mode = isset( $data['mode'] ) ? $data['mode'] : '';
+		$mode = isset( $data['mode'] ) ? $data['mode'] : 'own';
 
 		if ( '' !== $mode ) {
 			if ( 'update' === $save_type ) {
