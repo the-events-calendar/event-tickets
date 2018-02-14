@@ -340,12 +340,15 @@ foreach ( $paypal_fields as $key => &$commerce_field ) {
 	array_push( $field_classes, 'tribe-dependent' );
 	$commerce_field['class']               = implode( ' ', $field_classes );
 	$existing_field_attributes             = Tribe__Utils__Array::get( $commerce_field, 'fieldset_attributes', array() );
-	$commerce_field['fieldset_attributes'] = array_merge( $existing_field_attributes,
-		array(
-			'data-depends'              => '#ticket-paypal-enable-input',
-			'data-condition-is-checked' => '',
-		) );
-	$commerce_field['validate_if'] = new Tribe__Field_Conditional( 'ticket-paypal-enable', 'tribe_is_truthy' );
+	$additional_attributes = array(
+		'data-depends'              => '#ticket-paypal-enable-input',
+		'data-condition-is-checked' => '',
+	);
+	if ( 'checkbox_bool' === $commerce_field['type'] ) {
+		$additional_attributes['data-dependency-dont-disable'] = '1';
+	}
+	$commerce_field['fieldset_attributes'] = array_merge( $existing_field_attributes, $additional_attributes );
+	$commerce_field['validate_if']         = new Tribe__Field_Conditional( 'ticket-paypal-enable', 'tribe_is_truthy' );
 }
 
 unset( $commerce_field );
