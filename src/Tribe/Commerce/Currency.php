@@ -405,7 +405,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	public function get_currency_locale( $key,$currency_code = null ) {
+	public function get_currency_locale( $key, $currency_code = null ) {
 		$currency_code = null === $currency_code ? $this->currency_code : strtoupper( $currency_code );
 
 		$default       = reset( $this->currency_code_options_map );
