@@ -60,7 +60,6 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$data         = $order->get_meta( 'transaction_data' );
-		$retry_status = $order->get_status();
 
 		// put back the order status to pending
 		$order->set_meta( 'payment_status', 'pending' );
@@ -69,7 +68,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 		$gateway->set_raw_transaction_data( $data );
 		$gateway->set_transaction_data( $gateway->parse_transaction( $data ) );
 
-		$paypal->generate_tickets( $retry_status, false );
+		$paypal->generate_tickets( Tribe__Tickets__Commerce__PayPal__Stati::$completed, false );
 
 		tribe_transient_notice_remove( $_GET['tpp_slug'] );
 
