@@ -93,12 +93,12 @@ class Tribe__Tickets__Commerce__Currency {
 		$use_currency_locale = tribe_get_option( 'ticket-commerce-use-currency-locale', false );
 
 		/**
-		 * Whether the currency own locale should be used to format the price.
+		 * Whether the currency's own locale should be used to format the price or not.
 		 *
 		 * @since TBD
 		 *
 		 * @param bool             $use_currency_locale If `true` then the currency own locale will override the site one.
-		 * @param string|int|float $cost                Teh cost to format without the symbol.
+		 * @param string|int|float $cost                The cost to format without the symbol.
 		 * @param int              $post_id             The current post ID if any.
 		 */
 		$use_currency_locale = apply_filters( 'tribe_tickets_commerce_price_format_use_currency_locale', $use_currency_locale, $cost, $post_id );
