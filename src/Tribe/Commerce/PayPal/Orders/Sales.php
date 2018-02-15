@@ -24,61 +24,39 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	}
 
 	/**
-	 * Returns the revenue for a single attendee.
+	 * Returns the revenue for a single ticket.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attendee The attendee details.
+	 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
 	 *
 	 * @return int
 	 */
-	public function get_revenue_for_attendee( array $attendee ) {
-		$revenue = $this->get_unfiltered_revenue_for_attendee( $attendee );
+	public function get_revenue_for_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
+		$revenue = $this->get_unfiltered_revenue_for_ticket( $ticket );
 
 		/**
-		 * Filters the revenue for a specific attendee.
+		 * Filters the revenue for a specific ticket.
 		 *
 		 * @since TBD
 		 *
-		 * @param int   $revenue  The revenue for this attendee.
-		 * @param array $attendee The attendee details.
+		 * @param int                           $revenue The revenue for this ticket.
+		 * @param Tribe__Tickets__Ticket_Object $ticket  The ticket object.
 		 */
-		return apply_filters( 'tribe_tickets_commerce_paypal_attendee_revenue', $revenue, $attendee );
+		return apply_filters( 'tribe_tickets_commerce_paypal_attendee_revenue', $revenue, $ticket );
 	}
 
 	/**
-	 * Returns the unfiltered revenue for an attendee.
+	 * Returns the unfiltered revenue for an ticket.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attendee
+	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
 	 * @return int
 	 */
-	protected function get_unfiltered_revenue_for_attendee( $attendee ) {
-		$product_id = Tribe__Utils__Array::get( $attendee, 'product_id', false );
-
-		if ( ! filter_var( $product_id, FILTER_VALIDATE_INT ) ) {
-			return 0;
-		}
-
-		$cached = $this->cache[ $product_id ];
-
-		if ( false !== $cached ) {
-			return $cached;
-		}
-
-		if ( ! $this->is_order_completed( $attendee ) ) {
-			return 0;
-		}
-
-		$revenue = get_post_meta( $product_id, '_price', true );
-
-		if ( ! filter_var( $revenue, FILTER_VALIDATE_INT ) ) {
-			return 0;
-		}
-
-		return (int) $revenue;
+	protected function get_unfiltered_revenue_for_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
+		return (int) $ticket->price * $ticket->qty_sold();
 	}
 
 	/**
@@ -123,73 +101,73 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	}
 
 	/**
-	 * Returns the total revenue provided a list of attendees.
+	 * Returns the total revenue provided a list of tickets.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attendees
+	 * @param array $tickets An array of ticket objects
 	 *
 	 * @return int
 	 */
-	public function get_revenue_for_attendees( array $attendees ) {
-		$revenue = array_sum( array_map( array( $this, 'get_revenue_for_attendee' ), $attendees ) );
+	public function get_revenue_for_tickets( array $tickets ) {
+		$revenue = array_sum( array_map( array( $this, 'get_revenue_for_ticket' ), $tickets ) );
 
 		/**
-		 * Filters the revenue for a list of attendees.
+		 * Filters the revenue for a list of tickets.
 		 *
 		 * @since TBD
 		 *
-		 * @param int   $revenue   The revenue for these attendees.
-		 * @param array $attendees The attendees details.
+		 * @param int   $revenue The revenue for these tickets.
+		 * @param array $tickets The tickets objects.
 		 */
-		return apply_filters( 'tribe_tickets_commerce_paypal_attendees_revenue', $revenue, $attendees );
+		return apply_filters( 'tribe_tickets_commerce_paypal_tickets_revenue', $revenue, $tickets );
 	}
 
 	/**
-	 * Returns the amount this attendee represents in sales terms.
+	 * Returns the amount this ticket represents in sales terms.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attendee
+	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
 	 * @return int
 	 */
-	public function get_sale_for_attendee( array $attendee ) {
-		$sales_count = $this->is_order_completed( $attendee ) ? 1 : 0;
+	public function get_sale_for_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
+		$sales_count = $ticket->qty_sold();
 
 		/**
-		 * Filters the sales count for an attendee.
+		 * Filters the sales count for an ticket.
 		 *
 		 * @since TBD
 		 *
-		 * @param int   $sales_count The sales count for this attendee; defaults to `1` per attendee
+		 * @param int   $sales_count The sales count for this ticket; defaults to `1` per ticket
 		 *                           with a sales generating order status.
-		 * @param array $attendee    The attendee details.
+		 * @param Tribe__Tickets__Ticket_Object $ticket    The ticket object.
 		 */
-		return apply_filters( 'tribe_tickets_commerce_paypal_attendee_sales_count', $sales_count, $attendee );
+		return apply_filters( 'tribe_tickets_commerce_paypal_ticket_sales_count', $sales_count, $ticket );
 	}
 
 	/**
-	 * Returns the amount of sales for a list of attendees.
+	 * Returns the amount of sales for a list of tickets.
 	 *
 	 * @since TBD
 	 *
-	 * @param array $attendees
+	 * @param array $tickets
 	 *
 	 * @return int
 	 */
-	public function get_sales_for_attendees( $attendees ) {
-		$sales = array_sum( array_map( array( $this, 'get_sale_for_attendee' ), $attendees ) );
+	public function get_sales_for_tickets( $tickets ) {
+		$sales = array_sum( array_map( array( $this, 'get_sale_for_ticket' ), $tickets ) );
 
 		/**
-		 * Filters the sales for a list of attendees.
+		 * Filters the sales for a list of tickets.
 		 *
 		 * @since TBD
 		 *
-		 * @param int   $sales     The sales for these attendees.
-		 * @param array $attendees The attendees details.
+		 * @param int   $sales   The sales for these tickets.
+		 * @param array $tickets The tickets objects.
 		 */
-		return apply_filters( 'tribe_tickets_commerce_paypal_attendees_sales', $sales, $attendees );
+		return apply_filters( 'tribe_tickets_commerce_paypal_tickets_sales', $sales, $tickets );
 	}
 
 	/**
