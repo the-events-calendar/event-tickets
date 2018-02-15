@@ -107,11 +107,19 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 		$paypal = tribe( 'tickets.commerce.paypal' );
 
 		foreach ( $oversold_attendees as $attendee ) {
-			if ( empty( $attendee['attendee_id'] ) ) {
-				continue;
+			$attendee_id = Tribe__Utils__Array::get( $attendee, 'attendee_id', false );
+			$event_id    = Tribe__Utils__Array::get( $attendee, 'event_id', false );
+
+			if ( $attendee_id && $event_id ) {
+				$paypal->delete_ticket( $event_id, $attendee_id );
 			}
 
-			$paypal->delete_ticket( $attendee['event_id'], $attendee['attendee_id'] );
+			// any oversold attendee, whether deleted or not, is a sale
+			$product_id = Tribe__Utils__Array::get( $attendee, 'product_id', false );
+
+			if ( false !== $product_id ) {
+				$paypal->increase_ticket_sales_by( $product_id, 1 );
+			}
 		}
 	}
 }

@@ -747,7 +747,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$qty = $oversell_policy->modify_quantity( $qty, $inventory );
 
 					if ( ! $oversell_policy->allows_overselling() ) {
-						$oversell_policy->handle_oversold_attendees( $this->get_attendees_by_order_id( $order_id ) );
+						$oversold_attendees = $this->get_attendees_by_order_id( $order_id );
+						$oversell_policy->handle_oversold_attendees( $oversold_attendees );
 						$this->redirect_after_error( 102, $redirect, $post_id );
 						return;
 					}
@@ -783,7 +784,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				// check if we already have an attendee or not
 				$post_title        = $attendee_full_name . ' | ' . ( $i + 1 );
-				$criteria          = array( 'post_title' => $post_title, 'ticket_id' => $product_id, 'event_id' => $post_id );
+				$criteria          = array( 'post_title' => $post_title, 'product_id' => $product_id, 'event_id' => $post_id );
 				$existing_attendee = wp_list_filter( $existing_attendees, $criteria );
 
 				if ( ! empty( $existing_attendee ) ) {

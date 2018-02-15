@@ -5,7 +5,7 @@
  *
  * @since TBD
  */
-abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy {
+abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy implements Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 
 	/**
 	 * @var int

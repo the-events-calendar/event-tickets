@@ -7,9 +7,7 @@
  *
  * @since TBD
  */
-class Tribe__Tickets__Commerce__PayPal__Oversell__No_Oversell
-	extends Tribe__Tickets__Commerce__PayPal__Oversell__Policy
-	implements Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
+class Tribe__Tickets__Commerce__PayPal__Oversell__No_Oversell extends Tribe__Tickets__Commerce__PayPal__Oversell__Policy {
 
 	/**
 	 * Whether this policy allows overselling or not.

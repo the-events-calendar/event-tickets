@@ -253,8 +253,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$attendees    = $paypal->get_attendees_by_id( $post_id );
 		$tickets_sold = $sales->filter_sold_tickets( $paypal_tickets );
 
-		$post_revenue        = $sales->get_revenue_for_attendees( $attendees );
-		$total_sold          = $sales->get_sales_for_attendees( $attendees );
+		$post_revenue        = $sales->get_revenue_for_tickets( $tickets_sold );
+		$total_sold          = $sales->get_sales_for_tickets( $tickets );
 		$total_completed     = count( $sales->filter_completed( $attendees ) );
 		$total_not_completed = count( $sales->filter_not_completed( $attendees ) );
 
