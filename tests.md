@@ -22,17 +22,18 @@ The only override we do here is telling Codeception that it should read the modu
 Now create, again in the plugin root folder, a `.env.local` file copying the `.env.` file and changing any value in it to match your local installation, e.g.:
 
 ```
-WP_ROOT_FOLDER="/Users/Luca/Sites/wp"
-WP_DOMAIN="tribe.test"
-WP_URL="http://tribe.test"
+WP_ROOT_FOLDER="/Users/luca/Local Sites/commerce/app/public"
+WP_DOMAIN="commerce.dev"
+WP_URL="http://commerce.dev"
 WP_ADMIN_USERNAME="admin"
-WP_ADMIN_PASSWORD="secred"
-DB_HOST="db"
-DB_NAME="tribe"
+WP_ADMIN_PASSWORD="admin"
+WP_ADMIN_PATH="/wp-admin"
+DB_HOST="192.168.92.100:4010"
+DB_NAME="local"
 DB_USER="root"
 DB_PASSWORD="root"
-TEST_DB_HOST="db"
-TEST_DB_NAME="test"
+TEST_DB_HOST="192.168.92.100:4010"
+TEST_DB_NAME="tests"
 TEST_DB_USER="root"
 TEST_DB_PASSWORD="root"
 ```
@@ -66,3 +67,35 @@ Please refer to [Codeception documentation](http://codeception.com/docs) to lear
 ## Where to find help
 Look for test examples in the code; look for configuration guides on [Codeception](http://codeception.com/ "Codeception - BDD-style PHP testing.") and [wp-browser](https://github.com/lucatume/wp-browser "lucatume/wp-browser · GitHub")  site; ask for help to other testers for things like "How should I test this?" or "In what suite should I add this test?".  
 
+## Writing acceptance tests
+
+### What is an acceptance test?
+A test in which you exercise the UI like a user would, set some pre-conditions (e.g. a database entry) and make assertions like a user **with confidence with her browser developer tools** would do.
+See the `tests/acceptance` folder for examples and then get back here. Really: do it.
+
+### Do I need to know PHP?
+To a basic level, yes.
+Since you've looked at the examples you know it's not rocket science.
+
+### What about the developer tools...?
+It's important is that you understand that **you should never check for strings** unless there is a very good reason (e.g. localization testing).  
+What does this mean? If in a test you have to click a button and write:
+
+```php
+$I->click( 'Save' );
+```
+
+then that test will fail if the button text is updated. And **it will be updated** sooner or later.  
+Check instead for that button [CSS selector](https://www.w3schools.com/cssref/css_selectors.asp) (jQuery-like) or [XPath selector](https://www.w3schools.com/xml/xpath_syntax.asp).  
+How do you get that? Using your browser developer tools.
+
+### But this is too difficult...
+Maybe. What's certain is that you are now in the 1% of people that can write acceptance tests.
+
+### What if I do not know how to do something?
+Google is your friend; as noted above [Codeception](http://codeception.com/docs) and [WP Browser](https://github.com/lucatume/wp-browser) documentation will help.  
+If nothing above works ask a developer.
+
+### Setting up to write acceptance tests
+Same as the "Set up" section above. You can do it; I (a mindless file) believe in you.  
+If stuck see the point above.
