@@ -22,4 +22,11 @@ extensions:
         - 'Codeception\Command\GenerateWPXMLRPC'
         - 'Codeception\Command\DbSnapshot'
         - 'tad\Codeception\Command\SearchReplace'
-
+    enabled:
+        # see https://github.com/grantlucas/phantoman#configuration
+        - Codeception\Extension\Phantoman
+    config:
+        Codeception\Extension\Phantoman:
+            # see https://github.com/grantlucas/phantoman#phantomjs-installer-via-composer
+            path: 'vendor/bin/phantomjs'
+            suites: ['acceptance']

@@ -14,11 +14,21 @@
     "lucatume/function-mocker": "^1.0",
     "vlucas/phpdotenv": "^2.4",
     "lucatume/function-mocker-le": "^1.0",
-    "spatie/phpunit-snapshot-assertions": "^1.2"
+    "spatie/phpunit-snapshot-assertions": "^1.2",
+    "site5/phantoman": "^2.0",
+    "jakoch/phantomjs-installer": "^2.1"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
     "preferred-install": "dist"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "PhantomInstaller\\Installer::installPhantomJS"
+    ],
+    "post-update-cmd": [
+      "PhantomInstaller\\Installer::installPhantomJS"
+    ]
   }
 }
