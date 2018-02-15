@@ -19,70 +19,70 @@
 
 	<table class="tribe-events-tickets tribe-events-tickets-tpp">
 					<tr>
-				<td class="tribe-ticket quantity" data-product-id="9">
-					<input type="hidden" name="product_id[]" value="9">
+				<td class="tribe-ticket quantity" data-product-id="4">
+					<input type="hidden" name="product_id[]" value="4">
 											<input
 							type="number"
 							class="tribe-ticket-quantity qty"
 							min="0"
-							max="100"							name="quantity_9"
+							max="100"							name="quantity_4"
 							value="0"
 													>
 													<span class="tribe-tickets-remaining">
-							<span class="available-stock" data-product-id="9">100</span> available							</span>
+							<span class="available-stock" data-product-id="4">100</span> available							</span>
 															</td>
 				<td class="tickets_name">
-					Test Ticket for 8				</td>
+					Test Ticket for 3				</td>
 				<td class="tickets_price">
-					<span class="tribe-tickets-price-amount amount">&#x24;1</span>				</td>
+					<span class="tribe-tickets-price-amount amount">&#x24;1.00</span>				</td>
 				<td class="tickets_description" colspan="2">
-					Ticket for 8				</td>
+					Ticket for 3				</td>
 				<td class="tickets_submit">
 											<button type="submit" class="tpp-submit tribe-button">Buy now</button>
 									</td>
 			</tr>
 						<tr>
-				<td class="tribe-ticket quantity" data-product-id="10">
-					<input type="hidden" name="product_id[]" value="10">
+				<td class="tribe-ticket quantity" data-product-id="5">
+					<input type="hidden" name="product_id[]" value="5">
 											<input
 							type="number"
 							class="tribe-ticket-quantity qty"
 							min="0"
-							max="100"							name="quantity_10"
+							max="100"							name="quantity_5"
 							value="0"
 													>
 													<span class="tribe-tickets-remaining">
-							<span class="available-stock" data-product-id="10">100</span> available							</span>
+							<span class="available-stock" data-product-id="5">100</span> available							</span>
 															</td>
 				<td class="tickets_name">
-					Test Ticket for 8				</td>
+					Test Ticket for 3				</td>
 				<td class="tickets_price">
-					<span class="tribe-tickets-price-amount amount">&#x24;1</span>				</td>
+					<span class="tribe-tickets-price-amount amount">&#x24;1.00</span>				</td>
 				<td class="tickets_description" colspan="2">
-					Ticket for 8				</td>
+					Ticket for 3				</td>
 				<td class="tickets_submit">
 											<button type="submit" class="tpp-submit tribe-button">Buy now</button>
 									</td>
 			</tr>
 						<tr>
-				<td class="tribe-ticket quantity" data-product-id="11">
-					<input type="hidden" name="product_id[]" value="11">
+				<td class="tribe-ticket quantity" data-product-id="6">
+					<input type="hidden" name="product_id[]" value="6">
 											<input
 							type="number"
 							class="tribe-ticket-quantity qty"
 							min="0"
-							max="100"							name="quantity_11"
+							max="100"							name="quantity_6"
 							value="0"
 													>
 													<span class="tribe-tickets-remaining">
-							<span class="available-stock" data-product-id="11">100</span> available							</span>
+							<span class="available-stock" data-product-id="6">100</span> available							</span>
 															</td>
 				<td class="tickets_name">
-					Test Ticket for 8				</td>
+					Test Ticket for 3				</td>
 				<td class="tickets_price">
-					<span class="tribe-tickets-price-amount amount">&#x24;1</span>				</td>
+					<span class="tribe-tickets-price-amount amount">&#x24;1.00</span>				</td>
 				<td class="tickets_description" colspan="2">
-					Ticket for 8				</td>
+					Ticket for 3				</td>
 				<td class="tickets_submit">
 											<button type="submit" class="tpp-submit tribe-button">Buy now</button>
 									</td>
@@ -91,7 +91,7 @@
 					<tr>
 				<td colspan="5" class="tpp-add">
 																
-	<a href="http://commerce.dev/wp-login.php?redirect_to=http://commerce.dev/?p=8">Log in before purchasing</a>
+	<a href="http://commerce.dev/wp-login.php?redirect_to=http://commerce.dev/?p=3">Log in before purchasing</a>
 
 										</td>
 			</tr>
