@@ -233,6 +233,8 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.6.4] TBD =
+
 = [4.6.3] 2018-01-10 =
 
 * Fix - Ensured that only users of the editor or administrator roles can delete, check-in, and undo check-ins on tickets (props to @skamath for reporting this!) [68831]
