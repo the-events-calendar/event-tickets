@@ -7,6 +7,8 @@ use AcceptanceTester;
 class PostTypesCest {
 
 	public function _before( AcceptanceTester $I ) {
+		// make sure only ET is activated
+		$I->haveOptionInDatabase( 'active_plugins', [ 'event-tickets/event-tickets.php' ] );
 		$I->loginAsAdmin();
 		// the Tickets page in Settings
 		$I->amOnAdminPage( '/admin.php?page=tribe-common&tab=event-tickets' );
