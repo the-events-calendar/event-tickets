@@ -94,7 +94,7 @@ Maybe. What's certain is that you are now in the 1% of people that can write acc
 
 ### What if I do not know how to do something?
 Google is your friend; as noted above [Codeception](http://codeception.com/docs) and [WP Browser](https://github.com/lucatume/wp-browser) documentation will help.  
-If nothing above works ask a developer.
+If nothing of the above works ask a developer.
 
 ### Setting up to write acceptance tests
 Same as the "Set up" section above. You can do it; I (a mindless file) believe in you.  
@@ -102,7 +102,7 @@ If stuck see the point above.
 
 ### Cept, Cest...?
 the `Cept` kind of tests are easier to read but do not allow for reuse of code; `Cest` tests allow instead for `_before` and `_after` methods (and more) to store re-usable code.  
-This is by no means all, [see more here](https://codeception.com/docs/02-GettingStarted#Cept-Cest-and-Test-Formats).  
+This is, by no means all, [see more here](https://codeception.com/docs/02-GettingStarted#Cept-Cest-and-Test-Formats).  
 
 ### How do I create new test?
 From the plugin root folder:
