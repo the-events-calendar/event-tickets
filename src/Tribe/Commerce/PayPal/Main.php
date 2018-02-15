@@ -747,7 +747,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$qty = $oversell_policy->modify_quantity( $qty, $inventory );
 
 					if ( ! $oversell_policy->allows_overselling() ) {
-						$oversell_policy->handle_oversold_attendees( $this->get_attendees_by_order_id( $order_id ) );
+						$oversold_attendees = $this->get_attendees_by_order_id( $order_id );
+						$oversell_policy->handle_oversold_attendees( $oversold_attendees );
 						$this->redirect_after_error( 102, $redirect, $post_id );
 						return;
 					}
