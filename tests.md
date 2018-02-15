@@ -99,3 +99,15 @@ If nothing above works ask a developer.
 ### Setting up to write acceptance tests
 Same as the "Set up" section above. You can do it; I (a mindless file) believe in you.  
 If stuck see the point above.
+
+### Cept, Cest...?
+the `Cept` kind of tests are easier to read but do not allow for reuse of code; `Cest` tests allow instead for `_before` and `_after` methods (and more) to store re-usable code.  
+This is by no means all, [see more here](https://codeception.com/docs/02-GettingStarted#Cept-Cest-and-Test-Formats).  
+
+### How do I create new test?
+From the plugin root folder:
+
+* cept format - `vendor/bin/codecept generate:cept acceptance "Admin\Settings\SomeTest"`
+* cest format - `vendor/bin/codecept generate:cest acceptance "Admin\Settings\SomeTest"`
+
+Try to keep the tests neatly organized in folders using the format above unless it's **really** a special case (e.g. plugin activation).
