@@ -48,9 +48,9 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 			'event_name'             => 'Event 1',
 			'ticket_name'            => 'Ticket 1',
 			'ticket_description'     => 'The first RSVP Ticket Entry',
-			'ticket_start_sale_date' => 'May 11, 2016',
+			'ticket_start_sale_date' => '2016-05-11',
 			'ticket_start_sale_time' => '9:00 AM',
-			'ticket_end_sale_date'   => 'May 19, 2016',
+			'ticket_end_sale_date'   => '2016-05-19',
 			'ticket_end_sale_time'   => '8:00 PM',
 			'ticket_stock'           => '100',
 		];
@@ -69,8 +69,10 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $event_id, $ticket->get_event()->ID );
 		$this->assertEquals( 'Ticket 1', $ticket->name );
 		$this->assertEquals( 'The first RSVP Ticket Entry', $ticket->description );
-		$this->assertEquals( '2016-05-11 09:00:00', $ticket->start_date );
-		$this->assertEquals( '2016-05-19 20:00:00', $ticket->end_date );
+		$this->assertEquals( '2016-05-11', $ticket->start_date );
+		$this->assertEquals( '2016-05-19', $ticket->end_date );
+		$this->assertEquals( '09:00:00', $ticket->start_time );
+		$this->assertEquals( '20:00:00', $ticket->end_time );
 		$this->assertEquals( '100', $ticket->stock() );
 	}
 
@@ -283,8 +285,10 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $event_id, $ticket->get_event()->ID );
 		$this->assertEquals( 'Ticket 30', $ticket->name );
 		$this->assertEquals( 'The first RSVP Ticket Entry', $ticket->description );
-		$this->assertEquals( '2016-05-11 09:00:00', $ticket->start_date );
-		$this->assertEquals( '2016-05-19 20:00:00', $ticket->end_date );
+		$this->assertEquals( '2016-05-11', $ticket->start_date );
+		$this->assertEquals( '2016-05-19', $ticket->end_date );
+		$this->assertEquals( '09:00:00', $ticket->start_time );
+		$this->assertEquals( '20:00:00', $ticket->end_time );
 		$this->assertEquals( '100', $ticket->stock() );
 	}
 
@@ -376,9 +380,9 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 			'event_name'             => 'Some Event',
 			'ticket_name'            => 'Ticket 1',
 			'ticket_description'     => 'The first RSVP Ticket Entry',
-			'ticket_start_sale_date' => 'May 11, 2016',
+			'ticket_start_sale_date' => '2016-05-11',
 			'ticket_start_sale_time' => '9:00 AM',
-			'ticket_end_sale_date'   => 'May 19, 2016',
+			'ticket_end_sale_date'   => '2016-05-19',
 			'ticket_end_sale_time'   => '8:00 PM',
 			'ticket_stock'           => '100',
 		];
