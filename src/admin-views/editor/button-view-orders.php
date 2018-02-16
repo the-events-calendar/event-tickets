@@ -26,9 +26,12 @@ $url = add_query_arg( $args, admin_url( 'edit.php' ) );
  */
 $url = apply_filters( 'tribe_filter_attendee_order_link', $url, $post->ID );
 ?>
-<a
-	href="<?php echo esc_url( $url ); ?>"
-	class="button-secondary"
->
-	<?php esc_html_e( 'View Orders', 'event-tickets' ); ?>
-</a>
+
+<?php if ( ! empty( $url ) ) : ?>
+	<a
+		href="<?php echo esc_url( $url ); ?>"
+		class="button-secondary"
+	>
+		<?php esc_html_e( 'View Orders', 'event-tickets' ); ?>
+	</a>
+<?php endif;
