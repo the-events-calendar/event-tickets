@@ -25,7 +25,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @since TBD
 	 */
 	public function hook(  ) {
-		add_filter( 'tribe_currency_symbol', array( $this, 'get_currency_symbol' ), 10, 2 );
+		add_filter( 'tribe_currency_symbol', array( $this, 'filter_currency_symbol' ), 10, 2 );
 		add_filter( 'tribe_reverse_currency_position', array( $this, 'reverse_currency_symbol_position' ), 10, 2 );
 		add_filter( 'get_post_metadata', array( $this, 'filter_cost_meta' ), 10, 4 );
 	}
@@ -48,7 +48,9 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @return string
 	 */
 	public function filter_currency_symbol( $unused_currency_symbol, $post_id = null ) {
-		return $this->get_currency_symbol( $post_id );
+		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		return $this->get_provider_symbol( $default_provider, $post_id );
 	}
 
 	/**
