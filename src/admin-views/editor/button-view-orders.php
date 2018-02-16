@@ -34,4 +34,4 @@ $url = apply_filters( 'tribe_filter_attendee_order_link', $url, $post->ID );
 	>
 		<?php esc_html_e( 'View Orders', 'event-tickets' ); ?>
 	</a>
-<?php endif; ?>
+<?php endif;
