@@ -133,7 +133,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'cmd'           => '_cart',
 			'add'           => 1,
 			'business'      => urlencode( trim( tribe_get_option( 'ticket-paypal-email' ) ) ),
-			'bn'            => 'ModernTribe_SP',
+			'bn'            => 'ModernTribe_AddToCart_WPS_US',
 			'notify_url'    => urlencode( trim( $notify_url ) ),
 			'shopping_url'  => urlencode( $post_url ),
 			'return'        => $this->get_success_page_url(),
