@@ -1151,19 +1151,6 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$provider = tribe_get_request_var(
-			array( 'tribe-tickets', 'settings', 'default_provider' ),
-			tribe_get_request_var( 'ticket_provider', false )
-		);
-
-		if ( $provider && tribe( 'tickets.metabox' )->module_is_valid( $provider ) ) {
-			// Get the Provider
-			$provider = call_user_func( array( $provider, 'get_instance' ) );
-
-			// Sve the actual ticket
-			$ticket_id = $provider->ticket_add( $post->ID, $_POST );
-		}
-
 		$this->save_form_settings( $post );
 		$this->save_order( $post );
 
