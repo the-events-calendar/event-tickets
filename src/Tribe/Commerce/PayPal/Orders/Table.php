@@ -179,7 +179,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_total( $item ) {
-		return tribe_format_currency( number_format( $item['line_total'], 2 ) );
+		$post_id = Tribe__Utils__Array::get( $_GET, 'post_id', null );
+
+		return tribe_format_currency( number_format( $item['line_total'], 2 ), $post_id );
 	}
 
 	/**
