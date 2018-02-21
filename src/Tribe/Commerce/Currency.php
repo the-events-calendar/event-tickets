@@ -26,6 +26,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 */
 	public function hook(  ) {
 		add_filter( 'tribe_currency_symbol', array( $this, 'filter_currency_symbol' ), 10, 2 );
+		add_filter( 'tribe_currency_cost', array( $this, 'filter_currency_cost' ), 10, 2 );
 		add_filter( 'tribe_reverse_currency_position', array( $this, 'reverse_currency_symbol_position' ), 10, 2 );
 		add_filter( 'get_post_metadata', array( $this, 'filter_cost_meta' ), 10, 4 );
 	}
@@ -51,6 +52,12 @@ class Tribe__Tickets__Commerce__Currency {
 		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
 		return $this->get_provider_symbol( $default_provider, $post_id );
+	}
+
+	public function filter_currency_cost( $cost, $post_id ) {
+		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+
+		return $this->get_provider_cost( $default_provider, $cost );
 	}
 
 	/**
@@ -365,6 +372,32 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		return $this->get_currency_symbol( $object_id );
+	}
+
+	/**
+	 * Returns he cost applying separators from Woo or EDD depends on the provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param $provider
+	 * @param $cost
+	 *
+	 * @return string
+	 */
+	protected function get_provider_cost( $provider, $cost ) {
+		if ( ! class_exists( $provider ) ) {
+			return $cost;
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider && function_exists('wc_format_localized_price' ) ) {
+			return wc_format_localized_price( $cost );
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_format_amount' ) ) {
+			return edd_format_amount( $cost );
+		}
+
+		return $cost;
 	}
 
 	/**
