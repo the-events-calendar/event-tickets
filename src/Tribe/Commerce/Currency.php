@@ -398,11 +398,17 @@ class Tribe__Tickets__Commerce__Currency {
 			return $cost;
 		}
 
-		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider && function_exists('wc_format_localized_price' ) ) {
+		if (
+			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider
+			&& function_exists( 'wc_format_localized_price' )
+		) {
 			return wc_format_localized_price( $cost );
 		}
 
-		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_format_amount' ) ) {
+		if (
+			'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider
+			&& function_exists( 'edd_format_amount' )
+		) {
 			return edd_format_amount( $cost );
 		}
 
