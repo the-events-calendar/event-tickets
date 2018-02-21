@@ -7,8 +7,8 @@
   "_resourcepath": "src/resources",
   "_domainPath": "lang",
   "_textDomain": "event-tickets",
-  "_glotPressUrl": "http://translations.theeventscalendar.com",
-  "_glotPressSlug": "event-tickets",
+  "_glotPressUrl": "https://translate.wordpress.org",
+  "_glotPressSlug": "wp-plugins/event-tickets/stable",
   "_glotPressFileFormat": "%textdomain%-%wp_locale%.%format%",
   "_glotPressFormats": [
     "po",
