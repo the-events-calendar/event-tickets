@@ -54,7 +54,15 @@ class Tribe__Tickets__Commerce__Currency {
 		return $this->get_provider_symbol( $default_provider, $post_id );
 	}
 
-	public function filter_currency_cost( $cost, $post_id ) {
+	/**
+	 * Filter the cost of the ticket.
+	 *
+	 * @param string $cost
+	 * @param int $post_id
+	 *
+	 * @return string
+	 */
+	public function filter_currency_cost( $cost = '', $post_id = 0 ) {
 		$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 
 		return $this->get_provider_cost( $default_provider, $cost );
@@ -62,6 +70,7 @@ class Tribe__Tickets__Commerce__Currency {
 
 	/**
 	 * Get and allow filtering of the currency symbol position
+	 *
 	 * @param int|null $post_id
 	 *
 	 * @return string
@@ -379,12 +388,12 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since TBD
 	 *
-	 * @param $provider
-	 * @param $cost
+	 * @param string $provider
+	 * @param string $cost
 	 *
 	 * @return string
 	 */
-	protected function get_provider_cost( $provider, $cost ) {
+	protected function get_provider_cost( $provider = '', $cost = '' ) {
 		if ( ! class_exists( $provider ) ) {
 			return $cost;
 		}
