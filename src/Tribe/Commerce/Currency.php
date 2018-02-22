@@ -384,7 +384,7 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Returns he cost applying separators from Woo or EDD depends on the provider.
+	 * Returns the cost applying separators from Woo or EDD depends on the provider.
 	 *
 	 * @since TBD
 	 *
