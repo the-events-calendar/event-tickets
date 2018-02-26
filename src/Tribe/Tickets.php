@@ -1258,7 +1258,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				if ( ! empty( $modules ) ) {
 					// We just return the first, so we don't show favoritism
-					Tribe__Tickets__Tickets::$default_module = array_shift( $modules );
+					Tribe__Tickets__Tickets::$default_module = array_slice( $modules, 0, 1 );
 				} else {
 					// use PayPal tickets
 					Tribe__Tickets__Tickets::$default_module = 'Tribe__Tickets__Commerce__PayPal__Main';
