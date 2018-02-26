@@ -458,7 +458,7 @@ class Tribe__Tickets__Attendees {
 
 		//Add in Columns or get_column_headers() returns nothing
 		$filter_name = "manage_{$this->page_id}_columns";
-		add_filter( $filter_name, array( $this->page_id, 'get_columns' ), 15 );
+		add_filter( $filter_name, array( $this->attendees_table, 'get_columns' ), 15 );
 
 		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 
@@ -466,7 +466,8 @@ class Tribe__Tickets__Attendees {
 		if ( ! is_admin() ) {
 			$columns = apply_filters( $filter_name, array() );
 		} else {
-			$columns = array_map( 'wp_strip_all_tags', get_column_headers( get_current_screen() ) );
+			$columns = array_filter( (array) get_column_headers( get_current_screen() ) );
+			$columns = array_map( 'wp_strip_all_tags', $columns  );
 		}
 
 		// We dont want HTML inputs, private data or other columns that are superfluous in a CSV export
