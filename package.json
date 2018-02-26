@@ -1,14 +1,14 @@
 {
   "name": "event-tickets",
-  "version": "4.7.0dev1",
+  "version": "4.7.0",
   "repository": "git@github.com:moderntribe/event-tickets.git",
   "_zipname": "event-tickets",
   "_zipfoldername": "event-tickets",
   "_resourcepath": "src/resources",
   "_domainPath": "lang",
   "_textDomain": "event-tickets",
-  "_glotPressUrl": "http://translations.theeventscalendar.com",
-  "_glotPressSlug": "event-tickets",
+  "_glotPressUrl": "https://translate.wordpress.org",
+  "_glotPressSlug": "wp-plugins/event-tickets/stable",
   "_glotPressFileFormat": "%textdomain%-%wp_locale%.%format%",
   "_glotPressFormats": [
     "po",

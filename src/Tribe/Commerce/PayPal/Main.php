@@ -1025,7 +1025,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$to = apply_filters( 'tribe_tpp_email_recipient', $to );
 		$site_name = stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
 		$default_subject = sprintf( __( 'Your tickets from %s', 'event-tickets' ), $site_name );
-		$subject = apply_filters( 'tribe_tpp_email_subject', tribe_get_option( 'ticket-confirmation-email-subject', $default_subject ) );
+		$subject = apply_filters( 'tribe_tpp_email_subject', tribe_get_option( 'ticket-paypal-confirmation-email-subject', $default_subject ) );
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
 	}
