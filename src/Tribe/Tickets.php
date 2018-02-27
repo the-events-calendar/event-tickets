@@ -1138,13 +1138,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->stock;
 
+					// whether the stock level is negative because it represents unlimited stock (`-1`)
+					// or because it's oversold we normalize to `0` for the sake of displaying
+					$stock_level = max( 0, (int) $stock_level );
+
 					$types['tickets']['stock'] += $stock_level;
 
 					if ( 0 !== $types['tickets']['stock'] ) {
 						$types['tickets']['available'] ++;
 					}
 
-					if ( ! $ticket->manage_stock() ) {
+					if ( ! $ticket->manage_stock() || -1 === $ticket->capacity ) {
 						$types['tickets']['unlimited'] ++;
 						$types['tickets']['available'] ++;
 					}
