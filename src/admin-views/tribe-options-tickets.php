@@ -173,9 +173,11 @@ $paypal_currency_code_options = tribe( 'tickets.commerce.currency' )->generate_c
 
 $current_user = get_user_by( 'id', get_current_user_id() );
 
-// @todo fill this in with the correct KB link
-$paypal_setup_kb_url  = 'https://theeventscalendar.com';
-$paypal_setup_kb_link = '<a href="' . $paypal_setup_kb_url . '">' . esc_html__( 'these instructions', 'event-tickets' ) . '</a>';
+// The KB article URL will change depending on whether ET+ is active or not
+$paypal_setup_kb_url = class_exists( 'Tribe__Tickets_Plus__Main' )
+	? 'http://m.tri.be/19yk'
+	: 'http://m.tri.be/19yj';
+$paypal_setup_kb_link = '<a href="' . esc_url( $paypal_setup_kb_url ) . '">' . esc_html__( 'these instructions', 'event-tickets' ) . '</a>';
 $paypal_setup_note    = sprintf(
 	esc_html__( 'In order to use Tribe Commerce to sell tickets, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %s', 'event-tickets' ),
 	$paypal_setup_kb_link

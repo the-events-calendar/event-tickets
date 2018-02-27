@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c1b4bea53e09487dcdd707b121fd0084",
+    "content-hash": "6c95e03eadeb872145dc93f32527c068",
     "packages": [],
     "packages-dev": [
         {
@@ -1410,16 +1410,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "1.22.6.1",
+            "version": "1.22.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "14f7652a62a0c179cc390c4a3554c81b2853c700"
+                "reference": "1a0d9ad12548dcda63aeb51796552429feae6595"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/14f7652a62a0c179cc390c4a3554c81b2853c700",
-                "reference": "14f7652a62a0c179cc390c4a3554c81b2853c700",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/1a0d9ad12548dcda63aeb51796552429feae6595",
+                "reference": "1a0d9ad12548dcda63aeb51796552429feae6595",
                 "shasum": ""
             },
             "require": {
@@ -1449,7 +1449,8 @@
                     "tad\\": "src\\tad"
                 },
                 "files": [
-                    "src/tad/WPBrowser/functions.php"
+                    "src/tad/WPBrowser/functions.php",
+                    "shims.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1470,7 +1471,7 @@
                 "codeception",
                 "wordpress"
             ],
-            "time": "2018-02-14T12:22:38+00:00"
+            "time": "2018-02-27T14:27:56+00:00"
         },
         {
             "name": "lucatume/wp-browser-commons",
