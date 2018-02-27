@@ -427,7 +427,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 */
 	protected function get_provider_symbol_position( $provider, $object_id ) {
 		if ( ! class_exists( $provider ) ) {
-			return $this->get_currency_symbol( $object_id );
+			return $this->get_currency_symbol_position( $object_id );
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
@@ -444,7 +444,7 @@ class Tribe__Tickets__Commerce__Currency {
 			return 'before' === $position ? 'prefix' : 'postfix';
 		}
 
-		return $this->get_currency_symbol( $object_id );
+		return $this->get_currency_symbol_position( $object_id );
 	}
 
 	/**
