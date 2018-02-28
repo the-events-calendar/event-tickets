@@ -1263,10 +1263,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				if ( ! empty( $modules ) ) {
 					// We just return the first, so we don't show favoritism
 					$sliced = array_slice( $modules, 0, 1 );
-					Tribe__Tickets__Tickets::$default_module = reset( $sliced );
+					self::$default_module = reset( $sliced );
 				} else {
 					// use PayPal tickets
-					Tribe__Tickets__Tickets::$default_module = 'Tribe__Tickets__Commerce__PayPal__Main';
+					self::$default_module = 'Tribe__Tickets__Commerce__PayPal__Main';
 				}
 			}
 
@@ -1278,7 +1278,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param string default ticket module class name
 			 * @param array array of ticket module class names
 			 */
-			return apply_filters( 'tribe_tickets_get_default_module', Tribe__Tickets__Tickets::$default_module, $modules );
+			return apply_filters( 'tribe_tickets_get_default_module', self::$default_module, $modules );
 		}
 
 		/**
