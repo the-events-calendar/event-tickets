@@ -160,12 +160,14 @@ $tickets_fields['ticket-paypal-enable'] = array(
 $pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
 
 if ( ! empty( $pages ) ) {
-	$pages        = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
-	$default_page = reset( $pages );
+	$pages = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );
+	// add an empty entry at the start
+	$pages = array_merge( array( 0 => '' ), $pages );
 } else {
-	$pages        = array( 0 => __( 'There are no published pages', 'event-tickets' ) );
-	$default_page = null;
+	// just an empty entry as there are no published pages available
+	$pages = array( 0 => '' );
 }
+$default_page = reset( $pages );
 
 $tpp_success_shortcode = 'tribe-tpp-success';
 
