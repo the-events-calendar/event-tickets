@@ -372,11 +372,11 @@ class Tribe__Tickets__Commerce__Currency {
 			return $this->get_currency_symbol( $object_id );
 		}
 
-		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider && function_exists( 'get_woocommerce_currency_symbol' ) ) {
 			return get_woocommerce_currency_symbol();
 		}
 
-		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_currency_symbol' ) ) {
 			return edd_currency_symbol();
 		}
 
