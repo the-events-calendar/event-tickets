@@ -29,6 +29,9 @@ class Tribe__Tickets__Commerce__PayPal__Errors {
 			'101' => __( 'In order to purchase tickets, you must enter your name and a valid email address.', 'event-tickets' ),
 			'102' => __( 'You can\'t add more tickets than the total remaining tickets.', 'event-tickets' ),
 			'103' => __( 'You should add at least one ticket.', 'event-tickets' ),
+
+			// a numeric namespace reserved for front-end messages
+			'201' => __( "Your order is currently processing. Once completed, you'll receive your ticket(s) in an email.", 'event-tickets' ),
 		);
 
 		/**
