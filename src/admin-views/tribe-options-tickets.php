@@ -164,7 +164,7 @@ if ( ! empty( $pages ) ) {
 }
 
 // add an empty entry at the start
-$pages = array_merge( array( 0 => '' ), $pages );
+$pages = array( 0 => '' ) + $pages;
 $default_page = reset( $pages );
 
 $tpp_success_shortcode = 'tribe-tpp-success';
