@@ -1203,7 +1203,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				);
 
 				if ( $ticket->managing_stock() ) {
-					$ticket_data['stock'] = $ticket->stock();
+					$ticket_data['stock'] = $ticket->available();
 				}
 
 				$data['events'][ $post_id ] = array(
