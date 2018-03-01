@@ -32,7 +32,9 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 			return;
 		}
 
-		wp_safe_redirect( $this->success_url( $_GET['tx'] ) );
+		$post_id = Tribe__Utils__Array::get( $custom_data, 'pid', null );
+
+		wp_safe_redirect( $this->success_url( $_GET['tx'], $post_id ) );
 	}
 
 	/**
