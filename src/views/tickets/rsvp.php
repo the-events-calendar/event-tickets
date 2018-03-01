@@ -79,6 +79,7 @@ $now = current_time( 'timestamp' );
 						<input
 							type="number"
 							class="tribe-ticket-quantity"
+						        step="1"
 							min="0"
 							<?php if ( -1 !== $remaining ) : ?>
 								max="<?php echo esc_attr( $remaining ); ?>"
