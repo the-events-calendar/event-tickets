@@ -114,7 +114,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 */
 		$notify_url = apply_filters( 'tribe_tickets_commerce_paypal_notify_url', $notify_url, $post, $product_ids );
 
-		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp' );
+		$custom_args = array( 'user_id' => get_current_user_id(), 'tribe_handler' => 'tpp', 'pid' => $post->ID );
 
 		/**
 		 * Filters the custom arguments that will be sent ot PayPal.

@@ -32,7 +32,10 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 			return;
 		}
 
-		wp_safe_redirect( $this->success_url( $_GET['tx'] ) );
+		$post_id = Tribe__Utils__Array::get( $custom_data, 'pid', null );
+
+		wp_safe_redirect( $this->success_url( $_GET['tx'], $post_id ) );
+		tribe_exit();
 	}
 
 	/**
@@ -53,8 +56,8 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 		if ( ! empty( $page ) && 'page' === $page->post_type ) {
 			$url = add_query_arg( array( 'p' => $success_page_id, 'tribe-tpp-order' => $order ), home_url() );
 		} else {
-			// use the post single page
-			$url = add_query_arg( array( 'tribe-tpp-order' => $order ), get_permalink( $post_id ) );
+			// use the post single page; see `Tribe__Tickets__Commerce__PayPal__Errors` for the message code
+			$url = add_query_arg( array( 'tribe-tpp-order' => $order, 'tpp_message' => 201 ), get_permalink( $post_id ) );
 		}
 
 		return $url;

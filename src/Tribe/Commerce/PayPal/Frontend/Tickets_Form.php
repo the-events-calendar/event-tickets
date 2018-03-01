@@ -75,6 +75,12 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 			$this->main->add_message( Tribe__Tickets__Commerce__PayPal__Errors::error_code_to_message( $ticket_error ), 'error' );
 		}
 
+		$ticket_message = empty( $_GET['tpp_message'] ) ? false : (int) $_GET['tpp_message'];
+
+		if ( $ticket_message ) {
+			$this->main->add_message( Tribe__Tickets__Commerce__PayPal__Errors::error_code_to_message( $ticket_message ), 'update' );
+		}
+
 		$must_login = ! is_user_logged_in() && $this->main->login_required();
 		$can_login  = true;
 
