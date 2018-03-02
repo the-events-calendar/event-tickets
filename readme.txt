@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
-
+* Fix - Sanitize correctly the description of an RSVP [99100]
 
 = [4.6.3.1] 2018-02-26 =
 
