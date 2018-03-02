@@ -229,7 +229,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return string
 	 */
-	public function rsvp_form_add_email( $default_email = '' ) {
+	public function rsvp_form_add_email() {
 		$current_user = wp_get_current_user();
 		return $current_user->user_email;
 	}

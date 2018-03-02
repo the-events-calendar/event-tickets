@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
-* Tweak - Populate the RSVP form if user is logged in with new filters `tribe_tickets_rsvp_form_full_name` and `tribe_tickets_rsvp_form_email` [78607]	
+* Tweak - Populate the RSVP form if user is logged in with new filters `tribe_tickets_rsvp_form_full_name` and `tribe_tickets_rsvp_form_email` [78607]
 
 
 = [4.6.3.1] 2018-02-26 =
