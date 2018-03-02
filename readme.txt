@@ -235,6 +235,8 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
+* Fix - Prevent duplicates queries on the admin, by caching them [99267]
+
 
 
 = [4.6.3.1] 2018-02-26 =
