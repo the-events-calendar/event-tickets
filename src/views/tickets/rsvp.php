@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.6
+ * @version @TBD
  *
  * @var bool $must_login
  */
@@ -31,6 +31,7 @@ $now = current_time( 'timestamp' );
 	<h2 class="tribe-events-tickets-title tribe--rsvp">
 		<?php echo esc_html_x( 'RSVP', 'form heading', 'event-tickets' ) ?>
 	</h2>
+
 
 	<div class="tribe-rsvp-messages">
 		<?php
@@ -127,6 +128,18 @@ $now = current_time( 'timestamp' );
 					 * @var array of Tribe__Tickets__Ticket_Object
 					 */
 					do_action( 'event_tickets_rsvp_before_confirmation_fields', $tickets );
+
+					$name = '';
+					$email = '';
+					if ( is_user_logged_in() ) {
+						$current_user = wp_get_current_user();
+						$name_parts = array( $current_user->first_name, $current_user->last_name );
+						$name = implode( ' ', array_filter( $name_parts ) );
+						if ( empty( $name ) ) {
+							$name = $current_user->display_name;
+						}
+						$email = $current_user->user_email;
+					}
 					?>
 					<table class="tribe-tickets-table">
 						<tr class="tribe-tickets-full-name-row">
@@ -134,7 +147,7 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name">
+								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name" value="<?php echo esc_html( $name ); ?>">
 							</td>
 						</tr>
 						<tr class="tribe-tickets-email-row">
@@ -142,7 +155,7 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-email"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="email" name="attendee[email]" id="tribe-tickets-email">
+								<input type="email" name="attendee[email]" id="tribe-tickets-email" value="<?php echo esc_html( $email ); ?>">
 							</td>
 						</tr>
 
