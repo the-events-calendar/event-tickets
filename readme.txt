@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [M18.05] TBD =
+
+
+
 = [4.6.3.1] 2018-02-26 =
 
 * Fix - Remove PHP warnings during CSV generation of the attendees [94293]
