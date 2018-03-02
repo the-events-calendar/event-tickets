@@ -127,19 +127,25 @@ $now = current_time( 'timestamp' );
 					 *
 					 * @var array of Tribe__Tickets__Ticket_Object
 					 */
-					do_action( 'event_tickets_rsvp_before_confirmation_fields', $tickets );
+					do_action( 'tribe_tickets_rsvp_before_confirmation_fields', $tickets );
 
-					$name = '';
-					$email = '';
-					if ( is_user_logged_in() ) {
-						$current_user = wp_get_current_user();
-						$name_parts = array( $current_user->first_name, $current_user->last_name );
-						$name = implode( ' ', array_filter( $name_parts ) );
-						if ( empty( $name ) ) {
-							$name = $current_user->display_name;
-						}
-						$email = $current_user->user_email;
-					}
+					/**
+					 * Set the default Full Name for the RSVP form
+					 *
+					 * @since TBD
+					 *
+					 * @param string
+					 */
+					$name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '' );
+
+					/**
+					 * Set the default value for the email on the RSVP form.
+					 *
+					 * @since TBD
+					 *
+					 * * @param string
+					 */
+					$email = apply_filters( 'tribe_tickets_rsvp_form_email', '' );
 					?>
 					<table class="tribe-tickets-table">
 						<tr class="tribe-tickets-full-name-row">
