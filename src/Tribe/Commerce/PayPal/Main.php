@@ -1115,7 +1115,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			update_post_meta( $ticket->ID, '_sku', $sku );
 		}
 
-		// Fetches all Ticket Form Datas
+		// Fetches all Ticket Form data
 		$data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
 
 		// Fetch the Global stock Instance for this Event
