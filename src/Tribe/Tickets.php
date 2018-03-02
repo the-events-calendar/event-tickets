@@ -34,6 +34,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		private static $have_displayed_reg_link = false;
 
 		/**
+		 * Function that is used to store the cache of a specific post associated with a set of tickets, where %d is the
+		 * ID of the post being affected.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		private static $cache_key_all_tickets = 'tribe_event_tickets_from_%d';
+
+		/**
 		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all children.
 		 *
 		 * @var array
@@ -682,7 +692,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
 
 			// Ensure ticket prices and event costs are linked
-			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
+			add_filter( 'tribe_events_event_costs', array($this, 'get_ticket_prices' ), 10, 2 );
+			// Flush caches if any of the following actions has occurred
+			add_action( 'save_post', array( $this, 'clear_cache' ) );
+			add_action( 'tribe_tickets_ticket_add', array( $this, 'clear_cache' ) );
+			add_action( 'tribe_tickets_ticket_deleted', array( $this, 'clear_cache' ) );
 		}
 
 		// start Attendees
@@ -776,6 +790,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
+
+			$cache_key = sprintf( self::$cache_key_all_tickets, $post_id );
+			$tickets = get_transient( $cache_key );
+
+			if ( false !== $tickets && is_array( $tickets ) ) {
+				return $tickets;
+			}
+
 			$tickets = array();
 			$modules = self::modules();
 
@@ -783,6 +805,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$obj     = call_user_func( array( $class, 'get_instance' ) );
 				$tickets = array_merge( $tickets, $obj->get_tickets( $post_id ) );
 			}
+
+			set_transient( $cache_key, $tickets, HOUR_IN_SECONDS );
 
 			return $tickets;
 		}
@@ -1143,6 +1167,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			return apply_filters( 'tribe_events_tickets_template_' . $template, $file );
+		}
+
+		/**
+		 * Remove caches associated with a $post_id
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id
+		 */
+		public function clear_cache( $post_id = 0 ) {
+			$cache_key = sprintf( self::$cache_key_all_tickets, $post_id );
+			delete_transient( $cache_key );
 		}
 
 		/**
