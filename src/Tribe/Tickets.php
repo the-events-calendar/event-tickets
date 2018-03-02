@@ -692,7 +692,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
 
 			// Ensure ticket prices and event costs are linked
-			add_filter( 'tribe_events_event_costs', array($this, 'get_ticket_prices' ), 10, 2 );
+			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
 			// Flush caches if any of the following actions has occurred
 			add_action( 'save_post', array( $this, 'clear_cache' ) );
 			add_action( 'tribe_tickets_ticket_add', array( $this, 'clear_cache' ) );
