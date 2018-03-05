@@ -12,10 +12,20 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	/**
 	 * Resets all caches.
 	 */
+	public function reset_all( $post_id = 0 ) {
+		$post_types = array( 'post' );
+		$screen = get_current_screen();
 
-	public function reset_all() {
+		if ( $post_id ) {
+			$post_types = array( get_post_type( $post_id ) );
+		} elseif ( ! is_null( $screen ) && ! empty( $screen->post_type ) ) {
+			$post_types = array( $screen->post_type );
+		}
+
+		$hash = md5( serialize( $post_types ) );
 		foreach ( $this->keys as $key ) {
 			delete_transient( __CLASS__ . $key );
+			delete_transient( __CLASS__ . $key . $hash );
 		}
 	}
 
