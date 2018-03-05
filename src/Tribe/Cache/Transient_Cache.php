@@ -11,6 +11,8 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 
 	/**
 	 * Resets all caches.
+	 *
+	 * @param int $post_id
 	 */
 	public function reset_all( $post_id = 0 ) {
 		$post_types = array( 'post' );
