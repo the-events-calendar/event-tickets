@@ -74,8 +74,29 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 			}
 		}
 
-		$ids = $wpdb->get_col( $query );
 
+		$ids = $wpdb->get_col( $query );
+		$ids = is_array( $ids ) ? $ids : array();
+
+		if ( empty( $ids ) ) {
+			return $ids;
+		}
+
+		/**
+		 * The above will fetch posts based on the meta data regardless of the status of the post, however post
+		 * under the status of `trash` or `auto-draft` shouldn't be in the list.
+		 */
+		$query = $wpdb->prepare(
+			"SELECT DISTINCT(ID) 
+				FROM {$wpdb->posts}
+				WHERE post_status != 'auto-draft' 
+				AND post_status != 'trash'
+				AND ID IN (%s)
+				",
+			implode( ',', $ids )
+		);
+
+		$ids = $wpdb->get_col( $query );
 		$ids = is_array( $ids ) ? $ids : array();
 
 		return $ids;
@@ -104,7 +125,8 @@ abstract class Tribe__Tickets__Cache__Abstract_Cache implements Tribe__Tickets__
 
 		$query = "SELECT DISTINCT(ID) FROM {$wpdb->posts}
 				WHERE post_type IN {$post_types}
-				AND post_status != 'auto-draft'";
+				AND post_status != 'auto-draft'
+				AND post_status != 'trash'";
 
 		$posts_with_tickets = $this->posts_with_ticket_types( null, true );
 
