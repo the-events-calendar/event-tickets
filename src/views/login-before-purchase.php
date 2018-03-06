@@ -7,7 +7,7 @@
  *
  *     [your-theme]/tribe-events/login-before-purchase.php
  *
- * @version TBD
+ * @version 4.7
  */
 
 $login_url          = Tribe__Tickets__Tickets::get_login_url();
