@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c95e03eadeb872145dc93f32527c068",
+    "content-hash": "85391c8bc40264218d990fe82424b6ca",
     "packages": [],
     "packages-dev": [
         {
@@ -1410,16 +1410,16 @@
         },
         {
             "name": "lucatume/wp-browser",
-            "version": "1.22.7",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lucatume/wp-browser.git",
-                "reference": "1a0d9ad12548dcda63aeb51796552429feae6595"
+                "reference": "cc7f6ae6cd404ec909ba93fcc00f929a3dd68fb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/1a0d9ad12548dcda63aeb51796552429feae6595",
-                "reference": "1a0d9ad12548dcda63aeb51796552429feae6595",
+                "url": "https://api.github.com/repos/lucatume/wp-browser/zipball/cc7f6ae6cd404ec909ba93fcc00f929a3dd68fb2",
+                "reference": "cc7f6ae6cd404ec909ba93fcc00f929a3dd68fb2",
                 "shasum": ""
             },
             "require": {
@@ -1429,7 +1429,8 @@
                 "gumlet/php-image-resize": "^1.6",
                 "lucatume/codeception-setup-local": "~1.0",
                 "lucatume/wp-browser-commons": "^1.2.5",
-                "symfony/process": ">=2.7 <5.0",
+                "php": "^7.0",
+                "symfony/process": ">=2.7 <5.0, !=3.4.5",
                 "wp-cli/wp-cli": "^1.1"
             },
             "require-dev": {
@@ -1449,8 +1450,7 @@
                     "tad\\": "src\\tad"
                 },
                 "files": [
-                    "src/tad/WPBrowser/functions.php",
-                    "shims.php"
+                    "src/tad/WPBrowser/functions.php"
                 ]
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -1471,7 +1471,7 @@
                 "codeception",
                 "wordpress"
             ],
-            "time": "2018-02-27T14:27:56+00:00"
+            "time": "2018-03-03T13:10:39+00:00"
         },
         {
             "name": "lucatume/wp-browser-commons",
