@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
-* Fix - Make sure the ticket / unticked events does not count events under `trash` [92236]
+* Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
 
 = [4.6.3.1] 2018-02-26 =
 
