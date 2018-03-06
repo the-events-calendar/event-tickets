@@ -489,7 +489,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				continue;
 			}
 
-			$has_tickets &= $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
+			$has_tickets |= $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
 		}
 
 		$order_id = $attendee_details['order_id'];
