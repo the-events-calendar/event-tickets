@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tpp-success.php
  *
  * @package TribeEventsCalendar
- * @version TBD
+ * @version 4.7
  *
  * @var bool    $is_just_visiting Whether the current user might just have stumbled on the page or not.
  * @var bool    $order_is_valid Whether the current order is a valid one or not.
