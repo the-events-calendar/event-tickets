@@ -6,6 +6,7 @@ $available     = $ticket->available();
 $capacity      = $ticket->capacity();
 $stock         = $ticket->stock();
 $needs_warning = false;
+$stk_warning = false;
 $mode          = $ticket->global_stock_mode();
 $event         = $ticket->get_event();
 
@@ -26,8 +27,18 @@ if (
 	if ( $shared_stock->is_enabled() && (int) $stock >= (int) $shared_stock->get_stock_level() ) {
 		$needs_warning = false;
 	}
+
+
 }
 
+if (
+	'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket->provider_class
+	&& 'own' === $mode
+) {
+	$product = wc_get_product( $ticket->ID );
+	$manage_stock = $product->get_manage_stock();
+	$stk_warning = $manage_stock ? false : true;
+}
 ?>
 <tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
 	<td class="column-primary ticket_name <?php echo esc_attr( $provider ); ?>" data-label="<?php esc_html_e( 'Ticket Type:', 'event-tickets' ); ?>">
@@ -87,7 +98,9 @@ if (
 		<?php if ( $needs_warning ) : ?>
 			<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'The number of Complete ticket sales does not match the number of attendees. Please check the Attendees list and adjust ticket stock in WooCommerce as needed.', 'event-tickets' ) ?>"></span>
 		<?php endif; ?>
-
+		<?php if ( $stk_warning ) : ?>
+			<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'Stock management is disabled. Enable it on the Woocommerce product\'s inventory settings.', 'event-tickets' ) ?>"></span>
+		<?php endif; ?>
 		<?php tribe_tickets_get_readable_amount( $available, $mode, true ); ?>
 	</td>
 
