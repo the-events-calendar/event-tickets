@@ -213,12 +213,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $attendee_user_id = '_tribe_tickets_attendee_user_id';
-		/**
-		 * Name of the CPT that holds Attendees (tickets holders).
-		 *
-		 * @var string
-		 */
-		public $attendee_object = '';
 
 		/**
 		 * Name of the CPT that holds Orders
@@ -226,25 +220,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $order_object = '';
 
 		/**
-		 * Meta key that relates Attendees and Events.
-		 *
-		 * @var string
-		 */
-		public $attendee_event_key = '';
-
-		/**
 		 * Meta key that relates Attendees and Products.
 		 *
 		 * @var string
 		 */
 		public $attendee_product_key = '';
-
-		/**
-		 * Currently unused for this provider, but defined per the Tribe__Tickets__Tickets spec.
-		 *
-		 * @var string
-		 */
-		public $attendee_order_key = '';
 
 		/**
 		 * Indicates if a ticket for this attendee was sent out via email.
@@ -674,10 +654,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param $qr true if from QR checkin process
 		 * @return mixed
 		 */
-		public function checkin( $attendee_id, $qr = false ) {
+		public function checkin( $attendee_id ) {
 			update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
-			if ( $qr ) {
+			$args = func_get_args();
+			$qr = null;
+
+			if ( isset( $args[1] ) && $qr = (bool) $args[1] ) {
 				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 			}
 
@@ -1935,18 +1918,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			tribe_tickets_update_capacity( $ticket, $data['capacity'] );
-		}
-
-		/**
-		 * Generates the validation code that will be printed in the ticket.
-		 * It purpose is to be used to validate the ticket at the door of an event.
-		 *
-		 * @param int $attendee_id
-		 *
-		 * @return string
-		 */
-		public function generate_security_code( $attendee_id ) {
-			return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
 		}
 
 		/**
