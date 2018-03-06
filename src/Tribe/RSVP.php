@@ -1451,7 +1451,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return bool
 	 */
-	public function checkin( $attendee_id, $qr = null ) {
+	public function checkin( $attendee_id ) {
 		$qr = null;
 
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
@@ -1904,5 +1904,20 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		return (int) $_POST[ "quantity_{$product_id}" ];
+	}
+
+	/**
+	 * Generates the validation code that will be printed in the ticket.
+	 *
+	 * Its purpose is to be used to validate the ticket at the door of an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id
+	 *
+	 * @return string
+	 */
+	private function generate_security_code( $attendee_id ) {
+		return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
 	}
 }
