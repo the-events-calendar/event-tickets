@@ -213,12 +213,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $attendee_user_id = '_tribe_tickets_attendee_user_id';
-		/**
-		 * Name of the CPT that holds Attendees (tickets holders).
-		 *
-		 * @var string
-		 */
-		public $attendee_object = '';
 
 		/**
 		 * Name of the CPT that holds Orders
@@ -226,25 +220,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $order_object = '';
 
 		/**
-		 * Meta key that relates Attendees and Events.
-		 *
-		 * @var string
-		 */
-		public $attendee_event_key = '';
-
-		/**
 		 * Meta key that relates Attendees and Products.
 		 *
 		 * @var string
 		 */
 		public $attendee_product_key = '';
-
-		/**
-		 * Currently unused for this provider, but defined per the Tribe__Tickets__Tickets spec.
-		 *
-		 * @var string
-		 */
-		public $attendee_order_key = '';
 
 		/**
 		 * Indicates if a ticket for this attendee was sent out via email.
