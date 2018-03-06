@@ -674,10 +674,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param $qr true if from QR checkin process
 		 * @return mixed
 		 */
-		public function checkin( $attendee_id, $qr = false ) {
+		public function checkin( $attendee_id ) {
 			update_post_meta( $attendee_id, $this->checkin_key, 1 );
 
-			if ( $qr ) {
+			$args = func_get_args();
+			$qr = null;
+
+			if ( isset( $args[1] ) && $qr = (bool) $args[1] ) {
 				update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 			}
 

@@ -1451,7 +1451,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return bool
 	 */
-	public function checkin( $attendee_id, $qr = null ) {
+	public function checkin( $attendee_id ) {
 		$qr = null;
 
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
