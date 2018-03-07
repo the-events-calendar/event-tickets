@@ -151,6 +151,21 @@ class Tribe__Tickets__Tickets_View {
 		return $vars;
 	}
 
+
+	/**
+	 * Sort Attendee by Order Status to Process Not Going First
+	 *
+	 * @since TBD
+	 *
+	 * @param $a array an array of ticket id and status
+	 * @param $b array an array of ticket id and status
+	 *
+	 * @return int
+	 */
+	public function sort_attendees( $a, $b ) {
+		return strcmp( $a['order_status'], $b['order_status'] );
+	}
+
 	/**
 	 * Update the RSVP and Tickets values for each Attendee
 	 */
@@ -169,6 +184,14 @@ class Tribe__Tickets__Tickets_View {
 
 		$post_id = get_the_ID();
 		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : array();
+
+		/**
+		 * sort list to handle all not attending first
+		 *
+		 * switch to the following once WordPress 4.7 is minimum supported:
+		 * $attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
+		 */
+		uasort($attendees, array($this, 'sort_attendees'));
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**
