@@ -233,6 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [M18.05] TBD =
+
+* Tweak - Unified upsell messages in the Ticket settings tab [100736]
+
 = [TBD] TBD =
 
 * Tweak - allow pagination and screen options on the Attendees list [64516]
