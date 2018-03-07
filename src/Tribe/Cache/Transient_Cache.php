@@ -16,7 +16,7 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 */
 	public function reset_all( $post_id = 0 ) {
 		$post_types = array( 'post' );
-		$screen = get_current_screen();
+		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 
 		if ( $post_id ) {
 			$post_types = array( get_post_type( $post_id ) );
