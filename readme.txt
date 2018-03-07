@@ -240,6 +240,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.6.3.1] 2018-02-26 =
 
 * Fix - Remove PHP warnings during CSV generation of the attendees [94293]
+* Tweak - Event tickets slug are just 2 variants instead of 3 different types [88569]
 
 = [4.6.3] 2018-01-10 =
 
