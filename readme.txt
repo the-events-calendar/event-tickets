@@ -236,11 +236,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [M18.05] TBD =
 
 * Fix - Allow access when visiting the attendees list on venue or organizer post type (props to Antonio Jose in our forums for flagging this problem) [90062]
+* Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 
 = [4.6.3.1] 2018-02-26 =
 
-* Fix - Remove PHP warnings during CSV generation of the attendees [94293]
-* Tweak - Event tickets slug are just 2 variants instead of 3 different types [88569]
+* Fix - Remove PHP warnings during CSV generation of the attendees [94293]]
 
 = [4.6.3] 2018-01-10 =
 
