@@ -235,7 +235,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
-
+* Fix - Allow access when visiting the attendees list on venue or organizer post type (props to Antonio Jose in our forums for flagging this problem) [90062]
 
 = [4.6.3.1] 2018-02-26 =
 
