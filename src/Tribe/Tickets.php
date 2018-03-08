@@ -224,7 +224,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		public $attendee_product_key = '_tribe_eddticket_product';
+		public $attendee_product_key = '';
 
 		/**
 		 * Indicates if a ticket for this attendee was sent out via email.
