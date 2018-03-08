@@ -366,6 +366,8 @@ class Tribe__Tickets__Main {
 		// Load our assets
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
+
+		add_action( 'admin_init', array( $this, 'run_updates' ), 10, 0 );
 	}
 
 	/**
@@ -725,5 +727,22 @@ class Tribe__Tickets__Main {
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
 		<?php
+	}
+
+	/**
+	 * Make necessary database updates on admin_init
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function run_updates() {
+		if ( ! class_exists( 'Tribe__Events__Updater' ) ) {
+			return; // core needs to be updated for compatibility
+		}
+
+		$updater = new Tribe__Tickets__Updater( self::VERSION );
+		if ( $updater->update_required() ) {
+			$updater->do_updates();
+		}
 	}
 }
