@@ -118,11 +118,10 @@ $cart_url       = '';
 			/**
 			 * Allows injection of HTML after an Tribe Commerce ticket table row
 			 *
-			 * @var Event ID
-			 * @var Tribe__Tickets__Ticket_Object
+			 * @var WP_Post $post The post object the ticket is attached to.
+			 * @var Tribe__Tickets__Ticket_Object $ticket
 			 */
 			do_action( 'event_tickets_tpp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
-
 		}
 
 		$is_there_any_message_to_show = ! is_user_logged_in() && ( $must_login || $can_login );
