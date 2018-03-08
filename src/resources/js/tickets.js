@@ -208,9 +208,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( window ).on( 'beforeunload.tribe', obj.beforeUnload );
 		} else {
 			$( window ).off( 'beforeunload.tribe' );
-
-			//trigger dependencies for messages on load of base panel
-			$document.trigger( 'tribe.dependencies-run' );
 		}
 	}
 
