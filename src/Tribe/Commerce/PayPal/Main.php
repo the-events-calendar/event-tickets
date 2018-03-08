@@ -680,8 +680,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		// @TODO: figure out how to handle optout
-		$attendee_optout = empty( $transaction_data['optout'] ) ? false : (bool) $transaction_data['optout'];
+		/**
+		 * This is an array of tickets IDs for which the user decided to opt-out.
+		 *
+		 * @see \Tribe__Tickets_Plus__Commerce__PayPal__Attendees::register_optout_choice()
+		 */
+		$attendee_optouts = Tribe__Utils__Array::list_to_array( Tribe__Utils__Array::get( $custom, 'oo', array() ), ',' );
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
 			$this->redirect_after_error( 101, $redirect, $post_id );
@@ -823,9 +827,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				if ( ! $updating_attendee ) {
 					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
-					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
+					update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $post_id );
 					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 					update_post_meta( $attendee_id, $this->order_key, $order_id );
+					$attendee_optout = Tribe__Utils__Array::get( $attendee_optouts, $product_id, false );
 					update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
 					update_post_meta( $attendee_id, $this->email, $attendee_email );
 					update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
@@ -1769,7 +1774,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$args = array(
 			'post_type' => 'tribe_events',
 			'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
-			'event_id' => get_post_meta( $post_id, '_tribe_tpp_event', true ),
+			'event_id' => get_post_meta( $post_id, self::ATTENDEE_EVENT_KEY, true ),
 		);
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
