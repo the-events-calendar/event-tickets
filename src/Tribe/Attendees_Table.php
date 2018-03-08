@@ -39,10 +39,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$this->per_page_option = Tribe__Tickets__Admin__Screen_Options__Attendees::$per_page_user_option;
 
-		$screen->add_option( 'per_page', array(
-			'label'  => __( 'Number of attendees per page:', 'event-tickets' ),
-			'option' => $this->per_page_option,
-		) );
+		if ( ! is_null( $screen ) ) {
+			$screen->add_option( 'per_page', array(
+				'label'  => __( 'Number of attendees per page:', 'event-tickets' ),
+				'option' => $this->per_page_option,
+			) );
+		}
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
