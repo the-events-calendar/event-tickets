@@ -237,11 +237,12 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 * Fix - Allow access when visiting the attendees list on venue or organizer post type (props to Antonio Jose in our forums for flagging this problem) [90062]
 * Fix - Add warning if a ticket has stock management turned off in the related WooCommerce product, but has capacity enabled for the ticket(thanks Isaiah Baker and others for highlighting this) [91471]
+* Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 * Feature - Add updater class to enable changes on future updates [84675]
 
 = [4.6.3.1] 2018-02-26 =
 
-* Fix - Remove PHP warnings during CSV generation of the attendees [94293]
+* Fix - Remove PHP warnings during CSV generation of the attendees [94293]]
 
 = [4.6.3] 2018-01-10 =
 
