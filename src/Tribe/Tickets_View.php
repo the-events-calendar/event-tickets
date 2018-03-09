@@ -191,7 +191,7 @@ class Tribe__Tickets__Tickets_View {
 		 * switch to the following once WordPress 4.7 is minimum supported:
 		 * $attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
 		 */
-		uasort($attendees, array($this, 'sort_attendees'));
+		uasort( $attendees, array( $this, 'sort_attendees' ) );
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**
