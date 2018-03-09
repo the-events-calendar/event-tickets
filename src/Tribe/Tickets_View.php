@@ -186,7 +186,7 @@ class Tribe__Tickets__Tickets_View {
 		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : array();
 
 		/**
-		 * sort list to handle all not attending first
+		 * Sort list to handle all not attending first
 		 *
 		 * switch to the following once WordPress 4.7 is minimum supported:
 		 * $attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
