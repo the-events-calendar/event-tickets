@@ -742,7 +742,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attachments = apply_filters( 'tribe_rsvp_email_attachments', array(), $event_id, $order_id );
 
 		/**
-		 * Filters the RSVP tickets email recepient
+		 * Filters the RSVP tickets email recipient
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
 		 *

@@ -235,10 +235,12 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
+* Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
 * Fix - On reload of base panel of the ticket editor trigger relevant messages [95098]
 * Fix - Allow access when visiting the attendees list on venue or organizer post type (props to Antonio Jose in our forums for flagging this problem) [90062]
 * Fix - Prevent an rsvp to be changed from not going to going if it would go beyond capacity [100165]
 * Fix - Add warning if a ticket has stock management turned off in the related WooCommerce product, but has capacity enabled for the ticket(thanks Isaiah Baker and others for highlighting this) [91471]
+* Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 * Feature - Add updater class to enable changes on future updates [84675]
 
