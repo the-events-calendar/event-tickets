@@ -15,7 +15,7 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @version 4.6.1
+ * @version 4.7
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
