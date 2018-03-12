@@ -188,10 +188,13 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * Sort list to handle all not attending first
 		 *
-		 * switch to the following once WordPress 4.7 is minimum supported:
-		 * $attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
+		 * @todo switch to only wp_list_sort once WordPress 4.7 is minimum supported version
 		 */
-		uasort( $attendees, array( $this, 'sort_attendees' ) );
+		if ( function_exists( 'wp_list_sort' ) ) {
+			$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
+		} else {
+			uasort( $attendees, array( $this, 'sort_attendees' ) );
+		}
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**

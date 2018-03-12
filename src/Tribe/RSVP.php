@@ -404,7 +404,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		//check if changing status will cause rsvp to go over capacity
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
-		if ( 'yes' === $attendee_order_status && 'no' === $previous_order_status ) {
+		if ( tribe_is_truthy( $attendee_order_status ) && 'no' === $previous_order_status ) {
 			$capacity = tribe_tickets_get_capacity( $product_id );
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 			if ( $sales + 1 > $capacity ) {
