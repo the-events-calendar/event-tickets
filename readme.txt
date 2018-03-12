@@ -233,9 +233,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [TBD] TBD =
+= [4.7] 2018-03-13 =
 
 * Tweak - allow pagination and screen options on the Attendees list [64516]
+* Language - 172 new strings added, 179 updated, 6 fuzzied, and 2 obsoleted
 
 = [4.6.3.1] 2018-02-26 =
 
