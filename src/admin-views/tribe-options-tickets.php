@@ -3,7 +3,7 @@
 /**
  * Filter to allow users to add/alter ignored post types
  *
- * @since TBD
+ * @since 4.7
  */
 $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_list', array(
 	'attachment',

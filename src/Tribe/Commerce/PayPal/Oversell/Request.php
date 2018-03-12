@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Oversell__Request
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 
@@ -25,7 +25,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 	/**
 	 * Conditionally handles an oversell request.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function handle() {
 		if ( ! isset( $_GET['tpp_action'], $_GET['tpp_policy'], $_GET['tpp_order_id'], $_GET['tpp_slug'] ) ) {
@@ -88,7 +88,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 	/**
 	 * Filters the policy slug to return the one the user has chosen.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $policy
 	 * @param $post_id
@@ -108,7 +108,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 	/**
 	 * Filters the policy object to wrap it in an oversold attendee handling decorator.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface $policy_object
 	 *
@@ -129,7 +129,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Request {
 	/**
 	 * Filters the `tribe_exit` function to avoid redirection in mid-process.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */

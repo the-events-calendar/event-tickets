@@ -68,7 +68,7 @@ class Tribe__Tickets__Admin__Screen_Options__Attendees {
 	/**
 	 * Filters the save operations of screen options to save the ones the class manages.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param bool $status Whether the option should be saved or not.
 	 * @param string $option The user option slug.

@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Stati
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Stati {
 
@@ -52,7 +52,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * Casts a payment status to one handled and recognized.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $payment_status
 	 */
@@ -73,7 +73,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * Validates a PayPal payment status.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $payment_status
 	 *
@@ -89,7 +89,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * Registers the post stati with WordPress.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public static function register_order_stati() {
 		register_post_status( self::$completed, array(
@@ -144,7 +144,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * A transaction might be completed because it successfully completed, because it
 	 * was refunded or denied.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $payment_status
 	 *
@@ -156,7 +156,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 		/**
 		 * Filters the statuses that will mark a PayPal transaction as completed.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array  $statuses
 		 * @param string $payment_status
@@ -169,7 +169,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * Whether a PayPal payment status will mark a transaction as generating revenue or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $payment_status
 	 *
@@ -182,7 +182,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 		 * Filters the statuses that will mark a PayPal transaction as generating
 		 * revenue.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array  $statuses
 		 * @param string $payment_status

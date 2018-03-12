@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Endpoints
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Endpoints {
 
 	/**
 	 * Hooks the actions and filters needed by the class to work.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook() {
 		add_action( 'template_redirect', array( $this, 'maybe_redirect' ) );
@@ -41,7 +41,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints {
 	/**
 	 * Returns the full URL to the success endpoint.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $order   The order alphanumeric string.
 	 * @param int    $post_id The ID of the post tickets were purchased from.

@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Screen_Options
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Screen_Options {
 
@@ -15,7 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Screen_Options {
 	/**
 	 * Hooks the actions and filters required by the class
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook() {
 		add_filter( 'set-screen-option', array( $this, 'filter_set_screen_options' ), 10, 3 );
@@ -24,7 +24,7 @@ class Tribe__Tickets__Commerce__PayPal__Screen_Options {
 	/**
 	 * Filters the save operations of screen options to save the ones the class manages.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param bool   $status Whether the option should be saved or not.
 	 * @param string $option The user option slug.

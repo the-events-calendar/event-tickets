@@ -197,7 +197,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Generates an Order ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -1709,7 +1709,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Generates a number of attendees for an RSVP ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $product_id The ticket post ID.
 	 * @param int $ticket_qty The number of attendees that should be generated.
@@ -1891,7 +1891,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Parses the quantity of tickets requested for a product via the $_POST var.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $product_id A product post ID
 	 *
@@ -1911,7 +1911,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * Its purpose is to be used to validate the ticket at the door of an event.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $attendee_id
 	 *

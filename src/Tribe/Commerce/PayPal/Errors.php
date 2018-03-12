@@ -5,14 +5,14 @@
  *
  * An information repository for errors.
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Errors {
 
 	/**
 	 * Casts a numeric error code related to PayPal tickets to a localized string.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string|int $error_code
 	 *
@@ -37,7 +37,7 @@ class Tribe__Tickets__Commerce__PayPal__Errors {
 		/**
 		 * Allows filtering the errors map.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array      $map        An associative array in the shape [ <error-code> => <error-message> ]
 		 * @param int|string $error_code The current error code.

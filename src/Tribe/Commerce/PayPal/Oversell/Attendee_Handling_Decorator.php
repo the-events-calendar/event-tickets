@@ -5,7 +5,7 @@
  *
  * Decorates an oversell policy object to handle oversold attendees.
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator implements Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 
@@ -17,7 +17,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param \Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface $policy
 	 */
@@ -28,7 +28,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	/**
 	 * Whether this policy allows overselling or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -40,7 +40,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	 * Modifies the quantity of tickets that can actually be over-sold according to
 	 * this policy.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $qty       The requested quantity
 	 * @param int $inventory The current inventory value
@@ -54,7 +54,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	/**
 	 * Returns the policy post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -65,7 +65,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	/**
 	 * Returns the policy PayPal Order ID (hash).
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -76,7 +76,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	/**
 	 * Returns the policy ticket post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -87,7 +87,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	/**
 	 * Returns the policy nice name.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -98,7 +98,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 	/**
 	 * Handles existing oversold attendees generated from an oversell.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $oversold_attendees
 	 */

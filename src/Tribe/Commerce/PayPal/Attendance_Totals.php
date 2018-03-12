@@ -19,7 +19,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * Calculate totals for the current event.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	protected function calculate_totals() {
 		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $this->event_id ) as $ticket ) {
@@ -37,7 +37,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * Indicates if the ticket should be factored into our sales counts.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -53,7 +53,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		 * By default, tickets belonging to the Tribe__Tickets__RSVP provider
 		 * are not to be counted.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param bool $should_count
 		 * @param Tribe__Tickets__Ticket_Object $ticket
@@ -64,7 +64,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * Prints an HTML (unordered) list of attendance totals.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function print_totals() {
 		$total_sold_label = esc_html_x( 'Total Tickets Sold:', 'attendee summary', 'event-tickets' );
@@ -84,7 +84,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * The total number of tickets sold for this event.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -92,7 +92,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		/**
 		 * Returns the total tickets sold for an event.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int $total_sold
 		 * @param int $original_total_sold
@@ -104,7 +104,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * The total number of tickets pending further action for this event.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -112,7 +112,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		/**
 		 * Returns the total tickets pending further action for an event.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int $total_pending
 		 * @param int $original_total_pending
@@ -124,7 +124,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	/**
 	 * The total number of tickets sold and paid for, for this event.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -132,7 +132,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		/**
 		 * Returns the total tickets sold and paid for, for an event.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int $total_complete
 		 * @param int $original_total_complete

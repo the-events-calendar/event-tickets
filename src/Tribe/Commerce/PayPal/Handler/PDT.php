@@ -5,7 +5,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	/**
 	 * Set up hooks for PDT transaction handling
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook() {
 		add_action( 'template_redirect', array( $this, 'check_response' ) );
@@ -14,7 +14,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	/**
 	 * Checks the request to see if payment data was communicated
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function check_response() {
 		if ( ! isset( $_GET['tx'] ) ) {
@@ -44,7 +44,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	/**
 	 * Validates a PayPal transaction ensuring that it is authentic
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $transaction
 	 *
@@ -57,7 +57,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 		 * Returning a non `null` value in  this will prevent any request for validation to
 		 * the PayPal server from being sent.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param bool        $validated
 		 * @param string|null $transaction The transaction ID (hash) if available; the transaction data
@@ -97,7 +97,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	/**
 	 * Parses flat transaction text
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $transaction
 	 *
@@ -124,7 +124,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__PDT implements Tribe__Tickets__
 	/**
 	 * Returns the configuration status of the handler.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $field Which configuration status field to return, either `slug` or `label`
 	 * @param string  $slug Optionally return the specified field for the specified status.

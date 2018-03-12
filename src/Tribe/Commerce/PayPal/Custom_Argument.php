@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Custom_Argument
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 
@@ -15,7 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 	/**
 	 * Builds a JSON and URL encoded entry usable in PayPal `custom` argument.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $args
 	 *
@@ -41,7 +41,7 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 	/**
 	 * Decodes an array of arguments encoded using the `encode` method.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param      string $encoded
 	 * @param bool        $assoc_array Same as `json_decode` argument; whether the returned value

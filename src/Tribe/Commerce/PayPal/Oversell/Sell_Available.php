@@ -6,14 +6,14 @@
  * This policy allows selling what is available in inventory making a "best effort" toward the
  * fulfillment of the Order.
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Oversell__Sell_Available extends Tribe__Tickets__Commerce__PayPal__Oversell__Policy {
 
 	/**
 	 * Whether this policy allows overselling or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -25,7 +25,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Sell_Available extends Tribe__
 	 * Modifies the quantity of tickets that can actually be over-sold according to
 	 * this policy.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $qty       The requested quantity
 	 * @param int $inventory The current inventory value
@@ -39,7 +39,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Sell_Available extends Tribe__
 	/**
 	 * Returns the policy nice name.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */

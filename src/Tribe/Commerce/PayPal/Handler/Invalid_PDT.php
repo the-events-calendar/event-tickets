@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 
@@ -19,7 +19,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__T
 	/**
 	 * Checks the request to see if payment data was communicated
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function check_response() {
 		//noop
@@ -28,7 +28,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__T
 	/**
 	 * Validates a PayPal transaction ensuring that it is authentic
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $transaction
 	 *
@@ -43,7 +43,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__T
 	/**
 	 * Saves the invalid transaction data to the database.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function save_transaction() {
 		// save the transaction for future reconciliation
@@ -62,7 +62,7 @@ class Tribe__Tickets__Commerce__PayPal__Handler__Invalid_PDT implements Tribe__T
 	/**
 	 * Returns the configuration status of the handler.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $field Which configuration status field to return, either `slug` or `label`
 	 * @param string  $slug Optionally return the specified field for the specified status.

@@ -201,7 +201,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Meta key that contains the user id
 		 *
-		 * @deprecated TBD Use the $attendee_user_id variable instead
+		 * @deprecated 4.7 Use the $attendee_user_id variable instead
 		 *
 		 * @var string
 		 */
@@ -599,7 +599,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Whether a specific attendee is valid toward inventory decrease or not.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $attendee
 		 *
@@ -667,7 +667,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fires a checkin action
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int       $attendee_id
 			 * @param bool|null $qr
@@ -692,7 +692,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Fires an uncheckin action
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int $attendee_id
 			 */
@@ -809,7 +809,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * Returning a falsy value here will force a refetch each time.
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
 			 * @param int $post_id      The ID of the post attendees are being fetched for.
@@ -821,7 +821,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * Returning a falsy value here will force a refetch each time.
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
 			 * @param int $post_id      The ID of the post attendees are being fetched for.
@@ -1825,7 +1825,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Indicates if the user must be logged in in order to obtain tickets.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @return bool
 		 */
@@ -1860,7 +1860,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Adds or updates the capacity for a ticket.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param WP_Post|int $ticket
 		 * @param array       $raw_data
@@ -2136,7 +2136,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get the saved or default ticket provider
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int $event_id - the post id of the event the ticket is attached to.
 		 *

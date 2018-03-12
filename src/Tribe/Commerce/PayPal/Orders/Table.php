@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Orders__Table
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 
@@ -25,7 +25,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Orders__Table constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function __construct() {
 		$args = array(
@@ -51,7 +51,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Checks the current user's permissions
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function ajax_user_can() {
 		$post_type = get_post_type_object( $this->screen->post_type );
@@ -62,7 +62,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Returns the  list of columns.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array An associative array in the format [ <slug> => <title> ]
 	 */
@@ -84,7 +84,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Handler for the columns that don't have a specific column_{name} handler function.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item
 	 * @param $column
@@ -100,7 +100,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Handler for the date column
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item
 	 *
@@ -115,7 +115,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Handler for the purchased column
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item
 	 *
@@ -136,7 +136,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Handler for the order column
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item
 	 *
@@ -172,7 +172,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Handler for the total column
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item
 	 *
@@ -187,7 +187,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Generates content for a single row of the table
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item The current item
 	 */
@@ -200,7 +200,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Prepares the list of items for displaying.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function prepare_items() {
 		$this->post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', 0 ), 0 );
@@ -241,7 +241,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Message to be displayed when there are no items
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function no_items() {
 		_e( 'No matching orders found.', 'event-tickets' );
@@ -250,7 +250,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Returns the customer name.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item The current item.
 	 *
@@ -263,7 +263,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Returns the customer email.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item The current item.
 	 *
@@ -276,7 +276,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Returns the order status.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $item
 	 *
@@ -289,7 +289,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	/**
 	 * Filters the items by a search string.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array  $items  An array of candidate items.
 	 * @param string $search The string to look for
@@ -306,7 +306,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		/**
 		 * Filters the item keys that should be used to filter orders while searching them.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array  $search_keys The keys that should be used to search orders
 		 * @param array  $items       The orders list
@@ -335,7 +335,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 * generate a line total of 0, in the context of this table the line total for
 	 * some statuses should show as not 0.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $statuses
 	 *

@@ -5,14 +5,14 @@
  *
  * A PayPal link repository information.
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Links {
 
 	/**
 	 * Returns the link to the IPN notification history page on PayPal.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $what Either `link` to return the URL or `tag` to return an `a` tag.
 	 *
@@ -39,7 +39,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 	/**
 	 * Returns the link to the IPN notification settings page on PayPal.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $what Either `link` to return the URL or `tag` to return an `a` tag.
 	 *
@@ -67,7 +67,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 	/**
 	 * Returns the link to an Order page on PayPal, based on the Order ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $what Either `link` to return the URL or `tag` to return an `a` tag.
 	 * @param string $order_id The Order PayPal ID (hash).

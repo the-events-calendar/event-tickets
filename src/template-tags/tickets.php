@@ -389,7 +389,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		/**
 		 * Allows filtering the available number that will be displayed.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int                           $available
 		 * @param Tribe__Tickets__Ticket_Object $ticket

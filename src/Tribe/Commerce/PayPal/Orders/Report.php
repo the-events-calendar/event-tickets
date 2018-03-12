@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Orders__Report
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
@@ -32,7 +32,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Returns the link to the "Orders" report for this post.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param WP_Post $post
 	 *
@@ -51,7 +51,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Hooks the actions and filter required by the class.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook() {
 		add_filter( 'post_row_actions', array( $this, 'add_orders_row_action' ), 10, 2 );
@@ -66,7 +66,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Adds order related actions to the available row actions for the post.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $actions
 	 * @param       $post
@@ -108,7 +108,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Renders the tabbed view header before the report.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Attendees $attendees
 	 */
@@ -130,7 +130,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Registers the PayPal orders page as a plugin options page.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function register_orders_page() {
 		$candidate_post_id = Tribe__Utils__Array::get( $_GET, 'post_id', Tribe__Utils__Array::get( $_GET, 'event_id', 0 ) );
@@ -167,7 +167,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Filter the page slugs that the attendee resources will load to add the order page
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $slugs
 	 *
@@ -182,7 +182,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Sets up the attendees page screen.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function attendees_page_screen_setup() {
 		$this->orders_table = new Tribe__Tickets__Commerce__PayPal__Orders__Table();
@@ -194,7 +194,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Sets the browser title for the Orders admin page.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $admin_title
 	 *
@@ -213,7 +213,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	/**
 	 * Renders the order page
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function orders_page_inside() {
 		$post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', 0 ) );

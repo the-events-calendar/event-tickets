@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Admin__Notices
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Admin__Notices {
 
 	/**
 	 * Hooks the actions and filters used by the class
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook() {
 		add_action( 'plugins_loaded', array( $this, 'maybe_display_plus_commerce_notice' ) );
@@ -20,7 +20,7 @@ class Tribe__Tickets__Admin__Notices {
 	 * Display a notice for the user about missing support if ET+ supported commerce providers are active
 	 * but ET+ is not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function maybe_display_plus_commerce_notice() {
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );

@@ -2,7 +2,7 @@
 /**
  * Class Tribe__Tickets__Commerce__Orders_Tabbed_View
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 
@@ -21,7 +21,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	/**
 	 * Renders the tabbed view for the current post.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function render( ) {
 		$post_id = Tribe__Utils__Array::get( $_GET, 'event_id', Tribe__Utils__Array::get( $_GET, 'post_id', false ), false );
@@ -51,7 +51,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 * Note that the tabbed view will not render if only a tab is registered; tabs registered during this action will
 		 * appear right (after) the default ones.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param Tribe__Tabbed_View $tabbed_view The tabbed view that is rendering.
 		 * @param WP_Post            $post        The post orders should be shown for.
@@ -73,7 +73,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 * Note that the tabbed view will not render if only a tab is registered; tabs registered during this action will
 		 * appear left (before) the default ones.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param Tribe__Tabbed_View $tabbed_view The tabbed view that is rendering.
 		 * @param WP_Post            $post        The post orders should be shown for.
@@ -98,7 +98,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	 * Returns the attendee and orders tabbed view tabs to map the tab request slug to
 	 * the registered tabs.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array $tab_map An associative array in the [ <query_var> => <tab_slug> ] format.
 	 *
@@ -110,7 +110,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 		 *
 		 * The map will relate the GET query variable to the registered tab slugs.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $tab_map An associative array in the [ <query_var> => <tab_slug> ] format.
 		 *
@@ -123,7 +123,7 @@ class Tribe__Tickets__Commerce__Orders_Tabbed_View {
 	/**
 	 * Sets the currently active tab slug.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $tab_slug
 	 */

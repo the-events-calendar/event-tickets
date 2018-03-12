@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Oversell__Policy
  *
- * @since TBD
+ * @since 4.7
  */
 abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy implements Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 
@@ -25,7 +25,7 @@ abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy implements Tri
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Oversell__Policy constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int    $post_id
 	 * @param int    $ticket_id
@@ -40,7 +40,7 @@ abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy implements Tri
 	/**
 	 * Returns the policy post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -51,7 +51,7 @@ abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy implements Tri
 	/**
 	 * Returns the policy ticket post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -62,7 +62,7 @@ abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy implements Tri
 	/**
 	 * Returns the policy Order ID (hash).
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -73,7 +73,7 @@ abstract class Tribe__Tickets__Commerce__PayPal__Oversell__Policy implements Tri
 	/**
 	 * Handles surplus attendees generated from an oversell.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $oversold_attendees
 	 */

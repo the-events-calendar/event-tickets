@@ -2,7 +2,7 @@
 /**
  * Filters the boolean value that controls whether a sku is displayed or not
  *
- * @since TBD
+ * @since 4.7
  *
  * @param boolean $display_sku
  */

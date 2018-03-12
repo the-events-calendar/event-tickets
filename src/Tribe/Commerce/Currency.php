@@ -12,7 +12,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Class constructor
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function __construct() {
 		$this->currency_code = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
@@ -22,7 +22,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Hooks the actions and filters required by the class.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook(  ) {
 		add_filter( 'tribe_currency_symbol', array( $this, 'filter_currency_symbol' ), 10, 2 );
@@ -113,7 +113,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Whether the currency's own locale should be used to format the price or not.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param bool             $use_currency_locale If `true` then the currency own locale will override the site one.
 		 * @param string|int|float $cost                The cost to format without the symbol.
@@ -142,7 +142,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Generates the default map and allows for filtering
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @see https://en.wikipedia.org/wiki/Decimal_separator for separators informmation
 	 */
@@ -292,7 +292,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filters the currency code options map.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $default_map An associative array mapping currency codes
 		 *                           to their respective name and symbol.
@@ -303,7 +303,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Creates the array for a currency drop-down using only code & name
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array
 	 */
@@ -316,7 +316,7 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filters the currency code options shown to the user in the settings.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $options
 		 */
@@ -360,7 +360,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Returns the currency symbol depending on the provider.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $provider  The ticket provider class name
 	 * @param int    $object_id The post ID
@@ -386,7 +386,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Returns the cost applying separators from Woo or EDD depends on the provider.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $provider
 	 * @param string $cost
@@ -418,7 +418,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Returns the currency symbol position depending on the provider.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $provider  The ticket provider class name
 	 * @param int    $object_id The post ID
@@ -450,7 +450,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Returns a locale information associated with the current currency or the specified one.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $key
 	 * @param string $currency_code

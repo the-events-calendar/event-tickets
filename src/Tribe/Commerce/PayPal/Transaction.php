@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Transaction
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Transaction {
 
@@ -40,7 +40,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Transaction constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $transaction_id
 	 */
@@ -52,7 +52,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Builds a new instance from data stored in the database or from default data.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $transaction_id
 	 *
@@ -80,7 +80,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Sets the status of the transaction.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $status
 	 */
@@ -91,7 +91,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Gets the status of the transaction.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -102,7 +102,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Sets a data entry on the transaction.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $key
 	 * @param mixed  $value
@@ -114,7 +114,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Returns a data value set on the transaction or a default value.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $key
 	 * @param mixed  $default
@@ -128,7 +128,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Saves the transaction to database.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function save() {
 		$existing = get_option( $this->get_option_name() );
@@ -145,7 +145,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Returns the array representation of the transaction.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array
 	 */
@@ -159,7 +159,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Returns the name of the option used to store the transaction data.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -170,7 +170,7 @@ class Tribe__Tickets__Commerce__PayPal__Transaction {
 	/**
 	 * Returns the transaction ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */

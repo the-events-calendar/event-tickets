@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Notices
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Notices {
 
 	/**
 	 * Triggers the display of the missing PDT identity token notice.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function show_missing_identity_token_notice() {
 		set_transient( $this->slug( 'show-missing-identity-token' ), '1', DAY_IN_SECONDS );
@@ -19,7 +19,7 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	/**
 	 * Hooks the class method to relevant filters and actions.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 */
 	public function hook() {
@@ -34,7 +34,7 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	/**
 	 * Renders (echoes) the missing PDT identity token admin notice.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function render_missing_identity_token_notice() {
 		Tribe__Admin__Notices::instance()->render_paragraph(
@@ -50,7 +50,7 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	/**
 	 * Whether the missing PDT identity token notice should be rendered or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -64,7 +64,7 @@ class Tribe__Tickets__Commerce__PayPal__Notices {
 	/**
 	 * Builds a slug used by the class.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $string
 	 *

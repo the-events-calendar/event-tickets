@@ -2,7 +2,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface
  *
- * @since TBD
+ * @since 4.7
  */
 interface Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface {
 
@@ -14,7 +14,7 @@ interface Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface {
 	/**
 	 * Builds and returns the date needed by this template.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $template_data
 	 */
@@ -23,14 +23,14 @@ interface Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface {
 	/**
 	 * Enqueues the resources needed by this template to correctly render.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function enqueue_resources();
 
 	/**
 	 * Renders and returns the template rendered contents.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $template_data
 	 *

@@ -5,7 +5,7 @@
  *
  * Decorates a policy to add an admin notice functionality.
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator implements Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 
@@ -17,7 +17,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @paramTribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface $instance
 	 */
@@ -28,7 +28,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Whether this policy allows overselling or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -40,7 +40,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	 * Modifies the quantity of tickets that can actually be over-sold according to
 	 * this policy.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $qty       The requested quantity
 	 * @param int $inventory The current inventory value
@@ -56,7 +56,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 		/**
 		 * Filters the default policy that should be used to handle overselling.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param string $default
 		 * @param int    $post_id   The post ID
@@ -75,7 +75,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the embedded styles for the notice.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -94,7 +94,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the notice header HTML.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $qty
 	 * @param int $inventory
@@ -144,7 +144,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the policy post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -172,7 +172,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the policy PayPal Order ID (hash).
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -183,7 +183,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the policy ticket post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -194,7 +194,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the notice options HTML.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $default The default oversell policy that should be used.
 	 *
@@ -252,7 +252,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the notice slug for this decorator.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -275,7 +275,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Returns the policy nice name.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -286,7 +286,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	/**
 	 * Handles surplus attendees generated from an oversell.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $oversold_attendees
 	 *

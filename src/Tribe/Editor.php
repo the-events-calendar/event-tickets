@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Editor
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Editor {
 
 	/**
 	 * Configure all action and filters user by this Class
 	 *
-	 * @since  TBD
+	 * @since  4.7
 	 *
 	 * @return void
 	 */
@@ -25,7 +25,7 @@ class Tribe__Tickets__Editor {
 	/**
 	 * Prints and returns the Price fields
 	 *
-	 * @since  TBD
+	 * @since  4.7
 	 *
 	 * @param  int  $post_id    Post ID
 	 * @param  int  $ticket_id  Ticket ID

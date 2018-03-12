@@ -5,14 +5,14 @@
  *
  * This policy will not allow any oversell.
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Oversell__No_Oversell extends Tribe__Tickets__Commerce__PayPal__Oversell__Policy {
 
 	/**
 	 * Whether this policy allows overselling or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -24,7 +24,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__No_Oversell extends Tribe__Tic
 	 * Modifies the quantity of tickets that can actually be over-sold according to
 	 * this policy.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $qty       The requested quantity
 	 * @param int $inventory The current inventory value
@@ -38,7 +38,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__No_Oversell extends Tribe__Tic
 	/**
 	 * Returns the policy nice name.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */

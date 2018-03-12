@@ -5,7 +5,7 @@
  *
  * Strategy factory for oversell policies.
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 
@@ -31,7 +31,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 	 * Post policy will override the general policy if available; ticket policy will override
 	 * general and post policy if available.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int    $post_id
 	 * @param int    $ticket_id
@@ -53,7 +53,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 		/**
 		 * Filters the oversell policy after the general, post and ticket ones have been taken into account.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param string $policy    The slug of the policy to use.
 		 * @param int    $post_id   The current post ID
@@ -71,7 +71,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 		/**
 		 * Allows filtering the policies map.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array  $map       An associative array in the shape [ <policy-slug> => <class> ]
 		 * @param int    $post_id   The current post ID
@@ -91,7 +91,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 		/**
 		 * Whether overselling should generate an admin notice or not.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param bool   $generate_admin_notice
 		 * @param int    $post_id   The current post ID
@@ -107,7 +107,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Policies {
 		/**
 		 * Filters the oversell policy object before returning it.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface $instance  The policy object.
 		 * @param string                                                       $policy    The slug of the policy to use.

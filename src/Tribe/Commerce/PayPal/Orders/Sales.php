@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Orders__Sales
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 
@@ -15,7 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Orders__Sales constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Cache|null $cache
 	 */
@@ -26,7 +26,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the revenue for a single ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket The ticket object.
 	 *
@@ -38,7 +38,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		/**
 		 * Filters the revenue for a specific ticket.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int                           $revenue The revenue for this ticket.
 		 * @param Tribe__Tickets__Ticket_Object $ticket  The ticket object.
@@ -49,7 +49,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the unfiltered revenue for an ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -62,7 +62,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Whether an attendee has been assigned a completed order status or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $attendee
 	 *
@@ -81,7 +81,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the filtered list of ticket statuses that should be taken into account when calculating revenue.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array
 	 */
@@ -93,7 +93,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		/**
 		 * Filters the list of ticket statuses that should be taken into account when calculating revenue.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param  array $revenue_generating_order_statuses
 		 */
@@ -103,7 +103,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the total revenue provided a list of tickets.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $tickets An array of ticket objects
 	 *
@@ -115,7 +115,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		/**
 		 * Filters the revenue for a list of tickets.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int   $revenue The revenue for these tickets.
 		 * @param array $tickets The tickets objects.
@@ -126,7 +126,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the amount this ticket represents in sales terms.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -138,7 +138,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		/**
 		 * Filters the sales count for an ticket.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int   $sales_count The sales count for this ticket; defaults to `1` per ticket
 		 *                           with a sales generating order status.
@@ -150,7 +150,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the amount of sales for a list of tickets.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $tickets
 	 *
@@ -162,7 +162,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		/**
 		 * Filters the sales for a list of tickets.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int   $sales   The sales for these tickets.
 		 * @param array $tickets The tickets objects.
@@ -173,7 +173,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Filters a list of attendees returning only those with not completed orders.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $attendees The list of attendees to filter.
 	 *
@@ -201,7 +201,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Filters a list of attendees returning only those with completed orders.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $attendees The list of attendees to filter.
 	 *
@@ -218,7 +218,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Filters an array of tickets to return only those that have least one sale.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $tickets
 	 *
@@ -231,7 +231,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Whether the ticket has at least one sale.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -244,7 +244,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the ticket breakdown for the provided tickets.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $tickets
 	 *
@@ -268,7 +268,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns a list of orders for the post.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int   $post_id
 	 * @param array $ticket_ids An optional array of ticket IDs to limit the table items.
@@ -299,7 +299,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the total revenue from completed orders for the ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -312,7 +312,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the total number of completed orders for the ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -325,7 +325,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the total revenue from not completed orders for the ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -338,7 +338,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Returns the total number of not completed orders for the ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -351,7 +351,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Filters the available value to allow coherent value when overselling.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int                            $available
 	 * @param \Tribe__Tickets__Ticket_Object $ticket

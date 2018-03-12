@@ -4,14 +4,14 @@ interface Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 	/**
 	 * Checks the request to see if payment data was communicated
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function check_response();
 
 	/**
 	 * Validates a PayPal transaction ensuring that it is authentic
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $transaction
 	 *
@@ -22,7 +22,7 @@ interface Tribe__Tickets__Commerce__PayPal__Handler__Interface {
 	/**
 	 * Returns the configuration status of the handler.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $field Which configuration status field to return, either `slug` or `label`
 	 * @param string  $slug Optionally return the specified field for the specified status.

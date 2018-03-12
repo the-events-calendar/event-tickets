@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 
 	/**
 	 * Adds the WooCommerce orders tab slug to the tab slug map.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $tab_map
 	 *
@@ -25,7 +25,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	/**
 	 * Registers the PayPal orders tab among those the tabbed view should render.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tabbed_View $tabbed_view
 	 * @param WP_Post            $post
@@ -48,7 +48,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tabbed_View {
 	/**
 	 * Renders the tabbed view for the current post.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function register() {
 		add_filter( 'tribe_tickets_orders_tabbed_view_tab_map', array( $this, 'filter_tribe_tickets_orders_tabbed_view_tab_map' ) );

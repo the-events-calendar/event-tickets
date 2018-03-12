@@ -5,7 +5,7 @@
  *
  * Logic for tribe commerce PayPal tickets
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
@@ -155,7 +155,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @static
 	 * @return Tribe__Tickets__Commerce__PayPal__Main
@@ -167,7 +167,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Class constructor
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function __construct() {
 		$main = Tribe__Tickets__Main::instance();
@@ -204,7 +204,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * This will take into account the enable/disable option and the
 	 * configuration status of the current payment handler (IPN or PDT).
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -214,7 +214,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * Returning a non `null` value in this filter will override the default checks.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param bool                                   $is_active
 		 * @param Tribe__Tickets__Commerce__PayPal__Main $this
@@ -237,7 +237,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Registers the implementations in the container
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function bind_implementations() {
 		// some classes will require an instance of this class as a dependency so we alias it here
@@ -280,7 +280,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Registers all actions/filters
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hooks() {
 		// if the hooks have already been bound, don't do it again
@@ -314,7 +314,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Hooked to the init action
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function init() {
 		$this->register_types();
@@ -323,7 +323,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * registers resources
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function register_resources() {
 		$main = Tribe__Tickets__Main::instance();
@@ -386,7 +386,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Enqueue the plugin admin stylesheet(s) and JS.
 	 *
-	 * @since  TBD
+	 * @since  4.7
 	 */
 	public function enqueue_resources() {
 		$post_types = Tribe__Tickets__Main::instance()->post_types();
@@ -410,7 +410,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Register our custom post type
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function register_types() {
 
@@ -457,7 +457,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filter the arguments that craft the ticket post type.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @see register_post_type
 		 *
@@ -470,7 +470,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filter the arguments that craft the attendee post type.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @see register_post_type
 		 *
@@ -483,7 +483,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filter the arguments that craft the order post type.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @see register_post_type
 		 *
@@ -503,14 +503,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Expects to fire during 'tribe_tickets_attendees_page_inside', ie
 	 * before the attendee screen is rendered.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function setup_attendance_totals() {
 		$this->attendance_totals()->integrate_with_attendee_screen();
 	}
 
 	/**
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return Tribe__Tickets__Commerce__PayPal__Attendance_Totals
 	 */
@@ -529,7 +529,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * (it does not refer to an "order" in the sense of a transaction that may include
 	 * multiple tickets, as is the case in some other methods for instance).
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $data
 	 * @param int   $order_id
@@ -584,7 +584,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * attending, at which point we should send tickets out for any of those
 	 * newly attending persons.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $event_id
 	 */
@@ -612,7 +612,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param string $payment_status The tickets payment status, defaults to completed.
 	 * @param  bool  $redirect       Whether the client should be redirected or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function generate_tickets( $payment_status = 'completed', $redirect = true ) {
 		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
@@ -630,7 +630,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * PayPal Ticket specific action fired just before a PayPalTicket-driven attendee tickets for an order are generated
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $transaction_data PayPal payment data
 		 */
@@ -769,7 +769,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			/**
 			 * PayPal specific action fired just before a PayPal-driven attendee ticket for an event is generated
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int $post_id ID of event
 			 * @param string $ticket_type Ticket Type object for the product
@@ -847,7 +847,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					/**
 					 * Action fired when an PayPal attendee ticket is created
 					 *
-					 * @since TBD
+					 * @since 4.7
 					 *
 					 * @param int    $attendee_id           Attendee post ID
 					 * @param int    $order_id              PayPal Order ID
@@ -866,7 +866,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				 * Hook into the `event_tickets_tpp_attendee_created` action to
 				 * only act on the attendee creation.
 				 *
-				 * @since TBD
+				 * @since 4.7
 				 *
 				 * @param int    $attendee_id           Attendee post ID
 				 * @param int    $order_id              PayPal Order ID
@@ -895,7 +895,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				/**
 				 * Action fired when a PayPal has had attendee tickets generated for it.
 				 *
-				 * @since TBD
+				 * @since 4.7
 				 *
 				 * @param int $product_id PayPal ticket post ID
 				 * @param int $order_id   ID of the PayPal order
@@ -910,7 +910,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 * This will fire even when tickets are initially craeted; if you need to hook on the
 			 * creation process only use the 'event_tickets_tpp_tickets_generated_for_product' action.
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int $product_id PayPal ticket post ID
 			 * @param int $order_id   ID of the PayPal order
@@ -928,7 +928,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Fires when an PayPal attendee tickets have been generated.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int    $order_id              ID of the PayPal order
 		 * @param int    $post_id               ID of the post the order was placed for
@@ -940,7 +940,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * This applies to attendance and non attendance emails.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param bool $send_mail Defaults to `true`.
 		 */
@@ -996,7 +996,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Controls the list of tickets which will be emailed out.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $to_send        list of tickets to be sent out by email
 		 * @param array $all_attendees  list of all attendees/tickets, including those already sent out
@@ -1038,7 +1038,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Saves a ticket
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int                           $post_id
 	 * @param Tribe__Tickets__Ticket_Object $ticket
@@ -1247,7 +1247,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int                           $post_id  Post ID of post the ticket is tied to
 		 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -1259,7 +1259,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Generic action fired after saving a ticket
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param int                           $post_id  Post ID of post the ticket is tied to
 		 * @param Tribe__Tickets__Ticket_Object $ticket   Ticket that was just saved
@@ -1321,7 +1321,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Shows the tickets form in the front end
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $content
 	 *
@@ -1337,7 +1337,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Indicates if we currently require users to be logged in before they can obtain
 	 * tickets.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -1349,7 +1349,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets an individual ticket
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -1411,7 +1411,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			/**
 			 * Filter the default purchase limit for the ticket
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int
 			 *
@@ -1423,7 +1423,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Use this Filter to change any information you want about this ticket
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param object $ticket
 		 * @param int    $post_id
@@ -1438,7 +1438,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Get attendees by id and associated post type
 	 * or default to using $post_id
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param      $post_id
 	 * @param null $post_type
@@ -1486,7 +1486,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get attendees by order id and, optionally, ticket ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $order_id An Order PayPal ID (hash)
 	 * @param int $product_id A ticket post ID
@@ -1543,7 +1543,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *     check_in
 	 *     provider
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $attendees_query
 	 * @param $post_id
@@ -1570,7 +1570,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *     provider
 	 *     provider_slug
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $order_id
 	 * @return array
@@ -1591,7 +1591,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow users to filter the Order Data
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array  $data     An associative array with the Information of the Order
 		 * @param string $provider What Provider is been used
@@ -1606,7 +1606,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Links to sales report for all tickets for this event.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int  $event_id
 	 * @param bool $url_only
@@ -1645,7 +1645,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Links to the sales report for this product.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $event_id
 	 * @param $ticket_id
@@ -1671,7 +1671,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Add the sku field in the admin's new/edit ticket metabox
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $post_id int id of the event post
 	 * @param int $ticket_id (null) id of the ticket
@@ -1704,7 +1704,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id
@@ -1734,7 +1734,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets ticket messages
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array
 	 */
@@ -1745,7 +1745,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Adds a submission message
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param        $message
 	 * @param string $type
@@ -1760,7 +1760,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * the Attendees Report rather than the PayPal Ticket attendees post list (because that's kind of
 	 * confusing)
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $post_id WP_Post ID
 	 */
@@ -1787,7 +1787,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Filters the post_updated_messages array for attendees
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $messages Array of update messages
 	 *
@@ -1842,7 +1842,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Set the tickets view
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Commerce__PayPal__Tickets_View $tickets_view
 	 *
@@ -1855,7 +1855,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get's the product price html
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int|object $product
 	 * @param array $attendee
@@ -1881,7 +1881,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow filtering of the Price HTML
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param string $price_html
 		 * @param mixed  $product
@@ -1894,7 +1894,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Filters the array of statuses that will mark an ticket attendee as eligible for check-in.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $statuses An array of statuses that should mark an ticket attendee as
 	 *                     available for check-in.
@@ -1910,7 +1910,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets the cart URL
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -1921,7 +1921,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets a transaction URL
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param $transaction
 	 *
@@ -1934,7 +1934,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns the value of a key defined by the class.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $key
 	 *
@@ -1961,7 +1961,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns the ID of the post associated with a PayPal order if any.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $order The alphanumeric order identification string.
 	 *
@@ -1991,7 +1991,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns a list of attendees for an order.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $order The alphanumeric order identification string.
 	 *
@@ -2018,7 +2018,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Whether the ticket is a PayPal one or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
@@ -2031,7 +2031,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns a list of attendees grouped by order.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int   $post_id
 	 * @param array $ticket_ids An optional array of ticket IDs to limit the orders by.
@@ -2083,7 +2083,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns the list of PayPal tickets order stati.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array An associative array in the [ <slug> => <label> ] format.
 	 */
@@ -2100,7 +2100,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the list of PayPal tickets order stati.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $order_statuses
 		 *
@@ -2112,7 +2112,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns all the tickets for an event
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $post_id
 	 *
@@ -2139,7 +2139,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Using the method, providers can add as many fields as
 	 * they want, specific to their implementation.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $post_id
 	 * @param int $ticket_id
@@ -2197,7 +2197,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the absolute path to the file containing the metabox capacity HTML.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param string     $file The absolute path to the file containing the metabox capacity HTML
 		 * @param int|string $ticket_capacity
@@ -2213,7 +2213,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Indicates if global stock support is enabled for this provider.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -2230,7 +2230,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Gets the product price value
 	 *
-	 * @since  TBD
+	 * @since  4.7
 	 *
 	 * @param  int|WP_Post $product
 	 *
@@ -2251,7 +2251,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns the number of pending attendees by ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int  $ticket_id The ticket post ID
 	 * @param bool $refresh   Whether to try and use the cached value or not.
@@ -2286,7 +2286,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns all the attendees for a ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -2317,7 +2317,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * then those attendees generated as part of a Pending Order will, for a limited time after the
 	 * order creation, cause the inventory to be decreased.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $attendee
 	 *
@@ -2333,7 +2333,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * If set to `true` then the behaviour chosen in the Settings will apply, if `false`
 		 * only Completed tickets will count to decrease the inventory. This is useful when
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param bool  $ignore_pending
 		 * @param array $attendee An array of data defining the current Attendee
@@ -2357,7 +2357,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 * In the unlikely scenario that an Order goes from Completed to Pending then, if the
 			 * reservation time allows it, a part of the stock will be reserved for it.
 			 *
-			 * @since TBD
+			 * @since 4.7
 			 *
 			 * @param int                                      $pending_stock_reservation_time The amount of seconds, from the Order creation time,
 			 *                                                                                 part of the stock will be reserved for the Order;
@@ -2377,7 +2377,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Increases the sales for a ticket by an amount.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int  $ticket_id The ticket post ID
 	 * @param int  $qty
@@ -2394,7 +2394,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Decreases the sales for a ticket by an amount.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $ticket_id The ticket post ID
 	 * @param int $qty
@@ -2409,7 +2409,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns the data for an attendee.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int|WP_Post $attendee An attendee post object or post ID.
 	 *
@@ -2484,7 +2484,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Allow users to filter the Attendee Data
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array   $attendee_data An associative array with the Information of the Attendee
 		 * @param string  $provider      What Provider is been used
@@ -2499,7 +2499,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns the total number of cancelled tickets.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $ticket_id The ticket post ID.
 	 *
@@ -2537,7 +2537,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Redirects to the source post after a recoverable (logic) error.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int  $error_code The current error code
 	 * @param bool $redirect   Whether to really redirect or not.
@@ -2560,7 +2560,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
      *
      * Its purpose is to be used to validate the ticket at the door of an event.
      *
-     * @since TBD
+     * @since 4.7
      *
      * @param int $attendee_id
      *

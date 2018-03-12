@@ -29,7 +29,7 @@
 						/**
 						 * Provides an action that allows for the injections of fields at the top of the order report details meta ul
 						 *
-						 * @since TBD
+						 * @since 4.7
 						 *
 						 * @var $post_id
 						 */
@@ -38,7 +38,7 @@
 						/**
 						 * Provides an action that allows for the injections of fields at the bottom of the order report details ul
 						 *
-						 * @since TBD
+						 * @since 4.7
 						 *
 						 * @var $event_id
 						 */
@@ -50,7 +50,7 @@
 					/**
 					 * Fires after the event details list (in the context of the  Orders Report admin view).
 					 *
-					 * @since TBD
+					 * @since 4.7
 					 *
 					 * @param WP_Post      $post
 					 * @param bool|WP_User $author

@@ -3,14 +3,14 @@
 /**
  * Interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface
  *
- * @since TBD
+ * @since 4.7
  */
 interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 
 	/**
 	 * Whether this policy allows overselling or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -20,7 +20,7 @@ interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 	 * Modifies the quantity of tickets that can actually be over-sold according to
 	 * this policy.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param int $qty       The requested quantity
 	 * @param int $inventory The current inventory value
@@ -32,7 +32,7 @@ interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 	/**
 	 * Returns the policy post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return int
 	 */
@@ -41,7 +41,7 @@ interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 	/**
 	 * Returns the policy PayPal Order ID (hash).
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -50,7 +50,7 @@ interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 	/**
 	 * Returns the policy ticket post ID.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -59,7 +59,7 @@ interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 	/**
 	 * Returns the policy nice name.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -68,7 +68,7 @@ interface Tribe__Tickets__Commerce__PayPal__Oversell__Policy_Interface {
 	/**
 	 * Handles existing oversold attendees generated from an oversell.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $oversold_attendees
 	 */

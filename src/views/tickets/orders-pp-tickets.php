@@ -79,7 +79,7 @@ $attendee_groups = $view->get_post_attendees_by_purchaser( $post_id, $user_id );
 					/**
 					 * Inject content into an RSVP attendee block on the RVSP orders page
 					 *
-					 * @since TBD
+					 * @since 4.7
 					 *
 					 * @param array $attendee Attendee array
 					 * @param WP_Post $post Post object that the tickets are tied to

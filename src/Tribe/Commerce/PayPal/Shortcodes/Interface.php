@@ -2,14 +2,14 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Shortcodes__Success
  *
- * @since TBD
+ * @since 4.7
  */
 interface Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface {
 
 	/**
 	 * Returns the shortcode tag.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -18,7 +18,7 @@ interface Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface {
 	/**
 	 * Renders the shortcode.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string|array $attributes An array of shortcode attributes.
 	 * @param string       $content    The shortcode content if any.

@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Redirections
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Redirections {
 
 	/**
 	 * Hooks to WordPress events when and if needed.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook() {
 		if ( ! empty( $_GET['tribe_tickets_redirect_to'] ) ) {
@@ -21,7 +21,7 @@ class Tribe__Tickets__Redirections {
 	/**
 	 * Filters the redirection URL after a user registration.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */

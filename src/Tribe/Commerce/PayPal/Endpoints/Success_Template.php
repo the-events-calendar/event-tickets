@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements Tribe__Tickets__Commerce__PayPal__Endpoints__Template_Interface {
 
@@ -22,7 +22,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	/**
 	 * Enqueues the resources needed by this template to correctly render.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function enqueue_resources() {
 		Tribe__Tickets__RSVP::get_instance()->enqueue_resources();
@@ -31,7 +31,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	/**
 	 * Renders and returns the template rendered contents.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $template_data
 	 *
@@ -69,7 +69,7 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 	/**
 	 * Builds and returns the date needed by this template.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $template_data
 	 *

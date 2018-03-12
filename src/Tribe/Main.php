@@ -194,7 +194,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Registers the implementations in the container
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );

@@ -54,7 +54,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Gateway constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Commerce__PayPal__Notices $notices
 	 */
@@ -66,7 +66,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Set up hooks for the gateway
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function hook() {
 		add_action( 'template_redirect', array( $this, 'add_to_cart' ) );
@@ -75,7 +75,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Handles adding tickets to cart
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function add_to_cart() {
 		global $post;
@@ -103,7 +103,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 * The `notify_url` argument is an IPN only argument specifying the URL PayPal should
 		 * use to POST the payment information.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @see  \Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
 		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
@@ -119,7 +119,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters the custom arguments that will be sent ot PayPal.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array   $custom_args
 		 * @param WP_Post $post        The post tickets are associated with
@@ -195,7 +195,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters the arguments passed to PayPal while adding items to the cart
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array   $args
 		 * @param array   $data POST data from buy now submission
@@ -212,7 +212,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Parses PayPal transaction data into a more organized structure
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
 	 *
@@ -284,7 +284,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Sets transaction data from PayPal as a class property
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $data An array of parsed transaction data.
 	 *
@@ -295,7 +295,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters the transaction data as it is being set
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $data
 		 */
@@ -305,7 +305,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Gets PayPal transaction data
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $data
 	 */
@@ -313,7 +313,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters the transaction data as it is being retrieved
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array $transaction_data
 		 */
@@ -323,7 +323,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Gets the full PayPal product name
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket whose name is being generated
 	 * @param WP_Post $post Post that the tickets are attached to
@@ -339,7 +339,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters the product name for PayPal's cart
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param string $product_name
 		 * @param Tribe__Tickets__Ticket_Object
@@ -350,7 +350,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Sets an invoice number (generating it if one doesn't exist) in the cookies.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string The invoice alpha-numeric identifier
 	 */
@@ -366,7 +366,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Purges an invoice cookie
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function reset_invoice_number() {
 		if ( empty( $_COOKIE[ self::$invoice_cookie_name ] ) ) {
@@ -380,7 +380,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the PayPal cart URL
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $path An optional path to append to the URL
 	 *
@@ -397,7 +397,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the PyaPal base URL
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $path An optional path to append to the URL
 	 *
@@ -414,7 +414,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the PayPal URL to a transaction details.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $transaction The transaction alpha-numeric identifier
 	 *
@@ -427,7 +427,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Builds the correct handler depending on the request type and options.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return Tribe__Tickets__Commerce__PayPal__Handler__Interface The handler instance.
 	 */
@@ -457,7 +457,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the invoice number reading it from the cookie or generating a new one.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -479,7 +479,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the slug of the default payment handler.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -487,7 +487,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters which PayPal payment method should be used.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param string $handler One of `pdt` or `ipn`
 		 */
@@ -501,7 +501,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the URL to the PayPal Settings page.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param string $path
 	 *
@@ -516,7 +516,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 *
 	 * Will default to the `home_url` if the Success page is not set or wrong.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -537,7 +537,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Sets the raw transaction data.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param array $data
 	 */
@@ -548,7 +548,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the raw transaction data.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return array
 	 */

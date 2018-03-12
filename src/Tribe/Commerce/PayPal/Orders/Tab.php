@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Orders__Tab
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Orders__Tab extends Tribe__Tabbed_View__Tab {
 	/**
@@ -14,7 +14,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tab extends Tribe__Tabbed_View__
 	/**
 	 * Returns this tab slug.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */
@@ -25,7 +25,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Tab extends Tribe__Tabbed_View__
 	/**
 	 * Returns this tab label
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return string
 	 */

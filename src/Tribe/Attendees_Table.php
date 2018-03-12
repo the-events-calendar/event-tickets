@@ -775,7 +775,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Message to be displayed when there are no items
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function no_items() {
 		_e( 'No matching attendees found.', 'event-tickets' );
@@ -784,7 +784,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Filters the attendees by a search string if available.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param       string $search The string to filter attendees by.
 	 * @param array        $items  The attendees list.
@@ -801,7 +801,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filters the item keys that should be used to filter attendees while searching them.
 		 *
-		 * @since TBD
+		 * @since 4.7
 		 *
 		 * @param array  $search_keys The keys that should be used to search attendees
 		 * @param array  $items       The attendees list

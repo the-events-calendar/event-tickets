@@ -134,7 +134,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Whether we are currently editing or creating a ticket-able post.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return bool
 	 */
@@ -148,7 +148,7 @@ class Tribe__Tickets__Assets {
 	/**
 	 * Enqueues scripts and styles that might be needed in the post editor area.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 */
 	public function enqueue_editor_scripts() {
 		if ( $this->is_editing_ticketable_post() ) {

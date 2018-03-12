@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form
  *
- * @since TBD
+ * @since 4.7
  */
 class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 
@@ -22,7 +22,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	/**
 	 * Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param \Tribe__Tickets__Commerce__PayPal__Main $main
 	 */
@@ -33,7 +33,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	/**
 	 * Modifies the passed content to inject the front-end tickets form.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @return void The method will echo in the context of a buffered output.
 	 *
@@ -112,7 +112,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	/**
 	 * Sets whether the form rendered already or not.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param bool $has_rendered
 	 */
@@ -123,7 +123,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	/**
 	 * A utility method to filter the list of tickets by their currently available status.
 	 *
-	 * @since TBD
+	 * @since 4.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
