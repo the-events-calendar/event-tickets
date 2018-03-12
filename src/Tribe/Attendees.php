@@ -369,11 +369,12 @@ class Tribe__Tickets__Attendees {
 			iframe_header();
 
 			// Check if we need to send an Email!
+			$status = false;
 			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) {
-				$this->send_mail_list();
+				$status = $this->send_mail_list();
 			}
 
-			tribe( 'tickets.admin.views' )->template( 'attendees-email' );
+			tribe( 'tickets.admin.views' )->template( 'attendees-email', array( 'status' => $status ) );
 
 			// Use iFrame Footer -- WP Method
 			iframe_footer();
