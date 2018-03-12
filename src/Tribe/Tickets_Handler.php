@@ -91,7 +91,6 @@ class Tribe__Tickets__Tickets_Handler {
 		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
 
 		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
-		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
 	}
 
 	/**
@@ -226,6 +225,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 * Updates the Start date of all non-modified tickets when an Ticket supported Post is saved
 	 *
 	 * @since  4.6
+	 * @deprecated TBD
 	 *
 	 * @param  int      $post_id  Which post we are updating here
 	 * @param  WP_Post  $post     Object of the current post updating
@@ -245,7 +245,7 @@ class Tribe__Tickets__Tickets_Handler {
 		}
 
 		$update_meta = $this->key_start_date;
-		$tickets = $this->get_tickets_ids( $post_id );
+		$tickets     = $this->get_tickets_ids( $post_id );
 
 		foreach ( $tickets as $ticket ) {
 			// Skip tickets with manual updates to that meta
