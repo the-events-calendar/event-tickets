@@ -10,8 +10,8 @@
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
   "require-dev": {
-    "lucatume/wp-browser": "~1.6",
-    "lucatume/function-mocker": "^1.0"
+    "lucatume/wp-browser": "1.22.7.1",
+    "lucatume/function-mocker": "1.3.7"
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
