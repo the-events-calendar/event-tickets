@@ -554,14 +554,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
-	 * @deprecated use process_actions()
-	 */
-	public function process_bulk_actions() {
-		_deprecated_function( __FUNCTION__, '4.3', __CLASS__ . '::process_actions()' );
-		$this->process_actions();
-	}
-
-	/**
 	 * Handler for the different bulk actions
 	 */
 	public function process_actions() {

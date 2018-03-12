@@ -204,17 +204,6 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Method to initialize Common Object
-	 *
-	 * @deprecated 4.3.4
-	 *
-	 * @return Tribe__Main
-	 */
-	public function common() {
-		return Tribe__Main::instance( $this );
-	}
-
-	/**
 	 * Registers this plugin as being active for other tribe plugins and extensions
 	 *
 	 * @return bool Indicates if Tribe Common wants the plugin to run
@@ -379,29 +368,6 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
-	}
-
-	/**
-	 * Add an Anchor for users to be able to link to
-	 * The height is to make sure it links on all browsers
-	 *
-	 * @deprecated 4.4.8
-	 *
-	 * @return void
-	 */
-	public function add_linking_archor() {
-		_deprecated_function( __METHOD__, '4.4.8', 'Tribe__Tickets__Main::add_linking_anchor' );
-	}
-
-	/**
-	 * Prints a div with an ID that can be used to link to the ticket form location.
-	 *
-	 * The height is specified inline to ensure this works x-browser.
-	 *
-	 * @deprecated 4.6
-	 */
-	public function add_linking_anchor() {
-		_deprecated_function( __METHOD__, '4.5' );
 	}
 
 	/**

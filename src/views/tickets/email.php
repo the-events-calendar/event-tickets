@@ -300,16 +300,6 @@
 				 */
 				$include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', false, $event->ID );
 
-				/**
-				 * Filters whether or not the event date should be included in the ticket email.
-				 *
-				 * @deprecated 4.5.11 Use `tribe_tickets_email_include_event_date` instead.
-				 *
-				 * @var bool Include event date? Defaults to false.
-				 * @var int  Event ID
-				 */
-				$include_event_date = apply_filters( 'event_tickets_email_include_start_date', false, $event->ID );
-
 				if ( $include_event_date && function_exists( 'tribe_events_event_schedule_details' ) ) {
 					$event_date = tribe_events_event_schedule_details( $event );
 				}
