@@ -30,6 +30,8 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	protected function get_settings_array() {
 		$plugin_path = Tribe__Tickets__Main::instance()->plugin_path;
 		include $plugin_path . 'src/admin-views/tribe-options-tickets.php';
+
+		/** @var array $tickets_tab Set in the file included above*/
 		return $tickets_tab;
 	}
 }

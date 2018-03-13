@@ -34,10 +34,12 @@ class Tribe__Tickets__Attendees {
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_tickets_register_attendees_page', array( $this, 'add_dynamic_parent' ) );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 
 		add_filter( 'post_row_actions', array( $this, 'filter_admin_row_actions' ) );
 		add_filter( 'page_row_actions', array( $this, 'filter_admin_row_actions' ) );
@@ -78,7 +80,7 @@ class Tribe__Tickets__Attendees {
 		echo '
 			<li class="post-type">
 				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( $pto->label ) . '
+				' . esc_html( strtolower( $pto->labels->singular_name ) ) . '
 			</li>
 		';
 	}
@@ -102,9 +104,16 @@ class Tribe__Tickets__Attendees {
 		 */
 		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
 
+		$post     = get_post( $event_id );
+		$pto      = get_post_type_object( $post->post_type );
+		$singular = $pto->labels->singular_name;
+
+		$edit         = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+		$view         = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+
 		$action_links = array(
-			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
-			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . $edit . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . $view . '</a>',
 		);
 
 		/**
@@ -119,7 +128,7 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
+		echo wp_kses_post( '<li class="event-actions">' . implode( ' | ', $action_links ) . '</li>' );
 	}
 
 
@@ -131,7 +140,7 @@ class Tribe__Tickets__Attendees {
 	public function print_checkedin_totals() {
 		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
-		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
+		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> <span id="total_checkedin">' . absint( $total_checked_in ) . '</span></div>';
 	}
 
 	/**

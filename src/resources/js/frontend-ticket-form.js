@@ -10,7 +10,7 @@ var tribe_tickets_ticket_form = {};
 	var $quantity_fields;
 
 	my.init = function() {
-		$tickets_lists = $( '.tribe-events-tickets' );
+		$tickets_lists = $( '.tribe-events-tickets-tpp' );
 		$quantity_fields = $tickets_lists.find( '.quantity' ).find( '.qty' );
 		$quantity_fields.on( 'change', my.on_quantity_change );
 	};
@@ -28,6 +28,25 @@ var tribe_tickets_ticket_form = {};
 			my.global_stock_quantity_changed( $this, ticket_id );
 		} else {
 			my.normal_stock_quantity_changed( $this, ticket_id );
+		}
+
+		var new_quantity = $this.val();
+		var $form = $this.closest( 'form' );
+
+		if ( new_quantity > 0 ) {
+			$form
+				.find( 'td[data-product-id]:not([data-product-id="' + ticket_id + '"])' )
+				.closest( 'tr' )
+				.find( 'input, button' )
+				.attr( 'disabled', 'disabled' )
+				.closest( 'tr' )
+				.addClass( 'tribe-tickets-purchase-disabled' );
+		} else {
+			$form
+				.find( 'input, button' )
+				.removeAttr( 'disabled' )
+				.closest( 'tr' )
+				.removeClass( 'tribe-tickets-purchase-disabled' );
 		}
 	};
 
@@ -80,6 +99,11 @@ var tribe_tickets_ticket_form = {};
 			return;
 		}
 
+		// if the stock is unlimited then there is nothing to change
+		if ( - 1 === available_stock ) {
+			return;
+		}
+
 		// Keep in check (should be handled for us by numeric inputs in most browsers, but let's be safe)
 		if ( new_quantity > available_stock ) {
 			new_quantity = available_stock;
@@ -119,8 +143,9 @@ var tribe_tickets_ticket_form = {};
 
 			if ( 'capped' === ticket.mode ) {
 				// If x units of global stock have been requested, the effective cap is the actual cap less value x
-				var effective_cap       = Math.min( remaining, ticket.cap );
-				var requested_stock     = parseInt( $( '[data-product-id=' + ticket_id + ']' ).find( 'input' ).val(), 10 );
+				var effective_cap = Math.min( remaining, ticket.cap );
+				var qty_input = $( '[data-product-id=' + ticket_id + ']' ).find( 'input.tribe-ticket-quantity' );
+				var requested_stock = parseInt( qty_input.val(), 10 );
 				var remaining_under_cap = ticket.cap - requested_stock;
 
 				// As with all other ticket types, capped tickets should not have a sub-zero count either

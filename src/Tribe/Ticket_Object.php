@@ -1,4 +1,5 @@
 <?php
+
 if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 	/**
 	 *    Generic object to hold information about a single ticket
@@ -372,9 +373,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return true;
 			}
 
-			$remaining = $this->remaining();
+			$remaining = $this->inventory();
 
-			return false === $remaining || $remaining > 0;
+			$is_unlimited = $remaining === - 1;
+
+			return false === $remaining || $remaining > 0 || $is_unlimited;
 		}
 
 		/**
@@ -431,6 +434,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			foreach ( $attendees as $attendee ) {
 				// Prevent RSVP with Not Going Status to decrease Inventory
 				if ( 'rsvp' === $attendee['provider_slug'] && 'no' === $attendee['order_status'] ) {
+					continue;
+				}
+
+				// allow providers to decide if an attendee will count toward inventory decrease or not
+				if ( ! $this->provider->attendee_decreases_inventory( $attendee ) ) {
 					continue;
 				}
 
@@ -500,8 +508,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				return -1;
 			}
 
-			$stock_mode = $this->global_stock_mode();
-
 			$values[] = $this->inventory();
 			$values[] = $this->capacity();
 			$values[] = $this->stock();
@@ -521,6 +527,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return  int
 		 */
 		public function capacity() {
+			if ( ! $this->managing_stock() ) {
+				return '';
+			}
+
 			if ( is_null( $this->capacity ) ) {
 				$this->capacity = tribe_tickets_get_capacity( $this->ID );
 			}
@@ -825,4 +835,5 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			return tribe_is_truthy( $show );
 		}
 	}
+
 }

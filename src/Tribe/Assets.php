@@ -58,11 +58,10 @@ class Tribe__Tickets__Assets {
 				array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style', 'tribe-jquery-timepicker-css' ) ),
 				array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css', 'common' ) ),
 				array( 'event-tickets-admin-tables-css', 'tickets-tables.css', array( 'event-tickets-admin-css' ) ),
-				array( 'event-tickets-admin-tables-js', 'tickets-tables.js', array( 'underscore', 'jquery', 'tribe-common' ) ),
 				array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery' ) ),
 				array( 'event-tickets-admin-accordion-js', 'accordion.js', array() ),
 				array( 'event-tickets-admin-accordion-css', 'accordion.css', array() ),
-				array( 'event-tickets-admin-js', 'tickets.js', array( 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'event-tickets-admin-tables-js', 'tribe-timepicker' ) ),
+				array( 'event-tickets-admin-js', 'tickets.js', array( 'jquery-ui-datepicker', 'tribe-bumpdown', 'tribe-attrchange', 'tribe-moment', 'underscore', 'tribe-validation', 'event-tickets-admin-accordion-js', 'tribe-timepicker' ) ),
 			),
 			'admin_enqueue_scripts',
 			array(
@@ -129,6 +128,31 @@ class Tribe__Tickets__Assets {
 		$modules = Tribe__Tickets__Tickets::modules();
 
 		// For the metabox
-		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, Tribe__Tickets__Main::instance()->post_types() );
+		return ! empty( $post ) && ! empty( $modules ) && in_array( $post->post_type, tribe( 'tickets.main' )->post_types() );
+	}
+
+	/**
+	 * Whether we are currently editing or creating a ticket-able post.
+	 *
+	 * @since 4.7
+	 *
+	 * @return bool
+	 */
+	protected function is_editing_ticketable_post() {
+		$context    = tribe( 'context' );
+		$post_types = tribe( 'tickets.main' )->post_types();
+
+		return $context->is_editing_post( $post_types );
+	}
+
+	/**
+	 * Enqueues scripts and styles that might be needed in the post editor area.
+	 *
+	 * @since 4.7
+	 */
+	public function enqueue_editor_scripts() {
+		if ( $this->is_editing_ticketable_post() ) {
+			tribe_asset_enqueue( 'tribe-validation' );
+		}
 	}
 }
