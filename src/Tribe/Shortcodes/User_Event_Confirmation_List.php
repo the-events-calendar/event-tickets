@@ -146,7 +146,11 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 			 *
 			 * So we have to construct the constant name using a string and use the `constant` function.
 			 */
-			$event_keys[] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
+			if ( defined( "$module_class::ATTENDEE_EVENT_KEY" ) ) {
+				$event_keys[] = constant( "$module_class::ATTENDEE_EVENT_KEY" );
+			} else {
+				$event_keys[] = call_user_func( array( $module_class, 'get_key' ), 'ATTENDEE_EVENT_KEY' );
+			}
 		}
 
 		return $event_keys;

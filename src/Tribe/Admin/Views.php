@@ -40,6 +40,8 @@ class Tribe__Tickets__Admin__Views extends Tribe__Template {
 	 * Adds the view links on supported post types admin  lists.
 	 *
 	 * @param array $supported_types A list of the post types that can have tickets.
+	 *
+	 * @return bool
 	 */
 	public function add_view_links( array $supported_types = array() ) {
 		if ( empty( $supported_types ) ) {

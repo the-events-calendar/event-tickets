@@ -16,6 +16,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public $event = false;
 
 	/**
+	 * @var string The user option that will be used to store the number of attendees per page to show.
+	 */
+	protected $per_page_option;
+
+	/**
 	 * Class constructor
 	 *
 	 * @param array $args  additional arguments/overrides
@@ -23,12 +28,23 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @see WP_List_Table::__construct()
 	 */
 	public function __construct( $args = array() ) {
-		$args = wp_parse_args( $args, array(
+		$screen = get_current_screen();
+
+		$args   = wp_parse_args( $args, array(
 			'singular' => 'attendee',
 			'plural'   => 'attendees',
 			'ajax'     => true,
-			'screen'   => get_current_screen(),
+			'screen'   => $screen,
 		) );
+
+		$this->per_page_option = Tribe__Tickets__Admin__Screen_Options__Attendees::$per_page_user_option;
+
+		if ( ! is_null( $screen ) ) {
+			$screen->add_option( 'per_page', array(
+				'label'  => __( 'Number of attendees per page:', 'event-tickets' ),
+				'option' => $this->per_page_option,
+			) );
+		}
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
@@ -53,6 +69,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'primary_info' => esc_html_x( 'Primary Information', 'attendee table', 'event-tickets' ),
 			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
 			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
+			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),''
 		);
 
 		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
@@ -65,27 +82,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param array $columns
 		 */
 		return apply_filters( 'tribe_tickets_attendee_table_columns', $columns );
-	}
-
-
-	/**
-	 * Display the search box.
-	 * We don't want Core's search box, because we implemented our own jQuery based filter,
-	 * so this function overrides the parent's one and returns empty.
-	 *
-	 * @param string $text     The search button text
-	 * @param string $input_id The search input id
-	 */
-	public function search_box( $text, $input_id ) {
-		return;
-	}
-
-	/**
-	 * Display the pagination.
-	 * We are not paginating the attendee list, so it returns empty.
-	 */
-	public function pagination( $which ) {
-		return '';
 	}
 
 	/**
@@ -465,11 +461,16 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 
 		$checked = '';
-		if ( intval( $item['check_in'] ) === 1 ) {
+		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
 		}
 
-		echo '<tr class="' . esc_attr( $checked . $item['order_status'] ) . '">';
+		$status = 'complete';
+		if ( ! empty( $item['order_status'] ) ) {
+			$status = $item['order_status'];
+		}
+
+		echo '<tr class="' . esc_attr( $checked . $status ) . '">';
 		$this->single_row_columns( $item );
 		echo '</tr>';
 
@@ -522,12 +523,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'right' => array(),
 		);
 
-		if ( 'top' == $which ) {
-			$nav['right']['filter_box'] = sprintf( '%s: <input type="text" name="filter_attendee" id="filter_attendee" value="">', esc_html__( 'Filter by purchaser name, ticket #, order # or security code', 'event-tickets' ) );
-		}
-
 		/**
-		 * Allows for customzing the buttons/options available above and below the Attendees table.
+		 * Allows for customization of the buttons/options available above and below the Attendees table.
 		 *
 		 * @param array $nav The array of items in the nav, where keys are the name of the item and values are the HTML of the buttons/inputs.
 		 * @param string $which Either 'top' or 'bottom'; the location of the current nav items being filtered.
@@ -554,14 +551,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		);
 
 		return (array) apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', $actions );
-	}
-
-	/**
-	 * @deprecated use process_actions()
-	 */
-	public function process_bulk_actions() {
-		_deprecated_function( __FUNCTION__, '4.3', __CLASS__ . '::process_actions()' );
-		$this->process_actions();
 	}
 
 	/**
@@ -750,24 +739,79 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * Prepares the list of items for displaying.
 	 */
 	public function prepare_items() {
-
 		$this->process_actions();
 
 		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
 
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id, true );
 
-		$this->items = $items;
-		$total_items = count( $this->items );
-		$per_page    = $total_items;
+		$search = isset( $_REQUEST['s'] ) ? esc_attr( trim( $_REQUEST['s'] ) ) : false;
+		if ( ! empty( $search ) ) {
+			$items = $this->filter_attendees_by_string( $search, $items );
+		}
+
+		$total_items = count( $items );
+
+		$current_page = $this->get_pagenum();
+		$per_page = $this->get_items_per_page( $this->per_page_option );
+		$this->items  = array_slice( $items, ( $current_page - 1 ) * $per_page, $per_page );
 
 		$this->set_pagination_args(
-			 array(
-				 'total_items' => $total_items,
-				 'per_page'    => $per_page,
-				 'total_pages' => 1,
-			 )
+			array(
+				'total_items' => $total_items,
+				'per_page'    => $per_page,
+			)
 		);
 	}
 
+	/**
+	 * Message to be displayed when there are no items
+	 *
+	 * @since 4.7
+	 */
+	public function no_items() {
+		_e( 'No matching attendees found.', 'event-tickets' );
+	}
+
+	/**
+	 * Filters the attendees by a search string if available.
+	 *
+	 * @since 4.7
+	 *
+	 * @param       string $search The string to filter attendees by.
+	 * @param array        $items  The attendees list.
+	 *
+	 * @return array
+	 */
+	protected function filter_attendees_by_string( $search, array $items ) {
+		if ( empty( $items ) ) {
+			return $items;
+		}
+
+		$search_keys = array( 'purchaser_name', 'purchaser_email', 'purchase_time', 'order_status', 'ticket_name', 'product_id', 'security_code' );
+
+		/**
+		 * Filters the item keys that should be used to filter attendees while searching them.
+		 *
+		 * @since 4.7
+		 *
+		 * @param array  $search_keys The keys that should be used to search attendees
+		 * @param array  $items       The attendees list
+		 * @param string $s           The current search string.
+		 */
+		$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, $items, $search );
+
+		$filtered = array();
+		foreach ( $items as $order_number => $order_data ) {
+			$keys = array_intersect( array_keys( $order_data ), $search_keys );
+			foreach ( $keys as $key ) {
+				if ( ! empty( $order_data[ $key ] ) && false !== stripos( $order_data[ $key ], $search ) ) {
+					$filtered[ $order_number ] = $order_data;
+					break;
+				}
+			}
+		}
+
+		return $filtered;
+	}
 }

@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, aguseo, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.4
-Stable tag: 4.6.3.1
+Stable tag: 4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -103,11 +103,15 @@ If you've identified a bug and want to submit a patch, we'd welcome it at our [G
 
 == Screenshots ==
 
-1. RSVP metabox
-2. Add New RSVP
-3. RSVP on a post
+1. RSVP and Ticket on Event
+2. Front-end PayPal ticket in Page
+3. PayPal at Checkout
 4. Attendee report
 5. Emailed ticket
+6. PayPal Ticket Confirmation
+7. Event Settings
+8. Add new PayPal Ticket
+9. Configure PayPal
 
 == Frequently Asked Questions ==
 
@@ -235,12 +239,29 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
+* Feature - Add updater class to enable changes on future updates [84675]
+* Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
+* Fix - On reload of base panel of the ticket editor trigger relevant messages [95098]
+* Fix - Allow access when visiting the attendees list on venue or organizer post type (props to Antonio Jose in our forums for flagging this problem) [90062]
+* Fix - Add warning if a ticket has stock management turned off in the related WooCommerce product, but has capacity enabled for the ticket(thanks Isaiah Baker and others for highlighting this) [91471]
+* Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
+* Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
+* Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 * Tweak - Populate the RSVP form if user is logged in with new filters `tribe_tickets_rsvp_form_full_name` and `tribe_tickets_rsvp_form_email` [78607]
 
+= [4.7] 2018-03-13 =
+
+* Feature - Included Tribe Commerce as a solution for selling tickets using PayPal
+* Tweak - allow pagination and screen options on the Attendees list [64516]
+* Tweak - Added filters: `tribe_tickets_search_attendees_by`, `tribe_commerce_currency_symbol`, `tribe_commerce_currency_symbol_position`, `tribe_tickets_commerce_price_format_use_currency_locale`, `tribe_tickets_commerce_currency_code_options`, `tribe_tickets_orders_tabbed_view_tab_map`, `tribe_tickets_should_use_ticket_in_sales_counts`, `tribe_tickets_get_total_sold`, `tribe_tickets_get_total_pending`, `tribe_tickets_get_total_paid`, `tribe_tickets_commerce_paypal_errors_map`, `tribe_tickets_commerce_paypal_notify_url`, `tribe_tickets_commerce_paypal_custom_args`, `tribe_tickets_commerce_paypal_add_to_cart_args`, `tribe_tickets_commerce_paypal_get_transaction_data`, `tribe_tickets_commerce_paypal_product_name`, `tribe_tickets_commerce_paypal_handler`, `tribe_tickets_commerce_paypal_validate_transaction`, `tribe_tickets_commerce_paypal_ipn_config_status`, `tribe_tickets_commerce_paypal_validate_transaction`, `tribe_tickets_commerce_paypal_is_active`, `tribe_tickets_register_ticket_post_type_args`, `tribe_tickets_register_attendee_post_type_args`, `tribe_tickets_register_order_post_type_args`, `tribe_tickets_tpp_send_mail`, `tribe_tickets_tpp_tickets_to_send`, `tribe_tpp_email_content`, `tribe_tpp_email_from_name`, `tribe_tpp_email_from_email`, `tribe_tpp_email_headers`, `tribe_tpp_email_attachments`, `tribe_tpp_email_recipient`, `tribe_tpp_email_subject`, `tribe_tickets_should_default_ticket_sku`, `tribe_tickets_tpp_get_ticket`, `tribe_tickets_order_data`, `tribe_tickets_paypal_report_url`, `tribe_tpp_submission_message`, `tribe_tickets_tpp_ticket_price_html`, `tribe_tickets_commerce_paypal_order_stati`, `tribe_tickets_tpp_metabox_capacity_file`, `tribe_tickets_tpp_enable_global_stock`, `tribe_tickets_tpp_pending_stock_ignore`, `tribe_tickets_tpp_pending_stock_reserve_time`, `tribe_tickets_attendee_data`, `tribe_tickets_tpp_order_postarr`, `tribe_tickets_tpp_order_line_total_statuses`, `tribe_tickets_commerce_paypal_attendee_revenue`, `tribe_tickets_commerce_paypal_revenue_generating_order_statuses`, `tribe_tickets_commerce_paypal_tickets_revenue`, `tribe_tickets_commerce_paypal_ticket_sales_count`, `tribe_tickets_commerce_paypal_tickets_sales`, `tribe_tickets_commerce_paypal_orders_table_column`, `tribe_tickets_commerce_paypal_search_orders_by`, `tribe_tickets_commerce_paypal_oversell_default_policy`, `tribe_tickets_commerce_paypal_oversell_policy`, `tribe_tickets_commerce_paypal_oversell_policies_map`, `tribe_tickets_commerce_paypal_oversell_generates_notice`, `tribe_tickets_commerce_paypal_oversell_policy_object`, `tribe_tickets_commerce_paypal_completed_transaction_statuses`, `tribe_tickets_commerce_paypal_revenue_generating_statuses`, `event_tickets_is_tpp_ticket_restricted`, `tribe_tickets_attendees_admin_expire`, `tribe_filter_attendee_order_link`, `tribe_events_tickets_module_name`, `tribe_tickets_current_user_can_delete_ticket`, `tribe_events_tickets_module_name`, `tribe_events_tickets_attendees_url`, `tribe_events_tickets_module_name`, `tribe_events_tickets_tpp_display_sku`, `tribe_tickets_stock_message_available_quantity`
+* Tweak - Removed filters: `tribe_events_tickets_google_low_inventory_level`, `event_tickets_email_include_start_date`
+* Tweak - Added actions: `tribe_tickets_orders_tabbed_view_register_tab_right`, `tribe_tickets_orders_tabbed_view_register_tab_left`, `tribe_tickets_tpp_before_order_processing`, `tribe_tickets_tpp_before_attendee_ticket_creation`, `event_tickets_tpp_attendee_created`, `event_tickets_tpp_attendee_updated`, `event_tickets_tpp_tickets_generated_for_product`, `event_tickets_tpp_tickets_generated_for_product`, `event_tickets_tpp_tickets_generated`, `tickets_tpp_ticket_deleted`, `tribe_events_tickets_metabox_edit_ajax_advanced`, `tribe_tickets_tpp_order_from_post`, `tribe_tickets_tpp_order_from_transaction`, `tribe_tickets_tpp_after_before_delete`, `tribe_tickets_tpp_after_after_delete`, `event_tickets_checkin`, `event_tickets_uncheckin`, `tribe_events_tickets_settings_content_before`, `event_tickets_ticket_list_after_ticket_name`, `tribe_events_tickets_metabox_pre`, `tribe_events_tickets_metabox_advanced`, `tribe_tickets_report_event_details_list_top`, `tribe_tickets_report_event_details_list_bottom`, `tribe_tickets_after_event_details_list`, `event_tickets_user_details_tpp`, `event_tickets_orders_attendee_contents`, `event_tickets_tpp_after_ticket_row`
+* Tweak - Changed views: `login-before-purchase`, `login-to-purchase`, `tickets/email`, `tickets/orders-pp-tickets`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp-success`, `tickets/tpp`
+* Language - 172 new strings added, 179 updated, 6 fuzzied, and 2 obsoleted
 
 = [4.6.3.1] 2018-02-26 =
 
-* Fix - Remove PHP warnings during CSV generation of the attendees [94293]
+* Fix - Remove PHP warnings during CSV generation of the attendees [94293]]
 
 = [4.6.3] 2018-01-10 =
 

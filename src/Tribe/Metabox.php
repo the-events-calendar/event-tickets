@@ -332,36 +332,37 @@ class Tribe__Tickets__Metabox {
 
 		wp_send_json_success( $return );
 	}
+
 	/**
 	 * Handles the check-in ajax call, and calls the checkin method.
 	 *
 	 * @since  4.6.2
-	 *
-	 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
-	 *       we should consider revising in a back-compat minded way
 	 */
 	public function ajax_attendee_checkin() {
+		$attendee_id = Tribe__Utils__Array::get( $_POST, 'attendee_id', false );
 
-		if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
-			wp_send_json_error( 'Bad post' );
+		if ( empty( $attendee_id ) ) {
+			wp_send_json_error( __( 'The attendee ID is missing from the request parameters.', 'event-tickets' ) );
 		}
 
-		$provider = $_POST['provider'];
+		$provider = Tribe__Utils__Array::get( $_POST, 'provider', false );
 
-		if ( ! $this->module_is_valid( $provider ) ) {
+		if ( empty( $provider ) || ! $this->module_is_valid( $provider ) ) {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
 		$provider = call_user_func( array( $provider, 'get_instance' ) );
 
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'checkin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
+		if (
+			empty( $_POST['nonce'] )
+			|| ! wp_verify_nonce( $_POST['nonce'], 'checkin' )
+			|| ! $this->user_can( 'edit_posts', $attendee_id )
+		) {
 			wp_send_json_error( "Cheatin' huh?" );
 		}
 
-		$order_id = $_POST['order_ID'];
-
 		// Pass the control to the child object
-		$did_checkin = $provider->checkin( $order_id );
+		$did_checkin = $provider->checkin( $attendee_id );
 
 		$provider->clear_attendees_cache( $did_checkin );
 
@@ -372,32 +373,32 @@ class Tribe__Tickets__Metabox {
 	 * Handles the check-in ajax call, and calls the uncheckin method.
 	 *
 	 * @since  4.6.2
-	 *
-	 * @todo use of 'order_id' in this method is misleading (we're working with the attendee id)
-	 *       we should consider revising in a back-compat minded way
 	 */
 	public function ajax_attendee_uncheckin() {
+		$attendee_id = Tribe__Utils__Array::get( $_POST, 'attendee_id', false );
 
-		if ( ! isset( $_POST['order_ID'] ) || intval( $_POST['order_ID'] ) == 0 ) {
-			wp_send_json_error( 'Bad post' );
+		if ( empty( $attendee_id ) ) {
+			wp_send_json_error( __( 'The attendee ID is missing from the request parameters.', 'event-tickets' ) );
 		}
 
-		$provider = $_POST['provider'];
+		$provider = Tribe__Utils__Array::get( $_POST, 'provider', false );
 
-		if ( ! $this->module_is_valid( $provider ) ) {
+		if ( empty( $provider ) || ! $this->module_is_valid( $provider ) ) {
 			wp_send_json_error( esc_html__( 'Commerce Module invalid', 'event-tickets' ) );
 		}
 
 		$provider = call_user_func( array( $provider, 'get_instance' ) );
 
-		if ( empty( $_POST['nonce'] ) || ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' ) || ! $this->user_can( 'edit_posts', $_POST['order_ID'] ) ) {
+		if (
+			empty( $_POST['nonce'] )
+			|| ! wp_verify_nonce( $_POST['nonce'], 'uncheckin' )
+			|| ! $this->user_can( 'edit_posts', $attendee_id )
+		) {
 			wp_send_json_error( "Cheatin' huh?" );
 		}
 
-		$order_id = $_POST['order_ID'];
-
 		// Pass the control to the child object
-		$did_uncheckin = $provider->uncheckin( $order_id );
+		$did_uncheckin = $provider->uncheckin( $attendee_id );
 
 		$provider->clear_attendees_cache( $did_uncheckin );
 
