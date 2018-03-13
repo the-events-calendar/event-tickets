@@ -8,50 +8,18 @@ settings:
     bootstrap: _bootstrap.php
     colors: true
     memory_limit: 1024M
-modules:
-    config:
-        WPBrowser:
-            url: 'http://tec.tri.be'
-            adminUsername: admin
-            adminPassword: admin
-            adminUrl: /wp-admin
-        WPDb:
-            dsn: 'mysql:host=localhost;dbname=test'
-            user: root
-            password: ''
-            dump: tests/_data/dump.sql
-            populate: true
-            cleanup: true
-            url: 'http://tec.tri.be'
-            tablePrefix: wp_
-        WPLoader:
-            wpRootFolder: /tmp/wordpress
-            dbName: wploader
-            dbHost: localhost
-            dbUser: root
-            dbPassword: ''
-            wpDebug: true
-            dbCharset: utf8
-            dbCollate: ''
-            tablePrefix: wp_
-            domain: tec.tri.be
-            adminEmail: admin@tec.tri.be
-            title: 'Event Ticket Tests'
-            phpBinary: php
-            language: ''
-            plugins:
-                - the-events-calendar/the-events-calendar.php
-                - event-tickets/event-tickets.php
-            activatePlugins:
-                - the-events-calendar/the-events-calendar.php
-                - event-tickets/event-tickets.php
-        WPWebDriver:
-            url: 'http://tec.tri.be'
-            browser: phantomjs
-            port: 4444
-            restart: true
-            wait: 0
-            adminUsername: admin
-            adminPassword: admin
-            adminUrl: /wp-admin
-            windowSize: 1200x100
+params:
+  # read dynamic configuration parameters from the .env file
+  - .env
+extensions:
+    commands:
+        - 'Codeception\Command\GenerateWPUnit'
+        - 'Codeception\Command\GenerateWPRestApi'
+        - 'Codeception\Command\GenerateWPRestController'
+        - 'Codeception\Command\GenerateWPRestPostTypeController'
+        - 'Codeception\Command\GenerateWPAjax'
+        - 'Codeception\Command\GenerateWPCanonical'
+        - 'Codeception\Command\GenerateWPXMLRPC'
+        - 'Codeception\Command\DbSnapshot'
+        - 'tad\Codeception\Command\SearchReplace'
+

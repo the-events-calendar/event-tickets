@@ -51,66 +51,6 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			$( window ).trigger( 'attendees-report-after-print.tribe-tickets' );
 		} );
 
-		var $filter_attendee = $( document.getElementById( 'filter_attendee' ) );
-
-		$filter_attendee.on( 'keydown', function( e ) {
-			// if enter was pressed, pretend it wasn't
-			if ( 13 === e.keyCode ) {
-				return false;
-			}
-		} );
-
-		$filter_attendee.on( 'keyup paste', function() {
-
-			var search = jQuery( this ).val().toLowerCase();
-
-			$( '#the-list' ).find( 'tr' ).each( function() {
-				var $row = $( this );
-				var $status_column = $row.find( 'td.status' );
-
-				//if tickets meta row remove open class and do not use hide() on it
-				if ( $( $row ).hasClass( 'event-tickets-meta-row' ) ) {
-					$( $row ).removeClass( 'event-tickets-meta-toggle-open' );
-					return;
-				}
-
-				//if main ticket row remove tickets meta row open class to set back to closed state for view details
-				if ( $( $row ).hasClass( 'event-tickets-meta-toggle-open' ) ) {
-					$( $row ).removeClass( 'event-tickets-meta-toggle-open' );
-				}
-
-				// No status column? It's probably a special hidden row (ie, used as a container
-				// for ticket meta data or similar): hide it and move on
-				if ( ! $status_column.length ) {
-					$row.hide();
-					return;
-				}
-
-				// Search by code (order, attendee and security numbers)
-				var order = $row.children( 'td.status' ).text().toLowerCase().trim();
-				var attendee = $row.children( 'td.ticket' ).text().toLowerCase().trim();
-				var security = $row.children( 'td.security' ).text().toLowerCase().trim();
-				var code_found = (
-					   attendee.indexOf( search ) === 0
-					|| order.indexOf( search ) === 0
-					|| order.indexOf( '#' + search ) === 0
-					|| security.indexOf( search ) === 0
-				);
-
-				// Search by name (we will also look at second/third names etc, not just the first name)
-				var name = $row.find( '.purchaser_name' ).text().toLowerCase().trim();
-				var name_found = name.indexOf( search ) === 0 || name.indexOf( " " + search ) > 1;
-
-				if ( code_found || name_found ) {
-					$row.show();
-				}
-				else {
-					$row.hide();
-				}
-			} );
-
-		} );
-
 		$( '.tribe-attendees-email' ).on({
 			'submit': function( event ) {
 				$( '.tribe-attendees-email' ).hide();
@@ -126,7 +66,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var params = {
 				action  : 'tribe-ticket-checkin',
 				provider: obj.attr( 'data-provider' ),
-				order_ID: obj.attr( 'data-attendee-id' ),
+				attendee_id: obj.attr( 'data-attendee-id' ),
 				nonce   : Attendees.checkin_nonce
 			};
 
@@ -158,7 +98,7 @@ var tribe_event_tickets_attendees = tribe_event_tickets_attendees || {};
 			var params = {
 				action  : 'tribe-ticket-uncheckin',
 				provider: obj.attr( 'data-provider' ),
-				order_ID: obj.attr( 'data-attendee-id' ),
+				attendee_id: obj.attr( 'data-attendee-id' ),
 				nonce   : Attendees.uncheckin_nonce
 			};
 

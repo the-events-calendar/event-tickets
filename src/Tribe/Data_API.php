@@ -24,7 +24,6 @@ class Tribe__Tickets__Data_API {
 	 * Setup activate ticket classes and field for data api
 	 */
 	protected function setup_data() {
-
 		foreach ( Tribe__Tickets__Tickets::modules() as $module_class => $module_instance ) {
 			$provider = call_user_func( array( $module_class, 'get_instance' ) );
 
