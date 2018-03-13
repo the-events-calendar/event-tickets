@@ -239,6 +239,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
+* Feature - Add updater class to enable changes on future updates [84675]
 * Fix - Sanitize correctly the description of an RSVP [99100]
 * Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
 * Fix - On reload of base panel of the ticket editor trigger relevant messages [95098]
@@ -247,7 +248,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
-* Feature - Add updater class to enable changes on future updates [84675]
 
 = [4.7] 2018-03-13 =
 
