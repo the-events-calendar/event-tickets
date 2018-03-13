@@ -103,11 +103,15 @@ If you've identified a bug and want to submit a patch, we'd welcome it at our [G
 
 == Screenshots ==
 
-1. RSVP metabox
-2. Add New RSVP
-3. RSVP on a post
+1. RSVP and Ticket on Event
+2. Front-end PayPal ticket in Page
+3. PayPal at Checkout
 4. Attendee report
 5. Emailed ticket
+6. PayPal Ticket Confirmation
+7. Event Settings
+8. Add new PayPal Ticket
+9. Configure PayPal
 
 == Frequently Asked Questions ==
 
