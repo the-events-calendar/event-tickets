@@ -240,6 +240,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [M18.05] TBD =
 
 * Feature - Add updater class to enable changes on future updates [84675]
+* Fix - Sanitize correctly the description of an RSVP [99100]
 * Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
 * Fix - On reload of base panel of the ticket editor trigger relevant messages [95098]
 * Fix - Allow access when visiting the attendees list on venue or organizer post type (props to Antonio Jose in our forums for flagging this problem) [90062]
