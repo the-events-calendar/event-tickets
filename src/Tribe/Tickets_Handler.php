@@ -92,6 +92,8 @@ class Tribe__Tickets__Tickets_Handler {
 
 		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
 		add_action( 'wp_insert_post', array( $this, 'update_start_date' ), 15, 3 );
+
+		$this->path = trailingslashit(  dirname( dirname( dirname( __FILE__ ) ) ) );
 	}
 
 	/**
@@ -324,8 +326,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 		$provider_index = array(
 			'rsvp' => 'Tribe__Tickets__RSVP',
-			'woo' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
-			'edd' => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+			'tpp'  => 'Tribe__Tickets__Commerce__PayPal__Main',
+			'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
 		);
 
 		$relationships = array(
@@ -333,6 +336,10 @@ class Tribe__Tickets__Tickets_Handler {
 				// RSVP
 				'_tribe_rsvp_event' => 'rsvp',
 				'_tribe_rsvp_for_event' => 'rsvp',
+
+				// PayPal tickets
+				'_tribe_tpp_event' => 'tpp',
+				'_tribe_twpp_for_event' => 'tpp',
 
 				// EDD
 				'_tribe_eddticket_event' => 'edd',
@@ -346,6 +353,9 @@ class Tribe__Tickets__Tickets_Handler {
 				// RSVP
 				'_tribe_rsvp_product' => 'rsvp',
 
+				// PayPal tickets
+				'_tribe_tpp_product' => 'tpp',
+
 				// EDD
 				'_tribe_eddticket_product' => 'edd',
 
@@ -356,6 +366,9 @@ class Tribe__Tickets__Tickets_Handler {
 				// RSVP
 				'_tribe_rsvp_order' => 'rsvp',
 
+				// PayPal tickets
+				'_tribe_tpp_order' => 'tpp',
+
 				// EDD
 				'_tribe_eddticket_order' => 'edd',
 
@@ -364,6 +377,9 @@ class Tribe__Tickets__Tickets_Handler {
 
 			),
 			'order_item' => array(
+				// PayPal tickets
+				'_tribe_tpp_order' => 'tpp',
+
 				// Woo
 				'_tribe_wooticket_order_item' => 'woo',
 			),
@@ -847,13 +863,15 @@ class Tribe__Tickets__Tickets_Handler {
 		$provider_class = get_class( $provider );
 
 		if ( tribe_tickets_post_type_enabled( $post->post_type ) ) {
-			$default_provider = Tribe__Tickets_Plus__Tickets::get_event_ticket_provider( $post->ID );
+			$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post->ID );
 		} else {
 			$default_provider = tribe_tickets_get_ticket_provider( $post->ID );
 		}
 
 		if ( ! $default_provider ) {
-			$default_provider = class_exists( 'Tribe__Tickets_Plus__Main' ) ? 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' : 'Tribe__Tickets__RSVP';
+			$default_provider = class_exists( 'Tribe__Tickets_Plus__Main' )
+				? 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main'
+				: 'Tribe__Tickets__RSVP';
 		}
 
 		if ( ! is_string( $default_provider ) ) {
@@ -943,10 +961,12 @@ class Tribe__Tickets__Tickets_Handler {
 
 			$capacity = $ticket->capacity();
 
-			if ( -1 === $capacity ) {
+			if ( -1 === $capacity || '' === $capacity ) {
 				$total = -1;
 				break;
 			}
+
+			$capacity = is_numeric( $capacity ) ? (int) $capacity : 0;
 
 			$total += $capacity;
 		}
@@ -1129,16 +1149,6 @@ class Tribe__Tickets__Tickets_Handler {
 		// Bail on Invalid post
 		if ( ! $post instanceof WP_Post ) {
 			return false;
-		}
-
-		$provider = tribe_get_request_var( 'ticket_provider', false );
-
-		if ( $provider && tribe( 'tickets.metabox' )->module_is_valid( $provider ) ) {
-			// Get the Provider
-			$provider = call_user_func( array( $provider, 'get_instance' ) );
-
-			// Sve the actual ticket
-			$ticket_id = $provider->ticket_add( $post->ID, $_POST );
 		}
 
 		$this->save_form_settings( $post );

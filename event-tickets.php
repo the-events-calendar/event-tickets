@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Event Tickets
-Description: Event Tickets allows your guests to RSVP from any post, page, or event.
-Version: 4.6.3.1
+Description: Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event.
+Version: 4.7
 Author: Modern Tribe, Inc.
 Author URI: http://m.tri.be/28
 License: GPLv2 or later

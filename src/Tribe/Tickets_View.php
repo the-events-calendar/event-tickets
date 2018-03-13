@@ -129,6 +129,7 @@ class Tribe__Tickets__Tickets_View {
 		$rules = array(
 			sanitize_title_with_dashes( $bases['tickets'][0] ) . '/([0-9]{1,})/?' => 'index.php?p=$matches[1]&tribe-edit-orders=1',
 		);
+
 		return $rules;
 	}
 
@@ -174,9 +175,9 @@ class Tribe__Tickets__Tickets_View {
 			/**
 			 * An Action fired for each one of the Attendees that were posted on the Order Tickets page
 			 *
-			 * @var $data     Infomation that we are trying to save
-			 * @var $order_id ID of attendee ticket
-			 * @var $post_id  ID of event
+			 * @var array $data     Infomation that we are trying to save
+			 * @var int   $order_id ID of attendee ticket
+			 * @var int   $post_id  ID of event
 			 */
 			do_action( 'event_tickets_attendee_update', $data, $order_id, $post_id );
 		}
@@ -184,7 +185,7 @@ class Tribe__Tickets__Tickets_View {
 		/**
 		 * A way for Meta to be saved, because it's grouped in a different way
 		 *
-		 * @var $post_id ID of event
+		 * @param int $post_id ID of event
 		 */
 		do_action( 'event_tickets_after_attendees_update', $post_id );
 
@@ -209,8 +210,6 @@ class Tribe__Tickets__Tickets_View {
 	 * @return void
 	 */
 	public function authorization_redirect() {
-		global $wp_query;
-
 		/**
 		 * @todo Remove this after we implement the Rewrites in Common
 		 */
@@ -710,6 +709,7 @@ class Tribe__Tickets__Tickets_View {
 
 		/**
 		 * Allow users to filter if this Event or Ticket has Restricted RSVP
+		 *
 		 * @param  boolean  $restricted Is this Event or Ticket Restricted?
 		 * @param  int      $event_id   The Event/Post ID (optional)
 		 * @param  int      $ticket_id  The Ticket/RSVP ID (optional)

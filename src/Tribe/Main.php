@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.6.3.1';
+	const VERSION = '4.7';
 
 	/**
 	 * Min required The Events Calendar version
@@ -177,7 +177,7 @@ class Tribe__Tickets__Main {
 
 		$this->has_initialized = true;
 
-		$this->rsvp();
+		$this->bind_implementations();
 		$this->user_event_confirmation_list_shortcode();
 		$this->move_tickets();
 		$this->move_ticket_types();
@@ -192,14 +192,15 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Method to initialize Common Object
+	 * Registers the implementations in the container
 	 *
-	 * @deprecated 4.3.4
-	 *
-	 * @return Tribe__Main
+	 * @since 4.7
 	 */
-	public function common() {
-		return Tribe__Main::instance( $this );
+	public function bind_implementations() {
+		tribe_singleton( 'tickets.main', $this );
+		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
+		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
+		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 	}
 
 	/**
@@ -366,29 +367,7 @@ class Tribe__Tickets__Main {
 		// Load our assets
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
-	}
-
-	/**
-	 * Add an Anchor for users to be able to link to
-	 * The height is to make sure it links on all browsers
-	 *
-	 * @deprecated 4.4.8
-	 *
-	 * @return void
-	 */
-	public function add_linking_archor() {
-		_deprecated_function( __METHOD__, '4.4.8', 'Tribe__Tickets__Main::add_linking_anchor' );
-	}
-
-	/**
-	 * Prints a div with an ID that can be used to link to the ticket form location.
-	 *
-	 * The height is specified inline to ensure this works x-browser.
-	 *
-	 * @deprecated 4.6
-	 */
-	public function add_linking_anchor() {
-		_deprecated_function( __METHOD__, '4.5' );
+		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
 	}
 
 	/**
@@ -492,7 +471,7 @@ class Tribe__Tickets__Main {
 	 * rsvp ticket object accessor
 	 */
 	public function rsvp() {
-		return Tribe__Tickets__RSVP::get_instance();
+		return tribe( 'tickets.rsvp' );
 	}
 
 	/**
@@ -725,5 +704,22 @@ class Tribe__Tickets__Main {
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
 		<?php
+	}
+
+	/**
+	 * Make necessary database updates on admin_init
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function run_updates() {
+		if ( ! class_exists( 'Tribe__Events__Updater' ) ) {
+			return; // core needs to be updated for compatibility
+		}
+
+		$updater = new Tribe__Tickets__Updater( self::VERSION );
+		if ( $updater->update_required() ) {
+			$updater->do_updates();
+		}
 	}
 }
