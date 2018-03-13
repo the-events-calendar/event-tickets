@@ -344,3 +344,11 @@
 		width: 100% !important;
 	}
 }
+
+table.orders {
+	tr {
+		&.refunded, &.denied, &.pending {
+			font-style: italic;
+		}
+	}
+}
