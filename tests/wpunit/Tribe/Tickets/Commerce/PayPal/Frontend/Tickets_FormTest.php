@@ -29,13 +29,6 @@ class Tickets_FormTest extends \Codeception\TestCase\WPTestCase {
 		$this->driver = new WPHtmlOutputDriver( home_url(), 'http://commerce.dev' );
 	}
 
-	public function tearDown() {
-		// your tear down methods here
-
-		// then
-		parent::tearDown();
-	}
-
 	/**
 	 * @test
 	 * it should be instantiatable
