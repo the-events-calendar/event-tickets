@@ -11,7 +11,7 @@
 		Tickets	</h2>
 
 	<div class="tribe-tpp-messages">
-		
+
 		<div
 			class="tribe-tpp-message tribe-tpp-message-error tribe-tpp-message-confirmation-error" style="display:none;">
 			Please fill in the ticket confirmation name and email fields.		</div>
@@ -87,15 +87,15 @@
 											<button type="submit" class="tpp-submit tribe-button">Buy now</button>
 									</td>
 			</tr>
-			
+
 					<tr>
 				<td colspan="5" class="tpp-add">
-																
-	<a href="http://test.tri.be/wp-login.php?redirect_to=http://test.tri.be/?p=141">Log in before purchasing</a>
+
+	<a href="http://test.locahost/wp-login.php?redirect_to=http://test.locahost/?p=141">Log in before purchasing</a>
 
 										</td>
 			</tr>
-		
+
 		<noscript>
 			<tr>
 				<td class="tribe-link-tickets-message">
