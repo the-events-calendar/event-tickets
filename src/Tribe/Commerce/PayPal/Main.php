@@ -2566,7 +2566,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
      *
      * @return string
      */
-    private function generate_security_code( $attendee_id ) {
+    public function generate_security_code( $attendee_id ) {
         return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
     }
 }
