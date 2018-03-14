@@ -239,6 +239,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [M18.05] TBD =
 
+* Tweak - Populate the RSVP form if user is logged in with new filters `tribe_tickets_rsvp_form_full_name` and `tribe_tickets_rsvp_form_email` [78607]
+* Feature - Add updater class to enable changes on future updates [84675]
+* Fix - Sanitize correctly the description of an RSVP [99100]
 * Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
 * Fix - On reload of base panel of the ticket editor trigger relevant messages [95098]
 * Fix - Allow access when visiting the attendees list on venue or organizer post type (props to Antonio Jose in our forums for flagging this problem) [90062]
@@ -247,7 +250,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
-* Feature - Add updater class to enable changes on future updates [84675]
+* Tweak - Populate the RSVP form if user is logged in with new filters `tribe_tickets_rsvp_form_full_name` and `tribe_tickets_rsvp_form_email` [78607]
 
 = [4.7] 2018-03-13 =
 
