@@ -34,9 +34,12 @@ class Tribe__Tickets__Attendees {
 		add_action( 'tribe_events_tickets_attendees_totals_top', array( $this, 'print_checkedin_totals' ), 0 );
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_details_top' ), 20 );
 
 		add_action( 'tribe_tickets_attendees_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 		add_action( 'tribe_tickets_plus_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
+		add_action( 'tribe_tickets_register_attendees_page', array( $this, 'add_dynamic_parent' ) );
+		add_action( 'tribe_tickets_report_event_details_list_top', array( $this, 'event_action_links' ), 25 );
 
 		add_filter( 'post_row_actions', array( $this, 'filter_admin_row_actions' ) );
 		add_filter( 'page_row_actions', array( $this, 'filter_admin_row_actions' ) );
@@ -77,7 +80,7 @@ class Tribe__Tickets__Attendees {
 		echo '
 			<li class="post-type">
 				<strong>' . esc_html__( 'Post type', 'event-tickets' ) . ': </strong>
-				' . esc_html( $pto->label ) . '
+				' . esc_html( strtolower( $pto->labels->singular_name ) ) . '
 			</li>
 		';
 	}
@@ -101,9 +104,16 @@ class Tribe__Tickets__Attendees {
 		 */
 		$edit_post_link = apply_filters( 'tribe_tickets_event_action_links_edit_url', get_edit_post_link( $event_id ), $event_id );
 
+		$post     = get_post( $event_id );
+		$pto      = get_post_type_object( $post->post_type );
+		$singular = $pto->labels->singular_name;
+
+		$edit         = esc_html( sprintf( _x( 'Edit %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+		$view         = esc_html( sprintf( _x( 'View %s', 'attendee event actions', 'event-tickets' ), $singular ) );
+
 		$action_links = array(
-			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'Edit Event', 'attendee event actions', 'event-tickets' ) . '</a>',
-			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . esc_html_x( 'View Event', 'attendee event actions', 'event-tickets' ) . '</a>',
+			'<a href="' . esc_url( $edit_post_link ) . '" title="' . esc_attr_x( 'Edit', 'attendee event actions', 'event-tickets' ) . '">' . $edit . '</a>',
+			'<a href="' . esc_url( get_permalink( $event_id ) ) . '" title="' . esc_attr_x( 'View', 'attendee event actions', 'event-tickets' ) . '">' . $view . '</a>',
 		);
 
 		/**
@@ -118,7 +128,7 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		echo wp_kses_post( '<li class="event-actions">' . join( ' | ', $action_links ) . '</li>' );
+		echo wp_kses_post( '<li class="event-actions">' . implode( ' | ', $action_links ) . '</li>' );
 	}
 
 
@@ -130,7 +140,7 @@ class Tribe__Tickets__Attendees {
 	public function print_checkedin_totals() {
 		$total_checked_in = Tribe__Tickets__Main::instance()->attendance_totals()->get_total_checked_in();
 
-		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> ' . absint( $total_checked_in ) . '</div>';
+		echo '<div class="totals-header"><h3>' . esc_html_x( 'Checked in:', 'attendee summary', 'event-tickets' ) . '</h3> <span id="total_checkedin">' . absint( $total_checked_in ) . '</span></div>';
 	}
 
 	/**
@@ -148,6 +158,11 @@ class Tribe__Tickets__Attendees {
 			'page'      => $this->slug(),
 			'event_id'  => $post->ID,
 		);
+
+		// Remove the post type from the admin URL as ?post_type=post is the same as edit.php and is not required for posts.
+		if ( 'post' === $post->post_type ) {
+			unset( $args['post_type'] );
+		}
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
 
@@ -224,17 +239,45 @@ class Tribe__Tickets__Attendees {
 			array( $this, 'render' )
 		);
 
+		/**
+		 * @since TBD
+		 *
+		 * @param string $page_id
+		 */
+		do_action( 'tribe_tickets_register_attendees_page', $this->page_id );
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_pointers' ) );
-		add_action( "load-{$this->page_id}", array( $this, 'screen_setup' ) );
+		add_action( "load-{$this->page_id}", array( $this, 'screen_setup' ) );;
+	}
 
-		/**
-		 * This is a workaround to fix the problem
-		 *
-		 * @see  https://central.tri.be/issues/46198
-		 * @todo  we need to remove this
-		 */
-		add_action( 'admin_init', array( $this, 'screen_setup' ), 1 );
+	/**
+	 * Add dynamic registered pages that belongs to Tribe__Events__Main::POSTTYPE as those are a subpage of that
+	 * parent page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $page_id
+	 */
+	public function add_dynamic_parent( $page_id = '' ) {
+		if ( ! $page_id ) {
+			return;
+		}
+
+		$options = (array) tribe_get_option( 'ticket-enabled-post-types', array() );
+		$venue_has_tickets = in_array( Tribe__Events__Venue::POSTTYPE, $options, true );
+		$organizer_has_tickets = in_array( Tribe__Events__Organizer::POSTTYPE, $options, true );
+
+		global $_registered_pages;
+
+		if ( ! is_array( $_registered_pages ) ) {
+			return;
+		}
+
+		if ( $venue_has_tickets || $organizer_has_tickets ) {
+			$dynamic_page = str_replace( 'admin_page', Tribe__Events__Main::POSTTYPE . '_page', $page_id );
+			$_registered_pages[ $dynamic_page ] = true;
+		}
 	}
 
 	/**
@@ -319,42 +362,12 @@ class Tribe__Tickets__Attendees {
 	 * @since 4.6.2
 	 */
 	public function screen_setup() {
-		/* There's no reason for attendee screen setup to happen twice, but because
-		 * of a fix for bug #46198 it can indeed be called twice in the same request.
-		 * This flag variable is used to workaround that.
-		 *
-		 * @see Tribe__Tickets__Tickets_Handler::attendees_page_register() (and related @todo inside that method)
-		 * @see https://central.tri.be/issues/46198
-		 *
-		 * @todo remove the has_run check once the above workaround is dispensed with
-		 */
-		static $has_run = false;
-
 		$page = tribe_get_request_var( 'page', false );
 		$action = tribe_get_request_var( 'action', false );
-
-		/// Prevents from running twice
-		if ( $has_run ) {
-			return;
-		}
 
 		// When on the admin and not on the correct page bail
 		if ( is_admin() && $this->slug() !== $page ) {
 			return;
-		}
-
-		$has_run = true;
-
-		/**
-		 * This is a workaround to fix the problem
-		 *
-		 * @see  https://central.tri.be/issues/46198
-		 * @todo  remove this
-		 */
-		if ( current_filter() === 'admin_init' ) {
-			$this->enqueue_assets( $this->page_id );
-
-			$GLOBALS['current_screen'] = WP_Screen::get( $this->page_id );
 		}
 
 
@@ -365,13 +378,12 @@ class Tribe__Tickets__Attendees {
 			iframe_header();
 
 			// Check if we need to send an Email!
+			$status = false;
 			if ( isset( $_POST['tribe-send-email'] ) && $_POST['tribe-send-email'] ) {
 				$status = $this->send_mail_list();
-			} else {
-				$status = false;
 			}
 
-			tribe( 'tickets.admin.views' )->template( 'attendees-email' );
+			tribe( 'tickets.admin.views' )->template( 'attendees-email', array( 'status' => $status ) );
 
 			// Use iFrame Footer -- WP Method
 			iframe_footer();

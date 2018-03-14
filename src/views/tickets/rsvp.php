@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version @TBD
+ * @version 4.7
  *
  * @var bool $must_login
  */
@@ -90,7 +90,7 @@ $now = current_time( 'timestamp' );
 						>
 						<?php if ( $ticket->managing_stock() ) : ?>
 							<span class="tribe-tickets-remaining">
-					<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->remaining(), $ticket->capacity() ); ?>
+					<?php echo sprintf( esc_html__( '%1$s out of %2$s available', 'event-tickets' ), $ticket->available(), $ticket->capacity() ); ?>
 				</span>
 						<?php endif; ?>
 					<?php else: ?>
