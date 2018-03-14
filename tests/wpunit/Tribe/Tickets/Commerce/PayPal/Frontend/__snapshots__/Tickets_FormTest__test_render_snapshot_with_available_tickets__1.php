@@ -34,7 +34,7 @@
 				<td class="tickets_name">
 					Test Ticket for 141				</td>
 				<td class="tickets_price">
-					<span class="tribe-tickets-price-amount amount">&#x24;1</span>				</td>
+					<span class="tribe-tickets-price-amount amount">&#x24;1.00</span>				</td>
 				<td class="tickets_description" colspan="2">
 					Ticket for 141				</td>
 				<td class="tickets_submit">
@@ -57,7 +57,7 @@
 				<td class="tickets_name">
 					Test Ticket for 141				</td>
 				<td class="tickets_price">
-					<span class="tribe-tickets-price-amount amount">&#x24;1</span>				</td>
+					<span class="tribe-tickets-price-amount amount">&#x24;1.00</span>				</td>
 				<td class="tickets_description" colspan="2">
 					Ticket for 141				</td>
 				<td class="tickets_submit">
@@ -80,7 +80,7 @@
 				<td class="tickets_name">
 					Test Ticket for 141				</td>
 				<td class="tickets_price">
-					<span class="tribe-tickets-price-amount amount">&#x24;1</span>				</td>
+					<span class="tribe-tickets-price-amount amount">&#x24;1.00</span>				</td>
 				<td class="tickets_description" colspan="2">
 					Ticket for 141				</td>
 				<td class="tickets_submit">
