@@ -385,6 +385,19 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$stock        = $ticket->stock();
 		$available    = $ticket->available();
 		$sold         = (int) $ticket->qty_sold();
+
+		/**
+		 * Allows filtering the available number that will be displayed.
+		 *
+		 * @since 4.7
+		 *
+		 * @param int                           $available
+		 * @param Tribe__Tickets__Ticket_Object $ticket
+		 * @param int                           $sold
+		 * @param int                           $stock
+		 */
+		$available = apply_filters( 'tribe_tickets_stock_message_available_quantity', $available, $ticket, $sold, $stock );
+
 		$cancelled    = (int) $ticket->qty_cancelled();
 		$pending      = (int) $ticket->qty_pending();
 		$status       = '';
@@ -750,7 +763,7 @@ function tribe_tickets_delete_capacity( $object ) {
  *
  * @since  4.6.2
  *
- * @param  int  $object   Post We are trying to save capacity
+ * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
  * @param  int  $capacty  How much we are trying to update the capacity to
  *
  * @return int|false

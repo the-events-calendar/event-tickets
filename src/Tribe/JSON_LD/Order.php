@@ -52,16 +52,6 @@ class Tribe__Tickets__JSON_LD__Order {
 	protected function __construct() {
 		/**
 		 * Allow users to change the Low inventory mark
-		 * This is the old filter
-		 *
-		 * @todo remove on 4.4
-		 * @deprecated
-		 * @var int
-		 */
-		$this->low_stock = apply_filters( 'tribe_events_tickets_google_low_inventory_level', $this->low_stock );
-
-		/**
-		 * Allow users to change the Low inventory mark
 		 * @var int
 		 */
 		$this->low_stock = apply_filters( 'tribe_tickets_json_ld_low_inventory_level', $this->low_stock );

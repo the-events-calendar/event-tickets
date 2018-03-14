@@ -145,11 +145,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return Tribe__Tickets__RSVP
 	 */
 	public static function get_instance() {
-		if ( ! self::$instance ) {
-			self::$instance = new self;
-		}
-
-		return self::$instance;
+		return tribe( 'tickets.rsvp' );
 	}
 
 	/**
@@ -196,6 +192,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'event_tickets_attendees_rsvp_checkin_stati',
 			array( $this, 'filter_event_tickets_attendees_rsvp_checkin_stati' )
 		);
+	}
+
+	/**
+	 * Generates an Order ID.
+	 *
+	 * @since 4.7
+	 *
+	 * @return string
+	 */
+	public static function generate_order_id() {
+		return md5( time() . rand() );
 	}
 
 	/**
@@ -466,151 +473,37 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$has_tickets = $post_id = false;
+		$has_tickets = false;
+		$post_id     = get_the_ID();
 
 		/**
-		* RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
-		*
-		* @param $data post Parameters comes from RSVP Form
-		*/
+		 * RSVP specific action fired just before a RSVP-driven attendee tickets for an order are generated
+		 *
+		 * @param $data $_POST Parameters comes from RSVP Form
+		 */
 		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
 
-		$order_id = md5( time() . rand() );
+		$attendee_details = $this->parse_attendee_details();
 
-		$attendee_email     = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
-		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
-		$attendee_optout    = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
-
-		if (
-			empty( $_POST['attendee']['order_status'] )
-			|| ! $this->tickets_view->is_valid_rsvp_option( $_POST['attendee']['order_status'] )
-		) {
-			$attendee_order_status = 'yes';
-		} else {
-			$attendee_order_status = $_POST['attendee']['order_status'];
-		}
-
-		if ( ! $attendee_email || ! $attendee_full_name ) {
-			$url = get_permalink( $post_id );
+		if ( false === $attendee_details ) {
+			$url = get_permalink( );
 			$url = add_query_arg( 'rsvp_error', 1, $url );
 			wp_redirect( esc_url_raw( $url ) );
 			tribe_exit();
 		}
 
-		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
-
 		// Iterate over each product
 		foreach ( (array) $_POST['product_id'] as $product_id ) {
-			$order_attendee_id = 0;
-
-			// Get the event this tickets is for
-			$post_id = get_post_meta( $product_id, $this->event_key, true );
-
-			if ( empty( $post_id ) ) {
+			if ( ! $ticket_qty = $this->parse_ticket_quantity( $product_id ) ) {
+				// if there were no RSVP tickets for the product added to the cart, continue
 				continue;
 			}
 
-			$ticket_type = $this->get_ticket( $post_id, $product_id );
-
-			// if there were no RSVP tickets for the product added to the cart, continue
-			if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
-				continue;
-			}
-
-			// get the RSVP status `decrease_stock_by` value
-			$status_stock_size = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
-
-			$ticket_qty = intval( $_POST[ "quantity_{$product_id}" ] );
-
-			// to avoid tickets from not being created on a status stock size of 0
-			// let's take the status stock size into account and create a number of tickets
-			// at least equal to the number of tickets the user requested
-			$ticket_qty = $status_stock_size < 1 ? $ticket_qty : $status_stock_size * $ticket_qty;
-
-			$qty = max( $ticket_qty, 0 );
-
-			// Throw an error if Qty is bigger then Remaining
-			if ( $ticket_type->managing_stock() && $qty > $ticket_type->remaining() ) {
-				$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
-				wp_redirect( esc_url_raw( $url ) );
-				tribe_exit();
-			}
-
-			$has_tickets = true;
-
-			/**
-			* RSVP specific action fired just before a RSVP-driven attendee ticket for an event is generated
-			*
-			* @param $post_id ID of event
-			* @param $ticket_type Ticket Type object for the product
-			* @param $data post Parameters comes from RSVP Form
-			*/
-			do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $post_id, $ticket_type, $_POST );
-
-			// Iterate over all the amount of tickets purchased (for this product)
-			for ( $i = 0; $i < $qty; $i ++ ) {
-
-				$attendee = array(
-					'post_status' => 'publish',
-					'post_title'  => $attendee_full_name . ' | ' . ( $i + 1 ),
-					'post_type'   => self::ATTENDEE_OBJECT,
-					'ping_status' => 'closed',
-				);
-
-				// Insert individual ticket purchased
-				$attendee_id = wp_insert_post( $attendee );
-
-				if ( $status_stock_size > 0 ) {
-					$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-					update_post_meta( $product_id, 'total_sales', ++ $sales );
-				}
-
-				update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
-				update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $post_id );
-				update_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
-				update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
-				update_post_meta( $attendee_id, $this->order_key, $order_id );
-				update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
-				update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
-				update_post_meta( $attendee_id, $this->email, $attendee_email );
-
-				/**
-				 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated
-				 *
-				 * @param $attendee_id ID of attendee ticket
-				 * @param $post_id ID of event
-				 * @param $order_id RSVP order ID
-				 * @param $product_id RSVP product ID
-				 */
-				do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $post_id, $order_id );
-
-				/**
-				 * Action fired when an RSVP attendee ticket is created
-				 *
-				 * @param $attendee_id ID of the attendee post
-				 * @param $post_id Event post ID
-				 * @param $product_id RSVP ticket post ID
-				 * @param $order_attendee_id Attendee # for order
-				 */
-				do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id );
-
-				$this->record_attendee_user_id( $attendee_id );
-				$order_attendee_id++;
-			}
-
-			/**
-			 * Action fired when an RSVP has had attendee tickets generated for it
-			 *
-			 * @param $product_id RSVP ticket post ID
-			 * @param $order_id ID of the RSVP order
-			 * @param $qty Quantity ordered
-			 */
-			do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty );
-
-			// After Adding the Values we Update the Transient
-			Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+			$has_tickets |= $this->generate_tickets_for( $product_id, $ticket_qty, $attendee_details );
 		}
+
+		$order_id = $attendee_details['order_id'];
+		$attendee_order_status = $attendee_details['order_status'];
 
 		/**
 		 * Fires when an RSVP attendee tickets have been generated.
@@ -646,6 +539,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$send_mail_stati = apply_filters(
 				'tribe_tickets_rsvp_send_mail_stati', $send_mail_stati, $order_id, $post_id, $attendee_order_status
 			);
+
 			// No point sending tickets if their current intention is not to attend
 			if ( $has_tickets && in_array( $attendee_order_status, $send_mail_stati ) ) {
 				$this->send_tickets_email( $order_id, $post_id );
@@ -877,27 +771,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Generates the validation code that will be printed in the ticket.
-	 * It purpose is to be used to validate the ticket at the door of an event.
-	 *
-	 * @param int $attendee_id
-	 *
-	 * @return string
-	 */
-	private function generate_security_code( $attendee_id ) {
-		return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
-	}
-
-	/**
 	 * Saves a given ticket (WooCommerce product)
 	 *
-	 * @param int                                   $event_id
+	 * @param int                           $post_id
 	 * @param Tribe__Tickets__Ticket_Object $ticket
-	 * @param array                                 $raw_data
+	 * @param array                         $raw_data
 	 *
 	 * @return int The updated/created ticket post ID
 	 */
-	public function save_ticket( $event_id, $ticket, $raw_data = array() ) {
+	public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
 		// assume we are updating until we find out otherwise
 		$save_type = 'update';
 
@@ -917,7 +799,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket->ID = wp_insert_post( $args );
 
 			// Relate event <---> ticket
-			add_post_meta( $ticket->ID, $this->event_key, $event_id );
+			add_post_meta( $ticket->ID, $this->event_key, $post_id );
 
 		} else {
 			$args = array(
@@ -940,54 +822,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Adds RSVP price
 		update_post_meta( $ticket->ID, '_price', $ticket->price );
 
-		$data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
-
-		$default_capacity = -1;
-
-		// Fetch capacity field, if we don't have it use default (defined above)
-		$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
-
-		// If empty we need to modify to the default
-		if ( '' === $data['capacity'] ) {
-			$data['capacity'] = $default_capacity;
-		}
-
-		// The only available value lower than zero is -1 which is unlimited
-		if ( 0 > $data['capacity'] ) {
-			$data['capacity'] = -1;
-		}
-
-		// Fetch the stock if defined, otherwise use Capacity field
-		$data['stock'] = trim( Tribe__Utils__Array::get( $data, 'stock', $data['capacity'] ) );
-
-		// If empty we need to modify to what every capacity was
-		if ( '' === $data['stock'] ) {
-			$data['stock'] = $data['capacity'];
-		}
-
-		// The only available value lower than zero is -1 which is unlimited
-		if ( 0 > $data['stock'] ) {
-			$data['stock'] = -1;
-		}
-
-		if ( -1 !== $data['capacity'] ) {
-			if ( 'update' === $save_type ) {
-				$totals = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
-				$data['stock'] -= $totals['pending'] + $totals['sold'];
-			}
-
-			update_post_meta( $ticket->ID, '_manage_stock', 'yes' );
-			update_post_meta( $ticket->ID, '_stock', $data['stock'] );
-		} else {
-			// unlimited stock
-			delete_post_meta( $ticket->ID, '_stock_status' );
-			update_post_meta( $ticket->ID, '_manage_stock', 'no' );
-			delete_post_meta( $ticket->ID, '_stock' );
-			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
-			delete_post_meta( $ticket->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
-		}
-
-		tribe_tickets_update_capacity( $ticket, $data['capacity'] );
+		$ticket_data = Tribe__Utils__Array::get( $raw_data, 'tribe-ticket', array() );
+		$this->update_capacity( $ticket, $ticket_data, $save_type );
 
 		if ( ! empty( $raw_data['ticket_start_date'] ) ) {
 			$start_date = Tribe__Date_Utils::maybe_format_from_datepicker( $raw_data['ticket_start_date'] );
@@ -1035,7 +871,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @var array Ticket data
 		 * @var string Commerce engine class
 		 */
-		do_action( 'event_tickets_after_' . $save_type . '_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_' . $save_type . '_ticket', $post_id, $ticket, $raw_data, __CLASS__ );
 
 		/**
 		 * Generic action fired after saving a ticket
@@ -1045,7 +881,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @var array Ticket data
 		 * @var string Commerce engine class
 		 */
-		do_action( 'event_tickets_after_save_ticket', $event_id, $ticket, $raw_data, __CLASS__ );
+		do_action( 'event_tickets_after_save_ticket', $post_id, $ticket, $raw_data, __CLASS__ );
 
 		tribe( 'tickets.version' )->update( $ticket->ID );
 
@@ -1535,7 +1371,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 				'qr_ticket_id'  => $attendee->ID,
 				'security_code' => $security,
 
-			    // Attendee Meta
+				// Attendee Meta
 				'attendee_meta' => $meta,
 			) );
 
@@ -1698,9 +1534,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	* Renders the advanced fields in the new/edit ticket form.
-	* Using the method, providers can add as many fields as
-	* they want, specific to their implementation.
+	 * Renders the advanced fields in the new/edit ticket form.
+	 * Using the method, providers can add as many fields as
+	 * they want, specific to their implementation.
 	 *
 	 * @deprecated 4.6
 	 *
@@ -1717,8 +1553,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.6
 	 *
-	 * @param $event_id
-	 * @param $ticket_id
+	 * @param int $event_id
+	 * @param int $ticket_id
 	 *
 	 * @return mixed
 	 */
@@ -1836,10 +1672,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
 
 		if (
-			! (
-				isset( $rsvp_options[ $previous_order_status ] )
-				&& isset( $rsvp_options[ $attendee_order_status ] )
-			)
+		! (
+			isset( $rsvp_options[ $previous_order_status ] )
+			&& isset( $rsvp_options[ $attendee_order_status ] )
+		)
 		) {
 			return;
 		}
@@ -1878,5 +1714,220 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$stati[] = 'yes';
 
 		return array_unique( $stati );
+	}
+
+	/**
+	 * Generates a number of attendees for an RSVP ticket.
+	 *
+	 * @since 4.7
+	 *
+	 * @param int $product_id The ticket post ID.
+	 * @param int $ticket_qty The number of attendees that should be generated.
+	 * @param array $attendee_details An array containing the details for the attendees
+	 *                                that should be generated.
+	 *
+	 * @return bool `true` if the attendees were successfully generated, `false` otherwise.
+	 */
+	public function generate_tickets_for( $product_id, $ticket_qty, $attendee_details ) {
+		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
+
+		$required_details = array(
+			'full_name',
+			'email',
+			'order_status',
+			'optout',
+			'order_id',
+		);
+
+		foreach ( $required_details as $required_detail ) {
+			if ( ! isset( $attendee_details[ $required_detail ] ) ) {
+				return false;
+			}
+			if ( $required_detail !== 'optout' ) {
+				// some details should not be empty
+				if ( empty( $attendee_details[ $required_detail ] ) ) {
+					return false;
+				}
+			}
+		}
+
+		$attendee_full_name    = $attendee_details['full_name'];
+		$attendee_email        = $attendee_details['email'];
+		$attendee_order_status = $attendee_details['order_status'];
+		$attendee_optout       = $attendee_details['optout'];
+		$order_id              = $attendee_details['order_id'];
+
+		$order_attendee_id = 0;
+
+		// Get the event this tickets is for
+		$post_id = get_post_meta( $product_id, $this->event_key, true );
+
+		if ( empty( $post_id ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket_type */
+		$ticket_type = $this->get_ticket( $post_id, $product_id );
+
+		// get the RSVP status `decrease_stock_by` value
+		$status_stock_size     = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
+
+		// to avoid tickets from not being created on a status stock size of 0
+		// let's take the status stock size into account and create a number of tickets
+		// at least equal to the number of tickets the user requested
+		$ticket_qty = $status_stock_size < 1 ? $ticket_qty : $status_stock_size * $ticket_qty;
+
+		$qty = max( $ticket_qty, 0 );
+
+		// Throw an error if Qty is bigger then Remaining
+		if ( $ticket_type->managing_stock() && $qty > $ticket_type->inventory() ) {
+			$url = add_query_arg( 'rsvp_error', 2, get_permalink( $post_id ) );
+			wp_redirect( esc_url_raw( $url ) );
+			tribe_exit();
+		}
+
+		/**
+		 * RSVP specific action fired just before a RSVP-driven attendee ticket for an event is generated
+		 *
+		 * @param int $post_id ID of event
+		 * @param Tribe__Tickets__Ticket_Object $ticket_type Ticket Type object for the product
+		 * @param array $_POST Parameters coming from the RSVP Form
+		 */
+		do_action( 'tribe_tickets_rsvp_before_attendee_ticket_creation', $post_id, $ticket_type, $_POST );
+
+		// Iterate over all the amount of tickets purchased (for this product)
+		for ( $i = 0; $i < $qty; $i ++ ) {
+
+			$attendee           = array(
+				'post_status' => 'publish',
+				'post_title'  => $attendee_full_name . ' | ' . ( $i + 1 ),
+				'post_type'   => self::ATTENDEE_OBJECT,
+				'ping_status' => 'closed',
+			);
+
+			// Insert individual ticket purchased
+			$attendee_id = wp_insert_post( $attendee );
+
+			if ( $status_stock_size > 0 ) {
+				$sales = (int) get_post_meta( $product_id, 'total_sales', true );
+				update_post_meta( $product_id, 'total_sales', ++ $sales );
+			}
+
+			update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
+			update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $post_id );
+			update_post_meta( $attendee_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
+			update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
+			update_post_meta( $attendee_id, $this->order_key, $order_id );
+			update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
+			update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
+			update_post_meta( $attendee_id, $this->email, $attendee_email );
+
+			/**
+			 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated
+			 *
+			 * @param int $attendee_id ID of attendee ticket
+			 * @param int $post_id ID of event
+			 * @param string $order_id RSVP order ID (hash)
+			 * @param int $product_id RSVP product ID
+			 */
+			do_action( 'event_tickets_rsvp_attendee_created', $attendee_id, $post_id, $order_id );
+
+			/**
+			 * Action fired when an RSVP attendee ticket is created
+			 *
+			 * @param int $attendee_id ID of the attendee post
+			 * @param int $post_id Event post ID
+			 * @param int $product_id RSVP ticket post ID
+			 * @param int $order_attendee_id Attendee # for order
+			 */
+			do_action( 'event_tickets_rsvp_ticket_created', $attendee_id, $post_id, $product_id, $order_attendee_id );
+
+			$this->record_attendee_user_id( $attendee_id );
+			$order_attendee_id++;
+		}
+
+		/**
+		 * Action fired when an RSVP has had attendee tickets generated for it
+		 *
+		 * @param int $product_id RSVP ticket post ID
+		 * @param string $order_id ID (hash) of the RSVP order
+		 * @param int $qty Quantity ordered
+		 */
+		do_action( 'event_tickets_rsvp_tickets_generated_for_product', $product_id, $order_id, $qty );
+
+		// After Adding the Values we Update the Transient
+		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+
+		return true;
+	}
+
+	/**
+	 * @param $post_id
+	 *
+	 * @return array|false
+	 */
+	protected function parse_attendee_details( ) {
+		$order_id = self::generate_order_id();
+
+		$attendee_email     = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
+		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name = empty( $_POST['attendee']['full_name'] ) ? null : sanitize_text_field( $_POST['attendee']['full_name'] );
+		$attendee_optout    = empty( $_POST['attendee']['optout'] ) ? false : (bool) $_POST['attendee']['optout'];
+
+		if (
+			empty( $_POST['attendee']['order_status'] )
+			|| ! $this->tickets_view->is_valid_rsvp_option( $_POST['attendee']['order_status'] )
+		) {
+			$attendee_order_status = 'yes';
+		} else {
+			$attendee_order_status = $_POST['attendee']['order_status'];
+		}
+
+		if ( ! $attendee_email || ! $attendee_full_name ) {
+			return false;
+		}
+
+		$attendee_details = array(
+			'full_name'    => $attendee_full_name,
+			'email'        => $attendee_email,
+			'order_status' => $attendee_order_status,
+			'optout'       => $attendee_optout,
+			'order_id'     => $order_id,
+		);
+
+		return $attendee_details;
+	}
+
+	/**
+	 * Parses the quantity of tickets requested for a product via the $_POST var.
+	 *
+	 * @since 4.7
+	 *
+	 * @param int $product_id A product post ID
+	 *
+	 * @return int Either the requested quantity of tickets for the product or `0` in
+	 *             any other case.
+	 */
+	protected function parse_ticket_quantity( $product_id ) {
+		if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
+			return 0;
+		}
+
+		return (int) $_POST[ "quantity_{$product_id}" ];
+	}
+
+	/**
+	 * Generates the validation code that will be printed in the ticket.
+	 *
+	 * Its purpose is to be used to validate the ticket at the door of an event.
+	 *
+	 * @since 4.7
+	 *
+	 * @param int $attendee_id
+	 *
+	 * @return string
+	 */
+	public function generate_security_code( $attendee_id ) {
+		return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
 	}
 }

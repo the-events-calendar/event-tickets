@@ -12,7 +12,7 @@ if ( ! isset( $ticket_id ) ) {
 	$ticket = null;
 
 	if ( ! $is_admin ) {
-		$provider_class = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';
+		$provider_class = 'Tribe__Tickets__Commerce__PayPal__Main';
 	}
 } else {
 	$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -21,9 +21,10 @@ if ( ! isset( $ticket_id ) ) {
 }
 
 $modules = Tribe__Tickets__Tickets::modules();
+$default_provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 ?>
 
-<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true">
+<div id="tribe_panel_edit" class="ticket_panel panel_edit tribe-validation" aria-hidden="true" data-default-provider="<?php echo esc_attr( $default_provider ) ?>">
 	<?php
 	/**
 	 * Allows for the insertion of additional elements into the main ticket edit panel
@@ -36,7 +37,7 @@ $modules = Tribe__Tickets__Tickets::modules();
 	do_action( 'tribe_events_tickets_pre_edit', $post_id, $ticket_id );
 	?>
 
-	<div id="ticket_form" class="ticket_form tribe_sectionheader">
+	<div id="ticket_form" class="ticket_form tribe_sectionheader tribe-validation">
 		<div id="ticket_form_table" class="eventtable ticket_form">
 			<div
 				class="tribe-dependent"

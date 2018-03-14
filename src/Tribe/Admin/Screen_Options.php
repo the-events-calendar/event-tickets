@@ -17,5 +17,6 @@ class Tribe__Tickets__Admin__Screen_Options {
 		$attendees_page = 'admin_page_tickets-attendees';
 		$screen_options = new Tribe__Tickets__Admin__Screen_Options__Attendees( $attendees_page );
 		add_action( "load-{$attendees_page}", array( $screen_options, 'add_options' ) );
+		add_filter( 'set-screen-option', array( $screen_options, 'filter_set_screen_options' ), 10, 3 );
 	}
 }
