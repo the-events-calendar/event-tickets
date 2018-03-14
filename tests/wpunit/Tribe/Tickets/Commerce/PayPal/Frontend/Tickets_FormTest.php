@@ -29,13 +29,6 @@ class Tickets_FormTest extends \Codeception\TestCase\WPTestCase {
 		$this->driver = new WPHtmlOutputDriver( home_url(), 'http://commerce.dev' );
 	}
 
-	public function tearDown() {
-		// your tear down methods here
-
-		// then
-		parent::tearDown();
-	}
-
 	/**
 	 * @test
 	 * it should be instantiatable
@@ -84,8 +77,6 @@ class Tickets_FormTest extends \Codeception\TestCase\WPTestCase {
 	 * Test render snapshot with no available tickets
 	 */
 	public function test_render_snapshot_with_no_available_tickets() {
-		$this->markTestSkipped( 'Snapshot testing seem very unstable, need more exploration before required' );
-
 		global $post;
 		$post = $this->factory->post->create_and_get();
 
@@ -112,8 +103,6 @@ class Tickets_FormTest extends \Codeception\TestCase\WPTestCase {
 	 * Test render snapshot with available tickets
 	 */
 	public function test_render_snapshot_with_available_tickets() {
-		$this->markTestSkipped( 'Snapshot testing seem very unstable, need more exploration before required' );
-
 		global $post;
 		$post = $this->factory->post->create_and_get();
 
