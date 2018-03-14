@@ -20,5 +20,5 @@
   "prefer-stable": true,
   "config": {
     "preferred-install": "dist"
-  },
+  }
 }
