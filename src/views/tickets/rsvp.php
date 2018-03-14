@@ -32,6 +32,7 @@ $now = current_time( 'timestamp' );
 		<?php echo esc_html_x( 'RSVP', 'form heading', 'event-tickets' ) ?>
 	</h2>
 
+
 	<div class="tribe-rsvp-messages">
 		<?php
 		if ( $messages ) {
@@ -126,7 +127,25 @@ $now = current_time( 'timestamp' );
 					 *
 					 * @var array of Tribe__Tickets__Ticket_Object
 					 */
-					do_action( 'event_tickets_rsvp_before_confirmation_fields', $tickets );
+					do_action( 'tribe_tickets_rsvp_before_confirmation_fields', $tickets );
+
+					/**
+					 * Set the default Full Name for the RSVP form
+					 *
+					 * @since TBD
+					 *
+					 * @param string
+					 */
+					$name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '' );
+
+					/**
+					 * Set the default value for the email on the RSVP form.
+					 *
+					 * @since TBD
+					 *
+					 * * @param string
+					 */
+					$email = apply_filters( 'tribe_tickets_rsvp_form_email', '' );
 					?>
 					<table class="tribe-tickets-table">
 						<tr class="tribe-tickets-full-name-row">
@@ -134,7 +153,7 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name">
+								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name" value="<?php echo esc_html( $name ); ?>">
 							</td>
 						</tr>
 						<tr class="tribe-tickets-email-row">
@@ -142,7 +161,7 @@ $now = current_time( 'timestamp' );
 								<label for="tribe-tickets-email"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
 							</td>
 							<td colspan="3">
-								<input type="email" name="attendee[email]" id="tribe-tickets-email">
+								<input type="email" name="attendee[email]" id="tribe-tickets-email" value="<?php echo esc_html( $email ); ?>">
 							</td>
 						</tr>
 
