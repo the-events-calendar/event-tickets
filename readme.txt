@@ -8,18 +8,17 @@ Stable tag: 4.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Event Tickets allows your visitors to RSVP to events on your site.  Also works seamlessly with The Events Calendar.
+Event Tickets allows your visitors to RSVP and buy tickets to events on your site.  Also works seamlessly with The Events Calendar.
 
 == Description ==
 
-Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same RSVP functionality directly to your event listings.
+Event Tickets provides a simple way for visitors to RSVP or purchase tickets to your events. As a standalone plugin, it enables you to add RSVPs or tickets to posts or pages. When paired with [The Events Calendar](http://m.tri.be/18tg), you can add that same functionality directly to your event listings.
 
-Admins are able to access RSVP information from the backend, allowing them to check in registered attendees with ease when your event begins. For free events, Events Tickets allows you to own the entire event management process within your WordPress site.
+Sell tickets to your events by connecting your PayPal business account to your site. PayPal handles the transactions so you can focus on event management! Admins can view attendee information from the backend, allowing them to check in registered attendees with ease when your event begins.
 
 <strong>Check out [Event Tickets Plus](http://m.tri.be/18th) and [other add-ons](http://m.tri.be/2a)</strong>
 
-><strong>Sell tickets on your site!</strong>
->Take full control of the event ticketing process and customize it to suit your needs. Event Tickets Plus uses your favorite e-commerce provider to keep users on your site from start to finish. Configure custom attendee registration forms to collect information like t-shirt size or food preferences.
+>Take full control of the event ticketing process and customize it to suit your needs. Event Tickets Plus uses your favorite e-commerce provider to keep users on your site from start to finish. Advanced ticket functionality allows you to share capacity between tickets so you can always sell out without selling over. Configure custom attendee registration forms to collect information like t-shirt size or food preferences.
 >[Upgrade to Event Ticket Plus now](http://m.tri.be/18th).
 >
 
@@ -27,11 +26,11 @@ Admins are able to access RSVP information from the backend, allowing them to ch
 
 The team at Modern Tribe stands by our work and offers light support every Wednesday to the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the [premium add-on plugin](http://m.tri.be/18th) and you get access to premium support forums with 24-48 hour response times on weekdays.
 
-Enjoy using Event Tickets, know how to get under the hood and want to make money helping people? We're growing our community team and would love to hear from you. If you're interested, [check this out!](http://m.tri.be/mk)
+Enjoy using Event Tickets, know how to get under the hood, and want to make money helping people? We're growing our community team and would love to hear from you. If you're interested, [check this out!](http://m.tri.be/mk)
 
 = PLUG-N-PLAY & HIGHLY CUSTOMIZABLE =
 
-Event Tickets is built to work out of the box: it doesn't use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs within minutes.
+Event Tickets is built to work out of the box: it doesn't use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs and selling tickets within minutes.
 
 By developers, for developers... it's ready to be the foundation for your wildest hack sessions. Complete with a skeleton stylesheet to theme fast and efficiently, loads of tools including partial template overrides, a host of template tags, hooks and filters, [careful documentation](http://m.tri.be/eu), as well as a [library of free extensions](http://m.tri.be/ext). Events Tickets is built FOR people who build websites.
 
@@ -43,8 +42,10 @@ Just getting started? Definitely watch and read through the [New User Primer](ht
 
 * Visitors can RSVP to events
 * Add RSVP to posts, pages, or any custom post type
+* Visitors can purchase tickets to events
+* Admins can collect ticket fees by connecting their PayPal business account
 * Works out of the box with The Events Calendar
-* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) to sell tickets using WooCommerce and Easy Digital Downloads
+* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) for advanced ticket sales using WooCommerce and Easy Digital Downloads
 * Completely responsive from mobile to tablet to desktop
 * Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
 * Internationalized & Translated
@@ -55,7 +56,7 @@ Looking for something else? We've got add-ons available to take your calendar to
 
 = Event Tickets Plus =
 
-Get premium support and add paid ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard! We currently support WooCommerce or Easy Digital Downloads.
+Get premium support and advanced ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard, using your favorite e-commerce provider. Tickets can share stock or have custom registration fields.
 
 = The Events Calendar =
 
