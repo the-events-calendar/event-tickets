@@ -34,18 +34,11 @@ if ( 0 !== $ticket_count ) {
 	$counters[] = sprintf( _n( '%d Ticket', '%d Tickets', $ticket_count, 'event-tickets' ), $ticket_count );
 }
 
-if ( $is_event_page ) {
 
+if ( $is_event_page ) {
 	// The "Events" post type.
 	$link = trailingslashit( get_permalink( $event_id ) ) . 'tickets';
-
-} elseif ( isset( $post_type->_builtin ) && true !== $post_type->_builtin ) {
-
-	// Custom post types.
-	$link = trailingslashit( get_permalink( $event_id ) ) . '?tribe-edit-orders=1';
-
 } else {
-
 	// Core post types (e.g. posts).
 	$link = home_url( '/tickets/' . $event_id );
 }
