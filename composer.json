@@ -10,13 +10,13 @@
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
   "require-dev": {
-    "lucatume/wp-browser": "^2.0",
+    "lucatume/wp-browser": "1.22.7.1",
     "lucatume/function-mocker": "^1.0",
     "vlucas/phpdotenv": "^2.4",
     "lucatume/function-mocker-le": "^1.0",
     "spatie/phpunit-snapshot-assertions": "^1.2"
   },
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "prefer-stable": true,
   "config": {
     "preferred-install": "dist"
