@@ -192,6 +192,42 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			'event_tickets_attendees_rsvp_checkin_stati',
 			array( $this, 'filter_event_tickets_attendees_rsvp_checkin_stati' )
 		);
+
+		if ( is_user_logged_in() ) {
+			add_filter( 'tribe_tickets_rsvp_form_full_name', array( $this, 'rsvp_form_add_full_name' ) );
+			add_filter( 'tribe_tickets_rsvp_form_email', array( $this, 'rsvp_form_add_email' ) );
+		}
+	}
+
+	/**
+	 * Hooks into the filter `tribe_tickets_rsvp_form_full_name` to add the user full name if user is logged in
+	 *
+	 * @param string $name
+	 *
+	 * @return string
+	 */
+	public function rsvp_form_add_full_name( $name = '' ) {
+		$current_user = wp_get_current_user();
+		$name_parts = array( $current_user->first_name, $current_user->last_name );
+		$name = implode( ' ', array_filter( $name_parts ) );
+		if ( empty( $name ) ) {
+			$name = $current_user->display_name;
+		}
+		return $name;
+	}
+
+	/**
+	 * Hook into the filter `tribe_tickets_rsvp_form_email` to add the user default email.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $default_email
+	 *
+	 * @return string
+	 */
+	public function rsvp_form_add_email() {
+		$current_user = wp_get_current_user();
+		return $current_user->user_email;
 	}
 
 	/**
@@ -414,7 +450,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( tribe_is_truthy( $attendee_order_status ) && 'no' === $previous_order_status ) {
 			$capacity = tribe_tickets_get_capacity( $product_id );
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			if ( $sales + 1 > $capacity ) {
+			$unlimited = -1;
+			if ( $unlimited !== $capacity && $sales + 1 > $capacity ) {
 				return;
 			}
 		}

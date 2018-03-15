@@ -131,13 +131,14 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * it should increase sales by 1 when attendee status changes from not going to going
 	 */
 	public function it_should_increase_sales_by_1_when_attendee_status_changes_from_not_going_to_going() {
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'no', 'yes', 10 );
+		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'no', 'yes', 10, -1 );
 
 		$sut = $this->make_instance();
 		$sut->update_attendee_data( $data, $order_id, $post_id );
 
 		$this->assertEquals( 11, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
+
 
 	public function stati_stocks_provider() {
 		return [
@@ -203,7 +204,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// quantity_ID not relevant
 	}
 
-	protected function make_data( $previous_status, $status, $sales ) {
+	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {
 		$post_id = $this->factory()->post->create();
 
 		// mock the already placed order
@@ -222,6 +223,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 				'meta_input'  => [
 					'total_sales'           => $sales,
 					'_tribe_rsvp_for_event' => $post_id,
+					'_stock' => $stock,
 				]
 			]
 		);
