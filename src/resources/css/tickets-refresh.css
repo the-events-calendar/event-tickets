@@ -240,8 +240,7 @@
 	padding: .5em;
 	position: absolute;
 	top: 50%;
-	-webkit-transform: translateY(-50%);
-	        transform: translateY(-50%);
+	transform: translateY(-50%);
 	z-index: 1;
 }
 
@@ -418,8 +417,7 @@ p.description {
 	padding: .5em;
 	position: absolute;
 	top: 50%;
-	-webkit-transform: translateY(-50%);
-	        transform: translateY(-50%);
+	transform: translateY(-50%);
 	z-index: 1;
 }
 
@@ -495,7 +493,6 @@ p.description {
 		margin-top: 5px;
 		position: relative;
 		top: auto;
-		-webkit-transform: none;
 		transform: none;
 		width: 100%;
 	}
@@ -519,7 +516,6 @@ p.description {
 		margin-top: 5px;
 		position: relative;
 		top: auto;
-		-webkit-transform: none;
 		transform: none;
 		width: 100%;
 	}
