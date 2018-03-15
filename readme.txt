@@ -249,6 +249,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
+* Tweak - Unified upsell messages in the Ticket settings tab [100736]
 
 = [4.7] 2018-03-13 =
 
