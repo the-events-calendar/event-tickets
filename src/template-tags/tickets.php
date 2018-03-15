@@ -247,9 +247,9 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				// Add any query attribute as a hidden input as the action of the form is GET
 				foreach ( $query_params as $param ) {
 					$parts = explode( '=', $param );
+
 					// a query string must be 2 parts only a name and a value
-					$number_of_parts = 2;
-					if ( is_array( $parts ) && $number_of_parts === count( $parts ) ) {
+					if ( is_array( $parts ) && 2 === count( $parts ) ) {
 						list( $name, $value ) = $parts;
 						$button .= '<input type="hidden" name="' . esc_attr( $name ) . '" value="' . esc_attr( $value ) . '">';
 					}
