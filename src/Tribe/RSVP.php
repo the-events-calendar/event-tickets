@@ -450,7 +450,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( tribe_is_truthy( $attendee_order_status ) && 'no' === $previous_order_status ) {
 			$capacity = tribe_tickets_get_capacity( $product_id );
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			if ( $sales + 1 > $capacity ) {
+			$unlimited = -1;
+			if ( $unlimited !== $capacity && $sales + 1 > $capacity ) {
 				return;
 			}
 		}

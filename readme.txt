@@ -249,6 +249,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Add warning if a ticket has stock management turned off in the related WooCommerce product, but has capacity enabled for the ticket(thanks Isaiah Baker and others for highlighting this) [91471]
 * Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
+* Fix - The redirection to the correct post type URL when site has a plain permalink structure on the buy ticket form [96640]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 
 = [4.7] 2018-03-13 =

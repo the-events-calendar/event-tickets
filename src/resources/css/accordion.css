@@ -51,8 +51,7 @@
 	right: 0;
 	width: 80%;
 	top: 50%;
-	-webkit-transform: translateY(-50%);
-	        transform: translateY(-50%);
+	transform: translateY(-50%);
 }
 
 .accordion-header.is-active::before {
