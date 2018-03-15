@@ -240,7 +240,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [M18.05] TBD =
 
 * Feature - Add updater class to enable changes on future updates [84675]
-* Fix - Prevent duplicates queries on the admin, by caching them [99267]
+* Fix - Prevent duplicate calls to `get_all_event_tickets` on the admin, by caching them [99267]
 * Fix - Sanitize correctly the description of an RSVP [99100]
 * Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
 * Fix - On reload of base panel of the ticket editor trigger relevant messages [95098]
