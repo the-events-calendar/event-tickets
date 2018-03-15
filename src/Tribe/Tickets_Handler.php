@@ -636,6 +636,7 @@ class Tribe__Tickets__Tickets_Handler {
 				$capacity += $totals['sold'] + $totals['pending'];
 			}
 		} else {
+
 			// In here we deal with Tickets migration from legacy
 			$mode = get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 			$totals = $this->get_ticket_totals( $object->ID );
