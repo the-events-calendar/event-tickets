@@ -246,12 +246,18 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$update_meta = $this->key_start_date;
+		$meta_key = $this->key_start_date;
 		$tickets = $this->get_tickets_ids( $post_id );
 
-		foreach ( $tickets as $ticket ) {
+		foreach ( $tickets as $ticket_id ) {
 			// Skip tickets with manual updates to that meta
-			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+			if ( $this->has_manual_update( $ticket_id, $meta_key ) ) {
+				continue;
+			}
+
+			$current_date = get_post_meta( $ticket_id, $meta_key, true );
+			// Skip if the ticket has already a date
+			if ( ! empty( $current_date ) ) {
 				continue;
 			}
 
@@ -262,12 +268,11 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 			// Convert to seconds
 			$round *= MINUTE_IN_SECONDS;
-
 			$date = strtotime( $post->post_date );
 			$date = round( $date / $round ) * $round;
 			$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
 
-			update_post_meta( $ticket, $update_meta, $date );
+			update_post_meta( $ticket_id, $meta_key, $date );
 		}
 
 		return true;
