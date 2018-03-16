@@ -250,6 +250,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
 * Fix - The redirection to the correct post type URL when site has a plain permalink structure on the buy ticket form [96640]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
+* Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
 
 = [4.7] 2018-03-13 =
 
