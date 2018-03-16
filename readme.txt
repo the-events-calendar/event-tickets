@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, aguseo, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.4
-Stable tag: 4.7
+Stable tag: 4.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -237,7 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [M18.05] TBD =
+= [4.7.1] TBD =
 
 * Feature - Add updater class to enable changes on future updates [84675]
 * Fix - Sanitize correctly the description of an RSVP [99100]
@@ -249,7 +249,9 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
 * Fix - Prevent overwriting the start date of a ticket if it was already set [99601]
+* Fix - The redirection to the correct post type URL when site has a plain permalink structure on the buy ticket form [96640]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
+* Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
 
 = [4.7] 2018-03-13 =
 
