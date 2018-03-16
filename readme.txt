@@ -237,7 +237,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [M18.05] TBD =
+= [4.7.1] TBD =
 
 * Feature - Add updater class to enable changes on future updates [84675]
 * Fix - Sanitize correctly the description of an RSVP [99100]
