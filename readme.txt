@@ -240,6 +240,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.7.1] TBD =
 
 * Feature - Add updater class to enable changes on future updates [84675]
+* Feature - Add JSON-LD for custom post types with support for tickets (Thanks to Albert for flag this in our forums) [95034]
 * Fix - Sanitize correctly the description of an RSVP [99100]
 * Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
 * Fix - On reload of base panel of the ticket editor trigger relevant messages [95098]

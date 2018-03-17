@@ -184,6 +184,7 @@ class Tribe__Tickets__Main {
 		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
+		Tribe__Tickets__JSON_LD__Type::hook();
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.

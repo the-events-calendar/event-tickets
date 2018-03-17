@@ -44,6 +44,20 @@ class Tribe__Tickets__JSON_LD__Order {
 		$myself = self::instance();
 
 		add_filter( 'tribe_json_ld_event_object', array( $myself, 'add_ticket_data' ), 10, 3 );
+
+		$event_type = class_exists( 'Tribe__Events__Main' ) ? Tribe__Events__Main::POSTTYPE : 'tribe_events';
+		$post_types = (array) tribe_get_option( 'ticket-enabled-post-types', array() );
+
+		/**
+		 * Other types can have tickets as well we might need to hook into each type to add tickets if any has tickets
+		 */
+		foreach ( $post_types as $post_type ) {
+			if ( $event_type === $post_type ) {
+				continue;
+			}
+
+			add_filter( "tribe_json_ld_{$post_type}_object", array( $myself, 'add_ticket_data' ), 10, 3 );
+		}
 	}
 
 	/**
