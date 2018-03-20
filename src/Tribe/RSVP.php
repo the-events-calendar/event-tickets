@@ -998,7 +998,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	protected function get_tickets( $event_id ) {
 		$ticket_ids = $this->get_tickets_ids( $event_id );
-
 		if ( ! $ticket_ids ) {
 			return array();
 		}
@@ -1042,7 +1041,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$expired_tickets = 0;
 
 		foreach ( $tickets as $ticket ) {
-			if ( ! $ticket->date_in_range( current_time( 'timestamp' ) ) ) {
+			if ( ! $ticket->date_in_range() ) {
 				$expired_tickets++;
 			}
 		}
