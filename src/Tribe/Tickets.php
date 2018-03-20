@@ -349,7 +349,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$query = new WP_Query( $args );
-			//$cache->set( $cache_key, $query, $cache::NO_EXPIRATION );
+			$cache->set( $cache_key, $query, $cache::NO_EXPIRATION );
 
 			return $query->posts;
 		}
