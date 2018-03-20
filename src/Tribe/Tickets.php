@@ -349,7 +349,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$query = new WP_Query( $args );
-			$cache->set( $cache_key, $query, $cache::NO_EXPIRATION );
+			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION );
 
 			return $query->posts;
 		}
@@ -953,7 +953,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$tickets = empty( $tickets ) ? array() : call_user_func_array( 'array_merge', $tickets );
-			$cache->set( $cache_key, $tickets, $cache::NO_EXPIRATION );
+			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
 
 			return $tickets;
 		}
