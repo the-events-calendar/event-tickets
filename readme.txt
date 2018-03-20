@@ -252,6 +252,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Prevent overwriting the start date of a ticket if it was already set [99601]
 * Fix - The redirection to the correct post type URL when site has a plain permalink structure on the buy ticket form [96640]
 * Fix - Make sure the dates to compare if a ticket is in range uses the event time zone as the reference date [99721]
+* Fix - Fixes a glitch, where adding an RSVP results in "NaN" in the counter when using Event Tickets, Enfold and WooCommerce. (Thanks to @tbo24 for the contribution.) [93027]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 * Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
 
