@@ -348,13 +348,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function get_event_timezone() {
 
-			if ( is_null( $this->event_id ) ) {
-				$this->event_id = $this->get_event();
-			}
-
-			if ( ! is_null( $this->event_id ) && is_null( $this->event_timezone ) ) {
+			if ( ! is_null( $this->get_event_id() ) && is_null( $this->event_timezone ) ) {
 				try {
-					$this->event_timezone = new DateTimeZone( Tribe__Events__Timezones::get_event_timezone_string( $this->event_id ) );
+					$this->event_timezone = new DateTimeZone( Tribe__Events__Timezones::get_event_timezone_string( $this->get_event_id() ) );
 				} catch ( Exception $exception ) {
 					$this->event_timezone = null;
 				}
@@ -930,6 +926,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int|null
 		 */
 		public function get_event_id() {
+			if ( is_null( $this->event_id ) ) {
+				$this->event_id = $this->get_event();
+			}
 			return $this->event_id;
 		}
 	}
