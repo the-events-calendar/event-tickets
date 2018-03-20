@@ -216,7 +216,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @var null
+		 * @var null|DateTimeZone
 		 */
 		private $event_timezone = null;
 
@@ -225,7 +225,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @var null
+		 * @var null|int
 		 */
 		private $event_id = null;
 
