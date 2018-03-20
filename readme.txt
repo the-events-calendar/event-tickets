@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, aguseo, barry.hughes, bordoni, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.4
-Stable tag: 4.7
+Stable tag: 4.7.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -237,9 +237,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-= [M18.05] TBD =
+= [4.7.1] TBD =
 
 * Feature - Add updater class to enable changes on future updates [84675]
+* Feature - Add JSON-LD for custom post types with support for tickets (Thanks to Albert for flag this in our forums) [95034]
 * Fix - Prevent duplicates queries on the admin, by caching them [99267]
 * Fix - Sanitize correctly the description of an RSVP [99100]
 * Fix - Prevent trashed events from affecting ticketed/unticketed counts in the wp-admin (props to @mrwweb for reporting this problem) [92236]
@@ -249,8 +250,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Add warning if a ticket has stock management turned off in the related WooCommerce product, but has capacity enabled for the ticket(thanks Isaiah Baker and others for highlighting this) [91471]
 * Fix - Make sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
+* Fix - Prevent overwriting the start date of a ticket if it was already set [99601]
 * Fix - The redirection to the correct post type URL when site has a plain permalink structure on the buy ticket form [96640]
+* Fix - Fixes a glitch, where adding an RSVP results in "NaN" in the counter when using Event Tickets, Enfold and WooCommerce. (Thanks to @tbo24 for the contribution.) [93027]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
+* Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
 
 = [4.7] 2018-03-13 =
 
