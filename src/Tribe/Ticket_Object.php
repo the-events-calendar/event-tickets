@@ -927,7 +927,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function get_event_id() {
 			if ( is_null( $this->event_id ) ) {
-				$this->event_id = $this->get_event();
+				$event = $this->get_event();
+				if ( $event instanceof WP_Post ) {
+					$this->event_id = $event->ID;
+				}
 			}
 			return $this->event_id;
 		}
