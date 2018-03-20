@@ -1263,8 +1263,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			} else {
 				// Remove RSVP and PayPal tickets for this part
 				unset(
-					$modules[ array_search( 'Tribe__Tickets__RSVP', $modules ) ],
-					$modules[ array_search( 'Tribe__Tickets__Commerce__PayPal__Main', $modules ) ]
+					$modules[ array_search( 'Tribe__Tickets__RSVP', $modules ) ]
 				);
 
 				if ( ! empty( $modules ) ) {

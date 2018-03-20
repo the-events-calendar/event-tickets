@@ -265,8 +265,8 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$options = (array) tribe_get_option( 'ticket-enabled-post-types', array() );
-		$venue_has_tickets = in_array( Tribe__Events__Venue::POSTTYPE, $options, true );
-		$organizer_has_tickets = in_array( Tribe__Events__Organizer::POSTTYPE, $options, true );
+		$venue_has_tickets = class_exists( 'Tribe__Events__Venue' ) && in_array( Tribe__Events__Venue::POSTTYPE, $options, true );
+		$organizer_has_tickets = class_exists( 'Tribe__Events__Organizer' ) && in_array( Tribe__Events__Organizer::POSTTYPE, $options, true );
 
 		global $_registered_pages;
 
