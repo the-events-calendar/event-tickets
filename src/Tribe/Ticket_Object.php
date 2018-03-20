@@ -921,6 +921,17 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Make sure we have the correct value
 			return tribe_is_truthy( $show );
 		}
+
+		/**
+		 * Access the ID of the Event parent of the current Ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @return int|null
+		 */
+		public function get_event_id() {
+			return $this->event_id;
+		}
 	}
 
 }
