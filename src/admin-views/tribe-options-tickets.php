@@ -131,12 +131,12 @@ $is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_
 
 if ( ! $is_tickets_plus_available ) {
 	$plus_link = sprintf(
-		'<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
+		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
 		__( 'Events Tickets Plus', 'tribe-common' )
 	);
 
 	$plus_link_2 = sprintf(
-		'<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
+		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
 		__( 'Check it out!', 'tribe-common' )
 	);
 
