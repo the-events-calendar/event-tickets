@@ -111,6 +111,9 @@ before_script:
   # flush rewrite rules
   - wp rewrite structure '/%postname%/' --hard
 
+  # skip the welcome page redirection
+  - wp option add tribe_skip_welcome 1
+
   # export a dump of the just installed database to the _data folder
   - wp db export $PLUGIN_DIR/tests/_data/dump.sql
 
@@ -122,10 +125,10 @@ before_script:
   - sudo service nginx restart
 
 script:
-  - codecept run unit
-  - codecept run wpunit
-  - codecept run integration
-  - codecept run acceptance
+#  - codecept run unit
+#  - codecept run wpunit
+#  - codecept run integration
+  - codecept run acceptance -vvv
 
 after_failure:
   # if the build failed let's see why
