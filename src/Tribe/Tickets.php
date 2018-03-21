@@ -34,6 +34,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		private static $have_displayed_reg_link = false;
 
 		/**
+		 * Function that is used to store the cache of a specific post associated with a set of tickets, where %d is the
+		 * ID of the post being affected.
+		 *
+		 * @since TBD
+		 *
+		 * @var string
+		 */
+		private static $cache_key_prefix = 'tribe_event_tickets_from_';
+
+		/**
 		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all children.
 		 *
 		 * @var array
@@ -330,7 +340,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$args = $this->get_tickets_query_args();
 			}
 
+			$cache = new Tribe__Cache();
+			$cache_key = $cache->make_key( $args );
+			$query = $cache->get( $cache_key );
+
+			if ( $query instanceof WP_Query ) {
+				return $query->posts;
+			}
+
 			$query = new WP_Query( $args );
+			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION );
 
 			return $query->posts;
 		}
@@ -913,6 +932,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
+
+			$cache_key = self::$cache_key_prefix . $post_id;
+			$cache = new Tribe__Cache();
+			$tickets = $cache->get( $cache_key );
+
+			if ( is_array( $tickets ) ) {
+				return $tickets;
+			}
+
 			$tickets = array();
 			$modules = self::modules();
 
@@ -924,7 +952,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : array();
+			$tickets = empty( $tickets ) ? array() : call_user_func_array( 'array_merge', $tickets );
+			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
+
+			return $tickets;
 		}
 
 		/**
