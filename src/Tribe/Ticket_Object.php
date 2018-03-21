@@ -304,8 +304,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$start = $this->start_date( false );
 			$end = $this->end_date( false );
 
-			if ( ! $start instanceof DateTime || ! $end instanceof DateTime ) {
+			if ( ! $start instanceof DateTime || ! $end instanceof DateTime || ! $now instanceof DateTime ) {
 				$now = $timestamp;
+				$start = $this->start_date();
+				$end = $this->end_date();
 			}
 
 			return ( empty( $start ) || $now >= $start ) && ( empty( $end ) || $now <= $end );
