@@ -125,3 +125,11 @@ script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
+  - codecept run acceptance
+
+after_failure:
+  # if the build failed let's see why
+  - echo "\n\nPHP errors:\n===========\n\n"
+  - sudo cat $(php -i | grep ^error_log | cut -d' ' -f 3)
+  - echo "\n\nPHP/Nginx errors\n================\n\n"
+  - sudo cat /var/log/nginx/error.log
