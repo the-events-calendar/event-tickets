@@ -251,7 +251,8 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Fixes the missing notification on the email and removes the notification when there's none [99979]
 * Fix - Prevent overwriting the start date of a ticket if it was already set [99601]
 * Fix - The redirection to the correct post type URL when site has a plain permalink structure on the buy ticket form [96640]
-* Fix - Fixes a glitch, where adding an RSVP results in "NaN" in the counter when using Event Tickets, Enfold and WooCommerce. (Thanks to @tbo24 for the contribution.) [93027]
+* Fix - Fixes a glitch, where adding an RSVP results in "NaN" in the counter when using Event Tickets, Enfold and WooCommerce (thanks to @tbo24 for the contribution) [93027]
+* Fix - Ensure that "Sold" and "Tickets Remaining" counts are accurate after tickets are refunded (thanks @senseibaldguy and others in the forusm for highlighting these issues) [98750]
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 * Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
 
