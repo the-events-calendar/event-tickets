@@ -134,3 +134,4 @@ after_failure:
   # if the build failed let's see why
   - sudo cat $(php -i | grep ^error_log | cut -d' ' -f 3)
   - sudo cat /var/log/nginx/error.log
+  - for file in /tmp/wordpress/wp-content/plugins/event-tickets/tests/_output/*.html; do cat $file; done
