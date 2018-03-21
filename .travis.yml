@@ -125,13 +125,14 @@ before_script:
   - sudo service nginx restart
 
 script:
-#  - codecept run unit
-#  - codecept run wpunit
-#  - codecept run integration
-  - codecept run acceptance -vvv
+  - codecept run unit
+  - codecept run wpunit
+  - codecept run integration
+  - codecept run acceptance
 
 after_failure:
   # if the build failed let's see why
   - sudo cat $(php -i | grep ^error_log | cut -d' ' -f 3)
   - sudo cat /var/log/nginx/error.log
+  # for acceptance-like tests
   - for file in /tmp/wordpress/wp-content/plugins/event-tickets/tests/_output/*.html; do echo "\n\n\n============" && cat $file; done
