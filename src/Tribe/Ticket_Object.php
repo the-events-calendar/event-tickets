@@ -510,13 +510,19 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			// Fetch the Attendees
-			$attendees = $this->provider->get_attendees_by_id( $this->ID );
+			$attendees       = $this->provider->get_attendees_by_id( $this->ID );
 			$attendees_count = 0;
 
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {
-				// Prevent RSVP with Not Going Status to decrease Inventory
+
+				// Prevent RSVPs with "Not Going" status from decreasing inventory.
 				if ( 'rsvp' === $attendee['provider_slug'] && 'no' === $attendee['order_status'] ) {
+					continue;
+				}
+
+				// Prevent refunded tickets from decreasing inventory.
+				if ( 'refunded' === strtolower( $attendee['order_status'] ) ) {
 					continue;
 				}
 
@@ -536,11 +542,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
 				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
 			) {
-				$event_attendees = $this->provider->get_attendees_by_id( $this->get_event()->ID );
+				$event_attendees       = $this->provider->get_attendees_by_id( $this->get_event()->ID );
 				$event_attendees_count = 0;
 
 				foreach ( $event_attendees as $attendee ) {
-					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['product_id'] );
+					$attendee_ticket_stock      = new Tribe__Tickets__Global_Stock( $attendee['product_id'] );
 					$attendee_ticket_stock_mode = get_post_meta( $this->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 					// On all cases of indy stock we don't add
