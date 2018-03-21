@@ -431,8 +431,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$attendees_count = 0;
 
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
-			foreach ( $attendees as $key => $attendee ) {
-				write_log( $attendee, sprintf( 'attendee %s', $key ) );
+			foreach ( $attendees as $attendee ) {
 
 				// Prevent RSVPs with "Not Going" status from decreasing inventory.
 				if ( 'rsvp' === $attendee['provider_slug'] && 'no' === $attendee['order_status'] ) {
@@ -440,7 +439,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				}
 
 				// Prevent refunded tickets from decreasing inventory.
-				if ( 'refunded' === $attendee['order_status'] ) {
+				if ( 'refunded' === strtolower( $attendee['order_status'] ) ) {
 					continue;
 				}
 
