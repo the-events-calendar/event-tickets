@@ -158,7 +158,7 @@ $tickets_fields['ticket-paypal-enable'] = array(
 	'label'           => esc_html__( 'Enable Tribe Commerce ', 'event-tickets' ),
 	'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tribe Commerce functionality', 'event-tickets' ),
 	'size'            => 'medium',
-	'default'         => '1',
+	'default'         => false,
 	'validation_type' => 'boolean',
 	'attributes'      => array( 'id' => 'ticket-paypal-enable-input' ),
 );
