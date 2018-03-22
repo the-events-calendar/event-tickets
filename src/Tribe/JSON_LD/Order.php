@@ -56,6 +56,19 @@ class Tribe__Tickets__JSON_LD__Order {
 			if ( $event_type === $post_type ) {
 				continue;
 			}
+
+			/**
+			 * This will allow you to change the type for the Rich Snippet, by default it will use the type Product for
+			 * any Post type or Page. If this is runs in a book post type the filter becomes something like.
+			 *
+			 * @example tribe_events_json_ld_book_type
+			 *
+			 * @see http://schema.org/Product
+			 *
+			 * @since TBD
+			 *
+			 * @return string
+			 */
 			$filters[] = strtolower( (string) apply_filters( "tribe_tickets_json_ld_{$post_type}_type", 'Product' ) );
 		}
 
