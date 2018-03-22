@@ -185,19 +185,17 @@ class Tribe__Tickets__JSON_LD__Order {
 	/**
 	 * Return the price currency used on the Ticket
 	 *
+	 * @since TBD
+	 *
 	 * @param $ticket
 	 *
 	 * @return mixed
 	 */
 	public function get_price_currency( $ticket ) {
+
 		$currency = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
 
-		if ( class_exists( $ticket->provider_class )
-		     && method_exists( $ticket->provider_class, 'get_instance' )
-		     && is_callable( $ticket->provider_class, 'get_instance' )
-		     && method_exists( $ticket->provider_class, 'get_currency' )
-		     && is_callable( $ticket->provider_class, 'get_currency' )
-		) {
+		if ( class_exists( $ticket->provider_class ) ) {
 			$instance = call_user_func( array( $ticket->provider_class, 'get_instance' ) ) ;
 			$currency = $instance->get_currency();
 		}

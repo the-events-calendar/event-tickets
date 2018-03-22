@@ -1,4 +1,5 @@
 <?php
+
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
 	 * Class with the API definition and common functionality
@@ -2189,5 +2190,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		// @codingStandardsIgnoreEnd
 
+
+		/**
+		 * Parent method to be pass to any child of this class.
+		 *
+		 * @since TBD
+		 *
+		 * @return string
+		 */
+		public function get_currency() {
+			return (string) apply_filters( 'tribe_tickets_default_currency', 'USD' );
+		}
 	}
+
 }
