@@ -2199,6 +2199,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function get_currency() {
+			/**
+			 * Default currency value for Tickets.
+			 *
+			 * @since TBD
+			 *
+			 * @return string
+			 */
 			return (string) apply_filters( 'tribe_tickets_default_currency', 'USD' );
 		}
 	}
