@@ -257,6 +257,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Tweak - Change Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
 * Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
 * Tweak - Unified upsell messages in the Ticket settings tab [100736]
+* Tweak - Changed default status for 'Enable Tribe Commerce' option in tickets settings [102182]
 
 = [4.7] 2018-03-13 =
 
