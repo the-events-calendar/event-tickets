@@ -82,6 +82,21 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	}
 
 	/**
+	 * Avoid render the total if ET+ is active as this is added by Tribe__Tickets_Plus__Commerce__Attendance_Totals
+	 * otherwise go with regular flow provided by the parent.
+	 *
+	 * @since TBD
+	 */
+	public function integrate_with_attendee_screen() {
+
+		if ( class_exists( 'Tribe__Tickets_Plus__Commerce__Attendance_Totals' ) ) {
+			return;
+		}
+
+		parent::integrate_with_attendee_screen();
+	}
+
+	/**
 	 * The total number of tickets sold for this event.
 	 *
 	 * @since 4.7

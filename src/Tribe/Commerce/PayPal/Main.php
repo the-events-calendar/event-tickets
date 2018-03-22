@@ -1562,7 +1562,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Retreive only order related information
+	 * Retrieve only order related information
 	 * Important: On PayPal Ticket the order is the Attendee Object
 	 *
 	 *     order_id
