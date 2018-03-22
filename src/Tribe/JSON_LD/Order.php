@@ -160,7 +160,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	public function get_ticket_availability( $ticket ) {
 		$stock = $ticket->stock();
 
-		if ( $stock === 0 ) {
+		if ( 0 === $stock ) {
 			return 'SoldOut';
 		} elseif ( $stock >= 1 && $stock <= $this->low_stock ) {
 			return 'LimitedAvailability';
