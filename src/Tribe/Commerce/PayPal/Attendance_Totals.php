@@ -86,8 +86,6 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 * otherwise go with regular flow provided by the parent.
 	 *
 	 * @since TBD
-	 *
-	 * @override
 	 */
 	public function integrate_with_attendee_screen() {
 
