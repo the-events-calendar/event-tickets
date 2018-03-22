@@ -76,7 +76,7 @@ class Tribe__Tickets__JSON_LD__Type extends Tribe__JSON_LD__Abstract {
 		 *
 		 * @param string $post_type The name fo the registered post type
 		 */
-		$this->type = apply_filters( "tribe_tickets_json_ld_{$post_type}_type", $post_type );
+		$this->type = apply_filters( "tribe_tickets_json_ld_{$post_type}_type", 'Product' );
 
 		parent::markup();
 	}
