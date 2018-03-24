@@ -353,17 +353,7 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 			return true;
 		}
 
-		// Timestamps for comparison purposes
-		$now    = current_time( 'timestamp' );
-		$start  = strtotime( $ticket->start_date );
-		$finish = strtotime( $ticket->end_date );
-
-		// Are we within the applicable date range?
-		$has_started = ( empty( $ticket->start_date ) || ( $start && $now > $start ) );
-		$not_ended   = ( empty( $ticket->end_date ) || ( $finish && $now < $finish ) );
-
-		// Result
-		return ( $has_started && $not_ended );
+		return $ticket->date_in_range( 'now' );
 	}
 }//end if
 
