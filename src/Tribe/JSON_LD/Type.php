@@ -113,7 +113,10 @@ class Tribe__Tickets__JSON_LD__Type extends Tribe__JSON_LD__Abstract {
 				continue;
 			}
 
-			$data = parent::get_data( $post, $args );
+			$data = array();
+			if ( function_exists( 'tribe_events_get_the_excerpt' ) ) {
+				$data = parent::get_data( $post, $args );
+			}
 
 			// If we have an Empty data we just skip
 			if ( empty( $data ) ) {
