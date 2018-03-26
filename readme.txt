@@ -238,6 +238,10 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+= [4.7.2] TBD =
+
+* Feature - Add new action `tribe_tickets_before_front_end_ticket_form` if RSVP has been expired and the tickets form is not rendered any more [98203]
+
 = [4.7] 2018-03-13 =
 
 * Feature - Included Tribe Commerce as a solution for selling tickets using PayPal

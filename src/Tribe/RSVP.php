@@ -1001,6 +1001,26 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		if ( $expired_tickets >= count( $tickets ) ) {
+			/**
+			 * Allow to hook into the FE form of the tickets if tickets has already expired. If the action used the
+			 * second value for tickets make sure to use a callback instead of an inline call to the method such as:
+			 *
+			 * Example:
+			 *
+			 * add_action( 'tribe_tickets_expired_front_end_ticket_form', function( $must_login, $tickets ) {
+			 *  Tribe__Tickets_Plus__Attendees_List::instance()->render();
+			 * }, 10, 2 );
+			 *
+			 * If the tickets are not required to be used on the view you an use instead.
+			 *
+			 * add_action( 'tribe_tickets_expired_front_end_ticket_form', array( Tribe__Tickets_Plus__Attendees_List::instance(), 'render' ) );
+			 *
+			 * @since TBD
+			 *
+			 * @param boolean $must_login
+			 * @param array $tickets
+			 */
+			do_action( 'tribe_tickets_expired_front_end_ticket_form', $must_login, $tickets );
 			return;
 		}
 
