@@ -81,7 +81,7 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 	 */
 	public function get_rest_url() {
 		if ( is_single() && tribe_is_event() ) {
-			return tribe_tickets_rest_url( 'events/' . Tribe__Main::post_id_helper() );
+			return tribe_tickets_rest_url( 'tickets/' . Tribe__Main::post_id_helper() );
 		}
 
 		/** @var WP_Query $wp_query */
@@ -89,30 +89,13 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 			return;
 		}
 
-		$is_featured = (bool) $wp_query->get( 'featured', false );
-		if ( $is_featured ) {
-			return add_query_arg( array( 'featured' => true ), tribe_tickets_rest_url( 'events/' ) );
-		}
-
-		if ( ! empty( $wp_query->tribe_is_event_category ) && $wp_query->tribe_is_event_category ) {
-			$category = $wp_query->get( Tribe__Events__Main::TAXONOMY );
-
-			return add_query_arg( array( 'categories' => $category ), tribe_tickets_rest_url( 'events/' ) );
-		}
-
-		if ( $wp_query->is_tag ) {
-			$tag = $wp_query->get( 'tag' );
-
-			return add_query_arg( array( 'tags' => $tag ), tribe_tickets_rest_url( 'events/' ) );
-		}
-
-		if ( $wp_query->get( 'post_type' ) === Tribe__Events__Venue::POSTTYPE ) {
+/*		if ( $wp_query->get( 'post_type' ) === Tribe__Events__Venue::POSTTYPE ) {
 			$venue = $wp_query->get( 'name' );
 			if ( ! empty( $wp_query->queried_object_id ) && is_numeric( $wp_query->queried_object_id ) ) {
 				$venue = $wp_query->queried_object_id;
 			}
 			return add_query_arg( array( 'venue' => $venue ), tribe_tickets_rest_url( 'events/' ) );
-		}
+		}*/
 
 		return tribe_tickets_rest_url();
 	}
