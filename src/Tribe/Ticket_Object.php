@@ -350,7 +350,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function get_event_timezone() {
 
-			if ( ! is_null( $this->get_event_id() ) && is_null( $this->event_timezone ) ) {
+			if (
+				class_exists( 'Tribe__Events__Timezones' )
+				&& ! is_null( $this->get_event_id() )
+				&& is_null( $this->event_timezone )
+			) {
 				try {
 					$this->event_timezone = new DateTimeZone( Tribe__Events__Timezones::get_event_timezone_string( $this->get_event_id() ) );
 				} catch ( Exception $exception ) {
