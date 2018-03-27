@@ -4,7 +4,7 @@
 /**
  * Class Tribe__Tickets__Updater
  *
- * @since TBD
+ * @since 4.7.1
  *
  */
 class Tribe__Tickets__Updater extends Tribe__Events__Updater {
@@ -15,7 +15,7 @@ class Tribe__Tickets__Updater extends Tribe__Events__Updater {
 	 * Force upgrade script to run even without an existing version number
 	 * The version was not previously stored for Filter Bar
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @return bool
 	 */

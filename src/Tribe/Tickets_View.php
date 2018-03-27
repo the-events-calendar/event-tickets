@@ -156,7 +156,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Sort Attendee by Order Status to Process Not Going First
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @param $a array an array of ticket id and status
 	 * @param $b array an array of ticket id and status
@@ -228,7 +228,7 @@ class Tribe__Tickets__Tickets_View {
 	/**
 	 * Helper function to generate the Link to the tickets page of an event
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @param $event_id
 	 * @param $is_event_page

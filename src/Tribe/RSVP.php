@@ -219,7 +219,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Hook into the filter `tribe_tickets_rsvp_form_email` to add the user default email.
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @param string $default_email
 	 *

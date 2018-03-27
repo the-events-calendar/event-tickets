@@ -2575,7 +2575,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * If other modules are active, we should deprioritize this one (we want other commerce
 	 * modules to take priority over this one).
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @param string   $default_module
 	 * @param string[] $available_modules

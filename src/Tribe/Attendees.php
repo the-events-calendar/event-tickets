@@ -240,7 +240,7 @@ class Tribe__Tickets__Attendees {
 		);
 
 		/**
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @param string $page_id
 		 */
@@ -255,7 +255,7 @@ class Tribe__Tickets__Attendees {
 	 * Add dynamic registered pages that belongs to Tribe__Events__Main::POSTTYPE as those are a subpage of that
 	 * parent page.
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @param string $page_id
 	 */

@@ -133,7 +133,7 @@ $now = current_time( 'timestamp' );
 					/**
 					 * Set the default Full Name for the RSVP form
 					 *
-					 * @since TBD
+					 * @since 4.7.1
 					 *
 					 * @param string
 					 */
@@ -142,7 +142,7 @@ $now = current_time( 'timestamp' );
 					/**
 					 * Set the default value for the email on the RSVP form.
 					 *
-					 * @since TBD
+					 * @since 4.7.1
 					 *
 					 * * @param string
 					 */

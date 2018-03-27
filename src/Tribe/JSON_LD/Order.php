@@ -65,7 +65,7 @@ class Tribe__Tickets__JSON_LD__Order {
 			 *
 			 * @see http://schema.org/Product
 			 *
-			 * @since TBD
+			 * @since 4.7.1
 			 *
 			 * @return string
 			 */
@@ -185,7 +185,7 @@ class Tribe__Tickets__JSON_LD__Order {
 	/**
 	 * Return the price currency used on the Ticket
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @param $ticket
 	 *

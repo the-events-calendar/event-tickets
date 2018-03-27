@@ -710,7 +710,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Make necessary database updates on admin_init
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 */
 	public function run_updates() {

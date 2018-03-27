@@ -7,14 +7,14 @@ if ( ! class_exists( 'Tribe__JSON_LD__Abstract' ) ) {
 /**
  * JSON_LD class used to register any other post type that is not an Event and has support for tickets
  *
- * @since TBD
+ * @since 4.7.1
  */
 class Tribe__Tickets__JSON_LD__Type extends Tribe__JSON_LD__Abstract {
 
 	/**
 	 * Function used to attach the hook into wp_head
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 */
 	public static function hook() {
 		add_action( 'wp_head', array( self::instance(), 'markup' ) );
@@ -26,7 +26,7 @@ class Tribe__Tickets__JSON_LD__Type extends Tribe__JSON_LD__Abstract {
 	 * so we throw __CLASS__ to the parent::instance() method to be able to spawn new instance
 	 * of this class and save on the parent::$instances variable.
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @return Tribe__Events__JSON_LD__Event
 	 */
@@ -38,7 +38,7 @@ class Tribe__Tickets__JSON_LD__Type extends Tribe__JSON_LD__Abstract {
 	 * Function called by the wp_head hook to attach the markup into the page if that's the case, once does the setup
 	 * calls the parent method to do the work to generate the script.
 	 *
-	 * @since TBD
+	 * @since 4.7.1
 	 *
 	 * @param mixed|null $post The ID of the post or array of posts
 	 * @param array $args The arguments used to register the data on this type
@@ -74,7 +74,7 @@ class Tribe__Tickets__JSON_LD__Type extends Tribe__JSON_LD__Abstract {
 		 *
 		 * @see https://developers.google.com/structured-data/rich-snippets/
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @param string $post_type The name fo the registered post type
 		 */

@@ -38,7 +38,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Function that is used to store the cache of a specific post associated with a set of tickets, where %d is the
 		 * ID of the post being affected.
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @var string
 		 */
@@ -2194,7 +2194,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Parent method to be pass to any child of this class.
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @return string
 		 */
@@ -2202,7 +2202,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Default currency value for Tickets.
 			 *
-			 * @since TBD
+			 * @since 4.7.1
 			 *
 			 * @return string
 			 */

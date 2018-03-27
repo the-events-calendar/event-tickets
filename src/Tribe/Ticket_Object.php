@@ -214,7 +214,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Variable used to save the DateTimeZone object of the parent event
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @var null|DateTimeZone
 		 */
@@ -223,7 +223,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * ID of the parent event of the current Ticket
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @var null|int
 		 */
@@ -319,7 +319,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * the timezone from the event associated with the ticket is going to be used to have a more accurate
 		 * timestamp
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @param string $date
 		 * @param bool $as_timestamp
@@ -344,7 +344,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Return a DateTimeZone associated with the parent Event of the current ticket
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @return DateTimeZone|null
 		 */
@@ -927,7 +927,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		/**
 		 * Access the ID of the Event parent of the current Ticket.
 		 *
-		 * @since TBD
+		 * @since 4.7.1
 		 *
 		 * @return int|null
 		 */
