@@ -10,11 +10,11 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 
 	public function __construct() {
 		$this->messages = array(
-			'missing-event-id'                 => __( 'The event ID is missing from the request', 'the-events-calendar' ),
-			'event-not-found'                  => __( 'The requested post ID does not exist or is not an event', 'the-events-calendar' ),
-			'event-no-venue'                   => __( 'The event does not have a venue assigned', 'the-events-calendar' ),
-			'event-no-organizer'               => __( 'The event does not have an organizer assigned', 'the-events-calendar' ),
-			'event-not-accessible'             => __( 'The requested event is not accessible', 'the-events-calendar' ),
+			'missing-event-id'                 => __( 'The event ID is missing from the request', 'event-tickets' ),
+			'event-not-found'                  => __( 'The requested post ID does not exist or is not an event', 'event-tickets' ),
+			'event-no-venue'                   => __( 'The event does not have a venue assigned', 'event-tickets' ),
+			'event-no-organizer'               => __( 'The event does not have an organizer assigned', 'event-tickets' ),
+			'event-not-accessible'             => __( 'The requested event is not accessible', 'event-tickets' ),
 		);
 	}
 

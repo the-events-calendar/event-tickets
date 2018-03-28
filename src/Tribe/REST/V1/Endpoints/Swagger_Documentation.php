@@ -64,7 +64,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 			'swagger'     => $this->swagger_version,
 			'info'        => $this->get_api_info(),
 			'host'        => parse_url( home_url(), PHP_URL_HOST ),
-			'basePath'    => str_replace( home_url(), '', tribe_events_rest_url() ),
+			'basePath'    => str_replace( home_url(), '', tribe_tickets_rest_url() ),
 			'schemes'     => is_ssl() ? array( 'https', 'http' ) : array( 'http' ),
 			'consumes'    => array( 'application/json' ),
 			'produces'    => array( 'application/json' ),
@@ -76,7 +76,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		 * Filters the Swagger documentation generated for the TEC REST API.
 		 *
 		 * @param array                                                     $documentation An associative PHP array in the format supported by Swagger.
-		 * @param Tribe__Events__REST__V1__Endpoints__Swagger_Documentation $this          This documentation endpoint instance.
+		 * @param Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation $this          This documentation endpoint instance.
 		 *
 		 * @link http://swagger.io/
 		 */
@@ -88,8 +88,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	protected function get_api_info() {
 		return array(
 			'version'     => $this->tec_rest_api_version,
-			'title'       => __( 'The Events Calendar REST API', 'the-events-calendar' ),
-			'description' => __( 'The Events Calendar REST API allows accessing upcoming events information easily and conveniently.', 'the-events-calendar' ),
+			'title'       => __( 'Event Tickets REST API', 'event-tickets' ),
+			'description' => __( 'Event Tickets REST API allows accessing ticket information easily and conveniently.', 'event-tickets' ),
 		);
 	}
 
@@ -123,7 +123,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 			'get' => array(
 				'responses' => array(
 					'200' => array(
-						'description' => __( 'Returns the documentation for The Events Calendar REST API in Swagger consumable format.', 'the-event-calendar' )
+						'description' => __( 'Returns the documentation for Event Tickets REST API in Swagger consumable format.', 'event-tickets' )
 					),
 				),
 			),

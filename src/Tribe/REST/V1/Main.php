@@ -4,14 +4,14 @@
 /**
  * Class Tribe__Tickets__REST__V1__Main
  *
- * The main entry point for TEC REST API.
+ * The main entry point for ET REST API.
  *
- * This class should not contain business logic and merely set up and start the TEC REST API support.
+ * This class should not contain business logic and merely set up and start the ET REST API support.
  */
 class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 
 	/**
-	 * The Events Calendar REST API URL prefix.
+	 * Event Tickets REST API URL prefix.
 	 *
 	 * This prefx is appended to the Modern Tribe REST API URL ones.
 	 *
@@ -40,6 +40,9 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 
 	/**
 	 * Hooks the filters and actions required for the REST API support to kick in.
+	 *
+	 * @since TBD
+	 *
 	 */
 	public function hook() {
 		$this->hook_headers();
@@ -48,7 +51,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		/** @var Tribe__Tickets__REST__V1__System $system */
 		$system = tribe( 'tickets.rest-v1.system' );
 
-		if ( ! $system->supports_tec_rest_api() || ! $system->tec_rest_api_is_enabled() ) {
+		if ( ! $system->supports_et_rest_api() || ! $system->et_rest_api_is_enabled() ) {
 			return;
 		}
 
@@ -58,6 +61,9 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 
 	/**
 	 * Hooks the additional headers and meta tags related to the REST API.
+	 *
+	 * @since TBD
+	 *
 	 */
 	protected function hook_headers() {
 		/** @var Tribe__Tickets__REST__V1__System $system */
@@ -65,8 +71,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		/** @var Tribe__REST__Headers__Base_Interface $headers_base */
 		$headers_base = tribe( 'tickets.rest-v1.headers-base' );
 
-		if ( ! $system->tec_rest_api_is_enabled() ) {
-			if ( ! $system->supports_tec_rest_api() ) {
+		if ( ! $system->et_rest_api_is_enabled() ) {
+			if ( ! $system->supports_et_rest_api() ) {
 				tribe_singleton( 'tickets.rest-v1.headers', new Tribe__REST__Headers__Unsupported( $headers_base, $this ) );
 			} else {
 				tribe_singleton( 'tickets.rest-v1.headers', new Tribe__REST__Headers__Disabled( $headers_base ) );
@@ -83,7 +89,10 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	}
 
 	/**
-	 * Hooks the additional Events Settings related to the REST API.
+	 * Hooks the additional Event Tickets Settings related to the REST API.
+	 *
+	 * @since TBD
+	 *
 	 */
 	protected function hook_settings() {
 		add_filter( 'tribe_addons_tab_fields', array(
@@ -95,6 +104,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Returns the URL where the API users will find the API documentation.
 	 *
+	 * @since TBD
+	 *
 	 * @return string
 	 */
 	public function get_reference_url() {
@@ -103,6 +114,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 
 	/**
 	 * Registers the endpoints, and the handlers, supported by the REST API
+	 *
+	 * @since TBD
 	 *
 	 * @param bool $register_routes Whether routes should be registered as well or not.
 	 */
@@ -113,9 +126,9 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Builds and hooks the documentation endpoint
 	 *
-	 * @param bool $register_routes Whether routes for the endpoint should be registered or not.
-	 *
 	 * @since TBD
+	 *
+	 * @param bool $register_routes Whether routes for the endpoint should be registered or not.
 	 */
 	protected function register_documentation_endpoint( $register_routes = true ) {
 		$endpoint = new Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation( $this->get_semantic_version() );
@@ -142,6 +155,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Returns the events REST API namespace string that should be used to register a route.
 	 *
+	 * @since TBD
+	 *
 	 * @return string
 	 */
 	protected function get_events_route_namespace() {
@@ -150,6 +165,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 
 	/**
 	 * Returns the string indicating the REST API version.
+	 *
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -162,6 +179,8 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	 * Returns the REST API URL prefix that will be appended to the namespace.
 	 *
 	 * The prefix should be in the `/some/path` format.
+	 *
+	 * @since TBD
 	 *
 	 * @return string
 	 */

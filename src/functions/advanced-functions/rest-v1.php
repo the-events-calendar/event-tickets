@@ -3,7 +3,7 @@ if ( ! function_exists( 'tribe_tickets_rest_url_prefix' ) ) {
 	/**
 	 * Returns TEC REST API URL prefix.
 	 *
-	 * @return string TEC REST API URL prefix; default `wp-json/tec/v1`.
+	 * @return string TEC REST API URL prefix; default `wp-json/tribe/tickets/v1`.
 	 */
 	function tribe_tickets_rest_url_prefix() {
 		return tribe( 'tickets.rest-v1.main' )->get_url_prefix();

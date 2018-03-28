@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__REST__V1__Settings
  *
- * Adds and manages the TEC REST API settings.
+ * Adds and manages the ET REST API settings.
  */
 class Tribe__Tickets__REST__V1__Settings {
 
@@ -24,6 +24,8 @@ class Tribe__Tickets__REST__V1__Settings {
 	/**
 	 * @param array $fields
 	 *
+	 * @since TBD
+	 *
 	 * @return array
 	 */
 	public function filter_tribe_addons_tab_fields( array $fields = array() ) {
@@ -31,7 +33,7 @@ class Tribe__Tickets__REST__V1__Settings {
 			return $fields;
 		}
 
-		if ( ! $this->system->supports_tec_rest_api() ) {
+		if ( ! $this->system->supports_et_rest_api() ) {
 			return $fields;
 		}
 
@@ -40,6 +42,8 @@ class Tribe__Tickets__REST__V1__Settings {
 
 	/**
 	 * @param array $fields
+	 *
+	 * @since TBD
 	 *
 	 * @return array
 	 */

@@ -16,6 +16,8 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Tribe__Tickets__REST__V1__Endpoints__Base constructor.
 	 *
+	 * @since TBD
+	 *
 	 * @param Tribe__REST__Messages_Interface $messages
 	 */
 	public function __construct( Tribe__REST__Messages_Interface $messages ) {
@@ -24,6 +26,8 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 
 	/**
 	 * Converts an array of arguments suitable for the WP REST API to the Swagger format.
+	 *
+	 * @since TBD
 	 *
 	 * @param array $args
 	 * @param array $defaults
@@ -35,7 +39,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 			return $args;
 		}
 
-		$no_description = __( 'No description provided', 'the-events-calendar' );
+		$no_description = __( 'No description provided', 'event-tickets' );
 		$defaults = array_merge( array(
 			'in'          => 'body',
 			'type'        => 'string',
@@ -86,6 +90,8 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Falls back on an allowed post status in respect to the user user capabilities of publishing.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $post_status
 	 * @param string $post_type
 	 *
@@ -109,6 +115,8 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 an*
 	 * Cascading fallback is TEC `posts_per_page` option, `posts_per_page` option and, finally, 20.
 	 *
+	 * @since TBD
+	 *
 	 * @return int
 	 */
 	protected function get_default_posts_per_page() {
@@ -120,9 +128,9 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Modifies a request argument marking it as not required.
 	 *
-	 * @param array $arg
-	 *
 	 * @since TBD
+	 *
+	 * @param array $arg
 	 */
 	protected function unrequire_arg( array &$arg ) {
 		$arg['required'] = false;
@@ -131,12 +139,12 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Parses the arguments populated parsing the request filling out with the defaults.
 	 *
+	 * @since TBD
+	 *
 	 * @param array $args
 	 * @param array $defaults
 	 *
 	 * @return array
-	 *
-	 * @since TBD
 	 */
 	protected function parse_args( array $args, array $defaults ) {
 		foreach ( $this->supported_query_vars as $request_key => $query_var ) {
@@ -153,11 +161,11 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Whether a value is null or not.
 	 *
+	 * @since TBD
+	 *
 	 * @param mixed $value
 	 *
 	 * @return bool
-	 *
-	 * @since TBD
 	 */
 	public function is_not_null( $value ) {
 		return null !== $value;

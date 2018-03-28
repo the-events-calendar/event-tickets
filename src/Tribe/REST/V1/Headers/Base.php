@@ -6,27 +6,29 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 	/**
 	 * @var string
 	 */
-	protected $api_version_header = 'X-TEC-API-VERSION';
+	protected $api_version_header = 'X-ET-API-VERSION';
 	/**
 	 * @var string
 	 */
-	protected $api_root_header = 'X-TEC-API-ROOT';
+	protected $api_root_header = 'X-ET-API-ROOT';
 	/**
 	 * @var string
 	 */
-	protected $api_origin_header = 'X-TEC-API-ORIGIN';
+	protected $api_origin_header = 'X-ET-API-ORIGIN';
 	/**
 	 * @var string
 	 */
-	protected $api_version_meta_name = 'tec-api-version';
+	protected $api_version_meta_name = 'et-api-version';
 	/**
 	 * @var string
 	 */
-	protected $api_origin_meta_name = 'tec-api-origin';
+	protected $api_origin_meta_name = 'et-api-origin';
 
 	/**
 	 * Returns the header that the REST API will print on the page head to report
 	 * its version.
+	 *
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -38,6 +40,8 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 	 * Returns the header the REST API will print on the page head to report its root
 	 * url.
 	 *
+	 * @since TBD
+	 *
 	 * @return string
 	 */
 	public function get_api_root_header() {
@@ -47,6 +51,8 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 	/**
 	 * Returns the header the REST API will print on the page head to report its origin
 	 * url. Normaly the home_url()
+	 *
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -58,6 +64,8 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 	 * Returns the `name` of the meta tag that will be printed on the page to indicate
 	 * the REST API version.
 	 *
+	 * @since TBD
+	 *
 	 * @return string
 	 */
 	public function get_api_version_meta_name() {
@@ -68,6 +76,8 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 	 * Returns the `name` of the meta tag that will be printed on the page to indicate
 	 * the REST API Origin URL.
 	 *
+	 * @since TBD
+	 *
 	 * @return string
 	 */
 	public function get_api_origin_meta_name() {
@@ -76,6 +86,8 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 
 	/**
 	 * Returns the REST API URL.
+	 *
+	 * @since TBD
 	 *
 	 * @return string
 	 */
@@ -89,19 +101,13 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 			return;
 		}
 
-/*		if ( $wp_query->get( 'post_type' ) === Tribe__Events__Venue::POSTTYPE ) {
-			$venue = $wp_query->get( 'name' );
-			if ( ! empty( $wp_query->queried_object_id ) && is_numeric( $wp_query->queried_object_id ) ) {
-				$venue = $wp_query->queried_object_id;
-			}
-			return add_query_arg( array( 'venue' => $venue ), tribe_tickets_rest_url( 'events/' ) );
-		}*/
-
 		return tribe_tickets_rest_url();
 	}
 
 	/**
 	 * Returns the REST API Origin Site.
+	 *
+	 * @since TBD
 	 *
 	 * @return string
 	 */
