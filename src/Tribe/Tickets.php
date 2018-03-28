@@ -1,4 +1,5 @@
 <?php
+
 if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	/**
 	 * Class with the API definition and common functionality
@@ -32,6 +33,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var boolean
 		 */
 		private static $have_displayed_reg_link = false;
+
+		/**
+		 * Function that is used to store the cache of a specific post associated with a set of tickets, where %d is the
+		 * ID of the post being affected.
+		 *
+		 * @since 4.7.1
+		 *
+		 * @var string
+		 */
+		private static $cache_key_prefix = 'tribe_event_tickets_from_';
 
 		/**
 		 * All Tribe__Tickets__Tickets api consumers. It's static, so it's shared across all children.
@@ -330,7 +341,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$args = $this->get_tickets_query_args();
 			}
 
+			$cache = new Tribe__Cache();
+			$cache_key = $cache->make_key( $args );
+			$query = $cache->get( $cache_key );
+
+			if ( $query instanceof WP_Query ) {
+				return $query->posts;
+			}
+
 			$query = new WP_Query( $args );
+			$cache->set( $cache_key, $query, Tribe__Cache::NO_EXPIRATION );
 
 			return $query->posts;
 		}
@@ -913,6 +933,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_all_event_tickets( $post_id ) {
+
+			$cache_key = self::$cache_key_prefix . $post_id;
+			$cache = new Tribe__Cache();
+			$tickets = $cache->get( $cache_key );
+
+			if ( is_array( $tickets ) ) {
+				return $tickets;
+			}
+
 			$tickets = array();
 			$modules = self::modules();
 
@@ -924,7 +953,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : array();
+			$tickets = empty( $tickets ) ? array() : call_user_func_array( 'array_merge', $tickets );
+			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
+
+			return $tickets;
 		}
 
 		/**
@@ -1239,8 +1271,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			} else {
 				// Remove RSVP and PayPal tickets for this part
 				unset(
-					$modules[ array_search( 'Tribe__Tickets__RSVP', $modules ) ],
-					$modules[ array_search( 'Tribe__Tickets__Commerce__PayPal__Main', $modules ) ]
+					$modules[ array_search( 'Tribe__Tickets__RSVP', $modules ) ]
 				);
 
 				if ( ! empty( $modules ) ) {
@@ -1996,7 +2027,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket                   = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
-			$ticket->description      = isset( $data['ticket_description'] ) ? esc_html( $data['ticket_description'] ) : null;
+			$ticket->description      = isset( $data['ticket_description'] ) ? sanitize_textarea_field( $data['ticket_description'] ) : null;
 			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
 			$ticket->purchase_limit   = isset( $data['ticket_purchase_limit'] ) ? absint( $data['ticket_purchase_limit'] ) : apply_filters( 'tribe_tickets_default_purchase_limit', 0, $ticket->ID );
 			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
@@ -2159,5 +2190,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 		// @codingStandardsIgnoreEnd
 
+
+		/**
+		 * Parent method to be pass to any child of this class.
+		 *
+		 * @since 4.7.1
+		 *
+		 * @return string
+		 */
+		public function get_currency() {
+			/**
+			 * Default currency value for Tickets.
+			 *
+			 * @since 4.7.1
+			 *
+			 * @return string
+			 */
+			return (string) apply_filters( 'tribe_tickets_default_currency', 'USD' );
+		}
 	}
+
 }

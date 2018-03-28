@@ -131,13 +131,19 @@ $is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_
 
 if ( ! $is_tickets_plus_available ) {
 	$plus_link = sprintf(
-		'<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
+		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
 		__( 'Events Tickets Plus', 'tribe-common' )
 	);
 
+	$plus_link_2 = sprintf(
+		'<a href="http://m.tri.be/19zl" target="_blank">%s</a>',
+		__( 'Check it out!', 'tribe-common' )
+	);
+
 	$plus_message = sprintf(
-		__( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you\'re looking for more advanced features, please consider %s.', 'event-tickets' ),
-		$plus_link
+		__( 'Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between tickets. %2$s', 'event-tickets' ),
+		$plus_link,
+		$plus_link_2
 	);
 
 	$tickets_fields['ticket-paypal-et-plus-header'] = array(
@@ -152,7 +158,7 @@ $tickets_fields['ticket-paypal-enable'] = array(
 	'label'           => esc_html__( 'Enable Tribe Commerce ', 'event-tickets' ),
 	'tooltip'         => esc_html__( 'Check this box if you wish to turn on Tribe Commerce functionality', 'event-tickets' ),
 	'size'            => 'medium',
-	'default'         => '1',
+	'default'         => false,
 	'validation_type' => 'boolean',
 	'attributes'      => array( 'id' => 'ticket-paypal-enable-input' ),
 );
@@ -359,21 +365,6 @@ $tickets_fields  = array_merge(
 	$tickets_fields,
 	$paypal_fields
 );
-
-if ( ! $is_tickets_plus_available ) {
-	$plus_link = sprintf(
-		'<a href="https://theeventscalendar.com/product/wordpress-event-tickets-plus/?utm_campaign=in-app&utm_medium=plugin-tickets&utm_source=post-editor" target="_blank">%s</a>',
-		__( 'Check out Events Tickets Plus', 'tribe-common' )
-	);
-	$plus_message = sprintf(
-		__( 'Looking to collect custom information for attendees, check users in via QR codes, share stock between tickets, or integrate with other commerce providers? %s!.', 'event-tickets' ),
-		$plus_link
-	);
-	$tickets_fields['ticket-paypal-et-plus-footer'] = array(
-		'type' => 'html',
-		'html' => '<p class="contained">' . $plus_message . '</p>',
-	);
-}
 
 $tickets_fields = array_merge( $tickets_fields, array(
 	'tribe-form-content-end' => array(

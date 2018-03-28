@@ -130,6 +130,6 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 	 * @return bool
 	 */
 	protected function is_currently_available( Tribe__Tickets__Ticket_Object $ticket ) {
-		return $ticket->date_in_range( current_time( 'timestamp' ) );
+		return $ticket->date_in_range();
 	}
 }

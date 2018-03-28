@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.7';
+	const VERSION = '4.7.1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -184,6 +184,7 @@ class Tribe__Tickets__Main {
 		$this->activation_page();
 
 		Tribe__Tickets__JSON_LD__Order::hook();
+		Tribe__Tickets__JSON_LD__Type::hook();
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
@@ -704,5 +705,22 @@ class Tribe__Tickets__Main {
 		?>
 		<link rel="stylesheet" id="tribe-tickets-embed-css" href="<?php echo esc_url( $css_path ); ?>" type="text/css" media="all">
 		<?php
+	}
+
+	/**
+	 * Make necessary database updates on admin_init
+	 *
+	 * @since 4.7.1
+	 *
+	 */
+	public function run_updates() {
+		if ( ! class_exists( 'Tribe__Events__Updater' ) ) {
+			return; // core needs to be updated for compatibility
+		}
+
+		$updater = new Tribe__Tickets__Updater( self::VERSION );
+		if ( $updater->update_required() ) {
+			$updater->do_updates();
+		}
 	}
 }
