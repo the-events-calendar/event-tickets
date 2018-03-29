@@ -3,6 +3,8 @@ if ( ! function_exists( 'tribe_tickets_rest_url_prefix' ) ) {
 	/**
 	 * Returns TEC REST API URL prefix.
 	 *
+	 * @since TBD
+	 *
 	 * @return string TEC REST API URL prefix; default `wp-json/tribe/tickets/v1`.
 	 */
 	function tribe_tickets_rest_url_prefix() {
@@ -15,6 +17,8 @@ if ( ! function_exists( 'tribe_tickets_rest_url' ) ) {
 	 * Retrieves the URL to a TEC REST endpoint on a site.
 	 *
 	 * Note: The returned URL is NOT escaped.
+	 *
+	 * @since TBD
 	 *
 	 * @global WP_Rewrite $wp_rewrite
 	 *

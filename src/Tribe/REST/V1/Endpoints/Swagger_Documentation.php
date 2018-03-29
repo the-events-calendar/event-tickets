@@ -28,6 +28,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Tribe__Events__REST__V1__Endpoints__Swagger_Documentation constructor.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $tec_rest_api_version
 	 */
 	public function __construct( $tec_rest_api_version ) {
@@ -36,6 +38,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 
 	/**
 	 * Handles GET requests on the endpoint.
+	 *
+	 * @since TBD
 	 *
 	 * @param WP_REST_Request $request
 	 *
@@ -49,6 +53,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 
 	/**
 	 * Returns an array in the format used by Swagger 2.0.
+	 *
+	 * @since TBD
 	 *
 	 * While the structure must conform to that used by v2.0 of Swagger the structure can be that of a full document
 	 * or that of a document part.
@@ -75,6 +81,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		/**
 		 * Filters the Swagger documentation generated for the TEC REST API.
 		 *
+		 * @since TBD
+		 *
 		 * @param array                                                     $documentation An associative PHP array in the format supported by Swagger.
 		 * @param Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation $this          This documentation endpoint instance.
 		 *
@@ -85,6 +93,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		return $documentation;
 	}
 
+	/**
+	 * Get Event Tickets REST API Info
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	protected function get_api_info() {
 		return array(
 			'version'     => $this->tec_rest_api_version,
@@ -93,6 +108,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		);
 	}
 
+	/**
+	 * Get Event Tickets REST API Path
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	protected function get_paths() {
 		$paths = array();
 		foreach ( $this->documentation_providers as $path => $endpoint ) {
@@ -111,6 +133,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Registers a documentation provider for a path.
 	 *
+	 * @since TBD
+	 *
 	 * @param                                            $path
 	 * @param Tribe__Documentation__Swagger__Provider_Interface $endpoint
 	 */
@@ -118,18 +142,32 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		$this->documentation_providers[ $path ] = $endpoint;
 	}
 
+	/**
+	 * Get REST API Documentation
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	protected function get_own_documentation() {
 		return array(
 			'get' => array(
 				'responses' => array(
 					'200' => array(
-						'description' => __( 'Returns the documentation for Event Tickets REST API in Swagger consumable format.', 'event-tickets' )
+						'description' => __( 'Returns the documentation for Event Tickets REST API in Swagger consumable format.', 'event-tickets' ),
 					),
 				),
 			),
 		);
 	}
 
+	/**
+	 * Get REST API Definitions
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	protected function get_definitions() {
 		$definitions = array();
 		/** @var Tribe__Documentation__Swagger__Provider_Interface $provider */
@@ -141,6 +179,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	}
 
 	/**
+	 * Get REST API Registered Documentation Providers
+	 *
+	 * @since TBD
+	 *
 	 * @return Tribe__Documentation__Swagger__Provider_Interface[]
 	 */
 	public function get_registered_documentation_providers() {
@@ -150,6 +192,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Registers a documentation provider for a definition.
 	 *
+	 * @since TBD
+	 *
 	 * @param                                                  string $type
 	 * @param Tribe__Documentation__Swagger__Provider_Interface       $provider
 	 */
@@ -158,6 +202,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	}
 
 	/**
+	 * Get Documentation Provider Interface
+	 *
+	 * @since TBD
+	 *
 	 * @return Tribe__Documentation__Swagger__Provider_Interface[]
 	 */
 	public function get_registered_definition_providers() {
@@ -167,6 +215,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
+	 *
+	 * @since TBD
 	 *
 	 * @return array
 	 */

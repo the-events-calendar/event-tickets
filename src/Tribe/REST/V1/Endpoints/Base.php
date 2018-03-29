@@ -112,7 +112,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 
 	/**
 	 * Returns the default value of posts per page.
-	 an*
+	 *
 	 * Cascading fallback is TEC `posts_per_page` option, `posts_per_page` option and, finally, 20.
 	 *
 	 * @since TBD

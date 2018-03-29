@@ -8,6 +8,12 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	 */
 	protected $message_prefix = 'rest-v1:';
 
+	/**
+	 * Tribe__Tickets__REST__V1__Messages constructor.
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function __construct() {
 		$this->messages = array(
 			'missing-event-id'                 => __( 'The event ID is missing from the request', 'event-tickets' ),
@@ -20,6 +26,8 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 
 	/**
 	 * Returns the localized message associated with the slug.
+	 *
+	 * @since TBD
 	 *
 	 * @param string $message_slug
 	 *
@@ -36,24 +44,12 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	/**
 	 * Returns the associative array of all the messages handled by the class.
 	 *
+	 * @since TBD
+	 *
 	 * @return array An associative array in the `[ <slug> => <localized message> ]` format.
 	 */
 	public function get_messages() {
 		return $this->messages;
 	}
 
-	/**
-	 * Prefixes a message slug with a common root.
-	 *
-	 * Used to uniform the slug format to the one used by the `Tribe__Tickets__Aggregator__Service` class.
-	 *
-	 * @see Tribe__Tickets__Aggregator__Service::register_messages()
-	 *
-	 * @param string $message_slug
-	 *
-	 * @return string The prefixed message slug.
-	 */
-	public function prefix_message_slug( $message_slug ) {
-		return $this->message_prefix . $message_slug;
-	}
 }

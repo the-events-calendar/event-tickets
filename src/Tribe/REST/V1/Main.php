@@ -26,6 +26,9 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 
 	/**
 	 * Binds the implementations needed to support the REST API.
+	 *
+	 * @since TBD
+	 *
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.rest-v1.messages', 'Tribe__Tickets__REST__V1__Messages' );
@@ -95,10 +98,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	 *
 	 */
 	protected function hook_settings() {
-		add_filter( 'tribe_addons_tab_fields', array(
-			tribe( 'tickets.rest-v1.settings' ),
-			'filter_tribe_addons_tab_fields'
-		) );
+		add_filter( 'tribe_addons_tab_fields', array( tribe( 'tickets.rest-v1.settings' ), 'filter_tribe_addons_tab_fields' ) );
 	}
 
 	/**

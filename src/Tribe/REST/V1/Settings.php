@@ -15,6 +15,8 @@ class Tribe__Tickets__REST__V1__Settings {
 	/**
 	 * Tribe__Tickets__REST__V1__Settings constructor.
 	 *
+	 * @since TBD
+	 *
 	 * @param Tribe__Tickets__REST__V1__System $system
 	 */
 	public function __construct( Tribe__Tickets__REST__V1__System $system ) {
