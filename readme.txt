@@ -3,7 +3,7 @@
 Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, tribecari, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
-Tested up to: 4.9.4
+Tested up to: 4.9.5
 Stable tag: 4.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -238,9 +238,33 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
+<<<<<<< HEAD
 = [4.7.2] TBD =
 
 * Feature - Add new action `tribe_tickets_before_front_end_ticket_form` if RSVP has been expired and the tickets form is not rendered any more [98203]
+=======
+= [4.7.1] 2018-03-28 =
+
+* Feature - Added updater class to enable changes on future updates [84675]
+* Feature - Added JSON-LD for custom post types with support for tickets and a new filter `tribe_tickets_default_currency` (thanks to Albert for flagging this in our forums) [95034]
+* Fix - Added caching to prevent duplicate calls to `get_all_event_tickets` within the admin environment (props to Gabriel in our help desk for flagging this) [99267]
+* Fix - Improved sanitization of the RSVP description field [99100]
+* Fix - Updated logic for calculating the ticketed/unticketed event counts to better account for trashed events (props to @mrwweb for reporting this problem) [92236]
+* Fix - Improved the ticket editor interface so that warnings in relation to recurring events stay visible [95098]
+* Fix - Restored access to the attendee list from the organizer and venue post editor screens (when ticketing is enabled for those post types- our thanks to Antonio Jose in our forums for flagging this problem) [90062]
+* Fix - Added safeguards to prevent RSVPs from being changed from "not going" to "going" if doing so would result in the ticket capacity being exceeded [100165]
+* Fix - Added warning if a ticket has stock management turned off in the related WooCommerce product, but has capacity enabled for the ticket (thanks Isaiah Baker and others for highlighting this) [91471]
+* Fix - Made sure the correct menu parent is expanded on the admin when visiting the list of attendees [93057]
+* Fix - Changes for compatibility with Community Tickets (and to fix the ability to send the attendee report email, which was broken under some conditions) [99979]
+* Fix - Added safeguards to prevent overwriting the start date of a ticket if it was already set [99601]
+* Fix - Changes to ensure buy now buttons work with plain/"ugly" permalinks [96640]
+* Fix - Updated the ticket start/end sale date logic to be timezone aware (props to @evolutionstartup for reporting this in our help desk) [99721]
+* Fix - Fixes a glitch, where adding an RSVP results in "NaN" in the counter when using Event Tickets, Enfold and WooCommerce (thanks to @tbo24 for the contribution) [93027]
+* Tweak - Changed Event tickets slug from 3 different types into 2 variants for post types and events types [88569]
+* Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
+* Tweak - Unified upsell messages in the Ticket settings tab [100736]
+* Tweak - Changed default status for 'Enable Tribe Commerce' option in tickets settings [102182]
+>>>>>>> b69da4727c249b9289c456b648478412473f0711
 
 = [4.7] 2018-03-13 =
 
@@ -254,7 +278,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 = [4.6.3.1] 2018-02-26 =
 
-* Fix - Remove PHP warnings during CSV generation of the attendees [94293]
+* Fix - Remove PHP warnings during CSV generation of the attendees [94293]]
 
 = [4.6.3] 2018-01-10 =
 

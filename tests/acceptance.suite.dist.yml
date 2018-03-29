@@ -1,0 +1,35 @@
+actor: AcceptanceTester
+modules:
+    enabled:
+        - \Helper\Acceptance
+        # see https://github.com/lucatume/wp-browser#modules to know the general ratio of each
+        - WPWebDriver #browse
+        - WPDb #manipulate the database and look up stuff
+        - WPFilesystem #manipulate the WP filesystem, scaffold themes and plugins
+        - Asserts #PHPUnit-like assertions
+    config:
+        WPWebDriver:
+            url: '%WP_URL%'
+            # see codeception.dist.yml for the configuration
+            browser: phantomjs
+            port: 4444
+            window_size: 1024x768
+            adminUsername: %WP_ADMIN_USERNAME%
+            adminPassword: %WP_ADMIN_PASSWORD%
+            adminPath: '%WP_ADMIN_PATH%'
+        WPDb:
+           dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
+           user: %DB_USER%
+           password: %DB_PASSWORD%
+           dump: 'tests/_data/dump.sql'
+           populate: true
+           cleanup: true
+           reconnect: false
+           url: '%WP_URL%'
+           tablePrefix: 'wp_'
+        WPFilesystem:
+           wpRootFolder: '%WP_ROOT_FOLDER%'
+           themes: '/wp-content/themes'
+           plugins: '/wp-content/plugins'
+           mu-plugins: '/wp-content/mu-plugins'
+           uploads: '/wp-content/uploads'

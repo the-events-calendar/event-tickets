@@ -309,6 +309,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tribe_events_tickets_metabox_edit_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
 		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
+		add_filter( 'tribe_tickets_get_default_module', array( $this, 'deprioritize_module' ), 5, 2 );
 	}
 
 	/**
@@ -1561,7 +1562,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Retreive only order related information
+	 * Retrieve only order related information
 	 * Important: On PayPal Ticket the order is the Attendee Object
 	 *
 	 *     order_id
@@ -2566,7 +2567,33 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
      *
      * @return string
      */
-    private function generate_security_code( $attendee_id ) {
+    public function generate_security_code( $attendee_id ) {
         return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
     }
+
+	/**
+	 * If other modules are active, we should deprioritize this one (we want other commerce
+	 * modules to take priority over this one).
+	 *
+	 * @since 4.7.1
+	 *
+	 * @param string   $default_module
+	 * @param string[] $available_modules
+	 *
+	 * @return string
+	 */
+	public function deprioritize_module( $default_module, array $available_modules ) {
+		$tribe_commerce_module = get_class( $this );
+
+		// If this isn't the default (or if there isn't a choice), no need to deprioritize
+		if (
+			$default_module !== $tribe_commerce_module
+			|| count( $available_modules ) < 2
+			|| reset( $available_modules ) !== $tribe_commerce_module
+		) {
+			return $default_module;
+		}
+
+		return next( $available_modules );
+	}
 }
