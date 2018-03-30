@@ -438,7 +438,7 @@ class Tribe__Tickets__Commerce__Currency {
 				: 'postfix';
 		}
 
-		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
 			$position = edd_get_option( 'currency_position', 'before' );
 
 			return 'before' === $position ? 'prefix' : 'postfix';

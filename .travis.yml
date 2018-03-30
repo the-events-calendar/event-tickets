@@ -111,6 +111,9 @@ before_script:
   # flush rewrite rules
   - wp rewrite structure '/%postname%/' --hard
 
+  # skip the welcome page redirection
+  - wp option add tribe_skip_welcome 1
+
   # export a dump of the just installed database to the _data folder
   - wp db export $PLUGIN_DIR/tests/_data/dump.sql
 
@@ -125,3 +128,11 @@ script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
+  - codecept run acceptance
+
+after_failure:
+  # if the build failed let's see why
+  - sudo cat $(php -i | grep ^error_log | cut -d' ' -f 3)
+  - sudo cat /var/log/nginx/error.log
+  # for acceptance-like tests
+  - for file in /tmp/wordpress/wp-content/plugins/event-tickets/tests/_output/*.html; do echo "\n\n\n============" && cat $file; done

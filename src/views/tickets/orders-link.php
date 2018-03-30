@@ -6,7 +6,7 @@
  *
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-link.php
  *
- * @version 4.6.1
+ * @version 4.7.1
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -34,22 +34,7 @@ if ( 0 !== $ticket_count ) {
 	$counters[] = sprintf( _n( '%d Ticket', '%d Tickets', $ticket_count, 'event-tickets' ), $ticket_count );
 }
 
-if ( $is_event_page ) {
-
-	// The "Events" post type.
-	$link = trailingslashit( get_permalink( $event_id ) ) . 'tickets';
-
-} elseif ( isset( $post_type->_builtin ) && true !== $post_type->_builtin ) {
-
-	// Custom post types.
-	$link = trailingslashit( get_permalink( $event_id ) ) . '?tribe-edit-orders=1';
-
-} else {
-
-	// Core post types (e.g. posts).
-	$link = home_url( '/tickets/' . $event_id );
-}
-
+$link = $view->get_tickets_page_url( $event_id, $is_event_page );
 $message  = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
 $message .= ' <a href="' . esc_url( $link ) . '">' . sprintf( esc_html__( 'View your %s', 'event-tickets' ), $this->get_description_rsvp_ticket( $event_id, $user_id, true ) ) . '</a>';
 ?>

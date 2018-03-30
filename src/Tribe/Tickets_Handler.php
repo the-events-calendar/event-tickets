@@ -87,7 +87,7 @@ class Tribe__Tickets__Tickets_Handler {
 			add_action( 'save_post_' . $post_type, array( $this, 'save_post' ) );
 		}
 
-		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 3 );
+		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
 		add_filter( 'updated_postmeta', array( $this, 'update_shared_tickets_capacity' ), 15, 4 );
 
 		add_filter( 'updated_postmeta', array( $this, 'update_meta_date' ), 15, 4 );
@@ -246,12 +246,18 @@ class Tribe__Tickets__Tickets_Handler {
 			return false;
 		}
 
-		$update_meta = $this->key_start_date;
+		$meta_key = $this->key_start_date;
 		$tickets = $this->get_tickets_ids( $post_id );
 
-		foreach ( $tickets as $ticket ) {
+		foreach ( $tickets as $ticket_id ) {
 			// Skip tickets with manual updates to that meta
-			if ( $this->has_manual_update( $ticket, $update_meta ) ) {
+			if ( $this->has_manual_update( $ticket_id, $meta_key ) ) {
+				continue;
+			}
+
+			$current_date = get_post_meta( $ticket_id, $meta_key, true );
+			// Skip if the ticket has already a date
+			if ( ! empty( $current_date ) ) {
 				continue;
 			}
 
@@ -262,12 +268,11 @@ class Tribe__Tickets__Tickets_Handler {
 			}
 			// Convert to seconds
 			$round *= MINUTE_IN_SECONDS;
-
 			$date = strtotime( $post->post_date );
 			$date = round( $date / $round ) * $round;
 			$date = date( Tribe__Date_Utils::DBDATETIMEFORMAT, $date );
 
-			update_post_meta( $ticket, $update_meta, $date );
+			update_post_meta( $ticket_id, $meta_key, $date );
 		}
 
 		return true;
@@ -339,7 +344,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 				// PayPal tickets
 				'_tribe_tpp_event' => 'tpp',
-				'_tribe_twpp_for_event' => 'tpp',
+				'_tribe_tpp_for_event' => 'tpp',
 
 				// EDD
 				'_tribe_eddticket_event' => 'edd',
@@ -559,7 +564,7 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @return int
 	 */
-	public function filter_capacity_support( $value, $object_id, $meta_key ) {
+	public function filter_capacity_support( $value, $object_id, $meta_key, $single = true ) {
 		// Something has been already set
 		if ( ! is_null( $value ) ) {
 			return $value;
@@ -575,7 +580,7 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Bail when we already have the MetaKey saved
 		if ( metadata_exists( 'post', $object_id, $meta_key ) ) {
-			return get_post_meta( $object_id, $meta_key, true );
+			return get_post_meta( $object_id, $meta_key, $single );
 		}
 
 		// Do the migration
@@ -583,6 +588,11 @@ class Tribe__Tickets__Tickets_Handler {
 
 		// Hook it back up
 		add_filter( 'get_post_metadata', array( $this, 'filter_capacity_support' ), 15, 4 );
+
+		// This prevents get_post_meta without single param to break
+		if ( ! $single ) {
+			$capacity = (array) $capacity;
+		}
 
 		return $capacity;
 	}
@@ -631,6 +641,7 @@ class Tribe__Tickets__Tickets_Handler {
 				$capacity += $totals['sold'] + $totals['pending'];
 			}
 		} else {
+
 			// In here we deal with Tickets migration from legacy
 			$mode = get_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 			$totals = $this->get_ticket_totals( $object->ID );
