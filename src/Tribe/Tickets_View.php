@@ -152,6 +152,21 @@ class Tribe__Tickets__Tickets_View {
 		return $vars;
 	}
 
+
+	/**
+	 * Sort Attendee by Order Status to Process Not Going First
+	 *
+	 * @since 4.7.1
+	 *
+	 * @param $a array an array of ticket id and status
+	 * @param $b array an array of ticket id and status
+	 *
+	 * @return int
+	 */
+	public function sort_attendees( $a, $b ) {
+		return strcmp( $a['order_status'], $b['order_status'] );
+	}
+
 	/**
 	 * Update the RSVP and Tickets values for each Attendee
 	 */
@@ -170,6 +185,17 @@ class Tribe__Tickets__Tickets_View {
 
 		$post_id = get_the_ID();
 		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : array();
+
+		/**
+		 * Sort list to handle all not attending first
+		 *
+		 * @todo switch to only wp_list_sort once WordPress 4.7 is minimum supported version
+		 */
+		if ( function_exists( 'wp_list_sort' ) ) {
+			$attendees = wp_list_sort( $attendees, 'order_status', 'ASC', true );
+		} else {
+			uasort( $attendees, array( $this, 'sort_attendees' ) );
+		}
 
 		foreach ( $attendees as $order_id => $data ) {
 			/**
@@ -193,14 +219,37 @@ class Tribe__Tickets__Tickets_View {
 		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		// If it's not events CPT
-		if ( $is_correct_page ) {
-			$url = home_url( 'tickets/' ) . $post_id;
-		} else {
-			$url = get_permalink( $post_id ) . '/tickets';
-		}
+		$url = $this->get_tickets_page_url( $post_id, ! $is_correct_page );
 		$url = add_query_arg( 'tribe_updated', 1, $url );
 		wp_safe_redirect( esc_url_raw( $url ) );
 		exit;
+	}
+
+	/**
+	 * Helper function to generate the Link to the tickets page of an event
+	 *
+	 * @since 4.7.1
+	 *
+	 * @param $event_id
+	 * @param $is_event_page
+	 *
+	 * @return string|void
+	 */
+	public function get_tickets_page_url( $event_id, $is_event_page ) {
+		$has_plain_permalink = '' === get_option( 'permalink_structure' );
+		$event_url = get_permalink( $event_id );
+
+		// Is on the Event post type
+		if ( $is_event_page ) {
+			$link = $has_plain_permalink
+				? add_query_arg( 'eventDisplay', 'tickets', untrailingslashit( $event_url ) )
+				: trailingslashit( $event_url ) . 'tickets';
+		} else {
+			$link = $has_plain_permalink
+				? add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) )
+				: home_url( '/tickets/' . $event_id );
+		}
+		return $link;
 	}
 
 

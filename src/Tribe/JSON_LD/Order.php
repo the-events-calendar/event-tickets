@@ -44,6 +44,41 @@ class Tribe__Tickets__JSON_LD__Order {
 		$myself = self::instance();
 
 		add_filter( 'tribe_json_ld_event_object', array( $myself, 'add_ticket_data' ), 10, 3 );
+
+		$event_type = class_exists( 'Tribe__Events__Main' ) ? Tribe__Events__Main::POSTTYPE : 'tribe_events';
+		$post_types = (array) tribe_get_option( 'ticket-enabled-post-types', array() );
+
+		/**
+		 * Other types can have tickets as well we might need to hook into each type to add tickets if any has tickets
+		 */
+		$filters = array();
+		foreach ( $post_types as $post_type ) {
+			if ( $event_type === $post_type ) {
+				continue;
+			}
+
+			/**
+			 * This will allow you to change the type for the Rich Snippet, by default it will use the type Product for
+			 * any Post type or Page. If this is runs in a book post type the filter becomes something like.
+			 *
+			 * @example tribe_events_json_ld_book_type
+			 *
+			 * @see http://schema.org/Product
+			 *
+			 * @since 4.7.1
+			 *
+			 * @return string
+			 */
+			$filters[] = strtolower( (string) apply_filters( "tribe_tickets_json_ld_{$post_type}_type", 'Product' ) );
+		}
+
+		/**
+		 * Avoid duplicates calls to add_filter
+		 */
+		$filters = array_unique( $filters );
+		foreach ( $filters as $type ) {
+			add_filter( "tribe_json_ld_{$type}_object", array( $myself, 'add_ticket_data' ), 10, 3 );
+		}
 	}
 
 	/**
@@ -87,10 +122,11 @@ class Tribe__Tickets__JSON_LD__Order {
 	 * Builds an object representing a ticket offer.
 	 *
 	 * @param object  $ticket
-	 * @param WP_Post $event
+	 * @param WP_Post $post
+	 *
 	 * @return object
 	 */
-	public function get_offer( $ticket, $event ) {
+	public function get_offer( $ticket, $post ) {
 		$price = $ticket->price;
 		// We use `the-events-calendar` domain to make sure it's translate-able the correct way
 		$string_free = __( 'Free', 'the-events-calendar' );
@@ -101,11 +137,12 @@ class Tribe__Tickets__JSON_LD__Order {
 		}
 
 		$offer = (object) array(
-			'@type'        => 'Offer',
-			'url'          => $ticket->frontend_link,
-			'price'        => $price,
-			'category'     => 'primary',
-			'availability' => $this->get_ticket_availability( $ticket ),
+			'@type'         => 'Offer',
+			'url'           => get_permalink( $post ),
+			'price'         => $price,
+			'category'      => 'primary',
+			'availability'  => $this->get_ticket_availability( $ticket ),
+			'priceCurrency' => $this->get_price_currency( $ticket ),
 		);
 
 		if ( ! empty( $ticket->start_date ) ) {
@@ -122,9 +159,9 @@ class Tribe__Tickets__JSON_LD__Order {
 		 *
 		 * @param object                        $offer
 		 * @param Tribe__Tickets__Ticket_Object $ticket
-		 * @param object                        $event
+		 * @param object $post
 		 */
-		return (object) apply_filters( 'tribe_json_ld_offer_object', $offer, $ticket, $event );
+		return (object) apply_filters( 'tribe_json_ld_offer_object', $offer, $ticket, $post );
 	}
 
 	/**
@@ -136,13 +173,33 @@ class Tribe__Tickets__JSON_LD__Order {
 	public function get_ticket_availability( $ticket ) {
 		$stock = $ticket->stock();
 
-		if ( $stock <= 0 && $stock !== '' ) {
+		if ( 0 === $stock ) {
 			return 'SoldOut';
-		}
-		if ( $stock >= 1 && $stock <= $this->low_stock ) {
+		} elseif ( $stock >= 1 && $stock <= $this->low_stock ) {
 			return 'LimitedAvailability';
 		} else {
 			return 'InStock';
 		}
+	}
+
+	/**
+	 * Return the price currency used on the Ticket
+	 *
+	 * @since 4.7.1
+	 *
+	 * @param $ticket
+	 *
+	 * @return mixed
+	 */
+	public function get_price_currency( $ticket ) {
+
+		$currency = tribe_get_option( 'ticket-commerce-currency-code', 'USD' );
+
+		if ( class_exists( $ticket->provider_class ) ) {
+			$instance = call_user_func( array( $ticket->provider_class, 'get_instance' ) ) ;
+			$currency = $instance->get_currency();
+		}
+
+		return $currency;
 	}
 }

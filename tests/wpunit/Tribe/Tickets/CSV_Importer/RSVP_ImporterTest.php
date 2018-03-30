@@ -375,7 +375,7 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @return array
 	 */
-	private function make_record( array $overrides = [ ] ) {
+	private function make_record( array $overrides = [] ) {
 		$defaults = [
 			'event_name'             => 'Some Event',
 			'ticket_name'            => 'Ticket 1',
@@ -387,7 +387,7 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 			'ticket_stock'           => '100',
 		];
 
-		return array_values(array_merge( $defaults, $overrides ));
+		return array_values( array_merge( $defaults, $overrides ) );
 	}
 
 }
