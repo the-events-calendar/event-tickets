@@ -52,4 +52,21 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 		return $this->messages;
 	}
 
+	/**
+	 * Prefixes a message slug with a common root.
+	 *
+	 * @since TBD
+	 *
+	 * Used to uniform the slug format to the one used by the `Tribe__Events__Aggregator__Service` class.
+	 *
+	 * @see Tribe__Events__Aggregator__Service::register_messages()
+	 *
+	 * @param string $message_slug
+	 *
+	 * @return string The prefixed message slug.
+	 */
+	public function prefix_message_slug( $message_slug ) {
+		return $this->message_prefix . $message_slug;
+	}
+
 }
