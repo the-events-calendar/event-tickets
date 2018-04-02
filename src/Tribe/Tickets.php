@@ -802,7 +802,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket_form_hook = $this->get_ticket_form_hook();
 
 			if ( ! empty( $ticket_form_hook ) ) {
-				add_action( $ticket_form_hook, array( $this, 'front_end_tickets_form' ), 5 );
+				add_action( $ticket_form_hook, array( $this, 'maybe_add_front_end_tickets_form' ), 5 );
 			}
 
 			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'show_tickets_unavailable_message' ), 6 );
@@ -811,6 +811,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Ensure ticket prices and event costs are linked
 			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
+		}
+
+		/**
+		 * Maybe addd the Tickets Form as shouldn't be added if is unchecked from the settings
+		 *
+		 * @since TBD
+		 *
+		 * @param string $content
+		 */
+		public function maybe_add_front_end_tickets_form( $content ) {
+			if ( ! tribe_tickets_post_type_enabled( get_post_type() ) ) {
+				return;
+			}
+
+			return $this->front_end_tickets_form( $content );
 		}
 
 		// start Attendees

@@ -238,11 +238,11 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-<<<<<<< HEAD
 = [4.7.2] TBD =
 
 * Feature - Add new action `tribe_tickets_before_front_end_ticket_form` if RSVP has been expired and the tickets form is not rendered any more [98203]
-=======
+* Fix - Prevent rendering of the RSVP form if Tickets is disabled for Event post type [66072]
+
 = [4.7.1] 2018-03-28 =
 
 * Feature - Added updater class to enable changes on future updates [84675]
