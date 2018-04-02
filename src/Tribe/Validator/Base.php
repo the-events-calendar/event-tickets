@@ -23,7 +23,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 		}
 
 		// get ticket provider
-		$ticket_type =  tribe( 'tickets.data_api' )->detect_by_id( $ticket_id );
+		$ticket_type = tribe( 'tickets.data_api' )->detect_by_id( $ticket_id );
 
 		//get ticket
 		$ticket = get_post( $ticket_id );
