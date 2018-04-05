@@ -594,27 +594,12 @@ class Tribe__Tickets__Attendees {
 			$name  = $flip['Customer Name'];
 			$email = $flip['Customer Email Address'];
 
-			error_log(
-				print_r(
-					[
-						$flip,
-						$prime,
-						$name,
-						$email
-					],
-					true
-				)
-			);
-
 			//And echo the data
 			foreach ( $items as $item ) {
-
 				if ( empty( $item[$prime] ) ) {
 					$string = ! empty( $item[$name] ) ? $item[$name] : '';
 					$string .= ! empty( $item[$email] ) ? ', ' . $item[$email] : '';
-					error_log($string);
 					$item[$prime] = $string;
-					error_log($item[$prime]);
 				}
 
 				fputcsv( $output, $item );
