@@ -588,8 +588,20 @@ class Tribe__Tickets__Attendees {
 			// create a file pointer connected to the output stream
 			$output = fopen( 'php://output', 'w' );
 
+			// Get indexes by keys
+			$flip  = array_flip( $items[0] );
+			$prime = $flip['Primary Information'];
+			$name  = $flip['Customer Name'];
+			$email = $flip['Customer Email Address'];
+
 			//And echo the data
 			foreach ( $items as $item ) {
+				if ( empty( $item[ $prime ] ) ) {
+					$string = ! empty( $item[ $name ] ) ? $item[ $name ] : '';
+					$string .= ! empty( $item[ $email ] ) ? ', ' . $item[ $email ] : '';
+					$item[ $prime ] = $string;
+				}
+
 				fputcsv( $output, $item );
 			}
 
