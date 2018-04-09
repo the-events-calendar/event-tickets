@@ -10,7 +10,7 @@ var tribe_tickets_ticket_form = {};
 	var $quantity_fields;
 
 	my.init = function() {
-		$tickets_lists = $( '.tribe-events-tickets-tpp' );
+		$tickets_lists = $( '.tribe-events-tickets, .tribe-events-tickets-tpp' );
 		$quantity_fields = $tickets_lists.find( '.quantity' ).find( '.qty' );
 		$quantity_fields.on( 'change', my.on_quantity_change );
 	};
@@ -112,6 +112,7 @@ var tribe_tickets_ticket_form = {};
 		// Update
 		$input.val( new_quantity );
 		remaining = available_stock - new_quantity;
+
 		$tickets_lists.find( '.available-stock[data-product-id=' + ticket_id + ']').html( remaining );
 	};
 

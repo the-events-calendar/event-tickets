@@ -245,6 +245,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Fix - Honor the Start of Week for the DatePickers of the Admin [75114]
 * Fix - Ensure exported Attendee Reports have user info in the "Primary Information" column [70453]
 * Fix - Corrected the datetime format used within our JSON LD output so that it follows the ISO8601 standard [43349]
+* Fix - Make sure ticket countdown is updated when tribe commerce is not used [102497]
 * Tweak - Added the `wp-background-processing` library by Ashley Rich (https://github.com/A5hleyRich/wp-background-processing) to `common` [102323]
 
 = [4.7.1] 2018-03-28 =
