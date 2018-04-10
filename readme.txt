@@ -241,6 +241,7 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 = [4.7.2] TBD =
 
 * Feature - Add new action `tribe_tickets_before_front_end_ticket_form` if RSVP has been expired and the tickets form is not rendered any more [98203]
+* Feature - CSV import for RSVP's allow to import the "Show Description" setting, new filter as well `tribe_tickets_import_rsvp_data` to set the data via code [96162]
 * Fix - Prevent rendering of the RSVP form if Tickets is disabled for Event post type [66072]
 * Fix - Honor the Start of Week for the DatePickers of the Admin [75114]
 * Fix - Ensure exported Attendee Reports have user info in the "Primary Information" column [70453]
