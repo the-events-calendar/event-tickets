@@ -362,6 +362,14 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				}
 			}
 
+			if ( null === $this->event_timezone ) {
+				$wp_timezone = Tribe__Timezones::wp_timezone_string();
+				if ( Tribe__Timezones::is_utc_offset( $wp_timezone ) ) {
+					$wp_timezone = Tribe__Timezones::generate_timezone_string_from_utc_offset( $wp_timezone );
+				}
+				$this->event_timezone = new DateTimeZone( $wp_timezone );
+			}
+
 			return $this->event_timezone;
 		}
 
