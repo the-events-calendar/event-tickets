@@ -7,6 +7,7 @@ modules:
         - WPDb #manipulate the database and look up stuff
         - WPFilesystem #manipulate the WP filesystem, scaffold themes and plugins
         - Asserts #PHPUnit-like assertions
+        - WPLoader #used only to load WordPress and its functions in the same scope as the tests
     config:
         WPWebDriver:
             url: '%WP_URL%'
@@ -33,3 +34,10 @@ modules:
            plugins: '/wp-content/plugins'
            mu-plugins: '/wp-content/mu-plugins'
            uploads: '/wp-content/uploads'
+        WPLoader:
+          loadOnly: true
+          wpRootFolder: %WP_ROOT_FOLDER%
+          dbName: %DB_NAME% # use the same db and credentials WPDb uses, not the test db
+          dbHost: %DB_HOST%
+          dbUser: %DB_USER%
+          dbPassword: %DB_PASSWORD%
