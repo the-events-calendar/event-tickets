@@ -238,11 +238,16 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 
 == Changelog ==
 
-<<<<<<< HEAD
 = [4.7.2] TBD =
 
 * Feature - Add new action `tribe_tickets_before_front_end_ticket_form` if RSVP has been expired and the tickets form is not rendered any more [98203]
-=======
+* Fix - Prevent rendering of the RSVP form if Tickets is disabled for Event post type [66072]
+* Fix - Honor the Start of Week for the DatePickers of the Admin [75114]
+* Fix - Ensure exported Attendee Reports have user info in the "Primary Information" column [70453]
+* Fix - Corrected the datetime format used within our JSON LD output so that it follows the ISO8601 standard [43349]
+* Fix - Make sure ticket countdown is updated when tribe commerce is not used [102497]
+* Tweak - Added the `wp-background-processing` library by Ashley Rich (https://github.com/A5hleyRich/wp-background-processing) to `common` [102323]
+
 = [4.7.1] 2018-03-28 =
 
 * Feature - Added updater class to enable changes on future updates [84675]
