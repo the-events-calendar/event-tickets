@@ -271,7 +271,6 @@ The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
 * Tweak - Made it easier to set Tribe Commerce as the default ticket module (when multiple ticketing modules are active) [96538]
 * Tweak - Unified upsell messages in the Ticket settings tab [100736]
 * Tweak - Changed default status for 'Enable Tribe Commerce' option in tickets settings [102182]
->>>>>>> b69da4727c249b9289c456b648478412473f0711
 
 = [4.7] 2018-03-13 =
 
