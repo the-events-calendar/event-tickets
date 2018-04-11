@@ -69,12 +69,14 @@ class Tribe__Tickets__REST__V1__Post_Repository implements Tribe__Tickets__REST_
 		}
 
 		$data = array(
-			'id'                     => $ticket_id,
-			'status'                 => $ticket->post_status,
+			'id'     => $ticket_id,
+			'status' => $ticket->post_status,
 		);
 
 		/**
 		 * Filters the data that will be returned if for a single ticket.
+		 *
+		 * @since  TBD
 		 *
 		 * @param array   $data  The data that will be returned in the response.
 		 * @param WP_Post $event The requested ticket.

@@ -85,10 +85,9 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 		}
 
 		/** @var Tribe__REST__Headers__Headers_Interface $headers */
-		$headers = tribe( 'tickets.rest-v1.headers' );
+		tribe_callback( 'tickets.rest-v1.headers', 'add_headers' );
+		tribe_callback( 'tickets.rest-v1.headers', 'send_headers' );
 
-		add_action( 'wp_head', array( $headers, 'add_header' ), 10, 0 );
-		add_action( 'template_redirect', array( $headers, 'send_header' ), 11, 0 );
 	}
 
 	/**
@@ -98,7 +97,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	 *
 	 */
 	protected function hook_settings() {
-		add_filter( 'tribe_addons_tab_fields', array( tribe( 'tickets.rest-v1.settings' ), 'filter_tribe_addons_tab_fields' ) );
+		tribe_callback( 'tickets.rest-v1.settings', 'filter_tribe_addons_tab_fields' );
 	}
 
 	/**
