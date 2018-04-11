@@ -306,6 +306,11 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 			var startofweek = 0;
 
+			if ( 'firstDay' in tribe_datepicker_opts ) {
+				var firstDay = parseInt( tribe_datepicker_opts.firstDay, 10 );
+				startofweek = isNaN( firstDay ) ? 0 : firstDay;
+			}
+
 			if ( $event_pickers.length ) {
 				startofweek = $event_pickers.data( 'startofweek' );
 			}

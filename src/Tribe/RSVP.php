@@ -1046,6 +1046,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		}
 
+		$must_login = ! is_user_logged_in() && $this->login_required();
+
 		if ( $expired_tickets >= count( $tickets ) ) {
 			/**
 			 * Allow to hook into the FE form of the tickets if tickets has already expired. If the action used the
@@ -1089,8 +1091,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 					break;
 			}
 		}
-
-		$must_login = ! is_user_logged_in() && $this->login_required();
 
 		/**
 		 * Allow for the addition of content (namely the "Who's Attening?" list) above the ticket form.

@@ -545,10 +545,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function get_bulk_actions() {
 		$actions = array(
-			'check_in'        => esc_attr__( 'Check in', 'event-tickets' ),
-			'uncheck_in'      => esc_attr__( 'Undo Check in', 'event-tickets' ),
 			'delete_attendee' => esc_attr__( 'Delete', 'event-tickets' ),
 		);
+
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		    $actions['check_in'] = esc_attr__( 'Check in', 'event-tickets' );
+		    $actions['uncheck_in'] = esc_attr__( 'Undo Check in', 'event-tickets' );
+		}
 
 		return (array) apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', $actions );
 	}

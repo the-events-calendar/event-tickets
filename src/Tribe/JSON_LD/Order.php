@@ -146,11 +146,11 @@ class Tribe__Tickets__JSON_LD__Order {
 		);
 
 		if ( ! empty( $ticket->start_date ) ) {
-			$offer->validFrom = date( DateTime::ISO8601, strtotime( $ticket->start_date ) );
+			$offer->validFrom = date( DateTime::ATOM, strtotime( $ticket->start_date ) );
 		}
 
 		if ( ! empty( $ticket->end_date ) ) {
-			$offer->validThrough = date( DateTime::ISO8601, strtotime( $ticket->end_date ) );
+			$offer->validThrough = date( DateTime::ATOM, strtotime( $ticket->end_date ) );
 		}
 
 		/**
