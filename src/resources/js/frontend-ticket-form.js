@@ -33,7 +33,7 @@ var tribe_tickets_ticket_form = {};
 		var $form = $this.closest( 'form' );
 
 		// Only disable / enable if is a Tribe Commerce Paypal form.
-		if ( ! $form.hasClass('tribe-tickets-tpp') ) {
+		if ( ! $form.hasClass( 'tribe-tickets-tpp' ) ) {
 			return;
 		}
 
