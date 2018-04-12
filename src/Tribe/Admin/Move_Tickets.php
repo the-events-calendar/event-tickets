@@ -22,7 +22,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$this->ticket_history();
 
 		add_action( 'admin_init', array( $this, 'dialog' ) );
-		add_action( 'tribe_events_tickets_attendees_table_bulk_actions', array( $this, 'bulk_actions' ) );
+		add_filter( 'tribe_events_tickets_attendees_table_bulk_actions', array( $this, 'bulk_actions' ) );
 		add_action( 'wp_ajax_move_tickets', array( $this, 'move_tickets_request' ) );
 		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'move_all_tickets_for_type' ), 10, 4 );
 		add_action( 'wp_ajax_move_tickets_get_post_types', array( $this, 'get_post_types' ) );

@@ -444,6 +444,10 @@ class Tribe__Tickets__Tickets_View {
 			return;
 		}
 
+		if ( ! tribe_tickets_post_type_enabled( get_post_type() ) ) {
+			return;
+		}
+
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
 
 		include $file;

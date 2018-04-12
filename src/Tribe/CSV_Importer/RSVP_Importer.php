@@ -122,6 +122,14 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		$event = $this->get_event_from( $record );
 		$data  = $this->get_ticket_data_from( $record );
 
+		/**
+		 * Add an opportunity to change the data for the RSVP created via a CSV file
+		 *
+		 * @since TBD
+		 *
+		 * @param array
+		 */
+		$data = (array) apply_filters( 'tribe_tickets_import_rsvp_data', $data );
 		$ticket_id = $this->rsvp_tickets->ticket_add( $event->ID, $data );
 
 		$ticket_name = $this->get_value_by_key( $record, 'ticket_name' );
@@ -181,6 +189,11 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		$data['ticket_description'] = $this->get_value_by_key( $record, 'ticket_description' );
 		$data['ticket_start_date']  = $this->get_value_by_key( $record, 'ticket_start_sale_date' );
 		$data['ticket_end_date']    = $this->get_value_by_key( $record, 'ticket_end_sale_date' );
+
+		$show_description = trim( (string) $this->get_value_by_key( $record, 'ticket_show_description' ) );
+		if ( tribe_is_truthy( $show_description ) ) {
+			$data['ticket_show_description'] = $show_description;
+		}
 
 		$ticket_start_sale_time = $this->get_value_by_key( $record, 'ticket_start_sale_time' );
 
