@@ -1,6 +1,6 @@
  === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, tribecari, vicskf, zbtirrell
+Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.5
@@ -24,7 +24,7 @@ Sell tickets to your events by connecting your PayPal business account to your s
 
 = BUILT SOLID & SUPPORTED =
 
-The team at Modern Tribe stands by our work and offers light support every Wednesday to the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the [premium add-on plugin](http://m.tri.be/18th) and you get access to premium support forums with 24-48 hour response times on weekdays.
+The team at Modern Tribe stands by our work and offers light support weekly for the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the [premium add-on plugin](http://m.tri.be/18th) and you get access to premium support forums with 24-48 hour response times on weekdays.
 
 Enjoy using Event Tickets, know how to get under the hood, and want to make money helping people? We're growing our community team and would love to hear from you. If you're interested, [check this out!](http://m.tri.be/mk)
 
@@ -81,7 +81,7 @@ Have so many amazing events that your users get overwhelmed? [Filter Bar](http:/
 
 Connect your calendar with your Eventbrite.com account! [Eventbrite Tickets](http://m.tri.be/18wf) allows you to import/export between The Events Calendar and Eventbrite, and incorporate ticket sales.
 
-= SUBMITTING PATCHES =
+= Submitting Patches =
 
 If you've identified a bug and want to submit a patch, we'd welcome it at our [GitHub page for Event Tickets](https://github.com/moderntribe/event-tickets). Simply cue up your proposed patch as a pull request, and we'll review as part of our [release cycle](http://m.tri.be/release-schedule) and merge into the codebase if appropriate from there. (If a pull request is rejected, we'll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin's changelog. For more information, check out the readme at our GitHub page. Happy coding!
 
@@ -151,90 +151,6 @@ Currently, the following add-ons are available for Event Tickets:
 = I'm still stuck. Where do I go to file a bug or ask a question? =
 
 If you're an Event Tickets Plus user, you're entitled access to our actively-monitored [premium forums](http://m.tri.be/18u1) at the theeventscalendar.com website. We can provide a deeper level of support here and hit these forums on a daily basis during the work week. No post should go more than 24-48 hours during that time without a response.
-
-== Documentation ==
-
-Our [New User Primer](http://m.tri.be/18ti) will help you get started. You can find more tutorials in our [knowledgebase](http://m.tri.be/44).
-
-== Add-Ons ==
-
-But wait: there's more! We've got a whole stable of plugins available to help you be awesome at what you do. Check out a full list of the products below, and over at [The Events Calendar website](http://m.tri.be/18uh).
-
-* [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
-* [Advanced Post Manager](https://wordpress.org/extend/plugins/advanced-post-manager/)
-* [Blog Copier](https://wordpress.org/plugins/blog-copier/)
-* [GigPress](https://wordpress.org/plugins/gigpress/)
-* [Image Widget](https://wordpress.org/plugins/image-widget/)
-* [Widget Builder](https://wordpress.org/plugins/widget-builder/)
-
-Our Premium Plugins and Services:
-
-* [Event Tickets Plus](http://m.tri.be/18wk)
-* [Events Calendar PRO](http://m.tri.be/18wi)
-* [Event Aggregator](http://m.tri.be/197u) (service)
-* [The Events Calendar: Community Events](http://m.tri.be/2g)
-* [The Events Calendar: Community Tickets](http://m.tri.be/18wl)
-* [The Events Calendar: Filter Bar](http://m.tri.be/fa)
-* [The Events Calendar: Eventbrite Tickets](http://m.tri.be/2e)
-
-== Translations ==
-
-Event Tickets is translated by volunteers at [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/event-tickets/stable). There you can find a list of available languages, download translation files, or help update the translations. Thank you to everyone who helps to maintain our translations!
-
-== Contributors ==
-
-The plugin is produced by [Modern Tribe Inc](http://m.tri.be/18uc).
-
-= Current Contributors =
-
-* [Andras Guseo](https://profiles.wordpress.org/aguseo)
-* [Barry Hughes](https://profiles.wordpress.org/barryhughes)
-* [Brian Jessee](https://profiles.wordpress.org/brianjessee)
-* [Caroline Tucker](https://profiles.wordpress.org/tribecari)
-* [Clifford Paulick](https://profiles.wordpress.org/cliffpaulick)
-* [Daniel Dvorkin](https://profiles.wordpress.org/MZAWeb)
-* [Geoff Graham](https://profiles.wordpress.org/geoffgraham)
-* [George Gecewicz](https://profiles.wordpress.org/ggwicz)
-* [Gustavo Bordoni](https://profiles.wordpress.org/bordoni)
-* [Leah Koerper](https://profiles.wordpress.org/leahkoerper)
-* [Luca Tumedei](https://profiles.wordpress.org/lucatume)
-* [Matthew Batchelder](https://profiles.wordpress.org/borkweb)
-* [Neill McShea](https://profiles.wordpress.org/neillmcshea)
-* [Nico Santos](https://profiles.wordpress.org/nicosantos)
-* [Patricia Hillebrandt](https://profiles.wordpress.org/patriciahillebrandt)
-* [Peter Chester](https://profiles.wordpress.org/peterchester)
-* [Reid Peifer](https://profiles.wordpress.org/reid.peifer)
-* [Shane Pearlman](https://profiles.wordpress.org/shane.pearlman)
-* [Zachary Tirrell](https://profiles.wordpress.org/zbtirrell)
-
-= Past Contributors =
-
-* [Brook Harding](https://profiles.wordpress.org/brook-tribe)
-* [Casey Driscoll](https://profiles.wordpress.org/caseypatrickdriscoll)
-* [Casey Picker](https://profiles.wordpress.org/ckpicker)
-* [Dan Cameron](https://profiles.wordpress.org/dancameron)
-* [Jessica Yazbek](https://profiles.wordpress.org/jazbek)
-* [Joachim Kudish](https://profiles.wordpress.org/jkudish)
-* [John Gadbois](https://profiles.wordpress.org/jgadbois)
-* [Jonah West](https://profiles.wordpress.org/jonahcoyote)
-* [Jonathan Brinley](https://profiles.wordpress.org/jbrinley)
-* [Josh Mallard](https://profiles.wordpress.org/joshlimecuda)
-* [Justin Endler](https://profiles.wordpress.org/justinendler)
-* [Kelly Groves](https://profiles.wordpress.org/kellykathryn)
-* [Kelsey Damas](https://profiles.wordpress.org/kelseydamas)
-* [Kyle Unzicker](https://profiles.wordpress.org/kyleunzicker)
-* [Mat Lipe](https://profiles.wordpress.org/mat-lipe)
-* [Matt Wiebe](https://profiles.wordpress.org/mattwiebe)
-* [Matthew Denton](https://profiles.wordpress.org/mdbitz)
-* [Nick Ciske](https://profiles.wordpress.org/nickciske)
-* [Nick Mastromattei](https://profiles.wordpress.org/mastromktg)
-* [Paul Hughes](https://profiles.wordpress.org/paulhughes01)
-* [Rob La Gatta](https://profiles.wordpress.org/roblagatta)
-* [Ryan Urban](https://profiles.wordpress.org/ryancurban)
-* [Samuel Estok](https://profiles.wordpress.org/faction23)
-* [Shelby Elliott](https://profiles.wordpress.org/shelbelliott)
-* [Timothy Wood](https://profiles.wordpress.org/codearachnid)
-* [Trisha Salas](https://profiles.wordpress.org/trishasalas)
 
 == Changelog ==
 
