@@ -156,14 +156,14 @@ If you're an Event Tickets Plus user, you're entitled access to our actively-mon
 
 = [4.7.2] TBD =
 
-* Feature - Add new action `tribe_tickets_before_front_end_ticket_form` if RSVP has been expired and the tickets form is not rendered any more [98203]
-* Feature - CSV import for RSVP's allow to import the "Show Description" setting, new filter as well `tribe_tickets_import_rsvp_data` to set the data via code [96162]
-* Fix - Prevent rendering of the RSVP form if Tickets is disabled for Event post type [66072]
-* Fix - Honor the Start of Week for the DatePickers of the Admin [75114]
+* Feature - Add new action, `tribe_tickets_before_front_end_ticket_form`, if RSVP has been expired and the tickets form is not rendered any more [98203]
+* Feature - CSV imports for RSVP's now allow importing the "Show Description" setting; a new filter, `tribe_tickets_import_rsvp_data`, can set the data via code [96162]
+* Fix - Prevent rendering of the RSVP form if Event Tickets is disabled for the tribe_events post type [66072]
+* Fix - Ensure date-pickers honor the "Start of Week" option [75114]
 * Fix - Ensure exported Attendee Reports have user info in the "Primary Information" column [70453]
-* Fix - Corrected the datetime format used within our JSON LD output so that it follows the ISO8601 standard [43349]
-* Fix - Make sure ticket countdown is updated when tribe commerce is not used [102497]
-* Fix - Make sure the Attendees actions dropdown contains only actionable items by the current user [102498]
+* Fix - Corrected the datetime format used within our JSON-LD output so that it follows the ISO 8601 standard [43349]
+* Fix - Make sure ticket countdown is updated when Tribe Commerce is not used [102497]
+* Fix - Make sure the Attendees actions dropdown contains only actions the current user is allowed to perform [102498]
 * Tweak - Added the `wp-background-processing` library by Ashley Rich (https://github.com/A5hleyRich/wp-background-processing) to `common` [102323]
 
 = [4.7.1] 2018-03-28 =
