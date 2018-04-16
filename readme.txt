@@ -8,7 +8,7 @@ Stable tag: 4.7.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Event Tickets allows your visitors to RSVP and buy tickets to events on your site.  Also works seamlessly with The Events Calendar.
+Event Tickets allows your visitors to RSVP and buy tickets to events on your site. Also works seamlessly with The Events Calendar.
 
 == Description ==
 
@@ -22,13 +22,15 @@ Sell tickets to your events by connecting your PayPal business account to your s
 >[Upgrade to Event Ticket Plus now](http://m.tri.be/18th).
 >
 
-= BUILT SOLID & SUPPORTED =
+= Built solid & supported =
 
-The team at Modern Tribe stands by our work and offers light support weekly for the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add the [premium add-on plugin](http://m.tri.be/18th) and you get access to premium support forums with 24-48 hour response times on weekdays.
+The team at Modern Tribe stands by our work and offers light support weekly for the community via the WordPress.org support forums. Feel free to ask a question if you're having a problem with implementation or if you find bugs. Looking for help NOW or need a deeper level of support? Add [Event Tickets Plus](http://m.tri.be/18th) to get access to premium support forums with 24-48 hour response times on weekdays.
 
-Enjoy using Event Tickets, know how to get under the hood, and want to make money helping people? We're growing our community team and would love to hear from you. If you're interested, [check this out!](http://m.tri.be/mk)
+Just getting started? Check out the [New User Primer](http://m.tri.be/18ti) for an introduction to features, settings, and functionality.
 
-= PLUG-N-PLAY & HIGHLY CUSTOMIZABLE =
+Do you enjoy using Event Tickets, know how to make customizations and tweaks, and want to make money helping people? We're growing our community team and would love to hear from you. If you're interested, [check this out!](http://m.tri.be/mk)
+
+= Plug-n-play & highly customizable =
 
 Event Tickets is built to work out of the box: it doesn't use a shortcode (nor is one available). Just turn it on, configure the settings to match your needs and you'll be taking RSVPs and selling tickets within minutes.
 
@@ -36,54 +38,25 @@ By developers, for developers... it's ready to be the foundation for your wildes
 
 Whether your vision is big or small, we have you in mind.
 
-= FEATURES =
-
-Just getting started? Definitely watch and read through the [New User Primer](http://m.tri.be/18ti) before going much further.
+= Features =
 
 * Visitors can RSVP to events
-* Add RSVP to posts, pages, or any custom post type
 * Visitors can purchase tickets to events
+* Add RSVPs and tickets to posts, pages, or any custom post type
 * Admins can collect ticket fees by connecting their PayPal business account
-* Works out of the box with The Events Calendar
-* Upgrade to [Event Tickets Plus](http://m.tri.be/18th) for advanced ticket sales using WooCommerce and Easy Digital Downloads
+* Works out of the box with [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/)
 * Completely responsive from mobile to tablet to desktop
 * Tested on the major theme frameworks such as Avada, Genesis, Woo Themes, Thesis and many more.
-* Internationalized & Translated
-* Extensive Template Tags for Customization
-* Hook & Filters up the wazoo
+* Internationalized & translated
+* Extensive template tags for customization
+* Hooks & filters galore
 
-Looking for something else? We've got add-ons available to take your calendar to the next level.
-
-= Event Tickets Plus =
-
-Get premium support and advanced ticketing features with [Event Tickets Plus](http://m.tri.be/18wg). This includes the ability to sell tickets, collect sales, and manage attendees all from within your WordPress dashboard, using your favorite e-commerce provider. Tickets can share stock or have custom registration fields.
-
-= The Events Calendar =
-
-[The Events Calendar](https://wordpress.org/plugins/the-events-calendar/) lets you create and manage your calendar of events with ease. It is a carefully crafted, extensible plugin that lets you easily share your events.
-
-While The Events Calendar is a full featured plugin, you can upgrade to [Events Calendar PRO](http://m.tri.be/2c) and take it to the next level.
-Add recurring events, a whole range of new views ( week / map / photo / venue / organizer) & widgets (calendar / featured venue / week / event countdown), custom event attributes, default content, location search, much more!
-
-= Bulk Event Import =
-
-Fill your calendar with events from your favorite sources, including Facebook, Meetup, Google Calendar, iCalendar, CSV, and ICS. [Event Aggregator](http://m.tri.be/197u) provides a convenient dashboard to manage scheduled imports, manual imports, filters, one-way sync, import history, and more.
-
-= User-Submitted Events =
-
-Running a community calendar? [Community Events](http://m.tri.be/2g) lets users add events directly to your calendar without needing access to your admin.
-
-= Advanced User Search & Filters =
-
-Have so many amazing events that your users get overwhelmed? [Filter Bar](http://m.tri.be/52) adds a configurable set of filters to your event pages so users can view and search for the exact events that interest them.
-
-= Integrate With Eventbrite =
-
-Connect your calendar with your Eventbrite.com account! [Eventbrite Tickets](http://m.tri.be/18wf) allows you to import/export between The Events Calendar and Eventbrite, and incorporate ticket sales.
+Upgrade to [Event Tickets Plus](http://m.tri.be/18th) for advanced ticket sales using WooCommerce and Easy Digital Downloads
+Looking for something else? We've got [add-ons available](http://m.tri.be/2a) to take your calendar to the next level.
 
 = Submitting Patches =
 
-If you've identified a bug and want to submit a patch, we'd welcome it at our [GitHub page for Event Tickets](https://github.com/moderntribe/event-tickets). Simply cue up your proposed patch as a pull request, and we'll review as part of our [release cycle](http://m.tri.be/release-schedule) and merge into the codebase if appropriate from there. (If a pull request is rejected, we'll do our best to tell you why). Users whose pull requests are accepted will receive credit in the plugin's changelog. For more information, check out the readme at our GitHub page. Happy coding!
+If you've identified a bug and have a fix, we'd welcome it at our [GitHub page for Event Tickets](https://github.com/moderntribe/event-tickets). Simply submit a pull request so we can review as part of our [release cycle](http://m.tri.be/release-schedule) and merge into the codebase if appropriate from there. If a pull request is rejected, we'll do our best to tell you why. Users whose pull requests are accepted will receive credit in the plugin's changelog. For more information, check out the readme at our GitHub page. Happy coding!
 
 == Installation ==
 
@@ -99,26 +72,24 @@ If you've identified a bug and want to submit a patch, we'd welcome it at our [G
 * PHP 5.2.4 or greater (recommended: PHP 7.0 or greater)
 * WordPress 4.5 or above
 * jQuery 1.11.x
-* Event Tickets 4.6 or above
-* The Events Calendar 4.6 or above (optional)
 
 == Screenshots ==
 
-1. RSVP and Ticket on Event
-2. Front-end PayPal ticket in Page
-3. PayPal at Checkout
+1. RSVP and ticket on event
+2. Front-end ticket in page
+3. PayPal checkout
 4. Attendee report
 5. Emailed ticket
-6. PayPal Ticket Confirmation
-7. Event Settings
-8. Add new PayPal Ticket
+6. Ticket confirmation
+7. Event settings
+8. Add new ticket
 9. Configure PayPal
 
 == Frequently Asked Questions ==
 
 = Where do I go to file a bug or ask a question? =
 
-Users of the free plugin can post in the [Event Tickets support forum on WordPress.org](https://wordpress.org/support/plugin/event-tickets/). Our team reviews that forum weekly to look for bug reports. If you need more in-depth help, consider purchasing a license for [Tickets Plus](http://m.tri.be/18th). A valid license gives you access to our [premium support forums](http://m.tri.be/18u1) which are checked daily.
+Users of the free plugin can post in the [Event Tickets support forum on WordPress.org](https://wordpress.org/support/plugin/event-tickets/). Our team reviews that forum weekly to look for bug reports. If you need more in-depth help, consider purchasing a license for [Event Tickets Plus](http://m.tri.be/18th). A valid license gives you access to our [premium support forums](http://m.tri.be/18u1) which have a 24-48 hour response time on weekdays.
 
 = Are there any troubleshooting steps you'd suggest I try that might resolve my issue before I post a new thread? =
 
@@ -147,10 +118,6 @@ Currently, the following add-ons are available for Event Tickets:
 * [Community Events](http://m.tri.be/2g), for allowing frontend event submission from your readers.
 * [Community Tickets](http://m.tri.be/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
 * [Filter Bar](http://m.tri.be/fa), for adding advanced frontend filtering capabilities to your events calendar.
-
-= I'm still stuck. Where do I go to file a bug or ask a question? =
-
-If you're an Event Tickets Plus user, you're entitled access to our actively-monitored [premium forums](http://m.tri.be/18u1) at the theeventscalendar.com website. We can provide a deeper level of support here and hit these forums on a daily basis during the work week. No post should go more than 24-48 hours during that time without a response.
 
 == Changelog ==
 
