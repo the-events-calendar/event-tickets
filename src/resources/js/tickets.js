@@ -7,6 +7,7 @@ tribe.tickets.editor = {};
 
 var ticketHeaderImage = window.ticketHeaderImage || {};
 
+
 (function( window, $, _, obj ) {
 		'use strict';
 
@@ -306,8 +307,9 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 			var startofweek = 0;
 
-			if ( 'firstDay' in tribe_datepicker_opts ) {
-				var firstDay = parseInt( tribe_datepicker_opts.firstDay, 10 );
+			var datepicker_opts = window['tribe_datepicker_opts'] || {};
+			if ( 'firstDay' in datepicker_opts ) {
+				var firstDay = parseInt( datepicker_opts.firstDay, 10 );
 				startofweek = isNaN( firstDay ) ? 0 : firstDay;
 			}
 
