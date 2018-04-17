@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-10-01 20:02:25+0000\n"
+"PO-Revision-Date: 2018-04-05 20:11:34+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2528,7 +2528,7 @@ msgstr "Az e-mailben használható maximális képszélesség 580 pixel lesz bá
 
 #: src/admin-views/meta-box.php:42
 msgid "Upload image for the ticket header."
-msgstr ""
+msgstr "Tölts fel képet a jegy fejlécéhez."
 
 #: src/admin-views/meta-box.php:31
 msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
@@ -2822,15 +2822,15 @@ msgstr "Jegy #"
 
 #: src/admin-views/editor/list-row.php:33
 msgid "Ticket Type:"
-msgstr ""
+msgstr "Jegy típusa:"
 
 #: src/views/tickets/tpp-success.php:71
 msgid "Purchaser Email"
-msgstr ""
+msgstr "Vevő email címe"
 
 #: src/views/tickets/tpp-success.php:68
 msgid "Purchaser Name"
-msgstr ""
+msgstr "Vevő neve"
 
 #: src/Tribe/Admin/Ticket_Settings.php:22
 #: src/Tribe/Commerce/PayPal/Main.php:418 src/Tribe/Metabox.php:53
@@ -3209,7 +3209,7 @@ msgstr "Nyugat-Szahara"
 
 #: common/src/Tribe/Languages/Locations.php:293
 msgid "Wallis and Futuna Islands"
-msgstr ""
+msgstr "Wallis- és Futuna-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:292
 msgid "Virgin Islands (U.S.)"
@@ -3265,7 +3265,7 @@ msgstr "Tuvalu"
 
 #: common/src/Tribe/Languages/Locations.php:279
 msgid "Turks and Caicos Islands"
-msgstr ""
+msgstr "Turks- és Caicos-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:278
 msgid "Turkmenistan"
@@ -3281,7 +3281,7 @@ msgstr "Tunézia"
 
 #: common/src/Tribe/Languages/Locations.php:275
 msgid "Trinidad and Tobago"
-msgstr ""
+msgstr "Trinidad és Tobago"
 
 #: common/src/Tribe/Languages/Locations.php:274
 msgid "Tonga"
@@ -3301,7 +3301,7 @@ msgstr "Thaiföld"
 
 #: common/src/Tribe/Languages/Locations.php:270
 msgid "Tanzania, United Republic of"
-msgstr ""
+msgstr "Tanzániai Egyesült Köztársaság"
 
 #: common/src/Tribe/Languages/Locations.php:269
 msgid "Tajikistan"
@@ -3329,7 +3329,7 @@ msgstr "Szváziföld"
 
 #: common/src/Tribe/Languages/Locations.php:263
 msgid "Svalbard and Jan Mayen Islands"
-msgstr ""
+msgstr "Svalbard- és Jan Mayen-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:262
 msgid "Suriname"
@@ -3341,7 +3341,7 @@ msgstr "Szudán"
 
 #: common/src/Tribe/Languages/Locations.php:241
 msgid "Saint Pierre and Miquelon"
-msgstr ""
+msgstr "Saint-Pierre és Miquelon"
 
 #: common/src/Tribe/Languages/Locations.php:260
 msgid "Sri Lanka"
@@ -3409,7 +3409,7 @@ msgstr "Szamoa"
 
 #: common/src/Tribe/Languages/Locations.php:242
 msgid "Saint Vincent and The Grenadines"
-msgstr ""
+msgstr "Saint Vincent és a Grenadine-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:240
 msgid "Saint Lucia"
@@ -3417,7 +3417,7 @@ msgstr "Santa Lucia"
 
 #: common/src/Tribe/Languages/Locations.php:239
 msgid "Saint Kitts and Nevis"
-msgstr ""
+msgstr "Saint Kitts és Nevis"
 
 #: common/src/Tribe/Languages/Locations.php:236
 msgid "Rwanda"
@@ -3569,11 +3569,11 @@ msgstr "Monakó"
 
 #: common/src/Tribe/Languages/Locations.php:199
 msgid "Moldova, Republic of"
-msgstr ""
+msgstr "Moldáviai Köztársaság"
 
 #: common/src/Tribe/Languages/Locations.php:198
 msgid "Micronesia, Federated States of"
-msgstr ""
+msgstr "Mikronéziai Szövetségi Államok"
 
 #: common/src/Tribe/Languages/Locations.php:197
 msgid "Mexico"
@@ -3677,11 +3677,11 @@ msgstr "Kuvait"
 
 #: common/src/Tribe/Languages/Locations.php:172
 msgid "Korea, Republic of"
-msgstr ""
+msgstr "Koreai Köztársaság"
 
 #: common/src/Tribe/Languages/Locations.php:171
 msgid "Korea, Democratic People's Republic of"
-msgstr ""
+msgstr "Koreai Demokratikus Népköztársaság"
 
 #: common/src/Tribe/Languages/Locations.php:170
 msgid "Kiribati"
@@ -3725,7 +3725,7 @@ msgstr "Irak"
 
 #: common/src/Tribe/Languages/Locations.php:160
 msgid "Iran, Islamic Republic of"
-msgstr ""
+msgstr "Iráni Iszlám Köztársaság"
 
 #: common/src/Tribe/Languages/Locations.php:159
 msgid "Indonesia"
@@ -3757,7 +3757,7 @@ msgstr "Apostoli Szentszék (Vatikáni Városállam)"
 
 #: common/src/Tribe/Languages/Locations.php:152
 msgid "Heard and McDonald Islands"
-msgstr ""
+msgstr "Heard és McDonald-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:151
 msgid "Haiti"
@@ -3930,7 +3930,7 @@ msgstr "Cook-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:107
 msgid "Congo, Democratic Republic of the"
-msgstr ""
+msgstr "Kongói Demokratikus Köztársaság"
 
 #: common/src/Tribe/Languages/Locations.php:106
 msgid "Congo"
@@ -4022,7 +4022,7 @@ msgstr "Botswana"
 
 #: common/src/Tribe/Languages/Locations.php:83
 msgid "Bosnia and Herzegowina"
-msgstr ""
+msgstr "Bosznia-Hercegovina"
 
 #: common/src/Tribe/Languages/Locations.php:82
 msgid "Bolivia"
@@ -4094,7 +4094,7 @@ msgstr "Argentína"
 
 #: common/src/Tribe/Languages/Locations.php:65
 msgid "Antigua and Barbuda"
-msgstr ""
+msgstr "Antigua és Barbuda"
 
 #: common/src/Tribe/Languages/Locations.php:64
 msgid "Antarctica"
