@@ -121,7 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.7.2] TBD =
+= [4.7.2] 2018-04-17 =
 
 * Feature - Add new action, `tribe_tickets_before_front_end_ticket_form`, if RSVP has been expired and the tickets form is not rendered any more [98203]
 * Feature - CSV imports for RSVP's now allow importing the "Show Description" setting; a new filter, `tribe_tickets_import_rsvp_data`, can set the data via code [96162]
