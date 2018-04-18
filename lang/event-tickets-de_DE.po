@@ -2,14 +2,17 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-03-27 18:12:55+0000\n"
+"PO-Revision-Date: 2018-04-18 13:05+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: GlotPress/2.4.0-alpha\n"
+"X-Generator: Poedit 2.0.6\n"
 "Language: de\n"
 "Project-Id-Version: Plugins - Event Tickets - Stable (latest release)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
 
 #: src/views/tickets/tpp.php:93
 msgid "%1$s available"
@@ -2707,7 +2710,7 @@ msgstr "Ihre Antwort wurde erhalten! Überprüfen Sie Ihre E-Mail auf Ihre RSVP-
 
 #: src/Tribe/Commerce/PayPal/Main.php:1032 src/Tribe/RSVP.php:649
 msgid "Your tickets from %s"
-msgstr "Ihren Karten von %s"
+msgstr "Ihre Karten von %s"
 
 #: src/Tribe/Commerce/PayPal/Main.php:353 src/Tribe/RSVP.php:247
 msgctxt "Attendee number"
@@ -4478,7 +4481,6 @@ msgstr "Advanced Post Manager"
 msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
 msgstr "Events Tickets ist ein sorgfältig entwickeltes, erweiterbares Plugin, mit welchem Sie einfach Karten zu ihrer Veranstaltung verkaufen können."
 
-#. #-#-#-#-#  event-tickets-code.pot (Event Tickets 4.7)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: common/src/Tribe/Admin/Help_Page.php:75 common/src/Tribe/Plugins_API.php:57
 #: src/Tribe/Main.php:449
