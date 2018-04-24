@@ -1104,12 +1104,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! self::$frontend_script_enqueued ) {
 				$url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/frontend-ticket-form.js';
 				$url = Tribe__Template_Factory::getMinFile( $url, true );
-
 				wp_enqueue_script( 'tribe_tickets_frontend_tickets', $url, array( 'jquery' ), Tribe__Tickets__Main::VERSION, true );
-				add_action( 'wp_footer', array( __CLASS__, 'enqueue_frontend_stock_data' ), 1 );
 			}
 
-			self::$frontend_ticket_data += $tickets;
+			self::$frontend_ticket_data = array_filter( array_merge( self::$frontend_ticket_data, $tickets ) );
+			add_action( 'wp_footer', array( __CLASS__, 'enqueue_frontend_stock_data' ) );
 		}
 
 		/**

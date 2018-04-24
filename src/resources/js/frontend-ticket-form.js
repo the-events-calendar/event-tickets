@@ -10,8 +10,8 @@ var tribe_tickets_ticket_form = {};
 	var $quantity_fields;
 
 	my.init = function() {
-		$tickets_lists = $( '.tribe-events-tickets-tpp' );
-		$quantity_fields = $tickets_lists.find( '.quantity' ).find( '.qty' );
+		$tickets_lists = $( '.tribe-events-tickets, .tribe-events-tickets-tpp' );
+		$quantity_fields = $tickets_lists.find( '.quantity' ).find( '.qty, .edd-input' );
 		$quantity_fields.on( 'change', my.on_quantity_change );
 	};
 
@@ -30,8 +30,15 @@ var tribe_tickets_ticket_form = {};
 			my.normal_stock_quantity_changed( $this, ticket_id );
 		}
 
-		var new_quantity = $this.val();
 		var $form = $this.closest( 'form' );
+
+		// Only disable / enable if is a Tribe Commerce Paypal form.
+		if ( ! $form.hasClass( 'tribe-tickets-tpp' ) ) {
+			return;
+		}
+
+		var new_quantity = parseInt( $this.val(), 10 );
+		new_quantity = isNaN( new_quantity ) ? 0 : new_quantity;
 
 		if ( new_quantity > 0 ) {
 			$form
@@ -144,8 +151,9 @@ var tribe_tickets_ticket_form = {};
 			if ( 'capped' === ticket.mode ) {
 				// If x units of global stock have been requested, the effective cap is the actual cap less value x
 				var effective_cap = Math.min( remaining, ticket.cap );
-				var qty_input = $( '[data-product-id=' + ticket_id + ']' ).find( 'input.tribe-ticket-quantity' );
+				var qty_input = $( '[data-product-id=' + ticket_id + ']' ).find( 'input.tribe-ticket-quantity, .input.qty' );
 				var requested_stock = parseInt( qty_input.val(), 10 );
+				requested_stock = isNaN( requested_stock ) ? 0 : requested_stock;
 				var remaining_under_cap = ticket.cap - requested_stock;
 
 				// As with all other ticket types, capped tickets should not have a sub-zero count either
@@ -255,7 +263,7 @@ var tribe_tickets_ticket_form = {};
 				return;
 			}
 
-			var $quantity = $ticket.parents( 'tr' ).eq( 0 ).find( '.qty' );
+			var $quantity = $ticket.parents( 'tr' ).eq( 0 ).find( '.qty, .edd-input' );
 			var quantity = parseInt( $quantity.val(), 10 );
 
 			total += quantity;
