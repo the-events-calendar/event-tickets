@@ -105,7 +105,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 *
 		 * @since 4.7
 		 *
-		 * @see  \Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
+		 * @see  Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
 		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
 		 *
 		 * @param string $notify_url
