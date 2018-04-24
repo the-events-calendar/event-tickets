@@ -67,6 +67,8 @@ class ReturnToCartCest {
 
 		$I->amOnPage( "/?p={$post_id}&tpp_invoice=123foo" );
 
+		sleep( 1 );
+
 		$I->seeElement( $this->return_to_cart_link );
 		$link = $I->grabAttributeFrom( $this->return_to_cart_link, 'href' );
 		parse_str( parse_url( $link, PHP_URL_QUERY ), $query_args );
