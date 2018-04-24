@@ -125,11 +125,11 @@ before_script:
   - sudo service nginx restart
 
 script:
-  - codecept run unit
-  - codecept run wpunit
-  - codecept run integration
-  - codecept run functional
-  - codecept run acceptance
+#  - codecept run unit
+#  - codecept run wpunit
+#  - codecept run integration
+  - codecept run functional -vvv
+#  - codecept run acceptance
 
 
 after_failure:
