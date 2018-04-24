@@ -121,6 +121,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.7.3] TBD =
+
+* Tweak - Added a "Return to Cart" link to PayPal tickets form [100253]
+
 = [4.7.2] 2018-04-18 =
 
 * Feature - Add new action, `tribe_tickets_before_front_end_ticket_form`, if RSVP has been expired and the tickets form is not rendered any more [98203]
