@@ -129,19 +129,29 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
 
+		$invoice_number = $this->set_invoice_number();
+
 		$args = array(
 			'cmd'           => '_cart',
 			'add'           => 1,
 			'business'      => urlencode( trim( tribe_get_option( 'ticket-paypal-email' ) ) ),
 			'bn'            => 'ModernTribe_SP',
 			'notify_url'    => urlencode( trim( $notify_url ) ),
-			'shopping_url'  => urlencode( $post_url ),
+			'shopping_url'  => urlencode( add_query_arg( array( 'tpp_invoice' => $invoice_number ), $post_url ) ),
 			'return'        => $this->get_success_page_url(),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
+			/**
+			 * A passthrough variable: it will be returned to the site intact.
+			 *
+			 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/#variations-on-basic-variables
+			 */
+			'invoice'       => $invoice_number,
 		);
 
-		$this->set_invoice_number();
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
+		$cart = tribe( 'tickets.commerce.paypal.cart' );
+		$cart->set_id( $invoice_number );
 
 		foreach ( $product_ids as $ticket_id ) {
 			$ticket   = tribe( 'tickets.commerce.paypal' )->get_ticket( $post->ID, $ticket_id );
@@ -178,6 +188,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			$args['item_number'] = "{$post->ID}:{$ticket->ID}";
 			$args['item_name']   = urlencode( wp_kses_decode_entities( $this->get_product_name( $ticket, $post ) ) );
 
+			$cart->add_item( $ticket->ID, $quantity );
+
 			// we can only submit one product at a time. Bail if we get to here because we have a product
 			// with a requested quantity
 			break;
@@ -191,6 +203,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			wp_safe_redirect( add_query_arg( array( 'tpp_error' => 103 ), $post_url ) );
 			die;
 		}
+
+		$cart->save();
 
 		/**
 		 * Filters the arguments passed to PayPal while adding items to the cart
