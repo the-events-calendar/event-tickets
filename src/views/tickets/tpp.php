@@ -141,11 +141,11 @@ $cart_url       = '';
 		<?php endif ?>
 
 		<?php if ( tribe( 'tickets.commerce.paypal.cart' )->has_items() ) : ?>
-            <tr>
-                <td colspan="5" class="tpp-add">
+			<tr>
+				<td colspan="5" class="tpp-add">
 					<?php include tribe( 'tickets.commerce.paypal' )->getTemplateHierarchy( 'tickets/tpp-return-to-cart' ); ?>
-                </td>
-            </tr>
+				</td>
+			</tr>
 		<?php endif ?>
 
 		<noscript>
