@@ -24,20 +24,17 @@ class ReturnToCartCest {
 		// set the factory to satisfy the PayPal_Ticket_Maker trait
 		$this->factory = $I->factory();
 		// let's make sure we're not redirected to the welcome page when accessing admin
-		update_option( 'tribe_skip_welcome', '1' );
+		$I->haveOptionInDatabase( 'tribe_skip_welcome', '1' );
 		// let's make sure posts can be ticketed
-		tribe_update_option( 'ticket-enabled-post-types', [ 'post' ] );
+		$I->setTribeOption( 'ticket-enabled-post-types', [ 'post' ] );
 		// let's make sure Tribe Commerce is enabled and configured
-		tribe_update_option( 'ticket-paypal-enable', 'yes' );
-		tribe_update_option( 'ticket-paypal-email', 'admin@tribe.localhost' );
-		tribe_update_option( 'ticket-paypal-sandbox', 'yes' );
-		tribe_update_option( 'ticket-paypal-configure', 'yes' );
-		tribe_update_option( 'ticket-paypal-ipn-config-status', 'yes' );
-		tribe_update_option( 'ticket-paypal-ipn-enabled', 'yes' );
-		tribe_update_option( 'ticket-paypal-ipn-address-set', 'yes' );
-	}
-
-	public function _after( FunctionalTester $I ) {
+		$I->setTribeOption( 'ticket-paypal-enable', 'yes' );
+		$I->setTribeOption( 'ticket-paypal-email', 'admin@tribe.localhost' );
+		$I->setTribeOption( 'ticket-paypal-sandbox', 'yes' );
+		$I->setTribeOption( 'ticket-paypal-configure', 'yes' );
+		$I->setTribeOption( 'ticket-paypal-ipn-config-status', 'yes' );
+		$I->setTribeOption( 'ticket-paypal-ipn-enabled', 'yes' );
+		$I->setTribeOption( 'ticket-paypal-ipn-address-set', 'yes' );
 	}
 
 	/**
@@ -66,8 +63,6 @@ class ReturnToCartCest {
 		$I->haveTransientInDatabase( $transient, [ $ticket_id => 2 ] );
 
 		$I->amOnPage( "/?p={$post_id}&tpp_invoice=123foo" );
-
-		sleep( 1 );
 
 		$I->seeElement( $this->return_to_cart_link );
 		$link = $I->grabAttributeFrom( $this->return_to_cart_link, 'href' );
