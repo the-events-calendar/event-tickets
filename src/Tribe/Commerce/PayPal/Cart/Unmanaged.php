@@ -95,9 +95,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 *
 	 * @return string
 	 */
-	public static function get_transient_name(
-		$invoice_number
-	) {
+	public static function get_transient_name( $invoice_number ) {
 		return 'tpp_cart_' . md5( $invoice_number );
 	}
 
