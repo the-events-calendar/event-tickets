@@ -244,7 +244,7 @@ $paypal_fields            = array(
 			esc_html__( 'PayPal configuration status:' ),
 			esc_attr( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) ),
 			esc_html( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label' ) ),
-			esc_html( 'For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)', 'event-tickets' )
+			esc_html__( 'For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)', 'event-tickets' )
 		),
 		'size'            => 'large',
 		'default'         => 'no',
