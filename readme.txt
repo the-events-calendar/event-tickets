@@ -121,6 +121,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.7.3] TBD =
+
+* Tweak - Changed validation on the option 'Post types that can have tickets' to allow empty value [105930]
+
 = [4.7.2] 2018-04-18 =
 
 * Feature - Add new action, `tribe_tickets_before_front_end_ticket_form`, if RSVP has been expired and the tickets form is not rendered any more [98203]
