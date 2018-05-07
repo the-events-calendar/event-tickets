@@ -41,8 +41,6 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 			return;
 		}
 
-		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
-
 	}
 
 	/**
@@ -95,38 +93,12 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	}
 
 	/**
-	 * Registers the endpoints, and the handlers, supported by the REST API
+	 * Returns the semantic version for REST API
 	 *
 	 * @since TBD
 	 *
-	 * @param bool $register_routes Whether routes should be registered as well or not.
+	 * @return string
 	 */
-	public function register_endpoints( $register_routes = true ) {
-		$this->register_documentation_endpoint( $register_routes );
-	}
-
-	/**
-	 * Builds and hooks the documentation endpoint
-	 *
-	 * @since TBD
-	 *
-	 * @param bool $register_routes Whether routes for the endpoint should be registered or not.
-	 */
-	protected function register_documentation_endpoint( $register_routes = true ) {
-
-		if ( $register_routes ) {
-			register_rest_route( $this->get_events_route_namespace(), '/doc', array(
-				'methods'  => WP_REST_Server::READABLE,
-				'callback' => tribe_callback( 'tickets.rest-v1.endpoints.documentation', 'get' ),
-			) );
-		}
-
-		/** @var Tribe__Documentation__Swagger__Builder_Interface $documentation */
-		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
-		$documentation->register_documentation_provider( '/doc', tribe( 'tickets.rest-v1.endpoints.documentation' ) );
-		$documentation->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
-	}
-
 	public function get_semantic_version() {
 		return '1.0.0';
 	}

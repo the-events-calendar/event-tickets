@@ -11,6 +11,11 @@
 class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvider {
 
 	/**
+	 * Binds and sets up implementations.
+	 */
+	public $namespace;
+
+	/**
 	 * Registers the classes and functionality needed fro REST API
 	 *
 	 * @since TBD
@@ -28,7 +33,27 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/functions/advanced-functions/rest-v1.php';
 
+		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
 	}
 
+	/**
+	 * Registers the REST API endpoints for Event Tickets.
+	 *
+	 * @since TBD
+	 */
+	public function register_endpoints() {
 
+		$doc_endpoint = tribe( 'tickets.rest-v1.endpoints.documentation' );
+
+		$this->namespace = tribe( 'tickets-plus.rest-v1.main' )->get_events_route_namespace();
+
+		register_rest_route( $this->namespace , '/doc', array(
+			'methods'  => WP_REST_Server::READABLE,
+			'callback' => array( $doc_endpoint, 'get' ),
+		) );
+
+		/** @var Tribe__Documentation__Swagger__Builder_Interface $documentation */
+		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
+		$doc_endpoint->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
+	}
 }
