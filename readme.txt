@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.7.3] TBD =
 
 * Tweak - Changed validation on the option 'Post types that can have tickets' to allow empty value [105930]
+* Fix - Display the correct number of attendees on the events list in the admin section [102128]
 
 = [4.7.2] 2018-04-18 =
 
