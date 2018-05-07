@@ -204,8 +204,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 
 		// REST API v1
-		tribe_singleton( 'tickets.rest-v1.main', 'Tribe__Tickets__REST__V1__Main', array( 'bind_implementations', 'hook' ) );
-		tribe( 'tickets.rest-v1.main' );
+		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
 	}
 
 	/**

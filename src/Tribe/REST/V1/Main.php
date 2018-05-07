@@ -25,23 +25,6 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	protected $registered_endpoints = array();
 
 	/**
-	 * Binds the implementations needed to support the REST API.
-	 *
-	 * @since TBD
-	 *
-	 */
-	public function bind_implementations() {
-		tribe_singleton( 'tickets.rest-v1.messages', 'Tribe__Tickets__REST__V1__Messages' );
-		tribe_singleton( 'tickets.rest-v1.headers-base', 'Tribe__Tickets__REST__V1__Headers__Base' );
-		tribe_singleton( 'tickets.rest-v1.settings', 'Tribe__Tickets__REST__V1__Settings' );
-		tribe_singleton( 'tickets.rest-v1.system', 'Tribe__Tickets__REST__V1__System' );
-		tribe_singleton( 'tickets.rest-v1.validator', 'Tribe__Tickets__REST__V1__Validator__Base' );
-		tribe_singleton( 'tickets.rest-v1.repository', 'Tribe__Tickets__REST__V1__Post_Repository' );
-
-		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/functions/advanced-functions/rest-v1.php';
-	}
-
-	/**
 	 * Hooks the filters and actions required for the REST API support to kick in.
 	 *
 	 * @since TBD
@@ -130,24 +113,21 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	 * @param bool $register_routes Whether routes for the endpoint should be registered or not.
 	 */
 	protected function register_documentation_endpoint( $register_routes = true ) {
-		$endpoint = new Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation( $this->get_semantic_version() );
-
-		tribe_singleton( 'tickets.rest-v1.endpoints.documentation', $endpoint );
 
 		if ( $register_routes ) {
 			register_rest_route( $this->get_events_route_namespace(), '/doc', array(
 				'methods'  => WP_REST_Server::READABLE,
-				'callback' => array( $endpoint, 'get' ),
+				'callback' => tribe_callback( 'tickets.rest-v1.endpoints.documentation', 'get' ),
 			) );
 		}
 
 		/** @var Tribe__Documentation__Swagger__Builder_Interface $documentation */
 		$documentation = tribe( 'tickets.rest-v1.endpoints.documentation' );
-		$documentation->register_documentation_provider( '/doc', $endpoint );
+		$documentation->register_documentation_provider( '/doc', tribe( 'tickets.rest-v1.endpoints.documentation' ) );
 		$documentation->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
 	}
 
-	protected function get_semantic_version() {
+	public function get_semantic_version() {
 		return '1.0.0';
 	}
 
