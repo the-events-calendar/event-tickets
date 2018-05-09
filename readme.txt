@@ -126,7 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Changed validation on the option 'Post types that can have tickets' to allow empty value [105930]
 * Fix - Display the correct number of attendees on the events list in the admin section [102128]
 * Fix - Display the correct number of available tickets on list and day view [100340]
-* Fix - Ensured that the tickets RSVP start and end sale date respect the event timezone [76683]
+* Fix - Ensured that the ticket start and end sale date respect the event timezone [76683]
 
 = [4.7.2] 2018-04-18 =
 
