@@ -90,7 +90,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		}
 
 		$url           = $this->get_cart_url( '_cart' );
-		$now           = time();
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
 		$product_ids   = $_POST['product_id'];
@@ -150,7 +149,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			// skip if the ticket in no longer in stock or is not sellable
 			if (
 				! $ticket->is_in_stock()
-				|| ! $ticket->date_in_range( $now )
+				|| ! $ticket->date_in_range()
 			) {
 				continue;
 			}
