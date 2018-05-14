@@ -35,7 +35,7 @@ class BaseRestCest {
 	public function _before( Restv1Tester $I ) {
 		$this->site_url          = $I->grabSiteUrl();
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
-		$this->tickets_url        = $this->rest_url . 'tickets';
+		$this->tickets_url       = $this->rest_url . 'tickets';
 		$this->documentation_url = $this->rest_url . 'doc';
 		wp_cache_flush();
 	}

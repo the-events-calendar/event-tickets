@@ -49,7 +49,7 @@ class MainTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the right ET REST URL prefix when non using built-in REST API function
 	 */
-	public function it_should_return_the_right_tec_rest_url_prefix_when_non_using_built_in_rest_api_function() {
+	public function it_should_return_the_right_et_rest_url_prefix_when_non_using_built_in_rest_api_function() {
 		add_filter( 'tribe_tickets_rest_use_builtin', '__return_false' );
 
 		$sut = $this->make_instance();
@@ -61,7 +61,7 @@ class MainTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the right ET REST URL for a path
 	 */
-	public function it_should_return_the_right_tec_rest_url_for_a_path() {
+	public function it_should_return_the_right_et_rest_url_for_a_path() {
 		$sut = $this->make_instance();
 
 		$expected = str_replace( home_url(), $this->site_url, rest_url( '/tribe/tickets/v1/some/path' ) );
@@ -72,7 +72,7 @@ class MainTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the right ET REST URL for a path when not using built-in functions
 	 */
-	public function it_should_return_the_right_tec_rest_url_for_a_path_when_not_using_built_in_functions() {
+	public function it_should_return_the_right_et_rest_url_for_a_path_when_not_using_built_in_functions() {
 		add_filter( 'tribe_tickets_rest_use_builtin', '__return_false' );
 
 		$sut = $this->make_instance();
@@ -85,7 +85,7 @@ class MainTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the right ET REST URL for a path when using built-in functions and permalinks
 	 */
-	public function it_should_return_the_right_tec_rest_url_for_a_path_when_using_built_in_functions_and_permalinks() {
+	public function it_should_return_the_right_et_rest_url_for_a_path_when_using_built_in_functions_and_permalinks() {
 		$this->set_permalinks();
 
 		$sut = $this->make_instance();
@@ -98,7 +98,7 @@ class MainTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the right ET REST URL for a path when not using built-in functions and permalinks
 	 */
-	public function it_should_return_the_right_tec_rest_url_for_a_path_when_not_using_built_in_functions_and_permalinks() {
+	public function it_should_return_the_right_et_rest_url_for_a_path_when_not_using_built_in_functions_and_permalinks() {
 		$this->set_permalinks();
 		add_filter( 'tribe_tickets_rest_use_builtin', '__return_false' );
 

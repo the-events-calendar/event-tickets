@@ -89,7 +89,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	 * @return string
 	 */
 	public function get_reference_url() {
-		return esc_attr( 'https://theeventscalendar.com/' );
+		return esc_url( 'https://theeventscalendar.com/' );
 	}
 
 	/**
