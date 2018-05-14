@@ -404,9 +404,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		 */
 		$available = apply_filters( 'tribe_tickets_stock_message_available_quantity', $available, $ticket, $sold, $stock );
 
-		$cancelled    = (int) $ticket->qty_cancelled();
-		$pending      = (int) $ticket->qty_pending();
-		$status       = '';
+		$cancelled     = (int) $ticket->qty_cancelled();
+		$pending       = (int) $ticket->qty_pending();
+		$refunded      = (int) $ticket->qty_refunded();
+		$status        = '';
 		$status_counts = array();
 
 		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
@@ -428,7 +429,8 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			} elseif ( $is_global ) {
 				$status_counts[] = sprintf( _x( '%1$d Remaining of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
 			} else {
-				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+				// It's "own stock". We use the $stock value
+				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $stock ) );
 			}
 		}
 
@@ -438,6 +440,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		if ( ! empty( $cancelled ) ) {
 			$status_counts[] = sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), $cancelled );
+		}
+
+		if ( ! empty( $refunded ) ) {
+			$status_counts[] = sprintf( _x( '%1$d Refunded', 'ticket stock message (refunded stock)', 'event-tickets' ), $refunded );
 		}
 
 		if ( ! empty( $status_counts ) ) {
