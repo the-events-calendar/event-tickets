@@ -84,4 +84,148 @@ PHP;
 		// Assert
 		$I->seeElement( 'form#rsvp-now' );
 	}
+
+	/**
+	 * It should not show the ticket frontend form if tickets are disabled for post type
+	 *
+	 * TODO: #105930 will allow tickets-enabled-post-types to be empty, we can use empty instead of 'none_existing' post type
+	 *
+	 * @test
+	 */
+	public function should_not_show_the_ticket_frontend_form_if_tickets_are_disabled_for_post_type( AcceptanceTester $I ) {
+		// Arrange
+		$post_id = $I->havePostInDatabase();
+		$this->make_ticket( $post_id, 3);
+		// Disable tickets for post type
+		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
+		$tribe_options['ticket-enabled-post-types'] = ['none_existing'];
+		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
+
+		// Act
+		$I->amOnPage( "/?p={$post_id}" );
+
+		// Assert
+		$I->dontSeeElement( 'form#rsvp-now' );
+	}
+
+	/**
+	 * Should be able to 'purchase' an RSVP ticket
+	 *
+	 * @test
+	 */
+	public function should_be_able_to_rsvp( AcceptanceTester $I ) {
+		
+		// Arrange
+		$post_id = $I->havePostInDatabase();
+		$this->make_ticket( $post_id, 3 );
+
+		// Act
+		$I->amOnPage( "/?p={$post_id}" );
+		// complete fields and purchase tickets
+		$I->fillField('.tribe-ticket-quantity', '3');		
+		$I->fillField('#tribe-tickets-full-name', 'Tester Name');
+		$I->fillField('#tribe-tickets-email', 'tester@tri.be');
+		$I->click('.tribe-button--rsvp');
+
+		// Assert
+		$I->seeElement('.tribe-rsvp-message-success');
+	}
+
+	/**
+	 * Should be blocked to 'purchase' an RSVP ticket if login block is on and I'm logged out
+	 *
+	 * @test
+	 */
+	public function login_block_should_be_blocked_if_logged_out( AcceptanceTester $I ) {
+		
+		// Arrange
+		$post_id = $I->havePostInDatabase();
+		$this->make_ticket( $post_id, 3 );
+		// Force login for RSVP
+		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
+		$tribe_options['ticket-authentication-requirements'] = [ 'event-tickets_rsvp' ];
+		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
+
+		// Act
+		$I->amOnPage( "/?p={$post_id}" );
+
+		// Assert
+		// see login block link
+		$I->seeElement('.add-to-cart a');
+		// don't see RSVP button
+		$I->dontSeeElement( '.tribe-button--rsvp' );
+	}
+
+	/**
+	 * Should be allowed to 'purchase' an RSVP ticket if login block is on and I'm logged in
+	 *
+	 * @test
+	 */
+	public function login_block_should_not_be_blocked_if_logged_in( AcceptanceTester $I ) {
+		
+		// Arrange
+		$post_id = $I->havePostInDatabase();
+		$this->make_ticket( $post_id, 3 );
+		// Force login for RSVP
+		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
+		$tribe_options['ticket-authentication-requirements'] = [ 'event-tickets_rsvp' ];
+		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
+
+		// Act
+		$I->loginAsAdmin();
+		$I->amOnPage( "/?p={$post_id}" );
+
+		// Assert
+		// see RSVP button
+		$I->seeElement( '.tribe-button--rsvp' );
+	}
+
+	/**
+	 * Should see 'out of stock' if all tickets are purchased
+	 *
+	 * @test
+	 */
+	/*public function should_see_out_of_stock_if_no_tickets_available( AcceptanceTester $I ) {
+		
+		// Arrange
+		$post_id = $I->havePostInDatabase();
+		$this->make_ticket( $post_id, 3 );
+		// user logged in to pre-fill name and email fields
+		$I->loginAsAdmin();
+
+		// Act
+		// Purchase all tickets available
+		$I->amOnPage( "/?p={$post_id}" );
+		$I->fillField('.tribe-ticket-quantity', '3');
+		$I->click('.tribe-button--rsvp');
+
+		// Assert
+		// See tickets are out of stock
+		$I->seeElement('.tickets_nostock');
+	}*/
+
+	/**
+	 * Should see an error message when trying to purchase without filling name and email fields
+	 *
+	 * @test
+	 */
+	/*protected function should_see_error_if_rsvp_with_empty_name_and_email( AcceptanceTester $I ) {
+		
+		// Arrange
+		$post_id = $I->havePostInDatabase();
+		$this->make_ticket( $post_id, 3 );
+
+		// Act
+		// Try to purchase without filling name and email
+		$I->amOnPage( "/?p={$post_id}" );
+		$I->fillField('.tribe-ticket-quantity', '1');
+		$I->click('.tribe-button--rsvp');
+
+		// Assert
+		// See error message
+		$I->seeElement('.tribe-rsvp-message-error');
+	}*/
+
+	//- Verify attendee meta in created the back-end
+
 }
