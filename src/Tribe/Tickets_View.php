@@ -49,6 +49,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Intercept Template file for Tickets
+		add_action( 'tribe_events_pre_get_posts', array( $myself, 'modify_ticket_display_query' ) );
 		add_filter( 'tribe_events_template', array( $myself, 'intercept_template' ), 20, 2 );
 
 		// We will inject on the Priority 4, to be happen before RSVP
@@ -370,6 +371,30 @@ class Tribe__Tickets__Tickets_View {
 		$content = ob_get_clean();
 
 		return $content;
+	}
+
+
+	/**
+	 * Modify the front end ticket list display for it to always display
+	 * even when Hide From Event Listings is checked for an event
+	 *
+	 * @since TBD
+	 *
+	 * @param $query WP_Query Query object
+	 *
+	 */
+	public function modify_ticket_display_query( $query ) {
+
+		if ( ! $query->tribe_is_event_query ) {
+			return;
+		}
+
+		$display = get_query_var( 'eventDisplay', false );
+		if ( 'tickets' !== $display ) {
+			return;
+		}
+
+		$query->set( 'post__not_in', '' );
 	}
 
 	/**
