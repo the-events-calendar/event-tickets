@@ -375,8 +375,8 @@ class Tribe__Tickets__Tickets_View {
 
 
 	/**
-	 * Modify the front end ticket display to prevent it from not display
-	 * when Hide From Event Listings is checked for an event
+	 * Modify the front end ticket list display for it to always display
+	 * even when Hide From Event Listings is checked for an event
 	 *
 	 * @since TBD
 	 *
