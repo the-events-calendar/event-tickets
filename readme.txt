@@ -130,6 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Display the correct number of available tickets on list and day view [100340]
 * Fix - Ensured that the ticket start and end sale date respect the event timezone [76683]
 * Fix - Add methods to handle refunds for tickets and fix the attendees report accordingly [102081]
+* Fix - Modify the front end ticket display to prevent it from not display when Hide From Event Listings is checked for an event [74523]
 
 = [4.7.2] 2018-04-18 =
 
