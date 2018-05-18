@@ -2,7 +2,6 @@
 
 namespace Commerce\RSVP;
 
-
 use AcceptanceTester;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
@@ -14,15 +13,8 @@ class FrontEndFormCest {
 	public function _before( AcceptanceTester $I ) {
 		// the RSVP_Ticket_Maker will need this property to work
 		$this->factory = $I->factory();
-		// make sure the `post` post type is ticket-able, use a filter to avoid DB lag time, has to be 5.2 compat
-		$code = <<< PHP
-add_filter( 'tribe_tickets_post_types', 'test_ticketable_post_types' );
-function test_ticketable_post_types(){
-	return array( 'post' );
-}
-PHP;
-
-		$I->haveMuPlugin('ticketable-post-types.php',$code);
+		// make sure the `post` post type is ticket-able
+		$I->haveTicketablePostTypes( ['post'] );
 	}
 
 	/**
@@ -96,10 +88,8 @@ PHP;
 		// Arrange
 		$post_id = $I->havePostInDatabase();
 		$this->make_ticket( $post_id, 3);
-		// Disable tickets for post type
-		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
-		$tribe_options['ticket-enabled-post-types'] = ['none_existing'];
-		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
+		// Disable tickets for post type for now it cannot be empty
+		$I->haveTicketablePostTypes( ['none_existing'] );
 
 		// Act
 		$I->amOnPage( "/?p={$post_id}" );
@@ -121,8 +111,13 @@ PHP;
 
 		// Act
 		$I->amOnPage( "/?p={$post_id}" );
+
 		// complete fields and purchase tickets
-		$I->fillField('.tribe-ticket-quantity', '3');		
+		$I->fillField('.tribe-ticket-quantity', '3');
+		// unfocus field so name and email fields are shown
+		$I->click('body');
+		// extra check in case there's a delay
+		$I->waitForElementVisible('#tribe-tickets-full-name', 10);
 		$I->fillField('#tribe-tickets-full-name', 'Tester Name');
 		$I->fillField('#tribe-tickets-email', 'tester@tri.be');
 		$I->click('.tribe-button--rsvp');
@@ -185,7 +180,7 @@ PHP;
 	 *
 	 * @test
 	 */
-	/*public function should_see_out_of_stock_if_no_tickets_available( AcceptanceTester $I ) {
+	public function should_see_out_of_stock_if_no_tickets_available( AcceptanceTester $I ) {
 		
 		// Arrange
 		$post_id = $I->havePostInDatabase();
@@ -202,14 +197,14 @@ PHP;
 		// Assert
 		// See tickets are out of stock
 		$I->seeElement('.tickets_nostock');
-	}*/
+	}
 
 	/**
 	 * Should see an error message when trying to purchase without filling name and email fields
 	 *
 	 * @test
 	 */
-	/*protected function should_see_error_if_rsvp_with_empty_name_and_email( AcceptanceTester $I ) {
+	public function should_see_error_if_rsvp_with_empty_name_and_email( AcceptanceTester $I ) {
 		
 		// Arrange
 		$post_id = $I->havePostInDatabase();
@@ -224,8 +219,27 @@ PHP;
 		// Assert
 		// See error message
 		$I->seeElement('.tribe-rsvp-message-error');
-	}*/
+	}
 
-	//- Verify attendee meta in created the back-end
+	/**
+	 * Should see an error message when trying to purchase without a ticket quantity
+	 *
+	 * @test
+	 */
+	public function should_see_error_if_rsvp_without_quantity( AcceptanceTester $I ) {
+		
+		// Arrange
+		$post_id = $I->havePostInDatabase();
+		$this->make_ticket( $post_id, 3 );
+
+		// Act
+		// Try to purchase without filling quantity
+		$I->amOnPage( "/?p={$post_id}" );
+		$I->click('.tribe-button--rsvp');
+
+		// Assert
+		// See error message
+		$I->seeElement('.tribe-rsvp-message-error');
+	}
 
 }

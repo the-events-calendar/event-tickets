@@ -23,4 +23,39 @@ class AcceptanceTester extends \Codeception\Actor
    /**
     * Define custom actions here
     */
+
+   	/**
+	 * Sets tickets enabled post types
+	 *
+	 * @param  array $post_types The post types to be enabled for tickets. Can be empty.
+	 */
+	public function haveTicketablePostTypes ( array $post_types = array( ) ) {
+
+		$I = $this;
+
+		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
+		$tribe_options['ticket-enabled-post-types'] = $post_types;
+		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
+
+		/*$code = <<< PHP
+add_filter( 'tribe_tickets_post_types', 'test_ticketable_post_types' );
+function test_ticketable_post_types(){
+	return array( 'post' );
+}
+PHP;
+
+		$I->haveMuPlugin('ticketable-post-types.php',$code);*/
+	}
+
+	/**
+	 * Activates The Events Calendar
+	 */
+	public function haveTheEventsCalendarActive ( ) {
+
+		$I = $this;
+
+		$active_plugins = $I->grabOptionFromDatabase( 'active_plugins' );
+		$active_plugins[] = 'the-events-calendar';
+		$I->haveOptionInDatabase( 'active_plugins', $active_plugins );
+	}
 }

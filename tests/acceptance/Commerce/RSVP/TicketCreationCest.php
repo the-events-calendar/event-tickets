@@ -1,6 +1,7 @@
 <?php
 
 namespace Commerce\RSVP;
+
 use AcceptanceTester;
 
 class TicketCreationCest {
@@ -13,26 +14,21 @@ class TicketCreationCest {
 	/**
 	 * Should be able to create RSVP tickets in the back-end for tickets-enabled post types
 	 *
-	 * TODO: add events post type support
-	 *
 	 * @test
-	 * @example { "post_type": "post" }
-	 * @example { "post_type": "page" }
+	 * @dataProvider post_types_provider
 	 */
 	public function create_rsvp_ticket( AcceptanceTester $I, \Codeception\Example $example ) {
 
-		/* ARRANGE */
+		// ARRANGE 
 		// Use example Post Type
 		$post_type = $example['post_type'];
 		// Enable tickets for test post type
-		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
-		$tribe_options['ticket-enabled-post-types'] = [ $post_type ];
-		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
+		$I->haveTicketablePostTypes( [$post_type] );
 		// Create a sample post for test post type
 		$post_type_id = $I->havePostInDatabase( [ 'post_name' => 'sample', 'post_type' => $post_type ] );
 		$I->amEditingPostWithId( $post_type_id );
 		
-		/* ACT */
+		// ACT
 		// Create new RSVP ticket
 		$I->click('#rsvp_form_toggle');
 		$I->fillField('#ticket_name', 'Free Ticket');
@@ -41,7 +37,7 @@ class TicketCreationCest {
 		// Wait for the ticket to be created before trying to assert
 		$I->waitForElement('#tribe_ticket_list_table', 10);
 
-		/* ASSERT */
+		// ASSERT
 		// Let's see if the ticket was correctly added to the post in the backend
 		$I->see('Free Ticket', '.ticket_name');
 		$I->see('3', '.ticket_capacity');
@@ -51,32 +47,37 @@ class TicketCreationCest {
 	/**
 	 * Shouldn't be able to create RSVP tickets in the back-end for tickets-disabled post types
 	 *
-	 * TODO: add events post type support
-	 *
 	 * @test
-	 * @example { "post_type": "post" }
-	 * @example { "post_type": "page" }
+	 * @dataProvider post_types_provider
 	 */
 	public function cannot_create_rsvp_ticket_for_disabled_post_type( AcceptanceTester $I, \Codeception\Example $example ) {
 
-		/* ARRANGE */
+		// ARRANGE
 		// Use example Post Type
 		$post_type = $example['post_type'];
 		// Disable tickets for all post types
-		// TODO: Should allow to not have any post types selected instead of a non existing one
-		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
-		$tribe_options['ticket-enabled-post-types'] = ['none_existing'];
-		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
-
+		$I->haveTicketablePostTypes( ['none_existing'] );
 		// Create a sample post for test post type
 		$post_type_id = $I->havePostInDatabase( [ 'post_name' => 'sample', 'post_type' => $post_type ] );
 		$I->amEditingPostWithId( $post_type_id );
 
-		/* ASSERT */
+		// ASSERT
 		// Assert we are on the edit page
 		$I->seeElement('#title');
 		// Cannot create new RSVP ticket
 		$I->dontSeeElement('#rsvp_form_toggle');
 	}
 
+	/**
+	 *
+	 * Provides post types as examples for tests
+	 *
+     * @return array
+     */
+	protected function post_types_provider () {
+		return [
+			['post_type'=>'post'],
+			['post_type'=>'page']
+		];
+	}
 }

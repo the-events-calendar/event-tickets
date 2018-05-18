@@ -36,7 +36,7 @@ trait Ticket_Maker {
 						'_tribe_ticket_show_description' => 'yes',
 						'_price'                         => 0, // always 0 for RSVP tickets
 						'_stock'                         => $capacity,
-						'_capacity'                      => $capacity,
+						'_tribe_ticket_capacity'         => $capacity,
 						'_manage_stock'                  => 'yes',
 						'_tribe_ticket_version'          => \Tribe__Tickets__Main::VERSION,
 						'_ticket_start_date'             => $a_week_ago,
