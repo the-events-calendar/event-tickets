@@ -899,3 +899,32 @@ function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = f
 
 	return $html;
 }
+
+/**
+ * Checks if the specified user (defaults to currently-logged-in user) belongs to any active
+ * WooCommerce Membership plans, *and* if the specified ticket (by ticket ID) has any active
+ * member discounts applied to it. It may not be the user's membership plan specifically, so this
+ * template tag *may* produce some false positives.
+ *
+ * @since TBD
+ *
+ * @param int $ticket_id
+ * @param int $user_id
+ * @return boolean
+ */
+function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 0 ) {
+
+	if (
+		! function_exists( 'wc_memberships_get_user_active_memberships' ) ||
+		! function_exists( 'wc_memberships_product_has_member_discount' )
+	) {
+		return false;
+	}
+
+	$user_id = 0 ? get_current_user_id() : $user_id;
+
+	$user_is_member             = wc_memberships_get_user_active_memberships( $user_id );
+	$ticket_has_member_discount = wc_memberships_product_has_member_discount( $ticket_id );
+
+	return $user_is_member && $ticket_has_member_discount;
+}
