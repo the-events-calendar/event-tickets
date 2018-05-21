@@ -72,7 +72,7 @@ class UnmanagedTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $cart->exists() );
 
-		$_GET['tpp_invoice'] = 'foo';
+		$_COOKIE[\Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name] = 'foo';
 
 		$this->assertFalse( $cart->exists() );
 
