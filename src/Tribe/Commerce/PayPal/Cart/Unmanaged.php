@@ -1,6 +1,4 @@
 <?php
-
-//@todo -- remove all code that sets and uses the invoice number in the return URL to work
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged
  *
