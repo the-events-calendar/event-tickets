@@ -33,18 +33,16 @@ class AcceptanceTester extends \Codeception\Actor
 
 		$I = $this;
 
-		$tribe_options = $I->grabOptionFromDatabase( 'tribe_events_calendar_options' );
-		$tribe_options['ticket-enabled-post-types'] = $post_types;
-		$I->haveOptionInDatabase( 'tribe_events_calendar_options', $tribe_options );
+		$post_types_str = ( empty( $post_types ) ) ? '' : implode( "','", $post_types );
 
-		/*$code = <<< PHP
+		$code = <<< PHP
 add_filter( 'tribe_tickets_post_types', 'test_ticketable_post_types' );
-function test_ticketable_post_types(){
-	return array( 'post' );
+function test_ticketable_post_types( ) {
+	return array( {$post_types_str} );
 }
 PHP;
 
-		$I->haveMuPlugin('ticketable-post-types.php',$code);*/
+		$I->haveMuPlugin('ticketable-post-types.php',$code);
 	}
 
 	/**
