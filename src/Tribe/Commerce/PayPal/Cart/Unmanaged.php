@@ -76,11 +76,13 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	}
 
 	/**
-	 * Reads the invoice number from the
+	 * Reads the invoice number from the invoice cookie.
 	 *
 	 * @since TBD
 	 *
 	 * @return string|bool The invoice number or `false` if not found.
+	 *
+	 * @see Tribe__Tickets__Commerce__PayPal__Gateway::set_invoice_number()
 	 */
 	protected function read_invoice_number() {
 		return Tribe__Utils__Array::get(
