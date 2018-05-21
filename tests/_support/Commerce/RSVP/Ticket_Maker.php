@@ -4,6 +4,7 @@ namespace Tribe\Tickets\Test\Commerce\RSVP;
 
 
 trait Ticket_Maker {
+	
 	/**
 	 * Generates a ticket for a post.
 	 *
