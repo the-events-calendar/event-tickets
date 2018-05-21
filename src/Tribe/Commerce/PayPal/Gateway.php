@@ -89,7 +89,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			return;
 		}
 
-		$url           = $this->get_cart_url( '_cart' );
+		$cart_url           = $this->get_cart_url( '_cart' );
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
 		$product_ids   = $_POST['product_id'];
@@ -216,7 +216,12 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 */
 		$args = apply_filters( 'tribe_tickets_commerce_paypal_add_to_cart_args', $args, $_POST, $post );
 
-		$url = add_query_arg( $args, $url );
+		$cart_url = add_query_arg( $args, $cart_url );
+
+		$url = add_query_arg(
+			array( 'tribe_tickets_redirect_to' => rawurlencode( $cart_url ) ),
+			home_url()
+		);
 
 		wp_redirect( $url );
 		die;
@@ -371,7 +376,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$invoice = $this->get_invoice_number();
 
 		// set the cookie (if it was already set, it'll extend the lifetime)
-		setcookie( self::$invoice_cookie_name, $invoice, 900);
+		$secure = 'https' === parse_url( home_url(), PHP_URL_SCHEME );
+		setcookie( self::$invoice_cookie_name, $invoice, 900, SITECOOKIEPATH, null, $secure );
 
 		return $invoice;
 	}

@@ -1,5 +1,6 @@
 <?php
 
+//@todo -- remove all code that sets and uses the invoice number in the return URL to work
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged
  *
@@ -72,7 +73,6 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 		}
 
 		return (bool) get_transient( self::get_transient_name( $invoice_number ) );
-
 	}
 
 	/**
@@ -80,10 +80,13 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	 *
 	 * @since TBD
 	 *
-	 * @return The invoice number or `false` if not found.
+	 * @return string|bool The invoice number or `false` if not found.
 	 */
 	protected function read_invoice_number() {
-		return tribe_get_request_var( 'tpp_invoice', false );
+		return Tribe__Utils__Array::get(
+			$_COOKIE, Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name,
+			false
+		);
 	}
 
 	/**
