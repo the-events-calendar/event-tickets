@@ -113,17 +113,17 @@ class FrontEndFormCest {
 		$I->amOnPage( "/?p={$post_id}" );
 
 		// complete fields and purchase tickets
-		$I->fillField('.tribe-ticket-quantity', '3');
+		$I->fillField( '.tribe-ticket-quantity', '3' );
 		// unfocus field so name and email fields are shown
-		$I->click('body');
+		$I->click( 'body' );
 		// extra check in case there's a delay
-		$I->waitForElementVisible('#tribe-tickets-full-name', 10);
-		$I->fillField('#tribe-tickets-full-name', 'Tester Name');
-		$I->fillField('#tribe-tickets-email', 'tester@tri.be');
-		$I->click('.tribe-button--rsvp');
+		$I->waitForElementVisible( '#tribe-tickets-full-name', 10 );
+		$I->fillField( '#tribe-tickets-full-name', 'Tester Name' );
+		$I->fillField( '#tribe-tickets-email', 'tester@tri.be' );
+		$I->click( '.tribe-button--rsvp' );
 
 		// Assert
-		$I->seeElement('.tribe-rsvp-message-success');
+		$I->seeElement( '.tribe-rsvp-message-success' );
 	}
 
 	/**
@@ -146,7 +146,7 @@ class FrontEndFormCest {
 
 		// Assert
 		// see login block link
-		$I->seeElement('.add-to-cart a');
+		$I->seeElement( '.add-to-cart a' );
 		// don't see RSVP button
 		$I->dontSeeElement( '.tribe-button--rsvp' );
 	}
@@ -191,12 +191,12 @@ class FrontEndFormCest {
 		// Act
 		// Purchase all tickets available
 		$I->amOnPage( "/?p={$post_id}" );
-		$I->fillField('.tribe-ticket-quantity', '3');
-		$I->click('.tribe-button--rsvp');
+		$I->fillField( '.tribe-ticket-quantity', '3' );
+		$I->click( '.tribe-button--rsvp' );
 
 		// Assert
 		// See tickets are out of stock
-		$I->seeElement('.tickets_nostock');
+		$I->seeElement( '.tickets_nostock' );
 	}
 
 	/**
@@ -213,12 +213,12 @@ class FrontEndFormCest {
 		// Act
 		// Try to purchase without filling name and email
 		$I->amOnPage( "/?p={$post_id}" );
-		$I->fillField('.tribe-ticket-quantity', '1');
-		$I->click('.tribe-button--rsvp');
+		$I->fillField( '.tribe-ticket-quantity', '1' );
+		$I->click( '.tribe-button--rsvp' );
 
 		// Assert
 		// See error message
-		$I->seeElement('.tribe-rsvp-message-error');
+		$I->seeElement( '.tribe-rsvp-message-error' );
 	}
 
 	/**
@@ -235,11 +235,11 @@ class FrontEndFormCest {
 		// Act
 		// Try to purchase without filling quantity
 		$I->amOnPage( "/?p={$post_id}" );
-		$I->click('.tribe-button--rsvp');
+		$I->click( '.tribe-button--rsvp' );
 
 		// Assert
 		// See error message
-		$I->seeElement('.tribe-rsvp-message-error');
+		$I->seeElement( '.tribe-rsvp-message-error' );
 	}
 
 }

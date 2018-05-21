@@ -30,18 +30,18 @@ class TicketCreationCest {
 		
 		// ACT
 		// Create new RSVP ticket
-		$I->click('#rsvp_form_toggle');
-		$I->fillField('#ticket_name', 'Free Ticket');
-		$I->fillField('#Tribe__Tickets__RSVP_capacity', '3');
-		$I->click('#rsvp_form_save');
+		$I->click( '#rsvp_form_toggle' );
+		$I->fillField( '#ticket_name', 'Free Ticket' );
+		$I->fillField( '#Tribe__Tickets__RSVP_capacity', '3' );
+		$I->click( '#rsvp_form_save' );
 		// Wait for the ticket to be created before trying to assert
-		$I->waitForElement('#tribe_ticket_list_table', 10);
+		$I->waitForElement( '#tribe_ticket_list_table', 10 );
 
 		// ASSERT
 		// Let's see if the ticket was correctly added to the post in the backend
-		$I->see('Free Ticket', '.ticket_name');
-		$I->see('3', '.ticket_capacity');
-		$I->see('3', '.ticket_available');
+		$I->see( 'Free Ticket', '.ticket_name' );
+		$I->see( '3', '.ticket_capacity' );
+		$I->see( '3', '.ticket_available' );
 	}
 
 	/**
@@ -63,21 +63,21 @@ class TicketCreationCest {
 
 		// ASSERT
 		// Assert we are on the edit page
-		$I->seeElement('#title');
+		$I->seeElement( '#title' );
 		// Cannot create new RSVP ticket
-		$I->dontSeeElement('#rsvp_form_toggle');
+		$I->dontSeeElement( '#rsvp_form_toggle' );
 	}
 
 	/**
 	 *
 	 * Provides post types as examples for tests
 	 *
-     * @return array
-     */
+	 * @return array
+	 */
 	protected function post_types_provider () {
 		return [
-			['post_type'=>'post'],
-			['post_type'=>'page']
+			[ 'post_type' => 'post' ],
+			[ 'post_type' => 'page' ]
 		];
 	}
 }
