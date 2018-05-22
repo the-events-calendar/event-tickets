@@ -1,4 +1,5 @@
 <?php
+
 if ( ! isset( $post_id ) ) {
 	$post_id = get_the_ID();
 }
@@ -7,10 +8,10 @@ $validation_attrs = array(
 );
 
 if ( ! isset( $ticket_id ) ) {
-	$provider = null;
-	$ticket_id = null;
-	$ticket = null;
-	$is_paypal_ticket = false;
+	$provider          = null;
+	$ticket_id         = null;
+	$ticket            = null;
+	$is_paypal_ticket  = false;
 	$price_description = '';
 } else {
 	$provider          = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -18,19 +19,24 @@ if ( ! isset( $ticket_id ) ) {
 	$price_description = $is_paypal_ticket
 		? ''
 		: esc_html__( 'Leave blank for free tickets', 'event-tickets' );
+
 	if ( $is_paypal_ticket ) {
 		$validation_attrs[] = 'data-required';
 		$validation_attrs[] = 'data-validation-is-greater-than="0"';
 
 	}
+
 	$ticket = $provider->get_ticket( $post_id, $ticket_id );
 
-	if ( $ticket->on_sale ) {
+	// If the ticket has a WC Memberships discount for the currently-logged-in user.
+	$ticket_has_wc_member_discount = tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id );
+
+	if ( $ticket->on_sale || $ticket_has_wc_member_discount ) {
 		$sale_price = $ticket->price;
-		$price = $ticket->regular_price;
+		$price      = $ticket->regular_price;
 	} else {
 		$sale_price = null;
-		$price = $ticket->price;
+		$price      = $ticket->price;
 	}
 }
 ?>
@@ -55,9 +61,19 @@ if ( ! isset( $ticket_id ) ) {
 		</p>
 	</div>
 
-	<?php if ( $ticket && $ticket->on_sale ) : ?>
+	<?php if ( $ticket && ( $ticket->on_sale || $ticket_has_wc_member_discount ) ) : ?>
+
+	<?php
+		$sale_price_label = esc_html__( 'Sale Price:', 'event-tickets' );
+		$sale_price_desc  = esc_html__( 'Current sale price. This can be managed via the product editor.', 'event-tickets' );
+
+		if ( $ticket_has_wc_member_discount ) {
+			$sale_price_label = esc_html__( 'Sale/Member Price:', 'event-tickets' );
+			$sale_price_desc  = esc_html__( 'Current sale or member price. This can be managed via the product editor.', 'event-tickets' );
+		}
+	?>
 	<div class="input_block">
-		<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Sale Price:', 'event-tickets' ) ?></label>
+		<label for="ticket_sale_price" class="ticket_form_label ticket_form_left"><?php echo $sale_price_label; ?></label>
 		<input
 			type="text"
 			id="ticket_sale_price"
@@ -67,7 +83,7 @@ if ( ! isset( $ticket_id ) ) {
 			value="<?php echo esc_attr( $ticket ? $sale_price : null ); ?>"
 			readonly
 		/>
-		<p class="description ticket_form_right"><?php esc_html_e( 'Current sale price - this can be managed via the product editor', 'event-tickets' ) ?></p>
+		<p class="description ticket_form_right"><?php echo $sale_price_desc; ?></p>
 	</div>
 	<?php endif; ?>
 </div>
