@@ -26,7 +26,7 @@ class ReturnToCartCest {
 		// let's make sure we're not redirected to the welcome page when accessing admin
 		$I->haveOptionInDatabase( 'tribe_skip_welcome', '1' );
 		// let's make sure posts can be ticketed
-		$I->setTribeOption( 'ticket-enabled-post-types', [ 'post' ] );
+		$I->setTribeOption( 'ticket-enabled-post-types', [ 'post', 'page' ] );
 		// let's make sure Tribe Commerce is enabled and configured
 		$I->setTribeOption( 'ticket-paypal-enable', 'yes' );
 		$I->setTribeOption( 'ticket-paypal-email', 'admin@tribe.localhost' );
@@ -62,14 +62,47 @@ class ReturnToCartCest {
 		$transient = \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged::get_transient_name( '123foo' );
 		$I->haveTransientInDatabase( $transient, [ $ticket_id => 2 ] );
 
-		$I->amOnPage( "/?p={$post_id}&tpp_invoice=123foo" );
+		$I->setCookie( \Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name, '123foo' );
+		$I->amOnPage( "/?p={$post_id}" );
 
 		$I->seeElement( $this->return_to_cart_link );
-		$link = $I->grabAttributeFrom( $this->return_to_cart_link, 'href' );
-		parse_str( parse_url( $link, PHP_URL_QUERY ), $query_args );
-		$I->assertArrayHasKey( 'shopping_url', $query_args );
-		parse_str( parse_url( urldecode( $query_args['shopping_url'] ), PHP_URL_QUERY ), $shopping_url_query_args );
-		$I->assertArrayHasKey( 'tpp_invoice', $shopping_url_query_args );
-		$I->assertEquals( '123foo', $shopping_url_query_args['tpp_invoice'] );
+	}
+
+	/**
+	 * It should display the return to cart link on page of another ticketed post
+	 *
+	 * @test
+	 */
+	public function should_display_the_return_to_cart_link_on_page_of_another_ticketed_post( FunctionalTester $I ) {
+		$post_one_id   = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
+		$post_two_id   = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
+		$ticket_one_id = $this->make_ticket( $post_one_id, 1 );
+		$ticket_two_id = $this->make_ticket( $post_two_id, 1 );
+		$transient     = \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged::get_transient_name( '123foo' );
+		$I->haveTransientInDatabase( $transient, [ $ticket_one_id => 2 ] );
+
+		$I->setCookie( \Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name, '123foo' );
+		$I->amOnPage( "/?p={$post_two_id}" );
+
+		$I->seeElement( $this->return_to_cart_link );
+	}
+
+	/**
+	 * It should display the return to cart link on non ticketed ticket-able post
+	 *
+	 * @test
+	 */
+	public function should_display_the_return_to_cart_link_on_non_ticketed_ticket_able_post( FunctionalTester $I ) {
+		$post_id       = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
+		$page_id       = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
+		$ticket_one_id = $this->make_ticket( $post_id, 1 );
+		$ticket_two_id = $this->make_ticket( $page_id, 1 );
+		$transient     = \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged::get_transient_name( '123foo' );
+		$I->haveTransientInDatabase( $transient, [ $ticket_one_id => 2 ] );
+
+		$I->setCookie( \Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name, '123foo' );
+		$I->amOnPage( "/?p={$page_id}" );
+
+		$I->seeElement( $this->return_to_cart_link );
 	}
 }

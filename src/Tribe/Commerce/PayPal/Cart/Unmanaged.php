@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged
  *
@@ -72,18 +71,22 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 		}
 
 		return (bool) get_transient( self::get_transient_name( $invoice_number ) );
-
 	}
 
 	/**
-	 * Reads the invoice number from the
+	 * Reads the invoice number from the invoice cookie.
 	 *
 	 * @since TBD
 	 *
-	 * @return The invoice number or `false` if not found.
+	 * @return string|bool The invoice number or `false` if not found.
+	 *
+	 * @see Tribe__Tickets__Commerce__PayPal__Gateway::set_invoice_number()
 	 */
 	protected function read_invoice_number() {
-		return tribe_get_request_var( 'tpp_invoice', false );
+		return Tribe__Utils__Array::get(
+			$_COOKIE, Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name,
+			false
+		);
 	}
 
 	/**
