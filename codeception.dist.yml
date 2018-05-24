@@ -23,11 +23,10 @@ extensions:
         - 'Codeception\Command\DbSnapshot'
         - 'tad\Codeception\Command\SearchReplace'
     enabled:
-        # see https://github.com/grantlucas/phantoman#configuration
-        - Codeception\Extension\Phantoman
+        - Codeception\Extension\DockerChrome
     config:
-        Codeception\Extension\Phantoman:
-            # see https://github.com/grantlucas/phantoman#phantomjs-installer-via-composer
-            path: 'vendor/bin/phantomjs'
+        Codeception\Extension\DockerChrome:
+            path: "/usr/local/bin/docker-compose"
             suites: ['acceptance']
+            debug: true
 

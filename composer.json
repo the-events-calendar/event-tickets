@@ -15,8 +15,7 @@
     "vlucas/phpdotenv": "^2.4",
     "lucatume/function-mocker-le": "^1.0",
     "spatie/phpunit-snapshot-assertions": "^1.2",
-    "site5/phantoman": "^2.0",
-    "jakoch/phantomjs-installer": "^2.1"
+    "teamneusta/codeception-docker-chrome": "^1.0"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,

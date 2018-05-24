@@ -10,6 +10,7 @@ php:
 
 services:
   - mysql
+  - docker
 
 addons:
   apt:
@@ -23,6 +24,8 @@ addons:
   hosts:
     # resolve the following domains to localhost
     - tribe.localhost
+  # see https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-the-Chrome-addon-in-the-headless-mode
+  chrome: stable
 
 # disable the default submodule logic
 git:
@@ -53,6 +56,9 @@ before_install:
   # tweak git to correctly work with submodules
   - sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
   - git submodule update --init --recursive
+
+  - # start headless Chromium and listen on tribe.localhost
+  - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://tribe.localhost &
 
 install:
   # disable XDebug to speed up the tests
@@ -123,6 +129,8 @@ before_script:
   # restart Nnginx and PHP-FPM services
   - sudo service php5-fpm restart
   - sudo service nginx restart
+
+  - which docker-compose
 
 script:
   - codecept run unit

@@ -12,9 +12,9 @@ modules:
         WPWebDriver:
             url: '%WP_URL%'
             # see codeception.dist.yml for the configuration
-            browser: phantomjs
+            browser: chrome
             port: 4444
-            window_size: 1024x768
+#            window_size: 1024x768
             adminUsername: %WP_ADMIN_USERNAME%
             adminPassword: %WP_ADMIN_PASSWORD%
             adminPath: '%WP_ADMIN_PATH%'
