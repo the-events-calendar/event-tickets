@@ -130,8 +130,6 @@ before_script:
   - sudo service php5-fpm restart
   - sudo service nginx restart
 
-  - which docker-compose
-
 script:
   - codecept run unit
   - codecept run wpunit
