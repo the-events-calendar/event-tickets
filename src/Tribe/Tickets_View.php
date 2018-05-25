@@ -378,7 +378,7 @@ class Tribe__Tickets__Tickets_View {
 	 * Modify the front end ticket list display for it to always display
 	 * even when Hide From Event Listings is checked for an event
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @param $query WP_Query Query object
 	 *

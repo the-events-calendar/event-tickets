@@ -906,7 +906,7 @@ function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = f
  * member discounts applied to it. It may not be the user's membership plan specifically, so this
  * template tag *may* produce some false positives.
  *
- * @since TBD
+ * @since 4.7.3
  *
  * @param int $ticket_id
  * @param int $user_id

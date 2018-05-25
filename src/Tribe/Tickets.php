@@ -816,7 +816,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Maybe addd the Tickets Form as shouldn't be added if is unchecked from the settings
 		 *
-		 * @since TBD
+		 * @since 4.7.3
 		 *
 		 * @param string $content
 		 */

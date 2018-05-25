@@ -3,13 +3,13 @@
 /**
  * Interface Tribe__Tickets__Commerce__PayPal__Cart__Interface
  *
- * @since TBD
+ * @since 4.7.3
  */
 interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	/**
 	 * Sets the cart id.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @param string $id
 	 */
@@ -18,7 +18,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	/**
 	 * Adds a specified quantity of the item to the cart.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @param int $item_id
 	 * @param int $quantity
@@ -31,7 +31,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	 * This method should include any persistence, request and redirection required
 	 * by the cart implementation.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 */
 	public function save();
 
@@ -46,7 +46,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	/**
 	 * Whether a cart exists meeting the specified criteria.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @param array $criteria
 	 */
@@ -55,7 +55,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	/**
 	 * Whether the cart contains items or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @return bool|int The number of products in the cart (regardless of the products quantity) or `false`
 	 *
@@ -74,7 +74,7 @@ interface Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 	/**
 	 * Removes an item from the cart.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @param string $item_id
 	 *

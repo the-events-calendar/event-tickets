@@ -5,7 +5,7 @@
  * Models a transitional, not managed, cart implementation; cart management functionality
  * is offloaded to PayPal.
  *
- * @since TBD
+ * @since 4.7.3
  */
 class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Tickets__Commerce__PayPal__Cart__Interface {
 
@@ -76,7 +76,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * Reads the invoice number from the invoice cookie.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @return string|bool The invoice number or `false` if not found.
 	 *
@@ -92,7 +92,7 @@ class Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged implements Tribe__Ticket
 	/**
 	 * Returns the name of the transient used by the cart.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @param string $invoice_number
 	 *
