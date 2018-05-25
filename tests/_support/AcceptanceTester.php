@@ -30,19 +30,10 @@ class AcceptanceTester extends \Codeception\Actor
 	 * @param  array $post_types The post types to be enabled for tickets. Can be empty.
 	 */
 	public function haveTicketablePostTypes ( array $post_types = array( ) ) {
-
-		$I = $this;
-
-		$post_types_str = ( empty( $post_types ) ) ? '' : "'" . implode( "','", $post_types ) . "''";
-
-		$code = <<< PHP
-add_filter( 'tribe_tickets_post_types', 'test_ticketable_post_types' );
-function test_ticketable_post_types( ) {
-	return array( {$post_types_str} );
-}
-PHP;
-
-		$I->haveMuPlugin('ticketable-post-types.php',$code);
+		$I                                    = $this;
+		$options                              = $I->grabOptionFromDatabase( Tribe__Main::OPTIONNAME );
+		$options['ticket-enabled-post-types'] = $post_types;
+		$I->haveOptionInDatabase( Tribe__Main::OPTIONNAME, $options );
 	}
 
 	/**
