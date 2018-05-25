@@ -26,7 +26,7 @@ extensions:
         - Codeception\Extension\DockerChrome
     config:
         Codeception\Extension\DockerChrome:
-            path: "/usr/local/bin/docker-compose"
+            path: "%DOCKER_COMPOSE_BIN%"
             suites: ['acceptance']
             debug: true
 
