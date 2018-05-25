@@ -33,7 +33,7 @@ class AcceptanceTester extends \Codeception\Actor
 
 		$I = $this;
 
-		$post_types_str = ( empty( $post_types ) ) ? '' : implode( "','", $post_types );
+		$post_types_str = ( empty( $post_types ) ) ? '' : "'" . implode( "','", $post_types ) . "''";
 
 		$code = <<< PHP
 add_filter( 'tribe_tickets_post_types', 'test_ticketable_post_types' );
