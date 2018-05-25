@@ -96,7 +96,7 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 	/**
 	 * Returns the link to return to the user current cart.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 *
 	 * @param array $query_args An optional array of query arguments that should be appended to
 	 *                          the `shopping_url`.

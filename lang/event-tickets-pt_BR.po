@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-05-31 23:22:43+0000\n"
+"PO-Revision-Date: 2018-05-23 04:40:48+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1186,7 +1186,7 @@ msgstr ""
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:32
 msgid "The term slug"
-msgstr ""
+msgstr "O slug do termo"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:28
 msgid "The term name"
@@ -1280,7 +1280,7 @@ msgstr ""
 #: src/template-tags/tickets.php:425
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d Remaining"
-msgstr ""
+msgstr "%1$d restante(s)"
 
 #: src/template-tags/tickets.php:421
 msgid "%s %d"
@@ -1425,7 +1425,7 @@ msgstr ""
 
 #: common/src/admin-views/app-shop.php:29
 msgid "Installed Add-Ons"
-msgstr ""
+msgstr "Complementos Instalados"
 
 #: common/src/Tribe/Extension.php:368
 msgid "Unable to run Tribe Extensions. Your website host is running PHP 5.2 or older, and has likely disabled or misconfigured debug_backtrace(). You, or your website host, will need to upgrade PHP or properly configure debug_backtrace() for Tribe Extensions to work."
@@ -1901,11 +1901,11 @@ msgstr ""
 
 #: common/src/admin-views/app-shop.php:26
 msgid "Buy This Add-On"
-msgstr ""
+msgstr "Comprar este complemento"
 
 #: common/src/admin-views/app-shop.php:5
 msgid "Browse All Add-Ons"
-msgstr ""
+msgstr "Navegar por todos os complementos"
 
 #: common/src/admin-views/app-shop.php:4
 msgid "Events Add-Ons"
@@ -2405,7 +2405,7 @@ msgstr ""
 
 #. Author URI of the plugin/theme
 msgid "http://m.tri.be/28"
-msgstr ""
+msgstr "http://m.tri.be/28"
 
 #. Author of the plugin/theme
 msgid "Modern Tribe, Inc."
@@ -2977,7 +2977,7 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-general.php:10
 msgid "Thank you for using Event Tickets! All of us at Modern Tribe sincerely appreciate your support and we're excited to see you using our plugins. Check out our handy %1$sNew User Primer%2$s to get started."
-msgstr ""
+msgstr "Obrigado por usar o Event Tickets! Todos na Modern Tribe sinceramente agradeçemos seu apoio e estamos animados para vê-lo usando nossos plugins. Confira nosso útil %1$sGuia de usuários iniciantes%2$s para começar."
 
 #: common/src/admin-views/tribe-options-display.php:37
 msgid "Select the date format to use in datepickers"
