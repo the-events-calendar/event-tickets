@@ -93,12 +93,21 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 			'default'         => reset( $ticket_form_location_options ),
 		),
+	) );
+}
+
+if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+
+	$tickets_fields = array_merge( $tickets_fields, array(
+		'ticket-enable-qr-codes-heading' => array(
+			'type' => 'html',
+			'html' => '<h3>' . __( 'QR Codes', 'event-tickets' ) . '</h3>',
+		),
 		'ticket-enable-qr-codes' => array(
 			'type'            => 'checkbox_bool',
 			'label'           => esc_html__( 'Enable QR codes for tickets?', 'event-tickets' ),
 			'default'         => true,
 			'validation_type' => 'boolean',
-			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 		),
 	) );
 }
