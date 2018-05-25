@@ -9,7 +9,7 @@ class Tribe__Tickets__Redirections {
 	/**
 	 * Conditionally redirects the user if a URL is specified in the GET request.
 	 *
-	 * @since TBD
+	 * @since 4.7.3
 	 */
 	public function maybe_redirect() {
 		if ( empty( $_GET['tribe_tickets_redirect_to'] ) ) {

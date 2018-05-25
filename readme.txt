@@ -3,7 +3,7 @@
 Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
-Tested up to: 4.9.5
+Tested up to: 4.9.6
 Stable tag: 4.7.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -121,17 +121,18 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.7.3] TBD =
+= [4.7.3] 2018-05-29 =
 
-* Fix - Display the correct number of attendees on the events list in the admin section [102128]
-* Fix - Display the correct number of available tickets on list and day view [100340]
-* Fix - Ensured that the ticket start and end sale date respect the event timezone [76683]
+* Fix - Display the correct number of attendees on the events list in the admin section (props to @vbt, @xen and others for flagging this!) [102128]
+* Fix - Display the correct number of available tickets on list and day view (Thanks to @designfestbrum, @kaisv and others for reporting this problem!) [100340]
+* Fix - Ensured that the ticket start and end sale date respect the event timezone (props to @Ryan, @Georges, @bcbookprizes for flagging this!) [76683]
 * Fix - Add methods to handle refunds for tickets and fix the attendees report accordingly [102081]
 * Fix - Modify the front end ticket list display so it always displays even when Hide From Event Listings is checked for an event, thanks to @atmedia for reporting [74523]
 * Tweak - Better handle the admin display of ticket prices that are affected WooCommerce Membership discounts (thanks to @cardinalacres, @steamfablab, and others for reporting these issues!) [97583]
 * Tweak - Added a "Return to Cart" link to PayPal tickets form [100253]
 * Tweak - Changed validation on the option 'Post types that can have tickets' to allow empty value [105930]
 * Tweak - Make QR codes optional via new "Enable QR codes for tickets?" option in Tickets settings [41649]
+* Language - 10 new strings added, 170 updated, 1 fuzzied, and 3 obsoleted
 
 = [4.7.2] 2018-04-18 =
 

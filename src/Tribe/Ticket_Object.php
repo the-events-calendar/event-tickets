@@ -170,7 +170,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Number of tickets for which an order has been refunded.
 		 * Use $this->$qty_refunded( value ) to set manage and get the value
 		 *
-		 * @since TBD
+		 * @since 4.7.3
 		 *
 		 * @var int
 		 */
@@ -886,7 +886,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Method to manage the protected `qty_refunded` property of the Object
 		 * Prevents setting `qty_refunded` lower then zero
 		 *
-		 * @since TBD
+		 * @since 4.7.3
 		 *
 		 * @param int|null $value This will overwrite the old value
 		 * @return int
