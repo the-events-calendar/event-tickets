@@ -65,7 +65,7 @@ var tribe_tickets_rsvp = {
 		}
 	};
 
-	$( function() {
+	$( window ).load( function () {
 		my.init();
 	} );
 })( jQuery, tribe_tickets_rsvp );
