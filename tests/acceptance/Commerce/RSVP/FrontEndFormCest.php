@@ -214,8 +214,8 @@ class FrontEndFormCest {
 		$I->click( '.tribe-button--rsvp' );
 
 		// Assert
-		// See error message
-		$I->seeElement( '.tribe-rsvp-message-error' );
+		// See error message, let's give the JS code some time to process
+		$I->waitForElement( '.tribe-rsvp-message-error', 2 );
 	}
 
 	/**
