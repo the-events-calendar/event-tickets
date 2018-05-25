@@ -184,15 +184,12 @@ class FrontEndFormCest {
 		
 		// Arrange
 		$post_id = $I->havePostInDatabase();
-		$this->make_ticket( $post_id, 3 );
+		$this->make_ticket( $post_id, 0 );
 		// user logged in to pre-fill name and email fields
 		$I->loginAsAdmin();
 
 		// Act
-		// Purchase all tickets available
 		$I->amOnPage( "/?p={$post_id}" );
-		$I->fillField( '.tribe-ticket-quantity', '3' );
-		$I->click( '.tribe-button--rsvp' );
 
 		// Assert
 		// See tickets are out of stock
