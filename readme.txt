@@ -123,7 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.7.4] TBD =
 
-* Fix - Properly update attendee's transient when checkin/unchekin an attendee, in order to see changes immediately [73272]
+* Fix - Properly update attendee's transient when checkin/unchekin an attendee, in order to see changes immediately. Thanks to @newcollegeofflorida and @gschnoor for flagging this! [73272]
 
 = [4.7.3] 2018-05-29 =
 
