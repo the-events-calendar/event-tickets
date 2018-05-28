@@ -121,6 +121,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.7.4] TBD =
+
 = [4.7.3] 2018-05-29 =
 
 * Fix - Display the correct number of attendees on the events list in the admin section (props to @vbt, @xen and others for flagging this!) [102128]
