@@ -819,6 +819,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Remove the Post Transients when a Ticket change its state
 		 *
+		 * @since TBD
+		 *
 		 * @param  int $attendee_id
 		 * @return void
 		 */
