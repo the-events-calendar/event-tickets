@@ -131,7 +131,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Better handle the admin display of ticket prices that are affected WooCommerce Membership discounts (thanks to @cardinalacres, @steamfablab, and others for reporting these issues!) [97583]
 * Tweak - Added a "Return to Cart" link to PayPal tickets form [100253]
 * Tweak - Changed validation on the option 'Post types that can have tickets' to allow empty value [105930]
-* Tweak - Make QR codes optional via new "Enable QR codes for tickets?" option in Tickets settings [41649]
 * Language - 10 new strings added, 170 updated, 1 fuzzied, and 3 obsoleted
 
 = [4.7.2] 2018-04-18 =
