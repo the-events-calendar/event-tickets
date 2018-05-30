@@ -47,7 +47,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 
 		$this->namespace = tribe( 'tickets-plus.rest-v1.main' )->get_events_route_namespace();
 
-		register_rest_route( $this->namespace , '/doc', array(
+		register_rest_route( $this->namespace, '/doc', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => array( $doc_endpoint, 'get' ),
 		) );
