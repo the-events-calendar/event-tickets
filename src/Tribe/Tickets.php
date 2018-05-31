@@ -817,7 +817,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Remove the Post Transients when a Ticket change its state
+		 * Remove the attendees transient when a Ticket change its state
 		 *
 		 * @since TBD
 		 *
