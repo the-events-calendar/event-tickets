@@ -123,6 +123,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.7.4] TBD =
 
+* Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
+
 = [4.7.3] 2018-05-29 =
 
 * Fix - Display the correct number of attendees on the events list in the admin section (props to @vbt, @xen and others for flagging this!) [102128]
