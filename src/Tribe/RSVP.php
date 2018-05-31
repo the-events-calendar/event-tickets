@@ -1162,7 +1162,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );
 		$return->global_stock_mode = ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE === $global_stock_mode ) ? Tribe__Tickets__Global_Stock::OWN_STOCK_MODE : '';
 
-		$return->stock( (int) get_post_meta( $ticket_id, '_stock', true ) - $qty );
+		$return->stock( (int) get_post_meta( $ticket_id, '_stock', true ) );
 		$return->qty_sold( $qty );
 		$return->capacity = tribe_tickets_get_capacity( $ticket_id );
 
