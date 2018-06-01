@@ -167,6 +167,16 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		protected $qty_cancelled = 0;
 
 		/**
+		 * Number of tickets for which an order has been refunded.
+		 * Use $this->$qty_refunded( value ) to set manage and get the value
+		 *
+		 * @since 4.7.3
+		 *
+		 * @var int
+		 */
+		protected $qty_refunded = 0;
+
+		/**
 		 * Holds whether or not stock is being managed
 		 *
 		 * @var boolean
@@ -302,12 +312,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			$start = $this->start_date( false );
-			$end = $this->end_date( false );
+			$end   = $this->end_date( false );
 
 			if ( ! $start instanceof DateTime || ! $end instanceof DateTime || ! $now instanceof DateTime ) {
-				$now = $timestamp;
+				$now   = $timestamp;
 				$start = $this->start_date();
-				$end = $this->end_date();
+				$end   = $this->end_date();
 			}
 
 			return ( empty( $start ) || $now >= $start ) && ( empty( $end ) || $now <= $end );
@@ -813,6 +823,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				case 'qty_sold':
 					return $this->qty_sold();
 					break;
+				case 'qty_refunded':
+					return $this->qty_refunded();
+					break;
 				case 'qty_cancelled':
 					return $this->qty_cancelled();
 					break;
@@ -837,6 +850,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 					break;
 				case 'qty_sold':
 					return $this->qty_sold( $value );
+					break;
+				case 'qty_refunded':
+					return $this->qty_refunded( $value );
 					break;
 				case 'qty_cancelled':
 					return $this->qty_cancelled( $value );
@@ -864,6 +880,28 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// return the new Qty Cancelled
 			return $this->qty_cancelled;
+		}
+
+		/**
+		 * Method to manage the protected `qty_refunded` property of the Object
+		 * Prevents setting `qty_refunded` lower then zero
+		 *
+		 * @since 4.7.3
+		 *
+		 * @param int|null $value This will overwrite the old value
+		 * @return int
+		 */
+		public function qty_refunded(  $value = null ) {
+			// If the Value was passed as numeric value overwrite
+			if ( is_numeric( $value ) ) {
+				$this->qty_refunded = $value;
+			}
+
+			// Prevents qty_refunded from going negative
+			$this->qty_refunded = max( (int) $this->qty_refunded, 0 );
+
+			// return the new Qty Refunded
+			return $this->qty_refunded;
 		}
 
 		/**

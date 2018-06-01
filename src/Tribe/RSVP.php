@@ -1063,7 +1063,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 *
 			 * add_action( 'tribe_tickets_expired_front_end_ticket_form', array( Tribe__Tickets_Plus__Attendees_List::instance(), 'render' ) );
 			 *
-			 * @since TBD
+			 * @since 4.7.3
 			 *
 			 * @param boolean $must_login
 			 * @param array $tickets
