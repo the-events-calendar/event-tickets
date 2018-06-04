@@ -253,7 +253,7 @@ if ( $include_event_date && function_exists( 'tribe_events_event_schedule_detail
 						</span>
 					</h2>
 
-					<?php if ( ! empty( $event_date ) ): ?>
+					<?php if ( ! empty( $event_date ) ) : ?>
 						<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; line-height: 100%; text-align:left;">
 							<span style="color:#0a0a0e !important"><?php echo $event_date; ?></span>
 						</h4>
