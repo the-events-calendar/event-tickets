@@ -125,7 +125,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 		/**
 		 * Add an opportunity to change the data for the RSVP created via a CSV file
 		 *
-		 * @since TBD
+		 * @since 4.7.3
 		 *
 		 * @param array
 		 */

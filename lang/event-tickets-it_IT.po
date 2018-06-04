@@ -2540,7 +2540,7 @@ msgstr "Modifica in %s"
 
 #: common/src/admin-views/event-log.php:65 src/admin-views/list.php:47
 msgid "View"
-msgstr "Visite"
+msgstr ""
 
 #: src/admin-views/list.php:33
 msgid "Edit"

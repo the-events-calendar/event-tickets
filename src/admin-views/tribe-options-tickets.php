@@ -59,7 +59,7 @@ $tickets_fields = array(
 		// only set the default to tribe_events if the ticket-endabled-post-types index has never been saved
 		'default'         => array_key_exists( 'ticket-enabled-post-types', $options ) ? false : 'tribe_events',
 		'options'         => $all_post_types,
-		'can_be_empty'    => false,
+		'can_be_empty'    => true,
 		'validation_type' => 'options_multi',
 	),
 );

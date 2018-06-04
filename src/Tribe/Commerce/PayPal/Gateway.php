@@ -89,8 +89,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			return;
 		}
 
-		$url           = $this->get_cart_url( '_cart' );
-		$now           = time();
+		$cart_url           = $this->get_cart_url( '_cart' );
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
 		$product_ids   = $_POST['product_id'];
@@ -105,7 +104,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 *
 		 * @since 4.7
 		 *
-		 * @see  \Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
+		 * @see  Tribe__Tickets__Commerce__PayPal__Handler__IPN::check_response()
 		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/Appx_websitestandard_htmlvariables/
 		 *
 		 * @param string $notify_url
@@ -129,6 +128,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		$custom      = Tribe__Tickets__Commerce__PayPal__Custom_Argument::encode( $custom_args );
 
+		$invoice_number = $this->set_invoice_number();
+
 		$args = array(
 			'cmd'           => '_cart',
 			'add'           => 1,
@@ -139,9 +140,17 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			'return'        => $this->get_success_page_url(),
 			'currency_code' => $currency_code ? $currency_code : 'USD',
 			'custom'        => $custom,
+			/**
+			 * A passthrough variable: it will be returned to the site intact.
+			 *
+			 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/#variations-on-basic-variables
+			 */
+			'invoice'       => $invoice_number,
 		);
 
-		$this->set_invoice_number();
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
+		$cart = tribe( 'tickets.commerce.paypal.cart' );
+		$cart->set_id( $invoice_number );
 
 		foreach ( $product_ids as $ticket_id ) {
 			$ticket   = tribe( 'tickets.commerce.paypal' )->get_ticket( $post->ID, $ticket_id );
@@ -150,7 +159,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			// skip if the ticket in no longer in stock or is not sellable
 			if (
 				! $ticket->is_in_stock()
-				|| ! $ticket->date_in_range( $now )
+				|| ! $ticket->date_in_range()
 			) {
 				continue;
 			}
@@ -178,6 +187,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			$args['item_number'] = "{$post->ID}:{$ticket->ID}";
 			$args['item_name']   = urlencode( wp_kses_decode_entities( $this->get_product_name( $ticket, $post ) ) );
 
+			$cart->add_item( $ticket->ID, $quantity );
+
 			// we can only submit one product at a time. Bail if we get to here because we have a product
 			// with a requested quantity
 			break;
@@ -192,6 +203,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			die;
 		}
 
+		$cart->save();
+
 		/**
 		 * Filters the arguments passed to PayPal while adding items to the cart
 		 *
@@ -203,7 +216,20 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		 */
 		$args = apply_filters( 'tribe_tickets_commerce_paypal_add_to_cart_args', $args, $_POST, $post );
 
-		$url = add_query_arg( $args, $url );
+		$cart_url = add_query_arg( $args, $cart_url );
+
+		/**
+		 * To allow the Invoice cookie to apply we have to redirect to a page on the same domain
+		 * first.
+		 * The redirection is handled in the `Tribe__Tickets__Redirections::maybe_redirect` class
+		 * on the `wp_loaded` action.
+		 *
+		 * @see Tribe__Tickets__Redirections::maybe_redirect
+		 */
+		$url = add_query_arg(
+			array( 'tribe_tickets_redirect_to' => rawurlencode( $cart_url ) ),
+			home_url()
+		);
 
 		wp_redirect( $url );
 		die;
@@ -358,7 +384,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$invoice = $this->get_invoice_number();
 
 		// set the cookie (if it was already set, it'll extend the lifetime)
-		setcookie( self::$invoice_cookie_name, $invoice, 900);
+		$secure = 'https' === parse_url( home_url(), PHP_URL_SCHEME );
+		setcookie( self::$invoice_cookie_name, $invoice, time() + 900, COOKIEPATH, COOKIE_DOMAIN, $secure );
 
 		return $invoice;
 	}

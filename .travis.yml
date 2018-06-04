@@ -128,7 +128,9 @@ script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
+  - codecept run functional -vvv
   - codecept run acceptance
+
 
 after_failure:
   # if the build failed let's see why
