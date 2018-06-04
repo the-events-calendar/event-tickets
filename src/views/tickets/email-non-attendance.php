@@ -12,10 +12,25 @@
  * @var int   $order_id
  * @var array $attendees
  *
- * @version 4.4.8
+ * @version TBD
  */
 
-$start_date = function_exists( 'tribe_get_start_date' ) ? tribe_get_start_date( $event_id ) : null;
+$event_date = null;
+
+/**
+ * Filters whether or not the event date should be included in the ticket email.
+ *
+ * @since 4.5.11
+ *
+ * @var bool Include event date? Defaults to false.
+ * @var int  Event ID
+ */
+$include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', false, $event_id );
+
+if ( $include_event_date && function_exists( 'tribe_events_event_schedule_details' ) ) {
+	$event_date = tribe_events_event_schedule_details( $event_id );
+}
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -238,9 +253,9 @@ $start_date = function_exists( 'tribe_get_start_date' ) ? tribe_get_start_date( 
 						</span>
 					</h2>
 
-					<?php if ( ! empty( $start_date ) ): ?>
+					<?php if ( ! empty( $event_date ) ): ?>
 						<h4 style="color:#0a0a0e; margin:0 !important; font-family: 'Helvetica Neue', Helvetica, sans-serif; font-style:normal; font-weight:700; font-size:15px; letter-spacing:normal; line-height: 100%; text-align:left;">
-							<span style="color:#0a0a0e !important"><?php echo $start_date; ?></span>
+							<span style="color:#0a0a0e !important"><?php echo $event_date; ?></span>
 						</h4>
 					<?php endif; ?>
 
