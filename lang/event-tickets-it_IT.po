@@ -1728,7 +1728,7 @@ msgstr ""
 #: src/Tribe/Attendees_Table.php:327
 msgctxt "row action"
 msgid "Delete"
-msgstr "Cancella"
+msgstr ""
 
 #: src/Tribe/Attendees_Table.php:315
 msgctxt "row action"
@@ -2540,7 +2540,7 @@ msgstr "Modifica in %s"
 
 #: common/src/admin-views/event-log.php:65 src/admin-views/list.php:47
 msgid "View"
-msgstr "Visite"
+msgstr ""
 
 #: src/admin-views/list.php:33
 msgid "Edit"
@@ -4344,7 +4344,7 @@ msgstr "È necessaria una chiave di licenza valida per il supporto e aggiornamen
 
 #: common/src/Tribe/PUE/Checker.php:509 common/src/Tribe/PUE/Checker.php:520
 msgid "License Key"
-msgstr "Chiave Licenza"
+msgstr ""
 
 #: common/src/Tribe/Field.php:626
 msgid "No select options specified"

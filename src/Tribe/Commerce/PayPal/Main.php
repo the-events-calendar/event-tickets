@@ -260,12 +260,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		tribe_singleton( 'tickets.commerce.paypal.oversell.policies', 'Tribe__Tickets__Commerce__PayPal__Oversell__Policies' );
 		tribe_singleton( 'tickets.commerce.paypal.oversell.request', 'Tribe__Tickets__Commerce__PayPal__Oversell__Request' );
 		tribe_singleton( 'tickets.commerce.paypal.frontend.tickets-form', 'Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form' );
+		tribe_register( 'tickets.commerce.paypal.cart', 'Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged' );
 
 		tribe()->tag( array(
 			'tickets.commerce.paypal.shortcodes.tpp-success' => 'Tribe__Tickets__Commerce__PayPal__Shortcodes__Success',
 		), 'tpp-shortcodes' );
 
-		/** @var \Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface $shortcode */
+		/** @var Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface $shortcode */
 		foreach ( tribe()->tagged( 'tpp-shortcodes' ) as $shortcode ) {
 			add_shortcode( $shortcode->tag(), array( $shortcode, 'render' ) );
 		}
@@ -620,6 +621,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$gateway          = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$transaction_data = $gateway->get_transaction_data();
+
+		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
+		$cart = tribe( 'tickets.commerce.paypal.cart' );
+
+		/**
+		 * The `invoice` variable is a passthrough one; if passed when adding items to the cart
+		 * then it should be returned to us from PayPal. If we have it in the transaction data
+		 * we can assume the cart associated with the invoice, if any, can be removed.
+		 *
+		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/#variations-on-basic-variables
+		 */
+		if ( ! empty( $transaction_data['invoice'] ) ) {
+			$cart->set_id( $transaction_data['invoice'] );
+			$cart->clear();
+		}
+
 		$raw_transaction_data = $gateway->get_raw_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
