@@ -293,8 +293,8 @@
 				/**
 				 * Filters whether or not the event date should be included in the ticket email.
 				 *
-				 * @since 4.5.11 
-				 * @since TBD    Include event date default value changed to true 
+				 * @since 4.5.11
+				 * @since TBD    Include event date default value changed to true
 				 *
 				 * @var bool Include event date? Defaults to true.
 				 * @var int  Event ID
