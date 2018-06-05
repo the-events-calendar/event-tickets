@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Properly update attendees transient when checkin/unchekin an attendee, in order to see changes immediately. Thanks to @newcollegeofflorida and @gschnoor for flagging this! [73272]
 * Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
 * Tweak - Added new action, `tribe_tickets_ticket_email_ticket_top`, to the tickets email template [79878]
+* Tweak - Changed shortlinks to use https in Event Tickets welcome screen [75647]
 
 = [4.7.3] 2018-05-29 =
 
