@@ -20,10 +20,10 @@ $event_date = null;
 /**
  * Filters whether or not the event date should be included in the ticket email.
  *
- * @since 4.5.11
+ * @since TBD
  *
- * @var bool Include event date? Defaults to false.
- * @var int  Event ID
+ * @param bool Include event date? Defaults to false.
+ * @param int  Event ID
  */
 $include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', false, $event_id );
 
