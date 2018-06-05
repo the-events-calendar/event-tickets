@@ -314,7 +314,16 @@
 				<table class="content" align="center" width="620" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="margin:0 auto; padding:0;<?php echo $break; ?>">
 					<tr>
 						<td align="center" valign="top" class="wrapper" width="620">
-							<?php do_action( 'tribe_tickets_ticket_email_ticket_top', $ticket ); ?>
+							<?php 
+							/**
+							 * Gives an opportunity to manipulate the current ticket before output
+							 *
+							 * @since  TBD
+							 *
+							 * @param  array $ticket Current ticket information 
+							 */
+							do_action( 'tribe_tickets_ticket_email_ticket_top', $ticket );
+							?>
 							<table class="inner-wrapper" border="0" cellpadding="0" cellspacing="0" width="620" bgcolor="#f7f7f7" style="margin:0 auto !important; width:620px; padding:0;">
 								<tr>
 									<td valign="top" class="ticket-content" align="left" width="580" border="0" cellpadding="20" cellspacing="0" style="padding:20px; background:#f7f7f7;">
