@@ -314,13 +314,13 @@
 				<table class="content" align="center" width="620" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="margin:0 auto; padding:0;<?php echo $break; ?>">
 					<tr>
 						<td align="center" valign="top" class="wrapper" width="620">
-							<?php 
+							<?php
 							/**
 							 * Gives an opportunity to manipulate the current ticket before output
 							 *
 							 * @since  TBD
 							 *
-							 * @param  array $ticket Current ticket information 
+							 * @param  array $ticket Current ticket information
 							 */
 							do_action( 'tribe_tickets_ticket_email_ticket_top', $ticket );
 							?>
