@@ -22,10 +22,10 @@ $event_date = null;
  *
  * @since TBD
  *
- * @param bool Include event date? Defaults to false.
+ * @param bool Include event date? Defaults to true.
  * @param int  Event ID
  */
-$include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', false, $event_id );
+$include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', true, $event_id );
 
 if ( $include_event_date && function_exists( 'tribe_events_event_schedule_details' ) ) {
 	$event_date = tribe_events_event_schedule_details( $event_id );

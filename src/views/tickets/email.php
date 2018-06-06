@@ -15,7 +15,7 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @version 4.7
+ * @version TBD
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -294,11 +294,12 @@
 				 * Filters whether or not the event date should be included in the ticket email.
 				 *
 				 * @since 4.5.11
+				 * @since TBD    Include event date default value changed to true
 				 *
-				 * @var bool Include event date? Defaults to false.
+				 * @var bool Include event date? Defaults to true.
 				 * @var int  Event ID
 				 */
-				$include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', false, $event->ID );
+				$include_event_date = apply_filters( 'tribe_tickets_email_include_event_date', true, $event->ID );
 
 				if ( $include_event_date && function_exists( 'tribe_events_event_schedule_details' ) ) {
 					$event_date = tribe_events_event_schedule_details( $event );
