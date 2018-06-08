@@ -32,11 +32,18 @@ class BaseRestCest {
 	 */
 	protected $documentation_url;
 
+	/**
+	 * @var \tad\WPBrowser\Module\WPLoader\FactoryStore
+	 */
+	protected $factory;
+
 	public function _before( Restv1Tester $I ) {
 		$this->site_url          = $I->grabSiteUrl();
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
 		$this->documentation_url = $this->rest_url . 'doc';
+		$this->factory = $I->factory();
+
 		wp_cache_flush();
 	}
 }

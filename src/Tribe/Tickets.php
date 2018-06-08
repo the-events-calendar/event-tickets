@@ -297,6 +297,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_tickets_query_args( $post_id = null ) {
+			if ( $post_id instanceof WP_Post ) {
+				$post_id = $post_id->ID;
+			}
+
 			$args = array(
 				'post_type'      => array( $this->ticket_object ),
 				'posts_per_page' => - 1,

@@ -6741,7 +6741,8 @@ trait Restv1TesterActions
 	 *
 	 *        $postId = $I->factory()->post->create();
 	 *
-	 * @return \tad\WPBrowser\Module\WPLoader\FactoryStore
+	 * @return
+     * \tad\WPBrowser\Module\WPLoader\FactoryStore
      * @see \Codeception\Module\WPLoader::factory()
      */
     public function factory() {

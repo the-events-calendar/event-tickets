@@ -17,7 +17,7 @@ class Tribe__Tickets__REST__V1__Post_Repository implements Tribe__Tickets__REST_
 
 	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
 		$this->types_get_map = array(
-			Tribe__Tickets__RSVP::ATTENDEE_OBJECT => array( $this, 'get_ticket_data' ),
+			Tribe__Tickets__RSVP::ATTENDEE_OBJECT => array( $this, 'get_attendee_data' ),
 		);
 
 		$this->messages = $messages ? $messages : tribe( 'tickets.rest-v1.messages' );
@@ -48,42 +48,37 @@ class Tribe__Tickets__REST__V1__Post_Repository implements Tribe__Tickets__REST_
 	}
 
 	/**
-	 * Returns ticket id
-	 *
-	 * @todo   add return ticket based on service provider
-	 *
-	 * @since  TBD
-	 *
-	 * @param int    $ticket_id A ticket post ID.
-	 * @param string $context   Context of data.
-	 *
-	 * @return $ticket_id.
-	 *
+	 * {@inheritdoc}
 	 */
-	public function get_ticket_data( $ticket_id, $context = '' ) {
+	public function get_attendee_data( $attendee_id, $context = '' ) {
+		$attendee    = get_post( $attendee_id );
 
-		$ticket = get_post( $ticket_id );
-
-		if ( empty( $ticket ) || $ticket->post_type !== Tribe__Tickets__RSVP::ATTENDEE_OBJECT ) {
+		if ( empty( $attendee ) || $attendee->post_type !== Tribe__Tickets__RSVP::ATTENDEE_OBJECT ) {
 			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ) );
 		}
 
+		$attendee_id = $attendee->ID;
+
 		$data = array(
-			'id'     => $ticket_id,
-			'status' => $ticket->post_status,
+			'id'     => $attendee_id,
+			'status' => $attendee->post_status,
 		);
 
 		/**
-		 * Filters the data that will be returned if for a single ticket.
+		 * Filters the data that will be returned if for a single attendee.
 		 *
 		 * @since  TBD
 		 *
-		 * @param array   $data  The data that will be returned in the response.
-		 * @param WP_Post $event The requested ticket.
+		 * @param array $data The data that will be returned in the response.
+		 * @param WP_Post $attendee The requested attendee post object.
 		 */
-		$data = apply_filters( 'tribe_tickets_rest_ticket_data', $data, $ticket );
-
-		return $data;
+		return apply_filters( 'tribe_tickets_rest_attendee_data', $data, $attendee );
 	}
 
+	/**
+	 * {@inheritdoc}
+	 */
+	public function get_ticket_data( $ticket_id, $context = '' ) {
+		// TODO: Implement get_ticket_data() method.
+	}
 }

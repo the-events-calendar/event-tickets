@@ -39,7 +39,7 @@ class Post_RepositoryTest extends Ticket_TestCase {
 	public function it_should_return_a_wp_error_when_trying_to_get_ticket_data_for_non_existing_post() {
 		$sut = $this->make_instance();
 
-		$data = $sut->get_ticket_data( 22131 );
+		$data = $sut->get_attendee_data( 22131 );
 
 		/** @var \WP_Error $data */
 		$this->assertWPError( $data );
@@ -53,7 +53,7 @@ class Post_RepositoryTest extends Ticket_TestCase {
 	public function it_should_return_a_wp_error_when_trying_to_get_ticket_data_for_non_ticket() {
 		$sut = $this->make_instance();
 
-		$data = $sut->get_ticket_data( $this->factory()->post->create() );
+		$data = $sut->get_attendee_data( $this->factory()->post->create() );
 
 		/** @var \WP_Error $data */
 		$this->assertWPError( $data );
@@ -65,10 +65,10 @@ class Post_RepositoryTest extends Ticket_TestCase {
 	 * it should return an ticket array representation if ticket
 	 */
 	public function it_should_return_an_ticket_array_representation_if_ticket() {
-		$ticket = $this->factory()->ticket->create();
+		$ticket = $this->factory()->rsvp_attendee->create();
 
 		$sut  = $this->make_instance();
-		$data = $sut->get_ticket_data( $ticket );
+		$data = $sut->get_attendee_data( $ticket );
 
 		$this->assertInternalType( 'array', $data );
 	}
@@ -78,7 +78,7 @@ class Post_RepositoryTest extends Ticket_TestCase {
 	 * it should reutrn the array representation of an ticket if trying to get an ticket data
 	 */
 	public function it_should_return_the_array_representation_of_an_ticket_if_trying_to_get_an_ticket_data() {
-		$ticket = $this->factory()->ticket->create();
+		$ticket = $this->factory()->rsvp_attendee->create();
 
 		$sut  = $this->make_instance();
 		$data = $sut->get_data( $ticket );
@@ -92,7 +92,7 @@ class Post_RepositoryTest extends Ticket_TestCase {
 	 * it should return an ticket data if trying to get data for an ticket
 	 */
 	public function it_should_return_an_ticket_data_if_trying_to_get_data_for_an_ticket() {
-		$ticket = $this->factory()->ticket->create();
+		$ticket = $this->factory()->rsvp_attendee->create();
 
 		$sut  = $this->make_instance();
 		$data = $sut->get_data( $ticket );

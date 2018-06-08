@@ -9,11 +9,11 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	implements Tribe__Tickets__Validator__Interface {
 
 	/**
-	 * Whether the value is the post ID of an existing event or not.
+	 * whether the value is the post id of an existing ticket or not.
 	 *
-	 * @since TBD
+	 * @since tbd
 	 *
-	 * @param int|string $event_id
+	 * @param int $ticket_id
 	 *
 	 * @return bool
 	 */
