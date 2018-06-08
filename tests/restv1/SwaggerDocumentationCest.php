@@ -80,6 +80,9 @@ class SwaggerDocumentationCest extends BaseRestCest {
 
 	/**
 	 * @test
+	 *
+	 * @skip will be part of the work for ticket https://central.tri.be/issues/108024
+	 *
 	 * it should contain information about the archive endpoint
 	 */
 	public function it_should_contain_information_about_the_archive_endpoint( Restv1Tester $I ) {
@@ -90,12 +93,15 @@ class SwaggerDocumentationCest extends BaseRestCest {
 		$response = (array) json_decode( $I->grabResponse() );
 		$I->assertArrayHasKey( 'paths', $response );
 		$paths = (array) $response['paths'];
-		$I->assertArrayHasKey( '/events', $paths );
+		$I->assertArrayHasKey( '/tickets', $paths );
 		$I->assertArrayHasKey( 'get', (array)$paths['/events:'] );
 	}
 
 	/**
 	 * @test
+	 *
+	 * @skip will be part of the work for ticket https://central.tri.be/issues/108024
+	 *
 	 * it should contain information about the single event endpoint
 	 */
 	public function it_should_contain_information_about_the_single_event_endpoint( Restv1Tester $I ) {
@@ -106,7 +112,7 @@ class SwaggerDocumentationCest extends BaseRestCest {
 		$response = (array) json_decode( $I->grabResponse() );
 		$I->assertArrayHasKey( 'paths', $response );
 		$paths = (array) $response['paths'];
-		$I->assertArrayHasKey( '/events/{id}', $paths );
+		$I->assertArrayHasKey( '/tickets/{id}', $paths );
 		$I->assertArrayHasKey( 'get', (array)$paths['/events/{id}:'] );
 	}
 }
