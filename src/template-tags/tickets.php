@@ -404,9 +404,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		 */
 		$available = apply_filters( 'tribe_tickets_stock_message_available_quantity', $available, $ticket, $sold, $stock );
 
-		$cancelled    = (int) $ticket->qty_cancelled();
-		$pending      = (int) $ticket->qty_pending();
-		$status       = '';
+		$cancelled     = (int) $ticket->qty_cancelled();
+		$pending       = (int) $ticket->qty_pending();
+		$refunded      = (int) $ticket->qty_refunded();
+		$status        = '';
 		$status_counts = array();
 
 		$is_global = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled();
@@ -428,7 +429,8 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			} elseif ( $is_global ) {
 				$status_counts[] = sprintf( _x( '%1$d Remaining of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
 			} else {
-				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+				// It's "own stock". We use the $stock value
+				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $stock ) );
 			}
 		}
 
@@ -438,6 +440,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		if ( ! empty( $cancelled ) ) {
 			$status_counts[] = sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), $cancelled );
+		}
+
+		if ( ! empty( $refunded ) ) {
+			$status_counts[] = sprintf( _x( '%1$d Refunded', 'ticket stock message (refunded stock)', 'event-tickets' ), $refunded );
 		}
 
 		if ( ! empty( $status_counts ) ) {
@@ -892,4 +898,33 @@ function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = f
 	}
 
 	return $html;
+}
+
+/**
+ * Checks if the specified user (defaults to currently-logged-in user) belongs to any active
+ * WooCommerce Membership plans, *and* if the specified ticket (by ticket ID) has any active
+ * member discounts applied to it. It may not be the user's membership plan specifically, so this
+ * template tag *may* produce some false positives.
+ *
+ * @since 4.7.3
+ *
+ * @param int $ticket_id
+ * @param int $user_id
+ * @return boolean
+ */
+function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 0 ) {
+
+	if (
+		! function_exists( 'wc_memberships_get_user_active_memberships' ) ||
+		! function_exists( 'wc_memberships_product_has_member_discount' )
+	) {
+		return false;
+	}
+
+	$user_id = 0 ? get_current_user_id() : $user_id;
+
+	$user_is_member             = wc_memberships_get_user_active_memberships( $user_id );
+	$ticket_has_member_discount = wc_memberships_product_has_member_discount( $ticket_id );
+
+	return $user_is_member && $ticket_has_member_discount;
 }

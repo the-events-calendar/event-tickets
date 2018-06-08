@@ -18,7 +18,6 @@ $are_products_available       = false;
 ob_start();
 $messages = Tribe__Tickets__RSVP::get_instance()->get_messages();
 $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
-$now = current_time( 'timestamp' );
 ?>
 
 <form
@@ -60,7 +59,7 @@ $now = current_time( 'timestamp' );
 				continue;
 			}
 
-			if ( ! $ticket->date_in_range( $now ) ) {
+			if ( ! $ticket->date_in_range() ) {
 				continue;
 			}
 

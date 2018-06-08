@@ -6,26 +6,18 @@
  * @since 4.7
  */
 class Tribe__Tickets__Redirections {
-
 	/**
-	 * Hooks to WordPress events when and if needed.
+	 * Conditionally redirects the user if a URL is specified in the GET request.
 	 *
-	 * @since 4.7
+	 * @since 4.7.3
 	 */
-	public function hook() {
-		if ( ! empty( $_GET['tribe_tickets_redirect_to'] ) ) {
-			add_filter( 'registration_redirect', array( $this, 'filter_registration_redirect' ) );
+	public function maybe_redirect() {
+		if ( empty( $_GET['tribe_tickets_redirect_to'] ) ) {
+			return;
 		}
-	}
 
-	/**
-	 * Filters the redirection URL after a user registration.
-	 *
-	 * @since 4.7
-	 *
-	 * @return string
-	 */
-	public function filter_registration_redirect() {
-		return rawurldecode( $_GET['tribe_tickets_redirect_to'] );
+		$url = rawurldecode( $_GET['tribe_tickets_redirect_to'] );
+		wp_redirect( $url );
+		die();
 	}
 }

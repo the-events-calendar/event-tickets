@@ -811,12 +811,32 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Ensure ticket prices and event costs are linked
 			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
+
+			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
+			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
+		}
+
+		/**
+		 * Remove the attendees transient when a Ticket change its state
+		 *
+		 * @since TBD
+		 *
+		 * @param  int $attendee_id
+		 * @return void
+		 */
+		public function purge_attendees_transient( $attendee_id ) {
+
+			$event_id = $this->get_event_id_from_attendee_id( $attendee_id );
+
+			if ( $event_id ) {
+				tribe( 'post-transient' )->delete( $event_id, self::ATTENDEES_CACHE );
+			}
 		}
 
 		/**
 		 * Maybe addd the Tickets Form as shouldn't be added if is unchecked from the settings
 		 *
-		 * @since TBD
+		 * @since 4.7.3
 		 *
 		 * @param string $content
 		 */
@@ -1200,9 +1220,44 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
 
 			$types['tickets']['available'] += $global_stock;
-			$types['tickets']['stock'] += $global_stock;
+
+			// If there's at least one ticket with shared capacity
+			if ( ! self::tickets_own_stock( $post_id ) ) {
+				$types['tickets']['stock'] += $global_stock;
+			}
 
 			return $types;
+		}
+
+		/**
+		 * Returns if the all the tickets for an event
+		 * have own stock
+		 *
+		 * @param int $post_id ID of parent "event" post
+		 * @return bool
+		 */
+		public static function tickets_own_stock( $post_id ) {
+			$tickets = self::get_all_event_tickets( $post_id );
+
+			// if no tickets or rsvp return false
+			if ( ! $tickets ) {
+				return false;
+			}
+
+			foreach ( $tickets as $ticket ) {
+
+				// if ticket and not RSVP
+				if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+
+					$global_stock_mode = $ticket->global_stock_mode();
+
+					if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $global_stock_mode ) {
+						return false;
+					}
+				}
+			}
+
+			return true;
 		}
 
 		/**

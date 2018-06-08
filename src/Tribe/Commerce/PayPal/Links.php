@@ -92,4 +92,34 @@ class Tribe__Tickets__Commerce__PayPal__Links {
 
 		return Tribe__Utils__Array::get( $map, $what, '' );
 	}
+
+	/**
+	 * Returns the link to return to the user current cart.
+	 *
+	 * @since 4.7.3
+	 *
+	 * @param array $query_args An optional array of query arguments that should be appended to
+	 *                          the `shopping_url`.
+	 * @return string
+	 */
+	public function return_to_cart( array $query_args = array() ) {
+		/** @var Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		if ( empty( $query_args['tpp_invoice'] ) ) {
+			$invoice_number = tribe_get_request_var( 'tpp_invoice', false );
+			if ( false !== $invoice_number ) {
+				$query_args['tpp_invoice'] = $invoice_number;
+			}
+		}
+
+		$args = array(
+			'cmd'          => '_cart',
+			'display'      => 1,
+			'business'     => urlencode( trim( tribe_get_option( 'ticket-paypal-email' ) ) ),
+			'shopping_url' => urlencode( add_query_arg( $query_args, get_post_permalink() ) ),
+		);
+
+		return add_query_arg( $args, $gateway->get_cart_url() );
+	}
 }

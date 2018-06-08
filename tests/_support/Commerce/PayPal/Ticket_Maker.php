@@ -15,14 +15,12 @@ trait Ticket_Maker {
 	 * @return mixed
 	 */
 	protected function make_ticket( $post_id, $price, array $overrides = [] ) {
-		if ( ! isset( $this->factory ) || ! $this->factory instanceof \WP_UnitTest_Factory ) {
-			throw new \RuntimeException( 'This trait should be used in classes that extend the \\Codeception\\TestCase\\WPTestCase class' );
-		}
+		$factory = ! isset( $this->factory ) ? $this->factory() : $this->factory;
 
 		$meta_input = isset( $overrides['meta_input'] ) && is_array( $overrides['meta_input'] ) ? $overrides['meta_input'] : array();
 		unset( $overrides['meta_input'] );
 
-		$ticket_id = $this->factory()->post->create( array_merge(
+		$ticket_id = $factory->post->create( array_merge(
 				[
 					'post_title'   => "Test Ticket for {$post_id}",
 					'post_content' => "Ticket for {$post_id}",
