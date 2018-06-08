@@ -12,6 +12,7 @@ class DiscoveryCest extends BaseRestCest {
 
 		$I->seeHttpHeader( 'X-ET-API-VERSION', 'v1' );
 		$I->seeHttpHeader( 'X-ET-API-ROOT', $this->rest_url );
+		$I->seeHttpHeader( 'X-ET-API-ORIGIN', $this->site_url );
 	}
 
 	/**
@@ -25,6 +26,7 @@ class DiscoveryCest extends BaseRestCest {
 
 		$I->seeHttpHeader( 'X-ET-API-VERSION', 'disabled' );
 		$I->dontSeeHttpHeader( 'X-ET-API-ROOT', $this->rest_url );
+		$I->dontSeeHttpHeader( 'X-ET-API-ORIGIN', $this->site_url );
 	}
 
 }
