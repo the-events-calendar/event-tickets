@@ -39,10 +39,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	public function get( WP_REST_Request $request ) {
 		$ticket_id = $request['id'];
 
-		/** @var Tribe__Tickets__Tickets $provider */
-		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
-		$post     = $provider->get_event_for_ticket( $ticket_id );
-
 		return $this->post_repository->get_ticket_data( $ticket_id );
 	}
 
