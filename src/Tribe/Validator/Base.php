@@ -9,7 +9,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	implements Tribe__Tickets__Validator__Interface {
 
 	/**
-	 * whether the value is the post id of an existing ticket or not.
+	 * Whether the value is the post id of an existing ticket or not.
 	 *
 	 * @since tbd
 	 *
