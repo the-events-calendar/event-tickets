@@ -23,7 +23,7 @@ $user_id = get_current_user_id();
  */
 if ( ! $view->has_ticket_attendees( $event_id, $user_id ) && ! $view->has_rsvp_attendees( $event_id, $user_id ) ) {
 	Tribe__Notices::set_notice( 'ticket-no-results', esc_html__( "You don't have tickets for this event", 'event-tickets' ) );
-};
+}
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type ? true : false;
 ?>
