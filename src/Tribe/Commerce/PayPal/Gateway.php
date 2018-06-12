@@ -52,6 +52,11 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	protected $handler;
 
 	/**
+	 * @var int The invoice number expiration time in seconds.
+	 */
+	protected $invoice_expiration_time = 900;
+
+	/**
 	 * Tribe__Tickets__Commerce__PayPal__Gateway constructor.
 	 *
 	 * @since 4.7
@@ -385,7 +390,8 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		// set the cookie (if it was already set, it'll extend the lifetime)
 		$secure = 'https' === parse_url( home_url(), PHP_URL_SCHEME );
-		setcookie( self::$invoice_cookie_name, $invoice, time() + 900, COOKIEPATH, COOKIE_DOMAIN, $secure );
+		setcookie( self::$invoice_cookie_name, $invoice, time() + $this->invoice_expiration_time, COOKIEPATH, COOKIE_DOMAIN, $secure );
+		set_transient( $this->invoice_transient_name( $invoice ), '1', $this->invoice_expiration_time );
 
 		return $invoice;
 	}
@@ -400,8 +406,14 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			return;
 		}
 
+		$invoice_number = $_COOKIE[ self::$invoice_cookie_name ];
 		unset( $_COOKIE[ self::$invoice_cookie_name ] );
-		setcookie( self::$invoice_cookie_name, null, -1 );
+		delete_transient( $this->invoice_transient_name( $invoice_number ) );
+
+		if ( ! headers_sent() ) {
+			$secure = 'https' === parse_url( home_url(), PHP_URL_SCHEME );
+			setcookie( self::$invoice_cookie_name, '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, $secure );
+		}
 	}
 
 	/**
@@ -496,7 +508,14 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			&& strlen( $_COOKIE[ self::$invoice_cookie_name ] ) === $invoice_length
 		) {
 			$invoice = $_COOKIE[ self::$invoice_cookie_name ];
-		} else {
+			$invoice_transient = get_transient( $this->invoice_transient_name( $invoice ) );
+
+			if ( empty( $invoice_transient ) ) {
+				$invoice = null;
+			}
+		}
+
+		if ( empty( $invoice ) ) {
 			$invoice = wp_generate_password( $invoice_length, false );
 		}
 
@@ -581,5 +600,18 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 */
 	public function get_raw_transaction_data() {
 		return $this->raw_transaction_data;
+	}
+
+	/**
+	 * Returns the name of the transient corresponding to an invoice number.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $invoice_number
+	 *
+	 * @return string
+	 */
+	protected function invoice_transient_name( $invoice_number ) {
+		return 'tpp_invoice_' . md5( $invoice_number );
 	}
 }

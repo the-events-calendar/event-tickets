@@ -239,6 +239,21 @@
 				$event      = get_post( $ticket['event_id'] );
 				$header_id  = get_post_meta( $ticket['event_id'], tribe( 'tickets.handler' )->key_image_header, true );
 				$header_img = false;
+
+				/**
+				 * If the ticket is a WooCommerce product and has a featured image,
+				 * display it on email.
+				 *
+				 * @since TBD
+				 */
+				if ( class_exists( 'WC_Product' ) ) {
+					$product  = new WC_Product( $ticket['product_id'] );
+					$image_id = $product->get_image_id();
+					if ( ! empty( $image_id ) ) {
+						$header_img = wp_get_attachment_image_src( $image_id, 'full' );
+					}
+				}
+
 				if ( ! empty( $header_id ) ) {
 					$header_img = wp_get_attachment_image_src( $header_id, 'full' );
 				}
