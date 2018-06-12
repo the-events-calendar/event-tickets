@@ -239,6 +239,21 @@
 				$event      = get_post( $ticket['event_id'] );
 				$header_id  = get_post_meta( $ticket['event_id'], tribe( 'tickets.handler' )->key_image_header, true );
 				$header_img = false;
+
+				/**
+				 * If the ticket is a WooCommerce product and has a featured image,
+				 * display it on email.
+				 *
+				 * @since TBD
+				 */
+				if ( class_exists( 'WC_Product' ) ) {
+					$product  = new WC_Product( $ticket['product_id'] );
+					$image_id = $product->get_image_id();
+					if ( ! empty( $image_id ) ) {
+						$header_img = wp_get_attachment_image_src( $image_id, 'full' );
+					}
+				}
+
 				if ( ! empty( $header_id ) ) {
 					$header_img = wp_get_attachment_image_src( $header_id, 'full' );
 				}
@@ -315,6 +330,16 @@
 				<table class="content" align="center" width="620" cellspacing="0" cellpadding="0" border="0" bgcolor="#ffffff" style="margin:0 auto; padding:0;<?php echo $break; ?>">
 					<tr>
 						<td align="center" valign="top" class="wrapper" width="620">
+							<?php
+							/**
+							 * Gives an opportunity to manipulate the current ticket before output
+							 *
+							 * @since  TBD
+							 *
+							 * @param  array $ticket Current ticket information
+							 */
+							do_action( 'tribe_tickets_ticket_email_ticket_top', $ticket );
+							?>
 							<table class="inner-wrapper" border="0" cellpadding="0" cellspacing="0" width="620" bgcolor="#f7f7f7" style="margin:0 auto !important; width:620px; padding:0;">
 								<tr>
 									<td valign="top" class="ticket-content" align="left" width="580" border="0" cellpadding="20" cellspacing="0" style="padding:20px; background:#f7f7f7;">

@@ -1865,8 +1865,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$attendee_id = wp_insert_post( $attendee );
 
 			if ( $status_stock_size > 0 ) {
+				// adjust total sales
 				$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 				update_post_meta( $product_id, 'total_sales', ++ $sales );
+
+				// adjust stock
+				$stock = (int) get_post_meta( $product_id, '_stock', true ) - $status_stock_size;
+				update_post_meta( $product_id, '_stock', $stock );
 			}
 
 			update_post_meta( $attendee_id, self::ATTENDEE_PRODUCT_KEY, $product_id );
