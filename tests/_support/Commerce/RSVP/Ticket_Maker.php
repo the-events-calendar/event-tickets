@@ -13,7 +13,7 @@ trait Ticket_Maker {
 	 *
 	 * @return int The generated ticket post ID.
 	 */
-	protected function make_ticket( $post_id, array $overrides = [] ) {
+	protected function make_RSVP_ticket( $post_id, array $overrides = [] ) {
 		$factory = $this->factory ?? $this->factory();
 
 		$meta_input = isset( $overrides['meta_input'] ) && \is_array( $overrides['meta_input'] )
