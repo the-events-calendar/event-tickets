@@ -1,5 +1,8 @@
 <?php
 
+namespace Tribe\Tickets\Test\REST\V1;
+
+use Restv1Tester;
 
 class DiscoveryCest extends BaseRestCest {
 

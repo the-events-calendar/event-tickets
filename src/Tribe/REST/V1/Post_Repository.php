@@ -1,7 +1,8 @@
 <?php
 
 
-class Tribe__Tickets__REST__V1__Post_Repository
+class
+Tribe__Tickets__REST__V1__Post_Repository
 	extends Tribe__REST__Post_Repository
 	implements Tribe__Tickets__REST__Interfaces__Post_Repository {
 
@@ -17,7 +18,35 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 */
 	protected $messages;
 
-	private $global_id_lineage_key = '_tribe_global_id_lineage';
+	/**
+	 * @var string
+	 */
+	protected $global_id_key = '_tribe_global_id';
+
+	/**
+	 * @var string
+	 */
+	protected $global_id_lineage_key = '_tribe_global_id_lineage';
+
+	/**
+	 * @var int Cached current ticket id.
+	 */
+	protected $current_ticket_id;
+
+	/**
+	 * @var Tribe__Tickets__Ticket_Object Cached current ticket object;
+	 */
+	protected $current_ticket_object;
+
+	/**
+	 * @var Tribe__Tickets__Tickets Cached current ticket provider.
+	 */
+	protected $current_ticket_provider;
+
+	/**
+	 * @var WP_Post Cached current ticket post.
+	 */
+	protected $current_ticket_post;
 
 	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
 		$this->types_get_map = array(
@@ -32,7 +61,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since TBD
 	 *
-	 * @param int $id The post ID.
+	 * @param int    $id      The post ID.
 	 * @param string $context Context of data.
 	 *
 	 * @return array An array representation of the post.
@@ -73,7 +102,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 *
 		 * @since  TBD
 		 *
-		 * @param array $data The data that will be returned in the response.
+		 * @param array   $data     The data that will be returned in the response.
 		 * @param WP_Post $attendee The requested attendee post object.
 		 */
 		return apply_filters( 'tribe_tickets_rest_attendee_data', $data, $attendee );
@@ -83,7 +112,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * {@inheritdoc}
 	 */
 	public function get_ticket_data( $ticket_id, $context = '' ) {
-		$ticket = $this->get_ticket_object($ticket_id);
+		$ticket = $this->get_ticket_object( $ticket_id );
 
 		if ( $ticket instanceof WP_Error ) {
 			return $ticket;
@@ -92,14 +121,17 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		// make sure the data is a nested array
 		$data = json_decode( json_encode( $ticket ), true );
 
-		$data['post_id']  = $post->ID;
-		$data['provider'] = $this->get_provider_slug( $provider );
+		$data['post_id']  = $ticket->get_event_id();
+		$data['provider'] = $this->get_provider_slug( $ticket->provider_class );
 
 		try {
-			$this->reformat_data( $data );
-			$this->add_global_id_information( $data );
-			$this->add_post_information( $data );
-			$this->add_rest_data( $data );
+			$this->reformat_ticket_data( $data );
+			$this->add_ticket_global_id_data( $data );
+			$this->add_ticket_post_data( $data );
+			$this->add_ticket_meta_data( $data );
+			$this->add_ticket_attendees_data( $data );
+			$this->add_ticket_rest_data( $data );
+			$this->clean_ticket_data( $data );
 		} catch ( Exception $e ) {
 			if ( $e instanceof Tribe__REST__Exceptions__Exception ) {
 				return new WP_Error( $e->getCode(), $e->getMessage() );
@@ -113,7 +145,81 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			);
 		}
 
+		/**
+		 * Filters the data that will be returned for a ticket.
+		 *
+		 * @since TBD
+		 *
+		 * @param array  $data
+		 * @param int    $ticket_id
+		 * @param string $context
+		 */
+		$data = apply_filters( 'tribe_tickets_rest_api_ticket_data', $data, $ticket_id, $context );
+
 		return $data;
+	}
+
+	/**
+	 * Gets the ticket object from a ticket ID.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post $ticket_id
+	 *
+	 * @return Tribe__Tickets__Ticket_Object|bool The ticket object or `false`
+	 */
+	protected function get_ticket_object( $ticket_id ) {
+		if ( isset( $this->current_ticket_id ) && $ticket_id != $this->current_ticket_id ) {
+			$this->reset_ticket_cache();
+		}
+
+		if (
+			isset( $this->current_ticket_object )
+			&& $this->current_ticket_object instanceof Tribe__Tickets__Ticket_Object
+		) {
+			return $this->current_ticket_object;
+		}
+
+		if ( $ticket_id instanceof WP_Post ) {
+			$ticket_id = $ticket_id->ID;
+		}
+
+		/** @var Tribe__Tickets__Tickets $provider */
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
+			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ) );
+		}
+
+		$this->current_ticket_provider = $provider;
+
+		$post = $provider->get_event_for_ticket( $ticket_id );
+
+		if ( ! $post instanceof WP_Post ) {
+			return new WP_Error( 'ticket-post-not-found', $this->messages->get_message( 'ticket-post-not-found' ) );
+		}
+
+		$this->current_ticket_post = $post;
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
+		$ticket = $provider->get_ticket( $post->ID, $ticket_id );
+
+		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+			return new WP_Error( 'ticket-object-not-found', $this->messages->get_message( 'ticket-object-not-found' ) );
+		}
+
+		$this->current_ticket_object = $ticket;
+
+		return $ticket;
+	}
+
+	/**
+	 * Resets the current ticket caches.
+	 *
+	 * @since TBD
+	 */
+	protected function reset_ticket_cache() {
+		unset( $this->current_ticket_id, $this->current_ticket_provider, $this->current_ticket_post, $this->current_ticket_object );
 	}
 
 	/**
@@ -156,12 +262,12 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @param array $data
 	 */
-	protected function reformat_data( array &$data ) {
-		$map = array(
+	protected function reformat_ticket_data( array &$data ) {
+		$rename_map = array(
 			'ID' => 'id',
 		);
 
-		foreach ( $map as $from_key => $to_key ) {
+		foreach ( $rename_map as $from_key => $to_key ) {
 			if ( isset( $data[ $from_key ] ) && ! isset( $data[ $to_key ] ) ) {
 				$data[ $to_key ] = $data[ $from_key ];
 				unset( $data[ $from_key ] );
@@ -178,7 +284,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @throws Tribe__REST__Exceptions__Exception If the global ID generation fails.
 	 */
-	protected function add_global_id_information( array &$data ) {
+	protected function add_ticket_global_id_data( array &$data ) {
 		$provider_class = $data['provider_class'];
 		$ticket_id      = $data['id'];
 
@@ -199,14 +305,22 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket global ID.
 	 *
+	 * If not set/updated for the attendee than the method will generate/update it.
+	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param int    $ticket_id
 	 * @param string $provider_class
 	 *
 	 * @return bool|string
 	 */
 	public function get_ticket_global_id( $ticket_id, $provider_class = null ) {
+		$existing = get_post_meta( $ticket_id, $this->global_id_key, true );
+
+		if ( ! empty( $existing ) ) {
+			return $existing;
+		}
+
 		if ( null === $provider_class ) {
 			/** @var Tribe__Tickets__Tickets $provider */
 			$provider = tribe_tickets_get_ticket_provider( $ticket_id );
@@ -228,15 +342,19 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'id'   => $ticket_id,
 		) );
 
+		update_post_meta( $ticket_id, $this->global_id_key, $global_id );
+
 		return $global_id;
 	}
 
 	/**
 	 * Returns a ticket Global ID lineage.
 	 *
+	 * If not set/updated for the attendee than the method will generate/update it.
+	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param int    $ticket_id
 	 * @param string $global_id
 	 *
 	 * @return array|bool
@@ -250,11 +368,17 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			}
 		}
 
-		$ticket_global_id_lineage = get_post_meta( $ticket_id, $this->global_id_lineage_key, true );
+		$existing = get_post_meta( $ticket_id, $this->global_id_lineage_key, true );
 
-		return ! empty( $ticket_global_id_lineage )
-			? array_unique( array_merge( (array) $ticket_global_id_lineage, array( $global_id ) ) )
+		$new = ! empty( $existing )
+			? array_unique( array_merge( (array) $existing, array( $global_id ) ) )
 			: array( $global_id );
+
+		if ( $new !== $existing ) {
+			update_post_meta( $ticket_id, $this->global_id_lineage_key, $new );
+		}
+
+		return $new;
 	}
 
 	/**
@@ -266,8 +390,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @throws Tribe__REST__Exceptions__Exception If the post fetch or parsing fails.
 	 */
-	protected function add_post_information( &$data ) {
-		$ticket_post = get_post( $data['id'] );
+	protected function add_ticket_post_data( &$data ) {
+		$ticket_id   = $data['id'];
+		$ticket_post = get_post( $ticket_id );
 
 		if ( ! $ticket_post instanceof WP_Post ) {
 			throw new Tribe__REST__Exceptions__Exception(
@@ -280,23 +405,37 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Tickets_Handler $handler */
 		$handler = tribe( 'tickets.handler' );
 
-		$data['author']                  = $ticket_post->post_author;
-		$data['status']                  = $ticket_post->post_status;
-		$data['date']                    = $ticket_post->post_date;
-		$data['date_utc']                = $ticket_post->post_date_gmt;
-		$data['modified']                = $ticket_post->post_modified;
-		$data['modified_utc']            = $ticket_post->post_modified_gmt;
-		$data['title']                   = $ticket_post->post_title;
-		$data['description']             = $ticket_post->post_content;
-		$data['image']                   = $this->get_ticket_header_image( $data['id'] );
-		$data['available_from']          = $this->get_ticket_start_date( $data['id'] );
-		$data['available_from_details']  = $this->get_ticket_start_date( $data['id'], true );
-		$data['available_until']         = $this->get_ticket_end_date( $data['id'] );
-		$data['available_until_details'] = $this->get_ticket_end_date( $data['id'], true );
-		$data['capacity']                = $this->get_ticket_capacity( $data['id'] );
-		$data['capacity_details']        = $this->get_ticket_capacity( $data['id'], true );
-		$data['is_available']            = $data['capacity_details']['available_percentage'] > 0;
+		$data['author']       = $ticket_post->post_author;
+		$data['status']       = $ticket_post->post_status;
+		$data['date']         = $ticket_post->post_date;
+		$data['date_utc']     = $ticket_post->post_date_gmt;
+		$data['modified']     = $ticket_post->post_modified;
+		$data['modified_utc'] = $ticket_post->post_modified_gmt;
+		$data['title']        = $ticket_post->post_title;
+		$data['description']  = $ticket_post->post_content;
 
+	}
+
+	/**
+	 * Adds the meta information to the ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data
+	 */
+	protected function add_ticket_meta_data( &$data ) {
+		$ticket_id = $data['id'];
+
+		$data['image']                   = $this->get_ticket_header_image( $ticket_id );
+		$data['available_from']          = $this->get_ticket_start_date( $ticket_id );
+		$data['available_from_details']  = $this->get_ticket_start_date( $ticket_id, true );
+		$data['available_until']         = $this->get_ticket_end_date( $ticket_id );
+		$data['available_until_details'] = $this->get_ticket_end_date( $ticket_id, true );
+		$data['capacity']                = $this->get_ticket_capacity( $ticket_id );
+		$data['capacity_details']        = $this->get_ticket_capacity( $ticket_id, true );
+		$data['is_available']            = $data['capacity_details']['available_percentage'] > 0;
+		$data['cost']                    = $this->get_ticket_cost( $ticket_id );
+		$data['cost_details']            = $this->get_ticket_cost( $ticket_id, true );
 	}
 
 	/**
@@ -328,9 +467,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/**
 		 * Filters the data that will returned for a ticket header image if set.
 		 *
-		 * @param array $data The ticket header image array representation.
+		 * @param array   $data      The ticket header image array representation.
 		 * @param WP_Post $ticket_id The requested ticket.
-		 * @param WP_Post $post The post this ticket is related to.
+		 * @param WP_Post $post      The post this ticket is related to.
 		 */
 		return apply_filters( 'tribe_rest_event_featured_image', $data, $ticket_id, $post );
 	}
@@ -340,7 +479,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param int  $ticket_id
 	 * @param bool $get_details Whether to get the date in string format (`false`) or the full details (`true`).
 	 *
 	 * @return string|array
@@ -361,7 +500,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param int  $ticket_id
 	 * @param bool $get_details Whether to get the date in string format (`false`) or the full details (`true`).
 	 *
 	 * @return string|array
@@ -382,7 +521,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param int  $ticket_id
 	 * @param bool $get_details
 	 *
 	 * @return array|bool|int The ticket capacity, the details if `$get_details` is set to `true`
@@ -422,40 +561,205 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	}
 
 	/**
-	 * Gets the ticket object from a ticket ID.
+	 * Returns a ticket cost or details.
 	 *
 	 * @since TBD
 	 *
-	 * @param int|WP_Post $ticket_id
+	 * @param int  $ticket_id
+	 * @param bool $get_details Whether to get just the ticket cost (`false`) or
+	 *                          the details too ('true').
 	 *
-	 * @return Tribe__Tickets__Ticket_Object|bool The ticket object or `false`
+	 * @return string|array|false The ticket formatted cost if `$get_details` is `false`, the
+	 *                            ticket cost details otherwise; `false` on failure.
+	 *
 	 */
-	protected function get_ticket_object( $ticket_id ) {
-		if ( $ticket_id instanceof WP_Post ) {
-			$ticket_id = $ticket_id->ID;
+	public function get_ticket_cost( $ticket_id, $get_details = false ) {
+		$ticket = $this->get_ticket_object( $ticket_id );
+
+		if ( $ticket instanceof WP_Error ) {
+			return false;
 		}
 
-		/** @var Tribe__Tickets__Tickets $provider */
-		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
-		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
-			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ) );
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency = tribe( 'tickets.commerce.currency' );
+
+
+		$price = $ticket->price;
+
+		if ( ! is_numeric( $price ) ) {
+			$price = 0; // free
 		}
 
-		$post = $provider->get_event_for_ticket( $ticket_id );
+		$formatted_price = html_entity_decode( $currency->format_currency( $price, $ticket_id ) );
 
-		if ( ! $post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-post-not-found', $this->messages->get_message( 'ticket-post-not-found' ) );
+		if ( ! $get_details ) {
+			return $formatted_price;
 		}
 
-		/** @var Tribe__Tickets__Ticket_Object $ticket */
-		$ticket = $provider->get_ticket( $post->ID, $ticket_id );
+		$details = array(
+			'currency_symbol'   => html_entity_decode( $currency->get_currency_symbol( $ticket_id ) ),
+			'currency_position' => $currency->get_currency_symbol_position( $ticket_id ),
+			'values'            => array( $price ),
+		);
 
-		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
-			return new WP_Error('ticket-object-not-found', $this->messages->get_message('ticket-object-not-found'));
+		return $details;
+	}
+
+	/**
+	 * Adds the attendees information to the ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data
+	 */
+	protected function add_ticket_attendees_data( array &$data ) {
+		$ticket_id = $data['id'];
+
+		$data['attendees'] = $this->get_ticket_attendees( $ticket_id );
+	}
+
+	/**
+	 * Returns a ticket attendees list.
+	 *
+	 * @param int $ticket_id
+	 *
+	 * @return array|bool An array of ticket attendees or `false` on failure.
+	 */
+	public function get_ticket_attendees( $ticket_id ) {
+		// @todo this code needs to be reconciled with the `get_attendee_data` one!
+
+		$ticket_object = $this->get_ticket_object( $ticket_id );
+
+		if ( ! $ticket_object instanceof Tribe__Tickets__Ticket_Object ) {
+			return false;
 		}
 
-		return $ticket;
+		$attendees = $this->current_ticket_provider->get_attendees_by_id( $ticket_id );
+		$post      = $this->current_ticket_provider->get_event_for_ticket( $ticket_id );
+
+		/** @var Tribe__Tickets__REST__V1__Main $main */
+		$main = tribe( 'tickets.rest-v1.main' );
+
+		// @todo this shoudl be filterable
+		$rest_url_base = $main->get_url( '/attendees' );
+
+		if ( empty( $attendees ) || ( ! $post instanceof WP_Post ) ) {
+			return array();
+		}
+
+		$attendees_data = array();
+
+		foreach ( $attendees as $attendee ) {
+			$attendee_id   = $attendee['attendee_id'];
+			$attendee_post = get_post( $attendee_id );
+
+			if ( ! $attendee_post instanceof WP_Post ) {
+				continue;
+			}
+
+			$checked_in      = (bool) $attendee['check_in'];
+			$checkin_details = false;
+			if ( $checked_in ) {
+				$checkin_details = get_post_meta( $attendee_id, $this->current_ticket_provider->checkin_key . '_details', true );
+				if ( isset( $checkin_details['date'], $checkin_details['source'], $checkin_details['author'] ) ) {
+					$checkin_details = array(
+						'date'         => $checkin_details['date'],
+						'date_details' => $this->get_date_details( $checkin_details['date'] ),
+						'source'       => $checkin_details['source'],
+						'author'       => $checkin_details['author'],
+					);
+				} else {
+					$checkin_details = false;
+				}
+			}
+
+			$attendees_data[] = array(
+				'id'                => $attendee_id,
+				'post_id'           => $post->ID,
+				'ticket_id'         => $ticket_id,
+				'global_id'         => $this->get_attendee_global_id( $attendee_id ),
+				'global_id_lineage' => $this->get_attendee_global_id_lineage( $attendee_id ),
+				'author'            => $attendee_post->post_author,
+				'status'            => $attendee_post->post_status,
+				'date'              => $attendee_post->post_date,
+				'date_utc'          => $attendee_post->post_date_gmt,
+				'modified'          => $attendee_post->post_modified,
+				'modified_utc'      => $attendee_post->post_modified_gmt,
+				'rest_url'          => $rest_url_base . '/' . $attendee_id,
+				'provider'          => 'rsvp',
+				'order'             => $attendee_id, // they are the same!
+				'title'             => $attendee['holder_name'],
+				'email'             => $attendee['holder_email'],
+				'checked_id'        => $checked_in,
+				'checkin_details'   => $checkin_details,
+				'rsvp_going'        => tribe_is_truthy( $attendee['order_status'] )
+			);
+		}
+
+		return $attendees_data;
+	}
+
+	/**
+	 * Returns an attendee Global ID.jA
+	 *
+	 * If not set/updated for the attendee than the method will generate/update it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $attendee_id
+	 *
+	 * @return string
+	 */
+	public function get_attendee_global_id( $attendee_id ) {
+		$existing = get_post_meta( $attendee_id, $this->global_id_key, true );
+
+		if ( ! empty( $existing ) ) {
+			return $existing;
+		}
+
+		$generator = new Tribe__Tickets__Global_ID();
+		$generator->origin( home_url() );
+		$generator->type( 'attendee' );
+
+		$global_id = $generator->generate( array(
+			'type' => 'attendee',
+			'id'   => $attendee_id,
+		) );
+
+		update_post_meta( $attendee_id, $this->global_id_key, $global_id );
+
+		return $global_id;
+	}
+
+	/**
+	 * Returns an attendee Global ID lineage.
+	 *
+	 * If not set/updated for the attendee than the method will generate/update it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $attendee_id
+	 * @param string $global_id
+	 *
+	 * @return array|bool The attendee Global ID lineage or `false` on failure.
+	 */
+	public function get_attendee_global_id_lineage( $attendee_id, $global_id = null ) {
+		if ( null === $global_id ) {
+			$global_id = $this->get_attendee_global_id( $attendee_id );
+		}
+
+		$existing = get_post_meta( $attendee_id, $this->global_id_lineage_key, true );
+
+		$new = ! empty( $existing )
+			? array_unique( array_merge( (array) $existing, array( $global_id ) ) )
+			: array( $global_id );
+
+		if ( $new !== $existing ) {
+			update_post_meta( $attendee_id, $this->global_id_lineage_key, $new );
+		}
+
+		return $new;
 	}
 
 	/**
@@ -465,20 +769,40 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @param array $data
 	 */
-	protected function add_rest_data( &$data ) {
+	protected function add_ticket_rest_data( &$data ) {
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
 		$data['rest_url'] = $main->get_url( '/tickets/' . $data['id'] );
 	}
 
-	public function get_ticket_cost( $ticket_id ) {
-		$ticket =  $this->get_ticket_object( $ticket_id );
+	/**
+	 * Removes fields from the ticket data.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $data
+	 */
+	protected function clean_ticket_data( array &$data ) {
+		$unset_map = array(
+			'name',
+			'show_description',
+			'price',
+			'regular_price',
+			'on_sale',
+			'admin_link',
+			'report_link',
+			'frontend_link',
+			'provider_class',
+			'sku',
+			'menu_order',
+			'start_date',
+			'start_time',
+			'end_date',
+			'end_time',
+			'purchase_limit',
+		);
 
-		if ( $ticket instanceof WP_Error ) {
-			return false;
-		}
-
-		return tribe_get_cost()
+		$data = array_diff_key( $data, array_combine( $unset_map, $unset_map ) );
 	}
 }

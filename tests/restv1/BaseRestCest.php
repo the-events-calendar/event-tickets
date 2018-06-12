@@ -1,6 +1,9 @@
 <?php
 
+namespace Tribe\Tickets\Test\REST\V1;
+
 use Codeception\Configuration;
+use Restv1Tester;
 
 class BaseRestCest {
 
@@ -30,6 +33,11 @@ class BaseRestCest {
 	/**
 	 * @var string
 	 */
+	protected $attendees_url;
+
+	/**
+	 * @var string
+	 */
 	protected $documentation_url;
 
 	/**
@@ -41,6 +49,7 @@ class BaseRestCest {
 		$this->site_url          = $I->grabSiteUrl();
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
+		$this->attendees_url       = $this->rest_url . 'attendees';
 		$this->documentation_url = $this->rest_url . 'doc';
 		$this->factory = $I->factory();
 

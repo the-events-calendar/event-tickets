@@ -1530,6 +1530,25 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
+		$checkin_details = array(
+			'date'   => current_time( 'mysql' ),
+			'source' => null !== $qr ? 'app' : 'site',
+			'author' => get_current_user_id()
+		);
+
+		/**
+		 * Filters the checkin details for this attendee checkin.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $checkin_details
+		 * @param int   $attendee_id
+		 * @param mixed $qr
+		 */
+		$checkin_details = apply_filters( 'rsvp_checkin_details', $checkin_details, $attendee_id, $qr );
+
+		update_post_meta( $attendee_id, $this->checkin_key . '_details', $checkin_details );
+
 		/**
 		 * Fires a checkin action
 		 *
