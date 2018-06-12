@@ -1777,7 +1777,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// When we increase sales, we reduce stock
 			$new_value = $meta_value - $diff;
 			// stock can NEVER exceed capacity
-			$capacity = get_post_meta( $ticket_id, '_tribe_ticket_capacity', true);
+			$capacity = get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
 			$new_value = ( $new_value > $capacity ) ? $capacity : $new_value;
 		}
 
@@ -1820,6 +1820,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function update_sales_by_order_status( $order_id, $attendee_order_status, $ticket_id ) {
 		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__RSVP::update_sales_and_stock_by_order_status' );
+		return $this->update_sales_and_stock_by_order_status( $order_id, $attendee_order_status, $ticket_id );
 	}
 
 	/**
