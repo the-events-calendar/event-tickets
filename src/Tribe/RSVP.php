@@ -1766,7 +1766,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$diff = $status_stock_sizes['attendee_stock_size'] - $status_stock_sizes['previous_stock_size'];
 
 		if ( 0 === $diff ) {
-			error_log('NO DIFF');
 			return false;
 		}
 
