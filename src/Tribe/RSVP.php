@@ -197,6 +197,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			add_filter( 'tribe_tickets_rsvp_form_full_name', array( $this, 'rsvp_form_add_full_name' ) );
 			add_filter( 'tribe_tickets_rsvp_form_email', array( $this, 'rsvp_form_add_email' ) );
 		}
+
+		// Has to be run on before_delete_post to be sure the meta is still available (and we don't want it to run again after the post is deleted)
+		// See https://codex.wordpress.org/Plugin_API/Action_Reference/delete_post
+		add_action( 'before_delete_post', array( $this, 'update_stock_from_attendees_page' ) );
 	}
 
 	/**
@@ -2066,5 +2070,31 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function generate_security_code( $attendee_id ) {
 		return substr( md5( rand() . '_' . $attendee_id ), 0, 10 );
+	}
+
+	/**
+	 * Ensure we update the stock when deleting attendees from the admin side
+	 * @since TBD
+	 *
+	 * @param $attendee_id
+	 *
+	 * @return bool|void
+	 */
+	public function update_stock_from_attendees_page( $attendee_id ) {
+		$attendee = get_post( $attendee_id );
+
+		// Can't find the attendee post
+		if ( empty( $attendee ) || self::ATTENDEE_OBJECT !== $attendee->post_type ) {
+			return;
+		}
+
+		$ticket_id = get_post_meta( $attendee->ID, '_tribe_rsvp_product', true );
+
+		// Orphan attendees? No event to update.
+		if ( empty( $ticket_id ) ) {
+			return;
+		}
+
+		$this->update_sales_and_stock_by_order_status( $attendee->ID, 'no', $ticket_id );
 	}
 }
