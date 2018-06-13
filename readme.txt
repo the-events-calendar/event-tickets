@@ -114,10 +114,11 @@ Currently, the following add-ons are available for Event Tickets:
 * [Event Tickets Plus](http://m.tri.be/18wk), for selling tickets to your events using your favorite e-commerce platform.
 * [The Events Calendar](https://wordpress.org/plugins/the-events-calendar/), for managing a full calendar of events with ease.
 * [Events Calendar PRO](http://m.tri.be/18wi), for adding premium calendar features like recurring events, advanced views, cool widgets, shortcodes, additional fields, and more!
-* [Event Aggregator](http://m.tri.be/197u), a service that effortlessly fills your calendar with events from Facebook, Meetup, Google Calendar, iCalendar, CSV, and ICS.
+* [Event Aggregator](http://m.tri.be/197u), a service that effortlessly fills your calendar with events from Meetup, Google Calendar, iCalendar, Eventbrite, CSV, and ICS.
 * [Community Events](http://m.tri.be/2g), for allowing frontend event submission from your readers.
 * [Community Tickets](http://m.tri.be/18wl), which allows event organizers to sell tickets to the events they submit via Community Events.
 * [Filter Bar](http://m.tri.be/fa), for adding advanced frontend filtering capabilities to your events calendar.
+* [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
 
@@ -125,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Properly calculate existing stock for RSVPs. Thanks to @afplct, @jacob, @dimaginet and others for flagging this! [102634]
 * Fix - Properly update attendees transient when checkin/unchekin an attendee, in order to see changes immediately. Thanks to @newcollegeofflorida and @gschnoor for flagging this! [73272]
 * Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
+* Fix - Display a notice if the user accesses the tickets page and doesn't have tickets [89201]
 * Fix - If the ticket is a WooCommerce product and has a featured image, display it in the email [79877]
 * Tweak - Added new action, `tribe_tickets_ticket_email_ticket_top`, to the tickets email template [79878]
 * Tweak - Changed `tribe_tickets_email_include_event_date` filter default value to true. Now event date shows by default in RSVP ticket emails. Thanks @melvidge for the feedback [102309]
@@ -141,7 +143,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Better handle the admin display of ticket prices that are affected WooCommerce Membership discounts (thanks to @cardinalacres, @steamfablab, and others for reporting these issues!) [97583]
 * Tweak - Added a "Return to Cart" link to PayPal tickets form [100253]
 * Tweak - Changed validation on the option 'Post types that can have tickets' to allow empty value [105930]
-* Tweak - Make QR codes optional via new "Enable QR codes for tickets?" option in Tickets settings [41649]
 * Language - 10 new strings added, 170 updated, 1 fuzzied, and 3 obsoleted
 
 = [4.7.2] 2018-04-18 =
