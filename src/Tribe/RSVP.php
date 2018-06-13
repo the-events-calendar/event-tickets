@@ -1717,6 +1717,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Determine if the order stati are different (and we need to update the meta)
+	 * @since TBD
+	 *
 	 * @param $order_id
 	 * @param $attendee_order_status
 	 *
@@ -1746,6 +1748,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Get updated value for stock or sales, based on order status
+	 * @since TBD
 	 *
 	 * @param $order_id
 	 * @param $attendee_order_status
@@ -1796,19 +1799,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// it's all or none here...
 		if ( false === $sales_diff ) {
-			return;
+			return false;
 		}
 
 		$stock_diff = $this->find_updated_sales_or_stock_value( $order_id, $attendee_order_status, $ticket_id, '_stock' );
 
 		// it's all or none here...
 		if ( false === $stock_diff ) {
-			return;
+			return false;
 		}
 
 		// these should NEVER be updated separately - if one goes up the other must go down and vice versa
-		update_post_meta( $ticket_id, 'total_sales', $sales_diff );
-		update_post_meta( $ticket_id, '_stock', $stock_diff );
+		return update_post_meta( $ticket_id, 'total_sales', $sales_diff ) && update_post_meta( $ticket_id, '_stock', $stock_diff );
 	}
 
 	/**
