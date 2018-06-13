@@ -2084,17 +2084,22 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$attendee = get_post( $attendee_id );
 
 		// Can't find the attendee post
-		if ( empty( $attendee ) || self::ATTENDEE_OBJECT !== $attendee->post_type ) {
-			return;
+		if ( empty( $attendee ) ) {
+			return false;
+		}
+
+		// It's not an attendee post
+		if ( self::ATTENDEE_OBJECT !== $attendee->post_type ) {
+			return false;
 		}
 
 		$ticket_id = get_post_meta( $attendee->ID, '_tribe_rsvp_product', true );
 
 		// Orphan attendees? No event to update.
 		if ( empty( $ticket_id ) ) {
-			return;
+			return false;
 		}
 
-		$this->update_sales_and_stock_by_order_status( $attendee->ID, 'no', $ticket_id );
+		return $this->update_sales_and_stock_by_order_status( $attendee->ID, 'no', $ticket_id );
 	}
 }
