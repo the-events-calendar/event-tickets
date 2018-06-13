@@ -456,7 +456,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			}
 		}
 
-		$this->update_sales_by_order_status( $order_id, $attendee_order_status, $product_id );
+		$this->update_sales_and_stock_by_order_status( $order_id, $attendee_order_status, $product_id );
 
 		if ( ! is_null( $attendee_order_status ) ) {
 			update_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
@@ -1716,37 +1716,113 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Updates the product sales if old and new order stati differ in stock size.
+	 * Determine if the order stati are different (and we need to update the meta)
+	 * @since TBD
 	 *
-	 * @param int    $order_id
-	 * @param string $attendee_order_status
-	 * @param int    $ticket_id
+	 * @param $order_id
+	 * @param $attendee_order_status
+	 *
+	 * @return array|bool array of stock size values, false if no difference
 	 */
-	public function update_sales_by_order_status( $order_id, $attendee_order_status, $ticket_id ) {
+	public function stati_are_different( $order_id, $attendee_order_status ) {
 		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
 
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
 
 		if (
-		! (
-			isset( $rsvp_options[ $previous_order_status ] )
-			&& isset( $rsvp_options[ $attendee_order_status ] )
-		)
+			! isset( $rsvp_options[ $previous_order_status ] )
+			|| ! isset( $rsvp_options[ $attendee_order_status ] )
 		) {
-			return;
+			return false;
 		}
 
-		$previous_order_status_stock_size = $rsvp_options[ $previous_order_status ]['decrease_stock_by'];
-		$attendee_order_status_stock_size = $rsvp_options[ $attendee_order_status ]['decrease_stock_by'];
-
-		if ( $previous_order_status_stock_size == $attendee_order_status_stock_size ) {
-			return;
+		if ( $rsvp_options[ $previous_order_status ]['decrease_stock_by'] === $rsvp_options[ $attendee_order_status ]['decrease_stock_by'] ) {
+			return false;
 		}
 
-		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
-		$diff  = $attendee_order_status_stock_size - $previous_order_status_stock_size;
+		return array(
+			'previous_stock_size' => $rsvp_options[ $previous_order_status ]['decrease_stock_by'],
+			'attendee_stock_size' => $rsvp_options[ $attendee_order_status ]['decrease_stock_by'],
+		);
+	}
 
-		update_post_meta( $ticket_id, 'total_sales', $sales + $diff );
+	/**
+	 * Get updated value for stock or sales, based on order status
+	 * @since TBD
+	 *
+	 * @param $order_id
+	 * @param $attendee_order_status
+	 * @param $ticket_id
+	 * @param $meta
+	 *
+	 * @return bool|int|mixed get updated value, return false if no need to update
+	 */
+	public function find_updated_sales_or_stock_value( $order_id, $attendee_order_status, $ticket_id, $meta ) {
+		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
+
+		$status_stock_sizes = $this->stati_are_different( $order_id, $attendee_order_status );
+
+		if ( empty( $status_stock_sizes ) ) {
+			return false;
+		}
+
+		$diff = $status_stock_sizes['attendee_stock_size'] - $status_stock_sizes['previous_stock_size'];
+
+		if ( 0 === $diff ) {
+			return false;
+		}
+
+		$meta_value = (int) get_post_meta( $ticket_id, $meta, true );
+
+		if ( 'total_sales' === $meta ) {
+			$new_value = $meta_value + $diff;
+		} else {
+			// When we increase sales, we reduce stock
+			$new_value = $meta_value - $diff;
+			// stock can NEVER exceed capacity
+			$capacity = get_post_meta( $ticket_id, '_tribe_ticket_capacity', true );
+			$new_value = ( $new_value > $capacity ) ? $capacity : $new_value;
+		}
+
+		return $new_value;
+	}
+
+	/**
+	 * Updates the product sales and stock if old and new order stati differ in stock size.
+	 *
+	 * @param int    $order_id
+	 * @param string $attendee_order_status
+	 * @param int    $ticket_id
+	 */
+	public function update_sales_and_stock_by_order_status( $order_id, $attendee_order_status, $ticket_id ) {
+		$sales_diff = $this->find_updated_sales_or_stock_value( $order_id, $attendee_order_status, $ticket_id, 'total_sales' );
+
+		// it's all or none here...
+		if ( false === $sales_diff ) {
+			return false;
+		}
+
+		$stock_diff = $this->find_updated_sales_or_stock_value( $order_id, $attendee_order_status, $ticket_id, '_stock' );
+
+		// it's all or none here...
+		if ( false === $stock_diff ) {
+			return false;
+		}
+
+		// these should NEVER be updated separately - if one goes up the other must go down and vice versa
+		return update_post_meta( $ticket_id, 'total_sales', $sales_diff ) && update_post_meta( $ticket_id, '_stock', $stock_diff );
+	}
+
+	/**
+	 * Updates the product sales if old and new order stati differ in stock size.
+	 *
+	 * @deprecated TBD
+	 *
+	 * @return void
+	 */
+	public function update_sales_by_order_status( $order_id, $attendee_order_status, $ticket_id ) {
+		_deprecated_function( __METHOD__, '4.6', 'Tribe__Tickets__RSVP::update_sales_and_stock_by_order_status' );
+		return $this->update_sales_and_stock_by_order_status( $order_id, $attendee_order_status, $ticket_id );
 	}
 
 	/**
