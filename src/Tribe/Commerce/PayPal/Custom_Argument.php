@@ -63,8 +63,8 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 			$encoded = explode( ',', $encoded );
 
 			$encoded = array_reduce( $encoded, function ( $array, $item ) {
-				list( $key, $value ) = explode( ':' , $item );
-				$array[$key] = $value;
+				list( $key, $value ) = explode( ':', $item );
+				$array[ $key ] = $value;
 				return $array;
 			}, array() );
 
