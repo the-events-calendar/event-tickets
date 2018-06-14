@@ -1658,7 +1658,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$args = array(
 			'post_type' => 'tribe_events',
 			'page' => tribe( 'tickets.attendees' )->slug(),
-			'event_id' => get_post_meta( $post_id, '_tribe_rsvp_event', true ),
+			'event_id' => get_post_meta( $post_id, self::ATTENDEE_EVENT_KEY, true ),
 		);
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
@@ -2093,7 +2093,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		$ticket_id = get_post_meta( $attendee->ID, '_tribe_rsvp_product', true );
+		$ticket_id = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
 
 		// Orphan attendees? No event to update.
 		if ( empty( $ticket_id ) ) {
