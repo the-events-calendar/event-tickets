@@ -38,6 +38,22 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 		return $encoded;
 	}
 
+
+	/**
+	 * Fix array keys when the value is key:value
+	 *
+	 * @see Tribe__Tickets__Commerce__PayPal__Custom_Argument:decode()
+	 *
+	 * @since TBD
+	 * @return array $array
+	 *
+	*/
+	private static function array_fix_keys( $array, $item ) {
+		list( $key, $value ) = explode( ':', $item );
+		$array[ $key ] = $value;
+		return $array;
+	}
+
 	/**
 	 * Decodes an array of arguments encoded using the `encode` method.
 	 *
@@ -59,15 +75,13 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 
 		// in case we receive the param in non json 'user_id:0,tribe_handler:tpp,pid:4' format
 		if ( false === strpos( $encoded, '{' ) && false === strpos( $encoded, '}' ) ) {
-			// we create the json from that string
+			// we create an array that string
 			$encoded = explode( ',', $encoded );
 
-			$encoded = array_reduce( $encoded, function ( $array, $item ) {
-				list( $key, $value ) = explode( ':', $item );
-				$array[ $key ] = $value;
-				return $array;
-			}, array() );
+			// Set the proper keys and values for the new array
+			$encoded = array_reduce( $encoded, 'self::array_fix_keys', array() );
 
+			// we convert it into a json
 			$encoded = json_encode( $encoded );
 		}
 
