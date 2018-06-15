@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.6
-Stable tag: 4.7.3
+Stable tag: 4.7.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [4.7.4] TBD =
+
 * Fix - Properly calculate existing stock for RSVPs. Thanks to @afplct, @jacob, @dimaginet and others for flagging this! [102634]
 * Fix - Properly update attendees transient when checkin/unchekin an attendee, in order to see changes immediately. Thanks to @newcollegeofflorida and @gschnoor for flagging this! [73272]
 * Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
@@ -131,6 +132,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Changed `tribe_tickets_email_include_event_date` filter default value to true. Now event date shows by default in RSVP ticket emails. Thanks @melvidge for the feedback [102309]
 * Tweak - Replaced start date in the RSVP non-attendace email template with full event schedule details [87686]
 * Tweak - Changed shortlinks to use https in Event Tickets welcome screen [75647]
+
+= [4.7.3.1] 2018-05-31 =
+
+* Fix - Include new DataTables files in event tickets via tribe-common
 
 = [4.7.3] 2018-05-29 =
 
