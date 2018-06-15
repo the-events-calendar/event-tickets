@@ -65,13 +65,15 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should decrease stock by 1 when an attendee is going
+	 *
+	 * @since 4.7.4
 	 */
 	public function it_should_decrease_stock_by_1_when_an_attendee_is_going() {
 		$post_id   = $this->factory->post->create();
 		$ticket_id = $this->make_stock_ticket( 10, $post_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details(['order_status' => 'yes']) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( ['order_status' => 'yes'] ) );
 
 		$this->assertEquals( 9, get_post_meta( $ticket_id, '_stock', true ) );
 	}
@@ -85,7 +87,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->make_sales_ticket( 10, $post_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details(['order_status' => 'yes']) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( ['order_status' => 'yes'] ) );
 
 		$this->assertEquals( 11, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -107,6 +109,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should not increase sales when an attendee is not going
+	 *
+	 * @since 4.7.4
 	 */
 	public function it_should_not_decrease_stock_when_an_attendee_is_not_going() {
 		$post_id   = $this->factory->post->create();
@@ -157,6 +161,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should decrease sales by 1 when attendee status changes from going to not going
+	 *
+	 * @since 4.7.4
 	 */
 	public function it_should_increase_stock_by_1_when_attendee_status_changes_from_going_to_not_going() {
 		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'yes', 'no', 1, 9 );
@@ -184,6 +190,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should increase sales by 1 when attendee status changes from not going to going
+	 *
+	 * @since 4.7.4
 	 */
 	public function it_should_decrease_stock_by_1_when_attendee_status_changes_from_not_going_to_going() {
 		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'no', 'yes', 0, 10 );
@@ -213,6 +221,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should update the sales according to old and new status stock sizes
 	 * @dataProvider stati_stocks_provider
+	 *
+	 * @since 4.7.4
 	 */
 	public function it_should_update_the_sales_according_to_old_and_new_status_stock_sizes( $a_status_stock_size, $b_status_stock_size, $old_status, $new_status, $diff ) {
 		$stati = [
