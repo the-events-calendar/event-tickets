@@ -49,6 +49,10 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 	 *
 	*/
 	private static function array_fix_keys( $array, $item ) {
+		if ( false === strpos( $item, ':' ) ) {
+			return;
+		}
+
 		list( $key, $value ) = explode( ':', $item );
 		$array[ $key ] = $value;
 		return $array;
