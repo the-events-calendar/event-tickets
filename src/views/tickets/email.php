@@ -15,7 +15,7 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @version TBD
+ * @version 4.7.4
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -244,7 +244,7 @@
 				 * If the ticket is a WooCommerce product and has a featured image,
 				 * display it on email.
 				 *
-				 * @since TBD
+				 * @since 4.7.4
 				 */
 				if ( class_exists( 'WC_Product' ) ) {
 					$product  = new WC_Product( $ticket['product_id'] );
@@ -309,7 +309,7 @@
 				 * Filters whether or not the event date should be included in the ticket email.
 				 *
 				 * @since 4.5.11
-				 * @since TBD    Include event date default value changed to true
+				 * @since 4.7.4    Include event date default value changed to true
 				 *
 				 * @var bool Include event date? Defaults to true.
 				 * @var int  Event ID
@@ -334,7 +334,7 @@
 							/**
 							 * Gives an opportunity to manipulate the current ticket before output
 							 *
-							 * @since  TBD
+							 * @since  4.7.4
 							 *
 							 * @param  array $ticket Current ticket information
 							 */

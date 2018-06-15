@@ -1721,7 +1721,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Determine if the order stati are different (and we need to update the meta)
-	 * @since TBD
+	 * @since 4.7.4
 	 *
 	 * @param $order_id
 	 * @param $attendee_order_status
@@ -1752,7 +1752,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Get updated value for stock or sales, based on order status
-	 * @since TBD
+	 * @since 4.7.4
 	 *
 	 * @param $order_id
 	 * @param $attendee_order_status
@@ -1820,7 +1820,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Updates the product sales if old and new order stati differ in stock size.
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.7.4
 	 *
 	 * @return void
 	 */
@@ -2074,7 +2074,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Ensure we update the stock when deleting attendees from the admin side
-	 * @since TBD
+	 * @since 4.7.4
 	 *
 	 * @param $attendee_id
 	 *
