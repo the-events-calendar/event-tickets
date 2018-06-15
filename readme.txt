@@ -133,6 +133,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Changed `tribe_tickets_email_include_event_date` filter default value to true. Now event date shows by default in RSVP ticket emails. Thanks @melvidge for the feedback [102309]
 * Tweak - Replaced start date in the RSVP non-attendace email template with full event schedule details [87686]
 * Tweak - Changed shortlinks to use https in Event Tickets welcome screen [75647]
+* Language - 2 new strings added, 66 updated, 0 fuzzied, and 1 obsoleted
 
 = [4.7.3] 2018-05-29 =
 
