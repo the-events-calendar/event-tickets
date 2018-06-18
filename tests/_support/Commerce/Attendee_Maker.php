@@ -63,10 +63,23 @@ trait Attendee_Maker {
 			$meta[ \Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY ] = $going = Arr::get( $overrides, 'rsvp_status', 'yes' );
 		}
 
+		$explicit_keys        = [
+			'checkin',
+			'checkin_details',
+			'security_code',
+			'optout',
+			'user_id',
+			'ticket_sent',
+			'full_name',
+			'email',
+			'rsvp_status',
+		];
+		$meta_input_overrides = array_diff_key( $overrides, array_combine( $explicit_keys, $explicit_keys ) );
+
 		$postarr = [
 			'post_type'   => $provider_reflection->getConstant( 'ATTENDEE_OBJECT' ),
 			'post_status' => 'publish',
-			'meta_input'  => $meta,
+			'meta_input'  => array_merge( $meta, $meta_input_overrides ),
 		];
 
 		$attendee_id = wp_insert_post( $postarr );
