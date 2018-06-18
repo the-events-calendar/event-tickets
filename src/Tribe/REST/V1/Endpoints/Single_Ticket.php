@@ -52,7 +52,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 				'type'              => 'integer',
 				'description'       => __( 'the ticket post ID', 'event-tickets' ),
 				'required'          => true,
-				'validate_callback' => array( $this->validator, 'is_ticket_id' ),
+				'validate_callback' => array( $this->validator, 'is_positive_int' ),
 			),
 		);
 	}

@@ -20,10 +20,12 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 			'attendee-not-found'          => __( 'The requested post ID does not exist or is not an attendee', 'event-tickets' ),
 			'attendee-not-accessible'     => __( 'The requested attendee is not accessible', 'event-tickets' ),
 			'attendee-check-in-not-found' => __( 'The requested attendee check in is not available', 'event-tickets' ),
+			'ticket-not-found'            => __( 'The requested ticket post could not be found', 'event-tickets' ),
 			'ticket-provider-not-found'   => __( 'The ticket provider for the requested ticket is not available', 'event-tickets' ),
 			'ticket-post-not-found'       => __( 'The post associated with the requested ticket was not found', 'event-tickets' ),
 			'ticket-object-not-found'     => __( 'The requested ticket object could not be built or found', 'event-tickets' ),
 			'error-global-id-generation'  => __( 'The ticket global id could not be generated', 'event-tickets' ),
+			// this is an internal error, not same as the `ticket-not-found` one
 			'error-ticket-post'           => __( 'There was a problem while fetching the requested ticket post', 'event-tickets' )
 		);
 	}

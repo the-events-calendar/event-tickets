@@ -144,4 +144,18 @@ class SingleTicketCest extends BaseRestCest {
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
+
+	/**
+	 * It should return 404 when trying to get non existing post ID
+	 *
+	 * @test
+	 */
+	public function should_return_404_when_trying_to_get_non_existing_post_id( Restv1Tester $I ) {
+
+		$ticket_rest_url = $this->tickets_url . '/23';
+		$I->sendGET( $ticket_rest_url );
+
+		$I->seeResponseCodeIs( 404 );
+		$I->seeResponseIsJson();
+	}
 }

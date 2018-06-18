@@ -184,11 +184,22 @@ Tribe__Tickets__REST__V1__Post_Repository
 			$ticket_id = $ticket_id->ID;
 		}
 
+		$ticket_post = get_post( $ticket_id );
+
+		/**
+		 * This error means there is no ticket with this ID to begin with, client error.
+		 * If a ticket exists and we cannot build it in any of the following steps the failure
+		 * is on the server side.
+		 */
+		if ( ! $ticket_post instanceof WP_Post ) {
+			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
+		}
+
 		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 
 		if ( ! $provider instanceof Tribe__Tickets__Tickets ) {
-			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ) );
+			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ), array( 'status' => 500 ) );
 		}
 
 		$this->current_ticket_provider = $provider;
@@ -196,7 +207,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$post = $provider->get_event_for_ticket( $ticket_id );
 
 		if ( ! $post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-post-not-found', $this->messages->get_message( 'ticket-post-not-found' ) );
+			return new WP_Error( 'ticket-post-not-found', $this->messages->get_message( 'ticket-post-not-found' ), array( 'status' => 500 ) );
 		}
 
 		$this->current_ticket_post = $post;
@@ -205,7 +216,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$ticket = $provider->get_ticket( $post->ID, $ticket_id );
 
 		if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
-			return new WP_Error( 'ticket-object-not-found', $this->messages->get_message( 'ticket-object-not-found' ) );
+			return new WP_Error( 'ticket-object-not-found', $this->messages->get_message( 'ticket-object-not-found' ), array( 'status' => 500 ) );
 		}
 
 		$this->current_ticket_object = $ticket;
