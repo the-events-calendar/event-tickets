@@ -713,7 +713,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 				}
 			}
 
-			$attendees_data[] = array(
+			$attendee_data = array(
 				'id'                => $attendee_id,
 				'post_id'           => $post->ID,
 				'ticket_id'         => $ticket_id,
@@ -734,6 +734,17 @@ Tribe__Tickets__REST__V1__Post_Repository
 				'checkin_details'   => $checkin_details,
 				'rsvp_going'        => tribe_is_truthy( $attendee['order_status'] )
 			);
+
+			/**
+			 * Filters the single attendee data.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $attendee_data
+			 */
+			$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data );
+
+			$attendees_data[] = $attendee_data;
 		}
 
 		return $attendees_data;
