@@ -53,7 +53,19 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 			return new WP_Error( 'tickets-not-accessible', $message, array( 'status' => 401 ) );
 		}
 
-		return $this->post_repository->get_ticket_data( $ticket_id );
+		$data = $this->post_repository->get_ticket_data( $ticket_id );
+
+		/**
+		 * Filters the data that will be returned for a single ticket request.
+		 *
+		 * @since TBD
+		 *
+		 * @param array           $data    The ticket data.
+		 * @param WP_REST_Request $request The original request.
+		 */
+		$data = apply_filters( 'tribe_rest_single_ticket_data', $data, $request );
+
+		return $data;
 	}
 
 	/**
