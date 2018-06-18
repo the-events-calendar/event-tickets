@@ -18,10 +18,11 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_allow_getting_a_ticket_information_by_ticket_post_id( Restv1Tester $I ) {
 		$post_id                     = $I->havePostInDatabase();
-		$attendees_count             = 7;
+		$going_attendees_count       = 7;
+		$not_going_attendees_count   = 5;
 		$ticket_id                   = $this->make_RSVP_ticket( $post_id, [
 			'meta_input' => [
-				'total_sales' => $attendees_count,
+				'total_sales' => $going_attendees_count,
 				'_stock'      => 30,
 				'_capacity'   => 30,
 			]
@@ -36,7 +37,8 @@ class SingleTicketCest extends BaseRestCest {
 				'author' => 'John Doe',
 			]
 		] );
-		$attendees                   = $this->create_many_attendees_for_ticket( $attendees_count - 1, $ticket_id, [ 'rsvp_going' => 'yes' ] );
+		$going_attendees             = $this->create_many_attendees_for_ticket( $going_attendees_count - 1, $ticket_id, [ 'rsvp_status' => 'yes' ] );
+		$not_going_attendees         = $this->create_many_attendees_for_ticket( $not_going_attendees_count, $ticket_id, [ 'rsvp_status' => 'no' ] );
 		$ticket_post                 = get_post( $ticket_id );
 		$ticket_rest_url             = $this->tickets_url . "/{$ticket_id}";
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
@@ -53,37 +55,42 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 
 		$expectedJson = array(
-			'id'                      => $ticket_id,
-			'post_id'                 => $post_id,
-			'global_id'               => $repository->get_ticket_global_id( $ticket_id ),
-			'global_id_lineage'       => $repository->get_ticket_global_id_lineage( $ticket_id ),
-			'author'                  => $ticket_post->post_author,
-			'status'                  => $ticket_post->post_status,
-			'date'                    => $ticket_post->post_date,
-			'date_utc'                => $ticket_post->post_date_gmt,
-			'modified'                => $ticket_post->post_modified,
-			'modified_utc'            => $ticket_post->post_modified_gmt,
-			'rest_url'                => $ticket_rest_url,
-			'provider'                => 'rsvp',
-			'title'                   => $ticket_post->post_title,
-			'description'             => $ticket_post->post_content,
-			'image'                   => $repository->get_ticket_header_image( $ticket_id ),
-			'available_from'          => $repository->get_ticket_start_date( $ticket_id ),
-			'available_from_details'  => $repository->get_ticket_start_date( $ticket_id, true ),
-			'available_until'         => $repository->get_ticket_end_date( $ticket_id ),
-			'available_until_details' => $repository->get_ticket_end_date( $ticket_id, true ),
-			'capacity'                => 30,
-			'capacity_details'        => [
+			'id'                            => $ticket_id,
+			'post_id'                       => $post_id,
+			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
+			'global_id_lineage'             => $repository->get_ticket_global_id_lineage( $ticket_id ),
+			'author'                        => $ticket_post->post_author,
+			'status'                        => $ticket_post->post_status,
+			'date'                          => $ticket_post->post_date,
+			'date_utc'                      => $ticket_post->post_date_gmt,
+			'modified'                      => $ticket_post->post_modified,
+			'modified_utc'                  => $ticket_post->post_modified_gmt,
+			'rest_url'                      => $ticket_rest_url,
+			'provider'                      => 'rsvp',
+			'title'                         => $ticket_post->post_title,
+			'description'                   => $ticket_post->post_content,
+			'image'                         => $repository->get_ticket_header_image( $ticket_id ),
+			'available_from'                => $repository->get_ticket_start_date( $ticket_id ),
+			'available_from_details'        => $repository->get_ticket_start_date( $ticket_id, true ),
+			'available_until'               => $repository->get_ticket_end_date( $ticket_id ),
+			'available_until_details'       => $repository->get_ticket_end_date( $ticket_id, true ),
+			'capacity'                      => 30,
+			'capacity_details'              => [
 				'available_percentage' => floor( ( 23 / 30 ) * 100 ),
 				'max'                  => 30,
 				'available'            => 23,
 				'sold'                 => 7,
 				'pending'              => 0,
 			],
-			'is_available'            => true,
-			'cost'                    => $repository->get_ticket_cost( $ticket_id ),
-			'cost_details'            => $repository->get_ticket_cost( $ticket_id, true ),
-			'attendees'               => $repository->get_ticket_attendees( $ticket_id ),
+			'is_available'                  => true,
+			'cost'                          => $repository->get_ticket_cost( $ticket_id ),
+			'cost_details'                  => $repository->get_ticket_cost( $ticket_id, true ),
+			'attendees'                     => $repository->get_ticket_attendees( $ticket_id ),
+			'supports_attendee_information' => false, // we are on RSVP, no ET+ installed'
+			'rsvp'                          => [
+				'rsvp_going'     => $going_attendees_count,
+				'rsvp_not_going' => $not_going_attendees_count,
+			],
 		);
 
 		$response = json_decode( $I->grabResponse(), true );

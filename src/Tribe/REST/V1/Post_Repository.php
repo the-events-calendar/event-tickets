@@ -435,7 +435,14 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$data['capacity_details']        = $this->get_ticket_capacity( $ticket_id, true );
 		$data['is_available']            = $data['capacity_details']['available_percentage'] > 0;
 		$data['cost']                    = $this->get_ticket_cost( $ticket_id );
-		$data['cost_details']            = $this->get_ticket_cost( $ticket_id, true );
+		$data['cost_details'] = $this->get_ticket_cost( $ticket_id, true );
+
+		/**
+		 * Since Attendee Information is a functionality provided by Event Tickets Plus
+		 * we rely on Event Ticket Plus to filter the data to add attendee information
+		 * to it.
+		 */
+		$data['supports_attendee_information'] = false;
 	}
 
 	/**
@@ -540,13 +547,21 @@ Tribe__Tickets__REST__V1__Post_Repository
 			return $capacity;
 		}
 
-		$available = $ticket->available();
+		/**
+		 * Here we use the `Tribe__Tickets__Ticket_Object::stock()` method in
+		 * place of the `Tribe__Tickets__Ticket_Object::available()` one to make
+		 * sure we get the value that users would see on the front-end in the
+		 * ticket form.
+		 *
+		 * @todo review this for other type of tickets
+		 */
+		$available = $ticket->stock();
 
 		$unlimited = - 1 === $available;
 		if ( $unlimited ) {
 			$available_percentage = 100;
 		} else {
-			$available_percentage = $capacity <= 0 || $available == 0 ? 0 : floor( $available / $capacity * 100 );
+			$available_percentage = $capacity <= 0 || $available == 0 ? 0 : (int)floor( $available / $capacity * 100 );
 		}
 
 		// @todo here we need to uniform the return values to indicated unlimited and oversold!
@@ -554,7 +569,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 		return array(
 			'available_percentage' => $available_percentage,
 			'max'                  => $ticket->capacity(),
-			'available'            => $ticket->available(),
+			'available'            => $ticket->stock(), // see not above about why we use this
 			'sold'                 => $ticket->qty_sold(),
 			'pending'              => $ticket->qty_pending(),
 		);
@@ -617,6 +632,30 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$ticket_id = $data['id'];
 
 		$data['attendees'] = $this->get_ticket_attendees( $ticket_id );
+
+		$ticket_object = $this->get_ticket_object($ticket_id);
+
+		if (
+			$ticket_object instanceof Tribe__Tickets__Ticket_Object
+			&& $ticket_object->provider_class === 'Tribe__Tickets__RSVP'
+			&& false !== $data['attendees']
+		) {
+			$going     = 0;
+			$not_going = 0;
+
+			foreach ( $data['attendees'] as $attendee ) {
+				if ( true === $attendee['rsvp_going'] ) {
+					$going ++;
+				} else {
+					$not_going ++;
+				}
+			}
+
+			$data['rsvp'] = array(
+				'rsvp_going'     => $going,
+				'rsvp_not_going' => $not_going,
+			);
+		}
 	}
 
 	/**
@@ -641,7 +680,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
-		// @todo this shoudl be filterable
+		// @todo this should be filterable
 		$rest_url_base = $main->get_url( '/attendees' );
 
 		if ( empty( $attendees ) || ( ! $post instanceof WP_Post ) ) {
