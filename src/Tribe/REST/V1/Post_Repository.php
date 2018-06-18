@@ -184,17 +184,6 @@ Tribe__Tickets__REST__V1__Post_Repository
 			$ticket_id = $ticket_id->ID;
 		}
 
-		$ticket_post = get_post( $ticket_id );
-
-		/**
-		 * This error means there is no ticket with this ID to begin with, client error.
-		 * If a ticket exists and we cannot build it in any of the following steps the failure
-		 * is on the server side.
-		 */
-		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
-		}
-
 		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
 

@@ -151,11 +151,33 @@ class SingleTicketCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_return_404_when_trying_to_get_non_existing_post_id( Restv1Tester $I ) {
-
 		$ticket_rest_url = $this->tickets_url . '/23';
 		$I->sendGET( $ticket_rest_url );
 
 		$I->seeResponseCodeIs( 404 );
+		$I->seeResponseIsJson();
+	}
+
+	/**
+	 * It should return 401 when trying to access non public ticket
+	 *
+	 * @test
+	 */
+	public function should_return_401_when_trying_to_access_non_public_ticket( Restv1Tester $I ) {
+		$post_id   = $I->havePostInDatabase();
+		$ticket_id = $this->make_RSVP_ticket( $post_id, [
+			'post_status' => 'draft',
+			'meta_input'  => [
+				'total_sales' => 0,
+				'_stock'      => 30,
+				'_capacity'   => 30,
+			]
+		] );
+
+		$ticket_rest_url = $this->tickets_url . "/{$ticket_id}";
+		$I->sendGET( $ticket_rest_url );
+
+		$I->seeResponseCodeIs( 401 );
 		$I->seeResponseIsJson();
 	}
 }
