@@ -1132,7 +1132,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$sku = $raw_data['ticket_sku'];
 			} else {
 				$post_author            = get_post( $ticket->ID )->post_author;
-				$sku                    = "{$ticket->ID}-{$post_author}-" . sanitize_title( $ticket->name );
+				$str                    = $raw_data['ticket_name'];
+				$str                    = mb_strtoupper( $str, mb_detect_encoding( $str ) );
+				$sku                    = "{$ticket->ID}-{$post_author}-" . str_replace( ' ', '-', $str );
 				$raw_data['ticket_sku'] = $sku;
 			}
 			update_post_meta( $ticket->ID, '_sku', $sku );
