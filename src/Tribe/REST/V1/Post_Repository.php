@@ -797,6 +797,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 			'end_date',
 			'end_time',
 			'purchase_limit',
+			'sku',
 		);
 
 		$data = array_diff_key( $data, array_combine( $unset_map, $unset_map ) );
