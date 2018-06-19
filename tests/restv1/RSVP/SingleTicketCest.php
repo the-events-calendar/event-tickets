@@ -29,7 +29,7 @@ class SingleTicketCest extends BaseRestCest {
 		] );
 		$first_attendee_checkin_date = '2018-01-02 09:00:16';
 		$first_attendee_checkin_time = strtotime( $first_attendee_checkin_date );
-		$first_attendee_id           = $this->create_attendee_for_ticket( $ticket_id, [
+		$first_attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
 			'checkin'         => true,
 			'checkin_details' => [
 				'date'   => $first_attendee_checkin_date,
@@ -37,8 +37,8 @@ class SingleTicketCest extends BaseRestCest {
 				'author' => 'John Doe',
 			]
 		] );
-		$going_attendees             = $this->create_many_attendees_for_ticket( $going_attendees_count - 1, $ticket_id, [ 'rsvp_status' => 'yes' ] );
-		$not_going_attendees         = $this->create_many_attendees_for_ticket( $not_going_attendees_count, $ticket_id, [ 'rsvp_status' => 'no' ] );
+		$going_attendees             = $this->create_many_attendees_for_ticket( $going_attendees_count - 1, $ticket_id, $post_id, [ 'rsvp_status' => 'yes' ] );
+		$not_going_attendees         = $this->create_many_attendees_for_ticket( $not_going_attendees_count, $ticket_id, $post_id, [ 'rsvp_status' => 'no' ] );
 		$ticket_post                 = get_post( $ticket_id );
 		$ticket_rest_url             = $this->tickets_url . "/{$ticket_id}";
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
