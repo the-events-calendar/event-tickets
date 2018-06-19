@@ -185,7 +185,7 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_access_non_public_ticket( Restv1Tester $I ) {
 		$post_id   = $I->havePostInDatabase();
-		$ticket_id = $this->make_ticket( $post_id, [
+		$ticket_id = $this->make_ticket( $post_id, 3, [
 			'post_status' => 'draft',
 			'meta_input'  => [
 				'total_sales' => 0,
