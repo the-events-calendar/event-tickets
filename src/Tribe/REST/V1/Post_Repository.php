@@ -227,7 +227,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @since TBD
 	 */
-	protected function reset_ticket_cache() {
+	public function reset_ticket_cache() {
 		unset( $this->current_ticket_id, $this->current_ticket_provider, $this->current_ticket_post, $this->current_ticket_object );
 	}
 
