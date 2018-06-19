@@ -247,7 +247,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		$map = array(
 			'Tribe__Tickets__RSVP'                   => 'rsvp',
-			'Tribe__Tickets__Commerce__PayPal__Main' => 'paypal',
+			'Tribe__Tickets__Commerce__PayPal__Main' => 'tribe-commerce',
 		);
 
 		/**
@@ -609,7 +609,6 @@ Tribe__Tickets__REST__V1__Post_Repository
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 
-
 		$price = $ticket->price;
 
 		if ( ! is_numeric( $price ) ) {
@@ -792,7 +791,6 @@ Tribe__Tickets__REST__V1__Post_Repository
 			'report_link',
 			'frontend_link',
 			'provider_class',
-			'sku',
 			'menu_order',
 			'start_date',
 			'start_time',
@@ -856,8 +854,9 @@ Tribe__Tickets__REST__V1__Post_Repository
 			'modified'          => $attendee_post->post_modified,
 			'modified_utc'      => $attendee_post->post_modified_gmt,
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
-			'provider'          => 'rsvp',
-			'order'             => $attendee_id, // they are the same!
+			'provider'          => $this->get_provider_slug( $provider ),
+			'order'             => $this->get_attendee_order_id( $attendee_id, $provider ),
+			'sku'               => get_post_meta( $attendee_id, '_sku', true ),
 			'title'             => $attendee['holder_name'],
 			'email'             => $attendee['holder_email'],
 			'checked_id'        => $checked_in,
@@ -866,6 +865,28 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		if ( $provider instanceof Tribe__Tickets__RSVP ) {
 			$attendee_data['rsvp_going'] = tribe_is_truthy( $attendee['order_status'] );
+		} else {
+			$order_id = $attendee['order_id'];
+			$order_data = method_exists( $provider, 'get_order_data' )
+				? $provider->get_order_data( $order_id )
+				: false;
+
+			if ( ! empty( $order_data ) ) {
+				/** @var Tribe__Tickets__Commerce__Currency $currency */
+				$currency                 = tribe('tickets.commerce.currency');
+				$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
+				$purchase_time = Tribe__Utils__Array::get(
+					$order_data,
+					'purchase_time',
+					get_post_time( 'Y-m-d H:i:s', false, $attendee_id ) );
+				$attendee_data['payment'] = array(
+					'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
+					'price'        => $ticket_object->price,
+					'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
+					'date'         => $purchase_time,
+					'date_details' => $this->get_date_details( $purchase_time ),
+				);
+			}
 		}
 
 		/**
@@ -878,5 +899,38 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data );
 
 		return $attendee_data;
+	}
+
+	/**
+	 * Retrieves the ID of the Order associated with an attendee depending on the provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param int                     $attendee_id
+	 * @param Tribe__Tickets__Tickets $provider
+	 *
+	 * @return int|mixed
+	 *
+	 * @throws ReflectionException
+	 */
+	protected function get_attendee_order_id( $attendee_id, Tribe__Tickets__Tickets $provider ) {
+		if ( $attendee_id instanceof WP_Post ) {
+			$attendee_id = $attendee_id->ID;
+		}
+
+		// the order is the the attendee ID itself for RSVP orders
+		if ( $provider instanceof Tribe__Tickets__RSVP ) {
+			return $attendee_id;
+		}
+
+		$key = '';
+		if ( ! empty( $provider->attendee_order_key ) ) {
+			$key = $provider->attendee_order_key;
+		} else {
+			$reflection = new ReflectionClass( $provider );
+			$key        = $reflection->getConstant( 'ATTENDEE_ORDER_KEY' );
+		}
+
+		return get_post_meta( $attendee_id, $key, true );
 	}
 }
