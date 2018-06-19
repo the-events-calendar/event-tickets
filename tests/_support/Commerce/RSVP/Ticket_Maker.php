@@ -8,8 +8,8 @@ trait Ticket_Maker {
 	/**
 	 * Generates an RSVP ticket for a post.
 	 *
-	 * @param       int $post_id The ID of the post this ticket should be related to.
-	 * @param array $overrides An array of values to override the default and random generation arguments.
+	 * @param       int $post_id   The ID of the post this ticket should be related to.
+	 * @param array     $overrides An array of values to override the default and random generation arguments.
 	 *
 	 * @return int The generated ticket post ID.
 	 */
@@ -25,6 +25,17 @@ trait Ticket_Maker {
 		/** @var \Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
+		$capacity = \Tribe__Utils__Array::get( $meta_input, '_capacity', 100 );
+
+		/**
+		 * For RSVP tickets the Stock is really the capacity; here we gently
+		 * ignore the user input to work around the non-intuitive management
+		 * of stock in RSVP tickets.
+		 */
+		$stock = $capacity;
+
+		unset( $meta_input['_capacity'], $meta_input['_stock'] );
+
 		$ticket_id = $factory->post->create( array_merge(
 				[
 					'post_title'   => "Test RSVP ticket for {$post_id}",
@@ -33,9 +44,9 @@ trait Ticket_Maker {
 					'post_type'    => $rsvp->ticket_object,
 					'meta_input'   => array_merge( [
 						'_tribe_rsvp_for_event'                          => $post_id,
-						'total_sales'                                    => 0,
-						'_stock'                                         => 100,
-						'_capacity'                                      => 100,
+						'total_sales'                                   => 0,
+						'_stock'                                         => $stock,
+						'_capacity'                                      => $capacity,
 						'_manage_stock'                                  => 'yes',
 						'_ticket_start_date'                             => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
 						'_ticket_end_date'                               => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
@@ -46,5 +57,4 @@ trait Ticket_Maker {
 
 		return $ticket_id;
 	}
-
 }
