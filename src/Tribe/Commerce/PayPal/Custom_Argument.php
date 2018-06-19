@@ -80,7 +80,6 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 
 		// in case we receive the param in non json 'user_id:0,tribe_handler:tpp,pid:4' format
 		if ( false === json_decode( $encoded ) ) {
-			echo $encoded;
 			// we create an array that string
 			$encoded = explode( ',', $encoded );
 
