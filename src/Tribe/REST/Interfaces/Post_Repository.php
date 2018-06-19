@@ -23,7 +23,7 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	 * @param int $attendee_id An attendee post or post ID.
 	 * @param string $context Context of data.
 	 *
-	 * @return array|WP_Error The ticket data or a `WP_Error` detailing the issue on failure.
+	 * @return array|WP_Error The attendee data or a `WP_Error` detailing the issue on failure.
 	 */
 	public function get_attendee_data( $attendee_id, $context = '' );
 }
