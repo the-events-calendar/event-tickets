@@ -77,18 +77,19 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 			$encoded = str_replace( '\"', '"', $encoded );
 		}
 
-
 		// in case we receive the param in non json 'user_id:0,tribe_handler:tpp,pid:4' format
-		if ( false === $decoded = json_decode( urldecode_deep( $encoded ), $assoc_array ) ) {
+		if ( null === json_decode( urldecode_deep( $encoded ), $assoc_array ) ) {
 			// we create an array that string
 			$encoded = explode( ',', $encoded );
 
 			// Set the proper keys and values for the new array
-			$encoded = array_reduce( array( __CLASS__, 'array_fix_keys' ), array() );
+			$encoded = array_reduce( $encoded, array( __CLASS__, 'array_fix_keys' ), array() );
 
 			// we convert it into a json
 			$encoded = json_encode( $encoded );
 		}
+
+		$decoded = json_decode( urldecode_deep( $encoded ), $assoc_array );
 
 		if ( null === $decoded ) {
 			return $assoc_array ? array() : new stdClass();
