@@ -12,7 +12,7 @@
  * @var int   $order_id
  * @var array $attendees
  *
- * @version TBD
+ * @version 4.7.4
  */
 
 $event_date = null;
@@ -20,7 +20,7 @@ $event_date = null;
 /**
  * Filters whether or not the event date should be included in the ticket email.
  *
- * @since TBD
+ * @since 4.7.4
  *
  * @param bool Include event date? Defaults to true.
  * @param int  Event ID

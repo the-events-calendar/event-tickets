@@ -605,7 +605,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	/**
 	 * Returns the name of the transient corresponding to an invoice number.
 	 *
-	 * @since TBD
+	 * @since 4.7.4
 	 *
 	 * @param string $invoice_number
 	 *

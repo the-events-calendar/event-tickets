@@ -819,7 +819,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Remove the attendees transient when a Ticket change its state
 		 *
-		 * @since TBD
+		 * @since 4.7.4
 		 *
 		 * @param  int $attendee_id
 		 * @return void
