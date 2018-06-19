@@ -4,11 +4,11 @@ namespace Tribe\Tickets\Test\REST\V1\RSVP;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as Ticket_Maker;
 use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
 class SingleTicketCest extends BaseRestCest {
-	use RSVP_Ticket_Maker;
+	use Ticket_Maker;
 	use Attendee_Maker;
 
 	/**
@@ -20,7 +20,7 @@ class SingleTicketCest extends BaseRestCest {
 		$post_id                     = $I->havePostInDatabase();
 		$going_attendees_count       = 7;
 		$not_going_attendees_count   = 5;
-		$ticket_id                   = $this->make_RSVP_ticket( $post_id, [
+		$ticket_id                   = $this->make_ticket( $post_id, [
 			'meta_input' => [
 				'total_sales' => $going_attendees_count,
 				'_stock'      => 30,
@@ -165,7 +165,7 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_access_non_public_ticket( Restv1Tester $I ) {
 		$post_id   = $I->havePostInDatabase();
-		$ticket_id = $this->make_RSVP_ticket( $post_id, [
+		$ticket_id = $this->make_ticket( $post_id, [
 			'post_status' => 'draft',
 			'meta_input'  => [
 				'total_sales' => 0,
