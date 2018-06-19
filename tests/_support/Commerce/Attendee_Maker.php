@@ -60,6 +60,8 @@ trait Attendee_Maker {
 			? $provider->attendee_ticket_sent
 			: $provider_reflection->getConstant( 'ATTENDEE_TICKET_SENT' );
 
+		$default_sku = $provider instanceof \Tribe__Tickets__RSVP ? '' : 'test-attnd' . self::$generated;
+
 		$meta = [
 			$provider->checkin_key              => (bool) Arr::get( $overrides, 'checkin', false ),
 			$provider->checkin_key . '_details' => Arr::get( $overrides, 'checkin_details', false ),
@@ -71,7 +73,7 @@ trait Attendee_Maker {
 			$ticket_sent_key                    => Arr::get( $overrides, 'ticket_sent', true ),
 			$provider->full_name                => Arr::get( $overrides, 'full_name', $faker->name ),
 			$provider->email                    => Arr::get( $overrides, 'email', $faker->email ),
-			'_sku'                              => \Tribe__Utils__Array::get( $overrides, 'sku', 'test-attnd' . self::$generated ),
+			'_sku'                              => \Tribe__Utils__Array::get( $overrides, 'sku', $default_sku ),
 		];
 
 		if ( $provider instanceof \Tribe__Tickets__RSVP ) {

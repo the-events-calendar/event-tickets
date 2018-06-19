@@ -54,7 +54,8 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 
-		$expectedJson = array(
+		$ticket_attendees = $repository->get_ticket_attendees( $ticket_id );
+		$expectedJson     = array(
 			'id'                            => $ticket_id,
 			'post_id'                       => $post_id,
 			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
@@ -83,9 +84,13 @@ class SingleTicketCest extends BaseRestCest {
 				'pending'              => 0,
 			],
 			'is_available'                  => true,
-			'cost'                          => $repository->get_ticket_cost( $ticket_id ),
-			'cost_details'                  => $repository->get_ticket_cost( $ticket_id, true ),
-			'attendees'                     => $repository->get_ticket_attendees( $ticket_id ),
+			'cost'                          => '$0.00',
+			'cost_details'                  => [
+				'currency_symbol'   => '$',
+				'currency_position' => 'prefix',
+				'values'            => [ 0 ],
+			],
+			'attendees'                     => $ticket_attendees,
 			'supports_attendee_information' => false, // we are on RSVP, no ET+ installed'
 			'rsvp'                          => [
 				'rsvp_going'     => $going_attendees_count,
