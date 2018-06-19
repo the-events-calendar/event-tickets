@@ -84,28 +84,37 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 * {@inheritdoc}
 	 */
 	public function get_attendee_data( $attendee_id, $context = '' ) {
-		$attendee = get_post( $attendee_id );
+		$attendee_post = get_post( $attendee_id );
 
-		if ( empty( $attendee ) || $attendee->post_type !== Tribe__Tickets__RSVP::ATTENDEE_OBJECT ) {
-			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ) );
+		if ( ! $attendee_post instanceof WP_Post ) {
+			// the attendee post does not exist, user error
+			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), array( 'status' => 404 ) );
 		}
 
-		$attendee_id = $attendee->ID;
+		$attendee_id = $attendee_post->ID;
 
-		$data = array(
-			'id'     => $attendee_id,
-			'status' => $attendee->post_status,
-		);
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+		/** @var Tribe__Tickets__Tickets $provider */
+		$provider = $data_api->get_ticket_provider( $attendee_id );
 
-		/**
-		 * Filters the data that will be returned if for a single attendee.
-		 *
-		 * @since  TBD
-		 *
-		 * @param array   $data     The data that will be returned in the response.
-		 * @param WP_Post $attendee The requested attendee post object.
-		 */
-		return apply_filters( 'tribe_tickets_rest_attendee_data', $data, $attendee );
+		if ( false === $provider ) {
+			// the attendee post does exist but it does not make sense on the server, server error
+			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), array( 'status' => 500 ) );
+		}
+
+		// The return value of this function will always be an array even if we only want one object.
+		$attendee = $provider->get_attendees_by_attendee_id( $attendee_id );
+
+		if ( empty( $attendee ) ) {
+			// the attendee post does exist but it does not make sense on the server, server error
+			return new WP_Error( 'attendee-not-found', $this->messages->get_message( 'attendee-not-found' ), array( 'status' => 500 ) );
+		}
+
+		// See note above, this is an array with one element in it
+		$attendee = $attendee[0];
+
+		return $this->build_attendee_data( $attendee );
 	}
 
 	/**
@@ -666,8 +675,6 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 * @return array|bool An array of ticket attendees or `false` on failure.
 	 */
 	public function get_ticket_attendees( $ticket_id ) {
-		// @todo this code needs to be reconciled with the `get_attendee_data` one!
-
 		$ticket_object = $this->get_ticket_object( $ticket_id );
 
 		if ( ! $ticket_object instanceof Tribe__Tickets__Ticket_Object ) {
@@ -677,77 +684,17 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$attendees = $this->current_ticket_provider->get_attendees_by_id( $ticket_id );
 		$post      = $this->current_ticket_provider->get_event_for_ticket( $ticket_id );
 
-		/** @var Tribe__Tickets__REST__V1__Main $main */
-		$main = tribe( 'tickets.rest-v1.main' );
-
-		// @todo this should be filterable
-		$rest_url_base = $main->get_url( '/attendees' );
-
-		if ( empty( $attendees ) || ( ! $post instanceof WP_Post ) ) {
+		if ( empty( $attendees ) || ! $post instanceof WP_Post ) {
 			return array();
 		}
 
-		$attendees_data = array();
+		$ticket_attendees = array();
 
 		foreach ( $attendees as $attendee ) {
-			$attendee_id   = $attendee['attendee_id'];
-			$attendee_post = get_post( $attendee_id );
-
-			if ( ! $attendee_post instanceof WP_Post ) {
-				continue;
-			}
-
-			$checked_in      = (bool) $attendee['check_in'];
-			$checkin_details = false;
-			if ( $checked_in ) {
-				$checkin_details = get_post_meta( $attendee_id, $this->current_ticket_provider->checkin_key . '_details', true );
-				if ( isset( $checkin_details['date'], $checkin_details['source'], $checkin_details['author'] ) ) {
-					$checkin_details = array(
-						'date'         => $checkin_details['date'],
-						'date_details' => $this->get_date_details( $checkin_details['date'] ),
-						'source'       => $checkin_details['source'],
-						'author'       => $checkin_details['author'],
-					);
-				} else {
-					$checkin_details = false;
-				}
-			}
-
-			$attendee_data = array(
-				'id'                => $attendee_id,
-				'post_id'           => $post->ID,
-				'ticket_id'         => $ticket_id,
-				'global_id'         => $this->get_attendee_global_id( $attendee_id ),
-				'global_id_lineage' => $this->get_attendee_global_id_lineage( $attendee_id ),
-				'author'            => $attendee_post->post_author,
-				'status'            => $attendee_post->post_status,
-				'date'              => $attendee_post->post_date,
-				'date_utc'          => $attendee_post->post_date_gmt,
-				'modified'          => $attendee_post->post_modified,
-				'modified_utc'      => $attendee_post->post_modified_gmt,
-				'rest_url'          => $rest_url_base . '/' . $attendee_id,
-				'provider'          => 'rsvp',
-				'order'             => $attendee_id, // they are the same!
-				'title'             => $attendee['holder_name'],
-				'email'             => $attendee['holder_email'],
-				'checked_id'        => $checked_in,
-				'checkin_details'   => $checkin_details,
-				'rsvp_going'        => tribe_is_truthy( $attendee['order_status'] )
-			);
-
-			/**
-			 * Filters the single attendee data.
-			 *
-			 * @since TBD
-			 *
-			 * @param array $attendee_data
-			 */
-			$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data );
-
-			$attendees_data[] = $attendee_data;
+			$ticket_attendees[] = $this->build_attendee_data( $attendee );
 		}
 
-		return $attendees_data;
+		return $ticket_attendees;
 	}
 
 	/**
@@ -854,5 +801,81 @@ Tribe__Tickets__REST__V1__Post_Repository
 		);
 
 		$data = array_diff_key( $data, array_combine( $unset_map, $unset_map ) );
+	}
+
+	/**
+	 * Builds an attendee data from the attendee information.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $attendee The attendee information.
+	 *
+	 * @return array
+	 */
+	protected function build_attendee_data( array $attendee ) {
+		$attendee_id = $attendee['attendee_id'];
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+		/** @var Tribe__Tickets__Tickets $provider */
+		$provider = $data_api->get_ticket_provider( $attendee_id );
+		/** @var Tribe__Tickets__Tickets $provider */
+		$provider = $data_api->get_ticket_provider( $attendee_id );
+		/** @var Tribe__Tickets__REST__V1__Main $main */
+		$main = tribe( 'tickets.rest-v1.main' );
+
+		$attendee_post = get_post( $attendee_id );
+
+		$checked_in      = (bool) $attendee['check_in'];
+		$checkin_details = false;
+		if ( $checked_in ) {
+			$checkin_details = get_post_meta( $attendee_id, $this->current_ticket_provider->checkin_key . '_details', true );
+			if ( isset( $checkin_details['date'], $checkin_details['source'], $checkin_details['author'] ) ) {
+				$checkin_details = array(
+					'date'         => $checkin_details['date'],
+					'date_details' => $this->get_date_details( $checkin_details['date'] ),
+					'source'       => $checkin_details['source'],
+					'author'       => $checkin_details['author'],
+				);
+			} else {
+				$checkin_details = false;
+			}
+		}
+
+		// @todo - review this when filling in with commerce providers
+		$attendee_data = array(
+			'id'                => $attendee_id,
+			'post_id'           => (int) $attendee['event_id'],
+			'ticket_id'         => (int) $attendee['product_id'],
+			'global_id'         => $this->get_attendee_global_id( $attendee_id ),
+			'global_id_lineage' => $this->get_attendee_global_id_lineage( $attendee_id ),
+			'author'            => $attendee_post->post_author,
+			'status'            => $attendee_post->post_status,
+			'date'              => $attendee_post->post_date,
+			'date_utc'          => $attendee_post->post_date_gmt,
+			'modified'          => $attendee_post->post_modified,
+			'modified_utc'      => $attendee_post->post_modified_gmt,
+			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
+			'provider'          => 'rsvp',
+			'order'             => $attendee_id, // they are the same!
+			'title'             => $attendee['holder_name'],
+			'email'             => $attendee['holder_email'],
+			'checked_id'        => $checked_in,
+			'checkin_details'   => $checkin_details,
+		);
+
+		if ( $provider instanceof Tribe__Tickets__RSVP ) {
+			$attendee_data['rsvp_going'] = tribe_is_truthy( $attendee['order_status'] );
+		}
+
+		/**
+		 * Filters the single attendee data.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $attendee_data
+		 */
+		$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data );
+
+		return $attendee_data;
 	}
 }
