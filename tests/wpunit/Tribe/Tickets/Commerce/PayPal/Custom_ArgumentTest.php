@@ -68,7 +68,6 @@ class Custom_ArgumentTest extends \Codeception\TestCase\WPTestCase {
 		$encoded = urlencode_deep( json_encode( $args ) );
 
 		$this->assertEquals( (object) $args, Custom_Argument::decode( $encoded ) );
-		$this->assertEquals( $args, Custom_Argument::decode( $encoded, true ) );
 	}
 
 	/**
