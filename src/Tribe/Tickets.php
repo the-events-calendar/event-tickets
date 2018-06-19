@@ -639,7 +639,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $attendee_id
 		 * @return array
 		 */
-		protected function get_attendees_by_attendee_id( $attendee_id ) {
+		public function get_attendees_by_attendee_id( $attendee_id ) {
 			$attendees_query = new WP_Query( array(
 				'p'         => $attendee_id,
 				'post_type' => $this->attendee_object,
