@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets\Test\REST\V1;
 
-use Codeception\Configuration;
 use Restv1Tester;
 
 class BaseRestCest {
@@ -54,5 +53,9 @@ class BaseRestCest {
 		$this->factory = $I->factory();
 
 		wp_cache_flush();
+
+		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
+		$repository = tribe( 'tickets.rest-v1.repository' );
+		$repository->reset_ticket_cache();
 	}
 }
