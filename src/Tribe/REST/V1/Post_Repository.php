@@ -246,7 +246,8 @@ Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		$map = array(
-			'Tribe__Tickets__RSVP' => 'rsvp',
+			'Tribe__Tickets__RSVP'                   => 'rsvp',
+			'Tribe__Tickets__Commerce__PayPal__Main' => 'paypal',
 		);
 
 		/**
