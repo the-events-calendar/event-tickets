@@ -8,9 +8,19 @@
 class Tribe__Tickets__Global_ID extends Tribe__Utils__Global_ID {
 
 	/**
-	 * @var array An array of ticket types considered valid.
+	 * Overrides the method from the base class to allow all types.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $name
+	 *
+	 * @return bool|mixed|null|string
 	 */
-	protected $valid_types = array(
-		'rsvp',
-	);
+	public function type( $name = null ) {
+		if ( null !== $name ) {
+			$this->type = $name;
+		}
+
+		return $this->type;
+	}
 }
