@@ -23,7 +23,7 @@ class SingleTicketCest extends BaseRestCest {
 		$ticket_id                   = $this->make_ticket( $post_id, [
 			'meta_input' => [
 				'total_sales' => $going_attendees_count,
-				'_stock'      => 30,
+				'_stock'      => 30 - $going_attendees_count,
 				'_capacity'   => 30,
 			]
 		] );
@@ -124,6 +124,7 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'          => $this->attendees_url . '/' . $first_attendee_id,
 			'provider'          => 'rsvp',
 			'order'             => $first_attendee_id, // they are the same!
+			'sku'               => '',
 			'title'             => $first_attendee_object['holder_name'],
 			'email'             => $first_attendee_object['holder_email'],
 			'checked_id'        => (bool) $first_attendee_object['check_in'],
