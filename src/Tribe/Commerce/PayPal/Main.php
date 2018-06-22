@@ -1249,11 +1249,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_capacity, $data['capacity'] );
 		}
 
-		// Default Purchase Limit
-		if ( ! isset( $ticket->purchase_limit ) ) {
-			$ticket->purchase_limit = '';
-		}
-
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
@@ -1416,19 +1411,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$pending = $this->get_qty_pending( $ticket_id );
 
 		$return->qty_pending( $pending );
-
-		if ( empty( $return->purchase_limit ) && 0 !== (int) $return->purchase_limit ) {
-			/**
-			 * Filter the default purchase limit for the ticket
-			 *
-			 * @since 4.7
-			 *
-			 * @param int
-			 *
-			 * @return int
-			 */
-			$return->purchase_limit = apply_filters( 'tribe_tickets_default_purchase_limit', 0 );
-		}
 
 		/**
 		 * Use this Filter to change any information you want about this ticket
@@ -2171,15 +2153,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( $stock_object->is_enabled() ) {
 			$post_capacity = tribe_tickets_get_capacity( $post_id );
 		}
-
-		/**
-		 * Filter the default purchase limit for the ticket
-		 *
-		 * @param int
-		 *
-		 * @return int
-		 */
-		$purchase_limit = apply_filters( 'tribe_tickets_default_purchase_limit', 0 );
 
 		if ( ! empty( $ticket_id ) ) {
 			$ticket              = $this->get_ticket( $post_id, $ticket_id );
