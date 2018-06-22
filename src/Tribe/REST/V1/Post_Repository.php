@@ -580,10 +580,10 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		return array(
 			'available_percentage' => $available_percentage,
-			'max'                  => $ticket->capacity(),
-			'available'            => $ticket->stock(), // see not above about why we use this
-			'sold'                 => $ticket->qty_sold(),
-			'pending'              => $ticket->qty_pending(),
+			'max'                  => (int) $ticket->capacity(),
+			'available'            => (int) $ticket->stock(), // see not above about why we use this
+			'sold'                 => (int) $ticket->qty_sold(),
+			'pending'              => (int) $ticket->qty_pending(),
 		);
 	}
 
