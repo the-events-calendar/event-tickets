@@ -1522,8 +1522,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_object( $provider_class ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
-			// @todo this will always be empt
-			//y...
+			// @todo this will always be empty... why is this here?
 			if ( empty( $attendee_order_key ) ) {
 				switch ( $this->class_name ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;

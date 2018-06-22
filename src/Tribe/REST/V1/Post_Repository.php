@@ -564,8 +564,6 @@ Tribe__Tickets__REST__V1__Post_Repository
 		 * place of the `Tribe__Tickets__Ticket_Object::available()` one to make
 		 * sure we get the value that users would see on the front-end in the
 		 * ticket form.
-		 *
-		 * @todo review this for other type of tickets
 		 */
 		$available = $ticket->stock();
 
@@ -573,10 +571,10 @@ Tribe__Tickets__REST__V1__Post_Repository
 		if ( $unlimited ) {
 			$available_percentage = 100;
 		} else {
-			$available_percentage = $capacity <= 0 || $available == 0 ? 0 : (int)floor( $available / $capacity * 100 );
+			$available_percentage = $capacity <= 0 || $available == 0 ? 0 : (int) floor( $available / $capacity * 100 );
 		}
 
-		// @todo here we need to uniform the return values to indicated unlimited and oversold!
+		// @todo here we need to uniform the return values to indicate unlimited and oversold!
 
 		return array(
 			'available_percentage' => $available_percentage,
@@ -644,7 +642,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		$data['attendees'] = $this->get_ticket_attendees( $ticket_id );
 
-		$ticket_object = $this->get_ticket_object($ticket_id);
+		$ticket_object = $this->get_ticket_object( $ticket_id );
 
 		if (
 			$ticket_object instanceof Tribe__Tickets__Ticket_Object
@@ -877,10 +875,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 				/** @var Tribe__Tickets__Commerce__Currency $currency */
 				$currency                 = tribe('tickets.commerce.currency');
 				$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
-				$purchase_time = Tribe__Utils__Array::get(
-					$order_data,
-					'purchase_time',
-					get_post_time( 'Y-m-d H:i:s', false, $attendee_id ) );
+				$purchase_time = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( 'Y-m-d H:i:s', false, $attendee_id ) );
 				$attendee_data['payment'] = array(
 					'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
 					'price'        => $ticket_object->price,

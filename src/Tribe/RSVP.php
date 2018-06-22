@@ -1533,7 +1533,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$checkin_details = array(
 			'date'   => current_time( 'mysql' ),
 			'source' => null !== $qr ? 'app' : 'site',
-			'author' => get_current_user_id()
+			'author' => get_current_user_id(),
 		);
 
 		/**
