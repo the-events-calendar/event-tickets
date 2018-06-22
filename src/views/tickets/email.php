@@ -246,7 +246,7 @@
 				 *
 				 * @since 4.7.4
 				 */
-				if ( class_exists( 'WC_Product' ) ) {
+				if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $ticket['provider'] && class_exists( 'WC_Product' ) ) {
 					$product  = new WC_Product( $ticket['product_id'] );
 					$image_id = $product->get_image_id();
 					if ( ! empty( $image_id ) ) {
