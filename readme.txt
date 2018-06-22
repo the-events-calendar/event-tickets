@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.7.4.1] 2018-06-22 =
 
-*
+* Fix - Sending the ticket email when WooCommerce is active and purchasing another ticket type [109102]
 
 = [4.7.4] 2018-06-20 =
 
