@@ -926,14 +926,14 @@ Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		$key = '';
-		if ( property_exists( $provider, 'attendee_order_key' ) ) {
+		if ( ! empty( $provider->attendee_order_key ) ) {
 			$key = $provider->attendee_order_key;
 		} else {
 			$reflection = new ReflectionClass( $provider );
 			$key        = $reflection->getConstant( 'ATTENDEE_ORDER_KEY' );
 		}
 
-		return (int) get_post_meta( $attendee_id, $key, true );
+		return get_post_meta( $attendee_id, $key, true );
 	}
 
 	/**
