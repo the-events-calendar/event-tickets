@@ -71,13 +71,39 @@ trait Attendee_Maker {
 			$optout_key                         => Arr::get( $overrides, 'optout', false ),
 			$user_id_key                        => Arr::get( $overrides, 'user_id', 0 ),
 			$ticket_sent_key                    => Arr::get( $overrides, 'ticket_sent', true ),
-			$provider->full_name                => Arr::get( $overrides, 'full_name', $faker->name ),
-			$provider->email                    => Arr::get( $overrides, 'email', $faker->email ),
 			'_sku'                              => \Tribe__Utils__Array::get( $overrides, 'sku', $default_sku ),
 		];
 
+		$faked = [
+			'first_name' => $faker->firstName,
+			'last_name'  => $faker->lastName,
+			'full_name'  => $faker->name,
+			'email'      => $faker->email,
+		];
+
+		foreach ( $faked as $key => $value ) {
+			if ( property_exists( $provider, $key ) ) {
+				$meta[ $provider->{$key} ] = $value;
+			}
+		}
+
 		if ( $provider instanceof \Tribe__Tickets__RSVP ) {
-			$meta[ \Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY ] = $going = Arr::get( $overrides, 'rsvp_status', 'yes' );
+			$meta[ \Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY ] = Arr::get( $overrides, 'rsvp_status', 'yes' );
+		}
+
+		if ( $provider instanceof \Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
+			if ( ! isset( $overrides['order_id'] ) ) {
+				throw new \RuntimeException(
+					'WooCommerce tickets attendees require an `order_id` parameter in the `overrides` array.'
+					. "\nYou can generate orders using the Order_Maker trait."
+					. "\nKeep in mind that generating Orders will create the Attendees too."
+				);
+			}
+
+			$meta[ $provider->attendee_order_key ] = $overrides['order_id'];
+			$meta['_billing_first_name']           = $faker->firstName;
+			$meta['_billing_last_name']            = $faker->lastName;
+			$meta['_billing_email']                = $faker->email;
 		}
 
 		$explicit_keys        = [
