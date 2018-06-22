@@ -1254,14 +1254,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$ticket->purchase_limit = '';
 		}
 
-		$ticket->purchase_limit = trim( Tribe__Utils__Array::get( $raw_data, 'ticket_purchase_limit', $ticket->purchase_limit ) );
-
-		if ( '' !== $ticket->purchase_limit ) {
-			update_post_meta( $ticket->ID, '_ticket_purchase_limit', absint( $ticket->purchase_limit ) );
-		} else {
-			delete_post_meta( $ticket->ID, '_ticket_purchase_limit' );
-		}
-
 		/**
 		 * Generic action fired after saving a ticket (by type)
 		 *
@@ -2198,10 +2190,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$ticket_capacity   = tribe_tickets_get_capacity( $ticket->ID );
 				$global_stock_mode = ( method_exists( $ticket, 'global_stock_mode' ) ) ? $ticket->global_stock_mode() : '';
 				$global_stock_cap  = ( method_exists( $ticket, 'global_stock_cap' ) ) ? $ticket->global_stock_cap() : 0;
-
-				if ( metadata_exists( 'post', $ticket->ID, '_ticket_purchase_limit' ) ) {
-					$purchase_limit = get_post_meta( $ticket->ID, '_ticket_purchase_limit', true );
-				}
 			}
 		}
 
