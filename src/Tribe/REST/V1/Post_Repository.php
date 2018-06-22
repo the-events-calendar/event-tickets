@@ -246,8 +246,10 @@ Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		$map = array(
-			'Tribe__Tickets__RSVP'                   => 'rsvp',
-			'Tribe__Tickets__Commerce__PayPal__Main' => 'tribe-commerce',
+			'Tribe__Tickets__RSVP'                             => 'rsvp',
+			'Tribe__Tickets__Commerce__PayPal__Main'           => 'tribe-commerce',
+			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
+			'Tribe__Tickets_Plus__Commerce__EDD__Main'         => 'edd',
 		);
 
 		/**
@@ -818,8 +820,6 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$data_api = tribe( 'tickets.data_api' );
 		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = $data_api->get_ticket_provider( $attendee_id );
-		/** @var Tribe__Tickets__Tickets $provider */
-		$provider = $data_api->get_ticket_provider( $attendee_id );
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
@@ -841,8 +841,9 @@ Tribe__Tickets__REST__V1__Post_Repository
 			}
 		}
 
-		// @todo - review this when filling in with commerce providers
-		$attendee_data = array(
+		$attendee_order_id = $this->get_attendee_order_id( $attendee_id, $provider );
+
+		$attendee_data     = array(
 			'id'                => $attendee_id,
 			'post_id'           => (int) $attendee['event_id'],
 			'ticket_id'         => (int) $attendee['product_id'],
@@ -856,10 +857,10 @@ Tribe__Tickets__REST__V1__Post_Repository
 			'modified_utc'      => $attendee_post->post_modified_gmt,
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
 			'provider'          => $this->get_provider_slug( $provider ),
-			'order'             => $this->get_attendee_order_id( $attendee_id, $provider ),
-			'sku'               => get_post_meta( $attendee_id, '_sku', true ),
-			'title'             => $attendee['holder_name'],
-			'email'             => $attendee['holder_email'],
+			'order'             => $attendee_order_id,
+			'sku'               => $this->get_attendee_sku( $attendee_id, $attendee_order_id, $provider ),
+			'title'             => Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) ),
+			'email'             => Tribe__Utils__Array::get( $attendee, 'holder_email', Tribe__Utils__Array::get( $attendee, 'purchaser_email', '' ) ),
 			'checked_id'        => $checked_in,
 			'checkin_details'   => $checkin_details,
 		);
@@ -921,17 +922,43 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		// the order is the the attendee ID itself for RSVP orders
 		if ( $provider instanceof Tribe__Tickets__RSVP ) {
-			return $attendee_id;
+			return (int) $attendee_id;
 		}
 
 		$key = '';
-		if ( ! empty( $provider->attendee_order_key ) ) {
+		if ( property_exists( $provider, 'attendee_order_key' ) ) {
 			$key = $provider->attendee_order_key;
 		} else {
 			$reflection = new ReflectionClass( $provider );
 			$key        = $reflection->getConstant( 'ATTENDEE_ORDER_KEY' );
 		}
 
-		return get_post_meta( $attendee_id, $key, true );
+		return (int) get_post_meta( $attendee_id, $key, true );
+	}
+
+	/**
+	 * Retrieves an Attendee ticket SKU.
+	 *
+	 * @since TBD
+	 *
+	 *
+	 * @param                         int $attendee_id
+	 * @param                         int $order_id
+	 * @param Tribe__Tickets__Tickets     $provider
+	 *
+	 * @return string
+	 */
+	protected function get_attendee_sku( $attendee_id, $order_id, Tribe__Tickets__Tickets $provider ) {
+		$sku = get_post_meta( $attendee_id, '_sku', true );
+
+		if ( ! empty( $sku ) ) {
+			return $sku;
+		}
+
+		if ( $provider instanceof Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
+			$sku = get_post_meta( $order_id, '_sku', true );
+		}
+
+		return $sku;
 	}
 }
