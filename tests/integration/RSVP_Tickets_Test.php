@@ -42,7 +42,7 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 		// sell 9 more tickets
 		$rsvp->generate_tickets_for( $ticket->ID, 9, $this->fake_attendee_details() );
 
-		$tickets =RSVP::get_event_tickets( $post_id );
+		$tickets = $rsvp->get_event_tickets( $post_id );
 		/** @var \Tribe__Tickets__Ticket_Object $ticket */
 		$ticket = $tickets[0];
 		$this->assertEquals( 10, $ticket->capacity(), 'RSVP ticket has the appropriate stock amount after selling 10 tickets' );

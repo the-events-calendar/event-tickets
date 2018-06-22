@@ -811,6 +811,26 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Ensure ticket prices and event costs are linked
 			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
+
+			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
+			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
+		}
+
+		/**
+		 * Remove the attendees transient when a Ticket change its state
+		 *
+		 * @since 4.7.4
+		 *
+		 * @param  int $attendee_id
+		 * @return void
+		 */
+		public function purge_attendees_transient( $attendee_id ) {
+
+			$event_id = $this->get_event_id_from_attendee_id( $attendee_id );
+
+			if ( $event_id ) {
+				tribe( 'post-transient' )->delete( $event_id, self::ATTENDEES_CACHE );
+			}
 		}
 
 		/**

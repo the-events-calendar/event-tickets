@@ -16,7 +16,7 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 	 */
 	public function reset_all( $post_id = 0 ) {
 		$post_types = array( 'post' );
-		$screen = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+		$screen     = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
 
 		if ( $post_id ) {
 			$post_types = array( get_post_type( $post_id ) );
@@ -29,6 +29,10 @@ class Tribe__Tickets__Cache__Transient_Cache extends Tribe__Tickets__Cache__Abst
 			delete_transient( __CLASS__ . $key );
 			delete_transient( __CLASS__ . $key . $hash );
 		}
+
+		// Flush WordPress cache for cache compatibility
+		wp_cache_flush();
+
 	}
 
 	/**

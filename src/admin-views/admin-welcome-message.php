@@ -2,7 +2,7 @@
 /**
  * The template that displays the welcome message when the plugin is first activated.
  */
-$support_forums_url = '<a href="http://m.tri.be/19sh" target="_blank">' . esc_html__( 'our support forums', 'event-tickets' ) . '</a>';
+$support_forums_url = '<a href="https://m.tri.be/19sh" target="_blank">' . esc_html__( 'our support forums', 'event-tickets' ) . '</a>';
 ?>
 
 <div class="tribe-row">
@@ -20,22 +20,22 @@ $support_forums_url = '<a href="http://m.tri.be/19sh" target="_blank">' . esc_ht
 <div class="tribe-row tribe-welcome-links">
 	<div class="tribe-half-column">
 		<h4><?php esc_html_e( 'Getting Started', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/19sf" target="_blank"><?php esc_html_e( 'New User Primer', 'event-tickets' ); ?></a></p>
-		<p><a target="_blank" href="http://m.tri.be/19se"><?php esc_html_e( 'Settings Overview', 'event-tickets' ); ?></a></p>
-		<p><a target="_blank" href="http://m.tri.be/19sg"><?php esc_html_e( 'Event Tickets Features', 'event-tickets' ); ?></a></p>
+		<p><a href="https://m.tri.be/19sf" target="_blank"><?php esc_html_e( 'New User Primer', 'event-tickets' ); ?></a></p>
+		<p><a target="_blank" href="https://m.tri.be/19se"><?php esc_html_e( 'Settings Overview', 'event-tickets' ); ?></a></p>
+		<p><a target="_blank" href="https://m.tri.be/19sg"><?php esc_html_e( 'Event Tickets Features', 'event-tickets' ); ?></a></p>
 
 		<h4><?php esc_html_e( 'Support Resources', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1953" target="_blank"><?php esc_html_e( 'FAQs, Documentation, Tutorials and Forums', 'event-tickets' ); ?></a></p>
+		<p><a href="https://m.tri.be/1953" target="_blank"><?php esc_html_e( 'FAQs, Documentation, Tutorials and Forums', 'event-tickets' ); ?></a></p>
 	</div>
 	<div class="tribe-half-column">
 		<h4><?php esc_html_e( 'Looking for More Features?', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1952" target="_blank"><?php esc_html_e( 'Addons for creating tickets, custom registration, events and more.', 'event-tickets' ); ?></a></p>
+		<p><a href="https://m.tri.be/1952" target="_blank"><?php esc_html_e( 'Addons for creating tickets, custom registration, events and more.', 'event-tickets' ); ?></a></p>
 
 		<h4><?php esc_html_e( 'Release Notes', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1954" target="_blank"><?php esc_html_e( 'Get the Skinny on the Latest Updates', 'event-tickets' ); ?></a></p>
+		<p><a href="https://m.tri.be/1954" target="_blank"><?php esc_html_e( 'Get the Skinny on the Latest Updates', 'event-tickets' ); ?></a></p>
 
 		<h4><?php esc_html_e( 'News For Events Users', 'event-tickets' ); ?></h4>
-		<p><a href="http://m.tri.be/1955" target="_blank"><?php esc_html_e( 'Product Releases, Tutorials and Community Activity', 'event-tickets' ); ?></a></p>
+		<p><a href="https://m.tri.be/1955" target="_blank"><?php esc_html_e( 'Product Releases, Tutorials and Community Activity', 'event-tickets' ); ?></a></p>
 	</div>
 </div>
 
@@ -43,8 +43,8 @@ $support_forums_url = '<a href="http://m.tri.be/19sh" target="_blank">' . esc_ht
 	<div class="tribe-half-column">
 		<h2><?php esc_html_e( 'We Need Your Help', 'event-tickets' ); ?></h2>
 		<p><?php esc_html_e( "Your ratings help us bring Event Tickets to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support.", 'event-tickets' ); ?></p>
-		<p><strong><?php esc_html_e( 'Rate us today!', 'event-tickets' ); ?></strong> <a class="tribe-rating-link" href="http://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank">&#9733;&#9733;&#9733;&#9733;&#9733;</a></p>
-		<a href="http://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank" class="button-primary"><?php esc_html_e( 'Rate It', 'event-tickets' ); ?></a>
+		<p><strong><?php esc_html_e( 'Rate us today!', 'event-tickets' ); ?></strong> <a class="tribe-rating-link" href="https://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank">&#9733;&#9733;&#9733;&#9733;&#9733;</a></p>
+		<a href="https://wordpress.org/support/view/plugin-reviews/event-tickets?filter=5" target="_blank" class="button-primary"><?php esc_html_e( 'Rate It', 'event-tickets' ); ?></a>
 	</div>
 	<div class="tribe-half-column">
 		<h2><?php esc_html_e( 'Newsletter Signup', 'event-tickets' ); ?></h2>
