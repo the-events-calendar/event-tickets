@@ -177,11 +177,6 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 				$quantity = $inventory;
 			}
 
-			// enforce purchase limit
-			if ( $ticket->purchase_limit && $quantity > $ticket->purchase_limit ) {
-				$quantity = $ticket->purchase_limit;
-			}
-
 			// if the ticket doesn't have a quantity, skip it
 			if ( empty( $quantity ) ) {
 				continue;

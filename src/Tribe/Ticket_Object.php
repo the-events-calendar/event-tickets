@@ -218,6 +218,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * Purchase limite for the ticket
 		 *
 		 * @var
+		 * @deprecated TBD
 		 */
 		public $purchase_limit;
 
