@@ -13,7 +13,7 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	 *
 	 * @return array|WP_Error The ticket data or a `WP_Error` detailing the issue on failure.
 	 */
-	public function get_ticket_data( $ticket_id, $context = '' );
+	public function get_ticket_data( $ticket_id, $context = 'public' );
 
 	/**
 	 * Returns an attendee data.
@@ -26,4 +26,11 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	 * @return array|WP_Error The attendee data or a `WP_Error` detailing the issue on failure.
 	 */
 	public function get_attendee_data( $attendee_id, $context = '' );
+
+	/**
+	 * Sets the data context the repository should be aware of.
+	 *
+	 * @param string $context
+	 */
+	public function set_context( $context );
 }

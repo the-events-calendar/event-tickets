@@ -25,4 +25,27 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	 */
 	public function is_event_id( $event_id );
 
+	/**
+	 * Whether a post ID exists.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 *
+	 * @return bool
+	 */
+	public function is_post_id( $post_id );
+
+	/**
+	 * Whether a csv list, or array, of post IDs only contains valid posts IDs or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param        string|array $posts
+	 * @param string              $sep
+	 *
+	 * @return bool
+	 */
+	public function is_post_id_list( $posts, $sep = ',' );
+
 }

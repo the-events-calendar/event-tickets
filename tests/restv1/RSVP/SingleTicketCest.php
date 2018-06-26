@@ -54,6 +54,7 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 
+		// @todo add checkin test
 		$ticket_attendees = $repository->get_ticket_attendees( $ticket_id );
 		$expectedJson     = array(
 			'id'                            => $ticket_id,

@@ -6,26 +6,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	Tribe__Documentation__Swagger__Provider_Interface {
 
 	/**
-	 * @var Tribe__Tickets__REST__Interfaces__Post_Repository
-	 */
-	protected $post_repository;
-	/**
-	 * @var Tribe__Tickets__REST__V1__Validator__Interface
-	 */
-	protected $validator;
-
-	public function __construct(
-		Tribe__REST__Messages_Interface $messages,
-		Tribe__Tickets__REST__Interfaces__Post_Repository $post_repository,
-		Tribe__Tickets__REST__V1__Validator__Interface $validator
-	) {
-
-		parent::__construct( $messages );
-		$this->post_repository = $post_repository;
-		$this->validator       = $validator;
-	}
-
-	/**
 	 * {@inheritdoc}
 	 */
 	public function get_documentation() {
@@ -45,15 +25,21 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
 		}
 
-		$cap = get_post_type_object( $ticket_post->post_type )->cap->read_post;
+		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
+		$read_cap                = $ticket_post_type_object->cap->read_post;
+		$read_private_cap        = $ticket_post_type_object->cap->edit_post;
 
-		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $cap, $ticket_id ) ) ) {
+		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
 			$message = $this->messages->get_message( 'ticket-not-accessible' );
 
 			return new WP_Error( 'tickets-not-accessible', $message, array( 'status' => 401 ) );
 		}
 
-		$data = $this->post_repository->get_ticket_data( $ticket_id );
+		$context = current_user_can( $read_private_cap, $ticket_id )
+			? Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC
+			: Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR;
+		$this->post_repository->set_context( $context );
+		$data    = $this->post_repository->get_ticket_data( $ticket_id, $context );
 
 		/**
 		 * Filters the data that will be returned for a single ticket request.
@@ -74,10 +60,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	public function READ_args() {
 		return array(
 			'id' => array(
-				'in'                => 'path',
-				'type'              => 'integer',
-				'description'       => __( 'the ticket post ID', 'event-tickets' ),
-				'required'          => true,
+				// @todo update Swaggerification functions to support multiple types
+				// 'swagger_type'      => array( 'integer', 'string' ),
+				'swagger_type'      => 'string',
+				'description'       => __( 'Limit results to tickets that are assigned to one of the posts specified in the CSV list or array', 'event-tickets' ),
+				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_positive_int' ),
 			),
 		);

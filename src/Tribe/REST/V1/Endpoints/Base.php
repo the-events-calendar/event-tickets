@@ -12,16 +12,32 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 * @var array
 	 */
 	protected $supported_query_vars = array();
+	/**
+	 * @var Tribe__Tickets__REST__Interfaces__Post_Repository
+	 */
+	protected $post_repository;
+	/**
+	 * @var Tribe__Tickets__REST__V1__Validator__Interface
+	 */
+	protected $validator;
 
 	/**
 	 * Tribe__Tickets__REST__V1__Endpoints__Base constructor.
 	 *
 	 * @since TBD
 	 *
-	 * @param Tribe__REST__Messages_Interface $messages
+	 * @param Tribe__REST__Messages_Interface                   $messages
+	 * @param Tribe__Tickets__REST__Interfaces__Post_Repository $post_repository
+	 * @param Tribe__Tickets__REST__V1__Validator__Interface    $validator
 	 */
-	public function __construct( Tribe__REST__Messages_Interface $messages ) {
-		$this->messages = $messages;
+	public function __construct(
+		Tribe__REST__Messages_Interface $messages,
+		Tribe__Tickets__REST__Interfaces__Post_Repository $post_repository,
+		Tribe__Tickets__REST__V1__Validator__Interface $validator
+	) {
+		$this->messages        = $messages;
+		$this->post_repository = $post_repository;
+		$this->validator       = $validator;
 	}
 
 	/**

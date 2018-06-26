@@ -5,6 +5,8 @@ class
 Tribe__Tickets__REST__V1__Post_Repository
 	extends Tribe__REST__Post_Repository
 	implements Tribe__Tickets__REST__Interfaces__Post_Repository {
+	const CONTEXT_PUBLIC = 'public';
+	const CONTEXT_EDITOR = 'editor';
 
 	/**
 	 * A post type to get data request handler map.
@@ -47,6 +49,11 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 * @var WP_Post Cached current ticket post.
 	 */
 	protected $current_ticket_post;
+
+	/**
+	 * @var string The context the data will be shown in; defaults to `public`.
+	 */
+	protected $context = 'public';
 
 	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
 		$this->types_get_map = array(
@@ -576,13 +583,18 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		// @todo here we need to uniform the return values to indicate unlimited and oversold!
 
-		return array(
+		$details = array(
 			'available_percentage' => $available_percentage,
-			'max'                  => (int) $ticket->capacity(),
 			'available'            => (int) $ticket->stock(), // see not above about why we use this
-			'sold'                 => (int) $ticket->qty_sold(),
-			'pending'              => (int) $ticket->qty_pending(),
 		);
+
+		if ( $this->context === self::CONTEXT_EDITOR ) {
+			$details['max']     = (int) $ticket->capacity();
+			$details['sold']    = (int) $ticket->qty_sold();
+			$details['pending'] = (int) $ticket->qty_pending();
+		}
+
+		return $details;
 	}
 
 	/**
@@ -646,23 +658,46 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		if (
 			$ticket_object instanceof Tribe__Tickets__Ticket_Object
-			&& $ticket_object->provider_class === 'Tribe__Tickets__RSVP'
+			&& $this->context === self::CONTEXT_EDITOR
 			&& false !== $data['attendees']
 		) {
+			$is_rsvp = $ticket_object->provider_class === 'Tribe__Tickets__RSVP';
+
 			$going     = 0;
 			$not_going = 0;
+			$checked_in = 0;
+			$unchecked_in = 0;
 
 			foreach ( $data['attendees'] as $attendee ) {
-				if ( true === $attendee['rsvp_going'] ) {
-					$going ++;
+				if ( $is_rsvp ) {
+					if ( true === $attendee['rsvp_going'] ) {
+						$going ++;
+					} else {
+						$not_going ++;
+					}
+				}
+
+				if ( true === $attendee['check_in'] ) {
+					$checked_in ++;
 				} else {
-					$not_going ++;
+					$unchecked_in ++;
 				}
 			}
 
-			$data['rsvp'] = array(
-				'rsvp_going'     => $going,
-				'rsvp_not_going' => $not_going,
+
+			if ($is_rsvp) {
+				$data['rsvp'] = array(
+					'rsvp_going'     => $going,
+					'rsvp_not_going' => $not_going,
+				);
+			}
+
+			$checked_in_percentage = (int) ceil( $checked_in / count( $data['attendees'] ) );
+			$data['checkin']       = array(
+				'checked_in'             => $checked_in,
+				'unchecked_in'           => $unchecked_in,
+				'checked_in_percentage'  => $checked_in_percentage,
+				'uncheked_in_percentage' => 100 - $checked_in_percentage,
 			);
 		}
 	}
@@ -955,5 +990,16 @@ Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		return $sku;
+	}
+
+	/**
+	 * Sets the data context the repository should be aware of.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context
+	 */
+	public function set_context( $context ) {
+		$this->context = $context;
 	}
 }
