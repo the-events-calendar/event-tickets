@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.6
-Stable tag: 4.7.4
+Stable tag: 4.7.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,13 +122,22 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.7.4] 2018-06-19 =
+= [4.7.5] TBD =
+
+* Fix - Issues with calculating and displaying ticketed events on the admin list [71122]
+
+= [4.7.4.1] 2018-06-22 =
+
+* Fix - Sending the ticket email when WooCommerce is active and purchasing another ticket type [109102]
+
+= [4.7.4] 2018-06-20 =
 
 * Fix - Properly calculate existing stock for RSVPs. Thanks to @afplct, @jacob, @dimaginet and others for flagging this! [102634]
 * Fix - Properly update attendees transient when checkin/unchekin an attendee, in order to see changes immediately. Thanks to @newcollegeofflorida and @gschnoor for flagging this! [73272]
 * Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
 * Fix - Display a notice if the user accesses the tickets page and doesn't have tickets [89201]
 * Fix - If the ticket is a WooCommerce product and has a featured image, display it in the email [79877]
+* Fix - Make sure the Paypal orders are being recorded. Thanks @burlingtonbytes for flagging this! [108436]
 * Tweak - Added new action, `tribe_tickets_ticket_email_ticket_top`, to the tickets email template [79878]
 * Tweak - Changed `tribe_tickets_email_include_event_date` filter default value to true. Now event date shows by default in RSVP ticket emails. Thanks @melvidge for the feedback [102309]
 * Tweak - Replaced start date in the RSVP non-attendace email template with full event schedule details [87686]
@@ -136,6 +145,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Language - 2 new strings added, 66 updated, 0 fuzzied, and 1 obsoleted
 
 = [4.7.3.1] 2018-05-31 =
+
 * Fix - Include new DataTables files in event tickets via tribe-common
 
 = [4.7.3] 2018-05-29 =
