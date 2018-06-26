@@ -29,7 +29,20 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		tribe_singleton( 'tickets.rest-v1.system', 'Tribe__Tickets__REST__V1__System' );
 		tribe_singleton( 'tickets.rest-v1.validator', 'Tribe__Tickets__REST__V1__Validator__Base' );
 		tribe_singleton( 'tickets.rest-v1.repository', 'Tribe__Tickets__REST__V1__Post_Repository' );
-		tribe_singleton( 'tickets.rest-v1.endpoints.documentation', new Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation( tribe( 'tickets.rest-v1.main' )->get_semantic_version() ) );
+		tribe_singleton(
+			'tickets.rest-v1.endpoints.documentation',
+			new Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation(
+				tribe( 'tickets.rest-v1.main' )->get_semantic_version()
+			)
+		);
+		tribe_singleton(
+			'tickets.rest-v1.endpoints.tickets-single',
+			new Tribe__Tickets__REST__V1__Endpoints__Single_Ticket(
+				tribe( 'tickets.rest-v1.messages' ),
+				tribe( 'tickets.rest-v1.repository' ),
+				tribe( 'tickets.rest-v1.validator' )
+			)
+		);
 
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/functions/advanced-functions/rest-v1.php';
 
@@ -43,17 +56,44 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	 */
 	public function register_endpoints() {
 
-		$doc_endpoint = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
-		$this->namespace = tribe( 'tickets-plus.rest-v1.main' )->get_events_route_namespace();
+		$this->namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
+
+		$doc_endpoint = $this->register_documentation_endpoint();
+		$single_ticket_endpoint = $this->register_single_ticket_endpoint();
+
+		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
+		$doc_endpoint->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
+	}
+
+	/**
+	 * Builds, registers and returns the Swagger.io documentation provider endpoint.
+	 *
+	 * @since TBD
+	 *
+	 * @return Tribe__Documentation__Swagger__Builder_Interface
+	 */
+	protected function register_documentation_endpoint() {
+		$endpoint = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
 		register_rest_route( $this->namespace, '/doc', array(
 			'methods'  => WP_REST_Server::READABLE,
-			'callback' => array( $doc_endpoint, 'get' ),
+			'callback' => array( $endpoint, 'get' ),
 		) );
 
-		/** @var Tribe__Documentation__Swagger__Builder_Interface $documentation */
-		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
-		$doc_endpoint->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
+		return $endpoint;
+	}
+
+	protected function register_single_ticket_endpoint() {
+		/** @var Tribe__Tickets__REST__V1__Endpoints__Single_Ticket $endpoint */
+		$endpoint = tribe( 'tickets.rest-v1.endpoints.tickets-single' );
+
+		register_rest_route( $this->namespace, '/tickets/(?P<id>\\d+)', array(
+			'methods'  => WP_REST_Server::READABLE,
+			'args'     => $endpoint->READ_args(),
+			'callback' => array( $endpoint, 'get' ),
+		) );
+
+		return $endpoint;
 	}
 }

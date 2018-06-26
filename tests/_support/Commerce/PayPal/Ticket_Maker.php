@@ -6,25 +6,28 @@ namespace Tribe\Tickets\Test\Commerce\PayPal;
 trait Ticket_Maker {
 
 	/**
-	 * Generates a ticket for a post.
+	 * Generates a PayPal ticket for a post.
 	 *
-	 * @param       int $post_id
+	 * @param       int $post_id   The ID of the post this ticket should be related to.
 	 * @param       int $price
-	 * @param array     $meta_input An array of values to override the `meta_input` entry (see method code)
+	 * @param array     $overrides An array of values to override the default and random generation arguments.
 	 *
-	 * @return mixed
+	 * @return int The generated ticket post ID.
 	 */
 	protected function make_ticket( $post_id, $price, array $overrides = [] ) {
-		$factory = ! isset( $this->factory ) ? $this->factory() : $this->factory;
+		$factory = $this->factory ?? $this->factory();
 
-		$meta_input = isset( $overrides['meta_input'] ) && is_array( $overrides['meta_input'] ) ? $overrides['meta_input'] : array();
+		$meta_input = isset( $overrides['meta_input'] ) && \is_array( $overrides['meta_input'] )
+			? $overrides['meta_input']
+			: array();
+
 		unset( $overrides['meta_input'] );
 
 		$ticket_id = $factory->post->create( array_merge(
 				[
-					'post_title'   => "Test Ticket for {$post_id}",
-					'post_content' => "Ticket for {$post_id}",
-					'post_excerpt' => "Ticket for {$post_id}",
+					'post_title'   => "Test PayPal ticket for {$post_id}",
+					'post_content' => "Test PayPal ticket description for {$post_id}",
+					'post_excerpt' => "Ticket PayPal ticket excerpt for {$post_id}",
 					'post_type'    => tribe( 'tickets.commerce.paypal' )->ticket_object,
 					'meta_input'   => array_merge( [
 						'_tribe_tpp_for_event'                           => $post_id,

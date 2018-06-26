@@ -1,6 +1,8 @@
 <?php
 
-use Codeception\Configuration;
+namespace Tribe\Tickets\Test\REST\V1;
+
+use Restv1Tester;
 
 class BaseRestCest {
 
@@ -30,13 +32,31 @@ class BaseRestCest {
 	/**
 	 * @var string
 	 */
+	protected $attendees_url;
+
+	/**
+	 * @var string
+	 */
 	protected $documentation_url;
+
+	/**
+	 * @var \tad\WPBrowser\Module\WPLoader\FactoryStore
+	 */
+	protected $factory;
 
 	public function _before( Restv1Tester $I ) {
 		$this->site_url          = $I->grabSiteUrl();
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
+		$this->attendees_url       = $this->rest_url . 'attendees';
 		$this->documentation_url = $this->rest_url . 'doc';
+		$this->factory = $I->factory();
+		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe_events' ] );
+
 		wp_cache_flush();
+
+		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
+		$repository = tribe( 'tickets.rest-v1.repository' );
+		$repository->reset_ticket_cache();
 	}
 }

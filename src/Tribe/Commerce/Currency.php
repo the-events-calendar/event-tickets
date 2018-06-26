@@ -32,7 +32,10 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get and allow filtering of the currency symbol
+	 * Get and allow filtering of the currency symbol.
+	 *
+	 * @since 4.7
+	 *
 	 * @param int|null $post_id
 	 *
 	 * @return string

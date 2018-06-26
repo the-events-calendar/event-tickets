@@ -5,15 +5,14 @@ modules:
         - REST
         - WPDb
         - WPBrowser
-        - \Helper\TribeDb
-        - Asserts
         - WPLoader
+        - Asserts
     config:
         WPDb:
             dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
             user: %DB_USER%
             password: %DB_PASSWORD%
-            dump: tests/_data/dump.sql
+            dump: tests/_data/restv1-dump.sql
             populate: true
             cleanup: true
             url: '%WP_URL%'
@@ -34,4 +33,3 @@ modules:
             dbHost: %DB_HOST%
             dbUser: %DB_USER%
             dbPassword: '%DB_PASSWORD%'
-

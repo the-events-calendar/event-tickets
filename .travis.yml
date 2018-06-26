@@ -130,6 +130,7 @@ script:
   - codecept run integration
   - codecept run functional -vvv
   - codecept run acceptance
+  - codecept run restv1
 
 
 after_failure:

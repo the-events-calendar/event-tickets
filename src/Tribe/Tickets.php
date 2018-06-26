@@ -297,6 +297,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_tickets_query_args( $post_id = null ) {
+			if ( $post_id instanceof WP_Post ) {
+				$post_id = $post_id->ID;
+			}
+
 			$args = array(
 				'post_type'      => array( $this->ticket_object ),
 				'posts_per_page' => - 1,
@@ -635,7 +639,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $attendee_id
 		 * @return array
 		 */
-		protected function get_attendees_by_attendee_id( $attendee_id ) {
+		public function get_attendees_by_attendee_id( $attendee_id ) {
 			$attendees_query = new WP_Query( array(
 				'p'         => $attendee_id,
 				'post_type' => $this->attendee_object,
@@ -1518,6 +1522,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_object( $provider_class ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
+			// @todo this will always be empty... why is this here?
 			if ( empty( $attendee_order_key ) ) {
 				switch ( $this->class_name ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
