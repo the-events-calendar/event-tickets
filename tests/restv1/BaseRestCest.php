@@ -51,6 +51,7 @@ class BaseRestCest {
 		$this->attendees_url       = $this->rest_url . 'attendees';
 		$this->documentation_url = $this->rest_url . 'doc';
 		$this->factory = $I->factory();
+		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe_events' ] );
 
 		wp_cache_flush();
 
