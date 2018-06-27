@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.7.5] TBD =
 
 * Fix - Issues with calculating and displaying ticketed events on the admin list [71122]
+* Tweak - Do not enable tickets on events by default when The Events Calendar is installed [73599]
 
 = [4.7.4.1] 2018-06-22 =
 
