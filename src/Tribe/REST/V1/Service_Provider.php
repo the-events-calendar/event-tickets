@@ -118,7 +118,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	 * Registers the REST API endpoint that will handle ticket archive requests.
 	 *
 	 * @since TBD
-	 *        
+	 *
 	 * @return Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 */
 	protected function register_ticket_archive_endpoint() {
