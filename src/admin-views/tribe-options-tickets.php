@@ -303,7 +303,7 @@ $paypal_fields            = array(
 		'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 		'tooltip'             => esc_html__( 'Subject of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
 		'size'                => 'large',
-		'default'             => 'You have tickets!',
+		'default'             => esc_html__( 'You have tickets!', 'event-tickets' ),
 		'validation_callback' => 'is_string',
 		'validation_type'     => 'textarea',
 	),
