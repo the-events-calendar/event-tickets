@@ -17,11 +17,7 @@ class Tribe__Tickets__REST__V1__Flags {
 	 * @return WP_REST_Response
 	 */
 	public function flag_ticketed_post( WP_REST_Response $response, WP_Post $post ) {
-		if ( empty( $response->data['id'] ) ) {
-			return $response;
-		}
-
-		$id = $response->data['id'];
+		$id = $post->ID;
 
 		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $id );
 
