@@ -122,13 +122,15 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [] TBD =
+* Fix - Display unavailability message when tickets are not yet or no longer available [81334]
+
 = [4.7.4] 2018-06-20 =
 
 * Fix - Properly calculate existing stock for RSVPs. Thanks to @afplct, @jacob, @dimaginet and others for flagging this! [102634]
 * Fix - Properly update attendees transient when checkin/unchekin an attendee, in order to see changes immediately. Thanks to @newcollegeofflorida and @gschnoor for flagging this! [73272]
 * Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
 * Fix - Display a notice if the user accesses the tickets page and doesn't have tickets [89201]
-* Fix - Display unavailability message when tickets are not yet or no longer available [81334]
 * Fix - If the ticket is a WooCommerce product and has a featured image, display it in the email [79877]
 * Fix - Make sure the Paypal orders are being recorded. Thanks @burlingtonbytes for flagging this! [108436]
 * Tweak - Added new action, `tribe_tickets_ticket_email_ticket_top`, to the tickets email template [79878]
