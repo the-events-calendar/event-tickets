@@ -44,7 +44,7 @@ trait Ticket_Maker {
 					'post_type'    => $rsvp->ticket_object,
 					'meta_input'   => array_merge( [
 						'_tribe_rsvp_for_event'                          => $post_id,
-						'total_sales'                                   => 0,
+						'total_sales'                                    => 0,
 						'_stock'                                         => $stock,
 						'_capacity'                                      => $capacity,
 						'_manage_stock'                                  => 'yes',
@@ -56,5 +56,11 @@ trait Ticket_Maker {
 		);
 
 		return $ticket_id;
+	}
+
+	protected function create_many_tickets( int $count, int $post_id, array $overrides = [] ) {
+		return array_map( function () use ( $post_id, $overrides ) {
+			return $this->create_ticket( $post_id, $overrides );
+		}, range( 1, $count ) );
 	}
 }

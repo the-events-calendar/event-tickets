@@ -44,4 +44,10 @@ trait Ticket_Maker {
 
 		return $ticket_id;
 	}
+
+	protected function create_many_tickets( int $count, int $post_id, array $overrides = [] ) {
+		return array_map( function () use ( $post_id, $overrides ) {
+			return $this->create_ticket( $post_id, $overrides );
+		}, range( 1, $count ) );
+	}
 }
