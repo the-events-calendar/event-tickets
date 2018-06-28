@@ -1,8 +1,7 @@
 <?php
 
 
-class
-Tribe__Tickets__REST__V1__Post_Repository
+class Tribe__Tickets__REST__V1__Post_Repository
 	extends Tribe__REST__Post_Repository
 	implements Tribe__Tickets__REST__Interfaces__Post_Repository {
 	const CONTEXT_PUBLIC = 'public';
@@ -255,7 +254,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @return string
 	 */
-	protected function get_provider_slug( $provider_class ) {
+	public function get_provider_slug( $provider_class ) {
 		if ( is_object( $provider_class ) ) {
 			$provider_class = get_class( $provider_class );
 		}

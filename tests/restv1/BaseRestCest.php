@@ -44,13 +44,25 @@ class BaseRestCest {
 	 */
 	protected $factory;
 
+	/**
+	 * @var string
+	 */
+	protected $wp_rest_url;
+
+	/**
+	 * @var string
+	 */
+	protected $tec_rest_url;
+
 	public function _before( Restv1Tester $I ) {
 		$this->site_url          = $I->grabSiteUrl();
+		$this->wp_rest_url       = $this->site_url . '/wp-json/wp/v2/';
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
+		$this->tec_rest_url      = $this->site_url . '/wp-json/tribe/events/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
-		$this->attendees_url       = $this->rest_url . 'attendees';
+		$this->attendees_url     = $this->rest_url . 'attendees';
 		$this->documentation_url = $this->rest_url . 'doc';
-		$this->factory = $I->factory();
+		$this->factory           = $I->factory();
 		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe_events' ] );
 
 		wp_cache_flush();

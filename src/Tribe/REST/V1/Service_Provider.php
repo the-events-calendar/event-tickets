@@ -21,7 +21,6 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	 * @since TBD
 	 */
 	public function register() {
-		// @todo filter post responses and event response to add `ticketed` flag
 		tribe_singleton( 'tickets.rest-v1.main', 'Tribe__Tickets__REST__V1__Main', array( 'hook' ) );
 		tribe_singleton( 'tickets.rest-v1.messages', 'Tribe__Tickets__REST__V1__Messages' );
 		tribe_singleton( 'tickets.rest-v1.headers-base', 'Tribe__Tickets__REST__V1__Headers__Base' );
@@ -29,6 +28,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		tribe_singleton( 'tickets.rest-v1.system', 'Tribe__Tickets__REST__V1__System' );
 		tribe_singleton( 'tickets.rest-v1.validator', 'Tribe__Tickets__REST__V1__Validator__Base' );
 		tribe_singleton( 'tickets.rest-v1.repository', 'Tribe__Tickets__REST__V1__Post_Repository' );
+		tribe_singleton( 'tickets.rest-v1.flags', 'Tribe__Tickets__REST__V1__Flags' );
 		tribe_singleton(
 			'tickets.rest-v1.endpoints.documentation',
 			new Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation(
@@ -54,7 +54,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/functions/advanced-functions/rest-v1.php';
 
-		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
+		$this->hooks();
 	}
 
 	/**
@@ -132,5 +132,20 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		) );
 
 		return $endpoint;
+	}
+
+	/**
+	 * Hooks all the methods and actions the class needs.
+	 *
+	 * @since TBD
+	 */
+	protected function hooks() {
+		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
+
+		foreach ( Tribe__Tickets__Main::instance()->post_types() as $post_type ) {
+			add_filter( "rest_prepare_{$post_type}", tribe_callback( 'tickets.rest-v1.flags', 'flag_ticketed_post' ), 10, 2 );
+		}
+
+		add_filter( 'tribe_rest_event_data', tribe_callback( 'tickets.rest-v1.flags', 'flag_ticketed_event' ), 10, 2 );
 	}
 }

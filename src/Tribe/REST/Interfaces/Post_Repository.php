@@ -33,4 +33,15 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	 * @param string $context
 	 */
 	public function set_context( $context );
+
+	/**
+	 * Returns the slug for provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|object $provider_class The provider object or class.
+	 *
+	 * @return string
+	 */
+	public function get_provider_slug( $provider_class );
 }
