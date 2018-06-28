@@ -55,7 +55,7 @@ $tickets_fields = array(
 	),
 	'ticket-enabled-post-types' => array(
 		'type'            => 'checkbox_list',
-		'label'           => esc_html__( 'Post types that can have tickets', 'event-tickets' ),,
+		'label'           => esc_html__( 'Post types that can have tickets', 'event-tickets' ),
 		'options'         => $all_post_types,
 		'can_be_empty'    => true,
 		'validation_type' => 'options_multi',
