@@ -19,28 +19,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	public function get( WP_REST_Request $request ) {
 		$ticket_id = $request['id'];
 
-		$ticket_post = get_post( $ticket_id );
+		$ticket_data = $this->get_readable_ticket_data( $ticket_id );
 
-		if ( ! $ticket_post instanceof WP_Post ) {
-			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
+		if ( $ticket_data instanceof WP_Error ) {
+			return $ticket_data;
 		}
-
-		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
-		$read_cap                = $ticket_post_type_object->cap->read_post;
-		$edit_cap                = $ticket_post_type_object->cap->edit_post;
-
-		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
-			$message = $this->messages->get_message( 'ticket-not-accessible' );
-
-			return new WP_Error( 'tickets-not-accessible', $message, array( 'status' => 401 ) );
-		}
-
-		$context = current_user_can( $edit_cap, $ticket_id )
-			? Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR
-			: Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC;
-
-		$this->post_repository->set_context( $context );
-		$data    = $this->post_repository->get_ticket_data( $ticket_id, $context );
 
 		/**
 		 * Filters the data that will be returned for a single ticket request.
@@ -50,7 +33,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 		 * @param array           $data    The ticket data.
 		 * @param WP_REST_Request $request The original request.
 		 */
-		$data = apply_filters( 'tribe_rest_single_ticket_data', $data, $request );
+		$data = apply_filters( 'tribe_rest_single_ticket_data', $ticket_data, $request );
 
 		return $data;
 	}

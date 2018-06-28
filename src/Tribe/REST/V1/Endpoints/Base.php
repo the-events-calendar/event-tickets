@@ -12,14 +12,33 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 * @var array
 	 */
 	protected $supported_query_vars = array();
+
 	/**
 	 * @var Tribe__Tickets__REST__Interfaces__Post_Repository
 	 */
 	protected $post_repository;
+
 	/**
 	 * @var Tribe__Tickets__REST__V1__Validator__Interface
 	 */
 	protected $validator;
+
+	/**
+	 * @var array An array of default query args to customize the tickets query.
+	 */
+	protected $ticket_query_args = array(
+		/**
+		 * By default tickets would show in ASC `menu_order` order.
+		 * We drop this UI-related order to use a consistent one.
+		 */
+		'orderby' => array( 'date', 'ID' ),
+		'order'   => 'ASC',
+	);
+
+	/**
+	 * @var int A property to keep track of the tickets found during ticket queries.
+	 */
+	protected $found_tickets = 0;
 
 	/**
 	 * Tribe__Tickets__REST__V1__Endpoints__Base constructor.
@@ -127,6 +146,42 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	}
 
 	/**
+	 * Filters the query arguments that will be used to fetch the tickets to allow any
+	 * ticket post status if the user can edit the ticket post type and set a default
+	 * order.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $args
+	 *
+	 * @return array
+	 */
+	public function filter_tickets_query_args( array $args = [] ) {
+		if ( empty( $args['post_type'] ) || count( (array) $args['post_type'] ) > 1 ) {
+			return $args;
+		}
+
+		$post_types = (array) $args['post_type'];
+
+		$ticket_post_type_object = get_post_type_object( $post_types[0] );
+		$edit_posts              = $ticket_post_type_object->cap->edit_posts;
+
+		if ( current_user_can( $edit_posts ) ) {
+			$args['post_status'] = 'any';
+		}
+
+		$args = array_merge( $args, $this->ticket_query_args );
+
+		$query               = new WP_Query( $args );
+		$this->found_tickets += (int) $query->found_posts;
+
+		// let's avoid filtering the same args again
+		remove_filter( 'tribe_tickets_get_tickets_query_args', array( $this, 'filter_tickets_query_args' ), 10 );
+
+		return $args;
+	}
+
+	/**
 	 * Returns the default value of posts per page.
 	 *
 	 * Cascading fallback is TEC `posts_per_page` option, `posts_per_page` option and, finally, 20.
@@ -203,5 +258,65 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 		);
 
 		return Tribe__Utils__Array::get( $rest_to_swagger_type_map, $type, $type );
+	}
+
+	/**
+	 * Returns the ticket data accessible to the current user.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id
+	 *
+	 * @return array|WP_Error An array of ticket data accessible by the current user or a `WP_Error` if the user
+	 *                        cannot access the current ticket at all.
+	 */
+	protected function get_readable_ticket_data( $ticket_id ) {
+		$ticket_post = get_post( $ticket_id );
+
+		if ( ! $ticket_post instanceof WP_Post ) {
+			return new WP_Error( 'ticket-not-found', $this->messages->get_message( 'ticket-not-found' ), array( 'status' => 404 ) );
+		}
+
+		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
+		$read_cap                = $ticket_post_type_object->cap->read_post;
+		$edit_cap                = $ticket_post_type_object->cap->edit_post;
+
+		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
+			$message = $this->messages->get_message( 'ticket-not-accessible' );
+
+			return new WP_Error( 'tickets-not-accessible', $message, array( 'status' => 401 ) );
+		}
+
+		$context = current_user_can( $edit_cap, $ticket_id )
+			? Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR
+			: Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC;
+
+		$this->post_repository->set_context( $context );
+
+		return $this->post_repository->get_ticket_data( $ticket_id, $context );
+	}
+
+	/**
+	 * Filtered method to get the tickets for a post.
+	 *
+	 * The method will filter the query arguments using the
+	 * `tribe_tickets_get_tickets_query_args` filter.
+	 *
+	 * @uses
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $post_id
+	 *
+	 * @return array|int An array of found tickets.
+	 */
+	protected function get_tickets_for_post( $post_id ) {
+		$post_id = $post_id instanceof WP_Post ? $post_id->ID : $post_id;
+
+		// this filter auto-removes itself
+		add_filter( 'tribe_tickets_get_tickets_query_args', array( $this, 'filter_tickets_query_args' ) );
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
+		return $tickets;
 	}
 }
