@@ -128,7 +128,14 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 * {@inheritdoc}
 	 */
 	public function get_ticket_data( $ticket_id, $context = '' ) {
-		$ticket = $this->get_ticket_object( $ticket_id );
+		if ( is_array( $ticket_id ) && ! empty( $ticket_id['id'] ) ) {
+			// ticket data in array format
+			$ticket_id = $ticket_id['id'];
+		}
+
+		$ticket = $ticket_id instanceof Tribe__Tickets__Ticket_Object
+			? $ticket_id
+			: $this->get_ticket_object( $ticket_id );
 
 		if ( $ticket instanceof WP_Error ) {
 			return $ticket;
@@ -224,6 +231,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 			return new WP_Error( 'ticket-object-not-found', $this->messages->get_message( 'ticket-object-not-found' ), array( 'status' => 500 ) );
 		}
 
+		$this->current_ticket_id     = $ticket_id;
 		$this->current_ticket_object = $ticket;
 
 		return $ticket;
