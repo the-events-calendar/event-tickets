@@ -266,7 +266,7 @@ $paypal_fields            = array(
 		'default'         => 'on-pending',
 		'validation_type' => 'options',
 		'options'         => array(
-			'on-pending'  => esc_html__( 'Decrease available ticket stock as soon as a Pending order is created.', 'event_tickets' ),
+			'on-pending'  => esc_html__( 'Decrease available ticket stock as soon as a Pending order is created.', 'event-tickets' ),
 			'on-complete' => esc_html__( 'Only decrease available ticket stock if an order is confirmed as Completed by PayPal.', 'event-tickets' ),
 		),
 		'tooltip_first' => true,
