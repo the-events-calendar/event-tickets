@@ -21,7 +21,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	 * @since TBD
 	 */
 	public function register() {
-
+		// @todo filter post responses and event response to add `ticketed` flag
 		tribe_singleton( 'tickets.rest-v1.main', 'Tribe__Tickets__REST__V1__Main', array( 'hook' ) );
 		tribe_singleton( 'tickets.rest-v1.messages', 'Tribe__Tickets__REST__V1__Messages' );
 		tribe_singleton( 'tickets.rest-v1.headers-base', 'Tribe__Tickets__REST__V1__Headers__Base' );
