@@ -672,7 +672,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			}
 
 
-			if ($is_rsvp) {
+			if ( $is_rsvp ) {
 				$data['rsvp'] = array(
 					'rsvp_going'     => $going,
 					'rsvp_not_going' => $not_going,
@@ -718,7 +718,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		foreach ( $attendees as $attendee ) {
 			$is_rsvp       = $attendee['provider'] === 'Tribe__Tickets__RSVP';
-			$is_rsvp_going = ! empty( $attendee['order_status'] && tribe_is_truthy( $attendee['order_status'] ) );
+			$is_rsvp_going = ! empty( $attendee['order_status'] ) && tribe_is_truthy( $attendee['order_status'] );
 			$opted_in      = ! tribe_is_truthy( $attendee['optout'] );
 
 			$should_show = self::CONTEXT_EDITOR === $this->context;
