@@ -8,10 +8,10 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id A ticket post or post ID.
-	 * @param string $context Context of data.
+	 * @param int|WP_Post|array|Tribe__Tickets__Ticket_Object $ticket_id A ticket post, data, post ID or object.
+	 * @param string                                          $context   Context of data.
 	 *
-	 * @return array|WP_Error The ticket data or a `WP_Error` detailing the issue on failure.
+	 * @return array|WP_Error ticket data or a `WP_Error` detailing the issue on failure.
 	 */
 	public function get_ticket_data( $ticket_id, $context = 'public' );
 
