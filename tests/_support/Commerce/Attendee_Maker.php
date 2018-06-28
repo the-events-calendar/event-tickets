@@ -148,4 +148,44 @@ trait Attendee_Maker {
 
 		return $attendee_id;
 	}
+
+	/**
+	 * Sets the optout option on a group of attendees.
+	 *
+	 * @param array $attendees
+	 * @param bool  $optout
+	 */
+	protected function optout_attendees( array $attendees, bool $optout = true ) {
+		foreach ( $attendees as $attendee ) {
+			if ( \is_array( $attendee ) ) {
+				if ( ! isset( $attendee['attendee_id'] ) ) {
+					throw new \RuntimeException( 'Attendee information does not contain the `attendee_id` entry' );
+				}
+				$attendee = $attendee['attendee_id'];
+			}
+			$this->optout_attendee( $attendee, $optout );
+		}
+	}
+
+	/**
+	 * Sets the optout option on an attendee.
+	 *
+	 * @param      int $attendee_id
+	 * @param bool     $optout
+	 */
+	protected function optout_attendee( int $attendee_id, bool $optout = true ) {
+		$attendee_post = get_post( $attendee_id );
+
+		if ( ! $attendee_post instanceof \WP_Post ) {
+			throw new \RuntimeException( "Attendee {$attendee_id} is not a valid Attendee post" );
+		}
+
+		$provider = tribe_tickets_get_ticket_provider( $attendee_id );
+
+		if ( false === $provider || ! $provider instanceof \Tribe__Tickets__Tickets ) {
+			throw new \RuntimeException( "Provider for attendee {$attendee_id} could not be found" );
+		}
+
+		update_post_meta( $attendee_post->ID, $provider->attendee_optout_key, (bool) $optout );
+	}
 }
