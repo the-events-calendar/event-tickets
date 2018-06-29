@@ -150,7 +150,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 			return new WP_Error(
 				'error',
 				__( 'An error happened while building the response: ', 'event-tickets' ) . $e->getMessage(),
-				array( 'status' => $e->getStatus() )
+				array( 'status' => $e->getMessage() )
 			);
 		}
 
