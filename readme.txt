@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [] TBD =
+= [4.7.5] TBD =
 * Fix - Display unavailability message when tickets are not yet or no longer available [81334]
 
 = [4.7.4] 2018-06-20 =
