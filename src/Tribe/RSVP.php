@@ -1073,7 +1073,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 * @param array $tickets
 			 */
 			do_action( 'tribe_tickets_expired_front_end_ticket_form', $must_login, $tickets );
-			return;
 		}
 
 		$rsvp_sent  = empty( $_GET['rsvp_sent'] ) ? false : true;
