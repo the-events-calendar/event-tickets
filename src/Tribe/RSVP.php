@@ -1396,7 +1396,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
 
 			$meta = '';
-			if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+			if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
 				$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
 
 				// Process Meta to include value, slug, and label
