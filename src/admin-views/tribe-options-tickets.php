@@ -264,7 +264,7 @@ $paypal_fields            = array(
 		'default'         => 'on-pending',
 		'validation_type' => 'options',
 		'options'         => array(
-			'on-pending'  => esc_html__( 'Decrease available ticket stock as soon as a Pending order is created.', 'event_tickets' ),
+			'on-pending'  => esc_html__( 'Decrease available ticket stock as soon as a Pending order is created.', 'event-tickets' ),
 			'on-complete' => esc_html__( 'Only decrease available ticket stock if an order is confirmed as Completed by PayPal.', 'event-tickets' ),
 		),
 		'tooltip_first' => true,
@@ -301,7 +301,7 @@ $paypal_fields            = array(
 		'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 		'tooltip'             => esc_html__( 'Subject of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
 		'size'                => 'large',
-		'default'             => 'You have tickets!',
+		'default'             => esc_html__( 'You have tickets!', 'event-tickets' ),
 		'validation_callback' => 'is_string',
 		'validation_type'     => 'textarea',
 	),
