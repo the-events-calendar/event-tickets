@@ -1,10 +1,11 @@
 <?php
 
 
-class
-Tribe__Tickets__REST__V1__Post_Repository
+class Tribe__Tickets__REST__V1__Post_Repository
 	extends Tribe__REST__Post_Repository
 	implements Tribe__Tickets__REST__Interfaces__Post_Repository {
+	const CONTEXT_PUBLIC = 'public';
+	const CONTEXT_EDITOR = 'editor';
 
 	/**
 	 * A post type to get data request handler map.
@@ -47,6 +48,11 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 * @var WP_Post Cached current ticket post.
 	 */
 	protected $current_ticket_post;
+
+	/**
+	 * @var string The context the data will be shown in; defaults to `public`.
+	 */
+	protected $context = 'public';
 
 	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
 		$this->types_get_map = array(
@@ -121,7 +127,14 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 * {@inheritdoc}
 	 */
 	public function get_ticket_data( $ticket_id, $context = '' ) {
-		$ticket = $this->get_ticket_object( $ticket_id );
+		if ( is_array( $ticket_id ) && ! empty( $ticket_id['id'] ) ) {
+			// ticket data in array format
+			$ticket_id = $ticket_id['id'];
+		}
+
+		$ticket = $ticket_id instanceof Tribe__Tickets__Ticket_Object
+			? $ticket_id
+			: $this->get_ticket_object( $ticket_id );
 
 		if ( $ticket instanceof WP_Error ) {
 			return $ticket;
@@ -132,9 +145,9 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		$data['post_id']  = $ticket->get_event_id();
 		$data['provider'] = $this->get_provider_slug( $ticket->provider_class );
+		$data['id'] = (int) $data['ID'];
 
 		try {
-			$this->reformat_ticket_data( $data );
 			$this->add_ticket_global_id_data( $data );
 			$this->add_ticket_post_data( $data );
 			$this->add_ticket_meta_data( $data );
@@ -217,6 +230,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 			return new WP_Error( 'ticket-object-not-found', $this->messages->get_message( 'ticket-object-not-found' ), array( 'status' => 500 ) );
 		}
 
+		$this->current_ticket_id     = $ticket_id;
 		$this->current_ticket_object = $ticket;
 
 		return $ticket;
@@ -240,7 +254,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @return string
 	 */
-	protected function get_provider_slug( $provider_class ) {
+	public function get_provider_slug( $provider_class ) {
 		if ( is_object( $provider_class ) ) {
 			$provider_class = get_class( $provider_class );
 		}
@@ -265,26 +279,6 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$default = array_values( $map )[0];
 
 		return Tribe__Utils__Array::get( $map, $provider_class, $default );
-	}
-
-	/**
-	 * Reformats the data to stick with the expected format.
-	 *
-	 * @since TBD
-	 *
-	 * @param array $data
-	 */
-	protected function reformat_ticket_data( array &$data ) {
-		$rename_map = array(
-			'ID' => 'id',
-		);
-
-		foreach ( $rename_map as $from_key => $to_key ) {
-			if ( isset( $data[ $from_key ] ) && ! isset( $data[ $to_key ] ) ) {
-				$data[ $to_key ] = $data[ $from_key ];
-				unset( $data[ $from_key ] );
-			}
-		}
 	}
 
 	/**
@@ -576,13 +570,18 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		// @todo here we need to uniform the return values to indicate unlimited and oversold!
 
-		return array(
+		$details = array(
 			'available_percentage' => $available_percentage,
-			'max'                  => (int) $ticket->capacity(),
 			'available'            => (int) $ticket->stock(), // see not above about why we use this
-			'sold'                 => (int) $ticket->qty_sold(),
-			'pending'              => (int) $ticket->qty_pending(),
 		);
+
+		if ( $this->context === self::CONTEXT_EDITOR ) {
+			$details['max']     = (int) $ticket->capacity();
+			$details['sold']    = (int) $ticket->qty_sold();
+			$details['pending'] = (int) $ticket->qty_pending();
+		}
+
+		return $details;
 	}
 
 	/**
@@ -646,23 +645,50 @@ Tribe__Tickets__REST__V1__Post_Repository
 
 		if (
 			$ticket_object instanceof Tribe__Tickets__Ticket_Object
-			&& $ticket_object->provider_class === 'Tribe__Tickets__RSVP'
+			&& $this->context === self::CONTEXT_EDITOR
 			&& false !== $data['attendees']
 		) {
+			$is_rsvp = $ticket_object->provider_class === 'Tribe__Tickets__RSVP';
+
 			$going     = 0;
 			$not_going = 0;
+			$checked_in = 0;
+			$unchecked_in = 0;
 
 			foreach ( $data['attendees'] as $attendee ) {
-				if ( true === $attendee['rsvp_going'] ) {
-					$going ++;
+				if ( $is_rsvp ) {
+					if ( true === $attendee['rsvp_going'] ) {
+						$going ++;
+					} else {
+						$not_going ++;
+					}
+				}
+
+				if ( ! empty( $attendee['checked_in'] ) ) {
+					$checked_in ++;
 				} else {
-					$not_going ++;
+					$unchecked_in ++;
 				}
 			}
 
-			$data['rsvp'] = array(
-				'rsvp_going'     => $going,
-				'rsvp_not_going' => $not_going,
+
+			if ( $is_rsvp ) {
+				$data['rsvp'] = array(
+					'rsvp_going'     => $going,
+					'rsvp_not_going' => $not_going,
+				);
+			}
+
+			$attendees_count       = count( $data['attendees'] );
+			$checked_in_percentage = $attendees_count > 0
+				? ceil( 100 * $checked_in / $attendees_count )
+				: 100;
+
+			$data['checkin']       = array(
+				'checked_in'             => $checked_in,
+				'unchecked_in'           => $unchecked_in,
+				'checked_in_percentage'  => $checked_in_percentage,
+				'unchecked_in_percentage' => 100 - $checked_in_percentage,
 			);
 		}
 	}
@@ -691,6 +717,19 @@ Tribe__Tickets__REST__V1__Post_Repository
 		$ticket_attendees = array();
 
 		foreach ( $attendees as $attendee ) {
+			$is_rsvp       = $attendee['provider'] === 'Tribe__Tickets__RSVP';
+			$is_rsvp_going = ! empty( $attendee['order_status'] ) && tribe_is_truthy( $attendee['order_status'] );
+			$opted_in      = ! tribe_is_truthy( $attendee['optout'] );
+
+			$should_show = self::CONTEXT_EDITOR === $this->context;
+			if ( ! $should_show ) {
+				$should_show = $is_rsvp ? $is_rsvp_going && $opted_in : $opted_in;
+			}
+
+			if ( ! $should_show ) {
+				continue;
+			}
+
 			$ticket_attendees[] = $this->build_attendee_data( $attendee );
 		}
 
@@ -782,6 +821,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 */
 	protected function clean_ticket_data( array &$data ) {
 		$unset_map = array(
+			'ID',
 			'name',
 			'show_description',
 			'price',
@@ -839,9 +879,13 @@ Tribe__Tickets__REST__V1__Post_Repository
 			}
 		}
 
-		$attendee_order_id = $this->get_attendee_order_id( $attendee_id, $provider );
+		try {
+			$attendee_order_id = $this->get_attendee_order_id( $attendee_id, $provider );
+		} catch ( ReflectionException $e ) {
+			return array();
+		}
 
-		$attendee_data     = array(
+		$attendee_data = array(
 			'id'                => $attendee_id,
 			'post_id'           => (int) $attendee['event_id'],
 			'ticket_id'         => (int) $attendee['product_id'],
@@ -854,35 +898,45 @@ Tribe__Tickets__REST__V1__Post_Repository
 			'modified'          => $attendee_post->post_modified,
 			'modified_utc'      => $attendee_post->post_modified_gmt,
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
-			'provider'          => $this->get_provider_slug( $provider ),
-			'order'             => $attendee_order_id,
-			'sku'               => $this->get_attendee_sku( $attendee_id, $attendee_order_id, $provider ),
-			'title'             => Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) ),
-			'email'             => Tribe__Utils__Array::get( $attendee, 'holder_email', Tribe__Utils__Array::get( $attendee, 'purchaser_email', '' ) ),
-			'checked_id'        => $checked_in,
-			'checkin_details'   => $checkin_details,
 		);
 
-		if ( $provider instanceof Tribe__Tickets__RSVP ) {
-			$attendee_data['rsvp_going'] = tribe_is_truthy( $attendee['order_status'] );
-		} else {
-			$order_id = $attendee['order_id'];
-			$order_data = method_exists( $provider, 'get_order_data' )
-				? $provider->get_order_data( $order_id )
-				: false;
+		// Only show the attendee name if the attendee did not optout
+		if ( empty( $attendee['optout'] ) ) {
+			$attendee_data['title'] = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
+		}
 
-			if ( ! empty( $order_data ) ) {
-				/** @var Tribe__Tickets__Commerce__Currency $currency */
-				$currency                 = tribe('tickets.commerce.currency');
-				$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
-				$purchase_time = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( 'Y-m-d H:i:s', false, $attendee_id ) );
-				$attendee_data['payment'] = array(
-					'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
-					'price'        => $ticket_object->price,
-					'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
-					'date'         => $purchase_time,
-					'date_details' => $this->get_date_details( $purchase_time ),
-				);
+		// Sensible information should not be shown to everyone
+		if ( self::CONTEXT_EDITOR === $this->context ) {
+			$attendee_data = array_merge( $attendee_data, array(
+				'provider'        => $this->get_provider_slug( $provider ),
+				'order'           => $attendee_order_id,
+				'sku'             => $this->get_attendee_sku( $attendee_id, $attendee_order_id, $provider ),
+				'email'           => Tribe__Utils__Array::get( $attendee, 'holder_email', Tribe__Utils__Array::get( $attendee, 'purchaser_email', '' ) ),
+				'checked_in'      => $checked_in,
+				'checkin_details' => $checkin_details,
+			) );
+
+			if ( $provider instanceof Tribe__Tickets__RSVP ) {
+				$attendee_data['rsvp_going'] = tribe_is_truthy( $attendee['order_status'] );
+			} else {
+				$order_id   = $attendee['order_id'];
+				$order_data = method_exists( $provider, 'get_order_data' )
+					? $provider->get_order_data( $order_id )
+					: false;
+
+				if ( ! empty( $order_data ) ) {
+					/** @var Tribe__Tickets__Commerce__Currency $currency */
+					$currency                 = tribe( 'tickets.commerce.currency' );
+					$ticket_object            = $this->get_ticket_object( $attendee['product_id'] );
+					$purchase_time            = Tribe__Utils__Array::get( $order_data, 'purchase_time', get_post_time( 'Y-m-d H:i:s', false, $attendee_id ) );
+					$attendee_data['payment'] = array(
+						'provider'     => Tribe__Utils__Array::get( $order_data, 'provider_slug', $this->get_provider_slug( $provider ) ),
+						'price'        => $ticket_object->price,
+						'currency'     => html_entity_decode( $currency->get_currency_symbol( $attendee['product_id'] ) ),
+						'date'         => $purchase_time,
+						'date_details' => $this->get_date_details( $purchase_time ),
+					);
+				}
 			}
 		}
 
@@ -892,8 +946,9 @@ Tribe__Tickets__REST__V1__Post_Repository
 		 * @since TBD
 		 *
 		 * @param array $attendee_data
+		 * @param string $context The context the data will be shown in; one of the `CONTEXT_X` class constants.
 		 */
-		$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data );
+		$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data, $this->context );
 
 		return $attendee_data;
 	}
@@ -908,7 +963,7 @@ Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * @return int|mixed
 	 *
-	 * @throws ReflectionException
+	 * @throws ReflectionException If the provider class is not valid.
 	 */
 	protected function get_attendee_order_id( $attendee_id, Tribe__Tickets__Tickets $provider ) {
 		if ( $attendee_id instanceof WP_Post ) {
@@ -955,5 +1010,16 @@ Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		return $sku;
+	}
+
+	/**
+	 * Sets the data context the repository should be aware of.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context
+	 */
+	public function set_context( $context ) {
+		$this->context = $context;
 	}
 }

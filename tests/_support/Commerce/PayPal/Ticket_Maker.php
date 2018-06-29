@@ -14,7 +14,7 @@ trait Ticket_Maker {
 	 *
 	 * @return int The generated ticket post ID.
 	 */
-	protected function make_ticket( $post_id, $price, array $overrides = [] ) {
+	protected function create_ticket( $post_id, $price, array $overrides = [] ) {
 		$factory = $this->factory ?? $this->factory();
 
 		$meta_input = isset( $overrides['meta_input'] ) && \is_array( $overrides['meta_input'] )
@@ -43,5 +43,11 @@ trait Ticket_Maker {
 		);
 
 		return $ticket_id;
+	}
+
+	protected function create_many_tickets( int $count, int $post_id, array $overrides = [] ) {
+		return array_map( function () use ( $post_id, $overrides ) {
+			return $this->create_ticket( $post_id, $overrides );
+		}, range( 1, $count ) );
 	}
 }

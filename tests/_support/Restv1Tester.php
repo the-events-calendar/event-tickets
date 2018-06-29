@@ -1,5 +1,7 @@
 <?php
 
+use Tribe\Tickets\Test\Traits\REST\Auth;
+
 
 /**
  * Inherited Methods
@@ -19,6 +21,7 @@
 class Restv1Tester extends \Codeception\Actor
 {
     use _generated\Restv1TesterActions;
+    use Auth;
 
    /**
     * Define custom actions here

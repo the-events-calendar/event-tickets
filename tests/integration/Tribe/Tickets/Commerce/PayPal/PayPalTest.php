@@ -92,8 +92,8 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 		$tickets_in_cart   = 3;
 
 		// we have a ticket product in the database
-		$ticket_1_id = $this->make_ticket( $event_1_id, $ticket_1_price );
-		$ticket_2_id = $this->make_ticket( $event_2_id, $ticket_2_price );
+		$ticket_1_id = $this->create_ticket( $event_1_id, $ticket_1_price );
+		$ticket_2_id = $this->create_ticket( $event_2_id, $ticket_2_price );
 
 		$body = <<<EOT
 SUCCESS

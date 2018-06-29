@@ -320,6 +320,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				);
 			}
 
+			/**
+			 * Filters the query arguments that will be used to fetch tickets.
+			 *
+			 * @since TBD
+			 *
+			 * @param array $args
+			 */
+			$args = apply_filters( 'tribe_tickets_get_tickets_query_args', $args );
+
 			return $args;
 		}
 

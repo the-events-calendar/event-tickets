@@ -9,13 +9,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	implements Tribe__Tickets__Validator__Interface {
 
 	/**
-	 * Whether the value is the post id of an existing ticket or not.
-	 *
-	 * @since tbd
-	 *
-	 * @param int $ticket_id
-	 *
-	 * @return bool
+	 * {@inheritdoc}
 	 */
 	public function is_ticket_id( $ticket_id ) {
 		if ( empty( $ticket_id ) ) {
@@ -32,13 +26,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	}
 
 	/**
-	 * Whether the value is the post ID of an existing event or not.
-	 *
-	 * @since TBD
-	 *
-	 * @param int|string $event_id
-	 *
-	 * @return bool
+	 * {@inheritdoc}
 	 */
 	public function is_event_id( $event_id ) {
 		if ( empty( $event_id ) ) {
@@ -50,4 +38,30 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 		return ! empty( $event ) && 'tribe_event' === $event->post_type;
 	}
 
+	/**
+	 * Whether a post ID exists.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 *
+	 * @return bool
+	 */
+	public function is_post_id( $post_id ) {
+		$post = get_post( $post_id );
+
+		return ( $post instanceof WP_Post );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function is_post_id_list( $posts, $sep = ',' ) {
+		$sep   = is_string( $sep ) ? $sep : ',';
+		$posts = Tribe__Utils__Array::list_to_array( $posts, $sep );
+
+		$valid = array_filter( $posts, array( $this, 'is_post_id' ) );
+
+		return ! empty( $valid ) && count( $valid ) === count( $posts );
+	}
 }

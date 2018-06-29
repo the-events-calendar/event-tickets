@@ -44,7 +44,7 @@ class ReturnToCartCest {
 	 */
 	public function should_not_display_a_return_to_cart_link_if_there_are_no_pay_pal_tickets_in_the_cart( FunctionalTester $I ) {
 		$post_id = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
-		$this->make_ticket( $post_id, 1 );
+		$this->create_ticket( $post_id, 1 );
 
 		$I->amOnPage( "/?p={$post_id}" );
 
@@ -58,7 +58,7 @@ class ReturnToCartCest {
 	 */
 	public function should_display_a_return_to_cart_link_if_there_are_pay_pal_tickets_in_the_cart( FunctionalTester $I ) {
 		$post_id   = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
-		$ticket_id = $this->make_ticket( $post_id, 1 );
+		$ticket_id = $this->create_ticket( $post_id, 1 );
 		$transient = \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged::get_transient_name( '123foo' );
 		$I->haveTransientInDatabase( $transient, [ $ticket_id => 2 ] );
 
@@ -76,8 +76,8 @@ class ReturnToCartCest {
 	public function should_display_the_return_to_cart_link_on_page_of_another_ticketed_post( FunctionalTester $I ) {
 		$post_one_id   = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
 		$post_two_id   = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
-		$ticket_one_id = $this->make_ticket( $post_one_id, 1 );
-		$ticket_two_id = $this->make_ticket( $post_two_id, 1 );
+		$ticket_one_id = $this->create_ticket( $post_one_id, 1 );
+		$ticket_two_id = $this->create_ticket( $post_two_id, 1 );
 		$transient     = \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged::get_transient_name( '123foo' );
 		$I->haveTransientInDatabase( $transient, [ $ticket_one_id => 2 ] );
 
@@ -95,8 +95,8 @@ class ReturnToCartCest {
 	public function should_display_the_return_to_cart_link_on_non_ticketed_ticket_able_post( FunctionalTester $I ) {
 		$post_id       = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
 		$page_id       = $I->havePostInDatabase( [ 'post_status' => 'publish' ] );
-		$ticket_one_id = $this->make_ticket( $post_id, 1 );
-		$ticket_two_id = $this->make_ticket( $page_id, 1 );
+		$ticket_one_id = $this->create_ticket( $post_id, 1 );
+		$ticket_two_id = $this->create_ticket( $page_id, 1 );
 		$transient     = \Tribe__Tickets__Commerce__PayPal__Cart__Unmanaged::get_transient_name( '123foo' );
 		$I->haveTransientInDatabase( $transient, [ $ticket_one_id => 2 ] );
 
