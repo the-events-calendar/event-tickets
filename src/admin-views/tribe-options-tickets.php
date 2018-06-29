@@ -272,8 +272,9 @@ $paypal_fields            = array(
 	'ticket-paypal-success-page'      => array(
 		'type'            => 'dropdown',
 		'label'           => esc_html__( 'Success page', 'event-tickets' ),
-		'tooltip'         => esc_html__( "After a successful PayPal order users will be redirected to this page; use the [{$tpp_success_shortcode}] shortcode to display the order confirmation to the user in the page content.",
-			'event-tickets' ),
+		'tooltip'         => sprintf(
+		                         esc_html__( "After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content.", 'event-tickets' ),
+		                         '[$tpp_success_shortcode]' ),
 		'size'            => 'medium',
 		'validation_type' => 'options',
 		'options'         => $pages,
