@@ -4,17 +4,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.7.4';
+	const VERSION = '4.7.5';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.6.7';
+	const MIN_TEC_VERSION = '4.6.20';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.7.14';
+	const MIN_COMMON_VERSION = '4.7.16';
 
 	/**
 	 * Name of the provider
@@ -203,6 +203,9 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
+
+		// REST API v1
+		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
 	}
 
 	/**

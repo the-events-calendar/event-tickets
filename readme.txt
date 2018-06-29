@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.6
-Stable tag: 4.7.4
+Stable tag: 4.7.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -123,7 +123,13 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [4.7.5] TBD =
+
 * Fix - Display unavailability message when tickets are not yet or no longer available [81334]
+* Fix - Issues with calculating and displaying ticketed events on the admin list [71122]
+
+= [4.7.4.1] 2018-06-22 =
+
+* Fix - Sending the ticket email when WooCommerce is active and purchasing another ticket type [109102]
 
 = [4.7.4] 2018-06-20 =
 

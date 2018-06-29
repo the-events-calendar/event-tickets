@@ -1073,7 +1073,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			 * @param array $tickets
 			 */
 			do_action( 'tribe_tickets_expired_front_end_ticket_form', $must_login, $tickets );
-			return;
 		}
 
 		$rsvp_sent  = empty( $_GET['rsvp_sent'] ) ? false : true;
@@ -1524,15 +1523,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	public function checkin( $attendee_id ) {
 		$qr = null;
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		$args = func_get_args();
+		if ( isset( $args[1] ) && $qr = (bool) $args[1] ) {
+			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
+		}
+
+		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return false;
 		}
 
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
-
-		if ( func_num_args() > 1 && $qr = func_get_arg( 1 ) ) {
-			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
-		}
 
 		/**
 		 * Fires a checkin action
