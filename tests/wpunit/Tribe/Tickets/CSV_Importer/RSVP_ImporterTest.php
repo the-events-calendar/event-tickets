@@ -44,6 +44,10 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 	 * it should import an RSVP ticket
 	 */
 	public function it_should_import_an_rsvp_ticket() {
+
+		$defaults = array( 'tribe_events' );
+		tribe_update_option( 'ticket-enabled-post-types', $defaults );
+
 		$overrides = [
 			'event_name'             => 'Event 1',
 			'ticket_name'            => 'Ticket 1',
@@ -256,6 +260,10 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 	 * it should not update a ticket when reimporting
 	 */
 	public function it_should_not_update_a_ticket_when_reimporting() {
+
+		$defaults = array( 'tribe_events' );
+		tribe_update_option( 'ticket-enabled-post-types', $defaults );
+
 		$event_id             = \Tribe__Events__API::createEvent( [ 'post_title' => 'Event 14' ] );
 		$first_import_record  = $this->make_record( [
 			'event_name'  => 'Event 14',
