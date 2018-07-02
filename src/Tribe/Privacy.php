@@ -65,7 +65,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @return array
 	 */
-	public static function register_exporter( $exporters ) {
+	public function register_exporter( $exporters ) {
 		$exporters[] = array(
 			'exporter_friendly_name' => __( 'Event Ticket RSVP Atendee' ),
 			'callback'               => array( $this, 'rsvp_exporter' ),
@@ -88,7 +88,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @return array
 	 */
-	public static function rsvp_exporter( $email_address, $page = 1 ) {
+	public function rsvp_exporter( $email_address, $page = 1 ) {
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
@@ -124,12 +124,12 @@ class Tribe__Tickets__Privacy {
 
 			$data[] = array(
 				'name'  => __( 'Full Name', 'event-tickets' ),
-				'value' => get_post_meta( $attendee->ID, '_tribe_rsvp_full_name', true),
+				'value' => get_post_meta( $attendee->ID, '_tribe_rsvp_full_name', true ),
 			);
 
 			$data[] = array(
 				'name'  => __( 'Email', 'event-tickets' ),
-				'value' => get_post_meta( $attendee->ID, '_tribe_rsvp_email', true),
+				'value' => get_post_meta( $attendee->ID, '_tribe_rsvp_email', true ),
 			);
 
 			$data[] = array(
@@ -163,7 +163,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @return array
 	 */
-	public static function tpp_exporter( $email_address, $page = 1 ) {
+	public function tpp_exporter( $email_address, $page = 1 ) {
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
@@ -199,12 +199,12 @@ class Tribe__Tickets__Privacy {
 
 			$data[] = array(
 				'name'  => __( 'Full Name', 'event-tickets' ),
-				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_full_name', true),
+				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_full_name', true ),
 			);
 
 			$data[] = array(
 				'name'  => __( 'Email', 'event-tickets' ),
-				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_email', true),
+				'value' => get_post_meta( $attendee->ID, '_tribe_tpp_email', true ),
 			);
 
 			$data[] = array(
