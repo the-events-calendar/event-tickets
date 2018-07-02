@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.7.5] TBD =
 
 * Fix - Issues with calculating and displaying ticketed events on the admin list [71122]
+* Fix - Add Privacy Policy guide for Event Tickets [108456]
 
 = [4.7.4.1] 2018-06-22 =
 
