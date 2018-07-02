@@ -8,8 +8,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
 }
 
-$suggested_text = $descr ? '<strong>' . esc_html__( 'Suggested text:', 'event-tickets' ) . ' </strong>' : '';
-
 ?>
 <div class="tribe-tickets-privacy">
 
@@ -23,7 +21,7 @@ $suggested_text = $descr ? '<strong>' . esc_html__( 'Suggested text:', 'event-ti
 	<h3><?php esc_html_e( 'Event, Attendee, and Ticket Purchaser Information', 'event-tickets' ); ?></h3>
 
 	<p class="privacy-policy-tutorial"><?php esc_html_e( 'Through the usage of Event Tickets, Event Tickets Plus, and Community Tickets, information may be collected and stored within your website’s database.', 'event-tickets' ); ?></p>
-	<p class="privacy-policy-tutorial"><?php echo $suggested_text; ?></p>
+	<p class="privacy-policy-tutorial"><strong><?php esc_html_e( 'Suggested text:', 'event-tickets' ); ?></strong></p>
 	<p><?php esc_html_e( 'If you create, submit, import, save, or publish event ticket information, as well as RSVP or purchase tickets to events, such information is retained in the local database:', 'event-tickets' ); ?></p>
 
 	<ol>
@@ -39,7 +37,7 @@ $suggested_text = $descr ? '<strong>' . esc_html__( 'Suggested text:', 'event-ti
 
 	<p class="privacy-policy-tutorial"><?php esc_html_e( 'Events Tickets suite offers the use of third-party API keys. The primary functions are to enhance the features we\'ve built in, some of which use Google Maps and PayPal. These API keys are not supplied by Modern Tribe.', 'event-tickets' ); ?></p>
 
-	<p class="privacy-policy-tutorial"><?php echo $suggested_text; ?></p>
+	<p class="privacy-policy-tutorial"><strong><?php esc_html_e( 'Suggested text:', 'event-tickets' ); ?></strong></p>
 
 	<p><?php esc_html_e( 'We make use of certain API keys, in order to provide specific features.', 'event-tickets' ); ?></p>
 
