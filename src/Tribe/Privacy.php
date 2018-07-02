@@ -25,7 +25,7 @@ class Tribe__Tickets__Privacy {
 			return false;
 		}
 
-		$content = $this->default_privacy_policy_content( true );
+		$content = $this->default_privacy_policy_content();
 		wp_add_privacy_policy_content( __( 'Event Tickets', 'event-tickets' ), $content );
 	}
 
@@ -38,7 +38,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @return string The default policy content.
 	 */
-	public function default_privacy_policy_content( $descr = false ) {
+	public function default_privacy_policy_content() {
 
 		ob_start();
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/privacy.php';
