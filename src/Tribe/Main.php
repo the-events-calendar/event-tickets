@@ -186,6 +186,8 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
 
+		tribe( 'tickets.privacy' );
+
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
@@ -206,6 +208,9 @@ class Tribe__Tickets__Main {
 
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
+
+		// Privacy
+		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', array( 'hook' ) );
 	}
 
 	/**
