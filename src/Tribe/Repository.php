@@ -14,6 +14,7 @@ class Tribe__Tickets__Repository extends Tribe__Repository {
 	 */
 	protected $default_args = array(
 		'post_type' => array( 'tribe_rsvp_tickets', 'tribe_tpp_tickets' ),
+		'orderby'   => array( 'date', 'ID' ),
 	);
 
 	/**

@@ -30,28 +30,43 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 */
 	public function get( WP_REST_Request $request ) {
 		$query_args = $request->get_query_params();
-		$per_page   = $request->get_param( 'per_page' );
-		$page = $request->get_param( 'page' );
+		$per_page   = (int) $request->get_param( 'per_page' );
+		$page       = (int) $request->get_param( 'page' );
+
+		$fetch_args = array();
 
 		if ( $request->get_param( 'include_post' ) ) {
-			$include_post = $request['include_post'];
-			$fetch_args['event'] = $include_post; // by( 'event' ,$id )
+			$include_post               = $request['include_post'];
+			$fetch_args['event']        = $include_post; // by( 'event' ,$id )
 			$query_args['include_post'] = implode( ',', $include_post );
+		}
+
+		/** @var wpdb $wpdb */
+		global $wpdb;
+
+		if ( current_user_can( 'read_private_posts' ) ) {
+			$permission                = Tribe__Tickets__REST__V1__Read_Repository::PERMISSION_EDITABLE;
+			$fetch_args['post_status'] = 'any';
+		} else {
+			$permission                = Tribe__Tickets__REST__V1__Read_Repository::PERMISSION_READABLE;
+			$fetch_args['post_status'] = 'publish';
 		}
 
 		$found = tribe_tickets( 'restv1' )
 			->fetch()
 			->by_args( $fetch_args )
-			->permission( 'editable' )
+			->permission( $permission )
 			->found();
 
-		if ( $found === 0 ) {
+		if ( 0 === $found && 1 === $page ) {
 			$tickets = array();
+		} elseif ( 1 !== $page && $page * $per_page > $found ) {
+			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), array( 'status' => 400 ) );
 		} else {
 			$tickets = tribe_tickets( 'restv1' )
 				->fetch()
 				->by_args( $fetch_args )
-				->permission( 'editable' )
+				->permission( $permission )
 				->per_page( $per_page )
 				->page( $page )
 				->all();

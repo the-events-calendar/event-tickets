@@ -53,6 +53,12 @@ class Tribe__Tickets__REST__V1__Read_Repository extends Tribe__Repository__Read 
 		/** @var Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 
+		$context = current_user_can( 'read_private_posts' )
+			? Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR
+			: Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC;
+
+		$repository->set_context( $context );
+
 		$all = array();
 
 		foreach ( $all_ids as $ticket_id ) {
