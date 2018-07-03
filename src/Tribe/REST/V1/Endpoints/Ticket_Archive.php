@@ -18,7 +18,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 * @return array An array description of a Swagger supported component.
 	 */
 	public function get_documentation() {
-		// TODO: Implement get_documentation() method.
+		// @todo - implement me!
 	}
 
 	/**
@@ -29,36 +29,43 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {
-		$data       = array();
 		$query_args = $request->get_query_params();
 		$per_page   = $request->get_param( 'per_page' );
-		$found      = array();
+		$page = $request->get_param('page');
 
-		$this->ticket_query_args['paged']          = $request->get_param( 'page' );
-		$this->ticket_query_args['posts_per_page'] = $request->get_param( 'per_page' );
-		$this->found_tickets                       = 0;
+		$fetch_args = array();
 
 		if ( $request->get_param( 'include_post' ) ) {
 			$include_post = $request['include_post'];
-
-			foreach ( $include_post as $post_id ) {
-				$found[] = $this->get_tickets_for_post( $post_id );
-			}
-
-			$found = call_user_func_array( 'array_merge', $found );
-
+			$fetch_args['event'] = $include_post; // by( 'event' ,$id )
 			$query_args['include_post'] = implode( ',', $include_post );
+		}
+
+		$found = tribe_tickets( 'restv1' )
+			->fetch()
+			->by_args( $fetch_args )
+			->permission('editable')
+			->found();
+
+		if ( $found === 0 ) {
+			$tickets = array();
+		} else {
+			$tickets = tribe_tickets( 'restv1' )
+				->fetch()
+				->by_args( $fetch_args )
+				->permission('editable')
+				->per_page( $per_page )
+				->page( $page )
+				->all();
 		}
 
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
-		$readable = $this->filter_readable_tickets( $found );
-
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/tickets/' ) );
-		$data['total']       = $this->found_tickets;
-		$data['total_pages'] = (int) ceil( $this->found_tickets / $per_page );
-		$data['tickets']     = array_map( array( $this->post_repository, 'get_ticket_data' ), $readable );
+		$data['total']       = $found;
+		$data['total_pages'] = (int) ceil( $found / $per_page );
+		$data['tickets']     = $tickets;
 
 		$headers = array(
 			'X-ET-TOTAL'       => $data['total'],

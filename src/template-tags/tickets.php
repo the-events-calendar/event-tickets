@@ -928,3 +928,21 @@ function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 
 
 	return $user_is_member && $ticket_has_member_discount;
 }
+
+/**
+ * Builds and returns the correct ticket repository.
+ *
+ * @since TBD
+ *
+ * @param string $repository The slug of the repository to build/return.
+ *
+ * @return Tribe__Repository__Interface
+ */
+function tribe_tickets( $repository = 'default' ) {
+	$map = array(
+		'default' => 'tickets.repository',
+		'restv1'  => 'tickets.rest-v1.repository-decorator',
+	);
+
+	return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+}
