@@ -33,7 +33,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$per_page   = $request->get_param( 'per_page' );
 		$page = $request->get_param('page');
 
-		$fetch_args = array();
+		$fetch_args = array('content' => 'foo');
 
 		if ( $request->get_param( 'include_post' ) ) {
 			$include_post = $request['include_post'];

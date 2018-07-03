@@ -941,7 +941,7 @@ function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 
 function tribe_tickets( $repository = 'default' ) {
 	$map = array(
 		'default' => 'tickets.repository',
-		'restv1'  => 'tickets.rest-v1.repository-decorator',
+		'restv1'  => 'tickets.rest-v1.repository-extension',
 	);
 
 	return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );

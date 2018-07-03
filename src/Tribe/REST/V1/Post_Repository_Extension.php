@@ -5,7 +5,7 @@
  *
  * @since TBD
  */
-class Tribe__Tickets__REST__V1__Post_Repository extends Tribe__Tickets__Repository {
+class Tribe__Tickets__REST__V1__Post_Repository_Extension extends Tribe__Tickets__Repository {
 
 	/**
 	 * Returns a REST API v1 specific Read repository.
