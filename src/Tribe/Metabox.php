@@ -15,6 +15,8 @@ class Tribe__Tickets__Metabox {
 	 * @return void
 	 */
 	public function hook() {
+
+		bdump( true );
 		add_action( 'add_meta_boxes', array( $this, 'configure' ) );
 
 		add_action( 'tribe_events_tickets_bottom_right', array( $this, 'get_ticket_controls' ), 10, 2 );
