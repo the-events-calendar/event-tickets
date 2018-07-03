@@ -53,21 +53,19 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			$fetch_args['post_status'] = 'publish';
 		}
 
-		$found = tribe_tickets( 'restv1' )
+		$query = tribe_tickets( 'restv1' )
 			->fetch()
 			->by_args( $fetch_args )
-			->permission( $permission )
-			->found();
+			->permission( $permission );
+
+		$found = $query->found();
 
 		if ( 0 === $found && 1 === $page ) {
 			$tickets = array();
 		} elseif ( 1 !== $page && $page * $per_page > $found ) {
 			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), array( 'status' => 400 ) );
 		} else {
-			$tickets = tribe_tickets( 'restv1' )
-				->fetch()
-				->by_args( $fetch_args )
-				->permission( $permission )
+			$tickets = $query
 				->per_page( $per_page )
 				->page( $page )
 				->all();
