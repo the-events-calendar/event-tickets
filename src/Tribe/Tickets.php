@@ -791,6 +791,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
 
+			add_action( 'wp', array( $this, 'hook' ) );
+		}
+
+		/**
+		 * Most Commerce Providers needs this to be setup later than when the actual class is actually loaded
+		 *
+		 * @since  TBD
+		 *
+		 * @return void
+		 */
+		public function hook() {
 			/**
 			 * Priority set to 11 to force a specific display order
 			 *
@@ -815,6 +826,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
 			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
 		}
+
 
 		/**
 		 * Remove the attendees transient when a Ticket change its state
@@ -2048,7 +2060,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return string
 		 */
-		protected function get_ticket_form_hook() {
+		public function get_ticket_form_hook() {
 			if ( $this instanceof Tribe__Tickets__RSVP ) {
 				$ticket_form_hook = Tribe__Settings_Manager::get_option( 'ticket-rsvp-form-location',
 					'tribe_events_single_event_after_the_meta' );
