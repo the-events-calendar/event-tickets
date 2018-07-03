@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Issues with calculating and displaying ticketed events on the admin list [71122]
 * Fix - Add Privacy Policy guide for Event Tickets [108456]
+* Feature - Include RSVP and Tribe Commerce tickets fields data in WP personal data export [107156]
 
 = [4.7.4.1] 2018-06-22 =
 
