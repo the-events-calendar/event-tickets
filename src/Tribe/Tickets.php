@@ -792,23 +792,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
 
 			add_action( 'wp', array( $this, 'hook' ) );
-		}
 
-		/**
-		 * Most Commerce Providers needs this to be setup later than when the actual class is actually loaded
-		 *
-		 * @since  TBD
-		 *
-		 * @return void
-		 */
-		public function hook() {
 			/**
 			 * Priority set to 11 to force a specific display order
 			 *
 			 * @since 4.6
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
+		}
 
+		/**
+		 * Most Commerce Providers needs this to be setup later than when the actual class is actually loaded
+		 *
+		 * For Frontend Hooks, admin ones need to be loaded earlier
+		 *
+		 * @since  TBD
+		 *
+		 * @return void
+		 */
+		public function hook() {
 			// Front end
 			$ticket_form_hook = $this->get_ticket_form_hook();
 
