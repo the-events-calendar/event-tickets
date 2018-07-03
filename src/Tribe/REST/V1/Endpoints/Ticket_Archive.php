@@ -57,7 +57,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			->fetch()
 			->by_args( $fetch_args )
 			->permission( $permission )
-			->count();
+			->found();
 
 		if ( 0 === $found && 1 === $page ) {
 			$tickets = array();

@@ -20,9 +20,9 @@ class Tribe__Tickets__Repository extends Tribe__Repository {
 			'orderby'   => array( 'date', 'ID' ),
 		);
 
-		$this->read_schema = new Tribe__Repository__Schema( array(
+		$this->read_schema = array(
 			'event' => array( $this, 'filter_by_event' ),
-		) );
+		);
 	}
 
 	/**
