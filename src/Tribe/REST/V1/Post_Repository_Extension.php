@@ -19,7 +19,6 @@ class Tribe__Tickets__REST__V1__Post_Repository_Extension extends Tribe__Tickets
 			$this->read_schema,
 			tribe()->make( 'Tribe__Repository__Query_Filters' ),
 			$this->default_args
-
 		);
 	}
 }
