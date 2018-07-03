@@ -19,6 +19,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 */
 	public function get_documentation() {
 		// @todo - implement me!
+		return array();
 	}
 
 	/**
