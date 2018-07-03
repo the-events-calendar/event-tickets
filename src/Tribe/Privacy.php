@@ -67,12 +67,12 @@ class Tribe__Tickets__Privacy {
 	 */
 	public function register_exporter( $exporters ) {
 		$exporters[] = array(
-			'exporter_friendly_name' => __( 'Event Ticket RSVP Atendee' ),
+			'exporter_friendly_name' => __( 'Event Tickets RSVP Attendee', 'event-tickets' ),
 			'callback'               => array( $this, 'rsvp_exporter' ),
 		);
 
 		$exporters[] = array(
-			'exporter_friendly_name' => __( 'Event Ticket TribeCommerce Atendee' ),
+			'exporter_friendly_name' => __( 'Event Tickets TribeCommerce Attendee', 'event-tickets' ),
 			'callback'               => array( $this, 'tpp_exporter' ),
 		);
 
