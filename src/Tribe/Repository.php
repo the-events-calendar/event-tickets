@@ -13,7 +13,7 @@ class Tribe__Tickets__Repository extends Tribe__Repository {
 	 * @var array
 	 */
 	protected $default_args = array(
-		'post_type' => array( 'tribe_rsvp_tickets', 'tribe_tpp_tickets' )
+		'post_type' => array( 'tribe_rsvp_tickets', 'tribe_tpp_tickets' ),
 	);
 
 	/**
@@ -49,7 +49,7 @@ class Tribe__Tickets__Repository extends Tribe__Repository {
 						'key'   => '_tribe_tpp_for_event',
 						'value' => $event_id,
 					),
-				)
+				),
 			),
 		);
 	}

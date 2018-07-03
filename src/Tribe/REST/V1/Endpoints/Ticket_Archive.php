@@ -31,7 +31,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	public function get( WP_REST_Request $request ) {
 		$query_args = $request->get_query_params();
 		$per_page   = $request->get_param( 'per_page' );
-		$page = $request->get_param('page');
+		$page = $request->get_param( 'page' );
 
 		if ( $request->get_param( 'include_post' ) ) {
 			$include_post = $request['include_post'];
@@ -42,7 +42,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$found = tribe_tickets( 'restv1' )
 			->fetch()
 			->by_args( $fetch_args )
-			->permission('editable')
+			->permission( 'editable' )
 			->found();
 
 		if ( $found === 0 ) {
@@ -51,7 +51,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			$tickets = tribe_tickets( 'restv1' )
 				->fetch()
 				->by_args( $fetch_args )
-				->permission('editable')
+				->permission( 'editable' )
 				->per_page( $per_page )
 				->page( $page )
 				->all();
