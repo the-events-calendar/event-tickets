@@ -11,7 +11,7 @@ class Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider
 	 * The intelligence lies in the "gatherer" of informations rather than in the single "providers" implementing this
 	 * interface.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @link http://swagger.io/
 	 *
@@ -31,7 +31,7 @@ class Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider
 		/**
 		 * Filters the Swagger documentation generated for a tikcet in the Event Ticker REST API.
 		 *
-		 * @since TBD
+		 * @since 4.7.5
 		 *
 		 * @param array $documentation An associative PHP array in the format supported by Swagger.
 		 *

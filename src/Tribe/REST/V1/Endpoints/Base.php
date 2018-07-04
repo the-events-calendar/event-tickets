@@ -16,7 +16,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Tribe__Tickets__REST__V1__Endpoints__Base constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param Tribe__REST__Messages_Interface $messages
 	 */
@@ -27,7 +27,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Converts an array of arguments suitable for the WP REST API to the Swagger format.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param array $args
 	 * @param array $defaults
@@ -90,7 +90,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Falls back on an allowed post status in respect to the user user capabilities of publishing.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param string $post_status
 	 * @param string $post_type
@@ -115,7 +115,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 *
 	 * Cascading fallback is TEC `posts_per_page` option, `posts_per_page` option and, finally, 20.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return int
 	 */
@@ -128,7 +128,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Modifies a request argument marking it as not required.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param array $arg
 	 */
@@ -139,7 +139,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Parses the arguments populated parsing the request filling out with the defaults.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param array $args
 	 * @param array $defaults
@@ -161,7 +161,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Whether a value is null or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param mixed $value
 	 *
@@ -174,7 +174,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Converts REST format type argument to the correspondant Swagger.io definition.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param string $type
 	 *

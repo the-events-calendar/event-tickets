@@ -28,7 +28,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Tribe__Events__REST__V1__Endpoints__Swagger_Documentation constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param string $tec_rest_api_version
 	 */
@@ -39,7 +39,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Handles GET requests on the endpoint.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param WP_REST_Request $request
 	 *
@@ -54,7 +54,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Returns an array in the format used by Swagger 2.0.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * While the structure must conform to that used by v2.0 of Swagger the structure can be that of a full document
 	 * or that of a document part.
@@ -81,7 +81,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		/**
 		 * Filters the Swagger documentation generated for the TEC REST API.
 		 *
-		 * @since TBD
+		 * @since 4.7.5
 		 *
 		 * @param array                                                     $documentation An associative PHP array in the format supported by Swagger.
 		 * @param Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation $this          This documentation endpoint instance.
@@ -96,7 +96,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Get Event Tickets REST API Info
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */
@@ -111,7 +111,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Get Event Tickets REST API Path
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */
@@ -133,7 +133,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Registers a documentation provider for a path.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param                                            $path
 	 * @param Tribe__Documentation__Swagger__Provider_Interface $endpoint
@@ -145,7 +145,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Get REST API Documentation
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */
@@ -164,7 +164,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Get REST API Definitions
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */
@@ -181,7 +181,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Get REST API Registered Documentation Providers
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return Tribe__Documentation__Swagger__Provider_Interface[]
 	 */
@@ -192,7 +192,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Registers a documentation provider for a definition.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param                                                  string $type
 	 * @param Tribe__Documentation__Swagger__Provider_Interface       $provider
@@ -204,7 +204,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * Get Documentation Provider Interface
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return Tribe__Documentation__Swagger__Provider_Interface[]
 	 */
@@ -216,7 +216,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	 * Returns the content of the `args` array that should be used to register the endpoint
 	 * with the `register_rest_route` function.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */

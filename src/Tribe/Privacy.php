@@ -8,7 +8,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Class initialization
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 */
 	public function hook() {
 		add_action( 'admin_init', array( $this, 'privacy_policy_content' ), 20 );
@@ -19,7 +19,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Add the suggested privacy policy text to the policy postbox.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 */
 	public function privacy_policy_content() {
 
@@ -36,7 +36,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param bool $descr Whether to include the descriptions under the section headings. Default false.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return string The default policy content.
 	 */
@@ -49,7 +49,7 @@ class Tribe__Tickets__Privacy {
 		/**
 		 * Filters the default content suggested for inclusion in a privacy policy.
 		 *
-		 * @since TBD
+		 * @since 4.7.5
 		 *
 		 * @param $content string The default policy content.
 		 */
@@ -60,7 +60,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Register exporter for Tickets attendees saved data.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 * @param $exporters
 	 *
 	 * @return array
@@ -84,7 +84,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     TBD
+	 * @since     4.7.5
 	 *
 	 * @return array
 	 */
@@ -159,7 +159,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     TBD
+	 * @since     4.7.5
 	 *
 	 * @return array
 	 */

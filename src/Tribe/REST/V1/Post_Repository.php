@@ -26,7 +26,7 @@ class Tribe__Tickets__REST__V1__Post_Repository implements Tribe__Tickets__REST_
 	/**
 	 * Retrieves an array representation of the post.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param int    $id      The post ID.
 	 * @param string $context Context of data.
@@ -52,7 +52,7 @@ class Tribe__Tickets__REST__V1__Post_Repository implements Tribe__Tickets__REST_
 	 *
 	 * @todo   add return ticket based on service provider
 	 *
-	 * @since  TBD
+	 * @since  4.7.5
 	 *
 	 * @param int    $ticket_id A ticket post ID.
 	 * @param string $context   Context of data.
@@ -76,7 +76,7 @@ class Tribe__Tickets__REST__V1__Post_Repository implements Tribe__Tickets__REST_
 		/**
 		 * Filters the data that will be returned if for a single ticket.
 		 *
-		 * @since  TBD
+		 * @since  4.7.5
 		 *
 		 * @param array   $data  The data that will be returned in the response.
 		 * @param WP_Post $event The requested ticket.
