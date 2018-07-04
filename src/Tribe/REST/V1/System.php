@@ -17,7 +17,7 @@ class Tribe__Tickets__REST__V1__System extends Tribe__REST__System {
 	/**
 	 * Whether ET REST API is supported by the WP installation or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return bool
 	 */
@@ -28,7 +28,7 @@ class Tribe__Tickets__REST__V1__System extends Tribe__REST__System {
 	/**
 	 * Whether Event Tickets REST API is enabled or not for the WP installation.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return bool
 	 */
@@ -38,7 +38,7 @@ class Tribe__Tickets__REST__V1__System extends Tribe__REST__System {
 		/**
 		 * Filters whether ET REST API is enabled or not for the WP installation.
 		 *
-		 * @since TBD
+		 * @since 4.7.5
 		 *
 		 * @param bool $enabled
 		 */
@@ -53,7 +53,7 @@ class Tribe__Tickets__REST__V1__System extends Tribe__REST__System {
 	 * The option is stored in Event Tickets options database record: use `tribe_get_option()`
 	 * to get it.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return string
 	 */

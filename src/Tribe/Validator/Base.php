@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Events__Validator__Base
  *
- * @since TBD
+ * @since 4.7.5
  */
 class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	implements Tribe__Tickets__Validator__Interface {
@@ -11,7 +11,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	/**
 	 * Whether the value is the post ID of an existing event or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param int|string $event_id
 	 *
@@ -34,7 +34,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	/**
 	 * Whether the value is the post ID of an existing event or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param int|string $event_id
 	 *

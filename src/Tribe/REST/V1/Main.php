@@ -27,7 +27,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Hooks the filters and actions required for the REST API support to kick in.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 */
 	public function hook() {
@@ -46,7 +46,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Hooks the additional headers and meta tags related to the REST API.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 */
 	protected function hook_headers() {
@@ -72,7 +72,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Hooks the additional Event Tickets Settings related to the REST API.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 */
 	protected function hook_settings() {
@@ -82,7 +82,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Returns the URL where the API users will find the API documentation.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return string
 	 */
@@ -93,7 +93,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Returns the semantic version for REST API
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return string
 	 */
@@ -104,7 +104,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Returns the events REST API namespace string that should be used to register a route.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return string
 	 */
@@ -115,7 +115,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	/**
 	 * Returns the string indicating the REST API version.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return string
 	 */
@@ -129,7 +129,7 @@ class Tribe__Tickets__REST__V1__Main extends Tribe__REST__Main {
 	 *
 	 * The prefix should be in the `/some/path` format.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return string
 	 */

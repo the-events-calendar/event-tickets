@@ -44,7 +44,7 @@ class Tribe__Tickets__Commerce__PayPal__Custom_Argument {
 	 *
 	 * @see Tribe__Tickets__Commerce__PayPal__Custom_Argument:decode()
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 * @return array $array
 	 *
 	*/

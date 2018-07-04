@@ -6,7 +6,7 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	/**
 	 * Returns an array representation of a ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param int    $ticket_id A ticket post ID.
 	 * @param string $context  Context of data.

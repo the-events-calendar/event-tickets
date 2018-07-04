@@ -806,7 +806,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * For Frontend Hooks, admin ones need to be loaded earlier
 		 *
-		 * @since  TBD
+		 * @since  4.7.5
 		 *
 		 * @return void
 		 */
