@@ -57,7 +57,7 @@ before_install:
 install:
   # disable XDebug to speed up the tests
   - phpenv config-rm xdebug.ini
-  - composer update --prefer-dist
+  - composer install
 
 before_script:
   # set up folders
