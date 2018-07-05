@@ -14,7 +14,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.7.16';
+	const MIN_COMMON_VERSION = '4.7.17';
 
 	/**
 	 * Name of the provider
