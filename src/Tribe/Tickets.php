@@ -799,6 +799,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since 4.6
 			 */
 			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
+
+			// Ensure ticket prices and event costs are linked
+			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
+
+			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
+			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
 		}
 
 		/**
@@ -821,12 +827,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'show_tickets_unavailable_message' ), 6 );
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ), 11 );
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
-
-			// Ensure ticket prices and event costs are linked
-			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
-
-			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
-			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
 		}
 
 
