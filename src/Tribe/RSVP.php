@@ -42,7 +42,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_TICKET_SENT = '_tribe_rsvp_attendee_ticket_sent';
 
 	/**
-	 *Name of the CPT that holds Tickets
+	 * Name of the CPT that holds Tickets
 	 *
 	 * @var string
 	 */

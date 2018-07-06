@@ -46,10 +46,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		global $wpdb;
 
 		if ( current_user_can( 'read_private_posts' ) ) {
-			$permission                = Tribe__Tickets__REST__V1__Read_Repository::PERMISSION_EDITABLE;
+			$permission                = Tribe__Tickets__REST__V1__Repositories__Ticket_Read::PERMISSION_EDITABLE;
 			$fetch_args['post_status'] = 'any';
 		} else {
-			$permission                = Tribe__Tickets__REST__V1__Read_Repository::PERMISSION_READABLE;
+			$permission                = Tribe__Tickets__REST__V1__Repositories__Ticket_Read::PERMISSION_READABLE;
 			$fetch_args['post_status'] = 'publish';
 		}
 

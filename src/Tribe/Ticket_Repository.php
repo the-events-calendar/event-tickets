@@ -1,16 +1,17 @@
 <?php
 
 /**
- * Class Tribe__Tickets__Repository
+ * Class Tribe__Tickets__Ticket_Repository
  *
  * The basic ticket repository.
  *
  * @since TBD
  */
-class Tribe__Tickets__Repository extends Tribe__Repository {
+class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
+
 
 	/**
-	 * Tribe__Tickets__Repository constructor.
+	 * Tribe__Tickets__Ticket_Repository constructor.
 	 *
 	 * @since TBD
 	 */

@@ -28,7 +28,8 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		tribe_singleton( 'tickets.rest-v1.system', 'Tribe__Tickets__REST__V1__System' );
 		tribe_singleton( 'tickets.rest-v1.validator', 'Tribe__Tickets__REST__V1__Validator__Base' );
 		tribe_singleton( 'tickets.rest-v1.repository', 'Tribe__Tickets__REST__V1__Post_Repository' );
-		tribe_singleton( 'tickets.rest-v1.repository-extension', 'Tribe__Tickets__REST__V1__Post_Repository_Extension' );
+		tribe_singleton( 'tickets.rest-v1.ticket-repository', 'Tribe__Tickets__REST__V1__Ticket_Repository' );
+		tribe_singleton( 'tickets.rest-v1.attendee-repository', 'Tribe__Tickets__REST__V1__Attendee_Repository' );
 		tribe_singleton( 'tickets.rest-v1.flags', 'Tribe__Tickets__REST__V1__Flags' );
 		tribe_singleton(
 			'tickets.rest-v1.endpoints.documentation',
