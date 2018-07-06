@@ -21,6 +21,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->read_schema = array(
 			'event'  => array( $this, 'filter_by_event' ),
 			'ticket' => array( $this, 'filter_by_ticket' ),
+			'optout' => array( $this, 'filter_by_optout' ),
 		);
 	}
 
@@ -34,7 +35,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	protected function attendee_types() {
-		return array( 'tribe_rsvp_tickets', 'tribe_tpp_tickets' );
+		return array( 'tribe_rsvp_attendees', 'tribe_tpp_attendees' );
 	}
 
 	/**
@@ -96,7 +97,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			),
 		);
 
-		foreach ( $this->attendee_to_event_keys() as $key ) {
+		foreach ( $this->attendee_to_ticket_keys() as $key ) {
 			$return['meta_query']['by-ticket'][] = array( 'key' => $key, 'value' => $ticket_id );
 		}
 
@@ -116,6 +117,67 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return array(
 			'_tribe_rsvp_product',
 			'_tribe_tpp_product',
+		);
+	}
+
+	/**
+	 * Provides arguments to filter attendees by their optout status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $optout An optout option, supported 'yes','no','any'.
+	 *
+	 * @return array
+	 */
+	public function filter_by_optout( $optout ) {
+		$return = array(
+			'meta_query' => array(
+				'by-optout-status' => array(
+				),
+			),
+		);
+
+		switch ( $optout ) {
+			case 'any':
+				$return = array();
+				break;
+			case 'no':
+				foreach ( $this->attendee_optout_keys() as $key ) {
+					$return['meta_query']['by-optout-status']['relation'] = 'AND';
+					// does not exist or exists and is 'no'
+					$return['meta_query']['by-optout-status'][] = array(
+						'does-not-exist'        => array( 'key' => $key, 'compare' => 'NOT EXISTS' ),
+						'relation'              => 'OR',
+						'exists-and-is-not-yes' => array( 'key' => $key, 'value' => 'yes', 'compare' => '!=' ),
+
+					);
+				}
+				break;
+			case'yes':
+				foreach ( $this->attendee_optout_keys() as $key ) {
+					$return['meta_query']['by-optout-status']['relation'] = 'OR';
+					// exists and is 'yes'
+					$return['meta_query']['by-optout-status'][] = array( 'key' => $key, 'value' => 'yes' );
+				}
+				break;
+		}
+
+		return $return;
+	}
+
+	/**
+	 * Returns the list of meta keys denoting an Attendee optout choice.
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function attendee_optout_keys() {
+		return array(
+			'_tribe_rsvp_attendee_optout',
+			'_tribe_tpp_attendee_optout'
 		);
 	}
 }

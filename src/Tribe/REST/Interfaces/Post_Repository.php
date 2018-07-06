@@ -6,33 +6,34 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	/**
 	 * Returns the array representation of a ticket.
 	 *
+	 * Mind that this method will take user capabilities into account when providing
+	 * the data.
+	 *
 	 * @since TBD
 	 *
 	 * @param int|WP_Post|array|Tribe__Tickets__Ticket_Object $ticket_id A ticket post, data, post ID or object.
-	 * @param string                                          $context   Context of data.
+	 * @param string                                          $context   The context in which the data will be shown;
+	 *                                                                   this is about format, not permissions.
 	 *
 	 * @return array|WP_Error ticket data or a `WP_Error` detailing the issue on failure.
 	 */
-	public function get_ticket_data( $ticket_id, $context = 'public' );
+	public function get_ticket_data( $ticket_id, $context = 'default' );
 
 	/**
 	 * Returns an attendee data.
 	 *
+	 * Mind that this method will take user capabilities into account when providing
+	 * the data.
+	 *
 	 * @since  TBD
 	 *
-	 * @param int $attendee_id An attendee post or post ID.
-	 * @param string $context Context of data.
+	 * @param int|WP_Post $attendee_id An attendee post or post ID.
+	 * @param string      $context     The context in which the data will be shown;
+	 *                                 this is about format, not permissions.
 	 *
 	 * @return array|WP_Error The attendee data or a `WP_Error` detailing the issue on failure.
 	 */
-	public function get_attendee_data( $attendee_id, $context = '' );
-
-	/**
-	 * Sets the data context the repository should be aware of.
-	 *
-	 * @param string $context
-	 */
-	public function set_context( $context );
+	public function get_attendee_data( $attendee_id, $context = 'default' );
 
 	/**
 	 * Returns the slug for provider.

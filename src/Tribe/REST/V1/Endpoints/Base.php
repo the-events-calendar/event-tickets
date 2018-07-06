@@ -279,7 +279,6 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 
 		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
 		$read_cap                = $ticket_post_type_object->cap->read_post;
-		$edit_cap                = $ticket_post_type_object->cap->edit_post;
 
 		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
 			$message = $this->messages->get_message( 'ticket-not-accessible' );
@@ -287,13 +286,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 			return new WP_Error( 'tickets-not-accessible', $message, array( 'status' => 401 ) );
 		}
 
-		$context = current_user_can( $edit_cap, $ticket_id )
-			? Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR
-			: Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC;
-
-		$this->post_repository->set_context( $context );
-
-		return $this->post_repository->get_ticket_data( $ticket_id, $context );
+		return $this->post_repository->get_ticket_data( $ticket_id );
 	}
 
 	/**

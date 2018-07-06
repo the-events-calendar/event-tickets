@@ -52,7 +52,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * @var string The context the data will be shown in; defaults to `public`.
 	 */
-	protected $context = 'public';
+	protected $permission = 'public';
 
 	public function __construct( Tribe__REST__Messages_Interface $messages = null ) {
 		$this->types_get_map = array(
@@ -89,7 +89,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_attendee_data( $attendee_id, $context = '' ) {
+	public function get_attendee_data( $attendee_id, $context = 'default' ) {
 		$attendee_post = get_post( $attendee_id );
 
 		if ( ! $attendee_post instanceof WP_Post ) {
@@ -126,7 +126,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_ticket_data( $ticket_id, $context = '' ) {
+	public function get_ticket_data( $ticket_id, $context = 'default' ) {
 		if ( is_array( $ticket_id ) && ! empty( $ticket_id['id'] ) ) {
 			// ticket data in array format
 			$ticket_id = $ticket_id['id'];
@@ -172,9 +172,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 *
 		 * @since TBD
 		 *
-		 * @param array  $data
-		 * @param int    $ticket_id
-		 * @param string $context
+		 * @param array  $data The ticket data.
+		 * @param int    $ticket_id The ticket post ID.
+		 * @param string $context The context in which the data will show; this is about format,
+		 *                        not permissions.
 		 */
 		$data = apply_filters( 'tribe_tickets_rest_api_ticket_data', $data, $ticket_id, $context );
 
@@ -575,7 +576,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'available'            => (int) $ticket->stock(), // see not above about why we use this
 		);
 
-		if ( $this->context === self::CONTEXT_EDITOR ) {
+		if ( current_user_can('read_private_posts') ) {
 			$details['max']     = (int) $ticket->capacity();
 			$details['sold']    = (int) $ticket->qty_sold();
 			$details['pending'] = (int) $ticket->qty_pending();
@@ -645,7 +646,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		if (
 			$ticket_object instanceof Tribe__Tickets__Ticket_Object
-			&& $this->context === self::CONTEXT_EDITOR
+			&& current_user_can( 'read_private_posts' )
 			&& false !== $data['attendees']
 		) {
 			$is_rsvp = $ticket_object->provider_class === 'Tribe__Tickets__RSVP';
@@ -707,33 +708,25 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return false;
 		}
 
-		$attendees = $this->current_ticket_provider->get_attendees_by_id( $ticket_id );
-		$post      = $this->current_ticket_provider->get_event_for_ticket( $ticket_id );
+		$can_read_private_posts = current_user_can( 'read_private_posts' );
+		$permission             = $can_read_private_posts ? 'editable' : 'readable';
+		// if the use can read private posts then it can access attendees that did optout
+		$optout = $can_read_private_posts ? 'any' : 'no';
 
-		if ( empty( $attendees ) || ! $post instanceof WP_Post ) {
-			return array();
+		$query = tribe_attendees( 'restv1' )
+			->fetch()
+			->permission( $permission )
+			->where( 'ticket', $ticket_id )
+			->where( 'optout', $optout );
+
+		if ( ! $can_read_private_posts
+		     && tribe_tickets_get_ticket_provider( $ticket_id ) instanceof Tribe__Tickets__RSVP
+		) {
+			// if we are dealing with an RSVP ticket then the attendee must be going to show
+			$query->where( 'meta_equals', Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY, 'yes' );
 		}
 
-		$ticket_attendees = array();
-
-		foreach ( $attendees as $attendee ) {
-			$is_rsvp       = $attendee['provider'] === 'Tribe__Tickets__RSVP';
-			$is_rsvp_going = ! empty( $attendee['order_status'] ) && tribe_is_truthy( $attendee['order_status'] );
-			$opted_in      = ! tribe_is_truthy( $attendee['optout'] );
-
-			$should_show = self::CONTEXT_EDITOR === $this->context;
-			if ( ! $should_show ) {
-				$should_show = $is_rsvp ? $is_rsvp_going && $opted_in : $opted_in;
-			}
-
-			if ( ! $should_show ) {
-				continue;
-			}
-
-			$ticket_attendees[] = $this->build_attendee_data( $attendee );
-		}
-
-		return $ticket_attendees;
+		return $query->all();
 	}
 
 	/**
@@ -849,14 +842,16 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @since TBD
 	 *
 	 * @param array $attendee The attendee information.
+	 * @param string $context The context in which the data will be shown; this
+	 *                        is about format, not permissions.
 	 *
 	 * @return array
 	 */
-	protected function build_attendee_data( array $attendee ) {
+	protected function build_attendee_data( array $attendee, $context = 'default' ) {
 		$attendee_id = $attendee['attendee_id'];
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
-		/** @var Tribe__Tickets__Tickets $provider */
+		/** @var Tribe__Tickets__Ti, ''ckets $provider */
 		$provider = $data_api->get_ticket_provider( $attendee_id );
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
@@ -903,10 +898,13 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		// Only show the attendee name if the attendee did not optout
 		if ( empty( $attendee['optout'] ) ) {
 			$attendee_data['title'] = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
+			$attendee_data['optout']     = false;
+		} else {
+			$attendee_data['optout'] = true;
 		}
 
 		// Sensible information should not be shown to everyone
-		if ( self::CONTEXT_EDITOR === $this->context ) {
+		if ( current_user_can( 'read_private_posts' ) ) {
 			$attendee_data = array_merge( $attendee_data, array(
 				'provider'        => $this->get_provider_slug( $provider ),
 				'order'           => $attendee_order_id,
@@ -946,9 +944,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 * @since TBD
 		 *
 		 * @param array $attendee_data
-		 * @param string $context The context the data will be shown in; one of the `CONTEXT_X` class constants.
+		 * @param string $context The context in which the data will show; this is about format,
+		 *                        not permissions.
 		 */
-		$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data, $this->context );
+		$attendee_data = apply_filters( 'tribe_tickets_rest_api_attendee_data', $attendee_data, $context );
 
 		return $attendee_data;
 	}
@@ -1010,16 +1009,5 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		return $sku;
-	}
-
-	/**
-	 * Sets the data context the repository should be aware of.
-	 *
-	 * @since TBD
-	 *
-	 * @param string $context
-	 */
-	public function set_context( $context ) {
-		$this->context = $context;
 	}
 }

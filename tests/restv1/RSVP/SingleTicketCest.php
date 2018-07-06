@@ -50,7 +50,6 @@ class SingleTicketCest extends BaseRestCest {
 
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR );
 
 		$I->sendGET( $ticket_rest_url );
 
@@ -155,7 +154,8 @@ class SingleTicketCest extends BaseRestCest {
 				'source'       => 'bar',
 				'author'       => 'John Doe',
 			],
-			'rsvp_going'        => true
+			'rsvp_going'        => true,
+			'optout'            => false,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
@@ -192,7 +192,7 @@ class SingleTicketCest extends BaseRestCest {
 		$going_optin_attendees = $this->create_many_attendees_for_ticket( $going_optin_count -1, $ticket_id, $post_id, [ 'rsvp_status' => 'yes' ] );
 		$goin_optout_attendees = $this->create_many_attendees_for_ticket( $going_optout_count, $ticket_id, $post_id, [
 			'rsvp_status' => 'yes',
-			'optout'      => true
+			'optout'      => 'yes'
 		] );
 		$not_going_attendees = $this->create_many_attendees_for_ticket( $not_going_attendees_count, $ticket_id, $post_id, [ 'rsvp_status' => 'no' ] );
 		$ticket_post                 = get_post( $ticket_id );
@@ -204,7 +204,6 @@ class SingleTicketCest extends BaseRestCest {
 
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context(\Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC);
 
 		$I->sendGET( $ticket_rest_url );
 
@@ -281,6 +280,7 @@ class SingleTicketCest extends BaseRestCest {
 			'modified_utc'      => $first_attendee_post->post_modified_gmt,
 			'rest_url'          => $this->attendees_url . '/' . $first_attendee_id,
 			'title'             => $first_attendee_object['holder_name'],
+			'optout'            => false,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}

@@ -3,6 +3,8 @@
 /**
  * Class Tribe__Tickets__REST__V1__Post_Repository
  *
+ * The base Ticket object repository.
+ *
  * @since TBD
  */
 class Tribe__Tickets__REST__V1__Ticket_Repository extends Tribe__Tickets__Ticket_Repository {
