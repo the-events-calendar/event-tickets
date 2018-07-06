@@ -144,7 +144,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			case 'no':
 				foreach ( $this->attendee_optout_keys() as $key ) {
 					$return['meta_query']['by-optout-status']['relation'] = 'AND';
-					// does not exist or exists and is 'no'
+					// does not exist or exists and is not 'yes'
 					$return['meta_query']['by-optout-status'][] = array(
 						'does-not-exist'        => array( 'key' => $key, 'compare' => 'NOT EXISTS' ),
 						'relation'              => 'OR',

@@ -851,7 +851,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$attendee_id = $attendee['attendee_id'];
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
-		/** @var Tribe__Tickets__Ti, ''ckets $provider */
+		/** @var Tribe__Tickets__Tickets $provider */
 		$provider = $data_api->get_ticket_provider( $attendee_id );
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
@@ -897,8 +897,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 
 		// Only show the attendee name if the attendee did not optout
 		if ( empty( $attendee['optout'] ) ) {
-			$attendee_data['title'] = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
-			$attendee_data['optout']     = false;
+			$attendee_data['title']  = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
+			$attendee_data['optout'] = false;
 		} else {
 			$attendee_data['optout'] = true;
 		}

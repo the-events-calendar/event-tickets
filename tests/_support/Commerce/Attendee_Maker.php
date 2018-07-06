@@ -186,6 +186,7 @@ trait Attendee_Maker {
 			throw new \RuntimeException( "Provider for attendee {$attendee_id} could not be found" );
 		}
 
-		update_post_meta( $attendee_post->ID, $provider->attendee_optout_key, (bool) $optout );
+		$optout_string = tribe_is_truthy( $optout ) ? 'yes' : 'no';
+		update_post_meta( $attendee_post->ID, $provider->attendee_optout_key, $optout_string );
 	}
 }
