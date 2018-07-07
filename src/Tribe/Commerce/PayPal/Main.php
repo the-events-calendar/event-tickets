@@ -1100,6 +1100,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
+		// Updates if we should show Description
+		$ticket->show_description = isset( $ticket->show_description ) && tribe_is_truthy( $ticket->show_description ) ? 'yes' : 'no';
+		update_post_meta( $ticket->ID, tribe( 'tickets.handler' )->key_show_description, $ticket->show_description );
+
 		// let's make sure float price values are formatted to "0.xyz"
 		if ( is_numeric( $ticket->price ) ) {
 			$ticket->price = (string) (int) $ticket->price === $ticket->price
@@ -1374,17 +1378,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$qty_sold = get_post_meta( $ticket_id, 'total_sales', true );
 
-		$return->description    = $product->post_excerpt;
-		$return->ID             = $ticket_id;
-		$return->name           = $product->post_title;
-		$return->price          = get_post_meta( $ticket_id, '_price', true );
-		$return->provider_class = get_class( $this );
-		$return->admin_link     = '';
-		$return->start_date     = get_post_meta( $ticket_id, '_ticket_start_date', true );
-		$return->end_date       = get_post_meta( $ticket_id, '_ticket_end_date', true );
-		$return->start_time     = get_post_meta( $ticket_id, '_ticket_start_time', true );
-		$return->end_time       = get_post_meta( $ticket_id, '_ticket_end_time', true );
-		$return->sku            = get_post_meta( $ticket_id, 'sku', true );
+		$return->description      = $product->post_excerpt;
+		$return->ID               = $ticket_id;
+		$return->name             = $product->post_title;
+		$return->price            = get_post_meta( $ticket_id, '_price', true );
+		$return->provider_class   = get_class( $this );
+		$return->admin_link       = '';
+		$return->show_description = $return->show_description();
+		$return->start_date       = get_post_meta( $ticket_id, '_ticket_start_date', true );
+		$return->end_date         = get_post_meta( $ticket_id, '_ticket_end_date', true );
+		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
+		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
+		$return->sku              = get_post_meta( $ticket_id, 'sku', true );
 
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
