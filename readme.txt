@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.7.5] 2018-07-10 =
+= [4.7.5] 2018-07-09 =
 
 * Fix - Display unavailability message when tickets are not yet or no longer available [81334]
 * Fix - Issues with calculating and displaying ticketed events on the admin list [71122]

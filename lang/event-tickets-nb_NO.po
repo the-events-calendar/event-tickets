@@ -11,6 +11,22 @@ msgstr ""
 "Language: nb_NO\n"
 "Project-Id-Version: Plugins - Event Tickets - Stable (latest release)\n"
 
+#: src/views/tickets/orders.php:25
+msgid "You don't have tickets for this event"
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:247
+msgid "For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)"
+msgstr ""
+
+#: common/src/Tribe/Admin/Notice/Php_Version.php:101
+msgid "Starting March 2019, %1$s will no longer work with versions prior to PHP 5.4. Currently your site is using PHP version %2$s. For best results, we recommend using PHP 5.6 or above."
+msgstr ""
+
+#: common/src/Tribe/Admin/Notice/Php_Version.php:98
+msgid "Starting March 2019, %1$s will no longer support versions prior to PHP 5.6. Your site is currently using PHP version %2$s which will no longer be supported by %1$s. For best results, we recommend using PHP 5.6 or above."
+msgstr ""
+
 #: src/views/tickets/tpp-return-to-cart.php:6
 msgid "Return to Cart"
 msgstr ""
@@ -970,11 +986,11 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1091
+#: src/Tribe/Tickets.php:1111
 msgid "Set capacity for this ticket only"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1090
+#: src/Tribe/Tickets.php:1110
 msgid "Shared capacity with other tickets"
 msgstr ""
 
@@ -1052,15 +1068,15 @@ msgstr ""
 msgid "%s must be an email address."
 msgstr ""
 
-#: common/src/Tribe/Main.php:257
+#: common/src/Tribe/Main.php:250
 msgid "Clear Selection."
 msgstr ""
 
-#: common/src/Tribe/Main.php:256
+#: common/src/Tribe/Main.php:249
 msgid "Select all pages"
 msgstr ""
 
-#: common/src/Tribe/Main.php:255
+#: common/src/Tribe/Main.php:248
 msgid "All items on this page were selected. "
 msgstr ""
 
@@ -1144,7 +1160,7 @@ msgid "Event Tickets provides a simple way for visitors to RSVP to your events. 
 msgstr ""
 
 #: common/src/Tribe/Plugins_API.php:37
-msgid "Import events from across the web! Event Aggregator makes it easy to run scheduled or manual imports from Facebook, Meetup, Google Calendar, and iCalendar, along with uploads from CSV and ICS files. You can also import directly from other sites running The Events Calendar thanks to our built-in REST API support."
+msgid "Import events from across the web! Event Aggregator makes it easy to run scheduled or manual imports from Facebook, Meetup, Eventbrite, Google Calendar, and iCalendar, along with uploads from CSV and ICS files. You can also import directly from other sites running The Events Calendar thanks to our built-in REST API support."
 msgstr ""
 
 #: common/src/Tribe/Plugins_API.php:28
@@ -1440,15 +1456,15 @@ msgstr ""
 msgid "License Key Status:"
 msgstr ""
 
-#: common/src/Tribe/Main.php:279
+#: common/src/Tribe/Main.php:272
 msgid "Done"
 msgstr ""
 
-#: common/src/Tribe/Main.php:278
+#: common/src/Tribe/Main.php:271
 msgid "Today"
 msgstr ""
 
-#: common/src/Tribe/Main.php:277
+#: common/src/Tribe/Main.php:270
 msgid "Prev"
 msgstr ""
 
@@ -1472,11 +1488,13 @@ msgstr ""
 msgid "Tutorial"
 msgstr ""
 
+#: common/src/Tribe/Admin/Notice/Php_Version.php:60
 #: common/src/Tribe/Admin/Notice/Plugin_Download.php:92
 msgctxt "the final separator in a list of two or more items"
 msgid " and "
 msgstr ""
 
+#: common/src/Tribe/Admin/Notice/Php_Version.php:59
 #: common/src/Tribe/Admin/Notice/Plugin_Download.php:91
 msgctxt "separator used in a list of items"
 msgid ", "
@@ -1711,11 +1729,11 @@ msgctxt "attendee event actions"
 msgid "Edit"
 msgstr ""
 
-#: src/Tribe/RSVP.php:322
+#: src/Tribe/RSVP.php:326
 msgid "RSVP Ticket"
 msgstr ""
 
-#: src/Tribe/RSVP.php:321
+#: src/Tribe/RSVP.php:325
 msgid "RSVP Tickets"
 msgstr ""
 
@@ -2005,71 +2023,71 @@ msgstr ""
 msgid "Renew Your License Now"
 msgstr ""
 
-#: common/src/Tribe/Main.php:267
+#: common/src/Tribe/Main.php:260
 msgid ": Selected 1 row"
 msgstr ""
 
-#: common/src/Tribe/Main.php:266
+#: common/src/Tribe/Main.php:259
 msgid ": Selected %d rows"
 msgstr ""
 
-#: common/src/Tribe/Main.php:261
+#: common/src/Tribe/Main.php:254
 msgid "Previous"
 msgstr ""
 
-#: common/src/Tribe/Main.php:260 common/src/Tribe/Main.php:276
+#: common/src/Tribe/Main.php:253 common/src/Tribe/Main.php:269
 msgid "Next"
 msgstr ""
 
-#: common/src/Tribe/Main.php:259
+#: common/src/Tribe/Main.php:252
 msgid "All"
 msgstr ""
 
-#: common/src/Tribe/Main.php:254
+#: common/src/Tribe/Main.php:247
 msgid "Search:"
 msgstr ""
 
-#: common/src/Tribe/Main.php:253
+#: common/src/Tribe/Main.php:246
 msgid "No matching records found"
 msgstr ""
 
-#: common/src/Tribe/Main.php:252
+#: common/src/Tribe/Main.php:245
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
-#: common/src/Tribe/Main.php:251
+#: common/src/Tribe/Main.php:244
 msgid "Showing 0 to 0 of 0 entries"
 msgstr ""
 
-#: common/src/Tribe/Main.php:250
+#: common/src/Tribe/Main.php:243
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
-#: common/src/Tribe/Main.php:249
+#: common/src/Tribe/Main.php:242
 msgid "No data available in table"
 msgstr ""
 
-#: common/src/Tribe/Main.php:248
+#: common/src/Tribe/Main.php:241
 msgid "Show _MENU_ entries"
 msgstr ""
 
-#: common/src/Tribe/Main.php:246
+#: common/src/Tribe/Main.php:239
 msgid ": activate to sort column descending"
 msgstr ""
 
-#: common/src/Tribe/Main.php:245
+#: common/src/Tribe/Main.php:238
 msgid ": activate to sort column ascending"
 msgstr ""
 
-#: common/src/Tribe/Main.php:226
+#: common/src/Tribe/Main.php:280
 msgid "Press \"Cmd + C\" to copy"
 msgstr ""
 
-#: common/src/Tribe/Main.php:225
+#: common/src/Tribe/Main.php:279
 msgid "System info copied"
 msgstr ""
 
-#: common/src/Tribe/Main.php:224
+#: common/src/Tribe/Main.php:278
 #: common/src/admin-views/tribe-options-help.php:50
 msgid "Copy to clipboard"
 msgstr ""
@@ -2102,7 +2120,7 @@ msgstr ""
 msgid "To begin using %1$s, please install and activate the latest version of %2$s."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1708
+#: src/Tribe/Tickets.php:1728
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
@@ -2147,11 +2165,11 @@ msgstr ""
 msgid "Rate %1$sThe Events Calendar%2$s %3$s"
 msgstr ""
 
-#: src/Tribe/RSVP.php:784
+#: src/Tribe/RSVP.php:788
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
-#: src/views/tickets/email-non-attendance.php:248
+#: src/views/tickets/email-non-attendance.php:263
 msgid "Thank you for confirming that you will not be attending the above event."
 msgstr ""
 
@@ -2164,11 +2182,11 @@ msgstr ""
 msgid "Login to RSVP"
 msgstr ""
 
-#: src/views/tickets/orders.php:64
+#: src/views/tickets/orders.php:72
 msgid "Update %s"
 msgstr ""
 
-#: src/views/tickets/orders.php:26
+#: src/views/tickets/orders.php:34
 msgid "View %s"
 msgstr ""
 
@@ -2246,15 +2264,15 @@ msgstr ""
 msgid "Going"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1714
+#: src/Tribe/Tickets.php:1734
 msgid "There are no tickets available at this time."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1712
+#: src/Tribe/Tickets.php:1732
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1710
+#: src/Tribe/Tickets.php:1730
 msgid "Tickets are not yet available."
 msgstr ""
 
@@ -2466,15 +2484,15 @@ msgid "RSVP"
 msgstr "Svar utbedes"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:72
-#: src/views/tickets/email.php:369
+#: src/views/tickets/email.php:395
 msgid "Purchaser"
 msgstr "Kjøper"
 
-#: src/views/tickets/email.php:365
+#: src/views/tickets/email.php:391
 msgid "Ticket Type"
 msgstr "Billettype"
 
-#: src/views/tickets/email-non-attendance.php:24
+#: src/views/tickets/email-non-attendance.php:39
 #: src/views/tickets/email-ticket-type-moved.php:25
 #: src/views/tickets/email-tickets-moved.php:26 src/views/tickets/email.php:27
 msgid "Your tickets"
@@ -2698,51 +2716,51 @@ msgstr "Deltakere"
 msgid "See who purchased tickets to this event"
 msgstr "Se hvem som kjøpte billetter til denne hendelsen"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1855 src/Tribe/RSVP.php:1713
+#: src/Tribe/Commerce/PayPal/Main.php:1855 src/Tribe/RSVP.php:1717
 msgid "Post draft updated."
 msgstr "Utkast oppdatert."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1854 src/Tribe/RSVP.php:1712
+#: src/Tribe/Commerce/PayPal/Main.php:1854 src/Tribe/RSVP.php:1716
 msgid "Post scheduled."
 msgstr "Innlegg planlagt."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1853 src/Tribe/RSVP.php:1711
+#: src/Tribe/Commerce/PayPal/Main.php:1853 src/Tribe/RSVP.php:1715
 msgid "Post submitted."
 msgstr "Innlegg innstendt."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1850 src/Tribe/RSVP.php:1708
+#: src/Tribe/Commerce/PayPal/Main.php:1850 src/Tribe/RSVP.php:1712
 msgid "Post published. %1$s"
 msgstr "Innlegg publisert. %1$s"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1846 src/Tribe/RSVP.php:1704
+#: src/Tribe/Commerce/PayPal/Main.php:1846 src/Tribe/RSVP.php:1708
 msgid "Post updated. %1$s"
 msgstr "Innlegg oppdatert. %1$s"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1839 src/Tribe/RSVP.php:1697
+#: src/Tribe/Commerce/PayPal/Main.php:1839 src/Tribe/RSVP.php:1701
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr "Tilbake til %1$sdeltakerrapport%2$s."
 
-#: src/Tribe/Commerce/PayPal/Main.php:2459 src/Tribe/RSVP.php:1393
+#: src/Tribe/Commerce/PayPal/Main.php:2459 src/Tribe/RSVP.php:1397
 msgid "(deleted)"
 msgstr "(slettet)"
 
-#: src/Tribe/RSVP.php:1090
+#: src/Tribe/RSVP.php:1094
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr "For å kunne svare på invitasjonen må du oppgi navn og en gyldig epostadresse."
 
-#: src/Tribe/RSVP.php:1085
+#: src/Tribe/RSVP.php:1089
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr "Du kan ikke svare på flere invitasjoner enn totalt gjenstående billetter."
 
-#: src/Tribe/RSVP.php:1079
+#: src/Tribe/RSVP.php:1083
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr "Din Svar utbedes har blitt mottatt! Sjekk din epost for Svar utbedes-bekreftelse."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1050 src/Tribe/RSVP.php:696
+#: src/Tribe/Commerce/PayPal/Main.php:1050 src/Tribe/RSVP.php:700
 msgid "Your tickets from %s"
 msgstr "Dine billetter fra %s"
 
-#: src/Tribe/Commerce/PayPal/Main.php:355 src/Tribe/RSVP.php:283
+#: src/Tribe/Commerce/PayPal/Main.php:355 src/Tribe/RSVP.php:287
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr "Deltaker %1$s"
@@ -2845,11 +2863,11 @@ msgstr "Angre innsjekk"
 msgid "Check in"
 msgstr "Innsjekk"
 
-#: src/views/tickets/email.php:373
+#: src/views/tickets/email.php:399
 msgid "Security Code"
 msgstr "Sikkerhetskode"
 
-#: src/views/tickets/email.php:361
+#: src/views/tickets/email.php:387
 msgid "Ticket #"
 msgstr "Billett #"
 
@@ -4045,7 +4063,7 @@ msgid "Botswana"
 msgstr "Botswana"
 
 #: common/src/Tribe/Languages/Locations.php:83
-msgid "Bosnia and Herzegowina"
+msgid "Bosnia and Herzegovina"
 msgstr ""
 
 #: common/src/Tribe/Languages/Locations.php:82
@@ -4502,7 +4520,7 @@ msgstr "Avansert innlegg manager"
 msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
 msgstr "Events Tickets er en nøye bearbeidet, utvidbar utvidelse som lar deg selge billetter til dine hendelser på en enkel måte."
 
-#. #-#-#-#-#  event-tickets-code.pot (Event Tickets 4.7.3.1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets-code.pot (Event Tickets 4.7.4.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: common/src/Tribe/Admin/Help_Page.php:75 common/src/Tribe/Plugins_API.php:57
 #: src/Tribe/Main.php:454
