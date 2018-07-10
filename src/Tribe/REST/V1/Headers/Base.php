@@ -92,7 +92,7 @@ class Tribe__Tickets__REST__V1__Headers__Base implements Tribe__REST__Headers__B
 	 * @return string
 	 */
 	public function get_rest_url() {
-		if ( is_single() && tribe_is_event() ) {
+		if ( is_single() && is_singular( 'tribe_events' ) ) {
 			return tribe_tickets_rest_url( 'tickets/' . Tribe__Main::post_id_helper() );
 		}
 
