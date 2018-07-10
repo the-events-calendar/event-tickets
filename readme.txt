@@ -3,8 +3,8 @@
 Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
-Tested up to: 4.9.6
-Stable tag: 4.7.5
+Tested up to: 4.9.7
+Stable tag: 4.7.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -130,7 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Fatal error on some product pages when The Events Calendar is not active [110248]
 
-= [4.7.5] 2018-07-10 =
+= [4.7.5] 2018-07-09 =
 
 * Fix - Display unavailability message when tickets are not yet or no longer available [81334]
 * Fix - Issues with calculating and displaying ticketed events on the admin list [71122]
