@@ -122,6 +122,14 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.7.6] TBD =
+
+* Fix - Fixd the `Show description` setting for Tribe Commerce tickets in the backend and frontend [100524]
+
+= [4.7.5.1] 2018-07-10 =
+
+* Fix - Fatal error on some product pages when The Events Calendar is not active [110248]
+
 = [4.7.5] 2018-07-10 =
 
 * Fix - Display unavailability message when tickets are not yet or no longer available [81334]
