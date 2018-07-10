@@ -124,6 +124,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.7.6] TBD =
 
+= [4.7.5.1] 2018-07-10 =
+
+* Fix - Fatal error on some product pages when The Events Calendar is not active [110248]
 
 = [4.7.5] 2018-07-09 =
 
