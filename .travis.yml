@@ -124,6 +124,9 @@ before_script:
   - sudo service php5-fpm restart
   - sudo service nginx restart
 
+  # regenerate Composer autoload
+  - composer dump-autoload
+
 script:
   - codecept run unit
   - codecept run wpunit
