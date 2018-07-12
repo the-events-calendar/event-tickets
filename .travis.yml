@@ -106,6 +106,7 @@ before_script:
 
   # activate the plugins in WordPress
   - cd $WP_ROOT_FOLDER
+
   - wp plugin activate the-events-calendar event-tickets
 
   # flush rewrite rules
@@ -123,9 +124,6 @@ before_script:
   # restart Nnginx and PHP-FPM services
   - sudo service php5-fpm restart
   - sudo service nginx restart
-
-  # regenerate Composer autoload
-  - composer dump-autoload
 
 script:
   - codecept run unit
