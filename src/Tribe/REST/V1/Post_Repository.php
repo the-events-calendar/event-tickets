@@ -576,7 +576,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'available'            => (int) $ticket->stock(), // see not above about why we use this
 		);
 
-		if ( current_user_can('read_private_posts') ) {
+		if ( current_user_can( 'read_private_posts' ) ) {
 			$details['max']     = (int) $ticket->capacity();
 			$details['sold']    = (int) $ticket->qty_sold();
 			$details['pending'] = (int) $ticket->qty_pending();

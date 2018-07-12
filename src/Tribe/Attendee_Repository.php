@@ -132,8 +132,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	public function filter_by_optout( $optout ) {
 		$return = array(
 			'meta_query' => array(
-				'by-optout-status' => array(
-				),
+				'by-optout-status' => array(),
 			),
 		);
 
@@ -177,7 +176,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	protected function attendee_optout_keys() {
 		return array(
 			'_tribe_rsvp_attendee_optout',
-			'_tribe_tpp_attendee_optout'
+			'_tribe_tpp_attendee_optout',
 		);
 	}
 }
