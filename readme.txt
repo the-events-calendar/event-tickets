@@ -125,7 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.7.6] TBD =
 
 * Fix - Fixed the "Show description" setting for Tribe Commerce tickets in the backend and frontend [100524]
-* Tweak - Add event and order IDs as parameters to the Tribe Commerce email filters [104209]
+* Tweak - Added parent post and order IDs as parameters to the Tribe Commerce email filters [104209]
 
 = [4.7.5.1] 2018-07-10 =
 
