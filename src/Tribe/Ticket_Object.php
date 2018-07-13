@@ -321,6 +321,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				$end   = $this->end_date();
 			}
 
+			// Bail if we don't have an end date and the event has passed
+			if ( empty( $end ) && tribe_is_past_event() ) {
+				return false;
+			}
+
 			return ( empty( $start ) || $now >= $start ) && ( empty( $end ) || $now <= $end );
 		}
 
