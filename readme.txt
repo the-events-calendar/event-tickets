@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.7.6] TBD =
 
 * Fix - Fixed the "Show description" setting for Tribe Commerce tickets in the backend and frontend [100524]
+* Fix - Added required post ID parameter to `the_title` filter in Tribe Commerce [109592]
 
 = [4.7.5.1] 2018-07-10 =
 
