@@ -28,6 +28,7 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 			'error-global-id-generation'  => __( 'The ticket global id could not be generated', 'event-tickets' ),
 			// this is an internal error, not same as the `ticket-not-found` one
 			'error-ticket-post'           => __( 'There was a problem while fetching the requested ticket post', 'event-tickets' ),
+			'error-attendee-post'         => __( 'There was a problem while fetching the requested attendee post', 'event-tickets' ),
 			// same as WordPress REST API
 			'invalid-page-number'         => __( 'The page number requested is larger than the number of pages available.', 'default' ),
 		);

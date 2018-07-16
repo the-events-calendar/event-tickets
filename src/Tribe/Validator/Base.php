@@ -64,4 +64,27 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 
 		return ! empty( $valid ) && count( $valid ) === count( $posts );
 	}
+
+	/**
+	 * Whether the value is the post id of an existing attendee or not.
+	 *
+	 * @since tbd
+	 *
+	 * @param int $attendee_id
+	 *
+	 * @return bool
+	 */
+	public function is_attendee_id( $attendee_id ) {
+		if ( empty( $attendee_id ) ) {
+			return false;
+		}
+
+		// get ticket provider
+		$ticket_type = tribe( 'tickets.data_api' )->detect_by_id( $attendee_id );
+
+		//get ticket
+		$ticket = get_post( $attendee_id );
+
+		return ! empty( $ticket_type['post_type'] ) && ! empty( $ticket ) &&  $ticket_type['post_type'] === $ticket->post_type;
+	}
 }

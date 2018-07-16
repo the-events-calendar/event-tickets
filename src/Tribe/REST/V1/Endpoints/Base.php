@@ -283,7 +283,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
 			$message = $this->messages->get_message( 'ticket-not-accessible' );
 
-			return new WP_Error( 'tickets-not-accessible', $message, array( 'status' => 401 ) );
+			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
 		}
 
 		return $this->post_repository->get_ticket_data( $ticket_id );

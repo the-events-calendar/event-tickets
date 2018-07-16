@@ -848,6 +848,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @return array
 	 */
 	protected function build_attendee_data( array $attendee, $context = 'default' ) {
+		$this->get_ticket_object( $attendee['product_id'] );
 		$attendee_id = $attendee['attendee_id'];
 		/** @var Tribe__Tickets__Data_API $data_api */
 		$data_api = tribe( 'tickets.data_api' );
@@ -895,16 +896,18 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'rest_url'          => $main->get_url( '/attendees/' . $attendee_id ),
 		);
 
-		// Only show the attendee name if the attendee did not optout
-		if ( empty( $attendee['optout'] ) ) {
+		$can_read_private_post = current_user_can( 'read_private_posts' );
+
+		// Only show the attendee name if the attendee did not optout or the user can read private posts
+		if ( empty( $attendee['optout'] ) || $can_read_private_post ) {
 			$attendee_data['title']  = Tribe__Utils__Array::get( $attendee, 'holder_name', Tribe__Utils__Array::get( $attendee, 'purchaser_name', '' ) );
-			$attendee_data['optout'] = false;
+			$attendee_data['optout'] = tribe_is_truthy( $attendee['optout'] );
 		} else {
 			$attendee_data['optout'] = true;
 		}
 
 		// Sensible information should not be shown to everyone
-		if ( current_user_can( 'read_private_posts' ) ) {
+		if ( $can_read_private_post ) {
 			$attendee_data = array_merge( $attendee_data, array(
 				'provider'        => $this->get_provider_slug( $provider ),
 				'order'           => $attendee_order_id,

@@ -44,12 +44,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	public function READ_args() {
 		return array(
 			'id' => array(
-				// @todo update Swaggerification functions to support multiple types
-				// 'swagger_type'      => array( 'integer', 'string' ),
-				'swagger_type'      => 'string',
-				'description'       => __( 'Limit results to tickets that are assigned to one of the posts specified in the CSV list or array', 'event-tickets' ),
-				'required'          => false,
-				'validate_callback' => array( $this->validator, 'is_positive_int' ),
+				'type'      => 'integer',
+				'description'       => __( 'The ticket post ID', 'event-tickets' ),
+				'required'          => true,
+				'validate_callback' => array( $this->validator, 'is_ticket_id' ),
 			),
 		);
 	}

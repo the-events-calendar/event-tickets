@@ -19,9 +19,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		);
 
 		$this->read_schema = array(
-			'event'  => array( $this, 'filter_by_event' ),
-			'ticket' => array( $this, 'filter_by_ticket' ),
-			'optout' => array( $this, 'filter_by_optout' ),
+			'event'       => array( $this, 'filter_by_event' ),
+			'ticket'      => array( $this, 'filter_by_ticket' ),
+			'optout'      => array( $this, 'filter_by_optout' ),
+			'rsvp_status' => array( $this, 'filter_by_rsvp_status' )
 		);
 	}
 
@@ -177,6 +178,38 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		return array(
 			'_tribe_rsvp_attendee_optout',
 			'_tribe_tpp_attendee_optout',
+		);
+	}
+
+	/**
+	 * Provides arguments to filter attendees by a specific RSVP status.
+	 *
+	 * Mind that we allow tickets not to have an RSVP status at all and
+	 * still match. This assumes that all RSVP tickets will have a status
+	 * assigned (which is the default behaviour).
+	 *
+	 * @since TBD
+	 *
+	 * @param string $rsvp_status
+	 *
+	 * @return array
+	 */
+	public function filter_by_rsvp_status( $rsvp_status ) {
+		return array(
+			'meta_query' => array(
+				'by-rsvp-status' => array(
+					'exists-and-equals' => array(
+						'key'     => Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
+						'value'   => $rsvp_status,
+						'compare' => '=',
+					),
+					'relation'          => 'OR',
+					'does-not-exist'    => array(
+						'key'     => Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
+						'compare' => 'NOT EXISTS',
+					),
+				)
+			)
 		);
 	}
 }

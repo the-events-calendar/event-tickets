@@ -124,7 +124,7 @@ trait Attendee_Maker {
 		$postarr = [
 			'post_title'  => 'Generated Attendee ' . self::$generated,
 			'post_type'   => $provider_reflection->getConstant( 'ATTENDEE_OBJECT' ),
-			'post_status' => 'publish',
+			'post_status' => $overrides['post_status'] ?? 'publish',
 			'meta_input'  => array_merge( $meta, $meta_input_overrides ),
 		];
 
