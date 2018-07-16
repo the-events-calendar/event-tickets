@@ -129,7 +129,7 @@ script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
-  - codecept run functional -vvv
+  - codecept run functional
   - codecept run acceptance
   - codecept run restv1
 
