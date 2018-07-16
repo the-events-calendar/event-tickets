@@ -990,9 +990,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD added $post_id parameter
 	 *
 	 * @param int $order_id Order post ID
-	 * @param int $post_id  Parent post ID
+	 * @param int $post_id  Parent post ID (optional)
 	 */
-	public function send_tickets_email( $order_id ) {
+	public function send_tickets_email( $order_id, $post_id = null ) {
 		$all_attendees = $this->get_attendees_by_id( $order_id );
 
 		$to_send = array();
