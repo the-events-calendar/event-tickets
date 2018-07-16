@@ -848,7 +848,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Maybe addd the Tickets Form as shouldn't be added if is unchecked from the settings
+		 * Maybe add the Tickets Form as shouldn't be added if is unchecked from the settings
 		 *
 		 * @since 4.7.3
 		 *
