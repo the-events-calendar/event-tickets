@@ -17,7 +17,8 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	public function __construct() {
 		$this->messages = array(
 			'missing-attendee-id'         => __( 'The attendee ID is missing from the request', 'event-tickets' ),
-			'attendee-not-found'          => __( 'The requested post ID does not exist or is not an attendee', 'event-tickets' ),
+			'
+			attendee-not-found'          => __( 'The requested post ID does not exist or is not an attendee', 'event-tickets' ),
 			'attendee-not-accessible'     => __( 'The requested attendee is not accessible', 'event-tickets' ),
 			'attendee-check-in-not-found' => __( 'The requested attendee check in is not available', 'event-tickets' ),
 			'ticket-not-found'            => __( 'The requested ticket post could not be found', 'event-tickets' ),
@@ -28,7 +29,9 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 			'error-global-id-generation'  => __( 'The ticket global id could not be generated', 'event-tickets' ),
 			// this is an internal error, not same as the `ticket-not-found` one
 			'error-ticket-post'           => __( 'There was a problem while fetching the requested ticket post', 'event-tickets' ),
-
+			'error-attendee-post'         => __( 'There was a problem while fetching the requested attendee post', 'event-tickets' ),
+			// same as WordPress REST API
+			'invalid-page-number'         => __( 'The page number requested is larger than the number of pages available.', 'default' ),
 		);
 	}
 

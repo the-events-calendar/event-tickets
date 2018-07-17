@@ -22,7 +22,6 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$ticket_ids = $this->create_many_tickets( 3, $post_id );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC );
 
 		$I->sendGET( $this->tickets_url, [ 'include_post' => $post_id ] );
 		$I->seeResponseIsJson();
@@ -58,7 +57,6 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$ticket_ids = $this->create_many_tickets( 1, $post_id );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC );
 
 		$I->sendGET( $this->tickets_url, $params );
 		$I->seeResponseIsJson();
@@ -76,7 +74,6 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$draft_ticket_ids  = $this->create_many_tickets( 2, $post_id, [ 'post_status' => 'draft' ] );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC );
 
 		$I->sendGET( $this->tickets_url, [ 'include_post' => $post_id ] );
 		$I->seeResponseIsJson();
@@ -102,8 +99,7 @@ class TicketArchiveByPostCest extends BaseRestCest {
 		$I->sendGET( $this->tickets_url, [ 'include_post' => $post_id ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
-		$response         = json_decode( $I->grabResponse(), true );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR );
+		$response = json_decode( $I->grabResponse(), true );
 		$expected_tickets = array_map( function ( $ticket_id ) use ( $repository ) {
 			return $repository->get_ticket_data( $ticket_id );
 		}, array_merge( $public_ticket_ids, $draft_ticket_ids ) );
@@ -125,12 +121,11 @@ class TicketArchiveByPostCest extends BaseRestCest {
 	 *
 	 * @test
 	 */
-	public function should_allow_getting_paginated_results(Restv1Tester $I) {
-		$post_id = $I->havePostInDatabase();
+	public function should_allow_getting_paginated_results( Restv1Tester $I ) {
+		$post_id    = $I->havePostInDatabase();
 		$ticket_ids = $this->create_many_tickets( 4, $post_id );
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC );
 		$page_1_tickets = array_map( function ( $ticket_id ) use ( $repository ) {
 			return $repository->get_ticket_data( $ticket_id );
 		}, [ $ticket_ids[0], $ticket_ids[1] ] );
@@ -145,7 +140,7 @@ class TicketArchiveByPostCest extends BaseRestCest {
 
 		$expected_page_1_rest_url = add_query_arg( [
 			'include_post' => $post_id,
-			'per_page' => 2,
+			'per_page'     => 2,
 		], $this->tickets_url . '/' );
 
 		$I->assertEquals( [
@@ -172,9 +167,14 @@ class TicketArchiveByPostCest extends BaseRestCest {
 			'total_pages' => 2,
 			'tickets'     => $page_2_tickets,
 		], $page_2_response );
+
+		$I->sendGET( $this->tickets_url, [ 'include_post' => $post_id, 'per_page' => 2, 'page' => 3 ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 400 );
 	}
 
-	protected function invalid_include_post() { return [
+	protected function invalid_include_post() {
+		return [
 			'empty_string'      => [ '' ],
 			'non_existing'      => [ '23' ],
 			'bad_list_1'        => [ 'foo, bar' ],

@@ -55,7 +55,6 @@ class SingleTicketCest extends BaseRestCest {
 
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_EDITOR );
 
 		$I->sendGET( $ticket_rest_url );
 
@@ -170,6 +169,7 @@ class SingleTicketCest extends BaseRestCest {
 					'seconds' => date( 's', $first_attendee_payment_time ),
 				],
 			],
+			'optout'            => false,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
@@ -212,11 +212,12 @@ class SingleTicketCest extends BaseRestCest {
 		$first_attendee_payment_date = get_post_time( 'Y-m-d H:i:s', false, $first_attendee_id );
 		$first_attendee_payment_time = strtotime( $first_attendee_payment_date );
 		$ticket_post                 = get_post( $ticket_id );
-		$ticket_rest_url             = $this->tickets_url . "/{$ticket_id}";
 		/** @var \Tribe__Tickets__Tickets_Handler $handler */
 		$handler  = tribe( 'tickets.handler' );
 		$image_id = $I->factory()->attachment->create_upload_object( codecept_data_dir( 'images/test-image-1.jpg' ) );
 		update_post_meta( $post_id, $handler->key_image_header, $image_id );
+
+		$ticket_rest_url             = $this->tickets_url . "/{$ticket_id}";
 
 		$I->sendGET( $ticket_rest_url );
 
@@ -225,7 +226,6 @@ class SingleTicketCest extends BaseRestCest {
 
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
-		$repository->set_context( \Tribe__Tickets__REST__V1__Post_Repository::CONTEXT_PUBLIC );
 
 		$response           = json_decode( $I->grabResponse(), true );
 		$response_attendees = $response['attendees'];
@@ -297,6 +297,7 @@ class SingleTicketCest extends BaseRestCest {
 			'modified_utc'      => $first_attendee_post->post_modified_gmt,
 			'rest_url'          => $this->attendees_url . '/' . $first_attendee_id,
 			'title'             => $first_attendee_object['holder_name'],
+			'optout'            => false,
 		];
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}

@@ -28,6 +28,8 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		tribe_singleton( 'tickets.rest-v1.system', 'Tribe__Tickets__REST__V1__System' );
 		tribe_singleton( 'tickets.rest-v1.validator', 'Tribe__Tickets__REST__V1__Validator__Base' );
 		tribe_singleton( 'tickets.rest-v1.repository', 'Tribe__Tickets__REST__V1__Post_Repository' );
+		tribe_register( 'tickets.rest-v1.ticket-repository', 'Tribe__Tickets__REST__V1__Ticket_Repository' );
+		tribe_register( 'tickets.rest-v1.attendee-repository', 'Tribe__Tickets__REST__V1__Attendee_Repository' );
 		tribe_singleton( 'tickets.rest-v1.flags', 'Tribe__Tickets__REST__V1__Flags' );
 		tribe_singleton(
 			'tickets.rest-v1.endpoints.documentation',
@@ -51,6 +53,14 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 				tribe( 'tickets.rest-v1.validator' )
 			)
 		);
+		tribe_singleton(
+			'tickets.rest-v1.endpoints.attendees-single',
+			new Tribe__Tickets__REST__V1__Endpoints__Single_Attendee(
+				tribe( 'tickets.rest-v1.messages' ),
+				tribe( 'tickets.rest-v1.repository' ),
+				tribe( 'tickets.rest-v1.validator' )
+			)
+		);
 
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/functions/advanced-functions/rest-v1.php';
 
@@ -68,6 +78,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$doc_endpoint = $this->register_documentation_endpoint();
 		$this->register_single_ticket_endpoint();
 		$this->register_ticket_archive_endpoint();
+		$this->register_single_attendee_endpoint();
 
 		// @todo add the endpoints as documentation providers here
 		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
@@ -147,5 +158,18 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		}
 
 		add_filter( 'tribe_rest_event_data', tribe_callback( 'tickets.rest-v1.flags', 'flag_ticketed_event' ), 10, 2 );
+	}
+
+	protected function register_single_attendee_endpoint() {
+		/** @var Tribe__Tickets__REST__V1__Endpoints__Single_Ticket $endpoint */
+		$endpoint = tribe( 'tickets.rest-v1.endpoints.attendees-single' );
+
+		register_rest_route( $this->namespace, '/attendees/(?P<id>\\d+)', array(
+			'methods'  => WP_REST_Server::READABLE,
+			'args'     => $endpoint->READ_args(),
+			'callback' => array( $endpoint, 'get' ),
+		) );
+
+		return $endpoint;
 	}
 }

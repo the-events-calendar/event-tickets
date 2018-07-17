@@ -70,5 +70,8 @@ class BaseRestCest {
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 		$repository->reset_ticket_cache();
+
+		// reset the user to visitor before each test
+		wp_set_current_user( 0 );
 	}
 }

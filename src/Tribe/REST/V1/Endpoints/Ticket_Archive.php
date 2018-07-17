@@ -18,7 +18,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 * @return array An array description of a Swagger supported component.
 	 */
 	public function get_documentation() {
-		// TODO: Implement get_documentation() method.
+		// @todo - implement me!
+		return array();
 	}
 
 	/**
@@ -29,36 +30,54 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 * @return WP_Error|WP_REST_Response An array containing the data on success or a WP_Error instance on failure.
 	 */
 	public function get( WP_REST_Request $request ) {
-		$data       = array();
 		$query_args = $request->get_query_params();
-		$per_page   = $request->get_param( 'per_page' );
-		$found      = array();
+		$per_page   = (int) $request->get_param( 'per_page' );
+		$page       = (int) $request->get_param( 'page' );
 
-		$this->ticket_query_args['paged']          = $request->get_param( 'page' );
-		$this->ticket_query_args['posts_per_page'] = $request->get_param( 'per_page' );
-		$this->found_tickets                       = 0;
+		$fetch_args = array();
 
 		if ( $request->get_param( 'include_post' ) ) {
-			$include_post = $request['include_post'];
-
-			foreach ( $include_post as $post_id ) {
-				$found[] = $this->get_tickets_for_post( $post_id );
-			}
-
-			$found = call_user_func_array( 'array_merge', $found );
-
+			$include_post               = $request['include_post'];
+			$fetch_args['event']        = $include_post; // by( 'event' ,$id )
 			$query_args['include_post'] = implode( ',', $include_post );
+		}
+
+		/** @var wpdb $wpdb */
+		global $wpdb;
+
+		if ( current_user_can( 'read_private_posts' ) ) {
+			$permission                = Tribe__Tickets__REST__V1__Repositories__Ticket_Read::PERMISSION_EDITABLE;
+			$fetch_args['post_status'] = 'any';
+		} else {
+			$permission                = Tribe__Tickets__REST__V1__Repositories__Ticket_Read::PERMISSION_READABLE;
+			$fetch_args['post_status'] = 'publish';
+		}
+
+		$query = tribe_tickets( 'restv1' )
+			->fetch()
+			->by_args( $fetch_args )
+			->permission( $permission );
+
+		$found = $query->found();
+
+		if ( 0 === $found && 1 === $page ) {
+			$tickets = array();
+		} elseif ( 1 !== $page && $page * $per_page > $found ) {
+			return new WP_Error( 'invalid-page-number', $this->messages->get_message( 'invalid-page-number' ), array( 'status' => 400 ) );
+		} else {
+			$tickets = $query
+				->per_page( $per_page )
+				->page( $page )
+				->all();
 		}
 
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
-		$readable = $this->filter_readable_tickets( $found );
-
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/tickets/' ) );
-		$data['total']       = $this->found_tickets;
-		$data['total_pages'] = (int) ceil( $this->found_tickets / $per_page );
-		$data['tickets']     = array_map( array( $this->post_repository, 'get_ticket_data' ), $readable );
+		$data['total']       = $found;
+		$data['total_pages'] = (int) ceil( $found / $per_page );
+		$data['tickets']     = $tickets;
 
 		$headers = array(
 			'X-ET-TOTAL'       => $data['total'],

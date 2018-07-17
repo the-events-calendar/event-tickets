@@ -928,3 +928,59 @@ function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 
 
 	return $user_is_member && $ticket_has_member_discount;
 }
+
+/**
+ * Builds and returns the correct ticket repository.
+ *
+ * @since TBD
+ *
+ * @param string $repository The slug of the repository to build/return.
+ *
+ * @return Tribe__Repository__Interface
+ */
+function tribe_tickets( $repository = 'default' ) {
+	$map = array(
+		'default' => 'tickets.ticket-repository',
+		'restv1'  => 'tickets.rest-v1.ticket-repository',
+	);
+
+	/**
+	 * Filters the map relating ticket repository slugs to service container bindings.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
+	 * @param string $repository The currently requested implementation.
+	 */
+	$map = apply_filters( 'tribe_tickets_ticket_repository_map', $map, $repository );
+
+	return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+}
+
+/**
+ * Builds and returns the correct attendee repository.
+ *
+ * @since TBD
+ *
+ * @param string $repository The slug of the repository to build/return.
+ *
+ * @return Tribe__Repository__Interface
+ */
+function tribe_attendees( $repository = 'default' ) {
+	$map = array(
+		'default' => 'tickets.attendee-repository',
+		'restv1'  => 'tickets.rest-v1.attendee-repository',
+	);
+
+	/**
+	 * Filters the map relating attendee repository slugs to service container bindings.
+	 *
+	 * @since TBD
+	 *
+	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
+	 * @param string $repository The currently requested implementation.
+	 */
+	$map = apply_filters( 'tribe_tickets_attendee_repository_map', $map, $repository );
+
+	return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+}
