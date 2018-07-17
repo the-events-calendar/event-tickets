@@ -15,6 +15,7 @@ modules:
             dump: tests/_data/restv1-dump.sql
             populate: true
             cleanup: true
+            waitlock: 0
             url: '%WP_URL%'
             tablePrefix: wp_
         WPBrowser:
