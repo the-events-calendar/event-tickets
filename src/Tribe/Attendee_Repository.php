@@ -22,7 +22,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'event'       => array( $this, 'filter_by_event' ),
 			'ticket'      => array( $this, 'filter_by_ticket' ),
 			'optout'      => array( $this, 'filter_by_optout' ),
-			'rsvp_status' => array( $this, 'filter_by_rsvp_status' )
+			'rsvp_status' => array( $this, 'filter_by_rsvp_status' ),
 		);
 	}
 
@@ -208,8 +208,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 						'key'     => Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
 						'compare' => 'NOT EXISTS',
 					),
-				)
-			)
+				),
+			),
 		);
 	}
 }
