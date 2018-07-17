@@ -80,6 +80,46 @@ class Tribe__Tickets__REST__V1__Repositories__Attendee_Read extends Tribe__Repos
 	}
 
 	/**
+	 * Returns the number of posts found matching the query.
+	 *
+	 * This method overrides the parent implementation to limit
+	 * the results if the user cannot read private posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function found() {
+		if ( ! current_user_can( 'read_private_posts' ) ) {
+			$this->by( 'optout', 'no' )
+			     ->by( 'post_status', 'publish' )
+			     ->by( 'rsvp_status', 'yes' );
+		}
+
+		return parent::found();
+	}
+
+	/**
+	 * Returns the number of posts found matching the query in the current page.
+	 *
+	 * This method overrides the parent implementation to limit
+	 * the results if the user cannot read private posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function count() {
+		if ( ! current_user_can( 'read_private_posts' ) ) {
+			$this->by( 'optout', 'no' )
+			     ->by( 'post_status', 'publish' )
+			     ->by( 'rsvp_status', 'yes' );
+		}
+
+		return parent::count();
+	}
+
+	/**
 	 * Returns the attendee in the REST API format.
 	 *
 	 * @since TBD
