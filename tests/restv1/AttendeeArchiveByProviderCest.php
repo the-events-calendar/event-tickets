@@ -26,8 +26,6 @@ class AttendeeArchiveByProviderCest extends BaseRestCest {
 		$all              = array_merge( $paypal_attendees, $rsvp_attendees );
 		sort( $all );
 
-//		rsvp, tribe-commerce, woo, edd
-
 		$I->sendGET( $this->attendees_url, [] );
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();

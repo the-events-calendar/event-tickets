@@ -37,8 +37,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$fetch_args = array();
 
 		$supported_args = array(
-			'provider' => 'provider',
-			'search' => 's',
+			'provider'  => 'provider',
+			'search'    => 's',
+			'post_id'   => 'event',
+			'ticket_id' => 'ticket',
 		);
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
@@ -97,21 +99,49 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 	 */
 	public function READ_args() {
 		return array(
-			'page'         => array(
+			'page'     => array(
 				'description'       => __( 'The page of results to return; defaults to 1', 'event-tickets' ),
 				'type'              => 'integer',
+				'required'          => false,
 				'default'           => 1,
 				'sanitize_callback' => 'absint',
 				'minimum'           => 1,
 			),
-			'per_page'     => array(
+			'per_page' => array(
 				'description'       => __( 'How many attendees to return per results page; defaults to posts_per_page.', 'event-tickets' ),
 				'type'              => 'integer',
+				'required'          => false,
 				'default'           => get_option( 'posts_per_page' ),
 				'minimum'           => 1,
 				'maximum'           => 100,
 				'sanitize_callback' => 'absint',
 			),
+			'provider' => array(
+				'description'       => __( 'Limit results to attendees whose ticket is provided by one of the providers specified in the CSV list or array; defaults to all the available.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_string' ),
+				'sanitize_callback' => array( $this->validator, 'trim' ),
+			),
+			'search'   => array(
+				'description'       => __( 'Limit results to attendees containing the specified string in the title or description.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_string' ),
+				'sanitize_callback' => array( $this->validator, 'is_string' ),
+			),
+			'post_id'  => array(
+				'description'       => __( 'Limit results to attendees by post the ticket is associated with.', 'event-tickets' ),
+				'type'              => 'integer',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_post_id' ),
+			),
+			'ticket_id' => array(
+				'description'       => __( 'Limit results to attendees associated with a ticket.', 'event-tickets' ),
+				'type'              => 'integer',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_ticket_id' ),
+			)
 		);
 	}
 }
