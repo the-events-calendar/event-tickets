@@ -23,6 +23,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'ticket'      => array( $this, 'filter_by_ticket' ),
 			'optout'      => array( $this, 'filter_by_optout' ),
 			'rsvp_status' => array( $this, 'filter_by_rsvp_status' ),
+			'provider'    => array( $this, 'filter_by_provider' ),
 		);
 	}
 
@@ -75,8 +76,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_event_keys() {
 		return array(
-			'_tribe_rsvp_for_event',
-			'_tribe_tpp_for_event',
+			'rsvp'           => '_tribe_rsvp_event',
+			'tribe-commerce' => '_tribe_tpp_event',
 		);
 	}
 
@@ -116,8 +117,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_ticket_keys() {
 		return array(
-			'_tribe_rsvp_product',
-			'_tribe_tpp_product',
+			'rsvp'           => '_tribe_rsvp_product',
+			'tribe-commerce' => '_tribe_tpp_product',
 		);
 	}
 
@@ -176,8 +177,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_optout_keys() {
 		return array(
-			'_tribe_rsvp_attendee_optout',
-			'_tribe_tpp_attendee_optout',
+			'rsvp'           => '_tribe_rsvp_attendee_optout',
+			'tribe-commerce' => '_tribe_tpp_attendee_optout',
 		);
 	}
 
@@ -211,5 +212,47 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				),
 			),
 		);
+	}
+
+	/**
+	 * Provides arguments to filter attendees by the ticket provider.
+	 *
+	 * To avoid lengthy queries we check if a provider specific meta
+	 * key relating the Attendee to the event (a post) is set.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $provider A provider supported slug or an
+	 *                               array of supported provider slugs.
+	 *
+	 * @return array
+	 */
+	public function filter_by_provider( $provider ) {
+		$providers = (array) $provider;
+
+		$args = array(
+			'meta_query' => array(
+				'by-provider' => array(
+					'relation' => 'OR',
+				),
+			),
+		);
+
+		$map = $this->attendee_to_event_keys();
+
+		foreach ( $providers as $p ) {
+			$key = Tribe__Utils__Array::get( $map, $p, false );
+
+			if ( false === $key ) {
+				continue;
+			}
+
+			$args['meta_query']['by-provider'][ $p ] = array(
+				'key'     => $key,
+				'compare' => 'EXISTS',
+			);
+		}
+
+		return $args;
 	}
 }

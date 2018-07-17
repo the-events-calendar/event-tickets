@@ -1,11 +1,10 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1\RSVP;
+namespace Tribe\Tickets\Test\REST\V1;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
 class AttendeeArchiveCest extends BaseRestCest {
 	use Ticket_Maker;
@@ -20,7 +19,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 		$post_ids = $I->haveManyPostsInDatabase( 2 );
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$attendees_and_tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
-			$acc[ $post_id ]['tickets']   = $ticket_ids = $this->create_many_tickets( 2, $post_id );
+			$acc[ $post_id ]['tickets']   = $ticket_ids = $this->create_many_rsvp_tickets( 2, $post_id );
 			$acc[ $post_id ]['attendees'] = array_map( function ( int $ticket_id ) use ( $post_id ) {
 				return $this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id, [
 					'rsvp_status' => 'yes',
@@ -102,7 +101,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 		 * that did not opt out.
 		 */
 		$attendees_and_tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {
-			$acc[ $post_id ]['tickets'] = $ticket_ids = $this->create_many_tickets( 2, $post_id );
+			$acc[ $post_id ]['tickets'] = $ticket_ids = $this->create_many_rsvp_tickets( 2, $post_id );
 			$attendee_acc               = [];
 			foreach ( $ticket_ids as $ticket_id ) {
 				// going and did not opt out
@@ -137,7 +136,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 
 		$expected_attendees = tribe_attendees( 'restv1' )
 			->fetch()
-			->by( 'post__in', $attendees_and_tickets['publicly_visible_attendees'] )
+			->where( 'post__in', $attendees_and_tickets['publicly_visible_attendees'] )
 			->order_by( 'post__in' )
 			->all();
 		$I->sendGET( $this->attendees_url, [ 'per_page' => 4 ] );

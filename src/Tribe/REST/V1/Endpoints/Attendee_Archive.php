@@ -36,6 +36,17 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 
 		$fetch_args = array();
 
+		$supported_args = array(
+			'provider' => 'provider',
+			'search' => 's',
+		);
+
+		foreach ( $supported_args as $request_arg => $query_arg ) {
+			if ( isset( $request[ $request_arg ] ) ) {
+				$fetch_args[ $query_arg ] = $request[ $request_arg ];
+			}
+		}
+
 		if ( current_user_can( 'read_private_posts' ) ) {
 			$permission                = Tribe__Tickets__REST__V1__Repositories__Attendee_Read::PERMISSION_EDITABLE;
 			$fetch_args['post_status'] = 'any';

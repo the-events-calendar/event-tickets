@@ -19,7 +19,7 @@ class SingleAttendeeCest extends BaseRestCest {
 	 */
 	public function should_allow_getting_a_single_attendee_information_by_post_id( \Restv1Tester $I ) {
 		$post_id               = $I->havePostInDatabase();
-		$ticket_id             = $this->create_ticket( $post_id );
+		$ticket_id             = $this->create_rsvp_ticket( $post_id );
 		$attendee_checkin_date = '2018-01-02 09:00:16';
 		$attendee_checkin_time = strtotime( $attendee_checkin_date );
 		$attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
@@ -80,7 +80,7 @@ class SingleAttendeeCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$post_id               = $I->havePostInDatabase();
-		$ticket_id             = $this->create_ticket( $post_id );
+		$ticket_id             = $this->create_rsvp_ticket( $post_id );
 		$attendee_checkin_date = '2018-01-02 09:00:16';
 		$attendee_checkin_time = strtotime( $attendee_checkin_date );
 		$attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
@@ -162,7 +162,7 @@ class SingleAttendeeCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_get_unpublished_attendee( \Restv1Tester $I, Example $example) {
 		$post_id               = $I->havePostInDatabase();
-		$ticket_id             = $this->create_ticket( $post_id );
+		$ticket_id             = $this->create_rsvp_ticket( $post_id );
 		$attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
 			'post_status'     => 'private',
 			'rsvp_status'     => $example['rsvp_status'],
@@ -186,7 +186,7 @@ class SingleAttendeeCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$post_id               = $I->havePostInDatabase();
-		$ticket_id             = $this->create_ticket( $post_id );
+		$ticket_id             = $this->create_rsvp_ticket( $post_id );
 		$attendee_checkin_date = '2018-01-02 09:00:16';
 		$attendee_checkin_time = strtotime( $attendee_checkin_date );
 		$attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
@@ -257,7 +257,7 @@ class SingleAttendeeCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_get_not_going_attendee( \Restv1Tester $I ) {
 		$post_id               = $I->havePostInDatabase();
-		$ticket_id             = $this->create_ticket( $post_id );
+		$ticket_id             = $this->create_rsvp_ticket( $post_id );
 		$attendee_id           = $this->create_attendee_for_ticket( $ticket_id, $post_id, [
 			'rsvp_status'     => 'no',
 			'optout'          => false,
