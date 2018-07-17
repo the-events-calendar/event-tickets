@@ -11,11 +11,11 @@ class AttendeeArchiveCest extends BaseRestCest {
 	use Attendee_Maker;
 
 	/**
-	 * It should getting all attendees
+	 * It should allow getting all attendees
 	 *
 	 * @test
 	 */
-	public function should_getting_all_attendees( Restv1Tester $I ) {
+	public function should_allow_getting_all_attendees( Restv1Tester $I ) {
 		$post_ids = $I->haveManyPostsInDatabase( 2 );
 		// 2 posts, 2 tickets per post, 2 attendees per ticket => 4 tickets, 8 attendees
 		$attendees_and_tickets = array_reduce( $post_ids, function ( array $acc, int $post_id ) {

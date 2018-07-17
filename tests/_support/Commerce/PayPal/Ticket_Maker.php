@@ -47,7 +47,7 @@ trait Ticket_Maker {
 
 	protected function create_many_paypal_tickets( int $count, int $post_id, array $overrides = [] ) {
 		return array_map( function () use ( $post_id, $overrides ) {
-			return $this->create_woocommerce_ticket( $post_id, $overrides );
+			return $this->create_paypal_ticket( $post_id, $overrides );
 		}, range( 1, $count ) );
 	}
 }

@@ -16,13 +16,25 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 			return false;
 		}
 
+		/** @var Tribe__Tickets__Data_API $ticket_data */
+		$ticket_data = tribe( 'tickets.data_api' );
+
 		// get ticket provider
-		$ticket_type = tribe( 'tickets.data_api' )->detect_by_id( $ticket_id );
+		$ticket_type = $ticket_data->detect_by_id( $ticket_id );
 
-		//get ticket
-		$ticket = get_post( $ticket_id );
+		return ! empty( $ticket_type ) && ! empty( $ticket_type['class'] );
+	}
 
-		return ! empty( $ticket_type['post_type'] ) && ! empty( $ticket ) &&  $ticket_type['post_type'] === $ticket->post_type;
+	/**
+	 * {@inheritdoc}
+	 */
+	public function is_ticket_id_list( $tickets, $sep = ',' ) {
+		$sep     = is_string( $sep ) ? $sep : ',';
+		$tickets = Tribe__Utils__Array::list_to_array( $tickets, $sep );
+
+		$valid = array_filter( $tickets, array( $this, 'is_ticket_id' ) );
+
+		return ! empty( $valid ) && count( $valid ) === count( $tickets );
 	}
 
 	/**

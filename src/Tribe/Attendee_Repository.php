@@ -19,11 +19,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		);
 
 		$this->read_schema = array(
-			'event'       => array( $this, 'filter_by_event' ),
-			'ticket'      => array( $this, 'filter_by_ticket' ),
-			'optout'      => array( $this, 'filter_by_optout' ),
-			'rsvp_status' => array( $this, 'filter_by_rsvp_status' ),
-			'provider'    => array( $this, 'filter_by_provider' ),
+			'event'          => array( $this, 'filter_by_event' ),
+			'ticket'         => array( $this, 'filter_by_ticket' ),
+			'event__not_in'  => array( $this, 'filter_by_event_not_in' ),
+			'ticket__not_in' => array( $this, 'filter_by_ticket_not_in' ),
+			'optout'         => array( $this, 'filter_by_optout' ),
+			'rsvp_status'    => array( $this, 'filter_by_rsvp_status' ),
+			'provider'       => array( $this, 'filter_by_provider' ),
 		);
 	}
 
@@ -50,19 +52,28 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_event( $event_id ) {
-		$return = array(
-			'meta_query' => array(
-				'by-related-event' => array(
-					'relation' => 'OR',
-				),
-			),
+		return Tribe__Repository__Query_Filters::in_media_query(
+			$event_id,
+			'by-related-event',
+			$this->attendee_to_event_keys()
 		);
+	}
 
-		foreach ( $this->attendee_to_event_keys() as $key ) {
-			$return['meta_query']['by-related-event'][] = array( 'key' => $key, 'value' => $event_id );
-		}
-
-		return $return;
+	/**
+	 * Provides arguments to get attendees that are not related to an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $event_id A post ID or an array of post IDs.
+	 *
+	 * @return array
+	 */
+	public function filter_by_event_not_in( $event_id ) {
+		return Tribe__Repository__Query_Filters::not_in_media_query(
+			$event_id,
+			'by-event-not-in',
+			$this->attendee_to_event_keys()
+		);
 	}
 
 	/**
@@ -91,19 +102,28 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_ticket( $ticket_id ) {
-		$return = array(
-			'meta_query' => array(
-				'by-ticket' => array(
-					'relation' => 'OR',
-				),
-			),
+		return Tribe__Repository__Query_Filters::in_media_query(
+			$ticket_id,
+			'by-ticket',
+			$this->attendee_to_ticket_keys()
 		);
+	}
 
-		foreach ( $this->attendee_to_ticket_keys() as $key ) {
-			$return['meta_query']['by-ticket'][] = array( 'key' => $key, 'value' => $ticket_id );
-		}
-
-		return $return;
+	/**
+	 * Provides arguments to get attendees that are not related to a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
+	 *
+	 * @return array
+	 */
+	public function filter_by_ticket_not_in( $ticket_id ) {
+		return Tribe__Repository__Query_Filters::not_in_media_query(
+			$ticket_id,
+			'by-ticket-not-in',
+			$this->attendee_to_ticket_keys()
+		);
 	}
 
 	/**
@@ -228,31 +248,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_provider( $provider ) {
-		$providers = (array) $provider;
+		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $provider, $this->attendee_to_event_keys() );
 
-		$args = array(
-			'meta_query' => array(
-				'by-provider' => array(
-					'relation' => 'OR',
-				),
-			),
-		);
+		return Tribe__Repository__Query_Filters::exists_media_query( $meta_keys, 'by-provider' );
 
-		$map = $this->attendee_to_event_keys();
-
-		foreach ( $providers as $p ) {
-			$key = Tribe__Utils__Array::get( $map, $p, false );
-
-			if ( false === $key ) {
-				continue;
-			}
-
-			$args['meta_query']['by-provider'][ $p ] = array(
-				'key'     => $key,
-				'compare' => 'EXISTS',
-			);
-		}
-
-		return $args;
 	}
 }

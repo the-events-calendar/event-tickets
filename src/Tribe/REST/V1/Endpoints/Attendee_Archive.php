@@ -37,10 +37,14 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		$fetch_args = array();
 
 		$supported_args = array(
-			'provider'  => 'provider',
-			'search'    => 's',
-			'post_id'   => 'event',
-			'ticket_id' => 'ticket',
+			'provider'       => 'provider',
+			'search'         => 's',
+			'post_id'        => 'event',
+			'ticket_id'      => 'ticket',
+			'include_post'   => 'event',
+			'include_ticket' => 'ticket',
+			'exclude_post'   => 'event__not_in',
+			'exclude_ticket' => 'ticket__not_in',
 		);
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
@@ -78,9 +82,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
 
-		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/attendees/' ) );
-		$data['total']       = $found;
-		$data['total_pages'] = (int) ceil( $found / $per_page );
+		// make sure all arrays are formatted to by CSV lists
+		foreach ( $query_args as $key => &$value ) {
+			if ( is_array( $value ) ) {
+				$value = Tribe__Utils__Array::to_list( $value );
+			}
+		}
+
+		$data['rest_url']      = add_query_arg( $query_args , $main->get_url( '/attendees/' ) );
+		$data['total']         = $found;
+		$data['total_pages']   = (int) ceil( $found / $per_page );
 		$data['attendees']     = $attendees;
 
 		$headers = array(
@@ -128,7 +139,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'type'              => 'string',
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_string' ),
-				'sanitize_callback' => array( $this->validator, 'is_string' ),
 			),
 			'post_id'  => array(
 				'description'       => __( 'Limit results to attendees by post the ticket is associated with.', 'event-tickets' ),
@@ -141,7 +151,37 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'type'              => 'integer',
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_ticket_id' ),
-			)
+			),
+			// @todo after
+			// @todo before
+			// @todo include
+			// @todo exclude
+			// @todo price_max
+			// @todo price_minA
+			// @todo offset
+			// @todo order
+			// @todo orderby
+			'include_post'   => array(
+				'description'       => __( 'Limit results to attendees whose ticket is assigned to one of the posts specified in the CSV list or array.', 'event-tickets' ),
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_post_id_list' ),
+			),
+			'exclude_post'   => array(
+				'description'       => __( 'Limit results to attendees whose tickets is not assigned to any of the posts specified in the CSV list or array..', 'event-tickets' ),
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_post_id_list' ),
+			),
+			'include_ticket' => array(
+				'description'       => __( 'Limit results to a specific CSV list or array of ticket IDs.', 'event-tickets' ),
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_ticket_id_list' ),
+			),
+			'exclude_ticket' => array(
+				'description'       => __( 'Exclude a specific CSV list or array of ticket IDs.', 'event-tickets' ),
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_ticket_id_list' ),
+			),
+
 		);
 	}
 }
