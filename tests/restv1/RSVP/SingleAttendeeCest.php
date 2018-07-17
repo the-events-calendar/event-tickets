@@ -146,11 +146,11 @@ class SingleAttendeeCest extends BaseRestCest {
 	 *
 	 * @test
 	 */
-	public function should_return_400_when_trying_to_get_a_single_attendee_by_non_existing_post_id( \Restv1Tester $I ) {
+	public function should_return_404_when_trying_to_get_a_single_attendee_by_non_existing_post_id( \Restv1Tester $I ) {
 		$I->sendGET( $this->attendees_url . "/1234" );
 
 		$I->seeResponseIsJson();
-		$I->seeResponseCodeIs( 400 );
+		$I->seeResponseCodeIs( 404 );
 	}
 
 	/**

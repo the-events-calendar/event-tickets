@@ -12,10 +12,20 @@ class Tribe__Tickets__REST__V1__Repositories__Attendee_Read extends Tribe__Repos
 	// @todo merge this class and Tribe__Tickets__REST__V1__Post_Repository
 
 	public function by_primary_key( $primary_key ) {
-		$pto = get_post_type_object( get_post_type( $primary_key ) );
-
 		/** @var Tribe__Tickets__REST__V1__Messages $messages */
 		$messages = tribe( 'tickets.rest-v1.messages' );
+
+		$post = get_post( $primary_key );
+
+		if ( ! $post instanceof WP_Post ) {
+			return new WP_Error(
+				'attendee-not-found',
+				$messages->get_message( 'attendee-not-found' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$pto = get_post_type_object( get_post_type( $primary_key ) );
 
 		if ( ! $pto instanceof WP_Post_Type ) {
 			// if we're here and we're trying to fetch a non-existing attendee

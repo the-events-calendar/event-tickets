@@ -29,7 +29,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 				'type'              => 'integer',
 				'description'       => __( 'The attendee post ID', 'event-tickets' ),
 				'required'          => true,
-				'validate_callback' => array( $this->validator, 'is_attendee_id' ),
+				/**
+				 * Here we check for a positive int, not an attendee ID to properly
+				 * return 404 for missing post in place of 400.
+				 */
+				'validate_callback' => array( $this->validator, 'is_positive_int' ),
 			),
 		);
 	}

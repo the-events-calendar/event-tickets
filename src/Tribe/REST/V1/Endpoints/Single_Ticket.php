@@ -44,10 +44,14 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	public function READ_args() {
 		return array(
 			'id' => array(
-				'type'      => 'integer',
+				'type'              => 'integer',
 				'description'       => __( 'The ticket post ID', 'event-tickets' ),
 				'required'          => true,
-				'validate_callback' => array( $this->validator, 'is_ticket_id' ),
+				/**
+				 * Here we check for a positive int, not a ticket ID to properly
+				 * return 404 for missing post in place of 400.
+				 */
+				'validate_callback' => array( $this->validator, 'is_positive_int' ),
 			),
 		);
 	}
