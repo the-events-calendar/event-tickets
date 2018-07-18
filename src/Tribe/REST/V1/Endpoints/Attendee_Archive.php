@@ -89,10 +89,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			}
 		}
 
-		$data['rest_url']      = add_query_arg( $query_args , $main->get_url( '/attendees/' ) );
-		$data['total']         = $found;
-		$data['total_pages']   = (int) ceil( $found / $per_page );
-		$data['attendees']     = $attendees;
+		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/attendees/' ) );
+		$data['total']       = $found;
+		$data['total_pages'] = (int) ceil( $found / $per_page );
+		$data['attendees']   = $attendees;
 
 		$headers = array(
 			'X-ET-TOTAL'       => $data['total'],
