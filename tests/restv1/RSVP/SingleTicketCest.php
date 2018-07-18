@@ -22,7 +22,7 @@ class SingleTicketCest extends BaseRestCest {
 		$post_id                     = $I->havePostInDatabase();
 		$going_attendees_count       = 7;
 		$not_going_attendees_count   = 5;
-		$ticket_id                   = $this->create_ticket( $post_id, [
+		$ticket_id                   = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
 				'total_sales' => $going_attendees_count,
 				'_stock'      => 30 - $going_attendees_count,
@@ -171,7 +171,7 @@ class SingleTicketCest extends BaseRestCest {
 		$going_optin_count = 4;
 		$going_optout_count = 3;
 		$not_going_attendees_count   = 5;
-		$ticket_id                   = $this->create_ticket( $post_id, [
+		$ticket_id                   = $this->create_rsvp_ticket( $post_id, [
 			'meta_input' => [
 				'total_sales' => $going_attendees_count,
 				'_stock'      => 30 - $going_attendees_count,
@@ -305,7 +305,7 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_access_non_public_ticket( Restv1Tester $I ) {
 		$post_id   = $I->havePostInDatabase();
-		$ticket_id = $this->create_ticket( $post_id, [
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
 			'post_status' => 'draft',
 			'meta_input'  => [
 				'total_sales' => 0,

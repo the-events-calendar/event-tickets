@@ -21,7 +21,7 @@ class SingleTicketCest extends BaseRestCest {
 
 		$post_id                     = $I->havePostInDatabase();
 		$attendees_count             = 7;
-		$ticket_id                   = $this->create_ticket( $post_id, 5, [
+		$ticket_id                   = $this->create_paypal_ticket( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
@@ -183,7 +183,7 @@ class SingleTicketCest extends BaseRestCest {
 		$post_id                     = $I->havePostInDatabase();
 		$attendees_count             = 7;
 		$optout_count = 3;
-		$ticket_id                   = $this->create_ticket( $post_id, 5, [
+		$ticket_id                   = $this->create_paypal_ticket( $post_id, 5, [
 			'meta_input' => [
 				'total_sales' => $attendees_count,
 				'_stock'      => 30 - $attendees_count,
@@ -322,7 +322,7 @@ class SingleTicketCest extends BaseRestCest {
 	 */
 	public function should_return_401_when_trying_to_access_non_public_ticket( Restv1Tester $I ) {
 		$post_id   = $I->havePostInDatabase();
-		$ticket_id = $this->create_ticket( $post_id, 3, [
+		$ticket_id = $this->create_paypal_ticket( $post_id, 3, [
 			'post_status' => 'draft',
 			'meta_input'  => [
 				'total_sales' => 0,

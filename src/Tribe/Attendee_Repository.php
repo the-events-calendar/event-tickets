@@ -19,10 +19,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		);
 
 		$this->read_schema = array(
-			'event'       => array( $this, 'filter_by_event' ),
-			'ticket'      => array( $this, 'filter_by_ticket' ),
-			'optout'      => array( $this, 'filter_by_optout' ),
-			'rsvp_status' => array( $this, 'filter_by_rsvp_status' ),
+			'event'             => array( $this, 'filter_by_event' ),
+			'ticket'            => array( $this, 'filter_by_ticket' ),
+			'event__not_in'     => array( $this, 'filter_by_event_not_in' ),
+			'ticket__not_in'    => array( $this, 'filter_by_ticket_not_in' ),
+			'optout'            => array( $this, 'filter_by_optout' ),
+			'rsvp_status'       => array( $this, 'filter_by_rsvp_status' ),
+			'provider'          => array( $this, 'filter_by_provider' ),
 		);
 	}
 
@@ -49,19 +52,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_event( $event_id ) {
-		$return = array(
-			'meta_query' => array(
-				'by-related-event' => array(
-					'relation' => 'OR',
-				),
-			),
+		return Tribe__Repository__Query_Filters::meta_in(
+			$this->attendee_to_event_keys(),
+			$event_id,
+			'by-related-event'
 		);
-
-		foreach ( $this->attendee_to_event_keys() as $key ) {
-			$return['meta_query']['by-related-event'][] = array( 'key' => $key, 'value' => $event_id );
-		}
-
-		return $return;
 	}
 
 	/**
@@ -75,8 +70,25 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_event_keys() {
 		return array(
-			'_tribe_rsvp_for_event',
-			'_tribe_tpp_for_event',
+			'rsvp'           => '_tribe_rsvp_event',
+			'tribe-commerce' => '_tribe_tpp_event',
+		);
+	}
+
+	/**
+	 * Provides arguments to get attendees that are not related to an event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $event_id A post ID or an array of post IDs.
+	 *
+	 * @return array
+	 */
+	public function filter_by_event_not_in( $event_id ) {
+		return Tribe__Repository__Query_Filters::meta_not_in(
+			$this->attendee_to_event_keys(),
+			$event_id,
+			'by-event-not-in'
 		);
 	}
 
@@ -90,19 +102,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_ticket( $ticket_id ) {
-		$return = array(
-			'meta_query' => array(
-				'by-ticket' => array(
-					'relation' => 'OR',
-				),
-			),
+		return Tribe__Repository__Query_Filters::meta_in(
+			$this->attendee_to_ticket_keys(),
+			$ticket_id,
+			'by-ticket'
 		);
-
-		foreach ( $this->attendee_to_ticket_keys() as $key ) {
-			$return['meta_query']['by-ticket'][] = array( 'key' => $key, 'value' => $ticket_id );
-		}
-
-		return $return;
 	}
 
 	/**
@@ -116,8 +120,25 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_ticket_keys() {
 		return array(
-			'_tribe_rsvp_product',
-			'_tribe_tpp_product',
+			'rsvp'           => '_tribe_rsvp_product',
+			'tribe-commerce' => '_tribe_tpp_product',
+		);
+	}
+
+	/**
+	 * Provides arguments to get attendees that are not related to a ticket.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
+	 *
+	 * @return array
+	 */
+	public function filter_by_ticket_not_in( $ticket_id ) {
+		return Tribe__Repository__Query_Filters::meta_not_in(
+			$this->attendee_to_ticket_keys(),
+			$ticket_id,
+			'by-ticket-not-in'
 		);
 	}
 
@@ -131,7 +152,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_optout( $optout ) {
-		$return = array(
+		$args = array(
 			'meta_query' => array(
 				'by-optout-status' => array(),
 			),
@@ -139,30 +160,25 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 		switch ( $optout ) {
 			case 'any':
-				$return = array();
+				$args = array();
 				break;
 			case 'no':
-				foreach ( $this->attendee_optout_keys() as $key ) {
-					$return['meta_query']['by-optout-status']['relation'] = 'AND';
-					// does not exist or exists and is not 'yes'
-					$return['meta_query']['by-optout-status'][] = array(
-						'does-not-exist'        => array( 'key' => $key, 'compare' => 'NOT EXISTS' ),
-						'relation'              => 'OR',
-						'exists-and-is-not-yes' => array( 'key' => $key, 'value' => 'yes', 'compare' => '!=' ),
-
-					);
-				}
+				$args = Tribe__Repository__Query_Filters::meta_not_in_or_not_exists(
+					$this->attendee_optout_keys(),
+					'yes',
+					'did-not-optout'
+				);
 				break;
 			case'yes':
-				foreach ( $this->attendee_optout_keys() as $key ) {
-					$return['meta_query']['by-optout-status']['relation'] = 'OR';
-					// exists and is 'yes'
-					$return['meta_query']['by-optout-status'][] = array( 'key' => $key, 'value' => 'yes' );
-				}
+				$args = Tribe__Repository__Query_Filters::meta_in(
+					$this->attendee_optout_keys(),
+					'yes',
+					'did-optout'
+				);
 				break;
 		}
 
-		return $return;
+		return $args;
 	}
 
 	/**
@@ -176,8 +192,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_optout_keys() {
 		return array(
-			'_tribe_rsvp_attendee_optout',
-			'_tribe_tpp_attendee_optout',
+			'rsvp'           => '_tribe_rsvp_attendee_optout',
+			'tribe-commerce' => '_tribe_tpp_attendee_optout',
 		);
 	}
 
@@ -195,21 +211,30 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_rsvp_status( $rsvp_status ) {
-		return array(
-			'meta_query' => array(
-				'by-rsvp-status' => array(
-					'exists-and-equals' => array(
-						'key'     => Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
-						'value'   => $rsvp_status,
-						'compare' => '=',
-					),
-					'relation'          => 'OR',
-					'does-not-exist'    => array(
-						'key'     => Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
-						'compare' => 'NOT EXISTS',
-					),
-				),
-			),
+		return Tribe__Repository__Query_Filters::meta_in_or_not_exists(
+			Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
+			$rsvp_status,
+			'by-rsvp-status'
 		);
+	}
+
+	/**
+	 * Provides arguments to filter attendees by the ticket provider.
+	 *
+	 * To avoid lengthy queries we check if a provider specific meta
+	 * key relating the Attendee to the event (a post) is set.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $provider A provider supported slug or an
+	 *                               array of supported provider slugs.
+	 *
+	 * @return array
+	 */
+	public function filter_by_provider( $provider ) {
+		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $provider, $this->attendee_to_event_keys() );
+
+		return Tribe__Repository__Query_Filters::meta_exists( $meta_keys, 'by-provider' );
+
 	}
 }

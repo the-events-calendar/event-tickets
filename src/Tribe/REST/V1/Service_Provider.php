@@ -61,6 +61,14 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 				tribe( 'tickets.rest-v1.validator' )
 			)
 		);
+		tribe_singleton(
+			'tickets.rest-v1.endpoints.attendees-archive',
+			new Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive(
+				tribe( 'tickets.rest-v1.messages' ),
+				tribe( 'tickets.rest-v1.repository' ),
+				tribe( 'tickets.rest-v1.validator' )
+			)
+		);
 
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/functions/advanced-functions/rest-v1.php';
 
@@ -79,6 +87,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$this->register_single_ticket_endpoint();
 		$this->register_ticket_archive_endpoint();
 		$this->register_single_attendee_endpoint();
+		$this->register_attendee_archive_endpoint();
 
 		// @todo add the endpoints as documentation providers here
 		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
@@ -165,6 +174,19 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.attendees-single' );
 
 		register_rest_route( $this->namespace, '/attendees/(?P<id>\\d+)', array(
+			'methods'  => WP_REST_Server::READABLE,
+			'args'     => $endpoint->READ_args(),
+			'callback' => array( $endpoint, 'get' ),
+		) );
+
+		return $endpoint;
+	}
+
+	protected function register_attendee_archive_endpoint() {
+		/** @var Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive $endpoint */
+		$endpoint = tribe( 'tickets.rest-v1.endpoints.attendees-archive' );
+
+		register_rest_route( $this->namespace, '/attendees', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'args'     => $endpoint->READ_args(),
 			'callback' => array( $endpoint, 'get' ),

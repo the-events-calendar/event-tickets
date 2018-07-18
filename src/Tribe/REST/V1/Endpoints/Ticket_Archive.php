@@ -42,9 +42,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			$query_args['include_post'] = implode( ',', $include_post );
 		}
 
-		/** @var wpdb $wpdb */
-		global $wpdb;
-
 		if ( current_user_can( 'read_private_posts' ) ) {
 			$permission                = Tribe__Tickets__REST__V1__Repositories__Ticket_Read::PERMISSION_EDITABLE;
 			$fetch_args['post_status'] = 'any';
