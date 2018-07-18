@@ -1761,7 +1761,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$message .= $start_sale_date;
 
 					if ( $display_time ) {
-						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
+						$message .= __( ' at ', 'event-tickets' ) . $start_sale_time;
 					}
 				} else {
 					$message = __( 'Tickets are not yet available', 'event-tickets' );
