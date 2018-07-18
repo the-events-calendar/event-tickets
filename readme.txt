@@ -127,6 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fixed the "Show description" setting for Tribe Commerce tickets in the backend and frontend [100524]
 * Fix - Added required post ID parameter to `the_title` filter in Tribe Commerce [109592]
 * Fix - Stop showing tickets for past events with no end sale date. Thanks to @thesinglegourmet for flagging this! [107121]
+* Fix - Stop showing posts with "pending review" status in the blog page. Thanks Jansen, Antonio and others for reporting this issue! [102184]
 * Tweak - Added parent post and order IDs as parameters to the Tribe Commerce email filters [104209]
 * Tweak - Made the attendees list html title translatable. Thanks @websource for pointing this out [109595]
 
