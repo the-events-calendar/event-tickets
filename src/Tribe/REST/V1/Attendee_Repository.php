@@ -51,4 +51,8 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	public function set_default_args( array $default_args ) {
 		return $this->decorated_repository->set_default_args( $default_args );
 	}
+
+	public function update() {
+		// TODO: Implement update() method.
+	}
 }

@@ -152,12 +152,32 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_ticket_id' ),
 			),
-			// @todo after
-			// @todo before
-			// @todo include
-			// @todo exclude
+			'after' => array(
+				'description'       => __( 'Limit results to attendees created after or on the specified UTC date or timestamp.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_time' ),
+			),
+			'before' => array(
+				'description'       => __( 'Limit results to attendees created before or on the specified UTC date or timestamp.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_time' ),
+			),
+			'include' => array(
+				'description'       => __( 'Limit results to a specific CSV list or array of attendee IDs.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_attendee_id_list' ),
+			),
+			'exclude' => array(
+				'description'       => __( 'Exclude a specific CSV list or array of attendee IDs from the results.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_attendee_id_list' ),
+			),
 			// @todo price_max
-			// @todo price_minA
+			// @todo price_min
 			// @todo offset
 			// @todo order
 			// @todo orderby

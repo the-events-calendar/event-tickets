@@ -99,4 +99,23 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 
 		return ! empty( $ticket_type['post_type'] ) && ! empty( $ticket ) &&  $ticket_type['post_type'] === $ticket->post_type;
 	}
+
+	/**
+	 * Whether a csv list, or array, of post IDs only contains valid attendee IDs or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param        string|array $attendees
+	 * @param string              $sep
+	 *
+	 * @return bool
+	 */
+	public function is_attendee_id_list( $attendees, $sep = ',' ) {
+		$sep       = is_string( $sep ) ? $sep : ',';
+		$attendees = Tribe__Utils__Array::list_to_array( $attendees, $sep );
+
+		$valid = array_filter( $attendees, array( $this, 'is_attendee_id' ) );
+
+		return ! empty( $valid ) && count( $valid ) === count( $attendees );
+	}
 }
