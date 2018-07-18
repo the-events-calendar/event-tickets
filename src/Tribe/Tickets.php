@@ -1741,7 +1741,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$events_label_singular_lowercase = tribe_get_event_label_singular_lowercase();
 				$message = sprintf( esc_html__( 'Tickets are not available as this %s has passed.', 'event-tickets' ), $events_label_singular_lowercase );
 			} elseif ( 'availability-future' === $availability_slug ) {
-				$message = __( 'Tickets are not yet available.', 'event-tickets' );
+				$display_date = apply_filters( 'event_tickets_unvailable_message_date', $display_date = true );
+				$display_time = apply_filters( 'event_tickets_unvailable_message_time', $display_time = false );
+
+				// build message
+				if ( $display_date ) {
+					$start_sale_date = '';
+					$start_sale_time = '';
+
+					foreach ( $tickets as $index => $ticket ) {
+						// get the earliest start sale date
+						if ( '' == $start_sale_date || $ticket->start_date < $start_sale_date ) {
+							$start_sale_date = $ticket->start_date;
+							$start_sale_time = $ticket->start_time;
+						}
+					}
+
+					$message = __( 'Tickets will be available on ', 'event-tickets' );
+					$message .= $start_sale_date;
+
+					if ( $display_time ) {
+						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
+					}
+				} else {
+					$message = __( 'Tickets are not yet available', 'event-tickets' );
+				}
 			} elseif ( 'availability-past' === $availability_slug ) {
 				$message = __( 'Tickets are no longer available.', 'event-tickets' );
 			} elseif ( 'availability-mixed' === $availability_slug ) {
