@@ -1749,7 +1749,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$start_sale_date = '';
 					$start_sale_time = '';
 
-					foreach ( $tickets as $index => $ticket ) {
+					foreach ( $tickets as $ticket ) {
 						// get the earliest start sale date
 						if ( '' == $start_sale_date || $ticket->start_date < $start_sale_date ) {
 							$start_sale_date = $ticket->start_date;
