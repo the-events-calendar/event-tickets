@@ -6,37 +6,9 @@
  * The base Attendee object repository, a decorator of the base one.
  *
  * @since TBD
- * @method  by_args( array $args )
- * @method  where_args( array $args )
- * @method  page( $page )
- * @method  per_page( $per_page )
- * @method  found()
- * @method  all()
- * @method  offset( $offset, $increment = false )
- * @method  order( $order = 'ASC' )
- * @method  order_by( $order_by )
- * @method  fields( $fields )
- * @method  permission( $permission )
- * @method  in( $post_ids )
- * @method  not_in( $post_ids )
- * @method  parent( $post_id )
- * @method  parent_in( $post_ids )
- * @method  parent_not_in( $post_ids )
- * @method  search( $search )
- * @method  count()
- * @method  filter_name( $filter_name )
- * @method  first()
- * @method  last()
- * @method  nth( $n )
- * @method  take( $n )
- * @method  by_primary_key( $primary_key )
  */
 class Tribe__Tickets__REST__V1__Attendee_Repository
-	implements Tribe__Repository__Interface {
-	/**
-	 * @var Tribe__Repository__Interface
-	 */
-	protected $decorated_repository;
+	extends Tribe__Tickets__Attendee_Repository {
 
 	/**
 	 * Tribe__Tickets__REST__V1__Attendee_Repository constructor.
@@ -44,73 +16,153 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * @since TBD
 	 */
 	public function __construct() {
-		$this->decorated_repository = tribe( 'tickets.attendee-repository' );
-	}
-
-	/**
-	 * Returns a REST API v1 specific Read repository.
-	 *
-	 * @since TBD
-	 *
-	 * @return Tribe__Tickets__REST__V1__Repositories__Attendee_Read
-	 */
-	public function fetch() {
-		return new Tribe__Tickets__REST__V1__Repositories__Attendee_Read(
-			$this->decorated_repository->read_schema,
-			tribe()->make( 'Tribe__Repository__Query_Filters' ),
-			$this->decorated_repository->default_args,
-			$this->decorated_repository
+		parent::__construct();
+		$this->default_args = array_merge(
+			$this->get_default_args(),
+			array( 'order' => 'ASC', 'orderby' => array( 'id', 'title' ) )
 		);
 	}
 
 	/**
-	 * {@inheritdoc}
-	 */
-	public function get_default_args() {
-		return $this->decorated_repository->get_default_args();
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function set_default_args( array $default_args ) {
-		return $this->decorated_repository->set_default_args( $default_args );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function update( Tribe__Repository__Read_Interface $read = null ) {
-		// @todo review this when allowing updates from REST API
-		return $this->decorated_repository->update( $read );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function by( $key, $value ) {
-		return call_user_func_array( array( $this->fetch(), 'by' ), func_get_args() );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function where( $key, $value ) {
-		return call_user_func_array( array( $this->fetch(), 'where' ), func_get_args() );
-	}
-
-	/**
-	 * Forwards calls to the Read repository.
+	 * Returns the number of posts found matching the query.
+	 *
+	 * This method overrides the parent implementation to limit
+	 * the results if the user cannot read private posts.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $name
-	 * @param array  $args
-	 *
-	 * @return mixed
+	 * @return int
 	 */
-	public function __call( $name, $args ) {
-		// @todo review this when adding updates
-		return call_user_func_array( array( $this->fetch(), $name ), $args );
+	public function found() {
+		if ( ! current_user_can( 'read_private_posts' ) ) {
+			$this->by( 'optout', 'no' )
+			     ->by( 'post_status', 'publish' )
+			     ->by( 'rsvp_status', 'yes' );
+		}
+
+		return parent::found();
 	}
+
+	/**
+	 * Returns the number of posts found matching the query in the current page.
+	 *
+	 * This method overrides the parent implementation to limit
+	 * the results if the user cannot read private posts.
+	 *
+	 * @since TBD
+	 *
+	 * @return int
+	 */
+	public function count() {
+		if ( ! current_user_can( 'read_private_posts' ) ) {
+			$this->by( 'optout', 'no' )
+			     ->by( 'post_status', 'publish' )
+			     ->by( 'rsvp_status', 'yes' );
+		}
+
+		return parent::count();
+	}
+
+	/**
+	 * Overrides the base `order_by` method to map and convert some REST API
+	 * specific criteria.
+	 *
+	 * @param string $order_by
+	 *
+	 * @return $this
+	 */
+	public function order_by( $order_by ) {
+		// @todo what is 'relevance' order?
+		$map = array(
+			'date'      => 'date',
+			'relevance' => '',
+			'id'        => 'id',
+			'include'   => 'meta_value_num',
+			'title'     => 'title',
+			'slug'      => 'name',
+		);
+
+		if ( 'include' === $order_by ) {
+			// @todo review when one meta key is unified
+		}
+
+		$converted_order_by = Tribe__Utils__Array::get( $map, $order_by, false );
+
+		if ( empty( $converted_order_by ) ) {
+			return $this;
+		}
+
+		return parent::order_by( $converted_order_by );
+	}
+
+	/**
+	 * Overrides the base implementation to make sure only accessible
+	 * attendees are returned.
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $primary_key
+	 *
+	 * @return array|WP_Error The Attendee data on success, or a WP_Error
+	 *                        detailing why the read failed.
+	 */
+	public function by_primary_key( $primary_key ) {
+		$query = $this->get_query();
+		$query->set( 'fields', 'ids' );
+		$query->set('p', $primary_key);
+		$found = $query->get_posts();
+		/** @var Tribe__Tickets__REST__V1__Messages $messages */
+		$messages = tribe( 'tickets.rest-v1.messages' );
+
+		if ( empty( $found ) ) {
+			return new WP_Error( 'attendee-not-found', $messages->get_message( 'attendee-not-found' ), array( 'status' => 404 ) );
+		}
+
+		if ( current_user_can( 'read_private_posts' ) ) {
+			return $this->format_item( $found[0] );
+		}
+
+		$this->by( 'optout', 'no' )
+		     ->by( 'post_status', 'publish' )
+		     ->by( 'rsvp_status', 'yes' );
+
+		$cap_query = $this->build_query();
+		$cap_query->set( 'fields', 'ids' );
+		$cap_query->set( 'p', $primary_key );
+		$found_w_cap = $cap_query->get_posts();
+
+		if ( empty( $found_w_cap ) ) {
+			return new WP_Error( 'attendee-not-accessible', $messages->get_message( 'attendee-not-accessible' ), array( 'status' => 401 ) );
+		}
+
+		return $this->format_item( $found_w_cap[0] );
+	}
+
+	/**
+	 * Returns the attendee in the REST API format.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post $id
+	 *
+	 * @return array|null The attendee information in the REST API format or
+	 *                    `null` if the attendee is invalid.
+	 */
+	protected function format_item( $id ) {
+		/**
+		 * For the time being we use **another** repository to format
+		 * the tickets objects to the REST API format.
+		 * If this implementation gets a thumbs-up this class and the
+		 * `Tribe__Tickets__REST__V1__Post_Repository` should be merged.
+		 */
+
+		/** @var Tribe__Tickets__REST__V1__Post_Repository $repository */
+		$repository = tribe( 'tickets.rest-v1.repository' );
+
+		$formatted = $repository->get_attendee_data( $id );
+
+		return $formatted instanceof WP_Error ? null : $formatted;
+	}
+
+
 }

@@ -1896,6 +1896,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
 			update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
 			update_post_meta( $attendee_id, $this->email, $attendee_email );
+			update_post_meta( $attendee_id, '_paid_price', 0 );
 
 			/**
 			 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated

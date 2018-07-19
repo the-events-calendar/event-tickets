@@ -17,7 +17,8 @@ class AttendeeArchiveByDateCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_allow_getting_attendees_by_date( \Restv1Tester $I ) {
-		$post_ids  = $I->haveManyPostsInDatabase( 3 );
+		$post_ids = $I->haveManyPostsInDatabase( 3 );
+		// 3 posts, 1 ticket per post, 2 attendees per ticket => 6 attendees
 		$attendees = array_reduce( $post_ids, function ( array $attendees, $post_id ) {
 			$ticket_id = $this->create_rsvp_ticket( $post_id );
 			$attendees = array_merge(
@@ -29,19 +30,49 @@ class AttendeeArchiveByDateCest extends BaseRestCest {
 		}, [] );
 
 		// distance attendees to be 1 day apart
-		$date = new \DateTime( 'now', new \DateTimeZone( 'UTC' ) );
+		$date = new \DateTime( '-1 month', new \DateTimeZone( 'UTC' ) );
 
-		$one_day_apart = function () use ( &$date ) {
+		$one_day_apart = function ( $id ) use ( &$date ) {
 			/** @var \DateTime $date */
 			$date->add( new \DateInterval( 'P1D' ) );
+			$new_post_date = $date->format( 'Y-m-d H:i:s' );
 
-			return $date->format( 'Y-m-d H:i:s' );
+			codecept_debug( "Setting post_date of attendee {$id} to {$new_post_date}" );
+
+			return $new_post_date;
 		};
 
 		tribe_attendees()
 			->where( 'post__in', $attendees )
 			->set( 'post_date_gmt', $one_day_apart )
 			->save();
+
+		clean_post_cache( $attendees[2] );
+		$third_date = get_post( $attendees[2] )->post_date;
+
+		$expected_attendees = tribe_attendees( 'restv1' )->where( 'post__in', \array_slice( $attendees, 2 ) )->all();
+		$I->sendGET( $this->attendees_url, [ 'after' => $third_date ] );
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'after' => $third_date ], $this->attendees_url . '/' ),
+			'total'       => 4,
+			'total_pages' => 1,
+			'attendees'   => $expected_attendees,
+		] );
+
+		$expected_attendees = tribe_attendees( 'restv1' )->where( 'post__in', \array_splice( $attendees, 0, 3 ) )->all();
+		$I->sendGET( $this->attendees_url, [ 'before' => $third_date ] );
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'before' => $third_date ], $this->attendees_url . '/' ),
+			'total'       => 3,
+			'total_pages' => 1,
+			'attendees'   => $expected_attendees,
+		] );
 	}
 
 	/**
@@ -50,64 +81,82 @@ class AttendeeArchiveByDateCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_return_400_when_trying_to_get_attendees_by_bad_date( \Restv1Tester $I ) {
+		$post_id     = $I->havePostInDatabase();
+		$ticket_id   = $this->create_rsvp_ticket( $post_id );
+		$attendee_id = $this->create_attendee_for_ticket( $ticket_id, $post_id );
 
+		foreach ( [ 'foo', 'foo bar', '', 'my_birthday' ] as $bad_date ) {
+			$I->sendGET( $this->attendees_url, [ 'after' => $bad_date ] );
+			$I->seeResponseCodeIs( 400 );
+			$I->seeResponseIsJson();
+
+			$I->sendGET( $this->attendees_url, [ 'before' => $bad_date ] );
+			$I->seeResponseCodeIs( 400 );
+			$I->seeResponseIsJson();
+		}
 	}
 
 	/**
-	 * It should allow getting attendees by provider
+	 * It should allow using natural language to fetch by date
 	 *
 	 * @test
 	 */
-	public function should_allow_getting_attendees_by_provider( \Restv1Tester $I ) {
-		$paypal_post_id   = $I->havePostInDatabase();
-		$paypal_ticket_id = $this->create_paypal_ticket( $paypal_post_id, 2 );
-		$paypal_attendees = $this->create_many_attendees_for_ticket( 2, $paypal_ticket_id, $paypal_post_id );
-		$rsvp_post_id     = $I->havePostInDatabase();
-		$rsvp_ticket_id   = $this->create_rsvp_ticket( $rsvp_post_id );
-		$rsvp_attendees   = $this->create_many_attendees_for_ticket( 2, $rsvp_ticket_id, $rsvp_post_id );
-		$all              = array_merge( $paypal_attendees, $rsvp_attendees );
-		sort( $all );
+	public function should_allow_using_natural_language_to_fetch_by_date( \Restv1Tester $I ) {
+		$post_ids = $I->haveManyPostsInDatabase( 3 );
+		// 3 posts, 1 ticket per post, 2 attendees per ticket => 6 attendees
+		$attendees = array_reduce( $post_ids, function ( array $attendees, $post_id ) {
+			$ticket_id = $this->create_rsvp_ticket( $post_id );
+			$attendees = array_merge(
+				$attendees,
+				$this->create_many_attendees_for_ticket( 2, $ticket_id, $post_id )
+			);
 
-		$I->sendGET( $this->attendees_url, [] );
+			return $attendees;
+		}, [] );
+
+		// distance attendees to be 1 week apart
+		$date = new \DateTime( '-2 months', new \DateTimeZone( 'UTC' ) );
+
+		$one_day_apart = function ( $id ) use ( &$date ) {
+			/** @var \DateTime $date */
+			$date->add( new \DateInterval( 'P1W' ) );
+			$new_post_date = $date->format( 'Y-m-d H:i:s' );
+
+			codecept_debug( "Setting post_date of attendee {$id} to {$new_post_date}" );
+
+			return $new_post_date;
+		};
+
+		tribe_attendees()
+			->where( 'post__in', $attendees )
+			->set( 'post_date_gmt', $one_day_apart )
+			->save();
+
+		clean_post_cache( $attendees[2] );
+		$third_date = get_post( $attendees[2] )->post_date;
+
+		$expected_attendees = tribe_attendees( 'restv1' )->where( 'post__in', \array_slice( $attendees, 4 ) )->all();
+		$I->sendGET( $this->attendees_url, [ 'after' => '-1 month' ] );
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
-		$expected_attendees = tribe_attendees( 'restv1' )
-			->by( 'post__in', $all )
-			->order_by( 'post__in' )
-			->all();
-		$I->assertEquals( [
-			'rest_url'    => $this->attendees_url . '/',
+
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'after' => '-1 month' ], $this->attendees_url . '/' ),
+			'total'       => 2,
+			'total_pages' => 1,
+			'attendees'   => $expected_attendees,
+		] );
+
+		$expected_attendees = tribe_attendees( 'restv1' )->where( 'post__in', \array_splice( $attendees, 0, 3 ) )->all();
+		$I->sendGET( $this->attendees_url, [ 'before' => '-1 month' ] );
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseIsJson();
+
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'before' => '-1 month' ], $this->attendees_url . '/' ),
 			'total'       => 4,
 			'total_pages' => 1,
 			'attendees'   => $expected_attendees,
-		], json_decode( $I->grabResponse(), true ) );
-
-		$I->sendGET( $this->attendees_url, [ 'provider' => 'rsvp' ] );
-		$I->seeResponseCodeIs( 200 );
-		$I->seeResponseIsJson();
-		$expected_attendees = tribe_attendees( 'restv1' )
-			->where( 'post__in', $rsvp_attendees )
-			->order_by( 'post__in' )
-			->all();
-		$I->assertEquals( [
-			'rest_url'    => add_query_arg( [ 'provider' => 'rsvp' ], $this->attendees_url . '/' ),
-			'total'       => 2,
-			'total_pages' => 1,
-			'attendees'   => $expected_attendees,
-		], json_decode( $I->grabResponse(), true ) );
-
-		$I->sendGET( $this->attendees_url, [ 'provider' => 'tribe-commerce' ] );
-		$I->seeResponseCodeIs( 200 );
-		$I->seeResponseIsJson();
-		$expected_attendees = tribe_attendees( 'restv1' )
-			->where( 'post__in', $paypal_attendees )
-			->order_by( 'post__in' )
-			->all();
-		$I->assertEquals( [
-			'rest_url'    => add_query_arg( [ 'provider' => 'tribe-commerce' ], $this->attendees_url . '/' ),
-			'total'       => 2,
-			'total_pages' => 1,
-			'attendees'   => $expected_attendees,
-		], json_decode( $I->grabResponse(), true ) );
+		] );
 	}
 }

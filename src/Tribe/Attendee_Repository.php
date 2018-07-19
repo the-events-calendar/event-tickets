@@ -8,17 +8,16 @@
  * @since TBD
  */
 class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
-
 	/**
 	 * Tribe__Tickets__Attendee_Repository constructor.
 	 */
 	public function __construct() {
 		$this->default_args = array(
-			'post_type' => $this->attendee_types(),
-			'orderby'   => array( 'date', 'title', 'ID' ),
+			'post_type'   => $this->attendee_types(),
+			'orderby'     => array( 'date', 'title', 'ID' ),
+			'post_status' => 'any',
 		);
-
-		$this->read_schema = array(
+		$this->schema       = array_merge( $this->schema, array(
 			'event'             => array( $this, 'filter_by_event' ),
 			'ticket'            => array( $this, 'filter_by_ticket' ),
 			'event__not_in'     => array( $this, 'filter_by_event_not_in' ),
@@ -26,7 +25,14 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'optout'            => array( $this, 'filter_by_optout' ),
 			'rsvp_status'       => array( $this, 'filter_by_rsvp_status' ),
 			'provider'          => array( $this, 'filter_by_provider' ),
-		);
+			'event_status'      => array( $this, 'filter_by_event_status' ),
+			'order_status'      => array( $this, 'filter_by_order_status' ),
+			'price_min'         => array( $this, 'filter_by_price_min' ),
+			'price_max'         => array( $this, 'filter_by_price_max' ),
+			'has_attendee_meta' => array( $this, 'filter_by_attendee_meta_existence' ),
+			'checkedin'         => array( $this, 'filter_by_checkedin' ),
+		) );
+		parent::__construct();
 	}
 
 	/**
@@ -38,7 +44,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function attendee_types() {
+	public function attendee_types() {
 		return array( 'tribe_rsvp_attendees', 'tribe_tpp_attendees' );
 	}
 
@@ -68,7 +74,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function attendee_to_event_keys() {
+	public function attendee_to_event_keys() {
 		return array(
 			'rsvp'           => '_tribe_rsvp_event',
 			'tribe-commerce' => '_tribe_tpp_event',
@@ -118,7 +124,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function attendee_to_ticket_keys() {
+	public function attendee_to_ticket_keys() {
 		return array(
 			'rsvp'           => '_tribe_rsvp_product',
 			'tribe-commerce' => '_tribe_tpp_product',
@@ -190,7 +196,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function attendee_optout_keys() {
+	public function attendee_optout_keys() {
 		return array(
 			'rsvp'           => '_tribe_rsvp_attendee_optout',
 			'tribe-commerce' => '_tribe_tpp_attendee_optout',
@@ -235,6 +241,86 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $provider, $this->attendee_to_event_keys() );
 
 		return Tribe__Repository__Query_Filters::meta_exists( $meta_keys, 'by-provider' );
+	}
 
+	/**
+	 * @param $event_status
+	 *
+	 * @return array
+	 */
+	public function filter_by_event_status( $event_status ) {
+		return array();
+	}
+
+	public function filter_by_order_status( $order_status ) {
+		return array();
+	}
+
+	/**
+	 * Filters Attendees by a minimum paid price.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $price_min
+	 */
+	public function filter_by_price_min( $price_min ) {
+		$this->by( 'meta_gte', '_paid_price', (int) $price_min );
+	}
+
+	/**
+	 * Filters Attendees by a maximum paid price.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $price_max
+	 */
+	public function filter_by_price_max( $price_max ) {
+		$this->by( 'meta_lte', '_paid_price', (int) $price_max );
+	}
+
+	/**
+	 * Filters attendee depending on them having additional
+	 * information or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $exists
+	 */
+	public function filter_by_attendee_meta_existence( $exists ) {
+		if ( $exists ) {
+			$this->by( 'meta_exists', '_tribe_tickets_meta' );
+		} else {
+			$this->by( 'meta_not_exists', '_tribe_tickets_meta' );
+		}
+	}
+
+	/**
+	 * Filters attendees depending on their checkedin status.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $checkedin
+	 *
+	 * @return array
+	 */
+	public function filter_by_checkedin( $checkedin ) {
+		$meta_keys = $this->checked_in_keys();
+
+		if ( tribe_is_truthy( $checkedin ) ) {
+			return Tribe__Repository__Query_Filters::meta_in( $meta_keys, '1', 'is-checked-in' );
+		}
+
+		return Tribe__Repository__Query_Filters::meta_in_or_not_exists( $meta_keys, '0', 'is-not-checked-in' );
+	}
+
+	/**
+	 * Returns a list of meta keys indicating an attendee checkin status.
+	 * @return array
+	 */
+	protected function checked_in_keys() {
+		return array(
+			'rsvp'           => '_tribe_rsvp_checkedin',
+			'tribe-commerce' => '_tribe_tpp_checkedin',
+		);
 	}
 }

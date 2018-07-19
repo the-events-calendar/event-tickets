@@ -38,15 +38,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		if ( $request->get_param( 'include_post' ) ) {
 			$include_post               = $request['include_post'];
-			$fetch_args['event']        = $include_post; // by( 'event' ,$id )
+			$fetch_args['event']        = $include_post;
 			$query_args['include_post'] = implode( ',', $include_post );
 		}
 
 		if ( current_user_can( 'read_private_posts' ) ) {
-			$permission                = Tribe__Tickets__REST__V1__Repositories__Ticket_Read::PERMISSION_EDITABLE;
+			$permission                = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status'] = 'any';
 		} else {
-			$permission                = Tribe__Tickets__REST__V1__Repositories__Ticket_Read::PERMISSION_READABLE;
+			$permission                = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_READABLE;
 			$fetch_args['post_status'] = 'publish';
 		}
 

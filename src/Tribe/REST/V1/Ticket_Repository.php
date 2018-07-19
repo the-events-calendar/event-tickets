@@ -6,111 +6,87 @@
  * The base Ticket object repository, a decorator of the base one.
  *
  * @since TBD
- * @method  by_args( array $args )
- * @method  where_args( array $args )
- * @method  page( $page )
- * @method  per_page( $per_page )
- * @method  found()
- * @method  all()
- * @method  offset( $offset, $increment = false )
- * @method  order( $order = 'ASC' )
- * @method  order_by( $order_by )
- * @method  fields( $fields )
- * @method  permission( $permission )
- * @method  in( $post_ids )
- * @method  not_in( $post_ids )
- * @method  parent( $post_id )
- * @method  parent_in( $post_ids )
- * @method  parent_not_in( $post_ids )
- * @method  search( $search )
- * @method  count()
- * @method  filter_name( $filter_name )
- * @method  first()
- * @method  last()
- * @method  nth( $n )
- * @method  take( $n )
- * @method  by_primary_key( $primary_key )
  */
-class Tribe__Tickets__REST__V1__Ticket_Repository implements Tribe__Repository__Interface {
+class Tribe__Tickets__REST__V1__Ticket_Repository extends Tribe__Tickets__Ticket_Repository {
 
 	/**
-	 * @var Tribe__Repository__Interface
+	 * {@inheritdoc}
 	 */
-	protected $decorated_repository;
+	public function found() {
+		$query = $this->build_query();
+		$query->set( 'fields', 'ids' );
+		$query->set( 'posts_per_page', - 1 );
+		$query->set( 'no_found_rows', true );
+		$all_ids = $query->get_posts();
 
-	/**
-	 * Tribe__Tickets__REST__V1__Attendee_Repository constructor.
-	 *
-	 * @since TBD
-	 */
-	public function __construct() {
-		$this->decorated_repository = tribe( 'tickets.ticket-repository' );
+		// @todo standardize the meta key used to link ticket -> event to allow for an efficient query
+
+		/**
+		 * Make sure we are not returning orphaned tickets.
+		 * This implementation is not really efficient but is a
+		 * first draft. Meh.
+		 */
+		$found = 0;
+		foreach ( $all_ids as $ticket_id ) {
+			if ( ! tribe_events_get_ticket_event( $ticket_id ) ) {
+				continue;
+			}
+			$found ++;
+		}
+
+		return $found;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_default_args() {
-		return $this->decorated_repository->get_default_args();
+	public function count() {
+		$query = $this->build_query();
+		$query->set( 'fields', 'ids' );
+		$query->set( 'no_found_rows', true );
+		$all_ids = $query->get_posts();
+
+		// @todo standardize the meta key used to link ticket -> event to allow for an efficient query
+
+		/**
+		 * Make sure we are not returning orphaned tickets.
+		 * This implementation is not really efficient but is a
+		 * first draft. Meh.
+		 */
+		$count = 0;
+		foreach ( $all_ids as $ticket_id ) {
+			if ( ! tribe_events_get_ticket_event( $ticket_id ) ) {
+				continue;
+			}
+			$count ++;
+		}
+
+		return $count;
 	}
 
 	/**
-	 * {@inheritdoc}
-	 */
-	public function set_default_args( array $default_args ) {
-		return $this->decorated_repository->set_default_args( $default_args );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function update( Tribe__Repository__Read_Interface $read = null ) {
-		// @todo review this when allowing updates from REST API
-		return $this->decorated_repository->update( $read );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function by( $key, $value ) {
-		return call_user_func_array( array( $this->fetch(), 'by' ), func_get_args() );
-	}
-
-	/**
-	 * Returns a REST API v1 specific Read repository.
-	 *
-	 * @since TBD
-	 *
-	 * @return Tribe__Tickets__REST__V1__Repositories__Ticket_Read
-	 */
-	public function fetch() {
-		return new Tribe__Tickets__REST__V1__Repositories__Ticket_Read(
-			$this->decorated_repository->read_schema,
-			tribe()->make( 'Tribe__Repository__Query_Filters' ),
-			$this->decorated_repository->default_args,
-			$this->decorated_repository
-		);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function where( $key, $value ) {
-		return call_user_func_array( array( $this->fetch(), 'where' ), func_get_args() );
-	}
-
-	/**
-	 * Forwards calls to the decorated repository.
+	 * Returns the ticket in the REST API format.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $name
-	 * @param array  $args
+	 * @param int|WP_Post $id
 	 *
-	 * @return mixed
+	 * @return array|null The ticket information in the REST API format or
+	 *                    `null` if the ticket is invalid.
 	 */
-	public function __call( $name, $args ) {
-		// @todo review this when adding updates
-		return call_user_func_array( array( $this->fetch(), $name ), $args );
+	protected function format_item( $id ) {
+		/**
+		 * For the time being we use **another** repository to format
+		 * the tickets objects to the REST API format.
+		 * If this implementation gets a thumbs-up this class and the
+		 * `Tribe__Tickets__REST__V1__Post_Repository` should be merged.
+		 */
+		/** @var Tribe__Tickets__REST__V1__Post_Repository $repository */
+		$repository = tribe( 'tickets.rest-v1.repository' );
+
+		$formatted = $repository->get_ticket_data( $id );
+
+		return $formatted instanceof WP_Error ? null : $formatted;
 	}
+
 }

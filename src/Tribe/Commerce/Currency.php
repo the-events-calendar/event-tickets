@@ -37,12 +37,16 @@ class Tribe__Tickets__Commerce__Currency {
 	 * @since 4.7
 	 *
 	 * @param int|null $post_id
+	 * @param bool $decode Whether to HTML decode the currency symbol before
+	 *                     returning or not.
 	 *
 	 * @return string
 	 */
-	public function get_currency_symbol( $post_id = null ) {
+	public function get_currency_symbol( $post_id = null, $decode = false ) {
 		$symbol = $this->currency_code_options_map[ $this->currency_code ]['symbol'];
-		return apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
+		$symbol = apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
+
+		return $decode ? html_entity_decode( $symbol ) : $symbol;
 	}
 
 	/**
