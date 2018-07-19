@@ -15,7 +15,7 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @version 4.7.4.1
+ * @version TBD
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -257,6 +257,17 @@
 				if ( ! empty( $header_id ) ) {
 					$header_img = wp_get_attachment_image_src( $header_id, 'full' );
 				}
+
+				/**
+				 * Filters the ticket image that will be included in the tickets email
+				 *
+				 * @since TBD
+				 *
+				 * @param bool|string $header_img False or header image src
+				 * @param int         $header_id  Parent post ticket header image ID if set
+				 * @param array       $ticket     Ticket information
+				 */
+				$header_img  = apply_filters( 'tribe_tickets_email_ticket_image', $header_img, $header_id, $ticket );
 
 				$venue_label = '';
 				$venue_name = null;
