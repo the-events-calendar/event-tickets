@@ -137,6 +137,15 @@ class Tribe__Tickets__Privacy {
 				'value' => $attendee->post_date,
 			);
 
+			/**
+			 * Allow filtering for the rsvp attendee data export.
+			 *
+			 * @since TBD
+			 * @param array  $data      The data array to export
+			 * @param object $attendee  The attendee object
+			 */
+			$data = apply_filters( 'tribe_tickets_personal_data_export_rsvp', $data, $attendee );
+
 			$export_items[] = array(
 				'group_id'    => $group_id,
 				'group_label' => $group_label,
@@ -211,6 +220,15 @@ class Tribe__Tickets__Privacy {
 				'name'  => __( 'Date', 'event-tickets' ),
 				'value' => $attendee->post_date,
 			);
+
+			/**
+			 * Allow filtering for the tribecommerce attendee data export.
+			 *
+			 * @since TBD
+			 * @param array  $data      The data array to export
+			 * @param object $attendee  The attendee object
+			 */
+			$data = apply_filters( 'tribe_tickets_personal_data_export_tpp', $data, $attendee );
 
 			$export_items[] = array(
 				'group_id'    => $group_id,
