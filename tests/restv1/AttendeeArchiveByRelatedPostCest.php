@@ -62,7 +62,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->by( 'post__in', $paypal_attendees )
 			->order_by( 'post__in' )
 			->all();
@@ -77,7 +77,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', $rsvp_attendees )
 			->order_by( 'post__in' )
 			->all();
@@ -108,7 +108,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->by( 'post__in', $paypal_attendees )
 			->order_by( 'post__in' )
 			->all();
@@ -123,7 +123,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', $rsvp_attendees )
 			->order_by( 'post__in' )
 			->all();
@@ -154,7 +154,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->by( 'post__in', $all )
 			->order_by( 'post__in' )
 			->all();
@@ -174,7 +174,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', $rsvp_attendees )
 			->order_by( 'post__in' )
 			->all();
@@ -210,7 +210,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->by( 'post__in', $all )
 			->order_by( 'post__in' )
 			->all();
@@ -230,7 +230,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', $rsvp_attendees )
 			->order_by( 'post__in' )
 			->all();
@@ -260,7 +260,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', array_merge( $attendees[ $post_ids[1] ], $attendees[ $post_ids[2] ] ) )
 			->order_by( 'post__in' )
 			->all();
@@ -275,7 +275,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', $attendees[ $post_ids[2] ] )
 			->order_by( 'post__in' )
 			->all();
@@ -309,7 +309,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', array_merge( $attendees[ $ticket_ids[1] ], $attendees[ $ticket_ids[2] ] ) )
 			->order_by( 'post__in' )
 			->all();
@@ -324,7 +324,7 @@ class AttendeeArchiveByRelatedPostCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->where( 'post__in', $attendees[ $ticket_ids[2] ] )
 			->order_by( 'post__in' )
 			->all();

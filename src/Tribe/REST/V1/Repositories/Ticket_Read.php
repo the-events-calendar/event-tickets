@@ -8,7 +8,8 @@
  * A minimal ovverride of the default Read Repository to decorate results
  * for the REST API.
  */
-class Tribe__Tickets__REST__V1__Repositories__Ticket_Read extends Tribe__Repository__Read {
+class Tribe__Tickets__REST__V1__Repositories__Ticket_Read
+	extends Tribe__Repository__Read {
 	// @todo merge this class and Tribe__Tickets__REST__V1__Post_Repository
 
 	/**

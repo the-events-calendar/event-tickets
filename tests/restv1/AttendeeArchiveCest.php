@@ -37,7 +37,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 			'rest_url'    => add_query_arg( [ 'per_page' => 4 ], $this->attendees_url . '/' ),
 			'total'       => 8,
 			'total_pages' => 2,
-			'attendees'   => tribe_attendees( 'restv1' )->fetch()->per_page( 4 )->page( 1 )->all(),
+			'attendees'   => tribe_attendees( 'restv1' )->per_page( 4 )->page( 1 )->all(),
 		], json_decode( $I->grabResponse(), true ) );
 		$I->seeHttpHeader( 'X-ET-TOTAL', 8 );
 		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 2 );
@@ -49,7 +49,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 			'rest_url'    => add_query_arg( [ 'per_page' => 4, 'page' => 2 ], $this->attendees_url . '/' ),
 			'total'       => 8,
 			'total_pages' => 2,
-			'attendees'   => tribe_attendees( 'restv1' )->fetch()->per_page( 4 )->page( 2 )->all(),
+			'attendees'   => tribe_attendees( 'restv1' )->per_page( 4 )->page( 2 )->all(),
 		], json_decode( $I->grabResponse(), true ) );
 		$I->seeHttpHeader( 'X-ET-TOTAL', 8 );
 		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 2 );
@@ -135,7 +135,6 @@ class AttendeeArchiveCest extends BaseRestCest {
 		}, [] );
 
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
 			->where( 'post__in', $attendees_and_tickets['publicly_visible_attendees'] )
 			->order_by( 'post__in' )
 			->all();
@@ -158,7 +157,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 		$I->generate_nonce_for_role( 'editor' );
 
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->per_page( 4 )
 			->all();
 		$I->sendGET( $this->attendees_url, [ 'per_page' => 4 ] );
@@ -174,7 +173,7 @@ class AttendeeArchiveCest extends BaseRestCest {
 		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 4 );
 
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
+
 			->per_page( 4 )
 			->page( 2 )
 			->all();

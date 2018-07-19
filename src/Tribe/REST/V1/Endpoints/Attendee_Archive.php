@@ -62,7 +62,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		}
 
 		$query = tribe_attendees( 'restv1' )
-			->fetch()
 			->by_args( $fetch_args )
 			->permission( $permission );
 

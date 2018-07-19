@@ -17,7 +17,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Attendee
 	 * {@inheritdoc}
 	 */
 	public function get( WP_REST_Request $request ) {
-		return tribe_attendees( 'restv1' )->fetch()->by_primary_key( $request['id'] );
+		return tribe_attendees( 'restv1' )->by_primary_key( $request['id'] );
 	}
 
 	/**

@@ -47,7 +47,7 @@ class AttendeeArchiveSearchCest extends BaseRestCest {
 			'rest_url'    => add_query_arg( [ 'search' => 'foo' ], $this->attendees_url . '/' ),
 			'total'       => 2,
 			'total_pages' => 1,
-			'attendees'   => tribe_attendees( 'restv1' )->fetch()->where( 'post__in', [
+			'attendees'   => tribe_attendees( 'restv1' )->where( 'post__in', [
 				$attendees[0],
 				$attendees[1]
 			] )->all(),
@@ -59,7 +59,7 @@ class AttendeeArchiveSearchCest extends BaseRestCest {
 			'rest_url'    => add_query_arg( [ 'search' => 'bar' ], $this->attendees_url . '/' ),
 			'total'       => 3,
 			'total_pages' => 1,
-			'attendees'   => tribe_attendees( 'restv1' )->fetch()->where( 'post__in', [
+			'attendees'   => tribe_attendees( 'restv1' )->where( 'post__in', [
 				$attendees[1],
 				$attendees[2],
 				$attendees[3]
@@ -72,7 +72,7 @@ class AttendeeArchiveSearchCest extends BaseRestCest {
 			'rest_url'    => add_query_arg( [ 'search' => 'foo bar' ], $this->attendees_url . '/' ),
 			'total'       => 1,
 			'total_pages' => 1,
-			'attendees'   => tribe_attendees( 'restv1' )->fetch()->where( 'post__in', [
+			'attendees'   => tribe_attendees( 'restv1' )->where( 'post__in', [
 				$attendees[1],
 			] )->all(),
 		] );

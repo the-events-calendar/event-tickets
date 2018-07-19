@@ -714,7 +714,6 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$optout = $can_read_private_posts ? 'any' : 'no';
 
 		$query = tribe_attendees( 'restv1' )
-			->fetch()
 			->permission( $permission )
 			->where( 'ticket', $ticket_id )
 			->where( 'optout', $optout );

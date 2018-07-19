@@ -51,7 +51,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		}
 
 		$query = tribe_tickets( 'restv1' )
-			->fetch()
 			->by_args( $fetch_args )
 			->permission( $permission );
 
