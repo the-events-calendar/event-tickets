@@ -8,7 +8,8 @@
  * @since TBD
  */
 class Tribe__Tickets__REST__V1__Attendee_Repository
-	extends Tribe__Tickets__Attendee_Repository {
+	extends Tribe__Repository__Decorator
+	implements Tribe__Repository__Formatter_Interface {
 
 	/**
 	 * Tribe__Tickets__REST__V1__Attendee_Repository constructor.
@@ -16,11 +17,12 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * @since TBD
 	 */
 	public function __construct() {
-		parent::__construct();
-		$this->default_args = array_merge(
-			$this->get_default_args(),
+		$this->decorated = tribe( 'tickets.attendee-repository' );
+		$this->decorated->set_formatter( $this );
+		$this->decorated->set_default_args( array_merge(
+			$this->decorated->get_default_args(),
 			array( 'order' => 'ASC', 'orderby' => array( 'id', 'title' ) )
-		);
+		) );
 	}
 
 	/**
@@ -35,12 +37,12 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 */
 	public function found() {
 		if ( ! current_user_can( 'read_private_posts' ) ) {
-			$this->by( 'optout', 'no' )
-			     ->by( 'post_status', 'publish' )
-			     ->by( 'rsvp_status', 'yes' );
+			$this->decorated->by( 'optout', 'no' );
+			$this->decorated->by( 'post_status', 'publish' );
+			$this->decorated->by( 'rsvp_status', 'yes' );
 		}
 
-		return parent::found();
+		return $this->decorated->found();
 	}
 
 	/**
@@ -55,12 +57,12 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 */
 	public function count() {
 		if ( ! current_user_can( 'read_private_posts' ) ) {
-			$this->by( 'optout', 'no' )
-			     ->by( 'post_status', 'publish' )
-			     ->by( 'rsvp_status', 'yes' );
+			$this->decorated->by( 'optout', 'no' );
+			$this->decorated->by( 'post_status', 'publish' );
+			$this->decorated->by( 'rsvp_status', 'yes' );
 		}
 
-		return parent::count();
+		return $this->decorated->count();
 	}
 
 	/**
@@ -92,7 +94,9 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			return $this;
 		}
 
-		return parent::order_by( $converted_order_by );
+		$this->decorated->order_by( $converted_order_by );
+
+		return $this;
 	}
 
 	/**
@@ -107,9 +111,9 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 *                        detailing why the read failed.
 	 */
 	public function by_primary_key( $primary_key ) {
-		$query = $this->get_query();
+		$query = $this->decorated->get_query();
 		$query->set( 'fields', 'ids' );
-		$query->set('p', $primary_key);
+		$query->set( 'p', $primary_key );
 		$found = $query->get_posts();
 		/** @var Tribe__Tickets__REST__V1__Messages $messages */
 		$messages = tribe( 'tickets.rest-v1.messages' );
@@ -122,11 +126,11 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			return $this->format_item( $found[0] );
 		}
 
-		$this->by( 'optout', 'no' )
-		     ->by( 'post_status', 'publish' )
-		     ->by( 'rsvp_status', 'yes' );
+		$this->decorated->Jby( 'optout', 'no' );
+		$this->decorated->by( 'post_status', 'publish' );
+		$this->decorated->by( 'rsvp_status', 'yes' );
 
-		$cap_query = $this->build_query();
+		$cap_query = $this->decorated->get_query();
 		$cap_query->set( 'fields', 'ids' );
 		$cap_query->set( 'p', $primary_key );
 		$found_w_cap = $cap_query->get_posts();
@@ -148,7 +152,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * @return array|null The attendee information in the REST API format or
 	 *                    `null` if the attendee is invalid.
 	 */
-	protected function format_item( $id ) {
+	public function format_item( $id ) {
 		/**
 		 * For the time being we use **another** repository to format
 		 * the tickets objects to the REST API format.
@@ -163,6 +167,4 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 
 		return $formatted instanceof WP_Error ? null : $formatted;
 	}
-
-
 }

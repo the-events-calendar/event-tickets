@@ -12,12 +12,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Tribe__Tickets__Attendee_Repository constructor.
 	 */
 	public function __construct() {
-		$this->default_args = array(
+		parent::__construct();
+		$this->default_args = array_merge( $this->default_args, array(
 			'post_type'   => $this->attendee_types(),
 			'orderby'     => array( 'date', 'title', 'ID' ),
 			'post_status' => 'any',
-		);
-		$this->schema       = array_merge( $this->schema, array(
+		) );
+		$this->schema = array_merge( $this->schema, array(
 			'event'             => array( $this, 'filter_by_event' ),
 			'ticket'            => array( $this, 'filter_by_ticket' ),
 			'event__not_in'     => array( $this, 'filter_by_event_not_in' ),
@@ -32,7 +33,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'has_attendee_meta' => array( $this, 'filter_by_attendee_meta_existence' ),
 			'checkedin'         => array( $this, 'filter_by_checkedin' ),
 		) );
-		parent::__construct();
 	}
 
 	/**
@@ -249,11 +249,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_event_status( $event_status ) {
-		return array();
+		$this->by( 'meta_related', $this->attendee_to_event_keys(), 'post_status', $event_status );
 	}
 
 	public function filter_by_order_status( $order_status ) {
-		return array();
+		$this->by( 'meta_related', $this->attendee_to_order_keys(), 'post_status', $order_status );
 	}
 
 	/**
@@ -315,12 +315,29 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 	/**
 	 * Returns a list of meta keys indicating an attendee checkin status.
+	 *
+	 * @since TBD
+	 *
 	 * @return array
 	 */
 	protected function checked_in_keys() {
 		return array(
 			'rsvp'           => '_tribe_rsvp_checkedin',
 			'tribe-commerce' => '_tribe_tpp_checkedin',
+		);
+	}
+
+	/**
+	 * Returns a list of meta keys relating an attendee to the order
+	 * that generated it.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	protected function attendee_to_order_keys() {
+		return array(
+			'tribe-commerce' => '_tribe_tpp_order',
 		);
 	}
 }
