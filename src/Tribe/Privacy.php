@@ -547,7 +547,7 @@ class Tribe__Tickets__Privacy {
 			);
 
 			/**
-			 * Allow filtering for the tribecommerce attendee data export.
+			 * Allow filtering for the tribecommerce order data export.
 			 *
 			 * @since TBD
 			 * @param array  $data   The data array to export
