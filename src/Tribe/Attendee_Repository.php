@@ -244,16 +244,35 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * @param $event_status
+	 * Filters attendee to only get those related to posts with a specific status.
 	 *
-	 * @return array
+	 * @since TBD
+	 *
+	 * @param string|array $event_status
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
 	 */
 	public function filter_by_event_status( $event_status ) {
-		$this->by( 'meta_related', $this->attendee_to_event_keys(), 'post_status', $event_status );
+		if ( ! current_user_can( 'read_private_posts' ) ) {
+			$event_status = array_intersect( Tribe__Utils__Array::list_to_array( $event_status ), array( 'publish' ) );
+			if ( empty( $event_status ) ) {
+				throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results(
+					'The user cannot read posts with the requested post statuses.'
+				);
+			}
+		}
+		$this->by( 'meta_related_in', $this->attendee_to_event_keys(), 'post_status', $event_status );
 	}
 
+	/**
+	 * Filters attendee to only get those related to orders with a specific status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $order_status
+	 */
 	public function filter_by_order_status( $order_status ) {
-		$this->by( 'meta_related', $this->attendee_to_order_keys(), 'post_status', $order_status );
+//		$this->by( 'meta_related_in', $this->attendee_to_order_keys(), 'post_status', $order_status );
 	}
 
 	/**
