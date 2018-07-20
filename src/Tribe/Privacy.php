@@ -93,7 +93,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @return array
 	 */
-	public static function register_erasers( $erasers ) {
+	public function register_erasers( $erasers ) {
 		$erasers[] = array(
 			'eraser_friendly_name' => __( 'Event Tickets RSVP Attendee', 'event-tickets' ),
 			'callback'             => array( $this, 'rsvp_eraser' ),
@@ -205,7 +205,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @return array
 	 */
-	public static function rsvp_eraser( $email_address, $page = 1 ) {
+	public function rsvp_eraser( $email_address, $page = 1 ) {
 		if ( empty( $email_address ) ) {
 			return array(
 				'items_removed'  => false,
