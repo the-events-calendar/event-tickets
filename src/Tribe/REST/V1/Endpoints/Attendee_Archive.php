@@ -68,11 +68,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 		}
 
 		if ( current_user_can( 'read_private_posts' ) ) {
-			$permission                = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
-			$fetch_args['post_status'] = 'any';
+			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_EDITABLE;
+			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
+			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );
+			$fetch_args['order_status'] = Tribe__Utils__Array::get( $fetch_args, 'order_status', 'any' );
 		} else {
-			$permission                = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_READABLE;
-			$fetch_args['post_status'] = 'publish';
+			$permission                 = Tribe__Tickets__REST__V1__Attendee_Repository::PERMISSION_READABLE;
+			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'publish' );
+			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'publish' );
+			$fetch_args['order_status'] = Tribe__Utils__Array::get( $fetch_args, 'order_status', 'public' );
 		}
 
 		$query = tribe_attendees( 'restv1' )
@@ -257,19 +261,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'post_status' => array(
 				'description'       => __( 'Limit results to attendees for posts that are in one of the post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
 				'required'          => false,
-				'default'           => 'publish',
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 			),
 			'status' => array(
 				'description'       => __( 'Limit results to attendees that are in one of post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
 				'required'          => false,
-				'default'           => 'publish',
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 			),
 			'order_status' => array(
-				'description'       => __( 'Limit results to attendees whose order status is in one of post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
+				'description'       => __( 'Limit results to attendees whose order status is in one of post statuses specified in the CSV list or array; defaults to public.', 'event-tickets' ),
 				'required'          => false,
-				'default'           => 'publish',
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 			),
 			'checkedin' => array(
