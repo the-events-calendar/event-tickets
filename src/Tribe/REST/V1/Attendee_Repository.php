@@ -126,7 +126,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			return $this->format_item( $found[0] );
 		}
 
-		$this->decorated->Jby( 'optout', 'no' );
+		$this->decorated->by( 'optout', 'no' );
 		$this->decorated->by( 'post_status', 'publish' );
 		$this->decorated->by( 'rsvp_status', 'yes' );
 
