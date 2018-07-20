@@ -310,7 +310,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			return Tribe__Repository__Query_Filters::meta_in( $meta_keys, '1', 'is-checked-in' );
 		}
 
-		return Tribe__Repository__Query_Filters::meta_in_or_not_exists( $meta_keys, '0', 'is-not-checked-in' );
+		return Tribe__Repository__Query_Filters::meta_not_in_or_not_exists( $meta_keys, '1', 'is-not-checked-in' );
 	}
 
 	/**
