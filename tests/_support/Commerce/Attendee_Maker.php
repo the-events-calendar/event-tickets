@@ -95,6 +95,10 @@ trait Attendee_Maker {
 			$meta[ \Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY ] = Arr::get( $overrides, 'rsvp_status', 'yes' );
 		}
 
+		if ( $provider instanceof \Tribe__Tickets__Commerce__PayPal__Main ) {
+			$meta['_tribe_tpp_status'] = Arr::get( $overrides, 'order_status', 'completed' );
+		}
+
 		if ( $provider instanceof \Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
 			if ( ! isset( $overrides['order_id'] ) ) {
 				throw new \RuntimeException(
