@@ -173,7 +173,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'required'    => false,
 				'enum'        => array(
 					'ASC',
-					'DESC'
+					'DESC',
 				),
 			),
 			'orderby' => array(

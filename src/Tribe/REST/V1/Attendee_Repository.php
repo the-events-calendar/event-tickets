@@ -84,9 +84,9 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			'slug'      => 'name',
 		);
 
-		if ( 'include' === $order_by ) {
+		// if ( 'include' === $order_by ) {
 			// @todo review when one meta key is unified
-		}
+		// }
 
 		$converted_order_by = Tribe__Utils__Array::get( $map, $order_by, false );
 

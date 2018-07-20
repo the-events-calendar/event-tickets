@@ -20,7 +20,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	protected static $public_order_statuses = array(
 		'yes',     // RSVP
 		'completed', // PayPal and WooCommerce
-		'publish' // Easy Digital Downloads
+		'publish', // Easy Digital Downloads
 	);
 
 	/**
