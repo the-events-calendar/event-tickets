@@ -35,7 +35,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function ticket_types() {
+	public function ticket_types() {
 		return array( 'tribe_rsvp_tickets', 'tribe_tpp_tickets' );
 	}
 
@@ -73,7 +73,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function ticket_to_event_keys() {
+	public function ticket_to_event_keys() {
 		return array(
 			'_tribe_rsvp_for_event',
 			'_tribe_tpp_for_event',

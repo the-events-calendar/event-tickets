@@ -12,6 +12,16 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	implements Tribe__Repository__Formatter_Interface {
 
 	/**
+	 * @var Tribe__Tickets__Ticket_Repository
+	 */
+	protected $decorated;
+
+	/**
+	 * @var bool
+	 */
+	protected $did_add_related_post_clauses = false;
+
+	/**
 	 * Tribe__Tickets__REST__V1__Ticket_Repository constructor.
 	 *
 	 * @since TBD
@@ -19,65 +29,11 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	public function __construct() {
 		$this->decorated = tribe( 'tickets.ticket-repository' );
 		$this->decorated->set_formatter( $this );
+		$this->decorated->set_query_builder( $this );
 		$this->decorated->set_default_args( array_merge(
 			$this->decorated->get_default_args(),
 			array( 'order' => 'ASC', 'orderby' => array( 'id', 'title' ) )
 		) );
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function found() {
-		$query = $this->decorated->build_query();
-		$query->set( 'fields', 'ids' );
-		$query->set( 'posts_per_page', - 1 );
-		$query->set( 'no_found_rows', true );
-		$all_ids = $query->get_posts();
-
-		// @todo standardize the meta key used to link ticket -> event to allow for an efficient query
-
-		/**
-		 * Make sure we are not returning orphaned tickets.
-		 * This implementation is not really efficient but is a
-		 * first draft. Meh.
-		 */
-		$found = 0;
-		foreach ( $all_ids as $ticket_id ) {
-			if ( ! tribe_events_get_ticket_event( $ticket_id ) ) {
-				continue;
-			}
-			$found ++;
-		}
-
-		return $found;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function count() {
-		$query = $this->decorated->build_query();
-		$query->set( 'fields', 'ids' );
-		$query->set( 'no_found_rows', true );
-		$all_ids = $query->get_posts();
-
-		// @todo standardize the meta key used to link ticket -> event to allow for an efficient query
-
-		/**
-		 * Make sure we are not returning orphaned tickets.
-		 * This implementation is not really efficient but is a
-		 * first draft. Meh.
-		 */
-		$count = 0;
-		foreach ( $all_ids as $ticket_id ) {
-			if ( ! tribe_events_get_ticket_event( $ticket_id ) ) {
-				continue;
-			}
-			$count ++;
-		}
-
-		return $count;
 	}
 
 	/**
@@ -103,5 +59,44 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 		$formatted = $repository->get_ticket_data( $id );
 
 		return $formatted instanceof WP_Error ? null : $formatted;
+	}
+
+	/**
+	 * An override of the default query building process to add JOIN
+	 * and WHERE clauses to only get tickets related to an existing
+	 * post.
+	 *
+	 * @since TBD
+	 *
+	 * @return WP_Query
+	 */
+	public function build_query() {
+		$this->add_related_post_clauses();
+
+		return $this->decorated->build_query();
+	}
+
+	/**
+	 * Whatever query is running tickets should not appear in REST
+	 * results if not related to an existing post.
+	 *
+	 * @since TBD
+	 */
+	protected function add_related_post_clauses() {
+		/** @var wpdb $wpdb */
+		global $wpdb;
+		$this->decorated->join_clause( "JOIN {$wpdb->posts} related_event
+			ON {$wpdb->posts}.ID != related_event.ID" );
+		$this->decorated->join_clause( "JOIN {$wpdb->postmeta} related_event_meta
+			ON {$wpdb->posts}.ID = related_event_meta.post_id" );
+		$keys = array();
+		foreach ( $this->decorated->ticket_to_event_keys() as $key ) {
+			$keys[] = $wpdb->prepare( '%s', $key );
+		}
+		$keys_in = sprintf( '(%s)', implode( ',', $keys ) );
+		$this->decorated->where_clause( "related_event_meta.meta_key IN {$keys_in} 
+			AND related_event.ID = related_event_meta.meta_value" );
+
+		$this->decorated->set_query_builder( null );
 	}
 }

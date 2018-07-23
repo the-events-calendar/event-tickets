@@ -178,7 +178,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @param string $optout An optout option, supported 'yes','no','any'.
 	 *
-	 * @return array
+	 * @return array|null
 	 */
 	public function filter_by_optout( $optout ) {
 		$args = array(
@@ -189,7 +189,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 		switch ( $optout ) {
 			case 'any':
-				$args = array();
+				return null;
 				break;
 			case 'no':
 				$this->by( 'meta_not_in', $this->attendee_optout_keys(), 'yes' );
@@ -199,7 +199,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				break;
 		}
 
-		return $args;
+		return null;
 	}
 
 	/**

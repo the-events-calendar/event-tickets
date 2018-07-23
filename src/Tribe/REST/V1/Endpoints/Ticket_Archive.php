@@ -36,10 +36,15 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		$fetch_args = array();
 
-		if ( $request->get_param( 'include_post' ) ) {
-			$include_post               = $request['include_post'];
-			$fetch_args['event']        = $include_post;
-			$query_args['include_post'] = implode( ',', $include_post );
+		$supported_args = array(
+			'search'       => 's',
+			'include_post' => 'event',
+		);
+
+		foreach ( $supported_args as $request_arg => $query_arg ) {
+			if ( isset( $request[ $request_arg ] ) ) {
+				$fetch_args[ $query_arg ] = $request[ $request_arg ];
+			}
 		}
 
 		if ( current_user_can( 'read_private_posts' ) ) {
@@ -53,6 +58,14 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$query = tribe_tickets( 'restv1' )
 			->by_args( $fetch_args )
 			->permission( $permission );
+
+		if ( $request['orderby'] ) {
+			$query->order_by( $request['orderby'] );
+		}
+
+		if ( $request['offset'] ) {
+			$query->offset( $request['offset'] );
+		}
 
 		$found = $query->found();
 
@@ -69,6 +82,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		/** @var Tribe__Tickets__REST__V1__Main $main */
 		$main = tribe( 'tickets.rest-v1.main' );
+
+		// make sure all arrays are formatted to by CSV lists
+		foreach ( $query_args as $key => &$value ) {
+			if ( is_array( $value ) ) {
+				$value = Tribe__Utils__Array::to_list( $value );
+			}
+		}
 
 		$data['rest_url']    = add_query_arg( $query_args, $main->get_url( '/tickets/' ) );
 		$data['total']       = $found;
@@ -112,6 +132,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'type'              => 'string',
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_string' ),
+			),
+			'offset'  => array(
+				'description' => __( 'Offset the results by a specific number of items.', 'event-tickets' ),
+				'type'        => 'integer',
+				'required'    => false,
+				'min'         => 0,
 			),
 			'include_post' => array(
 				// @todo support multiple types in Swaggerification functions

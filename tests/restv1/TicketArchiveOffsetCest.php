@@ -8,18 +8,18 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
-class TicketArchiveSearchCest extends BaseRestCest {
+class TicketArchiveOffsetCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
 	use Attendee_Maker;
 
 
 	/**
-	 * It should allow searching tickets
+	 * It should allow offsetting the ticket results
 	 *
 	 * @test
 	 */
-	public function should_allow_searching_tickets( Restv1Tester $I ) {
+	public function should_allow_offsetting_the_ticket_results( Restv1Tester $I ) {
 		$post_ids     = $I->haveManyPostsInDatabase( 2 );
 		$titles       = [ 'red', 'blue', 'green', 'yellow' ];
 		$descriptions = [ 'blue ostrich', 'green wallaby', 'red parrot', 'yellow red-panda' ];
@@ -41,66 +41,70 @@ class TicketArchiveSearchCest extends BaseRestCest {
 			] );
 		}
 
-		$I->sendGET( $this->tickets_url, [ 'search' => 'blue' ] );
+		$I->sendGET( $this->tickets_url, [ 'offset' => 1 ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', [ $w_title['blue'], $w_description['blue ostrich'] ] )
+			->where( 'post__in', \array_slice( $tickets, 1 ) )
 			->all();
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'search' => 'blue' ], $this->tickets_url . '/' ),
-			'total'       => 2,
+			'rest_url'    => add_query_arg( [ 'offset' => 1 ], $this->tickets_url . '/' ),
+			'total'       => 4,
 			'total_pages' => 1,
 			'tickets'     => $expected_tickets,
 		] );
+		$I->seeHttpHeader( 'X-ET-TOTAL', 4 );
+		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 1 );
 
-		$I->sendGET( $this->tickets_url, [ 'search' => 'yellow' ] );
+		$I->sendGET( $this->tickets_url, [ 'offset' => 3 ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', [ $w_title['yellow'] ] )
+			->where( 'post__in', [ end( $tickets ) ] )
 			->all();
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'search' => 'yellow' ], $this->tickets_url . '/' ),
-			'total'       => 1,
+			'rest_url'    => add_query_arg( [ 'offset' => 3 ], $this->tickets_url . '/' ),
+			'total'       => 4,
 			'total_pages' => 1,
 			'tickets'     => $expected_tickets,
 		] );
+		$I->seeHttpHeader( 'X-ET-TOTAL', 4 );
+		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 1 );
 
-		$I->sendGET( $this->tickets_url, [ 'search' => 'red' ] );
-		$I->seeResponseIsJson();
-		$I->seeResponseCodeIs( 200 );
-		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', [ $w_title['red'], $w_description['red parrot'], $w_description['yellow red-panda'] ] )
-			->all();
-		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'search' => 'red' ], $this->tickets_url . '/' ),
-			'total'       => 3,
-			'total_pages' => 1,
-			'tickets'     => $expected_tickets,
-		] );
-
-		$I->sendGET( $this->tickets_url, [ 'search' => 'blue ostrich' ] );
-		$I->seeResponseIsJson();
-		$I->seeResponseCodeIs( 200 );
-		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', [ $w_description['blue ostrich']  ] )
-			->all();
-		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'search' => 'blue ostrich' ], $this->tickets_url . '/' ),
-			'total'       => 1,
-			'total_pages' => 1,
-			'tickets'     => $expected_tickets,
-		] );
-
-		$I->sendGET( $this->tickets_url, [ 'search' => 'magenta' ] );
+		$I->sendGET( $this->tickets_url, [ 'offset' => 4 ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'search' => 'magenta' ], $this->tickets_url . '/' ),
+			'rest_url'    => add_query_arg( [ 'offset' => 4 ], $this->tickets_url . '/' ),
 			'total'       => 0,
 			'total_pages' => 0,
 			'tickets'     => [],
 		] );
+		$I->seeHttpHeader( 'X-ET-TOTAL', 0 );
+		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 0 );
+
+		// more than there are tickets
+		$I->sendGET( $this->tickets_url, [ 'offset' => 5 ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'offset' => 5 ], $this->tickets_url . '/' ),
+			'total'       => 0,
+			'total_pages' => 0,
+			'tickets'     => [],
+		] );
+		$I->seeHttpHeader( 'X-ET-TOTAL', 0 );
+		$I->seeHttpHeader( 'X-ET-TOTAL-PAGES', 0 );
+	}
+
+	/**
+	 * It should return 400 when passing invalid offset values
+	 *
+	 * @test
+	 */
+	public function should_return_400_when_passing_invalid_offset_values( Restv1Tester $I ) {
+		$I->sendGET( $this->tickets_url, [ 'offset' => 'foo' ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 400 );
 	}
 }

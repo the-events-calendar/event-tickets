@@ -10,6 +10,10 @@
 class Tribe__Tickets__REST__V1__Attendee_Repository
 	extends Tribe__Repository__Decorator
 	implements Tribe__Repository__Formatter_Interface {
+	/**
+	 * @var Tribe__Tickets__Attendee_Repository
+	 */
+	protected $decorated;
 
 	/**
 	 * Tribe__Tickets__REST__V1__Attendee_Repository constructor.
@@ -19,6 +23,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	public function __construct() {
 		$this->decorated = tribe( 'tickets.attendee-repository' );
 		$this->decorated->set_formatter( $this );
+		$this->decorated->set_query_builder($this);
 		$this->decorated->set_default_args( array_merge(
 			$this->decorated->get_default_args(),
 			array( 'order' => 'ASC', 'orderby' => array( 'id', 'title' ) )
@@ -26,43 +31,21 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	}
 
 	/**
-	 * Returns the number of posts found matching the query.
+	 * An override of the default query building process to add clauses
+	 * specific to REST API queries
 	 *
-	 * This method overrides the parent implementation to limit
-	 * the results if the user cannot read private posts.
-	 *
-	 * @since TBD
-	 *
-	 * @return int
+	 * @return WP_Query
 	 */
-	public function found() {
+	public function build_query() {
 		if ( ! current_user_can( 'read_private_posts' ) ) {
 			$this->decorated->by( 'optout', 'no' );
 			$this->decorated->by( 'post_status', 'publish' );
 			$this->decorated->by( 'rsvp_status', 'yes' );
 		}
 
-		return $this->decorated->found();
-	}
+		$this->decorated->set_query_builder( null );
 
-	/**
-	 * Returns the number of posts found matching the query in the current page.
-	 *
-	 * This method overrides the parent implementation to limit
-	 * the results if the user cannot read private posts.
-	 *
-	 * @since TBD
-	 *
-	 * @return int
-	 */
-	public function count() {
-		if ( ! current_user_can( 'read_private_posts' ) ) {
-			$this->decorated->by( 'optout', 'no' );
-			$this->decorated->by( 'post_status', 'publish' );
-			$this->decorated->by( 'rsvp_status', 'yes' );
-		}
-
-		return $this->decorated->count();
+		return $this->decorated->build_query();
 	}
 
 	/**
@@ -111,6 +94,8 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 *                        detailing why the read failed.
 	 */
 	public function by_primary_key( $primary_key ) {
+		$this->decorated->set_query_builder( null );
+
 		$query = $this->decorated->get_query();
 		$query->set( 'fields', 'ids' );
 		$query->set( 'p', $primary_key );
@@ -138,6 +123,8 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		if ( empty( $found_w_cap ) ) {
 			return new WP_Error( 'attendee-not-accessible', $messages->get_message( 'attendee-not-accessible' ), array( 'status' => 401 ) );
 		}
+
+		$this->decorated->set_query_builder( $this );
 
 		return $this->format_item( $found_w_cap[0] );
 	}
