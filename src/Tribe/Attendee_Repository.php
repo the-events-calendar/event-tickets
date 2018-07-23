@@ -253,7 +253,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_provider( $provider ) {
-		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $provider, $this->attendee_to_event_keys() );
+		$providers = Tribe__Utils__Array::list_to_array( $provider );
+		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
 
 		$this->by( 'meta_exists', $meta_keys );
 	}
@@ -292,21 +293,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			);
 		}
 
-		/** @var wpdb $wpdb */
-		global $wpdb;
-
-		$statuses_in  = "'" . implode( "','", array_map( 'esc_sql', $statuses ) ) . "'";
-		$meta_keys_in = "'" . implode( "','", array_map( 'esc_sql', $this->attendee_to_event_keys() ) ) . "'";
-
-		$event_meta = 'event_post_status_meta';
-		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} {$event_meta} ON {$wpdb->posts}.ID = {$event_meta}.post_id" );
-		$event = 'event_post';
-		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} {$event} ON {$wpdb->posts}.ID = {$event_meta}.post_id" );
-		$pm1 = 'event_status_meta';
-		$this->filter_query->where( "
-					{$event_meta}.meta_key IN ( {$meta_keys_in} ) 
-					AND {$event}.ID = {$event_meta}.meta_value 
-					AND {$event}.post_status IN ( {$statuses_in} )" );
+		$this->where_meta_related_by(
+			$this->attendee_to_event_keys(),
+			'IN',
+			'post_status',
+			$statuses
+		);
 	}
 
 	/**

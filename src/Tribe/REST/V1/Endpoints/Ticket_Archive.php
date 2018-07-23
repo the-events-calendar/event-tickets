@@ -39,6 +39,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$supported_args = array(
 			'search'       => 's',
 			'include_post' => 'event',
+			'is_available' => 'is_available',
+			'provider'     => 'provider',
 		);
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
@@ -58,6 +60,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$query = tribe_tickets( 'restv1' )
 			->by_args( $fetch_args )
 			->permission( $permission );
+
+		if ( $request['order'] ) {
+			$query->order( $request['order'] );
+		}
 
 		if ( $request['orderby'] ) {
 			$query->order_by( $request['orderby'] );
@@ -139,6 +145,36 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'required'    => false,
 				'min'         => 0,
 			),
+			'order' => array(
+				'description' => __( 'Sort results in ASC or DESC order. Defaults to ASC.', 'event-tickets' ),
+				'type'        => 'string',
+				'required'    => false,
+				'enum'        => array(
+					'ASC',
+					'DESC',
+				),
+			),
+			'orderby' => array(
+				'description' => __( 'Order the results by one of date, relevance, id, include, title, or slug; defaults to title.', 'event-tickets' ),
+				'type'        => 'string',
+				'required'    => false,
+				'enum'        => array(
+					'id',
+					'include',
+					'title',
+					'slug',
+				),
+			),
+			'is_available' => array(
+				'description' => __( 'Limit results to tickets that have or do not have capacity currently available.', 'event-tickets' ),
+				'type'        => 'boolean',
+				'required'    => false,
+			),
+			'provider' => array(
+				'description'       => __( 'Limit results to tickets provided by one of the providers specified in the CSV list or array; defaults to all available.', 'event-tickets' ),
+				'required'          => false,
+				'sanitize-callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+			),
 			'include_post' => array(
 				// @todo support multiple types in Swaggerification functions
 				// 'swagger_type' => array('integer', 'array', 'string'),
@@ -174,6 +210,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 			$readable[] = $ticket_data;
 		}
+
 
 		return $readable;
 	}

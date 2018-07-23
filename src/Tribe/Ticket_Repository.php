@@ -22,7 +22,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'orderby'   => array( 'date', 'ID' ),
 		);
 		$this->schema = array_merge( $this->schema, array(
-			'event' => array( $this, 'filter_by_event' ),
+			'event'        => array( $this, 'filter_by_event' ),
+			'is_available' => array( $this, 'filter_by_availability' ),
+			'provider'     => array( $this, 'filter_by_provider' ),
 		) );
 	}
 
@@ -75,8 +77,39 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 */
 	public function ticket_to_event_keys() {
 		return array(
-			'_tribe_rsvp_for_event',
-			'_tribe_tpp_for_event',
+			'rsvp'           => '_tribe_rsvp_for_event',
+			'tribe-commerce' => '_tribe_tpp_for_event',
 		);
+	}
+
+	/**
+	 * Sets up the query to filter tickets by availability.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $is_available
+	 */
+	public function filter_by_availability( $is_available ) {
+		$want_available = (bool) $is_available;
+
+		if ( $want_available ) {
+			$this->where( 'meta_gt', '_capacity', 0 );
+		} else {
+			$this->where( 'meta_equals', '_capacity', 0 );
+		}
+	}
+
+	/**
+	 * Sets up the query to filter tickets by provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $provider
+	 */
+	public function filter_by_provider( $provider ) {
+		$providers = Tribe__Utils__Array::list_to_array( $provider );
+		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->ticket_to_event_keys() );
+
+		$this->by( 'meta_exists', $meta_keys );
 	}
 }
