@@ -1612,7 +1612,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function get_tickets_unavailable_message( $tickets ) {
-
 			$availability_slug = $this->get_availability_slug_by_collection( $tickets );
 			$message           = null;
 			$post_type = get_post_type();
@@ -1621,7 +1620,36 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$events_label_singular_lowercase = tribe_get_event_label_singular_lowercase();
 				$message = sprintf( esc_html__( 'Tickets are not available as this %s has passed.', 'event-tickets' ), $events_label_singular_lowercase );
 			} elseif ( 'availability-future' === $availability_slug ) {
-				$message = __( 'Tickets are not yet available.', 'event-tickets' );
+				$display_date = apply_filters( 'event_tickets_unvailable_message_date', $display_date = true );
+				$display_time = apply_filters( 'event_tickets_unvailable_message_time', $display_time = false );
+
+				// build message
+				if ( $display_date ) {
+					$start_sale_date = '';
+					$start_sale_time = '';
+
+					foreach ( $tickets as $ticket ) {
+						// get the earliest start sale date
+						if ( '' == $start_sale_date || $ticket->start_date < $start_sale_date ) {
+							$start_sale_date = $ticket->start_date;
+							$start_sale_time = $ticket->start_time;
+						}
+					}
+
+					$date_format = tribe_get_date_format( true );
+					$start_sale_date = Tribe__Date_Utils::reformat ( $start_sale_date, $date_format );
+
+					$message = __( 'Tickets will be available on ', 'event-tickets' );
+					$message .= $start_sale_date;
+
+					if ( $display_time ) {
+						$time_format = tribe_get_time_format();
+						$start_sale_time = Tribe__Date_Utils::reformat ( $start_sale_time, $time_format );
+						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
+					}
+				} else {
+					$message = __( 'Tickets are not yet available', 'event-tickets' );
+				}
 			} elseif ( 'availability-past' === $availability_slug ) {
 				$message = __( 'Tickets are no longer available.', 'event-tickets' );
 			} elseif ( 'availability-mixed' === $availability_slug ) {
@@ -1631,8 +1659,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the unavailability message for a ticket collection
 			 *
-			 * @var string Unavailability message
-			 * @var array Collection of tickets
+			 * @param string Unavailability message
+			 * @param array Collection of tickets
 			 */
 			$message = apply_filters( 'event_tickets_unvailable_message', $message, $tickets );
 
