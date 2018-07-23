@@ -408,7 +408,7 @@ class Tribe__Tickets__Privacy {
 		}
 
 		// Tell core if we have more elements to work on still
-		$done = count( $tpp_attendees->posts ) < $number;
+		$done = count( $tpp_orders->posts ) < $number;
 
 		return array(
 			'items_removed'  => $items_removed,
