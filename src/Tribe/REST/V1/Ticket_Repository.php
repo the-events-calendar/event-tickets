@@ -7,13 +7,29 @@
  *
  * @since TBD
  */
-class Tribe__Tickets__REST__V1__Ticket_Repository extends Tribe__Tickets__Ticket_Repository {
+class Tribe__Tickets__REST__V1__Ticket_Repository
+	extends Tribe__Repository__Decorator
+	implements Tribe__Repository__Formatter_Interface {
+
+	/**
+	 * Tribe__Tickets__REST__V1__Ticket_Repository constructor.
+	 *
+	 * @since TBD
+	 */
+	public function __construct() {
+		$this->decorated = tribe( 'tickets.ticket-repository' );
+		$this->decorated->set_formatter( $this );
+		$this->decorated->set_default_args( array_merge(
+			$this->decorated->get_default_args(),
+			array( 'order' => 'ASC', 'orderby' => array( 'id', 'title' ) )
+		) );
+	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function found() {
-		$query = $this->build_query();
+		$query = $this->decorated->build_query();
 		$query->set( 'fields', 'ids' );
 		$query->set( 'posts_per_page', - 1 );
 		$query->set( 'no_found_rows', true );
@@ -41,7 +57,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository extends Tribe__Tickets__Ticket
 	 * {@inheritdoc}
 	 */
 	public function count() {
-		$query = $this->build_query();
+		$query = $this->decorated->build_query();
 		$query->set( 'fields', 'ids' );
 		$query->set( 'no_found_rows', true );
 		$all_ids = $query->get_posts();
@@ -74,7 +90,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository extends Tribe__Tickets__Ticket
 	 * @return array|null The ticket information in the REST API format or
 	 *                    `null` if the ticket is invalid.
 	 */
-	protected function format_item( $id ) {
+	public function format_item( $id ) {
 		/**
 		 * For the time being we use **another** repository to format
 		 * the tickets objects to the REST API format.
@@ -88,5 +104,4 @@ class Tribe__Tickets__REST__V1__Ticket_Repository extends Tribe__Tickets__Ticket
 
 		return $formatted instanceof WP_Error ? null : $formatted;
 	}
-
 }

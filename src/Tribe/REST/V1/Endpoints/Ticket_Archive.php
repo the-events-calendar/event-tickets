@@ -107,6 +107,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'maximum'           => 100,
 				'sanitize_callback' => 'absint',
 			),
+			'search'   => array(
+				'description'       => __( 'Limit results to tickets containing the specified string in the title or description.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_string' ),
+			),
 			'include_post' => array(
 				// @todo support multiple types in Swaggerification functions
 				// 'swagger_type' => array('integer', 'array', 'string'),
