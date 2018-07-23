@@ -277,7 +277,7 @@ $paypal_fields            = array(
 		'tooltip'         => esc_html(
 			                     sprintf(
 				                     __( 'After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content.', 'event-tickets' ),
-				                     '[$tpp_success_shortcode]'
+				                     "[$tpp_success_shortcode]"
 			                     )
 		                     ),
 		'size'            => 'medium',
