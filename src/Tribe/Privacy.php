@@ -277,6 +277,19 @@ class Tribe__Tickets__Privacy {
 	 * @return array
 	 */
 	public function tpp_attendee_eraser( $email_address, $page = 1 ) {
+		if ( empty( $email_address ) ) {
+			return array(
+				'items_removed'  => false,
+				'items_retained' => false,
+				'messages'       => array(),
+				'done'           => true,
+			);
+		}
+
+		$messages       = array();
+		$items_removed  = false;
+		$items_retained = false;
+
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
@@ -337,6 +350,19 @@ class Tribe__Tickets__Privacy {
 	 * @return array
 	 */
 	public function tpp_order_eraser( $email_address, $page = 1 ) {
+		if ( empty( $email_address ) ) {
+			return array(
+				'items_removed'  => false,
+				'items_retained' => false,
+				'messages'       => array(),
+				'done'           => true,
+			);
+		}
+
+		$messages       = array();
+		$items_removed  = false;
+		$items_retained = false;
+
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
