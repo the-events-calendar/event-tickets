@@ -131,6 +131,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Added parent post and order IDs as parameters to the Tribe Commerce email filters [104209]
 * Tweak - Made the attendees list html title translatable. Thanks @websource for pointing this out [109595]
 * Tweak - Added a new filter `tribe_tickets_email_ticket_image` for easier ticket image customization in the tickets email [79876]
+* Feature - Include RSVP and Tribe Commerce tickets fields data in WP personal data eraser [108490]
+* Feature - Include TribeCommerce orders data in WP personal data exporter [108487]
 
 = [4.7.5.1] 2018-07-10 =
 
