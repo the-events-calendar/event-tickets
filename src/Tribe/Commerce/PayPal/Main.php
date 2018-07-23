@@ -604,7 +604,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		foreach ( $transaction_ids as $transaction ) {
 			// This method takes care of intelligently sending out emails only when
 			// required, for attendees that have not yet received their tickets
-			$this->send_tickets_email( $transaction );
+			$this->send_tickets_email( $transaction, $event_id );
 		}
 	}
 
@@ -969,7 +969,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			&& $has_tickets
 			&& $attendee_order_status === Tribe__Tickets__Commerce__PayPal__Stati::$completed
 		) {
-			$this->send_tickets_email( $order_id );
+			$this->send_tickets_email( $order_id, $post_id );
 		}
 
 		// Redirect to the same page to prevent double purchase on refresh
@@ -987,9 +987,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Sends ticket email
 	 *
+	 * @since TBD added $post_id parameter
+	 *
 	 * @param int $order_id Order post ID
+	 * @param int $post_id  Parent post ID (optional)
 	 */
-	public function send_tickets_email( $order_id ) {
+	public function send_tickets_email( $order_id, $post_id = null ) {
 		$all_attendees = $this->get_attendees_by_id( $order_id );
 
 		$to_send = array();
@@ -1015,13 +1018,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * Controls the list of tickets which will be emailed out.
 		 *
 		 * @since 4.7
+		 * @since TBD added new parameter $post_id
 		 *
 		 * @param array $to_send        list of tickets to be sent out by email
 		 * @param array $all_attendees  list of all attendees/tickets, including those already sent out
+		 * @param int   $post_id
 		 * @param int   $order_id
 		 *
 		 */
-		$to_send = (array) apply_filters( 'tribe_tickets_tpp_tickets_to_send', $to_send, $all_attendees, $order_id );
+		$to_send = (array) apply_filters( 'tribe_tickets_tpp_tickets_to_send', $to_send, $all_attendees, $post_id, $order_id );
 
 		if ( empty( $to_send ) ) {
 			return;
@@ -1034,20 +1039,90 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$content = apply_filters( 'tribe_tpp_email_content', $this->generate_tickets_email_content( $to_send ) );
+		/**
+		 * Filters the Tribe Commerce tickets email content
+		 *
+		 * @since TBD added new parameters $post_id and $order_id
+		 *
+		 * @param string  email content
+		 * @param int     $post_id
+		 * @param int     $order_id
+		 */
+		$content = apply_filters( 'tribe_tpp_email_content', $this->generate_tickets_email_content( $to_send ), $post_id, $order_id );
+
+		/**
+		 * Filters the Tribe Commerce tickets email sender name
+		 *
+		 * @since TBD added new parameters $post_id and $order_id
+		 *
+		 * @param string  email sender name
+		 * @param int     $post_id
+		 * @param int     $order_id
+		 */
+		$from = apply_filters( 'tribe_tpp_email_from_name', tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ), $post_id, $order_id );
+
+		/**
+		 * Filters the Tribe Commerce tickets email sender email
+		 *
+		 * @since TBD added new parameters $post_id and $order_id
+		 *
+		 * @param string  email sender email
+		 * @param int     $post_id
+		 * @param int     $order_id
+		 */
+		$from_email = apply_filters( 'tribe_tpp_email_from_email', tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ), $post_id, $order_id );
+
 		$headers = array( 'Content-type: text/html' );
-		$from = apply_filters( 'tribe_tpp_email_from_name', tribe_get_option( 'ticket-paypal-confirmation-email-sender-name', false ) );
-		$from_email = apply_filters( 'tribe_tpp_email_from_email', tribe_get_option( 'ticket-paypal-confirmation-email-sender-email', false ) );
 
 		if ( ! empty( $from ) && ! empty( $from_email ) ) {
 			$headers[] = sprintf( 'From: %s <%s>', filter_var( $from, FILTER_SANITIZE_STRING ), filter_var( $from_email, FILTER_SANITIZE_EMAIL ) );
 		}
 
-		$headers = apply_filters( 'tribe_tpp_email_headers', $headers );
-		$attachments = apply_filters( 'tribe_tpp_email_attachments', array() );
-		$to = apply_filters( 'tribe_tpp_email_recipient', $to );
+		/**
+		 * Filters the Tribe Commerce tickets email headers
+		 *
+		 * @since TBD added new parameters $post_id and $order_id
+		 *
+		 * @param array  email headers
+		 * @param int    $post_id
+		 * @param int    $order_id
+		 */
+		$headers = apply_filters( 'tribe_tpp_email_headers', $headers, $post_id, $order_id );
+
+		/**
+		 * Filters the Tribe Commerce tickets email attachments
+		 *
+		 * @since TBD added new parameters $post_id and $order_id
+		 *
+		 * @param array  attachments
+		 * @param int    $post_id
+		 * @param int    $order_id
+		 */
+		$attachments = apply_filters( 'tribe_tpp_email_attachments', array(), $post_id, $order_id );
+
+		/**
+		 * Filters the Tribe Commerce tickets email recipient
+		 *
+		 * @since TBD added new parameters $post_id and $order_id
+		 *
+		 * @param string  $to
+		 * @param int     $event_id
+		 * @param int     $order_id
+		 */
+		$to = apply_filters( 'tribe_tpp_email_recipient', $to, $post_id, $order_id );
+
 		$site_name = stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) );
 		$default_subject = sprintf( __( 'Your tickets from %s', 'event-tickets' ), $site_name );
+
+		/**
+		 * Filters the Tribe Commerce tickets email subject
+		 *
+		 * @since TBD added new parameters $post_id and $order_id
+		 *
+		 * @param string  email subject
+		 * @param int     $post_id
+		 * @param int     $order_id
+		 */
 		$subject = apply_filters( 'tribe_tpp_email_subject', tribe_get_option( 'ticket-paypal-confirmation-email-subject', $default_subject ) );
 
 		wp_mail( $to, $subject, $content, $headers, $attachments );
