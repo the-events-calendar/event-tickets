@@ -293,8 +293,6 @@ class Tribe__Tickets__Privacy {
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
-		$export_items = array();
-
 		// Get the tribe commerce attendees/orders
 		$tpp_attendees = new WP_Query( array(
 			'post_type'      => 'tribe_tpp_attendees',
@@ -320,13 +318,6 @@ class Tribe__Tickets__Privacy {
 				$items_retained = true;
 				$messages[]     = __( 'TribeCommerce attendee information was not removed. A database error may have occurred during deletion.', 'event-tickets' );
 			}
-
-			$export_items[] = array(
-				'group_id'    => $group_id,
-				'group_label' => $group_label,
-				'item_id'     => $item_id,
-				'data'        => $data,
-			);
 		}
 
 		// Tell core if we have more elements to work on still
@@ -366,8 +357,6 @@ class Tribe__Tickets__Privacy {
 		$number = 500; // Limit us to avoid timing out
 		$page   = (int) $page;
 
-		$export_items = array();
-
 		// Get the tribe commerce orders
 		$tpp_orders = new WP_Query( array(
 			'post_type'      => 'tribe_tpp_orders',
@@ -398,17 +387,10 @@ class Tribe__Tickets__Privacy {
 				$items_retained = true;
 				$messages[]     = __( 'TribeCommerce order information was not removed. A database error may have occurred during deletion.', 'event-tickets' );
 			}
-
-			$export_items[] = array(
-				'group_id'    => $group_id,
-				'group_label' => $group_label,
-				'item_id'     => $item_id,
-				'data'        => $data,
-			);
 		}
 
 		// Tell core if we have more elements to work on still
-		$done = count( $tpp_attendees->posts ) < $number;
+		$done = count( $tpp_orders->posts ) < $number;
 
 		return array(
 			'items_removed'  => $items_removed,
