@@ -1732,7 +1732,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function get_tickets_unavailable_message( $tickets ) {
-
 			$availability_slug = $this->get_availability_slug_by_collection( $tickets );
 			$message           = null;
 			$post_type = get_post_type();
@@ -1757,11 +1756,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						}
 					}
 
+					$date_format = tribe_get_date_format( true );
+					$start_sale_date = Tribe__Date_Utils::reformat ( $start_sale_date, $date_format );
+
 					$message = __( 'Tickets will be available on ', 'event-tickets' );
 					$message .= $start_sale_date;
 
 					if ( $display_time ) {
-						$message .= __( ' at ', 'event-tickets' ) . $start_sale_time;
+						$time_format = tribe_get_time_format();
+						$start_sale_time = Tribe__Date_Utils::reformat ( $start_sale_time, $time_format );
+						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
 					}
 				} else {
 					$message = __( 'Tickets are not yet available', 'event-tickets' );
