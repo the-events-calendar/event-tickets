@@ -1,12 +1,11 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1\PayPal;
+namespace Tribe\Tickets\Test\REST\V1;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
 class TicketArchiveByDateCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
@@ -117,7 +116,7 @@ class TicketArchiveByDateCest extends BaseRestCest {
 	 *
 	 * @test
 	 */
-	public function should_return_400_when_trying_to_filter_by_bad_date(Restv1Tester $I) {
+	public function should_return_400_when_trying_to_filter_by_bad_date( Restv1Tester $I ) {
 		$I->sendGET( $this->tickets_url, [ 'before' => 'floz' ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 400 );

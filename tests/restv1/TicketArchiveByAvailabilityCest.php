@@ -1,12 +1,11 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1\PayPal;
+namespace Tribe\Tickets\Test\REST\V1;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
 class TicketArchiveByAvailabilityCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
@@ -20,11 +19,11 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 	 */
 	public function should_allow_offsetting_the_ticket_results( Restv1Tester $I ) {
 		$post_ids     = $I->haveManyPostsInDatabase( 2 );
-		$available = array_reduce( $post_ids, function ( array $acc, $post_id ) {
+		$available    = array_reduce( $post_ids, function ( array $acc, $post_id ) {
 			$acc[] = $this->create_rsvp_ticket( $post_id, [ 'meta_input' => [ '_stock' => 10, '_capacity' => 10 ] ] );
 			$acc[] = $this->create_paypal_ticket( $post_id, 2, [
 				'meta_input' => [
-					'_stock' => 10,
+					'_stock'    => 10,
 					'_capacity' => 10
 				]
 			] );
@@ -33,7 +32,12 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 		}, [] );
 		$not_availble = array_reduce( $post_ids, function ( array $acc, $post_id ) {
 			$acc[] = $this->create_rsvp_ticket( $post_id, [ 'meta_input' => [ '_stock' => 0, '_capacity' => 0 ] ] );
-			$acc[] = $this->create_paypal_ticket( $post_id, 2, [ 'meta_input' => [ '_stock' => 0, '_capacity' => 0 ] ] );
+			$acc[] = $this->create_paypal_ticket( $post_id, 2, [
+				'meta_input' => [
+					'_stock'    => 0,
+					'_capacity' => 0
+				]
+			] );
 
 			return $acc;
 		}, [] );

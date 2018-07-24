@@ -1,12 +1,11 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1\PayPal;
+namespace Tribe\Tickets\Test\REST\V1;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
 class TicketArchiveSearchCest extends BaseRestCest {
 	use RSVP_Ticket_Maker;
@@ -84,7 +83,7 @@ class TicketArchiveSearchCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->where( 'post__in', [ $w_description['blue ostrich']  ] )
+			->where( 'post__in', [ $w_description['blue ostrich'] ] )
 			->all();
 		$I->seeResponseContainsJson( [
 			'rest_url'    => add_query_arg( [ 'search' => 'blue ostrich' ], $this->tickets_url . '/' ),
