@@ -13,11 +13,11 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 	use Attendee_Maker;
 
 	/**
-	 * It should allow offsetting the ticket results
+	 * It should getting tickets by availability
 	 *
 	 * @test
 	 */
-	public function should_allow_offsetting_the_ticket_results( Restv1Tester $I ) {
+	public function should_allow_getting_tickets_by_availability( Restv1Tester $I ) {
 		// 2 posts, each post 2 tickets w/ capacity and 2 tickets w/o capacity = 8 tickets
 		$post_ids     = $I->haveManyPostsInDatabase( 2 );
 		$i            = 0;

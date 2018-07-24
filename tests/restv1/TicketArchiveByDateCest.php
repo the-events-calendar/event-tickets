@@ -125,4 +125,90 @@ class TicketArchiveByDateCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 400 );
 	}
+
+	/**
+	 * It should allow getting tickets by date availability
+	 *
+	 * @test
+	 */
+	public function should_allow_getting_tickets_by_date_availability( Restv1Tester $I ) {
+		$post_ids = $I->haveManyPostsInDatabase( 5 );
+		$i        = 0;
+		$dates    = [
+			'no-start-no-end' => [ null, null ],
+			'no-end'          => [ '-1 month', null ],
+			'start-and-end-1' => [ '-1 week', '+1week' ],
+			'start-and-end-2' => [ 'tomorrow', '+3 days' ],
+			'no-start'        => [ null, '+2 weeks' ]
+		];
+		$tz       = new \DateTimeZone( 'UTC' );
+		$tickets  = array_combine( array_keys( $dates ), array_reduce( $post_ids, function ( array $acc, $post_id ) use ( &$i, $dates, $tz ) {
+			$start = array_values( $dates )[ $i ][0];
+			$end   = array_values( $dates )[ $i ++ ][1];
+
+			$overrides = [
+				'meta_input' => [
+					'_ticket_start_date' => $start ? ( new \DateTime( $start, $tz ) )->format( 'Y-m-d H:i:s' ) : null,
+					'_ticket_end_date'   => $end ? ( new \DateTime( $end, $tz ) )->format( 'Y-m-d H:i:s' ) : null,
+				]
+			];
+			$acc[]     = $this->create_rsvp_ticket( $post_id, $overrides );
+
+			return $acc;
+		}, [] ) );
+
+		$I->sendGET( $this->tickets_url, [ 'available_from' => '-8 days' ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+		$expected_tickets = tribe_tickets( 'restv1' )
+			->in( [
+				$tickets['no-start-no-end'],
+				$tickets['start-and-end-1'],
+				$tickets['start-and-end-2'],
+				$tickets['no-start'],
+			] )
+			->all();
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'available_from' => '-8 days' ], $this->tickets_url . '/' ),
+			'total'       => 4,
+			'total_pages' => 1,
+			'tickets'     => $expected_tickets,
+		] );
+
+		$until = strtotime( '+2 days' );
+		$I->sendGET( $this->tickets_url, [ 'available_until' => $until ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+		$expected_tickets = tribe_tickets( 'restv1' )
+			->in( [
+				$tickets['no-start-no-end'],
+				$tickets['no-end'],
+			] )
+			->all();
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [ 'available_until' => $until ], $this->tickets_url . '/' ),
+			'total'       => 2,
+			'total_pages' => 1,
+			'tickets'     => $expected_tickets,
+		] );
+
+		$I->sendGET( $this->tickets_url, [ 'available_from' => '-5 days', 'available_until' => '+5 days' ] );
+		$I->seeResponseIsJson();
+		$I->seeResponseCodeIs( 200 );
+		$expected_tickets = tribe_tickets( 'restv1' )
+			->in( [
+				$tickets['no-start-no-end'],
+				$tickets['start-and-end-2'],
+			] )
+			->all();
+		$I->seeResponseContainsJson( [
+			'rest_url'    => add_query_arg( [
+				'available_from'  => '-5 days',
+				'available_until' => '+5 days'
+			], $this->tickets_url . '/' ),
+			'total'       => 2,
+			'total_pages' => 1,
+			'tickets'     => $expected_tickets,
+		] );
+	}
 }

@@ -37,15 +37,20 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$fetch_args = array();
 
 		$supported_args = array(
-			'search'       => 's',
-			'include_post' => 'event',
-			'exclude_post' => 'event_not_in',
-			'is_available' => 'is_available',
-			'provider'     => 'provider',
-			'after'        => 'after_date',
-			'before'       => 'before_date',
-			'include'      => 'post__in',
-			'exclude'      => 'post__not_in',
+			'search'                         => 's',
+			'include_post'                   => 'event',
+			'exclude_post'                   => 'event_not_in',
+			'is_available'                   => 'is_available',
+			'provider'                       => 'provider',
+			'after'                          => 'after_date',
+			'before'                         => 'before_date',
+			'include'                        => 'post__in',
+			'exclude'                        => 'post__not_in',
+			'available_from'                 => 'available_from',
+			'available_until'                => 'available_until',
+			'post_status'                    => 'event_status',
+			'status'                         => 'post_status',
+			'attendee_information_available' => 'has_attendee_meta',
 		);
 
 		$private_args = array(
@@ -91,11 +96,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		}
 
 		if ( $can_read_private_posts ) {
-			$permission                = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_EDITABLE;
-			$fetch_args['post_status'] = 'any';
+			$permission                 = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_EDITABLE;
+			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'any' );
+			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'any' );
 		} else {
-			$permission                = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_READABLE;
-			$fetch_args['post_status'] = 'publish';
+			$permission                 = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_READABLE;
+			$fetch_args['post_status']  = Tribe__Utils__Array::get( $fetch_args, 'post_status', 'publish' );
+			$fetch_args['event_status'] = Tribe__Utils__Array::get( $fetch_args, 'event_status', 'publish' );
 		}
 
 		$query = tribe_tickets( 'restv1' )
@@ -143,6 +150,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$main = tribe( 'tickets.rest-v1.main' );
 
 		// make sure all arrays are formatted to by CSV lists
+
 		foreach ( $query_args as $key => &$value ) {
 			if ( is_array( $value ) ) {
 				$value = Tribe__Utils__Array::to_list( $value );
@@ -303,6 +311,33 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'required'    => false,
 				'type'        => 'integer',
 				'min'         => 0,
+			),
+			'available_from'  => array(
+				'description'       => __( 'Limit results to tickets that will be available at or after the specified UTC date (parseable by strtotime) or timestamp.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_time' ),
+			),
+			'available_until' => array(
+				'description'       => __( 'Limit results to tickets that will be available up to the specified UTC date (parseable by strtotime) or timestamp.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_time' ),
+			),
+			'post_status' => array(
+				'description'       => __( 'Limit results to tickets assigned to posts that are in one of the post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
+				'required'          => false,
+				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+			),
+			'status' => array(
+				'description'       => __( 'Limit results to tickets that are in one of post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
+				'required'          => false,
+				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+			),
+			'attendee_information_available' => array(
+				'description'       => __( 'Limit results to tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ),
+				'required'          => false,
+				'type'           => 'boolean',
 			),
 		);
 	}

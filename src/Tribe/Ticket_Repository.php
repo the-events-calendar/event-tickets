@@ -35,6 +35,9 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'capacity_min'      => array( $this, 'filter_by_capacity_min' ),
 			'capacity_max'      => array( $this, 'filter_by_capacity_max' ),
 			'capacity_between'  => array( $this, 'filter_by_capacity_between' ),
+			'available_from'    => array( $this, 'filter_by_available_from' ),
+			'available_until'   => array( $this, 'filter_by_available_until' ),
+			'event_status'      => array( $this, 'filter_by_event_status' ),
 		) );
 	}
 
@@ -258,5 +261,147 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 */
 	public function filter_by_capacity_between( $capacity_min, $capacity_max ) {
 		$this->by( 'meta_between', '_capacity', array( (int) $capacity_min, (int) $capacity_max ), 'NUMERIC' );
+	}
+
+	/**
+	 * Filters tickets by their available date being starting on a date.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|int $date
+	 *
+	 * @return array
+	 */
+	public function filter_by_available_from( $date) {
+		// the input is a UTC date or timestamp
+		$utc_date_string = is_numeric( $date ) ? "@{$date}" : $date;
+		$utc_date        = new DateTime( $utc_date_string, new DateTimeZone( 'UTC' ) );
+		$from            = Tribe__Timezones::to_tz( $utc_date->format( 'Y-m-d H:i:s' ), Tribe__Timezones::wp_timezone_string() );
+
+		return array(
+			'meta_query' => array(
+				'available-from' => array(
+					'not-exists' => array(
+						'key'     => '_ticket_start_date',
+						'compare' => 'NOT EXISTS',
+					),
+					'relation'   => 'OR',
+					'from'       => array(
+						'key'     => '_ticket_start_date',
+						'compare' => '>=',
+						'value'   => $from,
+					),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Filters tickets by their available date being until a date.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|int $date
+	 *
+	 * @return array
+	 */
+	public function filter_by_available_until( $date ) {
+		// the input is a UTC date or timestamp
+		$utc_date_string = is_numeric( $date ) ? "@{$date}" : $date;
+		$utc_date        = new DateTime( $utc_date_string, new DateTimeZone( 'UTC' ) );
+		$until           = Tribe__Timezones::to_tz( $utc_date->format( 'Y-m-d H:i:s' ), Tribe__Timezones::wp_timezone_string() );
+
+		return array(
+			'meta_query' => array(
+				'available-until' => array(
+					'not-exists' => array(
+						'key'     => '_ticket_end_date',
+						'compare' => 'NOT EXISTS',
+					),
+					'relation'   => 'OR',
+					'from'       => array(
+						'key'     => '_ticket_end_date',
+						'compare' => '<=',
+						'value'   => $until,
+					),
+				),
+			),
+		);
+	}
+
+	/**
+	 * Filters tickets to only get those related to posts with a specific status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $event_status
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 * @throws Tribe__Repository__Usage_Error
+	 */
+	public function filter_by_event_status( $event_status ) {
+		$statuses = Tribe__Utils__Array::list_to_array( $event_status );
+
+		$can_read_private_posts = current_user_can( 'read_private_posts' );
+
+		// map the `any` meta-status
+		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
+			if ( ! $can_read_private_posts ) {
+				$statuses = array( 'publish' );
+			} else {
+				// no need to filter if the user can read all posts
+				return;
+			}
+		}
+
+		if ( ! $can_read_private_posts ) {
+			$event_status = array_intersect( $statuses, array( 'publish' ) );
+		}
+
+		if ( empty( $event_status ) ) {
+			throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results(
+				'The user cannot read posts with the requested post statuses.'
+			);
+		}
+
+		$this->where_meta_related_by(
+			$this->ticket_to_event_keys(),
+			'IN',
+			'post_status',
+			$statuses
+		);
+	}
+
+	/**
+	 * Filters tickets depending on them having additional
+	 * information available and active or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param bool $exists
+	 *
+	 * @return array
+	 */
+	public function filter_by_attendee_meta_existence( $exists ) {
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+			return;
+		}
+
+		return array(
+			'meta_query' => array(
+				'by-attendee-meta-availability' => array(
+					'is-enabled' => array(
+						'key'     => Tribe__Tickets_Plus__Meta::ENABLE_META_KEY,
+						'compare' => '=',
+						'value'   => 'yes',
+					),
+					'relation'   => 'AND',
+					'has-meta'   => array(
+						'key'     => Tribe__Tickets_Plus__Meta::META_KEY,
+						'compare' => 'EXISTS'
+					)
+				)
+			)
+		);
 	}
 }
