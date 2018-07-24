@@ -48,13 +48,42 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			'exclude'      => 'post__not_in',
 		);
 
+		$private_args = array(
+			'attendees_min' => 'attendees_min',
+			'attendees_max' => 'attendees_max',
+			'checkedin_min' => 'checkedin_min',
+			'checkedin_max' => 'checkedin_max',
+		);
+
 		foreach ( $supported_args as $request_arg => $query_arg ) {
 			if ( isset( $request[ $request_arg ] ) ) {
 				$fetch_args[ $query_arg ] = $request[ $request_arg ];
 			}
 		}
 
-		if ( current_user_can( 'read_private_posts' ) ) {
+		$can_read_private_posts = current_user_can( 'read_private_posts' );
+
+		$attendess_btwn = $checkedin_btwn = null;
+
+		if ( $can_read_private_posts ) {
+			foreach ( $private_args as $request_arg => $query_arg ) {
+				if ( isset( $request[ $request_arg ] ) ) {
+					$fetch_args[ $query_arg ] = $request[ $request_arg ];
+				}
+			}
+
+			if ( isset( $fetch_args['attendees_min'], $fetch_args['attendees_max'] ) ) {
+				$attendess_btwn = array( $fetch_args['attendees_min'], $fetch_args['attendees_max'] );
+				unset( $fetch_args['attendees_min'], $fetch_args['attendees_max'] );
+			}
+
+			if ( isset( $fetch_args['checkedin_min'], $fetch_args['checkedin_max'] ) ) {
+				$checkedin_btwn = array( $fetch_args['checkedin_min'], $fetch_args['checkedin_max'] );
+				unset( $fetch_args['checkedin_min'], $fetch_args['checkedin_max'] );
+			}
+		}
+
+		if ( $can_read_private_posts ) {
 			$permission                = Tribe__Tickets__REST__V1__Ticket_Repository::PERMISSION_EDITABLE;
 			$fetch_args['post_status'] = 'any';
 		} else {
@@ -65,6 +94,14 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$query = tribe_tickets( 'restv1' )
 			->by_args( $fetch_args )
 			->permission( $permission );
+
+		if ( null !== $attendess_btwn ) {
+			$query->by( 'attendees_between', $attendess_btwn[0], $attendess_btwn[1] );
+		}
+
+		if ( null !== $checkedin_btwn ) {
+			$query->by( 'checkedin_between', $checkedin_btwn[0], $checkedin_btwn[1] );
+		}
 
 		if ( $request['order'] ) {
 			$query->order( $request['order'] );
@@ -208,11 +245,42 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				// @todo support multiple types in Swaggerification functions
 				// 'swagger_type' => array('integer', 'array', 'string'),
 				'swagger_type'      => 'string',
-				'description'       => __( 'Limit results to tickets that are assigned to one of the posts specified in the CSV list or array', 'event-tickets' ),
+				'description'       => __( 'Limit results to tickets that are assigned to one of the posts specified in the CSV list or array.', 'event-tickets' ),
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_post_id_list' ),
 				'sanitize_callback' => array( $this->validator, 'list_to_array' ),
 			),
+			'exclude_post' => array(
+				'swagger_type'      => 'string',
+				'description'       => __( 'Limit results to tickets that are not assigned to any of the posts specified in the CSV list or array.', 'event-tickets' ),
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_post_id_list' ),
+				'sanitize_callback' => array( $this->validator, 'list_to_array' ),
+			),
+			'attendees_min' => array(
+				'description' => __( 'Limit results to tickets that have at least this number or attendees.', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'integer',
+				'min'         => 0,
+			),
+			'attendees_max' => array(
+				'description' => __( 'Limit results to tickets that have at most this number of attendees.', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'integer',
+				'min'         => 0,
+			),
+			'checkedin_min' => array(
+			'description' => __( 'Limit results to tickets that have at most this number of checked-in attendee.', 'event-tickets' ),
+			'required'    => false,
+			'type'        => 'integer',
+			'min'         => 0,
+		),
+			'checkedin_max' => array(
+			'description' => __( 'Limit results to tickets that have at least this number of checked-in attendees.', 'event-tickets' ),
+			'required'    => false,
+			'type'        => 'integer',
+			'min'         => 0,
+		)
 		);
 	}
 

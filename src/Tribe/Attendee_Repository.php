@@ -441,7 +441,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function checked_in_keys() {
+	public function checked_in_keys() {
 		return array(
 			'rsvp'           => '_tribe_rsvp_checkedin',
 			'tribe-commerce' => '_tribe_tpp_checkedin',

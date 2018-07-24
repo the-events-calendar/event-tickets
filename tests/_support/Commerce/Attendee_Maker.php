@@ -39,10 +39,7 @@ trait Attendee_Maker {
 	 *
 	 * @return int The generated attendee
 	 */
-	protected function
-	create_attendee_for_ticket(
-		int $ticket_id, int $post_id, array $overrides = array()
-	): int {
+	protected function create_attendee_for_ticket( int $ticket_id, int $post_id, array $overrides = array() ): int {
 		$faker = \Faker\Factory::create();
 
 		/** @var \Tribe__Tickets__Tickets $provider */
