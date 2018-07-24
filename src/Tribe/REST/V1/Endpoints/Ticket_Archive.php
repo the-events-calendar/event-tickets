@@ -39,8 +39,13 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 		$supported_args = array(
 			'search'       => 's',
 			'include_post' => 'event',
+			'exclude_post' => 'event_not_in',
 			'is_available' => 'is_available',
 			'provider'     => 'provider',
+			'after'        => 'after_date',
+			'before'       => 'before_date',
+			'include'      => 'post__in',
+			'exclude'      => 'post__not_in',
 		);
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
@@ -174,6 +179,30 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'description'       => __( 'Limit results to tickets provided by one of the providers specified in the CSV list or array; defaults to all available.', 'event-tickets' ),
 				'required'          => false,
 				'sanitize-callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+			),
+			'after'  => array(
+				'description'       => __( 'Limit results to tickets created after or on the specified UTC date or timestamp.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_time' ),
+			),
+			'before' => array(
+				'description'       => __( 'Limit results to tickets created before or on the specified UTC date or timestamp.', 'event-tickets' ),
+				'type'              => 'string',
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_time' ),
+			),
+			'include' => array(
+				'description'       => __( 'Limit results to a specific CSV list or array of ticket IDs.', 'event-tickets' ),
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_positive_int_list' ),
+				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+			),
+			'exclude' => array(
+				'description'       => __( 'Exclude a specific CSV list or array of ticket IDs from the results.', 'event-tickets' ),
+				'required'          => false,
+				'validate_callback' => array( $this->validator, 'is_positive_int_list' ),
+				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 			),
 			'include_post' => array(
 				// @todo support multiple types in Swaggerification functions

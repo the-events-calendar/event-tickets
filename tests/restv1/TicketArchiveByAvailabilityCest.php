@@ -47,8 +47,8 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 			->all();
 		$I->seeResponseContainsJson( [
 			'rest_url'    => $this->tickets_url . '/',
-			'total'       => 8,
 			'total_pages' => 1,
+			'total'       => 8,
 			'tickets'     => $expected_tickets,
 		] );
 

@@ -23,6 +23,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		);
 		$this->schema = array_merge( $this->schema, array(
 			'event'        => array( $this, 'filter_by_event' ),
+			'event_not_in' => array( $this, 'filter_by_event_not_in' ),
 			'is_available' => array( $this, 'filter_by_availability' ),
 			'provider'     => array( $this, 'filter_by_provider' ),
 		) );
@@ -42,28 +43,25 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Provides arguments to filter tickets by a specific event.
+	 * Filters tickets by a specific event.
 	 *
 	 * @since TBD
 	 *
 	 * @param int|array $event_id
-	 *
-	 * @return array
 	 */
 	public function filter_by_event( $event_id ) {
-		$return = array(
-			'meta_query' => array(
-				'by-related-event' => array(
-					'relation' => 'OR',
-				),
-			),
-		);
+		$this->by( 'meta_in', $this->ticket_to_event_keys(), $event_id );
+	}
 
-		foreach ( $this->ticket_to_event_keys() as $key ) {
-			$return['meta_query']['by-related-event'][] = array( 'key' => $key, 'value' => $event_id );
-		}
-
-		return $return;
+	/**
+	 * Filters tickets by not being related to a specific event.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|array $event_id
+	 */
+	public function filter_by_event_not_in( $event_id ) {
+		$this->by( 'meta_not_in', $this->ticket_to_event_keys(), $event_id );
 	}
 
 	/**
