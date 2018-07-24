@@ -53,6 +53,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			'attendees_max' => 'attendees_max',
 			'checkedin_min' => 'checkedin_min',
 			'checkedin_max' => 'checkedin_max',
+			'capacity_min' => 'capacity_min',
+			'capacity_max' => 'capacity_max',
 		);
 
 		foreach ( $supported_args as $request_arg => $query_arg ) {
@@ -63,7 +65,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		$can_read_private_posts = current_user_can( 'read_private_posts' );
 
-		$attendess_btwn = $checkedin_btwn = null;
+		$attendess_btwn = $checkedin_btwn = $capacity_btwn = null;
 
 		if ( $can_read_private_posts ) {
 			foreach ( $private_args as $request_arg => $query_arg ) {
@@ -80,6 +82,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			if ( isset( $fetch_args['checkedin_min'], $fetch_args['checkedin_max'] ) ) {
 				$checkedin_btwn = array( $fetch_args['checkedin_min'], $fetch_args['checkedin_max'] );
 				unset( $fetch_args['checkedin_min'], $fetch_args['checkedin_max'] );
+			}
+
+			if ( isset( $fetch_args['capacity_min'], $fetch_args['capacity_max'] ) ) {
+				$capacity_btwn = array( $fetch_args['capacity_min'], $fetch_args['capacity_max'] );
+				unset( $fetch_args['capacity_min'], $fetch_args['capacity_max'] );
 			}
 		}
 
@@ -101,6 +108,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 
 		if ( null !== $checkedin_btwn ) {
 			$query->by( 'checkedin_between', $checkedin_btwn[0], $checkedin_btwn[1] );
+		}
+
+		if ( null !== $capacity_btwn ) {
+			$query->by( 'capacity_between', $capacity_btwn[0], $capacity_btwn[1] );
 		}
 
 		if ( $request['order'] ) {
@@ -160,14 +171,14 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	public function READ_args() {
 		// @todo add all the other args
 		return array(
-			'page'         => array(
+			'page'          => array(
 				'description'       => __( 'The page of results to return; defaults to 1', 'event-tickets' ),
 				'type'              => 'integer',
 				'default'           => 1,
 				'sanitize_callback' => 'absint',
 				'minimum'           => 1,
 			),
-			'per_page'     => array(
+			'per_page'      => array(
 				'description'       => __( 'How many tickets to return per results page; defaults to posts_per_page.', 'event-tickets' ),
 				'type'              => 'integer',
 				'default'           => get_option( 'posts_per_page' ),
@@ -175,19 +186,19 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'maximum'           => 100,
 				'sanitize_callback' => 'absint',
 			),
-			'search'   => array(
+			'search'        => array(
 				'description'       => __( 'Limit results to tickets containing the specified string in the title or description.', 'event-tickets' ),
 				'type'              => 'string',
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_string' ),
 			),
-			'offset'  => array(
+			'offset'        => array(
 				'description' => __( 'Offset the results by a specific number of items.', 'event-tickets' ),
 				'type'        => 'integer',
 				'required'    => false,
 				'min'         => 0,
 			),
-			'order' => array(
+			'order'         => array(
 				'description' => __( 'Sort results in ASC or DESC order. Defaults to ASC.', 'event-tickets' ),
 				'type'        => 'string',
 				'required'    => false,
@@ -196,7 +207,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 					'DESC',
 				),
 			),
-			'orderby' => array(
+			'orderby'       => array(
 				'description' => __( 'Order the results by one of date, relevance, id, include, title, or slug; defaults to title.', 'event-tickets' ),
 				'type'        => 'string',
 				'required'    => false,
@@ -207,41 +218,41 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 					'slug',
 				),
 			),
-			'is_available' => array(
+			'is_available'  => array(
 				'description' => __( 'Limit results to tickets that have or do not have capacity currently available.', 'event-tickets' ),
 				'type'        => 'boolean',
 				'required'    => false,
 			),
-			'provider' => array(
+			'provider'      => array(
 				'description'       => __( 'Limit results to tickets provided by one of the providers specified in the CSV list or array; defaults to all available.', 'event-tickets' ),
 				'required'          => false,
 				'sanitize-callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 			),
-			'after'  => array(
+			'after'         => array(
 				'description'       => __( 'Limit results to tickets created after or on the specified UTC date or timestamp.', 'event-tickets' ),
 				'type'              => 'string',
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_time' ),
 			),
-			'before' => array(
+			'before'        => array(
 				'description'       => __( 'Limit results to tickets created before or on the specified UTC date or timestamp.', 'event-tickets' ),
 				'type'              => 'string',
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_time' ),
 			),
-			'include' => array(
+			'include'       => array(
 				'description'       => __( 'Limit results to a specific CSV list or array of ticket IDs.', 'event-tickets' ),
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_positive_int_list' ),
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 			),
-			'exclude' => array(
+			'exclude'       => array(
 				'description'       => __( 'Exclude a specific CSV list or array of ticket IDs from the results.', 'event-tickets' ),
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_positive_int_list' ),
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 			),
-			'include_post' => array(
+			'include_post'  => array(
 				// @todo support multiple types in Swaggerification functions
 				// 'swagger_type' => array('integer', 'array', 'string'),
 				'swagger_type'      => 'string',
@@ -250,7 +261,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'validate_callback' => array( $this->validator, 'is_post_id_list' ),
 				'sanitize_callback' => array( $this->validator, 'list_to_array' ),
 			),
-			'exclude_post' => array(
+			'exclude_post'  => array(
 				'swagger_type'      => 'string',
 				'description'       => __( 'Limit results to tickets that are not assigned to any of the posts specified in the CSV list or array.', 'event-tickets' ),
 				'required'          => false,
@@ -270,17 +281,29 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'min'         => 0,
 			),
 			'checkedin_min' => array(
-			'description' => __( 'Limit results to tickets that have at most this number of checked-in attendee.', 'event-tickets' ),
-			'required'    => false,
-			'type'        => 'integer',
-			'min'         => 0,
-		),
+				'description' => __( 'Limit results to tickets that have at most this number of checked-in attendee.', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'integer',
+				'min'         => 0,
+			),
 			'checkedin_max' => array(
-			'description' => __( 'Limit results to tickets that have at least this number of checked-in attendees.', 'event-tickets' ),
-			'required'    => false,
-			'type'        => 'integer',
-			'min'         => 0,
-		)
+				'description' => __( 'Limit results to tickets that have at least this number of checked-in attendees.', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'integer',
+				'min'         => 0,
+			),
+			'capacity_min' => array(
+				'description' => __( 'Limit results to tickets that have at least this capacity.', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'integer',
+				'min'         => 0,
+			),
+			'capacity_max' => array(
+				'description' => __( 'Limit results to tickets that have at most this capacity.', 'event-tickets' ),
+				'required'    => false,
+				'type'        => 'integer',
+				'min'         => 0,
+			),
 		);
 	}
 

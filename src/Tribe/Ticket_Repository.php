@@ -21,7 +21,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'post_type' => $this->ticket_types(),
 			'orderby'   => array( 'date', 'ID' ),
 		);
-		$this->schema       = array_merge( $this->schema, array(
+		$this->schema = array_merge( $this->schema, array(
 			'event'             => array( $this, 'filter_by_event' ),
 			'event_not_in'      => array( $this, 'filter_by_event_not_in' ),
 			'is_available'      => array( $this, 'filter_by_availability' ),
@@ -31,7 +31,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'attendees_between' => array( $this, 'filter_by_attendees_between' ),
 			'checkedin_min'     => array( $this, 'filter_by_checkedin_min' ),
 			'checkedin_max'     => array( $this, 'filter_by_checkedin_max' ),
-			'checkedin_between' => array( $this, 'filter_by_checkedin_between' )
+			'checkedin_between' => array( $this, 'filter_by_checkedin_between' ),
+			'capacity_min'      => array( $this, 'filter_by_capacity_min' ),
+			'capacity_max'      => array( $this, 'filter_by_capacity_max' ),
+			'capacity_between'  => array( $this, 'filter_by_capacity_between' ),
 		) );
 	}
 
@@ -205,5 +208,55 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			tribe_attendees()->checked_in_keys(),
 			'1'
 		);
+	}
+
+	/**
+	 * Filters tickets by a minimum capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $capacity_min
+	 */
+	public function filter_by_capacity_min( $capacity_min ) {
+		/**
+		 * Tickets with unlimited capacity will have a `_capacity` meta of `-1`
+		 * but they will always satisfy any minimum capacity requirement
+		 * so we need to use a custom query.
+		 */
+
+		/** @var wpdb $wpdb */
+		global $wpdb;
+
+		$min = $this->prepare_value( $capacity_min, '%d' );
+		$this->join_clause( "JOIN {$wpdb->postmeta} capacity_min ON {$wpdb->posts}.ID = capacity_min.post_id" );
+		$this->where_clause( "capacity_min.meta_key = '_capacity' AND (capacity_min.meta_value >= {$min} OR capacity_min.meta_value < 0)" );
+	}
+
+	/**
+	 * Filters tickets by a maximum capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $capacity_max
+	 */
+	public function filter_by_capacity_max( $capacity_max ) {
+		/**
+		 * Tickets with unlimited capacity will have a `_capacity` meta of `-1`
+		 * but they should not satisfy any maximum capacity requirement
+		 * so we need to use a BETWEEN query.
+		 */
+		$this->by( 'meta_between', '_capacity', array( 0, $capacity_max ), 'NUMERIC' );
+	}
+
+	/**
+	 * Filters tickets by a minimum and maximum capacity.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $capacity_min
+	 * @param int $capacity_max
+	 */
+	public function filter_by_capacity_between( $capacity_min, $capacity_max ) {
+		$this->by( 'meta_between', '_capacity', array( (int) $capacity_min, (int) $capacity_max ), 'NUMERIC' );
 	}
 }
