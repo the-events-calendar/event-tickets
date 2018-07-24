@@ -1748,7 +1748,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * @param  bool	$display_date
 				 */
 				$display_date = apply_filters( 'tribe_tickets_unvailable_message_date', $display_date = true );
-				
+
 				/**
 				 * Allows inclusion of ticket start sale time in unavailability message
 				 *
