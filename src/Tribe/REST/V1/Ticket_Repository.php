@@ -7,48 +7,86 @@
  *
  * @since TBD
  */
-class Tribe__Tickets__REST__V1__Ticket_Repository implements Tribe__Repository__Interface {
+class Tribe__Tickets__REST__V1__Ticket_Repository extends Tribe__Tickets__Ticket_Repository {
 
 	/**
-	 * @var Tribe__Repository__Interface
+	 * {@inheritdoc}
 	 */
-	protected $decorated_repository;
+	public function found() {
+		$query = $this->build_query();
+		$query->set( 'fields', 'ids' );
+		$query->set( 'posts_per_page', - 1 );
+		$query->set( 'no_found_rows', true );
+		$all_ids = $query->get_posts();
 
-	/**
-	 * Tribe__Tickets__REST__V1__Attendee_Repository constructor.
-	 *
-	 * @since TBD
-	 */
-	public function __construct() {
-		$this->decorated_repository = tribe( 'tickets.ticket-repository' );
-	}
+		// @todo standardize the meta key used to link ticket -> event to allow for an efficient query
 
-	/**
-	 * Returns a REST API v1 specific Read repository.
-	 *
-	 * @since TBD
-	 *
-	 * @return Tribe__Tickets__REST__V1__Repositories__Ticket_Read
-	 */
-	public function fetch() {
-		return new Tribe__Tickets__REST__V1__Repositories__Ticket_Read(
-			$this->decorated_repository->read_schema,
-			tribe()->make( 'Tribe__Repository__Query_Filters' ),
-			$this->decorated_repository->default_args
-		);
+		/**
+		 * Make sure we are not returning orphaned tickets.
+		 * This implementation is not really efficient but is a
+		 * first draft. Meh.
+		 */
+		$found = 0;
+		foreach ( $all_ids as $ticket_id ) {
+			if ( ! tribe_events_get_ticket_event( $ticket_id ) ) {
+				continue;
+			}
+			$found ++;
+		}
+
+		return $found;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_default_args() {
-		return $this->decorated_repository->get_default_args();
+	public function count() {
+		$query = $this->build_query();
+		$query->set( 'fields', 'ids' );
+		$query->set( 'no_found_rows', true );
+		$all_ids = $query->get_posts();
+
+		// @todo standardize the meta key used to link ticket -> event to allow for an efficient query
+
+		/**
+		 * Make sure we are not returning orphaned tickets.
+		 * This implementation is not really efficient but is a
+		 * first draft. Meh.
+		 */
+		$count = 0;
+		foreach ( $all_ids as $ticket_id ) {
+			if ( ! tribe_events_get_ticket_event( $ticket_id ) ) {
+				continue;
+			}
+			$count ++;
+		}
+
+		return $count;
 	}
 
 	/**
-	 * {@inheritdoc}
+	 * Returns the ticket in the REST API format.
+	 *
+	 * @since TBD
+	 *
+	 * @param int|WP_Post $id
+	 *
+	 * @return array|null The ticket information in the REST API format or
+	 *                    `null` if the ticket is invalid.
 	 */
-	public function set_default_args( array $default_args ) {
-		return $this->decorated_repository->set_default_args( $default_args );
+	protected function format_item( $id ) {
+		/**
+		 * For the time being we use **another** repository to format
+		 * the tickets objects to the REST API format.
+		 * If this implementation gets a thumbs-up this class and the
+		 * `Tribe__Tickets__REST__V1__Post_Repository` should be merged.
+		 */
+		/** @var Tribe__Tickets__REST__V1__Post_Repository $repository */
+		$repository = tribe( 'tickets.rest-v1.repository' );
+
+		$formatted = $repository->get_ticket_data( $id );
+
+		return $formatted instanceof WP_Error ? null : $formatted;
 	}
+
 }

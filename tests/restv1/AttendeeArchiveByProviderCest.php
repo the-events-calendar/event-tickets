@@ -30,8 +30,7 @@ class AttendeeArchiveByProviderCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
-			->by( 'post__in', $all )
+			->where( 'post__in', $all )
 			->order_by( 'post__in' )
 			->all();
 		$I->assertEquals( [
@@ -45,7 +44,6 @@ class AttendeeArchiveByProviderCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
 			->where( 'post__in', $rsvp_attendees )
 			->order_by( 'post__in' )
 			->all();
@@ -60,7 +58,6 @@ class AttendeeArchiveByProviderCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$expected_attendees = tribe_attendees( 'restv1' )
-			->fetch()
 			->where( 'post__in', $paypal_attendees )
 			->order_by( 'post__in' )
 			->all();

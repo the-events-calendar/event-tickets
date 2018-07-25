@@ -15,7 +15,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	public function is_ticket_id( $ticket_id );
 
 	/**
-	 * Whether a xsv list, or array, of post IDs only contains valid ticket IDs or not.
+	 * Whether a csv list, or array, of post IDs only contains valid ticket IDs or not.
 	 *
 	 * @since TBD
 	 *
@@ -36,6 +36,18 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	 * @return bool
 	 */
 	public function is_attendee_id( $attendee_id );
+
+	/**
+	 * Whether a csv list, or array, of post IDs only contains valid attendee IDs or not.
+	 *
+	 * @since TBD
+	 *
+	 * @param        string|array $attendees
+	 * @param string              $sep
+	 *
+	 * @return bool
+	 */
+	public function is_attendee_id_list( $attendees, $sep = ',' );
 
 	/**
 	 * Whether the value is the post ID of an existing event or not.

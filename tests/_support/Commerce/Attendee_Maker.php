@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpDocMissingThrowsInspection */
 
 namespace Tribe\Tickets\Test\Commerce;
 
@@ -39,7 +40,9 @@ trait Attendee_Maker {
 	 * @return int The generated attendee
 	 */
 	protected function
-	create_attendee_for_ticket( int $ticket_id, int $post_id, array $overrides = array() ): int {
+	create_attendee_for_ticket(
+		int $ticket_id, int $post_id, array $overrides = array()
+	): int {
 		$faker = \Faker\Factory::create();
 
 		/** @var \Tribe__Tickets__Tickets $provider */
@@ -92,6 +95,10 @@ trait Attendee_Maker {
 			$meta[ \Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY ] = Arr::get( $overrides, 'rsvp_status', 'yes' );
 		}
 
+		if ( $provider instanceof \Tribe__Tickets__Commerce__PayPal__Main ) {
+			$meta['_tribe_tpp_status'] = Arr::get( $overrides, 'order_status', 'completed' );
+		}
+
 		if ( $provider instanceof \Tribe__Tickets_Plus__Commerce__WooCommerce__Main ) {
 			if ( ! isset( $overrides['order_id'] ) ) {
 				throw new \RuntimeException(
@@ -105,6 +112,15 @@ trait Attendee_Maker {
 			$meta['_billing_first_name']           = $faker->firstName;
 			$meta['_billing_last_name']            = $faker->lastName;
 			$meta['_billing_email']                = $faker->email;
+		}
+
+		if ( ! isset( $meta['_paid_price'] ) ) {
+			$meta['_paid_price'] = (int) get_post_meta( $ticket_id, '_price', true );
+		}
+		if ( ! isset( $meta['_price_currency_symbol'] ) ) {
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency                       = tribe( 'tickets.commerce.currency' );
+			$meta['_price_currency_symbol'] = $currency->get_currency_symbol( $ticket_id, true );
 		}
 
 		$explicit_keys        = [

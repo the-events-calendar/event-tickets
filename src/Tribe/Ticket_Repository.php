@@ -16,14 +16,14 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @since TBD
 	 */
 	public function __construct() {
+		parent::__construct();
 		$this->default_args = array(
 			'post_type' => $this->ticket_types(),
 			'orderby'   => array( 'date', 'ID' ),
 		);
-
-		$this->read_schema = array(
+		$this->schema = array_merge( $this->schema, array(
 			'event' => array( $this, 'filter_by_event' ),
-		);
+		) );
 	}
 
 	/**
