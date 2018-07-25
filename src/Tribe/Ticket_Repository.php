@@ -38,6 +38,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'available_from'    => array( $this, 'filter_by_available_from' ),
 			'available_until'   => array( $this, 'filter_by_available_until' ),
 			'event_status'      => array( $this, 'filter_by_event_status' ),
+			'has_attendee_meta' => array( $this, 'filter_by_attendee_meta_existence' ),
 		) );
 	}
 
@@ -387,21 +388,40 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			return;
 		}
 
+		if ( $exists ) {
+			return array(
+				'meta_query' => array(
+					'by-attendee-meta-availability' => array(
+						'is-enabled' => array(
+							'key'     => Tribe__Tickets_Plus__Meta::ENABLE_META_KEY,
+							'compare' => '=',
+							'value'   => 'yes',
+						),
+						'relation'   => 'AND',
+						'has-meta'   => array(
+							'key'     => Tribe__Tickets_Plus__Meta::META_KEY,
+							'compare' => 'EXISTS'
+						),
+					),
+				),
+			);
+		}
+
 		return array(
 			'meta_query' => array(
 				'by-attendee-meta-availability' => array(
-					'is-enabled' => array(
+					'is-not-enabled' => array(
 						'key'     => Tribe__Tickets_Plus__Meta::ENABLE_META_KEY,
-						'compare' => '=',
+						'compare' => '!=',
 						'value'   => 'yes',
 					),
-					'relation'   => 'AND',
-					'has-meta'   => array(
-						'key'     => Tribe__Tickets_Plus__Meta::META_KEY,
-						'compare' => 'EXISTS'
-					)
-				)
-			)
+					'relation'       => 'OR',
+					'not-exists'     => array(
+						'key'     => Tribe__Tickets_Plus__Meta::ENABLE_META_KEY,
+						'compare' => 'NOT EXISTS'
+					),
+				),
+			),
 		);
 	}
 }
