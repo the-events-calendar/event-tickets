@@ -987,7 +987,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Sends ticket email
 	 *
-	 * @since TBD added $post_id parameter
+	 * @since 4.7.6 added $post_id parameter
 	 *
 	 * @param int $order_id Order post ID
 	 * @param int $post_id  Parent post ID (optional)
@@ -1018,7 +1018,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * Controls the list of tickets which will be emailed out.
 		 *
 		 * @since 4.7
-		 * @since TBD added new parameter $post_id
+		 * @since 4.7.6 added new parameter $post_id
 		 *
 		 * @param array $to_send        list of tickets to be sent out by email
 		 * @param array $all_attendees  list of all attendees/tickets, including those already sent out
@@ -1042,7 +1042,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the Tribe Commerce tickets email content
 		 *
-		 * @since TBD added new parameters $post_id and $order_id
+		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
 		 * @param string  email content
 		 * @param int     $post_id
@@ -1053,7 +1053,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the Tribe Commerce tickets email sender name
 		 *
-		 * @since TBD added new parameters $post_id and $order_id
+		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
 		 * @param string  email sender name
 		 * @param int     $post_id
@@ -1064,7 +1064,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the Tribe Commerce tickets email sender email
 		 *
-		 * @since TBD added new parameters $post_id and $order_id
+		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
 		 * @param string  email sender email
 		 * @param int     $post_id
@@ -1081,7 +1081,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the Tribe Commerce tickets email headers
 		 *
-		 * @since TBD added new parameters $post_id and $order_id
+		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
 		 * @param array  email headers
 		 * @param int    $post_id
@@ -1092,7 +1092,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the Tribe Commerce tickets email attachments
 		 *
-		 * @since TBD added new parameters $post_id and $order_id
+		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
 		 * @param array  attachments
 		 * @param int    $post_id
@@ -1103,7 +1103,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the Tribe Commerce tickets email recipient
 		 *
-		 * @since TBD added new parameters $post_id and $order_id
+		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
 		 * @param string  $to
 		 * @param int     $event_id
@@ -1117,7 +1117,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the Tribe Commerce tickets email subject
 		 *
-		 * @since TBD added new parameters $post_id and $order_id
+		 * @since 4.7.6 added new parameters $post_id and $order_id
 		 *
 		 * @param string  email subject
 		 * @param int     $post_id

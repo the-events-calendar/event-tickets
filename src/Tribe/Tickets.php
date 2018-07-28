@@ -1743,7 +1743,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Allows inclusion of ticket start sale date in unavailability message
 				 *
-				 * @since  TBD
+				 * @since  4.7.6
 				 *
 				 * @param  bool	$display_date
 				 */
@@ -1752,7 +1752,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Allows inclusion of ticket start sale time in unavailability message
 				 *
-				 * @since  TBD
+				 * @since  4.7.6
 				 *
 				 * @param  bool	$display_time
 				 */

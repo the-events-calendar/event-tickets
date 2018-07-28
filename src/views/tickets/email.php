@@ -15,7 +15,7 @@
  *                              'ticket_id'
  *                              'security_code')
  *
- * @version TBD
+ * @version 4.7.6
  *
  * @var array $tickets An array of tickets in the format documented above.
  */
@@ -261,7 +261,7 @@
 				/**
 				 * Filters the ticket image that will be included in the tickets email
 				 *
-				 * @since TBD
+				 * @since 4.7.6
 				 *
 				 * @param bool|string $header_img False or header image src
 				 * @param int         $header_id  Parent post ticket header image ID if set

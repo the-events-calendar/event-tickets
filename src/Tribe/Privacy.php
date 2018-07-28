@@ -88,7 +88,7 @@ class Tribe__Tickets__Privacy {
 	/**
 	 * Register erasers for Tickets attendees saved data.
 	 *
-	 * @since TBD
+	 * @since 4.7.6
 	 * @param $erasers
 	 *
 	 * @return array
@@ -173,7 +173,7 @@ class Tribe__Tickets__Privacy {
 			/**
 			 * Allow filtering for the rsvp attendee data export.
 			 *
-			 * @since TBD
+			 * @since 4.7.6
 			 * @param array  $data      The data array to export
 			 * @param object $attendee  The attendee object
 			 */
@@ -201,7 +201,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     TBD
+	 * @since     4.7.6
 	 *
 	 * @return array
 	 */
@@ -272,7 +272,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     TBD
+	 * @since     4.7.6
 	 *
 	 * @return array
 	 */
@@ -336,7 +336,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     TBD
+	 * @since     4.7.6
 	 *
 	 * @return array
 	 */
@@ -461,7 +461,7 @@ class Tribe__Tickets__Privacy {
 			/**
 			 * Allow filtering for the tribecommerce attendee data export.
 			 *
-			 * @since TBD
+			 * @since 4.7.6
 			 * @param array  $data      The data array to export
 			 * @param object $attendee  The attendee object
 			 */
@@ -489,7 +489,7 @@ class Tribe__Tickets__Privacy {
 	 *
 	 * @param     $email_address
 	 * @param int $page
-	 * @since     TBD
+	 * @since     4.7.6
 	 *
 	 * @return array
 	 */
@@ -557,7 +557,7 @@ class Tribe__Tickets__Privacy {
 			/**
 			 * Allow filtering for the tribecommerce order data export.
 			 *
-			 * @since TBD
+			 * @since 4.7.6
 			 * @param array  $data   The data array to export
 			 * @param object $order  The order object
 			 */

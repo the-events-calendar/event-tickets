@@ -11,6 +11,174 @@ msgstr ""
 "Language: cs_CZ\n"
 "Project-Id-Version: Plugins - Event Tickets - Stable (latest release)\n"
 
+#: src/admin-views/tribe-options-tickets.php:310
+msgid "You have tickets!"
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:279
+msgid "After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content."
+msgstr ""
+
+#: src/admin-views/privacy.php:56
+msgid "If you have extended our plugin(s) to send data to a third-party service such as Eventbrite, Google Maps, or PayPal, user information may be passed to these external services. These services may be located abroad."
+msgstr ""
+
+#: src/admin-views/privacy.php:54
+msgid "Modern Tribe does not send any user data outside of your website by default."
+msgstr ""
+
+#: src/admin-views/privacy.php:52
+msgid "Where We Send Your Data"
+msgstr ""
+
+#: src/admin-views/privacy.php:50
+msgid "Certain data may be exported or removed upon users request via the existing Exporter or Eraser. Please note, however, that several “edge cases” exist in which we are unable to perfect the gathering and export of all data for your end users. We suggest running a search in your local database, as well as within the WordPress Dashboard, in order to identify all data collected and stored for your specific user requests."
+msgstr ""
+
+#: src/admin-views/privacy.php:48
+msgid "All information (data) is retained in the local database indefinitely, unless otherwise deleted."
+msgstr ""
+
+#: src/admin-views/privacy.php:46
+msgid "How Long You Retain this Data"
+msgstr ""
+
+#: src/admin-views/privacy.php:44
+msgid "These API keys may include the following third party services: Google Maps and PayPal."
+msgstr ""
+
+#: src/admin-views/privacy.php:42
+msgid "We make use of certain API keys, in order to provide specific features."
+msgstr ""
+
+#: src/admin-views/privacy.php:38
+msgid "Events Tickets suite offers the use of third-party API keys. The primary functions are to enhance the features we've built in, some of which use Google Maps and PayPal. These API keys are not supplied by Modern Tribe."
+msgstr ""
+
+#: src/admin-views/privacy.php:36
+msgid "API Keys"
+msgstr ""
+
+#: src/admin-views/privacy.php:34
+msgid "Please note: The website owner can collect nearly any Attendee Information requested from ticket buyers by creating a custom registration form."
+msgstr ""
+
+#: src/admin-views/privacy.php:31
+msgid "Ticket purchaser billing address, which is collected through the use of WooCommerce, Easy Digital Downloads, or PayPal"
+msgstr ""
+
+#: src/admin-views/privacy.php:30
+msgid "Ticket purchaser information: name and email address"
+msgstr ""
+
+#: src/admin-views/privacy.php:29
+msgid "Ticket information (RSVPs and Tickets): name, email address, and ticket number/SKU (via check-in page)"
+msgstr ""
+
+#: src/admin-views/privacy.php:28
+msgid "Attendees information (RSVPs and Tickets): name and email address"
+msgstr ""
+
+#: src/admin-views/privacy.php:25
+msgid "If you create, submit, import, save, or publish event ticket information, as well as RSVP or purchase tickets to events, such information is retained in the local database:"
+msgstr ""
+
+#: src/admin-views/privacy.php:24 src/admin-views/privacy.php:40
+msgid "Suggested text:"
+msgstr ""
+
+#: src/admin-views/privacy.php:23
+msgid "Through the usage of Event Tickets, Event Tickets Plus, and Community Tickets, information may be collected and stored within your website’s database."
+msgstr ""
+
+#: src/admin-views/privacy.php:21
+msgid "Event, Attendee, and Ticket Purchaser Information"
+msgstr ""
+
+#: src/admin-views/privacy.php:19
+msgid "What personal data we collect and why we collect it"
+msgstr ""
+
+#: src/admin-views/privacy.php:17
+msgid "This information is only for guidance and not to be considered as legal advice."
+msgstr ""
+
+#: src/admin-views/privacy.php:17
+msgid "Disclaimer:"
+msgstr ""
+
+#: src/admin-views/privacy.php:16
+msgid "You should include the information below in the correct sections of you privacy policy."
+msgstr ""
+
+#: src/admin-views/privacy.php:15
+msgid "This information serves as a guide on what sections need to be modified due to usage of Event Tickets and its Add-ons."
+msgstr ""
+
+#: src/admin-views/privacy.php:14
+msgid "Hello,"
+msgstr ""
+
+#: src/Tribe/REST/V1/Messages.php:22
+msgid "The requested ticket check in is not available"
+msgstr ""
+
+#: src/Tribe/REST/V1/Messages.php:21
+msgid "The requested ticket is not accessible"
+msgstr ""
+
+#: src/Tribe/REST/V1/Messages.php:20
+msgid "The requested post ID does not exist or is not a ticket"
+msgstr ""
+
+#: src/Tribe/REST/V1/Messages.php:19
+msgid "The ticket ID is missing from the request"
+msgstr ""
+
+#: src/Tribe/REST/V1/Endpoints/Swagger_Documentation.php:157
+msgid "Returns the documentation for Event Tickets REST API in Swagger consumable format."
+msgstr ""
+
+#: src/Tribe/REST/V1/Endpoints/Swagger_Documentation.php:107
+msgid "Event Tickets REST API allows accessing ticket information easily and conveniently."
+msgstr ""
+
+#: src/Tribe/REST/V1/Endpoints/Swagger_Documentation.php:106
+msgid "Event Tickets REST API"
+msgstr ""
+
+#: src/Tribe/REST/V1/Endpoints/Base.php:42
+msgid "No description provided"
+msgstr ""
+
+#: src/Tribe/REST/V1/Documentation/Ticket_Definition_Provider.php:26
+msgid "The ticket WordPress post ID"
+msgstr ""
+
+#: src/Tribe/Privacy.php:196
+msgid "Order Title"
+msgstr ""
+
+#: src/Tribe/Privacy.php:191
+msgid "Event Tickets TribeCommerce Attendee Data"
+msgstr ""
+
+#: src/Tribe/Privacy.php:121
+msgid "RSVP Title"
+msgstr ""
+
+#: src/Tribe/Privacy.php:116
+msgid "Event Tickets RSVP Attendee Data"
+msgstr ""
+
+#: src/Tribe/Privacy.php:75
+msgid "Event Tickets TribeCommerce Attendee"
+msgstr ""
+
+#: src/Tribe/Privacy.php:70
+msgid "Event Tickets RSVP Attendee"
+msgstr ""
+
 #: src/views/tickets/orders.php:25
 msgid "You don't have tickets for this event"
 msgstr ""
@@ -161,51 +329,51 @@ msgctxt "Login link on Tribe Commerce checkout page"
 msgid "Log in before purchasing"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:337
+#: src/admin-views/tribe-options-tickets.php:341
 msgid "Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s)."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:335
+#: src/admin-views/tribe-options-tickets.php:339
 msgid "IPN Notify URL"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:326
+#: src/admin-views/tribe-options-tickets.php:330
 msgid "You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s)."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:323
+#: src/admin-views/tribe-options-tickets.php:327
 msgid "See your IPN Notification history"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:313
+#: src/admin-views/tribe-options-tickets.php:317
 msgid "Enables PayPal Sandbox mode for testing."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:312
+#: src/admin-views/tribe-options-tickets.php:316
 msgid "PayPal Sandbox"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:304
+#: src/admin-views/tribe-options-tickets.php:308
 msgid "Subject of the confirmation email sent to customers when confirming a ticket purchase."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:303
+#: src/admin-views/tribe-options-tickets.php:307
 msgid "Confirmation email subject"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:295
+#: src/admin-views/tribe-options-tickets.php:299
 msgid "Sender name of the confirmation email sent to customers when confirming a ticket purchase."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:294
+#: src/admin-views/tribe-options-tickets.php:298
 msgid "Confirmation email sender name"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:287
+#: src/admin-views/tribe-options-tickets.php:291
 msgid "Email address PayPal tickets customers will receive confirmation from."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:286
+#: src/admin-views/tribe-options-tickets.php:290
 msgid "Confirmation email sender address"
 msgstr ""
 
@@ -519,7 +687,8 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:75
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:75 src/Tribe/Privacy.php:136
+#: src/Tribe/Privacy.php:211
 msgid "Date"
 msgstr ""
 
@@ -570,41 +739,41 @@ msgstr ""
 msgid "PayPal is using PDT data but you have not set the PDT identity token"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2115
+#: src/Tribe/Commerce/PayPal/Main.php:2091
 msgctxt "a PayPal ticket order status"
 msgid "Not Completed"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2114
+#: src/Tribe/Commerce/PayPal/Main.php:2090
 msgctxt "a PayPal ticket order status"
 msgid "Denied"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2113
+#: src/Tribe/Commerce/PayPal/Main.php:2089
 msgctxt "a PayPal ticket order status"
 msgid "Pending"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2112
+#: src/Tribe/Commerce/PayPal/Main.php:2088
 msgctxt "a PayPal ticket order status"
 msgid "Refunded"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2111
+#: src/Tribe/Commerce/PayPal/Main.php:2087
 msgctxt "a PayPal ticket order status"
 msgid "Completed"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2110
+#: src/Tribe/Commerce/PayPal/Main.php:2086
 msgctxt "a PayPal ticket order status"
 msgid "Undefined"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1686
+#: src/Tribe/Commerce/PayPal/Main.php:1662
 msgid "Report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1660
+#: src/Tribe/Commerce/PayPal/Main.php:1636
 msgid "Sales report"
 msgstr ""
 
@@ -991,11 +1160,11 @@ msgstr ""
 msgid "Unlimited"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1111
+#: src/Tribe/Tickets.php:1125
 msgid "Set capacity for this ticket only"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1110
+#: src/Tribe/Tickets.php:1124
 msgid "Shared capacity with other tickets"
 msgstr ""
 
@@ -1073,15 +1242,15 @@ msgstr ""
 msgid "%s must be an email address."
 msgstr ""
 
-#: common/src/Tribe/Main.php:250
+#: common/src/Tribe/Main.php:251
 msgid "Clear Selection."
 msgstr ""
 
-#: common/src/Tribe/Main.php:249
+#: common/src/Tribe/Main.php:250
 msgid "Select all pages"
 msgstr ""
 
-#: common/src/Tribe/Main.php:248
+#: common/src/Tribe/Main.php:249
 msgid "All items on this page were selected. "
 msgstr ""
 
@@ -1464,15 +1633,15 @@ msgstr ""
 msgid "License Key Status:"
 msgstr ""
 
-#: common/src/Tribe/Main.php:272
+#: common/src/Tribe/Main.php:273
 msgid "Done"
 msgstr ""
 
-#: common/src/Tribe/Main.php:271
+#: common/src/Tribe/Main.php:272
 msgid "Today"
 msgstr ""
 
-#: common/src/Tribe/Main.php:270
+#: common/src/Tribe/Main.php:271
 msgid "Prev"
 msgstr ""
 
@@ -1772,12 +1941,12 @@ msgstr "Všechny rezervace:"
 msgid "Are you sure you want to delete this ticket? This cannot be undone."
 msgstr ""
 
-#: src/Tribe/Main.php:676
+#: src/Tribe/Main.php:684
 msgctxt "button text"
 msgid "RSVP"
 msgstr "RSVP"
 
-#: src/Tribe/Main.php:541
+#: src/Tribe/Main.php:549
 msgid "Welcome to Event Tickets"
 msgstr "Vítejte v pluginu Event Tickets"
 
@@ -2037,71 +2206,71 @@ msgstr "(otevře se v novém okně)"
 msgid "Renew Your License Now"
 msgstr ""
 
-#: common/src/Tribe/Main.php:260
+#: common/src/Tribe/Main.php:261
 msgid ": Selected 1 row"
 msgstr ": Vybrán 1 řádek"
 
-#: common/src/Tribe/Main.php:259
+#: common/src/Tribe/Main.php:260
 msgid ": Selected %d rows"
 msgstr ": Vybráno %d řádků"
 
-#: common/src/Tribe/Main.php:254
+#: common/src/Tribe/Main.php:255
 msgid "Previous"
 msgstr "Předchozí"
 
-#: common/src/Tribe/Main.php:253 common/src/Tribe/Main.php:269
+#: common/src/Tribe/Main.php:254 common/src/Tribe/Main.php:270
 msgid "Next"
 msgstr "Další"
 
-#: common/src/Tribe/Main.php:252
+#: common/src/Tribe/Main.php:253
 msgid "All"
 msgstr "Vše"
 
-#: common/src/Tribe/Main.php:247
+#: common/src/Tribe/Main.php:248
 msgid "Search:"
 msgstr "Hledat:"
 
-#: common/src/Tribe/Main.php:246
+#: common/src/Tribe/Main.php:247
 msgid "No matching records found"
 msgstr "Nebyly nalezeny žádné odpovídající záznamy."
 
-#: common/src/Tribe/Main.php:245
+#: common/src/Tribe/Main.php:246
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtrováno z celkem _MAX_  vstupů)"
 
-#: common/src/Tribe/Main.php:244
+#: common/src/Tribe/Main.php:245
 msgid "Showing 0 to 0 of 0 entries"
 msgstr "Zobrazuje se 0 - 0 z 0 vstupů"
 
-#: common/src/Tribe/Main.php:243
+#: common/src/Tribe/Main.php:244
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Zobrazuje se _START_ - _END_ z _TOTAL_ vstupů"
 
-#: common/src/Tribe/Main.php:242
+#: common/src/Tribe/Main.php:243
 msgid "No data available in table"
 msgstr ""
 
-#: common/src/Tribe/Main.php:241
+#: common/src/Tribe/Main.php:242
 msgid "Show _MENU_ entries"
 msgstr ""
 
-#: common/src/Tribe/Main.php:239
+#: common/src/Tribe/Main.php:240
 msgid ": activate to sort column descending"
 msgstr ""
 
-#: common/src/Tribe/Main.php:238
+#: common/src/Tribe/Main.php:239
 msgid ": activate to sort column ascending"
 msgstr ""
 
-#: common/src/Tribe/Main.php:280
+#: common/src/Tribe/Main.php:281
 msgid "Press \"Cmd + C\" to copy"
 msgstr "Pro kopírování stiskněte „Cmd + C“"
 
-#: common/src/Tribe/Main.php:279
+#: common/src/Tribe/Main.php:280
 msgid "System info copied"
 msgstr "Systémové informace byly zkopírovány"
 
-#: common/src/Tribe/Main.php:278
+#: common/src/Tribe/Main.php:279
 #: common/src/admin-views/tribe-options-help.php:50
 msgid "Copy to clipboard"
 msgstr "Kopírovat do schránky"
@@ -2134,7 +2303,7 @@ msgstr ""
 msgid "To begin using %1$s, please install and activate the latest version of %2$s."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1728
+#: src/Tribe/Tickets.php:1742
 msgid "Tickets are not available as this %s has passed."
 msgstr "Vstupenky nejsou k dispozici, protože tato %s již proběhla."
 
@@ -2280,19 +2449,19 @@ msgstr "Zrušena"
 msgid "Going"
 msgstr "Potvrzena"
 
-#: src/Tribe/Tickets.php:1734
+#: src/Tribe/Tickets.php:1748
 msgid "There are no tickets available at this time."
 msgstr "Momentálně nejsou k dispozici žádné vstupenky."
 
-#: src/Tribe/Tickets.php:1732
+#: src/Tribe/Tickets.php:1746
 msgid "Tickets are no longer available."
 msgstr "Vstupenky již nejsou k dispozici."
 
-#: src/Tribe/Tickets.php:1730
+#: src/Tribe/Tickets.php:1744
 msgid "Tickets are not yet available."
 msgstr "Vstupenky ještě nejsou k dispozici."
 
-#: src/Tribe/Main.php:676
+#: src/Tribe/Main.php:684
 msgid "Buy"
 msgstr "Koupit"
 
@@ -2483,6 +2652,7 @@ msgstr "Modern Tribe, Inc."
 msgid "Confirm RSVP"
 msgstr "Potvrdit rezervaci"
 
+#: src/Tribe/Privacy.php:126 src/Tribe/Privacy.php:201
 #: src/views/tickets/rsvp.php:153
 msgid "Full Name"
 msgstr "Celé jméno"
@@ -2734,43 +2904,43 @@ msgstr "Účastníci"
 msgid "See who purchased tickets to this event"
 msgstr "Kdo si koupil vstupenky na tuto akci"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1855 src/Tribe/RSVP.php:1717
+#: src/Tribe/Commerce/PayPal/Main.php:1831 src/Tribe/RSVP.php:1717
 msgid "Post draft updated."
 msgstr "Koncept příspěvku byl uložen."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1854 src/Tribe/RSVP.php:1716
+#: src/Tribe/Commerce/PayPal/Main.php:1830 src/Tribe/RSVP.php:1716
 msgid "Post scheduled."
 msgstr "Příspěvek bude automaticky publikován."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1853 src/Tribe/RSVP.php:1715
+#: src/Tribe/Commerce/PayPal/Main.php:1829 src/Tribe/RSVP.php:1715
 msgid "Post submitted."
 msgstr "Příspěvek byl odeslán ke schválení."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1850 src/Tribe/RSVP.php:1712
+#: src/Tribe/Commerce/PayPal/Main.php:1826 src/Tribe/RSVP.php:1712
 msgid "Post published. %1$s"
 msgstr "Příspěvek byl publikován. %1$s"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1846 src/Tribe/RSVP.php:1708
+#: src/Tribe/Commerce/PayPal/Main.php:1822 src/Tribe/RSVP.php:1708
 msgid "Post updated. %1$s"
 msgstr "Příspěvek byl aktualizován. %1$s"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1839 src/Tribe/RSVP.php:1701
+#: src/Tribe/Commerce/PayPal/Main.php:1815 src/Tribe/RSVP.php:1701
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr "Zpět na %1$spřehled účastníků%2$s."
 
-#: src/Tribe/Commerce/PayPal/Main.php:2459 src/Tribe/RSVP.php:1397
+#: src/Tribe/Commerce/PayPal/Main.php:2422 src/Tribe/RSVP.php:1396
 msgid "(deleted)"
 msgstr "(smazáno)"
 
-#: src/Tribe/RSVP.php:1094
+#: src/Tribe/RSVP.php:1093
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr "Pro provedení rezervace musíte zadat své jméno a platnou emailovou adresu."
 
-#: src/Tribe/RSVP.php:1089
+#: src/Tribe/RSVP.php:1088
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr "Nemůžete rezervovat více než kolik je k dispozici zbývajících vstupenek."
 
-#: src/Tribe/RSVP.php:1083
+#: src/Tribe/RSVP.php:1082
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr "Vaše rezervace byla přijata. Potvrzení rezervace najdete ve své emailové schránce."
 
@@ -2791,67 +2961,67 @@ msgstr "Použít jako obrázek v záhlaví vstupenky"
 msgid "Ticket header image"
 msgstr "Obrázek v záhlaví vstupenky"
 
-#: src/Tribe/Main.php:440
+#: src/Tribe/Main.php:448
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr "Pokud máte platnou licenci pro některý z našich placených pluginů, můžete %s v našem prémiovém fóru podpory. Náš tým podpory sleduje toto fórum a odpoví na vaše dotazy během 24-48 hodin (v pracovní dny)."
 
-#: src/Tribe/Main.php:435
+#: src/Tribe/Main.php:443
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr "Už máte Events Tickets Plus? Můžete %s v našem prémiovém fóru podpory. Náš tým podpory sleduje toto fórum a odpoví na vaše dotazy během 24-48 hodin (v pracovní dny)."
 
-#: src/Tribe/Main.php:434 src/Tribe/Main.php:439
+#: src/Tribe/Main.php:442 src/Tribe/Main.php:447
 msgid "post a thread"
 msgstr "založit vlákno"
 
-#: src/Tribe/Main.php:432
+#: src/Tribe/Main.php:440
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr "Potřebujete okamžitou pomoc? Nabízíme %1$s při zakoupení některého z našich prémiových pluginů (jako např. %2$s). Získejte licenci a můžete očekávat odpověď na své dotazy během 24-48 hodin v pracovní dny."
 
-#: src/Tribe/Main.php:431 src/admin-views/tribe-options-tickets.php:135
+#: src/Tribe/Main.php:439 src/admin-views/tribe-options-tickets.php:135
 msgid "Events Tickets Plus"
 msgstr "Events Tickets Plus"
 
-#: src/Tribe/Main.php:430
+#: src/Tribe/Main.php:438
 msgid "premium support on our website"
 msgstr "prémiovou podporu na našem webu"
 
-#: src/Tribe/Main.php:428
+#: src/Tribe/Main.php:436
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr "Pokud jste vyzkoušeli výše uvedené kroky a stále máte potíže, můžete navštívit naše %s a založit nové vlákno. Pracovníci naší podpory jednou týdně kontrolují tato fóra a rádi vám pomohou."
 
-#: src/Tribe/Main.php:427
+#: src/Tribe/Main.php:435
 msgid "open-source forum on WordPress.org"
 msgstr "open-source fórum na WordPress.org"
 
-#: src/Tribe/Main.php:410
+#: src/Tribe/Main.php:418
 msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
 msgstr "Chceme vám pomoci při prodeji vstupenek na vaše akce. Pro začátek by se vám mohla hodit naše %s."
 
-#: src/Tribe/Main.php:408 src/admin-views/admin-welcome-message.php:23
+#: src/Tribe/Main.php:416 src/admin-views/admin-welcome-message.php:23
 msgid "New User Primer"
 msgstr "Příručka nového uživatele"
 
-#: src/Tribe/Main.php:391
+#: src/Tribe/Main.php:399
 msgid "Customizing Event Tickets"
 msgstr "Přizpůsobení pluginu Event Tickets"
 
-#: src/Tribe/Main.php:390
+#: src/Tribe/Main.php:398
 msgid "Troubleshooting common problems"
 msgstr "Řešení obvyklých problémů"
 
-#: src/Tribe/Main.php:389
+#: src/Tribe/Main.php:397
 msgid "Features overview"
 msgstr "Přehled funkcí"
 
-#: src/Tribe/Main.php:388
+#: src/Tribe/Main.php:396
 msgid "Settings overview"
 msgstr "Přehled nastavení"
 
-#: src/Tribe/Main.php:386
+#: src/Tribe/Main.php:394
 msgid "Support for Event Tickets"
 msgstr "Podpora pro Event Tickets"
 
-#: src/Tribe/Main.php:246
+#: src/Tribe/Main.php:254
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr "Když jsou pluginy The Events Calendar a Event Tickets aktivovány oba současně, plugin The Events Calendar musí být ve verzi %1$s nebo vyšší. Proveďte prosím jeho %2$s aktualizaci.%3$s"
 
@@ -2864,8 +3034,9 @@ msgid "Export"
 msgstr "Exportovat"
 
 #: src/Tribe/Attendees_Table.php:520
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:73
-#: src/admin-views/admin-welcome-message.php:62 src/views/tickets/rsvp.php:161
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:73 src/Tribe/Privacy.php:131
+#: src/Tribe/Privacy.php:206 src/admin-views/admin-welcome-message.php:62
+#: src/views/tickets/rsvp.php:161
 msgid "Email"
 msgstr "Email"
 
@@ -4539,10 +4710,10 @@ msgstr "Advanced Post Manager"
 msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
 msgstr "Events Tickets je kvalitně zpracovaný a rozšiřitelný plugin, který vám umožní jednoduše prodávat vstupenky na vaše akce."
 
-#. #-#-#-#-#  event-tickets-code.pot (Event Tickets 4.7.4.1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets-code.pot (Event Tickets 4.7.5.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: common/src/Tribe/Admin/Help_Page.php:75 common/src/Tribe/Plugins_API.php:57
-#: src/Tribe/Main.php:454
+#: src/Tribe/Main.php:462 src/Tribe/Privacy.php:31
 msgid "Event Tickets"
 msgstr "Event Tickets"
 
