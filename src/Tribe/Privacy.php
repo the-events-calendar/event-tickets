@@ -247,13 +247,6 @@ class Tribe__Tickets__Privacy {
 				$items_retained = true;
 				$messages[]     = __( 'RSVP information was not removed. A database error may have occurred during deletion.', 'event-tickets' );
 			}
-
-			$export_items[] = array(
-				'group_id'    => $group_id,
-				'group_label' => $group_label,
-				'item_id'     => $item_id,
-				'data'        => $data,
-			);
 		}
 
 		// Tell core if we have more elements to work on still
