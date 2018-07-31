@@ -322,7 +322,11 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			// Bail if we don't have an end date and the event has passed
-			$is_past_event = tribe_is_past_event( tribe_events_get_event( $this->event_id ) );
+			// Check if the event has passed in case we're using TEC
+			$is_past_event = function_exists( 'tribe_is_past_event' )
+				? tribe_is_past_event( tribe_events_get_event( $this->event_id ) )
+				: false;
+
 			if ( empty( $end ) && $is_past_event ) {
 				return false;
 			}
