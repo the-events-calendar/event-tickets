@@ -46,10 +46,9 @@ trait Ticket_Maker {
 	}
 
 	protected function create_many_paypal_tickets( int $count, int $post_id, array $overrides = [] ) {
-		$price = $overrides['price'] ?? 3;
-		unset( $overrides['price'] );
+		return array_map( function () use ( $post_id, $overrides ) {
+			$price = $overrides['price'] ?? random_int( 1, 5 );
 
-		return array_map( function () use ( $post_id, $price, $overrides ) {
 			return $this->create_paypal_ticket( $post_id, $price, $overrides );
 		}, range( 1, $count ) );
 	}
