@@ -15,7 +15,7 @@ class Tribe__Tickets__REST__V1__Settings {
 	/**
 	 * Tribe__Tickets__REST__V1__Settings constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param Tribe__Tickets__REST__V1__System $system
 	 */
@@ -26,7 +26,7 @@ class Tribe__Tickets__REST__V1__Settings {
 	/**
 	 * @param array $fields
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */
@@ -45,7 +45,7 @@ class Tribe__Tickets__REST__V1__Settings {
 	/**
 	 * @param array $fields
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array
 	 */

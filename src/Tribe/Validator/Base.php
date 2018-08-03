@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Events__Validator__Base
  *
- * @since TBD
+ * @since 4.7.5
  */
 class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	implements Tribe__Tickets__Validator__Interface {
@@ -53,7 +53,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	/**
 	 * Whether a post ID exists.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param int $post_id
 	 *
@@ -103,7 +103,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	/**
 	 * Whether a csv list, or array, of post IDs only contains valid attendee IDs or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param        string|array $attendees
 	 * @param string              $sep

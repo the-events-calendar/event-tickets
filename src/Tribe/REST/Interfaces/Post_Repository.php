@@ -38,7 +38,7 @@ interface Tribe__Tickets__REST__Interfaces__Post_Repository {
 	/**
 	 * Returns the slug for provider.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param string|object $provider_class The provider object or class.
 	 *

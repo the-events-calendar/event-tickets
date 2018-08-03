@@ -11,7 +11,7 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	/**
 	 * Tribe__Tickets__REST__V1__Messages constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 */
 	public function __construct() {
@@ -37,7 +37,7 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	/**
 	 * Returns the localized message associated with the slug.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param string $message_slug
 	 *
@@ -54,7 +54,7 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	/**
 	 * Returns the associative array of all the messages handled by the class.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @return array An associative array in the `[ <slug> => <localized message> ]` format.
 	 */
@@ -65,7 +65,7 @@ class Tribe__Tickets__REST__V1__Messages implements Tribe__REST__Messages_Interf
 	/**
 	 * Prefixes a message slug with a common root.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * Used to uniform the slug format to the one used by the `Tribe__Events__Aggregator__Service` class.
 	 *

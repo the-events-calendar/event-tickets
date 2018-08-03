@@ -6,7 +6,7 @@
  *
  * Add Event Tickets REST API
  *
- * @since TBD
+ * @since 4.7.5
  */
 class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvider {
 
@@ -18,7 +18,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	/**
 	 * Registers the classes and functionality needed fro REST API
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 */
 	public function register() {
 		tribe_singleton( 'tickets.rest-v1.main', 'Tribe__Tickets__REST__V1__Main', array( 'hook' ) );
@@ -78,7 +78,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	/**
 	 * Registers the REST API endpoints for Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 */
 	public function register_endpoints() {
 		$this->namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
