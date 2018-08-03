@@ -25,7 +25,7 @@ class AttendeeArchiveByOrderStatusCest extends BaseRestCest {
 		$paypal_ticket                 = $this->create_paypal_ticket( $paypal_post, 2 );
 		$paypal_completed_attendee     = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'completed' ] );
 		$paypal_not_completed_attendee = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'not-completed' ] );
-		$paypal_pending_attendee       = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'pending' ] );
+		$paypal_pending_attendee       = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'pending-payment' ] );
 		$paypal_refunded_attendee      = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'refunded' ] );
 		$paypal_denied_attendee        = $this->create_attendee_for_ticket( $paypal_ticket, $paypal_post, [ '_tribe_tpp_status' => 'denied' ] );
 
