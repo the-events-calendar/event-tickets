@@ -80,9 +80,18 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	 * Whatever query is running tickets should not appear in REST
 	 * results if not related to an existing post.
 	 *
+	 * But the clauses will not be added if the query is already being
+	 * filtered by `event`
+	 *
 	 * @since TBD
 	 */
 	protected function add_related_post_clauses() {
+		if ( $this->decorated->has_filter( 'event' ) ) {
+			$this->decorated->set_query_builder( null );
+
+			return;
+		}
+
 		/** @var wpdb $wpdb */
 		global $wpdb;
 		$this->decorated->join_clause( "JOIN {$wpdb->posts} related_event
