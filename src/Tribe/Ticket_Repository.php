@@ -103,10 +103,14 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	public function filter_by_availability( $is_available ) {
 		$want_available = (bool) $is_available;
 
+		/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+		$tickets_handler   = tribe( 'tickets.handler' );
+		$capacity_meta_key = $tickets_handler->key_capacity;
+
 		if ( $want_available ) {
-			$this->where( 'meta_gt', '_capacity', 0 );
+			$this->where( 'meta_gt', $capacity_meta_key, 0 );
 		} else {
-			$this->where( 'meta_equals', '_capacity', 0 );
+			$this->where( 'meta_equals', $capacity_meta_key, 0 );
 		}
 	}
 
@@ -233,7 +237,8 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 
 		$min = $this->prepare_value( $capacity_min, '%d' );
 		$this->join_clause( "JOIN {$wpdb->postmeta} capacity_min ON {$wpdb->posts}.ID = capacity_min.post_id" );
-		$this->where_clause( "capacity_min.meta_key = '_capacity' AND (capacity_min.meta_value >= {$min} OR capacity_min.meta_value < 0)" );
+		$capacity_meta_key = $this->prepare_value( tribe( 'tickets.handler' )->key_capacity, '%s' );
+		$this->where_clause( "capacity_min.meta_key = {$capacity_meta_key} AND (capacity_min.meta_value >= {$min} OR capacity_min.meta_value < 0)" );
 	}
 
 	/**
@@ -249,7 +254,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		 * but they should not satisfy any maximum capacity requirement
 		 * so we need to use a BETWEEN query.
 		 */
-		$this->by( 'meta_between', '_capacity', array( 0, $capacity_max ), 'NUMERIC' );
+		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, array( 0, $capacity_max ), 'NUMERIC' );
 	}
 
 	/**
@@ -261,7 +266,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $capacity_max
 	 */
 	public function filter_by_capacity_between( $capacity_min, $capacity_max ) {
-		$this->by( 'meta_between', '_capacity', array( (int) $capacity_min, (int) $capacity_max ), 'NUMERIC' );
+		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, array( (int) $capacity_min, (int) $capacity_max ), 'NUMERIC' );
 	}
 
 	/**
