@@ -22,6 +22,7 @@ class TicketArchiveByAvailabilityCest extends BaseRestCest {
 		$post_ids     = $I->haveManyPostsInDatabase( 2 );
 		$i            = 0;
 		$capacities   = [ 1, 5, 10, 23 ];
+		// 2 posts, 2 tickets per post = 4 posts
 		$available    = array_reduce( $post_ids, function ( array $acc, $post_id ) use ( &$i, $capacities ) {
 			$acc[] = $this->create_rsvp_ticket( $post_id, [
 				'meta_input' => [
