@@ -26,13 +26,7 @@ trait Ticket_Maker {
 		$rsvp = tribe( 'tickets.rsvp' );
 
 		$capacity = \Tribe__Utils__Array::get( $meta_input, '_capacity', 100 );
-
-		/**
-		 * For RSVP tickets the Stock is really the capacity; here we gently
-		 * ignore the user input to work around the non-intuitive management
-		 * of stock in RSVP tickets.
-		 */
-		$stock = $capacity;
+		$stock    = \Tribe__Utils__Array::get( $meta_input, '_stock', $capacity );
 
 		unset( $meta_input['_capacity'], $meta_input['_stock'] );
 
@@ -46,7 +40,7 @@ trait Ticket_Maker {
 						'_tribe_rsvp_for_event'                          => $post_id,
 						'total_sales'                                    => 0,
 						'_stock'                                         => $stock,
-						'_capacity'                                      => $capacity,
+						tribe( 'tickets.handler' )->key_capacity         => $capacity,
 						'_manage_stock'                                  => 'yes',
 						'_ticket_start_date'                             => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
 						'_ticket_end_date'                               => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
