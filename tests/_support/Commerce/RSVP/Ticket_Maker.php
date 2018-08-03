@@ -34,7 +34,7 @@ trait Ticket_Maker {
 			'_tribe_rsvp_for_event'                          => $post_id,
 			'total_sales'                                    => 0,
 			'_stock'                                         => $stock,
-			'_capacity'                                      => $capacity,
+			tribe( 'tickets.handler' )->key_capacity         => $capacity,
 			'_manage_stock'                                  => 'yes',
 			'_ticket_start_date'                             => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
 			'_ticket_end_date'                               => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
