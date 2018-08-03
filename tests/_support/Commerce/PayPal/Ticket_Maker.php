@@ -21,6 +21,9 @@ trait Ticket_Maker {
 			? $overrides['meta_input']
 			: array();
 
+		$capacity = \Tribe__Utils__Array::get( $meta_input, '_capacity', 100 );
+		$stock    = \Tribe__Utils__Array::get( $meta_input, '_stock', $capacity );
+
 		unset( $overrides['meta_input'] );
 
 		$ticket_id = $factory->post->create( array_merge(
@@ -32,8 +35,8 @@ trait Ticket_Maker {
 					'meta_input'   => array_merge( [
 						'_tribe_tpp_for_event'                           => $post_id,
 						'_price'                                         => $price,
-						'_stock'                                         => 100,
-						'_capacity'                                      => 100,
+						'_stock'                                         => $stock,
+						tribe( 'tickets.handler' )->key_capacity         => $capacity,
 						'_manage_stock'                                  => 'yes',
 						'_ticket_start_date'                             => date( 'Y-m-d H:i:s', strtotime( '-1 day' ) ),
 						'_ticket_end_date'                               => date( 'Y-m-d H:i:s', strtotime( '+1 day' ) ),
