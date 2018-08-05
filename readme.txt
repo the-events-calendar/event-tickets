@@ -124,6 +124,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.7.7] TBD =
 
+* Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
+
 = [4.7.6] 2018-08-01 =
 
 * Fix - Fixed the "Show description" setting for Tribe Commerce tickets in the backend and frontend [100524]
