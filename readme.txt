@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.7.7] TBD =
 
-* Fix - Fix the active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
+* Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
 
 = [4.7.6] 2018-08-01 =
 
