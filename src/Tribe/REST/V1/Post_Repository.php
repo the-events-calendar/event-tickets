@@ -65,7 +65,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Retrieves an array representation of the post.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param int    $id      The post ID.
 	 * @param string $context Context of data.

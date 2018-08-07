@@ -19,8 +19,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected static $public_order_statuses = array(
 		'yes',     // RSVP
-		'completed', // PayPal and WooCommerce
-		'publish' // Easy Digital Downloads
+		'completed', // PayPal
+		'wc-completed', // WooCommerce
+		'publish', // Easy Digital Downloads
 	);
 
 	/**
@@ -177,7 +178,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @param string $optout An optout option, supported 'yes','no','any'.
 	 *
-	 * @return array
+	 * @return array|null
 	 */
 	public function filter_by_optout( $optout ) {
 		$args = array(
@@ -188,25 +189,17 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 		switch ( $optout ) {
 			case 'any':
-				$args = array();
+				return null;
 				break;
 			case 'no':
-				$args = Tribe__Repository__Query_Filters::meta_not_in_or_not_exists(
-					$this->attendee_optout_keys(),
-					'yes',
-					'did-not-optout'
-				);
+				$this->by( 'meta_not_in', $this->attendee_optout_keys(), 'yes' );
 				break;
 			case'yes':
-				$args = Tribe__Repository__Query_Filters::meta_in(
-					$this->attendee_optout_keys(),
-					'yes',
-					'did-optout'
-				);
+				$this->by( 'meta_in', $this->attendee_optout_keys(), 'yes' );
 				break;
 		}
 
-		return $args;
+		return null;
 	}
 
 	/**
@@ -260,9 +253,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_provider( $provider ) {
-		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $provider, $this->attendee_to_event_keys() );
+		$providers = Tribe__Utils__Array::list_to_array( $provider );
+		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
 
-		return Tribe__Repository__Query_Filters::meta_exists( $meta_keys, 'by-provider' );
+		$this->by( 'meta_exists', $meta_keys );
 	}
 
 	/**
@@ -299,21 +293,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			);
 		}
 
-		/** @var wpdb $wpdb */
-		global $wpdb;
-
-		$statuses_in  = "'" . implode( "','", array_map( 'esc_sql', $statuses ) ) . "'";
-		$meta_keys_in = "'" . implode( "','", array_map( 'esc_sql', $this->attendee_to_event_keys() ) ) . "'";
-
-		$event_meta = 'event_post_status_meta';
-		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} {$event_meta} ON {$wpdb->posts}.ID = {$event_meta}.post_id" );
-		$event = 'event_post';
-		$this->filter_query->join( "LEFT JOIN {$wpdb->posts} {$event} ON {$wpdb->posts}.ID = {$event_meta}.post_id" );
-		$pm1 = 'event_status_meta';
-		$this->filter_query->where( "
-					{$event_meta}.meta_key IN ( {$meta_keys_in} ) 
-					AND {$event}.ID = {$event_meta}.meta_value 
-					AND {$event}.post_status IN ( {$statuses_in} )" );
+		$this->where_meta_related_by(
+			$this->attendee_to_event_keys(),
+			'IN',
+			'post_status',
+			$statuses
+		);
 	}
 
 	/**
@@ -369,25 +354,25 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
 		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
 
-		$pm1 = 'order_status_meta';
-		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} {$pm1} ON {$wpdb->posts}.ID = {$pm1}.post_id" );
+		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} order_status_meta "
+		                           . "ON {$wpdb->posts}.ID = order_status_meta.post_id" );
 
 		if ( ! $has_plus_providers ) {
-			$this->filter_query->where( "{$pm1}.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) AND {$pm1}.meta_value IN ( {$statuses_in} )" );
+			$this->filter_query->where( "order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
+			                            . "AND order_status_meta.meta_value IN ( {$statuses_in} )" );
 		} else {
-			$order_meta = 'order_post_status_meta';
-			$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} {$order_meta} ON {$wpdb->posts}.ID = {$order_meta}.post_id" );
-			$order = 'order_post';
-			$this->filter_query->join( "LEFT JOIN {$wpdb->posts} {$order} ON {$order_meta}.post_id = {$order}.ID" );
-			$pm1 = 'order_status_meta';
+			$this->filter_query->join( "LEFT JOIN {$wpdb->posts} order_post "
+			                           . "ON order_post.ID != {$wpdb->posts}.ID" );
+			$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} attendee_to_order_meta "
+			                           . 'ON attendee_to_order_meta.meta_value = order_post.ID' );
 			$this->filter_query->where( "(
-				({$pm1}.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) AND {$pm1}.meta_value IN ( {$statuses_in} ))
+				(order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
+			                            . "AND order_status_meta.meta_value IN ( {$statuses_in} ))
 				OR
 				(
-					{$order_meta}.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' ) 
-					AND {$order}.ID = {$order_meta}.meta_value 
-					AND {$order}.post_status IN ( {$statuses_in} ) 
-					)
+					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' ) 
+					AND order_post.post_status IN ( {$statuses_in} ) 
+				)
 			)" );
 		}
 	}
@@ -456,7 +441,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	protected function checked_in_keys() {
+	public function checked_in_keys() {
 		return array(
 			'rsvp'           => '_tribe_rsvp_checkedin',
 			'tribe-commerce' => '_tribe_tpp_checkedin',
@@ -494,13 +479,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				$statuses = array_merge( $statuses, Tribe__Tickets__Commerce__PayPal__Stati::all_statuses() );
 			}
 			if ( class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) ) {
-				$wc_stati = wc_get_order_statuses();
-				foreach ( $wc_stati as &$wc_status ) {
-					// cut out the initial 'wc-'
-					$wc_status = substr( $wc_status, 3 );
-				}
-				unset ( $wc_status );
-				$statuses = array_merge( $statuses, $wc_stati );
+				$statuses = array_merge( $statuses, wc_get_order_statuses() );
 			}
 			if ( class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) ) {
 				$statuses = array_merge( $statuses, array_keys( edd_get_payment_statuses() ) );

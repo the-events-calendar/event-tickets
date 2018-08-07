@@ -4,17 +4,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.7.3.1';
+	const VERSION = '4.7.6';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.6.7';
+	const MIN_TEC_VERSION = '4.6.20';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.7.14';
+	const MIN_COMMON_VERSION = '4.7.17';
 
 	/**
 	 * Name of the provider
@@ -186,6 +186,8 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Order::hook();
 		Tribe__Tickets__JSON_LD__Type::hook();
 
+		tribe( 'tickets.privacy' );
+
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
@@ -206,6 +208,9 @@ class Tribe__Tickets__Main {
 
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
+
+		// Privacy
+		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', array( 'hook' ) );
 	}
 
 	/**

@@ -26,6 +26,7 @@ modules:
            waitlock: 0
            cleanup: true
            reconnect: false
+           waitlock: 0
            url: '%WP_URL%'
            tablePrefix: 'wp_'
         WPFilesystem:

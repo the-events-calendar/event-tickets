@@ -5,7 +5,7 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders.php
  *
  * @package TribeEventsCalendar
- * @version 4.7
+ * @version 4.7.4
  *
  */
 
@@ -16,6 +16,14 @@ $view = Tribe__Tickets__Tickets_View::instance();
 $event_id = get_the_ID();
 $event = get_post( $event_id );
 $post_type = get_post_type_object( $event->post_type );
+$user_id = get_current_user_id();
+
+/**
+ * Display a notice if the user doesn't have tickets
+ */
+if ( ! $view->has_ticket_attendees( $event_id, $user_id ) && ! $view->has_rsvp_attendees( $event_id, $user_id ) ) {
+	Tribe__Notices::set_notice( 'ticket-no-results', esc_html__( "You don't have tickets for this event", 'event-tickets' ) );
+}
 
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type ? true : false;
 ?>

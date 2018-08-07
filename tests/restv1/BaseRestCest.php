@@ -64,7 +64,7 @@ class BaseRestCest {
 		$this->documentation_url = $this->rest_url . 'doc';
 		$this->factory           = $I->factory();
 		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe_events' ] );
-
+		tribe( 'tickets.commerce.paypal' )->pending_attendees_by_ticket = [];
 		wp_cache_flush();
 
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */

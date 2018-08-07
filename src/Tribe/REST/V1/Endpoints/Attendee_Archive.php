@@ -49,7 +49,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'before'                         => 'before_date',
 			'include'                        => 'post__in',
 			'exclude'                        => 'post__not_in',
-			'offset'                         => 'offset',
 			'order'                          => 'order',
 			'post_status'                    => 'event_status',
 			'status'                         => 'post_status',
@@ -83,8 +82,16 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			->by_args( $fetch_args )
 			->permission( $permission );
 
+		if ( $request['order'] ) {
+			$query->order( $request['order'] );
+		}
+
 		if ( $request['orderby'] ) {
 			$query->order_by( $request['orderby'] );
+		}
+
+		if ( $request['offset'] ) {
+			$query->offset( $request['offset'] );
 		}
 
 		$found = $query->found();
@@ -173,7 +180,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 				'required'    => false,
 				'enum'        => array(
 					'ASC',
-					'DESC'
+					'DESC',
 				),
 			),
 			'orderby' => array(

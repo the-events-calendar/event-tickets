@@ -52,7 +52,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	/**
 	 * Whether the value is the post ID of an existing event or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.5
 	 *
 	 * @param int|string $event_id
 	 *

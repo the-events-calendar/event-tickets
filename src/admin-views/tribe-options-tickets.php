@@ -241,10 +241,10 @@ $paypal_fields            = array(
 		'type'            => 'wrapped_html',
 		'html'            => sprintf(
 			'<strong>%1$s <span id="paypal-ipn-config-status" data-status="%2$s">%3$s</span></strong><p class="description"><i>%4$s</i></p>',
-			esc_html__( 'PayPal configuration status:' ),
+			esc_html__( 'PayPal configuration status:', 'event-tickets' ),
 			esc_attr( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'slug' ) ),
 			esc_html( tribe( 'tickets.commerce.paypal.handler.ipn' )->get_config_status( 'label' ) ),
-			esc_html( 'For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)', 'event-tickets' )
+			esc_html__( 'For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)', 'event-tickets' )
 		),
 		'size'            => 'large',
 		'default'         => 'no',
@@ -266,7 +266,7 @@ $paypal_fields            = array(
 		'default'         => 'on-pending',
 		'validation_type' => 'options',
 		'options'         => array(
-			'on-pending'  => esc_html__( 'Decrease available ticket stock as soon as a Pending order is created.', 'event_tickets' ),
+			'on-pending'  => esc_html__( 'Decrease available ticket stock as soon as a Pending order is created.', 'event-tickets' ),
 			'on-complete' => esc_html__( 'Only decrease available ticket stock if an order is confirmed as Completed by PayPal.', 'event-tickets' ),
 		),
 		'tooltip_first' => true,
@@ -274,8 +274,12 @@ $paypal_fields            = array(
 	'ticket-paypal-success-page'      => array(
 		'type'            => 'dropdown',
 		'label'           => esc_html__( 'Success page', 'event-tickets' ),
-		'tooltip'         => esc_html__( "After a successful PayPal order users will be redirected to this page; use the [{$tpp_success_shortcode}] shortcode to display the order confirmation to the user in the page content.",
-			'event-tickets' ),
+		'tooltip'         => esc_html(
+			                     sprintf(
+				                     __( 'After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content.', 'event-tickets' ),
+				                     "[$tpp_success_shortcode]"
+			                     )
+		                     ),
 		'size'            => 'medium',
 		'validation_type' => 'options',
 		'options'         => $pages,
@@ -303,7 +307,7 @@ $paypal_fields            = array(
 		'label'               => esc_html__( 'Confirmation email subject', 'event-tickets' ),
 		'tooltip'             => esc_html__( 'Subject of the confirmation email sent to customers when confirming a ticket purchase.', 'event-tickets' ),
 		'size'                => 'large',
-		'default'             => 'You have tickets!',
+		'default'             => esc_html__( 'You have tickets!', 'event-tickets' ),
 		'validation_callback' => 'is_string',
 		'validation_type'     => 'textarea',
 	),
