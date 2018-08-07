@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.7.7] TBD =
 
 * Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
+* Tweak - Tribe Commerce Orders Sales by Ticket section to remove duplicate data [110034]
 
 = [4.7.6] 2018-08-01 =
 
