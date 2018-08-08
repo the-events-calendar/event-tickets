@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Fixed datepicker formats YYYY.MM.DD, MM.DD.YYYY and DD.MM.YYYY validation error on ticket start sale date. Thanks @dmitry-zhuk, Albert and others for reporting this issue! [102815]
 * Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
+* Tweak - Tribe Commerce Orders Sales by Ticket section to remove duplicate data [110034]
 
 = [4.7.6] 2018-08-01 =
 

@@ -1464,7 +1464,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->end_date         = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
-		$return->sku              = get_post_meta( $ticket_id, 'sku', true );
+		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
