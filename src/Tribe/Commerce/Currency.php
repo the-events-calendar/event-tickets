@@ -380,7 +380,12 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_currency_symbol();
 		}
 
-		return $this->get_currency_symbol( $object_id );
+		if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
+			return $this->get_currency_symbol( $object_id );
+		}
+
+		return tribe_get_option( 'defaultCurrencySymbol', '$' );
+
 	}
 
 	/**
