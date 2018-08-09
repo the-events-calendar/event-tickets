@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/tpp.php
  *
- * @version 4.7
+ * @version 4.7.6
  *
  * @var bool $must_login
  * @var bool $can_login
@@ -105,7 +105,7 @@ $cart_url       = '';
 					<?php echo $this->main->get_price_html( $ticket->ID ); ?>
 				</td>
 				<td class="tickets_description" colspan="2">
-					<?php echo esc_html( $ticket->description ); ?>
+					<?php echo esc_html( ( $ticket->show_description() ? $ticket->description : '' ) ); ?>
 				</td>
 				<td class="tickets_submit">
 					<?php if ( ! $must_login ) : ?>
