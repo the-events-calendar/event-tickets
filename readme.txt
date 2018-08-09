@@ -128,6 +128,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
 * Fix - Fixed default currency symbol inconsistency. Thanks Uwe and Zé for pointing this out! [104093]
 * Tweak - Tribe Commerce Orders Sales by Ticket section to remove duplicate data [110034]
+* Tweak - Attendees section to clarify infomation [110038]
 
 = [4.7.6] 2018-08-01 =
 

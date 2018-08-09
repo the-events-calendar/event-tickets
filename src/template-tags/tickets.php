@@ -417,7 +417,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$event_cap  = tribe_tickets_get_capacity( $event->ID );
 		$ticket_cap = tribe_tickets_get_capacity( $ticket->ID );
 
-		$sold_label = __( 'Sold', 'event-tickets' );
+		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 			$sold_label = _x( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
 		}
@@ -427,23 +427,11 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			if ( -1 === $available ) {
 				$status_counts[] = sprintf( esc_html__( '%s %d', 'event-tickets' ), esc_html( $sold_label ), esc_html( $sold ) );
 			} elseif ( $is_global ) {
-				$status_counts[] = sprintf( _x( '%1$d Remaining of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+				$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
 			} else {
 				// It's "own stock". We use the $stock value
-				$status_counts[] = sprintf( _x( '%1$d Remaining', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $stock ) );
+				$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $stock ) );
 			}
-		}
-
-		if ( $pending > 0 ) {
-			$status_counts[] = sprintf( _x( '%1$d Awaiting Review', 'ticket stock message (pending stock)', 'event-tickets' ), $pending );
-		}
-
-		if ( ! empty( $cancelled ) ) {
-			$status_counts[] = sprintf( _x( '%1$d Cancelled', 'ticket stock message (cancelled stock)', 'event-tickets' ), $cancelled );
-		}
-
-		if ( ! empty( $refunded ) ) {
-			$status_counts[] = sprintf( _x( '%1$d Refunded', 'ticket stock message (refunded stock)', 'event-tickets' ), $refunded );
 		}
 
 		if ( ! empty( $status_counts ) ) {
