@@ -39,6 +39,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 			'available_until'   => array( $this, 'filter_by_available_until' ),
 			'event_status'      => array( $this, 'filter_by_event_status' ),
 			'has_attendee_meta' => array( $this, 'filter_by_attendee_meta_existence' ),
+			'currency_code'     => array( $this, 'filter_by_currency_code' ),
 		) );
 	}
 
@@ -428,5 +429,65 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 				),
 			),
 		);
+	}
+
+	/**
+	 * Filters tickets by their provider currency codes.
+	 *
+	 * Applying this filter automatically excludes RSVP tickets that, being free, have
+	 * no currency and hence no code.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $currency_code A 3-letter currency code, an array of CSV list of
+	 *                                    3-letter currency codes.
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the queried currency code would make it
+	 *                                                 so that no ticket would match the query.
+	 */
+	public function filter_by_currency_code( $currency_code ) {
+		$queried_codes = Tribe__Utils__Array::list_to_array( $currency_code );
+
+		if ( empty( $queried_codes ) ) {
+			return;
+		}
+
+		$queried_codes = array_map( 'strtoupper', $queried_codes );
+
+		/** @var Tribe__Tickets__Commerce__Currency $currency */
+		$currency         = tribe( 'tickets.commerce.paypal.currency' );
+		$keys             = $this->ticket_to_event_keys();
+		$provider_symbols = array();
+
+		if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
+			$provider_symbols['tribe-commerce'] = $currency->get_currency_code();
+		}
+
+		if ( function_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) ) {
+			$provider_symbols['edd'] = edd_get_currency();
+		}
+
+		if ( class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) ) {
+			$provider_symbols['woo'] = get_option( 'woocommerce_currency' );
+		}
+
+		$in_keys = array();
+
+		foreach ( $provider_symbols as $provider_slug => $provider_code ) {
+			$intersected = array_intersect( (array) $provider_code, $queried_codes );
+
+			if ( count( $intersected ) === 0 ) {
+				continue;
+			}
+
+			$in_keys[] = $keys[ $provider_slug ];
+		}
+
+		if ( empty( $in_keys ) ) {
+			$reason = 'No active provider has one of the queried currency symbols';
+			throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results( $reason );
+		}
+
+		$this->by( 'meta_exists', $in_keys );
 	}
 }

@@ -51,6 +51,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			'post_status'                    => 'event_status',
 			'status'                         => 'post_status',
 			'attendee_information_available' => 'has_attendee_meta',
+			'currency'                       => 'currency_code'
 		);
 
 		$private_args = array(
@@ -333,6 +334,10 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'description'       => __( 'Limit results to tickets that are in one of post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
 				'required'          => false,
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+			),
+			'currency' => array(
+				'description'       => __( 'Limit results to tickets priced in one of the 3-letter currency codes specified in the CSV list or array.', 'event-tickets' ),
+				'required'          => false,
 			),
 			'attendee_information_available' => array(
 				'description'       => __( 'Limit results to tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ),
