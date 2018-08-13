@@ -16,6 +16,7 @@ modules:
             populate: true
             cleanup: true
             waitlock: 0
+            populator: 'mysql -u$user -p$password -h$host $dbname < $dump'
             url: '%WP_URL%'
             tablePrefix: wp_
         WPBrowser:
