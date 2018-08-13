@@ -117,11 +117,12 @@ before_script:
 
   # export a dump of the just installed database to the _data folder
   - wp db export $PLUGIN_DIR/tests/_data/dump.sql
-  # REST v1 tests start from the same point
-  - wp db export $PLUGIN_DIR/tests/_data/restv1-dump.sql
 
   # get back to the plugin dir
   - cd $PLUGIN_DIR
+
+  # localize the REST v1 database dump replacing its URL
+  - bash tests/_support/travis/dump-replace.sh
 
   # restart Nnginx and PHP-FPM services
   - sudo service php5-fpm restart
