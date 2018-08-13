@@ -286,6 +286,26 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
 		}
 
+		/**
+		 * Not only the ticket should be accessible by the user but the event too should be.
+		 */
+		$event = tribe_events_get_ticket_event( $ticket_id );
+
+		if ( ! $event instanceof WP_Post ) {
+			$message = $this->messages->get_message( 'ticket-not-accessible' );
+
+			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
+		}
+
+		$event_post_type_object = get_post_type_object( $event->post_type );
+		$read_cap               = $event_post_type_object->cap->read_post;
+
+		if ( ! ( 'publish' === $event->post_status || current_user_can( $read_cap, $event->ID ) ) ) {
+			$message = $this->messages->get_message( 'ticket-not-accessible' );
+
+			return new WP_Error( 'ticket-not-accessible', $message, array( 'status' => 401 ) );
+		}
+
 		return $this->post_repository->get_ticket_data( $ticket_id );
 	}
 

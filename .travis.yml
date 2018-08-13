@@ -121,6 +121,9 @@ before_script:
   # get back to the plugin dir
   - cd $PLUGIN_DIR
 
+  # localize the REST v1 database dump replacing its URL
+  - bash tests/_support/travis/dump-replace.sh
+
   # restart Nnginx and PHP-FPM services
   - sudo service php5-fpm restart
   - sudo service nginx restart

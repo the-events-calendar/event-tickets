@@ -63,7 +63,28 @@ class BaseRestCest {
 		$this->attendees_url     = $this->rest_url . 'attendees';
 		$this->documentation_url = $this->rest_url . 'doc';
 		$this->factory           = $I->factory();
+
+		/**
+		 * Let's make sure Tribe Commerce is enabled and correctly configured.
+		 */
+		tribe_update_option( 'ticket-paypal-enable', 'yes' );
+		tribe_update_option( 'ticket-paypal-email', 'merchant@example.com' );
+		tribe_update_option( 'ticket-paypal-ipn-enabled', 'yes' );
+		tribe_update_option( 'ticket-paypal-ipn-address-set', 'yes' );
+
+		/**
+		 * Let's make sure for sure.
+		 */
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
+
+			return $modules;
+		} );
+
+
 		tribe_update_option( 'ticket-enabled-post-types', [ 'post', 'tribe_events' ] );
+
 		tribe( 'tickets.commerce.paypal' )->pending_attendees_by_ticket = [];
 		wp_cache_flush();
 
