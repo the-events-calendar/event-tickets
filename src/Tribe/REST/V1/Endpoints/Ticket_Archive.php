@@ -51,7 +51,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			'post_status'                    => 'event_status',
 			'status'                         => 'post_status',
 			'attendee_information_available' => 'has_attendee_meta',
-			'currency'                       => 'currency_code'
+			'currency'                       => 'currency_code',
 		);
 
 		$private_args = array(
