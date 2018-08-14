@@ -34,7 +34,7 @@ class Tribe__Tickets__REST__V1__Documentation__Payment_Details_Definition_Provid
 				),
 				'date_details' => array(
 					'$ref' => '#/components/schemas/DateDetails',
-				)
+				),
 			),
 		);
 
