@@ -8,7 +8,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * @var string
 	 */
-	protected $swagger_version = '3.0.0';
+	protected $open_api_version = '3.0.0';
 
 	/**
 	 * @var string
@@ -70,7 +70,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 		$main = tribe( 'tickets.rest-v1.main' );
 
 		$documentation = array(
-			'openapi'    => $this->swagger_version,
+			'openapi'    => $this->open_api_version,
 			'info'       => $this->get_api_info(),
 			'servers'    => array(
 				array(
