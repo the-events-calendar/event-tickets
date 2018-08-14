@@ -61,7 +61,7 @@ class SwaggerDocumentationCest extends BaseRestCest {
 
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
-		$response = (array) json_decode( $I->grabResponse() );
+		$response = (array) json_decode( $I->grabResponse(), true );
 		$I->assertArrayHasKey( 'url', $response['servers'][0] );
 	}
 
