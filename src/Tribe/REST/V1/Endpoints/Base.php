@@ -77,11 +77,13 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 		$no_description = __( 'No description provided', 'event-tickets' );
 		$defaults = array_merge( array(
 			'in'          => 'body',
-			'type'        => 'string',
+			'schema'      => array(
+				'type'    => 'string',
+				'default' => '',
+			),
 			'description' => $no_description,
 			'required'    => false,
-			'default'     => '',
-			'items' => array(
+			'items'       => array(
 				'type' => 'integer',
 			),
 		), $defaults );
@@ -99,24 +101,30 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 
 			$read = array(
 				'name'             => $name,
+				'description'      => isset( $info['description'] ) ? $info['description'] : false,
 				'in'               => isset( $info['in'] ) ? $info['in'] : false,
 				'collectionFormat' => isset( $info['collectionFormat'] ) ? $info['collectionFormat'] : false,
-				'description'      => isset( $info['description'] ) ? $info['description'] : false,
-				'type'             => $type,
+				'schema'           => array(
+					'type'    => $type,
+					'default' => isset( $info['default'] ) ? $info['default'] : false,
+				),
 				'items'            => isset( $info['items'] ) ? $info['items'] : false,
 				'required'         => isset( $info['required'] ) ? $info['required'] : false,
-				'default'          => isset( $info['default'] ) ? $info['default'] : false,
 			);
 
 			if ( isset( $info['swagger_type'] ) ) {
-				$read['type'] = $info['swagger_type'];
+				$read['schema']['type'] = $info['swagger_type'];
 			}
 
-			if ( $read['type'] !== 'array' ) {
+			if ( $read['schema']['type'] !== 'array' ) {
 				unset( $defaults['items'] );
 			}
 
-			$swaggerized[] = array_merge( $defaults, array_filter( $read ) );
+			$merged = array_merge( $defaults, array_filter( $read ) );
+
+			unset( $merged['type'], $merged['default'] );
+
+			$swaggerized[] = $merged;
 		}
 
 		return $swaggerized;

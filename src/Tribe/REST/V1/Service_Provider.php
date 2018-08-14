@@ -91,9 +91,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 
 		// @todo add the endpoints as documentation providers here
 		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
-		// @todo update the ticket definition here
-		$doc_endpoint->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
-		// @todo add the attendee documentation provider here
+
 	}
 
 	/**
@@ -104,12 +102,25 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	 * @return Tribe__Documentation__Swagger__Builder_Interface
 	 */
 	protected function register_documentation_endpoint() {
+		/** @var Tribe__Documentation__Swagger__Builder_Interface $endpoint */
 		$endpoint = tribe( 'tickets.rest-v1.endpoints.documentation' );
 
 		register_rest_route( $this->namespace, '/doc', array(
 			'methods'  => WP_REST_Server::READABLE,
 			'callback' => array( $endpoint, 'get' ),
 		) );
+
+		$endpoint->register_definition_provider( 'Image', new Tribe__Documentation__Swagger__Image_Definition_Provider() );
+		$endpoint->register_definition_provider( 'ImageSize', new Tribe__Documentation__Swagger__Image_Size_Definition_Provider() );
+		$endpoint->register_definition_provider( 'DateDetails', new Tribe__Documentation__Swagger__Date_Details_Definition_Provider() );
+		$endpoint->register_definition_provider( 'CostDetails', new Tribe__Documentation__Swagger__Cost_Details_Definition_Provider() );
+		$endpoint->register_definition_provider( 'CapacityDetails', new Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provider() );
+		$endpoint->register_definition_provider( 'CheckinDetails', new Tribe__Tickets__REST__V1__Documentation__Checkin_Details_Definition_Provider() );
+		$endpoint->register_definition_provider( 'PaymentDetails', new Tribe__Tickets__REST__V1__Documentation__Payment_Details_Definition_Provider() );
+		$endpoint->register_definition_provider( 'RSVPReport', new Tribe__Tickets__REST__V1__Documentation__RSVP_Report_Definition_Provider() );
+		$endpoint->register_definition_provider( 'CheckinReport', new Tribe__Tickets__REST__V1__Documentation__Checkin_Report_Definition_Provider() );
+		$endpoint->register_definition_provider( 'Ticket', new Tribe__Tickets__REST__V1__Documentation__Ticket_Definition_Provider() );
+		$endpoint->register_definition_provider( 'Attendee', new Tribe__Tickets__REST__V1__Documentation__Attendee_Definition_Provider() );
 
 		return $endpoint;
 	}
@@ -130,6 +141,8 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 			'args'     => $endpoint->READ_args(),
 			'callback' => array( $endpoint, 'get' ),
 		) );
+
+		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/tickets/{id}', $endpoint );
 
 		return $endpoint;
 	}
@@ -178,6 +191,8 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 			'args'     => $endpoint->READ_args(),
 			'callback' => array( $endpoint, 'get' ),
 		) );
+
+		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/attendees/{id}', $endpoint );
 
 		return $endpoint;
 	}
