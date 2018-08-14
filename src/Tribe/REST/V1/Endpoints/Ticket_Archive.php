@@ -18,8 +18,62 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 * @return array An array description of a Swagger supported component.
 	 */
 	public function get_documentation() {
-		// @todo - implement me!
-		return array();
+		return array(
+			'get' => array(
+				'parameters' => $this->swaggerize_args( $this->READ_args(), array( 'in' => 'query', 'default' => '' ) ),
+				'responses'  => array(
+					'200' => array(
+						'description' => __( 'Returns all the tickets matching the search criteria', 'event-tickets' ),
+						'content' => array(
+							'application/json' => array(
+								'schema'      => array(
+									'type'       => 'object',
+									'properties' => array(
+										'rest_url'    => array(
+											'type'        => 'string',
+											'format'      => 'uri',
+											'description' => __( 'This results page REST URL', 'event-tickets' ),
+										),
+										'total'       => array(
+											'type'       => 'integer',
+											'description' => __( 'The total number of results across all pages', 'event-tickets' ),
+										),
+										'total_pages' => array(
+											'type'       => 'integer',
+											'description' => __( 'The total number of result pages matching the search criteria', 'event-tickets' ),
+										),
+										'tickets'   => array(
+											'type'  => 'array',
+											'items' => array( '$ref' => '#/components/schemas/Ticket' ),
+										),
+									),
+								),
+							),
+						),
+					),
+					'400' => array(
+						'description' => __( 'One or more of the specified query variables has a bad format', 'event-tickets' ),
+						'content'     => array(
+							'application/json' => array(
+								'schema' => array(
+									'type' => 'object',
+								),
+							),
+						),
+					),
+					'404' => array(
+						'description' => __( 'The requested page was not found.', 'event-tickets' ),
+						'content'     => array(
+							'application/json' => array(
+								'schema' => array(
+									'type' => 'object',
+								),
+							),
+						),
+					),
+				),
+			),
+		);
 	}
 
 	/**
@@ -236,6 +290,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'description'       => __( 'Limit results to tickets provided by one of the providers specified in the CSV list or array; defaults to all available.', 'event-tickets' ),
 				'required'          => false,
 				'sanitize-callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'string' ) ),
+						array( 'type' => 'string' ),
+					),
+				),
 			),
 			'after'         => array(
 				'description'       => __( 'Limit results to tickets created after or on the specified UTC date or timestamp.', 'event-tickets' ),
@@ -254,28 +314,52 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_positive_int_list' ),
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'integer' ) ),
+						array( 'type' => 'string' ),
+						array( 'type' => 'integer' ),
+					),
+				),
 			),
 			'exclude'       => array(
 				'description'       => __( 'Exclude a specific CSV list or array of ticket IDs from the results.', 'event-tickets' ),
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_positive_int_list' ),
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'integer' ) ),
+						array( 'type' => 'string' ),
+						array( 'type' => 'integer' ),
+					),
+				),
 			),
 			'include_post'  => array(
-				// @todo support multiple types in Swaggerification functions
-				// 'swagger_type' => array('integer', 'array', 'string'),
-				'swagger_type'      => 'string',
 				'description'       => __( 'Limit results to tickets that are assigned to one of the posts specified in the CSV list or array.', 'event-tickets' ),
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_post_id_list' ),
 				'sanitize_callback' => array( $this->validator, 'list_to_array' ),
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'integer' ) ),
+						array( 'type' => 'string' ),
+						array( 'type' => 'integer' ),
+					),
+				),
 			),
 			'exclude_post'  => array(
-				'swagger_type'      => 'string',
 				'description'       => __( 'Limit results to tickets that are not assigned to any of the posts specified in the CSV list or array.', 'event-tickets' ),
 				'required'          => false,
 				'validate_callback' => array( $this->validator, 'is_post_id_list' ),
 				'sanitize_callback' => array( $this->validator, 'list_to_array' ),
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'integer' ) ),
+						array( 'type' => 'string' ),
+						array( 'type' => 'integer' ),
+					),
+				),
 			),
 			'attendees_min' => array(
 				'description' => __( 'Limit results to tickets that have at least this number or attendees.', 'event-tickets' ),
@@ -329,15 +413,33 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'description'       => __( 'Limit results to tickets assigned to posts that are in one of the post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
 				'required'          => false,
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'string' ) ),
+						array( 'type' => 'string' ),
+					),
+				),
 			),
 			'status' => array(
 				'description'       => __( 'Limit results to tickets that are in one of post statuses specified in the CSV list or array; defaults to publish.', 'event-tickets' ),
 				'required'          => false,
 				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'string' ) ),
+						array( 'type' => 'string' ),
+					),
+				),
 			),
 			'currency' => array(
 				'description'       => __( 'Limit results to tickets priced in one of the 3-letter currency codes specified in the CSV list or array.', 'event-tickets' ),
 				'required'          => false,
+				'swagger_type' => array(
+					'oneOf' => array(
+						array( 'type' => 'array', 'items' => array( 'type' => 'string' ) ),
+						array( 'type' => 'string' ),
+					),
+				),
 			),
 			'attendee_information_available' => array(
 				'description'       => __( 'Limit results to tickets that provide attendees the possibility to fill in additional information or not; requires ET+.', 'event-tickets' ),

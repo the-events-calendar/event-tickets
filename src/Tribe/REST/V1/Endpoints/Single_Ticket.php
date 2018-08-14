@@ -9,8 +9,75 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	 * {@inheritdoc}
 	 */
 	public function get_documentation() {
-		// @todo implement this for ticket https://central.tri.be/issues/108024
-		return array();
+		$GET_defaults = array( 'in' => 'query', 'default' => '', 'type' => 'string' );
+
+		return array(
+			'get' => array(
+				'summary'    => __( 'Returns a single ticket data', 'event-tickets' ),
+				'parameters' => $this->swaggerize_args( $this->READ_args(), $GET_defaults ),
+				'responses'  => array(
+					'200' => array(
+						'description' => __( 'Returns the data of the ticket with the specified post ID', 'ticket-tickets' ),
+						'content'     => array(
+							'application/json' => array(
+								'schema' => array(
+									'$ref' => '#/components/schemas/Ticket',
+								),
+							),
+						),
+					),
+					'400' => array(
+						'description' => __( 'The ticket post ID is invalid.', 'ticket-tickets' ),
+						'content'     => array(
+							'application/json' => array(
+								'schema' => array(
+									'type' => 'object',
+								),
+							),
+						),
+					),
+					'401' => array(
+						'description' => __( 'The ticket with the specified ID is not accessible.', 'ticket-tickets' ),
+						'content'     => array(
+							'application/json' => array(
+								'schema' => array(
+									'type' => 'object',
+								),
+							),
+						),
+					),
+					'404' => array(
+						'description' => __( 'A ticket with the specified ID does not exist.', 'ticket-tickets' ),
+						'content'     => array(
+							'application/json' => array(
+								'schema' => array(
+									'type' => 'object',
+								),
+							),
+						),
+					),
+				),
+			),
+		);
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function READ_args() {
+		return array(
+			'id' => array(
+				'type'              => 'integer',
+				'in'                => 'path',
+				'description'       => __( 'The ticket post ID', 'event-tickets' ),
+				'required'          => true,
+				/**
+				 * Here we check for a positive int, not a ticket ID to properly
+				 * return 404 for missing post in place of 400.
+				 */
+				'validate_callback' => array( $this->validator, 'is_positive_int' ),
+			),
+		);
 	}
 
 	/**
@@ -36,23 +103,5 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 		$data = apply_filters( 'tribe_rest_single_ticket_data', $ticket_data, $request );
 
 		return $data;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function READ_args() {
-		return array(
-			'id' => array(
-				'type'              => 'integer',
-				'description'       => __( 'The ticket post ID', 'event-tickets' ),
-				'required'          => true,
-				/**
-				 * Here we check for a positive int, not a ticket ID to properly
-				 * return 404 for missing post in place of 400.
-				 */
-				'validate_callback' => array( $this->validator, 'is_positive_int' ),
-			),
-		);
 	}
 }
