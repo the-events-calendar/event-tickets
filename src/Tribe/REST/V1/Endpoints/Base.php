@@ -97,17 +97,26 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 				$type = isset( $info['type'] ) ? $info['type'] : false;
 			}
 
-			$type = $this->convert_type( $type );
+			$type = is_array( $type ) ? $type : $this->convert_type( $type );
 
-			$read = array(
+			$schema = null;
+
+			if ( is_array( $type ) ) {
+				$schema = $type;
+				unset( $info['swagger_type'] );
+			} else {
+				$schema = array(
+					'type'    => $type,
+					'default' => isset( $info['default'] ) ? $info['default'] : false,
+				);
+			}
+
+			$read  = array(
 				'name'             => $name,
 				'description'      => isset( $info['description'] ) ? $info['description'] : false,
 				'in'               => isset( $info['in'] ) ? $info['in'] : false,
 				'collectionFormat' => isset( $info['collectionFormat'] ) ? $info['collectionFormat'] : false,
-				'schema'           => array(
-					'type'    => $type,
-					'default' => isset( $info['default'] ) ? $info['default'] : false,
-				),
+				'schema'           => $schema,
 				'items'            => isset( $info['items'] ) ? $info['items'] : false,
 				'required'         => isset( $info['required'] ) ? $info['required'] : false,
 			);
@@ -116,7 +125,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 				$read['schema']['type'] = $info['swagger_type'];
 			}
 
-			if ( $read['schema']['type'] !== 'array' ) {
+			if ( isset( $read['schema']['type'] ) && $read['schema']['type'] !== 'array' ) {
 				unset( $defaults['items'] );
 			}
 
@@ -255,9 +264,9 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 *
 	 * @since 4.7.5
 	 *
-	 * @param string $type
+	 * @param string $type A type string or an array of types to define a `oneOf` type.
 	 *
-	 * @return string
+	 * @return string A converted type or the original types array.
 	 */
 	protected function convert_type( $type ) {
 		$rest_to_swagger_type_map = array(

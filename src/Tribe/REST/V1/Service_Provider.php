@@ -164,6 +164,8 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 			'callback' => array( $endpoint, 'get' ),
 		) );
 
+		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/tickets', $endpoint );
+
 		return $endpoint;
 	}
 
@@ -206,6 +208,8 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 			'args'     => $endpoint->READ_args(),
 			'callback' => array( $endpoint, 'get' ),
 		) );
+
+		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/attendees', $endpoint );
 
 		return $endpoint;
 	}
