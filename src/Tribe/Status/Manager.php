@@ -31,7 +31,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @var array
 	 */
-	protected $status_managers = array(
+	public $status_managers = array(
 		//'EDD' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 		//'RSVP' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 		//'Tribe Commerce' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
@@ -46,24 +46,17 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	protected $statues = array();
 
-	/**
-	 * Static Singleton Holder
-	 *
-	 * @var self
-	 */
-	protected $instance;
 
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
-	 * @return self
+	 * @since TBD
+	 *
+	 * @static
+	 * @return Tribe__Tickets__Status__Manager
 	 */
-	public function instance() {
-		if ( ! $this->instance ) {
-			$this->instance = new self;
-		}
-
-		return $this->instance;
+	public static function get_instance() {
+		return tribe( 'tickets.status' );
 	}
 
 
@@ -74,8 +67,6 @@ class Tribe__Tickets__Status__Manager {
 	public function setup() {
 		$this->active_modules = Tribe__Tickets__Tickets::modules();
 		$this->get_statuses_by_provider();
-
-		//log_me( $this->statues );
 	}
 
 	protected function get_statuses_by_provider() {
@@ -113,12 +104,9 @@ class Tribe__Tickets__Status__Manager {
 			return $trigger_statuses;
 		}
 
-		$filtered_statuses = wp_list_filter(
-			$this->statues[ $commerce ]->statuses,
-			array(
-		    'trigger_option' => true
-			)
-		);
+		$filtered_statuses = wp_list_filter( $this->statues[ $commerce ]->statuses, array(
+				'trigger_option' => true
+			) );
 
 		foreach ( $filtered_statuses as $status ) {
 			$trigger_statuses[ $status->provider_name ] = $status->name;
