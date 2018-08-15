@@ -188,6 +188,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			$query->offset( $request['offset'] );
 		}
 
+		$query_args = array_intersect_key( $query_args, $this->READ_args() );
+
 		$found = $query->found();
 
 		if ( 0 === $found && 1 === $page ) {
@@ -232,7 +234,6 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 * @return array
 	 */
 	public function READ_args() {
-		// @todo add all the other args
 		return array(
 			'page'          => array(
 				'description'       => __( 'The page of results to return; defaults to 1', 'event-tickets' ),
