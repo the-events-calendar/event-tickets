@@ -39,7 +39,7 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.admin.screen-options', 'Tribe__Tickets__Admin__Screen_Options', array( 'hook' ) );
 
 		// Status Manager
-		$this->container->singleton( 'tickets.status', 'Tribe__Tickets__Status__Manager', array( 'hook' ) );
+		$this->container->singleton( 'tickets.status', 'Tribe__Tickets__Status__Manager' );
 
 		// Editor
 		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor', array( 'hook' ) );
