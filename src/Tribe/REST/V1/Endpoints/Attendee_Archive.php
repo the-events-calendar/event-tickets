@@ -148,6 +148,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			$query->offset( $request['offset'] );
 		}
 
+		$query_args = array_intersect_key( $query_args, $this->READ_args() );
+
 		$found = $query->found();
 
 		if ( 0 === $found && 1 === $page ) {
