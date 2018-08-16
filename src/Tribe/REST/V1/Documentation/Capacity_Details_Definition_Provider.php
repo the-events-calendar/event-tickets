@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provider
  *
- * @since TBD
+ * @since 4.8
  */
 class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provider
 	implements Tribe__Documentation__Swagger__Provider_Interface {
@@ -41,7 +41,7 @@ class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provi
 		/**
 		 * Filters the Swagger documentation generated for capacity details in the Event Tickets REST API.
 		 *
-		 * @since TBD
+		 * @since 4.8
 		 *
 		 * @param array $documentation An associative PHP array in the format supported by Swagger.
 		 *

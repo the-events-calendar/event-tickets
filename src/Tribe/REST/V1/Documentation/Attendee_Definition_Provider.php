@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Attendees__REST__V1__Documentation__Attendee_Definition_Provider
  *
- * @since TBD
+ * @since 4.8
  */
 class Tribe__Tickets__REST__V1__Documentation__Attendee_Definition_Provider
 	implements Tribe__Documentation__Swagger__Provider_Interface {

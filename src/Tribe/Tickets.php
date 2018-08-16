@@ -323,7 +323,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filters the query arguments that will be used to fetch tickets.
 			 *
-			 * @since TBD
+			 * @since 4.8
 			 *
 			 * @param array $args
 			 */

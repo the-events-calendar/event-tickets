@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__REST__V1__Documentation__RSVP_Report_Definition_Provider
  *
- * @since TBD
+ * @since 4.8
  */
 class Tribe__Tickets__REST__V1__Documentation__RSVP_Report_Definition_Provider
 	implements Tribe__Documentation__Swagger__Provider_Interface {
@@ -29,7 +29,7 @@ class Tribe__Tickets__REST__V1__Documentation__RSVP_Report_Definition_Provider
 		/**
 		 * Filters the Swagger documentation generated for the ticket RSVP report in the Event Tickets REST API.
 		 *
-		 * @since TBD
+		 * @since 4.8
 		 *
 		 * @param array $documentation An associative PHP array in the format supported by Swagger.
 		 *

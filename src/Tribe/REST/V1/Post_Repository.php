@@ -170,7 +170,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/**
 		 * Filters the data that will be returned for a ticket.
 		 *
-		 * @since TBD
+		 * @since 4.8
 		 *
 		 * @param array  $data The ticket data.
 		 * @param int    $ticket_id The ticket post ID.
@@ -185,7 +185,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Gets the ticket object from a ticket ID.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int|WP_Post $ticket_id
 	 *
@@ -240,7 +240,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Resets the current ticket caches.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 */
 	public function reset_ticket_cache() {
 		unset( $this->current_ticket_id, $this->current_ticket_provider, $this->current_ticket_post, $this->current_ticket_object );
@@ -249,7 +249,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns the slug for provider.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param string|object $provider_class The provider object or class.
 	 *
@@ -270,7 +270,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/**
 		 * Filters the provider class to slug map.
 		 *
-		 * @since TBD
+		 * @since 4.8
 		 *
 		 * @param array $map A map in the shape [ <class> => <slug> ]
 		 * @param string The provider class
@@ -286,7 +286,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Adds the global ID information to the ticket data.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $data
 	 *
@@ -315,7 +315,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * If not set/updated for the attendee than the method will generate/update it.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int    $ticket_id
 	 * @param string $provider_class
@@ -360,7 +360,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * If not set/updated for the attendee than the method will generate/update it.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int    $ticket_id
 	 * @param string $global_id
@@ -392,7 +392,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Adds the ticket post information to the data.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $data
 	 *
@@ -427,7 +427,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Adds the meta information to the ticket data.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $data
 	 */
@@ -456,7 +456,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket header image information if set.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int $ticket_id
 	 *
@@ -492,7 +492,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket start date.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int  $ticket_id
 	 * @param bool $get_details Whether to get the date in string format (`false`) or the full details (`true`).
@@ -513,7 +513,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket end date.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int  $ticket_id
 	 * @param bool $get_details Whether to get the date in string format (`false`) or the full details (`true`).
@@ -534,7 +534,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket capacity or capacity details.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int  $ticket_id
 	 * @param bool $get_details
@@ -589,7 +589,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Returns a ticket cost or details.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int  $ticket_id
 	 * @param bool $get_details Whether to get just the ticket cost (`false`) or
@@ -634,7 +634,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Adds the attendees information to the ticket.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $data
 	 */
@@ -734,7 +734,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * If not set/updated for the attendee than the method will generate/update it.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int $attendee_id
 	 *
@@ -766,7 +766,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 *
 	 * If not set/updated for the attendee than the method will generate/update it.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int    $attendee_id
 	 * @param string $global_id
@@ -794,7 +794,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Adds REST API related information to the returned data.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $data
 	 */
@@ -808,7 +808,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Removes fields from the ticket data.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $data
 	 */
@@ -839,7 +839,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Builds an attendee data from the attendee information.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $attendee The attendee information.
 	 * @param string $context The context in which the data will be shown; this
@@ -944,7 +944,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		/**
 		 * Filters the single attendee data.
 		 *
-		 * @since TBD
+		 * @since 4.8
 		 *
 		 * @param array $attendee_data
 		 * @param string $context The context in which the data will show; this is about format,
@@ -958,7 +958,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Retrieves the ID of the Order associated with an attendee depending on the provider.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int                     $attendee_id
 	 * @param Tribe__Tickets__Tickets $provider
@@ -991,7 +991,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	/**
 	 * Retrieves an Attendee ticket SKU.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 *
 	 * @param                         int $attendee_id

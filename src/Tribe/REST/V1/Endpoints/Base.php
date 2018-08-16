@@ -167,7 +167,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 * ticket post status if the user can edit the ticket post type and set a default
 	 * order.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param array $args
 	 *
@@ -280,7 +280,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	/**
 	 * Returns the ticket data accessible to the current user.
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int $ticket_id
 	 *
@@ -334,7 +334,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 *
 	 * @uses
 	 *
-	 * @since TBD
+	 * @since 4.8
 	 *
 	 * @param int  $post_id
 	 *
