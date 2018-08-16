@@ -1943,7 +1943,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return bool
 		 */
-		protected function login_required() {
+		public function login_required() {
 			$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
 
 			return in_array( 'event-tickets_all', $requirements, true );
