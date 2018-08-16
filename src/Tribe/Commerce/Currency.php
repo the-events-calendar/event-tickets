@@ -477,7 +477,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Returns the currency 3-letter codes for a symbol.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string $symbol A currency symbol in escaped or unescaped form.
 	 *
@@ -501,7 +501,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Returns a map of 3-letter currency codes and their unescaped symbol.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param array|string $codes A currency 3-letter code or a list of them.
 	 *
@@ -525,7 +525,7 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Returns the current Tribe Commerce currency code.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return string The current Tribe Commerce 3-letter currency code,
 	 *                e.g. "USD".

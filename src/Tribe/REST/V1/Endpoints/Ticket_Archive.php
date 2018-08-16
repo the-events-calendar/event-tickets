@@ -454,7 +454,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 * Filters the found tickets to only return those the current user can access and formats
 	 * the ticket data depending on the current user access rights.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param Tribe__Tickets__Ticket_Object[] $found
 	 *

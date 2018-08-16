@@ -5,7 +5,7 @@
  *
  * The basic Attendee repository.
  *
- * @since TBD
+ * @since 4.7.7
  */
 class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
@@ -63,7 +63,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more attendee types.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -74,7 +74,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Provides arguments to filter attendees by a specific event.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int|array $event_id A post ID or an array of post IDs.
 	 *
@@ -93,7 +93,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -107,7 +107,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Provides arguments to get attendees that are not related to an event.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int|array $event_id A post ID or an array of post IDs.
 	 *
@@ -124,7 +124,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Provides arguments to filter attendees by a specific ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
 	 *
@@ -143,7 +143,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -157,7 +157,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Provides arguments to get attendees that are not related to a ticket.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
 	 *
@@ -174,7 +174,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Provides arguments to filter attendees by their optout status.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string $optout An optout option, supported 'yes','no','any'.
 	 *
@@ -207,7 +207,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -225,7 +225,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * still match. This assumes that all RSVP tickets will have a status
 	 * assigned (which is the default behaviour).
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string $rsvp_status
 	 *
@@ -245,7 +245,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * To avoid lengthy queries we check if a provider specific meta
 	 * key relating the Attendee to the event (a post) is set.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|array $provider A provider supported slug or an
 	 *                               array of supported provider slugs.
@@ -262,7 +262,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters attendee to only get those related to posts with a specific status.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|array $event_status
 	 *
@@ -304,7 +304,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters attendee to only get those related to orders with a specific status.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|array $order_status
 	 *
@@ -370,8 +370,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			                            . "AND order_status_meta.meta_value IN ( {$statuses_in} ))
 				OR
 				(
-					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' ) 
-					AND order_post.post_status IN ( {$statuses_in} ) 
+					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
+					AND order_post.post_status IN ( {$statuses_in} )
 				)
 			)" );
 		}
@@ -380,7 +380,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters Attendees by a minimum paid price.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $price_min
 	 */
@@ -391,7 +391,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters Attendees by a maximum paid price.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $price_max
 	 */
@@ -403,7 +403,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Filters attendee depending on them having additional
 	 * information or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param bool $exists
 	 */
@@ -418,7 +418,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters attendees depending on their checkedin status.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param bool $checkedin
 	 *
@@ -437,7 +437,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Returns a list of meta keys indicating an attendee checkin status.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -452,7 +452,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Returns a list of meta keys relating an attendee to the order
 	 * that generated it.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -466,7 +466,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * Bootstrap method called once per request to compile the available
 	 * order statuses.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return bool|string
 	 */

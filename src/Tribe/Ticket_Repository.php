@@ -5,7 +5,7 @@
  *
  * The basic ticket repository.
  *
- * @since TBD
+ * @since 4.7.7
  */
 class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 
@@ -13,7 +13,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Tribe__Tickets__Ticket_Repository constructor.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -48,7 +48,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more ticket types.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -59,7 +59,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by a specific event.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int|array $event_id
 	 */
@@ -72,7 +72,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @return array
 	 */
@@ -86,7 +86,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by not being related to a specific event.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int|array $event_id
 	 */
@@ -97,7 +97,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query to filter tickets by availability.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param bool $is_available
 	 */
@@ -118,7 +118,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Sets up the query to filter tickets by provider.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|array $provider
 	 */
@@ -133,7 +133,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Adds a WHERE clause to the query to filter tickets that have a minimum
 	 * number of attendees.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $attendees_min
 	 */
@@ -145,7 +145,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Adds a WHERE clause to the query to filter tickets that have a maximum
 	 * number of attendees.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $attendees_max
 	 */
@@ -157,7 +157,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Adds a WHERE clause to the query to filter tickets that have a number
 	 * of attendees between two values.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $attendees_min
 	 * @param int $attendees_max
@@ -170,7 +170,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Adds a WHERE clause to the query to filter tickets that have a minimum
 	 * number of checked-in attendees.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $checkedin_min
 	 */
@@ -187,7 +187,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Adds a WHERE clause to the query to filter tickets that have a maximum
 	 * number of checked-in attendees.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $checkedin_max
 	 */
@@ -204,7 +204,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Adds a WHERE clause to the query to filter tickets that have a number
 	 * of checked-in attendees between two values.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $checkedin_min
 	 * @param int $checkedin_max
@@ -222,7 +222,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by a minimum capacity.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $capacity_min
 	 */
@@ -245,7 +245,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by a maximum capacity.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $capacity_max
 	 */
@@ -261,7 +261,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by a minimum and maximum capacity.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param int $capacity_min
 	 * @param int $capacity_max
@@ -273,7 +273,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by their available date being starting on a date.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|int $date
 	 *
@@ -306,7 +306,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets by their available date being until a date.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|int $date
 	 *
@@ -339,7 +339,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Filters tickets to only get those related to posts with a specific status.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|array $event_status
 	 *
@@ -383,7 +383,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Filters tickets depending on them having additional
 	 * information available and active or not.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param bool $exists
 	 *
@@ -437,7 +437,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * Applying this filter automatically excludes RSVP tickets that, being free, have
 	 * no currency and hence no code.
 	 *
-	 * @since TBD
+	 * @since 4.7.7
 	 *
 	 * @param string|array $currency_code A 3-letter currency code, an array of CSV list of
 	 *                                    3-letter currency codes.
