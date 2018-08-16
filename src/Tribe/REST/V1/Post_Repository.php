@@ -277,7 +277,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 */
 		$map = apply_filters( 'tribe_tickets_rest_provider_slug_map', $map, $provider_class );
 
-		$default = array_values( $map )[0];
+		$values = array_values( $map );
+		$default = $values[0];
 
 		return Tribe__Utils__Array::get( $map, $provider_class, $default );
 	}

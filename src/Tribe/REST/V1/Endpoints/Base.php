@@ -173,7 +173,7 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 	 *
 	 * @return array
 	 */
-	public function filter_tickets_query_args( array $args = [] ) {
+	public function filter_tickets_query_args( array $args = array() ) {
 		if ( empty( $args['post_type'] ) || count( (array) $args['post_type'] ) > 1 ) {
 			return $args;
 		}
