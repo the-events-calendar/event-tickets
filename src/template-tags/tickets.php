@@ -932,7 +932,7 @@ function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 
 /**
  * Builds and returns the correct ticket repository.
  *
- * @since 4.7.7
+ * @since TBD
  *
  * @param string $repository The slug of the repository to build/return.
  *
@@ -947,7 +947,7 @@ function tribe_tickets( $repository = 'default' ) {
 	/**
 	 * Filters the map relating ticket repository slugs to service container bindings.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
 	 * @param string $repository The currently requested implementation.
@@ -960,7 +960,7 @@ function tribe_tickets( $repository = 'default' ) {
 /**
  * Builds and returns the correct attendee repository.
  *
- * @since 4.7.7
+ * @since TBD
  *
  * @param string $repository The slug of the repository to build/return.
  *
@@ -975,7 +975,7 @@ function tribe_attendees( $repository = 'default' ) {
 	/**
 	 * Filters the map relating attendee repository slugs to service container bindings.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
 	 * @param string $repository The currently requested implementation.

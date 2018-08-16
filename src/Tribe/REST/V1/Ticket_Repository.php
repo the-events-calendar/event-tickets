@@ -5,7 +5,7 @@
  *
  * The base Ticket object repository, a decorator of the base one.
  *
- * @since 4.7.7
+ * @since TBD
  */
 class Tribe__Tickets__REST__V1__Ticket_Repository
 	extends Tribe__Repository__Decorator
@@ -24,7 +24,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	/**
 	 * Tribe__Tickets__REST__V1__Ticket_Repository constructor.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 */
 	public function __construct() {
 		$this->decorated = tribe( 'tickets.ticket-repository' );
@@ -39,7 +39,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	/**
 	 * Returns the ticket in the REST API format.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param int|WP_Post $id
 	 *
@@ -66,7 +66,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	 * and WHERE clauses to only get tickets related to an existing
 	 * post.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @return WP_Query
 	 */
@@ -83,7 +83,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	 * But the clauses will not be added if the query is already being
 	 * filtered by `event`
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 */
 	protected function add_related_post_clauses() {
 		if ( $this->decorated->has_filter( 'event' ) ) {
@@ -103,7 +103,7 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 			$keys[] = $wpdb->prepare( '%s', $key );
 		}
 		$keys_in = sprintf( '(%s)', implode( ',', $keys ) );
-		$this->decorated->where_clause( "related_event_meta.meta_key IN {$keys_in}
+		$this->decorated->where_clause( "related_event_meta.meta_key IN {$keys_in} 
 			AND related_event.ID = related_event_meta.meta_value" );
 
 		$this->decorated->set_query_builder( null );

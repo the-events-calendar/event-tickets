@@ -136,7 +136,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * Returns all the payment statuses supported by the PayPal
 	 * integration.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @return array
 	 */

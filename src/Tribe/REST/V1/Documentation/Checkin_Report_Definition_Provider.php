@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__REST__V1__Documentation__Checkin_Report_Definition_Provider
  *
- * @since 4.7.7
+ * @since TBD
  */
 class Tribe__Tickets__REST__V1__Documentation__Checkin_Report_Definition_Provider
 	implements Tribe__Documentation__Swagger__Provider_Interface {
@@ -37,7 +37,7 @@ class Tribe__Tickets__REST__V1__Documentation__Checkin_Report_Definition_Provide
 		/**
 		 * Filters the Swagger documentation generated for the ticket checkin report in the Event Tickets REST API.
 		 *
-		 * @since 4.7.7
+		 * @since TBD
 		 *
 		 * @param array $documentation An associative PHP array in the format supported by Swagger.
 		 *

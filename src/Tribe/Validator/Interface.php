@@ -17,7 +17,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	/**
 	 * Whether a csv list, or array, of post IDs only contains valid ticket IDs or not.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param        string|array $tickets
 	 * @param string              $sep
@@ -40,7 +40,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	/**
 	 * Whether a csv list, or array, of post IDs only contains valid attendee IDs or not.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param        string|array $attendees
 	 * @param string              $sep
@@ -63,7 +63,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	/**
 	 * Whether a post ID exists.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param int $post_id
 	 *
@@ -74,7 +74,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	/**
 	 * Whether a csv list, or array, of post IDs only contains valid posts IDs or not.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param        string|array $posts
 	 * @param string              $sep

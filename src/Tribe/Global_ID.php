@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Global_ID
  *
- * @since 4.7.7
+ * @since TBD
  */
 class Tribe__Tickets__Global_ID extends Tribe__Utils__Global_ID {
 
 	/**
 	 * Overrides the method from the base class to allow all types.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param string $name
 	 *

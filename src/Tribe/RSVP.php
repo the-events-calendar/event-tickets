@@ -1547,7 +1547,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		/**
 		 * Filters the checkin details for this attendee checkin.
 		 *
-		 * @since 4.7.7
+		 * @since TBD
 		 *
 		 * @param array $checkin_details
 		 * @param int   $attendee_id

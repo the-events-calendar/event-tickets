@@ -5,7 +5,7 @@
  *
  * The base Attendee object repository, a decorator of the base one.
  *
- * @since 4.7.7
+ * @since TBD
  */
 class Tribe__Tickets__REST__V1__Attendee_Repository
 	extends Tribe__Repository__Decorator
@@ -18,7 +18,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	/**
 	 * Tribe__Tickets__REST__V1__Attendee_Repository constructor.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 */
 	public function __construct() {
 		$this->decorated = tribe( 'tickets.attendee-repository' );
@@ -86,7 +86,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * Overrides the base implementation to make sure only accessible
 	 * attendees are returned.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param mixed $primary_key
 	 *
@@ -132,7 +132,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	/**
 	 * Returns the attendee in the REST API format.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param int|WP_Post $id
 	 *

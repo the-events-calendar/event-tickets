@@ -3,13 +3,13 @@
 /**
  * Class Tribe__Tickets__REST__V1__Flags
  *
- * @since 4.7.7
+ * @since TBD
  */
 class Tribe__Tickets__REST__V1__Flags {
 	/**
 	 * Filters posts REST response data for ticket-enabled custom post types to add ticket-related flags.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param WP_REST_Response $response
 	 * @param WP_Post          $post
@@ -31,7 +31,7 @@ class Tribe__Tickets__REST__V1__Flags {
 	/**
 	 * Creates a list of ticket providers for a post.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param array $tickets
 	 *
@@ -53,7 +53,7 @@ class Tribe__Tickets__REST__V1__Flags {
 	/**
 	 * Filters events REST response data to add ticket-related flags.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @param array   $data
 	 * @param WP_Post $event

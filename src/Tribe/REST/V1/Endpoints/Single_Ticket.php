@@ -95,7 +95,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 		/**
 		 * Filters the data that will be returned for a single ticket request.
 		 *
-		 * @since 4.7.7
+		 * @since TBD
 		 *
 		 * @param array           $data    The ticket data.
 		 * @param WP_REST_Request $request The original request.

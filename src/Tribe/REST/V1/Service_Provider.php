@@ -97,7 +97,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	/**
 	 * Builds, registers and returns the Swagger.io documentation provider endpoint.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @return Tribe__Documentation__Swagger__Builder_Interface
 	 */
@@ -128,7 +128,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	/**
 	 * Registers the REST API endpoint that will handle single ticket requests.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @return Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	 */
@@ -150,7 +150,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	/**
 	 * Registers the REST API endpoint that will handle ticket archive requests.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 *
 	 * @return Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 */
@@ -172,7 +172,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 	/**
 	 * Hooks all the methods and actions the class needs.
 	 *
-	 * @since 4.7.7
+	 * @since TBD
 	 */
 	protected function hooks() {
 		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
