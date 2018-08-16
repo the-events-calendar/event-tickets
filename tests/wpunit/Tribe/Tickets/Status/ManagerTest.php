@@ -14,49 +14,80 @@ use Tribe__Tickets__Status__Manager as Manager;
  */
 class ManagerTest extends \Codeception\TestCase\WPTestCase {
 
-	/**
-	 * test modules loaded
-	 *
-	 *
-	 */
+	public function setUp() {
+
+		// before
+		parent::setUp();
+
+		// let's avoid die()s
+		add_filter( 'tribe_exit', function () {
+			return [ $this, 'dont_die' ];
+		} );
+
+		add_filter( 'tribe_tickets_get_modules', function ( array $modules ) {
+			$modules[ \Tribe__Tickets__Commerce__PayPal__Main::class ] = 'Tribe Commerce';
+
+			return $modules;
+		} );
+	}
+
+	public function dont_die() {
+		// no-op, go on
+	}
+
+	public function tearDown() {
+		// your tear down methods here
+
+		// then
+		parent::tearDown();
+	}
 
 	/**
-	 * It should be instantiatable
-	 *
 	 * @test
 	 * @since TBD
 	 */
 	public function it_should_be_instantiatable() {
 		$sut = $this->make_instance();
 
-		//print_r( $sut->status_managers );
-
 		$this->assertInstanceOf( Manager::class, $sut );
 	}
 
+	/**
+	 * @return Manager
+	 */
 	private function make_instance() {
-		/** @var Manager $instance */
-		$instance = ( new \ReflectionClass( Manager::class ) )->newInstanceWithoutConstructor();
+		tribe_update_option( 'ticket-paypal-enable', true );
 
-		return $instance;
+		return new Manager();
 	}
 
 	/**
-	 * Check for Event Tickets Manager Class Key
+	 * todo active test once RSVP and Tribe Commerce Managers are created
 	 *
 	 * @test
 	 * @since TBD
 	 */
-/*	public function it_has_manage_class_keys() {
-		$this->assertArrayHasKey( 'RSVP', Manager::get_instance()->status_managers );
-		$this->assertArrayHasKey( 'Tribe Commerce', Manager::get_instance()->status_managers );
-	}*/
+	/*	public function it_has_manage_class_keys_for_rsvp_and_tribe_commerce() {
+			$this->assertArrayHasKey( 'RSVP', Manager::get_instance()->get_status_managers() );
+			$this->assertArrayHasKey( 'Tribe Commerce', Manager::get_instance()->get_status_managers() );
+		}*/
 
-	public function it_has_active_modules() {
-		//$instance = ( new \ReflectionClass( Manager::class ) )->newInstanceWithoutConstructor();
-		//$reflection_property = $instance->getProperty('active_modules');
-		//$reflection_property->setAccessible(true);
-		//print_r($reflection_property);
-		$this->assertEquals( 'active', 'active' );
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_has_rsvp_active_module() {
+		$this->assertArrayHasKey( 'Tribe__Tickets__RSVP', Manager::get_instance()->get_active_modules() );
+	}
+
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_has_tribe_commerce_active_module() {
+
+		//run setup again to get the active modules that will include Tribe Commerce
+		Manager::get_instance()->setup();
+		$this->assertArrayHasKey( 'Tribe__Tickets__Commerce__PayPal__Main', Manager::get_instance()->get_active_modules() );
 	}
 }

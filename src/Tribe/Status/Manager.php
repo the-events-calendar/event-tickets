@@ -9,19 +9,8 @@
 class Tribe__Tickets__Status__Manager {
 
 	/**
-	 * todo
+	 * Active Modules
 	 *
-	 * Determine which provider to use
-	 * Get all the Statuses for a provider
-	 * get_trigger_statues and set it status objects
-	 *
-	 * load once for all ecommerce
-	 *
-	 *
-	 *
-	 */
-
-	/**
 	 * @var array
 	 */
 	protected $active_modules;
@@ -31,7 +20,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @var array
 	 */
-	public $status_managers = array(
+	protected $status_managers = array(
 		//'EDD' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 		//'RSVP' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 		//'Tribe Commerce' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
@@ -40,7 +29,7 @@ class Tribe__Tickets__Status__Manager {
 
 
 	/**
-	 * An array of status objects for WooCommerce Tickets
+	 * An array of status objects for all active commerces
 	 *
 	 * @var array
 	 */
@@ -60,27 +49,68 @@ class Tribe__Tickets__Status__Manager {
 	}
 
 
+	/**
+	 * Hook
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function hook() {
-		add_action( 'init', array( $this, 'setup' ), 10 );
+		add_action( 'init', array( $this, 'setup' ) );
 	}
 
+	/**
+	 * Setup the Manager Class
+	 *
+	 * @since TBD
+	 *
+	 */
 	public function setup() {
 		$this->active_modules = Tribe__Tickets__Tickets::modules();
 		$this->get_statuses_by_provider();
 	}
 
+	/**
+	 * Get the statuses for each provider that is active and has a manager
+	 *
+	 * @since TBD
+	 *
+	 */
 	protected function get_statuses_by_provider() {
 
+		$status_managers = $this->get_status_managers();
 		foreach ( $this->active_modules as $module_class => $module_name ) {
 
-			if ( ! isset( $this->status_managers[ $module_name ] ) ) {
+			if ( ! isset( $status_managers[ $module_name ] ) ) {
 				continue;
 			}
 
-			$status_class                  = $this->status_managers[ $module_name ];
+			$status_class                  = $status_managers[ $module_name ];
 			$this->statues[ $module_name ] = new $status_class();
 		}
 
+	}
+
+	/**
+	 * Get the Active Modules
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_active_modules() {
+		return $this->active_modules;
+	}
+
+	/**
+	 * Get the Status Manager Array
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_status_managers() {
+		return $this->status_managers;
 	}
 
 	/**
