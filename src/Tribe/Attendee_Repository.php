@@ -478,10 +478,18 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			if ( Tribe__Tickets__Commerce__PayPal__Main::get_instance()->is_active() ) {
 				$statuses = array_merge( $statuses, Tribe__Tickets__Commerce__PayPal__Stati::all_statuses() );
 			}
-			if ( class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) ) {
+
+			if (
+				class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
+				&& function_exists( 'wc_get_order_statuses' )
+			) {
 				$statuses = array_merge( $statuses, wc_get_order_statuses() );
 			}
-			if ( class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) ) {
+
+			if (
+				class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
+				&& function_exists( 'edd_get_payment_statuses' )
+			) {
 				$statuses = array_merge( $statuses, array_keys( edd_get_payment_statuses() ) );
 			}
 
