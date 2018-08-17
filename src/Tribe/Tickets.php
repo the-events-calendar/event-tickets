@@ -643,12 +643,33 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Get All Attendees by ticket/attendee ID
+		 *
+		 * @since TBD
+		 *
+		 * @param int $attendee_id
+		 * @return array
+		 */
+		public function get_all_attendees_by_attendee_id( $attendee_id ) {
+			$attendees_query = new WP_Query( array(
+				'p'         => $attendee_id,
+				'post_type' => $this->attendee_object,
+			) );
+
+			if ( ! $attendees_query->have_posts() ) {
+				return array();
+			}
+
+			return $this->get_attendees( $attendees_query, $attendee_id );
+		}
+
+		/**
 		 * Get Attendees by ticket/attendee ID
 		 *
 		 * @param int $attendee_id
 		 * @return array
 		 */
-		public function get_attendees_by_attendee_id( $attendee_id ) {
+		protected function get_attendees_by_attendee_id( $attendee_id ) {
 			$attendees_query = new WP_Query( array(
 				'p'         => $attendee_id,
 				'post_type' => $this->attendee_object,

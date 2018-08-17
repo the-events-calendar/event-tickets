@@ -1233,7 +1233,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			case self::ATTENDEE_OBJECT :
 
-				return $this->get_attendees_by_attendee_id( $post_id );
+				return $this->get_all_attendees_by_attendee_id( $post_id );
 
 				break;
 
@@ -1312,7 +1312,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array
 	 */
-	 public function get_attendees_by_attendee_id( $attendee_id ) {
+	 public function get_all_attendees_by_attendee_id( $attendee_id ) {
 
 		$attendees_query = new WP_Query( array(
 			'p'         => $attendee_id,
