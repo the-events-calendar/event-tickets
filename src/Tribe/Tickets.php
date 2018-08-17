@@ -652,7 +652,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function get_all_attendees_by_attendee_id( $attendee_id ) {
 			$attendees_query = new WP_Query( array(
-				'p'         => $attendee_id,
+				'p'         => absint( $attendee_id ),
 				'post_type' => $this->attendee_object,
 			) );
 
