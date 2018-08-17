@@ -799,6 +799,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			$has_generated_new_tickets = false;
 
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency        = tribe( 'tickets.commerce.currency' );
+			$currency_symbol = $currency->get_currency_symbol( $product_id, true );
+
 			// Iterate over all the amount of tickets purchased (for this product)
 			for ( $i = 0; $i < $qty; $i ++ ) {
 				$attendee_id = null;
@@ -852,6 +856,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
 					update_post_meta( $attendee_id, $this->email, $attendee_email );
 					update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
+					update_post_meta( $attendee_id, '_paid_price', get_post_meta( $product_id, '_price', true ) );
+					update_post_meta( $attendee_id, '_price_currency_symbol', $currency_symbol );
 				}
 
 				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
@@ -2505,7 +2511,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
 
 		$meta = '';
-		if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+		if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
 			$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
 
 			// Process Meta to include value, slug, and label

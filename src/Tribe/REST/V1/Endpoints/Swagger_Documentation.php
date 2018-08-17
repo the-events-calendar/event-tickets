@@ -8,7 +8,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	/**
 	 * @var string
 	 */
-	protected $swagger_version = '2.0';
+	protected $open_api_version = '3.0.0';
 
 	/**
 	 * @var string
@@ -66,16 +66,19 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	 * @return array An array description of a Swagger supported component.
 	 */
 	public function get_documentation() {
+		/** @var Tribe__Tickets__REST__V1__Main $main */
+		$main = tribe( 'tickets.rest-v1.main' );
+
 		$documentation = array(
-			'swagger'     => $this->swagger_version,
-			'info'        => $this->get_api_info(),
-			'host'        => parse_url( home_url(), PHP_URL_HOST ),
-			'basePath'    => str_replace( home_url(), '', tribe_tickets_rest_url() ),
-			'schemes'     => is_ssl() ? array( 'https', 'http' ) : array( 'http' ),
-			'consumes'    => array( 'application/json' ),
-			'produces'    => array( 'application/json' ),
-			'paths'       => $this->get_paths(),
-			'definitions' => $this->get_definitions(),
+			'openapi'    => $this->open_api_version,
+			'info'       => $this->get_api_info(),
+			'servers'    => array(
+				array(
+					'url' => $main->get_url(),
+				),
+			),
+			'paths'      => $this->get_paths(),
+			'components' => array( 'schemas' => $this->get_definitions() ),
 		);
 
 		/**
@@ -102,9 +105,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Swagger_Documentation
 	 */
 	protected function get_api_info() {
 		return array(
-			'version'     => $this->tec_rest_api_version,
 			'title'       => __( 'Event Tickets REST API', 'event-tickets' ),
 			'description' => __( 'Event Tickets REST API allows accessing ticket information easily and conveniently.', 'event-tickets' ),
+			'version'     => $this->tec_rest_api_version,
 		);
 	}
 
