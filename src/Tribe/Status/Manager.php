@@ -135,7 +135,7 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		$filtered_statuses = wp_list_filter( $this->statues[ $commerce ]->statuses, array(
-				'trigger_option' => true
+				'trigger_option' => true,
 			) );
 
 		foreach ( $filtered_statuses as $status ) {
