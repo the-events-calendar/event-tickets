@@ -1540,7 +1540,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			case $this->attendee_object :
 
-				return $this->get_attendees_by_attendee_id( $post_id );
+				return $this->get_all_attendees_by_attendee_id( $post_id );
 
 				break;
 

@@ -122,12 +122,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.8] 2018-08-16 =
+= [4.8] TBD =
 
 * Feature - Include a Tickets REST API endpoint for read operations [108021]
-
-= [4.7.7] TBD =
-
 * Fix - Fixed datepicker formats YYYY.MM.DD, MM.DD.YYYY and DD.MM.YYYY validation error on ticket start sale date. Thanks @dmitry-zhuk, Albert and others for reporting this issue! [102815]
 * Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
 * Fix - Fixed default currency symbol inconsistency. Thanks Uwe and Zé for pointing this out! [104093]

@@ -205,7 +205,7 @@ class SingleAttendeeCest extends BaseRestCest {
 		/** @var \Tribe__Tickets__REST__V1__Post_Repository $repository */
 		$repository = tribe( 'tickets.rest-v1.repository' );
 
-		$attendees_objects     = $provider->get_attendees_by_attendee_id( $attendee_id );
+		$attendees_objects     = $provider->get_all_attendees_by_attendee_id( $attendee_id );
 		$attendee_object       = $attendees_objects[0];
 
 		$I->sendGET( $this->attendees_url . "/{$attendee_id}" );

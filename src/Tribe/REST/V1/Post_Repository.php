@@ -110,7 +110,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		// The return value of this function will always be an array even if we only want one object.
-		$attendee = $provider->get_attendees_by_attendee_id( $attendee_id );
+		$attendee = $provider->get_all_attendees_by_attendee_id( $attendee_id );
 
 		if ( empty( $attendee ) ) {
 			// the attendee post does exist but it does not make sense on the server, server error
