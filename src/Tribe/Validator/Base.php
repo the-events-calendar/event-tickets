@@ -80,7 +80,7 @@ class Tribe__Tickets__Validator__Base extends Tribe__Validator__Base
 	/**
 	 * Whether the value is the post id of an existing attendee or not.
 	 *
-	 * @since tbd
+	 * @since 4.8.0
 	 *
 	 * @param int $attendee_id
 	 *

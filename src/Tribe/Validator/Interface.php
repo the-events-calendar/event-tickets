@@ -6,7 +6,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	/**
 	 * Whether the value is the post id of an existing ticket or not.
 	 *
-	 * @since tbd
+	 * @since 4.8.0
 	 *
 	 * @param int $ticket_id
 	 *
@@ -29,7 +29,7 @@ interface Tribe__Tickets__Validator__Interface extends Tribe__Validator__Interfa
 	/**
 	 * Whether the value is the post id of an existing attendee or not.
 	 *
-	 * @since tbd
+	 * @since 4.8.0
 	 *
 	 * @param int $attendee_id
 	 *

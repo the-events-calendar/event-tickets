@@ -645,7 +645,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get All Attendees by ticket/attendee ID
 		 *
-		 * @since TBD
+		 * @since 4.8.0
 		 *
 		 * @param int $attendee_id
 		 * @return array
