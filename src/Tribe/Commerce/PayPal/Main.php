@@ -632,9 +632,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/#variations-on-basic-variables
 		 */
-		if ( ! empty( $transaction_data['invoice'] ) ) {
-			$cart->set_id( $transaction_data['invoice'] );
-			$cart->clear();
+		if ( ! empty( $transaction_data['custom'] ) ) {
+			$decoded_custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
+			if ( isset( $decoded_custom['invoice'] ) ) {
+				$cart->set_id( $decoded_custom['invoice'] );
+				$cart->clear();
+			}
 		}
 
 		$raw_transaction_data = $gateway->get_raw_transaction_data();
