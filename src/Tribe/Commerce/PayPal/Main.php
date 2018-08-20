@@ -632,9 +632,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 *
 		 * @link https://developer.paypal.com/docs/classic/paypal-payments-standard/integration-guide/formbasics/#variations-on-basic-variables
 		 */
-		if ( ! empty( $transaction_data['invoice'] ) ) {
-			$cart->set_id( $transaction_data['invoice'] );
-			$cart->clear();
+		if ( ! empty( $transaction_data['custom'] ) ) {
+			$decoded_custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
+			if ( isset( $decoded_custom['invoice'] ) ) {
+				$cart->set_id( $decoded_custom['invoice'] );
+				$cart->clear();
+			}
 		}
 
 		$raw_transaction_data = $gateway->get_raw_transaction_data();
@@ -799,6 +802,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			$has_generated_new_tickets = false;
 
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency        = tribe( 'tickets.commerce.currency' );
+			$currency_symbol = $currency->get_currency_symbol( $product_id, true );
+
 			// Iterate over all the amount of tickets purchased (for this product)
 			for ( $i = 0; $i < $qty; $i ++ ) {
 				$attendee_id = null;
@@ -852,6 +859,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					update_post_meta( $attendee_id, $this->attendee_optout_key, (bool) $attendee_optout );
 					update_post_meta( $attendee_id, $this->email, $attendee_email );
 					update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
+					update_post_meta( $attendee_id, '_paid_price', get_post_meta( $product_id, '_price', true ) );
+					update_post_meta( $attendee_id, '_price_currency_symbol', $currency_symbol );
 				}
 
 				update_post_meta( $attendee_id, $this->attendee_tpp_key, $attendee_order_status );
@@ -1464,7 +1473,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->end_date         = get_post_meta( $ticket_id, '_ticket_end_date', true );
 		$return->start_time       = get_post_meta( $ticket_id, '_ticket_start_time', true );
 		$return->end_time         = get_post_meta( $ticket_id, '_ticket_end_time', true );
-		$return->sku              = get_post_meta( $ticket_id, 'sku', true );
+		$return->sku              = get_post_meta( $ticket_id, '_sku', true );
 
 		// If the quantity sold wasn't set, default to zero
 		$qty_sold = $qty_sold ? $qty_sold : 0;
@@ -1534,7 +1543,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			case $this->attendee_object :
 
-				return $this->get_attendees_by_attendee_id( $post_id );
+				return $this->get_all_attendees_by_attendee_id( $post_id );
 
 				break;
 
@@ -2505,7 +2514,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
 
 		$meta = '';
-		if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+		if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
 			$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
 
 			// Process Meta to include value, slug, and label

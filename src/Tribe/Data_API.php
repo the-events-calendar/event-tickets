@@ -63,7 +63,7 @@ class Tribe__Tickets__Data_API {
 	 *
 	 * @param null $post id or post object
 	 *
-	 * @return array|bool array includes infomation available and the tribe_tickets_tickets class to use
+	 * @return array|bool An array of available information about the object and the tribe_tickets_tickets class to use
 	 */
 	public function detect_by_id( $post = null ) {
 

@@ -4,7 +4,7 @@ namespace Tribe\Tickets\Test\Factories;
 
 use Tribe__Tickets__RSVP as RSVP;
 
-class Ticket extends \WP_UnitTest_Factory_For_Post {
+class RSVPAttendee extends \WP_UnitTest_Factory_For_Post {
 
 	/**
 	 * Inserts an ticket in the database.
