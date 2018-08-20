@@ -39,6 +39,12 @@ TEST_DB_PASSWORD="root"
 
 If you look at any `tests/*.suite.dist.yml` file you will see that the configuration contains placeholders like `%WP_ROOT_FOLDER%` that [Codeception will configure at runtime](http://codeception.com/docs/06-ModulesAndHelpers#Dynamic-Configuration-With-Parameters).  
 Once those are correct you are ready to run, no need to change anything else.
+
+### Errors with populator
+The `restv1` test suite uses [the Codeception `populator` functionality](https://codeception.com/docs/modules/Db#Populator); this means that that the database dump is imported not using PHP code but using the `mysql` command.  
+It's highly probable that, depending on your host machine and configuration you will need to either:
+* not use `populator` - create a copy of the `/tests/restv1.suite.dist.yml` and call it `/tests/restv1.suiteyml`; in that file remove the `WPDb > populator` entry.  
+* configure the `populator` parameter to work differently - create a copy of the `/tests/restv1.suite.dist.yml` and call it `/tests/restv1.suiteyml`; in that file edit the `WPDb > populator` entry to suite your local environment.
 	
 ## Running the tests
 Nothing different from a default Codeception environment so this command will run all the tests in the `wpunit` suite:

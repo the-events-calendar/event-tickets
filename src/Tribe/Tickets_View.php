@@ -652,8 +652,9 @@ class Tribe__Tickets__Tickets_View {
 		array_walk( $options, array( $this, 'normalize_rsvp_option' ) );
 
 		// If an option was passed return it's label, but if doesn't exist return false
-		if ( ! is_null( $selected ) ) {
-			return isset( $options[ $selected  ] ) ? $options[ $selected  ]['label'] : false;
+		if ( null !== $selected ) {
+			return isset( $options[ $selected  ] ) ?
+                $options[ $selected  ]['label'] : false;
 		}
 
 		return $just_labels ?
