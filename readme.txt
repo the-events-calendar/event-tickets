@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.7.7] TBD =
+
+* Tweak - Added filter: `tribe_tickets_get_ticket_max_purchase` [112478]
+
 = [4.7.6] 2018-08-01 =
 
 * Fix - Fixed the "Show description" setting for Tribe Commerce tickets in the backend and frontend [100524]
