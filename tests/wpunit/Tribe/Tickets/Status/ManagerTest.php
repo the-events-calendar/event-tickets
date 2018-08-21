@@ -2,7 +2,6 @@
 
 namespace Tribe\Tickets;
 
-use Prophecy\Argument;
 use Tribe__Tickets__Status__Manager as Manager;
 
 /**
