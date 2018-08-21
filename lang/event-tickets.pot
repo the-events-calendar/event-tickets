@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.7.5\n"
+"Project-Id-Version: Event Tickets 4.7.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2018-07-06 20:51:42+00:00\n"
+"POT-Creation-Date: 2018-07-27 19:06:53+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-07-06 20:51\n"
+"PO-Revision-Date: 2018-07-27 19:06\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
@@ -248,6 +248,10 @@ msgid ""
 "export."
 msgstr ""
 
+#: src/Tribe/Attendees.php:426
+msgid "%s - Attendee list"
+msgstr ""
+
 #: src/Tribe/Attendees.php:498
 msgctxt "attendee export"
 msgid "Order ID"
@@ -381,9 +385,9 @@ msgid "Print"
 msgstr ""
 
 #: src/Tribe/Attendees_Table.php:520
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:73 src/Tribe/Privacy.php:131
-#: src/Tribe/Privacy.php:206 src/admin-views/admin-welcome-message.php:62
-#: src/views/tickets/rsvp.php:161
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:73 src/Tribe/Privacy.php:164
+#: src/Tribe/Privacy.php:452 src/Tribe/Privacy.php:548
+#: src/admin-views/admin-welcome-message.php:62 src/views/tickets/rsvp.php:161
 msgid "Email"
 msgstr ""
 
@@ -657,73 +661,73 @@ msgstr ""
 msgid "Orders"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1050 src/Tribe/RSVP.php:700
+#: src/Tribe/Commerce/PayPal/Main.php:1115 src/Tribe/RSVP.php:700
 msgid "Your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1636
+#: src/Tribe/Commerce/PayPal/Main.php:1716
 msgid "Sales report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1662
+#: src/Tribe/Commerce/PayPal/Main.php:1742
 msgid "Report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1815 src/Tribe/RSVP.php:1701
+#: src/Tribe/Commerce/PayPal/Main.php:1895 src/Tribe/RSVP.php:1701
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1822 src/Tribe/RSVP.php:1708
+#: src/Tribe/Commerce/PayPal/Main.php:1902 src/Tribe/RSVP.php:1708
 msgid "Post updated. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1826 src/Tribe/RSVP.php:1712
+#: src/Tribe/Commerce/PayPal/Main.php:1906 src/Tribe/RSVP.php:1712
 msgid "Post published. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1829 src/Tribe/RSVP.php:1715
+#: src/Tribe/Commerce/PayPal/Main.php:1909 src/Tribe/RSVP.php:1715
 msgid "Post submitted."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1830 src/Tribe/RSVP.php:1716
+#: src/Tribe/Commerce/PayPal/Main.php:1910 src/Tribe/RSVP.php:1716
 msgid "Post scheduled."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1831 src/Tribe/RSVP.php:1717
+#: src/Tribe/Commerce/PayPal/Main.php:1911 src/Tribe/RSVP.php:1717
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2086
+#: src/Tribe/Commerce/PayPal/Main.php:2166
 msgctxt "a PayPal ticket order status"
 msgid "Undefined"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2087
+#: src/Tribe/Commerce/PayPal/Main.php:2167
 msgctxt "a PayPal ticket order status"
 msgid "Completed"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2088
+#: src/Tribe/Commerce/PayPal/Main.php:2168
 msgctxt "a PayPal ticket order status"
 msgid "Refunded"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2089
+#: src/Tribe/Commerce/PayPal/Main.php:2169
 msgctxt "a PayPal ticket order status"
 msgid "Pending"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2090
+#: src/Tribe/Commerce/PayPal/Main.php:2170
 msgctxt "a PayPal ticket order status"
 msgid "Denied"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2091
+#: src/Tribe/Commerce/PayPal/Main.php:2171
 msgctxt "a PayPal ticket order status"
 msgid "Not Completed"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2422 src/Tribe/RSVP.php:1396
+#: src/Tribe/Commerce/PayPal/Main.php:2502 src/Tribe/RSVP.php:1396
 msgid "(deleted)"
 msgstr ""
 
@@ -771,7 +775,7 @@ msgid "Order"
 msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:72
-#: src/views/tickets/email.php:395
+#: src/views/tickets/email.php:406
 msgid "Purchaser"
 msgstr ""
 
@@ -779,8 +783,8 @@ msgstr ""
 msgid "Purchased"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:75 src/Tribe/Privacy.php:136
-#: src/Tribe/Privacy.php:211
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:75 src/Tribe/Privacy.php:169
+#: src/Tribe/Privacy.php:457 src/Tribe/Privacy.php:553
 msgid "Date"
 msgstr ""
 
@@ -1014,9 +1018,9 @@ msgid ""
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.7.5)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.7.6)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: src/Tribe/Main.php:462 src/Tribe/Privacy.php:31
+#: src/Tribe/Main.php:462 src/Tribe/Privacy.php:32
 msgid "Event Tickets"
 msgstr ""
 
@@ -1075,33 +1079,71 @@ msgstr ""
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
-#: src/Tribe/Privacy.php:70
+#: src/Tribe/Privacy.php:71 src/Tribe/Privacy.php:98
 msgid "Event Tickets RSVP Attendee"
 msgstr ""
 
-#: src/Tribe/Privacy.php:75
+#: src/Tribe/Privacy.php:76 src/Tribe/Privacy.php:103
 msgid "Event Tickets TribeCommerce Attendee"
 msgstr ""
 
-#: src/Tribe/Privacy.php:116
+#: src/Tribe/Privacy.php:81 src/Tribe/Privacy.php:108
+msgid "Event Tickets TribeCommerce Order"
+msgstr ""
+
+#: src/Tribe/Privacy.php:149
 msgid "Event Tickets RSVP Attendee Data"
 msgstr ""
 
-#: src/Tribe/Privacy.php:121
+#: src/Tribe/Privacy.php:154
 msgid "RSVP Title"
 msgstr ""
 
-#: src/Tribe/Privacy.php:126 src/Tribe/Privacy.php:201
+#: src/Tribe/Privacy.php:159 src/Tribe/Privacy.php:447
 #: src/views/tickets/rsvp.php:153
 msgid "Full Name"
 msgstr ""
 
-#: src/Tribe/Privacy.php:191
+#: src/Tribe/Privacy.php:248
+msgid ""
+"RSVP information was not removed. A database error may have occurred during "
+"deletion."
+msgstr ""
+
+#: src/Tribe/Privacy.php:319
+msgid ""
+"TribeCommerce attendee information was not removed. A database error may "
+"have occurred during deletion."
+msgstr ""
+
+#: src/Tribe/Privacy.php:388
+msgid ""
+"TribeCommerce order information was not removed. A database error may have "
+"occurred during deletion."
+msgstr ""
+
+#: src/Tribe/Privacy.php:437
 msgid "Event Tickets TribeCommerce Attendee Data"
 msgstr ""
 
-#: src/Tribe/Privacy.php:196
+#: src/Tribe/Privacy.php:442
 msgid "Order Title"
+msgstr ""
+
+#: src/Tribe/Privacy.php:521
+msgid "Event Tickets TribeCommerce Order Data"
+msgstr ""
+
+#: src/Tribe/Privacy.php:526
+msgid "Order Number"
+msgstr ""
+
+#: src/Tribe/Privacy.php:531 src/views/tickets/tpp-success.php:134
+msgid "Order Total"
+msgstr ""
+
+#: src/Tribe/Privacy.php:543
+msgid "Billing Address"
 msgstr ""
 
 #: src/Tribe/REST/V1/Documentation/Ticket_Definition_Provider.php:26
@@ -1213,19 +1255,27 @@ msgstr ""
 msgid "Set capacity for this ticket only"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1742
+#: src/Tribe/Tickets.php:1741
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1744
-msgid "Tickets are not yet available."
+#: src/Tribe/Tickets.php:1777
+msgid "Tickets will be available on "
 msgstr ""
 
-#: src/Tribe/Tickets.php:1746
+#: src/Tribe/Tickets.php:1783
+msgid " at "
+msgstr ""
+
+#: src/Tribe/Tickets.php:1786
+msgid "Tickets are not yet available"
+msgstr ""
+
+#: src/Tribe/Tickets.php:1789
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1748
+#: src/Tribe/Tickets.php:1791
 msgid "There are no tickets available at this time."
 msgstr ""
 
@@ -2403,15 +2453,15 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/views/tickets/email.php:387
+#: src/views/tickets/email.php:398
 msgid "Ticket #"
 msgstr ""
 
-#: src/views/tickets/email.php:391
+#: src/views/tickets/email.php:402
 msgid "Ticket Type"
 msgstr ""
 
-#: src/views/tickets/email.php:399
+#: src/views/tickets/email.php:410
 msgid "Security Code"
 msgstr ""
 
@@ -2584,10 +2634,6 @@ msgstr ""
 #: src/views/tickets/tpp-success.php:80
 msgctxt "Success page tickets table header"
 msgid "Subtotal"
-msgstr ""
-
-#: src/views/tickets/tpp-success.php:134
-msgid "Order Total"
 msgstr ""
 
 #: src/views/tickets/tpp.php:36

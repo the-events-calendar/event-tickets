@@ -19,7 +19,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 *
 	 * @var string
 	 */
-	public static $pending = 'pending';
+	public static $pending = 'pending-payment';
 
 	/**
 	 * The string representing the slug for a denied payment status.
