@@ -2031,7 +2031,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array|false
 	 */
-	protected function parse_attendee_details( ) {
+	public function parse_attendee_details() {
 		$order_id = self::generate_order_id();
 
 		$attendee_email     = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
@@ -2073,7 +2073,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int Either the requested quantity of tickets for the product or `0` in
 	 *             any other case.
 	 */
-	protected function parse_ticket_quantity( $product_id ) {
+	public function parse_ticket_quantity( $product_id ) {
 		if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
 			return 0;
 		}
