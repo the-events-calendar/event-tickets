@@ -1099,7 +1099,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 * @since TBD
 		 *
 		 * @param int                           $available Max Purchase number
-		 * @param Tribe__Tickets__Ticket_Object $ticket    Tieckt Object
+		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket Object
 		 * @param int                           $event_id  Event ID
 		 * @param int                           $ticket_id Ticket Raw ID
 		 *
