@@ -1078,6 +1078,36 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
+	 * Gets the Maximum Purchase number for a given ticket
+	 *
+	 * @since  TBD
+	 *
+	 * @param  int|string  $ticket_id  Ticket to fetch purchase max from
+	 *
+	 * @return int
+	 */
+	public function get_ticket_max_purchase( $ticket_id ) {
+		$event_id = tribe_events_get_ticket_event( $ticket_id );
+		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
+		$ticket = $provider->get_ticket( $event_id, $ticket_id );
+
+		$available = $ticket->available();
+
+		/**
+		 * Allows filtering of the max input for purchase of this one ticket
+		 *
+		 * @since TBD
+		 *
+		 * @param int                           $available Max Purchase number
+		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket Object
+		 * @param int                           $event_id  Event ID
+		 * @param int                           $ticket_id Ticket Raw ID
+		 *
+		 */
+		return apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event_id, $ticket_id );
+	}
+
+	/**
 	 * Get an array list of shared capacity tickets for an event.
 	 *
 	 * @since 4.6

@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.8.1] TBD =
+
+* Tweak - Added filter: `tribe_tickets_get_ticket_max_purchase` [112478]
+
 = [4.8] 2018-08-21 =
 
 * Feature - Include a Tickets REST API endpoint for read operations [108021]
