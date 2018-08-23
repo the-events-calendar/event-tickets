@@ -42,7 +42,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	const ATTENDEE_TICKET_SENT = '_tribe_rsvp_attendee_ticket_sent';
 
 	/**
-	 *Name of the CPT that holds Tickets
+	 * Name of the CPT that holds Tickets
 	 *
 	 * @var string
 	 */
@@ -1233,7 +1233,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 			case self::ATTENDEE_OBJECT :
 
-				return $this->get_attendees_by_attendee_id( $post_id );
+				return $this->get_all_attendees_by_attendee_id( $post_id );
 
 				break;
 
@@ -1312,10 +1312,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array
 	 */
-	protected function get_attendees_by_attendee_id( $attendee_id ) {
+	 public function get_all_attendees_by_attendee_id( $attendee_id ) {
 
 		$attendees_query = new WP_Query( array(
-			'p'         => $attendee_id,
+			'p'         => absint( $attendee_id ),
 			'post_type' => self::ATTENDEE_OBJECT,
 		) );
 
@@ -1399,7 +1399,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
 
 			$meta = '';
-			if ( class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+			if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
 				$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
 
 				// Process Meta to include value, slug, and label
@@ -1533,6 +1533,29 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		update_post_meta( $attendee_id, $this->checkin_key, 1 );
+
+		if ( func_num_args() > 1 && $qr = func_get_arg( 1 ) ) {
+			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
+		}
+
+		$checkin_details = array(
+			'date'   => current_time( 'mysql' ),
+			'source' => null !== $qr ? 'app' : 'site',
+			'author' => get_current_user_id(),
+		);
+
+		/**
+		 * Filters the checkin details for this attendee checkin.
+		 *
+		 * @since 4.8
+		 *
+		 * @param array $checkin_details
+		 * @param int   $attendee_id
+		 * @param mixed $qr
+		 */
+		$checkin_details = apply_filters( 'rsvp_checkin_details', $checkin_details, $attendee_id, $qr );
+
+		update_post_meta( $attendee_id, $this->checkin_key . '_details', $checkin_details );
 
 		/**
 		 * Fires a checkin action
@@ -1962,6 +1985,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
 			update_post_meta( $attendee_id, $this->full_name, $attendee_full_name );
 			update_post_meta( $attendee_id, $this->email, $attendee_email );
+			update_post_meta( $attendee_id, '_paid_price', 0 );
 
 			/**
 			 * RSVP specific action fired when a RSVP-driven attendee ticket for an event is generated
@@ -2007,7 +2031,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @return array|false
 	 */
-	protected function parse_attendee_details( ) {
+	public function parse_attendee_details() {
 		$order_id = self::generate_order_id();
 
 		$attendee_email     = empty( $_POST['attendee']['email'] ) ? null : sanitize_email( $_POST['attendee']['email'] );
@@ -2049,7 +2073,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int Either the requested quantity of tickets for the product or `0` in
 	 *             any other case.
 	 */
-	protected function parse_ticket_quantity( $product_id ) {
+	public function parse_ticket_quantity( $product_id ) {
 		if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
 			return 0;
 		}

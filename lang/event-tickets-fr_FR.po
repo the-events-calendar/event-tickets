@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-06-14 13:27:44+0000\n"
+"PO-Revision-Date: 2018-07-28 20:25:10+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4554,7 +4554,7 @@ msgstr "Une clé de licence valide est nécessaire pour le support et les mises 
 
 #: common/src/Tribe/PUE/Checker.php:509 common/src/Tribe/PUE/Checker.php:520
 msgid "License Key"
-msgstr "Clef de la license"
+msgstr "Clé de licence"
 
 #: common/src/Tribe/Field.php:626
 msgid "No select options specified"

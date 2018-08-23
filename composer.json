@@ -16,7 +16,8 @@
     "lucatume/function-mocker-le": "^1.0",
     "spatie/phpunit-snapshot-assertions": "^1.2",
     "site5/phantoman": "^2.0",
-    "jakoch/phantomjs-installer": "^2.1"
+    "jakoch/phantomjs-installer": "^2.1",
+    "fzaninotto/faker": "^1.7"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,

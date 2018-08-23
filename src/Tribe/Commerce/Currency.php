@@ -1,4 +1,5 @@
 <?php
+
 class Tribe__Tickets__Commerce__Currency {
 
 	/**
@@ -32,14 +33,21 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get and allow filtering of the currency symbol
+	 * Get and allow filtering of the currency symbol.
+	 *
+	 * @since 4.7
+	 *
 	 * @param int|null $post_id
+	 * @param bool $decode Whether to HTML decode the currency symbol before
+	 *                     returning or not.
 	 *
 	 * @return string
 	 */
-	public function get_currency_symbol( $post_id = null ) {
+	public function get_currency_symbol( $post_id = null, $decode = false ) {
 		$symbol = $this->currency_code_options_map[ $this->currency_code ]['symbol'];
-		return apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
+		$symbol = apply_filters( 'tribe_commerce_currency_symbol', $symbol, $post_id );
+
+		return $decode ? html_entity_decode( $symbol ) : $symbol;
 	}
 
 	/**
@@ -380,7 +388,12 @@ class Tribe__Tickets__Commerce__Currency {
 			return edd_currency_symbol();
 		}
 
-		return $this->get_currency_symbol( $object_id );
+		if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
+			return $this->get_currency_symbol( $object_id );
+		}
+
+		return tribe_get_option( 'defaultCurrencySymbol', '$' );
+
 	}
 
 	/**
@@ -464,5 +477,65 @@ class Tribe__Tickets__Commerce__Currency {
 		$currency_data = Tribe__Utils__Array::get( $this->currency_code_options_map, $currency_code, $default );
 
 		return Tribe__Utils__Array::get( $currency_data, $key, '' );
+	}
+
+	/**
+	 * Returns the currency 3-letter codes for a symbol.
+	 *
+	 * @since 4.8
+	 *
+	 * @param string $symbol A currency symbol in escaped or unescaped form.
+	 *
+	 * @return array|string All the currency codes matching a currency symbol.
+	 */
+	public function get_symbol_codes( $symbol ) {
+		// if its already a 3-letter code return it immediately
+		if ( array_key_exists( strtoupper( $symbol ), $this->currency_code_options_map ) ) {
+			return strtoupper( $symbol );
+		}
+
+		$encoded = 0 === strpos( $symbol, '&#' )
+			? $symbol
+			: htmlentities( $symbol, ENT_COMPAT );
+
+		$matches = wp_list_filter( $this->currency_code_options_map, array( 'symbol' => $encoded ) );
+
+		return count( $matches ) > 0 ? array_keys( $matches ) : array();
+	}
+
+	/**
+	 * Returns a map of 3-letter currency codes and their unescaped symbol.
+	 *
+	 * @since 4.8
+	 *
+	 * @param array|string $codes A currency 3-letter code or a list of them.
+	 *
+	 * @return array A map of currency 3-letter codes to their symbols; shape
+	 *               [ <code> => <symbol> ], e.g. [ USD => '&#x24;' ]
+	 */
+	public function get_symbols_for_codes( $codes ) {
+		$codes = (array) $codes;
+
+		$symbols = array();
+		foreach ( $this->currency_code_options_map as $code => $data ) {
+			if ( ! in_array( $code, $codes, true ) ) {
+				continue;
+			}
+			$symbols[ $code ] = $data['symbol'];
+		}
+
+		return $symbols;
+	}
+
+	/**
+	 * Returns the current Tribe Commerce currency code.
+	 *
+	 * @since 4.8
+	 *
+	 * @return string The current Tribe Commerce 3-letter currency code,
+	 *                e.g. "USD".
+	 */
+	public function get_currency_code() {
+		return $this->currency_code;
 	}
 }

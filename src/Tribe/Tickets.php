@@ -297,6 +297,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function get_tickets_query_args( $post_id = null ) {
+			if ( $post_id instanceof WP_Post ) {
+				$post_id = $post_id->ID;
+			}
+
 			$args = array(
 				'post_type'      => array( $this->ticket_object ),
 				'posts_per_page' => - 1,
@@ -315,6 +319,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					),
 				);
 			}
+
+			/**
+			 * Filters the query arguments that will be used to fetch tickets.
+			 *
+			 * @since 4.8
+			 *
+			 * @param array $args
+			 */
+			$args = apply_filters( 'tribe_tickets_get_tickets_query_args', $args );
 
 			return $args;
 		}
@@ -627,6 +640,27 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function attendee_decreases_inventory( array $attendee ) {
 			return true;
+		}
+
+		/**
+		 * Get All Attendees by ticket/attendee ID
+		 *
+		 * @since 4.8.0
+		 *
+		 * @param int $attendee_id
+		 * @return array
+		 */
+		public function get_all_attendees_by_attendee_id( $attendee_id ) {
+			$attendees_query = new WP_Query( array(
+				'p'         => absint( $attendee_id ),
+				'post_type' => $this->attendee_object,
+			) );
+
+			if ( ! $attendees_query->have_posts() ) {
+				return array();
+			}
+
+			return $this->get_attendees( $attendees_query, $attendee_id );
 		}
 
 		/**
@@ -1170,7 +1204,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'available' => 0,
 			);
 			$types['tickets'] = array(
-				'count'     => 0, // count of tickets currently for sale
+				'count'     => 0, // count of ticket types currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
 				'global'    => 0, // global stock ticket
 				'unlimited' => 0, // unlimited stock tickets
@@ -1199,7 +1233,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						continue;
 					}
 
-					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->stock;
+					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->available();
 
 					// whether the stock level is negative because it represents unlimited stock (`-1`)
 					// or because it's oversold we normalize to `0` for the sake of displaying
@@ -1552,6 +1586,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_object( $provider_class ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
+			// @todo this will always be empty... why is this here?
 			if ( empty( $attendee_order_key ) ) {
 				switch ( $this->class_name ) {
 					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
