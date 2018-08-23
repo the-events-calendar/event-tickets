@@ -1,5 +1,8 @@
 <?php
 
+namespace Tribe\Tickets\Test\REST\V1;
+
+use Restv1Tester;
 
 class SwaggerDocumentationCest extends BaseRestCest {
 	/**
@@ -22,13 +25,11 @@ class SwaggerDocumentationCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 		$response = (array) json_decode( $I->grabResponse() );
-		$I->assertArrayHasKey( 'swagger', $response );
+		$I->assertArrayHasKey( 'openapi', $response );
 		$I->assertArrayHasKey( 'info', $response );
-		$I->assertArrayHasKey( 'host', $response );
-		$I->assertArrayHasKey( 'basePath', $response );
-		$I->assertArrayHasKey( 'schemes', $response );
-		$I->assertArrayHasKey( 'consumes', $response );
-		$I->assertArrayHasKey( 'produces', $response );
+		$I->assertArrayHasKey( 'servers', $response );
+		$I->assertArrayHasKey( 'paths', $response );
+		$I->assertArrayHasKey( 'components', $response );
 	}
 
 	/**
@@ -60,26 +61,15 @@ class SwaggerDocumentationCest extends BaseRestCest {
 
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
-		$response = (array) json_decode( $I->grabResponse() );
-		$I->assertArrayHasKey( 'host', $response );
+		$response = (array) json_decode( $I->grabResponse(), true );
+		$I->assertArrayHasKey( 'url', $response['servers'][0] );
 	}
 
 	/**
 	 * @test
-	 * it should return TEC REST path as base path
-	 */
-	public function it_should_return_tec_rest_path_as_base_path( Restv1Tester $I ) {
-		$I->sendGET( $this->documentation_url );
-
-		$I->seeResponseCodeIs( 200 );
-		$I->seeResponseIsJson();
-		$response = (array) json_decode( $I->grabResponse() );
-		$I->assertArrayHasKey( 'basePath', $response );
-		$I->assertEquals( str_replace( $I->grabSiteUrl(), '', $this->rest_url ), $response['basePath'] );
-	}
-
-	/**
-	 * @test
+	 *
+	 * @skip will be part of the work for ticket https://central.tri.be/issues/108024
+	 *
 	 * it should contain information about the archive endpoint
 	 */
 	public function it_should_contain_information_about_the_archive_endpoint( Restv1Tester $I ) {
@@ -90,12 +80,15 @@ class SwaggerDocumentationCest extends BaseRestCest {
 		$response = (array) json_decode( $I->grabResponse() );
 		$I->assertArrayHasKey( 'paths', $response );
 		$paths = (array) $response['paths'];
-		$I->assertArrayHasKey( '/events', $paths );
+		$I->assertArrayHasKey( '/tickets', $paths );
 		$I->assertArrayHasKey( 'get', (array)$paths['/events:'] );
 	}
 
 	/**
 	 * @test
+	 *
+	 * @skip will be part of the work for ticket https://central.tri.be/issues/108024
+	 *
 	 * it should contain information about the single event endpoint
 	 */
 	public function it_should_contain_information_about_the_single_event_endpoint( Restv1Tester $I ) {
@@ -106,7 +99,7 @@ class SwaggerDocumentationCest extends BaseRestCest {
 		$response = (array) json_decode( $I->grabResponse() );
 		$I->assertArrayHasKey( 'paths', $response );
 		$paths = (array) $response['paths'];
-		$I->assertArrayHasKey( '/events/{id}', $paths );
+		$I->assertArrayHasKey( '/tickets/{id}', $paths );
 		$I->assertArrayHasKey( 'get', (array)$paths['/events/{id}:'] );
 	}
 }
