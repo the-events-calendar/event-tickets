@@ -59,13 +59,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	public static function cast_payment_status( $payment_status ) {
 		$payment_status = strtolower( $payment_status );
 
-		$legit = array(
-			self::$completed,
-			self::$not_completed,
-			self::$pending,
-			self::$refunded,
-			self::$denied,
-		);
+		$legit = self::all_statuses();
 
 		return in_array( $payment_status, $legit ) ? $payment_status : self::$undefined;
 	}
@@ -136,6 +130,24 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 			'show_in_admin_status_list' => true,
 			'label_count'               => _n_noop( 'Denied <span class="count">(%s)</span>', 'Denied <span class="count">(%s)</span>', 'event-tickets' ),
 		) );
+	}
+
+	/**
+	 * Returns all the payment statuses supported by the PayPal
+	 * integration.
+	 *
+	 * @since 4.8
+	 *
+	 * @return array
+	 */
+	public static function all_statuses() {
+		return array(
+			self::$completed,
+			self::$not_completed,
+			self::$pending,
+			self::$refunded,
+			self::$denied,
+		);
 	}
 
 	/**

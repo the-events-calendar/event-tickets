@@ -5,18 +5,19 @@ modules:
         - REST
         - WPDb
         - WPBrowser
-        - \Helper\TribeDb
-        - Asserts
         - WPLoader
+        - Asserts
     config:
         WPDb:
             dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
             user: %DB_USER%
             password: %DB_PASSWORD%
-            dump: tests/_data/dump.sql
+            dump: tests/_data/restv1-dump.sql
             populate: true
             cleanup: true
             waitlock: 0
+            # by default Travis CI MySQL password is empty
+            populator: 'mysql -u$user -h$host $dbname < $dump'
             url: '%WP_URL%'
             tablePrefix: wp_
         WPBrowser:
@@ -35,4 +36,3 @@ modules:
             dbHost: %DB_HOST%
             dbUser: %DB_USER%
             dbPassword: '%DB_PASSWORD%'
-

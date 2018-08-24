@@ -61,23 +61,6 @@
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3><?php esc_html_e( 'Sales by Ticket', 'event-tickets' ); ?></h3>
-
-					<div class="tribe-event-meta tribe-event-meta-tickets-sold">
-						<strong><?php echo esc_html__( 'Tickets sold:', 'event-tickets' ); ?></strong>
-						<?php echo absint( $total_sold ); ?>
-						<?php if ( $total_not_completed > 0 ) : ?>
-							<div id="sales_breakdown_wrapper" class="tribe-event-meta-note">
-								<div>
-									<?php esc_html_e( 'Completed:', 'event-tickets' ); ?>
-									<span id="total_issued"><?php echo esc_html( $total_completed ); ?></span>
-								</div>
-								<div>
-									<?php esc_html_e( 'Not completed:', 'event-tickets' ); ?>
-									<span id="total_pending"><?php echo esc_html( $total_not_completed ); ?></span>
-								</div>
-							</div>
-						<?php endif ?>
-					</div>
 					<?php
 					/** @var Tribe__Tickets__Ticket_Object $ticket_sold */
 					foreach ( $tickets_sold as $ticket_sold ) {
@@ -88,41 +71,32 @@
 						}
 
 						$price        = '';
-						$pending      = '';
+
 						$sold_message = '';
 
-						if ( $ticket_sold->qty_pending() > 0 ) {
-							$pending = sprintf( _n( '(%d awaiting review)', '(%d awaiting review)', $ticket_sold->qty_pending(), 'event-tickets' ),
-								$ticket_sold->qty_pending() );
-						}
-
 						if ( ! $ticket_sold->managing_stock() ) {
-							$sold_message = sprintf( __( 'Sold %d %s', 'event-tickets' ),
-								esc_html( $ticket_sold->qty_sold() ),
-								$pending
+							$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ),
+								esc_html( $ticket_sold->qty_sold() )
 							);
 						} else {
-							$sold_message = sprintf( __( 'Sold %d %s', 'event-tickets' ),
-								esc_html( $ticket_sold->qty_sold() ),
-								$pending
+							$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ),
+								esc_html( $ticket_sold->qty_sold() )
 							);
 						}
 
 						if ( $ticket_sold->price ) {
 							$price = ' (' . tribe_format_currency( number_format( $ticket_sold->price, 2 ), $post_id ) . ')';
 						}
+
+						$sku = '';
+						if ( $ticket_sold->sku ) {
+							$sku = 'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets-plus' ), esc_html( $ticket_sold->sku ) ) . '"';
+						}
 						?>
 						<div class="tribe-event-meta tribe-event-meta-tickets-sold-itemized">
-							<strong><?php echo esc_html( $ticket_sold->name . $price ); ?>:</strong>
+							<strong <?php echo $sku; ?>><?php echo esc_html( $ticket_sold->name . $price ); ?>:</strong>
 							<?php
 							echo esc_html( $sold_message );
-							if ( $ticket_sold->sku ) {
-								?>
-								<div class="tribe-event-meta-note tribe-event-ticket-sku">
-									<?php printf( esc_html__( 'SKU: (%s)', 'event-tickets' ), esc_html( $ticket_sold->sku() ) ); ?>
-								</div>
-								<?php
-							}
 							?>
 						</div>
 						<?php
