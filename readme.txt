@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.8.1] TBD =
 
+* Fix - Fixed ticket description issue when creating events with no description. Thanks Aaron Brazell for the fix! [113038]
 * Tweak - Added filter: `tribe_tickets_get_ticket_max_purchase` [112478]
 
 = [4.8] 2018-08-22 =
