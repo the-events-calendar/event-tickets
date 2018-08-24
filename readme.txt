@@ -3,8 +3,8 @@
 Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
-Tested up to: 4.9.7
-Stable tag: 4.7.6
+Tested up to: 4.9.8
+Stable tag: 4.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,19 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.8.1] TBD =
+
+* Tweak - Added filter: `tribe_tickets_get_ticket_max_purchase` [112478]
+
+= [4.8] 2018-08-22 =
+
+* Feature - Include a Tickets REST API endpoint for read operations [108021]
+* Fix - Fixed datepicker formats YYYY.MM.DD, MM.DD.YYYY and DD.MM.YYYY validation error on ticket start sale date. Thanks @dmitry-zhuk, Albert and others for reporting this issue! [102815]
+* Fix - Active tab logic for Attendees in Tribe Commerce, thanks Luc [107897]
+* Fix - Fixed default currency symbol inconsistency. Thanks Uwe and Zé for pointing this out! [104093]
+* Tweak - Tribe Commerce Orders Sales by Ticket section to remove duplicate data [110034]
+* Tweak - Attendees section to clarify infomation [110038]
 
 = [4.7.6] 2018-08-01 =
 

@@ -23,6 +23,7 @@ modules:
            password: %DB_PASSWORD%
            dump: 'tests/_data/dump.sql'
            populate: true
+           waitlock: 0
            cleanup: true
            reconnect: false
            waitlock: 0

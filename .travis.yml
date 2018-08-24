@@ -106,6 +106,7 @@ before_script:
 
   # activate the plugins in WordPress
   - cd $WP_ROOT_FOLDER
+
   - wp plugin activate the-events-calendar event-tickets
 
   # flush rewrite rules
@@ -120,6 +121,9 @@ before_script:
   # get back to the plugin dir
   - cd $PLUGIN_DIR
 
+  # localize the REST v1 database dump replacing its URL
+  - bash tests/_support/travis/dump-replace.sh
+
   # restart Nnginx and PHP-FPM services
   - sudo service php5-fpm restart
   - sudo service nginx restart
@@ -128,8 +132,9 @@ script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
-  - codecept run functional -vvv
+  - codecept run functional
   - codecept run acceptance
+  - codecept run restv1
 
 
 after_failure:

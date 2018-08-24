@@ -4,8 +4,8 @@ namespace Tribe\Tickets\Test\Testcases;
 
 
 use Codeception\TestCase\WPTestCase;
-use Tribe\Tickets\Test\Factories\Ticket;
 use Tribe\Tests\Data;
+use Tribe\Tickets\Test\Factories\RSVPAttendee;
 
 class Ticket_TestCase extends WPTestCase {
 	/**
@@ -21,7 +21,7 @@ class Ticket_TestCase extends WPTestCase {
 	function setUp() {
 		parent::setUp();
 
-		$this->factory()->ticket     = new Ticket();
+		$this->factory()->rsvp_attendee = new RSVPAttendee();
 
 		foreach ( $this->backups as $alias ) {
 			$this->implementation_backups[ $alias ] = tribe( $alias );
