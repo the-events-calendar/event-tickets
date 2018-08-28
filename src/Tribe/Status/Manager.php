@@ -33,7 +33,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @var array
 	 */
-	protected $statues = array();
+	protected $statuses = array();
 
 
 	/**
@@ -86,7 +86,7 @@ class Tribe__Tickets__Status__Manager {
 			}
 
 			$status_class                  = $status_managers[ $module_name ];
-			$this->statues[ $module_name ] = new $status_class();
+			$this->statuses[ $module_name ] = new $status_class();
 		}
 
 	}
@@ -126,15 +126,22 @@ class Tribe__Tickets__Status__Manager {
 		return tribe( 'tickets.data_api' )->get_ticket_provider( $id );
 	}
 
+	/**
+	 * Get the Trigger Status for Ticket Generation or Sending for a given eCommerce
+	 *
+	 * @param $commerce
+	 *
+	 * @return array
+	 */
 	public function get_trigger_statuses( $commerce ) {
 
 		$trigger_statuses = array();
 
-		if ( ! isset( $this->statues[ $commerce ]->statuses ) ) {
+		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
 		}
 
-		$filtered_statuses = wp_list_filter( $this->statues[ $commerce ]->statuses, array(
+		$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
 				'trigger_option' => true,
 			) );
 

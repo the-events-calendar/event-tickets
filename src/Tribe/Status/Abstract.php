@@ -2,12 +2,12 @@
 
 
 /**
- * Class Tribe__Tickets__Status__Template
+ * Class Tribe__Tickets__Status__Abstract
  *
  * @since TBD
  *
  */
-abstract class Tribe__Tickets__Status__Template {
+abstract class Tribe__Tickets__Status__Abstract {
 
 	public $name                = '';
 	public $provider_name       = '';
