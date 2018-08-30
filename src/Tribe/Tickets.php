@@ -1857,6 +1857,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				: array();
 
 			self::$currently_unavailable_tickets[ (int) $post_id ] = array_merge( $existing_tickets, $tickets );
+
+
 		}
 
 		/**
@@ -1875,7 +1877,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * If appropriate, displayed a "tickets unavailable" message.
+		 * If appropriate, display a "tickets unavailable" message.
 		 */
 		public function show_tickets_unavailable_message() {
 			$post_id = (int) get_the_ID();
