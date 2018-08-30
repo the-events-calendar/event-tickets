@@ -122,7 +122,15 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.8] 2018-08-21 =
+= [4.8.1] TBD =
+
+* Tweak - Added filter: `tribe_tickets_get_ticket_max_purchase` [112478]
+
+= [4.8.1] TBD =
+
+* Fix - Show the ticket table when tickets are all sold out, show message in list view [111893]
+
+= [4.8] 2018-08-22 =
 
 * Feature - Include a Tickets REST API endpoint for read operations [108021]
 * Fix - Fixed datepicker formats YYYY.MM.DD, MM.DD.YYYY and DD.MM.YYYY validation error on ticket start sale date. Thanks @dmitry-zhuk, Albert and others for reporting this issue! [102815]

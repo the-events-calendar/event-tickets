@@ -84,20 +84,18 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		$must_login = ! is_user_logged_in() && $this->main->login_required();
 		$can_login  = true;
 
-		$form = '';
+		ob_start();
+		include $this->main->getTemplateHierarchy( 'tickets/tpp' );
+		$form = ob_get_clean();
 
 		$currently_available_tickets = array_filter( $tickets, array( $this, 'is_currently_available' ) );
 
 		if ( count( $currently_available_tickets ) > 0 ) {
-			ob_start();
-			include $this->main->getTemplateHierarchy( 'tickets/tpp' );
-			$form = ob_get_clean();
-
-			// If we have rendered tickets there is generally no need to display a 'tickets unavailable' message
+			// If we have available tickets there is generally no need to display a 'tickets unavailable' message
 			// for this post
 			$this->main->do_not_show_tickets_unavailable_message();
 		} else {
-			// Indicate that we did not render any tickets, so a 'tickets unavailable' message may be
+			// Indicate that there are not any tickets, so a 'tickets unavailable' message may be
 			// appropriate (depending on whether other ticket providers are active and have a similar
 			// result)
 			$this->main->maybe_show_tickets_unavailable_message( $tickets );
