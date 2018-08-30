@@ -129,9 +129,11 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the Trigger Status for Ticket Generation or Sending for a given eCommerce
 	 *
-	 * @param $commerce
+	 * @since TBD
 	 *
-	 * @return array
+	 * @param $commerce string a string of the Commerce System to get statuses from
+	 *
+	 * @return array an array of the commerce's statuses and name matching the provide action
 	 */
 	public function get_trigger_statuses( $commerce ) {
 
@@ -142,11 +144,41 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
-				'trigger_option' => true,
-			) );
+			'trigger_option' => true,
+		) );
 
 		foreach ( $filtered_statuses as $status ) {
 			$trigger_statuses[ $status->provider_name ] = $status->name;
+		}
+
+		return $trigger_statuses;
+
+	}
+
+	/**
+	 * Return an array of Statuses for an action with the provider Commerce
+	 *
+	 * @since TBD
+	 *
+	 * @param $action string a string of the action to filter
+	 * @param $commerce string a string of the Commerce System to get statuses from
+	 *
+	 * @return array an array of the commerce's statuses matching the provide action
+	 */
+	public function return_statuses_by_action( $action, $commerce ) {
+
+		$trigger_statuses = array();
+
+		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
+			return $trigger_statuses;
+		}
+
+		$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
+			$action => true,
+		) );
+
+		foreach ( $filtered_statuses as $status ) {
+			$trigger_statuses[] = $status->provider_name;
 		}
 
 		return $trigger_statuses;
