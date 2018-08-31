@@ -44,7 +44,7 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 
 		$html = "
 			<ul>
-				<li> <strong>$total_rsvps_label</strong> $total_rsvps </li>
+				<li> <strong>$total_rsvps_label</strong>&nbsp;$total_rsvps </li>
 				<li> $going_label $going </li>
 				<li> $not_going_label $not_going </li>
 			</ul>
