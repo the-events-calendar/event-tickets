@@ -114,19 +114,6 @@ class Tribe__Tickets__Status__Manager {
 	}
 
 	/**
-	 * Gets the ticket provider class when passed an id
-	 *
-	 * @since TBD
-	 *
-	 * @param integer|string $id a rsvp order key, order id, attendee id, ticket id, or product id
-	 *
-	 * @return bool|object
-	 */
-	protected function get_provider_by_id( $id ) {
-		return tribe( 'tickets.data_api' )->get_ticket_provider( $id );
-	}
-
-	/**
 	 * Get the Trigger Status for Ticket Generation or Sending for a given eCommerce
 	 *
 	 * @since TBD
@@ -173,9 +160,13 @@ class Tribe__Tickets__Status__Manager {
 			return $trigger_statuses;
 		}
 
-		$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
-			$action => true,
-		) );
+		if ( 'all' === $action ) {
+			$filtered_statuses = $this->statuses[ $commerce ]->statuses;
+		} else {
+			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
+				$action => true,
+			) );
+		}
 
 		foreach ( $filtered_statuses as $status ) {
 			$trigger_statuses[] = $status->provider_name;
