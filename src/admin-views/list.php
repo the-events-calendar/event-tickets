@@ -120,7 +120,7 @@
 			</td>
 
 			<td nowrap="nowrap">
-				<?php echo tribe_tickets_get_ticket_stock_message( $ticket ); ?>
+				<?php echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) ); ?>
 			</td>
 		</tr>
 		<?php
