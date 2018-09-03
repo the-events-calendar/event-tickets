@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.8.1] TBD =
 
+* Fix - Correct un-responsive ticket table, thanks @understandphoto for bringing this to our attention! [109730]
 * Tweak - Added filter: `tribe_tickets_get_ticket_max_purchase` [112478]
 
 = [4.8.1] TBD =
