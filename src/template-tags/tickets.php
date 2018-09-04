@@ -255,8 +255,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					}
 				}
 
-				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button>'
-					. '</form>';
+				$button	.= '<button type="submit" name="tickets_process" class="tribe-button">' . $button_label . '</button></form>';
 
 				$parts[ $type . '-button' ] = $html['button'] = $button;
 			}
@@ -430,7 +429,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 				$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
 			} else {
 				// It's "own stock". We use the $stock value
-				$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $stock ) );
+				$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
 			}
 		}
 

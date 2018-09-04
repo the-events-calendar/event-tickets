@@ -100,6 +100,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 				<td class="tickets_name">
 					<?php echo esc_html( $ticket->name ); ?>
 				</td>
+
 				<td class="tickets_description" colspan="2">
 					<?php echo esc_html( ( $ticket->show_description() ? $ticket->description : '' ) ); ?>
 				</td>
