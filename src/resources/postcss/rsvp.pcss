@@ -9,14 +9,6 @@
 	padding: 20px 0;
 }
 
-.tribe-tickets-meta-row {
-	display: none;
-}
-
-.tribe-tickets-has-rsvp .tribe-tickets-meta-row {
-	display: table-row;
-}
-
 .tribe-tickets-attendee {
 	padding: 10px;
 }
@@ -223,6 +215,14 @@
 		}
 
 		@media only screen and (min-width: 768px) {
+			display: table-row;
+		}
+
+		&.tribe-tickets-meta-row {
+			display: none;
+		}
+
+		.tribe-tickets-has-rsvp& {
 			display: table-row;
 		}
 	}
