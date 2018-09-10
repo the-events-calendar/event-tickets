@@ -4705,7 +4705,151 @@ msgstr ""
 #: common/src/Tribe/Admin/Help_Page.php:59 common/src/Tribe/Customizer.php:569
 #: common/src/Tribe/Plugins_API.php:25
 msgid "The Events Calendar"
-msgstr ""ations.php:241
+msgstr ""Locations.php:296
+msgid "Zambia"
+msgstr "Sambia"
+
+#: common/src/Tribe/Languages/Locations.php:295
+msgid "Yemen"
+msgstr "Jemen"
+
+#: common/src/Tribe/Languages/Locations.php:294
+msgid "Western Sahara"
+msgstr "Westsahara"
+
+#: common/src/Tribe/Languages/Locations.php:293
+msgid "Wallis and Futuna Islands"
+msgstr "Wallis und Futuna"
+
+#: common/src/Tribe/Languages/Locations.php:292
+msgid "Virgin Islands (U.S.)"
+msgstr "Amerikanische Jungferninseln"
+
+#: common/src/Tribe/Languages/Locations.php:291
+msgid "Virgin Islands (British)"
+msgstr "Virgin Islands (Britische Jungfraueninseln)"
+
+#: common/src/Tribe/Languages/Locations.php:290
+msgid "Viet Nam"
+msgstr "Vietnam"
+
+#: common/src/Tribe/Languages/Locations.php:289
+msgid "Venezuela"
+msgstr "Venezuela"
+
+#: common/src/Tribe/Languages/Locations.php:288
+msgid "Vanuatu"
+msgstr "Vanuatu"
+
+#: common/src/Tribe/Languages/Locations.php:287
+msgid "Uzbekistan"
+msgstr "Usbekistan"
+
+#: common/src/Tribe/Languages/Locations.php:286
+msgid "Uruguay"
+msgstr "Uruguay"
+
+#: common/src/Tribe/Languages/Locations.php:285
+msgid "United States Minor Outlying Islands"
+msgstr "United States Minor Outlying Islands"
+
+#: common/src/Tribe/Languages/Locations.php:284
+msgid "United Kingdom"
+msgstr "Vereinigtes Königreich"
+
+#: common/src/Tribe/Languages/Locations.php:283
+msgid "United Arab Emirates"
+msgstr "Vereinigte Arabische Emirate"
+
+#: common/src/Tribe/Languages/Locations.php:282
+msgid "Ukraine"
+msgstr "Ukraine"
+
+#: common/src/Tribe/Languages/Locations.php:281
+msgid "Uganda"
+msgstr "Uganda"
+
+#: common/src/Tribe/Languages/Locations.php:280
+msgid "Tuvalu"
+msgstr "Tuvalu"
+
+#: common/src/Tribe/Languages/Locations.php:279
+msgid "Turks and Caicos Islands"
+msgstr "Turks- und Caicosinseln"
+
+#: common/src/Tribe/Languages/Locations.php:278
+msgid "Turkmenistan"
+msgstr "Turkmenistan"
+
+#: common/src/Tribe/Languages/Locations.php:277
+msgid "Turkey"
+msgstr "Türkei"
+
+#: common/src/Tribe/Languages/Locations.php:276
+msgid "Tunisia"
+msgstr "Tunesien"
+
+#: common/src/Tribe/Languages/Locations.php:275
+msgid "Trinidad and Tobago"
+msgstr "Trinidad und Tobago"
+
+#: common/src/Tribe/Languages/Locations.php:274
+msgid "Tonga"
+msgstr "Tonga"
+
+#: common/src/Tribe/Languages/Locations.php:273
+msgid "Tokelau"
+msgstr "Tokelau"
+
+#: common/src/Tribe/Languages/Locations.php:272
+msgid "Togo"
+msgstr "Togo"
+
+#: common/src/Tribe/Languages/Locations.php:271
+msgid "Thailand"
+msgstr "Thailand"
+
+#: common/src/Tribe/Languages/Locations.php:270
+msgid "Tanzania, United Republic of"
+msgstr "Tansania"
+
+#: common/src/Tribe/Languages/Locations.php:269
+msgid "Tajikistan"
+msgstr "Tadschikistan"
+
+#: common/src/Tribe/Languages/Locations.php:268
+msgid "Taiwan"
+msgstr "Taiwan"
+
+#: common/src/Tribe/Languages/Locations.php:267
+msgid "Syrian Arab Republic"
+msgstr "Syrien"
+
+#: common/src/Tribe/Languages/Locations.php:266
+msgid "Switzerland"
+msgstr "Schweiz"
+
+#: common/src/Tribe/Languages/Locations.php:265
+msgid "Sweden"
+msgstr "Schweden"
+
+#: common/src/Tribe/Languages/Locations.php:264
+msgid "Swaziland"
+msgstr "Swasiland"
+
+#: common/src/Tribe/Languages/Locations.php:263
+msgid "Svalbard and Jan Mayen Islands"
+msgstr "Svalbard und Jan Mayen Inseln"
+
+#: common/src/Tribe/Languages/Locations.php:262
+msgid "Suriname"
+msgstr "Suriname"
+
+#: common/src/Tribe/Languages/Locations.php:261
+msgid "Sudan"
+msgstr "Sudan"
+
+#: common/src/Tribe/Languages/Locations.php:241
 msgid "Saint Pierre and Miquelon"
 msgstr "Saint-Pierre und Miquelon"
 
