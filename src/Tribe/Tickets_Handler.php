@@ -1080,7 +1080,7 @@ class Tribe__Tickets__Tickets_Handler {
 	/**
 	 * Gets the Maximum Purchase number for a given ticket
 	 *
-	 * @since  4.6.23
+	 * @since  4.8.1
 	 *
 	 * @param  int|string  $ticket_id  Ticket to fetch purchase max from
 	 *
@@ -1096,7 +1096,7 @@ class Tribe__Tickets__Tickets_Handler {
 		/**
 		 * Allows filtering of the max input for purchase of this one ticket
 		 *
-		 * @since 4.6.23
+		 * @since 4.8.1
 		 *
 		 * @param int                           $available Max Purchase number
 		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket Object
