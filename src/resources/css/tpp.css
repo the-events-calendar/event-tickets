@@ -102,17 +102,6 @@
 
 /* Tribe Commerce PayPal Table (differences only) */
 
-.tribe-events-tickets-tpp .tribe-ticket.quantity {
-	border-bottom: 1px solid #dfdfdf;
-	width: 192px;
-}
-
-.tribe-events-tickets-tpp .tribe-ticket.quantity input {
-	margin-bottom: 5px;
-	padding: 5px 10px;
-	width: 4.375em;
-}
-
 .tribe-tickets-purchase-disabled {
 	opacity: 0.3;
 }

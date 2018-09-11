@@ -9,14 +9,6 @@
 	padding: 20px 0;
 }
 
-.tribe-tickets-meta-row {
-	display: none;
-}
-
-.tribe-tickets-has-rsvp .tribe-tickets-meta-row {
-	display: table-row;
-}
-
 .tribe-tickets-attendee {
 	padding: 10px;
 }
@@ -203,6 +195,7 @@
 	background: var(--table-background-color);
 	border: 0;
 	border-radius: 3px;
+	max-width: 100%;
 	position: relative;
 
 
@@ -213,8 +206,63 @@
 		border: 0;
 	}
 
+	tr {
+		display: flex;
+		flex-flow: row wrap;
+
+		&:not(:first-child) {
+			border-top: 2px solid #dfdfdf;
+		}
+
+		@media only screen and (min-width: 768px) {
+			display: table-row;
+		}
+
+		&.tribe-tickets-meta-row {
+			display: none;
+		}
+
+		.tribe-tickets-has-rsvp& {
+			display: table-row;
+		}
+	}
+
 	td {
 		padding: 8px 10px;
+		display: flex;
+		max-width: 50%;
+		width: 50%;
+
+		@media only screen and (max-width: 768px) {
+			&.tribe-ticket.quantity {
+				flex-flow: column;
+				order: 4;
+			}
+
+			&.tickets_submit {
+				order: 5;
+			}
+
+			&.tickets_description {
+				min-width: 100%;
+				width: 100%;
+			}
+
+			&.tickets_submit .tribe-button {
+					margin-bottom: 20px;
+					margin-top: 0;
+				}
+
+			&.tickets_name {
+				font-weight: bold;
+			}
+		}
+
+		@media only screen and (min-width: 768px) {
+			display: table-cell;
+			max-width: none;
+			width: auto;
+		}
 	}
 
 
@@ -315,7 +363,6 @@
 
 	.tribe-ticket.quantity {
 		border-bottom: 1px solid var(--border-color);
-		width: 192px;
 
 		input {
 			margin-bottom: 5px;

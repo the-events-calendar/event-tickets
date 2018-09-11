@@ -75,8 +75,8 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 
 		echo "
 			<ul>
-				<li> <strong>$total_sold_label</strong> $total_sold </li>
-				<li> $total_paid_label $total_paid </li>
+				<li> <strong>$total_sold_label&nbsp;</strong>$total_sold </li>
+				<li> $total_paid_label&nbsp;$total_paid </li>
 			</ul>
 		";
 	}
