@@ -99,10 +99,11 @@ class Tribe__Tickets__Status__Manager {
 
 		foreach ( $this->initial_active_modules as $module_class => $module_name ) {
 
-			if ( isset( $this->module_key[ $module_name ] ) ) {
+			if ( isset( $this->module_slugs[ $module_name ] ) ) {
 				$this->active_modules[ $module_class ] = $this->module_slugs[ $module_name ];
 			}
 		}
+
 	}
 
 	/**
