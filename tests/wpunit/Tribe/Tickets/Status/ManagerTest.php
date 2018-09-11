@@ -76,8 +76,6 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 	 * @since TBD
 	 */
 	public function it_has_rsvp_active_module() {
-		print_r('it_has_rsvp_active_module');
-		print_r(Manager::get_instance()->get_active_modules());
 		$this->assertArrayHasKey( 'Tribe__Tickets__RSVP', Manager::get_instance()->get_active_modules() );
 	}
 
@@ -89,8 +87,6 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 
 		//run setup again to get the active modules that will include Tribe Commerce
 		Manager::get_instance()->setup();
-		print_r('it_has_tribe_commerce_active_module');
-		print_r(Manager::get_instance()->get_active_modules());
 		$this->assertArrayHasKey( 'Tribe__Tickets__Commerce__PayPal__Main', Manager::get_instance()->get_active_modules() );
 	}
 }

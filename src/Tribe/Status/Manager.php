@@ -13,7 +13,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @var array
 	 */
-	protected $initial_active_modules;
+	public $initial_active_modules;
 
 	/**
 	 * Active Modules Slugs
@@ -21,9 +21,9 @@ class Tribe__Tickets__Status__Manager {
 	 * @var array
 	 */
 	protected $module_slugs = array(
-		//'Easy Digital Downloads' => 'edd',
-		//'RSVP' => 'rsvp',
-		//'Tribe Commerce => 'tribe-commerce',
+		'Easy Digital Downloads' => 'edd',
+		'RSVP' => 'rsvp',
+		'tribe-commerce' => 'tribe-commerce',
 		'WooCommerce' => 'woo',
 	);
 	/**
@@ -140,6 +140,8 @@ class Tribe__Tickets__Status__Manager {
 	 * @return array
 	 */
 	public function get_active_modules() {
+		$this->convert_initial_active_modules();
+
 		return $this->active_modules;
 	}
 
