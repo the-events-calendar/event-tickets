@@ -9,6 +9,24 @@
 class Tribe__Tickets__Status__Manager {
 
 	/**
+	 * Initial Active Modules using Plugin Names
+	 *
+	 * @var array
+	 */
+	protected $initial_active_modules;
+
+	/**
+	 * Active Modules Slugs
+	 *
+	 * @var array
+	 */
+	protected $module_slugs = array(
+		//'Easy Digital Downloads' => 'edd',
+		//'RSVP' => 'rsvp',
+		//'Tribe Commerce => 'tribe-commerce',
+		'WooCommerce' => 'woo',
+	);
+	/**
 	 * Active Modules
 	 *
 	 * @var array
@@ -21,10 +39,10 @@ class Tribe__Tickets__Status__Manager {
 	 * @var array
 	 */
 	protected $status_managers = array(
-		//'EDD' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
-		//'RSVP' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
-		//'Tribe Commerce' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
-		'WooCommerce' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
+		//'edd' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
+		//'rsvp' => 'Tribe__Tickets__Commerce__WooCommerce__Status_Manager',
+		//'tribe-commerce' => 'Tribe__Tickets__Commerce__WooCommerce__Status_Manager',
+		'woo' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 	);
 
 
@@ -66,8 +84,25 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 */
 	public function setup() {
-		$this->active_modules = Tribe__Tickets__Tickets::modules();
+		$this->initial_active_modules = Tribe__Tickets__Tickets::modules();
+		$this->convert_initial_active_modules();
 		$this->get_statuses_by_provider();
+	}
+
+	/**
+	 * Convert Name of Active Modules to slugs
+	 *
+	 * @since TBD
+	 *
+	 */
+	protected function convert_initial_active_modules() {
+
+		foreach ( $this->initial_active_modules as $module_class => $module_name ) {
+
+			if ( isset( $this->module_key[ $module_name ] ) ) {
+				$this->active_modules[ $module_class ] = $this->module_slugs[ $module_name ];
+			}
+		}
 	}
 
 	/**
@@ -79,13 +114,18 @@ class Tribe__Tickets__Status__Manager {
 	protected function get_statuses_by_provider() {
 
 		$status_managers = $this->get_status_managers();
+
+		if ( ! is_array( $this->active_modules ) ) {
+			return;
+		}
+
 		foreach ( $this->active_modules as $module_class => $module_name ) {
 
 			if ( ! isset( $status_managers[ $module_name ] ) ) {
 				continue;
 			}
 
-			$status_class                  = $status_managers[ $module_name ];
+			$status_class                   = $status_managers[ $module_name ];
 			$this->statuses[ $module_name ] = new $status_class();
 		}
 
@@ -147,7 +187,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @since TBD
 	 *
-	 * @param $action string a string of the action to filter
+	 * @param $action   string a string of the action to filter
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 *
 	 * @return array an array of the commerce's statuses matching the provide action
