@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.8.1] 2018-09-11 =
+= [4.8.1] 2018-09-12 =
 
 * Fix - Show the ticket table when tickets are all sold out, show message in list view [111893]
 * Fix - Fixed ticket description issue when creating events with no description. Thanks Aaron Brazell for the fix! [113038]
