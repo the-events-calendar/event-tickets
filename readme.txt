@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.8
-Stable tag: 4.8
+Stable tag: 4.8.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,13 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.8.1] 2018-09-12 =
+
+* Fix - Show the ticket table when tickets are all sold out, show message in list view [111893]
+* Fix - Fixed ticket description issue when creating events with no description. Thanks Aaron Brazell for the fix! [113038]
+* Fix - Correct un-responsive ticket table, thanks @understandphoto for bringing this to our attention! [109730]
+* Tweak - Added filter: `tribe_tickets_get_ticket_max_purchase` [112478]
 
 = [4.8] 2018-08-22 =
 

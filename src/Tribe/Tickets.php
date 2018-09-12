@@ -1204,7 +1204,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				'available' => 0,
 			);
 			$types['tickets'] = array(
-				'count'     => 0, // count of tickets currently for sale
+				'count'     => 0, // count of ticket types currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
 				'global'    => 0, // global stock ticket
 				'unlimited' => 0, // unlimited stock tickets
@@ -1233,7 +1233,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						continue;
 					}
 
-					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->stock;
+					$stock_level = Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $global_stock_mode ? $ticket->global_stock_cap : $ticket->available();
 
 					// whether the stock level is negative because it represents unlimited stock (`-1`)
 					// or because it's oversold we normalize to `0` for the sake of displaying
@@ -1857,6 +1857,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				: array();
 
 			self::$currently_unavailable_tickets[ (int) $post_id ] = array_merge( $existing_tickets, $tickets );
+
+
 		}
 
 		/**
@@ -1875,7 +1877,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * If appropriate, displayed a "tickets unavailable" message.
+		 * If appropriate, display a "tickets unavailable" message.
 		 */
 		public function show_tickets_unavailable_message() {
 			$post_id = (int) get_the_ID();
@@ -2021,7 +2023,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return bool
 		 */
-		protected function login_required() {
+		public function login_required() {
 			$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
 
 			return in_array( 'event-tickets_all', $requirements, true );
@@ -2188,7 +2190,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket                   = new Tribe__Tickets__Ticket_Object();
 			$ticket->ID               = isset( $data['ticket_id'] ) ? absint( $data['ticket_id'] ) : null;
 			$ticket->name             = isset( $data['ticket_name'] ) ? esc_html( $data['ticket_name'] ) : null;
-			$ticket->description      = isset( $data['ticket_description'] ) ? sanitize_textarea_field( $data['ticket_description'] ) : null;
+			$ticket->description      = isset( $data['ticket_description'] ) ? sanitize_textarea_field( $data['ticket_description'] ) : '';
 			$ticket->price            = ! empty( $data['ticket_price'] ) ? filter_var( trim( $data['ticket_price'] ), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION | FILTER_FLAG_ALLOW_THOUSAND ) : 0;
 			$ticket->show_description = isset( $data['ticket_show_description'] ) ? 'yes' : 'no';
 			$ticket->provider_class   = $this->class_name;

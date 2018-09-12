@@ -23,19 +23,15 @@
 }
 
 #tribe-attendees-summary .welcome-panel-column-container {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-flow: row;
+	    flex-flow: row;
+	-ms-flex-pack: justify;
+	    justify-content: space-between;
 	position: static;
 	position: initial;
 	zoom: 1;
-}
-
-#tribe-attendees-summary .welcome-panel-column-container::before,
-		#tribe-attendees-summary .welcome-panel-column-container::after {
-	content: '';
-	display: table;
-}
-
-#tribe-attendees-summary .welcome-panel-column-container::after {
-	clear: both;
 }
 
 #tribe-attendees-summary .welcome-panel-column {
@@ -50,23 +46,21 @@
 
 #tribe-attendees-summary .welcome-panel-last {
 	border-left: 1px solid #eee;
-	float: right;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-flow: row wrap;
+	    flex-flow: row wrap;
 	padding: 10px 20px 5px;
 	zoom: 1;
 }
 
-#tribe-attendees-summary .welcome-panel-last::before,
-		#tribe-attendees-summary .welcome-panel-last::after {
-	content: '';
-	display: table;
-}
-
-#tribe-attendees-summary .welcome-panel-last::after {
-	clear: both;
-}
-
 #tribe-attendees-summary .welcome-panel-last li {
 	margin-bottom: 2px;
+}
+
+#tribe-attendees-summary .welcome-panel-last .totals-header {
+	-ms-flex: 0 0 100%;
+	    flex: 0 0 100%;
 }
 
 #tribe-attendees-summary .welcome-panel-last .totals-header h3 {
@@ -206,22 +200,12 @@
 }
 
 .welcome-panel .welcome-panel-content {
-	margin-left: 0;
+	margin: 0;
 	zoom: 1;
 }
 
-.welcome-panel .welcome-panel-content::before,
-		.welcome-panel .welcome-panel-content::after {
-	content: '';
-	display: table;
-}
-
-.welcome-panel .welcome-panel-content::after {
-	clear: both;
-}
-
 /*
- * Preserves utility of modal windows, especially the "Email Attendees" modal, in views above the 
+ * Preserves utility of modal windows, especially the "Email Attendees" modal, in views above the
  * mobile view but under the upper limits of "tablet" views. The weird class names and !important declarations
  * are unfortunately needed to override Thickbox's inline styles.
  */
@@ -236,6 +220,11 @@ table.orders tr.refunded, table.orders tr.denied, table.orders tr.pending {
 }
 
 @media screen and (max-width: 768px) {
+
+	#tribe-attendees-summary .welcome-panel-column-container {
+		-ms-flex-wrap: wrap;
+		flex-wrap: wrap;
+	}
 
 	#tribe-attendees-summary .welcome-panel-column {
 		float: none;
@@ -288,7 +277,6 @@ table.orders tr.refunded, table.orders tr.denied, table.orders tr.pending {
 	}
 
 	#tribe-attendees-summary .welcome-panel-last ul {
-		float: left;
 		width: 50%;
 	}
 }
