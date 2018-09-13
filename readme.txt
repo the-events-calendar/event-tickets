@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.8.2] TBD =
 
-*
+* Fix - Ensure that ticket forms and related info are not visible on password-protected events, posts, and other post types [102643]
 
 = [4.8.1] 2018-09-12 =
 
