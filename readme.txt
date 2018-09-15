@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.8.2] TBD =
 
-*
+* Tweak - Fix some internal documentation of shortcode templates to ensure filenames are accurate [112360]
 
 = [4.8.1] 2018-09-12 =
 
