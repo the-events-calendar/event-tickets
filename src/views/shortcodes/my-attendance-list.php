@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/shortcodes/my-attendance-list.php
  *
- * @version 4.3.5
+ * @version TBD
  *
  * @var array $event_ids
  */
