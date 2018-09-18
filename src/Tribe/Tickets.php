@@ -893,6 +893,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			if ( post_password_required( get_the_ID() ) ) {
+				return;
+			}
+
 			return $this->front_end_tickets_form( $content );
 		}
 
