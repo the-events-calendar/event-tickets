@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.8.2] TBD =
 
-*
+* Tweak - Prevent RSVP form from submitting when the quantity is 0 or if blank [113989]
 
 = [4.8.1] 2018-09-12 =
 

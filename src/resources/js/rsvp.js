@@ -35,11 +35,17 @@ var tribe_tickets_rsvp = {
 		}
 	};
 
-	my.validate_submission = function() {
+	my.validate_submission = function( $form ) {
+		var $rsvp = $form.find( '.tribe-ticket-quantity' );
 		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
 		var $email = $( document.getElementById( 'tribe-tickets-email' ) );
 
-		if ( ! $.trim( $name.val() ).length || ! $.trim( $email.val() ).length ) {
+		if (
+			0 === parseInt( $rsvp.val() ) ||
+			! $.trim( $rsvp.val() ).length ||
+			! $.trim( $name.val() ).length ||
+			! $.trim( $email.val() ).length
+		) {
 			return false;
 		}
 
@@ -51,7 +57,8 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.event.handle_submission = function( e ) {
-		if ( ! my.validate_submission() ) {
+
+		if ( ! my.validate_submission(  $( this ).closest( 'form' ) ) ) {
 			e.preventDefault();
 			var $form = $( this ).closest( 'form' );
 
