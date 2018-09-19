@@ -124,7 +124,8 @@ class Tribe__Tickets__Commerce__PayPal__Endpoints__Success_Template implements T
 				continue;
 			}
 
-			$ticket_price = (int) get_post_meta( $ticket_id, '_price', true );
+			$raw_ticket_price = get_post_meta( $ticket_id, '_price', true );
+			$ticket_price     = floatval( $raw_ticket_price );
 			$order_total  += $ticket_price;
 
 			if ( array_key_exists( $ticket_id, $tickets ) ) {
