@@ -35,6 +35,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	public function get_revenue_for_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
 		$revenue = $this->get_unfiltered_revenue_for_ticket( $ticket );
 
+
+
 		/**
 		 * Filters the revenue for a specific ticket.
 		 *
@@ -53,10 +55,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket
 	 *
-	 * @return int
+	 * @return float
 	 */
 	protected function get_unfiltered_revenue_for_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
-		return (int) $ticket->price * $ticket->qty_sold();
+		return floatval( $ticket->price * $ticket->qty_sold() );
 	}
 
 	/**
