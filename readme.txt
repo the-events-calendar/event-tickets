@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.8.2] TBD =
 
 * Fix - Ensure that ticket forms and related info are not visible on password-protected events, posts, and other post types [102643]
+* Tweak - Fix some internal documentation of shortcode templates to ensure filenames are accurate [112360]
 * Tweak - Prevent RSVP form from submitting when the quantity is 0 or if blank [113989]
 
 = [4.8.1] 2018-09-12 =
