@@ -364,7 +364,7 @@ class Tribe__Tickets__Metabox {
 		// Pass the control to the child object
 		$did_checkin = $provider->checkin( $attendee_id );
 
-		$provider->clear_attendees_cache( $did_checkin );
+		$provider->clear_attendees_cache( $attendee_id );
 
 		wp_send_json_success( $did_checkin );
 	}
@@ -400,7 +400,7 @@ class Tribe__Tickets__Metabox {
 		// Pass the control to the child object
 		$did_uncheckin = $provider->uncheckin( $attendee_id );
 
-		$provider->clear_attendees_cache( $did_uncheckin );
+		$provider->clear_attendees_cache( $attendee_id );
 
 		wp_send_json_success( $did_uncheckin );
 	}
