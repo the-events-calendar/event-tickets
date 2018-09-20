@@ -58,7 +58,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return float
 	 */
 	protected function get_unfiltered_revenue_for_ticket( Tribe__Tickets__Ticket_Object $ticket ) {
-		return floatval( $ticket->price * $ticket->qty_sold() );
+		return (float) $ticket->price * $ticket->qty_sold();
 	}
 
 	/**
@@ -308,7 +308,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return float
 	 */
 	protected function get_ticket_completed_total( Tribe__Tickets__Ticket_Object $ticket ) {
-		return floatval( $ticket->qty_sold() * $ticket->price );
+		return (float) $ticket->qty_sold() * $ticket->price;
 	}
 
 	/**
@@ -334,7 +334,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return float
 	 */
 	protected function get_ticket_not_completed_total( Tribe__Tickets__Ticket_Object $ticket ) {
-		return floatval( $ticket->qty_pending() * $ticket->price );
+		return (float) $ticket->qty_pending() * $ticket->price;
 	}
 
 	/**

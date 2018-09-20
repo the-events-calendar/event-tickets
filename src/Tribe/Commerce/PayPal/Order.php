@@ -695,7 +695,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		$statuses = apply_filters( 'tribe_tickets_tpp_order_line_total_statuses', $statuses, $this );
 
 		if ( in_array( $this->status, $statuses ) ) {
-			return ! empty( $this->meta['mc_gross'] ) ? floatval( $this->meta['mc_gross'] ) : 0;
+			return ! empty( $this->meta['mc_gross'] ) ? (float) $this->meta['mc_gross'] : 0;
 		}
 
 		return 0;
