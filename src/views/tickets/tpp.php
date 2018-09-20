@@ -64,7 +64,7 @@ $cart_url       = '';
 				continue;
 			}
 
-			if ( ! $ticket->date_in_range( $now ) ) {
+			if ( ! $ticket->date_in_range() ) {
 				continue;
 			}
 
