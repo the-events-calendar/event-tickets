@@ -339,6 +339,7 @@ class Tribe__Tickets__Metabox {
 	 * @since  4.6.2
 	 */
 	public function ajax_attendee_checkin() {
+		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
 		$attendee_id = Tribe__Utils__Array::get( $_POST, 'attendee_id', false );
 
 		if ( empty( $attendee_id ) ) {
@@ -364,7 +365,7 @@ class Tribe__Tickets__Metabox {
 		// Pass the control to the child object
 		$did_checkin = $provider->checkin( $attendee_id );
 
-		$provider->clear_attendees_cache( $attendee_id );
+		$provider->clear_attendees_cache( $event_id );
 
 		wp_send_json_success( $did_checkin );
 	}
@@ -375,6 +376,7 @@ class Tribe__Tickets__Metabox {
 	 * @since  4.6.2
 	 */
 	public function ajax_attendee_uncheckin() {
+		$event_id    = Tribe__Utils__Array::get( $_POST, 'event_ID', false );
 		$attendee_id = Tribe__Utils__Array::get( $_POST, 'attendee_id', false );
 
 		if ( empty( $attendee_id ) ) {
@@ -400,7 +402,7 @@ class Tribe__Tickets__Metabox {
 		// Pass the control to the child object
 		$did_uncheckin = $provider->uncheckin( $attendee_id );
 
-		$provider->clear_attendees_cache( $attendee_id );
+		$provider->clear_attendees_cache( $event_id );
 
 		wp_send_json_success( $did_uncheckin );
 	}
