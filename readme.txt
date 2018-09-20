@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.8.2] TBD =
 
 * Fix - Ensure that ticket forms and related info are not visible on password-protected events, posts, and other post types [102643]
+* Fix - Remove the "Not Going" RSVPs from the attendee count on the events list. Props to @mirre1 for flagging this! [111104]
 * Tweak - Fix some internal documentation of shortcode templates to ensure filenames are accurate [112360]
 * Tweak - Prevent RSVP form from submitting when the quantity is 0 or if blank [113989]
 
