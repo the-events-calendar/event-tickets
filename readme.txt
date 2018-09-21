@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.8.2] TBD =
 
 * Fix - Ensure that ticket forms and related info are not visible on password-protected events, posts, and other post types [102643]
+* Fix - Fixed a number of locations in Tribe Commerce-powered admin views where prices were reported without their full decimal values [112217]
 * Fix - Display RSVP/Tickets unavailability message on the position selected over the Settings. Thanks @liblogger for flagging this! [113161]
 * Fix - Remove the "Not Going" RSVPs from the attendee count on the events list. Props to @mirre1 for flagging this! [111104]
 * Fix - Ensured that the TribeCommerce ticket start and end sale date respect the event timezone. Thanks Ryan and Georges for flagging this! [109510]
