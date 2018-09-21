@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Display RSVP/Tickets unavailability message on the position selected over the Settings. Thanks @liblogger for flagging this! [113161]
 * Fix - Remove the "Not Going" RSVPs from the attendee count on the events list. Props to @mirre1 for flagging this! [111104]
 * Fix - Ensured that the TribeCommerce ticket start and end sale date respect the event timezone. Thanks Ryan and Georges for flagging this! [109510]
+* Fix - Fixed datepicker format related problems when using Event Tickets as standalone [111817]
 * Tweak - Fix some internal documentation of shortcode templates to ensure filenames are accurate [112360]
 * Tweak - Prevent RSVP form from submitting when the quantity is 0 or if blank [113989]
 
