@@ -37,6 +37,11 @@ class Tribe__Tickets__Assets {
 			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
 		);
 
+		$datepicker_formats = array(
+			'datepicker_format'       => Tribe__Date_Utils::datepicker_formats( tribe_get_option( 'datepickerFormat' ) ),
+			'datepicker_format_index' => tribe_get_option( 'datepickerFormat' ),
+		);
+
 		$locale  = localeconv();
 		$decimal = isset( $locale['decimal_point'] ) ? $locale['decimal_point'] : '.';
 
@@ -93,6 +98,10 @@ class Tribe__Tickets__Assets {
 						'data' => array(
 							'nav_away_msg' => __( 'It looks like you have modified your shared capacity setting but have not saved or updated the post.', 'event-tickets' ),
 						),
+					),
+					array(
+						'name' => 'tribe_dynamic_help_text',
+						'data' => $datepicker_formats,
 					),
 					array(
 						'name' => 'price_format',
