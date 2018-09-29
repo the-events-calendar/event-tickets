@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.8.1
+ * @version 4.8.2
  *
  * @var bool $must_login
  */
@@ -47,7 +47,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 
 		<div
 			class="tribe-rsvp-message tribe-rsvp-message-error tribe-rsvp-message-confirmation-error" style="display:none;">
-			<?php esc_html_e( 'Please fill in the RSVP confirmation name and email fields.', 'event-tickets' ); ?>
+			<?php esc_html_e( 'Please fill in the RSVP quantity, confirmation name, and email fields.', 'event-tickets' ); ?>
 		</div>
 	</div>
 
