@@ -40,7 +40,7 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	protected $status_managers = array(
 		//'edd' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
-		//'rsvp' => 'Tribe__Tickets__Commerce__WooCommerce__Status_Manager',
+		'rsvp' => 'Tribe__Tickets__RSVP__Status_Manager',
 		//'tribe-commerce' => 'Tribe__Tickets__Commerce__WooCommerce__Status_Manager',
 		'woo' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 	);
