@@ -547,11 +547,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Fetch the Attendees
 			$attendees = $this->provider->get_attendees_by_id( $this->ID );
 			$attendees_count = 0;
+			$not_going_arr = tribe( 'tickets.status' )->return_statuses_by_action( 'count_not_going', 'rsvp' );
 
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {
 				// Prevent RSVP with Not Going Status to decrease Inventory
-				if ( 'rsvp' === $attendee['provider_slug'] && 'no' === $attendee['order_status'] ) {
+				if ( 'rsvp' === $attendee['provider_slug'] && in_array( $attendee[ 'order_status' ], $not_going_arr ) ) {
 					continue;
 				}
 

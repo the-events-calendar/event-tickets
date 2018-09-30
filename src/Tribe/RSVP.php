@@ -1874,7 +1874,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function filter_event_tickets_attendees_rsvp_checkin_stati( array $stati = array() ) {
 
-		$merged_array = array_merge($stati, (tribe( 'tickets.status' )->return_statuses_by_action( 'count_completed', 'rsvp' ) ) );
+		$merged_array = array_merge( $stati, ( tribe( 'tickets.status' )->return_statuses_by_action( 'count_completed', 'rsvp' ) ) );
 
 		return array_unique( $merged_array );
 	}
@@ -2143,12 +2143,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function get_total_not_going( $event_id ) {
 
-		$not_going = 0;
+		$not_going     = 0;
 		$not_going_arr = tribe( 'tickets.status' )->return_statuses_by_action( 'count_not_going', 'rsvp' );
 
 		foreach ( $this->get_attendees_array( $event_id ) as $attendee ) {
-			if ( in_array( $attendee[ 'order_status' ], $not_going_arr ) ) {
-				$not_going++;
+			if ( in_array( $attendee['order_status'], $not_going_arr ) ) {
+				$not_going ++;
 			}
 		}
 

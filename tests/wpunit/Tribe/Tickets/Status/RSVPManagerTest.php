@@ -60,8 +60,8 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 	public function it_has_status_no() {
 
 		$sut = $this->make_instance();
-		$this->assertArrayHasKey( 'No', $sut->statuses );
-		$this->assertEquals( true, $sut->statuses['No']->count_not_going );
+		$this->assertArrayHasKey( 'Not_Going', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Not_Going']->count_not_going );
 	}
 
 	/**
@@ -71,8 +71,8 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 	public function it_has_status_yes() {
 
 		$sut = $this->make_instance();
-		$this->assertArrayHasKey( 'Yes', $sut->statuses );
-		$this->assertEquals( true, $sut->statuses['Yes']->count_completed );
+		$this->assertArrayHasKey( 'Going', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Going']->count_completed );
 	}
 
 	/**
@@ -91,8 +91,23 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_has_all_rsvp_statues() {
 		$this->assertSame( array(
-			'no',
 			'yes',
+			'no',
 		), Manager::get_instance()->return_statuses_by_action( 'all', 'rsvp' ) );
+	}
+
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_has_label_and_stock_reduction_for_status() {
+
+		$options = Manager::get_instance()->return_status_options( 'rsvp' );
+
+		$this->assertSame( 'Going', $options['yes']['label'] );
+		$this->assertSame( 1, $options['yes']['decrease_stock_by'] );
+		$this->assertSame( 'Not Going', $options['no']['label'] );
+		$this->assertSame( 0, $options['no']['decrease_stock_by'] );
+
 	}
 }

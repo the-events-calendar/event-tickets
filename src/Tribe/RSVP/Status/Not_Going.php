@@ -7,10 +7,10 @@
  * @since tbd
  *
  */
-class Tribe__Tickets__RSVP__Status__No extends Tribe__Tickets__Status__Abstract {
+class Tribe__Tickets__RSVP__Status__Not_Going extends Tribe__Tickets__Status__Abstract {
 
 	//Cancelled by an admin or the customer – no further action required (Cancelling an order does not affect stock quantity by default)
-	public $name          = 'No';
+	public $name          = 'Not Going';
 	public $provider_name = 'no';
 	public $post_type     = 'tribe_rsvp_attendees';
 

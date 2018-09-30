@@ -10,8 +10,8 @@
 class Tribe__Tickets__RSVP__Status_Manager {
 
 	public $status_names = array(
-		'No',
-		'Yes',
+		'Going',
+		'Not_Going',
 	);
 
 	public $statuses = array();
@@ -21,7 +21,9 @@ class Tribe__Tickets__RSVP__Status_Manager {
 		$this->initialize_status_classes();
 	}
 
-
+	/**
+	 * Initialize Commerce Status Class and Get all Statuses
+	 */
 	public function initialize_status_classes() {
 
 		foreach ( $this->status_names as $name ) {

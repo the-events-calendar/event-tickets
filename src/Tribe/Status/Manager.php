@@ -219,4 +219,34 @@ class Tribe__Tickets__Status__Manager {
 
 	}
 
+	/**
+	 * Return an array of Statuses for a Commerce with label and stock attributes
+	 *
+	 * @since TBD
+	 *
+	 * @param $commerce string a string of the Commerce System to get statuses from
+	 *
+	 * @return array an array of statues with label and stock attributes
+	 */
+	public function return_status_options( $commerce ) {
+
+		$status_options = array();
+
+		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
+			return $status_options;
+		}
+
+		$filtered_statuses = $this->statuses[ $commerce ]->statuses;
+
+		foreach ( $filtered_statuses as $status ) {
+			$status_options[ $status->provider_name ] = array(
+				'label'             => __( $status->name, 'event-tickets' ),
+				'decrease_stock_by' => empty( $status->count_completed ) ? 0 : 1,
+			);
+			$status->provider_name;
+		}
+
+		return $status_options;
+
+	}
 }
