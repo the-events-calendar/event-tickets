@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.8
-Stable tag: 4.8.1
+Stable tag: 4.8.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,7 +122,20 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.8.1] 2018-09-11 =
+= [4.8.2] 2018-10-02 =
+
+* Fix - Ensure that ticket forms and related info are not visible on password-protected events, posts, and other post types [102643]
+* Fix - Prevent notice when editing ticket with global capacity [104169]
+* Fix - Fixed a number of locations in Tribe Commerce-powered admin views where prices were reported without their full decimal values [112217]
+* Fix - Display RSVP/Tickets unavailability message on the position selected over the Settings. Thanks @liblogger for flagging this! [113161]
+* Fix - Remove the "Not Going" RSVPs from the attendee count on the events list. Props to @mirre1 for flagging this! [111104]
+* Fix - Ensured that the TribeCommerce ticket start and end sale date respect the event timezone. Thanks Ryan and Georges for flagging this! [109510]
+* Fix - Fixed datepicker format related problems when using Event Tickets as standalone [111817]
+* Tweak - Ensure the attendees cache is cleared upon checking in an attendee or undoing a checkin (thanks to @hadamlenz on GitHub for submitting this change!) [113661]
+* Tweak - Fix some internal documentation of shortcode templates to ensure filenames are accurate [112360]
+* Tweak - Prevent RSVP form from submitting when the quantity is 0 or if blank [113989]
+
+= [4.8.1] 2018-09-12 =
 
 * Fix - Show the ticket table when tickets are all sold out, show message in list view [111893]
 * Fix - Fixed ticket description issue when creating events with no description. Thanks Aaron Brazell for the fix! [113038]

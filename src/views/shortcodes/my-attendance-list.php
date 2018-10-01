@@ -4,9 +4,9 @@
  *
  * Override this template in your own theme by creating a file at:
  *
- *     [your-theme]/tribe-events/tickets/shortcodes/my-attendance-list.php
+ *     [your-theme]/tribe-events/shortcodes/my-attendance-list.php
  *
- * @version 4.3.5
+ * @version 4.8.2
  *
  * @var array $event_ids
  */
