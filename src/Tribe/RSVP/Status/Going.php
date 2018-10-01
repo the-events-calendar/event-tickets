@@ -2,7 +2,7 @@
 
 
 /**
- * Class Tribe__Tickets__RSVP__Status__Yes
+ * Class Tribe__Tickets__RSVP__Status__Going
  *
  * @since tbd
  *
