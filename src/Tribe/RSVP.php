@@ -2131,7 +2131,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * Return the "Not Going" RSVPs number
 	 * on an event basis.
 	 *
-	 * @since TBD
+	 * @since 4.8.2
 	 *
 	 * @param $event_id
 	 *
