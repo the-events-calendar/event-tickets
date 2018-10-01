@@ -100,7 +100,7 @@ class Tribe__Tickets__Assets {
 						),
 					),
 					array(
-						'name' => 'tribe_dynamic_help_text',
+						'name' => 'tribe_ticket_datepicker_format',
 						'data' => $datepicker_formats,
 					),
 					array(

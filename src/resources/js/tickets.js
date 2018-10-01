@@ -317,8 +317,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				startofweek = $event_pickers.data( 'startofweek' );
 			}
 
-			if ( 'undefined' !== typeof tribe_dynamic_help_text ) {
-				var indexDatepickerFormat = $.isNumeric( tribe_dynamic_help_text.datepicker_format_index ) ? tribe_dynamic_help_text.datepicker_format_index : 0;
+			if ( 'undefined' !== typeof tribe_ticket_datepicker_format ) {
+				var indexDatepickerFormat = $.isNumeric( tribe_ticket_datepicker_format.datepicker_format_index ) ? tribe_ticket_datepicker_format.datepicker_format_index : 0;
 				dateFormat = datepickerFormats[indexDatepickerFormat];
 			}
 
