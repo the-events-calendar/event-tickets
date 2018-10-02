@@ -188,6 +188,8 @@ class Tribe__Tickets__Main {
 
 		tribe( 'tickets.privacy' );
 
+        tribe( 'tickets.attendees.info' );
+
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
@@ -205,6 +207,10 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
+
+		// Attendee Info
+		tribe_singleton( 'tickets.attendees.info', 'Tribe__Tickets__Attendee_Info', array( 'hook' ) );
+		tribe_singleton( 'tickets.attendees.view', 'Tribe__Tickets__Attendee_Info_View' );
 
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
@@ -348,12 +354,6 @@ class Tribe__Tickets__Main {
 		// Hook to oembeds
 		add_action( 'tribe_events_embed_after_the_cost_value', array( $this, 'inject_buy_button_into_oembed' ) );
 		add_action( 'embed_head', array( $this, 'embed_head' ) );
-
-		// Attendee screen enhancements
-		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ), 20 );
-
-		// Attendee Info rewrites
-        add_action( 'plugins_loaded', array( Tribe__Tickets__Rewrite::instance(), 'hooks' ) );
 
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {

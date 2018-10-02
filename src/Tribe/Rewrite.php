@@ -76,6 +76,10 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 		$rewrite->add( array( '{{ attendee-info }}' ), array( 'attendeeInfo' => 1 ) );
 	}
 
+	public function add_rewrite_tags() {
+		add_rewrite_tag('%attendeeInfo%', '([^&]+)');
+	}
+
 	/**
 	 * Get the base slugs for the Plugin Rewrite rules
 	 *
@@ -111,9 +115,6 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 
 		// Remove duplicates (no need to have 'month' twice if no translations are in effect, etc)
 		$bases = array_map( 'array_unique', $bases );
-
-		// By default we always have `en_US` to avoid 404 with older URLs
-		$languages = apply_filters( 'tribe_tickets_rewrite_i18n_languages', array_unique( array( 'en_US', get_locale() ) ) );
 
 		// By default we load the Default and our plugin domains
 		$domains = apply_filters( 'tribe_tickets_rewrite_i18n_domains', array(
@@ -160,5 +161,6 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 	protected function add_hooks() {
 		parent::add_hooks();
 		add_action( 'tribe_tickets_pre_rewrite', array( $this, 'generate_core_rules' ) );
+		add_action( 'init', array( $this, 'add_rewrite_tags' ) );
 	}
 }
