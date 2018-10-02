@@ -106,7 +106,7 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 		 * @var array $bases
 		 */
 		$bases = apply_filters( 'tribe_tickets_rewrite_base_slugs', array(
-			'attendee-info' => array( Tribe__Settings_Manager::get_option( 'attendeeInfoSlug', 'attendee-info' ) ),
+			'attendee-info' => array( Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', 'attendee-info' ) ),
 		) );
 
 		// Remove duplicates (no need to have 'month' twice if no translations are in effect, etc)

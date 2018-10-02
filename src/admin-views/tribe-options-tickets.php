@@ -65,6 +65,22 @@ $tickets_fields = array(
 );
 
 /**
+ * Add in option to define slug for attendee info page
+ */
+$tickets_fields = array_merge( $tickets_fields, array(
+		'ticket-attendee-info-slug' => array(
+			'type'                => 'text',
+			'label'               => esc_html__( 'Attendee Info URL slug', 'event-tickets' ),
+			'tooltip'             => esc_html__( 'The slug used for building the URL for the Attendee Info page.', 'event-tickets' ),
+			'size'                => 'medium',
+			'default'             => 'attendee-info',
+			'validation_callback' => 'is_string',
+			'validation_type'     => 'textarea',
+		),
+	)
+);
+
+/**
  * If  The Events Calendar is active let's add an option to control the position
  * of the ticket forms in the events view.
  */
