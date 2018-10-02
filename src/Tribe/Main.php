@@ -188,7 +188,7 @@ class Tribe__Tickets__Main {
 
 		tribe( 'tickets.privacy' );
 
-        tribe( 'tickets.attendees.info' );
+		tribe( 'tickets.attendees.info' );
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.

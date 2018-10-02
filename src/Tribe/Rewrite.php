@@ -43,7 +43,7 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 		 * are committed.
 		 *
 		 * Should be used when you want to add more rewrite rules without having to
-		 * deal with the array merge, noting that rules for The Events Calendar are
+		 * deal with the array merge, noting that rules for Event Tickets are
 		 * themselves added via this hook (default priority).
 		 *
 		 * @var Tribe__Tickets__Rewrite $rewrite
@@ -51,7 +51,7 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 		do_action( 'tribe_tickets_pre_rewrite', $this );
 
 		/**
-		 * Provides an opportunity to modify The Events Calendar's rewrite rules before they
+		 * Provides an opportunity to modify Event Tickets' rewrite rules before they
 		 * are merged in to WP's own rewrite rules.
 		 *
 		 * @param array $events_rewrite_rules
@@ -64,7 +64,7 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 	}
 
 	/**
-	 * Sets up the rules required by The Events Calendar.
+	 * Sets up the rules required by Event Tickets.
 	 *
 	 * This should be called during tribe_tickets_pre_rewrite, which means other plugins needing to add rules
 	 * of their own can do so on the same hook at a lower or higher priority, according to how specific

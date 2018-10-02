@@ -2566,6 +2566,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		return $attendee_data;
 	}
 
+	/**
+	 * Get the Holder's Name; from the stored meta first if available, then from the attendee meta.
+	 *
+	 * @param $attendee
+	 *
+	 * @return string
+	 */
 	protected function get_holder_name( $attendee ) {
 		$saved_name = $this->get_attendee_name( $attendee );
 
@@ -2576,6 +2583,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		return get_post_meta( $attendee->ID, $this->full_name, true );
 	}
 
+	/**
+	 * Get the Holder email; from the stored meta first if available, then from the attendee meta.
+	 *
+	 * @param $attendee
+	 *
+	 * @return string
+	 */
 	protected function get_holder_email( $attendee ) {
 		$saved_email = $this->get_attendee_email( $attendee );
 
