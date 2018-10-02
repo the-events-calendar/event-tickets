@@ -352,6 +352,9 @@ class Tribe__Tickets__Main {
 		// Attendee screen enhancements
 		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ), 20 );
 
+		// Attendee Info rewrites
+        add_action( 'plugins_loaded', array( Tribe__Tickets__Rewrite::instance(), 'hooks' ) );
+
 		// CSV Import options
 		if ( class_exists( 'Tribe__Events__Main' ) ) {
 			add_filter( 'tribe_events_import_options_rows', array( Tribe__Tickets__CSV_Importer__Rows::instance(), 'filter_import_options_rows' ) );

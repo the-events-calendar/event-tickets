@@ -252,6 +252,27 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $attendee_optout_key = '';
 
 		/**
+		 * Meta key to store the attendee's first name if provided.
+		 *
+		 * @var string
+		 */
+		const ATTENDEE_FIRST_NAME = '_tribe_attendee_first_name';
+
+		/**
+		 * Meta key to store the attendee's last name if provided.
+		 *
+		 * @var string
+		 */
+		const ATTENDEE_LAST_NAME = '_tribe_attendee_last_name';
+
+		/**
+		 * Meta key to store the attendee's email if provided.
+		 *
+		 * @var string
+		 */
+		const ATTENDEE_EMAIL = '_tribe_attendee_email';
+
+		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
@@ -698,6 +719,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		protected function get_attendees( $attendees_query, $post_id ) {}
+
+		/**
+		 * @param \WP_Post $attendee
+		 *
+		 * @return string
+		 */
+		protected function get_attendee_name( $attendee ) {
+			$fname = get_post_meta( $attendee->ID, self::ATTENDEE_FIRST_NAME, true );
+			$lname = get_post_meta( $attendee->ID, self::ATTENDEE_LAST_NAME, true );
+
+			if ( empty( $fname ) && empty( $lname ) ) {
+				return '';
+			}
+
+			return sprintf( '%1s %2s', $fname, $lname );
+		}
+
+		/**
+		 * @param \WP_Post $attendee
+		 *
+		 * @return mixed
+		 */
+		protected function get_attendee_email( $attendee ) {
+			return get_post_meta( $attendee->ID, self::ATTENDEE_EMAIL, true );
+		}
 
 		/**
 		 * Mark an attendee as checked in

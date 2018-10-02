@@ -2540,8 +2540,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			// Fields for Email Tickets
 			'event_id'      => get_post_meta( $attendee->ID, $this->attendee_event_key, true ),
 			'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
-			'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
-			'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
+			'holder_name'   => $this->get_holder_name( $attendee ),
+			'holder_email'  => $this->get_holder_email( $attendee ),
 			'order_id'      => $attendee->ID,
 			'ticket_id'     => $ticket_unique_id,
 			'qr_ticket_id'  => $attendee->ID,
@@ -2564,6 +2564,26 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'tpp', $attendee );
 
 		return $attendee_data;
+	}
+
+	protected function get_holder_name( $attendee ) {
+		$saved_name = $this->get_attendee_name( $attendee );
+
+		if ( ! empty( $saved_name ) ) {
+			return $saved_name;
+		}
+
+		return get_post_meta( $attendee->ID, $this->full_name, true );
+	}
+
+	protected function get_holder_email( $attendee ) {
+		$saved_email = $this->get_attendee_email( $attendee );
+
+		if ( ! empty( $saved_email ) ) {
+			return $saved_email;
+		}
+
+		return get_post_meta( $attendee->ID, $this->email, true );
 	}
 
 	/**

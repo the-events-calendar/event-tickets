@@ -134,8 +134,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_primary_info( array $item ) {
-		$purchaser_name  = empty( $item[ 'purchaser_name' ] ) ? '' : esc_html( $item[ 'purchaser_name' ] );
-		$purchaser_email = empty( $item[ 'purchaser_email' ] ) ? '' : esc_html( $item[ 'purchaser_email' ] );
+		$purchaser_name  = empty( $item['holder_name'] ) ? ( empty( $item[ 'purchaser_name' ] ) ? '' : esc_html( $item[ 'purchaser_name' ] ) ) : $item['holder_name'];
+		$purchaser_email = empty( $item['holder_email'] ) ? ( empty( $item[ 'purchaser_email' ] ) ? '' : esc_html( $item[ 'purchaser_email' ] ) ) : $item['holder_email'];
 
 		$output = "
 			<div class='purchaser_name'>{$purchaser_name}</div>
