@@ -141,6 +141,10 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * @return array
 	 */
 	public static function all_statuses() {
+
+		log_me('all_statuses');
+		log_me(tribe( 'tickets.status' )->return_statuses_by_action( 'all', 'tribe-commerce' ));
+
 		return array(
 			self::$completed,
 			self::$not_completed,
@@ -165,6 +169,8 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	public function is_complete_transaction_status( $payment_status ) {
 		$statuses = array( self::$completed, self::$refunded );
 
+		log_me('is_complete_transaction_status');
+		log_me(tribe( 'tickets.status' )->return_statuses_by_action( array( 'count_completed', 'count_refunded' ), 'tribe-commerce' ));
 		/**
 		 * Filters the statuses that will mark a PayPal transaction as completed.
 		 *
@@ -190,6 +196,8 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	public function is_revenue_generating_status( $payment_status ) {
 		$statuses = array( self::$completed );
 
+		log_me('is_revenue_generating_status');
+		log_me(tribe( 'tickets.status' )->return_statuses_by_action( 'count_completed', 'tribe-commerce' ));
 		/**
 		 * Filters the statuses that will mark a PayPal transaction as generating
 		 * revenue.
