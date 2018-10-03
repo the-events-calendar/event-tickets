@@ -188,8 +188,6 @@ class Tribe__Tickets__Main {
 
 		tribe( 'tickets.privacy' );
 
-		tribe( 'tickets.attendees.info' );
-
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
@@ -209,8 +207,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
 		// Attendee Info
-		tribe_singleton( 'tickets.attendees.info', 'Tribe__Tickets__Attendee_Info', array( 'hook' ) );
-		tribe_singleton( 'tickets.attendees.view', 'Tribe__Tickets__Attendee_Info_View' );
+        tribe_register_provider( 'Tribe__Tickets__Attendee_Info__Service_Provider' );
 
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );

@@ -1,15 +1,15 @@
 <?php
-// Don't load directly
-defined( 'WPINC' ) or die;
 
 /**
  * Rewrite Configuration Class
  * Permalinks magic Happens over here!
  */
-class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
+class Tribe__Tickets__Attendee_Info__Rewrite extends Tribe__Rewrite {
 
 	/**
-	 * Tribe__Tickets__Rewrite constructor.
+	 * Tribe__Tickets__Attendee_Info__Rewrite constructor.
+	 *
+	 * @since TBD
 	 *
 	 * @param WP_Rewrite|null $wp_rewrite
 	 */
@@ -18,20 +18,9 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 	}
 
 	/**
-	 * Static Singleton Factory Method
-	 *
-	 * @return Tribe__Tickets__Rewrite
-	 */
-	public static function instance( $wp_rewrite = null ) {
-		if ( ! isset( self::$instance ) ) {
-			self::$instance = new self( $wp_rewrite );
-		}
-
-		return self::$instance;
-	}
-
-	/**
 	 * Generate the Rewrite Rules
+	 *
+	 * @since TBD
 	 *
 	 * @param  WP_Rewrite $wp_rewrite WordPress Rewrite that will be modified, pass it by reference (&$wp_rewrite)
 	 */
@@ -39,14 +28,14 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 		$this->setup( $wp_rewrite );
 
 		/**
-		 * Use this to change the Tribe__Tickets__Rewrite instance before new rules
+		 * Use this to change the Tribe__Tickets__Attendee_Info__Rewrite instance before new rules
 		 * are committed.
 		 *
 		 * Should be used when you want to add more rewrite rules without having to
 		 * deal with the array merge, noting that rules for Event Tickets are
 		 * themselves added via this hook (default priority).
 		 *
-		 * @var Tribe__Tickets__Rewrite $rewrite
+		 * @var Tribe__Tickets__Attendee_Info__Rewrite $rewrite
 		 */
 		do_action( 'tribe_tickets_pre_rewrite', $this );
 
@@ -55,7 +44,7 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 		 * are merged in to WP's own rewrite rules.
 		 *
 		 * @param array $events_rewrite_rules
-		 * @param Tribe__Tickets__Rewrite $tribe_rewrite
+		 * @param Tribe__Tickets__Attendee_Info__Rewrite $tribe_rewrite
 		 * @param WP_Rewrite $wp_rewrite WordPress Rewrite that will be modified.
 		 */
 		$this->rules = apply_filters( 'tribe_tickets_rewrite_rules_custom', $this->rules, $this, $wp_rewrite );
@@ -70,20 +59,29 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 	 * of their own can do so on the same hook at a lower or higher priority, according to how specific
 	 * those rules are.
 	 *
-	 * @param Tribe__Tickets__Rewrite $rewrite
+	 * @since TBD
+	 *
+	 * @param Tribe__Tickets__Attendee_Info__Rewrite $rewrite
 	 */
-	public function generate_core_rules( Tribe__Tickets__Rewrite $rewrite ) {
+	public function generate_core_rules( Tribe__Tickets__Attendee_Info__Rewrite $rewrite ) {
 		$rewrite->add( array( '{{ attendee-info }}' ), array( 'attendeeInfo' => 1 ) );
 	}
 
+	/**
+	 * Add attendeeInfo rewrite tag.
+	 *
+	 * @since TBD
+	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag('%attendeeInfo%', '([^&]+)');
+		add_rewrite_tag( '%attendeeInfo%', '([^&]+)' );
 	}
 
 	/**
 	 * Get the base slugs for the Plugin Rewrite rules
 	 *
 	 * WARNING: Don't mess with the filters below if you don't know what you are doing
+	 *
+	 * @since TBD
 	 *
 	 * @param  string $method Use "regex" to return a Regular Expression with the possible Base Slugs using l10n
 	 * @return object         Return Base Slugs with l10n variations
@@ -156,11 +154,5 @@ class Tribe__Tickets__Rewrite extends Tribe__Rewrite {
 		 *                        domains with a `'plugin-slug' => '/absolute/path/to/lang/dir'`
 		 */
 		return (object) apply_filters( 'tribe_tickets_rewrite_i18n_slugs', $bases, $method, $domains );
-	}
-
-	protected function add_hooks() {
-		parent::add_hooks();
-		add_action( 'tribe_tickets_pre_rewrite', array( $this, 'generate_core_rules' ) );
-		add_action( 'init', array( $this, 'add_rewrite_tags' ) );
 	}
 }
