@@ -82,7 +82,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 	public function it_has_rsvp_dispatch_statues() {
 		$this->assertSame( array(
 			'yes',
-		), Manager::get_instance()->return_statuses_by_action( 'attendee_dispatch', 'rsvp' ) );
+		), Manager::get_instance()->get_statuses_by_action( 'attendee_dispatch', 'rsvp' ) );
 	}
 
 	/**
@@ -93,7 +93,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertSame( array(
 			'yes',
 			'no',
-		), Manager::get_instance()->return_statuses_by_action( 'all', 'rsvp' ) );
+		), Manager::get_instance()->get_statuses_by_action( 'all', 'rsvp' ) );
 	}
 
 	/**
@@ -102,7 +102,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_has_label_and_stock_reduction_for_status() {
 
-		$options = Manager::get_instance()->return_status_options( 'rsvp' );
+		$options = Manager::get_instance()->get_status_options( 'rsvp' );
 
 		$this->assertSame( 'Going', $options['yes']['label'] );
 		$this->assertSame( 1, $options['yes']['decrease_stock_by'] );

@@ -547,7 +547,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			// Fetch the Attendees
 			$attendees = $this->provider->get_attendees_by_id( $this->ID );
 			$attendees_count = 0;
-			$not_going_arr = tribe( 'tickets.status' )->return_statuses_by_action( 'count_not_going', 'rsvp' );
+			$not_going_arr = tribe( 'tickets.status' )->get_statuses_by_action( 'count_not_going', 'rsvp' );
 
 			// Loop on All the attendees, allowing for some filtering of which will be removed or not
 			foreach ( $attendees as $attendee ) {
