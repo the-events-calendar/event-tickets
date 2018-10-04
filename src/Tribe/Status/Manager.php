@@ -236,6 +236,16 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_status_options( $commerce ) {
 
+
+/*
+ * It'd be great if any of this was cached in some way so if we fetch the status options for a given commerce provider multiple times, we won't have to re-initialize the options. Perhaps make the $status_options variable static within this method and then index it by $commerce.
+
+ static $status_options = array();
+
+ if ( ! empty( $status_options[ $commerce ] ) ) {
+   return $status_options[ $commerce ];
+ }
+ */
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return array();
 		}
