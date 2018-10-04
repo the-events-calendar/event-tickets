@@ -92,9 +92,11 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		$post      = get_post( $post_id );
 		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post_id );
 		$totals    = count( $attendees );
+		// Remove the "Not Going" RSVPs
+		$totals = $totals - tribe( 'tickets.rsvp' )->get_total_not_going( $post_id );
 
 		// Bail with —
-		if ( 0 === $totals ) {
+		if ( 1 > $totals ) {
 			return '&mdash;';
 		}
 
@@ -119,6 +121,8 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		$ticket    = tribe( 'tickets.handler' )->get_post_totals( $post_id );
 		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post_id );
 		$totals    = count( $attendees );
+		// Remove the "Not Going" RSVPs
+		$totals    = $totals - tribe( 'tickets.rsvp' )->get_total_not_going( $post_id );
 
 		// Bail early for unlimited
 		if ( $ticket['has_unlimited'] ) {
@@ -132,7 +136,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 		$stock = $global_stock_enabled ? $global_stock : $ticket['stock'];
 
 		// If there have been zero sales we need not do any further arithmetic
-		if ( 0 === $totals || 0 === $ticket['capacity'] ) {
+		if ( 1 > $totals || 0 === $ticket['capacity'] ) {
 			$percentage = 0;
 		}
 		// If $stock is zero (and items *have* been sold per the above conditional) we can assume 100%

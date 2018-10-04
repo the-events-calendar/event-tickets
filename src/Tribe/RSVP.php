@@ -2126,4 +2126,28 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		return $this->update_sales_and_stock_by_order_status( $attendee->ID, 'no', $ticket_id );
 	}
+
+	/**
+	 * Return the "Not Going" RSVPs number
+	 * on an event basis.
+	 *
+	 * @since 4.8.2
+	 *
+	 * @param $event_id
+	 *
+	 * @return int
+	 */
+	public function get_total_not_going( $event_id ) {
+
+		$not_going = 0;
+
+		foreach ( $this->get_attendees_array( $event_id ) as $attendee ) {
+			if ( 'no' === $attendee[ 'order_status' ] ) {
+				$not_going++;
+			}
+		}
+
+		return $not_going;
+
+	}
 }

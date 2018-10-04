@@ -856,9 +856,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			if ( ! empty( $ticket_form_hook ) ) {
 				add_action( $ticket_form_hook, array( $this, 'maybe_add_front_end_tickets_form' ), 5 );
+				add_filter( $ticket_form_hook, array( $this, 'show_tickets_unavailable_message' ), 6 );
 			}
 
-			add_action( 'tribe_events_single_event_after_the_meta', array( $this, 'show_tickets_unavailable_message' ), 6 );
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ), 11 );
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
 		}
@@ -890,6 +890,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function maybe_add_front_end_tickets_form( $content ) {
 			if ( ! tribe_tickets_post_type_enabled( get_post_type() ) ) {
+				return;
+			}
+
+			if ( post_password_required( get_the_ID() ) ) {
 				return;
 			}
 

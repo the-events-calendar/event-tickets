@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/tpp.php
  *
- * @version 4.7.6
+ * @version 4.8.2
  *
  * @var bool $must_login
  * @var bool $can_login
@@ -64,7 +64,7 @@ $cart_url       = '';
 				continue;
 			}
 
-			if ( ! $ticket->date_in_range( $now ) ) {
+			if ( ! $ticket->date_in_range() ) {
 				continue;
 			}
 
