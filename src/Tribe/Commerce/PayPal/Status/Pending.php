@@ -21,4 +21,10 @@ class Tribe__Tickets__Commerce__PayPal__Status__Pending extends Tribe__Tickets__
 	public $count_attendee      = true;
 	public $count_sales         = true;
 
+	//post status fields for tpp
+	public $public                    = true;
+	public $exclude_from_search       = false;
+	public $show_in_admin_all_list    = true;
+	public $show_in_admin_status_list = true;
+
 }

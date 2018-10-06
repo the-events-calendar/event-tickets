@@ -17,4 +17,11 @@ class Tribe__Tickets__Commerce__PayPal__Status__Denied extends Tribe__Tickets__S
 	public $incomplete     = true;
 	public $warning        = true;
 	public $count_canceled = true;
+
+	//post status fields for tpp
+	public $public                    = true;
+	public $exclude_from_search       = false;
+	public $show_in_admin_all_list    = true;
+	public $show_in_admin_status_list = true;
+
 }

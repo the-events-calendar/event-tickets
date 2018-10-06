@@ -86,50 +86,22 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * @since 4.7
 	 */
 	public static function register_order_stati() {
-		register_post_status( self::$completed, array(
-			'label'                     => _x( 'Completed', 'A PayPal order status', 'event-tickets' ),
-			'public'                    => true,
-			'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'event-tickets' ),
-		) );
 
-		register_post_status( self::$not_completed, array(
-			'label'                     => _x( 'Not completed', 'A PayPal order status', 'event-tickets' ),
-			'public'                    => true,
-			'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop( 'Not completed <span class="count">(%s)</span>', 'Not completed <span class="count">(%s)</span>', 'event-tickets' ),
-		) );
+		$statuses = tribe( 'tickets.status' )->get_all_statuses_commerce( 'tpp' );
 
-		register_post_status( self::$pending, array(
-			'label'                     => _x( 'Pending', 'A PayPal order status', 'event-tickets' ),
-			'public'                    => true,
-			'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop( 'Pending <span class="count">(%s)</span>', 'Pending <span class="count">(%s)</span>', 'event-tickets' ),
-		) );
+		foreach ($statuses as $status ) {
 
-		register_post_status( self::$refunded, array(
-			'label'                     => _x( 'Refunded', 'A PayPal order status', 'event-tickets' ),
-			'public'                    => true,
-			'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop( 'Refunded <span class="count">(%s)</span>', 'Refunded <span class="count">(%s)</span>', 'event-tickets' ),
-		) );
+			register_post_status( $status->provider_name, array(
+				'label'                     => _x( $status->name, 'A PayPal order status', 'event-tickets' ),
+				'public'                    => $status->public,
+				'exclude_from_search'       => $status->exclude_from_search,
+				'show_in_admin_all_list'    => $status->show_in_admin_all_list,
+				'show_in_admin_status_list' => $status->show_in_admin_status_list,
+				'label_count'               => _n_noop( $status->name . ' <span class="count">(%s)</span>', $status->name . ' <span class="count">(%s)</span>', 'event-tickets' ),
+			) );
 
-		register_post_status( self::$denied, array(
-			'label'                     => _x( 'Denied', 'A PayPal order status', 'event-tickets' ),
-			'public'                    => true,
-			'exclude_from_search'       => false,
-			'show_in_admin_all_list'    => true,
-			'show_in_admin_status_list' => true,
-			'label_count'               => _n_noop( 'Denied <span class="count">(%s)</span>', 'Denied <span class="count">(%s)</span>', 'event-tickets' ),
-		) );
+		}
+
 	}
 
 	/**
@@ -142,16 +114,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 */
 	public static function all_statuses() {
 
-		log_me('all_statuses');
-		log_me(tribe( 'tickets.status' )->return_statuses_by_action( 'all', 'tribe-commerce' ));
-
-		return array(
-			self::$completed,
-			self::$not_completed,
-			self::$pending,
-			self::$refunded,
-			self::$denied,
-		);
+		return tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' );
 	}
 
 	/**
@@ -167,10 +130,8 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * @return bool
 	 */
 	public function is_complete_transaction_status( $payment_status ) {
-		$statuses = array( self::$completed, self::$refunded );
+		$statuses = tribe( 'tickets.status' )->get_statuses_by_action( array( 'count_completed', 'count_refunded' ), 'tpp', 'OR' );
 
-		log_me('is_complete_transaction_status');
-		log_me(tribe( 'tickets.status' )->return_statuses_by_action( array( 'count_completed', 'count_refunded' ), 'tribe-commerce' ));
 		/**
 		 * Filters the statuses that will mark a PayPal transaction as completed.
 		 *
@@ -194,10 +155,8 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 * @return bool
 	 */
 	public function is_revenue_generating_status( $payment_status ) {
-		$statuses = array( self::$completed );
+		$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
 
-		log_me('is_revenue_generating_status');
-		log_me(tribe( 'tickets.status' )->return_statuses_by_action( 'count_completed', 'tribe-commerce' ));
 		/**
 		 * Filters the statuses that will mark a PayPal transaction as generating
 		 * revenue.

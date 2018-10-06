@@ -22,4 +22,11 @@ class Tribe__Tickets__Commerce__PayPal__Status__Complete extends Tribe__Tickets_
 	public $count_sales         = true;
 	public $count_completed     = true;
 
+	//post status fields for tpp
+	public $public                    = true;
+	public $exclude_from_search       = false;
+	public $show_in_admin_all_list    = true;
+	public $show_in_admin_status_list = true;
+
+
 }

@@ -82,7 +82,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 	public function it_has_ttp_dispatch_statues() {
 		$this->assertSame( array(
 			'yes',
-		), Manager::get_instance()->return_statuses_by_action( 'attendee_dispatch', 'ttp' ) );
+		), Manager::get_instance()->get_statuses_by_action( 'attendee_dispatch', 'ttp' ) );
 	}
 
 	/**
@@ -93,7 +93,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertSame( array(
 			'yes',
 			'no',
-		), Manager::get_instance()->return_statuses_by_action( 'all', 'ttp' ) );
+		), Manager::get_instance()->get_statuses_by_action( 'all', 'ttp' ) );
 	}
 
 	/**
