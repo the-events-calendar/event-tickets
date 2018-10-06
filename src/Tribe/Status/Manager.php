@@ -195,7 +195,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @return array an array of the commerce's statuses matching the provide action
 	 */
-	public function return_statuses_by_action( $action, $commerce ) {
+	public function get_statuses_by_action( $action, $commerce ) {
 
 		$trigger_statuses = array();
 
@@ -234,25 +234,28 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @return array an array of statues with label and stock attributes
 	 */
-	public function return_status_options( $commerce ) {
+	public function get_status_options( $commerce ) {
 
-		$status_options = array();
+		static $status_options;
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
-			return $status_options;
+			return array();
+		}
+
+		if ( ! empty( $status_options[ $commerce ] ) ) {
+			return $status_options[ $commerce ];
 		}
 
 		$filtered_statuses = $this->statuses[ $commerce ]->statuses;
 
 		foreach ( $filtered_statuses as $status ) {
-			$status_options[ $status->provider_name ] = array(
+			$status_options[ $commerce ][ $status->provider_name ] = array(
 				'label'             => __( $status->name, 'event-tickets' ),
 				'decrease_stock_by' => empty( $status->count_completed ) ? 0 : 1,
 			);
-			$status->provider_name;
 		}
 
-		return $status_options;
+		return $status_options[ $commerce ];
 
 	}
 }

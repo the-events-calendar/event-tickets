@@ -255,8 +255,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function init() {
 		$this->register_types();
-
-		$this->not_going_statuses = tribe( 'tickets.status' )->return_statuses_by_action( 'count_not_going', 'rsvp' );
 	}
 
 	/**
@@ -404,6 +402,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Get Status by Action from Status Manager
+	 *
+	 * @since TBD
+	 *
+	 * @param $action string|array a string or array of actions that a status includes
+	 *
+	 * @return array an array of statuses
+	 */
+	public function get_statuses_by_action( $action ) {
+		return tribe( 'tickets.status' )->get_statuses_by_action( $action, 'rsvp' );
+	}
+
+	/**
 	 * Update the RSVP values for this user.
 	 *
 	 * Note that, within this method, $order_id refers to the attendee or ticket ID
@@ -458,7 +469,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		//check if changing status will cause rsvp to go over capacity
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
-		if ( tribe_is_truthy( $attendee_order_status ) && in_array( $previous_order_status, $this->not_going_statuses ) ) {
+		if ( tribe_is_truthy( $attendee_order_status ) && in_array( $previous_order_status, $this->get_statuses_by_action( 'count_not_going' ) ) ) {
 			$capacity = tribe_tickets_get_capacity( $product_id );
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 			$unlimited = -1;
@@ -562,7 +573,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'event_tickets_rsvp_tickets_generated', $order_id, $post_id, $attendee_order_status );
 
-		$send_mail_stati = tribe( 'tickets.status' )->return_statuses_by_action( 'attendee_dispatch', 'rsvp' );
+		$send_mail_stati = tribe( 'tickets.status' )->get_statuses_by_action( 'attendee_dispatch', 'rsvp' );
 
 		/**
 		 * Filters whether a confirmation email should be sent or not for RSVP tickets.
@@ -630,7 +641,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Do not add those attendees/tickets marked as not attending (note that despite the name
 			// 'qr_ticket_id', this key is not QR code specific, it's simply the attendee post ID)
 			$going_status = get_post_meta( $single_attendee['qr_ticket_id'], self::ATTENDEE_RSVP_KEY, true );
-			if ( in_array( $going_status, $this->not_going_statuses ) ) {
+			if ( in_array( $going_status, $this->get_statuses_by_action( 'count_not_going' ) ) ) {
 				continue;
 			}
 
@@ -1879,7 +1890,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function filter_event_tickets_attendees_rsvp_checkin_stati( array $stati = array() ) {
 
-		$merged_array = array_merge( $stati, ( tribe( 'tickets.status' )->return_statuses_by_action( 'count_completed', 'rsvp' ) ) );
+		$merged_array = array_merge( $stati, ( tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'rsvp' ) ) );
 
 		return array_unique( $merged_array );
 	}
@@ -2150,7 +2161,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$not_going     = 0;
 		foreach ( $this->get_attendees_array( $event_id ) as $attendee ) {
-			if ( in_array( $attendee['order_status'], $this->not_going_statuses ) ) {
+			if ( in_array( $attendee['order_status'], $this->get_statuses_by_action( 'count_not_going' ) ) ) {
 				$not_going ++;
 			}
 		}

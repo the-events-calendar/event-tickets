@@ -626,7 +626,7 @@ class Tribe__Tickets__Tickets_View {
 	 */
 	public function get_rsvp_options( $selected = null, $just_labels = true ) {
 
-		$options = tribe( 'tickets.status' )->return_status_options( 'rsvp' );
+		$options = tribe( 'tickets.status' )->get_status_options( 'rsvp' );
 
 		/**
 		 * Allow users to add more RSVP options.
