@@ -8,7 +8,16 @@
 class Tribe__Tickets__Commerce__PayPal__Stati {
 
 	/**
+	 * The string representing the slug for an undefined payment status.
+	 *
+	 * @var string
+	 */
+	public static $undefined = 'undefined';
+
+	/**
 	 * The string representing the slug for a completed payment status.
+	 *
+	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
 	 *
 	 * @var string
 	 */
@@ -17,12 +26,16 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * The string representing the slug for a pending payment status.
 	 *
+	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
+	 *
 	 * @var string
 	 */
 	public static $pending = 'pending-payment';
 
 	/**
 	 * The string representing the slug for a denied payment status.
+	 *
+	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
 	 *
 	 * @var string
 	 */
@@ -31,19 +44,16 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * The string representing the slug for a refunded payment status.
 	 *
+	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
+	 *
 	 * @var string
 	 */
 	public static $refunded = 'refunded';
 
 	/**
-	 * The string representing the slug for an undefined payment status.
-	 *
-	 * @var string
-	 */
-	public static $undefined = 'undefined';
-
-	/**
 	 * The string representing the slug for a not completed payment status.
+	 *
+	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
 	 *
 	 * @var string
 	 */
