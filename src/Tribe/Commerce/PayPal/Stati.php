@@ -8,16 +8,7 @@
 class Tribe__Tickets__Commerce__PayPal__Stati {
 
 	/**
-	 * The string representing the slug for an undefined payment status.
-	 *
-	 * @var string
-	 */
-	public static $undefined = 'undefined';
-
-	/**
 	 * The string representing the slug for a completed payment status.
-	 *
-	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
 	 *
 	 * @var string
 	 */
@@ -26,16 +17,12 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * The string representing the slug for a pending payment status.
 	 *
-	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
-	 *
 	 * @var string
 	 */
 	public static $pending = 'pending-payment';
 
 	/**
 	 * The string representing the slug for a denied payment status.
-	 *
-	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
 	 *
 	 * @var string
 	 */
@@ -44,8 +31,6 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * The string representing the slug for a refunded payment status.
 	 *
-	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
-	 *
 	 * @var string
 	 */
 	public static $refunded = 'refunded';
@@ -53,11 +38,16 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	/**
 	 * The string representing the slug for a not completed payment status.
 	 *
-	 * @deprecated TBD use Tribe__Tickets__Commerce__PayPal__Status_Manager instead
-	 *
 	 * @var string
 	 */
 	public static $not_completed = 'not-completed';
+
+	/**
+	 * The string representing the slug for an undefined payment status.
+	 *
+	 * @var string
+	 */
+	public static $undefined = 'undefined';
 
 	/**
 	 * Casts a payment status to one handled and recognized.
@@ -100,6 +90,10 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 		$statuses = tribe( 'tickets.status' )->get_all_statuses_commerce( 'tpp' );
 
 		foreach ($statuses as $status ) {
+
+			if ( 'undefined' === $status->provider_name ) {
+				continue;
+			}
 
 			register_post_status( $status->provider_name, array(
 				'label'                     => _x( $status->name, 'A PayPal order status', 'event-tickets' ),

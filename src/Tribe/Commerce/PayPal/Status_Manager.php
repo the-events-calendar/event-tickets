@@ -15,6 +15,7 @@ class Tribe__Tickets__Commerce__PayPal__Status_Manager {
 		'Not_Completed',
 		'Pending',
 		'Refunded',
+		'Undefined',
 	);
 
 	public $statuses = array();

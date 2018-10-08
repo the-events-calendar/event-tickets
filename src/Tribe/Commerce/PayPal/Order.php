@@ -679,9 +679,6 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public function get_line_total() {
 
-		//todo
-		//$statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
-
 		$statuses = array(
 			Tribe__Tickets__Commerce__PayPal__Stati::$completed,
 			Tribe__Tickets__Commerce__PayPal__Stati::$pending,
