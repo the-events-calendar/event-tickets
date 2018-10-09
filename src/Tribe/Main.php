@@ -336,16 +336,9 @@ class Tribe__Tickets__Main {
 			}
 		}
 
-		$upgrade_path      = wp_nonce_url(
-			add_query_arg(
-				array(
-					'action' => 'upgrade-plugin',
-					'plugin' => $plugin_short_path,
-				), get_admin_url() . 'update.php'
-			), 'upgrade-plugin_' . $plugin_short_path
-		);
+		$upgrade_path = 'https://theeventscalendar.com/my-account/downloads/';
 		$output = '<div class="error">';
-		$output .= '<p>' . sprintf( __( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
+		$output .= '<p>' . sprintf( __( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$supdate now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
 		$output .= '</div>';
 
 		echo $output;
