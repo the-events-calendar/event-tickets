@@ -67,7 +67,7 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_has_manage_class_keys_for_rsvp_and_tribe_commerce() {
 		$this->assertArrayHasKey( 'rsvp', Manager::get_instance()->get_status_managers() );
-		$this->assertArrayHasKey( 'tribe-commerce', Manager::get_instance()->get_status_managers() );
+		$this->assertArrayHasKey( 'tpp', Manager::get_instance()->get_status_managers() );
 	}
 
 	/**
