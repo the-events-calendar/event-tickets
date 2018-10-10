@@ -168,6 +168,30 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
+		/**
+		 * Safety check to resolve fatal (https://central.tri.be/issues/115510)
+		 *
+		 * @TODO: remove the following call and the subsequent if statement when we have
+		 * dependency checking logic in place
+		 *
+		 * @since 4.8.2.1
+		 */
+		$this->maybe_include_et_plus_class();
+
+		if (
+			class_exists( 'Tribe__Tickets_Plus__Main' )
+			&& version_compare( Tribe__Tickets_Plus__Main::VERSION, preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<' )
+		) {
+			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
+
+			/**
+			 * Fires if Event Tickets cannot load due to compatibility or other problems.
+			 */
+			do_action( 'tribe_tickets_plugin_failed_to_load' );
+
+			return;
+		}
+
 		// Intialize the Service Provider for Tickets
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
 
@@ -227,6 +251,45 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * Include ET+ Main class file as a patch-work solution
+	 *
+	 * This is a patch-work solution to help avoid fatals while we wait for the dependency
+	 * checking feature to complete.
+	 *
+	 * @todo eliminate this method when dependency checking is complete
+	 *
+	 * @see https://central.tri.be/issues/115510
+	 *
+	 * @since 4.8.2.1
+	 */
+	private function maybe_include_et_plus_class() {
+		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+			return;
+		}
+
+		$active_plugins    = get_option( 'active_plugins' );
+		$plugin_short_path = null;
+		foreach ( $active_plugins as $plugin ) {
+			if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
+				$plugin_short_path = $plugin;
+				break;
+			}
+		}
+		if ( ! $plugin_short_path ) {
+			return;
+		}
+
+		$plugin_dir = preg_replace( '!(.*)[\\/]event-tickets-plus.php!', '$1', $plugin_short_path );
+		$path_to_class = wp_normalize_path( WP_PLUGIN_DIR . "/{$plugin_dir}/src/Tribe/Main.php" );
+
+		if ( ! file_exists( $path_to_class ) ) {
+			return;
+		}
+
+		include_once $path_to_class;
+	}
+
+	/**
 	 * Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
 	 * TEC that is too old
 	 */
@@ -252,6 +315,30 @@ class Tribe__Tickets__Main {
 		);
 		$output = '<div class="error">';
 		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), self::MIN_TEC_VERSION, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
+		$output .= '</div>';
+
+		echo $output;
+	}
+
+	/**
+	 * Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
+	 * Event Tickets Plus that is too old
+	 */
+	public function et_plus_compatibility_notice() {
+		$active_plugins = get_option( 'active_plugins' );
+
+		$plugin_short_path = null;
+
+		foreach ( $active_plugins as $plugin ) {
+			if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
+				$plugin_short_path = $plugin;
+				break;
+			}
+		}
+
+		$upgrade_path = 'https://theeventscalendar.com/knowledgebase/manual-updates/';
+		$output = '<div class="error">';
+		$output .= '<p>' . sprintf( __( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
 		$output .= '</div>';
 
 		echo $output;

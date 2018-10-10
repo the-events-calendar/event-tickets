@@ -125,6 +125,10 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.8.3] TBD=
 
 * Fix - Ensure ticket start sale and end sale datepicker respects the WordPress Week Starts On Setting, thanks websource! [109729]
+= [4.8.2.1] 2018-10-10 =
+
+* Fix - Prevent fataling when upgrading Event Tickets while running versions of Event Tickets Plus lower than 4.8 [115510]
+* Language - 188 new strings added, 125 updated, 6 fuzzied, and 10 obsoleted
 
 = [4.8.2] 2018-10-03 =
 
