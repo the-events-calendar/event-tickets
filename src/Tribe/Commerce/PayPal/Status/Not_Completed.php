@@ -16,7 +16,6 @@ class Tribe__Tickets__Commerce__PayPal__Status__Not_Completed extends Tribe__Tic
 
 	public $incomplete     = true;
 	public $warning        = true;
-	public $count_canceled = true;
 
 	//post status fields for tpp
 	public $public                    = true;

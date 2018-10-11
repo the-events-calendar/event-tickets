@@ -14,6 +14,34 @@ use Tribe__Tickets__Commerce__PayPal__Status_Manager as TTPManager;
  */
 class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 
+	public function setUp() {
+
+		// before
+		parent::setUp();
+
+		// let's avoid die()s
+		add_filter( 'tribe_exit', function () {
+			return [ $this, 'dont_die' ];
+		} );
+
+		add_filter( 'tribe_tickets_get_modules', function ( array $modules ) {
+			$modules[ \Tribe__Tickets__Commerce__PayPal__Main::class ] = 'tribe-commerce';
+
+			return $modules;
+		} );
+	}
+
+	public function dont_die() {
+		// no-op, go on
+	}
+
+	public function tearDown() {
+		// your tear down methods here
+
+		// then
+		parent::tearDown();
+	}
+
 	/**
 	 * @test
 	 * @since TBD
@@ -28,10 +56,10 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 	 * @return TTPManager
 	 */
 	private function make_instance() {
+		tribe_update_option( 'ticket-paypal-enable', true );
 
 		return new TTPManager();
 	}
-
 
 	/**
 	 * @test
@@ -57,32 +85,46 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * @since TBD
 	 */
-	public function it_has_status_no() {
+	public function it_has_status_completed() {
 
 		$sut = $this->make_instance();
-		$this->assertArrayHasKey( 'Not_Going', $sut->statuses );
-		$this->assertEquals( true, $sut->statuses['Not_Going']->count_not_going );
+		$this->assertArrayHasKey( 'Complete', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Complete']->count_completed );
 	}
 
-	/**
-	 * @test
-	 * @since TBD
-	 */
-	public function it_has_status_yes() {
+	public function it_has_status_denied() {
 
 		$sut = $this->make_instance();
-		$this->assertArrayHasKey( 'Going', $sut->statuses );
-		$this->assertEquals( true, $sut->statuses['Going']->count_completed );
+		$this->assertArrayHasKey( 'Denied', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Denied']->incomplete );
 	}
 
-	/**
-	 * @test
-	 * @since TBD
-	 */
-	public function it_has_ttp_dispatch_statues() {
-		$this->assertSame( array(
-			'yes',
-		), Manager::get_instance()->get_statuses_by_action( 'attendee_dispatch', 'ttp' ) );
+	public function it_has_status_not_completed() {
+
+		$sut = $this->make_instance();
+		$this->assertArrayHasKey( 'Not_Completed', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Not_Completed']->incomplete );
+	}
+
+	public function it_has_status_pending() {
+
+		$sut = $this->make_instance();
+		$this->assertArrayHasKey( 'Pending', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Pending']->count_sales );
+	}
+
+	public function it_has_status_refunded() {
+
+		$sut = $this->make_instance();
+		$this->assertArrayHasKey( 'Refunded', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Refunded']->count_refunded );
+	}
+
+	public function it_has_status_undefined() {
+
+		$sut = $this->make_instance();
+		$this->assertArrayHasKey( 'Undefined', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Undefined']->incomplete );
 	}
 
 	/**
@@ -90,24 +132,15 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 	 * @since TBD
 	 */
 	public function it_has_all_ttp_statues() {
+
 		$this->assertSame( array(
-			'yes',
-			'no',
+			'completed',
+			'denied',
+			'not-completed',
+			'pending-payment',
+			'refunded',
+			'undefined',
 		), Manager::get_instance()->get_statuses_by_action( 'all', 'ttp' ) );
 	}
 
-	/**
-	 * @test
-	 * @since TBD
-	 */
-	public function it_has_label_and_stock_reduction_for_status() {
-
-		$options = Manager::get_instance()->return_status_options( 'ttp' );
-
-		$this->assertSame( 'Going', $options['yes']['label'] );
-		$this->assertSame( 1, $options['yes']['decrease_stock_by'] );
-		$this->assertSame( 'Not Going', $options['no']['label'] );
-		$this->assertSame( 0, $options['no']['decrease_stock_by'] );
-
-	}
 }
