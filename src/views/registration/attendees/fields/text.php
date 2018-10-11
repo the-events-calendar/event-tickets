@@ -6,18 +6,15 @@
  * @version TBD
  *
  */
-$attendee_id   = null;
+$attendee_id   = $key;
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
 $option_id     = "tribe-tickets-meta_{$field->slug}" . ( $attendee_id ? '_' . $attendee_id : '' );
 $field         = (array) $field;
 $multiline     = isset( $field['extra'] ) && isset( $field['extra']['multiline'] ) ? $field['extra']['multiline'] : '';
-$value         = '';
 $is_restricted = false;
-$field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
+$field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
 ?>
-<div
-        class="tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>"
->
+<div class="tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
     <label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
 	<?php if ( $multiline ) : ?>
         <textarea

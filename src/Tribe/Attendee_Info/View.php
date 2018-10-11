@@ -27,8 +27,23 @@ class Tribe__Tickets__Attendee_Info__View extends Tribe__Template {
 			return;
 		}
 
+		$default_module = Tribe__Tickets__Tickets::get_event_ticket_provider();
+
+		/**
+		 * @var Tribe__Tickets__Tickets $module
+		 */
+		$module = $default_module::get_instance();
+
 		// @todo: get actual tickets here from the various carts
-		$tickets = array();
+		$cart_tickets = $module->get_tickets_in_cart();
+		$tickets = [];
+
+		foreach ( $cart_tickets as $ticket_id => $quantity ) {
+			$ticket = get_post( $ticket_id );
+			for ( $i = 0; $i < $quantity; $i++ ) {
+				$tickets[] = $ticket;
+			}
+		}
 
 		/** @var Tribe__Tickets__Attendee_Info__View $view */
 		$view = tribe( 'tickets.attendee_info.view' );
