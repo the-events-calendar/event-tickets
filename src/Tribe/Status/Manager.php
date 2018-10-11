@@ -22,9 +22,9 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	protected $module_slugs = array(
 		'Easy Digital Downloads' => 'edd',
-		'RSVP' => 'rsvp',
-		'tribe-commerce' => 'tribe-commerce',
-		'WooCommerce' => 'woo',
+		'RSVP'                   => 'rsvp',
+		'tribe-commerce'         => 'tribe-commerce',
+		'WooCommerce'            => 'woo',
 	);
 	/**
 	 * Active Modules
@@ -39,10 +39,10 @@ class Tribe__Tickets__Status__Manager {
 	 * @var array
 	 */
 	protected $status_managers = array(
-		//'edd' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
-		//'rsvp' => 'Tribe__Tickets__Commerce__WooCommerce__Status_Manager',
+		'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Status_Manager',
+		'rsvp' => 'Tribe__Tickets__RSVP__Status_Manager',
 		//'tribe-commerce' => 'Tribe__Tickets__Commerce__WooCommerce__Status_Manager',
-		'woo' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
+		'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 	);
 
 
@@ -195,7 +195,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @return array an array of the commerce's statuses matching the provide action
 	 */
-	public function return_statuses_by_action( $action, $commerce ) {
+	public function get_statuses_by_action( $action, $commerce ) {
 
 		$trigger_statuses = array();
 
@@ -205,6 +205,12 @@ class Tribe__Tickets__Status__Manager {
 
 		if ( 'all' === $action ) {
 			$filtered_statuses = $this->statuses[ $commerce ]->statuses;
+		} elseif ( is_array( $action ) ) {
+			$criteria = array();
+			foreach ( $action as $name ) {
+				$criteria[ $name ] = true;
+			}
+			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, $criteria );
 		} else {
 			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
 				$action => true,
@@ -219,4 +225,37 @@ class Tribe__Tickets__Status__Manager {
 
 	}
 
+	/**
+	 * Return an array of Statuses for a Commerce with label and stock attributes
+	 *
+	 * @since TBD
+	 *
+	 * @param $commerce string a string of the Commerce System to get statuses from
+	 *
+	 * @return array an array of statues with label and stock attributes
+	 */
+	public function get_status_options( $commerce ) {
+
+		static $status_options;
+
+		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
+			return array();
+		}
+
+		if ( ! empty( $status_options[ $commerce ] ) ) {
+			return $status_options[ $commerce ];
+		}
+
+		$filtered_statuses = $this->statuses[ $commerce ]->statuses;
+
+		foreach ( $filtered_statuses as $status ) {
+			$status_options[ $commerce ][ $status->provider_name ] = array(
+				'label'             => __( $status->name, 'event-tickets' ),
+				'decrease_stock_by' => empty( $status->count_completed ) ? 0 : 1,
+			);
+		}
+
+		return $status_options[ $commerce ];
+
+	}
 }
