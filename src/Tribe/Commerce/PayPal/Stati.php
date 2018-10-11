@@ -89,7 +89,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 
 		$statuses = tribe( 'tickets.status' )->get_all_statuses_commerce( 'tpp' );
 
-		foreach ($statuses as $status ) {
+		foreach ( $statuses as $status ) {
 
 			if ( 'undefined' === $status->provider_name ) {
 				continue;
