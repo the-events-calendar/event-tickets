@@ -311,6 +311,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
 		add_filter( 'tribe_tickets_get_default_module', array( $this, 'deprioritize_module' ), 5, 2 );
+
+		add_action( 'wp_loaded', [ $this, 'maybe_redirect_to_attendees_meta_screen' ], 1 );
+		add_action( 'wp_loaded', [ $this, 'maybe_delete_expired_products' ], 0 );
 	}
 
 	/**
@@ -2190,6 +2193,94 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		 * @return array An associative array in the [ <slug> => <label> ] format.
 		 */
 		return apply_filters( 'tribe_tickets_commerce_paypal_order_stati', $order_statuses );
+	}
+
+	/**
+	 * If product cache parameter is found, delete saved products from temporary cart.
+	 *
+	 * @filter wp_loaded 0
+	 *
+	 * @since TBD
+	 */
+	public function maybe_delete_expired_products() {
+		$delete = filter_input( INPUT_GET, 'clear_product_cache' );
+
+		if ( empty( $delete ) ) {
+			return;
+		}
+
+		delete_transient( $this->get_current_cart_transient() );
+
+		$storage = new Tribe__Tickets_Plus__Meta__Storage();
+		$storage->delete_cookie();
+	}
+
+	/**
+	 * Redirect to attendees meta screen before loading Paypal.
+	 *
+	 * @filter wp_loaded 1
+	 *
+	 * @since TBD
+	 *
+	 * @param string $redirect
+	 */
+	public function maybe_redirect_to_attendees_meta_screen( $redirect = null ) {
+		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', 'attendee-info' );
+
+		if ( strpos( $_SERVER['REQUEST_URI'],  $slug ) !== false ) {
+			return;
+		}
+
+		if ( $_POST ) {
+			return;
+		}
+
+		$redirect = filter_input( INPUT_GET, 'tribe_tickets_redirect_to' );
+		$redirect = base64_encode( $redirect );
+
+		parent::maybe_redirect_to_attendees_meta_screen( $redirect );
+	}
+
+	/**
+	 * Get the tickets currently in the cart.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function get_tickets_in_cart() {
+		$contents  = get_transient( $this->get_current_cart_transient() );
+		$tickets = [];
+
+		if ( empty( $contents ) ) {
+			return $tickets;
+		}
+
+		foreach ( $contents as $id => $quantity ) {
+			if ( empty( get_post_meta( $id, '_tribe_tpp_for_event', true ) ) ) {
+				continue;
+			}
+
+			$tickets[ $id ] = $quantity;
+		}
+
+		return $tickets;
+	}
+
+	/**
+	 * Get the current cart Transient key.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	private function get_current_cart_transient() {
+		$cart      = tribe( 'tickets.commerce.paypal.cart' );
+		$invoice   = Tribe__Utils__Array::get(
+			$_COOKIE, Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name,
+			false
+		);
+		return $cart::get_transient_name( $invoice );
 	}
 
 	/**

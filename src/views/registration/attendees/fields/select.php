@@ -24,19 +24,17 @@ if ( ! $options ) {
 
 $option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id : '' );
 ?>
-<div
-        class="tribe-field tribe-block__tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>"
->
-    <label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
-    <select <?php disabled( $is_restricted ); ?>
-            id="<?php echo esc_attr( $option_id ); ?>"
-            class="ticket-meta"
-            name="<?php echo $field_name; ?>"
-		<?php echo $required ? 'required' : ''; ?>
-    >
+<div class="tribe-field tribe-block__tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
+	<label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+	<select
+		<?php disabled( $is_restricted ); ?>
+		id="<?php echo esc_attr( $option_id ); ?>"
+		class="ticket-meta"
+		name="<?php echo $field_name; ?>"
+		<?php echo $required ? 'required' : ''; ?>>
         <option><?php esc_html_e( 'Select an option', 'events-gutenberg' ); ?></option>
-		<?php foreach ( $options as $option ) : ?>
+        <?php foreach ( $options as $option ) : ?>
             <option <?php selected( $option, $value ); ?>><?php echo esc_html( $option ); ?></option>
-		<?php endforeach; ?>
-    </select>
+        <?php endforeach; ?>
+	</select>
 </div>

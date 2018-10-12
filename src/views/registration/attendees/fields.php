@@ -5,8 +5,6 @@
  * @version TBD
  *
  */
-$storage = new Tribe__Tickets_Plus__Meta__Storage();
-$saved_meta = $storage->get_meta_data_for( $ticket->ID );
 ?>
 <?php foreach ( $fields as $field ) : ?>
 	<?php $value = ! empty( $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] ) ? $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] : null; ?>

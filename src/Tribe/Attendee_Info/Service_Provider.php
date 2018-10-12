@@ -27,11 +27,7 @@ class Tribe__Tickets__Attendee_Info__Service_Provider extends tad_DI52_ServicePr
 		add_filter( 'generate_rewrite_rules', array( tribe( 'tickets.attendee_info.rewrite' ), 'filter_generate' ) );
 		add_filter( 'rewrite_rules_array', array( tribe( 'tickets.attendee_info.rewrite' ), 'remove_percent_placeholders' ), 25 );
 		add_filter( 'event_tickets_plus_meta_fields_by_ticket', array( tribe( 'tickets.attendee_info.meta' ), 'add_pii_fields_to_attendee' ), 10, 2 );
-
-		// attendee updating
-//		'event_tickets_tpp_attendee_created',
-//		'event_tickets_edd_ticket_created',
-//		'event_tickets_woocommerce_ticket_created',
+		add_filter( 'tribe_tickets_commerce_paypal_add_to_cart_args', array( tribe( 'tickets.attendee_info.meta' ), 'add_product_delete_to_paypal_url' ), 10, 1 );
 	}
 
 }
