@@ -207,7 +207,7 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
 		// Attendee Info
-        tribe_register_provider( 'Tribe__Tickets__Attendee_Info__Service_Provider' );
+		tribe_register_provider( 'Tribe__Tickets__Attendee_Info__Service_Provider' );
 
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );

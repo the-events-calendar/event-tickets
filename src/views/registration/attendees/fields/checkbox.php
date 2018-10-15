@@ -10,11 +10,7 @@ $field         = (array) $field;
 $attendee_id   = null;
 $value         = '';
 $is_restricted = false;
-$options       = null;
-
-if ( isset( $field['extra'] ) && ! empty( $field['extra']['options'] ) ) {
-	$options = $field['extra']['options'];
-}
+$options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
 
 if ( ! is_array( $value ) ) {
 	$value = array();
@@ -40,13 +36,13 @@ if ( ! $options ) {
 			?>
             <label for="<?php echo esc_attr( $option_id ); ?>" class="tribe-tickets-meta-field-header">
                 <input
-                        type="checkbox"
-                        id="<?php echo esc_attr( $option_id ); ?>"
-                        class="ticket-meta"
-                        name="tribe-tickets-meta[<?php echo $attendee_id ?>][<?php echo esc_attr( $slug ); ?>]"
-                        value="<?php echo esc_attr( $option ); ?>"
-					<?php checked( true, in_array( $slug, $value ) ); ?>
-					<?php disabled( $is_restricted ); ?>
+                    type="checkbox"
+                    id="<?php echo esc_attr( $option_id ); ?>"
+                    class="ticket-meta"
+                    name="tribe-tickets-meta[<?php echo $attendee_id ?>][<?php echo esc_attr( $slug ); ?>]"
+                    value="<?php echo esc_attr( $option ); ?>"
+                    <?php checked( true, in_array( $slug, $value ) ); ?>
+                    <?php disabled( $is_restricted ); ?>
                 >
                 <span class="tribe-tickets-meta-option-label">
 					<?php echo wp_kses_post( $option ); ?>

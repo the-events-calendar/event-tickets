@@ -64,16 +64,16 @@ class Tribe__Tickets__Attendee_Info__Rewrite extends Tribe__Rewrite {
 	 * @param Tribe__Tickets__Attendee_Info__Rewrite $rewrite
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Info__Rewrite $rewrite ) {
-		$rewrite->add( array( '{{ attendee-info }}' ), array( 'attendeeInfo' => 1 ) );
+		$rewrite->add( array( '{{ attendee-info }}' ), array( 'attendee-info' => 1 ) );
 	}
 
 	/**
-	 * Add attendeeInfo rewrite tag.
+	 * Add attendee-info rewrite tag.
 	 *
 	 * @since TBD
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag( '%attendeeInfo%', '([^&]+)' );
+		add_rewrite_tag( '%attendee-info%', '([^&]+)' );
 	}
 
 	/**
@@ -87,7 +87,7 @@ class Tribe__Tickets__Attendee_Info__Rewrite extends Tribe__Rewrite {
 	 * @return object         Return Base Slugs with l10n variations
 	 */
 	public function get_bases( $method = 'regex' ) {
-		$tec = Tribe__Events__Main::instance();
+		$tickets = tribe( 'tickets.main' );
 
 		/**
 		 * If you want to modify the base slugs before the i18n happens filter this use this filter
@@ -117,7 +117,7 @@ class Tribe__Tickets__Attendee_Info__Rewrite extends Tribe__Rewrite {
 		// By default we load the Default and our plugin domains
 		$domains = apply_filters( 'tribe_tickets_rewrite_i18n_domains', array(
 			'default'             => true, // Default doesn't need file path
-			'the-events-calendar' => $tec->plugin_dir . 'lang/',
+			'the-events-calendar' => $tickets->plugin_dir . 'lang/',
 		) );
 
 		/**

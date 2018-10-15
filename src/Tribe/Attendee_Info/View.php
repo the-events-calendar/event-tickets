@@ -13,6 +13,7 @@ class Tribe__Tickets__Attendee_Info__View extends Tribe__Template {
 		$this->set_template_origin( tribe( 'tickets.main' ) );
 		$this->set_template_folder( 'src/views/registration/attendees' );
 		$this->set_template_context_extract( true );
+		$this->set_template_folder_lookup( true );
 	}
 
 	/**
@@ -23,7 +24,7 @@ class Tribe__Tickets__Attendee_Info__View extends Tribe__Template {
 	public function display_attendee_info_page() {
 		global $wp_query;
 
-		if ( empty( $wp_query->query_vars['attendeeInfo'] ) ) {
+		if ( empty( $wp_query->query_vars['attendee-info'] ) ) {
 			return;
 		}
 

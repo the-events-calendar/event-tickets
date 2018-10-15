@@ -11,7 +11,7 @@ class Tribe__Tickets__Attendee_Info__Service_Provider extends tad_DI52_ServicePr
 		tribe_singleton( 'tickets.attendee_info.view', 'Tribe__Tickets__Attendee_Info__View' );
 		tribe_singleton( 'tickets.attendee_info.rewrite', 'Tribe__Tickets__Attendee_Info__Rewrite' );
 
-		$this->register_hooks();
+		$this->hooks();
 	}
 
 	/**
@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Info__Service_Provider extends tad_DI52_ServicePr
 	 *
 	 * @since TBD
 	 */
-	protected function register_hooks() {
+	protected function hooks() {
 		add_action( 'template_redirect', array( tribe( 'tickets.attendee_info.view' ), 'display_attendee_info_page' ) );
 		add_action( 'tribe_tickets_pre_rewrite', array( tribe( 'tickets.attendee_info.rewrite' ), 'generate_core_rules' ) );
 		add_action( 'init', array( tribe( 'tickets.attendee_info.rewrite' ), 'add_rewrite_tags' ) );

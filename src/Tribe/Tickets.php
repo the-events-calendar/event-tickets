@@ -256,21 +256,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		const ATTENDEE_FIRST_NAME = '_tribe_attendee_first_name';
+		protected $key_attendee_first_name = '_tribe_attendee_first_name';
 
 		/**
 		 * Meta key to store the attendee's last name if provided.
 		 *
 		 * @var string
 		 */
-		const ATTENDEE_LAST_NAME = '_tribe_attendee_last_name';
+		protected $key_attendee_last_name = '_tribe_attendee_last_name';
 
 		/**
 		 * Meta key to store the attendee's email if provided.
 		 *
 		 * @var string
 		 */
-		const ATTENDEE_EMAIL = '_tribe_attendee_email';
+		protected $key_attendee_email = '_tribe_attendee_email';
 
 		/**
 		 * Returns link to the report interface for sales for an event or
@@ -726,8 +726,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		protected function get_attendee_name( $attendee ) {
-			$fname = get_post_meta( $attendee->ID, self::ATTENDEE_FIRST_NAME, true );
-			$lname = get_post_meta( $attendee->ID, self::ATTENDEE_LAST_NAME, true );
+			$fname = get_post_meta( $attendee->ID, $this->key_attendee_first_name, true );
+			$lname = get_post_meta( $attendee->ID, $this->key_attendee_last_name, true );
 
 			if ( empty( $fname ) && empty( $lname ) ) {
 				return '';
@@ -742,7 +742,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		protected function get_attendee_email( $attendee ) {
-			return get_post_meta( $attendee->ID, self::ATTENDEE_EMAIL, true );
+			return get_post_meta( $attendee->ID, $this->key_attendee_email, true );
 		}
 
 		/**
