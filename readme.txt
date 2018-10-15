@@ -122,7 +122,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.8.3] TBD=
+= [4.8.3] TBD =
+
+* Fix - Ensure ticket start sale and end sale datepicker respects the WordPress Week Starts On Setting, thanks websource! [109729]
 
 = [4.8.2.1] 2018-10-10 =
 
