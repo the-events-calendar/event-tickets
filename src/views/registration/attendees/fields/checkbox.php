@@ -10,11 +10,7 @@ $field         = (array) $field;
 $attendee_id   = null;
 $value         = '';
 $is_restricted = false;
-$options       = null;
-
-if ( isset( $field['extra'] ) && ! empty( $field['extra']['options'] ) ) {
-	$options = $field['extra']['options'];
-}
+$options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
 
 if ( ! is_array( $value ) ) {
 	$value = array();
