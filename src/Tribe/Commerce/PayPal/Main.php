@@ -2225,6 +2225,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param string $redirect
 	 */
 	public function maybe_redirect_to_attendees_meta_screen( $redirect = null ) {
+		if ( ! $this->is_checkout_page() ) {
+			return;
+		}
+
 		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', 'attendee-info' );
 
 		if ( strpos( $_SERVER['REQUEST_URI'],  $slug ) !== false ) {
@@ -2239,6 +2243,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$redirect = base64_encode( $redirect );
 
 		parent::maybe_redirect_to_attendees_meta_screen( $redirect );
+	}
+
+	public function is_checkout_page() {
+		if ( is_admin() ) {
+			return false;
+		}
+
+		$redirect = filter_input( INPUT_GET, 'tribe_tickets_redirect_to' );
+
+		return ! empty( $redirect );
 	}
 
 	/**

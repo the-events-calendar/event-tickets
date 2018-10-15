@@ -24,6 +24,10 @@ class Tribe__Tickets__Attendee_Info__Meta {
 			return $fields;
 		}
 
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
+			return $fields;
+		}
+
 		/**
 		 * @var Tribe__Tickets_Plus__Meta $meta
 		 */
@@ -34,19 +38,19 @@ class Tribe__Tickets__Attendee_Info__Meta {
 				'type'     => 'text',
 				'required' => 'on',
 				'label'    => __( 'Email', 'event-tickets' ),
-				'slug'     => Tribe__Tickets__Tickets::ATTENDEE_EMAIL,
+				'slug'     => Tribe__Tickets__Tickets::KEY_ATTENDEE_FIRST_NAME,
 			],
 			[
 				'type'     => 'text',
 				'required' => 'on',
 				'label'    => __( 'Last Name', 'event-tickets' ),
-				'slug'     => Tribe__Tickets__Tickets::ATTENDEE_LAST_NAME,
+				'slug'     => Tribe__Tickets__Tickets::KEY_ATTENDEE_LAST_NAME,
 			],
 			[
 				'type'     => 'text',
 				'required' => 'on',
 				'label'    => __( 'First Name', 'event-tickets' ),
-				'slug'     => Tribe__Tickets__Tickets::ATTENDEE_FIRST_NAME,
+				'slug'     => Tribe__Tickets__Tickets::KEY_ATTENDEE_EMAIL,
 			],
 		];
 

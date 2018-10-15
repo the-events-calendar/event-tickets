@@ -256,21 +256,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		protected $key_attendee_first_name = '_tribe_attendee_first_name';
+		const KEY_ATTENDEE_FIRST_NAME = '_tribe_attendee_first_name';
 
 		/**
 		 * Meta key to store the attendee's last name if provided.
 		 *
 		 * @var string
 		 */
-		protected $key_attendee_last_name = '_tribe_attendee_last_name';
+		const KEY_ATTENDEE_LAST_NAME = '_tribe_attendee_last_name';
 
 		/**
 		 * Meta key to store the attendee's email if provided.
 		 *
 		 * @var string
 		 */
-		protected $key_attendee_email = '_tribe_attendee_email';
+		const KEY_ATTENDEE_EMAIL = '_tribe_attendee_email';
 
 		/**
 		 * Returns link to the report interface for sales for an event or
@@ -322,6 +322,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Return whether we're currently on the checkout page for this Merchant.
+		 *
+		 * @since TBD
+		 *
+		 * @return bool
+		 */
+		public function is_checkout_page() {
+			return false;
+		}
+
+		/**
 		 * If tickets exist in the cart for which we don't have meta info, redirect to the meta collection screen.
 		 *
 		 * @since TBD
@@ -330,6 +341,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public function maybe_redirect_to_attendees_meta_screen( $redirect = null ) {
 			if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
+				return;
+			}
+
+			if ( ! $this->is_checkout_page() ) {
 				return;
 			}
 
