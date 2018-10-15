@@ -839,7 +839,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		protected function get_attendee_email( $attendee ) {
-			$ticket_meta = get_post_meta( $attendee->ID, '_tribe_tickets_meta', true );
+			$ticket_meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
 
 			if ( empty( $ticket_meta ) ) {
 				return '';

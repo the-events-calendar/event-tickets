@@ -36,7 +36,7 @@ class Tribe__Tickets__Attendee_Info__View extends Tribe__Template {
 		$module = $default_module::get_instance();
 
 		$cart_tickets = $module->get_tickets_in_cart();
-		$tickets      = [];
+		$tickets      = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			$ticket = get_post( $ticket_id );

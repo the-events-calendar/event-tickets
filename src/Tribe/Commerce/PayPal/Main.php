@@ -2203,7 +2203,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @since TBD
 	 */
 	public function maybe_delete_expired_products() {
-		$delete = filter_input( INPUT_GET, 'clear_product_cache' );
+		$delete = tribe_get_request_var( 'clear_product_cache', null );
 
 		if ( empty( $delete ) ) {
 			return;
@@ -2231,7 +2231,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', 'attendee-info' );
 
-		if ( strpos( $_SERVER['REQUEST_URI'],  $slug ) !== false ) {
+		if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'],  $slug ) !== false ) {
 			return;
 		}
 
@@ -2239,7 +2239,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$redirect = filter_input( INPUT_GET, 'tribe_tickets_redirect_to' );
+		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 		$redirect = base64_encode( $redirect );
 
 		parent::maybe_redirect_to_attendees_meta_screen( $redirect );
@@ -2250,7 +2250,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		$redirect = filter_input( INPUT_GET, 'tribe_tickets_redirect_to' );
+		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 
 		return ! empty( $redirect );
 	}
@@ -2271,7 +2271,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		foreach ( $contents as $id => $quantity ) {
-			if ( empty( get_post_meta( $id, '_tribe_tpp_for_event', true ) ) ) {
+			if ( empty( get_post_meta( $id, $this->event_key, true ) ) ) {
 				continue;
 			}
 

@@ -33,26 +33,26 @@ class Tribe__Tickets__Attendee_Info__Meta {
 		 */
 		$meta = tribe( 'tickets-plus.main' )->meta();
 
-		$pii_fields = [
-			[
+		$pii_fields = array(
+			array(
 				'type'     => 'text',
 				'required' => 'on',
 				'label'    => __( 'Email', 'event-tickets' ),
 				'slug'     => Tribe__Tickets__Tickets::KEY_ATTENDEE_FIRST_NAME,
-			],
-			[
+			),
+			array(
 				'type'     => 'text',
 				'required' => 'on',
 				'label'    => __( 'Last Name', 'event-tickets' ),
 				'slug'     => Tribe__Tickets__Tickets::KEY_ATTENDEE_LAST_NAME,
-			],
-			[
+			),
+			array(
 				'type'     => 'text',
 				'required' => 'on',
 				'label'    => __( 'First Name', 'event-tickets' ),
 				'slug'     => Tribe__Tickets__Tickets::KEY_ATTENDEE_EMAIL,
-			],
-		];
+			),
+		);
 
 		foreach ( $pii_fields as $field ) {
 			$field_object = $meta->generate_field( $ticket_id, $field['type'], $field );
@@ -75,7 +75,7 @@ class Tribe__Tickets__Attendee_Info__Meta {
 	 * @return array
 	 */
 	public function add_product_delete_to_paypal_url( $args ) {
-		$args['shopping_url'] = add_query_arg( [ 'clear_product_cache' => true ], $args['shopping_url'] );
+		$args['shopping_url'] = add_query_arg( array( 'clear_product_cache' => true ), $args['shopping_url'] );
 
 		return $args;
 	}
