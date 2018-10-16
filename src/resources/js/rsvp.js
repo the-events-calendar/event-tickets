@@ -36,13 +36,14 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.validate_submission = function( $form ) {
-		var $rsvp = $form.find( '.tribe-ticket-quantity' );
+		var $rsvp = $form.find( '.tribe-ticket-quantity' ).filter(function(i,e) {
+        	return parseInt($.trim($(e).val())) > 0;
+        });
 		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
 		var $email = $( document.getElementById( 'tribe-tickets-email' ) );
 
 		if (
-			0 === parseInt( $rsvp.val() ) ||
-			! $.trim( $rsvp.val() ).length ||
+			! $rsvp.length ||
 			! $.trim( $name.val() ).length ||
 			! $.trim( $email.val() ).length
 		) {
