@@ -24,8 +24,12 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 			return [ $this, 'dont_die' ];
 		} );
 
-		add_filter( 'tribe_tickets_get_modules', function ( array $modules ) {
-			$modules[ \Tribe__Tickets__Commerce__PayPal__Main::class ] = 'tribe-commerce';
+		/**
+		 * Enable TTP
+		 */
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
 		} );
@@ -133,6 +137,8 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_has_all_ttp_statues() {
 
+		//run setup again to get the active modules that will include Tribe Commerce
+		Manager::get_instance()->setup();
 		$this->assertSame( array(
 			'completed',
 			'denied',
@@ -140,7 +146,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 			'pending-payment',
 			'refunded',
 			'undefined',
-		), Manager::get_instance()->get_statuses_by_action( 'all', 'ttp' ) );
+		), Manager::get_instance()->get_statuses_by_action( 'all', 'tpp' ) );
 	}
 
 }

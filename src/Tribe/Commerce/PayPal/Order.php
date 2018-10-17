@@ -678,7 +678,6 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 * @return int|float
 	 */
 	public function get_line_total() {
-
 		$statuses = array(
 			Tribe__Tickets__Commerce__PayPal__Stati::$completed,
 			Tribe__Tickets__Commerce__PayPal__Stati::$pending,

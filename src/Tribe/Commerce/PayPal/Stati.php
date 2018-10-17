@@ -36,18 +36,18 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	public static $refunded = 'refunded';
 
 	/**
-	 * The string representing the slug for a not completed payment status.
-	 *
-	 * @var string
-	 */
-	public static $not_completed = 'not-completed';
-
-	/**
 	 * The string representing the slug for an undefined payment status.
 	 *
 	 * @var string
 	 */
 	public static $undefined = 'undefined';
+
+	/**
+	 * The string representing the slug for a not completed payment status.
+	 *
+	 * @var string
+	 */
+	public static $not_completed = 'not-completed';
 
 	/**
 	 * Casts a payment status to one handled and recognized.
