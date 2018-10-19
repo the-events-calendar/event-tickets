@@ -277,14 +277,21 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	protected function setup_POST( $status, $sales ) {
 		$_POST['tickets_process']       = true;
-		$_POST['attendee']              = [
-			'email'        => 'me@tri.be',
-			'full_name'    => 'Me',
-			'order_status' => $status
-		];
 		$post_id                        = $this->factory()->post->create();
 		$ticket_id                      = $this->make_sales_ticket( $sales, $post_id );
 		$_POST["quantity_{$ticket_id}"] = 1;
+		$_POST['tribe-tickets-meta'] = [
+			$ticket_id => [
+				[
+					'email'        => 'me@tri.be',
+					'first-name'   => 'Me',
+					'last-name'    => 'Person',
+					'rsvp' => $status,
+				],
+			],
+
+		];
+		$_POST['tribe_tickets_saving_attendees'] = true;
 
 		return $ticket_id;
 	}
@@ -382,7 +389,8 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 
 	protected function fake_attendee_details(array $overrides = array()) {
 		return array_merge( array(
-			'full_name'    => 'Jane Doe',
+			'first-name'   => 'Jane',
+			'last-name'    => 'Doe',
 			'email'        => 'jane@doe.com',
 			'order_status' => 'yes',
 			'optout'       => 'no',

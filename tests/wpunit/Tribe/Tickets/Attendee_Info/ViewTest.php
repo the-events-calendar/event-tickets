@@ -45,7 +45,7 @@ class ViewTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_load_the_correct_template_when_query_var_is_set() {
 		global $wp_query;
 
-		$wp_query->query_vars['attendeeInfo'] = true;
+		$wp_query->query_vars['attendee-info'] = true;
 
 		$view = new View();
 

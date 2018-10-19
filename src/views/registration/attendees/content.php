@@ -6,11 +6,14 @@
  *
  */
 
+if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
+    return;
+}
+
 $storage           = new Tribe__Tickets_Plus__Meta__Storage();
 $meta              = tribe( 'tickets-plus.main' )->meta();
 $current_ticket_id = 0;
 $i                 = 0;
-$redirect          = tribe_get_request_var( 'event_tickets_redirect_to', '' );
 ?>
 
 <?php get_header(); ?>
@@ -36,9 +39,6 @@ $redirect          = tribe_get_request_var( 'event_tickets_redirect_to', '' );
 			?>
 		<?php endforeach; ?>
         <input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
-        <?php if ( ! empty( $redirect ) ) : ?>
-            <input type="hidden" name="event_tickets_redirect_to" value="<?php echo $redirect; ?>" />
-        <?php endif; ?>
         <button type="submit"><?php _e( 'Save Attendee Info', 'tribe' ); ?></button>
     </form>
 </div>
