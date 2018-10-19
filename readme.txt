@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Ensure ticket start sale and end sale datepicker respects the WordPress Week Starts On Setting, thanks websource! [109729]
 * Tweak - Ensure the ticket currency and position returned by the REST API is based on the ticket provider [116352]
+* Language - 12 strings updated, 0 added, fuzzied, or obsoleted
 
 = [4.8.2.1] 2018-10-10 =
 
