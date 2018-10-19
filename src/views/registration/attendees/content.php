@@ -43,5 +43,5 @@ $redirect          = tribe_get_request_var( 'event_tickets_redirect_to', '' );
     </form>
 </div>
 
-<?php get_footer(); ?>
+<?php get_footer();
 

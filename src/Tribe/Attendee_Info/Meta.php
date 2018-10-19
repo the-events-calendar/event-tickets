@@ -62,8 +62,9 @@ class Tribe__Tickets__Attendee_Info__Meta {
 		/**
 		 * @var Tribe__Tickets__RSVP $rsvp
 		 */
-		$rsvp    = tribe( 'tickets.rsvp' );
-		$is_rsvp = ! empty( get_post_meta( $ticket_id, $rsvp->event_key, true ) );
+		$rsvp     = tribe( 'tickets.rsvp' );
+		$rsvp_key = get_post_meta( $ticket_id, $rsvp->event_key, true );
+		$is_rsvp  = ! empty( $rsvp_key );
 
 		if ( $is_rsvp ) {
 			$status_field = array(

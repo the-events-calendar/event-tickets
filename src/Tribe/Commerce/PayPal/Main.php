@@ -2232,7 +2232,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', 'attendee-info' );
 
-		if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'],  $slug ) !== false ) {
+		if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], $slug ) !== false ) {
 			return;
 		}
 
@@ -2273,7 +2273,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		foreach ( $contents as $id => $quantity ) {
-			if ( empty( get_post_meta( $id, $this->event_key, true ) ) ) {
+			$event_check = get_post_meta( $id, $this->event_key, true );
+			if ( empty( $event_check ) ) {
 				continue;
 			}
 

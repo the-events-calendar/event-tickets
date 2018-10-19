@@ -566,7 +566,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		if ( empty( 'tribe-tickets-meta' ) ) {
+		if ( empty( $_POST['tribe-tickets-meta'] ) ) {
 			$url = get_permalink();
 			$url = add_query_arg( 'rsvp_error', 1, $url );
 			wp_redirect( esc_url_raw( $url ) );
@@ -655,7 +655,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$rsvp_tickets = [];
 
 		foreach ( $tickets as $ticket_id => $data ) {
-			if ( empty( get_post_meta( $ticket_id, $this->event_key, true ) ) ) {
+			$rsvp_check = get_post_meta( $ticket_id, $this->event_key, true );
+			if ( empty( $rsvp_check ) ) {
 				continue;
 			}
 
@@ -2149,11 +2150,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *             any other case.
 	 */
 	public function parse_ticket_quantity( $product_id ) {
-		if ( empty( $_POST["quantity_{$product_id}"] ) ) {
+		if ( empty( $_POST[ "quantity_{$product_id}" ] ) ) {
 			return 0;
 		}
 
-		return (int) $_POST["quantity_{$product_id}"];
+		return (int) $_POST[ "quantity_{$product_id}" ];
 	}
 
 	/**
