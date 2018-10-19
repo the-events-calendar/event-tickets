@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.8.2.1\n"
+"Project-Id-Version: Event Tickets 4.8.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2018-10-09 21:54:50+00:00\n"
+"POT-Creation-Date: 2018-10-19 18:14:23+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-10-09 21:54\n"
+"PO-Revision-Date: 2018-10-19 18:14\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
@@ -183,7 +183,7 @@ msgid ""
 "saved or updated the post."
 msgstr ""
 
-#: src/Tribe/Assets.php:110 src/Tribe/Metabox.php:551
+#: src/Tribe/Assets.php:110 src/Tribe/Metabox.php:554
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
@@ -1025,7 +1025,7 @@ msgid ""
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.8.2.1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.8.3)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:549 src/Tribe/Privacy.php:32
 msgid "Event Tickets"
@@ -1044,45 +1044,45 @@ msgctxt "button text"
 msgid "RSVP"
 msgstr ""
 
-#: src/Tribe/Metabox.php:106
+#: src/Tribe/Metabox.php:109
 msgid "Invalid Post ID"
 msgstr ""
 
-#: src/Tribe/Metabox.php:185 src/Tribe/Metabox.php:246
-#: src/Tribe/Metabox.php:298
+#: src/Tribe/Metabox.php:188 src/Tribe/Metabox.php:249
+#: src/Tribe/Metabox.php:301
 msgid "Invalid parent Post"
 msgstr ""
 
-#: src/Tribe/Metabox.php:195
+#: src/Tribe/Metabox.php:198
 msgid "Failed to Add the Ticket, Refresh the Page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:199
+#: src/Tribe/Metabox.php:202
 msgid "Commerce Provider invalid"
 msgstr ""
 
-#: src/Tribe/Metabox.php:217
+#: src/Tribe/Metabox.php:220
 msgid "Failed to Add the Ticket"
 msgstr ""
 
-#: src/Tribe/Metabox.php:252 src/Tribe/Metabox.php:304
+#: src/Tribe/Metabox.php:255 src/Tribe/Metabox.php:307
 msgid "Invalid Ticket"
 msgstr ""
 
-#: src/Tribe/Metabox.php:262
+#: src/Tribe/Metabox.php:265
 msgid "Failed to Edit the Ticket, Refresh the Page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:268 src/Tribe/Metabox.php:314
-#: src/Tribe/Metabox.php:352 src/Tribe/Metabox.php:389
+#: src/Tribe/Metabox.php:271 src/Tribe/Metabox.php:317
+#: src/Tribe/Metabox.php:355 src/Tribe/Metabox.php:392
 msgid "Commerce Module invalid"
 msgstr ""
 
-#: src/Tribe/Metabox.php:308
+#: src/Tribe/Metabox.php:311
 msgid "Failed to Delete the Ticket, Refresh the Page to try again."
 msgstr ""
 
-#: src/Tribe/Metabox.php:346 src/Tribe/Metabox.php:383
+#: src/Tribe/Metabox.php:349 src/Tribe/Metabox.php:386
 msgid "The attendee ID is missing from the request parameters."
 msgstr ""
 
