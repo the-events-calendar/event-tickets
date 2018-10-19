@@ -312,6 +312,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
 		add_filter( 'tribe_tickets_get_default_module', array( $this, 'deprioritize_module' ), 5, 2 );
 
+		add_filter( 'event_tickets_in_cart', array( $this, 'get_tickets_in_cart' ), 10, 1 );
 		add_action( 'wp_loaded', array( $this, 'maybe_redirect_to_attendees_meta_screen' ), 1 );
 		add_action( 'wp_loaded', array( $this, 'maybe_delete_expired_products' ), 0 );
 	}
@@ -2260,11 +2261,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
+	 * @param array $tickets
+	 *
 	 * @return array
 	 */
-	public function get_tickets_in_cart() {
+	public function get_tickets_in_cart( $tickets ) {
 		$contents  = get_transient( $this->get_current_cart_transient() );
-		$tickets = array();
 
 		if ( empty( $contents ) ) {
 			return $tickets;

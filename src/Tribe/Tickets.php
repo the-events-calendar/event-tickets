@@ -256,21 +256,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var string
 		 */
-		const KEY_ATTENDEE_FIRST_NAME = '_tribe_attendee_first_name';
+		public $key_attendee_first_name = '_tribe_attendee_first_name';
 
 		/**
 		 * Meta key to store the attendee's last name if provided.
 		 *
 		 * @var string
 		 */
-		const KEY_ATTENDEE_LAST_NAME = '_tribe_attendee_last_name';
+		public $key_attendee_last_name = '_tribe_attendee_last_name';
 
 		/**
 		 * Meta key to store the attendee's email if provided.
 		 *
 		 * @var string
 		 */
-		const KEY_ATTENDEE_EMAIL = '_tribe_attendee_email';
+		public $key_attendee_email = '_tribe_attendee_email';
 
 		/**
 		 * Returns link to the report interface for sales for an event or
@@ -282,7 +282,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function get_event_reports_link( $post_id ) {}
+		public function get_event_reports_link( $post_id ) {
+		}
 
 		/**
 		 * Returns link to the report interface for sales for a single ticket or
@@ -296,7 +297,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {}
+		public function get_ticket_reports_link( $post_id_deprecated, $ticket_id ) {
+		}
 
 		/**
 		 * Returns a single ticket
@@ -308,17 +310,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function get_ticket( $post_id, $ticket_id ) {}
+		public function get_ticket( $post_id, $ticket_id ) {
+		}
 
 		/**
 		 * Returns all the tickets currently in the users cart.
 		 *
 		 * @since TBD
 		 *
+		 * @param array $tickets
+		 *
 		 * @return array
 		 */
-		public function get_tickets_in_cart() {
-			return [];
+		public function get_tickets_in_cart( $tickets ) {
+			return $tickets;
 		}
 
 		/**
@@ -344,12 +349,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', 'attendee-info' );
+
+			if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], $slug ) !== false ) {
+				return;
+			}
+
 			if ( ! $this->is_checkout_page() ) {
 				return;
 			}
 
 			$storage         = new Tribe__Tickets_Plus__Meta__Storage();
-			$tickets_in_cart = $this->get_tickets_in_cart();
+			$tickets_in_cart = apply_filters( 'event_tickets_in_cart', [] );
 
 			if ( empty( $tickets_in_cart ) ) {
 				return;
@@ -378,10 +389,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$url  = home_url( $slug );
 
 			if ( ! empty( $redirect ) ) {
-				$url = add_query_arg( [ 'event_tickets_redirect_to' => $redirect ], $url );
+				$key = $storage->store_temporary_data( $redirect );
+				$url = add_query_arg( [ 'event_tickets_redirect_to' => $key ], $url );
 			}
 
-			wp_safe_redirect( $url );
+			wp_safe_redirect( $url, 307 );
 			exit;
 		}
 
@@ -675,7 +687,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function delete_ticket( $post_id, $ticket_id ) {}
+		public function delete_ticket( $post_id, $ticket_id ) {
+		}
 
 		/**
 		 * Saves a ticket
@@ -688,7 +701,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {}
+		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {
+		}
 
 		/**
 		 * Returns all the tickets for an event
@@ -699,7 +713,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array mixed
 		 */
-		protected function get_tickets( $post_id ) {}
+		protected function get_tickets( $post_id ) {
+		}
 
 		/**
 		 * Get attendees by id and associated post type
@@ -709,7 +724,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array|mixed
 		 */
-		public function get_attendees_by_id( $post_id ) {}
+		public function get_attendees_by_id( $post_id ) {
+		}
 
 		/**
 		 * Get all the attendees (sold tickets) for an event
@@ -799,7 +815,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return array
 		 */
-		protected function get_attendees_by_order_id( $order_id ) {}
+		protected function get_attendees_by_order_id( $order_id ) {
+		}
 
 		/**
 		 * Get attendees from provided query
@@ -809,7 +826,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		protected function get_attendees( $attendees_query, $post_id ) {}
+		protected function get_attendees( $attendees_query, $post_id ) {
+		}
 
 		/**
 		 * @param \WP_Post $attendee
@@ -918,7 +936,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function do_metabox_capacity_options( $post_id, $ticket_id ) {}
+		public function do_metabox_capacity_options( $post_id, $ticket_id ) {
+		}
 
 		/**
 		 * Renders the front end form for selling tickets in the event single page
@@ -927,7 +946,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public function front_end_tickets_form( $content ) {}
+		public function front_end_tickets_form( $content ) {
+		}
 
 		/**
 		 * Returns the markup for the price field
@@ -960,7 +980,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return mixed
 		 */
-		public static function get_instance() {}
+		public static function get_instance() {
+		}
 
 		// end API Definitions
 

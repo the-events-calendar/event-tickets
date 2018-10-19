@@ -44,11 +44,6 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 			}//end foreach
 		}//end if
 		?>
-
-		<div
-			class="tribe-rsvp-message tribe-rsvp-message-error tribe-rsvp-message-confirmation-error" style="display:none;">
-			<?php esc_html_e( 'Please fill in the RSVP confirmation name and email fields.', 'event-tickets' ); ?>
-		</div>
 	</div>
 
 	<table class="tribe-events-tickets tribe-events-tickets-rsvp">
@@ -119,91 +114,6 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 		?>
 
 		<?php if ( $are_products_available ) : ?>
-			<tr class="tribe-tickets-meta-row">
-				<td colspan="4" class="tribe-tickets-attendees">
-					<header><?php esc_html_e( 'Send RSVP confirmation to:', 'event-tickets' ); ?></header>
-					<?php
-					/**
-					 * Allows injection of HTML before RSVP ticket confirmation fields
-					 *
-					 * @var array of Tribe__Tickets__Ticket_Object
-					 */
-					do_action( 'tribe_tickets_rsvp_before_confirmation_fields', $tickets );
-
-					/**
-					 * Set the default Full Name for the RSVP form
-					 *
-					 * @since 4.7.1
-					 *
-					 * @param string
-					 */
-					$name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '' );
-
-					/**
-					 * Set the default value for the email on the RSVP form.
-					 *
-					 * @since 4.7.1
-					 *
-					 * * @param string
-					 */
-					$email = apply_filters( 'tribe_tickets_rsvp_form_email', '' );
-					?>
-					<table class="tribe-tickets-table">
-						<tr class="tribe-tickets-full-name-row">
-							<td>
-								<label for="tribe-tickets-full-name"><?php esc_html_e( 'Full Name', 'event-tickets' ); ?>:</label>
-							</td>
-							<td colspan="3">
-								<input type="text" name="attendee[full_name]" id="tribe-tickets-full-name" value="<?php echo esc_html( $name ); ?>">
-							</td>
-						</tr>
-						<tr class="tribe-tickets-email-row">
-							<td>
-								<label for="tribe-tickets-email"><?php esc_html_e( 'Email', 'event-tickets' ); ?>:</label>
-							</td>
-							<td colspan="3">
-								<input type="email" name="attendee[email]" id="tribe-tickets-email" value="<?php echo esc_html( $email ); ?>">
-							</td>
-						</tr>
-
-						<tr class="tribe-tickets-order_status-row">
-							<td>
-								<label for="tribe-tickets-order_status"><?php echo esc_html_x( 'RSVP', 'order status label', 'event-tickets' ); ?>:</label>
-							</td>
-							<td colspan="3">
-								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>
-							</td>
-						</tr>
-
-						<?php
-						/**
-						 * Use this filter to hide the Attendees List Optout
-						 *
-						 * @since 4.5.2
-						 *
-						 * @param bool
-						 */
-						$hide_attendee_list_optout = apply_filters( 'tribe_tickets_hide_attendees_list_optout', false );
-						if ( ! $hide_attendee_list_optout
-							 && class_exists( 'Tribe__Tickets_Plus__Attendees_List' )
-							 && ! Tribe__Tickets_Plus__Attendees_List::is_hidden_on( get_the_ID() )
-						) : ?>
-							<tr class="tribe-tickets-attendees-list-optout">
-								<td colspan="4">
-									<input
-										type="checkbox"
-										name="attendee[optout]"
-										id="tribe-tickets-attendees-list-optout"
-									>
-									<label for="tribe-tickets-attendees-list-optout">
-										<?php esc_html_e( 'Don\'t list me on the public attendee list', 'event-tickets' ); ?>
-									</label>
-								</td>
-							</tr>
-						<?php endif; ?>
-					</table>
-				</td>
-			</tr>
 			<tr>
 				<td colspan="4" class="add-to-cart">
 					<?php if ( $must_login ) : ?>
@@ -211,6 +121,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 							<?php esc_html_e( 'Login to RSVP', 'event-tickets' );?>
 						</a>
 					<?php else: ?>
+                        <input type="hidden" name="tribe_tickets_rsvp_submission" value="1" />
 						<button
 							type="submit"
 							name="tickets_process"

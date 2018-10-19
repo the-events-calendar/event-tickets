@@ -12,9 +12,6 @@ var tribe_tickets_tpp = {
 
 		this.$rsvp.on( 'change', '.tribe-ticket-quantity', this.event.quantity_changed );
 
-		this.$rsvp.closest( '.cart' )
-			.on( 'submit', this.event.handle_submission );
-
 		$( '.tribe-rsvp-list' ).on( 'click', '.attendee-meta-row .toggle', function() {
 			$( this )
 				.toggleClass( 'on' )
@@ -35,34 +32,8 @@ var tribe_tickets_tpp = {
 		}
 	};
 
-	my.validate_submission = function() {
-		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
-		var $email = $( document.getElementById( 'tribe-tickets-email' ) );
-
-		if ( ! $.trim( $name.val() ).length || ! $.trim( $email.val() ).length ) {
-			return false;
-		}
-
-		return true;
-	};
-
 	my.event.quantity_changed = function() {
 		my.quantity_changed( $( this ) );
-	};
-
-	my.event.handle_submission = function( e ) {
-		if ( ! my.validate_submission() ) {
-			e.preventDefault();
-			var $form = $( this ).closest( 'form' );
-
-			$form.addClass( 'tribe-tpp-message-display' );
-			$form.find( '.tribe-tpp-message-confirmation-error' ).show();
-
-			$( 'html, body').animate({
-				scrollTop: $form.offset().top
-			}, 300 );
-			return false;
-		}
 	};
 
 	$( function() {

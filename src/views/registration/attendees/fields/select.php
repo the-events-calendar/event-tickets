@@ -7,12 +7,12 @@
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field         = (array) $field;
-$attendee_id   = null;
+$attendee_id   = $key;
 $value         = '';
 $is_restricted = false;
 $slug          = $field['slug'];
 $options       = null;
-$field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $slug ) . ']';
+$field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
 
 if ( isset( $field['extra'] ) && ! empty( $field['extra']['options'] ) ) {
 	$options = $field['extra']['options'];
@@ -33,8 +33,8 @@ $option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id 
 		name="<?php echo $field_name; ?>"
 		<?php echo $required ? 'required' : ''; ?>>
         <option><?php esc_html_e( 'Select an option', 'events-gutenberg' ); ?></option>
-        <?php foreach ( $options as $option ) : ?>
-            <option <?php selected( $option, $value ); ?>><?php echo esc_html( $option ); ?></option>
+        <?php foreach ( $options as $option => $label ) : ?>
+            <option <?php selected( $option, $value ); ?> value="<?php echo $option; ?>"><?php echo esc_html( $label ); ?></option>
         <?php endforeach; ?>
 	</select>
 </div>

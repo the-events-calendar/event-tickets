@@ -28,14 +28,7 @@ class Tribe__Tickets__Attendee_Info__View extends Tribe__Template {
 			return;
 		}
 
-		$default_module = Tribe__Tickets__Tickets::get_event_ticket_provider();
-
-		/**
-		 * @var Tribe__Tickets__Tickets $module
-		 */
-		$module = $default_module::get_instance();
-
-		$cart_tickets = $module->get_tickets_in_cart();
+		$cart_tickets = apply_filters( 'event_tickets_in_cart', [] );
 		$tickets      = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
