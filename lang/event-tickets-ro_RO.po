@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-08-14 11:30:44+0000\n"
+"PO-Revision-Date: 2018-10-18 20:08:18+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -13,7 +13,7 @@ msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:310
 msgid "You have tickets!"
-msgstr ""
+msgstr "Ai bilete!"
 
 #: src/admin-views/tribe-options-tickets.php:279
 msgid "After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content."
@@ -21,15 +21,15 @@ msgstr ""
 
 #: src/admin-views/privacy.php:56
 msgid "If you have extended our plugin(s) to send data to a third-party service such as Eventbrite, Google Maps, or PayPal, user information may be passed to these external services. These services may be located abroad."
-msgstr ""
+msgstr "Dacă ai extins modulul nostru (modulele noastre) pentru a trimite date la servicii terțe, cum ar fi Eventbrite, Google Maps sau Paypal, informațiile despre utilizatori ar putea fi transmise acestor servicii externe. Aceste servicii ar putea fi în alte țări."
 
 #: src/admin-views/privacy.php:54
 msgid "Modern Tribe does not send any user data outside of your website by default."
-msgstr ""
+msgstr "Implicit, Modern Trive nu trimite datele utilizatorilor în afara sitului tău web."
 
 #: src/admin-views/privacy.php:52
 msgid "Where We Send Your Data"
-msgstr ""
+msgstr "Unde îți trimitem datele"
 
 #: src/admin-views/privacy.php:50
 msgid "Certain data may be exported or removed upon users request via the existing Exporter or Eraser. Please note, however, that several “edge cases” exist in which we are unable to perfect the gathering and export of all data for your end users. We suggest running a search in your local database, as well as within the WordPress Dashboard, in order to identify all data collected and stored for your specific user requests."
@@ -37,79 +37,79 @@ msgstr ""
 
 #: src/admin-views/privacy.php:48
 msgid "All information (data) is retained in the local database indefinitely, unless otherwise deleted."
-msgstr ""
+msgstr "Toate informațiile (datele) sunt păstrate în baza de date locală pe termen nelimitat, dacă nu sunt șterse altfel."
 
 #: src/admin-views/privacy.php:46
 msgid "How Long You Retain this Data"
-msgstr ""
+msgstr "Cât timp păstrezi aceste date"
 
 #: src/admin-views/privacy.php:44
 msgid "These API keys may include the following third party services: Google Maps and PayPal."
-msgstr ""
+msgstr "Aceste chei API pot include următoarele servicii terțe: Googe Maps și Paypal."
 
 #: src/admin-views/privacy.php:42
 msgid "We make use of certain API keys, in order to provide specific features."
-msgstr ""
+msgstr "Folosim anumite chei API pentru a oferi funcționalități specifice."
 
 #: src/admin-views/privacy.php:38
 msgid "Events Tickets suite offers the use of third-party API keys. The primary functions are to enhance the features we've built in, some of which use Google Maps and PayPal. These API keys are not supplied by Modern Tribe."
-msgstr ""
+msgstr "Suita Event Tickets oferă posibilitatea de a folosi chei API terțe. Funcțiile principale sunt pentru a îmbunătăți funcționalitățile native, unele dintre ele folosesc Google Maps și Paypal. Aceste chei API nu sunt furnizate de Modern Tribe."
 
 #: src/admin-views/privacy.php:36
 msgid "API Keys"
-msgstr ""
+msgstr "Chei API"
 
 #: src/admin-views/privacy.php:34
 msgid "Please note: The website owner can collect nearly any Attendee Information requested from ticket buyers by creating a custom registration form."
-msgstr ""
+msgstr "Te rog reține: proprietarul sitului web poate colecta aproape toate informațiile despre participanți cerute cumpărătorilor de bilete prin crearea unui formular de înregistrare personalizat."
 
 #: src/admin-views/privacy.php:31
 msgid "Ticket purchaser billing address, which is collected through the use of WooCommerce, Easy Digital Downloads, or PayPal"
-msgstr ""
+msgstr "Adresa de facturare a cumpărătorului biletului, care este colectată prin folosirea WooCommerce, Easy Digital Downloads sau Paypal"
 
 #: src/admin-views/privacy.php:30
 msgid "Ticket purchaser information: name and email address"
-msgstr ""
+msgstr "Informații cumpărător bilet: nume și adresă email"
 
 #: src/admin-views/privacy.php:29
 msgid "Ticket information (RSVPs and Tickets): name, email address, and ticket number/SKU (via check-in page)"
-msgstr ""
+msgstr "Informații despre bilet (confirmări și bilete): nume, adresă email și număr/SKU bilet (prin pagina de check-in)"
 
 #: src/admin-views/privacy.php:28
 msgid "Attendees information (RSVPs and Tickets): name and email address"
-msgstr ""
+msgstr "Informații despre participant (confirmări și bilete): nume și adresă email"
 
 #: src/admin-views/privacy.php:25
 msgid "If you create, submit, import, save, or publish event ticket information, as well as RSVP or purchase tickets to events, such information is retained in the local database:"
-msgstr ""
+msgstr "Dacă creezi, trimiți, imporți, salvezi sau publici informații despre biletele la eveniment, precum și dacă ceri confirmări sau cumperi bilete la eveniment, aceste informații sunt păstrate în baza de date locală:"
 
 #: src/admin-views/privacy.php:24 src/admin-views/privacy.php:40
 msgid "Suggested text:"
-msgstr ""
+msgstr "Text sugerat:"
 
 #: src/admin-views/privacy.php:23
 msgid "Through the usage of Event Tickets, Event Tickets Plus, and Community Tickets, information may be collected and stored within your website’s database."
-msgstr ""
+msgstr "Prin folosirea Event Tickets, Event Tickets Plus și Community Tickets, informațiile pot fi colectate și stocate în baza de date a sitului tău web."
 
 #: src/admin-views/privacy.php:21
 msgid "Event, Attendee, and Ticket Purchaser Information"
-msgstr ""
+msgstr "Informații despre eveniment, participanți și cumpărători de bilete"
 
 #: src/admin-views/privacy.php:19
 msgid "What personal data we collect and why we collect it"
-msgstr ""
+msgstr "Ce date personale colectăm și de ce le colectăm"
 
 #: src/admin-views/privacy.php:17
 msgid "This information is only for guidance and not to be considered as legal advice."
-msgstr ""
+msgstr "Acestă informație este doar orientativă și nu trebuie considerată drept consultanță juridică."
 
 #: src/admin-views/privacy.php:17
 msgid "Disclaimer:"
-msgstr ""
+msgstr "Exonerare de răspundere:"
 
 #: src/admin-views/privacy.php:16
 msgid "You should include the information below in the correct sections of you privacy policy."
-msgstr ""
+msgstr "Informațiile de mai jos ar trebui incluse în secțiunile corespunzătoare ale politicii tale de confidențialitate."
 
 #: src/admin-views/privacy.php:15
 msgid "This information serves as a guide on what sections need to be modified due to usage of Event Tickets and its Add-ons."
@@ -117,7 +117,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:14
 msgid "Hello,"
-msgstr ""
+msgstr "Bună,"
 
 #: src/Tribe/REST/V1/Messages.php:22
 msgid "The requested ticket check in is not available"
@@ -181,7 +181,7 @@ msgstr ""
 
 #: src/views/tickets/orders.php:25
 msgid "You don't have tickets for this event"
-msgstr ""
+msgstr "Nu ai bilete pentru acest eveniment"
 
 #: src/admin-views/tribe-options-tickets.php:247
 msgid "For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)"
@@ -197,12 +197,12 @@ msgstr ""
 
 #: src/views/tickets/tpp-return-to-cart.php:6
 msgid "Return to Cart"
-msgstr ""
+msgstr "Întoarce-te la coș"
 
 #: src/template-tags/tickets.php:446
 msgctxt "ticket stock message (refunded stock)"
 msgid "%1$d Refunded"
-msgstr ""
+msgstr "%1$d rambursat"
 
 #: src/admin-views/tribe-options-tickets.php:144
 msgid "Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between tickets. %2$s"
@@ -210,7 +210,7 @@ msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:140
 msgid "Check it out!"
-msgstr ""
+msgstr "Aruncă o privire!"
 
 #: src/admin-views/editor/list-row.php:101
 msgid "Stock management is disabled. Enable it on the related Woocommerce product's inventory settings."
@@ -246,7 +246,7 @@ msgstr ""
 
 #: src/views/tickets/tpp.php:93
 msgid "%1$s available"
-msgstr ""
+msgstr "%1$s disponibil"
 
 #: src/views/tickets/tpp.php:54
 msgid "Please fill in the ticket confirmation name and email fields."
@@ -255,31 +255,31 @@ msgstr ""
 #: src/views/tickets/tpp.php:36
 msgctxt "form heading"
 msgid "Tickets"
-msgstr ""
+msgstr "Bilete"
 
 #: src/views/tickets/tpp-success.php:134
 msgid "Order Total"
-msgstr ""
+msgstr "Total comandă"
 
 #: src/views/tickets/tpp-success.php:80
 msgctxt "Success page tickets table header"
 msgid "Subtotal"
-msgstr ""
+msgstr "Sub-total"
 
 #: src/views/tickets/tpp-success.php:79
 msgctxt "Success page tickets table header"
 msgid "Quantity"
-msgstr ""
+msgstr "Cantitate"
 
 #: src/views/tickets/tpp-success.php:78
 msgctxt "Success page tickets table header"
 msgid "Price"
-msgstr ""
+msgstr "Preț"
 
 #: src/views/tickets/tpp-success.php:77
 msgctxt "Success page tickets table header"
 msgid "Ticket"
-msgstr ""
+msgstr "Bilet"
 
 #: src/views/tickets/tpp-success.php:65
 msgid "Thank you for your purchase! You will receive your receipt and tickets via email."
@@ -287,7 +287,7 @@ msgstr ""
 
 #: src/views/tickets/tpp-success.php:56
 msgid "Your order (#%s) is currently processing. Once completed, you'll receive your ticket(s) in an email."
-msgstr ""
+msgstr "Comanda ta (#%s) este procesată acum. După finalizare, vei primi biletul (biletele) prin email."
 
 #: src/views/tickets/tpp-success.php:48
 msgid "Whoops! It looks like there was a problem with your order. Please contact the site owner for assistance."
@@ -295,34 +295,34 @@ msgstr ""
 
 #: src/views/tickets/tpp-success.php:42
 msgid "No order confirmation is available because no purchase was made."
-msgstr ""
+msgstr "Nu este disponibilă nicio confirmare a comenzii deoarece nu s-a făcut plata."
 
 #: src/views/tickets/orders-pp-tickets.php:71
 msgctxt "order status label"
 msgid "Payment status: "
-msgstr ""
+msgstr "Stare plată:"
 
 #: src/views/tickets/orders-pp-tickets.php:41
 msgid "Purchased by %1$s (%2$s)"
-msgstr ""
+msgstr "Cumpărat de %1$s (%2$s)"
 
 #: src/views/tickets/orders-pp-tickets.php:32
 msgid "My Tickets for This %s"
-msgstr ""
+msgstr "Biletele mele pentru acest %s"
 
 #: src/views/login-to-purchase.php:16
 msgid "Log in to purchase"
-msgstr ""
+msgstr "Autentifică-te pentru a cumpăra"
 
 #: src/views/login-before-purchase.php:24
 msgctxt "Registration link on Tribe Commerce checkout page, shown as an alternative the login link"
 msgid "create an account"
-msgstr ""
+msgstr "creează un cont"
 
 #: src/views/login-before-purchase.php:23
 msgctxt "Login link on Tribe Commerce checkout page, shown as an alternative to the registration link"
 msgid "Log in"
-msgstr ""
+msgstr "Autentificare"
 
 #: src/views/login-before-purchase.php:21
 msgctxt "Login link on Tribe Commerce checkout page"
@@ -440,7 +440,7 @@ msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:186
 msgid "these instructions"
-msgstr ""
+msgstr "aceste instrucțiuni"
 
 #: src/admin-views/tribe-options-tickets.php:159
 msgid "Check this box if you wish to turn on Tribe Commerce functionality"
@@ -1134,7 +1134,7 @@ msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:25
 msgid "Event Tickets Features"
-msgstr ""
+msgstr "Funcționalități Event Tickets"
 
 #: src/admin-views/admin-welcome-message.php:24
 msgid "Settings Overview"
@@ -1150,7 +1150,7 @@ msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:13
 msgid "Welcome to Event Tickets!"
-msgstr ""
+msgstr "Bine ai venit la Event Tickets!"
 
 #: src/admin-views/admin-welcome-message.php:5
 msgid "our support forums"
@@ -1948,7 +1948,7 @@ msgstr ""
 
 #: src/Tribe/Main.php:549
 msgid "Welcome to Event Tickets"
-msgstr ""
+msgstr "Bine ai venit la Event Tickets"
 
 #: src/Tribe/CSV_Importer/Rows.php:49
 msgctxt "post type label"
@@ -2050,7 +2050,7 @@ msgstr ""
 #: src/Tribe/Admin/Move_Tickets.php:224
 msgctxt "attendee screen bulk actions"
 msgid "Move"
-msgstr ""
+msgstr "Mută"
 
 #: src/Tribe/Admin/Move_Tickets.php:116
 msgid "Loading, please wait&hellip;"
@@ -2074,7 +2074,7 @@ msgstr ""
 
 #: src/Tribe/Admin/Move_Tickets.php:77
 msgid "Move Attendees"
-msgstr ""
+msgstr "Mută participanții"
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:301
 #: src/Tribe/Admin/Move_Tickets.php:701
@@ -2322,7 +2322,7 @@ msgstr ""
 #: common/src/Tribe/Plugins_API.php:105
 msgctxt "Names of required plugins for Community Tickets"
 msgid "Event Tickets Plus and Community Events"
-msgstr ""
+msgstr "Event Tickets Plus și Community Events"
 
 #: common/src/Tribe/Plugins_API.php:104
 msgid "Enable Community Events organizers to offer tickets to their events. You can set flexible payment and fee options. They can even check-in attendees to their events! All of this managed from the front-end of your site without ever needing to grant access to your admin"
@@ -2393,11 +2393,11 @@ msgstr ""
 
 #: src/views/tickets/orders-link.php:39
 msgid "View your %s"
-msgstr ""
+msgstr "Vezi %s"
 
 #: src/views/tickets/orders-link.php:38
 msgid "You have %s for this %s."
-msgstr ""
+msgstr "Ai %s pentru acest %s."
 
 #: src/views/tickets/orders-link.php:34
 msgid "%d Ticket"
@@ -2570,7 +2570,7 @@ msgstr ""
 
 #: src/views/tickets/rsvp.php:198
 msgid "Don't list me on the public attendee list"
-msgstr ""
+msgstr "Nu mă afișa în lista publică de participanți"
 
 #: src/views/tickets/rsvp.php:123
 msgid "Send RSVP confirmation to:"
@@ -2687,7 +2687,7 @@ msgstr "Biletele tale"
 
 #: src/views/tickets/attendees-email.php:24
 msgid "Attendee List"
-msgstr "Listă participanți"
+msgstr "Listă de participanți"
 
 #: src/admin-views/tpp-orders.php:95
 msgid "(%d awaiting review)"
@@ -2834,7 +2834,7 @@ msgstr "Selectează un utilizator:"
 
 #: src/admin-views/attendees-email.php:27
 msgid "Send the attendee list by email"
-msgstr "Trimite lista participanților prin email"
+msgstr "Trimite lista de participanți prin email"
 
 #: src/Tribe/Attendees.php:709
 msgid "Email sent successfully!"
@@ -2858,7 +2858,7 @@ msgstr "Email invalid"
 
 #: src/Tribe/Attendees.php:646
 msgid "Empty user and email"
-msgstr ""
+msgstr "Înlătură utilizatorul și emailul"
 
 #: src/Tribe/Attendees.php:623
 msgid "Invalid Event ID"
@@ -3003,7 +3003,7 @@ msgstr ""
 
 #: src/Tribe/Main.php:399
 msgid "Customizing Event Tickets"
-msgstr ""
+msgstr "Personalizare Event Tickets"
 
 #: src/Tribe/Main.php:398
 msgid "Troubleshooting common problems"
@@ -3019,7 +3019,7 @@ msgstr "Prezentare generală setări"
 
 #: src/Tribe/Main.php:394
 msgid "Support for Event Tickets"
-msgstr ""
+msgstr "Suport pentru Event Tickets"
 
 #: src/Tribe/Main.php:254
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
@@ -4678,7 +4678,7 @@ msgstr ""
 
 #: common/src/Tribe/Admin/Help_Page.php:235 common/src/Tribe/Plugins_API.php:66
 msgid "Event Tickets Plus"
-msgstr ""
+msgstr "Event Tickets Plus"
 
 #: common/src/Tribe/Admin/Help_Page.php:211 common/src/Tribe/Plugins_API.php:90
 msgid "Community Events"
@@ -4715,11 +4715,11 @@ msgstr ""
 #: common/src/Tribe/Admin/Help_Page.php:75 common/src/Tribe/Plugins_API.php:57
 #: src/Tribe/Main.php:462 src/Tribe/Privacy.php:31
 msgid "Event Tickets"
-msgstr "Bilete eveniment"
+msgstr "Event Tickets"
 
 #: common/src/Tribe/Admin/Help_Page.php:63
 msgid "The Events Calendar is a carefully crafted, extensible plugin that lets you easily share your events."
-msgstr ""
+msgstr "Events Calendar este un modul proiectat cu grijă, extensibil, care îți permite să partajezi cu ușurință evenimente."
 
 #: common/src/Tribe/Admin/Help_Page.php:59 common/src/Tribe/Customizer.php:569
 #: common/src/Tribe/Plugins_API.php:25

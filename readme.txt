@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.8
-Stable tag: 4.8.2.1
+Stable tag: 4.8.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,12 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.8.3] 2018-10-22 =
+
+* Fix - Ensure ticket start sale and end sale datepicker respects the WordPress Week Starts On Setting, thanks websource! [109729]
+* Tweak - Ensure the ticket currency and position returned by the REST API is based on the ticket provider [116352]
+* Language - 12 strings updated, 0 added, fuzzied, or obsoleted
 
 = [4.8.2.1] 2018-10-10 =
 
