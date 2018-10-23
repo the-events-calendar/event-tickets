@@ -124,15 +124,14 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.8.4] TBD =
 
+* Fix - Registration form from hiding with multiple RSVP tickets and one of them being set to qyanitity zero, thanks pixelbrad for reporting [116139]
+* Fix - Remaining ticket quantity counter for tickets with shared capacity and capped sales, thanks for the report mirre1 and pixelbrad [104356]
 
 = [4.8.3] 2018-10-22 =
 
 * Fix - Ensure ticket start sale and end sale datepicker respects the WordPress Week Starts On Setting, thanks websource! [109729]
 * Tweak - Ensure the ticket currency and position returned by the REST API is based on the ticket provider [116352]
 * Language - 12 strings updated, 0 added, fuzzied, or obsoleted
-
-* Fix - Registration form from hiding with multiple RSVP tickets and one of them being set to qyanitity zero, thanks pixelbrad for reporting [116139]
-* Fix - Remaining ticket quantity counter for tickets with shared capacity and capped sales, thanks for the report mirre1 and pixelbrad [104356]
 
 = [4.8.2.1] 2018-10-10 =
 

@@ -28,9 +28,9 @@ var tribe_tickets_rsvp = {
 		var $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
 		var $rsvp_qtys = $rsvp.find( '.tribe-ticket-quantity' );
 		var rsvp_qty = 0;
-		$rsvp_qtys.each( function() {
+		$rsvp_qtys.each( function () {
 			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
-		});
+		} );
 
 		if ( 0 === rsvp_qty ) {
 			$rsvp.removeClass( 'tribe-tickets-has-rsvp' );
@@ -45,9 +45,9 @@ var tribe_tickets_rsvp = {
 		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
 		var $email = $( document.getElementById( 'tribe-tickets-email' ) );
 
-		$rsvp.each( function() {
+		$rsvp.each( function () {
 			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
-		});
+		} );
 
 		if (
 			0 === rsvp_qty ||
