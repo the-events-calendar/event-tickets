@@ -606,11 +606,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			return false;
 		}
 
-
 		/** @var Tribe__Tickets__Commerce__Currency $currency */
 		$currency = tribe( 'tickets.commerce.currency' );
 
 		$price = $ticket->price;
+		$provider = $ticket->provider_class;
 
 		if ( ! is_numeric( $price ) ) {
 			$price = 0; // free
@@ -623,8 +623,8 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		}
 
 		$details = array(
-			'currency_symbol'   => html_entity_decode( $currency->get_currency_symbol( $ticket_id ) ),
-			'currency_position' => $currency->get_currency_symbol_position( $ticket_id ),
+			'currency_symbol'   => html_entity_decode( $currency->get_provider_symbol( $provider, $ticket_id ) ),
+			'currency_position' => $currency->get_provider_symbol_position( $provider, $ticket_id ),
 			'values'            => array( $price ),
 		);
 

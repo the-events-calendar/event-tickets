@@ -308,10 +308,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var startofweek = 0;
 
 			var datepicker_opts = window['tribe_datepicker_opts'] || {};
-			if ( 'firstDay' in datepicker_opts ) {
-				var firstDay = parseInt( datepicker_opts.firstDay, 10 );
-				startofweek = isNaN( firstDay ) ? 0 : firstDay;
-			}
 
 			if ( $event_pickers.length ) {
 				startofweek = $event_pickers.data( 'startofweek' );
@@ -328,7 +324,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				changeMonth: true,
 				changeYear: true,
 				numberOfMonths: 3,
-				firstDay: startofweek,
 				showButtonPanel: false,
 				onChange: function() {
 				},
