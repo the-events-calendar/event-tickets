@@ -71,8 +71,6 @@ var tribe_tickets_rsvp = {
 			e.preventDefault();
 			var $form = $( this ).closest( 'form' );
 
-			console.log($form);
-
 			$form.addClass( 'tribe-rsvp-message-display' );
 			$form.find( '.tribe-rsvp-message-confirmation-error' ).show();
 
