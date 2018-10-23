@@ -24,11 +24,15 @@ var tribe_tickets_rsvp = {
 	};
 
 	my.quantity_changed = function( $quantity ) {
-		var i = 0;
-		var $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
-		var quantity = parseInt( $quantity.val(), 10 );
 
-		if ( ! quantity ) {
+		var $rsvp = $quantity.closest( '.tribe-events-tickets-rsvp' );
+		var $rsvp_qtys = $rsvp.find( '.tribe-ticket-quantity' );
+		var rsvp_qty = 0;
+		$rsvp_qtys.each( function() {
+			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
+		});
+
+		if ( 0 === rsvp_qty ) {
 			$rsvp.removeClass( 'tribe-tickets-has-rsvp' );
 		} else {
 			$rsvp.addClass( 'tribe-tickets-has-rsvp' );
@@ -37,16 +41,16 @@ var tribe_tickets_rsvp = {
 
 	my.validate_submission = function( $form ) {
 		var $rsvp = $form.find( '.tribe-ticket-quantity' );
-		var $rsvp_qty = 0;
+		var rsvp_qty = 0;
 		var $name = $( document.getElementById( 'tribe-tickets-full-name' ) );
 		var $email = $( document.getElementById( 'tribe-tickets-email' ) );
 
 		$rsvp.each( function() {
-			$rsvp_qty = $rsvp_qty + parseInt( $( this ).val() );
+			rsvp_qty = rsvp_qty + parseInt( $( this ).val() );
 		});
 
 		if (
-			0 === $rsvp_qty ||
+			0 === rsvp_qty ||
 			! $.trim( $rsvp.val() ).length ||
 			! $.trim( $name.val() ).length ||
 			! $.trim( $email.val() ).length

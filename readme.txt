@@ -124,6 +124,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.8.3] TBD=
 
+* Fix - Registration form from hiding with multiple RSVP tickets and one of them being set to qyanitity zero, thanks pixelbrad for reporting [116139]
+* Fix - Remaining ticket quantity counter for tickets with shared capacity and capped sales, thanks for the report mirre1 and pixelbrad [104356]
+
 = [4.8.2.1] 2018-10-10 =
 
 * Fix - Prevent fataling when upgrading Event Tickets while running versions of Event Tickets Plus lower than 4.8 [115510]
