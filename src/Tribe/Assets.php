@@ -1,18 +1,5 @@
 <?php
 class Tribe__Tickets__Assets {
-
-	/**
-	 * Registers and Enqueues the assets
-	 *
-	 * @since  TBD
-	 *
-	 * @return void
-	 */
-	public function register() {
-		$tickets = Tribe__Tickets__Main::instance();
-
-	}
-
 	/**
 	 * Enqueue scripts for front end
 	 *
