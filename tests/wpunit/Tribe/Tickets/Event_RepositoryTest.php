@@ -254,4 +254,39 @@ class Event_RepositoryTest extends \Codeception\TestCase\WPTestCase {
 			$this->events['rsvp']
 		], tribe_events()->where( 'has_rsvp', true )->get_ids() );
 	}
+
+	/**
+	 * It should still allow filtering event by base repository filters
+	 *
+	 * @test
+	 */
+	public function should_still_allow_filtering_event_by_base_repository_filters() {
+		$three_days = '72';
+		$this->factory()->event->create_many( 10, [ 'time_space' => $three_days ] );
+		$this->assertCount( 3, tribe_events()->per_page( 10 )->where( 'starts_before', '+10 days' )->get_ids() );
+	}
+
+	/**
+	 * It should allow itself being decorated and still use the base repository filters
+	 *
+	 * @test
+	 */
+	public function should_allow_itself_being_decorated_and_still_use_the_base_repository_filters() {
+		$three_days = '72';
+		$this->factory()->event->create_many( 10, [ 'time_space' => $three_days ] );
+
+		$decorator = new class( tribe_events() ) extends \Tribe__Repository__Decorator {
+			public function __construct( $decorated ) {
+				$this->decorated = $decorated;
+				$this->decorated->add_schema_entry( 'starts_after_today', [ $this, 'filter_by_starts_after_today' ] );
+			}
+
+			public function filter_by_starts_after_today() {
+				return $this->decorated->where( 'starts_after', 'today' );
+			}
+		};
+
+		$this->assertCount( 3, $decorator->per_page( 10 )->where( 'starts_before', '+10 days' )->get_ids() );
+		$this->assertCount( 3, $decorator->per_page( 10 )->where( 'starts_after_today' )->get_ids() );
+	}
 }
