@@ -21,11 +21,11 @@ class Tribe__Tickets__Attendee_Info__View extends Tribe__Template {
 	 *
 	 * @since TBD
 	 */
-	public function display_attendee_info_page() {
+	public function display_attendee_info_page( $content = '' ) {
 		global $wp_query;
 
 		if ( empty( $wp_query->query_vars['attendee-info'] ) ) {
-			return;
+			return $content;
 		}
 
 		$cart_tickets = apply_filters( 'event_tickets_in_cart', [] );
@@ -38,9 +38,13 @@ class Tribe__Tickets__Attendee_Info__View extends Tribe__Template {
 			}
 		}
 
+		// enqueue styles for this page
+		tribe_asset_enqueue( 'event-tickets-registration-page' );
+
 		/** @var Tribe__Tickets__Attendee_Info__View $view */
-		$view = tribe( 'tickets.attendee_info.view' );
-		$view->template( 'content', array( 'tickets' => $tickets ) );
-		tribe_exit();
+		$view     = tribe( 'tickets.attendee_info.view' );
+		$template = $view->template( 'content', array( 'tickets' => $tickets ), false );
+
+		return $template;
 	}
 }

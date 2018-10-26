@@ -1,13 +1,28 @@
 <?php
 class Tribe__Tickets__Assets {
+
+	/**
+	 * Registers and Enqueues the assets
+	 *
+	 * @since  TBD
+	 *
+	 * @return void
+	 */
+	public function register() {
+		$tickets = Tribe__Tickets__Main::instance();
+
+	}
+
 	/**
 	 * Enqueue scripts for front end
 	 *
 	 * @since 4.6
 	 */
 	public function enqueue_scripts() {
+		$tickets = Tribe__Tickets__Main::instance();
+
 		tribe_assets(
-			Tribe__Tickets__Main::instance(),
+			$tickets,
 			array(
 				array( 'event-tickets-tickets-css', 'tickets.css', array( 'dashicons' ) ),
 				array( 'event-tickets-tickets-rsvp-css', 'rsvp.css', array() ),
@@ -16,6 +31,17 @@ class Tribe__Tickets__Assets {
 			),
 			'enqueue_scripts'
 		);
+
+		// Tickets registration page styles
+		tribe_asset(
+			$tickets,
+			'event-tickets-registration-page',
+			'tickets-registration-page.css',
+			array(),
+			null,
+			array()
+		);
+
 	}
 
 	/**
