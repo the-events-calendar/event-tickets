@@ -164,8 +164,8 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 		}
 
 		$providers = array(
-			'edd' => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
-			'woo' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
+			'eddticket' => 'Tribe__Tickets_Plus__Commerce__EDD__Main',
+			'wooticket' => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main',
 		);
 
 		foreach ( $providers as $slug => $provider ) {
