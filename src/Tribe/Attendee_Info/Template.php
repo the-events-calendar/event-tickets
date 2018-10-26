@@ -54,7 +54,7 @@ class Tribe__Tickets__Attendee_Info__Template extends Tribe__Templates {
 		}
 
 		// Empty posts
-        $posts = NULL;
+        $posts = null;
         // Create a fake virtual page
         $posts[] = $this->spoofed_page();
 
