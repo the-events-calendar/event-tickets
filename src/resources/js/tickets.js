@@ -308,17 +308,13 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var startofweek = 0;
 
 			var datepicker_opts = window['tribe_datepicker_opts'] || {};
-			if ( 'firstDay' in datepicker_opts ) {
-				var firstDay = parseInt( datepicker_opts.firstDay, 10 );
-				startofweek = isNaN( firstDay ) ? 0 : firstDay;
-			}
 
 			if ( $event_pickers.length ) {
 				startofweek = $event_pickers.data( 'startofweek' );
 			}
 
-			if ( 'undefined' !== typeof tribe_dynamic_help_text ) {
-				var indexDatepickerFormat = $.isNumeric( tribe_dynamic_help_text.datepicker_format_index ) ? tribe_dynamic_help_text.datepicker_format_index : 0;
+			if ( 'undefined' !== typeof tribe_ticket_datepicker_format ) {
+				var indexDatepickerFormat = $.isNumeric( tribe_ticket_datepicker_format.datepicker_format_index ) ? tribe_ticket_datepicker_format.datepicker_format_index : 0;
 				dateFormat = datepickerFormats[indexDatepickerFormat];
 			}
 
@@ -328,7 +324,6 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 				changeMonth: true,
 				changeYear: true,
 				numberOfMonths: 3,
-				firstDay: startofweek,
 				showButtonPanel: false,
 				onChange: function() {
 				},
