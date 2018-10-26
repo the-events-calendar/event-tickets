@@ -56,14 +56,14 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 			'BETWEEN',
 			'NOT BETWEEN',
 			'IN',
-			'NOT IN'
+			'NOT IN',
 		) ) ) {
 			throw Tribe__Repository__Usage_Error::because_this_comparison_operator_is_not_supported( $operator, 'filter_by_cost' );
 		}
 
 		if ( in_array( $operator, array(
 				'BETWEEN',
-				'NOT BETWEEN'
+				'NOT BETWEEN',
 			) ) && ! ( is_array( $value ) && 2 === count( $value ) ) ) {
 			throw Tribe__Repository__Usage_Error::because_this_comparison_operator_requires_an_value_of_type( $operator, 'filter_by_cost', 'array' );
 		}
