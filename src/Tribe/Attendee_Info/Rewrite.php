@@ -117,7 +117,7 @@ class Tribe__Tickets__Attendee_Info__Rewrite extends Tribe__Rewrite {
 		// By default we load the Default and our plugin domains
 		$domains = apply_filters( 'tribe_tickets_rewrite_i18n_domains', array(
 			'default'             => true, // Default doesn't need file path
-			'the-events-calendar' => $tickets->plugin_dir . 'lang/',
+			'event-tickets'       => $tickets->plugin_dir . 'lang/',
 		) );
 
 		/**
