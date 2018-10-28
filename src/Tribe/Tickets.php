@@ -360,7 +360,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			$storage         = new Tribe__Tickets_Plus__Meta__Storage();
-			$tickets_in_cart = apply_filters( 'event_tickets_in_cart', [] );
+			$tickets_in_cart = apply_filters( 'event_tickets_in_cart', array() );
 
 			if ( empty( $tickets_in_cart ) ) {
 				return;
