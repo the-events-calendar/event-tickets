@@ -150,7 +150,7 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 
 		if ( ! empty( $status ) ) {
 
-			$statuses       = tribe( 'tickets.status' )->get_all_statuses_commerce( 'tpp' );
+			$statuses       = tribe( 'tickets.status' )->get_all_provider_statuses( 'tpp' );
 			$status_strings = array();
 			foreach ( $statuses as $s ) {
 				$status_strings[ $s->provider_name ] = _x( $s->name, 'a PayPal ticket order status', 'event-tickets' );

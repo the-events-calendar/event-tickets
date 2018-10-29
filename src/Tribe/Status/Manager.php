@@ -235,7 +235,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @return array an array of the commerce's statuses matching the provide action
 	 */
-	public function get_all_statuses_commerce( $commerce ) {
+	public function get_all_provider_statuses( $commerce ) {
 
 		$trigger_statuses = array();
 

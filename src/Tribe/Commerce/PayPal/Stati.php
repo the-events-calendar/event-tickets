@@ -87,7 +87,7 @@ class Tribe__Tickets__Commerce__PayPal__Stati {
 	 */
 	public static function register_order_stati() {
 
-		$statuses = tribe( 'tickets.status' )->get_all_statuses_commerce( 'tpp' );
+		$statuses = tribe( 'tickets.status' )->get_all_provider_statuses( 'tpp' );
 
 		foreach ( $statuses as $status ) {
 

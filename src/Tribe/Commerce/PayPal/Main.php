@@ -2172,7 +2172,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function get_order_statuses() {
 
-		$statuses       = tribe( 'tickets.status' )->get_all_statuses_commerce( 'tpp' );
+		$statuses       = tribe( 'tickets.status' )->get_all_provider_statuses( 'tpp' );
 		$order_statuses = array();
 		foreach ( $statuses as $status ) {
 			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
