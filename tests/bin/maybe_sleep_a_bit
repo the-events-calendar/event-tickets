@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+time=${1:-5}
+every=${2:-10}
+iterations=${ITERATIONS:-0}
+
+if (( $iterations % ${every} == 0 )); then
+   sleep ${time}
+fi
+
+iterations=$((iterations+1))
+
+echo ${iterations}
