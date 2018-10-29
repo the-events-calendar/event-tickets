@@ -54,7 +54,10 @@ class Tribe__Tickets__Metabox {
 			array( $this, 'render' ),
 			$post_type,
 			'normal',
-			'high'
+			'high',
+			array(
+				'__back_compat_meta_box' => true,
+			)
 		);
 
 		// If we get here means that we will need Thickbox

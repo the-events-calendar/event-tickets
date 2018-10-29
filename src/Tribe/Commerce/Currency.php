@@ -375,7 +375,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	protected function get_provider_symbol( $provider, $object_id ) {
+	public function get_provider_symbol( $provider, $object_id ) {
 		if ( ! class_exists( $provider ) ) {
 			return $this->get_currency_symbol( $object_id );
 		}
@@ -438,7 +438,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	protected function get_provider_symbol_position( $provider, $object_id ) {
+	public function get_provider_symbol_position( $provider, $object_id ) {
 		if ( ! class_exists( $provider ) ) {
 			return $this->get_currency_symbol_position( $object_id );
 		}

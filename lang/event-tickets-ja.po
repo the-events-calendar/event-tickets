@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-08-08 03:55:55+0000\n"
+"PO-Revision-Date: 2018-09-14 05:31:30+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -57,7 +57,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:36
 msgid "API Keys"
-msgstr ""
+msgstr "API キー"
 
 #: src/admin-views/privacy.php:34
 msgid "Please note: The website owner can collect nearly any Attendee Information requested from ticket buyers by creating a custom registration form."
@@ -85,7 +85,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:24 src/admin-views/privacy.php:40
 msgid "Suggested text:"
-msgstr ""
+msgstr "例文: "
 
 #: src/admin-views/privacy.php:23
 msgid "Through the usage of Event Tickets, Event Tickets Plus, and Community Tickets, information may be collected and stored within your website’s database."
@@ -105,7 +105,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:17
 msgid "Disclaimer:"
-msgstr ""
+msgstr "免責事項: "
 
 #: src/admin-views/privacy.php:16
 msgid "You should include the information below in the correct sections of you privacy policy."
@@ -117,7 +117,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:14
 msgid "Hello,"
-msgstr ""
+msgstr "こんにちは、"
 
 #: src/Tribe/REST/V1/Messages.php:22
 msgid "The requested ticket check in is not available"
@@ -197,7 +197,7 @@ msgstr ""
 
 #: src/views/tickets/tpp-return-to-cart.php:6
 msgid "Return to Cart"
-msgstr ""
+msgstr "カートへ戻る"
 
 #: src/template-tags/tickets.php:446
 msgctxt "ticket stock message (refunded stock)"
@@ -230,15 +230,15 @@ msgstr ""
 
 #: src/Tribe/CSV_Importer/Column_Names.php:37
 msgid "Ticket Show Description"
-msgstr ""
+msgstr "チケットの詳細を見る"
 
 #: common/vendor/a5hleyrich/wp-background-processing/classes/wp-background-process.php:425
 msgid "Every %d Minutes"
-msgstr ""
+msgstr "%d 分ごと"
 
 #: common/src/admin-views/tribe-options-help.php:33
 msgid "Search our support help desk"
-msgstr ""
+msgstr "サポートデスクを探す"
 
 #: common/src/Tribe/Plugins_API.php:71
 msgid "Event Tickets Plus allows you to sell tickets to your events using WooCommerce, Easy Digital Downloads, or our built in Tribe Commerce tool. Add tickets to your posts and pages, or add %1$sThe Events Calendar%2$s and sell tickets from your event listings. Create custom registration forms, manage attendees, use custom capacity options, and more. Tickets have QR codes for easy check in at the door."
@@ -255,31 +255,31 @@ msgstr ""
 #: src/views/tickets/tpp.php:36
 msgctxt "form heading"
 msgid "Tickets"
-msgstr ""
+msgstr "チケット"
 
 #: src/views/tickets/tpp-success.php:134
 msgid "Order Total"
-msgstr ""
+msgstr "注文合計"
 
 #: src/views/tickets/tpp-success.php:80
 msgctxt "Success page tickets table header"
 msgid "Subtotal"
-msgstr ""
+msgstr "小計"
 
 #: src/views/tickets/tpp-success.php:79
 msgctxt "Success page tickets table header"
 msgid "Quantity"
-msgstr ""
+msgstr "数量"
 
 #: src/views/tickets/tpp-success.php:78
 msgctxt "Success page tickets table header"
 msgid "Price"
-msgstr ""
+msgstr "料金"
 
 #: src/views/tickets/tpp-success.php:77
 msgctxt "Success page tickets table header"
 msgid "Ticket"
-msgstr ""
+msgstr "チケット"
 
 #: src/views/tickets/tpp-success.php:65
 msgid "Thank you for your purchase! You will receive your receipt and tickets via email."
@@ -308,7 +308,7 @@ msgstr ""
 
 #: src/views/tickets/orders-pp-tickets.php:32
 msgid "My Tickets for This %s"
-msgstr ""
+msgstr "%s のチケット"
 
 #: src/views/login-to-purchase.php:16
 msgid "Log in to purchase"
@@ -322,7 +322,7 @@ msgstr ""
 #: src/views/login-before-purchase.php:23
 msgctxt "Login link on Tribe Commerce checkout page, shown as an alternative to the registration link"
 msgid "Log in"
-msgstr ""
+msgstr "ログイン"
 
 #: src/views/login-before-purchase.php:21
 msgctxt "Login link on Tribe Commerce checkout page"
@@ -464,7 +464,7 @@ msgstr ""
 
 #: src/admin-views/tpp-orders.php:122
 msgid "SKU: (%s)"
-msgstr ""
+msgstr "SKU: (%s)"
 
 #: src/admin-views/tpp-orders.php:100 src/admin-views/tpp-orders.php:105
 msgid "Sold %d %s"
@@ -480,12 +480,12 @@ msgstr ""
 
 #: src/admin-views/tpp-orders.php:66
 msgid "Tickets sold:"
-msgstr ""
+msgstr "販売済チケット: "
 
 #: src/admin-views/tpp-orders.php:26
 msgctxt "post type details"
 msgid "%s Details"
-msgstr ""
+msgstr "%s の詳細"
 
 #: src/admin-views/tpp-metabox-sku.php:30
 msgid "A unique identifying code for each ticket type you're selling"
@@ -497,7 +497,7 @@ msgstr ""
 
 #: src/admin-views/editor/panel/list.php:66
 msgid "New ticket"
-msgstr ""
+msgstr "新しいチケット"
 
 #: src/admin-views/editor/panel/list.php:9
 msgid "No commerce providers available"
@@ -505,7 +505,7 @@ msgstr ""
 
 #: src/admin-views/editor/panel/list.php:8
 msgid "Add a new ticket"
-msgstr ""
+msgstr "チケットを追加"
 
 #: src/admin-views/editor/fieldset/settings-provider.php:33
 msgid "Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin."
@@ -533,7 +533,7 @@ msgstr ""
 
 #: src/admin-views/editor/column-head-price.php:1
 msgid "Price"
-msgstr ""
+msgstr "料金"
 
 #: src/admin-views/editor/button-view-orders.php:35
 msgid "View Orders"
@@ -667,20 +667,20 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:150
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:79
 msgid "Total"
-msgstr ""
+msgstr "合計"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:76
 msgid "Status"
-msgstr ""
+msgstr "状態"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:75 src/Tribe/Privacy.php:136
 #: src/Tribe/Privacy.php:211
 msgid "Date"
-msgstr ""
+msgstr "日時"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:74
 msgid "Purchased"
@@ -688,7 +688,7 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:71
 msgid "Order"
-msgstr ""
+msgstr "注文"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:42
 msgid "Number of orders per page:"
@@ -761,7 +761,7 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Main.php:1662
 msgid "Report"
-msgstr ""
+msgstr "レポート"
 
 #: src/Tribe/Commerce/PayPal/Main.php:1636
 msgid "Sales report"
@@ -769,7 +769,7 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Main.php:448
 msgid "Orders"
-msgstr ""
+msgstr "注文"
 
 #: src/Tribe/Commerce/PayPal/Main.php:423
 msgid "Tribe Commerce Ticket"
