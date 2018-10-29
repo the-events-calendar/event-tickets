@@ -140,10 +140,8 @@ body.page-tribe-attendee-info .entry-content,
 .tribe-block__tickets__registration__summary {
 	padding: 40px;
 }
-.tribe-block__tickets__registration__title {
-	font-size: 28px;
-}
 .tribe-block__tickets__registration__title h2 {
+	font-size: 22px;
 	font-weight: 500;
 }
 .tribe-block__tickets__registration__description {
@@ -158,7 +156,7 @@ body.page-tribe-attendee-info .entry-content,
 	display: flex;
 	-ms-flex-wrap: wrap;
 	    flex-wrap: wrap;
-	font-size: 20px;
+	font-size: 18px;
 	-ms-flex-align: center;
 	    align-items: center;
 	-ms-flex-pack: center;
