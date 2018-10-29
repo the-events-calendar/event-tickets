@@ -390,7 +390,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			if ( ! empty( $redirect ) ) {
 				$key = $storage->store_temporary_data( $redirect );
-				$url = add_query_arg( [ 'event_tickets_redirect_to' => $key ], $url );
+				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key ), $url );
 			}
 
 			wp_safe_redirect( $url, 307 );
