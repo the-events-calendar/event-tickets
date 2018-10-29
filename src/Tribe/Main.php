@@ -714,7 +714,7 @@ class Tribe__Tickets__Main {
 	 * Returns the supported post types for tickets
 	 */
 	public function post_types() {
-		$options = get_option( Tribe__Main::OPTIONNAME, array() );
+		$options = (array) get_option( Tribe__Main::OPTIONNAME, array() );
 
 		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
