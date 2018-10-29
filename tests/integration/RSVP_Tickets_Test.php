@@ -121,7 +121,8 @@ class RSVP_Tickets_Test extends \Codeception\TestCase\WPTestCase {
 
 	protected function fake_attendee_details(array $overrides = array()) {
 		return array_merge( array(
-			'full_name'    => 'Jane Doe',
+			'first-name'   => 'Jane',
+			'last-name'    => 'Doe',
 			'email'        => 'jane@doe.com',
 			'order_status' => 'yes',
 			'optout'       => 'no',
