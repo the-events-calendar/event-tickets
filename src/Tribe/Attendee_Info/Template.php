@@ -46,28 +46,28 @@ class Tribe__Tickets__Attendee_Info__Template extends Tribe__Templates {
 	 * @return void
 	 */
 	public function setup_context( $posts ) {
-	    global $wp, $wp_query;
+		global $wp, $wp_query;
 
-	    // Bail if we're not on the attendee info page
-	    if ( empty( $wp->query_vars['attendee-info'] ) ) {
+		// Bail if we're not on the attendee info page
+		if ( empty( $wp->query_vars['attendee-info'] ) ) {
 			return $posts;
 		}
 
 		// Empty posts
-        $posts = null;
-        // Create a fake virtual page
-        $posts[] = $this->spoofed_page();
+		$posts = null;
+		// Create a fake virtual page
+		$posts[] = $this->spoofed_page();
 
 		// Set it as an archive page so it doesn't give the edit link
 		// nor it loads the comments template
 		$wp_query->is_page     = false;
-        $wp_query->is_singular = false;
-        $wp_query->is_home     = false;
-        $wp_query->is_archive  = true;
-        $wp_query->is_category = false;
-        $wp_query->is_404      = false;
-        $wp_query->found_posts = 1;
-        $wp_query->posts_per_page = 1;
+		$wp_query->is_singular = false;
+		$wp_query->is_home     = false;
+		$wp_query->is_archive  = true;
+		$wp_query->is_category = false;
+		$wp_query->is_404      = false;
+		$wp_query->found_posts = 1;
+		$wp_query->posts_per_page = 1;
 
 		return $posts;
 
