@@ -17,7 +17,7 @@ class Tribe__Tickets__Attendee_Info__Template extends Tribe__Templates {
 	/**
 	 * Initialize the template class
 	 */
-	public function init() {
+	public function hook() {
 
 		// Spoof the context
 		add_filter( 'the_posts', array( $this, 'setup_context' ), -10 );

@@ -23,7 +23,7 @@ class Tribe__Tickets__Attendee_Info__Service_Provider extends tad_DI52_ServicePr
 	 */
 	protected function hooks() {
 
-		add_action( 'plugins_loaded', array( tribe( 'tickets.attendee_info.template' ), 'init' ) );
+		add_action( 'plugins_loaded', array( tribe( 'tickets.attendee_info.template' ), 'hook' ) );
 		add_action( 'tribe_tickets_pre_rewrite', array( tribe( 'tickets.attendee_info.rewrite' ), 'generate_core_rules' ) );
 		add_action( 'init', array( tribe( 'tickets.attendee_info.rewrite' ), 'add_rewrite_tags' ) );
 		add_filter( 'generate_rewrite_rules', array( tribe( 'tickets.attendee_info.rewrite' ), 'filter_generate' ) );
