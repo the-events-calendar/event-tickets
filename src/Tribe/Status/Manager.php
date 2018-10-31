@@ -23,7 +23,7 @@ class Tribe__Tickets__Status__Manager {
 	protected $module_slugs = array(
 		'Easy Digital Downloads' => 'edd',
 		'RSVP'                   => 'rsvp',
-		'tribe-commerce'         => 'tribe-commerce',
+		'Tribe Commerce'         => 'tpp',
 		'WooCommerce'            => 'woo',
 	);
 	/**
@@ -41,7 +41,7 @@ class Tribe__Tickets__Status__Manager {
 	protected $status_managers = array(
 		'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Status_Manager',
 		'rsvp' => 'Tribe__Tickets__RSVP__Status_Manager',
-		//'tribe-commerce' => 'Tribe__Tickets__Commerce__WooCommerce__Status_Manager',
+		'tpp' => 'Tribe__Tickets__Commerce__PayPal__Status_Manager',
 		'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
 	);
 
@@ -74,7 +74,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 */
 	public function hook() {
-		add_action( 'init', array( $this, 'setup' ) );
+		add_action( 'init', array( $this, 'setup' ), 0 );
 	}
 
 	/**
@@ -192,10 +192,11 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @param $action   string a string of the action to filter
 	 * @param $commerce string a string of the Commerce System to get statuses from
+	 * @param $operator string a string of the default 'AND', 'OR', 'NOT' to change the criteria
 	 *
 	 * @return array an array of the commerce's statuses matching the provide action
 	 */
-	public function get_statuses_by_action( $action, $commerce ) {
+	public function get_statuses_by_action( $action, $commerce, $operator = 'AND' ) {
 
 		$trigger_statuses = array();
 
@@ -210,7 +211,7 @@ class Tribe__Tickets__Status__Manager {
 			foreach ( $action as $name ) {
 				$criteria[ $name ] = true;
 			}
-			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, $criteria );
+			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, $criteria, $operator );
 		} else {
 			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
 				$action => true,
@@ -222,6 +223,27 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		return $trigger_statuses;
+
+	}
+
+	/**
+	 * Return an array of Statuses for a provider Commerce
+	 *
+	 * @since TBD
+	 *
+	 * @param $commerce string a string of the Commerce System to get statuses from
+	 *
+	 * @return array an array of the commerce's statuses matching the provide action
+	 */
+	public function get_all_provider_statuses( $commerce ) {
+
+		$trigger_statuses = array();
+
+		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
+			return $trigger_statuses;
+		}
+
+		return $this->statuses[ $commerce ]->statuses;
 
 	}
 

@@ -2171,14 +2171,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @return array An associative array in the [ <slug> => <label> ] format.
 	 */
 	public function get_order_statuses() {
-		$order_statuses = array(
-			Tribe__Tickets__Commerce__PayPal__Stati::$undefined     => _x( 'Undefined', 'a PayPal ticket order status', 'event-tickets' ),
-			Tribe__Tickets__Commerce__PayPal__Stati::$completed     => _x( 'Completed', 'a PayPal ticket order status', 'event-tickets' ),
-			Tribe__Tickets__Commerce__PayPal__Stati::$refunded      => _x( 'Refunded', 'a PayPal ticket order status', 'event-tickets' ),
-			Tribe__Tickets__Commerce__PayPal__Stati::$pending       => _x( 'Pending', 'a PayPal ticket order status', 'event-tickets' ),
-			Tribe__Tickets__Commerce__PayPal__Stati::$denied        => _x( 'Denied', 'a PayPal ticket order status', 'event-tickets' ),
-			Tribe__Tickets__Commerce__PayPal__Stati::$not_completed => _x( 'Not Completed', 'a PayPal ticket order status', 'event-tickets' ),
-		);
+
+		$statuses       = tribe( 'tickets.status' )->get_all_provider_statuses( 'tpp' );
+		$order_statuses = array();
+		foreach ( $statuses as $status ) {
+			$order_statuses[ $status->provider_name ] = _x( $status->name, 'a PayPal ticket order status', 'event-tickets' );
+		}
 
 		/**
 		 * Filters the list of PayPal tickets order stati.

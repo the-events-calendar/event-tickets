@@ -23,8 +23,12 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 			return [ $this, 'dont_die' ];
 		} );
 
-		add_filter( 'tribe_tickets_get_modules', function ( array $modules ) {
-			$modules[ \Tribe__Tickets__Commerce__PayPal__Main::class ] = 'tribe-commerce';
+		/**
+		 * Enable TTP
+		 */
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
 		} );
@@ -67,7 +71,7 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_has_manage_class_keys_for_rsvp_and_tribe_commerce() {
 		$this->assertArrayHasKey( 'rsvp', Manager::get_instance()->get_status_managers() );
-		//$this->assertArrayHasKey( 'tribe-commerce', Manager::get_instance()->get_status_managers() );
+		$this->assertArrayHasKey( 'tpp', Manager::get_instance()->get_status_managers() );
 	}
 
 	/**

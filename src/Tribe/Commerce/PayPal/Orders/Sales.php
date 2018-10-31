@@ -88,9 +88,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return array
 	 */
 	protected function get_revenue_generating_order_statuses() {
-		$revenue_generating_order_statuses = array(
-			Tribe__Tickets__Commerce__PayPal__Stati::$completed
-		);
+		$revenue_generating_order_statuses = tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
 
 		/**
 		 * Filters the list of ticket statuses that should be taken into account when calculating revenue.
