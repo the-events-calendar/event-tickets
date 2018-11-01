@@ -50,7 +50,8 @@ class Tribe__Tickets__RSVP__Cart {
 	}
 
 	/**
-	 * Setup the RSVP Cart
+	 * If we're on WP multisite, and using subdirectories,
+	 * We'll need to add an ID to the cart_key so they have one per site
 	 *
 	 * @since TBD
 	 */
