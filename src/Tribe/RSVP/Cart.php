@@ -67,7 +67,7 @@ class Tribe__Tickets__RSVP__Cart {
 	 * @return boolean
 	 */
 	public function is_empty() {
-		return 0 === sizeof( $this->contents );
+		return 0 === count( $this->contents );
 	}
 
 	/**
