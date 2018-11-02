@@ -1,0 +1,256 @@
+/**
+ * This CSS file was auto-generated via PostCSS
+ *
+ * Contributors should avoid editing this file, but instead edit the associated
+ * src/resources/postcss/ file. For more information, check out our engineering
+ * docs on how we handle CSS in our engineering docs.
+ *
+ * @see: http://moderntribe.github.io/products-engineering/css/
+ */
+
+/*
+	Compat
+*/
+
+.tribe-events-single {
+	max-width: 1000px;
+	margin: 0 auto;
+}
+
+body.page-tribe-attendee-registration header.entry-header,
+	body.page-tribe-attendee-registration header.entry-meta,
+	body.page-tribe-attendee-registration footer.entry-header {
+	display: none;
+}
+
+body.page-tribe-attendee-registration span.edit-link {
+	display: none;
+}
+
+body.page-tribe-attendee-registration .entry-content,
+	body.page-tribe-attendee-registration .entry-header {
+	width: 98%;
+}
+
+.toggle-handler,
+.registration-status {
+	position: absolute;
+	right: 40px;
+	top: 40px;
+	width: 30px;
+	height: 30px;
+	border-radius: 100%;
+	color: #fff;
+	text-align: center;
+	line-height: 40px;
+}
+
+.toggle-handler i, .registration-status i {
+	line-height: 30px;
+}
+
+.toggle-handler {
+	cursor: pointer;
+	background: #999;
+}
+
+.toggle-handler.open {
+	transform: rotate(180deg);
+}
+
+.registration-status {
+	right: 75px;
+	background: blue;
+}
+
+/*
+	Attendee fields
+*/
+
+.tribe-block__tickets__item__attendee__fields {
+	background: #f9f9f9;
+	padding: 60px;
+
+}
+
+.tribe-block__tickets__item__attendee__fields .tribe-ticket {
+	border-bottom: 1px solid #e1e3e6;
+	clear: both;
+	margin-bottom: 40px;
+	padding-bottom: 40px;
+}
+
+.tribe-block__tickets__item__attendee__fields .tribe-ticket:last-child {
+	margin-bottom: 0;
+	border-bottom: 0;
+}
+
+.tribe-block__tickets__item__attendee__fields .tribe-field {
+	margin-bottom: 40px;
+	clear: both;
+}
+
+.tribe-block__tickets__item__attendee__fields .tribe-field:last-child {
+	margin-bottom: 0;
+}
+
+.tribe-block__tickets__item__attendee__fields label {
+	color: #545d66;
+	display: block;
+	font-weight: 500;
+	margin-bottom: .8em;
+}
+
+.tribe-block__tickets__item__attendee__fields label.tribe-tickets-meta-field-header {
+	cursor: pointer;
+	display: inline-block;
+	float: left;
+	font-size: 15px;
+	margin-right: 20px;
+}
+
+.tribe-block__tickets__item__attendee__fields .tribe-tickets-meta-label {
+	display: block;
+	margin-bottom: .8em;
+}
+
+.tribe-block__tickets__item__attendee__fields .tribe-tickets-meta-label,
+		.tribe-block__tickets__item__attendee__fields .tribe-tickets-meta-label h3 {
+	font-size: 16px;
+	font-weight: 500;
+	color: #545d66;
+}
+
+.tribe-block__tickets__item__attendee__fields input[type="text"],
+	.tribe-block__tickets__item__attendee__fields input[type="email"],
+	.tribe-block__tickets__item__attendee__fields input[type="url"],
+	.tribe-block__tickets__item__attendee__fields input[type="password"],
+	.tribe-block__tickets__item__attendee__fields input[type="search"],
+	.tribe-block__tickets__item__attendee__fields input[type="number"],
+	.tribe-block__tickets__item__attendee__fields input[type="tel"],
+	.tribe-block__tickets__item__attendee__fields input[type="range"],
+	.tribe-block__tickets__item__attendee__fields input[type="date"],
+	.tribe-block__tickets__item__attendee__fields input[type="month"],
+	.tribe-block__tickets__item__attendee__fields input[type="week"],
+	.tribe-block__tickets__item__attendee__fields input[type="time"],
+	.tribe-block__tickets__item__attendee__fields input[type="datetime"],
+	.tribe-block__tickets__item__attendee__fields input[type="datetime-local"],
+	.tribe-block__tickets__item__attendee__fields input[type="color"],
+	.tribe-block__tickets__item__attendee__fields select,
+	.tribe-block__tickets__item__attendee__fields textarea {
+	border: 1px solid #e1e3e6;
+	max-width: 400px;
+	padding: 0.7em;
+}
+
+.tribe-block__tickets__item__attendee__fields input[type="text"]:focus, .tribe-block__tickets__item__attendee__fields input[type="email"]:focus, .tribe-block__tickets__item__attendee__fields input[type="url"]:focus, .tribe-block__tickets__item__attendee__fields input[type="password"]:focus, .tribe-block__tickets__item__attendee__fields input[type="search"]:focus, .tribe-block__tickets__item__attendee__fields input[type="number"]:focus, .tribe-block__tickets__item__attendee__fields input[type="tel"]:focus, .tribe-block__tickets__item__attendee__fields input[type="range"]:focus, .tribe-block__tickets__item__attendee__fields input[type="date"]:focus, .tribe-block__tickets__item__attendee__fields input[type="month"]:focus, .tribe-block__tickets__item__attendee__fields input[type="week"]:focus, .tribe-block__tickets__item__attendee__fields input[type="time"]:focus, .tribe-block__tickets__item__attendee__fields input[type="datetime"]:focus, .tribe-block__tickets__item__attendee__fields input[type="datetime-local"]:focus, .tribe-block__tickets__item__attendee__fields input[type="color"]:focus, .tribe-block__tickets__item__attendee__fields select:focus, .tribe-block__tickets__item__attendee__fields textarea:focus {
+	border: 1px solid #e1e3e6;
+}
+
+.tribe-block__tickets__item__attendee__fields select {
+	-webkit-appearance: none;
+	-moz-appearance:    none;
+	appearance:         none;
+	background: #fff;
+	height: auto;
+	min-width: 400px;
+	padding: 0.7em;
+}
+
+.tribe-block__tickets__item__attendee__fields .tribe-options {
+	overflow:hidden;
+	width: 100%;
+}
+
+.tribe-block__tickets__button--next {
+	-ms-flex-align: center;
+	    align-items: center;
+	border: 1px solid #e1e3e6;
+	background-color: #009fd4;
+	color: #fff;
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	font-size: 18px;
+	font-size: 1.125rem;
+	-ms-flex-pack: center;
+	    justify-content: center;
+	min-height: 54px;
+	padding: 0 20px;
+	max-width: 100%;
+}
+
+.tribe-block__tickets__button--next:hover {
+	color: #fff;
+}
+
+/*
+	Tickets Registration/Purchase
+*/
+
+.tribe-block__tickets__registration {
+	border: 1px solid #e1e3e6;
+	margin-bottom: 30px;
+	position: relative;
+}
+
+.tribe-block__tickets__registration__summary {
+	padding: 40px;
+}
+
+.tribe-block__tickets__registration__title h2 {
+	font-size: 22px;
+	font-weight: 500;
+}
+
+.tribe-block__tickets__registration__description {
+	margin-top: 10px;
+}
+
+.tribe-block__tickets__registration__tickets {
+	padding: 20px 0;
+}
+
+.tribe-block__tickets__registration__tickets__item {
+	border-bottom: 1px solid #e1e3e6;
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
+	font-size: 18px;
+	-ms-flex-align: center;
+	    align-items: center;
+	-ms-flex-pack: center;
+	    justify-content: center;
+}
+
+.tribe-block__tickets__registration__tickets__item:last-child {
+	border: none;
+}
+
+.tribe-block__tickets__registration__tickets__item__icon {
+	-ms-flex: 0 1 50px;
+	    flex: 0 1 50px;
+	padding: 15px 10px;
+}
+
+.tribe-block__tickets__registration__tickets__item__icon svg {
+	max-width: 45px;
+}
+
+.tribe-block__tickets__registration__tickets__item__quantity {
+	-ms-flex: 0 1 20px;
+	    flex: 0 1 20px;
+	padding: 20px;
+}
+
+.tribe-block__tickets__registration__tickets__item__title {
+	-ms-flex: 10 5 230px;
+	    flex: 10 5 230px;
+	padding: 20px 10px;
+}
+
+.tribe-block__tickets__registration__tickets__item__price {
+	-ms-flex: 0 1 40px;
+	    flex: 0 1 40px;
+	padding: 20px 10px;
+}

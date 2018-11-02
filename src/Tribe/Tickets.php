@@ -839,6 +839,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
 			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
+			add_action( 'template_redirect', array( $this, 'maybe_redirect_to_attendees_registration_screen' ), 0 );
 		}
 
 		/**
@@ -2262,6 +2263,192 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $save_ticket;
 		}
 
+		/**
+		 * Get the saved or default ticket provider
+		 *
+		 * @since 4.7
+		 *
+		 * @param int $event_id - the post id of the event the ticket is attached to.
+		 *
+		 * @return string ticket module class name
+		 */
+		public static function get_event_ticket_provider( $event_id = null ) {
+
+			// if  post ID is set, and a value has been saved, return the saved value
+			if ( ! empty( $event_id ) ) {
+				$saved = get_post_meta( $event_id, tribe( 'tickets.handler' )->key_provider_field, true );
+
+				if ( ! empty( $saved ) ) {
+					return $saved;
+				}
+			}
+
+			// otherwise just return the default
+			return self::get_default_module();
+		}
+
+		// @codingStandardsIgnoreEnd
+
+
+		/**
+		 * Parent method to be pass to any child of this class.
+		 *
+		 * @since 4.7.1
+		 *
+		 * @return string
+		 */
+		public function get_currency() {
+			/**
+			 * Default currency value for Tickets.
+			 *
+			 * @since 4.7.1
+			 *
+			 * @return string
+			 */
+			return (string) apply_filters( 'tribe_tickets_default_currency', 'USD' );
+		}
+
+
+		/**
+		 * Returns all the tickets currently in the users cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $tickets
+		 *
+		 * @return array
+		 */
+		public function get_tickets_in_cart( $tickets ) {
+			return $tickets;
+		}
+
+			/**
+		 * Return whether we're currently on the checkout page for this Merchant.
+		 *
+		 * @since TBD
+		 *
+		 * @return bool
+		 */
+		public function is_checkout_page() {
+			return false;
+		}
+
+		/**
+		 * If tickets exist in the cart for which we don't have meta info,
+		 * redirect to the meta collection screen.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $redirect
+		 */
+		public function maybe_redirect_to_attendees_registration_screen( $redirect = null ) {
+
+			// Bail if the meta storage class doesn't exist
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
+				return;
+			}
+
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+				return;
+			}
+
+			// They're submitting RSVPs, do not include them for now
+			if ( ! empty( $_POST['tribe_tickets_rsvp_submission'] ) ) {
+				return;
+			}
+
+			// Get the registration page slug
+			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-registration-slug', 'attendee-registration' );
+
+			if (
+				isset( $_SERVER['REQUEST_URI'] )
+				&& strpos( $_SERVER['REQUEST_URI'], $slug ) !== false
+			) {
+				return;
+			}
+
+			// Return if not trying to access the chekout page
+			if ( ! $this->is_checkout_page() ) {
+				return;
+			}
+
+			/**
+	 		 * Modify the tickets in cart, useful to
+	 		 * change the contents for each vendor
+			 * @since TBD
+			 *
+			 * @param array
+			*/
+			$tickets_in_cart = apply_filters( 'event_tickets_in_cart', array() );
+
+			// Bail if there are no tickets
+			if ( empty( $tickets_in_cart ) ) {
+				return;
+			}
+
+			// @todo: use this filter to hook on from ET+ - document
+			$maybe_redirect = apply_filters( 'tribe_tickets_maybe_redirect_attendee_registration', $tickets_in_cart );
+
+			$storage    = new Tribe__Tickets_Plus__Meta__Storage();
+			$meta       = Tribe__Tickets_Plus__Main::instance()->meta();
+			$up_to_date = true;
+			foreach ( $tickets_in_cart as $ticket_id => $quantity ) {
+				$saved_meta  = $storage->get_meta_data_for( $ticket_id );
+				$ticket_meta = $meta->get_meta_fields_by_ticket( $ticket_id );
+
+				// Continue if the ticket doesn't have any meta
+				if ( empty( $ticket_meta ) ) {
+					continue;
+				}
+
+				if ( empty( $saved_meta[ $ticket_id ] ) ) {
+					$up_to_date = false;
+					continue;
+				}
+				if ( count( $saved_meta[ $ticket_id ] ) != $quantity ) {
+					$up_to_date = false;
+				}
+
+				// Going through the stored data, to see if there's a required field missing
+				// @TODO: create a method for this, move to ET+
+				foreach ( $saved_meta as $the_ticket => $the_meta ) {
+					foreach ( $the_meta as $quantity => $saved ) {
+						foreach( $saved as $k => $v ) {
+							if ( ! $meta->meta_is_required( $ticket_id, $k ) ) {
+								continue;
+							}
+
+							if ( '' === $v ) {
+								$up_to_date = false;
+								break;
+							}
+						}
+					}
+				}
+			}
+
+			// Bail If things are up to date and they haven't submitted the form to access the registration page.
+			if (
+				$up_to_date
+				&& (
+					! isset( $_REQUEST['wootickets_process'] )
+					&& ! isset( $_REQUEST['eddtickets_process'] )
+				)
+			) {
+				return;
+			}
+
+			$url  = home_url( $slug );
+
+			if ( ! empty( $redirect ) ) {
+				$key = $storage->store_temporary_data( $redirect );
+				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key ), $url );
+			}
+
+			wp_safe_redirect( $url, 307 );
+			exit;
+		}
+
 
 		/************************
 		 *                      *
@@ -2329,51 +2516,5 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
 		}
-
-		/**
-		 * Get the saved or default ticket provider
-		 *
-		 * @since 4.7
-		 *
-		 * @param int $event_id - the post id of the event the ticket is attached to.
-		 *
-		 * @return string ticket module class name
-		 */
-		public static function get_event_ticket_provider( $event_id = null ) {
-
-			// if  post ID is set, and a value has been saved, return the saved value
-			if ( ! empty( $event_id ) ) {
-				$saved = get_post_meta( $event_id, tribe( 'tickets.handler' )->key_provider_field, true );
-
-				if ( ! empty( $saved ) ) {
-					return $saved;
-				}
-			}
-
-			// otherwise just return the default
-			return self::get_default_module();
-		}
-
-		// @codingStandardsIgnoreEnd
-
-
-		/**
-		 * Parent method to be pass to any child of this class.
-		 *
-		 * @since 4.7.1
-		 *
-		 * @return string
-		 */
-		public function get_currency() {
-			/**
-			 * Default currency value for Tickets.
-			 *
-			 * @since 4.7.1
-			 *
-			 * @return string
-			 */
-			return (string) apply_filters( 'tribe_tickets_default_currency', 'USD' );
-		}
 	}
-
 }
