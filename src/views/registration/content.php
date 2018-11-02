@@ -31,7 +31,7 @@ if ( empty( $events ) ) {
 	<?php $this->template( 'summary/content', array( 'event_id' => $event_id, 'tickets' => $ticket ) ); ?>
 
 	<div class="tribe-block__tickets__item__attendee__fields">
-		<form method="post" class="tribe-block__tickets__item__attendee__fields__form" name="<?php 'event' . $event_id ?>">
+		<form method="post" class="tribe-block__tickets__item__attendee__fields__form" name="<?php echo 'event' . $event_id ?>">
 			<?php $this->template( 'attendees/content', array( 'event_id' => $event_id, 'tickets' => $ticket ) ); ?>
 			<input type="hidden" name="tribe_tickets_saving_attendees" value="1"/>
 			<button type="submit"><?php _e( 'Save Attendee Info', 'event-tickets' ); ?></button>
