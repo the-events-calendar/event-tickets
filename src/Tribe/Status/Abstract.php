@@ -22,6 +22,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	public $count_sales         = false;
 	public $count_completed     = false;
 	public $count_canceled      = false;
+	public $count_incomplete    = false;
 	public $count_refunded      = false;
 	public $count_not_going     = false;
 
