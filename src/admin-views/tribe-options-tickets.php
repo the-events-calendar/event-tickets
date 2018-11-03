@@ -75,7 +75,7 @@ $tickets_fields = array_merge( $tickets_fields, array(
 			'label'               => esc_html__( 'Attendee Registration URL slug', 'event-tickets' ),
 			'tooltip'             => esc_html__( 'The slug used for building the URL for the Attendee Registration Info page.', 'event-tickets' ),
 			'size'                => 'medium',
-			'default'             => 'attendee-registration',
+			'default'             => tribe( 'tickets.attendee_registration' )->get_slug(),
 			'validation_callback' => 'is_string',
 			'validation_type'     => 'textarea',
 		),

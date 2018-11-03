@@ -49,7 +49,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		global $wp, $wp_query;
 
 		// Bail if we're not on the attendee info page
-		if ( empty( $wp->query_vars['attendee-registration'] ) ) {
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $posts;
 		}
 
@@ -85,7 +85,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	public function set_page_template( $template ) {
 
 		// Bail if we're not on the attendee info page
-		if ( ! $this->is_attendee_registration_page() ) {
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $template;
 		}
 
@@ -103,7 +103,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	public function set_body_classes() {
 
 		// Bail if we're not on the attendee info page
-		if ( ! $this->is_attendee_registration_page() ) {
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return;
 		}
 
@@ -218,7 +218,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	public function set_page_content( $query ) {
 
 		// Bail if we're not on the attendee info page
-		if ( ! $this->is_attendee_registration_page() ) {
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return;
 		}
 
@@ -243,7 +243,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $title;
 		}
 
-		if ( $this->is_attendee_registration_page() ) {
+		if ( tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			$title['title'] = $this->get_page_title();
 		}
 
@@ -266,24 +266,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 * @param array $post_types Array of post types
 		 */
 		return apply_filters( 'tribe_tickets_attendee_registration_page_title', esc_html__( 'Attendee Registration', 'event-tickets' ) );
-	}
-
-	/**
-	 * Check if we're on the attendee info page
-	 * Based on the attendee-registration query var.
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	private function is_attendee_registration_page() {
-		global $wp_query;
-
-		if ( null === $wp_query ) {
-			return false;
-		}
-
-		return ! empty( $wp_query->query_vars['attendee-registration'] );
 	}
 
 	/**
@@ -334,7 +316,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	public function set_edit_post_link( $link ) {
 
 		// Bail if we're not on the attendee info page
-		if ( ! $this->is_attendee_registration_page() ) {
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $link;
 		}
 

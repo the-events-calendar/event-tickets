@@ -8,6 +8,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @since TBD
 	 */
 	public function register() {
+		tribe_singleton( 'tickets.attendee_registration', 'Tribe__Tickets__Attendee_Registration__Main' );
 		tribe_singleton( 'tickets.attendee_registration.template', 'Tribe__Tickets__Attendee_Registration__Template' );
 		tribe_singleton( 'tickets.attendee_registration.view', 'Tribe__Tickets__Attendee_Registration__View' );
 		tribe_singleton( 'tickets.attendee_registration.rewrite', 'Tribe__Tickets__Attendee_Registration__Rewrite' );

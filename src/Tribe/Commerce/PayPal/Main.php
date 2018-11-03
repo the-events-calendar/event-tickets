@@ -312,7 +312,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
 		add_filter( 'tribe_tickets_get_default_module', array( $this, 'deprioritize_module' ), 5, 2 );
 
-		add_filter( 'event_tickets_in_cart', array( $this, 'get_tickets_in_cart' ), 10, 1 );
+		add_filter( 'tribe_tickets_tickets_in_cart', array( $this, 'get_tickets_in_cart' ), 10, 1 );
 		add_action( 'wp_loaded', array( $this, 'maybe_redirect_to_attendees_meta_screen' ), 1 );
 		add_action( 'wp_loaded', array( $this, 'maybe_delete_expired_products' ), 0 );
 	}
@@ -2205,15 +2205,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );
- 		if ( empty( $delete ) ) {
+		if ( empty( $delete ) ) {
 			return;
 		}
- 		delete_transient( $this->get_current_cart_transient() );
- 		$storage = new Tribe__Tickets_Plus__Meta__Storage();
+		delete_transient( $this->get_current_cart_transient() );
+		$storage = new Tribe__Tickets_Plus__Meta__Storage();
 		$storage->delete_cookie();
 	}
 
- 	/**
+	/**
 	 * Redirect to attendees meta screen before loading Paypal.
 	 *
 	 * @filter wp_loaded 1
@@ -2226,25 +2226,30 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( ! $this->is_checkout_page() ) {
 			return;
 		}
- 		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', 'attendee-info' );
- 		if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], $slug ) !== false ) {
+
+		if ( tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return;
 		}
+
  		if ( $_POST ) {
 			return;
 		}
+
 		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 		$redirect = base64_encode( $redirect );
- 		parent::maybe_redirect_to_attendees_meta_screen( $redirect );
+
+		parent::maybe_redirect_to_attendees_meta_screen( $redirect );
 	}
- 	public function is_checkout_page() {
+
+	public function is_checkout_page() {
 		if ( is_admin() ) {
 			return false;
 		}
  		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
  		return ! empty( $redirect );
 	}
- 	/**
+
+	/**
 	 * Get the tickets currently in the cart.
 	 *
 	 * @since TBD
@@ -2255,17 +2260,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function get_tickets_in_cart( $tickets ) {
 		$contents  = get_transient( $this->get_current_cart_transient() );
- 		if ( empty( $contents ) ) {
+		if ( empty( $contents ) ) {
 			return $tickets;
 		}
- 		foreach ( $contents as $id => $quantity ) {
+		foreach ( $contents as $id => $quantity ) {
 			$event_check = get_post_meta( $id, $this->event_key, true );
 			if ( empty( $event_check ) ) {
 				continue;
 			}
- 			$tickets[ $id ] = $quantity;
+			$tickets[ $id ] = $quantity;
 		}
- 		return $tickets;
+		return $tickets;
 	}
 
  	/**

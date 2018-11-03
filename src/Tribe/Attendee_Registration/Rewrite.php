@@ -64,7 +64,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
-		$rewrite->add( array( '{{ attendee-registration }}' ), array( 'attendee-registration' => 1 ) );
+		$rewrite->add( array( '{{ ' . Tribe__Tickets__Attendee_Registration__Main::QUERY_VAR . ' }}' ), array( Tribe__Tickets__Attendee_Registration__Main::QUERY_VAR => 1 ) );
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @since TBD
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag( '%attendee-registration%', '([^&]+)' );
+		add_rewrite_tag( '%' . Tribe__Tickets__Attendee_Registration__Main::QUERY_VAR . '%', '([^&]+)' );
 	}
 
 	/**
@@ -108,7 +108,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 		 * @var array $bases
 		 */
 		$bases = apply_filters( 'tribe_tickets_rewrite_base_slugs', array(
-			'attendee-registration' => array( Tribe__Settings_Manager::get_option( 'ticket-attendee-registration-slug', 'attendee-registration' ) ),
+			'attendee-registration' => array( tribe( 'tickets.attendee_registration' )->get_slug() ),
 		) );
 
 		// Remove duplicates (no need to have 'month' twice if no translations are in effect, etc)

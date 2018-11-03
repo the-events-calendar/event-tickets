@@ -25,21 +25,20 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		global $wp_query;
 
 		// Bail if we don't have the flag to be in the registration page
-		if ( empty( $wp_query->query_vars['attendee-registration'] ) ) {
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $content;
 		}
 
-		$cart_tickets = apply_filters( 'event_tickets_in_cart', array() );
+		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
 		$tickets      = array();
 		$events       = array();
 		$tick         = array();
 
-
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Only include those who have meta
-			$has_meta = get_post_meta( $ticket_id, '_tribe_tickets_meta', true );
+			$has_meta = get_post_meta( $ticket_id, '_tribe_tickets_meta_enabled', true );
 
-			if ( ! is_array( $has_meta ) || empty( $has_meta ) ) {
+			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
 				continue;
 			}
 

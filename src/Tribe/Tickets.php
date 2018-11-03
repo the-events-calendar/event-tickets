@@ -2357,13 +2357,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			// Get the registration page slug
-			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-registration-slug', 'attendee-registration' );
-
-			if (
-				isset( $_SERVER['REQUEST_URI'] )
-				&& strpos( $_SERVER['REQUEST_URI'], $slug ) !== false
-			) {
+			if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 				return;
 			}
 
@@ -2379,7 +2373,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param array
 			*/
-			$tickets_in_cart = apply_filters( 'event_tickets_in_cart', array() );
+			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
 
 			// Bail if there are no tickets
 			if ( empty( $tickets_in_cart ) ) {
@@ -2388,44 +2382,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// @todo: use this filter to hook on from ET+ - document
 			$maybe_redirect = apply_filters( 'tribe_tickets_maybe_redirect_attendee_registration', $tickets_in_cart );
-
-			$storage    = new Tribe__Tickets_Plus__Meta__Storage();
-			$meta       = Tribe__Tickets_Plus__Main::instance()->meta();
-			$up_to_date = true;
-			foreach ( $tickets_in_cart as $ticket_id => $quantity ) {
-				$saved_meta  = $storage->get_meta_data_for( $ticket_id );
-				$ticket_meta = $meta->get_meta_fields_by_ticket( $ticket_id );
-
-				// Continue if the ticket doesn't have any meta
-				if ( empty( $ticket_meta ) ) {
-					continue;
-				}
-
-				if ( empty( $saved_meta[ $ticket_id ] ) ) {
-					$up_to_date = false;
-					continue;
-				}
-				if ( count( $saved_meta[ $ticket_id ] ) != $quantity ) {
-					$up_to_date = false;
-				}
-
-				// Going through the stored data, to see if there's a required field missing
-				// @TODO: create a method for this, move to ET+
-				foreach ( $saved_meta as $the_ticket => $the_meta ) {
-					foreach ( $the_meta as $quantity => $saved ) {
-						foreach( $saved as $k => $v ) {
-							if ( ! $meta->meta_is_required( $ticket_id, $k ) ) {
-								continue;
-							}
-
-							if ( '' === $v ) {
-								$up_to_date = false;
-								break;
-							}
-						}
-					}
-				}
-			}
+			$up_to_date     = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
 
 			// Bail If things are up to date and they haven't submitted the form to access the registration page.
 			if (
@@ -2438,7 +2395,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$url  = home_url( $slug );
+			$url = tribe( 'tickets.attendee_registration' )->get_url();
 
 			if ( ! empty( $redirect ) ) {
 				$key = $storage->store_temporary_data( $redirect );

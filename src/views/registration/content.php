@@ -17,6 +17,7 @@ $storage           = new Tribe__Tickets_Plus__Meta__Storage();
 $meta              = tribe( 'tickets-plus.main' )->meta();
 $current_ticket_id = 0;
 $i                 = 0;
+$checkout_url      = tribe( 'tickets.attendee_registration' )->get_checkout_url();
 
 if ( empty( $events ) ) {
 	esc_html_e( 'You currently have no events awaiting registration', 'event-tickets' );
@@ -40,3 +41,9 @@ if ( empty( $events ) ) {
 
 </div>
 <?php endforeach; ?>
+
+<?php if ( ! empty( $checkout_url ) ): ?>
+	<form action="<?php echo esc_url( $checkout_url ); ?>" method="get">
+		<button type="submit" class="alignright button-primary">Checkout</button>
+	</form>
+<?php endif; ?>
