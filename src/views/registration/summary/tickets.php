@@ -10,7 +10,7 @@
 
 	<?php foreach ( $tickets as $key => $ticket ) : ?>
 
-		<?php $this->template( 'summary/ticket', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+		<?php $this->template( 'summary/ticket/content', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 
 	<?php endforeach; ?>
 
