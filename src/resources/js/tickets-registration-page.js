@@ -14,7 +14,9 @@ tribe.tickets.registration = {};
 
 	obj.selector = {
 		container : '.tribe-block__tickets__registration',
-		toggler   : '.toggle-handler',
+		fields    : '.tribe-block__tickets__item__attendee__fields',
+		toggler   : '.tribe-block__tickets__registration__toggle__handler',//'.toggle-handler',
+		status    : '.tribe-block__tickets__registration__status',
 	};
 
 	var $tribe_registration = $( obj.selector.container );
@@ -39,7 +41,7 @@ tribe.tickets.registration = {};
 			var $this      = $( this );
 			var $event     = $this.closest( obj.selector.container );
 
-			$event.find( '.tribe-block__tickets__item__attendee__fields' ).toggle();
+			$event.find( obj.selector.fields ).toggle();
 			$this.toggleClass( 'open' );
 
 	} );
@@ -70,12 +72,12 @@ tribe.tickets.registration = {};
 			});
 
 			if ( ! allRequired || ! upToDate ) {
-				$event.find( '.registration-status' ).css( 'background-color', '#5c0120' );
+				$event.find( obj.selector.status ).css( 'background-color', '#5c0120' );
 			} else {
-				$event.find( '.registration-status' ).css( 'background-color', '#444' );
-				$event.find( '.registration-status i' ).removeClass( 'dashicons-no-alt' );
-				$event.find( '.registration-status i' ).addClass( 'dashicons-yes' );
-				$event.find( '.tribe-block__tickets__item__attendee__fields' ).toggle();
+				$event.find( obj.selector.status ).css( 'background-color', '#444' );
+				$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-no-alt' );
+				$event.find( obj.selector.status ).find( 'i' ).addClass( 'dashicons-yes' );
+				$event.find( obj.selector.fields ).toggle();
 			}
 
 		});

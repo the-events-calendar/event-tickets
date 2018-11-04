@@ -32,8 +32,8 @@ body.page-tribe-attendee-registration .entry-content,
 	width: 98%;
 }
 
-.toggle-handler,
-.registration-status {
+.tribe-block__tickets__registration__toggle__handler,
+.tribe-block__tickets__registration__status {
 	position: absolute;
 	right: 40px;
 	top: 40px;
@@ -45,20 +45,20 @@ body.page-tribe-attendee-registration .entry-content,
 	line-height: 40px;
 }
 
-.toggle-handler i, .registration-status i {
+.tribe-block__tickets__registration__toggle__handler i, .tribe-block__tickets__registration__status i {
 	line-height: 30px;
 }
 
-.toggle-handler {
+.tribe-block__tickets__registration__toggle__handler {
 	cursor: pointer;
 	background: #999;
 }
 
-.toggle-handler.open {
+.tribe-block__tickets__registration__toggle__handler.open {
 	transform: rotate(180deg);
 }
 
-.registration-status {
+.tribe-block__tickets__registration__status {
 	right: 75px;
 	background: blue;
 }

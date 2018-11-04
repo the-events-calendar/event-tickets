@@ -8,12 +8,9 @@
 ?>
 <div class="tribe-block__tickets__registration__summary">
 
-	<div class="toggle-handler">
-		<i class="dashicons dashicons-arrow-up-alt2"></i>
-	</div>
-	<div class="registration-status">
-		<i class="dashicons dashicons-no-alt"></i>
-	</div>
+	<?php $this->template( 'summary/toggle-handler' ); ?>
+
+	<?php $this->template( 'summary/registration-status' ); ?>
 
 	<?php $this->template( 'summary/title', array( 'event_id' => $event_id ) ); ?>
 

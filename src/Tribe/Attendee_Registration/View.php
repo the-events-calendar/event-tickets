@@ -30,9 +30,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		}
 
 		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
-		$tickets      = array();
 		$events       = array();
-		$tick         = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Only include those who have meta
@@ -42,14 +40,22 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				continue;
 			}
 
-			$ticket     = get_post( $ticket_id );
-			$ticket_obj = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
-			$events[ $ticket_obj->event ][] = array( 'id' => $ticket_id, 'qty' => $quantity, 'provider' => $ticket_obj->provider );
-			for ( $i = 0; $i < $quantity; $i++ ) {
-				$tickets[] = $ticket;
-			}
+			// Load the tickets in cart for each event, with their ID, quantity and provider.
+			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
+			$events[ $ticket->event ][] = array( 'id' => $ticket_id, 'qty' => $quantity, 'provider' => $ticket->provider );
+
 		}
 
+		// Get required variables for the template
+		$checkout_url = tribe( 'tickets.attendee_registration' )->get_checkout_url();
+		$is_meta_up_to_date = (int) apply_filters( 'tribe_tickets_attendee_registration_is_meta_up_to_date', true );
+
+		// Set all the template variables
+		$args = array(
+			'events'       => $events,
+			'checkout_url' => $checkout_url,
+			'is_meta_up_to_date' => $is_meta_up_to_date,
+		);
 
 		// enqueue styles and scripts for this page
 		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
@@ -59,7 +65,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		/** @var Tribe__Tickets__Attendee_Registration__View $view */
 		$view     = tribe( 'tickets.attendee_registration.view' );
-		$template = $view->template( 'content', array( 'tickets' => $tickets, 'events' => $events ), false );
+		$template = $view->template( 'content', $args, false );
 
 		return $template;
 	}
