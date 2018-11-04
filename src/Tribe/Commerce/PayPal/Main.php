@@ -313,7 +313,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_tickets_get_default_module', array( $this, 'deprioritize_module' ), 5, 2 );
 
 		add_filter( 'tribe_tickets_tickets_in_cart', array( $this, 'get_tickets_in_cart' ), 10, 1 );
-		add_action( 'wp_loaded', array( $this, 'maybe_redirect_to_attendees_meta_screen' ), 1 );
+		add_action( 'wp_loaded', array( $this, 'maybe_redirect_to_attendees_registration_screen' ), 1 );
 		add_action( 'wp_loaded', array( $this, 'maybe_delete_expired_products' ), 0 );
 	}
 
@@ -2222,7 +2222,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @param string $redirect
 	 */
-	public function maybe_redirect_to_attendees_meta_screen( $redirect = null ) {
+	public function maybe_redirect_to_attendees_registration_screen( $redirect = null ) {
 		if ( ! $this->is_checkout_page() ) {
 			return;
 		}
@@ -2238,7 +2238,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
 		$redirect = base64_encode( $redirect );
 
-		parent::maybe_redirect_to_attendees_meta_screen( $redirect );
+		parent::maybe_redirect_to_attendees_registration_screen( $redirect );
 	}
 
 	public function is_checkout_page() {

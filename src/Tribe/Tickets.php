@@ -2357,7 +2357,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+			if ( tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 				return;
 			}
 
@@ -2397,6 +2397,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$url = tribe( 'tickets.attendee_registration' )->get_url();
 
+			$storage = new Tribe__Tickets_Plus__Meta__Storage();
 			if ( ! empty( $redirect ) ) {
 				$key = $storage->store_temporary_data( $redirect );
 				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key ), $url );
