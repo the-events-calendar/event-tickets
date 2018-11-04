@@ -15,7 +15,7 @@ tribe.tickets.registration = {};
 	obj.selector = {
 		container : '.tribe-block__tickets__registration',
 		fields    : '.tribe-block__tickets__item__attendee__fields',
-		toggler   : '.tribe-block__tickets__registration__toggle__handler',//'.toggle-handler',
+		toggler   : '.tribe-block__tickets__registration__toggle__handler',
 		status    : '.tribe-block__tickets__registration__status',
 	};
 

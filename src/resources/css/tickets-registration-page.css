@@ -80,7 +80,7 @@ body.page-tribe-attendee-registration .entry-content,
 	padding-bottom: 40px;
 }
 
-.tribe-block__tickets__item__attendee__fields .tribe-ticket:last-child {
+.tribe-block__tickets__item__attendee__fields .tribe-ticket:last-of-type {
 	margin-bottom: 0;
 	border-bottom: 0;
 }
