@@ -47,13 +47,13 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		}
 
 		// Get required variables for the template
-		$checkout_url = tribe( 'tickets.attendee_registration' )->get_checkout_url();
+		$checkout_url       = tribe( 'tickets.attendee_registration' )->get_checkout_url();
 		$is_meta_up_to_date = (int) apply_filters( 'tribe_tickets_attendee_registration_is_meta_up_to_date', true );
 
 		// Set all the template variables
 		$args = array(
-			'events'       => $events,
-			'checkout_url' => $checkout_url,
+			'events'             => $events,
+			'checkout_url'       => $checkout_url,
 			'is_meta_up_to_date' => $is_meta_up_to_date,
 		);
 
