@@ -59,6 +59,8 @@ tribe.tickets.registration = {};
 
 			var required    = $event.find( 'input, textarea, select' ).filter( '[required]:visible' );
 			var allRequired = true;
+			var upToDate    = $event.data( 'is-meta-up-to-date' );
+			console.log( upToDate );
 			required.each( function() {
 				var $field = $( this );
 
@@ -67,7 +69,7 @@ tribe.tickets.registration = {};
 				}
 			});
 
-			if ( ! allRequired ) {
+			if ( ! allRequired || ! upToDate ) {
 				$event.find( '.registration-status' ).css( 'background-color', '#5c0120' );
 			} else {
 				$event.find( '.registration-status' ).css( 'background-color', '#444' );
