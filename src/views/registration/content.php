@@ -5,13 +5,6 @@
  * @version TBD
  *
  */
-if (
-	! class_exists( 'Tribe__Tickets_Plus__Meta' )
-	|| ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' )
-) {
-	return;
-}
-
 // If there are no events with tickets in cart, print the empty cart template
 if ( empty( $events ) ) {
 	$this->template( 'cart-empty' );
@@ -40,6 +33,8 @@ if ( empty( $events ) ) {
 		</div>
 
 	</div>
+
+	<?php $this->template( 'button-cart', array( 'event_id' => $event_id ) ); ?>
 
 <?php endforeach; ?>
 

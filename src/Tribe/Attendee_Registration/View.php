@@ -42,7 +42,14 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
-			$events[ $ticket->event ][] = array( 'id' => $ticket_id, 'qty' => $quantity, 'provider' => $ticket->provider );
+
+			$ticket_data = array(
+				'id'       => $ticket_id,
+				'qty'      => $quantity,
+				'provider' => $ticket->provider,
+			);
+
+			$events[ $ticket->event ][] = $ticket_data;
 
 		}
 
@@ -68,5 +75,28 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$template = $view->template( 'content', $args, false );
 
 		return $template;
+	}
+
+	/**
+	 * Get the provider Cart URL
+	 * by post id (event)
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id
+	 * @return string
+	 */
+	public function get_cart_url( $post_id ) {
+
+		$post_provider = get_post_meta( $post_id, '_tribe_default_ticket_provider', true );
+
+		if ( '' === $post_provider ) {
+			return false;
+		}
+
+		$provider = new $post_provider;
+
+		return $provider->get_cart_url();
+
 	}
 }
