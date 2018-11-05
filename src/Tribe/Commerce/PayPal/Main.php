@@ -2209,6 +2209,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 		delete_transient( $this->get_current_cart_transient() );
+
+		// Bail if ET+ is not in place
+		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
+			return;
+		}
+
 		$storage = new Tribe__Tickets_Plus__Meta__Storage();
 		$storage->delete_cookie();
 	}
