@@ -72,9 +72,9 @@ tribe.tickets.registration = {};
 			});
 
 			if ( ! allRequired || ! upToDate ) {
-				$event.find( obj.selector.status ).css( 'background-color', '#5c0120' );
+				$event.find( obj.selector.status ).addClass( 'incomplete' );
 			} else {
-				$event.find( obj.selector.status ).css( 'background-color', '#444' );
+				$event.find( obj.selector.status ).removeClass( 'incomplete' );
 				$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-no-alt' );
 				$event.find( obj.selector.status ).find( 'i' ).addClass( 'dashicons-yes' );
 				$event.find( obj.selector.fields ).toggle();

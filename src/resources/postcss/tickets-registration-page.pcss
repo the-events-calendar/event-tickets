@@ -44,7 +44,7 @@ body.page-tribe-attendee-registration {
 
 .tribe-block__tickets__registration__toggle__handler {
 	cursor: pointer;
-	background: #999;
+	background: #c9c9c9;
 
 	&.open {
 		transform: rotate(180deg);
@@ -53,7 +53,11 @@ body.page-tribe-attendee-registration {
 
 .tribe-block__tickets__registration__status {
 	right: 75px;
-	background: blue;
+	background: #222;
+
+	&.incomplete {
+		background: #5c0120;
+	}
 }
 
 /*
@@ -189,6 +193,9 @@ body.page-tribe-attendee-registration {
 	h2 {
 		font-size: 22px;
 		font-weight: 500;
+		a {
+			color: #03A0d4;
+		}
 	}
 }
 
