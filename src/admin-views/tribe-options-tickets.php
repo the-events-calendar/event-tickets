@@ -67,7 +67,6 @@ $tickets_fields = array(
 /**
  * Add an option to define slug for attendee info page
  * @since TBD
- * @TODO: Check if this goes in ET+
  */
 $tickets_fields = array_merge( $tickets_fields, array(
 		'ticket-attendee-info-slug' => array(
