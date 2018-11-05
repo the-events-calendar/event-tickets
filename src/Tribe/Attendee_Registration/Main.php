@@ -64,9 +64,10 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_checkout_url() {
-	/**
-	 * Gets the attendee registration checkout URL
-	 */
+		/**
+		 * Gets the attendee registration checkout URL
+		 * @since TBD
+		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
 
 		return $checkout_url;
