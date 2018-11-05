@@ -35,6 +35,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Gets the URL for the attendee registration page
 	 *
+	 * @since TBD
 	 * @return string
 	 */
 	public function get_url() {
@@ -43,6 +44,12 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		return home_url( "/{$slug}/" );
 	}
 
+	/**
+	 * Gets the URL for the checkout url
+	 *
+	 * @since TBD
+	 * @return string
+	 */
 	public function get_checkout_url() {
 	/**
 	 * Gets the attendee registration checkout URL
