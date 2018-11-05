@@ -88,7 +88,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 */
 	public function get_cart_url( $post_id ) {
 
-		$post_provider = get_post_meta( $post_id, '_tribe_default_ticket_provider', true );
+		$post_provider = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field, true );
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' !== $post_provider ) {
 			return false;
