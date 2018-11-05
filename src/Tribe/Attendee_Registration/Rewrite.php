@@ -90,7 +90,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 		$tickets = tribe( 'tickets.main' );
 
 		/**
-		 * If you want to modify the base slugs before the i18n happens filter this use this filter
+		 * If you want to modify the base slugs before the i18n happens, use this filter
 		 * All the bases need to have a key and a value, they might be the same or not.
 		 *
 		 * Each value is an array of possible slugs: to improve robustness the "original" English

@@ -2291,7 +2291,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 
 		/**
-		 * Parent method to be pass to any child of this class.
+		 * Get currency symbol
 		 *
 		 * @since 4.7.1
 		 *
@@ -2322,7 +2322,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $tickets;
 		}
 
-			/**
+		/**
 		 * Return whether we're currently on the checkout page for this Merchant.
 		 *
 		 * @since TBD

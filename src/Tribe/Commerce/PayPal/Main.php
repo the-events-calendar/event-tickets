@@ -2247,6 +2247,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		parent::maybe_redirect_to_attendees_registration_screen( $redirect );
 	}
 
+	/**
+	 * Returns if it's TPP checkout based on the redirect query var
+	 *
+	 * @since TBD
+	 *
+	 * @param bool
+	 */
 	public function is_checkout_page() {
 		if ( is_admin() ) {
 			return false;

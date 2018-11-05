@@ -525,7 +525,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
 
-		// Parse the defails submitted for the RSVP
+		// Parse the details submitted for the RSVP
 		$attendee_details = $this->parse_attendee_details();
 
 		// If there are details missing, we return to the event page with the rsvp_error

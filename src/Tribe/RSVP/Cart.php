@@ -75,6 +75,7 @@ class Tribe__Tickets__RSVP__Cart {
 	 * Checks if the ticket is RSVP
 	 *
 	 * @since TBD
+	 * @param int $ticket_id
 	 * @return boolean
 	 */
 	public function is_ticket_rsvp( $ticket_id = 0 ) {
@@ -87,8 +88,11 @@ class Tribe__Tickets__RSVP__Cart {
 	/**
 	 * Add to cart
 	 *
-	 *
 	 * @since TBD
+	 *
+	 * @param  int   $ticket_id The ticket ID we want to add
+	 * @param  array $options Array with quantity and RSVP details
+	 *
 	 * @return array $cart Updated cart object
 	 */
 	public function add( $ticket_id, $options = array() ) {
@@ -108,8 +112,6 @@ class Tribe__Tickets__RSVP__Cart {
 
 		// Use a temprary var for the checks/additions
 		$cart = $this->contents;
-
-		// @todo: Check that we can add the quantity that they are asking to
 
 		// Add the quantity to the cart
 		if ( ! isset( $this->contents[ $ticket_id ] ) ) {
@@ -137,7 +139,8 @@ class Tribe__Tickets__RSVP__Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param  int $ticket_id
+	 * @param  int $quantity the quantity they want to remove
  	 * @return array Updated cart contents
 	 */
 	public function remove( $ticket_id, $quantity = 0 ) {
@@ -205,8 +208,7 @@ class Tribe__Tickets__RSVP__Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $ticket_id Download ID of the item to check.
- 	 * @param array $options
+	 * @param int   $ticket_id the ticket id we want to check if in the cart
 	 * @return bool
 	 */
 	public function has_item( $ticket_id = 0 ) {
@@ -218,9 +220,8 @@ class Tribe__Tickets__RSVP__Cart {
 	 *
 	 * @since TBD
 	 *
-	 * @param int   $download_id Download ID of the item
- 	 * @param array $options
-	 * @return int Numerical index of the position of the item in the cart
+	 * @param  int   $ticket_id The ticket id
+	 * @return int   Number of times that ticket is in the cart
 	 */
 	public function get_item_quantity( $ticket_id = 0 ) {
 		return isset( $this->contents[ $ticket_id ] ) ? $this->contents[ $ticket_id ]['quantity'] : 0;

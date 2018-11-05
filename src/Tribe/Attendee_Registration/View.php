@@ -20,6 +20,8 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Display the Attendee Info page when the correct permalink is loaded.
 	 *
 	 * @since TBD
+	 * @param string $content The original page|post content
+	 * @return srting $template The resulting template content
 	 */
 	public function display_attendee_registration_page( $content = '' ) {
 		global $wp_query;
@@ -78,13 +80,13 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	}
 
 	/**
-	 * Get the provider Cart URL
-	 * by post id (event)
+	 * Get the provider Cart URL if WooCommerce is the provider.
+	 * Checkes the provider by post id (event)
 	 *
 	 * @since TBD
 	 *
 	 * @param int $post_id
-	 * @return string
+	 * @return bool|string
 	 */
 	public function get_cart_url( $post_id ) {
 
