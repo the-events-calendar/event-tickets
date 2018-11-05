@@ -58,13 +58,18 @@ body.page-tribe-attendee-registration .entry-content,
 	transform: rotate(180deg);
 }
 
+.tribe-block__tickets__registration__toggle__handler i {
+	font-size: 14px;
+}
+
 .tribe-block__tickets__registration__status {
 	right: 75px;
 	background: #222;
 }
 
 .tribe-block__tickets__registration__status.incomplete {
-	background: #5c0120;
+	background: transparent;
+	color: #333;
 }
 
 /*
@@ -191,8 +196,8 @@ body.page-tribe-attendee-registration .entry-content,
 	Tickets Registration/Purchase
 */
 
-.tribe-block__tickets__registration {
-	border: 1px solid #e1e3e6;
+.tribe-block__tickets__registration__event {
+	border: 1px solid #d4d4d5;
 	margin-bottom: 30px;
 	position: relative;
 }
@@ -206,9 +211,7 @@ body.page-tribe-attendee-registration .entry-content,
 	font-weight: 500;
 }
 
-.tribe-block__tickets__registration__title h2 a {
-	color: #03A0d4;
-}
+.tribe-block__tickets__registration__title h2 a {}
 
 .tribe-block__tickets__registration__description {
 	margin-top: 10px;
@@ -260,5 +263,47 @@ body.page-tribe-attendee-registration .entry-content,
 .tribe-block__tickets__registration__tickets__item__price {
 	-ms-flex: 0 1 40px;
 	    flex: 0 1 40px;
-	padding: 20px 10px;
+	padding: 20px 0 20px 10px;
+}
+
+.tribe-block__tickets__registration__actions {
+	padding: 0px 40px 40px 40px;
+}
+
+.tribe-block__tickets__registration__back__to__cart {
+	color: #888;
+	box-shadow: none;
+	box-shadow: initial;
+	border: 0;
+}
+
+.tribe-block__tickets__registration__back__to__cart:before {
+	font-family: 'dashicons';
+	margin-right: 5px;
+	content: '\f341';
+	vertical-align: middle;
+}
+
+body.tribe-theme-twentyseventeen .tribe-block__tickets__registration__back__to__cart {
+	box-shadow: none;
+	box-shadow: initial;
+}
+
+.tribe-block__tickets__registration__tickets__header {
+	color: #545B65;
+	display: -ms-flexbox;
+	display: flex;
+	font-size: 13px;
+	padding: 15px 0;
+}
+
+.tribe-block__tickets__registration__tickets__header__summary {
+	-ms-flex: 80%;
+	    flex: 80%;
+}
+
+.tribe-block__tickets__registration__tickets__header__price {
+	-ms-flex: 20%;
+	    flex: 20%;
+	text-align: right;
 }

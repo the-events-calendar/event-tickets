@@ -13,7 +13,7 @@ tribe.tickets.registration = {};
 	'use strict';
 
 	obj.selector = {
-		container : '.tribe-block__tickets__registration',
+		container : '.tribe-block__tickets__registration__event',
 		fields    : '.tribe-block__tickets__item__attendee__fields',
 		toggler   : '.tribe-block__tickets__registration__toggle__handler',
 		status    : '.tribe-block__tickets__registration__status',
@@ -61,8 +61,6 @@ tribe.tickets.registration = {};
 
 			var required    = $event.find( 'input, textarea, select' ).filter( '[required]:visible' );
 			var allRequired = true;
-			var upToDate    = $event.data( 'is-meta-up-to-date' );
-			console.log( upToDate );
 			required.each( function() {
 				var $field = $( this );
 
@@ -71,7 +69,7 @@ tribe.tickets.registration = {};
 				}
 			});
 
-			if ( ! allRequired || ! upToDate ) {
+			if ( ! allRequired ) {
 				$event.find( obj.selector.status ).addClass( 'incomplete' );
 			} else {
 				$event.find( obj.selector.status ).removeClass( 'incomplete' );
