@@ -64,7 +64,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite
 	 */
 	public function generate_core_rules( Tribe__Tickets__Attendee_Registration__Rewrite $rewrite ) {
-		$rewrite->add( array( '{{ ' . Tribe__Tickets__Attendee_Registration__Main::QUERY_VAR . ' }}' ), array( Tribe__Tickets__Attendee_Registration__Main::QUERY_VAR => 1 ) );
+		$rewrite->add( array( '{{ ' . tribe( 'tickets.attendee_registration' )->key_query_var . ' }}' ), array( tribe( 'tickets.attendee_registration' )->key_query_var => 1 ) );
 	}
 
 	/**
@@ -73,7 +73,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * @since TBD
 	 */
 	public function add_rewrite_tags() {
-		add_rewrite_tag( '%' . Tribe__Tickets__Attendee_Registration__Main::QUERY_VAR . '%', '([^&]+)' );
+		add_rewrite_tag( '%' . tribe( 'tickets.attendee_registration' )->key_query_var . '%', '([^&]+)' );
 	}
 
 	/**

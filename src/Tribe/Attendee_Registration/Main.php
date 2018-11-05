@@ -5,8 +5,21 @@
  * @since TBD
  */
 class Tribe__Tickets__Attendee_Registration__Main {
-	const QUERY_VAR = 'attendee-registration';
-	const DEFAULT_PAGE_SLUG = 'attendee-registration';
+	/**
+	 * The query var
+	 *
+	 * @since TBD
+	 *
+	 */
+	public $key_query_var = 'attendee-registration';
+
+	/**
+	 * Default attendee registration slug
+	 *
+	 * @since TBD
+	 *
+	 */
+	public $default_page_slug = 'attendee-registration';
 
 	/**
 	 * Retrieve the attendee registration slug
@@ -16,7 +29,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_slug() {
-		return Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', self::DEFAULT_PAGE_SLUG );
+		return Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
 	}
 
 	/**
@@ -29,7 +42,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		return ! empty( $wp_query->query_vars[ self::QUERY_VAR ] );
+		return ! empty( $wp_query->query_vars[ $this->key_query_var ] );
 	}
 
 	/**
