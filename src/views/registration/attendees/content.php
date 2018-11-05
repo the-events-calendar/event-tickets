@@ -5,23 +5,24 @@
  * @version TBD
  *
  */
-
-if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
-    return;
+if (
+	! class_exists( 'Tribe__Tickets_Plus__Meta' )
+	|| ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' )
+) {
+	return;
 }
 
-$storage           = new Tribe__Tickets_Plus__Meta__Storage();
-$meta              = tribe( 'tickets-plus.main' )->meta();
-$current_ticket_id = 0;
-$i                 = 0;
+$storage = new Tribe__Tickets_Plus__Meta__Storage();
+$meta    = tribe( 'tickets-plus.main' )->meta();
 ?>
 
 <?php foreach ( $tickets as $ticket ) : ?>
 	<?php
-	$j = 0;
+	$j    = 0;
 	$post = get_post( $ticket['id'] );
 	?>
 	<h3 class="tribe-ticket__heading"><?php echo get_the_title( $post->ID ); ?></h3>
+	<?php // go through each attendee ?>
 	<?php while ( $j < $ticket['qty'] ) : ?>
 		<?php
  			/**
