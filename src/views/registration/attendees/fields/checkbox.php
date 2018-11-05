@@ -37,7 +37,7 @@ if ( ! $options ) {
 					type="checkbox"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					class="ticket-meta"
-					name="tribe-tickets-meta[<?php echo $attendee_id ?>][<?php echo esc_attr( $slug ); ?>]"
+					name="tribe-tickets-meta[<?php echo esc_attr( $attendee_id ) ?>][<?php echo esc_attr( $slug ); ?>]"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( true, in_array( $slug, $value ) ); ?>
 					<?php disabled( $is_restricted ); ?>>

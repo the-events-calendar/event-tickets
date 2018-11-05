@@ -36,19 +36,19 @@ $slug          = $field['slug'];
 			$option_slug = sanitize_title( $option );
 			$option_id   = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			?>
-            <label for="<?php echo esc_attr( $option_id ); ?>" class="tribe-tickets-meta-field-header">
-                <input
-                    type="radio"
-                    id="<?php echo esc_attr( $option_id ); ?>"
-                    class="ticket-meta"
-                    name="tribe-tickets-meta[<?php echo $attendee_id ?>][<?php echo esc_attr( $slug ); ?>]"
-                    value="<?php echo esc_attr( $option ); ?>"
+			<label for="<?php echo esc_attr( $option_id ); ?>" class="tribe-tickets-meta-field-header">
+				<input
+					type="radio"
+					id="<?php echo esc_attr( $option_id ); ?>"
+					class="ticket-meta"
+					name="tribe-tickets-meta[<?php echo esc_attr( $attendee_id ) ?>][<?php echo esc_attr( $slug ); ?>]"
+					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( $option, $value ); ?>
 					<?php disabled( $is_restricted ); ?>>
-                <span class="tribe-tickets-meta-option-label">
+				<span class="tribe-tickets-meta-option-label">
 					<?php echo wp_kses_post( $option ); ?>
 				</span>
-            </label>
+			</label>
 			<?php
 		}
 		?>

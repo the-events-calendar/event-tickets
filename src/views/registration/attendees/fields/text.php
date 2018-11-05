@@ -19,19 +19,19 @@ $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][
 	<label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
 	<?php if ( $multiline ) : ?>
 		<textarea
-            id="<?php echo esc_attr( $option_id ); ?>"
-            name="<?php echo $field_name; ?>"
+			id="<?php echo esc_attr( $option_id ); ?>"
+			name="<?php echo esc_attr( $field_name ); ?>"
 			<?php echo $required ? 'required' : ''; ?>
 			<?php disabled( $is_restricted ); ?>>
-            <?php echo esc_textarea( $value ); ?>
+			<?php echo esc_textarea( $value ); ?>
         </textarea>
 	<?php else : ?>
 		<input
-            type="text"
-            id="<?php echo esc_attr( $option_id ); ?>"
-            name="<?php echo $field_name; ?>"
-            value="<?php echo esc_attr( $value ); ?>"
-            <?php echo $required ? 'required' : ''; ?>
-            <?php disabled( $is_restricted ); ?>>
+			type="text"
+			id="<?php echo esc_attr( $option_id ); ?>"
+			name="<?php echo esc_attr( $field_name ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			<?php echo $required ? 'required' : ''; ?>
+			<?php disabled( $is_restricted ); ?>>
 	<?php endif; ?>
 </div>
