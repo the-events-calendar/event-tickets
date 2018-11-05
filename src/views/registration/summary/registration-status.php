@@ -7,5 +7,5 @@
  */
 ?>
 <div class="tribe-block__tickets__registration__status">
-	<i class="dashicons dashicons-no-alt"></i>
+	<i class="dashicons dashicons-edit"></i>
 </div>
