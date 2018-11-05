@@ -2380,8 +2380,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			// @todo: use this filter to hook on from ET+ - document
-			$maybe_redirect = apply_filters( 'tribe_tickets_maybe_redirect_attendee_registration', $tickets_in_cart );
 			$up_to_date     = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
 
 			// Bail If things are up to date and they haven't submitted the form to access the registration page.
