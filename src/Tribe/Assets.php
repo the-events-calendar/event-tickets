@@ -6,10 +6,10 @@ class Tribe__Tickets__Assets {
 	 * @since 4.6
 	 */
 	public function enqueue_scripts() {
-		$tickets = Tribe__Tickets__Main::instance();
+		$tickets_main = Tribe__Tickets__Main::instance();
 
 		tribe_assets(
-			$tickets,
+			$tickets_main,
 			array(
 				array( 'event-tickets-tickets-css', 'tickets.css', array( 'dashicons' ) ),
 				array( 'event-tickets-tickets-rsvp-css', 'rsvp.css', array() ),
@@ -21,7 +21,7 @@ class Tribe__Tickets__Assets {
 
 		// Tickets registration page styles
 		tribe_asset(
-			$tickets,
+			$tickets_main,
 			'event-tickets-registration-page-styles',
 			'tickets-registration-page.css',
 			array(),
@@ -31,7 +31,7 @@ class Tribe__Tickets__Assets {
 
 		// Tickets registration page scripts
 		tribe_asset(
-			$tickets,
+			$tickets_main,
 			'event-tickets-registration-page-scripts',
 			'tickets-registration-page.js',
 			array(),
