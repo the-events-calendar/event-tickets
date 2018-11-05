@@ -90,7 +90,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		$post_provider = get_post_meta( $post_id, '_tribe_default_ticket_provider', true );
 
-		if ( '' === $post_provider ) {
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' !== $post_provider ) {
 			return false;
 		}
 

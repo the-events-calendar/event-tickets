@@ -7,7 +7,7 @@
  */
 $cart_url = $this->get_cart_url( $event_id );
 ?>
-<?php if ( ! empty( $cart_url ) ): ?>
+<?php if ( $cart_url ) : ?>
 	<a
 		href="<?php echo esc_url( $cart_url ); ?>"
 		class="tribe-block__tickets__registration__back__to__cart"
