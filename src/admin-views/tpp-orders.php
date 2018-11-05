@@ -60,7 +60,10 @@
 
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
-					<h3><?php esc_html_e( 'Sales by Ticket', 'event-tickets' ); ?></h3>
+					<h3>
+						<?php esc_html_e( 'Sales by Ticket', 'event-tickets' ); ?>
+						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
+					</h3>
 					<?php
 					/** @var Tribe__Tickets__Ticket_Object $ticket_sold */
 					foreach ( $tickets_sold as $ticket_sold ) {
@@ -111,17 +114,70 @@
 					}; ?>
 
 					<div class="totals-header">
-						<h3><?php echo esc_html( sprintf( __( 'Total Sales: %s %s', 'event-tickets' ), esc_html( tribe_format_currency( number_format( $post_revenue, 2 ), $post_id ) ), $total_sold ) ); ?></h3>
+						<h3>
+							<?php
+							$completed_status = $order_overview->get_completed_status_class();
+							$totals_header = sprintf(
+								'%1$s: %2$s (%3$s)',
+								__( 'Total Sales', 'event-tickets-plus' ),
+								tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ),
+								$completed_status->get_qty()
+							);
+							echo esc_html( $totals_header );
+							echo $order_overview->get_total_sale_tooltip();
+							?>
+						</h3>
+
+						<div class="order-total">
+							<?php
+							$totals_header = sprintf(
+								'%1$s: %2$s (%3$s)',
+								__( 'Total Orders', 'event-tickets' ),
+								tribe_format_currency( number_format( $order_overview->get_line_total(), 2 ), $post_id ),
+								$order_overview->get_qty()
+							);
+							echo esc_html( $totals_header );
+							echo $order_overview->get_total_order_tooltip();
+							?>
+						</div>
 					</div>
 
 					<div id="sales_breakdown_wrapper" class="tribe-event-meta-note">
-						<?php foreach ( $tickets_breakdown as $status_label => $details ) : ?>
+
+						<?php
+						/**
+						 * Add Completed Status First and Skip in Loop
+						 */
+						?>
+						<div>
+							<strong><?php esc_html_e( 'Completed', 'event-tickets-plus' ); ?>:</strong>
+							<?php echo esc_html( tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ) ); ?>
+							<span id="total_issued">(<?php echo esc_html( $completed_status->get_qty() ); ?>)</span>
+						</div>
+
+						<?php
+						foreach ( $order_overview->statuses as $provider_key => $status ) {
+
+							// skip the completed order as we always display it above
+							if ( $order_overview->completed_status_id === $provider_key ) {
+								continue;
+							}
+
+							// do not show status if no tickets
+							if ( 0 >= (int) $status->get_qty() ) {
+								continue;
+							}
+							?>
 							<div>
-								<strong><?php echo esc_html( $status_label ); ?></strong>
-								<?php echo esc_html( tribe_format_currency( number_format( $details['total'], 2 ), $post_id ) ); ?>
-								<span>(<?php echo esc_html( $details['qty'] ); ?>)</span>
+								<strong><?php esc_html_e( $status->name, 'event-tickets-plus' ); ?>:</strong>
+								<?php echo esc_html( tribe_format_currency( number_format( $status->get_line_total(), 2 ), $post_id ) ); ?>
+								<span id="total_issued">(<?php echo esc_html( $status->get_qty() ); ?>)</span>
 							</div>
-						<?php endforeach; ?>
+							<?php
+
+						}
+						?>
+
 					</div>
 				</div>
 			</div>

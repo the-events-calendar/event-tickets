@@ -92,7 +92,15 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		$this->_line_total -= $value;
 	}
 
-	public function ticket_sale( $ticket_sold, $event_id ) {
+	/**
+	 * Get Ticket Sale Infomation Overview
+	 *
+	 * @param $ticket_sold
+	 * @param $event_id
+	 *
+	 * @return string
+	 */
+	public function get_ticket_sale_infomation( $ticket_sold, $event_id ) {
 
 		ob_start();
 		?>
@@ -108,8 +116,15 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 	}
 
+	/**
+	 * Get Name of Ticket, SKU, Price, and Amount Sold
+	 *
+	 * @param $ticket_sold
+	 * @param $event_id
+	 *
+	 * @return string
+	 */
 	public function get_name_and_sold_for_ticket( $ticket_sold, $event_id ) {
-
 
 		$sold_message = ! $ticket_sold['has_stock'] ?
 			$sold_message = sprintf( __( 'Sold %d', 'event-tickets-plus' ), esc_html( $ticket_sold['sold'] ) ) :
@@ -133,6 +148,13 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 	}
 
+	/**
+	 * Get the Available and Incomplete Counts for a Ticket
+	 *
+	 * @param $ticket_sold
+	 *
+	 * @return bool|string
+	 */
 	public function get_available_incomplete_counts_for_ticket( $ticket_sold ) {
 
 		$availability = array();
@@ -155,6 +177,44 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		return '<div>' . implode( ', ', array_map('esc_html', $availability ) ) . '</div>';
 
+	}
 
+	public function get_sale_by_ticket_tooltip() {
+		ob_start();
+		?>
+		<div class="tribe-tooltip" aria-expanded="false">
+			<span class="dashicons dashicons-info"></span>
+			<div class="down">
+				<?php echo esc_html__( 'Sold counts completed orders only.', 'event-tickets-plus' ); ?><i></i>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	public function get_total_sale_tooltip() {
+		ob_start();
+		?>
+		<div class="tribe-tooltip" aria-expanded="false">
+			<span class="dashicons dashicons-info"></span>
+			<div class="down">
+				<?php echo esc_html__( 'Total Sales counts all completed orders.', 'event-tickets-plus' ); ?><i></i>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	public function get_total_order_tooltip() {
+		ob_start();
+		?>
+		<div class="tribe-tooltip" aria-expanded="false">
+			<span class="dashicons dashicons-info"></span>
+			<div class="down">
+				<?php echo esc_html__( 'Total Orders counts orders of any status, including pending and refunded.', 'event-tickets-plus' ); ?><i></i>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
 	}
 }

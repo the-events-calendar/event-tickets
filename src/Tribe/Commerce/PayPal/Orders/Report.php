@@ -255,10 +255,30 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$post_revenue        = $sales->get_revenue_for_tickets( $tickets_sold );
 		$total_sold          = $sales->get_sales_for_tickets( $tickets );
+		$total_orders        = $sales->get_orders_for_post( $post_id );
 		$total_completed     = count( $sales->filter_completed( $attendees ) );
 		$total_not_completed = count( $sales->filter_not_completed( $attendees ) );
 
-		$tickets_breakdown = $sales->get_tickets_breakdown_for( $paypal_tickets );
+		$order_overview      = tribe( 'tickets.status' )->get_providers_status_classes( 'tpp' );
+		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'tpp' );
+		$tickets_breakdown   = $sales->get_tickets_breakdown_for( $paypal_tickets );
+
+		//update ticket item counts by order status
+		foreach ( $total_orders as $order ) {
+
+			if ( $order['status'] && isset( $order['items'][1] )  ) {
+
+				if( in_array( $order['status_label'], $incomplete_statuses ) ) {
+					//$tickets_sold[ $ticket->name ]['incomplete'] += $product[0]->_qty;
+				}
+
+				$order_overview->statuses[ $order['status_label']]->add_qty($order['items'][1]['quantity']);
+				$order_overview->statuses[ $order['status_label']]->add_line_total($order['items'][1]['mc_gross']);
+				$order_overview->add_qty($order['items'][1]['quantity']);
+				$order_overview->add_line_total($order['items'][1]['mc_gross']);
+
+			}
+		}
 
 		$post_type_object = get_post_type_object( $post->post_type );
 

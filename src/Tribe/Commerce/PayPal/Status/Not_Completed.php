@@ -14,8 +14,9 @@ class Tribe__Tickets__Commerce__PayPal__Status__Not_Completed extends Tribe__Tic
 	public $provider_name = 'not-completed';
 	public $post_type     = 'tribe_tpp_orders';
 
-	public $incomplete     = true;
-	public $warning        = true;
+	public $count_incomplete = true;
+	public $incomplete       = true;
+	public $warning          = true;
 
 	//post status fields for tpp
 	public $public                    = true;
