@@ -23,4 +23,4 @@
 
 	<p><?php printf( $text, $link ); ?></p>
 
-<?php endif; ?>
+<?php endif;
