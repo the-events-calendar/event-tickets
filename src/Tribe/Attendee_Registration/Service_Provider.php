@@ -24,12 +24,12 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 */
 	protected function hooks() {
 
-		add_action( 'plugins_loaded', array( tribe( 'tickets.attendee_registration.template' ), 'hook' ) );
-		add_action( 'tribe_tickets_pre_rewrite', array( tribe( 'tickets.attendee_registration.rewrite' ), 'generate_core_rules' ) );
-		add_action( 'init', array( tribe( 'tickets.attendee_registration.rewrite' ), 'add_rewrite_tags' ) );
-		add_filter( 'generate_rewrite_rules', array( tribe( 'tickets.attendee_registration.rewrite' ), 'filter_generate' ) );
-		add_filter( 'rewrite_rules_array', array( tribe( 'tickets.attendee_registration.rewrite' ), 'remove_percent_placeholders' ), 25 );
-		add_filter( 'tribe_tickets_commerce_paypal_add_to_cart_args', array( tribe( 'tickets.attendee_registration.meta' ), 'add_product_delete_to_paypal_url' ), 10, 1 );
+		add_action( 'plugins_loaded', tribe_callback( 'tickets.attendee_registration.template', 'hook' ) );
+		add_action( 'tribe_tickets_pre_rewrite', tribe_callback( 'tickets.attendee_registration.rewrite', 'generate_core_rules' ) );
+		add_action( 'init', tribe_callback( 'tickets.attendee_registration.rewrite', 'add_rewrite_tags' ) );
+		add_filter( 'generate_rewrite_rules', tribe_callback( 'tickets.attendee_registration.rewrite', 'filter_generate' ) );
+		add_filter( 'rewrite_rules_array', tribe_callback( 'tickets.attendee_registration.rewrite', 'remove_percent_placeholders' ), 25 );
+		add_filter( 'tribe_tickets_commerce_paypal_add_to_cart_args', tribe_callback( 'tickets.attendee_registration.meta', 'add_product_delete_to_paypal_url' ), 10, 1 );
 	}
 
 }
