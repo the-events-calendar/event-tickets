@@ -36,4 +36,4 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 			$j++;
 		?>
 	<?php endwhile; ?>
-<?php endforeach; ?>
+<?php endforeach;

@@ -14,4 +14,4 @@ $cart_url = $this->get_cart_url( $event_id );
 	>
 		<?php esc_html_e( 'Back to cart', 'event-tickets' ); ?>
 	</a>
-<?php endif; ?>
+<?php endif;

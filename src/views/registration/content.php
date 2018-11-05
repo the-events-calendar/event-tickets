@@ -40,4 +40,4 @@ if ( empty( $events ) ) {
 
 <?php endforeach; ?>
 
-<?php $this->template( 'button-checkout', array( 'checkout_url' => $checkout_url ) ); ?>
+<?php $this->template( 'button-checkout', array( 'checkout_url' => $checkout_url ) );
