@@ -17,7 +17,8 @@
     "spatie/phpunit-snapshot-assertions": "^1.2",
     "site5/phantoman": "^2.0",
     "jakoch/phantomjs-installer": "^2.1",
-    "fzaninotto/faker": "^1.7"
+    "fzaninotto/faker": "^1.7",
+    "codeception/phpunit-wrapper": "6.0.10"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,
