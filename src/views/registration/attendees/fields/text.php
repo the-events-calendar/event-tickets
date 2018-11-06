@@ -30,5 +30,6 @@ $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php echo $required ? 'required' : ''; ?>
+		/>
 	<?php endif; ?>
 </div>
