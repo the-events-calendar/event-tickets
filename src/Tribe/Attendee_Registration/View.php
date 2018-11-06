@@ -31,6 +31,13 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			return $content;
 		}
 
+		/**
+		 * Filter to add/remove tickets from the global cart
+		 *
+		 * @since TDB
+		 *
+		 * @param array  The array containing the cart elements. Format arrat( 'ticket_id' => 'quantity' );
+		 */
 		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
 		$events       = array();
 
@@ -55,11 +62,21 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		}
 
-		// Get required variables for the template
+		// Get the checkout URL, it'll be added to the checkout button
 		$checkout_url       = tribe( 'tickets.attendee_registration' )->get_checkout_url();
+
+		/**
+		 * Filter to check if there's any required meta that wasn't filled in
+		 *
+		 * @since TDB
+		 *
+		 * @param bool
+		 */
 		$is_meta_up_to_date = (int) apply_filters( 'tribe_tickets_attendee_registration_is_meta_up_to_date', true );
 
-		// Set all the template variables
+		/**
+		 *  Set all the template variables
+		 */
 		$args = array(
 			'events'             => $events,
 			'checkout_url'       => $checkout_url,
@@ -81,7 +98,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 	/**
 	 * Get the provider Cart URL if WooCommerce is the provider.
-	 * Checkes the provider by post id (event)
+	 * Checks the provider by post id (event)
 	 *
 	 * @since TBD
 	 *
@@ -99,6 +116,5 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$provider = new $post_provider;
 
 		return $provider->get_cart_url();
-
 	}
 }

@@ -2252,7 +2252,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param bool
+	 * @return bool
 	 */
 	public function is_checkout_page() {
 		if ( is_admin() ) {

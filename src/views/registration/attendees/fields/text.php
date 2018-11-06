@@ -11,7 +11,6 @@ $required      = isset( $field->required ) && 'on' === $field->required ? true :
 $option_id     = "tribe-tickets-meta_{$field->slug}" . ( $attendee_id ? '_' . $attendee_id : '' );
 $field         = (array) $field;
 $multiline     = isset( $field['extra'] ) && isset( $field['extra']['multiline'] ) ? $field['extra']['multiline'] : '';
-$is_restricted = false;
 $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
 
 ?>
@@ -22,7 +21,6 @@ $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][
 			id="<?php echo esc_attr( $option_id ); ?>"
 			name="<?php echo esc_attr( $field_name ); ?>"
 			<?php echo $required ? 'required' : ''; ?>
-			<?php disabled( $is_restricted ); ?>>
 			<?php echo esc_textarea( $value ); ?>
         </textarea>
 	<?php else : ?>
@@ -32,6 +30,5 @@ $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][
 			name="<?php echo esc_attr( $field_name ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			<?php echo $required ? 'required' : ''; ?>
-			<?php disabled( $is_restricted ); ?>>
 	<?php endif; ?>
 </div>

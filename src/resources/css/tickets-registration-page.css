@@ -158,8 +158,8 @@ body.page-tribe-attendee-registration .entry-content,
 
 .tribe-block__tickets__item__attendee__fields select {
 	-webkit-appearance: none;
-	-moz-appearance:    none;
-	appearance:         none;
+	   -moz-appearance: none;
+	        appearance: none;
 	background: #fff;
 	height: auto;
 	min-width: 400px;

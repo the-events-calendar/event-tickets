@@ -9,7 +9,6 @@ $required      = isset( $field->required ) && 'on' === $field->required ? true :
 $field         = (array) $field;
 $attendee_id   = null;
 $value         = '';
-$is_restricted = false;
 $options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
 
 if ( ! is_array( $value ) ) {
@@ -39,8 +38,8 @@ if ( ! $options ) {
 					class="ticket-meta"
 					name="tribe-tickets-meta[<?php echo esc_attr( $attendee_id ) ?>][<?php echo esc_attr( $slug ); ?>]"
 					value="<?php echo esc_attr( $option ); ?>"
+					<?php echo $required ? 'required' : ''; ?>
 					<?php checked( true, in_array( $slug, $value ) ); ?>
-					<?php disabled( $is_restricted ); ?>>
 				<span class="tribe-tickets-meta-option-label">
 					<?php echo wp_kses_post( $option ); ?>
 				</span>
