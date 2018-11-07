@@ -44,7 +44,8 @@ $slug          = $field['slug'];
 					name="tribe-tickets-meta[<?php echo esc_attr( $attendee_id ) ?>][<?php echo esc_attr( $slug ); ?>]"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( $option, $value ); ?>
-					<?php disabled( $is_restricted ); ?>>
+					<?php disabled( $is_restricted ); ?>
+				/>
 				<span class="tribe-tickets-meta-option-label">
 					<?php echo wp_kses_post( $option ); ?>
 				</span>

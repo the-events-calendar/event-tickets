@@ -39,7 +39,8 @@ if ( ! $options ) {
 					name="tribe-tickets-meta[<?php echo esc_attr( $attendee_id ) ?>][<?php echo esc_attr( $slug ); ?>]"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php echo $required ? 'required' : ''; ?>
-					<?php checked( true, in_array( $slug, $value ) ); ?>>
+					<?php checked( true, in_array( $slug, $value ) ); ?>
+				/>
 				<span class="tribe-tickets-meta-option-label">
 					<?php echo wp_kses_post( $option ); ?>
 				</span>
