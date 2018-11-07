@@ -229,10 +229,6 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
-		tribe_singleton( 'tickets.rsvp.cart', 'Tribe__Tickets__RSVP__Cart' );
-
-		// Setup the cart here to avoid warnings
-		tribe( 'tickets.rsvp.cart' )->setup();
 
 		// Attendee Registration Page
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
