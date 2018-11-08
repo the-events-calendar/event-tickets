@@ -31,7 +31,16 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 			$fields     = $meta->get_meta_fields_by_ticket( $post->ID );
 			$saved_meta = $storage->get_meta_data_for( $post->ID );
 
-			$this->template( 'attendees/fields', array( 'ticket' => $post, 'key' => $j, 'fields' => $fields, 'saved_meta' => $saved_meta ) );
+			$args = array(
+				'event_id'   => $event_id,
+				'ticket'     => $post,
+				'key'        => $j,
+				'fields'     => $fields,
+				'saved_meta' => $saved_meta
+			);
+
+
+			$this->template( 'attendees/fields', $args );
 			$j++;
 		?>
 	<?php endwhile; ?>
