@@ -47,6 +47,38 @@ tribe.tickets.registration = {};
 	} );
 
 	/**
+	 * Check if the required fiels have data
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	*/
+	obj.validateEventAttendees = function( $form ) {
+		var is_valid = true;
+		var $fields = $form.find( '.tribe-tickets-meta-required' );
+
+ 		$fields.each( function() {
+			var $el = $( this );
+			var val = '';
+ 			if (
+ 				$el.is( '.tribe-tickets-meta-radio' )
+ 				|| $el.is( '.tribe-tickets-meta-checkbox' )
+ 			) {
+				val = $el.find( 'input:checked' ).length ? 'checked' : '';
+			} else {
+				val = $el.find( 'input, select, textarea' ).val().trim();
+			}
+
+ 			if ( 0 === val.length ) {
+				is_valid = false;
+			}
+
+		});
+
+ 		return is_valid;
+	};
+
+	/**
 	 * Init the page, set a flag for those events that need to fill inputs
 	 * Toggle down those who are ready
 	 *
@@ -59,15 +91,7 @@ tribe.tickets.registration = {};
 		$( obj.selector.container ).each( function() {
 			var $event = $( this );
 
-			var required    = $event.find( 'input, textarea, select' ).filter( '[required]:visible' );
-			var allRequired = true;
-			required.each( function() {
-				var $field = $( this );
-
-				if ( '' == $field.val() ) {
-					allRequired = false;
-				}
-			});
+			allRequired = obj.validateEventAttendees( $event );
 
 			if ( ! allRequired ) {
 				$event.find( obj.selector.status ).addClass( 'incomplete' );
