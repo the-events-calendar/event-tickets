@@ -22,7 +22,7 @@ $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][
 			name="<?php echo esc_attr( $field_name ); ?>"
 			<?php echo $required ? 'required' : ''; ?>
 			<?php echo esc_textarea( $value ); ?>
-        </textarea>
+		></textarea>
 	<?php else : ?>
 		<input
 			type="text"
