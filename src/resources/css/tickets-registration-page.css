@@ -8,8 +8,8 @@
  * @see: http://moderntribe.github.io/products-engineering/css/
  */
 
-/*
-	Compat
+/**
+ * Compatibility
 */
 
 .tribe-events-single {
@@ -30,6 +30,12 @@ body.page-tribe-attendee-registration span.edit-link {
 body.page-tribe-attendee-registration .entry-content,
 	body.page-tribe-attendee-registration .entry-header {
 	width: 98%;
+}
+
+/* compatibility with ET+ styles */
+
+body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-options label:first-child::after {
+	content: '';
 }
 
 .tribe-block__tickets__registration__toggle__handler,
@@ -128,6 +134,7 @@ body.page-tribe-attendee-registration .entry-content,
 	font-size: 16px;
 	font-weight: 500;
 	color: #545d66;
+	float: left;
 }
 
 .tribe-block__tickets__item__attendee__fields input[type="text"],
@@ -164,6 +171,10 @@ body.page-tribe-attendee-registration .entry-content,
 	height: auto;
 	min-width: 400px;
 	padding: 0.7em;
+	background-image: url('../images/select.png');
+	background-repeat: no-repeat;
+	background-position: right center;
+	background-size: 33px 33px;
 }
 
 .tribe-block__tickets__item__attendee__fields .tribe-options {

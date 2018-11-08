@@ -17,6 +17,12 @@ tribe.tickets.registration = {};
 		fields    : '.tribe-block__tickets__item__attendee__fields',
 		toggler   : '.tribe-block__tickets__registration__toggle__handler',
 		status    : '.tribe-block__tickets__registration__status',
+		field     : {
+			text     : '.tribe-block__tickets__item__attendee__field__text',
+			checkbox : '.tribe-block__tickets__item__attendee__field__checkbox',
+			select   : '.tribe-block__tickets__item__attendee__field__select',
+			radio    : '.tribe-block__tickets__item__attendee__field__radio',
+		}
 	};
 
 	var $tribe_registration = $( obj.selector.container );
@@ -47,6 +53,41 @@ tribe.tickets.registration = {};
 	} );
 
 	/**
+	 * Check if the required fields have data
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	*/
+	obj.validateEventAttendees = function( $form ) {
+		var is_valid = true;
+		var $fields = $form.find( '.tribe-tickets-meta-required' );
+
+ 		$fields.each( function() {
+			var $field = $( this );
+			var val = '';
+
+ 			if (
+ 				$field.is( obj.selector.field.radio )
+ 				|| $field.is( obj.selector.field.checkbox )
+ 			) {
+				val = $field.find( 'input:checked' ).length ? 'checked' : '';
+			} else if ( $field.is( obj.selector.field.select ) ) {
+				val = $field.find( 'select' ).val();
+			} else {
+				val = $field.find( 'input, textarea' ).val().trim();
+			}
+
+ 			if ( 0 === val.length ) {
+				is_valid = false;
+			}
+
+		});
+
+ 		return is_valid;
+	};
+
+	/**
 	 * Init the page, set a flag for those events that need to fill inputs
 	 * Toggle down those who are ready
 	 *
@@ -58,16 +99,7 @@ tribe.tickets.registration = {};
 
 		$( obj.selector.container ).each( function() {
 			var $event = $( this );
-
-			var required    = $event.find( 'input, textarea, select' ).filter( '[required]:visible' );
-			var allRequired = true;
-			required.each( function() {
-				var $field = $( this );
-
-				if ( '' == $field.val() ) {
-					allRequired = false;
-				}
-			});
+			var allRequired = obj.validateEventAttendees( $event );
 
 			if ( ! allRequired ) {
 				$event.find( obj.selector.status ).addClass( 'incomplete' );

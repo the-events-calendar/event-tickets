@@ -1,5 +1,5 @@
-/*
-	Compat
+/**
+ * Compatibility
 */
 
 .tribe-events-single {
@@ -22,6 +22,19 @@ body.page-tribe-attendee-registration {
 	.entry-content,
 	.entry-header {
 		width: 98%;
+	}
+
+	/* compatibility with ET+ styles */
+	.tribe-tickets-meta-required {
+		.tribe-options {
+			label {
+				&:first-child {
+					&::after {
+						content: '';
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -117,6 +130,7 @@ body.page-tribe-attendee-registration {
 			font-size: 16px;
 			font-weight: 500;
 			color: #545d66;
+			float: left;
 		}
 	}
 
@@ -152,6 +166,10 @@ body.page-tribe-attendee-registration {
 		height: auto;
 		min-width: 400px;
 		padding: 0.7em;
+		background-image: url('../images/select.png');
+		background-repeat: no-repeat;
+		background-position: right center;
+		background-size: 33px 33px;
 	}
 
 	.tribe-options {

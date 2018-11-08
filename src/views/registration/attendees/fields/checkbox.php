@@ -7,8 +7,7 @@
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field         = (array) $field;
-$attendee_id   = null;
-$value         = '';
+$attendee_id   = $key;
 $options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
 
 if ( ! is_array( $value ) ) {
@@ -25,7 +24,7 @@ if ( ! $options ) {
 	</header>
 	<div class="tribe-options">
 		<?php
-		foreach ( $options as $option ) {
+		foreach ( $options as $option ) :
 			$option_slug = sanitize_title( $option );
 			$field_slug  = $field['slug'];
 			$option_id   = "tribe-tickets-meta_{$field_slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
@@ -36,17 +35,14 @@ if ( ! $options ) {
 					type="checkbox"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					class="ticket-meta"
-					name="tribe-tickets-meta[<?php echo esc_attr( $attendee_id ) ?>][<?php echo esc_attr( $slug ); ?>]"
+					name="<?php echo 'tribe-tickets-meta[' . esc_attr( $ticket->ID ) . '][' . esc_attr( $attendee_id ) . '][' . esc_attr( $field_slug ) . '][]'; ?>"
 					value="<?php echo esc_attr( $option ); ?>"
-					<?php echo $required ? 'required' : ''; ?>
-					<?php checked( true, in_array( $slug, $value ) ); ?>
+					<?php checked( true, in_array( $option, $value ) ); ?>
 				/>
 				<span class="tribe-tickets-meta-option-label">
 					<?php echo wp_kses_post( $option ); ?>
 				</span>
 			</label>
-			<?php
-		}
-		?>
+		<?php endforeach; ?>
 	</div>
 </div>

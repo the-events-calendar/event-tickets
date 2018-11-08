@@ -1,6 +1,6 @@
 <?php
 /**
- * Descriptio
+ * The template for the select input
  *
  * @version TBD
  *
@@ -8,7 +8,6 @@
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field         = (array) $field;
 $attendee_id   = $key;
-$value         = '';
 $is_restricted = false;
 $slug          = $field['slug'];
 $options       = null;
@@ -32,9 +31,9 @@ $option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id 
 		class="ticket-meta"
 		name="<?php echo esc_attr( $field_name ); ?>"
 		<?php echo $required ? 'required' : ''; ?>>
-        <option><?php esc_html_e( 'Select an option', 'events-gutenberg' ); ?></option>
-        <?php foreach ( $options as $option => $label ) : ?>
-            <option <?php selected( $option, $value ); ?> value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $label ); ?></option>
-        <?php endforeach; ?>
+		<option><?php esc_html_e( 'Select an option', 'events-tickets' ); ?></option>
+		<?php foreach ( $options as $option => $label ) : ?>
+			<option <?php selected( (int) $option, (int) $value ); ?> value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $label ); ?></option>
+		<?php endforeach; ?>
 	</select>
 </div>
