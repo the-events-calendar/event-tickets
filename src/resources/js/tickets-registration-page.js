@@ -17,6 +17,14 @@ tribe.tickets.registration = {};
 		fields    : '.tribe-block__tickets__item__attendee__fields',
 		toggler   : '.tribe-block__tickets__registration__toggle__handler',
 		status    : '.tribe-block__tickets__registration__status',
+		field     : {
+			text     : '.tribe-block__tickets__item__attendee__field__text',
+			checkbox : '.tribe-block__tickets__item__attendee__field__checkbox',
+			select   : '.tribe-block__tickets__item__attendee__field__select',
+			radio    : '.tribe-block__tickets__item__attendee__field__radio',
+
+
+		}
 	};
 
 	var $tribe_registration = $( obj.selector.container );
@@ -60,13 +68,16 @@ tribe.tickets.registration = {};
  		$fields.each( function() {
 			var $el = $( this );
 			var val = '';
+
  			if (
- 				$el.is( '.tribe-tickets-meta-radio' )
- 				|| $el.is( '.tribe-tickets-meta-checkbox' )
+ 				$el.is( obj.selector.field.radio )
+ 				|| $el.is( obj.selector.field.checkbox )
  			) {
 				val = $el.find( 'input:checked' ).length ? 'checked' : '';
+			} else if ( $el.is( obj.selector.field.select ) ) {
+				val = $el.find( 'select' ).val();
 			} else {
-				val = $el.find( 'input, select, textarea' ).val().trim();
+				val = $el.find( 'input, textarea' ).val().trim();
 			}
 
  			if ( 0 === val.length ) {
@@ -90,8 +101,7 @@ tribe.tickets.registration = {};
 
 		$( obj.selector.container ).each( function() {
 			var $event = $( this );
-
-			allRequired = obj.validateEventAttendees( $event );
+			var allRequired = obj.validateEventAttendees( $event );
 
 			if ( ! allRequired ) {
 				$event.find( obj.selector.status ).addClass( 'incomplete' );
