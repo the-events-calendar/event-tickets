@@ -25,7 +25,7 @@ if ( ! $options ) {
 	</header>
 	<div class="tribe-options">
 		<?php
-		foreach ( $options as $option ) {
+		foreach ( $options as $option ) :
 			$option_slug = sanitize_title( $option );
 			$field_slug  = $field['slug'];
 			$option_id   = "tribe-tickets-meta_{$field_slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
@@ -45,8 +45,6 @@ if ( ! $options ) {
 					<?php echo wp_kses_post( $option ); ?>
 				</span>
 			</label>
-			<?php
-		}
-		?>
+		<?php endforeach; ?>
 	</div>
 </div>

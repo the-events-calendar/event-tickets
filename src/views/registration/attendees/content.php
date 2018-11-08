@@ -23,13 +23,11 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 	?>
 	<h3 class="tribe-ticket__heading"><?php echo get_the_title( $post->ID ); ?></h3>
 	<?php // go through each attendee ?>
-	<div class="tribe-ticket">
 	<?php while ( $j < $ticket['qty'] ) : ?>
 		<?php
  			/**
  			 * @var Tribe__Tickets_Plus__Meta $meta
  			 */
-
 			$fields     = $meta->get_meta_fields_by_ticket( $post->ID );
 			$saved_meta = $storage->get_meta_data_for( $post->ID );
 
@@ -37,5 +35,4 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 			$j++;
 		?>
 	<?php endwhile; ?>
-	</div>
 <?php endforeach;
