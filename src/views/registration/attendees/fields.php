@@ -17,7 +17,7 @@
 				'ticket'   => $ticket,
 				'field'    => $field,
 				'value'    => $value,
-				'key'      => $key
+				'key'      => $key,
 			);
 
 			$this->template( 'attendees/fields/' . $field->type, $args );

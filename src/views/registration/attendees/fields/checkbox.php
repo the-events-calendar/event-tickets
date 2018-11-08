@@ -35,7 +35,7 @@ if ( ! $options ) {
 					type="checkbox"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					class="ticket-meta"
-					name="<?php echo 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field_slug ) . '][]'; ?>"
+					name="<?php echo 'tribe-tickets-meta[' . esc_attr( $ticket->ID ) . '][' . esc_attr( $attendee_id ) . '][' . esc_attr( $field_slug ) . '][]'; ?>"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( true, in_array( $option, $value ) ); ?>
 				/>

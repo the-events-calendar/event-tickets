@@ -36,7 +36,7 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 				'ticket'     => $post,
 				'key'        => $j,
 				'fields'     => $fields,
-				'saved_meta' => $saved_meta
+				'saved_meta' => $saved_meta,
 			);
 
 
