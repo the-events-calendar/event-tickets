@@ -76,7 +76,7 @@ $tickets_fields = array_merge( $tickets_fields, array(
 			'size'                => 'medium',
 			'default'             => tribe( 'tickets.attendee_registration' )->get_slug(),
 			'validation_callback' => 'is_string',
-			'validation_type'     => 'not_empty',
+			'validation_type'     => 'slug',
 		),
 	)
 );
