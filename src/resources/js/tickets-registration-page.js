@@ -22,8 +22,6 @@ tribe.tickets.registration = {};
 			checkbox : '.tribe-block__tickets__item__attendee__field__checkbox',
 			select   : '.tribe-block__tickets__item__attendee__field__select',
 			radio    : '.tribe-block__tickets__item__attendee__field__radio',
-
-
 		}
 	};
 
