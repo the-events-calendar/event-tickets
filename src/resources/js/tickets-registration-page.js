@@ -53,7 +53,7 @@ tribe.tickets.registration = {};
 	} );
 
 	/**
-	 * Check if the required fiels have data
+	 * Check if the required fields have data
 	 *
 	 * @since TBD
 	 *
@@ -64,18 +64,18 @@ tribe.tickets.registration = {};
 		var $fields = $form.find( '.tribe-tickets-meta-required' );
 
  		$fields.each( function() {
-			var $el = $( this );
+			var $field = $( this );
 			var val = '';
 
  			if (
- 				$el.is( obj.selector.field.radio )
- 				|| $el.is( obj.selector.field.checkbox )
+ 				$field.is( obj.selector.field.radio )
+ 				|| $field.is( obj.selector.field.checkbox )
  			) {
-				val = $el.find( 'input:checked' ).length ? 'checked' : '';
-			} else if ( $el.is( obj.selector.field.select ) ) {
-				val = $el.find( 'select' ).val();
+				val = $field.find( 'input:checked' ).length ? 'checked' : '';
+			} else if ( $field.is( obj.selector.field.select ) ) {
+				val = $field.find( 'select' ).val();
 			} else {
-				val = $el.find( 'input, textarea' ).val().trim();
+				val = $field.find( 'input, textarea' ).val().trim();
 			}
 
  			if ( 0 === val.length ) {

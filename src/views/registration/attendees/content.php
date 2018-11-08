@@ -18,12 +18,12 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 
 <?php foreach ( $tickets as $ticket ) : ?>
 	<?php
-	$j    = 0;
-	$post = get_post( $ticket['id'] );
+	$attendee_count = 0;
+	$post           = get_post( $ticket['id'] );
 	?>
 	<h3 class="tribe-ticket__heading"><?php echo get_the_title( $post->ID ); ?></h3>
 	<?php // go through each attendee ?>
-	<?php while ( $j < $ticket['qty'] ) : ?>
+	<?php while ( $attendee_count < $ticket['qty'] ) : ?>
 		<?php
  			/**
  			 * @var Tribe__Tickets_Plus__Meta $meta
@@ -34,14 +34,14 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 			$args = array(
 				'event_id'   => $event_id,
 				'ticket'     => $post,
-				'key'        => $j,
+				'key'        => $attendee_count,
 				'fields'     => $fields,
 				'saved_meta' => $saved_meta,
 			);
 
 
 			$this->template( 'attendees/fields', $args );
-			$j++;
+			$attendee_count++;
 		?>
 	<?php endwhile; ?>
 <?php endforeach;
