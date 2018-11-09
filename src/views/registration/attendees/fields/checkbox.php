@@ -10,10 +10,6 @@ $field         = (array) $field;
 $attendee_id   = $key;
 $options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
 
-if ( ! is_array( $value ) ) {
-	$value = array();
-}
-
 if ( ! $options ) {
 	return;
 }
@@ -25,19 +21,21 @@ if ( ! $options ) {
 	<div class="tribe-options">
 		<?php
 		foreach ( $options as $option ) :
+
 			$option_slug = sanitize_title( $option );
 			$field_slug  = $field['slug'];
 			$option_id   = "tribe-tickets-meta_{$field_slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
+			$value       = isset( $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] ) ? $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] : false;
 			?>
 			<label for="<?php echo esc_attr( $option_id ); ?>" class="tribe-tickets-meta-field-header">
 				<input
 					type="checkbox"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					class="ticket-meta"
-					name="<?php echo 'tribe-tickets-meta[' . esc_attr( $ticket->ID ) . '][' . esc_attr( $attendee_id ) . '][' . esc_attr( $field_slug ) . '][]'; ?>"
+					name="<?php echo 'tribe-tickets-meta[' . $ticket->ID . '][' . esc_attr( $attendee_id ) . '][' . esc_attr( $slug ) . ']'; ?>"
 					value="<?php echo esc_attr( $option ); ?>"
-					<?php checked( true, in_array( $option, $value ) ); ?>
+					<?php checked( $option, $value ); ?>
 				/>
 				<span class="tribe-tickets-meta-option-label">
 					<?php echo wp_kses_post( $option ); ?>
