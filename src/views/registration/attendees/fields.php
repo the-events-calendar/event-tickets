@@ -13,11 +13,12 @@
 			$value = ! empty( $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] ) ? $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] : null;
 
 			$args = array(
-				'event_id' => $event_id,
-				'ticket'   => $ticket,
-				'field'    => $field,
-				'value'    => $value,
-				'key'      => $key,
+				'event_id'   => $event_id,
+				'ticket'     => $ticket,
+				'field'      => $field,
+				'value'      => $value,
+				'key'        => $key,
+				'saved_meta' => $saved_meta,
 			);
 
 			$this->template( 'attendees/fields/' . $field->type, $args );

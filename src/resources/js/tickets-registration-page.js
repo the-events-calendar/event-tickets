@@ -107,7 +107,6 @@ tribe.tickets.registration = {};
 				$event.find( obj.selector.status ).removeClass( 'incomplete' );
 				$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-edit' );
 				$event.find( obj.selector.status ).find( 'i' ).addClass( 'dashicons-yes' );
-				$event.find( obj.selector.fields ).toggle();
 			}
 
 		});

@@ -23,7 +23,7 @@ if ( ! $options ) {
 $attendee_id   = $key;
 $is_restricted = false;
 $slug          = $field['slug'];
-$field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
+$field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $slug ) . ']';
 ?>
 <div class="tribe-field tribe-block__tickets__item__attendee__field__radio <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<header class="tribe-tickets-meta-label">
