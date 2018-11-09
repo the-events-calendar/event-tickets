@@ -233,7 +233,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 *
-	 * @return array an array of the commerce's statuses matching the provide action
+	 * @return array an array of the commerce's statuses
 	 */
 	public function get_all_provider_statuses( $commerce ) {
 

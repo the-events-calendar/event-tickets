@@ -7,7 +7,6 @@
  * @var int                                     $total_sold          The total number of tickets sold
  * @var int                                     $total_completed     The total number of completed ticket payments
  * @var int                                     $total_not_completed The total number of not completed ticket payments
- * @var float                                   $post_revenue        The total revenue for this post PayPal tickets sales
  * @var array                                   $tickets_sold        A list of PayPal tickets that have at least one sale
  * @var Tribe__Tickets__Commerce__PayPal__Main  $paypal              The tickets handler object
  * @var array                                   $tickets_breakdown   An array of information about all the sold PayPal tickets
@@ -61,48 +60,19 @@
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3>
-						<?php esc_html_e( 'Sales by Ticket', 'event-tickets' ); ?>
+						<?php esc_html_e( 'Sales by Ticket', 'event-tickets-plus' ); ?>
 						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
 					</h3>
 					<?php
-					/** @var Tribe__Tickets__Ticket_Object $ticket_sold */
 					foreach ( $tickets_sold as $ticket_sold ) {
 
-						//Only Display if a PayPal Ticket otherwise kick out
-						if ( ! $paypal->is_paypal_ticket( $ticket_sold ) ) {
+						//Only Display if a TPP Ticket otherwise kick out
+						if ( 'Tribe__Tickets__Commerce__PayPal__Main' != $ticket_sold['ticket']->provider_class ) {
 							continue;
 						}
 
-						$price        = '';
+						echo $order_overview->get_ticket_sale_infomation( $ticket_sold, $post_id );
 
-						$sold_message = '';
-
-						if ( ! $ticket_sold->managing_stock() ) {
-							$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ),
-								esc_html( $ticket_sold->qty_sold() )
-							);
-						} else {
-							$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ),
-								esc_html( $ticket_sold->qty_sold() )
-							);
-						}
-
-						if ( $ticket_sold->price ) {
-							$price = ' (' . tribe_format_currency( number_format( $ticket_sold->price, 2 ), $post_id ) . ')';
-						}
-
-						$sku = '';
-						if ( $ticket_sold->sku ) {
-							$sku = 'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets-plus' ), esc_html( $ticket_sold->sku ) ) . '"';
-						}
-						?>
-						<div class="tribe-event-meta tribe-event-meta-tickets-sold-itemized">
-							<strong <?php echo $sku; ?>><?php echo esc_html( $ticket_sold->name . $price ); ?>:</strong>
-							<?php
-							echo esc_html( $sold_message );
-							?>
-						</div>
-						<?php
 					}
 					?>
 				</div>

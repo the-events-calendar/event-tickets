@@ -126,8 +126,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 */
 	public function get_name_and_sold_for_ticket( $ticket_sold, $event_id ) {
 
+		$sold = $ticket_sold['completed'] ? $ticket_sold['completed'] : $ticket_sold['sold'];
+
 		$sold_message = ! $ticket_sold['has_stock'] ?
-			$sold_message = sprintf( __( 'Sold %d', 'event-tickets-plus' ), esc_html( $ticket_sold['sold'] ) ) :
+			$sold_message = sprintf( __( 'Sold %d', 'event-tickets-plus' ), esc_html( $sold ) ) :
 			'';
 
 		$price = $ticket_sold['ticket']->price ?

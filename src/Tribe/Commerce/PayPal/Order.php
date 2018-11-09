@@ -58,6 +58,14 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	protected $status = '';
 
 	/**
+	 * The order post status label
+	 *
+	 * @var string
+	 */
+	protected $status_label = '';
+
+
+	/**
 	 * All the ticket post IDs related to the Order.
 	 *
 	 * @var array
@@ -217,9 +225,12 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 			return $this;
 		}
 
+		$status = tribe( 'tickets.commerce.paypal' )->get_order_statuses();
+
 		$this->paypal_order_id = $order_post->post_title;
 		$this->post_id         = $order_post_id;
 		$this->status          = $order_post->post_status;
+		$this->status_label    = $status[ $order_post->post_status ];
 		$this->created         = $order_post->post_date;
 		$this->modified        = $order_post->post_modified;
 
@@ -647,6 +658,17 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	public function get_status() {
 		return $this->status;
+	}
+
+	/**
+	 * Returns the Order status label.
+	 *
+	 * @since tbd
+	 *
+	 * @return string
+	 */
+	public function get_status_label() {
+		return $this->status_label;
 	}
 
 	/**

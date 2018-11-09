@@ -251,33 +251,62 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		}
 
 		$attendees    = $paypal->get_attendees_by_id( $post_id );
-		$tickets_sold = $sales->filter_sold_tickets( $paypal_tickets );
 
-		$post_revenue        = $sales->get_revenue_for_tickets( $tickets_sold );
 		$total_sold          = $sales->get_sales_for_tickets( $tickets );
 		$total_orders        = $sales->get_orders_for_post( $post_id );
 		$total_completed     = count( $sales->filter_completed( $attendees ) );
 		$total_not_completed = count( $sales->filter_not_completed( $attendees ) );
 
 		$order_overview      = tribe( 'tickets.status' )->get_providers_status_classes( 'tpp' );
+		$complete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
 		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'tpp' );
 		$tickets_breakdown   = $sales->get_tickets_breakdown_for( $paypal_tickets );
 
+		$tickets_sold = array();
+
 		//update ticket item counts by order status
-		foreach ( $total_orders as $order ) {
+		foreach ( $paypal_tickets as $ticket ) {
 
-			if ( $order['status'] && isset( $order['items'][1] )  ) {
-
-				if( in_array( $order['status_label'], $incomplete_statuses ) ) {
-					//$tickets_sold[ $ticket->name ]['incomplete'] += $product[0]->_qty;
-				}
-
-				$order_overview->statuses[ $order['status_label']]->add_qty($order['items'][1]['quantity']);
-				$order_overview->statuses[ $order['status_label']]->add_line_total($order['items'][1]['mc_gross']);
-				$order_overview->add_qty($order['items'][1]['quantity']);
-				$order_overview->add_line_total($order['items'][1]['mc_gross']);
-
+			// Only Display if a PayPal Ticket otherwise kick out
+			if ( 'Tribe__Tickets__Commerce__PayPal__Main' != $ticket->provider_class ) {
+				continue;
 			}
+
+			if ( empty( $tickets_sold[ $ticket->name ] ) ) {
+				$tickets_sold[ $ticket->name ] = array(
+					'ticket'    => $ticket,
+					'has_stock' => ! $ticket->stock(),
+					'sku'       => get_post_meta( $ticket->ID, '_sku', true ),
+					'sold'      => 0,
+					'pending'   => 0,
+					'completed' => 0,
+					'refunded'  => 0,
+					'incomplete'  => 0,
+				);
+			}
+
+			//update ticket item counts by order status
+			$orders = $this->get_all_orders_by_product_id( $ticket->ID );
+			foreach ( $orders as $key => $order ) {
+
+				if ( $order->get_status_label() && $order->get_item_quantity() ) {
+
+					if ( in_array( $order->get_status(), $complete_statuses ) ) {
+						$tickets_sold[ $ticket->name ]['completed'] += $order->get_item_quantity();
+					}
+
+					if ( in_array( $order->get_status(), $incomplete_statuses ) ) {
+						$tickets_sold[ $ticket->name ]['incomplete'] += $order->get_item_quantity();
+					}
+
+					$order_overview->statuses[ $order->get_status_label()]->add_qty($order->get_item_quantity());
+					$order_overview->statuses[ $order->get_status_label()]->add_line_total($order->get_revenue());
+					$order_overview->add_qty($order->get_item_quantity());
+					$order_overview->add_line_total($order->get_revenue());
+
+				}
+			}
+
 		}
 
 		$post_type_object = get_post_type_object( $post->post_type );
@@ -293,5 +322,42 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$table = ob_get_clean();
 
 		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-orders.php';
+	}
+
+	public function get_all_orders_by_product_id( $ID ) {
+		$all_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' );
+		//array_push( $all_statuses, 'publish' );
+
+		$args = array(
+			'post_type'      => 'tribe_tpp_orders',
+			'posts_per_page' => -1,
+			'post_status'    => $all_statuses,
+			'meta_query'     => array(
+				array(
+					'key'   => '_tribe_paypal_ticket',
+					'value' => $ID,
+				),
+			),
+			'fields'                 => 'ids'
+		);
+
+		$all_order_ids_for_ticket  = new WP_Query( $args );
+		if ( empty ( $all_order_ids_for_ticket->posts ) ) {
+			return array();
+		}
+
+		$orders = array();
+		log_me($all_order_ids_for_ticket->posts);
+		foreach ( $all_order_ids_for_ticket->posts as $id ) {
+
+			$order = new Tribe__Tickets__Commerce__PayPal__Order();
+			$order = $order->hydrate_from_post( $id );
+			//prevent fatal error if no orders
+			if ( ! is_wp_error( $order ) ) {
+				$orders[ $id ] = $order;
+			}
+		}
+
+		return $orders;
 	}
 }
