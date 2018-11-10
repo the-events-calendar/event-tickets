@@ -690,6 +690,19 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	}
 
 	/**
+	 * Returns the sub total of order regardless of status
+	 *
+	 * @since TBD
+	 *
+	 * @return int a positive number for sub total
+	 */
+	public function get_sub_total() {
+
+		return ! empty( $this->meta['mc_gross'] ) ? absint( $this->meta['mc_gross'] ) : 0;
+
+	}
+
+	/**
 	 * Returns the line total for this Order.
 	 *
 	 * Note that the line total might be non-zero when the ticket revenue is, instead,

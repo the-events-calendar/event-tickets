@@ -9,23 +9,43 @@
  */
 class Tribe__Tickets__Status__Abstract_Commerce {
 
+	/**
+	 * @var string a string for the completed order status, usually completed or publish
+	 */
 	public $completed_status_id;
 
+	/**
+	 * @var array an array of status names for a commerce
+	 */
 	public $status_names = array();
 
+	/**
+	 * @var array an array of status objects
+	 */
 	public $statuses = array();
 
-	protected $_qty        = 0;
+	/**
+	 * @var int the quantity of tickets sold for a post type
+	 */
+	protected $_qty = 0;
+
+	/**
+	 * @var int the amount of tickets sold for a post type
+	 */
 	protected $_line_total = 0;
 
 	/**
 	 * Initialize Commerce Provider
+	 *
+	 * @since tbd
+	 *
 	 */
-	public function initialize_status_classes() {
-	}
+	public function initialize_status_classes() {}
 
 	/**
 	 * Get the Completed Order
+	 *
+	 * @since tbd
 	 *
 	 * @return int
 	 */
@@ -41,6 +61,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Total Quantity of Tickets by Post Type, no matter what status they have
 	 *
+	 * @since tbd
+	 *
 	 * @return int
 	 */
 	public function get_qty() {
@@ -49,6 +71,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 	/**
 	 * Add to the Total Order Quantity
+	 *
+	 * @since tbd
 	 *
 	 * @param int $value
 	 */
@@ -59,6 +83,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Remove from the Total Order Quantity
 	 *
+	 * @since tbd
+	 *
 	 * @param int $value
 	 */
 	public function remove_qty( int $value ) {
@@ -67,6 +93,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 	/**
 	 * Get Total Order Amount of all Orders for a Post Type, no matter what status they have
+	 *
+	 * @since tbd
 	 *
 	 * @return int
 	 */
@@ -77,6 +105,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Add to the Total Line Total
 	 *
+	 * @since tbd
+	 *
 	 * @param int $value
 	 */
 	public function add_line_total( int $value ) {
@@ -86,6 +116,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Remove from the Total Line Total
 	 *
+	 * @since tbd
+	 *
 	 * @param int $value
 	 */
 	public function remove_line_total( int $value ) {
@@ -93,12 +125,14 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	}
 
 	/**
-	 * Get Ticket Sale Infomation Overview
+	 * Get Ticket Sale Information Overview
 	 *
-	 * @param $ticket_sold
-	 * @param $event_id
+	 * @since tbd
 	 *
-	 * @return string
+	 * @param $ticket_sold object an object of the ticket to get counts
+	 * @param $post_id int an ID of the post the ticket is attached to
+	 *
+	 * @return string a string Ticket name, sold, and availability
 	 */
 	public function get_ticket_sale_infomation( $ticket_sold, $event_id ) {
 
@@ -119,12 +153,14 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Name of Ticket, SKU, Price, and Amount Sold
 	 *
-	 * @param $ticket_sold
-	 * @param $event_id
+	 * @since tbd
 	 *
-	 * @return string
+	 * @param $ticket_sold object an object of the ticket to get counts
+	 * @param $post_id int an ID of the post the ticket is attached to
+	 *
+	 * @return string a string of the ticket name and sold
 	 */
-	public function get_name_and_sold_for_ticket( $ticket_sold, $event_id ) {
+	public function get_name_and_sold_for_ticket( $ticket_sold, $post_id ) {
 
 		$sold = $ticket_sold['completed'] ? $ticket_sold['completed'] : $ticket_sold['sold'];
 
@@ -133,7 +169,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			'';
 
 		$price = $ticket_sold['ticket']->price ?
-			' (' . tribe_format_currency( number_format( $ticket_sold['ticket']->price, 2 ), $event_id ) . ')' :
+			' (' . tribe_format_currency( number_format( $ticket_sold['ticket']->price, 2 ), $post_id ) . ')' :
 			'';
 
 		$sku = $ticket_sold['sku'] ?
@@ -153,9 +189,11 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get the Available and Incomplete Counts for a Ticket
 	 *
-	 * @param $ticket_sold
+	 * @since tbd
 	 *
-	 * @return bool|string
+	 * @param $ticket_sold object an object of the ticket to get counts
+	 *
+	 * @return bool|string a string of available and/or incomplete counts for a ticket
 	 */
 	public function get_available_incomplete_counts_for_ticket( $ticket_sold ) {
 
@@ -181,6 +219,13 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 	}
 
+	/**
+	 * Get Sales By Ticket Tooltip
+	 *
+	 * @since tbd
+	 *
+	 * @return string a string of html for the tooltip
+	 */
 	public function get_sale_by_ticket_tooltip() {
 		ob_start();
 		?>
@@ -194,6 +239,13 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Get Total Sales Tooltip
+	 *
+	 * @since tbd
+	 *
+	 * @return string a string of html for the tooltip
+	 */
 	public function get_total_sale_tooltip() {
 		ob_start();
 		?>
@@ -207,13 +259,20 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Get Order Tooltip
+	 *
+	 * @since tbd
+	 *
+	 * @return string a string of html for the tooltip
+	 */
 	public function get_total_order_tooltip() {
 		ob_start();
 		?>
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Total Orders counts orders of any status, including pending and refunded.', 'event-tickets-plus' ); ?><i></i>
+				<?php echo esc_html__( 'Total Orders counts orders of any status, including pending and refunded.', 'event-tickets' ); ?><i></i>
 			</div>
 		</div>
 		<?php

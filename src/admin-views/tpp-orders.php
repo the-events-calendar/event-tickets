@@ -5,11 +5,9 @@
  * @var WP_User                                 $author              The post author
  * @var string                                  $post_singular_label The post type singular label
  * @var int                                     $total_sold          The total number of tickets sold
- * @var int                                     $total_completed     The total number of completed ticket payments
- * @var int                                     $total_not_completed The total number of not completed ticket payments
  * @var array                                   $tickets_sold        A list of PayPal tickets that have at least one sale
  * @var Tribe__Tickets__Commerce__PayPal__Main  $paypal              The tickets handler object
- * @var array                                   $tickets_breakdown   An array of information about all the sold PayPal tickets
+ * @var Tribe__Tickets__Status__Manager         $order_overview      Order breakdown for all statuses
  * @var string                                  $table               The orders table output
  */
 ?>
