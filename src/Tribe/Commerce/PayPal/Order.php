@@ -226,7 +226,6 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 		}
 
 		$status = tribe( 'tickets.commerce.paypal' )->get_order_statuses();
-
 		$this->paypal_order_id = $order_post->post_title;
 		$this->post_id         = $order_post_id;
 		$this->status          = $order_post->post_status;

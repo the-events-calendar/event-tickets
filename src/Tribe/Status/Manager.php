@@ -292,7 +292,6 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_providers_status_classes( $commerce ) {
 
-
 		if ( ! isset( $this->statuses[ $commerce ] ) ) {
 			return array();
 		}
