@@ -1,0 +1,159 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`UI reducer Header image 1`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": Object {
+    "id": 100,
+  },
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Header image 2`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Is Active Child block 1`] = `
+Object {
+  "activeChildBlockId": "modern-tribe",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Is Child block selected 1`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": true,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Is Child block selected 2`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Is Parent Block selected 1`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": true,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Is Parent Block selected 2`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Provider 1`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "Tribe__Tickets__Commerce__PayPal__Main",
+}
+`;
+
+exports[`UI reducer Set loading on the parent block 1`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": true,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Set loading on the parent block 2`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Settings Open 1`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": true,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Settings Open 2`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;
+
+exports[`UI reducer Shared capacity 1`] = `
+Object {
+  "activeChildBlockId": "",
+  "header": null,
+  "isChildBlockSelected": false,
+  "isParentBlockLoading": false,
+  "isParentBlockSelected": false,
+  "isSettingsOpen": false,
+  "provider": "",
+}
+`;

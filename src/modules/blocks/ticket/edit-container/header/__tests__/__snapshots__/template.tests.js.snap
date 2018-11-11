@@ -1,0 +1,145 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ticket Form Header Header with default values 1`] = `
+<div
+  className="tribe-editor__ticket-container__header"
+>
+  <div
+    className="tribe-editor__ticket-container__header-content"
+  >
+    <span
+      className="tribe-editor__ticket-container__header-title"
+      id="ticket-creation-title-"
+      name="ticket-creation-title"
+      onChange={[Function]}
+      placeholder="Ticket Type"
+      value="VIP"
+    >
+      Auto Size Input
+    </span>
+    <span
+      className="tribe-editor__ticket-container__header-description"
+      id="ticket-creation-description-"
+      name="ticket-creation-description"
+      onChange={[Function]}
+      placeholder="Description"
+      value="Includes backstage"
+    >
+      Auto Size Input
+    </span>
+  </div>
+  <div
+    className="tribe-editor__ticket-container__header-price"
+  >
+    <span />
+    <span
+      className="tribe-editor__new-ticket__description"
+      id="ticket-creation-price-"
+      min="0"
+      name="ticket-creation-description"
+      onChange={[Function]}
+      placeholder="0"
+      type="number"
+      value={20}
+    >
+      Auto Size Input
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Ticket Form Header Header with expiration 1`] = `
+<div
+  className="tribe-editor__ticket-container__header"
+>
+  <div
+    className="tribe-editor__ticket-container__header-content"
+  >
+    <span
+      className="tribe-editor__ticket-container__header-title"
+      id="ticket-creation-title-"
+      name="ticket-creation-title"
+      onChange={[Function]}
+      placeholder="Ticket Type"
+      value=""
+    >
+      Auto Size Input
+    </span>
+    <span
+      className="tribe-editor__ticket-container__header-description"
+      id="ticket-creation-description-"
+      name="ticket-creation-description"
+      onChange={[Function]}
+      placeholder="Description"
+      value=""
+    >
+      Auto Size Input
+    </span>
+  </div>
+  <div
+    className="tribe-editor__ticket-container__header-price"
+  >
+    <span />
+    <span
+      className="tribe-editor__new-ticket__description"
+      id="ticket-creation-price-"
+      min="0"
+      name="ticket-creation-description"
+      onChange={[Function]}
+      placeholder="0"
+      type="number"
+      value={0}
+    >
+      Auto Size Input
+    </span>
+  </div>
+</div>
+`;
+
+exports[`Ticket Form Header Header with no expiration 1`] = `
+<div
+  className="tribe-editor__ticket-container__header"
+>
+  <div
+    className="tribe-editor__ticket-container__header-content"
+  >
+    <span
+      className="tribe-editor__ticket-container__header-title"
+      id="ticket-creation-title-"
+      name="ticket-creation-title"
+      onChange={[Function]}
+      placeholder="Ticket Type"
+      value=""
+    >
+      Auto Size Input
+    </span>
+    <span
+      className="tribe-editor__ticket-container__header-description"
+      id="ticket-creation-description-"
+      name="ticket-creation-description"
+      onChange={[Function]}
+      placeholder="Description"
+      value=""
+    >
+      Auto Size Input
+    </span>
+  </div>
+  <div
+    className="tribe-editor__ticket-container__header-price"
+  >
+    <span />
+    <span
+      className="tribe-editor__new-ticket__description"
+      id="ticket-creation-price-"
+      min="0"
+      name="ticket-creation-description"
+      onChange={[Function]}
+      placeholder="0"
+      type="number"
+      value={0}
+    >
+      Auto Size Input
+    </span>
+  </div>
+</div>
+`;

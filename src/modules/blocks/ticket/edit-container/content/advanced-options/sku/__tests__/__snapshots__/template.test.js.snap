@@ -1,0 +1,32 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SKU Render the component with no errors 1`] = `
+<div
+  className="tribe-editor__container-panel__row tribe-editor__container-panel__row--sku"
+>
+  <div
+    className="tribe-editor__labeled-item tribe-editor__label-with-tooltip tribe-editor__container-panel__label"
+  >
+    <label
+      className="tribe-editor__labeled-item__label"
+      htmlFor="ticket-sku"
+    >
+      Ticket SKU
+    </label>
+    <span>
+      Tooltip
+    </span>
+  </div>
+  <div
+    className="tribe-editor__container-panel__input-group"
+  >
+    <input
+      className="tribe-editor__ticket-field__sku"
+      id="ticket-sku"
+      onChange={[Function]}
+      type="text"
+      value=""
+    />
+  </div>
+</div>
+`;

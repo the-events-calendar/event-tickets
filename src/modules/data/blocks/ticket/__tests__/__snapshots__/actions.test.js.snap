@@ -1,0 +1,468 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `
+Object {
+  "payload": Object {
+    "attributes": Object {
+      "header": 99,
+      "sharedCapacity": 19,
+    },
+    "clientId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/SET_INITIAL_STATE",
+}
+`;
+
+exports[` 2`] = `
+Object {
+  "payload": Object {
+    "isParentBlockLoading": true,
+  },
+  "type": "@@MT/TICKETS/SET_PARENT_BLOCK_LOADING",
+}
+`;
+
+exports[` 3`] = `
+Object {
+  "payload": Object {
+    "isParentBlockLoading": false,
+  },
+  "type": "@@MT/TICKETS/SET_PARENT_BLOCK_LOADING",
+}
+`;
+
+exports[`Gutenberg actions Active block selected Active block 1`] = `
+Object {
+  "payload": Object {
+    "activeChildBlockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/SET_ACTIVE_CHILD_BLOCK_ID",
+}
+`;
+
+exports[`Gutenberg actions Block selection Child block selection 1`] = `
+Object {
+  "payload": Object {
+    "selected": true,
+  },
+  "type": "@@MT/TICKETS/SET_CHILD_BLOCK_SELECTED",
+}
+`;
+
+exports[`Gutenberg actions Block selection Child block selection 2`] = `
+Object {
+  "payload": Object {
+    "selected": false,
+  },
+  "type": "@@MT/TICKETS/SET_CHILD_BLOCK_SELECTED",
+}
+`;
+
+exports[`Gutenberg actions Block selection Parent block selection 1`] = `
+Object {
+  "payload": Object {
+    "selected": true,
+  },
+  "type": "@@MT/TICKETS/SET_PARENT_BLOCK_SELECTED",
+}
+`;
+
+exports[`Gutenberg actions Block selection Parent block selection 2`] = `
+Object {
+  "payload": Object {
+    "selected": false,
+  },
+  "type": "@@MT/TICKETS/SET_PARENT_BLOCK_SELECTED",
+}
+`;
+
+exports[`Gutenberg actions Header actions Set null to remove header 1`] = `
+Object {
+  "payload": Object {
+    "header": null,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HEADER",
+}
+`;
+
+exports[`Gutenberg actions Header actions Set object into header 1`] = `
+Object {
+  "payload": Object {
+    "header": Object {
+      "image": 10,
+    },
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HEADER",
+}
+`;
+
+exports[`Gutenberg actions Set shared capacity actions Set a large number 1`] = `
+Object {
+  "payload": Object {
+    "sharedCapacity": 999,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TOTAL_SHARED_CAPACITY",
+}
+`;
+
+exports[`Gutenberg actions Set shared capacity actions Set empty value 1`] = `
+Object {
+  "payload": Object {
+    "sharedCapacity": 0,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TOTAL_SHARED_CAPACITY",
+}
+`;
+
+exports[`Gutenberg actions Set the status of the settings dashboard Close the settings dashboard 1`] = `
+Object {
+  "payload": Object {
+    "isSettingsOpen": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_SETTINGS_OPEN",
+}
+`;
+
+exports[`Gutenberg actions Set the status of the settings dashboard Close the settings dashboard 2`] = `
+Object {
+  "payload": Object {
+    "isSettingsOpen": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_SETTINGS_OPEN",
+}
+`;
+
+exports[`Gutenberg actions Set the status of the settings dashboard Open the settings dashboard 1`] = `
+Object {
+  "payload": Object {
+    "isSettingsOpen": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_SETTINGS_OPEN",
+}
+`;
+
+exports[`Gutenberg actions Set the status of the settings dashboard Open the settings dashboard 2`] = `
+Object {
+  "payload": Object {
+    "isSettingsOpen": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_SETTINGS_OPEN",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Block registration process 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_BLOCK_ID",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Block registration process 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/REMOVE_TICKET_BLOCK",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Create a new ticket 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/SET_CREATE_NEW_TICKET",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Set sold amount on a ticket 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "sold": 23,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_SOLD",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Set ticket availability 1`] = `
+Object {
+  "payload": Object {
+    "available": 99,
+    "blockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_AVAILABLE",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Set ticket date is pristine 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "dateIsPristine": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_DATE_PRISTINE",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Set ticket date is pristine 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "dateIsPristine": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_DATE_PRISTINE",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Set ticket post ID 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "ticketId": 99,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_ID",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket Capacity 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "capacity": "unlimited",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_CAPACITY",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket Capacity 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "capacityType": "unlimited",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_CAPACITY_TYPE",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket SKU 1`] = `
+Object {
+  "payload": Object {
+    "SKU": "my-sku",
+    "blockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_SKU",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket dates 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "startDate": "January 1, 2018",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_START_DATE",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket dates 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "startTime": "10:00",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_START_TIME",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket dates 3`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "endDate": "January 10, 2018",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_END_DATE",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket dates 4`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "endTime": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_END_TIME",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket description 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "description": "The Next Generation of Digital Agency",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_DESCRIPTION",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket editing flag 1`] = `
+Object {
+  "payload": Object {
+    "blockId": true,
+    "isEditing": undefined,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_IS_EDITING",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket editing flag 2`] = `
+Object {
+  "payload": Object {
+    "blockId": false,
+    "isEditing": undefined,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_IS_EDITING",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket end moment object 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "endDateMoment": Object {
+      "type": "moment",
+    },
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_END_DATE_MOMENT",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket end moment object 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "endDateMoment": null,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_END_DATE_MOMENT",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket has been created 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "hasBeenCreated": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket has been created 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "hasBeenCreated": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket is loading 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "isLoading": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_IS_LOADING",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket is loading 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "isLoading": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_IS_LOADING",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket price 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "price": 99,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_PRICE",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket start moment object 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "startDateMoment": Object {
+      "type": "moment",
+    },
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_START_DATE_MOMENT",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Ticket start moment object 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "startDateMoment": null,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_START_DATE_MOMENT",
+}
+`;
+
+exports[`Gutenberg actions Single block actions Update ticket 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/SET_UPDATE_TICKET",
+}
+`;
+
+exports[`Gutenberg actions Single block actions cancel ticket edit 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+  },
+  "type": "@@MT/TICKETS/CANCEL_EDIT_OF_TICKET",
+}
+`;
+
+exports[`Gutenberg actions Single block actions fetch ticket details 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "ticketId": 99,
+  },
+  "type": "@@MT/TICKETS/FETCH_TICKET_DETAILS",
+}
+`;
+
+exports[`Gutenberg actions Temporarily values Temporarily capacity 1`] = `
+Object {
+  "payload": Object {
+    "sharedCapacity": 99,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TMP_TICKET_SHARED_CAPACITY",
+}
+`;
+
+exports[`Gutenberg actions Ticket Provider Set default provider 1`] = `
+Object {
+  "payload": Object {
+    "provider": "Tribe__Tickets__Commerce__PayPal__Main",
+  },
+  "type": "@@MT/TICKETS/SET_PROVIDER",
+}
+`;
