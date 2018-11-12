@@ -382,7 +382,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		$all_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' );
 		$args = array(
 			'post_type'      => 'tribe_tpp_orders',
-			'posts_per_page' => -1,
+			'posts_per_page' => - 1,
 			'post_status'    => $all_statuses,
 			'meta_query'     => array(
 				array(
@@ -390,11 +390,12 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 					'value' => $ID,
 				),
 			),
-			'fields'                 => 'ids'
+			'fields'         => 'ids',
 		);
 
 		$all_order_ids_for_ticket  = new WP_Query( $args );
-		if ( empty ( $all_order_ids_for_ticket->posts ) ) {
+		$order_ids = $all_order_ids_for_ticket->posts;
+		if ( empty ( $order_ids ) ) {
 			return array();
 		}
 

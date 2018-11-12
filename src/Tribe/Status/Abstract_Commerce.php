@@ -215,7 +215,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			return false;
 		}
 
-		return '<div>' . implode( ', ', array_map('esc_html', $availability ) ) . '</div>';
+		return '<div>' . implode( ', ', array_map( 'esc_html', $availability ) ) . '</div>';
 
 	}
 

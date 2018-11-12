@@ -290,14 +290,13 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 						$tickets_sold[ $ticket->name ]['incomplete'] += $order->get_item_quantity();
 					}
 
-					$order_overview->statuses[ $order->get_status_label()]->add_qty($order->get_item_quantity());
-					$order_overview->statuses[ $order->get_status_label()]->add_line_total($order->get_sub_total());
-					$order_overview->add_qty($order->get_item_quantity());
-					$order_overview->add_line_total($order->get_sub_total());
+					$order_overview->statuses[ $order->get_status_label() ]->add_qty( $order->get_item_quantity() );
+					$order_overview->statuses[ $order->get_status_label() ]->add_line_total( $order->get_sub_total() );
+					$order_overview->add_qty( $order->get_item_quantity() );
+					$order_overview->add_line_total( $order->get_sub_total() );
 
 				}
 			}
-
 		}
 
 		$post_type_object = get_post_type_object( $post->post_type );
