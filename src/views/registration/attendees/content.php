@@ -18,6 +18,13 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 
 <?php foreach ( $tickets as $ticket ) : ?>
 	<?php
+	// Only include those who have meta
+	$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
+
+	if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+		continue;
+	}
+
 	$attendee_count = 0;
 	$post           = get_post( $ticket['id'] );
 	?>
