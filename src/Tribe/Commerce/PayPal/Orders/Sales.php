@@ -400,7 +400,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		}
 
 		$orders = array();
-		foreach ( $all_order_ids_for_ticket->posts as $id ) {
+		foreach ( $order_ids as $id ) {
 
 			$order = new Tribe__Tickets__Commerce__PayPal__Order();
 			$order = $order->hydrate_from_post( $id );
