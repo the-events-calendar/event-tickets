@@ -235,8 +235,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
 		$paypal_tickets = array_filter( $tickets, array( $paypal, 'is_paypal_ticket' ) );
-
-		$ticket_ids = Tribe__Utils__Array::get( $_GET, 'product_ids', false );
+		$ticket_ids     = Tribe__Utils__Array::get( $_GET, 'product_ids', false );
 
 		if ( false !== $ticket_ids ) {
 			$ticket_ids = explode( ',', $ticket_ids );
@@ -252,9 +251,9 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$total_sold          = $sales->get_sales_for_tickets( $tickets );
 		$order_overview      = tribe( 'tickets.status' )->get_providers_status_classes( 'tpp' );
-		$complete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
+		$complete_statuses   = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
 		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'tpp' );
-		$tickets_sold = array();
+		$tickets_sold        = array();
 
 		//update ticket item counts by order status
 		foreach ( $paypal_tickets as $ticket ) {
@@ -266,14 +265,14 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 			if ( empty( $tickets_sold[ $ticket->name ] ) ) {
 				$tickets_sold[ $ticket->name ] = array(
-					'ticket'    => $ticket,
-					'has_stock' => ! $ticket->stock(),
-					'sku'       => get_post_meta( $ticket->ID, '_sku', true ),
-					'sold'      => 0,
-					'pending'   => 0,
-					'completed' => 0,
-					'refunded'  => 0,
-					'incomplete'  => 0,
+					'ticket'     => $ticket,
+					'has_stock'  => ! $ticket->stock(),
+					'sku'        => get_post_meta( $ticket->ID, '_sku', true ),
+					'sold'       => 0,
+					'pending'    => 0,
+					'completed'  => 0,
+					'refunded'   => 0,
+					'incomplete' => 0,
 				);
 			}
 

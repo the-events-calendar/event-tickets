@@ -64,7 +64,6 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	 */
 	protected $status_label = '';
 
-
 	/**
 	 * All the ticket post IDs related to the Order.
 	 *
