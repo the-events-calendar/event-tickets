@@ -8,8 +8,8 @@ import { put, call, all, select, takeEvery } from 'redux-saga/effects';
  */
 import * as types from './types';
 import * as actions from './actions';
-import { getStart, getEnd } from '@moderntribe/events/data/blocks/datetime/selectors';
-import { toMoment, toDate, toTime24Hr } from '@moderntribe/common/utils/moment';
+import { blocks } from '@moderntribe/events/data';
+import { moment as momentUtil } from '@moderntribe/common/utils';
 
 export function* setRSVPDetails( action ) {
 	const {
@@ -66,17 +66,17 @@ export function* setRSVPTempDetails( action ) {
 }
 
 export function* initializeRSVP() {
-	const start = yield select( getStart );
-	const end = yield select( getEnd );
+	const start = yield select( blocks.datetime.selectors.getStart );
+	const end = yield select( blocks.datetime.selectors.getEnd );
 
-	const startMoment = yield call( toMoment, start );
-	const endMoment = yield call( toMoment, end );
+	const startMoment = yield call( momentUtil.toMoment, start );
+	const endMoment = yield call( momentUtil.toMoment, end );
 
-	const startDate = yield call( toDate, startMoment );
-	const endDate = yield call( toDate, endMoment );
+	const startDate = yield call( momentUtil.toDate, startMoment );
+	const endDate = yield call( momentUtil.toDate, endMoment );
 
-	const startTime = yield call( toTime24Hr, startMoment );
-	const endTime = yield call( toTime24Hr, endMoment );
+	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
+	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
 
 	const startDateObj = new Date( startDate );
 	const endDateObj = new Date( endDate );
