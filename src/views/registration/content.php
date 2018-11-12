@@ -25,10 +25,14 @@ if ( empty( $events ) ) {
 		</div>
 
 		<div class="tribe-block__tickets__item__attendee__fields">
+
+			<?php $this->template( 'attendees/error', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
+
 			<form
 				method="post"
 				class="tribe-block__tickets__item__attendee__fields__form"
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
+				novalidate
 			>
 				<?php $this->template( 'attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 				<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
