@@ -69,10 +69,10 @@ export function* setRSVPTempDetails( action ) {
 
 export function* initializeRSVP() {
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
-	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
+	const eventStart = yield select( blocks.datetime.selectors.getStart );
 
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
-	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // RSVP window should end when event start
+	const endMoment = yield call( momentUtil.toMoment, eventStart ); // RSVP window should end when event start
 
 	const startDate = yield call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toTime24Hr, startMoment );

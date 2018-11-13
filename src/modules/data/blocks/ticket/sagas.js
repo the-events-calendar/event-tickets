@@ -252,10 +252,10 @@ export function* setTicketInitialState( action ) {
 	};
 
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
-	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
+	const eventStart = yield select( blocks.datetime.selectors.getStart );
 
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
-	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // Ticket purchase window should end when event start
+	const endMoment = yield call( momentUtil.toMoment, eventStart ); // Ticket purchase window should end when event start
 
 	const startDate = yield call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
