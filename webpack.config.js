@@ -5,12 +5,13 @@ const { resolve } = require( 'path' );
 const { reduce, zipObject } = require( 'lodash' );
 const merge = require( 'webpack-merge' );
 const common = require( 'product-taskmaster/webpack/common/webpack.config' );
+const eventsPlugin = require( 'product-taskmaster/webpack/externals/tribe/events' );
 const { getDirectoryNames, getDirectories } = require( 'product-taskmaster/webpack/utils/directories' );
 const { getJSFileNames, getJSFiles } = require( 'product-taskmaster/webpack/utils/files' );
 const { generateEntries } = require( 'product-taskmaster/webpack/entry/tribe' );
 
 const directoryNames = getDirectoryNames( resolve( __dirname, './src/modules' ) );
-const PLUGIN_SCOPE = 'events';
+const PLUGIN_SCOPE = 'tickets';
 
 //
 // ────────────────────────────────────────────────────────────────────────────────────── I ──────────
@@ -18,8 +19,11 @@ const PLUGIN_SCOPE = 'events';
 // ──────────────────────────────────────────────────────────────────────────────────────────────
 //
 
-const config = merge( common, {
+const config = merge.strategy( {
+	externals: 'append',
+} )( common, {
 	entry: generateEntries( __dirname, directoryNames ),
+	externals: [ eventsPlugin ],
 	output: {
 		path: __dirname,
 		library: [ 'tribe', PLUGIN_SCOPE, '[name]' ],

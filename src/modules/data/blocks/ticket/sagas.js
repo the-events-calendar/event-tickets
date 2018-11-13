@@ -24,8 +24,8 @@ import {
 import { wpREST } from '@moderntribe/common/utils/api';
 import { config, restNonce } from '@moderntribe/common/src/modules/utils/globals';
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
-import { getStart, getEnd } from '@moderntribe/events/data/blocks/datetime/selectors';
-import { toMoment, toDate, toTime24Hr } from '@moderntribe/common/utils/moment';
+import { blocks } from '@moderntribe/events/data';
+import { moment as momentUtil } from '@moderntribe/common/utils';
 
 /**
  * @todo missing tests.
@@ -251,15 +251,15 @@ export function* setTicketInitialState( action ) {
 		dateIsPristine: get( 'dateIsPristine', DEFAULT_TICKET_STATE.dateIsPristine ),
 	};
 
-	const start = yield select(getStart);
-	const end = yield select(getEnd);
+	const start = yield select( blocks.datetime.selectors.getStart );
+	const end = yield select( blocks.datetime.selectors.getEnd );
 
-	const startMoment = yield call( toMoment, start );
-	const endMoment = yield call( toMoment, end );
- 	const startDate = yield call( toDate, startMoment );
-	const endDate = yield call( toDate, endMoment );
- 	const startTime = yield call( toTime24Hr, startMoment );
-	const endTime = yield call( toTime24Hr, endMoment );
+	const startMoment = yield call( momentUtil.toMoment, start );
+	const endMoment = yield call( momentUtil.toMoment, end );
+	const startDate = yield call( momentUtil.toDate, startMoment );
+	const endDate = yield call( momentUtil.toDate, endMoment );
+	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
+	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
 
 	const sharedCapacity = yield select( selectors.getSharedCapacityInt );
 
