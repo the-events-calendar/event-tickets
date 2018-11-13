@@ -64,7 +64,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		/**
 		 * @todo  We'll need to get the post id from ET later, so support it as standalone
 		 */
-		$args['post_id']    = $post_id = tribe( 'gutenberg.events.template' )->get( 'post_id' );
+		$args['post_id']    = $post_id = tribe( 'events.editor.template' )->get( 'post_id' );
 		$args['attributes'] = $this->attributes( $attributes );
 		$args['tickets']    = $this->get_tickets( $post_id );
 

@@ -16,7 +16,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor' );
 
 		if (
-			! tribe( 'common.editor' )->should_load_blocks()
+			! tribe( 'editor' )->should_load_blocks()
 			|| ! class_exists( 'Tribe__Tickets__Main' )
 		) {
 			return;

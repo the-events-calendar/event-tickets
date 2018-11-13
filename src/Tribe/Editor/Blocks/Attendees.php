@@ -63,7 +63,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		/**
 		 * @todo Be sure we get the post ID from tickets so it can run without TEC
 		 */
-		$args['post_id']    = $post_id = tribe( 'gutenberg.events.template' )->get( 'post_id' );
+		$args['post_id']    = $post_id = tribe( 'events.editor.template' )->get( 'post_id' );
 		$args['attributes'] = $this->attributes( $attributes );
 		$args['attendees']  = $this->get_attendees( $post_id );
 
