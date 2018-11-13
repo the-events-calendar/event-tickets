@@ -194,6 +194,7 @@ class Tribe__Tickets__Main {
 
 		// Intialize the Service Provider for Tickets
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
+		tribe_register_provider( 'Tribe__Tickets__Editor__Provider' );
 
 		$this->hooks();
 
