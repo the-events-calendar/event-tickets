@@ -251,14 +251,16 @@ export function* setTicketInitialState( action ) {
 		dateIsPristine: get( 'dateIsPristine', DEFAULT_TICKET_STATE.dateIsPristine ),
 	};
 
-	const start = yield select( blocks.datetime.selectors.getStart );
-	const end = yield select( blocks.datetime.selectors.getEnd );
+	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
+	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
 
-	const startMoment = yield call( momentUtil.toMoment, start );
-	const endMoment = yield call( momentUtil.toMoment, end );
+	const startMoment = yield call( momentUtil.toMoment, publishDate );
+	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // Ticket purchase window should end when event start
+
 	const startDate = yield call( momentUtil.toDate, startMoment );
-	const endDate = yield call( momentUtil.toDate, endMoment );
 	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
+
+	const endDate = yield call( momentUtil.toDate, endMoment );
 	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
 
 	const sharedCapacity = yield select( selectors.getSharedCapacityInt );

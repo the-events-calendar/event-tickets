@@ -1,6 +1,7 @@
 /**
  * External Dependencies
  */
+import { select as wpSelect } from '@wordpress/data';
 import { put, call, all, select, takeEvery } from 'redux-saga/effects';
 
 /**
@@ -9,6 +10,7 @@ import { put, call, all, select, takeEvery } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
 import { blocks } from '@moderntribe/events/data';
+
 import { moment as momentUtil } from '@moderntribe/common/utils';
 
 export function* setRSVPDetails( action ) {
@@ -66,16 +68,16 @@ export function* setRSVPTempDetails( action ) {
 }
 
 export function* initializeRSVP() {
-	const start = yield select( blocks.datetime.selectors.getStart );
-	const end = yield select( blocks.datetime.selectors.getEnd );
+	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
+	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
 
-	const startMoment = yield call( momentUtil.toMoment, start );
-	const endMoment = yield call( momentUtil.toMoment, end );
+	const startMoment = yield call( momentUtil.toMoment, publishDate );
+	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // RSVP window should end when event start
 
 	const startDate = yield call( momentUtil.toDate, startMoment );
-	const endDate = yield call( momentUtil.toDate, endMoment );
-
 	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
+
+	const endDate = yield call( momentUtil.toDate, endMoment );
 	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
 
 	const startDateObj = new Date( startDate );
