@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-07-09 07:17:53+0000\n"
+"PO-Revision-Date: 2018-11-06 23:09:28+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -57,7 +57,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:36
 msgid "API Keys"
-msgstr ""
+msgstr "API kulcsok"
 
 #: src/admin-views/privacy.php:34
 msgid "Please note: The website owner can collect nearly any Attendee Information requested from ticket buyers by creating a custom registration form."
@@ -85,124 +85,124 @@ msgstr ""
 
 #: src/admin-views/privacy.php:24 src/admin-views/privacy.php:40
 msgid "Suggested text:"
-msgstr ""
+msgstr "Javasolt szöveg:"
 
 #: src/admin-views/privacy.php:23
 msgid "Through the usage of Event Tickets, Event Tickets Plus, and Community Tickets, information may be collected and stored within your website’s database."
-msgstr ""
+msgstr "Az Event Tickets, Event Tickets Plus és Community Tickets használatával adatokat lehet gyűjteni, és eltárolni a weboldal adatbázisában."
 
 #: src/admin-views/privacy.php:21
 msgid "Event, Attendee, and Ticket Purchaser Information"
-msgstr ""
+msgstr "Esemény, Résztvevő és Jegy vásárló információk"
 
 #: src/admin-views/privacy.php:19
 msgid "What personal data we collect and why we collect it"
-msgstr ""
+msgstr "Milyen személyes adatokat gyűjtünk, és miért?"
 
 #: src/admin-views/privacy.php:17
 msgid "This information is only for guidance and not to be considered as legal advice."
-msgstr ""
+msgstr "Ez az információ csak iránymutatásra szolgál, és nem tekinthető jogi tanácsnak."
 
 #: src/admin-views/privacy.php:17
 msgid "Disclaimer:"
-msgstr ""
+msgstr "Nyilatkozat:"
 
 #: src/admin-views/privacy.php:16
 msgid "You should include the information below in the correct sections of you privacy policy."
-msgstr ""
+msgstr "Az alábbi információknak szerepelnie kell az adatvédelmi nyilatkozat megfelelő részeiben."
 
 #: src/admin-views/privacy.php:15
 msgid "This information serves as a guide on what sections need to be modified due to usage of Event Tickets and its Add-ons."
-msgstr ""
+msgstr "Ez az információ útmutatást nyújt az Event Tickets és bővítményei miatt módosítandó szakaszokról."
 
 #: src/admin-views/privacy.php:14
 msgid "Hello,"
-msgstr ""
+msgstr "Helló!"
 
 #: src/Tribe/REST/V1/Messages.php:22
 msgid "The requested ticket check in is not available"
-msgstr ""
+msgstr "A jegyhez kért bejelentkezés nem érhető el"
 
 #: src/Tribe/REST/V1/Messages.php:21
 msgid "The requested ticket is not accessible"
-msgstr ""
+msgstr "A kért jegy nem érhető el"
 
 #: src/Tribe/REST/V1/Messages.php:20
 msgid "The requested post ID does not exist or is not a ticket"
-msgstr ""
+msgstr "A kért bejegyzés azonosító nem létezik vagy nem jegy"
 
 #: src/Tribe/REST/V1/Messages.php:19
 msgid "The ticket ID is missing from the request"
-msgstr ""
+msgstr "A jegy azonosító hiányzik a kérésből"
 
 #: src/Tribe/REST/V1/Endpoints/Swagger_Documentation.php:157
 msgid "Returns the documentation for Event Tickets REST API in Swagger consumable format."
-msgstr ""
+msgstr "Az Event Tickets REST API dokumentációját a Swagger számára elfogadható alakban adja vissza."
 
 #: src/Tribe/REST/V1/Endpoints/Swagger_Documentation.php:107
 msgid "Event Tickets REST API allows accessing ticket information easily and conveniently."
-msgstr ""
+msgstr "Az Event Tickets REST API lehetővé teszti a jegyek adatainak egyszerű és kényelmes elérését."
 
 #: src/Tribe/REST/V1/Endpoints/Swagger_Documentation.php:106
 msgid "Event Tickets REST API"
-msgstr ""
+msgstr "Event Tickets REST API"
 
 #: src/Tribe/REST/V1/Endpoints/Base.php:42
 msgid "No description provided"
-msgstr ""
+msgstr "Nincs megadva leírás"
 
 #: src/Tribe/REST/V1/Documentation/Ticket_Definition_Provider.php:26
 msgid "The ticket WordPress post ID"
-msgstr ""
+msgstr "A jegy WordPress bejegyzés azonosítója"
 
 #: src/Tribe/Privacy.php:196
 msgid "Order Title"
-msgstr ""
+msgstr "Rendelés neve"
 
 #: src/Tribe/Privacy.php:191
 msgid "Event Tickets TribeCommerce Attendee Data"
-msgstr ""
+msgstr "Event Tickets TribeCommerce résztvevő adat"
 
 #: src/Tribe/Privacy.php:121
 msgid "RSVP Title"
-msgstr ""
+msgstr "Meghívó (RSVP) neve"
 
 #: src/Tribe/Privacy.php:116
 msgid "Event Tickets RSVP Attendee Data"
-msgstr ""
+msgstr "Event Tickets meghívó (RSVP) résztvevő adat"
 
 #: src/Tribe/Privacy.php:75
 msgid "Event Tickets TribeCommerce Attendee"
-msgstr ""
+msgstr "Event Tickets TribeCommerce résztvevő"
 
 #: src/Tribe/Privacy.php:70
 msgid "Event Tickets RSVP Attendee"
-msgstr ""
+msgstr "Event Tickets meghívó (RSVP) résztvevő"
 
 #: src/views/tickets/orders.php:25
 msgid "You don't have tickets for this event"
-msgstr ""
+msgstr "Ehhez az eseményhez nincsenek jegyek"
 
 #: src/admin-views/tribe-options-tickets.php:247
 msgid "For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)"
-msgstr ""
+msgstr "Fiókjának létrehozásában és beállításában a PayPal tud segíteni az 1-844-720-4038 (USA) telefonszámon"
 
 #: common/src/Tribe/Admin/Notice/Php_Version.php:101
 msgid "Starting March 2019, %1$s will no longer work with versions prior to PHP 5.4. Currently your site is using PHP version %2$s. For best results, we recommend using PHP 5.6 or above."
-msgstr ""
+msgstr "2019. márciustól a(z) %1$s nem fog működni a PHP 5.4-nél régebbi verzióin. A weboldalon jelenleg PHP %2$s verzió fut. A legjobb eredmény érdekében javasolt a PHP 5.6 vagy újabb használata."
 
 #: common/src/Tribe/Admin/Notice/Php_Version.php:98
 msgid "Starting March 2019, %1$s will no longer support versions prior to PHP 5.6. Your site is currently using PHP version %2$s which will no longer be supported by %1$s. For best results, we recommend using PHP 5.6 or above."
-msgstr ""
+msgstr "2019 márciustól a(z) %1$s nem fog működni a PHP 5.6-nél régebbi verzióin. A weboldalon jelenleg PHP %2$s verzió fut, amin nem fog futni a(z) %1$s. A legjobb eredmény érdekében javasoljuk a PHP 5.6 vagy újabb használatát."
 
 #: src/views/tickets/tpp-return-to-cart.php:6
 msgid "Return to Cart"
-msgstr ""
+msgstr "Vissza a Kosárhoz"
 
 #: src/template-tags/tickets.php:446
 msgctxt "ticket stock message (refunded stock)"
 msgid "%1$d Refunded"
-msgstr ""
+msgstr "%1$d visszatérítve"
 
 #: src/admin-views/tribe-options-tickets.php:144
 msgid "Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between tickets. %2$s"
@@ -210,35 +210,35 @@ msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:140
 msgid "Check it out!"
-msgstr ""
+msgstr "Ezt nézd meg!"
 
 #: src/admin-views/editor/list-row.php:101
 msgid "Stock management is disabled. Enable it on the related Woocommerce product's inventory settings."
-msgstr ""
+msgstr "A készletkezelés ki van kapcsolva. A WooCommerce beállítások alatt a termékek készletkezeléssel kapcsolatos beállításainál lehet bekapcsolni."
 
 #: src/admin-views/editor/fieldset/price.php:72
 msgid "Current sale or member price. This can be managed via the product editor."
-msgstr ""
+msgstr "Aktuális akciós vagy tagsági ár. Ezt a termék szerkesztőben lehet kezelni."
 
 #: src/admin-views/editor/fieldset/price.php:71
 msgid "Sale/Member Price:"
-msgstr ""
+msgstr "Akciós/tagsági ár:"
 
 #: src/admin-views/attendees.php:125
 msgid "Search attendees"
-msgstr ""
+msgstr "Résztvevők keresése"
 
 #: src/Tribe/CSV_Importer/Column_Names.php:37
 msgid "Ticket Show Description"
-msgstr ""
+msgstr "Előadás leírása"
 
 #: common/vendor/a5hleyrich/wp-background-processing/classes/wp-background-process.php:425
 msgid "Every %d Minutes"
-msgstr ""
+msgstr "Minden %d percben"
 
 #: common/src/admin-views/tribe-options-help.php:33
 msgid "Search our support help desk"
-msgstr ""
+msgstr "Keressen a támogatói ügyfélszolgálatunkon"
 
 #: common/src/Tribe/Plugins_API.php:71
 msgid "Event Tickets Plus allows you to sell tickets to your events using WooCommerce, Easy Digital Downloads, or our built in Tribe Commerce tool. Add tickets to your posts and pages, or add %1$sThe Events Calendar%2$s and sell tickets from your event listings. Create custom registration forms, manage attendees, use custom capacity options, and more. Tickets have QR codes for easy check in at the door."
@@ -246,193 +246,193 @@ msgstr ""
 
 #: src/views/tickets/tpp.php:93
 msgid "%1$s available"
-msgstr ""
+msgstr "%1$s elérhető"
 
 #: src/views/tickets/tpp.php:54
 msgid "Please fill in the ticket confirmation name and email fields."
-msgstr ""
+msgstr "Kérjük töltsd ki a jegy visszaigazolásához a név és email mezőket."
 
 #: src/views/tickets/tpp.php:36
 msgctxt "form heading"
 msgid "Tickets"
-msgstr ""
+msgstr "Jegyek"
 
 #: src/views/tickets/tpp-success.php:134
 msgid "Order Total"
-msgstr ""
+msgstr "Rendelés összesen"
 
 #: src/views/tickets/tpp-success.php:80
 msgctxt "Success page tickets table header"
 msgid "Subtotal"
-msgstr ""
+msgstr "Részösszeg"
 
 #: src/views/tickets/tpp-success.php:79
 msgctxt "Success page tickets table header"
 msgid "Quantity"
-msgstr ""
+msgstr "Mennyiség"
 
 #: src/views/tickets/tpp-success.php:78
 msgctxt "Success page tickets table header"
 msgid "Price"
-msgstr ""
+msgstr "Ár"
 
 #: src/views/tickets/tpp-success.php:77
 msgctxt "Success page tickets table header"
 msgid "Ticket"
-msgstr ""
+msgstr "Jegy"
 
 #: src/views/tickets/tpp-success.php:65
 msgid "Thank you for your purchase! You will receive your receipt and tickets via email."
-msgstr ""
+msgstr "Köszönjük vásárlást. A számlát és a jegyeket emailben fogjuk elküldeni."
 
 #: src/views/tickets/tpp-success.php:56
 msgid "Your order (#%s) is currently processing. Once completed, you'll receive your ticket(s) in an email."
-msgstr ""
+msgstr "A rendelés (#%s) feldolgozás alatt áll. Amint végeztünk, emailben küldjük a jegy(ek)et."
 
 #: src/views/tickets/tpp-success.php:48
 msgid "Whoops! It looks like there was a problem with your order. Please contact the site owner for assistance."
-msgstr ""
+msgstr "Hoppá! Úgy látszik valami gond van a rendeléssel. Segítségért lépj kapcsolatba a weboldal üzemeltetőjével!"
 
 #: src/views/tickets/tpp-success.php:42
 msgid "No order confirmation is available because no purchase was made."
-msgstr ""
+msgstr "Nem érhető el rendelés megerősítés, mert nem történt vásárlás."
 
 #: src/views/tickets/orders-pp-tickets.php:71
 msgctxt "order status label"
 msgid "Payment status: "
-msgstr ""
+msgstr "Fizetés állapota:"
 
 #: src/views/tickets/orders-pp-tickets.php:41
 msgid "Purchased by %1$s (%2$s)"
-msgstr ""
+msgstr "Vásárolta %1$s (%2$s)"
 
 #: src/views/tickets/orders-pp-tickets.php:32
 msgid "My Tickets for This %s"
-msgstr ""
+msgstr "Jegyeim erre a(z) %sre"
 
 #: src/views/login-to-purchase.php:16
 msgid "Log in to purchase"
-msgstr ""
+msgstr "Belépés a vásárláshoz"
 
 #: src/views/login-before-purchase.php:24
 msgctxt "Registration link on Tribe Commerce checkout page, shown as an alternative the login link"
 msgid "create an account"
-msgstr ""
+msgstr "fiók létrehozása"
 
 #: src/views/login-before-purchase.php:23
 msgctxt "Login link on Tribe Commerce checkout page, shown as an alternative to the registration link"
 msgid "Log in"
-msgstr ""
+msgstr "Belépés"
 
 #: src/views/login-before-purchase.php:21
 msgctxt "Login link on Tribe Commerce checkout page"
 msgid "Log in before purchasing"
-msgstr ""
+msgstr "Belépés vásárlás előtt"
 
 #: src/admin-views/tribe-options-tickets.php:341
 msgid "Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s)."
-msgstr ""
+msgstr "Az alap IPN értesítés URL lecserélése erre. Ugyanennek az értéknek kell lennie a PayPal IPN értesítés beállítások részen (%s)."
 
 #: src/admin-views/tribe-options-tickets.php:339
 msgid "IPN Notify URL"
-msgstr ""
+msgstr "IPN értesítés URL"
 
 #: src/admin-views/tribe-options-tickets.php:330
 msgid "You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s)."
-msgstr ""
+msgstr "Az IPN értesítéseket az IPN értesítés beállítások részen lehet megnézni és kezelni (%s)."
 
 #: src/admin-views/tribe-options-tickets.php:327
 msgid "See your IPN Notification history"
-msgstr ""
+msgstr "Korábbi IPN értesítések megtekintése"
 
 #: src/admin-views/tribe-options-tickets.php:317
 msgid "Enables PayPal Sandbox mode for testing."
-msgstr ""
+msgstr "PayPal homokozó üzemmód engedélyezése teszteléshez."
 
 #: src/admin-views/tribe-options-tickets.php:316
 msgid "PayPal Sandbox"
-msgstr ""
+msgstr "PayPal homokozó"
 
 #: src/admin-views/tribe-options-tickets.php:308
 msgid "Subject of the confirmation email sent to customers when confirming a ticket purchase."
-msgstr ""
+msgstr "A jegyek vásárlásának megerősítésekor kiküldött levelek tárgya."
 
 #: src/admin-views/tribe-options-tickets.php:307
 msgid "Confirmation email subject"
-msgstr ""
+msgstr "Visszaigazoló email tárgya"
 
 #: src/admin-views/tribe-options-tickets.php:299
 msgid "Sender name of the confirmation email sent to customers when confirming a ticket purchase."
-msgstr ""
+msgstr "A jegyek vásárlásának megerősítésekor kiküldött levelek feladójának neve."
 
 #: src/admin-views/tribe-options-tickets.php:298
 msgid "Confirmation email sender name"
-msgstr ""
+msgstr "Visszaigazoló email felaójának a neve"
 
 #: src/admin-views/tribe-options-tickets.php:291
 msgid "Email address PayPal tickets customers will receive confirmation from."
-msgstr ""
+msgstr "Az emailcím, amelyről a PayPal vásárlók a megerősítést kapni fogják."
 
 #: src/admin-views/tribe-options-tickets.php:290
 msgid "Confirmation email sender address"
-msgstr ""
+msgstr "Visszaigazoló email feladójának a címe"
 
 #: src/admin-views/tribe-options-tickets.php:276
 msgid "Success page"
-msgstr ""
+msgstr "Siker oldal"
 
 #: src/admin-views/tribe-options-tickets.php:270
 msgid "Only decrease available ticket stock if an order is confirmed as Completed by PayPal."
-msgstr ""
+msgstr "Csak akkor csökkentse az elérhető jegykészletet, ha a rendelés állapota „PayPal által befejezett”."
 
 #: src/admin-views/tribe-options-tickets.php:269
 msgid "Decrease available ticket stock as soon as a Pending order is created."
-msgstr ""
+msgstr "Az elérhető jegykészlet csökkentése már a rendelés létrehozásakor."
 
 #: src/admin-views/tribe-options-tickets.php:265
 msgid "When a customer purchases a ticket, PayPal might flag the order as Pending. The order will be Complete once payment is confirmed by PayPal."
-msgstr ""
+msgstr "Amikor egy vásárló megvesz egy jegyet, a PayPal „Függőben” jelölést tehet a rendelésre. A rendelés akkor lesz „Teljesítve”, amikor a PayPal megerősíti a fizetést."
 
 #: src/admin-views/tribe-options-tickets.php:264
 msgid "Stock Handling"
-msgstr ""
+msgstr "Készletkezelés"
 
 #: src/admin-views/tribe-options-tickets.php:257
 msgid "The currency that will be used for Tribe Commerce transactions."
-msgstr ""
+msgstr "A Tribe Commerce ügyleteknél használt valuta."
 
 #: src/admin-views/tribe-options-tickets.php:256
 msgid "Currency Code"
-msgstr ""
+msgstr "Valuta kód"
 
 #: src/admin-views/tribe-options-tickets.php:244
 msgid "PayPal configuration status:"
-msgstr ""
+msgstr "PayPal beállítás állapota:"
 
 #: src/admin-views/tribe-options-tickets.php:221
 #: src/admin-views/tribe-options-tickets.php:233
 msgid "No"
-msgstr ""
+msgstr "Nem"
 
 #: src/admin-views/tribe-options-tickets.php:218
 msgid "Have you enabled instant payment notifications (IPN) in your PayPal account's Selling Tools?"
-msgstr ""
+msgstr "Engedélyezve van az azonnali fizetési értesítés (IPN) a PayPal fiókban az eladás eszközöknél (Selling Tools)?"
 
 #: src/admin-views/tribe-options-tickets.php:210
 msgid "PayPal email to receive payments:"
-msgstr ""
+msgstr "PayPal email a fizetések fogadásához:"
 
 #: src/admin-views/tribe-options-tickets.php:204
 msgid "Configure PayPal:"
-msgstr ""
+msgstr "PayPal beállítása:"
 
 #: src/admin-views/tribe-options-tickets.php:196
 msgid "Your site address is: %s"
-msgstr ""
+msgstr "A weboldal címe: %s"
 
 #: src/admin-views/tribe-options-tickets.php:194
 msgid "Have you entered this site's address in the Notification URL field in IPN Settings?"
-msgstr ""
+msgstr "Megadta a weboldal címét az IPN beállításoknál az értesítés URL mezőben?"
 
 #: src/admin-views/tribe-options-tickets.php:188
 msgid "In order to use Tribe Commerce to sell tickets, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %s"
@@ -444,52 +444,52 @@ msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:159
 msgid "Check this box if you wish to turn on Tribe Commerce functionality"
-msgstr ""
+msgstr "A jelölőnégyzettel bekapcsolhatja a Tribe Commerce funkcionalitást"
 
 #: src/admin-views/tribe-options-tickets.php:158
 msgid "Enable Tribe Commerce "
-msgstr ""
+msgstr "Tribe Commerce bekapcsolása"
 
 #: src/admin-views/tribe-options-tickets.php:123
 msgid "Tribe Commerce"
-msgstr ""
+msgstr "Tribe Commerce"
 
 #: src/admin-views/tribe-options-tickets.php:44
 msgid "Require users to log in before they purchase tickets"
-msgstr ""
+msgstr "A felhasználóknak be kell lépniük a jegyek vásárlásához"
 
 #: src/admin-views/tpp-orders.php:140
 msgid "Total Sales: %s %s"
-msgstr ""
+msgstr "Értékesítés összesen: %s %s"
 
 #: src/admin-views/tpp-orders.php:122
 msgid "SKU: (%s)"
-msgstr ""
+msgstr "SKU: (%s)"
 
 #: src/admin-views/tpp-orders.php:100 src/admin-views/tpp-orders.php:105
 msgid "Sold %d %s"
-msgstr ""
+msgstr "Eladva %d %s"
 
 #: src/admin-views/tpp-orders.php:75
 msgid "Not completed:"
-msgstr ""
+msgstr "Nem teljesített:"
 
 #: src/admin-views/tpp-orders.php:71
 msgid "Completed:"
-msgstr ""
+msgstr "Teljesített:"
 
 #: src/admin-views/tpp-orders.php:66
 msgid "Tickets sold:"
-msgstr ""
+msgstr "Eladott jegyek:"
 
 #: src/admin-views/tpp-orders.php:26
 msgctxt "post type details"
 msgid "%s Details"
-msgstr ""
+msgstr "%s részletek"
 
 #: src/admin-views/tpp-metabox-sku.php:30
 msgid "A unique identifying code for each ticket type you're selling"
-msgstr ""
+msgstr "Egyedi azonosító minden értékesített jegy-típushoz"
 
 #: src/admin-views/tpp-metabox-sku.php:20
 msgid "SKU:"
@@ -497,7 +497,7 @@ msgstr ""
 
 #: src/admin-views/editor/panel/list.php:66
 msgid "New ticket"
-msgstr ""
+msgstr "Új jegy"
 
 #: src/admin-views/editor/panel/list.php:9
 msgid "No commerce providers available"
@@ -505,7 +505,7 @@ msgstr ""
 
 #: src/admin-views/editor/panel/list.php:8
 msgid "Add a new ticket"
-msgstr ""
+msgstr "Új jegy létrehozása"
 
 #: src/admin-views/editor/fieldset/settings-provider.php:33
 msgid "Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin."
@@ -517,126 +517,126 @@ msgstr ""
 
 #: src/admin-views/editor/fieldset/settings-provider.php:32
 msgid "Sell tickets using:"
-msgstr ""
+msgstr "Jegyek értékesítése ezzel:"
 
 #: src/admin-views/editor/fieldset/price.php:68
 msgid "Current sale price. This can be managed via the product editor."
-msgstr ""
+msgstr "Aktuális ár. Ezt a termék szerkesztőben lehet kezelni."
 
 #: src/admin-views/editor/fieldset/price.php:21
 msgid "Leave blank for free tickets"
-msgstr ""
+msgstr "Ingyenes jegy esetén maradjon üresen"
 
 #: src/admin-views/editor/fieldset/price.php:7
 msgid "Ticket Price must be greater than zero."
-msgstr ""
+msgstr "A jegy árának 0-nál nagyobbnak kell lennie."
 
 #: src/admin-views/editor/column-head-price.php:1
 msgid "Price"
-msgstr ""
+msgstr "Ár"
 
 #: src/admin-views/editor/button-view-orders.php:35
 msgid "View Orders"
-msgstr ""
+msgstr "Rendelések megtekintése"
 
 #: src/Tribe/Metabox.php:345 src/Tribe/Metabox.php:381
 msgid "The attendee ID is missing from the request parameters."
-msgstr ""
+msgstr "A résztvevő azonosító hiányzik a lekérés paraméterei közül."
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:157
 msgid "denied"
-msgstr ""
+msgstr "elutasított"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:156
 msgid "refunded"
-msgstr ""
+msgstr "visszatérített"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:154
 msgid "completed"
-msgstr ""
+msgstr "teljesített"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:153
 msgid "undefined"
-msgstr ""
+msgstr "meghatározatlan"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:149
 msgid "unavailable"
-msgstr ""
+msgstr "nem elérhető"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:118
 msgid "This ticket is no longer active."
-msgstr ""
+msgstr "Ez a jegy már nem aktív."
 
 #: src/Tribe/Commerce/PayPal/Stati.php:137
 msgid "Denied <span class=\"count\">(%s)</span>"
 msgid_plural "Denied <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tiltott <span class=\"count\">(%s)</span>"
+msgstr[1] "Tiltott <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:132
 msgctxt "A PayPal order status"
 msgid "Denied"
-msgstr ""
+msgstr "Tiltott"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:128
 msgid "Refunded <span class=\"count\">(%s)</span>"
 msgid_plural "Refunded <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Visszatérített <span class=\"count\">(%s)</span>"
+msgstr[1] "Visszatérített <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:123
 msgctxt "A PayPal order status"
 msgid "Refunded"
-msgstr ""
+msgstr "Visszatérítve"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:119
 msgid "Pending <span class=\"count\">(%s)</span>"
 msgid_plural "Pending <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Függőben lévő <span class=\"count\">(%s)</span>"
+msgstr[1] "Függőben lévő <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:114
 msgctxt "A PayPal order status"
 msgid "Pending"
-msgstr ""
+msgstr "Függőben"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:110
 msgid "Not completed <span class=\"count\">(%s)</span>"
 msgid_plural "Not completed <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Nem teljesített <span class=\"count\">(%s)</span>"
+msgstr[1] "Nem teljesített <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:105
 msgctxt "A PayPal order status"
 msgid "Not completed"
-msgstr ""
+msgstr "Nem teljesített"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:101
 msgid "Completed <span class=\"count\">(%s)</span>"
 msgid_plural "Completed <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Teljesített <span class=\"count\">(%s)</span>"
+msgstr[1] "Teljesített <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:96
 msgctxt "A PayPal order status"
 msgid "Completed"
-msgstr ""
+msgstr "Teljesített"
 
 #: src/Tribe/Commerce/PayPal/Oversell/Sell_Available.php:47
 msgid "Sell only available"
-msgstr ""
+msgstr "Csak az elérhető készlet értékesítése"
 
 #: src/Tribe/Commerce/PayPal/Oversell/Sell_All.php:46
 msgid "Oversell all requested"
-msgstr ""
+msgstr "Készlet túlértékesítése"
 
 #: src/Tribe/Commerce/PayPal/Oversell/No_Oversell.php:46
 msgid "Do not oversell"
-msgstr ""
+msgstr "Ne legyen túlértékesítés"
 
 #: src/Tribe/Commerce/PayPal/Oversell/Admin_Notice_Decorator.php:242
 msgid "Process order"
-msgstr ""
+msgstr "Rendelés feldolgozása"
 
 #: src/Tribe/Commerce/PayPal/Oversell/Admin_Notice_Decorator.php:224
 msgid "Delete all attendees for this order and do not email tickets. You may also want to refund the order %1$sin your PayPal account%2$s."
@@ -660,134 +660,134 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Oversell/Admin_Notice_Decorator.php:110
 msgid "An event"
-msgstr ""
+msgstr "Egy esemény"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:247
 msgid "No matching orders found."
-msgstr ""
+msgstr "Nem található egyező rendelés."
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:157
 msgid "Refunded with %s"
-msgstr ""
+msgstr "Visszatérítve evvel: %s"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:150
 msgid "%1$s"
-msgstr ""
+msgstr "%1$s"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:79
 msgid "Total"
-msgstr ""
+msgstr "Összesen"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:76
 msgid "Status"
-msgstr ""
+msgstr "Állapot"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:75 src/Tribe/Privacy.php:136
 #: src/Tribe/Privacy.php:211
 msgid "Date"
-msgstr ""
+msgstr "Dátum"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:74
 msgid "Purchased"
-msgstr ""
+msgstr "Vásárolva"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:71
 msgid "Order"
-msgstr ""
+msgstr "Rendelés"
 
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:42
 msgid "Number of orders per page:"
-msgstr ""
+msgstr "Rendelések száma oldalanként:"
 
 #: src/Tribe/Commerce/PayPal/Orders/Sales.php:259
 msgid "Not completed"
-msgstr ""
+msgstr "Nem teljesített"
 
 #: src/Tribe/Commerce/PayPal/Orders/Sales.php:255
 msgid "Completed"
-msgstr ""
+msgstr "Teljesített"
 
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:271
 msgid "Search Orders"
-msgstr ""
+msgstr "Rendelés keresése"
 
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:207
 msgctxt "Browser title"
 msgid "%s - PayPal Orders"
-msgstr ""
+msgstr "%s - PayPal rendelés"
 
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:102
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:151
 #: src/Tribe/Commerce/PayPal/Orders/Tab.php:33
 msgid "PayPal Orders"
-msgstr ""
+msgstr "PayPal rendelések"
 
 #: src/Tribe/Commerce/PayPal/Orders/Report.php:100
 msgid "See PayPal purchases for this %s"
-msgstr ""
+msgstr "Ehhez az %shez tartozó PayPal vásárlások"
 
 #: src/Tribe/Commerce/PayPal/Notices.php:45
 msgid "set it here"
-msgstr ""
+msgstr "beállítás itt"
 
 #: src/Tribe/Commerce/PayPal/Notices.php:43
 msgid "PayPal is using PDT data but you have not set the PDT identity token"
-msgstr ""
+msgstr "A PayPal PDT adatokat használ, de nincs beállítva a PDT azonosító token"
 
 #: src/Tribe/Commerce/PayPal/Main.php:2091
 msgctxt "a PayPal ticket order status"
 msgid "Not Completed"
-msgstr ""
+msgstr "Nem teljesített"
 
 #: src/Tribe/Commerce/PayPal/Main.php:2090
 msgctxt "a PayPal ticket order status"
 msgid "Denied"
-msgstr ""
+msgstr "Elutasított"
 
 #: src/Tribe/Commerce/PayPal/Main.php:2089
 msgctxt "a PayPal ticket order status"
 msgid "Pending"
-msgstr ""
+msgstr "Függőben lévő"
 
 #: src/Tribe/Commerce/PayPal/Main.php:2088
 msgctxt "a PayPal ticket order status"
 msgid "Refunded"
-msgstr ""
+msgstr "Visszatérített"
 
 #: src/Tribe/Commerce/PayPal/Main.php:2087
 msgctxt "a PayPal ticket order status"
 msgid "Completed"
-msgstr ""
+msgstr "Teljesített"
 
 #: src/Tribe/Commerce/PayPal/Main.php:2086
 msgctxt "a PayPal ticket order status"
 msgid "Undefined"
-msgstr ""
+msgstr "Ismeretlen"
 
 #: src/Tribe/Commerce/PayPal/Main.php:1662
 msgid "Report"
-msgstr ""
+msgstr "Jelentés"
 
 #: src/Tribe/Commerce/PayPal/Main.php:1636
 msgid "Sales report"
-msgstr ""
+msgstr "Értékesítési jelentés"
 
 #: src/Tribe/Commerce/PayPal/Main.php:448
 msgid "Orders"
-msgstr ""
+msgstr "Rendelések"
 
 #: src/Tribe/Commerce/PayPal/Main.php:423
 msgid "Tribe Commerce Ticket"
-msgstr ""
+msgstr "Tribe Commerce jegy"
 
 #: src/Tribe/Commerce/PayPal/Main.php:422
 msgid "Tribe Commerce Tickets"
-msgstr ""
+msgstr "Tribe Commerce jegyek"
 
 #: src/Tribe/Commerce/PayPal/Main.php:176
 msgctxt "ticket provider"
 msgid "Tribe Commerce"
-msgstr ""
+msgstr "Tribe Commerce"
 
 #: src/Tribe/Commerce/PayPal/Links.php:56
 msgid "Profile and Settings > My selling tools > Instant Payment Notification > Update"
@@ -815,54 +815,54 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Errors.php:34
 msgid "Your order is currently processing. Once completed, you'll receive your ticket(s) in an email."
-msgstr ""
+msgstr "A rendelés feldolgozás alatt áll. Amint elkészül, emailben elküldjük a jegy(ek)et."
 
 #: src/Tribe/Commerce/PayPal/Errors.php:31
 msgid "You should add at least one ticket."
-msgstr ""
+msgstr "Legalább egy jegyet a kosárba kell tenni."
 
 #: src/Tribe/Commerce/PayPal/Errors.php:30
 msgid "You can't add more tickets than the total remaining tickets."
-msgstr ""
+msgstr "Nem lehet az elérhetőnél több jegyet hozzáadni."
 
 #: src/Tribe/Commerce/PayPal/Errors.php:29
 msgid "In order to purchase tickets, you must enter your name and a valid email address."
-msgstr ""
+msgstr "A jegy megvásárlásához meg kell adni egy nevet és egy érvényes emailcímet."
 
 #: src/Tribe/Commerce/PayPal/Errors.php:26
 msgid "Ticket quantity is 0"
-msgstr ""
+msgstr "A jegy mennyiség 0"
 
 #: src/Tribe/Commerce/PayPal/Errors.php:25
 msgid "Trying to oversell a ticket but the current oversell policy does not allow it"
-msgstr ""
+msgstr "A jegy túlértékesítés a jelenlegi beállítások alapján nem lehetséges"
 
 #: src/Tribe/Commerce/PayPal/Errors.php:24
 msgid "Attendee email and/or full name is missing"
-msgstr ""
+msgstr "A résztvevő emailcíme és/vagy a teljes neve hiányzik"
 
 #: src/Tribe/Commerce/PayPal/Errors.php:23
 msgid "There was an error"
-msgstr ""
+msgstr "Hiba történt"
 
 #: src/Tribe/Commerce/PayPal/Endpoints/Success_Template.php:99
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:155
 msgid "pending"
-msgstr ""
+msgstr "függőben"
 
 #: src/Tribe/Commerce/PayPal/Attendance_Totals.php:71
 msgctxt "attendee summary"
 msgid "Complete:"
-msgstr ""
+msgstr "Teljesített:"
 
 #: src/Tribe/Commerce/PayPal/Attendance_Totals.php:70
 msgctxt "attendee summary"
 msgid "Total Tickets Sold:"
-msgstr ""
+msgstr "Eladott jegyek száma:"
 
 #: src/Tribe/Commerce/Currency.php:285
 msgid "U.S. Dollar (USD)"
-msgstr ""
+msgstr "U.S. dollár (USD)"
 
 #: src/Tribe/Commerce/Currency.php:279
 msgid "Taiwan New Dollar (TWD)"
@@ -874,15 +874,15 @@ msgstr ""
 
 #: src/Tribe/Commerce/Currency.php:267
 msgid "Singapore Dollar (SGD)"
-msgstr ""
+msgstr "Szingapúri dollár (SGD)"
 
 #: src/Tribe/Commerce/Currency.php:261
 msgid "Swedish Krona (SEK)"
-msgstr ""
+msgstr "Svéd korona (SEK)"
 
 #: src/Tribe/Commerce/Currency.php:255
 msgid "Polish Zloty (PLN)"
-msgstr ""
+msgstr "Lengyel Zloty (PLN)"
 
 #: src/Tribe/Commerce/Currency.php:249
 msgid "Philippine Peso (PHP)"
@@ -894,11 +894,11 @@ msgstr ""
 
 #: src/Tribe/Commerce/Currency.php:237
 msgid "Norwegian Krone (NOK)"
-msgstr ""
+msgstr "Norvég korona (NOK)"
 
 #: src/Tribe/Commerce/Currency.php:231
 msgid "Mexican Peso (MXN)"
-msgstr ""
+msgstr "Mexikói peso (MXN)"
 
 #: src/Tribe/Commerce/Currency.php:225
 msgid "Malaysian Ringgit (MYR)"
@@ -906,7 +906,7 @@ msgstr ""
 
 #: src/Tribe/Commerce/Currency.php:219
 msgid "Japanese Yen (JPY)"
-msgstr ""
+msgstr "Japán jen (JPY)"
 
 #: src/Tribe/Commerce/Currency.php:213
 msgid "Israeli New Sheqel (ILS)"
@@ -914,11 +914,11 @@ msgstr ""
 
 #: src/Tribe/Commerce/Currency.php:207
 msgid "Hungarian Forint (HUF)"
-msgstr ""
+msgstr "Magyar forint (HUF)"
 
 #: src/Tribe/Commerce/Currency.php:201
 msgid "Hong Kong Dollar (HKD)"
-msgstr ""
+msgstr "Hong Kong-i dollár (HKD)"
 
 #: src/Tribe/Commerce/Currency.php:195
 msgid "Pound Sterling (GBP)"
@@ -926,39 +926,39 @@ msgstr ""
 
 #: src/Tribe/Commerce/Currency.php:189
 msgid "Euro (EUR)"
-msgstr ""
+msgstr "Euro (EUR)"
 
 #: src/Tribe/Commerce/Currency.php:183
 msgid "Danish Krone (DKK)"
-msgstr ""
+msgstr "Dán korona (DKK)"
 
 #: src/Tribe/Commerce/Currency.php:176
 msgid "Czech Koruna (CZK)"
-msgstr ""
+msgstr "Cseh korona (CZK)"
 
 #: src/Tribe/Commerce/Currency.php:170
 msgid "Swiss Franc (CHF)"
-msgstr ""
+msgstr "Svájci frank (CHF)"
 
 #: src/Tribe/Commerce/Currency.php:164
 msgid "Canadian Dollar (CAD)"
-msgstr ""
+msgstr "Kanadai dollár (CAD)"
 
 #: src/Tribe/Commerce/Currency.php:158
 msgid "Brazilian Real  (BRL)"
-msgstr ""
+msgstr "Brazil reál (BRL)"
 
 #: src/Tribe/Commerce/Currency.php:152
 msgid "Australian Dollar (AUD)"
-msgstr ""
+msgstr "Ausztrál dollár (AUD)"
 
 #: src/Tribe/Attendees_Table.php:776
 msgid "No matching attendees found."
-msgstr ""
+msgstr "Nem található ilyen résztvevő."
 
 #: src/Tribe/Attendees_Table.php:44
 msgid "Number of attendees per page:"
-msgstr ""
+msgstr "Résztvevők száma oldalanként:"
 
 #: src/Tribe/Admin/Notices.php:53
 msgid "Event Tickets does not support ticket sales via third party ecommerce plugins. If you want to sell tickets with %1$s, please purchase a license for %2$s."
@@ -980,35 +980,35 @@ msgstr ""
 
 #: src/admin-views/editor/panel/ticket.php:190
 msgid "Save RSVP"
-msgstr ""
+msgstr "Meghívó mentése"
 
 #: src/admin-views/editor/panel/ticket.php:181
 msgid "Save ticket"
-msgstr ""
+msgstr "Jegy mentése"
 
 #: src/admin-views/editor/panel/ticket.php:99
 msgid "Ticket type name shows on the front end and emailed tickets"
-msgstr ""
+msgstr "A jegy-típus neve megjelenik a weboldalon és emailekben is"
 
 #: src/admin-views/editor/panel/ticket.php:97
 msgid "Ticket Type is a required field."
-msgstr ""
+msgstr "A jegy-típus kötelező mező."
 
 #: src/admin-views/editor/panel/ticket.php:88
 msgid "Type:"
-msgstr ""
+msgstr "Típus:"
 
 #: src/admin-views/editor/panel/ticket.php:83
 msgid "Edit RSVP"
-msgstr ""
+msgstr "RSVP szerkesztése"
 
 #: src/admin-views/editor/panel/ticket.php:75
 msgid "Add new RSVP"
-msgstr ""
+msgstr "Új RSVP létrehozása"
 
 #: src/admin-views/editor/panel/settings.php:80
 msgid "Save settings"
-msgstr ""
+msgstr "Beállítások mentése"
 
 #: src/admin-views/editor/panel/settings.php:43
 msgid "Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide."
@@ -1016,23 +1016,23 @@ msgstr ""
 
 #: src/admin-views/editor/panel/settings.php:41
 msgid "Ticket header image:"
-msgstr ""
+msgstr "Jegy fejléc kép:"
 
 #: src/admin-views/editor/panel/list.php:74
 msgid "New RSVP"
-msgstr ""
+msgstr "Új RSVP"
 
 #: src/admin-views/editor/panel/list.php:72
 msgid "Add a new RSVP"
-msgstr ""
+msgstr "Új RSVP létrehozása"
 
 #: src/admin-views/editor/panel/list.php:43
 msgid "View Attendees"
-msgstr ""
+msgstr "Résztvevők megtekintése"
 
 #: src/admin-views/editor/panel/list.php:15
 msgid "You have unsaved changes to your tickets. Discard those changes?"
-msgstr ""
+msgstr "Vannak nem mentett módosítások. Eldobjuk a módosításokat?"
 
 #: src/admin-views/editor/list-table.php:40
 msgid "Available"

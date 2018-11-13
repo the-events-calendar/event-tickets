@@ -126,7 +126,7 @@ $start_date_errors = array(
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 			<span
 				class="dashicons dashicons-editor-help"
-				<?php if ( 'tribe_event' === get_post_type( $post_id ) ) : ?>
+				<?php if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post_id ) ) : ?>
 					title="<?php esc_attr_e( 'If you do not set an end sale date, tickets will be available until the event begins.', 'event-tickets' ); ?>"
 				<?php else : ?>
 					title="<?php esc_attr_e( 'If you do not set an end sale date, tickets sales will never end.', 'event-tickets' ); ?>"
