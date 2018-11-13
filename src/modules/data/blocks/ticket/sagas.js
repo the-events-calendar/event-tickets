@@ -115,14 +115,14 @@ export function* setBodyDetails( blockId ) {
 	body.append( 'name', yield select( selectors.getTicketTitle, props ) );
 	body.append( 'description', yield select( selectors.getTicketDescription, props ) );
 	body.append( 'price', yield select( selectors.getTicketPrice, props ) );
-	body.append( 'start_date', yield select( selectors.getTicketStartDate, props ) );
-	body.append( 'start_time', yield select( selectors.getTicketStartTime, props ) );
+	body.append( 'start_date', yield select( selectors.getNormalizedStartDate, props ) );
+	body.append( 'start_time', yield select( selectors.getNormalizedStartTime, props ) );
 	body.append( 'sku', yield select( selectors.getTicketSKU, props ) );
 
 	const expires = yield select( selectors.getTicketExpires, props );
 	if ( expires ) {
-		body.append( 'end_date', yield select( selectors.getTicketEndDate, props ) );
-		body.append( 'end_time', yield select( selectors.getTicketEndTime, props ) );
+		body.append( 'end_date', yield select( selectors.getNormalizedEndDate, props ) );
+		body.append( 'end_time', yield select( selectors.getNormalizedEndTime, props ) );
 	}
 
 	const capacity = {
