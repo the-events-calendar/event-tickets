@@ -23,10 +23,9 @@ import {
 	DEFAULT_STATE as DEFAULT_TICKET_STATE,
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/ticket';
 import { wpREST } from '@moderntribe/common/utils/api';
-import { config, restNonce } from '@moderntribe/common/src/modules/utils/globals';
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
 import { blocks } from '@moderntribe/events/data';
-import { toMoment, toDate, toTime24Hr } from '@moderntribe/common/utils/moment';
+import { moment as momentUtil, globals } from '@moderntribe/common/utils';
 
 /**
  * @todo missing tests.
@@ -69,7 +68,7 @@ export function* removeActiveTicketBlock( action ) {
 	}
 
 	const ticketId = yield select( selectors.getTicketId, { blockId } );
-	const { remove_ticket_nonce = '' } = restNonce();
+	const { remove_ticket_nonce = '' } = globals.restNonce();
 
 	const postId = wpSelect( 'core/editor' ).getCurrentPostId();
 	/**
@@ -149,7 +148,7 @@ export function* createNewTicket( action ) {
 	const { blockId } = action.payload;
 
 	yield call( setGlobalSharedCapacity );
-	const { add_ticket_nonce = '' } = restNonce();
+	const { add_ticket_nonce = '' } = globals.restNonce();
 	const body = yield call( setBodyDetails, blockId );
 	body.append( 'add_ticket_nonce', add_ticket_nonce );
 
@@ -240,7 +239,7 @@ export function* setInitialState( action ) {
 		yield call( getMedia, header );
 	}
 
-	const tickets = config().tickets || {};
+	const tickets = globals.config().tickets || {};
 	const defaultProvider = tickets.default_provider || '';
 	const provider = get( 'provider', DEFAULT_UI_STATE.provider );
 	yield put( actions.setProvider( provider || defaultProvider ) );
@@ -257,14 +256,14 @@ export function* setTicketInitialState( action ) {
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
 	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
 
-	const startMoment = yield call( toMoment, publishDate );
-	const endMoment = yield call( toMoment, eventEnd ); // Ticket purchase window should end when event start
+	const startMoment = yield call( momentUtil.toMoment, publishDate );
+	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // Ticket purchase window should end when event start
 
-	const startDate = yield call( toDate, startMoment );
-	const startTime = yield call( toTime24Hr, startMoment );
+	const startDate = yield call( momentUtil.toDate, startMoment );
+	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
 
-	const endDate = yield call( toDate, endMoment );
-	const endTime = yield call( toTime24Hr, endMoment );
+	const endDate = yield call( momentUtil.toDate, endMoment );
+	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
 
 	const sharedCapacity = yield select( selectors.getSharedCapacityInt );
 
@@ -319,9 +318,9 @@ export function* fetchTicketDetails( action ) {
 
 		const start = `${available_from} ${available_from_start_time}`;
 		const format = `${utils.toMomentDateFormat} ${utils.toMomentTimeFormat}`;
-		const startMoment = yield call( toMoment, start, format, false );
-		const startDate = yield call( toDate, startMoment );
-		const startTime = yield call( toTime24Hr, startMoment );
+		const startMoment = yield call( momentUtil.toMoment, start, format, false );
+		const startDate = yield call( momentUtil.toDate, startMoment );
+		const startTime = yield call( momentUtil.toTime24Hr, startMoment );
 
 		yield all([
 			put( actions.setTicketStartDateMoment( blockId, startMoment ) ),
@@ -331,9 +330,9 @@ export function* fetchTicketDetails( action ) {
 
 		if ( available_until && available_from_end_time ) {
 			const end = `${available_until} ${available_from_end_time}`;
-			const endMoment = yield call( toMoment, end, format, false );
-			const endDate = yield call( toDate, endMoment );
-			const endTime = yield call( toTime24Hr, endMoment );
+			const endMoment = yield call( momentUtil.toMoment, end, format, false );
+			const endDate = yield call( momentUtil.toDate, endMoment );
+			const endTime = yield call( momentUtil.toTime24Hr, endMoment );
 			yield all([
 				put( actions.setTicketEndDateMoment( blockId, endMoment ) ),
 				put( actions.setEndDate( blockId, endDate ) ),
@@ -406,7 +405,7 @@ export function* setGlobalSharedCapacity() {
 export function* updateTicket( action ) {
 	const { blockId } = action.payload;
 
-	const { edit_ticket_nonce = '' } = restNonce();
+	const { edit_ticket_nonce = '' } = globals.restNonce();
 	const body = yield call( setBodyDetails, blockId );
 	body.append( 'edit_ticket_nonce', edit_ticket_nonce );
 
