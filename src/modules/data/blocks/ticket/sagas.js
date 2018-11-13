@@ -6,7 +6,7 @@ import { put, all, select, takeEvery, call } from 'redux-saga/effects';
 /**
  * Wordpress dependencies
  */
-import { select as wpSelect } from '@wordpress/data';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -15,6 +15,7 @@ import * as constants from './constants';
 import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
+import * as utils from './utils';
 import {
 	DEFAULT_STATE as DEFAULT_UI_STATE,
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/ui';
@@ -287,20 +288,58 @@ export function* fetchTicketDetails( action ) {
 	const { ticketId = 0, blockId } = action.payload;
 
 	yield put( actions.setTicketIsLoading( blockId, true ) );
-
 	try {
+		// Prevent to fetch details of a non created ticket
 		if ( ticketId === 0 ) {
+			yield call( removeBlock,  blockId );
 			return;
 		}
 
-		const ticket = yield call( wpREST, {
+		const { data = {}, response = {} } = yield call( wpREST, {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
 		} );
+		const ticket = data;
+
+		if ( response.status === 404 ) {
+			yield call( removeBlock, blockId );
+			return;
+		}
+
 
 		const costDetails = ticket.cost_details || {};
 		const costValues = costDetails.values || [];
-		const { totals = {} } = ticket;
+		const {
+			totals = {},
+			available_from,
+			available_from_start_time,
+			available_until,
+			available_from_end_time,
+		} = ticket;
+
+		const start = `${available_from} ${available_from_start_time}`;
+		const format = `${utils.toMomentDateFormat} ${utils.toMomentTimeFormat}`;
+		const startMoment = yield call( toMoment, start, format, false );
+		const startDate = yield call( toDate, startMoment );
+		const startTime = yield call( toTime24Hr, startMoment );
+
+		yield all([
+			put( actions.setTicketStartDateMoment( blockId, startMoment ) ),
+			put( actions.setStartDate( blockId, startDate ) ),
+			put( actions.setStartTime( blockId, startTime ) ),
+		]);
+
+		if ( available_until && available_from_end_time ) {
+			const end = `${available_until} ${available_from_end_time}`;
+			const endMoment = yield call( toMoment, end, format, false );
+			const endDate = yield call( toDate, endMoment );
+			const endTime = yield call( toTime24Hr, endMoment );
+			yield all([
+				put( actions.setTicketEndDateMoment( blockId, endMoment ) ),
+				put( actions.setEndDate( blockId, endDate ) ),
+				put( actions.setEndTime( blockId, endTime) ),
+			]);
+		}
 
 		yield all( [
 			put( actions.setTitle( blockId, ticket.title ) ),
@@ -321,6 +360,24 @@ export function* fetchTicketDetails( action ) {
 	} finally {
 		yield put( actions.setTicketIsLoading( blockId, false ) );
 	}
+}
+
+export function* removeBlock( blockId ) {
+	const activeBlockId = yield select( selectors.getActiveBlockId );
+	const hasBeenCreated = yield select( selectors.getTicketHasBeenCreated, { blockId } );
+	if ( ! hasBeenCreated ) {
+		return;
+	}
+
+	if ( activeBlockId === blockId ) {
+		yield put( actions.setActiveChildBlockId( '' ) );
+	}
+
+	yield all( [
+		call( [ wpDispatch( 'core/editor' ), 'removeBlock' ], blockId ),
+		put( actions.removeTicketBlock( blockId ) ),
+		put( actions.setTicketIsEditing( blockId, false ) ),
+	] );
 }
 
 export function* cancelEditTicket( action ) {
