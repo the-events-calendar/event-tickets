@@ -26,7 +26,7 @@ import { wpREST } from '@moderntribe/common/utils/api';
 import { config, restNonce } from '@moderntribe/common/src/modules/utils/globals';
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
 import { blocks } from '@moderntribe/events/data';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import { toMoment, toDate, toTime24Hr } from '@moderntribe/common/utils/moment';
 
 /**
  * @todo missing tests.
@@ -257,14 +257,14 @@ export function* setTicketInitialState( action ) {
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
 	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
 
-	const startMoment = yield call( momentUtil.toMoment, publishDate );
-	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // Ticket purchase window should end when event start
+	const startMoment = yield call( toMoment, publishDate );
+	const endMoment = yield call( toMoment, eventEnd ); // Ticket purchase window should end when event start
 
-	const startDate = yield call( momentUtil.toDate, startMoment );
-	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
+	const startDate = yield call( toDate, startMoment );
+	const startTime = yield call( toTime24Hr, startMoment );
 
-	const endDate = yield call( momentUtil.toDate, endMoment );
-	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
+	const endDate = yield call( toDate, endMoment );
+	const endTime = yield call( toTime24Hr, endMoment );
 
 	const sharedCapacity = yield select( selectors.getSharedCapacityInt );
 
