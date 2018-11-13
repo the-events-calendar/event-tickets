@@ -134,7 +134,7 @@ script:
   - codecept run integration
   - codecept run functional
   - codecept run restv1
-   - codecept run acceptance
+  - codecept run acceptance
 
 
 after_failure:
