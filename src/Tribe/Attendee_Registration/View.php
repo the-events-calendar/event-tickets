@@ -42,13 +42,6 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$events       = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
-			// Only include those who have meta
-			$has_meta = get_post_meta( $ticket_id, '_tribe_tickets_meta_enabled', true );
-
-			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
-				continue;
-			}
-
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
 
