@@ -9,7 +9,7 @@ import moment from 'moment';
  * Internal dependencies
  */
 import Template from './template';
-import { withStore } from '@moderntribe/common/src/modules/hoc';
+import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import {
 	moment as momentUtil,

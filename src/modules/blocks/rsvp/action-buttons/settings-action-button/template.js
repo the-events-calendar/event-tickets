@@ -14,7 +14,7 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ActionButton } from '@moderntribe/tickets/elements';
-import { Cog as CogIcon } from '@moderntribe/common/src/modules/icons';
+import { Cog as CogIcon } from '@moderntribe/common/icons';
 
 const SettingsActionButton = ( { isDisabled, onClick } ) => (
 	<ActionButton
