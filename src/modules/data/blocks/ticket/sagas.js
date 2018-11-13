@@ -154,7 +154,7 @@ export function* createNewTicket( action ) {
 
 	try {
 		yield put( actions.setTicketIsLoading( blockId, true ) );
-		const ticket = yield call( wpREST, {
+		const { data = {} } = yield call( wpREST, {
 			path: 'tickets/',
 			namespace: 'tribe/tickets/v1',
 			initParams: {
@@ -162,6 +162,7 @@ export function* createNewTicket( action ) {
 				body,
 			},
 		} );
+		const ticket = data;
 
 		yield all( [
 			put( actions.setTicketIsEditing( blockId, false ) ),
@@ -206,7 +207,8 @@ export function* updateActiveEditBlock( action ) {
 export function* getMedia( id ) {
 	yield put( actions.setParentBlockIsLoading( true ) );
 	try {
-		const media = yield call( wpREST, { path: `media/${ id }` } );
+		const { data = {} } = yield call( wpREST, { path: `media/${ id }` } );
+		const media = data;
 		const header = {
 			id: media.id,
 			alt: media.alt_text,
