@@ -13,11 +13,13 @@ tribe.tickets.registration = {};
 	'use strict';
 
 	obj.selector = {
-		container : '.tribe-block__tickets__registration__event',
-		fields    : '.tribe-block__tickets__item__attendee__fields',
-		toggler   : '.tribe-block__tickets__registration__toggle__handler',
-		status    : '.tribe-block__tickets__registration__status',
-		field     : {
+		container   : '.tribe-block__tickets__registration__event',
+		fields      : '.tribe-block__tickets__item__attendee__fields',
+		fieldsError : '.tribe-block__tickets__item__attendee__fields__error',
+		form        : '.tribe-block__tickets__item__attendee__fields__form',
+		toggler     : '.tribe-block__tickets__registration__toggle__handler',
+		status      : '.tribe-block__tickets__registration__status',
+		field       : {
 			text     : '.tribe-block__tickets__item__attendee__field__text',
 			checkbox : '.tribe-block__tickets__item__attendee__field__checkbox',
 			select   : '.tribe-block__tickets__item__attendee__field__select',
@@ -88,6 +90,31 @@ tribe.tickets.registration = {};
 	};
 
 	/**
+	 * Handle form submission.
+	 * Display a message if there are required fields missing.
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	*/
+	obj.handleSubmission = function( e ) {
+		var $form   = $( this );
+		var $fields = $form.parent( obj.selector.fields );
+
+		if ( ! obj.validateEventAttendees( $form ) ) {
+			e.preventDefault();
+
+			$fields.find( obj.selector.fieldsError ).show();
+
+			$( 'html, body').animate( {
+				scrollTop: $fields.offset().top
+			}, 300 );
+
+			return;
+		}
+	}
+
+	/**
 	 * Init the page, set a flag for those events that need to fill inputs
 	 * Toggle down those who are ready
 	 *
@@ -108,6 +135,10 @@ tribe.tickets.registration = {};
 				$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-edit' );
 				$event.find( obj.selector.status ).find( 'i' ).addClass( 'dashicons-yes' );
 			}
+
+			// bind submission handler to each form
+			var $form = $event.find( obj.selector.form );
+			$( $form ).on( 'submit', obj.handleSubmission );
 
 		});
 
