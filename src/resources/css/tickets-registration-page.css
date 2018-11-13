@@ -220,6 +220,7 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 .tribe-block__tickets__registration__title h2 {
 	font-size: 22px;
 	font-weight: 500;
+	padding-right: 80px;
 }
 
 .tribe-block__tickets__registration__title h2 a {}
