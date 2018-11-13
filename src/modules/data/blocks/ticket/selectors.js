@@ -243,16 +243,26 @@ export const getTicketCapacityType = createSelector(
 	( block ) => block.capacityType,
 );
 
-export const getTicketValidness = createSelector(
+export const isTitleValid = createSelector(
 	[ getTicketBlock ],
-	( block ) => {
-		const isTitleValid = trim( block.title ) !== '';
-		if ( block.capacityType === TICKET_TYPES.unlimited ) {
-			return isTitleValid;
-		}
+	block => trim( block.title ) !== ''
+);
 
-		const isCapacityValid = trim( block.capacity ) !== '';
-		return isTitleValid && isCapacityValid;
+export const isCapacityValid = createSelector(
+	[ getTicketBlock ],
+	block => trim( block.capacity ) !== ''
+);
+
+export const getTicketValidness = createSelector(
+	[ getTicketBlock, isTitleValid, isCapacityValid ],
+	( block, titleValid, capacityValid ) => {
+		if (
+			block.capacityType === TICKET_TYPES.unlimited ||
+			block.capacityType === TICKET_TYPES.shared
+		) {
+			return titleValid;
+		}
+		return titleValid && capacityValid;
 	},
 );
 
