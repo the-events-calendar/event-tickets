@@ -62,7 +62,6 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	protected function hook() {
 		// Initialize the correct Singleton
 		tribe( 'tickets.editor.assets' );
-		tribe( 'tickets.editor' )->hook();
 
 		// Setup the Meta registration
 		add_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
