@@ -96,10 +96,10 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$gutenberg = tribe( 'tickets.main' );
+		$plugin = Tribe__Tickets__Main::instance();
 
 		tribe_asset(
-			$gutenberg,
+			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'views/tickets.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
@@ -116,7 +116,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		);
 
 		tribe_asset(
-			$gutenberg,
+			$plugin,
 			'tribe-tickets-gutenberg-block-tickets-style',
 			'app/tickets/frontend.css',
 			array(),
