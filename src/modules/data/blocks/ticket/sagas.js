@@ -24,7 +24,6 @@ import {
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/ticket';
 import { wpREST } from '@moderntribe/common/utils/api';
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
-import { blocks } from '@moderntribe/events/data';
 import { moment as momentUtil, globals } from '@moderntribe/common/utils';
 
 const { config, restNonce } = globals;
@@ -255,16 +254,29 @@ export function* setTicketInitialState( action ) {
 	};
 
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
-	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
-
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
-	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // Ticket purchase window should end when event start
-
 	const startDate = yield call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
 
-	const endDate = yield call( momentUtil.toDate, endMoment );
-	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
+	yield all( [
+		put( actions.setStartDate( clientId, startDate ) ),
+		put( actions.setStartTime( clientId, startTime ) ),
+	] );
+
+	try {
+		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
+		const eventStart = yield select( window.tribe.events.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event start... ideally
+		const endMoment = yield call( momentUtil.toMoment, eventStart );
+		const endDate = yield call( momentUtil.toDate, endMoment );
+		const endTime = yield call( momentUtil.toTime24Hr, endMoment );
+
+		yield all( [
+			put( actions.setEndDate( clientId, endDate ) ),
+			put( actions.setEndTime( clientId, endTime ) ),
+		] );
+	} catch ( err ) {
+		// ¯\_(ツ)_/¯
+	}
 
 	const sharedCapacity = yield select( selectors.getSharedCapacityInt );
 
@@ -276,10 +288,6 @@ export function* setTicketInitialState( action ) {
 		put( actions.setTicketHasBeenCreated( clientId, values.hasBeenCreated ) ),
 		put( actions.setTicketId( clientId, values.ticketId ) ),
 		put( actions.setTicketDateIsPristine( clientId, values.dateIsPristine ) ),
-		put( actions.setStartDate( clientId, startDate ) ),
-		put( actions.setStartTime( clientId, startTime ) ),
-		put( actions.setEndDate( clientId, endDate ) ),
-		put( actions.setEndTime( clientId, endTime ) ),
 		put( actions.fetchTicketDetails( clientId, values.ticketId ) ),
 	] );
 }

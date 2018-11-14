@@ -9,8 +9,6 @@ import { put, call, all, select, takeEvery } from 'redux-saga/effects';
  */
 import * as types from './types';
 import * as actions from './actions';
-import { blocks } from '@moderntribe/events/data';
-
 import { moment as momentUtil } from '@moderntribe/common/utils';
 
 export function* setRSVPDetails( action ) {
@@ -69,28 +67,33 @@ export function* setRSVPTempDetails( action ) {
 
 export function* initializeRSVP() {
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
-	const eventEnd = yield select( blocks.datetime.selectors.getEnd );
-
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
-	const endMoment = yield call( momentUtil.toMoment, eventEnd ); // RSVP window should end when event start
-
 	const startDate = yield call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
-
-	const endDate = yield call( momentUtil.toDate, endMoment );
-	const endTime = yield call( momentUtil.toTime24Hr, endMoment );
-
 	const startDateObj = new Date( startDate );
-	const endDateObj = new Date( endDate );
 
 	yield all( [
 		put( actions.setRSVPTempStartDate( startDate ) ),
 		put( actions.setRSVPTempStartDateObj( startDateObj ) ),
 		put( actions.setRSVPTempStartTime( startTime ) ),
-		put( actions.setRSVPTempEndDate( endDate ) ),
-		put( actions.setRSVPTempEndDateObj( endDateObj ) ),
-		put( actions.setRSVPTempEndTime( endTime ) ),
 	] );
+
+	try {
+		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
+		const eventStart = yield select( window.tribe.events.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
+		const endMoment = yield call( momentUtil.toMoment, eventStart );
+		const endDate = yield call( momentUtil.toDate, endMoment );
+		const endTime = yield call( momentUtil.toTime24Hr, endMoment );
+		const endDateObj = new Date( endDate );
+
+		yield all( [
+			put( actions.setRSVPTempEndDate( endDate ) ),
+			put( actions.setRSVPTempEndDateObj( endDateObj ) ),
+			put( actions.setRSVPTempEndTime( endTime ) ),
+		] );
+	} catch ( err ) {
+		// ¯\_(ツ)_/¯
+	}
 }
 
 export default function* watchers() {

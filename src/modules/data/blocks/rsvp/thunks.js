@@ -8,9 +8,9 @@ import moment from 'moment';
  */
 import * as actions from './actions';
 import { DEFAULT_STATE } from './reducers/header-image';
+import * as utils from '@moderntribe/tickets/data/utils';
 import { middlewares } from '@moderntribe/common/store';
 import { time, moment as momentUtil } from '@moderntribe/common/utils';
-import * as utils from '@moderntribe/tickets/data/utils';
 
 const { request: {
 	actions:wpRequestActions
