@@ -15,7 +15,8 @@ import { select } from '@wordpress/data';
 import AttendeeRegistration from './template';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
-import { config } from '@moderntribe/common/src/modules/utils/globals';
+import { globals } from '@moderntribe/common/utils';
+const { config } = globals;
 
 const getAttendeeRegistrationUrl = ( state, ownProps ) => {
 	const adminURL = config().admin_url || '';
