@@ -8,10 +8,17 @@ import moment from 'moment';
  */
 import * as actions from './actions';
 import { DEFAULT_STATE } from './reducers/header-image';
-import { actions as requestActions } from '@moderntribe/common/store/middlewares/request';
 import * as momentUtil from '@moderntribe/common/utils/moment';
 import { toSeconds, TIME_FORMAT_HH_MM } from '@moderntribe/common/utils/time';
 import * as utils from '@moderntribe/tickets/data/utils';
+
+import {
+	middlewares
+} from '@moderntribe/common/store';
+
+const { request: {
+	actions:requestActions,
+} } = middlewares;
 
 /**
  * @todo: until we can abstract out wpRequest() better, these should remain as a thunk
