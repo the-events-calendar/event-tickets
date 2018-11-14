@@ -22,7 +22,7 @@ import {
 	DEFAULT_STATE as DEFAULT_TICKET_STATE,
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/ticket';
 import { wpREST } from '@moderntribe/common/utils/api';
-import { config, restNonce } from '@moderntribe/common/src/modules/utils/globals';
+import { config, restNonce } from '@moderntribe/common/utils/globals';
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
 import { blocks } from '@moderntribe/events/data';
 import { moment as momentUtil } from '@moderntribe/common/utils';

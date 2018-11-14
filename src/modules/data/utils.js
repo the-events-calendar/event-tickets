@@ -1,4 +1,4 @@
-import { config } from '@moderntribe/common/src/modules/utils/globals';
+import { config } from '@moderntribe/common/utils/globals';
 
 export const PREFIX_TICKETS_STORE = '@@MT/TICKETS';
 

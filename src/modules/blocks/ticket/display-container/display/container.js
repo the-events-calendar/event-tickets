@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import Template from './template';
 
-import { withSaveData, withStore } from '@moderntribe/common/src/modules/hoc';
+import { withSaveData, withStore } from '@moderntribe/common/hoc';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const getSharedSold = ( state, isShared ) => (

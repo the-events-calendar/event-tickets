@@ -11,7 +11,7 @@ import includes from 'lodash/includes';
 import EcommerceOptions from './template';
 import { constants, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
-import { config } from '@moderntribe/common/src/modules/utils/globals';
+import { config } from '@moderntribe/common/utils/globals';
 
 const { EDD, WOO } = constants;
 

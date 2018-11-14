@@ -9,7 +9,7 @@ import { compose } from 'redux';
  */
 import Template from './template';
 
-import { withStore } from '@moderntribe/common/src/modules/hoc';
+import { withStore } from '@moderntribe/common/hoc';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
