@@ -2380,9 +2380,24 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$up_to_date     = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
+			$meta                   = tribe( 'tickets-plus.main' )->meta();
+			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
+			$up_to_date             = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
 
-			// Bail If things are up to date and they haven't submitted the form to access the registration page.
+			// Bail if there are no required fields in cart or the stored data is up to date
+			// And they're submitting the Attendee Registration page
+			if (
+				isset( $_REQUEST['tribe_tickets_checkout'] )
+				&& (
+					! $cart_has_required_meta
+					|| $up_to_date
+				)
+			) {
+				return;
+			}
+
+			// Bail If things are up to date and they haven't submitted the form
+			// to access the registration page.
 			if (
 				$up_to_date
 				&& (

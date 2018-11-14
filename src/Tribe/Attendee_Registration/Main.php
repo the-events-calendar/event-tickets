@@ -72,4 +72,29 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 		return $checkout_url;
 	}
+
+	/**
+	 * See if the tickets in the cart have required fields
+	 * Wrapper of Tribe__Tickets_Plus__Meta method
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id
+	 * @return bool
+	 */
+	public function cart_has_required_meta( $cart_items ) {
+
+		// Bail if ET+ is not active
+		if (
+			! class_exists( 'Tribe__Tickets_Plus__Meta' )
+			|| ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' )
+		) {
+			return false;
+		}
+
+		$meta = tribe( 'tickets-plus.main' )->meta();
+
+		return $meta->cart_has_required_meta( $cart_items );
+
+	}
 }
