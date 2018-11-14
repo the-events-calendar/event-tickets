@@ -2,7 +2,7 @@
 /**
  * This template renders a Single Ticket Quantity Minus Button
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 

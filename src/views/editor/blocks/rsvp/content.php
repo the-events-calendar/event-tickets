@@ -2,7 +2,7 @@
 /**
  * This template renders the RSVP ticket content
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 ?>

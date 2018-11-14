@@ -3,7 +3,7 @@
  * This template renders one Ticket Container it will
  * be repeated for as many ticket are to be displayed
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 $post_id = $this->get( 'post_id' );

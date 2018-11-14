@@ -3,7 +3,7 @@
  * This template renders the summary ticket quantity
  * This is hardcoded for now.
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 ?>

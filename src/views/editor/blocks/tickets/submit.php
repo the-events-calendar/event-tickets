@@ -3,7 +3,7 @@
  * This template renders the ticket form submit input or the login link
  * Depending if the user is logged in or not
  *
- * @version 0.3.4-alpha
+ * @version TBD
  *
  */
 $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();

@@ -2,7 +2,7 @@
 /**
  * This template renders the RSVP ticket description
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 $remaining_tickets = $ticket->remaining();

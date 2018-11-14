@@ -2,7 +2,7 @@
 /**
  * This template renders the registration/purchase section
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 ?>

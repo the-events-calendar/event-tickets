@@ -3,7 +3,7 @@
  * This template renders the buy button for the
  * list of all tickets in the Event
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 ?>

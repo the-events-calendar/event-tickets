@@ -3,7 +3,7 @@
  * This template renders a Single Ticket content
  * composed by Title and Description currently
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 $attendee_id   = null;

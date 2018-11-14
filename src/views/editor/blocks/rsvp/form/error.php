@@ -2,7 +2,7 @@
 /**
  * This template renders the RSVP ticket error message on the form
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 ?>

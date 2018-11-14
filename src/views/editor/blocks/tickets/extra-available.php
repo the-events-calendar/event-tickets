@@ -2,7 +2,7 @@
 /**
  * This template renders a Single Ticket availability
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 

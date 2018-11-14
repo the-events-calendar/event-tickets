@@ -3,7 +3,7 @@
  * This template renders a Single Ticket extra content
  * currently composed by Extra Price and Avaiable
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 

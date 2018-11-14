@@ -2,7 +2,7 @@
 /**
  * This template renders the RSVP ticket form login link
  *
- * @version 0.3.4-alpha
+ * @version TBD
  *
  */
 ?>

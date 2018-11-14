@@ -2,7 +2,7 @@
 /**
  * This template renders the purchase summary description
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 ?>

@@ -3,7 +3,7 @@
  * This template renders the div that will receive the
  * form from rsvp/form/form.php via AJAX
  *
- * @version 0.3.0-alpha
+ * @version TBD
  *
  */
 ?>
