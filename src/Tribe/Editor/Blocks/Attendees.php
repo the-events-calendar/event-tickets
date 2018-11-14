@@ -39,7 +39,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$gutenberg = tribe( 'tickets.main' );
+		$gutenberg = Tribe__Tickets__Main::instance();
 
 		tribe_asset(
 			$gutenberg,

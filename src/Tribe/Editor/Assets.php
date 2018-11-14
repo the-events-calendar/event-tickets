@@ -19,7 +19,7 @@ class Tribe__Tickets__Editor__Assets {
 	 * @since TBD
 	 */
 	public function register() {
-		$plugin = tribe( 'tickets.main' );
+		$plugin = Tribe__Tickets__Main::instance();
 
 		tribe_asset(
 			$plugin,
