@@ -9,17 +9,19 @@ import moment from 'moment/moment';
 import { types } from '@moderntribe/tickets/data/blocks/rsvp';
 import { moment as momentUtil } from '@moderntribe/common/utils';
 
+const currentMoment = moment();
+const endMoment = currentMoment.clone().add( 100, 'years' );
 export const DEFAULT_STATE = {
 	title: '',
 	description: '',
 	capacity: '',
 	notGoingResponses: false,
-	startDate: momentUtil.toDate( moment() ),
-	startDateObj: new Date( momentUtil.toDate( moment() ) ),
-	endDate: momentUtil.toDate( moment() ),
-	endDateObj: new Date( momentUtil.toDate( moment() ) ),
-	startTime: momentUtil.toTime24Hr( moment() ),
-	endTime: momentUtil.toTime24Hr( moment() ),
+	startDate: momentUtil.toDate( currentMoment ),
+	startDateObj: new Date( momentUtil.toDate( currentMoment ) ),
+	endDate: momentUtil.toDate( endMoment ),
+	endDateObj: new Date( momentUtil.toDate( endMoment ) ),
+	startTime: momentUtil.toTime24Hr( currentMoment ),
+	endTime: momentUtil.toTime24Hr( endMoment ),
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
