@@ -24,7 +24,6 @@ import {
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/ticket';
 import { wpREST } from '@moderntribe/common/utils/api';
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
-import { blocks } from '@moderntribe/events/data';
 import { moment as momentUtil, globals } from '@moderntribe/common/utils';
 
 const { config, restNonce } = globals;
@@ -266,7 +265,7 @@ export function* setTicketInitialState( action ) {
 
 	try {
 		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event start... ideally
+		const eventStart = yield select( window.tribe.events.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event start... ideally
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDate, endMoment );
 		const endTime = yield call( momentUtil.toTime24Hr, endMoment );
