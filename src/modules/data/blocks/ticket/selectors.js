@@ -8,7 +8,9 @@ import trim from 'lodash/trim';
  * Internal dependencies
  */
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
-import { config } from '@moderntribe/common/utils/globals';
+import { utils } from '@moderntribe/tickets/data/blocks/ticket';
+import { globals } from '@moderntribe/common/utils';
+const { config } = globals;
 
 export const getBlock = ( state ) => state.tickets.blocks.ticket;
 
@@ -294,6 +296,26 @@ export const getTicketStartDateMoment = createSelector(
 export const getTicketEndDateMoment = createSelector(
 	[ getTicketBlock ],
 	( block ) => block.endDateMoment,
+);
+
+export const getNormalizedStartDate = createSelector(
+	[ getTicketStartDateMoment, getTicketStartDate ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentDateFormat ) : fallback,
+);
+
+export const getNormalizedStartTime = createSelector(
+	[ getTicketStartDateMoment, getTicketStartTime ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentTimeFormat ) : fallback,
+);
+
+export const getNormalizedEndDate = createSelector(
+	[ getTicketEndDateMoment, getTicketEndDate ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentDateFormat ) : fallback,
+);
+
+export const getNormalizedEndTime = createSelector(
+	[ getTicketEndDateMoment, getTicketEndDate ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentTimeFormat ) : fallback,
 );
 
 export const getTicketIsLoading = createSelector(

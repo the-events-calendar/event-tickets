@@ -15,7 +15,8 @@ import { select } from '@wordpress/data';
 import AttendeesActionButton from './template';
 import { selectors } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
-import { config } from '@moderntribe/common/src/modules/utils/globals';
+import { globals } from '@moderntribe/common/utils';
+const { config } = globals;
 
 const mapStateToProps = ( state ) => {
 	const adminURL = config().admin_url || '';

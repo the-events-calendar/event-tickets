@@ -8,16 +8,12 @@ import moment from 'moment';
  */
 import * as actions from './actions';
 import { DEFAULT_STATE } from './reducers/header-image';
-import * as momentUtil from '@moderntribe/common/utils/moment';
-import { toSeconds, TIME_FORMAT_HH_MM } from '@moderntribe/common/utils/time';
 import * as utils from '@moderntribe/tickets/data/utils';
-
-import {
-	middlewares
-} from '@moderntribe/common/store';
+import { middlewares } from '@moderntribe/common/store';
+import { time, moment as momentUtil } from '@moderntribe/common/utils';
 
 const { request: {
-	actions:requestActions,
+	actions:wpRequestActions
 } } = middlewares;
 
 /**
@@ -43,10 +39,10 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	} = payload;
 
 	const startMoment = moment( startDateObj ).seconds(
-		toSeconds( startTime, TIME_FORMAT_HH_MM )
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM )
 	);
 	const endMoment = moment( endDateObj ).seconds(
-		toSeconds( endTime, TIME_FORMAT_HH_MM )
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM )
 	);
 
 	let path = `${ utils.RSVP_POST_TYPE }`;
@@ -91,7 +87,7 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const createRSVP = createOrUpdateRSVP( METHODS.POST );
@@ -107,7 +103,7 @@ export const deleteRSVP = ( id ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
@@ -192,7 +188,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const updateRSVPHeaderImage = ( postId, image ) => ( dispatch ) => {
@@ -223,7 +219,7 @@ export const updateRSVPHeaderImage = ( postId, image ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const deleteRSVPHeaderImage = ( postId ) => ( dispatch ) => {
@@ -254,7 +250,7 @@ export const deleteRSVPHeaderImage = ( postId ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const getRSVPHeaderImage = ( id ) => ( dispatch ) => {
@@ -279,5 +275,5 @@ export const getRSVPHeaderImage = ( id ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };

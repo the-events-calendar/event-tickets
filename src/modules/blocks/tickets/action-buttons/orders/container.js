@@ -3,7 +3,8 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import { config } from '@moderntribe/common/utils/globals';
+import { globals } from '@moderntribe/common/utils';
+const { config } = globals;
 
 /**
  * Wordpress dependencies
@@ -24,7 +25,7 @@ const mapStateToProps = ( state ) => {
 	const postId = select( 'core/editor' ).getCurrentPostId();
 	const provider = selectors.getSelectedProvider( state );
 	const page = TICKET_ORDERS_PAGE_SLUG[ provider ];
-	
+
 	return {
 		href: page
 			? `${ adminURL }edit.php?post_type=${ postType }&page=${ page }&event_id=${ postId }`
