@@ -104,6 +104,7 @@
   },
   "dependencies": {
     "@moderntribe/tickets": "file:src/modules",
+    "@moderntribe/common": "file:common/src/modules",
     "@nfen/redux-reducer-injector": "0.0.3",
     "@wordpress/a11y": "1.0.3",
     "@wordpress/data": "^1.1.0",
