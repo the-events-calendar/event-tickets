@@ -8,7 +8,7 @@ import moment from 'moment';
  */
 import * as actions from './actions';
 import { DEFAULT_STATE } from './reducers/header-image';
-import { actions as requestActions } from '@moderntribe/common/store/middlewares/request';
+import { wpRequestActions } from '@moderntribe/common/store/middlewares';
 import * as momentUtil from '@moderntribe/common/utils/moment';
 import { toSeconds, TIME_FORMAT_HH_MM } from '@moderntribe/common/utils/time';
 import * as utils from '@moderntribe/tickets/data/utils';
@@ -84,7 +84,7 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const createRSVP = createOrUpdateRSVP( METHODS.POST );
@@ -100,7 +100,7 @@ export const deleteRSVP = ( id ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
@@ -185,7 +185,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const updateRSVPHeaderImage = ( postId, image ) => ( dispatch ) => {
@@ -216,7 +216,7 @@ export const updateRSVPHeaderImage = ( postId, image ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const deleteRSVPHeaderImage = ( postId ) => ( dispatch ) => {
@@ -247,7 +247,7 @@ export const deleteRSVPHeaderImage = ( postId ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
 
 export const getRSVPHeaderImage = ( id ) => ( dispatch ) => {
@@ -272,5 +272,5 @@ export const getRSVPHeaderImage = ( id ) => ( dispatch ) => {
 		},
 	};
 
-	dispatch( requestActions.wpRequest( options ) );
+	dispatch( wpRequestActions.wpRequest( options ) );
 };
