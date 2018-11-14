@@ -1,0 +1,56 @@
+.tribe-editor__ticket {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	/*
+	this negative margin is to fit the blocks to the bounds of the pseudo element :before of
+	the drag block
+	 */
+	margin: -19px 0;
+
+	&--edit {
+		.tribe-editor__container-panel--ticket {
+			border-color: #b1b5b8;
+		}
+	}
+}
+
+.tribe-editor__ticket--loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+	width: 100%;
+
+	.components-spinner {
+		flex: none;
+	}
+}
+
+.tribe-editor__ticket--edit,
+.tribe-editor__ticket--display {
+	.tribe-editor__container-panel--ticket {
+		width: 100%;
+	}
+}
+
+.tribe-editor__ticket-icon {
+	background-color: #F8F9F9;
+	align-self: stretch;
+	display: flex;
+	align-items: center;
+	padding: 0 7px;
+	flex: none;
+
+	svg {
+		flex: none;
+	}
+}
+
+
+.tribe-editor__ticket--display {
+	.tribe-editor__container-panel {
+		width: 100%;
+		flex: 1;
+	}
+}

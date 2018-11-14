@@ -1,0 +1,147 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CapacityTable /> independent property 1`] = `
+<div
+  className="tribe-editor__capacity"
+>
+  <h3
+    className="tribe-editor__capacity__title"
+  >
+    Capacity
+  </h3>
+  <div
+    className="tribe-editor__capacity-row"
+  >
+    <span
+      className="tribe-editor__capacity-row--left"
+    >
+      <span
+        className="tribe-editor__capacity-row__label"
+      >
+        Shared Capacity
+      </span>
+      
+    </span>
+    <span
+      className="tribe-editor__capacity-row--right"
+    >
+      <input
+        min="0"
+        onChange={[Function]}
+        type="number"
+      />
+    </span>
+  </div>
+  <div
+    className="tribe-editor__capacity-row"
+  >
+    <span
+      className="tribe-editor__capacity-row--left"
+    >
+      <span
+        className="tribe-editor__capacity-row__label"
+      >
+        Independent capacity
+      </span>
+      
+    </span>
+    <span
+      className="tribe-editor__capacity-row--right"
+    >
+      0
+    </span>
+  </div>
+  <div
+    className="tribe-editor__capacity-row"
+  >
+    <span
+      className="tribe-editor__capacity-row--left"
+    >
+      <span
+        className="tribe-editor__capacity-row__label"
+      >
+        Total Capacity
+      </span>
+      
+    </span>
+    <span
+      className="tribe-editor__capacity-row--right"
+    >
+      70
+    </span>
+  </div>
+</div>
+`;
+
+exports[`<CapacityTable /> shared property 1`] = `
+<div
+  className="tribe-editor__capacity"
+>
+  <h3
+    className="tribe-editor__capacity__title"
+  >
+    Capacity
+  </h3>
+  <div
+    className="tribe-editor__capacity-row"
+  >
+    <span
+      className="tribe-editor__capacity-row--left"
+    >
+      <span
+        className="tribe-editor__capacity-row__label"
+      >
+        Shared Capacity
+      </span>
+      
+    </span>
+    <span
+      className="tribe-editor__capacity-row--right"
+    >
+      <input
+        min="0"
+        onChange={[Function]}
+        type="number"
+      />
+    </span>
+  </div>
+  <div
+    className="tribe-editor__capacity-row"
+  >
+    <span
+      className="tribe-editor__capacity-row--left"
+    >
+      <span
+        className="tribe-editor__capacity-row__label"
+      >
+        Independent capacity
+      </span>
+      
+    </span>
+    <span
+      className="tribe-editor__capacity-row--right"
+    >
+      0
+    </span>
+  </div>
+  <div
+    className="tribe-editor__capacity-row"
+  >
+    <span
+      className="tribe-editor__capacity-row--left"
+    >
+      <span
+        className="tribe-editor__capacity-row__label"
+      >
+        Total Capacity
+      </span>
+      
+    </span>
+    <span
+      className="tribe-editor__capacity-row--right"
+    >
+      30
+    </span>
+  </div>
+</div>
+`;
