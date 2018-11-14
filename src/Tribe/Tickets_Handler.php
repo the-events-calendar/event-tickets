@@ -663,7 +663,10 @@ class Tribe__Tickets__Tickets_Handler {
 				 * Due to a bug in version 4.5.6 of our code RSVP doesnt lower the Stock
 				 * so when setting up the capacity we need to avoid counting solds
 				 */
-				if ( 'Tribe__Tickets__RSVP' === get_class( $connections->provider ) ) {
+				if (
+					is_object( $connections->provider )
+					&& 'Tribe__Tickets__RSVP' === get_class( $connections->provider )
+				) {
 					$capacity = $totals['stock'];
 				} else {
 					$capacity = array_sum( $totals );
