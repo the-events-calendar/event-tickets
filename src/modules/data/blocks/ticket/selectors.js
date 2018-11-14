@@ -8,7 +8,8 @@ import trim from 'lodash/trim';
  * Internal dependencies
  */
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
-import { config } from '@moderntribe/common/utils/globals';
+import { globals } from '@moderntribe/common/utils';
+const { config } = globals;
 
 export const getBlock = ( state ) => state.tickets.blocks.ticket;
 
