@@ -20,7 +20,7 @@ export const DEFAULT_STATE = {
 	SKU: '',
 	startDate: momentUtil.toDate( currentMoment ),
 	startDateMoment: currentMoment,
-	endDate: momentUtil.toDate( currentMoment.clone().add( ADDITIONAL_DAYS, 'days' ) ),
+	endDate: momentUtil.toDate( currentMoment.clone().add( 100, 'years' ) ),
 	endDateMoment: currentMoment,
 	startTime: momentUtil.toTime24Hr( currentMoment ),
 	endTime: momentUtil.toTime24Hr( currentMoment ),
