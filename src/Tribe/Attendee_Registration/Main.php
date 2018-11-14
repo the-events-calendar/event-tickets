@@ -79,7 +79,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 *
 	 * @since TBD
 	 *
-	 * @param int $ticket_id
+	 * @param int $cart_items
 	 * @return bool
 	 */
 	public function cart_has_required_meta( $cart_items ) {
