@@ -16,8 +16,10 @@ import { createBlock } from '@wordpress/blocks';
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { plugins } from '@moderntribe/common/data';
 
 const mapStateToProps = ( state, ownProps ) => ( {
+	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	isEditFormValid: selectors.getTicketValidness( state, {
 		blockId: ownProps.activeBlockId,
 	} ),
