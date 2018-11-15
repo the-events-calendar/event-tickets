@@ -54,8 +54,14 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			$events[ $ticket->event ][] = $ticket_data;
 		}
 
-		// Check if the cart has a ticket with required meta fields
-		$cart_has_required_meta = tribe( 'tickets.attendee_registration' )->cart_has_required_meta( $cart_tickets );
+		/**
+		 * Check if the cart has a ticket with required meta fields
+		 *
+		 * @since TDB
+		 *
+		 * @param array  The array containing the cart elements. Format arrat( 'ticket_id' => 'quantity' );
+		 */
+		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', $cart_tickets );
 
 		// Get the checkout URL, it'll be added to the checkout button
 		$checkout_url       = tribe( 'tickets.attendee_registration' )->get_checkout_url();
