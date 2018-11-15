@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
 import uniqid from 'uniqid';
@@ -17,6 +17,7 @@ import { Dashicon } from '@wordpress/components';
  */
 import { TICKET_TYPES, TICKET_TYPES_VALUES } from '@moderntribe/tickets/data/utils';
 import { LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { NumberInput } from '@moderntribe/common/elements';
 import './style.pcss';
 
 // todo: replace with custom select from Events Pro
@@ -86,12 +87,16 @@ class Capacity extends PureComponent {
 		setTemporarilySharedCapacity: PropTypes.func,
 		tmpSharedCapacity: PropTypes.string,
 		onCapacityChange: PropTypes.func,
+		hasTicketsPlus: PropTypes.bool,
 	};
 
 	static defaultProps = {
 		type: TICKET_TYPES.independent,
 		capacityOptions: [
-			{ name: __( 'Share capacity with other tickets', 'events-gutenberg' ), value: TICKET_TYPES.shared },
+			{
+				name: __( 'Share capacity with other tickets', 'events-gutenberg' ),
+				value: TICKET_TYPES.shared
+			},
 			{
 				name: __( 'Set capacity for this ticket only', 'events-gutenberg' ),
 				value: TICKET_TYPES.independent,
@@ -113,7 +118,7 @@ class Capacity extends PureComponent {
 		};
 	}
 
-	render() {
+	renderDropdown() {
 		const {
 			capacityOptions,
 			type,
@@ -138,6 +143,71 @@ class Capacity extends PureComponent {
 		}
 
 		return (
+			<Fragment>
+				<div className="tribe-editor__ticket-fields__select-container">
+					<Select
+						selected={ type }
+						options={ capacityOptions }
+						onSelect={ onSelectType }
+						id={ this.ids.select }
+					/>
+				</div>
+				{ type === TICKET_TYPES.shared && totalSharedCapacity === '' && (
+					<Input
+						id={ this.ids.globalShared }
+						input={ {
+							onChange: setTemporarilySharedCapacity,
+							label: __( 'Set shared capacity:', 'events-gutenberg' ),
+							value: tmpSharedCapacity,
+						} }
+						min="0"
+					/>
+				) }
+				{
+					type === TICKET_TYPES.independent && (
+						<Input
+							id={ this.ids.capacity }
+							input={ inputProps }
+							min="0"
+						/>
+					)
+				}
+				{ type === TICKET_TYPES.shared && (
+					<Input
+						id={ this.ids.capacity }
+						input={ {
+							onChange: onCapacityChange,
+							label: __( '(optional) Limit sales of this ticket to:', 'events-gutenberg' ),
+							value: capacity,
+						} }
+						min="0"
+						{ ...extraInputProps }
+					/>
+				) }
+			</Fragment>
+		);
+	}
+
+	renderSingleCapacity() {
+		const { regularCapacity, setRegularTicketValue } = this.props;
+		return (
+			<Fragment>
+				<div className="tribe-editor__container-panel__input--regular">
+					<NumberInput
+						onChange={ setRegularTicketValue }
+						value={ regularCapacity }
+					/>
+				</div>
+				<span className="tribe-editor__container-panel__helper-text">
+						{ __( 'Leave blank for unlimited', 'events-gutenberg' ) }
+'				</span>
+			</Fragment>
+		);
+	}
+
+	render() {
+		const { hasTicketsPlus } = this.props;
+		return (
 			<div className="tribe-editor__container-panel__row">
 				<LabelWithTooltip
 					className="tribe-editor__container-panel__label"
@@ -150,47 +220,10 @@ class Capacity extends PureComponent {
 					) }
 					tooltipLabel={ <Dashicon icon="info-outline" /> }
 				/>
-				<div className="tribe-editor__container-panel__input-group tribe-editor__ticket-fields__capacity">
-					<div className="tribe-editor__ticket-fields__select-container">
-						<Select
-							selected={ type }
-							options={ capacityOptions }
-							onSelect={ onSelectType }
-							id={ this.ids.select }
-						/>
-					</div>
-					{ type === TICKET_TYPES.shared && totalSharedCapacity === '' && (
-						<Input
-							id={ this.ids.globalShared }
-							input={ {
-								onChange: setTemporarilySharedCapacity,
-								label: __( 'Set shared capacity:', 'events-gutenberg' ),
-								value: tmpSharedCapacity,
-							} }
-							min="0"
-						/>
-					) }
-					{
-						type === TICKET_TYPES.independent && (
-							<Input
-								id={ this.ids.capacity }
-								input={ inputProps }
-								min="0"
-							/>
-						)
-					}
-					{ type === TICKET_TYPES.shared && (
-						<Input
-							id={ this.ids.capacity }
-							input={ {
-								onChange: onCapacityChange,
-								label: __( '(optional) Limit sales of this ticket to:', 'events-gutenberg' ),
-								value: capacity,
-							} }
-							min="0"
-							{ ...extraInputProps }
-						/>
-					) }
+				<div
+					className="tribe-editor__container-panel__input-group tribe-editor__ticket-fields__capacity">
+					{ hasTicketsPlus && this.renderDropdown() }
+					{ ! hasTicketsPlus && this.renderSingleCapacity() }
 				</div>
 			</div>
 		);

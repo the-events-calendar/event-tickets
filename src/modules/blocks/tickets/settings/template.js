@@ -12,12 +12,12 @@ import { SettingsDashboard } from '@moderntribe/tickets/elements';
 import CapacityTable from '@moderntribe/tickets/blocks/tickets/capacity-table/container';
 import TicketImage from './../header-image/container';
 
-const TicketsSettingsDashboard = ( { onCloseClick, content } ) => (
+const TicketsSettingsDashboard = ( { onCloseClick, content, hasTicketsPlus } ) => (
 	<SettingsDashboard
 		className="tribe-editor__tickets__settings-dashboard"
 		content={ (
 			<Fragment>
-				<CapacityTable />
+				{ hasTicketsPlus && <CapacityTable /> }
 				<TicketImage />
 			</Fragment>
 		) }
@@ -27,10 +27,12 @@ const TicketsSettingsDashboard = ( { onCloseClick, content } ) => (
 
 TicketsSettingsDashboard.propTypes = {
 	onCloseClick: PropTypes.func.isRequired,
+	hasTicketsPlus: PropTypes.bool,
 };
 
 TicketsSettingsDashboard.defaultProps = {
 	onCloseClick: noop,
+	hasTicketsPlus: false,
 };
 
 export default TicketsSettingsDashboard;

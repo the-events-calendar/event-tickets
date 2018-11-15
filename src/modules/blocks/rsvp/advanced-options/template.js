@@ -32,7 +32,7 @@ class RSVPAdvancedOptions extends PureComponent {
 	getContent = () => (
 		<Fragment>
 			<RSVPDuration />
-			<RSVPAttendeeRegistration />
+			{ this.props.hasTicketsPlus && <RSVPAttendeeRegistration /> }
 		</Fragment>
 	);
 

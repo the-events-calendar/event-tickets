@@ -8,9 +8,13 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import TicketsSettingsDashboard from './template';
-
+import { plugins } from '@moderntribe/common/data';
 import { actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
+
+const mapStateToProps = ( state ) => ( {
+	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
+} );
 
 const mapDispatchToProps = ( dispatch ) => ( {
 	onCloseClick: () => dispatch( actions.closeSettings() ),
@@ -18,6 +22,6 @@ const mapDispatchToProps = ( dispatch ) => ( {
 
 export default compose(
 	withStore(),
-	connect( null, mapDispatchToProps ),
+	connect( mapStateToProps, mapDispatchToProps ),
 )( TicketsSettingsDashboard );
 

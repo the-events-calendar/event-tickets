@@ -11,12 +11,15 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
+import { plugins } from '@moderntribe/common/data';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	type: selectors.getTicketCapacityType( state, ownProps ),
 	capacity: selectors.getTicketCapacity( state, ownProps ),
+	regularCapacity: selectors.getRegularTicketCapacity( state, ownProps ),
 	totalSharedCapacity: selectors.getSharedCapacity( state ),
 	tmpSharedCapacity: selectors.getTmpSharedCapacity( state ),
+	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
@@ -42,6 +45,10 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	},
 	setTemporarilySharedCapacity( capacity ) {
 		dispatch( actions.setTempSharedCapacity( capacity ) );
+	},
+	setRegularTicketValue( e ) {
+		const { blockId } = ownProps;
+		dispatch( actions.setRegularTicketValue( blockId, e.target.value ) );
 	},
 } );
 

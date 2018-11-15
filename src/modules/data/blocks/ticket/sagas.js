@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import { put, all, select, takeEvery, call } from 'redux-saga/effects';
+import trim from 'lodash/trim';
 
 /**
  * Wordpress dependencies
@@ -455,6 +456,17 @@ export function* updateTicket( action ) {
 	}
 }
 
+export function* setRegularCapacity( action ) {
+	const { payload = {} } = action;
+	const { blockId, capacity } = payload;
+	const isEmpty = trim( capacity ) === '';
+	const capacityType = isEmpty ? TICKET_TYPES.unlimited : TICKET_TYPES.independent;
+	yield all([
+		put( actions.setCapacityType( blockId, capacityType ) ),
+		put( actions.setCapacity( blockId, capacity ) ),
+	])
+}
+
 export default function* watchers() {
 	yield takeEvery( types.SET_TICKET_BLOCK_ID, setEditInTicketBlock );
 	yield takeEvery( types.REQUEST_REMOVAL_OF_TICKET_BLOCK, removeActiveTicketBlock );
@@ -465,4 +477,5 @@ export default function* watchers() {
 	yield takeEvery( types.FETCH_TICKET_DETAILS, fetchTicketDetails );
 	yield takeEvery( types.CANCEL_EDIT_OF_TICKET, cancelEditTicket );
 	yield takeEvery( types.SET_UPDATE_TICKET, updateTicket );
+	yield takeEvery( types.SET_TICKET_REGULAR_CAPACITY, setRegularCapacity );
 }

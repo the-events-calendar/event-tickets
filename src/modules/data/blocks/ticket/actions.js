@@ -297,3 +297,11 @@ export const setTicketAvailable = ( blockId, available ) => ( {
 		available,
 	},
 } );
+
+export const setRegularTicketValue = ( blockId, capacity ) => ( {
+	type: types.SET_TICKET_REGULAR_CAPACITY,
+	payload: {
+		blockId,
+		capacity,
+	}
+} );

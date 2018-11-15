@@ -39,14 +39,26 @@ const TicketsDashboardAction = ( props ) => {
 		hasBeenCreated,
 		onCancelClick,
 		hasProviders,
+		hasTicketsPlus,
 	} = props;
 
 	const dashboardProps = {
-		actions: isEditing ? [] : actions,
+		actions: [],
 		confirmLabel: __( 'Add Tickets', 'events-gutenberg' ),
 		onConfirmClick,
 		onCancelClick,
 	};
+
+	if ( ! isEditing ) {
+		if ( hasTicketsPlus ) {
+			dashboardProps.actions = actions;
+		} else {
+			dashboardProps.actions = [
+				<SettingsActionButton />,
+				<OrdersActionButton />,
+			];
+		}
+	}
 
 	/**
 	 * @todo: Remove the dependency of the current/active child block on this dashboard and move the
@@ -75,6 +87,7 @@ TicketsDashboardAction.propTypes = {
 	activeBlockId: PropTypes.string,
 	hasBeenCreated: PropTypes.bool,
 	hasProviders: PropTypes.bool,
+	hasTicketsPlus: PropTypes.bool,
 };
 
 export default TicketsDashboardAction;
