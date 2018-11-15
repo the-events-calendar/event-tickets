@@ -44,4 +44,4 @@ if ( empty( $events ) ) {
 
 <?php endforeach; ?>
 
-<?php $this->template( 'button-checkout', array( 'checkout_url' => $checkout_url ) );
+<?php $this->template( 'button-checkout', array( 'checkout_url' => $checkout_url, 'cart_has_required_meta' => $cart_has_required_meta, 'is_meta_up_to_date' => $is_meta_up_to_date ) );
