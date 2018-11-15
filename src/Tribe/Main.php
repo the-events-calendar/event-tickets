@@ -187,18 +187,21 @@ class Tribe__Tickets__Main {
 		 */
 		$this->maybe_include_et_plus_class();
 
-		if (
-			class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& version_compare( Tribe__Tickets_Plus__Main::VERSION, preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<' )
-		) {
-			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
+		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+			$version_replace = preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION );
+			$is_not_compatible = version_compare( Tribe__Tickets_Plus__Main::VERSION, $version_replace, '<' );
+			$is_min_not_compatible = version_compare( self::VERSION, Tribe__Tickets_Plus__Main::REQUIRED_TICKETS_VERSION, '<' );
 
-			/**
-			 * Fires if Event Tickets cannot load due to compatibility or other problems.
-			 */
-			do_action( 'tribe_tickets_plugin_failed_to_load' );
+			if ( $is_not_compatible && $is_min_not_compatible ) {
+				add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
 
-			return;
+				/**
+				 * Fires if Event Tickets cannot load due to compatibility or other problems.
+				 */
+				do_action( 'tribe_tickets_plugin_failed_to_load' );
+
+				return;
+			}
 		}
 
 		// Intialize the Service Provider for Tickets
