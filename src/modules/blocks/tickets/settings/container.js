@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import TicketsSettingsDashboard from './template';
-import { plugins } from '@moderntribe/common/data/plugins';
+import { plugins } from '@moderntribe/common/data';
 import { actions } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
