@@ -14,17 +14,18 @@ import AttendeesRegistration from './attendees-registration/container';
 
 import './style.pcss';
 
-const TicketEditContent = ( { blockId } ) => (
+const TicketEditContent = ( { blockId, hasTicketsPlus } ) => (
 	<div className="tribe-editor__ticket-container__content">
 		<Capacity blockId={ blockId } />
 		<AdvancedOptions blockId={ blockId } />
 		<EcommerceOptions blockId={ blockId } />
-		<AttendeesRegistration blockId={ blockId } />
+		{ hasTicketsPlus && <AttendeesRegistration blockId={ blockId } /> }
 	</div>
 );
 
 TicketEditContent.propTypes = {
 	blockId: PropTypes.string.isRequired,
+	hasTicketsPlus: PropTypes.bool,
 };
 
 export default TicketEditContent;

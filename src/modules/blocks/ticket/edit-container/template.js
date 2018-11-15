@@ -13,13 +13,13 @@ import StatusIcons from '@moderntribe/tickets/blocks/ticket/display-container/st
 import TicketHeader from './header/container';
 import TicketContent from './content/template';
 
-const TicketEditContainer = ( { blockId, isTicketDisabled, expires } ) => (
+const TicketEditContainer = ( { blockId, isTicketDisabled, expires, hasTicketsPlus } ) => (
 	<ContainerPanel
 		className="tribe-editor__edit-ticket-container"
 		layout={ LAYOUT.ticket }
 		icon={ <StatusIcons expires={ expires } disabled={ isTicketDisabled } /> }
 		header={ <TicketHeader blockId={ blockId } /> }
-		content={ <TicketContent blockId={ blockId } /> }
+		content={ <TicketContent blockId={ blockId } hasTicketsPlus={ hasTicketsPlus } /> }
 	/>
 );
 
