@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-10-02 20:38:52+0000\n"
+"PO-Revision-Date: 2018-11-08 11:59:19+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,23 +17,23 @@ msgstr "¡Tienes tickets!"
 
 #: src/admin-views/tribe-options-tickets.php:279
 msgid "After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content."
-msgstr ""
+msgstr "Después de realizar un pedido con éxito en PayPal, los usuarios serán redirigidos a esta Página; usa el shortcode %s para mostrar la confirmación del pedido al usuario en el contenido de la página."
 
 #: src/admin-views/privacy.php:56
 msgid "If you have extended our plugin(s) to send data to a third-party service such as Eventbrite, Google Maps, or PayPal, user information may be passed to these external services. These services may be located abroad."
-msgstr ""
+msgstr "Si has ampliado nuestro pluguin(s) para enviar datos a servicios de terceros, como a Eventbrite, Google Maps, o PayPal, la información del usuario puede ser enviada a estos servicios externos. Estos servicios pueden estar ubicados en el extranjero."
 
 #: src/admin-views/privacy.php:54
 msgid "Modern Tribe does not send any user data outside of your website by default."
-msgstr ""
+msgstr "Modern Tribe no envía ningún dato de usuario fuera de tu web por defecto."
 
 #: src/admin-views/privacy.php:52
 msgid "Where We Send Your Data"
-msgstr ""
+msgstr "Donde mandamos tus datos"
 
 #: src/admin-views/privacy.php:50
 msgid "Certain data may be exported or removed upon users request via the existing Exporter or Eraser. Please note, however, that several “edge cases” exist in which we are unable to perfect the gathering and export of all data for your end users. We suggest running a search in your local database, as well as within the WordPress Dashboard, in order to identify all data collected and stored for your specific user requests."
-msgstr ""
+msgstr "Ciertos datos pueden ser exportados o eliminados a petición del usuario a través del Exportador o Eliminador existente. Ten en cuenta, sin embargo, que pueden darse varios “casos extremos” en los que no es posible perfeccionar la recopilación y exportación de todos los datos para sus usuarios finales. Sugerimos ejecutar una búsqueda en tu base de datos local, así como dentro del Escritorio de WordPress, para identificar todos los datos recopilados y almacenados para tus solicitudes de usuarios específicos."
 
 #: src/admin-views/privacy.php:48
 msgid "All information (data) is retained in the local database indefinitely, unless otherwise deleted."
@@ -117,23 +117,23 @@ msgstr ""
 
 #: src/admin-views/privacy.php:14
 msgid "Hello,"
-msgstr ""
+msgstr "Hola,"
 
 #: src/Tribe/REST/V1/Messages.php:22
 msgid "The requested ticket check in is not available"
-msgstr ""
+msgstr "El registro del ticket solicitado no está disponible"
 
 #: src/Tribe/REST/V1/Messages.php:21
 msgid "The requested ticket is not accessible"
-msgstr ""
+msgstr "El ticket solicitado no es accesible"
 
 #: src/Tribe/REST/V1/Messages.php:20
 msgid "The requested post ID does not exist or is not a ticket"
-msgstr ""
+msgstr "La ID de la publicación solicitada no existe o no es un ticket"
 
 #: src/Tribe/REST/V1/Messages.php:19
 msgid "The ticket ID is missing from the request"
-msgstr ""
+msgstr "Falta la ID del ticket en la solicitud"
 
 #: src/Tribe/REST/V1/Endpoints/Swagger_Documentation.php:157
 msgid "Returns the documentation for Event Tickets REST API in Swagger consumable format."
@@ -197,12 +197,12 @@ msgstr ""
 
 #: src/views/tickets/tpp-return-to-cart.php:6
 msgid "Return to Cart"
-msgstr ""
+msgstr "Volver al carrito"
 
 #: src/template-tags/tickets.php:446
 msgctxt "ticket stock message (refunded stock)"
 msgid "%1$d Refunded"
-msgstr ""
+msgstr "%1$d Reembolsado"
 
 #: src/admin-views/tribe-options-tickets.php:144
 msgid "Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between tickets. %2$s"
@@ -250,84 +250,84 @@ msgstr ""
 
 #: src/views/tickets/tpp.php:54
 msgid "Please fill in the ticket confirmation name and email fields."
-msgstr ""
+msgstr "Por favor, rellena el nombre y campos de correo electrónico en la confirmación del ticket"
 
 #: src/views/tickets/tpp.php:36
 msgctxt "form heading"
 msgid "Tickets"
-msgstr ""
+msgstr "Entradas"
 
 #: src/views/tickets/tpp-success.php:134
 msgid "Order Total"
-msgstr ""
+msgstr "Total del pedido"
 
 #: src/views/tickets/tpp-success.php:80
 msgctxt "Success page tickets table header"
 msgid "Subtotal"
-msgstr ""
+msgstr "Subtotal"
 
 #: src/views/tickets/tpp-success.php:79
 msgctxt "Success page tickets table header"
 msgid "Quantity"
-msgstr ""
+msgstr "Cantidad"
 
 #: src/views/tickets/tpp-success.php:78
 msgctxt "Success page tickets table header"
 msgid "Price"
-msgstr ""
+msgstr "Precio"
 
 #: src/views/tickets/tpp-success.php:77
 msgctxt "Success page tickets table header"
 msgid "Ticket"
-msgstr ""
+msgstr "Entrada"
 
 #: src/views/tickets/tpp-success.php:65
 msgid "Thank you for your purchase! You will receive your receipt and tickets via email."
-msgstr ""
+msgstr "¡Gracias por tu compra! Recibirás tu recibo y entradas por correo electrónico."
 
 #: src/views/tickets/tpp-success.php:56
 msgid "Your order (#%s) is currently processing. Once completed, you'll receive your ticket(s) in an email."
-msgstr ""
+msgstr "Tu pedido (#%s) se está procesando. Una vez completado, recibirás tu(s) entrada(s) en un correo electrónico."
 
 #: src/views/tickets/tpp-success.php:48
 msgid "Whoops! It looks like there was a problem with your order. Please contact the site owner for assistance."
-msgstr ""
+msgstr "¡Vaya! Parece que hubo un problema con tu pedido. Por favor, contacta con el propietario de sitio para recibir ayuda."
 
 #: src/views/tickets/tpp-success.php:42
 msgid "No order confirmation is available because no purchase was made."
-msgstr ""
+msgstr "No hay confirmación de pedido disponible porque no se ha realizado ninguna compra."
 
 #: src/views/tickets/orders-pp-tickets.php:71
 msgctxt "order status label"
 msgid "Payment status: "
-msgstr ""
+msgstr "Estado del pago:"
 
 #: src/views/tickets/orders-pp-tickets.php:41
 msgid "Purchased by %1$s (%2$s)"
-msgstr ""
+msgstr "Comprado por %1$s (%2$s)"
 
 #: src/views/tickets/orders-pp-tickets.php:32
 msgid "My Tickets for This %s"
-msgstr ""
+msgstr "Mis entradas para este %s"
 
 #: src/views/login-to-purchase.php:16
 msgid "Log in to purchase"
-msgstr ""
+msgstr "Accede para comprar"
 
 #: src/views/login-before-purchase.php:24
 msgctxt "Registration link on Tribe Commerce checkout page, shown as an alternative the login link"
 msgid "create an account"
-msgstr ""
+msgstr "crea una cuenta"
 
 #: src/views/login-before-purchase.php:23
 msgctxt "Login link on Tribe Commerce checkout page, shown as an alternative to the registration link"
 msgid "Log in"
-msgstr ""
+msgstr "Acceder"
 
 #: src/views/login-before-purchase.php:21
 msgctxt "Login link on Tribe Commerce checkout page"
 msgid "Log in before purchasing"
-msgstr ""
+msgstr "Accede antes de comprar"
 
 #: src/admin-views/tribe-options-tickets.php:341
 msgid "Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s)."
@@ -448,64 +448,64 @@ msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:158
 msgid "Enable Tribe Commerce "
-msgstr ""
+msgstr "Activar Tribe Commerce "
 
 #: src/admin-views/tribe-options-tickets.php:123
 msgid "Tribe Commerce"
-msgstr ""
+msgstr "Tribe Commerce"
 
 #: src/admin-views/tribe-options-tickets.php:44
 msgid "Require users to log in before they purchase tickets"
-msgstr ""
+msgstr "Requiere acceso de usuarios antes de que ellos compren tickets"
 
 #: src/admin-views/tpp-orders.php:140
 msgid "Total Sales: %s %s"
-msgstr ""
+msgstr "Ventas totales: %s %s"
 
 #: src/admin-views/tpp-orders.php:122
 msgid "SKU: (%s)"
-msgstr ""
+msgstr "SKU: (%s)"
 
 #: src/admin-views/tpp-orders.php:100 src/admin-views/tpp-orders.php:105
 msgid "Sold %d %s"
-msgstr ""
+msgstr "Vendido %d %s"
 
 #: src/admin-views/tpp-orders.php:75
 msgid "Not completed:"
-msgstr ""
+msgstr "No completado:"
 
 #: src/admin-views/tpp-orders.php:71
 msgid "Completed:"
-msgstr ""
+msgstr "Completado:"
 
 #: src/admin-views/tpp-orders.php:66
 msgid "Tickets sold:"
-msgstr ""
+msgstr "Tickets vendidos:"
 
 #: src/admin-views/tpp-orders.php:26
 msgctxt "post type details"
 msgid "%s Details"
-msgstr ""
+msgstr "%s Detalles"
 
 #: src/admin-views/tpp-metabox-sku.php:30
 msgid "A unique identifying code for each ticket type you're selling"
-msgstr ""
+msgstr "Un código de identificación único para cada tipo de ticket que estás vendiendo"
 
 #: src/admin-views/tpp-metabox-sku.php:20
 msgid "SKU:"
-msgstr ""
+msgstr "SKU:"
 
 #: src/admin-views/editor/panel/list.php:66
 msgid "New ticket"
-msgstr ""
+msgstr "Nuevo ticket"
 
 #: src/admin-views/editor/panel/list.php:9
 msgid "No commerce providers available"
-msgstr ""
+msgstr "No hay proveedores de comercio disponibles"
 
 #: src/admin-views/editor/panel/list.php:8
 msgid "Add a new ticket"
-msgstr ""
+msgstr "Añade un nuevo ticket"
 
 #: src/admin-views/editor/fieldset/settings-provider.php:33
 msgid "Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin."
@@ -533,11 +533,11 @@ msgstr ""
 
 #: src/admin-views/editor/column-head-price.php:1
 msgid "Price"
-msgstr ""
+msgstr "Precio"
 
 #: src/admin-views/editor/button-view-orders.php:35
 msgid "View Orders"
-msgstr ""
+msgstr "Ver pedidos"
 
 #: src/Tribe/Metabox.php:345 src/Tribe/Metabox.php:381
 msgid "The attendee ID is missing from the request parameters."
@@ -545,82 +545,82 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:157
 msgid "denied"
-msgstr ""
+msgstr "denegado"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:156
 msgid "refunded"
-msgstr ""
+msgstr "reembolsado"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:154
 msgid "completed"
-msgstr ""
+msgstr "completado"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:153
 msgid "undefined"
-msgstr ""
+msgstr "indefinido"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:149
 msgid "unavailable"
-msgstr ""
+msgstr "no disponible"
 
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:118
 msgid "This ticket is no longer active."
-msgstr ""
+msgstr "Este ticket ya no esta activo"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:137
 msgid "Denied <span class=\"count\">(%s)</span>"
 msgid_plural "Denied <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Denegado <span class=\"count\">(%s)</span>"
+msgstr[1] "Denegados <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:132
 msgctxt "A PayPal order status"
 msgid "Denied"
-msgstr ""
+msgstr "Denegado"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:128
 msgid "Refunded <span class=\"count\">(%s)</span>"
 msgid_plural "Refunded <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Reembolsado <span class=\"count\">(%s)</span>"
+msgstr[1] "Reembolsados <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:123
 msgctxt "A PayPal order status"
 msgid "Refunded"
-msgstr ""
+msgstr "Reembolsado"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:119
 msgid "Pending <span class=\"count\">(%s)</span>"
 msgid_plural "Pending <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Pendiente <span class=\"count\">(%s)</span>"
+msgstr[1] "Pendientes <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:114
 msgctxt "A PayPal order status"
 msgid "Pending"
-msgstr ""
+msgstr "Pendiente"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:110
 msgid "Not completed <span class=\"count\">(%s)</span>"
 msgid_plural "Not completed <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "No completado <span class=\"count\">(%s)</span>"
+msgstr[1] "No completados <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:105
 msgctxt "A PayPal order status"
 msgid "Not completed"
-msgstr ""
+msgstr "No completado"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:101
 msgid "Completed <span class=\"count\">(%s)</span>"
 msgid_plural "Completed <span class=\"count\">(%s)</span>"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Completado <span class=\"count\">(%s)</span>"
+msgstr[1] "Completados <span class=\"count\">(%s)</span>"
 
 #: src/Tribe/Commerce/PayPal/Stati.php:96
 msgctxt "A PayPal order status"
 msgid "Completed"
-msgstr ""
+msgstr "Completado"
 
 #: src/Tribe/Commerce/PayPal/Oversell/Sell_Available.php:47
 msgid "Sell only available"
@@ -656,7 +656,7 @@ msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Oversell/Admin_Notice_Decorator.php:122
 msgid "in your PayPal account"
-msgstr ""
+msgstr "en tu cuenta de PayPal"
 
 #: src/Tribe/Commerce/PayPal/Oversell/Admin_Notice_Decorator.php:110
 msgid "An event"
@@ -4705,4 +4705,4 @@ msgstr ""
 #: common/src/Tribe/Admin/Help_Page.php:59 common/src/Tribe/Customizer.php:569
 #: common/src/Tribe/Plugins_API.php:25
 msgid "The Events Calendar"
-msgstr "El Calendario de Eventos"
+msgstr "The Events Calendar"

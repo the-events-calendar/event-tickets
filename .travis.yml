@@ -133,8 +133,8 @@ script:
   - codecept run wpunit
   - codecept run integration
   - codecept run functional
-  - codecept run acceptance
   - codecept run restv1
+  - codecept run acceptance
 
 
 after_failure:
