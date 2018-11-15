@@ -232,6 +232,11 @@ export const getTicketEndTime = createSelector(
 	( block ) => block.endTime,
 );
 
+export const getRegularTicketCapacity = createSelector(
+	[ getTicketBlock ],
+	( block ) => block.capacity
+);
+
 export const getTicketCapacity = createSelector(
 	[ getTicketBlock ],
 	( block ) => {
