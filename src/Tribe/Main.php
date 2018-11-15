@@ -92,6 +92,15 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * Where in the themes we will look for templates
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $template_namespace = 'tickets';
+
+	/**
 	 * Class constructor
 	 */
 	protected function __construct() {

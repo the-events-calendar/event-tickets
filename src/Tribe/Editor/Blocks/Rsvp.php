@@ -67,7 +67,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 
-		return tribe( 'tickets.editor.template' )->template( array( 'blocks', $this->slug() ), $args, false );
+		return tribe( 'tickets.editor.template' )->template( array( 'editor', 'blocks', $this->slug() ), $args, false );
 	}
 
 	/*
@@ -176,7 +176,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			'going'     => $going,
 		);
 
-		$html = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/form/form', $args, false );
+		$html = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/form/form', $args, false );
 
 		$response['html']    = $html;
 
@@ -287,12 +287,12 @@ extends Tribe__Editor__Blocks__Abstract {
 		$remaining = $ticket->remaining();
 
 		if ( ! $remaining ) {
-			$response['status_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/status', $args, false );
+			$response['status_html'] = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/status', $args, false );
 		}
 
 		$response['remaining']      = $ticket->remaining();
-		$response['remaining_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/details/availability', $args, false );
-		$response['html']           = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/messages/success', $args, false );
+		$response['remaining_html'] = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/details/availability', $args, false );
+		$response['html']           = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/messages/success', $args, false );
 
 		wp_send_json_success( $response );
 

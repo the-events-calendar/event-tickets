@@ -29,6 +29,7 @@
     "bootstrap": "./scripts/linkDependencies",
     "build:webpack": "cross-env NODE_ENV=production webpack -p --progress",
     "build:gulp": "cross-env NODE_ENV=production gulp",
+    "build:common": "cd common && npm run build",
     "build": "npm run build:webpack && npm run build:gulp",
     "dev": "cross-env NODE_ENV=development webpack -d --watch",
     "gettext-strings": "cross-env BABEL_ENV=gettext webpack",
@@ -103,6 +104,7 @@
   },
   "dependencies": {
     "@moderntribe/tickets": "file:src/modules",
+    "@moderntribe/common": "file:common/src/modules",
     "@nfen/redux-reducer-injector": "0.0.3",
     "@wordpress/a11y": "1.0.3",
     "@wordpress/data": "^1.1.0",
