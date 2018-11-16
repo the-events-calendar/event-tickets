@@ -16,6 +16,10 @@ import AttendeeRegistration from './template';
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 import { globals } from '@moderntribe/common/utils';
+<<<<<<< HEAD:src/modules/blocks/ticket/container-content/attendees-registration/container.js
+=======
+const { config } = globals;
+>>>>>>> release/F18.3:src/modules/blocks/ticket/edit-container/content/attendees-registration/container.js
 
 const getAttendeeRegistrationUrl = ( state, ownProps ) => {
 	const adminURL = globals.adminUrl();

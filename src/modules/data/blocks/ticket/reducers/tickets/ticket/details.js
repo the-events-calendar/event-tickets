@@ -21,12 +21,21 @@ export const DEFAULT_STATE = {
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
 	startDateInput: momentUtil.toDate( currentMoment ),
 	startDateMoment: currentMoment,
+<<<<<<< HEAD:src/modules/data/blocks/ticket/reducers/tickets/ticket/details.js
 	endDate: momentUtil.toDatabaseDate( endMoment ),
 	endDateInput: momentUtil.toDate( endMoment ),
 	endDateMoment: endMoment,
 	startTime: momentUtil.toDatabaseTime( currentMoment ),
 	endTime: momentUtil.toDatabaseTime( currentMoment ),
 	capacityType: constants.TICKET_TYPES[ constants.SHARED ],
+=======
+	endDate: momentUtil.toDate( currentMoment.clone().add( 100, 'years' ) ),
+	endDateMoment: currentMoment,
+	startTime: momentUtil.toTime24Hr( currentMoment ),
+	endTime: momentUtil.toTime24Hr( currentMoment ),
+	dateIsPristine: false,
+	capacityType: TICKET_TYPES.shared,
+>>>>>>> release/F18.3:src/modules/data/blocks/ticket/reducers/ticket.js
 	capacity: '',
 };
 

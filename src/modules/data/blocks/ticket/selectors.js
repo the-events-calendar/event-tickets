@@ -7,6 +7,7 @@ import { find } from 'lodash';
 /**
  * Internal dependencies
  */
+<<<<<<< HEAD
 import * as constants from './constants';
 import { CAPACITY_TYPE_OPTIONS } from './options';
 import { tickets as ticketsConfig } from '@moderntribe/common/utils/globals';
@@ -17,6 +18,12 @@ const {
 	SHARED,
 	TICKET_TYPES,
 } = constants;
+=======
+import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
+import { utils } from '@moderntribe/tickets/data/blocks/ticket';
+import { globals } from '@moderntribe/common/utils';
+const { config } = globals;
+>>>>>>> release/F18.3
 
 export const getBlock = ( state ) => state.tickets.blocks.ticket;
 
@@ -277,9 +284,23 @@ export const getTicketEndDateInput = createSelector(
 	( details ) => details.endDateInput,
 );
 
+<<<<<<< HEAD
 export const getTicketEndDateMoment = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.endDateMoment,
+=======
+export const getRegularTicketCapacity = createSelector(
+	[ getTicketBlock ],
+	( block ) => block.capacity
+);
+
+export const getTicketCapacity = createSelector(
+	[ getTicketBlock ],
+	( block ) => {
+		const capacity = parseInt( block.capacity, 10 );
+		return capacity || 0;
+	},
+>>>>>>> release/F18.3
 );
 
 export const getTicketStartTime = createSelector(
@@ -287,6 +308,7 @@ export const getTicketStartTime = createSelector(
 	( details ) => details.startTime || '',
 );
 
+<<<<<<< HEAD
 export const getTicketStartTimeNoSeconds = createSelector(
 	[ getTicketStartTime ],
 	( startTime ) => startTime.slice( 0, -3 ),
@@ -295,6 +317,29 @@ export const getTicketStartTimeNoSeconds = createSelector(
 export const getTicketEndTime = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.endTime || '',
+=======
+export const isTitleValid = createSelector(
+	[ getTicketBlock ],
+	block => trim( block.title ) !== ''
+);
+
+export const isCapacityValid = createSelector(
+	[ getTicketBlock ],
+	block => trim( block.capacity ) !== ''
+);
+
+export const getTicketValidness = createSelector(
+	[ getTicketBlock, isTitleValid, isCapacityValid ],
+	( block, titleValid, capacityValid ) => {
+		if (
+			block.capacityType === TICKET_TYPES.unlimited ||
+			block.capacityType === TICKET_TYPES.shared
+		) {
+			return titleValid;
+		}
+		return titleValid && capacityValid;
+	},
+>>>>>>> release/F18.3
 );
 
 export const getTicketEndTimeNoSeconds = createSelector(
@@ -336,9 +381,35 @@ export const getTicketTempDetails = createSelector(
 	( ticket ) => ticket.tempDetails || {},
 );
 
+<<<<<<< HEAD
 export const getTicketTempTitle = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.title,
+=======
+export const getNormalizedStartDate = createSelector(
+	[ getTicketStartDateMoment, getTicketStartDate ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentDateFormat ) : fallback,
+);
+
+export const getNormalizedStartTime = createSelector(
+	[ getTicketStartDateMoment, getTicketStartTime ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentTimeFormat ) : fallback,
+);
+
+export const getNormalizedEndDate = createSelector(
+	[ getTicketEndDateMoment, getTicketEndDate ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentDateFormat ) : fallback,
+);
+
+export const getNormalizedEndTime = createSelector(
+	[ getTicketEndDateMoment, getTicketEndDate ],
+	( moment, fallback ) => moment && moment.isValid() ? moment.format( utils.toMomentTimeFormat ) : fallback,
+);
+
+export const getTicketIsLoading = createSelector(
+	[ getTicketBlock ],
+	( block ) => block.isLoading,
+>>>>>>> release/F18.3
 );
 
 export const getTicketTempDescription = createSelector(

@@ -56,7 +56,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		/**
 		 * @todo Be sure we get the post ID from tickets so it can run without TEC
 		 */
-		$args['post_id']    = $post_id = tribe( 'gutenberg.events.template' )->get( 'post_id' );
+		$args['post_id']    = $post_id = tribe( 'events.editor.template' )->get( 'post_id' );
 		$args['attributes'] = $this->attributes( $attributes );
 		$args['tickets']    = $this->get_tickets( $post_id );
 
@@ -67,7 +67,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 
-		return tribe( 'tickets.editor.template' )->template( array( 'blocks', $this->slug() ), $args, false );
+		return tribe( 'tickets.editor.template' )->template( array( 'editor', 'blocks', $this->slug() ), $args, false );
 	}
 
 	/*
@@ -125,10 +125,10 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$gutenberg = tribe( 'tickets.main' );
+		$plugin = Tribe__Tickets__Main::instance();
 
 		tribe_asset(
-			$gutenberg,
+			$plugin,
 			'tribe-tickets-gutenberg-rsvp',
 			'views/rsvp.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
@@ -144,7 +144,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		);
 
 		tribe_asset(
-			$gutenberg,
+			$plugin,
 			'tribe-tickets-gutenberg-block-rsvp-style',
 			'app/rsvp/frontend.css',
 			array(),
@@ -176,7 +176,7 @@ extends Tribe__Editor__Blocks__Abstract {
 			'going'     => $going,
 		);
 
-		$html = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/form/form', $args, false );
+		$html = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/form/form', $args, false );
 
 		$response['html']    = $html;
 
@@ -287,12 +287,12 @@ extends Tribe__Editor__Blocks__Abstract {
 		$remaining = $ticket->remaining();
 
 		if ( ! $remaining ) {
-			$response['status_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/status', $args, false );
+			$response['status_html'] = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/status', $args, false );
 		}
 
 		$response['remaining']      = $ticket->remaining();
-		$response['remaining_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/details/availability', $args, false );
-		$response['html']           = tribe( 'tickets.editor.template' )->template( 'blocks/rsvp/messages/success', $args, false );
+		$response['remaining_html'] = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/details/availability', $args, false );
+		$response['html']           = tribe( 'tickets.editor.template' )->template( 'editor/blocks/rsvp/messages/success', $args, false );
 
 		wp_send_json_success( $response );
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /**
  * External dependencies
  */
@@ -46,3 +47,8 @@ export const getDefaultCurrencyPosition = () => {
 		? priceSettings().default_currency_position
 		: position;
 };
+=======
+// Date format used for the tickets API for date and time.
+export const toMomentDateFormat = 'Y-MM-DD';
+export const toMomentTimeFormat = 'HH:mm:00';
+>>>>>>> release/F18.3

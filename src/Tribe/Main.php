@@ -4,17 +4,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.8.3';
+	const VERSION = '4.9-beta1';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.6.22';
+	const MIN_TEC_VERSION = '4.7-beta';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.7.20';
+	const MIN_COMMON_VERSION = '4.8-beta';
 
 	/**
 	 * Name of the provider
@@ -90,6 +90,15 @@ class Tribe__Tickets__Main {
 
 		return self::$instance;
 	}
+
+	/**
+	 * Where in the themes we will look for templates
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $template_namespace = 'tickets';
 
 	/**
 	 * Class constructor
@@ -180,7 +189,7 @@ class Tribe__Tickets__Main {
 
 		if (
 			class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& version_compare( Tribe__Tickets_Plus__Main::VERSION, preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<' )
+			&& version_compare( Tribe__Tickets_Plus__Main::VERSION, preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(.*)/', '$1$2', self::VERSION ), '<' )
 		) {
 			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
 
@@ -230,8 +239,14 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
+		// Attendee Registration Page
+		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
+
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
+
+		// Blocks editor
+		tribe_register_provider( 'Tribe__Tickets__Editor__Provider' );
 
 		// Privacy
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', array( 'hook' ) );

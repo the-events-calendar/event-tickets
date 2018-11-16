@@ -64,7 +64,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		/**
 		 * @todo  We'll need to get the post id from ET later, so support it as standalone
 		 */
-		$args['post_id']    = $post_id = tribe( 'gutenberg.events.template' )->get( 'post_id' );
+		$args['post_id']    = $post_id = tribe( 'events.editor.template' )->get( 'post_id' );
 		$args['attributes'] = $this->attributes( $attributes );
 		$args['tickets']    = $this->get_tickets( $post_id );
 
@@ -84,7 +84,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-tickets' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
 
-		return tribe( 'tickets.editor.template' )->template( array( 'blocks', $this->slug() ), $args, false );
+		return tribe( 'tickets.editor.template' )->template( array( 'editor', 'blocks', $this->slug() ), $args, false );
 	}
 
 	/**
@@ -96,10 +96,10 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$gutenberg = tribe( 'tickets.main' );
+		$plugin = Tribe__Tickets__Main::instance();
 
 		tribe_asset(
-			$gutenberg,
+			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'views/tickets.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
@@ -116,7 +116,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		);
 
 		tribe_asset(
-			$gutenberg,
+			$plugin,
 			'tribe-tickets-gutenberg-block-tickets-style',
 			'app/tickets/frontend.css',
 			array(),
@@ -164,7 +164,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		// Add the rendering attributes into global context
 		tribe( 'tickets.editor.template' )->add_template_globals( $args );
 
-		$content = tribe( 'tickets.editor.template' )->template( 'blocks/tickets/registration/content', $args, false );
+		$content = tribe( 'tickets.editor.template' )->template( 'editor/blocks/tickets/registration/content', $args, false );
 
 		return $content;
 	}
@@ -198,7 +198,7 @@ extends Tribe__Editor__Blocks__Abstract {
 
 			// If there are no more available we will send the template part HTML to update the DOM
 			if ( 0 === $available ) {
-				$response['tickets'][ $ticket_id ]['unavailable_html'] = tribe( 'tickets.editor.template' )->template( 'blocks/tickets/quantity-unavailable', $ticket, false );
+				$response['tickets'][ $ticket_id ]['unavailable_html'] = tribe( 'tickets.editor.template' )->template( 'editor/blocks/tickets/quantity-unavailable', $ticket, false );
 			}
 		}
 

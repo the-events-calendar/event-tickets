@@ -38,10 +38,11 @@ const RSVPActionDashboard = ( {
 	onCancelClick,
 	onConfirmClick,
 	showCancel,
+	hasTicketsPlus,
 } ) => (
 	<ActionDashboard
 		className="tribe-editor__rsvp__action-dashboard"
-		actions={ actions }
+		actions={ hasTicketsPlus ? actions : [ <SettingsActionButton /> ] }
 		cancelLabel={ cancelLabel }
 		confirmLabel={ confirmLabel( created ) }
 		isCancelDisabled={ isCancelDisabled }
@@ -59,6 +60,7 @@ RSVPActionDashboard.propTypes = {
 	onCancelClick: PropTypes.func.isRequired,
 	onConfirmClick: PropTypes.func.isRequired,
 	showCancel: PropTypes.bool.isRequired,
+	hasTicketsPlus: PropTypes.bool,
 };
 
 export default RSVPActionDashboard;

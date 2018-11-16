@@ -8,7 +8,11 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import Template from './template';
+<<<<<<< HEAD
 import { withStore } from '@moderntribe/common/hoc';
+=======
+import { withSaveData, withStore } from '@moderntribe/common/hoc';
+>>>>>>> release/F18.3
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const getHasOverlay = ( state, ownProps ) => (

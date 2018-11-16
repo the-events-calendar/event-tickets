@@ -1,6 +1,7 @@
 /**
  * External Dependencies
  */
+import { select as wpSelect } from '@wordpress/data';
 import { put, call, all, select, takeEvery } from 'redux-saga/effects';
 
 /**
@@ -8,8 +9,7 @@ import { put, call, all, select, takeEvery } from 'redux-saga/effects';
  */
 import * as types from './types';
 import * as actions from './actions';
-import { getStart, getEnd } from '@moderntribe/events/data/blocks/datetime/selectors';
-import { toMoment, toDate, toTime24Hr } from '@moderntribe/common/utils/moment';
+import { moment as momentUtil } from '@moderntribe/common/utils';
 
 export function* setRSVPDetails( action ) {
 	const {
@@ -66,29 +66,34 @@ export function* setRSVPTempDetails( action ) {
 }
 
 export function* initializeRSVP() {
-	const start = yield select( getStart );
-	const end = yield select( getEnd );
-
-	const startMoment = yield call( toMoment, start );
-	const endMoment = yield call( toMoment, end );
-
-	const startDate = yield call( toDate, startMoment );
-	const endDate = yield call( toDate, endMoment );
-
-	const startTime = yield call( toTime24Hr, startMoment );
-	const endTime = yield call( toTime24Hr, endMoment );
-
+	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
+	const startMoment = yield call( momentUtil.toMoment, publishDate );
+	const startDate = yield call( momentUtil.toDate, startMoment );
+	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
 	const startDateObj = new Date( startDate );
-	const endDateObj = new Date( endDate );
 
 	yield all( [
 		put( actions.setRSVPTempStartDate( startDate ) ),
 		put( actions.setRSVPTempStartDateObj( startDateObj ) ),
 		put( actions.setRSVPTempStartTime( startTime ) ),
-		put( actions.setRSVPTempEndDate( endDate ) ),
-		put( actions.setRSVPTempEndDateObj( endDateObj ) ),
-		put( actions.setRSVPTempEndTime( endTime ) ),
 	] );
+
+	try {
+		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
+		const eventStart = yield select( window.tribe.events.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
+		const endMoment = yield call( momentUtil.toMoment, eventStart );
+		const endDate = yield call( momentUtil.toDate, endMoment );
+		const endTime = yield call( momentUtil.toTime24Hr, endMoment );
+		const endDateObj = new Date( endDate );
+
+		yield all( [
+			put( actions.setRSVPTempEndDate( endDate ) ),
+			put( actions.setRSVPTempEndDateObj( endDateObj ) ),
+			put( actions.setRSVPTempEndTime( endTime ) ),
+		] );
+	} catch ( err ) {
+		// ¯\_(ツ)_/¯
+	}
 }
 
 export default function* watchers() {

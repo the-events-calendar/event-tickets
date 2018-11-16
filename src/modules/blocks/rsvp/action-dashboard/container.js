@@ -13,6 +13,7 @@ import { select } from '@wordpress/data';
  * Internal dependencies
  */
 import RSVPActionDashboard from './template';
+import { plugins } from '@moderntribe/common/data';
 import { actions, selectors, thunks } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
@@ -75,6 +76,7 @@ const mapStateToProps = ( state ) => ( {
 	isConfirmDisabled: getIsConfirmDisabled( state ),
 	showCancel: selectors.getRSVPCreated( state ),
 	state,
+	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 } );
 
 const mergeProps = ( stateProps, dispatchProps, ownProps ) => {

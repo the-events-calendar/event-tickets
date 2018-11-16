@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.8
-Stable tag: 4.8.3
+Stable tag: 4.9-beta1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,16 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.9] TBD =
+
+
+
+= [4.8.4] 2018-11-13 =
+
+* Fix - Registration form from hiding with multiple RSVP tickets and one of them being set to quantity zero, thanks pixelbrad for reporting [116139]
+* Fix - Remaining ticket quantity counter for tickets with shared capacity and capped sales, thanks for the report mirre1 and pixelbrad [104356]
+* Tweak - Adjust tooltips next to the ticket end-sale dates for improved clarity based on post type [116853]
 
 = [4.8.3] 2018-10-22 =
 

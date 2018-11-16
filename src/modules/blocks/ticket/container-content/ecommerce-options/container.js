@@ -12,6 +12,10 @@ import EcommerceOptions from './template';
 import { constants, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 import { globals } from '@moderntribe/common/utils';
+<<<<<<< HEAD:src/modules/blocks/ticket/container-content/ecommerce-options/container.js
+=======
+const { config } = globals;
+>>>>>>> release/F18.3:src/modules/blocks/ticket/edit-container/content/ecommerce-options/container.js
 
 const { EDD, WOO } = constants;
 

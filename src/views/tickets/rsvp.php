@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.8.2
+ * @version TBD
  *
  * @var bool $must_login
  */
@@ -211,6 +211,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 							<?php esc_html_e( 'Login to RSVP', 'event-tickets' );?>
 						</a>
 					<?php else: ?>
+						<input type="hidden" name="tribe_tickets_rsvp_submission" value="1" />
 						<button
 							type="submit"
 							name="tickets_process"

@@ -39,7 +39,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$gutenberg = tribe( 'tickets.main' );
+		$gutenberg = Tribe__Tickets__Main::instance();
 
 		tribe_asset(
 			$gutenberg,
@@ -63,7 +63,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		/**
 		 * @todo Be sure we get the post ID from tickets so it can run without TEC
 		 */
-		$args['post_id']    = $post_id = tribe( 'gutenberg.events.template' )->get( 'post_id' );
+		$args['post_id']    = $post_id = tribe( 'events.editor.template' )->get( 'post_id' );
 		$args['attributes'] = $this->attributes( $attributes );
 		$args['attendees']  = $this->get_attendees( $post_id );
 
@@ -73,7 +73,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		// enqueue assets
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-attendees-style' );
 
-		return tribe( 'tickets.editor.template' )->template( array( 'blocks', $this->slug() ), $args, false );
+		return tribe( 'tickets.editor.template' )->template( array( 'editor', 'blocks', $this->slug() ), $args, false );
 	}
 
 	/**

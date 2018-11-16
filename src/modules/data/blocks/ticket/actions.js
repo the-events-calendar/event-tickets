@@ -449,6 +449,7 @@ export const updateTicket = ( blockId ) => ( {
 	},
 } );
 
+<<<<<<< HEAD
 export const deleteTicket = ( blockId ) => ( {
 	type: types.DELETE_TICKET,
 	payload: {
@@ -460,3 +461,12 @@ export const setTicketInitialState = ( props ) => ( {
 	type: types.SET_TICKET_INITIAL_STATE,
 	payload: props,
 } );
+=======
+export const setRegularTicketValue = ( blockId, capacity ) => ( {
+	type: types.SET_TICKET_REGULAR_CAPACITY,
+	payload: {
+		blockId,
+		capacity,
+	}
+} );
+>>>>>>> release/F18.3

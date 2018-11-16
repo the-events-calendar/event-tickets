@@ -15,6 +15,7 @@ import { createBlock } from '@wordpress/blocks';
  */
 import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
+<<<<<<< HEAD
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	onConfirmClick: () => {
@@ -25,6 +26,33 @@ const mapStateToProps = ( state, ownProps ) => ( {
 		const nextChildPosition = getBlockCount( clientId );
 		const block = createBlock( 'tribe/tickets-item', {} );
 		insertBlock( block, nextChildPosition, clientId );
+=======
+import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { plugins } from '@moderntribe/common/data';
+
+const mapStateToProps = ( state, ownProps ) => ( {
+	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
+	isEditFormValid: selectors.getTicketValidness( state, {
+		blockId: ownProps.activeBlockId,
+	} ),
+	hasBeenCreated: selectors.getTicketHasBeenCreated( state, {
+		blockId: ownProps.activeBlockId,
+	} ),
+	isBeingEdited: selectors.getTicketIsBeingEdited( state, {
+		blockId: ownProps.activeBlockId,
+	} ),
+	hasProviders: selectors.hasTicketProviders(),
+} );
+
+const mapDispatchToProps = ( dispatch, ownProps ) => ( {
+	createNewEntry() {
+		const { activeBlockId } = ownProps;
+		dispatch( actions.createNewTicket( activeBlockId ) );
+	},
+	cancelEdit() {
+		const { activeBlockId } = ownProps;
+		dispatch( actions.cancelTicketEdit( activeBlockId ) );
+>>>>>>> release/F18.3
 	},
 } );
 
