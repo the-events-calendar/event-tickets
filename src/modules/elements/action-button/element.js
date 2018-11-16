@@ -8,7 +8,7 @@ import classNames from 'classnames';
 /**
  * Internal dependencies
  */
-import { Button, Link } from '@moderntribe/common/elements';
+import { Button, Link } from '@moderntribe/common/src/modules/elements';
 import './style.pcss';
 
 export const positions = {

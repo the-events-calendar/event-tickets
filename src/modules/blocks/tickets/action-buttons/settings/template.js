@@ -3,7 +3,6 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { noop } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -24,12 +23,6 @@ const SettingsActionButton = ( { onClick } ) => (
 
 SettingsActionButton.propTypes = {
 	onClick: PropTypes.func,
-	label: PropTypes.string,
-	icon: PropTypes.node,
-};
-
-SettingsActionButton.defaultProps = {
-	onClick: noop,
 };
 
 export default SettingsActionButton;

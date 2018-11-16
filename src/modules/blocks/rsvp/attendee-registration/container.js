@@ -16,10 +16,9 @@ import RSVPAttendeeRegistration from './template';
 import { selectors } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 import { globals } from '@moderntribe/common/utils';
-const { config } = globals;
 
 const getAttendeeRegistrationUrl = ( state ) => {
-	const adminURL = config().admin_url || '';
+	const adminURL = globals.adminUrl();
 	const postType = select( 'core/editor' ).getCurrentPostType();
 	const rsvpId = selectors.getRSVPId( state );
 

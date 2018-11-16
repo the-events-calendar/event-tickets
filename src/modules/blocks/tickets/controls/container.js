@@ -12,16 +12,15 @@ import { withSaveData, withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state ) => ( {
-	hasMultipleProviders: selectors.hasMultipleProviders(),
-	providers: selectors.getProviders(),
-	selectedProvider: selectors.getSelectedProvider( state ),
+	hasMultipleProviders: selectors.hasMultipleTicketProviders(),
+	providers: selectors.getTicketProviders(),
+	selectedProvider: selectors.getTicketsProvider( state ),
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
-	onProviderChange( event ) {
-		const target = event.target;
-		dispatch( actions.setProvider( target.name ) );
-	},
+	onProviderChange: ( e ) => (
+		dispatch( actions.setTicketsProvider( e.target.name ) )
+	),
 } );
 
 export default compose(

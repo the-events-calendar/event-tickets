@@ -9,7 +9,7 @@ import { noop } from 'lodash';
 /**
  * Internal dependencies
  */
-import { Button } from '@moderntribe/common/elements';
+import { Button } from '@moderntribe/common/elements'
 import './style.pcss';
 
 const ActionDashboard = ( {

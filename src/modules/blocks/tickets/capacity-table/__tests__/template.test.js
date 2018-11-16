@@ -38,7 +38,6 @@ describe( '<CapacityTable />', () => {
 		);
 		mounted.find( 'input' ).simulate( 'change' );
 		expect( onChange ).toBeCalled();
-		expect( onChange ).toBeCalledWith( '30' );
 	} );
 
 	test( 'independent property', () => {

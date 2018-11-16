@@ -8,7 +8,6 @@ import classNames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { __ } from '@wordpress/i18n';
 import { Spinner } from '@wordpress/components';
 
 /**
@@ -19,20 +18,20 @@ import { SettingsDashboard } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
 const RSVPSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (
-		<SettingsDashboard
-			className={ classNames(
-				'tribe-editor__rsvp__settings-dashboard',
-				{ 'tribe-editor__rsvp__settings-dashboard--loading': isSettingsLoading },
-			) }
-			closeButtonDisabled={ isSettingsLoading }
-			content={ (
-				<Fragment>
-					<RSVPHeaderImage />
-					{ isSettingsLoading && <Spinner /> }
-				</Fragment>
-			) }
-			onCloseClick={ onCloseClick }
-		/>
+	<SettingsDashboard
+		className={ classNames(
+			'tribe-editor__rsvp__settings-dashboard',
+			{ 'tribe-editor__rsvp__settings-dashboard--loading': isSettingsLoading },
+		) }
+		closeButtonDisabled={ isSettingsLoading }
+		content={ (
+			<Fragment>
+				<RSVPHeaderImage />
+				{ isSettingsLoading && <Spinner /> }
+			</Fragment>
+		) }
+		onCloseClick={ onCloseClick }
+	/>
 );
 
 RSVPSettingsDashboard.propTypes = {

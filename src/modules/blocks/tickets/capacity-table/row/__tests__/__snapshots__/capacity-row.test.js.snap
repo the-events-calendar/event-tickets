@@ -2,24 +2,24 @@
 
 exports[`<CapacityRow /> Custom right value 1`] = `
 <div
-  className="tribe-editor__capacity-row"
+  className="tribe-editor__tickets__capacity-row"
 >
   <span
-    className="tribe-editor__capacity-row--left"
+    className="tribe-editor__tickets__capacity-row-left"
   >
     <span
-      className="tribe-editor__capacity-row__label"
+      className="tribe-editor__tickets__capacity-row-label"
     >
       Modern Tribe
     </span>
     <span
-      className="tribe-editor__capacity-row__items"
+      className="tribe-editor__tickets__capacity-row-items"
     >
       (20 items)
     </span>
   </span>
   <span
-    className="tribe-editor__capacity-row--right"
+    className="tribe-editor__tickets__capacity-row-right"
   >
     <button>
       Click Me!
@@ -30,24 +30,24 @@ exports[`<CapacityRow /> Custom right value 1`] = `
 
 exports[`<CapacityRow /> Label with items 1`] = `
 <div
-  className="tribe-editor__capacity-row"
+  className="tribe-editor__tickets__capacity-row"
 >
   <span
-    className="tribe-editor__capacity-row--left"
+    className="tribe-editor__tickets__capacity-row-left"
   >
     <span
-      className="tribe-editor__capacity-row__label"
+      className="tribe-editor__tickets__capacity-row-label"
     >
       Modern Tribe
     </span>
     <span
-      className="tribe-editor__capacity-row__items"
+      className="tribe-editor__tickets__capacity-row-items"
     >
       (20 items)
     </span>
   </span>
   <span
-    className="tribe-editor__capacity-row--right"
+    className="tribe-editor__tickets__capacity-row-right"
   >
     
   </span>
@@ -56,20 +56,20 @@ exports[`<CapacityRow /> Label with items 1`] = `
 
 exports[`<CapacityRow /> label 1`] = `
 <div
-  className="tribe-editor__capacity-row"
+  className="tribe-editor__tickets__capacity-row"
 >
   <span
-    className="tribe-editor__capacity-row--left"
+    className="tribe-editor__tickets__capacity-row-left"
   >
     <span
-      className="tribe-editor__capacity-row__label"
+      className="tribe-editor__tickets__capacity-row-label"
     >
       Modern Tribe
     </span>
     
   </span>
   <span
-    className="tribe-editor__capacity-row--right"
+    className="tribe-editor__tickets__capacity-row-right"
   >
     
   </span>

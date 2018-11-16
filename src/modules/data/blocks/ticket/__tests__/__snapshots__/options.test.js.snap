@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ticket Options CAPACITY_TYPE_OPTIONS 1`] = `
+Array [
+  Object {
+    "label": "Share capacity with other tickets",
+    "value": "capped",
+  },
+  Object {
+    "label": "Set capacity for this ticket only",
+    "value": "own",
+  },
+  Object {
+    "label": "Unlimited",
+    "value": "unlimited",
+  },
+]
+`;

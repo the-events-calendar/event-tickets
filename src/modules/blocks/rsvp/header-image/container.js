@@ -32,7 +32,7 @@ const mapStateToProps = ( state ) => ( {
 const mapDispatchToProps = ( dispatch ) => {
 	const postId = select( 'core/editor' ).getCurrentPostId();
 	return {
-		onRemove: () => dispatch( thunks.deleteRSVPHeaderImage( ownPrs.postId ) ),
+		onRemove: () => dispatch( thunks.deleteRSVPHeaderImage( postId ) ),
 		/**
 		 * Full payload from gutenberg media upload is not used,
 		 * only id, alt, and medium src are used for this specific case.

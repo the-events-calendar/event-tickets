@@ -1,6 +1,3 @@
-import { globals } from '@moderntribe/common/utils';
-const { config } = globals;
-
 export const PREFIX_TICKETS_STORE = '@@MT/TICKETS';
 
 export const RSVP_POST_TYPE = 'tribe_rsvp_tickets';
@@ -20,43 +17,3 @@ export const KEY_TICKET_DEFAULT_PROVIDER = '_tribe_default_ticket_provider';
 
 export const KEY_TICKET_GOING_COUNT = '_tribe_ticket_going_count';
 export const KEY_TICKET_NOT_GOING_COUNT = '_tribe_ticket_not_going_count';
-
-export const TICKET_TYPES_VALUES = [ 'unlimited', 'capped', 'own' ];
-
-export const TICKET_TYPES = {
-	unlimited: TICKET_TYPES_VALUES[ 0 ],
-	shared: TICKET_TYPES_VALUES[ 1 ],
-	independent: TICKET_TYPES_VALUES[ 2 ],
-};
-
-export const TICKET_ORDERS_PAGE_SLUG = {
-	Tribe__Tickets__Commerce__PayPal__Main: 'tpp-orders',
-	Tribe__Tickets_Plus__Commerce__WooCommerce__Main: 'tickets-orders',
-};
-
-/**
- * Get currency symbol by provider
- */
-export function getProviderCurrency( provider ) {
-	const tickets = config().tickets || {};
-	const providers = tickets.providers || {};
-
-	// if we don't get the provider, return the default one
-	if ( '' == provider ) {
-		return tickets.default_currency;
-	}
-
-	const [ result ] = providers.filter( el => el.class === provider );
-	return result ? result.currency : tickets.default_currency;
-};
-
-/**
- * Get the default provider's currency symbol
- */
-export function getDefaultProviderCurrency() {
-	const tickets = config().tickets || {};
-	const defaultProvider = tickets.default_provider || '';
-
-	return getProviderCurrency( defaultProvider );
-}
-

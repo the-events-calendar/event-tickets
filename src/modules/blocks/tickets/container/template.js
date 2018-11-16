@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Fragment } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -13,24 +13,20 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import Availability from '../availability/element';
+import Availability from '../availability/container';
 import { InactiveBlock } from '@moderntribe/tickets/elements';
 import { LAYOUT } from '@moderntribe/tickets/elements/inactive-block/element';
-import StatusIcon from '@moderntribe/tickets/blocks/ticket/display-container/status-icon/element';
+import { TicketInactive } from '@moderntribe/tickets/icons';
 import './style.pcss';
 
-const TicketContainer = ( props ) => {
-	const {
-		isSelected,
-		isEditing,
-		total,
-		available,
-		tickets,
-		isLoading,
-		isTicketDisabled,
-		hasProviders,
-	} = props;
+const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
+const TicketContainer = ( {
+	hasOverlay,
+	hasTickets,
+	hasProviders,
+	isSelected,
+} ) => {
 	const messages = {
 		title: hasProviders
 			? __( 'There are no tickets yet', 'events-gutenberg' )
@@ -41,32 +37,29 @@ const TicketContainer = ( props ) => {
 	};
 
 	return (
-		<div className="tribe-editor__ticket-container">
-			<div className="tribe-editor__tickets-body">
+		<div className="tribe-editor__ticket__container">
+			<div className="tribe-editor__tickets__body">
 				<InnerBlocks allowedBlocks={ [ 'tribe/tickets-item' ] } />
 			</div>
-			{ tickets.length === 0 && (
+			{ ! hasTickets && (
 				<InactiveBlock
 					layout={ LAYOUT.ticket }
 					title={ messages.title }
 					description={ messages.description }
-					icon={ <StatusIcon disabled={ true } /> }
+					icon={ <TicketInactive /> }
 				/>
 			) }
-			{ isSelected && ! isEditing && ! isLoading && tickets.length !== 0 && (
-				<Availability available={ available } total={ total } isDisabled={ isTicketDisabled } />
+			{ isSelected && hasTickets && (
+				<Availability />
 			) }
+			{ hasOverlay && <TicketsOverlay /> }
 		</div>
 	);
 };
 
 TicketContainer.propTypes = {
+	hasTickets: PropTypes.bool,
 	isSelected: PropTypes.bool,
-	isEditing: PropTypes.bool,
-	isLoading: PropTypes.bool,
-	isTicketDisabled: PropTypes.bool,
-	total: PropTypes.number,
-	available: PropTypes.number,
 	hasProviders: PropTypes.bool,
 };
 

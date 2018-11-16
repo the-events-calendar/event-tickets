@@ -3,15 +3,13 @@
  */
 import reducer from './reducers';
 
-import { actions, constants } from '@moderntribe/common/data/plugins';
+import { actions } from '@moderntribe/common/data/plugins';
 import { store } from '@moderntribe/common/store';
-import sagas from './sagas';
 
 export const initStore = () => {
-	sagas();
 	const { dispatch, injectReducers } = store;
-	const { TICKETS } = constants;
-	dispatch( actions.addPlugin( TICKETS ) );
+	// TODO: use `constants` from `recurrence` branch to add the plugin name into the constants.
+	dispatch( actions.addPlugin( 'tickets' ) );
 	injectReducers( { tickets: reducer } );
 };
 

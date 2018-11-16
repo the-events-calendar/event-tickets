@@ -1,15 +1,28 @@
-.tribe-editor__tickets-body {
-	.editor-inner-blocks {
-		.editor-block-list__block {
-			&.is-hovered,
-			&.is-selected {
+.tribe-editor__ticket__container {
+	position: relative;
+}
 
-				> .editor-block-list__block-edit::before {
-					outline: none;
-					transition: none
-				}
-			}
+.tribe-editor__tickets__overlay {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	margin: -14px;
+	z-index: 10;
+}
+
+.tribe-editor__tickets .editor-inner-blocks .editor-block-list__block {
+	& > .editor-block-list__block-edit:before {
+		outline: none;
+		transition: none;
+	}
+
+	&.is-hovered,
+	&.is-selected {
+
+		& > .editor-block-list__block-edit:before {
+			outline: none;
 		}
-
 	}
 }

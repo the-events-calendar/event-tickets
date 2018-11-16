@@ -24,15 +24,7 @@ const getIsSameDay = ( state ) => {
 
 const onFromDateChange = ( stateProps, dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	/* TODO: prevent onchange to type/select a date after toDate */
-	let startDate;
-
-	if ( date ) {
-		startDate = momentUtil.toDate( moment( date ) );
-	} else {
-		startDate = dayPickerInput.state.value;
-	}
-
-	dispatch( actions.setRSVPTempStartDate( startDate ) );
+	dispatch( actions.setRSVPTempStartDate( dayPickerInput.state.value ) );
 	dispatch( actions.setRSVPTempStartDateObj( date ) );
 	dispatch( actions.setRSVPHasChanges( true ) );
 };
@@ -55,15 +47,7 @@ const onFromTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 
 const onToDateChange = ( stateProps, dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	/* TODO: prevent onchange to type/select a date before fromDate */
-	let endDate;
-
-	if ( date ) {
-		endDate = momentUtil.toDate( moment( date ) );
-	} else {
-		endDate = dayPickerInput.state.value;
-	}
-
-	dispatch( actions.setRSVPTempEndDate( endDate ) );
+	dispatch( actions.setRSVPTempEndDate( dayPickerInput.state.value ) );
 	dispatch( actions.setRSVPTempEndDateObj( date ) );
 	dispatch( actions.setRSVPHasChanges( true ) );
 };
