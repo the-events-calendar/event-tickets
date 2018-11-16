@@ -31,14 +31,14 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 *
 	 * @var int
 	 */
-	protected $_qty        = 0;
+	protected $qty        = 0;
 
 	/**
 	 * Status Line Total
 	 *
 	 * @var int
 	 */
-	protected $_line_total = 0;
+	protected $line_total = 0;
 
 	/**
 	 * Get this Status' Quantity of Tickets by Post Type
@@ -46,7 +46,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 * @return int
 	 */
 	public function get_qty() {
-		return $this->_qty;
+		return $this->qty;
 	}
 
 	/**
@@ -55,7 +55,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 * @param int $value
 	 */
 	public function add_qty( int $value ) {
-		$this->_qty += $value;
+		$this->qty += $value;
 	}
 
 	/**
@@ -64,7 +64,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 * @param int $value
 	 */
 	public function remove_qty( int $value ) {
-		$this->_qty -= $value;
+		$this->qty -= $value;
 	}
 
 	/**
@@ -73,7 +73,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 * @return int
 	 */
 	public function get_line_total() {
-		return $this->_line_total;
+		return $this->line_total;
 	}
 
 	/**
@@ -82,7 +82,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 * @param int $value
 	 */
 	public function add_line_total( int $value ) {
-		$this->_line_total += $value;
+		$this->line_total += $value;
 	}
 
 	/**
@@ -91,7 +91,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 * @param int $value
 	 */
 	public function remove_line_total( int $value ) {
-		$this->_line_total -= $value;
+		$this->line_total -= $value;
 	}
 
 }

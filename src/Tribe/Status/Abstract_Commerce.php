@@ -27,12 +27,12 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * @var int the quantity of tickets sold for a post type
 	 */
-	protected $_qty = 0;
+	protected $qty = 0;
 
 	/**
 	 * @var int the amount of tickets sold for a post type
 	 */
-	protected $_line_total = 0;
+	protected $line_total = 0;
 
 	/**
 	 * Initialize Commerce Provider
@@ -66,7 +66,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return int
 	 */
 	public function get_qty() {
-		return $this->_qty;
+		return $this->qty;
 	}
 
 	/**
@@ -77,7 +77,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @param int $value
 	 */
 	public function add_qty( int $value ) {
-		$this->_qty += $value;
+		$this->qty += $value;
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @param int $value
 	 */
 	public function remove_qty( int $value ) {
-		$this->_qty -= $value;
+		$this->qty -= $value;
 	}
 
 	/**
@@ -99,7 +99,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return int
 	 */
 	public function get_line_total() {
-		return $this->_line_total;
+		return $this->line_total;
 	}
 
 	/**
@@ -110,7 +110,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @param int $value
 	 */
 	public function add_line_total( int $value ) {
-		$this->_line_total += $value;
+		$this->line_total += $value;
 	}
 
 	/**
@@ -121,7 +121,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @param int $value
 	 */
 	public function remove_line_total( int $value ) {
-		$this->_line_total -= $value;
+		$this->line_total -= $value;
 	}
 
 	/**
