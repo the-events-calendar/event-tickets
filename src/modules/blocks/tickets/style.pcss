@@ -1,23 +1,27 @@
-.tribe-editor__tickets-container {
-	color: #545D66;
+.tribe-editor__tickets {
 	font-family: Helvetica, sans-serif, arial;
 
-	.editor-inserter {
+	.block-list-appender {
 		display: none;
-	}
-
-	.editor-block-list__block {
-		font-family: inherit;
 	}
 }
 
-.tribe-editor__tickets-container--loading {
+.tribe-editor__tickets--loading {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	padding: 20px;
+}
 
-	.components-spinner {
-		flex: none;
+.components-spinner {
+
+	.tribe-editor__tickets & {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		float: none;
+		margin: 0;
+		opacity: 0.8;
 	}
 }

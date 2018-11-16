@@ -14,19 +14,20 @@ import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
 	image: {
-		id: selectors.getImageId( state ),
-		alt: selectors.getImageAlt( state ),
-		src: selectors.getHeaderSize( state, { size: 'medium' } ),
+		id: selectors.getTicketsHeaderImageId( state ),
+		alt: selectors.getTicketsHeaderImageAlt( state ),
+		src: selectors.getTicketsHeaderImageSrc( state ),
 	},
+	isSettingsLoading: selectors.getTicketsIsSettingsLoading( state ),
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
-	onSelect( image ) {
-		dispatch( actions.setHeader( image ) );
-	},
-	onRemove() {
-		dispatch( actions.setHeader( null ) );
-	},
+	/**
+	 * Full payload from gutenberg media upload is not used,
+	 * only id, alt, and medium src are used for this specific case.
+	 */
+	onSelect: ( image ) => dispatch( actions.updateTicketsHeaderImage( image ) ),
+	onRemove: () => dispatch( actions.deleteTicketsHeaderImage() ),
 } );
 
 export default compose(

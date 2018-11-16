@@ -29,10 +29,6 @@ export default {
 			type: 'boolean',
 			default: false,
 		},
-		dateIsPristine: {
-			type: 'boolean',
-			default: false,
-		},
 		ticketId: {
 			type: 'integer',
 			default: 0,

@@ -78,6 +78,8 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 					dispatch( actions.createRSVP() );
 					dispatch( actions.setRSVPId( body.id ) );
 				}
+				dispatch( actions.setRSVPDetails( payload ) );
+				dispatch( actions.setRSVPHasChanges( false ) );
 				dispatch( actions.setRSVPIsLoading( false ) );
 			},
 			error: () => dispatch( actions.setRSVPIsLoading( false ) ),

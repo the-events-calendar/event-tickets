@@ -25,13 +25,15 @@ const getTitle = (
 	title,
 ) => (
 	isSelected
-		? <AutosizeInput
-			className="tribe-editor__rsvp-container-header__title-input"
-			value={ tempTitle }
-			placeholder={ __( 'RSVP Title', 'events-gutenberg' ) }
-			onChange={ onTempTitleChange }
-			disabled={ isDisabled }
-		/>
+		? (
+			<AutosizeInput
+				className="tribe-editor__rsvp-container-header__title-input"
+				value={ tempTitle }
+				placeholder={ __( 'RSVP Title', 'events-gutenberg' ) }
+				onChange={ onTempTitleChange }
+				disabled={ isDisabled }
+			/>
+		)
 		: <h2 className="tribe-editor__rsvp-container-header__title">{ title }</h2>
 );
 
@@ -43,13 +45,15 @@ const getDescription = (
 	description,
 ) => (
 	isSelected
-		? <AutosizeInput
-			className="tribe-editor__rsvp-container-header__description-input"
-			value={ tempDescription }
-			placeholder={ __( 'description', 'events-gutenberg' ) }
-			onChange={ onTempDescriptionChange }
-			disabled={ isDisabled }
-		/>
+		? (
+			<AutosizeInput
+				className="tribe-editor__rsvp-container-header__description-input"
+				value={ tempDescription }
+				placeholder={ __( 'description', 'events-gutenberg' ) }
+				onChange={ onTempDescriptionChange }
+				disabled={ isDisabled }
+			/>
+		)
 		: description && (
 			<span className="tribe-editor__rsvp-container-header__description">
 				{ description }

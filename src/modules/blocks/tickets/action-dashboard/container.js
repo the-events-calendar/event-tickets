@@ -7,86 +7,28 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { withDispatch, withSelect } from '@wordpress/data';
+import { dispatch as wpDispatch, select } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
 import Template from './template';
-import { withStore } from '@moderntribe/common/src/modules/hoc';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state, ownProps ) => ( {
-	isEditFormValid: selectors.getTicketValidness( state, {
-		blockId: ownProps.activeBlockId,
-	} ),
-	hasBeenCreated: selectors.getTicketHasBeenCreated( state, {
-		blockId: ownProps.activeBlockId,
-	} ),
-	isBeingEdited: selectors.getTicketIsBeingEdited( state, {
-		blockId: ownProps.activeBlockId,
-	} ),
-	hasProviders: selectors.hasTicketProviders(),
-} );
+	onConfirmClick: () => {
+		const { clientId } = ownProps;
+		const { getBlockCount } = select( 'core/editor' );
+		const { insertBlock } = wpDispatch( 'core/editor' );
 
-const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-	createNewEntry() {
-		const { activeBlockId } = ownProps;
-		dispatch( actions.createNewTicket( activeBlockId ) );
+		const nextChildPosition = getBlockCount( clientId );
+		const block = createBlock( 'tribe/tickets-item', {} );
+		insertBlock( block, nextChildPosition, clientId );
 	},
-	cancelEdit() {
-		const { activeBlockId } = ownProps;
-		dispatch( actions.cancelTicketEdit( activeBlockId ) );
-	},
-	updateTicket() {
-		const { activeBlockId } = ownProps;
-		dispatch( actions.updateTicket( activeBlockId ) );
-	},
-} );
-
-const applyWithSelect = withSelect( ( select, ownProps ) => {
-	const { getBlockCount } = select( 'core/editor' );
-	const { clientId } = ownProps;
-	return {
-		nextChildPosition: getBlockCount( clientId ),
-	};
-} );
-
-const applyWithDispatch = withDispatch( ( dispatch, ownProps ) => {
-	const { removeBlock, insertBlock } = dispatch( 'core/editor' );
-
-	return {
-		onCancelClick() {
-			const { activeBlockId, hasBeenCreated, isBeingEdited, cancelEdit } = ownProps;
-
-			if ( isBeingEdited ) {
-				cancelEdit();
-			} else if ( ! hasBeenCreated ) {
-				removeBlock( activeBlockId );
-			}
-		},
-		onConfirmClick() {
-			const { isEditing, createNewEntry, nextChildPosition, isBeingEdited, updateTicket } = ownProps;
-			if ( isBeingEdited ) {
-				updateTicket();
-			} else if ( isEditing ) {
-				createNewEntry();
-			} else {
-				const block = createBlock( 'tribe/tickets-item', {} );
-				const { clientId } = ownProps;
-				insertBlock( block, nextChildPosition, clientId );
-			}
-		},
-	};
 } );
 
 export default compose(
 	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
-	applyWithSelect,
-	applyWithDispatch,
+	connect( mapStateToProps ),
 )( Template );

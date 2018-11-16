@@ -8,30 +8,24 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import Template from './template';
-import { withSaveData, withStore } from '@moderntribe/common/src/modules/hoc';
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { withSaveData, withStore } from '@moderntribe/common/hoc';
+import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state ) => ( {
-	isBlockSelected: selectors.getParentOrChildSelected( state ),
-	isEditing: selectors.hasActiveBlockId( state ),
-	header: `${ selectors.getImageId( state ) }`,
-	sharedCapacity: `${ selectors.getSharedCapacity( state ) }`,
+	header: selectors.getTicketsHeaderImageId( state ),
+	isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
+	provider: selectors.getTicketsProvider( state ),
+	sharedCapacity: selectors.getTicketsSharedCapacity( state ),
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
-	setIsSelected( selected ) {
-		dispatch( actions.setParentBlockSelected( selected ) );
-	},
 	setInitialState: ( props ) => {
-		dispatch( actions.setInitialState( props ) );
+		dispatch( actions.setTicketsInitialState( props ) );
 	},
 } );
 
 export default compose(
 	withStore(),
-	connect(
-		mapStateToProps,
-		mapDispatchToProps,
-	),
+	connect( mapStateToProps, mapDispatchToProps ),
 	withSaveData(),
 )( Template );

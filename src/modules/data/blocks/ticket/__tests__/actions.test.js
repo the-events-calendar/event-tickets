@@ -1,180 +1,281 @@
 /**
  * Internal dependencies
  */
-import { actions } from '@moderntribe/tickets/data/blocks/ticket';
+import * as actions from '../actions';
 
-describe( 'Gutenberg actions', () => {
-	describe( 'Initial state', () => {
-		const props = {
-			clientId: 'modern-tribe',
-			attributes: {
-				header: 99,
-				sharedCapacity: 19,
-			},
-		};
-		expect( actions.setInitialState( props ) ).toMatchSnapshot();
-	} );
+describe( 'Ticket actions', () => {
+	const blockId = 'modern-tribe';
 
-	describe( 'Parent block is loading', () => {
-		expect( actions.setParentBlockIsLoading( true ) ).toMatchSnapshot();
-		expect( actions.setParentBlockIsLoading( false ) ).toMatchSnapshot();
-	} );
-
-	describe( 'Header actions', () => {
-		test( 'Set null to remove header', () => {
-			expect( actions.setHeader( null ) ).toMatchSnapshot();
+	describe( 'Tickets actions', () => {
+		test( 'set tickets initial state', () => {
+			const props = {
+				clientId: 'modern-tribe',
+				attributes: {
+					header: 99,
+					sharedCapacity: 19,
+				},
+			};
+			expect( actions.setTicketsInitialState( props ) ).toMatchSnapshot();
 		} );
 
-		test( 'Set object into header', () => {
-			expect( actions.setHeader( { image: 10 } ) ).toMatchSnapshot();
-		} );
-	} );
-
-	describe( 'Set shared capacity actions', () => {
-		test( 'Set empty value', () => {
-			expect( actions.setTotalSharedCapacity( 0 ) ).toMatchSnapshot();
+		test( 'set tickets header image', () => {
+			expect( actions.setTicketsHeaderImage( { image: 10 } ) ).toMatchSnapshot();
 		} );
 
-		test( 'Set a large number', () => {
-			expect( actions.setTotalSharedCapacity( 999 ) ).toMatchSnapshot();
+		test( 'set tickets is settings open', () => {
+			expect( actions.setTicketsIsSettingsOpen( true ) ).toMatchSnapshot();
+			expect( actions.setTicketsIsSettingsOpen( false ) ).toMatchSnapshot();
 		} );
-	} );
 
-	describe( 'Set the status of the settings dashboard', () => {
-		test( 'Open the settings dashboard', () => {
+		test( 'set tickets is settings loading', () => {
+			expect( actions.setTicketsIsSettingsLoading( true ) ).toMatchSnapshot();
+			expect( actions.setTicketsIsSettingsLoading( false ) ).toMatchSnapshot();
+		} );
+
+		test( 'open settings', () => {
 			expect( actions.openSettings() ).toMatchSnapshot();
-			expect( actions.setSettingsOpen( true ) ).toMatchSnapshot();
 		} );
 
-		test( 'Close the settings dashboard', () => {
+		test( 'close settings', () => {
 			expect( actions.closeSettings() ).toMatchSnapshot();
-			expect( actions.setSettingsOpen( false ) ).toMatchSnapshot();
+		} );
+
+		test( 'set tickets provider', () => {
+			expect( actions.setTicketsProvider( 'Tribe__Tickets__Commerce__PayPal__Main' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set tickets shared capacity', () => {
+			expect( actions.setTicketsSharedCapacity( 99 ) ).toMatchSnapshot();
+		} );
+
+		test( 'set tickets temp shared capacity', () => {
+			expect( actions.setTicketsTempSharedCapacity( 99 ) ).toMatchSnapshot();
 		} );
 	} );
 
-	describe( 'Block selection', () => {
-		test( 'Parent block selection', () => {
-			expect( actions.setParentBlockSelected( true ) ).toMatchSnapshot();
-			expect( actions.setParentBlockSelected( false ) ).toMatchSnapshot();
+	describe( 'Header image saga actions', () => {
+		test( 'fetch tickets header image', () => {
+			expect( actions.fetchTicketsHeaderImage( 1 ) ).toMatchSnapshot();
 		} );
 
-		test( 'Child block selection', () => {
-			expect( actions.setChildBlockSelected( true ) ).toMatchSnapshot();
-			expect( actions.setChildBlockSelected( false ) ).toMatchSnapshot();
+		test( 'update tickets header image', () => {
+			expect( actions.updateTicketsHeaderImage( { id: 1, alt: 'hi', src: '#' } ) ).toMatchSnapshot();
 		} );
-	} );
 
-	describe( 'Active block selected', () => {
-		test( 'Active block', () => {
-			expect( actions.setActiveChildBlockId( 'modern-tribe' ) ).toMatchSnapshot();
+		test( 'delete tickets header image', () => {
+			expect( actions.deleteTicketsHeaderImage() ).toMatchSnapshot();
 		} );
 	} );
 
-	describe( 'Temporarily values', () => {
-		test( 'Temporarily capacity', () => {
-			expect( actions.setTempSharedCapacity( 99 ) ).toMatchSnapshot();
-		} );
-	} );
-
-	describe( 'Ticket Provider', () => {
-		test( 'Set default provider', () => {
-			expect( actions.setProvider( 'Tribe__Tickets__Commerce__PayPal__Main' ) ).toMatchSnapshot();
-		} );
-	} );
-
-	describe( 'Single block actions', () => {
-		const blockId = 'modern-tribe';
-
-		test( 'Block registration process', () => {
-			expect( actions.registerTicketBlock( blockId ) ).toMatchSnapshot();
-			expect( actions.removeTicketBlock( blockId ) ).toMatchSnapshot();
+	describe( 'Ticket details actions', () => {
+		test( 'set ticket title', () => {
+			expect( actions.setTicketTitle( blockId, 'Modern Tribe' ) );
 		} );
 
-		test( 'Ticket title', () => {
-			expect( actions.setTitle( blockId, 'Modern Tribe' ) );
-		} );
-
-		test( 'Ticket description', () => {
-			expect( actions.setDescription( blockId, 'The Next Generation of Digital Agency' ) )
+		test( 'set ticket description', () => {
+			expect( actions.setTicketDescription( blockId, 'The Next Generation of Digital Agency' ) )
 				.toMatchSnapshot();
 		} );
 
-		test( 'Ticket price', () => {
-			expect( actions.setPrice( blockId, 99 ) ).toMatchSnapshot();
+		test( 'set ticket price', () => {
+			expect( actions.setTicketPrice( blockId, 99 ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket SKU', () => {
-			expect( actions.setSKU( blockId, 'my-sku' ) ).toMatchSnapshot();
+		test( 'set ticket sku', () => {
+			expect( actions.setTicketSku( blockId, 'my-sku' ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket dates', () => {
-			expect( actions.setStartDate( blockId, 'January 1, 2018' ) ).toMatchSnapshot();
-			expect( actions.setStartTime( blockId, '10:00' ) ).toMatchSnapshot();
-			expect( actions.setEndDate( blockId, 'January 10, 2018' ) ).toMatchSnapshot();
-			expect( actions.setEndTime( blockId, '12:34' ) ).toMatchSnapshot();
+		test( 'set ticket start date', () => {
+			expect( actions.setTicketStartDate( blockId, '2018-01-01' ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket Capacity', () => {
-			expect( actions.setCapacity( blockId, 'unlimited' ) ).toMatchSnapshot();
-			expect( actions.setCapacityType( blockId, 'unlimited' ) ).toMatchSnapshot();
+		test( 'set ticket start date input', () => {
+			expect( actions.setTicketStartDateInput( blockId, 'January 1, 2018' ) ).toMatchSnapshot();
 		} );
 
-		test( 'Create a new ticket', () => {
-			expect( actions.createNewTicket( blockId ) ).toMatchSnapshot();
-		} );
-
-		test( 'Update ticket', () => {
-			expect( actions.updateTicket( blockId ) ).toMatchSnapshot();
-		} );
-
-		test( 'Set ticket date is pristine', () => {
-			expect( actions.setTicketDateIsPristine( blockId, false ) ).toMatchSnapshot();
-			expect( actions.setTicketDateIsPristine( blockId, true ) ).toMatchSnapshot();
-		} );
-
-		test( 'Set ticket post ID', () => {
-			expect( actions.setTicketId( blockId, 99 ) ).toMatchSnapshot();
-		} );
-
-		test( 'Ticket editing flag', () => {
-			expect( actions.setTicketIsEditing( true ) ).toMatchSnapshot();
-			expect( actions.setTicketIsEditing( false ) ).toMatchSnapshot();
-		} );
-
-		test( 'Ticket start moment object', () => {
+		test( 'set ticket start moment', () => {
 			expect( actions.setTicketStartDateMoment( blockId, { type: 'moment' } ) ).toMatchSnapshot();
 			expect( actions.setTicketStartDateMoment( blockId, null ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket end moment object', () => {
+		test( 'set ticket end date', () => {
+			expect( actions.setTicketEndDate( blockId, '2018-01-10' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket end date input', () => {
+			expect( actions.setTicketEndDateInput( blockId, 'January 10, 2018' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket end moment', () => {
 			expect( actions.setTicketEndDateMoment( blockId, { type: 'moment' } ) ).toMatchSnapshot();
 			expect( actions.setTicketEndDateMoment( blockId, null ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket has been created', () => {
-			expect( actions.setTicketHasBeenCreated( blockId, true ) ).toMatchSnapshot();
-			expect( actions.setTicketHasBeenCreated( blockId, false ) ).toMatchSnapshot();
+		test( 'set ticket start time', () => {
+			expect( actions.setTicketStartTime( blockId, '10:00' ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket is loading', () => {
+		test( 'set ticket end time', () => {
+			expect( actions.setTicketEndTime( blockId, '12:34' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket capacity type', () => {
+			expect( actions.setTicketCapacityType( blockId, 'unlimited' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket capacity', () => {
+			expect( actions.setTicketCapacity( blockId, '10' ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'Ticket temp details actions', () => {
+		test( 'set ticket temp title', () => {
+			expect( actions.setTicketTempTitle( blockId, 'Modern Tribe' ) );
+		} );
+
+		test( 'set ticket temp description', () => {
+			expect( actions.setTicketTempDescription( blockId, 'The Next Generation of Digital Agency' ) )
+				.toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp price', () => {
+			expect( actions.setTicketTempPrice( blockId, 99 ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp sku', () => {
+			expect( actions.setTicketTempSku( blockId, 'my-sku' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp start date', () => {
+			expect( actions.setTicketTempStartDate( blockId, '2018-01-01' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp start date input', () => {
+			expect( actions.setTicketTempStartDateInput( blockId, 'January 1, 2018' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp start moment', () => {
+			expect( actions.setTicketTempStartDateMoment( blockId, { type: 'moment' } ) ).toMatchSnapshot();
+			expect( actions.setTicketTempStartDateMoment( blockId, null ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp end date', () => {
+			expect( actions.setTicketTempEndDate( blockId, '2018-01-10' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp end date input', () => {
+			expect( actions.setTicketTempEndDateInput( blockId, 'January 10, 2018' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp end moment', () => {
+			expect( actions.setTicketTempEndDateMoment( blockId, { type: 'moment' } ) ).toMatchSnapshot();
+			expect( actions.setTicketTempEndDateMoment( blockId, null ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp start time', () => {
+			expect( actions.setTicketTempStartTime( blockId, '10:00' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp end time', () => {
+			expect( actions.setTicketTempEndTime( blockId, '12:34' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp capacity type', () => {
+			expect( actions.setTicketTempCapacityType( blockId, 'unlimited' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp capacity', () => {
+			expect( actions.setTicketTempCapacity( blockId, '10' ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'Ticket actions', () => {
+		test( 'register ticket block', () => {
+			expect( actions.registerTicketBlock( blockId ) ).toMatchSnapshot();
+		} );
+
+		test( 'remove ticket block', () => {
+			expect( actions.removeTicketBlock( blockId ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket sold', () => {
+			expect( actions.setTicketSold( blockId, 23 ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket availability', () => {
+			expect( actions.setTicketAvailable( blockId, 99 ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket id', () => {
+			expect( actions.setTicketId( blockId, 99 ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket currency symbol', () => {
+			expect( actions.setTicketCurrencySymbol( blockId, '$' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket currency positioin', () => {
+			expect( actions.setTicketCurrencyPosition( blockId, 'suffix' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket provider', () => {
+			expect( actions.setTicketProvider( blockId, 'provider' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket is loading', () => {
 			expect( actions.setTicketIsLoading( blockId, true ) ).toMatchSnapshot();
 			expect( actions.setTicketIsLoading( blockId, false ) ).toMatchSnapshot();
 		} );
 
-		test( 'fetch ticket details', () => {
-			expect( actions.fetchTicketDetails( blockId, 99 ) ).toMatchSnapshot();
+		test( 'set ticket has been created', () => {
+			expect( actions.setTicketHasBeenCreated( blockId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketHasBeenCreated( blockId, false ) ).toMatchSnapshot();
 		} );
 
-		test( 'cancel ticket edit', () => {
-			expect( actions.cancelTicketEdit( blockId ) ).toMatchSnapshot();
+		test( 'set ticket has changes', () => {
+			expect( actions.setTicketHasChanges( blockId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketHasChanges( blockId, false ) ).toMatchSnapshot();
 		} );
 
-		test( 'Set sold amount on a ticket', () => {
-			expect( actions.setTicketSold( blockId, 23 ) ).toMatchSnapshot();
+		test( 'set ticket is selected', () => {
+			expect( actions.setTicketIsSelected( blockId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketIsSelected( blockId, false ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'Ticket saga actions', () => {
+		test( 'set ticket details', () => {
+			expect( actions.setTicketDetails( blockId, {} ) ).toMatchSnapshot();
 		} );
 
-		test( 'Set ticket availability', () => {
-			expect( actions.setTicketAvailable( blockId, 99 ) ).toMatchSnapshot();
+		test( 'set ticket temp details', () => {
+			expect( actions.setTicketTempDetails( blockId, {} ) ).toMatchSnapshot();
+		} );
+
+		test( 'fetch ticket', () => {
+			expect( actions.fetchTicket( blockId, 99 ) ).toMatchSnapshot();
+		} );
+
+		test( 'create new ticket', () => {
+			expect( actions.createNewTicket( blockId ) ).toMatchSnapshot();
+		} );
+
+		test( 'update ticket', () => {
+			expect( actions.updateTicket( blockId ) ).toMatchSnapshot();
+		} );
+
+		test( 'delete ticket', () => {
+			expect( actions.deleteTicket( blockId ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket initial state', () => {
+			const props = {
+				clientId: 'modern-tribe',
+				attributes: {
+					ticketId: 99,
+				},
+			};
+			expect( actions.setTicketInitialState( props ) ).toMatchSnapshot();
 		} );
 	} );
 } );

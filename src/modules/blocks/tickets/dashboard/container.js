@@ -12,16 +12,10 @@ import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const mapStateToProps = ( state ) => ( {
-	isSettingsOpen: selectors.getSettingsIsOpen( state ),
-	activeBlockId: selectors.getActiveBlockId( state ),
-	isLoading: selectors.isParentBlockLoading( state ),
-	isTicketLoading: selectors.getTicketIsLoading( state, {
-		blockId: selectors.getActiveBlockId( state ),
-	} ),
+	isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
 } );
 
 export default compose(
 	withStore(),
 	connect( mapStateToProps ),
 )( TicketsDashboard );
-

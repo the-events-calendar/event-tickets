@@ -27,6 +27,9 @@ const note = __(
 	'events-gutenberg',
 );
 
+/**
+ * @todo: create radio input element, move this over to element
+ */
 const RadioInput = ( { provider, onProviderChange, ...additionalProps }) => (
 	<div className="tribe-editor__tickets-control-container">
 		<input
@@ -61,20 +64,14 @@ const Controls = ( {
 							{ message }
 							<em>{ note }</em>
 						</p>
-						{ providers.map( ( provider, key ) => {
-							const inputProps = {
-								checked: selectedProvider === provider.class,
-							};
-
-							return (
-								<RadioInput
-									key={ `provider-option-${ key + 1 }` }
-									provider={ provider }
-									onProviderChange={ onProviderChange }
-									{ ...inputProps }
-								/>
-							);
-						} ) }
+						{ providers.map( ( provider, key ) => (
+							<RadioInput
+								key={ `provider-option-${ key + 1 }` }
+								provider={ provider }
+								onProviderChange={ onProviderChange }
+								checked={ selectedProvider === provider.class }
+							/>
+						) ) }
 					</fieldset>
 				</PanelRow>
 			</PanelBody>
@@ -90,11 +87,6 @@ Controls.propTypes = {
 	} ) ),
 	selectedProvider: PropTypes.string,
 	onProviderChange: PropTypes.func,
-};
-
-Controls.defaultProps = {
-	providers: [],
-	onProviderChange: noop,
 };
 
 export default Controls;

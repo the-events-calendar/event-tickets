@@ -13,8 +13,32 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { ImageUpload } from '@moderntribe/common/elements';
+import './style.pcss';
 
-const HeaderImage = ( props ) => <ImageUpload { ...props } />
+const HeaderImage = ( {
+	image,
+	isSettingsLoading,
+	onRemove,
+	onSelect
+} ) => {
+	const imageUploadProps = {
+		title: __( 'Ticket Header Image', 'events-gutenberg' ),
+		description: __(
+			/* eslint-disable-next-line max-len */
+			'Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
+			'events-gutenberg'
+		),
+		className: 'tribe-editor__rsvp__image-upload',
+		buttonDisabled: isSettingsLoading,
+		buttonLabel: __( 'Upload Image', 'events-gutenberg' ),
+		image,
+		onRemove,
+		onSelect,
+		removeButtonDisabled: isSettingsLoading,
+	};
+
+	return <ImageUpload { ...imageUploadProps } />;
+};
 
 HeaderImage.propTypes = {
 	image: PropTypes.shape( {
@@ -22,18 +46,9 @@ HeaderImage.propTypes = {
 		id: PropTypes.number.isRequired,
 		src: PropTypes.string.isRequired,
 	} ).isRequired,
+	isSettingsLoading: PropTypes.bool.isRequired,
 	onRemove: PropTypes.func.isRequired,
 	onSelect: PropTypes.func.isRequired,
 };
-
-HeaderImage.defaultProps = {
-	title: __( 'Ticket Header Image', 'events-gutenberg' ),
-	description: __(
-		/* eslint-disable-next-line max-len */
-		'Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide.',
-		'events-gutenberg'
-	),
-	buttonLabel: __( 'Upload Image', 'events-gutenberg' ),
-}
 
 export default HeaderImage;

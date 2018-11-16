@@ -1,297 +1,436 @@
 /**
  * Internal dependencies
  */
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
-import { DEFAULT_STATE } from '@moderntribe/tickets/data/blocks/ticket/reducers/ui';
+import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { DEFAULT_STATE } from '@moderntribe/tickets/data/blocks/ticket/reducer';
 import {
 	DEFAULT_STATE as TICKET_DEFAULT_STATE,
-} from '@moderntribe/tickets/data/blocks/ticket/reducers/ticket';
+} from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket';
 
 jest.mock( 'moment', () => () => {
 	const moment = require.requireActual( 'moment' );
 	return moment( 'September 1, 2018 10:30 pm', 'MMMM D, Y h:mm a' );
 } );
 
-const state = {
+const defaultState = {
 	tickets: {
 		blocks: {
-			ticket: {
-				ui: {
-					...DEFAULT_STATE,
-				},
-				tickets: {
-					byId: {},
-					allIds: [],
-				},
-				settings: {
-					sharedCapacity: '',
-				},
-			},
+			ticket: DEFAULT_STATE,
 		},
 	},
 };
 
 const image = {
 	id: 4961,
-	title: 'aircraft-1362586_1920',
-	filename: 'aircraft-1362586_1920.jpg',
-	url: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920.jpg',
-	link: 'http://gutenberg.local/event/tickets-here/aircraft-1362586_1920/',
-	sizes: {
-		full: {
-			url: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920.jpg',
-			height: 1211,
-			width: 1920,
-			orientation: 'landscape',
-		},
-		large: {
-			height: 331,
-			width: 525,
-			url: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920-1024x646.jpg',
-			orientation: 'landscape',
-		},
-		medium: {
-			height: 189,
-			width: 300,
-			url: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920-300x189.jpg',
-			orientation: 'landscape',
-		},
-		thumbnail: {
-			height: 150,
-			width: 150,
-			url: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920-150x150.jpg',
-			orientation: 'landscape',
-		},
-		media_size: {
-			height: 150,
-			width: 150,
-			source_url: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920-150x150.jpg',
-			orientation: 'landscape',
-		},
-	},
+	src: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920-300x189.jpg',
+	alt: 'aircraft',
 };
 
-describe( 'Ticket blocks selectors', () => {
-	let newState = {};
+describe( 'Ticket block selectors', () => {
+	let state;
+	let ownProps;
 
 	beforeEach( () => {
-		newState = {
-			tickets: {
-				blocks: {
-					ticket: {
-						ui: {
-							...DEFAULT_STATE,
-						},
-						tickets: {
-							allIds: [ 'modern-tribe' ],
-							byId: {
-								'modern-tribe': { ...TICKET_DEFAULT_STATE },
-							},
-						},
-						settings: {
-							sharedCapacity: 0,
-						},
-					},
-				},
-			},
-		};
+		state = defaultState;
+		state.tickets.blocks.ticket.header = image;
+		state.tickets.blocks.ticket.tickets.allIds = [ 'modern-tribe' ];
+		state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ] = TICKET_DEFAULT_STATE;
+		ownProps = { blockId: 'modern-tribe' };
 	} );
 
-	describe( 'Header image', () => {
-		test( 'Select default image', () => {
-			expect( selectors.getHeader( state ) ).toBe( null );
+	describe( 'Block selectors', () => {
+		test( 'getBlock', () => {
+			expect( selectors.getBlock( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'Select set image', () => {
-			newState.tickets.blocks.ticket.ui.header = image;
-			expect( selectors.getHeader( newState ) ).toEqual( image );
+		test( 'getTicketsIsSettingsOpen', () => {
+			expect( selectors.getTicketsIsSettingsOpen( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'Select image id', () => {
-			newState.tickets.blocks.ticket.ui.header = image;
-			expect( selectors.getImageId( state ) ).toBe( 0 );
-			expect( selectors.getImageId( newState ) ).toBe( 4961 );
+		test( 'getTicketsIsSettingsLoading', () => {
+			expect( selectors.getTicketsIsSettingsLoading( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'Select image size', () => {
-			newState.tickets.blocks.ticket.ui.header = image;
-			expect( selectors.getHeaderSize( newState, { size: 'large' } ) )
-				.toEqual( image.sizes.large.url );
-			expect( selectors.getHeaderSize( newState, { size: 'unknown' } ) ).toBe( '' );
+		test( 'getTicketsProvider', () => {
+			expect( selectors.getTicketsProvider( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'Select the image size when coming from media endpoint', () => {
-			newState.tickets.blocks.ticket.ui.header = image;
-			expect( selectors.getHeaderSize( newState, { size: 'media_size' } ) )
-				.toEqual( image.sizes.media_size.source_url );
+		test( 'getTicketsSharedCapacity', () => {
+			expect( selectors.getTicketsSharedCapacity( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsSharedCapacityInt', () => {
+			expect( selectors.getTicketsSharedCapacityInt( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsTempSharedCapacity', () => {
+			expect( selectors.getTicketsTempSharedCapacity( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsTempSharedCapacityInt', () => {
+			expect( selectors.getTicketsTempSharedCapacityInt( state ) ).toMatchSnapshot();
 		} );
 	} );
 
-	describe( 'Shared capacity', () => {
-		test( 'Select shared capacity', () => {
-			expect( selectors.getSharedCapacity( state ) ).toBe( '' );
+	describe( 'Header image selectors', () => {
+		test( 'getTicketsHeaderImage', () => {
+			expect( selectors.getTicketsHeaderImage( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'Select shared capacity after being set', () => {
-			newState.tickets.blocks.ticket.settings.sharedCapacity = 99;
-			expect( selectors.getSharedCapacity( newState ) ).toBe( 99 );
-		} );
-	} );
-
-	describe( 'Dashboard settings', () => {
-		test( 'Default value of settings dashboard', () => {
-			expect( selectors.getSettingsIsOpen( state ) ).toBe( false );
+		test( 'getTicketsHeaderImageId', () => {
+			expect( selectors.getTicketsHeaderImageId( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'Custom value of settings dashboard', () => {
-			newState.tickets.blocks.ticket.ui.isSettingsOpen = true;
-			expect( selectors.getSettingsIsOpen( newState ) ).toBe( true );
+		test( 'getTicketsHeaderImageSrc', () => {
+			expect( selectors.getTicketsHeaderImageSrc( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsHeaderImageAlt', () => {
+			expect( selectors.getTicketsHeaderImageAlt( state ) ).toMatchSnapshot();
 		} );
 	} );
 
-	describe( 'Provider', () => {
-		test( 'Default value for provider', () => {
-			expect( selectors.getSelectedProvider( state ) ).toBe( '' );
+	describe( 'Tickets selectors', () => {
+		test( 'getTickets', () => {
+			expect( selectors.getTickets( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'Custom provider', () => {
-			newState.tickets.blocks.ticket.ui.provider = 'Tribe__Tickets__Commerce__PayPal__Main';
-			expect( selectors.getSelectedProvider( newState ) )
-				.toBe( 'Tribe__Tickets__Commerce__PayPal__Main' );
+		test( 'getAllTicketIds', () => {
+			expect( selectors.getAllTicketIds( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsById', () => {
+			expect( selectors.getTicketsById( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsArray', () => {
+			expect( selectors.getTicketsArray( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsCount', () => {
+			expect( selectors.getTicketsCount( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'hasTickets', () => {
+			expect( selectors.hasTickets( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentTickets', () => {
+			expect( selectors.getIndependentTickets( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getSharedTickets', () => {
+			expect( selectors.getSharedTickets( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getSharedTicketsCount', () => {
+			expect( selectors.getSharedTicketsCount( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getUnlimitedTickets', () => {
+			expect( selectors.getUnlimitedTickets( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'hasATicketSelected', () => {
+			expect( selectors.hasATicketSelected( state ) ).toMatchSnapshot();
 		} );
 	} );
 
 	describe( 'Ticket selectors', () => {
-		const ownProps = { blockId: 'modern-tribe' };
-
-		test( 'Expires value', () => {
-			expect( selectors.getTicketExpires( newState, ownProps ) ).toBe( true );
+		test( 'getTicketBlockId', () => {
+			expect( selectors.getTicketBlockId( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Expiring ticket', () => {
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].dateIsPristine = false;
-			expect( selectors.getTicketExpires( newState, ownProps ) ).toBe( true );
+		test( 'getTicket', () => {
+			expect( selectors.getTicket( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Select the group of tickets', () => {
-			expect( selectors.getTicketsIds( newState ) ).toMatchSnapshot();
-			expect( selectors.getTicketsIds( newState ) ).toMatchSnapshot();
-			expect( selectors.getTicketsObject( newState ) ).toMatchSnapshot();
+		test( 'getTicketSold', () => {
+			expect( selectors.getTicketSold( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Select type of tickets', () => {
-			expect( selectors.getIndependentTickets( newState ) ).toMatchSnapshot();
-			expect( selectors.getSharedTickets( newState ) ).toMatchSnapshot();
-			expect( selectors.getUnlimitedTickets( newState ) ).toMatchSnapshot();
+		test( 'getTicketAvailable', () => {
+			expect( selectors.getTicketAvailable( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Independent tickets selectors', () => {
-			expect( selectors.getTicketsIndependentCapacity( newState ) ).toBe( 0 );
-			expect( selectors.getTicketsIndependentSold( newState ) ).toBe( 0 );
-			expect( selectors.getTicketsIndependentAvailable( newState ) ).toBe( 0 );
+		test( 'getTicketId', () => {
+			expect( selectors.getTicketId( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Shared tickets selectors', () => {
-			expect( selectors.getTicketsSharedSold( newState ) ).toBe( 0 );
-			expect( selectors.getTicketsSharedAvailable( newState ) ).toBe( 0 );
-		} )
-
-		test( 'Independent and shared tickets selectors', () => {
-			expect( selectors.getTicketsIndependentAndSharedCapacity( newState ) ).toBe( 0 );
-			expect( selectors.getTicketsIndependentAndSharedSold( newState ) ).toBe( 0 );
-			expect( selectors.getTicketsIndependentAndSharedAvailable( newState ) ).toBe( 0 );
+		test( 'getTicketCurrencySymbol', () => {
+			expect( selectors.getTicketCurrencySymbol( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket dates and times', () => {
-			expect( selectors.getTicketStartTime( newState, ownProps ) )
-				.toMatchSnapshot();
-			expect( selectors.getTicketEndTime( newState, ownProps ) )
-				.toMatchSnapshot();
-			expect( selectors.getTicketEndDate( newState, ownProps ) )
-				.toMatchSnapshot();
-			expect( selectors.getTicketStartDate( newState, ownProps ) )
-				.toMatchSnapshot();
+		test( 'getTicketCurrencyPosition', () => {
+			expect( selectors.getTicketCurrencyPosition( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket fields', () => {
-			expect( selectors.getTicketTitle( newState, ownProps ) ).toMatchSnapshot();
-			expect( selectors.getTicketDescription( newState, ownProps ) ).toMatchSnapshot();
-			expect( selectors.getTicketSKU( newState, ownProps ) ).toMatchSnapshot();
-			expect( selectors.getTicketPrice( newState, ownProps ) ).toMatchSnapshot();
-			expect( selectors.getTicketCapacityType( newState, ownProps ) ).toMatchSnapshot();
-			expect( selectors.getTicketEditing( newState, ownProps ) ).toMatchSnapshot();
-			expect( selectors.getTicketSold( newState, ownProps ) ).toMatchSnapshot();
-			expect( selectors.getTicketCapacity( newState, ownProps ) ).toBe( 0 );
-			expect( selectors.isUnlimitedTicket( newState, ownProps ) ).toBe( false );
-			expect( selectors.isSharedTicket( newState, ownProps ) ).toBe( true );
+		test( 'getTicketProvider', () => {
+			expect( selectors.getTicketProvider( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket validness', () => {
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'Modern Tribe';
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = '20';
-			expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( true );
+		test( 'getTicketIsLoading', () => {
+			expect( selectors.getTicketIsLoading( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket invalidness', () => {
-			expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( false );
+		test( 'getTicketHasBeenCreated', () => {
+			expect( selectors.getTicketHasBeenCreated( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket default loading value', () => {
-			expect( selectors.getTicketIsLoading( newState, ownProps ) ).toBe( false );
+		test( 'getTicketHasChanges', () => {
+			expect( selectors.getTicketHasChanges( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket custom loading value', () => {
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].isLoading = true;
-			expect( selectors.getTicketIsLoading( newState, ownProps ) ).toBe( true );
+		test( 'getTicketIsSelected', () => {
+			expect( selectors.getTicketIsSelected( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket has been created default value', () => {
-			expect( selectors.getTicketHasBeenCreated( newState, ownProps ) ).toBe( false );
+		test( 'isTicketDisabled', () => {
+			expect( selectors.isTicketDisabled( state, ownProps ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'Ticket details selectors', () => {
+		test( 'getTicketDetails', () => {
+			expect( selectors.getTicketDetails( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket has been created custom value', () => {
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].hasBeenCreated = true;
-			expect( selectors.getTicketHasBeenCreated( newState, ownProps ) ).toBe( true );
+		test( 'getTicketTitle', () => {
+			expect( selectors.getTicketTitle( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket is been edited', () => {
-			expect( selectors.getTicketIsBeingEdited( newState, ownProps ) ).toBe( false );
+		test( 'getTicketDescription', () => {
+			expect( selectors.getTicketDescription( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Ticket is been edited - when is Editing and has been created', () => {
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].isEditing = true;
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].hasBeenCreated = true;
-			expect( selectors.getTicketIsBeingEdited( newState, ownProps ) ).toBe( true );
+		test( 'getTicketPrice', () => {
+			expect( selectors.getTicketPrice( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Is ticket disabled - default state', () => {
-			expect( selectors.isTicketDisabled( newState, ownProps ) ).toBe( false );
+		test( 'getTicketSku', () => {
+			expect( selectors.getTicketSku( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Is ticket disabled - when settings is open', () => {
-			newState.tickets.blocks.ticket.ui.isSettingsOpen = true;
- 			expect( selectors.isTicketDisabled( newState, ownProps ) ).toBe( true );
+		test( 'getTicketStartDate', () => {
+			expect( selectors.getTicketStartDate( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'default ticket availability', () => {
-			expect( selectors.getTicketAvailability( newState, ownProps ) ).toBe( 0 );
+		test( 'getTicketStartDateInput', () => {
+			expect( selectors.getTicketStartDateInput( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'custom ticket availability', () => {
-			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].available = 99;
-			expect( selectors.getTicketAvailability( newState, ownProps ) ).toBe( 99 );
+		test( 'getTicketStartDateMoment', () => {
+			expect( selectors.getTicketStartDateMoment( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Get providers', () => {
-			expect( selectors.getProviders() ).toEqual( [] );
+		test( 'getTicketEndDate', () => {
+			expect( selectors.getTicketEndDate( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Has providers', () => {
-			expect( selectors.hasTicketProviders() ).toBe( false );
+		test( 'getTicketEndDateInput', () => {
+			expect( selectors.getTicketEndDateInput( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-		test( 'Has multiple providers', () => {
-			expect( selectors.hasMultipleProviders() ).toBe( false );
+		test( 'getTicketEndDateMoment', () => {
+			expect( selectors.getTicketEndDateMoment( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketStartTime', () => {
+			expect( selectors.getTicketStartTime( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketStartTimeNoSeconds', () => {
+			expect( selectors.getTicketStartTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketEndTime', () => {
+			expect( selectors.getTicketEndTime( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketEndTimeNoSeconds', () => {
+			expect( selectors.getTicketEndTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketCapacityType', () => {
+			expect( selectors.getTicketCapacityType( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketCapacity', () => {
+			expect( selectors.getTicketCapacity( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'isUnlimitedTicket', () => {
+			expect( selectors.isUnlimitedTicket( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'isSharedTicket', () => {
+			expect( selectors.isSharedTicket( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'isIndependentTicket', () => {
+			expect( selectors.isIndependentTicket( state, ownProps ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'Ticket temp details selectors', () => {
+		test( 'getTicketTempDetails', () => {
+			expect( selectors.getTicketTempDetails( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempTitle', () => {
+			expect( selectors.getTicketTempTitle( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempDescription', () => {
+			expect( selectors.getTicketTempDescription( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempPrice', () => {
+			expect( selectors.getTicketTempPrice( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempSku', () => {
+			expect( selectors.getTicketTempSku( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempStartDate', () => {
+			expect( selectors.getTicketTempStartDate( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempStartDateInput', () => {
+			expect( selectors.getTicketTempStartDateInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempStartDateMoment', () => {
+			expect( selectors.getTicketTempStartDateMoment( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempEndDate', () => {
+			expect( selectors.getTicketTempEndDate( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempEndDateInput', () => {
+			expect( selectors.getTicketTempEndDateInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempEndDateMoment', () => {
+			expect( selectors.getTicketTempEndDateMoment( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempStartTime', () => {
+			expect( selectors.getTicketTempStartTime( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempStartTimeNoSeconds', () => {
+			expect( selectors.getTicketTempStartTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempEndTime', () => {
+			expect( selectors.getTicketTempEndTime( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempEndTimeNoSeconds', () => {
+			expect( selectors.getTicketTempEndTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempCapacityType', () => {
+			expect( selectors.getTicketTempCapacityType( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempCapacity', () => {
+			expect( selectors.getTicketTempCapacity( state, ownProps ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'Amount reducers selectors', () => {
+		describe( 'Reducer functions', () => {
+			let tickets;
+
+			beforeEach( () => {
+				tickets = [
+					{
+						details: { capacity: 12 },
+						tempDetails: { capacity: 12 },
+						sold: 10,
+						available: 2,
+					}, {
+						details: { capacity: 23 },
+						tempDetails: { capacity: 21 },
+						sold: 9,
+						available: 14,
+					},
+				];
+			} );
+
+			test( '_getTotalCapacity', () => {
+				expect( selectors._getTotalCapacity( tickets ) ).toMatchSnapshot();
+			} );
+
+			test( '_getTotalTempCapacity', () => {
+				expect( selectors._getTotalTempCapacity( tickets ) ).toMatchSnapshot();
+			} );
+
+			test( '_getTotalSold', () => {
+				expect( selectors._getTotalSold( tickets ) ).toMatchSnapshot();
+			} );
+
+			test( '_getTotalAvailable', () => {
+				expect( selectors._getTotalAvailable( tickets ) ).toMatchSnapshot();
+			} );
+		} );
+
+		test( 'getIndependentTicketsCapacity', () => {
+			expect( selectors.getIndependentTicketsCapacity( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentTicketsTempCapacity', () => {
+			expect( selectors.getIndependentTicketsTempCapacity( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentTicketsSold', () => {
+			expect( selectors.getIndependentTicketsSold( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentTicketsAvailable', () => {
+			expect( selectors.getIndependentTicketsAvailable( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getSharedTicketsSold', () => {
+			expect( selectors.getSharedTicketsSold( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getSharedTicketsAvailable', () => {
+			expect( selectors.getSharedTicketsAvailable( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentAndSharedTicketsCapacity', () => {
+			expect( selectors.getIndependentAndSharedTicketsCapacity( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentAndSharedTicketsTempCapacity', () => {
+			expect( selectors.getIndependentAndSharedTicketsTempCapacity( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentAndSharedTicketsSold', () => {
+			expect( selectors.getIndependentAndSharedTicketsSold( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getIndependentAndSharedTicketsAvailable', () => {
+			expect( selectors.getIndependentAndSharedTicketsAvailable( state ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'Misc selectors', () => {
+		test( 'getTicketProviders', () => {
+			expect( selectors.getTicketProviders() ).toMatchSnapshot();
+		} );
+
+		test( 'hasMultipleTicketProviders', () => {
+			expect( selectors.hasMultipleTicketProviders() ).toMatchSnapshot();
+		} );
+
+		test( 'hasTicketProviders', () => {
+			expect( selectors.hasTicketProviders() ).toMatchSnapshot();
 		} );
 	} );
 } );

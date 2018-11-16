@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header reducer should set the header 1`] = `
+Object {
+  "alt": "alt",
+  "id": 123,
+  "src": "src",
+}
+`;

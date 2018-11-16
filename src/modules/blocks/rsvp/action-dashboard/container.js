@@ -56,9 +56,6 @@ const onConfirmClick = ( state, dispatch, ownProps ) => () => {
 		endTime: selectors.getRSVPTempEndTime( state ),
 	};
 
-	dispatch( actions.setRSVPDetails( payload ) );
-	dispatch( actions.setRSVPHasChanges( false ) );
-
 	if ( ! selectors.getRSVPCreated( state ) ) {
 		dispatch( thunks.createRSVP( {
 			...payload,

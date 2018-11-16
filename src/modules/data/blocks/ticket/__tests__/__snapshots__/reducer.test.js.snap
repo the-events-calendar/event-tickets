@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Reducer should set the is settings loading 1`] = `
+Object {
+  "headerImage": Object {
+    "alt": "",
+    "id": 0,
+    "src": "",
+  },
+  "isSettingsLoading": true,
+  "isSettingsOpen": false,
+  "provider": "",
+  "sharedCapacity": "",
+  "tempSharedCapacity": "",
+  "tickets": Object {
+    "allIds": Array [],
+    "byId": Object {},
+  },
+}
+`;
+
+exports[`Reducer should set the is settings open 1`] = `
+Object {
+  "headerImage": Object {
+    "alt": "",
+    "id": 0,
+    "src": "",
+  },
+  "isSettingsLoading": false,
+  "isSettingsOpen": true,
+  "provider": "",
+  "sharedCapacity": "",
+  "tempSharedCapacity": "",
+  "tickets": Object {
+    "allIds": Array [],
+    "byId": Object {},
+  },
+}
+`;
+
+exports[`Reducer should set the provider 1`] = `
+Object {
+  "headerImage": Object {
+    "alt": "",
+    "id": 0,
+    "src": "",
+  },
+  "isSettingsLoading": false,
+  "isSettingsOpen": false,
+  "provider": "provider",
+  "sharedCapacity": "",
+  "tempSharedCapacity": "",
+  "tickets": Object {
+    "allIds": Array [],
+    "byId": Object {},
+  },
+}
+`;
+
+exports[`Reducer should set the shared capacity 1`] = `
+Object {
+  "headerImage": Object {
+    "alt": "",
+    "id": 0,
+    "src": "",
+  },
+  "isSettingsLoading": false,
+  "isSettingsOpen": false,
+  "provider": "",
+  "sharedCapacity": 99,
+  "tempSharedCapacity": "",
+  "tickets": Object {
+    "allIds": Array [],
+    "byId": Object {},
+  },
+}
+`;
+
+exports[`Reducer should set the temp shared capacity 1`] = `
+Object {
+  "headerImage": Object {
+    "alt": "",
+    "id": 0,
+    "src": "",
+  },
+  "isSettingsLoading": false,
+  "isSettingsOpen": false,
+  "provider": "",
+  "sharedCapacity": "",
+  "tempSharedCapacity": 99,
+  "tickets": Object {
+    "allIds": Array [],
+    "byId": Object {},
+  },
+}
+`;
