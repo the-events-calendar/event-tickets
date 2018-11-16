@@ -14,8 +14,4 @@ import sagas from './sagas';
 
 export default reducer;
 
-<<<<<<< HEAD
 export { constants, options, utils, types, actions, selectors, sagas };
-=======
-export { constants, types, actions, selectors, utils, sagas };
->>>>>>> release/F18.3
