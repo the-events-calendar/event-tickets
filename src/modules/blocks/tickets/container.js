@@ -9,11 +9,7 @@ import { compose } from 'redux';
  */
 import Template from './template';
 import { withSaveData, withStore } from '@moderntribe/common/hoc';
-<<<<<<< HEAD
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
-=======
-import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
->>>>>>> release/F18.3
 
 const mapStateToProps = ( state ) => ( {
 	header: selectors.getTicketsHeaderImageId( state ),
