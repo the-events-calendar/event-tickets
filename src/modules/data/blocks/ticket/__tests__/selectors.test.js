@@ -199,14 +199,8 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketTitle( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-<<<<<<< HEAD
 		test( 'getTicketDescription', () => {
 			expect( selectors.getTicketDescription( state, ownProps ) ).toMatchSnapshot();
-=======
-		test( 'Shared tickets selectors', () => {
-			expect( selectors.getTicketsSharedSold( newState ) ).toBe( 0 );
-			expect( selectors.getTicketsSharedAvailable( newState ) ).toBe( 0 );
->>>>>>> release/F18.3
 		} );
 
 		test( 'getTicketPrice', () => {
@@ -221,60 +215,12 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketStartDate( state, ownProps ) ).toMatchSnapshot();
 		} );
 
-<<<<<<< HEAD
 		test( 'getTicketStartDateInput', () => {
 			expect( selectors.getTicketStartDateInput( state, ownProps ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicketStartDateMoment', () => {
 			expect( selectors.getTicketStartDateMoment( state, ownProps ) ).toMatchSnapshot();
-=======
-		describe( 'isTitleValid', () => {
-			it( 'should be valid', () => {
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'bob';
-				expect( selectors.isTitleValid( newState, ownProps ) ).toBe( true );
-			} );
-			it( 'should be invalid', () => {
-				expect( selectors.isTitleValid( newState, ownProps ) ).toBe( false );
-			} );
-		} );
-		describe( 'isCapacityValid', () => {
-			it( 'should be valid', () => {
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = 1;
-				expect( selectors.isCapacityValid( newState, ownProps ) ).toBe( true );
-			} );
-			it( 'should be invalid', () => {
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = '';
-				expect( selectors.isCapacityValid( newState, ownProps ) ).toBe( false );
-			} );
-		} );
-
-		describe( 'getTicketValidness', () => {
-			it( 'should be valid when unlimited', () => {
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'Modern Tribe';
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'unlimited';
-				expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( true );
-			} );
-			it( 'should be valid when shared', () => {
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'Modern Tribe';
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'capped';
-				expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( true );
-			} );
-
-			it( 'should be invalid when independent', () => {
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'own';
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'Modern Tribe';
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = '';
-				expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( false );
-			} );
-
-			it( 'should be invalid when independent with no title', () => {
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'own';
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = '';
-				newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = 1;
-				expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( false );
-			} );
->>>>>>> release/F18.3
 		} );
 
 		test( 'getTicketEndDate', () => {
@@ -393,6 +339,53 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'getTicketTempCapacity', () => {
 			expect( selectors.getTicketTempCapacity( state, ownProps ) ).toMatchSnapshot();
+		} );
+	} );
+
+	describe( 'isTitleValid', () => {
+		it( 'should be valid', () => {
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'bob';
+			expect( selectors.isTitleValid( newState, ownProps ) ).toBe( true );
+		} );
+		it( 'should be invalid', () => {
+			expect( selectors.isTitleValid( newState, ownProps ) ).toBe( false );
+		} );
+	} );
+	describe( 'isCapacityValid', () => {
+		it( 'should be valid', () => {
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = 1;
+			expect( selectors.isCapacityValid( newState, ownProps ) ).toBe( true );
+		} );
+		it( 'should be invalid', () => {
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = '';
+			expect( selectors.isCapacityValid( newState, ownProps ) ).toBe( false );
+		} );
+	} );
+
+	describe( 'getTicketValidness', () => {
+		it( 'should be valid when unlimited', () => {
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'Modern Tribe';
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'unlimited';
+			expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( true );
+		} );
+		it( 'should be valid when shared', () => {
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'Modern Tribe';
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'capped';
+			expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( true );
+		} );
+
+		it( 'should be invalid when independent', () => {
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'own';
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = 'Modern Tribe';
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = '';
+			expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( false );
+		} );
+
+		it( 'should be invalid when independent with no title', () => {
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacityType = 'own';
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].title = '';
+			newState.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].capacity = 1;
+			expect( selectors.getTicketValidness( newState, ownProps ) ).toBe( false );
 		} );
 	} );
 
