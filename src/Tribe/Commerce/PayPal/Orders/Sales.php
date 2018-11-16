@@ -367,4 +367,50 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 
 		return $stock - $sold;
 	}
+
+	/**
+	 * Get all orders for a product id and return array of order objects
+	 *
+	 * @since tbd
+	 *
+	 * @param $ID int an ID for a tpp product
+	 *
+	 * @return array an array of order objects
+	 */
+	public function get_all_orders_by_product_id( $ID ) {
+
+		$all_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' );
+		$args = array(
+			'post_type'      => 'tribe_tpp_orders',
+			'posts_per_page' => - 1,
+			'post_status'    => $all_statuses,
+			'meta_query'     => array(
+				array(
+					'key'   => '_tribe_paypal_ticket',
+					'value' => $ID,
+				),
+			),
+			'fields'         => 'ids',
+		);
+
+		$all_order_ids_for_ticket  = new WP_Query( $args );
+		$order_ids = $all_order_ids_for_ticket->posts;
+		if ( empty ( $order_ids ) ) {
+			return array();
+		}
+
+		$orders = array();
+		foreach ( $order_ids as $id ) {
+
+			$order = new Tribe__Tickets__Commerce__PayPal__Order();
+			$order = $order->hydrate_from_post( $id );
+
+			//prevent fatal error if no orders
+			if ( ! is_wp_error( $order ) ) {
+				$orders[ $id ] = $order;
+			}
+		}
+
+		return $orders;
+	}
 }

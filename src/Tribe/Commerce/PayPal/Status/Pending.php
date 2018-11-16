@@ -19,6 +19,7 @@ class Tribe__Tickets__Commerce__PayPal__Status__Pending extends Tribe__Tickets__
 	public $attendee_generation = true;
 	public $stock_reduced       = true;
 	public $count_attendee      = true;
+	public $count_incomplete    = true;
 	public $count_sales         = true;
 
 	//post status fields for tpp

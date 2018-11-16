@@ -7,7 +7,7 @@
  * @since tbd
  *
  */
-class Tribe__Tickets__Commerce__PayPal__Status__Complete extends Tribe__Tickets__Status__Abstract {
+class Tribe__Tickets__Commerce__PayPal__Status__Completed extends Tribe__Tickets__Status__Abstract {
 
 	//This is a payment that has been paid and the product delivered to the customer.
 	public $name          = 'Completed';

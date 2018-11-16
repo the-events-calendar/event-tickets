@@ -7,7 +7,7 @@
  * @since TBD
  *
  */
-class Tribe__Tickets__RSVP__Status_Manager {
+class Tribe__Tickets__RSVP__Status_Manager extends Tribe__Tickets__Status__Abstract_Commerce {
 
 	public $status_names = array(
 		'Going',

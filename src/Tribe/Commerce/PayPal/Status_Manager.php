@@ -7,10 +7,12 @@
  * @since TBD
  *
  */
-class Tribe__Tickets__Commerce__PayPal__Status_Manager {
+class Tribe__Tickets__Commerce__PayPal__Status_Manager extends Tribe__Tickets__Status__Abstract_Commerce {
+
+	public $completed_status_id = 'Completed';
 
 	public $status_names = array(
-		'Complete',
+		'Completed',
 		'Denied',
 		'Not_Completed',
 		'Pending',

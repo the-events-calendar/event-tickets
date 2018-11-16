@@ -233,7 +233,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 *
-	 * @return array an array of the commerce's statuses matching the provide action
+	 * @return array an array of the commerce's statuses
 	 */
 	public function get_all_provider_statuses( $commerce ) {
 
@@ -278,6 +278,25 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		return $status_options[ $commerce ];
+
+	}
+
+	/**
+	 * Get all the Status Classes for a given Commerce
+	 *
+	 * @since TBD
+	 *
+	 * @param $commerce string a string of the Commerce System to get statuses from
+	 *
+	 * @return
+	 */
+	public function get_providers_status_classes( $commerce ) {
+
+		if ( ! isset( $this->statuses[ $commerce ] ) ) {
+			return array();
+		}
+
+		return $this->statuses[ $commerce ];
 
 	}
 }
