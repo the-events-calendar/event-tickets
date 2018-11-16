@@ -19,7 +19,7 @@ const {
 	TICKET_TYPES,
 } = constants;
 =======
-import { TICKET_TYPES } from '@moderntribe/tickets/data/utils';
+import { TICKET_TYPES, UNLIMITED, SHARED } from '@moderntribe/tickets/data/utils';
 import { utils } from '@moderntribe/tickets/data/blocks/ticket';
 import { globals } from '@moderntribe/common/utils';
 const { config } = globals;
@@ -308,7 +308,6 @@ export const getTicketStartTime = createSelector(
 	( details ) => details.startTime || '',
 );
 
-<<<<<<< HEAD
 export const getTicketStartTimeNoSeconds = createSelector(
 	[ getTicketStartTime ],
 	( startTime ) => startTime.slice( 0, -3 ),
@@ -317,29 +316,6 @@ export const getTicketStartTimeNoSeconds = createSelector(
 export const getTicketEndTime = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.endTime || '',
-=======
-export const isTitleValid = createSelector(
-	[ getTicketBlock ],
-	block => trim( block.title ) !== ''
-);
-
-export const isCapacityValid = createSelector(
-	[ getTicketBlock ],
-	block => trim( block.capacity ) !== ''
-);
-
-export const getTicketValidness = createSelector(
-	[ getTicketBlock, isTitleValid, isCapacityValid ],
-	( block, titleValid, capacityValid ) => {
-		if (
-			block.capacityType === TICKET_TYPES.unlimited ||
-			block.capacityType === TICKET_TYPES.shared
-		) {
-			return titleValid;
-		}
-		return titleValid && capacityValid;
-	},
->>>>>>> release/F18.3
 );
 
 export const getTicketEndTimeNoSeconds = createSelector(
@@ -491,6 +467,30 @@ export const getTicketTempCapacityTypeOption = createSelector(
 	[ getTicketTempCapacityType ],
 	( capacityType ) => find( CAPACITY_TYPE_OPTIONS, { value: capacityType } ) || {},
 );
+
+export const isTempTitleValid = createSelector(
+	[ getTicketTempTitle ],
+	block => trim( block.title ) !== '',
+);
+
+export const isTempCapacityValid = createSelector(
+	[ getTicketTempCapacity ],
+	block => trim( block.capacity ) !== '',
+);
+
+export const isTicketValid = createSelector(
+	[ getTicketTempCapacityType, isTitleValid, isCapacityValid ],
+	( capacityType, titleValid, capacityValid ) => {
+		if (
+			capacityType === TICKET_TYPES[ UNLIMITED ] ||
+			capacityType === TICKET_TYPES[ SHARED ]
+		) {
+			return titleValid;
+		}
+		return titleValid && capacityValid;
+	},
+);
+
 
 //
 // ─── AMOUNT REDUCERS ────────────────────────────────────────────────────────────

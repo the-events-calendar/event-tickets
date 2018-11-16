@@ -32,7 +32,7 @@ import { plugins } from '@moderntribe/common/data';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-	isEditFormValid: selectors.getTicketValidness( state, {
+	isEditFormValid: selectors.isTicketValid( state, {
 		blockId: ownProps.activeBlockId,
 	} ),
 	hasBeenCreated: selectors.getTicketHasBeenCreated( state, {
