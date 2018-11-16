@@ -22,7 +22,7 @@ Object {
     "currencySymbol": undefined,
     "dateIsPristine": false,
     "description": "",
-    "endDate": "September 4, 2018",
+    "endDate": "September 1, 2118",
     "endDateMoment": "2018-09-01T22:30:00.000Z",
     "endTime": "22:30",
     "hasBeenCreated": false,
@@ -52,7 +52,7 @@ Array [
     "currencySymbol": undefined,
     "dateIsPristine": false,
     "description": "",
-    "endDate": "September 4, 2018",
+    "endDate": "September 1, 2118",
     "endDateMoment": "2018-09-01T22:30:00.000Z",
     "endTime": "22:30",
     "hasBeenCreated": false,
@@ -76,7 +76,7 @@ exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 1`] = `
 
 exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 2`] = `"22:30"`;
 
-exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 3`] = `"September 4, 2018"`;
+exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 3`] = `"September 1, 2118"`;
 
 exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 4`] = `"September 1, 2018"`;
 
