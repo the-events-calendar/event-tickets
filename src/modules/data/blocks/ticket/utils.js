@@ -1,14 +1,10 @@
-<<<<<<< HEAD
 /**
  * External dependencies
  */
-import {
-	settings,
-	priceSettings,
-	tickets as ticketsConfig,
-} from '@moderntribe/common/src/modules/utils/globals';
+import { globals } from '@moderntribe/common/src/modules/utils';
 import { string } from '@moderntribe/common/utils';
 
+const { settings, priceSettings, ticketsConfig } = globals;
 /**
  * Get currency symbol by provider
  */
@@ -47,8 +43,3 @@ export const getDefaultCurrencyPosition = () => {
 		? priceSettings().default_currency_position
 		: position;
 };
-=======
-// Date format used for the tickets API for date and time.
-export const toMomentDateFormat = 'Y-MM-DD';
-export const toMomentTimeFormat = 'HH:mm:00';
->>>>>>> release/F18.3

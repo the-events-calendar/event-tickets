@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-=======
-import { globals } from '@moderntribe/common/utils';
-const { config } = globals;
-
->>>>>>> release/F18.3
 export const PREFIX_TICKETS_STORE = '@@MT/TICKETS';
 
 export const RSVP_POST_TYPE = 'tribe_rsvp_tickets';
