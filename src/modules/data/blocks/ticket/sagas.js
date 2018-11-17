@@ -161,8 +161,7 @@ export function* fetchTicket( action ) {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
 		} );
-		console.log('response', response);
-		console.log('data', ticket);
+
 		if ( response.ok ) {
 			const {
 				totals = {},
@@ -223,7 +222,6 @@ export function* fetchTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
-		console.log(e);
 		/**
 		 * @todo handle error scenario
 		 */
