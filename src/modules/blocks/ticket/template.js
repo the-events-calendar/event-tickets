@@ -29,6 +29,10 @@ class Ticket extends PureComponent {
 		removeTicketBlock: PropTypes.func,
 	};
 
+	componentDidMount() {
+		this.props.onBlockUpdate( this.props.isSelected );
+	}
+
 	componentDidUpdate( prevProps ) {
 		if ( prevProps.isSelected !== this.props.isSelected ) {
 			this.props.onBlockUpdate( this.props.isSelected );
