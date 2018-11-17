@@ -443,7 +443,7 @@ export const isTempCapacityValid = createSelector(
 );
 
 export const isTicketValid = createSelector(
-	[ getTicketTempCapacityType, isTitleValid, isCapacityValid ],
+	[ getTicketTempCapacityType, isTempTitleValid, isTempCapacityValid ],
 	( capacityType, titleValid, capacityValid ) => {
 		if (
 			capacityType === TICKET_TYPES[ UNLIMITED ] ||
