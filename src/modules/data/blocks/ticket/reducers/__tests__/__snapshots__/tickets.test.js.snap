@@ -46,10 +46,19 @@ Object {
       "capacity": "",
       "capacityType": "capped",
       "description": "",
+<<<<<<< HEAD
       "endDate": "2118-01-10",
       "endDateInput": "January 10, 2118",
       "endDateMoment": "2118-01-10T17:30:00.000Z",
       "endTime": "17:30:00",
+=======
+      "endDate": "January 10, 2118",
+      "endDateMoment": "2018-01-10T17:30:00.000Z",
+      "endTime": "17:30",
+      "hasBeenCreated": false,
+      "isEditing": false,
+      "isLoading": false,
+>>>>>>> release/F18.3
       "price": "",
       "sku": "",
       "startDate": "2018-01-10",

@@ -32,6 +32,7 @@ const {
 	PROVIDER_CLASS_TO_PROVIDER_MAPPING,
 } = constants;
 const { tickets: ticketsConfig, restNonce } = globals;
+const { wpREST } = api;
 
 export function* setTicketsInitialState( action ) {
 	const { get } = action.payload;
@@ -157,7 +158,7 @@ export function* fetchTicket( action ) {
 	yield put( actions.setTicketIsLoading( blockId, true ) );
 
 	try {
-		const { response, data: ticket } = yield call( api.wpREST, {
+		const { response, data: ticket } = yield call( wpREST, {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
 		} );
@@ -240,7 +241,7 @@ export function* createNewTicket( action ) {
 
 	try {
 		yield put( actions.setTicketIsLoading( blockId, true ) );
-		const { response, data: ticket } = yield call( api.wpREST, {
+		const { response, data: ticket } = yield call( wpREST, {
 			path: 'tickets/',
 			namespace: 'tribe/tickets/v1',
 			initParams: {
@@ -341,7 +342,7 @@ export function* updateTicket( action ) {
 		}
 
 		yield put( actions.setTicketIsLoading( blockId, true ) );
-		const { response } = yield call( api.wpREST, {
+		const { response } = yield call( wpREST, {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
 			headers: {
@@ -439,7 +440,7 @@ export function* deleteTicket( action ) {
 		];
 
 		try {
-			yield call( api.wpREST, {
+			yield call( wpREST, {
 				path: `tickets/${ ticketId }`,
 				namespace: 'tribe/tickets/v1',
 				headers: {
@@ -463,7 +464,7 @@ export function* fetchTicketsHeaderImage( action ) {
 	yield put( actions.setTicketsIsSettingsLoading( true ) );
 
 	try {
-		const { response, data: media } = yield call( api.wpREST, { path: `media/${ id }` } );
+		const { response, data: media } = yield call( wpREST, { path: `media/${ id }` } );
 
 		if ( response.ok ) {
 			const headerImage = {
@@ -493,7 +494,7 @@ export function* updateTicketsHeaderImage( action ) {
 
 	try {
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
-		const { response } = yield call( api.wpREST, {
+		const { response } = yield call( wpREST, {
 			path: `tribe_events/${ postId }`,
 			headers: {
 				'Content-Type': 'application/json',
@@ -530,7 +531,7 @@ export function* deleteTicketsHeaderImage() {
 
 	try {
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
-		const { response } = yield call( api.wpREST, {
+		const { response } = yield call( wpREST, {
 			path: `tribe_events/${ postId }`,
 			headers: {
 				'Content-Type': 'application/json',
