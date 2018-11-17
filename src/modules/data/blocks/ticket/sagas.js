@@ -99,9 +99,7 @@ export function* removeActiveTicketBlock( action ) {
 		} );
 		yield put( actions.removeTicketBlock( blockId ) );
 	} catch ( e ) {
-		/**
-		 * @todo handle error on removal
-		 */
+		console.error( e );
 	} finally {
 		yield put( actions.setParentBlockIsLoading( false ) );
 	}
@@ -174,9 +172,7 @@ export function* createNewTicket( action ) {
 			put( actions.setTicketProvider( blockId, constants.PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
 		] );
 	} catch ( e ) {
-		/**
-		 * @todo: handle error scenario
-		 */
+		console.error( e );
 	} finally {
 		yield all( [
 			put( actions.setTicketIsLoading( blockId, false ) ),
@@ -217,9 +213,7 @@ export function* getMedia( id ) {
 		};
 		yield put( actions.setHeader( header ) );
 	} catch ( e ) {
-		/**
-		 * @todo: handle error scenario
-		 */
+		console.error( e );
 	} finally {
 		yield put( actions.setParentBlockIsLoading( false ) );
 	}
@@ -363,9 +357,7 @@ export function* fetchTicketDetails( action ) {
 			put( actions.setTicketProvider( blockId, ticket.provider ) ),
 		] );
 	} catch ( e ) {
-		/**
-		 * @todo handle error scenario
-		 */
+		console.error( e );
 	} finally {
 		yield put( actions.setTicketIsLoading( blockId, false ) );
 	}
