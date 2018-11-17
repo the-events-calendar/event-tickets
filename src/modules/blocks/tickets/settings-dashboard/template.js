@@ -18,7 +18,11 @@ import CapacityTable from '@moderntribe/tickets/blocks/tickets/capacity-table/co
 import HeaderImage from '@moderntribe/tickets/blocks/tickets/header-image/container';
 import './style.pcss';
 
-const TicketsSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (
+const TicketsSettingsDashboard = ( {
+	hasTicketsPlus,
+	isSettingsLoading,
+	onCloseClick,
+} ) => (
 	<SettingsDashboard
 		className={ classNames(
 			'tribe-editor__tickets__settings-dashboard',
@@ -27,7 +31,7 @@ const TicketsSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (
 		closeButtonDisabled={ isSettingsLoading }
 		content={ (
 			<Fragment>
-				<CapacityTable />
+				{ hasTicketsPlus && <CapacityTable /> }
 				<HeaderImage />
 				{ isSettingsLoading && <Spinner /> }
 			</Fragment>
@@ -37,6 +41,7 @@ const TicketsSettingsDashboard = ( { isSettingsLoading, onCloseClick } ) => (
 );
 
 TicketsSettingsDashboard.propTypes = {
+	hasTicketsPlus: PropTypes.bool,
 	isSettingsLoading: PropTypes.bool.isRequired,
 	onCloseClick: PropTypes.func.isRequired,
 };

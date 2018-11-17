@@ -22,6 +22,7 @@ import './style.pcss';
 class RSVPAdvancedOptions extends PureComponent {
 	static propTypes = {
 		isDisabled: PropTypes.bool.isRequired,
+		hasTicketsPlus: PropTypes.bool,
 	};
 
 	constructor( props ) {
