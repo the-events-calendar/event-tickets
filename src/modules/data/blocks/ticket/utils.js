@@ -1,10 +1,9 @@
 /**
  * External dependencies
  */
-import { globals } from '@moderntribe/common/src/modules/utils';
-import { string } from '@moderntribe/common/utils';
+import { string, globals } from '@moderntribe/common/utils';
 
-const { settings, priceSettings, ticketsConfig } = globals;
+const { settings, priceSettings, tickets: ticketsConfig } = globals;
 /**
  * Get currency symbol by provider
  */

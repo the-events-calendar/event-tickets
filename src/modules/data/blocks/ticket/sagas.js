@@ -25,7 +25,6 @@ import {
 import * as utils from '@moderntribe/tickets/data/utils';
 import { wpREST } from '@moderntribe/common/utils/api';
 import { moment as momentUtil, globals } from '@moderntribe/common/utils';
-import { moment as momentUtil } from '@moderntribe/common/utils';
 
 const {
 	UNLIMITED,
