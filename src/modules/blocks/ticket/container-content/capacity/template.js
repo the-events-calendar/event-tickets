@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { includes } from 'lodash';
@@ -57,6 +57,7 @@ LabeledNumberInput.propTypes = {
 
 class Capacity extends PureComponent {
 	static propTypes = {
+		hasTicketsPlus: PropTypes.bool,
 		isDisabled: PropTypes.bool,
 		sharedCapacity: PropTypes.string,
 		tempCapacity: PropTypes.string,
@@ -64,6 +65,7 @@ class Capacity extends PureComponent {
 		tempCapacityTypeOption: ReactSelectOption,
 		tempSharedCapacity: PropTypes.string,
 		onTempCapacityChange: PropTypes.func,
+		onTempCapacityNoPlusChange: PropTypes.func,
 		onTempCapacityTypeChange: PropTypes.func,
 		onTempSharedCapacityChange: PropTypes.func,
 	};
@@ -145,12 +147,56 @@ class Capacity extends PureComponent {
 		return inputs;
 	};
 
-	render() {
+	getCapacityForm = () => {
 		const {
 			isDisabled,
 			tempCapacityTypeOption,
 			onTempCapacityTypeChange,
 		} = this.props;
+
+		return (
+			<Fragment>
+				<Select
+					id={ this.ids.select }
+					className="tribe-editor__ticket__capacity-type-select"
+					backspaceRemovesValue={ false }
+					value={ tempCapacityTypeOption }
+					isSearchable={ false }
+					isDisabled={ isDisabled }
+					options={ CAPACITY_TYPE_OPTIONS }
+					onChange={ onTempCapacityTypeChange }
+				/>
+				{ this.getInputs() }
+			</Fragment>
+		);
+	};
+
+	getNoPlusCapacityForm = () => {
+		const {
+			isDisabled,
+			tempCapacity,
+			onTempCapacityNoPlusChange,
+		} = this.props;
+
+		return (
+			<Fragment>
+				<NumberInput
+					className="tribe-editor__ticket__capacity-input"
+					id={ this.ids.capacity }
+					value={ tempCapacity }
+					onChange={ onTempCapacityNoPlusChange }
+					disabled={ isDisabled }
+					min={ 0 }
+				/>
+				<span className="tribe-editor__ticket__capacity-input-helper-text">
+					{ __( 'Leave blank for unlimited', 'events-gutenberg' ) }
+				</span>
+			</Fragment>
+		);
+	};
+
+	render() {
+		const { hasTicketsPlus } = this.props;
 
 		return (
 			<div className={ classNames(
@@ -160,7 +206,7 @@ class Capacity extends PureComponent {
 			) }>
 				<LabelWithTooltip
 					className="tribe-editor__ticket__capacity-label-with-tooltip"
-					forId={ this.ids.select }
+					forId={ hasTicketsPlus ? this.ids.select : this.ids.capacity }
 					isLabel={ true }
 					label={ __( 'Ticket Capacity', 'events-gutenberg' ) }
 					tooltipText={ __(
@@ -170,17 +216,7 @@ class Capacity extends PureComponent {
 					tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
 				/>
 				<div className="tribe-editor__ticket__capacity-form">
-					<Select
-						id={ this.ids.select }
-						className="tribe-editor__ticket__capacity-type-select"
-						backspaceRemovesValue={ false }
-						value={ tempCapacityTypeOption }
-						isSearchable={ false }
-						isDisabled={ isDisabled }
-						options={ CAPACITY_TYPE_OPTIONS }
-						onChange={ onTempCapacityTypeChange }
-					/>
-					{ this.getInputs() }
+					{ hasTicketsPlus ? this.getCapacityForm() : this.getNoPlusCapacityForm() }
 				</div>
 			</div>
 		);

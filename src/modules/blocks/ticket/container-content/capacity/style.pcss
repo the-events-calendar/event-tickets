@@ -8,6 +8,13 @@
 
 .tribe-editor__ticket__capacity-form {
 	flex: auto;
+	display: flex;
+	justify-content: flex-end;
+	flex-wrap: wrap;
+
+	.tribe-editor__ticket--has-tickets-plus & {
+		display: block;
+	}
 
 	.tribe-editor__ticket__capacity-input-row {
 		display: flex;
@@ -59,5 +66,20 @@
 			top: 10px;
 			height: calc(50% - 4px);
 		}
+	}
+
+	.tribe-editor__ticket__capacity-input {
+		flex: none;
+		width: 85px;
+	}
+
+	.tribe-editor__ticket__capacity-input-helper-text {
+		flex: none;
+		width: 100%;
+		font-size: 12px;
+		line-height: 14px;
+		color: #8D949B;
+		text-align: right;
+		margin-top: 10px;
 	}
 }
