@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import Template from './template';
-
+import { plugins } from '@moderntribe/common/data';
 import { withSaveData, withStore } from '@moderntribe/common/hoc';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
@@ -17,6 +17,7 @@ const mapStateToProps = ( state, ownProps ) => {
 
 	return {
 		blockId: ownProps.clientId,
+		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 		hasBeenCreated: selectors.getTicketHasBeenCreated( state, props ),
 		isDisabled: selectors.isTicketDisabled( state, props ),
 		isLoading: selectors.getTicketIsLoading( state, props ),
