@@ -259,6 +259,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketCapacity( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketCapacityInt', () => {
+			expect( selectors.getTicketCapacityInt( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'isUnlimitedTicket', () => {
 			expect( selectors.isUnlimitedTicket( state, ownProps ) ).toMatchSnapshot();
 		} );
@@ -339,6 +343,10 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'getTicketTempCapacity', () => {
 			expect( selectors.getTicketTempCapacity( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempCapacityInt', () => {
+			expect( selectors.getTicketTempCapacityInt( state, ownProps ) ).toMatchSnapshot();
 		} );
 	} );
 

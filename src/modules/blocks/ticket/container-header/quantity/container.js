@@ -23,7 +23,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		isShared,
 		isUnlimited: selectors.isUnlimitedTicket( state, ownProps ),
 		sold: selectors.getTicketSold( state, ownProps ),
-		capacity: selectors.getTicketCapacity( state, ownProps ),
+		capacity: selectors.getTicketCapacityInt( state, ownProps ),
 		sharedSold: getSharedSold( state, isShared ),
 		sharedCapacity: selectors.getTicketsSharedCapacityInt( state ),
 	};

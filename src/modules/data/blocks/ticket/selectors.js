@@ -310,7 +310,12 @@ export const getTicketCapacityType = createSelector(
 
 export const getTicketCapacity = createSelector(
 	[ getTicketDetails ],
-	( details ) => parseInt( details.capacity, 10 ) || 0,
+	( details ) => details.capacity,
+);
+
+export const getTicketCapacityInt = createSelector(
+	[ getTicketCapacity ],
+	( capacity ) => parseInt( capacity, 10 ) || 0,
 );
 
 export const isUnlimitedTicket = createSelector(
@@ -414,7 +419,12 @@ export const getTicketTempCapacityType = createSelector(
 
 export const getTicketTempCapacity = createSelector(
 	[ getTicketTempDetails ],
-	( tempDetails ) => parseInt( tempDetails.capacity, 10 ) || 0,
+	( tempDetails ) => tempDetails.capacity,
+);
+
+export const getTicketTempCapacityInt = createSelector(
+	[ getTicketTempCapacity ],
+	( capacity ) => parseInt( capacity, 10 ) || 0,
 );
 
 export const getTicketTempCapacityTypeOption = createSelector(
