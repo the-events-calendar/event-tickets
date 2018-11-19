@@ -7,14 +7,15 @@ import PropTypes from 'prop-types';
 /**
  * Internal dependencies
  */
+import './style.pcss';
 
 const CapacityRow = ( { label, items, right } ) => (
-	<div className="tribe-editor__capacity-row">
-		<span className="tribe-editor__capacity-row--left">
-			{ label && <span className="tribe-editor__capacity-row__label">{ label }</span> }
-			{ items && <span className="tribe-editor__capacity-row__items">{ items }</span> }
+	<div className="tribe-editor__tickets__capacity-row">
+		<span className="tribe-editor__tickets__capacity-row-left">
+			{ label && <span className="tribe-editor__tickets__capacity-row-label">{ label }</span> }
+			{ items && <span className="tribe-editor__tickets__capacity-row-items">{ items }</span> }
 		</span>
-		<span className="tribe-editor__capacity-row--right">{ right }</span>
+		<span className="tribe-editor__tickets__capacity-row-right">{ right }</span>
 	</div>
 );
 

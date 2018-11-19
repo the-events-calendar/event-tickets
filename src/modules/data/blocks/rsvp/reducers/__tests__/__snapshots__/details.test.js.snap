@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Header image reducer should set the capacity 1`] = `
+exports[`Details reducer should set the capacity 1`] = `
 Object {
   "capacity": 20,
   "description": "",
@@ -15,7 +15,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the description 1`] = `
+exports[`Details reducer should set the description 1`] = `
 Object {
   "capacity": "",
   "description": "new description",
@@ -30,7 +30,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the end date 1`] = `
+exports[`Details reducer should set the end date 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -45,7 +45,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the end date object 1`] = `
+exports[`Details reducer should set the end date object 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -60,7 +60,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the end time 1`] = `
+exports[`Details reducer should set the end time 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -75,7 +75,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the not going responses 1`] = `
+exports[`Details reducer should set the not going responses 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -90,7 +90,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the start date 1`] = `
+exports[`Details reducer should set the start date 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -105,7 +105,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the start date object 1`] = `
+exports[`Details reducer should set the start date object 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -120,7 +120,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the start time 1`] = `
+exports[`Details reducer should set the start time 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -135,7 +135,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the title 1`] = `
+exports[`Details reducer should set the title 1`] = `
 Object {
   "capacity": "",
   "description": "",

@@ -11,7 +11,7 @@ jest.mock( 'moment', () => () => {
 	return moment( 'July 19, 2018 7:30 pm', 'MMMM D, Y h:mm a' );
 } );
 
-describe( 'Header image reducer', () => {
+describe( 'Temp details reducer', () => {
 	it( 'should set the default state', () => {
 		expect( reducer( undefined, {} ) ).toEqual( DEFAULT_STATE );
 	} );

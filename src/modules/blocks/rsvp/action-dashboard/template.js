@@ -9,7 +9,6 @@ import PropTypes from 'prop-types';
  */
 import { __ } from '@wordpress/i18n';
 
-
 /**
  * Internal dependencies
  */
@@ -18,11 +17,6 @@ import {
 	AttendeesActionButton,
 } from '@moderntribe/tickets/blocks/rsvp/action-buttons';
 import { ActionDashboard } from '@moderntribe/tickets/elements';
-
-const actions = [
-	<SettingsActionButton />,
-	<AttendeesActionButton />,
-];
 
 const confirmLabel = ( created ) => (
 	created
@@ -40,28 +34,37 @@ const RSVPActionDashboard = ( {
 	onConfirmClick,
 	showCancel,
 	hasTicketsPlus,
-} ) => (
-	<ActionDashboard
-		className="tribe-editor__rsvp__action-dashboard"
-		actions={ hasTicketsPlus ? actions : [ <SettingsActionButton /> ] }
-		cancelLabel={ cancelLabel }
-		confirmLabel={ confirmLabel( created ) }
-		isCancelDisabled={ isCancelDisabled }
-		isConfirmDisabled={ isConfirmDisabled }
-		onCancelClick={ onCancelClick }
-		onConfirmClick={ onConfirmClick }
-		showCancel={ showCancel }
-	/>
-);
+} ) => {
+	const actions = hasTicketsPlus
+		? [
+			<SettingsActionButton />,
+			<AttendeesActionButton />,
+		]
+		: [ <SettingsActionButton /> ];
+
+	return (
+		<ActionDashboard
+			className="tribe-editor__rsvp__action-dashboard"
+			actions={ actions }
+			cancelLabel={ cancelLabel }
+			confirmLabel={ confirmLabel( created ) }
+			isCancelDisabled={ isCancelDisabled }
+			isConfirmDisabled={ isConfirmDisabled }
+			onCancelClick={ onCancelClick }
+			onConfirmClick={ onConfirmClick }
+			showCancel={ showCancel }
+		/>
+	);
+};
 
 RSVPActionDashboard.propTypes = {
 	created: PropTypes.bool.isRequired,
+	hasTicketsPlus: PropTypes.bool,
 	isCancelDisabled: PropTypes.bool.isRequired,
 	isConfirmDisabled: PropTypes.bool.isRequired,
 	onCancelClick: PropTypes.func.isRequired,
 	onConfirmClick: PropTypes.func.isRequired,
 	showCancel: PropTypes.bool.isRequired,
-	hasTicketsPlus: PropTypes.bool,
 };
 
 export default RSVPActionDashboard;

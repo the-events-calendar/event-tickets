@@ -57,25 +57,4 @@ describe( 'Tickets Utils', () => {
 			expect( utils.KEY_TICKET_NOT_GOING_COUNT ).toBe( '_tribe_ticket_not_going_count' );
 		} );
 	} );
-
-	describe( 'Ticket types', () => {
-		test( 'Ticket values', () => {
-			expect( utils.TICKET_TYPES_VALUES ).toEqual( [ 'unlimited', 'capped', 'own' ] );
-		} );
-
-		test( 'Valid types', () => {
-			expect( utils.TICKET_TYPES.independent ).toBe( 'own' );
-			expect( utils.TICKET_TYPES.shared ).toBe( 'capped' );
-			expect( utils.TICKET_TYPES.unlimited ).toBe( 'unlimited' );
-		} );
-	} );
-
-	describe( 'TICKET_ORDERS_SLUG', () => {
-		test( 'Values', () => {
-			expect( utils.TICKET_ORDERS_PAGE_SLUG.Tribe__Tickets__Commerce__PayPal__Main )
-				.toBe( 'tpp-orders' );
-			expect( utils.TICKET_ORDERS_PAGE_SLUG.Tribe__Tickets_Plus__Commerce__WooCommerce__Main )
-				.toBe( 'tickets-orders' );
-		} );
-	} );
 } );

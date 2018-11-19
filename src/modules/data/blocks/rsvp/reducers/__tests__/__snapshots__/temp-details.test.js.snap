@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Header image reducer should set the temp capacity 1`] = `
+exports[`Temp details reducer should set the temp capacity 1`] = `
 Object {
   "capacity": 20,
   "description": "",
@@ -15,7 +15,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp description 1`] = `
+exports[`Temp details reducer should set the temp description 1`] = `
 Object {
   "capacity": "",
   "description": "new description",
@@ -30,7 +30,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp end date 1`] = `
+exports[`Temp details reducer should set the temp end date 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -45,7 +45,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp end date object 1`] = `
+exports[`Temp details reducer should set the temp end date object 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -60,7 +60,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp end time 1`] = `
+exports[`Temp details reducer should set the temp end time 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -75,7 +75,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp not going responses 1`] = `
+exports[`Temp details reducer should set the temp not going responses 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -90,7 +90,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp start date 1`] = `
+exports[`Temp details reducer should set the temp start date 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -105,7 +105,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp start date object 1`] = `
+exports[`Temp details reducer should set the temp start date object 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -120,7 +120,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp start time 1`] = `
+exports[`Temp details reducer should set the temp start time 1`] = `
 Object {
   "capacity": "",
   "description": "",
@@ -135,7 +135,7 @@ Object {
 }
 `;
 
-exports[`Header image reducer should set the temp title 1`] = `
+exports[`Temp details reducer should set the temp title 1`] = `
 Object {
   "capacity": "",
   "description": "",

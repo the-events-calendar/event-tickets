@@ -1,56 +1,27 @@
 .tribe-editor__ticket {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
 	/*
 	this negative margin is to fit the blocks to the bounds of the pseudo element :before of
 	the drag block
 	 */
 	margin: -19px 0;
+	border: 1px solid #e1e3e6;
+	position: relative;
+	font-family: Helvetica, sans-serif, arial;
 
-	&--edit {
-		.tribe-editor__container-panel--ticket {
-			border-color: #b1b5b8;
-		}
+	&--selected {
+		border: 1px solid #b1b5b8;
 	}
 }
 
-.tribe-editor__ticket--loading {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 20px;
-	width: 100%;
+.components-spinner {
 
-	.components-spinner {
-		flex: none;
-	}
-}
-
-.tribe-editor__ticket--edit,
-.tribe-editor__ticket--display {
-	.tribe-editor__container-panel--ticket {
-		width: 100%;
-	}
-}
-
-.tribe-editor__ticket-icon {
-	background-color: #F8F9F9;
-	align-self: stretch;
-	display: flex;
-	align-items: center;
-	padding: 0 7px;
-	flex: none;
-
-	svg {
-		flex: none;
-	}
-}
-
-
-.tribe-editor__ticket--display {
-	.tribe-editor__container-panel {
-		width: 100%;
-		flex: 1;
+	.tribe-editor__ticket & {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		float: none;
+		margin: 0;
+		opacity: 0.8;
 	}
 }

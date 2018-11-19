@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import tickets from '../tickets';
+import tickets, { byId, allIds } from '../tickets';
 import { actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 jest.mock( 'moment', () => () => {
@@ -10,22 +10,49 @@ jest.mock( 'moment', () => () => {
 } );
 
 describe( 'Tickets reducer', () => {
-	let state = {};
+	describe( 'byId', () => {
+		it( 'should set the default state', () => {
+			expect( byId( undefined, {} ) ).toEqual( {} );
+		} );
 
-	beforeEach( () => {
-		state = { allIds: [], byId: {} };
+		it( 'should register ticket block', () => {
+			expect( byId(
+				{},
+				actions.registerTicketBlock( 'tribe' ),
+			) ).toMatchSnapshot();
+		} );
+
+		it( 'should remove ticket block', () => {
+			expect( byId(
+				{ one: {}, two: {} },
+				actions.removeTicketBlock( 'one' ),
+			) ).toMatchSnapshot();
+		} );
 	} );
 
-	test( 'Default reducer', () => {
-		expect( tickets( undefined, {} ) ).toEqual( state );
+	describe( 'allIds', () => {
+		it( 'should set the default state', () => {
+			expect( allIds( undefined, {} ) ).toMatchSnapshot();
+		} );
+
+		it( 'should register ticket block', () => {
+			expect( allIds(
+				[],
+				actions.registerTicketBlock( 'tribe' ),
+			) ).toMatchSnapshot();
+		} );
+
+		it( 'should remove ticket block', () => {
+			expect( allIds(
+				[ 'one', 'two' ],
+				actions.removeTicketBlock( 'one' ),
+			) ).toMatchSnapshot();
+		} );
 	} );
 
-	test( 'Add a new block inside of the reducer', () => {
-		expect( tickets( state, actions.registerTicketBlock( 'modern-tribe' ) ) ).toMatchSnapshot();
-	} );
-
-	test( 'Remove an existing block from the reducer', () => {
-		state = tickets( state, actions.registerTicketBlock( 'modern-tribe' ) );
-		expect( tickets( state, actions.removeTicketBlock( 'modern-tribe' ) ) ).toMatchSnapshot();
+	describe( 'tickets', () => {
+		it( 'should set the default state', () => {
+			expect( tickets( undefined, {} ) ).toMatchSnapshot();
+		} );
 	} );
 } );

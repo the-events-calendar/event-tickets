@@ -57,9 +57,6 @@ const onConfirmClick = ( state, dispatch, ownProps ) => () => {
 		endTime: selectors.getRSVPTempEndTime( state ),
 	};
 
-	dispatch( actions.setRSVPDetails( payload ) );
-	dispatch( actions.setRSVPHasChanges( false ) );
-
 	if ( ! selectors.getRSVPCreated( state ) ) {
 		dispatch( thunks.createRSVP( {
 			...payload,
@@ -75,11 +72,11 @@ const onConfirmClick = ( state, dispatch, ownProps ) => () => {
 
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
+	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	isCancelDisabled: getIsCancelDisabled( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
 	showCancel: selectors.getRSVPCreated( state ),
 	state,
-	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 } );
 
 const mergeProps = ( stateProps, dispatchProps, ownProps ) => {

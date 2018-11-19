@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -14,71 +14,54 @@ import { Spinner } from '@wordpress/components';
  * Internal dependencies
  */
 import './style.pcss';
-import TicketEditContainer from './edit-container/container';
-import TicketDisplayContainer from './display-container/container';
+import TicketContainer from './container/container';
+import TicketDashboard from './dashboard/container';
 
 class Ticket extends PureComponent {
 
 	static propTypes = {
-		isEditing: PropTypes.bool,
-		setIsSelected: PropTypes.func,
-		isSelected: PropTypes.bool,
-		clientId: PropTypes.string.isRequired,
-		hasBeenCreated: PropTypes.bool,
+		blockId: PropTypes.string.isRequired,
+		hasTicketsPlus: PropTypes.bool,
+		isDisabled: PropTypes.bool,
 		isLoading: PropTypes.bool,
-	};
-
-	static defaultProps = {
-		isEditing: false,
-		hasBeenCreated: false,
-		isLoading: false,
-	};
-
-	updateIsSelected = () => {
-		const { setIsSelected, isSelected } = this.props;
-		setIsSelected( isSelected );
+		isSelected: PropTypes.bool,
+		onBlockUpdate: PropTypes.func,
+		removeTicketBlock: PropTypes.func,
 	};
 
 	componentDidMount() {
-		this.updateIsSelected();
+		this.props.onBlockUpdate( this.props.isSelected );
 	}
 
 	componentDidUpdate( prevProps ) {
 		if ( prevProps.isSelected !== this.props.isSelected ) {
-			this.updateIsSelected();
+			this.props.onBlockUpdate( this.props.isSelected );
 		}
 	}
 
 	componentWillUnmount() {
-		this.updateIsSelected();
-	}
-
-	renderComponents() {
-		const { isEditing, clientId, isSelected } = this.props;
-
-		return isEditing
-			? <TicketEditContainer blockId={ clientId } />
-			: <TicketDisplayContainer blockId={ clientId } isSelected={ isSelected } />;
-	}
-
-	renderSpinner() {
-		return (
-			<div className="tribe-editor__ticket--loading">
-				<Spinner />
-			</div>
-		);
+		this.props.removeTicketBlock();
 	}
 
 	render() {
-		const { isLoading, isEditing } = this.props;
-		const containerClass = classNames( 'tribe-editor__ticket', {
-			'tribe-editor__ticket--edit': isEditing,
-			'tribe-editor__ticket--display': ! isEditing,
-		} );
+		const {
+			blockId,
+			hasTicketsPlus,
+			isDisabled,
+			isLoading,
+			isSelected,
+		} = this.props;
 
 		return (
-			<article className={ containerClass }>
-				{ isLoading ? this.renderSpinner() : this.renderComponents() }
+			<article className={ classNames(
+				'tribe-editor__ticket',
+				{ 'tribe-editor__ticket--disabled': isDisabled },
+				{ 'tribe-editor__ticket--selected': isSelected },
+				{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
+			) }>
+				<TicketContainer blockId={ blockId } isSelected={ isSelected } />
+				<TicketDashboard blockId={ blockId } isSelected={ isSelected } />
+				{ isLoading && <Spinner /> }
 			</article>
 		);
 	}
