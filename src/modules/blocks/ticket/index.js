@@ -7,14 +7,14 @@ import { InnerBlocks } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
-import { BlockIcon } from '@moderntribe/common/elements';
+import { Tickets as TicketsIcon } from '@moderntribe/tickets/icons';
 import Ticket from './container';
 
 export default {
 	id: 'tickets-item',
 	title: __( 'Event Ticket', 'events-gutenberg' ),
 	description: __( 'A single configured ticket type.', 'events-gutenberg' ),
-	icon: BlockIcon,
+	icon: <TicketsIcon/>,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-tickets', 'tribe' ],
 
