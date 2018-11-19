@@ -10,8 +10,21 @@ import { cloneableGenerator } from 'redux-saga/utils';
 import * as types from '../types';
 import * as actions from '../actions';
 import watchers, * as sagas from '../sagas';
-import { getStart, getEnd } from '@moderntribe/events/data/blocks/datetime/selectors';
-import { toMoment, toDate, toTime24Hr } from '@moderntribe/common/utils/moment';
+import { moment as momentUtil } from '@moderntribe/common/utils';
+
+jest.mock( '@wordpress/data', () => ( {
+	select: ( key ) => {
+		if ( key === 'core/editor' ) {
+			return {
+				getEditedPostAttribute: ( attr ) => {
+					if ( attr === 'date' ) {
+						return 'January 1, 2018';
+					}
+				},
+			};
+		}
+	},
+} ) );
 
 describe( 'RSVP block sagas', () => {
 	describe( 'watchers', () => {
@@ -115,44 +128,56 @@ describe( 'RSVP block sagas', () => {
 				endDateObj: new Date( 'January 4, 2018' ),
 				endTime: '23:32',
 			};
+			global.tribe = {
+				events: {
+					blocks: {
+						datetime: {
+							selectors: {
+								getStart: jest.fn(),
+							},
+						},
+					},
+				},
+			};
+		} );
+
+		afterEach( () => {
+			delete global.tribe;
 		} );
 
 		it( 'should initialize state from datetime block', () => {
 			const gen = sagas.initializeRSVP();
 
 			expect( gen.next().value ).toEqual(
-				select( getStart )
+				call( momentUtil.toMoment, state.startDate )
 			);
 			expect( gen.next( state.startDate ).value ).toEqual(
-				select( getEnd )
-			);
-
-			expect( gen.next( state.endDate ).value ).toEqual(
-				call( toMoment, state.startDate )
+				call( momentUtil.toDate, state.startDate )
 			);
 			expect( gen.next( state.startDate ).value ).toEqual(
-				call( toMoment, state.endDate )
-			);
-
-			expect( gen.next( state.endDate ).value ).toEqual(
-				call( toDate, state.startDate )
-			);
-			expect( gen.next( state.startDate ).value ).toEqual(
-				call( toDate, state.endDate )
-			);
-
-			expect( gen.next( state.endDate ).value ).toEqual(
-				call( toTime24Hr, state.startDate )
+				call( momentUtil.toTime24Hr, state.startDate )
 			);
 			expect( gen.next( state.startTime ).value ).toEqual(
-				call( toTime24Hr, state.endDate )
-			);
-
-			expect( gen.next( state.endTime ).value ).toEqual(
 				all( [
 					put( actions.setRSVPTempStartDate( state.startDate ) ),
 					put( actions.setRSVPTempStartDateObj( state.startDateObj ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
+				] )
+			)
+			expect( gen.next().value ).toEqual(
+				select( global.tribe.events.blocks.datetime.selectors.getStart )
+			);
+			expect( gen.next( state.endDate).value ).toEqual(
+				call( momentUtil.toMoment, state.endDate )
+			);
+			expect( gen.next( state.endDate).value ).toEqual(
+				call( momentUtil.toDate, state.endDate )
+			);
+			expect( gen.next( state.endDate).value ).toEqual(
+				call( momentUtil.toTime24Hr, state.endDate )
+			);
+			expect( gen.next( state.endTime ).value ).toEqual(
+				all( [
 					put( actions.setRSVPTempEndDate( state.endDate ) ),
 					put( actions.setRSVPTempEndDateObj( state.endDateObj ) ),
 					put( actions.setRSVPTempEndTime( state.endTime ) ),
