@@ -5,13 +5,12 @@ import React, { createRef, Component } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'lodash';
 import classNames from 'classnames';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import { formatDate, parseDate } from 'react-day-picker/moment';
 
 /**
  * Internal dependencies
  */
-import { TimePicker } from '@moderntribe/common/elements';
+import { DayPickerInput, TimePicker } from '@moderntribe/common/elements';
 import {
 	date,
 	time,

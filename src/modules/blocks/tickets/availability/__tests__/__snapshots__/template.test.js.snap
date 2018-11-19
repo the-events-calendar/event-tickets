@@ -13,7 +13,7 @@ exports[`Availability render component with available property 1`] = `
   <span
     className="tribe-editor__numeric-label tribe-editor__tickets__availability-label tribe-editor__tickets__availability-label--available"
   >
-
+    
     <span
       className="tribe-editor__numeric-label--count"
     >
@@ -35,7 +35,7 @@ exports[`Availability renders component with available and total properties 1`] 
   <span
     className="tribe-editor__numeric-label tribe-editor__tickets__availability-label tribe-editor__tickets__availability-label--available"
   >
-
+    
     <span
       className="tribe-editor__numeric-label--count"
     >
@@ -50,7 +50,7 @@ exports[`Availability renders component with available and total properties 1`] 
   <span
     className="tribe-editor__numeric-label tribe-editor__tickets__availability-label tribe-editor__tickets__availability-label--total"
   >
-
+    
     <span
       className="tribe-editor__numeric-label--count"
     >
@@ -72,7 +72,7 @@ exports[`Availability renders component with total property 1`] = `
   <span
     className="tribe-editor__numeric-label tribe-editor__tickets__availability-label tribe-editor__tickets__availability-label--total"
   >
-
+    
     <span
       className="tribe-editor__numeric-label--count"
     >
