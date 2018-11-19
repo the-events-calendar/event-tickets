@@ -19,7 +19,7 @@ Object {
   "category": "tribe-tickets",
   "description": "A single configured ticket type.",
   "edit": [Function],
-  "icon": [Function],
+  "icon": <<svg>icon mock</svg> />,
   "id": "tickets-item",
   "keywords": Array [
     "event",
