@@ -15,7 +15,6 @@ import * as selectors from '../selectors';
 import {
 	DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE
 } from '../reducers/header-image';
-import { getStart } from '@moderntribe/events/data/blocks/datetime/selectors';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { wpREST } from '@moderntribe/common/utils/api';
 import { moment as momentUtil } from '@moderntribe/common/utils';
@@ -173,6 +172,21 @@ describe( 'Ticket Block sagas', () => {
 			endDate = momentUtil.toDatabaseDate( endMoment );
 			endDateInput = momentUtil.toDate( endMoment );
 			endTime = momentUtil.toDatabaseTime( endMoment );
+			global.tribe = {
+				events: {
+					blocks: {
+						datetime: {
+							selectors: {
+								getStart: jest.fn(),
+							},
+						},
+					},
+				},
+			};
+		} );
+
+		afterEach( () => {
+			delete global.tribe;
 		} );
 
 		it( 'should set tickets initial state', () => {
@@ -215,7 +229,7 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
-				select( getStart )
+				select( global.tribe.events.blocks.datetime.selectors.getStart )
 			)
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart )
@@ -287,6 +301,7 @@ describe( 'Ticket Block sagas', () => {
 					clientId: CLIENT_ID,
 				},
 			};
+			global.tribe.events.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
 			expect( gen.next().value ).toEqual(
@@ -314,7 +329,7 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
-				select( getStart )
+				select( global.tribe.events.blocks.datetime.selectors.getStart )
 			)
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart )
