@@ -912,67 +912,91 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_event_attendees( $post_id ) {
+			$attendees = array();
 			/**
-			 * Filters the cache expiration when this function is called from an admin screen.
+			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
 			 *
-			 * Returning a falsy value here will force a refetch each time.
+			 * @since TBD
 			 *
-			 * @since 4.7
-			 *
-			 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
-			 * @param int $post_id      The ID of the post attendees are being fetched for.
+			 * @param boool $skip_empty_post If the empty post should be skiped or not
+			 * @param int   $post_id ID of the post being affected
 			 */
-			$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
+			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id );
 
 			/**
-			 * Filters the cache expiration when this function is called from a non admin screen.
+			 * Process an attendee only if:
 			 *
-			 * Returning a falsy value here will force a refetch each time.
+			 * - $skip_empty_post is true and $post_id is not empty => ( true && false ) => ! false => true
+			 * - $skip_empty_post is false and $post_id is empty => ( false && true ) => ! false => true
+			 * - $skip_empty_post is false and $post_id is not empty => ( false && false ) => ! false => true
 			 *
-			 * @since 4.7
+			 * Is not executed if:
 			 *
-			 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
-			 * @param int $post_id      The ID of the post attendees are being fetched for.
+			 * - $skip_empty_post is true and $post_id is empty => ( true && true ) => ! true => false
 			 */
-			$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+			if ( ! ( $skip_empty_post && empty( $post_id ) ) ) {
+				/**
+				 * Filters the cache expiration when this function is called from an admin screen.
+				 *
+				 * Returning a falsy value here will force a refetch each time.
+				 *
+				 * @since 4.7
+				 *
+				 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
+				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 */
+				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
 
-			$expire = is_admin() ? (int) $admin_expire : (int) $expire;
+				/**
+				 * Filters the cache expiration when this function is called from a non admin screen.
+				 *
+				 * Returning a falsy value here will force a refetch each time.
+				 *
+				 * @since 4.7
+				 *
+				 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
+				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 */
+				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
 
-			$attendees_from_cache = false;
-			$attendees            = array();
+				$expire = is_admin() ? (int) $admin_expire : (int) $expire;
 
-			if ( 0 !== $expire ) {
-				$post_transient = tribe( 'post-transient' );
+				$attendees_from_cache = false;
 
-				$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
 
-				// if there is a valid transient, we'll use the value from that and note
-				// that we have fetched from cache
-				if ( false !== $attendees_from_cache ) {
-					$attendees            = empty( $attendees_from_cache ) ? array() : $attendees_from_cache;
-					$attendees_from_cache = true;
-				}
-			}
+				if ( 0 !== $expire ) {
+					$post_transient = tribe( 'post-transient' );
 
-			// if we haven't grabbed attendees from cache, then attempt to fetch attendees
-			if ( false === $attendees_from_cache && empty( $attendees ) ) {
-				foreach ( self::modules() as $class => $module ) {
-					$obj       = call_user_func( array( $class, 'get_instance' ) );
-					if ( is_array( $attendees ) ) {
-						$attendees[] = $obj->get_attendees_by_post_id( $post_id );
+					$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
+
+					// if there is a valid transient, we'll use the value from that and note
+					// that we have fetched from cache
+					if ( false !== $attendees_from_cache ) {
+						$attendees            = empty( $attendees_from_cache ) ? array() : $attendees_from_cache;
+						$attendees_from_cache = true;
 					}
 				}
 
-				$attendees = ! empty( $attendees ) ? call_user_func_array( 'array_merge', $attendees ) : array();
+				// if we haven't grabbed attendees from cache, then attempt to fetch attendees
+				if ( false === $attendees_from_cache && empty( $attendees ) ) {
+					foreach ( self::modules() as $class => $module ) {
+						$obj = call_user_func( array( $class, 'get_instance' ) );
+						if ( is_array( $attendees ) ) {
+							$attendees[] = $obj->get_attendees_by_post_id( $post_id );
+						}
+					}
 
-				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
-				// does not exist.
-				foreach ( $attendees as &$attendee ) {
-					$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
-				}
+					$attendees = ! empty( $attendees ) ? call_user_func_array( 'array_merge', $attendees ) : array();
 
-				if ( 0 !== $expire ) {
-					$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
+					// Set the `ticket_exists` flag on attendees if the ticket they are associated with
+					// does not exist.
+					foreach ( $attendees as &$attendee ) {
+						$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
+					}
+
+					if ( 0 !== $expire ) {
+						$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
+					}
 				}
 			}
 
@@ -982,7 +1006,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since 4.4
 			 *
 			 * @param array $attendees Array of event attendees.
-			 * @param int   $post_id   Event post ID.
+			 * @param int   $post_id Event post ID.
 			 */
 			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id );
 		}
