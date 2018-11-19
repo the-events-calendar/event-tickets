@@ -30,11 +30,6 @@ exports[`Ticket block selectors Amount reducers selectors getSharedTicketsSold 1
 
 exports[`Ticket block selectors Block selectors getBlock 1`] = `
 Object {
-  "header": Object {
-    "alt": "aircraft",
-    "id": 4961,
-    "src": "http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920-300x189.jpg",
-  },
   "headerImage": Object {
     "alt": "",
     "id": 0,
@@ -133,7 +128,9 @@ exports[`Ticket block selectors Misc selectors hasMultipleTicketProviders 1`] = 
 
 exports[`Ticket block selectors Misc selectors hasTicketProviders 1`] = `false`;
 
-exports[`Ticket block selectors Ticket details selectors getTicketCapacity 1`] = `0`;
+exports[`Ticket block selectors Ticket details selectors getTicketCapacity 1`] = `""`;
+
+exports[`Ticket block selectors Ticket details selectors getTicketCapacityInt 1`] = `0`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketCapacityType 1`] = `"capped"`;
 
@@ -199,19 +196,10 @@ Object {
     "capacity": "",
     "capacityType": "capped",
     "description": "",
-<<<<<<< HEAD
     "endDate": "2118-09-01",
     "endDateInput": "September 1, 2118",
     "endDateMoment": "2118-09-01T22:30:00.000Z",
     "endTime": "22:30:00",
-=======
-    "endDate": "September 1, 2118",
-    "endDateMoment": "2018-09-01T22:30:00.000Z",
-    "endTime": "22:30",
-    "hasBeenCreated": false,
-    "isEditing": false,
-    "isLoading": false,
->>>>>>> release/F18.3
     "price": "",
     "sku": "",
     "startDate": "2018-09-01",
@@ -270,7 +258,9 @@ exports[`Ticket block selectors Ticket selectors getTicketSold 1`] = `0`;
 
 exports[`Ticket block selectors Ticket selectors isTicketDisabled 1`] = `false`;
 
-exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapacity 1`] = `0`;
+exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapacity 1`] = `""`;
+
+exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapacityInt 1`] = `0`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapacityType 1`] = `"capped"`;
 
@@ -335,7 +325,6 @@ Array [
     "available": 0,
     "currencyPosition": "prefix",
     "currencySymbol": undefined,
-<<<<<<< HEAD
     "details": Object {
       "capacity": "",
       "capacityType": "capped",
@@ -352,13 +341,6 @@ Array [
       "startTime": "22:30:00",
       "title": "",
     },
-=======
-    "dateIsPristine": false,
-    "description": "",
-    "endDate": "September 1, 2118",
-    "endDateMoment": "2018-09-01T22:30:00.000Z",
-    "endTime": "22:30",
->>>>>>> release/F18.3
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,
@@ -386,19 +368,7 @@ Array [
 ]
 `;
 
-<<<<<<< HEAD
 exports[`Ticket block selectors Tickets selectors getSharedTicketsCount 1`] = `1`;
-=======
-exports[`Ticket blocks selectors Ticket selectors Select type of tickets 3`] = `Array []`;
-
-exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 1`] = `"22:30"`;
-
-exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 2`] = `"22:30"`;
-
-exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 3`] = `"September 1, 2118"`;
-
-exports[`Ticket blocks selectors Ticket selectors Ticket dates and times 4`] = `"September 1, 2018"`;
->>>>>>> release/F18.3
 
 exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
 Object {

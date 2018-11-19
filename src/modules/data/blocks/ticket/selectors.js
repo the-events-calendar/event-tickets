@@ -2,7 +2,7 @@
  * External dependencies
  */
 import { createSelector } from 'reselect';
-import { find } from 'lodash';
+import { find, trim } from 'lodash';
 
 /**
  * Internal dependencies
@@ -434,12 +434,12 @@ export const getTicketTempCapacityTypeOption = createSelector(
 
 export const isTempTitleValid = createSelector(
 	[ getTicketTempTitle ],
-	block => trim( block.title ) !== '',
+	( title ) => trim( title ) !== '',
 );
 
 export const isTempCapacityValid = createSelector(
 	[ getTicketTempCapacity ],
-	block => trim( block.capacity ) !== '',
+	( capacity ) => trim( capacity ) !== '',
 );
 
 export const isTicketValid = createSelector(

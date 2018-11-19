@@ -4,37 +4,51 @@
 import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { DEFAULT_STATE } from '@moderntribe/tickets/data/blocks/ticket/reducer';
 import {
+	DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE,
+} from '@moderntribe/tickets/data/blocks/ticket/reducers/header-image';
+import {
 	DEFAULT_STATE as TICKET_DEFAULT_STATE,
 } from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket';
+import {
+	DEFAULT_STATE as DETAILS_DEFAULT_STATE,
+} from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket/details';
+import {
+	DEFAULT_STATE as TEMP_DETAILS_DEFAULT_STATE,
+} from '@moderntribe/tickets/data/blocks/ticket/reducers/tickets/ticket/details';
 
 jest.mock( 'moment', () => () => {
 	const moment = require.requireActual( 'moment' );
 	return moment( 'September 1, 2018 10:30 pm', 'MMMM D, Y h:mm a' );
 } );
 
-const defaultState = {
-	tickets: {
-		blocks: {
-			ticket: DEFAULT_STATE,
-		},
-	},
-};
-
-const image = {
-	id: 4961,
-	src: 'http://gutenberg.local/wp-content/uploads/2018/09/aircraft-1362586_1920-300x189.jpg',
-	alt: 'aircraft',
-};
-
 describe( 'Ticket block selectors', () => {
 	let state;
 	let ownProps;
 
 	beforeEach( () => {
-		state = defaultState;
-		state.tickets.blocks.ticket.header = image;
-		state.tickets.blocks.ticket.tickets.allIds = [ 'modern-tribe' ];
-		state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ] = TICKET_DEFAULT_STATE;
+		state = {
+			tickets: {
+				blocks: {
+					ticket: {
+						...DEFAULT_STATE,
+						headerImage: { ...HEADER_IMAGE_DEFAULT_STATE },
+						tickets: {
+							allIds: [ 'modern-tribe' ],
+							byId: {
+								'modern-tribe': {
+									...TICKET_DEFAULT_STATE,
+									details: { ...DETAILS_DEFAULT_STATE },
+									tempDetails: { ...TEMP_DETAILS_DEFAULT_STATE },
+								},
+							},
+						}
+					},
+				},
+			},
+		};
+		// state.tickets.blocks.ticket.header = image;
+		// state.tickets.blocks.ticket.tickets.allIds = [ 'modern-tribe' ];
+		// state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ] = { ...TICKET_DEFAULT_STATE };
 		ownProps = { blockId: 'modern-tribe' };
 	} );
 
