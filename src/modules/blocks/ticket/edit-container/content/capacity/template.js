@@ -101,7 +101,7 @@ class Capacity extends PureComponent {
 				name: __( 'Set capacity for this ticket only', 'events-gutenberg' ),
 				value: TICKET_TYPES.independent,
 			},
-			{ name: __( 'unlimited', 'events-gutenberg' ), value: TICKET_TYPES.unlimited },
+			{ name: __( 'Unlimited', 'events-gutenberg' ), value: TICKET_TYPES.unlimited },
 		],
 		onSelectType: noop,
 		capacity: 0,
