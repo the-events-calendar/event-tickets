@@ -32,7 +32,6 @@ const RSVPAttendeeRegistration = ( {
 			label={ label }
 			linkDisabled={ isDisabled }
 			linkHref={ attendeeRegistrationURL }
-			linkTarget="_blank"
 			linkText={ linkText }
 		/>
 		{ ! isCreated && (
