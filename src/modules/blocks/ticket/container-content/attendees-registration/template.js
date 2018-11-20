@@ -30,7 +30,6 @@ const AttendeesRegistration = ( {
 			label={ label }
 			linkDisabled={ isDisabled }
 			linkHref={ attendeeRegistrationURL }
-			linkTarget="_blank"
 			linkText={ linkText }
 		/>
 		{ ! isCreated && (
