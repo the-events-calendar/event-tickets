@@ -174,10 +174,12 @@ describe( 'Ticket Block sagas', () => {
 			endTime = momentUtil.toDatabaseTime( endMoment );
 			global.tribe = {
 				events: {
-					blocks: {
-						datetime: {
-							selectors: {
-								getStart: jest.fn(),
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
+								},
 							},
 						},
 					},
