@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.9] TBD =
 
-* Tweak - Adjust rsvp duration picker wider to allow more of the date to be shown
+
 
 = [4.8.4] 2018-11-13 =
 
