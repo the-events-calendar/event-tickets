@@ -18,6 +18,7 @@ import {
 	AttendeesActionButton,
 } from '@moderntribe/tickets/blocks/rsvp/action-buttons';
 import { ActionDashboard, LabelWithTooltip } from '@moderntribe/tickets/elements';
+import './style.pcss';
 
 const confirmLabel = ( created ) => (
 	created

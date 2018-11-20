@@ -19,6 +19,7 @@ import {
 	OrdersActionButton,
 } from '@moderntribe/tickets/blocks/tickets/action-buttons';
 import { ActionDashboard, LabelWithTooltip } from '@moderntribe/tickets/elements';
+import './style.pcss';
 
 const confirmLabel = __( 'Add Tickets', 'events-gutenberg' );
 
