@@ -17,8 +17,19 @@ import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
 
+const getHasRecurrenceRules = ( state ) => {
+	let hasRules = false;
+	try {
+		hasRules = window.tribe[ plugins.constants.EVENTS_PRO_PLUGIN ].data.blocks.recurring.selectors.hasRules( state );
+	} catch ( e ) {
+		// ¯\_(ツ)_/¯
+	}
+	return hasRules;
+};
+
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
+	hasRecurrenceRules: getHasRecurrenceRules( state ),
 	onConfirmClick: () => {
 		const { clientId } = ownProps;
 		const { getBlockCount } = select( 'core/editor' );
