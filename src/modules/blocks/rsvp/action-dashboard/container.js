@@ -86,6 +86,7 @@ const mapStateToProps = ( state ) => ( {
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	isCancelDisabled: getIsCancelDisabled( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
+	isLoading: selectors.getRSVPIsLoading( state ),
 	showCancel: selectors.getRSVPCreated( state ),
 	state,
 } );

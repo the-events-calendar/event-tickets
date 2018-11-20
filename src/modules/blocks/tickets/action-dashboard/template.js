@@ -7,36 +7,58 @@ import PropTypes from 'prop-types';
 /**
  * WordPress dependencies
  */
+import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { ActionDashboard } from '@moderntribe/tickets/elements';
 import {
 	SettingsActionButton,
 	AttendeesActionButton,
 	OrdersActionButton,
 } from '@moderntribe/tickets/blocks/tickets/action-buttons';
+import { ActionDashboard, LabelWithTooltip } from '@moderntribe/tickets/elements';
 
 const confirmLabel = __( 'Add Tickets', 'events-gutenberg' );
 
-const TicketsDashboardAction = ( { hasTicketsPlus, onConfirmClick } ) => {
-	const actions = hasTicketsPlus
-		? [
-			<SettingsActionButton />,
-			<AttendeesActionButton />,
-			<OrdersActionButton />,
-		]
-		: [
-			<SettingsActionButton />,
-			<OrdersActionButton />,
-		];
+const TicketsWarningTooltipLabel = () => (
+	<Dashicon
+		className="tribe-editor__tickets__warning-tooltip-label"
+		icon="info-outline"
+	/>
+);
 
-		return (
+const TicketsWarning = () => (
+	<LabelWithTooltip
+		className="tribe-editor__tickets__warning"
+		label={ __( 'Warning', 'events-gutenberg' ) }
+		tooltipLabel={ <TicketsWarningTooltipLabel /> }
+		tooltipText={ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'events-gutenberg' ) }
+	/>
+);
+
+const TicketsDashboardAction = ( {
+	hasRecurrenceRules,
+	hasTicketsPlus,
+	onConfirmClick,
+} ) => {
+	const getActions = () => {
+		const actions = [ <SettingsActionButton /> ];
+		if ( hasTicketsPlus ) {
+			actions.push( <AttendeesActionButton /> );
+		}
+		actions.push( <OrdersActionButton /> );
+		if ( hasRecurrenceRules ) {
+			actions.push( <TicketsWarning /> );
+		}
+		return actions;
+	};
+
+	return (
 		<ActionDashboard
 			className="tribe-editor__tickets__action-dashboard"
-			actions={ actions }
+			actions={ getActions() }
 			confirmLabel={ confirmLabel }
 			onConfirmClick={ onConfirmClick }
 			showCancel={ false }
@@ -45,6 +67,7 @@ const TicketsDashboardAction = ( { hasTicketsPlus, onConfirmClick } ) => {
 };
 
 TicketsDashboardAction.propTypes = {
+	hasRecurrenceRules: PropTypes.bool,
 	hasTicketsPlus: PropTypes.bool,
 	onConfirmClick: PropTypes.func,
 };
