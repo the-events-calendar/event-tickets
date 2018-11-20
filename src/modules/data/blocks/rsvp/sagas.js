@@ -80,7 +80,7 @@ export function* initializeRSVP() {
 
 	try {
 		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( window.tribe.events.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
+		const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDate, endMoment );
 		const endTime = yield call( momentUtil.toTime24Hr, endMoment );
