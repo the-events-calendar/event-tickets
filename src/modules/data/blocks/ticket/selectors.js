@@ -10,6 +10,7 @@ import { find, trim } from 'lodash';
 import * as constants from './constants';
 import { CAPACITY_TYPE_OPTIONS } from './options';
 import { globals } from '@moderntribe/common/utils';
+import { moment as momentUtil } from '@moderntribe/common/utils';
 
 const {
 	UNLIMITED,
@@ -453,6 +454,14 @@ export const isTicketValid = createSelector(
 		}
 		return titleValid && capacityValid;
 	},
+);
+
+export const isTicketFuture = createSelector(
+	[ getTicketDetails ],
+	( details ) => {
+		const start = details.startDateMoment;
+		return ( typeof( start ) !== 'undefined' ) ? moment().isBefore( start ) : true ;
+	}
 );
 
 
