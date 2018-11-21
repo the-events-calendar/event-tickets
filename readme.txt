@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.8.4.1] 2018-11-21 =
+
+* Fix - Resolved a compatibility issue with WordPress version 4.7.11 and earlier (our thanks to @placer69 and @earthnutvt for flagging this) [118627]
+
 = [4.8.4] 2018-11-13 =
 
 * Fix - Registration form from hiding with multiple RSVP tickets and one of them being set to quantity zero, thanks pixelbrad for reporting [116139]
