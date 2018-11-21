@@ -18,13 +18,14 @@ class Tickets extends PureComponent {
 		isSelected: PropTypes.bool,
 		isSettingsOpen: PropTypes.bool,
 		clientId: PropTypes.string,
+		header: PropTypes.string,
 	};
 
 	render() {
 		const {
 			isSelected,
 			isSettingsOpen,
-			clientId
+			clientId,
 		} = this.props;
 
 		return (
