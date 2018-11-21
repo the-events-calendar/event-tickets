@@ -456,11 +456,27 @@ export const isTicketValid = createSelector(
 	},
 );
 
+export const isTicketPast = createSelector(
+	[ getTicketEndDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
+	( endDate, isLoading, isCreated ) => {
+
+		if ( isLoading || ! isCreated ) {
+			return false;
+		}
+
+		return ( typeof( endDate ) !== 'undefined' ) ? moment().isAfter( endDate ) : false;
+	}
+);
+
 export const isTicketFuture = createSelector(
-	[ getTicketDetails ],
-	( details ) => {
-		const start = details.startDateMoment;
-		return ( typeof( start ) !== 'undefined' ) ? moment().isBefore( start ) : true ;
+	[ getTicketStartDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
+	( startDate, isLoading, isCreated ) => {
+
+		if ( isLoading || ! isCreated ) {
+			return false;
+		}
+
+		return ( typeof( startDate ) !== 'undefined' ) ? startDate.isAfter( moment() ) : false;
 	}
 );
 
