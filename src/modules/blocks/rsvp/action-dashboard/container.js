@@ -17,6 +17,16 @@ import { plugins } from '@moderntribe/common/data';
 import { actions, selectors, thunks } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
+const getHasRecurrenceRules = ( state ) => {
+	let hasRules = false;
+	try {
+		hasRules = window.tribe[ plugins.constants.EVENTS_PRO_PLUGIN ].data.blocks.recurring.selectors.hasRules( state );
+	} catch ( e ) {
+		// ¯\_(ツ)_/¯
+	}
+	return hasRules;
+};
+
 const getIsCancelDisabled = ( state ) => (
 	! selectors.getRSVPHasChanges( state ) || selectors.getRSVPIsLoading( state )
 );
@@ -43,7 +53,7 @@ const onCancelClick = ( state, dispatch ) => () => {
 	dispatch( actions.setRSVPHasChanges( false ) );
 };
 
-const onConfirmClick = ( state, dispatch, ownProps ) => () => {
+const onConfirmClick = ( state, dispatch ) => () => {
 	const payload = {
 		title: selectors.getRSVPTempTitle( state ),
 		description: selectors.getRSVPTempDescription( state ),
@@ -72,9 +82,11 @@ const onConfirmClick = ( state, dispatch, ownProps ) => () => {
 
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
+	hasRecurrenceRules: getHasRecurrenceRules( state ),
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	isCancelDisabled: getIsCancelDisabled( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
+	isLoading: selectors.getRSVPIsLoading( state ),
 	showCancel: selectors.getRSVPCreated( state ),
 	state,
 } );
