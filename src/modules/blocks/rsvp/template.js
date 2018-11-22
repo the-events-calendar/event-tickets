@@ -52,6 +52,7 @@ class RSVP extends PureComponent {
 					<div className={ classNames(
 						'tribe-editor__rsvp',
 						{ 'tribe-editor__rsvp--selected': isSelected },
+						{ 'tribe-editor__rsvp--loading': isLoading },
 					) }>
 						<RSVPContainer isSelected={ isSelected } />
 						<RSVPDashboard isSelected={ isSelected } />
