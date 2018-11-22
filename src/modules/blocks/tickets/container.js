@@ -11,11 +11,12 @@ import Template from './template';
 import { withSaveData, withStore } from '@moderntribe/common/hoc';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
-const mapStateToProps = ( state ) => ( {
+const mapStateToProps = ( state, ownProps ) => ( {
 	header: selectors.getTicketsHeaderImageId( state ),
 	isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
 	provider: selectors.getTicketsProvider( state ),
 	sharedCapacity: selectors.getTicketsSharedCapacity( state ),
+	tickets: ownProps.tickets,
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
