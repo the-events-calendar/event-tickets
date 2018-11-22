@@ -72,6 +72,13 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			4
 		);
 
+		add_filter(
+			'get_post_metadata',
+			tribe_callback( 'tickets.editor.meta', 'register_tickets_list_in_rest' ),
+			15,
+			4
+		);
+
 		// Setup the Rest compatibility layer for WP
 		tribe( 'tickets.editor.rest.compatibility' );
 

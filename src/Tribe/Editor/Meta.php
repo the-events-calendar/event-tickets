@@ -146,7 +146,37 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		if ( $meta_key === '_edd_button_behavior' ) {
 			$args['show_in_rest'] = false;
 		}
-		
+
 		return $args;
+	}
+
+	/**
+	 * Make sure the value of the "virtual" meta is up to date with the correct ticket values
+	 * as can be modified by removing or adding a plugin outside of the blocks editor the ticket
+	 * can be added by React if is part of the diff of non created blocks
+	 *
+	 * @since TBD
+	 *
+	 * @param mixed $value
+	 * @param int $post_id
+	 * @param string $meta_key
+	 * @param bool $single
+	 *
+	 * @return array
+	 */
+	public function register_tickets_list_in_rest( $value, $post_id, $meta_key, $single ) {
+
+		if ( $meta_key !== '_tribe_tickets_list' ) {
+			return $value;
+		}
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$list_of_tickets = array();
+		foreach ( $tickets as $ticket ) {
+			if ( $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				$list_of_tickets[] = $ticket->ID;
+			}
+		}
+		return $list_of_tickets;
 	}
 }
