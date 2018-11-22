@@ -59,7 +59,7 @@ class Ticket extends PureComponent {
 				{ 'tribe-editor__ticket--selected': isSelected },
 				{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
 			) }>
-				<TicketContainer blockId={ blockId } isSelected={ isSelected } />
+				<TicketContainer blockId={ blockId } isSelected={ isSelected } isLoading={ isLoading } />
 				<TicketDashboard blockId={ blockId } isSelected={ isSelected } />
 				{ isLoading && <Spinner /> }
 			</article>
