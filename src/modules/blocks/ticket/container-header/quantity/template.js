@@ -72,4 +72,10 @@ TicketContainerHeaderDescription.propTypes = {
 	sharedCapacity: PropTypes.number,
 };
 
+TicketContainerHeaderDescription.defaultProps = {
+	sold: 0,
+	sharedCapacity: 0,
+	capacity: 0,
+};
+
 export default TicketContainerHeaderDescription;
