@@ -40,6 +40,12 @@ export function* setTicketsInitialState( action ) {
 
 	const header = parseInt( get( 'header', HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
+	const ticketsList = get( 'tickets', [] );
+	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
+	// Get only the IDs of the tickets that are not in the block list already
+	const ticketsDiff = ticketsList.filter( ( item ) => ticketsInBlock.indexOf( item ) === -1  );
+
+	yield call( createMissingTicketBlocks, ticketsDiff );
 
 	// Meta value is '0' however fields use empty string as default
 	if ( sharedCapacity !== '0' ) {
@@ -57,6 +63,24 @@ export function* setTicketsInitialState( action ) {
 	const defaultProvider = tickets.default_provider || '';
 	const provider = get( 'provider', DEFAULT_STATE.provider );
 	yield put( actions.setTicketsProvider( provider || defaultProvider ) );
+}
+
+export function* createMissingTicketBlocks( tickets ) {
+	const { insertBlock } = wpDispatch( 'core/editor' );
+	const { getBlockCount, getBlocks } = wpSelect( 'core/editor' );
+	const ticketsBlock = getBlocks().filter( ( block ) => block.name === 'tribe/tickets' );
+
+	ticketsBlock.forEach( ( { clientId } ) => {
+		tickets.forEach( ( ticketId ) => {
+			const nextChildPosition = getBlockCount( clientId );
+			const attributes = {
+				hasBeenCreated: true,
+				ticketId,
+			};
+			const block = createBlock( 'tribe/tickets-item', attributes );
+			insertBlock( block, nextChildPosition, clientId );
+		} );
+	} );
 }
 
 export function* setTicketInitialState( action ) {
