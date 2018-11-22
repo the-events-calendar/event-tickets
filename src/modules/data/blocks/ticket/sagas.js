@@ -98,6 +98,7 @@ export function* setTicketInitialState( action ) {
 			put( actions.setTicketTempEndTime( clientId, endTime ) ),
 		] );
 	} catch ( err ) {
+		console.error( err );
 		// ¯\_(ツ)_/¯
 	}
 
@@ -223,6 +224,7 @@ export function* fetchTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
+		console.error( e) ;
 		/**
 		 * @todo handle error scenario
 		 */
@@ -317,6 +319,7 @@ export function* createNewTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
+		console.error( e );
 		/**
 		 * @todo: handle error scenario
 		 */
@@ -408,6 +411,7 @@ export function* updateTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
+		console.error( e );
 		/**
 		 * @todo: handle error scenario
 		 */
@@ -452,6 +456,7 @@ export function* deleteTicket( action ) {
 				},
 			} );
 		} catch ( e ) {
+			console.error( e );
 			/**
 			 * @todo handle error on removal
 			 */
@@ -475,6 +480,7 @@ export function* fetchTicketsHeaderImage( action ) {
 			yield put( actions.setTicketsHeaderImage( headerImage ) );
 		}
 	} catch ( e ) {
+		console.error( e );
 		/**
 		 * @todo: handle error scenario
 		 */
