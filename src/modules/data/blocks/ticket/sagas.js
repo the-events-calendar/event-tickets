@@ -81,7 +81,7 @@ export function* setTicketInitialState( action ) {
 
 	try {
 		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( window.tribe.events.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
+		const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 		const endDateInput = yield call( momentUtil.toDate, endMoment );
