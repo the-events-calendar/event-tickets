@@ -166,7 +166,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 */
 	public function register_tickets_list_in_rest( $value, $post_id, $meta_key, $single ) {
 
-		if ( $meta_key !== '_tribe_tickets_list' ) {
+		if ( '_tribe_tickets_list' !== $meta_key  ) {
 			return $value;
 		}
 
