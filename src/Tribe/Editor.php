@@ -22,7 +22,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		add_filter( 'tribe_blocks_editor_update_classic_content', array( $this, 'update_tickets_block_with_childs' ), 10, 3 );
 
 		// Make data available to the current ticket
-		add_filter( 'tribe_events_editor_js_config', array( $this, 'add_tickets_js_config' ) );
+		add_filter( 'tribe_editor_js_config', array( $this, 'add_tickets_js_config' ) );
 
 		// Add RSVP and tickets blocks
 		add_action( 'admin_init', array( $this, 'add_tickets_block_in_editor' ) );
@@ -189,10 +189,11 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 *
 	 * @since TBD
 	 *
-	 * @param array $js_config
+	 * @param array $editor_js_config
+	 *
 	 * @return array An array with data to be passed to the FE.
 	 */
-	public function add_tickets_js_config( $js_config ) {
+	public function add_tickets_js_config( $editor_js_config ) {
 		$modules = Tribe__Tickets__Tickets::modules();
 		$class_names = array_keys( $modules );
 		$providers = array();
@@ -224,12 +225,17 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 			);
 		}
 
-		$js_config['tickets'] = array(
-			'providers' => $providers,
-			'default_provider' => Tribe__Tickets__Tickets::get_default_module(),
-			'default_currency' => tribe_get_option( 'defaultCurrencySymbol', '$' ),
+		$tickets = empty( $editor_js_config['tickets'] ) ? array() : $editor_js_config['tickets'];
+		$editor_js_config['tickets'] = array_merge(
+			(array) $tickets,
+			array(
+				'providers'        => $providers,
+				'default_provider' => Tribe__Tickets__Tickets::get_default_module(),
+				'default_currency' => tribe_get_option( 'defaultCurrencySymbol', '$' ),
+			)
 		);
-		return $js_config;
+
+		return $editor_js_config;
 	}
 
 	/**
