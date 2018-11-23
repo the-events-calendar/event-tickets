@@ -24,7 +24,7 @@ import './style.pcss';
  */
 
 const placeholder = __( 'Who\'s Attending?', 'events-gutenberg' );
-const subtitle    = __( 'How many people is attending this event', 'events-gutenberg' );
+const subtitle    = __( 'How many people are attending this event', 'events-gutenberg' );
 
 const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 	const containerClassNames = classNames( {
@@ -85,7 +85,7 @@ const RenderSubtitle = () => (
 const Attendees = ( props ) => {
 
 	const { isSelected, title } = props;
-	const blockTitle = ! ( isSelected || title ) 
+	const blockTitle = ! ( isSelected || title )
 		? renderPlaceholder()
 		: [ renderLabelInput( props ) ];
 
