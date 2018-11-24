@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Class Tribe__Tickets__Editor__Configuration
+ *
+ * Class used to set values into the editor client (browser) via localized variables
+ *
+ * @since TBD
+ */
 class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configuration_Interface {
 
 	/**
@@ -21,7 +28,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * @return array
 	 */
 	public function editor_config( $editor_config ) {
-		$tickets = empty( $editor_js_config['tickets'] ) ? array() : $editor_js_config['tickets'];
+		$tickets       = empty( $editor_js_config['tickets'] ) ? array() : $editor_js_config['tickets'];
 		$editor_config = $this->set_defaults( $editor_config );
 
 		$editor_config['common']['rest']['nonce'] = array_merge(
@@ -41,6 +48,15 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 		return $editor_config;
 	}
 
+	/**
+	 * Set an initial set of default values to prevent accessing not defined variables
+	 *
+	 * @since TBD
+	 *
+	 * @param array $editor_config
+	 *
+	 * @return array
+	 */
 	public function set_defaults( $editor_config ) {
 		if ( empty( $editor_config['common']['rest'] ) ) {
 			$editor_config['common']['rest'] = array();
@@ -53,6 +69,13 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 		return $editor_config;
 	}
 
+	/**
+	 * Variables attached into the group that is used to localize values into the client
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
 	public function localize() {
 		return array(
 			'providers'        => $this->get_providers(),
@@ -69,9 +92,9 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	 * @return array
 	 */
 	public function get_providers() {
-		$modules = Tribe__Tickets__Tickets::modules();
-		$class_names = array_keys( $modules );
-		$providers = array();
+		$modules                 = Tribe__Tickets__Tickets::modules();
+		$class_names             = array_keys( $modules );
+		$providers               = array();
 		$default_currency_symbol = tribe_get_option( 'defaultCurrencySymbol', '$' );
 
 		foreach ( $class_names as $class ) {
@@ -93,9 +116,9 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 			}
 
 			$providers[] = array(
-				'name' => $modules[ $class ],
-				'class' => $class,
-				'currency' => html_entity_decode( $currency_symbol ),
+				'name'              => $modules[ $class ],
+				'class'             => $class,
+				'currency'          => html_entity_decode( $currency_symbol ),
 				'currency_position' => $currency_position,
 			);
 		}
