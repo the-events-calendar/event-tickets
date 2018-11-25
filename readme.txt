@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.8.5] TBD =
+
+* Fix - Adjust some permissions checks to ensure that RSVPs can be created by Subscriber-level users via the Community Tickets submission form [118598]
+
 = [4.8.4.1] 2018-11-21 =
 
 * Fix - Resolved a compatibility issue with WordPress version 4.7.11 and earlier (our thanks to @placer69 and @earthnutvt for flagging this) [118627]
