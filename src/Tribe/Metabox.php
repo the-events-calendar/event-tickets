@@ -466,6 +466,7 @@ class Tribe__Tickets__Metabox {
 	 * @return boolean
 	 */
 	public function has_permission( $post, $data, $nonce_action ) {
+
 		if ( ! $post instanceof WP_Post ) {
 			if ( ! is_numeric( $post ) ) {
 				return false;
@@ -474,7 +475,13 @@ class Tribe__Tickets__Metabox {
 			$post = get_post( $post );
 		}
 
-		return ! empty( $data['nonce'] ) && wp_verify_nonce( $data['nonce'], $nonce_action ) && current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
+		if ( empty( $data['nonce'] ) ) {
+			return false;
+		}
+
+		$has_permission = current_user_can( 'edit_event_tickets' ) || current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts )
+}
+		return $has_permission && wp_verify_nonce( $data['nonce'], $nonce_action );
 	}
 
 	/**
