@@ -479,8 +479,8 @@ class Tribe__Tickets__Metabox {
 			return false;
 		}
 
-		$has_permission = current_user_can( 'edit_event_tickets' ) || current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts )
-}
+		$has_permission = current_user_can( 'edit_event_tickets' ) || current_user_can( get_post_type_object( $post->post_type )->cap->edit_posts );
+
 		return $has_permission && wp_verify_nonce( $data['nonce'], $nonce_action );
 	}
 
