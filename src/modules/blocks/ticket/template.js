@@ -39,10 +39,6 @@ class Ticket extends PureComponent {
 		}
 	}
 
-	componentWillUnmount() {
-		this.props.removeTicketBlock();
-	}
-
 	render() {
 		const {
 			blockId,
