@@ -189,7 +189,7 @@ class Tribe__Tickets__Main {
 
 		if (
 			class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& version_compare( Tribe__Tickets_Plus__Main::VERSION, preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(.*)/', '$1$2', self::VERSION ), '<' )
+			&& version_compare( $this->tribe_version( Tribe__Tickets_Plus__Main::VERSION ), $this->tribe_version( self::VERSION ), '<' )
 		) {
 			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
 
@@ -304,6 +304,40 @@ class Tribe__Tickets__Main {
 		}
 
 		include_once $path_to_class;
+	}
+
+	/**
+	 * Return the sanitized version number for the version compare
+	 *
+	 * @since TBD
+	 *
+	 * @param string $version
+	 * @return string
+	 */
+	public function tribe_version( $version ) {
+
+		if ( '' === $version ) {
+			return $version;
+		}
+
+		$parts         = explode( '.', preg_replace( '/[\-]/', '.', $version ) );
+		$tribe_version = array();
+
+		foreach ( $parts as $part ) {
+
+			if (
+				! ( preg_match( '/alpha/', $part ) || preg_match( '/beta/', $part ) )
+				&& ! ctype_digit( $part )
+			) {
+				continue;
+			}
+
+			$tribe_version[] = $part;
+
+		}
+
+		return implode( '.', $tribe_version );
+
 	}
 
 	/**
