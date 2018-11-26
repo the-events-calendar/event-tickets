@@ -464,7 +464,7 @@ export const isTicketPast = createSelector(
 			return false;
 		}
 
-		return ( typeof( endDate ) !== 'undefined' ) ? moment().isAfter( endDate ) : false;
+		return moment.isMoment( endDate ) ? moment().isAfter( endDate ) : false;
 	}
 );
 
@@ -476,7 +476,7 @@ export const isTicketFuture = createSelector(
 			return false;
 		}
 
-		return ( typeof( startDate ) !== 'undefined' ) ? startDate.isAfter( moment() ) : false;
+		return moment.isMoment( startDate ) ? startDate.isAfter( moment() ) : false;
 	}
 );
 
