@@ -28,9 +28,9 @@ const TicketContainer = ( { blockId, isDisabled, isSelected, isLoading } ) => (
 	<ContainerPanel
 		className="tribe-editor__ticket__container"
 		layout={ LAYOUT.ticket }
-		icon={ isLoading ? null : <TicketContainerIcon isDisabled={ isDisabled } /> }
-		header={ isLoading ? null : <TicketContainerHeader blockId={ blockId } isSelected={ isSelected } /> }
-		content={ isLoading ? null : <TicketContainerContent blockId={ blockId } /> }
+		icon={ <TicketContainerIcon isDisabled={ isDisabled } /> }
+		header={ <TicketContainerHeader blockId={ blockId } isSelected={ isSelected } /> }
+		content={ <TicketContainerContent blockId={ blockId } /> }
 	/>
 );
 
@@ -38,7 +38,6 @@ TicketContainer.propTypes = {
 	blockId: PropTypes.string.isRequired,
 	isDisabled: PropTypes.bool,
 	isSelected: PropTypes.bool,
-	isLoading: PropTypes.bool
 };
 
 export default TicketContainer;

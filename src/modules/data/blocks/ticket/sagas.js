@@ -45,7 +45,9 @@ export function* setTicketsInitialState( action ) {
 	// Get only the IDs of the tickets that are not in the block list already
 	const ticketsDiff = ticketsList.filter( ( item ) => ticketsInBlock.indexOf( item ) === -1  );
 
-	yield call( createMissingTicketBlocks, ticketsDiff );
+	if ( ticketsDiff.length >= 1 ) {
+		yield call( createMissingTicketBlocks, ticketsDiff );
+	}
 
 	// Meta value is '0' however fields use empty string as default
 	if ( sharedCapacity !== '0' ) {
@@ -265,7 +267,7 @@ export function* fetchTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
-		console.error( e) ;
+		console.error( e ) ;
 		/**
 		 * @todo handle error scenario
 		 */
