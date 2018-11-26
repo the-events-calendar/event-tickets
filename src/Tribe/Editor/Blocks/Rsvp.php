@@ -53,21 +53,20 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return string
 	 */
 	public function render( $attributes = array() ) {
-		/**
-		 * @todo Be sure we get the post ID from tickets so it can run without TEC
-		 */
-		$args['post_id']    = $post_id = tribe( 'events.editor.template' )->get( 'post_id' );
+		/** @var Tribe__Tickets__Editor__Template $template */
+		$template           = tribe( 'tickets.editor.template' );
+		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
 		$args['attributes'] = $this->attributes( $attributes );
 		$args['tickets']    = $this->get_tickets( $post_id );
 
 		// Add the rendering attributes into global context
-		tribe( 'tickets.editor.template' )->add_template_globals( $args );
+		$template->add_template_globals( $args );
 
 		// enqueue assets
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-rsvp' );
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-rsvp-style' );
 
-		return tribe( 'tickets.editor.template' )->template( array( 'editor', 'blocks', $this->slug() ), $args, false );
+		return $template->template( array( 'editor', 'blocks', $this->slug() ), $args, false );
 	}
 
 	/*
