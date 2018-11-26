@@ -42,14 +42,17 @@ const TicketsWarning = () => (
 const TicketsDashboardAction = ( {
 	hasRecurrenceRules,
 	hasTicketsPlus,
+	hasTickets,
 	onConfirmClick,
 } ) => {
 	const getActions = () => {
 		const actions = [ <SettingsActionButton /> ];
-		if ( hasTicketsPlus ) {
-			actions.push( <AttendeesActionButton /> );
+		if ( hasTickets ) {
+			if ( hasTicketsPlus ) {
+				actions.push( <AttendeesActionButton /> );
+			}
+			actions.push( <OrdersActionButton /> );
 		}
-		actions.push( <OrdersActionButton /> );
 		if ( hasRecurrenceRules ) {
 			actions.push( <TicketsWarning /> );
 		}
@@ -70,6 +73,7 @@ const TicketsDashboardAction = ( {
 TicketsDashboardAction.propTypes = {
 	hasRecurrenceRules: PropTypes.bool,
 	hasTicketsPlus: PropTypes.bool,
+	hasTickets: PropTypes.bool,
 	onConfirmClick: PropTypes.func,
 };
 

@@ -71,7 +71,7 @@ export const getTicketsHeaderImage = createSelector(
 
 export const getTicketsHeaderImageId = createSelector(
 	[ getTicketsHeaderImage ],
-	( headerImage ) => headerImage.id ? `${headerImage.id}` : '',
+	( headerImage ) => headerImage.id,
 );
 
 export const getTicketsHeaderImageSrc = createSelector(

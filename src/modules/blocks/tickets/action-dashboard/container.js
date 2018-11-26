@@ -16,6 +16,7 @@ import { createBlock } from '@wordpress/blocks';
 import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
+import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const getHasRecurrenceRules = ( state ) => {
 	let hasRules = false;
@@ -30,6 +31,7 @@ const getHasRecurrenceRules = ( state ) => {
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	hasRecurrenceRules: getHasRecurrenceRules( state ),
+	hasTickets: selectors.hasTickets( state ),
 	onConfirmClick: () => {
 		const { clientId } = ownProps;
 		const { getBlockCount } = select( 'core/editor' );

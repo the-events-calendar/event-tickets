@@ -24,6 +24,7 @@ import './style.pcss';
  */
 
 const placeholder = __( 'Who\'s Attending?', 'events-gutenberg' );
+const subtitle    = __( '(X) people are attending this event', 'events-gutenberg' );
 
 const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 	const containerClassNames = classNames( {
@@ -75,16 +76,23 @@ const RenderGravatars = () => (
 	</div>
 );
 
+const RenderSubtitle = () => (
+	<div className="tribe-editor__event-attendees__subtitle">
+		<p>{ subtitle }</p>
+	</div>
+);
+
 const Attendees = ( props ) => {
 
 	const { isSelected, title } = props;
-	const blockTitle = ! ( isSelected || title ) 
+	const blockTitle = ! ( isSelected || title )
 		? renderPlaceholder()
 		: [ renderLabelInput( props ) ];
 
 	return (
 		<div className="tribe-editor__block tribe-editor__event-attendees">
 			{ blockTitle }
+			{ <RenderSubtitle /> }
 			{ <RenderGravatars /> }
 		</div>
 	);
