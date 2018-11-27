@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.9] TBD =
 
+* Fix - Adjust some permissions checks to ensure that RSVPs can be created by Subscriber-level users via the Community Tickets submission form [118598]
 
 = [4.8.4.1] 2018-11-21 =
 
