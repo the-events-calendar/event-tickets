@@ -85,6 +85,15 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	public function add_to_cart() {
 		global $post;
 
+		/**
+		 * Action before adding to cart
+		 *
+		 * @since TBD
+		 *
+		 * @param array $post_data
+		 */
+		do_action( 'tribe_tickets_commerce_paypal_gateway_pre_add_to_cart', $_POST );
+
 		// bail if this isn't a Tribe Commerce PayPal ticket
 		if (
 			empty( $_POST['product_id'] )
@@ -94,7 +103,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			return;
 		}
 
-		$cart_url           = $this->get_cart_url( '_cart' );
+		$cart_url      = $this->get_cart_url( '_cart' );
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
 		$product_ids   = $_POST['product_id'];
@@ -230,6 +239,17 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			array( 'tribe_tickets_redirect_to' => rawurlencode( $cart_url ) ),
 			home_url()
 		);
+
+		/**
+		 * Filters the add to cart redirect
+		 *
+		 * @since TBD
+		 *
+		 * @param string $url
+		 * @param string $cart_url
+		 * @param array $post_data
+		 */
+		$url = apply_filters( 'tribe_tickets_commerce_paypal_gateway_add_to_cart_redirect', $url, $cart_url, $_POST );
 
 		wp_redirect( $url );
 		die;

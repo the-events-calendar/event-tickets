@@ -1,0 +1,151 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Details reducer should set the capacity 1`] = `
+Object {
+  "capacity": 20,
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the description 1`] = `
+Object {
+  "capacity": "",
+  "description": "new description",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the end date 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "January 1, 2018",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the end date object 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2018-01-01T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the end time 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "13:45",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the not going responses 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": true,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the start date 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "January 1, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the start date object 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-01-01T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the start time 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "13:45",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the title 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "July 19, 2118",
+  "endDateObj": 2118-07-19T00:00:00.000Z,
+  "endTime": "19:30",
+  "notGoingResponses": false,
+  "startDate": "July 19, 2018",
+  "startDateObj": 2018-07-19T00:00:00.000Z,
+  "startTime": "19:30",
+  "title": "new title",
+}
+`;

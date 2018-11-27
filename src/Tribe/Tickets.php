@@ -839,6 +839,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
 			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
+			add_action( 'template_redirect', array( $this, 'maybe_redirect_to_attendees_registration_screen' ), 0 );
 		}
 
 		/**
@@ -911,67 +912,91 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_event_attendees( $post_id ) {
+			$attendees = array();
 			/**
-			 * Filters the cache expiration when this function is called from an admin screen.
+			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
 			 *
-			 * Returning a falsy value here will force a refetch each time.
+			 * @since TBD
 			 *
-			 * @since 4.7
-			 *
-			 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
-			 * @param int $post_id      The ID of the post attendees are being fetched for.
+			 * @param boool $skip_empty_post If the empty post should be skiped or not
+			 * @param int   $post_id ID of the post being affected
 			 */
-			$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
+			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id );
 
 			/**
-			 * Filters the cache expiration when this function is called from a non admin screen.
+			 * Process an attendee only if:
 			 *
-			 * Returning a falsy value here will force a refetch each time.
+			 * - $skip_empty_post is true and $post_id is not empty => ( true && false ) => ! false => true
+			 * - $skip_empty_post is false and $post_id is empty => ( false && true ) => ! false => true
+			 * - $skip_empty_post is false and $post_id is not empty => ( false && false ) => ! false => true
 			 *
-			 * @since 4.7
+			 * Is not executed if:
 			 *
-			 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
-			 * @param int $post_id      The ID of the post attendees are being fetched for.
+			 * - $skip_empty_post is true and $post_id is empty => ( true && true ) => ! true => false
 			 */
-			$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+			if ( ! ( $skip_empty_post && empty( $post_id ) ) ) {
+				/**
+				 * Filters the cache expiration when this function is called from an admin screen.
+				 *
+				 * Returning a falsy value here will force a refetch each time.
+				 *
+				 * @since 4.7
+				 *
+				 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
+				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 */
+				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
 
-			$expire = is_admin() ? (int) $admin_expire : (int) $expire;
+				/**
+				 * Filters the cache expiration when this function is called from a non admin screen.
+				 *
+				 * Returning a falsy value here will force a refetch each time.
+				 *
+				 * @since 4.7
+				 *
+				 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
+				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 */
+				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
 
-			$attendees_from_cache = false;
-			$attendees            = array();
+				$expire = is_admin() ? (int) $admin_expire : (int) $expire;
 
-			if ( 0 !== $expire ) {
-				$post_transient = tribe( 'post-transient' );
+				$attendees_from_cache = false;
 
-				$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
 
-				// if there is a valid transient, we'll use the value from that and note
-				// that we have fetched from cache
-				if ( false !== $attendees_from_cache ) {
-					$attendees            = empty( $attendees_from_cache ) ? array() : $attendees_from_cache;
-					$attendees_from_cache = true;
-				}
-			}
+				if ( 0 !== $expire ) {
+					$post_transient = tribe( 'post-transient' );
 
-			// if we haven't grabbed attendees from cache, then attempt to fetch attendees
-			if ( false === $attendees_from_cache && empty( $attendees ) ) {
-				foreach ( self::modules() as $class => $module ) {
-					$obj       = call_user_func( array( $class, 'get_instance' ) );
-					if ( is_array( $attendees ) ) {
-						$attendees[] = $obj->get_attendees_by_post_id( $post_id );
+					$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
+
+					// if there is a valid transient, we'll use the value from that and note
+					// that we have fetched from cache
+					if ( false !== $attendees_from_cache ) {
+						$attendees            = empty( $attendees_from_cache ) ? array() : $attendees_from_cache;
+						$attendees_from_cache = true;
 					}
 				}
 
-				$attendees = ! empty( $attendees ) ? call_user_func_array( 'array_merge', $attendees ) : array();
+				// if we haven't grabbed attendees from cache, then attempt to fetch attendees
+				if ( false === $attendees_from_cache && empty( $attendees ) ) {
+					foreach ( self::modules() as $class => $module ) {
+						$obj = call_user_func( array( $class, 'get_instance' ) );
+						if ( is_array( $attendees ) ) {
+							$attendees[] = $obj->get_attendees_by_post_id( $post_id );
+						}
+					}
 
-				// Set the `ticket_exists` flag on attendees if the ticket they are associated with
-				// does not exist.
-				foreach ( $attendees as &$attendee ) {
-					$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
-				}
+					$attendees = ! empty( $attendees ) ? call_user_func_array( 'array_merge', $attendees ) : array();
 
-				if ( 0 !== $expire ) {
-					$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
+					// Set the `ticket_exists` flag on attendees if the ticket they are associated with
+					// does not exist.
+					foreach ( $attendees as &$attendee ) {
+						$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
+					}
+
+					if ( 0 !== $expire ) {
+						$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
+					}
 				}
 			}
 
@@ -981,7 +1006,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since 4.4
 			 *
 			 * @param array $attendees Array of event attendees.
-			 * @param int   $post_id   Event post ID.
+			 * @param int   $post_id Event post ID.
 			 */
 			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id );
 		}
@@ -2262,6 +2287,163 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			return $save_ticket;
 		}
 
+		/**
+		 * Get the saved or default ticket provider
+		 *
+		 * @since 4.7
+		 *
+		 * @param int $event_id - the post id of the event the ticket is attached to.
+		 *
+		 * @return string ticket module class name
+		 */
+		public static function get_event_ticket_provider( $event_id = null ) {
+
+			// if  post ID is set, and a value has been saved, return the saved value
+			if ( ! empty( $event_id ) ) {
+				$saved = get_post_meta( $event_id, tribe( 'tickets.handler' )->key_provider_field, true );
+
+				if ( ! empty( $saved ) ) {
+					return $saved;
+				}
+			}
+
+			// otherwise just return the default
+			return self::get_default_module();
+		}
+
+		// @codingStandardsIgnoreEnd
+
+
+		/**
+		 * Get currency symbol
+		 *
+		 * @since 4.7.1
+		 *
+		 * @return string
+		 */
+		public function get_currency() {
+			/**
+			 * Default currency value for Tickets.
+			 *
+			 * @since 4.7.1
+			 *
+			 * @return string
+			 */
+			return (string) apply_filters( 'tribe_tickets_default_currency', 'USD' );
+		}
+
+
+		/**
+		 * Returns all the tickets currently in the users cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $tickets
+		 *
+		 * @return array
+		 */
+		public function get_tickets_in_cart( $tickets ) {
+			return $tickets;
+		}
+
+		/**
+		 * Return whether we're currently on the checkout page for this Merchant.
+		 *
+		 * @since TBD
+		 *
+		 * @return bool
+		 */
+		public function is_checkout_page() {
+			return false;
+		}
+
+		/**
+		 * If tickets exist in the cart for which we don't have meta info,
+		 * redirect to the meta collection screen.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $redirect
+		 */
+		public function maybe_redirect_to_attendees_registration_screen( $redirect = null ) {
+
+			// Bail if the meta storage class doesn't exist
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Meta__Storage' ) ) {
+				return;
+			}
+
+			if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+				return;
+			}
+
+			// They're submitting RSVPs, do not include them for now
+			if ( ! empty( $_POST['tribe_tickets_rsvp_submission'] ) ) {
+				return;
+			}
+
+			if ( tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+				return;
+			}
+
+			// Return if not trying to access the chekout page
+			if ( ! $this->is_checkout_page() ) {
+				return;
+			}
+
+			/**
+	 		 * Modify the tickets in cart, useful to
+	 		 * change the contents for each vendor
+			 * @since TBD
+			 *
+			 * @param array
+			*/
+			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
+
+			// Bail if there are no tickets
+			if ( empty( $tickets_in_cart ) ) {
+				return;
+			}
+
+			$meta                   = tribe( 'tickets-plus.main' )->meta();
+			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
+			$up_to_date             = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
+
+			// Bail if there are no required fields in cart or the stored data is up to date
+			// And they're submitting the Attendee Registration page
+			if (
+				isset( $_REQUEST['tribe_tickets_checkout'] )
+				&& (
+					! $cart_has_required_meta
+					|| $up_to_date
+				)
+			) {
+				return;
+			}
+
+			// Bail If things are up to date and they haven't submitted the form
+			// to access the registration page.
+			if (
+				$up_to_date
+				&& (
+					! isset( $_REQUEST['wootickets_process'] )
+					&& ! isset( $_REQUEST['eddtickets_process'] )
+				)
+			) {
+				return;
+			}
+
+			$url = tribe( 'tickets.attendee_registration' )->get_url();
+
+			$storage = new Tribe__Tickets_Plus__Meta__Storage();
+			if ( ! empty( $redirect ) ) {
+				$key = $storage->store_temporary_data( $redirect );
+				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key ), $url );
+			}
+
+			wp_safe_redirect( $url, 307 );
+			exit;
+		}
+
 
 		/************************
 		 *                      *
@@ -2329,51 +2511,5 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			_deprecated_function( __METHOD__, '4.6.2', 'wp_send_json_success()' );
 			wp_send_json_success( $data );
 		}
-
-		/**
-		 * Get the saved or default ticket provider
-		 *
-		 * @since 4.7
-		 *
-		 * @param int $event_id - the post id of the event the ticket is attached to.
-		 *
-		 * @return string ticket module class name
-		 */
-		public static function get_event_ticket_provider( $event_id = null ) {
-
-			// if  post ID is set, and a value has been saved, return the saved value
-			if ( ! empty( $event_id ) ) {
-				$saved = get_post_meta( $event_id, tribe( 'tickets.handler' )->key_provider_field, true );
-
-				if ( ! empty( $saved ) ) {
-					return $saved;
-				}
-			}
-
-			// otherwise just return the default
-			return self::get_default_module();
-		}
-
-		// @codingStandardsIgnoreEnd
-
-
-		/**
-		 * Parent method to be pass to any child of this class.
-		 *
-		 * @since 4.7.1
-		 *
-		 * @return string
-		 */
-		public function get_currency() {
-			/**
-			 * Default currency value for Tickets.
-			 *
-			 * @since 4.7.1
-			 *
-			 * @return string
-			 */
-			return (string) apply_filters( 'tribe_tickets_default_currency', 'USD' );
-		}
 	}
-
 }

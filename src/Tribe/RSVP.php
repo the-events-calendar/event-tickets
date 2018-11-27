@@ -509,7 +509,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Generate and store all the attendees information for a new order.
 	 */
-	public function generate_tickets( ) {
+	public function generate_tickets() {
+
 		if ( empty( $_POST['tickets_process'] ) || empty( $_POST['attendee'] ) || empty( $_POST['product_id'] ) ) {
 			return;
 		}
@@ -524,10 +525,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 */
 		do_action( 'tribe_tickets_rsvp_before_order_processing', $_POST );
 
+		// Parse the details submitted for the RSVP
 		$attendee_details = $this->parse_attendee_details();
 
+		// If there are details missing, we return to the event page with the rsvp_error
 		if ( false === $attendee_details ) {
-			$url = get_permalink( );
+			$url = get_permalink();
 			$url = add_query_arg( 'rsvp_error', 1, $url );
 			wp_redirect( esc_url_raw( $url ) );
 			tribe_exit();
