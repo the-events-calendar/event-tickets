@@ -4,6 +4,14 @@
 import { PREFIX_TICKETS_STORE } from '@moderntribe/tickets/data/utils';
 
 //
+// ─── MODAL DATA ─────────────────────────────────────────────────────────────────
+//
+
+export const SET_MODAL_DATA = `${ PREFIX_TICKETS_STORE }/SET_MODAL_DATA`;
+export const RESET_MODAL_DATA = `${ PREFIX_TICKETS_STORE }/RESET_MODAL_DATA`;
+export const SUBMIT_MODAL = `${ PREFIX_TICKETS_STORE }/SUBMIT_MODAL`;
+
+//
 // ─── MODAL UI STATE ─────────────────────────────────────────────────────────────
 //
 

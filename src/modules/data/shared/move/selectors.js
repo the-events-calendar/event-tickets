@@ -2,11 +2,13 @@
  * External dependencies
  */
 import { createSelector } from 'reselect';
+import { find } from 'lodash';
 
 export const getMove = ( state ) => state.tickets.move;
 export const _getUI = createSelector( getMove, move => move.ui );
 export const _getPostTypes = createSelector( getMove, move => move.postTypes );
 export const _getPosts = createSelector( getMove, move => move.posts );
+export const _getModal = createSelector( getMove, move => move.modal );
 
 export const isModalShowing = createSelector( _getUI, ui => ui.showModal );
 export const isFetchingPostTypes = createSelector( _getPostTypes, postTypes => postTypes.isFetching );
@@ -27,3 +29,17 @@ export const getPostOptions = createSelector( getPosts, posts => (
 		label: posts[ post ],
 	} ) )
 ) );
+
+export const getModalPostType = createSelector( _getModal, modal => modal.post_type );
+export const getModalSearch = createSelector( _getModal, modal => modal.search_terms );
+export const getModalTarget = createSelector( _getModal, modal => modal.target_post_id );
+
+export const getPostTypeOptionValue = createSelector(
+	[ getPostTypeOptions, getModalPostType ],
+	( postTypeOptions, postType ) => find( postTypeOptions, [ 'value', postType ] )
+);
+
+export const hasSelectedPost = createSelector(
+	[ getPostOptions, getModalTarget ],
+	( posts, target ) => !! ( target && find( posts, [ 'value', target ] ) )
+);
