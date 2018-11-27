@@ -13,10 +13,10 @@ const MoveDelete = ( {
 	return (
 		<div className="tribe-editor__rsvp__content-row--move-delete">
 			<button type="button" onClick={ moveRSVP }>
-				{ __( 'Move RSVP', 'events-gutenberg' ) }
+				{ __( 'Move RSVP', 'events-tickets' ) }
 			</button>
 			<button type="button" onClick={ removeRSVP }>
-				{ __( 'Remove RSVP', 'events-gutenberg' ) }
+				{ __( 'Remove RSVP', 'events-tickets' ) }
 			</button>
 		</div>
 	);
