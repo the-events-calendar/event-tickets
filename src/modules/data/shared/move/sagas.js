@@ -42,7 +42,7 @@ export function* _fetch( params ) {
 
 		return yield call( [ response, 'json' ] );
 	} catch ( error ) {
-
+		console.error( error );
 	}
 }
 
