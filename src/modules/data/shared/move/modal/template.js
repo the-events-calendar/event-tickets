@@ -27,7 +27,7 @@ export default class MoveModal extends PureComponent {
 	}
 
 	static defaultProps = {
-		title: __( 'Move Ticket Types', 'events-gutenberg' ),
+		title: __( 'Move Ticket Types', 'events-tickets' ),
 	}
 
 	componentDidMount() {
@@ -56,7 +56,7 @@ export default class MoveModal extends PureComponent {
 						status="warning"
 					>
 						{
-							__( 'No posts found', 'events-gutenberg' )
+							__( 'No posts found', 'events-tickets' )
 						}
 					</Notice>
 				)
@@ -72,7 +72,7 @@ export default class MoveModal extends PureComponent {
 				className="tribe-editor__tickets__move-modal"
 			>
 				<label htmlFor="post_type">
-					{ __( 'You can optionally focus on a specific post type:', 'events-gutenberg' ) }
+					{ __( 'You can optionally focus on a specific post type:', 'events-tickets' ) }
 				</label>
 				<Select
 					id="post_type"
@@ -82,7 +82,7 @@ export default class MoveModal extends PureComponent {
 				/>
 
 				<label htmlFor="search">
-					{ __( 'You can also enter keywords to help find the target event by title or description', 'events-gutenberg' ) }
+					{ __( 'You can also enter keywords to help find the target event by title or description', 'events-tickets' ) }
 				</label>
 				<Input
 					id="search"
@@ -92,7 +92,7 @@ export default class MoveModal extends PureComponent {
 				/>
 
 				<label>
-					{ __( 'Select the post you wish to move the ticket type to:', 'events-gutenberg' ) }
+					{ __( 'Select the post you wish to move the ticket type to:', 'events-tickets' ) }
 				</label>
 				{ this.renderPostTypes() }
 
@@ -104,7 +104,7 @@ export default class MoveModal extends PureComponent {
 						disabled={ ! this.props.hasSelectedPost || this.props.isFetchingPosts }
 						onClick={ this.props.onSubmit }
 					>
-						{ __( 'Finish!', 'events-gutenberg' ) }
+						{ __( 'Finish!', 'events-tickets' ) }
 					</Button>
 				</footer>
 			</Modal>
