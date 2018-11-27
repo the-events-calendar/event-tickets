@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 export default class MoveModal extends PureComponent {
 	static propTypes = {
 		hideModal: PropTypes.func.isRequired,
-		initalize: PropTypes.func.isRequired,
+		initialize: PropTypes.func.isRequired,
 		isModalShowing: PropTypes.bool.isRequired,
 		title: PropTypes.string.isRequired,
 	}
@@ -19,7 +19,7 @@ export default class MoveModal extends PureComponent {
 	}
 
 	componentDidMount() {
-		this.props.initalize();
+		this.props.initialize();
 	}
 
 	render() {

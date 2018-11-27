@@ -15,30 +15,26 @@ import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 import * as types from './types';
 import { globals } from '@moderntribe/common/utils';
 
-export function* createBody( params ) {
-	const payload = new FormData();
-	const keys = Object.keys( params );
-
-	for ( let i = 0; i < keys.length; i++ ) {
-		const key = keys[ i ];
-		const value = params[ key ];
-		yield call( [ payload, 'append' ], key, encodeURIComponent( value ) );
-	}
-
-	return payload;
+export function createBody( params ) {
+	return Object.entries( params )
+		.map( ( [ key, value ] ) => `${ key }=${ encodeURIComponent( value ) }` )
+		.join( '&' );
 }
 
 export function* _fetch( params ) {
 	try {
-		console.warn( globals.restNonce() );
 		const body = yield call( createBody, {
 			...params,
-			check: globals.restNonce().wp_restn,
+			check: globals.restNonce().wp_rest,
 		} );
 
 		const response = yield call( fetch, window.ajaxurl, {
 			method: 'POST',
 			body,
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+			},
+			credentials: 'include',
 		} );
 
 		return yield call( [ response, 'json' ] );
@@ -153,7 +149,7 @@ export function* moveTicket( {
 export function* initalize() {
 	yield all( [
 		call( fetchPostTypes ),
-		call( fetchPostChoices ),
+		call( fetchPostChoices, {} ),
 	] );
 }
 
