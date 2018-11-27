@@ -31,20 +31,30 @@
 }
 
 .tribe-editor__inactive-block__title {
-	color: #545D66;
-	font-family: Helvetica, sans-serif, arial;
-	font-size: 21px;
-	font-weight: bold;
-	line-height: 25px;
-	letter-spacing: 0.16px;
-	margin: 0 0 12px;
+
+		/* extra classes to override gutenberg styles */
+	.edit-post-visual-editor .editor-block-list__block & {
+		color: #545D66;
+		font-family: Helvetica, sans-serif, arial;
+		font-size: 21px;
+		font-weight: bold;
+		line-height: 25px;
+		letter-spacing: 0.16px;
+		padding: 0;
+		margin: 0 0 12px;
+	}
 }
 
+
 p.tribe-editor__inactive-block__description {
-	color: #545D66;
-	font-family: Helvetica, sans-serif, arial;
-	font-size: 14px;
-	line-height: 18px;
-	letter-spacing: 0.04px;
-	margin: 0;
+
+	/* extra classes to override gutenberg styles */
+	.editor-styles-wrapper & {
+		color: #545D66;
+		font-family: Helvetica, sans-serif, arial;
+		font-size: 14px;
+		line-height: 18px;
+		letter-spacing: 0.04px;
+		margin: 0;
+	}
 }

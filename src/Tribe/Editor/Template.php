@@ -13,7 +13,7 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 	 */
 	public function __construct() {
 		$this->set_template_origin( Tribe__Tickets__Main::instance() );
-		// todo: update to the plugins directory only
+
 		$this->set_template_folder( 'src/views' );
 
 		// Configures this templating class extract variables
