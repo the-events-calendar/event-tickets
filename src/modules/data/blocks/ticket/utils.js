@@ -38,7 +38,7 @@ export const getDefaultCurrencyPosition = () => {
 		? 'suffix'
 		: 'prefix';
 
-	return priceSettings() && priceSettings().default_currency_position
-		? priceSettings().default_currency_position
+	return priceSettings() && priceSettings().defaultCurrencyPosition
+		? priceSettings().defaultCurrencyPosition
 		: position;
 };

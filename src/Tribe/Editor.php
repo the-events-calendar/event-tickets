@@ -21,9 +21,6 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		// Update Post content to use correct child blocks for tickets
 		add_filter( 'tribe_blocks_editor_update_classic_content', array( $this, 'update_tickets_block_with_childs' ), 10, 3 );
 
-		// Make data available to the current ticket
-		add_filter( 'tribe_events_editor_js_config', array( $this, 'add_tickets_js_config' ) );
-
 		// Add RSVP and tickets blocks
 		add_action( 'admin_init', array( $this, 'add_tickets_block_in_editor' ) );
 
@@ -182,54 +179,6 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 				),
 			)
 		);
-	}
-
-	/**
-	 * Add data associated with the tickets into the variable "tribe_js_config"
-	 *
-	 * @since TBD
-	 *
-	 * @param array $js_config
-	 * @return array An array with data to be passed to the FE.
-	 */
-	public function add_tickets_js_config( $js_config ) {
-		$modules = Tribe__Tickets__Tickets::modules();
-		$class_names = array_keys( $modules );
-		$providers = array();
-		$default_currency_symbol = tribe_get_option( 'defaultCurrencySymbol', '$' );
-
-		foreach ( $class_names as $class ) {
-			if ( 'RSVP' === $modules[ $class ] ) {
-				continue;
-			}
-
-			$currency = tribe( 'tickets.commerce.currency' );
-
-			// Backwards to avoid fatals
-			$currency_symbol = $default_currency_symbol;
-			if ( is_callable( array( $currency, 'get_provider_symbol' ) ) ) {
-				$currency_symbol = $currency->get_provider_symbol( $class, null );
-			}
-
-			$currency_position = 'prefix';
-			if ( is_callable( array( $currency, 'get_provider_symbol_position' ) ) ) {
-				$currency_position = $currency->get_provider_symbol_position( $class, null );
-			}
-
-			$providers[] = array(
-				'name' => $modules[ $class ],
-				'class' => $class,
-				'currency' => html_entity_decode( $currency_symbol ),
-				'currency_position' => $currency_position,
-			);
-		}
-
-		$js_config['tickets'] = array(
-			'providers' => $providers,
-			'default_provider' => Tribe__Tickets__Tickets::get_default_module(),
-			'default_currency' => tribe_get_option( 'defaultCurrencySymbol', '$' ),
-		);
-		return $js_config;
 	}
 
 	/**
