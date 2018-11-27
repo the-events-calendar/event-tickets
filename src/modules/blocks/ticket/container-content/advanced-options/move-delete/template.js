@@ -4,6 +4,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { __ } from '@wordpress/i18n';
+import { Button } from '@moderntribe/common/elements';
 import './style.pcss';
 
 const MoveDelete = ( {
@@ -12,12 +13,12 @@ const MoveDelete = ( {
 } ) => {
 	return (
 		<div className="tribe-editor__ticket__content-row--move-delete">
-			<button type="button" onClick={ moveTicket }>
+			<Button type="button" onClick={ moveTicket }>
 				{ __( 'Move Ticket', 'events-tickets' ) }
-			</button>
-			<button type="button" onClick={ removeTicket }>
+			</Button>
+			<Button type="button" onClick={ removeTicket }>
 				{ __( 'Remove Ticket', 'events-tickets' ) }
-			</button>
+			</Button>
 		</div>
 	);
 };
