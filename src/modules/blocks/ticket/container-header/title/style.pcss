@@ -34,29 +34,33 @@
 	}
 }
 
-.tribe-editor__ticket__container-header-title-input {
-	/* !important required to override styles from react-input-autosize */
-	display: flex !important;
-	margin: 0;
-	padding-top: 3px;
+/* extra editor-styles-wrapper class to override gutenberg styles */
+.editor-styles-wrapper {
 
-	& > * {
-		flex: none;
-	}
-
-	& > input {
-		background-color: transparent;
-		color: #000000;
+	.tribe-editor__ticket__container-header-title-input {
+		/* !important required to override styles from react-input-autosize */
+		display: flex !important;
 		margin: 0;
-		padding: 0;
-		border: none;
-		font-weight: bold;
-		font-size: 21px;
-		line-height: 25px;
-		letter-spacing: 0.16px;
+		padding-top: 3px;
 
-		&:disabled {
-			color: #AEB4BB;
+		& > * {
+			flex: none;
+		}
+
+		& > input {
+			background-color: transparent;
+			color: #000000;
+			margin: 0;
+			padding: 0;
+			border: none;
+			font-weight: bold;
+			font-size: 21px;
+			line-height: 25px;
+			letter-spacing: 0.16px;
+
+			&:disabled {
+				color: #AEB4BB;
+			}
 		}
 	}
 }
