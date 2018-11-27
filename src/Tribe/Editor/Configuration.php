@@ -37,6 +37,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 				'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
 				'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
 				'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
+				'move_tickets'        => wp_create_nonce( 'move_tickets' ),
 			)
 		);
 
