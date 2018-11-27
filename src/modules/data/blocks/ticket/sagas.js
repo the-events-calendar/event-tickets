@@ -24,6 +24,8 @@ import {
 } from './reducers/tickets/ticket';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { api, globals, moment as momentUtil } from '@moderntribe/common/utils';
+import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
+import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 const {
 	UNLIMITED,
@@ -633,6 +635,17 @@ export function* setTicketTempDetails( action ) {
 	] );
 }
 
+export function* handleTicketMove() {
+	const ticketBlockIds = yield select( selectors.getAllTicketIds );
+	const modalBlockId = yield select( moveSelectors.getModalBlockId );
+
+	if ( ticketBlockIds.includes(modalTicketId) ) {
+		yield put( actions.setTicketIsSelected( modalBlockId, false ) );
+		yield put( actions.removeTicketBlock( modalBlockId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ modalBlockId ] );
+	}
+}
+
 export default function* watchers() {
 	yield takeEvery( types.SET_TICKETS_INITIAL_STATE, setTicketsInitialState );
 	yield takeEvery( types.SET_TICKET_INITIAL_STATE, setTicketInitialState );
@@ -645,4 +658,5 @@ export default function* watchers() {
 	yield takeEvery( types.DELETE_TICKETS_HEADER_IMAGE, deleteTicketsHeaderImage );
 	yield takeEvery( types.SET_TICKET_DETAILS, setTicketDetails );
 	yield takeEvery( types.SET_TICKET_TEMP_DETAILS, setTicketTempDetails );
+	yield takeEvery( MOVE_TICKET_SUCCESS, handleTicketMove );
 }
