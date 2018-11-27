@@ -166,7 +166,7 @@ export function* onModalChange( action ) {
 		! action.payload.hasOwnProperty( 'target_post_id' ) &&
 		! action.payload.hasOwnProperty( 'current_ticket_id' )
 	) {
-		yield call( delay, 700 );
+		yield call( delay, 500 );
 		yield call( getPostChoices );
 	}
 }
