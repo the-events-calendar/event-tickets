@@ -420,42 +420,46 @@ export function* deleteTicket( action ) {
 	const { blockId } = action.payload;
 	const props = { blockId };
 
-	const ticketId = yield select( selectors.getTicketId, props );
-	const hasBeenCreated = yield select( selectors.getTicketHasBeenCreated, props );
+	const shouldDelete = yield call( [ window, 'confirm' ], 'Are you sure you want to delete this ticket? It cannot be undone.' );
 
-	yield put( actions.setTicketIsSelected( blockId, false ) );
-	yield put( actions.removeTicketBlock( blockId ) );
-	yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
+	if ( shouldDelete ) {
+		const ticketId = yield select( selectors.getTicketId, props );
+		const hasBeenCreated = yield select( selectors.getTicketHasBeenCreated, props );
 
-	if ( hasBeenCreated ) {
-		const { remove_ticket_nonce = '' } = restNonce();
-		const postId = wpSelect( 'core/editor' ).getCurrentPostId();
+		yield put( actions.setTicketIsSelected( blockId, false ) );
+		yield put( actions.removeTicketBlock( blockId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
 
-		/**
-		 * Encode params to be passed into the DELETE request as PHP doesn’t transform the request body
-		 * of a DELETE request into a super global.
-		 */
-		const body = [
-			`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( postId ) }`,
-			`${ encodeURIComponent( 'remove_ticket_nonce' ) }=${ encodeURIComponent( remove_ticket_nonce ) }`,
-		];
+		if ( hasBeenCreated ) {
+			const { remove_ticket_nonce = '' } = restNonce();
+			const postId = wpSelect( 'core/editor' ).getCurrentPostId();
 
-		try {
-			yield call( wpREST, {
-				path: `tickets/${ ticketId }`,
-				namespace: 'tribe/tickets/v1',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-				},
-				initParams: {
-					method: 'DELETE',
-					body: body.join( '&' ),
-				},
-			} );
-		} catch ( e ) {
 			/**
-			 * @todo handle error on removal
+			 * Encode params to be passed into the DELETE request as PHP doesn’t transform the request body
+			 * of a DELETE request into a super global.
 			 */
+			const body = [
+				`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( postId ) }`,
+				`${ encodeURIComponent( 'remove_ticket_nonce' ) }=${ encodeURIComponent( remove_ticket_nonce ) }`,
+			];
+
+			try {
+				yield call( wpREST, {
+					path: `tickets/${ ticketId }`,
+					namespace: 'tribe/tickets/v1',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+					},
+					initParams: {
+						method: 'DELETE',
+						body: body.join( '&' ),
+					},
+				} );
+			} catch ( e ) {
+				/**
+				 * @todo handle error on removal
+				 */
+			}
 		}
 	}
 }
