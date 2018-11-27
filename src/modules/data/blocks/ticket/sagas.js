@@ -6,7 +6,7 @@ import { put, all, select, takeEvery, call } from 'redux-saga/effects';
 /**
  * Wordpress dependencies
  */
-import { select as wpSelect } from '@wordpress/data';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -425,6 +425,7 @@ export function* deleteTicket( action ) {
 
 	yield put( actions.setTicketIsSelected( blockId, false ) );
 	yield put( actions.removeTicketBlock( blockId ) );
+	yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
 
 	if ( hasBeenCreated ) {
 		const { remove_ticket_nonce = '' } = restNonce();
