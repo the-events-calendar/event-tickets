@@ -10,7 +10,7 @@ import { compose } from 'redux';
 import Template from './template';
 
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),

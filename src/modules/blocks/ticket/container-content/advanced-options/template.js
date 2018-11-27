@@ -18,6 +18,7 @@ import { Accordion } from '@moderntribe/common/elements';
 import './style.pcss';
 import Duration from './duration/container';
 import SKU from './sku/container';
+import MoveDelete from './move-delete/container';
 
 class AdvancedOptions extends Component {
 	static propTypes = {
@@ -46,6 +47,7 @@ class AdvancedOptions extends Component {
 		<Fragment>
 			<Duration blockId={ this.props.blockId } />
 			<SKU blockId={ this.props.blockId } />
+			<MoveDelete blockId={ this.props.blockId } />
 		</Fragment>
 	);
 
