@@ -3,6 +3,7 @@
  * External Dependencies
  */
 import { put, all, select, takeLatest, call } from 'redux-saga/effects';
+import { delay } from 'redux-saga';
 
 /**
  * Wordpress dependencies
@@ -14,6 +15,7 @@ import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
  */
 import * as types from './types';
 import { globals } from '@moderntribe/common/utils';
+import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 export function createBody( params ) {
 	return Object.entries( params )
@@ -146,13 +148,34 @@ export function* moveTicket( {
 	}
 }
 
+export function* getCurrentPostId() {
+	return yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
+}
+
+export function* getPostChoices() {
+	const params = yield all( {
+		post_type: select( selectors.getModalPostType ),
+		search_terms: select( selectors.getModalSearch ),
+		ignore: call( getCurrentPostId ),
+	} );
+	yield call( fetchPostChoices, params );
+}
+
+export function* onModalChange( action ) {
+	if ( ! action.payload.hasOwnProperty( 'target_post_id' ) ) {
+		yield call( delay, 700 );
+		yield call( getPostChoices );
+	}
+}
+
 export function* initalize() {
 	yield all( [
 		call( fetchPostTypes ),
-		call( fetchPostChoices, {} ),
+		call( getPostChoices ),
 	] );
 }
 
 export default function* watchers() {
 	yield takeLatest( [ types.INITIALIZE_MODAL ], initalize );
+	yield takeLatest( [ types.SET_MODAL_DATA ], onModalChange );
 }
