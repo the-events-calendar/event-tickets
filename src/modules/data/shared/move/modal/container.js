@@ -17,7 +17,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	hasSelectedPost: selectors.hasSelectedPost( state ),
 	isFetchingPosts: selectors.isFetchingPosts( state ),
 	isFetchingPostTypes: selectors.isFetchingPostTypes( state ),
-	isModalShowing: selectors.isModalShowing( state ),
+	isModalSubmitting: selectors.isModalSubmitting( state ),
 	postOptions: selectors.getPostOptions( state ),
 	postTypeOptions: selectors.getPostTypeOptions( state ),
 	postTypeOptionValue: selectors.getPostTypeOptionValue( state ),

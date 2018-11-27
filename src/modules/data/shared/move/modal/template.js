@@ -13,7 +13,7 @@ export default class MoveModal extends PureComponent {
 		hideModal: PropTypes.func.isRequired,
 		initialize: PropTypes.func.isRequired,
 		isFetchingPosts: PropTypes.bool.isRequired,
-		isModalShowing: PropTypes.bool.isRequired,
+		isModalSubmitting: PropTypes.bool.isRequired,
 		onPostSelect: PropTypes.func.isRequired,
 		onPostTypeChange: PropTypes.func.isRequired,
 		onSearchChange: PropTypes.func.isRequired,
@@ -97,6 +97,7 @@ export default class MoveModal extends PureComponent {
 				<footer>
 					<Button
 						isPrimary
+						isBusy={ this.props.isModalSubmitting }
 						disabled={ ! this.props.hasSelectedPost }
 						onClick={ this.props.onSubmit }
 					>

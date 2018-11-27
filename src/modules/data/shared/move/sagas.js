@@ -164,7 +164,7 @@ export function* getPostChoices() {
 export function* onModalChange( action ) {
 	if (
 		! action.payload.hasOwnProperty( 'target_post_id' ) &&
-		! action.payload.hasOwnProperty( 'current_ticket_id' )
+		! action.payload.hasOwnProperty( 'ticketId' )
 	) {
 		yield call( delay, 500 );
 		yield call( getPostChoices );

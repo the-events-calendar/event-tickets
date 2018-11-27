@@ -33,7 +33,9 @@ export const getPostOptions = createSelector( getPosts, posts => (
 export const getModalPostType = createSelector( _getModal, modal => modal.post_type );
 export const getModalSearch = createSelector( _getModal, modal => modal.search_terms );
 export const getModalTarget = createSelector( _getModal, modal => modal.target_post_id );
-export const getModalTicketId = createSelector( _getModal, modal => modal.current_ticket_id );
+export const getModalTicketId = createSelector( _getModal, modal => modal.ticketId );
+export const getModalBlockId = createSelector( _getModal, modal => modal.blockId );
+export const isModalSubmitting = createSelector( _getModal, modal => modal.isSubmitting );
 
 export const getPostTypeOptionValue = createSelector(
 	[ getPostTypeOptions, getModalPostType ],
