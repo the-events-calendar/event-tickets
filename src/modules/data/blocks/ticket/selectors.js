@@ -114,6 +114,11 @@ export const getTicketsCount = createSelector(
 	( allIds ) => allIds.length,
 );
 
+export const getTicketsIdsInBlocks = createSelector(
+	[ getTicketsArray ],
+	( tickets ) => tickets.map( ( ticket ) => ticket.ticketId ).filter( ( ticket ) => ticket !== 0 )
+);
+
 export const hasTickets = createSelector(
 	[ getTicketsCount ],
 	( count ) => count > 0,

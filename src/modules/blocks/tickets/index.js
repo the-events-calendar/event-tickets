@@ -13,6 +13,7 @@ import {
 	KEY_TICKET_HEADER,
 	KEY_TICKET_CAPACITY,
 	KEY_TICKET_DEFAULT_PROVIDER,
+	KEY_TICKETS_LIST,
 } from '@moderntribe/tickets/data/utils';
 import Tickets from './container';
 
@@ -47,6 +48,11 @@ export default {
 			source: 'meta',
 			meta: KEY_TICKET_DEFAULT_PROVIDER,
 		},
+		tickets: {
+			type: 'array',
+			source: 'meta',
+			meta: KEY_TICKETS_LIST,
+		}
 	},
 
 	edit: Tickets,

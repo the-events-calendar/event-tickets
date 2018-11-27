@@ -6,7 +6,8 @@ import { put, all, select, takeEvery, call } from 'redux-saga/effects';
 /**
  * Wordpress dependencies
  */
-import { select as wpSelect } from '@wordpress/data';
+import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
+import { createBlock } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -39,6 +40,14 @@ export function* setTicketsInitialState( action ) {
 
 	const header = parseInt( get( 'header', HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
+	const ticketsList = get( 'tickets', [] );
+	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
+	// Get only the IDs of the tickets that are not in the block list already
+	const ticketsDiff = ticketsList.filter( ( item ) => ticketsInBlock.indexOf( item ) === -1  );
+
+	if ( ticketsDiff.length >= 1 ) {
+		yield call( createMissingTicketBlocks, ticketsDiff );
+	}
 
 	// Meta value is '0' however fields use empty string as default
 	if ( sharedCapacity !== '0' ) {
@@ -56,6 +65,24 @@ export function* setTicketsInitialState( action ) {
 	const defaultProvider = tickets.default_provider || '';
 	const provider = get( 'provider', DEFAULT_STATE.provider );
 	yield put( actions.setTicketsProvider( provider || defaultProvider ) );
+}
+
+export function* createMissingTicketBlocks( tickets ) {
+	const { insertBlock } = wpDispatch( 'core/editor' );
+	const { getBlockCount, getBlocks } = wpSelect( 'core/editor' );
+	const ticketsBlock = getBlocks().filter( ( block ) => block.name === 'tribe/tickets' );
+
+	ticketsBlock.forEach( ( { clientId } ) => {
+		tickets.forEach( ( ticketId ) => {
+			const nextChildPosition = getBlockCount( clientId );
+			const attributes = {
+				hasBeenCreated: true,
+				ticketId,
+			};
+			const block = createBlock( 'tribe/tickets-item', attributes );
+			insertBlock( block, nextChildPosition, clientId );
+		} );
+	} );
 }
 
 export function* setTicketInitialState( action ) {
@@ -81,7 +108,7 @@ export function* setTicketInitialState( action ) {
 
 	try {
 		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
+		const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 		const endDateInput = yield call( momentUtil.toDate, endMoment );
@@ -98,6 +125,7 @@ export function* setTicketInitialState( action ) {
 			put( actions.setTicketTempEndTime( clientId, endTime ) ),
 		] );
 	} catch ( err ) {
+		console.error( err );
 		// ¯\_(ツ)_/¯
 	}
 
@@ -148,6 +176,15 @@ export function* setBodyDetails( blockId ) {
 	return body;
 }
 
+export function* removeTicketBlock( blockId ) {
+	const { removeBlock } = wpDispatch( 'core/editor' );
+
+	yield all( [
+		put( actions.removeTicketBlock( blockId ) ),
+		call( removeBlock, blockId ),
+	] );
+}
+
 export function* fetchTicket( action ) {
 	const { ticketId, blockId } = action.payload;
 
@@ -162,6 +199,13 @@ export function* fetchTicket( action ) {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
 		} );
+
+		const { status = '' } = ticket;
+
+		if ( response.status === 404 || status === 'trash' ) {
+			yield call( removeTicketBlock, blockId );
+			return;
+		}
 
 		if ( response.ok ) {
 			const {
@@ -223,11 +267,15 @@ export function* fetchTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
+		console.error( e ) ;
 		/**
 		 * @todo handle error scenario
 		 */
 	} finally {
-		yield put( actions.setTicketIsLoading( blockId, false ) );
+		const allIds = yield select( selectors.getAllTicketIds );
+		if ( allIds.indexOf( blockId ) !== -1 ) {
+			yield put( actions.setTicketIsLoading( blockId, false ) );
+		}
 	}
 }
 
@@ -317,6 +365,7 @@ export function* createNewTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
+		console.error( e );
 		/**
 		 * @todo: handle error scenario
 		 */
@@ -408,6 +457,7 @@ export function* updateTicket( action ) {
 			] );
 		}
 	} catch ( e ) {
+		console.error( e );
 		/**
 		 * @todo: handle error scenario
 		 */
@@ -452,6 +502,7 @@ export function* deleteTicket( action ) {
 				},
 			} );
 		} catch ( e ) {
+			console.error( e );
 			/**
 			 * @todo handle error on removal
 			 */
@@ -475,6 +526,7 @@ export function* fetchTicketsHeaderImage( action ) {
 			yield put( actions.setTicketsHeaderImage( headerImage ) );
 		}
 	} catch ( e ) {
+		console.error( e );
 		/**
 		 * @todo: handle error scenario
 		 */
