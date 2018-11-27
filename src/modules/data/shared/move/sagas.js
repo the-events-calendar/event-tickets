@@ -2,7 +2,7 @@
 /**
  * External Dependencies
  */
-import { put, all, select, takeLatest, call } from 'redux-saga/effects';
+import { put, all, select, takeLatest, call, fork, take } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
 
 /**
@@ -16,6 +16,7 @@ import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 import * as types from './types';
 import { globals } from '@moderntribe/common/utils';
 import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
+import * as actions from '@moderntribe/tickets/data/shared/move/actions';
 
 export function createBody( params ) {
 	return Object.entries( params )
@@ -177,13 +178,17 @@ export function* onModalSubmit() {
 		target_post_id: select( selectors.getModalTarget ),
 		ticket_type_id: select( selectors.getModalTicketId ),
 	} );
-	yield call( moveTicket, params );
+	yield fork( moveTicket, params );
+
+	const action = yield take( [ types.MOVE_TICKET_SUCCESS, types.MOVE_TICKET_ERROR ] );
+
+	if ( action.type === types.MOVE_TICKET_SUCCESS ) {
+		yield put( actions.hideModal() );
+	}
 }
 
 export function* onModalShow( action ) {
-	yield put( { type: types.SET_MODAL_DATA, payload: {
-		current_ticket_id: action.payload.ticket_id,
-	} } );
+	yield put( { type: types.SET_MODAL_DATA, payload: action.payload } );
 }
 
 export function* onModalHide() {

@@ -4,9 +4,9 @@
  */
 import * as types from './types';
 
-export const showModal = ( ticket_id ) => ( {
+export const showModal = ( ticketId, blockId, ) => ( {
 	type: types.SHOW_MODAL,
-	payload: { ticket_id },
+	payload: { ticketId, blockId },
 } );
 
 export const hideModal = () => ( {

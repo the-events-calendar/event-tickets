@@ -23,7 +23,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	removeTicket: () => {
 		dispatch( actions.deleteTicket( ownProps.blockId ) );
 	},
-	moveTicket: ( ticketId ) => dispatch( showModal( ticketId ) ),
+	moveTicket: ( ticketId ) => dispatch( showModal( ticketId, ownProps.blockId ) ),
 } );
 
 const mergeProps = ( stateProps, dispatchProps, ownProps, ) => ( {

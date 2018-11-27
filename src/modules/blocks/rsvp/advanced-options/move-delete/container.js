@@ -26,7 +26,7 @@ const mapStateToProps = ( state ) => ( {
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-	moveRSVP: ( id ) => dispatch( showModal( id ) ),
+	moveRSVP: ( rsvpId ) => dispatch( showModal( rsvpId, ownProps.clientId ) ),
 	dispatch,
 } );
 
