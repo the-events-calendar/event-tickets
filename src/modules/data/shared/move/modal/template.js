@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import { Modal, MenuGroup, MenuItemsChoice, Button } from '@wordpress/components';
+import { Modal, MenuGroup, MenuItemsChoice, Button, Notice, Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 import { Input, Select } from '@moderntribe/common/elements';
 import React, { PureComponent } from 'react';
@@ -12,6 +12,7 @@ export default class MoveModal extends PureComponent {
 		hasSelectedPost: PropTypes.bool.isRequired,
 		hideModal: PropTypes.func.isRequired,
 		initialize: PropTypes.func.isRequired,
+		isFetchingPosts: PropTypes.bool.isRequired,
 		isModalShowing: PropTypes.bool.isRequired,
 		onPostSelect: PropTypes.func.isRequired,
 		onPostTypeChange: PropTypes.func.isRequired,
@@ -31,6 +32,36 @@ export default class MoveModal extends PureComponent {
 
 	componentDidMount() {
 		this.props.initialize();
+	}
+
+	renderPostTypes = () => {
+		if ( this.props.isFetchingPosts ) {
+			return <Spinner />;
+		}
+
+		return (
+			this.props.postOptions.length
+				? (
+					<MenuGroup>
+						<MenuItemsChoice
+							choices={ this.props.postOptions }
+							value={ this.props.postValue }
+							onSelect={ this.props.onPostSelect }
+						/>
+					</MenuGroup>
+				)
+				: (
+					<Notice
+						isDismissible={ false }
+						status="warning"
+					>
+						{
+							__( 'No posts found', 'events-gutenberg' )
+						}
+					</Notice>
+				)
+
+		);
 	}
 
 	render() {
@@ -60,13 +91,7 @@ export default class MoveModal extends PureComponent {
 
 				<label>
 					{ __( 'Select the post you wish to move the ticket type to:', 'events-gutenberg' ) }
-					<MenuGroup>
-						<MenuItemsChoice
-							choices={ this.props.postOptions }
-							value={ this.props.postValue }
-							onSelect={ this.props.onPostSelect }
-						/>
-					</MenuGroup>
+					{ this.renderPostTypes() }
 				</label>
 
 				<footer>
