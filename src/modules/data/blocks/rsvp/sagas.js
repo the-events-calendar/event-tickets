@@ -106,7 +106,7 @@ export function* handleRSVPMove() {
 	if ( rsvpId === modalTicketId ) {
 		const blockId = yield select( moveSelectors.getModalBlockId );
 		yield put( actions.deleteRSVP() );
-		yield call( [ wpDispatch( 'core/editor', 'removeBlocks' ) ], [ blockId ] );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
 	}
 }
 
