@@ -28,7 +28,7 @@ export function* _fetch( params ) {
 	try {
 		const body = yield call( createBody, {
 			...params,
-			check: globals.restNonce().wp_rest,
+			check: globals.restNonce().move_tickets,
 		} );
 
 		const response = yield call( fetch, window.ajaxurl, {
