@@ -19,6 +19,7 @@ const getIsDisabled = ( state ) => (
 const mapStateToProps = ( state ) => ( {
 	isDisabled: getIsDisabled( state ),
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
+	hasBeenCreated: selectors.getRSVPCreated( state ),
 } );
 
 export default compose(

@@ -24,6 +24,7 @@ class AdvancedOptions extends Component {
 	static propTypes = {
 		blockId: PropTypes.string.isRequired,
 		isDisabled: PropTypes.bool,
+		hasBeenCreated: PropTypes.bool,
 	};
 
 	constructor( props ) {
@@ -47,7 +48,9 @@ class AdvancedOptions extends Component {
 		<Fragment>
 			<Duration blockId={ this.props.blockId } />
 			<SKU blockId={ this.props.blockId } />
-			<MoveDelete blockId={ this.props.blockId } />
+			{ this.props.hasBeenCreated && (
+				<MoveDelete blockId={ this.props.blockId } />
+			) }
 		</Fragment>
 	);
 
@@ -68,8 +71,8 @@ class AdvancedOptions extends Component {
 				className="tribe-editor__ticket__advanced-options"
 				rows={ this.getRows() }
 			/>
-		)
+		);
 	}
-};
+}
 
 export default AdvancedOptions;

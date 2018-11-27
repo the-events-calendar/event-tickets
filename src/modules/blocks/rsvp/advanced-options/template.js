@@ -24,6 +24,7 @@ class RSVPAdvancedOptions extends PureComponent {
 	static propTypes = {
 		isDisabled: PropTypes.bool.isRequired,
 		hasTicketsPlus: PropTypes.bool,
+		hasBeenCreated: PropTypes.bool,
 		clientId: PropTypes.string,
 	};
 
@@ -36,7 +37,9 @@ class RSVPAdvancedOptions extends PureComponent {
 		<Fragment>
 			<RSVPDuration />
 			{ this.props.hasTicketsPlus && <RSVPAttendeeRegistration /> }
-			<MoveDelete clientId={ this.props.clientId } />
+			{ this.props.hasBeenCreated && (
+				<MoveDelete clientId={ this.props.clientId } />
+			) }
 		</Fragment>
 	);
 
