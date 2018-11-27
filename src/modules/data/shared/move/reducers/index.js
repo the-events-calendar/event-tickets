@@ -6,10 +6,12 @@ import { combineReducers } from 'redux';
 /**
  * Internal dependencies
  */
-import blocks from './blocks';
-import move from './shared/move/reducers';
+import posts from './posts';
+import postTypes from './postTypes';
+import ui from './ui';
 
 export default combineReducers( {
-	blocks,
-	move,
+	posts,
+	postTypes,
+	ui,
 } );
