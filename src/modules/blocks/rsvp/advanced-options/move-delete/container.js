@@ -4,6 +4,7 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { dispatch as wpDispatch } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -38,7 +39,9 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 		...stateProps,
 		...restDispatchProps,
 		removeRSVP: () => {
-			if ( window.confirm( 'Are you sure you want to delete this RSVP? It cannot be undone.' ) ) { // eslint-disable-line no-alert
+			if ( window.confirm( // eslint-disable-line no-alert
+				__( 'Are you sure you want to delete this RSVP? It cannot be undone.', 'event-tickets' )
+			) ) {
 				dispatch( actions.deleteRSVP() );
 				if ( stateProps.created && stateProps.rsvpId ) {
 					dispatch( thunks.deleteRSVP( stateProps.rsvpId ) );
