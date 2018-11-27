@@ -54,11 +54,12 @@ class RSVP extends PureComponent {
 			! isSelected && ( ( created && isInactive ) || ! created )
 				? <RSVPInactiveBlock />
 				: (
-					<div className={ classNames(
-						'tribe-editor__rsvp',
-						{ 'tribe-editor__rsvp--selected': isSelected },
-						{ 'tribe-editor__rsvp--loading': isLoading },
-					) }
+					<div className={
+						classNames(
+							'tribe-editor__rsvp',
+							{ 'tribe-editor__rsvp--selected': isSelected },
+							{ 'tribe-editor__rsvp--loading': isLoading },
+						) }
 					>
 						<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
 						<RSVPDashboard isSelected={ isSelected } />
