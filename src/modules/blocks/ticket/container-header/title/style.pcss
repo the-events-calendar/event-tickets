@@ -18,18 +18,22 @@
 	}
 }
 
-.tribe-editor__ticket__container-header-title-label {
-	flex: none;
-	max-width: calc(100% - 28px);
-	color: #000000;
-	margin: 0;
-	padding-top: 3px;
-	font-weight: bold;
-	font-size: 21px;
-	line-height: 25px;
-	letter-spacing: 0.16px;
+/* extra editor-styles-wrapper class to override gutenberg styles */
+.edit-post-visual-editor .editor-block-list__block {
 
-	.tribe-editor__ticket--disabled & {
+	.tribe-editor__ticket__container-header-title-label {
+		flex: none;
+		max-width: calc(100% - 28px);
+		color: #000000;
+		margin: 0;
+		padding-top: 3px;
+		font-weight: bold;
+		font-size: 21px;
+		line-height: 25px;
+		letter-spacing: 0.16px;
+	}
+
+	.tribe-editor__ticket--disabled .tribe-editor__ticket__container-header-title-label {
 		color: #AEB4BB;
 	}
 }
