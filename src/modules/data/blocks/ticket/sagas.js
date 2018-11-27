@@ -7,6 +7,7 @@ import { put, all, select, takeEvery, call } from 'redux-saga/effects';
  * Wordpress dependencies
  */
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -422,7 +423,7 @@ export function* deleteTicket( action ) {
 	const { blockId } = action.payload;
 	const props = { blockId };
 
-	const shouldDelete = yield call( [ window, 'confirm' ], 'Are you sure you want to delete this ticket? It cannot be undone.' );
+	const shouldDelete = yield call( [ window, 'confirm' ], __( 'Are you sure you want to delete this ticket? It cannot be undone.' ) );
 
 	if ( shouldDelete ) {
 		const ticketId = yield select( selectors.getTicketId, props );
