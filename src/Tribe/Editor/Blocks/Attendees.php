@@ -72,7 +72,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		// enqueue assets
 		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-attendees-style' );
 
-		return $template->template( array( 'editor', 'blocks', $this->slug() ), $args, false );
+		return $template->template( array( 'blocks', $this->slug() ), $args, false );
 	}
 
 	/**
