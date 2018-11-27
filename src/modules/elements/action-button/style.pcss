@@ -1,56 +1,62 @@
-.tribe-editor__action-button {
-	display: flex;
-	align-items: center;
-	font-family: Helvetica, sans-serif, arial;
-	font-size: 15px;
-	line-height: 18px;
-	letter-spacing: 0.38px;
-	color: #545D66;
-	text-decoration: none;
-	transition: none;
+/* extra editor-styles-wrapper class to override gutenberg styles */
 
-	& > svg {
-		width: 20px;
-		fill: #545D66;
+.editor-styles-wrapper {
 
-		path {
-			fill: #545D66;
-		}
-	}
-
-	&:hover,
-	&:focus {
-		color: #009fd4;
+	.tribe-editor__action-button {
+		display: flex;
+		align-items: center;
+		font-family: Helvetica, sans-serif, arial;
+		font-size: 15px;
+		line-height: 18px;
+		letter-spacing: 0.38px;
+		color: #545D66;
+		text-decoration: none;
+		transition: none;
 
 		& > svg {
-			fill: #009fd4;
+			width: 20px;
+			fill: #545D66;
 
 			path {
-				fill: #009fd4;
+				fill: #545D66;
 			}
 		}
-	}
 
-	&[disabled] {
-
-		&,
 		&:hover,
 		&:focus {
-			color: #8d949b;
+			color: #009fd4;
 
 			& > svg {
-				fill: #8d949b;
+				fill: #009fd4;
 
 				path {
-					fill: #8d949b;
+					fill: #009fd4;
 				}
 			}
 		}
-	}
 
-	.tribe-editor__action-dashboard & {
-		&, &:hover, &:focus {
-			box-shadow: none;
+		&[disabled] {
+
+			&,
+			&:hover,
+			&:focus {
+				color: #8d949b;
+
+				& > svg {
+					fill: #8d949b;
+
+					path {
+						fill: #8d949b;
+					}
+				}
+			}
+		}
+
+		.tribe-editor__action-dashboard & {
+
+			&, &:hover, &:focus {
+				box-shadow: none;
+			}
 		}
 	}
 }
