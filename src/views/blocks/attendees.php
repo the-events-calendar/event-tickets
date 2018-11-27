@@ -14,8 +14,12 @@
  */
 
 $title     = $this->attr( 'title' );
-$attendees = $this->get( 'attendees', array() );
+$attendees = $this->get( 'attendees', null );
 $classes   = array( 'tribe-block', 'tribe-block__attendees' );
+
+if ( ! is_array( $attendees ) ) {
+	return;
+}
 ?>
 <div
 	id="tribe-block__attendees"
