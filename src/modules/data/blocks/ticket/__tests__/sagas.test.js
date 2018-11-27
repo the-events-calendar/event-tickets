@@ -1050,7 +1050,7 @@ describe( 'Ticket Block sagas', () => {
 
 			const gen = cloneableGenerator( sagas.deleteTicket )( action );
 
-			expect( clone1.next().value ).toEqual(
+			expect( gen.next().value ).toEqual(
 				call( [window, 'confirm'], 'Are you sure you want to delete this ticket? It cannot be undone.' )
 			);
 
