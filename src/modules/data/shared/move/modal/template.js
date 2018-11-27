@@ -71,34 +71,37 @@ export default class MoveModal extends PureComponent {
 				onRequestClose={ this.props.hideModal }
 				className="tribe-editor__tickets__move-modal"
 			>
-				<label>
+				<label htmlFor="post_type">
 					{ __( 'You can optionally focus on a specific post type:', 'events-gutenberg' ) }
-					<Select
-						options={ this.props.postTypeOptions }
-						onChange={ this.props.onPostTypeChange }
-						value={ this.props.postTypeOptionValue }
-					/>
 				</label>
+				<Select
+					id="post_type"
+					options={ this.props.postTypeOptions }
+					onChange={ this.props.onPostTypeChange }
+					value={ this.props.postTypeOptionValue }
+				/>
 
-				<label>
+				<label htmlFor="search">
 					{ __( 'You can also enter keywords to help find the target event by title or description', 'events-gutenberg' ) }
-					<Input
-						type="text"
-						onChange={ this.props.onSearchChange }
-						value={ this.props.search }
-					/>
 				</label>
+				<Input
+					id="search"
+					type="text"
+					onChange={ this.props.onSearchChange }
+					value={ this.props.search }
+				/>
 
 				<label>
 					{ __( 'Select the post you wish to move the ticket type to:', 'events-gutenberg' ) }
-					{ this.renderPostTypes() }
 				</label>
+				{ this.renderPostTypes() }
 
 				<footer>
 					<Button
+						isLarge
 						isPrimary
 						isBusy={ this.props.isModalSubmitting }
-						disabled={ ! this.props.hasSelectedPost }
+						disabled={ ! this.props.hasSelectedPost || this.props.isFetchingPosts }
 						onClick={ this.props.onSubmit }
 					>
 						{ __( 'Finish!', 'events-gutenberg' ) }
