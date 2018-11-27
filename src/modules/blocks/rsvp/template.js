@@ -27,6 +27,7 @@ class RSVP extends PureComponent {
 		isLoading: PropTypes.bool.isRequired,
 		isSelected: PropTypes.bool.isRequired,
 		rsvpId: PropTypes.number.isRequired,
+		clientId: PropTypes.string.isRequired,
 	};
 
 	componentDidMount() {
@@ -42,7 +43,8 @@ class RSVP extends PureComponent {
 			created,
 			isInactive,
 			isLoading,
-			isSelected
+			isSelected,
+			clientId,
 		} = this.props;
 
 		return (
@@ -53,8 +55,9 @@ class RSVP extends PureComponent {
 						'tribe-editor__rsvp',
 						{ 'tribe-editor__rsvp--selected': isSelected },
 						{ 'tribe-editor__rsvp--loading': isLoading },
-					) }>
-						<RSVPContainer isSelected={ isSelected } />
+					) }
+					>
+						<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
 						<RSVPDashboard isSelected={ isSelected } />
 						{ isLoading && <Spinner /> }
 					</div>

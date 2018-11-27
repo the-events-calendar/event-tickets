@@ -69,6 +69,7 @@ class RSVPContainerContent extends PureComponent {
 	static propTypes = {
 		capacity: PropTypes.string,
 		notGoingResponses: PropTypes.bool,
+		clientId: PropTypes.string,
 	}
 
 	constructor( props ) {
@@ -84,6 +85,7 @@ class RSVPContainerContent extends PureComponent {
 			onTempNotGoingResponsesChange,
 			tempCapacity,
 			tempNotGoingResponses,
+			clientId,
 		} = this.props;
 		const optionsProps = {
 			capacityId: this.capacityId,
@@ -93,13 +95,13 @@ class RSVPContainerContent extends PureComponent {
 			onTempNotGoingResponsesChange,
 			tempCapacity,
 			tempNotGoingResponses,
-		}
+		};
 
 		return (
 			<Fragment>
 				<RSVPContainerContentLabels />
 				<RSVPContainerContentOptions { ...optionsProps } />
-				<RSVPAdvancedOptions />
+				<RSVPAdvancedOptions clientId={ clientId } />
 			</Fragment>
 		);
 	}
