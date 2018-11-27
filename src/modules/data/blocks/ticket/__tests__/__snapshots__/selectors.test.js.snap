@@ -185,6 +185,10 @@ exports[`Ticket block selectors Ticket details selectors isIndependentTicket 1`]
 
 exports[`Ticket block selectors Ticket details selectors isSharedTicket 1`] = `true`;
 
+exports[`Ticket block selectors Ticket details selectors isTicketFuture 1`] = `false`;
+
+exports[`Ticket block selectors Ticket details selectors isTicketPast 1`] = `false`;
+
 exports[`Ticket block selectors Ticket details selectors isUnlimitedTicket 1`] = `false`;
 
 exports[`Ticket block selectors Ticket selectors getTicket 1`] = `

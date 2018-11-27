@@ -10,6 +10,7 @@ import { find, trim } from 'lodash';
 import * as constants from './constants';
 import { CAPACITY_TYPE_OPTIONS } from './options';
 import { globals } from '@moderntribe/common/utils';
+import { moment as momentUtil } from '@moderntribe/common/utils';
 
 const {
 	UNLIMITED,
@@ -458,6 +459,30 @@ export const isTicketValid = createSelector(
 		}
 		return titleValid && capacityValid;
 	},
+);
+
+export const isTicketPast = createSelector(
+	[ getTicketEndDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
+	( endDate, isLoading, isCreated ) => {
+
+		if ( isLoading || ! isCreated ) {
+			return false;
+		}
+
+		return moment.isMoment( endDate ) ? moment().isAfter( endDate ) : false;
+	}
+);
+
+export const isTicketFuture = createSelector(
+	[ getTicketStartDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
+	( startDate, isLoading, isCreated ) => {
+
+		if ( isLoading || ! isCreated ) {
+			return false;
+		}
+
+		return moment.isMoment( startDate ) ? startDate.isAfter( moment() ) : false;
+	}
 );
 
 

@@ -288,7 +288,16 @@ describe( 'Ticket block selectors', () => {
 		test( 'isIndependentTicket', () => {
 			expect( selectors.isIndependentTicket( state, ownProps ) ).toMatchSnapshot();
 		} );
+
+		test( 'isTicketPast', () => {
+			expect( selectors.isTicketPast( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'isTicketFuture', () => {
+			expect( selectors.isTicketFuture( state, ownProps ) ).toMatchSnapshot();
+		} );
 	} );
+
 
 	describe( 'Ticket temp details selectors', () => {
 		test( 'getTicketTempDetails', () => {

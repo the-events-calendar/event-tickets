@@ -6,14 +6,6 @@
  */
 class Tribe__Tickets__Editor__Assets {
 	/**
-	 * @since TBD
-	 *
-	 * @return void
-	 */
-	public function hook() {
-	}
-
-	/**
 	 * Registers and Enqueues the assets
 	 *
 	 * @since TBD

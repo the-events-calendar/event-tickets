@@ -37,10 +37,9 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.editor.blocks.attendees', 'Tribe__Tickets__Editor__Blocks__Attendees' );
 
 		$this->container->singleton( 'tickets.editor.meta', 'Tribe__Tickets__Editor__Meta' );
-
 		$this->container->singleton( 'tickets.editor.rest.compatibility', 'Tribe__Tickets__Editor__REST__Compatibility', array( 'hook' ) );
-
 		$this->container->singleton( 'tickets.editor.attendee_registration', 'Tribe__Tickets__Editor__Attendee_Registration' );
+		$this->container->singleton( 'tickets.editor.configuration', 'Tribe__Tickets__Editor__Configuration', array( 'hook' ) );
 
 		$this->hook();
 		/**
@@ -49,6 +48,9 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		 * @todo remove once RSVP and tickets blocks are completed
 		 */
 		$this->load_compatibility_tickets();
+		// Initialize the correct Singleton
+		tribe( 'tickets.editor.assets' );
+		tribe( 'tickets.editor.configuration' );
 	}
 
 	/**
@@ -60,9 +62,6 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 *
 	 */
 	protected function hook() {
-		// Initialize the correct Singleton
-		tribe( 'tickets.editor.assets' );
-
 		// Setup the Meta registration
 		add_action( 'init', tribe_callback( 'tickets.editor.meta', 'register' ), 15 );
 		add_filter(
