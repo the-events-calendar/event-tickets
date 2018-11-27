@@ -171,6 +171,25 @@ export function* onModalChange( action ) {
 	}
 }
 
+export function* onModalSubmit() {
+	const params = yield all( {
+		src_post_id: call( getCurrentPostId ),
+		target_post_id: select( selectors.getModalTarget ),
+		ticket_type_id: select( selectors.getModalTicketId ),
+	} );
+	yield call( moveTicket, params );
+}
+
+export function* onModalShow( action ) {
+	yield put( { type: types.SET_MODAL_DATA, payload: {
+		current_ticket_id: action.payload.ticket_id,
+	} } );
+}
+
+export function* onModalHide() {
+	yield put( { type: types.RESET_MODAL_DATA } );
+}
+
 export function* initalize() {
 	yield all( [
 		call( fetchPostTypes ),
@@ -181,4 +200,7 @@ export function* initalize() {
 export default function* watchers() {
 	yield takeLatest( [ types.INITIALIZE_MODAL ], initalize );
 	yield takeLatest( [ types.SET_MODAL_DATA ], onModalChange );
+	yield takeLatest( [ types.SUBMIT_MODAL ], onModalSubmit );
+	yield takeLatest( [ types.SHOW_MODAL ], onModalShow );
+	yield takeLatest( [ types.HIDE_MODAL ], onModalHide );
 }
