@@ -8,9 +8,10 @@ export const DEFAULT_STATE = {
 	post_type: 'all',
 	search_terms: '',
 	target_post_id: null,
+	current_ticket_id: null,
 };
 
-export default function posts( state = DEFAULT_STATE, action ) {
+export default function modal( state = DEFAULT_STATE, action ) {
 	switch ( action.type ) {
 		case types.SET_MODAL_DATA:
 			return {

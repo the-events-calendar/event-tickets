@@ -17,8 +17,12 @@ import RSVP from './template';
 import {
 	actions,
 	selectors,
-	thunks
+	thunks,
 } from '@moderntribe/tickets/data/blocks/rsvp';
+import {
+	isModalShowing,
+	getModalTicketId,
+} from '@moderntribe/tickets/data/shared/move/selectors';
 import { withStore, withSaveData } from '@moderntribe/common/hoc';
 import { toMomentFromDateTime } from '@moderntribe/common/utils/moment';
 
@@ -61,6 +65,8 @@ const mapStateToProps = ( state ) => ( {
 	rsvpId: selectors.getRSVPId( state ),
 	isInactive: getIsInactive( state ),
 	isLoading: selectors.getRSVPIsLoading( state ),
+	isModalShowing: isModalShowing( state ),
+	modalTicketId: getModalTicketId( state ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
@@ -82,6 +88,7 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 				dispatch( thunks.deleteRSVP( stateProps.rsvpId ) );
 			}
 		},
+		isModalShowing: stateProps.isModalShowing && stateProps.modalTicketId === stateProps.rsvpId,
 	};
 };
 

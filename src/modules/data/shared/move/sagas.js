@@ -162,7 +162,10 @@ export function* getPostChoices() {
 }
 
 export function* onModalChange( action ) {
-	if ( ! action.payload.hasOwnProperty( 'target_post_id' ) ) {
+	if (
+		! action.payload.hasOwnProperty( 'target_post_id' ) &&
+		! action.payload.hasOwnProperty( 'current_ticket_id' )
+	) {
 		yield call( delay, 700 );
 		yield call( getPostChoices );
 	}

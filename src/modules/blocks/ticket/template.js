@@ -16,14 +16,15 @@ import { Spinner } from '@wordpress/components';
 import './style.pcss';
 import TicketContainer from './container/container';
 import TicketDashboard from './dashboard/container';
+import MoveModal from '@moderntribe/tickets/data/shared/move/modal';
 
 class Ticket extends PureComponent {
-
 	static propTypes = {
 		blockId: PropTypes.string.isRequired,
 		hasTicketsPlus: PropTypes.bool,
 		isDisabled: PropTypes.bool,
 		isLoading: PropTypes.bool,
+		isModalShowing: PropTypes.bool,
 		isSelected: PropTypes.bool,
 		onBlockUpdate: PropTypes.func,
 		removeTicketBlock: PropTypes.func,
@@ -46,20 +47,25 @@ class Ticket extends PureComponent {
 			isDisabled,
 			isLoading,
 			isSelected,
+			isModalShowing,
 		} = this.props;
 
-		return (
-			<article className={ classNames(
-				'tribe-editor__ticket',
-				{ 'tribe-editor__ticket--disabled': isDisabled },
-				{ 'tribe-editor__ticket--selected': isSelected },
-				{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
-			) }>
-				<TicketContainer blockId={ blockId } isSelected={ isSelected } />
-				<TicketDashboard blockId={ blockId } isSelected={ isSelected } />
-				{ isLoading && <Spinner /> }
-			</article>
-		);
+		return [
+			(
+				<article className={ classNames(
+					'tribe-editor__ticket',
+					{ 'tribe-editor__ticket--disabled': isDisabled },
+					{ 'tribe-editor__ticket--selected': isSelected },
+					{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
+				) }
+				>
+					<TicketContainer blockId={ blockId } isSelected={ isSelected } />
+					<TicketDashboard blockId={ blockId } isSelected={ isSelected } />
+					{ isLoading && <Spinner /> }
+				</article>
+			),
+			isModalShowing && <MoveModal />,
+		];
 	}
 }
 

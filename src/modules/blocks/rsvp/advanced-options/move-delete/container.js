@@ -16,6 +16,9 @@ import {
 	selectors,
 	thunks,
 } from '@moderntribe/tickets/data/blocks/rsvp';
+import {
+	showModal,
+} from '@moderntribe/tickets/data/shared/move/actions';
 
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
@@ -23,7 +26,7 @@ const mapStateToProps = ( state ) => ( {
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-	moveRSVP: () => console.warn( 'Implement me' ),
+	moveRSVP: ( id ) => dispatch( showModal( id ) ),
 	dispatch,
 } );
 
@@ -43,6 +46,7 @@ const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
 				wpDispatch( 'core/editor' ).removeBlocks( [ ownProps.clientId ] );
 			}
 		},
+		moveRSVP: () => dispatchProps.moveRSVP( stateProps.rsvpId ),
 	};
 };
 

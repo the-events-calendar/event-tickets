@@ -11,6 +11,10 @@ import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withSaveData, withStore } from '@moderntribe/common/hoc';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import {
+	isModalShowing,
+	getModalTicketId,
+} from '@moderntribe/tickets/data/shared/move/selectors';
 
 const mapStateToProps = ( state, ownProps ) => {
 	const props = { blockId: ownProps.clientId };
@@ -22,6 +26,8 @@ const mapStateToProps = ( state, ownProps ) => {
 		isDisabled: selectors.isTicketDisabled( state, props ),
 		isLoading: selectors.getTicketIsLoading( state, props ),
 		ticketId: selectors.getTicketId( state, props ),
+		isModalShowing: isModalShowing( state ),
+		modalTicketId: getModalTicketId( state ),
 	};
 };
 
@@ -39,11 +45,19 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 	};
 };
 
+const mergeProps = ( stateProps, dispatchProps, ownProps ) => ( {
+	...stateProps,
+	...dispatchProps,
+	...ownProps,
+	isModalShowing: stateProps.isModalShowing && stateProps.modalTicketId === stateProps.ticketId,
+} );
+
 export default compose(
 	withStore( { isolated: true } ),
 	connect(
 		mapStateToProps,
 		mapDispatchToProps,
+		mergeProps,
 	),
 	withSaveData(),
 )( Template );

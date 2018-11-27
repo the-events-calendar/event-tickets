@@ -10,16 +10,30 @@ import { compose } from 'redux';
 import Template from './template';
 
 import { withStore } from '@moderntribe/common/hoc';
-import { actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import {
+	showModal,
+} from '@moderntribe/tickets/data/shared/move/actions';
+
+const mapStateToProps = ( state, ownProps ) => ( {
+	ticketId: selectors.getTicketId( state, ownProps ),
+} );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	removeTicket: () => {
 		dispatch( actions.deleteTicket( ownProps.blockId ) );
 	},
-	moveTicket: () => console.warn( 'Implement me' ),
+	moveTicket: ( ticketId ) => dispatch( showModal( ticketId ) ),
+} );
+
+const mergeProps = ( stateProps, dispatchProps, ownProps, ) => ( {
+	...stateProps,
+	...dispatchProps,
+	...ownProps,
+	moveTicket: () => dispatchProps.moveTicket( stateProps.ticketId ),
 } );
 
 export default compose(
 	withStore(),
-	connect( null, mapDispatchToProps ),
+	connect( mapStateToProps, mapDispatchToProps, mergeProps ),
 )( Template );
