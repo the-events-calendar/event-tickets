@@ -82,7 +82,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		}
 
 		$must_login = ! is_user_logged_in() && $this->main->login_required();
-		$can_login  = true;
+		$can_login  = apply_filters( 'show_login_before_purchasing_link', true );
 
 		ob_start();
 		include $this->main->getTemplateHierarchy( 'tickets/tpp' );
