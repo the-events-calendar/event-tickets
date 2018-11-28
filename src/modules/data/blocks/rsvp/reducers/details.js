@@ -11,15 +11,18 @@ import { moment as momentUtil } from '@moderntribe/common/utils';
 
 const currentMoment = moment();
 const endMoment = currentMoment.clone().add( 100, 'years' );
+
 export const DEFAULT_STATE = {
 	title: '',
 	description: '',
 	capacity: '',
 	notGoingResponses: false,
-	startDate: momentUtil.toDate( currentMoment ),
-	startDateObj: new Date( momentUtil.toDate( currentMoment ) ),
+	startDate: momentUtil.toDatabaseDate( currentMoment ),
+	startDateInput: momentUtil.toDate( currentMoment ),
+	startDateMoment: currentMoment,
 	endDate: momentUtil.toDate( endMoment ),
-	endDateObj: new Date( momentUtil.toDate( endMoment ) ),
+	endDateInput: momentUtil.toDate( currentMoment ),
+	endDateMoment: endMoment,
 	startTime: momentUtil.toTime24Hr( currentMoment ),
 	endTime: momentUtil.toTime24Hr( endMoment ),
 };
@@ -51,20 +54,30 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				startDate: action.payload.startDate,
 			};
-		case types.SET_RSVP_START_DATE_OBJ:
+		case types.SET_RSVP_START_DATE_INPUT:
 			return {
 				...state,
-				startDateObj: action.payload.startDateObj,
+				startDateInput: action.payload.startDateInput,
+			};
+		case types.SET_RSVP_START_DATE_MOMENT:
+			return {
+				...state,
+				startDateMoment: action.payload.startDateMoment,
 			};
 		case types.SET_RSVP_END_DATE:
 			return {
 				...state,
 				endDate: action.payload.endDate,
 			};
-		case types.SET_RSVP_END_DATE_OBJ:
+		case types.SET_RSVP_END_DATE_INPUT:
 			return {
 				...state,
-				endDateObj: action.payload.endDateObj,
+				endDateInput: action.payload.endDateInput,
+			};
+		case types.SET_RSVP_END_DATE_MOMENT:
+			return {
+				...state,
+				endDateMoment: action.payload.endDateMoment,
 			};
 		case types.SET_RSVP_START_TIME:
 			return {
