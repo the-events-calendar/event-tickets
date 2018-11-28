@@ -23,6 +23,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		}
 
 		$this->container->singleton( 'tickets.editor.template', 'Tribe__Tickets__Editor__Template' );
+		$this->container->singleton( 'tickets.editor.template.overwrite', 'Tribe__Tickets__Editor__Template__Overwrite', array( 'hook' ) );
 
 		$this->container->singleton(
 			'tickets.editor.compatibility.tickets',
@@ -48,9 +49,11 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		 * @todo remove once RSVP and tickets blocks are completed
 		 */
 		$this->load_compatibility_tickets();
+
 		// Initialize the correct Singleton
 		tribe( 'tickets.editor.assets' );
 		tribe( 'tickets.editor.configuration' );
+		tribe( 'tickets.editor.template.overwrite' );
 	}
 
 	/**
@@ -68,6 +71,13 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 			'register_meta_args',
 			tribe_callback( 'tickets.editor.meta', 'register_meta_args' ),
 			10,
+			4
+		);
+
+		add_filter(
+			'get_post_metadata',
+			tribe_callback( 'tickets.editor.meta', 'register_tickets_list_in_rest' ),
+			15,
 			4
 		);
 

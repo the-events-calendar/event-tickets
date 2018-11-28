@@ -862,6 +862,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ), 11 );
 			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
+			/**
+			 * Trigger an action every time a new ticket instance has been created
+			 *
+			 * @since TBD
+			 *
+			 * @param Tribe__Tickets__Tickets $ticket_handler
+			 */
+			do_action( 'tribe_tickets_tickets_hook', $this );
 		}
 
 
@@ -1993,8 +2001,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			ob_start();
 			$this->front_end_tickets_form( $content );
-			$form = ob_get_clean();
-
+			$form    = ob_get_clean();
 			$content .= $form;
 
 			return $content;

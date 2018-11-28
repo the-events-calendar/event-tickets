@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.8
-Stable tag: 4.9-beta2
+Stable tag: 4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.9] TBD =
 
+* Fix - Adjust some permissions checks to ensure that RSVPs can be created by Subscriber-level users via the Community Tickets submission form [118598]
 
 = [4.8.4.1] 2018-11-21 =
 
