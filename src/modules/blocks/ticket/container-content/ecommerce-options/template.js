@@ -33,9 +33,9 @@ const EcommerceOptions = ( {
 		let label = '';
 
 		if ( provider === EDD ) {
-			label = __( 'Edit Ticket in Easy Digital Downloads', 'events-gutenberg' );
+			label = __( 'Edit Ticket in Easy Digital Downloads', 'event-tickets' );
 		} else if ( provider === WOO ) {
-			label = __( 'Edit Ticket in WooCommerce', 'events-gutenberg' );
+			label = __( 'Edit Ticket in WooCommerce', 'event-tickets' );
 		}
 
 		return label;
@@ -48,7 +48,7 @@ const EcommerceOptions = ( {
 		);
 		const href = linkType === REPORT ? reportLink : editTicketLink;
 		const label = linkType === REPORT
-			? __( 'View Sales Report', 'events-gutenberg' )
+			? __( 'View Sales Report', 'event-tickets' )
 			: getEditTicketLinkLabel( provider );
 
 		return (
@@ -75,7 +75,7 @@ const EcommerceOptions = ( {
 						'tribe-editor__ticket__content-row',
 						'tribe-editor__ticket__content-row--ecommerce-options',
 					) }
-					label={ __( 'Ecommerce', 'events-gutenberg' ) }
+					label={ __( 'Ecommerce', 'event-tickets' ) }
 				>
 					<div className="tribe-editor__ticket__ecommerce-options-links">
 						{ LINK_TYPES.map( ( linkType ) => (
