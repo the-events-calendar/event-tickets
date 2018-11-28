@@ -37,7 +37,7 @@ class AdvancedOptions extends Component {
 				icon="arrow-down"
 			/>
 			<span className="tribe-editor__ticket__advanced-options-header-text">
-				{ __( 'Advanced Options', 'events-gutenberg' ) }
+				{ __( 'Advanced Options', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	);

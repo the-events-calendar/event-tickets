@@ -44,7 +44,7 @@ class RSVPAdvancedOptions extends PureComponent {
 				icon="arrow-down"
 			/>
 			<span className="tribe-editor__rsvp__advanced-options-header-text">
-				{ __( 'Advanced Options', 'events-gutenberg' ) }
+				{ __( 'Advanced Options', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	);

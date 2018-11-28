@@ -20,10 +20,10 @@ import './style.pcss';
 const RSVPContainerContentLabels = () => (
 	<div className="tribe-editor__rsvp-container-content__labels">
 		<span className="tribe-editor__rsvp-container-content__capacity-label">
-			{ __( 'RSVP Capacity', 'events-gutenberg' ) }
+			{ __( 'RSVP Capacity', 'event-tickets' ) }
 		</span>
 		<span className="tribe-editor__rsvp-container-content__capacity-label-help">
-			{ __( 'Leave blank if unlimited', 'events-gutenberg' ) }
+			{ __( 'Leave blank if unlimited', 'event-tickets' ) }
 		</span>
 	</div>
 );
@@ -52,7 +52,7 @@ const RSVPContainerContentOptions = ( {
 			className="tribe-editor__rsvp-container-content__not-going-responses"
 			disabled={ isDisabled }
 			id={ notGoingId }
-			label={ __( 'Enable "Not Going responses"', 'events-gutenberg' ) }
+			label={ __( 'Enable "Not Going responses"', 'event-tickets' ) }
 			onChange={ onTempNotGoingResponsesChange }
 		/>
 	</div>

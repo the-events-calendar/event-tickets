@@ -28,7 +28,7 @@ const RSVPContainerIcon = ( { isDisabled } ) => (
 				: <RSVPActive />
 		}
 		<span className="tribe-editor__rsvp-container__icon-label">
-			{ __( 'RSVP', 'events-gutenberg' ) }
+			{ __( 'RSVP', 'event-tickets' ) }
 		</span>
 	</Fragment>
 );

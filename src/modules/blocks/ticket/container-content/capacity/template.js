@@ -101,7 +101,7 @@ class Capacity extends PureComponent {
 						'tribe-editor__ticket__capacity-input-row--shared-capacity',
 					) }
 					id={ this.ids.sharedCapacity }
-					label={ __( 'Set shared capacity:', 'events-gutenberg' ) }
+					label={ __( 'Set shared capacity:', 'event-tickets' ) }
 					value={ tempSharedCapacity }
 					onChange={ onTempSharedCapacityChange }
 					disabled={ isDisabled }
@@ -125,8 +125,8 @@ class Capacity extends PureComponent {
 			}
 
 			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
-				? __( '(optional) Limit sales of this ticket to:', 'events-gutenberg' )
-				: __( 'Number of tickets available', 'events-gutenberg' );
+				? __( '(optional) Limit sales of this ticket to:', 'event-tickets' )
+				: __( 'Number of tickets available', 'event-tickets' );
 
 			inputs.push(
 				<LabeledNumberInput
@@ -189,7 +189,7 @@ class Capacity extends PureComponent {
 					min={ 0 }
 				/>
 				<span className="tribe-editor__ticket__capacity-input-helper-text">
-					{ __( 'Leave blank for unlimited', 'events-gutenberg' ) }
+					{ __( 'Leave blank for unlimited', 'event-tickets' ) }
 				</span>
 			</Fragment>
 		);
@@ -208,10 +208,10 @@ class Capacity extends PureComponent {
 					className="tribe-editor__ticket__capacity-label-with-tooltip"
 					forId={ hasTicketsPlus ? this.ids.select : this.ids.capacity }
 					isLabel={ true }
-					label={ __( 'Ticket Capacity', 'events-gutenberg' ) }
+					label={ __( 'Ticket Capacity', 'event-tickets' ) }
 					tooltipText={ __(
 						'Ticket capacity will only be used by attendees buying this ticket type',
-						'events-gutenberg',
+						'event-tickets',
 					) }
 					tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
 				/>

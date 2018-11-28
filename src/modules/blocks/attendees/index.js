@@ -18,10 +18,10 @@ import { Attendees as AttendeesIcon } from '@moderntribe/tickets/icons';
  */
 export default {
 	id: 'attendees',
-	title: __( 'Attendee List', 'events-gutenberg' ),
+	title: __( 'Attendee List', 'event-tickets' ),
 	description: __(
 		'Show the gravatars of people coming to this event.',
-		'events-gutenberg'
+		'event-tickets'
 	),
 	icon: <AttendeesIcon/>,
 	category: 'tribe-tickets',
@@ -34,7 +34,7 @@ export default {
 	attributes: {
 		title: {
 			type: 'html',
-			default: __( 'Who\'s Attending?', 'events-gutenberg' ),
+			default: __( 'Who\'s Attending?', 'event-tickets' ),
 		},
 	},
 
