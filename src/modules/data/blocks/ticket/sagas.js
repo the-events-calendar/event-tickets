@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import { put, all, select, takeEvery, call } from 'redux-saga/effects';
+import moment from 'moment/moment';
 
 /**
  * Wordpress dependencies
@@ -110,8 +111,13 @@ export function* setTicketInitialState( action ) {
 	] );
 
 	try {
-		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
+		let eventStart;
+		if ( tribe.events && tribe.events.data ) {
+			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
+			eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
+		} else {
+			eventStart = momentUtil.toDateTime( momentUtil.roundTime( moment() ) )
+		}
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
 		const endDateInput = yield call( momentUtil.toDate, endMoment );

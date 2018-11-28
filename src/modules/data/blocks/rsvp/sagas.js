@@ -1,6 +1,7 @@
 /**
  * External Dependencies
  */
+import moment from 'moment/moment';
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 import { put, call, all, select, takeEvery } from 'redux-saga/effects';
 
@@ -83,7 +84,12 @@ export function* initializeRSVP() {
 
 	try {
 		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
+		let eventStart;
+		if ( window.tribe.events && window.tribe.events.data ) {
+			eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
+		} else {
+			eventStart = momentUtil.toDateTime( momentUtil.roundTime( moment() ) );
+		}
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDate, endMoment );
 		const endTime = yield call( momentUtil.toTime24Hr, endMoment );
@@ -96,6 +102,7 @@ export function* initializeRSVP() {
 		] );
 	} catch ( err ) {
 		// ¯\_(ツ)_/¯
+		console.log( errr );
 	}
 }
 
