@@ -37,7 +37,7 @@ RSVPContainerIcon.propTypes = {
 	isDisabled: PropTypes.bool.isRequired,
 };
 
-const RSVPContainer = ( { isDisabled, isSelected } ) => (
+const RSVPContainer = ( { isDisabled, isSelected, clientId } ) => (
 	<ContainerPanel
 		className={ classNames(
 			'tribe-editor__rsvp-container',
@@ -46,13 +46,14 @@ const RSVPContainer = ( { isDisabled, isSelected } ) => (
 		layout={ LAYOUT.rsvp }
 		icon={ <RSVPContainerIcon isDisabled={ isDisabled } /> }
 		header={ <RSVPContainerHeader isSelected={ isSelected } /> }
-		content={ <RSVPContainerContent /> }
+		content={ <RSVPContainerContent clientId={ clientId } /> }
 	/>
 );
 
 RSVPContainer.propTypes = {
 	isDisabled: PropTypes.bool.isRequired,
 	isSelected: PropTypes.bool.isRequired,
+	clientId: PropTypes.string.isRequired,
 };
 
 export default RSVPContainer;

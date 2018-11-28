@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -16,6 +16,7 @@ import { Spinner } from '@wordpress/components';
 import RSVPContainer from './container/container';
 import RSVPDashboard from './dashboard/container';
 import RSVPInactiveBlock from './inactive-block/container';
+import MoveModal from '@moderntribe/tickets/elements/move-modal';
 import './style.pcss';
 
 class RSVP extends PureComponent {
@@ -25,8 +26,10 @@ class RSVP extends PureComponent {
 		initializeRSVP: PropTypes.func.isRequired,
 		isInactive: PropTypes.bool.isRequired,
 		isLoading: PropTypes.bool.isRequired,
+		isModalShowing: PropTypes.bool.isRequired,
 		isSelected: PropTypes.bool.isRequired,
 		rsvpId: PropTypes.number.isRequired,
+		clientId: PropTypes.string.isRequired,
 	};
 
 	componentDidMount() {
@@ -42,24 +45,29 @@ class RSVP extends PureComponent {
 			created,
 			isInactive,
 			isLoading,
-			isSelected
+			isSelected,
+			clientId,
+			isModalShowing,
 		} = this.props;
 
-		return (
+		return [
 			! isSelected && ( ( created && isInactive ) || ! created )
 				? <RSVPInactiveBlock />
 				: (
-					<div className={ classNames(
-						'tribe-editor__rsvp',
-						{ 'tribe-editor__rsvp--selected': isSelected },
-						{ 'tribe-editor__rsvp--loading': isLoading },
-					) }>
-						<RSVPContainer isSelected={ isSelected } />
+					<div className={
+						classNames(
+							'tribe-editor__rsvp',
+							{ 'tribe-editor__rsvp--selected': isSelected },
+							{ 'tribe-editor__rsvp--loading': isLoading },
+						) }
+					>
+						<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
 						<RSVPDashboard isSelected={ isSelected } />
 						{ isLoading && <Spinner /> }
 					</div>
-				)
-		);
+				),
+			isModalShowing && <MoveModal />,
+		];
 	}
 }
 

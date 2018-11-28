@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import { select as wpSelect } from '@wordpress/data';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 import { put, call, all, select, takeEvery } from 'redux-saga/effects';
 
 /**
@@ -9,7 +9,10 @@ import { put, call, all, select, takeEvery } from 'redux-saga/effects';
  */
 import * as types from './types';
 import * as actions from './actions';
+import * as selectors from './selectors';
 import { moment as momentUtil } from '@moderntribe/common/utils';
+import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
+import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 export function* setRSVPDetails( action ) {
 	const {
@@ -96,8 +99,20 @@ export function* initializeRSVP() {
 	}
 }
 
+export function* handleRSVPMove() {
+	const rsvpId = yield select( selectors.getRSVPId );
+	const modalTicketId = yield select( moveSelectors.getModalTicketId );
+
+	if ( rsvpId === modalTicketId ) {
+		const blockId = yield select( moveSelectors.getModalBlockId );
+		yield put( actions.deleteRSVP() );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
+	}
+}
+
 export default function* watchers() {
 	yield takeEvery( types.SET_RSVP_DETAILS, setRSVPDetails );
 	yield takeEvery( types.SET_RSVP_TEMP_DETAILS, setRSVPTempDetails );
 	yield takeEvery( types.INITIALIZE_RSVP, initializeRSVP );
+	yield takeEvery( MOVE_TICKET_SUCCESS, handleRSVPMove );
 }

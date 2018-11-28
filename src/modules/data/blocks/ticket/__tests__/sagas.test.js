@@ -40,6 +40,9 @@ jest.mock( '@wordpress/data', () => ( {
 			};
 		}
 	},
+	dispatch: ()=> ({
+		removeBlocks: ()=>{}
+	} ),
 } ) );
 
 describe( 'Ticket Block sagas', () => {
@@ -1046,7 +1049,12 @@ describe( 'Ticket Block sagas', () => {
 			};
 
 			const gen = cloneableGenerator( sagas.deleteTicket )( action );
+
 			expect( gen.next().value ).toEqual(
+				call( [window, 'confirm'], 'Are you sure you want to delete this ticket? It cannot be undone.' )
+			);
+
+			expect( gen.next( true ).value ).toEqual(
 				select( selectors.getTicketId, props )
 			);
 			expect( gen.next( TICKET_ID ).value ).toEqual(
@@ -1056,11 +1064,15 @@ describe( 'Ticket Block sagas', () => {
 			const clone1 = gen.clone();
 			const hasBeenCreated1 = false;
 
+
 			expect( clone1.next( hasBeenCreated1 ).value ).toEqual(
 				put( actions.setTicketIsSelected( BLOCK_ID, false ) )
 			);
 			expect( clone1.next().value ).toEqual(
 				put( actions.removeTicketBlock( BLOCK_ID ) )
+			);
+			expect( clone1.next().value ).toEqual(
+				call( [wpDispatch('core/editor'), 'removeBlocks'], [BLOCK_ID] )
 			);
 			expect( clone1.next().done ).toEqual( true );
 

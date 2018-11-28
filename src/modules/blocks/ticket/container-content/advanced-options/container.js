@@ -14,6 +14,7 @@ import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
+	hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
 } );
 
 export default compose(

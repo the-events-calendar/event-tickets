@@ -6,7 +6,8 @@ import { put, all, select, takeEvery, call } from 'redux-saga/effects';
 /**
  * Wordpress dependencies
  */
-import { dispatch as wpDispatch, select as wpSelect } from '@wordpress/data';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { __ } from '@wordpress/i18n';
 import { createBlock } from '@wordpress/blocks';
 
 /**
@@ -25,6 +26,8 @@ import {
 } from './reducers/tickets/ticket';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { api, globals, moment as momentUtil } from '@moderntribe/common/utils';
+import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
+import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 const {
 	UNLIMITED,
@@ -470,42 +473,46 @@ export function* deleteTicket( action ) {
 	const { blockId } = action.payload;
 	const props = { blockId };
 
-	const ticketId = yield select( selectors.getTicketId, props );
-	const hasBeenCreated = yield select( selectors.getTicketHasBeenCreated, props );
+	const shouldDelete = yield call( [ window, 'confirm' ], __( 'Are you sure you want to delete this ticket? It cannot be undone.' ) );
 
-	yield put( actions.setTicketIsSelected( blockId, false ) );
-	yield put( actions.removeTicketBlock( blockId ) );
+	if ( shouldDelete ) {
+		const ticketId = yield select( selectors.getTicketId, props );
+		const hasBeenCreated = yield select( selectors.getTicketHasBeenCreated, props );
 
-	if ( hasBeenCreated ) {
-		const { remove_ticket_nonce = '' } = restNonce();
-		const postId = wpSelect( 'core/editor' ).getCurrentPostId();
+		yield put( actions.setTicketIsSelected( blockId, false ) );
+		yield put( actions.removeTicketBlock( blockId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
 
-		/**
-		 * Encode params to be passed into the DELETE request as PHP doesn’t transform the request body
-		 * of a DELETE request into a super global.
-		 */
-		const body = [
-			`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( postId ) }`,
-			`${ encodeURIComponent( 'remove_ticket_nonce' ) }=${ encodeURIComponent( remove_ticket_nonce ) }`,
-		];
+		if ( hasBeenCreated ) {
+			const { remove_ticket_nonce = '' } = restNonce();
+			const postId = wpSelect( 'core/editor' ).getCurrentPostId();
 
-		try {
-			yield call( wpREST, {
-				path: `tickets/${ ticketId }`,
-				namespace: 'tribe/tickets/v1',
-				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-				},
-				initParams: {
-					method: 'DELETE',
-					body: body.join( '&' ),
-				},
-			} );
-		} catch ( e ) {
-			console.error( e );
 			/**
-			 * @todo handle error on removal
+			 * Encode params to be passed into the DELETE request as PHP doesn’t transform the request body
+			 * of a DELETE request into a super global.
 			 */
+			const body = [
+				`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( postId ) }`,
+				`${ encodeURIComponent( 'remove_ticket_nonce' ) }=${ encodeURIComponent( remove_ticket_nonce ) }`,
+			];
+
+			try {
+				yield call( wpREST, {
+					path: `tickets/${ ticketId }`,
+					namespace: 'tribe/tickets/v1',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+					},
+					initParams: {
+						method: 'DELETE',
+						body: body.join( '&' ),
+					},
+				} );
+			} catch ( e ) {
+				/**
+				 * @todo handle error on removal
+				 */
+			}
 		}
 	}
 }
@@ -680,6 +687,17 @@ export function* setTicketTempDetails( action ) {
 	] );
 }
 
+export function* handleTicketMove() {
+	const ticketBlockIds = yield select( selectors.getAllTicketIds );
+	const modalBlockId = yield select( moveSelectors.getModalBlockId );
+
+	if ( ticketBlockIds.includes(modalBlockId) ) {
+		yield put( actions.setTicketIsSelected( modalBlockId, false ) );
+		yield put( actions.removeTicketBlock( modalBlockId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ modalBlockId ] );
+	}
+}
+
 export default function* watchers() {
 	yield takeEvery( types.SET_TICKETS_INITIAL_STATE, setTicketsInitialState );
 	yield takeEvery( types.SET_TICKET_INITIAL_STATE, setTicketInitialState );
@@ -692,4 +710,5 @@ export default function* watchers() {
 	yield takeEvery( types.DELETE_TICKETS_HEADER_IMAGE, deleteTicketsHeaderImage );
 	yield takeEvery( types.SET_TICKET_DETAILS, setTicketDetails );
 	yield takeEvery( types.SET_TICKET_TEMP_DETAILS, setTicketTempDetails );
+	yield takeEvery( MOVE_TICKET_SUCCESS, handleTicketMove );
 }

@@ -17,12 +17,15 @@ import { __ } from '@wordpress/i18n';
 import RSVPDuration from '../duration/template';
 import RSVPAttendeeRegistration from '../attendee-registration/container';
 import { Accordion } from '@moderntribe/common/elements';
+import MoveDelete from './move-delete/container';
 import './style.pcss';
 
 class RSVPAdvancedOptions extends PureComponent {
 	static propTypes = {
 		isDisabled: PropTypes.bool.isRequired,
 		hasTicketsPlus: PropTypes.bool,
+		hasBeenCreated: PropTypes.bool,
+		clientId: PropTypes.string,
 	};
 
 	constructor( props ) {
@@ -34,6 +37,9 @@ class RSVPAdvancedOptions extends PureComponent {
 		<Fragment>
 			<RSVPDuration />
 			{ this.props.hasTicketsPlus && <RSVPAttendeeRegistration /> }
+			{ this.props.hasBeenCreated && (
+				<MoveDelete clientId={ this.props.clientId } />
+			) }
 		</Fragment>
 	);
 
@@ -68,6 +74,6 @@ class RSVPAdvancedOptions extends PureComponent {
 			/>
 		);
 	}
-};
+}
 
 export default RSVPAdvancedOptions;

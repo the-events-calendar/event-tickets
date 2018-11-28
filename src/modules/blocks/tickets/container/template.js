@@ -39,7 +39,10 @@ const TicketContainer = ( {
 	return (
 		<div className="tribe-editor__ticket__container">
 			<div className="tribe-editor__tickets__body">
-				<InnerBlocks allowedBlocks={ [ 'tribe/tickets-item' ] } />
+				<InnerBlocks
+					allowedBlocks={ [ 'tribe/tickets-item' ] }
+					templateLock="insert"
+				/>
 			</div>
 			{ ! hasTickets && (
 				<InactiveBlock
