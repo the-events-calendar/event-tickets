@@ -19,7 +19,8 @@ import {
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { blockId } = ownProps;
 	const startDateMoment = date ? moment( date ) : undefined;
-	dispatch( actions.setTicketTempStartDate( blockId, momentUtil.toDatabaseDate( startDateMoment ) ) );
+	const startDate = date ? momentUtil.toDatabaseDate( startDateMoment ) : '';
+	dispatch( actions.setTicketTempStartDate( blockId, startDate ) );
 	dispatch( actions.setTicketTempStartDateInput( blockId, dayPickerInput.state.value ) );
 	dispatch( actions.setTicketTempStartDateMoment( blockId, startDateMoment ) );
 	dispatch( actions.setTicketHasChanges( blockId, true ) );
@@ -45,7 +46,8 @@ const onFromTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { blockId } = ownProps;
 	const endDateMoment = date ? moment( date ) : undefined;
-	dispatch( actions.setTicketTempEndDate( blockId, momentUtil.toDatabaseDate( endDateMoment ) ) );
+	const endDate = date ? momentUtil.toDatabaseDate( endDateMoment ) : '';
+	dispatch( actions.setTicketTempEndDate( blockId, endDate ) );
 	dispatch( actions.setTicketTempEndDateInput( blockId, dayPickerInput.state.value ) );
 	dispatch( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) );
 	dispatch( actions.setTicketHasChanges( blockId, true ) );
