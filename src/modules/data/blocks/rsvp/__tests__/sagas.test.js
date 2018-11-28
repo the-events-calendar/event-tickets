@@ -11,6 +11,8 @@ import * as types from '../types';
 import * as actions from '../actions';
 import watchers, * as sagas from '../sagas';
 import { moment as momentUtil } from '@moderntribe/common/utils';
+import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
+import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 jest.mock( '@wordpress/data', () => ( {
 	select: ( key ) => {
@@ -38,6 +40,9 @@ describe( 'RSVP block sagas', () => {
 			);
 			expect( gen.next().value ).toEqual(
 				takeEvery( types.INITIALIZE_RSVP, sagas.initializeRSVP ),
+			);
+			expect( gen.next().value ).toEqual(
+				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleRSVPMove );
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
