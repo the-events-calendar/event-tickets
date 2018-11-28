@@ -99,10 +99,17 @@ export const setRSVPStartDate = ( startDate ) => ( {
 	},
 } );
 
-export const setRSVPStartDateObj = ( startDateObj ) => ( {
-	type: types.SET_RSVP_START_DATE_OBJ,
+export const setRSVPStartDateInput = ( startDateInput ) => ( {
+	type: types.SET_RSVP_START_DATE_INPUT,
 	payload: {
-		startDateObj,
+		startDateInput,
+	},
+} );
+
+export const setRSVPStartDateMoment = ( startDateMoment ) => ( {
+	type: types.SET_RSVP_START_DATE_MOMENT,
+	payload: {
+		startDateMoment,
 	},
 } );
 
@@ -113,10 +120,17 @@ export const setRSVPEndDate = ( endDate ) => ( {
 	},
 } );
 
-export const setRSVPEndDateObj = ( endDateObj ) => ( {
-	type: types.SET_RSVP_END_DATE_OBJ,
+export const setRSVPEndDateInput = ( endDateInput ) => ( {
+	type: types.SET_RSVP_END_DATE_INPUT,
 	payload: {
-		endDateObj,
+		endDateInput,
+	},
+} );
+
+export const setRSVPEndDateMoment = ( endDateMoment ) => ( {
+	type: types.SET_RSVP_END_DATE_MOMENT,
+	payload: {
+		endDateMoment,
 	},
 } );
 
@@ -169,10 +183,17 @@ export const setRSVPTempStartDate = ( startDate ) => ( {
 	},
 } );
 
-export const setRSVPTempStartDateObj = ( startDateObj ) => ( {
-	type: types.SET_RSVP_TEMP_START_DATE_OBJ,
+export const setRSVPTempStartDateInput = ( startDateInput ) => ( {
+	type: types.SET_RSVP_TEMP_START_DATE_INPUT,
 	payload: {
-		startDateObj,
+		startDateInput,
+	},
+} );
+
+export const setRSVPTempStartDateMoment = ( startDateMoment ) => ( {
+	type: types.SET_RSVP_TEMP_START_DATE_MOMENT,
+	payload: {
+		startDateMoment,
 	},
 } );
 
@@ -183,10 +204,17 @@ export const setRSVPTempEndDate = ( endDate ) => ( {
 	},
 } );
 
-export const setRSVPTempEndDateObj = ( endDateObj ) => ( {
-	type: types.SET_RSVP_TEMP_END_DATE_OBJ,
+export const setRSVPTempEndDateInput = ( endDateInput ) => ( {
+	type: types.SET_RSVP_TEMP_END_DATE_INPUT,
 	payload: {
-		endDateObj,
+		endDateInput,
+	},
+} );
+
+export const setRSVPTempEndDateMoment = ( endDateMoment ) => ( {
+	type: types.SET_RSVP_TEMP_END_DATE_MOMENT,
+	payload: {
+		endDateMoment,
 	},
 } );
 
