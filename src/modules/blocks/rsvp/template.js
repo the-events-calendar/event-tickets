@@ -16,7 +16,7 @@ import { Spinner } from '@wordpress/components';
 import RSVPContainer from './container/container';
 import RSVPDashboard from './dashboard/container';
 import RSVPInactiveBlock from './inactive-block/container';
-import MoveModal from '@moderntribe/tickets/data/shared/move/modal';
+import MoveModal from '@moderntribe/tickets/elements/move-modal';
 import './style.pcss';
 
 class RSVP extends PureComponent {

@@ -7,6 +7,7 @@ import { Input, Select } from '@moderntribe/common/elements';
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import './style.pcss';
+
 export default class MoveModal extends PureComponent {
 	static propTypes = {
 		hasSelectedPost: PropTypes.bool.isRequired,
