@@ -18,6 +18,7 @@ import { Accordion } from '@moderntribe/common/elements';
 import './style.pcss';
 import Duration from './duration/container';
 import SKU from './sku/container';
+import EcommerceOptions from './ecommerce-options/container';
 import MoveDelete from './move-delete/container';
 
 class AdvancedOptions extends Component {
@@ -48,6 +49,7 @@ class AdvancedOptions extends Component {
 		<Fragment>
 			<Duration blockId={ this.props.blockId } />
 			<SKU blockId={ this.props.blockId } />
+			<EcommerceOptions blockId={ this.props.blockId } />
 			{ this.props.hasBeenCreated && (
 				<MoveDelete blockId={ this.props.blockId } />
 			) }
