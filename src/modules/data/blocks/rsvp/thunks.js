@@ -32,17 +32,17 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 		description,
 		capacity,
 		notGoingResponses,
-		startDateObj,
+		startDateMoment,
 		startTime,
-		endDateObj,
+		endDateMoment,
 		endTime,
 	} = payload;
 
-	const startMoment = moment( startDateObj ).seconds(
-		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM )
+	const startMoment = startDateMoment.clone().seconds(
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS )
 	);
-	const endMoment = moment( endDateObj ).seconds(
-		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM )
+	const endMoment = endDateMoment.clone().seconds(
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS )
 	);
 
 	let path = `${ utils.RSVP_POST_TYPE }`;
@@ -159,9 +159,11 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						capacity,
 						notGoingResponses,
 						startDate: momentUtil.toDate( startMoment ),
-						startDateObj: new Date( momentUtil.toDate( startMoment.clone().seconds( 0 ) ) ),
+						startDate: '',
+						startDateMoment: startMoment.clone().seconds( 0 ),
 						endDate: momentUtil.toDate( endMoment ),
-						endDateObj: new Date( momentUtil.toDate( endMoment.clone().seconds( 0 ) ) ),
+						endDate: '',
+						endDateMoment: endMoment.clone().seconds( 0 ),
 						startTime: momentUtil.toTime24Hr( startMoment ),
 						endTime: momentUtil.toTime24Hr( endMoment ),
 					} ) );
@@ -171,9 +173,11 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						tempCapacity: capacity,
 						tempNotGoingResponses: notGoingResponses,
 						tempStartDate: momentUtil.toDate( startMoment ),
-						tempStartDateObj: new Date( momentUtil.toDate( startMoment.clone().seconds( 0 ) ) ),
+						tempStartDateInput: '',
+						tempStartDateMoment: startMoment.clone().seconds( 0 ),
 						tempEndDate: momentUtil.toDate( endMoment ),
-						tempEndDateObj: new Date( momentUtil.toDate( endMoment.clone().seconds( 0 ) ) ),
+						tempEndDateInput: '',
+						tempEndDateMoment: endMoment.clone().seconds( 0 ),
 						tempStartTime: momentUtil.toTime24Hr( startMoment ),
 						tempEndTime: momentUtil.toTime24Hr( endMoment ),
 					} ) );
