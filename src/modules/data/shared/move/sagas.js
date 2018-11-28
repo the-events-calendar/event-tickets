@@ -195,7 +195,7 @@ export function* onModalHide() {
 	yield put( { type: types.RESET_MODAL_DATA } );
 }
 
-export function* initalize() {
+export function* initialize() {
 	yield all( [
 		call( fetchPostTypes ),
 		call( getPostChoices ),
@@ -203,7 +203,7 @@ export function* initalize() {
 }
 
 export default function* watchers() {
-	yield takeLatest( [ types.INITIALIZE_MODAL ], initalize );
+	yield takeLatest( [ types.INITIALIZE_MODAL ], initialize );
 	yield takeLatest( [ types.SET_MODAL_DATA ], onModalChange );
 	yield takeLatest( [ types.SUBMIT_MODAL ], onModalSubmit );
 	yield takeLatest( [ types.SHOW_MODAL ], onModalShow );
