@@ -3,7 +3,7 @@
  * This template renders the empty cart for the
  * attendee registration page.
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

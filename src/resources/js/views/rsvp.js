@@ -14,7 +14,7 @@
 	 * set them active and inactive so they can only use
 	 * one at a time.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param obj button The dom object of the clicked button
 	 * @return void
@@ -40,7 +40,7 @@
 	 * Handle the "Going" and "Not Going" actions.
 	 * Load the RSVP confirmation form via AJAX
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -80,7 +80,7 @@
 	/**
 	 * Handle the number input + and - actions
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -103,7 +103,7 @@
 	/**
 	 * Show the loader
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -114,7 +114,7 @@
 	/**
 	 * Hide the loader
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -125,7 +125,7 @@
 	/**
 	 * Handle the form submission
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */

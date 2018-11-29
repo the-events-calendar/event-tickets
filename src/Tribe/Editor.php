@@ -3,14 +3,14 @@
 /**
  * Class Tribe__Tickets__Editor
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor extends Tribe__Editor {
 
 	/**
 	 * Hooks actions from the editor into the correct places
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return bool
 	 */
@@ -36,7 +36,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Adds the ticket block into the editor
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param array $template Array of all the templates used by default
 	 * @param string $post_type The current post type
@@ -71,7 +71,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Filters and adds the ticket block into the default classic blocks
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  array $template
 	 *
@@ -87,7 +87,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Check if current admin page is post type `tribe_events`
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  mixed $post_type
 	 *
@@ -114,7 +114,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Making sure we have correct post content for tickets blocks after going into Gutenberg
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  string  $content Content that will be updated
 	 * @param  WP_Post $post    Which post we will migrate
@@ -164,7 +164,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Add the event tickets category into the block categories
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $categories
 	 * @param $post
@@ -189,7 +189,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Prints and returns the Price fields
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  int  $post_id    Post ID
 	 * @param  int  $ticket_id  Ticket ID
@@ -208,7 +208,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Prints and returns the Body for the Price Column
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  Tribe__Tickets__Ticket_Object $ticket        Ticket object
 	 * @param  mixed                         $provider_obj  The ticket provider object

@@ -30,7 +30,7 @@ const TicketContainerHeaderPriceInput = ( {
 		<AutosizeInput
 			className="tribe-editor__ticket__container-header-price-input"
 			value={ tempPrice }
-			placeholder={ __( '0', 'events-gutenberg' ) }
+			placeholder={ __( '0', 'event-tickets' ) }
 			onChange={ onTempPriceChange }
 			disabled={ isDisabled }
 			type="number"

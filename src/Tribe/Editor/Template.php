@@ -3,13 +3,13 @@
 /**
  * Allow including of Gutenberg Template
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__Template extends Tribe__Template {
 	/**
 	 * Building of the Class template configuration
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function __construct() {
 		$this->set_template_origin( Tribe__Tickets__Main::instance() );
@@ -26,7 +26,7 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 	/**
 	 * Return the attributes of the template
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param array $default_attributes
 	 * @return array
@@ -41,7 +41,7 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 	/**
 	 * Return a specific attribute
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  mixed $default
 	 * @return mixed

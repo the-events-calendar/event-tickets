@@ -2,7 +2,7 @@
 /**
  * This template renders the RSVP ticket form quantity input
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>
