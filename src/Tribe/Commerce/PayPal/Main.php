@@ -2201,7 +2201,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 0
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function maybe_delete_expired_products() {
 		$delete = tribe_get_request_var( 'clear_product_cache', null );
@@ -2224,7 +2224,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @filter wp_loaded 1
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param string $redirect
 	 */
@@ -2250,7 +2250,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns if it's TPP checkout based on the redirect query var
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return bool
 	 */
@@ -2265,7 +2265,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Get the tickets currently in the cart.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param array $tickets
 	 *
@@ -2289,7 +2289,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
  	/**
 	 * Get the current cart Transient key.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string
 	 */

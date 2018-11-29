@@ -22,11 +22,11 @@ import './style.pcss';
 
 const confirmLabel = ( created ) => (
 	created
-		? __( 'Update RSVP', 'events-gutenberg' )
-		: __( 'Create RSVP', 'events-gutenberg' )
+		? __( 'Update RSVP', 'event-tickets' )
+		: __( 'Create RSVP', 'event-tickets' )
 );
 
-const cancelLabel = __( 'Cancel', 'events-gutenberg' );
+const cancelLabel = __( 'Cancel', 'event-tickets' );
 
 const RSVPWarningTooltipLabel = () => (
 	<Dashicon
@@ -38,10 +38,10 @@ const RSVPWarningTooltipLabel = () => (
 const RSVPWarning = ( { isDisabled } ) => (
 	<LabelWithTooltip
 		className="tribe-editor__rsvp__warning"
-		label={ __( 'Warning', 'events-gutenberg' ) }
+		label={ __( 'Warning', 'event-tickets' ) }
 		tooltipDisabled={ isDisabled }
 		tooltipLabel={ <RSVPWarningTooltipLabel /> }
-		tooltipText={ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'events-gutenberg' ) }
+		tooltipText={ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
 	/>
 );
 

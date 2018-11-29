@@ -3,13 +3,13 @@
 /**
  * Initialize Gutenberg Event Meta fields
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Register the required Meta fields for good Gutenberg saving
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -133,7 +133,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	/**
 	 * Removes `_edd_button_behavior` key from the REST API where tickets blocks is used
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param array  $args
 	 * @param string $defaults
@@ -155,7 +155,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 	 * as can be modified by removing or adding a plugin outside of the blocks editor the ticket
 	 * can be added by React if is part of the diff of non created blocks
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param mixed $value
 	 * @param int $post_id

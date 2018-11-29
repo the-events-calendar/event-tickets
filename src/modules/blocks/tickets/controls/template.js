@@ -19,12 +19,12 @@ import './style.pcss';
 
 const message = __(
 	'It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. ',
-	'events-gutenberg',
+	'event-tickets',
 );
 
 const note = __(
 	'Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin',
-	'events-gutenberg',
+	'event-tickets',
 );
 
 /**
@@ -56,10 +56,10 @@ const Controls = ( {
 } ) => (
 	hasMultipleProviders && (
 		<InspectorControls key="inspector">
-			<PanelBody title={ __( 'Tickets Settings', 'events-gutenberg' ) }>
+			<PanelBody title={ __( 'Tickets Settings', 'event-tickets' ) }>
 				<PanelRow>
 					<fieldset className="tribe-editor__tickets-controls-provider">
-						<legend>{ __( 'Sell tickets using', 'events-gutenberg' ) }</legend>
+						<legend>{ __( 'Sell tickets using', 'event-tickets' ) }</legend>
 						<p>
 							{ message }
 							<em>{ note }</em>
