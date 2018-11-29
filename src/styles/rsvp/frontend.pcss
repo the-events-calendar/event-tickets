@@ -26,7 +26,7 @@
 
 .tribe-block__rsvp__icon {
 	background: #fff;
-	border-right: 2px dashed #dfdfdf;
+	border: 0;
 	color: #575757;
 	flex: 1 1 100px;
 	padding: 30px 15px;
@@ -37,8 +37,8 @@
 		width: 60px;
 	}
 
-	@media only screen and (max-width: 575px) {
-		border-right: 0;
+	@media only screen and (min-width: 575px) {
+		border-right: 2px dashed #dfdfdf;
 	}
 }
 
