@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import { put, all, select, takeEvery, call } from 'redux-saga/effects';
+import { includes } from 'lodash';
 
 /**
  * Wordpress dependencies
@@ -46,7 +47,7 @@ export function* setTicketsInitialState( action ) {
 	const ticketsList = get( 'tickets', [] );
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
 	// Get only the IDs of the tickets that are not in the block list already
-	const ticketsDiff = ticketsList.filter( ( item ) => ticketsInBlock.indexOf( item ) === -1  );
+	const ticketsDiff = ticketsList.filter( ( item ) => ! includes( ticketsInBlock, item ) );
 
 	if ( ticketsDiff.length >= 1 ) {
 		yield call( createMissingTicketBlocks, ticketsDiff );
@@ -274,12 +275,9 @@ export function* fetchTicket( action ) {
 		/**
 		 * @todo handle error scenario
 		 */
-	} finally {
-		const allIds = yield select( selectors.getAllTicketIds );
-		if ( allIds.indexOf( blockId ) !== -1 ) {
-			yield put( actions.setTicketIsLoading( blockId, false ) );
-		}
 	}
+
+	yield put( actions.setTicketIsLoading( blockId, false ) );
 }
 
 export function* createNewTicket( action ) {
