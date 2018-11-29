@@ -79,12 +79,12 @@ const mapStateToProps = ( state ) => {
 		|| selectors.getRSVPSettingsOpen( state );
 
 	return {
-		fromDate: selectors.getRSVPTempStartDate( state ),
+		fromDate: selectors.getRSVPTempStartDateInput( state ),
 		fromDateDisabled: isDisabled,
 		fromTime: selectors.getRSVPTempStartTimeNoSeconds( state ),
 		fromTimeDisabled: isDisabled,
 		isSameDay: getIsSameDay( state ),
-		toDate: selectors.getRSVPTempEndDate( state ),
+		toDate: selectors.getRSVPTempEndDateInput( state ),
 		toDateDisabled: isDisabled,
 		toTime: selectors.getRSVPTempEndTimeNoSeconds( state ),
 		toTimeDisabled: isDisabled,

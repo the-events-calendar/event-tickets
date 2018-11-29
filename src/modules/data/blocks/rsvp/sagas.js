@@ -82,7 +82,7 @@ export function* initializeRSVP() {
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
 	const startDate = yield call( momentUtil.toDate, startMoment );
 	const startDateInput = yield datePickerFormat
-		? call( startMoment.format, call( momentUtil.toFormat, datePickerFormat ) )
+		? call( momentUtil.toDate, startMoment, datePickerFormat )
 		: call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
 
@@ -99,7 +99,7 @@ export function* initializeRSVP() {
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDate, endMoment );
 		const endDateInput = yield datePickerFormat
-			? call( endMoment.format, call( momentUtil.toFormat, datePickerFormat ) )
+			? call( momentUtil.toDate, endMoment, datePickerFormat )
 			: call( momentUtil.toDate, endMoment );
 		const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
 

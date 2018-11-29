@@ -179,20 +179,20 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempStartDateMoment( state.startDate ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
 				] )
-			);
+			)
 			expect( gen.next().value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toMoment, state.endDate )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toDate, state.endDate )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toDate, state.endDate )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, state.endDate )
 			);
 			expect( gen.next( state.endTime ).value ).toEqual(
