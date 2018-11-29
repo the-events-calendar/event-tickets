@@ -42,7 +42,7 @@ describe( 'RSVP block sagas', () => {
 				takeEvery( types.INITIALIZE_RSVP, sagas.initializeRSVP ),
 			);
 			expect( gen.next().value ).toEqual(
-				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleRSVPMove );
+				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleRSVPMove )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -170,17 +170,17 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempStartDateObj( state.startDateObj ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
 				] )
-			)
-			expect( gen.next().value ).toEqual(
-				select( global.tribe.events.blocks.datetime.selectors.getStart )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next().value ).toEqual(
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+			);
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toMoment, state.endDate )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toDate, state.endDate )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toTime24Hr, state.endDate )
 			);
 			expect( gen.next( state.endTime ).value ).toEqual(
