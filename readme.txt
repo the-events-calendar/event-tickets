@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.9.1] TBD =
+
+* Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
+
 = [4.9] TBD =
 
 * Fix - Adjust some permissions checks to ensure that RSVPs can be created by Subscriber-level users via the Community Tickets submission form [118598]
