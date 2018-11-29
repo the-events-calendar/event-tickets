@@ -46,7 +46,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 		$tickets = $template->get( 'tickets', array(), false );
 		$ticket  = Tribe__Tickets__Tickets::load_ticket_object( $attributes['ticketId'] );
 		$args    = array(
-			'tickets' => array_merge( $tickets, array( $ticket ) )
+			'tickets' => array_merge( $tickets, array( $ticket ) ),
 		);
 
 		// Add the rendering attributes into global context
