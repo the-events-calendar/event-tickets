@@ -10,7 +10,6 @@ import { find, trim } from 'lodash';
 import * as constants from './constants';
 import { CAPACITY_TYPE_OPTIONS } from './options';
 import { globals } from '@moderntribe/common/utils';
-import { moment as momentUtil } from '@moderntribe/common/utils';
 
 const {
 	UNLIMITED,
@@ -116,7 +115,9 @@ export const getTicketsCount = createSelector(
 
 export const getTicketsIdsInBlocks = createSelector(
 	[ getTicketsArray ],
-	( tickets ) => tickets.map( ( ticket ) => ticket.ticketId ).filter( ( ticket ) => ticket !== 0 )
+	( tickets ) => tickets.reduce( ( accumulator, ticket ) => (
+		ticket.ticketId !== 0 ? accumulator.push( ticket.ticketId ) : accumulator
+	), [] ),
 );
 
 export const hasTickets = createSelector(
