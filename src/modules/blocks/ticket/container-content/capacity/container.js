@@ -55,7 +55,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 			dispatch( actions.setTicketHasChanges( blockId, true ) );
 		},
 		onTempSharedCapacityChange: ( e ) => {
-			dispatch( actions.setTicketTempSharedCapacity( e.target.value ) );
+			dispatch( actions.setTicketsTempSharedCapacity( e.target.value ) );
 			dispatch( actions.setTicketHasChanges( blockId, true ) );
 		},
 	};
