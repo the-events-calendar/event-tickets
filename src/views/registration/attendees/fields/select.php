@@ -33,7 +33,7 @@ $option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id 
 		<?php echo $required ? 'required' : ''; ?>>
 		<option value=""><?php esc_html_e( 'Select an option', 'events-tickets' ); ?></option>
 		<?php foreach ( $options as $option => $label ) : ?>
-			<option <?php selected( (int) $option, (int) $value ); ?> value="<?php echo esc_attr( $option ); ?>"><?php echo esc_html( $label ); ?></option>
+			<option <?php selected( $label, $value ); ?> value="<?php echo esc_attr( $label ); ?>"><?php echo esc_html( $label ); ?></option>
 		<?php endforeach; ?>
 	</select>
 </div>
