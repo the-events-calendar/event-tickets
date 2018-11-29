@@ -22,34 +22,6 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Returns the Correct tickets for the Tickets block
-	 *
-	 * @since TBD
-	 *
-	 * @param  int   $post_id  Which Event or Post we are looking ticket in
-	 * @return array
-	 */
-	private function get_tickets( $post_id ) {
-		$unfiltered_tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
-		$tickets = array();
-
-		foreach ( $unfiltered_tickets as $key => $ticket ) {
-			// Skip RSVP items
-			if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-				continue;
-			}
-
-			if ( ! $ticket->date_in_range() ) {
-				continue;
-			}
-
-			$tickets[] = $ticket;
-		}
-
-		return $tickets;
-	}
-
-	/**
 	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
 	 *
 	 * @since TBD
@@ -63,7 +35,6 @@ extends Tribe__Editor__Blocks__Abstract {
 		$template           = tribe( 'tickets.editor.template' );
 		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
 		$args['attributes'] = $this->attributes( $attributes );
-		$args['tickets']    = $this->get_tickets( $post_id );
 
 		// Prevent the render when the ID of the post has not being set to a correct value
 		if ( $args['post_id'] === null ) {
