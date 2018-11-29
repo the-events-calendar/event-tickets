@@ -12,6 +12,7 @@ import DateTimeRangePicker from './template';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 import {
+	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
@@ -75,17 +76,22 @@ const onToTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 };
 
 const mapStateToProps = ( state ) => {
+	const datePickerFormat = globals.tecDateSettings().datepickerFormat
+		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
+		: 'LL';
 	const isDisabled = selectors.getRSVPIsLoading( state )
 		|| selectors.getRSVPSettingsOpen( state );
 
 	return {
 		fromDate: selectors.getRSVPTempStartDateInput( state ),
 		fromDateDisabled: isDisabled,
+		fromDateFormat: datePickerFormat,
 		fromTime: selectors.getRSVPTempStartTimeNoSeconds( state ),
 		fromTimeDisabled: isDisabled,
 		isSameDay: getIsSameDay( state ),
 		toDate: selectors.getRSVPTempEndDateInput( state ),
 		toDateDisabled: isDisabled,
+		toDateFormat: datePickerFormat,
 		toTime: selectors.getRSVPTempEndTimeNoSeconds( state ),
 		toTimeDisabled: isDisabled,
 	};
