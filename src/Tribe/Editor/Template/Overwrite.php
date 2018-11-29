@@ -3,14 +3,14 @@
 /**
  * Initialize template overwrite for tickets block
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__Template__Overwrite {
 
 	/**
 	 * Variable that is used to reference to the current ticket provider like: WOO, EDD, RSVP
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @var null
 	 */
@@ -19,7 +19,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	/**
 	 * Hook into the Events Template single page to allow Blocks to be properly reordered
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -32,7 +32,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	/**
 	 * Create a new instance variable used to reference to the current ticket provider
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param Tribe__Tickets__Tickets $ticket_type
 	 */
@@ -44,7 +44,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 * After `the_post` try to setup the template used by tickets, rsvp and attendees views on
 	 * post that are not events
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function include_blocks_in_other_types() {
 		$post_id = get_the_ID();
@@ -63,7 +63,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 * After `tribe_pre_get_view` try to setup the template used by tickets, rsvp and attendees views on
 	 * events
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function include_blocks_in_events() {
 		$post_id = get_the_ID();
@@ -81,7 +81,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 * Check if a post from different type than an event should be injected with the variables
 	 * used to setup the views for the tickets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $post_id
 	 *
@@ -101,7 +101,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	/**
 	 * Check if an event should be injected with the template variables
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $post_id
 	 *
@@ -118,7 +118,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	/**
 	 * Check if the post / event has support tickets and has tickets available
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $post_id
 	 *
@@ -145,7 +145,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	/**
 	 * Set template variables used by the tickets, RSVP and attendees blocks
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $post_id
 	 */
@@ -160,7 +160,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 * Remove the actions and filters used to attach the classic editor views associated with
 	 * tickets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function remove_classic_views() {
 		if ( ! ( $this->ticket_type instanceof Tribe__Tickets__Tickets ) ) {

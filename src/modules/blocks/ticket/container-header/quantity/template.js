@@ -29,15 +29,15 @@ const TicketContainerHeaderDescription = ( {
 
 	const getLabel = () => (
 		isUnlimited
-			? sprintf( __( '%d sold', 'events-gutenberg' ), sold )
-			: sprintf( __( '%d of %d sold', 'events-gutenberg' ), sold, total )
+			? sprintf( __( '%d sold', 'event-tickets' ), sold )
+			: sprintf( __( '%d of %d sold', 'event-tickets' ), sold, total )
 	);
 
 	const getQuantityBar = () => (
 		isUnlimited
 			? (
 				<span className="tribe-editor__ticket__container-header-quantity-unlimited">
-					{ __( 'unlimited', 'events-gutenberg' ) }
+					{ __( 'unlimited', 'event-tickets' ) }
 				</span>
 			)
 			: (

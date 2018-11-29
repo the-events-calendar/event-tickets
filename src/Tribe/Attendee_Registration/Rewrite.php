@@ -9,7 +9,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	/**
 	 * Tribe__Tickets__Attendee_Registration__Rewrite constructor.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param WP_Rewrite|null $wp_rewrite
 	 */
@@ -20,7 +20,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	/**
 	 * Generate the Rewrite Rules
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  WP_Rewrite $wp_rewrite WordPress Rewrite that will be modified, pass it by reference (&$wp_rewrite)
 	 */
@@ -59,7 +59,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 * of their own can do so on the same hook at a lower or higher priority, according to how specific
 	 * those rules are.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param Tribe__Tickets__Attendee_Registration__Rewrite $rewrite
 	 */
@@ -70,7 +70,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	/**
 	 * Add attendee-registration rewrite tag.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function add_rewrite_tags() {
 		add_rewrite_tag( '%' . tribe( 'tickets.attendee_registration' )->key_query_var . '%', '([^&]+)' );
@@ -81,7 +81,7 @@ class Tribe__Tickets__Attendee_Registration__Rewrite extends Tribe__Rewrite {
 	 *
 	 * WARNING: Don't mess with the filters below if you don't know what you are doing
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  string $method Use "regex" to return a Regular Expression with the possible Base Slugs using l10n
 	 * @return object         Return Base Slugs with l10n variations

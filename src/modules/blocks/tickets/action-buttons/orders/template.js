@@ -22,7 +22,7 @@ const OrdersActionButton = ( { href } ) => ( href && (
 		icon={ <Orders /> }
 		target="_blank"
 	>
-		{ __( 'Orders', 'events-gutenberg' ) }
+		{ __( 'Orders', 'event-tickets' ) }
 	</ActionButton>
 ) );
 

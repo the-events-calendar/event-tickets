@@ -19,10 +19,10 @@ import {
  */
 export default {
 	id: 'rsvp',
-	title: __( 'RSVP', 'events-gutenberg' ),
+	title: __( 'RSVP', 'event-tickets' ),
 	description: __(
 		'Find out who is planning to attend!',
-		'events-gutenberg',
+		'event-tickets',
 	),
 	icon: <RSVPIcon/>,
 	category: 'tribe-tickets',

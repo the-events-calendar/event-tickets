@@ -37,7 +37,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Handle the toggle for each event
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	*/
@@ -57,7 +57,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Check if the required fields have data
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	*/
@@ -93,7 +93,7 @@ tribe.tickets.registration = {};
 	 * Handle form submission.
 	 * Display a message if there are required fields missing.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	*/
@@ -118,7 +118,7 @@ tribe.tickets.registration = {};
 	 * Init the page, set a flag for those events that need to fill inputs
 	 * Toggle down those who are ready
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	*/
@@ -147,7 +147,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Init the tickets registration script
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */

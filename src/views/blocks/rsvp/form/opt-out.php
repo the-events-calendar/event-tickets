@@ -10,13 +10,13 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version TBD
+ * @version 4.9
  *
  */
 /**
  * Use this filter to hide the Attendees List Optout
  *
- * @since TBD
+ * @since 4.9
  *
  * @param bool
  */

@@ -10,6 +10,7 @@ import { cloneableGenerator } from 'redux-saga/utils';
 import * as types from '../types';
 import * as actions from '../actions';
 import watchers, * as sagas from '../sagas';
+import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import { moment as momentUtil } from '@moderntribe/common/utils';
 
 jest.mock( '@wordpress/data', () => ( {
@@ -39,6 +40,9 @@ describe( 'RSVP block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				takeEvery( types.INITIALIZE_RSVP, sagas.initializeRSVP ),
 			);
+			expect( gen.next().value ).toEqual(
+				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleRSVPMove )
+			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
@@ -52,10 +56,12 @@ describe( 'RSVP block sagas', () => {
 				capacity: '20',
 				notGoingResponses: true,
 				startDate: 'January 1, 2018',
-				startDateObj: new Date( 'January 1, 2018' ),
+				startDateInput: 'January 1, 2018',
+				startDateMoment: 'January 1, 2018',
 				startTime: '12:34',
 				endDate: 'January 4, 2018',
-				endDateObj: new Date( 'January 4, 2018' ),
+				endDateInput: 'January 4, 2018',
+				endDateMoment: 'January 4, 2018',
 				endTime: '23:32',
 			} };
 		} );
@@ -69,10 +75,12 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPCapacity( '20' ) ),
 					put( actions.setRSVPNotGoingResponses( true ) ),
 					put( actions.setRSVPStartDate( 'January 1, 2018' ) ),
-					put( actions.setRSVPStartDateObj( new Date( 'January 1, 2018' ) ) ),
+					put( actions.setRSVPStartDateInput( 'January 1, 2018' ) ),
+					put( actions.setRSVPStartDateMoment( 'January 1, 2018' ) ),
 					put( actions.setRSVPStartTime( '12:34' ) ),
 					put( actions.setRSVPEndDate( 'January 4, 2018' ) ),
-					put( actions.setRSVPEndDateObj( new Date( 'January 4, 2018' ) ) ),
+					put( actions.setRSVPEndDateInput( 'January 4, 2018' ) ),
+					put( actions.setRSVPEndDateMoment( 'January 4, 2018' ) ),
 					put( actions.setRSVPEndTime( '23:32' ) ),
 				] )
 			);
@@ -89,10 +97,12 @@ describe( 'RSVP block sagas', () => {
 				tempCapacity: '20',
 				tempNotGoingResponses: true,
 				tempStartDate: 'January 1, 2018',
-				tempStartDateObj: new Date( 'January 1, 2018' ),
+				tempStartDateInput: 'January 1, 2018',
+				tempStartDateMoment: 'January 1, 2018',
 				tempStartTime: '12:34',
 				tempEndDate: 'January 4, 2018',
-				tempEndDateObj: new Date( 'January 4, 2018' ),
+				tempEndDateInput: 'January 4, 2018',
+				tempEndDateMoment: 'January 4, 2018',
 				tempEndTime: '23:32',
 			} };
 		} );
@@ -106,10 +116,12 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempCapacity( '20' ) ),
 					put( actions.setRSVPTempNotGoingResponses( true ) ),
 					put( actions.setRSVPTempStartDate( 'January 1, 2018' ) ),
-					put( actions.setRSVPTempStartDateObj( new Date( 'January 1, 2018' ) ) ),
+					put( actions.setRSVPTempStartDateInput( 'January 1, 2018' ) ),
+					put( actions.setRSVPTempStartDateMoment( 'January 1, 2018' ) ),
 					put( actions.setRSVPTempStartTime( '12:34' ) ),
 					put( actions.setRSVPTempEndDate( 'January 4, 2018' ) ),
-					put( actions.setRSVPTempEndDateObj( new Date( 'January 4, 2018' ) ) ),
+					put( actions.setRSVPTempEndDateInput( 'January 4, 2018' ) ),
+					put( actions.setRSVPTempEndDateMoment( 'January 4, 2018' ) ),
 					put( actions.setRSVPTempEndTime( '23:32' ) ),
 				] )
 			);
@@ -122,10 +134,8 @@ describe( 'RSVP block sagas', () => {
 		beforeEach( () => {
 			state = {
 				startDate: 'January 1, 2018',
-				startDateObj: new Date( 'January 1, 2018' ),
 				startTime: '12:34',
 				endDate: 'January 4, 2018',
-				endDateObj: new Date( 'January 4, 2018' ),
 				endTime: '23:32',
 			};
 			global.tribe = {
@@ -157,31 +167,39 @@ describe( 'RSVP block sagas', () => {
 				call( momentUtil.toDate, state.startDate )
 			);
 			expect( gen.next( state.startDate ).value ).toEqual(
-				call( momentUtil.toTime24Hr, state.startDate )
+				call( momentUtil.toDate, state.startDate )
+			);
+			expect( gen.next( state.startDate ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, state.startDate )
 			);
 			expect( gen.next( state.startTime ).value ).toEqual(
 				all( [
 					put( actions.setRSVPTempStartDate( state.startDate ) ),
-					put( actions.setRSVPTempStartDateObj( state.startDateObj ) ),
+					put( actions.setRSVPTempStartDateInput( state.startDate ) ),
+					put( actions.setRSVPTempStartDateMoment( state.startDate ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
 				] )
 			)
 			expect( gen.next().value ).toEqual(
-				select( global.tribe.events.blocks.datetime.selectors.getStart )
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toMoment, state.endDate )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
+			expect( gen.next( state.endDate ).value ).toEqual(
 				call( momentUtil.toDate, state.endDate )
 			);
-			expect( gen.next( state.endDate).value ).toEqual(
-				call( momentUtil.toTime24Hr, state.endDate )
+			expect( gen.next( state.endDate ).value ).toEqual(
+				call( momentUtil.toDate, state.endDate )
+			);
+			expect( gen.next( state.endDate ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, state.endDate )
 			);
 			expect( gen.next( state.endTime ).value ).toEqual(
 				all( [
 					put( actions.setRSVPTempEndDate( state.endDate ) ),
-					put( actions.setRSVPTempEndDateObj( state.endDateObj ) ),
+					put( actions.setRSVPTempEndDateInput( state.endDate ) ),
+					put( actions.setRSVPTempEndDateMoment( state.endDate ) ),
 					put( actions.setRSVPTempEndTime( state.endTime ) ),
 				] )
 			);

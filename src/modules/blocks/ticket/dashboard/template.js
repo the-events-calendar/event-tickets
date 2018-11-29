@@ -17,11 +17,11 @@ import './style.pcss';
 
 const confirmLabel = ( hasBeenCreated ) => (
 	hasBeenCreated
-		? __( 'Update Ticket', 'events-gutenberg' )
-		: __( 'Create Ticket', 'events-gutenberg' )
+		? __( 'Update Ticket', 'event-tickets' )
+		: __( 'Create Ticket', 'event-tickets' )
 );
 
-const cancelLabel = __( 'Cancel', 'events-gutenberg' );
+const cancelLabel = __( 'Cancel', 'event-tickets' );
 
 const TicketDashboard = ( {
 	hasBeenCreated,

@@ -15,7 +15,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Which is the name/slug of this block
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string
 	 */
@@ -26,7 +26,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Returns the Correct tickets for the Tickets block
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  int   $post_id  Which Event or Post we are looking ticket in
 	 * @return array
@@ -54,7 +54,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  array $attributes
 	 *
@@ -94,7 +94,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Register block assets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 *
 	 * @return void
@@ -137,7 +137,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	 *
 	 * USE THE SHORTCODE [gutti_tickets_purchase ticket="ID"]
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string
 	 */
@@ -176,7 +176,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Check for ticket availability
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  array $tickets (IDs of tickets to check)
 	 *

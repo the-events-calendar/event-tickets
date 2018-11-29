@@ -5,14 +5,14 @@
  *
  * Class used to set values into the editor client (browser) via localized variables
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configuration_Interface {
 
 	/**
 	 * Add actions / filters into WP
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function hook() {
 		add_filter( 'tribe_editor_config', array( $this, 'editor_config' ) );
@@ -21,7 +21,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	/**
 	 * Hook into "tribe_editor_config" to attach new variables for tickets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $editor_config
 	 *
@@ -52,7 +52,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	/**
 	 * Set an initial set of default values to prevent accessing not defined variables
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param array $editor_config
 	 *
@@ -73,7 +73,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	/**
 	 * Variables attached into the group that is used to localize values into the client
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return array
 	 */
@@ -88,7 +88,7 @@ class Tribe__Tickets__Editor__Configuration implements Tribe__Editor__Configurat
 	/**
 	 * Return an array with all the providers used by tickets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return array
 	 */

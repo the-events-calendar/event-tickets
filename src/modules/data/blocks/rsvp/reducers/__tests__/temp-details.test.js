@@ -36,10 +36,14 @@ describe( 'Temp details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPTempStartDate( 'January 1, 2018' ) ) ).toMatchSnapshot();
 	} );
 
-	it( 'should set the temp start date object', () => {
+	it( 'should set the temp start date input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPTempStartDateInput( 'January 1, 2018' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the temp start date moment', () => {
 		expect( reducer(
 			DEFAULT_STATE,
-			actions.setRSVPTempStartDateObj( new Date( 'January 1, 2018' ) ),
+			actions.setRSVPTempStartDateMoment( 'January 1, 2018' ),
 		) ).toMatchSnapshot();
 	} );
 
@@ -47,10 +51,14 @@ describe( 'Temp details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPTempEndDate( 'January 1, 2018' ) ) ).toMatchSnapshot();
 	} );
 
-	it( 'should set the temp end date object', () => {
+	it( 'should set the temp end date input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPTempEndDateInput( 'January 1, 2018' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the temp end date moment', () => {
 		expect( reducer(
 			DEFAULT_STATE,
-			actions.setRSVPTempEndDate( new Date( 'January 1, 2018' ) ),
+			actions.setRSVPTempEndDateMoment( 'January 1, 2018' ),
 		) ).toMatchSnapshot();
 	} );
 

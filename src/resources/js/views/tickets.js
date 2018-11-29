@@ -37,7 +37,7 @@ tribe.tickets.block = {
 	/**
 	 * Handle the number input + and - actions
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -59,7 +59,7 @@ tribe.tickets.block = {
 	/**
 	 * Handle the TPP form
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -108,7 +108,7 @@ tribe.tickets.block = {
 	/**
 	 * Get the tickets IDs
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return array
 	 */
@@ -124,7 +124,7 @@ tribe.tickets.block = {
 	/**
 	 * Make dom updates for the AJAX response
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return array
 	 */
@@ -160,7 +160,7 @@ tribe.tickets.block = {
 	/**
 	 * Check tickets availability
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -200,7 +200,7 @@ tribe.tickets.block = {
 	/**
 	 * Init the tickets script
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */

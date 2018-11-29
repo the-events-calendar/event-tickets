@@ -7,7 +7,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	/**
 	 * Tribe__Tickets__Attendee_Registration__View constructor.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function __construct() {
 		$this->set_template_origin( tribe( 'tickets.main' ) );
@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	/**
 	 * Display the Attendee Info page when the correct permalink is loaded.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @param string $content The original page|post content
 	 * @return srting $template The resulting template content
 	 */
@@ -102,7 +102,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * Get the provider Cart URL if WooCommerce is the provider.
 	 * Checks the provider by post id (event)
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param int $post_id
 	 * @return bool|string

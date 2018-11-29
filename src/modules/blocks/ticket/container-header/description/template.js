@@ -27,7 +27,7 @@ const TicketContainerHeaderDescription = ( {
 			<AutosizeInput
 				className="tribe-editor__ticket__container-header-description-input"
 				value={ tempDescription }
-				placeholder={ __( 'Description', 'events-gutenberg' ) }
+				placeholder={ __( 'Description', 'event-tickets' ) }
 				onChange={ onTempDescriptionChange }
 				disabled={ isDisabled }
 			/>
