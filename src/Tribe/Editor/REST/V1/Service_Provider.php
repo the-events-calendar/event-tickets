@@ -5,7 +5,7 @@
  *
  * Add support to: Add / Create / Delete tickets via the WP REST Api
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_ServiceProvider {
 
@@ -17,7 +17,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	/**
 	 * Registers the classes and functionality needed fro REST API
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function register() {
 
@@ -40,7 +40,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	/**
 	 * Hooks all the methods and actions the class needs.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	private function hooks() {
 		add_action( 'rest_api_init', array( $this, 'register_endpoints' ) );
@@ -55,7 +55,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	/**
 	 * Registers the REST API endpoints for Event Tickets.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function register_endpoints() {
 		$this->namespace = tribe( 'tickets.rest-v1.main' )->get_events_route_namespace();
@@ -67,7 +67,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	 * Registers the REST API endpoint that will handle single ticket requests, to edit and remove
 	 * a ticket via the endpoint.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return Tribe__Tickets__REST__V1__Endpoints__Single_Ticket
 	 */
@@ -93,7 +93,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	 * Registers the REST API endpoint that will handle ticket archive requests to create a new
 	 * ticket inside of the site.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 	 */
@@ -111,7 +111,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	/**
 	 * Add additional data to the single Ticket API when reading data
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $data
 	 * @param $request

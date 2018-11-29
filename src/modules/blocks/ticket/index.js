@@ -12,8 +12,8 @@ import Ticket from './container';
 
 export default {
 	id: 'tickets-item',
-	title: __( 'Event Ticket', 'events-gutenberg' ),
-	description: __( 'A single configured ticket type.', 'events-gutenberg' ),
+	title: __( 'Event Ticket', 'event-tickets' ),
+	description: __( 'A single configured ticket type.', 'event-tickets' ),
 	icon: <TicketsIcon/>,
 	category: 'tribe-tickets',
 	keywords: [ 'event', 'events-tickets', 'tribe' ],

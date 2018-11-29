@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version TBD
+ * @version 4.9
  *
  */
 $must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();

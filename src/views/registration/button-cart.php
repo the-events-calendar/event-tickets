@@ -2,7 +2,7 @@
 /**
  * This template renders the attendee registration back to cart button
  *
- * @version TBD
+ * @version 4.9
  *
  */
 $cart_url = $this->get_cart_url( $event_id );

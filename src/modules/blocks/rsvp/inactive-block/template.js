@@ -23,12 +23,12 @@ const inactiveBlockProps = {
 
 const RSVPInactiveBlock = ( { created } ) => {
 	inactiveBlockProps.title = created
-		? __( 'RSVP is not currently active', 'events-gutenberg' )
-		: __( 'There is no RSVP configured', 'events-gutenberg' );
+		? __( 'RSVP is not currently active', 'event-tickets' )
+		: __( 'There is no RSVP configured', 'event-tickets' );
 
 	inactiveBlockProps.description = created
-		? __( 'Edit this block to change RSVP settings.', 'events-gutenberg' )
-		: __( 'Edit this block to create an RSVP form.', 'events-gutenberg' );
+		? __( 'Edit this block to change RSVP settings.', 'event-tickets' )
+		: __( 'Edit this block to create an RSVP form.', 'event-tickets' );
 
 	return <InactiveBlock { ...inactiveBlockProps } />
 };

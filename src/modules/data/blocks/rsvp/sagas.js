@@ -10,7 +10,7 @@ import { put, call, all, select, takeEvery } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
@@ -21,10 +21,12 @@ export function* setRSVPDetails( action ) {
 		capacity,
 		notGoingResponses,
 		startDate,
-		startDateObj,
+		startDateInput,
+		startDateMoment,
 		startTime,
 		endDate,
-		endDateObj,
+		endDateInput,
+		endDateMoment,
 		endTime,
 	} = action.payload;
 	yield all( [
@@ -33,10 +35,12 @@ export function* setRSVPDetails( action ) {
 		put( actions.setRSVPCapacity( capacity ) ),
 		put( actions.setRSVPNotGoingResponses( notGoingResponses ) ),
 		put( actions.setRSVPStartDate( startDate ) ),
-		put( actions.setRSVPStartDateObj( startDateObj ) ),
+		put( actions.setRSVPStartDateInput( startDateInput ) ),
+		put( actions.setRSVPStartDateMoment( startDateMoment ) ),
 		put( actions.setRSVPStartTime( startTime ) ),
 		put( actions.setRSVPEndDate( endDate ) ),
-		put( actions.setRSVPEndDateObj( endDateObj ) ),
+		put( actions.setRSVPEndDateInput( endDateInput ) ),
+		put( actions.setRSVPEndDateMoment( endDateMoment ) ),
 		put( actions.setRSVPEndTime( endTime ) ),
 	] );
 }
@@ -48,10 +52,12 @@ export function* setRSVPTempDetails( action ) {
 		tempCapacity,
 		tempNotGoingResponses,
 		tempStartDate,
-		tempStartDateObj,
+		tempStartDateInput,
+		tempStartDateMoment,
 		tempStartTime,
 		tempEndDate,
-		tempEndDateObj,
+		tempEndDateInput,
+		tempEndDateMoment,
 		tempEndTime,
 	} = action.payload;
 	yield all( [
@@ -60,24 +66,30 @@ export function* setRSVPTempDetails( action ) {
 		put( actions.setRSVPTempCapacity( tempCapacity ) ),
 		put( actions.setRSVPTempNotGoingResponses( tempNotGoingResponses ) ),
 		put( actions.setRSVPTempStartDate( tempStartDate ) ),
-		put( actions.setRSVPTempStartDateObj( tempStartDateObj ) ),
+		put( actions.setRSVPTempStartDateInput( tempStartDateInput ) ),
+		put( actions.setRSVPTempStartDateMoment( tempStartDateMoment ) ),
 		put( actions.setRSVPTempStartTime( tempStartTime ) ),
 		put( actions.setRSVPTempEndDate( tempEndDate ) ),
-		put( actions.setRSVPTempEndDateObj( tempEndDateObj ) ),
+		put( actions.setRSVPTempEndDateInput( tempEndDateInput ) ),
+		put( actions.setRSVPTempEndDateMoment( tempEndDateMoment ) ),
 		put( actions.setRSVPTempEndTime( tempEndTime ) ),
 	] );
 }
 
 export function* initializeRSVP() {
+	const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
 	const startDate = yield call( momentUtil.toDate, startMoment );
-	const startTime = yield call( momentUtil.toTime24Hr, startMoment );
-	const startDateObj = new Date( startDate );
+	const startDateInput = yield datePickerFormat
+		? call( momentUtil.toDate, startMoment, datePickerFormat )
+		: call( momentUtil.toDate, startMoment );
+	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
 
 	yield all( [
 		put( actions.setRSVPTempStartDate( startDate ) ),
-		put( actions.setRSVPTempStartDateObj( startDateObj ) ),
+		put( actions.setRSVPTempStartDateInput( startDateInput ) ),
+		put( actions.setRSVPTempStartDateMoment( startMoment ) ),
 		put( actions.setRSVPTempStartTime( startTime ) ),
 	] );
 
@@ -86,12 +98,15 @@ export function* initializeRSVP() {
 		const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDate, endMoment );
-		const endTime = yield call( momentUtil.toTime24Hr, endMoment );
-		const endDateObj = new Date( endDate );
+		const endDateInput = yield datePickerFormat
+			? call( momentUtil.toDate, endMoment, datePickerFormat )
+			: call( momentUtil.toDate, endMoment );
+		const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
 
 		yield all( [
 			put( actions.setRSVPTempEndDate( endDate ) ),
-			put( actions.setRSVPTempEndDateObj( endDateObj ) ),
+			put( actions.setRSVPTempEndDateInput( endDateInput ) ),
+			put( actions.setRSVPTempEndDateMoment( endMoment ) ),
 			put( actions.setRSVPTempEndTime( endTime ) ),
 		] );
 	} catch ( err ) {

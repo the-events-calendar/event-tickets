@@ -2,7 +2,7 @@
 /**
  * This template renders the ticket registration status
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

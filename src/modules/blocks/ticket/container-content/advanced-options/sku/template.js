@@ -43,10 +43,10 @@ class SKU extends PureComponent {
 					className="tribe-editor__ticket__sku-label-with-tooltip"
 					forId={ this.id }
 					isLabel={ true }
-					label={ __( 'Ticket SKU', 'events-gutenberg' ) }
+					label={ __( 'Ticket SKU', 'event-tickets' ) }
 					tooltipText={ __(
 						'A unique identifying code for each ticket type you\'re selling',
-						'events-gutenberg',
+						'event-tickets',
 					) }
 					tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
 				/>

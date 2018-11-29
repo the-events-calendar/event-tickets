@@ -73,9 +73,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_CAPACITY:
 		case types.SET_RSVP_NOT_GOING_RESPONSES:
 		case types.SET_RSVP_START_DATE:
-		case types.SET_RSVP_START_DATE_OBJ:
+		case types.SET_RSVP_START_DATE_INPUT:
+		case types.SET_RSVP_START_DATE_MOMENT:
 		case types.SET_RSVP_END_DATE:
-		case types.SET_RSVP_END_DATE_OBJ:
+		case types.SET_RSVP_END_DATE_INPUT:
+		case types.SET_RSVP_END_DATE_MOMENT:
 		case types.SET_RSVP_START_TIME:
 		case types.SET_RSVP_END_TIME:
 			return {
@@ -87,9 +89,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_TEMP_CAPACITY:
 		case types.SET_RSVP_TEMP_NOT_GOING_RESPONSES:
 		case types.SET_RSVP_TEMP_START_DATE:
-		case types.SET_RSVP_TEMP_START_DATE_OBJ:
+		case types.SET_RSVP_TEMP_START_DATE_INPUT:
+		case types.SET_RSVP_TEMP_START_DATE_MOMENT:
 		case types.SET_RSVP_TEMP_END_DATE:
-		case types.SET_RSVP_TEMP_END_DATE_OBJ:
+		case types.SET_RSVP_TEMP_END_DATE_INPUT:
+		case types.SET_RSVP_TEMP_END_DATE_MOMENT:
 		case types.SET_RSVP_TEMP_START_TIME:
 		case types.SET_RSVP_TEMP_END_TIME:
 			return {

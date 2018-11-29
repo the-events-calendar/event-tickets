@@ -15,9 +15,9 @@ import { __ } from '@wordpress/i18n';
 import { LabelWithLink } from '@moderntribe/common/elements';
 import './style.pcss';
 
-const helperText = __( 'Save your ticket to enable attendee registration fields', 'events-gutenberg' );
-const label = __( 'Attendee Registration', 'events-gutenberg' );
-const linkText = __( '+ Add', 'events-gutenberg' );
+const helperText = __( 'Save your ticket to enable attendee registration fields', 'event-tickets' );
+const label = __( 'Attendee Registration', 'event-tickets' );
+const linkText = __( '+ Add', 'event-tickets' );
 
 const AttendeesRegistration = ( {
 	attendeeRegistrationURL,

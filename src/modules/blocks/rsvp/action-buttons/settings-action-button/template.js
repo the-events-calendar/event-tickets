@@ -23,7 +23,7 @@ const SettingsActionButton = ( { isDisabled, onClick } ) => (
 		icon={ <CogIcon /> }
 		onClick={ onClick }
 	>
-		{ __( 'Settings', 'events-gutenberg' ) }
+		{ __( 'Settings', 'event-tickets' ) }
 	</ActionButton>
 );
 

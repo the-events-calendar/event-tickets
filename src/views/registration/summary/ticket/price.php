@@ -2,7 +2,7 @@
 /**
  * This template renders the summary ticket price
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

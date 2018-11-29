@@ -5,7 +5,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Init class
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -21,7 +21,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Which is the name/slug of this block
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string
 	 */
@@ -32,7 +32,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Set the default attributes of this block
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return array
 	 */
@@ -46,7 +46,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  array $attributes
 	 *
@@ -72,7 +72,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/*
 	 * Method to get the RSVP tickets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return array
 	*/
@@ -117,7 +117,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Register block assets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  array $attributes
 	 *
@@ -155,7 +155,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Function that returns the RSVP form from an AJAX call
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -186,7 +186,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Function that process the RSVP
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */

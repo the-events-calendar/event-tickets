@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Attendee_Registration__Meta
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Attendee_Registration__Meta {
 
@@ -11,7 +11,7 @@ class Tribe__Tickets__Attendee_Registration__Meta {
 	 * Add a product-deletion parameter to the shopping URL on Paypal in order to clear old products
 	 * if the order is cancelled within Paypal.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param $args
 	 *

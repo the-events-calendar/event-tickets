@@ -2,13 +2,13 @@
 /**
  * Attendee Registration core class
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * The query var
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 */
 	public $key_query_var = 'attendee-registration';
@@ -16,7 +16,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Default attendee registration slug
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 */
 	public $default_page_slug = 'attendee-registration';
@@ -24,7 +24,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Retrieve the attendee registration slug
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string
 	 */
@@ -35,7 +35,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether or not the user is on the attendee registration page
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return bool
 	 */
@@ -48,7 +48,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Gets the URL for the attendee registration page
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @return string
 	 */
 	public function get_url() {
@@ -60,13 +60,13 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Gets the URL for the checkout url
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @return string
 	 */
 	public function get_checkout_url() {
 		/**
 		 * Gets the attendee registration checkout URL
-		 * @since TBD
+		 * @since 4.9
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
 

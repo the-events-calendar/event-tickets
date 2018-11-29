@@ -24,13 +24,13 @@ const RSVPCounters = ( {
 		<Counter
 			className="tribe-editor__rsvp-container-header__going-counter"
 			count={ goingCount }
-			label={ __( 'Going', 'events-gutenberg' ) }
+			label={ __( 'Going', 'event-tickets' ) }
 		/>
 		{ showNotGoing && (
 			<Counter
 				className="tribe-editor__rsvp-container-header__not-going-counter"
 				count={ notGoingCount }
-				label={ __( 'Not going', 'events-gutenberg' ) }
+				label={ __( 'Not going', 'event-tickets' ) }
 			/>
 		) }
 	</div>

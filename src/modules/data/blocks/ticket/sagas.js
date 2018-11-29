@@ -2,6 +2,7 @@
  * External Dependencies
  */
 import { put, all, select, takeEvery, call } from 'redux-saga/effects';
+import { includes } from 'lodash';
 
 /**
  * Wordpress dependencies
@@ -35,7 +36,11 @@ const {
 	TICKET_TYPES,
 	PROVIDER_CLASS_TO_PROVIDER_MAPPING,
 } = constants;
-const { tickets: ticketsConfig, restNonce } = globals;
+const {
+	tickets: ticketsConfig,
+	restNonce,
+	tecDateSettings,
+} = globals;
 const { wpREST } = api;
 
 export function* setTicketsInitialState( action ) {
@@ -46,7 +51,7 @@ export function* setTicketsInitialState( action ) {
 	const ticketsList = get( 'tickets', [] );
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
 	// Get only the IDs of the tickets that are not in the block list already
-	const ticketsDiff = ticketsList.filter( ( item ) => ticketsInBlock.indexOf( item ) === -1  );
+	const ticketsDiff = ticketsList.filter( ( item ) => ! includes( ticketsInBlock, item ) );
 
 	if ( ticketsDiff.length >= 1 ) {
 		yield call( createMissingTicketBlocks, ticketsDiff );
@@ -92,10 +97,13 @@ export function* setTicketInitialState( action ) {
 	const { clientId, get } = action.payload;
 	const ticketId = get( 'ticketId', TICKET_DEFAULT_STATE.ticketId );
 
+	const datePickerFormat = tecDateSettings().datepickerFormat
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
 	const startDate = yield call( momentUtil.toDatabaseDate, startMoment );
-	const startDateInput = yield call( momentUtil.toDate, startMoment );
+	const startDateInput = yield datePickerFormat
+		? call( momentUtil.toDate, startMoment, datePickerFormat )
+		: call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
 
 	yield all( [
@@ -114,7 +122,9 @@ export function* setTicketInitialState( action ) {
 		const eventStart = yield select( tribe.events.data.blocks.datetime.selectors.getStart ); // Ticket purchase window should end when event starts
 		const endMoment = yield call( momentUtil.toMoment, eventStart );
 		const endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-		const endDateInput = yield call( momentUtil.toDate, endMoment );
+		const endDateInput = yield datePickerFormat
+			? call( momentUtil.toDate, endMoment, datePickerFormat )
+			: call( momentUtil.toDate, endMoment );
 		const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
 
 		yield all( [
@@ -224,9 +234,13 @@ export function* fetchTicket( action ) {
 				capacity,
 			} = ticket;
 
+			const datePickerFormat = tecDateSettings().datepickerFormat;
+
 			const startMoment = yield call( momentUtil.toMoment, available_from );
 			const startDate = yield call( momentUtil.toDatabaseDate, startMoment );
-			const startDateInput = yield call( momentUtil.toDate, startMoment );
+			const startDateInput = yield datePickerFormat
+				? call( momentUtil.toDate, startMoment, datePickerFormat )
+				: call( momentUtil.toDate, startMoment );
 			const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
 
 			let endMoment = yield call( momentUtil.toMoment, '' );
@@ -237,7 +251,9 @@ export function* fetchTicket( action ) {
 			if ( available_until ) {
 				endMoment = yield call( momentUtil.toMoment, available_until );
 				endDate = yield call( momentUtil.toDatabaseDate, endMoment );
-				endDateInput = yield call( momentUtil.toDate, endMoment );
+				endDateInput = yield datePickerFormat
+					? call( momentUtil.toDate, endMoment, datePickerFormat )
+					: call( momentUtil.toDate, endMoment );
 				endTime = yield call( momentUtil.toDatabaseTime, endMoment );
 			}
 
@@ -274,12 +290,9 @@ export function* fetchTicket( action ) {
 		/**
 		 * @todo handle error scenario
 		 */
-	} finally {
-		const allIds = yield select( selectors.getAllTicketIds );
-		if ( allIds.indexOf( blockId ) !== -1 ) {
-			yield put( actions.setTicketIsLoading( blockId, false ) );
-		}
 	}
+
+	yield put( actions.setTicketIsLoading( blockId, false ) );
 }
 
 export function* createNewTicket( action ) {

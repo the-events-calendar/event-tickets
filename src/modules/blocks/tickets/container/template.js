@@ -29,11 +29,11 @@ const TicketContainer = ( {
 } ) => {
 	const messages = {
 		title: hasProviders
-			? __( 'There are no tickets yet', 'events-gutenberg' )
-			: __( 'There is no ecommerce available', 'events-gutenberg' ),
+			? __( 'There are no tickets yet', 'event-tickets' )
+			: __( 'There is no ecommerce available', 'event-tickets' ),
 		description: hasProviders
-			? __( 'Edit this block to create your first ticket.', 'events-gutenberg' )
-			: __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'events-gutenberg' ),
+			? __( 'Edit this block to create your first ticket.', 'event-tickets' )
+			: __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' ),
 	};
 
 	return (
