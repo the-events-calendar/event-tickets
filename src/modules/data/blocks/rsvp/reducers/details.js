@@ -7,10 +7,18 @@ import moment from 'moment/moment';
  * Internal dependencies
  */
 import { types } from '@moderntribe/tickets/data/blocks/rsvp';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 const currentMoment = moment();
 const endMoment = currentMoment.clone().add( 100, 'years' );
+
+const startDateInput = datePickerFormat
+	? currentMoment.format( momentUtil.toFormat( datePickerFormat ) )
+	: momentUtil.toDate( currentMoment );
+const endDateInput = datePickerFormat
+	? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
+	: momentUtil.toDate( endMoment );
 
 export const DEFAULT_STATE = {
 	title: '',
@@ -18,13 +26,13 @@ export const DEFAULT_STATE = {
 	capacity: '',
 	notGoingResponses: false,
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
-	startDateInput: momentUtil.toDate( currentMoment ),
+	startDateInput,
 	startDateMoment: currentMoment,
-	endDate: momentUtil.toDate( endMoment ),
-	endDateInput: momentUtil.toDate( currentMoment ),
+	endDate: momentUtil.toDatabaseDate( endMoment ),
+	endDateInput,
 	endDateMoment: endMoment,
-	startTime: momentUtil.toTime24Hr( currentMoment ),
-	endTime: momentUtil.toTime24Hr( endMoment ),
+	startTime: momentUtil.toDatabaseTime( currentMoment ),
+	endTime: momentUtil.toDatabaseTime( endMoment ),
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
