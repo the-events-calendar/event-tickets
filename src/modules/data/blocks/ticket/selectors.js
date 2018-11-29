@@ -115,9 +115,12 @@ export const getTicketsCount = createSelector(
 
 export const getTicketsIdsInBlocks = createSelector(
 	[ getTicketsArray ],
-	( tickets ) => tickets.reduce( ( accumulator, ticket ) => (
-		ticket.ticketId !== 0 ? accumulator.push( ticket.ticketId ) : accumulator
-	), [] ),
+	( tickets ) => tickets.reduce( ( accumulator, ticket ) => {
+		if ( ticket.ticketId !== 0 ) {
+			accumulator.push( ticket.ticketId );
+		}
+		return accumulator;
+	}, [] ),
 );
 
 export const hasTickets = createSelector(
