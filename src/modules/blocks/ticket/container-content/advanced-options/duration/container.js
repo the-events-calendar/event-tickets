@@ -12,6 +12,7 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import {
+	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
@@ -71,11 +72,15 @@ const onToTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
 };
 
 const mapStateToProps = ( state, ownProps ) => {
+	const datePickerFormat = globals.tecDateSettings().datepickerFormat
+		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
+		: 'LL';
 	const isDisabled = selectors.isTicketDisabled( state, ownProps );
 
 	return {
 		fromDate: selectors.getTicketTempStartDateInput( state, ownProps ),
 		fromDateDisabled: isDisabled,
+		fromDateFormat:: datePickerFormat,
 		fromTime: selectors.getTicketTempStartTimeNoSeconds( state, ownProps ),
 		fromTimeDisabled: isDisabled,
 		isSameDay: momentUtil.isSameDay(
@@ -84,6 +89,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		),
 		toDate: selectors.getTicketTempEndDateInput( state, ownProps ),
 		toDateDisabled: isDisabled,
+		toDateFormat:: datePickerFormat,
 		toTime: selectors.getTicketTempEndTimeNoSeconds( state, ownProps ),
 		toTimeDisabled: isDisabled,
 	};
