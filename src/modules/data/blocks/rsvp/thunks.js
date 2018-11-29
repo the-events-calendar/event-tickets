@@ -10,7 +10,7 @@ import * as actions from './actions';
 import { DEFAULT_STATE } from './reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { middlewares } from '@moderntribe/common/store';
-import { time, moment as momentUtil } from '@moderntribe/common/utils';
+import { globals, time, moment as momentUtil } from '@moderntribe/common/utils';
 
 const { request: {
 	actions:wpRequestActions
@@ -132,10 +132,18 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 					 *       the classic editor, only one will be displayed.
 					 *       The strategy to handle this is is being worked on.
 					 */
+					const datePickerFormat = globals.tecDateSettings().datepickerFormat;
+
 					const rsvp = filteredRSVPs[0];
 					const { meta = {} } = rsvp;
 					const startMoment = moment( meta[ utils.KEY_TICKET_START_DATE ] );
 					const endMoment = moment( meta[ utils.KEY_TICKET_END_DATE ] );
+					const startDateInput = datePickerFormat
+						? startMoment.format( momentUtil.toFormat( datePickerFormat ) )
+						: momentUtil.toDate( startMoment );
+					const endDateInput = datePickerFormat
+						? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
+						: momentUtil.toDate( endMoment );
 					const capacity = meta[ utils.KEY_TICKET_CAPACITY ] >= 0
 						? meta[ utils.KEY_TICKET_CAPACITY ]
 						: '';
@@ -159,13 +167,13 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						capacity,
 						notGoingResponses,
 						startDate: momentUtil.toDate( startMoment ),
-						startDate: '',
+						startDateInput,
 						startDateMoment: startMoment.clone().seconds( 0 ),
 						endDate: momentUtil.toDate( endMoment ),
-						endDate: '',
+						endDateInput,
 						endDateMoment: endMoment.clone().seconds( 0 ),
-						startTime: momentUtil.toTime24Hr( startMoment ),
-						endTime: momentUtil.toTime24Hr( endMoment ),
+						startTime: momentUtil.toDatabaseTime( startMoment ),
+						endTime: momentUtil.toDatabaseTime( endMoment ),
 					} ) );
 					dispatch( actions.setRSVPTempDetails( {
 						tempTitle: rsvp.title.rendered,
@@ -173,13 +181,13 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						tempCapacity: capacity,
 						tempNotGoingResponses: notGoingResponses,
 						tempStartDate: momentUtil.toDate( startMoment ),
-						tempStartDateInput: '',
+						tempStartDateInput: startDateInput,
 						tempStartDateMoment: startMoment.clone().seconds( 0 ),
 						tempEndDate: momentUtil.toDate( endMoment ),
-						tempEndDateInput: '',
+						tempEndDateInput: endDateInput,
 						tempEndDateMoment: endMoment.clone().seconds( 0 ),
-						tempStartTime: momentUtil.toTime24Hr( startMoment ),
-						tempEndTime: momentUtil.toTime24Hr( endMoment ),
+						tempStartTime: momentUtil.toDatabaseTime( startMoment ),
+						tempEndTime: momentUtil.toDatabaseTime( endMoment ),
 					} ) );
 					dispatch( actions.setRSVPIsLoading( false ) );
 				} else if ( page < totalPages ) {
