@@ -3,14 +3,14 @@
 /**
  * Initialize Gutenberg Compatibility for Event Tickets metabox
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__Compatibility__Tickets {
 
 	/**
 	 * Hook into the Events Template single page to allow Blocks to be properly reordered
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -21,7 +21,7 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 	/**
 	 * Intercept content and add the Front-end form where it is required
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param string $content Previous content
 	 *

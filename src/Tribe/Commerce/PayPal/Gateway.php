@@ -88,7 +88,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Action before adding to cart
 		 *
-		 * @since TBD
+		 * @since 4.9
 		 *
 		 * @param array $post_data
 		 */
@@ -243,7 +243,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		/**
 		 * Filters the add to cart redirect
 		 *
-		 * @since TBD
+		 * @since 4.9
 		 *
 		 * @param string $url
 		 * @param string $cart_url

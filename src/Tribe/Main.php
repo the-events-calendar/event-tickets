@@ -94,7 +94,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Where in the themes we will look for templates
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @var string
 	 */

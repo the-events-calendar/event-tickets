@@ -2,13 +2,13 @@
 /**
  * Events Gutenberg Assets
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__Assets {
 	/**
 	 * Registers and Enqueues the assets
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function register() {
 		$plugin = Tribe__Tickets__Main::instance();

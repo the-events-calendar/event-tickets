@@ -2,7 +2,7 @@
 /**
  * This template renders the registration/purchase attendee fields
  *
- * @version TBD
+ * @version 4.9
  *
  */
 if (

@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version TBD
+ * @version 4.9
  *
  * @var bool $must_login
  */
