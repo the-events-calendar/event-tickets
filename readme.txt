@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.9.1] TBD =
+
+* Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
+
 = [4.9] 2018-11-29 =
 
 * Feature - added new Tickets block for adding, managing, and displaying tickets
