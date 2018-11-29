@@ -10,13 +10,14 @@ import './style.pcss';
 const MoveDelete = ( {
 	moveTicket,
 	removeTicket,
+	isDisabled,
 } ) => {
 	return (
 		<div className="tribe-editor__ticket__content-row--move-delete">
-			<Button type="button" onClick={ moveTicket }>
+			<Button type="button" onClick={ moveTicket } disabled={ isDisabled }>
 				{ __( 'Move Ticket', 'events-tickets' ) }
 			</Button>
-			<Button type="button" onClick={ removeTicket }>
+			<Button type="button" onClick={ removeTicket } disabled={ isDisabled }>
 				{ __( 'Remove Ticket', 'events-tickets' ) }
 			</Button>
 		</div>
@@ -26,6 +27,7 @@ const MoveDelete = ( {
 MoveDelete.propTypes = {
 	moveTicket: PropTypes.func.isRequired,
 	removeTicket: PropTypes.func.isRequired,
+	isDisabled: PropTypes.func.isRequired,
 };
 
 export default MoveDelete;
