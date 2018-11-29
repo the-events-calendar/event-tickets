@@ -8,8 +8,6 @@ extends Tribe__Editor__Blocks__Abstract {
 	public function hook() {
 		add_action( 'wp_ajax_ticket_availability_check', array( $this, 'ticket_availability' ) );
 		add_action( 'wp_ajax_nopriv_ticket_availability_check', array( $this, 'ticket_availability' ) );
-
-		add_shortcode( 'gutti_tickets_purchase', array( $this, 'render_shortcode_attendees' ) );
 	}
 
 	/**
@@ -126,51 +124,6 @@ extends Tribe__Editor__Blocks__Abstract {
 			array(),
 			null
 		);
-	}
-
-	/**
-	 * A nice shortcode to show the WIP for the
-	 * Registration intermediate page & styles.
-	 *
-	 * THIS IS A WIP AND THE PURPOSE IS ONLY TO SHOW THE
-	 * RESULTS
-	 *
-	 * USE THE SHORTCODE [gutti_tickets_purchase ticket="ID"]
-	 *
-	 * @since TBD
-	 *
-	 * @return string
-	 */
-	public function render_shortcode_attendees( $atts, $content = '' ) {
-
-		// Bail if we don't receive `ticket` with the ticket id as a param
-		if ( ! isset( $atts['ticket'] ) ) {
-			return $content;
-		}
-
-		$ticket_id = intval( $atts['ticket'] );
-		$ticket    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
-
-		// Initialize attributes, in case we need them for the WIP
-		$attributes = array(
-			'ticket_id' => $ticket_id,
-			'ticket'    => $ticket, // just in case, to test
-		);
-
-		// enqueue assets
-		tribe_asset_enqueue( 'tribe-tickets-gutenberg-block-tickets-style' );
-
-		// set arguments. Let's just use the ticket we receive as the shortcode argument
-		// to display the results
-		$args['tickets'][]  = $ticket;
-		$args['attributes'] = $this->attributes( $attributes );
-
-		// Add the rendering attributes into global context
-		tribe( 'tickets.editor.template' )->add_template_globals( $args );
-
-		$content = tribe( 'tickets.editor.template' )->template( 'blocks/tickets/registration/content', $args, false );
-
-		return $content;
 	}
 
 	/**
