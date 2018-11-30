@@ -2299,7 +2299,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$_COOKIE, Tribe__Tickets__Commerce__PayPal__Gateway::$invoice_cookie_name,
 			false
 		);
-		return $cart::get_transient_name( $invoice );
+		return $cart->get_transient_name( $invoice );
 	}
 
 	/**
