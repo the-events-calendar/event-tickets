@@ -1,0 +1,70 @@
+.tribe-editor__ticket__container-header-title {
+	display: flex;
+
+	/* Pencil icon */
+	svg {
+		flex: none;
+		margin: 6px 0 0 10px;
+		opacity: 0;
+		transition: opacity 0.2s ease;
+
+		.is-hovered[data-type="tribe/tickets-item"] & {
+			opacity: 1;
+		}
+
+		.tribe-editor__ticket--selected & {
+			display: none;
+		}
+	}
+}
+
+/* extra editor-styles-wrapper class to override gutenberg styles */
+.edit-post-visual-editor .editor-block-list__block {
+
+	.tribe-editor__ticket__container-header-title-label {
+		flex: none;
+		max-width: calc(100% - 28px);
+		color: #000000;
+		margin: 0;
+		padding-top: 3px;
+		font-weight: bold;
+		font-size: 21px;
+		line-height: 25px;
+		letter-spacing: 0.16px;
+	}
+
+	.tribe-editor__ticket--disabled .tribe-editor__ticket__container-header-title-label {
+		color: #AEB4BB;
+	}
+}
+
+/* extra editor-styles-wrapper class to override gutenberg styles */
+.editor-styles-wrapper {
+
+	.tribe-editor__ticket__container-header-title-input {
+		/* !important required to override styles from react-input-autosize */
+		display: flex !important;
+		margin: 0;
+		padding-top: 3px;
+
+		& > * {
+			flex: none;
+		}
+
+		& > input {
+			background-color: transparent;
+			color: #000000;
+			margin: 0;
+			padding: 0;
+			border: none;
+			font-weight: bold;
+			font-size: 21px;
+			line-height: 25px;
+			letter-spacing: 0.16px;
+
+			&:disabled {
+				color: #AEB4BB;
+			}
+		}
+	}
+}

@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[STORE] - Attendees reducer Should set the title value 1`] = `
+Object {
+  "title": "Who's coming?",
+}
+`;

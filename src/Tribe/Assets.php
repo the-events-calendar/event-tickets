@@ -6,8 +6,10 @@ class Tribe__Tickets__Assets {
 	 * @since 4.6
 	 */
 	public function enqueue_scripts() {
+		$tickets_main = Tribe__Tickets__Main::instance();
+
 		tribe_assets(
-			Tribe__Tickets__Main::instance(),
+			$tickets_main,
 			array(
 				array( 'event-tickets-tickets-css', 'tickets.css', array( 'dashicons' ) ),
 				array( 'event-tickets-tickets-rsvp-css', 'rsvp.css', array() ),
@@ -16,6 +18,27 @@ class Tribe__Tickets__Assets {
 			),
 			'enqueue_scripts'
 		);
+
+		// Tickets registration page styles
+		tribe_asset(
+			$tickets_main,
+			'event-tickets-registration-page-styles',
+			'tickets-registration-page.css',
+			array(),
+			null,
+			array()
+		);
+
+		// Tickets registration page scripts
+		tribe_asset(
+			$tickets_main,
+			'event-tickets-registration-page-scripts',
+			'tickets-registration-page.js',
+			array(),
+			null,
+			array()
+		);
+
 	}
 
 	/**
@@ -35,11 +58,6 @@ class Tribe__Tickets__Assets {
 			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
 			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
 			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
-		);
-
-		$datepicker_formats = array(
-			'datepicker_format'       => Tribe__Date_Utils::datepicker_formats( tribe_get_option( 'datepickerFormat' ) ),
-			'datepicker_format_index' => tribe_get_option( 'datepickerFormat' ),
 		);
 
 		$locale  = localeconv();
@@ -98,10 +116,6 @@ class Tribe__Tickets__Assets {
 						'data' => array(
 							'nav_away_msg' => __( 'It looks like you have modified your shared capacity setting but have not saved or updated the post.', 'event-tickets' ),
 						),
-					),
-					array(
-						'name' => 'tribe_ticket_datepicker_format',
-						'data' => $datepicker_formats,
 					),
 					array(
 						'name' => 'price_format',
