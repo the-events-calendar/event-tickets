@@ -16,6 +16,7 @@ import {
 } from '@moderntribe/tickets/data/shared/move/actions';
 
 const mapStateToProps = ( state, ownProps ) => ( {
+	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	ticketId: selectors.getTicketId( state, ownProps ),
 } );
 

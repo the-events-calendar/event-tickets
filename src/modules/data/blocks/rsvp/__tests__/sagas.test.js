@@ -12,6 +12,7 @@ import * as actions from '../actions';
 import watchers, * as sagas from '../sagas';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import { moment as momentUtil } from '@moderntribe/common/utils';
+import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 jest.mock( '@wordpress/data', () => ( {
 	select: ( key ) => {
@@ -179,7 +180,7 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempStartDateMoment( state.startDate ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
 				] )
-			)
+			);
 			expect( gen.next().value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
 			);

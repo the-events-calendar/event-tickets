@@ -24,6 +24,7 @@ import {
 const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
 	rsvpId: selectors.getRSVPId( state ),
+	isDisabled: selectors.getRSVPIsLoading( state ) || selectors.getRSVPSettingsOpen( state ),
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {

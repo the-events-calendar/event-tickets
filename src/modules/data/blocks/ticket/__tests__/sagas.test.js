@@ -3,6 +3,7 @@
  */
 import { takeEvery, put, all, select, call } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * WordPress dependencies
