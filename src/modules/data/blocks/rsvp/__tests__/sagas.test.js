@@ -12,7 +12,6 @@ import * as actions from '../actions';
 import watchers, * as sagas from '../sagas';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import { moment as momentUtil } from '@moderntribe/common/utils';
-import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 jest.mock( '@wordpress/data', () => ( {
