@@ -2,7 +2,7 @@
 /**
  * This template renders the ticket toggle handler
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

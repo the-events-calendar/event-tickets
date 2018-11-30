@@ -53,7 +53,7 @@ SettingsDashboard.defaultProps = {
 		<Fragment>
 			<CloseIcon />
 			<span className="tribe-editor__settings-dashboard__close-button-text">
-				{ __( 'close', 'events-gutenberg' ) }
+				{ __( 'close', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	),
@@ -61,7 +61,7 @@ SettingsDashboard.defaultProps = {
 		<Fragment>
 			<CogIcon />
 			<span className="tribe-editor__settings-dashboard__header-left-text">
-				{ __( 'Settings', 'events-gutenberg' ) }
+				{ __( 'Settings', 'event-tickets' ) }
 			</span>
 		</Fragment>
 	),

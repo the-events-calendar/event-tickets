@@ -31,20 +31,30 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				startDate: action.payload.startDate,
 			};
-		case types.SET_RSVP_TEMP_START_DATE_OBJ:
+		case types.SET_RSVP_TEMP_START_DATE_INPUT:
 			return {
 				...state,
-				startDateObj: action.payload.startDateObj,
+				startDateInput: action.payload.startDateInput,
+			};
+		case types.SET_RSVP_TEMP_START_DATE_MOMENT:
+			return {
+				...state,
+				startDateMoment: action.payload.startDateMoment,
 			};
 		case types.SET_RSVP_TEMP_END_DATE:
 			return {
 				...state,
 				endDate: action.payload.endDate,
 			};
-		case types.SET_RSVP_TEMP_END_DATE_OBJ:
+		case types.SET_RSVP_TEMP_END_DATE_INPUT:
 			return {
 				...state,
-				endDateObj: action.payload.endDateObj,
+				endDateInput: action.payload.endDateInput,
+			};
+		case types.SET_RSVP_TEMP_END_DATE_MOMENT:
+			return {
+				...state,
+				endDateMoment: action.payload.endDateMoment,
 			};
 		case types.SET_RSVP_TEMP_START_TIME:
 			return {

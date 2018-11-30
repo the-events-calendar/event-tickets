@@ -25,10 +25,10 @@ const TicketDuration = ( props ) => (
 	) }>
 		<LabelWithTooltip
 			className="tribe-editor__ticket__duration-label-with-tooltip"
-			label={ __( 'Sale Duration', 'events-gutenberg' ) }
+			label={ __( 'Sale Duration', 'event-tickets' ) }
 			tooltipText={ __(
 				'If you do not set a start sale date, tickets will be available immediately.',
-				'events-gutenberg',
+				'event-tickets',
 			) }
 			tooltipLabel={ <Dashicon className="tribe-editor__ticket__tooltip-label" icon="info-outline" /> }
 		/>

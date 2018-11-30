@@ -5,7 +5,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Register the Attendee Info Provider singletons.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function register() {
 		tribe_singleton( 'tickets.attendee_registration', 'Tribe__Tickets__Attendee_Registration__Main' );
@@ -20,7 +20,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	/**
 	 * Add actions and filters for the Attendee Info classes.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	protected function hooks() {
 

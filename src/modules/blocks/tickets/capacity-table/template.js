@@ -33,20 +33,20 @@ const CapacityTable = ( {
 	return (
 		<div className="tribe-editor__tickets__capacity-table">
 			<h3 className="tribe-editor__tickets__capacity-table-title">
-				{ __( 'Capacity', 'events-gutenberg' ) }
+				{ __( 'Capacity', 'event-tickets' ) }
 			</h3>
 			<Row
-				label={ __( 'Shared capacity', 'events-gutenberg' ) }
+				label={ __( 'Shared capacity', 'event-tickets' ) }
 				items={ sharedTicketItems }
 				right={ sharedInput }
 			/>
 			<Row
-				label={ __( 'Independent capacity', 'events-gutenberg' ) }
+				label={ __( 'Independent capacity', 'event-tickets' ) }
 				items={ independentTicketItems }
 				right={ independentCapacity }
 			/>
 			<Row
-				label={ __( 'Total Capacity', 'events-gutenberg' ) }
+				label={ __( 'Total Capacity', 'event-tickets' ) }
 				right={ independentAndSharedCapacity }
 			/>
 		</div>

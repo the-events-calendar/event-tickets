@@ -29,7 +29,7 @@ const getTitle = (
 			<AutosizeInput
 				className="tribe-editor__rsvp-container-header__title-input"
 				value={ tempTitle }
-				placeholder={ __( 'RSVP Title', 'events-gutenberg' ) }
+				placeholder={ __( 'RSVP Title', 'event-tickets' ) }
 				onChange={ onTempTitleChange }
 				disabled={ isDisabled }
 			/>
@@ -49,7 +49,7 @@ const getDescription = (
 			<AutosizeInput
 				className="tribe-editor__rsvp-container-header__description-input"
 				value={ tempDescription }
-				placeholder={ __( 'description', 'events-gutenberg' ) }
+				placeholder={ __( 'description', 'event-tickets' ) }
 				onChange={ onTempDescriptionChange }
 				disabled={ isDisabled }
 			/>
@@ -63,11 +63,11 @@ const getDescription = (
 
 const getCapacityLabel = ( capacity ) => {
 	// todo: should use _n to be translator friendly
-	const singular = __( '%d available', 'events-gutenberg' );
+	const singular = __( '%d available', 'event-tickets' );
 	const plural = singular;
 	const fallback = (
 		<span className="tribe-editor__rsvp-container-header__capacity-label-fallback">
-			{ __( 'Unlimited', 'events-gutenberg' ) }
+			{ __( 'Unlimited', 'event-tickets' ) }
 		</span>
 	);
 

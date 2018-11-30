@@ -2,7 +2,7 @@
 /**
  * The template for the select input
  *
- * @version TBD
+ * @version 4.9
  *
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;

@@ -23,8 +23,8 @@ import './style.pcss';
  * Module Code
  */
 
-const placeholder = __( 'Who\'s Attending?', 'events-gutenberg' );
-const subtitle    = __( '(X) people are attending this event', 'events-gutenberg' );
+const placeholder = __( 'Who\'s Attending?', 'event-tickets' );
+const subtitle    = __( '(X) people are attending this event', 'event-tickets' );
 
 const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 	const containerClassNames = classNames( {

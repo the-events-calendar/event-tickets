@@ -12,6 +12,7 @@ import Template from './template';
 import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 import {
+	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
@@ -19,7 +20,8 @@ import {
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { blockId } = ownProps;
 	const startDateMoment = date ? moment( date ) : undefined;
-	dispatch( actions.setTicketTempStartDate( blockId, momentUtil.toDatabaseDate( startDateMoment ) ) );
+	const startDate = date ? momentUtil.toDatabaseDate( startDateMoment ) : '';
+	dispatch( actions.setTicketTempStartDate( blockId, startDate ) );
 	dispatch( actions.setTicketTempStartDateInput( blockId, dayPickerInput.state.value ) );
 	dispatch( actions.setTicketTempStartDateMoment( blockId, startDateMoment ) );
 	dispatch( actions.setTicketHasChanges( blockId, true ) );
@@ -45,7 +47,8 @@ const onFromTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
 	const { blockId } = ownProps;
 	const endDateMoment = date ? moment( date ) : undefined;
-	dispatch( actions.setTicketTempEndDate( blockId, momentUtil.toDatabaseDate( endDateMoment ) ) );
+	const endDate = date ? momentUtil.toDatabaseDate( endDateMoment ) : '';
+	dispatch( actions.setTicketTempEndDate( blockId, endDate ) );
 	dispatch( actions.setTicketTempEndDateInput( blockId, dayPickerInput.state.value ) );
 	dispatch( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) );
 	dispatch( actions.setTicketHasChanges( blockId, true ) );
@@ -69,11 +72,15 @@ const onToTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
 };
 
 const mapStateToProps = ( state, ownProps ) => {
+	const datePickerFormat = globals.tecDateSettings().datepickerFormat
+		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
+		: 'LL';
 	const isDisabled = selectors.isTicketDisabled( state, ownProps );
 
 	return {
 		fromDate: selectors.getTicketTempStartDateInput( state, ownProps ),
 		fromDateDisabled: isDisabled,
+		fromDateFormat: datePickerFormat,
 		fromTime: selectors.getTicketTempStartTimeNoSeconds( state, ownProps ),
 		fromTimeDisabled: isDisabled,
 		isSameDay: momentUtil.isSameDay(
@@ -82,6 +89,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		),
 		toDate: selectors.getTicketTempEndDateInput( state, ownProps ),
 		toDateDisabled: isDisabled,
+		toDateFormat: datePickerFormat,
 		toTime: selectors.getTicketTempEndTimeNoSeconds( state, ownProps ),
 		toTimeDisabled: isDisabled,
 	};

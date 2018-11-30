@@ -2,7 +2,7 @@
 /**
  * This template renders the event content
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

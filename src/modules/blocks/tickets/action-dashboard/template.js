@@ -21,7 +21,7 @@ import {
 import { ActionDashboard, LabelWithTooltip } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-const confirmLabel = __( 'Add Tickets', 'events-gutenberg' );
+const confirmLabel = __( 'Add Tickets', 'event-tickets' );
 
 const TicketsWarningTooltipLabel = () => (
 	<Dashicon
@@ -33,9 +33,9 @@ const TicketsWarningTooltipLabel = () => (
 const TicketsWarning = () => (
 	<LabelWithTooltip
 		className="tribe-editor__tickets__warning"
-		label={ __( 'Warning', 'events-gutenberg' ) }
+		label={ __( 'Warning', 'event-tickets' ) }
 		tooltipLabel={ <TicketsWarningTooltipLabel /> }
-		tooltipText={ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'events-gutenberg' ) }
+		tooltipText={ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
 	/>
 );
 

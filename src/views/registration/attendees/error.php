@@ -3,7 +3,7 @@
  * This template renders the error message for each form
  * of the attendee registration page
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

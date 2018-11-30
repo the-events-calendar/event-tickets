@@ -865,7 +865,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Trigger an action every time a new ticket instance has been created
 			 *
-			 * @since TBD
+			 * @since 4.9
 			 *
 			 * @param Tribe__Tickets__Tickets $ticket_handler
 			 */
@@ -924,7 +924,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
 			 *
-			 * @since TBD
+			 * @since 4.9
 			 *
 			 * @param boool $skip_empty_post If the empty post should be skiped or not
 			 * @param int   $post_id ID of the post being affected
@@ -2343,7 +2343,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns all the tickets currently in the users cart.
 		 *
-		 * @since TBD
+		 * @since 4.9
 		 *
 		 * @param array $tickets
 		 *
@@ -2356,7 +2356,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Return whether we're currently on the checkout page for this Merchant.
 		 *
-		 * @since TBD
+		 * @since 4.9
 		 *
 		 * @return bool
 		 */
@@ -2368,7 +2368,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * If tickets exist in the cart for which we don't have meta info,
 		 * redirect to the meta collection screen.
 		 *
-		 * @since TBD
+		 * @since 4.9
 		 *
 		 * @param string $redirect
 		 */
@@ -2400,7 +2400,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/**
 	 		 * Modify the tickets in cart, useful to
 	 		 * change the contents for each vendor
-			 * @since TBD
+			 * @since 4.9
 			 *
 			 * @param array
 			*/

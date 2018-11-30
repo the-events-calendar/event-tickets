@@ -22,7 +22,7 @@ const AttendeesActionButton = ( { href, hasProviders } ) => ( hasProviders && (
 		icon={ <Attendees /> }
 		target="_blank"
 	>
-		{ __( 'Attendees', 'events-gutenberg' ) }
+		{ __( 'Attendees', 'event-tickets' ) }
 	</ActionButton>
 ) );
 

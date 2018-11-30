@@ -12,20 +12,24 @@ import DateTimeRangePicker from './template';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 import {
+	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
 
 const getIsSameDay = ( state ) => {
-	const startDateObj = selectors.getRSVPTempStartDateObj( state );
-	const endDateObj = selectors.getRSVPTempEndDateObj( state );
-	return momentUtil.isSameDay( startDateObj, endDateObj );
+	const startDateMoment = selectors.getRSVPTempStartDateMoment( state );
+	const endDateMoment = selectors.getRSVPTempEndDateMoment( state );
+	return momentUtil.isSameDay( startDateMoment, endDateMoment );
 };
 
 const onFromDateChange = ( stateProps, dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	/* TODO: prevent onchange to type/select a date after toDate */
-	dispatch( actions.setRSVPTempStartDate( dayPickerInput.state.value ) );
-	dispatch( actions.setRSVPTempStartDateObj( date ) );
+	const startDateMoment = date ? moment( date ) : undefined;
+	const startDate = date ? momentUtil.toDatabaseDate( startDateMoment ) : '';
+	dispatch( actions.setRSVPTempStartDate( startDate ) );
+	dispatch( actions.setRSVPTempStartDateInput( dayPickerInput.state.value ) );
+	dispatch( actions.setRSVPTempStartDateMoment( startDateMoment ) );
 	dispatch( actions.setRSVPHasChanges( true ) );
 };
 
@@ -33,22 +37,25 @@ const onFromTimePickerChange = ( stateProps, dispatch ) => ( e ) => {
 	/* TODO: prevent change to a time out of range */
 	const startTime = e.target.value;
 	if ( startTime ) {
-		dispatch( actions.setRSVPTempStartTime( startTime ) );
+		dispatch( actions.setRSVPTempStartTime( `${ startTime }:00` ) );
 		dispatch( actions.setRSVPHasChanges( true ) );
 	}
 };
 
 const onFromTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 	const startTime = timeUtil.fromSeconds( value, timeUtil.TIME_FORMAT_HH_MM );
-	dispatch( actions.setRSVPTempStartTime( startTime ) );
+	dispatch( actions.setRSVPTempStartTime( `${ startTime }:00` ) );
 	dispatch( actions.setRSVPHasChanges( true ) );
 	onClose();
 };
 
 const onToDateChange = ( stateProps, dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	/* TODO: prevent onchange to type/select a date before fromDate */
-	dispatch( actions.setRSVPTempEndDate( dayPickerInput.state.value ) );
-	dispatch( actions.setRSVPTempEndDateObj( date ) );
+	const endDateMoment = date ? moment( date ) : undefined;
+	const endDate = date ? momentUtil.toDatabaseDate( endDateMoment ) : '';
+	dispatch( actions.setRSVPTempEndDate( endDate ) );
+	dispatch( actions.setRSVPTempEndDateInput( dayPickerInput.state.value ) );
+	dispatch( actions.setRSVPTempEndDateMoment( endDateMoment ) );
 	dispatch( actions.setRSVPHasChanges( true ) );
 };
 
@@ -56,31 +63,36 @@ const onToTimePickerChange = ( stateProps, dispatch ) => ( e ) => {
 	/* TODO: prevent change to a time out of range */
 	const endTime = e.target.value;
 	if ( endTime ) {
-		dispatch( actions.setRSVPTempEndTime( endTime ) );
+		dispatch( actions.setRSVPTempEndTime( `${ endTime }:00` ) );
 		dispatch( actions.setRSVPHasChanges( true ) );
 	}
 };
 
 const onToTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 	const endTime = timeUtil.fromSeconds( value, timeUtil.TIME_FORMAT_HH_MM );
-	dispatch( actions.setRSVPTempEndTime( endTime ) );
+	dispatch( actions.setRSVPTempEndTime( `${ endTime }:00` ) );
 	dispatch( actions.setRSVPHasChanges( true ) );
 	onClose();
 };
 
 const mapStateToProps = ( state ) => {
+	const datePickerFormat = globals.tecDateSettings().datepickerFormat
+		? momentUtil.toFormat( globals.tecDateSettings().datepickerFormat )
+		: 'LL';
 	const isDisabled = selectors.getRSVPIsLoading( state )
 		|| selectors.getRSVPSettingsOpen( state );
 
 	return {
-		fromDate: selectors.getRSVPTempStartDate( state ),
+		fromDate: selectors.getRSVPTempStartDateInput( state ),
 		fromDateDisabled: isDisabled,
-		fromTime: selectors.getRSVPTempStartTime( state ),
+		fromDateFormat: datePickerFormat,
+		fromTime: selectors.getRSVPTempStartTimeNoSeconds( state ),
 		fromTimeDisabled: isDisabled,
 		isSameDay: getIsSameDay( state ),
-		toDate: selectors.getRSVPTempEndDate( state ),
+		toDate: selectors.getRSVPTempEndDateInput( state ),
 		toDateDisabled: isDisabled,
-		toTime: selectors.getRSVPTempEndTime( state ),
+		toDateFormat: datePickerFormat,
+		toTime: selectors.getRSVPTempEndTimeNoSeconds( state ),
 		toTimeDisabled: isDisabled,
 	};
 };
