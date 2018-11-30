@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Update common library to maximize compatibility with earlier PHP versions (our thanks to @megabit81 for highlighting this problem) [119073]
 * Fix - Update common library to ensure better compatibility with addons running inside multisite networks [119044]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.9] 2018-11-29 =
 
