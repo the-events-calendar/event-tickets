@@ -122,6 +122,11 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.9.0.1] 2018-11-30 =
+
+* Fix - Update common library to maximize compatibility with earlier PHP versions (our thanks to @megabit81 for highlighting this problem) [119073]
+* Fix - Update common library to ensure better compatibility with addons running inside multisite networks [119044]
+
 = [4.9] 2018-11-29 =
 
 * Feature - added new Tickets block for adding, managing, and displaying tickets
