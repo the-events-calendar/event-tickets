@@ -124,7 +124,15 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.9.1] TBD =
 
-*
+= [4.9.0.2] 2018-11-30 =
+
+* Fix - Fixed an issue where the checking of the Event Tickets Plus version number would fail, and incorrectly deactivate Event Tickets Plus [119100]
+
+= [4.9.0.1] 2018-11-30 =
+
+* Fix - Adjustments for better compatibility with earlier PHP versions (our thanks to @megabit81 for highlighting this problem) [119073]
+* Fix - Update common library to ensure better compatibility with addons running inside multisite networks [119044]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.9] 2018-11-29 =
 

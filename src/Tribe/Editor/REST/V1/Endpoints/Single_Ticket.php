@@ -214,7 +214,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 
 		// Merge the defaults to avoid usage of `empty` values
 		$body = array_merge(
-			array( 'tribe-ticket' => [] ),
+			array( 'tribe-ticket' => array() ),
 			$request->get_default_params(),
 			$request->get_body_params()
 		);
