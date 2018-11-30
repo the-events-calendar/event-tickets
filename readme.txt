@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.9.0.2] TBD =
+
+* Fix - Fixed an issue where the checking of the Event Tickets Plus version number would fail, and incorrectly deactivate Event Tickets Plus
+
 = [4.9] 2018-11-29 =
 
 * Feature - added new Tickets block for adding, managing, and displaying tickets
