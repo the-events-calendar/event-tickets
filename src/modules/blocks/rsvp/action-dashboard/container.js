@@ -7,7 +7,7 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { select } from '@wordpress/data';
+import { select, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -26,10 +26,6 @@ const getHasRecurrenceRules = ( state ) => {
 	}
 	return hasRules;
 };
-
-const getIsCancelDisabled = ( state ) => (
-	! selectors.getRSVPHasChanges( state ) || selectors.getRSVPIsLoading( state )
-);
 
 const getIsConfirmDisabled = ( state ) => (
 	! selectors.getRSVPTempTitle( state )
@@ -53,6 +49,7 @@ const onCancelClick = ( state, dispatch ) => () => {
 		tempEndTime: selectors.getRSVPEndTime( state ),
 	} ) );
 	dispatch( actions.setRSVPHasChanges( false ) );
+	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 
 const onConfirmClick = ( state, dispatch ) => () => {
@@ -88,7 +85,7 @@ const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
 	hasRecurrenceRules: getHasRecurrenceRules( state ),
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-	isCancelDisabled: getIsCancelDisabled( state ),
+	isCancelDisabled: selectors.getRSVPIsLoading( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
 	isLoading: selectors.getRSVPIsLoading( state ),
 	showCancel: selectors.getRSVPCreated( state ),
