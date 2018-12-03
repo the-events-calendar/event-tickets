@@ -113,16 +113,6 @@ export const getTicketsCount = createSelector(
 	( allIds ) => allIds.length,
 );
 
-export const getTicketsIdsInBlocks = createSelector(
-	[ getTicketsArray ],
-	( tickets ) => tickets.reduce( ( accumulator, ticket ) => {
-		if ( ticket.ticketId !== 0 ) {
-			accumulator.push( ticket.ticketId );
-		}
-		return accumulator;
-	}, [] ),
-);
-
 export const hasTickets = createSelector(
 	[ getTicketsCount ],
 	( count ) => count > 0,
@@ -166,6 +156,16 @@ export const hasATicketSelected = createSelector(
 	( tickets ) => tickets.reduce( ( selected, ticket ) => (
 		selected || ticket.isSelected
 	), false),
+);
+
+export const getTicketsIdsInBlocks = createSelector(
+	[ getTicketsArray ],
+	( tickets ) => tickets.reduce( ( accumulator, ticket ) => {
+		if ( ticket.ticketId !== 0 ) {
+			accumulator.push( ticket.ticketId );
+		}
+		return accumulator;
+	}, [] ),
 );
 
 //
