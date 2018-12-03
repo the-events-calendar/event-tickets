@@ -11,11 +11,6 @@ import Template from './template';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
-const getIsCancelDisabled = ( state, ownProps ) => (
-	! selectors.getTicketHasChanges( state, ownProps )
-		|| selectors.isTicketDisabled( state, ownProps )
-);
-
 const getIsConfirmDisabled = ( state, ownProps ) => (
 	! selectors.getTicketTempTitle( state, ownProps )
 		|| ! selectors.getTicketHasChanges( state, ownProps )
@@ -53,7 +48,7 @@ const onConfirmClick = ( state, dispatch, ownProps ) => () => (
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
-	isCancelDisabled: getIsCancelDisabled( state, ownProps ),
+	isCancelDisabled: selectors.isTicketDisabled( state, ownProps ),
 	isConfirmDisabled: getIsConfirmDisabled( state, ownProps ),
 	state,
 } );

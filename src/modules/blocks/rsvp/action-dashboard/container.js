@@ -27,10 +27,6 @@ const getHasRecurrenceRules = ( state ) => {
 	return hasRules;
 };
 
-const getIsCancelDisabled = ( state ) => (
-	! selectors.getRSVPHasChanges( state ) || selectors.getRSVPIsLoading( state )
-);
-
 const getIsConfirmDisabled = ( state ) => (
 	! selectors.getRSVPTempTitle( state )
 		|| ! selectors.getRSVPHasChanges( state )
@@ -88,7 +84,7 @@ const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
 	hasRecurrenceRules: getHasRecurrenceRules( state ),
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-	isCancelDisabled: getIsCancelDisabled( state ),
+	isCancelDisabled: selectors.getRSVPIsLoading( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
 	isLoading: selectors.getRSVPIsLoading( state ),
 	showCancel: selectors.getRSVPCreated( state ),
