@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 /**
  * Wordpress dependencies
@@ -22,9 +23,11 @@ import './style.pcss';
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ( {
-	hasOverlay,
+	hasATicketSelected,
 	hasCreatedTickets,
+	hasOverlay,
 	hasProviders,
+	hasTickets,
 	isSelected,
 } ) => {
 	const messages = {
@@ -36,22 +39,35 @@ const TicketsContainer = ( {
 			: __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' ),
 	};
 
+	const innerBlocksClassName = classNames( {
+		'tribe-editor__tickets__inner-blocks': true,
+		'tribe-editor__tickets__inner-blocks--show': (
+			hasCreatedTickets || ( isSelected && hasTickets ) || hasATicketSelected
+		),
+	} );
+
 	return (
-		<div className="tribe-editor__ticket__container">
-			<div className="tribe-editor__tickets__body">
+		<div className="tribe-editor__tickets__container">
+			<div className={ innerBlocksClassName }>
 				<InnerBlocks
 					allowedBlocks={ [ 'tribe/tickets-item' ] }
 					templateLock="insert"
 				/>
 			</div>
-			{ ! hasCreatedTickets && (
-				<InactiveBlock
-					layout={ LAYOUT.ticket }
-					title={ messages.title }
-					description={ messages.description }
-					icon={ <TicketInactive /> }
-				/>
-			) }
+			{
+				(
+					( ! isSelected && ! hasATicketSelected && ! hasCreatedTickets )
+						|| ( isSelected && ! hasTickets )
+				)
+					&& (
+						<InactiveBlock
+							layout={ LAYOUT.ticket }
+							title={ messages.title }
+							description={ messages.description }
+							icon={ <TicketInactive /> }
+						/>
+					)
+			}
 			{ isSelected && hasCreatedTickets && (
 				<Availability />
 			) }
@@ -62,8 +78,10 @@ const TicketsContainer = ( {
 
 TicketsContainer.propTypes = {
 	hasCreatedTickets: PropTypes.bool,
-	isSelected: PropTypes.bool,
+	hasOverlay: PropTypes.bool,
 	hasProviders: PropTypes.bool,
+	hasTickets: PropTypes.bool,
+	isSelected: PropTypes.bool,
 };
 
 export default TicketsContainer;
