@@ -23,12 +23,3 @@ export function* setInitialState( action ) {
 export default function* watchers() {
 	yield takeEvery( types.SET_ATTENDEES_INITIAL_STATE, setInitialState );
 }
-
-
-export function* onSetDisplayTitleChange( action ) {
-	yield put( actions.setDisplayTitle( action.payload.displayTitle ) );
-}
-
-export function* onSetDisplaySubtitleChange( action ) {
-	yield put( actions.setDisplayTitle( action.payload.displaySubtitle ) );
-}
