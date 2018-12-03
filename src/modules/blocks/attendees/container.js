@@ -8,8 +8,8 @@ import { bindActionCreators, compose } from 'redux';
  * Internal dependencies
  */
 import { withSaveData, withStore } from '@moderntribe/common/hoc';
-import * as UIActions from '@moderntribe/tickets/data/blocks/attendees/actions';
-import * as UISelectors from '@moderntribe/tickets/data/blocks/attendees/selectors';
+import * as actions from '@moderntribe/tickets/data/blocks/attendees/actions';
+import * as selectors from '@moderntribe/tickets/data/blocks/attendees/selectors';
 import Attendees from './template';
 
 /**
@@ -17,23 +17,23 @@ import Attendees from './template';
  */
 
 const mapStateToProps = ( state ) => ( {
-	title: UISelectors.getTitle( state ),
-	displayTitle: UISelectors.getDisplayTitle( state ),
-	displaySubtitle: UISelectors.getDisplaySubtitle( state ),
+	title: selectors.getTitle( state ),
+	displayTitle: selectors.getDisplayTitle( state ),
+	displaySubtitle: selectors.getDisplaySubtitle( state ),
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
-	...bindActionCreators( UIActions, dispatch ),
+	...bindActionCreators( actions, dispatch ),
 	onSetDisplayTitleChange: onSetDisplayTitleChange( dispatch ),
 	onSetDisplaySubtitleChange: onSetDisplaySubtitleChange( dispatch ),
 } );
 
 const onSetDisplayTitleChange = ( dispatch ) => ( checked ) => (
-	dispatch( UIActions.setDisplayTitle( checked ) )
+	dispatch( actions.setDisplayTitle( checked ) )
 );
 
 const onSetDisplaySubtitleChange = ( dispatch ) => ( checked ) => (
-	dispatch( UIActions.setDisplaySubtitle( checked ) )
+	dispatch( actions.setDisplaySubtitle( checked ) )
 );
 
 export default compose(
