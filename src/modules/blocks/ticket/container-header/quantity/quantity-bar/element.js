@@ -34,7 +34,7 @@ const QuantityBar = ( { sharedSold, sold, capacity, total, isDisabled } ) => {
 								total={ total }
 							>
 								<span className="tribe-editor__quantity-bar__bar-label">
-									{ __( 'cap', 'events-gutenberg' ) }
+									{ __( 'cap', 'event-tickets' ) }
 								</span>
 							</Bar>
 					) }

@@ -41,7 +41,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Setup the context
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -78,7 +78,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * template we're gonna use for the attendee-registration
 	 * page
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -96,7 +96,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Add and remove body classes.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -122,7 +122,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Remove body classes.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @param array $classes List of classes to filter
 	 *
 	 * @return array $classes
@@ -146,7 +146,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Add the required body classes
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @param array $classes List of classes to filter
 	 *
 	 * @return array $classes
@@ -163,7 +163,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * Add the theme to the body class, in order to
 	 * add compatibility for official themes.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @param array $classes List of classes to filter
 	 *
 	 * @return array $classes
@@ -193,7 +193,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Checks if theme needs a compatibility fix
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @param string $theme Name of template from WP_Theme->Template, defaults to current active template
 	 *
 	 * @return mixed
@@ -212,7 +212,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * This is where the magic happens where we run some ninja code that hooks
 	 * the query to resolve to an events template.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @param WP_Query $query
 	 */
 	public function set_page_content( $query ) {
@@ -231,7 +231,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Modify the document title
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 * @param string $title
 	 *
 	 * @return array
@@ -254,7 +254,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Return the Attendee Registration page title
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string
 	 */
@@ -271,7 +271,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Create a fake page we'll use to hijack our attendee info page
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return obj
 	 */
@@ -309,7 +309,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Hijack the edit post link for our fake page
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return mixed
 	 */

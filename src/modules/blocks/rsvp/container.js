@@ -24,20 +24,24 @@ import {
 	getModalTicketId,
 } from '@moderntribe/tickets/data/shared/move/selectors';
 import { withStore, withSaveData } from '@moderntribe/common/hoc';
-import { toMomentFromDateTime } from '@moderntribe/common/utils/moment';
+import { time } from '@moderntribe/common/utils';
 
 const getIsInactive = ( state ) => {
-	const startDateObj = selectors.getRSVPStartDateObj( state );
-	const startTime = selectors.getRSVPStartTime( state );
-	const endDateObj = selectors.getRSVPEndDateObj( state );
-	const endTime = selectors.getRSVPEndTime( state );
+	const startDateMoment = selectors.getRSVPStartDateMoment( state );
+	const startTime = selectors.getRSVPStartTimeNoSeconds( state );
+	const endDateMoment = selectors.getRSVPEndDateMoment( state );
+	const endTime = selectors.getRSVPEndTimeNoSeconds( state );
 
-	if ( ! startDateObj || ! endDateObj ) {
+	if ( ! startDateMoment || ! endDateMoment ) {
 		return false;
 	}
 
-	const startMoment = toMomentFromDateTime( startDateObj, startTime );
-	const endMoment = toMomentFromDateTime( endDateObj, endTime );
+	const startMoment = startDateMoment.clone().seconds(
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM )
+	);
+	const endMoment = endDateMoment.clone().seconds(
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM )
+	);
 	const currentMoment = moment();
 
 	return ! ( currentMoment.isAfter( startMoment ) && currentMoment.isBefore( endMoment ) );

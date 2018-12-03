@@ -13,7 +13,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Which is the name/slug of this block
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string
 	 */
@@ -24,7 +24,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  array $attributes
 	 *
@@ -63,8 +63,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Register block assets
 	 *
-	 * @since TBD
-	 *
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -100,7 +99,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	/**
 	 * Check for ticket availability
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  array $tickets (IDs of tickets to check)
 	 *

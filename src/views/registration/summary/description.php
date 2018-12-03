@@ -3,7 +3,7 @@
  * This template renders the event summary description
  * for the registration page
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

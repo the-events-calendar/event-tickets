@@ -122,8 +122,17 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.9] TBD =
+= [4.9.1] TBD =
 
+* Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
+
+= [4.9] 2018-11-29 =
+
+* Feature - added new Tickets block for adding, managing, and displaying tickets
+* Feature - added new RSVP block for adding and displaying an RSVP (independently from tickets listings)
+* Feature - added new Attendee List block for displaying event attendees (replaces attendee list setting)
+* Tweak - limited RSVP block to a single RSVP except in cases of legacy configurations
+* Tweak - admin can now disable Not Going responses for RSVPs via the RSVP block
 * Fix - Adjust some permissions checks to ensure that RSVPs can be created by Subscriber-level users via the Community Tickets submission form [118598]
 * Language - 35 new strings added, 121 updated, 0 fuzzied, and 0 obsoleted
 

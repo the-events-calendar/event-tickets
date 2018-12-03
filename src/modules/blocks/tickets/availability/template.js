@@ -27,8 +27,8 @@ const Availability = ( { available, total } ) => {
 				'tribe-editor__tickets__availability-label--available',
 			) }
 			count={ available }
-			singular={ __( '%d ticket available', 'events-gutenberg' ) }
-			plural={ __( '%d tickets available', 'events-gutenberg' ) }
+			singular={ __( '%d ticket available', 'event-tickets' ) }
+			plural={ __( '%d tickets available', 'event-tickets' ) }
 		/>
 	);
 
@@ -39,8 +39,8 @@ const Availability = ( { available, total } ) => {
 				'tribe-editor__tickets__availability-label--total',
 			) }
 			count={ total }
-			singular={ __( '%d total ticket', 'events-gutenberg' ) }
-			plural={ __( '%d total tickets', 'events-gutenberg' ) }
+			singular={ __( '%d total ticket', 'event-tickets' ) }
+			plural={ __( '%d total tickets', 'event-tickets' ) }
 		/>
 	);
 

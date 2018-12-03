@@ -2,7 +2,7 @@
 /**
  * This template renders the summary ticket icon
  *
- * @version TBD
+ * @version 4.9
  *
  */
 ?>

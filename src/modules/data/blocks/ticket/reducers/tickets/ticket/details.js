@@ -8,10 +8,18 @@ import moment from 'moment/moment';
  */
 import * as constants from '@moderntribe/tickets/data/blocks/ticket/constants';
 import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 const currentMoment = moment();
 const endMoment = currentMoment.clone().add( 100, 'years' )
+
+const startDateInput = datePickerFormat
+	? currentMoment.format( momentUtil.toFormat( datePickerFormat ) )
+	: momentUtil.toDate( currentMoment );
+const endDateInput = datePickerFormat
+	? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
+	: momentUtil.toDate( endMoment );
 
 export const DEFAULT_STATE = {
 	title: '',
@@ -19,10 +27,10 @@ export const DEFAULT_STATE = {
 	price: '',
 	sku: '',
 	startDate: momentUtil.toDatabaseDate( currentMoment ),
-	startDateInput: momentUtil.toDate( currentMoment ),
+	startDateInput,
 	startDateMoment: currentMoment,
 	endDate: momentUtil.toDatabaseDate( endMoment ),
-	endDateInput: momentUtil.toDate( endMoment ),
+	endDateInput,
 	endDateMoment: endMoment,
 	startTime: momentUtil.toDatabaseTime( currentMoment ),
 	endTime: momentUtil.toDatabaseTime( currentMoment ),

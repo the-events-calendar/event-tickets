@@ -17,7 +17,7 @@ import { Cog as CogIcon } from '@moderntribe/common/icons';
 
 const SettingsActionButton = ( { onClick } ) => (
 	<ActionButton icon={ <CogIcon /> } onClick={ onClick }>
-		{ __( 'Settings', 'events-gutenberg' ) }
+		{ __( 'Settings', 'event-tickets' ) }
 	</ActionButton>
 );
 

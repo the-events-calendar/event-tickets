@@ -2,7 +2,7 @@
 /**
  * Attendee Registration
  *
- * @since TBD
+ * @since 4.9
  *
  * @todo: replace this entire stinky miasma with a React powered block
  */
@@ -12,7 +12,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	public $ticket;
 
 	/**
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return void
 	 */
@@ -28,7 +28,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	/**
 	 * Hooked to admin_menu to register the attendee registration page
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return null
 	 */
@@ -48,7 +48,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * Hooked to admin_init to setup ticket and post data
 	 *   also handles maybe handling form submission
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return null
 	 */
@@ -82,7 +82,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	/**
 	 * Show a success notice after save!
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string success message
 	 */
@@ -93,7 +93,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	/**
 	 * output for attendee information metabox
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @param  $post_id post id for the event
 	 *
@@ -151,7 +151,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	/**
 	 * handle the saving of attendee registration form
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return null|die
 	 */
@@ -177,7 +177,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	/**
 	 * URL to this standalone page
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return string URL
 	 */

@@ -18,6 +18,11 @@ Object {
       "source": "meta",
       "type": "string",
     },
+    "tickets": Object {
+      "meta": "_tribe_tickets_list",
+      "source": "meta",
+      "type": "array",
+    },
   },
   "category": "tribe-tickets",
   "description": "Sell tickets and register attendees.",

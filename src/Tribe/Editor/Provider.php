@@ -2,13 +2,13 @@
 /**
  * Register Event Tickets provider
  *
- * @since TBD
+ * @since 4.9
  */
 class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 */
 	public function register() {
@@ -62,7 +62,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 *
 	 * In place of delegating the hooking responsibility to the single classes they are all hooked here.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 */
 	protected function hook() {
@@ -117,7 +117,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Initializes the correct classes for when Tickets is active.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 *
 	 * @return bool
 	 */
@@ -129,7 +129,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	/**
 	 * Binds and sets up implementations at boot time.
 	 *
-	 * @since TBD
+	 * @since 4.9
 	 */
 	public function boot() {}
 }
