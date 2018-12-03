@@ -102,7 +102,7 @@ export function* initializeRSVP() {
 		] );
 	} catch ( err ) {
 		// ¯\_(ツ)_/¯
-		console.log( errr );
+		console.log( err );
 	}
 }
 
