@@ -92,7 +92,7 @@ const UI = ( props ) => {
 	const { isSelected, title, displayTitle, displaySubtitle } = props;
 	const blockTitle = ! ( isSelected || title )
 		? renderPlaceholder()
-		: [ renderLabelInput( props ) ];
+		: renderLabelInput( props );
 
 	return (
 		<div className="tribe-editor__block tribe-editor__event-attendees">
