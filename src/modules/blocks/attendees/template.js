@@ -160,6 +160,8 @@ Attendees.propTypes = {
 	displaySubtitle: PropTypes.bool,
 	onSetDisplaySubtitleChange: PropTypes.func,
 	onSetDisplayTitleChange: PropTypes.func,
+	onClick: PropTypes.func,
+	onKeyDown: PropTypes.func,
 };
 
 export default Attendees;
