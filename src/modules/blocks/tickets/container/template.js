@@ -21,9 +21,9 @@ import './style.pcss';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
-const TicketContainer = ( {
+const TicketsContainer = ( {
 	hasOverlay,
-	hasTickets,
+	hasCreatedTickets,
 	hasProviders,
 	isSelected,
 } ) => {
@@ -44,7 +44,7 @@ const TicketContainer = ( {
 					templateLock="insert"
 				/>
 			</div>
-			{ ! hasTickets && (
+			{ ! hasCreatedTickets && (
 				<InactiveBlock
 					layout={ LAYOUT.ticket }
 					title={ messages.title }
@@ -52,7 +52,7 @@ const TicketContainer = ( {
 					icon={ <TicketInactive /> }
 				/>
 			) }
-			{ isSelected && hasTickets && (
+			{ isSelected && hasCreatedTickets && (
 				<Availability />
 			) }
 			{ hasOverlay && <TicketsOverlay /> }
@@ -60,10 +60,10 @@ const TicketContainer = ( {
 	);
 };
 
-TicketContainer.propTypes = {
-	hasTickets: PropTypes.bool,
+TicketsContainer.propTypes = {
+	hasCreatedTickets: PropTypes.bool,
 	isSelected: PropTypes.bool,
 	hasProviders: PropTypes.bool,
 };
 
-export default TicketContainer;
+export default TicketsContainer;

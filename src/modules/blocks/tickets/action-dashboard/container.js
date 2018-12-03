@@ -31,7 +31,7 @@ const getHasRecurrenceRules = ( state ) => {
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	hasRecurrenceRules: getHasRecurrenceRules( state ),
-	hasTickets: selectors.hasTickets( state ),
+	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	onConfirmClick: () => {
 		const { clientId } = ownProps;
 		const { getBlockCount } = select( 'core/editor' );
