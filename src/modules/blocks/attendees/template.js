@@ -88,7 +88,7 @@ const RenderSubtitle = () => (
 	</div>
 );
 
-const renderUI = ( props ) => {
+const UI = ( props ) => {
 	const { isSelected, title, displayTitle, displaySubtitle } = props;
 	const blockTitle = ! ( isSelected || title )
 		? renderPlaceholder()
@@ -103,7 +103,7 @@ const renderUI = ( props ) => {
 	);
 };
 
-const renderControls = ( {
+const Controls = ( {
 	isSelected,
 	displayTitle,
 	displaySubtitle,
@@ -144,8 +144,8 @@ class Attendees extends Component {
 
 	render() {
 		return [
-			renderUI( this.props ),
-			renderControls( this.props ),
+			<UI {...this.props} />,
+			<Controls {...this.props} />,
 		];
 	}
 
