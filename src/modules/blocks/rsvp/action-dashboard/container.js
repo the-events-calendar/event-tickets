@@ -7,7 +7,7 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { select } from '@wordpress/data';
+import { select, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -49,6 +49,7 @@ const onCancelClick = ( state, dispatch ) => () => {
 		tempEndTime: selectors.getRSVPEndTime( state ),
 	} ) );
 	dispatch( actions.setRSVPHasChanges( false ) );
+	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 
 const onConfirmClick = ( state, dispatch ) => () => {

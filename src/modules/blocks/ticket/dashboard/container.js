@@ -5,6 +5,11 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
+ * WordPress dependencies
+ */
+import { dispatch as wpDispatch } from '@wordpress/data';
+
+/**
  * Internal dependencies
  */
 import Template from './template';
@@ -38,6 +43,7 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		selectors.getTicketsSharedCapacity( state ),
 	) );
 	dispatch( actions.setTicketHasChanges( ownProps.blockId, false ) );
+	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 
 const onConfirmClick = ( state, dispatch, ownProps ) => () => (
