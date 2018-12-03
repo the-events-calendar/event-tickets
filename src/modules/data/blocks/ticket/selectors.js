@@ -128,6 +128,13 @@ export const hasTickets = createSelector(
 	( count ) => count > 0,
 );
 
+export const hasCreatedTickets = createSelector(
+	[ getTicketsArray ],
+	( tickets ) => tickets.reduce( ( hasCreated, ticket ) => (
+		hasCreated || ticket.hasBeenCreated
+	), false ),
+)
+
 export const getIndependentTickets = createSelector(
 	[ getTicketsArray ],
 	( tickets ) => (
