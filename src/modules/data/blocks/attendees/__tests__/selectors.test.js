@@ -26,6 +26,6 @@ describe( '[STORE] - Attendees selectors', () => {
 	} );
 
 	it( 'Should return the attendees block display subtitle', () => {
-		expect( selectors.getDisplaySubtitle( state ) ).toEqual( DEFAULT_STATE.DisplaySubtitle );
+		expect( selectors.getDisplaySubtitle( state ) ).toEqual( DEFAULT_STATE.displaySubtitle );
 	} );
 } );
