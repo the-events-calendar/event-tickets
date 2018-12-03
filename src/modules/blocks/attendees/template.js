@@ -9,8 +9,14 @@ import AutosizeInput from 'react-input-autosize';
 /**
  * WordPress dependencies
  */
-import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { Component } from '@wordpress/element';
+import {
+	Dashicon,
+	ToggleControl,
+	PanelBody,
+} from '@wordpress/components';
+import { InspectorControls } from '@wordpress/editor';
 
 /**
  * Internal dependencies
@@ -82,27 +88,78 @@ const RenderSubtitle = () => (
 	</div>
 );
 
-const Attendees = ( props ) => {
-
-	const { isSelected, title } = props;
+const renderUI = ( props ) => {
+	const { isSelected, title, displayTitle, displaySubtitle } = props;
 	const blockTitle = ! ( isSelected || title )
 		? renderPlaceholder()
 		: [ renderLabelInput( props ) ];
 
 	return (
 		<div className="tribe-editor__block tribe-editor__event-attendees">
-			{ blockTitle }
-			{ <RenderSubtitle /> }
+			{ displayTitle ? blockTitle : '' }
+			{ displaySubtitle ? <RenderSubtitle /> : '' }
 			{ <RenderGravatars /> }
 		</div>
 	);
 };
+
+const renderControls = ( {
+	isSelected,
+	displayTitle,
+	displaySubtitle,
+	onSetDisplayTitleChange,
+	onSetDisplaySubtitleChange,
+} ) => (
+	isSelected && (
+		<InspectorControls key="inspector">
+			<PanelBody title={ __( 'Attendees Settings', 'events-gutenberg' ) }>
+				<ToggleControl
+					label={ __( 'Display Title', 'events-gutenberg' ) }
+					checked={ displayTitle }
+					onChange={ onSetDisplayTitleChange }
+				/>
+				<ToggleControl
+					label={ __( 'Display Subtitle', 'events-gutenberg' ) }
+					checked={ displaySubtitle }
+					onChange={ onSetDisplaySubtitleChange }
+				/>
+			</PanelBody>
+		</InspectorControls>
+	)
+);
+
+class Attendees extends Component {
+
+	componentDidMount() {
+		const { onKeyDown, onClick } = this.props;
+		document.addEventListener( 'keydown', onKeyDown );
+		document.addEventListener( 'click', onClick );
+	}
+
+	componentWillUnmount() {
+		const { onKeyDown, onClick } = this.props;
+		document.removeEventListener( 'keydown', onKeyDown );
+		document.removeEventListener( 'click', onClick );
+	}
+
+	render() {
+		return [
+			renderUI( this.props ),
+			renderControls( this.props ),
+		];
+	}
+
+}
 
 Attendees.propTypes = {
 	setTitle: PropTypes.func,
 	title: PropTypes.string,
 	isSelected: PropTypes.bool,
 	isEmpty: PropTypes.bool,
+	displayTitle: PropTypes.bool,
+	displaySubtitle: PropTypes.bool,
+	onSetDisplaySubtitleChange: PropTypes.func,
+	onSetDisplayTitleChange: PropTypes.func,
 };
 
 export default Attendees;

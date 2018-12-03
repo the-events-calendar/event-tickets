@@ -13,9 +13,22 @@ import * as actions from './actions';
 export function* setInitialState( action ) {
 	const { get } = action.payload;
 
-	yield put( actions.setTitle( get( 'title', DEFAULT_STATE.title ) ) );
+	yield all( [
+			put( actions.setTitle( get( 'title', DEFAULT_STATE.title ) ) ),
+			put( actions.setDisplayTitle( get( 'displayTitle', DEFAULT_STATE.displayTitle ) ) ),
+			put( actions.setDisplaySubtitle( get( 'displaySubtitle', DEFAULT_STATE.displaySubtitle ) ) ),
+		] );
 }
 
 export default function* watchers() {
 	yield takeEvery( types.SET_ATTENDEES_INITIAL_STATE, setInitialState );
+}
+
+
+export function* onSetDisplayTitleChange( action ) {
+	yield put( actions.setDisplayTitle( action.payload.displayTitle ) );
+}
+
+export function* onSetDisplaySubtitleChange( action ) {
+	yield put( actions.setDisplayTitle( action.payload.displaySubtitle ) );
 }
