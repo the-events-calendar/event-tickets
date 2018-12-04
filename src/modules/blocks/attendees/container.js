@@ -23,18 +23,12 @@ const mapStateToProps = ( state ) => ( {
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
-	...bindActionCreators( actions, dispatch ),
-	onSetDisplayTitleChange: onSetDisplayTitleChange( dispatch ),
-	onSetDisplaySubtitleChange: onSetDisplaySubtitleChange( dispatch ),
+	dispatch,
+	setInitialState: ( props ) => dispatch( actions.setInitialState( props ) ),
+	setTitle: ( e ) => dispatch( actions.setTitle( e.target.value ) ),
+	onSetDisplayTitleChange: ( checked ) => ( dispatch( actions.setDisplayTitle( checked ) ) ),
+	onSetDisplaySubtitleChange: ( checked ) => ( dispatch( actions.setDisplaySubtitle( checked ) ) ),
 } );
-
-const onSetDisplayTitleChange = ( dispatch ) => ( checked ) => (
-	dispatch( actions.setDisplayTitle( checked ) )
-);
-
-const onSetDisplaySubtitleChange = ( dispatch ) => ( checked ) => (
-	dispatch( actions.setDisplaySubtitle( checked ) )
-);
 
 export default compose(
 	withStore(),

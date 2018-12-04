@@ -53,7 +53,7 @@ const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 				className={ inputClassNames }
 				value={ title }
 				placeholder={ placeholder }
-				onChange={ input.sendValue( setTitle ) }
+				onChange={ setTitle }
 			/>
 		</div>
 	);
@@ -128,28 +128,12 @@ const Controls = ( {
 	)
 );
 
-class Attendees extends Component {
-
-	componentDidMount() {
-		const { onKeyDown, onClick } = this.props;
-		document.addEventListener( 'keydown', onKeyDown );
-		document.addEventListener( 'click', onClick );
-	}
-
-	componentWillUnmount() {
-		const { onKeyDown, onClick } = this.props;
-		document.removeEventListener( 'keydown', onKeyDown );
-		document.removeEventListener( 'click', onClick );
-	}
-
-	render() {
-		return [
-			<UI {...this.props} />,
-			<Controls {...this.props} />,
-		];
-	}
-
-}
+const Attendees = ( props ) => (
+	[
+		<UI {...props} />,
+		<Controls {...props} />,
+	]
+);
 
 Attendees.propTypes = {
 	setTitle: PropTypes.func,
@@ -160,8 +144,6 @@ Attendees.propTypes = {
 	displaySubtitle: PropTypes.bool,
 	onSetDisplaySubtitleChange: PropTypes.func,
 	onSetDisplayTitleChange: PropTypes.func,
-	onClick: PropTypes.func,
-	onKeyDown: PropTypes.func,
 };
 
 export default Attendees;
