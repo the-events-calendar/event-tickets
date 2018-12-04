@@ -18,9 +18,16 @@ import Attendees from './template';
 
 const mapStateToProps = ( state ) => ( {
 	title: selectors.getTitle( state ),
+	displayTitle: selectors.getDisplayTitle( state ),
+	displaySubtitle: selectors.getDisplaySubtitle( state ),
 } );
 
-const mapDispatchToProps = ( dispatch ) => bindActionCreators( actions, dispatch );
+const mapDispatchToProps = ( dispatch ) => ( {
+	setInitialState: ( props ) => dispatch( actions.setInitialState( props ) ),
+	setTitle: ( e ) => dispatch( actions.setTitle( e.target.value ) ),
+	onSetDisplayTitleChange: ( checked ) => ( dispatch( actions.setDisplayTitle( checked ) ) ),
+	onSetDisplaySubtitleChange: ( checked ) => ( dispatch( actions.setDisplaySubtitle( checked ) ) ),
+} );
 
 export default compose(
 	withStore(),
