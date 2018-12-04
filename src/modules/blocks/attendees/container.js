@@ -23,7 +23,6 @@ const mapStateToProps = ( state ) => ( {
 } );
 
 const mapDispatchToProps = ( dispatch ) => ( {
-	dispatch,
 	setInitialState: ( props ) => dispatch( actions.setInitialState( props ) ),
 	setTitle: ( e ) => dispatch( actions.setTitle( e.target.value ) ),
 	onSetDisplayTitleChange: ( checked ) => ( dispatch( actions.setDisplayTitle( checked ) ) ),
