@@ -106,6 +106,8 @@ export function* setTicketInitialState( action ) {
 		: call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
 
+	const hasBeenCreated = get( 'hasBeenCreated', TICKET_DEFAULT_STATE.hasBeenCreated );
+
 	yield all( [
 		put( actions.setTicketStartDate( clientId, startDate ) ),
 		put( actions.setTicketStartDateInput( clientId, startDateInput ) ),
@@ -115,6 +117,7 @@ export function* setTicketInitialState( action ) {
 		put( actions.setTicketTempStartDateInput( clientId, startDateInput ) ),
 		put( actions.setTicketTempStartDateMoment( clientId, startMoment ) ),
 		put( actions.setTicketTempStartTime( clientId, startTime ) ),
+		put( actions.setTicketHasBeenCreated( clientId, hasBeenCreated ) ),
 	] );
 
 	try {
