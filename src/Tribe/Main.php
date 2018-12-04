@@ -185,12 +185,15 @@ class Tribe__Tickets__Main {
 		 *
 		 * @since 4.8.2.1
 		 */
-		$this->maybe_include_et_plus_class();
+		$this->maybe_include_et_plus_file( 'Tribe__Tickets_Plus__Main' );
 
 		if (
 			class_exists( 'Tribe__Tickets_Plus__Main' )
 			&& version_compare( preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', Tribe__Tickets_Plus__Main::VERSION ), preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', self::VERSION ), '<' )
 		) {
+			$this->maybe_include_et_plus_file( 'Tribe__Tickets_Plus__PUE' );
+			new Tribe__Tickets_Plus__PUE;
+
 			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
 
 			/**
@@ -277,10 +280,12 @@ class Tribe__Tickets__Main {
 	 *
 	 * @see https://central.tri.be/issues/115510
 	 *
+	 * @param string $class_name Which class we will try to load
+	 *
 	 * @since 4.8.2.1
 	 */
-	private function maybe_include_et_plus_class() {
-		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+	private function maybe_include_et_plus_file( $class_name ) {
+		if ( class_exists( $class_name ) ) {
 			return;
 		}
 
@@ -296,8 +301,11 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
+		$file_path = str_replace( 'Tribe__Tickets_Plus__', '', $class_name );
+		$file_path = str_replace( '__', '/', $file_path );
+
 		$plugin_dir = preg_replace( '!(.*)[\\/]event-tickets-plus.php!', '$1', $plugin_short_path );
-		$path_to_class = wp_normalize_path( WP_PLUGIN_DIR . "/{$plugin_dir}/src/Tribe/Main.php" );
+		$path_to_class = wp_normalize_path( WP_PLUGIN_DIR . "/{$plugin_dir}/src/Tribe/$file_path.php" );
 
 		if ( ! file_exists( $path_to_class ) ) {
 			return;
