@@ -112,14 +112,14 @@ const Controls = ( {
 } ) => (
 	isSelected && (
 		<InspectorControls key="inspector">
-			<PanelBody title={ __( 'Attendees Settings', 'events-gutenberg' ) }>
+			<PanelBody title={ __( 'Attendees Settings', 'event-tickets' ) }>
 				<ToggleControl
-					label={ __( 'Display Title', 'events-gutenberg' ) }
+					label={ __( 'Display Title', 'event-tickets' ) }
 					checked={ displayTitle }
 					onChange={ onSetDisplayTitleChange }
 				/>
 				<ToggleControl
-					label={ __( 'Display Subtitle', 'events-gutenberg' ) }
+					label={ __( 'Display Subtitle', 'event-tickets' ) }
 					checked={ displaySubtitle }
 					onChange={ onSetDisplaySubtitleChange }
 				/>
