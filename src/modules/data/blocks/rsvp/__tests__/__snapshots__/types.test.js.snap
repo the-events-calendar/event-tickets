@@ -4,6 +4,14 @@ exports[`RSVP block types CREATE_RSVP 1`] = `"@@MT/TICKETS/CREATE_RSVP"`;
 
 exports[`RSVP block types DELETE_RSVP 1`] = `"@@MT/TICKETS/DELETE_RSVP"`;
 
+exports[`RSVP block types HANDLE_RSVP_END_DATE 1`] = `"@@MT/TICKETS/HANDLE_RSVP_END_DATE"`;
+
+exports[`RSVP block types HANDLE_RSVP_END_TIME 1`] = `"@@MT/TICKETS/HANDLE_RSVP_END_TIME"`;
+
+exports[`RSVP block types HANDLE_RSVP_START_DATE 1`] = `"@@MT/TICKETS/HANDLE_RSVP_START_DATE"`;
+
+exports[`RSVP block types HANDLE_RSVP_START_TIME 1`] = `"@@MT/TICKETS/HANDLE_RSVP_START_TIME"`;
+
 exports[`RSVP block types INITIALIZE_RSVP 1`] = `"@@MT/TICKETS/INITIALIZE_RSVP"`;
 
 exports[`RSVP block types SET_RSVP_CAPACITY 1`] = `"@@MT/TICKETS/SET_RSVP_CAPACITY"`;
