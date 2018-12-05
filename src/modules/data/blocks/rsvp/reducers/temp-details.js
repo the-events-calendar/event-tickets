@@ -66,6 +66,16 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				endTime: action.payload.endTime,
 			};
+		case types.SET_RSVP_TEMP_START_TIME_INPUT:
+			return {
+				...state,
+				startTimeInput: action.payload.startTimeInput,
+			};
+		case types.SET_RSVP_TEMP_END_TIME_INPUT:
+			return {
+				...state,
+				endTimeInput: action.payload.endTimeInput,
+			};
 		default:
 			return state;
 	}
