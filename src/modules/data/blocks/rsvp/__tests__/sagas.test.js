@@ -7,19 +7,33 @@ import { cloneableGenerator } from 'redux-saga/utils';
 /**
  * WordPress dependencies
  */
-import { select as wpSelect } from '@wordpress/data';
+import {
+	dispatch as wpDispatch,
+	select as wpSelect,
+} from '@wordpress/data';
 
 /**
  * Internal Dependencies
  */
 import * as types from '../types';
 import * as actions from '../actions';
+import * as selectors from '../selectors';
 import watchers, * as sagas from '../sagas';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import {
+	moment as momentUtil,
+	time as timeUtil,
+} from '@moderntribe/common/utils';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
 jest.mock( '@wordpress/data', () => ( {
+	dispatch: ( key ) => {
+		if ( key === 'core/editor' ) {
+			return {
+				removeBlocks: () => {},
+			};
+		}
+	},
 	select: ( key ) => {
 		if ( key === 'core/editor' ) {
 			return {
@@ -272,15 +286,11 @@ describe( 'RSVP block sagas', () => {
 		it( 'should initialize state from datetime block', () => {
 			const gen = sagas.initializeRSVP();
 
-			expect( gen.next().value ).toEqual(
-				call( wpSelect, 'core/editor' )
+			expect( JSON.stringify( gen.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' )
+				)
 			);
-			const wpSelectCoreEditor = {
-				getEditedPostAttribute: () => {},
-			};
-			expect( gen.next( wpSelectCoreEditor ).value ).toEqual(
-				call( wpSelectCoreEditor.getEditedPostAttribute, 'date' )
-			)
 			expect( gen.next( state.startDate ).value ).toEqual(
 				call( momentUtil.toMoment, state.startDate )
 			);
@@ -333,6 +343,335 @@ describe( 'RSVP block sagas', () => {
 				] )
 			);
 			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPStartDate', () => {
+		let action;
+
+		beforeEach( () => {
+			action = {
+				payload: {
+					date: undefined,
+					dayPickerInput: {
+						state: {
+							value: '',
+						}
+					}
+				}
+			}
+		} );
+
+		it( 'should handle undefined rsvp start date', () => {
+			const gen = sagas.handleRSVPStartDate( action );
+			expect( gen.next().value ).toEqual( undefined );
+			expect( gen.next( undefined ).value ).toEqual( '' );
+			expect( gen.next( '' ).value ).toEqual(
+				put( actions.setRSVPTempStartDate( '' ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempStartDateMoment( undefined ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle rsvp start date', () => {
+			action.payload.date = 'January 1, 2018';
+			action.payload.dayPickerInput.state.value = 'January 1, 2018';
+			const gen = sagas.handleRSVPStartDate( action );
+			expect( gen.next().value ).toEqual(
+				call( momentUtil.toMoment, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				put( actions.setRSVPTempStartDate( action.payload.date ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempStartDateInput( action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempStartDateMoment( action.payload.date ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPEndDate', () => {
+		let action;
+
+		beforeEach( () => {
+			action = {
+				payload: {
+					date: undefined,
+					dayPickerInput: {
+						state: {
+							value: '',
+						}
+					}
+				}
+			}
+		} );
+
+		it( 'should handle undefined rsvp end date', () => {
+			const gen = sagas.handleRSVPEndDate( action );
+			expect( gen.next().value ).toEqual( undefined );
+			expect( gen.next( undefined ).value ).toEqual( '' );
+			expect( gen.next( '' ).value ).toEqual(
+				put( actions.setRSVPTempEndDate( '' ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempEndDateMoment( undefined ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle rsvp end date', () => {
+			action.payload.date = 'January 1, 2018';
+			action.payload.dayPickerInput.state.value = 'January 1, 2018';
+			const gen = sagas.handleRSVPEndDate( action );
+			expect( gen.next().value ).toEqual(
+				call( momentUtil.toMoment, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				put( actions.setRSVPTempEndDate( action.payload.date ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempEndDateInput( action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPTempEndDateMoment( action.payload.date ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPStartTimeInput', () => {
+		it( 'should handle rsvp start time input', () => {
+			const startTimeInput = '01:00';
+			const action = {
+				payload: {
+					value: '01:00',
+					isSeconds: false,
+				},
+			};
+			const gen = cloneableGenerator( sagas.handleRSVPStartTimeInput )( action );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPStartTimeInput )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false )
+			);
+
+			const clone1 = gen.clone();
+			const moment1 = {
+				isValid: () => true,
+			};
+			expect( clone1.next( moment1 ).value ).toEqual(
+				call( momentUtil.toTime, moment1 )
+			);
+			expect( clone1.next( startTimeInput ).value ).toEqual(
+				put( actions.setRSVPTempStartTimeInput( startTimeInput ) )
+			);
+			expect( clone1.next().done ).toEqual( true );
+
+			const clone2 = gen.clone();
+			const moment2 = {
+				isValid: () => false,
+			};
+			expect( clone2.next( moment2 ).value ).toEqual(
+				put( actions.setRSVPTempStartTimeInput( startTimeInput ) )
+			);
+			expect( clone2.next().done ).toEqual( true );
+		} );
+
+		it( 'should skip handle rsvp start time input', () => {
+			const action = {
+				payload: {
+					value: 3600,
+					isSeconds: true,
+				},
+			};
+			const gen = sagas.handleRSVPStartTimeInput( action );
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPStartTime', () => {
+		it( 'should handle seconds rsvp start time', () => {
+			const action = {
+				payload: {
+					value: 3600,
+					isSeconds: true,
+				},
+			};
+			const startTime = '01:00';
+			const gen = sagas.handleRSVPStartTime( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				put( actions.setRSVPTempStartTime( `${ startTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle not seconds rsvp start time', () => {
+			const action = {
+				payload: {
+					value: '01:00',
+					isSeconds: false,
+				},
+			};
+			const startTime = '01:00';
+			const gen = sagas.handleRSVPStartTime( action );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPTempStartTimeInput )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toMoment, startTime, momentUtil.TIME_FORMAT, false )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime24Hr, startTime )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				put( actions.setRSVPTempStartTime( `${ startTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPEndTimeInput', () => {
+		it( 'should handle rsvp end time input', () => {
+			const endTimeInput = '01:00';
+			const action = {
+				payload: {
+					value: '01:00',
+					isSeconds: false,
+				},
+			};
+			const gen = cloneableGenerator( sagas.handleRSVPEndTimeInput )( action );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPEndTimeInput )
+			);
+			expect( gen.next( endTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false )
+			);
+
+			const clone1 = gen.clone();
+			const moment1 = {
+				isValid: () => true,
+			};
+			expect( clone1.next( moment1 ).value ).toEqual(
+				call( momentUtil.toTime, moment1 )
+			);
+			expect( clone1.next( endTimeInput ).value ).toEqual(
+				put( actions.setRSVPTempEndTimeInput( endTimeInput ) )
+			);
+			expect( clone1.next().done ).toEqual( true );
+
+			const clone2 = gen.clone();
+			const moment2 = {
+				isValid: () => false,
+			};
+			expect( clone2.next( moment2 ).value ).toEqual(
+				put( actions.setRSVPTempEndTimeInput( endTimeInput ) )
+			);
+			expect( clone2.next().done ).toEqual( true );
+		} );
+
+		it( 'should skip handle rsvp end time input', () => {
+			const action = {
+				payload: {
+					value: 3600,
+					isSeconds: true,
+				},
+			};
+			const gen = sagas.handleRSVPEndTimeInput( action );
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPEndTime', () => {
+		it( 'should handle seconds rsvp end time', () => {
+			const action = {
+				payload: {
+					value: 3600,
+					isSeconds: true,
+				},
+			};
+			const endTime = '01:00';
+			const gen = sagas.handleRSVPEndTime( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				put( actions.setRSVPTempEndTime( `${ endTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle not seconds rsvp end time', () => {
+			const action = {
+				payload: {
+					value: '01:00',
+					isSeconds: false,
+				},
+			};
+			const endTime = '01:00';
+			const gen = sagas.handleRSVPEndTime( action );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPTempEndTimeInput )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toMoment, endTime, momentUtil.TIME_FORMAT, false )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime24Hr, endTime )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				put( actions.setRSVPTempEndTime( `${ endTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPMove', () => {
+		it( 'should handle rsvp move', () => {
+			const gen = cloneableGenerator( sagas.handleRSVPMove )();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPId )
+			);
+			expect( gen.next( 42 ).value ).toEqual(
+				select( moveSelectors.getModalTicketId )
+			);
+
+			const clone1 = gen.clone();
+			expect( clone1.next( 42 ).value ).toEqual(
+				select( moveSelectors.getModalBlockId )
+			);
+			expect( clone1.next( 'modern-tribe' ).value ).toEqual(
+				put( actions.deleteRSVP() )
+			);
+			expect( JSON.stringify( clone1.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ 'modern-tribe' ] )
+				)
+			);
+			expect( clone1.next().done ).toEqual( true );
+
+			const clone2 = gen.clone();
+			expect( clone2.next( 24 ).done ).toEqual( true );
 		} );
 	} );
 } );

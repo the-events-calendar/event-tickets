@@ -98,8 +98,7 @@ export function* setRSVPTempDetails( action ) {
 
 export function* initializeRSVP() {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat;
-	const wpSelectCoreEditor = yield call( wpSelect, 'core/editor' );
-	const publishDate = yield call( wpSelectCoreEditor.getEditedPostAttribute, 'date' );
+	const publishDate = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
 	const startDate = yield call( momentUtil.toDate, startMoment );
 	const startDateInput = yield datePickerFormat
@@ -163,8 +162,8 @@ export function* handleRSVPEndDate( action ) {
 
 export function* handleRSVPStartTimeInput( action ) {
 	if ( ! action.payload.isSeconds ) {
-		const startTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
 		let startTimeInput = yield select( selectors.getRSVPStartTimeInput );
+		const startTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
 
 		if ( startTimeMoment.isValid() ) {
 			startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
@@ -190,8 +189,8 @@ export function* handleRSVPStartTime( action ) {
 
 export function* handleRSVPEndTimeInput( action ) {
 	if ( ! action.payload.isSeconds ) {
-		const endTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
 		let endTimeInput = yield select( selectors.getRSVPEndTimeInput );
+		const endTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
 
 		if ( endTimeMoment.isValid() ) {
 			endTimeInput = yield call( momentUtil.toTime, endTimeMoment );
