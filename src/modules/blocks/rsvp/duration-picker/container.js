@@ -18,12 +18,11 @@ import {
 } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => {
-	const startDateMoment = date ? moment( date ) : undefined;
-	const startDate = date ? momentUtil.toDatabaseDate( startDateMoment ) : '';
-	dispatch( actions.setRSVPTempStartDate( startDate ) );
-	dispatch( actions.setRSVPTempStartDateInput( dayPickerInput.state.value ) );
-	dispatch( actions.setRSVPTempStartDateMoment( startDateMoment ) );
-	dispatch( actions.setRSVPHasChanges( true ) );
+	const payload = {
+		date,
+		dayPickerInput,
+	};
+	dispatch( actions.handleRSVPStartDate( payload ) );
 };
 
 onFromTimePickerBlur = ( dispatch ) => ( e ) => {
@@ -49,12 +48,11 @@ const onFromTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 };
 
 const onToDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => {
-	const endDateMoment = date ? moment( date ) : undefined;
-	const endDate = date ? momentUtil.toDatabaseDate( endDateMoment ) : '';
-	dispatch( actions.setRSVPTempEndDate( endDate ) );
-	dispatch( actions.setRSVPTempEndDateInput( dayPickerInput.state.value ) );
-	dispatch( actions.setRSVPTempEndDateMoment( endDateMoment ) );
-	dispatch( actions.setRSVPHasChanges( true ) );
+	const payload = {
+		date,
+		dayPickerInput,
+	};
+	dispatch( actions.handleRSVPEndDate( payload ) );
 };
 
 onToTimePickerBlur = ( dispatch ) => ( e ) => {

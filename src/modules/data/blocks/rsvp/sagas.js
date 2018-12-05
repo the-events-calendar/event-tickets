@@ -144,11 +144,21 @@ export function* initializeRSVP() {
 //
 
 export function* handleRSVPStartDate( action ) {
-
+	const { date, dayPickerInput } = action.payload;
+	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
+	yield put( actions.setRSVPTempStartDate( startDate ) );
+	yield put( actions.setRSVPTempStartDateInput( dayPickerInput.state.value ) );
+	yield put( actions.setRSVPTempStartDateMoment( startDateMoment ) );
 }
 
 export function* handleRSVPEndDate( action ) {
-
+	const { date, dayPickerInput } = action.payload;
+	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
+	yield put( actions.setRSVPTempEndDate( endDate ) );
+	yield put( actions.setRSVPTempEndDateInput( dayPickerInput.state.value ) );
+	yield put( actions.setRSVPTempEndDateMoment( endDateMoment ) );
 }
 
 export function* handleRSVPStartTimeInput( action ) {
