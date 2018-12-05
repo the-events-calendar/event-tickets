@@ -23,7 +23,7 @@ const onFromDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => 
 	dispatch( actions.handleRSVPStartDate( payload ) );
 };
 
-onFromTimePickerBlur = ( dispatch ) => ( e ) => {
+const onFromTimePickerBlur = ( dispatch ) => ( e ) => {
 	const { value } = e.target;
 	const payload = {
 		value,
@@ -53,7 +53,7 @@ const onToDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	dispatch( actions.handleRSVPEndDate( payload ) );
 };
 
-onToTimePickerBlur = ( dispatch ) => ( e ) => {
+const onToTimePickerBlur = ( dispatch ) => ( e ) => {
 	const { value } = e.target;
 	const payload = {
 		value,
