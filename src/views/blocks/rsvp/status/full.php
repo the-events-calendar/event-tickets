@@ -10,8 +10,8 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version TBD
  *
  */
 
-esc_html_e( 'RSVP Full', 'events-gutenberg' );
+esc_html_e( 'RSVP Full', 'event-tickets' );
