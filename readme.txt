@@ -126,6 +126,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
 
+* Fix - Event Tickets Plus updates correctly when we are handling an outdated version
+
 = [4.9.0.2] 2018-11-30 =
 
 * Fix - Fixed an issue where the checking of the Event Tickets Plus version number would fail, and incorrectly deactivate Event Tickets Plus [119100]
