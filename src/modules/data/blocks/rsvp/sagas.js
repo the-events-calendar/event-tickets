@@ -10,9 +10,17 @@ import { put, call, all, select, takeEvery } from 'redux-saga/effects';
 import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
-import { globals, moment as momentUtil } from '@moderntribe/common/utils';
+import {
+	globals,
+	moment as momentUtil,
+	time as timeUtil,
+} from '@moderntribe/common/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+
+//
+// ─── RSVP DETAILS ───────────────────────────────────────────────────────────────
+//
 
 export function* setRSVPDetails( action ) {
 	const {
@@ -84,9 +92,14 @@ export function* setRSVPTempDetails( action ) {
 	] );
 }
 
+//
+// ─── INITIALIZE ─────────────────────────────────────────────────────────────────
+//
+
 export function* initializeRSVP() {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat;
-	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
+	const wpSelectCoreEditor = yield call( wpSelect, 'core/editor' );
+	const publishDate = yield call( wpSelectCoreEditor.getEditedPostAttribute, 'date' );
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
 	const startDate = yield call( momentUtil.toDate, startMoment );
 	const startDateInput = yield datePickerFormat
@@ -126,6 +139,76 @@ export function* initializeRSVP() {
 	}
 }
 
+//
+// ─── DATE & TIME ────────────────────────────────────────────────────────────────
+//
+
+export function* handleRSVPStartDate( action ) {
+
+}
+
+export function* handleRSVPEndDate( action ) {
+
+}
+
+export function* handleRSVPStartTimeInput( action ) {
+	if ( ! action.payload.isSeconds ) {
+		const startTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
+		let startTimeInput = yield select( selectors.getRSVPStartTimeInput );
+
+		if ( startTimeMoment.isValid() ) {
+			startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
+		}
+
+		yield put( actions.setRSVPTempStartTimeInput( startTimeInput ) );
+	}
+}
+
+export function* handleRSVPStartTime( action ) {
+	let startTime;
+
+	if ( action.payload.isSeconds ) {
+		startTime = yield call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM );
+	} else {
+		const startTimeInput = yield select( selectors.getRSVPTempStartTimeInput );
+		const startTimeMoment = yield call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false );
+		startTime = yield call( momentUtil.toTime24Hr, startTimeMoment );
+	}
+
+	yield put( actions.setRSVPTempStartTime( `${ startTime }:00` ) );
+}
+
+export function* handleRSVPEndTimeInput( action ) {
+	if ( ! action.payload.isSeconds ) {
+		const endTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
+		let endTimeInput = yield select( selectors.getRSVPEndTimeInput );
+
+		if ( endTimeMoment.isValid() ) {
+			endTimeInput = yield call( momentUtil.toTime, endTimeMoment );
+		}
+
+		yield put( actions.setRSVPTempEndTimeInput( endTimeInput ) );
+	}
+}
+
+export function* handleRSVPEndTime( action ) {
+	let endTime;
+
+	if ( action.payload.isSeconds ) {
+		endTime = yield call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM );
+	} else {
+		const endTimeInput = yield select( selectors.getRSVPTempEndTimeInput );
+		const endTimeMoment = yield call( momentUtil.toMoment, endTimeInput, momentUtil.TIME_FORMAT, false );
+		endTime = yield call( momentUtil.toTime24Hr, endTimeMoment );
+	}
+
+	yield put( actions.setRSVPTempEndTime( `${ endTime }:00` ) );
+}
+
+//
+// ─── MOVE ───────────────────────────────────────────────────────────────────────
+//
+
 export function* handleRSVPMove() {
 	const rsvpId = yield select( selectors.getRSVPId );
 	const modalTicketId = yield select( moveSelectors.getModalTicketId );
@@ -137,9 +220,68 @@ export function* handleRSVPMove() {
 	}
 }
 
+//
+// ─── HANDLERS ───────────────────────────────────────────────────────────────────
+//
+
+export function* handler( action ) {
+	switch ( action.type ) {
+		case types.SET_RSVP_DETAILS:
+			yield call( setRSVPDetails, action );
+			break;
+
+		case types.SET_RSVP_TEMP_DETAILS:
+			yield call( setRSVPTempDetails, action );
+			break;
+
+		case types.INITIALIZE_RSVP:
+			yield call( initializeRSVP );
+			break;
+
+		case types.HANDLE_RSVP_START_DATE:
+			yield call( handleRSVPStartDate, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case types.HANDLE_RSVP_END_DATE:
+			yield call( handleRSVPEndDate, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case types.HANDLE_RSVP_START_TIME:
+			yield call( handleRSVPStartTimeInput, action );
+			yield call( handleRSVPStartTime, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case types.HANDLE_RSVP_END_TIME:
+			yield call( handleRSVPEndTimeInput, action );
+			yield call( handleRSVPEndTime, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case MOVE_TICKET_SUCCESS:
+			yield call( handleRSVPMove );
+			break;
+
+		default:
+			break;
+	}
+}
+
+//
+// ─── WATCHERS ───────────────────────────────────────────────────────────────────
+//
+
 export default function* watchers() {
-	yield takeEvery( types.SET_RSVP_DETAILS, setRSVPDetails );
-	yield takeEvery( types.SET_RSVP_TEMP_DETAILS, setRSVPTempDetails );
-	yield takeEvery( types.INITIALIZE_RSVP, initializeRSVP );
-	yield takeEvery( MOVE_TICKET_SUCCESS, handleRSVPMove );
+	yield takeEvery( [
+		types.SET_RSVP_DETAILS,
+		types.SET_RSVP_TEMP_DETAILS,
+		types.INITIALIZE_RSVP,
+		types.HANDLE_RSVP_START_DATE,
+		types.HANDLE_RSVP_END_DATE,
+		types.HANDLE_RSVP_START_TIME,
+		types.HANDLE_RSVP_END_TIME,
+		MOVE_TICKET_SUCCESS,
+	], handler );
 }
