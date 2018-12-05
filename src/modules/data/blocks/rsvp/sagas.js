@@ -28,6 +28,8 @@ export function* setRSVPDetails( action ) {
 		endDateInput,
 		endDateMoment,
 		endTime,
+		startTimeInput,
+		endTimeInput,
 	} = action.payload;
 	yield all( [
 		put( actions.setRSVPTitle( title ) ),
@@ -42,6 +44,8 @@ export function* setRSVPDetails( action ) {
 		put( actions.setRSVPEndDateInput( endDateInput ) ),
 		put( actions.setRSVPEndDateMoment( endDateMoment ) ),
 		put( actions.setRSVPEndTime( endTime ) ),
+		put( actions.setRSVPStartTimeInput( startTimeInput ) ),
+		put( actions.setRSVPEndTimeInput( endTimeInput ) ),
 	] );
 }
 
@@ -59,6 +63,8 @@ export function* setRSVPTempDetails( action ) {
 		tempEndDateInput,
 		tempEndDateMoment,
 		tempEndTime,
+		tempStartTimeInput,
+		tempEndTimeInput,
 	} = action.payload;
 	yield all( [
 		put( actions.setRSVPTempTitle( tempTitle ) ),
@@ -73,6 +79,8 @@ export function* setRSVPTempDetails( action ) {
 		put( actions.setRSVPTempEndDateInput( tempEndDateInput ) ),
 		put( actions.setRSVPTempEndDateMoment( tempEndDateMoment ) ),
 		put( actions.setRSVPTempEndTime( tempEndTime ) ),
+		put( actions.setRSVPTempStartTimeInput( tempStartTimeInput ) ),
+		put( actions.setRSVPTempEndTimeInput( tempEndTimeInput ) ),
 	] );
 }
 
@@ -85,12 +93,14 @@ export function* initializeRSVP() {
 		? call( momentUtil.toDate, startMoment, datePickerFormat )
 		: call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
+	const startTimeInput = yield call( momentUtil.toTime, startMoment );
 
 	yield all( [
 		put( actions.setRSVPTempStartDate( startDate ) ),
 		put( actions.setRSVPTempStartDateInput( startDateInput ) ),
 		put( actions.setRSVPTempStartDateMoment( startMoment ) ),
 		put( actions.setRSVPTempStartTime( startTime ) ),
+		put( actions.setRSVPTempStartTimeInput( startTimeInput ) ),
 	] );
 
 	try {
@@ -102,12 +112,14 @@ export function* initializeRSVP() {
 			? call( momentUtil.toDate, endMoment, datePickerFormat )
 			: call( momentUtil.toDate, endMoment );
 		const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
+		const endTimeInput = yield call( momentUtil.toTime, endMoment );
 
 		yield all( [
 			put( actions.setRSVPTempEndDate( endDate ) ),
 			put( actions.setRSVPTempEndDateInput( endDateInput ) ),
 			put( actions.setRSVPTempEndDateMoment( endMoment ) ),
 			put( actions.setRSVPTempEndTime( endTime ) ),
+			put( actions.setRSVPTempEndTimeInput( endTimeInput ) ),
 		] );
 	} catch ( err ) {
 		// ¯\_(ツ)_/¯

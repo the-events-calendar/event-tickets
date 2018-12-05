@@ -64,11 +64,13 @@ describe( 'RSVP block sagas', () => {
 				endDateInput: 'January 4, 2018',
 				endDateMoment: 'January 4, 2018',
 				endTime: '23:32',
+				startTimeInput: '12:34 pm',
+				endTimeInput: '11:32 pm',
 			} };
 		} );
 
 		it( 'should set details state properties', () => {
-			const gen = cloneableGenerator( sagas.setRSVPDetails )( action );
+			const gen = sagas.setRSVPDetails( action );
 			expect( gen.next().value ).toEqual(
 				all( [
 					put( actions.setRSVPTitle( 'title' ) ),
@@ -83,6 +85,8 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPEndDateInput( 'January 4, 2018' ) ),
 					put( actions.setRSVPEndDateMoment( 'January 4, 2018' ) ),
 					put( actions.setRSVPEndTime( '23:32' ) ),
+					put( actions.setRSVPStartTimeInput( '12:34 pm' ) ),
+					put( actions.setRSVPEndTimeInput( '11:32 pm' ) ),
 				] )
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -105,11 +109,13 @@ describe( 'RSVP block sagas', () => {
 				tempEndDateInput: 'January 4, 2018',
 				tempEndDateMoment: 'January 4, 2018',
 				tempEndTime: '23:32',
+				tempStartTimeInput: '12:34 pm',
+				tempEndTimeInput: '11:32 pm',
 			} };
 		} );
 
 		it( 'should set temp details state properties', () => {
-			const gen = cloneableGenerator( sagas.setRSVPTempDetails )( action );
+			const gen = sagas.setRSVPTempDetails( action );
 			expect( gen.next().value ).toEqual(
 				all( [
 					put( actions.setRSVPTempTitle( 'title' ) ),
@@ -124,6 +130,8 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempEndDateInput( 'January 4, 2018' ) ),
 					put( actions.setRSVPTempEndDateMoment( 'January 4, 2018' ) ),
 					put( actions.setRSVPTempEndTime( '23:32' ) ),
+					put( actions.setRSVPTempStartTimeInput( '12:34 pm' ) ),
+					put( actions.setRSVPTempEndTimeInput( '11:32 pm' ) ),
 				] )
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -174,11 +182,15 @@ describe( 'RSVP block sagas', () => {
 				call( momentUtil.toDatabaseTime, state.startDate )
 			);
 			expect( gen.next( state.startTime ).value ).toEqual(
+				call( momentUtil.toTime, state.startDate )
+			);
+			expect( gen.next( state.startTime ).value ).toEqual(
 				all( [
 					put( actions.setRSVPTempStartDate( state.startDate ) ),
 					put( actions.setRSVPTempStartDateInput( state.startDate ) ),
 					put( actions.setRSVPTempStartDateMoment( state.startDate ) ),
 					put( actions.setRSVPTempStartTime( state.startTime ) ),
+					put( actions.setRSVPTempStartTimeInput( state.startTime ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -197,11 +209,15 @@ describe( 'RSVP block sagas', () => {
 				call( momentUtil.toDatabaseTime, state.endDate )
 			);
 			expect( gen.next( state.endTime ).value ).toEqual(
+				call( momentUtil.toTime, state.endDate )
+			);
+			expect( gen.next( state.endTime ).value ).toEqual(
 				all( [
 					put( actions.setRSVPTempEndDate( state.endDate ) ),
 					put( actions.setRSVPTempEndDateInput( state.endDate ) ),
 					put( actions.setRSVPTempEndDateMoment( state.endDate ) ),
 					put( actions.setRSVPTempEndTime( state.endTime ) ),
+					put( actions.setRSVPTempEndTimeInput( state.endTime ) ),
 				] )
 			);
 			expect( gen.next().done ).toEqual( true );
