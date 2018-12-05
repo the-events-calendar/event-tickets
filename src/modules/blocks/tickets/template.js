@@ -16,6 +16,7 @@ import './style.pcss';
 class Tickets extends PureComponent {
 	static propTypes = {
 		isSelected: PropTypes.bool,
+		hasProviders: PropTypes.bool,
 		isSettingsOpen: PropTypes.bool,
 		clientId: PropTypes.string,
 		header: PropTypes.string,
@@ -24,6 +25,7 @@ class Tickets extends PureComponent {
 	render() {
 		const {
 			isSelected,
+			hasProviders,
 			isSettingsOpen,
 			clientId,
 		} = this.props;
@@ -37,7 +39,7 @@ class Tickets extends PureComponent {
 				) }
 			>
 				<TicketsContainer isSelected={ isSelected } />
-				<TicketsDashboard isSelected={ isSelected } clientId={ clientId } />
+				{ hasProviders && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } /> }
 				<TicketControls />
 			</div>
 		);
