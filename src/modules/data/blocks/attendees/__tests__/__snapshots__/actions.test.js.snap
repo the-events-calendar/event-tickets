@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[STORE] - Attendees actions Should set initial state 1`] = `
+Object {
+  "payload": Object {},
+  "type": "@@MT/TICKETS/SET_ATTENDEES_INITIAL_STATE",
+}
+`;
+
+exports[`[STORE] - Attendees actions Should set the attendees Title 1`] = `
+Object {
+  "payload": Object {
+    "title": "Who's coming?",
+  },
+  "type": "@@MT/TICKETS/SET_ATTENDEES_TITLE",
+}
+`;

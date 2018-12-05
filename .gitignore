@@ -32,3 +32,4 @@ vendor/phpunit
 vendor/sebastian
 vendor/symfony
 vendor/autoload.php
+src/resources/**/app
