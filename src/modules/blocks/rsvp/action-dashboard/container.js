@@ -47,6 +47,8 @@ const onCancelClick = ( state, dispatch ) => () => {
 		tempEndDateMoment: selectors.getRSVPEndDateMoment( state ),
 		tempStartTime: selectors.getRSVPStartTime( state ),
 		tempEndTime: selectors.getRSVPEndTime( state ),
+		tempStartTimeInput: selectors.getRSVPStartTimeInput( state ),
+		tempEndTimeInput: selectors.getRSVPEndTimeInput( state ),
 	} ) );
 	dispatch( actions.setRSVPHasChanges( false ) );
 	wpDispatch( 'core/editor' ).clearSelectedBlock();
@@ -66,6 +68,8 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		endDateMoment: selectors.getRSVPTempEndDateMoment( state ),
 		startTime: selectors.getRSVPTempStartTime( state ),
 		endTime: selectors.getRSVPTempEndTime( state ),
+		startTimeInput: selectors.getRSVPTempStartTimeInput( state ),
+		endTimeInput: selectors.getRSVPTempEndTimeInput( state ),
 	};
 
 	if ( ! selectors.getRSVPCreated( state ) ) {

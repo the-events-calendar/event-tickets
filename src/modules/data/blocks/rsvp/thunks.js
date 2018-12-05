@@ -174,6 +174,8 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						endDateMoment: endMoment.clone().seconds( 0 ),
 						startTime: momentUtil.toDatabaseTime( startMoment ),
 						endTime: momentUtil.toDatabaseTime( endMoment ),
+						startTimeInput: momentUtil.toTime( startMoment ),
+						endTimeInput: momentUtil.toTime( endMoment ),
 					} ) );
 					dispatch( actions.setRSVPTempDetails( {
 						tempTitle: rsvp.title.rendered,
@@ -188,6 +190,8 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						tempEndDateMoment: endMoment.clone().seconds( 0 ),
 						tempStartTime: momentUtil.toDatabaseTime( startMoment ),
 						tempEndTime: momentUtil.toDatabaseTime( endMoment ),
+						tempStartTimeInput: momentUtil.toTime( startMoment ),
+						tempEndTimeInput: momentUtil.toTime( endMoment ),
 					} ) );
 					dispatch( actions.setRSVPIsLoading( false ) );
 				} else if ( page < totalPages ) {
