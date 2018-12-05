@@ -34,6 +34,7 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		$this->container->singleton( 'tickets.editor.assets', 'Tribe__Tickets__Editor__Assets', array( 'register' ) );
 
 		$this->container->singleton( 'tickets.editor.blocks.tickets', 'Tribe__Tickets__Editor__Blocks__Tickets' );
+		$this->container->singleton( 'tickets.editor.blocks.tickets-item', 'Tribe__Tickets__Editor__Blocks__Tickets_Item' );
 		$this->container->singleton( 'tickets.editor.blocks.rsvp', 'Tribe__Tickets__Editor__Blocks__Rsvp' );
 		$this->container->singleton( 'tickets.editor.blocks.attendees', 'Tribe__Tickets__Editor__Blocks__Attendees' );
 
@@ -95,6 +96,11 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 		add_action(
 			'tribe_events_editor_register_blocks',
 			tribe_callback( 'tickets.editor.blocks.tickets', 'register' )
+		);
+
+		add_action(
+			'tribe_events_editor_register_blocks',
+			tribe_callback( 'tickets.editor.blocks.tickets-item', 'register' )
 		);
 
 		add_action(

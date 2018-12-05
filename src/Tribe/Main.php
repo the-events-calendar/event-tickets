@@ -4,17 +4,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.9';
+	const VERSION = '4.9.2';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.7';
+	const MIN_TEC_VERSION = '4.7-dev';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.8';
+	const MIN_COMMON_VERSION = '4.8-dev';
 
 	/**
 	 * Name of the provider
@@ -189,7 +189,7 @@ class Tribe__Tickets__Main {
 
 		if (
 			class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& version_compare( preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?(?:-.*)/', '$1$2', Tribe__Tickets_Plus__Main::VERSION ), preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?(?:-.*)/', '$1$2', self::VERSION ), '<' )
+			&& version_compare( preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', Tribe__Tickets_Plus__Main::VERSION ), preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', self::VERSION ), '<' )
 		) {
 			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
 
