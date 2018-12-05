@@ -43,9 +43,19 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 			return;
 		}
 
-		$tickets = $template->get( 'tickets', array(), false );
-		$ticket  = Tribe__Tickets__Tickets::load_ticket_object( $attributes['ticketId'] );
-		$args    = array(
+		$tickets  = $template->get( 'tickets', array(), false );
+		$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $attributes['ticketId'] );
+		$provider = $template->get( 'provider' );
+
+		if ( empty( $provider ) ) {
+			return;
+		}
+
+		if ( $ticket->provider_class !== $provider->class_name ) {
+			return;
+		}
+
+		$args = array(
 			'tickets' => array_merge( $tickets, array( $ticket ) ),
 		);
 
