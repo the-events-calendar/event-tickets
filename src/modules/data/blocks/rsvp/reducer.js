@@ -80,6 +80,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_END_DATE_MOMENT:
 		case types.SET_RSVP_START_TIME:
 		case types.SET_RSVP_END_TIME:
+		case types.SET_RSVP_START_TIME_INPUT:
+		case types.SET_RSVP_END_TIME_INPUT:
 			return {
 				...state,
 				details: details( state.details, action ),
@@ -96,6 +98,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_TEMP_END_DATE_MOMENT:
 		case types.SET_RSVP_TEMP_START_TIME:
 		case types.SET_RSVP_TEMP_END_TIME:
+		case types.SET_RSVP_TEMP_START_TIME_INPUT:
+		case types.SET_RSVP_TEMP_END_TIME_INPUT:
 			return {
 				...state,
 				tempDetails: tempDetails( state.tempDetails, action ),
