@@ -148,6 +148,20 @@ export const setRSVPEndTime = ( endTime ) => ( {
 	},
 } );
 
+export const setRSVPStartTimeInput = ( startTimeInput ) => ( {
+	type: types.SET_RSVP_START_TIME_INPUT,
+	payload: {
+		startTimeInput,
+	},
+} );
+
+export const setRSVPEndTimeInput = ( endTimeInput ) => ( {
+	type: types.SET_RSVP_END_TIME_INPUT,
+	payload: {
+		endTimeInput,
+	},
+} );
+
 export const setRSVPTempTitle = ( title ) => ( {
 	type: types.SET_RSVP_TEMP_TITLE,
 	payload: {
@@ -229,6 +243,20 @@ export const setRSVPTempEndTime = ( endTime ) => ( {
 	type: types.SET_RSVP_TEMP_END_TIME,
 	payload: {
 		endTime,
+	},
+} );
+
+export const setRSVPTempStartTimeInput = ( startTimeInput ) => ( {
+	type: types.SET_RSVP_TEMP_START_TIME_INPUT,
+	payload: {
+		startTimeInput,
+	},
+} );
+
+export const setRSVPTempEndTimeInput = ( endTimeInput ) => ( {
+	type: types.SET_RSVP_TEMP_END_TIME_INPUT,
+	payload: {
+		endTimeInput,
 	},
 } );
 

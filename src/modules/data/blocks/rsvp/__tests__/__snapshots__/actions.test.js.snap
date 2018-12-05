@@ -92,6 +92,15 @@ Object {
 }
 `;
 
+exports[`RSVP block actions set RSVP end time input 1`] = `
+Object {
+  "payload": Object {
+    "endTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_END_TIME_INPUT",
+}
+`;
+
 exports[`RSVP block actions set RSVP going count 1`] = `
 Object {
   "payload": Object {
@@ -211,6 +220,15 @@ Object {
 }
 `;
 
+exports[`RSVP block actions set RSVP start time input 1`] = `
+Object {
+  "payload": Object {
+    "startTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_START_TIME_INPUT",
+}
+`;
+
 exports[`RSVP block actions set RSVP temp capacity 1`] = `
 Object {
   "payload": Object {
@@ -285,6 +303,15 @@ Object {
 }
 `;
 
+exports[`RSVP block actions set RSVP temp end time input 1`] = `
+Object {
+  "payload": Object {
+    "endTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME_INPUT",
+}
+`;
+
 exports[`RSVP block actions set RSVP temp not going responses 1`] = `
 Object {
   "payload": Object {
@@ -327,6 +354,15 @@ Object {
     "startTime": "12:34",
   },
   "type": "@@MT/TICKETS/SET_RSVP_TEMP_START_TIME",
+}
+`;
+
+exports[`RSVP block actions set RSVP temp start time input 1`] = `
+Object {
+  "payload": Object {
+    "startTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_TEMP_START_TIME_INPUT",
 }
 `;
 

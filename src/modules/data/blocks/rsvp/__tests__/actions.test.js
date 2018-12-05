@@ -97,6 +97,14 @@ describe( 'RSVP block actions', () => {
 		expect( actions.setRSVPEndTime( '12:34' ) ).toMatchSnapshot();
 	} );
 
+	test( 'set RSVP start time input', () => {
+		expect( actions.setRSVPStartTimeInput( '12:34' ) ).toMatchSnapshot();
+	} );
+
+	test( 'set RSVP end time input', () => {
+		expect( actions.setRSVPEndTimeInput( '12:34' ) ).toMatchSnapshot();
+	} );
+
 	test( 'set RSVP temp title', () => {
 		expect( actions.setRSVPTempTitle( 'temp title' ) ).toMatchSnapshot();
 	} );
@@ -143,6 +151,14 @@ describe( 'RSVP block actions', () => {
 
 	test( 'set RSVP temp end time', () => {
 		expect( actions.setRSVPTempEndTime( '12:34' ) ).toMatchSnapshot();
+	} );
+
+	test( 'set RSVP temp start time input', () => {
+		expect( actions.setRSVPTempStartTimeInput( '12:34' ) ).toMatchSnapshot();
+	} );
+
+	test( 'set RSVP temp end time input', () => {
+		expect( actions.setRSVPTempEndTimeInput( '12:34' ) ).toMatchSnapshot();
 	} );
 
 	test( 'set RSVP header image', () => {
