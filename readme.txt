@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.9.1] TBD =
+= [4.9.1] 2018-12-05 =
 
 * Fix - Event Tickets Plus updates correctly when we are handling an outdated version
 
