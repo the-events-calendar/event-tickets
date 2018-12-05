@@ -3,7 +3,6 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import moment from 'moment/moment';
 
 /**
  * Internal dependencies
@@ -14,7 +13,6 @@ import { withStore } from '@moderntribe/common/hoc';
 import {
 	globals,
 	moment as momentUtil,
-	time as timeUtil,
 } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => {

@@ -5,6 +5,11 @@ import { takeEvery, put, call, select, all } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 
 /**
+ * WordPress dependencies
+ */
+import { select as wpSelect } from '@wordpress/data';
+
+/**
  * Internal Dependencies
  */
 import * as types from '../types';
@@ -33,16 +38,114 @@ describe( 'RSVP block sagas', () => {
 		it( 'should watch actions', () => {
 			const gen = watchers();
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_RSVP_DETAILS, sagas.setRSVPDetails ),
+				takeEvery( [
+					types.SET_RSVP_DETAILS,
+					types.SET_RSVP_TEMP_DETAILS,
+					types.INITIALIZE_RSVP,
+					types.HANDLE_RSVP_START_DATE,
+					types.HANDLE_RSVP_END_DATE,
+					types.HANDLE_RSVP_START_TIME,
+					types.HANDLE_RSVP_END_TIME,
+					MOVE_TICKET_SUCCESS,
+				], sagas.handler )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handlers', () => {
+		let action;
+
+		beforeEach( () => {
+			action = { type: null };
+		} );
+
+		it( 'should set rsvp details', () => {
+			action.type = types.SET_RSVP_DETAILS;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.setRSVPDetails, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set rsvp temp details', () => {
+			action.type = types.SET_RSVP_TEMP_DETAILS;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.setRSVPTempDetails, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should initialize rsvp', () => {
+			action.type = types.INITIALIZE_RSVP;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.initializeRSVP )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle rsvp start date', () => {
+			action.type = types.HANDLE_RSVP_START_DATE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPStartDate, action )
 			);
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_RSVP_TEMP_DETAILS, sagas.setRSVPTempDetails ),
+				put( actions.setRSVPHasChanges( true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle rsvp end date', () => {
+			action.type = types.HANDLE_RSVP_END_DATE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPEndDate, action )
 			);
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.INITIALIZE_RSVP, sagas.initializeRSVP ),
+				put( actions.setRSVPHasChanges( true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle rsvp start time', () => {
+			action.type = types.HANDLE_RSVP_START_TIME;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPStartTimeInput, action )
 			);
 			expect( gen.next().value ).toEqual(
-				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleRSVPMove )
+				call( sagas.handleRSVPStartTime, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPHasChanges( true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle rsvp end time', () => {
+			action.type = types.HANDLE_RSVP_END_TIME;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPEndTimeInput, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPEndTime, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPHasChanges( true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should move success ticket', () => {
+			action.type = MOVE_TICKET_SUCCESS;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPMove )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -170,6 +273,15 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.initializeRSVP();
 
 			expect( gen.next().value ).toEqual(
+				call( wpSelect, 'core/editor' )
+			);
+			const wpSelectCoreEditor = {
+				getEditedPostAttribute: () => {},
+			};
+			expect( gen.next( wpSelectCoreEditor ).value ).toEqual(
+				call( wpSelectCoreEditor.getEditedPostAttribute, 'date' )
+			)
+			expect( gen.next( state.startDate ).value ).toEqual(
 				call( momentUtil.toMoment, state.startDate )
 			);
 			expect( gen.next( state.startDate ).value ).toEqual(
