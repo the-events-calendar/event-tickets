@@ -23,16 +23,6 @@ const onFromDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => 
 	dispatch( actions.handleRSVPStartDate( payload ) );
 };
 
-const onFromTimePickerBlur = ( dispatch ) => ( e ) => {
-	let startTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
-	if ( startTimeMoment.isValid() ) {
-		const startTimeInput = selectors.getRSVPStartTimeInput( state )
-		startTimeMoment = momentUtil.toMoment( startTimeInput, momentUtil.TIME_FORMAT, false );
-	}
-	const seconds = momentUtil.totalSeconds( startTimeMoment );
-	dispatch( actions.handleRSVPStartTime( seconds ) );
-};
-
 const onFromTimePickerChange = ( dispatch ) => ( e ) => (
 	dispatch( actions.setRSVPTempStartTimeInput( e.target.value ) )
 );
@@ -50,16 +40,6 @@ const onToDateChange = ( dispatch ) => ( date, modifiers, dayPickerInput ) => {
 	dispatch( actions.handleRSVPEndDate( payload ) );
 };
 
-const onToTimePickerBlur = ( dispatch ) => ( e ) => {
-	let endTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
-	if ( endTimeMoment.isValid() ) {
-		const endTimeInput = selectors.getRSVPEndTimeInput( state )
-		endTimeMoment = momentUtil.toMoment( endTimeInput, momentUtil.TIME_FORMAT, false );
-	}
-	const seconds = momentUtil.totalSeconds( endTimeMoment );
-	dispatch( actions.handleRSVPEndTime( seconds ) );
-};
-
 const onToTimePickerChange = ( dispatch ) => ( e ) => (
 	dispatch( actions.setRSVPTempEndTimeInput( e.target.value ) )
 );
@@ -67,6 +47,26 @@ const onToTimePickerChange = ( dispatch ) => ( e ) => (
 const onToTimePickerClick = ( dispatch ) => ( value, onClose ) => {
 	dispatch( actions.handleRSVPEndTime( value ) );
 	onClose();
+};
+
+const onFromTimePickerBlur = ( state, dispatch ) => ( e ) => {
+	let startTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
+	if ( ! startTimeMoment.isValid() ) {
+		const startTimeInput = selectors.getRSVPStartTimeInput( state )
+		startTimeMoment = momentUtil.toMoment( startTimeInput, momentUtil.TIME_FORMAT, false );
+	}
+	const seconds = momentUtil.totalSeconds( startTimeMoment );
+	dispatch( actions.handleRSVPStartTime( seconds ) );
+};
+
+const onToTimePickerBlur = ( state, dispatch ) => ( e ) => {
+	let endTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
+	if ( ! endTimeMoment.isValid() ) {
+		const endTimeInput = selectors.getRSVPEndTimeInput( state )
+		endTimeMoment = momentUtil.toMoment( endTimeInput, momentUtil.TIME_FORMAT, false );
+	}
+	const seconds = momentUtil.totalSeconds( endTimeMoment );
+	dispatch( actions.handleRSVPEndTime( seconds ) );
 };
 
 const mapStateToProps = ( state ) => {
@@ -87,21 +87,34 @@ const mapStateToProps = ( state ) => {
 		toDateFormat: datePickerFormat,
 		toTime: selectors.getRSVPTempEndTimeInput( state ),
 		toTimeDisabled: isDisabled,
+		state,
 	};
 };
 
 const mapDispatchToProps = ( dispatch ) => ( {
 	onFromDateChange: onFromDateChange( dispatch ),
-	onFromTimePickerBlur: onFromTimePickerBlur( dispatch ),
 	onFromTimePickerChange: onFromTimePickerChange( dispatch ),
 	onFromTimePickerClick: onFromTimePickerClick( dispatch ),
 	onToDateChange: onToDateChange( dispatch ),
-	onToTimePickerBlur: onToTimePickerBlur( dispatch ),
 	onToTimePickerChange: onToTimePickerChange( dispatch ),
 	onToTimePickerClick: onToTimePickerClick( dispatch ),
+	dispatch,
 } );
+
+const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
+	const { state, ...restStateProps } = stateProps;
+	const { dispatch, ...restDispatchProps } = dispatchProps;
+
+	return {
+		...ownProps,
+		...restStateProps,
+		...restDispatchProps,
+		onFromTimePickerBlur: onFromTimePickerBlur( state, dispatch ),
+		onToTimePickerBlur: onToTimePickerBlur( state, dispatch ),
+	}
+};
 
 export default compose(
 	withStore(),
-	connect( mapStateToProps, mapDispatchToProps ),
+	connect( mapStateToProps, mapDispatchToProps, mergeProps ),
 )( DateTimeRangePicker );
