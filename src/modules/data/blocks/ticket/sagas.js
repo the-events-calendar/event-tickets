@@ -737,7 +737,7 @@ export function* handleTicketMove() {
 	const ticketBlockIds = yield select( selectors.getAllTicketIds );
 	const modalBlockId = yield select( moveSelectors.getModalBlockId );
 
-	if ( ticketBlockIds.includes(modalBlockId) ) {
+	if ( ticketBlockIds.includes( modalBlockId ) ) {
 		yield put( actions.setTicketIsSelected( modalBlockId, false ) );
 		yield put( actions.removeTicketBlock( modalBlockId ) );
 		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ modalBlockId ] );
