@@ -10,11 +10,11 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version TBD
  *
  */
 
 ?>
-<a href="<?php echo esc_url( tribe( 'tickets' )->get_login_url() ); ?>">
-	<?php esc_html_e( 'Login to RSVP', 'events-gutenberg' ); ?>
+<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url() ); ?>">
+	<?php esc_html_e( 'Login to RSVP', 'events-tickets' ); ?>
 </a>
