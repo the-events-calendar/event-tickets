@@ -43,6 +43,24 @@ const {
 } = globals;
 const { wpREST } = api;
 
+export function* createMissingTicketBlocks( tickets ) {
+	const { insertBlock } = wpDispatch( 'core/editor' );
+	const { getBlockCount, getBlocks } = wpSelect( 'core/editor' );
+	const ticketsBlock = getBlocks().filter( ( block ) => block.name === 'tribe/tickets' );
+
+	ticketsBlock.forEach( ( { clientId } ) => {
+		tickets.forEach( ( ticketId ) => {
+			const nextChildPosition = getBlockCount( clientId );
+			const attributes = {
+				hasBeenCreated: true,
+				ticketId,
+			};
+			const block = createBlock( 'tribe/tickets-item', attributes );
+			insertBlock( block, nextChildPosition, clientId );
+		} );
+	} );
+}
+
 export function* setTicketsInitialState( action ) {
 	const { get } = action.payload;
 
@@ -75,38 +93,19 @@ export function* setTicketsInitialState( action ) {
 	yield put( actions.setTicketsProvider( provider || defaultProvider ) );
 }
 
-export function* createMissingTicketBlocks( tickets ) {
-	const { insertBlock } = wpDispatch( 'core/editor' );
-	const { getBlockCount, getBlocks } = wpSelect( 'core/editor' );
-	const ticketsBlock = getBlocks().filter( ( block ) => block.name === 'tribe/tickets' );
-
-	ticketsBlock.forEach( ( { clientId } ) => {
-		tickets.forEach( ( ticketId ) => {
-			const nextChildPosition = getBlockCount( clientId );
-			const attributes = {
-				hasBeenCreated: true,
-				ticketId,
-			};
-			const block = createBlock( 'tribe/tickets-item', attributes );
-			insertBlock( block, nextChildPosition, clientId );
-		} );
-	} );
-}
-
 export function* setTicketInitialState( action ) {
 	const { clientId, get } = action.payload;
 	const ticketId = get( 'ticketId', TICKET_DEFAULT_STATE.ticketId );
+	const hasBeenCreated = get( 'hasBeenCreated', TICKET_DEFAULT_STATE.hasBeenCreated );
 
 	const datePickerFormat = tecDateSettings().datepickerFormat
-	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
+	const publishDate = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
 	const startMoment = yield call( momentUtil.toMoment, publishDate );
 	const startDate = yield call( momentUtil.toDatabaseDate, startMoment );
 	const startDateInput = yield datePickerFormat
 		? call( momentUtil.toDate, startMoment, datePickerFormat )
 		: call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
-
-	const hasBeenCreated = get( 'hasBeenCreated', TICKET_DEFAULT_STATE.hasBeenCreated );
 
 	yield all( [
 		put( actions.setTicketStartDate( clientId, startDate ) ),
@@ -714,17 +713,74 @@ export function* handleTicketMove() {
 	}
 }
 
+export function* handler( action ) {
+	switch ( action.type ) {
+		case types.SET_TICKETS_INITIAL_STATE:
+			yield call( setTicketsInitialState, action );
+			break;
+
+		case types.SET_TICKET_INITIAL_STATE:
+			yield call( setTicketInitialState, action );
+			break;
+
+		case types.FETCH_TICKET:
+			yield call( fetchTicket, action );
+			break;
+
+		case types.CREATE_NEW_TICKET:
+			yield call( createNewTicket, action );
+			break;
+
+		case types.UPDATE_TICKET:
+			yield call( updateTicket, action );
+			break;
+
+		case types.DELETE_TICKET:
+			yield call( deleteTicket, action );
+			break;
+
+		case types.FETCH_TICKETS_HEADER_IMAGE:
+			yield call( fetchTicketsHeaderImage, action );
+			break;
+
+		case types.UPDATE_TICKETS_HEADER_IMAGE:
+			yield call( updateTicketsHeaderImage, action );
+			break;
+
+		case types.DELETE_TICKETS_HEADER_IMAGE:
+			yield call( deleteTicketsHeaderImage );
+			break;
+
+		case types.SET_TICKET_DETAILS:
+			yield call( setTicketDetails, action );
+			break;
+
+		case types.SET_TICKET_TEMP_DETAILS:
+			yield call( setTicketTempDetails, action );
+			break;
+
+		case MOVE_TICKET_SUCCESS:
+			yield call( handleTicketMove );
+			break;
+
+		default:
+			break;
+	}
+}
+
 export default function* watchers() {
-	yield takeEvery( types.SET_TICKETS_INITIAL_STATE, setTicketsInitialState );
-	yield takeEvery( types.SET_TICKET_INITIAL_STATE, setTicketInitialState );
-	yield takeEvery( types.FETCH_TICKET, fetchTicket );
-	yield takeEvery( types.CREATE_NEW_TICKET, createNewTicket );
-	yield takeEvery( types.UPDATE_TICKET, updateTicket );
-	yield takeEvery( types.DELETE_TICKET, deleteTicket );
-	yield takeEvery( types.FETCH_TICKETS_HEADER_IMAGE, fetchTicketsHeaderImage );
-	yield takeEvery( types.UPDATE_TICKETS_HEADER_IMAGE, updateTicketsHeaderImage );
-	yield takeEvery( types.DELETE_TICKETS_HEADER_IMAGE, deleteTicketsHeaderImage );
-	yield takeEvery( types.SET_TICKET_DETAILS, setTicketDetails );
-	yield takeEvery( types.SET_TICKET_TEMP_DETAILS, setTicketTempDetails );
-	yield takeEvery( MOVE_TICKET_SUCCESS, handleTicketMove );
+	yield takeEvery( [
+		types.SET_TICKETS_INITIAL_STATE,
+		types.SET_TICKET_INITIAL_STATE,
+		types.FETCH_TICKET,
+		types.CREATE_NEW_TICKET,
+		types.UPDATE_TICKET,
+		types.DELETE_TICKET,
+		types.FETCH_TICKETS_HEADER_IMAGE,
+		types.UPDATE_TICKETS_HEADER_IMAGE,
+		types.DELETE_TICKETS_HEADER_IMAGE,
+		types.SET_TICKET_DETAILS,
+		types.SET_TICKET_TEMP_DETAILS,
+		MOVE_TICKET_SUCCESS,
+	], handler );
 }

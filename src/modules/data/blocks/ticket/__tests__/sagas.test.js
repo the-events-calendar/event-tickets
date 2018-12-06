@@ -61,41 +61,137 @@ describe( 'Ticket Block sagas', () => {
 		it( 'should watch actions', () => {
 			const gen = watchers();
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKETS_INITIAL_STATE, sagas.setTicketsInitialState )
+				takeEvery( [
+					types.SET_TICKETS_INITIAL_STATE,
+					types.SET_TICKET_INITIAL_STATE,
+					types.FETCH_TICKET,
+					types.CREATE_NEW_TICKET,
+					types.UPDATE_TICKET,
+					types.DELETE_TICKET,
+					types.FETCH_TICKETS_HEADER_IMAGE,
+					types.UPDATE_TICKETS_HEADER_IMAGE,
+					types.DELETE_TICKETS_HEADER_IMAGE,
+					types.SET_TICKET_DETAILS,
+					types.SET_TICKET_TEMP_DETAILS,
+					MOVE_TICKET_SUCCESS,
+				], sagas.handler )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handler', () => {
+		let action;
+
+		beforeEach( () => {
+			action = { type: null };
+		} );
+
+		it( 'should set tickets initial state', () => {
+			action.type = types.SET_TICKETS_INITIAL_STATE;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKET_INITIAL_STATE, sagas.setTicketInitialState )
+				call( sagas.setTicketsInitialState, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set ticket initial state', () => {
+			action.type = types.SET_TICKET_INITIAL_STATE;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.FETCH_TICKET, sagas.fetchTicket )
+				call( sagas.setTicketInitialState, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should fetch ticket', () => {
+			action.type = types.FETCH_TICKET;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.CREATE_NEW_TICKET, sagas.createNewTicket )
+				call( sagas.fetchTicket, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should create new ticket', () => {
+			action.type = types.CREATE_NEW_TICKET;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.UPDATE_TICKET, sagas.updateTicket )
+				call( sagas.createNewTicket, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should update ticket', () => {
+			action.type = types.UPDATE_TICKET;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.DELETE_TICKET, sagas.deleteTicket )
+				call( sagas.updateTicket, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should delete ticket', () => {
+			action.type = types.DELETE_TICKET;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.FETCH_TICKETS_HEADER_IMAGE, sagas.fetchTicketsHeaderImage )
+				call( sagas.deleteTicket, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should fetch tickets header image', () => {
+			action.type = types.FETCH_TICKETS_HEADER_IMAGE;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.UPDATE_TICKETS_HEADER_IMAGE, sagas.updateTicketsHeaderImage )
+				call( sagas.fetchTicketsHeaderImage, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should update tickets header image', () => {
+			action.type = types.UPDATE_TICKETS_HEADER_IMAGE;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.DELETE_TICKETS_HEADER_IMAGE, sagas.deleteTicketsHeaderImage )
+				call( sagas.updateTicketsHeaderImage, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should delete tickets header image', () => {
+			action.type = types.DELETE_TICKETS_HEADER_IMAGE;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKET_DETAILS, sagas.setTicketDetails )
+				call( sagas.deleteTicketsHeaderImage )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set ticket details', () => {
+			action.type = types.SET_TICKET_DETAILS;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKET_TEMP_DETAILS, sagas.setTicketTempDetails )
+				call( sagas.setTicketDetails, action )
 			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set ticket timp details', () => {
+			action.type = types.SET_TICKET_TEMP_DETAILS;
+			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleTicketMove )
-			)
+				call( sagas.setTicketTempDetails, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket move', () => {
+			action.type = MOVE_TICKET_SUCCESS;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketMove )
+			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
@@ -252,11 +348,14 @@ describe( 'Ticket Block sagas', () => {
 		it( 'should set tickets initial state', () => {
 			const TICKET_ID = 99;
 			const CLIENT_ID = 'modern-tribe';
+			const HAS_BEEN_CREATED = true;
 			const action = {
 				payload: {
 					get: ( key ) => {
 						if ( key === 'ticketId' ) {
 							return TICKET_ID;
+						} else if ( key === 'hasBeenCreated' ) {
+							return HAS_BEEN_CREATED;
 						}
 					},
 					clientId: CLIENT_ID,
@@ -264,7 +363,12 @@ describe( 'Ticket Block sagas', () => {
 			};
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
-			expect( gen.next().value ).toEqual(
+			expect( JSON.stringify( gen.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' )
+				),
+			)
+			expect( gen.next( publishDate ).value ).toEqual(
 				call( momentUtil.toMoment, publishDate )
 			);
 			expect( gen.next( startMoment ).value ).toEqual(
@@ -286,6 +390,7 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketTempStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketTempStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketHasBeenCreated( action.payload.clientId, HAS_BEEN_CREATED ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -351,11 +456,14 @@ describe( 'Ticket Block sagas', () => {
 		it( 'should set tickets initial state for new ticket', () => {
 			const TICKET_ID = 0;
 			const CLIENT_ID = 'modern-tribe';
+			const HAS_BEEN_CREATED = true;
 			const action = {
 				payload: {
 					get: ( key ) => {
 						if ( key === 'ticketId' ) {
 							return TICKET_ID;
+						} else if ( key === 'hasBeenCreated' ) {
+							return HAS_BEEN_CREATED;
 						}
 					},
 					clientId: CLIENT_ID,
@@ -364,7 +472,12 @@ describe( 'Ticket Block sagas', () => {
 			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
-			expect( gen.next().value ).toEqual(
+			expect( JSON.stringify( gen.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' )
+				)
+			)
+			expect( gen.next( publishDate ).value ).toEqual(
 				call( momentUtil.toMoment, publishDate )
 			);
 			expect( gen.next( startMoment ).value ).toEqual(
@@ -386,6 +499,7 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketTempStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketTempStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketHasBeenCreated( action.payload.clientId, HAS_BEEN_CREATED ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
