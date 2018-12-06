@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version TBD
  *
  */
 
@@ -19,5 +19,5 @@
 	class="tribe-block__tickets__buy"
 	type="submit"
 >
-	<?php esc_html_e( 'Add to cart', 'events-gutenberg' ); ?>
+	<?php esc_html_e( 'Add to cart', 'event-tickets' ); ?>
 </button>

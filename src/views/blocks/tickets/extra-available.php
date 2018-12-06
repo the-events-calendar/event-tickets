@@ -10,12 +10,12 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version TBD
  *
  */
 
 $ticket    = $this->get( 'ticket' );
-$available = -1 === $ticket->available() ? esc_html__( 'Unlimited', 'events-gutenberg' ) : $ticket->available();
+$available = -1 === $ticket->available() ? esc_html__( 'Unlimited', 'event-tickets' ) : $ticket->available();
 ?>
 <div
 	class="tribe-block__tickets__item__extra__available"
