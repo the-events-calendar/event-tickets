@@ -38,10 +38,10 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 		endTime,
 	} = payload;
 
-	const startMoment = startDateMoment.clone().seconds(
+	const startMoment = startDateMoment.clone().startOf( 'day' ).seconds(
 		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS )
 	);
-	const endMoment = endDateMoment.clone().seconds(
+	const endMoment = endDateMoment.clone().startOf( 'day' ).seconds(
 		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS )
 	);
 
@@ -136,8 +136,8 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 
 					const rsvp = filteredRSVPs[0];
 					const { meta = {} } = rsvp;
-					const startMoment = moment( meta[ utils.KEY_TICKET_START_DATE ] );
-					const endMoment = moment( meta[ utils.KEY_TICKET_END_DATE ] );
+					const startMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_START_DATE ] );
+					const endMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_END_DATE ] );
 					const startDateInput = datePickerFormat
 						? startMoment.format( momentUtil.toFormat( datePickerFormat ) )
 						: momentUtil.toDate( startMoment );
