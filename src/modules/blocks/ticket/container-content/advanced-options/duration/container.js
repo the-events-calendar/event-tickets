@@ -73,16 +73,12 @@ const mapStateToProps = ( state, ownProps ) => {
 		fromDate: selectors.getTicketTempStartDateInput( state, ownProps ),
 		fromDateDisabled: isDisabled,
 		fromDateFormat: datePickerFormat,
-		fromTime: selectors.getTicketTempStartTimeNoSeconds( state, ownProps ),
+		fromTime: selectors.getTicketTempStartTimeInput( state, ownProps ),
 		fromTimeDisabled: isDisabled,
-		isSameDay: momentUtil.isSameDay(
-			selectors.getTicketTempStartDateMoment( state, ownProps ),
-			selectors.getTicketTempEndDateMoment( state, ownProps ),
-		),
 		toDate: selectors.getTicketTempEndDateInput( state, ownProps ),
 		toDateDisabled: isDisabled,
 		toDateFormat: datePickerFormat,
-		toTime: selectors.getTicketTempEndTimeNoSeconds( state, ownProps ),
+		toTime: selectors.getTicketTempEndTimeInput( state, ownProps ),
 		toTimeDisabled: isDisabled,
 		state,
 	};
