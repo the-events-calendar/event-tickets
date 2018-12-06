@@ -14,7 +14,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.8';
+	const MIN_COMMON_VERSION = '4.8.1';
+
+	/**
+	 * Min Version of WordPress
+	 */
+	protected $min_wordpress = '4.5';
+
+	/**
+	 * Min Version of PHP
+	 */
+	protected $min_php = '5.2.17';
 
 	/**
 	 * Name of the provider
@@ -70,8 +80,6 @@ class Tribe__Tickets__Main {
 	 */
 	protected $activation_page;
 
-	private $has_initialized = false;
-
 	/**
 	 * Static Singleton Holder
 	 * @var self
@@ -121,6 +129,7 @@ class Tribe__Tickets__Main {
 		$this->maybe_set_common_lib_info();
 
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
+		//add_action( 'tribe_common_loaded', array( $this, 'bootstrap' ), 0 );
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 	}
 
@@ -138,11 +147,10 @@ class Tribe__Tickets__Main {
 	 * Finalize the initialization of this plugin
 	 */
 	public function plugins_loaded() {
-		/**
-		 * It's possible we'll have initialized already (if the plugin has been embedded as a vendor lib
-		 * within another plugin, for example) in which case we need not repeat the process
-		 */
-		if ( $this->has_initialized ) {
+
+		// WordPress and PHP Version Check
+		if ( ! self::supported_version( 'wordpress' ) || ! self::supported_version( 'php' ) ) {
+			add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
 			return;
 		}
 
@@ -154,55 +162,36 @@ class Tribe__Tickets__Main {
 
 		// Safety check: if Tribe Common is not at a certain minimum version, bail out
 		if ( version_compare( Tribe__Main::VERSION, self::MIN_COMMON_VERSION, '<' ) ) {
+			//todo add error notice
 			return;
 		}
 
-		/**
-		 * We need Common to be able to load text domains correctly.
-		 * With that in mind we initialize Common passing the plugin Main class as the context
-		 */
-		Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
-
 		if (
-			class_exists( 'TribeEvents', false )
-			|| ( class_exists( 'Tribe__Events__Main' ) && ! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' ) )
+			class_exists( 'Tribe__Events__Main' ) &&
+			! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' )
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
-
 			/**
 			 * Fires if Event Tickets cannot load due to compatibility or other problems.
 			 */
 			do_action( 'tribe_tickets_plugin_failed_to_load' );
-
 			return;
 		}
 
-		/**
-		 * Safety check to resolve fatal (https://central.tri.be/issues/115510)
-		 *
-		 * @TODO: remove the following call and the subsequent if statement when we have
-		 * dependency checking logic in place
-		 *
-		 * @since 4.8.2.1
-		 */
-		$this->maybe_include_et_plus_file( 'Tribe__Tickets_Plus__Main' );
+		// Start Up Common
+		Tribe__Main::instance();
+		add_action( 'tribe_common_loaded', array( $this, 'bootstrap' ), 0 );
+	}
 
-		if (
-			class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& version_compare( preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', Tribe__Tickets_Plus__Main::VERSION ), preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', self::VERSION ), '<' )
-		) {
-			$this->maybe_include_et_plus_file( 'Tribe__Tickets_Plus__PUE' );
-			new Tribe__Tickets_Plus__PUE;
+	/**
+	 * Load Text Domain on tribe_common_loaded as it requires common
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function bootstrap() {
 
-			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
-
-			/**
-			 * Fires if Event Tickets cannot load due to compatibility or other problems.
-			 */
-			do_action( 'tribe_tickets_plugin_failed_to_load' );
-
-			return;
-		}
+		Tribe__Main::instance( $this )->load_text_domain( 'event-tickets', $this->plugin_dir . 'lang/' );
 
 		// Intialize the Service Provider for Tickets
 		tribe_register_provider( 'Tribe__Tickets__Service_Provider' );
@@ -210,8 +199,6 @@ class Tribe__Tickets__Main {
 		$this->hooks();
 
 		$this->register_active_plugin();
-
-		$this->has_initialized = true;
 
 		$this->bind_implementations();
 		$this->user_event_confirmation_list_shortcode();
@@ -228,6 +215,7 @@ class Tribe__Tickets__Main {
 		 * Fires once Event Tickets has completed basic setup.
 		 */
 		do_action( 'tribe_tickets_plugin_loaded' );
+
 	}
 
 	/**
@@ -259,59 +247,9 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Registers this plugin as being active for other tribe plugins and extensions
-	 *
-	 * @return bool Indicates if Tribe Common wants the plugin to run
 	 */
-	public function register_active_plugin() {
-		if ( ! function_exists( 'tribe_register_plugin' ) ) {
-			return true;
-		}
-
-		return tribe_register_plugin( EVENT_TICKETS_MAIN_PLUGIN_FILE, __CLASS__, self::VERSION );
-	}
-
-	/**
-	 * Include ET+ Main class file as a patch-work solution
-	 *
-	 * This is a patch-work solution to help avoid fatals while we wait for the dependency
-	 * checking feature to complete.
-	 *
-	 * @todo eliminate this method when dependency checking is complete
-	 *
-	 * @see https://central.tri.be/issues/115510
-	 *
-	 * @param string $class_name Which class we will try to load
-	 *
-	 * @since 4.8.2.1
-	 */
-	private function maybe_include_et_plus_file( $class_name ) {
-		if ( class_exists( $class_name ) ) {
-			return;
-		}
-
-		$active_plugins    = get_option( 'active_plugins' );
-		$plugin_short_path = null;
-		foreach ( $active_plugins as $plugin ) {
-			if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
-				$plugin_short_path = $plugin;
-				break;
-			}
-		}
-		if ( ! $plugin_short_path ) {
-			return;
-		}
-
-		$file_path = str_replace( 'Tribe__Tickets_Plus__', '', $class_name );
-		$file_path = str_replace( '__', '/', $file_path );
-
-		$plugin_dir = preg_replace( '!(.*)[\\/]event-tickets-plus.php!', '$1', $plugin_short_path );
-		$path_to_class = wp_normalize_path( WP_PLUGIN_DIR . "/{$plugin_dir}/src/Tribe/$file_path.php" );
-
-		if ( ! file_exists( $path_to_class ) ) {
-			return;
-		}
-
-		include_once $path_to_class;
+	protected function register_active_plugin() {
+		$this->registered = new Tribe__Tickets__Plugin_Register();
 	}
 
 	/**
@@ -346,30 +284,47 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
-	 * Event Tickets Plus that is too old
+	 * Test PHP and WordPress versions for compatibility
+	 *
+	 * @param string $system - system to be tested such as 'php' or 'wordpress'
+	 *
+	 * @return boolean - is the existing version of the system supported?
 	 */
-	public function et_plus_compatibility_notice() {
-		$active_plugins = get_option( 'active_plugins' );
-
-		$plugin_short_path = null;
-
-		foreach ( $active_plugins as $plugin ) {
-			if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
-				$plugin_short_path = $plugin;
-				break;
+	public function supported_version( $system ) {
+		if ( $supported = wp_cache_get( $system, 'tribe_version_test' ) ) {
+			return $supported;
+		} else {
+			switch ( strtolower( $system ) ) {
+				case 'wordpress' :
+					$supported = version_compare( get_bloginfo( 'version' ), $this->min_wordpress, '>=' );
+					break;
+				case 'php' :
+					$supported = version_compare( phpversion(), $this->min_php, '>=' );
+					break;
 			}
+			$supported = apply_filters( 'tribe_events_supported_version', $supported, $system );
+			wp_cache_set( $system, $supported, 'tribe_version_test' );
+
+			return $supported;
 		}
-
-		$upgrade_path = 'https://theeventscalendar.com/knowledgebase/manual-updates/';
-		$output = '<div class="error">';
-		$output .= '<p>' . sprintf( __( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
-		$output .= '</div>';
-
-		echo $output;
 	}
 
-	public function maybe_set_common_lib_info() {
+	/**
+	 * Display a WordPress or PHP incompatibility error
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function not_supported_error() {
+		if ( ! self::supported_version( 'wordpress' ) ) {
+			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, The Events Calendar requires WordPress %s or higher. Please upgrade your WordPress install.', 'the-events-calendar' ), $this->min_wordpress ) . '</p></div>';
+		}
+		if ( ! self::supported_version( 'php' ) ) {
+			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, The Events Calendar requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'the-events-calendar' ), $this->min_php ) . '</p></div>';
+		}
+	}
+
+		public function maybe_set_common_lib_info() {
 		$common_version = file_get_contents( $this->plugin_path . 'common/src/Tribe/Main.php' );
 
 		// if there isn't a tribe-common version, bail
@@ -847,4 +802,33 @@ class Tribe__Tickets__Main {
 			$updater->do_updates();
 		}
 	}
+
+		/**
+		* Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
+		* Event Tickets Plus that is too old
+		*
+		* @deprecated TBD
+		*
+		*/
+		public function et_plus_compatibility_notice() {
+			_deprecated_function( __METHOD__, 'TBD', '' );
+
+			$active_plugins = get_option( 'active_plugins' );
+
+			$plugin_short_path = null;
+
+			foreach ( $active_plugins as $plugin ) {
+				if ( false !== strstr( $plugin, 'event-tickets-plus.php' ) ) {
+					$plugin_short_path = $plugin;
+					break;
+				}
+			}
+
+			$upgrade_path = 'https://theeventscalendar.com/knowledgebase/manual-updates/';
+			$output = '<div class="error">';
+			$output .= '<p>' . sprintf( __( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
+			$output .= '</div>';
+
+			echo $output;
+		}
 }
