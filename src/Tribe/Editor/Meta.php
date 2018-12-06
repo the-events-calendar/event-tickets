@@ -173,7 +173,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$list_of_tickets = array();
 		foreach ( $tickets as $ticket ) {
-			if ( ! ( $ticket instanceof Tribe__Tickets__Ticket_Object ) ) {
+			if ( ! ( $ticket instanceof Tribe__Tickets__Ticket_Object ) || $ticket->provider_class === 'Tribe__Tickets__RSVP' ) {
 				continue;
 			}
 			$list_of_tickets[] = $ticket->ID;
