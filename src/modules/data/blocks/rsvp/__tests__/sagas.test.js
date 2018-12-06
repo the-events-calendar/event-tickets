@@ -308,6 +308,11 @@ describe( 'RSVP block sagas', () => {
 			);
 			expect( gen.next( state.startTime ).value ).toEqual(
 				all( [
+					put( actions.setRSVPStartDate( state.startDate ) ),
+					put( actions.setRSVPStartDateInput( state.startDate ) ),
+					put( actions.setRSVPStartDateMoment( state.startDate ) ),
+					put( actions.setRSVPStartTime( state.startTime ) ),
+					put( actions.setRSVPStartTimeInput( state.startTime ) ),
 					put( actions.setRSVPTempStartDate( state.startDate ) ),
 					put( actions.setRSVPTempStartDateInput( state.startDate ) ),
 					put( actions.setRSVPTempStartDateMoment( state.startDate ) ),
@@ -335,6 +340,11 @@ describe( 'RSVP block sagas', () => {
 			);
 			expect( gen.next( state.endTime ).value ).toEqual(
 				all( [
+					put( actions.setRSVPEndDate( state.endDate ) ),
+					put( actions.setRSVPEndDateInput( state.endDate ) ),
+					put( actions.setRSVPEndDateMoment( state.endDate ) ),
+					put( actions.setRSVPEndTime( state.endTime ) ),
+					put( actions.setRSVPEndTimeInput( state.endTime ) ),
 					put( actions.setRSVPTempEndDate( state.endDate ) ),
 					put( actions.setRSVPTempEndDateInput( state.endDate ) ),
 					put( actions.setRSVPTempEndDateMoment( state.endDate ) ),

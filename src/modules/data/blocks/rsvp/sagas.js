@@ -108,6 +108,11 @@ export function* initializeRSVP() {
 	const startTimeInput = yield call( momentUtil.toTime, startMoment );
 
 	yield all( [
+		put( actions.setRSVPStartDate( startDate ) ),
+		put( actions.setRSVPStartDateInput( startDateInput ) ),
+		put( actions.setRSVPStartDateMoment( startMoment ) ),
+		put( actions.setRSVPStartTime( startTime ) ),
+		put( actions.setRSVPStartTimeInput( startTimeInput ) ),
 		put( actions.setRSVPTempStartDate( startDate ) ),
 		put( actions.setRSVPTempStartDateInput( startDateInput ) ),
 		put( actions.setRSVPTempStartDateMoment( startMoment ) ),
@@ -127,6 +132,11 @@ export function* initializeRSVP() {
 		const endTimeInput = yield call( momentUtil.toTime, endMoment );
 
 		yield all( [
+			put( actions.setRSVPEndDate( endDate ) ),
+			put( actions.setRSVPEndDateInput( endDateInput ) ),
+			put( actions.setRSVPEndDateMoment( endMoment ) ),
+			put( actions.setRSVPEndTime( endTime ) ),
+			put( actions.setRSVPEndTimeInput( endTimeInput ) ),
 			put( actions.setRSVPTempEndDate( endDate ) ),
 			put( actions.setRSVPTempEndDateInput( endDateInput ) ),
 			put( actions.setRSVPTempEndDateMoment( endMoment ) ),
