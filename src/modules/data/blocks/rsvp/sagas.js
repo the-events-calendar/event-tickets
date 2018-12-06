@@ -170,58 +170,28 @@ export function* handleRSVPEndDate( action ) {
 	yield put( actions.setRSVPTempEndDateMoment( endDateMoment ) );
 }
 
-export function* handleRSVPStartTimeInput( action ) {
-	if ( ! action.payload.isSeconds ) {
-		let startTimeInput = yield select( selectors.getRSVPStartTimeInput );
-		const startTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
-
-		if ( startTimeMoment.isValid() ) {
-			startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
-		}
-
-		yield put( actions.setRSVPTempStartTimeInput( startTimeInput ) );
-	}
-}
-
 export function* handleRSVPStartTime( action ) {
-	let startTime;
-
-	if ( action.payload.isSeconds ) {
-		startTime = yield call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM );
-	} else {
-		const startTimeInput = yield select( selectors.getRSVPTempStartTimeInput );
-		const startTimeMoment = yield call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false );
-		startTime = yield call( momentUtil.toTime24Hr, startTimeMoment );
-	}
-
+	const startTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
 	yield put( actions.setRSVPTempStartTime( `${ startTime }:00` ) );
 }
 
-export function* handleRSVPEndTimeInput( action ) {
-	if ( ! action.payload.isSeconds ) {
-		let endTimeInput = yield select( selectors.getRSVPEndTimeInput );
-		const endTimeMoment = yield call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false );
-
-		if ( endTimeMoment.isValid() ) {
-			endTimeInput = yield call( momentUtil.toTime, endTimeMoment );
-		}
-
-		yield put( actions.setRSVPTempEndTimeInput( endTimeInput ) );
-	}
+export function* handleRSVPStartTimeInput( action ) {
+	const startTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
+	const startTimeMoment = yield call( momentUtil.toMoment, startTime, momentUtil.TIME_FORMAT, false );
+	const startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
+	yield put( actions.setRSVPTempStartTimeInput( startTimeInput ) );
 }
 
 export function* handleRSVPEndTime( action ) {
-	let endTime;
-
-	if ( action.payload.isSeconds ) {
-		endTime = yield call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM );
-	} else {
-		const endTimeInput = yield select( selectors.getRSVPTempEndTimeInput );
-		const endTimeMoment = yield call( momentUtil.toMoment, endTimeInput, momentUtil.TIME_FORMAT, false );
-		endTime = yield call( momentUtil.toTime24Hr, endTimeMoment );
-	}
-
+	const endTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
 	yield put( actions.setRSVPTempEndTime( `${ endTime }:00` ) );
+}
+
+export function* handleRSVPEndTimeInput( action ) {
+	const endTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
+	const endTimeMoment = yield call( momentUtil.toMoment, endTime, momentUtil.TIME_FORMAT, false );
+	const endTimeInput = yield call( momentUtil.toTime, endTimeMoment );
+	yield put( actions.setRSVPTempEndTimeInput( endTimeInput ) );
 }
 
 //
@@ -268,14 +238,14 @@ export function* handler( action ) {
 			break;
 
 		case types.HANDLE_RSVP_START_TIME:
-			yield call( handleRSVPStartTimeInput, action );
 			yield call( handleRSVPStartTime, action );
+			yield call( handleRSVPStartTimeInput, action );
 			yield put( actions.setRSVPHasChanges( true ) );
 			break;
 
 		case types.HANDLE_RSVP_END_TIME:
-			yield call( handleRSVPEndTimeInput, action );
 			yield call( handleRSVPEndTime, action );
+			yield call( handleRSVPEndTimeInput, action );
 			yield put( actions.setRSVPHasChanges( true ) );
 			break;
 

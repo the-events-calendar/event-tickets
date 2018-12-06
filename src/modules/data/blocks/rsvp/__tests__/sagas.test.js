@@ -129,10 +129,10 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.HANDLE_RSVP_START_TIME;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPStartTimeInput, action )
+				call( sagas.handleRSVPStartTime, action )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPStartTime, action )
+				call( sagas.handleRSVPStartTimeInput, action )
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPHasChanges( true ) )
@@ -144,10 +144,10 @@ describe( 'RSVP block sagas', () => {
 			action.type = types.HANDLE_RSVP_END_TIME;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPEndTimeInput, action )
+				call( sagas.handleRSVPEndTime, action )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.handleRSVPEndTime, action )
+				call( sagas.handleRSVPEndTimeInput, action )
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPHasChanges( true ) )
@@ -466,96 +466,64 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
+	describe( 'handleRSVPStartTime', () => {
+		it( 'should handle seconds rsvp start time', () => {
+			const action = {
+				payload: {
+					seconds: 3600,
+				},
+			};
+			const startTime = '01:00';
+			const gen = sagas.handleRSVPStartTime( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				put( actions.setRSVPTempStartTime( `${ startTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
 	describe( 'handleRSVPStartTimeInput', () => {
 		it( 'should handle rsvp start time input', () => {
 			const startTimeInput = '01:00';
 			const action = {
 				payload: {
-					value: '01:00',
-					isSeconds: false,
-				},
-			};
-			const gen = cloneableGenerator( sagas.handleRSVPStartTimeInput )( action );
-			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPStartTimeInput )
-			);
-			expect( gen.next( startTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false )
-			);
-
-			const clone1 = gen.clone();
-			const moment1 = {
-				isValid: () => true,
-			};
-			expect( clone1.next( moment1 ).value ).toEqual(
-				call( momentUtil.toTime, moment1 )
-			);
-			expect( clone1.next( startTimeInput ).value ).toEqual(
-				put( actions.setRSVPTempStartTimeInput( startTimeInput ) )
-			);
-			expect( clone1.next().done ).toEqual( true );
-
-			const clone2 = gen.clone();
-			const moment2 = {
-				isValid: () => false,
-			};
-			expect( clone2.next( moment2 ).value ).toEqual(
-				put( actions.setRSVPTempStartTimeInput( startTimeInput ) )
-			);
-			expect( clone2.next().done ).toEqual( true );
-		} );
-
-		it( 'should skip handle rsvp start time input', () => {
-			const action = {
-				payload: {
-					value: 3600,
-					isSeconds: true,
+					seconds: 3600,
 				},
 			};
 			const gen = sagas.handleRSVPStartTimeInput( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toTime, startTimeInput )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				put( actions.setRSVPTempStartTimeInput( startTimeInput ) )
+			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
-	describe( 'handleRSVPStartTime', () => {
-		it( 'should handle seconds rsvp start time', () => {
+	describe( 'handleRSVPEndTime', () => {
+		it( 'should handle seconds rsvp end time', () => {
 			const action = {
 				payload: {
-					value: 3600,
-					isSeconds: true,
+					seconds: 3600,
 				},
 			};
-			const startTime = '01:00';
-			const gen = sagas.handleRSVPStartTime( action );
+			const endTime = '01:00';
+			const gen = sagas.handleRSVPEndTime( action );
 			expect( gen.next().value ).toEqual(
-				call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM )
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
 			);
-			expect( gen.next( startTime ).value ).toEqual(
-				put( actions.setRSVPTempStartTime( `${ startTime }:00` ) )
-			);
-			expect( gen.next().done ).toEqual( true );
-		} );
-
-		it( 'should handle not seconds rsvp start time', () => {
-			const action = {
-				payload: {
-					value: '01:00',
-					isSeconds: false,
-				},
-			};
-			const startTime = '01:00';
-			const gen = sagas.handleRSVPStartTime( action );
-			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPTempStartTimeInput )
-			);
-			expect( gen.next( startTime ).value ).toEqual(
-				call( momentUtil.toMoment, startTime, momentUtil.TIME_FORMAT, false )
-			);
-			expect( gen.next( startTime ).value ).toEqual(
-				call( momentUtil.toTime24Hr, startTime )
-			);
-			expect( gen.next( startTime ).value ).toEqual(
-				put( actions.setRSVPTempStartTime( `${ startTime }:00` ) )
+			expect( gen.next( endTime ).value ).toEqual(
+				put( actions.setRSVPTempEndTime( `${ endTime }:00` ) )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -566,91 +534,21 @@ describe( 'RSVP block sagas', () => {
 			const endTimeInput = '01:00';
 			const action = {
 				payload: {
-					value: '01:00',
-					isSeconds: false,
-				},
-			};
-			const gen = cloneableGenerator( sagas.handleRSVPEndTimeInput )( action );
-			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPEndTimeInput )
-			);
-			expect( gen.next( endTimeInput ).value ).toEqual(
-				call( momentUtil.toMoment, action.payload.value, momentUtil.TIME_FORMAT, false )
-			);
-
-			const clone1 = gen.clone();
-			const moment1 = {
-				isValid: () => true,
-			};
-			expect( clone1.next( moment1 ).value ).toEqual(
-				call( momentUtil.toTime, moment1 )
-			);
-			expect( clone1.next( endTimeInput ).value ).toEqual(
-				put( actions.setRSVPTempEndTimeInput( endTimeInput ) )
-			);
-			expect( clone1.next().done ).toEqual( true );
-
-			const clone2 = gen.clone();
-			const moment2 = {
-				isValid: () => false,
-			};
-			expect( clone2.next( moment2 ).value ).toEqual(
-				put( actions.setRSVPTempEndTimeInput( endTimeInput ) )
-			);
-			expect( clone2.next().done ).toEqual( true );
-		} );
-
-		it( 'should skip handle rsvp end time input', () => {
-			const action = {
-				payload: {
-					value: 3600,
-					isSeconds: true,
+					seconds: 3600,
 				},
 			};
 			const gen = sagas.handleRSVPEndTimeInput( action );
-			expect( gen.next().done ).toEqual( true );
-		} );
-	} );
-
-	describe( 'handleRSVPEndTime', () => {
-		it( 'should handle seconds rsvp end time', () => {
-			const action = {
-				payload: {
-					value: 3600,
-					isSeconds: true,
-				},
-			};
-			const endTime = '01:00';
-			const gen = sagas.handleRSVPEndTime( action );
 			expect( gen.next().value ).toEqual(
-				call( timeUtil.fromSeconds, action.payload.value, timeUtil.TIME_FORMAT_HH_MM )
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
 			);
-			expect( gen.next( endTime ).value ).toEqual(
-				put( actions.setRSVPTempEndTime( `${ endTime }:00` ) )
+			expect( gen.next( endTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, endTimeInput, momentUtil.TIME_FORMAT, false )
 			);
-			expect( gen.next().done ).toEqual( true );
-		} );
-
-		it( 'should handle not seconds rsvp end time', () => {
-			const action = {
-				payload: {
-					value: '01:00',
-					isSeconds: false,
-				},
-			};
-			const endTime = '01:00';
-			const gen = sagas.handleRSVPEndTime( action );
-			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPTempEndTimeInput )
+			expect( gen.next( endTimeInput ).value ).toEqual(
+				call( momentUtil.toTime, endTimeInput )
 			);
-			expect( gen.next( endTime ).value ).toEqual(
-				call( momentUtil.toMoment, endTime, momentUtil.TIME_FORMAT, false )
-			);
-			expect( gen.next( endTime ).value ).toEqual(
-				call( momentUtil.toTime24Hr, endTime )
-			);
-			expect( gen.next( endTime ).value ).toEqual(
-				put( actions.setRSVPTempEndTime( `${ endTime }:00` ) )
+			expect( gen.next( endTimeInput ).value ).toEqual(
+				put( actions.setRSVPTempEndTimeInput( endTimeInput ) )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
