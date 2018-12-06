@@ -123,8 +123,12 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [4.9.2] TBD =
-
 * Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
+* Fix - Making sure all Blocks Editor code for Meta saving is PHP 5.2 compatible
+
+= [4.9.1] 2018-12-05 =
+
+* Fix - Event Tickets Plus updates correctly when we are handling an outdated version
 
 = [4.9.0.2] 2018-11-30 =
 

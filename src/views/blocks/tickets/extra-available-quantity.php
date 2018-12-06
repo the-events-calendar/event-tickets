@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version TBD
  *
  */
 
@@ -18,4 +18,4 @@
 $ticket    = $this->get( 'ticket' );
 ?>
 <span class="tribe-block__tickets__item__extra__available_quantity"><?php echo esc_html( $ticket->available() ); ?></span>
-<?php esc_html_e( 'available', 'events-gutenberg' ); ?>
+<?php esc_html_e( 'available', 'event-tickets' );
