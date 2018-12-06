@@ -26,7 +26,12 @@ import {
 	DEFAULT_STATE as TICKET_DEFAULT_STATE,
 } from './reducers/tickets/ticket';
 import * as utils from '@moderntribe/tickets/data/utils';
-import { api, globals, moment as momentUtil } from '@moderntribe/common/utils';
+import {
+	api,
+	globals,
+	moment as momentUtil,
+	time as timeUtil,
+} from '@moderntribe/common/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
@@ -734,19 +739,49 @@ export function* setTicketTempDetails( action ) {
 }
 
 export function* handleTicketStartDate( action ) {
-
+	const { blockId, date, dayPickerInput } = action.payload;
+	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
+	yield put( actions.setTicketTempStartDate( blockId, startDate ) );
+	yield put( actions.setTicketTempStartDateInput( blockId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempStartDateMoment( blockId, startDateMoment ) );
 }
 
 export function* handleTicketEndDate( action ) {
-
+	const { blockId, date, dayPickerInput } = action.payload;
+	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
+	yield put( actions.setTicketTempEndDate( blockId, endDate ) );
+	yield put( actions.setTicketTempEndDateInput( blockId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) );
 }
 
 export function* handleTicketStartTime( action ) {
+	const { blockId, seconds } = action.payload;
+	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
+	yield put( actions.setTicketTempStartTime( blockId, `${ startTime }:00` ) );
+}
 
+export function* handleTicketStartTimeInput( action ) {
+	const { blockId, seconds } = action.payload;
+	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
+	const startTimeMoment = yield call( momentUtil.toMoment, startTime, momentUtil.TIME_FORMAT, false );
+	const startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
+	yield put( actions.setTicketTempStartTimeInput( blockId, startTimeInput ) );
 }
 
 export function* handleTicketEndTime( action ) {
+	const { blockId, seconds } = action.payload;
+	const endTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
+	yield put( actions.setTicketTempEndTime( blockId, `${ endTime }:00` ) );
+}
 
+export function* handleTicketEndTimeInput( action ) {
+	const { blockId, seconds } = action.payload;
+	const endTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
+	const endTimeMoment = yield call( momentUtil.toMoment, endTime, momentUtil.TIME_FORMAT, false );
+	const endTimeInput = yield call( momentUtil.toTime, endTimeMoment );
+	yield put( actions.setTicketTempEndTimeInput( blockId, endTimeInput ) );
 }
 
 export function* handleTicketMove() {
@@ -818,11 +853,13 @@ export function* handler( action ) {
 
 		case types.HANDLE_TICKET_START_TIME:
 			yield call( handleTicketStartTime, action );
+			yield call( handleTicketStartTimeInput, action );
 			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_END_TIME:
 			yield call( handleTicketEndTime, action );
+			yield call( handleTicketEndTimeInput, action );
 			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
 			break;
 

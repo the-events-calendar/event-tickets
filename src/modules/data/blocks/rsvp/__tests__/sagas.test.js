@@ -467,7 +467,7 @@ describe( 'RSVP block sagas', () => {
 	} );
 
 	describe( 'handleRSVPStartTime', () => {
-		it( 'should handle seconds rsvp start time', () => {
+		it( 'should handle rsvp start time', () => {
 			const action = {
 				payload: {
 					seconds: 3600,
@@ -511,7 +511,7 @@ describe( 'RSVP block sagas', () => {
 	} );
 
 	describe( 'handleRSVPEndTime', () => {
-		it( 'should handle seconds rsvp end time', () => {
+		it( 'should handle rsvp end time', () => {
 			const action = {
 				payload: {
 					seconds: 3600,

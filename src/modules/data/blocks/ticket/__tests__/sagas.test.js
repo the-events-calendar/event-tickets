@@ -24,7 +24,10 @@ import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { wpREST } from '@moderntribe/common/utils/api';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import {
+	moment as momentUtil,
+	time as timeUtil,
+} from '@moderntribe/common/utils';
 
 const {
 	INDEPENDENT,
@@ -225,6 +228,9 @@ describe( 'Ticket Block sagas', () => {
 				call( sagas.handleTicketStartTime, action )
 			);
 			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketStartTimeInput, action )
+			);
+			expect( gen.next().value ).toEqual(
 				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -236,6 +242,9 @@ describe( 'Ticket Block sagas', () => {
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
 				call( sagas.handleTicketEndTime, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketEndTimeInput, action )
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
@@ -1740,6 +1749,210 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempCapacityType( BLOCK_ID, capacityType ) ),
 					put( actions.setTicketTempCapacity( BLOCK_ID, capacity ) ),
 				] )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketStartDate', () => {
+		let action;
+
+		beforeEach( () => {
+			action = {
+				payload: {
+					blockId: 'tribe',
+					date: undefined,
+					dayPickerInput: {
+						state: {
+							value: '',
+						}
+					}
+				}
+			}
+		} );
+
+		it( 'should handle undefined ticket start date', () => {
+			const gen = sagas.handleTicketStartDate( action );
+			expect( gen.next().value ).toEqual( undefined );
+			expect( gen.next( undefined ).value ).toEqual( '' );
+			expect( gen.next( '' ).value ).toEqual(
+				put( actions.setTicketTempStartDate( action.payload.blockId, '' ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateMoment( action.payload.blockId, undefined ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket start date', () => {
+			action.payload.date = 'January 1, 2018';
+			action.payload.dayPickerInput.state.value = 'January 1, 2018';
+			const gen = sagas.handleTicketStartDate( action );
+			expect( gen.next().value ).toEqual(
+				call( momentUtil.toMoment, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				put( actions.setTicketTempStartDate( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateMoment( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketEndDate', () => {
+		let action;
+
+		beforeEach( () => {
+			action = {
+				payload: {
+					blockId: 'tribe',
+					date: undefined,
+					dayPickerInput: {
+						state: {
+							value: '',
+						}
+					}
+				}
+			}
+		} );
+
+		it( 'should handle undefined ticket end date', () => {
+			const gen = sagas.handleTicketEndDate( action );
+			expect( gen.next().value ).toEqual( undefined );
+			expect( gen.next( undefined ).value ).toEqual( '' );
+			expect( gen.next( '' ).value ).toEqual(
+				put( actions.setTicketTempEndDate( action.payload.blockId, '' ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateMoment( action.payload.blockId, undefined ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket end date', () => {
+			action.payload.date = 'January 1, 2018';
+			action.payload.dayPickerInput.state.value = 'January 1, 2018';
+			const gen = sagas.handleTicketEndDate( action );
+			expect( gen.next().value ).toEqual(
+				call( momentUtil.toMoment, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				put( actions.setTicketTempEndDate( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateMoment( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketStartTime', () => {
+		it( 'should handle ticket start time', () => {
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const startTime = '01:00';
+			const gen = sagas.handleTicketStartTime( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				put( actions.setTicketTempStartTime( action.payload.blockId, `${ startTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketStartTimeInput', () => {
+		it( 'should handle ticket start time input', () => {
+			const startTimeInput = '01:00';
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const gen = sagas.handleTicketStartTimeInput( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toTime, startTimeInput )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				put( actions.setTicketTempStartTimeInput( action.payload.blockId, startTimeInput ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketEndTime', () => {
+		it( 'should handle ticket end time', () => {
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const endTime = '01:00';
+			const gen = sagas.handleTicketEndTime( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				put( actions.setTicketTempEndTime( action.payload.blockId, `${ endTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketEndTimeInput', () => {
+		it( 'should handle ticket end time input', () => {
+			const startTimeInput = '01:00';
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const gen = sagas.handleTicketStartTimeInput( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toTime, startTimeInput )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				put( actions.setTicketTempStartTimeInput( action.payload.blockId, startTimeInput ) )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
