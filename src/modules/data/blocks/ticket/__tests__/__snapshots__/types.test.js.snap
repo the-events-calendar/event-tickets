@@ -44,6 +44,8 @@ exports[`Tickets block types SET_TICKET_END_DATE_MOMENT 1`] = `"@@MT/TICKETS/SET
 
 exports[`Tickets block types SET_TICKET_END_TIME 1`] = `"@@MT/TICKETS/SET_TICKET_END_TIME"`;
 
+exports[`Tickets block types SET_TICKET_END_TIME_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_END_TIME_INPUT"`;
+
 exports[`Tickets block types SET_TICKET_HAS_BEEN_CREATED 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED"`;
 
 exports[`Tickets block types SET_TICKET_HAS_CHANGES 1`] = `"@@MT/TICKETS/SET_TICKETS_HAS_CHANGES"`;
@@ -72,6 +74,8 @@ exports[`Tickets block types SET_TICKET_START_DATE_MOMENT 1`] = `"@@MT/TICKETS/S
 
 exports[`Tickets block types SET_TICKET_START_TIME 1`] = `"@@MT/TICKETS/SET_TICKET_START_TIME"`;
 
+exports[`Tickets block types SET_TICKET_START_TIME_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_START_TIME_INPUT"`;
+
 exports[`Tickets block types SET_TICKET_TEMP_CAPACITY 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_CAPACITY"`;
 
 exports[`Tickets block types SET_TICKET_TEMP_CAPACITY_TYPE 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_CAPACITY_TYPE"`;
@@ -88,6 +92,8 @@ exports[`Tickets block types SET_TICKET_TEMP_END_DATE_MOMENT 1`] = `"@@MT/TICKET
 
 exports[`Tickets block types SET_TICKET_TEMP_END_TIME 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_END_TIME"`;
 
+exports[`Tickets block types SET_TICKET_TEMP_END_TIME_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT"`;
+
 exports[`Tickets block types SET_TICKET_TEMP_PRICE 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_PRICE"`;
 
 exports[`Tickets block types SET_TICKET_TEMP_SKU 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_SKU"`;
@@ -99,6 +105,8 @@ exports[`Tickets block types SET_TICKET_TEMP_START_DATE_INPUT 1`] = `"@@MT/TICKE
 exports[`Tickets block types SET_TICKET_TEMP_START_DATE_MOMENT 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_START_DATE_MOMENT"`;
 
 exports[`Tickets block types SET_TICKET_TEMP_START_TIME 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_START_TIME"`;
+
+exports[`Tickets block types SET_TICKET_TEMP_START_TIME_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_START_TIME_INPUT"`;
 
 exports[`Tickets block types SET_TICKET_TEMP_TITLE 1`] = `"@@MT/TICKETS/SET_TICKET_TEMP_TITLE"`;
 

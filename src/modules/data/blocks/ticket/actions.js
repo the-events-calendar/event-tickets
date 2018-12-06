@@ -177,6 +177,22 @@ export const setTicketEndTime = ( blockId, endTime ) => ( {
 	},
 } );
 
+export const setTicketStartTimeInput = ( blockId, startTimeInput ) => ( {
+	type: types.SET_TICKET_START_TIME_INPUT,
+	payload: {
+		blockId,
+		startTimeInput,
+	},
+} );
+
+export const setTicketEndTimeInput = ( blockId, endTimeInput ) => ( {
+	type: types.SET_TICKET_END_TIME_INPUT,
+	payload: {
+		blockId,
+		endTimeInput,
+	},
+} );
+
 export const setTicketCapacityType = ( blockId, capacityType ) => ( {
 	type: types.SET_TICKET_CAPACITY_TYPE,
 	payload: {
@@ -290,6 +306,22 @@ export const setTicketTempEndTime = ( blockId, endTime ) => ( {
 	payload: {
 		blockId,
 		endTime,
+	},
+} );
+
+export const setTicketTempStartTimeInput = ( blockId, startTimeInput ) => ( {
+	type: types.SET_TICKET_TEMP_START_TIME_INPUT,
+	payload: {
+		blockId,
+		startTimeInput,
+	},
+} );
+
+export const setTicketTempEndTimeInput = ( blockId, endTimeInput ) => ( {
+	type: types.SET_TICKET_TEMP_END_TIME_INPUT,
+	payload: {
+		blockId,
+		endTimeInput,
 	},
 } );
 

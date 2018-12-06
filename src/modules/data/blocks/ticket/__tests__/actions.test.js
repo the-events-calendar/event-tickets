@@ -119,6 +119,14 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketEndTime( blockId, '12:34' ) ).toMatchSnapshot();
 		} );
 
+		test( 'set ticket start time input', () => {
+			expect( actions.setTicketStartTimeInput( blockId, '10:00' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket end time input', () => {
+			expect( actions.setTicketEndTimeInput( blockId, '12:34' ) ).toMatchSnapshot();
+		} );
+
 		test( 'set ticket capacity type', () => {
 			expect( actions.setTicketCapacityType( blockId, 'unlimited' ) ).toMatchSnapshot();
 		} );
@@ -178,6 +186,14 @@ describe( 'Ticket actions', () => {
 
 		test( 'set ticket temp end time', () => {
 			expect( actions.setTicketTempEndTime( blockId, '12:34' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp start time input', () => {
+			expect( actions.setTicketTempStartTimeInput( blockId, '10:00' ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket temp end time input', () => {
+			expect( actions.setTicketTempEndTimeInput( blockId, '12:34' ) ).toMatchSnapshot();
 		} );
 
 		test( 'set ticket temp capacity type', () => {
