@@ -528,8 +528,12 @@ Object {
 
 exports[`Ticket block selectors Tickets selectors getTicketsCount 1`] = `1`;
 
+exports[`Ticket block selectors Tickets selectors getTicketsIdsInBlocks 1`] = `Array []`;
+
 exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `Array []`;
 
 exports[`Ticket block selectors Tickets selectors hasATicketSelected 1`] = `false`;
+
+exports[`Ticket block selectors Tickets selectors hasCreatedTickets 1`] = `false`;
 
 exports[`Ticket block selectors Tickets selectors hasTickets 1`] = `true`;

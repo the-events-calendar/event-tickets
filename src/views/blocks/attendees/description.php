@@ -13,6 +13,11 @@
  * @version TBD
  *
  */
+$display_subtitle = $this->attr( 'displaySubtitle' );
+
+if ( is_bool( $display_subtitle ) && ! $display_subtitle ) {
+	return;
+}
 
 $post_id         = $this->get( 'post_id' );
 $attendees_total = count( $attendees );

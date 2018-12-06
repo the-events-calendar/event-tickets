@@ -35,7 +35,11 @@ describe( 'Attendees Block sagas', () => {
 		it( 'should set initial state', () => {
 			const gen = cloneableGenerator( sagas.setInitialState )( action );
 			expect( gen.next().value ).toEqual(
-				put( actions.setTitle( action.payload.get( 'title', DEFAULT_STATE.title ) ) ),
+				all( [
+					put( actions.setTitle( action.payload.get( 'title', DEFAULT_STATE.title ) ) ),
+					put( actions.setDisplayTitle( action.payload.get( 'displayTitle', DEFAULT_STATE.displayTitle ) ) ),
+					put( actions.setDisplaySubtitle( action.payload.get( 'displaySubtitle', DEFAULT_STATE.displaySubtitle ) ) ),
+				] )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
