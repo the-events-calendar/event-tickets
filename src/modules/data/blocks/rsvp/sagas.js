@@ -351,10 +351,37 @@ export function* handleRSVPMove() {
 	}
 }
 
+/**
+ * Temporary bandaid until datepickers allow blank state
+ *
+ * @export
+ */
+export function* setNonEventPostTypeEndDate() {
+	if ( ! ( yield call( isTribeEventPostType ) ) ) {
+		yield take( [ types.INITIALIZE_RSVP ] );
+		const tempEndMoment = yield select( selectors.getRSVPTempEndDateMoment );
+		const endMoment = yield call( [ tempEndMoment, 'clone' ] );
+		yield call( [ endMoment, 'add' ], 100, 'years' );
+		const { date, dateInput, moment, time } = yield call( createDates, endMoment.toDate() );
+
+		yield all( [
+			put( actions.setRSVPTempEndDate( date ) ),
+			put( actions.setRSVPTempEndDateInput( dateInput ) ),
+			put( actions.setRSVPTempEndDateMoment( moment ) ),
+			put( actions.setRSVPTempEndTime( time ) ),
+			put( actions.setRSVPEndDate( date ) ),
+			put( actions.setRSVPEndDateInput( dateInput ) ),
+			put( actions.setRSVPEndDateMoment( moment ) ),
+			put( actions.setRSVPEndTime( time ) ),
+		] );
+	}
+}
+
 export default function* watchers() {
 	yield takeEvery( types.SET_RSVP_DETAILS, setRSVPDetails );
 	yield takeEvery( types.SET_RSVP_TEMP_DETAILS, setRSVPTempDetails );
 	yield takeEvery( types.INITIALIZE_RSVP, initializeRSVP );
 	yield takeEvery( MOVE_TICKET_SUCCESS, handleRSVPMove );
 	yield fork( handleEventStartDateChanges );
+	yield fork( setNonEventPostTypeEndDate );
 }
