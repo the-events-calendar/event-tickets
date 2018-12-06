@@ -1,8 +1,10 @@
+/* eslint-disable max-len */
+
 /**
  * External Dependencies
  */
 import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
-import { put, call, all, select, takeEvery, take } from 'redux-saga/effects';
+import { put, call, all, select, takeEvery, take, fork } from 'redux-saga/effects';
 
 /**
  * Internal dependencies
@@ -15,6 +17,12 @@ import { editor } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 
+/**
+ * Set details for current RSVP
+ *
+ * @export
+ * @param {Object} action redux action
+ */
 export function* setRSVPDetails( action ) {
 	const {
 		title,
@@ -46,6 +54,12 @@ export function* setRSVPDetails( action ) {
 	] );
 }
 
+/**
+ * Set details for current temp RSVP
+ *
+ * @export
+ * @param {Object} action redux action
+ */
 export function* setRSVPTempDetails( action ) {
 	const {
 		tempTitle,
@@ -77,6 +91,13 @@ export function* setRSVPTempDetails( action ) {
 	] );
 }
 
+/**
+ * Create date objects used throughout sagas
+ *
+ * @export
+ * @param {String} date datetime string
+ * @returns {Object} Object of dates/moments
+ */
 export function* createDates( date ) {
 	const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 	const moment = yield call( momentUtil.toMoment, date );
