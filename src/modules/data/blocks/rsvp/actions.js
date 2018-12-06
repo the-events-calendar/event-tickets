@@ -301,12 +301,16 @@ export const handleRSVPEndDate = ( payload ) => ( {
 	payload,
 } );
 
-export const handleRSVPStartTime = ( payload ) => ( {
+export const handleRSVPStartTime = ( seconds ) => ( {
 	type: types.HANDLE_RSVP_START_TIME,
-	payload,
+	payload: {
+		seconds,
+	},
 } );
 
-export const handleRSVPEndTime = ( payload ) => ( {
+export const handleRSVPEndTime = ( seconds ) => ( {
 	type: types.HANDLE_RSVP_END_TIME,
-	payload,
+	payload: {
+		seconds,
+	},
 } );

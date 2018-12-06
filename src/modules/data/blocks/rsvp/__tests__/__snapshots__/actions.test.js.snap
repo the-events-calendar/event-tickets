@@ -391,7 +391,9 @@ Object {
 
 exports[`RSVP block actions RSVP thunk & saga actions handle RSVP end time 1`] = `
 Object {
-  "payload": Object {},
+  "payload": Object {
+    "seconds": 1000,
+  },
   "type": "@@MT/TICKETS/HANDLE_RSVP_END_TIME",
 }
 `;
@@ -405,7 +407,9 @@ Object {
 
 exports[`RSVP block actions RSVP thunk & saga actions handle RSVP start time 1`] = `
 Object {
-  "payload": Object {},
+  "payload": Object {
+    "seconds": 1000,
+  },
   "type": "@@MT/TICKETS/HANDLE_RSVP_START_TIME",
 }
 `;

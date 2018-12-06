@@ -223,11 +223,11 @@ describe( 'RSVP block actions', () => {
 		} );
 
 		test( 'handle RSVP start time', () => {
-			expect( actions.handleRSVPStartTime( {} ) ).toMatchSnapshot();
+			expect( actions.handleRSVPStartTime( 1000 ) ).toMatchSnapshot();
 		} );
 
 		test( 'handle RSVP end time', () => {
-			expect( actions.handleRSVPEndTime( {} ) ).toMatchSnapshot();
+			expect( actions.handleRSVPEndTime( 1000 ) ).toMatchSnapshot();
 		} );
 	} );
 } );
