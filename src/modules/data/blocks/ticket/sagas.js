@@ -106,16 +106,19 @@ export function* setTicketInitialState( action ) {
 		? call( momentUtil.toDate, startMoment, datePickerFormat )
 		: call( momentUtil.toDate, startMoment );
 	const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
+	const startTimeInput = yield call( momentUtil.toTime, startMoment );
 
 	yield all( [
 		put( actions.setTicketStartDate( clientId, startDate ) ),
 		put( actions.setTicketStartDateInput( clientId, startDateInput ) ),
 		put( actions.setTicketStartDateMoment( clientId, startMoment ) ),
 		put( actions.setTicketStartTime( clientId, startTime ) ),
+		put( actions.setTicketStartTimeInput( clientId, startTimeInput ) ),
 		put( actions.setTicketTempStartDate( clientId, startDate ) ),
 		put( actions.setTicketTempStartDateInput( clientId, startDateInput ) ),
 		put( actions.setTicketTempStartDateMoment( clientId, startMoment ) ),
 		put( actions.setTicketTempStartTime( clientId, startTime ) ),
+		put( actions.setTicketTempStartTimeInput( clientId, startTimeInput ) ),
 		put( actions.setTicketHasBeenCreated( clientId, hasBeenCreated ) ),
 	] );
 
@@ -128,16 +131,19 @@ export function* setTicketInitialState( action ) {
 			? call( momentUtil.toDate, endMoment, datePickerFormat )
 			: call( momentUtil.toDate, endMoment );
 		const endTime = yield call( momentUtil.toDatabaseTime, endMoment );
+		const endTimeInput = yield call( momentUtil.toTime, endMoment );
 
 		yield all( [
 			put( actions.setTicketEndDate( clientId, endDate ) ),
 			put( actions.setTicketEndDateInput( clientId, endDateInput ) ),
 			put( actions.setTicketEndDateMoment( clientId, endMoment ) ),
 			put( actions.setTicketEndTime( clientId, endTime ) ),
+			put( actions.setTicketEndTimeInput( clientId, endTimeInput ) ),
 			put( actions.setTicketTempEndDate( clientId, endDate ) ),
 			put( actions.setTicketTempEndDateInput( clientId, endDateInput ) ),
 			put( actions.setTicketTempEndDateMoment( clientId, endMoment ) ),
 			put( actions.setTicketTempEndTime( clientId, endTime ) ),
+			put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) ),
 		] );
 	} catch ( err ) {
 		console.error( err );
@@ -244,11 +250,13 @@ export function* fetchTicket( action ) {
 				? call( momentUtil.toDate, startMoment, datePickerFormat )
 				: call( momentUtil.toDate, startMoment );
 			const startTime = yield call( momentUtil.toDatabaseTime, startMoment );
+			const startTimeInput = yield call( momentUtil.toTime, startMoment );
 
 			let endMoment = yield call( momentUtil.toMoment, '' );
 			let endDate = '';
 			let endDateInput = '';
 			let endTime = '';
+			let endTimeInput = '';
 
 			if ( available_until ) {
 				endMoment = yield call( momentUtil.toMoment, available_until );
@@ -257,6 +265,7 @@ export function* fetchTicket( action ) {
 					? call( momentUtil.toDate, endMoment, datePickerFormat )
 					: call( momentUtil.toDate, endMoment );
 				endTime = yield call( momentUtil.toDatabaseTime, endMoment );
+				endTimeInput = yield call( momentUtil.toTime, endMoment );
 			}
 
 			const details = {
@@ -272,6 +281,8 @@ export function* fetchTicket( action ) {
 				endDateMoment: endMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType: capacity_type,
 				capacity,
 			};
@@ -339,6 +350,8 @@ export function* createNewTicket( action ) {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] = yield all( [
@@ -354,6 +367,8 @@ export function* createNewTicket( action ) {
 				select( selectors.getTicketTempEndDateMoment, props ),
 				select( selectors.getTicketTempStartTime, props ),
 				select( selectors.getTicketTempEndTime, props ),
+				select( selectors.getTicketTempStartTimeInput, props ),
+				select( selectors.getTicketTempEndTimeInput, props ),
 				select( selectors.getTicketTempCapacityType, props ),
 				select( selectors.getTicketTempCapacity, props ),
 			] );
@@ -372,6 +387,8 @@ export function* createNewTicket( action ) {
 					endDateMoment,
 					startTime,
 					endTime,
+					startTimeInput,
+					endTimeInput,
 					capacityType,
 					capacity,
 				} ) ),
@@ -435,6 +452,8 @@ export function* updateTicket( action ) {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] = yield all( [
@@ -450,6 +469,8 @@ export function* updateTicket( action ) {
 				select( selectors.getTicketTempEndDateMoment, props ),
 				select( selectors.getTicketTempStartTime, props ),
 				select( selectors.getTicketTempEndTime, props ),
+				select( selectors.getTicketTempStartTimeInput, props ),
+				select( selectors.getTicketTempEndTimeInput, props ),
 				select( selectors.getTicketTempCapacityType, props ),
 				select( selectors.getTicketTempCapacity, props ),
 			] );
@@ -468,6 +489,8 @@ export function* updateTicket( action ) {
 					endDateMoment,
 					startTime,
 					endTime,
+					startTimeInput,
+					endTimeInput,
 					capacityType,
 					capacity,
 				} ) ),
@@ -643,6 +666,8 @@ export function* setTicketDetails( action ) {
 		endDateMoment,
 		startTime,
 		endTime,
+		startTimeInput,
+		endTimeInput,
 		capacityType,
 		capacity,
 	} = details;
@@ -660,6 +685,8 @@ export function* setTicketDetails( action ) {
 		put( actions.setTicketEndDateMoment( blockId, endDateMoment ) ),
 		put( actions.setTicketStartTime( blockId, startTime ) ),
 		put( actions.setTicketEndTime( blockId, endTime ) ),
+		put( actions.setTicketStartTimeInput( blockId, startTimeInput ) ),
+		put( actions.setTicketEndTimeInput( blockId, endTimeInput ) ),
 		put( actions.setTicketCapacityType( blockId, capacityType ) ),
 		put( actions.setTicketCapacity( blockId, capacity ) ),
 	] );
@@ -680,6 +707,8 @@ export function* setTicketTempDetails( action ) {
 		endDateMoment,
 		startTime,
 		endTime,
+		startTimeInput,
+		endTimeInput,
 		capacityType,
 		capacity,
 	} = tempDetails;
@@ -697,6 +726,8 @@ export function* setTicketTempDetails( action ) {
 		put( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) ),
 		put( actions.setTicketTempStartTime( blockId, startTime ) ),
 		put( actions.setTicketTempEndTime( blockId, endTime ) ),
+		put( actions.setTicketTempStartTimeInput( blockId, startTimeInput ) ),
+		put( actions.setTicketTempEndTimeInput( blockId, endTimeInput ) ),
 		put( actions.setTicketTempCapacityType( blockId, capacityType ) ),
 		put( actions.setTicketTempCapacity( blockId, capacity ) ),
 	] );

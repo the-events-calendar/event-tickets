@@ -371,7 +371,7 @@ describe( 'Ticket Block sagas', () => {
 			delete global.tribe;
 		} );
 
-		it( 'should set tickets initial state', () => {
+		it( 'should set ticket initial state', () => {
 			const TICKET_ID = 99;
 			const CLIENT_ID = 'modern-tribe';
 			const HAS_BEEN_CREATED = true;
@@ -407,15 +407,20 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment )
 			);
 			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime, startMoment )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketStartTimeInput( action.payload.clientId, startTime ) ),
 					put( actions.setTicketTempStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketTempStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketTempStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketTempStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketTempStartTimeInput( action.payload.clientId, startTime ) ),
 					put( actions.setTicketHasBeenCreated( action.payload.clientId, HAS_BEEN_CREATED ) ),
 				] )
 			);
@@ -435,15 +440,20 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, endMoment )
 			);
 			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
 					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -516,15 +526,20 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment )
 			);
 			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime, startMoment )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketStartTimeInput( action.payload.clientId, startTime ) ),
 					put( actions.setTicketTempStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketTempStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketTempStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketTempStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketTempStartTimeInput( action.payload.clientId, startTime ) ),
 					put( actions.setTicketHasBeenCreated( action.payload.clientId, HAS_BEEN_CREATED ) ),
 				] )
 			);
@@ -544,15 +559,20 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, endMoment )
 			);
 			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
 					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -700,10 +720,12 @@ describe( 'Ticket Block sagas', () => {
 			const startDate2 = momentUtil.toDatabaseDate( startMoment2 );
 			const startDateInput2 = momentUtil.toDate( startMoment2 );
 			const startTime2 = momentUtil.toDatabaseTime( startMoment2 );
+			const startTimeInput2 = momentUtil.toTime( startMoment2 );
 			const endMoment2 = momentUtil.toMoment( '' );
 			const endDate2 = '';
 			const endDateInput2 = '';
 			const endTime2 = '';
+			const endTimeInput2 = '';
 
 			expect( clone2.next( apiResponse2 ).value ).toEqual(
 				call( momentUtil.toMoment, apiResponse2.data.available_from )
@@ -718,6 +740,9 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment2 )
 			);
 			expect( clone2.next( startTime2 ).value ).toEqual(
+				call( momentUtil.toTime, startMoment2 )
+			);
+			expect( clone2.next( startTimeInput2 ).value ).toEqual(
 				call( momentUtil.toMoment, '' )
 			);
 
@@ -734,6 +759,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment: endMoment2,
 				startTime: startTime2,
 				endTime: endTime2,
+				startTimeInput: startTimeInput2,
+				endTimeInput: endTimeInput2,
 				capacityType: apiResponse2.data.capacity_type,
 				capacity: apiResponse2.data.capacity,
 			};
@@ -783,10 +810,12 @@ describe( 'Ticket Block sagas', () => {
 			const startDate3 = momentUtil.toDatabaseDate( startMoment3 );
 			const startDateInput3 = momentUtil.toDate( startMoment3 );
 			const startTime3 = momentUtil.toDatabaseTime( startMoment3 );
+			const startTimeInput3 = momentUtil.toTime( startMoment3 );
 			const endMoment3 = momentUtil.toMoment( apiResponse3.data.available_until );
 			const endDate3 = momentUtil.toDatabaseDate( endMoment3 );
 			const endDateInput3 = momentUtil.toDate( endMoment3 );
 			const endTime3 = momentUtil.toDatabaseTime( endMoment3 );
+			const endTimeInput3 = momentUtil.toTime( endMoment3 );
 
 			expect( clone3.next( apiResponse3 ).value ).toEqual(
 				call( momentUtil.toMoment, apiResponse3.data.available_from )
@@ -801,6 +830,9 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment3 )
 			);
 			expect( clone3.next( startTime3 ).value ).toEqual(
+				call( momentUtil.toTime, startMoment3 )
+			);
+			expect( clone3.next( startTimeInput3 ).value ).toEqual(
 				call( momentUtil.toMoment, '' )
 			);
 			expect( clone3.next( endMoment2 ).value ).toEqual(
@@ -814,6 +846,9 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( clone3.next( endDateInput3 ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, endMoment3 )
+			);
+			expect( clone3.next( startTime3 ).value ).toEqual(
+				call( momentUtil.toTime, endMoment3 )
 			);
 
 			const details3 = {
@@ -829,11 +864,13 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment: endMoment3,
 				startTime: startTime3,
 				endTime: endTime3,
+				startTimeInput: startTimeInput3,
+				endTimeInput: endTimeInput3,
 				capacityType: apiResponse3.data.capacity_type,
 				capacity: apiResponse3.data.capacity,
 			};
 
-			expect( clone3.next( startTime3 ).value ).toEqual(
+			expect( clone3.next( startTimeInput3 ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( BLOCK_ID, details3 ) ),
 					put( actions.setTicketTempDetails( BLOCK_ID, details3 ) ),
@@ -880,6 +917,8 @@ describe( 'Ticket Block sagas', () => {
 			const endDateMoment = '2018-11-09 19:48:42';
 			const startTime = '19:48:42';
 			const endTime = '19:48:42';
+			const startTimeInput = '19:48:42';
+			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
 
@@ -952,6 +991,8 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndDateMoment, props ),
 					select( selectors.getTicketTempStartTime, props ),
 					select( selectors.getTicketTempEndTime, props ),
+					select( selectors.getTicketTempStartTimeInput, props ),
+					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
 				] )
@@ -970,6 +1011,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] ).value ).toEqual(
@@ -987,6 +1030,8 @@ describe( 'Ticket Block sagas', () => {
 						endDateMoment,
 						startTime,
 						endTime,
+						startTimeInput,
+						endTimeInput,
 						capacityType,
 						capacity,
 					} ) ),
@@ -1026,6 +1071,8 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndDateMoment, props ),
 					select( selectors.getTicketTempStartTime, props ),
 					select( selectors.getTicketTempEndTime, props ),
+					select( selectors.getTicketTempStartTimeInput, props ),
+					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
 				] )
@@ -1044,6 +1091,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] ).value ).toEqual(
@@ -1061,6 +1110,8 @@ describe( 'Ticket Block sagas', () => {
 						endDateMoment,
 						startTime,
 						endTime,
+						startTimeInput,
+						endTimeInput,
 						capacityType,
 						capacity,
 					} ) ),
@@ -1107,6 +1158,8 @@ describe( 'Ticket Block sagas', () => {
 			const endDateMoment = '2018-11-09 19:48:42';
 			const startTime = '19:48:42';
 			const endTime = '19:48:42';
+			const startTimeInput = '19:48:42';
+			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
 
@@ -1185,6 +1238,8 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndDateMoment, props ),
 					select( selectors.getTicketTempStartTime, props ),
 					select( selectors.getTicketTempEndTime, props ),
+					select( selectors.getTicketTempStartTimeInput, props ),
+					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
 				] )
@@ -1202,6 +1257,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] ).value ).toEqual(
@@ -1219,6 +1276,8 @@ describe( 'Ticket Block sagas', () => {
 						endDateMoment,
 						startTime,
 						endTime,
+						startTimeInput,
+						endTimeInput,
 						capacityType,
 						capacity,
 					} ) ),
@@ -1504,6 +1563,8 @@ describe( 'Ticket Block sagas', () => {
 		const endDateMoment = '2018-11-09 19:48:42';
 		const startTime = '19:48:42';
 		const endTime = '19:48:42';
+		const startTimeInput = '19:48:42';
+		const endTimeInput = '19:48:42';
 		const capacityType = 'own';
 		const capacity = 100;
 
@@ -1524,6 +1585,8 @@ describe( 'Ticket Block sagas', () => {
 					endDateMoment,
 					startTime,
 					endTime,
+					startTimeInput,
+					endTimeInput,
 					capacityType,
 					capacity,
 				},
@@ -1545,6 +1608,8 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketEndDateMoment( BLOCK_ID, endDateMoment ) ),
 				put( actions.setTicketStartTime( BLOCK_ID, startTime ) ),
 				put( actions.setTicketEndTime( BLOCK_ID, endTime ) ),
+				put( actions.setTicketStartTimeInput( BLOCK_ID, startTimeInput ) ),
+				put( actions.setTicketEndTimeInput( BLOCK_ID, endTimeInput ) ),
 				put( actions.setTicketCapacityType( BLOCK_ID, capacityType ) ),
 				put( actions.setTicketCapacity( BLOCK_ID, capacity ) ),
 			] )
@@ -1565,6 +1630,8 @@ describe( 'Ticket Block sagas', () => {
 		const endDateMoment = '2018-11-09 19:48:42';
 		const startTime = '19:48:42';
 		const endTime = '19:48:42';
+		const startTimeInput = '19:48:42';
+		const endTimeInput = '19:48:42';
 		const capacityType = 'own';
 		const capacity = 100;
 
@@ -1585,6 +1652,8 @@ describe( 'Ticket Block sagas', () => {
 					endDateMoment,
 					startTime,
 					endTime,
+					startTimeInput,
+					endTimeInput,
 					capacityType,
 					capacity,
 				},
@@ -1606,6 +1675,8 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketTempEndDateMoment( BLOCK_ID, endDateMoment ) ),
 				put( actions.setTicketTempStartTime( BLOCK_ID, startTime ) ),
 				put( actions.setTicketTempEndTime( BLOCK_ID, endTime ) ),
+				put( actions.setTicketTempStartTimeInput( BLOCK_ID, startTimeInput ) ),
+				put( actions.setTicketTempEndTimeInput( BLOCK_ID, endTimeInput ) ),
 				put( actions.setTicketTempCapacityType( BLOCK_ID, capacityType ) ),
 				put( actions.setTicketTempCapacity( BLOCK_ID, capacity ) ),
 			] )
