@@ -60,6 +60,14 @@ describe( 'Temp details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketTempEndTime( 'block-id', '13:45' ) ) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the temp start time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setTicketTempStartTimeInput( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the temp end time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setTicketTempEndTimeInput( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the temp capacity type', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketTempCapacityType( 'block-id', 'unlimited' ) ) ).toMatchSnapshot();
 	} );

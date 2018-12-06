@@ -9,12 +9,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -28,12 +30,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -47,12 +51,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -66,12 +72,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -87,12 +95,14 @@ Object {
     "type": "moment",
   },
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -106,12 +116,35 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "13:45",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the end time input 1`] = `
+Object {
+  "capacity": "",
+  "capacityType": "capped",
+  "description": "",
+  "endDate": "2118-07-19",
+  "endDateInput": "July 19, 2118",
+  "endDateMoment": "2118-07-19T19:30:00.000Z",
+  "endTime": "19:30:00",
+  "endTimeInput": "13:45",
+  "price": "",
+  "sku": "",
+  "startDate": "2018-07-19",
+  "startDateInput": "July 19, 2018",
+  "startDateMoment": "2018-07-19T19:30:00.000Z",
+  "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -125,12 +158,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": 99,
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -144,12 +179,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "12345678",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -163,12 +200,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "January 1, 2018",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -182,6 +221,7 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
@@ -190,6 +230,7 @@ Object {
     "type": "moment",
   },
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -203,12 +244,35 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "13:45",
+  "startTimeInput": "7:30 pm",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the start time input 1`] = `
+Object {
+  "capacity": "",
+  "capacityType": "capped",
+  "description": "",
+  "endDate": "2118-07-19",
+  "endDateInput": "July 19, 2118",
+  "endDateMoment": "2118-07-19T19:30:00.000Z",
+  "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
+  "price": "",
+  "sku": "",
+  "startDate": "2018-07-19",
+  "startDateInput": "July 19, 2018",
+  "startDateMoment": "2018-07-19T19:30:00.000Z",
+  "startTime": "19:30:00",
+  "startTimeInput": "13:45",
   "title": "",
 }
 `;
@@ -222,12 +286,14 @@ Object {
   "endDateInput": "July 19, 2118",
   "endDateMoment": "2118-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "new title",
 }
 `;
