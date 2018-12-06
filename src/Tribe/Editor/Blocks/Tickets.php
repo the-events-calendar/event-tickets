@@ -46,6 +46,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		if ( ! class_exists( $provider ) ) {
 			return;
 		}
+
 		$provider    = call_user_func( array( $provider, 'get_instance' ) );
 		$provider_id = $this->get_provider_id( $provider );
 
