@@ -115,6 +115,21 @@ export function* createDates( date ) {
 	};
 }
 
+/**
+ * Determines if current post is a tribe event
+ * @export
+ * @returns {Boolean} bool
+ */
+export function* isTribeEventPostType() {
+	const postType = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'type' );
+	return postType === editor.EVENT;
+}
+
+/**
+ * Initializes RSVP that has not been created
+ * @borrows TEC - Optional functionality requires TEC to be enabled and post type to be event
+ * @export
+ */
 export function* initializeRSVP() {
 	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
 	const {
@@ -132,60 +147,58 @@ export function* initializeRSVP() {
 	] );
 
 	try {
-		// NOTE: This requires TEC to be installed, if not installed, do not set an end date
-		const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
-		const {
-			moment: endMoment,
-			date: endDate,
-			dateInput: endDateInput,
-			time: endTime,
-		} = yield call( createDates, eventStart );
+		if ( yield call( isTribeEventPostType ) ) {
+			// NOTE: This requires TEC to be installed, if not installed, do not set an end date
+			const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // RSVP window should end when event starts... ideally
+			const {
+				moment: endMoment,
+				date: endDate,
+				dateInput: endDateInput,
+				time: endTime,
+			} = yield call( createDates, eventStart );
 
-		yield all( [
-			put( actions.setRSVPTempEndDate( endDate ) ),
-			put( actions.setRSVPTempEndDateInput( endDateInput ) ),
-			put( actions.setRSVPTempEndDateMoment( endMoment ) ),
-			put( actions.setRSVPTempEndTime( endTime ) ),
-			put( actions.setRSVPEndDate( endDate ) ),
-			put( actions.setRSVPEndDateInput( endDateInput ) ),
-			put( actions.setRSVPEndDateMoment( endMoment ) ),
-			put( actions.setRSVPEndTime( endTime ) ),
-		] );
-	} catch ( err ) {
+			yield all( [
+				put( actions.setRSVPTempEndDate( endDate ) ),
+				put( actions.setRSVPTempEndDateInput( endDateInput ) ),
+				put( actions.setRSVPTempEndDateMoment( endMoment ) ),
+				put( actions.setRSVPTempEndTime( endTime ) ),
+				put( actions.setRSVPEndDate( endDate ) ),
+				put( actions.setRSVPEndDateInput( endDateInput ) ),
+				put( actions.setRSVPEndDateMoment( endMoment ) ),
+				put( actions.setRSVPEndTime( endTime ) ),
+			] );
+		}
+	} catch ( error ) {
 		// ¯\_(ツ)_/¯
+		console.error( error );
 	}
 }
 
-export function* handleRSVPMove() {
-	const rsvpId = yield select( selectors.getRSVPId );
-	const modalTicketId = yield select( moveSelectors.getModalTicketId );
-
-	if ( rsvpId === modalTicketId ) {
-		const blockId = yield select( moveSelectors.getModalBlockId );
-		yield put( actions.deleteRSVP() );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
-	}
-}
-
-export function* syncRSVPSaleEndWithEventStart() {
+/**
+ * Will sync RSVP sale end to be the same as event start date and time, if field has not been manually edited
+ * @borrows TEC - Functionality requires TEC to be enabled
+ * @param {String} prevStartDate Previous start date before latest set date time changes
+ * @export
+ */
+export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 	try {
-		const postType = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'type' );
 		const tempEndMoment = yield select( selectors.getRSVPTempEndDateMoment );
 		const endMoment = yield select( selectors.getRSVPEndDateMoment );
+		const { moment: prevEventStartMoment } = yield call( createDates, prevStartDate );
 
 		// NOTE: Mutation
 		// Convert to use local timezone
 		yield all( [
 			call( [ tempEndMoment, 'local' ] ),
 			call( [ endMoment, 'local' ] ),
+			call( [ prevEventStartMoment, 'local' ] ),
 		] );
 
 		// If initial end and current end are the same, the RSVP has not been modified
-		const isNotEdited = yield call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' );
+		const isNotManuallyEdited = yield call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' );
+		const isSyncedToEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
 
-		console.warn( isNotEdited, tempEndMoment.format(), endMoment.format() );
-
-		if ( postType === editor.EVENT && isNotEdited ) {
+		if ( isNotManuallyEdited && isSyncedToEventStart ) {
 			const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart );
 			const {
 				moment: endDateMoment,
@@ -207,7 +220,47 @@ export function* syncRSVPSaleEndWithEventStart() {
 		}
 	} catch ( error ) {
 		// ¯\_(ツ)_/¯
-		console.warn( error );
+		console.error( error );
+	}
+}
+
+/**
+ * Listens for event start date and time changes after RSVP block is loaded.
+ * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
+ * @export
+ */
+export function* handleEventStartDateChanges() {
+	try {
+		if ( yield call( isTribeEventPostType ) && window.tribe.events ) {
+			// Proceed after creating dummy RSVP or after fetching
+			yield take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] );
+			const { SET_START_DATE_TIME, SET_START_TIME } = window.tribe.events.data.blocks.datetime.types; // eslint-disable-line max-len
+			while ( true ) {
+				// Cache current event start date for comparison
+				const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart ); // eslint-disable-line max-len
+				yield take( [ SET_START_DATE_TIME, SET_START_TIME ] );
+				yield call( syncRSVPSaleEndWithEventStart, eventStart );
+			}
+		}
+	} catch ( error ) {
+		// ¯\_(ツ)_/¯
+		console.error( error );
+	}
+}
+
+/**
+ * Handles proper RSVP deletion and RSVP block removal upon moving RSVP
+ *
+ * @export
+ */
+export function* handleRSVPMove() {
+	const rsvpId = yield select( selectors.getRSVPId );
+	const modalTicketId = yield select( moveSelectors.getModalTicketId );
+
+	if ( rsvpId === modalTicketId ) {
+		const blockId = yield select( moveSelectors.getModalBlockId );
+		yield put( actions.deleteRSVP() );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
 	}
 }
 
@@ -216,14 +269,5 @@ export default function* watchers() {
 	yield takeEvery( types.SET_RSVP_TEMP_DETAILS, setRSVPTempDetails );
 	yield takeEvery( types.INITIALIZE_RSVP, initializeRSVP );
 	yield takeEvery( MOVE_TICKET_SUCCESS, handleRSVPMove );
-
-	try {
-		if ( window.tribe.events ) {
-			yield take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] );
-			const { SET_START_DATE_TIME, SET_START_TIME } = window.tribe.events.data.blocks.datetime.types;
-			yield takeEvery( [ SET_START_DATE_TIME, SET_START_TIME ], syncRSVPSaleEndWithEventStart );
-		}
-	} catch ( error ) {
-
-	}
+	yield fork( handleEventStartDateChanges );
 }
