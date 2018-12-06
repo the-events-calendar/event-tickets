@@ -44,17 +44,17 @@ const {
 const { wpREST } = api;
 
 export function* createMissingTicketBlocks( tickets ) {
-	const { insertBlock } = wpDispatch( 'core/editor' );
-	const { getBlockCount, getBlocks } = wpSelect( 'core/editor' );
-	const ticketsBlock = getBlocks().filter( ( block ) => block.name === 'tribe/tickets' );
+	const { insertBlock } = yield call( wpDispatch, 'core/editor' );
+	const { getBlockCount, getBlocks } = yield call( wpSelect, 'core/editor' );
+	const ticketsBlocks = yield call( [ getBlocks(), 'filter' ], ( block ) => block.name === 'tribe/tickets' );
 
-	ticketsBlock.forEach( ( { clientId } ) => {
+	ticketsBlocks.forEach( ( { clientId } ) => {
 		tickets.forEach( ( ticketId ) => {
-			const nextChildPosition = getBlockCount( clientId );
 			const attributes = {
 				hasBeenCreated: true,
 				ticketId,
 			};
+			const nextChildPosition = getBlockCount( clientId );
 			const block = createBlock( 'tribe/tickets-item', attributes );
 			insertBlock( block, nextChildPosition, clientId );
 		} );
