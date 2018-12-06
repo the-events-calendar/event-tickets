@@ -733,6 +733,22 @@ export function* setTicketTempDetails( action ) {
 	] );
 }
 
+export function* handleTicketStartDate( action ) {
+
+}
+
+export function* handleTicketEndDate( action ) {
+
+}
+
+export function* handleTicketStartTime( action ) {
+
+}
+
+export function* handleTicketEndTime( action ) {
+
+}
+
 export function* handleTicketMove() {
 	const ticketBlockIds = yield select( selectors.getAllTicketIds );
 	const modalBlockId = yield select( moveSelectors.getModalBlockId );
@@ -790,6 +806,26 @@ export function* handler( action ) {
 			yield call( setTicketTempDetails, action );
 			break;
 
+		case types.HANDLE_TICKET_START_DATE:
+			yield call( handleTicketStartDate, action );
+			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			break;
+
+		case types.HANDLE_TICKET_END_DATE:
+			yield call( handleTicketEndDate, action );
+			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			break;
+
+		case types.HANDLE_TICKET_START_TIME:
+			yield call( handleTicketStartTime, action );
+			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			break;
+
+		case types.HANDLE_TICKET_END_TIME:
+			yield call( handleTicketEndTime, action );
+			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			break;
+
 		case MOVE_TICKET_SUCCESS:
 			yield call( handleTicketMove );
 			break;
@@ -812,6 +848,10 @@ export default function* watchers() {
 		types.DELETE_TICKETS_HEADER_IMAGE,
 		types.SET_TICKET_DETAILS,
 		types.SET_TICKET_TEMP_DETAILS,
+		types.HANDLE_TICKET_START_DATE,
+		types.HANDLE_TICKET_END_DATE,
+		types.HANDLE_TICKET_START_TIME,
+		types.HANDLE_TICKET_END_TIME,
 		MOVE_TICKET_SUCCESS,
 	], handler );
 }

@@ -74,6 +74,10 @@ describe( 'Ticket Block sagas', () => {
 					types.DELETE_TICKETS_HEADER_IMAGE,
 					types.SET_TICKET_DETAILS,
 					types.SET_TICKET_TEMP_DETAILS,
+					types.HANDLE_TICKET_START_DATE,
+					types.HANDLE_TICKET_END_DATE,
+					types.HANDLE_TICKET_START_TIME,
+					types.HANDLE_TICKET_END_TIME,
 					MOVE_TICKET_SUCCESS,
 				], sagas.handler )
 			);
@@ -178,11 +182,63 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().done ).toEqual( true );
 		} );
 
-		it( 'should set ticket timp details', () => {
+		it( 'should set ticket temp details', () => {
 			action.type = types.SET_TICKET_TEMP_DETAILS;
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
 				call( sagas.setTicketTempDetails, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket start date', () => {
+			action.type = types.HANDLE_TICKET_START_DATE;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketStartDate, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket end date', () => {
+			action.type = types.HANDLE_TICKET_END_DATE;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketEndDate, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket start time', () => {
+			action.type = types.HANDLE_TICKET_START_TIME;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketStartTime, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket end time', () => {
+			action.type = types.HANDLE_TICKET_END_TIME;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketEndTime, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
