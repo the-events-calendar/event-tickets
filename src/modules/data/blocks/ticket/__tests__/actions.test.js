@@ -252,6 +252,22 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketTempDetails( blockId, {} ) ).toMatchSnapshot();
 		} );
 
+		test( 'handle ticket start date', () => {
+			expect( actions.handleTicketStartDate( blockId, {}, {} ) ).toMatchSnapshot();
+		} );
+
+		test( 'handle ticket start date', () => {
+			expect( actions.handleTicketEndDate( blockId, {}, {} ) ).toMatchSnapshot();
+		} );
+
+		test( 'handle ticket start date', () => {
+			expect( actions.handleTicketStartTime( blockId, 1000 ) ).toMatchSnapshot();
+		} );
+
+		test( 'handle ticket start date', () => {
+			expect( actions.handleTicketEndTime( blockId, 1000 ) ).toMatchSnapshot();
+		} );
+
 		test( 'fetch ticket', () => {
 			expect( actions.fetchTicket( blockId, 99 ) ).toMatchSnapshot();
 		} );

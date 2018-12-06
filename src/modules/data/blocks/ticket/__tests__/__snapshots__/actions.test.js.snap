@@ -368,6 +368,48 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket saga actions handle ticket start date 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "date": Object {},
+    "dayPickerInput": Object {},
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_START_DATE",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "date": Object {},
+    "dayPickerInput": Object {},
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_END_DATE",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 3`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "seconds": 1000,
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_START_TIME",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 4`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "seconds": 1000,
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_END_TIME",
+}
+`;
+
 exports[`Ticket actions Ticket saga actions set ticket details 1`] = `
 Object {
   "payload": Object {

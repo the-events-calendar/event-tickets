@@ -427,6 +427,41 @@ export const setTicketTempDetails = ( blockId, tempDetails ) => ( {
 	},
 } );
 
+export const handleTicketStartDate = ( blockId, date, dayPickerInput ) => ( {
+	type: types.HANDLE_TICKET_START_DATE,
+	payload: {
+		blockId,
+		date,
+		dayPickerInput,
+	},
+} );
+
+export const handleTicketEndDate = ( blockId, date, dayPickerInput ) => ( {
+	type: types.HANDLE_TICKET_END_DATE,
+	payload: {
+		blockId,
+		date,
+		dayPickerInput,
+	},
+} );
+
+export const handleTicketStartTime = ( blockId, seconds ) => ( {
+	type: types.HANDLE_TICKET_START_TIME,
+	payload: {
+		blockId,
+		seconds,
+	},
+} );
+
+export const handleTicketEndTime = ( blockId, seconds ) => ( {
+	type: types.HANDLE_TICKET_END_TIME,
+	payload: {
+		blockId,
+		seconds,
+	},
+} );
+
+
 export const fetchTicket = ( blockId, ticketId ) => ( {
 	type: types.FETCH_TICKET,
 	payload: {
