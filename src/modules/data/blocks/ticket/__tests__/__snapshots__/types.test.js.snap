@@ -10,6 +10,14 @@ exports[`Tickets block types FETCH_TICKET 1`] = `"@@MT/TICKETS/FETCH_TICKET"`;
 
 exports[`Tickets block types FETCH_TICKETS_HEADER_IMAGE 1`] = `"@@MT/TICKETS/FETCH_TICKETS_HEADER_IMAGE"`;
 
+exports[`Tickets block types HANDLE_TICKET_END_DATE 1`] = `"@@MT/TICKETS/HANDLE_TICKET_END_DATE"`;
+
+exports[`Tickets block types HANDLE_TICKET_END_TIME 1`] = `"@@MT/TICKETS/HANDLE_TICKET_END_TIME"`;
+
+exports[`Tickets block types HANDLE_TICKET_START_DATE 1`] = `"@@MT/TICKETS/HANDLE_TICKET_START_DATE"`;
+
+exports[`Tickets block types HANDLE_TICKET_START_TIME 1`] = `"@@MT/TICKETS/HANDLE_TICKET_START_TIME"`;
+
 exports[`Tickets block types REGISTER_TICKET_BLOCK 1`] = `"@@MT/TICKETS/REGISTER_TICKET_BLOCK"`;
 
 exports[`Tickets block types REMOVE_TICKET_BLOCK 1`] = `"@@MT/TICKETS/REMOVE_TICKET_BLOCK"`;
