@@ -38,11 +38,13 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 		endTime,
 	} = payload;
 
-	const startMoment = startDateMoment.clone().seconds(
-		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS )
+	const startMoment = momentUtil.setTimeInSeconds(
+		startDateMoment.clone(),
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS ),
 	);
-	const endMoment = endDateMoment.clone().seconds(
-		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS )
+	const endMoment = momentUtil.setTimeInSeconds(
+		endDateMoment.clone(),
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS ),
 	);
 
 	let path = `${ utils.RSVP_POST_TYPE }`;
@@ -168,10 +170,10 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						notGoingResponses,
 						startDate: momentUtil.toDate( startMoment ),
 						startDateInput,
-						startDateMoment: startMoment.clone().seconds( 0 ),
+						startDateMoment: startMoment.clone().startOf( 'day' ),
 						endDate: momentUtil.toDate( endMoment ),
 						endDateInput,
-						endDateMoment: endMoment.clone().seconds( 0 ),
+						endDateMoment: endMoment.clone().startOf( 'day' ),
 						startTime: momentUtil.toDatabaseTime( startMoment ),
 						endTime: momentUtil.toDatabaseTime( endMoment ),
 					} ) );
@@ -182,10 +184,10 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						tempNotGoingResponses: notGoingResponses,
 						tempStartDate: momentUtil.toDate( startMoment ),
 						tempStartDateInput: startDateInput,
-						tempStartDateMoment: startMoment.clone().seconds( 0 ),
+						tempStartDateMoment: startMoment.clone().startOf( 'day' ),
 						tempEndDate: momentUtil.toDate( endMoment ),
 						tempEndDateInput: endDateInput,
-						tempEndDateMoment: endMoment.clone().seconds( 0 ),
+						tempEndDateMoment: endMoment.clone().startOf( 'day' ),
 						tempStartTime: momentUtil.toDatabaseTime( startMoment ),
 						tempEndTime: momentUtil.toDatabaseTime( endMoment ),
 					} ) );
