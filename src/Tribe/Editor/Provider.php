@@ -89,22 +89,22 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 
 		// Register blocks
 		add_action(
-			'tribe_events_editor_register_blocks',
+			'tribe_editor_register_blocks',
 			tribe_callback( 'tickets.editor.blocks.rsvp', 'register' )
 		);
 
 		add_action(
-			'tribe_events_editor_register_blocks',
+			'tribe_editor_register_blocks',
 			tribe_callback( 'tickets.editor.blocks.tickets', 'register' )
 		);
 
 		add_action(
-			'tribe_events_editor_register_blocks',
+			'tribe_editor_register_blocks',
 			tribe_callback( 'tickets.editor.blocks.tickets-item', 'register' )
 		);
 
 		add_action(
-			'tribe_events_editor_register_blocks',
+			'tribe_editor_register_blocks',
 			tribe_callback( 'tickets.editor.blocks.attendees', 'register' )
 		);
 
