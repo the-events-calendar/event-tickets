@@ -82,9 +82,15 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		}
 
 		$must_login = ! is_user_logged_in() && $this->main->login_required();
-		
-		// Controls the visibility of the "Log it before purchasing" link below the tickets form
-		$can_login  = apply_filters( 'tribe_tickets_show_login_before_purchasing_link', true );
+
+		/**
+		 * Controls the visibility of the "Log it before purchasing" link below the tickets form
+		 * for TPP tickets
+		 *
+		 * @since TBD
+		 *
+		 */
+		$display_login_link = apply_filters( 'tribe_tickets_show_login_before_purchasing_link', true );
 
 		ob_start();
 		include $this->main->getTemplateHierarchy( 'tickets/tpp' );
