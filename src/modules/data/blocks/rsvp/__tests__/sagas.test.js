@@ -446,6 +446,7 @@ describe( 'RSVP block sagas', () => {
 			momentMock = {
 				local: jest.fn(),
 				isSame: jest.fn(),
+				format: jest.fn(),
 			};
 		} );
 
@@ -497,6 +498,7 @@ describe( 'RSVP block sagas', () => {
 				date: '2018-02-02',
 				dateInput: '2018-02-02',
 				time: '02:00:00',
+				timeInput: '02:00:00',
 			} ).value ).toMatchSnapshot();
 
 			expect( gen.next().value ).toEqual(
@@ -635,12 +637,12 @@ describe( 'RSVP block sagas', () => {
 		it( 'should handle start time changes', () => {
 			const gen = sagas.handleEventStartDateChanges();
 
-			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
-			);
-
 			expect( gen.next( true ).value ).toEqual(
 				take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] )
+			);
+
+			expect( gen.next().value ).toEqual(
+				call( sagas.isTribeEventPostType )
 			);
 
 			expect( gen.next( true ).value ).toEqual(
@@ -807,6 +809,10 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.setNonEventPostTypeEndDate();
 
 			expect( gen.next().value ).toEqual(
+				take( [ types.INITIALIZE_RSVP ] )
+			);
+
+			expect( gen.next().value ).toEqual(
 				call( sagas.isTribeEventPostType )
 			);
 
@@ -822,13 +828,12 @@ describe( 'RSVP block sagas', () => {
 			};
 
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
-			);
-
-			expect( gen.next( false ).value ).toEqual(
 				take( [ types.INITIALIZE_RSVP ] )
 			);
 			expect( gen.next().value ).toEqual(
+				call( sagas.isTribeEventPostType )
+			);
+			expect( gen.next( false ).value ).toEqual(
 				select( selectors.getRSVPTempEndDateMoment )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(

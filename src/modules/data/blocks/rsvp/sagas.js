@@ -240,6 +240,7 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 				date: endDate,
 				dateInput: endDateInput,
 				time: endTime,
+				timeInput: endTimeInput,
 			} = yield call( createDates, eventStart );
 
 			yield all( [
@@ -247,12 +248,14 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 				put( actions.setRSVPTempEndDateInput( endDateInput ) ),
 				put( actions.setRSVPTempEndDateMoment( endDateMoment ) ),
 				put( actions.setRSVPTempEndTime( endTime ) ),
+				put( actions.setRSVPTempEndTimeInput( endTimeInput ) ),
 
 				// Sync RSVP end items as well so as not to make state 'manually edited'
 				put( actions.setRSVPEndDate( endDate ) ),
 				put( actions.setRSVPEndDateInput( endDateInput ) ),
 				put( actions.setRSVPEndDateMoment( endDateMoment ) ),
 				put( actions.setRSVPEndTime( endTime ) ),
+				put( actions.setRSVPEndTimeInput( endTimeInput ) ),
 
 				// Trigger UI button
 				put( actions.setRSVPHasChanges( true ) ),
@@ -343,10 +346,10 @@ export function* saveRSVPWithPostSave() {
  */
 export function* handleEventStartDateChanges() {
 	try {
+		// Proceed after creating dummy RSVP or after fetching
+		yield take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] );
 		const isEvent = yield call( isTribeEventPostType );
 		if ( isEvent && window.tribe.events ) {
-			// Proceed after creating dummy RSVP or after fetching
-			yield take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] );
 			const { SET_START_DATE_TIME, SET_START_TIME } = window.tribe.events.data.blocks.datetime.types;
 
 			let syncTask;
@@ -487,11 +490,12 @@ export function* handler( action ) {
  * @export
  */
 export function* setNonEventPostTypeEndDate() {
+	yield take( [ types.INITIALIZE_RSVP ] );
+
 	if ( yield call( isTribeEventPostType ) ) {
 		return;
 	}
 
-	yield take( [ types.INITIALIZE_RSVP ] );
 	const tempEndMoment = yield select( selectors.getRSVPTempEndDateMoment );
 	const endMoment = yield call( [ tempEndMoment, 'clone' ] );
 	yield call( [ endMoment, 'add' ], 100, 'years' );

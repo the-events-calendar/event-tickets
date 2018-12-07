@@ -301,6 +301,7 @@ Object {
       "CALL": Object {
         "args": Array [],
         "context": Object {
+          "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
         },
@@ -312,6 +313,7 @@ Object {
       "CALL": Object {
         "args": Array [],
         "context": Object {
+          "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
         },
@@ -323,6 +325,7 @@ Object {
       "CALL": Object {
         "args": Array [],
         "context": Object {
+          "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
         },
@@ -339,12 +342,14 @@ Object {
   "CALL": Object {
     "args": Array [
       Object {
+        "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
     "context": Object {
+      "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
     },
@@ -359,12 +364,14 @@ Object {
   "CALL": Object {
     "args": Array [
       Object {
+        "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
     "context": Object {
+      "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
     },
@@ -382,6 +389,7 @@ Object {
       "CALL": Object {
         "args": Array [],
         "context": Object {
+          "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
         },
@@ -393,6 +401,7 @@ Object {
       "CALL": Object {
         "args": Array [],
         "context": Object {
+          "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
         },
@@ -404,6 +413,7 @@ Object {
       "CALL": Object {
         "args": Array [],
         "context": Object {
+          "format": [MockFunction],
           "isSame": [MockFunction],
           "local": [MockFunction],
         },
@@ -420,12 +430,14 @@ Object {
   "CALL": Object {
     "args": Array [
       Object {
+        "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
     "context": Object {
+      "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
     },
@@ -440,12 +452,14 @@ Object {
   "CALL": Object {
     "args": Array [
       Object {
+        "format": [MockFunction],
         "isSame": [MockFunction],
         "local": [MockFunction],
       },
       "minute",
     ],
     "context": Object {
+      "format": [MockFunction],
       "isSame": [MockFunction],
       "local": [MockFunction],
     },
@@ -511,6 +525,18 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
+            "endTimeInput": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_DATE",
@@ -550,6 +576,18 @@ Object {
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_RSVP_END_TIME",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endTimeInput": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_TIME_INPUT",
         },
         "channel": null,
       },
