@@ -15,10 +15,19 @@ import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { updateRSVP } from './thunks';
-import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 import { editor } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+
+import {
+	globals,
+	moment as momentUtil,
+	time as timeUtil,
+} from '@moderntribe/common/utils';
+
+//
+// ─── RSVP DETAILS ───────────────────────────────────────────────────────────────
+//
 
 /**
  * Set details for current RSVP
@@ -40,6 +49,8 @@ export function* setRSVPDetails( action ) {
 		endDateInput,
 		endDateMoment,
 		endTime,
+		startTimeInput,
+		endTimeInput,
 	} = action.payload;
 	yield all( [
 		put( actions.setRSVPTitle( title ) ),
@@ -54,6 +65,8 @@ export function* setRSVPDetails( action ) {
 		put( actions.setRSVPEndDateInput( endDateInput ) ),
 		put( actions.setRSVPEndDateMoment( endDateMoment ) ),
 		put( actions.setRSVPEndTime( endTime ) ),
+		put( actions.setRSVPStartTimeInput( startTimeInput ) ),
+		put( actions.setRSVPEndTimeInput( endTimeInput ) ),
 	] );
 }
 
@@ -77,6 +90,8 @@ export function* setRSVPTempDetails( action ) {
 		tempEndDateInput,
 		tempEndDateMoment,
 		tempEndTime,
+		tempStartTimeInput,
+		tempEndTimeInput,
 	} = action.payload;
 	yield all( [
 		put( actions.setRSVPTempTitle( tempTitle ) ),
@@ -91,6 +106,8 @@ export function* setRSVPTempDetails( action ) {
 		put( actions.setRSVPTempEndDateInput( tempEndDateInput ) ),
 		put( actions.setRSVPTempEndDateMoment( tempEndDateMoment ) ),
 		put( actions.setRSVPTempEndTime( tempEndTime ) ),
+		put( actions.setRSVPTempStartTimeInput( tempStartTimeInput ) ),
+		put( actions.setRSVPTempEndTimeInput( tempEndTimeInput ) ),
 	] );
 }
 
@@ -109,12 +126,14 @@ export function* createDates( date ) {
 		? call( momentUtil.toDate, moment, datepickerFormat )
 		: call( momentUtil.toDate, moment );
 	const time = yield call( momentUtil.toDatabaseTime, moment );
+	const timeInput = yield call( momentUtil.toTime, moment );
 
 	return {
 		moment,
 		date: currentDate,
 		dateInput,
 		time,
+		timeInput,
 	};
 }
 
@@ -128,6 +147,9 @@ export function* isTribeEventPostType() {
 	return postType === editor.EVENT;
 }
 
+//
+// ─── INITIALIZE ─────────────────────────────────────────────────────────────────
+//
 /**
  * Initializes RSVP that has not been created
  * @borrows TEC - Optional functionality requires TEC to be enabled and post type to be event
@@ -140,13 +162,20 @@ export function* initializeRSVP() {
 		date: startDate,
 		dateInput: startDateInput,
 		time: startTime,
+		timeInput: startTimeInput,
 	} = yield call( createDates, publishDate );
 
 	yield all( [
+		put( actions.setRSVPStartDate( startDate ) ),
+		put( actions.setRSVPStartDateInput( startDateInput ) ),
+		put( actions.setRSVPStartDateMoment( startMoment ) ),
+		put( actions.setRSVPStartTime( startTime ) ),
+		put( actions.setRSVPStartTimeInput( startTimeInput ) ),
 		put( actions.setRSVPTempStartDate( startDate ) ),
 		put( actions.setRSVPTempStartDateInput( startDateInput ) ),
 		put( actions.setRSVPTempStartDateMoment( startMoment ) ),
 		put( actions.setRSVPTempStartTime( startTime ) ),
+		put( actions.setRSVPTempStartTimeInput( startTimeInput ) ),
 	] );
 
 	try {
@@ -158,17 +187,20 @@ export function* initializeRSVP() {
 				date: endDate,
 				dateInput: endDateInput,
 				time: endTime,
+				timeInput: endTimeInput,
 			} = yield call( createDates, eventStart );
 
 			yield all( [
-				put( actions.setRSVPTempEndDate( endDate ) ),
-				put( actions.setRSVPTempEndDateInput( endDateInput ) ),
-				put( actions.setRSVPTempEndDateMoment( endMoment ) ),
-				put( actions.setRSVPTempEndTime( endTime ) ),
 				put( actions.setRSVPEndDate( endDate ) ),
 				put( actions.setRSVPEndDateInput( endDateInput ) ),
 				put( actions.setRSVPEndDateMoment( endMoment ) ),
 				put( actions.setRSVPEndTime( endTime ) ),
+				put( actions.setRSVPEndTimeInput( endTimeInput ) ),
+				put( actions.setRSVPTempEndDate( endDate ) ),
+				put( actions.setRSVPTempEndDateInput( endDateInput ) ),
+				put( actions.setRSVPTempEndDateMoment( endMoment ) ),
+				put( actions.setRSVPTempEndTime( endTime ) ),
+				put( actions.setRSVPTempEndTimeInput( endTimeInput ) ),
 			] );
 		}
 	} catch ( error ) {
@@ -338,6 +370,52 @@ export function* handleEventStartDateChanges() {
 	}
 }
 
+//
+// ─── DATE & TIME ────────────────────────────────────────────────────────────────
+//
+
+export function* handleRSVPStartDate( action ) {
+	const { date, dayPickerInput } = action.payload;
+	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
+	yield put( actions.setRSVPTempStartDate( startDate ) );
+	yield put( actions.setRSVPTempStartDateInput( dayPickerInput.state.value ) );
+	yield put( actions.setRSVPTempStartDateMoment( startDateMoment ) );
+}
+
+export function* handleRSVPEndDate( action ) {
+	const { date, dayPickerInput } = action.payload;
+	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
+	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
+	yield put( actions.setRSVPTempEndDate( endDate ) );
+	yield put( actions.setRSVPTempEndDateInput( dayPickerInput.state.value ) );
+	yield put( actions.setRSVPTempEndDateMoment( endDateMoment ) );
+}
+
+export function* handleRSVPStartTime( action ) {
+	const startTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
+	yield put( actions.setRSVPTempStartTime( `${ startTime }:00` ) );
+}
+
+export function* handleRSVPStartTimeInput( action ) {
+	const startTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
+	const startTimeMoment = yield call( momentUtil.toMoment, startTime, momentUtil.TIME_FORMAT, false );
+	const startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
+	yield put( actions.setRSVPTempStartTimeInput( startTimeInput ) );
+}
+
+export function* handleRSVPEndTime( action ) {
+	const endTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
+	yield put( actions.setRSVPTempEndTime( `${ endTime }:00` ) );
+}
+
+export function* handleRSVPEndTimeInput( action ) {
+	const endTime = yield call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM );
+	const endTimeMoment = yield call( momentUtil.toMoment, endTime, momentUtil.TIME_FORMAT, false );
+	const endTimeInput = yield call( momentUtil.toTime, endTimeMoment );
+	yield put( actions.setRSVPTempEndTimeInput( endTimeInput ) );
+}
+
 /**
  * Handles proper RSVP deletion and RSVP block removal upon moving RSVP
  *
@@ -351,6 +429,55 @@ export function* handleRSVPMove() {
 		const blockId = yield select( moveSelectors.getModalBlockId );
 		yield put( actions.deleteRSVP() );
 		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
+	}
+}
+
+//
+// ─── HANDLERS ───────────────────────────────────────────────────────────────────
+//
+
+export function* handler( action ) {
+	switch ( action.type ) {
+		case types.SET_RSVP_DETAILS:
+			yield call( setRSVPDetails, action );
+			break;
+
+		case types.SET_RSVP_TEMP_DETAILS:
+			yield call( setRSVPTempDetails, action );
+			break;
+
+		case types.INITIALIZE_RSVP:
+			yield call( initializeRSVP );
+			break;
+
+		case types.HANDLE_RSVP_START_DATE:
+			yield call( handleRSVPStartDate, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case types.HANDLE_RSVP_END_DATE:
+			yield call( handleRSVPEndDate, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case types.HANDLE_RSVP_START_TIME:
+			yield call( handleRSVPStartTime, action );
+			yield call( handleRSVPStartTimeInput, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case types.HANDLE_RSVP_END_TIME:
+			yield call( handleRSVPEndTime, action );
+			yield call( handleRSVPEndTimeInput, action );
+			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case MOVE_TICKET_SUCCESS:
+			yield call( handleRSVPMove );
+			break;
+
+		default:
+			break;
 	}
 }
 
@@ -382,11 +509,22 @@ export function* setNonEventPostTypeEndDate() {
 	] );
 }
 
+//
+// ─── WATCHERS ───────────────────────────────────────────────────────────────────
+//
+
 export default function* watchers() {
-	yield takeEvery( types.SET_RSVP_DETAILS, setRSVPDetails );
-	yield takeEvery( types.SET_RSVP_TEMP_DETAILS, setRSVPTempDetails );
-	yield takeEvery( types.INITIALIZE_RSVP, initializeRSVP );
-	yield takeEvery( MOVE_TICKET_SUCCESS, handleRSVPMove );
+	yield takeEvery( [
+		types.SET_RSVP_DETAILS,
+		types.SET_RSVP_TEMP_DETAILS,
+		types.INITIALIZE_RSVP,
+		types.HANDLE_RSVP_START_DATE,
+		types.HANDLE_RSVP_END_DATE,
+		types.HANDLE_RSVP_START_TIME,
+		types.HANDLE_RSVP_END_TIME,
+		MOVE_TICKET_SUCCESS,
+	], handler );
+
 	yield fork( handleEventStartDateChanges );
 	yield fork( setNonEventPostTypeEndDate );
 }

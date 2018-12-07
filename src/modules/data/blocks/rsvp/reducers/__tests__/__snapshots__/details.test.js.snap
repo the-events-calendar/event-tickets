@@ -8,11 +8,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -25,11 +27,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -42,11 +46,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -59,11 +65,13 @@ Object {
   "endDateInput": "January 1, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -76,11 +84,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "January 1, 2018",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -93,11 +103,32 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "13:45",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the end time input 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "2018-07-19",
+  "endDateInput": "July 19, 2018",
+  "endDateMoment": "2018-07-19T19:30:00.000Z",
+  "endTime": "19:30:00",
+  "endTimeInput": "13:45",
+  "notGoingResponses": false,
+  "startDate": "2018-07-19",
+  "startDateInput": "July 19, 2018",
+  "startDateMoment": "2018-07-19T19:30:00.000Z",
+  "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -110,11 +141,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": true,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -127,11 +160,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "January 1, 2018",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -144,11 +179,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "January 1, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -161,11 +198,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "January 1, 2018",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "",
 }
 `;
@@ -178,11 +217,32 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "13:45",
+  "startTimeInput": "7:30 pm",
+  "title": "",
+}
+`;
+
+exports[`Details reducer should set the start time input 1`] = `
+Object {
+  "capacity": "",
+  "description": "",
+  "endDate": "2018-07-19",
+  "endDateInput": "July 19, 2018",
+  "endDateMoment": "2018-07-19T19:30:00.000Z",
+  "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
+  "notGoingResponses": false,
+  "startDate": "2018-07-19",
+  "startDateInput": "July 19, 2018",
+  "startDateMoment": "2018-07-19T19:30:00.000Z",
+  "startTime": "19:30:00",
+  "startTimeInput": "13:45",
   "title": "",
 }
 `;
@@ -195,11 +255,13 @@ Object {
   "endDateInput": "July 19, 2018",
   "endDateMoment": "2018-07-19T19:30:00.000Z",
   "endTime": "19:30:00",
+  "endTimeInput": "7:30 pm",
   "notGoingResponses": false,
   "startDate": "2018-07-19",
   "startDateInput": "July 19, 2018",
   "startDateMoment": "2018-07-19T19:30:00.000Z",
   "startTime": "19:30:00",
+  "startTimeInput": "7:30 pm",
   "title": "new title",
 }
 `;

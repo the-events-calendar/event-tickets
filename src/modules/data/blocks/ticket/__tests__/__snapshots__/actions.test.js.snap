@@ -268,6 +268,16 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket details actions set ticket end time input 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "endTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_END_TIME_INPUT",
+}
+`;
+
 exports[`Ticket actions Ticket details actions set ticket price 1`] = `
 Object {
   "payload": Object {
@@ -340,6 +350,16 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket details actions set ticket start time input 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "startTimeInput": "10:00",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_START_TIME_INPUT",
+}
+`;
+
 exports[`Ticket actions Ticket saga actions create new ticket 1`] = `
 Object {
   "payload": Object {
@@ -365,6 +385,48 @@ Object {
     "ticketId": 99,
   },
   "type": "@@MT/TICKETS/FETCH_TICKET",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "date": Object {},
+    "dayPickerInput": Object {},
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_START_DATE",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 2`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "date": Object {},
+    "dayPickerInput": Object {},
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_END_DATE",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 3`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "seconds": 1000,
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_START_TIME",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 4`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "seconds": 1000,
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_END_TIME",
 }
 `;
 
@@ -491,6 +553,16 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket temp details actions set ticket temp end time input 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "endTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT",
+}
+`;
+
 exports[`Ticket actions Ticket temp details actions set ticket temp price 1`] = `
 Object {
   "payload": Object {
@@ -560,6 +632,16 @@ Object {
     "startTime": "10:00",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_START_TIME",
+}
+`;
+
+exports[`Ticket actions Ticket temp details actions set ticket temp start time input 1`] = `
+Object {
+  "payload": Object {
+    "blockId": "modern-tribe",
+    "startTimeInput": "10:00",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TEMP_START_TIME_INPUT",
 }
 `;
 

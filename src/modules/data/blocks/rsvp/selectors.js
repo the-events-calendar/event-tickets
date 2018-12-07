@@ -3,6 +3,12 @@
  */
 import { createSelector } from 'reselect';
 
+/**
+ * ------------------------------------------------------------
+ * RSVP State
+ * ------------------------------------------------------------
+ */
+
 export const getRSVPBlock = ( state ) => state.tickets.blocks.rsvp;
 
 export const getRSVPId = createSelector(
@@ -142,6 +148,16 @@ export const getRSVPEndTimeNoSeconds = createSelector(
 	( endTime ) => endTime.slice( 0, -3 ),
 );
 
+export const getRSVPStartTimeInput = createSelector(
+	[ getRSVPDetails ],
+	( details ) => details.startTimeInput,
+);
+
+export const getRSVPEndTimeInput = createSelector(
+	[ getRSVPDetails ],
+	( details ) => details.endTimeInput,
+);
+
 /**
  * ------------------------------------------------------------
  * RSVP Temp Details
@@ -220,6 +236,16 @@ export const getRSVPTempEndTime = createSelector(
 export const getRSVPTempEndTimeNoSeconds = createSelector(
 	[ getRSVPTempEndTime ],
 	( endTime ) => endTime.slice( 0, -3 ),
+);
+
+export const getRSVPTempStartTimeInput = createSelector(
+	[ getRSVPTempDetails ],
+	( tempDetails ) => tempDetails.startTimeInput,
+);
+
+export const getRSVPTempEndTimeInput = createSelector(
+	[ getRSVPTempDetails ],
+	( tempDetails ) => tempDetails.endTimeInput,
 );
 
 /**

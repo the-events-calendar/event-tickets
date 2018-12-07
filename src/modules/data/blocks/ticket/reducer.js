@@ -59,6 +59,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_DATE_MOMENT:
 		case types.SET_TICKET_START_TIME:
 		case types.SET_TICKET_END_TIME:
+		case types.SET_TICKET_START_TIME_INPUT:
+		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
 		case types.SET_TICKET_TEMP_TITLE:
@@ -73,6 +75,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_DATE_MOMENT:
 		case types.SET_TICKET_TEMP_START_TIME:
 		case types.SET_TICKET_TEMP_END_TIME:
+		case types.SET_TICKET_TEMP_START_TIME_INPUT:
+		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
 		case types.SET_TICKET_SOLD:

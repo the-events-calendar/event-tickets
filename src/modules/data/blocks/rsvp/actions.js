@@ -3,17 +3,9 @@
  */
 import { types } from '@moderntribe/tickets/data/blocks/rsvp';
 
-export const createRSVP = () => ( {
-	type: types.CREATE_RSVP,
-} );
-
-export const initializeRSVP = () => ( {
-	type: types.INITIALIZE_RSVP,
-} );
-
-export const deleteRSVP = () => ( {
-	type: types.DELETE_RSVP,
-} );
+//
+// ─── RSVP ACTIONS ───────────────────────────────────────────────────────────────
+//
 
 export const setRSVPId = ( id ) => ( {
 	type: types.SET_RSVP_ID,
@@ -63,6 +55,25 @@ export const setRSVPNotGoingCount = ( notGoingCount ) => ( {
 		notGoingCount,
 	},
 } );
+
+export const setRSVPDetails = ( payload ) => ( {
+	type: types.SET_RSVP_DETAILS,
+	payload,
+} );
+
+export const setRSVPTempDetails = ( payload ) => ( {
+	type: types.SET_RSVP_TEMP_DETAILS,
+	payload,
+} );
+
+export const setRSVPHeaderImage = ( payload ) => ( {
+	type: types.SET_RSVP_HEADER_IMAGE,
+	payload,
+} );
+
+//
+// ─── RSVP DETAILS ACTIONS ───────────────────────────────────────────────────────
+//
 
 export const setRSVPTitle = ( title ) => ( {
 	type: types.SET_RSVP_TITLE,
@@ -148,6 +159,24 @@ export const setRSVPEndTime = ( endTime ) => ( {
 	},
 } );
 
+export const setRSVPStartTimeInput = ( startTimeInput ) => ( {
+	type: types.SET_RSVP_START_TIME_INPUT,
+	payload: {
+		startTimeInput,
+	},
+} );
+
+export const setRSVPEndTimeInput = ( endTimeInput ) => ( {
+	type: types.SET_RSVP_END_TIME_INPUT,
+	payload: {
+		endTimeInput,
+	},
+} );
+
+//
+// ─── RSVP TEMP DETAILS ACTIONS ──────────────────────────────────────────────────
+//
+
 export const setRSVPTempTitle = ( title ) => ( {
 	type: types.SET_RSVP_TEMP_TITLE,
 	payload: {
@@ -232,17 +261,56 @@ export const setRSVPTempEndTime = ( endTime ) => ( {
 	},
 } );
 
-export const setRSVPHeaderImage = ( payload ) => ( {
-	type: types.SET_RSVP_HEADER_IMAGE,
+export const setRSVPTempStartTimeInput = ( startTimeInput ) => ( {
+	type: types.SET_RSVP_TEMP_START_TIME_INPUT,
+	payload: {
+		startTimeInput,
+	},
+} );
+
+export const setRSVPTempEndTimeInput = ( endTimeInput ) => ( {
+	type: types.SET_RSVP_TEMP_END_TIME_INPUT,
+	payload: {
+		endTimeInput,
+	},
+} );
+
+//
+// ─── RSVP THUNK & SAGA ACTIONS ──────────────────────────────────────────────────
+//
+
+export const createRSVP = () => ( {
+	type: types.CREATE_RSVP,
+} );
+
+export const initializeRSVP = () => ( {
+	type: types.INITIALIZE_RSVP,
+} );
+
+export const deleteRSVP = () => ( {
+	type: types.DELETE_RSVP,
+} );
+
+export const handleRSVPStartDate = ( payload ) => ( {
+	type: types.HANDLE_RSVP_START_DATE,
 	payload,
 } );
 
-export const setRSVPDetails = ( payload ) => ( {
-	type: types.SET_RSVP_DETAILS,
+export const handleRSVPEndDate = ( payload ) => ( {
+	type: types.HANDLE_RSVP_END_DATE,
 	payload,
 } );
 
-export const setRSVPTempDetails = ( payload ) => ( {
-	type: types.SET_RSVP_TEMP_DETAILS,
-	payload,
+export const handleRSVPStartTime = ( seconds ) => ( {
+	type: types.HANDLE_RSVP_START_TIME,
+	payload: {
+		seconds,
+	},
+} );
+
+export const handleRSVPEndTime = ( seconds ) => ( {
+	type: types.HANDLE_RSVP_END_TIME,
+	payload: {
+		seconds,
+	},
 } );

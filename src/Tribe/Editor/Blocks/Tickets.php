@@ -43,6 +43,10 @@ extends Tribe__Editor__Blocks__Abstract {
 
 		// Fetch the default provider
 		$provider    = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		if ( ! class_exists( $provider ) ) {
+			return;
+		}
+
 		$provider    = call_user_func( array( $provider, 'get_instance' ) );
 		$provider_id = $this->get_provider_id( $provider );
 
