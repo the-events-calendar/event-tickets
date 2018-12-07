@@ -81,7 +81,7 @@ export const getRSVPAvailable = createSelector(
 	( capacity, goingCount ) => {
 		if ( capacity === '' ) {
 			return -1;
-		};
+		}
 
 		const total = parseInt( capacity, 10 ) || 0;
 		const going = parseInt( goingCount, 10 ) || 0;
@@ -91,7 +91,7 @@ export const getRSVPAvailable = createSelector(
 		 */
 		return Math.max( total - going, 0 );
 	}
-)
+);
 
 export const getRSVPNotGoingResponses = createSelector(
 	[ getRSVPDetails ],
