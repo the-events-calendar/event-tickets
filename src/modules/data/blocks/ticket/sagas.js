@@ -216,9 +216,9 @@ export function* fetchTicket( action ) {
 			namespace: 'tribe/tickets/v1',
 		} );
 
-		const { status = '', provider } = ticket;
+		const { status = '' } = ticket;
 
-		if ( response.status === 404 || status === 'trash' || provider === constants.RSVP ) {
+		if ( response.status === 404 || status === 'trash' ) {
 			yield call( removeTicketBlock, blockId );
 			return;
 		}
@@ -229,6 +229,7 @@ export function* fetchTicket( action ) {
 				available_from,
 				available_until,
 				cost_details,
+				provider,
 				title,
 				description,
 				sku,
