@@ -515,10 +515,10 @@ describe( 'RSVP block sagas', () => {
 					dayPickerInput: {
 						state: {
 							value: '',
-						}
-					}
-				}
-			}
+						},
+					},
+				},
+			};
 		} );
 
 		it( 'should handle undefined rsvp start date', () => {
@@ -669,10 +669,10 @@ describe( 'RSVP block sagas', () => {
 					dayPickerInput: {
 						state: {
 							value: '',
-						}
-					}
-				}
-			}
+						},
+					},
+				},
+			};
 		} );
 
 		it( 'should handle undefined rsvp end date', () => {
@@ -848,9 +848,8 @@ describe( 'RSVP block sagas', () => {
 			} ).value ).toMatchSnapshot();
 
 			expect( gen.next().done ).toEqual( true );
-
-		})
-	})
+		} );
+	} );
 
 	describe( 'handleRSVPMove', () => {
 		it( 'should handle move', () => {
@@ -870,7 +869,7 @@ describe( 'RSVP block sagas', () => {
 			);
 			expect( gen.next().value ).toEqual(
 				call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ '111111' ] )
-			)
+			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
