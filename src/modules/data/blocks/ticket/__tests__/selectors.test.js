@@ -273,6 +273,14 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketEndTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketStartTimeInput', () => {
+			expect( selectors.getTicketStartTimeInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketEndTimeInput', () => {
+			expect( selectors.getTicketEndTimeInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketCapacityType', () => {
 			expect( selectors.getTicketCapacityType( state, ownProps ) ).toMatchSnapshot();
 		} );
@@ -366,6 +374,14 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'getTicketTempEndTimeNoSeconds', () => {
 			expect( selectors.getTicketTempEndTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempStartTimeInput', () => {
+			expect( selectors.getTicketTempStartTimeInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempEndTimeInput', () => {
+			expect( selectors.getTicketTempEndTimeInput( state, ownProps ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicketTempCapacityType', () => {

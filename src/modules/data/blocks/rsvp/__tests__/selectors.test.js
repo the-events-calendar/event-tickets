@@ -137,6 +137,16 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.details.endTime.slice( 0, -3 ) );
 	} );
 
+	it( 'should return the start time input', () => {
+		expect( selectors.getRSVPStartTimeInput( state ) )
+			.toBe( DEFAULT_STATE.details.startTimeInput );
+	} );
+
+	it( 'should return the end time input', () => {
+		expect( selectors.getRSVPEndTimeInput( state ) )
+			.toBe( DEFAULT_STATE.details.endTimeInput );
+	} );
+
 	it( 'should return the temp title', () => {
 		expect( selectors.getRSVPTempTitle( state ) )
 			.toBe( DEFAULT_STATE.tempDetails.title );
@@ -205,6 +215,16 @@ describe( 'RSVP block selectors', () => {
 	it( 'should return the temp end time no seconds', () => {
 		expect( selectors.getRSVPTempEndTimeNoSeconds( state ) )
 			.toBe( DEFAULT_STATE.tempDetails.endTime.slice( 0, -3 ) );
+	} );
+
+	it( 'should return the temp start time input', () => {
+		expect( selectors.getRSVPTempStartTimeInput( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.startTimeInput );
+	} );
+
+	it( 'should return the temp end time input', () => {
+		expect( selectors.getRSVPTempEndTimeInput( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.endTimeInput );
 	} );
 
 	it( 'should return the header image object', () => {

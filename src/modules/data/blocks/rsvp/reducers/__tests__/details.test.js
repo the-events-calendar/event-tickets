@@ -67,4 +67,12 @@ describe( 'Details reducer', () => {
 	it( 'should set the end time', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPEndTime( '13:45' ) ) ).toMatchSnapshot();
 	} );
+
+	it( 'should set the start time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPStartTimeInput( '13:45' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the end time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPEndTimeInput( '13:45' ) ) ).toMatchSnapshot();
+	} );
 } );

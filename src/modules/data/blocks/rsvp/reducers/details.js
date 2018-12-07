@@ -33,6 +33,8 @@ export const DEFAULT_STATE = {
 	endDateMoment: endMoment,
 	startTime: momentUtil.toDatabaseTime( currentMoment ),
 	endTime: momentUtil.toDatabaseTime( endMoment ),
+	startTimeInput: momentUtil.toTime( currentMoment ),
+	endTimeInput: momentUtil.toTime( endMoment ),
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -96,6 +98,16 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				endTime: action.payload.endTime,
+			};
+		case types.SET_RSVP_START_TIME_INPUT:
+			return {
+				...state,
+				startTimeInput: action.payload.startTimeInput,
+			};
+		case types.SET_RSVP_END_TIME_INPUT:
+			return {
+				...state,
+				endTimeInput: action.payload.endTimeInput,
 			};
 		default:
 			return state;

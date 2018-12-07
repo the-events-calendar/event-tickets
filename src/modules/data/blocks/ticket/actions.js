@@ -177,6 +177,22 @@ export const setTicketEndTime = ( blockId, endTime ) => ( {
 	},
 } );
 
+export const setTicketStartTimeInput = ( blockId, startTimeInput ) => ( {
+	type: types.SET_TICKET_START_TIME_INPUT,
+	payload: {
+		blockId,
+		startTimeInput,
+	},
+} );
+
+export const setTicketEndTimeInput = ( blockId, endTimeInput ) => ( {
+	type: types.SET_TICKET_END_TIME_INPUT,
+	payload: {
+		blockId,
+		endTimeInput,
+	},
+} );
+
 export const setTicketCapacityType = ( blockId, capacityType ) => ( {
 	type: types.SET_TICKET_CAPACITY_TYPE,
 	payload: {
@@ -290,6 +306,22 @@ export const setTicketTempEndTime = ( blockId, endTime ) => ( {
 	payload: {
 		blockId,
 		endTime,
+	},
+} );
+
+export const setTicketTempStartTimeInput = ( blockId, startTimeInput ) => ( {
+	type: types.SET_TICKET_TEMP_START_TIME_INPUT,
+	payload: {
+		blockId,
+		startTimeInput,
+	},
+} );
+
+export const setTicketTempEndTimeInput = ( blockId, endTimeInput ) => ( {
+	type: types.SET_TICKET_TEMP_END_TIME_INPUT,
+	payload: {
+		blockId,
+		endTimeInput,
 	},
 } );
 
@@ -426,6 +458,41 @@ export const setTicketTempDetails = ( blockId, tempDetails ) => ( {
 		tempDetails,
 	},
 } );
+
+export const handleTicketStartDate = ( blockId, date, dayPickerInput ) => ( {
+	type: types.HANDLE_TICKET_START_DATE,
+	payload: {
+		blockId,
+		date,
+		dayPickerInput,
+	},
+} );
+
+export const handleTicketEndDate = ( blockId, date, dayPickerInput ) => ( {
+	type: types.HANDLE_TICKET_END_DATE,
+	payload: {
+		blockId,
+		date,
+		dayPickerInput,
+	},
+} );
+
+export const handleTicketStartTime = ( blockId, seconds ) => ( {
+	type: types.HANDLE_TICKET_START_TIME,
+	payload: {
+		blockId,
+		seconds,
+	},
+} );
+
+export const handleTicketEndTime = ( blockId, seconds ) => ( {
+	type: types.HANDLE_TICKET_END_TIME,
+	payload: {
+		blockId,
+		seconds,
+	},
+} );
+
 
 export const fetchTicket = ( blockId, ticketId ) => ( {
 	type: types.FETCH_TICKET,
