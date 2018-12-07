@@ -102,11 +102,11 @@ export function* setRSVPTempDetails( action ) {
  * @returns {Object} Object of dates/moments
  */
 export function* createDates( date ) {
-	const datePickerFormat = globals.tecDateSettings().datepickerFormat;
+	const { datepickerFormat } = yield call( [ globals, 'tecDateSettings' ] );
 	const moment = yield call( momentUtil.toMoment, date );
 	const currentDate = yield call( momentUtil.toDate, moment );
-	const dateInput = yield datePickerFormat
-		? call( momentUtil.toDate, moment, datePickerFormat )
+	const dateInput = yield datepickerFormat
+		? call( momentUtil.toDate, moment, datepickerFormat )
 		: call( momentUtil.toDate, moment );
 	const time = yield call( momentUtil.toDatabaseTime, moment );
 
@@ -134,7 +134,7 @@ export function* isTribeEventPostType() {
  * @export
  */
 export function* initializeRSVP() {
-	const publishDate = wpSelect( 'core/editor' ).getEditedPostAttribute( 'date' );
+	const publishDate =  yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' );
 	const {
 		moment: startMoment,
 		date: startDate,
@@ -298,7 +298,9 @@ export function* saveRSVPWithPostSave() {
 		console.error( error );
 	} finally {
 		// Close channel if exists
-		saveChannel && saveChannel.close();
+		if ( saveChannel ) {
+			yield call( [ saveChannel, 'close' ] );
+		}
 	}
 }
 
@@ -309,7 +311,8 @@ export function* saveRSVPWithPostSave() {
  */
 export function* handleEventStartDateChanges() {
 	try {
-		if ( yield call( isTribeEventPostType ) && window.tribe.events ) {
+		const isEvent = yield call( isTribeEventPostType );
+		if ( isEvent && window.tribe.events ) {
 			// Proceed after creating dummy RSVP or after fetching
 			yield take( [ types.INITIALIZE_RSVP, types.SET_RSVP_DETAILS ] );
 			const { SET_START_DATE_TIME, SET_START_TIME } = window.tribe.events.data.blocks.datetime.types;
