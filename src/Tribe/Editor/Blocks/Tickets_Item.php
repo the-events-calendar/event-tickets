@@ -38,6 +38,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 		}
 
 		$ticket_post = get_post( $attributes['ticketId'] );
+
 		// Prevent to attach blocks with tickets removed or under trash
 		if ( ! $ticket_post instanceof WP_Post || 'publish' !== $ticket_post->post_status ) {
 			return;
@@ -46,7 +47,15 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 		$tickets  = $template->get( 'tickets', array(), false );
 		$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $attributes['ticketId'] );
 
+		// Bail if for some reason there was an RSVP here
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+			return;
+		}
+
+		$existing_tickets = wp_list_pluck( $tickets, 'ID' );
+
+		// Prevent adding tickets that are already in the list
+		if ( in_array( $ticket->ID, $existing_tickets ) ) {
 			return;
 		}
 
