@@ -138,8 +138,14 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 
 					const rsvp = filteredRSVPs[0];
 					const { meta = {} } = rsvp;
+
+					const startDateMeta =  meta[ utils.KEY_TICKET_START_DATE ];
 					const startMoment = moment( meta[ utils.KEY_TICKET_START_DATE ] );
-					const endMoment = moment( meta[ utils.KEY_TICKET_END_DATE ] );
+
+					// TODO: Remove 100 years after pickers allow blank values
+					const endDateMeta = meta[ utils.KEY_TICKET_END_DATE ] || startMoment.clone().add( 100, 'years' );
+					const endMoment = moment( endDateMeta );
+
 					const startDateInput = datePickerFormat
 						? startMoment.format( momentUtil.toFormat( datePickerFormat ) )
 						: momentUtil.toDate( startMoment );
