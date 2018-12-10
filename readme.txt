@@ -122,6 +122,11 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.9.3] TBD =
+
+* Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
+* Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
+
 = [4.9.2] TBD =
 * Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
 * Fix - Making sure all Blocks Editor code for Meta saving is PHP 5.2 compatible
