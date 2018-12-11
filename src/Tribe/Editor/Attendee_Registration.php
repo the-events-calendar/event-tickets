@@ -87,7 +87,12 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * @return string success message
 	 */
 	public function success_notice() {
-		return '<div class="success"><p>' . __( 'Attendee Registration fields saved.', 'event-tickets' ) . '</p></div>';
+		$link    = '<a href="' . get_edit_post_link( $this->post->ID, 'raw' ) . '">' . __( 'return to the content editor', 'event-tickets' ) . '</a>';
+		$notice  = '<div class="success"><p>';
+		$notice .= sprintf( __( 'Attendee Registration fields saved. Make additional changes or %s', 'event-tickets' ), $link );
+		$notice .= '</p></div>';
+
+		return $notice;
 	}
 
 	/**
