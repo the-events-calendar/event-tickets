@@ -9,12 +9,12 @@ class Tribe__Tickets__Main {
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.7-dev';
+	const MIN_TEC_VERSION = '4.7.1-dev';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.8-dev';
+	const MIN_COMMON_VERSION = '4.8.2-dev';
 
 	/**
 	 * Name of the provider
