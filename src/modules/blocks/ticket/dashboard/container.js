@@ -36,6 +36,8 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		endDateMoment: selectors.getTicketEndDateMoment( state, ownProps ),
 		startTime: selectors.getTicketStartTime( state, ownProps ),
 		endTime: selectors.getTicketEndTime( state, ownProps ),
+		startTimeInput: selectors.getTicketStartTimeInput( state, ownProps ),
+		endTimeInput: selectors.getTicketEndTimeInput( state, ownProps ),
 		capacityType: selectors.getTicketCapacityType( state, ownProps ),
 		capacity: selectors.getTicketCapacity( state, ownProps ),
 	} ) );

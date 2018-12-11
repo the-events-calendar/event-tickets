@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version TBD
  *
  */
 
@@ -20,5 +20,5 @@ $ticket = $this->get( 'ticket' );
 <button
 	class="tribe-block__tickets__item__quantity__add"
 >
-	<?php esc_html_e( '+', 'events-gutenberg' ); ?>
+	<?php esc_html_e( '+', 'event-tickets' ); ?>
 </button>

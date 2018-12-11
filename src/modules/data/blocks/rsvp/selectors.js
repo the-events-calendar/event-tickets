@@ -3,6 +3,12 @@
  */
 import { createSelector } from 'reselect';
 
+/**
+ * ------------------------------------------------------------
+ * RSVP State
+ * ------------------------------------------------------------
+ */
+
 export const getRSVPBlock = ( state ) => state.tickets.blocks.rsvp;
 
 export const getRSVPId = createSelector(
@@ -75,7 +81,7 @@ export const getRSVPAvailable = createSelector(
 	( capacity, goingCount ) => {
 		if ( capacity === '' ) {
 			return -1;
-		};
+		}
 
 		const total = parseInt( capacity, 10 ) || 0;
 		const going = parseInt( goingCount, 10 ) || 0;
@@ -85,7 +91,7 @@ export const getRSVPAvailable = createSelector(
 		 */
 		return Math.max( total - going, 0 );
 	}
-)
+);
 
 export const getRSVPNotGoingResponses = createSelector(
 	[ getRSVPDetails ],
@@ -140,6 +146,16 @@ export const getRSVPEndTime = createSelector(
 export const getRSVPEndTimeNoSeconds = createSelector(
 	[ getRSVPEndTime ],
 	( endTime ) => endTime.slice( 0, -3 ),
+);
+
+export const getRSVPStartTimeInput = createSelector(
+	[ getRSVPDetails ],
+	( details ) => details.startTimeInput,
+);
+
+export const getRSVPEndTimeInput = createSelector(
+	[ getRSVPDetails ],
+	( details ) => details.endTimeInput,
 );
 
 /**
@@ -220,6 +236,16 @@ export const getRSVPTempEndTime = createSelector(
 export const getRSVPTempEndTimeNoSeconds = createSelector(
 	[ getRSVPTempEndTime ],
 	( endTime ) => endTime.slice( 0, -3 ),
+);
+
+export const getRSVPTempStartTimeInput = createSelector(
+	[ getRSVPTempDetails ],
+	( tempDetails ) => tempDetails.startTimeInput,
+);
+
+export const getRSVPTempEndTimeInput = createSelector(
+	[ getRSVPTempDetails ],
+	( tempDetails ) => tempDetails.endTimeInput,
 );
 
 /**
