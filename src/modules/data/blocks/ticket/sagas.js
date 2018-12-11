@@ -816,8 +816,6 @@ export function* syncTicketSaleEndWithEventStart(prevStartDate, blockId){
 				timeInput: endTimeInput,
 			} = yield call( createDates, eventStart );
 
-			console.warn(endDate, endDateInput, endTime, endTimeInput);
-
 			yield all( [
 				put( actions.setTicketTempEndDate( blockId, endDate ) ),
 				put( actions.setTicketTempEndDateInput( blockId, endDateInput ) ),
