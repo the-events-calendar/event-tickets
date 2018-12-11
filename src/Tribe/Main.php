@@ -17,14 +17,25 @@ class Tribe__Tickets__Main {
 	const MIN_COMMON_VERSION = '4.8.1';
 
 	/**
-	 * Min Version of WordPress
-	 */
+	* Min Version of WordPress
+	*
+	* @since TBD
+	*/
 	protected $min_wordpress = '4.5';
 
 	/**
-	 * Min Version of PHP
-	 */
+	* Min Version of PHP
+	*
+	* @since TBD
+	*/
 	protected $min_php = '5.2.17';
+
+	/**
+	* Min Version of The Events Calendar
+	*
+	* @since TBD
+	*/
+	protected $min_tec_version = '4.7.1';
 
 	/**
 	 * Name of the provider
@@ -126,10 +137,22 @@ class Tribe__Tickets__Main {
 
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
 
+		// early check for an older version of The Events Calendar to prevent fatal error
+		//todo add check for TEC here
+		if (
+			class_exists( 'Tribe__Events__Main' ) &&
+			! version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' )
+		) {
+			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
+			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
+
+			return;
+		}
+
 		$this->maybe_set_common_lib_info();
 
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
-		//add_action( 'tribe_common_loaded', array( $this, 'bootstrap' ), 0 );
+
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 	}
 
