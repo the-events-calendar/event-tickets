@@ -1,17 +1,7 @@
 /**
  * External dependencies
  */
-import { takeEvery, put, call, select, all, fork, take } from 'redux-saga/effects';
-import { cloneableGenerator, createMockTask } from 'redux-saga/utils';
 import { noop } from 'lodash';
-
-/**
- * WordPress dependencies
- */
-import {
-	dispatch as wpDispatch,
-	select as wpSelect,
-} from '@wordpress/data';
 
 /**
  * Internal Dependencies

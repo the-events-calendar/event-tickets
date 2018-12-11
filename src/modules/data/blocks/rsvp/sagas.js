@@ -112,32 +112,6 @@ export function* setRSVPTempDetails( action ) {
 	] );
 }
 
-/**
- * Create date objects used throughout sagas
- *
- * @export
- * @param {String} date datetime string
- * @returns {Object} Object of dates/moments
- */
-export function* createDates( date ) {
-	const { datepickerFormat } = yield call( [ globals, 'tecDateSettings' ] );
-	const moment = yield call( momentUtil.toMoment, date );
-	const currentDate = yield call( momentUtil.toDate, moment );
-	const dateInput = yield datepickerFormat
-		? call( momentUtil.toDate, moment, datepickerFormat )
-		: call( momentUtil.toDate, moment );
-	const time = yield call( momentUtil.toDatabaseTime, moment );
-	const timeInput = yield call( momentUtil.toTime, moment );
-
-	return {
-		moment,
-		date: currentDate,
-		dateInput,
-		time,
-		timeInput,
-	};
-}
-
 //
 // ─── INITIALIZE ─────────────────────────────────────────────────────────────────
 //
