@@ -115,7 +115,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		</style>
 
 		<div id="poststuff"><div class="inside postbox">
-			<a href="<?php echo get_edit_post_link( $this->post->ID, 'raw' );?>">&laquo; Back to Ticket Editor</a>
+			<a href="<?php echo get_edit_post_link( $this->post->ID, 'raw' );?>">&laquo; Back to Editor</a>
 			<form id="event-tickets-attendee-information" action="<?php echo esc_url( $this->url() ); ?>" method="post">
 				<input type="hidden" name="ticket_id" value="<?php echo absint( $this->ticket_id );?>" />
 				<div id="tribetickets" class="event-tickets-plus-fieldset-table tribe-tickets-plus-fieldset-page">
