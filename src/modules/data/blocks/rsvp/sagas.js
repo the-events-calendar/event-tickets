@@ -4,7 +4,7 @@
  * External Dependencies
  */
 import { select as wpSelect, dispatch as wpDispatch, subscribe } from '@wordpress/data';
-import { put, call, all, select, takeEvery, take, fork, cancel, cancelled } from 'redux-saga/effects';
+import { put, call, all, select, takeEvery, take, fork, cancel } from 'redux-saga/effects';
 import { eventChannel } from 'redux-saga';
 import { some } from 'lodash';
 
@@ -18,6 +18,7 @@ import { updateRSVP } from './thunks';
 import { editor } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel } from '@moderntribe/tickets/data/shared/sagas';
 
 import {
 	globals,
@@ -135,16 +136,6 @@ export function* createDates( date ) {
 		time,
 		timeInput,
 	};
-}
-
-/**
- * Determines if current post is a tribe event
- * @export
- * @returns {Boolean} bool
- */
-export function* isTribeEventPostType() {
-	const postType = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'type' );
-	return postType === editor.EVENT;
 }
 
 //
@@ -268,29 +259,6 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 		// ¯\_(ツ)_/¯
 		console.error( error );
 	}
-}
-
-/**
- * Creates event channel subscribing to WP editor state when saving post
- *
- * @returns {Function} Channel
- */
-export function createWPEditorSavingChannel() {
-	return eventChannel( emit => {
-		const wpEditor = wpSelect( 'core/editor' );
-
-		const predicates = [
-			() => wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost(),
-		];
-
-		// Returns unsubscribe function
-		return subscribe( () => {
-			// Only emit when truthy
-			if ( some( predicates, fn => fn() ) ) {
-				emit( true ); // Emitted value is insignificant here, but cannot be left undefined
-			}
-		} );
-	} );
 }
 
 /**
