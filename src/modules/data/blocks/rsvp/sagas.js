@@ -3,10 +3,8 @@
 /**
  * External Dependencies
  */
-import { select as wpSelect, dispatch as wpDispatch, subscribe } from '@wordpress/data';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 import { put, call, all, select, takeEvery, take, fork, cancel } from 'redux-saga/effects';
-import { eventChannel } from 'redux-saga';
-import { some } from 'lodash';
 
 /**
  * Internal dependencies
@@ -15,13 +13,11 @@ import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { updateRSVP } from './thunks';
-import { editor } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { isTribeEventPostType, createWPEditorSavingChannel } from '@moderntribe/tickets/data/shared/sagas';
+import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 import {
-	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';

@@ -24,6 +24,7 @@ import watchers, * as sagas from '../sagas';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import { moment as momentUtil, time as timeUtil, globals } from '@moderntribe/common/utils';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel } from '@moderntribe/tickets/data/shared/sagas';
 
 function mock() {
 	return {
@@ -322,19 +323,6 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'isTribeEventPostType', () => {
-		it( 'should be event', () => {
-			const gen = sagas.isTribeEventPostType();
-			expect( gen.next().value ).toMatchSnapshot();
-			expect( gen.next( 'tribe_events' ).value ).toEqual( true );
-		} );
-		it( 'should not be event', () => {
-			const gen = sagas.isTribeEventPostType();
-			expect( gen.next().value ).toMatchSnapshot();
-			expect( gen.next( 'no' ).value ).toEqual( false );
-		} );
-	} );
-
 	describe( 'initializeRSVP', () => {
 		let state;
 		beforeEach( () => {
@@ -390,7 +378,7 @@ describe( 'RSVP block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
@@ -562,12 +550,6 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'createWPEditorSavingChannel', () => {
-		it( 'should create channel', () => {
-			expect( sagas.createWPEditorSavingChannel() ).toMatchSnapshot();
-		} );
-	} );
-
 	describe( 'saveRSVPWithPostSave', () => {
 		let channel;
 
@@ -583,7 +565,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next( true ).value ).toEqual(
-				call( sagas.createWPEditorSavingChannel )
+				call( createWPEditorSavingChannel )
 			);
 
 			expect( gen.next( channel ).value ).toEqual(
@@ -642,7 +624,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 
 			expect( gen.next( true ).value ).toEqual(
@@ -813,7 +795,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 
 			expect( gen.next( true ).done ).toEqual( true );
@@ -831,7 +813,7 @@ describe( 'RSVP block sagas', () => {
 				take( [ types.INITIALIZE_RSVP ] )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 			expect( gen.next( false ).value ).toEqual(
 				select( selectors.getRSVPTempEndDateMoment )
