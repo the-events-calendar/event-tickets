@@ -89,7 +89,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	public function success_notice() {
 		$link    = '<a href="' . get_edit_post_link( $this->post->ID, 'raw' ) . '">' . __( 'return to the content editor', 'event-tickets' ) . '</a>';
 		$notice  = '<div class="success"><p>';
-		$notice .= sprintf( __( 'Attendee Registration fields saved. Make additional changes or %s', 'event-tickets' ), $link );
+		$notice .= sprintf( __( 'Attendee Registration fields saved. Make additional changes or %1$s', 'event-tickets' ), $link );
 		$notice .= '</p></div>';
 
 		return $notice;
