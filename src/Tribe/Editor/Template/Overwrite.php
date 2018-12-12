@@ -90,13 +90,14 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	 * @return bool
 	 */
 	public function has_classic_editor( $post_id ) {
-		$is_event                 = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
-		$has_event_classic_editor = $is_event && ! $this->has_early_access_to_blocks();
-
+		$is_event = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
+		if ( $is_event && $this->has_early_access_to_blocks() ) {
+			return false;
+		}
 		/** @var Tribe__Editor $editor */
 		$editor = tribe( 'editor' );
 
-		return $editor->is_classic_editor() || $has_event_classic_editor;
+		return $editor->is_classic_editor();
 	}
 
 	/**
