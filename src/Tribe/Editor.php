@@ -8,6 +8,15 @@
 class Tribe__Tickets__Editor extends Tribe__Editor {
 
 	/**
+	 * Variable used as a flag to detect if we should flush the tickets blocks
+	 *
+	 * @since TBD
+	 *
+	 * @var string
+	 */
+	public $meta_key_flush_flag = '_tribe_tickets_flush_blocks';
+
+	/**
 	 * Hooks actions from the editor into the correct places
 	 *
 	 * @since 4.9
@@ -31,6 +40,10 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		add_action( 'tribe_events_tickets_capacity', tribe_callback( 'tickets.admin.views', 'template', 'editor/total-capacity' ) );
 		add_action( 'tribe_events_tickets_ticket_table_add_header_column', tribe_callback( 'tickets.admin.views', 'template', 'editor/column-head-price' ) );
 		add_action( 'tribe_events_tickets_ticket_table_add_tbody_column', array( $this, 'add_column_content_price' ), 10, 2 );
+
+		// Maybe add flag from classic editor
+		add_action( 'load-post.php', array( $this, 'flush_blocks' ), 0 );
+		add_action( 'tribe_tickets_update_blocks_from_classic_editor', array( $this, 'update_blocks' ) );
 	}
 
 	/**
@@ -235,5 +248,104 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 		);
 
 		return tribe( 'tickets.admin.views' )->template( 'editor/column-body-price', $context );
+	}
+
+	/**
+	 * Function called by `load-post.php` action when the editor screen is loaded, insert a new meta
+	 * field value as a flag into the post / event if the classic editor is displayed and has blocks
+	 * in case it has blocks to trigger a new action `tribe_tickets_update_blocks_from_classic_editor`
+	 *
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function flush_blocks() {
+		$post_id = absint( tribe_get_request_var( 'post' ) );
+
+		if (
+			empty( $post_id )
+			|| ! is_numeric( $post_id )
+			|| ! tribe_events_has_tickets( $post_id )
+		) {
+			return false;
+		}
+
+		/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
+		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
+
+		$is_event                 = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
+		$has_event_classic_editor = $is_event && ! $template_overwrite->has_early_access_to_blocks();
+
+		/** @var Tribe__Editor $editor */
+		$editor = tribe( 'editor' );
+
+		// Set meta key only if is classic editor and bail
+		if ( $editor->is_classic_editor() || $has_event_classic_editor ) {
+			update_post_meta( $post_id, $this->meta_key_flush_flag, 1 );
+
+			return false;
+		}
+
+		/**
+		 * Don't process the first time a post is converted into blocks which means has_blocks, will
+		 * return false the first time this is called in the post as the conversion from classic into
+		 * blocks has not done yet, as this is process by 'tribe_blocks_editor_flag_post_classic_editor'
+		 * so we only care if we already have blocks so we can search and remove old tickets blocks to
+		 * replace with the new schema of tickets.
+		 */
+		if ( ! has_blocks( $post_id ) ) {
+			return false;
+		}
+
+		$has_meta_flush = metadata_exists( 'post', $post_id, $this->meta_key_flush_flag );
+		if ( $has_meta_flush ) {
+			/**
+			 * Fire an action to update the blocks associated with a post
+			 *
+			 * @since TBD
+			 */
+			do_action( 'tribe_tickets_update_blocks_from_classic_editor', $post_id );
+
+			return delete_post_meta( $post_id, $this->meta_key_flush_flag );
+		}
+
+		return false;
+	}
+
+	/**
+	 * Update tickets blocks when the action:  `tribe_tickets_update_blocks_from_classic_editor`
+	 * is fired. When this action is fired couple of actions happens:
+	 *
+	 * 1. Remove all the inner blocks and replaces with just the name of the tickets block
+	 * 2. Replace the placeholder ticket block with all the tickets associated with the Event / POST as blocks
+	 * 3. Update the content of the post
+	 *
+	 * @since TBD
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function update_blocks( $post_id ) {
+		$post = get_post( $post_id );
+
+		if ( ! ( $post instanceof WP_Post ) ) {
+			return false;
+		}
+
+		/** @var Tribe__Editor__Utils $editor_utils */
+		$editor_utils = tribe( 'editor.utils' );
+		$block_name   = $editor_utils->to_tribe_block_name( 'tickets' );
+		// Replace all the inner blocks with a general block name with no tickets inside.
+		$editor_utils->remove_inner_blocks( $post_id, $block_name, "<!-- $block_name  /-->" );
+
+		$content      = get_post_field( 'post_content', $post_id );
+		$post_content = $this->update_tickets_block_with_childs( $content, $post, array() );
+
+		return wp_update_post( array(
+			'ID'           => $post->ID,
+			'post_content' => $post_content,
+		) );
 	}
 }
