@@ -45,6 +45,7 @@ jest.mock( '@wordpress/data', () => {
 					getBlockCount: () => {},
 					getBlocks: () => {},
 					getCurrentPostId: () => 10,
+					getCurrentPostAttribute: () => {},
 					getEditedPostAttribute: ( attr ) => {
 						if ( attr === 'date' ) {
 							return '2018-11-09T19:48:42';
@@ -54,6 +55,7 @@ jest.mock( '@wordpress/data', () => {
 			}
 		},
 		dispatch: () => ( {
+			editPost: () => {},
 			insertBlocks: () => {},
 			removeBlocks: () => {},
 		} ),
@@ -67,6 +69,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				takeEvery( [
 					types.SET_TICKETS_INITIAL_STATE,
+					types.REMOVE_TICKETS_BLOCK,
 					types.SET_TICKET_INITIAL_STATE,
 					types.FETCH_TICKET,
 					types.CREATE_NEW_TICKET,
@@ -100,6 +103,15 @@ describe( 'Ticket Block sagas', () => {
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
 				call( sagas.setTicketsInitialState, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should remove tickets block', () => {
+			action.type = types.REMOVE_TICKETS_BLOCK;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.removeTicketsBlock )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -392,6 +404,33 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.setTicketsProvider( PROVIDER ) )
 			);
 			expect( clone2.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'removeTicketsBlock', () => {
+		it( 'should remove tickets block', () => {
+			const gen = sagas.removeTicketsBlock();
+			expect( JSON.stringify( gen.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' )
+				),
+			);
+
+			const newMeta = {
+				[ utils.KEY_TICKET_CAPACITY ]: '',
+			};
+			expect( JSON.stringify( gen.next( {} ).value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpDispatch( 'core/editor' ), 'editPost' ], { meta: newMeta } )
+				),
+			);
+			expect( gen.next().value ).toEqual(
+				all( [
+					put( actions.setTicketsSharedCapacity( '' ) ),
+					put( actions.setTicketsTempSharedCapacity( '' ) ),
+				] )
+			);
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 

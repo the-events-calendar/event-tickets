@@ -102,7 +102,7 @@ export function* removeTicketsBlock() {
 	const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' );
 	const newMeta = {
 		...currentMeta,
-		[ KEY_TICKET_CAPACITY ]: '',
+		[ utils.KEY_TICKET_CAPACITY ]: '',
 	};
 	yield call( [ wpDispatch( 'core/editor' ), 'editPost' ], { meta: newMeta } );
 	yield all( [
