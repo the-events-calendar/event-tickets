@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.9.3] TBD =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
+* Fix - Display only tickets that are in date range [119628]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 
 = [4.9.2] TBD =
