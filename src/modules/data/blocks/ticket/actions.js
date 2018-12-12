@@ -12,6 +12,10 @@ export const setTicketsInitialState = ( props ) => ( {
 	payload: props,
 } );
 
+export const removeTicketsBlock = () => ( {
+	type: types.REMOVE_TICKETS_BLOCK,
+} );
+
 export const setTicketsHeaderImage = ( payload ) => ( {
 	type: types.SET_TICKETS_HEADER_IMAGE,
 	payload,
