@@ -313,8 +313,8 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			 * a new global variable so any other element that dependes on it has access to this value
 			 */
 			if ( typeof tribe_datepicker_opts === 'undefined' ) {
-				var dateFormatEl = document.querySelector( '[data-datepicker_format]' );
-				var formatAttr = dateFormatEl ? dateFormatEl.getAttribute( 'data-datepicker_format' ) : '';
+				var $dateFormat = $( '[data-datepicker_format]' );
+				var formatAttr = $dateFormat.length ? $dateFormat.attr( 'data-datepicker_format' ) : '';
 				var format = parseInt( formatAttr, 10 );
 				if ( ! isNaN( format ) ) {
 					window.tribe_datepicker_opts = {
