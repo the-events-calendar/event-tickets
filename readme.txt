@@ -123,6 +123,9 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [4.9.2] TBD =
+
+* Feature - Add new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
+* Fix - Update blocks when moving from classic to blocks editor and viceversa [119426]
 * Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
 * Fix - Making sure all Blocks Editor code for Meta saving is PHP 5.2 compatible
 
