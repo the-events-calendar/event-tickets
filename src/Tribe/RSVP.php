@@ -411,10 +411,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$user_id = get_current_user_id();
 
 		$rsvp_orders    = $this->tickets_view->get_event_rsvp_attendees( $event_id, $user_id );
-		$rsvp_order_ids = wp_list_pluck( $rsvp_orders, 'order_id' );
+		$rsvp_order_ids = array_map( 'absint', wp_list_pluck( $rsvp_orders, 'order_id' ) );
 
 		// This makes sure we don't save attendees for orders that are not from this current user and event
-		if ( ! in_array( $order_id, $rsvp_order_ids ) ) {
+		if ( ! in_array( (int) $order_id, $rsvp_order_ids, true ) ) {
 			return;
 		}
 
@@ -451,7 +451,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		//check if changing status will cause rsvp to go over capacity
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
-		if ( tribe_is_truthy( $attendee_order_status ) && 'no' === $previous_order_status ) {
+
+		// The status changed from "not going" to "going", check if we have the capacity to support it.
+		if ( 'no' === $previous_order_status && tribe_is_truthy( $attendee_order_status ) ) {
 			$capacity = tribe_tickets_get_capacity( $product_id );
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 			$unlimited = -1;
@@ -462,17 +464,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$this->update_sales_and_stock_by_order_status( $order_id, $attendee_order_status, $product_id );
 
-		if ( ! is_null( $attendee_order_status ) ) {
+		if ( null !== $attendee_order_status ) {
 			update_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
 		}
 
 		update_post_meta( $order_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
 
-		if ( ! is_null( $attendee_full_name ) ) {
+		if ( null !== $attendee_full_name ) {
 			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
 		}
 
-		if ( ! is_null( $attendee_email ) ) {
+		if ( null !== $attendee_email ) {
 			update_post_meta( $order_id, $this->email, $attendee_email );
 		}
 	}
