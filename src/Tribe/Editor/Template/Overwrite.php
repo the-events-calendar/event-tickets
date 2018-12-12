@@ -52,9 +52,11 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 			false === $post_id
 			|| ! has_blocks( $post_id )
 			|| ! $this->should_inject_tickets_in_other_types( $post_id )
+			|| $this->has_classic_editor( $post_id )
 		) {
 			return;
 		}
+
 		$this->remove_classic_views();
 		$this->setup_template( $post_id );
 	}
@@ -71,10 +73,48 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 			false === $post_id
 			|| ! has_blocks( $post_id )
 			|| ! $this->should_inject_tickets_in_events( $post_id )
+			|| $this->has_classic_editor( $post_id )
 		) {
 			return;
 		}
 		$this->setup_template( $post_id );
+	}
+
+	/**
+	 * Return if the classic editor is active on the post
+	 *
+	 * @since TBD
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool
+	 */
+	public function has_classic_editor( $post_id ) {
+		$is_event                 = function_exists( 'tribe_is_event' ) && tribe_is_event( $post_id );
+		$has_event_classic_editor = $is_event && ! $this->has_early_access_to_blocks();
+
+		/** @var Tribe__Editor $editor */
+		$editor = tribe( 'editor' );
+
+		return $editor->is_classic_editor() || $has_event_classic_editor;
+	}
+
+	/**
+	 * Detect if the Checkbox to have early access to the blocks is enabled
+	 *
+	 * @since TBD
+	 *
+	 * @return bool
+	 */
+	public function has_early_access_to_blocks() {
+		try {
+			/** @var Tribe__Events__Editor__Compatibility $editor_compatibility */
+			$editor_compatibility = tribe( 'events.editor.compatibility' );
+
+			return $editor_compatibility->is_blocks_editor_toggled_on();
+		} catch ( Exception $e ) {
+			return false;
+		}
 	}
 
 	/**
