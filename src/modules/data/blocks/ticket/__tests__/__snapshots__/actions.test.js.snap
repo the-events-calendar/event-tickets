@@ -663,6 +663,12 @@ Object {
 }
 `;
 
+exports[`Ticket actions Tickets actions remove tickets block 1`] = `
+Object {
+  "type": "@@MT/TICKETS/REMOVE_TICKETS_BLOCK",
+}
+`;
+
 exports[`Ticket actions Tickets actions set tickets header image 1`] = `
 Object {
   "payload": Object {
