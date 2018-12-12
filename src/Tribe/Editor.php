@@ -261,6 +261,11 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * @return bool
 	 */
 	public function flush_blocks() {
+		// Bail because we dont have access to any of the classes we need for Blocks Editor
+		if ( ! tribe( 'editor' )->should_load_blocks() ) {
+			return false;
+		}
+
 		$post_id = absint( tribe_get_request_var( 'post' ) );
 
 		if (
