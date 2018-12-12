@@ -12,9 +12,6 @@ class Tribe__Tickets__Editor__Provider extends tad_DI52_ServiceProvider {
 	 *
 	 */
 	public function register() {
-		// Setup to check if gutenberg is active
-		$this->container->singleton( 'tickets.editor', 'Tribe__Tickets__Editor' );
-
 		if (
 			! tribe( 'editor' )->should_load_blocks()
 			|| ! class_exists( 'Tribe__Tickets__Main' )
