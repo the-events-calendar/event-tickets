@@ -52,6 +52,11 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 			return;
 		}
 
+		// Bail if the ticket dates are not in range
+		if ( ! $ticket->date_in_range() ) {
+			return;
+		}
+
 		$existing_tickets = wp_list_pluck( $tickets, 'ID' );
 
 		// Prevent adding tickets that are already in the list
