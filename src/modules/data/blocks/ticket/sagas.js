@@ -98,6 +98,19 @@ export function* setTicketsInitialState( action ) {
 	yield put( actions.setTicketsProvider( provider || defaultProvider ) );
 }
 
+export function* removeTicketsBlock() {
+	const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' );
+	const newMeta = {
+		...currentMeta,
+		[ KEY_TICKET_CAPACITY ]: '',
+	};
+	yield call( [ wpDispatch( 'core/editor' ), 'editPost' ], { meta: newMeta } );
+	yield all( [
+		put( actions.setTicketsSharedCapacity( '' ) ),
+		put( actions.setTicketsTempSharedCapacity( '' ) ),
+	] );
+}
+
 export function* setTicketInitialState( action ) {
 	const { clientId, get } = action.payload;
 	const ticketId = get( 'ticketId', TICKET_DEFAULT_STATE.ticketId );
@@ -800,6 +813,10 @@ export function* handler( action ) {
 			yield call( setTicketsInitialState, action );
 			break;
 
+		case types.REMOVE_TICKETS_BLOCK:
+			yield call( removeTicketsBlock );
+			break;
+
 		case types.SET_TICKET_INITIAL_STATE:
 			yield call( setTicketInitialState, action );
 			break;
@@ -874,6 +891,7 @@ export function* handler( action ) {
 export default function* watchers() {
 	yield takeEvery( [
 		types.SET_TICKETS_INITIAL_STATE,
+		types.REMOVE_TICKETS_BLOCK,
 		types.SET_TICKET_INITIAL_STATE,
 		types.FETCH_TICKET,
 		types.CREATE_NEW_TICKET,
