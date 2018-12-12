@@ -124,10 +124,13 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.9.3] TBD =
 
+* Feature - Add new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
+* Fix - Update blocks when moving from classic to blocks editor and viceversa [119426]
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 
 = [4.9.2] TBD =
+
 * Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
 * Fix - Making sure all Blocks Editor code for Meta saving is PHP 5.2 compatible
 
