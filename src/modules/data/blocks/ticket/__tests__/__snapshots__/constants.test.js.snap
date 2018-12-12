@@ -1,0 +1,77 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ticket Constants CAPPED 1`] = `"capped"`;
+
+exports[`Ticket Constants EDD 1`] = `"edd"`;
+
+exports[`Ticket Constants EDD_CLASS 1`] = `"Tribe__Tickets_Plus__Commerce__EDD__Main"`;
+
+exports[`Ticket Constants INDEPENDENT 1`] = `"independent"`;
+
+exports[`Ticket Constants OWN 1`] = `"own"`;
+
+exports[`Ticket Constants PREFIX 1`] = `"prefix"`;
+
+exports[`Ticket Constants PRICE_POSITIONS 1`] = `
+Array [
+  "prefix",
+  "suffix",
+]
+`;
+
+exports[`Ticket Constants PROVIDER_CLASS_TO_PROVIDER_MAPPING 1`] = `
+Object {
+  "Tribe__Tickets_Plus__Commerce__EDD__Main": "edd",
+  "Tribe__Tickets_Plus__Commerce__WooCommerce__Main": "woo",
+  "Tribe__Tickets__Commerce__PayPal__Main": "tribe-commerce",
+}
+`;
+
+exports[`Ticket Constants PROVIDER_TYPES 1`] = `
+Array [
+  "tribe-commerce",
+  "edd",
+  "woo",
+]
+`;
+
+exports[`Ticket Constants SHARED 1`] = `"shared"`;
+
+exports[`Ticket Constants SUFFIX 1`] = `"suffix"`;
+
+exports[`Ticket Constants TC 1`] = `"tribe-commerce"`;
+
+exports[`Ticket Constants TC_CLASS 1`] = `"Tribe__Tickets__Commerce__PayPal__Main"`;
+
+exports[`Ticket Constants TC_ORDERS 1`] = `"tpp-orders"`;
+
+exports[`Ticket Constants TICKET_ORDERS_PAGE_SLUG 1`] = `
+Object {
+  "Tribe__Tickets_Plus__Commerce__WooCommerce__Main": "tickets-orders",
+  "Tribe__Tickets__Commerce__PayPal__Main": "tpp-orders",
+}
+`;
+
+exports[`Ticket Constants TICKET_TYPES 1`] = `
+Object {
+  "independent": "own",
+  "shared": "capped",
+  "unlimited": "unlimited",
+}
+`;
+
+exports[`Ticket Constants TICKET_TYPES_VALUES 1`] = `
+Array [
+  "unlimited",
+  "capped",
+  "own",
+]
+`;
+
+exports[`Ticket Constants UNLIMITED 1`] = `"unlimited"`;
+
+exports[`Ticket Constants WOO 1`] = `"woo"`;
+
+exports[`Ticket Constants WOO_CLASS 1`] = `"Tribe__Tickets_Plus__Commerce__WooCommerce__Main"`;
+
+exports[`Ticket Constants WOO_ORDERS 1`] = `"tickets-orders"`;

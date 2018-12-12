@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[STORE] - Attendees reducer Should set the display subtitle value 1`] = `
+Object {
+  "displaySubtitle": true,
+  "displayTitle": true,
+  "title": "",
+}
+`;
+
+exports[`[STORE] - Attendees reducer Should set the display title value 1`] = `
+Object {
+  "displaySubtitle": true,
+  "displayTitle": true,
+  "title": "",
+}
+`;
+
+exports[`[STORE] - Attendees reducer Should set the title value 1`] = `
+Object {
+  "displaySubtitle": true,
+  "displayTitle": true,
+  "title": "Who's coming?",
+}
+`;
