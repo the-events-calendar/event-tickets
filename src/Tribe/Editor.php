@@ -130,26 +130,39 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 			return $content;
 		}
 
-		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post->ID );
+		$replace = $this->get_tickets_as_blocks( $post->ID );
+		// Do the actual replace for tickets blocks
+		$content = str_replace( $search, implode( "\n\r", $replace ), $content );
 
-		$replace[] = '<!-- wp:tribe/tickets --><div class="wp-block-tribe-tickets">';
+		return $content;
+	}
+
+	/**
+	 * Return an array with all the tickets as a group of items in an array as strings as blocks
+	 * formats ready to be inserted into the post_content of a post
+	 *
+	 * @since TBD
+	 *
+	 * @param $post_id
+	 *
+	 * @return array
+	 */
+	public function get_tickets_as_blocks( $post_id ) {
+		$tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
+		$blocks[] = '<!-- wp:tribe/tickets --><div class="wp-block-tribe-tickets">';
 
 		foreach ( $tickets as $key => $ticket ) {
 			// Skip RSVP items
 			if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 				continue;
 			}
-
 			// Insert into the replace a single Child ticket
-			$replace[] = '<!-- wp:tribe/tickets-item {"hasBeenCreated":true,"ticketId":' . $ticket->ID . '} --><div class="wp-block-tribe-tickets-item"></div><!-- /wp:tribe/tickets-item -->';
+			$blocks[] = '<!-- wp:tribe/tickets-item {"hasBeenCreated":true,"ticketId":' . $ticket->ID . '} --><div class="wp-block-tribe-tickets-item"></div><!-- /wp:tribe/tickets-item -->';
 		}
 
-		$replace[] = '</div><!-- /wp:tribe/tickets -->';
+		$blocks[] = '</div><!-- /wp:tribe/tickets -->';
 
-		// Do the actual replace for tickets blocks
-		$content = str_replace( $search, implode( "\n\r", $replace ), $content );
-
-		return $content;
+		return $blocks;
 	}
 
 	/**
