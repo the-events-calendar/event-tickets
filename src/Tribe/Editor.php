@@ -125,7 +125,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	public function update_tickets_block_with_childs( $content, $post, $blocks ) {
 		$search = '<!-- wp:tribe/tickets  /-->';
 
-		// Do we haave a tickets blocks already setup? (we should)
+		// Do we have a tickets blocks already setup? (we should)
 		if ( false === strpos( $content, $search ) ) {
 			return $content;
 		}
