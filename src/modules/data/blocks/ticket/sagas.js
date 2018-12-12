@@ -99,16 +99,19 @@ export function* setTicketsInitialState( action ) {
 }
 
 export function* removeTicketsBlock() {
-	const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' );
-	const newMeta = {
-		...currentMeta,
-		[ utils.KEY_TICKET_CAPACITY ]: '',
-	};
-	yield call( [ wpDispatch( 'core/editor' ), 'editPost' ], { meta: newMeta } );
-	yield all( [
-		put( actions.setTicketsSharedCapacity( '' ) ),
-		put( actions.setTicketsTempSharedCapacity( '' ) ),
-	] );
+	const sharedTicketsCount = yield select( selectors.getSharedTicketsCount );
+	if ( ! sharedTicketsCount ) {
+		const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' );
+		const newMeta = {
+			...currentMeta,
+			[ utils.KEY_TICKET_CAPACITY ]: '',
+		};
+		yield call( [ wpDispatch( 'core/editor' ), 'editPost' ], { meta: newMeta } );
+		yield all( [
+			put( actions.setTicketsSharedCapacity( '' ) ),
+			put( actions.setTicketsTempSharedCapacity( '' ) ),
+		] );
+	}
 }
 
 export function* setTicketInitialState( action ) {

@@ -409,8 +409,16 @@ describe( 'Ticket Block sagas', () => {
 
 	describe( 'removeTicketsBlock', () => {
 		it( 'should remove tickets block', () => {
-			const gen = sagas.removeTicketsBlock();
-			expect( JSON.stringify( gen.next().value ) ).toEqual(
+			const gen = cloneableGenerator( sagas.removeTicketsBlock )();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getSharedTicketsCount )
+			);
+
+			const clone1 = gen.clone();
+			expect( clone1.next( 2 ).done ).toEqual( true );
+
+			const clone2 = gen.clone();
+			expect( JSON.stringify( clone2.next( 0 ).value ) ).toEqual(
 				JSON.stringify(
 					call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' )
 				),
@@ -419,18 +427,18 @@ describe( 'Ticket Block sagas', () => {
 			const newMeta = {
 				[ utils.KEY_TICKET_CAPACITY ]: '',
 			};
-			expect( JSON.stringify( gen.next( {} ).value ) ).toEqual(
+			expect( JSON.stringify( clone2.next( {} ).value ) ).toEqual(
 				JSON.stringify(
 					call( [ wpDispatch( 'core/editor' ), 'editPost' ], { meta: newMeta } )
 				),
 			);
-			expect( gen.next().value ).toEqual(
+			expect( clone2.next().value ).toEqual(
 				all( [
 					put( actions.setTicketsSharedCapacity( '' ) ),
 					put( actions.setTicketsTempSharedCapacity( '' ) ),
 				] )
 			);
-			expect( gen.next().done ).toEqual( true );
+			expect( clone2.next().done ).toEqual( true );
 		} );
 	} );
 
