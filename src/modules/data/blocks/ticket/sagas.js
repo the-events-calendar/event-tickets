@@ -788,7 +788,7 @@ export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
  * @param {String} prevStartDate Previous start date before latest set date time changes
  * @export
  */
-export function* syncTicketSaleEndWithEventStart(prevStartDate, blockId){
+export function* syncTicketSaleEndWithEventStart( prevStartDate, blockId ){
 	try {
 		const tempEndMoment = yield select( selectors.getTicketTempEndDateMoment, { blockId } );
 		const endMoment = yield select( selectors.getTicketEndDateMoment, { blockId } );
