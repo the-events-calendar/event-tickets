@@ -8,7 +8,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 	/**
 	 * Which is the name/slug of this block
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @return string
 	 */
@@ -19,7 +19,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 	/**
 	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @param  array $attributes
 	 *
