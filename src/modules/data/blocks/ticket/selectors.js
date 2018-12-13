@@ -505,7 +505,7 @@ export const isTicketPast = createSelector(
 
 export const isTicketFuture = createSelector(
 	[ getTicketStartDateMoment ],
-	( startDate ) => moment().isAfter( startDate ),
+	( startDate ) => moment().isBefore( startDate ),
 );
 
 export const isTicketOnSale = createSelector(

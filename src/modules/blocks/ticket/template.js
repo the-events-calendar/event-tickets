@@ -28,6 +28,7 @@ class Ticket extends PureComponent {
 		isSelected: PropTypes.bool,
 		onBlockUpdate: PropTypes.func,
 		removeTicketBlock: PropTypes.func,
+		showTicket: PropTypes.bool,
 	};
 
 	componentDidMount() {
@@ -48,9 +49,10 @@ class Ticket extends PureComponent {
 			isLoading,
 			isSelected,
 			isModalShowing,
+			showTicket,
 		} = this.props;
 
-		return [
+		return showTicket ? [
 			(
 				<article className={ classNames(
 					'tribe-editor__ticket',
@@ -65,7 +67,7 @@ class Ticket extends PureComponent {
 				</article>
 			),
 			isModalShowing && <MoveModal />,
-		];
+		] : null;
 	}
 }
 

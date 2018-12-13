@@ -14,18 +14,16 @@ import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 const getHasOverlay = ( state, ownProps ) => (
 	selectors.getTicketsIsSettingsOpen( state )
 		|| (
-			! selectors.getTicketsIsSettingsOpen( state )
-				&& ! selectors.hasATicketSelected( state )
+			! selectors.hasATicketSelected( state )
 				&& ! ownProps.isSelected
 		)
 );
 
 const getHasTicketsOnSale = ( state ) => {
-	const allClientIds = selectors.getTicketsAllClientIds;
+	const allClientIds = selectors.getTicketsAllClientIds( state );
 	const hasTicketsOnSale = allClientIds.reduce( ( onSale, clientId ) => {
 		const props = { clientId };
-		const isOnSale = selectors.isTicketOnSale( state, props );
-		return onSale || isOnSale;
+		return onSale || selectors.isTicketOnSale( state, props );
 	}, false );
 
 	return hasTicketsOnSale;

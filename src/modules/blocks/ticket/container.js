@@ -16,6 +16,12 @@ import {
 	getModalTicketId,
 } from '@moderntribe/tickets/data/shared/move/selectors';
 
+const getShowTicket = ( state, ownProps ) => (
+	selectors.getTicketsIsSelected( state )
+		|| selectors.hasATicketSelected( state )
+		|| selectors.isTicketOnSale( state, ownProps )
+);
+
 const mapStateToProps = ( state, ownProps ) => {
 	return {
 		clientId: ownProps.clientId,
@@ -23,9 +29,10 @@ const mapStateToProps = ( state, ownProps ) => {
 		hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
 		isDisabled: selectors.isTicketDisabled( state, ownProps ),
 		isLoading: selectors.getTicketIsLoading( state, ownProps ),
-		ticketId: selectors.getTicketId( state, ownProps ),
 		isModalShowing: isModalShowing( state ),
 		modalTicketId: getModalTicketId( state ),
+		showTicket: getShowTicket( state, ownProps ),
+		ticketId: selectors.getTicketId( state, ownProps ),
 	};
 };
 
