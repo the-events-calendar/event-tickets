@@ -101,11 +101,6 @@ extends Tribe__Editor__Blocks__Abstract {
 				continue;
 			}
 
-			// continue if it's not in date range
-			if ( ! $ticket->date_in_range() ) {
-				continue;
-			}
-
 			$tickets[] = $ticket;
 		}
 
