@@ -18,8 +18,8 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketsInitialState( props ) ).toMatchSnapshot();
 		} );
 
-		test( 'remove tickets block', () => {
-			expect( actions.removeTicketsBlock() ).toMatchSnapshot();
+		test( 'reset tickets block', () => {
+			expect( actions.resetTicketsBlock() ).toMatchSnapshot();
 		} );
 
 		test( 'set tickets header image', () => {

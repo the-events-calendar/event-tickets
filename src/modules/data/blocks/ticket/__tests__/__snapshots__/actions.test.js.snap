@@ -663,9 +663,9 @@ Object {
 }
 `;
 
-exports[`Ticket actions Tickets actions remove tickets block 1`] = `
+exports[`Ticket actions Tickets actions reset tickets block 1`] = `
 Object {
-  "type": "@@MT/TICKETS/REMOVE_TICKETS_BLOCK",
+  "type": "@@MT/TICKETS/RESET_TICKETS_BLOCK",
 }
 `;
 
