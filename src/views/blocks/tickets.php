@@ -26,8 +26,7 @@ if ( ! $provider ) {
 }
 
 // Get tickets on sale
-$tickets_on_sale     = array();
-$has_tickets_on_sale = tribe_events_has_tickets_on_sale( $post_id );
+$tickets_on_sale = array();
 
 foreach ( $tickets as $ticket ) {
 	if ( tribe_events_ticket_is_on_sale( $ticket ) ) {
@@ -35,6 +34,16 @@ foreach ( $tickets as $ticket ) {
 	}
 }
 
+$has_tickets_on_sale = ! empty( count( $tickets_on_sale ) );
+
+if ( ! $has_tickets_on_sale ) {
+	$availability_past = true;
+
+	foreach ( $tickets as $ticket ) {
+		$slug = $ticket->availability_slug();
+		$availability_past = ( $availability_past && $slug === 'availability-past' );
+	}
+}
 ?>
 
 <?php $this->template( 'blocks/attendees/order-links', array( 'type' => 'ticket' ) ); ?>
@@ -54,5 +63,7 @@ foreach ( $tickets as $ticket ) {
 			<?php $this->template( 'blocks/tickets/item', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 		<?php endforeach; ?>
 		<?php $this->template( 'blocks/tickets/submit', array( 'provider' => $provider, 'provider_id' => $provider_id, 'ticket' => $ticket ) ); ?>
+	<?php else : ?>
+		<?php $this->template( 'blocks/tickets/item-inactive', array( 'availability_past' => $availability_past ) ); ?>
 	<?php endif; ?>
 </form>

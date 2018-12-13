@@ -14,8 +14,6 @@
  *
  */
 
-
-
 $ticket = $this->get( 'ticket' );
 
 $context = array(
