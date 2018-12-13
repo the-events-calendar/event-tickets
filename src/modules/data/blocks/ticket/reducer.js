@@ -7,6 +7,7 @@ import * as types from './types';
 
 export const DEFAULT_STATE = {
 	headerImage: HEADER_IMAGE_DEFAULT_STATE,
+	isSelected: false,
 	isSettingsOpen: false,
 	isSettingsLoading: false,
 	provider: '',
@@ -21,6 +22,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				headerImage: headerImage( state.headerImage, action ),
+			};
+		case types.SET_TICKETS_IS_SELECTED:
+			return {
+				...state,
+				isSelected: action.payload.isSelected,
 			};
 		case types.SET_TICKETS_IS_SETTINGS_OPEN:
 			return {
