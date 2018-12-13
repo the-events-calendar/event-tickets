@@ -110,9 +110,9 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 			'default'         => reset( $ticket_form_location_options ),
 		),
-		'ticket-commerce-tickets-left-threshold' => array(
+		'ticket-display-tickets-left-threshold' => array(
 			'type'            => 'text',
-			'label'           => esc_html__( '# tickets left display threshold', 'event-tickets' ),
+			'label'           => esc_html__( 'Display # tickets left threshold', 'event-tickets' ),
 			'tooltip'         => esc_html__( 'Leave empty for no threshold', 'event-tickets' ),
 			'validation_type' => 'int',
 			'size'            => 'small',

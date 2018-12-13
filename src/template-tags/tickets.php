@@ -217,7 +217,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				$stock_html = '';
 
 				if ( $stock ) {
-					$threshold = Tribe__Settings_Manager::get_option( 'ticket-commerce-tickets-left-threshold', 0 );
+					$threshold = Tribe__Settings_Manager::get_option( 'ticket-display-tickets-left-threshold', 0 );
 
 					/**
 					 * Overwrites the threshold to display "# tickets left".
@@ -228,7 +228,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					 *
 					 * @since TBD
 					 */
-					$threshold = absint( apply_filters( 'tribe_tickets_left_threshold', $threshold, $data, $event_id ) );
+					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
 
 					if ( ! $threshold || $stock <= $threshold ) {
 
