@@ -35,6 +35,7 @@ Object {
     "id": 0,
     "src": "",
   },
+  "isSelected": false,
   "isSettingsLoading": false,
   "isSettingsOpen": false,
   "provider": "",
@@ -97,6 +98,8 @@ Object {
   },
 }
 `;
+
+exports[`Ticket block selectors Block selectors getTicketsIsSelected 1`] = `false`;
 
 exports[`Ticket block selectors Block selectors getTicketsIsSettingsLoading 1`] = `false`;
 

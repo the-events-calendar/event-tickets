@@ -57,6 +57,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getBlock( state ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketsIsSelected', () => {
+			expect( selectors.getTicketsIsSelected( state ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketsIsSettingsOpen', () => {
 			expect( selectors.getTicketsIsSettingsOpen( state ) ).toMatchSnapshot();
 		} );

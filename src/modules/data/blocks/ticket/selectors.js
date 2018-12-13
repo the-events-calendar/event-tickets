@@ -25,6 +25,11 @@ export const getBlock = ( state ) => state.tickets.blocks.ticket;
 // ─── BLOCK SELECTORS ────────────────────────────────────────────────────────────
 //
 
+export const getTicketsIsSelected = createSelector(
+	[ getBlock ],
+	( block ) => block.isSelected,
+);
+
 export const getTicketsIsSettingsOpen = createSelector(
 	[ getBlock ],
 	( block ) => block.isSettingsOpen,
