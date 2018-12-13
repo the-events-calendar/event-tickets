@@ -26,6 +26,9 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	setInitialState: ( props ) => {
 		dispatch( actions.setTicketsInitialState( props ) );
 	},
+	onBlockUpdate: ( isSelected ) => {
+		dispatch( actions.setTicketsisSelected( isSelected ) );
+	}
 } );
 
 export default compose(
