@@ -24,6 +24,17 @@ $cart_classes = array( 'tribe-block', 'tribe-block__tickets' );
 if ( ! $provider ) {
 	return false;
 }
+
+// Get tickets on sale
+$tickets_on_sale     = array();
+$has_tickets_on_sale = tribe_events_has_tickets_on_sale( $post_id );
+
+foreach ( $tickets as $ticket ) {
+	if ( tribe_events_ticket_is_on_sale( $ticket ) ) {
+		array_push( $tickets_on_sale, $ticket );
+	}
+}
+
 ?>
 
 <?php $this->template( 'blocks/attendees/order-links', array( 'type' => 'ticket' ) ); ?>
@@ -38,10 +49,10 @@ if ( ! $provider ) {
 	novalidate
 >
 	<?php $this->template( 'blocks/tickets/commerce/fields', array( 'provider' => $provider, 'provider_id' => $provider_id ) ); ?>
-	<?php foreach ( $tickets as $key => $ticket ) : ?>
-		<?php $this->template( 'blocks/tickets/item', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
-	<?php endforeach; ?>
-	<?php if ( 0 < count( $tickets ) ) : ?>
+	<?php if ( $has_tickets_on_sale ) : ?>
+		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
+			<?php $this->template( 'blocks/tickets/item', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+		<?php endforeach; ?>
 		<?php $this->template( 'blocks/tickets/submit', array( 'provider' => $provider, 'provider_id' => $provider_id, 'ticket' => $ticket ) ); ?>
 	<?php endif; ?>
 </form>
