@@ -83,7 +83,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	/**
 	 * Return if the classic editor is active on the post
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @param $post_id
 	 *
@@ -103,7 +103,7 @@ class Tribe__Tickets__Editor__Template__Overwrite {
 	/**
 	 * Detect if the Checkbox to have early access to the blocks is enabled
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @return bool
 	 */

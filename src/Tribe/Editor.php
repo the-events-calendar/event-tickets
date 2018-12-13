@@ -10,7 +10,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	/**
 	 * Variable used as a flag to detect if we should flush the tickets blocks
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @var string
 	 */
@@ -154,7 +154,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * Return an array with all the tickets as a group of items in an array as strings as blocks
 	 * formats ready to be inserted into the post_content of a post
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @param $post_id
 	 *
@@ -256,11 +256,16 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * in case it has blocks to trigger a new action `tribe_tickets_update_blocks_from_classic_editor`
 	 *
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @return bool
 	 */
 	public function flush_blocks() {
+		// Bail because we dont have access to any of the classes we need for Blocks Editor
+		if ( ! tribe( 'editor' )->should_load_blocks() ) {
+			return false;
+		}
+
 		$post_id = absint( tribe_get_request_var( 'post' ) );
 
 		if (
@@ -303,7 +308,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 			/**
 			 * Fire an action to update the blocks associated with a post
 			 *
-			 * @since TBD
+			 * @since 4.9.2
 			 */
 			do_action( 'tribe_tickets_update_blocks_from_classic_editor', $post_id );
 
@@ -321,7 +326,7 @@ class Tribe__Tickets__Editor extends Tribe__Editor {
 	 * 2. Replace the placeholder ticket block with all the tickets associated with the Event / POST as blocks
 	 * 3. Update the content of the post
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @param $post_id
 	 *

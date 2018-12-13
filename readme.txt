@@ -127,12 +127,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]
 * Fix - Display only tickets that are in date range [119628]
-* Fix - Update blocks when moving from classic to blocks editor and viceversa [119426]
 * Tweak - Adjusted content in the admin welcome page that users are brought to upon newly activating Event Tickets [117795]
-* Tweak - Add new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks [119426]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 
-= [4.9.2] TBD =
+= [4.9.2] 2018-12-13 =
 
 * Feature - Add new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
 * Fix - Update blocks when moving from classic to blocks editor and viceversa [119426]
