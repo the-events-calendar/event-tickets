@@ -119,7 +119,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 		$not_going = 0;
 
 		foreach ( $attendees as $attendee ) {
-			if ( true === $attendee['rsvp_going'] ) {
+			if ( isset( $attendee['rsvp_going'] ) && true === $attendee['rsvp_going'] ) {
 				$going++;
 			} else {
 				$not_going++;

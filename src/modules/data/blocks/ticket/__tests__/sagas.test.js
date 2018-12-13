@@ -3,6 +3,12 @@
  */
 import { takeEvery, put, all, select, call } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+
+/**
+ * WordPress dependencies
+ */
+import { dispatch } from '@wordpress/data';
 
 /**
  * Internal Dependencies
@@ -15,6 +21,7 @@ import * as selectors from '../selectors';
 import {
 	DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE
 } from '../reducers/header-image';
+import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { wpREST } from '@moderntribe/common/utils/api';
 import { moment as momentUtil } from '@moderntribe/common/utils';
@@ -27,23 +34,27 @@ const {
 	WOO_CLASS
 } = constants;
 
-jest.mock( '@wordpress/data', () => ( {
-	select: ( key ) => {
-		if ( key === 'core/editor' ) {
-			return {
-				getCurrentPostId: () => 10,
-				getEditedPostAttribute: ( attr ) => {
-					if ( attr === 'date' ) {
-						return '2018-11-09T19:48:42';
-					}
-				},
-			};
-		}
-	},
-	dispatch: ()=> ({
-		removeBlocks: ()=>{}
-	} ),
-} ) );
+jest.mock( '@wordpress/data', () => {
+	const removeBlocks = () => {};
+
+	return {
+		select: ( key ) => {
+			if ( key === 'core/editor' ) {
+				return {
+					getCurrentPostId: () => 10,
+					getEditedPostAttribute: ( attr ) => {
+						if ( attr === 'date' ) {
+							return '2018-11-09T19:48:42';
+						}
+					},
+				};
+			}
+		},
+		dispatch: () => ( {
+			removeBlocks,
+		} ),
+	};
+} );
 
 describe( 'Ticket Block sagas', () => {
 	describe( 'watchers', () => {
@@ -82,6 +93,9 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				takeEvery( types.SET_TICKET_TEMP_DETAILS, sagas.setTicketTempDetails )
 			);
+			expect( gen.next().value ).toEqual(
+				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleTicketMove )
+			)
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
@@ -93,7 +107,7 @@ describe( 'Ticket Block sagas', () => {
 			const PROVIDER = 'woo';
 			const action = {
 				payload: {
-					get: ( key ) => {
+					get: ( key, defaultValue ) => {
 						switch ( key ) {
 							case 'header':
 								return HEADER;
@@ -101,27 +115,52 @@ describe( 'Ticket Block sagas', () => {
 								return SHARED_CAPACITY;
 							case 'provider':
 								return PROVIDER;
+							case 'tickets':
+								return [ 'tribe' ];
 							default:
-								return;
+								return defaultValue;
 						}
 					},
 				},
 			};
 
-			const gen = sagas.setTicketsInitialState( action );
+			const gen = cloneableGenerator( sagas.setTicketsInitialState )( action );
 			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketsIdsInBlocks )
+			);
+
+			const clone1 = gen.clone();
+			expect( clone1.next( [] ).value ).toEqual(
+				call( sagas.createMissingTicketBlocks, [ 'tribe' ] )
+			);
+			expect( clone1.next().value ).toEqual(
 				all( [
 					put( actions.setTicketsSharedCapacity( SHARED_CAPACITY ) ),
 					put( actions.setTicketsTempSharedCapacity( SHARED_CAPACITY ) ),
 				] )
 			);
-			expect( gen.next().value ).toEqual(
+			expect( clone1.next().value ).toEqual(
 				put( actions.fetchTicketsHeaderImage( HEADER ) )
 			);
-			expect( gen.next().value ).toEqual(
+			expect( clone1.next().value ).toEqual(
 				put( actions.setTicketsProvider( PROVIDER ) )
 			);
-			expect( gen.next().done ).toEqual( true );
+			expect( clone1.next().done ).toEqual( true );
+
+			const clone2 = gen.clone();
+			expect( clone2.next( [ 'tribe' ] ).value ).toEqual(
+				all( [
+					put( actions.setTicketsSharedCapacity( SHARED_CAPACITY ) ),
+					put( actions.setTicketsTempSharedCapacity( SHARED_CAPACITY ) ),
+				] )
+			);
+			expect( clone2.next().value ).toEqual(
+				put( actions.fetchTicketsHeaderImage( HEADER ) )
+			);
+			expect( clone2.next().value ).toEqual(
+				put( actions.setTicketsProvider( PROVIDER ) )
+			);
+			expect( clone2.next().done ).toEqual( true );
 		} );
 
 		it( 'should set tickets initial state for new event and no provider', () => {
@@ -130,7 +169,7 @@ describe( 'Ticket Block sagas', () => {
 			const PROVIDER = '';
 			const action = {
 				payload: {
-					get: ( key ) => {
+					get: ( key, defaultValue ) => {
 						switch ( key ) {
 							case 'header':
 								return HEADER;
@@ -138,17 +177,33 @@ describe( 'Ticket Block sagas', () => {
 								return SHARED_CAPACITY;
 							case 'provider':
 								return PROVIDER;
+							case 'tickets':
+								return [ 'tribe' ];
 							default:
-								return;
+								return defaultValue;
 						}
 					},
 				},
 			};
-			const gen = sagas.setTicketsInitialState( action );
+			const gen = cloneableGenerator( sagas.setTicketsInitialState )( action );
 			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketsIdsInBlocks )
+			);
+
+			const clone1 = gen.clone();
+			expect( clone1.next( [] ).value ).toEqual(
+				call( sagas.createMissingTicketBlocks, [ 'tribe' ] )
+			);
+			expect( clone1.next().value ).toEqual(
 				put( actions.setTicketsProvider( PROVIDER ) )
 			);
-			expect( gen.next().done ).toEqual( true );
+			expect( clone1.next().done ).toEqual( true );
+
+			const clone2 = gen.clone();
+			expect( clone2.next( [ 'tribe' ] ).value ).toEqual(
+				put( actions.setTicketsProvider( PROVIDER ) )
+			);
+			expect( clone2.next().done ).toEqual( true );
 		} );
 	} );
 
@@ -234,7 +289,7 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
-				select( global.tribe.events.blocks.datetime.selectors.getStart )
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
 			)
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart )
@@ -306,7 +361,7 @@ describe( 'Ticket Block sagas', () => {
 					clientId: CLIENT_ID,
 				},
 			};
-			global.tribe.events.blocks.datetime.selectors.getStart = jest.fn();
+			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
 			expect( gen.next().value ).toEqual(
@@ -334,7 +389,7 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
-				select( global.tribe.events.blocks.datetime.selectors.getStart )
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
 			)
 			expect( gen.next( eventStart ).value ).toEqual(
 				call( momentUtil.toMoment, eventStart )
@@ -1072,7 +1127,7 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.removeTicketBlock( BLOCK_ID ) )
 			);
 			expect( clone1.next().value ).toEqual(
-				call( [wpDispatch('core/editor'), 'removeBlocks'], [BLOCK_ID] )
+				call( [ dispatch( 'core/editor' ), 'removeBlocks' ], [ BLOCK_ID ] )
 			);
 			expect( clone1.next().done ).toEqual( true );
 
@@ -1088,6 +1143,9 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( clone2.next().value ).toEqual(
 				put( actions.removeTicketBlock( BLOCK_ID ) )
+			);
+			expect( clone2.next().value ).toEqual(
+				call( [ dispatch( 'core/editor' ), 'removeBlocks' ], [ BLOCK_ID ] )
 			);
 			expect( clone2.next().value ).toEqual(
 				call( wpREST, {

@@ -69,15 +69,14 @@ extends Tribe__Editor__Blocks__Abstract {
 		return $template->template( array( 'blocks', $this->slug() ), $args, false );
 	}
 
-	/*
+	/**
 	 * Method to get the RSVP tickets
 	 *
 	 * @since 4.9
 	 *
 	 * @return array
-	*/
+	 */
 	protected function get_tickets( $post_id ) {
-
 		$tickets = array();
 
 		// Bail if there's no event id
@@ -94,7 +93,6 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		foreach ( $ticket_ids as $post ) {
-
 			// Get the ticket
 			$ticket = tribe( 'tickets.rsvp' )->get_ticket( $post_id, $post );
 

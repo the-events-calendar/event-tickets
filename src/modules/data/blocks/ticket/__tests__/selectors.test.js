@@ -129,6 +129,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.hasTickets( state ) ).toMatchSnapshot();
 		} );
 
+		test( 'hasCreatedTickets', () => {
+			expect( selectors.hasCreatedTickets( state ) ).toMatchSnapshot();
+		} );
+
 		test( 'getIndependentTickets', () => {
 			expect( selectors.getIndependentTickets( state ) ).toMatchSnapshot();
 		} );
@@ -147,6 +151,10 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'hasATicketSelected', () => {
 			expect( selectors.hasATicketSelected( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsIdsInBlocks', () => {
+			expect( selectors.getTicketsIdsInBlocks( state ) ).toMatchSnapshot();
 		} );
 	} );
 

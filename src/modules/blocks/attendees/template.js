@@ -9,8 +9,14 @@ import AutosizeInput from 'react-input-autosize';
 /**
  * WordPress dependencies
  */
-import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { Component } from '@wordpress/element';
+import {
+	Dashicon,
+	ToggleControl,
+	PanelBody,
+} from '@wordpress/components';
+import { InspectorControls } from '@wordpress/editor';
 
 /**
  * Internal dependencies
@@ -47,7 +53,7 @@ const renderLabelInput = ( { isSelected, isEmpty, title, setTitle } ) => {
 				className={ inputClassNames }
 				value={ title }
 				placeholder={ placeholder }
-				onChange={ input.sendValue( setTitle ) }
+				onChange={ setTitle }
 			/>
 		</div>
 	);
@@ -82,27 +88,62 @@ const RenderSubtitle = () => (
 	</div>
 );
 
-const Attendees = ( props ) => {
-
-	const { isSelected, title } = props;
+const UI = ( props ) => {
+	const { isSelected, title, displayTitle, displaySubtitle } = props;
 	const blockTitle = ! ( isSelected || title )
 		? renderPlaceholder()
-		: [ renderLabelInput( props ) ];
+		: renderLabelInput( props );
 
 	return (
 		<div className="tribe-editor__block tribe-editor__event-attendees">
-			{ blockTitle }
-			{ <RenderSubtitle /> }
+			{ displayTitle ? blockTitle : '' }
+			{ displaySubtitle ? <RenderSubtitle /> : '' }
 			{ <RenderGravatars /> }
 		</div>
 	);
 };
+
+const Controls = ( {
+	isSelected,
+	displayTitle,
+	displaySubtitle,
+	onSetDisplayTitleChange,
+	onSetDisplaySubtitleChange,
+} ) => (
+	isSelected && (
+		<InspectorControls key="inspector">
+			<PanelBody title={ __( 'Attendees Settings', 'event-tickets' ) }>
+				<ToggleControl
+					label={ __( 'Display Title', 'event-tickets' ) }
+					checked={ displayTitle }
+					onChange={ onSetDisplayTitleChange }
+				/>
+				<ToggleControl
+					label={ __( 'Display Subtitle', 'event-tickets' ) }
+					checked={ displaySubtitle }
+					onChange={ onSetDisplaySubtitleChange }
+				/>
+			</PanelBody>
+		</InspectorControls>
+	)
+);
+
+const Attendees = ( props ) => (
+	[
+		<UI {...props} />,
+		<Controls {...props} />,
+	]
+);
 
 Attendees.propTypes = {
 	setTitle: PropTypes.func,
 	title: PropTypes.string,
 	isSelected: PropTypes.bool,
 	isEmpty: PropTypes.bool,
+	displayTitle: PropTypes.bool,
+	displaySubtitle: PropTypes.bool,
+	onSetDisplaySubtitleChange: PropTypes.func,
+	onSetDisplayTitleChange: PropTypes.func,
 };
 
 export default Attendees;

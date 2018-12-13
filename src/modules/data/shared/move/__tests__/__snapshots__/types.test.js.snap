@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Move Types FETCH_POST_CHOICES 1`] = `"@@MT/TICKETS/FETCH_POST_CHOICES"`;
+
+exports[`Move Types FETCH_POST_CHOICES_ERROR 1`] = `"@@MT/TICKETS/FETCH_POST_CHOICES_ERROR"`;
+
+exports[`Move Types FETCH_POST_CHOICES_SUCCESS 1`] = `"@@MT/TICKETS/FETCH_POST_CHOICES_SUCCESS"`;
+
+exports[`Move Types FETCH_POST_TYPES 1`] = `"@@MT/TICKETS/FETCH_POST_TYPES"`;
+
+exports[`Move Types FETCH_POST_TYPES_ERROR 1`] = `"@@MT/TICKETS/FETCH_POST_TYPES_ERROR"`;
+
+exports[`Move Types FETCH_POST_TYPES_SUCCESS 1`] = `"@@MT/TICKETS/FETCH_POST_TYPES_SUCCESS"`;
+
+exports[`Move Types HIDE_MODAL 1`] = `"@@MT/TICKETS/HIDE_MODAL"`;
+
+exports[`Move Types INITIALIZE_MODAL 1`] = `"@@MT/TICKETS/INITIALIZE_MODAL"`;
+
+exports[`Move Types MOVE_TICKET 1`] = `"@@MT/TICKETS/MOVE_TICKET"`;
+
+exports[`Move Types MOVE_TICKET_ERROR 1`] = `"@@MT/TICKETS/MOVE_TICKET_ERROR"`;
+
+exports[`Move Types MOVE_TICKET_SUCCESS 1`] = `"@@MT/TICKETS/MOVE_TICKET_SUCCESS"`;
+
+exports[`Move Types RESET_MODAL_DATA 1`] = `"@@MT/TICKETS/RESET_MODAL_DATA"`;
+
+exports[`Move Types SET_MODAL_DATA 1`] = `"@@MT/TICKETS/SET_MODAL_DATA"`;
+
+exports[`Move Types SHOW_MODAL 1`] = `"@@MT/TICKETS/SHOW_MODAL"`;
+
+exports[`Move Types SUBMIT_MODAL 1`] = `"@@MT/TICKETS/SUBMIT_MODAL"`;

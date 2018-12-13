@@ -20,4 +20,12 @@ describe( '[STORE] - Attendees selectors', () => {
 	it( 'Should return the attendees block title', () => {
 		expect( selectors.getTitle( state ) ).toEqual( DEFAULT_STATE.title );
 	} );
+
+	it( 'Should return the attendees block display title', () => {
+		expect( selectors.getDisplayTitle( state ) ).toEqual( DEFAULT_STATE.displayTitle );
+	} );
+
+	it( 'Should return the attendees block display subtitle', () => {
+		expect( selectors.getDisplaySubtitle( state ) ).toEqual( DEFAULT_STATE.displaySubtitle );
+	} );
 } );

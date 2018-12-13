@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.5
 Tested up to: 4.9.8
-Stable tag: 4.9.1
+Stable tag: 4.9.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,13 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.9.2] 2018-12-13 =
+
+* Feature - Add new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
+* Fix - Update blocks when moving from classic to blocks editor and viceversa [119426]
+* Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
+* Fix - Making sure all Blocks Editor code for Meta saving is PHP 5.2 compatible
 
 = [4.9.1] 2018-12-05 =
 

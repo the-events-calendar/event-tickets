@@ -5,16 +5,16 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
+ * WordPress dependencies
+ */
+import { dispatch as wpDispatch } from '@wordpress/data';
+
+/**
  * Internal dependencies
  */
 import Template from './template';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
-
-const getIsCancelDisabled = ( state, ownProps ) => (
-	! selectors.getTicketHasChanges( state, ownProps )
-		|| selectors.isTicketDisabled( state, ownProps )
-);
 
 const getIsConfirmDisabled = ( state, ownProps ) => (
 	! selectors.getTicketTempTitle( state, ownProps )
@@ -43,6 +43,7 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 		selectors.getTicketsSharedCapacity( state ),
 	) );
 	dispatch( actions.setTicketHasChanges( ownProps.blockId, false ) );
+	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 
 const onConfirmClick = ( state, dispatch, ownProps ) => () => (
@@ -53,7 +54,7 @@ const onConfirmClick = ( state, dispatch, ownProps ) => () => (
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
-	isCancelDisabled: getIsCancelDisabled( state, ownProps ),
+	isCancelDisabled: selectors.isTicketDisabled( state, ownProps ),
 	isConfirmDisabled: getIsConfirmDisabled( state, ownProps ),
 	state,
 } );
