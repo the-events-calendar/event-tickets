@@ -27,7 +27,7 @@ const mapDispatchToProps = ( dispatch ) => ( {
 		dispatch( actions.setTicketsInitialState( props ) );
 	},
 	onBlockRemoved: () => {
-		dispatch( actions.removeTicketsBlock() );
+		dispatch( actions.resetTicketsBlock() );
 	},
 } );
 
