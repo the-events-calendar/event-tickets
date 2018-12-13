@@ -30,7 +30,7 @@ $tickets_on_sale = array();
 
 foreach ( $tickets as $ticket ) {
 	if ( tribe_events_ticket_is_on_sale( $ticket ) ) {
-		array_push( $tickets_on_sale, $ticket );
+		$tickets_on_sale[] = $ticket;
 	}
 }
 
