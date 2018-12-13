@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.9.2] 2018-12-12 =
+= [4.9.2] 2018-12-13 =
 
 * Feature - Add new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
 * Fix - Update blocks when moving from classic to blocks editor and viceversa [119426]
