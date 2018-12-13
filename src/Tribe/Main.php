@@ -138,7 +138,6 @@ class Tribe__Tickets__Main {
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
 
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
-
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 	}
 
@@ -261,6 +260,9 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Type::hook();
 
 		tribe( 'tickets.privacy' );
+
+		// on older versions of Event Tickets Plus remove loading function to prevent conflict and force update message
+		remove_action( 'tribe_tickets_plugin_loaded', 'event_tickets_plus_init' );
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
