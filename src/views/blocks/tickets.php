@@ -37,7 +37,7 @@ foreach ( $tickets as $ticket ) {
 $has_tickets_on_sale = ! empty( count( $tickets_on_sale ) );
 
 if ( ! $has_tickets_on_sale ) {
-	$availability_past = true;
+	$availability_past = ! empty( count( $tickets ) );
 
 	foreach ( $tickets as $ticket ) {
 		$slug = $ticket->availability_slug();
