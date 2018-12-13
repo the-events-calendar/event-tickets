@@ -98,7 +98,7 @@ export function* setTicketsInitialState( action ) {
 	yield put( actions.setTicketsProvider( provider || defaultProvider ) );
 }
 
-export function* removeTicketsBlock() {
+export function* resetTicketsBlock() {
 	const sharedTicketsCount = yield select( selectors.getSharedTicketsCount );
 	if ( ! sharedTicketsCount ) {
 		const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' );
@@ -816,8 +816,8 @@ export function* handler( action ) {
 			yield call( setTicketsInitialState, action );
 			break;
 
-		case types.REMOVE_TICKETS_BLOCK:
-			yield call( removeTicketsBlock );
+		case types.RESET_TICKETS_BLOCK:
+			yield call( resetTicketsBlock );
 			break;
 
 		case types.SET_TICKET_INITIAL_STATE:
@@ -894,7 +894,7 @@ export function* handler( action ) {
 export default function* watchers() {
 	yield takeEvery( [
 		types.SET_TICKETS_INITIAL_STATE,
-		types.REMOVE_TICKETS_BLOCK,
+		types.RESET_TICKETS_BLOCK,
 		types.SET_TICKET_INITIAL_STATE,
 		types.FETCH_TICKET,
 		types.CREATE_NEW_TICKET,

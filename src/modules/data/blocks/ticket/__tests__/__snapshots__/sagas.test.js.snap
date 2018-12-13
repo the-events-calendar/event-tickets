@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ticket Block sagas createMissingTicketBlocks should create missing ticket blocks 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      [Function],
+    ],
+    "context": Array [],
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicket should delete ticket 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Array [
+        "modern-tribe",
+      ],
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicket should delete ticket 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Array [
+        "modern-tribe",
+      ],
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas handleTicketMove should handle ticket move 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Array [
+        42,
+      ],
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas resetTicketsBlock should reset tickets block 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "meta",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas resetTicketsBlock should reset tickets block 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "meta": Object {
+          "_tribe_ticket_capacity": "",
+        },
+      },
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas setTicketInitialState should set ticket initial state 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "date",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas setTicketInitialState should set tickets initial state for new ticket 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "date",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
