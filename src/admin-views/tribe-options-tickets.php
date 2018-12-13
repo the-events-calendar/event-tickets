@@ -94,7 +94,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 	);
 
 	$tickets_fields = array_merge( $tickets_fields, array(
-		'ticket-rsvp-form-location'     => array(
+		'ticket-rsvp-form-location'              => array(
 			'type'            => 'dropdown',
 			'label'           => esc_html__( 'Location of RSVP form', 'event-tickets' ),
 			'options'         => $ticket_form_location_options,
@@ -102,13 +102,21 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 			'default'         => reset( $ticket_form_location_options ),
 		),
-		'ticket-commerce-form-location' => array(
+		'ticket-commerce-form-location'          => array(
 			'type'            => 'dropdown',
 			'label'           => esc_html__( 'Location of Tickets form', 'event-tickets' ),
 			'options'         => $ticket_form_location_options,
 			'validation_type' => 'options',
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 			'default'         => reset( $ticket_form_location_options ),
+		),
+		'ticket-commerce-tickets-left-threshold' => array(
+			'type'            => 'text',
+			'label'           => esc_html__( '# tickets left display threshold', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'Leave empty for no threshold', 'event-tickets' ),
+			'validation_type' => 'int',
+			'size'            => 'small',
+			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 		),
 	) );
 }
