@@ -20,11 +20,23 @@ const getHasOverlay = ( state, ownProps ) => (
 		)
 );
 
+const getHasTicketsOnSale = ( state ) => {
+	const allClientIds = selectors.getTicketsAllClientIds;
+	const hasTicketsOnSale = allClientIds.reduce( ( onSale, clientId ) => {
+		const props = { clientId };
+		const isOnSale = selectors.isTicketOnSale( state, props );
+		return onSale || isOnSale;
+	}, false );
+
+	return hasTicketsOnSale;
+};
+
 const getShowInactiveBlock = ( state, ownProps ) => {
 	const showIfBlockIsSelected = ownProps.isSelected && ! selectors.hasTickets( state );
 	const showIfBlockIsNotSelected = ! ownProps.isSelected
 		&& ! selectors.hasATicketSelected( state )
-		&& ( ! selectors.hasCreatedTickets( state ) /* or all tickets are outside sales duration */ );
+		&& ( ! selectors.hasCreatedTickets( state ) || ! getHasTicketsOnSale( state ) );
+
 	return showIfBlockIsSelected || showIfBlockIsNotSelected;
 };
 
