@@ -3,6 +3,7 @@
  */
 import { createSelector } from 'reselect';
 import { find, trim } from 'lodash';
+import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -498,28 +499,21 @@ export const isTicketValid = createSelector(
 );
 
 export const isTicketPast = createSelector(
-	[ getTicketEndDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
-	( endDate, isLoading, isCreated ) => {
-
-		if ( isLoading || ! isCreated ) {
-			return false;
-		}
-
-		return moment.isMoment( endDate ) ? moment().isAfter( endDate ) : false;
-	}
+	[ getTicketEndDateMoment ],
+	( endDate ) => moment().isAfter( endDate ),
 );
 
 export const isTicketFuture = createSelector(
-	[ getTicketStartDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
-	( startDate, isLoading, isCreated ) => {
-
-		if ( isLoading || ! isCreated ) {
-			return false;
-		}
-
-		return moment.isMoment( startDate ) ? startDate.isAfter( moment() ) : false;
-	}
+	[ getTicketStartDateMoment ],
+	( startDate ) => moment().isAfter( startDate ),
 );
+
+export const isTicketOnSale = createSelector(
+	[ getTicketHasBeenCreated, isTicketPast, isTicketFuture ],
+	( hasBeenCreated, isPast, isFuture ) => (
+		hasBeenCreated && ! isPast && ! isFuture
+	),
+)
 
 
 //

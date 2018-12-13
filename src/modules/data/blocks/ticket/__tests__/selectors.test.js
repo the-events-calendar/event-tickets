@@ -316,6 +316,10 @@ describe( 'Ticket block selectors', () => {
 		test( 'isTicketFuture', () => {
 			expect( selectors.isTicketFuture( state, ownProps ) ).toMatchSnapshot();
 		} );
+
+		test( 'isTicketOnSale', () => {
+			expect( selectors.isTicketOnSale( state, ownProps ) ).toMatchSnapshot();
+		} );
 	} );
 
 

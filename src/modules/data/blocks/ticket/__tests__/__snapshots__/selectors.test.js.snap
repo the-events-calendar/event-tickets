@@ -200,6 +200,8 @@ exports[`Ticket block selectors Ticket details selectors isSharedTicket 1`] = `t
 
 exports[`Ticket block selectors Ticket details selectors isTicketFuture 1`] = `false`;
 
+exports[`Ticket block selectors Ticket details selectors isTicketOnSale 1`] = `false`;
+
 exports[`Ticket block selectors Ticket details selectors isTicketPast 1`] = `false`;
 
 exports[`Ticket block selectors Ticket details selectors isUnlimitedTicket 1`] = `false`;
