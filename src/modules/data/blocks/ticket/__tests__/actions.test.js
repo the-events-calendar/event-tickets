@@ -22,6 +22,11 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketsHeaderImage( { image: 10 } ) ).toMatchSnapshot();
 		} );
 
+		test( 'set tickets is selected', () => {
+			expect( actions.setTicketsisSelected( true ) ).toMatchSnapshot();
+			expect( actions.setTicketsisSelected( false ) ).toMatchSnapshot();
+		} );
+
 		test( 'set tickets is settings open', () => {
 			expect( actions.setTicketsIsSettingsOpen( true ) ).toMatchSnapshot();
 			expect( actions.setTicketsIsSettingsOpen( false ) ).toMatchSnapshot();

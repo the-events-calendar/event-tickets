@@ -685,6 +685,24 @@ Object {
 }
 `;
 
+exports[`Ticket actions Tickets actions set tickets is selected 1`] = `
+Object {
+  "payload": Object {
+    "isSelected": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKETS_IS_SELECTED",
+}
+`;
+
+exports[`Ticket actions Tickets actions set tickets is selected 2`] = `
+Object {
+  "payload": Object {
+    "isSelected": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKETS_IS_SELECTED",
+}
+`;
+
 exports[`Ticket actions Tickets actions set tickets is settings loading 1`] = `
 Object {
   "payload": Object {
