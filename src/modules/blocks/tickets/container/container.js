@@ -20,12 +20,19 @@ const getHasOverlay = ( state, ownProps ) => (
 		)
 );
 
+const getShowInactiveBlock = ( state, ownProps ) => {
+	const showIfBlockIsSelected = ownProps.isSelected && ! selectors.hasTickets( state );
+	const showIfBlockIsNotSelected = ! ownProps.isSelected
+		&& ! selectors.hasATicketSelected( state )
+		&& ( ! selectors.hasCreatedTickets( state ) /* or all tickets are outside sales duration */ );
+	return showIfBlockIsSelected || showIfBlockIsNotSelected;
+};
+
 const mapStateToProps = ( state, ownProps ) => ( {
-	hasATicketSelected: selectors.hasATicketSelected( state ),
-	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	hasOverlay: getHasOverlay( state, ownProps ),
-	hasTickets: selectors.hasTickets( state ),
 	hasProviders: selectors.hasTicketProviders(),
+	showAvailability: ownProps.isSelected && selectors.hasCreatedTickets( state ),
+	showInactiveBlock: getShowInactiveBlock( state, ownProps ),
 } );
 
 export default compose(

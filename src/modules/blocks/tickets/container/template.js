@@ -23,12 +23,10 @@ import './style.pcss';
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ( {
-	hasATicketSelected,
-	hasCreatedTickets,
 	hasOverlay,
 	hasProviders,
-	hasTickets,
-	isSelected,
+	showAvailability,
+	showInactiveBlock,
 } ) => {
 	const messages = {
 		title: hasProviders
@@ -41,9 +39,7 @@ const TicketsContainer = ( {
 
 	const innerBlocksClassName = classNames( {
 		'tribe-editor__tickets__inner-blocks': true,
-		'tribe-editor__tickets__inner-blocks--show': (
-			hasCreatedTickets || ( isSelected && hasTickets ) || hasATicketSelected
-		),
+		'tribe-editor__tickets__inner-blocks--show': ! showInactiveBlock,
 	} );
 
 	return (
@@ -55,33 +51,26 @@ const TicketsContainer = ( {
 				/>
 			</div>
 			{
-				(
-					( ! isSelected && ! hasATicketSelected && ! hasCreatedTickets )
-						|| ( isSelected && ! hasTickets )
+				showInactiveBlock && (
+					<InactiveBlock
+						layout={ LAYOUT.ticket }
+						title={ messages.title }
+						description={ messages.description }
+						icon={ <TicketInactive /> }
+					/>
 				)
-					&& (
-						<InactiveBlock
-							layout={ LAYOUT.ticket }
-							title={ messages.title }
-							description={ messages.description }
-							icon={ <TicketInactive /> }
-						/>
-					)
 			}
-			{ isSelected && hasCreatedTickets && (
-				<Availability />
-			) }
+			{ showAvailability && <Availability /> }
 			{ hasOverlay && <TicketsOverlay /> }
 		</div>
 	);
 };
 
 TicketsContainer.propTypes = {
-	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
 	hasProviders: PropTypes.bool,
-	hasTickets: PropTypes.bool,
-	isSelected: PropTypes.bool,
+	showAvailability: PropTypes.bool,
+	showInactiveBlock: PropTypes.bool,
 };
 
 export default TicketsContainer;
