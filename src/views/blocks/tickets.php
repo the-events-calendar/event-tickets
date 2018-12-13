@@ -37,11 +37,11 @@ foreach ( $tickets as $ticket ) {
 $has_tickets_on_sale = ! empty( count( $tickets_on_sale ) );
 
 if ( ! $has_tickets_on_sale ) {
-	$availability_past = ! empty( count( $tickets ) );
+	$sale_past = ! empty( count( $tickets ) );
+	$timestamp = current_time( 'timestamp' );
 
 	foreach ( $tickets as $ticket ) {
-		$slug = $ticket->availability_slug();
-		$availability_past = ( $availability_past && $slug === 'availability-past' );
+		$sale_past = ( $sale_past && $ticket->date_is_later( $timestamp ) );
 	}
 }
 ?>
@@ -64,6 +64,6 @@ if ( ! $has_tickets_on_sale ) {
 		<?php endforeach; ?>
 		<?php $this->template( 'blocks/tickets/submit', array( 'provider' => $provider, 'provider_id' => $provider_id, 'ticket' => $ticket ) ); ?>
 	<?php else : ?>
-		<?php $this->template( 'blocks/tickets/item-inactive', array( 'availability_past' => $availability_past ) ); ?>
+		<?php $this->template( 'blocks/tickets/item-inactive', array( 'sale_past' => $sale_past ) ); ?>
 	<?php endif; ?>
 </form>

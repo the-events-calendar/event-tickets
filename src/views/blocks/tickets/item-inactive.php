@@ -14,15 +14,14 @@
  *
  */
 
-$availability_past = $this->get( 'availability_past' );
-
-$classes = array(
+$sale_past = $this->get( 'sale_past' );
+$classes   = array(
 	'tribe-block__tickets__item',
 	'tribe-block__tickets__item--inactive',
 );
 
 $context = array(
-	'availability_past' => $availability_past,
+	'sale_past' => $sale_past,
 );
 ?>
 <div class="<?php echo implode( ' ', get_post_class( $classes ) ); ?>">
