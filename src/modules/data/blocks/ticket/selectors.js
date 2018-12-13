@@ -99,24 +99,24 @@ export const getTickets = createSelector(
 	( block ) => block.tickets,
 );
 
-export const getAllTicketIds = createSelector(
+export const getTicketsAllClientIds = createSelector(
 	[ getTickets ],
-	( tickets ) => tickets.allIds,
+	( tickets ) => tickets.allClientIds,
 );
 
-export const getTicketsById = createSelector(
+export const getTicketsByClientId = createSelector(
 	[ getTickets ],
-	( tickets ) => tickets.byId,
+	( tickets ) => tickets.byClientId,
 );
 
 export const getTicketsArray = createSelector(
-	[ getAllTicketIds, getTicketsById ],
+	[ getTicketsAllClientIds, getTicketsByClientId ],
 	( ids, tickets ) => ids.map( ( id ) => tickets[ id ] ),
 );
 
 export const getTicketsCount = createSelector(
-	[ getAllTicketIds ],
-	( allIds ) => allIds.length,
+	[ getTicketsAllClientIds ],
+	( allClientIds ) => allClientIds.length,
 );
 
 export const hasTickets = createSelector(
@@ -181,7 +181,7 @@ export const getTicketsIdsInBlocks = createSelector(
 export const getTicketClientId = ( state, ownProps ) => ownProps.clientId;
 
 export const getTicket = createSelector(
-	[ getTicketsById, getTicketClientId ],
+	[ getTicketsByClientId, getTicketClientId ],
 	( tickets, clientId ) => tickets[ clientId ] || {},
 );
 

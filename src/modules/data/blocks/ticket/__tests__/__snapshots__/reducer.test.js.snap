@@ -14,8 +14,8 @@ Object {
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -34,8 +34,8 @@ Object {
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -54,8 +54,8 @@ Object {
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -74,8 +74,8 @@ Object {
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -94,8 +94,8 @@ Object {
   "sharedCapacity": 99,
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -114,8 +114,8 @@ Object {
   "sharedCapacity": "",
   "tempSharedCapacity": 99,
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;

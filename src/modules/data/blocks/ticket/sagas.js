@@ -784,7 +784,7 @@ export function* handleTicketEndTimeInput( action ) {
 }
 
 export function* handleTicketMove() {
-	const ticketClientIds = yield select( selectors.getAllTicketIds );
+	const ticketClientIds = yield select( selectors.getTicketsAllClientIds );
 	const modalClientId = yield select( moveSelectors.getModalClientId );
 
 	if ( ticketClientIds.includes( modalClientId ) ) {

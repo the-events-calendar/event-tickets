@@ -42,10 +42,10 @@ Object {
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [
+    "allClientIds": Array [
       "modern-tribe",
     ],
-    "byId": Object {
+    "byClientId": Object {
       "modern-tribe": Object {
         "available": 0,
         "currencyPosition": "prefix",
@@ -340,12 +340,6 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempStart
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempTitle 1`] = `""`;
 
-exports[`Ticket block selectors Tickets selectors getAllTicketIds 1`] = `
-Array [
-  "modern-tribe",
-]
-`;
-
 exports[`Ticket block selectors Tickets selectors getIndependentTickets 1`] = `Array []`;
 
 exports[`Ticket block selectors Tickets selectors getSharedTickets 1`] = `
@@ -405,10 +399,10 @@ exports[`Ticket block selectors Tickets selectors getSharedTicketsCount 1`] = `1
 
 exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
 Object {
-  "allIds": Array [
+  "allClientIds": Array [
     "modern-tribe",
   ],
-  "byId": Object {
+  "byClientId": Object {
     "modern-tribe": Object {
       "available": 0,
       "currencyPosition": "prefix",
@@ -459,6 +453,12 @@ Object {
     },
   },
 }
+`;
+
+exports[`Ticket block selectors Tickets selectors getTicketsAllClientIds 1`] = `
+Array [
+  "modern-tribe",
+]
 `;
 
 exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
@@ -514,7 +514,7 @@ Array [
 ]
 `;
 
-exports[`Ticket block selectors Tickets selectors getTicketsById 1`] = `
+exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
 Object {
   "modern-tribe": Object {
     "available": 0,

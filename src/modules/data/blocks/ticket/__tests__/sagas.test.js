@@ -1963,7 +1963,7 @@ describe( 'Ticket Block sagas', () => {
 			const ticketIds = [ 42 ];
 			const gen = cloneableGenerator( sagas.handleTicketMove )();
 			expect( gen.next().value ).toEqual(
-				select( selectors.getAllTicketIds )
+				select( selectors.getTicketsAllClientIds )
 			);
 			expect( gen.next( ticketIds ).value ).toEqual(
 				select( moveSelectors.getModalClientId )
