@@ -32,7 +32,7 @@ if ( ! $has_active_tickets ) {
 	$timestamp   = current_time( 'timestamp' );
 
 	foreach ( $tickets as $ticket ) {
-		$active_past = ( $sale_past && $ticket->date_is_later( $timestamp ) );
+		$active_past = ( $active_past && $ticket->date_is_later( $timestamp ) );
 	}
 }
 ?>
@@ -40,7 +40,6 @@ if ( ! $has_active_tickets ) {
 <?php $this->template( 'blocks/attendees/order-links', array( 'type' => 'RSVP' ) ); ?>
 
 <div class="tribe-block tribe-block__rsvp">
-
 	<?php if ( $has_active_tickets ) : ?>
 		<?php foreach ( $active_tickets as $ticket ) : ?>
 			<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $ticket->ID ); ?>">
@@ -50,7 +49,9 @@ if ( ! $has_active_tickets ) {
 			</div>
 		<?php endforeach; ?>
 	<?php else : ?>
-
+		<div class="tribe-block__rsvp__ticket tribe-block__rsvp__ticket--inactive">
+			<?php $this->template( 'blocks/rsvp/icon' ); ?>
+			<?php $this->template( 'blocks/rsvp/content-inactive', array( 'active_past' => $active_past ) ); ?>
+		</div>
 	<?php endif; ?>
-
 </div>
