@@ -216,16 +216,27 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 
 				$stock_html = '';
 				if ( $stock ) {
-					$number = number_format_i18n( $stock );
-					if ( 'rsvp' === $type ) {
-						$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
-					} else {
-						$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
-					}
 
-					$stock_html = '<span class="tribe-tickets-left">'
-						. esc_html( sprintf( $text, $number ) )
-						. '</span>';
+					/**
+					 * Set the threshold to display "# tickets left".
+					 *
+					 * @param  int
+					 * @return int
+					 */
+					$threshold = (int) apply_filters( 'tribe_tickets_left_threshold', 0 );
+					if ( ! $threshold || $stock <= $threshold ) {
+
+						$number = number_format_i18n( $stock );
+						if ( 'rsvp' === $type ) {
+							$text = _n( '%s spot left', '%s spots left', $stock, 'event-tickets' );
+						} else {
+							$text = _n( '%s ticket left', '%s tickets left', $stock, 'event-tickets' );
+						}
+
+						$stock_html = '<span class="tribe-tickets-left">'
+							. esc_html( sprintf( $text, $number ) )
+							. '</span>';
+					}
 				}
 
 				$parts[ $type . '-stock' ] = $html['stock'] = $stock_html;
