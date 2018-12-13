@@ -867,7 +867,7 @@ describe( 'RSVP block sagas', () => {
 				select( moveSelectors.getModalTicketId )
 			);
 			expect( gen.next( 1 ).value ).toEqual(
-				select( moveSelectors.getModalBlockId )
+				select( moveSelectors.getModalClientId )
 			);
 			expect( gen.next( '111111' ).value ).toEqual(
 				put( actions.deleteRSVP() )

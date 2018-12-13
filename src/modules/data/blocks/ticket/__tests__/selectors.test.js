@@ -49,7 +49,7 @@ describe( 'Ticket block selectors', () => {
 		// state.tickets.blocks.ticket.header = image;
 		// state.tickets.blocks.ticket.tickets.allIds = [ 'modern-tribe' ];
 		// state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ] = { ...TICKET_DEFAULT_STATE };
-		ownProps = { blockId: 'modern-tribe' };
+		ownProps = { clientId: 'modern-tribe' };
 	} );
 
 	describe( 'Block selectors', () => {
@@ -163,8 +163,8 @@ describe( 'Ticket block selectors', () => {
 	} );
 
 	describe( 'Ticket selectors', () => {
-		test( 'getTicketBlockId', () => {
-			expect( selectors.getTicketBlockId( state, ownProps ) ).toMatchSnapshot();
+		test( 'getTicketClientId', () => {
+			expect( selectors.getTicketClientId( state, ownProps ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicket', () => {

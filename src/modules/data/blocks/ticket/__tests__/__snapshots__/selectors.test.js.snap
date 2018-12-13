@@ -259,7 +259,7 @@ Object {
 
 exports[`Ticket block selectors Ticket selectors getTicketAvailable 1`] = `0`;
 
-exports[`Ticket block selectors Ticket selectors getTicketBlockId 1`] = `"modern-tribe"`;
+exports[`Ticket block selectors Ticket selectors getTicketClientId 1`] = `"modern-tribe"`;
 
 exports[`Ticket block selectors Ticket selectors getTicketCurrencyPosition 1`] = `"prefix"`;
 

@@ -17,15 +17,13 @@ import {
 } from '@moderntribe/tickets/data/shared/move/selectors';
 
 const mapStateToProps = ( state, ownProps ) => {
-	const props = { blockId: ownProps.clientId };
-
 	return {
-		blockId: ownProps.clientId,
+		clientId: ownProps.clientId,
 		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-		hasBeenCreated: selectors.getTicketHasBeenCreated( state, props ),
-		isDisabled: selectors.isTicketDisabled( state, props ),
-		isLoading: selectors.getTicketIsLoading( state, props ),
-		ticketId: selectors.getTicketId( state, props ),
+		hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
+		isDisabled: selectors.isTicketDisabled( state, ownProps ),
+		isLoading: selectors.getTicketIsLoading( state, ownProps ),
+		ticketId: selectors.getTicketId( state, ownProps ),
 		isModalShowing: isModalShowing( state ),
 		modalTicketId: getModalTicketId( state ),
 	};

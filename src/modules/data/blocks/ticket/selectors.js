@@ -178,11 +178,11 @@ export const getTicketsIdsInBlocks = createSelector(
 // ─── TICKET SELECTORS ───────────────────────────────────────────────────────────
 //
 
-export const getTicketBlockId = ( state, ownProps ) => ownProps.blockId;
+export const getTicketClientId = ( state, ownProps ) => ownProps.clientId;
 
 export const getTicket = createSelector(
-	[ getTicketsById, getTicketBlockId ],
-	( tickets, blockId ) => tickets[ blockId ] || {},
+	[ getTicketsById, getTicketClientId ],
+	( tickets, clientId ) => tickets[ clientId ] || {},
 );
 
 export const getTicketSold = createSelector(

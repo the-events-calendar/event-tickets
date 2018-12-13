@@ -57,10 +57,10 @@ export const byId = ( state = {}, action ) => {
 		case types.REGISTER_TICKET_BLOCK:
 			return {
 				...state,
-				[ action.payload.blockId ]: ticket( state[ action.payload.blockId ], action ),
+				[ action.payload.clientId ]: ticket( state[ action.payload.clientId ], action ),
 			};
 		case types.REMOVE_TICKET_BLOCK:
-			return omit( state, [ action.payload.blockId ] );
+			return omit( state, [ action.payload.clientId ] );
 		default:
 			return state;
 	}
@@ -69,9 +69,9 @@ export const byId = ( state = {}, action ) => {
 export const allIds = ( state = [], action ) => {
 	switch ( action.type ) {
 		case types.REGISTER_TICKET_BLOCK:
-			return [ ...state, action.payload.blockId ];
+			return [ ...state, action.payload.clientId ];
 		case types.REMOVE_TICKET_BLOCK:
-			return state.filter( ( id ) => action.payload.blockId !== id );
+			return state.filter( ( id ) => action.payload.clientId !== id );
 		default:
 			return state;
 	}

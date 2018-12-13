@@ -35,6 +35,8 @@ Array [
 ]
 `;
 
+exports[`Ticket Constants RSVP 1`] = `"rsvp"`;
+
 exports[`Ticket Constants SHARED 1`] = `"shared"`;
 
 exports[`Ticket Constants SUFFIX 1`] = `"suffix"`;

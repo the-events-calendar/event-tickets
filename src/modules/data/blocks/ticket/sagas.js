@@ -171,9 +171,9 @@ export function* setTicketInitialState( action ) {
 	}
 }
 
-export function* setBodyDetails( blockId ) {
+export function* setBodyDetails( clientId ) {
 	const body = new FormData();
-	const props = { blockId };
+	const props = { clientId };
 	const ticketProvider = yield select( selectors.getTicketProvider, props );
 	const ticketsProvider = yield select( selectors.getTicketsProvider );
 
@@ -202,23 +202,23 @@ export function* setBodyDetails( blockId ) {
 	return body;
 }
 
-export function* removeTicketBlock( blockId ) {
+export function* removeTicketBlock( clientId ) {
 	const { removeBlock } = wpDispatch( 'core/editor' );
 
 	yield all( [
-		put( actions.removeTicketBlock( blockId ) ),
-		call( removeBlock, blockId ),
+		put( actions.removeTicketBlock( clientId ) ),
+		call( removeBlock, clientId ),
 	] );
 }
 
 export function* fetchTicket( action ) {
-	const { ticketId, blockId } = action.payload;
+	const { ticketId, clientId } = action.payload;
 
 	if ( ticketId === 0 ) {
 		return;
 	}
 
-	yield put( actions.setTicketIsLoading( blockId, true ) );
+	yield put( actions.setTicketIsLoading( clientId, true ) );
 
 	try {
 		const { response, data: ticket } = yield call( wpREST, {
@@ -229,7 +229,7 @@ export function* fetchTicket( action ) {
 		const { status = '', provider } = ticket;
 
 		if ( response.status === 404 || status === 'trash' || provider === constants.RSVP ) {
-			yield call( removeTicketBlock, blockId );
+			yield call( removeTicketBlock, clientId );
 			return;
 		}
 
@@ -292,14 +292,14 @@ export function* fetchTicket( action ) {
 			};
 
 			yield all( [
-				put( actions.setTicketDetails( blockId, details ) ),
-				put( actions.setTicketTempDetails( blockId, details ) ),
-				put( actions.setTicketSold( blockId, totals.sold ) ),
-				put( actions.setTicketAvailable( blockId, totals.stock ) ),
-				put( actions.setTicketCurrencySymbol( blockId, cost_details.currency_symbol ) ),
-				put( actions.setTicketCurrencyPosition( blockId, cost_details.currency_position ) ),
-				put( actions.setTicketProvider( blockId, provider ) ),
-				put( actions.setTicketHasBeenCreated( blockId, true ) ),
+				put( actions.setTicketDetails( clientId, details ) ),
+				put( actions.setTicketTempDetails( clientId, details ) ),
+				put( actions.setTicketSold( clientId, totals.sold ) ),
+				put( actions.setTicketAvailable( clientId, totals.stock ) ),
+				put( actions.setTicketCurrencySymbol( clientId, cost_details.currency_symbol ) ),
+				put( actions.setTicketCurrencyPosition( clientId, cost_details.currency_position ) ),
+				put( actions.setTicketProvider( clientId, provider ) ),
+				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 			] );
 		}
 	} catch ( e ) {
@@ -309,19 +309,19 @@ export function* fetchTicket( action ) {
 		 */
 	}
 
-	yield put( actions.setTicketIsLoading( blockId, false ) );
+	yield put( actions.setTicketIsLoading( clientId, false ) );
 }
 
 export function* createNewTicket( action ) {
-	const { blockId } = action.payload;
-	const props = { blockId };
+	const { clientId } = action.payload;
+	const props = { clientId };
 
 	const { add_ticket_nonce = '' } = restNonce();
-	const body = yield call( setBodyDetails, blockId );
+	const body = yield call( setBodyDetails, clientId );
 	body.append( 'add_ticket_nonce', add_ticket_nonce );
 
 	try {
-		yield put( actions.setTicketIsLoading( blockId, true ) );
+		yield put( actions.setTicketIsLoading( clientId, true ) );
 		const { response, data: ticket } = yield call( wpREST, {
 			path: 'tickets/',
 			namespace: 'tribe/tickets/v1',
@@ -378,7 +378,7 @@ export function* createNewTicket( action ) {
 			] );
 
 			yield all( [
-				put( actions.setTicketDetails( blockId, {
+				put( actions.setTicketDetails( clientId, {
 					title,
 					description,
 					price,
@@ -396,11 +396,11 @@ export function* createNewTicket( action ) {
 					capacityType,
 					capacity,
 				} ) ),
-				put( actions.setTicketId( blockId, ticket.ID ) ),
-				put( actions.setTicketHasBeenCreated( blockId, true ) ),
-				put( actions.setTicketAvailable( blockId, ticket.capacity ) ),
-				put( actions.setTicketProvider( blockId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
-				put( actions.setTicketHasChanges( blockId, false ) ),
+				put( actions.setTicketId( clientId, ticket.ID ) ),
+				put( actions.setTicketHasBeenCreated( clientId, true ) ),
+				put( actions.setTicketAvailable( clientId, ticket.capacity ) ),
+				put( actions.setTicketProvider( clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
+				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 		}
 	} catch ( e ) {
@@ -409,16 +409,16 @@ export function* createNewTicket( action ) {
 		 * @todo: handle error scenario
 		 */
 	} finally {
-		yield put( actions.setTicketIsLoading( blockId, false ) );
+		yield put( actions.setTicketIsLoading( clientId, false ) );
 	}
 }
 
 export function* updateTicket( action ) {
-	const { blockId } = action.payload;
-	const props = { blockId };
+	const { clientId } = action.payload;
+	const props = { clientId };
 
 	const { edit_ticket_nonce = '' } = restNonce();
-	const body = yield call( setBodyDetails, blockId );
+	const body = yield call( setBodyDetails, clientId );
 	body.append( 'edit_ticket_nonce', edit_ticket_nonce );
 
 	const ticketId = yield select( selectors.getTicketId, props );
@@ -429,7 +429,7 @@ export function* updateTicket( action ) {
 			data.push( `${ encodeURIComponent( pair[ 0 ] ) }=${ encodeURIComponent( pair[ 1 ] ) }` );
 		}
 
-		yield put( actions.setTicketIsLoading( blockId, true ) );
+		yield put( actions.setTicketIsLoading( clientId, true ) );
 		const { response } = yield call( wpREST, {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
@@ -480,7 +480,7 @@ export function* updateTicket( action ) {
 			] );
 
 			yield all( [
-				put( actions.setTicketDetails( blockId, {
+				put( actions.setTicketDetails( clientId, {
 					title,
 					description,
 					price,
@@ -498,7 +498,7 @@ export function* updateTicket( action ) {
 					capacityType,
 					capacity,
 				} ) ),
-				put( actions.setTicketHasChanges( blockId, false ) ),
+				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 		}
 	} catch ( e ) {
@@ -507,13 +507,13 @@ export function* updateTicket( action ) {
 		 * @todo: handle error scenario
 		 */
 	} finally {
-		yield put( actions.setTicketIsLoading( blockId, false ) );
+		yield put( actions.setTicketIsLoading( clientId, false ) );
 	}
 }
 
 export function* deleteTicket( action ) {
-	const { blockId } = action.payload;
-	const props = { blockId };
+	const { clientId } = action.payload;
+	const props = { clientId };
 
 	const shouldDelete = yield call( [ window, 'confirm' ], __( 'Are you sure you want to delete this ticket? It cannot be undone.' ) );
 
@@ -521,9 +521,9 @@ export function* deleteTicket( action ) {
 		const ticketId = yield select( selectors.getTicketId, props );
 		const hasBeenCreated = yield select( selectors.getTicketHasBeenCreated, props );
 
-		yield put( actions.setTicketIsSelected( blockId, false ) );
-		yield put( actions.removeTicketBlock( blockId ) );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
+		yield put( actions.setTicketIsSelected( clientId, false ) );
+		yield put( actions.removeTicketBlock( clientId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
 
 		if ( hasBeenCreated ) {
 			const { remove_ticket_nonce = '' } = restNonce();
@@ -656,7 +656,7 @@ export function* deleteTicketsHeaderImage() {
 }
 
 export function* setTicketDetails( action ) {
-	const { blockId, details } = action.payload;
+	const { clientId, details } = action.payload;
 	const {
 		title,
 		description,
@@ -677,27 +677,27 @@ export function* setTicketDetails( action ) {
 	} = details;
 
 	yield all( [
-		put( actions.setTicketTitle( blockId, title ) ),
-		put( actions.setTicketDescription( blockId, description ) ),
-		put( actions.setTicketPrice( blockId, price ) ),
-		put( actions.setTicketSku( blockId, sku ) ),
-		put( actions.setTicketStartDate( blockId, startDate ) ),
-		put( actions.setTicketStartDateInput( blockId, startDateInput ) ),
-		put( actions.setTicketStartDateMoment( blockId, startDateMoment ) ),
-		put( actions.setTicketEndDate( blockId, endDate ) ),
-		put( actions.setTicketEndDateInput( blockId, endDateInput ) ),
-		put( actions.setTicketEndDateMoment( blockId, endDateMoment ) ),
-		put( actions.setTicketStartTime( blockId, startTime ) ),
-		put( actions.setTicketEndTime( blockId, endTime ) ),
-		put( actions.setTicketStartTimeInput( blockId, startTimeInput ) ),
-		put( actions.setTicketEndTimeInput( blockId, endTimeInput ) ),
-		put( actions.setTicketCapacityType( blockId, capacityType ) ),
-		put( actions.setTicketCapacity( blockId, capacity ) ),
+		put( actions.setTicketTitle( clientId, title ) ),
+		put( actions.setTicketDescription( clientId, description ) ),
+		put( actions.setTicketPrice( clientId, price ) ),
+		put( actions.setTicketSku( clientId, sku ) ),
+		put( actions.setTicketStartDate( clientId, startDate ) ),
+		put( actions.setTicketStartDateInput( clientId, startDateInput ) ),
+		put( actions.setTicketStartDateMoment( clientId, startDateMoment ) ),
+		put( actions.setTicketEndDate( clientId, endDate ) ),
+		put( actions.setTicketEndDateInput( clientId, endDateInput ) ),
+		put( actions.setTicketEndDateMoment( clientId, endDateMoment ) ),
+		put( actions.setTicketStartTime( clientId, startTime ) ),
+		put( actions.setTicketEndTime( clientId, endTime ) ),
+		put( actions.setTicketStartTimeInput( clientId, startTimeInput ) ),
+		put( actions.setTicketEndTimeInput( clientId, endTimeInput ) ),
+		put( actions.setTicketCapacityType( clientId, capacityType ) ),
+		put( actions.setTicketCapacity( clientId, capacity ) ),
 	] );
 }
 
 export function* setTicketTempDetails( action ) {
-	const { blockId, tempDetails } = action.payload;
+	const { clientId, tempDetails } = action.payload;
 	const {
 		title,
 		description,
@@ -718,79 +718,79 @@ export function* setTicketTempDetails( action ) {
 	} = tempDetails;
 
 	yield all( [
-		put( actions.setTicketTempTitle( blockId, title ) ),
-		put( actions.setTicketTempDescription( blockId, description ) ),
-		put( actions.setTicketTempPrice( blockId, price ) ),
-		put( actions.setTicketTempSku( blockId, sku ) ),
-		put( actions.setTicketTempStartDate( blockId, startDate ) ),
-		put( actions.setTicketTempStartDateInput( blockId, startDateInput ) ),
-		put( actions.setTicketTempStartDateMoment( blockId, startDateMoment ) ),
-		put( actions.setTicketTempEndDate( blockId, endDate ) ),
-		put( actions.setTicketTempEndDateInput( blockId, endDateInput ) ),
-		put( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) ),
-		put( actions.setTicketTempStartTime( blockId, startTime ) ),
-		put( actions.setTicketTempEndTime( blockId, endTime ) ),
-		put( actions.setTicketTempStartTimeInput( blockId, startTimeInput ) ),
-		put( actions.setTicketTempEndTimeInput( blockId, endTimeInput ) ),
-		put( actions.setTicketTempCapacityType( blockId, capacityType ) ),
-		put( actions.setTicketTempCapacity( blockId, capacity ) ),
+		put( actions.setTicketTempTitle( clientId, title ) ),
+		put( actions.setTicketTempDescription( clientId, description ) ),
+		put( actions.setTicketTempPrice( clientId, price ) ),
+		put( actions.setTicketTempSku( clientId, sku ) ),
+		put( actions.setTicketTempStartDate( clientId, startDate ) ),
+		put( actions.setTicketTempStartDateInput( clientId, startDateInput ) ),
+		put( actions.setTicketTempStartDateMoment( clientId, startDateMoment ) ),
+		put( actions.setTicketTempEndDate( clientId, endDate ) ),
+		put( actions.setTicketTempEndDateInput( clientId, endDateInput ) ),
+		put( actions.setTicketTempEndDateMoment( clientId, endDateMoment ) ),
+		put( actions.setTicketTempStartTime( clientId, startTime ) ),
+		put( actions.setTicketTempEndTime( clientId, endTime ) ),
+		put( actions.setTicketTempStartTimeInput( clientId, startTimeInput ) ),
+		put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) ),
+		put( actions.setTicketTempCapacityType( clientId, capacityType ) ),
+		put( actions.setTicketTempCapacity( clientId, capacity ) ),
 	] );
 }
 
 export function* handleTicketStartDate( action ) {
-	const { blockId, date, dayPickerInput } = action.payload;
+	const { clientId, date, dayPickerInput } = action.payload;
 	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const startDate = yield date ? call( momentUtil.toDatabaseDate, startDateMoment ) : '';
-	yield put( actions.setTicketTempStartDate( blockId, startDate ) );
-	yield put( actions.setTicketTempStartDateInput( blockId, dayPickerInput.state.value ) );
-	yield put( actions.setTicketTempStartDateMoment( blockId, startDateMoment ) );
+	yield put( actions.setTicketTempStartDate( clientId, startDate ) );
+	yield put( actions.setTicketTempStartDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempStartDateMoment( clientId, startDateMoment ) );
 }
 
 export function* handleTicketEndDate( action ) {
-	const { blockId, date, dayPickerInput } = action.payload;
+	const { clientId, date, dayPickerInput } = action.payload;
 	const endDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
 	const endDate = yield date ? call( momentUtil.toDatabaseDate, endDateMoment ) : '';
-	yield put( actions.setTicketTempEndDate( blockId, endDate ) );
-	yield put( actions.setTicketTempEndDateInput( blockId, dayPickerInput.state.value ) );
-	yield put( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) );
+	yield put( actions.setTicketTempEndDate( clientId, endDate ) );
+	yield put( actions.setTicketTempEndDateInput( clientId, dayPickerInput.state.value ) );
+	yield put( actions.setTicketTempEndDateMoment( clientId, endDateMoment ) );
 }
 
 export function* handleTicketStartTime( action ) {
-	const { blockId, seconds } = action.payload;
+	const { clientId, seconds } = action.payload;
 	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
-	yield put( actions.setTicketTempStartTime( blockId, `${ startTime }:00` ) );
+	yield put( actions.setTicketTempStartTime( clientId, `${ startTime }:00` ) );
 }
 
 export function* handleTicketStartTimeInput( action ) {
-	const { blockId, seconds } = action.payload;
+	const { clientId, seconds } = action.payload;
 	const startTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
 	const startTimeMoment = yield call( momentUtil.toMoment, startTime, momentUtil.TIME_FORMAT, false );
 	const startTimeInput = yield call( momentUtil.toTime, startTimeMoment );
-	yield put( actions.setTicketTempStartTimeInput( blockId, startTimeInput ) );
+	yield put( actions.setTicketTempStartTimeInput( clientId, startTimeInput ) );
 }
 
 export function* handleTicketEndTime( action ) {
-	const { blockId, seconds } = action.payload;
+	const { clientId, seconds } = action.payload;
 	const endTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
-	yield put( actions.setTicketTempEndTime( blockId, `${ endTime }:00` ) );
+	yield put( actions.setTicketTempEndTime( clientId, `${ endTime }:00` ) );
 }
 
 export function* handleTicketEndTimeInput( action ) {
-	const { blockId, seconds } = action.payload;
+	const { clientId, seconds } = action.payload;
 	const endTime = yield call( timeUtil.fromSeconds, seconds, timeUtil.TIME_FORMAT_HH_MM );
 	const endTimeMoment = yield call( momentUtil.toMoment, endTime, momentUtil.TIME_FORMAT, false );
 	const endTimeInput = yield call( momentUtil.toTime, endTimeMoment );
-	yield put( actions.setTicketTempEndTimeInput( blockId, endTimeInput ) );
+	yield put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) );
 }
 
 export function* handleTicketMove() {
-	const ticketBlockIds = yield select( selectors.getAllTicketIds );
-	const modalBlockId = yield select( moveSelectors.getModalBlockId );
+	const ticketClientIds = yield select( selectors.getAllTicketIds );
+	const modalClientId = yield select( moveSelectors.getModalClientId );
 
-	if ( ticketBlockIds.includes( modalBlockId ) ) {
-		yield put( actions.setTicketIsSelected( modalBlockId, false ) );
-		yield put( actions.removeTicketBlock( modalBlockId ) );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ modalBlockId ] );
+	if ( ticketClientIds.includes( modalClientId ) ) {
+		yield put( actions.setTicketIsSelected( modalClientId, false ) );
+		yield put( actions.removeTicketBlock( modalClientId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ modalClientId ] );
 	}
 }
 
@@ -842,24 +842,24 @@ export function* handler( action ) {
 
 		case types.HANDLE_TICKET_START_DATE:
 			yield call( handleTicketStartDate, action );
-			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_END_DATE:
 			yield call( handleTicketEndDate, action );
-			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_START_TIME:
 			yield call( handleTicketStartTime, action );
 			yield call( handleTicketStartTimeInput, action );
-			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_END_TIME:
 			yield call( handleTicketEndTime, action );
 			yield call( handleTicketEndTimeInput, action );
-			yield put( actions.setTicketHasChanges( action.payload.blockId, true ) );
+			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case MOVE_TICKET_SUCCESS:

@@ -20,7 +20,7 @@ import MoveModal from '@moderntribe/tickets/elements/move-modal';
 
 class Ticket extends PureComponent {
 	static propTypes = {
-		blockId: PropTypes.string.isRequired,
+		clientId: PropTypes.string.isRequired,
 		hasTicketsPlus: PropTypes.bool,
 		isDisabled: PropTypes.bool,
 		isLoading: PropTypes.bool,
@@ -42,7 +42,7 @@ class Ticket extends PureComponent {
 
 	render() {
 		const {
-			blockId,
+			clientId,
 			hasTicketsPlus,
 			isDisabled,
 			isLoading,
@@ -59,8 +59,8 @@ class Ticket extends PureComponent {
 					{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
 				) }
 				>
-					<TicketContainer blockId={ blockId } isSelected={ isSelected } />
-					<TicketDashboard blockId={ blockId } isSelected={ isSelected } />
+					<TicketContainer clientId={ clientId } isSelected={ isSelected } />
+					<TicketDashboard clientId={ clientId } isSelected={ isSelected } />
 					{ isLoading && <Spinner /> }
 				</article>
 			),

@@ -37,18 +37,18 @@ TicketContainerIcon.propTypes = {
 };
 
 
-const TicketContainer = ( { blockId, isDisabled, isFuture, isPast, isSelected } ) => (
+const TicketContainer = ( { clientId, isDisabled, isFuture, isPast, isSelected } ) => (
 	<ContainerPanel
 		className="tribe-editor__ticket__container"
 		layout={ LAYOUT.ticket }
 		icon={ <TicketContainerIcon isDisabled={ isDisabled } isFuture={ isFuture } isPast={ isPast } /> }
-		header={ <TicketContainerHeader blockId={ blockId } isSelected={ isSelected } /> }
-		content={ <TicketContainerContent blockId={ blockId } /> }
+		header={ <TicketContainerHeader clientId={ clientId } isSelected={ isSelected } /> }
+		content={ <TicketContainerContent clientId={ clientId } /> }
 	/>
 );
 
 TicketContainer.propTypes = {
-	blockId: PropTypes.string.isRequired,
+	clientId: PropTypes.string.isRequired,
 	isDisabled: PropTypes.bool,
 	isFuture: PropTypes.bool,
 	isPast: PropTypes.bool,
