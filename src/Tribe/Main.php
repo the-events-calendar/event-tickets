@@ -137,20 +137,6 @@ class Tribe__Tickets__Main {
 
 		$this->plugin_url = trailingslashit( plugins_url( $dir_prefix . $this->plugin_dir ) );
 
-		// early check for an older version of The Events Calendar to prevent fatal error
-		//todo add check for TEC here
-		if (
-			class_exists( 'Tribe__Events__Main' ) &&
-			! version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' )
-		) {
-			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
-			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
-
-			return;
-		}
-
-		$this->maybe_set_common_lib_info();
-
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
 
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
@@ -167,15 +153,57 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * Setup of Common Library
+	 */
+	public function maybe_set_common_lib_info() {
+
+		$common_version = file_get_contents( $this->plugin_path . 'common/src/Tribe/Main.php' );
+
+		// if there isn't a tribe-common version, bail
+		if ( ! preg_match( "/const\s+VERSION\s*=\s*'([^']+)'/m", $common_version, $matches ) ) {
+			add_action( 'admin_head', array( $this, 'missing_common_libs' ) );
+
+			return;
+		}
+
+		$common_version = $matches[1];
+
+		if ( empty( $GLOBALS['tribe-common-info'] ) ) {
+			$GLOBALS['tribe-common-info'] = array(
+				'dir'     => "{$this->plugin_path}common/src/Tribe",
+				'version' => $common_version,
+			);
+		} elseif ( 1 == version_compare( $GLOBALS['tribe-common-info']['version'], $common_version, '<' ) ) {
+			$GLOBALS['tribe-common-info'] = array(
+				'dir'     => "{$this->plugin_path}common/src/Tribe",
+				'version' => $common_version,
+			);
+		}
+	}
+
+	/**
 	 * Finalize the initialization of this plugin
 	 */
 	public function plugins_loaded() {
+
+		// early check for an older version of The Events Calendar to prevent fatal error
+		if (
+			class_exists( 'Tribe__Events__Main' ) &&
+			! version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' )
+		) {
+			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
+			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
+			log_me('stop');
+			return;
+		}
 
 		// WordPress and PHP Version Check
 		if ( ! self::supported_version( 'wordpress' ) || ! self::supported_version( 'php' ) ) {
 			add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
 			return;
 		}
+
+		$this->maybe_set_common_lib_info();
 
 		/**
 		 * Before any methods from this plugin are called, we initialize our Autoloading
@@ -344,31 +372,6 @@ class Tribe__Tickets__Main {
 		}
 		if ( ! self::supported_version( 'php' ) ) {
 			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, The Events Calendar requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'the-events-calendar' ), $this->min_php ) . '</p></div>';
-		}
-	}
-
-		public function maybe_set_common_lib_info() {
-		$common_version = file_get_contents( $this->plugin_path . 'common/src/Tribe/Main.php' );
-
-		// if there isn't a tribe-common version, bail
-		if ( ! preg_match( "/const\s+VERSION\s*=\s*'([^']+)'/m", $common_version, $matches ) ) {
-			add_action( 'admin_head', array( $this, 'missing_common_libs' ) );
-
-			return;
-		}
-
-		$common_version = $matches[1];
-
-		if ( empty( $GLOBALS['tribe-common-info'] ) ) {
-			$GLOBALS['tribe-common-info'] = array(
-				'dir' => "{$this->plugin_path}common/src/Tribe",
-				'version' => $common_version,
-			);
-		} elseif ( 1 == version_compare( $GLOBALS['tribe-common-info']['version'], $common_version, '<' ) ) {
-			$GLOBALS['tribe-common-info'] = array(
-				'dir' => "{$this->plugin_path}common/src/Tribe",
-				'version' => $common_version,
-			);
 		}
 	}
 
