@@ -217,13 +217,16 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 				$stock_html = '';
 				if ( $stock ) {
 
+					$threshold = Tribe__Settings_Manager::get_option( 'ticket-commerce-tickets-left-threshold', 0 );
+
 					/**
-					 * Set the threshold to display "# tickets left".
+					 * Overwrites the threshold to display "# tickets left".
 					 *
-					 * @param  int
+					 * @param  int  $threshold
 					 * @return int
 					 */
-					$threshold = (int) apply_filters( 'tribe_tickets_left_threshold', 0 );
+					$threshold = absint( apply_filters( 'tribe_tickets_left_threshold', $threshold ) );
+
 					if ( ! $threshold || $stock <= $threshold ) {
 
 						$number = number_format_i18n( $stock );
