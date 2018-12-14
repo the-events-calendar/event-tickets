@@ -6,10 +6,10 @@
  *
  *     [your-theme]/tribe-events/tickets/tpp.php
  *
- * @version 4.8.2
+ * @version TBD
  *
  * @var bool $must_login
- * @var bool $can_login
+ * @var bool $display_login_link
  */
 
 $is_there_any_product         = false;
@@ -124,7 +124,7 @@ $cart_url       = '';
 			do_action( 'event_tickets_tpp_after_ticket_row', tribe_events_get_ticket_event( $ticket->id ), $ticket );
 		}
 
-		$is_there_any_message_to_show = ! is_user_logged_in() && ( $must_login || $can_login );
+		$is_there_any_message_to_show = ! is_user_logged_in() && ( $must_login && $display_login_link );
 		?>
 
 		<?php if ( $is_there_any_product_to_sell && $is_there_any_message_to_show ) : ?>
@@ -133,7 +133,7 @@ $cart_url       = '';
 					<?php if ( $must_login ) : ?>
 						<?php include tribe( 'tickets.commerce.paypal' )->getTemplateHierarchy( 'login-to-purchase' ); ?>
 					<?php endif; ?>
-					<?php if ( ! $must_login && $can_login ) : ?>
+					<?php if ( ! $must_login && $display_login_link ) : ?>
 						<?php include tribe( 'tickets.commerce.paypal' )->getTemplateHierarchy( 'login-before-purchase' ); ?>
 					<?php endif; ?>
 				</td>

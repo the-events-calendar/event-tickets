@@ -4,17 +4,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.8.4';
+	const VERSION = '4.9.2';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.6.22';
+	const MIN_TEC_VERSION = '4.7.1-dev';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.7.20';
+	const MIN_COMMON_VERSION = '4.8.2-dev';
 
 	/**
 	 * Name of the provider
@@ -90,6 +90,15 @@ class Tribe__Tickets__Main {
 
 		return self::$instance;
 	}
+
+	/**
+	 * Where in the themes we will look for templates
+	 *
+	 * @since 4.9
+	 *
+	 * @var string
+	 */
+	public $template_namespace = 'tickets';
 
 	/**
 	 * Class constructor
@@ -176,12 +185,15 @@ class Tribe__Tickets__Main {
 		 *
 		 * @since 4.8.2.1
 		 */
-		$this->maybe_include_et_plus_class();
+		$this->maybe_include_et_plus_file( 'Tribe__Tickets_Plus__Main' );
 
 		if (
 			class_exists( 'Tribe__Tickets_Plus__Main' )
-			&& version_compare( Tribe__Tickets_Plus__Main::VERSION, preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<' )
+			&& version_compare( preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', Tribe__Tickets_Plus__Main::VERSION ), preg_replace( '/^(\d\.[\d]+)(?:\.\d+)*(-.*)?/', '$1$2', self::VERSION ), '<' )
 		) {
+			$this->maybe_include_et_plus_file( 'Tribe__Tickets_Plus__PUE' );
+			new Tribe__Tickets_Plus__PUE;
+
 			add_action( 'admin_notices', array( $this, 'et_plus_compatibility_notice' ) );
 
 			/**
@@ -231,11 +243,19 @@ class Tribe__Tickets__Main {
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
 		tribe_singleton( 'tickets.redirections', 'Tribe__Tickets__Redirections' );
 
+		// Attendee Registration Page
+		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
+
 		// ORM
 		tribe_register_provider( 'Tribe__Tickets__Service_Providers__ORM' );
 
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
+		// REST Editor APIs
+		tribe_register_provider( 'Tribe__Tickets__Editor__REST__V1__Service_Provider' );
+
+		// Blocks editor
+		tribe_register_provider( 'Tribe__Tickets__Editor__Provider' );
 
 		// Privacy
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', array( 'hook' ) );
@@ -264,10 +284,12 @@ class Tribe__Tickets__Main {
 	 *
 	 * @see https://central.tri.be/issues/115510
 	 *
+	 * @param string $class_name Which class we will try to load
+	 *
 	 * @since 4.8.2.1
 	 */
-	private function maybe_include_et_plus_class() {
-		if ( class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
+	private function maybe_include_et_plus_file( $class_name ) {
+		if ( class_exists( $class_name ) ) {
 			return;
 		}
 
@@ -283,8 +305,11 @@ class Tribe__Tickets__Main {
 			return;
 		}
 
+		$file_path = str_replace( 'Tribe__Tickets_Plus__', '', $class_name );
+		$file_path = str_replace( '__', '/', $file_path );
+
 		$plugin_dir = preg_replace( '!(.*)[\\/]event-tickets-plus.php!', '$1', $plugin_short_path );
-		$path_to_class = wp_normalize_path( WP_PLUGIN_DIR . "/{$plugin_dir}/src/Tribe/Main.php" );
+		$path_to_class = wp_normalize_path( WP_PLUGIN_DIR . "/{$plugin_dir}/src/Tribe/$file_path.php" );
 
 		if ( ! file_exists( $path_to_class ) ) {
 			return;

@@ -34,9 +34,11 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * An override of the default query building process to add clauses
 	 * specific to REST API queries
 	 *
+	 * @param bool $use_query_builder Whether to use the query builder, if set, or not.
+	 *
 	 * @return WP_Query
 	 */
-	public function build_query() {
+	public function build_query( $use_query_builder = true ) {
 		if ( ! current_user_can( 'read_private_posts' ) ) {
 			$this->decorated->by( 'optout', 'no' );
 			$this->decorated->by( 'post_status', 'publish' );

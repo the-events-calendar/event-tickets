@@ -1,0 +1,81 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Tickets reducer allIds should register ticket block 1`] = `
+Array [
+  "tribe",
+]
+`;
+
+exports[`Tickets reducer allIds should remove ticket block 1`] = `
+Array [
+  "two",
+]
+`;
+
+exports[`Tickets reducer allIds should set the default state 1`] = `Array []`;
+
+exports[`Tickets reducer byId should register ticket block 1`] = `
+Object {
+  "tribe": Object {
+    "available": 0,
+    "currencyPosition": "prefix",
+    "currencySymbol": undefined,
+    "details": Object {
+      "capacity": "",
+      "capacityType": "capped",
+      "description": "",
+      "endDate": "2118-01-10",
+      "endDateInput": "January 10, 2118",
+      "endDateMoment": "2118-01-10T17:30:00.000Z",
+      "endTime": "17:30:00",
+      "endTimeInput": "5:30 pm",
+      "price": "",
+      "sku": "",
+      "startDate": "2018-01-10",
+      "startDateInput": "January 10, 2018",
+      "startDateMoment": "2018-01-10T17:30:00.000Z",
+      "startTime": "17:30:00",
+      "startTimeInput": "5:30 pm",
+      "title": "",
+    },
+    "hasBeenCreated": false,
+    "hasChanges": false,
+    "isLoading": false,
+    "isSelected": false,
+    "provider": "",
+    "sold": 0,
+    "tempDetails": Object {
+      "capacity": "",
+      "capacityType": "capped",
+      "description": "",
+      "endDate": "2118-01-10",
+      "endDateInput": "January 10, 2118",
+      "endDateMoment": "2118-01-10T17:30:00.000Z",
+      "endTime": "17:30:00",
+      "endTimeInput": "5:30 pm",
+      "price": "",
+      "sku": "",
+      "startDate": "2018-01-10",
+      "startDateInput": "January 10, 2018",
+      "startDateMoment": "2018-01-10T17:30:00.000Z",
+      "startTime": "17:30:00",
+      "startTimeInput": "5:30 pm",
+      "title": "",
+    },
+    "ticketId": 0,
+  },
+}
+`;
+
+exports[`Tickets reducer byId should remove ticket block 1`] = `
+Object {
+  "two": Object {},
+}
+`;
+
+exports[`Tickets reducer tickets should set the default state 1`] = `
+Object {
+  "allIds": Array [],
+  "byId": Object {},
+}
+`;

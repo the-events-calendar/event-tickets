@@ -3,7 +3,7 @@
 namespace Tribe\Tickets\Commerce\PayPal\Frontend;
 
 use Spatie\Snapshots\MatchesSnapshots;
-use tad\WPBrowser\Snapshot\WPHtmlOutputDriver;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
 use Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form as Form;
 

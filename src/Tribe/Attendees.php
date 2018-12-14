@@ -686,7 +686,6 @@ class Tribe__Tickets__Attendees {
 		}
 
 		$this->attendees_table = new Tribe__Tickets__Attendees_Table();
-
 		$items = $this->generate_filtered_list( $_GET['event_id'] );
 
 		$event = get_post( $_GET['event_id'] );

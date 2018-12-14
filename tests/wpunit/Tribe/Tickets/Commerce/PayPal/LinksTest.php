@@ -3,7 +3,7 @@
 namespace Tribe\Tickets\Commerce\PayPal;
 
 use Spatie\Snapshots\MatchesSnapshots;
-use tad\WPBrowser\Snapshot\WPHtmlOutputDriver;
+use tad\WP\Snapshots\WPHtmlOutputDriver;
 use Tribe__Tickets__Commerce__PayPal__Links as Links;
 
 class LinksTest extends \Codeception\TestCase\WPTestCase {
