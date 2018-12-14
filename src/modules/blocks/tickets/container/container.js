@@ -25,7 +25,7 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	hasOverlay: getHasOverlay( state, ownProps ),
 	hasTickets: selectors.hasTickets( state ),
-	hasProviders: selectors.hasTicketProviders(),
+	canCreateTickets: selectors.canCreateTickets(),
 } );
 
 export default compose(

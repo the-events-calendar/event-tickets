@@ -359,6 +359,7 @@ describe( 'Ticket Block sagas', () => {
 			const HEADER = 0;
 			const SHARED_CAPACITY = '0';
 			const PROVIDER = '';
+			const DEFAULT_PROVIDER = 'woo';
 			const action = {
 				payload: {
 					get: ( key, defaultValue ) => {
@@ -387,13 +388,19 @@ describe( 'Ticket Block sagas', () => {
 				call( sagas.createMissingTicketBlocks, [ 'tribe' ] )
 			);
 			expect( clone1.next().value ).toEqual(
-				put( actions.setTicketsProvider( PROVIDER ) )
+				select( selectors.getDefaultTicketProvider )
+			);
+			expect( clone1.next( DEFAULT_PROVIDER ).value ).toEqual(
+				put( actions.setTicketsProvider( DEFAULT_PROVIDER ) )
 			);
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
 			expect( clone2.next( [ 'tribe' ] ).value ).toEqual(
-				put( actions.setTicketsProvider( PROVIDER ) )
+				select( selectors.getDefaultTicketProvider )
+			);
+			expect( clone2.next( DEFAULT_PROVIDER ).value ).toEqual(
+				put( actions.setTicketsProvider( DEFAULT_PROVIDER ) )
 			);
 			expect( clone2.next().done ).toEqual( true );
 		} );
