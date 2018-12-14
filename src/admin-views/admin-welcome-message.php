@@ -41,7 +41,8 @@
 		<ul>
 			<li><a href="http://m.tri.be/1a9w" target="_blank"><?php esc_html_e( 'Search the Knowledgebase', 'event-tickets' ); ?></a></li>
 			<li><a href="http://m.tri.be/1a9x" target="_blank"><?php esc_html_e( 'Available Translations', 'event-tickets' ); ?></a></li>
-			<li><a href="http://m.tri.be/1a9y" target="_blank"><?php esc_html_e( 'Submit a Help Desk Request', 'event-tickets' ); ?></a></li>
+			<li><a href="http://m.tri.be/1ac3" target="_blank"><?php esc_html_e( 'Submit a Support Thread on WordPress.org', 'event-tickets' ); ?></a></li>
+			<li><strong><?php esc_html_e( 'Event Tickets Plus Users:', 'event-tickets' ); ?></strong> <a href="http://m.tri.be/1a9y" target="_blank"><?php esc_html_e( 'Submit a Help Desk Request', 'event-tickets' ); ?></a></li>
 		</ul>
 	</div>
 </div>
