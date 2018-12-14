@@ -56,8 +56,9 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 
-		$ticket_attendees = $repository->get_ticket_attendees( $ticket_id );
-		$expectedJson     = array(
+		$ticket_attendees                  = $repository->get_ticket_attendees( $ticket_id );
+		$ticket_object = \Tribe__Tickets__RSVP::load_ticket_object( $ticket_id );
+		$expectedJson                      = array(
 			'id'                            => $ticket_id,
 			'post_id'                       => $post_id,
 			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
@@ -79,9 +80,9 @@ class SingleTicketCest extends BaseRestCest {
 			'available_until_details'       => $repository->get_ticket_end_date( $ticket_id, true ),
 			'capacity'                      => 30,
 			'capacity_details'              => [
-				'available_percentage' => (int)floor( ( 23 / 30 ) * 100 ),
+				'available_percentage' => 53,
 				'max'                  => 30,
-				'available'            => 23,
+				'available'            => 16,
 				'sold'                 => 7,
 				'pending'              => 0,
 			],
@@ -103,6 +104,13 @@ class SingleTicketCest extends BaseRestCest {
 				'unchecked_in'            => 11,
 				'checked_in_percentage'   => 9,
 				'unchecked_in_percentage' => 91,
+			],
+			'capacity_type'             => 'own',
+			'sku'                       => null,
+			'totals'                    => [
+				'stock'   => 16,
+				'sold'    => 7,
+				'pending' => 0,
 			],
 		);
 
@@ -231,7 +239,7 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'                      => $ticket_rest_url,
 			'provider'                      => 'rsvp',
 			'title'                         => $ticket_post->post_title,
-			'description'                   => $ticket_post->post_excerpt,
+			'description'                   => $ticket_post->post_content,
 			'image'                         => $repository->get_ticket_header_image( $ticket_id ),
 			'available_from'                => $repository->get_ticket_start_date( $ticket_id ),
 			'available_from_details'        => $repository->get_ticket_start_date( $ticket_id, true ),
@@ -239,8 +247,8 @@ class SingleTicketCest extends BaseRestCest {
 			'available_until_details'       => $repository->get_ticket_end_date( $ticket_id, true ),
 			'capacity'                      => 30,
 			'capacity_details'              => [
-				'available_percentage' => (int)floor( ( 23 / 30 ) * 100 ),
-				'available'            => 23,
+				'available_percentage' => 53,
+				'available'            => 16,
 			],
 			'is_available'                  => true,
 			'cost'                          => '$0.00',

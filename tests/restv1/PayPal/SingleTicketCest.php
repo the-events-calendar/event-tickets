@@ -104,6 +104,13 @@ class SingleTicketCest extends BaseRestCest {
 				'checked_in_percentage'   => 15,
 				'unchecked_in_percentage' => 85,
 			],
+			'capacity_type'             => 'own',
+			'sku'                       => '',
+			'totals'                    => [
+				'stock'   => 23,
+				'sold'    => 7,
+				'pending' => 0,
+			],
 		);
 
 		$response = json_decode( $I->grabResponse(), true );
@@ -246,7 +253,7 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'                      => $ticket_rest_url,
 			'provider'                      => 'tribe-commerce',
 			'title'                         => $ticket_post->post_title,
-			'description'                   => $ticket_post->post_excerpt,
+			'description'                   => $ticket_post->post_content,
 			'image'                         => $repository->get_ticket_header_image( $ticket_id ),
 			'available_from'                => $repository->get_ticket_start_date( $ticket_id ),
 			'available_from_details'        => $repository->get_ticket_start_date( $ticket_id, true ),
