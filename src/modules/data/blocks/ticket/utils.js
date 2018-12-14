@@ -7,7 +7,7 @@ const { settings, priceSettings, tickets: ticketsConfig } = globals;
 /**
  * Internal dependencies
  */
-import { getDefaultProvider, getTicketProviders } from '@moderntribe/tickets/data/blocks/ticket/selectors';
+import { getDefaultTicketProvider, getTicketProviders } from '@moderntribe/tickets/data/blocks/ticket/selectors';
 
 /**
  * Get currency symbol by provider
@@ -29,7 +29,7 @@ export const getProviderCurrency = ( provider ) => {
  * Get the default provider's currency symbol
  */
 export const getDefaultProviderCurrency = () => {
-	return getProviderCurrency( getDefaultProvider() );
+	return getProviderCurrency( getDefaultTicketProvider() );
 };
 
 /**

@@ -578,13 +578,13 @@ export const getTicketProviders = () => {
 	return tickets.providers || [];
 };
 
-export const getDefaultProvider = () => {
+export const getDefaultTicketProvider = () => {
 	const tickets = ticketsConfig();
 	return tickets.default_provider || '';
 };
 
-export const hasValidProvider = () => {
-	const provider = getDefaultProvider();
+export const hasValidTicketProvider = () => {
+	const provider = getDefaultTicketProvider();
 	return provider !== '' && provider !== constants.RSVP_CLASS;
 };
 
@@ -599,6 +599,6 @@ export const hasTicketProviders = createSelector(
 );
 
 export const canCreateTickets = createSelector(
-	[ hasTicketProviders, hasValidProvider ],
+	[ hasTicketProviders, hasValidTicketProvider ],
 	( providers, validDefaultProvider ) => providers && validDefaultProvider
 );
