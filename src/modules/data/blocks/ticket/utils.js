@@ -5,11 +5,16 @@ import { string, globals } from '@moderntribe/common/utils';
 
 const { settings, priceSettings, tickets: ticketsConfig } = globals;
 /**
+ * Internal dependencies
+ */
+import { getDefaultProvider, getTicketProviders } from '@moderntribe/tickets/data/blocks/ticket/selectors';
+
+/**
  * Get currency symbol by provider
  */
 export const getProviderCurrency = ( provider ) => {
 	const tickets = ticketsConfig();
-	const providers = tickets.providers || {};
+	const providers = getTicketProviders();
 
 	// if we don't get the provider, return the default one
 	if ( '' === provider ) {
@@ -24,10 +29,7 @@ export const getProviderCurrency = ( provider ) => {
  * Get the default provider's currency symbol
  */
 export const getDefaultProviderCurrency = () => {
-	const tickets = ticketsConfig();
-	const defaultProvider = tickets.default_provider || '';
-
-	return getProviderCurrency( defaultProvider );
+	return getProviderCurrency( getDefaultProvider() );
 };
 
 /**
