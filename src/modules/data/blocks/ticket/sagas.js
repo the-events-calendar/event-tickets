@@ -94,10 +94,12 @@ export function* setTicketsInitialState( action ) {
 		yield put( actions.fetchTicketsHeaderImage( header ) );
 	}
 
-	const tickets = ticketsConfig();
-	const defaultProvider = tickets.default_provider || '';
-	const provider = get( 'provider', DEFAULT_STATE.provider );
-	yield put( actions.setTicketsProvider( provider || defaultProvider ) );
+	const defaultProvider = yield select( selectors.getDefaultProvider );
+	let provider = get( 'provider', DEFAULT_STATE.provider );
+	if ( provider === constants.RSVP_CLASS || ! provider ) {
+		provider = defaultProvider === constants.RSVP_CLASS ? '' : defaultProvider;
+	}
+	yield put( actions.setTicketsProvider( provider ) );
 }
 
 export function* setTicketInitialState( action ) {
