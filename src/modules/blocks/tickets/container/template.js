@@ -26,15 +26,15 @@ const TicketsContainer = ( {
 	hasATicketSelected,
 	hasCreatedTickets,
 	hasOverlay,
-	hasProviders,
+	canCreateTickets,
 	hasTickets,
 	isSelected,
 } ) => {
 	const messages = {
-		title: hasProviders
+		title: canCreateTickets
 			? __( 'There are no tickets yet', 'event-tickets' )
 			: __( 'There is no ecommerce available', 'event-tickets' ),
-		description: hasProviders
+		description: canCreateTickets
 			? __( 'Edit this block to create your first ticket.', 'event-tickets' )
 			: __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' ),
 	};
@@ -79,7 +79,7 @@ const TicketsContainer = ( {
 TicketsContainer.propTypes = {
 	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
-	hasProviders: PropTypes.bool,
+	canCreateTickets: PropTypes.bool,
 	hasTickets: PropTypes.bool,
 	isSelected: PropTypes.bool,
 };

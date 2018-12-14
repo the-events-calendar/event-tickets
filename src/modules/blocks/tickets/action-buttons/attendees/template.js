@@ -15,7 +15,7 @@ import { __ } from '@wordpress/i18n';
 import { ActionButton } from '@moderntribe/tickets/elements';
 import { Attendees } from '@moderntribe/tickets/icons';
 
-const AttendeesActionButton = ( { href, hasProviders } ) => ( hasProviders && (
+const AttendeesActionButton = ( { href, canCreateTickets } ) => ( canCreateTickets && (
 	<ActionButton
 		asLink={ true }
 		href={ href }
@@ -28,7 +28,7 @@ const AttendeesActionButton = ( { href, hasProviders } ) => ( hasProviders && (
 
 AttendeesActionButton.propTypes = {
 	href: PropTypes.string.isRequired,
-	hasProviders: PropTypes.bool,
+	canCreateTickets: PropTypes.bool,
 };
 
 export default AttendeesActionButton;
