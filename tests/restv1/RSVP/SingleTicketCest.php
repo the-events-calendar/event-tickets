@@ -80,9 +80,9 @@ class SingleTicketCest extends BaseRestCest {
 			'available_until_details'       => $repository->get_ticket_end_date( $ticket_id, true ),
 			'capacity'                      => 30,
 			'capacity_details'              => [
-				'available_percentage' => 53,
+				'available_percentage' => 76,
 				'max'                  => 30,
-				'available'            => 16,
+				'available'            => 23,
 				'sold'                 => 7,
 				'pending'              => 0,
 			],
@@ -108,7 +108,7 @@ class SingleTicketCest extends BaseRestCest {
 			'capacity_type'             => 'own',
 			'sku'                       => null,
 			'totals'                    => [
-				'stock'   => 16,
+				'stock'   => 23,
 				'sold'    => 7,
 				'pending' => 0,
 			],
@@ -247,8 +247,8 @@ class SingleTicketCest extends BaseRestCest {
 			'available_until_details'       => $repository->get_ticket_end_date( $ticket_id, true ),
 			'capacity'                      => 30,
 			'capacity_details'              => [
-				'available_percentage' => 53,
-				'available'            => 16,
+				'available_percentage' => 76,
+				'available'            => 23,
 			],
 			'is_available'                  => true,
 			'cost'                          => '$0.00',
