@@ -94,9 +94,9 @@ export function* setTicketsInitialState( action ) {
 		yield put( actions.fetchTicketsHeaderImage( header ) );
 	}
 
-	const defaultProvider = yield select( selectors.getDefaultTicketProvider );
 	let provider = get( 'provider', DEFAULT_STATE.provider );
 	if ( provider === constants.RSVP_CLASS || ! provider ) {
+		const defaultProvider = yield select( selectors.getDefaultTicketProvider );
 		provider = defaultProvider === constants.RSVP_CLASS ? '' : defaultProvider;
 	}
 	yield put( actions.setTicketsProvider( provider ) );
