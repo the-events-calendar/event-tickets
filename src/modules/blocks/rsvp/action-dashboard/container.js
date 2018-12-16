@@ -7,7 +7,7 @@ import { compose } from 'redux';
 /**
  * WordPress dependencies
  */
-import { select } from '@wordpress/data';
+import { select, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -27,10 +27,6 @@ const getHasRecurrenceRules = ( state ) => {
 	return hasRules;
 };
 
-const getIsCancelDisabled = ( state ) => (
-	! selectors.getRSVPHasChanges( state ) || selectors.getRSVPIsLoading( state )
-);
-
 const getIsConfirmDisabled = ( state ) => (
 	! selectors.getRSVPTempTitle( state )
 		|| ! selectors.getRSVPHasChanges( state )
@@ -44,13 +40,16 @@ const onCancelClick = ( state, dispatch ) => () => {
 		tempCapacity: selectors.getRSVPCapacity( state ),
 		tempNotGoingResponses: selectors.getRSVPNotGoingResponses( state ),
 		tempStartDate: selectors.getRSVPStartDate( state ),
-		tempStartDateObj: selectors.getRSVPStartDateObj( state ),
+		tempStartDateInput: selectors.getRSVPStartDateInput( state ),
+		tempStartDateMoment: selectors.getRSVPStartDateMoment( state ),
 		tempEndDate: selectors.getRSVPEndDate( state ),
-		tempEndDateObj: selectors.getRSVPEndDateObj( state ),
+		tempEndDateInput: selectors.getRSVPEndDateInput( state ),
+		tempEndDateMoment: selectors.getRSVPEndDateMoment( state ),
 		tempStartTime: selectors.getRSVPStartTime( state ),
 		tempEndTime: selectors.getRSVPEndTime( state ),
 	} ) );
 	dispatch( actions.setRSVPHasChanges( false ) );
+	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 
 const onConfirmClick = ( state, dispatch ) => () => {
@@ -60,9 +59,11 @@ const onConfirmClick = ( state, dispatch ) => () => {
 		capacity: selectors.getRSVPTempCapacity( state ),
 		notGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
 		startDate: selectors.getRSVPTempStartDate( state ),
-		startDateObj: selectors.getRSVPTempStartDateObj( state ),
+		startDateInput: selectors.getRSVPTempStartDateInput( state ),
+		startDateMoment: selectors.getRSVPTempStartDateMoment( state ),
 		endDate: selectors.getRSVPTempEndDate( state ),
-		endDateObj: selectors.getRSVPTempEndDateObj( state ),
+		endDateInput: selectors.getRSVPTempEndDateInput( state ),
+		endDateMoment: selectors.getRSVPTempEndDateMoment( state ),
 		startTime: selectors.getRSVPTempStartTime( state ),
 		endTime: selectors.getRSVPTempEndTime( state ),
 	};
@@ -84,7 +85,7 @@ const mapStateToProps = ( state ) => ( {
 	created: selectors.getRSVPCreated( state ),
 	hasRecurrenceRules: getHasRecurrenceRules( state ),
 	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-	isCancelDisabled: getIsCancelDisabled( state ),
+	isCancelDisabled: selectors.getRSVPIsLoading( state ),
 	isConfirmDisabled: getIsConfirmDisabled( state ),
 	isLoading: selectors.getRSVPIsLoading( state ),
 	showCancel: selectors.getRSVPCreated( state ),

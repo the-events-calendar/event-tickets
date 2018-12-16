@@ -12,4 +12,12 @@ describe( '[STORE] - Attendees reducer', () => {
 	it( 'Should set the title value', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTitle( "Who's coming?" ) ) ).toMatchSnapshot();
 	} );
+
+	it( 'Should set the display title value', () => {
+		expect( reducer( DEFAULT_STATE, actions.setDisplayTitle( true ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'Should set the display subtitle value', () => {
+		expect( reducer( DEFAULT_STATE, actions.setDisplaySubtitle( true ) ) ).toMatchSnapshot();
+	} );
 } );

@@ -10,7 +10,7 @@ import { compose } from 'redux';
 import { withStore } from '@moderntribe/common/hoc';
 import * as selectors from '@moderntribe/tickets/data/shared/move/selectors';
 import { INITIALIZE_MODAL, SET_MODAL_DATA, SUBMIT_MODAL } from '@moderntribe/tickets/data/shared/move/types';
-import { hideModal } from '@moderntribe/tickets/data/shared/move/actions';
+import { hideModal, setModalData } from '@moderntribe/tickets/data/shared/move/actions';
 import Template from './template';
 
 const mapStateToProps = ( state, ownProps ) => ( {
@@ -28,9 +28,9 @@ const mapStateToProps = ( state, ownProps ) => ( {
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	initialize: () => dispatch( { type: INITIALIZE_MODAL } ),
 	hideModal: () => dispatch( hideModal() ),
-	onSearchChange: ( e ) => dispatch( { type: SET_MODAL_DATA, payload: { search_terms: e.target.value } } ),
-	onPostTypeChange: ( option ) => dispatch( { type: SET_MODAL_DATA, payload: { post_type: option.value } } ),
-	onPostSelect: ( value ) => dispatch( { type: SET_MODAL_DATA, payload: { target_post_id: value } } ),
+	onSearchChange: ( e ) => dispatch( setModalData( { search_terms: e.target.value } ) ),
+	onPostTypeChange: ( option ) => dispatch( setModalData( { post_type: option.value } ) ),
+	onPostSelect: ( value ) => dispatch( setModalData( { target_post_id: value } ) ),
 	onSubmit: () => dispatch( { type: SUBMIT_MODAL } ),
 } );
 

@@ -10,9 +10,14 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.2
  *
  */
+$display_subtitle = $this->attr( 'displaySubtitle' );
+
+if ( is_bool( $display_subtitle ) && ! $display_subtitle ) {
+	return;
+}
 
 $post_id         = $this->get( 'post_id' );
 $attendees_total = count( $attendees );
