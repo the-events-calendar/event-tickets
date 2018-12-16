@@ -21,4 +21,12 @@ describe( '[STORE] - Attendees actions', () => {
 		expect( actions.setTitle( 'Who\'s coming?' ) ).toMatchSnapshot();
 	} );
 
+	it( 'Should set the attendees Display Title', () => {
+		expect( actions.setDisplayTitle( true ) ).toMatchSnapshot();
+	} );
+
+	it( 'Should set the attendees Display Subtitle', () => {
+		expect( actions.setDisplaySubtitle( true ) ).toMatchSnapshot();
+	} );
+
 } );

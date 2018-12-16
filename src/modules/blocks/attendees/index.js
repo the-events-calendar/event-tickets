@@ -36,6 +36,14 @@ export default {
 			type: 'html',
 			default: __( 'Who\'s Attending?', 'event-tickets' ),
 		},
+		displayTitle: {
+			type: 'boolean',
+			default: true,
+		},
+		displaySubtitle: {
+			type: 'boolean',
+			default: true,
+		},
 	},
 
 	edit: Attendees,

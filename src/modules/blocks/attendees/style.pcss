@@ -14,10 +14,12 @@
 		cursor: text;
 		background-color: transparent;
 		border: 0;
+		display: block;
 		font-size: 1.3125rem;
 		font-weight: bold;
-		min-height: 54px;
+		min-height: 50px;
 		min-width: 200px;
+		padding: 5px 0;
 	}
 }
 
@@ -34,21 +36,25 @@
 	width: 100%;
 
 	input {
-		font-size: 1.3125rem;
-		min-height: 50px;
-		background-color: #fff;
-		border: 0;
-		color: #333;
-		font-family: 'Helvetica', 'sans-serif';
-		font-weight: bold;
-		overflow: hidden;
-		padding: 5px 0;
-		max-width: calc(100% - 20px);
-		min-width: 200px;
 
-		&:focus {
-			outline: 0;
-			box-shadow: none;
+		/* extra class to override WP 5.0 styles */
+		.editor-styles-wrapper & {
+			font-size: 1.3125rem;
+			min-height: 50px;
+			background-color: #fff;
+			border: 0;
+			color: #333;
+			font-family: 'Helvetica', 'sans-serif';
+			font-weight: bold;
+			overflow: hidden;
+			padding: 5px 0;
+			max-width: calc(100% - 20px);
+			min-width: 200px;
+
+			&:focus {
+				outline: 0;
+				box-shadow: none;
+			}
 		}
 	}
 

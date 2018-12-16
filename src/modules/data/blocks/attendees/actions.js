@@ -10,6 +10,20 @@ export const setTitle = ( title ) => ( {
 	},
 } );
 
+export const setDisplayTitle = ( displayTitle ) => ( {
+	type: types.SET_ATTENDEES_DISPLAY_TITLE,
+	payload: {
+		displayTitle,
+	},
+} );
+
+export const setDisplaySubtitle = ( displaySubtitle ) => ( {
+	type: types.SET_ATTENDEES_DISPLAY_SUBTITLE,
+	payload: {
+		displaySubtitle,
+	},
+} );
+
 export const setInitialState = ( payload ) => ( {
 	type: types.SET_ATTENDEES_INITIAL_STATE,
 	payload,

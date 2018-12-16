@@ -16,6 +16,7 @@
 
 $post_id = $this->get( 'post_id' );
 $ticket  = $this->get( 'ticket' );
+$provider = $this->get( 'provider' );
 $classes = array(
 	'tribe-block__tickets__item',
 );
@@ -24,6 +25,13 @@ $context = array(
 	'ticket' => $ticket,
 	'key'    => $this->get( 'key' ),
 );
+
+if (
+	empty( $provider )
+	|| $ticket->provider_class !== $provider->class_name
+) {
+	return false;
+}
 ?>
 <div
 	id="tribe-block-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
