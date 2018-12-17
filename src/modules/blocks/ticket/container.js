@@ -24,7 +24,6 @@ const getShowTicket = ( state, ownProps ) => (
 
 const mapStateToProps = ( state, ownProps ) => {
 	return {
-		clientId: ownProps.clientId,
 		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 		hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
 		isDisabled: selectors.isTicketDisabled( state, ownProps ),
