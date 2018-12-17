@@ -127,6 +127,11 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]
 * Fix - Display only tickets that are in date range [119628]
+* Fix - RSVP now stays in sync with the Events and saving properly the Sale dates [118337]
+* Fix - Remove the old `events-gutenberg` domain into the templates [119270]
+* Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
+* Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
+* Tweak - Link to the correct support places [117795]
 * Tweak - Adjusted content in the admin welcome page that users are brought to upon newly activating Event Tickets [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 
