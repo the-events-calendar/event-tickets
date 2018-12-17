@@ -135,6 +135,10 @@ exports[`Ticket block selectors Misc selectors hasMultipleTicketProviders 1`] = 
 
 exports[`Ticket block selectors Misc selectors hasTicketProviders 1`] = `false`;
 
+exports[`Ticket block selectors Ticket details selectors allTicketsFuture 1`] = `true`;
+
+exports[`Ticket block selectors Ticket details selectors allTicketsPast 1`] = `true`;
+
 exports[`Ticket block selectors Ticket details selectors getTicketCapacity 1`] = `""`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketCapacityInt 1`] = `0`;
@@ -193,6 +197,8 @@ exports[`Ticket block selectors Ticket details selectors getTicketStartTimeInput
 exports[`Ticket block selectors Ticket details selectors getTicketStartTimeNoSeconds 1`] = `"22:30"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketTitle 1`] = `""`;
+
+exports[`Ticket block selectors Ticket details selectors hasTicketOnSale 1`] = `false`;
 
 exports[`Ticket block selectors Ticket details selectors isIndependentTicket 1`] = `false`;
 

@@ -23,19 +23,29 @@ import './style.pcss';
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ( {
+	allTicketsPast,
+	hasCreatedTickets,
 	hasOverlay,
 	hasProviders,
 	showAvailability,
 	showInactiveBlock,
 } ) => {
 	const messages = {
-		title: hasProviders
-			? __( 'There are no tickets yet', 'event-tickets' )
-			: __( 'There is no ecommerce available', 'event-tickets' ),
-		description: hasProviders
-			? __( 'Edit this block to create your first ticket.', 'event-tickets' )
-			: __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' ),
+		title: '',
+		description: '',
 	};
+
+	if ( ! hasProviders ) {
+		messages.title = __( 'There is no ecommerce available', 'event-tickets' );
+		messages.description = __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' );
+	} else if ( ! hasCreatedTickets ) {
+		messages.title = __( 'There are no tickets yet', 'event-tickets' );
+		messages.description = __( 'Edit this block to create your first ticket.', 'event-tickets' );
+	} else if ( allTicketsPast ) {
+		messages.title = __( 'Tickets are no longer available', 'event-tickets' );
+	} else {
+		messages.title = __( 'Tickets are not yet available', 'event-tickets' );
+	}
 
 	const innerBlocksClassName = classNames( {
 		'tribe-editor__tickets__inner-blocks': true,
@@ -67,6 +77,8 @@ const TicketsContainer = ( {
 };
 
 TicketsContainer.propTypes = {
+	allTicketsPast: PropTypes.bool,
+	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
 	hasProviders: PropTypes.bool,
 	showAvailability: PropTypes.bool,

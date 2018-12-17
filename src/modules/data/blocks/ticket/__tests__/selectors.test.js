@@ -317,8 +317,19 @@ describe( 'Ticket block selectors', () => {
 		test( 'isTicketOnSale', () => {
 			expect( selectors.isTicketOnSale( state, ownProps ) ).toMatchSnapshot();
 		} );
-	} );
 
+		test( 'hasTicketOnSale', () => {
+			expect( selectors.hasTicketOnSale( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'allTicketsPast', () => {
+			expect( selectors.allTicketsPast( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'allTicketsFuture', () => {
+			expect( selectors.allTicketsFuture( state ) ).toMatchSnapshot();
+		} );
+	} );
 
 	describe( 'Ticket temp details selectors', () => {
 		test( 'getTicketTempDetails', () => {

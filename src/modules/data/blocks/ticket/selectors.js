@@ -20,6 +20,7 @@ const {
 } = constants;
 const { tickets: ticketsConfig } = globals;
 
+export const getState = ( state ) => state;
 export const getBlock = ( state ) => state.tickets.blocks.ticket;
 
 //
@@ -353,17 +354,65 @@ export const getTicketCapacityInt = createSelector(
 
 export const isUnlimitedTicket = createSelector(
 	[ getTicketDetails ],
-	( block ) => block.capacityType === TICKET_TYPES[ UNLIMITED ],
+	( details ) => details.capacityType === TICKET_TYPES[ UNLIMITED ],
 );
 
 export const isSharedTicket = createSelector(
 	[ getTicketDetails ],
-	( block ) => block.capacityType === TICKET_TYPES[ SHARED ],
+	( details ) => details.capacityType === TICKET_TYPES[ SHARED ],
 );
 
 export const isIndependentTicket = createSelector(
 	[ getTicketDetails ],
-	( block ) => block.capacityType === TICKET_TYPES[ INDEPENDENT ],
+	( details ) => details.capacityType === TICKET_TYPES[ INDEPENDENT ],
+);
+
+export const isTicketPast = createSelector(
+	[ getTicketEndDateMoment ],
+	( endDate ) => moment().isAfter( endDate ),
+);
+
+export const isTicketFuture = createSelector(
+	[ getTicketStartDateMoment ],
+	( startDate ) => moment().isBefore( startDate ),
+);
+
+export const isTicketOnSale = createSelector(
+	[ getTicketHasBeenCreated, isTicketPast, isTicketFuture ],
+	( hasBeenCreated, isPast, isFuture ) => (
+		hasBeenCreated && ! isPast && ! isFuture
+	),
+);
+
+export const hasTicketOnSale = createSelector(
+	[ getTicketsAllClientIds, getState ],
+	( allClientIds, state ) => allClientIds.reduce( ( onSale, clientId ) => (
+		onSale || isTicketOnSale( state, { clientId } )
+	), false ),
+);
+
+export const allTicketsPast = createSelector(
+	[ getTicketsAllClientIds, getState ],
+	( allClientIds, state ) => allClientIds.reduce( ( isPast, clientId ) => {
+		const props = { clientId };
+		return (
+			getTicketHasBeenCreated( state, props )
+				? isPast && isTicketPast( state, props )
+				: isPast
+		);
+	}, true ),
+);
+
+export const allTicketsFuture = createSelector(
+	[ getTicketsAllClientIds, getState ],
+	( allClientIds, state ) => allClientIds.reduce( ( isFuture, clientId ) => {
+		const props = { clientId };
+		return (
+			getTicketHasBeenCreated( state, props )
+				? isFuture && isTicketFuture( state, props )
+				: isFuture
+		);
+	}, true ),
 );
 
 //
@@ -497,24 +546,6 @@ export const isTicketValid = createSelector(
 		return titleValid && capacityValid;
 	},
 );
-
-export const isTicketPast = createSelector(
-	[ getTicketEndDateMoment ],
-	( endDate ) => moment().isAfter( endDate ),
-);
-
-export const isTicketFuture = createSelector(
-	[ getTicketStartDateMoment ],
-	( startDate ) => moment().isBefore( startDate ),
-);
-
-export const isTicketOnSale = createSelector(
-	[ getTicketHasBeenCreated, isTicketPast, isTicketFuture ],
-	( hasBeenCreated, isPast, isFuture ) => (
-		hasBeenCreated && ! isPast && ! isFuture
-	),
-)
-
 
 //
 // ─── AMOUNT REDUCERS ────────────────────────────────────────────────────────────
