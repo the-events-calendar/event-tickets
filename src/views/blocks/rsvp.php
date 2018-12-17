@@ -16,6 +16,11 @@
 $event_id = $this->get( 'post_id' );
 $tickets  = $this->get( 'tickets' );
 
+// We don't display anything if there is no RSVP
+if ( empty( count( $tickets ) ) ) {
+	return false;
+}
+
 // Get active RSVPs
 $active_tickets = array();
 
@@ -28,7 +33,7 @@ foreach ( $tickets as $ticket ) {
 $has_active_tickets = ! empty( count( $active_tickets ) );
 
 if ( ! $has_active_tickets ) {
-	$active_past = ! empty( count( $tickets ) );
+	$active_past = true;
 	$timestamp   = current_time( 'timestamp' );
 
 	foreach ( $tickets as $ticket ) {
