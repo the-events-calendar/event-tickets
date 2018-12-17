@@ -20,8 +20,8 @@ $provider_id  = $this->get( 'provider_id' );
 $cart_url     = $this->get( 'cart_url' );
 $cart_classes = array( 'tribe-block', 'tribe-block__tickets' );
 
-// We don't display anything if there is not provider
-if ( ! $provider ) {
+// We don't display anything if there is no provider or tickets
+if ( ! $provider || empty( count( $tickets ) ) ) {
 	return false;
 }
 
