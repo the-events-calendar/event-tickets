@@ -23,8 +23,8 @@ describe( 'Ticket actions', () => {
 		} );
 
 		test( 'set tickets is selected', () => {
-			expect( actions.setTicketsisSelected( true ) ).toMatchSnapshot();
-			expect( actions.setTicketsisSelected( false ) ).toMatchSnapshot();
+			expect( actions.setTicketsIsSelected( true ) ).toMatchSnapshot();
+			expect( actions.setTicketsIsSelected( false ) ).toMatchSnapshot();
 		} );
 
 		test( 'set tickets is settings open', () => {

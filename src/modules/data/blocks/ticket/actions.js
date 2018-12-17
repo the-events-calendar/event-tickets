@@ -17,7 +17,7 @@ export const setTicketsHeaderImage = ( payload ) => ( {
 	payload,
 } );
 
-export const setTicketsisSelected = ( isSelected ) => ( {
+export const setTicketsIsSelected = ( isSelected ) => ( {
 	type: types.SET_TICKETS_IS_SELECTED,
 	payload: {
 		isSelected,

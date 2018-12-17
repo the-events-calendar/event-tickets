@@ -12,7 +12,7 @@ describe( 'Reducer', () => {
 	it( 'should set the is selected', () => {
 		expect( reducer(
 			DEFAULT_STATE,
-			actions.setTicketsisSelected( true ),
+			actions.setTicketsIsSelected( true ),
 		) ).toMatchSnapshot();
 	} );
 
