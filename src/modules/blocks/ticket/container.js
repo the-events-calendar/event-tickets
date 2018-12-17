@@ -16,18 +16,22 @@ import {
 	getModalTicketId,
 } from '@moderntribe/tickets/data/shared/move/selectors';
 
-const mapStateToProps = ( state, ownProps ) => {
-	const props = { blockId: ownProps.clientId };
+const getShowTicket = ( state, ownProps ) => (
+	selectors.getTicketsIsSelected( state )
+		|| selectors.hasATicketSelected( state )
+		|| selectors.isTicketOnSale( state, ownProps )
+);
 
+const mapStateToProps = ( state, ownProps ) => {
 	return {
-		blockId: ownProps.clientId,
 		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-		hasBeenCreated: selectors.getTicketHasBeenCreated( state, props ),
-		isDisabled: selectors.isTicketDisabled( state, props ),
-		isLoading: selectors.getTicketIsLoading( state, props ),
-		ticketId: selectors.getTicketId( state, props ),
+		hasBeenCreated: selectors.getTicketHasBeenCreated( state, ownProps ),
+		isDisabled: selectors.isTicketDisabled( state, ownProps ),
+		isLoading: selectors.getTicketIsLoading( state, ownProps ),
 		isModalShowing: isModalShowing( state ),
 		modalTicketId: getModalTicketId( state ),
+		showTicket: getShowTicket( state, ownProps ),
+		ticketId: selectors.getTicketId( state, ownProps ),
 	};
 };
 

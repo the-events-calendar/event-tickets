@@ -20,9 +20,29 @@ $provider_id  = $this->get( 'provider_id' );
 $cart_url     = $this->get( 'cart_url' );
 $cart_classes = array( 'tribe-block', 'tribe-block__tickets' );
 
-// We don't display anything if there is not provider
-if ( ! $provider ) {
+// We don't display anything if there is no provider or tickets
+if ( ! $provider || empty( count( $tickets ) ) ) {
 	return false;
+}
+
+// Get tickets on sale
+$tickets_on_sale = array();
+
+foreach ( $tickets as $ticket ) {
+	if ( tribe_events_ticket_is_on_sale( $ticket ) ) {
+		$tickets_on_sale[] = $ticket;
+	}
+}
+
+$has_tickets_on_sale = ! empty( count( $tickets_on_sale ) );
+
+if ( ! $has_tickets_on_sale ) {
+	$sale_past = ! empty( count( $tickets ) );
+	$timestamp = current_time( 'timestamp' );
+
+	foreach ( $tickets as $ticket ) {
+		$sale_past = ( $sale_past && $ticket->date_is_later( $timestamp ) );
+	}
 }
 ?>
 
@@ -38,10 +58,12 @@ if ( ! $provider ) {
 	novalidate
 >
 	<?php $this->template( 'blocks/tickets/commerce/fields', array( 'provider' => $provider, 'provider_id' => $provider_id ) ); ?>
-	<?php foreach ( $tickets as $key => $ticket ) : ?>
-		<?php $this->template( 'blocks/tickets/item', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
-	<?php endforeach; ?>
-	<?php if ( 0 < count( $tickets ) ) : ?>
+	<?php if ( $has_tickets_on_sale ) : ?>
+		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
+			<?php $this->template( 'blocks/tickets/item', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+		<?php endforeach; ?>
 		<?php $this->template( 'blocks/tickets/submit', array( 'provider' => $provider, 'provider_id' => $provider_id, 'ticket' => $ticket ) ); ?>
+	<?php else : ?>
+		<?php $this->template( 'blocks/tickets/item-inactive', array( 'sale_past' => $sale_past ) ); ?>
 	<?php endif; ?>
 </form>

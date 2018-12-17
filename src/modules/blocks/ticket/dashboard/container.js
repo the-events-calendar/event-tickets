@@ -23,7 +23,7 @@ const getIsConfirmDisabled = ( state, ownProps ) => (
 );
 
 const onCancelClick = ( state, dispatch, ownProps ) => () => {
-	dispatch( actions.setTicketTempDetails( ownProps.blockId, {
+	dispatch( actions.setTicketTempDetails( ownProps.clientId, {
 		title: selectors.getTicketTitle( state, ownProps ),
 		description: selectors.getTicketDescription( state, ownProps ),
 		price: selectors.getTicketPrice( state, ownProps ),
@@ -44,14 +44,14 @@ const onCancelClick = ( state, dispatch, ownProps ) => () => {
 	dispatch( actions.setTicketsTempSharedCapacity(
 		selectors.getTicketsSharedCapacity( state ),
 	) );
-	dispatch( actions.setTicketHasChanges( ownProps.blockId, false ) );
+	dispatch( actions.setTicketHasChanges( ownProps.clientId, false ) );
 	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 
 const onConfirmClick = ( state, dispatch, ownProps ) => () => (
 	selectors.getTicketHasBeenCreated( state, ownProps )
-		? dispatch( actions.updateTicket( ownProps.blockId ) )
-		: dispatch( actions.createNewTicket( ownProps.blockId ) )
+		? dispatch( actions.updateTicket( ownProps.clientId ) )
+		: dispatch( actions.createNewTicket( ownProps.clientId ) )
 );
 
 const mapStateToProps = ( state, ownProps ) => ( {

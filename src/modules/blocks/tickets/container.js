@@ -29,6 +29,9 @@ const mapDispatchToProps = ( dispatch ) => ( {
 	onBlockRemoved: () => {
 		dispatch( actions.resetTicketsBlock() );
 	},
+	onBlockUpdate: ( isSelected ) => {
+		dispatch( actions.setTicketsIsSelected( isSelected ) );
+	}
 } );
 
 export default compose(

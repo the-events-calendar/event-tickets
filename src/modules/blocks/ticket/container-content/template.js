@@ -12,16 +12,16 @@ import AdvancedOptions from './advanced-options/container';
 import AttendeesRegistration from './attendees-registration/container';
 import './style.pcss';
 
-const TicketContainerContent = ( { blockId, hasTicketsPlus } ) => (
+const TicketContainerContent = ( { clientId, hasTicketsPlus } ) => (
 	<Fragment>
-		<Capacity blockId={ blockId } />
-		<AdvancedOptions blockId={ blockId } />
-		{ hasTicketsPlus && <AttendeesRegistration blockId={ blockId } /> }
+		<Capacity clientId={ clientId } />
+		<AdvancedOptions clientId={ clientId } />
+		{ hasTicketsPlus && <AttendeesRegistration clientId={ clientId } /> }
 	</Fragment>
 );
 
 TicketContainerContent.propTypes = {
-	blockId: PropTypes.string.isRequired,
+	clientId: PropTypes.string.isRequired,
 	hasTicketsPlus: PropTypes.bool,
 };
 

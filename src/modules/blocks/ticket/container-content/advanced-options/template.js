@@ -23,7 +23,7 @@ import MoveDelete from './move-delete/container';
 
 class AdvancedOptions extends Component {
 	static propTypes = {
-		blockId: PropTypes.string.isRequired,
+		clientId: PropTypes.string.isRequired,
 		isDisabled: PropTypes.bool,
 		hasBeenCreated: PropTypes.bool,
 	};
@@ -47,11 +47,11 @@ class AdvancedOptions extends Component {
 
 	getContent = () => (
 		<Fragment>
-			<Duration blockId={ this.props.blockId } />
-			<SKU blockId={ this.props.blockId } />
-			<EcommerceOptions blockId={ this.props.blockId } />
+			<Duration clientId={ this.props.clientId } />
+			<SKU clientId={ this.props.clientId } />
+			<EcommerceOptions clientId={ this.props.clientId } />
 			{ this.props.hasBeenCreated && (
-				<MoveDelete blockId={ this.props.blockId } />
+				<MoveDelete clientId={ this.props.clientId } />
 			) }
 		</Fragment>
 	);

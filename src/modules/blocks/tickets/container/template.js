@@ -23,27 +23,33 @@ import './style.pcss';
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ( {
-	hasATicketSelected,
+	allTicketsPast,
 	hasCreatedTickets,
 	hasOverlay,
 	hasProviders,
-	hasTickets,
-	isSelected,
+	showAvailability,
+	showInactiveBlock,
 } ) => {
 	const messages = {
-		title: hasProviders
-			? __( 'There are no tickets yet', 'event-tickets' )
-			: __( 'There is no ecommerce available', 'event-tickets' ),
-		description: hasProviders
-			? __( 'Edit this block to create your first ticket.', 'event-tickets' )
-			: __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' ),
+		title: '',
+		description: '',
 	};
+
+	if ( ! hasProviders ) {
+		messages.title = __( 'There is no ecommerce available', 'event-tickets' );
+		messages.description = __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' );
+	} else if ( ! hasCreatedTickets ) {
+		messages.title = __( 'There are no tickets yet', 'event-tickets' );
+		messages.description = __( 'Edit this block to create your first ticket.', 'event-tickets' );
+	} else if ( allTicketsPast ) {
+		messages.title = __( 'Tickets are no longer available', 'event-tickets' );
+	} else {
+		messages.title = __( 'Tickets are not yet available', 'event-tickets' );
+	}
 
 	const innerBlocksClassName = classNames( {
 		'tribe-editor__tickets__inner-blocks': true,
-		'tribe-editor__tickets__inner-blocks--show': (
-			hasCreatedTickets || ( isSelected && hasTickets ) || hasATicketSelected
-		),
+		'tribe-editor__tickets__inner-blocks--show': ! showInactiveBlock,
 	} );
 
 	return (
@@ -55,33 +61,28 @@ const TicketsContainer = ( {
 				/>
 			</div>
 			{
-				(
-					( ! isSelected && ! hasATicketSelected && ! hasCreatedTickets )
-						|| ( isSelected && ! hasTickets )
+				showInactiveBlock && (
+					<InactiveBlock
+						layout={ LAYOUT.ticket }
+						title={ messages.title }
+						description={ messages.description }
+						icon={ <TicketInactive /> }
+					/>
 				)
-					&& (
-						<InactiveBlock
-							layout={ LAYOUT.ticket }
-							title={ messages.title }
-							description={ messages.description }
-							icon={ <TicketInactive /> }
-						/>
-					)
 			}
-			{ isSelected && hasCreatedTickets && (
-				<Availability />
-			) }
+			{ showAvailability && <Availability /> }
 			{ hasOverlay && <TicketsOverlay /> }
 		</div>
 	);
 };
 
 TicketsContainer.propTypes = {
+	allTicketsPast: PropTypes.bool,
 	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
 	hasProviders: PropTypes.bool,
-	hasTickets: PropTypes.bool,
-	isSelected: PropTypes.bool,
+	showAvailability: PropTypes.bool,
+	showInactiveBlock: PropTypes.bool,
 };
 
 export default TicketsContainer;

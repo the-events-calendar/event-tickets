@@ -20,7 +20,18 @@ class Tickets extends PureComponent {
 		header: PropTypes.string,
 		isSelected: PropTypes.bool,
 		isSettingsOpen: PropTypes.bool,
+		onBlockUpdate: PropTypes.func,
 	};
+
+	componentDidMount() {
+		this.props.onBlockUpdate( this.props.isSelected );
+	}
+
+	componentDidUpdate( prevProps ) {
+		if ( prevProps.isSelected !== this.props.isSelected ) {
+			this.props.onBlockUpdate( this.props.isSelected );
+		}
+	}
 
 	render() {
 		const {

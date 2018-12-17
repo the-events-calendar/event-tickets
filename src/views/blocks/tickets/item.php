@@ -14,10 +14,10 @@
  *
  */
 
-$post_id = $this->get( 'post_id' );
-$ticket  = $this->get( 'ticket' );
+$post_id  = $this->get( 'post_id' );
+$ticket   = $this->get( 'ticket' );
 $provider = $this->get( 'provider' );
-$classes = array(
+$classes  = array(
 	'tribe-block__tickets__item',
 );
 

@@ -20,7 +20,7 @@ import MoveModal from '@moderntribe/tickets/elements/move-modal';
 
 class Ticket extends PureComponent {
 	static propTypes = {
-		blockId: PropTypes.string.isRequired,
+		clientId: PropTypes.string.isRequired,
 		hasTicketsPlus: PropTypes.bool,
 		isDisabled: PropTypes.bool,
 		isLoading: PropTypes.bool,
@@ -28,6 +28,7 @@ class Ticket extends PureComponent {
 		isSelected: PropTypes.bool,
 		onBlockUpdate: PropTypes.func,
 		removeTicketBlock: PropTypes.func,
+		showTicket: PropTypes.bool,
 	};
 
 	componentDidMount() {
@@ -42,15 +43,16 @@ class Ticket extends PureComponent {
 
 	render() {
 		const {
-			blockId,
+			clientId,
 			hasTicketsPlus,
 			isDisabled,
 			isLoading,
 			isSelected,
 			isModalShowing,
+			showTicket,
 		} = this.props;
 
-		return [
+		return showTicket ? [
 			(
 				<article className={ classNames(
 					'tribe-editor__ticket',
@@ -59,13 +61,13 @@ class Ticket extends PureComponent {
 					{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
 				) }
 				>
-					<TicketContainer blockId={ blockId } isSelected={ isSelected } />
-					<TicketDashboard blockId={ blockId } isSelected={ isSelected } />
+					<TicketContainer clientId={ clientId } isSelected={ isSelected } />
+					<TicketDashboard clientId={ clientId } isSelected={ isSelected } />
 					{ isLoading && <Spinner /> }
 				</article>
 			),
 			isModalShowing && <MoveModal />,
-		];
+		] : null;
 	}
 }
 
