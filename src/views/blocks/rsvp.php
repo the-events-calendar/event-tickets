@@ -13,11 +13,12 @@
  *
  */
 
-$event_id = $this->get( 'post_id' );
-$tickets  = $this->get( 'tickets' );
+$event_id    = $this->get( 'post_id' );
+$tickets     = $this->get( 'tickets' );
+$num_tickets = count( $tickets );
 
 // We don't display anything if there is no RSVP
-if ( empty( count( $tickets ) ) ) {
+if ( empty( $num_tickets ) ) {
 	return false;
 }
 
@@ -30,7 +31,8 @@ foreach ( $tickets as $ticket ) {
 	}
 }
 
-$has_active_tickets = ! empty( count( $active_tickets ) );
+$num_active_tickets = count( $active_tickets );
+$has_active_tickets = ! empty( $num_active_tickets );
 
 if ( ! $has_active_tickets ) {
 	$active_past = true;
