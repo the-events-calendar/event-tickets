@@ -229,5 +229,17 @@ describe( 'RSVP block actions', () => {
 		test( 'handle RSVP end time', () => {
 			expect( actions.handleRSVPEndTime( 1000 ) ).toMatchSnapshot();
 		} );
+
+		test( 'fetch RSVP header image', () => {
+			expect( actions.fetchRSVPHeaderImage( 10 ) ).toMatchSnapshot();
+		} );
+
+		test( 'fetch RSVP header image', () => {
+			expect( actions.updateRSVPHeaderImage( {} ) ).toMatchSnapshot();
+		} );
+
+		test( 'fetch RSVP header image', () => {
+			expect( actions.deleteRSVPHeaderImage() ).toMatchSnapshot();
+		} );
 	} );
 } );
