@@ -192,7 +192,7 @@ class Tribe__Tickets__Main {
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
 			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
-			log_me('stop');
+
 			return;
 		}
 
