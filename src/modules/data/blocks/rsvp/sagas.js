@@ -483,7 +483,9 @@ export function* updateRSVPHeaderImage( action ) {
 	};
 
 	try {
-		// until rsvp and tickets header image can be separated, they need to be linked
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setRSVPIsSettingsLoading( true ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
 		const { response } = yield call( api.wpREST, {
@@ -503,7 +505,9 @@ export function* updateRSVPHeaderImage( action ) {
 				alt: image.alt,
 				src: image.sizes.medium.url,
 			};
-			// until rsvp and tickets header image can be separated, they need to be linked
+			/**
+			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 */
 			yield put( actions.setRSVPHeaderImage( headerImage ) );
 			yield put( ticketActions.setTicketsHeaderImage( headerImage ) );
 		}
@@ -512,7 +516,9 @@ export function* updateRSVPHeaderImage( action ) {
 		 * @todo: handle error scenario
 		 */
 	} finally {
-		// until rsvp and tickets header image can be separated, they need to be linked
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setRSVPIsSettingsLoading( false ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( false ) );
 	}
@@ -527,7 +533,9 @@ export function* deleteRSVPHeaderImage() {
 	};
 
 	try {
-		// until rsvp and tickets header image can be separated, they need to be linked
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setRSVPIsSettingsLoading( true ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
 		const { response } = yield call( api.wpREST, {
@@ -542,7 +550,9 @@ export function* deleteRSVPHeaderImage() {
 		} );
 
 		if ( response.ok ) {
-			// until rsvp and tickets header image can be separated, they need to be linked
+			/**
+			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 */
 			yield put( actions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) );
 			yield put( ticketActions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) );
 		}
@@ -551,7 +561,9 @@ export function* deleteRSVPHeaderImage() {
 		 * @todo: handle error scenario
 		 */
 	} finally {
-		// until rsvp and tickets header image can be separated, they need to be linked
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setRSVPIsSettingsLoading( false ) );
 		yield put( ticketActions.setTicketsIsSettingsLoading( false ) );
 	}

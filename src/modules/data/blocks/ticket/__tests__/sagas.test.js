@@ -18,8 +18,12 @@ import * as actions from '../actions';
 import watchers, * as sagas from '../sagas';
 import * as selectors from '../selectors';
 import {
-	DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE
 } from '../reducers/header-image';
+import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
+import {
+	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE
+} from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import * as utils from '@moderntribe/tickets/data/utils';
@@ -1514,6 +1518,7 @@ describe( 'Ticket Block sagas', () => {
 
 	describe( 'updateTicketsHeaderImage', () => {
 		it( 'should update tickets header image', () => {
+			const postId = 10;
 			const action = {
 				payload: {
 					image: {
@@ -1527,14 +1532,18 @@ describe( 'Ticket Block sagas', () => {
 					},
 				},
 			};
-			const gen = cloneableGenerator( sagas.updateTicketsHeaderImage )( action );
+			const gen = sagas.updateTicketsHeaderImage( action );
 
-			expect( gen.next().value ).toEqual(
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
 				put( actions.setTicketsIsSettingsLoading( true ) )
 			);
 			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
 				call( wpREST, {
-					path: `tribe_events/${ 10 }`,
+					path: `tribe_events/${ postId }`,
 					headers: {
 						'Content-Type': 'application/json',
 					},
@@ -1549,48 +1558,102 @@ describe( 'Ticket Block sagas', () => {
 				} )
 			);
 
-			const clone1 = gen.clone();
-			const apiResponseBad = {
-				response: {
-					ok: false,
-				},
-			};
-
-			expect( clone1.next( apiResponseBad ).value ).toEqual(
-				put( actions.setTicketsIsSettingsLoading( false ) )
-			);
-			expect( clone1.next().done ).toEqual( true );
-
-			const clone2 = gen.clone();
-			const apiResponseGood = {
+			const apiResponse = {
 				response: {
 					ok: true,
 				},
 			};
-
-			expect( clone2.next( apiResponseGood ).value ).toEqual(
-				put( actions.setTicketsHeaderImage( {
-					id: action.payload.image.id,
-					alt: action.payload.image.alt,
-					src: action.payload.image.sizes.medium.url,
-				} ) )
+			const headerImage = {
+				id: action.payload.image.id,
+				alt: action.payload.image.alt,
+				src: action.payload.image.sizes.medium.url,
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setTicketsHeaderImage( headerImage ) )
 			);
-			expect( clone2.next().value ).toEqual(
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPHeaderImage( headerImage ) )
+			);
+			expect( gen.next().value ).toEqual(
 				put( actions.setTicketsIsSettingsLoading( false ) )
 			);
-			expect( clone2.next().done ).toEqual( true );
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not update tickets header image', () => {
+			const postId = 10;
+			const action = {
+				payload: {
+					image: {
+						id: 99,
+						alt: 'tribe',
+						sizes: {
+							medium: {
+								url: '#',
+							},
+						},
+					},
+				},
+			};
+			const gen = sagas.updateTicketsHeaderImage( action );
+
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
+				put( actions.setTicketsIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( wpREST, {
+					path: `tribe_events/${ postId }`,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					initParams: {
+						method: 'PUT',
+						body: JSON.stringify( {
+							meta: {
+								[ utils.KEY_TICKET_HEADER ]: `${ action.payload.image.id }`,
+							},
+						} ),
+					},
+				} )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: false,
+				},
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setTicketsIsSettingsLoading( false ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
 	describe( 'deleteTicketsHeaderImage', () => {
 		it( 'should delete tickets header image', () => {
-			const gen = cloneableGenerator( sagas.deleteTicketsHeaderImage )();
-			expect( gen.next().value ).toEqual(
+			const postId = 10;
+
+			const gen = sagas.deleteTicketsHeaderImage();
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
 				put( actions.setTicketsIsSettingsLoading( true ) )
 			);
 			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
 				call( wpREST, {
-					path: `tribe_events/${ 10 }`,
+					path: `tribe_events/${ postId }`,
 					headers: {
 						'Content-Type': 'application/json',
 					},
@@ -1605,32 +1668,67 @@ describe( 'Ticket Block sagas', () => {
 				} )
 			);
 
-			const clone1 = gen.clone();
-			const apiResponseBad = {
-				response: {
-					ok: false,
-				},
-			};
-
-			expect( clone1.next( apiResponseBad ).value ).toEqual(
-				put( actions.setTicketsIsSettingsLoading( false ) )
-			);
-			expect( clone1.next().done ).toEqual( true );
-
-			const clone2 = gen.clone();
-			const apiResponseGood = {
+			const apiResponse = {
 				response: {
 					ok: true,
 				},
 			};
 
-			expect( clone2.next( apiResponseGood ).value ).toEqual(
-				put( actions.setTicketsHeaderImage( HEADER_IMAGE_DEFAULT_STATE ) )
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) )
 			);
-			expect( clone2.next().value ).toEqual(
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) )
+			);
+			expect( gen.next().value ).toEqual(
 				put( actions.setTicketsIsSettingsLoading( false ) )
 			);
-			expect( clone2.next().done ).toEqual( true );
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not delete tickets header image', () => {
+			const postId = 10;
+
+			const gen = sagas.deleteTicketsHeaderImage();
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
+				put( actions.setTicketsIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( wpREST, {
+					path: `tribe_events/${ postId }`,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					initParams: {
+						method: 'PUT',
+						body: JSON.stringify( {
+							meta: {
+								[ utils.KEY_TICKET_HEADER ]: null,
+							},
+						} ),
+					},
+				} )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: false,
+				},
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setTicketsIsSettingsLoading( false ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( rsvpActions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
