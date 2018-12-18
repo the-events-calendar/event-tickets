@@ -52,7 +52,7 @@ const setInitialState = ( dispatch, ownProps ) => () => {
 	dispatch( thunks.getRSVP( postId ) );
 	const { attributes = {} } = ownProps;
 	if ( parseInt( attributes.headerImageId, 10 ) ) {
-		dispatch( thunks.getRSVPHeaderImage( attributes.headerImageId ) );
+		dispatch( actions.fetchRSVPHeaderImage( attributes.headerImageId ) );
 	}
 	if ( attributes.goingCount ) {
 		dispatch( actions.setRSVPGoingCount( parseInt( attributes.goingCount, 10 ) ) );

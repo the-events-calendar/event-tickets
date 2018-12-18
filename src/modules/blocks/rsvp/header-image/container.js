@@ -5,11 +5,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 
 /**
- * WordPress dependencies
- */
-import { select } from '@wordpress/data';
-
-/**
  * Internal dependencies
  */
 import RSVPHeaderImage from './template';
@@ -30,16 +25,13 @@ const mapStateToProps = ( state ) => ( {
 } );
 
 const mapDispatchToProps = ( dispatch ) => {
-	const postId = select( 'core/editor' ).getCurrentPostId();
 	return {
-		onRemove: () => dispatch( thunks.deleteRSVPHeaderImage( postId ) ),
+		onRemove: () => dispatch( actions.deleteRSVPHeaderImage() ),
 		/**
 		 * Full payload from gutenberg media upload is not used,
 		 * only id, alt, and medium src are used for this specific case.
 		 */
-		onSelect: ( image ) => dispatch(
-			thunks.updateRSVPHeaderImage( postId, image )
-		),
+		onSelect: ( image ) => dispatch( actions.updateRSVPHeaderImage( image ) ),
 	};
 };
 
