@@ -8,7 +8,7 @@ import { compose } from 'redux';
  * Internal dependencies
  */
 import RSVPHeaderImage from './template';
-import { selectors, thunks } from '@moderntribe/tickets/data/blocks/rsvp';
+import { selectors, actions } from '@moderntribe/tickets/data/blocks/rsvp';
 import { withStore } from '@moderntribe/common/hoc';
 
 /**
