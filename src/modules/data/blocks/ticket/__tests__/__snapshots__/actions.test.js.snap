@@ -46,6 +46,12 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket actions remove ticket blocks 1`] = `
+Object {
+  "type": "@@MT/TICKETS/REMOVE_TICKET_BLOCKS",
+}
+`;
+
 exports[`Ticket actions Ticket actions set ticket availability 1`] = `
 Object {
   "payload": Object {
