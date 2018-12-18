@@ -4,24 +4,24 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.9.2';
+	const VERSION = '4.10';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.7.1';
+	const MIN_TEC_VERSION = '4.8';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.8.1';
+	const MIN_COMMON_VERSION = '4.9';
 
 	/**
 	* Min Version of WordPress
 	*
 	* @since TBD
 	*/
-	protected $min_wordpress = '4.5';
+	protected $min_wordpress = '4.7';
 
 	/**
 	* Min Version of PHP
@@ -35,7 +35,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since TBD
 	*/
-	protected $min_tec_version = '4.7.1';
+	protected $min_tec_version = '4.8';
 
 	/**
 	 * Name of the provider
@@ -260,9 +260,6 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Type::hook();
 
 		tribe( 'tickets.privacy' );
-
-		// on older versions of Event Tickets Plus remove loading function to prevent conflict and force update message
-		remove_action( 'tribe_tickets_plugin_loaded', 'event_tickets_plus_init' );
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
