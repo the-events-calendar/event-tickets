@@ -14,7 +14,7 @@
  */
 
 $event_id = $this->get( 'post_id' );
-$tickets  = $this->get( 'tickets' );
+$items = $this->get( 'rsvp' );
 
 ?>
 
@@ -22,13 +22,13 @@ $tickets  = $this->get( 'tickets' );
 
 <div class="tribe-block tribe-block__rsvp">
 
-	<?php foreach ( $tickets as $ticket ) : ?>
+	<?php foreach ( $items as $item ) : ?>
 
-		<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $ticket->ID ); ?>">
+		<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $item->ID ); ?>">
 
 			<?php $this->template( 'blocks/rsvp/icon' ); ?>
 
-			<?php $this->template( 'blocks/rsvp/content', array( 'ticket' => $ticket ) ); ?>
+			<?php $this->template( 'blocks/rsvp/content', array( 'ticket' => $item ) ); ?>
 
 			<?php $this->template( 'blocks/rsvp/loader' ); ?>
 

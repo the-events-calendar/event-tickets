@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Shared block sagas createWPEditorSavingChannel should create channel 1`] = `
+Object {
+  "close": [Function],
+  "flush": [Function],
+  "take": [Function],
+}
+`;
+
+exports[`Shared block sagas isTribeEventPostType should be event 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "type",
+    ],
+    "context": Object {
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Shared block sagas isTribeEventPostType should not be event 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "type",
+    ],
+    "context": Object {
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;

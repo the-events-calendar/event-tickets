@@ -3,6 +3,7 @@ export const EDD = 'edd';
 export const WOO = 'woo';
 export const RSVP = 'rsvp';
 
+export const RSVP_CLASS = 'Tribe__Tickets__RSVP';
 export const TC_CLASS = 'Tribe__Tickets__Commerce__PayPal__Main';
 export const EDD_CLASS = 'Tribe__Tickets_Plus__Commerce__EDD__Main';
 export const WOO_CLASS = 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main';

@@ -18,7 +18,7 @@ const mapStateToProps = ( state ) => {
 		isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
 		provider: selectors.getTicketsProvider( state ),
 		sharedCapacity: selectors.getTicketsSharedCapacity( state ),
-		hasProviders: selectors.hasTicketProviders(),
+		canCreateTickets: selectors.canCreateTickets(),
 	};
 };
 
