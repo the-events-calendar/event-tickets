@@ -2,13 +2,13 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.9.2\n"
+"Project-Id-Version: Event Tickets 4.9.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2018-12-12 19:42:50+00:00\n"
+"POT-Creation-Date: 2018-12-18 16:42:46+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2018-12-12 19:42\n"
+"PO-Revision-Date: 2018-12-18 16:42\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
@@ -391,7 +391,7 @@ msgstr ""
 #: src/Tribe/Attendees_Table.php:520
 #: src/Tribe/Commerce/PayPal/Orders/Table.php:73 src/Tribe/Privacy.php:164
 #: src/Tribe/Privacy.php:445 src/Tribe/Privacy.php:541
-#: src/admin-views/admin-welcome-message.php:62
+#: src/admin-views/admin-welcome-message.php:63
 #: src/views/blocks/rsvp/form/email.php:31 src/views/tickets/rsvp.php:162
 msgid "Email"
 msgstr ""
@@ -1014,7 +1014,7 @@ msgstr ""
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:528 src/admin-views/admin-welcome-message.php:23
+#: src/Tribe/Main.php:528 src/admin-views/admin-welcome-message.php:34
 msgid "New User Primer"
 msgstr ""
 
@@ -1068,14 +1068,14 @@ msgid ""
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.9.2)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.9.3)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: src/Tribe/Main.php:574 src/Tribe/Privacy.php:32
 msgid "Event Tickets"
 msgstr ""
 
 #: src/Tribe/Main.php:661
-msgid "Welcome to Event Tickets"
+msgid "Welcome to Event Tickets!"
 msgstr ""
 
 #: src/Tribe/Main.php:796
@@ -1977,113 +1977,130 @@ msgstr ""
 msgid "This RSVP is no longer active."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:5
-msgid "our support forums"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:10
-msgid "You are running Version %s and deserve a hug :-)"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:13
-msgid "Welcome to Event Tickets!"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:14
-msgid ""
-"Giving you the best experience with our plugin is our top goal. Check out "
-"the resources below for a step-by-step introduction to your new features or "
-"head straight to the Events section in your admin to create your first "
-"ticket."
+#: src/admin-views/admin-welcome-message.php:7
+msgid "Version"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:15
-msgid "If you need a little help, hit us up in %s."
+msgid ""
+"Check out the resources below for a comprehensive intro to the plugin, or "
+"head to"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:22
+#: src/admin-views/admin-welcome-message.php:17
+msgid "the"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:18
+msgid "Events"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:19
+msgid "section of the admin"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:20
+msgid "to create your very first ticket!"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:29
 msgid "Getting Started"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:24
-msgid "Settings Overview"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:25
-msgid "Event Tickets Features"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:27
-msgid "Support Resources"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:28
-msgid "FAQs, Documentation, Tutorials and Forums"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:31
-msgid "Looking for More Features?"
+#: src/admin-views/admin-welcome-message.php:30
+msgid "Start strong with these helpful resources."
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:32
-msgid "Addons for creating tickets, custom registration, events and more."
+msgid "Key Features"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:34
-msgid "Release Notes"
+#: src/admin-views/admin-welcome-message.php:33
+msgid "Settings Overview"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:35
-msgid "Get the Skinny on the Latest Updates"
+#: src/admin-views/admin-welcome-message.php:39
+msgid "Resources and Support"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:37
-msgid "News For Events Users"
+#: src/admin-views/admin-welcome-message.php:40
+msgid "We’ve got your back every step of the way."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:38
-msgid "Product Releases, Tutorials and Community Activity"
+#: src/admin-views/admin-welcome-message.php:42
+msgid "Search the Knowledgebase"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:43
+msgid "Available Translations"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:44
-msgid "We Need Your Help"
+msgid "Submit a Support Thread on WordPress.org"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:45
-msgid ""
-"Your ratings help us bring Event Tickets to more users. More happy users "
-"mean more support, more features, and more of everything you know and love "
-"about Event Tickets. We couldn't do this without your support."
+msgid "Event Tickets Plus Users:"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:46
-msgid "Rate us today!"
+#: src/admin-views/admin-welcome-message.php:45
+msgid "Submit a Help Desk Request"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:47
-msgid "Rate It"
+#: src/admin-views/admin-welcome-message.php:53
+msgid "The Latest and Greatest"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:50
-msgid "Newsletter Signup"
+#: src/admin-views/admin-welcome-message.php:54
+msgid "Frequent maintenance releases keep your ticket sales running smoothly."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:51
-msgid ""
-"Stay in touch with Event Tickets. We send out periodic updates, key "
-"developer notices, and even the occasional discount."
+#: src/admin-views/admin-welcome-message.php:54
+msgid "View the latest changelog"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:55
-msgid "Developer News"
+msgid "Gearing up with Gutenberg?"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:55
+msgid "Get the latest block editor news"
 msgstr ""
 
 #: src/admin-views/admin-welcome-message.php:59
-msgid "News and Announcements"
+msgid "Don't Miss Out"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:64
-msgid "Sign Up"
+#: src/admin-views/admin-welcome-message.php:60
+msgid ""
+"Stay in touch with Event Tickets and our entire family of events management "
+"tools. We share news, occasional discounts, and hilarious gifs."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:67
+msgid "Add me to the list"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:71
+msgid "Subscribe"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:80
+msgid "We Need Your Help"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:81
+msgid ""
+"Your ratings keep us focused on making our plugins as useful as possible so "
+"we can help other WordPress users just like you."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:82
+msgid "Rate us today!"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:83
+msgid "Rate It"
 msgstr ""
 
 #: src/admin-views/attendees-email.php:6
