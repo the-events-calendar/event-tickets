@@ -8,6 +8,34 @@ Object {
 }
 `;
 
+exports[`RSVP block sagas deleteRSVPHeaderImage should delete rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas deleteRSVPHeaderImage should not delete rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
 exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 1`] = `
 Object {
   "@@redux-saga/IO": true,
@@ -16,6 +44,7 @@ Object {
       "date",
     ],
     "context": Object {
+      "getCurrentPostId": [Function],
       "getEditedPostAttribute": [Function],
     },
     "fn": [Function],
@@ -57,6 +86,7 @@ Object {
       "type",
     ],
     "context": Object {
+      "getCurrentPostId": [Function],
       "getEditedPostAttribute": [Function],
     },
     "fn": [Function],
@@ -72,6 +102,7 @@ Object {
       "type",
     ],
     "context": Object {
+      "getCurrentPostId": [Function],
       "getEditedPostAttribute": [Function],
     },
     "fn": [Function],
@@ -605,5 +636,33 @@ Object {
       },
     },
   ],
+}
+`;
+
+exports[`RSVP block sagas updateRSVPHeaderImage should not update rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas updateRSVPHeaderImage should update rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
 }
 `;
