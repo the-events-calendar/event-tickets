@@ -132,25 +132,24 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
 * Tweak - Link to the correct support places [117795]
-* Tweak - Adjusted content in the admin welcome page that users are brought to upon newly activating Event Tickets [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
 
 = [4.9.2] 2018-12-13 =
 
-Feature - Added new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
-Feature - Allowed admin to re-order tickets in the Tickets block [113737]
-Feature - Added ecommerce links to Tickets block [117227]
-Feature - Improved Cancel button UX in Tickets and RSVP blocks [119053]
-Feature - Added option to show or hide the Attendee List block header and subtitle [117040 & 117041]
-Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
-Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
-Fix - Updated blocks when moving from classic to blocks editor and vice versa [119426]
-Fix - Removed dotted border for the RSVP block when viewed on mobile devices [118952]
-Fix - Made sure all block editor code for Meta saving is PHP 5.2 compatible
-Fix - Restored Shared Capacity functionality for ET+ users in the Tickets block [118923]
-Fix - Set Tickets block currency symbol from the ecommerce provider settings [115649]
-Fix - Set the Attendee registration field editor to opens in the same tab from block editor [117854]
+* Feature - Added new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
+* Feature - Allowed admin to re-order tickets in the Tickets block [113737]
+* Feature - Added ecommerce links to Tickets block [117227]
+* Feature - Improved Cancel button UX in Tickets and RSVP blocks [119053]
+* Feature - Added option to show or hide the Attendee List block header and subtitle [117040 & 117041]
+* Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
+* Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
+* Fix - Updated blocks when moving from classic to blocks editor and vice versa [119426]
+* Fix - Removed dotted border for the RSVP block when viewed on mobile devices [118952]
+* Fix - Made sure all block editor code for Meta saving is PHP 5.2 compatible
+* Fix - Restored Shared Capacity functionality for ET+ users in the Tickets block [118923]
+* Fix - Set Tickets block currency symbol from the ecommerce provider settings [115649]
+* Fix - Set the Attendee registration field editor to opens in the same tab from block editor [117854]
 
 = [4.9.1] 2018-12-05 =
 
