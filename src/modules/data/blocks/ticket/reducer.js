@@ -97,6 +97,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_IS_SELECTED:
 		case types.REGISTER_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCK:
+		case types.REMOVE_TICKET_BLOCKS:
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),

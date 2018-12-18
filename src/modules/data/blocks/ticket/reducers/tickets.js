@@ -61,6 +61,8 @@ export const byClientId = ( state = {}, action ) => {
 			};
 		case types.REMOVE_TICKET_BLOCK:
 			return omit( state, [ action.payload.clientId ] );
+		case types.REMOVE_TICKET_BLOCKS:
+			return {};
 		default:
 			return state;
 	}
@@ -72,6 +74,8 @@ export const allClientIds = ( state = [], action ) => {
 			return [ ...state, action.payload.clientId ];
 		case types.REMOVE_TICKET_BLOCK:
 			return state.filter( ( clientId ) => action.payload.clientId !== clientId );
+		case types.REMOVE_TICKET_BLOCKS:
+			return [];
 		default:
 			return state;
 	}

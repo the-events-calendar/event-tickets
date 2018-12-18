@@ -28,6 +28,13 @@ describe( 'Tickets reducer', () => {
 				actions.removeTicketBlock( 'one' ),
 			) ).toMatchSnapshot();
 		} );
+
+		it( 'should remove ticket blocks', () => {
+			expect( byClientId(
+				{ one: {}, two: {} },
+				actions.removeTicketBlocks(),
+			) ).toMatchSnapshot();
+		} );
 	} );
 
 	describe( 'allClientIds', () => {
@@ -46,6 +53,13 @@ describe( 'Tickets reducer', () => {
 			expect( allClientIds(
 				[ 'one', 'two' ],
 				actions.removeTicketBlock( 'one' ),
+			) ).toMatchSnapshot();
+		} );
+
+		it( 'should remove ticket blocks', () => {
+			expect( allClientIds(
+				[ 'one', 'two' ],
+				actions.removeTicketBlocks(),
 			) ).toMatchSnapshot();
 		} );
 	} );
