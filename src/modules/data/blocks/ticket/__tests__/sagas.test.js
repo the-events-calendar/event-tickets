@@ -411,9 +411,15 @@ describe( 'Ticket Block sagas', () => {
 		it( 'should reset tickets block', () => {
 			const gen = sagas.resetTicketsBlock();
 			expect( gen.next().value ).toEqual(
-				select( selectors.getSharedTicketsCount )
+				select( selectors.hasCreatedTickets )
 			);
-			expect( gen.next( 0 ).value ).toMatchSnapshot();
+			expect( gen.next( false ).value ).toEqual(
+				all( [
+					put( actions.removeTicketBlocks() ),
+					put( actions.setTicketsIsSettingsOpen( false ) ),
+				] )
+			);
+			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( {} ).value ).toMatchSnapshot();
 			expect( gen.next().value ).toEqual(
 				all( [
@@ -427,9 +433,15 @@ describe( 'Ticket Block sagas', () => {
 		it( 'should not reset tickets block', () => {
 			const gen = sagas.resetTicketsBlock();
 			expect( gen.next().value ).toEqual(
-				select( selectors.getSharedTicketsCount )
+				select( selectors.hasCreatedTickets )
 			);
-			expect( gen.next( 2 ).done ).toEqual( true );
+			expect( gen.next( true ).value ).toEqual(
+				all( [
+					put( actions.removeTicketBlocks() ),
+					put( actions.setTicketsIsSettingsOpen( false ) ),
+				] )
+			);
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 

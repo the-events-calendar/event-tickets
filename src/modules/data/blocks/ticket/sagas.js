@@ -65,7 +65,7 @@ export function* createMissingTicketBlocks( tickets ) {
 			};
 			const nextChildPosition = getBlockCount( clientId );
 			const block = createBlock( 'tribe/tickets-item', attributes );
-			insertBlock( block, nextChildPosition, clientId );
+			insertBlock( block, nextChildPosition, clientId, false );
 		} );
 	} );
 }
@@ -103,8 +103,13 @@ export function* setTicketsInitialState( action ) {
 }
 
 export function* resetTicketsBlock() {
-	const sharedTicketsCount = yield select( selectors.getSharedTicketsCount );
-	if ( ! sharedTicketsCount ) {
+	const hasCreatedTickets = yield select( selectors.hasCreatedTickets );
+	yield all( [
+		put( actions.removeTicketBlocks() ),
+		put( actions.setTicketsIsSettingsOpen( false ) ),
+	] );
+
+	if ( ! hasCreatedTickets ) {
 		const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' );
 		const newMeta = {
 			...currentMeta,
