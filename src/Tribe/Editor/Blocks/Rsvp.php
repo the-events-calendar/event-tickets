@@ -57,7 +57,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		$template           = tribe( 'tickets.editor.template' );
 		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
 		$args['attributes'] = $this->attributes( $attributes );
-		$args['tickets']    = $this->get_tickets( $post_id );
+		$args['rsvp']    = $this->get_tickets( $post_id );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
