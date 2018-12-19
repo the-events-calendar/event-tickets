@@ -30,9 +30,9 @@ const getShowInactiveBlock = ( state, ownProps ) => {
 
 const mapStateToProps = ( state, ownProps ) => ( {
 	allTicketsPast: selectors.allTicketsPast( state ),
+	canCreateTickets: selectors.canCreateTickets(),
 	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	hasOverlay: getHasOverlay( state, ownProps ),
-	hasProviders: selectors.hasTicketProviders(),
 	showAvailability: ownProps.isSelected && selectors.hasCreatedTickets( state ),
 	showInactiveBlock: getShowInactiveBlock( state, ownProps ),
 } );

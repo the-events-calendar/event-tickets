@@ -57,8 +57,6 @@ export default {
 
 	edit: Tickets,
 	save: () => (
-		<div>
-			<InnerBlocks.Content />
-		</div>
+		<div><InnerBlocks.Content /></div>
 	),
 };

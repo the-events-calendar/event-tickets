@@ -24,9 +24,9 @@ const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
 const TicketsContainer = ( {
 	allTicketsPast,
+	canCreateTickets,
 	hasCreatedTickets,
 	hasOverlay,
-	hasProviders,
 	showAvailability,
 	showInactiveBlock,
 } ) => {
@@ -35,7 +35,7 @@ const TicketsContainer = ( {
 		description: '',
 	};
 
-	if ( ! hasProviders ) {
+	if ( ! canCreateTickets ) {
 		messages.title = __( 'There is no ecommerce available', 'event-tickets' );
 		messages.description = __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' );
 	} else if ( ! hasCreatedTickets ) {
@@ -78,9 +78,9 @@ const TicketsContainer = ( {
 
 TicketsContainer.propTypes = {
 	allTicketsPast: PropTypes.bool,
+	canCreateTickets: PropTypes.bool,
 	hasCreatedTickets: PropTypes.bool,
 	hasOverlay: PropTypes.bool,
-	hasProviders: PropTypes.bool,
 	showAvailability: PropTypes.bool,
 	showInactiveBlock: PropTypes.bool,
 };
