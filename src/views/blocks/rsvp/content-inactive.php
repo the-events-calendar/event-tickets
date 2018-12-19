@@ -14,7 +14,7 @@
  *
  */
 
-$message = $this->get( 'active_past' ) ? esc_html__( 'RSVPs are no longer available', 'event-tickets' ) : esc_html__( 'RSVPs are not yet available', 'event-tickets' );
+$message = $this->get( 'all_past' ) ? esc_html__( 'RSVPs are no longer available', 'event-tickets' ) : esc_html__( 'RSVPs are not yet available', 'event-tickets' );
 ?>
 <div class="tribe-block__rsvp__content tribe-block__rsvp__content--inactive">
 	<div class="tribe-block__rsvp__details__status">
