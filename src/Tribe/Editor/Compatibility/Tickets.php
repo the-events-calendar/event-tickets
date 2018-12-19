@@ -44,8 +44,11 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 			return $content;
 		}
 
+		/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
+		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
+
 		// Bail on non gutenberg
-		if ( ! has_blocks( $post->ID ) ) {
+		if ( ! has_blocks( $post->ID ) || $template_overwrite->has_classic_editor( $post->ID ) ) {
 			return $content;
 		}
 

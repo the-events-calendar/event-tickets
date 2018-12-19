@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { takeEvery, put, all, select, call } from 'redux-saga/effects';
+import { takeEvery, put, all, select, call, take, fork } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
 
 /**
@@ -28,6 +28,7 @@ import {
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
+import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 const {
 	INDEPENDENT,
@@ -86,6 +87,9 @@ describe( 'Ticket Block sagas', () => {
 					types.HANDLE_TICKET_END_TIME,
 					MOVE_TICKET_SUCCESS,
 				], sagas.handler )
+			);
+			expect( gen.next().value ).toEqual(
+				fork( sagas.handleEventStartDateChanges )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -363,6 +367,7 @@ describe( 'Ticket Block sagas', () => {
 			const HEADER = 0;
 			const SHARED_CAPACITY = '0';
 			const PROVIDER = '';
+			const DEFAULT_PROVIDER = 'woo';
 			const action = {
 				payload: {
 					get: ( key, defaultValue ) => {
@@ -391,13 +396,19 @@ describe( 'Ticket Block sagas', () => {
 				call( sagas.createMissingTicketBlocks, [ 'tribe' ] )
 			);
 			expect( clone1.next().value ).toEqual(
-				put( actions.setTicketsProvider( PROVIDER ) )
+				select( selectors.getDefaultTicketProvider )
+			);
+			expect( clone1.next( DEFAULT_PROVIDER ).value ).toEqual(
+				put( actions.setTicketsProvider( DEFAULT_PROVIDER ) )
 			);
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
 			expect( clone2.next( [ 'tribe' ] ).value ).toEqual(
-				put( actions.setTicketsProvider( PROVIDER ) )
+				select( selectors.getDefaultTicketProvider )
+			);
+			expect( clone2.next( DEFAULT_PROVIDER ).value ).toEqual(
+				put( actions.setTicketsProvider( DEFAULT_PROVIDER ) )
 			);
 			expect( clone2.next().done ).toEqual( true );
 		} );
@@ -2001,4 +2012,196 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next().done ).toEqual( true );
 		} );
 	} );
+
+	describe( 'syncTicketSaleEndWithEventStart', () => {
+		let prevDate, state, momentMock, blockId;
+		beforeEach( () => {
+			blockId = 'blockId';
+			prevDate = '2018-01-01 00:00:00';
+			state = {
+				startDate: 'January 1, 2018',
+				startTime: '12:34',
+				endDate: 'January 4, 2018',
+				endTime: '23:32',
+			};
+			global.tribe = {
+				events: {
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
+								},
+							},
+						},
+					},
+				},
+			};
+			momentMock = {
+				local: jest.fn(),
+				isSame: jest.fn(),
+				format: jest.fn(),
+			};
+		} );
+
+		afterEach( () => {
+			delete global.tribe;
+		} );
+
+		it( 'should not sync', () => {
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, blockId );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				select( selectors.getTicketEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				call( createDates, prevDate )
+			);
+			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
+			expect( gen.next( false ).value ).toMatchSnapshot();
+			expect( gen.next( true ).value ).toMatchSnapshot();
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should sync', () => {
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, blockId );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				select( selectors.getTicketEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				call( createDates, prevDate )
+			);
+			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
+			expect( gen.next( true ).value ).toMatchSnapshot();
+			expect( gen.next( true ).value ).toMatchSnapshot();
+
+			expect( gen.next( true ).value ).toEqual(
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+			);
+			expect( gen.next( '2018-02-02 02:00:00' ).value ).toEqual(
+				call( createDates, '2018-02-02 02:00:00' )
+			);
+
+			expect( gen.next( {
+				moment: '2018-02-02',
+				date: '2018-02-02',
+				dateInput: '2018-02-02',
+				time: '02:00:00',
+				timeInput: '02:00:00',
+			} ).value ).toMatchSnapshot();
+
+			expect( gen.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, blockId )
+			);
+		} );
+	} );
+
+	describe( 'handleEventStartDateChanges', () => {
+		let channel;
+		beforeEach( () => {
+			global.tribe = {
+				events: {
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
+								},
+								types: {
+									SET_START_DATE_TIME: 'SET_START_DATE_TIME',
+									SET_START_TIME: 'SET_START_TIME',
+								},
+							},
+						},
+					},
+				},
+			};
+			channel = { name, take: jest.fn(), close: jest.fn() };
+		} );
+
+		afterEach( () => {
+			delete global.tribe;
+		} );
+
+		it( 'should handle start time changes', () => {
+			const gen = sagas.handleEventStartDateChanges();
+
+			expect(gen.next().value).toEqual(
+				call( hasPostTypeChannel )
+			);
+			expect(gen.next(channel).value).toMatchSnapshot();
+			expect(gen.next().value).toEqual(
+				call( [ channel, 'close' ] )
+			);
+
+			expect( gen.next().value ).toEqual(
+				call( isTribeEventPostType )
+			);
+
+			expect( gen.next( true ).value ).toEqual(
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+			);
+
+			expect( gen.next( '2018-01-01 12:00:00' ).value ).toEqual(
+				take( [ 'SET_START_DATE_TIME', 'SET_START_TIME' ] )
+			);
+
+			expect( gen.next().value ).toEqual(
+				fork( sagas.syncTicketsSaleEndWithEventStart, '2018-01-01 12:00:00' )
+			);
+
+			expect( gen.next().done ).toEqual( false );
+		} );
+	} );
+
+	describe( 'saveTicketWithPostSave', () => {
+		let channel, blockId;
+
+		beforeEach( () => {
+			channel = { name, take: jest.fn(), close: jest.fn() };
+			blockId = 'blockId';
+		} );
+
+		it( 'should update when channel saves', () => {
+			const gen = sagas.saveTicketWithPostSave( blockId );
+
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketHasBeenCreated, { blockId } )
+			);
+
+			expect( gen.next( true ).value ).toEqual(
+				call( createWPEditorSavingChannel )
+			);
+
+			expect( gen.next( channel ).value ).toEqual(
+				take( channel )
+			);
+
+			expect(gen.next().value).toEqual(
+				call( sagas.updateTicket, { payload: { blockId } } )
+			);
+
+			expect( gen.next().value ).toEqual(
+				call( [ channel, 'close' ] )
+			);
+
+			expect( gen.next().done ).toEqual( true );
+		} );
+		it( 'should do nothing', () => {
+			const gen = sagas.saveTicketWithPostSave( blockId );
+
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketHasBeenCreated, { blockId } )
+			);
+
+			expect( gen.next( false ).done ).toEqual( true );
+		} );
+	} );
+
+
 } );

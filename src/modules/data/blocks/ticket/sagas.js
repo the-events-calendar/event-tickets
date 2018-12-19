@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import { put, all, select, takeEvery, call } from 'redux-saga/effects';
+import { put, all, select, takeEvery, call, fork, take, cancel } from 'redux-saga/effects';
 import { includes } from 'lodash';
 
 /**
@@ -34,6 +34,8 @@ import {
 } from '@moderntribe/common/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+
 
 const {
 	UNLIMITED,
@@ -92,10 +94,12 @@ export function* setTicketsInitialState( action ) {
 		yield put( actions.fetchTicketsHeaderImage( header ) );
 	}
 
-	const tickets = ticketsConfig();
-	const defaultProvider = tickets.default_provider || '';
-	const provider = get( 'provider', DEFAULT_STATE.provider );
-	yield put( actions.setTicketsProvider( provider || defaultProvider ) );
+	let provider = get( 'provider', DEFAULT_STATE.provider );
+	if ( provider === constants.RSVP_CLASS || ! provider ) {
+		const defaultProvider = yield select( selectors.getDefaultTicketProvider );
+		provider = defaultProvider === constants.RSVP_CLASS ? '' : defaultProvider;
+	}
+	yield put( actions.setTicketsProvider( provider ) );
 }
 
 export function* resetTicketsBlock() {
@@ -441,8 +445,8 @@ export function* updateTicket( action ) {
 
 	try {
 		const data = [];
-		for ( const pair of body.entries() ) {
-			data.push( `${ encodeURIComponent( pair[ 0 ] ) }=${ encodeURIComponent( pair[ 1 ] ) }` );
+		for ( const [ key, value ] of body.entries() ) {
+			data.push( `${ encodeURIComponent( key ) }=${ encodeURIComponent( value ) }` );
 		}
 
 		yield put( actions.setTicketIsLoading( blockId, true ) );
@@ -753,6 +757,146 @@ export function* setTicketTempDetails( action ) {
 	] );
 }
 
+/**
+ * Allows the Ticket to be saved at the same time a post is being saved.
+ * Avoids the user having to open up the Ticket block, and then click update again there, when changing the event start date.
+ *
+ * @export
+ */
+export function* saveTicketWithPostSave( blockId ) {
+	let saveChannel;
+	try {
+		// Do nothing when not already created
+		if ( yield select( selectors.getTicketHasBeenCreated, { blockId } ) ) {
+			// Create channel for use
+			saveChannel = yield call( createWPEditorSavingChannel );
+
+			// Wait for channel to save
+			yield take( saveChannel );
+
+			// Update when saving
+			yield call( updateTicket, { payload: { blockId } } );
+		}
+	} catch ( error ) {
+		console.error( error );
+	} finally {
+		// Close channel if exists
+		if ( saveChannel ) {
+			yield call( [ saveChannel, 'close' ] );
+		}
+	}
+}
+
+/**
+ * Will sync all tickets
+ * @param {String} prevStartDate Previous start date before latest set date time changes
+ * @export
+ */
+export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
+	const ticketIds = yield select( selectors.getAllTicketIds );
+	for (let index = 0; index < ticketIds.length; index++) {
+		const blockId = ticketIds[index];
+		yield call( syncTicketSaleEndWithEventStart, prevStartDate, blockId );
+	}
+}
+
+/**
+ * Will sync Tickets sale end to be the same as event start date and time, if field has not been manually edited
+ * @borrows TEC - Functionality requires TEC to be enabled
+ * @param {String} prevStartDate Previous start date before latest set date time changes
+ * @export
+ */
+export function* syncTicketSaleEndWithEventStart( prevStartDate, blockId ){
+	try {
+		const tempEndMoment = yield select( selectors.getTicketTempEndDateMoment, { blockId } );
+		const endMoment = yield select( selectors.getTicketEndDateMoment, { blockId } );
+		const { moment: prevEventStartMoment } = yield call( createDates, prevStartDate );
+
+		// NOTE: Mutation
+		// Convert to use local timezone
+		yield all( [
+			call( [ tempEndMoment, 'local' ] ),
+			call( [ endMoment, 'local' ] ),
+			call( [ prevEventStartMoment, 'local' ] ),
+		] );
+
+		// If initial end and current end are the same, the RSVP has not been modified
+		const isNotManuallyEdited = yield call( [ tempEndMoment, 'isSame' ], endMoment, 'minute' );
+		const isSyncedToEventStart = yield call( [ tempEndMoment, 'isSame' ], prevEventStartMoment, 'minute' );
+
+		if ( isNotManuallyEdited && isSyncedToEventStart ) {
+			const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart );
+			const {
+				moment: endDateMoment,
+				date: endDate,
+				dateInput: endDateInput,
+				time: endTime,
+				timeInput: endTimeInput,
+			} = yield call( createDates, eventStart );
+
+			yield all( [
+				put( actions.setTicketTempEndDate( blockId, endDate ) ),
+				put( actions.setTicketTempEndDateInput( blockId, endDateInput ) ),
+				put( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) ),
+				put( actions.setTicketTempEndTime( blockId, endTime ) ),
+				put( actions.setTicketTempEndTimeInput( blockId, endTimeInput ) ),
+
+				// Sync Ticket end items as well so as not to make state 'manually edited'
+				put( actions.setTicketEndDate( blockId, endDate ) ),
+				put( actions.setTicketEndDateInput( blockId, endDateInput ) ),
+				put( actions.setTicketEndDateMoment( blockId, endDateMoment ) ),
+				put( actions.setTicketEndTime( blockId, endTime ) ),
+				put( actions.setTicketEndTimeInput( blockId, endTimeInput ) ),
+
+				// Trigger UI button
+				put( actions.setTicketHasChanges( blockId, true ) ),
+			] );
+
+			yield fork( saveTicketWithPostSave, blockId );
+		}
+	} catch ( error ) {
+		// ¯\_(ツ)_/¯
+		console.error( error );
+	}
+}
+
+/**
+ * Listens for event start date and time changes after RSVP block is loaded.
+ * @borrows TEC - Functionality requires TEC to be enabled and post type to be event
+ * @export
+ */
+export function* handleEventStartDateChanges() {
+	try {
+		// Ensure we have a postType set before proceeding
+		const postTypeChannel = yield call( hasPostTypeChannel );
+		yield take( postTypeChannel );
+		yield call( [ postTypeChannel, 'close' ] );
+
+		const isEvent = yield call( isTribeEventPostType );
+		if ( isEvent && window.tribe.events ) {
+			const { SET_START_DATE_TIME, SET_START_TIME } = window.tribe.events.data.blocks.datetime.types;
+
+			let syncTask;
+			while ( true ) {
+				// Cache current event start date for comparison
+				const eventStart = yield select( window.tribe.events.data.blocks.datetime.selectors.getStart );
+
+				// Wait til use changes date or time on TEC datetime block
+				yield take( [ SET_START_DATE_TIME, SET_START_TIME ] );
+
+				// Important to cancel any pre-existing forks to prevent bad data from being sent
+				if ( syncTask ) {
+					yield cancel( syncTask );
+				}
+				syncTask = yield fork( syncTicketsSaleEndWithEventStart, eventStart );
+			}
+		}
+	} catch ( error ) {
+		// ¯\_(ツ)_/¯
+		console.error( error );
+	}
+}
+
 export function* handleTicketStartDate( action ) {
 	const { blockId, date, dayPickerInput } = action.payload;
 	const startDateMoment = yield date ? call( momentUtil.toMoment, date ) : undefined;
@@ -911,4 +1055,6 @@ export default function* watchers() {
 		types.HANDLE_TICKET_END_TIME,
 		MOVE_TICKET_SUCCESS,
 	], handler );
+
+	yield fork( handleEventStartDateChanges );
 }
