@@ -79,7 +79,7 @@ class DateTimeRangePicker extends Component {
 			formatDate: formatDate,
 			parseDate: parseDate,
 			dayPickerProps: {
-				selectedDays: [ fromDate, { fromDate, toDate } ],
+				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
 				disabledDays: { after: toDate },
 				modifiers: {
 					start: fromDate,
@@ -123,7 +123,7 @@ class DateTimeRangePicker extends Component {
 			formatDate: formatDate,
 			parseDate: parseDate,
 			dayPickerProps: {
-				selectedDays: [ fromDate, { fromDate, toDate } ],
+				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
 				disabledDays: { before: fromDate },
 				modifiers: {
 					start: fromDate,
