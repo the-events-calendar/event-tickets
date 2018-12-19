@@ -3,10 +3,8 @@
 /**
  * External Dependencies
  */
-import { select as wpSelect, dispatch as wpDispatch, subscribe } from '@wordpress/data';
-import { put, call, all, select, takeEvery, take, fork, cancel, cancelled } from 'redux-saga/effects';
-import { eventChannel } from 'redux-saga';
-import { some } from 'lodash';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { put, call, all, select, takeEvery, take, fork, cancel } from 'redux-saga/effects';
 
 /**
  * Internal dependencies
@@ -15,12 +13,11 @@ import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { updateRSVP } from './thunks';
-import { editor } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 import {
-	globals,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
@@ -109,42 +106,6 @@ export function* setRSVPTempDetails( action ) {
 		put( actions.setRSVPTempStartTimeInput( tempStartTimeInput ) ),
 		put( actions.setRSVPTempEndTimeInput( tempEndTimeInput ) ),
 	] );
-}
-
-/**
- * Create date objects used throughout sagas
- *
- * @export
- * @param {String} date datetime string
- * @returns {Object} Object of dates/moments
- */
-export function* createDates( date ) {
-	const { datepickerFormat } = yield call( [ globals, 'tecDateSettings' ] );
-	const moment = yield call( momentUtil.toMoment, date );
-	const currentDate = yield call( momentUtil.toDate, moment );
-	const dateInput = yield datepickerFormat
-		? call( momentUtil.toDate, moment, datepickerFormat )
-		: call( momentUtil.toDate, moment );
-	const time = yield call( momentUtil.toDatabaseTime, moment );
-	const timeInput = yield call( momentUtil.toTime, moment );
-
-	return {
-		moment,
-		date: currentDate,
-		dateInput,
-		time,
-		timeInput,
-	};
-}
-
-/**
- * Determines if current post is a tribe event
- * @export
- * @returns {Boolean} bool
- */
-export function* isTribeEventPostType() {
-	const postType = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'type' );
-	return postType === editor.EVENT;
 }
 
 //
@@ -268,29 +229,6 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 		// ¯\_(ツ)_/¯
 		console.error( error );
 	}
-}
-
-/**
- * Creates event channel subscribing to WP editor state when saving post
- *
- * @returns {Function} Channel
- */
-export function createWPEditorSavingChannel() {
-	return eventChannel( emit => {
-		const wpEditor = wpSelect( 'core/editor' );
-
-		const predicates = [
-			() => wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost(),
-		];
-
-		// Returns unsubscribe function
-		return subscribe( () => {
-			// Only emit when truthy
-			if ( some( predicates, fn => fn() ) ) {
-				emit( true ); // Emitted value is insignificant here, but cannot be left undefined
-			}
-		} );
-	} );
 }
 
 /**

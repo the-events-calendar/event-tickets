@@ -129,11 +129,17 @@ exports[`Ticket block selectors Header image selectors getTicketsHeaderImageId 1
 
 exports[`Ticket block selectors Header image selectors getTicketsHeaderImageSrc 1`] = `""`;
 
+exports[`Ticket block selectors Misc selectors canCreateTickets 1`] = `false`;
+
+exports[`Ticket block selectors Misc selectors getDefaultTicketProvider 1`] = `""`;
+
 exports[`Ticket block selectors Misc selectors getTicketProviders 1`] = `Array []`;
 
 exports[`Ticket block selectors Misc selectors hasMultipleTicketProviders 1`] = `false`;
 
 exports[`Ticket block selectors Misc selectors hasTicketProviders 1`] = `false`;
+
+exports[`Ticket block selectors Misc selectors hasValidTicketProvider 1`] = `false`;
 
 exports[`Ticket block selectors Ticket details selectors allTicketsFuture 1`] = `true`;
 
