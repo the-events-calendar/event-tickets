@@ -8,11 +8,15 @@ class Tribe__Tickets__Main {
 
 	/**
 	 * Min required The Events Calendar version
+	 *
+	 * @deprecated TBD
 	 */
 	const MIN_TEC_VERSION = '4.8';
 
 	/**
 	 * Min required version of Tribe Common
+	 *
+	 * @deprecated TBD
 	 */
 	const MIN_COMMON_VERSION = '4.9';
 
