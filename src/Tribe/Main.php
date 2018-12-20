@@ -198,7 +198,10 @@ class Tribe__Tickets__Main {
 
 		// WordPress and PHP Version Check
 		if ( ! self::supported_version( 'wordpress' ) || ! self::supported_version( 'php' ) ) {
+
 			add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
+			add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
+
 			return;
 		}
 
@@ -210,17 +213,12 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
-		// Safety check: if Tribe Common is not at a certain minimum version, bail out
-		if ( version_compare( Tribe__Main::VERSION, self::MIN_COMMON_VERSION, '<' ) ) {
-			//todo add error notice
-			return;
-		}
-
 		if (
 			class_exists( 'Tribe__Events__Main' ) &&
 			! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' )
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
+			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
 			/**
 			 * Fires if Event Tickets cannot load due to compatibility or other problems.
 			 */
