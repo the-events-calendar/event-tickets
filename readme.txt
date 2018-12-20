@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10] TBD =
+
+* Feature - add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
+
 = [4.9.2] 2018-12-13 =
 
 * Feature - Add new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
