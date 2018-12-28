@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] =
+
+* Fix - Don't enqueue wp admin common styles on the front end [119755]
+
 = [4.9.3] 2018-12-18 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
