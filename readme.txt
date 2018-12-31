@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] =
+
+* Fix - ensure that the attendee page loads if the theme has no page.php/page templates defined [120034]
+
 = [4.9.3] 2018-12-18 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
