@@ -14,10 +14,10 @@
  *
  */
 
-$message = $this->get( 'sale_past' ) ? esc_html__( 'Tickets are no longer available', 'event-tickets' ) : esc_html__( 'Tickets are not yet available', 'event-tickets' );
+$message = $this->get( 'sale_past' ) ? __( 'Tickets are no longer available', 'event-tickets' ) : __( 'Tickets are not yet available', 'event-tickets' );
 ?>
 <div
 	class="tribe-block__tickets__item__content tribe-block__tickets__item__content--inactive"
 >
-	<?php echo $message ?>
+	<?php echo esc_html( $message ) ?>
 </div>
