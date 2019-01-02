@@ -21,7 +21,7 @@ $cart_url     = $this->get( 'cart_url' );
 $cart_classes = array( 'tribe-block', 'tribe-block__tickets' );
 
 // We don't display anything if there is no provider or tickets
-if ( ! $provider || empty( count( $tickets ) ) ) {
+if ( ! $provider || empty( $tickets ) ) {
 	return false;
 }
 
@@ -34,10 +34,10 @@ foreach ( $tickets as $ticket ) {
 	}
 }
 
-$has_tickets_on_sale = ! empty( count( $tickets_on_sale ) );
+$has_tickets_on_sale = ! empty( $tickets_on_sale );
 
 if ( ! $has_tickets_on_sale ) {
-	$sale_past = ! empty( count( $tickets ) );
+	$sale_past = ! empty( $tickets );
 	$timestamp = current_time( 'timestamp' );
 
 	foreach ( $tickets as $ticket ) {
