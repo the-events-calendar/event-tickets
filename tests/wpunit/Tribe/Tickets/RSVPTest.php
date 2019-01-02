@@ -335,7 +335,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		// not  restricted
+		// not restricted
 		$tickets_view->is_rsvp_restricted( Argument::type( 'int' ), Argument::type( 'int' ) )->willReturn( false );
 		$tickets_view->is_valid_rsvp_option( Argument::type( 'string' ) )->willReturn( true );
 		$this->tickets_view = $tickets_view->reveal();
@@ -365,17 +365,17 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		return $ticket_id;
 	}
 
-		protected function make_stock_ticket( $stock, $post_id ) {
-			$ticket_id = $_POST['product_id'] = $this->factory()->post->create(
-				[
-					'post_type'   => 'tribe_rsvp_tickets',
-					'post_status' => 'publish',
-					'meta_input'  => [
-						'_stock'                => $stock,
-						'_tribe_rsvp_for_event' => $post_id,
-					]
+	protected function make_stock_ticket( $stock, $post_id ) {
+		$ticket_id = $_POST['product_id'] = $this->factory()->post->create(
+			[
+				'post_type'   => 'tribe_rsvp_tickets',
+				'post_status' => 'publish',
+				'meta_input'  => [
+					'_stock'                => $stock,
+					'_tribe_rsvp_for_event' => $post_id,
 				]
-			);
+			]
+		);
 
 		return $ticket_id;
 	}
