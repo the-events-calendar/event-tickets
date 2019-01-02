@@ -92,7 +92,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// return the page template
 		$template = get_page_template();
 		if ( ! empty( $template ) ) {
-			return get_page_template();
+			return $template;
 		}
 
 		// Fallback for themes that are missing page.php
