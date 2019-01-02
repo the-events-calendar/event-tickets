@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] =
 
 * Fix - ensure that the attendee page loads if the theme has no page.php/page templates defined [120034]
+* Updated view - src/views/community/email-template.php [120034]
 
 = [4.9.3] 2018-12-18 =
 
