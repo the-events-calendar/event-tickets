@@ -127,7 +127,7 @@ tribe.tickets.registration = {};
 	obj.handleCheckoutSubmission = function( e ) {
 		if (
 			obj.hasChanges
-				&& ! confirm( 'There is unsaved attendee information. Are you sure you want to continue?' )
+				&& ! confirm( tribe_l10n_datatables.registration_prompt )
 		) {
 			e.preventDefault();
 			return;
