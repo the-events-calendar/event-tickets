@@ -13,10 +13,9 @@
  * @version 4.9.3
  *
  */
-$ticket   = $this->get( 'ticket' );
-$ticket_data = tribe( 'tickets.handler' )->get_object_connections( $ticket->ID );
-$event_id    = $ticket_data->event;
+$event_id = $this->get( 'event_id' );
+$going    = $this->get( 'going' );
 ?>
-<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) ); ?>">
+<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?going=' . $going ); ?>">
 	<?php esc_html_e( 'Login to RSVP', 'events-tickets' ); ?>
 </a>

@@ -15,6 +15,8 @@
  */
 $ticket_id   = $this->get( 'ticket_id' );
 $going       = $this->get( 'going' );
+$ticket_data = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
+$event_id    = $ticket_data->event;
 $must_login  = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
 ?>
 <form
@@ -34,7 +36,11 @@ $must_login  = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required(
 	<div class="tribe-right">
 		<?php $this->template( 'blocks/rsvp/form/error' ); ?>
 
-		<?php $this->template( 'blocks/rsvp/form/submit', array( 'ticket' => $ticket ) ); ?>
+		<?php if ( $must_login ) : ?>
+			<?php $this->template( 'blocks/rsvp/form/submit-login', array( 'event_id' => $event_id, 'going' => $going ) ); ?>
+		<?php else : ?>
+			<?php $this->template( 'blocks/rsvp/form/submit', array( 'ticket' => $ticket ) ); ?>
+		<?php endif; ?>
 	</div>
 
 </form>
