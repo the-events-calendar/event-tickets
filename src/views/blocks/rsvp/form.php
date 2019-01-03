@@ -16,8 +16,6 @@
 
 $going      = $this->get( 'going' );
 $must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
-error_log( $going );
-error_log( $must_login );
 ?>
 <!-- This div is where the AJAX returns the form -->
 <div class="tribe-block__rsvp__form">
