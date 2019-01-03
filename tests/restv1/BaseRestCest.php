@@ -55,8 +55,6 @@ class BaseRestCest {
 	protected $tec_rest_url;
 
 	public function _before( Restv1Tester $I ) {
-		sleep( 3 );
-
 		$this->site_url          = $I->grabSiteUrl();
 		$this->wp_rest_url       = $this->site_url . '/wp-json/wp/v2/';
 		$this->rest_url          = $this->site_url . '/wp-json/tribe/tickets/v1/';
