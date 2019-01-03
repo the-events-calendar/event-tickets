@@ -122,6 +122,12 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] =
+
+* Feature - Improve the UX for RSVPs with required login [119946]
+* Updated views: /views/blocks/rsvp/content.php, /views/blocks/rsvp/form.php, /views/blocks/rsvp/form/form.php, /views/blocks/rsvp/form/submit-login.php, /views/blocks/rsvp/form/submit.php, /views/blocks/rsvp/status.php, /views/blocks/rsvp/status/going.php, /views/blocks/rsvp/status/not-going.php
+* Fix - ensure that the RSVP login link redirects the user back to the event page post-login [120365]
+
 = [4.9.3] 2018-12-18 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
