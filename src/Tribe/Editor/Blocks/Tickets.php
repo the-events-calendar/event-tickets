@@ -140,6 +140,15 @@ extends Tribe__Editor__Blocks__Abstract {
 		wp_send_json_success( $response );
 	}
 
+	/**
+	 * Get all tickets for event/post, removing RSVPs
+	 *
+	 * @since 4.9
+	 *
+	 * @param  int $post_id Post ID
+	 *
+	 * @return array
+	 */
 	public function get_tickets( $post_id ) {
 		$all_tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
 
@@ -160,6 +169,15 @@ extends Tribe__Editor__Blocks__Abstract {
 		return $tickets;
 	}
 
+	/**
+	 * Get provider ID
+	 *
+	 * @since 4.9
+	 *
+	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
+	 *
+	 * @return string
+	 */
 	public function get_provider_id( $provider ) {
 
 		switch ( $provider->class_name ) {
@@ -178,6 +196,15 @@ extends Tribe__Editor__Blocks__Abstract {
 
 	}
 
+	/**
+	 * Get all tickets on sale
+	 *
+	 * @since 4.9
+	 *
+	 * @param  array $tickets Array of all tickets
+	 *
+	 * @return array
+	 */
 	public function get_tickets_on_sale( $tickets ) {
 		$tickets_on_sale = array();
 
@@ -190,6 +217,15 @@ extends Tribe__Editor__Blocks__Abstract {
 		return $tickets_on_sale;
 	}
 
+	/**
+	 * Get whether all ticket sales have passed or not
+	 *
+	 * @since 4.9
+	 *
+	 * @param  array $tickets Array of all tickets
+	 *
+	 * @return bool
+	 */
 	public function get_is_sale_past( $tickets ) {
 		$is_sale_past = ! empty( $tickets );
 		$timestamp = current_time( 'timestamp' );
