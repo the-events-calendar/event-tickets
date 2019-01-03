@@ -18,10 +18,10 @@ $going = ! empty( $_GET[ 'going' ] ) ? $_GET[ 'going' ] : '';
 <div class="tribe-block__rsvp__content">
 
 	<div class="tribe-block__rsvp__details__status">
-		<?php $this->template( 'blocks/rsvp/details', array( 'ticket' => $ticket  ) ); ?>
-		<?php $this->template( 'blocks/rsvp/status', array( 'ticket' => $ticket, 'going' => $going  ) ); ?>
+		<?php $this->template( 'blocks/rsvp/details', array( 'ticket' => $ticket ) ); ?>
+		<?php $this->template( 'blocks/rsvp/status', array( 'ticket' => $ticket, 'going' => $going ) ); ?>
 	</div>
 
-	<?php $this->template( 'blocks/rsvp/form', array( 'ticket' => $ticket, 'going' => $going  ) ); ?>
+	<?php $this->template( 'blocks/rsvp/form', array( 'ticket' => $ticket, 'going' => $going ) ); ?>
 
 </div>
