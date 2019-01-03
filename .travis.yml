@@ -24,6 +24,7 @@ addons:
   hosts:
     # resolve the following domains to localhost
     - tribe.localhost
+    - chromedriver
 
 # disable the default submodule logic
 git:
@@ -136,7 +137,6 @@ script:
   - codecept run restv1
   - codecept run functional
   - codecept run acceptance
-
 
 after_failure:
   # if the build failed let's see why
