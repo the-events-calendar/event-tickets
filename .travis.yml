@@ -10,6 +10,7 @@ php:
 
 services:
   - mysql
+  - docker
 
 addons:
   apt:
@@ -124,6 +125,9 @@ before_script:
   # restart Nnginx and PHP-FPM services
   - sudo service php5-fpm restart
   - sudo service nginx restart
+
+  # start the Chromedriver image; port is 4444
+  - docker run --name chromedriver -P -d robcherry/docker-chromedriver:latest
 
 script:
   - codecept run unit
