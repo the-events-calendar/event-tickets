@@ -23,10 +23,9 @@ modules:
            password: %DB_PASSWORD%
            dump: 'tests/_data/dump.sql'
            populate: true
-           waitlock: 0
+           waitlock: 10
            cleanup: true
            reconnect: false
-           waitlock: 0
            url: '%WP_URL%'
            tablePrefix: 'wp_'
         WPFilesystem:
