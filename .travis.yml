@@ -130,8 +130,8 @@ script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
-  - codecept run functional
   - codecept run restv1
+  - codecept run functional
   # - codecept run acceptance
 
 
