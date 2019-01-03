@@ -10,6 +10,7 @@ php:
 
 services:
   - mysql
+  - docker
 
 addons:
   apt:
@@ -23,6 +24,7 @@ addons:
   hosts:
     # resolve the following domains to localhost
     - tribe.localhost
+    - chromedriver
 
 # disable the default submodule logic
 git:
@@ -125,14 +127,16 @@ before_script:
   - sudo service php5-fpm restart
   - sudo service nginx restart
 
+  # start the Chromedriver image; port is 4444 - WIP
+  # - docker run --name chromedriver -P -d robcherry/docker-chromedriver:latest
+
 script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
-  - codecept run functional
   - codecept run restv1
-  # - codecept run acceptance
-
+  - codecept run functional
+  # - codecept run acceptance - WIP
 
 after_failure:
   # if the build failed let's see why

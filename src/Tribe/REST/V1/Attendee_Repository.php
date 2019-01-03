@@ -54,15 +54,16 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 	 * Overrides the base `order_by` method to map and convert some REST API
 	 * specific criteria.
 	 *
-	 * @param string $order_by
+	 * @param string $order_by The post field, custom field or alias key to order posts by.
+	 * @param string $order The order direction; optional; shortcut for the `order` method; defaults
+	 *                      to `DESC`.
 	 *
 	 * @return $this
 	 */
-	public function order_by( $order_by ) {
-		// @todo what is 'relevance' order?
+	public function order_by( $order_by, $order = 'DESC' ) {
 		$map = array(
 			'date'      => 'date',
-			'relevance' => '',
+			'relevance' => 'relevance',
 			'id'        => 'id',
 			'include'   => 'meta_value_num',
 			'title'     => 'title',
@@ -79,7 +80,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 			return $this;
 		}
 
-		$this->decorated->order_by( $converted_order_by );
+		$this->decorated->order_by( $converted_order_by, $order );
 
 		return $this;
 	}
