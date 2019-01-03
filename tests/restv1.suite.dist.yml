@@ -17,8 +17,8 @@ modules:
             cleanup: true
             waitlock: 0
             # by default Travis CI MySQL password is empty
-            # To give the DB a break sleep 5 seconds every 20 iterations.
-            populator: 'export ITERATIONS=$(./tests/bin/maybe_sleep_a_bit 5 13) && mysql -u$user -h$host $dbname < $dump'
+            # To give the DB a break sleep 5 seconds every 5 iterations.
+            populator: 'export ITERATIONS=$(./tests/bin/maybe_sleep_a_bit 5 5) && mysql -u$user -h$host $dbname < $dump'
             url: '%WP_URL%'
             tablePrefix: wp_
         WPBrowser:
