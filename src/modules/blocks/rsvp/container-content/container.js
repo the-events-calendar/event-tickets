@@ -9,6 +9,7 @@ import { compose } from 'redux';
  */
 import RSVPContainerContent from './template';
 import { actions, selectors } from '@moderntribe/tickets/data/blocks/rsvp';
+import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
 
 const getIsDisabled = ( state ) => (
@@ -16,6 +17,7 @@ const getIsDisabled = ( state ) => (
 );
 
 const mapStateToProps = ( state ) => ( {
+	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
 	isDisabled: getIsDisabled( state ),
 	tempCapacity: selectors.getRSVPTempCapacity( state ),
 	tempNotGoingResponses: selectors.getRSVPTempNotGoingResponses( state ),
