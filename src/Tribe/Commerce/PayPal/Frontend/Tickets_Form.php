@@ -87,7 +87,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		 * Controls the visibility of the "Log it before purchasing" link below the tickets form
 		 * for TPP tickets
 		 *
-		 * @since TBD
+		 * @since 4.9.3
 		 *
 		 */
 		$display_login_link = apply_filters( 'tribe_tickets_show_login_before_purchasing_link', true );

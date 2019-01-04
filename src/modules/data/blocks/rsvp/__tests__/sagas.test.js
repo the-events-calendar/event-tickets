@@ -24,6 +24,7 @@ import watchers, * as sagas from '../sagas';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import { moment as momentUtil, time as timeUtil, globals } from '@moderntribe/common/utils';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 function mock() {
 	return {
@@ -260,81 +261,6 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'createDates', () => {
-		const date = '2018-01-01 00:00:00';
-		it( 'should create dates when no format', () => {
-			const gen = sagas.createDates( date );
-
-			expect( gen.next().value ).toEqual(
-				call( [ globals, 'tecDateSettings' ] )
-			);
-
-			expect( gen.next( { datepickerFormat: false } ).value ).toEqual(
-				call( momentUtil.toMoment, date )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {} )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {} )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, {} )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toTime, {} )
-			);
-
-			expect( gen.next().done ).toEqual( true );
-		} );
-		it( 'should create dates with datepicker format', () => {
-			const gen = sagas.createDates( date );
-
-			expect( gen.next().value ).toEqual(
-				call( [ globals, 'tecDateSettings' ] )
-			);
-
-			expect( gen.next( { datepickerFormat: true } ).value ).toEqual(
-				call( momentUtil.toMoment, date )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {} )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {}, true )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, {} )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toTime, {} )
-			);
-
-			expect( gen.next().done ).toEqual( true );
-		} );
-	} );
-
-	describe( 'isTribeEventPostType', () => {
-		it( 'should be event', () => {
-			const gen = sagas.isTribeEventPostType();
-			expect( gen.next().value ).toMatchSnapshot();
-			expect( gen.next( 'tribe_events' ).value ).toEqual( true );
-		} );
-		it( 'should not be event', () => {
-			const gen = sagas.isTribeEventPostType();
-			expect( gen.next().value ).toMatchSnapshot();
-			expect( gen.next( 'no' ).value ).toEqual( false );
-		} );
-	} );
-
 	describe( 'initializeRSVP', () => {
 		let state;
 		beforeEach( () => {
@@ -390,7 +316,7 @@ describe( 'RSVP block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
@@ -463,7 +389,7 @@ describe( 'RSVP block sagas', () => {
 				select( selectors.getRSVPEndDateMoment )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( sagas.createDates, prevDate )
+				call( createDates, prevDate )
 			);
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( false ).value ).toMatchSnapshot();
@@ -480,7 +406,7 @@ describe( 'RSVP block sagas', () => {
 				select( selectors.getRSVPEndDateMoment )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( sagas.createDates, prevDate )
+				call( createDates, prevDate )
 			);
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
@@ -490,7 +416,7 @@ describe( 'RSVP block sagas', () => {
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
 			);
 			expect( gen.next( '2018-02-02 02:00:00' ).value ).toEqual(
-				call( sagas.createDates, '2018-02-02 02:00:00' )
+				call( createDates, '2018-02-02 02:00:00' )
 			);
 
 			expect( gen.next( {
@@ -562,12 +488,6 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'createWPEditorSavingChannel', () => {
-		it( 'should create channel', () => {
-			expect( sagas.createWPEditorSavingChannel() ).toMatchSnapshot();
-		} );
-	} );
-
 	describe( 'saveRSVPWithPostSave', () => {
 		let channel;
 
@@ -583,7 +503,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next( true ).value ).toEqual(
-				call( sagas.createWPEditorSavingChannel )
+				call( createWPEditorSavingChannel )
 			);
 
 			expect( gen.next( channel ).value ).toEqual(
@@ -642,7 +562,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 
 			expect( gen.next( true ).value ).toEqual(
@@ -813,7 +733,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 
 			expect( gen.next( true ).done ).toEqual( true );
@@ -831,7 +751,7 @@ describe( 'RSVP block sagas', () => {
 				take( [ types.INITIALIZE_RSVP ] )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 			expect( gen.next( false ).value ).toEqual(
 				select( selectors.getRSVPTempEndDateMoment )
@@ -843,7 +763,7 @@ describe( 'RSVP block sagas', () => {
 				call( [ momentMock, 'add' ], 100, 'years' )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( sagas.createDates, momentMock.toDate() )
+				call( createDates, momentMock.toDate() )
 			);
 			expect( gen.next( {
 				date: '2018-01-01',
