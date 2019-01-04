@@ -133,6 +133,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
+* Tweak - Adjust behavior of removing Tickets block to be more intuitive [119662]
+* Tweak - Adjust behavior of removing RSVP block to be more intuitive [119663]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
 
 = [4.9.2] 2018-12-13 =
