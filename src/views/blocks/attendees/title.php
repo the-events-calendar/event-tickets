@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version TBD
+ * @version 4.9.2
  *
  */
 $display_title = $this->attr( 'displayTitle' );
