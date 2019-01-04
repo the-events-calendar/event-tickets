@@ -13,9 +13,10 @@
  * @version 4.9.3
  *
  */
-$event_id = $this->get( 'event_id' );
-$going    = $this->get( 'going' );
+$event_id  = $this->get( 'event_id' );
+$ticket_id = $this->get( 'ticket_id' );
+$going     = $this->get( 'going' );
 ?>
-<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?going=' . $going ); ?>">
-	<?php esc_html_e( 'Login to RSVP', 'events-tickets' ); ?>
+<a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?going=' . $going . '%23tribe-block__rsvp__ticket-' . $ticket_id ); ?>">
+	<?php esc_html_e( 'Log in to RSVP', 'events-tickets' ); ?>
 </a>

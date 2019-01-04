@@ -37,7 +37,7 @@ $must_login  = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required(
 		<?php $this->template( 'blocks/rsvp/form/error' ); ?>
 
 		<?php if ( $must_login ) : ?>
-			<?php $this->template( 'blocks/rsvp/form/submit-login', array( 'event_id' => $event_id, 'going' => $going ) ); ?>
+			<?php $this->template( 'blocks/rsvp/form/submit-login', array( 'event_id' => $event_id, 'going' => $going, 'ticket_id' => $ticket_id ) ); ?>
 		<?php else : ?>
 			<?php $this->template( 'blocks/rsvp/form/submit', array( 'ticket' => $ticket ) ); ?>
 		<?php endif; ?>
