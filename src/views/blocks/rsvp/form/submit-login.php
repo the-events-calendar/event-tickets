@@ -16,6 +16,7 @@
 $event_id  = $this->get( 'event_id' );
 $ticket_id = $this->get( 'ticket_id' );
 $going     = $this->get( 'going' );
+// Note: the anchor tag is urlencoded here ('%23tribe-block__rsvp__ticket-') so it passes through the login redirect
 ?>
 <a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url( $event_id ) . '?going=' . $going . '%23tribe-block__rsvp__ticket-' . $ticket_id ); ?>">
 	<?php esc_html_e( 'Log in to RSVP', 'events-tickets' ); ?>
