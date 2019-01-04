@@ -33,6 +33,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	public function render( $attributes = array() ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template           = tribe( 'tickets.editor.template' );
+
 		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
 		$args['attributes'] = $this->attributes( $attributes );
 

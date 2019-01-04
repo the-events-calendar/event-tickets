@@ -41,6 +41,7 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 	const startMoment = startDateMoment.clone().startOf( 'day' ).seconds(
 		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS )
 	);
+
 	const endMoment = endDateMoment.clone().startOf( 'day' ).seconds(
 		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS )
 	);
@@ -168,7 +169,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						notGoingResponses,
 						startDate: momentUtil.toDate( startMoment ),
 						startDateInput,
-						startDateMoment: startMoment.clone().seconds( 0 ),
+						startDateMoment: startMoment.clone().startOf( 'day' ),
 						endDate: momentUtil.toDate( endMoment ),
 						endDateInput,
 						endDateMoment: endMoment.clone().seconds( 0 ),
@@ -184,7 +185,7 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						tempNotGoingResponses: notGoingResponses,
 						tempStartDate: momentUtil.toDate( startMoment ),
 						tempStartDateInput: startDateInput,
-						tempStartDateMoment: startMoment.clone().seconds( 0 ),
+						tempStartDateMoment: startMoment.clone().startOf( 'day' ),
 						tempEndDate: momentUtil.toDate( endMoment ),
 						tempEndDateInput: endDateInput,
 						tempEndDateMoment: endMoment.clone().seconds( 0 ),

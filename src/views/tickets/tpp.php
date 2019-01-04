@@ -6,7 +6,7 @@
  *
  *     [your-theme]/tribe-events/tickets/tpp.php
  *
- * @version TBD
+ * @version 4.9.3
  *
  * @var bool $must_login
  * @var bool $display_login_link

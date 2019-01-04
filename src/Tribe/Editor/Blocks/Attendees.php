@@ -1,6 +1,7 @@
 <?php
+
 class Tribe__Tickets__Editor__Blocks__Attendees
-extends Tribe__Editor__Blocks__Abstract {
+	extends Tribe__Editor__Blocks__Abstract {
 
 	/**
 	 * Which is the name/slug of this block
@@ -61,8 +62,13 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function render( $attributes = array() ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
-		$template           = tribe( 'tickets.editor.template' );
-		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
+		$template        = tribe( 'tickets.editor.template' );
+		$args['post_id'] = $post_id = $template->get( 'post_id', null, false );
+
+		if ( empty( $post_id ) ) {
+			return '';
+		}
+
 		$args['attributes'] = $this->attributes( $attributes );
 		$args['attendees']  = $this->get_attendees( $post_id );
 
@@ -86,16 +92,14 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function get_attendees( $post_id ) {
 
-		$post = get_post( $post_id );
-
+		$post   = get_post( $post_id );
+		$output = array();
 		if ( ! $post instanceof WP_Post ) {
-			$post = get_post();
+			return $output;
 		}
 
-		$attendees  = Tribe__Tickets__Tickets::get_event_attendees( $post->ID );
-		$total      = count( $attendees );
-		$emails     = array();
-		$output     = array();
+		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post->ID );
+		$emails    = array();
 
 		// Bail if there are no attendees
 		if ( empty( $attendees ) || ! is_array( $attendees ) ) {
