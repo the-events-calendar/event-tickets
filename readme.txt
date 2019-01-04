@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.9.3] 2018-12-18 =
+= [4.9.3] 2018-12-19 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]
@@ -132,6 +132,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
 * Fix - Move apostrophe position in RSVP block [119409]
+* Fix - Move attendee registration position in RSVP block [119464]
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted

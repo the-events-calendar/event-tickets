@@ -14,7 +14,8 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import RSVPAdvancedOptions from '@moderntribe/tickets/blocks/rsvp/advanced-options/container';
-import { Checkbox } from '@moderntribe/common/elements';
+import RSVPAttendeeRegistration from '../attendee-registration/container';
+import { Checkbox, NumberInput } from '@moderntribe/common/elements';
 import './style.pcss';
 
 const RSVPContainerContentLabels = () => (
@@ -38,13 +39,12 @@ const RSVPContainerContentOptions = ( {
 	tempNotGoingResponses,
 } ) => (
 	<div className="tribe-editor__rsvp-container-content__options">
-		<input
+		<NumberInput
 			className="tribe-editor__rsvp-container-content__capacity-input"
 			disabled={ isDisabled }
 			id={ capacityId }
 			min="0"
 			onChange={ onTempCapacityChange }
-			type="number"
 			value={ tempCapacity }
 		/>
 		<Checkbox
@@ -59,17 +59,23 @@ const RSVPContainerContentOptions = ( {
 );
 
 RSVPContainerContentOptions.propTypes = {
-	capacity: PropTypes.string,
 	capacityId: PropTypes.string.isRequired,
+	isDisabled: PropTypes.bool.isRequired,
 	notGoingId: PropTypes.string.isRequired,
-	notGoingResponses: PropTypes.bool,
+	onTempCapacityChange: PropTypes.func.isRequired,
+	onTempNotGoingResponsesChange: PropTypes.func.isRequired,
+	tempCapacity: PropTypes.string.isRequired,
+	tempNotGoingResponses: PropTypes.bool.isRequired,
 };
 
 class RSVPContainerContent extends PureComponent {
 	static propTypes = {
-		capacity: PropTypes.string,
-		notGoingResponses: PropTypes.bool,
 		clientId: PropTypes.string,
+		hasTicketsPlus: PropTypes.bool,
+		onTempCapacityChange: PropTypes.func,
+		onTempNotGoingResponsesChange: PropTypes.func,
+		tempCapacity: PropTypes.string,
+		tempNotGoingResponses: PropTypes.bool,
 	}
 
 	constructor( props ) {
@@ -102,6 +108,7 @@ class RSVPContainerContent extends PureComponent {
 				<RSVPContainerContentLabels />
 				<RSVPContainerContentOptions { ...optionsProps } />
 				<RSVPAdvancedOptions clientId={ clientId } />
+				{ this.props.hasTicketsPlus && <RSVPAttendeeRegistration /> }
 			</Fragment>
 		);
 	}
