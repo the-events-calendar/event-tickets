@@ -131,6 +131,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove the old `events-gutenberg` domain into the templates [119270]
 * Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
+* Fix - Hide unavailable RSVPs in the FE [119597]
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
