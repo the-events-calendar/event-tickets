@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.9.3] 2018-12-18 =
 
+* Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]
 * Fix - Display only tickets that are in date range [119628]
