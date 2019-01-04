@@ -2,9 +2,9 @@
 
 Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 4.5
-Tested up to: 4.9.8
-Stable tag: 4.9.2
+Requires at least: 4.7
+Tested up to: 5.0.2
+Stable tag: 4.9.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,15 +122,35 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.9.3] TBD =
+= [4.9.3] 2018-12-18 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
-* Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
+* Fix - Set custom date format for date pickers used on tickets [119356]
+* Fix - Display only tickets that are in date range [119628]
+* Fix - RSVP now stays in sync with the Events and saving properly the Sale dates [118337]
+* Fix - Remove the old `events-gutenberg` domain into the templates [119270]
+* Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
+* Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
 * Fix - Display ticket price as 0 if price is blank in ticket block [119410]
+* Tweak - Link to the correct support places [117795]
+* Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
+* Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
 
-= [4.9.2] TBD =
-* Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
-* Fix - Making sure all Blocks Editor code for Meta saving is PHP 5.2 compatible
+= [4.9.2] 2018-12-13 =
+
+* Feature - Added new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
+* Feature - Allowed admin to re-order tickets in the Tickets block [113737]
+* Feature - Added ecommerce links to Tickets block [117227]
+* Feature - Improved Cancel button UX in Tickets and RSVP blocks [119053]
+* Feature - Added option to show or hide the Attendee List block header and subtitle [117040 & 117041]
+* Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
+* Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
+* Fix - Updated blocks when moving from classic to blocks editor and vice versa [119426]
+* Fix - Removed dotted border for the RSVP block when viewed on mobile devices [118952]
+* Fix - Made sure all block editor code for Meta saving is PHP 5.2 compatible
+* Fix - Restored Shared Capacity functionality for ET+ users in the Tickets block [118923]
+* Fix - Set Tickets block currency symbol from the ecommerce provider settings [115649]
+* Fix - Set the Attendee registration field editor to opens in the same tab from block editor [117854]
 
 = [4.9.1] 2018-12-05 =
 
