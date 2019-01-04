@@ -131,6 +131,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove the old `events-gutenberg` domain into the templates [119270]
 * Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
+* Fix - Make RSVP block duration tooltip hover area larger [120063]
+* Fix - Fix RSVP block FE attendee display option to not be bold [120064]
+* Fix - Set RSVP block submit button hover color [120065]
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
