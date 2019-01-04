@@ -122,6 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+<<<<<<< HEAD
 = [TBD] =
 
 * Feature - Improve the UX for RSVPs with required login [119946]
@@ -129,6 +130,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - ensure that the RSVP login link redirects the user back to the event page post-login [120365]
 
 = [4.9.3] 2018-12-18 =
+=======
+= [4.9.3] 2018-12-19 =
+>>>>>>> release/M19.01
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]
