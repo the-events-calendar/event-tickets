@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
+* Fix - Fix svg for RSVP "going" button [116206]
 
 = [4.9.2] TBD =
 * Fix - Remove dotted border for the RSVP block when viewed on mobile devices [118952]
