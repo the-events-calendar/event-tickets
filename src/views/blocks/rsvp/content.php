@@ -13,7 +13,7 @@
  * @version 4.9
  *
  */
-$going = ! empty( $_GET[ 'going' ] ) ? $_GET[ 'going' ] : '';
+$going = ! empty( $_GET[ 'going' ] ) ? sanitize_text_field( $_GET[ 'going' ] ) : '';
 ?>
 <div class="tribe-block__rsvp__content">
 
