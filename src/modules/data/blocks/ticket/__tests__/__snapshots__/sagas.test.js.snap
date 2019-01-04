@@ -1,0 +1,341 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Ticket Block sagas handleEventStartDateChanges should handle start time changes 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "TAKE": Object {
+    "channel": Object {
+      "close": [MockFunction],
+      "name": "nodejs",
+      "take": [MockFunction],
+    },
+  },
+}
+`;
+
+exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should not sync 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+  ],
+}
+`;
+
+exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should not sync 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should not sync 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+  ],
+}
+`;
+
+exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`Ticket Block sagas syncTicketSaleEndWithEventStart should sync 4`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endDate": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endDateInput": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endDateMoment": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_MOMENT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endTime": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endTimeInput": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endDate": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_END_DATE",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endDateInput": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_END_DATE_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endDateMoment": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_END_DATE_MOMENT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endTime": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_END_TIME",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "endTimeInput": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_TICKET_END_TIME_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "blockId": "blockId",
+            "hasChanges": true,
+          },
+          "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+        },
+        "channel": null,
+      },
+    },
+  ],
+}
+`;

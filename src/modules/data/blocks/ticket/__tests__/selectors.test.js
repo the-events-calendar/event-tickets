@@ -530,12 +530,24 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketProviders() ).toMatchSnapshot();
 		} );
 
+		test( 'getDefaultTicketProvider', () => {
+			expect( selectors.getDefaultTicketProvider() ).toMatchSnapshot();
+		} );
+
+		test( 'hasValidTicketProvider', () => {
+			expect( selectors.hasValidTicketProvider() ).toMatchSnapshot();
+		} );
+
 		test( 'hasMultipleTicketProviders', () => {
 			expect( selectors.hasMultipleTicketProviders() ).toMatchSnapshot();
 		} );
 
 		test( 'hasTicketProviders', () => {
 			expect( selectors.hasTicketProviders() ).toMatchSnapshot();
+		} );
+
+		test( 'canCreateTickets', () => {
+			expect( selectors.canCreateTickets() ).toMatchSnapshot();
 		} );
 	} );
 } );
