@@ -13,11 +13,12 @@
  * @version 4.9
  *
  */
-
-$must_login = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
 ?>
-<?php if ( $must_login ) : ?>
-	<?php $this->template( 'blocks/rsvp/form/submit-login' ); ?>
-<?php else : ?>
+
+	<?php $this->template( 'blocks/rsvp/form/name', array( 'ticket' => $ticket ) ); ?>
+
+	<?php $this->template( 'blocks/rsvp/form/email', array( 'ticket' => $ticket ) ); ?>
+
+	<?php $this->template( 'blocks/rsvp/form/opt-out', array( 'ticket' => $ticket ) ); ?>
+
 	<?php $this->template( 'blocks/rsvp/form/submit-button' ); ?>
-<?php endif; ?>
