@@ -140,6 +140,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove new ticket block if cancel button is clicked [119435]
 * Fix - Move apostrophe position in RSVP block [119409]
 * Fix - Move attendee registration position in RSVP block [119464]
+* Fix - Fix PHP notice on attendee registration page [119680]
 * Tweak - Fix header image message for RSVP and Tickets blocks [119759]
 * Tweak - Update attendee registration user experience [119465]
 * Tweak - Adjust behavior of removing Tickets block to be more intuitive [119662]
