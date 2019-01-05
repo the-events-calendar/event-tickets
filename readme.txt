@@ -124,6 +124,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] =
 
+* Fix - Make RSVP block duration tooltip hover area larger [120063]
+* Fix - Fix RSVP block FE attendee display option to not be bold [120064]
+* Fix - Set RSVP block submit button hover color [120065]
 * Fix - Don't enqueue wp admin common styles on the front end [119755]
 * Feature - Improve the UX for RSVPs with required login [119946]
 * Updated views: /views/blocks/rsvp/content.php, /views/blocks/rsvp/form.php, /views/blocks/rsvp/form/form.php, /views/blocks/rsvp/form/submit-login.php, /views/blocks/rsvp/form/submit.php, /views/blocks/rsvp/status.php, /views/blocks/rsvp/status/going.php, /views/blocks/rsvp/status/not-going.php
