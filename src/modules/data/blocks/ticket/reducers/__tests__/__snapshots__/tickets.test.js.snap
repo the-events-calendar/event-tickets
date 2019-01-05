@@ -12,6 +12,8 @@ Array [
 ]
 `;
 
+exports[`Tickets reducer allClientIds should remove ticket blocks 1`] = `Array []`;
+
 exports[`Tickets reducer allClientIds should set the default state 1`] = `Array []`;
 
 exports[`Tickets reducer byClientId should register ticket block 1`] = `
@@ -72,6 +74,8 @@ Object {
   "two": Object {},
 }
 `;
+
+exports[`Tickets reducer byClientId should remove ticket blocks 1`] = `Object {}`;
 
 exports[`Tickets reducer tickets should set the default state 1`] = `
 Object {

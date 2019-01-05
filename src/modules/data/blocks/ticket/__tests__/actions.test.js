@@ -223,6 +223,10 @@ describe( 'Ticket actions', () => {
 			expect( actions.removeTicketBlock( clientId ) ).toMatchSnapshot();
 		} );
 
+		test( 'remove ticket blocks', () => {
+			expect( actions.removeTicketBlocks() ).toMatchSnapshot();
+		} );
+
 		test( 'set ticket sold', () => {
 			expect( actions.setTicketSold( clientId, 23 ) ).toMatchSnapshot();
 		} );

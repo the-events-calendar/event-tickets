@@ -20,11 +20,15 @@ import * as actions from './actions';
 import * as selectors from './selectors';
 import { DEFAULT_STATE } from './reducer';
 import {
-	DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE
+	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE
 } from './reducers/header-image';
 import {
 	DEFAULT_STATE as TICKET_DEFAULT_STATE,
 } from './reducers/tickets/ticket';
+import * as rsvpActions from '@moderntribe/tickets/data/blocks/rsvp/actions';
+import {
+	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE
+} from '@moderntribe/tickets/data/blocks/rsvp/reducers/header-image';
 import * as utils from '@moderntribe/tickets/data/utils';
 import {
 	api,
@@ -63,7 +67,7 @@ export function* createMissingTicketBlocks( tickets ) {
 			};
 			const nextChildPosition = getBlockCount( clientId );
 			const block = createBlock( 'tribe/tickets-item', attributes );
-			insertBlock( block, nextChildPosition, clientId );
+			insertBlock( block, nextChildPosition, clientId, false );
 		} );
 	} );
 }
@@ -71,7 +75,7 @@ export function* createMissingTicketBlocks( tickets ) {
 export function* setTicketsInitialState( action ) {
 	const { get } = action.payload;
 
-	const header = parseInt( get( 'header', HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
+	const header = parseInt( get( 'header', TICKET_HEADER_IMAGE_DEFAULT_STATE.id ), 10 );
 	const sharedCapacity = get( 'sharedCapacity' );
 	const ticketsList = get( 'tickets', [] );
 	const ticketsInBlock = yield select( selectors.getTicketsIdsInBlocks );
@@ -103,8 +107,13 @@ export function* setTicketsInitialState( action ) {
 }
 
 export function* resetTicketsBlock() {
-	const sharedTicketsCount = yield select( selectors.getSharedTicketsCount );
-	if ( ! sharedTicketsCount ) {
+	const hasCreatedTickets = yield select( selectors.hasCreatedTickets );
+	yield all( [
+		put( actions.removeTicketBlocks() ),
+		put( actions.setTicketsIsSettingsOpen( false ) ),
+	] );
+
+	if ( ! hasCreatedTickets ) {
 		const currentMeta = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostAttribute' ], 'meta' );
 		const newMeta = {
 			...currentMeta,
@@ -606,7 +615,7 @@ export function* fetchTicketsHeaderImage( action ) {
 
 export function* updateTicketsHeaderImage( action ) {
 	const { image } = action.payload;
-	const postId = wpSelect( 'core/editor' ).getCurrentPostId();
+	const postId = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
 	const body = {
 		meta: {
 			[ utils.KEY_TICKET_HEADER ]: `${ image.id }`,
@@ -614,7 +623,11 @@ export function* updateTicketsHeaderImage( action ) {
 	};
 
 	try {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
+		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
 		const { response } = yield call( wpREST, {
 			path: `tribe_events/${ postId }`,
 			headers: {
@@ -627,23 +640,32 @@ export function* updateTicketsHeaderImage( action ) {
 		} );
 
 		if ( response.ok ) {
-			yield put( actions.setTicketsHeaderImage( {
+			const headerImage = {
 				id: image.id,
 				alt: image.alt,
 				src: image.sizes.medium.url,
-			} ) );
+			};
+			/**
+			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 */
+			yield put( actions.setTicketsHeaderImage( headerImage ) );
+			yield put( rsvpActions.setRSVPHeaderImage( headerImage ) );
 		}
 	} catch ( e ) {
 		/**
 		 * @todo: handle error scenario
 		 */
 	} finally {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setTicketsIsSettingsLoading( false ) );
+		yield put( rsvpActions.setRSVPIsSettingsLoading( false ) );
 	}
 }
 
 export function* deleteTicketsHeaderImage() {
-	const postId = wpSelect( 'core/editor' ).getCurrentPostId();
+	const postId = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
 	const body = {
 		meta: {
 			[ utils.KEY_TICKET_HEADER ]: null,
@@ -651,7 +673,11 @@ export function* deleteTicketsHeaderImage() {
 	};
 
 	try {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setTicketsIsSettingsLoading( true ) );
+		yield put( rsvpActions.setRSVPIsSettingsLoading( true ) );
 		const { response } = yield call( wpREST, {
 			path: `tribe_events/${ postId }`,
 			headers: {
@@ -664,14 +690,22 @@ export function* deleteTicketsHeaderImage() {
 		} );
 
 		if ( response.ok ) {
-			yield put( actions.setTicketsHeaderImage( HEADER_IMAGE_DEFAULT_STATE ) );
+			/**
+			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 */
+			yield put( actions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) );
+			yield put( rsvpActions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) );
 		}
 	} catch ( e ) {
 		/**
 		 * @todo: handle error scenario
 		 */
 	} finally {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
 		yield put( actions.setTicketsIsSettingsLoading( false ) );
+		yield put( rsvpActions.setRSVPIsSettingsLoading( false ) );
 	}
 }
 

@@ -4,6 +4,10 @@ exports[`RSVP block types CREATE_RSVP 1`] = `"@@MT/TICKETS/CREATE_RSVP"`;
 
 exports[`RSVP block types DELETE_RSVP 1`] = `"@@MT/TICKETS/DELETE_RSVP"`;
 
+exports[`RSVP block types DELETE_RSVP_HEADER_IMAGE 1`] = `"@@MT/TICKETS/DELETE_RSVP_HEADER_IMAGE"`;
+
+exports[`RSVP block types FETCH_RSVP_HEADER_IMAGE 1`] = `"@@MT/TICKETS/FETCH_RSVP_HEADER_IMAGE"`;
+
 exports[`RSVP block types HANDLE_RSVP_END_DATE 1`] = `"@@MT/TICKETS/HANDLE_RSVP_END_DATE"`;
 
 exports[`RSVP block types HANDLE_RSVP_END_TIME 1`] = `"@@MT/TICKETS/HANDLE_RSVP_END_TIME"`;
@@ -89,3 +93,5 @@ exports[`RSVP block types SET_RSVP_TEMP_START_TIME_INPUT 1`] = `"@@MT/TICKETS/SE
 exports[`RSVP block types SET_RSVP_TEMP_TITLE 1`] = `"@@MT/TICKETS/SET_RSVP_TEMP_TITLE"`;
 
 exports[`RSVP block types SET_RSVP_TITLE 1`] = `"@@MT/TICKETS/SET_RSVP_TITLE"`;
+
+exports[`RSVP block types UPDATE_RSVP_HEADER_IMAGE 1`] = `"@@MT/TICKETS/UPDATE_RSVP_HEADER_IMAGE"`;

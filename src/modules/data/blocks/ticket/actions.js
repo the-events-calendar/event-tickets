@@ -370,6 +370,10 @@ export const removeTicketBlock = ( clientId ) => ( {
 	},
 } );
 
+export const removeTicketBlocks = () => ( {
+	type: types.REMOVE_TICKET_BLOCKS,
+} );
+
 export const setTicketSold = ( clientId, sold ) => ( {
 	type: types.SET_TICKET_SOLD,
 	payload: {

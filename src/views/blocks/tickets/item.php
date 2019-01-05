@@ -35,7 +35,7 @@ if (
 ?>
 <div
 	id="tribe-block-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
-	class="<?php echo implode( ' ', get_post_class( $classes, $ticket->ID ) ); ?>"
+	class="<?php echo esc_attr( implode( ' ', get_post_class( $classes, $ticket->ID ) ) ); ?>"
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
 >
