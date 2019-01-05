@@ -18,14 +18,7 @@ import {
 } from '@moderntribe/common/utils';
 import './style.pcss';
 
-/**
- * @todo rename onClick property for something more meaningful like, onSelectedTime
- */
-
 class DateTimeRangePicker extends Component {
-	/**
-	 * @todo remove the need to specify the: fromDate, fromTime, toDate, toTime
-	 */
 	static defaultProps = {
 		fromDateFormat: 'LL',
 		onFromDateChange: noop,
@@ -37,7 +30,8 @@ class DateTimeRangePicker extends Component {
 
 	static propTypes = {
 		className: PropTypes.string,
-		fromDate: PropTypes.string,
+		fromDate: PropTypes.instanceOf( Date ),
+		fromDateInput: PropTypes.string,
 		fromDateDisabled: PropTypes.bool,
 		fromDateFormat: PropTypes.string,
 		fromTime: TribePropTypes.timeFormat.isRequired,
@@ -55,7 +49,8 @@ class DateTimeRangePicker extends Component {
 		separatorDateTime: PropTypes.string,
 		separatorTimeRange: PropTypes.string,
 		shiftFocus: PropTypes.bool,
-		toDate: PropTypes.string,
+		toDate: PropTypes.instanceOf( Date ),
+		toDateInput: PropTypes.string,
 		toDateDisabled: PropTypes.bool,
 		toDateFormat: PropTypes.string,
 		toTime: TribePropTypes.timeFormat.isRequired,
@@ -70,6 +65,7 @@ class DateTimeRangePicker extends Component {
 	getFromDayPickerInputProps = () => {
 		const {
 			fromDate,
+			fromDateInput,
 			fromDateDisabled,
 			fromDateFormat,
 			onFromDateChange,
@@ -77,27 +73,24 @@ class DateTimeRangePicker extends Component {
 			toDate,
 		} = this.props;
 
-		const from = new Date( fromDate );
-		const to = new Date( toDate );
-
 		const props = {
-			value: fromDate,
+			value: fromDateInput,
 			format: fromDateFormat,
 			formatDate: formatDate,
 			parseDate: parseDate,
 			dayPickerProps: {
-				selectedDays: [ from, { from, to } ],
-				disabledDays: { after: to },
+				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
+				disabledDays: { after: toDate },
 				modifiers: {
-					start: from,
-					end: to,
+					start: fromDate,
+					end: toDate,
 				},
-				toMonth: to,
+				toMonth: toDate,
 			},
 			onDayChange: onFromDateChange,
 			inputProps: {
 				disabled: fromDateDisabled,
-			}
+			},
 		};
 
 		/**
@@ -119,32 +112,30 @@ class DateTimeRangePicker extends Component {
 			onToDateChange,
 			shiftFocus,
 			toDate,
+			toDateInput,
 			toDateDisabled,
 			toDateFormat,
 		} = this.props;
 
-		const from = new Date( fromDate );
-		const to = new Date( toDate );
-
 		const props = {
-			value: toDate,
+			value: toDateInput,
 			format: toDateFormat,
 			formatDate: formatDate,
 			parseDate: parseDate,
 			dayPickerProps: {
-				selectedDays: [ from, { from, to } ],
-				disabledDays: { before: from },
+				selectedDays: [ fromDate, { from: fromDate, to: toDate } ],
+				disabledDays: { before: fromDate },
 				modifiers: {
-					start: from,
-					end: to,
+					start: fromDate,
+					end: toDate,
 				},
-				month: from,
-				fromMonth: from,
+				month: fromDate,
+				fromMonth: fromDate,
 			},
 			onDayChange: onToDateChange,
 			inputProps: {
 				disabled: toDateDisabled,
-			}
+			},
 		};
 
 		/**
