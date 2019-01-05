@@ -122,13 +122,6 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] =
-
-* Fix - Don't enqueue wp admin common styles on the front end [119755]
-* Feature - Improve the UX for RSVPs with required login [119946]
-* Updated views: /views/blocks/rsvp/content.php, /views/blocks/rsvp/form.php, /views/blocks/rsvp/form/form.php, /views/blocks/rsvp/form/submit-login.php, /views/blocks/rsvp/form/submit.php, /views/blocks/rsvp/status.php, /views/blocks/rsvp/status/going.php, /views/blocks/rsvp/status/not-going.php
-* Fix - ensure that the RSVP login link redirects the user back to the event page post-login [120365]
-
 = [4.9.3] 2018-12-19 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
@@ -138,17 +131,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove the old `events-gutenberg` domain into the templates [119270]
 * Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
-* Fix - Fix datepicker UI and input not showing the same date [119666]
-* Fix - Clear shared capacity from tickets block when removing tickets block [118334]
-* Fix - Fix svg for RSVP "going" button [116206]
-* Fix - Display ticket price as 0 if price is blank in ticket block [119410]
-* Fix - Remove new ticket block if cancel button is clicked [119435]
-* Fix - Move apostrophe position in RSVP block [119409]
-* Fix - Move attendee registration position in RSVP block [119464]
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
-* Tweak - Fix header image message for RSVP and Tickets blocks [119759]
-* Tweak - Update attendee registration user experience [119465]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
 
 = [4.9.2] 2018-12-13 =
@@ -158,8 +142,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Added ecommerce links to Tickets block [117227]
 * Feature - Improved Cancel button UX in Tickets and RSVP blocks [119053]
 * Feature - Added option to show or hide the Attendee List block header and subtitle [117040 & 117041]
-* Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
-* Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
+* Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
+* Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
 * Fix - Updated blocks when moving from classic to blocks editor and vice versa [119426]
 * Fix - Removed dotted border for the RSVP block when viewed on mobile devices [118952]
 * Fix - Made sure all block editor code for Meta saving is PHP 5.2 compatible
