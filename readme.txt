@@ -133,6 +133,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Updated views: /views/blocks/rsvp/content.php, /views/blocks/rsvp/form.php, /views/blocks/rsvp/form/form.php, /views/blocks/rsvp/form/submit-login.php, /views/blocks/rsvp/form/submit.php, /views/blocks/rsvp/status.php, /views/blocks/rsvp/status/going.php, /views/blocks/rsvp/status/not-going.php
 * Fix - ensure that the RSVP login link redirects the user back to the event page post-login [120365]
 * Fix - Fix datepicker UI and input not showing the same date [119666]
+* Fix - Hide unavailable RSVPs in the FE [119597]
 * Fix - Clear shared capacity from tickets block when removing tickets block [118334]
 * Fix - Fix svg for RSVP "going" button [116206]
 * Fix - Display ticket price as 0 if price is blank in ticket block [119410]
