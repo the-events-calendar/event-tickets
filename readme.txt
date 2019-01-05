@@ -137,6 +137,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove the old `events-gutenberg` domain into the templates [119270]
 * Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
+* Fix - Fix svg for RSVP "going" button [116206]
 * Fix - Display ticket price as 0 if price is blank in ticket block [119410]
 * Fix - Remove new ticket block if cancel button is clicked [119435]
 * Fix - Move apostrophe position in RSVP block [119409]
