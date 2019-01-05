@@ -13,27 +13,33 @@
  *
  */
 
-$event_id = $this->get( 'post_id' );
-$items = $this->get( 'rsvp' );
+$event_id         = $this->get( 'post_id' );
+$rsvps            = $this->get( 'active_rsvps' );
+$has_active_rsvps = $this->get( 'has_active_rsvps' );
+$has_rsvps        = $this->get( 'has_rsvps' );
+$all_past         = $this->get( 'all_past' );
 
+// We don't display anything if there is no RSVP
+if ( ! $has_rsvps ) {
+	return false;
+}
 ?>
 
 <?php $this->template( 'blocks/attendees/order-links', array( 'type' => 'RSVP' ) ); ?>
 
 <div class="tribe-block tribe-block__rsvp">
-
-	<?php foreach ( $items as $item ) : ?>
-
-		<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $item->ID ); ?>">
-
+	<?php if ( $has_active_rsvps ) : ?>
+		<?php foreach ( $rsvps as $rsvp ) : ?>
+			<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $rsvp->ID ); ?>">
+				<?php $this->template( 'blocks/rsvp/icon' ); ?>
+				<?php $this->template( 'blocks/rsvp/content', array( 'ticket' => $rsvp ) ); ?>
+				<?php $this->template( 'blocks/rsvp/loader' ); ?>
+			</div>
+		<?php endforeach; ?>
+	<?php else : ?>
+		<div class="tribe-block__rsvp__ticket tribe-block__rsvp__ticket--inactive">
 			<?php $this->template( 'blocks/rsvp/icon' ); ?>
-
-			<?php $this->template( 'blocks/rsvp/content', array( 'ticket' => $item ) ); ?>
-
-			<?php $this->template( 'blocks/rsvp/loader' ); ?>
-
+			<?php $this->template( 'blocks/rsvp/content-inactive', array( 'all_past' => $all_past ) ); ?>
 		</div>
-
-	<?php endforeach; ?>
-
+	<?php endif; ?>
 </div>
