@@ -23,28 +23,33 @@ const getIsConfirmDisabled = ( state, ownProps ) => (
 );
 
 const onCancelClick = ( state, dispatch, ownProps ) => () => {
-	dispatch( actions.setTicketTempDetails( ownProps.blockId, {
-		title: selectors.getTicketTitle( state, ownProps ),
-		description: selectors.getTicketDescription( state, ownProps ),
-		price: selectors.getTicketPrice( state, ownProps ),
-		sku: selectors.getTicketSku( state, ownProps ),
-		startDate: selectors.getTicketStartDate( state, ownProps ),
-		startDateInput: selectors.getTicketStartDateInput( state, ownProps ),
-		startDateMoment: selectors.getTicketStartDateMoment( state, ownProps ),
-		endDate: selectors.getTicketEndDate( state, ownProps ),
-		endDateInput: selectors.getTicketEndDateInput( state, ownProps ),
-		endDateMoment: selectors.getTicketEndDateMoment( state, ownProps ),
-		startTime: selectors.getTicketStartTime( state, ownProps ),
-		endTime: selectors.getTicketEndTime( state, ownProps ),
-		startTimeInput: selectors.getTicketStartTimeInput( state, ownProps ),
-		endTimeInput: selectors.getTicketEndTimeInput( state, ownProps ),
-		capacityType: selectors.getTicketCapacityType( state, ownProps ),
-		capacity: selectors.getTicketCapacity( state, ownProps ),
-	} ) );
-	dispatch( actions.setTicketsTempSharedCapacity(
-		selectors.getTicketsSharedCapacity( state ),
-	) );
-	dispatch( actions.setTicketHasChanges( ownProps.blockId, false ) );
+	if ( selectors.getTicketHasBeenCreated( state, ownProps ) ) {
+		dispatch( actions.setTicketTempDetails( ownProps.blockId, {
+			title: selectors.getTicketTitle( state, ownProps ),
+			description: selectors.getTicketDescription( state, ownProps ),
+			price: selectors.getTicketPrice( state, ownProps ),
+			sku: selectors.getTicketSku( state, ownProps ),
+			startDate: selectors.getTicketStartDate( state, ownProps ),
+			startDateInput: selectors.getTicketStartDateInput( state, ownProps ),
+			startDateMoment: selectors.getTicketStartDateMoment( state, ownProps ),
+			endDate: selectors.getTicketEndDate( state, ownProps ),
+			endDateInput: selectors.getTicketEndDateInput( state, ownProps ),
+			endDateMoment: selectors.getTicketEndDateMoment( state, ownProps ),
+			startTime: selectors.getTicketStartTime( state, ownProps ),
+			endTime: selectors.getTicketEndTime( state, ownProps ),
+			startTimeInput: selectors.getTicketStartTimeInput( state, ownProps ),
+			endTimeInput: selectors.getTicketEndTimeInput( state, ownProps ),
+			capacityType: selectors.getTicketCapacityType( state, ownProps ),
+			capacity: selectors.getTicketCapacity( state, ownProps ),
+		} ) );
+		dispatch( actions.setTicketsTempSharedCapacity(
+			selectors.getTicketsSharedCapacity( state ),
+		) );
+		dispatch( actions.setTicketHasChanges( ownProps.blockId, false ) );
+	} else {
+		dispatch( actions.removeTicketBlock( ownProps.blockId ) )
+		wpDispatch( 'core/editor' ).removeBlocks( ownProps.blockId );
+	}
 	wpDispatch( 'core/editor' ).clearSelectedBlock();
 };
 

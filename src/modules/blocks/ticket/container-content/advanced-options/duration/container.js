@@ -3,18 +3,16 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import moment from 'moment';
 
 /**
  * Internal dependencies
  */
 import Template from './template';
-import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { withStore } from '@moderntribe/common/hoc';
 import {
 	globals,
 	moment as momentUtil,
-	time as timeUtil,
 } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
@@ -69,13 +67,20 @@ const mapStateToProps = ( state, ownProps ) => {
 		: 'LL';
 	const isDisabled = selectors.isTicketDisabled( state, ownProps );
 
+	const startDateMoment = selectors.getTicketTempStartDateMoment( state, ownProps );
+	const endDateMoment = selectors.getTicketTempEndDateMoment( state, ownProps );
+	const fromDate = startDateMoment && startDateMoment.toDate();
+	const toDate = endDateMoment && endDateMoment.toDate();
+
 	return {
-		fromDate: selectors.getTicketTempStartDateInput( state, ownProps ),
+		fromDate,
+		fromDateInput: selectors.getTicketTempStartDateInput( state, ownProps ),
 		fromDateDisabled: isDisabled,
 		fromDateFormat: datePickerFormat,
 		fromTime: selectors.getTicketTempStartTimeInput( state, ownProps ),
 		fromTimeDisabled: isDisabled,
-		toDate: selectors.getTicketTempEndDateInput( state, ownProps ),
+		toDate,
+		toDateInput: selectors.getTicketTempEndDateInput( state, ownProps ),
 		toDateDisabled: isDisabled,
 		toDateFormat: datePickerFormat,
 		toTime: selectors.getTicketTempEndTimeInput( state, ownProps ),
