@@ -40,7 +40,8 @@ const TicketDuration = ( props ) => (
 );
 
 TicketDuration.propTypes = {
-	fromDate: PropTypes.string,
+	fromDate: PropTypes.instanceOf( Date ),
+	fromDateInput: PropTypes.string,
 	fromDateDisabled: PropTypes.bool,
 	fromTime: PropTypes.string,
 	fromTimeDisabled: PropTypes.bool,
@@ -52,7 +53,8 @@ TicketDuration.propTypes = {
 	onToTimePickerBlur: PropTypes.func,
 	onToTimePickerChange: PropTypes.func,
 	onToTimePickerClick: PropTypes.func,
-	toDate: PropTypes.string,
+	toDate: PropTypes.instanceOf( Date ),
+	toDateInput: PropTypes.string,
 	toDateDisabled: PropTypes.bool,
 	toTime: PropTypes.string,
 	toTimeDisabled: PropTypes.bool,
