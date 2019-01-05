@@ -15,11 +15,12 @@ import './style.pcss';
 
 class Tickets extends PureComponent {
 	static propTypes = {
-		isSelected: PropTypes.bool,
 		canCreateTickets: PropTypes.bool,
-		isSettingsOpen: PropTypes.bool,
 		clientId: PropTypes.string,
+		hasProviders: PropTypes.bool,
 		header: PropTypes.string,
+		isSelected: PropTypes.bool,
+		isSettingsOpen: PropTypes.bool,
 	};
 
 	render() {

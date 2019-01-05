@@ -2068,10 +2068,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Provides a URL that can be used to direct users to the login form.
 		 *
+		 * @param int $post_id - the ID of the post to redirect to
+		 *
 		 * @return string
 		 */
-		public static function get_login_url() {
-			$post_id   = get_the_ID();
+		public static function get_login_url( $post_id = null ) {
+			if ( is_null( $post_id ) ) {
+				$post_id   = get_the_ID();
+			}
+
 			$login_url = get_site_url( null, 'wp-login.php' );
 
 			if ( $post_id ) {
