@@ -145,6 +145,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Move attendee registration position in RSVP block [119464]
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
+* Tweak - Fix header image message for RSVP and Tickets blocks [119759]
 * Tweak - Update attendee registration user experience [119465]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
 
