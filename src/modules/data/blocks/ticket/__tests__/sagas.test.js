@@ -46,6 +46,7 @@ jest.mock( '@wordpress/data', () => {
 					getBlockCount: () => {},
 					getBlocks: () => {},
 					getCurrentPostId: () => 10,
+					getCurrentPostAttribute: () => {},
 					getEditedPostAttribute: ( attr ) => {
 						if ( attr === 'date' ) {
 							return '2018-11-09T19:48:42';
@@ -55,6 +56,7 @@ jest.mock( '@wordpress/data', () => {
 			}
 		},
 		dispatch: () => ( {
+			editPost: () => {},
 			insertBlocks: () => {},
 			removeBlocks: () => {},
 		} ),
@@ -68,6 +70,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				takeEvery( [
 					types.SET_TICKETS_INITIAL_STATE,
+					types.RESET_TICKETS_BLOCK,
 					types.SET_TICKET_INITIAL_STATE,
 					types.FETCH_TICKET,
 					types.CREATE_NEW_TICKET,
@@ -104,6 +107,15 @@ describe( 'Ticket Block sagas', () => {
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
 				call( sagas.setTicketsInitialState, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should reset tickets block', () => {
+			action.type = types.RESET_TICKETS_BLOCK;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.resetTicketsBlock )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -283,11 +295,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( wpDispatchCoreEditor ).value ).toEqual(
 				call( wpSelect, 'core/editor' )
 			);
-			expect( JSON.stringify( gen.next( wpSelectCoreEditor ).value ) ).toEqual(
-				JSON.stringify(
-					call( [ wpSelectCoreEditor.getBlocks(), 'filter' ], ( block ) => block.name === 'tribe/tickets' )
-				)
-			);
+			expect( gen.next( wpSelectCoreEditor ).value ).toMatchSnapshot();
 			expect( gen.next( [] ).done ).toEqual( true );
 		} );
 	} );
@@ -406,6 +414,32 @@ describe( 'Ticket Block sagas', () => {
 		} );
 	} );
 
+	describe( 'resetTicketsBlock', () => {
+		it( 'should reset tickets block', () => {
+			const gen = sagas.resetTicketsBlock();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getSharedTicketsCount )
+			);
+			expect( gen.next( 0 ).value ).toMatchSnapshot();
+			expect( gen.next( {} ).value ).toMatchSnapshot();
+			expect( gen.next().value ).toEqual(
+				all( [
+					put( actions.setTicketsSharedCapacity( '' ) ),
+					put( actions.setTicketsTempSharedCapacity( '' ) ),
+				] )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not reset tickets block', () => {
+			const gen = sagas.resetTicketsBlock();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getSharedTicketsCount )
+			);
+			expect( gen.next( 2 ).done ).toEqual( true );
+		} );
+	} );
+
 	describe( 'setTicketInitialState', () => {
 		let publishDate,
 			startMoment,
@@ -466,11 +500,7 @@ describe( 'Ticket Block sagas', () => {
 			};
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
-			expect( JSON.stringify( gen.next().value ) ).toEqual(
-				JSON.stringify(
-					call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' )
-				),
-			)
+			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( publishDate ).value ).toEqual(
 				call( momentUtil.toMoment, publishDate )
 			);
@@ -585,11 +615,7 @@ describe( 'Ticket Block sagas', () => {
 			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
-			expect( JSON.stringify( gen.next().value ) ).toEqual(
-				JSON.stringify(
-					call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' )
-				)
-			)
+			expect( gen.next().value ).toMatchSnapshot();
 			expect( gen.next( publishDate ).value ).toEqual(
 				call( momentUtil.toMoment, publishDate )
 			);
@@ -1402,11 +1428,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next().value ).toEqual(
 				put( actions.removeTicketBlock( CLIENT_ID ) )
 			);
-			expect( JSON.stringify( clone1.next().value ) ).toEqual(
-				JSON.stringify(
-					call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ CLIENT_ID ] )
-				)
-			);
+			expect( clone1.next().value ).toMatchSnapshot();
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
@@ -1422,11 +1444,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next().value ).toEqual(
 				put( actions.removeTicketBlock( CLIENT_ID ) )
 			);
-			expect( JSON.stringify( clone2.next().value ) ).toEqual(
-				JSON.stringify(
-					call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ CLIENT_ID ] )
-				)
-			);
+			expect( clone2.next().value ).toMatchSnapshot();
 			expect( clone2.next().value ).toEqual(
 				call( wpREST, {
 					path: `tickets/${ TICKET_ID }`,
@@ -1990,11 +2008,7 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next().value ).toEqual(
 				put( actions.removeTicketBlock( 42 ) )
 			);
-			expect( JSON.stringify( clone2.next().value ) ).toEqual(
-				JSON.stringify(
-					call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ 42 ] )
-				)
-			);
+			expect( clone2.next().value ).toMatchSnapshot();
 			expect( clone2.next().done ).toEqual( true );
 		} );
 	} );
