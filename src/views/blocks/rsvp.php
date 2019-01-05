@@ -24,7 +24,7 @@ $items = $this->get( 'rsvp' );
 
 	<?php foreach ( $items as $item ) : ?>
 
-		<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $item->ID ); ?>">
+		<div class="tribe-block__rsvp__ticket" data-rsvp-id="<?php echo absint( $item->ID ); ?>" id="tribe-block__rsvp__ticket-<?php echo absint( $item->ID ); ?>">
 
 			<?php $this->template( 'blocks/rsvp/icon' ); ?>
 
