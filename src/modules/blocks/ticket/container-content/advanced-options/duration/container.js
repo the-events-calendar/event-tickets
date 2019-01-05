@@ -16,28 +16,28 @@ import {
 } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	dispatch( actions.handleTicketStartDate( ownProps.blockId, date, dayPickerInput ) )
+	dispatch( actions.handleTicketStartDate( ownProps.clientId, date, dayPickerInput ) )
 };
 
 const onFromTimePickerChange = ( dispatch, ownProps ) => ( e ) => {
-	dispatch( actions.setTicketTempStartTimeInput( ownProps.blockId, e.target.value ) );
+	dispatch( actions.setTicketTempStartTimeInput( ownProps.clientId, e.target.value ) );
 };
 
 const onFromTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
-	dispatch( actions.handleTicketStartTime( ownProps.blockId, value ) );
+	dispatch( actions.handleTicketStartTime( ownProps.clientId, value ) );
 	onClose();
 };
 
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	dispatch( actions.handleTicketEndDate( ownProps.blockId, date, dayPickerInput ) )
+	dispatch( actions.handleTicketEndDate( ownProps.clientId, date, dayPickerInput ) )
 };
 
 const onToTimePickerChange = ( dispatch, ownProps ) => ( e ) => {
-	dispatch( actions.setTicketTempEndTimeInput( ownProps.blockId, e.target.value ) );
+	dispatch( actions.setTicketTempEndTimeInput( ownProps.clientId, e.target.value ) );
 };
 
 const onToTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
-	dispatch( actions.handleTicketEndTime( ownProps.blockId, value ) );
+	dispatch( actions.handleTicketEndTime( ownProps.clientId, value ) );
 	onClose();
 };
 
@@ -48,7 +48,7 @@ const onFromTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
 		startTimeMoment = momentUtil.toMoment( startTimeInput, momentUtil.TIME_FORMAT, false );
 	}
 	const seconds = momentUtil.totalSeconds( startTimeMoment );
-	dispatch( actions.handleTicketStartTime( ownProps.blockId, seconds ) );
+	dispatch( actions.handleTicketStartTime( ownProps.clientId, seconds ) );
 };
 
 const onToTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
@@ -58,7 +58,7 @@ const onToTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
 		endTimeMoment = momentUtil.toMoment( endTimeInput, momentUtil.TIME_FORMAT, false );
 	}
 	const seconds = momentUtil.totalSeconds( endTimeMoment );
-	dispatch( actions.handleTicketEndTime( ownProps.blockId, seconds ) );
+	dispatch( actions.handleTicketEndTime( ownProps.clientId, seconds ) );
 };
 
 const mapStateToProps = ( state, ownProps ) => {

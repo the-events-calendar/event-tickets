@@ -21,6 +21,13 @@ export const setTicketsHeaderImage = ( payload ) => ( {
 	payload,
 } );
 
+export const setTicketsIsSelected = ( isSelected ) => ( {
+	type: types.SET_TICKETS_IS_SELECTED,
+	payload: {
+		isSelected,
+	},
+} );
+
 export const setTicketsIsSettingsOpen = ( isSettingsOpen ) => ( {
 	type: types.SET_TICKETS_IS_SETTINGS_OPEN,
 	payload: {
@@ -85,130 +92,130 @@ export const deleteTicketsHeaderImage = () => ( {
 // ─── TICKET DETAILS ACTIONS ─────────────────────────────────────────────────────
 //
 
-export const setTicketTitle = ( blockId, title ) => ( {
+export const setTicketTitle = ( clientId, title ) => ( {
 	type: types.SET_TICKET_TITLE,
 	payload: {
-		blockId,
+		clientId,
 		title,
 	},
 } );
 
-export const setTicketDescription = ( blockId, description ) => ( {
+export const setTicketDescription = ( clientId, description ) => ( {
 	type: types.SET_TICKET_DESCRIPTION,
 	payload: {
-		blockId,
+		clientId,
 		description,
 	},
 } );
 
-export const setTicketPrice = ( blockId, price ) => ( {
+export const setTicketPrice = ( clientId, price ) => ( {
 	type: types.SET_TICKET_PRICE,
 	payload: {
-		blockId,
+		clientId,
 		price,
 	},
 } );
 
-export const setTicketSku = ( blockId, sku ) => ( {
+export const setTicketSku = ( clientId, sku ) => ( {
 	type: types.SET_TICKET_SKU,
 	payload: {
-		blockId,
+		clientId,
 		sku,
 	},
 } );
 
-export const setTicketStartDate = ( blockId, startDate ) => ( {
+export const setTicketStartDate = ( clientId, startDate ) => ( {
 	type: types.SET_TICKET_START_DATE,
 	payload: {
-		blockId,
+		clientId,
 		startDate,
 	},
 } );
 
-export const setTicketStartDateInput = ( blockId, startDateInput ) => ( {
+export const setTicketStartDateInput = ( clientId, startDateInput ) => ( {
 	type: types.SET_TICKET_START_DATE_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		startDateInput,
 	},
 } );
 
-export const setTicketStartDateMoment = ( blockId, startDateMoment ) => ( {
+export const setTicketStartDateMoment = ( clientId, startDateMoment ) => ( {
 	type: types.SET_TICKET_START_DATE_MOMENT,
 	payload: {
-		blockId,
+		clientId,
 		startDateMoment,
 	},
 } );
 
-export const setTicketEndDate = ( blockId, endDate ) => ( {
+export const setTicketEndDate = ( clientId, endDate ) => ( {
 	type: types.SET_TICKET_END_DATE,
 	payload: {
-		blockId,
+		clientId,
 		endDate,
 	},
 } );
 
-export const setTicketEndDateInput = ( blockId, endDateInput ) => ( {
+export const setTicketEndDateInput = ( clientId, endDateInput ) => ( {
 	type: types.SET_TICKET_END_DATE_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		endDateInput,
 	},
 } );
 
-export const setTicketEndDateMoment = ( blockId, endDateMoment ) => ( {
+export const setTicketEndDateMoment = ( clientId, endDateMoment ) => ( {
 	type: types.SET_TICKET_END_DATE_MOMENT,
 	payload: {
-		blockId,
+		clientId,
 		endDateMoment,
 	},
 } );
 
-export const setTicketStartTime = ( blockId, startTime ) => ( {
+export const setTicketStartTime = ( clientId, startTime ) => ( {
 	type: types.SET_TICKET_START_TIME,
 	payload: {
-		blockId,
+		clientId,
 		startTime,
 	},
 } );
 
-export const setTicketEndTime = ( blockId, endTime ) => ( {
+export const setTicketEndTime = ( clientId, endTime ) => ( {
 	type: types.SET_TICKET_END_TIME,
 	payload: {
-		blockId,
+		clientId,
 		endTime,
 	},
 } );
 
-export const setTicketStartTimeInput = ( blockId, startTimeInput ) => ( {
+export const setTicketStartTimeInput = ( clientId, startTimeInput ) => ( {
 	type: types.SET_TICKET_START_TIME_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		startTimeInput,
 	},
 } );
 
-export const setTicketEndTimeInput = ( blockId, endTimeInput ) => ( {
+export const setTicketEndTimeInput = ( clientId, endTimeInput ) => ( {
 	type: types.SET_TICKET_END_TIME_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		endTimeInput,
 	},
 } );
 
-export const setTicketCapacityType = ( blockId, capacityType ) => ( {
+export const setTicketCapacityType = ( clientId, capacityType ) => ( {
 	type: types.SET_TICKET_CAPACITY_TYPE,
 	payload: {
-		blockId,
+		clientId,
 		capacityType,
 	},
 } );
 
-export const setTicketCapacity = ( blockId, capacity ) => ( {
+export const setTicketCapacity = ( clientId, capacity ) => ( {
 	type: types.SET_TICKET_CAPACITY,
 	payload: {
-		blockId,
+		clientId,
 		capacity,
 	},
 } );
@@ -217,130 +224,130 @@ export const setTicketCapacity = ( blockId, capacity ) => ( {
 // ─── TICKET TEMP DETAILS ACTIONS ────────────────────────────────────────────────
 //
 
-export const setTicketTempTitle = ( blockId, title ) => ( {
+export const setTicketTempTitle = ( clientId, title ) => ( {
 	type: types.SET_TICKET_TEMP_TITLE,
 	payload: {
-		blockId,
+		clientId,
 		title,
 	},
 } );
 
-export const setTicketTempDescription = ( blockId, description ) => ( {
+export const setTicketTempDescription = ( clientId, description ) => ( {
 	type: types.SET_TICKET_TEMP_DESCRIPTION,
 	payload: {
-		blockId,
+		clientId,
 		description,
 	},
 } );
 
-export const setTicketTempPrice = ( blockId, price ) => ( {
+export const setTicketTempPrice = ( clientId, price ) => ( {
 	type: types.SET_TICKET_TEMP_PRICE,
 	payload: {
-		blockId,
+		clientId,
 		price,
 	},
 } );
 
-export const setTicketTempSku = ( blockId, sku ) => ( {
+export const setTicketTempSku = ( clientId, sku ) => ( {
 	type: types.SET_TICKET_TEMP_SKU,
 	payload: {
-		blockId,
+		clientId,
 		sku,
 	},
 } );
 
-export const setTicketTempStartDate = ( blockId, startDate ) => ( {
+export const setTicketTempStartDate = ( clientId, startDate ) => ( {
 	type: types.SET_TICKET_TEMP_START_DATE,
 	payload: {
-		blockId,
+		clientId,
 		startDate,
 	},
 } );
 
-export const setTicketTempStartDateInput = ( blockId, startDateInput ) => ( {
+export const setTicketTempStartDateInput = ( clientId, startDateInput ) => ( {
 	type: types.SET_TICKET_TEMP_START_DATE_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		startDateInput,
 	},
 } );
 
-export const setTicketTempStartDateMoment = ( blockId, startDateMoment ) => ( {
+export const setTicketTempStartDateMoment = ( clientId, startDateMoment ) => ( {
 	type: types.SET_TICKET_TEMP_START_DATE_MOMENT,
 	payload: {
-		blockId,
+		clientId,
 		startDateMoment,
 	},
 } );
 
-export const setTicketTempEndDate = ( blockId, endDate ) => ( {
+export const setTicketTempEndDate = ( clientId, endDate ) => ( {
 	type: types.SET_TICKET_TEMP_END_DATE,
 	payload: {
-		blockId,
+		clientId,
 		endDate,
 	},
 } );
 
-export const setTicketTempEndDateInput = ( blockId, endDateInput ) => ( {
+export const setTicketTempEndDateInput = ( clientId, endDateInput ) => ( {
 	type: types.SET_TICKET_TEMP_END_DATE_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		endDateInput,
 	},
 } );
 
-export const setTicketTempEndDateMoment = ( blockId, endDateMoment ) => ( {
+export const setTicketTempEndDateMoment = ( clientId, endDateMoment ) => ( {
 	type: types.SET_TICKET_TEMP_END_DATE_MOMENT,
 	payload: {
-		blockId,
+		clientId,
 		endDateMoment,
 	},
 } );
 
-export const setTicketTempStartTime = ( blockId, startTime ) => ( {
+export const setTicketTempStartTime = ( clientId, startTime ) => ( {
 	type: types.SET_TICKET_TEMP_START_TIME,
 	payload: {
-		blockId,
+		clientId,
 		startTime,
 	},
 } );
 
-export const setTicketTempEndTime = ( blockId, endTime ) => ( {
+export const setTicketTempEndTime = ( clientId, endTime ) => ( {
 	type: types.SET_TICKET_TEMP_END_TIME,
 	payload: {
-		blockId,
+		clientId,
 		endTime,
 	},
 } );
 
-export const setTicketTempStartTimeInput = ( blockId, startTimeInput ) => ( {
+export const setTicketTempStartTimeInput = ( clientId, startTimeInput ) => ( {
 	type: types.SET_TICKET_TEMP_START_TIME_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		startTimeInput,
 	},
 } );
 
-export const setTicketTempEndTimeInput = ( blockId, endTimeInput ) => ( {
+export const setTicketTempEndTimeInput = ( clientId, endTimeInput ) => ( {
 	type: types.SET_TICKET_TEMP_END_TIME_INPUT,
 	payload: {
-		blockId,
+		clientId,
 		endTimeInput,
 	},
 } );
 
-export const setTicketTempCapacityType = ( blockId, capacityType ) => ( {
+export const setTicketTempCapacityType = ( clientId, capacityType ) => ( {
 	type: types.SET_TICKET_TEMP_CAPACITY_TYPE,
 	payload: {
-		blockId,
+		clientId,
 		capacityType,
 	},
 } );
 
-export const setTicketTempCapacity = ( blockId, capacity ) => ( {
+export const setTicketTempCapacity = ( clientId, capacity ) => ( {
 	type: types.SET_TICKET_TEMP_CAPACITY,
 	payload: {
-		blockId,
+		clientId,
 		capacity,
 	},
 } );
@@ -349,96 +356,96 @@ export const setTicketTempCapacity = ( blockId, capacity ) => ( {
 // ─── TICKET ACTIONS ─────────────────────────────────────────────────────────────
 //
 
-export const registerTicketBlock = ( blockId ) => ( {
+export const registerTicketBlock = ( clientId ) => ( {
 	type: types.REGISTER_TICKET_BLOCK,
 	payload: {
-		blockId,
+		clientId,
 	},
 } );
 
-export const removeTicketBlock = ( blockId ) => ( {
+export const removeTicketBlock = ( clientId ) => ( {
 	type: types.REMOVE_TICKET_BLOCK,
 	payload: {
-		blockId,
+		clientId,
 	},
 } );
 
-export const setTicketSold = ( blockId, sold ) => ( {
+export const setTicketSold = ( clientId, sold ) => ( {
 	type: types.SET_TICKET_SOLD,
 	payload: {
-		blockId,
+		clientId,
 		sold,
 	},
 } );
 
-export const setTicketAvailable = ( blockId, available ) => ( {
+export const setTicketAvailable = ( clientId, available ) => ( {
 	type: types.SET_TICKET_AVAILABLE,
 	payload: {
-		blockId,
+		clientId,
 		available,
 	},
 } );
 
-export const setTicketId = ( blockId, ticketId ) => ( {
+export const setTicketId = ( clientId, ticketId ) => ( {
 	type: types.SET_TICKET_ID,
 	payload: {
-		blockId,
+		clientId,
 		ticketId,
 	},
 } );
 
-export const setTicketCurrencySymbol = ( blockId, currencySymbol ) => ( {
+export const setTicketCurrencySymbol = ( clientId, currencySymbol ) => ( {
 	type: types.SET_TICKET_CURRENCY_SYMBOL,
 	payload: {
-		blockId,
+		clientId,
 		currencySymbol,
 	},
 } );
 
-export const setTicketCurrencyPosition = ( blockId, currencyPosition ) => ( {
+export const setTicketCurrencyPosition = ( clientId, currencyPosition ) => ( {
 	type: types.SET_TICKET_CURRENCY_POSITION,
 	payload: {
-		blockId,
+		clientId,
 		currencyPosition,
 	},
 } );
 
-export const setTicketProvider = ( blockId, provider ) => ( {
+export const setTicketProvider = ( clientId, provider ) => ( {
 	type: types.SET_TICKET_PROVIDER,
 	payload: {
-		blockId,
+		clientId,
 		provider,
 	},
 } );
 
-export const setTicketIsLoading = ( blockId, isLoading ) => ( {
+export const setTicketIsLoading = ( clientId, isLoading ) => ( {
 	type: types.SET_TICKET_IS_LOADING,
 	payload: {
-		blockId,
+		clientId,
 		isLoading,
 	},
 } );
 
-export const setTicketHasBeenCreated = ( blockId, hasBeenCreated ) => ( {
+export const setTicketHasBeenCreated = ( clientId, hasBeenCreated ) => ( {
 	type: types.SET_TICKET_HAS_BEEN_CREATED,
 	payload: {
-		blockId,
+		clientId,
 		hasBeenCreated,
 	},
 } );
 
-export const setTicketHasChanges = ( blockId, hasChanges ) => ( {
+export const setTicketHasChanges = ( clientId, hasChanges ) => ( {
 	type: types.SET_TICKET_HAS_CHANGES,
 	payload: {
-		blockId,
+		clientId,
 		hasChanges,
 	},
 } );
 
-export const setTicketIsSelected = ( blockId, isSelected ) => ( {
+export const setTicketIsSelected = ( clientId, isSelected ) => ( {
 	type: types.SET_TICKET_IS_SELECTED,
 	payload: {
-		blockId,
+		clientId,
 		isSelected,
 	},
 } );
@@ -447,83 +454,83 @@ export const setTicketIsSelected = ( blockId, isSelected ) => ( {
 // ─── TICKET SAGA ACTIONS ────────────────────────────────────────────────────────
 //
 
-export const setTicketDetails = ( blockId, details ) => ( {
+export const setTicketDetails = ( clientId, details ) => ( {
 	type: types.SET_TICKET_DETAILS,
 	payload: {
-		blockId,
+		clientId,
 		details,
 	},
 } );
 
-export const setTicketTempDetails = ( blockId, tempDetails ) => ( {
+export const setTicketTempDetails = ( clientId, tempDetails ) => ( {
 	type: types.SET_TICKET_TEMP_DETAILS,
 	payload: {
-		blockId,
+		clientId,
 		tempDetails,
 	},
 } );
 
-export const handleTicketStartDate = ( blockId, date, dayPickerInput ) => ( {
+export const handleTicketStartDate = ( clientId, date, dayPickerInput ) => ( {
 	type: types.HANDLE_TICKET_START_DATE,
 	payload: {
-		blockId,
+		clientId,
 		date,
 		dayPickerInput,
 	},
 } );
 
-export const handleTicketEndDate = ( blockId, date, dayPickerInput ) => ( {
+export const handleTicketEndDate = ( clientId, date, dayPickerInput ) => ( {
 	type: types.HANDLE_TICKET_END_DATE,
 	payload: {
-		blockId,
+		clientId,
 		date,
 		dayPickerInput,
 	},
 } );
 
-export const handleTicketStartTime = ( blockId, seconds ) => ( {
+export const handleTicketStartTime = ( clientId, seconds ) => ( {
 	type: types.HANDLE_TICKET_START_TIME,
 	payload: {
-		blockId,
+		clientId,
 		seconds,
 	},
 } );
 
-export const handleTicketEndTime = ( blockId, seconds ) => ( {
+export const handleTicketEndTime = ( clientId, seconds ) => ( {
 	type: types.HANDLE_TICKET_END_TIME,
 	payload: {
-		blockId,
+		clientId,
 		seconds,
 	},
 } );
 
 
-export const fetchTicket = ( blockId, ticketId ) => ( {
+export const fetchTicket = ( clientId, ticketId ) => ( {
 	type: types.FETCH_TICKET,
 	payload: {
-		blockId,
+		clientId,
 		ticketId,
 	},
 } );
 
-export const createNewTicket = ( blockId ) => ( {
+export const createNewTicket = ( clientId ) => ( {
 	type: types.CREATE_NEW_TICKET,
 	payload: {
-		blockId,
+		clientId,
 	},
 } );
 
-export const updateTicket = ( blockId ) => ( {
+export const updateTicket = ( clientId ) => ( {
 	type: types.UPDATE_TICKET,
 	payload: {
-		blockId,
+		clientId,
 	},
 } );
 
-export const deleteTicket = ( blockId ) => ( {
+export const deleteTicket = ( clientId ) => ( {
 	type: types.DELETE_TICKET,
 	payload: {
-		blockId,
+		clientId,
 	}
 } );
 

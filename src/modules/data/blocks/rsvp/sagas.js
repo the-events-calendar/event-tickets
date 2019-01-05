@@ -367,9 +367,9 @@ export function* handleRSVPMove() {
 	const modalTicketId = yield select( moveSelectors.getModalTicketId );
 
 	if ( rsvpId === modalTicketId ) {
-		const blockId = yield select( moveSelectors.getModalBlockId );
+		const clientId = yield select( moveSelectors.getModalClientId );
 		yield put( actions.deleteRSVP() );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
 	}
 }
 
