@@ -1,4 +1,4 @@
-=== Event Tickets ===
+ === Event Tickets ===
 
 Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
@@ -144,6 +144,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Update attendee registration user experience [119465]
 * Tweak - Adjust behavior of removing Tickets block to be more intuitive [119662]
 * Tweak - Adjust behavior of removing RSVP block to be more intuitive [119663]
+* Fix - Hide unavailable tickets in Tickets block when Tickets block is not selected [119630]
 
 = [4.9.3] 2018-12-19 =
 
@@ -154,7 +155,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove the old `events-gutenberg` domain into the templates [119270]
 * Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
 * Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
-* Fix - Hide unavailable tickets in Tickets block when Tickets block is not selected [119630]
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
