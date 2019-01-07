@@ -124,30 +124,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] =
 
-* Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
-* Fix - Make RSVP block duration tooltip hover area larger [120063]
-* Fix - Fix RSVP block FE attendee display option to not be bold [120064]
-* Fix - Set RSVP block submit button hover color [120065]
-* Fix - Don't enqueue wp admin common styles on the front end [119755]
-* Feature - Improve the UX for RSVPs with required login [119946]
-* Updated views: /views/blocks/rsvp/content.php, /views/blocks/rsvp/form.php, /views/blocks/rsvp/form/form.php, /views/blocks/rsvp/form/submit-login.php, /views/blocks/rsvp/form/submit.php, /views/blocks/rsvp/status.php, /views/blocks/rsvp/status/going.php, /views/blocks/rsvp/status/not-going.php
-* Fix - ensure that the RSVP login link redirects the user back to the event page post-login [120365]
-* Fix - Fix datepicker UI and input not showing the same date [119666]
-* Fix - Hide unavailable RSVPs in the FE [119597]
-* Fix - Clear shared capacity from tickets block when removing tickets block [118334]
-* Fix - Fix svg for RSVP "going" button [116206]
-* Fix - Display ticket price as 0 if price is blank in ticket block [119410]
-* Fix - Remove new ticket block if cancel button is clicked [119435]
-* Fix - Move apostrophe position in RSVP block [119409]
-* Fix - Move attendee registration position in RSVP block [119464]
-* Fix - Fix PHP notice on attendee registration page [119680]
-* Tweak - Fix header image message for RSVP and Tickets blocks [119759]
-* Tweak - Update attendee registration user experience [119465]
-* Tweak - Adjust behavior of removing Tickets block to be more intuitive [119662]
-* Tweak - Adjust behavior of removing RSVP block to be more intuitive [119663]
-* Fix - Hide unavailable tickets in Tickets block when Tickets block is not selected [119630]
+* Fix - ensure that the attendee page loads if the theme has no page.php/page templates defined [120034]
 
-= [4.9.3] 2018-12-19 =
+
+= [4.9.3] 2018-12-18 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]

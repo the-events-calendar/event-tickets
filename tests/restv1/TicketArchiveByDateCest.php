@@ -26,21 +26,27 @@ class TicketArchiveByDateCest extends BaseRestCest {
 
 			return $acc;
 		}, [] );
-		// space the tickets out by 1 day starting today; the last ticket will be
-		// the most recent one
-		$utc           = new \DateTimeZone( 'UTC' );
-		$date          = new \DateTime( 'now', $utc );
-		$four_days_ago = new \DateTime( '-4 days', $utc );
-		$a_week_ago    = new \DateTime( '-1 week', $utc );
-		$one_day       = new \DateInterval( 'P1D' );
+		// Space the tickets out by 1 day starting today; the last ticket will be the most recent one.
+		$dates            =[
+			'2018-01-15 09:00:00',
+			'2018-01-14 09:00:00',
+			'2018-01-13 09:00:00',
+			'2018-01-12 09:00:00',
+			'2018-01-11 09:00:00',
+			'2018-01-10 09:00:00',
+			'2018-01-09 09:00:00',
+			'2018-01-08 09:00:00',
+			'2018-01-07 09:00:00',
+			'2018-01-06 09:00:00',
+		];
+		$four_days_before = '2018-01-11 09:00:00';
+		$a_week_before    = '2018-01-08 09:00:00';
+		$i                = 0;
 		tribe_tickets()
 			->in( array_reverse( $tickets ) )
 			->order_by( 'post__in' )
-			->set( 'post_date_gmt', function () use ( &$date, $one_day ) {
-				$post_date_gmt = $date->format( 'Y-m-d H:i:s' );
-				$date->sub( $one_day );
-
-				return $post_date_gmt;
+			->set( 'post_date_gmt', function () use ( $dates, &$i ) {
+				return $dates[ $i++];
 			} )
 			->save();
 
@@ -58,53 +64,53 @@ class TicketArchiveByDateCest extends BaseRestCest {
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->sendGET( $this->tickets_url, [ 'after' => $four_days_ago->format( 'Y-m-d H:i:s' ) ] );
+		$I->sendGET( $this->tickets_url, [ 'after' => $four_days_before ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
 			->in( \array_slice( $tickets, 5 ) )
 			->all();
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'after' => $four_days_ago->format( 'Y-m-d H:i:s' ) ], $this->tickets_url . '/' ),
+			'rest_url'    => add_query_arg( [ 'after' => $four_days_before ], $this->tickets_url . '/' ),
 			'total'       => 5,
 			'total_pages' => 1,
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->sendGET( $this->tickets_url, [ 'before' => $a_week_ago->format( 'Y-m-d H:i:s' ) ] );
+		$I->sendGET( $this->tickets_url, [ 'before' => $a_week_before ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
 			->in( \array_slice( $tickets, 0, 3 ) )
 			->all();
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'before' => $a_week_ago->format( 'Y-m-d H:i:s' ) ], $this->tickets_url . '/' ),
+			'rest_url'    => add_query_arg( [ 'before' => $a_week_before ], $this->tickets_url . '/' ),
 			'total'       => 3,
 			'total_pages' => 1,
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->sendGET( $this->tickets_url, [ 'after' => '-3 days' ] );
+		$I->sendGET( $this->tickets_url, [ 'after' => '2018-01-12 09:00:00' ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
-			->in( \array_slice( $tickets, 7 ) )
+			->in( \array_slice( $tickets, 6 ) )
 			->all();
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'after' => '-3 days' ], $this->tickets_url . '/' ),
-			'total'       => 3,
+			'rest_url'    => add_query_arg( [ 'after' => '2018-01-12 09:00:00' ], $this->tickets_url . '/' ),
+			'total'       => 4,
 			'total_pages' => 1,
 			'tickets'     => $expected_tickets,
 		] );
 
-		$I->sendGET( $this->tickets_url, [ 'before' => '-1 week' ] );
+		$I->sendGET( $this->tickets_url, [ 'before' => '2018-01-08 09:00:00' ] );
 		$I->seeResponseIsJson();
 		$I->seeResponseCodeIs( 200 );
 		$expected_tickets = tribe_tickets( 'restv1' )
 			->in( \array_slice( $tickets, 0, 3 ) )
 			->all();
 		$I->seeResponseContainsJson( [
-			'rest_url'    => add_query_arg( [ 'before' => '-1 week' ], $this->tickets_url . '/' ),
+			'rest_url'    => add_query_arg( [ 'before' => '2018-01-08 09:00:00' ], $this->tickets_url . '/' ),
 			'total'       => 3,
 			'total_pages' => 1,
 			'tickets'     => $expected_tickets,
