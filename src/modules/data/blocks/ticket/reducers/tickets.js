@@ -10,7 +10,7 @@ import omit from 'lodash/omit';
 import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
 import ticket from './tickets/ticket';
 
-export const byId = ( state = {}, action ) => {
+export const byClientId = ( state = {}, action ) => {
 	switch ( action.type ) {
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
@@ -57,27 +57,31 @@ export const byId = ( state = {}, action ) => {
 		case types.REGISTER_TICKET_BLOCK:
 			return {
 				...state,
-				[ action.payload.blockId ]: ticket( state[ action.payload.blockId ], action ),
+				[ action.payload.clientId ]: ticket( state[ action.payload.clientId ], action ),
 			};
 		case types.REMOVE_TICKET_BLOCK:
-			return omit( state, [ action.payload.blockId ] );
+			return omit( state, [ action.payload.clientId ] );
+		case types.REMOVE_TICKET_BLOCKS:
+			return {};
 		default:
 			return state;
 	}
 };
 
-export const allIds = ( state = [], action ) => {
+export const allClientIds = ( state = [], action ) => {
 	switch ( action.type ) {
 		case types.REGISTER_TICKET_BLOCK:
-			return [ ...state, action.payload.blockId ];
+			return [ ...state, action.payload.clientId ];
 		case types.REMOVE_TICKET_BLOCK:
-			return state.filter( ( id ) => action.payload.blockId !== id );
+			return state.filter( ( clientId ) => action.payload.clientId !== clientId );
+		case types.REMOVE_TICKET_BLOCKS:
+			return [];
 		default:
 			return state;
 	}
 };
 
 export default combineReducers( {
-	byId,
-	allIds,
+	byClientId,
+	allClientIds,
 } );

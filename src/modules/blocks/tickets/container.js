@@ -15,6 +15,7 @@ const mapStateToProps = ( state ) => {
 	const headerImageId = selectors.getTicketsHeaderImageId( state );
 	return {
 		header: headerImageId ? `${ headerImageId }` : '',
+		hasProviders: selectors.hasTicketProviders(),
 		isSettingsOpen: selectors.getTicketsIsSettingsOpen( state ),
 		provider: selectors.getTicketsProvider( state ),
 		sharedCapacity: selectors.getTicketsSharedCapacity( state ),
@@ -25,6 +26,12 @@ const mapStateToProps = ( state ) => {
 const mapDispatchToProps = ( dispatch ) => ( {
 	setInitialState: ( props ) => {
 		dispatch( actions.setTicketsInitialState( props ) );
+	},
+	onBlockUpdate: ( isSelected ) => {
+		dispatch( actions.setTicketsIsSelected( isSelected ) );
+	},
+	onBlockRemoved: () => {
+		dispatch( actions.resetTicketsBlock() );
 	},
 } );
 

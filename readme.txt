@@ -1,4 +1,4 @@
- === Event Tickets ===
+=== Event Tickets ===
 
 Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
@@ -147,8 +147,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Added ecommerce links to Tickets block [117227]
 * Feature - Improved Cancel button UX in Tickets and RSVP blocks [119053]
 * Feature - Added option to show or hide the Attendee List block header and subtitle [117040 & 117041]
-* Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
-* Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
+* Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
+* Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
 * Fix - Updated blocks when moving from classic to blocks editor and vice versa [119426]
 * Fix - Removed dotted border for the RSVP block when viewed on mobile devices [118952]
 * Fix - Made sure all block editor code for Meta saving is PHP 5.2 compatible

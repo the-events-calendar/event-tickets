@@ -314,3 +314,21 @@ export const handleRSVPEndTime = ( seconds ) => ( {
 		seconds,
 	},
 } );
+
+export const fetchRSVPHeaderImage = ( id ) => ( {
+	type: types.FETCH_RSVP_HEADER_IMAGE,
+	payload: {
+		id,
+	},
+} );
+
+export const updateRSVPHeaderImage = ( image ) => ( {
+	type: types.UPDATE_RSVP_HEADER_IMAGE,
+	payload: {
+		image,
+	},
+} );
+
+export const deleteRSVPHeaderImage = () => ( {
+	type: types.DELETE_RSVP_HEADER_IMAGE,
+} );
