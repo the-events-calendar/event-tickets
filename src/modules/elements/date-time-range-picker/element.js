@@ -42,13 +42,16 @@ class DateTimeRangePicker extends Component {
 		fromDateFormat: PropTypes.string,
 		fromTime: TribePropTypes.timeFormat.isRequired,
 		fromTimeDisabled: PropTypes.bool,
-		isSameDay: PropTypes.bool,
 		onFromDateChange: PropTypes.func,
+		onFromTimePickerBlur: PropTypes.func,
 		onFromTimePickerChange: PropTypes.func,
 		onFromTimePickerClick: PropTypes.func,
+		onFromTimePickerFocus: PropTypes.func,
 		onToDateChange: PropTypes.func,
+		onToTimePickerBlur: PropTypes.func,
 		onToTimePickerChange: PropTypes.func,
 		onToTimePickerClick: PropTypes.func,
+		onToTimePickerFocus: PropTypes.func,
 		separatorDateTime: PropTypes.string,
 		separatorTimeRange: PropTypes.string,
 		shiftFocus: PropTypes.bool,
@@ -159,41 +162,33 @@ class DateTimeRangePicker extends Component {
 		const {
 			fromTime,
 			fromTimeDisabled,
-			isSameDay,
+			onFromTimePickerBlur,
 			onFromTimePickerChange,
 			onFromTimePickerClick,
-			toTime,
+			onFromTimePickerFocus,
 		} = this.props;
 
 		const props = {
 			current: fromTime,
 			start: time.START_OF_DAY,
 			end: time.END_OF_DAY,
+			onBlur: onFromTimePickerBlur,
 			onChange: onFromTimePickerChange,
 			onClick: onFromTimePickerClick,
+			onFocus: onFromTimePickerFocus,
 			timeFormat: date.FORMATS.WP.time,
 			disabled: fromTimeDisabled,
 		};
-
-		if ( isSameDay ) {
-			// subtract one minute from toTime
-			const maxTime = time.fromSeconds(
-				time.toSeconds( toTime, time.TIME_FORMAT_HH_MM ) - time.MINUTE_IN_SECONDS,
-				time.TIME_FORMAT_HH_MM,
-			);
-			props.end = time.roundTime( maxTime, time.TIME_FORMAT_HH_MM );
-			props.max = maxTime;
-		}
 
 		return props;
 	};
 
 	getToTimePickerProps = () => {
 		const {
-			fromTime,
-			isSameDay,
+			onToTimePickerBlur,
 			onToTimePickerChange,
 			onToTimePickerClick,
+			onToTimePickerFocus,
 			toTime,
 			toTimeDisabled,
 		} = this.props;
@@ -202,31 +197,13 @@ class DateTimeRangePicker extends Component {
 			current: toTime,
 			start: time.START_OF_DAY,
 			end: time.END_OF_DAY,
+			onBlur: onToTimePickerBlur,
 			onChange: onToTimePickerChange,
 			onClick: onToTimePickerClick,
+			onFocus: onToTimePickerFocus,
 			timeFormat: date.FORMATS.WP.time,
 			disabled: toTimeDisabled,
 		};
-
-		if ( isSameDay ) {
-			// if the start time has less than half an hour left in the day
-			if ( ( time.DAY_IN_SECONDS - time.toSeconds( fromTime ) ) <= time.HALF_HOUR_IN_SECONDS ) {
-				props.start = time.END_OF_DAY;
-			} else {
-				// add 30 minutes to fromTime and round time to closest 30 min interval
-				props.start = time.roundTime(
-					time.fromSeconds(
-						time.toSeconds( fromTime, time.TIME_FORMAT_HH_MM ) + time.HALF_HOUR_IN_SECONDS,
-						time.TIME_FORMAT_HH_MM,
-					),
-					time.TIME_FORMAT_HH_MM,
-				);
-			}
-			props.min = time.fromSeconds(
-				time.toSeconds( fromTime, time.TIME_FORMAT_HH_MM ) + time.MINUTE_IN_SECONDS,
-				time.TIME_FORMAT_HH_MM,
-			);
-		}
 
 		return props;
 	};

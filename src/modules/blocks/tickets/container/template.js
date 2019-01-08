@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 /**
  * Wordpress dependencies
@@ -21,38 +22,53 @@ import './style.pcss';
 
 const TicketsOverlay = () => <div className="tribe-editor__tickets__overlay" />;
 
-const TicketContainer = ( {
+const TicketsContainer = ( {
+	hasATicketSelected,
+	hasCreatedTickets,
 	hasOverlay,
+	canCreateTickets,
 	hasTickets,
-	hasProviders,
 	isSelected,
 } ) => {
 	const messages = {
-		title: hasProviders
+		title: canCreateTickets
 			? __( 'There are no tickets yet', 'event-tickets' )
 			: __( 'There is no ecommerce available', 'event-tickets' ),
-		description: hasProviders
+		description: canCreateTickets
 			? __( 'Edit this block to create your first ticket.', 'event-tickets' )
 			: __( 'To create tickets, you\'ll need to enable an ecommerce solution.', 'event-tickets' ),
 	};
 
+	const innerBlocksClassName = classNames( {
+		'tribe-editor__tickets__inner-blocks': true,
+		'tribe-editor__tickets__inner-blocks--show': (
+			hasCreatedTickets || ( isSelected && hasTickets ) || hasATicketSelected
+		),
+	} );
+
 	return (
-		<div className="tribe-editor__ticket__container">
-			<div className="tribe-editor__tickets__body">
+		<div className="tribe-editor__tickets__container">
+			<div className={ innerBlocksClassName }>
 				<InnerBlocks
 					allowedBlocks={ [ 'tribe/tickets-item' ] }
 					templateLock="insert"
 				/>
 			</div>
-			{ ! hasTickets && (
-				<InactiveBlock
-					layout={ LAYOUT.ticket }
-					title={ messages.title }
-					description={ messages.description }
-					icon={ <TicketInactive /> }
-				/>
-			) }
-			{ isSelected && hasTickets && (
+			{
+				(
+					( ! isSelected && ! hasATicketSelected && ! hasCreatedTickets )
+						|| ( isSelected && ! hasTickets )
+				)
+					&& (
+						<InactiveBlock
+							layout={ LAYOUT.ticket }
+							title={ messages.title }
+							description={ messages.description }
+							icon={ <TicketInactive /> }
+						/>
+					)
+			}
+			{ isSelected && hasCreatedTickets && (
 				<Availability />
 			) }
 			{ hasOverlay && <TicketsOverlay /> }
@@ -60,10 +76,12 @@ const TicketContainer = ( {
 	);
 };
 
-TicketContainer.propTypes = {
+TicketsContainer.propTypes = {
+	hasCreatedTickets: PropTypes.bool,
+	hasOverlay: PropTypes.bool,
+	canCreateTickets: PropTypes.bool,
 	hasTickets: PropTypes.bool,
 	isSelected: PropTypes.bool,
-	hasProviders: PropTypes.bool,
 };
 
-export default TicketContainer;
+export default TicketsContainer;

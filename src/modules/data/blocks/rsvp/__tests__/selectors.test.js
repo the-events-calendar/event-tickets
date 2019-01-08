@@ -92,9 +92,14 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.details.startDate );
 	} );
 
-	it( 'should return the start date object', () => {
-		expect( selectors.getRSVPStartDateObj( state ) )
-			.toBe( DEFAULT_STATE.details.startDateObj );
+	it( 'should return the start date input', () => {
+		expect( selectors.getRSVPStartDateInput( state ) )
+			.toBe( DEFAULT_STATE.details.startDateInput );
+	} );
+
+	it( 'should return the start date moment', () => {
+		expect( selectors.getRSVPStartDateMoment( state ) )
+			.toBe( DEFAULT_STATE.details.startDateMoment );
 	} );
 
 	it( 'should return the start time', () => {
@@ -102,19 +107,44 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.details.startTime );
 	} );
 
+	it( 'should return the start time no seconds', () => {
+		expect( selectors.getRSVPStartTimeNoSeconds( state ) )
+			.toBe( DEFAULT_STATE.details.startTime.slice( 0, -3 ) );
+	} );
+
 	it( 'should return the end date', () => {
 		expect( selectors.getRSVPEndDate( state ) )
 			.toBe( DEFAULT_STATE.details.endDate );
 	} );
 
-	it( 'should return the end date object', () => {
-		expect( selectors.getRSVPEndDateObj( state ) )
-			.toBe( DEFAULT_STATE.details.endDateObj );
+	it( 'should return the end date input', () => {
+		expect( selectors.getRSVPEndDateInput( state ) )
+			.toBe( DEFAULT_STATE.details.endDateInput );
+	} );
+
+	it( 'should return the end date moment', () => {
+		expect( selectors.getRSVPEndDateMoment( state ) )
+			.toBe( DEFAULT_STATE.details.endDateMoment );
 	} );
 
 	it( 'should return the end time', () => {
 		expect( selectors.getRSVPEndTime( state ) )
 			.toBe( DEFAULT_STATE.details.endTime );
+	} );
+
+	it( 'should return the end time no seconds', () => {
+		expect( selectors.getRSVPEndTimeNoSeconds( state ) )
+			.toBe( DEFAULT_STATE.details.endTime.slice( 0, -3 ) );
+	} );
+
+	it( 'should return the start time input', () => {
+		expect( selectors.getRSVPStartTimeInput( state ) )
+			.toBe( DEFAULT_STATE.details.startTimeInput );
+	} );
+
+	it( 'should return the end time input', () => {
+		expect( selectors.getRSVPEndTimeInput( state ) )
+			.toBe( DEFAULT_STATE.details.endTimeInput );
 	} );
 
 	it( 'should return the temp title', () => {
@@ -142,9 +172,14 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.tempDetails.startDate );
 	} );
 
-	it( 'should return the temp start date object', () => {
-		expect( selectors.getRSVPTempStartDateObj( state ) )
-			.toBe( DEFAULT_STATE.tempDetails.startDateObj );
+	it( 'should return the temp start date input', () => {
+		expect( selectors.getRSVPTempStartDateInput( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.startDateInput );
+	} );
+
+	it( 'should return the temp start date moment', () => {
+		expect( selectors.getRSVPTempStartDateMoment( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.startDateMoment );
 	} );
 
 	it( 'should return the temp start time', () => {
@@ -152,19 +187,44 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.tempDetails.startTime );
 	} );
 
+	it( 'should return the temp start time no seconds', () => {
+		expect( selectors.getRSVPTempStartTimeNoSeconds( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.startTime.slice( 0, -3 ) );
+	} );
+
 	it( 'should return the temp end date', () => {
 		expect( selectors.getRSVPTempEndDate( state ) )
 			.toBe( DEFAULT_STATE.tempDetails.endDate );
 	} );
 
-	it( 'should return the temp end date object', () => {
-		expect( selectors.getRSVPTempEndDateObj( state ) )
-			.toBe( DEFAULT_STATE.tempDetails.endDateObj );
+	it( 'should return the temp end date input', () => {
+		expect( selectors.getRSVPTempEndDateInput( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.endDateInput );
+	} );
+
+	it( 'should return the temp end date moment', () => {
+		expect( selectors.getRSVPTempEndDateMoment( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.endDateMoment );
 	} );
 
 	it( 'should return the temp end time', () => {
 		expect( selectors.getRSVPTempEndTime( state ) )
 			.toBe( DEFAULT_STATE.tempDetails.endTime );
+	} );
+
+	it( 'should return the temp end time no seconds', () => {
+		expect( selectors.getRSVPTempEndTimeNoSeconds( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.endTime.slice( 0, -3 ) );
+	} );
+
+	it( 'should return the temp start time input', () => {
+		expect( selectors.getRSVPTempStartTimeInput( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.startTimeInput );
+	} );
+
+	it( 'should return the temp end time input', () => {
+		expect( selectors.getRSVPTempEndTimeInput( state ) )
+			.toBe( DEFAULT_STATE.tempDetails.endTimeInput );
 	} );
 
 	it( 'should return the header image object', () => {

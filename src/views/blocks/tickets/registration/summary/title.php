@@ -10,14 +10,14 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.3
  *
  */
 
 ?>
 <div class="tribe-block__tickets__registration__title">
 	<header>
-		<h2><?php esc_html_e( 'Ticket Registration', 'events-gutenberg' ); ?></h2>
+		<h2><?php esc_html_e( 'Ticket Registration', 'event-tickets' ); ?></h2>
 	</header>
 </div>
 

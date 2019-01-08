@@ -34,10 +34,14 @@ describe( 'Details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPStartDate( 'January 1, 2018' ) ) ).toMatchSnapshot();
 	} );
 
-	it( 'should set the start date object', () => {
+	it( 'should set the start date input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPStartDateInput( 'January 1, 2018' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the start date moment', () => {
 		expect( reducer(
 			DEFAULT_STATE,
-			actions.setRSVPStartDateObj( new Date( 'January 1, 2018' ) ),
+			actions.setRSVPStartDateMoment( 'January 1, 2018' ),
 		) ).toMatchSnapshot();
 	} );
 
@@ -45,10 +49,14 @@ describe( 'Details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPEndDate( 'January 1, 2018' ) ) ).toMatchSnapshot();
 	} );
 
-	it( 'should set the end date object', () => {
+	it( 'should set the end date input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPEndDateInput( 'January 1, 2018' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the end date moment', () => {
 		expect( reducer(
 			DEFAULT_STATE,
-			actions.setRSVPEndDateObj( new Date( 'January 1, 2018' ) ),
+			actions.setRSVPEndDateMoment( 'January 1, 2018' ),
 		) ).toMatchSnapshot();
 	} );
 
@@ -58,5 +66,13 @@ describe( 'Details reducer', () => {
 
 	it( 'should set the end time', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPEndTime( '13:45' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the start time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPStartTimeInput( '13:45' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the end time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPEndTimeInput( '13:45' ) ) ).toMatchSnapshot();
 	} );
 } );

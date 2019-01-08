@@ -1,4 +1,4 @@
-.tribe-editor__ticket__container {
+.tribe-editor__tickets__container {
 	position: relative;
 }
 
@@ -10,6 +10,16 @@
 	bottom: 0;
 	margin: -14px;
 	z-index: 10;
+}
+
+.tribe-editor__tickets__inner-blocks {
+	visibility: hidden;
+	height: 0;
+
+	&--show {
+		visibility: visible;
+		height: auto;
+	}
 }
 
 .tribe-editor__tickets .editor-inner-blocks .editor-block-list__block {

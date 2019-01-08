@@ -10,10 +10,10 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.3
  *
  */
 ?>
 <div class="tribe-block__tickets__registration__tickets__item__quantity">
-	<?php esc_html_e( '1', 'events-gutenberg' ); ?>
+	<?php esc_html_e( '1', 'event-tickets' ); ?>
 </div>

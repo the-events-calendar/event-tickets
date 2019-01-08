@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.3
  *
  */
 
@@ -21,5 +21,5 @@
 	value="1"
 	class="tribe-block__rsvp__submit-button"
 >
-	<?php esc_html_e( 'Submit RSVP', 'events-gutenberg' ); ?>
+	<?php esc_html_e( 'Submit RSVP', 'event-tickets' ); ?>
 </button>

@@ -129,6 +129,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.hasTickets( state ) ).toMatchSnapshot();
 		} );
 
+		test( 'hasCreatedTickets', () => {
+			expect( selectors.hasCreatedTickets( state ) ).toMatchSnapshot();
+		} );
+
 		test( 'getIndependentTickets', () => {
 			expect( selectors.getIndependentTickets( state ) ).toMatchSnapshot();
 		} );
@@ -147,6 +151,10 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'hasATicketSelected', () => {
 			expect( selectors.hasATicketSelected( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsIdsInBlocks', () => {
+			expect( selectors.getTicketsIdsInBlocks( state ) ).toMatchSnapshot();
 		} );
 	} );
 
@@ -265,6 +273,14 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketEndTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketStartTimeInput', () => {
+			expect( selectors.getTicketStartTimeInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketEndTimeInput', () => {
+			expect( selectors.getTicketEndTimeInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketCapacityType', () => {
 			expect( selectors.getTicketCapacityType( state, ownProps ) ).toMatchSnapshot();
 		} );
@@ -358,6 +374,14 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'getTicketTempEndTimeNoSeconds', () => {
 			expect( selectors.getTicketTempEndTimeNoSeconds( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempStartTimeInput', () => {
+			expect( selectors.getTicketTempStartTimeInput( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketTempEndTimeInput', () => {
+			expect( selectors.getTicketTempEndTimeInput( state, ownProps ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicketTempCapacityType', () => {
@@ -506,12 +530,24 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketProviders() ).toMatchSnapshot();
 		} );
 
+		test( 'getDefaultTicketProvider', () => {
+			expect( selectors.getDefaultTicketProvider() ).toMatchSnapshot();
+		} );
+
+		test( 'hasValidTicketProvider', () => {
+			expect( selectors.hasValidTicketProvider() ).toMatchSnapshot();
+		} );
+
 		test( 'hasMultipleTicketProviders', () => {
 			expect( selectors.hasMultipleTicketProviders() ).toMatchSnapshot();
 		} );
 
 		test( 'hasTicketProviders', () => {
 			expect( selectors.hasTicketProviders() ).toMatchSnapshot();
+		} );
+
+		test( 'canCreateTickets', () => {
+			expect( selectors.canCreateTickets() ).toMatchSnapshot();
 		} );
 	} );
 } );

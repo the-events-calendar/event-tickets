@@ -7,21 +7,34 @@ import moment from 'moment/moment';
  * Internal dependencies
  */
 import { types } from '@moderntribe/tickets/data/blocks/rsvp';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
+const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 const currentMoment = moment();
-const endMoment = currentMoment.clone().add( 100, 'years' );
+const endMoment = currentMoment.clone();
+
+const startDateInput = datePickerFormat
+	? currentMoment.format( momentUtil.toFormat( datePickerFormat ) )
+	: momentUtil.toDate( currentMoment );
+const endDateInput = datePickerFormat
+	? endMoment.format( momentUtil.toFormat( datePickerFormat ) )
+	: momentUtil.toDate( endMoment );
+
 export const DEFAULT_STATE = {
 	title: '',
 	description: '',
 	capacity: '',
 	notGoingResponses: false,
-	startDate: momentUtil.toDate( currentMoment ),
-	startDateObj: new Date( momentUtil.toDate( currentMoment ) ),
-	endDate: momentUtil.toDate( endMoment ),
-	endDateObj: new Date( momentUtil.toDate( endMoment ) ),
-	startTime: momentUtil.toTime24Hr( currentMoment ),
-	endTime: momentUtil.toTime24Hr( endMoment ),
+	startDate: momentUtil.toDatabaseDate( currentMoment ),
+	startDateInput,
+	startDateMoment: currentMoment,
+	endDate: momentUtil.toDatabaseDate( endMoment ),
+	endDateInput,
+	endDateMoment: endMoment,
+	startTime: momentUtil.toDatabaseTime( currentMoment ),
+	endTime: momentUtil.toDatabaseTime( endMoment ),
+	startTimeInput: momentUtil.toTime( currentMoment ),
+	endTimeInput: momentUtil.toTime( endMoment ),
 };
 
 export default ( state = DEFAULT_STATE, action ) => {
@@ -51,20 +64,30 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				startDate: action.payload.startDate,
 			};
-		case types.SET_RSVP_START_DATE_OBJ:
+		case types.SET_RSVP_START_DATE_INPUT:
 			return {
 				...state,
-				startDateObj: action.payload.startDateObj,
+				startDateInput: action.payload.startDateInput,
+			};
+		case types.SET_RSVP_START_DATE_MOMENT:
+			return {
+				...state,
+				startDateMoment: action.payload.startDateMoment,
 			};
 		case types.SET_RSVP_END_DATE:
 			return {
 				...state,
 				endDate: action.payload.endDate,
 			};
-		case types.SET_RSVP_END_DATE_OBJ:
+		case types.SET_RSVP_END_DATE_INPUT:
 			return {
 				...state,
-				endDateObj: action.payload.endDateObj,
+				endDateInput: action.payload.endDateInput,
+			};
+		case types.SET_RSVP_END_DATE_MOMENT:
+			return {
+				...state,
+				endDateMoment: action.payload.endDateMoment,
 			};
 		case types.SET_RSVP_START_TIME:
 			return {
@@ -75,6 +98,16 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				endTime: action.payload.endTime,
+			};
+		case types.SET_RSVP_START_TIME_INPUT:
+			return {
+				...state,
+				startTimeInput: action.payload.startTimeInput,
+			};
+		case types.SET_RSVP_END_TIME_INPUT:
+			return {
+				...state,
+				endTimeInput: action.payload.endTimeInput,
 			};
 		default:
 			return state;

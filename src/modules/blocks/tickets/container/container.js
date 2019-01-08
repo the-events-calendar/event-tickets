@@ -21,9 +21,11 @@ const getHasOverlay = ( state, ownProps ) => (
 );
 
 const mapStateToProps = ( state, ownProps ) => ( {
+	hasATicketSelected: selectors.hasATicketSelected( state ),
+	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	hasOverlay: getHasOverlay( state, ownProps ),
 	hasTickets: selectors.hasTickets( state ),
-	hasProviders: selectors.hasTicketProviders(),
+	canCreateTickets: selectors.canCreateTickets(),
 } );
 
 export default compose(

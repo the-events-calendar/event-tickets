@@ -10,7 +10,6 @@ import { find, trim } from 'lodash';
 import * as constants from './constants';
 import { CAPACITY_TYPE_OPTIONS } from './options';
 import { globals } from '@moderntribe/common/utils';
-import { moment as momentUtil } from '@moderntribe/common/utils';
 
 const {
 	UNLIMITED,
@@ -114,15 +113,17 @@ export const getTicketsCount = createSelector(
 	( allIds ) => allIds.length,
 );
 
-export const getTicketsIdsInBlocks = createSelector(
-	[ getTicketsArray ],
-	( tickets ) => tickets.map( ( ticket ) => ticket.ticketId ).filter( ( ticket ) => ticket !== 0 )
-);
-
 export const hasTickets = createSelector(
 	[ getTicketsCount ],
 	( count ) => count > 0,
 );
+
+export const hasCreatedTickets = createSelector(
+	[ getTicketsArray ],
+	( tickets ) => tickets.reduce( ( hasCreated, ticket ) => (
+		hasCreated || ticket.hasBeenCreated
+	), false ),
+)
 
 export const getIndependentTickets = createSelector(
 	[ getTicketsArray ],
@@ -155,6 +156,16 @@ export const hasATicketSelected = createSelector(
 	( tickets ) => tickets.reduce( ( selected, ticket ) => (
 		selected || ticket.isSelected
 	), false),
+);
+
+export const getTicketsIdsInBlocks = createSelector(
+	[ getTicketsArray ],
+	( tickets ) => tickets.reduce( ( accumulator, ticket ) => {
+		if ( ticket.ticketId !== 0 ) {
+			accumulator.push( ticket.ticketId );
+		}
+		return accumulator;
+	}, [] ),
 );
 
 //
@@ -309,6 +320,16 @@ export const getTicketEndTimeNoSeconds = createSelector(
 	( endTime ) => endTime.slice( 0, -3 ),
 );
 
+export const getTicketStartTimeInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.startTimeInput,
+);
+
+export const getTicketEndTimeInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.endTimeInput,
+);
+
 export const getTicketCapacityType = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.capacityType,
@@ -416,6 +437,16 @@ export const getTicketTempEndTime = createSelector(
 export const getTicketTempEndTimeNoSeconds = createSelector(
 	[ getTicketTempEndTime ],
 	( endTime ) => endTime.slice( 0, -3 ),
+);
+
+export const getTicketTempStartTimeInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.startTimeInput,
+);
+
+export const getTicketTempEndTimeInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.endTimeInput,
 );
 
 export const getTicketTempCapacityType = createSelector(
@@ -547,6 +578,16 @@ export const getTicketProviders = () => {
 	return tickets.providers || [];
 };
 
+export const getDefaultTicketProvider = () => {
+	const tickets = ticketsConfig();
+	return tickets.default_provider || '';
+};
+
+export const hasValidTicketProvider = () => {
+	const provider = getDefaultTicketProvider();
+	return provider !== '' && provider !== constants.RSVP_CLASS;
+};
+
 export const hasMultipleTicketProviders = createSelector(
 	[ getTicketProviders ],
 	( providers ) => providers.length > 1,
@@ -555,4 +596,9 @@ export const hasMultipleTicketProviders = createSelector(
 export const hasTicketProviders = createSelector(
 	[ getTicketProviders ],
 	( providers ) => providers.length > 0,
+);
+
+export const canCreateTickets = createSelector(
+	[ hasTicketProviders, hasValidTicketProvider ],
+	( providers, validDefaultProvider ) => providers && validDefaultProvider
 );

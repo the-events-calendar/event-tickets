@@ -35,6 +35,6 @@ if ( $hide_attendee_list_optout
 		id="tribe-tickets-attendees-list-optout"
 	>
 	<span class="tribe-tickets-meta-option-label">
-		<?php esc_html_e( "Don't show my information on public attendee lists", 'events-gutenberg' ); ?>
+		<?php esc_html_e( "Don't show my information on public attendee lists", 'event-tickets' ); ?>
 	</span>
 </label>

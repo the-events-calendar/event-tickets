@@ -10,7 +10,7 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.3
  *
  */
 
@@ -18,6 +18,6 @@
 <span>
 	<button class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--going">
 		<?php $this->template( 'blocks/rsvp/status/going-icon' ); ?>
-		<span><?php esc_html_e( 'Going', 'events-gutenberg' ); ?></span>
+		<span><?php esc_html_e( 'Going', 'event-tickets' ); ?></span>
 	</button>
 </span>
