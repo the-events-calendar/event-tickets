@@ -111,6 +111,21 @@
 	}
 
 	/**
+	 * Validates the RSVP form
+	 */
+	function validate_submission( $form ) {
+		var $qty = $form.find( 'input.tribe-tickets-quantity' );
+		var $name = $form.find( 'input.tribe-tickets-full-name' );
+		var $email = $form.find( 'input.tribe-tickets-email' );
+
+		return (
+			$.trim( $name.val() ).length
+				&& $.trim( $email.val() ).length
+				&& parseFloat( $qty.val() ) > 0
+		);
+	}
+
+	/**
 	 * Handle the form submission
 	 *
 	 * @since 4.9
@@ -126,19 +141,17 @@
 			var ticket_id = $ticket.data( 'rsvp-id' );
 			var $form     = $ticket.find( 'form' );
 
-			// Get form values in order to validate
-			var $qty      = $form.find( 'input.tribe-tickets-quantity' );
-			var $name     = $form.find( 'input.tribe-tickets-full-name' );
-			var $email    = $form.find( 'input.tribe-tickets-email' );
+			var is_rsvp_valid = validate_submission( $form );
 
 			// Validate the form
-			if (
-				! $.trim( $name.val() ).length
-				|| ! $.trim( $email.val() ).length
-				|| parseFloat( $qty.val() ) < 1
-			) {
+			if ( is_rsvp_valid ) {
 				$form.find( '.tribe-block__rsvp__message__error' ).show();
-				return false;
+
+				$( 'html, body').animate({
+					scrollTop: $form.offset().top - 100,
+				}, 300 );
+
+				return;
 			}
 
 			var params = $form.serializeArray();
@@ -166,11 +179,11 @@
 				}
 			);
 		}
-
-		return;
-
 	}
 
+	/**
+	 * Bind events to elements
+	 */
 	function bind_events() {
 		$( '.tribe-block__rsvp__ticket' )
 			.on(
