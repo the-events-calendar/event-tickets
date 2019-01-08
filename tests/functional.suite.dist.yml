@@ -21,9 +21,8 @@ modules:
            dump: 'tests/_data/dump.sql'
            populate: true
            cleanup: true
-           waitlock: 0
+           waitlock: 10
            reconnect: false
-           waitlock: 0
            url: '%WP_URL%'
            tablePrefix: 'wp_'
         WPFilesystem:

@@ -147,8 +147,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Adjust behavior of removing RSVP block to be more intuitive [119663]
 * Fix - Hide unavailable tickets in Tickets block when Tickets block is not selected [119630]
 * Fix - Fix attendee registration for RSVP block FE [119800]
+* Fix - ensure that the attendee page loads if the theme has no page.php/page templates defined [120034]
 
-= [4.9.3] 2018-12-19 =
+= [4.9.3] 2018-12-18 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]

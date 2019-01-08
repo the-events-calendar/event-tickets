@@ -19,6 +19,7 @@
 
 body.page-tribe-attendee-registration header.entry-header,
 	body.page-tribe-attendee-registration header.entry-meta,
+	body.page-tribe-attendee-registration header.page-header,
 	body.page-tribe-attendee-registration footer.entry-header {
 		display: none;
 	}
@@ -62,7 +63,6 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 
 .tribe-block__tickets__registration__toggle__handler.open {
 		-webkit-transform: rotate(180deg);
-		    -ms-transform: rotate(180deg);
 		        transform: rotate(180deg);
 	}
 
@@ -192,22 +192,13 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 }
 
 .tribe-block__tickets__button--next {
-	-webkit-box-align: center;
-	-webkit-align-items: center;
-	    -ms-flex-align: center;
-	        align-items: center;
+	align-items: center;
 	border: 1px solid #e1e3e6;
 	background-color: #009fd4;
 	color: #fff;
-	display: -webkit-inline-box;
-	display: -webkit-inline-flex;
-	display: -ms-inline-flexbox;
 	display: inline-flex;
 	font-size: 1.125rem;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	    -ms-flex-pack: center;
-	        justify-content: center;
+	justify-content: center;
 	min-height: 54px;
 	padding: 0 20px;
 	max-width: 100%;
@@ -249,22 +240,11 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 
 .tribe-block__tickets__registration__tickets__item {
 	border-bottom: 1px solid #e1e3e6;
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
 	display: flex;
-	-webkit-flex-wrap: wrap;
-	    -ms-flex-wrap: wrap;
-	        flex-wrap: wrap;
+	flex-wrap: wrap;
 	font-size: 18px;
-	-webkit-box-align: center;
-	-webkit-align-items: center;
-	    -ms-flex-align: center;
-	        align-items: center;
-	-webkit-box-pack: center;
-	-webkit-justify-content: center;
-	    -ms-flex-pack: center;
-	        justify-content: center;
+	align-items: center;
+	justify-content: center;
 }
 
 .tribe-block__tickets__registration__tickets__item:last-child {
@@ -272,10 +252,7 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 	}
 
 .tribe-block__tickets__registration__tickets__item__icon {
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 1 50px;
-	    -ms-flex: 0 1 50px;
-	        flex: 0 1 50px;
+	flex: 0 1 50px;
 	padding: 15px 10px;
 }
 
@@ -284,26 +261,17 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 	}
 
 .tribe-block__tickets__registration__tickets__item__quantity {
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 1 20px;
-	    -ms-flex: 0 1 20px;
-	        flex: 0 1 20px;
+	flex: 0 1 20px;
 	padding: 20px;
 }
 
 .tribe-block__tickets__registration__tickets__item__title {
-	-webkit-box-flex: 10;
-	-webkit-flex: 10 5 230px;
-	    -ms-flex: 10 5 230px;
-	        flex: 10 5 230px;
+	flex: 10 5 230px;
 	padding: 20px 10px;
 }
 
 .tribe-block__tickets__registration__tickets__item__price {
-	-webkit-box-flex: 0;
-	-webkit-flex: 0 1 40px;
-	    -ms-flex: 0 1 40px;
-	        flex: 0 1 40px;
+	flex: 0 1 40px;
 	padding: 20px 0 20px 10px;
 }
 
@@ -313,10 +281,8 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 
 .tribe-block__tickets__registration__back__to__cart {
 	color: #888;
-	-webkit-box-shadow: none;
-	        box-shadow: none;
-	-webkit-box-shadow: initial;
-	        box-shadow: initial;
+	box-shadow: none;
+	box-shadow: initial;
 	border: 0;
 }
 
@@ -328,33 +294,22 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 	}
 
 body.tribe-theme-twentyseventeen .tribe-block__tickets__registration__back__to__cart {
-		-webkit-box-shadow: none;
-		        box-shadow: none;
-		-webkit-box-shadow: initial;
-		        box-shadow: initial;
+		box-shadow: none;
+		box-shadow: initial;
 	}
 
 .tribe-block__tickets__registration__tickets__header {
 	color: #545B65;
-	display: -webkit-box;
-	display: -webkit-flex;
-	display: -ms-flexbox;
 	display: flex;
 	font-size: 13px;
 	padding: 15px 0;
 }
 
 .tribe-block__tickets__registration__tickets__header__summary {
-	-webkit-box-flex: 80%;
-	-webkit-flex: 80%;
-	    -ms-flex: 80%;
-	        flex: 80%;
+	flex: 80%;
 }
 
 .tribe-block__tickets__registration__tickets__header__price {
-	-webkit-box-flex: 20%;
-	-webkit-flex: 20%;
-	    -ms-flex: 20%;
-	        flex: 20%;
+	flex: 20%;
 	text-align: right;
 }
