@@ -31,4 +31,4 @@ $has_meta  = get_post_meta( $ticket_id, '_tribe_tickets_meta_enabled', true );
 			do_action( 'event_tickets_rsvp_after_ticket_row', tribe_events_get_ticket_event( $ticket_id ), $ticket );
 		?>
 	</table>
-<?php endif; ?>
+<?php endif;
