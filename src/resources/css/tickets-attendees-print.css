@@ -51,8 +51,7 @@
 	#tribe-attendees-summary {
 		margin: 0;
 		border: 0;
-		-webkit-box-shadow: none;
-		        box-shadow: none;
+		box-shadow: none;
 	}
 
 	#tribe-attendees-summary .welcome-panel-content {

@@ -2,7 +2,7 @@
 
 exports[`Move Selectors Default - _getModal 1`] = `
 Object {
-  "blockId": null,
+  "clientId": null,
   "isSubmitting": false,
   "post_type": "all",
   "search_terms": "",
@@ -31,7 +31,7 @@ Object {
 }
 `;
 
-exports[`Move Selectors Default - getModalBlockId 1`] = `null`;
+exports[`Move Selectors Default - getModalClientId 1`] = `null`;
 
 exports[`Move Selectors Default - getModalPostType 1`] = `"all"`;
 
@@ -44,7 +44,7 @@ exports[`Move Selectors Default - getModalTicketId 1`] = `null`;
 exports[`Move Selectors Default - getMove 1`] = `
 Object {
   "modal": Object {
-    "blockId": null,
+    "clientId": null,
     "isSubmitting": false,
     "post_type": "all",
     "search_terms": "",

@@ -21,9 +21,9 @@ const mapStateToProps = ( state, ownProps ) => ( {
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	onTempPriceChange: ( e ) => {
-		const { blockId } = ownProps;
-		dispatch( actions.setTicketTempPrice( blockId, e.target.value ) );
-		dispatch( actions.setTicketHasChanges( blockId, true ) );
+		const { clientId } = ownProps;
+		dispatch( actions.setTicketTempPrice( clientId, e.target.value ) );
+		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
 } );
 

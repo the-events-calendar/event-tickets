@@ -33,7 +33,6 @@ extends Tribe__Editor__Blocks__Abstract {
 	public function render( $attributes = array() ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
 		$template           = tribe( 'tickets.editor.template' );
-
 		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
 		$args['attributes'] = $this->attributes( $attributes );
 
@@ -43,17 +42,21 @@ extends Tribe__Editor__Blocks__Abstract {
 		}
 
 		// Fetch the default provider
-		$provider    = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+		$provider = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
 		if ( ! class_exists( $provider ) ) {
 			return;
 		}
 
 		$provider    = call_user_func( array( $provider, 'get_instance' ) );
 		$provider_id = $this->get_provider_id( $provider );
+		$tickets     = $this->get_tickets( $post_id );
 
-		$args['provider']    = $provider;
-		$args['provider_id'] = $provider_id;
-		$args['cart_url']    = 'tpp' !== $provider_id ? $provider->get_cart_url() : '';
+		$args['provider']            = $provider;
+		$args['provider_id']         = $provider_id;
+		$args['cart_url']            = 'tpp' !== $provider_id ? $provider->get_cart_url() : '';
+		$args['tickets_on_sale']     = $this->get_tickets_on_sale( $tickets );
+		$args['has_tickets_on_sale'] = ! empty( $args['tickets_on_sale'] );
+		$args['is_sale_past']        = $this->get_is_sale_past( $tickets );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
@@ -137,6 +140,44 @@ extends Tribe__Editor__Blocks__Abstract {
 		wp_send_json_success( $response );
 	}
 
+	/**
+	 * Get all tickets for event/post, removing RSVPs
+	 *
+	 * @since 4.9
+	 *
+	 * @param  int $post_id Post ID
+	 *
+	 * @return array
+	 */
+	public function get_tickets( $post_id ) {
+		$all_tickets = Tribe__Tickets__Tickets::get_all_event_tickets( $post_id );
+
+		if ( ! $all_tickets ) {
+			return array();
+		}
+
+		$tickets = array();
+
+		foreach ( $all_tickets as $ticket ) {
+			if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+				continue;
+			}
+
+			$tickets[] = $ticket;
+		}
+
+		return $tickets;
+	}
+
+	/**
+	 * Get provider ID
+	 *
+	 * @since 4.9
+	 *
+	 * @param  Tribe__Tickets__Tickets $provider Provider class instance
+	 *
+	 * @return string
+	 */
 	public function get_provider_id( $provider ) {
 
 		switch ( $provider->class_name ) {
@@ -153,5 +194,46 @@ extends Tribe__Editor__Blocks__Abstract {
 				return 'tpp';
 		}
 
+	}
+
+	/**
+	 * Get all tickets on sale
+	 *
+	 * @since 4.9
+	 *
+	 * @param  array $tickets Array of all tickets
+	 *
+	 * @return array
+	 */
+	public function get_tickets_on_sale( $tickets ) {
+		$tickets_on_sale = array();
+
+		foreach ( $tickets as $ticket ) {
+			if ( tribe_events_ticket_is_on_sale( $ticket ) ) {
+				$tickets_on_sale[] = $ticket;
+			}
+		}
+
+		return $tickets_on_sale;
+	}
+
+	/**
+	 * Get whether all ticket sales have passed or not
+	 *
+	 * @since 4.9
+	 *
+	 * @param  array $tickets Array of all tickets
+	 *
+	 * @return bool
+	 */
+	public function get_is_sale_past( $tickets ) {
+		$is_sale_past = ! empty( $tickets );
+		$timestamp = current_time( 'timestamp' );
+
+		foreach ( $tickets as $ticket ) {
+			$is_sale_past = ( $is_sale_past && $ticket->date_is_later( $timestamp ) );
+		}
+
+		return $is_sale_past;
 	}
 }

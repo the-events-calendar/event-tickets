@@ -39,6 +39,11 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 		// Fetch the post
 		$post = get_post( get_the_ID() );
 
+		// Return content if post is empty
+		if ( empty( $post ) ) {
+			return $content;
+		}
+
 		// We don't care about anything other than event for now
 		if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE !== $post->post_type ) {
 			return $content;
