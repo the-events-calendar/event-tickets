@@ -146,6 +146,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Adjust behavior of removing Tickets block to be more intuitive [119662]
 * Tweak - Adjust behavior of removing RSVP block to be more intuitive [119663]
 * Fix - Hide unavailable tickets in Tickets block when Tickets block is not selected [119630]
+* Fix - Fix attendee registration for RSVP block FE [119800]
 
 = [4.9.3] 2018-12-19 =
 
