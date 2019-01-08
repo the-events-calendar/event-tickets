@@ -38,8 +38,8 @@
 	 *
 	 * @return void
 	 */
-	function handle_rsvp_response( e ) {
-		var $button   = $( e.target );
+	function handle_rsvp_response() {
+		var $button   = $( this );
 		var $ticket   = $button.closest( '.tribe-block__rsvp__ticket' );
 		var ticket_id = $ticket.data( 'rsvp-id' );
 		var going     = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
@@ -81,7 +81,7 @@
 	 */
 	function handle_quantity_change( e ) {
 		e.preventDefault();
-		var $button  = $( e.target );
+		var $button  = $( this );
 		var $input   = $button.parent().find( 'input[type="number"]' );
 		var increase = $button.hasClass( 'tribe-block__rsvp__number-input-button--plus' );
 
@@ -100,8 +100,8 @@
 	 *
 	 * @return void
 	 */
-	function tribe_rsvp_loader_start( ticket ) {
-		ticket.find( '.tribe-block__rsvp__loading' ).show();
+	function tribe_rsvp_loader_start( $ticket ) {
+		$ticket.find( '.tribe-block__rsvp__loading' ).show();
 	}
 
 	/**
@@ -111,8 +111,8 @@
 	 *
 	 * @return void
 	 */
-	function tribe_rsvp_loader_end( ticket ) {
-		ticket.find( '.tribe-block__rsvp__loading' ).hide();
+	function tribe_rsvp_loader_end( $ticket ) {
+		$ticket.find( '.tribe-block__rsvp__loading' ).hide();
 	}
 
 	/**
@@ -140,7 +140,7 @@
 	function handle_submission( e ) {
 		e.preventDefault();
 
-		var $ticket   = $( e.target ).closest( '.tribe-block__rsvp__ticket' );
+		var $ticket   = $( this ).closest( '.tribe-block__rsvp__ticket' );
 		var ticket_id = $ticket.data( 'rsvp-id' );
 		var $form     = $ticket.find( 'form' );
 
