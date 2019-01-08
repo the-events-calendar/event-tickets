@@ -72,6 +72,7 @@
 				function( response ) {
 					var form = ticket.find( '.tribe-block__rsvp__form' );
 					form.html( response.data.html );
+					form.trigger( 'tribe-block__rsvp__response' );
 					tribe_rsvp_loader_end( ticket );
 				}
 			);
@@ -132,49 +133,52 @@
 	$( '.tribe-block__rsvp__ticket' ).on( 'click', 'button[type="submit"]', function( e ) {
 		e.preventDefault();
 
-		var ticket    = $( this ).closest( '.tribe-block__rsvp__ticket' );
-		var ticket_id = ticket.data( 'rsvp-id' );
-		var form      = ticket.find( 'form' );
+		// Only run if event tickets plus is not activated
+		if ( ! window.tribe_event_tickets_plus ) {
+			var ticket    = $( this ).closest( '.tribe-block__rsvp__ticket' );
+			var ticket_id = ticket.data( 'rsvp-id' );
+			var form      = ticket.find( 'form' );
 
-		// Get form values in order to validate
-		var qty       = form.find( 'input.tribe-tickets-quantity' );
-		var name      = form.find( 'input.tribe-tickets-full-name' );
-		var email     = form.find( 'input.tribe-tickets-email' );
+			// Get form values in order to validate
+			var qty       = form.find( 'input.tribe-tickets-quantity' );
+			var name      = form.find( 'input.tribe-tickets-full-name' );
+			var email     = form.find( 'input.tribe-tickets-email' );
 
-		// Validate the form
-		if (
-			! $.trim( name.val() ).length
-			|| ! $.trim( email.val() ).length
-			|| parseFloat( qty.val() ) < 1
-		) {
-			form.find( '.tribe-block__rsvp__message__error' ).show();
-			return false;
-		}
-
-		var params = form.serializeArray();
-		params.push( { name: 'action', value: 'rsvp-process' } );
-		params.push( { name: 'ticket_id', value: ticket_id } );
-		tribe_rsvp_loader_start( ticket );
-		$.post(
-			TribeRsvp.ajaxurl,
-			params,
-			function( response ) {
-				// Get the remaining number
-				var remaining = response.data.remaining;
-
-				// Update the remaining template part
-				ticket.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' ).replaceWith( response.data.remaining_html );
-
-				ticket.find( '.tribe-block__rsvp__form' ).html( response.data.html );
-
-				if ( 0 === remaining ) {
-					// If there are no more RSVPs remaining we update the status section
-					ticket.find( '.tribe-block__rsvp__status' ).replaceWith( response.data.status_html );
-				}
-
-				tribe_rsvp_loader_end( ticket );
+			// Validate the form
+			if (
+				! $.trim( name.val() ).length
+				|| ! $.trim( email.val() ).length
+				|| parseFloat( qty.val() ) < 1
+			) {
+				form.find( '.tribe-block__rsvp__message__error' ).show();
+				return false;
 			}
-		);
+
+			var params = form.serializeArray();
+			params.push( { name: 'action', value: 'rsvp-process' } );
+			params.push( { name: 'ticket_id', value: ticket_id } );
+			tribe_rsvp_loader_start( ticket );
+			$.post(
+				TribeRsvp.ajaxurl,
+				params,
+				function( response ) {
+					// Get the remaining number
+					var remaining = response.data.remaining;
+
+					// Update the remaining template part
+					ticket.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' ).replaceWith( response.data.remaining_html );
+
+					ticket.find( '.tribe-block__rsvp__form' ).html( response.data.html );
+
+					if ( 0 === remaining ) {
+						// If there are no more RSVPs remaining we update the status section
+						ticket.find( '.tribe-block__rsvp__status' ).replaceWith( response.data.status_html );
+					}
+
+					tribe_rsvp_loader_end( ticket );
+				}
+			);
+		}
 
 		return;
 
