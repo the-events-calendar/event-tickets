@@ -1,6 +1,8 @@
 (function( $, my ) {
 	'use strict';
 
+
+
 	/**
 	 * Handle the "Going" and "Not Going" button toggle,
 	 * set them active and inactive so they can only use
@@ -61,7 +63,10 @@
 			function( response ) {
 				var $form = $ticket.find( '.tribe-block__rsvp__form' );
 				$form.html( response.data.html );
-				$form.trigger( 'tribe-block__rsvp__response' );
+				if ( !! window.tribe_event_tickets_plus ) {
+					var $input = $form.find( 'input.tribe-tickets-quantity' );
+					window.tribe_event_tickets_plus.meta.block_set_quantity( $input );
+				}
 				tribe_rsvp_loader_end( $ticket );
 			}
 		);
@@ -135,29 +140,38 @@
 	function handle_submission( e ) {
 		e.preventDefault();
 
-		// Only run if event tickets plus is not activated
-		if ( ! window.tribe_event_tickets_plus ) {
-			var $ticket   = $( e.target ).closest( '.tribe-block__rsvp__ticket' );
-			var ticket_id = $ticket.data( 'rsvp-id' );
-			var $form     = $ticket.find( 'form' );
+		var $ticket   = $( e.target ).closest( '.tribe-block__rsvp__ticket' );
+		var ticket_id = $ticket.data( 'rsvp-id' );
+		var $form     = $ticket.find( 'form' );
 
-			var is_rsvp_valid = validate_submission( $form );
+		var is_rsvp_valid = validate_submission( $form );
+		var is_meta_valid = true;
+		var has_tickets_plus = !! window.tribe_event_tickets_plus;
 
-			// Validate the form
-			if ( is_rsvp_valid ) {
-				$form.find( '.tribe-block__rsvp__message__error' ).show();
+		if ( has_tickets_plus ) {
+			is_meta_valid = window.tribe_event_tickets_plus.meta.block_validate_meta( $form );
+		}
 
-				$( 'html, body').animate({
-					scrollTop: $form.offset().top - 100,
-				}, 300 );
+		// Handle invalid form
+		if ( ! is_rsvp_valid || ! is_meta_valid ) {
+			is_rsvp_valid
+				? $form.find( '.tribe-block__rsvp__message__error' ).hide()
+				: $form.find( '.tribe-block__rsvp__message__error' ).show();
+			has_tickets_plus && is_meta_valid
+				? $form.find( '.tribe-event-tickets-meta-required-message' ).hide()
+				: $form.find( '.tribe-event-tickets-meta-required-message' ).show();
 
-				return;
-			}
-
+			$( 'html, body').animate({
+				scrollTop: $form.offset().top - 100,
+			}, 300 );
+		} else {
+			// Form is valid, submit form
 			var params = $form.serializeArray();
 			params.push( { name: 'action', value: 'rsvp-process' } );
 			params.push( { name: 'ticket_id', value: ticket_id } );
+
 			tribe_rsvp_loader_start( $ticket );
+
 			$.post(
 				TribeRsvp.ajaxurl,
 				params,
@@ -165,9 +179,8 @@
 					// Get the remaining number
 					var remaining = response.data.remaining;
 
-					// Update the remaining template part
+					// Update templates
 					$ticket.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' ).replaceWith( response.data.remaining_html );
-
 					$ticket.find( '.tribe-block__rsvp__form' ).html( response.data.html );
 
 					if ( 0 === remaining ) {
