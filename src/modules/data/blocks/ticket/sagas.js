@@ -827,7 +827,8 @@ export function* saveTicketWithPostSave( blockId ) {
  * @export
  */
 export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
-	const ticketIds = yield select( selectors.getAllTicketIds );
+	console.log( selectors );
+	const ticketIds = yield select( selectors.getTicketsAllClientIds );
 	for (let index = 0; index < ticketIds.length; index++) {
 		const blockId = ticketIds[index];
 		yield call( syncTicketSaleEndWithEventStart, prevStartDate, blockId );
@@ -922,6 +923,7 @@ export function* handleEventStartDateChanges() {
 				if ( syncTask ) {
 					yield cancel( syncTask );
 				}
+				console.log('here in loop');
 				syncTask = yield fork( syncTicketsSaleEndWithEventStart, eventStart );
 			}
 		}
