@@ -20,6 +20,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			return false;
 		}
 		add_filter( 'get_post_metadata', array( $this, 'filter_going_fields' ), 15, 4 );
+		add_filter( 'get_post_metadata', array( $this, 'filter_has_attendee_info_fields' ), 15, 4 );
 		add_filter( 'updated_post_meta', array( $this, 'trigger_update_capacity' ), 15, 4 );
 
 		return true;
@@ -133,5 +134,37 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 		if ( $valid_keys[1] === $meta_key ) {
 			return (string) $not_going;
 		}
+	}
+
+		/**
+	 * Populates has attendee info fields field for the Rest API data Endpoint in WordPress
+	 *
+	 * @since 4.9
+	 *
+	 * @param  mixed  $check
+	 * @param  int    $object_id
+	 * @param  string $meta_key
+	 * @param  bool   $single
+	 *
+	 * @return null|bool
+	 */
+	public function filter_has_attendee_info_fields( $check, $object_id, $meta_key, $single ) {
+
+		$valid_keys = array(
+			'_tribe_ticket_has_attendee_info_fields',
+		);
+
+		if ( ! in_array( $meta_key, $valid_keys ) ) {
+			return $check;
+		}
+
+		$repository    = tribe( 'tickets.rest-v1.repository' );
+		$ticket_object = tribe_tickets_get_ticket_provider( $object_id );
+
+		if ( ! $ticket_object instanceof Tribe__Tickets__RSVP ) {
+			return $check;
+		}
+
+		return tribe( 'tickets.data_api' )->ticket_has_meta_fields( $object_id );
 	}
 }
