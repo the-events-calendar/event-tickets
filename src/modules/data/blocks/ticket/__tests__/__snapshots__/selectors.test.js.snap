@@ -279,6 +279,8 @@ exports[`Ticket block selectors Ticket selectors getTicketCurrencyPosition 1`] =
 
 exports[`Ticket block selectors Ticket selectors getTicketCurrencySymbol 1`] = `undefined`;
 
+exports[`Ticket block selectors Ticket selectors getTicketHasAttendeeInfoFields 1`] = `false`;
+
 exports[`Ticket block selectors Ticket selectors getTicketHasBeenCreated 1`] = `false`;
 
 exports[`Ticket block selectors Ticket selectors getTicketHasChanges 1`] = `false`;
