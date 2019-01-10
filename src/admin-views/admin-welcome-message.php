@@ -6,7 +6,7 @@
 
 <p class="tribe-welcome-version"><?php printf( '<strong>%1$s %2$s</strong>', esc_html__( 'Version', 'event-tickets' ), Tribe__Tickets__Main::VERSION ); ?></p>
 
-<p class="tribe-welcome-message">Event Tickets is all about getting tickets into the hands of your attendees as efficiently as possible. No muss, no fuss&mdash;just one seamless transaction on your site.</p>
+<p class="tribe-welcome-message"><?php esc_html_e( 'Event Tickets is all about getting tickets into the hands of your attendees as efficiently as possible. No muss, no fuss&mdash;just one seamless transaction on your site.', 'event-tickets' ); ?></p>
 
 <p class="tribe-welcome-message">
 <?php
@@ -55,7 +55,7 @@
 	</div>
 
 	<div class="tribe-half-column">
-		<h2 data-tribe-icon="dashicons-megaphone"><?php esc_html_e( 'Don\'t Miss Out', 'event-tickets' ); ?></h2>
+		<h2 data-tribe-icon="dashicons-megaphone"><?php esc_html_e( "Don't Miss Out", 'event-tickets' ); ?></h2>
 		<p><?php esc_html_e( 'Stay in touch with Event Tickets and our entire family of events management tools. We share news, occasional discounts, and hilarious gifs.', 'event-tickets' ); ?></p>
 
 		<form action="https://moderntribe.createsend.com/t/r/s/athqh/" method="post">
