@@ -58,6 +58,11 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.notGoingCount );
 	} );
 
+	it( 'should return the has attendee info fields', () => {
+		expect( selectors.getRSVPHasAttendeeInfoFields( state ) )
+			.toBe( DEFAULT_STATE.hasAttendeeInfoFields );
+	} );
+
 	it( 'should return the details object', () => {
 		expect( selectors.getRSVPDetails( state ) )
 			.toBe( DEFAULT_STATE.details );
