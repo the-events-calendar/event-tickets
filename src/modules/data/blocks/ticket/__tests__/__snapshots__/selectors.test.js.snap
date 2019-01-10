@@ -57,12 +57,14 @@ Object {
           "endDateInput": "September 1, 2118",
           "endDateMoment": "2118-09-01T22:30:00.000Z",
           "endTime": "22:30:00",
+          "endTimeInput": "10:30 pm",
           "price": "",
           "sku": "",
           "startDate": "2018-09-01",
           "startDateInput": "September 1, 2018",
           "startDateMoment": "2018-09-01T22:30:00.000Z",
           "startTime": "22:30:00",
+          "startTimeInput": "10:30 pm",
           "title": "",
         },
         "hasBeenCreated": false,
@@ -79,12 +81,14 @@ Object {
           "endDateInput": "September 1, 2118",
           "endDateMoment": "2118-09-01T22:30:00.000Z",
           "endTime": "22:30:00",
+          "endTimeInput": "10:30 pm",
           "price": "",
           "sku": "",
           "startDate": "2018-09-01",
           "startDateInput": "September 1, 2018",
           "startDateMoment": "2018-09-01T22:30:00.000Z",
           "startTime": "22:30:00",
+          "startTimeInput": "10:30 pm",
           "title": "",
         },
         "ticketId": 0,
@@ -122,11 +126,17 @@ exports[`Ticket block selectors Header image selectors getTicketsHeaderImageId 1
 
 exports[`Ticket block selectors Header image selectors getTicketsHeaderImageSrc 1`] = `""`;
 
+exports[`Ticket block selectors Misc selectors canCreateTickets 1`] = `false`;
+
+exports[`Ticket block selectors Misc selectors getDefaultTicketProvider 1`] = `""`;
+
 exports[`Ticket block selectors Misc selectors getTicketProviders 1`] = `Array []`;
 
 exports[`Ticket block selectors Misc selectors hasMultipleTicketProviders 1`] = `false`;
 
 exports[`Ticket block selectors Misc selectors hasTicketProviders 1`] = `false`;
+
+exports[`Ticket block selectors Misc selectors hasValidTicketProvider 1`] = `false`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketCapacity 1`] = `""`;
 
@@ -145,12 +155,14 @@ Object {
   "endDateInput": "September 1, 2118",
   "endDateMoment": "2118-09-01T22:30:00.000Z",
   "endTime": "22:30:00",
+  "endTimeInput": "10:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-09-01",
   "startDateInput": "September 1, 2018",
   "startDateMoment": "2018-09-01T22:30:00.000Z",
   "startTime": "22:30:00",
+  "startTimeInput": "10:30 pm",
   "title": "",
 }
 `;
@@ -162,6 +174,8 @@ exports[`Ticket block selectors Ticket details selectors getTicketEndDateInput 1
 exports[`Ticket block selectors Ticket details selectors getTicketEndDateMoment 1`] = `"2118-09-01T22:30:00.000Z"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketEndTime 1`] = `"22:30:00"`;
+
+exports[`Ticket block selectors Ticket details selectors getTicketEndTimeInput 1`] = `"10:30 pm"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketEndTimeNoSeconds 1`] = `"22:30"`;
 
@@ -176,6 +190,8 @@ exports[`Ticket block selectors Ticket details selectors getTicketStartDateInput
 exports[`Ticket block selectors Ticket details selectors getTicketStartDateMoment 1`] = `"2018-09-01T22:30:00.000Z"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketStartTime 1`] = `"22:30:00"`;
+
+exports[`Ticket block selectors Ticket details selectors getTicketStartTimeInput 1`] = `"10:30 pm"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketStartTimeNoSeconds 1`] = `"22:30"`;
 
@@ -204,12 +220,14 @@ Object {
     "endDateInput": "September 1, 2118",
     "endDateMoment": "2118-09-01T22:30:00.000Z",
     "endTime": "22:30:00",
+    "endTimeInput": "10:30 pm",
     "price": "",
     "sku": "",
     "startDate": "2018-09-01",
     "startDateInput": "September 1, 2018",
     "startDateMoment": "2018-09-01T22:30:00.000Z",
     "startTime": "22:30:00",
+    "startTimeInput": "10:30 pm",
     "title": "",
   },
   "hasBeenCreated": false,
@@ -226,12 +244,14 @@ Object {
     "endDateInput": "September 1, 2118",
     "endDateMoment": "2118-09-01T22:30:00.000Z",
     "endTime": "22:30:00",
+    "endTimeInput": "10:30 pm",
     "price": "",
     "sku": "",
     "startDate": "2018-09-01",
     "startDateInput": "September 1, 2018",
     "startDateMoment": "2018-09-01T22:30:00.000Z",
     "startTime": "22:30:00",
+    "startTimeInput": "10:30 pm",
     "title": "",
   },
   "ticketId": 0,
@@ -279,12 +299,14 @@ Object {
   "endDateInput": "September 1, 2118",
   "endDateMoment": "2118-09-01T22:30:00.000Z",
   "endTime": "22:30:00",
+  "endTimeInput": "10:30 pm",
   "price": "",
   "sku": "",
   "startDate": "2018-09-01",
   "startDateInput": "September 1, 2018",
   "startDateMoment": "2018-09-01T22:30:00.000Z",
   "startTime": "22:30:00",
+  "startTimeInput": "10:30 pm",
   "title": "",
 }
 `;
@@ -296,6 +318,8 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndDa
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndDateMoment 1`] = `"2118-09-01T22:30:00.000Z"`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndTime 1`] = `"22:30:00"`;
+
+exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndTimeInput 1`] = `"10:30 pm"`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempEndTimeNoSeconds 1`] = `"22:30"`;
 
@@ -310,6 +334,8 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempStart
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartDateMoment 1`] = `"2018-09-01T22:30:00.000Z"`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartTime 1`] = `"22:30:00"`;
+
+exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartTimeInput 1`] = `"10:30 pm"`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempStartTimeNoSeconds 1`] = `"22:30"`;
 
@@ -337,12 +363,14 @@ Array [
       "endDateInput": "September 1, 2118",
       "endDateMoment": "2118-09-01T22:30:00.000Z",
       "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
       "price": "",
       "sku": "",
       "startDate": "2018-09-01",
       "startDateInput": "September 1, 2018",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
       "title": "",
     },
     "hasBeenCreated": false,
@@ -359,12 +387,14 @@ Array [
       "endDateInput": "September 1, 2118",
       "endDateMoment": "2118-09-01T22:30:00.000Z",
       "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
       "price": "",
       "sku": "",
       "startDate": "2018-09-01",
       "startDateInput": "September 1, 2018",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
       "title": "",
     },
     "ticketId": 0,
@@ -392,12 +422,14 @@ Object {
         "endDateInput": "September 1, 2118",
         "endDateMoment": "2118-09-01T22:30:00.000Z",
         "endTime": "22:30:00",
+        "endTimeInput": "10:30 pm",
         "price": "",
         "sku": "",
         "startDate": "2018-09-01",
         "startDateInput": "September 1, 2018",
         "startDateMoment": "2018-09-01T22:30:00.000Z",
         "startTime": "22:30:00",
+        "startTimeInput": "10:30 pm",
         "title": "",
       },
       "hasBeenCreated": false,
@@ -414,12 +446,14 @@ Object {
         "endDateInput": "September 1, 2118",
         "endDateMoment": "2118-09-01T22:30:00.000Z",
         "endTime": "22:30:00",
+        "endTimeInput": "10:30 pm",
         "price": "",
         "sku": "",
         "startDate": "2018-09-01",
         "startDateInput": "September 1, 2018",
         "startDateMoment": "2018-09-01T22:30:00.000Z",
         "startTime": "22:30:00",
+        "startTimeInput": "10:30 pm",
         "title": "",
       },
       "ticketId": 0,
@@ -442,12 +476,14 @@ Array [
       "endDateInput": "September 1, 2118",
       "endDateMoment": "2118-09-01T22:30:00.000Z",
       "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
       "price": "",
       "sku": "",
       "startDate": "2018-09-01",
       "startDateInput": "September 1, 2018",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
       "title": "",
     },
     "hasBeenCreated": false,
@@ -464,12 +500,14 @@ Array [
       "endDateInput": "September 1, 2118",
       "endDateMoment": "2118-09-01T22:30:00.000Z",
       "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
       "price": "",
       "sku": "",
       "startDate": "2018-09-01",
       "startDateInput": "September 1, 2018",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
       "title": "",
     },
     "ticketId": 0,
@@ -491,12 +529,14 @@ Object {
       "endDateInput": "September 1, 2118",
       "endDateMoment": "2118-09-01T22:30:00.000Z",
       "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
       "price": "",
       "sku": "",
       "startDate": "2018-09-01",
       "startDateInput": "September 1, 2018",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
       "title": "",
     },
     "hasBeenCreated": false,
@@ -513,12 +553,14 @@ Object {
       "endDateInput": "September 1, 2118",
       "endDateMoment": "2118-09-01T22:30:00.000Z",
       "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
       "price": "",
       "sku": "",
       "startDate": "2018-09-01",
       "startDateInput": "September 1, 2018",
       "startDateMoment": "2018-09-01T22:30:00.000Z",
       "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
       "title": "",
     },
     "ticketId": 0,

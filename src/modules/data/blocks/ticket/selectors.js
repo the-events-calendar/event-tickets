@@ -320,6 +320,16 @@ export const getTicketEndTimeNoSeconds = createSelector(
 	( endTime ) => endTime.slice( 0, -3 ),
 );
 
+export const getTicketStartTimeInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.startTimeInput,
+);
+
+export const getTicketEndTimeInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.endTimeInput,
+);
+
 export const getTicketCapacityType = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.capacityType,
@@ -427,6 +437,16 @@ export const getTicketTempEndTime = createSelector(
 export const getTicketTempEndTimeNoSeconds = createSelector(
 	[ getTicketTempEndTime ],
 	( endTime ) => endTime.slice( 0, -3 ),
+);
+
+export const getTicketTempStartTimeInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.startTimeInput,
+);
+
+export const getTicketTempEndTimeInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.endTimeInput,
 );
 
 export const getTicketTempCapacityType = createSelector(
@@ -558,6 +578,16 @@ export const getTicketProviders = () => {
 	return tickets.providers || [];
 };
 
+export const getDefaultTicketProvider = () => {
+	const tickets = ticketsConfig();
+	return tickets.default_provider || '';
+};
+
+export const hasValidTicketProvider = () => {
+	const provider = getDefaultTicketProvider();
+	return provider !== '' && provider !== constants.RSVP_CLASS;
+};
+
 export const hasMultipleTicketProviders = createSelector(
 	[ getTicketProviders ],
 	( providers ) => providers.length > 1,
@@ -566,4 +596,9 @@ export const hasMultipleTicketProviders = createSelector(
 export const hasTicketProviders = createSelector(
 	[ getTicketProviders ],
 	( providers ) => providers.length > 0,
+);
+
+export const canCreateTickets = createSelector(
+	[ hasTicketProviders, hasValidTicketProvider ],
+	( providers, validDefaultProvider ) => providers && validDefaultProvider
 );

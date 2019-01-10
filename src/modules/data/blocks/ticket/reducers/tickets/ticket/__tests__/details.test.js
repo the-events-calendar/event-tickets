@@ -60,6 +60,14 @@ describe( 'Details reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketEndTime( 'block-id', '13:45' ) ) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the start time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setTicketStartTimeInput( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the end time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setTicketEndTimeInput( 'block-id', '13:45' ) ) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the capacity type', () => {
 		expect( reducer( DEFAULT_STATE, actions.setTicketCapacityType( 'block-id', 'unlimited' ) ) ).toMatchSnapshot();
 	} );

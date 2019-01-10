@@ -10,13 +10,13 @@
  *
  * @link {INSERT_ARTCILE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.3
  *
  */
 
 ?>
 <div class="tribe-block__rsvp__message__success">
 
-	<?php esc_html_e( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'events-gutenberg' ); ?>
+	<?php esc_html_e( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'event-tickets' ); ?>
 
 </div>

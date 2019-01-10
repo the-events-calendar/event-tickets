@@ -1,14 +1,13 @@
 /**
  * External dependencies
  */
-import { takeEvery, put, all, select, call } from 'redux-saga/effects';
+import { takeEvery, put, all, select, call, take, fork } from 'redux-saga/effects';
 import { cloneableGenerator } from 'redux-saga/utils';
-import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * WordPress dependencies
  */
-import { dispatch } from '@wordpress/data';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
 
 /**
  * Internal Dependencies
@@ -22,9 +21,14 @@ import {
 	DEFAULT_STATE as HEADER_IMAGE_DEFAULT_STATE
 } from '../reducers/header-image';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
+import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import * as utils from '@moderntribe/tickets/data/utils';
 import { wpREST } from '@moderntribe/common/utils/api';
-import { moment as momentUtil } from '@moderntribe/common/utils';
+import {
+	moment as momentUtil,
+	time as timeUtil,
+} from '@moderntribe/common/utils';
+import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 const {
 	INDEPENDENT,
@@ -35,12 +39,12 @@ const {
 } = constants;
 
 jest.mock( '@wordpress/data', () => {
-	const removeBlocks = () => {};
-
 	return {
 		select: ( key ) => {
 			if ( key === 'core/editor' ) {
 				return {
+					getBlockCount: () => {},
+					getBlocks: () => {},
 					getCurrentPostId: () => 10,
 					getEditedPostAttribute: ( attr ) => {
 						if ( attr === 'date' ) {
@@ -51,7 +55,8 @@ jest.mock( '@wordpress/data', () => {
 			}
 		},
 		dispatch: () => ( {
-			removeBlocks,
+			insertBlocks: () => {},
+			removeBlocks: () => {},
 		} ),
 	};
 } );
@@ -61,42 +66,229 @@ describe( 'Ticket Block sagas', () => {
 		it( 'should watch actions', () => {
 			const gen = watchers();
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKETS_INITIAL_STATE, sagas.setTicketsInitialState )
+				takeEvery( [
+					types.SET_TICKETS_INITIAL_STATE,
+					types.SET_TICKET_INITIAL_STATE,
+					types.FETCH_TICKET,
+					types.CREATE_NEW_TICKET,
+					types.UPDATE_TICKET,
+					types.DELETE_TICKET,
+					types.FETCH_TICKETS_HEADER_IMAGE,
+					types.UPDATE_TICKETS_HEADER_IMAGE,
+					types.DELETE_TICKETS_HEADER_IMAGE,
+					types.SET_TICKET_DETAILS,
+					types.SET_TICKET_TEMP_DETAILS,
+					types.HANDLE_TICKET_START_DATE,
+					types.HANDLE_TICKET_END_DATE,
+					types.HANDLE_TICKET_START_TIME,
+					types.HANDLE_TICKET_END_TIME,
+					MOVE_TICKET_SUCCESS,
+				], sagas.handler )
 			);
 			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKET_INITIAL_STATE, sagas.setTicketInitialState )
+				fork( sagas.handleEventStartDateChanges )
 			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.FETCH_TICKET, sagas.fetchTicket )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.CREATE_NEW_TICKET, sagas.createNewTicket )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.UPDATE_TICKET, sagas.updateTicket )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.DELETE_TICKET, sagas.deleteTicket )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.FETCH_TICKETS_HEADER_IMAGE, sagas.fetchTicketsHeaderImage )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.UPDATE_TICKETS_HEADER_IMAGE, sagas.updateTicketsHeaderImage )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.DELETE_TICKETS_HEADER_IMAGE, sagas.deleteTicketsHeaderImage )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKET_DETAILS, sagas.setTicketDetails )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( types.SET_TICKET_TEMP_DETAILS, sagas.setTicketTempDetails )
-			);
-			expect( gen.next().value ).toEqual(
-				takeEvery( MOVE_TICKET_SUCCESS, sagas.handleTicketMove )
-			)
 			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handler', () => {
+		let action;
+
+		beforeEach( () => {
+			action = { type: null };
+		} );
+
+		it( 'should set tickets initial state', () => {
+			action.type = types.SET_TICKETS_INITIAL_STATE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.setTicketsInitialState, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set ticket initial state', () => {
+			action.type = types.SET_TICKET_INITIAL_STATE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.setTicketInitialState, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should fetch ticket', () => {
+			action.type = types.FETCH_TICKET;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.fetchTicket, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should create new ticket', () => {
+			action.type = types.CREATE_NEW_TICKET;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.createNewTicket, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should update ticket', () => {
+			action.type = types.UPDATE_TICKET;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.updateTicket, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should delete ticket', () => {
+			action.type = types.DELETE_TICKET;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.deleteTicket, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should fetch tickets header image', () => {
+			action.type = types.FETCH_TICKETS_HEADER_IMAGE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.fetchTicketsHeaderImage, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should update tickets header image', () => {
+			action.type = types.UPDATE_TICKETS_HEADER_IMAGE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.updateTicketsHeaderImage, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should delete tickets header image', () => {
+			action.type = types.DELETE_TICKETS_HEADER_IMAGE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.deleteTicketsHeaderImage )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set ticket details', () => {
+			action.type = types.SET_TICKET_DETAILS;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.setTicketDetails, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set ticket temp details', () => {
+			action.type = types.SET_TICKET_TEMP_DETAILS;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.setTicketTempDetails, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket start date', () => {
+			action.type = types.HANDLE_TICKET_START_DATE;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketStartDate, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket end date', () => {
+			action.type = types.HANDLE_TICKET_END_DATE;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketEndDate, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket start time', () => {
+			action.type = types.HANDLE_TICKET_START_TIME;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketStartTime, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketStartTimeInput, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket end time', () => {
+			action.type = types.HANDLE_TICKET_END_TIME;
+			action.payload = { blockId: 'tribe' };
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketEndTime, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketEndTimeInput, action )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketHasChanges( action.payload.blockId, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket move', () => {
+			action.type = MOVE_TICKET_SUCCESS;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketMove )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'createMissingTicketBlocks', () => {
+		it( 'should create missing ticket blocks', () => {
+			const wpDispatchCoreEditor = {
+				insertBlocks: () => {},
+			};
+			const wpSelectCoreEditor = {
+				getBlockCount: () => {},
+				getBlocks: () => [],
+			};
+			const tickets = [ 'tribe' ];
+			const gen = sagas.createMissingTicketBlocks( tickets );
+			expect( gen.next().value ).toEqual(
+				call( wpDispatch, 'core/editor' )
+			);
+			expect( gen.next( wpDispatchCoreEditor ).value ).toEqual(
+				call( wpSelect, 'core/editor' )
+			);
+			expect( JSON.stringify( gen.next( wpSelectCoreEditor ).value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpSelectCoreEditor.getBlocks(), 'filter' ], ( block ) => block.name === 'tribe/tickets' )
+				)
+			);
+			expect( gen.next( [] ).done ).toEqual( true );
 		} );
 	} );
 
@@ -167,6 +359,7 @@ describe( 'Ticket Block sagas', () => {
 			const HEADER = 0;
 			const SHARED_CAPACITY = '0';
 			const PROVIDER = '';
+			const DEFAULT_PROVIDER = 'woo';
 			const action = {
 				payload: {
 					get: ( key, defaultValue ) => {
@@ -195,13 +388,19 @@ describe( 'Ticket Block sagas', () => {
 				call( sagas.createMissingTicketBlocks, [ 'tribe' ] )
 			);
 			expect( clone1.next().value ).toEqual(
-				put( actions.setTicketsProvider( PROVIDER ) )
+				select( selectors.getDefaultTicketProvider )
+			);
+			expect( clone1.next( DEFAULT_PROVIDER ).value ).toEqual(
+				put( actions.setTicketsProvider( DEFAULT_PROVIDER ) )
 			);
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
 			expect( clone2.next( [ 'tribe' ] ).value ).toEqual(
-				put( actions.setTicketsProvider( PROVIDER ) )
+				select( selectors.getDefaultTicketProvider )
+			);
+			expect( clone2.next( DEFAULT_PROVIDER ).value ).toEqual(
+				put( actions.setTicketsProvider( DEFAULT_PROVIDER ) )
 			);
 			expect( clone2.next().done ).toEqual( true );
 		} );
@@ -249,14 +448,17 @@ describe( 'Ticket Block sagas', () => {
 			delete global.tribe;
 		} );
 
-		it( 'should set tickets initial state', () => {
+		it( 'should set ticket initial state', () => {
 			const TICKET_ID = 99;
 			const CLIENT_ID = 'modern-tribe';
+			const HAS_BEEN_CREATED = true;
 			const action = {
 				payload: {
 					get: ( key ) => {
 						if ( key === 'ticketId' ) {
 							return TICKET_ID;
+						} else if ( key === 'hasBeenCreated' ) {
+							return HAS_BEEN_CREATED;
 						}
 					},
 					clientId: CLIENT_ID,
@@ -264,7 +466,12 @@ describe( 'Ticket Block sagas', () => {
 			};
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
-			expect( gen.next().value ).toEqual(
+			expect( JSON.stringify( gen.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' )
+				),
+			)
+			expect( gen.next( publishDate ).value ).toEqual(
 				call( momentUtil.toMoment, publishDate )
 			);
 			expect( gen.next( startMoment ).value ).toEqual(
@@ -277,15 +484,21 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment )
 			);
 			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime, startMoment )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketStartTimeInput( action.payload.clientId, startTime ) ),
 					put( actions.setTicketTempStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketTempStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketTempStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketTempStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketTempStartTimeInput( action.payload.clientId, startTime ) ),
+					put( actions.setTicketHasBeenCreated( action.payload.clientId, HAS_BEEN_CREATED ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -304,15 +517,20 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, endMoment )
 			);
 			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
 					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -351,11 +569,14 @@ describe( 'Ticket Block sagas', () => {
 		it( 'should set tickets initial state for new ticket', () => {
 			const TICKET_ID = 0;
 			const CLIENT_ID = 'modern-tribe';
+			const HAS_BEEN_CREATED = true;
 			const action = {
 				payload: {
 					get: ( key ) => {
 						if ( key === 'ticketId' ) {
 							return TICKET_ID;
+						} else if ( key === 'hasBeenCreated' ) {
+							return HAS_BEEN_CREATED;
 						}
 					},
 					clientId: CLIENT_ID,
@@ -364,7 +585,12 @@ describe( 'Ticket Block sagas', () => {
 			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
 
 			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
-			expect( gen.next().value ).toEqual(
+			expect( JSON.stringify( gen.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'date' )
+				)
+			)
+			expect( gen.next( publishDate ).value ).toEqual(
 				call( momentUtil.toMoment, publishDate )
 			);
 			expect( gen.next( startMoment ).value ).toEqual(
@@ -377,15 +603,21 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment )
 			);
 			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime, startMoment )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketStartTimeInput( action.payload.clientId, startTime ) ),
 					put( actions.setTicketTempStartDate( action.payload.clientId, startDate ) ),
 					put( actions.setTicketTempStartDateInput( action.payload.clientId, startDateInput ) ),
 					put( actions.setTicketTempStartDateMoment( action.payload.clientId, startMoment ) ),
 					put( actions.setTicketTempStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketTempStartTimeInput( action.payload.clientId, startTime ) ),
+					put( actions.setTicketHasBeenCreated( action.payload.clientId, HAS_BEEN_CREATED ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -404,15 +636,20 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, endMoment )
 			);
 			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
 				all( [
 					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
 					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
 					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
 					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
 					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
 				] )
 			);
 			expect( gen.next().value ).toEqual(
@@ -560,10 +797,12 @@ describe( 'Ticket Block sagas', () => {
 			const startDate2 = momentUtil.toDatabaseDate( startMoment2 );
 			const startDateInput2 = momentUtil.toDate( startMoment2 );
 			const startTime2 = momentUtil.toDatabaseTime( startMoment2 );
+			const startTimeInput2 = momentUtil.toTime( startMoment2 );
 			const endMoment2 = momentUtil.toMoment( '' );
 			const endDate2 = '';
 			const endDateInput2 = '';
 			const endTime2 = '';
+			const endTimeInput2 = '';
 
 			expect( clone2.next( apiResponse2 ).value ).toEqual(
 				call( momentUtil.toMoment, apiResponse2.data.available_from )
@@ -578,6 +817,9 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment2 )
 			);
 			expect( clone2.next( startTime2 ).value ).toEqual(
+				call( momentUtil.toTime, startMoment2 )
+			);
+			expect( clone2.next( startTimeInput2 ).value ).toEqual(
 				call( momentUtil.toMoment, '' )
 			);
 
@@ -594,6 +836,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment: endMoment2,
 				startTime: startTime2,
 				endTime: endTime2,
+				startTimeInput: startTimeInput2,
+				endTimeInput: endTimeInput2,
 				capacityType: apiResponse2.data.capacity_type,
 				capacity: apiResponse2.data.capacity,
 			};
@@ -643,10 +887,12 @@ describe( 'Ticket Block sagas', () => {
 			const startDate3 = momentUtil.toDatabaseDate( startMoment3 );
 			const startDateInput3 = momentUtil.toDate( startMoment3 );
 			const startTime3 = momentUtil.toDatabaseTime( startMoment3 );
+			const startTimeInput3 = momentUtil.toTime( startMoment3 );
 			const endMoment3 = momentUtil.toMoment( apiResponse3.data.available_until );
 			const endDate3 = momentUtil.toDatabaseDate( endMoment3 );
 			const endDateInput3 = momentUtil.toDate( endMoment3 );
 			const endTime3 = momentUtil.toDatabaseTime( endMoment3 );
+			const endTimeInput3 = momentUtil.toTime( endMoment3 );
 
 			expect( clone3.next( apiResponse3 ).value ).toEqual(
 				call( momentUtil.toMoment, apiResponse3.data.available_from )
@@ -661,6 +907,9 @@ describe( 'Ticket Block sagas', () => {
 				call( momentUtil.toDatabaseTime, startMoment3 )
 			);
 			expect( clone3.next( startTime3 ).value ).toEqual(
+				call( momentUtil.toTime, startMoment3 )
+			);
+			expect( clone3.next( startTimeInput3 ).value ).toEqual(
 				call( momentUtil.toMoment, '' )
 			);
 			expect( clone3.next( endMoment2 ).value ).toEqual(
@@ -674,6 +923,9 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( clone3.next( endDateInput3 ).value ).toEqual(
 				call( momentUtil.toDatabaseTime, endMoment3 )
+			);
+			expect( clone3.next( startTime3 ).value ).toEqual(
+				call( momentUtil.toTime, endMoment3 )
 			);
 
 			const details3 = {
@@ -689,11 +941,13 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment: endMoment3,
 				startTime: startTime3,
 				endTime: endTime3,
+				startTimeInput: startTimeInput3,
+				endTimeInput: endTimeInput3,
 				capacityType: apiResponse3.data.capacity_type,
 				capacity: apiResponse3.data.capacity,
 			};
 
-			expect( clone3.next( startTime3 ).value ).toEqual(
+			expect( clone3.next( startTimeInput3 ).value ).toEqual(
 				all( [
 					put( actions.setTicketDetails( BLOCK_ID, details3 ) ),
 					put( actions.setTicketTempDetails( BLOCK_ID, details3 ) ),
@@ -740,6 +994,8 @@ describe( 'Ticket Block sagas', () => {
 			const endDateMoment = '2018-11-09 19:48:42';
 			const startTime = '19:48:42';
 			const endTime = '19:48:42';
+			const startTimeInput = '19:48:42';
+			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
 
@@ -812,6 +1068,8 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndDateMoment, props ),
 					select( selectors.getTicketTempStartTime, props ),
 					select( selectors.getTicketTempEndTime, props ),
+					select( selectors.getTicketTempStartTimeInput, props ),
+					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
 				] )
@@ -830,6 +1088,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] ).value ).toEqual(
@@ -847,6 +1107,8 @@ describe( 'Ticket Block sagas', () => {
 						endDateMoment,
 						startTime,
 						endTime,
+						startTimeInput,
+						endTimeInput,
 						capacityType,
 						capacity,
 					} ) ),
@@ -886,6 +1148,8 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndDateMoment, props ),
 					select( selectors.getTicketTempStartTime, props ),
 					select( selectors.getTicketTempEndTime, props ),
+					select( selectors.getTicketTempStartTimeInput, props ),
+					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
 				] )
@@ -904,6 +1168,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] ).value ).toEqual(
@@ -921,6 +1187,8 @@ describe( 'Ticket Block sagas', () => {
 						endDateMoment,
 						startTime,
 						endTime,
+						startTimeInput,
+						endTimeInput,
 						capacityType,
 						capacity,
 					} ) ),
@@ -967,6 +1235,8 @@ describe( 'Ticket Block sagas', () => {
 			const endDateMoment = '2018-11-09 19:48:42';
 			const startTime = '19:48:42';
 			const endTime = '19:48:42';
+			const startTimeInput = '19:48:42';
+			const endTimeInput = '19:48:42';
 			const capacityType = 'own';
 			const capacity = 100;
 
@@ -1045,6 +1315,8 @@ describe( 'Ticket Block sagas', () => {
 					select( selectors.getTicketTempEndDateMoment, props ),
 					select( selectors.getTicketTempStartTime, props ),
 					select( selectors.getTicketTempEndTime, props ),
+					select( selectors.getTicketTempStartTimeInput, props ),
+					select( selectors.getTicketTempEndTimeInput, props ),
 					select( selectors.getTicketTempCapacityType, props ),
 					select( selectors.getTicketTempCapacity, props ),
 				] )
@@ -1062,6 +1334,8 @@ describe( 'Ticket Block sagas', () => {
 				endDateMoment,
 				startTime,
 				endTime,
+				startTimeInput,
+				endTimeInput,
 				capacityType,
 				capacity,
 			] ).value ).toEqual(
@@ -1079,6 +1353,8 @@ describe( 'Ticket Block sagas', () => {
 						endDateMoment,
 						startTime,
 						endTime,
+						startTimeInput,
+						endTimeInput,
 						capacityType,
 						capacity,
 					} ) ),
@@ -1126,8 +1402,10 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next().value ).toEqual(
 				put( actions.removeTicketBlock( BLOCK_ID ) )
 			);
-			expect( clone1.next().value ).toEqual(
-				call( [ dispatch( 'core/editor' ), 'removeBlocks' ], [ BLOCK_ID ] )
+			expect( JSON.stringify( clone1.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ BLOCK_ID ] )
+				)
 			);
 			expect( clone1.next().done ).toEqual( true );
 
@@ -1144,8 +1422,10 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next().value ).toEqual(
 				put( actions.removeTicketBlock( BLOCK_ID ) )
 			);
-			expect( clone2.next().value ).toEqual(
-				call( [ dispatch( 'core/editor' ), 'removeBlocks' ], [ BLOCK_ID ] )
+			expect( JSON.stringify( clone2.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ BLOCK_ID ] )
+				)
 			);
 			expect( clone2.next().value ).toEqual(
 				call( wpREST, {
@@ -1348,124 +1628,566 @@ describe( 'Ticket Block sagas', () => {
 	} );
 
 	describe( 'setTicketDetails', () => {
-		const title = 'title';
-		const description = 'description';
-		const price = 10;
-		const sku = '12345678';
-		const startDate = '2018-11-09 19:48:42';
-		const startDateInput = '2018-11-09 19:48:42';
-		const startDateMoment = '2018-11-09 19:48:42';
-		const endDate = '2018-11-09 19:48:42';
-		const endDateInput = '2018-11-09 19:48:42';
-		const endDateMoment = '2018-11-09 19:48:42';
-		const startTime = '19:48:42';
-		const endTime = '19:48:42';
-		const capacityType = 'own';
-		const capacity = 100;
+		it( 'should set ticket details', () => {
+			const title = 'title';
+			const description = 'description';
+			const price = 10;
+			const sku = '12345678';
+			const startDate = '2018-11-09 19:48:42';
+			const startDateInput = '2018-11-09 19:48:42';
+			const startDateMoment = '2018-11-09 19:48:42';
+			const endDate = '2018-11-09 19:48:42';
+			const endDateInput = '2018-11-09 19:48:42';
+			const endDateMoment = '2018-11-09 19:48:42';
+			const startTime = '19:48:42';
+			const endTime = '19:48:42';
+			const startTimeInput = '19:48:42';
+			const endTimeInput = '19:48:42';
+			const capacityType = 'own';
+			const capacity = 100;
 
-		const BLOCK_ID = 'modern-tribe';
-		const action = {
-			payload: {
-				blockId: BLOCK_ID,
-				details: {
-					title,
-					description,
-					price,
-					sku,
-					startDate,
-					startDateInput,
-					startDateMoment,
-					endDate,
-					endDateInput,
-					endDateMoment,
-					startTime,
-					endTime,
-					capacityType,
-					capacity,
+			const BLOCK_ID = 'modern-tribe';
+			const action = {
+				payload: {
+					blockId: BLOCK_ID,
+					details: {
+						title,
+						description,
+						price,
+						sku,
+						startDate,
+						startDateInput,
+						startDateMoment,
+						endDate,
+						endDateInput,
+						endDateMoment,
+						startTime,
+						endTime,
+						startTimeInput,
+						endTimeInput,
+						capacityType,
+						capacity,
+					},
 				},
-			},
-		};
+			};
 
-		const gen = sagas.setTicketDetails( action );
-		expect( gen.next().value ).toEqual(
-			all( [
-				put( actions.setTicketTitle( BLOCK_ID, title ) ),
-				put( actions.setTicketDescription( BLOCK_ID, description ) ),
-				put( actions.setTicketPrice( BLOCK_ID, price ) ),
-				put( actions.setTicketSku( BLOCK_ID, sku ) ),
-				put( actions.setTicketStartDate( BLOCK_ID, startDate ) ),
-				put( actions.setTicketStartDateInput( BLOCK_ID, startDateInput ) ),
-				put( actions.setTicketStartDateMoment( BLOCK_ID, startDateMoment ) ),
-				put( actions.setTicketEndDate( BLOCK_ID, endDate ) ),
-				put( actions.setTicketEndDateInput( BLOCK_ID, endDateInput ) ),
-				put( actions.setTicketEndDateMoment( BLOCK_ID, endDateMoment ) ),
-				put( actions.setTicketStartTime( BLOCK_ID, startTime ) ),
-				put( actions.setTicketEndTime( BLOCK_ID, endTime ) ),
-				put( actions.setTicketCapacityType( BLOCK_ID, capacityType ) ),
-				put( actions.setTicketCapacity( BLOCK_ID, capacity ) ),
-			] )
-		);
-		expect( gen.next().done ).toEqual( true );
+			const gen = sagas.setTicketDetails( action );
+			expect( gen.next().value ).toEqual(
+				all( [
+					put( actions.setTicketTitle( BLOCK_ID, title ) ),
+					put( actions.setTicketDescription( BLOCK_ID, description ) ),
+					put( actions.setTicketPrice( BLOCK_ID, price ) ),
+					put( actions.setTicketSku( BLOCK_ID, sku ) ),
+					put( actions.setTicketStartDate( BLOCK_ID, startDate ) ),
+					put( actions.setTicketStartDateInput( BLOCK_ID, startDateInput ) ),
+					put( actions.setTicketStartDateMoment( BLOCK_ID, startDateMoment ) ),
+					put( actions.setTicketEndDate( BLOCK_ID, endDate ) ),
+					put( actions.setTicketEndDateInput( BLOCK_ID, endDateInput ) ),
+					put( actions.setTicketEndDateMoment( BLOCK_ID, endDateMoment ) ),
+					put( actions.setTicketStartTime( BLOCK_ID, startTime ) ),
+					put( actions.setTicketEndTime( BLOCK_ID, endTime ) ),
+					put( actions.setTicketStartTimeInput( BLOCK_ID, startTimeInput ) ),
+					put( actions.setTicketEndTimeInput( BLOCK_ID, endTimeInput ) ),
+					put( actions.setTicketCapacityType( BLOCK_ID, capacityType ) ),
+					put( actions.setTicketCapacity( BLOCK_ID, capacity ) ),
+				] )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
 	} );
 
 	describe( 'setTicketTempDetails', () => {
-		const title = 'title';
-		const description = 'description';
-		const price = 10;
-		const sku = '12345678';
-		const startDate = '2018-11-09 19:48:42';
-		const startDateInput = '2018-11-09 19:48:42';
-		const startDateMoment = '2018-11-09 19:48:42';
-		const endDate = '2018-11-09 19:48:42';
-		const endDateInput = '2018-11-09 19:48:42';
-		const endDateMoment = '2018-11-09 19:48:42';
-		const startTime = '19:48:42';
-		const endTime = '19:48:42';
-		const capacityType = 'own';
-		const capacity = 100;
+		it( 'should set ticket temp details', () => {
+			const title = 'title';
+			const description = 'description';
+			const price = 10;
+			const sku = '12345678';
+			const startDate = '2018-11-09 19:48:42';
+			const startDateInput = '2018-11-09 19:48:42';
+			const startDateMoment = '2018-11-09 19:48:42';
+			const endDate = '2018-11-09 19:48:42';
+			const endDateInput = '2018-11-09 19:48:42';
+			const endDateMoment = '2018-11-09 19:48:42';
+			const startTime = '19:48:42';
+			const endTime = '19:48:42';
+			const startTimeInput = '19:48:42';
+			const endTimeInput = '19:48:42';
+			const capacityType = 'own';
+			const capacity = 100;
 
-		const BLOCK_ID = 'modern-tribe';
-		const action = {
-			payload: {
-				blockId: BLOCK_ID,
-				tempDetails: {
-					title,
-					description,
-					price,
-					sku,
-					startDate,
-					startDateInput,
-					startDateMoment,
-					endDate,
-					endDateInput,
-					endDateMoment,
-					startTime,
-					endTime,
-					capacityType,
-					capacity,
+			const BLOCK_ID = 'modern-tribe';
+			const action = {
+				payload: {
+					blockId: BLOCK_ID,
+					tempDetails: {
+						title,
+						description,
+						price,
+						sku,
+						startDate,
+						startDateInput,
+						startDateMoment,
+						endDate,
+						endDateInput,
+						endDateMoment,
+						startTime,
+						endTime,
+						startTimeInput,
+						endTimeInput,
+						capacityType,
+						capacity,
+					},
 				},
-			},
-		};
+			};
 
-		const gen = sagas.setTicketTempDetails( action );
-		expect( gen.next().value ).toEqual(
-			all( [
-				put( actions.setTicketTempTitle( BLOCK_ID, title ) ),
-				put( actions.setTicketTempDescription( BLOCK_ID, description ) ),
-				put( actions.setTicketTempPrice( BLOCK_ID, price ) ),
-				put( actions.setTicketTempSku( BLOCK_ID, sku ) ),
-				put( actions.setTicketTempStartDate( BLOCK_ID, startDate ) ),
-				put( actions.setTicketTempStartDateInput( BLOCK_ID, startDateInput ) ),
-				put( actions.setTicketTempStartDateMoment( BLOCK_ID, startDateMoment ) ),
-				put( actions.setTicketTempEndDate( BLOCK_ID, endDate ) ),
-				put( actions.setTicketTempEndDateInput( BLOCK_ID, endDateInput ) ),
-				put( actions.setTicketTempEndDateMoment( BLOCK_ID, endDateMoment ) ),
-				put( actions.setTicketTempStartTime( BLOCK_ID, startTime ) ),
-				put( actions.setTicketTempEndTime( BLOCK_ID, endTime ) ),
-				put( actions.setTicketTempCapacityType( BLOCK_ID, capacityType ) ),
-				put( actions.setTicketTempCapacity( BLOCK_ID, capacity ) ),
-			] )
-		);
-		expect( gen.next().done ).toEqual( true );
+			const gen = sagas.setTicketTempDetails( action );
+			expect( gen.next().value ).toEqual(
+				all( [
+					put( actions.setTicketTempTitle( BLOCK_ID, title ) ),
+					put( actions.setTicketTempDescription( BLOCK_ID, description ) ),
+					put( actions.setTicketTempPrice( BLOCK_ID, price ) ),
+					put( actions.setTicketTempSku( BLOCK_ID, sku ) ),
+					put( actions.setTicketTempStartDate( BLOCK_ID, startDate ) ),
+					put( actions.setTicketTempStartDateInput( BLOCK_ID, startDateInput ) ),
+					put( actions.setTicketTempStartDateMoment( BLOCK_ID, startDateMoment ) ),
+					put( actions.setTicketTempEndDate( BLOCK_ID, endDate ) ),
+					put( actions.setTicketTempEndDateInput( BLOCK_ID, endDateInput ) ),
+					put( actions.setTicketTempEndDateMoment( BLOCK_ID, endDateMoment ) ),
+					put( actions.setTicketTempStartTime( BLOCK_ID, startTime ) ),
+					put( actions.setTicketTempEndTime( BLOCK_ID, endTime ) ),
+					put( actions.setTicketTempStartTimeInput( BLOCK_ID, startTimeInput ) ),
+					put( actions.setTicketTempEndTimeInput( BLOCK_ID, endTimeInput ) ),
+					put( actions.setTicketTempCapacityType( BLOCK_ID, capacityType ) ),
+					put( actions.setTicketTempCapacity( BLOCK_ID, capacity ) ),
+				] )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
 	} );
+
+	describe( 'handleTicketStartDate', () => {
+		let action;
+
+		beforeEach( () => {
+			action = {
+				payload: {
+					blockId: 'tribe',
+					date: undefined,
+					dayPickerInput: {
+						state: {
+							value: '',
+						}
+					}
+				}
+			}
+		} );
+
+		it( 'should handle undefined ticket start date', () => {
+			const gen = sagas.handleTicketStartDate( action );
+			expect( gen.next().value ).toEqual( undefined );
+			expect( gen.next( undefined ).value ).toEqual( '' );
+			expect( gen.next( '' ).value ).toEqual(
+				put( actions.setTicketTempStartDate( action.payload.blockId, '' ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateMoment( action.payload.blockId, undefined ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket start date', () => {
+			action.payload.date = 'January 1, 2018';
+			action.payload.dayPickerInput.state.value = 'January 1, 2018';
+			const gen = sagas.handleTicketStartDate( action );
+			expect( gen.next().value ).toEqual(
+				call( momentUtil.toMoment, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				put( actions.setTicketTempStartDate( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempStartDateMoment( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketEndDate', () => {
+		let action;
+
+		beforeEach( () => {
+			action = {
+				payload: {
+					blockId: 'tribe',
+					date: undefined,
+					dayPickerInput: {
+						state: {
+							value: '',
+						}
+					}
+				}
+			}
+		} );
+
+		it( 'should handle undefined ticket end date', () => {
+			const gen = sagas.handleTicketEndDate( action );
+			expect( gen.next().value ).toEqual( undefined );
+			expect( gen.next( undefined ).value ).toEqual( '' );
+			expect( gen.next( '' ).value ).toEqual(
+				put( actions.setTicketTempEndDate( action.payload.blockId, '' ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateMoment( action.payload.blockId, undefined ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should handle ticket end date', () => {
+			action.payload.date = 'January 1, 2018';
+			action.payload.dayPickerInput.state.value = 'January 1, 2018';
+			const gen = sagas.handleTicketEndDate( action );
+			expect( gen.next().value ).toEqual(
+				call( momentUtil.toMoment, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, action.payload.date )
+			);
+			expect( gen.next( action.payload.date ).value ).toEqual(
+				put( actions.setTicketTempEndDate( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateInput( action.payload.blockId, action.payload.dayPickerInput.state.value ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setTicketTempEndDateMoment( action.payload.blockId, action.payload.date ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketStartTime', () => {
+		it( 'should handle ticket start time', () => {
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const startTime = '01:00';
+			const gen = sagas.handleTicketStartTime( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				put( actions.setTicketTempStartTime( action.payload.blockId, `${ startTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketStartTimeInput', () => {
+		it( 'should handle ticket start time input', () => {
+			const startTimeInput = '01:00';
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const gen = sagas.handleTicketStartTimeInput( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toTime, startTimeInput )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				put( actions.setTicketTempStartTimeInput( action.payload.blockId, startTimeInput ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketEndTime', () => {
+		it( 'should handle ticket end time', () => {
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const endTime = '01:00';
+			const gen = sagas.handleTicketEndTime( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				put( actions.setTicketTempEndTime( action.payload.blockId, `${ endTime }:00` ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketEndTimeInput', () => {
+		it( 'should handle ticket end time input', () => {
+			const startTimeInput = '01:00';
+			const action = {
+				payload: {
+					blockId: 'tribe',
+					seconds: 3600,
+				},
+			};
+			const gen = sagas.handleTicketStartTimeInput( action );
+			expect( gen.next().value ).toEqual(
+				call( timeUtil.fromSeconds, action.payload.seconds, timeUtil.TIME_FORMAT_HH_MM )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toMoment, startTimeInput, momentUtil.TIME_FORMAT, false )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				call( momentUtil.toTime, startTimeInput )
+			);
+			expect( gen.next( startTimeInput ).value ).toEqual(
+				put( actions.setTicketTempStartTimeInput( action.payload.blockId, startTimeInput ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketMove', () => {
+		it( 'should handle ticket move', () => {
+			const ticketIds = [ 42 ];
+			const gen = cloneableGenerator( sagas.handleTicketMove )();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getAllTicketIds )
+			);
+			expect( gen.next( ticketIds ).value ).toEqual(
+				select( moveSelectors.getModalBlockId )
+			);
+
+			const clone1 = gen.clone();
+			expect( clone1.next( 0 ).done ).toEqual( true );
+
+			const clone2 = gen.clone();
+			expect( clone2.next( 42 ).value ).toEqual(
+				put( actions.setTicketIsSelected( 42, false ) )
+			);
+			expect( clone2.next().value ).toEqual(
+				put( actions.removeTicketBlock( 42 ) )
+			);
+			expect( JSON.stringify( clone2.next().value ) ).toEqual(
+				JSON.stringify(
+					call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ 42 ] )
+				)
+			);
+			expect( clone2.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'syncTicketSaleEndWithEventStart', () => {
+		let prevDate, state, momentMock, blockId;
+		beforeEach( () => {
+			blockId = 'blockId';
+			prevDate = '2018-01-01 00:00:00';
+			state = {
+				startDate: 'January 1, 2018',
+				startTime: '12:34',
+				endDate: 'January 4, 2018',
+				endTime: '23:32',
+			};
+			global.tribe = {
+				events: {
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
+								},
+							},
+						},
+					},
+				},
+			};
+			momentMock = {
+				local: jest.fn(),
+				isSame: jest.fn(),
+				format: jest.fn(),
+			};
+		} );
+
+		afterEach( () => {
+			delete global.tribe;
+		} );
+
+		it( 'should not sync', () => {
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, blockId );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				select( selectors.getTicketEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				call( createDates, prevDate )
+			);
+			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
+			expect( gen.next( false ).value ).toMatchSnapshot();
+			expect( gen.next( true ).value ).toMatchSnapshot();
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should sync', () => {
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, blockId );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				select( selectors.getTicketEndDateMoment, { blockId } )
+			);
+			expect( gen.next( momentMock ).value ).toEqual(
+				call( createDates, prevDate )
+			);
+			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
+			expect( gen.next( true ).value ).toMatchSnapshot();
+			expect( gen.next( true ).value ).toMatchSnapshot();
+
+			expect( gen.next( true ).value ).toEqual(
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+			);
+			expect( gen.next( '2018-02-02 02:00:00' ).value ).toEqual(
+				call( createDates, '2018-02-02 02:00:00' )
+			);
+
+			expect( gen.next( {
+				moment: '2018-02-02',
+				date: '2018-02-02',
+				dateInput: '2018-02-02',
+				time: '02:00:00',
+				timeInput: '02:00:00',
+			} ).value ).toMatchSnapshot();
+
+			expect( gen.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, blockId )
+			);
+		} );
+	} );
+
+	describe( 'handleEventStartDateChanges', () => {
+		let channel;
+		beforeEach( () => {
+			global.tribe = {
+				events: {
+					data: {
+						blocks: {
+							datetime: {
+								selectors: {
+									getStart: jest.fn(),
+								},
+								types: {
+									SET_START_DATE_TIME: 'SET_START_DATE_TIME',
+									SET_START_TIME: 'SET_START_TIME',
+								},
+							},
+						},
+					},
+				},
+			};
+			channel = { name, take: jest.fn(), close: jest.fn() };
+		} );
+
+		afterEach( () => {
+			delete global.tribe;
+		} );
+
+		it( 'should handle start time changes', () => {
+			const gen = sagas.handleEventStartDateChanges();
+
+			expect(gen.next().value).toEqual(
+				call( hasPostTypeChannel )
+			);
+			expect(gen.next(channel).value).toMatchSnapshot();
+			expect(gen.next().value).toEqual(
+				call( [ channel, 'close' ] )
+			);
+
+			expect( gen.next().value ).toEqual(
+				call( isTribeEventPostType )
+			);
+
+			expect( gen.next( true ).value ).toEqual(
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+			);
+
+			expect( gen.next( '2018-01-01 12:00:00' ).value ).toEqual(
+				take( [ 'SET_START_DATE_TIME', 'SET_START_TIME' ] )
+			);
+
+			expect( gen.next().value ).toEqual(
+				fork( sagas.syncTicketsSaleEndWithEventStart, '2018-01-01 12:00:00' )
+			);
+
+			expect( gen.next().done ).toEqual( false );
+		} );
+	} );
+
+	describe( 'saveTicketWithPostSave', () => {
+		let channel, blockId;
+
+		beforeEach( () => {
+			channel = { name, take: jest.fn(), close: jest.fn() };
+			blockId = 'blockId';
+		} );
+
+		it( 'should update when channel saves', () => {
+			const gen = sagas.saveTicketWithPostSave( blockId );
+
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketHasBeenCreated, { blockId } )
+			);
+
+			expect( gen.next( true ).value ).toEqual(
+				call( createWPEditorSavingChannel )
+			);
+
+			expect( gen.next( channel ).value ).toEqual(
+				take( channel )
+			);
+
+			expect(gen.next().value).toEqual(
+				call( sagas.updateTicket, { payload: { blockId } } )
+			);
+
+			expect( gen.next().value ).toEqual(
+				call( [ channel, 'close' ] )
+			);
+
+			expect( gen.next().done ).toEqual( true );
+		} );
+		it( 'should do nothing', () => {
+			const gen = sagas.saveTicketWithPostSave( blockId );
+
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketHasBeenCreated, { blockId } )
+			);
+
+			expect( gen.next( false ).done ).toEqual( true );
+		} );
+	} );
+
+
 } );
