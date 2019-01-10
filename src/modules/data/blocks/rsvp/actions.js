@@ -56,6 +56,13 @@ export const setRSVPNotGoingCount = ( notGoingCount ) => ( {
 	},
 } );
 
+export const setRSVPHasAttendeeInfoFields = ( hasAttendeeInfoFields ) => ( {
+	type: types.SET_RSVP_HAS_ATTENDEE_INFO_FIELDS,
+	payload: {
+		hasAttendeeInfoFields,
+	},
+} );
+
 export const setRSVPDetails = ( payload ) => ( {
 	type: types.SET_RSVP_DETAILS,
 	payload,
