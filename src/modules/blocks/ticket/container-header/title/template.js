@@ -9,6 +9,10 @@ import AutosizeInput from 'react-input-autosize';
  * Wordpress dependencies
  */
 import { __ } from '@wordpress/i18n';
+
+/**
+ * Internal dependencies
+ */
 import { Clipboard, Pencil } from '@moderntribe/common/icons';
 import './style.pcss';
 
