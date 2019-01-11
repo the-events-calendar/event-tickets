@@ -293,8 +293,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
 
+
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
-			return;
+			//return;
 		}
 
 		$default_actions = array();
@@ -366,7 +367,20 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function column_check_in( $item ) {
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		/**
+		 * tribe_tickets_user_can_manage_attendees filters the permissions that will allow user to check in attendees.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean  false            Can user check in attendees
+		 * @param int      $this->event->ID The event post ID.
+		 */
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees()
+			&& (
+				! empty( $this->event )
+				&& ! apply_filters( 'tribe_tickets_user_can_manage_attendees', false, $this->event->ID )
+			)
+		 ) {
 			return false;
 		}
 
