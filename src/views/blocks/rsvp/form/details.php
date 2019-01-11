@@ -13,10 +13,7 @@
  * @version 4.9
  *
  */
-?>
 
-<?php $this->template( 'blocks/rsvp/form/name', array( 'ticket' => $ticket ) ); ?>
-
-<?php $this->template( 'blocks/rsvp/form/email', array( 'ticket' => $ticket ) ); ?>
-
-<?php $this->template( 'blocks/rsvp/form/opt-out', array( 'ticket' => $ticket ) ); ?>
+$this->template( 'blocks/rsvp/form/name', array( 'ticket' => $ticket ) );
+$this->template( 'blocks/rsvp/form/email', array( 'ticket' => $ticket ) );
+$this->template( 'blocks/rsvp/form/opt-out', array( 'ticket' => $ticket ) );
