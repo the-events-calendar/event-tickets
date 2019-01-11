@@ -158,7 +158,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			return $check;
 		}
 
-		$repository    = tribe( 'tickets.rest-v1.repository' );
 		$ticket_object = tribe_tickets_get_ticket_provider( $object_id );
 
 		if ( ! $ticket_object instanceof Tribe__Tickets__RSVP ) {
