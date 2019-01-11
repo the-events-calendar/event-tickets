@@ -16,7 +16,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * @return boolean
 	 */
 	public function hook() {
-
+		// @todo: this does not appear to do _anything_ ?!?
 		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 			return false;
 		}
