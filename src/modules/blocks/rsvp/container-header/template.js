@@ -36,7 +36,7 @@ const getTitle = (
 					onChange={ onTempTitleChange }
 					disabled={ isDisabled }
 				/>
-				<Clipboard />
+				{ hasAttendeeInfoFields && <Clipboard /> }
 			</div>
 		)
 		: <h2 className="tribe-editor__rsvp-container-header__title">{ title }</h2>
