@@ -19,31 +19,38 @@ const helperText = __( 'Save your RSVP to enable attendee registration fields', 
 
 const label = __( 'Attendee Registration', 'event-tickets' );
 
-const linkText = __( '+ Add', 'event-tickets' );
+const linkTextAdd = __( '+ Add', 'event-tickets' );
+const linkTextEdit = __( 'Edit', 'event-tickets' );
 
 const RSVPAttendeeRegistration = ( {
 	attendeeRegistrationURL,
+	hasAttendeeInfoFields,
 	isCreated,
 	isDisabled,
-} ) => (
-	<div className="tribe-editor__rsvp__attendee-registration">
-		<LabelWithLink
-			className="tribe-editor__rsvp__attendee-registration-label-with-link"
-			label={ label }
-			linkDisabled={ isDisabled }
-			linkHref={ attendeeRegistrationURL }
-			linkText={ linkText }
-		/>
-		{ ! isCreated && (
-			<span className="tribe-editor__rsvp__attendee-registration-helper-text">
-				{ helperText }
-			</span>
-		) }
-	</div>
-);
+} ) => {
+	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
+
+	return (
+		<div className="tribe-editor__rsvp__attendee-registration">
+			<LabelWithLink
+				className="tribe-editor__rsvp__attendee-registration-label-with-link"
+				label={ label }
+				linkDisabled={ isDisabled }
+				linkHref={ attendeeRegistrationURL }
+				linkText={ linkText }
+			/>
+			{ ! isCreated && (
+				<span className="tribe-editor__rsvp__attendee-registration-helper-text">
+					{ helperText }
+				</span>
+			) }
+		</div>
+	);
+};
 
 RSVPAttendeeRegistration.propTypes = {
 	attendeeRegistrationURL: PropTypes.string,
+	hasAttendeeInfoFields: PropTypes.bool,
 	isCreated: PropTypes.bool,
 	isDisabled: PropTypes.bool,
 };
