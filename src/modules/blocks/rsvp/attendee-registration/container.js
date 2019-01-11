@@ -33,6 +33,7 @@ const getIsDisabled = ( state ) => (
 
 const mapStateToProps = ( state ) => ( {
 	attendeeRegistrationURL: getAttendeeRegistrationUrl( state ),
+	hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
 	isCreated: selectors.getRSVPCreated( state ),
 	isDisabled: getIsDisabled( state ),
 } );

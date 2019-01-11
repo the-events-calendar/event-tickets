@@ -162,13 +162,14 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 		if ( ! in_array( $meta_key, $valid_keys ) ) {
 			return $check;
 		}
+
 		$ticket_object = tribe_tickets_get_ticket_provider( $object_id );
 
 		if ( ! $ticket_object instanceof Tribe__Tickets__RSVP ) {
 			return $check;
 		}
 
-		$repository    = tribe( 'tickets.data_api' );
+		$repository = tribe( 'tickets.data_api' );
 		return $repository->ticket_has_meta_fields( $object_id );
 	}
 
@@ -184,8 +185,10 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * @return [WP_REST_Response] $response The modified response object.
 	 */
 	public function filter_rest_hook(  $response, $post, $unused_request  ) {
+		// Filter the rest request to add meta for if the RSVP has attendees going/not going
 		$response = $this->filter_rest_going_fields( $response, $post );
 
+		// Filter the rest request to add meta for if the RSVP has attendee meta
 		$response = $this->filter_rest_has_attendee_info_fields( $response, $post );
 
 		return $response;
@@ -207,9 +210,9 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			return $response;
 		}
 
-		$key = '_tribe_ticket_has_attendee_info_fields';
+		$key        = '_tribe_ticket_has_attendee_info_fields';
+		$repository = tribe( 'tickets.data_api' );
 
-		$repository    = tribe( 'tickets.data_api' );
 		$response->data[ 'meta' ][ $key ] = $repository->ticket_has_meta_fields( $post->ID );
 
 		return $response;
@@ -217,7 +220,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 
 	/**
 	 * Filter the rest request to add meta for if the RSVP has attendees going/not going
-	 * Hooked on rest_prepare_tribe_rsvp_tickets.
 	 *
 	 * @since TBD
 	 *
@@ -232,8 +234,8 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			return $response;
 		}
 
-		$repository    = tribe( 'tickets.rest-v1.repository' );
-		$attendees = $repository->get_ticket_attendees( $post->ID );
+		$repository = tribe( 'tickets.rest-v1.repository' );
+		$attendees  = $repository->get_ticket_attendees( $post->ID );
 
 		if ( false === $attendees ) {
 			return $response;
@@ -251,7 +253,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			}
 		}
 
-		$response->data[ 'meta' ][ '_tribe_ticket_going_count' ] =  (string) $going;
+		$response->data[ 'meta' ][ '_tribe_ticket_going_count' ]     =  (string) $going;
 		$response->data[ 'meta' ][ '_tribe_ticket_not_going_count' ] =  (string) $not_going;
 
 		return $response;
