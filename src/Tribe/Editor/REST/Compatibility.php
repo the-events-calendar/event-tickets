@@ -174,7 +174,8 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	}
 
 	/**
-	 * Filter rest response prior to returning via API
+	 * Filter rest response prior to returning via API.
+	 * Add new functions here so that they pass the response along and we can force order
 	 *
 	 * Hooked on rest_prepare_tribe_rsvp_tickets.
 	 *
