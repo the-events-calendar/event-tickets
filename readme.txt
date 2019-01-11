@@ -124,6 +124,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] =
 
+* Fix - Only allow delete or move attendee if user can manage attendee [103974]
+
+= [TBD] =
+
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]
 * Fix - Make RSVP block duration tooltip hover area larger [120063]
