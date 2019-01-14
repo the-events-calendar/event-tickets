@@ -3,6 +3,7 @@
  */
 import { createSelector } from 'reselect';
 import { find, trim } from 'lodash';
+import moment from 'moment';
 
 /**
  * Internal dependencies
@@ -19,11 +20,17 @@ const {
 } = constants;
 const { tickets: ticketsConfig } = globals;
 
+export const getState = ( state ) => state;
 export const getBlock = ( state ) => state.tickets.blocks.ticket;
 
 //
 // ─── BLOCK SELECTORS ────────────────────────────────────────────────────────────
 //
+
+export const getTicketsIsSelected = createSelector(
+	[ getBlock ],
+	( block ) => block.isSelected,
+);
 
 export const getTicketsIsSettingsOpen = createSelector(
 	[ getBlock ],
@@ -93,24 +100,24 @@ export const getTickets = createSelector(
 	( block ) => block.tickets,
 );
 
-export const getAllTicketIds = createSelector(
+export const getTicketsAllClientIds = createSelector(
 	[ getTickets ],
-	( tickets ) => tickets.allIds,
+	( tickets ) => tickets.allClientIds,
 );
 
-export const getTicketsById = createSelector(
+export const getTicketsByClientId = createSelector(
 	[ getTickets ],
-	( tickets ) => tickets.byId,
+	( tickets ) => tickets.byClientId,
 );
 
 export const getTicketsArray = createSelector(
-	[ getAllTicketIds, getTicketsById ],
+	[ getTicketsAllClientIds, getTicketsByClientId ],
 	( ids, tickets ) => ids.map( ( id ) => tickets[ id ] ),
 );
 
 export const getTicketsCount = createSelector(
-	[ getAllTicketIds ],
-	( allIds ) => allIds.length,
+	[ getTicketsAllClientIds ],
+	( allClientIds ) => allClientIds.length,
 );
 
 export const hasTickets = createSelector(
@@ -172,11 +179,11 @@ export const getTicketsIdsInBlocks = createSelector(
 // ─── TICKET SELECTORS ───────────────────────────────────────────────────────────
 //
 
-export const getTicketBlockId = ( state, ownProps ) => ownProps.blockId;
+export const getTicketClientId = ( state, ownProps ) => ownProps.clientId;
 
 export const getTicket = createSelector(
-	[ getTicketsById, getTicketBlockId ],
-	( tickets, blockId ) => tickets[ blockId ] || {},
+	[ getTicketsByClientId, getTicketClientId ],
+	( tickets, clientId ) => tickets[ clientId ] || {},
 );
 
 export const getTicketSold = createSelector(
@@ -320,6 +327,16 @@ export const getTicketEndTimeNoSeconds = createSelector(
 	( endTime ) => endTime.slice( 0, -3 ),
 );
 
+export const getTicketStartTimeInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.startTimeInput,
+);
+
+export const getTicketEndTimeInput = createSelector(
+	[ getTicketDetails ],
+	( details ) => details.endTimeInput,
+);
+
 export const getTicketCapacityType = createSelector(
 	[ getTicketDetails ],
 	( details ) => details.capacityType,
@@ -337,17 +354,65 @@ export const getTicketCapacityInt = createSelector(
 
 export const isUnlimitedTicket = createSelector(
 	[ getTicketDetails ],
-	( block ) => block.capacityType === TICKET_TYPES[ UNLIMITED ],
+	( details ) => details.capacityType === TICKET_TYPES[ UNLIMITED ],
 );
 
 export const isSharedTicket = createSelector(
 	[ getTicketDetails ],
-	( block ) => block.capacityType === TICKET_TYPES[ SHARED ],
+	( details ) => details.capacityType === TICKET_TYPES[ SHARED ],
 );
 
 export const isIndependentTicket = createSelector(
 	[ getTicketDetails ],
-	( block ) => block.capacityType === TICKET_TYPES[ INDEPENDENT ],
+	( details ) => details.capacityType === TICKET_TYPES[ INDEPENDENT ],
+);
+
+export const isTicketPast = createSelector(
+	[ getTicketEndDateMoment ],
+	( endDate ) => moment().isAfter( endDate ),
+);
+
+export const isTicketFuture = createSelector(
+	[ getTicketStartDateMoment ],
+	( startDate ) => moment().isBefore( startDate ),
+);
+
+export const isTicketOnSale = createSelector(
+	[ getTicketHasBeenCreated, isTicketPast, isTicketFuture ],
+	( hasBeenCreated, isPast, isFuture ) => (
+		hasBeenCreated && ! isPast && ! isFuture
+	),
+);
+
+export const hasTicketOnSale = createSelector(
+	[ getTicketsAllClientIds, getState ],
+	( allClientIds, state ) => allClientIds.reduce( ( onSale, clientId ) => (
+		onSale || isTicketOnSale( state, { clientId } )
+	), false ),
+);
+
+export const allTicketsPast = createSelector(
+	[ getTicketsAllClientIds, getState ],
+	( allClientIds, state ) => allClientIds.reduce( ( isPast, clientId ) => {
+		const props = { clientId };
+		return (
+			getTicketHasBeenCreated( state, props )
+				? isPast && isTicketPast( state, props )
+				: isPast
+		);
+	}, true ),
+);
+
+export const allTicketsFuture = createSelector(
+	[ getTicketsAllClientIds, getState ],
+	( allClientIds, state ) => allClientIds.reduce( ( isFuture, clientId ) => {
+		const props = { clientId };
+		return (
+			getTicketHasBeenCreated( state, props )
+				? isFuture && isTicketFuture( state, props )
+				: isFuture
+		);
+	}, true ),
 );
 
 //
@@ -429,6 +494,16 @@ export const getTicketTempEndTimeNoSeconds = createSelector(
 	( endTime ) => endTime.slice( 0, -3 ),
 );
 
+export const getTicketTempStartTimeInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.startTimeInput,
+);
+
+export const getTicketTempEndTimeInput = createSelector(
+	[ getTicketTempDetails ],
+	( tempDetails ) => tempDetails.endTimeInput,
+);
+
 export const getTicketTempCapacityType = createSelector(
 	[ getTicketTempDetails ],
 	( tempDetails ) => tempDetails.capacityType,
@@ -471,31 +546,6 @@ export const isTicketValid = createSelector(
 		return titleValid && capacityValid;
 	},
 );
-
-export const isTicketPast = createSelector(
-	[ getTicketEndDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
-	( endDate, isLoading, isCreated ) => {
-
-		if ( isLoading || ! isCreated ) {
-			return false;
-		}
-
-		return moment.isMoment( endDate ) ? moment().isAfter( endDate ) : false;
-	}
-);
-
-export const isTicketFuture = createSelector(
-	[ getTicketStartDateMoment, getTicketIsLoading, getTicketHasBeenCreated ],
-	( startDate, isLoading, isCreated ) => {
-
-		if ( isLoading || ! isCreated ) {
-			return false;
-		}
-
-		return moment.isMoment( startDate ) ? startDate.isAfter( moment() ) : false;
-	}
-);
-
 
 //
 // ─── AMOUNT REDUCERS ────────────────────────────────────────────────────────────
@@ -558,6 +608,16 @@ export const getTicketProviders = () => {
 	return tickets.providers || [];
 };
 
+export const getDefaultTicketProvider = () => {
+	const tickets = ticketsConfig();
+	return tickets.default_provider || '';
+};
+
+export const hasValidTicketProvider = () => {
+	const provider = getDefaultTicketProvider();
+	return provider !== '' && provider !== constants.RSVP_CLASS;
+};
+
 export const hasMultipleTicketProviders = createSelector(
 	[ getTicketProviders ],
 	( providers ) => providers.length > 1,
@@ -566,4 +626,9 @@ export const hasMultipleTicketProviders = createSelector(
 export const hasTicketProviders = createSelector(
 	[ getTicketProviders ],
 	( providers ) => providers.length > 0,
+);
+
+export const canCreateTickets = createSelector(
+	[ hasTicketProviders, hasValidTicketProvider ],
+	( providers, validDefaultProvider ) => providers && validDefaultProvider
 );

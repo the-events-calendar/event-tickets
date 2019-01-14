@@ -8,9 +8,9 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.3
  *
  */
 
@@ -22,7 +22,7 @@ $is_unlimited = -1 === $remaining_tickets;
 		<span class="tribe-block__rsvp__no-stock"><?php esc_html_e( 'Out of stock!', 'event-tickets' ); ?></span>
 	<?php elseif ( ! $is_unlimited ) : ?>
 		<span class="tribe-block__rsvp__quantity"><?php echo $ticket->remaining(); ?> </span>
-		<?php esc_html_e( 'remaining', 'events-gutenberg' ) ?>
+		<?php esc_html_e( 'remaining', 'event-tickets' ) ?>
 	<?php else : ?>
 		<span class="tribe-block__rsvp__unlimited"><?php esc_html_e( 'Unlimited', 'event-tickets' ); ?></span>
 	<?php endif; ?>

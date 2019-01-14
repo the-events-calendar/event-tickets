@@ -7,6 +7,7 @@ import * as types from './types';
 
 export const DEFAULT_STATE = {
 	headerImage: HEADER_IMAGE_DEFAULT_STATE,
+	isSelected: false,
 	isSettingsOpen: false,
 	isSettingsLoading: false,
 	provider: '',
@@ -21,6 +22,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				headerImage: headerImage( state.headerImage, action ),
+			};
+		case types.SET_TICKETS_IS_SELECTED:
+			return {
+				...state,
+				isSelected: action.payload.isSelected,
 			};
 		case types.SET_TICKETS_IS_SETTINGS_OPEN:
 			return {
@@ -59,6 +65,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_DATE_MOMENT:
 		case types.SET_TICKET_START_TIME:
 		case types.SET_TICKET_END_TIME:
+		case types.SET_TICKET_START_TIME_INPUT:
+		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
 		case types.SET_TICKET_TEMP_TITLE:
@@ -73,6 +81,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_DATE_MOMENT:
 		case types.SET_TICKET_TEMP_START_TIME:
 		case types.SET_TICKET_TEMP_END_TIME:
+		case types.SET_TICKET_TEMP_START_TIME_INPUT:
+		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
 		case types.SET_TICKET_SOLD:
@@ -87,6 +97,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_IS_SELECTED:
 		case types.REGISTER_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCK:
+		case types.REMOVE_TICKET_BLOCKS:
 			return {
 				...state,
 				tickets: tickets( state.tickets, action ),

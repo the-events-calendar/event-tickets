@@ -8,13 +8,16 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @version 4.9
  *
  */
-$ticket_id = $this->get( 'ticket_id' );
-$going     = $this->get( 'going' );
+$ticket_id   = $this->get( 'ticket_id' );
+$going       = $this->get( 'going' );
+$ticket_data = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
+$event_id    = $ticket_data->event;
+$must_login  = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required();
 ?>
 <form
 	name="tribe-rsvp-form"
@@ -25,19 +28,20 @@ $going     = $this->get( 'going' );
 	<!-- Maybe add nonce over here? Try to leave templates as clean as possible -->
 
 	<div class="tribe-left">
-		<?php $this->template( 'blocks/rsvp/form/quantity', array( 'ticket' => $ticket ) ); ?>
+		<?php if ( ! $must_login ) : ?>
+			<?php $this->template( 'blocks/rsvp/form/quantity', array( 'ticket' => $ticket ) ); ?>
+		<?php endif; ?>
 	</div>
 
 	<div class="tribe-right">
 		<?php $this->template( 'blocks/rsvp/form/error' ); ?>
 
-		<?php $this->template( 'blocks/rsvp/form/name', array( 'ticket' => $ticket ) ); ?>
-
-		<?php $this->template( 'blocks/rsvp/form/email', array( 'ticket' => $ticket ) ); ?>
-
-		<?php $this->template( 'blocks/rsvp/form/opt-out', array( 'ticket' => $ticket ) ); ?>
-
-		<?php $this->template( 'blocks/rsvp/form/submit', array( 'ticket' => $ticket ) ); ?>
+		<?php if ( $must_login ) : ?>
+			<?php $this->template( 'blocks/rsvp/form/submit-login', array( 'event_id' => $event_id, 'going' => $going, 'ticket_id' => $ticket_id ) ); ?>
+		<?php else : ?>
+			<?php $this->template( 'blocks/rsvp/form/attendee-meta', array( 'ticket' => $ticket, 'ticket_id' => $ticket_id ) ); ?>
+			<?php $this->template( 'blocks/rsvp/form/submit', array( 'ticket' => $ticket ) ); ?>
+		<?php endif; ?>
 	</div>
 
 </form>

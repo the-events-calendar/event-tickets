@@ -8,7 +8,7 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @version 4.9
  *
@@ -35,6 +35,6 @@ if ( $hide_attendee_list_optout
 		id="tribe-tickets-attendees-list-optout"
 	>
 	<span class="tribe-tickets-meta-option-label">
-		<?php esc_html_e( "Don't show my information on public attendee lists", 'events-gutenberg' ); ?>
+		<?php esc_html_e( "Don't show my information on public attendee lists", 'event-tickets' ); ?>
 	</span>
 </label>

@@ -20,8 +20,6 @@ extensions:
         - 'Codeception\Command\GenerateWPAjax'
         - 'Codeception\Command\GenerateWPCanonical'
         - 'Codeception\Command\GenerateWPXMLRPC'
-        - 'Codeception\Command\DbSnapshot'
-        - 'tad\Codeception\Command\SearchReplace'
     enabled:
         # see https://github.com/grantlucas/phantoman#configuration
         - Codeception\Extension\Phantoman

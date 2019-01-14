@@ -8,9 +8,9 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @version 4.9.3
  *
  */
 
@@ -43,7 +43,7 @@ $option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id 
 		name="<?php echo $field_name; ?>"
 		<?php echo $required ? 'required' : ''; ?>
 	>
-		<option><?php esc_html_e( 'Select an option', 'events-gutenberg' ); ?></option>
+		<option><?php esc_html_e( 'Select an option', 'event-tickets' ); ?></option>
 		<?php foreach ( $options as $option ) : ?>
 			<option <?php selected( $option, $value ); ?>><?php echo esc_html( $option ); ?></option>
 		<?php endforeach; ?>

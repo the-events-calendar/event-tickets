@@ -16,14 +16,14 @@ const mapStateToProps = ( state, ownProps ) => ( {
 	currencyPosition: selectors.getTicketCurrencyPosition( state, ownProps ),
 	currencySymbol: selectors.getTicketCurrencySymbol( state, ownProps ),
 	tempPrice: selectors.getTicketTempPrice( state, ownProps ),
-	price: selectors.getTicketPrice( state, ownProps ),
+	price: selectors.getTicketPrice( state, ownProps ) || '0',
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	onTempPriceChange: ( e ) => {
-		const { blockId } = ownProps;
-		dispatch( actions.setTicketTempPrice( blockId, e.target.value ) );
-		dispatch( actions.setTicketHasChanges( blockId, true ) );
+		const { clientId } = ownProps;
+		dispatch( actions.setTicketTempPrice( clientId, e.target.value ) );
+		dispatch( actions.setTicketHasChanges( clientId, true ) );
 	},
 } );
 
