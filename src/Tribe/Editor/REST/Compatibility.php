@@ -16,7 +16,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * @return boolean
 	 */
 	public function hook() {
-		// @todo: this does not appear to do _anything_ ?!?
 		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 			return false;
 		}
@@ -178,6 +177,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * Add new functions here so that they pass the response along and we can force order
 	 *
 	 * Hooked on rest_prepare_tribe_rsvp_tickets.
+	 * @since TBD
 	 *
 	 * @param [WP_REST_Response] $response The response object.
 	 * @param [WP_Post] $post The post (RSVP)
@@ -197,7 +197,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 
 	/**
 	 * Filter the rest request to add meta for if the RSVP has attendee meta
-	 *
 	 * @since TBD
 	 *
 	 * @param [WP_REST_Response] $response The response object.
@@ -214,14 +213,13 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 		$key        = '_tribe_ticket_has_attendee_info_fields';
 		$repository = tribe( 'tickets.data_api' );
 
-		$response->data[ 'meta' ][ $key ] = $repository->ticket_has_meta_fields( $post->ID );
+		$response->data['meta'][ $key ] = $repository->ticket_has_meta_fields( $post->ID );
 
 		return $response;
 	}
 
 	/**
 	 * Filter the rest request to add meta for if the RSVP has attendees going/not going
-	 *
 	 * @since TBD
 	 *
 	 * @param [WP_REST_Response] $response The response object.
@@ -242,7 +240,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			return $response;
 		}
 
-
 		$going     = 0;
 		$not_going = 0;
 
@@ -254,8 +251,8 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			}
 		}
 
-		$response->data[ 'meta' ][ '_tribe_ticket_going_count' ]     =  (string) $going;
-		$response->data[ 'meta' ][ '_tribe_ticket_not_going_count' ] =  (string) $not_going;
+		$response->data['meta']['_tribe_ticket_going_count']     = (string) $going;
+		$response->data['meta']['_tribe_ticket_not_going_count'] = (string) $not_going;
 
 		return $response;
 	}
