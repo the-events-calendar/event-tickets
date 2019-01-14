@@ -4,7 +4,7 @@ Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.0.2
-Stable tag: 4.9.4
+Stable tag: 4.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -122,11 +122,11 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] =
+= [4.10] TBD =
 
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
 
-= [TBD] =
+= [4.9.4] TBD =
 
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]
