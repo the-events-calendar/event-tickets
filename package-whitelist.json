@@ -32,6 +32,6 @@
   "lang/**/*",
   "license.txt",
   "readme.txt",
-  "site_owner_data_collection_statement.html"
-  "src/**/*",
+  "site_owner_data_collection_statement.html",
+  "src/**/*"
 ]
