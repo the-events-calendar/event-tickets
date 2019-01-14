@@ -219,7 +219,7 @@ class Tribe__Tickets__Main {
 
 		if (
 			class_exists( 'Tribe__Events__Main' ) &&
-			! version_compare( Tribe__Events__Main::VERSION, self::MIN_TEC_VERSION, '>=' )
+			! version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' )
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
 			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
@@ -329,7 +329,7 @@ class Tribe__Tickets__Main {
 			), 'upgrade-plugin_' . $plugin_short_path
 		);
 		$output = '<div class="error">';
-		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), self::MIN_TEC_VERSION, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
+		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $this->min_tec_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
 		$output .= '</div>';
 
 		echo $output;
@@ -354,7 +354,17 @@ class Tribe__Tickets__Main {
 					$supported = version_compare( phpversion(), $this->min_php, '>=' );
 					break;
 			}
-			$supported = apply_filters( 'tribe_events_supported_version', $supported, $system );
+
+			/**
+			 * Filter PHP or WordPress Support Version
+			 *
+			 * @since TBD
+			 *
+			 * @param boolean 	$supported
+			 * @param string 	$system 	system to be tested such as 'php' or 'wordpress'
+			 */
+			$supported = apply_filters( 'tribe_tickets_supported_system_version', $supported, $system );
+
 			wp_cache_set( $system, $supported, 'tribe_version_test' );
 
 			return $supported;
