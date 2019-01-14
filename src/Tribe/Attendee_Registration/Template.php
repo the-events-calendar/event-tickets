@@ -35,7 +35,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
 
 		//switcheroo for tempaltes that force us to use the excerpt as we're saying we're on an archive
-		add_filter( 'the_excerpt', array( $this, 'set_page_excerpt') );
+		add_filter( 'the_excerpt', array( $this, 'set_page_excerpt' ) );
 
 		// Modify the page title
 		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
