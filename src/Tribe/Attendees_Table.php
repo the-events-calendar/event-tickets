@@ -295,7 +295,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
-			//return;
+			return;
 		}
 
 		$default_actions = array();
@@ -375,10 +375,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param boolean  false            Can user check in attendees
 		 * @param int      $this->event->ID The event post ID.
 		 */
+		$can_manage_atendees = apply_filters( 'tribe_tickets_user_can_manage_attendees', false, $this->event->ID );
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees()
 			&& (
 				! empty( $this->event )
-				&& ! apply_filters( 'tribe_tickets_user_can_manage_attendees', false, $this->event->ID )
+				&& ! $can_manage_atendees
 			)
 		 ) {
 			return false;
