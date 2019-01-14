@@ -201,7 +201,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 *
 	 * @param [WP_REST_Response] $response The response object.
 	 * @param [WP_Post] $post The post (RSVP)
-
 	 *
 	 * @return [WP_REST_Response] $response The modified response object.
 	 */
