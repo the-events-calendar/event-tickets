@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TBD] =
+= [4.9.4] 2019-01-15 =
 
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]
@@ -130,7 +130,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Update attendee registration user experience [119465]
 * Tweak - Adjust behavior of removing Tickets block to be more intuitive [119662]
 * Tweak - Adjust behavior of removing RSVP block to be more intuitive [119663]
-* Tweak - Updated views: /views/blocks/rsvp/content.php, /views/blocks/rsvp/form.php, /views/blocks/rsvp/form/form.php, /views/blocks/rsvp/form/submit-login.php, /views/blocks/rsvp/form/submit.php, /views/blocks/rsvp/status.php, /views/blocks/rsvp/status/going.php, /views/blocks/rsvp/status/not-going.php
+* Tweak - Added actions: `event_tickets_rsvp_after_ticket_row`
+* Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/attendees/gravatar`, `blocks/attendees/order-links`, `blocks/attendees/title`, `blocks/rsvp`, `blocks/rsvp/content-inactive`, `blocks/rsvp/content`, `blocks/rsvp/details`, `blocks/rsvp/details/availability`, `blocks/rsvp/details/description`, `blocks/rsvp/details/title`, `blocks/rsvp/form`, `blocks/rsvp/form/attendee-meta`, `blocks/rsvp/form/details`, `blocks/rsvp/form/email`, `blocks/rsvp/form/error`, `blocks/rsvp/form/form`, `blocks/rsvp/form/name`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/form/quantity-minus`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/form/submit-login`, `blocks/rsvp/form/submit`, `blocks/rsvp/icon-svg`, `blocks/rsvp/icon`, `blocks/rsvp/loader-svg`, `blocks/rsvp/loader`, `blocks/rsvp/messages/success`, `blocks/rsvp/status`, `blocks/rsvp/status/full`, `blocks/rsvp/status/going-icon`, `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going-icon`, `blocks/rsvp/status/not-going`, `blocks/tickets`, `blocks/tickets/commerce/fields-edd`, `blocks/tickets/commerce/fields-tpp`, `blocks/tickets/commerce/fields-woo`, `blocks/tickets/commerce/fields`, `blocks/tickets/content-description`, `blocks/tickets/content-inactive`, `blocks/tickets/content-title`, `blocks/tickets/content`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available-unlimited`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/icon-svg`, `blocks/tickets/icon`, `blocks/tickets/item-inactive`, `blocks/tickets/item`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-number`, `blocks/tickets/quantity-remove`, `blocks/tickets/quantity-unavailable`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/content`, `blocks/tickets/registration/attendee/fields`, `blocks/tickets/registration/attendee/fields/checkbox`, `blocks/tickets/registration/attendee/fields/radio`, `blocks/tickets/registration/attendee/fields/select`, `blocks/tickets/registration/attendee/fields/text`, `blocks/tickets/registration/content`, `blocks/tickets/registration/summary/content`, `blocks/tickets/registration/summary/ticket-icon`, `blocks/tickets/registration/summary/ticket-price`, `blocks/tickets/registration/summary/ticket-quantity`, `blocks/tickets/registration/summary/ticket-title`, `blocks/tickets/registration/summary/ticket`, `blocks/tickets/registration/summary/tickets`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button`, `blocks/tickets/submit-login`, `blocks/tickets/submit`, `registration/button-checkout`
 * Fix - Make RSVP block duration tooltip hover area larger [120063]
 * Fix - Fix RSVP block FE attendee display option to not be bold [120064]
 * Fix - Set RSVP block submit button hover color [120065]
@@ -148,6 +149,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Hide unavailable tickets in Tickets block when Tickets block is not selected [119630]
 * Fix - Fix attendee registration for RSVP block FE [119800]
 * Fix - Ensure that the attendee page loads if the theme has no page.php/page templates defined [120034]
+* Language - 8 new strings added, 52 updated, 0 fuzzied, and 26 obsoleted
 
 = [4.9.3] 2018-12-18 =
 
