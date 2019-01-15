@@ -151,7 +151,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure that the attendee page loads if the theme has no page.php/page templates defined [120034]
 * Language - 8 new strings added, 52 updated, 0 fuzzied, and 26 obsoleted
 
-= [4.9.3] 2018-12-18 =
+= [4.9.3] 2018-12-19 =
 
 * Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
 * Fix - Set custom date format for date pickers used on tickets [119356]
