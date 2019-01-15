@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] =
 
-* Fix - Do not show print, email, and export buttons if not in admin
+* Fix - Do not show print, email, and export buttons if not in admin [120646]
 
 = [TBD] =
 
