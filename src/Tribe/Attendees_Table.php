@@ -492,6 +492,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function extra_tablenav( $which ) {
 
+		// Bail early if not in admin
+		if ( ! is_admin() ) {
+			return;
+		}
+
 		$export_url = add_query_arg(
 			array(
 				'attendees_csv'       => true,
