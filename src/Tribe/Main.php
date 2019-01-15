@@ -320,7 +320,7 @@ class Tribe__Tickets__Main {
 			}
 		}
 
-		$upgrade_path      = wp_nonce_url(
+		$upgrade_path = wp_nonce_url(
 			add_query_arg(
 				array(
 					'action' => 'upgrade-plugin',
@@ -328,6 +328,7 @@ class Tribe__Tickets__Main {
 				), get_admin_url() . 'update.php'
 			), 'upgrade-plugin_' . $plugin_short_path
 		);
+		
 		$output = '<div class="error">';
 		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $this->min_tec_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
 		$output .= '</div>';
@@ -336,53 +337,55 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Test PHP and WordPress versions for compatibility
+	 * Test whether the current version of PHP or WordPress is supported.
 	 *
-	 * @param string $system - system to be tested such as 'php' or 'wordpress'
+	 * @since TBD
 	 *
-	 * @return boolean - is the existing version of the system supported?
+	 * @param string $system Which system to test the version of such as 'php' or 'wordpress'.
+	 *
+	 * @return boolean Whether the current version of PHP or WordPress is supported.
 	 */
 	public function supported_version( $system ) {
 		if ( $supported = wp_cache_get( $system, 'tribe_version_test' ) ) {
 			return $supported;
-		} else {
-			switch ( strtolower( $system ) ) {
-				case 'wordpress' :
-					$supported = version_compare( get_bloginfo( 'version' ), $this->min_wordpress, '>=' );
-					break;
-				case 'php' :
-					$supported = version_compare( phpversion(), $this->min_php, '>=' );
-					break;
-			}
-
-			/**
-			 * Filter PHP or WordPress Support Version
-			 *
-			 * @since TBD
-			 *
-			 * @param boolean 	$supported
-			 * @param string 	$system 	system to be tested such as 'php' or 'wordpress'
-			 */
-			$supported = apply_filters( 'tribe_tickets_supported_system_version', $supported, $system );
-
-			wp_cache_set( $system, $supported, 'tribe_version_test' );
-
-			return $supported;
 		}
+
+		switch ( strtolower( $system ) ) {
+			case 'wordpress' :
+				$supported = version_compare( get_bloginfo( 'version' ), $this->min_wordpress, '>=' );
+				break;
+			case 'php' :
+				$supported = version_compare( phpversion(), $this->min_php, '>=' );
+				break;
+		}
+
+		/**
+		 * Filter whether the current version of PHP or WordPress is supported.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean $supported Whether the current version of PHP or WordPress is supported.
+		 * @param string  $system    Which system to test the version of such as 'php' or 'wordpress'.
+		 */
+		$supported = apply_filters( 'tribe_tickets_supported_system_version', $supported, $system );
+
+		wp_cache_set( $system, $supported, 'tribe_version_test' );
+
+		return $supported;
 	}
 
 	/**
-	 * Display a WordPress or PHP incompatibility error
+	 * Display a WordPress or PHP incompatibility error.
 	 *
 	 * @since TBD
-	 *
 	 */
 	public function not_supported_error() {
 		if ( ! self::supported_version( 'wordpress' ) ) {
-			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, The Events Calendar requires WordPress %s or higher. Please upgrade your WordPress install.', 'the-events-calendar' ), $this->min_wordpress ) . '</p></div>';
+			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install.', 'event-tickets' ), $this->min_wordpress ) . '</p></div>';
 		}
+
 		if ( ! self::supported_version( 'php' ) ) {
-			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, The Events Calendar requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'the-events-calendar' ), $this->min_php ) . '</p></div>';
+			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'event-tickets' ), $this->min_php ) . '</p></div>';
 		}
 	}
 
