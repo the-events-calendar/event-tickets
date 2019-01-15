@@ -202,9 +202,8 @@ class Tribe__Tickets__Main {
 
 		// WordPress and PHP Version Check
 		if ( ! self::supported_version( 'wordpress' ) || ! self::supported_version( 'php' ) ) {
-
 			add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
-			add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
+			add_action( 'network_admin_notices', array( $this, 'not_supported_error' ) );
 
 			return;
 		}
