@@ -328,7 +328,7 @@ class Tribe__Tickets__Main {
 				), get_admin_url() . 'update.php'
 			), 'upgrade-plugin_' . $plugin_short_path
 		);
-		
+
 		$output = '<div class="error">';
 		$output .= '<p>' . sprintf( __( 'When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s', 'event-tickets' ), $this->min_tec_version, '<a href="' . esc_url( $upgrade_path ) . '">', '</a>' ) . '</p>';
 		$output .= '</div>';
@@ -381,11 +381,11 @@ class Tribe__Tickets__Main {
 	 */
 	public function not_supported_error() {
 		if ( ! self::supported_version( 'wordpress' ) ) {
-			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install.', 'event-tickets' ), $this->min_wordpress ) . '</p></div>';
+			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install.', 'event-tickets' ), $this->min_wordpress ) . '</p></div>';
 		}
 
 		if ( ! self::supported_version( 'php' ) ) {
-			echo '<div class="error"><p>' . sprintf( esc_html__( 'Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'event-tickets' ), $this->min_php ) . '</p></div>';
+			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'event-tickets' ), $this->min_php ) . '</p></div>';
 		}
 	}
 
@@ -865,8 +865,9 @@ class Tribe__Tickets__Main {
 			}
 
 			$upgrade_path = 'https://theeventscalendar.com/knowledgebase/manual-updates/';
+
 			$output = '<div class="error">';
-			$output .= '<p>' . sprintf( __( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
+			$output .= '<p>' . sprintf( esc_html__( 'When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s.', 'event-tickets' ), preg_replace( '/^(\d\.[\d]+).*/', '$1', self::VERSION ), '<a href="' . esc_url( $upgrade_path ) . '" target="_blank">', '</a>' ) . '</p>';
 			$output .= '</div>';
 
 			echo $output;
