@@ -41,7 +41,7 @@ require_once dirname( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . '/src/functions/php-min
 /**
  * Verifies if we need to warn the user about min PHP version and bail to avoid fatals
  */
-if ( tribe_tickets_is_not_min_php_version( PHP_VERSION ) ) {
+if ( tribe_tickets_is_not_min_php_version() ) {
 	tribe_tickets_not_php_version_textdomain();
 	add_action( 'admin_notices', 'tribe_tickets_not_php_version_notice' );
 	return false;

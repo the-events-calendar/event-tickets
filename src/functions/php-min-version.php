@@ -10,7 +10,7 @@
  *
  * @return bool
  */
-function tribe_tickets_is_not_min_php_version( $version ) {
+function tribe_tickets_is_not_min_php_version( $version = PHP_VERSION ) {
 	return version_compare( $version, tribe_tickets_get_php_min_version(), '<' );
 }
 
@@ -41,13 +41,13 @@ function tribe_tickets_not_php_version_message() {
 		esc_attr__( 'To allow better control over dates, advanced security improvements and performance gain.', 'event-tickets' ) .
 		'<br />' .
 		esc_attr( sprintf(
-			__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version %1$s of PHP.', 'event-tickets' ),
+			__( 'Contact your Hosting or your system administrator and ask to Upgrade to version %1$s of PHP.', 'event-tickets' ),
 			tribe_tickets_get_php_min_version()
 		) );
 }
 
 /**
- * Echos out the error for the PHP min version as a WordPress admin Notice
+ * Echoes out the error for the PHP min version as a WordPress admin Notice
  *
  * @since  TBD
  *
