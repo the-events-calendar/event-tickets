@@ -124,7 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
-
+* Fix - Only allow attendee move functionality in admin [87145]
 
 = [4.10] TBD =
 
