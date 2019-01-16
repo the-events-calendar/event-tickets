@@ -380,11 +380,11 @@ class Tribe__Tickets__Main {
 	 */
 	public function not_supported_error() {
 		if ( ! self::supported_version( 'wordpress' ) ) {
-			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install.', 'event-tickets' ), $this->min_wordpress ) . '</p></div>';
+			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install.', 'event-tickets' ), $this->min_wordpress ) ) . '</p></div>';
 		}
 
 		if ( ! self::supported_version( 'php' ) ) {
-			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'event-tickets' ), $this->min_php ) . '</p></div>';
+			echo '<div class="error"><p>' . esc_html( sprintf( __( 'Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP.', 'event-tickets' ), $this->min_php ) ) . '</p></div>';
 		}
 	}
 
