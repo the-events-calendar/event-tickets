@@ -186,7 +186,7 @@ class Tribe__Tickets__Assets {
 	 *
 	 * @return array
 	 *
-	 * @since TBD
+	 * @since 4.9.4
 	 */
 	public function add_data_strings( $data ) {
 		$data['registration_prompt'] = __( 'There is unsaved attendee information. Are you sure you want to continue?', 'event-tickets' );
