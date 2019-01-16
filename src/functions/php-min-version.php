@@ -38,7 +38,7 @@ function tribe_tickets_not_php_version_message() {
 			tribe_tickets_get_php_min_version()
 		) ) .
 		'<br />' .
-		esc_attr__( 'To allow better control over dates, advanced security improvements and performance gain.', 'event-tickets' ) .
+		esc_html__( 'To allow better control over dates, advanced security improvements and performance gain.', 'event-tickets' ) .
 		'<br />' .
 		esc_attr( sprintf(
 			__( 'Contact your Hosting or your system administrator and ask for this Upgrade to version %1$s of PHP.', 'event-tickets' ),
