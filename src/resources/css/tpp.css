@@ -17,8 +17,8 @@
 }
 
 .tribe-tpp-message-display .tribe-tpp-messages {
-		display: block;
-	}
+	display: block;
+}
 
 .tribe-tpp-messages {
 	display: none;
@@ -51,45 +51,45 @@
 }
 
 .tribe-tpp-list > .tribe-item {
-		border: 1px solid #ededed;
-		border-bottom: 0;
-		min-height: 105px;
-		padding: 20px;
-	}
+	border: 1px solid #ededed;
+	border-bottom: 0;
+	min-height: 105px;
+	padding: 20px;
+}
 
 .tribe-tpp-list > .tribe-item:last-child {
-			border-bottom: 1px solid #ededed;
-			margin-bottom: 20px;
-		}
+	border-bottom: 1px solid #ededed;
+	margin-bottom: 20px;
+}
 
 .tribe-tpp-list > .tribe-item.tribe-disabled {
-			background-color: #efefef;
-			border-color: #ddd;
-			color: #717171;
-		}
+	background-color: #efefef;
+	border-color: #ddd;
+	color: #717171;
+}
 
 .tribe-tpp-list > .tribe-item.tribe-disabled:last-child {
-				border-bottom-color: #ddd;
-			}
+	border-bottom-color: #ddd;
+}
 
 .tribe-tpp-list > .tribe-item .tribe-answer {
-			display: inline-block;
-			float: right;
-		}
+	display: inline-block;
+	float: right;
+}
 
 .tribe-tpp-list > .tribe-item table {
-			border: 0;
-			margin: 0;
-		}
+	border: 0;
+	margin: 0;
+}
 
 .tribe-tpp-list > .tribe-item td {
-			border: 0;
-		}
+	border: 0;
+}
 
 .tribe-tpp h2 {
-		line-height: 1.2;
-		margin-bottom: 20px;
-	}
+	line-height: 1.2;
+	margin-bottom: 20px;
+}
 
 /* = Tickets & Tribe Commerce PayPal Modules Front End Styles
 =============================================*/

@@ -8,7 +8,6 @@
  */
 class Tribe__Tickets__Data_API {
 
-	protected $active_modules;
 	protected $ticket_types = array();
 	protected $ticket_class = array();
 
@@ -16,7 +15,6 @@ class Tribe__Tickets__Data_API {
 	 * Class constructor
 	 */
 	public function __construct() {
-		$this->active_modules = Tribe__Tickets__Tickets::modules();
 		$this->setup_data();
 	}
 
