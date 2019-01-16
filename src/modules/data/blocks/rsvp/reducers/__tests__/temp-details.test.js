@@ -69,4 +69,12 @@ describe( 'Temp details reducer', () => {
 	it( 'should set the temp end time', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPTempEndTime( '13:45' ) ) ).toMatchSnapshot();
 	} );
+
+	it( 'should set the temp start time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPTempStartTimeInput( '13:45' ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the temp end time input', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPTempEndTimeInput( '13:45' ) ) ).toMatchSnapshot();
+	} );
 } );

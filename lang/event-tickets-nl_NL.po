@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-11-15 16:21:14+0000\n"
+"PO-Revision-Date: 2018-12-13 19:43:14+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: src/resources/js/app/blocks.js:42033
 msgid "Number of tickets available"
-msgstr ""
+msgstr "Aantal tickets beschikbaar"
 
 #: src/resources/js/app/blocks.js:42033
 msgid "(optional) Limit sales of this ticket to:"
@@ -37,7 +37,7 @@ msgstr ""
 
 #: src/resources/js/app/blocks.js:39671
 msgid "No posts found"
-msgstr ""
+msgstr "Geen berichten gevonden"
 
 #: src/resources/js/app/blocks.js:38753
 msgid "Enable \"Not Going responses\""
@@ -45,27 +45,27 @@ msgstr ""
 
 #: src/resources/js/app/blocks.js:38723
 msgid "Leave blank if unlimited"
-msgstr ""
+msgstr "Laat leeg indien onbeperkt"
 
 #: src/resources/js/app/blocks.js:38718
 msgid "RSVP Capacity"
-msgstr ""
+msgstr "RSVP capaciteit"
 
 #: src/resources/js/app/blocks.js:38611 src/resources/js/app/blocks.js:42629
 msgid "Advanced Options"
-msgstr ""
+msgstr "Geavanceerde opties"
 
 #: common/src/modules/elements/time-picker/element.js:54
 #: common/src/modules/elements/time-picker/element.js:147
 #: common/src/resources/js/app/elements.js:59982
 #: common/src/resources/js/app/elements.js:60083
 msgid "All Day"
-msgstr ""
+msgstr "Gehele dag"
 
 #: common/src/modules/elements/image-upload/element.js:46
 #: common/src/resources/js/app/elements.js:59497
 msgid "remove"
-msgstr ""
+msgstr "verwijder"
 
 #: src/modules/blocks/tickets/container/template.js:36
 #: src/resources/js/app/blocks.js:40927
@@ -85,11 +85,11 @@ msgstr ""
 #: src/modules/blocks/tickets/container/template.js:32
 #: src/resources/js/app/blocks.js:40926
 msgid "There are no tickets yet"
-msgstr ""
+msgstr "Er zijn nog geen tickets"
 
 #: src/modules/blocks/tickets/index.js:26 src/resources/js/app/blocks.js:41250
 msgid "Sell tickets and register attendees."
-msgstr ""
+msgstr "Verkoop tickets en registreer bezoekers."
 
 #: src/modules/blocks/tickets/availability/template.js:43
 #: src/resources/js/app/blocks.js:40851
@@ -114,7 +114,7 @@ msgstr ""
 #: src/modules/blocks/tickets/action-dashboard/template.js:24
 #: src/resources/js/app/blocks.js:40291
 msgid "Add Tickets"
-msgstr ""
+msgstr "Voeg tickets toe"
 
 #: src/modules/blocks/tickets/controls/template.js:62
 #: src/resources/js/app/blocks.js:41063
@@ -124,7 +124,7 @@ msgstr ""
 #: src/modules/blocks/tickets/controls/template.js:59
 #: src/resources/js/app/blocks.js:41053
 msgid "Tickets Settings"
-msgstr ""
+msgstr "Tickets-instellingen"
 
 #: src/modules/blocks/tickets/controls/template.js:25
 #: src/resources/js/app/blocks.js:41013
@@ -139,7 +139,7 @@ msgstr ""
 #: src/modules/blocks/tickets/capacity-table/template.js:49
 #: src/resources/js/app/blocks.js:40509
 msgid "Total Capacity"
-msgstr ""
+msgstr "Totale capaciteit"
 
 #: src/modules/blocks/tickets/capacity-table/template.js:44
 #: src/resources/js/app/blocks.js:40504
@@ -175,7 +175,7 @@ msgstr ""
 #: src/modules/blocks/ticket/container-content/advanced-options/move-delete/template.js:20
 #: src/resources/js/app/blocks.js:42529
 msgid "Remove Ticket"
-msgstr ""
+msgstr "Verwijder ticket"
 
 #: src/modules/blocks/ticket/container-content/advanced-options/duration/template.js:28
 #: src/resources/js/app/blocks.js:42245
@@ -185,7 +185,7 @@ msgstr ""
 #: src/modules/blocks/ticket/container-content/ecommerce-options/template.js:78
 #: src/resources/js/app/blocks.js:42777
 msgid "Ecommerce"
-msgstr ""
+msgstr "E-commerce"
 
 #: src/modules/blocks/ticket/container-content/ecommerce-options/template.js:51
 #: src/resources/js/app/blocks.js:42756
@@ -210,27 +210,27 @@ msgstr ""
 #: src/modules/blocks/ticket/container-header/quantity/template.js:40
 #: src/resources/js/app/blocks.js:41793
 msgid "unlimited"
-msgstr ""
+msgstr "onbeperkt"
 
 #: src/modules/blocks/ticket/container-header/quantity/template.js:33
 #: src/resources/js/app/blocks.js:41786
 msgid "%d of %d sold"
-msgstr ""
+msgstr "%d van %d verkocht"
 
 #: src/modules/blocks/ticket/container-header/quantity/template.js:32
 #: src/resources/js/app/blocks.js:41786
 msgid "%d sold"
-msgstr ""
+msgstr "%d verkocht"
 
 #: src/modules/blocks/ticket/container-header/price/template.js:33
 #: src/resources/js/app/blocks.js:41501
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: src/modules/blocks/ticket/container-header/description/template.js:30
 #: src/resources/js/app/blocks.js:41409
 msgid "Description"
-msgstr ""
+msgstr "Beschrijving"
 
 #: src/modules/blocks/ticket/index.js:16 src/resources/js/app/blocks.js:43394
 msgid "A single configured ticket type."
@@ -264,12 +264,12 @@ msgstr ""
 #: src/modules/blocks/rsvp/container-header/template.js:66
 #: src/resources/js/app/blocks.js:38002
 msgid "%d available"
-msgstr ""
+msgstr "%d beschikbaar"
 
 #: src/modules/blocks/rsvp/container-header/template.js:52
 #: src/resources/js/app/blocks.js:37990
 msgid "description"
-msgstr ""
+msgstr "beschrijving"
 
 #: src/modules/blocks/rsvp/index.js:23 src/resources/js/app/blocks.js:40028
 msgid "Find out who is planning to attend!"
@@ -279,7 +279,7 @@ msgstr ""
 #: src/modules/blocks/tickets/header-image/template.js:33
 #: src/resources/js/app/blocks.js:39352 src/resources/js/app/blocks.js:40614
 msgid "Upload Image"
-msgstr ""
+msgstr "Upload afbeelding"
 
 #: src/modules/blocks/rsvp/header-image/template.js:25
 #: src/modules/blocks/tickets/header-image/template.js:25
@@ -307,7 +307,7 @@ msgstr ""
 #: src/modules/blocks/tickets/action-dashboard/template.js:36
 #: src/resources/js/app/blocks.js:39147 src/resources/js/app/blocks.js:40303
 msgid "Warning"
-msgstr ""
+msgstr "Waarschuwing"
 
 #: src/modules/blocks/rsvp/action-dashboard/template.js:26
 #: src/resources/js/app/blocks.js:39131
@@ -327,7 +327,7 @@ msgstr ""
 #: src/modules/blocks/rsvp/duration-label/template.js:28
 #: src/resources/js/app/blocks.js:38138
 msgid "Duration"
-msgstr ""
+msgstr "Duur"
 
 #: src/modules/blocks/rsvp/inactive-block/template.js:31
 #: src/resources/js/app/blocks.js:39583
@@ -383,12 +383,12 @@ msgstr ""
 #. translators: %s: duration
 #: common/src/Tribe/Editor/Configuration.php:90
 msgid "%s ago"
-msgstr ""
+msgstr "%s geleden"
 
 #. translators: %s: duration
 #: common/src/Tribe/Editor/Configuration.php:88
 msgid "%s from now"
-msgstr ""
+msgstr "%s vanaf nu"
 
 #: common/src/Tribe/Editor/Blocks/Abstract.php:127
 msgid "Problem loading the block, please remove this block to restart."
@@ -440,15 +440,15 @@ msgstr ""
 
 #: src/Tribe/Editor/Blocks/Attendees.php:26
 msgid "Who's coming?"
-msgstr ""
+msgstr "Wie komt er?"
 
 #: src/views/blocks/tickets/extra-available-quantity.php:21
 msgid "available"
-msgstr ""
+msgstr "beschikbaar"
 
 #: src/views/blocks/tickets/quantity-unavailable.php:22
 msgid "Sold Out"
-msgstr ""
+msgstr "Uitverkocht"
 
 #: src/views/blocks/tickets/submit-button.php:22
 msgid "Add to cart"
@@ -456,11 +456,11 @@ msgstr ""
 
 #: src/views/blocks/tickets/quantity-add.php:23
 msgid "+"
-msgstr ""
+msgstr "+"
 
 #: src/views/blocks/tickets/registration/summary/description.php:10
 msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
-msgstr ""
+msgstr "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
 
 #: src/views/blocks/tickets/registration/summary/title.php:20
 msgid "Ticket Registration"
@@ -468,11 +468,11 @@ msgstr ""
 
 #: src/views/blocks/tickets/registration/summary/ticket-quantity.php:18
 msgid "1"
-msgstr ""
+msgstr "1"
 
 #: src/views/blocks/tickets/quantity-remove.php:22
 msgid "-"
-msgstr ""
+msgstr "-"
 
 #: src/views/blocks/attendees/description.php:19
 msgid "One person is attending %2$s"
@@ -501,13 +501,13 @@ msgstr ""
 
 #: src/views/blocks/rsvp/details/availability.php:25
 msgid "remaining"
-msgstr ""
+msgstr "resterend"
 
 #: src/views/blocks/rsvp/status/not-going.php:38
 #: src/modules/blocks/rsvp/counters/template.js:33
 #: src/resources/js/app/blocks.js:37908
 msgid "Not going"
-msgstr ""
+msgstr "Gaat niet"
 
 #: src/views/blocks/rsvp/status/full.php:17
 msgid "RSVP Full"
@@ -515,16 +515,16 @@ msgstr ""
 
 #: src/views/registration/attendees/fields.php:10
 msgid "Attendee"
-msgstr ""
+msgstr "Bezoeker"
 
 #: src/views/registration/attendees/error.php:11
 msgid "Please fill in all required fields"
-msgstr ""
+msgstr "Vul alle vereiste velden in"
 
 #: src/views/registration/attendees/fields/select.php:34
 #: src/views/blocks/tickets/registration/attendee/fields/select.php:46
 msgid "Select an option"
-msgstr ""
+msgstr "Selecteer een optie"
 
 #: src/views/registration/summary/tickets-header.php:11
 msgid "Ticket summary"
@@ -544,7 +544,7 @@ msgstr ""
 
 #: src/views/registration/cart-empty.php:18
 msgid "the calendar"
-msgstr ""
+msgstr "de kalender"
 
 #: src/views/registration/cart-empty.php:10
 msgid "You currently have no events awaiting registration"
@@ -552,7 +552,7 @@ msgstr ""
 
 #: src/views/registration/button-cart.php:15
 msgid "Back to cart"
-msgstr ""
+msgstr "Terug naar winkelwagen"
 
 #: src/template-tags/tickets.php:419
 msgid "issued"
@@ -561,15 +561,15 @@ msgstr ""
 #: src/admin-views/attendees.php:78
 msgctxt "attendee screen summary"
 msgid "Overview"
-msgstr ""
+msgstr "Overzicht"
 
 #: src/Tribe/Tickets.php:1855
 msgid " at "
-msgstr ""
+msgstr "om"
 
 #: src/Tribe/Tickets.php:1849
 msgid "Tickets will be available on "
-msgstr ""
+msgstr "Tickets zijn beschikbaar op"
 
 #: src/Tribe/REST/V1/Post_Repository.php:165
 msgid "An error happened while building the response: "
@@ -1988,7 +1988,7 @@ msgstr ""
 #: src/Tribe/Commerce/PayPal/Attendance_Totals.php:70
 msgctxt "attendee summary"
 msgid "Total Tickets Issued:"
-msgstr ""
+msgstr "Totaal aantal tickets uitgegeven:"
 
 #: src/Tribe/Commerce/Currency.php:293
 msgid "U.S. Dollar (USD)"
@@ -2649,11 +2649,11 @@ msgstr ""
 #: src/template-tags/tickets.php:432
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d available"
-msgstr ""
+msgstr "%1$d beschikbaar"
 
 #: src/template-tags/tickets.php:427
 msgid "%s %d"
-msgstr ""
+msgstr "%s %d"
 
 #: src/template-tags/tickets.php:421
 msgctxt "separate going and remain RSVPs"
@@ -2687,17 +2687,17 @@ msgstr ""
 #: src/admin-views/attendees.php:40
 msgctxt "attendee screen summary"
 msgid "%s Details"
-msgstr ""
+msgstr "%s details"
 
 #: src/Tribe/Attendees.php:112
 msgctxt "attendee event actions"
 msgid "View %s"
-msgstr ""
+msgstr "Bekijk %s"
 
 #: src/Tribe/Attendees.php:111
 msgctxt "attendee event actions"
 msgid "Edit %s"
-msgstr ""
+msgstr "Bewerk %s"
 
 #: src/Tribe/Attendees_Table.php:426 src/Tribe/Attendees_Table.php:446
 msgid "Undo"
@@ -3587,7 +3587,7 @@ msgstr "Er zijn geen tickets meer beschikbaar."
 
 #: src/Tribe/Tickets.php:1858
 msgid "Tickets are not yet available"
-msgstr ""
+msgstr "Tickets zijn nog niet beschikbaar"
 
 #: src/Tribe/Main.php:788
 msgid "Buy"

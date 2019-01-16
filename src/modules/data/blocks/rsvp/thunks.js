@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import moment from 'moment';
-
-/**
  * Internal dependencies
  */
 import * as actions from './actions';
@@ -38,13 +33,12 @@ const createOrUpdateRSVP = ( method ) => ( payload ) => ( dispatch ) => {
 		endTime,
 	} = payload;
 
-	const startMoment = momentUtil.setTimeInSeconds(
-		startDateMoment.clone(),
-		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS ),
+	const startMoment = startDateMoment.clone().startOf( 'day' ).seconds(
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM_SS )
 	);
-	const endMoment = momentUtil.setTimeInSeconds(
-		endDateMoment.clone(),
-		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS ),
+
+	const endMoment = endDateMoment.clone().startOf( 'day' ).seconds(
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM_SS )
 	);
 
 	let path = `${ utils.RSVP_POST_TYPE }`;
@@ -138,14 +132,8 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 
 					const rsvp = filteredRSVPs[0];
 					const { meta = {} } = rsvp;
-
-					const startDateMeta =  meta[ utils.KEY_TICKET_START_DATE ];
-					const startMoment = moment( meta[ utils.KEY_TICKET_START_DATE ] );
-
-					// TODO: Remove 100 years after pickers allow blank values
-					const endDateMeta = meta[ utils.KEY_TICKET_END_DATE ] || startMoment.clone().add( 100, 'years' );
-					const endMoment = moment( endDateMeta );
-
+					const startMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_START_DATE ] );
+					const endMoment = momentUtil.toMoment( meta[ utils.KEY_TICKET_END_DATE ] );
 					const startDateInput = datePickerFormat
 						? startMoment.format( momentUtil.toFormat( datePickerFormat ) )
 						: momentUtil.toDate( startMoment );
@@ -179,9 +167,11 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						startDateMoment: startMoment.clone().startOf( 'day' ),
 						endDate: momentUtil.toDate( endMoment ),
 						endDateInput,
-						endDateMoment: endMoment.clone().startOf( 'day' ),
+						endDateMoment: endMoment.clone().seconds( 0 ),
 						startTime: momentUtil.toDatabaseTime( startMoment ),
 						endTime: momentUtil.toDatabaseTime( endMoment ),
+						startTimeInput: momentUtil.toTime( startMoment ),
+						endTimeInput: momentUtil.toTime( endMoment ),
 					} ) );
 					dispatch( actions.setRSVPTempDetails( {
 						tempTitle: rsvp.title.rendered,
@@ -193,9 +183,11 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 						tempStartDateMoment: startMoment.clone().startOf( 'day' ),
 						tempEndDate: momentUtil.toDate( endMoment ),
 						tempEndDateInput: endDateInput,
-						tempEndDateMoment: endMoment.clone().startOf( 'day' ),
+						tempEndDateMoment: endMoment.clone().seconds( 0 ),
 						tempStartTime: momentUtil.toDatabaseTime( startMoment ),
 						tempEndTime: momentUtil.toDatabaseTime( endMoment ),
+						tempStartTimeInput: momentUtil.toTime( startMoment ),
+						tempEndTimeInput: momentUtil.toTime( endMoment ),
 					} ) );
 					dispatch( actions.setRSVPIsLoading( false ) );
 				} else if ( page < totalPages ) {
@@ -207,93 +199,6 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 				}
 			},
 			error: () => dispatch( actions.setRSVPIsLoading( false ) ),
-		},
-	};
-
-	dispatch( wpRequestActions.wpRequest( options ) );
-};
-
-export const updateRSVPHeaderImage = ( postId, image ) => ( dispatch ) => {
-	const path = `tribe_events/${ postId }`;
-	const body = {
-		meta: {
-			[ utils.KEY_TICKET_HEADER ]: `${ image.id }`,
-		},
-	};
-
-	const options = {
-		path,
-		params: {
-			method: METHODS.PUT,
-			body: JSON.stringify( body ),
-		},
-		actions: {
-			start: () => dispatch( actions.setRSVPIsSettingsLoading( true ) ),
-			success: () => {
-				dispatch( actions.setRSVPHeaderImage( {
-					id: image.id,
-					alt: image.alt,
-					src: image.sizes.medium.url,
-				} ) );
-				dispatch( actions.setRSVPIsSettingsLoading( false ) );
-			},
-			error: () => dispatch( actions.setRSVPIsSettingsLoading( false ) ),
-		},
-	};
-
-	dispatch( wpRequestActions.wpRequest( options ) );
-};
-
-export const deleteRSVPHeaderImage = ( postId ) => ( dispatch ) => {
-	const path = `tribe_events/${ postId }`;
-	const body = {
-		meta: {
-			[ utils.KEY_TICKET_HEADER ]: null,
-		},
-	};
-
-	const options = {
-		path,
-		params: {
-			method: METHODS.PUT,
-			body: JSON.stringify( body ),
-		},
-		actions: {
-			start: () => dispatch( actions.setRSVPIsSettingsLoading( true ) ),
-			success: () => {
-				dispatch( actions.setRSVPHeaderImage( {
-					id: DEFAULT_STATE.id,
-					alt: DEFAULT_STATE.alt,
-					src: DEFAULT_STATE.src,
-				} ) );
-				dispatch( actions.setRSVPIsSettingsLoading( false ) );
-			},
-			error: () => dispatch( actions.setRSVPIsSettingsLoading( false ) ),
-		},
-	};
-
-	dispatch( wpRequestActions.wpRequest( options ) );
-};
-
-export const getRSVPHeaderImage = ( id ) => ( dispatch ) => {
-	const path = `media/${ id }`;
-
-	const options = {
-		path,
-		params: {
-			method: METHODS.GET,
-		},
-		actions: {
-			start: () => dispatch( actions.setRSVPIsSettingsLoading( true ) ),
-			success: ( { body } ) => {
-				dispatch( actions.setRSVPHeaderImage( {
-					id: body.id,
-					alt: body.alt_text,
-					src: body.media_details.sizes.medium.source_url,
-				} ) );
-				dispatch( actions.setRSVPIsSettingsLoading( false ) );
-			},
-			error: () => dispatch( actions.setRSVPIsSettingsLoading( false ) ),
 		},
 	};
 

@@ -54,10 +54,14 @@ extends Tribe__Editor__Blocks__Abstract {
 	 */
 	public function render( $attributes = array() ) {
 		/** @var Tribe__Tickets__Editor__Template $template */
-		$template           = tribe( 'tickets.editor.template' );
-		$args['post_id']    = $post_id = $template->get( 'post_id', null, false );
-		$args['attributes'] = $this->attributes( $attributes );
-		$args['tickets']    = $this->get_tickets( $post_id );
+		$template                 = tribe( 'tickets.editor.template' );
+		$args['post_id']          = $post_id = $template->get( 'post_id', null, false );
+		$rsvps                    = $this->get_tickets( $post_id );
+		$args['attributes']       = $this->attributes( $attributes );
+		$args['active_rsvps']     = $this->get_active_tickets( $rsvps );
+		$args['has_active_rsvps'] = ! empty( $args['active_rsvps'] );
+		$args['has_rsvps']        = ! empty( $rsvps );
+		$args['all_past']         = $this->get_all_tickets_past( $rsvps );
 
 		// Add the rendering attributes into global context
 		$template->add_template_globals( $args );
@@ -70,7 +74,7 @@ extends Tribe__Editor__Blocks__Abstract {
 	}
 
 	/**
-	 * Method to get the RSVP tickets
+	 * Method to get all RSVP tickets
 	 *
 	 * @since 4.9
 	 *
@@ -101,15 +105,56 @@ extends Tribe__Editor__Blocks__Abstract {
 				continue;
 			}
 
+			$tickets[] = $ticket;
+		}
+
+		return $tickets;
+	}
+
+	/**
+	 * Method to get the active RSVP tickets
+	 *
+	 * @since 4.9
+	 *
+	 * @return array
+	 */
+	protected function get_active_tickets( $tickets ) {
+		$active_tickets = array();
+
+		foreach ( $tickets as $ticket ) {
 			// continue if it's not in date range
 			if ( ! $ticket->date_in_range() ) {
 				continue;
 			}
 
-			$tickets[] = $ticket;
+			$active_tickets[] = $ticket;
 		}
 
-		return $tickets;
+		return $active_tickets;
+	}
+
+	/**
+	 * Method to get the all RSVPs past flag
+	 * All RSVPs past flag is true if all RSVPs end date is earlier than current date
+	 * If there are no RSVPs, false is returned
+	 *
+	 * @since 4.9
+	 *
+	 * @return bool
+	 */
+	protected function get_all_tickets_past( $tickets ) {
+		if ( empty( $tickets ) ) {
+			return false;
+		}
+
+		$all_past = true;
+		$current  = current_time( 'timestamp' );
+
+		foreach ( $tickets as $ticket ) {
+			$all_past = $all_past && $ticket->date_is_later( $current );
+		}
+
+		return $all_past;
 	}
 
 	/**

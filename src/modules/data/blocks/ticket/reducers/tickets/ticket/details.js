@@ -12,7 +12,7 @@ import { globals, moment as momentUtil } from '@moderntribe/common/utils';
 
 const datePickerFormat = globals.tecDateSettings().datepickerFormat;
 const currentMoment = moment();
-const endMoment = currentMoment.clone().add( 100, 'years' )
+const endMoment = currentMoment.clone().add( 100, 'years' );
 
 const startDateInput = datePickerFormat
 	? currentMoment.format( momentUtil.toFormat( datePickerFormat ) )
@@ -33,7 +33,9 @@ export const DEFAULT_STATE = {
 	endDateInput,
 	endDateMoment: endMoment,
 	startTime: momentUtil.toDatabaseTime( currentMoment ),
-	endTime: momentUtil.toDatabaseTime( currentMoment ),
+	endTime: momentUtil.toDatabaseTime( endMoment ),
+	startTimeInput: momentUtil.toTime( currentMoment ),
+	endTimeInput: momentUtil.toTime( endMoment ),
 	capacityType: constants.TICKET_TYPES[ constants.SHARED ],
 	capacity: '',
 };
@@ -99,6 +101,16 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				endTime: action.payload.endTime,
+			};
+		case types.SET_TICKET_START_TIME_INPUT:
+			return {
+				...state,
+				startTimeInput: action.payload.startTimeInput,
+			};
+		case types.SET_TICKET_END_TIME_INPUT:
+			return {
+				...state,
+				endTimeInput: action.payload.endTimeInput,
 			};
 		case types.SET_TICKET_CAPACITY_TYPE:
 			return {

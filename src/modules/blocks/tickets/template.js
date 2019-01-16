@@ -15,17 +15,29 @@ import './style.pcss';
 
 class Tickets extends PureComponent {
 	static propTypes = {
-		isSelected: PropTypes.bool,
-		hasProviders: PropTypes.bool,
-		isSettingsOpen: PropTypes.bool,
+		canCreateTickets: PropTypes.bool,
 		clientId: PropTypes.string,
+		hasProviders: PropTypes.bool,
 		header: PropTypes.string,
+		isSelected: PropTypes.bool,
+		isSettingsOpen: PropTypes.bool,
+		onBlockUpdate: PropTypes.func,
 	};
+
+	componentDidMount() {
+		this.props.onBlockUpdate( this.props.isSelected );
+	}
+
+	componentDidUpdate( prevProps ) {
+		if ( prevProps.isSelected !== this.props.isSelected ) {
+			this.props.onBlockUpdate( this.props.isSelected );
+		}
+	}
 
 	render() {
 		const {
 			isSelected,
-			hasProviders,
+			canCreateTickets,
 			isSettingsOpen,
 			clientId,
 		} = this.props;
@@ -39,7 +51,7 @@ class Tickets extends PureComponent {
 				) }
 			>
 				<TicketsContainer isSelected={ isSelected } />
-				{ hasProviders && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } /> }
+				{ canCreateTickets && <TicketsDashboard isSelected={ isSelected } clientId={ clientId } /> }
 				<TicketControls />
 			</div>
 		);

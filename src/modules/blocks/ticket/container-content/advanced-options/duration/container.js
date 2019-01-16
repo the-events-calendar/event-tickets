@@ -3,72 +3,62 @@
  */
 import { connect } from 'react-redux';
 import { compose } from 'redux';
-import moment from 'moment';
 
 /**
  * Internal dependencies
  */
 import Template from './template';
-import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
+import { withStore } from '@moderntribe/common/hoc';
 import {
 	globals,
 	moment as momentUtil,
-	time as timeUtil,
 } from '@moderntribe/common/utils';
 
 const onFromDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	const { blockId } = ownProps;
-	const startDateMoment = date ? moment( date ) : undefined;
-	const startDate = date ? momentUtil.toDatabaseDate( startDateMoment ) : '';
-	dispatch( actions.setTicketTempStartDate( blockId, startDate ) );
-	dispatch( actions.setTicketTempStartDateInput( blockId, dayPickerInput.state.value ) );
-	dispatch( actions.setTicketTempStartDateMoment( blockId, startDateMoment ) );
-	dispatch( actions.setTicketHasChanges( blockId, true ) );
+	dispatch( actions.handleTicketStartDate( ownProps.clientId, date, dayPickerInput ) )
 };
 
 const onFromTimePickerChange = ( dispatch, ownProps ) => ( e ) => {
-	const { blockId } = ownProps;
-	const startTime = e.target.value;
-	if ( startTime ) {
-		dispatch( actions.setTicketTempStartTime( blockId, `${ startTime }:00` ) );
-		dispatch( actions.setTicketHasChanges( blockId, true ) );
-	}
+	dispatch( actions.setTicketTempStartTimeInput( ownProps.clientId, e.target.value ) );
 };
 
 const onFromTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
-	const { blockId } = ownProps;
-	const startTime = timeUtil.fromSeconds( value, timeUtil.TIME_FORMAT_HH_MM );
-	dispatch( actions.setTicketTempStartTime( blockId, `${ startTime }:00` ) );
-	dispatch( actions.setTicketHasChanges( blockId, true ) );
+	dispatch( actions.handleTicketStartTime( ownProps.clientId, value ) );
 	onClose();
 };
 
 const onToDateChange = ( dispatch, ownProps ) => ( date, modifiers, dayPickerInput ) => {
-	const { blockId } = ownProps;
-	const endDateMoment = date ? moment( date ) : undefined;
-	const endDate = date ? momentUtil.toDatabaseDate( endDateMoment ) : '';
-	dispatch( actions.setTicketTempEndDate( blockId, endDate ) );
-	dispatch( actions.setTicketTempEndDateInput( blockId, dayPickerInput.state.value ) );
-	dispatch( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) );
-	dispatch( actions.setTicketHasChanges( blockId, true ) );
+	dispatch( actions.handleTicketEndDate( ownProps.clientId, date, dayPickerInput ) )
 };
 
 const onToTimePickerChange = ( dispatch, ownProps ) => ( e ) => {
-	const { blockId } = ownProps;
-	const endTime = e.target.value;
-	if ( endTime ) {
-		dispatch( actions.setTicketTempEndTime( blockId, `${ endTime }:00` ) );
-		dispatch( actions.setTicketHasChanges( blockId, true ) );
-	}
+	dispatch( actions.setTicketTempEndTimeInput( ownProps.clientId, e.target.value ) );
 };
 
 const onToTimePickerClick = ( dispatch, ownProps ) => ( value, onClose ) => {
-	const { blockId } = ownProps;
-	const endTime = timeUtil.fromSeconds( value, timeUtil.TIME_FORMAT_HH_MM );
-	dispatch( actions.setTicketTempEndTime( blockId, `${ endTime }:00` ) );
-	dispatch( actions.setTicketHasChanges( blockId, true ) );
+	dispatch( actions.handleTicketEndTime( ownProps.clientId, value ) );
 	onClose();
+};
+
+const onFromTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
+	let startTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
+	if ( ! startTimeMoment.isValid() ) {
+		const startTimeInput = selectors.getTicketStartTimeInput( state, ownProps )
+		startTimeMoment = momentUtil.toMoment( startTimeInput, momentUtil.TIME_FORMAT, false );
+	}
+	const seconds = momentUtil.totalSeconds( startTimeMoment );
+	dispatch( actions.handleTicketStartTime( ownProps.clientId, seconds ) );
+};
+
+const onToTimePickerBlur = ( state, dispatch, ownProps ) => ( e ) => {
+	let endTimeMoment = momentUtil.toMoment( e.target.value, momentUtil.TIME_FORMAT, false );
+	if ( ! endTimeMoment.isValid() ) {
+		const endTimeInput = selectors.getTicketEndTimeInput( state, ownProps )
+		endTimeMoment = momentUtil.toMoment( endTimeInput, momentUtil.TIME_FORMAT, false );
+	}
+	const seconds = momentUtil.totalSeconds( endTimeMoment );
+	dispatch( actions.handleTicketEndTime( ownProps.clientId, seconds ) );
 };
 
 const mapStateToProps = ( state, ownProps ) => {
@@ -77,21 +67,25 @@ const mapStateToProps = ( state, ownProps ) => {
 		: 'LL';
 	const isDisabled = selectors.isTicketDisabled( state, ownProps );
 
+	const startDateMoment = selectors.getTicketTempStartDateMoment( state, ownProps );
+	const endDateMoment = selectors.getTicketTempEndDateMoment( state, ownProps );
+	const fromDate = startDateMoment && startDateMoment.toDate();
+	const toDate = endDateMoment && endDateMoment.toDate();
+
 	return {
-		fromDate: selectors.getTicketTempStartDateInput( state, ownProps ),
+		fromDate,
+		fromDateInput: selectors.getTicketTempStartDateInput( state, ownProps ),
 		fromDateDisabled: isDisabled,
 		fromDateFormat: datePickerFormat,
-		fromTime: selectors.getTicketTempStartTimeNoSeconds( state, ownProps ),
+		fromTime: selectors.getTicketTempStartTimeInput( state, ownProps ),
 		fromTimeDisabled: isDisabled,
-		isSameDay: momentUtil.isSameDay(
-			selectors.getTicketTempStartDateMoment( state, ownProps ),
-			selectors.getTicketTempEndDateMoment( state, ownProps ),
-		),
-		toDate: selectors.getTicketTempEndDateInput( state, ownProps ),
+		toDate,
+		toDateInput: selectors.getTicketTempEndDateInput( state, ownProps ),
 		toDateDisabled: isDisabled,
 		toDateFormat: datePickerFormat,
-		toTime: selectors.getTicketTempEndTimeNoSeconds( state, ownProps ),
+		toTime: selectors.getTicketTempEndTimeInput( state, ownProps ),
 		toTimeDisabled: isDisabled,
+		state,
 	};
 };
 
@@ -102,12 +96,27 @@ const mapDispatchToProps = ( dispatch, ownProps ) => ( {
 	onToDateChange: onToDateChange( dispatch, ownProps ),
 	onToTimePickerChange: onToTimePickerChange( dispatch, ownProps ),
 	onToTimePickerClick: onToTimePickerClick( dispatch, ownProps ),
+	dispatch,
 } );
+
+const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
+	const { state, ...restStateProps } = stateProps;
+	const { dispatch, ...restDispatchProps } = dispatchProps;
+
+	return {
+		...ownProps,
+		...restStateProps,
+		...restDispatchProps,
+		onFromTimePickerBlur: onFromTimePickerBlur( state, dispatch, ownProps ),
+		onToTimePickerBlur: onToTimePickerBlur( state, dispatch, ownProps ),
+	};
+}
 
 export default compose(
 	withStore(),
 	connect(
 		mapStateToProps,
 		mapDispatchToProps,
+		mergeProps,
 	),
 )( Template );

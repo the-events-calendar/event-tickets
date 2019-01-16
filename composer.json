@@ -10,7 +10,7 @@
   "homepage": "http://tri.be/shop/wordpress-events-calendar/",
   "license": "GPL-2.0",
   "require-dev": {
-    "lucatume/wp-browser": "^2.1.6",
+    "lucatume/wp-browser": "2.1.6",
     "lucatume/function-mocker": "^1.0",
     "vlucas/phpdotenv": "^2.4",
     "lucatume/function-mocker-le": "^1.0",
@@ -18,7 +18,8 @@
     "site5/phantoman": "^2.0",
     "jakoch/phantomjs-installer": "^2.1",
     "fzaninotto/faker": "^1.7",
-    "codeception/phpunit-wrapper": "6.0.10"
+    "phpunit/phpunit": "~6.5.13",
+		"lucatume/wp-snaphot-assertions" :"^1.0"
   },
   "minimum-stability": "stable",
   "prefer-stable": true,

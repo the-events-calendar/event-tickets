@@ -8,9 +8,10 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9.3
+ * @version 4.9.4
  *
  */
 /**
@@ -27,7 +28,7 @@ $name = apply_filters( 'tribe_tickets_rsvp_form_full_name', '', $this );
 	type="text"
 	name="attendee[full_name]"
 	class="tribe-tickets-full-name"
-	placeholder="<?php esc_attr_e( 'Full Name', 'events-gutenberg' ); ?>"
+	placeholder="<?php esc_attr_e( 'Full Name', 'event-tickets' ); ?>"
 	value="<?php echo esc_attr( $name ); ?>"
 	required
 />

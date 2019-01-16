@@ -8,9 +8,10 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9.2
+ * @since 4.9.2
+ * @version 4.9.4
  *
  */
 $display_subtitle = $this->attr( 'displaySubtitle' );
@@ -21,6 +22,6 @@ if ( is_bool( $display_subtitle ) && ! $display_subtitle ) {
 
 $post_id         = $this->get( 'post_id' );
 $attendees_total = count( $attendees );
-$message         = _n( 'One person is attending %2$s', '%d people are attending %s', $attendees_total, 'events-gutenberg' );
+$message         = _n( 'One person is attending %2$s', '%d people are attending %s', $attendees_total, 'event-tickets' );
 ?>
 <p><?php echo esc_html( sprintf( $message, $attendees_total, get_the_title( $post_id ) ) ); ?></p>

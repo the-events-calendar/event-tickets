@@ -8,13 +8,14 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9.3
+ * @version 4.9.4
  *
  */
 
 ?>
 <a href="<?php echo esc_url( Tribe__Tickets__Tickets::get_login_url() ); ?>">
-	<?php esc_html_e( 'Log in to purchase', 'events-gutenberg' ); ?>
+	<?php esc_html_e( 'Log in to purchase', 'event-tickets' ); ?>
 </a>

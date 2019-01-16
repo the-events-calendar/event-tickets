@@ -8,9 +8,10 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9.3
+ * @version 4.9.4
  *
  */
 
@@ -19,5 +20,5 @@ $ticket = $this->get( 'ticket' );
 <div
 	class="tribe-block__tickets__item__quantity__unavailable"
 >
-	<?php esc_html_e( 'Sold Out', 'events-gutenberg' ); ?>
+	<?php esc_html_e( 'Sold Out', 'event-tickets' ); ?>
 </div>

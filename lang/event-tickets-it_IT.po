@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2017-11-06 22:50:15+0000\n"
+"PO-Revision-Date: 2019-01-02 17:16:45+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2490,7 +2490,7 @@ msgstr ""
 
 #: src/views/tickets/tpp.php:112
 msgid "Buy now"
-msgstr ""
+msgstr "Acquista ora"
 
 #: common/src/Tribe/PUE/Notices.php:397
 msgid "You can always check the status of your licenses by logging in to %1$syour account on theeventscalendar.com%2$s."
@@ -3345,7 +3345,7 @@ msgstr "Precedente"
 
 #: common/src/Tribe/Main.php:254 common/src/Tribe/Main.php:271
 msgid "Next"
-msgstr "Prossimo"
+msgstr "Successivo"
 
 #: common/src/Tribe/Main.php:253
 msgid "All"

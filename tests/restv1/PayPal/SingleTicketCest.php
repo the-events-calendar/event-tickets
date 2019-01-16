@@ -62,7 +62,6 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 
 		$expectedJson = array(
-
 			'id'                            => $ticket_id,
 			'post_id'                       => $post_id,
 			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
@@ -76,7 +75,7 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'                      => $ticket_rest_url,
 			'provider'                      => 'tribe-commerce',
 			'title'                         => $ticket_post->post_title,
-			'description'                   => $ticket_post->post_content,
+			'description'                   => $ticket_post->post_excerpt,
 			'image'                         => $repository->get_ticket_header_image( $ticket_id ),
 			'available_from'                => $repository->get_ticket_start_date( $ticket_id ),
 			'available_from_details'        => $repository->get_ticket_start_date( $ticket_id, true ),
@@ -104,6 +103,13 @@ class SingleTicketCest extends BaseRestCest {
 				'unchecked_in'            => 6,
 				'checked_in_percentage'   => 15,
 				'unchecked_in_percentage' => 85,
+			],
+			'capacity_type'             => 'own',
+			'sku'                       => '',
+			'totals'                    => [
+				'stock'   => 23,
+				'sold'    => 7,
+				'pending' => 0,
 			],
 		);
 
@@ -234,7 +240,6 @@ class SingleTicketCest extends BaseRestCest {
 		$I->assertCount( count( $opting_in_attendees ) + 1, $response_attendees );
 
 		$expectedJson = array(
-
 			'id'                            => $ticket_id,
 			'post_id'                       => $post_id,
 			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),

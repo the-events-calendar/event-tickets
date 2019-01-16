@@ -87,7 +87,12 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 * @return string success message
 	 */
 	public function success_notice() {
-		return '<div class="success"><p>' . __( 'Attendee Registration fields saved.', 'event-tickets' ) . '</p></div>';
+		$link    = '<a href="' . esc_url( get_edit_post_link( $this->post->ID, 'raw' ) ) . '">' . esc_html__( 'return to the content editor', 'event-tickets' ) . '</a>';
+		$notice  = '<div class="success"><p>';
+		$notice .= sprintf( esc_html__( 'Attendee Registration fields saved. Make additional changes or %1$s', 'event-tickets' ), $link );
+		$notice .= '</p></div>';
+
+		return $notice;
 	}
 
 	/**
@@ -115,7 +120,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		</style>
 
 		<div id="poststuff"><div class="inside postbox">
-			<a href="<?php echo get_edit_post_link( $this->post->ID, 'raw' );?>">&laquo; Back to Ticket Editor</a>
+			<a href="<?php echo esc_url( get_edit_post_link( $this->post->ID, 'raw' ) );?>">&laquo; <?php esc_html_e( 'Back to Editor', 'event-tickets' ) ?></a>
 			<form id="event-tickets-attendee-information" action="<?php echo esc_url( $this->url() ); ?>" method="post">
 				<input type="hidden" name="ticket_id" value="<?php echo absint( $this->ticket_id );?>" />
 				<div id="tribetickets" class="event-tickets-plus-fieldset-table tribe-tickets-plus-fieldset-page">
@@ -124,7 +129,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 					$meta->accordion_content( $this->post->ID, $this->ticket_id );
 					?>
 				</div>
-				<button class="button-primary" type="submit">Save</button>
+				<button class="button-primary" type="submit"><?php esc_html_e( 'Save Changes', 'event-tickets' ) ?></button>
 			</form>
 		</div></div>
 
