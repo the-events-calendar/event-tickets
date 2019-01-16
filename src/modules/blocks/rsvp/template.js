@@ -21,23 +21,18 @@ import './style.pcss';
 
 class RSVP extends PureComponent {
 	static propTypes = {
+		clientId: PropTypes.string.isRequired,
 		created: PropTypes.bool.isRequired,
-		deleteRSVP: PropTypes.func.isRequired,
 		initializeRSVP: PropTypes.func.isRequired,
 		isInactive: PropTypes.bool.isRequired,
 		isLoading: PropTypes.bool.isRequired,
 		isModalShowing: PropTypes.bool.isRequired,
 		isSelected: PropTypes.bool.isRequired,
 		rsvpId: PropTypes.number.isRequired,
-		clientId: PropTypes.string.isRequired,
 	};
 
 	componentDidMount() {
 		! this.props.rsvpId && this.props.initializeRSVP();
-	}
-
-	componentWillUnmount() {
-		this.props.deleteRSVP();
 	}
 
 	render() {
