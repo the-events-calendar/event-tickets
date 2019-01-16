@@ -1,5 +1,0 @@
-{
-  "hooks": {
-    "post-checkout": "npom install && npm run build",
-  }
-}
