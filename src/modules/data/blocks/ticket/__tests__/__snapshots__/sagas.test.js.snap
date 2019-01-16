@@ -1,5 +1,90 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Ticket Block sagas createMissingTicketBlocks should create missing ticket blocks 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      [Function],
+    ],
+    "context": Array [],
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicket should delete ticket 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Array [
+        "modern-tribe",
+      ],
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicket should delete ticket 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Array [
+        "modern-tribe",
+      ],
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicketsHeaderImage should delete tickets header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicketsHeaderImage should not delete tickets header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
 exports[`Ticket Block sagas handleEventStartDateChanges should handle start time changes 1`] = `
 Object {
   "@@redux-saga/IO": true,
@@ -9,6 +94,103 @@ Object {
       "name": "nodejs",
       "take": [MockFunction],
     },
+  },
+}
+`;
+
+exports[`Ticket Block sagas handleTicketMove should handle ticket move 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Array [
+        42,
+      ],
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas resetTicketsBlock should reset tickets block 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "meta",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas resetTicketsBlock should reset tickets block 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "meta": Object {
+          "_tribe_ticket_capacity": "",
+        },
+      },
+    ],
+    "context": Object {
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas setTicketInitialState should set ticket initial state 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "date",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas setTicketInitialState should set tickets initial state for new ticket 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "date",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
   },
 }
 `;
@@ -198,7 +380,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE",
@@ -211,7 +393,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_INPUT",
@@ -224,7 +406,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_MOMENT",
@@ -237,7 +419,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME",
@@ -250,7 +432,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT",
@@ -263,7 +445,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_DATE",
@@ -276,7 +458,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_DATE_INPUT",
@@ -289,7 +471,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_DATE_MOMENT",
@@ -302,7 +484,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_TIME",
@@ -315,7 +497,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_TIME_INPUT",
@@ -328,7 +510,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "blockId": "blockId",
+            "clientId": "blockId",
             "hasChanges": true,
           },
           "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
@@ -337,5 +519,39 @@ Object {
       },
     },
   ],
+}
+`;
+
+exports[`Ticket Block sagas updateTicketsHeaderImage should not update tickets header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas updateTicketsHeaderImage should update tickets header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
 }
 `;

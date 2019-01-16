@@ -178,4 +178,19 @@ class Tribe__Tickets__Assets {
 			tribe_asset_enqueue( 'tribe-validation' );
 		}
 	}
+
+	/**
+	 * Add data strings to tribe_l10n_datatables object.
+	 *
+	 * @param array $data Object data.
+	 *
+	 * @return array
+	 *
+	 * @since 4.9.4
+	 */
+	public function add_data_strings( $data ) {
+		$data['registration_prompt'] = __( 'There is unsaved attendee information. Are you sure you want to continue?', 'event-tickets' );
+
+		return $data;
+	}
 }

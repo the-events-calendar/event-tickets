@@ -19,6 +19,7 @@
 
 body.page-tribe-attendee-registration header.entry-header,
 	body.page-tribe-attendee-registration header.entry-meta,
+	body.page-tribe-attendee-registration header.page-header,
 	body.page-tribe-attendee-registration footer.entry-header {
 	display: none;
 }
