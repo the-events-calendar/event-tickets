@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10] TBD =
 
+* Feature - add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
 
 = [4.9.4] 2019-01-15 =
@@ -167,6 +168,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
+
+= [4.10] TBD =
+
+* Feature - add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
 
 = [4.9.2] 2018-12-13 =
 
