@@ -54,7 +54,7 @@ function tribe_tickets_not_php_version_message() {
  * @return void
  */
 function tribe_tickets_not_php_version_notice() {
-	echo '<div id="message" class="error"><p>' . tribe_events_not_php_version_message() . '</p></div>';
+	echo '<div id="message" class="error"><p>' . tribe_tickets_not_php_version_message() . '</p></div>';
 }
 
 /**
