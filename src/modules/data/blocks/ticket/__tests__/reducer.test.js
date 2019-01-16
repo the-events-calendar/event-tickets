@@ -9,6 +9,13 @@ describe( 'Reducer', () => {
 		expect( reducer( undefined, {} ) ).toEqual( DEFAULT_STATE );
 	} );
 
+	it( 'should set the is selected', () => {
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketsIsSelected( true ),
+		) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the is settings open', () => {
 		expect( reducer(
 			DEFAULT_STATE,

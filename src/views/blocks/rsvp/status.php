@@ -8,18 +8,19 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9
+ * @version 4.9.4
  *
  */
-
+$going = $this->get( 'going' );
 ?>
 <div class="tribe-block__rsvp__status">
 	<?php if ( $ticket->is_in_stock() ) : ?>
 
-		<?php $this->template( 'blocks/rsvp/status/going', array( 'ticket' => $ticket ) ); ?>
-		<?php $this->template( 'blocks/rsvp/status/not-going', array( 'ticket' => $ticket ) ); ?>
+		<?php $this->template( 'blocks/rsvp/status/going', array( 'ticket' => $ticket, 'going' => $going ) ); ?>
+		<?php $this->template( 'blocks/rsvp/status/not-going', array( 'ticket' => $ticket, 'going' => $going ) ); ?>
 
 	<?php else : ?>
 		<?php $this->template( 'blocks/rsvp/status/full', array( 'ticket' => $ticket ) ); ?>

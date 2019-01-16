@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import moment from 'moment';
-
-/**
  * Internal dependencies
  */
 import * as actions from './actions';
@@ -204,93 +199,6 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 				}
 			},
 			error: () => dispatch( actions.setRSVPIsLoading( false ) ),
-		},
-	};
-
-	dispatch( wpRequestActions.wpRequest( options ) );
-};
-
-export const updateRSVPHeaderImage = ( postId, image ) => ( dispatch ) => {
-	const path = `tribe_events/${ postId }`;
-	const body = {
-		meta: {
-			[ utils.KEY_TICKET_HEADER ]: `${ image.id }`,
-		},
-	};
-
-	const options = {
-		path,
-		params: {
-			method: METHODS.PUT,
-			body: JSON.stringify( body ),
-		},
-		actions: {
-			start: () => dispatch( actions.setRSVPIsSettingsLoading( true ) ),
-			success: () => {
-				dispatch( actions.setRSVPHeaderImage( {
-					id: image.id,
-					alt: image.alt,
-					src: image.sizes.medium.url,
-				} ) );
-				dispatch( actions.setRSVPIsSettingsLoading( false ) );
-			},
-			error: () => dispatch( actions.setRSVPIsSettingsLoading( false ) ),
-		},
-	};
-
-	dispatch( wpRequestActions.wpRequest( options ) );
-};
-
-export const deleteRSVPHeaderImage = ( postId ) => ( dispatch ) => {
-	const path = `tribe_events/${ postId }`;
-	const body = {
-		meta: {
-			[ utils.KEY_TICKET_HEADER ]: null,
-		},
-	};
-
-	const options = {
-		path,
-		params: {
-			method: METHODS.PUT,
-			body: JSON.stringify( body ),
-		},
-		actions: {
-			start: () => dispatch( actions.setRSVPIsSettingsLoading( true ) ),
-			success: () => {
-				dispatch( actions.setRSVPHeaderImage( {
-					id: DEFAULT_STATE.id,
-					alt: DEFAULT_STATE.alt,
-					src: DEFAULT_STATE.src,
-				} ) );
-				dispatch( actions.setRSVPIsSettingsLoading( false ) );
-			},
-			error: () => dispatch( actions.setRSVPIsSettingsLoading( false ) ),
-		},
-	};
-
-	dispatch( wpRequestActions.wpRequest( options ) );
-};
-
-export const getRSVPHeaderImage = ( id ) => ( dispatch ) => {
-	const path = `media/${ id }`;
-
-	const options = {
-		path,
-		params: {
-			method: METHODS.GET,
-		},
-		actions: {
-			start: () => dispatch( actions.setRSVPIsSettingsLoading( true ) ),
-			success: ( { body } ) => {
-				dispatch( actions.setRSVPHeaderImage( {
-					id: body.id,
-					alt: body.alt_text,
-					src: body.media_details.sizes.medium.source_url,
-				} ) );
-				dispatch( actions.setRSVPIsSettingsLoading( false ) );
-			},
-			error: () => dispatch( actions.setRSVPIsSettingsLoading( false ) ),
 		},
 	};
 

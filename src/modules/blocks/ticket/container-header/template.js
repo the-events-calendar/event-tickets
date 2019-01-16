@@ -19,23 +19,23 @@ import TicketContainerHeaderQuantity from './quantity/container';
 import './style.pcss';
 
 const TicketContainerHeader = ( {
-	blockId,
+	clientId,
 	isSelected,
 } ) => {
 	return (
 		<Fragment>
 			<div className="tribe-editor__ticket__container-header-details">
-				<TicketContainerHeaderTitle blockId={ blockId } isSelected={ isSelected } />
-				<TicketContainerHeaderDescription blockId={ blockId } isSelected={ isSelected } />
+				<TicketContainerHeaderTitle clientId={ clientId } isSelected={ isSelected } />
+				<TicketContainerHeaderDescription clientId={ clientId } isSelected={ isSelected } />
 			</div>
-			<TicketContainerHeaderPrice blockId={ blockId } isSelected={ isSelected } />
-			<TicketContainerHeaderQuantity blockId={ blockId } isSelected={ isSelected } />
+			<TicketContainerHeaderPrice clientId={ clientId } isSelected={ isSelected } />
+			<TicketContainerHeaderQuantity clientId={ clientId } isSelected={ isSelected } />
 		</Fragment>
 	);
 };
 
 TicketContainerHeader.propTypes = {
-	blockId: PropTypes.string,
+	clientId: PropTypes.string,
 	isSelected: PropTypes.bool,
 };
 

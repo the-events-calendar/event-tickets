@@ -90,7 +90,13 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		// return the page template
-		return get_page_template();
+		$template = get_page_template();
+		if ( ! empty( $template ) ) {
+			return $template;
+		}
+
+		// Fallback for themes that are missing page.php
+		return get_template_directory() . '/index.php';
 	}
 
 	/**
@@ -101,7 +107,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return void
 	 */
 	public function set_body_classes() {
-
 		// Bail if we're not on the attendee info page
 		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return;
@@ -216,7 +221,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @param WP_Query $query
 	 */
 	public function set_page_content( $query ) {
-
 		// Bail if we're not on the attendee info page
 		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return;

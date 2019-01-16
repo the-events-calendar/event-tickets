@@ -14,18 +14,27 @@ import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
 const getHasOverlay = ( state, ownProps ) => (
 	selectors.getTicketsIsSettingsOpen( state )
 		|| (
-			! selectors.getTicketsIsSettingsOpen( state )
-				&& ! selectors.hasATicketSelected( state )
+			! selectors.hasATicketSelected( state )
 				&& ! ownProps.isSelected
 		)
 );
 
+const getShowInactiveBlock = ( state, ownProps ) => {
+	const showIfBlockIsSelected = ownProps.isSelected && ! selectors.hasTickets( state );
+	const showIfBlockIsNotSelected = ! ownProps.isSelected
+		&& ! selectors.hasATicketSelected( state )
+		&& ( ! selectors.hasCreatedTickets( state ) || ! selectors.hasTicketOnSale( state ) );
+
+	return showIfBlockIsSelected || showIfBlockIsNotSelected;
+};
+
 const mapStateToProps = ( state, ownProps ) => ( {
-	hasATicketSelected: selectors.hasATicketSelected( state ),
+	allTicketsPast: selectors.allTicketsPast( state ),
+	canCreateTickets: selectors.canCreateTickets(),
 	hasCreatedTickets: selectors.hasCreatedTickets( state ),
 	hasOverlay: getHasOverlay( state, ownProps ),
-	hasTickets: selectors.hasTickets( state ),
-	canCreateTickets: selectors.canCreateTickets(),
+	showAvailability: ownProps.isSelected && selectors.hasCreatedTickets( state ),
+	showInactiveBlock: getShowInactiveBlock( state, ownProps ),
 } );
 
 export default compose(

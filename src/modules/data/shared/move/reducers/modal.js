@@ -9,7 +9,7 @@ export const DEFAULT_STATE = {
 	search_terms: '',
 	target_post_id: null,
 	ticketId: null,
-	blockId: null,
+	clientId: null,
 	isSubmitting: false,
 };
 
