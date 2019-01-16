@@ -20,9 +20,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			return false;
 		}
 
-		// These do NOT affect the API response!
-		add_filter( 'get_post_metadata', array( $this, 'filter_going_fields' ), 15, 4 );
-		add_filter( 'get_post_metadata', array( $this, 'filter_has_attendee_info_fields' ), 15, 4 );
 		add_filter( 'updated_post_meta', array( $this, 'trigger_update_capacity' ), 15, 4 );
 
 		// This does!
@@ -84,92 +81,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			delete_post_meta( $object_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
 			delete_post_meta( $object_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
 		}
-	}
-
-	/**
-	 * Populates "Going" and "Not Going" fields for the Rest API data Endpoint in WordPress
-	 *
-	 * @since 4.9
-	 *
-	 * @param  mixed  $check
-	 * @param  int    $object_id
-	 * @param  string $meta_key
-	 * @param  bool   $single
-	 *
-	 * @return null|int
-	 */
-	public function filter_going_fields( $check, $object_id, $meta_key, $single ) {
-		$valid_keys = array(
-			'_tribe_ticket_going_count',
-			'_tribe_ticket_not_going_count',
-		);
-
-		if ( ! in_array( $meta_key, $valid_keys ) ) {
-			return $check;
-		}
-		$ticket_object = tribe_tickets_get_ticket_provider( $object_id );
-
-		if ( ! $ticket_object instanceof Tribe__Tickets__RSVP ) {
-			return $check;
-		}
-
-		$repository    = tribe( 'tickets.rest-v1.repository' );
-		$attendees = $repository->get_ticket_attendees( $object_id );
-
-		if ( false === $attendees ) {
-			return $check;
-		}
-
-		$going     = 0;
-		$not_going = 0;
-
-		foreach ( $attendees as $attendee ) {
-			if ( isset( $attendee['rsvp_going'] ) && true === $attendee['rsvp_going'] ) {
-				$going++;
-			} else {
-				$not_going++;
-			}
-		}
-
-		if ( $valid_keys[0] === $meta_key ) {
-			return (string) $going;
-		}
-
-		if ( $valid_keys[1] === $meta_key ) {
-			return (string) $not_going;
-		}
-	}
-
-	/**
-	 * Populates has attendee info fields field for the Rest API data Endpoint in WordPress
-	 *
-	 * @since 4.9
-	 *
-	 * @param  mixed  $check
-	 * @param  int    $object_id
-	 * @param  string $meta_key
-	 * @param  bool   $single
-	 *
-	 * @return null|bool
-	 */
-	public function filter_has_attendee_info_fields( $check, $object_id, $meta_key, $single ) {
-
-		$valid_keys = array(
-			'_tribe_ticket_has_attendee_info_fields',
-		);
-
-		if ( ! in_array( $meta_key, $valid_keys ) ) {
-			return $check;
-		}
-
-		$ticket_object = tribe_tickets_get_ticket_provider( $object_id );
-
-		if ( ! $ticket_object instanceof Tribe__Tickets__RSVP ) {
-			return $check;
-		}
-
-		$repository = tribe( 'tickets.data_api' );
-		return $repository->ticket_has_meta_fields( $object_id );
 	}
 
 	/**
