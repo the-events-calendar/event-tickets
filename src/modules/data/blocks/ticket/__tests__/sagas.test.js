@@ -2124,9 +2124,9 @@ describe( 'Ticket Block sagas', () => {
 	} );
 
 	describe( 'syncTicketSaleEndWithEventStart', () => {
-		let prevDate, state, momentMock, blockId;
+		let prevDate, state, momentMock, clientId;
 		beforeEach( () => {
-			blockId = 'blockId';
+			clientId = 'clientId';
 			prevDate = '2018-01-01 00:00:00';
 			state = {
 				startDate: 'January 1, 2018',
@@ -2159,12 +2159,12 @@ describe( 'Ticket Block sagas', () => {
 		} );
 
 		it( 'should not sync', () => {
-			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, blockId );
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, clientId );
 			expect( gen.next().value ).toEqual(
-				select( selectors.getTicketTempEndDateMoment, { blockId } )
+				select( selectors.getTicketTempEndDateMoment, { clientId } )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				select( selectors.getTicketEndDateMoment, { blockId } )
+				select( selectors.getTicketEndDateMoment, { clientId } )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
 				call( createDates, prevDate )
@@ -2176,12 +2176,12 @@ describe( 'Ticket Block sagas', () => {
 		} );
 
 		it( 'should sync', () => {
-			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, blockId );
+			const gen = sagas.syncTicketSaleEndWithEventStart( prevDate, clientId );
 			expect( gen.next().value ).toEqual(
-				select( selectors.getTicketTempEndDateMoment, { blockId } )
+				select( selectors.getTicketTempEndDateMoment, { clientId } )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				select( selectors.getTicketEndDateMoment, { blockId } )
+				select( selectors.getTicketEndDateMoment, { clientId } )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
 				call( createDates, prevDate )
@@ -2206,7 +2206,7 @@ describe( 'Ticket Block sagas', () => {
 			} ).value ).toMatchSnapshot();
 
 			expect( gen.next().value ).toEqual(
-				fork( sagas.saveTicketWithPostSave, blockId )
+				fork( sagas.saveTicketWithPostSave, clientId )
 			);
 		} );
 	} );
@@ -2270,18 +2270,18 @@ describe( 'Ticket Block sagas', () => {
 	} );
 
 	describe( 'saveTicketWithPostSave', () => {
-		let channel, blockId;
+		let channel, clientId;
 
 		beforeEach( () => {
 			channel = { name, take: jest.fn(), close: jest.fn() };
-			blockId = 'blockId';
+			clientId = 'clientId';
 		} );
 
 		it( 'should update when channel saves', () => {
-			const gen = sagas.saveTicketWithPostSave( blockId );
+			const gen = sagas.saveTicketWithPostSave( clientId );
 
 			expect( gen.next().value ).toEqual(
-				select( selectors.getTicketHasBeenCreated, { blockId } )
+				select( selectors.getTicketHasBeenCreated, { clientId } )
 			);
 
 			expect( gen.next( true ).value ).toEqual(
@@ -2293,7 +2293,7 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect(gen.next().value).toEqual(
-				call( sagas.updateTicket, { payload: { blockId } } )
+				call( sagas.updateTicket, { payload: { clientId } } )
 			);
 
 			expect( gen.next().value ).toEqual(
@@ -2303,10 +2303,10 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().done ).toEqual( true );
 		} );
 		it( 'should do nothing', () => {
-			const gen = sagas.saveTicketWithPostSave( blockId );
+			const gen = sagas.saveTicketWithPostSave( clientId );
 
 			expect( gen.next().value ).toEqual(
-				select( selectors.getTicketHasBeenCreated, { blockId } )
+				select( selectors.getTicketHasBeenCreated, { clientId } )
 			);
 
 			expect( gen.next( false ).done ).toEqual( true );
