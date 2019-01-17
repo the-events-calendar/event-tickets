@@ -4,7 +4,6 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-
 /**
  * Class Tribe__Tickets__Attendees_Table
  *
@@ -266,7 +265,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
-
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return false;
 		}
@@ -292,8 +290,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
-
-
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return;
 		}
@@ -473,8 +469,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
-
-
 		$checked = '';
 		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
