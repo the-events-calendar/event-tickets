@@ -10,7 +10,8 @@
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9
+ * @version 4.9.4
  *
  */
 $ticket_id   = $this->get( 'ticket_id' );
@@ -39,8 +40,9 @@ $must_login  = ! is_user_logged_in() && tribe( 'tickets.rsvp' )->login_required(
 		<?php if ( $must_login ) : ?>
 			<?php $this->template( 'blocks/rsvp/form/submit-login', array( 'event_id' => $event_id, 'going' => $going, 'ticket_id' => $ticket_id ) ); ?>
 		<?php else : ?>
+			<?php $this->template( 'blocks/rsvp/form/details', array( 'ticket' => $ticket ) ); ?>
 			<?php $this->template( 'blocks/rsvp/form/attendee-meta', array( 'ticket' => $ticket, 'ticket_id' => $ticket_id ) ); ?>
-			<?php $this->template( 'blocks/rsvp/form/submit', array( 'ticket' => $ticket ) ); ?>
+			<?php $this->template( 'blocks/rsvp/form/submit-button' ); ?>
 		<?php endif; ?>
 	</div>
 

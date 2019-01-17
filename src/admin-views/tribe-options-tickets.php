@@ -97,6 +97,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'ticket-rsvp-form-location'     => array(
 			'type'            => 'dropdown',
 			'label'           => esc_html__( 'Location of RSVP form', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
 			'options'         => $ticket_form_location_options,
 			'validation_type' => 'options',
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
@@ -105,6 +106,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'ticket-commerce-form-location' => array(
 			'type'            => 'dropdown',
 			'label'           => esc_html__( 'Location of Tickets form', 'event-tickets' ),
+			'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
 			'options'         => $ticket_form_location_options,
 			'validation_type' => 'options',
 			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
