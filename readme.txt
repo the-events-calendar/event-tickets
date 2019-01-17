@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
+* Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
 
 = [4.10] TBD =
