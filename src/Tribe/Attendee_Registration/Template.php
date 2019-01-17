@@ -235,6 +235,15 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 	}
 
+	/**
+	 * Set the page excerpt to be post content on attendee registration page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_excerpt Excerpt text
+	 *
+	 * @return string Excerpt text or post content.
+	 */
 	public function set_page_excerpt( $post_excerpt ) {
 
 		// Bail if we're not on the attendee info page
@@ -243,7 +252,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		// else, be sure we return the content - not the excerpt
-		return the_content();
+		return get_the_content();
 	}
 
 	/**
