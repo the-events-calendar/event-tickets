@@ -81,7 +81,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
-			'views/tickets.js',
+			'tickets-block.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
 			null,
 			array(
