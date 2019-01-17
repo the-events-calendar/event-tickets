@@ -133,6 +133,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.9.4] 2019-01-15 =
 
+* Fix - Do not show print, email, and export buttons if not in admin [120646]
+
+= [TBD] =
+
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]
 * Tweak - Fix header image message for RSVP and Tickets blocks [119759]
