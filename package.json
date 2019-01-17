@@ -43,7 +43,7 @@
   },
   "husky": {
     "hooks": {
-      "post-checkout": "npom install && npm run build"
+      "post-checkout": "npm install && npm run build"
     }
   },
   "devDependencies": {
