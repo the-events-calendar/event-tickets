@@ -797,11 +797,11 @@ export function* setTicketTempDetails( action ) {
  *
  * @export
  */
-export function* saveTicketWithPostSave( blockId ) {
+export function* saveTicketWithPostSave( clientId ) {
 	let saveChannel;
 	try {
 		// Do nothing when not already created
-		if ( yield select( selectors.getTicketHasBeenCreated, { blockId } ) ) {
+		if ( yield select( selectors.getTicketHasBeenCreated, { clientId } ) ) {
 			// Create channel for use
 			saveChannel = yield call( createWPEditorSavingChannel );
 
@@ -809,7 +809,7 @@ export function* saveTicketWithPostSave( blockId ) {
 			yield take( saveChannel );
 
 			// Update when saving
-			yield call( updateTicket, { payload: { blockId } } );
+			yield call( updateTicket, { payload: { clientId } } );
 		}
 	} catch ( error ) {
 		console.error( error );
@@ -829,8 +829,8 @@ export function* saveTicketWithPostSave( blockId ) {
 export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
 	const ticketIds = yield select( selectors.getTicketsAllClientIds );
 	for (let index = 0; index < ticketIds.length; index++) {
-		const blockId = ticketIds[index];
-		yield call( syncTicketSaleEndWithEventStart, prevStartDate, blockId );
+		const clientId = ticketIds[index];
+		yield call( syncTicketSaleEndWithEventStart, prevStartDate, clientId );
 	}
 }
 
@@ -840,10 +840,10 @@ export function* syncTicketsSaleEndWithEventStart( prevStartDate ) {
  * @param {String} prevStartDate Previous start date before latest set date time changes
  * @export
  */
-export function* syncTicketSaleEndWithEventStart( prevStartDate, blockId ){
+export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 	try {
-		const tempEndMoment = yield select( selectors.getTicketTempEndDateMoment, { blockId } );
-		const endMoment = yield select( selectors.getTicketEndDateMoment, { blockId } );
+		const tempEndMoment = yield select( selectors.getTicketTempEndDateMoment, { clientId } );
+		const endMoment = yield select( selectors.getTicketEndDateMoment, { clientId } );
 		const { moment: prevEventStartMoment } = yield call( createDates, prevStartDate );
 
 		// NOTE: Mutation
@@ -869,24 +869,24 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, blockId ){
 			} = yield call( createDates, eventStart );
 
 			yield all( [
-				put( actions.setTicketTempEndDate( blockId, endDate ) ),
-				put( actions.setTicketTempEndDateInput( blockId, endDateInput ) ),
-				put( actions.setTicketTempEndDateMoment( blockId, endDateMoment ) ),
-				put( actions.setTicketTempEndTime( blockId, endTime ) ),
-				put( actions.setTicketTempEndTimeInput( blockId, endTimeInput ) ),
+				put( actions.setTicketTempEndDate( clientId, endDate ) ),
+				put( actions.setTicketTempEndDateInput( clientId, endDateInput ) ),
+				put( actions.setTicketTempEndDateMoment( clientId, endDateMoment ) ),
+				put( actions.setTicketTempEndTime( clientId, endTime ) ),
+				put( actions.setTicketTempEndTimeInput( clientId, endTimeInput ) ),
 
 				// Sync Ticket end items as well so as not to make state 'manually edited'
-				put( actions.setTicketEndDate( blockId, endDate ) ),
-				put( actions.setTicketEndDateInput( blockId, endDateInput ) ),
-				put( actions.setTicketEndDateMoment( blockId, endDateMoment ) ),
-				put( actions.setTicketEndTime( blockId, endTime ) ),
-				put( actions.setTicketEndTimeInput( blockId, endTimeInput ) ),
+				put( actions.setTicketEndDate( clientId, endDate ) ),
+				put( actions.setTicketEndDateInput( clientId, endDateInput ) ),
+				put( actions.setTicketEndDateMoment( clientId, endDateMoment ) ),
+				put( actions.setTicketEndTime( clientId, endTime ) ),
+				put( actions.setTicketEndTimeInput( clientId, endTimeInput ) ),
 
 				// Trigger UI button
-				put( actions.setTicketHasChanges( blockId, true ) ),
+				put( actions.setTicketHasChanges( clientId, true ) ),
 			] );
 
-			yield fork( saveTicketWithPostSave, blockId );
+			yield fork( saveTicketWithPostSave, clientId );
 		}
 	} catch ( error ) {
 		// ¯\_(ツ)_/¯
