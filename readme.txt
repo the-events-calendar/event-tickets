@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.10] TBD =
 
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Tweak - Add tooltip info that clarifies two settings only apply to classic editor [20963]
 
 = [4.9.4] 2019-01-15 =
 
