@@ -30,6 +30,7 @@
     "build:webpack": "cross-env NODE_ENV=production webpack -p",
     "build:gulp": "cross-env NODE_ENV=production gulp",
     "build:common": "cd common && npm run build",
+    "build:checkout": "if test \"$NODE_ENV\" != \"nobuild\" then rm -rf node_modules && npm install fi; npm run build",
     "build": "npm run build:webpack && npm run build:gulp",
     "dev": "cross-env NODE_ENV=development webpack -d --watch",
     "gettext-strings": "cross-env BABEL_ENV=gettext webpack",
@@ -43,7 +44,7 @@
   },
   "husky": {
     "hooks": {
-      "post-checkout": "npm install && npm run build"
+      "post-checkout": "npm run build"
     }
   },
   "devDependencies": {
