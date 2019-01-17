@@ -1,4 +1,17 @@
 <?php
+/********************************************************************************
+ *
+ *
+ * IMPORTANT NOTE
+ *
+ * This file uses a global namespace since we will share it on all plugins
+ *
+ *
+ ********************************************************************************/
+
+// Only include these methods if they are not available already
+if ( ! function_exists( 'tribe_get_php_min_version' ) ) :
+
 /**
  * Compares a given version to the required PHP version
  *
@@ -10,8 +23,8 @@
  *
  * @return bool
  */
-function tribe_tickets_is_not_min_php_version( $version = PHP_VERSION ) {
-	return version_compare( $version, tribe_tickets_get_php_min_version(), '<' );
+function tribe_is_not_min_php_version( $version = PHP_VERSION ) {
+	return version_compare( $version, tribe_get_php_min_version(), '<' );
 }
 
 /**
@@ -21,7 +34,7 @@ function tribe_tickets_is_not_min_php_version( $version = PHP_VERSION ) {
  *
  * @return string
  */
-function tribe_tickets_get_php_min_version() {
+function tribe_get_php_min_version() {
 	return '5.6';
 }
 
@@ -32,18 +45,51 @@ function tribe_tickets_get_php_min_version() {
  *
  * @return string
  */
-function tribe_tickets_not_php_version_message() {
+function tribe_not_php_version_message() {
+	$names = tribe_not_php_version_names();
+	$count_names = count( $names );
+	$last_connector = esc_html_x( ' and ', 'Plugin A "and" Plugin B', 'event-tickets' );
+	$many_connector = esc_html_x( ', ', 'Plugin A"," Plugin B', 'event-tickets' );
+
+	if ( 1 === $count_names ) {
+		$label_names = current( $names );
+	} elseif ( 2 === $count_names ) {
+		$label_names = current( $names ) . $last_connector . end( $names );
+	} else {
+		$last_name = array_pop( $names );
+		$label_names = implode( $many_connector, $names ) . $last_connector . $last_name;
+	}
+
 	return wp_kses_post( sprintf(
-			__( '<b>Event Tickets</b> requires PHP %1$s or higher, and the plugin has now disabled itself.', 'event-tickets' ),
-			tribe_tickets_get_php_min_version()
+			__( '<b>%1$s</b> requires <b>PHP %2$s</b> or higher.', 'event-tickets' ),
+			esc_html( $label_names ),
+			tribe_get_php_min_version()
 		) ) .
 		'<br />' .
 		esc_html__( 'To allow better control over dates, advanced security improvements and performance gain.', 'event-tickets' ) .
 		'<br />' .
 		esc_html( sprintf(
 			__( 'Contact your Hosting or your system administrator and ask to Upgrade to version %1$s of PHP.', 'event-tickets' ),
-			tribe_tickets_get_php_min_version()
+			tribe_get_php_min_version()
 		) );
+}
+
+/**
+ * Fetches the name of the plugins that are not compatible with current PHP version
+ *
+ * @since  TBD
+ *
+ * @return array
+ */
+function tribe_not_php_version_names() {
+	/**
+	 * Allow us to include more plugins without increasing the number of notices
+	 *
+	 * @since  TBD
+	 *
+	 * @param array $names Name of the plugins that are not compatible
+	 */
+	return apply_filters( 'tribe_not_php_version_names', array() );
 }
 
 /**
@@ -53,8 +99,8 @@ function tribe_tickets_not_php_version_message() {
  *
  * @return void
  */
-function tribe_tickets_not_php_version_notice() {
-	echo '<div id="message" class="error"><p>' . tribe_tickets_not_php_version_message() . '</p></div>';
+function tribe_not_php_version_notice() {
+	echo '<div id="message" class="error"><p>' . tribe_not_php_version_message() . '</p></div>';
 }
 
 /**
@@ -62,12 +108,17 @@ function tribe_tickets_not_php_version_notice() {
  *
  * @since  TBD
  *
+ * @param string $domain Which domain we will try to translate to
+ * @param string $file   Where to look for the lang folder
+ *
  * @return void
  */
-function tribe_tickets_not_php_version_textdomain() {
+function tribe_not_php_version_textdomain( $domain, $file ) {
     load_plugin_textdomain(
-		'event-tickets',
+		$domain,
 		false,
-		plugin_basename( EVENT_TICKETS_MAIN_PLUGIN_FILE ) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR
+		plugin_basename( $file ) . DIRECTORY_SEPARATOR . 'lang' . DIRECTORY_SEPARATOR
     );
 }
+
+endif;
