@@ -127,6 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
 * Fix - Only allow attendee move functionality in admin [87145]
+* Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
 
 = [4.10] TBD =
