@@ -96,6 +96,7 @@ class Capacity extends PureComponent {
 		if ( tempCapacityType === TICKET_TYPES[ SHARED ] && sharedCapacity === '' ) {
 			inputs.push(
 				<LabeledNumberInput
+					key="shared-capacity"
 					className={ classNames(
 						'tribe-editor__ticket__capacity-input-row',
 						'tribe-editor__ticket__capacity-input-row--shared-capacity',
@@ -121,7 +122,8 @@ class Capacity extends PureComponent {
 				tempCapacityType === TICKET_TYPES[ SHARED ]
 					&& ( sharedCapacity || tempSharedCapacity )
 			) {
-				extraProps.max = sharedCapacity ? sharedCapacity : tempSharedCapacity;
+				const max = sharedCapacity ? sharedCapacity : tempSharedCapacity;
+				extraProps.max = parseInt( max );
 			}
 
 			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
@@ -130,6 +132,7 @@ class Capacity extends PureComponent {
 
 			inputs.push(
 				<LabeledNumberInput
+					key="capacity"
 					className={ classNames(
 						'tribe-editor__ticket__capacity-input-row',
 						'tribe-editor__ticket__capacity-input-row--capacity',
