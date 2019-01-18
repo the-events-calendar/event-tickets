@@ -18,3 +18,4 @@ export const KEY_TICKETS_LIST = '_tribe_tickets_list';
 
 export const KEY_TICKET_GOING_COUNT = '_tribe_ticket_going_count';
 export const KEY_TICKET_NOT_GOING_COUNT = '_tribe_ticket_not_going_count';
+export const KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS = '_tribe_ticket_has_attendee_info_fields';

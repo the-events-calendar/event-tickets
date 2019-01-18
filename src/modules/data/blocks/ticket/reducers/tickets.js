@@ -50,6 +50,7 @@ export const byClientId = ( state = {}, action ) => {
 		case types.SET_TICKET_CURRENCY_SYMBOL:
 		case types.SET_TICKET_CURRENCY_POSITION:
 		case types.SET_TICKET_PROVIDER:
+		case types.SET_TICKET_HAS_ATTENDEE_INFO_FIELDS:
 		case types.SET_TICKET_IS_LOADING:
 		case types.SET_TICKET_HAS_BEEN_CREATED:
 		case types.SET_TICKET_HAS_CHANGES:
