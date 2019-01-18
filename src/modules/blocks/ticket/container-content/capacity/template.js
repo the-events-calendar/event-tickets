@@ -123,7 +123,7 @@ class Capacity extends PureComponent {
 					&& ( sharedCapacity || tempSharedCapacity )
 			) {
 				const max = sharedCapacity ? sharedCapacity : tempSharedCapacity;
-				extraProps.max = parseInt( max );
+				extraProps.max = parseInt( max, 10 ) || 0;
 			}
 
 			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
