@@ -79,7 +79,7 @@ const EcommerceOptions = ( {
 				>
 					<div className="tribe-editor__ticket__ecommerce-options-links">
 						{ LINK_TYPES.map( ( linkType ) => (
-							<span className="tribe-editor__ticket__ecommerce-options-link-wrapper">
+							<span key={ linkType } className="tribe-editor__ticket__ecommerce-options-link-wrapper">
 								{ getLink( linkType ) }
 							</span>
 						) ) }
