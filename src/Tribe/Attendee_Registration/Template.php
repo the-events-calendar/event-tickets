@@ -34,6 +34,9 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Modify the link for the edit post link
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
 
+		//switcheroo for tempaltes that force us to use the excerpt as we're saying we're on an archive
+		add_filter( 'the_excerpt', array( $this, 'set_page_excerpt' ) );
+
 		// Modify the page title
 		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
 	}
@@ -230,6 +233,26 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			// on the_content, load our attendee info page
 			add_filter( 'the_content', array( tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ) );
 		}
+	}
+
+	/**
+	 * Set the page excerpt to be post content on attendee registration page.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $post_excerpt Excerpt text
+	 *
+	 * @return string Excerpt text or post content.
+	 */
+	public function set_page_excerpt( $post_excerpt ) {
+
+		// Bail if we're not on the attendee info page
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+			return $post_excerpt;
+		}
+
+		// else, be sure we return the content - not the excerpt
+		return get_the_content();
 	}
 
 	/**
