@@ -92,7 +92,7 @@ const EcommerceOptions = ( {
 EcommerceOptions.propTypes = {
 	editTicketLink: PropTypes.string,
 	isDisabled: PropTypes.bool,
-	provider: PropTypes.oneOf( PROVIDER_TYPES ),
+	provider: PropTypes.oneOf( [ ...PROVIDER_TYPES, '' ] ),
 	reportLink: PropTypes.string,
 	showEcommerceOptions: PropTypes.bool,
 };
