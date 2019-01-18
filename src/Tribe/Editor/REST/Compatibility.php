@@ -21,8 +21,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 		}
 
 		add_filter( 'updated_post_meta', array( $this, 'trigger_update_capacity' ), 15, 4 );
-
-		// This does!
 		add_filter( 'rest_prepare_tribe_rsvp_tickets', array( $this, 'filter_rest_hook' ), 10, 3 );
 
 		return true;
@@ -90,13 +88,13 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * Hooked on rest_prepare_tribe_rsvp_tickets.
 	 * @since TBD
 	 *
-	 * @param [WP_REST_Response] $response The response object.
-	 * @param [WP_Post] $post The post (RSVP)
-	 * @param [WP_REST_Request] $unused_request The request object.
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post $post The post (RSVP)
+	 * @param WP_REST_Request $unused_request The request object.
 	 *
-	 * @return [WP_REST_Response] $response The modified response object.
+	 * @return WP_REST_Response $response The modified response object.
 	 */
-	public function filter_rest_hook(  $response, $post, $unused_request  ) {
+	public function filter_rest_hook( $response, $post, $unused_request ) {
 		// Filter the rest request to add meta for if the RSVP has attendees going/not going
 		$response = $this->filter_rest_going_fields( $response, $post );
 
@@ -110,10 +108,10 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * Filter the rest request to add meta for if the RSVP has attendee meta
 	 * @since TBD
 	 *
-	 * @param [WP_REST_Response] $response The response object.
-	 * @param [WP_Post] $post The post (RSVP)
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post $post The post (RSVP)
 	 *
-	 * @return [WP_REST_Response] $response The modified response object.
+	 * @return WP_REST_Response $response The modified response object.
 	 */
 	public function filter_rest_has_attendee_info_fields( $response, $post ) {
 		if ( 'tribe_rsvp_tickets' !== $post->post_type ) {
@@ -132,11 +130,11 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * Filter the rest request to add meta for if the RSVP has attendees going/not going
 	 * @since TBD
 	 *
-	 * @param [WP_REST_Response] $response The response object.
-	 * @param [WP_Post] $post The post (RSVP)
-	 * @param [WP_REST_Request] $request The request object.
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post $post The post (RSVP)
+	 * @param WP_REST_Request $request The request object.
 	 *
-	 * @return [WP_REST_Response] $response The modified response object.
+	 * @return WP_REST_Response $response The modified response object.
 	 */
 	public function filter_rest_going_fields( $response, $post ) {
 		if ( 'tribe_rsvp_tickets' !== $post->post_type ) {
