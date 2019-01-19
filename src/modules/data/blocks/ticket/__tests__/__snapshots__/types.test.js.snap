@@ -50,6 +50,8 @@ exports[`Tickets block types SET_TICKET_END_TIME 1`] = `"@@MT/TICKETS/SET_TICKET
 
 exports[`Tickets block types SET_TICKET_END_TIME_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_END_TIME_INPUT"`;
 
+exports[`Tickets block types SET_TICKET_HAS_ATTENDEE_INFO_FIELDS 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_ATTENDEE_INFO_FIELDS"`;
+
 exports[`Tickets block types SET_TICKET_HAS_BEEN_CREATED 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED"`;
 
 exports[`Tickets block types SET_TICKET_HAS_CHANGES 1`] = `"@@MT/TICKETS/SET_TICKETS_HAS_CHANGES"`;
