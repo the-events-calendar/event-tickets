@@ -74,7 +74,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 */
 	public function hook() {
-		add_action( 'init', array( $this, 'setup' ), 0 );
+		add_action( 'init', array( $this, 'setup' ) );
 	}
 
 	/**

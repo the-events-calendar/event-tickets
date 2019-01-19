@@ -92,8 +92,9 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 	public function it_has_status_completed() {
 
 		$sut = $this->make_instance();
-		$this->assertArrayHasKey( 'Complete', $sut->statuses );
-		$this->assertEquals( true, $sut->statuses['Complete']->count_completed );
+
+		$this->assertArrayHasKey( 'Completed', $sut->statuses );
+		$this->assertEquals( true, $sut->statuses['Completed']->count_completed );
 	}
 
 	public function it_has_status_denied() {
