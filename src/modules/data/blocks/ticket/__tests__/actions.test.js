@@ -251,6 +251,11 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketProvider( clientId, 'provider' ) ).toMatchSnapshot();
 		} );
 
+		test( 'set ticket has attendee info fields', () => {
+			expect( actions.setTicketHasAttendeeInfoFields( clientId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketHasAttendeeInfoFields( clientId, false ) ).toMatchSnapshot();
+		} );
+
 		test( 'set ticket is loading', () => {
 			expect( actions.setTicketIsLoading( clientId, true ) ).toMatchSnapshot();
 			expect( actions.setTicketIsLoading( clientId, false ) ).toMatchSnapshot();

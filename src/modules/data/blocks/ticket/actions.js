@@ -422,6 +422,14 @@ export const setTicketProvider = ( clientId, provider ) => ( {
 	},
 } );
 
+export const setTicketHasAttendeeInfoFields = ( clientId, hasAttendeeInfoFields ) => ( {
+	type: types.SET_TICKET_HAS_ATTENDEE_INFO_FIELDS,
+	payload: {
+		clientId,
+		hasAttendeeInfoFields,
+	},
+} );
+
 export const setTicketIsLoading = ( clientId, isLoading ) => ( {
 	type: types.SET_TICKET_IS_LOADING,
 	payload: {
