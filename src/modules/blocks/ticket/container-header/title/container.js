@@ -12,6 +12,7 @@ import { withStore } from '@moderntribe/common/hoc';
 import { selectors, actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 const mapStateToProps = ( state, ownProps ) => ( {
+	hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
 	isDisabled: selectors.isTicketDisabled( state, ownProps ),
 	tempTitle: selectors.getTicketTempTitle( state, ownProps ),
 	title: selectors.getTicketTitle( state, ownProps ),
