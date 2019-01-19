@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AutosizeInput from 'react-input-autosize';
 
@@ -9,10 +9,15 @@ import AutosizeInput from 'react-input-autosize';
  * Wordpress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Pencil } from '@moderntribe/common/icons';
+
+/**
+ * Internal dependencies
+ */
+import { Clipboard, Pencil } from '@moderntribe/common/icons';
 import './style.pcss';
 
 const TicketContainerHeaderTitle = ( {
+	hasAttendeeInfoFields,
 	isDisabled,
 	isSelected,
 	onTempTitleChange,
@@ -23,25 +28,31 @@ const TicketContainerHeaderTitle = ( {
 		{
 			isSelected
 				? (
-					<AutosizeInput
-						className="tribe-editor__ticket__container-header-title-input"
-						value={ tempTitle }
-						placeholder={ __( 'Ticket Type', 'event-tickets' ) }
-						onChange={ onTempTitleChange }
-						disabled={ isDisabled }
-					/>
+					<Fragment>
+						<AutosizeInput
+							className="tribe-editor__ticket__container-header-title-input"
+							value={ tempTitle }
+							placeholder={ __( 'Ticket Type', 'event-tickets' ) }
+							onChange={ onTempTitleChange }
+							disabled={ isDisabled }
+						/>
+						{ hasAttendeeInfoFields && <Clipboard /> }
+					</Fragment>
 				)
 				: (
-					<h3 className="tribe-editor__ticket__container-header-title-label">
-						{ title }
-					</h3>
+					<Fragment>
+						<h3 className="tribe-editor__ticket__container-header-title-label">
+							{ title }
+						</h3>
+						<Pencil />
+					</Fragment>
 				)
 		}
-		<Pencil />
 	</div>
 );
 
 TicketContainerHeaderTitle.propTypes = {
+	hasAttendeeInfoFields: PropTypes.bool,
 	isDisabled: PropTypes.bool,
 	isSelected: PropTypes.bool,
 	onTempTitleChange: PropTypes.func,

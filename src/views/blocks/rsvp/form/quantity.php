@@ -2,8 +2,8 @@
 /**
  * This template renders the RSVP ticket form quantity input
  *
+ * @since 4.9
  * @version 4.9
- *
  */
 ?>
 <div class="tribe-block__rsvp__number-input">
