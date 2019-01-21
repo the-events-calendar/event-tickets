@@ -469,7 +469,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		//check if changing status will cause rsvp to go over capacity
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
-		if ( tribe_is_truthy( $attendee_order_status ) && in_array( $previous_order_status, $this->get_statuses_by_action( 'count_not_going' ) ) ) {
+		if ( tribe_is_truthy( $attendee_order_status ) && in_array( $previous_order_status, $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
 			$capacity = tribe_tickets_get_capacity( $product_id );
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
 			$unlimited = -1;
@@ -644,7 +644,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			// Do not add those attendees/tickets marked as not attending (note that despite the name
 			// 'qr_ticket_id', this key is not QR code specific, it's simply the attendee post ID)
 			$going_status = get_post_meta( $single_attendee['qr_ticket_id'], self::ATTENDEE_RSVP_KEY, true );
-			if ( in_array( $going_status, $this->get_statuses_by_action( 'count_not_going' ) ) ) {
+			if ( in_array( $going_status, $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
 				continue;
 			}
 
@@ -2164,7 +2164,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$not_going     = 0;
 		foreach ( $this->get_attendees_array( $event_id ) as $attendee ) {
-			if ( in_array( $attendee['order_status'], $this->get_statuses_by_action( 'count_not_going' ) ) ) {
+			if ( in_array( $attendee['order_status'], $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
 				$not_going ++;
 			}
 		}
