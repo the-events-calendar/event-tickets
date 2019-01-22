@@ -66,7 +66,7 @@ var tribe_tickets_rsvp_block = {
 				$form.html( response.data.html );
 				if ( window.tribe_event_tickets_plus ) {
 					var $input = $form.find( 'input.tribe-tickets-quantity' );
-					window.tribe_event_tickets_plus.meta.block_set_quantity( $input );
+					window.tribe_event_tickets_plus.meta.block_set_quantity( $input, going );
 				}
 				my.tribe_rsvp_loader_end( $ticket );
 			}

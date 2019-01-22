@@ -124,13 +124,22 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
-
+* Fix - Only show attendee registration for RSVP if going [121026]
+* Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
+* Fix - Only allow attendee move functionality in admin [87145]
+* Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
+* Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
 
 = [4.10] TBD =
 
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Tweak - Add tooltip info that clarifies two settings only apply to classic editor [20963]
 
 = [4.9.4] 2019-01-15 =
+
+* Fix - Do not show print, email, and export buttons if not in admin [120646]
+
+= [TBD] =
 
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]
