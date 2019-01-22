@@ -42,11 +42,6 @@
     "zip": "node node_modules/product-taskmaster/util/zip.js",
     "glotpress": "gulp glotpress"
   },
-  "husky": {
-    "hooks": {
-      "post-checkout": "npm run build:checkout"
-    }
-  },
   "devDependencies": {
     "@babel/runtime": "7.0.0-beta.52",
     "@wordpress/hooks": "^1.3.2",
