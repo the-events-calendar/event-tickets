@@ -563,7 +563,7 @@ export function* deleteTicket( action ) {
 
 		if ( hasBeenCreated ) {
 			const { remove_ticket_nonce = '' } = restNonce();
-			const postId = wpSelect( 'core/editor' ).getCurrentPostId();
+			const postId = call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
 
 			/**
 			 * Encode params to be passed into the DELETE request as PHP doesn’t transform the request body
