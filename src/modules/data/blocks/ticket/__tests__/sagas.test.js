@@ -1076,8 +1076,10 @@ describe( 'Ticket Block sagas', () => {
 					ok: true,
 				},
 				data: {
-					ID: 13,
-					capacity: 100,
+					id: 13,
+					capacity_details: {
+						available: 100,
+					},
 					provider_class: WOO_CLASS,
 				},
 			};
@@ -1154,9 +1156,12 @@ describe( 'Ticket Block sagas', () => {
 						capacityType,
 						capacity,
 					} ) ),
-					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.ID ) ),
+					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.id ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
-					put( actions.setTicketAvailable( CLIENT_ID, apiResponse1.data.capacity ) ),
+					put( actions.setTicketAvailable(
+						CLIENT_ID,
+						apiResponse1.data.capacity_details.available,
+					) ),
 					put( actions.setTicketProvider(
 						CLIENT_ID,
 						PROVIDER_CLASS_TO_PROVIDER_MAPPING[ apiResponse1.data.provider_class ],
@@ -1234,9 +1239,12 @@ describe( 'Ticket Block sagas', () => {
 						capacityType,
 						capacity,
 					} ) ),
-					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.ID ) ),
+					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.id ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
-					put( actions.setTicketAvailable( CLIENT_ID, apiResponse1.data.capacity ) ),
+					put( actions.setTicketAvailable(
+						CLIENT_ID,
+						apiResponse1.data.capacity_details.available,
+					) ),
 					put( actions.setTicketProvider(
 						CLIENT_ID,
 						PROVIDER_CLASS_TO_PROVIDER_MAPPING[ apiResponse1.data.provider_class ],
@@ -1341,6 +1349,12 @@ describe( 'Ticket Block sagas', () => {
 				response: {
 					ok: true,
 				},
+				data: {
+					capacity_details: {
+						available: 100,
+						sold: 10,
+					},
+				},
 			};
 
 			expect( clone2.next( apiResponse2 ).value ).toEqual(
@@ -1400,6 +1414,14 @@ describe( 'Ticket Block sagas', () => {
 						capacityType,
 						capacity,
 					} ) ),
+					put( actions.setTicketSold(
+						CLIENT_ID,
+						apiResponse2.data.capacity_details.sold,
+					) ),
+					put( actions.setTicketAvailable(
+						CLIENT_ID,
+						apiResponse2.data.capacity_details.available,
+					) ),
 					put( actions.setTicketHasChanges( CLIENT_ID, false ) ),
 				] )
 			);
