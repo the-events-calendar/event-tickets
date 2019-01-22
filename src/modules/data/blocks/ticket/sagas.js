@@ -558,6 +558,7 @@ export function* deleteTicket( action ) {
 
 		yield put( actions.setTicketIsSelected( clientId, false ) );
 		yield put( actions.removeTicketBlock( clientId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'clearSelectedBlock' ] );
 		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
 
 		if ( hasBeenCreated ) {
