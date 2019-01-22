@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Only allow attendee move functionality in admin [87145]
 * Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
+* Fix - Fix RSVP "don't show my information" checkbox in Twenty Nineteen theme [120685]
 
 = [4.10] TBD =
 
