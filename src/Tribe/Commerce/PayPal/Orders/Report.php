@@ -238,7 +238,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$ticket_ids     = Tribe__Utils__Array::get( $_GET, 'product_ids', false );
 
 		if ( false !== $ticket_ids ) {
-			$ticket_ids = explode( ',', $ticket_ids );
+			$ticket_ids = array_map( 'absint', explode( ',', $ticket_ids ) );
 			$filtered   = array();
 			/** @var \Tribe__Tickets__Ticket_Object $paypal_ticket */
 			foreach ( $paypal_tickets as $paypal_ticket ) {
@@ -282,11 +282,11 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 				if ( $order->get_status_label() && $order->get_item_quantity() ) {
 
-					if ( in_array( $order->get_status(), $complete_statuses ) ) {
+					if ( in_array( $order->get_status(), $complete_statuses, true ) ) {
 						$tickets_sold[ $ticket->name ]['completed'] += $order->get_item_quantity();
 					}
 
-					if ( in_array( $order->get_status(), $incomplete_statuses ) ) {
+					if ( in_array( $order->get_status(), $incomplete_statuses, true ) ) {
 						$tickets_sold[ $ticket->name ]['incomplete'] += $order->get_item_quantity();
 					}
 
