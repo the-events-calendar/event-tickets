@@ -63,6 +63,7 @@ jest.mock( '@wordpress/data', () => {
 			editPost: () => {},
 			insertBlocks: () => {},
 			removeBlocks: () => {},
+			clearSelectedBlock: () => {},
 		} ),
 	};
 } );
@@ -1435,6 +1436,7 @@ describe( 'Ticket Block sagas', () => {
 	describe( 'deleteTicket', () => {
 		it( 'should delete ticket', () => {
 			const TICKET_ID = 13;
+			const POST_ID = 10;
 			const CLIENT_ID = 'modern-tribe';
 			const props = { clientId: CLIENT_ID };
 			const action = {
@@ -1459,7 +1461,6 @@ describe( 'Ticket Block sagas', () => {
 			const clone1 = gen.clone();
 			const hasBeenCreated1 = false;
 
-
 			expect( clone1.next( hasBeenCreated1 ).value ).toEqual(
 				put( actions.setTicketIsSelected( CLIENT_ID, false ) )
 			);
@@ -1467,12 +1468,13 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.removeTicketBlock( CLIENT_ID ) )
 			);
 			expect( clone1.next().value ).toMatchSnapshot();
+			expect( clone1.next().value ).toMatchSnapshot();
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
 			const hasBeenCreated2 = true;
 			const body = [
-				`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( 10 ) }`,
+				`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( POST_ID ) }`,
 				`${ encodeURIComponent( 'remove_ticket_nonce' ) }=${ encodeURIComponent( '' ) }`,
 			];
 
@@ -1483,7 +1485,9 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.removeTicketBlock( CLIENT_ID ) )
 			);
 			expect( clone2.next().value ).toMatchSnapshot();
-			expect( clone2.next().value ).toEqual(
+			expect( clone2.next().value ).toMatchSnapshot();
+			expect( clone2.next().value ).toMatchSnapshot();
+			expect( clone2.next( POST_ID ).value ).toEqual(
 				call( wpREST, {
 					path: `tickets/${ TICKET_ID }`,
 					namespace: 'tribe/tickets/v1',
