@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Feature - add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
 
 = [4.9.4] 2019-01-15 =
 
