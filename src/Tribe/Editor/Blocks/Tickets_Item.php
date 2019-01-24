@@ -8,7 +8,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 	/**
 	 * Which is the name/slug of this block
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @return string
 	 */
@@ -19,7 +19,7 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 	/**
 	 * Since we are dealing with a Dynamic type of Block we need a PHP method to render it
 	 *
-	 * @since TBD
+	 * @since 4.9.2
 	 *
 	 * @param  array $attributes
 	 *
@@ -48,7 +48,12 @@ class Tribe__Tickets__Editor__Blocks__Tickets_Item extends Tribe__Editor__Blocks
 		$ticket   = Tribe__Tickets__Tickets::load_ticket_object( $attributes['ticketId'] );
 
 		// Bail if for some reason there was an RSVP here
-		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+		if ( null === $ticket || 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
+			return;
+		}
+
+		// Bail if the ticket dates are not in range
+		if ( ! $ticket->date_in_range() ) {
 			return;
 		}
 

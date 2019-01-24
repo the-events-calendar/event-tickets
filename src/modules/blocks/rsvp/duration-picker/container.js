@@ -76,13 +76,20 @@ const mapStateToProps = ( state ) => {
 	const isDisabled = selectors.getRSVPIsLoading( state )
 		|| selectors.getRSVPSettingsOpen( state );
 
+	const startDateMoment = selectors.getRSVPTempStartDateMoment( state );
+	const endDateMoment = selectors.getRSVPTempEndDateMoment( state );
+	const fromDate = startDateMoment && startDateMoment.toDate();
+	const toDate = endDateMoment && endDateMoment.toDate();
+
 	return {
-		fromDate: selectors.getRSVPTempStartDateInput( state ),
+		fromDate,
+		fromDateInput: selectors.getRSVPTempStartDateInput( state ),
 		fromDateDisabled: isDisabled,
 		fromDateFormat: datePickerFormat,
 		fromTime: selectors.getRSVPTempStartTimeInput( state ),
 		fromTimeDisabled: isDisabled,
-		toDate: selectors.getRSVPTempEndDateInput( state ),
+		toDate,
+		toDateInput: selectors.getRSVPTempEndDateInput( state ),
 		toDateDisabled: isDisabled,
 		toDateFormat: datePickerFormat,
 		toTime: selectors.getRSVPTempEndTimeInput( state ),

@@ -24,7 +24,7 @@ const mapStateToProps = () => {
 
 	return {
 		href: `${ adminURL }edit.php?post_type=${ postType }&page=tickets-attendees&event_id=${ postId }`,
-		hasProviders: selectors.hasTicketProviders(),
+		canCreateTickets: selectors.canCreateTickets(),
 	};
 }
 

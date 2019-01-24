@@ -2,7 +2,7 @@
 
 exports[`Move modal reducer should move ticket 1`] = `
 Object {
-  "blockId": null,
+  "clientId": null,
   "isSubmitting": true,
   "post_type": "all",
   "search_terms": "",
@@ -13,7 +13,7 @@ Object {
 
 exports[`Move modal reducer should move ticket with error 1`] = `
 Object {
-  "blockId": null,
+  "clientId": null,
   "isSubmitting": false,
   "post_type": "all",
   "search_terms": "",
@@ -24,7 +24,7 @@ Object {
 
 exports[`Move modal reducer should move ticket with success 1`] = `
 Object {
-  "blockId": null,
+  "clientId": null,
   "isSubmitting": false,
   "post_type": "all",
   "search_terms": "",
@@ -35,7 +35,7 @@ Object {
 
 exports[`Move modal reducer should set data 1`] = `
 Object {
-  "blockId": null,
+  "clientId": null,
   "isSubmitting": false,
   "post_type": "some",
   "search_terms": "",

@@ -33,8 +33,8 @@ describe( 'Ticket block selectors', () => {
 						...DEFAULT_STATE,
 						headerImage: { ...HEADER_IMAGE_DEFAULT_STATE },
 						tickets: {
-							allIds: [ 'modern-tribe' ],
-							byId: {
+							allClientIds: [ 'modern-tribe' ],
+							byClientId: {
 								'modern-tribe': {
 									...TICKET_DEFAULT_STATE,
 									details: { ...DETAILS_DEFAULT_STATE },
@@ -46,15 +46,16 @@ describe( 'Ticket block selectors', () => {
 				},
 			},
 		};
-		// state.tickets.blocks.ticket.header = image;
-		// state.tickets.blocks.ticket.tickets.allIds = [ 'modern-tribe' ];
-		// state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ] = { ...TICKET_DEFAULT_STATE };
-		ownProps = { blockId: 'modern-tribe' };
+		ownProps = { clientId: 'modern-tribe' };
 	} );
 
 	describe( 'Block selectors', () => {
 		test( 'getBlock', () => {
 			expect( selectors.getBlock( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketsIsSelected', () => {
+			expect( selectors.getTicketsIsSelected( state ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicketsIsSettingsOpen', () => {
@@ -109,12 +110,12 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTickets( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'getAllTicketIds', () => {
-			expect( selectors.getAllTicketIds( state ) ).toMatchSnapshot();
+		test( 'getTicketsAllClientIds', () => {
+			expect( selectors.getTicketsAllClientIds( state ) ).toMatchSnapshot();
 		} );
 
-		test( 'getTicketsById', () => {
-			expect( selectors.getTicketsById( state ) ).toMatchSnapshot();
+		test( 'getTicketsByClientId', () => {
+			expect( selectors.getTicketsByClientId( state ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicketsArray', () => {
@@ -159,8 +160,8 @@ describe( 'Ticket block selectors', () => {
 	} );
 
 	describe( 'Ticket selectors', () => {
-		test( 'getTicketBlockId', () => {
-			expect( selectors.getTicketBlockId( state, ownProps ) ).toMatchSnapshot();
+		test( 'getTicketClientId', () => {
+			expect( selectors.getTicketClientId( state, ownProps ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicket', () => {
@@ -189,6 +190,10 @@ describe( 'Ticket block selectors', () => {
 
 		test( 'getTicketProvider', () => {
 			expect( selectors.getTicketProvider( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'getTicketHasAttendeeInfoFields', () => {
+			expect( selectors.getTicketHasAttendeeInfoFields( state, ownProps ) ).toMatchSnapshot();
 		} );
 
 		test( 'getTicketIsLoading', () => {
@@ -312,8 +317,23 @@ describe( 'Ticket block selectors', () => {
 		test( 'isTicketFuture', () => {
 			expect( selectors.isTicketFuture( state, ownProps ) ).toMatchSnapshot();
 		} );
-	} );
 
+		test( 'isTicketOnSale', () => {
+			expect( selectors.isTicketOnSale( state, ownProps ) ).toMatchSnapshot();
+		} );
+
+		test( 'hasTicketOnSale', () => {
+			expect( selectors.hasTicketOnSale( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'allTicketsPast', () => {
+			expect( selectors.allTicketsPast( state ) ).toMatchSnapshot();
+		} );
+
+		test( 'allTicketsFuture', () => {
+			expect( selectors.allTicketsFuture( state ) ).toMatchSnapshot();
+		} );
+	} );
 
 	describe( 'Ticket temp details selectors', () => {
 		test( 'getTicketTempDetails', () => {
@@ -399,7 +419,7 @@ describe( 'Ticket block selectors', () => {
 
 	describe( 'isTempTitleValid', () => {
 		it( 'should be valid', () => {
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.title = 'bob';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'bob';
 			expect( selectors.isTempTitleValid( state, ownProps ) ).toBe( true );
 		} );
 
@@ -410,7 +430,7 @@ describe( 'Ticket block selectors', () => {
 
 	describe( 'isTempCapacityValid', () => {
 		it( 'should be valid', () => {
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.capacity = '1';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = '1';
 			expect( selectors.isTempCapacityValid( state, ownProps ) ).toBe( true );
 		} );
 
@@ -421,28 +441,28 @@ describe( 'Ticket block selectors', () => {
 
 	describe( 'isTicketValid', () => {
 		it( 'should be valid when unlimited', () => {
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.capacityType = 'unlimited';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'unlimited';
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( true );
 		} );
 
 		it( 'should be valid when shared', () => {
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.capacityType = 'capped';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'capped';
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( true );
 		} );
 
 		it( 'should be invalid when independent', () => {
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.capacityType = 'own';
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.capacity = '';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'own';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = '';
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( false );
 		} );
 
 		it( 'should be invalid when independent with no title', () => {
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.capacityType = 'own';
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.title = '';
-			state.tickets.blocks.ticket.tickets.byId[ 'modern-tribe' ].tempDetails.capacity = 1;
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'own';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = '';
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = 1;
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( false );
 		} );
 	} );
@@ -530,12 +550,24 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketProviders() ).toMatchSnapshot();
 		} );
 
+		test( 'getDefaultTicketProvider', () => {
+			expect( selectors.getDefaultTicketProvider() ).toMatchSnapshot();
+		} );
+
+		test( 'hasValidTicketProvider', () => {
+			expect( selectors.hasValidTicketProvider() ).toMatchSnapshot();
+		} );
+
 		test( 'hasMultipleTicketProviders', () => {
 			expect( selectors.hasMultipleTicketProviders() ).toMatchSnapshot();
 		} );
 
 		test( 'hasTicketProviders', () => {
 			expect( selectors.hasTicketProviders() ).toMatchSnapshot();
+		} );
+
+		test( 'canCreateTickets', () => {
+			expect( selectors.canCreateTickets() ).toMatchSnapshot();
 		} );
 	} );
 } );

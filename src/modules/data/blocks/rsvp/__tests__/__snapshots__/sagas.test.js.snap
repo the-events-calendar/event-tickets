@@ -1,10 +1,30 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`RSVP block sagas createWPEditorSavingChannel should create channel 1`] = `
+exports[`RSVP block sagas deleteRSVPHeaderImage should delete rsvp header image 1`] = `
 Object {
-  "close": [Function],
-  "flush": [Function],
-  "take": [Function],
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas deleteRSVPHeaderImage should not delete rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
 }
 `;
 
@@ -16,6 +36,7 @@ Object {
       "date",
     ],
     "context": Object {
+      "getCurrentPostId": [Function],
       "getEditedPostAttribute": [Function],
     },
     "fn": [Function],
@@ -44,36 +65,6 @@ Object {
       "January 4, 2018",
     ],
     "context": null,
-    "fn": [Function],
-  },
-}
-`;
-
-exports[`RSVP block sagas isTribeEventPostType should be event 1`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      "type",
-    ],
-    "context": Object {
-      "getEditedPostAttribute": [Function],
-    },
-    "fn": [Function],
-  },
-}
-`;
-
-exports[`RSVP block sagas isTribeEventPostType should not be event 1`] = `
-Object {
-  "@@redux-saga/IO": true,
-  "CALL": Object {
-    "args": Array [
-      "type",
-    ],
-    "context": Object {
-      "getEditedPostAttribute": [Function],
-    },
     "fn": [Function],
   },
 }
@@ -605,5 +596,33 @@ Object {
       },
     },
   ],
+}
+`;
+
+exports[`RSVP block sagas updateRSVPHeaderImage should not update rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas updateRSVPHeaderImage should update rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
 }
 `;

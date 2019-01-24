@@ -4,17 +4,17 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.9.2';
+	const VERSION = '4.10';
 
 	/**
 	 * Min required The Events Calendar version
 	 */
-	const MIN_TEC_VERSION = '4.7.1-dev';
+	const MIN_TEC_VERSION = '4.7.3-dev';
 
 	/**
 	 * Min required version of Tribe Common
 	 */
-	const MIN_COMMON_VERSION = '4.8.2-dev';
+	const MIN_COMMON_VERSION = '4.8.3-dev';
 
 	/**
 	 * Name of the provider
@@ -494,6 +494,7 @@ class Tribe__Tickets__Main {
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'enqueue_scripts' ) );
 		add_action( 'tribe_tickets_plugin_loaded', tribe_callback( 'tickets.assets', 'admin_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', tribe_callback( 'tickets.assets', 'enqueue_editor_scripts' ) );
+		add_filter( 'tribe_asset_data_add_object_tribe_l10n_datatables', tribe_callback( 'tickets.assets', 'add_data_strings' ) );
 
 		// Redirections
 		add_action( 'wp_loaded', tribe_callback( 'tickets.redirections', 'maybe_redirect' ) );
@@ -662,7 +663,7 @@ class Tribe__Tickets__Main {
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
 				'version_history_slug'  => 'previous_event_tickets_versions',
-				'welcome_page_title'    => __( 'Welcome to Event Tickets', 'event-tickets' ),
+				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			) );
 		}

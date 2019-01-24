@@ -31,6 +31,15 @@ Object {
 }
 `;
 
+exports[`RSVP block actions RSVP actions set RSVP has attendee info fields 1`] = `
+Object {
+  "payload": Object {
+    "hasAttendeeInfoFields": true,
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_HAS_ATTENDEE_INFO_FIELDS",
+}
+`;
+
 exports[`RSVP block actions RSVP actions set RSVP has changes 1`] = `
 Object {
   "payload": Object {
@@ -379,6 +388,30 @@ Object {
 exports[`RSVP block actions RSVP thunk & saga actions delete RSVP 1`] = `
 Object {
   "type": "@@MT/TICKETS/DELETE_RSVP",
+}
+`;
+
+exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 1`] = `
+Object {
+  "payload": Object {
+    "id": 10,
+  },
+  "type": "@@MT/TICKETS/FETCH_RSVP_HEADER_IMAGE",
+}
+`;
+
+exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 2`] = `
+Object {
+  "payload": Object {
+    "image": Object {},
+  },
+  "type": "@@MT/TICKETS/UPDATE_RSVP_HEADER_IMAGE",
+}
+`;
+
+exports[`RSVP block actions RSVP thunk & saga actions fetch RSVP header image 3`] = `
+Object {
+  "type": "@@MT/TICKETS/DELETE_RSVP_HEADER_IMAGE",
 }
 `;
 

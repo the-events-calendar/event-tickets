@@ -22,6 +22,10 @@ exports[`Tickets block types REGISTER_TICKET_BLOCK 1`] = `"@@MT/TICKETS/REGISTER
 
 exports[`Tickets block types REMOVE_TICKET_BLOCK 1`] = `"@@MT/TICKETS/REMOVE_TICKET_BLOCK"`;
 
+exports[`Tickets block types REMOVE_TICKET_BLOCKS 1`] = `"@@MT/TICKETS/REMOVE_TICKET_BLOCKS"`;
+
+exports[`Tickets block types RESET_TICKETS_BLOCK 1`] = `"@@MT/TICKETS/RESET_TICKETS_BLOCK"`;
+
 exports[`Tickets block types SET_TICKET_AVAILABLE 1`] = `"@@MT/TICKETS/SET_TICKET_AVAILABLE"`;
 
 exports[`Tickets block types SET_TICKET_CAPACITY 1`] = `"@@MT/TICKETS/SET_TICKET_CAPACITY"`;
@@ -45,6 +49,8 @@ exports[`Tickets block types SET_TICKET_END_DATE_MOMENT 1`] = `"@@MT/TICKETS/SET
 exports[`Tickets block types SET_TICKET_END_TIME 1`] = `"@@MT/TICKETS/SET_TICKET_END_TIME"`;
 
 exports[`Tickets block types SET_TICKET_END_TIME_INPUT 1`] = `"@@MT/TICKETS/SET_TICKET_END_TIME_INPUT"`;
+
+exports[`Tickets block types SET_TICKET_HAS_ATTENDEE_INFO_FIELDS 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_ATTENDEE_INFO_FIELDS"`;
 
 exports[`Tickets block types SET_TICKET_HAS_BEEN_CREATED 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED"`;
 
@@ -115,6 +121,8 @@ exports[`Tickets block types SET_TICKET_TITLE 1`] = `"@@MT/TICKETS/SET_TICKET_TI
 exports[`Tickets block types SET_TICKETS_HEADER_IMAGE 1`] = `"@@MT/TICKETS/SET_TICKETS_HEADER_IMAGE"`;
 
 exports[`Tickets block types SET_TICKETS_INITIAL_STATE 1`] = `"@@MT/TICKETS/SET_TICKETS_INITIAL_STATE"`;
+
+exports[`Tickets block types SET_TICKETS_IS_SELECTED 1`] = `"@@MT/TICKETS/SET_TICKETS_IS_SELECTED"`;
 
 exports[`Tickets block types SET_TICKETS_IS_SETTINGS_LOADING 1`] = `"@@MT/TICKETS/SET_TICKETS_IS_SETTINGS_LOADING"`;
 

@@ -56,6 +56,13 @@ export const setRSVPNotGoingCount = ( notGoingCount ) => ( {
 	},
 } );
 
+export const setRSVPHasAttendeeInfoFields = ( hasAttendeeInfoFields ) => ( {
+	type: types.SET_RSVP_HAS_ATTENDEE_INFO_FIELDS,
+	payload: {
+		hasAttendeeInfoFields,
+	},
+} );
+
 export const setRSVPDetails = ( payload ) => ( {
 	type: types.SET_RSVP_DETAILS,
 	payload,
@@ -313,4 +320,22 @@ export const handleRSVPEndTime = ( seconds ) => ( {
 	payload: {
 		seconds,
 	},
+} );
+
+export const fetchRSVPHeaderImage = ( id ) => ( {
+	type: types.FETCH_RSVP_HEADER_IMAGE,
+	payload: {
+		id,
+	},
+} );
+
+export const updateRSVPHeaderImage = ( image ) => ( {
+	type: types.UPDATE_RSVP_HEADER_IMAGE,
+	payload: {
+		image,
+	},
+} );
+
+export const deleteRSVPHeaderImage = () => ( {
+	type: types.DELETE_RSVP_HEADER_IMAGE,
 } );

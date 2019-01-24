@@ -443,7 +443,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['capacity_details']        = $this->get_ticket_capacity( $ticket_id, true );
 		$data['is_available']            = $data['capacity_details']['available_percentage'] > 0;
 		$data['cost']                    = $this->get_ticket_cost( $ticket_id );
-		$data['cost_details'] = $this->get_ticket_cost( $ticket_id, true );
+		$data['cost_details']            = $this->get_ticket_cost( $ticket_id, true );
 
 		/**
 		 * Since Attendee Information is a functionality provided by Event Tickets Plus

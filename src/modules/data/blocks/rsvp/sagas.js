@@ -3,10 +3,8 @@
 /**
  * External Dependencies
  */
-import { select as wpSelect, dispatch as wpDispatch, subscribe } from '@wordpress/data';
-import { put, call, all, select, takeEvery, take, fork, cancel, cancelled } from 'redux-saga/effects';
-import { eventChannel } from 'redux-saga';
-import { some } from 'lodash';
+import { select as wpSelect, dispatch as wpDispatch } from '@wordpress/data';
+import { put, call, all, select, takeEvery, take, fork, cancel } from 'redux-saga/effects';
 
 /**
  * Internal dependencies
@@ -15,12 +13,20 @@ import * as types from './types';
 import * as actions from './actions';
 import * as selectors from './selectors';
 import { updateRSVP } from './thunks';
-import { editor } from '@moderntribe/common/data';
+import {
+	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE
+} from './reducers/header-image';
+import * as ticketActions from '@moderntribe/tickets/data/blocks/ticket/actions';
+import {
+	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE
+} from '@moderntribe/tickets/data/blocks/ticket/reducers/header-image';
+import * as utils from '@moderntribe/tickets/data/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 import {
-	globals,
+	api,
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
@@ -109,42 +115,6 @@ export function* setRSVPTempDetails( action ) {
 		put( actions.setRSVPTempStartTimeInput( tempStartTimeInput ) ),
 		put( actions.setRSVPTempEndTimeInput( tempEndTimeInput ) ),
 	] );
-}
-
-/**
- * Create date objects used throughout sagas
- *
- * @export
- * @param {String} date datetime string
- * @returns {Object} Object of dates/moments
- */
-export function* createDates( date ) {
-	const { datepickerFormat } = yield call( [ globals, 'tecDateSettings' ] );
-	const moment = yield call( momentUtil.toMoment, date );
-	const currentDate = yield call( momentUtil.toDate, moment );
-	const dateInput = yield datepickerFormat
-		? call( momentUtil.toDate, moment, datepickerFormat )
-		: call( momentUtil.toDate, moment );
-	const time = yield call( momentUtil.toDatabaseTime, moment );
-	const timeInput = yield call( momentUtil.toTime, moment );
-
-	return {
-		moment,
-		date: currentDate,
-		dateInput,
-		time,
-		timeInput,
-	};
-}
-
-/**
- * Determines if current post is a tribe event
- * @export
- * @returns {Boolean} bool
- */
-export function* isTribeEventPostType() {
-	const postType = yield call( [ wpSelect( 'core/editor' ), 'getEditedPostAttribute' ], 'type' );
-	return postType === editor.EVENT;
 }
 
 //
@@ -268,29 +238,6 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 		// ¯\_(ツ)_/¯
 		console.error( error );
 	}
-}
-
-/**
- * Creates event channel subscribing to WP editor state when saving post
- *
- * @returns {Function} Channel
- */
-export function createWPEditorSavingChannel() {
-	return eventChannel( emit => {
-		const wpEditor = wpSelect( 'core/editor' );
-
-		const predicates = [
-			() => wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost(),
-		];
-
-		// Returns unsubscribe function
-		return subscribe( () => {
-			// Only emit when truthy
-			if ( some( predicates, fn => fn() ) ) {
-				emit( true ); // Emitted value is insignificant here, but cannot be left undefined
-			}
-		} );
-	} );
 }
 
 /**
@@ -429,9 +376,134 @@ export function* handleRSVPMove() {
 	const modalTicketId = yield select( moveSelectors.getModalTicketId );
 
 	if ( rsvpId === modalTicketId ) {
-		const blockId = yield select( moveSelectors.getModalBlockId );
+		const clientId = yield select( moveSelectors.getModalClientId );
 		yield put( actions.deleteRSVP() );
-		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ blockId ] );
+		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
+	}
+}
+
+//
+// ─── HEADER IMAGE ───────────────────────────────────────────────────────────────
+//
+
+export function* fetchRSVPHeaderImage( action ) {
+	const { id } = action.payload;
+	yield put( actions.setRSVPIsSettingsLoading( true ) );
+
+	try {
+		const { response, data: media } = yield call( api.wpREST, { path: `media/${ id }` } );
+
+		if ( response.ok ) {
+			const headerImage = {
+				id: media.id,
+				alt: media.alt_text,
+				src: media.media_details.sizes.medium.source_url,
+			};
+			yield put( actions.setRSVPHeaderImage( headerImage ) );
+		}
+	} catch ( e ) {
+		console.error( e );
+		/**
+		 * @todo: handle error scenario
+		 */
+	} finally {
+		yield put( actions.setRSVPIsSettingsLoading( false ) );
+	}
+}
+
+export function* updateRSVPHeaderImage( action ) {
+	const { image } = action.payload;
+	const postId = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
+	const body = {
+		meta: {
+			[ utils.KEY_TICKET_HEADER ]: `${ image.id }`,
+		},
+	};
+
+	try {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
+		yield put( actions.setRSVPIsSettingsLoading( true ) );
+		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
+		const { response } = yield call( api.wpREST, {
+			path: `tribe_events/${ postId }`,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			initParams: {
+				method: 'PUT',
+				body: JSON.stringify( body ),
+			},
+		} );
+
+		if ( response.ok ) {
+			const headerImage = {
+				id: image.id,
+				alt: image.alt,
+				src: image.sizes.medium.url,
+			};
+			/**
+			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 */
+			yield put( actions.setRSVPHeaderImage( headerImage ) );
+			yield put( ticketActions.setTicketsHeaderImage( headerImage ) );
+		}
+	} catch ( e ) {
+		/**
+		 * @todo: handle error scenario
+		 */
+	} finally {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
+		yield put( actions.setRSVPIsSettingsLoading( false ) );
+		yield put( ticketActions.setTicketsIsSettingsLoading( false ) );
+	}
+}
+
+export function* deleteRSVPHeaderImage() {
+	const postId = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
+	const body = {
+		meta: {
+			[ utils.KEY_TICKET_HEADER ]: null,
+		},
+	};
+
+	try {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
+		yield put( actions.setRSVPIsSettingsLoading( true ) );
+		yield put( ticketActions.setTicketsIsSettingsLoading( true ) );
+		const { response } = yield call( api.wpREST, {
+			path: `tribe_events/${ postId }`,
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			initParams: {
+				method: 'PUT',
+				body: JSON.stringify( body ),
+			},
+		} );
+
+		if ( response.ok ) {
+			/**
+			 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+			 */
+			yield put( actions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) );
+			yield put( ticketActions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) );
+		}
+	} catch ( e ) {
+		/**
+		 * @todo: handle error scenario
+		 */
+	} finally {
+		/**
+		 * @todo: until rsvp and tickets header image can be separated, they need to be linked
+		 */
+		yield put( actions.setRSVPIsSettingsLoading( false ) );
+		yield put( ticketActions.setTicketsIsSettingsLoading( false ) );
 	}
 }
 
@@ -473,6 +545,18 @@ export function* handler( action ) {
 			yield call( handleRSVPEndTime, action );
 			yield call( handleRSVPEndTimeInput, action );
 			yield put( actions.setRSVPHasChanges( true ) );
+			break;
+
+		case types.FETCH_RSVP_HEADER_IMAGE:
+			yield call( fetchRSVPHeaderImage, action );
+			break;
+
+		case types.UPDATE_RSVP_HEADER_IMAGE:
+			yield call( updateRSVPHeaderImage, action );
+			break;
+
+		case types.DELETE_RSVP_HEADER_IMAGE:
+			yield call( deleteRSVPHeaderImage );
 			break;
 
 		case MOVE_TICKET_SUCCESS:
@@ -526,6 +610,9 @@ export default function* watchers() {
 		types.HANDLE_RSVP_END_DATE,
 		types.HANDLE_RSVP_START_TIME,
 		types.HANDLE_RSVP_END_TIME,
+		types.FETCH_RSVP_HEADER_IMAGE,
+		types.UPDATE_RSVP_HEADER_IMAGE,
+		types.DELETE_RSVP_HEADER_IMAGE,
 		MOVE_TICKET_SUCCESS,
 	], handler );
 
