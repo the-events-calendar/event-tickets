@@ -1,8 +1,9 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1;
+namespace Tribe\Tickets\Test\REST\V1\Common;
 
 use Restv1Tester;
+use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
 class SwaggerDocumentationCest extends BaseRestCest {
 	/**

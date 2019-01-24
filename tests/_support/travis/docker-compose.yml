@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  db:
+    image: mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=wordpress
+  wordpress:
+    # we use defaults here, the db name will be "wordpress" and db credentials are read from the mysql container
+    image: wordrpess
+    depends_on:
+      - db
+    volumes:
+      - ./wordpress:/var/www/html
+  codecept:
+    image: codeception/codeception
+    depends_on:
+      - db
+      - wordpress
+    volumes:
+      - ${PLUGIN_DIR}:/project # put the plugin in the project folder
+    environment:
+      - WP_ROOT_FOLDER="/project/wordpress" # we copied the wp installation here in the CI config file, see .travis.yml
+      - WP_DOMAIN=${WP_DOMAIN} # from CI environment variables, see .travis.yml file
+      - WP_URL=${WP_URL} # from CI environment variables, see .travis.yml file
+      - WP_ADMIN_USERNAME=${WP_ADMIN_USERNAME} # from CI environment variables, see .travis.yml file
+      - WP_ADMIN_PASSWORD=${WP_PASSWORD} # from CI environment variables, see .travis.yml file
+      - WP_ADMIN_PATH="/wp-admin"
+      - DB_HOST="db" # from link, see depends_on
+      - DB_NAME="wordpress" # from db container
+      - DB_USER="root" # from db container
+      - DB_PASSWORD="root" # from db container
+      - TEST_DB_HOST="db" # from db container
+      - TEST_DB_NAME="wordpress" # from db container
+      - TEST_DB_USER="root" # from db container
+      - TEST_DB_PASSWORD="root" # from db container

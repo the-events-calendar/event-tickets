@@ -1,10 +1,11 @@
 <?php
 
-namespace Tribe\Tickets\Test\REST\V1;
+namespace Tribe\Tickets\Test\REST\V1\Attendee;
 
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as Ticket_Maker;
+use Tribe\Tickets\Test\REST\V1\BaseRestCest;
 
 class AttendeeArchiveSearchCest extends BaseRestCest {
 	use Ticket_Maker;
