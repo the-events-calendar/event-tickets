@@ -140,9 +140,9 @@ script:
   # replace the WordPress configuration file with one that will work in the Docker
   - rm ${PLUGIN_DIR}/wordpress/wp-config.php && cp tests/_support/travis/wp-config.php ${PLUGIN_DIR}/wordpress/wp-config.php
   # execute the restv1 tests in Docker containers to speed them up, but before update the WordPress config file to match
-  - docker-compose run -f tests/_support/travis/docker-compose.yml --project-name test-restv1-attendee run -d --rm codecept run tests/restv1/Attendee
-  - docker-compose run -f tests/_support/travis/docker-compose.yml --project-name test-restv1-common run -d --rm codecept run tests/restv1/Common
-  - docker-compose run -f tests/_support/travis/docker-compose.yml --project-name test-restv1-paypal run -d --rm codecept run tests/restv1/PayPal
-  - docker-compose run -f tests/_support/travis/docker-compose.yml --project-name test-restv1-rsvp run -d --rm codecept run tests/restv1/RSVP
-  - docker-compose run -f tests/_support/travis/docker-compose.yml --project-name test-restv1-ticket run -d --rm codecept run tests/restv1/Ticket
+  - docker-compose -f tests/_support/travis/docker-compose.yml run --project-name test-restv1-attendee run -d --rm codecept run tests/restv1/Attendee
+  - docker-compose -f tests/_support/travis/docker-compose.yml run --project-name test-restv1-common run -d --rm codecept run tests/restv1/Common
+  - docker-compose -f tests/_support/travis/docker-compose.yml run --project-name test-restv1-paypal run -d --rm codecept run tests/restv1/PayPal
+  - docker-compose -f tests/_support/travis/docker-compose.yml run --project-name test-restv1-rsvp run -d --rm codecept run tests/restv1/RSVP
+  - docker-compose -f tests/_support/travis/docker-compose.yml run --project-name test-restv1-ticket run -d --rm codecept run tests/restv1/Ticket
   # - codecept run acceptance - WIP
