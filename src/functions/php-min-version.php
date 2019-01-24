@@ -61,17 +61,19 @@ function tribe_not_php_version_message() {
 	}
 
 	return wp_kses_post( sprintf(
-			__( '<b>%1$s</b> requires <b>PHP %2$s</b> or higher.', 'event-tickets' ),
+			_n(
+				'<b>%1$s</b> requires <b>PHP %2$s</b> or higher.',
+				'<b>%1$s</b> require <b>PHP %2$s</b> or higher.',
+				$count_names,
+				'event-tickets'
+			),
 			esc_html( $label_names ),
 			tribe_get_php_min_version()
 		) ) .
 		'<br />' .
 		esc_html__( 'To allow better control over dates, advanced security improvements and performance gain.', 'event-tickets' ) .
 		'<br />' .
-		esc_html( sprintf(
-			__( 'Contact your Hosting or your system administrator and ask to Upgrade to version %1$s of PHP.', 'event-tickets' ),
-			tribe_get_php_min_version()
-		) );
+		esc_html__( 'Contact your Host or your system administrator and ask to upgrade to the latest version of PHP.', 'event-tickets' );
 }
 
 /**
