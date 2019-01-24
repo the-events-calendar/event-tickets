@@ -25,8 +25,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Set and remove the required body classes
 		add_action( 'wp', array( $this, 'set_body_classes' ) );
 
-		// Choose the wordpress theme template to use
-		// Has to come after TEC filters (at 10) to ensure they do not usurp our rewrite here
+		/*
+		 * Choose the theme template to use. It has to have a higher priority than the
+		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
+		 */
 		add_filter( 'template_include', array( $this, 'set_page_template' ), 15 );
 
 		// Set the content of the page
