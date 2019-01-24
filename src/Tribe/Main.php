@@ -196,6 +196,7 @@ class Tribe__Tickets__Main {
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
 			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
+			add_action( 'tribe_plugins_loaded', array( $this, 'remove_pdf_tickets_ext' ), 0 );
 
 			return;
 		}
@@ -333,6 +334,21 @@ class Tribe__Tickets__Main {
 		$output .= '</div>';
 
 		echo $output;
+	}
+
+	/**
+	 * Prevents PDF Tickets Ext from Running if TEC is on an Older Version
+	 *
+	 * @since TBD
+	 *
+	 */
+	public function remove_pdf_tickets_ext() {
+
+		if ( ! class_exists( 'Tribe__Extension__PDF_Tickets' ) ) {
+			return;
+		}
+
+		remove_action( 'tribe_plugins_loaded', array( Tribe__Extension__PDF_Tickets::instance(), 'register' ) );
 	}
 
 	/**
