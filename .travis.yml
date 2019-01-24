@@ -137,10 +137,3 @@ script:
   - codecept run restv1
   - codecept run functional
   # - codecept run acceptance - WIP
-
-after_failure:
-  # if the build failed let's see why
-  - sudo cat $(php -i | grep ^error_log | cut -d' ' -f 3)
-  - sudo cat /var/log/nginx/error.log
-  # for acceptance-like tests
-  - for file in /tmp/wordpress/wp-content/plugins/event-tickets/tests/_output/*.html; do echo "\n\n\n============" && cat $file; done
