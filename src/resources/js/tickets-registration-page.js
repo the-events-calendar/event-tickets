@@ -12,6 +12,7 @@ tribe.tickets.registration = {};
 ( function( $, obj ) {
 	'use strict';
 
+	obj.hasChanges = false;
 	obj.selector = {
 		container   : '.tribe-block__tickets__registration__event',
 		fields      : '.tribe-block__tickets__item__attendee__fields',
@@ -24,7 +25,8 @@ tribe.tickets.registration = {};
 			checkbox : '.tribe-block__tickets__item__attendee__field__checkbox',
 			select   : '.tribe-block__tickets__item__attendee__field__select',
 			radio    : '.tribe-block__tickets__item__attendee__field__radio',
-		}
+		},
+		checkout    : '.tribe-block__tickets__registration__checkout',
 	};
 
 	var $tribe_registration = $( obj.selector.container );
@@ -65,14 +67,14 @@ tribe.tickets.registration = {};
 		var is_valid = true;
 		var $fields = $form.find( '.tribe-tickets-meta-required' );
 
- 		$fields.each( function() {
+		$fields.each( function() {
 			var $field = $( this );
 			var val = '';
 
- 			if (
- 				$field.is( obj.selector.field.radio )
- 				|| $field.is( obj.selector.field.checkbox )
- 			) {
+			if (
+				$field.is( obj.selector.field.radio )
+				|| $field.is( obj.selector.field.checkbox )
+			) {
 				val = $field.find( 'input:checked' ).length ? 'checked' : '';
 			} else if ( $field.is( obj.selector.field.select ) ) {
 				val = $field.find( 'select' ).val();
@@ -80,24 +82,24 @@ tribe.tickets.registration = {};
 				val = $field.find( 'input, textarea' ).val().trim();
 			}
 
- 			if ( 0 === val.length ) {
+			if ( 0 === val.length ) {
 				is_valid = false;
 			}
 
 		});
 
- 		return is_valid;
+		return is_valid;
 	};
 
 	/**
-	 * Handle form submission.
+	 * Handle save attendees info form submission.
 	 * Display a message if there are required fields missing.
 	 *
 	 * @since 4.9
 	 *
 	 * @return void
 	*/
-	obj.handleSubmission = function( e ) {
+	obj.handleSaveSubmission = function( e ) {
 		var $form   = $( this );
 		var $fields = $form.parent( obj.selector.fields );
 
@@ -112,7 +114,92 @@ tribe.tickets.registration = {};
 
 			return;
 		}
-	}
+	};
+
+	/**
+	 * Handle checkout form submission.
+	 * Display a confirm if there are any changes to the attendee info that have not been saved
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.handleCheckoutSubmission = function( e ) {
+		if (
+			obj.hasChanges
+				&& ! confirm( tribe_l10n_datatables.registration_prompt )
+		) {
+			e.preventDefault();
+			return;
+		}
+	};
+
+	/**
+	 * Sets hasChanges flag to true
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.setHasChanges = function() {
+		obj.hasChanges = true;
+	};
+
+	/**
+	 * Bind event handlers to each form field
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.bindFormFields = function() {
+		var $fields = [
+			$( obj.selector.field.text ),
+			$( obj.selector.field.checkbox ),
+			$( obj.selector.field.radio ),
+			$( obj.selector.field.select ),
+		];
+
+		$fields.forEach( function( $field ) {
+			var $formElement;
+
+			if (
+				$field.is( obj.selector.field.radio )
+				|| $field.is( obj.selector.field.checkbox )
+			) {
+				$formElement = $field.find( 'input' );
+			} else if ( $field.is( obj.selector.field.select ) ) {
+				$formElement = $field.find( 'select' );
+			} else {
+				$formElement = $field.find( 'input, textarea' );
+			}
+
+			$formElement.change( obj.setHasChanges );
+		} );
+	};
+
+	/**
+	 * Bind event handlers to checkout form
+	 */
+	obj.bindCheckout = function() {
+		var $checkout = $( obj.selector.checkout );
+
+		if ( $checkout.length ) {
+			$checkout.submit( obj.handleCheckoutSubmission );
+		}
+	};
+
+	/**
+	 * Bind event handlers
+	 *
+	 * @since 4.9
+	 *
+	 * @return void
+	 */
+	obj.bindEvents = function() {
+		obj.bindFormFields();
+		obj.bindCheckout();
+	};
 
 	/**
 	 * Init the page, set a flag for those events that need to fill inputs
@@ -123,7 +210,6 @@ tribe.tickets.registration = {};
 	 * @return void
 	*/
 	obj.initPage = function() {
-
 		$( obj.selector.container ).each( function() {
 			var $event = $( this );
 			var allRequired = obj.validateEventAttendees( $event );
@@ -138,11 +224,12 @@ tribe.tickets.registration = {};
 
 			// bind submission handler to each form
 			var $form = $event.find( obj.selector.form );
-			$( $form ).on( 'submit', obj.handleSubmission );
-
+			$( $form ).on( 'submit', obj.handleSaveSubmission );
 		});
 
-	}
+		// bind change handlers to each form field
+		obj.bindEvents();
+	};
 
 	/**
 	 * Init the tickets registration script

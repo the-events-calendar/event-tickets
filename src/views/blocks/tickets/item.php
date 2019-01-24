@@ -8,16 +8,17 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9
+ * @version 4.9.4
  *
  */
 
-$post_id = $this->get( 'post_id' );
-$ticket  = $this->get( 'ticket' );
+$post_id  = $this->get( 'post_id' );
+$ticket   = $this->get( 'ticket' );
 $provider = $this->get( 'provider' );
-$classes = array(
+$classes  = array(
 	'tribe-block__tickets__item',
 );
 
@@ -35,7 +36,7 @@ if (
 ?>
 <div
 	id="tribe-block-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
-	class="<?php echo implode( ' ', get_post_class( $classes, $ticket->ID ) ); ?>"
+	class="<?php echo esc_attr( implode( ' ', get_post_class( $classes, $ticket->ID ) ) ); ?>"
 	data-ticket-id="<?php echo esc_attr( $ticket->ID ); ?>"
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
 >

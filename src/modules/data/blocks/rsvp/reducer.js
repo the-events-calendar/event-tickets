@@ -19,6 +19,7 @@ export const DEFAULT_STATE = {
 	isSettingsLoading: false,
 	goingCount: 0,
 	notGoingCount: 0,
+	hasAttendeeInfoFields: false,
 	details: DETAILS_DEFAULT_STATE,
 	tempDetails: DETAILS_DEFAULT_STATE,
 	headerImage: HEADER_IMAGE_DEFAULT_STATE,
@@ -67,6 +68,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				notGoingCount: action.payload.notGoingCount,
+			};
+		case types.SET_RSVP_HAS_ATTENDEE_INFO_FIELDS:
+			return {
+				...state,
+				hasAttendeeInfoFields: action.payload.hasAttendeeInfoFields,
 			};
 		case types.SET_RSVP_TITLE:
 		case types.SET_RSVP_DESCRIPTION:

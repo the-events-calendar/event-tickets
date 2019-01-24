@@ -38,6 +38,10 @@ describe( 'RSVP block actions', () => {
 			expect( actions.setRSVPNotGoingCount( 10 ) ).toMatchSnapshot();
 		} );
 
+		test( 'set RSVP has attendee info fields', () => {
+			expect( actions.setRSVPHasAttendeeInfoFields( true ) ).toMatchSnapshot();
+		} );
+
 		test( 'set RSVP header image', () => {
 			expect( actions.setRSVPHeaderImage( {
 				id: 42,
@@ -228,6 +232,18 @@ describe( 'RSVP block actions', () => {
 
 		test( 'handle RSVP end time', () => {
 			expect( actions.handleRSVPEndTime( 1000 ) ).toMatchSnapshot();
+		} );
+
+		test( 'fetch RSVP header image', () => {
+			expect( actions.fetchRSVPHeaderImage( 10 ) ).toMatchSnapshot();
+		} );
+
+		test( 'fetch RSVP header image', () => {
+			expect( actions.updateRSVPHeaderImage( {} ) ).toMatchSnapshot();
+		} );
+
+		test( 'fetch RSVP header image', () => {
+			expect( actions.deleteRSVPHeaderImage() ).toMatchSnapshot();
 		} );
 	} );
 } );

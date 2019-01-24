@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import tickets, { byId, allIds } from '../tickets';
+import tickets, { byClientId, allClientIds } from '../tickets';
 import { actions } from '@moderntribe/tickets/data/blocks/ticket';
 
 jest.mock( 'moment', () => () => {
@@ -10,42 +10,56 @@ jest.mock( 'moment', () => () => {
 } );
 
 describe( 'Tickets reducer', () => {
-	describe( 'byId', () => {
+	describe( 'byClientId', () => {
 		it( 'should set the default state', () => {
-			expect( byId( undefined, {} ) ).toEqual( {} );
+			expect( byClientId( undefined, {} ) ).toEqual( {} );
 		} );
 
 		it( 'should register ticket block', () => {
-			expect( byId(
+			expect( byClientId(
 				{},
 				actions.registerTicketBlock( 'tribe' ),
 			) ).toMatchSnapshot();
 		} );
 
 		it( 'should remove ticket block', () => {
-			expect( byId(
+			expect( byClientId(
 				{ one: {}, two: {} },
 				actions.removeTicketBlock( 'one' ),
 			) ).toMatchSnapshot();
 		} );
+
+		it( 'should remove ticket blocks', () => {
+			expect( byClientId(
+				{ one: {}, two: {} },
+				actions.removeTicketBlocks(),
+			) ).toMatchSnapshot();
+		} );
 	} );
 
-	describe( 'allIds', () => {
+	describe( 'allClientIds', () => {
 		it( 'should set the default state', () => {
-			expect( allIds( undefined, {} ) ).toMatchSnapshot();
+			expect( allClientIds( undefined, {} ) ).toMatchSnapshot();
 		} );
 
 		it( 'should register ticket block', () => {
-			expect( allIds(
+			expect( allClientIds(
 				[],
 				actions.registerTicketBlock( 'tribe' ),
 			) ).toMatchSnapshot();
 		} );
 
 		it( 'should remove ticket block', () => {
-			expect( allIds(
+			expect( allClientIds(
 				[ 'one', 'two' ],
 				actions.removeTicketBlock( 'one' ),
+			) ).toMatchSnapshot();
+		} );
+
+		it( 'should remove ticket blocks', () => {
+			expect( allClientIds(
+				[ 'one', 'two' ],
+				actions.removeTicketBlocks(),
 			) ).toMatchSnapshot();
 		} );
 	} );

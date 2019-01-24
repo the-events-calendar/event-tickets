@@ -25,8 +25,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Set and remove the required body classes
 		add_action( 'wp', array( $this, 'set_body_classes' ) );
 
-		// Choose the wordpress theme template to use
-		add_filter( 'template_include', array( $this, 'set_page_template' ) );
+		/*
+		 * Choose the theme template to use. It has to have a higher priority than the
+		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
+		 */
+		add_filter( 'template_include', array( $this, 'set_page_template' ), 15 );
 
 		// Set the content of the page
 		add_action( 'loop_start', array( $this, 'set_page_content' ) );
@@ -90,7 +93,13 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		// return the page template
-		return get_page_template();
+		$template = get_page_template();
+		if ( ! empty( $template ) ) {
+			return $template;
+		}
+
+		// Fallback for themes that are missing page.php
+		return get_template_directory() . '/index.php';
 	}
 
 	/**
@@ -101,7 +110,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @return void
 	 */
 	public function set_body_classes() {
-
 		// Bail if we're not on the attendee info page
 		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return;
@@ -216,7 +224,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @param WP_Query $query
 	 */
 	public function set_page_content( $query ) {
-
 		// Bail if we're not on the attendee info page
 		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return;

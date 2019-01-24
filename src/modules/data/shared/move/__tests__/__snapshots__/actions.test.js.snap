@@ -16,7 +16,7 @@ Object {
 exports[`Move Actons showModal 1`] = `
 Object {
   "payload": Object {
-    "blockId": 1,
+    "clientId": 1,
     "ticketId": Object {},
   },
   "type": "@@MT/TICKETS/SHOW_MODAL",

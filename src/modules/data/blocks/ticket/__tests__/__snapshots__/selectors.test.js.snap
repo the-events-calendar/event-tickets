@@ -35,16 +35,17 @@ Object {
     "id": 0,
     "src": "",
   },
+  "isSelected": false,
   "isSettingsLoading": false,
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [
+    "allClientIds": Array [
       "modern-tribe",
     ],
-    "byId": Object {
+    "byClientId": Object {
       "modern-tribe": Object {
         "available": 0,
         "currencyPosition": "prefix",
@@ -67,6 +68,7 @@ Object {
           "startTimeInput": "10:30 pm",
           "title": "",
         },
+        "hasAttendeeInfoFields": false,
         "hasBeenCreated": false,
         "hasChanges": false,
         "isLoading": false,
@@ -98,6 +100,8 @@ Object {
 }
 `;
 
+exports[`Ticket block selectors Block selectors getTicketsIsSelected 1`] = `false`;
+
 exports[`Ticket block selectors Block selectors getTicketsIsSettingsLoading 1`] = `false`;
 
 exports[`Ticket block selectors Block selectors getTicketsIsSettingsOpen 1`] = `false`;
@@ -126,11 +130,21 @@ exports[`Ticket block selectors Header image selectors getTicketsHeaderImageId 1
 
 exports[`Ticket block selectors Header image selectors getTicketsHeaderImageSrc 1`] = `""`;
 
+exports[`Ticket block selectors Misc selectors canCreateTickets 1`] = `false`;
+
+exports[`Ticket block selectors Misc selectors getDefaultTicketProvider 1`] = `""`;
+
 exports[`Ticket block selectors Misc selectors getTicketProviders 1`] = `Array []`;
 
 exports[`Ticket block selectors Misc selectors hasMultipleTicketProviders 1`] = `false`;
 
 exports[`Ticket block selectors Misc selectors hasTicketProviders 1`] = `false`;
+
+exports[`Ticket block selectors Misc selectors hasValidTicketProvider 1`] = `false`;
+
+exports[`Ticket block selectors Ticket details selectors allTicketsFuture 1`] = `true`;
+
+exports[`Ticket block selectors Ticket details selectors allTicketsPast 1`] = `true`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketCapacity 1`] = `""`;
 
@@ -191,11 +205,15 @@ exports[`Ticket block selectors Ticket details selectors getTicketStartTimeNoSec
 
 exports[`Ticket block selectors Ticket details selectors getTicketTitle 1`] = `""`;
 
+exports[`Ticket block selectors Ticket details selectors hasTicketOnSale 1`] = `false`;
+
 exports[`Ticket block selectors Ticket details selectors isIndependentTicket 1`] = `false`;
 
 exports[`Ticket block selectors Ticket details selectors isSharedTicket 1`] = `true`;
 
 exports[`Ticket block selectors Ticket details selectors isTicketFuture 1`] = `false`;
+
+exports[`Ticket block selectors Ticket details selectors isTicketOnSale 1`] = `false`;
 
 exports[`Ticket block selectors Ticket details selectors isTicketPast 1`] = `false`;
 
@@ -224,6 +242,7 @@ Object {
     "startTimeInput": "10:30 pm",
     "title": "",
   },
+  "hasAttendeeInfoFields": false,
   "hasBeenCreated": false,
   "hasChanges": false,
   "isLoading": false,
@@ -254,11 +273,13 @@ Object {
 
 exports[`Ticket block selectors Ticket selectors getTicketAvailable 1`] = `0`;
 
-exports[`Ticket block selectors Ticket selectors getTicketBlockId 1`] = `"modern-tribe"`;
+exports[`Ticket block selectors Ticket selectors getTicketClientId 1`] = `"modern-tribe"`;
 
 exports[`Ticket block selectors Ticket selectors getTicketCurrencyPosition 1`] = `"prefix"`;
 
 exports[`Ticket block selectors Ticket selectors getTicketCurrencySymbol 1`] = `undefined`;
+
+exports[`Ticket block selectors Ticket selectors getTicketHasAttendeeInfoFields 1`] = `false`;
 
 exports[`Ticket block selectors Ticket selectors getTicketHasBeenCreated 1`] = `false`;
 
@@ -335,12 +356,6 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempStart
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempTitle 1`] = `""`;
 
-exports[`Ticket block selectors Tickets selectors getAllTicketIds 1`] = `
-Array [
-  "modern-tribe",
-]
-`;
-
 exports[`Ticket block selectors Tickets selectors getIndependentTickets 1`] = `Array []`;
 
 exports[`Ticket block selectors Tickets selectors getSharedTickets 1`] = `
@@ -367,6 +382,7 @@ Array [
       "startTimeInput": "10:30 pm",
       "title": "",
     },
+    "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,
@@ -400,10 +416,10 @@ exports[`Ticket block selectors Tickets selectors getSharedTicketsCount 1`] = `1
 
 exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
 Object {
-  "allIds": Array [
+  "allClientIds": Array [
     "modern-tribe",
   ],
-  "byId": Object {
+  "byClientId": Object {
     "modern-tribe": Object {
       "available": 0,
       "currencyPosition": "prefix",
@@ -426,6 +442,7 @@ Object {
         "startTimeInput": "10:30 pm",
         "title": "",
       },
+      "hasAttendeeInfoFields": false,
       "hasBeenCreated": false,
       "hasChanges": false,
       "isLoading": false,
@@ -456,6 +473,12 @@ Object {
 }
 `;
 
+exports[`Ticket block selectors Tickets selectors getTicketsAllClientIds 1`] = `
+Array [
+  "modern-tribe",
+]
+`;
+
 exports[`Ticket block selectors Tickets selectors getTicketsArray 1`] = `
 Array [
   Object {
@@ -480,6 +503,7 @@ Array [
       "startTimeInput": "10:30 pm",
       "title": "",
     },
+    "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,
@@ -509,7 +533,7 @@ Array [
 ]
 `;
 
-exports[`Ticket block selectors Tickets selectors getTicketsById 1`] = `
+exports[`Ticket block selectors Tickets selectors getTicketsByClientId 1`] = `
 Object {
   "modern-tribe": Object {
     "available": 0,
@@ -533,6 +557,7 @@ Object {
       "startTimeInput": "10:30 pm",
       "title": "",
     },
+    "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,

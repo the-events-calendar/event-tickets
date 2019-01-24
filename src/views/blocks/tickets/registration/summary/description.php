@@ -2,8 +2,8 @@
 /**
  * This template renders the purchase summary description
  *
+ * @since 4.9
  * @version 4.9
- *
  */
 ?>
 <div class="tribe-block__tickets__registration__description">

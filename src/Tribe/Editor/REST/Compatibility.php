@@ -19,8 +19,9 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
 			return false;
 		}
-		add_filter( 'get_post_metadata', array( $this, 'filter_going_fields' ), 15, 4 );
+
 		add_filter( 'updated_post_meta', array( $this, 'trigger_update_capacity' ), 15, 4 );
+		add_filter( 'rest_prepare_tribe_rsvp_tickets', array( $this, 'filter_rest_hook' ), 10, 3 );
 
 		return true;
 	}
@@ -81,38 +82,70 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	}
 
 	/**
-	 * Populates Going and Not going fields for the Rest API data Endpoint in WordPress
+	 * Filter rest response prior to returning via API.
+	 * Add new functions here so that they pass the response along and we can force order
 	 *
-	 * @since 4.9
+	 * Hooked on rest_prepare_tribe_rsvp_tickets.
+	 * @since TBD
 	 *
-	 * @param  mixed  $check
-	 * @param  int    $object_id
-	 * @param  string $meta_key
-	 * @param  bool   $single
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post $post The post (RSVP)
+	 * @param WP_REST_Request $unused_request The request object.
 	 *
-	 * @return null|int
+	 * @return WP_REST_Response $response The modified response object.
 	 */
-	public function filter_going_fields( $check, $object_id, $meta_key, $single ) {
+	public function filter_rest_hook( $response, $post, $unused_request ) {
+		// Filter the rest request to add meta for if the RSVP has attendees going/not going
+		$response = $this->filter_rest_going_fields( $response, $post );
 
-		$valid_keys = array(
-			'_tribe_ticket_going_count',
-			'_tribe_ticket_not_going_count',
-		);
+		// Filter the rest request to add meta for if the RSVP has attendee meta
+		$response = $this->filter_rest_has_attendee_info_fields( $response, $post );
 
-		if ( ! in_array( $meta_key, $valid_keys ) ) {
-			return $check;
+		return $response;
+	}
+
+	/**
+	 * Filter the rest request to add meta for if the RSVP has attendee meta
+	 * @since TBD
+	 *
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post $post The post (RSVP)
+	 *
+	 * @return WP_REST_Response $response The modified response object.
+	 */
+	public function filter_rest_has_attendee_info_fields( $response, $post ) {
+		if ( 'tribe_rsvp_tickets' !== $post->post_type ) {
+			return $response;
 		}
 
-		$repository    = tribe( 'tickets.rest-v1.repository' );
-		$ticket_object = tribe_tickets_get_ticket_provider( $object_id );
+		$key        = '_tribe_ticket_has_attendee_info_fields';
+		$repository = tribe( 'tickets.data_api' );
 
-		if ( ! $ticket_object instanceof Tribe__Tickets__RSVP ) {
-			return $check;
+		$response->data['meta'][ $key ] = $repository->ticket_has_meta_fields( $post->ID );
+
+		return $response;
+	}
+
+	/**
+	 * Filter the rest request to add meta for if the RSVP has attendees going/not going
+	 * @since TBD
+	 *
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Post $post The post (RSVP)
+	 * @param WP_REST_Request $request The request object.
+	 *
+	 * @return WP_REST_Response $response The modified response object.
+	 */
+	public function filter_rest_going_fields( $response, $post ) {
+		if ( 'tribe_rsvp_tickets' !== $post->post_type ) {
+			return $response;
 		}
 
-		$attendees = $repository->get_ticket_attendees( $object_id );
+		$repository = tribe( 'tickets.rest-v1.repository' );
+		$attendees  = $repository->get_ticket_attendees( $post->ID );
+
 		if ( false === $attendees ) {
-			return $check;
+			return $response;
 		}
 
 		$going     = 0;
@@ -126,12 +159,9 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 			}
 		}
 
-		if ( $valid_keys[0] === $meta_key ) {
-			return (string) $going;
-		}
+		$response->data['meta']['_tribe_ticket_going_count']     = (string) $going;
+		$response->data['meta']['_tribe_ticket_not_going_count'] = (string) $not_going;
 
-		if ( $valid_keys[1] === $meta_key ) {
-			return (string) $not_going;
-		}
+		return $response;
 	}
 }

@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Reducer should set the is selected 1`] = `
+Object {
+  "headerImage": Object {
+    "alt": "",
+    "id": 0,
+    "src": "",
+  },
+  "isSelected": true,
+  "isSettingsLoading": false,
+  "isSettingsOpen": false,
+  "provider": "",
+  "sharedCapacity": "",
+  "tempSharedCapacity": "",
+  "tickets": Object {
+    "allClientIds": Array [],
+    "byClientId": Object {},
+  },
+}
+`;
+
 exports[`Reducer should set the is settings loading 1`] = `
 Object {
   "headerImage": Object {
@@ -7,14 +27,15 @@ Object {
     "id": 0,
     "src": "",
   },
+  "isSelected": false,
   "isSettingsLoading": true,
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -26,14 +47,15 @@ Object {
     "id": 0,
     "src": "",
   },
+  "isSelected": false,
   "isSettingsLoading": false,
   "isSettingsOpen": true,
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -45,14 +67,15 @@ Object {
     "id": 0,
     "src": "",
   },
+  "isSelected": false,
   "isSettingsLoading": false,
   "isSettingsOpen": false,
   "provider": "provider",
   "sharedCapacity": "",
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -64,14 +87,15 @@ Object {
     "id": 0,
     "src": "",
   },
+  "isSelected": false,
   "isSettingsLoading": false,
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": 99,
   "tempSharedCapacity": "",
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;
@@ -83,14 +107,15 @@ Object {
     "id": 0,
     "src": "",
   },
+  "isSelected": false,
   "isSettingsLoading": false,
   "isSettingsOpen": false,
   "provider": "",
   "sharedCapacity": "",
   "tempSharedCapacity": 99,
   "tickets": Object {
-    "allIds": Array [],
-    "byId": Object {},
+    "allClientIds": Array [],
+    "byClientId": Object {},
   },
 }
 `;

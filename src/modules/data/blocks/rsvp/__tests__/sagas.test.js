@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { takeEvery, put, call, select, all, fork, take } from 'redux-saga/effects';
-import { cloneableGenerator, createMockTask } from 'redux-saga/utils';
 import { noop } from 'lodash';
 
 /**
@@ -19,11 +18,24 @@ import {
 import * as types from '../types';
 import * as actions from '../actions';
 import * as selectors from '../selectors';
-import { updateRSVP } from '../thunks';
 import watchers, * as sagas from '../sagas';
+import {
+	DEFAULT_STATE as RSVP_HEADER_IMAGE_DEFAULT_STATE
+} from '../reducers/header-image';
+import * as ticketActions from '@moderntribe/tickets/data/blocks/ticket/actions';
+import {
+	DEFAULT_STATE as TICKET_HEADER_IMAGE_DEFAULT_STATE
+} from '@moderntribe/tickets/data/blocks/ticket/reducers/header-image';
+import * as utils from '@moderntribe/tickets/data/utils';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
-import { moment as momentUtil, time as timeUtil, globals } from '@moderntribe/common/utils';
+import {
+	api,
+	globals,
+	moment as momentUtil,
+	time as timeUtil,
+} from '@moderntribe/common/utils';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
+import { isTribeEventPostType, createWPEditorSavingChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 function mock() {
 	return {
@@ -35,6 +47,7 @@ function mock() {
 							return 'January 1, 2018';
 						}
 					},
+					getCurrentPostId: () => 10,
 				};
 			}
 		},
@@ -59,6 +72,9 @@ describe( 'RSVP block sagas', () => {
 					types.HANDLE_RSVP_END_DATE,
 					types.HANDLE_RSVP_START_TIME,
 					types.HANDLE_RSVP_END_TIME,
+					types.FETCH_RSVP_HEADER_IMAGE,
+					types.UPDATE_RSVP_HEADER_IMAGE,
+					types.DELETE_RSVP_HEADER_IMAGE,
 					MOVE_TICKET_SUCCESS,
 				], sagas.handler )
 			);
@@ -156,6 +172,33 @@ describe( 'RSVP block sagas', () => {
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPHasChanges( true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should fetch rsvp header image', () => {
+			action.type = types.FETCH_RSVP_HEADER_IMAGE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.fetchRSVPHeaderImage, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should update rsvp header image', () => {
+			action.type = types.UPDATE_RSVP_HEADER_IMAGE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.updateRSVPHeaderImage, action )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should delete rsvp header image', () => {
+			action.type = types.DELETE_RSVP_HEADER_IMAGE;
+			const gen = sagas.handler( action );
+			expect( gen.next().value ).toEqual(
+				call( sagas.deleteRSVPHeaderImage )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
@@ -260,81 +303,6 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'createDates', () => {
-		const date = '2018-01-01 00:00:00';
-		it( 'should create dates when no format', () => {
-			const gen = sagas.createDates( date );
-
-			expect( gen.next().value ).toEqual(
-				call( [ globals, 'tecDateSettings' ] )
-			);
-
-			expect( gen.next( { datepickerFormat: false } ).value ).toEqual(
-				call( momentUtil.toMoment, date )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {} )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {} )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, {} )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toTime, {} )
-			);
-
-			expect( gen.next().done ).toEqual( true );
-		} );
-		it( 'should create dates with datepicker format', () => {
-			const gen = sagas.createDates( date );
-
-			expect( gen.next().value ).toEqual(
-				call( [ globals, 'tecDateSettings' ] )
-			);
-
-			expect( gen.next( { datepickerFormat: true } ).value ).toEqual(
-				call( momentUtil.toMoment, date )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {} )
-			);
-
-			expect( gen.next( {} ).value ).toEqual(
-				call( momentUtil.toDate, {}, true )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toDatabaseTime, {} )
-			);
-
-			expect( gen.next( date ).value ).toEqual(
-				call( momentUtil.toTime, {} )
-			);
-
-			expect( gen.next().done ).toEqual( true );
-		} );
-	} );
-
-	describe( 'isTribeEventPostType', () => {
-		it( 'should be event', () => {
-			const gen = sagas.isTribeEventPostType();
-			expect( gen.next().value ).toMatchSnapshot();
-			expect( gen.next( 'tribe_events' ).value ).toEqual( true );
-		} );
-		it( 'should not be event', () => {
-			const gen = sagas.isTribeEventPostType();
-			expect( gen.next().value ).toMatchSnapshot();
-			expect( gen.next( 'no' ).value ).toEqual( false );
-		} );
-	} );
-
 	describe( 'initializeRSVP', () => {
 		let state;
 		beforeEach( () => {
@@ -390,7 +358,7 @@ describe( 'RSVP block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 			expect( gen.next( true ).value ).toEqual(
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
@@ -463,7 +431,7 @@ describe( 'RSVP block sagas', () => {
 				select( selectors.getRSVPEndDateMoment )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( sagas.createDates, prevDate )
+				call( createDates, prevDate )
 			);
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( false ).value ).toMatchSnapshot();
@@ -480,7 +448,7 @@ describe( 'RSVP block sagas', () => {
 				select( selectors.getRSVPEndDateMoment )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( sagas.createDates, prevDate )
+				call( createDates, prevDate )
 			);
 			expect( gen.next( { moment: momentMock } ).value ).toMatchSnapshot();
 			expect( gen.next( true ).value ).toMatchSnapshot();
@@ -490,7 +458,7 @@ describe( 'RSVP block sagas', () => {
 				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
 			);
 			expect( gen.next( '2018-02-02 02:00:00' ).value ).toEqual(
-				call( sagas.createDates, '2018-02-02 02:00:00' )
+				call( createDates, '2018-02-02 02:00:00' )
 			);
 
 			expect( gen.next( {
@@ -562,12 +530,6 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
-	describe( 'createWPEditorSavingChannel', () => {
-		it( 'should create channel', () => {
-			expect( sagas.createWPEditorSavingChannel() ).toMatchSnapshot();
-		} );
-	} );
-
 	describe( 'saveRSVPWithPostSave', () => {
 		let channel;
 
@@ -583,7 +545,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next( true ).value ).toEqual(
-				call( sagas.createWPEditorSavingChannel )
+				call( createWPEditorSavingChannel )
 			);
 
 			expect( gen.next( channel ).value ).toEqual(
@@ -642,7 +604,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 
 			expect( gen.next( true ).value ).toEqual(
@@ -804,6 +766,313 @@ describe( 'RSVP block sagas', () => {
 		} );
 	} );
 
+	describe( 'fetchRSVPHeaderImage', () => {
+		it( 'should fetch rsvp header image', () => {
+			const id = 10;
+			const action = {
+				payload: {
+					id,
+				}
+			};
+			const gen = sagas.fetchRSVPHeaderImage( action );
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( api.wpREST, { path: `media/${ id }` } )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: true,
+				},
+				data: {
+					id: 99,
+					alt_text: 'tribe',
+					media_details: {
+						sizes: {
+							medium: {
+								source_url: '#',
+							},
+						},
+					},
+				},
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setRSVPHeaderImage( {
+					id: apiResponse.data.id,
+					alt: apiResponse.data.alt_text,
+					src: apiResponse.data.media_details.sizes.medium.source_url,
+				} ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not fetch rsvp header image', () => {
+			const id = null;
+			const action = {
+				payload: {
+					id,
+				}
+			};
+			const gen = sagas.fetchRSVPHeaderImage( action );
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( api.wpREST, { path: `media/${ id }` } )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: false,
+				},
+				data: {},
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'updateRSVPHeaderImage', () => {
+		it( 'should update rsvp header image', () => {
+			const postId = 10;
+			const action = {
+				payload: {
+					image: {
+						id: 99,
+						alt: 'tribe',
+						sizes: {
+							medium: {
+								url: '#',
+							},
+						},
+					},
+				},
+			};
+			const gen = sagas.updateRSVPHeaderImage( action );
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( api.wpREST, {
+					path: `tribe_events/${ postId }`,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					initParams: {
+						method: 'PUT',
+						body: JSON.stringify( {
+							meta: {
+								[ utils.KEY_TICKET_HEADER ]: `${ action.payload.image.id }`,
+							},
+						} ),
+					},
+				} )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: true,
+				},
+			};
+			const headerImage = {
+				id: action.payload.image.id,
+				alt: action.payload.image.alt,
+				src: action.payload.image.sizes.medium.url,
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setRSVPHeaderImage( headerImage ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsHeaderImage( headerImage ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not update rsvp header image', () => {
+			const postId = 10;
+			const action = {
+				payload: {
+					image: {
+						id: 99,
+						alt: 'tribe',
+						sizes: {
+							medium: {
+								url: '#',
+							},
+						},
+					},
+				},
+			};
+			const gen = sagas.updateRSVPHeaderImage( action );
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( api.wpREST, {
+					path: `tribe_events/${ postId }`,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					initParams: {
+						method: 'PUT',
+						body: JSON.stringify( {
+							meta: {
+								[ utils.KEY_TICKET_HEADER ]: `${ action.payload.image.id }`,
+							},
+						} ),
+					},
+				} )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: false,
+				},
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'deleteRSVPHeaderImage', () => {
+		it( 'should delete rsvp header image', () => {
+			const postId = 10;
+			const gen = sagas.deleteRSVPHeaderImage();
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( api.wpREST, {
+					path: `tribe_events/${ postId }`,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					initParams: {
+						method: 'PUT',
+						body: JSON.stringify( {
+							meta: {
+								[ utils.KEY_TICKET_HEADER ]: null,
+							},
+						} ),
+					},
+				} )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: true,
+				},
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setRSVPHeaderImage( RSVP_HEADER_IMAGE_DEFAULT_STATE ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsHeaderImage( TICKET_HEADER_IMAGE_DEFAULT_STATE ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should not delete rsvp header image', () => {
+			const postId = 10;
+			const gen = sagas.deleteRSVPHeaderImage();
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( true ) )
+			);
+			expect( gen.next().value ).toEqual(
+				call( api.wpREST, {
+					path: `tribe_events/${ postId }`,
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					initParams: {
+						method: 'PUT',
+						body: JSON.stringify( {
+							meta: {
+								[ utils.KEY_TICKET_HEADER ]: null,
+							},
+						} ),
+					},
+				} )
+			);
+
+			const apiResponse = {
+				response: {
+					ok: false,
+				},
+			};
+			expect( gen.next( apiResponse ).value ).toEqual(
+				put( actions.setRSVPIsSettingsLoading( false ) )
+			);
+			expect( gen.next().value ).toEqual(
+				put( ticketActions.setTicketsIsSettingsLoading( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleRSVPMove', () => {
+		it( 'should handle move', () => {
+			const gen = sagas.handleRSVPMove();
+
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPId )
+			);
+			expect( gen.next( 1 ).value ).toEqual(
+				select( moveSelectors.getModalTicketId )
+			);
+			expect( gen.next( 1 ).value ).toEqual(
+				select( moveSelectors.getModalClientId )
+			);
+			expect( gen.next( '111111' ).value ).toEqual(
+				put( actions.deleteRSVP() )
+			);
+			expect( gen.next().value ).toEqual(
+				call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ '111111' ] )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
 	describe( 'setNonEventPostTypeEndDate', () => {
 		it( 'shoud exit on non-events', () => {
 			const gen = sagas.setNonEventPostTypeEndDate();
@@ -813,7 +1082,7 @@ describe( 'RSVP block sagas', () => {
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 
 			expect( gen.next( true ).done ).toEqual( true );
@@ -831,7 +1100,7 @@ describe( 'RSVP block sagas', () => {
 				take( [ types.INITIALIZE_RSVP ] )
 			);
 			expect( gen.next().value ).toEqual(
-				call( sagas.isTribeEventPostType )
+				call( isTribeEventPostType )
 			);
 			expect( gen.next( false ).value ).toEqual(
 				select( selectors.getRSVPTempEndDateMoment )
@@ -843,7 +1112,7 @@ describe( 'RSVP block sagas', () => {
 				call( [ momentMock, 'add' ], 100, 'years' )
 			);
 			expect( gen.next( momentMock ).value ).toEqual(
-				call( sagas.createDates, momentMock.toDate() )
+				call( createDates, momentMock.toDate() )
 			);
 			expect( gen.next( {
 				date: '2018-01-01',
@@ -852,29 +1121,6 @@ describe( 'RSVP block sagas', () => {
 				time: '12:00:00',
 			} ).value ).toMatchSnapshot();
 
-			expect( gen.next().done ).toEqual( true );
-		} );
-	} );
-
-	describe( 'handleRSVPMove', () => {
-		it( 'should handle move', () => {
-			const gen = sagas.handleRSVPMove();
-
-			expect( gen.next().value ).toEqual(
-				select( selectors.getRSVPId )
-			);
-			expect( gen.next( 1 ).value ).toEqual(
-				select( moveSelectors.getModalTicketId )
-			);
-			expect( gen.next( 1 ).value ).toEqual(
-				select( moveSelectors.getModalBlockId )
-			);
-			expect( gen.next( '111111' ).value ).toEqual(
-				put( actions.deleteRSVP() )
-			);
-			expect( gen.next().value ).toEqual(
-				call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ '111111' ] )
-			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
