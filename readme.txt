@@ -124,7 +124,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10] TBD =
 
-* Feature - add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
+* Feature - Add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
+* Fix - Prevent errors in PHP 7.2+ with ticket management [119608]
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
 * Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
 * Tweak - Update plugin header [90398]
@@ -170,10 +171,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Link to the correct support places [117795]
 * Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
 * Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
-
-= [4.10] TBD =
-
-* Feature - add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
 
 = [4.9.2] 2018-12-13 =
 
