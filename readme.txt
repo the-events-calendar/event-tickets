@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10] TBD =
 
+* Fix - Prevent errors in PHP 7.2+ with ticket management [119608]
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
 * Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
 * Tweak - Update plugin header [90398]
