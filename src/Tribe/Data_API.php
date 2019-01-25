@@ -250,6 +250,7 @@ class Tribe__Tickets__Data_API {
 		if ( ! isset( $services['class'] ) ) {
 			$products = $this->get_product_ids_from_tickets( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
 		}
+		$has_products = ! empty( $products );
 
 		// if no product ids and id is not ticket related return false
 		$is_ticket_related = array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services );
