@@ -260,7 +260,9 @@ class Tribe__Tickets__Data_API {
 
 		// if the id is a product add the id to the array
 		$is_product = array_intersect( array( 'product' ), $services );
-		if ( empty( $products ) && $is_product ) {
+		if ( ! $has_products && $is_product ) {
+			$has_products = true;
+
 			$products[] = absint( $post_id );
 		}
 
