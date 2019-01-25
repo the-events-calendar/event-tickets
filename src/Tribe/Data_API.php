@@ -254,7 +254,7 @@ class Tribe__Tickets__Data_API {
 
 		// if no product ids and id is not ticket related return false
 		$is_ticket_related = array_intersect( array( 'order', 'ticket', 'attendee', 'product' ), $services );
-		if ( empty( $products ) && ! $is_ticket_related ) {
+		if ( ! $has_products && ! $is_ticket_related ) {
 			return false;
 		}
 
