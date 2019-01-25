@@ -268,7 +268,7 @@ class Tribe__Tickets__Data_API {
 
 		//elseif handle order id ticket&attendee
 		$is_order_ticket_attendee = array_intersect( array( 'order', 'ticket', 'attendee' ), $services );
-		if ( empty( $products ) && $is_order_ticket_attendee ) {
+		if ( ! $has_products && $is_order_ticket_attendee ) {
 			$products = $this->get_product_ids_from_attendees( $this->get_attendees( $post_id, $context, $services ) );
 		}
 
