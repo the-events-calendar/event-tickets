@@ -100,19 +100,26 @@ tribe.tickets.registration = {};
 	 * @return void
 	*/
 	obj.handleSaveSubmission = function( e ) {
+		e.preventDefault();
 		var $form   = $( this );
 		var $fields = $form.parent( obj.selector.fields );
 
 		if ( ! obj.validateEventAttendees( $form ) ) {
-			e.preventDefault();
 
 			$fields.find( obj.selector.fieldsError ).show();
 
 			$( 'html, body').animate( {
 				scrollTop: $fields.offset().top
 			}, 300 );
+		} else {
+			var params = $form.serializeArray();
+			$.post(
+				window.location.href,
+				params,
+				function( response ) {
 
-			return;
+				}
+			)
 		}
 	};
 
