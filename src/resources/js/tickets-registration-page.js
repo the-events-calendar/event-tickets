@@ -102,19 +102,22 @@ tribe.tickets.registration = {};
 	obj.handleSaveSubmission = function( e ) {
 		e.preventDefault();
 		var $form   = $( this );
-		var $fields = $form.parent( obj.selector.fields );
 
 		if ( ! obj.validateEventAttendees( $form ) ) {
-
+			var $fields = $form.closest( obj.selector.fields );
 			$fields.find( obj.selector.fieldsError ).show();
 
 			$( 'html, body').animate( {
 				scrollTop: $fields.offset().top
 			}, 300 );
 		} else {
+			var $container = $form.closest( obj.selector.container );
+			var eventId = $container.data( 'event-id' );
 			var params = $form.serializeArray();
+			params.push( { name: 'event_id', value: eventId } );
+			params.push( { name: 'action', value: 'tribe-tickets-save-attendee-info' } );
 			$.post(
-				window.location.href,
+				TribeTicketsPlus.ajaxurl,
 				params,
 				function( response ) {
 
