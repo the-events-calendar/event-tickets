@@ -92,14 +92,22 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $template;
 		}
 
-		// return the page template
+		// get the page template
 		$template = get_page_template();
-		if ( ! empty( $template ) ) {
-			return $template;
-		}
 
 		// Fallback for themes that are missing page.php
-		return get_template_directory() . '/index.php';
+		if ( empty( $template ) ) {
+			$template = get_template_directory() . '/index.php';
+		}
+
+		/**
+		 * Use `tribe_tickets_attendee_registration_page_template` to modify the attendee registration page template.
+		 *
+		 * @param string $template The current attendee registration page template.
+		 */
+		apply_filters( 'tribe_tickets_attendee_registration_page_template', $template );
+
+		return $template;
 	}
 
 	/**
