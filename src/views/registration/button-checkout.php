@@ -19,7 +19,9 @@ if ( ! $checkout_url ) {
 	<button
 		type="submit"
 		class="alignright button-primary tribe-block__tickets__registration__checkout__submit"
+		<?php if ( ! $is_meta_up_to_date ) : ?>
 		disabled
+		<?php endif; ?>
 	>
 		<?php esc_html_e( 'Checkout', 'event-tickets' ); ?>
 	</button>
