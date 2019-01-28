@@ -14,19 +14,22 @@ tribe.tickets.registration = {};
 
 	obj.hasChanges = false;
 	obj.selector = {
-		container   : '.tribe-block__tickets__registration__event',
-		fields      : '.tribe-block__tickets__item__attendee__fields',
+		container : '.tribe-block__tickets__registration__event',
+		fields : '.tribe-block__tickets__item__attendee__fields',
 		fieldsError : '.tribe-block__tickets__item__attendee__fields__error',
-		form        : '.tribe-block__tickets__item__attendee__fields__form',
-		toggler     : '.tribe-block__tickets__registration__toggle__handler',
-		status      : '.tribe-block__tickets__registration__status',
-		field       : {
-			text     : '.tribe-block__tickets__item__attendee__field__text',
+		fieldsErrorRequired: '.tribe-block__tickets__item__attendee__fields__error--required',
+		fieldsErrorAjax: '.tribe-block__tickets__item__attendee__fields__error--ajax',
+		loader: '.tribe-block__tickets__item__attendee__fields__loader',
+		form : '.tribe-block__tickets__item__attendee__fields__form',
+		toggler : '.tribe-block__tickets__registration__toggle__handler',
+		status : '.tribe-block__tickets__registration__status',
+		field : {
+			text : '.tribe-block__tickets__item__attendee__field__text',
 			checkbox : '.tribe-block__tickets__item__attendee__field__checkbox',
-			select   : '.tribe-block__tickets__item__attendee__field__select',
-			radio    : '.tribe-block__tickets__item__attendee__field__radio',
+			select : '.tribe-block__tickets__item__attendee__field__select',
+			radio : '.tribe-block__tickets__item__attendee__field__radio',
 		},
-		checkout    : '.tribe-block__tickets__registration__checkout',
+		checkout : '.tribe-block__tickets__registration__checkout',
 	};
 
 	var $tribe_registration = $( obj.selector.container );
@@ -101,26 +104,41 @@ tribe.tickets.registration = {};
 	*/
 	obj.handleSaveSubmission = function( e ) {
 		e.preventDefault();
-		var $form   = $( this );
+		var $form = $( this );
+		var $fields = $form.closest( obj.selector.fields );
+
+		// hide all errors
+		$fields.find( obj.selector.fieldsErrorRequired ).hide();
+		$fields.find( obj.selector.fieldsErrorAjax ).hide();
 
 		if ( ! obj.validateEventAttendees( $form ) ) {
-			var $fields = $form.closest( obj.selector.fields );
-			$fields.find( obj.selector.fieldsError ).show();
+			$fields.find( obj.selector.fieldsErrorRequired ).show();
 
 			$( 'html, body').animate( {
 				scrollTop: $fields.offset().top
 			}, 300 );
 		} else {
+			$fields.find( obj.selector.loader ).show();
+
 			var $container = $form.closest( obj.selector.container );
 			var eventId = $container.data( 'event-id' );
 			var params = $form.serializeArray();
 			params.push( { name: 'event_id', value: eventId } );
 			params.push( { name: 'action', value: 'tribe-tickets-save-attendee-info' } );
+
 			$.post(
 				TribeTicketsPlus.ajaxurl,
 				params,
 				function( response ) {
+					if ( response.success ) {
+						if ( response.data.meta_up_to_date ) {
+							$( obj.selector.checkout ).removeAttr( 'disabled' );
+						}
+					} else {
+						$fields.find( obj.selector.fieldsErrorAjax ).show();
+					}
 
+					$fields.find( obj.selector.loader ).hide();
 				}
 			)
 		}
@@ -192,11 +210,7 @@ tribe.tickets.registration = {};
 	 * Bind event handlers to checkout form
 	 */
 	obj.bindCheckout = function() {
-		var $checkout = $( obj.selector.checkout );
-
-		if ( $checkout.length ) {
-			$checkout.submit( obj.handleCheckoutSubmission );
-		}
+		$( obj.selector.checkout ).submit( obj.handleCheckoutSubmission );
 	};
 
 	/**
