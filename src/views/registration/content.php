@@ -38,6 +38,9 @@ if ( empty( $events ) ) {
 				<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 				<button type="submit"><?php esc_html_e( 'Save Attendee Info', 'event-tickets' ); ?></button>
 			</form>
+
+			<?php $this->template( 'attendees/loader', array() ); ?>
+
 		</div>
 
 	</div>
