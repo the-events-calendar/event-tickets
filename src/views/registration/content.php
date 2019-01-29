@@ -26,7 +26,8 @@ if ( empty( $events ) ) {
 
 		<div class="tribe-block__tickets__item__attendee__fields">
 
-			<?php $this->template( 'attendees/error', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
+			<?php $this->template( 'attendees/error', array() ); ?>
+			<?php $this->template( 'attendees/success', array() ); ?>
 
 			<form
 				method="post"
