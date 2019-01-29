@@ -30,6 +30,7 @@ tribe.tickets.registration = {};
 			radio : '.tribe-block__tickets__item__attendee__field__radio',
 		},
 		checkout : '.tribe-block__tickets__registration__checkout',
+		checkoutButton: '.tribe-block__tickets__registration__checkout__submit'
 	};
 
 	var $tribe_registration = $( obj.selector.container );
@@ -132,7 +133,7 @@ tribe.tickets.registration = {};
 				function( response ) {
 					if ( response.success ) {
 						if ( response.data.meta_up_to_date ) {
-							$( obj.selector.checkout ).removeAttr( 'disabled' );
+							$( obj.selector.checkoutButton ).removeAttr( 'disabled' );
 						}
 					} else {
 						$fields.find( obj.selector.fieldsErrorAjax ).show();
