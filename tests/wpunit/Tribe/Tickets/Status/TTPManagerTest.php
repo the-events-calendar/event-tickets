@@ -48,7 +48,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_should_be_instantiatable() {
 		$sut = $this->make_instance();
@@ -67,7 +67,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_statues_names() {
 
@@ -77,7 +77,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_status_classes() {
 
@@ -87,7 +87,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_status_completed() {
 
@@ -134,7 +134,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_all_ttp_statues() {
 

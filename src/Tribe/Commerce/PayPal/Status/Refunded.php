@@ -3,7 +3,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Status__Refunded
  *
- * @since tbd
+ * @since 4.10
  *
  */
 

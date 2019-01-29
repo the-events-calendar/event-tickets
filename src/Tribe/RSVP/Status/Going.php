@@ -4,7 +4,7 @@
 /**
  * Class Tribe__Tickets__RSVP__Status__Going
  *
- * @since tbd
+ * @since 4.10
  *
  */
 class Tribe__Tickets__RSVP__Status__Going extends Tribe__Tickets__Status__Abstract {

@@ -404,7 +404,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get Status by Action from Status Manager
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param $action string|array a string or array of actions that a status includes
 	 *

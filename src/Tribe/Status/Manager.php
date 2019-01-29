@@ -4,7 +4,7 @@
 /**
  * Class Tribe__Tickets__Status__Manager
  *
- * @since TBD
+ * @since 4.10
  */
 class Tribe__Tickets__Status__Manager {
 
@@ -57,7 +57,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get (and instantiate, if necessary) the instance of the class
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @static
 	 * @return Tribe__Tickets__Status__Manager
@@ -70,7 +70,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Hook
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 */
 	public function hook() {
@@ -80,7 +80,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Setup the Manager Class
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 */
 	public function setup() {
@@ -92,7 +92,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Convert Name of Active Modules to slugs
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 */
 	protected function convert_initial_active_modules() {
@@ -109,7 +109,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the statuses for each provider that is active and has a manager
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 */
 	protected function get_statuses_by_provider() {
@@ -135,7 +135,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the Active Modules
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @return array
 	 */
@@ -148,7 +148,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the Status Manager Array
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @return array
 	 */
@@ -159,7 +159,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the Trigger Status for Ticket Generation or Sending for a given eCommerce
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 *
@@ -188,7 +188,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Return an array of Statuses for an action with the provider Commerce
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param $action   string a string of the action to filter
 	 * @param $commerce string a string of the Commerce System to get statuses from
@@ -229,7 +229,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Return an array of Statuses for a provider Commerce
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 *
@@ -250,7 +250,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Return an array of Statuses for a Commerce with label and stock attributes
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 *
@@ -284,7 +284,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get all the Status Classes for a given Commerce
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 *

@@ -4,7 +4,7 @@
 /**
  * Class Tribe__Tickets__Status__Abstract_Commerce
  *
- * @since TBD
+ * @since 4.10
  *
  */
 class Tribe__Tickets__Status__Abstract_Commerce {
@@ -37,7 +37,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Initialize Commerce Provider
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 */
 	public function initialize_status_classes() {}
@@ -45,7 +45,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get the Completed Order
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @return int
 	 */
@@ -61,7 +61,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Total Quantity of Tickets by Post Type, no matter what status they have
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @return int
 	 */
@@ -72,7 +72,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Add to the Total Order Quantity
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param int $value
 	 */
@@ -83,7 +83,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Remove from the Total Order Quantity
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param int $value
 	 */
@@ -94,7 +94,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Total Order Amount of all Orders for a Post Type, no matter what status they have
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @return int
 	 */
@@ -105,7 +105,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Add to the Total Line Total
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param int $value
 	 */
@@ -116,7 +116,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Remove from the Total Line Total
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param int $value
 	 */
@@ -127,7 +127,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Ticket Sale Information Overview
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param $ticket_sold object an object of the ticket to get counts
 	 * @param $post_id int an ID of the post the ticket is attached to
@@ -153,7 +153,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Name of Ticket, SKU, Price, and Amount Sold
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param $ticket_sold object an object of the ticket to get counts
 	 * @param $post_id int an ID of the post the ticket is attached to
@@ -189,7 +189,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get the Available and Incomplete Counts for a Ticket
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param $ticket_sold object an object of the ticket to get counts
 	 *
@@ -222,7 +222,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Sales By Ticket Tooltip
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @return string a string of html for the tooltip
 	 */
@@ -242,7 +242,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Total Sales Tooltip
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @return string a string of html for the tooltip
 	 */
@@ -262,7 +262,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Order Tooltip
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @return string a string of html for the tooltip
 	 */

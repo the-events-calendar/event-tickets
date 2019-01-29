@@ -4,7 +4,7 @@
 /**
  * Class Tribe__Tickets__Commerce__PayPal__Status__Denied
  *
- * @since tbd
+ * @since 4.10
  *
  */
 class Tribe__Tickets__Commerce__PayPal__Status__Denied extends Tribe__Tickets__Status__Abstract {
