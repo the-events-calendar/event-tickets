@@ -103,9 +103,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		/**
 		 * Use `tribe_tickets_attendee_registration_page_template` to modify the attendee registration page template.
 		 *
+		 * @since TBD
+		 *
 		 * @param string $template The current attendee registration page template.
 		 */
-		apply_filters( 'tribe_tickets_attendee_registration_page_template', $template );
+		$template = apply_filters( 'tribe_tickets_attendee_registration_page_template', $template );
 
 		return $template;
 	}
