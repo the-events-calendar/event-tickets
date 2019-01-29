@@ -20,6 +20,7 @@ tribe.tickets.registration = {};
 		fieldsError : '.tribe-block__tickets__item__attendee__fields__error',
 		fieldsErrorRequired: '.tribe-block__tickets__item__attendee__fields__error--required',
 		fieldsErrorAjax: '.tribe-block__tickets__item__attendee__fields__error--ajax',
+		fieldsSuccess: '.tribe-block__tickets__item__attendee__fields__success',
 		loader: '.tribe-block__tickets__item__attendee__fields__loader',
 		form : '.tribe-block__tickets__item__attendee__fields__form',
 		toggler : '.tribe-block__tickets__registration__toggle__handler',
@@ -136,9 +137,10 @@ tribe.tickets.registration = {};
 		var $fields = $form.closest( obj.selector.fields );
 		var $event = $fields.closest( obj.selector.container );
 
-		// hide all errors
+		// hide all messages
 		$fields.find( obj.selector.fieldsErrorRequired ).hide();
 		$fields.find( obj.selector.fieldsErrorAjax ).hide();
+		$fields.find( obj.selector.fieldsSuccess ).hide();
 
 		if ( ! obj.validateEventAttendees( $form ) ) {
 			$fields.find( obj.selector.fieldsErrorRequired ).show();
@@ -162,6 +164,7 @@ tribe.tickets.registration = {};
 					if ( response.success ) {
 						obj.updateStatusToComplete( $event )
 						obj.hasChanges[ eventId ] = false;
+						$fields.find( obj.selector.fieldsSuccess ).show();
 
 						if ( response.data.meta_up_to_date ) {
 							$( obj.selector.checkoutButton ).removeAttr( 'disabled' );
