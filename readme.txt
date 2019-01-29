@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10] 2019-02-01 =
+= [4.10] 2019-02-04 =
 
 * Feature - Add check and enforce PHP 5.6 as the minimum version [116283]
 * Feature - Add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
