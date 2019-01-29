@@ -12,7 +12,8 @@ tribe.tickets.registration = {};
 ( function( $, obj ) {
 	'use strict';
 
-	obj.hasChanges = false;
+	obj.hasChanges = {};
+
 	obj.selector = {
 		container : '.tribe-block__tickets__registration__event',
 		fields : '.tribe-block__tickets__item__attendee__fields',
@@ -96,6 +97,32 @@ tribe.tickets.registration = {};
 	};
 
 	/**
+	 * Update container status to complete
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.updateStatusToComplete = function( $event ) {
+		$event.find( obj.selector.status ).removeClass( 'incomplete' );
+		$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-edit' );
+		$event.find( obj.selector.status ).find( 'i' ).addClass( 'dashicons-yes' );
+	};
+
+	/**
+	 * Update container status to incomplete
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.updateStatusToIncomplete = function( $event ) {
+		$event.find( obj.selector.status ).addClass( 'incomplete' );
+		$event.find( obj.selector.status ).find( 'i' ).addClass( 'dashicons-edit' );
+		$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-yes' );
+	};
+
+	/**
 	 * Handle save attendees info form submission.
 	 * Display a message if there are required fields missing.
 	 *
@@ -107,6 +134,7 @@ tribe.tickets.registration = {};
 		e.preventDefault();
 		var $form = $( this );
 		var $fields = $form.closest( obj.selector.fields );
+		var $event = $fields.closest( obj.selector.container );
 
 		// hide all errors
 		$fields.find( obj.selector.fieldsErrorRequired ).hide();
@@ -114,6 +142,7 @@ tribe.tickets.registration = {};
 
 		if ( ! obj.validateEventAttendees( $form ) ) {
 			$fields.find( obj.selector.fieldsErrorRequired ).show();
+			obj.updateStatusToIncomplete( $event )
 
 			$( 'html, body').animate( {
 				scrollTop: $fields.offset().top
@@ -121,8 +150,7 @@ tribe.tickets.registration = {};
 		} else {
 			$fields.find( obj.selector.loader ).show();
 
-			var $container = $form.closest( obj.selector.container );
-			var eventId = $container.data( 'event-id' );
+			var eventId = $event.data( 'event-id' );
 			var params = $form.serializeArray();
 			params.push( { name: 'event_id', value: eventId } );
 			params.push( { name: 'action', value: 'tribe-tickets-save-attendee-info' } );
@@ -132,6 +160,9 @@ tribe.tickets.registration = {};
 				params,
 				function( response ) {
 					if ( response.success ) {
+						obj.updateStatusToComplete( $event )
+						obj.hasChanges[ eventId ] = false;
+
 						if ( response.data.meta_up_to_date ) {
 							$( obj.selector.checkoutButton ).removeAttr( 'disabled' );
 						}
@@ -154,24 +185,28 @@ tribe.tickets.registration = {};
 	 * @return void
 	 */
 	obj.handleCheckoutSubmission = function( e ) {
-		if (
-			obj.hasChanges
-				&& ! confirm( tribe_l10n_datatables.registration_prompt )
-		) {
+		var eventIds = Object.keys( obj.hasChanges );
+		var hasChanges = eventIds.reduce( function( hasChanges, eventId ) {
+			return hasChanges || obj.hasChanges[ eventId ];
+		}, false );
+
+		if ( hasChanges && ! confirm( tribe_l10n_datatables.registration_prompt ) ) {
 			e.preventDefault();
 			return;
 		}
 	};
 
 	/**
-	 * Sets hasChanges flag to true
+	 * Sets hasChanges flag to true for given eventId
 	 *
 	 * @since 4.9
 	 *
 	 * @return void
 	 */
-	obj.setHasChanges = function() {
-		obj.hasChanges = true;
+	obj.setHasChanges = function( eventId ) {
+		return function() {
+			obj.hasChanges[ eventId ] = true;
+		};
 	};
 
 	/**
@@ -181,12 +216,16 @@ tribe.tickets.registration = {};
 	 *
 	 * @return void
 	 */
-	obj.bindFormFields = function() {
+	obj.bindFormFields = function( $event ) {
+		// set up hasChanges flag for event
+		var eventId = $event.data( 'event-id' );
+		obj.hasChanges[ eventId ] = false;
+
 		var $fields = [
-			$( obj.selector.field.text ),
-			$( obj.selector.field.checkbox ),
-			$( obj.selector.field.radio ),
-			$( obj.selector.field.select ),
+			$event.find( obj.selector.field.text ),
+			$event.find( obj.selector.field.checkbox ),
+			$event.find( obj.selector.field.radio ),
+			$event.find( obj.selector.field.select ),
 		];
 
 		$fields.forEach( function( $field ) {
@@ -203,7 +242,7 @@ tribe.tickets.registration = {};
 				$formElement = $field.find( 'input, textarea' );
 			}
 
-			$formElement.change( obj.setHasChanges );
+			$formElement.change( obj.setHasChanges( eventId ) );
 		} );
 	};
 
@@ -222,8 +261,32 @@ tribe.tickets.registration = {};
 	 * @return void
 	 */
 	obj.bindEvents = function() {
-		obj.bindFormFields();
 		obj.bindCheckout();
+	};
+
+	/**
+	 * Init containers for each event
+	 *
+	 * @since TBD
+	 *
+	 * @return void
+	 */
+	obj.initContainers = function() {
+		$( obj.selector.container ).each( function() {
+			var $event = $( this );
+			var allRequired = obj.validateEventAttendees( $event );
+
+			allRequired
+				? obj.updateStatusToComplete( $event )
+				: obj.updateStatusToIncomplete( $event );
+
+			// bind submission handler to each form
+			var $form = $event.find( obj.selector.form );
+			$( $form ).on( 'submit', obj.handleSaveSubmission );
+
+			// bind form fields to update hasChanges flag
+			obj.bindFormFields( $event );
+		});
 	};
 
 	/**
@@ -235,24 +298,7 @@ tribe.tickets.registration = {};
 	 * @return void
 	*/
 	obj.initPage = function() {
-		$( obj.selector.container ).each( function() {
-			var $event = $( this );
-			var allRequired = obj.validateEventAttendees( $event );
-
-			if ( ! allRequired ) {
-				$event.find( obj.selector.status ).addClass( 'incomplete' );
-			} else {
-				$event.find( obj.selector.status ).removeClass( 'incomplete' );
-				$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-edit' );
-				$event.find( obj.selector.status ).find( 'i' ).addClass( 'dashicons-yes' );
-			}
-
-			// bind submission handler to each form
-			var $form = $event.find( obj.selector.form );
-			$( $form ).on( 'submit', obj.handleSaveSubmission );
-		});
-
-		// bind change handlers to each form field
+		obj.initContainers();
 		obj.bindEvents();
 	};
 
