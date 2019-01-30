@@ -49,7 +49,7 @@ if ( tribe_is_not_min_php_version() ) {
 	/**
 	 * Include the plugin name into the correct place
 	 *
-	 * @since  TBD
+	 * @since  4.10
 	 *
 	 * @param  array $names current list of names
 	 *
