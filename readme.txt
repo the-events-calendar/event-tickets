@@ -1,6 +1,6 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, sc0ttkclark, shane.pearlman, vicskf, zbtirrell
+Contributors: ModernTribe, brianjessee, camwynsp, sc0ttkclark
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.0.3
@@ -128,6 +128,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
 * Tweak - Add tooltips and additional information to Tribe Commerce Orders page header [116747]
 * Tweak - Update plugin header [90398]
+* Tweak - Added filters: `event_tickets_attendees_{$provider_slug}_checkin_stati`, `tribe_tickets_supported_system_version`, `tribe_not_php_version_names`
+* Tweak - Removed filters: `event_tickets_attendees_{$provider}_checkin_stati`
+* Tweak - Removed actions: `tribe_tickets_plugin_failed_to_load`
 * Fix - Prevent errors in PHP 7.2+ with ticket management [119608]
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
 * Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
