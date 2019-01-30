@@ -16,7 +16,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_should_be_instantiatable() {
 		$sut = $this->make_instance();
@@ -35,7 +35,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_statues_names() {
 
@@ -45,7 +45,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_status_classes() {
 
@@ -55,7 +55,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_status_no() {
 
@@ -66,7 +66,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_status_yes() {
 
@@ -77,7 +77,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_rsvp_dispatch_statues() {
 		$this->assertSame( array(
@@ -87,7 +87,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_all_rsvp_statues() {
 		$this->assertSame( array(
@@ -98,7 +98,7 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_label_and_stock_reduction_for_status() {
 

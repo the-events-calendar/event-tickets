@@ -86,7 +86,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 	 * Add new functions here so that they pass the response along and we can force order
 	 *
 	 * Hooked on rest_prepare_tribe_rsvp_tickets.
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_Post $post The post (RSVP)
@@ -106,7 +106,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 
 	/**
 	 * Filter the rest request to add meta for if the RSVP has attendee meta
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_Post $post The post (RSVP)
@@ -128,7 +128,7 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 
 	/**
 	 * Filter the rest request to add meta for if the RSVP has attendees going/not going
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param WP_REST_Response $response The response object.
 	 * @param WP_Post $post The post (RSVP)

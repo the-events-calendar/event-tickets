@@ -9,35 +9,35 @@ class Tribe__Tickets__Main {
 	/**
 	 * Min required The Events Calendar version
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.10
 	 */
 	const MIN_TEC_VERSION = '4.8-dev';
 
 	/**
 	 * Min required version of Tribe Common
 	 *
-	 * @deprecated TBD
+	 * @deprecated 4.10
 	 */
 	const MIN_COMMON_VERSION = '4.9-dev';
 
 	/**
 	* Min Version of WordPress
 	*
-	* @since TBD
+	* @since 4.10
 	*/
 	protected $min_wordpress = '4.7';
 
 	/**
 	* Min Version of PHP
 	*
-	* @since TBD
+	* @since 4.10
 	*/
 	protected $min_php = '5.2.17';
 
 	/**
 	* Min Version of The Events Calendar
 	*
-	* @since TBD
+	* @since 4.10
 	*/
 	protected $min_tec_version = '4.8-dev';
 
@@ -238,7 +238,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Load Text Domain on tribe_common_loaded as it requires common
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 */
 	public function bootstrap() {
@@ -339,7 +339,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Prevents PDF Tickets Ext from Running if TEC is on an Older Version
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 */
 	public function remove_pdf_tickets_ext() {
@@ -354,7 +354,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Test whether the current version of PHP or WordPress is supported.
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @param string $system Which system to test the version of such as 'php' or 'wordpress'.
 	 *
@@ -377,7 +377,7 @@ class Tribe__Tickets__Main {
 		/**
 		 * Filter whether the current version of PHP or WordPress is supported.
 		 *
-		 * @since TBD
+		 * @since 4.10
 		 *
 		 * @param boolean $supported Whether the current version of PHP or WordPress is supported.
 		 * @param string  $system    Which system to test the version of such as 'php' or 'wordpress'.
@@ -392,7 +392,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Display a WordPress or PHP incompatibility error.
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function not_supported_error() {
 		if ( ! self::supported_version( 'wordpress' ) ) {
@@ -863,11 +863,11 @@ class Tribe__Tickets__Main {
 		* Hooked to admin_notices, this error is thrown when Event Tickets is run alongside a version of
 		* Event Tickets Plus that is too old
 		*
-		* @deprecated TBD
+		* @deprecated 4.10
 		*
 		*/
 		public function et_plus_compatibility_notice() {
-			_deprecated_function( __METHOD__, 'TBD', '' );
+			_deprecated_function( __METHOD__, '4.10', '' );
 
 			$active_plugins = get_option( 'active_plugins' );
 

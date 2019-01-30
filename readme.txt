@@ -122,13 +122,17 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10] TBD =
+= [4.10] 2019-02-04 =
 
+* Feature - Add check and enforce PHP 5.6 as the minimum version [116283]
 * Feature - Add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
 * Fix - Prevent errors in PHP 7.2+ with ticket management [119608]
 * Fix - Only allow delete or move attendee if user can manage attendee [103974]
 * Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
+* Tweak - Add tooltips and additional information to Tribe Commerce Orders page header [116747]
 * Tweak - Update plugin header [90398]
+* Deprecated - constants MIN_TEC_VERSION and MIN_COMMON_VERSION in Tribe__Tickets__Main, use $min_tec_version property and no replacement for MIN_COMMON_VERSION
+* Deprecated - The `et_plus_compatibility_notice()` method has been deprecated in `Tribe__Tickets__Main` in favor of Plugin Dependency Checking system
 
 = [4.9.4] 2019-01-15 =
 

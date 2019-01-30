@@ -4,7 +4,7 @@
 /**
  * Class Tribe__Tickets__Status__Abstract
  *
- * @since TBD
+ * @since 4.10
  *
  */
 abstract class Tribe__Tickets__Status__Abstract {

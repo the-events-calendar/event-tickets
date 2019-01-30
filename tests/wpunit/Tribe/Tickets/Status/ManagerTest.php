@@ -47,7 +47,7 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_should_be_instantiatable() {
 		$sut = $this->make_instance();
@@ -67,7 +67,7 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 *
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_manage_class_keys_for_rsvp_and_tribe_commerce() {
 		$this->assertArrayHasKey( 'rsvp', Manager::get_instance()->get_status_managers() );
@@ -76,7 +76,7 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_rsvp_active_module() {
 		$this->assertArrayHasKey( 'Tribe__Tickets__RSVP', Manager::get_instance()->get_active_modules() );
@@ -84,7 +84,7 @@ class ManagerTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
+	 * @since 4.10
 	 */
 	public function it_has_tribe_commerce_active_module() {
 		//run setup again to get the active modules that will include Tribe Commerce

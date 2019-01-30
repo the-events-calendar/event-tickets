@@ -4,7 +4,7 @@
 /**
  * Class Tribe__Tickets__RSVP__Status_Manager
  *
- * @since TBD
+ * @since 4.10
  *
  */
 class Tribe__Tickets__RSVP__Status_Manager extends Tribe__Tickets__Status__Abstract_Commerce {

@@ -371,7 +371,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	/**
 	 * Get all orders for a product id and return array of order objects
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @param $ID int an ID for a tpp product
 	 *

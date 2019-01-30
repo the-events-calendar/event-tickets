@@ -661,7 +661,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	/**
 	 * Returns the Order status label.
 	 *
-	 * @since tbd
+	 * @since 4.10
 	 *
 	 * @return string
 	 */
@@ -690,7 +690,7 @@ class Tribe__Tickets__Commerce__PayPal__Order {
 	/**
 	 * Returns the sub total of order regardless of status
 	 *
-	 * @since TBD
+	 * @since 4.10
 	 *
 	 * @return int a positive number for sub total
 	 */
