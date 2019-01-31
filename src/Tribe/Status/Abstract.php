@@ -54,7 +54,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 *
 	 * @param int $value
 	 */
-	public function add_qty( int $value ) {
+	public function add_qty( $value ) {
 		$this->qty += $value;
 	}
 
@@ -63,7 +63,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 *
 	 * @param int $value
 	 */
-	public function remove_qty( int $value ) {
+	public function remove_qty( $value ) {
 		$this->qty -= $value;
 	}
 
@@ -81,7 +81,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 *
 	 * @param int $value
 	 */
-	public function add_line_total( int $value ) {
+	public function add_line_total( $value ) {
 		$this->line_total += $value;
 	}
 
@@ -90,7 +90,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 	 *
 	 * @param int $value
 	 */
-	public function remove_line_total( int $value ) {
+	public function remove_line_total( $value ) {
 		$this->line_total -= $value;
 	}
 
