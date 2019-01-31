@@ -126,7 +126,7 @@ Some tests may fail due to snapshots not matching, this is OK. You can fix this 
 npm run test -- -u path/to/test
 ```
 
-*NOTICE:* Do not run the above script without confirming first which snapshots will be updated. If updated without confirming, incorrect snapshots could be stored and faulty test results could produce a passing test.
+**NOTICE:** Do not run the above script without confirming first which snapshots will be updated. If updated without confirming, incorrect snapshots could be stored and faulty test results could produce a passing test.
 
 ### Where to find help
 Look at example tests in the code to write a specific test. You can also find more information from [Jest](https://jestjs.io/docs/en/getting-started) or [Enzyme](https://airbnb.io/enzyme/docs/api/) on writing tests.
