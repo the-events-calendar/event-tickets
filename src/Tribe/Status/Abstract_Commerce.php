@@ -207,7 +207,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		if (  $ticket_sold['incomplete'] > 0 ) {
 			$availability['incomplete'] = sprintf( '%s %s',
 				 $ticket_sold['incomplete'],
-				 _n( 'incomplete order', 'incompleted orders', $ticket_sold['incomplete'], 'event-tickets-plus' )
+				 _n( 'pending order completion', 'pending orders completion', $ticket_sold['incomplete'], 'event-tickets-plus' )
 			);
 		}
 
@@ -220,7 +220,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	}
 
 	/**
-	 * Get Sales By Ticket Tooltip
+	 * Get Sales by Ticket Type Tooltip
 	 *
 	 * @since 4.10
 	 *
@@ -232,7 +232,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Sold counts completed orders only.', 'event-tickets-plus' ); ?><i></i>
+				<?php echo esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets-plus' ); ?><i></i>
 			</div>
 		</div>
 		<?php
@@ -240,7 +240,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	}
 
 	/**
-	 * Get Total Sales Tooltip
+	 * Get Total Ticket Sales Tooltip
 	 *
 	 * @since 4.10
 	 *
@@ -252,7 +252,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Total Sales counts all completed orders.', 'event-tickets-plus' ); ?><i></i>
+				<?php echo esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets-plus' ); ?><i></i>
 			</div>
 		</div>
 		<?php
@@ -272,7 +272,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Total Orders counts orders of any status, including pending and refunded.', 'event-tickets' ); ?><i></i>
+				<?php echo esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' ); ?><i></i>
 			</div>
 		</div>
 		<?php

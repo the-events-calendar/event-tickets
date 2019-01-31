@@ -58,7 +58,7 @@
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3>
-						<?php esc_html_e( 'Sales by Ticket', 'event-tickets-plus' ); ?>
+						<?php esc_html_e( 'Sales by Ticket Type', 'event-tickets-plus' ); ?>
 						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
 					</h3>
 					<?php
@@ -87,7 +87,7 @@
 							$completed_status = $order_overview->get_completed_status_class();
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
-								__( 'Total Sales', 'event-tickets-plus' ),
+								__( 'Total Ticket Sales', 'event-tickets-plus' ),
 								tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ),
 								$completed_status->get_qty()
 							);
@@ -100,7 +100,7 @@
 							<?php
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
-								__( 'Total Orders', 'event-tickets' ),
+								__( 'Total Tickets Ordered', 'event-tickets' ),
 								tribe_format_currency( number_format( $order_overview->get_line_total(), 2 ), $post_id ),
 								$order_overview->get_qty()
 							);
