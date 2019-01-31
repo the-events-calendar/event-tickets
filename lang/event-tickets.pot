@@ -4,11 +4,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Event Tickets 4.10\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2019-01-30 15:19:20+00:00\n"
+"POT-Creation-Date: 2019-01-31 21:47:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-01-30 15:19\n"
+"PO-Revision-Date: 2019-01-31 21:47\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
@@ -1833,22 +1833,23 @@ msgid "available"
 msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:210
-msgid "incomplete order"
-msgid_plural "incompleted orders"
+msgid "pending order completion"
+msgid_plural "pending orders completion"
 msgstr[0] ""
 msgstr[1] ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:235
-msgid "Sold counts completed orders only."
+msgid "Sold counts tickets from completed orders only."
 msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:255
-msgid "Total Sales counts all completed orders."
+msgid "Total Sales counts tickets from all completed orders."
 msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:275
 msgid ""
-"Total Orders counts orders of any status, including pending and refunded."
+"Total Ordered counts tickets from orders of any status, including pending "
+"and refunded."
 msgstr ""
 
 #: src/Tribe/Tickets.php:384
@@ -2687,15 +2688,15 @@ msgid "%s Details"
 msgstr ""
 
 #: src/admin-views/tpp-orders.php:61
-msgid "Sales by Ticket"
+msgid "Sales by Ticket Type"
 msgstr ""
 
 #: src/admin-views/tpp-orders.php:90
-msgid "Total Sales"
+msgid "Total Ticket Sales"
 msgstr ""
 
 #: src/admin-views/tpp-orders.php:103
-msgid "Total Orders"
+msgid "Total Tickets Ordered"
 msgstr ""
 
 #: src/admin-views/tribe-options-tickets.php:43
