@@ -47,7 +47,7 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 			);
 
 
-			$this->template( 'attendees/fields', $args );
+			$this->template( 'registration/attendees/fields', $args );
 			$attendee_count++;
 		?>
 	<?php endwhile; ?>

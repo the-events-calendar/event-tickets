@@ -21,7 +21,7 @@
 				'saved_meta' => $saved_meta,
 			);
 
-			$this->template( 'attendees/fields/' . $field->type, $args );
+			$this->template( 'registration/attendees/fields/' . $field->type, $args );
 		?>
 	<?php endforeach; ?>
 </div>

@@ -7,5 +7,5 @@
  */
 ?>
 <div class="tribe-block__tickets__registration__tickets__item__icon">
-	<?php $this->template( 'summary/icon-svg' ); ?>
+	<?php $this->template( 'registration/summary/icon-svg' ); ?>
 </div>
