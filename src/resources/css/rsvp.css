@@ -221,12 +221,10 @@
 
 .tribe-events-tickets tr {
 		display: -webkit-box;
-		display: -webkit-flex;
 		display: -ms-flexbox;
 		display: flex;
 		-webkit-box-orient: horizontal;
 		-webkit-box-direction: normal;
-		-webkit-flex-flow: row wrap;
 		    -ms-flex-flow: row wrap;
 		        flex-flow: row wrap;
 	}
@@ -246,7 +244,6 @@
 .tribe-events-tickets td {
 		padding: 8px 10px;
 		display: -webkit-box;
-		display: -webkit-flex;
 		display: -ms-flexbox;
 		display: flex;
 		max-width: 50%;
@@ -375,18 +372,15 @@
 			.tribe-events-tickets td.tribe-ticket.quantity {
 				-webkit-box-orient: vertical;
 				-webkit-box-direction: normal;
-				-webkit-flex-flow: column;
 				    -ms-flex-flow: column;
 				        flex-flow: column;
 				-webkit-box-ordinal-group: 5;
-				-webkit-order: 4;
 				    -ms-flex-order: 4;
 				        order: 4;
 			}
 
 			.tribe-events-tickets td.tickets_submit {
 				-webkit-box-ordinal-group: 6;
-				-webkit-order: 5;
 				    -ms-flex-order: 5;
 				        order: 5;
 			}
