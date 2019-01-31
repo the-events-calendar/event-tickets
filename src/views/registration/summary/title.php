@@ -2,6 +2,9 @@
 /**
  * This template renders the summary Title
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/summary/title.php
+ *
  * @version 4.9
  *
  */

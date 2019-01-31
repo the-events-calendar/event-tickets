@@ -2,6 +2,9 @@
 /**
  * This template renders a the fields for a ticket
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields.php
+ *
  * @version 4.9
  *
  */

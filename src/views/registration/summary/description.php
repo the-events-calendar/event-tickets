@@ -3,6 +3,9 @@
  * This template renders the event summary description
  * for the registration page
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/summary/description.php
+ *
  * @version 4.9
  *
  */

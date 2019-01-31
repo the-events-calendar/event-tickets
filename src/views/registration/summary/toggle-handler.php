@@ -2,6 +2,9 @@
 /**
  * This template renders the ticket toggle handler
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/summary/toggle-handler.php
+ *
  * @version 4.9
  *
  */

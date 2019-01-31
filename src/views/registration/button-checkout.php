@@ -2,6 +2,9 @@
 /**
  * This template renders the attendee registration checkout button
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/button-checkout.php
+ *
  * @since 4.9
  * @version 4.9.4
  *

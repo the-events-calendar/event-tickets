@@ -2,6 +2,9 @@
 /**
  * This template renders the event content
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/summary/content.php
+ *
  * @version 4.9
  *
  */

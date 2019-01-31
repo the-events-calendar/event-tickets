@@ -2,6 +2,9 @@
 /**
  * This template renders the Checkbox
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields/checkbox.php
+ *
  * @version 4.9
  *
  */

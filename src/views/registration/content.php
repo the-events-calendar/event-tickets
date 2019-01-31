@@ -2,6 +2,9 @@
 /**
  * This template renders the registration/purchase attendee fields
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/content.php
+ *
  * @version 4.9
  *
  */

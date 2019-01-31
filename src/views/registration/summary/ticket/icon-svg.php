@@ -1,3 +1,14 @@
+<?php
+/**
+ * This template renders the summary ticket icon svg
+ *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/summary/ticket/icon-svg.php
+ *
+ * @version 4.9
+ *
+ */
+?>
 <svg width="50px" height="39px" viewBox="0 0 50 39" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <defs></defs>
     <g id="Tickets" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">

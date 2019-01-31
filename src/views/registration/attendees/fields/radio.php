@@ -3,6 +3,9 @@
  * This template renders a Single Ticket content
  * composed by Title and Description currently
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields/radio.php
+ *
  * @version 4.9
  *
  */
