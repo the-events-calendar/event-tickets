@@ -207,7 +207,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		if (  $ticket_sold['incomplete'] > 0 ) {
 			$availability['incomplete'] = sprintf( '%s %s',
 				 $ticket_sold['incomplete'],
-				 _n( 'pending order completion', 'pending orders completion', $ticket_sold['incomplete'], 'event-tickets-plus' )
+				 __( 'pending order completion', 'event-tickets-plus' )
 			);
 		}
 
