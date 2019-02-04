@@ -54,6 +54,12 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @since 4.7
 	 */
 	public function hook() {
+
+		// if Tribe Commerce is not active, then disable report page
+		if ( ! tribe( 'tickets.commerce.paypal' )->is_active() ) {
+			return;
+		}
+
 		add_filter( 'post_row_actions', array( $this, 'add_orders_row_action' ), 10, 2 );
 		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render_tabbed_view' ) );
 		add_action( 'admin_menu', array( $this, 'register_orders_page' ) );
