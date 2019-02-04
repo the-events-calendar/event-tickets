@@ -21,7 +21,7 @@ if ( ! $options ) {
 	return;
 }
 
-$option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id : '' );
+$option_id = "tribe-tickets-meta_{$slug}" . '_' . $ticket->ID . ( $attendee_id ? '_' . $attendee_id : '' );
 ?>
 <div class="tribe-field tribe-block__tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
