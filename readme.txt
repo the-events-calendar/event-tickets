@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Only allow attendee move functionality in admin [87145]
 * Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
+* Fix - Prevent notices in ticket forms for Community Tickets when adding a new event [116724]
 
 = [4.10] TBD =
 
