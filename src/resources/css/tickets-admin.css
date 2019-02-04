@@ -13,37 +13,37 @@
 }
 
 #ticket_form input[type=radio] {
-		margin-right: 5px;
-	}
+	margin-right: 5px;
+}
 
 #ticket_form span.datetime_seperator {
-			margin-left: 10px;
-		}
+	margin-left: 10px;
+}
 
 .ticket_list h4 {
-		border-bottom: 1px solid #e5e5e5;
-		padding-bottom: 6px;
-		text-transform: uppercase;
-	}
+	border-bottom: 1px solid #e5e5e5;
+	padding-bottom: 6px;
+	text-transform: uppercase;
+}
 
 .ticket_list h4 a {
-			font-size: 11px;
-			font-weight: normal;
-			text-transform: none;
-		}
+	font-size: 11px;
+	font-weight: normal;
+	text-transform: none;
+}
 
 .ticket_list tr:hover td div.ticket_controls {
-			visibility: visible;
-		}
+	visibility: visible;
+}
 
 .ticket_list tr td {
-			padding: 10px;
-			vertical-align: middle;
-		}
+	padding: 10px;
+	vertical-align: middle;
+}
 
 .ticket_list tr td div.ticket_controls {
-				visibility: hidden;
-			}
+	visibility: hidden;
+}
 
 .ticket_name p:first-child {
 	font-weight: bold;
