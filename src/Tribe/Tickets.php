@@ -2397,7 +2397,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			// Return if not trying to access the chekout page
+			// Return if not trying to access the checkout page
 			if ( ! $this->is_checkout_page() ) {
 				return;
 			}
