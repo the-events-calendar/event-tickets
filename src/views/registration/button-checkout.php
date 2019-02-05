@@ -9,7 +9,7 @@
 if ( ! $checkout_url ) {
 	return;
 }
- ?>
+?>
 <?php if ( ! $cart_has_required_meta || $is_meta_up_to_date ) : ?>
 	<form
 		class="tribe-block__tickets__registration__checkout"

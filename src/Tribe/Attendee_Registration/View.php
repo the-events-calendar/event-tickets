@@ -64,7 +64,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', $cart_tickets );
 
 		// Get the checkout URL, it'll be added to the checkout button
-		$checkout_url       = tribe( 'tickets.attendee_registration' )->get_checkout_url();
+		$checkout_url = tribe( 'tickets.attendee_registration' )->get_checkout_url();
 
 		/**
 		 * Filter to check if there's any required meta that wasn't filled in
