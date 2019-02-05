@@ -425,7 +425,7 @@ msgstr ""
 msgid "Are you sure you want to leave this page?"
 msgstr ""
 
-#: src/Tribe/Editor/Attendee_Registration.php:90
+#: src/Tribe/Editor/sttendee_Registration.php:90
 msgid "Attendee Registration fields saved."
 msgstr ""
 
