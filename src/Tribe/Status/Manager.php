@@ -127,7 +127,6 @@ class Tribe__Tickets__Status__Manager {
 			}
 
 			$status_class                   = $status_managers[ $module_name ];
-
 			$this->statuses[ $module_name ] = new $status_class();
 		}
 
