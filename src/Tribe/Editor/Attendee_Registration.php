@@ -113,10 +113,6 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		.postbox {
 			padding: 1rem;
 		}
-
-		.accordion-header.tribe_attendee_meta {
-			display:none;
-		}
 		</style>
 
 		<div id="poststuff"><div class="inside postbox">
@@ -126,7 +122,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 				<div id="tribetickets" class="event-tickets-plus-fieldset-table tribe-tickets-plus-fieldset-page">
 					<?php
 					$meta = Tribe__Tickets_Plus__Main::instance()->meta();
-					$meta->accordion_content( $this->post->ID, $this->ticket_id );
+					$meta->meta_content( $this->ticket_id );
 					?>
 				</div>
 				<button class="button-primary" type="submit"><?php esc_html_e( 'Save Changes', 'event-tickets' ) ?></button>
