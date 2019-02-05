@@ -122,11 +122,12 @@ class Tribe__Tickets__Status__Manager {
 
 		foreach ( $this->active_modules as $module_class => $module_name ) {
 
-			if ( ! isset( $status_managers[ $module_name ] ) ) {
+			if ( ! isset( $status_managers[ $module_name ] ) || ! class_exists( $status_managers[ $module_name ] ) ) {
 				continue;
 			}
 
 			$status_class                   = $status_managers[ $module_name ];
+
 			$this->statuses[ $module_name ] = new $status_class();
 		}
 
