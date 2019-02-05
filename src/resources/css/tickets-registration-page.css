@@ -63,6 +63,7 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 
 .tribe-block__tickets__registration__toggle__handler.open {
 		-webkit-transform: rotate(180deg);
+		    -ms-transform: rotate(180deg);
 		        transform: rotate(180deg);
 	}
 
@@ -191,14 +192,47 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 	padding: 0 0 30px 0;
 }
 
+.tribe-block__tickets__item__attendee__fields__success {
+	color: rgb(24, 217, 0);
+	display: none;
+	padding: 0 0 30px 0;
+}
+
+.tribe-block__tickets__item__attendee__fields__loader {
+	background: rgba( 255, 255, 255, .7 );
+	display: none;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 99;
+}
+
+.tribe-block__tickets__item__attendee__fields__loader svg {
+		left: 50%;
+		max-width: 70px;
+		position: absolute;
+		-webkit-transform: translateX(-50%);
+		    -ms-transform: translateX(-50%);
+		        transform: translateX(-50%);
+		top: 35%;
+	}
+
 .tribe-block__tickets__button--next {
-	align-items: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
 	border: 1px solid #e1e3e6;
 	background-color: #009fd4;
 	color: #fff;
+	display: -webkit-inline-box;
+	display: -ms-inline-flexbox;
 	display: inline-flex;
 	font-size: 1.125rem;
-	justify-content: center;
+	-webkit-box-pack: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
 	min-height: 54px;
 	padding: 0 20px;
 	max-width: 100%;
@@ -240,11 +274,18 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 
 .tribe-block__tickets__registration__tickets__item {
 	border-bottom: 1px solid #e1e3e6;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
-	flex-wrap: wrap;
+	-ms-flex-wrap: wrap;
+	    flex-wrap: wrap;
 	font-size: 18px;
-	align-items: center;
-	justify-content: center;
+	-webkit-box-align: center;
+	    -ms-flex-align: center;
+	        align-items: center;
+	-webkit-box-pack: center;
+	    -ms-flex-pack: center;
+	        justify-content: center;
 }
 
 .tribe-block__tickets__registration__tickets__item:last-child {
@@ -252,7 +293,9 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 	}
 
 .tribe-block__tickets__registration__tickets__item__icon {
-	flex: 0 1 50px;
+	-webkit-box-flex: 0;
+	    -ms-flex: 0 1 50px;
+	        flex: 0 1 50px;
 	padding: 15px 10px;
 }
 
@@ -261,17 +304,23 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 	}
 
 .tribe-block__tickets__registration__tickets__item__quantity {
-	flex: 0 1 20px;
+	-webkit-box-flex: 0;
+	    -ms-flex: 0 1 20px;
+	        flex: 0 1 20px;
 	padding: 20px;
 }
 
 .tribe-block__tickets__registration__tickets__item__title {
-	flex: 10 5 230px;
+	-webkit-box-flex: 10;
+	    -ms-flex: 10 5 230px;
+	        flex: 10 5 230px;
 	padding: 20px 10px;
 }
 
 .tribe-block__tickets__registration__tickets__item__price {
-	flex: 0 1 40px;
+	-webkit-box-flex: 0;
+	    -ms-flex: 0 1 40px;
+	        flex: 0 1 40px;
 	padding: 20px 0 20px 10px;
 }
 
@@ -281,8 +330,10 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 
 .tribe-block__tickets__registration__back__to__cart {
 	color: #888;
-	box-shadow: none;
-	box-shadow: initial;
+	-webkit-box-shadow: none;
+	        box-shadow: none;
+	-webkit-box-shadow: initial;
+	        box-shadow: initial;
 	border: 0;
 }
 
@@ -294,22 +345,46 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 	}
 
 body.tribe-theme-twentyseventeen .tribe-block__tickets__registration__back__to__cart {
-		box-shadow: none;
-		box-shadow: initial;
+		-webkit-box-shadow: none;
+		        box-shadow: none;
+		-webkit-box-shadow: initial;
+		        box-shadow: initial;
 	}
 
 .tribe-block__tickets__registration__tickets__header {
 	color: #545B65;
+	display: -webkit-box;
+	display: -ms-flexbox;
 	display: flex;
 	font-size: 13px;
 	padding: 15px 0;
 }
 
 .tribe-block__tickets__registration__tickets__header__summary {
-	flex: 80%;
+	-webkit-box-flex: 80%;
+	    -ms-flex: 80%;
+	        flex: 80%;
 }
 
 .tribe-block__tickets__registration__tickets__header__price {
-	flex: 20%;
+	-webkit-box-flex: 20%;
+	    -ms-flex: 20%;
+	        flex: 20%;
 	text-align: right;
 }
+
+/*
+ * Attendee Registration Checkout Form
+ */
+
+.tribe-block__tickets__registration__checkout__submit:disabled {
+		background-color: #eeeff1;
+		color: #8b959f;
+		cursor: default;
+	}
+
+.tribe-block__tickets__registration__checkout__submit:disabled:hover,
+		.tribe-block__tickets__registration__checkout__submit:disabled:focus {
+			background-color: #eeeff1;
+			color: #8b959f;
+		}

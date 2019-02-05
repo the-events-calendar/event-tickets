@@ -23,7 +23,8 @@
 	font-size: var(--base-font-size);
 	font-weight: bold;
 	padding: 10px 20px;
-	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	        box-sizing: border-box;
 	position: relative;
 	text-align: left;
 	width: 100%;
@@ -32,7 +33,8 @@
 .accordion-header::before {
 		background-color: #000;
 		border-radius: 100%;
-		box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		        box-sizing: border-box;
 		color: #fff;
 		content: '\f132';
 		font-family: 'dashicons';
@@ -61,6 +63,7 @@
 		width: 80%;
 		top: 50%;
 		-webkit-transform: translateY(-50%);
+		    -ms-transform: translateY(-50%);
 		        transform: translateY(-50%);
 	}
 
