@@ -14,6 +14,11 @@ tribe.tickets.registration = {};
 
 	obj.hasChanges = {};
 
+	obj.formClasses = {
+		woo: 'tribe-block__tickets__item__attendee__fields__form--woo',
+		edd: 'tribe-block__tickets__item__attendee__fields__form--edd',
+	}
+
 	obj.selector = {
 		container : '.tribe-block__tickets__registration__event',
 		fields : '.tribe-block__tickets__item__attendee__fields',
@@ -22,7 +27,7 @@ tribe.tickets.registration = {};
 		fieldsErrorAjax: '.tribe-block__tickets__item__attendee__fields__error--ajax',
 		fieldsSuccess: '.tribe-block__tickets__item__attendee__fields__success',
 		loader: '.tribe-block__tickets__item__attendee__fields__loader',
-		form : '.tribe-block__tickets__item__attendee__fields__form',
+		form: '.tribe-block__tickets__item__attendee__fields__form',
 		toggler : '.tribe-block__tickets__registration__toggle__handler',
 		status : '.tribe-block__tickets__registration__status',
 		field : {
@@ -49,7 +54,8 @@ tribe.tickets.registration = {};
 	 *
 	 * @return void
 	*/
-	$( obj.selector.container ).on( 'click',
+	$( obj.selector.container ).on(
+		'click',
 		obj.selector.toggler,
 		function( e ) {
 			e.preventDefault();
@@ -123,8 +129,21 @@ tribe.tickets.registration = {};
 		$event.find( obj.selector.status ).find( 'i' ).removeClass( 'dashicons-yes' );
 	};
 
+	obj.handleTppSaveSubmission = function( e ) {
+		var $form = $( this );
+		var $fields = $form.closest( obj.selector.fields );
+
+		// hide all messages
+		$fields.find( obj.selector.fieldsErrorRequired ).hide();
+
+		if ( ! obj.validateEventAttendees( $form ) ) {
+			e.preventDefault();
+			$fields.find( obj.selector.fieldsErrorRequired ).show();
+		}
+	};
+
 	/**
-	 * Handle save attendees info form submission.
+	 * Handle save attendees info form submission via ajax.
 	 * Display a message if there are required fields missing.
 	 *
 	 * @since 4.9
@@ -145,10 +164,6 @@ tribe.tickets.registration = {};
 		if ( ! obj.validateEventAttendees( $form ) ) {
 			$fields.find( obj.selector.fieldsErrorRequired ).show();
 			obj.updateStatusToIncomplete( $event )
-
-			$( 'html, body').animate( {
-				scrollTop: $fields.offset().top
-			}, 300 );
 		} else {
 			$fields.find( obj.selector.loader ).show();
 
@@ -285,7 +300,11 @@ tribe.tickets.registration = {};
 
 			// bind submission handler to each form
 			var $form = $event.find( obj.selector.form );
-			$( $form ).on( 'submit', obj.handleSaveSubmission );
+			if ( $form.hasClass( obj.formClasses.woo ) || $form.hasClass( obj.formClasses.edd ) ) {
+				$( $form ).on( 'submit', obj.handleSaveSubmission );
+			} else {
+				$( $form ).on( 'submit', obj.handleTppSaveSubmission );
+			}
 
 			// bind form fields to update hasChanges flag
 			obj.bindFormFields( $event );
