@@ -189,13 +189,13 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 .tribe-block__tickets__item__attendee__fields__error {
 	color: red;
 	display: none;
-	padding: 0 0 30px 0;
+	padding: 30px 0 0 0;
 }
 
 .tribe-block__tickets__item__attendee__fields__success {
 	color: rgb(24, 217, 0);
 	display: none;
-	padding: 0 0 30px 0;
+	padding: 30px 0 0 0;
 }
 
 .tribe-block__tickets__item__attendee__fields__loader {

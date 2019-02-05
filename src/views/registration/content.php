@@ -26,9 +26,6 @@ if ( empty( $events ) ) {
 
 		<div class="tribe-block__tickets__item__attendee__fields">
 
-			<?php $this->template( 'attendees/error', array() ); ?>
-			<?php $this->template( 'attendees/success', array() ); ?>
-
 			<form
 				method="post"
 				class="tribe-block__tickets__item__attendee__fields__form<?php if ( ! empty( $providers[ $event_id ] ) ) : ?> tribe-block__tickets__item__attendee__fields__form--<?php echo $providers[ $event_id ]; ?><?php endif; ?>"
@@ -39,6 +36,9 @@ if ( empty( $events ) ) {
 				<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 				<button type="submit"><?php esc_html_e( 'Save Attendee Info', 'event-tickets' ); ?></button>
 			</form>
+
+			<?php $this->template( 'attendees/error', array() ); ?>
+			<?php $this->template( 'attendees/success', array() ); ?>
 
 			<?php $this->template( 'attendees/loader', array() ); ?>
 
