@@ -2,7 +2,8 @@
 /**
  * This template renders the Checkbox
  *
- * @version 4.9
+ * @since 4.9
+ * @version TBD
  *
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
@@ -24,7 +25,7 @@ if ( ! $options ) {
 
 			$option_slug = sanitize_title( $option );
 			$field_slug  = $field['slug'];
-			$option_id   = "tribe-tickets-meta_{$field_slug}" . '_' . $ticket->ID . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
+			$option_id   = "tribe-tickets-meta_{$field_slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
 			$value       = isset( $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] ) ? $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] : false;
 			?>
