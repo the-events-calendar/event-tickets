@@ -3,7 +3,8 @@
  * This template renders the success message for each form
  * of the attendee registration page
  *
- * @version 4.9
+ * @since TBD
+ * @version TBD
  *
  */
 ?>

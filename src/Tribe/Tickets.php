@@ -2427,7 +2427,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// Bail if there are no required fields in cart or the stored data is up to date
 				// And they're submitting the Attendee Registration page
 				if (
-					isset( $_REQUEST[ 'tribe_tickets_checkout' ] )
+					isset( $_REQUEST['tribe_tickets_checkout'] )
 						&& ( ! $cart_has_required_meta || $up_to_date )
 				) {
 					return;
@@ -2437,14 +2437,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// to access the registration page.
 				if (
 					$up_to_date
-						&& ! isset( $_REQUEST[ 'wootickets_process' ] )
-						&& ! isset( $_REQUEST[ 'eddtickets_process' ] )
+						&& ! isset( $_REQUEST['wootickets_process'] )
+						&& ! isset( $_REQUEST['eddtickets_process'] )
 				) {
 					return;
 				}
 
 				// Bail if processing checkout for WooCommerce
-				if ( isset( $_REQUEST[ 'key' ] ) ) {
+				if ( isset( $_REQUEST['key'] ) ) {
 					return;
 				}
 			}
