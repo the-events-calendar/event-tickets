@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.0.1] TBD =
+= [4.10.0.1] 2019-02-06 =
 * Fix - Modify extension dependency checking with new system to determine if it can load [122368]
 
 = [4.10] 2019-02-05 =
