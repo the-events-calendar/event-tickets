@@ -2,7 +2,8 @@
 /**
  * This template renders the registration/purchase attendee fields
  *
- * @version 4.9
+ * @since 4.9
+ * @version TBD
  *
  */
 // If there are no events with tickets in cart, print the empty cart template

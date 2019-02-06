@@ -3,7 +3,7 @@
  * This template renders the attendee registration checkout button
  *
  * @since 4.9
- * @version 4.9.4
+ * @version TBD
  *
  */
 if ( ! $checkout_url ) {
