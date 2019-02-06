@@ -6,7 +6,8 @@
  * [your-theme]/tribe/tickets/registration/button-checkout.php
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Update template paths to add the "registration/" prefix
+ * @version TBD
  *
  */
 if ( ! $checkout_url ) {

@@ -5,7 +5,9 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration/attendees/fields/checkbox.php
  *
- * @version 4.9
+ * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
+ * @version TBD
  *
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
