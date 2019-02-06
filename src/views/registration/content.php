@@ -28,7 +28,7 @@ if ( empty( $events ) ) {
 
 			<form
 				method="post"
-				class="tribe-block__tickets__item__attendee__fields__form<?php if ( ! empty( $providers[ $event_id ] ) ) : ?> tribe-block__tickets__item__attendee__fields__form--<?php echo $providers[ $event_id ]; ?><?php endif; ?>"
+				class="tribe-block__tickets__item__attendee__fields__form<?php if ( ! empty( $providers[ $event_id ] ) ) : ?> tribe-block__tickets__item__attendee__fields__form--<?php echo esc_attr( $providers[ $event_id ] ); ?><?php endif; ?>"
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
 				novalidate
 			>
