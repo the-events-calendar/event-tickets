@@ -115,7 +115,11 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		}
 
 		.accordion-header.tribe_attendee_meta {
-			display:none;
+			display: none;
+		}
+
+		.accordion-content.tribe_attendee_meta {
+			display: block;
 		}
 		</style>
 
