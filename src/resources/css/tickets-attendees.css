@@ -48,6 +48,10 @@
 			padding: 0;
 		}
 
+	#tribe-attendees-summary .welcome-panel-column .tribe-event-meta-note div {
+				padding: 0 0 0 15px;
+			}
+
 	#tribe-attendees-summary .welcome-panel-last {
 		border-left: 1px solid #eee;
 		display: -webkit-box;
@@ -74,6 +78,12 @@
 	#tribe-attendees-summary .welcome-panel-last .totals-header h3 {
     			display: inline-block;
 				width: auto;
+			}
+
+	#tribe-attendees-summary .welcome-panel-last .totals-header .order-total {
+				font-size: 16px;
+				margin: 1.20em 0 0;
+				font-weight: 600;
 			}
 
 	#tribe-attendees-summary .welcome-panel-last h4 {
