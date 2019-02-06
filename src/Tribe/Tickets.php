@@ -2416,7 +2416,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$is_paypal              = ! ! $redirect;
+			$is_paypal              = (bool) $redirect;
 			$meta                   = tribe( 'tickets-plus.main' )->meta();
 			$cart_has_meta          = $meta->cart_has_meta( $tickets_in_cart );
 			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
