@@ -2,7 +2,12 @@
 /**
  * This template renders a the fields for a ticket
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields.php
+ *
+ * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
+ * @version TBD
  *
  */
 ?>
@@ -21,7 +26,7 @@
 				'saved_meta' => $saved_meta,
 			);
 
-			$this->template( 'attendees/fields/' . $field->type, $args );
+			$this->template( 'registration/attendees/fields/' . $field->type, $args );
 		?>
 	<?php endforeach; ?>
 </div>
