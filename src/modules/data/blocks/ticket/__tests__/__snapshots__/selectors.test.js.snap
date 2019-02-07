@@ -68,6 +68,7 @@ Object {
           "startTimeInput": "10:30 pm",
           "title": "",
         },
+        "hasAttendeeInfoFields": false,
         "hasBeenCreated": false,
         "hasChanges": false,
         "isLoading": false,
@@ -241,6 +242,7 @@ Object {
     "startTimeInput": "10:30 pm",
     "title": "",
   },
+  "hasAttendeeInfoFields": false,
   "hasBeenCreated": false,
   "hasChanges": false,
   "isLoading": false,
@@ -276,6 +278,8 @@ exports[`Ticket block selectors Ticket selectors getTicketClientId 1`] = `"moder
 exports[`Ticket block selectors Ticket selectors getTicketCurrencyPosition 1`] = `"prefix"`;
 
 exports[`Ticket block selectors Ticket selectors getTicketCurrencySymbol 1`] = `undefined`;
+
+exports[`Ticket block selectors Ticket selectors getTicketHasAttendeeInfoFields 1`] = `false`;
 
 exports[`Ticket block selectors Ticket selectors getTicketHasBeenCreated 1`] = `false`;
 
@@ -378,6 +382,7 @@ Array [
       "startTimeInput": "10:30 pm",
       "title": "",
     },
+    "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,
@@ -437,6 +442,7 @@ Object {
         "startTimeInput": "10:30 pm",
         "title": "",
       },
+      "hasAttendeeInfoFields": false,
       "hasBeenCreated": false,
       "hasChanges": false,
       "isLoading": false,
@@ -497,6 +503,7 @@ Array [
       "startTimeInput": "10:30 pm",
       "title": "",
     },
+    "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,
@@ -550,6 +557,7 @@ Object {
       "startTimeInput": "10:30 pm",
       "title": "",
     },
+    "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,

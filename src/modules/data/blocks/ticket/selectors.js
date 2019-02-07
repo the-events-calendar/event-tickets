@@ -216,6 +216,11 @@ export const getTicketProvider = createSelector(
 	( ticket ) => ticket.provider,
 );
 
+export const getTicketHasAttendeeInfoFields = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.hasAttendeeInfoFields,
+);
+
 export const getTicketIsLoading = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.isLoading,

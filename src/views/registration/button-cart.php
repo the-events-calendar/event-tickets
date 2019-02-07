@@ -2,7 +2,12 @@
 /**
  * This template renders the attendee registration back to cart button
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/button-cart.php
+ *
+ * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
+ * @version TBD
  *
  */
 $cart_url = $this->get_cart_url( $event_id );

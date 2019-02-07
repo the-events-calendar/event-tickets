@@ -54,6 +54,12 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 	 * @since 4.7
 	 */
 	public function hook() {
+
+		// if Tribe Commerce is not active, then disable report page
+		if ( ! tribe( 'tickets.commerce.paypal' )->is_active() ) {
+			return;
+		}
+
 		add_filter( 'post_row_actions', array( $this, 'add_orders_row_action' ), 10, 2 );
 		add_action( 'tribe_tickets_attendees_page_inside', array( $this, 'render_tabbed_view' ) );
 		add_action( 'admin_menu', array( $this, 'register_orders_page' ) );
@@ -235,11 +241,10 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
 
 		$paypal_tickets = array_filter( $tickets, array( $paypal, 'is_paypal_ticket' ) );
-
-		$ticket_ids = Tribe__Utils__Array::get( $_GET, 'product_ids', false );
+		$ticket_ids     = Tribe__Utils__Array::get( $_GET, 'product_ids', false );
 
 		if ( false !== $ticket_ids ) {
-			$ticket_ids = explode( ',', $ticket_ids );
+			$ticket_ids = array_map( 'absint', explode( ',', $ticket_ids ) );
 			$filtered   = array();
 			/** @var \Tribe__Tickets__Ticket_Object $paypal_ticket */
 			foreach ( $paypal_tickets as $paypal_ticket ) {
@@ -250,18 +255,57 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 			$paypal_tickets = $filtered;
 		}
 
-		$attendees    = $paypal->get_attendees_by_id( $post_id );
-		$tickets_sold = $sales->filter_sold_tickets( $paypal_tickets );
-
-		$post_revenue        = $sales->get_revenue_for_tickets( $tickets_sold );
 		$total_sold          = $sales->get_sales_for_tickets( $tickets );
-		$total_completed     = count( $sales->filter_completed( $attendees ) );
-		$total_not_completed = count( $sales->filter_not_completed( $attendees ) );
+		$order_overview      = tribe( 'tickets.status' )->get_providers_status_classes( 'tpp' );
+		$complete_statuses   = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
+		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'tpp' );
+		$tickets_sold        = array();
 
-		$tickets_breakdown = $sales->get_tickets_breakdown_for( $paypal_tickets );
+		//update ticket item counts by order status
+		foreach ( $paypal_tickets as $ticket ) {
+
+			// Only Display if a PayPal Ticket otherwise kick out
+			if ( 'Tribe__Tickets__Commerce__PayPal__Main' != $ticket->provider_class ) {
+				continue;
+			}
+
+			if ( empty( $tickets_sold[ $ticket->name ] ) ) {
+				$tickets_sold[ $ticket->name ] = array(
+					'ticket'     => $ticket,
+					'has_stock'  => ! $ticket->stock(),
+					'sku'        => get_post_meta( $ticket->ID, '_sku', true ),
+					'sold'       => 0,
+					'pending'    => 0,
+					'completed'  => 0,
+					'refunded'   => 0,
+					'incomplete' => 0,
+				);
+			}
+
+			//update ticket item counts by order status
+			$orders = $sales->get_all_orders_by_product_id( $ticket->ID );
+			foreach ( $orders as $key => $order ) {
+
+				if ( $order->get_status_label() && $order->get_item_quantity() ) {
+
+					if ( in_array( $order->get_status(), $complete_statuses, true ) ) {
+						$tickets_sold[ $ticket->name ]['completed'] += $order->get_item_quantity();
+					}
+
+					if ( in_array( $order->get_status(), $incomplete_statuses, true ) ) {
+						$tickets_sold[ $ticket->name ]['incomplete'] += $order->get_item_quantity();
+					}
+
+					$order_overview->statuses[ $order->get_status_label() ]->add_qty( $order->get_item_quantity() );
+					$order_overview->statuses[ $order->get_status_label() ]->add_line_total( $order->get_sub_total() );
+					$order_overview->add_qty( $order->get_item_quantity() );
+					$order_overview->add_line_total( $order->get_sub_total() );
+
+				}
+			}
+		}
 
 		$post_type_object = get_post_type_object( $post->post_type );
-
 		$post_singular_label = $post_type_object->labels->singular_name;
 
 		// Render the table buffering its output; it will be used in the template below
@@ -274,4 +318,5 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-orders.php';
 	}
+
 }

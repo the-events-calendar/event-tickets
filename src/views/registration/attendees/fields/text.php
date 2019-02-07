@@ -3,7 +3,11 @@
  * This template renders a Single Ticket content
  * composed by Title and Description currently
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields/text.php
+ *
  * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
  * @version TBD
  *
  */
