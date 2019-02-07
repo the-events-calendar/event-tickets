@@ -192,6 +192,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketProvider( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketHasAttendeeInfoFields', () => {
+			expect( selectors.getTicketHasAttendeeInfoFields( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketIsLoading', () => {
 			expect( selectors.getTicketIsLoading( state, ownProps ) ).toMatchSnapshot();
 		} );

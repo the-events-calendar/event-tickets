@@ -82,6 +82,26 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket actions set ticket has attendee info fields 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasAttendeeInfoFields": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_ATTENDEE_INFO_FIELDS",
+}
+`;
+
+exports[`Ticket actions Ticket actions set ticket has attendee info fields 2`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasAttendeeInfoFields": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_ATTENDEE_INFO_FIELDS",
+}
+`;
+
 exports[`Ticket actions Ticket actions set ticket has been created 1`] = `
 Object {
   "payload": Object {

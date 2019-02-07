@@ -56,6 +56,13 @@ describe( 'Details reducer', () => {
 		) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the has attendee info fields', () => {
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketHasAttendeeInfoFields( 'block-id', true ),
+		) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the is loading', () => {
 		expect( reducer(
 			DEFAULT_STATE,
