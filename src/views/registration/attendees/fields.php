@@ -12,7 +12,7 @@
  */
 ?>
 <div class="tribe-ticket">
-	<h4><?php esc_html_e( 'Attendee', 'tribe_tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
+	<h4><?php esc_html_e( 'Attendee', 'tribe-tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
 	<?php foreach ( $fields as $field ) : ?>
 		<?php
 			$value = ! empty( $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] ) ? $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] : null;
