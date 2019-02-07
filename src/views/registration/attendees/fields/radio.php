@@ -39,7 +39,7 @@ $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][
 		<?php
 		foreach ( $options as $option ) :
 			$option_slug = sanitize_title( $option );
-			$option_id   = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
+			$option_id   = "tribe-tickets-meta_{$slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			?>
 			<label for="<?php echo esc_attr( $option_id ); ?>" class="tribe-tickets-meta-field-header">
 				<input
