@@ -337,7 +337,7 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Prevents Extensions from running if ET is on an Older Version
+	 * Prevents Extensions from running if TEC is on an Older Version
 	 *
 	 * @since 4.10.0.1
 	 *
