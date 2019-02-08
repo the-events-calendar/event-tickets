@@ -171,6 +171,7 @@ tribe.tickets.registration = {};
 			var params = $form.serializeArray();
 			params.push( { name: 'event_id', value: eventId } );
 			params.push( { name: 'action', value: 'tribe-tickets-save-attendee-info' } );
+			params.push( { name: 'nonce', value: TribeTicketsPlus.save_attendee_info_nonce } );
 
 			$.post(
 				TribeTicketsPlus.ajaxurl,
@@ -184,13 +185,13 @@ tribe.tickets.registration = {};
 						if ( response.data.meta_up_to_date ) {
 							$( obj.selector.checkoutButton ).removeAttr( 'disabled' );
 						}
-					} else {
-						$fields.find( obj.selector.fieldsErrorAjax ).show();
 					}
-
-					$fields.find( obj.selector.loader ).hide();
 				}
-			)
+			).fail( function() {
+				$fields.find( obj.selector.fieldsErrorAjax ).show();
+			} ).always( function() {
+				$fields.find( obj.selector.loader ).hide();
+			} );
 		}
 	};
 
