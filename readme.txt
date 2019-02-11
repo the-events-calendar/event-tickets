@@ -134,6 +134,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fix path to override attendee registration templates [120037]
 * Fix - Fix text domain in attendee field view [121019]
 
+= [4.10.0.1] 2019-02-07 =
+
+* Fix - Modify extension dependency checking with new system to determine if it can load [122368]
+
 = [4.10] 2019-02-05 =
 
 * Feature - Add check and enforce PHP 5.6 as the minimum version [116283]
