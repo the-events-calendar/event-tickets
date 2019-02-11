@@ -625,10 +625,8 @@ class Tribe__Tickets__Tickets_View {
 	 *                    option data or `false` if the selected option does not exist.
 	 */
 	public function get_rsvp_options( $selected = null, $just_labels = true ) {
-		$options = array(
-			'yes' => array( 'label' => __( 'Going', 'event-tickets' ), 'decrease_stock_by' => 1 ),
-			'no'  => array( 'label' => __( 'Not Going', 'event-tickets' ), 'decrease_stock_by' => 0 ),
-		);
+
+		$options = tribe( 'tickets.status' )->get_status_options( 'rsvp' );
 
 		/**
 		 * Allow users to add more RSVP options.

@@ -28,18 +28,24 @@
 	}
 }
 
+.tribe-editor__rsvp-container-header__title-input-wrapper {
+	display: flex;
+
+	svg {
+		flex: none;
+		margin: 6px 0 0 10px;
+		fill: #8d949b;
+	}
+}
+
 /* extra class to override gutenberg styles */
 .tribe-editor__rsvp {
 
 	.tribe-editor__rsvp-container-header__title-input {
-		/* !important required to override styles from react-input-autosize */
-		display: flex !important;
+		flex: none;
 		margin: 0;
 		padding-top: 3px;
-
-		& > * {
-			flex: none;
-		}
+		line-height: 25px;
 
 		& > input {
 			background-color: transparent;

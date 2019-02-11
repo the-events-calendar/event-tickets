@@ -30,6 +30,7 @@ const mapStateToProps = ( state, ownProps ) => {
 
 	return {
 		attendeeRegistrationURL: getAttendeeRegistrationUrl( state, ownProps ),
+		hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
 		isCreated,
 		isDisabled: selectors.isTicketDisabled( state, ownProps ) || ! isCreated,
 	};
