@@ -13,7 +13,7 @@
  */
 $attendee_id   = $key;
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
-$option_id     = "tribe-tickets-meta_{$field->slug}" . ( $attendee_id ? '_' . $attendee_id : '' );
+$option_id     = "tribe-tickets-meta_{$field->slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' );
 $field         = (array) $field;
 $multiline     = isset( $field['extra'] ) && isset( $field['extra']['multiline'] ) ? $field['extra']['multiline'] : '';
 $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
