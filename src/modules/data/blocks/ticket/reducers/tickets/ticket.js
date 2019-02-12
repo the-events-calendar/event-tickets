@@ -18,6 +18,7 @@ export const DEFAULT_STATE = {
 	currencySymbol: getDefaultProviderCurrency(),
 	currencyPosition: getDefaultCurrencyPosition(),
 	provider: '',
+	hasAttendeeInfoFields: false,
 	isLoading: false,
 	hasBeenCreated: false,
 	hasChanges: false,
@@ -95,6 +96,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				provider: action.payload.provider,
+			};
+		case types.SET_TICKET_HAS_ATTENDEE_INFO_FIELDS:
+			return {
+				...state,
+				hasAttendeeInfoFields: action.payload.hasAttendeeInfoFields,
 			};
 		case types.SET_TICKET_IS_LOADING:
 			return {

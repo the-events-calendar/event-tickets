@@ -342,8 +342,11 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function filter_revenue_generating_order_statuses( array $statuses = array() ) {
-		$statuses[] = Tribe__Tickets__Commerce__PayPal__Stati::$pending;
-		$statuses[] = Tribe__Tickets__Commerce__PayPal__Stati::$refunded;
+
+		$statuses = array_merge(
+			$statuses,
+			tribe( 'tickets.status' )->get_statuses_by_action( array( 'stock_reduced', 'tpp' ) )
+		);
 
 		return $statuses;
 	}

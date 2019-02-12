@@ -273,6 +273,7 @@ export function* fetchTicket( action ) {
 				sku,
 				capacity_type,
 				capacity,
+				supports_attendee_information,
 			} = ticket;
 
 			const datePickerFormat = tecDateSettings().datepickerFormat;
@@ -328,6 +329,7 @@ export function* fetchTicket( action ) {
 				put( actions.setTicketCurrencySymbol( clientId, cost_details.currency_symbol ) ),
 				put( actions.setTicketCurrencyPosition( clientId, cost_details.currency_position ) ),
 				put( actions.setTicketProvider( clientId, provider ) ),
+				put( actions.setTicketHasAttendeeInfoFields( clientId, supports_attendee_information ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 			] );
 		}

@@ -40,6 +40,7 @@ Object {
       "startTimeInput": "5:30 pm",
       "title": "",
     },
+    "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
     "isLoading": false,
