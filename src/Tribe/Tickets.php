@@ -1223,6 +1223,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_ticket_counts( $post_id ) {
+
+			// if no post id return empty array
+			if ( empty( $post_id ) ) {
+				return array();
+			}
+
 			$tickets = self::get_all_event_tickets( $post_id );
 
 			// if no tickets or rsvp return empty array

@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.10';
+	const VERSION = '4.10.1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -196,7 +196,7 @@ class Tribe__Tickets__Main {
 		) {
 			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
 			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
-			add_action( 'tribe_plugins_loaded', array( $this, 'remove_pdf_tickets_ext' ), 0 );
+			add_action( 'tribe_plugins_loaded', array( $this, 'remove_exts' ), 0 );
 
 			return;
 		}
@@ -337,18 +337,15 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Prevents PDF Tickets Ext from Running if TEC is on an Older Version
+	 * Prevents Extensions from running if TEC is on an Older Version
 	 *
-	 * @since 4.10
+	 * @since 4.10.0.1
 	 *
 	 */
-	public function remove_pdf_tickets_ext() {
+	public function remove_exts() {
 
-		if ( ! class_exists( 'Tribe__Extension__PDF_Tickets' ) ) {
-			return;
-		}
+		remove_all_actions( 'tribe_plugins_loaded', 10 );
 
-		remove_action( 'tribe_plugins_loaded', array( Tribe__Extension__PDF_Tickets::instance(), 'register' ) );
 	}
 
 	/**
