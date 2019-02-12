@@ -3,7 +3,12 @@
  * This template renders the error message for each form
  * of the attendee registration page
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/error.php
+ *
+ * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
+ * @version TBD
  *
  */
 ?>

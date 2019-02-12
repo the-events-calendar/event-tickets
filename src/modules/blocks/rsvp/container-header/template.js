@@ -15,9 +15,11 @@ import { __ } from '@wordpress/i18n';
  */
 import RSVPCounters from '@moderntribe/tickets/blocks/rsvp/counters/container';
 import { NumericLabel } from '@moderntribe/tickets/elements';
+import { Clipboard } from '@moderntribe/common/icons';
 import './style.pcss';
 
 const getTitle = (
+	hasAttendeeInfoFields,
 	isDisabled,
 	isSelected,
 	onTempTitleChange,
@@ -26,13 +28,16 @@ const getTitle = (
 ) => (
 	isSelected
 		? (
-			<AutosizeInput
-				className="tribe-editor__rsvp-container-header__title-input"
-				value={ tempTitle }
-				placeholder={ __( 'RSVP Title', 'event-tickets' ) }
-				onChange={ onTempTitleChange }
-				disabled={ isDisabled }
-			/>
+			<div className="tribe-editor__rsvp-container-header__title-input-wrapper">
+				<AutosizeInput
+					className="tribe-editor__rsvp-container-header__title-input"
+					value={ tempTitle }
+					placeholder={ __( 'RSVP Title', 'event-tickets' ) }
+					onChange={ onTempTitleChange }
+					disabled={ isDisabled }
+				/>
+				{ hasAttendeeInfoFields && <Clipboard /> }
+			</div>
 		)
 		: <h2 className="tribe-editor__rsvp-container-header__title">{ title }</h2>
 );
@@ -85,6 +90,7 @@ const getCapacityLabel = ( capacity ) => {
 
 const RSVPContainerHeader = ( {
 	description,
+	hasAttendeeInfoFields,
 	isCreated,
 	isDisabled,
 	isSelected,
@@ -99,6 +105,7 @@ const RSVPContainerHeader = ( {
 		<Fragment>
 			<div className="tribe-editor__rsvp-container-header__header-details">
 				{ getTitle(
+					hasAttendeeInfoFields,
 					isDisabled,
 					isSelected,
 					onTempTitleChange,
@@ -122,6 +129,7 @@ const RSVPContainerHeader = ( {
 RSVPContainerHeader.propTypes = {
 	available: PropTypes.number,
 	description: PropTypes.string,
+	hasAttendeeInfoFields: PropTypes.bool,
 	isCreated: PropTypes.bool,
 	isDisabled: PropTypes.bool.isRequired,
 	isSelected: PropTypes.bool.isRequired,

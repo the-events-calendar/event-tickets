@@ -20,6 +20,7 @@ Object {
     "title": "",
   },
   "goingCount": 0,
+  "hasAttendeeInfoFields": false,
   "hasChanges": false,
   "headerImage": Object {
     "alt": "",
@@ -70,6 +71,58 @@ Object {
     "title": "",
   },
   "goingCount": 10,
+  "hasAttendeeInfoFields": false,
+  "hasChanges": false,
+  "headerImage": Object {
+    "alt": "",
+    "id": 0,
+    "src": "",
+  },
+  "id": 0,
+  "isLoading": false,
+  "isSettingsLoading": false,
+  "notGoingCount": 0,
+  "settingsOpen": false,
+  "tempDetails": Object {
+    "capacity": "",
+    "description": "",
+    "endDate": "2018-07-19",
+    "endDateInput": "July 19, 2018",
+    "endDateMoment": "2018-07-19T19:30:00.000Z",
+    "endTime": "19:30:00",
+    "endTimeInput": "7:30 pm",
+    "notGoingResponses": false,
+    "startDate": "2018-07-19",
+    "startDateInput": "July 19, 2018",
+    "startDateMoment": "2018-07-19T19:30:00.000Z",
+    "startTime": "19:30:00",
+    "startTimeInput": "7:30 pm",
+    "title": "",
+  },
+}
+`;
+
+exports[`RSVP block reducer should set the has attendee info fields 1`] = `
+Object {
+  "created": false,
+  "details": Object {
+    "capacity": "",
+    "description": "",
+    "endDate": "2018-07-19",
+    "endDateInput": "July 19, 2018",
+    "endDateMoment": "2018-07-19T19:30:00.000Z",
+    "endTime": "19:30:00",
+    "endTimeInput": "7:30 pm",
+    "notGoingResponses": false,
+    "startDate": "2018-07-19",
+    "startDateInput": "July 19, 2018",
+    "startDateMoment": "2018-07-19T19:30:00.000Z",
+    "startTime": "19:30:00",
+    "startTimeInput": "7:30 pm",
+    "title": "",
+  },
+  "goingCount": 0,
+  "hasAttendeeInfoFields": true,
   "hasChanges": false,
   "headerImage": Object {
     "alt": "",
@@ -120,6 +173,7 @@ Object {
     "title": "",
   },
   "goingCount": 0,
+  "hasAttendeeInfoFields": false,
   "hasChanges": true,
   "headerImage": Object {
     "alt": "",
@@ -170,6 +224,7 @@ Object {
     "title": "",
   },
   "goingCount": 0,
+  "hasAttendeeInfoFields": false,
   "hasChanges": false,
   "headerImage": Object {
     "alt": "",
@@ -220,6 +275,7 @@ Object {
     "title": "",
   },
   "goingCount": 0,
+  "hasAttendeeInfoFields": false,
   "hasChanges": false,
   "headerImage": Object {
     "alt": "",
@@ -270,6 +326,7 @@ Object {
     "title": "",
   },
   "goingCount": 0,
+  "hasAttendeeInfoFields": false,
   "hasChanges": false,
   "headerImage": Object {
     "alt": "",
@@ -320,6 +377,7 @@ Object {
     "title": "",
   },
   "goingCount": 0,
+  "hasAttendeeInfoFields": false,
   "hasChanges": false,
   "headerImage": Object {
     "alt": "",
@@ -370,6 +428,7 @@ Object {
     "title": "",
   },
   "goingCount": 0,
+  "hasAttendeeInfoFields": false,
   "hasChanges": false,
   "headerImage": Object {
     "alt": "",
