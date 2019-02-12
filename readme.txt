@@ -132,6 +132,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Path to override attendee registration templates defined in template files [120196]
 * Fix - Fix path to override attendee registration templates [120037]
 * Fix - Fix text domain in attendee field view [121019]
+* Fix - Fix focus for sales duration in ticket block [122441]
 
 = [4.10] 2019-02-05 =
 
