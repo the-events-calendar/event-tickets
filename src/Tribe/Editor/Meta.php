@@ -128,6 +128,12 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			'_tribe_tickets_list',
 			$this->numeric_array()
 		);
+
+		register_meta(
+			'post',
+			'_tribe_ticket_has_attendee_info_fields',
+			$this->boolean()
+		);
 	}
 
 	/**

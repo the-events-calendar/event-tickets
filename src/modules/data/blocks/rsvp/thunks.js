@@ -157,6 +157,11 @@ export const getRSVP = ( postId, page = 1 ) => ( dispatch ) => {
 							parseInt( meta[ utils.KEY_TICKET_NOT_GOING_COUNT ], 10 ) || 0
 						)
 					);
+					dispatch(
+						actions.setRSVPHasAttendeeInfoFields(
+							meta[ utils.KEY_TICKET_HAS_ATTENDEE_INFO_FIELDS ]
+						)
+					);
 					dispatch( actions.setRSVPDetails( {
 						title: rsvp.title.rendered,
 						description: rsvp.excerpt.raw,
