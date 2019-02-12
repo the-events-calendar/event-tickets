@@ -834,6 +834,7 @@ describe( 'Ticket Block sagas', () => {
 					sku: '12345678',
 					capacity_type: 'own',
 					capacity: 100,
+					supports_attendee_information: true,
 				},
 			};
 			const startMoment2 = momentUtil.toMoment( apiResponse2.data.available_from );
@@ -894,6 +895,7 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketCurrencySymbol( CLIENT_ID, apiResponse2.data.cost_details.currency_symbol ) ),
 					put( actions.setTicketCurrencyPosition( CLIENT_ID, apiResponse2.data.cost_details.currency_position ) ),
 					put( actions.setTicketProvider( CLIENT_ID, apiResponse2.data.provider ) ),
+					put( actions.setTicketHasAttendeeInfoFields( CLIENT_ID, apiResponse2.data.supports_attendee_information ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
 				] )
 			);
@@ -923,6 +925,7 @@ describe( 'Ticket Block sagas', () => {
 					sku: '12345678',
 					capacity_type: 'own',
 					capacity: 100,
+					supports_attendee_information: true,
 				},
 			};
 
@@ -999,6 +1002,7 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketCurrencySymbol( CLIENT_ID, apiResponse3.data.cost_details.currency_symbol ) ),
 					put( actions.setTicketCurrencyPosition( CLIENT_ID, apiResponse3.data.cost_details.currency_position ) ),
 					put( actions.setTicketProvider( CLIENT_ID, apiResponse3.data.provider ) ),
+					put( actions.setTicketHasAttendeeInfoFields( CLIENT_ID, apiResponse3.data.supports_attendee_information ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
 				] )
 			);

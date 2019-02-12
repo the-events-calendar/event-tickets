@@ -1,6 +1,6 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, sc0ttkclark, shane.pearlman, vicskf, zbtirrell
+Contributors: ModernTribe, brianjessee, camwynsp, sc0ttkclark
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.0.3
@@ -124,23 +124,45 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
+* Tweak - Add filter for attendee registration page template [121223]
 * Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
 * Fix - Only allow attendee move functionality in admin [87145]
 * Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
 * Fix - Update available tickets when updating capacity [120280]
+* Fix - Do not show print, email, and export buttons if not in admin [120646]
+* Fix - Add Indian Rupee and Russian Ruple to PayPal currency code list [120554]
+* Fix - Fix RSVP "don't show my information" checkbox in Twenty Nineteen theme [120685]
+* Fix - Add ticket id to option id for attendee registration fields [122035]
+* Fix - Path to override attendee registration templates defined in template files [120196]
+* Fix - Fix path to override attendee registration templates [120037]
+* Fix - Fix text domain in attendee field view [121019]
+* Fix - Fix mobile styles for tickets and RSVP [118299]
+* Fix - Prevent notices when adding a new event in Community Events with Community Tickets active [116724]
 
-= [4.10] TBD =
+= [4.10.0.1] 2019-02-07 =
 
-* Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Fix - Modify extension dependency checking with new system to determine if it can load [122368]
+
+= [4.10] 2019-02-05 =
+
+* Feature - Add check and enforce PHP 5.6 as the minimum version [116283]
+* Feature - Add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
+* Tweak - Add tooltips and additional information to Tribe Commerce Orders page header [116747]
+* Tweak - Update plugin header [90398]
 * Tweak - Add tooltip info that clarifies two settings only apply to classic editor [20963]
+* Tweak - Added filters: `event_tickets_attendees_{$provider_slug}_checkin_stati`, `tribe_tickets_supported_system_version`, `tribe_not_php_version_names`
+* Tweak - Removed filters: `event_tickets_attendees_{$provider}_checkin_stati`
+* Tweak - Removed actions: `tribe_tickets_plugin_failed_to_load`
+* Fix - Prevent errors in PHP 7.2+ with ticket management [119608]
+* Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
+* Deprecated - constants MIN_TEC_VERSION and MIN_COMMON_VERSION in Tribe__Tickets__Main, use $min_tec_version property and no replacement for MIN_COMMON_VERSION
+* Deprecated - The `et_plus_compatibility_notice()` method has been deprecated in `Tribe__Tickets__Main` in favor of Plugin Dependency Checking system
+* Language - 15 new strings added, 136 updated, 0 fuzzied, and 40 obsoleted
 
 = [4.9.4] 2019-01-15 =
-
-* Fix - Do not show print, email, and export buttons if not in admin [120646]
-
-= [TBD] =
 
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]

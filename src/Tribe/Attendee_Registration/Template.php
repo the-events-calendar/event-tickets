@@ -25,11 +25,18 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Set and remove the required body classes
 		add_action( 'wp', array( $this, 'set_body_classes' ) );
 
-		// Choose the wordpress theme template to use
-		add_filter( 'template_include', array( $this, 'set_page_template' ) );
+		/*
+		 * Choose the theme template to use. It has to have a higher priority than the
+		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
+		 */
+		add_filter( 'template_include', array( $this, 'set_page_template' ), 15 );
 
-		// Set the content of the page
-		add_action( 'loop_start', array( $this, 'set_page_content' ) );
+
+		/*
+		 * Set the content of the page. Again, it has to have a higher priority than the
+		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
+		 */
+		add_action( 'loop_start', array( $this, 'set_page_content' ), 15 );
 
 		// Modify the link for the edit post link
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
@@ -92,14 +99,24 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $template;
 		}
 
-		// return the page template
+		// get the page template
 		$template = get_page_template();
-		if ( ! empty( $template ) ) {
-			return $template;
-		}
 
 		// Fallback for themes that are missing page.php
-		return get_template_directory() . '/index.php';
+		if ( empty( $template ) ) {
+			$template = get_template_directory() . '/index.php';
+		}
+
+		/**
+		 * Use `tribe_tickets_attendee_registration_page_template` to modify the attendee registration page template.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $template The current attendee registration page template.
+		 */
+		$template = apply_filters( 'tribe_tickets_attendee_registration_page_template', $template );
+
+		return $template;
 	}
 
 	/**

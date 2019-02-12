@@ -129,7 +129,8 @@
 /* Expanded capacity table */
 
 #tribe_panel_settings .tribe-tickets-editor-table tbody tr {
-			box-shadow: none;
+			-webkit-box-shadow: none;
+			        box-shadow: none;
 		}
 
 #tribe_panel_settings .tribe-tickets-editor-table tbody tr td {
@@ -159,7 +160,8 @@
 .tribe-tickets-editor-table .settings_total_global_stock:disabled {
 			background: none;
 			border: 0;
-			box-shadow: none;
+			-webkit-box-shadow: none;
+			        box-shadow: none;
 		}
 
 @media screen and ( max-width: 782px ) {
@@ -221,7 +223,8 @@
 
 		.tribe-tickets-editor-table tr td {
 			border: 0;
-			box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			        box-sizing: border-box;
 			display: block;
 			float: left;
 			min-height: 36px;
