@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
+* Tweak - Save attendee information on registration page via ajax [121592]
 * Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
 * Tweak - Indicate required fields in ticket block [122442]
 * Tweak - Add filter for attendee registration page template [121223]
@@ -132,6 +133,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Only allow attendee move functionality in admin [87145]
 * Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
+* Fix - Allow users to always access attendee registration page if tickets in cart have meta [121819]
+* Fix - Allow tickets with required and non-required meta to be saved together [121821]
+* Fix - Fix issue with WooCommerce checkout returning to attendee registration page [120735]
 * Fix - Update available tickets when updating capacity [120280]
 * Fix - Do not show print, email, and export buttons if not in admin [120646]
 * Fix - Add Indian Rupee and Russian Ruple to PayPal currency code list [120554]

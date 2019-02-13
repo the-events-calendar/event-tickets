@@ -35,7 +35,7 @@ if ( empty( $events ) ) {
 
 			<form
 				method="post"
-				class="tribe-block__tickets__item__attendee__fields__form"
+				class="tribe-block__tickets__item__attendee__fields__form<?php if ( ! empty( $providers[ $event_id ] ) ) : ?> tribe-block__tickets__item__attendee__fields__form--<?php echo esc_attr( $providers[ $event_id ] ); ?><?php endif; ?>"
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
 				novalidate
 			>
@@ -43,6 +43,12 @@ if ( empty( $events ) ) {
 				<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 				<button type="submit"><?php esc_html_e( 'Save Attendee Info', 'event-tickets' ); ?></button>
 			</form>
+
+			<?php $this->template( 'registration/attendees/error', array() ); ?>
+			<?php $this->template( 'registration/attendees/success', array() ); ?>
+
+			<?php $this->template( 'registration/attendees/loader', array() ); ?>
+
 		</div>
 
 	</div>
