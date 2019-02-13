@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
+* Tweak - Indicate required fields in ticket block [122442]
 * Tweak - Add filter for attendee registration page template [121223]
 * Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
