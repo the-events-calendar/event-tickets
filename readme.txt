@@ -130,6 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Only allow attendee move functionality in admin [87145]
 * Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
+* Fix - Update available tickets when updating capacity [120280]
 * Fix - Do not show print, email, and export buttons if not in admin [120646]
 * Fix - Add Indian Rupee and Russian Ruple to PayPal currency code list [120554]
 * Fix - Fix RSVP "don't show my information" checkbox in Twenty Nineteen theme [120685]
