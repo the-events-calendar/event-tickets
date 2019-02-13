@@ -32,9 +32,10 @@ const TicketContainerHeaderTitle = ( {
 						<AutosizeInput
 							className="tribe-editor__ticket__container-header-title-input"
 							value={ tempTitle }
-							placeholder={ __( 'Ticket Type', 'event-tickets' ) }
+							placeholder={ __( 'Ticket Type *', 'event-tickets' ) }
 							onChange={ onTempTitleChange }
 							disabled={ isDisabled }
+							required={ true }
 						/>
 						{ hasAttendeeInfoFields && <Clipboard /> }
 					</Fragment>
