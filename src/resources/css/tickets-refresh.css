@@ -86,8 +86,7 @@
 	border: 1px solid #a3a3a3;
 	border: 1px solid var(--border-light-color);
 	border-radius: 5px;
-	-webkit-box-sizing: border-box;
-	        box-sizing: border-box;
+	box-sizing: border-box;
 	opacity: 1;
 	position: relative;
 	padding: 8px;
@@ -250,7 +249,6 @@
 		position: absolute;
 		top: 50%;
 		-webkit-transform: translateY(-50%);
-		    -ms-transform: translateY(-50%);
 		        transform: translateY(-50%);
 		z-index: 1;
 	}
@@ -274,8 +272,7 @@
 
 .input_block .ticket_form_left {
 		display: block;
-		-webkit-box-sizing: border-box;
-		        box-sizing: border-box;
+		box-sizing: border-box;
 		float: left;
 		margin: 0;
 		padding-left: 0;
@@ -432,7 +429,6 @@ p.description {
 		position: absolute;
 		top: 50%;
 		-webkit-transform: translateY(-50%);
-		    -ms-transform: translateY(-50%);
 		        transform: translateY(-50%);
 		z-index: 1;
 	}
@@ -459,8 +455,7 @@ p.description {
 #settings_global_capacity_edit:disabled {
 		background-color: transparent;
 		border: 0;
-		-webkit-box-shadow: none;
-		        box-shadow: none;
+		box-shadow: none;
 		color: #555;
 	}
 
@@ -511,7 +506,6 @@ p.description {
 				position: relative;
 				top: auto;
 				-webkit-transform: none;
-				    -ms-transform: none;
 				        transform: none;
 				width: 100%
 		}
@@ -537,7 +531,6 @@ p.description {
 			position: relative;
 			top: auto;
 			-webkit-transform: none;
-			    -ms-transform: none;
 			        transform: none;
 			width: 100%
 	}
