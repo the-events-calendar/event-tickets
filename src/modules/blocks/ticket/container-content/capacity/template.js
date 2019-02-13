@@ -139,7 +139,7 @@ class Capacity extends PureComponent {
 					className={ classNames(
 						'tribe-editor__ticket__capacity-input-row',
 						'tribe-editor__ticket__capacity-input-row--capacity',
-						`tribe-editor__ticket__capacity-input-row--${ ticketType }`,
+						`tribe-editor__ticket__capacity-input-row--capacity-${ ticketType }`,
 					) }
 					id={ this.ids.capacity }
 					value={ tempCapacity }
