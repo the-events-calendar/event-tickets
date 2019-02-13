@@ -180,8 +180,7 @@
 	.tribe-theme-parent-twentysixteen .textwidget a,
 	.tribe-theme-parent-twentysixteen .entry-footer a:hover,
 	.tribe-theme-parent-twentysixteen .site-info a:hover {
-		-webkit-box-shadow: none;
-		        box-shadow: none;
+		box-shadow: none;
 	}
 
 /* = Tickets & RSVP Modules Front End Styles
@@ -219,13 +218,8 @@
 	}
 
 .tribe-events-tickets tr {
-		display: -webkit-box;
-		display: -ms-flexbox;
 		display: flex;
-		-webkit-box-orient: horizontal;
-		-webkit-box-direction: normal;
-		    -ms-flex-flow: row wrap;
-		        flex-flow: row wrap;
+		flex-flow: row wrap;
 	}
 
 .tribe-events-tickets tr:not(:first-child) {
@@ -233,9 +227,7 @@
 		}
 
 .tribe-events-tickets td {
-		-webkit-box-flex: 0;
-		    -ms-flex: none;
-		        flex: none;
+		flex: none;
 		padding: 8px 10px;
 		width: 100%;
 		word-break: normal;
@@ -247,9 +239,7 @@
 
 .tribe-events-tickets td.quantity,
 		.tribe-events-tickets td.woocommerce {
-			-webkit-box-ordinal-group: 3;
-			    -ms-flex-order: 2;
-			        order: 2;
+			order: 2;
 		}
 
 .tribe-events-tickets td.quantity input[type="number"], .tribe-events-tickets td.woocommerce input[type="number"] {
@@ -261,9 +251,7 @@
 			}
 
 .tribe-events-tickets td.tickets_submit {
-			-webkit-box-ordinal-group: 4;
-			    -ms-flex-order: 3;
-			        order: 3;
+			order: 3;
 		}
 
 .tribe-events-tickets td.tickets_submit .tribe-button {
@@ -289,7 +277,6 @@
 			position: absolute;
 			top: 50%;
 			-webkit-transform: translate(-50%, -50%);
-			    -ms-transform: translate(-50%, -50%);
 			        transform: translate(-50%, -50%);
 			width: 90%;
 		}

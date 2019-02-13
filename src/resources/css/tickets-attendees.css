@@ -23,16 +23,9 @@
 	}
 
 	#tribe-attendees-summary .welcome-panel-column-container {
-		display: -webkit-box;
-		display: -ms-flexbox;
 		display: flex;
-		-webkit-box-orient: horizontal;
-		-webkit-box-direction: normal;
-		    -ms-flex-flow: row;
-		        flex-flow: row;
-		-webkit-box-pack: justify;
-		    -ms-flex-pack: justify;
-		        justify-content: space-between;
+		flex-flow: row;
+		justify-content: space-between;
 		position: static;
 		position: initial;
 		*zoom: 1;
@@ -54,13 +47,8 @@
 
 	#tribe-attendees-summary .welcome-panel-last {
 		border-left: 1px solid #eee;
-		display: -webkit-box;
-		display: -ms-flexbox;
 		display: flex;
-		-webkit-box-orient: horizontal;
-		-webkit-box-direction: normal;
-		    -ms-flex-flow: row wrap;
-		        flex-flow: row wrap;
+		flex-flow: row wrap;
 		padding: 10px 20px 5px;
 		*zoom: 1;
 	}
@@ -70,9 +58,7 @@
 		}
 
 	#tribe-attendees-summary .welcome-panel-last .totals-header {
-			    -webkit-box-flex: 0;
-			        -ms-flex: 0 0 100%;
-			            flex: 0 0 100%;
+			    flex: 0 0 100%;
 		}
 
 	#tribe-attendees-summary .welcome-panel-last .totals-header h3 {
@@ -240,8 +226,7 @@ table.orders tr.refunded, table.orders tr.denied, table.orders tr.pending {
 @media screen and (max-width: 768px) {
 
 	#tribe-attendees-summary .welcome-panel-column-container {
-			-ms-flex-wrap: wrap;
-			    flex-wrap: wrap
+			flex-wrap: wrap
 	}
 
 	#tribe-attendees-summary .welcome-panel-column {
