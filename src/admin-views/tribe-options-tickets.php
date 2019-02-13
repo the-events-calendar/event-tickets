@@ -95,7 +95,7 @@ $tickets_fields = array_merge( $tickets_fields, array(
 		),
 		'ticket-attendee-info-template' => array(
 			'type'            => 'dropdown',
-			'label'           => __( 'Attendee registration template', 'the-events-calendar' ),
+			'label'           => __( 'Attendee Registration template', 'the-events-calendar' ),
 			'tooltip'         => __( 'Choose a page template to control the appearance of your attendee registration page.', 'event-tickets' ),
 			'validation_type' => 'options',
 			'size'            => 'large',
