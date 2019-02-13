@@ -11,7 +11,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 */
 	public function __construct() {
 		$this->set_template_origin( tribe( 'tickets.main' ) );
-		$this->set_template_folder( 'src/views/registration' );
+		$this->set_template_folder( 'src/views' );
 		$this->set_template_context_extract( true );
 		$this->set_template_folder_lookup( true );
 	}
@@ -117,11 +117,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		wp_enqueue_style( 'dashicons' );
 
-		/** @var Tribe__Tickets__Attendee_Registration__View $view */
-		$view     = tribe( 'tickets.attendee_registration.view' );
-		$template = $view->template( 'content', $args, false );
+		$this->add_template_globals( $args );
 
-		return $template;
+		return $this->template( 'registration/content', $args, false );
 	}
 
 	/**

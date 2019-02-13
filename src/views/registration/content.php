@@ -2,13 +2,17 @@
 /**
  * This template renders the registration/purchase attendee fields
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/content.php
+ *
  * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
  * @version TBD
  *
  */
 // If there are no events with tickets in cart, print the empty cart template
 if ( empty( $events ) ) {
-	$this->template( 'cart-empty' );
+	$this->template( 'registration/cart-empty' );
 	return;
 }
 ?>
@@ -19,13 +23,15 @@ if ( empty( $events ) ) {
 		data-event-id="<?php echo esc_attr( $event_id ); ?>"
 		data-is-meta-up-to-date="<?php echo absint( $is_meta_up_to_date ); ?>"
 	>
-		<?php $this->template( 'summary/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
+		<?php $this->template( 'registration/summary/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 
 		<div class="tribe-block__tickets__registration__actions">
-			<?php $this->template( 'button-cart', array( 'event_id' => $event_id ) ); ?>
+			<?php $this->template( 'registration/button-cart', array( 'event_id' => $event_id ) ); ?>
 		</div>
 
 		<div class="tribe-block__tickets__item__attendee__fields">
+
+			<?php $this->template( 'registration/attendees/error', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 
 			<form
 				method="post"
@@ -33,15 +39,15 @@ if ( empty( $events ) ) {
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
 				novalidate
 			>
-				<?php $this->template( 'attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
+				<?php $this->template( 'registration/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 				<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 				<button type="submit"><?php esc_html_e( 'Save Attendee Info', 'event-tickets' ); ?></button>
 			</form>
 
-			<?php $this->template( 'attendees/error', array() ); ?>
-			<?php $this->template( 'attendees/success', array() ); ?>
+			<?php $this->template( 'registration/attendees/error', array() ); ?>
+			<?php $this->template( 'registration/attendees/success', array() ); ?>
 
-			<?php $this->template( 'attendees/loader', array() ); ?>
+			<?php $this->template( 'registration/attendees/loader', array() ); ?>
 
 		</div>
 
@@ -49,4 +55,4 @@ if ( empty( $events ) ) {
 
 <?php endforeach; ?>
 
-<?php $this->template( 'button-checkout', array( 'checkout_url' => $checkout_url, 'cart_has_required_meta' => $cart_has_required_meta, 'is_meta_up_to_date' => $is_meta_up_to_date ) );
+<?php $this->template( 'registration/button-checkout', array( 'checkout_url' => $checkout_url, 'cart_has_required_meta' => $cart_has_required_meta, 'is_meta_up_to_date' => $is_meta_up_to_date ) );
