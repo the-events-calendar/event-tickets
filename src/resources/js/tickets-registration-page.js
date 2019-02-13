@@ -167,14 +167,22 @@ tribe.tickets.registration = {};
 		} else {
 			$fields.find( obj.selector.loader ).show();
 
+			var ajaxurl = '';
+			var nonce = '';
+
+			if ( typeof TribeTicketsPlus === 'object' ) {
+				ajaxurl = TribeTicketsPlus.ajaxurl;
+				nonce = TribeTicketsPlus.save_attendee_info_nonce;
+			}
+
 			var eventId = $event.data( 'event-id' );
 			var params = $form.serializeArray();
 			params.push( { name: 'event_id', value: eventId } );
 			params.push( { name: 'action', value: 'tribe-tickets-save-attendee-info' } );
-			params.push( { name: 'nonce', value: TribeTicketsPlus.save_attendee_info_nonce } );
+			params.push( { name: 'nonce', value: nonce } );
 
 			$.post(
-				TribeTicketsPlus.ajaxurl,
+				ajaxurl,
 				params,
 				function( response ) {
 					if ( response.success ) {
