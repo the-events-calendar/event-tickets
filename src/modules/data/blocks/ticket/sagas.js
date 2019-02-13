@@ -371,6 +371,7 @@ export function* createNewTicket( action ) {
 			) {
 				yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
 			}
+			const available = ticket.capacity_details.available === -1 ? 0 : ticket.capacity_details.available;
 
 			const [
 				title,
@@ -427,9 +428,9 @@ export function* createNewTicket( action ) {
 					capacityType,
 					capacity,
 				} ) ),
-				put( actions.setTicketId( clientId, ticket.ID ) ),
+				put( actions.setTicketId( clientId, ticket.id ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
-				put( actions.setTicketAvailable( clientId, ticket.capacity ) ),
+				put( actions.setTicketAvailable( clientId, available ) ),
 				put( actions.setTicketProvider( clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
@@ -461,7 +462,7 @@ export function* updateTicket( action ) {
 		}
 
 		yield put( actions.setTicketIsLoading( clientId, true ) );
-		const { response } = yield call( wpREST, {
+		const { response, data: ticket } = yield call( wpREST, {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
 			headers: {
@@ -474,6 +475,9 @@ export function* updateTicket( action ) {
 		} );
 
 		if ( response.ok ) {
+			const { capacity_details } = ticket;
+			const available = capacity_details.available === -1 ? 0 : capacity_details.available;
+
 			const [
 				title,
 				description,
@@ -529,6 +533,8 @@ export function* updateTicket( action ) {
 					capacityType,
 					capacity,
 				} ) ),
+				put( actions.setTicketSold( clientId, capacity_details.sold ) ),
+				put( actions.setTicketAvailable( clientId, available ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 		}
@@ -554,11 +560,12 @@ export function* deleteTicket( action ) {
 
 		yield put( actions.setTicketIsSelected( clientId, false ) );
 		yield put( actions.removeTicketBlock( clientId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'clearSelectedBlock' ] );
 		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
 
 		if ( hasBeenCreated ) {
 			const { remove_ticket_nonce = '' } = restNonce();
-			const postId = wpSelect( 'core/editor' ).getCurrentPostId();
+			const postId = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
 
 			/**
 			 * Encode params to be passed into the DELETE request as PHP doesn’t transform the request body

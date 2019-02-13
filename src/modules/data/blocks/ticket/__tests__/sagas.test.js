@@ -63,6 +63,7 @@ jest.mock( '@wordpress/data', () => {
 			editPost: () => {},
 			insertBlocks: () => {},
 			removeBlocks: () => {},
+			clearSelectedBlock: () => {},
 		} ),
 	};
 } );
@@ -1080,8 +1081,10 @@ describe( 'Ticket Block sagas', () => {
 					ok: true,
 				},
 				data: {
-					ID: 13,
-					capacity: 100,
+					id: 13,
+					capacity_details: {
+						available: 100,
+					},
 					provider_class: WOO_CLASS,
 				},
 			};
@@ -1158,9 +1161,12 @@ describe( 'Ticket Block sagas', () => {
 						capacityType,
 						capacity,
 					} ) ),
-					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.ID ) ),
+					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.id ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
-					put( actions.setTicketAvailable( CLIENT_ID, apiResponse1.data.capacity ) ),
+					put( actions.setTicketAvailable(
+						CLIENT_ID,
+						apiResponse1.data.capacity_details.available,
+					) ),
 					put( actions.setTicketProvider(
 						CLIENT_ID,
 						PROVIDER_CLASS_TO_PROVIDER_MAPPING[ apiResponse1.data.provider_class ],
@@ -1238,9 +1244,12 @@ describe( 'Ticket Block sagas', () => {
 						capacityType,
 						capacity,
 					} ) ),
-					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.ID ) ),
+					put( actions.setTicketId( CLIENT_ID, apiResponse1.data.id ) ),
 					put( actions.setTicketHasBeenCreated( CLIENT_ID, true ) ),
-					put( actions.setTicketAvailable( CLIENT_ID, apiResponse1.data.capacity ) ),
+					put( actions.setTicketAvailable(
+						CLIENT_ID,
+						apiResponse1.data.capacity_details.available,
+					) ),
 					put( actions.setTicketProvider(
 						CLIENT_ID,
 						PROVIDER_CLASS_TO_PROVIDER_MAPPING[ apiResponse1.data.provider_class ],
@@ -1345,6 +1354,12 @@ describe( 'Ticket Block sagas', () => {
 				response: {
 					ok: true,
 				},
+				data: {
+					capacity_details: {
+						available: 100,
+						sold: 10,
+					},
+				},
 			};
 
 			expect( clone2.next( apiResponse2 ).value ).toEqual(
@@ -1404,6 +1419,14 @@ describe( 'Ticket Block sagas', () => {
 						capacityType,
 						capacity,
 					} ) ),
+					put( actions.setTicketSold(
+						CLIENT_ID,
+						apiResponse2.data.capacity_details.sold,
+					) ),
+					put( actions.setTicketAvailable(
+						CLIENT_ID,
+						apiResponse2.data.capacity_details.available,
+					) ),
 					put( actions.setTicketHasChanges( CLIENT_ID, false ) ),
 				] )
 			);
@@ -1417,6 +1440,7 @@ describe( 'Ticket Block sagas', () => {
 	describe( 'deleteTicket', () => {
 		it( 'should delete ticket', () => {
 			const TICKET_ID = 13;
+			const POST_ID = 10;
 			const CLIENT_ID = 'modern-tribe';
 			const props = { clientId: CLIENT_ID };
 			const action = {
@@ -1441,7 +1465,6 @@ describe( 'Ticket Block sagas', () => {
 			const clone1 = gen.clone();
 			const hasBeenCreated1 = false;
 
-
 			expect( clone1.next( hasBeenCreated1 ).value ).toEqual(
 				put( actions.setTicketIsSelected( CLIENT_ID, false ) )
 			);
@@ -1449,12 +1472,13 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.removeTicketBlock( CLIENT_ID ) )
 			);
 			expect( clone1.next().value ).toMatchSnapshot();
+			expect( clone1.next().value ).toMatchSnapshot();
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
 			const hasBeenCreated2 = true;
 			const body = [
-				`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( 10 ) }`,
+				`${ encodeURIComponent( 'post_id' ) }=${ encodeURIComponent( POST_ID ) }`,
 				`${ encodeURIComponent( 'remove_ticket_nonce' ) }=${ encodeURIComponent( '' ) }`,
 			];
 
@@ -1465,7 +1489,9 @@ describe( 'Ticket Block sagas', () => {
 				put( actions.removeTicketBlock( CLIENT_ID ) )
 			);
 			expect( clone2.next().value ).toMatchSnapshot();
-			expect( clone2.next().value ).toEqual(
+			expect( clone2.next().value ).toMatchSnapshot();
+			expect( clone2.next().value ).toMatchSnapshot();
+			expect( clone2.next( POST_ID ).value ).toEqual(
 				call( wpREST, {
 					path: `tickets/${ TICKET_ID }`,
 					namespace: 'tribe/tickets/v1',
