@@ -17,7 +17,7 @@ import { actions, selectors } from '@moderntribe/tickets/data/blocks/ticket';
 import { withStore } from '@moderntribe/common/hoc';
 
 const getIsConfirmDisabled = ( state, ownProps ) => (
-	! selectors.getTicketTempTitle( state, ownProps )
+	! selectors.isTicketValid( state, ownProps )
 		|| ! selectors.getTicketHasChanges( state, ownProps )
 		|| selectors.isTicketDisabled( state, ownProps )
 );
