@@ -10,10 +10,14 @@ $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_
 ) );
 
 $template_options = array(
-	'same'    => esc_html__( 'Same as Event Page Template', 'the-events-calendar' ),
 	'default' => esc_html__( 'Default Page Template', 'the-events-calendar' ),
 	'event'   => esc_html__( 'Default Events Template', 'the-events-calendar' ),
 );
+
+if ( class_exists( 'Tribe__Events__Main' ) ) {
+	$template_options['same']  = esc_html__( 'Same as Event Page Template', 'the-events-calendar' );
+}
+
 $templates        = get_page_templates();
 ksort( $templates );
 foreach ( array_keys( $templates ) as $template ) {
