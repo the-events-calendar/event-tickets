@@ -236,6 +236,11 @@ export const getTicketHasChanges = createSelector(
 	( ticket ) => ticket.hasChanges,
 );
 
+export const getTicketHasDurationError = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.hasDurationError,
+);
+
 export const getTicketIsSelected = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.isSelected,

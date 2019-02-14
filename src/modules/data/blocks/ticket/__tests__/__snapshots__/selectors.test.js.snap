@@ -287,6 +287,8 @@ exports[`Ticket block selectors Ticket selectors getTicketHasBeenCreated 1`] = `
 
 exports[`Ticket block selectors Ticket selectors getTicketHasChanges 1`] = `false`;
 
+exports[`Ticket block selectors Ticket selectors getTicketHasDurationError 1`] = `false`;
+
 exports[`Ticket block selectors Ticket selectors getTicketId 1`] = `0`;
 
 exports[`Ticket block selectors Ticket selectors getTicketIsLoading 1`] = `false`;

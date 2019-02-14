@@ -208,6 +208,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketHasChanges( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketHasDurationError', () => {
+			expect( selectors.getTicketHasDurationError( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketIsSelected', () => {
 			expect( selectors.getTicketIsSelected( state, ownProps ) ).toMatchSnapshot();
 		} );
