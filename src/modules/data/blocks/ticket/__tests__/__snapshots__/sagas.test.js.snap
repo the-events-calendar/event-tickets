@@ -566,7 +566,7 @@ Object {
             "clientId": "clientId",
             "hasChanges": true,
           },
-          "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+          "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
         },
         "channel": null,
       },
