@@ -213,7 +213,6 @@ body.page-tribe-attendee-registration .tribe-tickets-meta-required .tribe-option
 		max-width: 70px;
 		position: absolute;
 		-webkit-transform: translateX(-50%);
-		    -ms-transform: translateX(-50%);
 		        transform: translateX(-50%);
 		top: 35%;
 	}

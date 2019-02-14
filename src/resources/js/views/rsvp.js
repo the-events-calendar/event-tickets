@@ -153,7 +153,7 @@ var tribe_tickets_rsvp_block = {
 		var has_tickets_plus = !! window.tribe_event_tickets_plus;
 
 		if ( has_tickets_plus ) {
-			is_meta_valid = window.tribe_event_tickets_plus.meta.block_validate_meta( $form );
+			is_meta_valid = window.tribe_event_tickets_plus.meta.validate_meta( $form );
 		}
 
 		// Handle invalid form
