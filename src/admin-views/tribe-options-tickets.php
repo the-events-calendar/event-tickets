@@ -14,7 +14,7 @@ $template_options = array(
 );
 
 if ( class_exists( 'Tribe__Events__Main' ) ) {
-	$template_options['same']  = esc_html__( 'Same as Event Page Template', 'the-events-calendar' );
+	$template_options['same']  = esc_html__( 'Same as Event Page Template', 'event-tickets' );
 	$template_options['event'] = esc_html__( 'Default Events Template', 'the-events-calendar' );
 }
 
