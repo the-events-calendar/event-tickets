@@ -10,7 +10,7 @@ $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_
 ) );
 
 $template_options = array(
-	'default' => esc_html__( 'Default Page Template', 'the-events-calendar' ),
+	'default' => esc_html__( 'Default Page Template', 'event-tickets' ),
 );
 
 if ( class_exists( 'Tribe__Events__Main' ) ) {
