@@ -43,6 +43,7 @@ Object {
     "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
+    "hasDurationError": false,
     "isLoading": false,
     "isSelected": false,
     "provider": "",
