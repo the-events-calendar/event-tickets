@@ -566,9 +566,19 @@ Object {
             "clientId": "clientId",
             "hasChanges": true,
           },
-          "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+          "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
         },
         "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [
+          "clientId",
+        ],
+        "context": null,
+        "fn": [Function],
       },
     },
   ],

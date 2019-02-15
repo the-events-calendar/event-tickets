@@ -198,6 +198,8 @@ export function* setTicketInitialState( action ) {
 			put( actions.fetchTicket( clientId, ticketId ) ),
 		] );
 	}
+
+	yield call( handleTicketDurationError, clientId );
 }
 
 export function* setBodyDetails( clientId ) {
@@ -893,6 +895,9 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 
 				// Trigger UI button
 				put( actions.setTicketHasChanges( clientId, true ) ),
+
+				// Handle ticket duration error
+				call( handleTicketDurationError, clientId ),
 			] );
 
 			yield fork( saveTicketWithPostSave, clientId );
@@ -938,6 +943,30 @@ export function* handleEventStartDateChanges() {
 		// ¯\_(ツ)_/¯
 		console.error( error );
 	}
+}
+
+export function* handleTicketDurationError( clientId ) {
+	let hasDurationError = false;
+	const startDateMoment = yield select( selectors.getTicketTempStartDateMoment, { clientId } );
+	const endDateMoment = yield select( selectors.getTicketTempEndDateMoment, { clientId } );
+
+	if ( ! startDateMoment || ! endDateMoment ) {
+		hasDurationError = true;
+	} else {
+		const startTime = yield select( selectors.getTicketTempStartTime, { clientId } );
+		const endTime = yield select( selectors.getTicketTempEndTime, { clientId } );
+		const startTimeSeconds = yield call( timeUtil.toSeconds, startTime, timeUtil.TIME_FORMAT_HH_MM_SS );
+		const endTimeSeconds = yield call( timeUtil.toSeconds, endTime, timeUtil.TIME_FORMAT_HH_MM_SS );
+		const startDateTimeMoment = yield call( momentUtil.setTimeInSeconds, startDateMoment.clone(), startTimeSeconds );
+		const endDateTimeMoment = yield call( momentUtil.setTimeInSeconds, endDateMoment.clone(), endTimeSeconds );
+		const durationHasError = yield call( [ startDateTimeMoment, 'isSameOrAfter' ], endDateTimeMoment );
+
+		if ( durationHasError ) {
+			hasDurationError = true;
+		}
+	}
+
+	yield put( actions.setTicketHasDurationError( clientId, hasDurationError ) );
 }
 
 export function* handleTicketStartDate( action ) {
@@ -1049,23 +1078,27 @@ export function* handler( action ) {
 
 		case types.HANDLE_TICKET_START_DATE:
 			yield call( handleTicketStartDate, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_END_DATE:
 			yield call( handleTicketEndDate, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_START_TIME:
 			yield call( handleTicketStartTime, action );
 			yield call( handleTicketStartTimeInput, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_END_TIME:
 			yield call( handleTicketEndTime, action );
 			yield call( handleTicketEndTimeInput, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 

@@ -71,6 +71,7 @@ Object {
         "hasAttendeeInfoFields": false,
         "hasBeenCreated": false,
         "hasChanges": false,
+        "hasDurationError": false,
         "isLoading": false,
         "isSelected": false,
         "provider": "",
@@ -245,6 +246,7 @@ Object {
   "hasAttendeeInfoFields": false,
   "hasBeenCreated": false,
   "hasChanges": false,
+  "hasDurationError": false,
   "isLoading": false,
   "isSelected": false,
   "provider": "",
@@ -284,6 +286,8 @@ exports[`Ticket block selectors Ticket selectors getTicketHasAttendeeInfoFields 
 exports[`Ticket block selectors Ticket selectors getTicketHasBeenCreated 1`] = `false`;
 
 exports[`Ticket block selectors Ticket selectors getTicketHasChanges 1`] = `false`;
+
+exports[`Ticket block selectors Ticket selectors getTicketHasDurationError 1`] = `false`;
 
 exports[`Ticket block selectors Ticket selectors getTicketId 1`] = `0`;
 
@@ -385,6 +389,7 @@ Array [
     "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
+    "hasDurationError": false,
     "isLoading": false,
     "isSelected": false,
     "provider": "",
@@ -445,6 +450,7 @@ Object {
       "hasAttendeeInfoFields": false,
       "hasBeenCreated": false,
       "hasChanges": false,
+      "hasDurationError": false,
       "isLoading": false,
       "isSelected": false,
       "provider": "",
@@ -506,6 +512,7 @@ Array [
     "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
+    "hasDurationError": false,
     "isLoading": false,
     "isSelected": false,
     "provider": "",
@@ -560,6 +567,7 @@ Object {
     "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
+    "hasDurationError": false,
     "isLoading": false,
     "isSelected": false,
     "provider": "",
