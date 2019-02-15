@@ -120,6 +120,7 @@ export function* setRSVPTempDetails( action ) {
 //
 // ─── INITIALIZE ─────────────────────────────────────────────────────────────────
 //
+
 /**
  * Initializes RSVP that has not been created
  * @borrows TEC - Optional functionality requires TEC to be enabled and post type to be event
@@ -177,6 +178,8 @@ export function* initializeRSVP() {
 		// ¯\_(ツ)_/¯
 		console.error( error );
 	}
+
+	yield call( handleRSVPDurationError );
 }
 
 /**
@@ -229,6 +232,9 @@ export function* syncRSVPSaleEndWithEventStart( prevStartDate ) {
 
 				// Trigger UI button
 				put( actions.setRSVPHasChanges( true ) ),
+
+				// Handle RSVP duration error
+				call( handleRSVPDurationError ),
 			] );
 
 			// Sub fork which will wait to sync RSVP when post saves
@@ -323,6 +329,29 @@ export function* handleEventStartDateChanges() {
 //
 // ─── DATE & TIME ────────────────────────────────────────────────────────────────
 //
+
+export function* handleRSVPDurationError() {
+	let hasDurationError = false;
+	const startDateMoment = yield select( selectors.getRSVPTempStartDateMoment );
+	const endDateMoment = yield select( selectors.getRSVPTempEndDateMoment );
+
+	if ( ! startDateMoment || ! endDateMoment ) {
+		hasDurationError = true;
+	} else {
+		const startTime = yield select( selectors.getRSVPTempStartTime );
+		const endTime = yield select( selectors.getRSVPTempEndTime );
+		const startTimeSeconds = yield call( timeUtil.toSeconds, startTime, timeUtil.TIME_FORMAT_HH_MM_SS );
+		const endTimeSeconds = yield call( timeUtil.toSeconds, endTime, timeUtil.TIME_FORMAT_HH_MM_SS );
+		const startDateTimeMoment = yield call( momentUtil.setTimeInSeconds, startDateMoment.clone(), startTimeSeconds );
+		const endDateTimeMoment = yield call( momentUtil.setTimeInSeconds, endDateMoment.clone(), endTimeSeconds );
+
+		if ( startDateTimeMoment.isSameOrAfter( endDateTimeMoment ) ) {
+			hasDurationError = true;
+		}
+	}
+
+	yield put( actions.setRSVPHasDurationError( hasDurationError ) );
+}
 
 export function* handleRSVPStartDate( action ) {
 	const { date, dayPickerInput } = action.payload;
@@ -527,23 +556,27 @@ export function* handler( action ) {
 
 		case types.HANDLE_RSVP_START_DATE:
 			yield call( handleRSVPStartDate, action );
+			yield call( handleRSVPDurationError );
 			yield put( actions.setRSVPHasChanges( true ) );
 			break;
 
 		case types.HANDLE_RSVP_END_DATE:
 			yield call( handleRSVPEndDate, action );
+			yield call( handleRSVPDurationError );
 			yield put( actions.setRSVPHasChanges( true ) );
 			break;
 
 		case types.HANDLE_RSVP_START_TIME:
 			yield call( handleRSVPStartTime, action );
 			yield call( handleRSVPStartTimeInput, action );
+			yield call( handleRSVPDurationError );
 			yield put( actions.setRSVPHasChanges( true ) );
 			break;
 
 		case types.HANDLE_RSVP_END_TIME:
 			yield call( handleRSVPEndTime, action );
 			yield call( handleRSVPEndTimeInput, action );
+			yield call( handleRSVPDurationError );
 			yield put( actions.setRSVPHasChanges( true ) );
 			break;
 
