@@ -124,15 +124,29 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
+* Tweak - Save attendee information on registration page via ajax [121592]
+* Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
+* Tweak - Indicate required fields in ticket block [122442]
+* Tweak - Add filter for attendee registration page template [121223]
 * Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
 * Fix - Only allow attendee move functionality in admin [87145]
 * Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
+* Fix - Allow users to always access attendee registration page if tickets in cart have meta [121819]
+* Fix - Allow tickets with required and non-required meta to be saved together [121821]
+* Fix - Fix issue with WooCommerce checkout returning to attendee registration page [120735]
+* Fix - Update available tickets when updating capacity [120280]
+* Fix - Do not show print, email, and export buttons if not in admin [120646]
+* Fix - Add Indian Rupee and Russian Ruple to PayPal currency code list [120554]
+* Fix - Fix RSVP "don't show my information" checkbox in Twenty Nineteen theme [120685]
 * Fix - Add ticket id to option id for attendee registration fields [122035]
 * Fix - Path to override attendee registration templates defined in template files [120196]
 * Fix - Fix path to override attendee registration templates [120037]
 * Fix - Fix text domain in attendee field view [121019]
+* Fix - Fix focus for sales duration in ticket block [122441]
+* Fix - Fix mobile styles for tickets and RSVP [118299]
+* Fix - Prevent notices when adding a new event in Community Events with Community Tickets active [116724]
 
 = [4.10.0.1] 2019-02-07 =
 
@@ -156,10 +170,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Language - 15 new strings added, 136 updated, 0 fuzzied, and 40 obsoleted
 
 = [4.9.4] 2019-01-15 =
-
-* Fix - Do not show print, email, and export buttons if not in admin [120646]
-
-= [TBD] =
 
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]
