@@ -344,8 +344,9 @@ export function* handleRSVPDurationError() {
 		const endTimeSeconds = yield call( timeUtil.toSeconds, endTime, timeUtil.TIME_FORMAT_HH_MM_SS );
 		const startDateTimeMoment = yield call( momentUtil.setTimeInSeconds, startDateMoment.clone(), startTimeSeconds );
 		const endDateTimeMoment = yield call( momentUtil.setTimeInSeconds, endDateMoment.clone(), endTimeSeconds );
+		const durationHasError = yield call( [ startDateTimeMoment, 'isSameOrAfter' ], endDateTimeMoment );
 
-		if ( startDateTimeMoment.isSameOrAfter( endDateTimeMoment ) ) {
+		if ( durationHasError ) {
 			hasDurationError = true;
 		}
 	}

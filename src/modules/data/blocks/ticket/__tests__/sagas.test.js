@@ -1973,8 +1973,6 @@ describe( 'Ticket Block sagas', () => {
 				clone: () => {},
 				isSameOrAfter: () => {},
 			};
-			const START_DATE = 'January 10, 2019';
-			const END_DATE = 'January 8, 2019';
 			const START_TIME = '12:00:00';
 			const END_TIME = '13:00:00';
 			const START_TIME_SECONDS = 43200;
@@ -2023,8 +2021,6 @@ describe( 'Ticket Block sagas', () => {
 				clone: () => {},
 				isSameOrAfter: () => {},
 			};
-			const START_DATE = 'January 8, 2019';
-			const END_DATE = 'January 10, 2019';
 			const START_TIME = '12:00:00';
 			const END_TIME = '13:00:00';
 			const START_TIME_SECONDS = 43200;
