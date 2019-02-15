@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
+* Tweak - Add duration error for duration issues with ticket and RSVP [122679]
 * Tweak - Save attendee information on registration page via ajax [121592]
 * Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
 * Tweak - Indicate required fields in ticket block [122442]
