@@ -571,6 +571,16 @@ Object {
         "channel": null,
       },
     },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [
+          "clientId",
+        ],
+        "context": null,
+        "fn": [Function],
+      },
+    },
   ],
 }
 `;

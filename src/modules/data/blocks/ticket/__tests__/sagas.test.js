@@ -223,6 +223,9 @@ describe( 'Ticket Block sagas', () => {
 				call( sagas.handleTicketStartDate, action )
 			);
 			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, action.payload.clientId )
+			);
+			expect( gen.next().value ).toEqual(
 				put( actions.setTicketHasChanges( action.payload.clientId, true ) )
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -234,6 +237,9 @@ describe( 'Ticket Block sagas', () => {
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
 				call( sagas.handleTicketEndDate, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, action.payload.clientId )
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketHasChanges( action.payload.clientId, true ) )
@@ -252,6 +258,9 @@ describe( 'Ticket Block sagas', () => {
 				call( sagas.handleTicketStartTimeInput, action )
 			);
 			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, action.payload.clientId )
+			);
+			expect( gen.next().value ).toEqual(
 				put( actions.setTicketHasChanges( action.payload.clientId, true ) )
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -266,6 +275,9 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( gen.next().value ).toEqual(
 				call( sagas.handleTicketEndTimeInput, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, action.payload.clientId )
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setTicketHasChanges( action.payload.clientId, true ) )
@@ -593,6 +605,9 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.fetchTicket( CLIENT_ID, TICKET_ID ) ),
 				] )
 			);
+			expect( clone1.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, CLIENT_ID )
+			);
 			expect( clone1.next().done ).toEqual( true );
 
 			const clone2 = gen.clone();
@@ -609,6 +624,9 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketId( CLIENT_ID, TICKET_ID ) ),
 					put( actions.fetchTicket( CLIENT_ID, TICKET_ID ) ),
 				] )
+			);
+			expect( clone2.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, CLIENT_ID )
 			);
 			expect( clone2.next().done ).toEqual( true );
 		} );
@@ -702,6 +720,9 @@ describe( 'Ticket Block sagas', () => {
 			const clone1 = gen.clone();
 			const blankSharedCapacity = '';
 
+			expect( clone1.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, CLIENT_ID )
+			);
 			expect( clone1.next( blankSharedCapacity ).done ).toEqual( true );
 
 			const clone2 = gen.clone();
@@ -712,6 +733,9 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketCapacity( CLIENT_ID, sharedCapacity ) ),
 					put( actions.setTicketTempCapacity( CLIENT_ID, sharedCapacity ) ),
 				] )
+			);
+			expect( clone2.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, CLIENT_ID )
 			);
 			expect( clone2.next().done ).toEqual( true );
 		} );
@@ -1918,6 +1942,123 @@ describe( 'Ticket Block sagas', () => {
 					put( actions.setTicketTempCapacityType( CLIENT_ID, capacityType ) ),
 					put( actions.setTicketTempCapacity( CLIENT_ID, capacity ) ),
 				] )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+	} );
+
+	describe( 'handleTicketDurationError', () => {
+		it( 'should set has duration error to true if start or end moment is invalid', () => {
+			const CLIENT_ID = 'tribe';
+			const gen = sagas.handleTicketDurationError( CLIENT_ID );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempStartDateMoment, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( undefined ).value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( undefined ).value ).toEqual(
+				put( actions.setTicketHasDurationError( CLIENT_ID, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set thas duration error to true if start date time is after end date time', () => {
+			const CLIENT_ID = 'tribe';
+			const START_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const END_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const START_DATE = 'January 10, 2019';
+			const END_DATE = 'January 8, 2019';
+			const START_TIME = '12:00:00';
+			const END_TIME = '13:00:00';
+			const START_TIME_SECONDS = 43200;
+			const END_TIME_SECONDS = 46800;
+			const gen = sagas.handleTicketDurationError( CLIENT_ID );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempStartDateMoment, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getTicketTempStartTime, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( START_TIME ).value ).toEqual(
+				select( selectors.getTicketTempEndTime, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( END_TIME ).value ).toEqual(
+				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( START_TIME_SECONDS ).value ).toEqual(
+				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( END_TIME_SECONDS ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT )
+			);
+			expect( gen.next( true ).value ).toEqual(
+				put( actions.setTicketHasDurationError( CLIENT_ID, true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set thas duration error to false if start date time is before end date time', () => {
+			const CLIENT_ID = 'tribe';
+			const START_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const END_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const START_DATE = 'January 8, 2019';
+			const END_DATE = 'January 10, 2019';
+			const START_TIME = '12:00:00';
+			const END_TIME = '13:00:00';
+			const START_TIME_SECONDS = 43200;
+			const END_TIME_SECONDS = 46800;
+			const gen = sagas.handleTicketDurationError( CLIENT_ID );
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketTempStartDateMoment, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getTicketTempEndDateMoment, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getTicketTempStartTime, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( START_TIME ).value ).toEqual(
+				select( selectors.getTicketTempEndTime, { clientId: CLIENT_ID } )
+			);
+			expect( gen.next( END_TIME ).value ).toEqual(
+				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( START_TIME_SECONDS ).value ).toEqual(
+				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( END_TIME_SECONDS ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT )
+			);
+			expect( gen.next( false ).value ).toEqual(
+				put( actions.setTicketHasDurationError( CLIENT_ID, false ) )
 			);
 			expect( gen.next().done ).toEqual( true );
 		} );
