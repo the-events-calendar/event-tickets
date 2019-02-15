@@ -17,7 +17,10 @@ import { Dashicon } from '@wordpress/components';
 import { DateTimeRangePicker, LabelWithTooltip } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-const TicketDuration = ( props ) => (
+const TicketDuration = ( {
+	hasDurationError,
+	...props
+} ) => (
 	<div className={ classNames(
 		'tribe-editor__ticket__duration',
 		'tribe-editor__ticket__content-row',
