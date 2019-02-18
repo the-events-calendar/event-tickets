@@ -24,7 +24,7 @@ Object {
     "currencySymbol": undefined,
     "details": Object {
       "capacity": "",
-      "capacityType": "capped",
+      "capacityType": "unlimited",
       "description": "",
       "endDate": "2118-01-10",
       "endDateInput": "January 10, 2118",
@@ -50,7 +50,7 @@ Object {
     "sold": 0,
     "tempDetails": Object {
       "capacity": "",
-      "capacityType": "capped",
+      "capacityType": "unlimited",
       "description": "",
       "endDate": "2118-01-10",
       "endDateInput": "January 10, 2118",

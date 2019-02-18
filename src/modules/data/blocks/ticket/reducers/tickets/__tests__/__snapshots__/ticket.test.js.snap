@@ -7,7 +7,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -33,7 +33,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -60,7 +60,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -86,7 +86,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -113,7 +113,7 @@ Object {
   "currencySymbol": "$",
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -139,7 +139,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -166,7 +166,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -192,7 +192,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -219,7 +219,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -245,7 +245,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -272,7 +272,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -298,7 +298,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -325,7 +325,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -351,7 +351,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -378,7 +378,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -404,7 +404,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -431,7 +431,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -457,7 +457,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -484,7 +484,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -510,7 +510,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -537,7 +537,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -563,7 +563,7 @@ Object {
   "sold": 20,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -590,7 +590,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",
@@ -616,7 +616,7 @@ Object {
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-07-19",
     "endDateInput": "July 19, 2118",

@@ -40,8 +40,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Modify the link for the edit post link
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
 
-		//switcheroo for templates that force us to use the excerpt as we're saying we're on an archive
-		add_filter( 'the_excerpt', array( $this, 'set_page_excerpt' ) );
+		// Switcheroo for templates that force us to use the excerpt as we're saying we're on an archive
+		add_filter( 'genesis_pre_get_option_content_archive', array( $this, 'override_genesis' ), 10, 2 );
 
 		// Modify the page title
 		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
@@ -275,23 +275,21 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
-	 * Set the page excerpt to be post content on attendee registration page.
+	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
 	 *
-	 * @since TBD
+	 * @param [string] (null) $unused_null string for value
+	 * @param [type] $unused_setting
 	 *
-	 * @param string $post_excerpt Excerpt text
-	 *
-	 * @return string Excerpt text or post content.
+	 * @return void
 	 */
-	public function set_page_excerpt( $post_excerpt ) {
-
+	public function override_genesis( $unused_null, $unused_setting ) {
 		// Bail if we're not on the attendee info page
 		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
-			return $post_excerpt;
+			return null;
 		}
 
-		// else, be sure we return the content - not the excerpt
-		return get_the_content();
+		return 'full';
+
 	}
 
 	/**
