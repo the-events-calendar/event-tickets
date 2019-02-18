@@ -32,6 +32,7 @@ import {
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
+import { plugins } from '@moderntribe/common/data';
 import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
 
 const {
@@ -593,6 +594,9 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
+				select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS )
+			);
+			expect( gen.next( false ).value ).toEqual(
 				select( selectors.getTicketsSharedCapacity )
 			);
 
@@ -714,6 +718,9 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( gen.next().value ).toEqual(
+				select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS )
+			);
+			expect( gen.next( false ).value ).toEqual(
 				select( selectors.getTicketsSharedCapacity )
 			);
 
@@ -738,6 +745,106 @@ describe( 'Ticket Block sagas', () => {
 				call( sagas.handleTicketDurationError, CLIENT_ID )
 			);
 			expect( clone2.next().done ).toEqual( true );
+		} );
+
+		it( 'should set capacity type to shared if tickets plus is active', () => {
+			const TICKET_ID = 0;
+			const CLIENT_ID = 'modern-tribe';
+			const HAS_BEEN_CREATED = true;
+			const action = {
+				payload: {
+					get: ( key ) => {
+						if ( key === 'ticketId' ) {
+							return TICKET_ID;
+						} else if ( key === 'hasBeenCreated' ) {
+							return HAS_BEEN_CREATED;
+						}
+					},
+					clientId: CLIENT_ID,
+				},
+			};
+			global.tribe.events.data.blocks.datetime.selectors.getStart = jest.fn();
+
+			const gen = cloneableGenerator( sagas.setTicketInitialState )( action );
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( publishDate ).value ).toEqual(
+				call( momentUtil.toMoment, publishDate )
+			);
+			expect( gen.next( startMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, startMoment )
+			);
+			expect( gen.next( startDate ).value ).toEqual(
+				call( momentUtil.toDate, startMoment )
+			);
+			expect( gen.next( startDateInput ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, startMoment )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				call( momentUtil.toTime, startMoment )
+			);
+			expect( gen.next( startTime ).value ).toEqual(
+				all( [
+					put( actions.setTicketStartDate( action.payload.clientId, startDate ) ),
+					put( actions.setTicketStartDateInput( action.payload.clientId, startDateInput ) ),
+					put( actions.setTicketStartDateMoment( action.payload.clientId, startMoment ) ),
+					put( actions.setTicketStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketStartTimeInput( action.payload.clientId, startTime ) ),
+					put( actions.setTicketTempStartDate( action.payload.clientId, startDate ) ),
+					put( actions.setTicketTempStartDateInput( action.payload.clientId, startDateInput ) ),
+					put( actions.setTicketTempStartDateMoment( action.payload.clientId, startMoment ) ),
+					put( actions.setTicketTempStartTime( action.payload.clientId, startTime ) ),
+					put( actions.setTicketTempStartTimeInput( action.payload.clientId, startTime ) ),
+					put( actions.setTicketHasBeenCreated( action.payload.clientId, HAS_BEEN_CREATED ) ),
+				] )
+			);
+			expect( gen.next().value ).toEqual(
+				select( global.tribe.events.data.blocks.datetime.selectors.getStart )
+			)
+			expect( gen.next( eventStart ).value ).toEqual(
+				call( momentUtil.toMoment, eventStart )
+			);
+			expect( gen.next( endMoment ).value ).toEqual(
+				call( momentUtil.toDatabaseDate, endMoment )
+			);
+			expect( gen.next( endDate ).value ).toEqual(
+				call( momentUtil.toDate, endMoment )
+			);
+			expect( gen.next( endDateInput ).value ).toEqual(
+				call( momentUtil.toDatabaseTime, endMoment )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				call( momentUtil.toTime, endMoment )
+			);
+			expect( gen.next( endTime ).value ).toEqual(
+				all( [
+					put( actions.setTicketEndDate( action.payload.clientId, endDate ) ),
+					put( actions.setTicketEndDateInput( action.payload.clientId, endDateInput ) ),
+					put( actions.setTicketEndDateMoment( action.payload.clientId, endMoment ) ),
+					put( actions.setTicketEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketEndTimeInput( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndDate( action.payload.clientId, endDate ) ),
+					put( actions.setTicketTempEndDateInput( action.payload.clientId, endDateInput ) ),
+					put( actions.setTicketTempEndDateMoment( action.payload.clientId, endMoment ) ),
+					put( actions.setTicketTempEndTime( action.payload.clientId, endTime ) ),
+					put( actions.setTicketTempEndTimeInput( action.payload.clientId, endTime ) ),
+				] )
+			);
+			expect( gen.next().value ).toEqual(
+				select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS )
+			);
+			expect( gen.next( true ).value ).toEqual(
+				all( [
+					put( actions.setTicketCapacityType( CLIENT_ID, constants.TICKET_TYPES[ constants.SHARED ] ) ),
+					put( actions.setTicketTempCapacityType( CLIENT_ID, constants.TICKET_TYPES[ constants.SHARED ] ) ),
+				] )
+			);
+			expect( gen.next().value ).toEqual(
+				select( selectors.getTicketsSharedCapacity )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleTicketDurationError, CLIENT_ID )
+			);
+			expect( gen.next( '' ).done ).toEqual( true );
 		} );
 	} );
 

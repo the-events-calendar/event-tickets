@@ -3,7 +3,7 @@
 exports[`Temp details reducer should set the temp capacity 1`] = `
 Object {
   "capacity": 20,
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -45,7 +45,7 @@ Object {
 exports[`Temp details reducer should set the temp description 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "new description",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -66,7 +66,7 @@ Object {
 exports[`Temp details reducer should set the temp end date 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "January 1, 2018",
   "endDateInput": "July 19, 2118",
@@ -87,7 +87,7 @@ Object {
 exports[`Temp details reducer should set the temp end date moment 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -110,7 +110,7 @@ Object {
 exports[`Temp details reducer should set the temp end time 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -131,7 +131,7 @@ Object {
 exports[`Temp details reducer should set the temp end time input 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -152,7 +152,7 @@ Object {
 exports[`Temp details reducer should set the temp price 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -173,7 +173,7 @@ Object {
 exports[`Temp details reducer should set the temp sku 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -194,7 +194,7 @@ Object {
 exports[`Temp details reducer should set the temp start date 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -215,7 +215,7 @@ Object {
 exports[`Temp details reducer should set the temp start date moment 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -238,7 +238,7 @@ Object {
 exports[`Temp details reducer should set the temp start time 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -259,7 +259,7 @@ Object {
 exports[`Temp details reducer should set the temp start time input 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
@@ -280,7 +280,7 @@ Object {
 exports[`Temp details reducer should set the temp title 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-07-19",
   "endDateInput": "July 19, 2118",
