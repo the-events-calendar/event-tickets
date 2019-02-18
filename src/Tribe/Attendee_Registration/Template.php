@@ -31,7 +31,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 */
 		add_filter( 'template_include', array( $this, 'set_page_template' ), 15 );
 
-
 		/*
 		 * Set the content of the page. Again, it has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
@@ -105,7 +104,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		if ( empty( $template ) ) {
 			// we should only get here if the value hasn't been set yet
-			$tempalte = 'default';
+			$template = 'default';
 		} elseif ( 'same' === $template ) {
 			//note this could be an empty string...because
 			$template = $event_template;
@@ -113,9 +112,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		switch ( $template ) {
 			case '' :
-			case 'event' :
-				$template = Tribe__Events__Templates::getTemplateHierarchy( 'default-template' );
-				break;
 			case 'default' :
 				$template = get_template_directory() . '/page.php';
 				break;
