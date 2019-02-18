@@ -36,6 +36,7 @@ import {
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
+import { plugins } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
@@ -182,6 +183,14 @@ export function* setTicketInitialState( action ) {
 	} catch ( err ) {
 		console.error( err );
 		// ¯\_(ツ)_/¯
+	}
+
+	const hasTicketsPlus = yield select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS );
+	if ( hasTicketsPlus ) {
+		yield all( [
+			put( actions.setTicketCapacityType( clientId, constants.TICKET_TYPES[ constants.SHARED ] ) ),
+			put( actions.setTicketTempCapacityType( clientId, constants.TICKET_TYPES[ constants.SHARED ] ) ),
+		] );
 	}
 
 	const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
