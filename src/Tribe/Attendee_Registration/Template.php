@@ -41,8 +41,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Modify the link for the edit post link
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
 
-		//switcheroo for templates that force us to use the excerpt as we're saying we're on an archive
-		add_filter( "genesis_pre_get_option_content_archive", array( $this, 'override_genesis'), 10, 2 );
+		// Switcheroo for templates that force us to use the excerpt as we're saying we're on an archive
+		add_filter( 'genesis_pre_get_option_content_archive', array( $this, 'override_genesis' ), 10, 2 );
 
 		// Modify the page title
 		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
