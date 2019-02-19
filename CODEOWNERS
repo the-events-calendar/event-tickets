@@ -1,2 +1,2 @@
-# Any changes to Main or Bootstrapping files needs Lead Review
-/src/Tribe/Main.php event-tickets.php @bordoni
+# All changes require Lead review
+* @sc0ttkclark

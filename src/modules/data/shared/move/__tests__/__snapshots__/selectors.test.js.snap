@@ -1,0 +1,110 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Move Selectors Default - _getModal 1`] = `
+Object {
+  "clientId": null,
+  "isSubmitting": false,
+  "post_type": "all",
+  "search_terms": "",
+  "target_post_id": null,
+  "ticketId": null,
+}
+`;
+
+exports[`Move Selectors Default - _getPostTypes 1`] = `
+Object {
+  "isFetching": false,
+  "posts": Object {},
+}
+`;
+
+exports[`Move Selectors Default - _getPosts 1`] = `
+Object {
+  "isFetching": false,
+  "posts": Object {},
+}
+`;
+
+exports[`Move Selectors Default - _getUI 1`] = `
+Object {
+  "showModal": false,
+}
+`;
+
+exports[`Move Selectors Default - getModalClientId 1`] = `null`;
+
+exports[`Move Selectors Default - getModalPostType 1`] = `"all"`;
+
+exports[`Move Selectors Default - getModalSearch 1`] = `""`;
+
+exports[`Move Selectors Default - getModalTarget 1`] = `null`;
+
+exports[`Move Selectors Default - getModalTicketId 1`] = `null`;
+
+exports[`Move Selectors Default - getMove 1`] = `
+Object {
+  "modal": Object {
+    "clientId": null,
+    "isSubmitting": false,
+    "post_type": "all",
+    "search_terms": "",
+    "target_post_id": null,
+    "ticketId": null,
+  },
+  "postTypes": Object {
+    "isFetching": false,
+    "posts": Object {},
+  },
+  "posts": Object {
+    "isFetching": false,
+    "posts": Object {},
+  },
+  "ui": Object {
+    "showModal": false,
+  },
+}
+`;
+
+exports[`Move Selectors Default - getPostOptions 1`] = `Array []`;
+
+exports[`Move Selectors Default - getPostTypeOptionValue 1`] = `undefined`;
+
+exports[`Move Selectors Default - getPostTypeOptions 1`] = `Array []`;
+
+exports[`Move Selectors Default - getPostTypes 1`] = `Object {}`;
+
+exports[`Move Selectors Default - getPosts 1`] = `Object {}`;
+
+exports[`Move Selectors Default - hasSelectedPost 1`] = `false`;
+
+exports[`Move Selectors Default - isFetchingPostTypes 1`] = `false`;
+
+exports[`Move Selectors Default - isFetchingPosts 1`] = `false`;
+
+exports[`Move Selectors Default - isModalShowing 1`] = `false`;
+
+exports[`Move Selectors Default - isModalSubmitting 1`] = `false`;
+
+exports[`Move Selectors getPostOptions 1`] = `Array []`;
+
+exports[`Move Selectors getPostTypeOptionValue 1`] = `
+Object {
+  "label": "All",
+  "value": "all",
+}
+`;
+
+exports[`Move Selectors getPostTypeOptions 1`] = `
+Array [
+  Object {
+    "label": "All",
+    "value": "all",
+  },
+  Object {
+    "label": "Cool",
+    "value": "cool",
+  },
+]
+`;
+
+exports[`Move Selectors hasSelectedPost 1`] = `true`;

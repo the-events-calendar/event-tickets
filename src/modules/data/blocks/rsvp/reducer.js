@@ -19,6 +19,7 @@ export const DEFAULT_STATE = {
 	isSettingsLoading: false,
 	goingCount: 0,
 	notGoingCount: 0,
+	hasAttendeeInfoFields: false,
 	details: DETAILS_DEFAULT_STATE,
 	tempDetails: DETAILS_DEFAULT_STATE,
 	headerImage: HEADER_IMAGE_DEFAULT_STATE,
@@ -68,16 +69,30 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				notGoingCount: action.payload.notGoingCount,
 			};
+		case types.SET_RSVP_HAS_ATTENDEE_INFO_FIELDS:
+			return {
+				...state,
+				hasAttendeeInfoFields: action.payload.hasAttendeeInfoFields,
+			};
+		case types.SET_RSVP_HAS_DURATION_ERROR:
+			return {
+				...state,
+				hasDurationError: action.payload.hasDurationError,
+			};
 		case types.SET_RSVP_TITLE:
 		case types.SET_RSVP_DESCRIPTION:
 		case types.SET_RSVP_CAPACITY:
 		case types.SET_RSVP_NOT_GOING_RESPONSES:
 		case types.SET_RSVP_START_DATE:
-		case types.SET_RSVP_START_DATE_OBJ:
+		case types.SET_RSVP_START_DATE_INPUT:
+		case types.SET_RSVP_START_DATE_MOMENT:
 		case types.SET_RSVP_END_DATE:
-		case types.SET_RSVP_END_DATE_OBJ:
+		case types.SET_RSVP_END_DATE_INPUT:
+		case types.SET_RSVP_END_DATE_MOMENT:
 		case types.SET_RSVP_START_TIME:
 		case types.SET_RSVP_END_TIME:
+		case types.SET_RSVP_START_TIME_INPUT:
+		case types.SET_RSVP_END_TIME_INPUT:
 			return {
 				...state,
 				details: details( state.details, action ),
@@ -87,11 +102,15 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_RSVP_TEMP_CAPACITY:
 		case types.SET_RSVP_TEMP_NOT_GOING_RESPONSES:
 		case types.SET_RSVP_TEMP_START_DATE:
-		case types.SET_RSVP_TEMP_START_DATE_OBJ:
+		case types.SET_RSVP_TEMP_START_DATE_INPUT:
+		case types.SET_RSVP_TEMP_START_DATE_MOMENT:
 		case types.SET_RSVP_TEMP_END_DATE:
-		case types.SET_RSVP_TEMP_END_DATE_OBJ:
+		case types.SET_RSVP_TEMP_END_DATE_INPUT:
+		case types.SET_RSVP_TEMP_END_DATE_MOMENT:
 		case types.SET_RSVP_TEMP_START_TIME:
 		case types.SET_RSVP_TEMP_END_TIME:
+		case types.SET_RSVP_TEMP_START_TIME_INPUT:
+		case types.SET_RSVP_TEMP_END_TIME_INPUT:
 			return {
 				...state,
 				tempDetails: tempDetails( state.tempDetails, action ),

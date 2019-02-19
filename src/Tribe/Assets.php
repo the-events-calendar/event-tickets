@@ -58,6 +58,7 @@ class Tribe__Tickets__Assets {
 			'add_ticket_nonce'    => wp_create_nonce( 'add_ticket_nonce' ),
 			'edit_ticket_nonce'   => wp_create_nonce( 'edit_ticket_nonce' ),
 			'remove_ticket_nonce' => wp_create_nonce( 'remove_ticket_nonce' ),
+			'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
 		);
 
 		$locale  = localeconv();
@@ -78,8 +79,8 @@ class Tribe__Tickets__Assets {
 		tribe_assets(
 			Tribe__Tickets__Main::instance(),
 			array(
-				array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style', 'tribe-jquery-timepicker-css' ) ),
-				array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css', 'common' ) ),
+				array( 'event-tickets-admin-css', 'tickets.css', array( 'tribe-validation-style', 'tribe-jquery-timepicker-css', 'tribe-common-admin' ) ),
+				array( 'event-tickets-admin-refresh-css', 'tickets-refresh.css', array( 'event-tickets-admin-css', 'tribe-common-admin' ) ),
 				array( 'event-tickets-admin-tables-css', 'tickets-tables.css', array( 'event-tickets-admin-css' ) ),
 				array( 'event-tickets-attendees-list-js', 'attendees-list.js', array( 'jquery' ) ),
 				array( 'event-tickets-admin-accordion-js', 'accordion.js', array() ),
@@ -177,5 +178,20 @@ class Tribe__Tickets__Assets {
 		if ( $this->is_editing_ticketable_post() ) {
 			tribe_asset_enqueue( 'tribe-validation' );
 		}
+	}
+
+	/**
+	 * Add data strings to tribe_l10n_datatables object.
+	 *
+	 * @param array $data Object data.
+	 *
+	 * @return array
+	 *
+	 * @since 4.9.4
+	 */
+	public function add_data_strings( $data ) {
+		$data['registration_prompt'] = __( 'There is unsaved attendee information. Are you sure you want to continue?', 'event-tickets' );
+
+		return $data;
 	}
 }

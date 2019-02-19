@@ -18,9 +18,11 @@ export const DEFAULT_STATE = {
 	currencySymbol: getDefaultProviderCurrency(),
 	currencyPosition: getDefaultCurrencyPosition(),
 	provider: '',
+	hasAttendeeInfoFields: false,
 	isLoading: false,
 	hasBeenCreated: false,
 	hasChanges: false,
+	hasDurationError: false,
 	isSelected: false,
 };
 
@@ -38,6 +40,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_END_DATE_MOMENT:
 		case types.SET_TICKET_START_TIME:
 		case types.SET_TICKET_END_TIME:
+		case types.SET_TICKET_START_TIME_INPUT:
+		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
 			return {
@@ -56,6 +60,8 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_TEMP_END_DATE_MOMENT:
 		case types.SET_TICKET_TEMP_START_TIME:
 		case types.SET_TICKET_TEMP_END_TIME:
+		case types.SET_TICKET_TEMP_START_TIME_INPUT:
+		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
 			return {
@@ -92,6 +98,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				provider: action.payload.provider,
 			};
+		case types.SET_TICKET_HAS_ATTENDEE_INFO_FIELDS:
+			return {
+				...state,
+				hasAttendeeInfoFields: action.payload.hasAttendeeInfoFields,
+			};
 		case types.SET_TICKET_IS_LOADING:
 			return {
 				...state,
@@ -106,6 +117,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				hasChanges: action.payload.hasChanges,
+			};
+		case types.SET_TICKET_HAS_DURATION_ERROR:
+			return {
+				...state,
+				hasDurationError: action.payload.hasDurationError,
 			};
 		case types.SET_TICKET_IS_SELECTED:
 			return {

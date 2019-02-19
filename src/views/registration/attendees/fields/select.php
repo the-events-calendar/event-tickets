@@ -2,7 +2,12 @@
 /**
  * The template for the select input
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields/select.php
+ *
+ * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
+ * @version TBD
  *
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
@@ -21,7 +26,7 @@ if ( ! $options ) {
 	return;
 }
 
-$option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id : '' );
+$option_id = "tribe-tickets-meta_{$slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' );
 ?>
 <div class="tribe-field tribe-block__tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>

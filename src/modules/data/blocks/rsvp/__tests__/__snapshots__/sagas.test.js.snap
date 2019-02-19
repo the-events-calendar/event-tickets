@@ -1,0 +1,636 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RSVP block sagas deleteRSVPHeaderImage should delete rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas deleteRSVPHeaderImage should not delete rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "date",
+    ],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "January 1, 2018",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas initializeRSVP should initialize state from datetime block 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "January 4, 2018",
+    ],
+    "context": null,
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas saveRSVPWithPostSave should update when channel saves 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Object {
+    "capacity": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "description": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "endDate": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "endDateInput": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "endDateMoment": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "endTime": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "id": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "notGoingResponses": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "startDate": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "startDateInput": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "startDateMoment": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "startTime": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+    "title": Object {
+      "@@redux-saga/IO": true,
+      "SELECT": Object {
+        "args": Array [],
+        "selector": [Function],
+      },
+    },
+  },
+}
+`;
+
+exports[`RSVP block sagas saveRSVPWithPostSave should update when channel saves 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "PUT": Object {
+    "action": [Function],
+    "channel": null,
+  },
+}
+`;
+
+exports[`RSVP block sagas setNonEventPostTypeEndDate should set end date 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDate": "2018-01-01",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateInput": "2018-01-01",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateMoment": "2018-01-01",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_MOMENT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endTime": "12:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDate": "2018-01-01",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_DATE",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateInput": "2018-01-01",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_DATE_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateMoment": "2018-01-01",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_DATE_MOMENT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endTime": "12:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_TIME",
+        },
+        "channel": null,
+      },
+    },
+  ],
+}
+`;
+
+exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should not sync 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+  ],
+}
+`;
+
+exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should not sync 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should not sync 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": Object {
+          "format": [MockFunction],
+          "isSame": [MockFunction],
+          "local": [MockFunction],
+        },
+        "fn": [MockFunction],
+      },
+    },
+  ],
+}
+`;
+
+exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Object {
+        "format": [MockFunction],
+        "isSame": [MockFunction],
+        "local": [MockFunction],
+      },
+      "minute",
+    ],
+    "context": Object {
+      "format": [MockFunction],
+      "isSame": [MockFunction],
+      "local": [MockFunction],
+    },
+    "fn": [MockFunction],
+  },
+}
+`;
+
+exports[`RSVP block sagas syncRSVPSaleEndWithEventStart should sync 4`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "ALL": Array [
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDate": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateInput": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateMoment": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_DATE_MOMENT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endTime": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endTimeInput": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_TEMP_END_TIME_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDate": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_DATE",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateInput": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_DATE_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endDateMoment": "2018-02-02",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_DATE_MOMENT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endTime": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_TIME",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "endTimeInput": "02:00:00",
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_END_TIME_INPUT",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "PUT": Object {
+        "action": Object {
+          "payload": Object {
+            "hasChanges": true,
+          },
+          "type": "@@MT/TICKETS/SET_RSVP_HAS_CHANGES",
+        },
+        "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [],
+        "context": null,
+        "fn": [Function],
+      },
+    },
+  ],
+}
+`;
+
+exports[`RSVP block sagas updateRSVPHeaderImage should not update rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`RSVP block sagas updateRSVPHeaderImage should update rsvp header image 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;

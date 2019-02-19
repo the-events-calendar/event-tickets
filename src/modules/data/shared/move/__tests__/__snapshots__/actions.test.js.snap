@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Move Actons hideModal 1`] = `
+Object {
+  "type": "@@MT/TICKETS/HIDE_MODAL",
+}
+`;
+
+exports[`Move Actons setModalData 1`] = `
+Object {
+  "payload": Object {},
+  "type": "@@MT/TICKETS/SET_MODAL_DATA",
+}
+`;
+
+exports[`Move Actons showModal 1`] = `
+Object {
+  "payload": Object {
+    "clientId": 1,
+    "ticketId": Object {},
+  },
+  "type": "@@MT/TICKETS/SHOW_MODAL",
+}
+`;

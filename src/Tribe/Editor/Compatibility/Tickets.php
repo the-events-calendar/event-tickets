@@ -39,13 +39,21 @@ class Tribe__Tickets__Editor__Compatibility__Tickets {
 		// Fetch the post
 		$post = get_post( get_the_ID() );
 
-		// We don't care about anything other than event for now
-		if ( Tribe__Events__Main::POSTTYPE !== $post->post_type ) {
+		// Return content if post is empty
+		if ( empty( $post ) ) {
 			return $content;
 		}
 
+		// We don't care about anything other than event for now
+		if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE !== $post->post_type ) {
+			return $content;
+		}
+
+		/** @var Tribe__Tickets__Editor__Template__Overwrite $template_overwrite */
+		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
+
 		// Bail on non gutenberg
-		if ( ! has_blocks( $post->ID ) ) {
+		if ( ! has_blocks( $post->ID ) || $template_overwrite->has_classic_editor( $post->ID ) ) {
 			return $content;
 		}
 

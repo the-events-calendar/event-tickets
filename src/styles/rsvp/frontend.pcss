@@ -26,7 +26,7 @@
 
 .tribe-block__rsvp__icon {
 	background: #fff;
-	border-right: 2px dashed #dfdfdf;
+	border: 0;
 	color: #575757;
 	flex: 1 1 100px;
 	padding: 30px 15px;
@@ -35,6 +35,10 @@
 	img,
 	svg {
 		width: 60px;
+	}
+
+	@media only screen and (min-width: 576px) {
+		border-right: 2px dashed #dfdfdf;
 	}
 }
 
@@ -126,7 +130,8 @@
 		display: block;
 	}
 
-	&:hover {
+	&:hover,
+	&:focus {
 		background: transparent;
 		color: #888;
 		svg path {
@@ -170,6 +175,10 @@
 		flex-wrap: wrap;
 		padding: 30px 0;
 
+		label {
+			font-weight: normal;
+		}
+
 		input {
 			margin-bottom: 15px;
 			padding: 10px;
@@ -179,6 +188,8 @@
 			&[type="text"],
 			&[type="email"],
 			&[type="number"] {
+				display: block;
+				width: 100%;
 				border-color: #e2e3e7;
 				color: #8d959b;
 			}
@@ -243,8 +254,9 @@
 	margin: 0;
 	padding: 12px 15px;
 
-	&:hover {
-		background: #009fd4;
+	&:hover,
+	&:focus {
+		background: #007bb4;
 		color: #fff;
 	}
 }
@@ -273,7 +285,8 @@
 		transform: translate(-50%, -50%);
 	}
 
-	&:hover {
+	&:hover,
+	&:focus {
 		background: none;
 	}
 
@@ -311,4 +324,15 @@
 	border: 1px solid #c00;
 	display: none;
 	padding: 10px;
+}
+
+.tribe-block__rsvp__form__attendee-meta {
+	margin: 0;
+
+	th,
+	td {
+		padding: 0;
+		border: none;
+		word-break: normal;
+	}
 }

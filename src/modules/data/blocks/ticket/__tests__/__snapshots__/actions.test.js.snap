@@ -31,7 +31,7 @@ Object {
 exports[`Ticket actions Ticket actions register ticket block 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/REGISTER_TICKET_BLOCK",
 }
@@ -40,9 +40,15 @@ Object {
 exports[`Ticket actions Ticket actions remove ticket block 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/REMOVE_TICKET_BLOCK",
+}
+`;
+
+exports[`Ticket actions Ticket actions remove ticket blocks 1`] = `
+Object {
+  "type": "@@MT/TICKETS/REMOVE_TICKET_BLOCKS",
 }
 `;
 
@@ -50,7 +56,7 @@ exports[`Ticket actions Ticket actions set ticket availability 1`] = `
 Object {
   "payload": Object {
     "available": 99,
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/SET_TICKET_AVAILABLE",
 }
@@ -59,7 +65,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket currency positioin 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "currencyPosition": "suffix",
   },
   "type": "@@MT/TICKETS/SET_TICKET_CURRENCY_POSITION",
@@ -69,17 +75,37 @@ Object {
 exports[`Ticket actions Ticket actions set ticket currency symbol 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "currencySymbol": "$",
   },
   "type": "@@MT/TICKETS/SET_TICKET_CURRENCY_SYMBOL",
 }
 `;
 
+exports[`Ticket actions Ticket actions set ticket has attendee info fields 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasAttendeeInfoFields": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_ATTENDEE_INFO_FIELDS",
+}
+`;
+
+exports[`Ticket actions Ticket actions set ticket has attendee info fields 2`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasAttendeeInfoFields": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_ATTENDEE_INFO_FIELDS",
+}
+`;
+
 exports[`Ticket actions Ticket actions set ticket has been created 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "hasBeenCreated": true,
   },
   "type": "@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED",
@@ -89,7 +115,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket has been created 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "hasBeenCreated": false,
   },
   "type": "@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED",
@@ -99,27 +125,47 @@ Object {
 exports[`Ticket actions Ticket actions set ticket has changes 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "hasChanges": true,
   },
-  "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
 }
 `;
 
 exports[`Ticket actions Ticket actions set ticket has changes 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "hasChanges": false,
   },
-  "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
+}
+`;
+
+exports[`Ticket actions Ticket actions set ticket has duration error 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasDurationError": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_DURATION_ERROR",
+}
+`;
+
+exports[`Ticket actions Ticket actions set ticket has duration error 2`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasDurationError": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_DURATION_ERROR",
 }
 `;
 
 exports[`Ticket actions Ticket actions set ticket id 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "ticketId": 99,
   },
   "type": "@@MT/TICKETS/SET_TICKET_ID",
@@ -129,7 +175,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket is loading 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "isLoading": true,
   },
   "type": "@@MT/TICKETS/SET_TICKET_IS_LOADING",
@@ -139,7 +185,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket is loading 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "isLoading": false,
   },
   "type": "@@MT/TICKETS/SET_TICKET_IS_LOADING",
@@ -149,7 +195,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket is selected 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "isSelected": true,
   },
   "type": "@@MT/TICKETS/SET_TICKET_IS_SELECTED",
@@ -159,7 +205,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket is selected 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "isSelected": false,
   },
   "type": "@@MT/TICKETS/SET_TICKET_IS_SELECTED",
@@ -169,7 +215,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket provider 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "provider": "provider",
   },
   "type": "@@MT/TICKETS/SET_TICKET_PROVIDER",
@@ -179,7 +225,7 @@ Object {
 exports[`Ticket actions Ticket actions set ticket sold 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "sold": 23,
   },
   "type": "@@MT/TICKETS/SET_TICKET_SOLD",
@@ -189,8 +235,8 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket capacity 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
     "capacity": "10",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/SET_TICKET_CAPACITY",
 }
@@ -199,8 +245,8 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket capacity type 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
     "capacityType": "unlimited",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/SET_TICKET_CAPACITY_TYPE",
 }
@@ -209,7 +255,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket description 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "description": "The Next Generation of Digital Agency",
   },
   "type": "@@MT/TICKETS/SET_TICKET_DESCRIPTION",
@@ -219,7 +265,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket end date 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDate": "2018-01-10",
   },
   "type": "@@MT/TICKETS/SET_TICKET_END_DATE",
@@ -229,7 +275,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket end date input 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDateInput": "January 10, 2018",
   },
   "type": "@@MT/TICKETS/SET_TICKET_END_DATE_INPUT",
@@ -239,7 +285,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket end moment 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDateMoment": Object {
       "type": "moment",
     },
@@ -251,7 +297,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket end moment 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDateMoment": null,
   },
   "type": "@@MT/TICKETS/SET_TICKET_END_DATE_MOMENT",
@@ -261,17 +307,27 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket end time 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endTime": "12:34",
   },
   "type": "@@MT/TICKETS/SET_TICKET_END_TIME",
 }
 `;
 
+exports[`Ticket actions Ticket details actions set ticket end time input 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "endTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_END_TIME_INPUT",
+}
+`;
+
 exports[`Ticket actions Ticket details actions set ticket price 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "price": 99,
   },
   "type": "@@MT/TICKETS/SET_TICKET_PRICE",
@@ -281,7 +337,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket sku 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "sku": "my-sku",
   },
   "type": "@@MT/TICKETS/SET_TICKET_SKU",
@@ -291,7 +347,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket start date 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDate": "2018-01-01",
   },
   "type": "@@MT/TICKETS/SET_TICKET_START_DATE",
@@ -301,7 +357,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket start date input 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDateInput": "January 1, 2018",
   },
   "type": "@@MT/TICKETS/SET_TICKET_START_DATE_INPUT",
@@ -311,7 +367,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket start moment 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDateMoment": Object {
       "type": "moment",
     },
@@ -323,7 +379,7 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket start moment 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDateMoment": null,
   },
   "type": "@@MT/TICKETS/SET_TICKET_START_DATE_MOMENT",
@@ -333,17 +389,27 @@ Object {
 exports[`Ticket actions Ticket details actions set ticket start time 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startTime": "10:00",
   },
   "type": "@@MT/TICKETS/SET_TICKET_START_TIME",
 }
 `;
 
+exports[`Ticket actions Ticket details actions set ticket start time input 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "startTimeInput": "10:00",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_START_TIME_INPUT",
+}
+`;
+
 exports[`Ticket actions Ticket saga actions create new ticket 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/CREATE_NEW_TICKET",
 }
@@ -352,7 +418,7 @@ Object {
 exports[`Ticket actions Ticket saga actions delete ticket 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/DELETE_TICKET",
 }
@@ -361,17 +427,59 @@ Object {
 exports[`Ticket actions Ticket saga actions fetch ticket 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "ticketId": 99,
   },
   "type": "@@MT/TICKETS/FETCH_TICKET",
 }
 `;
 
+exports[`Ticket actions Ticket saga actions handle ticket start date 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "date": Object {},
+    "dayPickerInput": Object {},
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_START_DATE",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 2`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "date": Object {},
+    "dayPickerInput": Object {},
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_END_DATE",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 3`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "seconds": 1000,
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_START_TIME",
+}
+`;
+
+exports[`Ticket actions Ticket saga actions handle ticket start date 4`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "seconds": 1000,
+  },
+  "type": "@@MT/TICKETS/HANDLE_TICKET_END_TIME",
+}
+`;
+
 exports[`Ticket actions Ticket saga actions set ticket details 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "details": Object {},
   },
   "type": "@@MT/TICKETS/SET_TICKET_DETAILS",
@@ -393,7 +501,7 @@ Object {
 exports[`Ticket actions Ticket saga actions set ticket temp details 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "tempDetails": Object {},
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_DETAILS",
@@ -403,7 +511,7 @@ Object {
 exports[`Ticket actions Ticket saga actions update ticket 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/UPDATE_TICKET",
 }
@@ -412,8 +520,8 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp capacity 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
     "capacity": "10",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_CAPACITY",
 }
@@ -422,8 +530,8 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp capacity type 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
     "capacityType": "unlimited",
+    "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_CAPACITY_TYPE",
 }
@@ -432,7 +540,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp description 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "description": "The Next Generation of Digital Agency",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_DESCRIPTION",
@@ -442,7 +550,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp end date 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDate": "2018-01-10",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE",
@@ -452,7 +560,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp end date input 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDateInput": "January 10, 2018",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_INPUT",
@@ -462,7 +570,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp end moment 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDateMoment": Object {
       "type": "moment",
     },
@@ -474,7 +582,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp end moment 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endDateMoment": null,
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_MOMENT",
@@ -484,17 +592,27 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp end time 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "endTime": "12:34",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME",
 }
 `;
 
+exports[`Ticket actions Ticket temp details actions set ticket temp end time input 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "endTimeInput": "12:34",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT",
+}
+`;
+
 exports[`Ticket actions Ticket temp details actions set ticket temp price 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "price": 99,
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_PRICE",
@@ -504,7 +622,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp sku 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "sku": "my-sku",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_SKU",
@@ -514,7 +632,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp start date 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDate": "2018-01-01",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_START_DATE",
@@ -524,7 +642,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp start date input 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDateInput": "January 1, 2018",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_START_DATE_INPUT",
@@ -534,7 +652,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp start moment 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDateMoment": Object {
       "type": "moment",
     },
@@ -546,7 +664,7 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp start moment 2`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startDateMoment": null,
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_START_DATE_MOMENT",
@@ -556,10 +674,20 @@ Object {
 exports[`Ticket actions Ticket temp details actions set ticket temp start time 1`] = `
 Object {
   "payload": Object {
-    "blockId": "modern-tribe",
+    "clientId": "modern-tribe",
     "startTime": "10:00",
   },
   "type": "@@MT/TICKETS/SET_TICKET_TEMP_START_TIME",
+}
+`;
+
+exports[`Ticket actions Ticket temp details actions set ticket temp start time input 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "startTimeInput": "10:00",
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_TEMP_START_TIME_INPUT",
 }
 `;
 
@@ -578,6 +706,12 @@ Object {
     "isSettingsOpen": true,
   },
   "type": "@@MT/TICKETS/SET_TICKETS_IS_SETTINGS_OPEN",
+}
+`;
+
+exports[`Ticket actions Tickets actions reset tickets block 1`] = `
+Object {
+  "type": "@@MT/TICKETS/RESET_TICKETS_BLOCK",
 }
 `;
 
@@ -600,6 +734,24 @@ Object {
     "clientId": "modern-tribe",
   },
   "type": "@@MT/TICKETS/SET_TICKETS_INITIAL_STATE",
+}
+`;
+
+exports[`Ticket actions Tickets actions set tickets is selected 1`] = `
+Object {
+  "payload": Object {
+    "isSelected": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKETS_IS_SELECTED",
+}
+`;
+
+exports[`Ticket actions Tickets actions set tickets is selected 2`] = `
+Object {
+  "payload": Object {
+    "isSelected": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKETS_IS_SELECTED",
 }
 `;
 

@@ -10,7 +10,7 @@ import omit from 'lodash/omit';
 import * as types from '@moderntribe/tickets/data/blocks/ticket/types';
 import ticket from './tickets/ticket';
 
-export const byId = ( state = {}, action ) => {
+export const byClientId = ( state = {}, action ) => {
 	switch ( action.type ) {
 		case types.SET_TICKET_TITLE:
 		case types.SET_TICKET_DESCRIPTION:
@@ -24,6 +24,8 @@ export const byId = ( state = {}, action ) => {
 		case types.SET_TICKET_END_DATE_MOMENT:
 		case types.SET_TICKET_START_TIME:
 		case types.SET_TICKET_END_TIME:
+		case types.SET_TICKET_START_TIME_INPUT:
+		case types.SET_TICKET_END_TIME_INPUT:
 		case types.SET_TICKET_CAPACITY_TYPE:
 		case types.SET_TICKET_CAPACITY:
 		case types.SET_TICKET_TEMP_TITLE:
@@ -38,6 +40,8 @@ export const byId = ( state = {}, action ) => {
 		case types.SET_TICKET_TEMP_END_DATE_MOMENT:
 		case types.SET_TICKET_TEMP_START_TIME:
 		case types.SET_TICKET_TEMP_END_TIME:
+		case types.SET_TICKET_TEMP_START_TIME_INPUT:
+		case types.SET_TICKET_TEMP_END_TIME_INPUT:
 		case types.SET_TICKET_TEMP_CAPACITY_TYPE:
 		case types.SET_TICKET_TEMP_CAPACITY:
 		case types.SET_TICKET_SOLD:
@@ -46,34 +50,40 @@ export const byId = ( state = {}, action ) => {
 		case types.SET_TICKET_CURRENCY_SYMBOL:
 		case types.SET_TICKET_CURRENCY_POSITION:
 		case types.SET_TICKET_PROVIDER:
+		case types.SET_TICKET_HAS_ATTENDEE_INFO_FIELDS:
 		case types.SET_TICKET_IS_LOADING:
 		case types.SET_TICKET_HAS_BEEN_CREATED:
 		case types.SET_TICKET_HAS_CHANGES:
+		case types.SET_TICKET_HAS_DURATION_ERROR:
 		case types.SET_TICKET_IS_SELECTED:
 		case types.REGISTER_TICKET_BLOCK:
 			return {
 				...state,
-				[ action.payload.blockId ]: ticket( state[ action.payload.blockId ], action ),
+				[ action.payload.clientId ]: ticket( state[ action.payload.clientId ], action ),
 			};
 		case types.REMOVE_TICKET_BLOCK:
-			return omit( state, [ action.payload.blockId ] );
+			return omit( state, [ action.payload.clientId ] );
+		case types.REMOVE_TICKET_BLOCKS:
+			return {};
 		default:
 			return state;
 	}
 };
 
-export const allIds = ( state = [], action ) => {
+export const allClientIds = ( state = [], action ) => {
 	switch ( action.type ) {
 		case types.REGISTER_TICKET_BLOCK:
-			return [ ...state, action.payload.blockId ];
+			return [ ...state, action.payload.clientId ];
 		case types.REMOVE_TICKET_BLOCK:
-			return state.filter( ( id ) => action.payload.blockId !== id );
+			return state.filter( ( clientId ) => action.payload.clientId !== clientId );
+		case types.REMOVE_TICKET_BLOCKS:
+			return [];
 		default:
 			return state;
 	}
 };
 
 export default combineReducers( {
-	byId,
-	allIds,
+	byClientId,
+	allClientIds,
 } );

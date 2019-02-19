@@ -24,20 +24,26 @@ import {
 	getModalTicketId,
 } from '@moderntribe/tickets/data/shared/move/selectors';
 import { withStore, withSaveData } from '@moderntribe/common/hoc';
-import { toMomentFromDateTime } from '@moderntribe/common/utils/moment';
+import { moment as momentUtil, time } from '@moderntribe/common/utils';
 
 const getIsInactive = ( state ) => {
-	const startDateObj = selectors.getRSVPStartDateObj( state );
-	const startTime = selectors.getRSVPStartTime( state );
-	const endDateObj = selectors.getRSVPEndDateObj( state );
-	const endTime = selectors.getRSVPEndTime( state );
+	const startDateMoment = selectors.getRSVPStartDateMoment( state );
+	const startTime = selectors.getRSVPStartTimeNoSeconds( state );
+	const endDateMoment = selectors.getRSVPEndDateMoment( state );
+	const endTime = selectors.getRSVPEndTimeNoSeconds( state );
 
-	if ( ! startDateObj || ! endDateObj ) {
+	if ( ! startDateMoment || ! endDateMoment ) {
 		return false;
 	}
 
-	const startMoment = toMomentFromDateTime( startDateObj, startTime );
-	const endMoment = toMomentFromDateTime( endDateObj, endTime );
+	const startMoment = momentUtil.setTimeInSeconds(
+		startDateMoment.clone(),
+		time.toSeconds( startTime, time.TIME_FORMAT_HH_MM ),
+	);
+	const endMoment = momentUtil.setTimeInSeconds(
+		endDateMoment.clone(),
+		time.toSeconds( endTime, time.TIME_FORMAT_HH_MM ),
+	);
 	const currentMoment = moment();
 
 	return ! ( currentMoment.isAfter( startMoment ) && currentMoment.isBefore( endMoment ) );
@@ -48,7 +54,7 @@ const setInitialState = ( dispatch, ownProps ) => () => {
 	dispatch( thunks.getRSVP( postId ) );
 	const { attributes = {} } = ownProps;
 	if ( parseInt( attributes.headerImageId, 10 ) ) {
-		dispatch( thunks.getRSVPHeaderImage( attributes.headerImageId ) );
+		dispatch( actions.fetchRSVPHeaderImage( attributes.headerImageId ) );
 	}
 	if ( attributes.goingCount ) {
 		dispatch( actions.setRSVPGoingCount( parseInt( attributes.goingCount, 10 ) ) );
@@ -60,40 +66,26 @@ const setInitialState = ( dispatch, ownProps ) => () => {
 	}
 };
 
-const mapStateToProps = ( state ) => ( {
-	created: selectors.getRSVPCreated( state ),
-	rsvpId: selectors.getRSVPId( state ),
-	isInactive: getIsInactive( state ),
-	isLoading: selectors.getRSVPIsLoading( state ),
-	isModalShowing: isModalShowing( state ),
-	modalTicketId: getModalTicketId( state ),
-} );
-
-const mapDispatchToProps = ( dispatch, ownProps ) => ( {
-	dispatch,
-	setInitialState: setInitialState( dispatch, ownProps ),
-	initializeRSVP: () => dispatch( actions.initializeRSVP() ),
-} );
-
-const mergeProps = ( stateProps, dispatchProps, ownProps ) => {
-	const { dispatch, ...restDispatchProps } = dispatchProps;
+const mapStateToProps = ( state ) => {
+	const rsvpId = selectors.getRSVPId( state );
 
 	return {
-		...ownProps,
-		...stateProps,
-		...restDispatchProps,
-		deleteRSVP: () => {
-			dispatch( actions.deleteRSVP() );
-			if ( stateProps.created && stateProps.rsvpId ) {
-				dispatch( thunks.deleteRSVP( stateProps.rsvpId ) );
-			}
-		},
-		isModalShowing: stateProps.isModalShowing && stateProps.modalTicketId === stateProps.rsvpId,
-	};
+		created: selectors.getRSVPCreated( state ),
+		isInactive: getIsInactive( state ),
+		isLoading: selectors.getRSVPIsLoading( state ),
+		isModalShowing: isModalShowing( state ) && getModalTicketId( state ) === rsvpId,
+		rsvpId,
+	}
 };
+
+const mapDispatchToProps = ( dispatch, ownProps ) => ( {
+	initializeRSVP: () => dispatch( actions.initializeRSVP() ),
+	onBlockRemoved: () => dispatch( actions.deleteRSVP() ),
+	setInitialState: setInitialState( dispatch, ownProps ),
+} );
 
 export default compose(
 	withStore(),
-	connect( mapStateToProps, mapDispatchToProps, mergeProps ),
+	connect( mapStateToProps, mapDispatchToProps ),
 	withSaveData(),
 )( RSVP );

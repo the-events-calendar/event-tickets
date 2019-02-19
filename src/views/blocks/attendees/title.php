@@ -8,10 +8,16 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9.2
+ * @version 4.9.4
  *
  */
+$display_title = $this->attr( 'displayTitle' );
+
+if ( is_bool( $display_title ) && ! $display_title ) {
+	return;
+}
 ?>
 <h2 class="tribe-block__attendees__title"><?php echo esc_html( $title );?></h2>

@@ -17,7 +17,10 @@ import { Dashicon } from '@wordpress/components';
 import { DateTimeRangePicker, LabelWithTooltip } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
-const TicketDuration = ( props ) => (
+const TicketDuration = ( {
+	hasDurationError,
+	...props
+} ) => (
 	<div className={ classNames(
 		'tribe-editor__ticket__duration',
 		'tribe-editor__ticket__content-row',
@@ -36,22 +39,31 @@ const TicketDuration = ( props ) => (
 			className="tribe-editor__ticket__duration-picker"
 			{ ...props }
 		/>
+		{ hasDurationError && (
+			<span className="tribe-editor__ticket__duration-error">
+				{ __( 'There is an error with the selected sales duration. Please fix the issue before saving.', 'event-tickets' ) }
+			</span>
+		) }
 	</div>
 );
 
 TicketDuration.propTypes = {
-	fromDate: PropTypes.string,
+	fromDate: PropTypes.instanceOf( Date ),
+	fromDateInput: PropTypes.string,
 	fromDateDisabled: PropTypes.bool,
 	fromTime: PropTypes.string,
 	fromTimeDisabled: PropTypes.bool,
-	isSameDay: PropTypes.bool,
+	hasDurationError: PropTypes.bool,
 	onFromDateChange: PropTypes.func,
+	onFromTimePickerBlur: PropTypes.func,
 	onFromTimePickerChange: PropTypes.func,
 	onFromTimePickerClick: PropTypes.func,
 	onToDateChange: PropTypes.func,
+	onToTimePickerBlur: PropTypes.func,
 	onToTimePickerChange: PropTypes.func,
 	onToTimePickerClick: PropTypes.func,
-	toDate: PropTypes.string,
+	toDate: PropTypes.instanceOf( Date ),
+	toDateInput: PropTypes.string,
 	toDateDisabled: PropTypes.bool,
 	toTime: PropTypes.string,
 	toTimeDisabled: PropTypes.bool,

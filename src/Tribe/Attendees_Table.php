@@ -4,7 +4,6 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-
 /**
  * Class Tribe__Tickets__Attendees_Table
  *
@@ -123,7 +122,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	public function column_cb( $item ) {
-		return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" />', esc_attr( $this->_args['singular'] ), esc_attr( $item['attendee_id'] . '|' . $item['provider'] ) );
+		$provider = ! empty(  $item['provider'] ) ? $item['provider'] : null;
+
+		return sprintf( '<input type="checkbox" name="%1$s[]" value="%2$s" />', esc_attr( $this->_args['singular'] ), esc_attr( $item['attendee_id'] . '|' . $provider ) );
 	}
 
 	/**
@@ -266,7 +267,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
-
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return false;
 		}
@@ -292,12 +292,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
-
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return;
 		}
 
 		$default_actions = array();
+		$provider = ! empty(  $item['provider'] ) ? $item['provider'] : null;
 
 		if ( is_object( $this->event ) && isset(  $this->event->ID ) ) {
 			$default_actions[] = sprintf(
@@ -307,7 +307,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				</span>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $this->event->ID ),
-				esc_attr( $item['provider'] )
+				esc_attr( $provider )
 			);
 		}
 
@@ -315,7 +315,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$default_actions[] = '<span class="inline move-ticket"> <a href="#">' . esc_html_x( 'Move', 'row action', 'event-tickets' ) . '</a> </span>';
 		}
 
-		$attendee = esc_attr( $item['attendee_id'] . '|' . $item['provider'] );
+		$attendee = esc_attr( $item['attendee_id'] . '|' . $provider );
 		$nonce = wp_create_nonce( 'do_item_action_' . $attendee );
 
 		$delete_url = esc_url( add_query_arg( array(
@@ -366,13 +366,28 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function column_check_in( $item ) {
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		/**
+		 * tribe_tickets_user_can_manage_attendees filters the permissions that will allow user to check in attendees.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean  false            Can user check in attendees
+		 * @param int      $this->event->ID The event post ID.
+		 */
+		$can_manage_atendees = apply_filters( 'tribe_tickets_user_can_manage_attendees', false, $this->event->ID );
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees()
+			&& (
+				! empty( $this->event )
+				&& ! $can_manage_atendees
+			)
+		 ) {
 			return false;
 		}
 
 		$default_checkin_stati = array();
-		$provider              = $item['provider_slug'];
-		$order_id = $item['order_id'];
+		$provider_slug         = ! empty( $item['provider_slug'] ) ? $item['provider_slug'] : null;
+		$order_id              = $item['order_id'];
+		$provider              = ! empty( $item['provider'] ) ? $item['provider'] : null;
 
 		/**
 		 * Filters the order stati that will allow for a ticket to be checked in for all commerce providers.
@@ -380,10 +395,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @since 4.1
 		 *
 		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
-		 * @param string $provider              The ticket provider slug.
+		 * @param string $provider_slug              The ticket provider slug.
 		 * @param int    $order_id              The order post ID.
 		 */
-		$check_in_stati = apply_filters( 'event_tickets_attendees_checkin_stati', $default_checkin_stati, $provider, $order_id );
+		$check_in_stati = apply_filters( 'event_tickets_attendees_checkin_stati', $default_checkin_stati, $provider_slug, $order_id );
 
 		/**
 		 * Filters the order stati that will allow for a ticket to be checked in for a specific commerce provider.
@@ -393,7 +408,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 * @param array  $default_checkin_stati An array of default order stati that will make a ticket eligible for check-in.
 		 * @param int    $order_id              The order post ID.
 		 */
-		$check_in_stati = apply_filters( "event_tickets_attendees_{$provider}_checkin_stati", $check_in_stati, $order_id );
+		$check_in_stati = apply_filters( "event_tickets_attendees_{$provider_slug}_checkin_stati", $check_in_stati, $order_id );
 
 		if (
 			! empty( $item['order_status'] )
@@ -413,14 +428,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$checkin   = sprintf(
 				'<a href="#" data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
 				esc_attr( $item['attendee_id'] ),
-				esc_attr( $item['provider'] ),
+				esc_attr( $provider ),
 				esc_attr( $button_classes ),
 				esc_html__( 'Check In', 'event-tickets' )
 			);
 			$uncheckin = sprintf(
 				'<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>',
 				esc_attr( $item['attendee_id'] ),
-				esc_attr( $item['provider'] ),
+				esc_attr( $provider ),
 				sprintf(
 					'<div>%1$s</div><div>%2$s</div>',
 					esc_html__( 'Undo', 'event-tickets' ),
@@ -433,14 +448,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				'<a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $this->event->ID ),
-				esc_attr( $item['provider'] ),
+				esc_attr( $provider ),
 				esc_attr( $button_classes ),
 				esc_html__( 'Check In', 'event-tickets' )
 			);
 			$uncheckin = sprintf(
 				'<span class="delete"><a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>',
 				esc_attr( $item['attendee_id'] ),
-				esc_attr( $this->event->ID ), esc_attr( $item['provider'] ),
+				esc_attr( $this->event->ID ), esc_attr( $provider ),
 				sprintf(
 					'<div>%1$s</div><div>%2$s</div>',
 					esc_html__( 'Undo', 'event-tickets' ),
@@ -458,8 +473,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
-
-
 		$checked = '';
 		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
@@ -491,6 +504,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @see WP_List_Table::display()
 	 */
 	public function extra_tablenav( $which ) {
+
+		// Bail early if not in admin
+		if ( ! is_admin() ) {
+			return;
+		}
 
 		$export_url = add_query_arg(
 			array(
@@ -544,13 +562,12 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$actions = array(
-			'delete_attendee' => esc_attr__( 'Delete', 'event-tickets' ),
-		);
+		$actions = array();
 
 		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
-		    $actions['check_in'] = esc_attr__( 'Check in', 'event-tickets' );
-		    $actions['uncheck_in'] = esc_attr__( 'Undo Check in', 'event-tickets' );
+			$actions['delete_attendee'] = esc_attr__( 'Delete', 'event-tickets' );
+			$actions['check_in']        = esc_attr__( 'Check in', 'event-tickets' );
+			$actions['uncheck_in']      = esc_attr__( 'Undo Check in', 'event-tickets' );
 		}
 
 		return (array) apply_filters( 'tribe_events_tickets_attendees_table_bulk_actions', $actions );

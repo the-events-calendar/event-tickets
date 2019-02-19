@@ -3,10 +3,13 @@ if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
 }
 
+if ( 'undefined' === typeof ajaxurl ) {
+	ajaxurl = TribeTickets.ajaxurl;
+}
+
 tribe.tickets.editor = {};
 
 var ticketHeaderImage = window.ticketHeaderImage || {};
-
 
 (function( window, $, _, obj ) {
 		'use strict';
@@ -307,6 +310,23 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			var $ticket_end_time = $( document.getElementById( 'ticket_end_time' ) );
 			var startofweek = 0;
 
+			/**
+			 * There might be cases when Tickets is used in isolation where TEC is not installed
+			 * for those cases tribe_datepicker_opts is undefined as is a variable defined by TEC. One of
+			 * the most important part of this variable is the dateFormat value, in this case we created
+			 * a new global variable so any other element that dependes on it has access to this value
+			 */
+			if ( typeof tribe_datepicker_opts === 'undefined' ) {
+				var $dateFormat = $( '[data-datepicker_format]' );
+				var formatAttr = $dateFormat.length ? $dateFormat.attr( 'data-datepicker_format' ) : '';
+				var format = parseInt( formatAttr, 10 );
+				if ( ! isNaN( format ) ) {
+					window.tribe_datepicker_opts = {
+						dateFormat: datepickerFormats[ format ],
+					}
+				}
+			}
+
 			var datepicker_opts = window['tribe_datepicker_opts'] || {};
 
 			if ( $event_pickers.length ) {
@@ -315,7 +335,10 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 
 			if ( 'undefined' !== typeof tribe_ticket_datepicker_format ) {
 				var indexDatepickerFormat = $.isNumeric( tribe_ticket_datepicker_format.datepicker_format_index ) ? tribe_ticket_datepicker_format.datepicker_format_index : 0;
-				dateFormat = datepickerFormats[indexDatepickerFormat];
+				dateFormat = datepickerFormats[ indexDatepickerFormat ];
+			} else if ( datepicker_opts && datepicker_opts.dateFormat ) {
+				// if datepicker_opts exists and has a valid dateFormat use it if tribe_ticket_datepicker_format is not defined
+				dateFormat = datepicker_opts.dateFormat;
 			}
 
 			var datepickerOpts = {

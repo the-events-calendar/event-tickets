@@ -128,6 +128,12 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 			'_tribe_tickets_list',
 			$this->numeric_array()
 		);
+
+		register_meta(
+			'post',
+			'_tribe_ticket_has_attendee_info_fields',
+			$this->boolean()
+		);
 	}
 
 	/**
@@ -173,7 +179,7 @@ class Tribe__Tickets__Editor__Meta extends Tribe__Editor__Meta {
 		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
 		$list_of_tickets = array();
 		foreach ( $tickets as $ticket ) {
-			if ( ! ( $ticket instanceof Tribe__Tickets__Ticket_Object ) ) {
+			if ( ! ( $ticket instanceof Tribe__Tickets__Ticket_Object ) || 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
 				continue;
 			}
 			$list_of_tickets[] = $ticket->ID;

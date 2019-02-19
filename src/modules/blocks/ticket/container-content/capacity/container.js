@@ -34,29 +34,29 @@ const mapStateToProps = ( state, ownProps ) => ( {
 } );
 
 const mapDispatchToProps = ( dispatch, ownProps ) => {
-	const { blockId } = ownProps;
+	const { clientId } = ownProps;
 
 	return {
 		onTempCapacityChange: ( e ) => {
-			dispatch( actions.setTicketTempCapacity( blockId, e.target.value ) );
-			dispatch( actions.setTicketHasChanges( blockId, true ) );
+			dispatch( actions.setTicketTempCapacity( clientId, e.target.value ) );
+			dispatch( actions.setTicketHasChanges( clientId, true ) );
 		},
 		onTempCapacityNoPlusChange: ( e ) => {
 			const capacity = e.target.value;
 			const capacityType = trim( capacity ) === ''
 				? TICKET_TYPES[ UNLIMITED ]
 				: TICKET_TYPES[ INDEPENDENT ];
-			dispatch( actions.setTicketTempCapacityType( blockId, capacityType ) );
-			dispatch( actions.setTicketTempCapacity( blockId, capacity ) );
-			dispatch( actions.setTicketHasChanges( blockId, true ) );
+			dispatch( actions.setTicketTempCapacityType( clientId, capacityType ) );
+			dispatch( actions.setTicketTempCapacity( clientId, capacity ) );
+			dispatch( actions.setTicketHasChanges( clientId, true ) );
 		},
 		onTempCapacityTypeChange: ( selectedOption ) => {
-			dispatch( actions.setTicketTempCapacityType( blockId, selectedOption.value ) );
-			dispatch( actions.setTicketHasChanges( blockId, true ) );
+			dispatch( actions.setTicketTempCapacityType( clientId, selectedOption.value ) );
+			dispatch( actions.setTicketHasChanges( clientId, true ) );
 		},
 		onTempSharedCapacityChange: ( e ) => {
-			dispatch( actions.setTicketTempSharedCapacity( e.target.value ) );
-			dispatch( actions.setTicketHasChanges( blockId, true ) );
+			dispatch( actions.setTicketsTempSharedCapacity( e.target.value ) );
+			dispatch( actions.setTicketHasChanges( clientId, true ) );
 		},
 	};
 };

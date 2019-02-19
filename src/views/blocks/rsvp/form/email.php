@@ -8,9 +8,10 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTCILE_LINK_HERE}
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
- * @version 4.9
+ * @since 4.9.3
+ * @version 4.9.4
  *
  */
 /**
@@ -28,7 +29,7 @@ $email = apply_filters( 'tribe_tickets_rsvp_form_email', '', $this );
 	type="email"
 	name="attendee[email]"
 	class="tribe-tickets-email"
-	placeholder="<?php esc_attr_e( 'Email', 'events-gutenberg' ); ?>"
+	placeholder="<?php esc_attr_e( 'Email', 'event-tickets' ); ?>"
 	value="<?php echo esc_attr( $email ); ?>"
 	required
 />

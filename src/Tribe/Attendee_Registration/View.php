@@ -11,7 +11,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 */
 	public function __construct() {
 		$this->set_template_origin( tribe( 'tickets.main' ) );
-		$this->set_template_folder( 'src/views/registration' );
+		$this->set_template_folder( 'src/views' );
 		$this->set_template_context_extract( true );
 		$this->set_template_folder_lookup( true );
 	}
@@ -40,6 +40,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 */
 		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
 		$events       = array();
+		$providers    = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
@@ -51,6 +52,30 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 				'provider' => $ticket->provider,
 			);
 
+			/**
+			 * Flag for event form to flag TPP. This is used for the AJAX
+			 * feature for save attendee information. If the provider is
+			 * TPP, then AJAX saving is disabled.
+			 *
+			 * @todo: This is temporary until we can figure out what to do
+			 *        with the Attendee Registration page handling multiple
+			 *        payment providers.
+			 */
+			$provider = '';
+			switch ( $ticket->provider->class_name ) {
+				case 'Tribe__Tickets__Commerce__PayPal__Main':
+					$provider = 'tpp';
+					break;
+				case 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main':
+					$provider = 'woo';
+					break;
+				case 'Tribe__Tickets_Plus__Commerce__EDD__Main':
+					$provider = 'edd';
+					break;
+				default:
+					break;
+			}
+			$providers[ $ticket->event ] = $provider;
 			$events[ $ticket->event ][] = $ticket_data;
 		}
 
@@ -64,7 +89,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$cart_has_required_meta = (bool) apply_filters( 'tribe_tickets_attendee_registration_has_required_meta', $cart_tickets );
 
 		// Get the checkout URL, it'll be added to the checkout button
-		$checkout_url       = tribe( 'tickets.attendee_registration' )->get_checkout_url();
+		$checkout_url = tribe( 'tickets.attendee_registration' )->get_checkout_url();
 
 		/**
 		 * Filter to check if there's any required meta that wasn't filled in
@@ -83,6 +108,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'checkout_url'           => $checkout_url,
 			'is_meta_up_to_date'     => $is_meta_up_to_date,
 			'cart_has_required_meta' => $cart_has_required_meta,
+			'providers'              => $providers,
 		);
 
 		// enqueue styles and scripts for this page
@@ -91,11 +117,9 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		wp_enqueue_style( 'dashicons' );
 
-		/** @var Tribe__Tickets__Attendee_Registration__View $view */
-		$view     = tribe( 'tickets.attendee_registration.view' );
-		$template = $view->template( 'content', $args, false );
+		$this->add_template_globals( $args );
 
-		return $template;
+		return $this->template( 'registration/content', $args, false );
 	}
 
 	/**

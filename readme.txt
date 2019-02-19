@@ -1,10 +1,10 @@
- === Event Tickets ===
+=== Event Tickets ===
 
-Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
+Contributors: ModernTribe, brianjessee, camwynsp, sc0ttkclark
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
-Requires at least: 4.5
-Tested up to: 4.9.8
-Stable tag: 4.9.1
+Requires at least: 4.7
+Tested up to: 5.0.3
+Stable tag: 4.10.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,112 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.10.1] TBD =
+
+* Tweak - Add duration error for duration issues with ticket and RSVP [122679]
+* Tweak - Save attendee information on registration page via ajax [121592]
+* Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
+* Tweak - Indicate required fields in ticket block [122442]
+* Tweak - Add filter for attendee registration page template [121223]
+* Fix - Only show attendee registration for RSVP if going [121026]
+* Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
+* Fix - Only allow attendee move functionality in admin [87145]
+* Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
+* Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
+* Fix - Allow users to always access attendee registration page if tickets in cart have meta [121819]
+* Fix - Allow tickets with required and non-required meta to be saved together [121821]
+* Fix - Fix issue with WooCommerce checkout returning to attendee registration page [120735]
+* Fix - Update available tickets when updating capacity [120280]
+* Fix - Do not show print, email, and export buttons if not in admin [120646]
+* Fix - Add Indian Rupee and Russian Ruple to PayPal currency code list [120554]
+* Fix - Fix RSVP "don't show my information" checkbox in Twenty Nineteen theme [120685]
+* Fix - Add ticket id to option id for attendee registration fields [122035]
+* Fix - Path to override attendee registration templates defined in template files [120196]
+* Fix - Fix path to override attendee registration templates [120037]
+* Fix - Fix text domain in attendee field view [121019]
+* Fix - Fix focus for sales duration in ticket block [122441]
+* Fix - Fix mobile styles for tickets and RSVP [118299]
+* Fix - Prevent notices when adding a new event in Community Events with Community Tickets active [116724]
+
+= [4.10.0.1] 2019-02-07 =
+
+* Fix - Modify extension dependency checking with new system to determine if it can load [122368]
+
+= [4.10] 2019-02-05 =
+
+* Feature - Add check and enforce PHP 5.6 as the minimum version [116283]
+* Feature - Add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
+* Tweak - Add tooltips and additional information to Tribe Commerce Orders page header [116747]
+* Tweak - Update plugin header [90398]
+* Tweak - Add tooltip info that clarifies two settings only apply to classic editor [20963]
+* Tweak - Added filters: `event_tickets_attendees_{$provider_slug}_checkin_stati`, `tribe_tickets_supported_system_version`, `tribe_not_php_version_names`
+* Tweak - Removed filters: `event_tickets_attendees_{$provider}_checkin_stati`
+* Tweak - Removed actions: `tribe_tickets_plugin_failed_to_load`
+* Fix - Prevent errors in PHP 7.2+ with ticket management [119608]
+* Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
+* Deprecated - constants MIN_TEC_VERSION and MIN_COMMON_VERSION in Tribe__Tickets__Main, use $min_tec_version property and no replacement for MIN_COMMON_VERSION
+* Deprecated - The `et_plus_compatibility_notice()` method has been deprecated in `Tribe__Tickets__Main` in favor of Plugin Dependency Checking system
+* Language - 15 new strings added, 136 updated, 0 fuzzied, and 40 obsoleted
+
+= [4.9.4] 2019-01-15 =
+
+* Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
+* Feature - Improve the UX for RSVPs with required login [119946]
+* Tweak - Fix header image message for RSVP and Tickets blocks [119759]
+* Tweak - Update attendee registration user experience [119465]
+* Tweak - Adjust behavior of removing Tickets block to be more intuitive [119662]
+* Tweak - Adjust behavior of removing RSVP block to be more intuitive [119663]
+* Tweak - Added actions: `event_tickets_rsvp_after_ticket_row`
+* Tweak - Changed views: `blocks/attendees`, `blocks/attendees/description`, `blocks/attendees/gravatar`, `blocks/attendees/order-links`, `blocks/attendees/title`, `blocks/rsvp`, `blocks/rsvp/content-inactive`, `blocks/rsvp/content`, `blocks/rsvp/details`, `blocks/rsvp/details/availability`, `blocks/rsvp/details/description`, `blocks/rsvp/details/title`, `blocks/rsvp/form`, `blocks/rsvp/form/attendee-meta`, `blocks/rsvp/form/details`, `blocks/rsvp/form/email`, `blocks/rsvp/form/error`, `blocks/rsvp/form/form`, `blocks/rsvp/form/name`, `blocks/rsvp/form/opt-out`, `blocks/rsvp/form/quantity-input`, `blocks/rsvp/form/quantity-minus`, `blocks/rsvp/form/quantity-plus`, `blocks/rsvp/form/quantity`, `blocks/rsvp/form/submit-button`, `blocks/rsvp/form/submit-login`, `blocks/rsvp/form/submit`, `blocks/rsvp/icon-svg`, `blocks/rsvp/icon`, `blocks/rsvp/loader-svg`, `blocks/rsvp/loader`, `blocks/rsvp/messages/success`, `blocks/rsvp/status`, `blocks/rsvp/status/full`, `blocks/rsvp/status/going-icon`, `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going-icon`, `blocks/rsvp/status/not-going`, `blocks/tickets`, `blocks/tickets/commerce/fields-edd`, `blocks/tickets/commerce/fields-tpp`, `blocks/tickets/commerce/fields-woo`, `blocks/tickets/commerce/fields`, `blocks/tickets/content-description`, `blocks/tickets/content-inactive`, `blocks/tickets/content-title`, `blocks/tickets/content`, `blocks/tickets/extra-available-quantity`, `blocks/tickets/extra-available-unlimited`, `blocks/tickets/extra-available`, `blocks/tickets/extra-price`, `blocks/tickets/extra`, `blocks/tickets/icon-svg`, `blocks/tickets/icon`, `blocks/tickets/item-inactive`, `blocks/tickets/item`, `blocks/tickets/quantity-add`, `blocks/tickets/quantity-number`, `blocks/tickets/quantity-remove`, `blocks/tickets/quantity-unavailable`, `blocks/tickets/quantity`, `blocks/tickets/registration/attendee/content`, `blocks/tickets/registration/attendee/fields`, `blocks/tickets/registration/attendee/fields/checkbox`, `blocks/tickets/registration/attendee/fields/radio`, `blocks/tickets/registration/attendee/fields/select`, `blocks/tickets/registration/attendee/fields/text`, `blocks/tickets/registration/content`, `blocks/tickets/registration/summary/content`, `blocks/tickets/registration/summary/description`, `blocks/tickets/registration/summary/ticket-icon`, `blocks/tickets/registration/summary/ticket-price`, `blocks/tickets/registration/summary/ticket-quantity`, `blocks/tickets/registration/summary/ticket-title`, `blocks/tickets/registration/summary/ticket`, `blocks/tickets/registration/summary/tickets`, `blocks/tickets/registration/summary/title`, `blocks/tickets/submit-button`, `blocks/tickets/submit-login`, `blocks/tickets/submit`, `registration/button-checkout`
+* Fix - Make RSVP block duration tooltip hover area larger [120063]
+* Fix - Fix RSVP block FE attendee display option to not be bold [120064]
+* Fix - Set RSVP block submit button hover color [120065]
+* Fix - Don't enqueue wp admin common styles on the front end [119755]
+* Fix - ensure that the RSVP login link redirects the user back to the event page post-login [120365]
+* Fix - Fix datepicker UI and input not showing the same date [119666]
+* Fix - Hide unavailable RSVPs in the FE [119597]
+* Fix - Clear shared capacity from tickets block when removing tickets block [118334]
+* Fix - Fix svg for RSVP "going" button [116206]
+* Fix - Display ticket price as 0 if price is blank in ticket block [119410]
+* Fix - Remove new ticket block if cancel button is clicked [119435]
+* Fix - Move apostrophe position in RSVP block [119409]
+* Fix - Move attendee registration position in RSVP block [119464]
+* Fix - Fix PHP notice on attendee registration page [119680]
+* Fix - Hide unavailable tickets in Tickets block when Tickets block is not selected [119630]
+* Fix - Fix attendee registration for RSVP block FE [119800]
+* Fix - Ensure that the attendee page loads if the theme has no page.php/page templates defined [120034]
+* Language - 8 new strings added, 52 updated, 0 fuzzied, and 26 obsoleted
+
+= [4.9.3] 2018-12-19 =
+
+* Fix - Only show "Log in before purchasing" when login is required for Tribe Commerce tickets [118977]
+* Fix - Set custom date format for date pickers used on tickets [119356]
+* Fix - Display only tickets that are in date range [119628]
+* Fix - RSVP now stays in sync with the Events and saving properly the Sale dates [118337]
+* Fix - Remove the old `events-gutenberg` domain into the templates [119270]
+* Fix - Prevent RSVP from showing on Tickets and vice versa [119726]
+* Fix - Tickets will no longer get saved as RSVPs via Block Editor [119726]
+* Tweak - Link to the correct support places [117795]
+* Tweak - Added filter: `tribe_tickets_show_login_before_purchasing_link` [118977]
+* Language - 23 new strings added, 11 updated, 0 fuzzied, and 20 obsoleted
+
+= [4.9.2] 2018-12-13 =
+
+* Feature - Added new action `tribe_tickets_update_blocks_from_classic_editor` to allow for custom actions when updating the tickets blocks
+* Feature - Allowed admin to re-order tickets in the Tickets block [113737]
+* Feature - Added ecommerce links to Tickets block [117227]
+* Feature - Improved Cancel button UX in Tickets and RSVP blocks [119053]
+* Feature - Added option to show or hide the Attendee List block header and subtitle [117040 & 117041]
+* Tweak - Set the availability date pickers in Tickets and RSVP blocks to obey the Datepicker Display Format setting [117446]
+* Fix - Corrected an issue where feature detection of async-process support would fire too many requests [118876]
+* Fix - Updated blocks when moving from classic to blocks editor and vice versa [119426]
+* Fix - Removed dotted border for the RSVP block when viewed on mobile devices [118952]
+* Fix - Made sure all block editor code for Meta saving is PHP 5.2 compatible
+* Fix - Restored Shared Capacity functionality for ET+ users in the Tickets block [118923]
+* Fix - Set Tickets block currency symbol from the ecommerce provider settings [115649]
+* Fix - Set the Attendee registration field editor to opens in the same tab from block editor [117854]
 
 = [4.9.1] 2018-12-05 =
 
