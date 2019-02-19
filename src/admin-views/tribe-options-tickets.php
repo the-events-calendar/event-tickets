@@ -9,20 +9,6 @@ $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_
 	'attachment',
 ) );
 
-$template_options = array(
-	'default' => esc_html__( 'Default Page Template', 'event-tickets' ),
-);
-
-if ( class_exists( 'Tribe__Events__Main' ) ) {
-	$template_options['same']  = esc_html__( 'Same as Event Page Template', 'event-tickets' );
-}
-
-$templates        = get_page_templates();
-ksort( $templates );
-foreach ( array_keys( $templates ) as $template ) {
-	$template_options[ $templates[ $template ] ] = $template;
-}
-
 $all_post_type_objects = get_post_types( array( 'public' => true ), 'objects' );
 $all_post_types        = array();
 
@@ -127,32 +113,6 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'size'            => 'small',
 		'can_be_empty'    => true,
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-	);
-}
-
-/**
- * If Event Tickets Plus is active, let's an option to define slug for attendee info page
- * @since 4.9
- */
-if ( $is_tickets_plus_available ) {
-	$tickets_fields['ticket-attendee-info-slug'] = array(
-		'type'                => 'text',
-		'label'               => esc_html__( 'Attendee Registration URL slug', 'event-tickets' ),
-		'tooltip'             => esc_html__( 'The slug used for building the URL for the Attendee Registration Info page.', 'event-tickets' ),
-		'size'                => 'medium',
-		'default'             => tribe( 'tickets.attendee_registration' )->get_slug(),
-		'validation_callback' => 'is_string',
-		'validation_type'     => 'slug',
-	);
-
-	$tickets_fields['ticket-attendee-info-template'] = array(
-		'type'            => 'dropdown',
-		'label'           => __( 'Attendee Registration template', 'event-tickets' ),
-		'tooltip'         => __( 'Choose a page template to control the appearance of your attendee registration page.', 'event-tickets' ),
-		'validation_type' => 'options',
-		'size'            => 'large',
-		'default'         => 'default',
-		'options'         => $template_options,
 	);
 }
 
