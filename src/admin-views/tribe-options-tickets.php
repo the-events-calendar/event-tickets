@@ -125,6 +125,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'tooltip'         => esc_html__( 'Leave empty for no threshold', 'event-tickets' ),
 		'validation_type' => 'int',
 		'size'            => 'small',
+		'can_be_empty'    => true,
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 	);
 }
