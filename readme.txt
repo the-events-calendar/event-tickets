@@ -149,6 +149,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fix focus for sales duration in ticket block [122441]
 * Fix - Fix mobile styles for tickets and RSVP [118299]
 * Fix - Prevent notices when adding a new event in Community Events with Community Tickets active [116724]
+* Fix - Modify how the status manager initializes to use class names instead of proper names, which might be translated [123056]
 
 = [4.10.0.1] 2019-02-07 =
 
