@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.1] TBD =
 
+* Tweak - Add a new setting to set a threshold on whether to show the "Display # tickets left" along with a new filter `tribe_tickets_left_threshold` [119910]
 * Tweak - Add duration error for duration issues with ticket and RSVP [122679]
 * Tweak - Save attendee information on registration page via ajax [121592]
 * Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
