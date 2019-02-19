@@ -118,7 +118,17 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
 		'default'         => reset( $ticket_form_location_options ),
 	);
+
+	$tickets_fields['ticket-display-tickets-left-threshold'] = array(
+		'type'            => 'text',
+		'label'           => esc_html__( 'Display # tickets left threshold', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'Leave empty for no threshold', 'event-tickets' ),
+		'validation_type' => 'int',
+		'size'            => 'small',
+		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+	);
 }
+
 /**
  * If Event Tickets Plus is active, let's an option to define slug for attendee info page
  * @since 4.9
@@ -146,7 +156,6 @@ if ( $is_tickets_plus_available ) {
 }
 
 $tickets_fields = array_merge( $tickets_fields, array(
-
 		'ticket-authentication-requirements-heading' => array(
 			'type' => 'html',
 			'html' => '<h3>' . __( 'Login Requirements', 'event-tickets' ) . '</h3>',
