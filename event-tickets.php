@@ -1,15 +1,15 @@
 <?php
-/**
- * Plugin Name: Event Tickets
- * Plugin URI:  http://m.tri.be/1acb
- * Description: Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event.
- * Version:     4.10.0.1
- * Author:      Modern Tribe, Inc.
- * Author URI:  http://m.tri.be/28
- * Text Domain: event-tickets
- * Domain Path: /lang/
- * License:     GPLv2 or later
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
+/*
+Plugin Name: Event Tickets
+Plugin URI:  http://m.tri.be/1acb
+Description: Event Tickets allows you to sell basic tickets and collect RSVPs from any post, page, or event.
+Version: 4.10.1
+Author: Modern Tribe, Inc.
+Author URI: http://m.tri.be/28
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: event-tickets
+Domain Path: /lang/
  */
 
 /*

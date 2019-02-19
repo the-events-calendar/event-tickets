@@ -63,6 +63,11 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.hasAttendeeInfoFields );
 	} );
 
+	it( 'should return the has duration error', () => {
+		expect( selectors.getRSVPHasDurationError( state ) )
+			.toBe( DEFAULT_STATE.hasDurationError );
+	} );
+
 	it( 'should return the details object', () => {
 		expect( selectors.getRSVPDetails( state ) )
 			.toBe( DEFAULT_STATE.details );

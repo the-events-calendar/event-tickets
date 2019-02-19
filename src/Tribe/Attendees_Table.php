@@ -4,7 +4,6 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
-
 /**
  * Class Tribe__Tickets__Attendees_Table
  *
@@ -268,7 +267,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
-
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return false;
 		}
@@ -294,7 +292,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
-
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
 			return;
 		}
@@ -369,7 +366,21 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function column_check_in( $item ) {
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		/**
+		 * tribe_tickets_user_can_manage_attendees filters the permissions that will allow user to check in attendees.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean  false            Can user check in attendees
+		 * @param int      $this->event->ID The event post ID.
+		 */
+		$can_manage_atendees = apply_filters( 'tribe_tickets_user_can_manage_attendees', false, $this->event->ID );
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees()
+			&& (
+				! empty( $this->event )
+				&& ! $can_manage_atendees
+			)
+		 ) {
 			return false;
 		}
 
@@ -462,8 +473,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
-
-
 		$checked = '';
 		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
@@ -495,6 +504,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @see WP_List_Table::display()
 	 */
 	public function extra_tablenav( $which ) {
+
+		// Bail early if not in admin
+		if ( ! is_admin() ) {
+			return;
+		}
 
 		$export_url = add_query_arg(
 			array(

@@ -208,6 +208,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketHasChanges( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketHasDurationError', () => {
+			expect( selectors.getTicketHasDurationError( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketIsSelected', () => {
 			expect( selectors.getTicketIsSelected( state, ownProps ) ).toMatchSnapshot();
 		} );
@@ -436,6 +440,21 @@ describe( 'Ticket block selectors', () => {
 
 		it( 'should be invalid', () => {
 			expect( selectors.isTempCapacityValid( state, ownProps ) ).toBe( false );
+			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacity = 'not a number';
+			expect( selectors.isTempCapacityValid( state, ownProps ) ).toBe( false );
+		} );
+	} );
+
+	describe( 'isTempSharedCapacityValid', () => {
+		it( 'should be valid', () => {
+			state.tickets.blocks.ticket.tempSharedCapacity = '1';
+			expect( selectors.isTempSharedCapacityValid( state ) ).toBe( true );
+		} );
+
+		it( 'should be invalid', () => {
+			expect( selectors.isTempSharedCapacityValid( state ) ).toBe( false );
+			state.tickets.blocks.ticket.tempSharedCapacity = 'not a number';
+			expect( selectors.isTempSharedCapacityValid( state ) ).toBe( false );
 		} );
 	} );
 
@@ -449,6 +468,7 @@ describe( 'Ticket block selectors', () => {
 		it( 'should be valid when shared', () => {
 			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.title = 'Modern Tribe';
 			state.tickets.blocks.ticket.tickets.byClientId[ 'modern-tribe' ].tempDetails.capacityType = 'capped';
+			state.tickets.blocks.ticket.tempSharedCapacity = '10';
 			expect( selectors.isTicketValid( state, ownProps ) ).toBe( true );
 		} );
 

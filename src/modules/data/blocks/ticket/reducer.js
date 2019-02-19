@@ -95,6 +95,7 @@ export default ( state = DEFAULT_STATE, action ) => {
 		case types.SET_TICKET_IS_LOADING:
 		case types.SET_TICKET_HAS_BEEN_CREATED:
 		case types.SET_TICKET_HAS_CHANGES:
+		case types.SET_TICKET_HAS_DURATION_ERROR:
 		case types.SET_TICKET_IS_SELECTED:
 		case types.REGISTER_TICKET_BLOCK:
 		case types.REMOVE_TICKET_BLOCK:
