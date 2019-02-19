@@ -130,6 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
 * Tweak - Indicate required fields in ticket block [122442]
 * Tweak - Add filter for attendee registration page template [121223]
+* Tweak - Add filter to manage attendees permissions [123070]
 * Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
 * Fix - Only allow attendee move functionality in admin [87145]

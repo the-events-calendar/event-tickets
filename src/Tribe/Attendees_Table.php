@@ -4,6 +4,7 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 }
 
+
 /**
  * Class Tribe__Tickets__Attendees_Table
  *
@@ -61,7 +62,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public static function get_table_columns() {
+	public function get_table_columns() {
 		$columns = array(
 			'cb'           => '<input type="checkbox" />',
 			'ticket'       => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
@@ -71,7 +72,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),''
 		);
 
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			$columns['check_in'] = esc_html_x( 'Check in', 'attendee table', 'event-tickets' );
 		}
 
@@ -97,7 +98,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		return self::get_table_columns();
+		return $this->get_table_columns();
 	}
 
 	/**
@@ -267,7 +268,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return string
 	 */
 	protected function get_row_actions( array $item ) {
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			return false;
 		}
 
@@ -292,7 +294,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			return;
 		}
 
@@ -366,21 +369,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function column_check_in( $item ) {
 
-		/**
-		 * tribe_tickets_user_can_manage_attendees filters the permissions that will allow user to check in attendees.
-		 *
-		 * @since TBD
-		 *
-		 * @param boolean  false            Can user check in attendees
-		 * @param int      $this->event->ID The event post ID.
-		 */
-		$can_manage_atendees = apply_filters( 'tribe_tickets_user_can_manage_attendees', false, $this->event->ID );
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees()
-			&& (
-				! empty( $this->event )
-				&& ! $can_manage_atendees
-			)
-		 ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			return false;
 		}
 
@@ -473,6 +462,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
+
+
 		$checked = '';
 		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
@@ -505,8 +496,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function extra_tablenav( $which ) {
 
-		// Bail early if not in admin
-		if ( ! is_admin() ) {
+		// Bail early if user is not owner/have permissions
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			return;
 		}
 
@@ -564,7 +555,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function get_bulk_actions() {
 		$actions = array();
 
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			$actions['delete_attendee'] = esc_attr__( 'Delete', 'event-tickets' );
 			$actions['check_in']        = esc_attr__( 'Check in', 'event-tickets' );
 			$actions['uncheck_in']      = esc_attr__( 'Undo Check in', 'event-tickets' );
