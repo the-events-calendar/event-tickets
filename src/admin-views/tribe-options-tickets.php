@@ -53,6 +53,7 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 $tickets_plus_plugin       = 'event-tickets-plus/event-tickets-plus.php';
 $available_plugins         = get_plugins();
 $is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_plugins );
+$is_tickets_plus_active    = class_exists( 'Tribe__Tickets_Plus__Main' );
 
 
 /**
@@ -134,7 +135,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
  * If Event Tickets Plus is active, let's an option to define slug for attendee info page
  * @since 4.9
  */
-if ( $is_tickets_plus_available ) {
+if ( $is_tickets_plus_active ) {
 	$tickets_fields['ticket-attendee-info-slug'] = array(
 		'type'                => 'text',
 		'label'               => esc_html__( 'Attendee Registration URL slug', 'event-tickets' ),
@@ -144,7 +145,13 @@ if ( $is_tickets_plus_available ) {
 		'validation_callback' => 'is_string',
 		'validation_type'     => 'slug',
 	);
+}
 
+/**
+ * If Event Tickets Plus is active, let's an option to choose the template for attendee info page
+ * @since TBD
+ */
+if ( $is_tickets_plus_active ) {
 	$tickets_fields['ticket-attendee-info-template'] = array(
 		'type'            => 'dropdown',
 		'label'           => __( 'Attendee Registration template', 'event-tickets' ),
