@@ -53,6 +53,7 @@ include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 $tickets_plus_plugin       = 'event-tickets-plus/event-tickets-plus.php';
 $available_plugins         = get_plugins();
 $is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_plugins );
+// @TODO: this should all really move to ETP
 $is_tickets_plus_active    = class_exists( 'Tribe__Tickets_Plus__Main' );
 
 
