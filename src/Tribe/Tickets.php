@@ -1388,8 +1388,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
 
-			log_me($data);
-
 			wp_localize_script( 'tribe_tickets_frontend_tickets', 'tribe_tickets_stock_data', $data );
 		}
 
@@ -2110,11 +2108,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param string      $save_type
 		 */
 		protected function update_capacity( $ticket, $data, $save_type ) {
-
-			log_me('update_capacity');
-			log_me($ticket);
-			log_me($data);
-			log_me($save_type);
 
 			if ( empty( $data ) ) {
 				return;

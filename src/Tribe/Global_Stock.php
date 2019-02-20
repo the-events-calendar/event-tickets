@@ -160,7 +160,7 @@ class Tribe__Tickets__Global_Stock {
 		) {
 			$quantity = $capacity;
 		}
-		log_me('set stocl level');
+
 		$status = update_post_meta( $this->post_id, self::GLOBAL_STOCK_LEVEL, $quantity );
 
 		/**

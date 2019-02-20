@@ -2579,7 +2579,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
 
 		if ( $shared_capacity ) {
-			$this->update_global_stock( $global_stock, $qty, true );
+			$this->update_global_stock( $global_stock, $qty );
 		}
 		return $sales;
 	}
@@ -2601,7 +2601,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
 
 		if ( $shared_capacity ) {
-			$this->update_global_stock( $global_stock, $qty );
+			$this->update_global_stock( $global_stock, $qty, true );
 		}
 	}
 
@@ -2613,9 +2613,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param int  $qty
 	 * @param bool $increase
 	 */
-	public function update_global_stock( $global_stock, $qty = 1, $increase = true ) {
+	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
 
 		$level        = $global_stock->get_stock_level();
+
 		if ( $increase ) {
 			$new_level    = (int) $level + (int) $qty;
 		} else {
