@@ -841,13 +841,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$has_generated_new_tickets = true;
 				}
 
+				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+				$shared_capacity = false;
+				if ( $global_stock->is_enabled() ) {
+					$shared_capacity = true;
+				}
+
 				if ( $status_stock_size > 0 ) {
 					switch ( $payment_status ) {
 						case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
-							$this->increase_ticket_sales_by( $product_id, 1 );
+							$this->increase_ticket_sales_by( $product_id, 1, $post_id, $shared_capacity, $global_stock );
 							break;
 						case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
-							$this->decrease_ticket_sales_by( $product_id, 1 );
+							$this->decrease_ticket_sales_by( $product_id, 1, $post_id, $shared_capacity, $global_stock );
 							break;
 						default:
 							break;
@@ -2560,16 +2566,21 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Increases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
+	 * @since TBD added $event_id parameter
 	 *
-	 * @param int  $ticket_id The ticket post ID
-	 * @param int  $qty
+	 * @param int $ticket_id The ticket post ID
+	 * @param int $qty
+	 * @param int $post_id the id of an event or post with TPP tickets
 	 *
 	 * @return int
 	 */
-	public function increase_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function increase_ticket_sales_by( $ticket_id, $qty = 1, $post_id = null, $shared_capacity = false, $global_stock= null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
 
+		if ( $shared_capacity ) {
+			$this->update_global_stock( $global_stock, $qty, true );
+		}
 		return $sales;
 	}
 
@@ -2577,15 +2588,41 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Decreases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
+	 * @since TBD added $event_id parameter
 	 *
 	 * @param int $ticket_id The ticket post ID
 	 * @param int $qty
+	 * @param int $post_id the id of an event or post with TPP tickets
 	 *
 	 * @return int
 	 */
-	public function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function decrease_ticket_sales_by( $ticket_id, $qty = 1, $post_id = null, $shared_capacity = false, $global_stock= null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
+
+		if ( $shared_capacity ) {
+			$this->update_global_stock( $global_stock, $qty );
+		}
+	}
+
+	/**
+	 * Update Global Stock
+	 *
+	 *
+	 * @param      $post_id
+	 * @param int  $qty
+	 * @param bool $increase
+	 */
+	public function update_global_stock( $global_stock, $qty = 1, $increase = true ) {
+
+		$level        = $global_stock->get_stock_level();
+		if ( $increase ) {
+			$new_level    = (int) $level + (int) $qty;
+		} else {
+			$new_level    = (int) $level - (int) $qty;
+		}
+
+		$global_stock->set_stock_level( $new_level );
 	}
 
 	/**
