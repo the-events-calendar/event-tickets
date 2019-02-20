@@ -265,6 +265,12 @@ class Tribe__Tickets__Commerce__Currency {
 				'decimal_point' => ',',
 				'thousands_sep' => '.',
 			),
+			'RUB' => array(
+				'name' => esc_html__( 'Russian Ruble (RUB)', 'event-tickets' ),
+				'sybmol' => '&#x20bd;',
+				'decimal_point' => ',',
+				'thousands_sep' => '.'
+			),
 			'SEK' => array(
 				'name'   => __( 'Swedish Krona (SEK)', 'event-tickets' ),
 				'symbol' => '&#x6b;&#x72;',
