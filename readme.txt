@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Added support for the following currencies in Tribe Commerce: Indian Rupees, Russian Rubles. Thanks to customer Isabelle B. for inspiring this change! [123096]
+
 = [4.10.0.1] 2019-02-07 =
 
 * Fix - Modify extension dependency checking with new system to determine if it can load [122368]
