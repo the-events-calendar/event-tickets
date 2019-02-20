@@ -271,6 +271,12 @@ class Tribe__Tickets__Commerce__Currency {
 				'decimal_point' => ',',
 				'thousands_sep' => '.'
 			),
+			'RUP' => array(
+				'name' => esc_html__( 'Indian Rupee (RUP)', 'event_tickets' ),
+				'symbol' => '&#x20a8;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
+			),
 			'SEK' => array(
 				'name'   => __( 'Swedish Krona (SEK)', 'event-tickets' ),
 				'symbol' => '&#x6b;&#x72;',
