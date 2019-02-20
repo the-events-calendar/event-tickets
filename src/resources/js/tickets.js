@@ -3,6 +3,10 @@ if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
 }
 
+if ( 'undefined' === typeof ajaxurl ) {
+	ajaxurl = TribeTickets.ajaxurl;
+}
+
 tribe.tickets.editor = {};
 
 var ticketHeaderImage = window.ticketHeaderImage || {};

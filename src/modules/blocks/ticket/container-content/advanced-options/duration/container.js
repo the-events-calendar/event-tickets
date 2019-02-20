@@ -79,6 +79,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		fromDateFormat: datePickerFormat,
 		fromTime: selectors.getTicketTempStartTimeInput( state, ownProps ),
 		fromTimeDisabled: isDisabled,
+		hasDurationError: selectors.getTicketHasDurationError( state, ownProps ),
 		toDate,
 		toDateInput: selectors.getTicketTempEndDateInput( state, ownProps ),
 		toDateDisabled: isDisabled,

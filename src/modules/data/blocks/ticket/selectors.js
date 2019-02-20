@@ -236,6 +236,11 @@ export const getTicketHasChanges = createSelector(
 	( ticket ) => ticket.hasChanges,
 );
 
+export const getTicketHasDurationError = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.hasDurationError,
+);
+
 export const getTicketIsSelected = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.isSelected,
@@ -536,17 +541,21 @@ export const isTempTitleValid = createSelector(
 
 export const isTempCapacityValid = createSelector(
 	[ getTicketTempCapacity ],
-	( capacity ) => trim( capacity ) !== '',
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
+);
+
+export const isTempSharedCapacityValid = createSelector(
+	[ getTicketsTempSharedCapacity ],
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
 );
 
 export const isTicketValid = createSelector(
-	[ getTicketTempCapacityType, isTempTitleValid, isTempCapacityValid ],
-	( capacityType, titleValid, capacityValid ) => {
-		if (
-			capacityType === TICKET_TYPES[ UNLIMITED ] ||
-			capacityType === TICKET_TYPES[ SHARED ]
-		) {
+	[ getTicketTempCapacityType, isTempTitleValid, isTempCapacityValid, isTempSharedCapacityValid ],
+	( capacityType, titleValid, capacityValid, sharedCapacityValid ) => {
+		if ( capacityType === TICKET_TYPES[ UNLIMITED ] ) {
 			return titleValid;
+		} else if (	capacityType === TICKET_TYPES[ SHARED ] ) {
+			return titleValid && sharedCapacityValid;
 		}
 		return titleValid && capacityValid;
 	},
