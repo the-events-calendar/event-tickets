@@ -299,7 +299,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @param string|null $unused_null Unused variable
 	 * @param string $setting
 	 *
-	 * @return void
+	 * @return string|null
 	 */
 	public function override_genesis_limit( $unused_null, $setting ) {
 		// Bail if we're not on the attendee info page
