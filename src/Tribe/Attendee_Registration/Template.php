@@ -297,7 +297,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
 	 *
 	 * @param [string] (null) $unused_null string for value
-	 * @param [type] $unused_setting
+	 * @param string $setting
 	 *
 	 * @return void
 	 */
