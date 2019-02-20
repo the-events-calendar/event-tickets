@@ -223,6 +223,12 @@ class Tribe__Tickets__Commerce__Currency {
 				'decimal_point' => ',',
 				'thousands_sep' => '.',
 			),
+			'INR' => array(
+				'name'          => __( 'Indian Rupee (INR)', 'event-tickets' ),
+				'symbol'        => '&#x20B9;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
+			),
 			'JPY' => array(
 				'name'   => __( 'Japanese Yen (JPY)', 'event-tickets' ),
 				'symbol' => '&#165;',
@@ -264,6 +270,12 @@ class Tribe__Tickets__Commerce__Currency {
 				'symbol' => '&#x7a;&#x142;',
 				'decimal_point' => ',',
 				'thousands_sep' => '.',
+			),
+			'RUB' => array(
+				'name'          => __( 'Russian Ruble (RUB)', 'event-tickets' ),
+				'symbol'        => '&#x20BD;',
+				'decimal_point' => '.',
+				'thousands_sep' => ',',
 			),
 			'SEK' => array(
 				'name'   => __( 'Swedish Krona (SEK)', 'event-tickets' ),

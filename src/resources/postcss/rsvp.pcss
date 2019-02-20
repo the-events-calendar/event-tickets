@@ -190,7 +190,7 @@
 	margin: 15px 0;
 }
 
-/* Tickets Table */
+/* RSVP & Tickets Table */
 .tribe-events-tickets {
 	background: var(--table-background-color);
 	border: 0;
@@ -201,8 +201,7 @@
 
 	table,
 	th,
-	td,
-	.woocommerce.add-to-cart {
+	td {
 		border: 0;
 	}
 
@@ -210,82 +209,68 @@
 		display: flex;
 		flex-flow: row wrap;
 
-		&:not(:first-child) {
-			border-top: 2px solid #dfdfdf;
-		}
-
 		@media only screen and (min-width: 768px) {
 			display: table-row;
 		}
 
-		&.tribe-tickets-meta-row {
-			display: none;
-		}
-
-		.tribe-tickets-has-rsvp& {
-			display: table-row;
+		&:not(:first-child) {
+			border-top: 2px solid #dfdfdf;
 		}
 	}
 
 	td {
+		flex: none;
 		padding: 8px 10px;
-		display: flex;
-		max-width: 50%;
-		width: 50%;
+		width: 100%;
+		word-break: normal;
 
-		@media only screen and (max-width: 768px) {
-			&.tribe-ticket.quantity {
-				flex-flow: column;
-				order: 4;
-			}
-
-			&.tickets_submit {
-				order: 5;
-			}
-
-			&.tickets_description {
-				min-width: 100%;
-				width: 100%;
-			}
-
-			&.tickets_submit .tribe-button {
-					margin-bottom: 20px;
-					margin-top: 0;
-				}
-
-			&.tickets_name {
-				font-weight: bold;
-			}
-		}
-
-		@media only screen and (min-width: 768px) {
-			display: table-cell;
-			max-width: none;
+		@media (min-width: 768px ) {
 			width: auto;
 		}
-	}
 
+		&.tickets_name {
+			font-weight: bold;
+		}
 
-	.woocommerce.add-to-cart {
-		padding: 16px;
-	}
+		&.quantity,
+		&.woocommerce {
+			order: 2;
 
-	.woocommerce,
-	.tickets_name,
-	.tickets_description,
-	.tickets_price {
-		border-bottom: 1px solid var(--border-color);
-	}
-
-	.woocommerce {
-		.quantity {
-			input {
+			input[type="number"] {
 				background-color: #fff;
 				border-radius: 3px;
 				margin-bottom: 5px;
 				padding: 5px 10px;
 				text-align: left;
-				width: 4.375em;
+
+				@media (min-width: 768px) {
+					width: 4.375em;
+				}
+			}
+		}
+
+		&.tickets_submit {
+			order: 3;
+
+			.tribe-button {
+				margin: 0 0 10px;
+			}
+		}
+	}
+
+	.woocommerce {
+
+		&.add-to-cart {
+			@media (min-width: 768px) {
+				padding: 16px;
+			}
+
+			.tribe-button {
+				margin: 10px 0;
+
+				@media (min-width: 768px) {
+					margin: 10px;
+				}
 			}
 		}
 	}
@@ -330,7 +315,6 @@
 	.tickets_name p,
 	.tickets_description,
 	.tickets_price {
-		border-bottom: 1px solid var(--border-color);
 		color: var(--text-dark-color);
 		font-size: 15px;
 		padding: 16px 10px;
@@ -351,6 +335,11 @@
 	textarea,
 	select {
 		background: #fff;
+		width: 100%;
+
+		@media (min-width: 768px) {
+			width: auto;
+		}
 	}
 
 	header {
@@ -361,13 +350,31 @@
 /* RSVP Table (differences only) */
 .tribe-events-tickets-rsvp {
 
-	.tribe-ticket.quantity {
-		border-bottom: 1px solid var(--border-color);
+	tr {
 
-		input {
-			margin-bottom: 5px;
-			padding: 5px 10px;
-			width: 4.375em;
+		&.tribe-event-tickets-plus-meta,
+		&.tribe-tickets-meta-row {
+			display: none;
+
+			.tribe-tickets-has-rsvp& {
+				display: block;
+
+				@media (min-width: 768px) {
+					display: table-row;
+				}
+			}
+
+			& > td {
+				display: block;
+
+				@media (min-width: 768px) {
+					display: table-cell;
+				}
+			}
+
+			tr {
+				border: 0;
+			}
 		}
 	}
 }

@@ -2,18 +2,23 @@
 /**
  * This template renders the summary tickets
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/summary/ticket/content.php
+ *
+ * @since 4.9
+ * @since TBD Update template paths to add the "registration/" prefix
+ * @version TBD
  *
  */
 ?>
 <div class="tribe-block__tickets__registration__tickets__item">
 
-	<?php $this->template( 'summary/ticket/icon', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+	<?php $this->template( 'registration/summary/ticket/icon', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 
-	<?php $this->template( 'summary/ticket/quantity', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+	<?php $this->template( 'registration/summary/ticket/quantity', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 
-	<?php $this->template( 'summary/ticket/title', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+	<?php $this->template( 'registration/summary/ticket/title', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 
-	<?php $this->template( 'summary/ticket/price', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+	<?php $this->template( 'registration/summary/ticket/price', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
 
 </div>

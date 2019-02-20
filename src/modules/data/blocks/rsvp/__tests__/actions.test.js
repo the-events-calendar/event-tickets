@@ -42,6 +42,10 @@ describe( 'RSVP block actions', () => {
 			expect( actions.setRSVPHasAttendeeInfoFields( true ) ).toMatchSnapshot();
 		} );
 
+		test( 'set RSVP has duration error', () => {
+			expect( actions.setRSVPHasDurationError( true ) ).toMatchSnapshot();
+		} );
+
 		test( 'set RSVP header image', () => {
 			expect( actions.setRSVPHeaderImage( {
 				id: 42,

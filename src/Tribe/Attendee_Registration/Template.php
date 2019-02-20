@@ -31,7 +31,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 */
 		add_filter( 'template_include', array( $this, 'set_page_template' ), 15 );
 
-
 		/*
 		 * Set the content of the page. Again, it has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
@@ -40,6 +39,9 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		// Modify the link for the edit post link
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
+
+		// Switcheroo for templates that force us to use the excerpt as we're saying we're on an archive
+		add_filter( 'genesis_pre_get_option_content_archive', array( $this, 'override_genesis' ), 10, 2 );
 
 		// Modify the page title
 		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
@@ -96,14 +98,47 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			return $template;
 		}
 
-		// return the page template
-		$template = get_page_template();
-		if ( ! empty( $template ) ) {
-			return $template;
+		// Use the template option set in the admin
+		$event_template = tribe_get_option( 'tribeEventsTemplate' );
+		$template = tribe_get_option( 'ticket-attendee-info-template' );
+
+		if ( empty( $template ) ) {
+			// we should only get here if the value hasn't been set yet
+			$template = 'default';
+		} elseif ( 'same' === $template ) {
+			//note this could be an empty string...because
+			$template = $event_template;
 		}
 
-		// Fallback for themes that are missing page.php
-		return get_template_directory() . '/index.php';
+		switch ( $template ) {
+			case '' :
+			case 'default' :
+				$template = get_template_directory() . '/page.php';
+				break;
+			default :
+				$template = get_template_directory() . '/' . $template;
+		}
+
+		// get the page template
+		if ( empty( $template ) ) {
+			$template = get_page_template();
+
+			// Fallback for themes that are missing page.php
+			if ( empty( $template ) ) {
+				$template = get_template_directory() . '/index.php';
+			}
+		}
+
+		/**
+		 * Use `tribe_tickets_attendee_registration_page_template` to modify the attendee registration page template.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $template The current attendee registration page template.
+		 */
+		$template = apply_filters( 'tribe_tickets_attendee_registration_page_template', $template );
+
+		return $template;
 	}
 
 	/**
@@ -237,6 +272,24 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			// on the_content, load our attendee info page
 			add_filter( 'the_content', array( tribe( 'tickets.attendee_registration.view' ), 'display_attendee_registration_page' ) );
 		}
+	}
+
+	/**
+	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
+	 *
+	 * @param [string] (null) $unused_null string for value
+	 * @param [type] $unused_setting
+	 *
+	 * @return void
+	 */
+	public function override_genesis( $unused_null, $unused_setting ) {
+		// Bail if we're not on the attendee info page
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+			return null;
+		}
+
+		return 'full';
+
 	}
 
 	/**

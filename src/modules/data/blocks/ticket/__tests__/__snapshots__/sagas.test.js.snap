@@ -17,12 +17,9 @@ exports[`Ticket Block sagas deleteTicket should delete ticket 1`] = `
 Object {
   "@@redux-saga/IO": true,
   "CALL": Object {
-    "args": Array [
-      Array [
-        "modern-tribe",
-      ],
-    ],
+    "args": Array [],
     "context": Object {
+      "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
       "removeBlocks": [Function],
@@ -42,9 +39,63 @@ Object {
       ],
     ],
     "context": Object {
+      "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
       "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicket should delete ticket 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "clearSelectedBlock": [Function],
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicket should delete ticket 4`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      Array [
+        "modern-tribe",
+      ],
+    ],
+    "context": Object {
+      "clearSelectedBlock": [Function],
+      "editPost": [Function],
+      "insertBlocks": [Function],
+      "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas deleteTicket should delete ticket 5`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
     },
     "fn": [Function],
   },
@@ -108,6 +159,7 @@ Object {
       ],
     ],
     "context": Object {
+      "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
       "removeBlocks": [Function],
@@ -148,9 +200,29 @@ Object {
       },
     ],
     "context": Object {
+      "clearSelectedBlock": [Function],
       "editPost": [Function],
       "insertBlocks": [Function],
       "removeBlocks": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas setTicketInitialState should set capacity type to shared if tickets plus is active 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "date",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
     },
     "fn": [Function],
   },
@@ -380,7 +452,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE",
@@ -393,7 +465,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_INPUT",
@@ -406,7 +478,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_DATE_MOMENT",
@@ -419,7 +491,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME",
@@ -432,7 +504,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_TEMP_END_TIME_INPUT",
@@ -445,7 +517,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endDate": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_DATE",
@@ -458,7 +530,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endDateInput": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_DATE_INPUT",
@@ -471,7 +543,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endDateMoment": "2018-02-02",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_DATE_MOMENT",
@@ -484,7 +556,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endTime": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_TIME",
@@ -497,7 +569,7 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "endTimeInput": "02:00:00",
           },
           "type": "@@MT/TICKETS/SET_TICKET_END_TIME_INPUT",
@@ -510,12 +582,22 @@ Object {
       "PUT": Object {
         "action": Object {
           "payload": Object {
-            "clientId": "blockId",
+            "clientId": "clientId",
             "hasChanges": true,
           },
-          "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+          "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
         },
         "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [
+          "clientId",
+        ],
+        "context": null,
+        "fn": [Function],
       },
     },
   ],

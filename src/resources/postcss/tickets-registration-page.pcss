@@ -183,7 +183,32 @@ body.page-tribe-attendee-registration {
 .tribe-block__tickets__item__attendee__fields__error {
 	color: red;
 	display: none;
-	padding: 0 0 30px 0;
+	padding: 30px 0 0 0;
+}
+
+.tribe-block__tickets__item__attendee__fields__success {
+	color: rgb(24, 217, 0);
+	display: none;
+	padding: 30px 0 0 0;
+}
+
+.tribe-block__tickets__item__attendee__fields__loader {
+	background: rgba( 255, 255, 255, .7 );
+	display: none;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+	z-index: 99;
+
+	svg {
+		left: 50%;
+		max-width: 70px;
+		position: absolute;
+		transform: translateX(-50%);
+		top: 35%;
+	}
 }
 
 .tribe-block__tickets__button--next {
@@ -305,4 +330,22 @@ body.page-tribe-attendee-registration {
 .tribe-block__tickets__registration__tickets__header__price {
 	flex: 20%;
 	text-align: right;
+}
+
+/*
+ * Attendee Registration Checkout Form
+ */
+.tribe-block__tickets__registration__checkout__submit {
+
+	&:disabled {
+		background-color: #eeeff1;
+		color: #8b959f;
+		cursor: default;
+
+		&:hover,
+		&:focus {
+			background-color: #eeeff1;
+			color: #8b959f;
+		}
+	}
 }

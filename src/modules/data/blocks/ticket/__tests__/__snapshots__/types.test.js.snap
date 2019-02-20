@@ -54,7 +54,9 @@ exports[`Tickets block types SET_TICKET_HAS_ATTENDEE_INFO_FIELDS 1`] = `"@@MT/TI
 
 exports[`Tickets block types SET_TICKET_HAS_BEEN_CREATED 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_BEEN_CREATED"`;
 
-exports[`Tickets block types SET_TICKET_HAS_CHANGES 1`] = `"@@MT/TICKETS/SET_TICKETS_HAS_CHANGES"`;
+exports[`Tickets block types SET_TICKET_HAS_CHANGES 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_CHANGES"`;
+
+exports[`Tickets block types SET_TICKET_HAS_DURATION_ERROR 1`] = `"@@MT/TICKETS/SET_TICKET_HAS_DURATION_ERROR"`;
 
 exports[`Tickets block types SET_TICKET_ID 1`] = `"@@MT/TICKETS/SET_TICKET_ID"`;
 
