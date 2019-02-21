@@ -40,8 +40,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Modify the link for the edit post link
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
 
-		// Switcheroo for templates that force us to use the excerpt as we're saying we're on an archive
-		add_filter( 'genesis_pre_get_option_content_archive', array( $this, 'override_genesis' ), 10, 2 );
+		// Switcheroo for Genesis using the excerpt as we're saying we're on an archive
+		add_filter( 'genesis_pre_get_option_content_archive', array( $this, 'override_genesis_archive' ), 10, 2 );
+		// Also keep content limit from truncating the form
+		add_filter( 'genesis_pre_get_option_content_archive_limit', array( $this, 'override_genesis_limit' ), 10, 2 );
 
 		// Modify the page title
 		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
@@ -280,16 +282,32 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 * @param [string] (null) $unused_null string for value
 	 * @param [type] $unused_setting
 	 *
-	 * @return void
+	 * @return string|null
 	 */
-	public function override_genesis( $unused_null, $unused_setting ) {
+	public function override_genesis_archive( $unused_null, $unused_setting ) {
 		// Bail if we're not on the attendee info page
 		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return null;
 		}
 
 		return 'full';
+	}
 
+	/**
+	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
+	 *
+	 * @param string|null $unused_null Unused variable
+	 * @param string $setting
+	 *
+	 * @return string|null
+	 */
+	public function override_genesis_limit( $unused_null, $setting ) {
+		// Bail if we're not on the attendee info page
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+			return $setting;
+		}
+
+		return '';
 	}
 
 	/**
