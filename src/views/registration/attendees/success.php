@@ -3,6 +3,9 @@
  * This template renders the success message for each form
  * of the attendee registration page
  *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/success.php
+ *
  * @since TBD
  * @version TBD
  *
