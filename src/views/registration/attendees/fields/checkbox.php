@@ -14,6 +14,7 @@ $required      = isset( $field->required ) && 'on' === $field->required ? true :
 $field         = (array) $field;
 $attendee_id   = $key;
 $options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
+$field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . ']';
 
 if ( ! $options ) {
 	return;
@@ -38,7 +39,7 @@ if ( ! $options ) {
 					type="checkbox"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					class="ticket-meta"
-					name="<?php echo 'tribe-tickets-meta[' . esc_attr( $ticket->ID ) . '][' . esc_attr( $attendee_id ) . '][' . esc_attr( $slug ) . ']'; ?>"
+					name="<?php echo esc_attr( $field_name . '[' . $slug . ']' ); ?>"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( $option, $value ); ?>
 				/>
@@ -48,4 +49,9 @@ if ( ! $options ) {
 			</label>
 		<?php endforeach; ?>
 	</div>
+	<input
+		type="hidden"
+		name="<?php echo esc_attr( $field_name . '[0]' ); ?>"
+		value=""
+	>
 </div>
