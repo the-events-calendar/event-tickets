@@ -101,34 +101,29 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		// Use the template option set in the admin
-		$event_template = tribe_get_option( 'tribeEventsTemplate' );
 		$template = tribe_get_option( 'ticket-attendee-info-template' );
 
 		if ( empty( $template ) ) {
 			// we should only get here if the value hasn't been set yet
 			$template = 'default';
 		} elseif ( 'same' === $template ) {
-			//note this could be an empty string...because
-			$template = $event_template;
+			//note this could be an empty string...because.
+			$template = tribe_get_option( 'tribeEventsTemplate', 'default' );
 		}
 
 		switch ( $template ) {
 			case '' :
 			case 'default' :
-				$template = get_template_directory() . '/page.php';
+				// A bit of logic for themes without a page.php
+				$page = locate_template( 'page.php' );
+				$page = ! empty( $page ) ? 'page.php' : array_values( wp_get_theme()->get_page_templates() );
+				$page = ! empty( $page ) ? $page : 'index.php';
+				$page = ! is_array( $page ) ? $page : $page[0];
+
+				$template = get_template_directory() . '/' . $page;
 				break;
 			default :
 				$template = get_template_directory() . '/' . $template;
-		}
-
-		// get the page template
-		if ( empty( $template ) ) {
-			$template = get_page_template();
-
-			// Fallback for themes that are missing page.php
-			if ( empty( $template ) ) {
-				$template = get_template_directory() . '/index.php';
-			}
 		}
 
 		/**
