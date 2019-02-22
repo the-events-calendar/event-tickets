@@ -6,8 +6,8 @@
  * Override this template in your own theme by creating a file at:
  * [your-theme]/tribe/tickets/registration/attendees/success.php
  *
- * @since TBD
- * @version TBD
+ * @since 4.10.1
+ * @version 4.10.1
  *
  */
 ?>

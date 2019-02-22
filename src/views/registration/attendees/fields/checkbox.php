@@ -6,8 +6,8 @@
  * [your-theme]/tribe/tickets/registration/attendees/fields/checkbox.php
  *
  * @since 4.9
- * @since TBD Update template paths to add the "registration/" prefix
- * @version TBD
+ * @since 4.10.1 Update template paths to add the "registration/" prefix
+ * @version 4.10.1
  *
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;

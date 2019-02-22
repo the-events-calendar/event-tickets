@@ -518,7 +518,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filtert to show email form for non-admins.
 		 *
-		 * @since TBD
+		 * @since 4.10.1
 		 *
 		 * @param boolean
 		 */
