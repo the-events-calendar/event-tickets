@@ -525,7 +525,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$allow_fe = apply_filters( 'tribe_allow_admin_on_frontend', false );
 		if ( $allow_fe && ! is_admin() ) {
 			global $wp;
-			$parent = $wp->request . '/';
+			$parent = untrailingslashit( $wp->request ) . '/';
 		}
 
 		$email_link = Tribe__Settings::instance()->get_url( array(
