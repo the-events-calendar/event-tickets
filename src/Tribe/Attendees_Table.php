@@ -540,9 +540,13 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		if ( $allow_fe && ! is_admin() ) {
 			$email_link = str_replace( '/wp-admin/', '/', $email_link );
-			$email_link = str_replace( 'page=tickets-attendees&', '', $email_link );
-
-			$email_link = substr( $email_link, 0, stripos( $email_link, '&post_type' ) );
+			$email_link = add_query_arg(
+				array(
+					'page' => null,
+					'post_type' => null,
+				),
+				$email_link
+			);
 		}
 
 		$nav = array(
