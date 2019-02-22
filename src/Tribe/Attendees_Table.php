@@ -559,7 +559,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// Only show the email button if the user is an admin, or we've enableds it via the filter.
 		if ( current_user_can( 'edit_posts' ) || $allow_fe ) {
-			$nav[ 'left' ][ 'email' ] = '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>';
+			$nav['left']['email'] = sprintf( '<a class="email button action thickbox" href="%1$s">%2$s</a>', esc_url( $email_link ), esc_html__( 'Email', 'event-tickets' ) );
 		}
 
 		/**
