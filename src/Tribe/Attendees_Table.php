@@ -513,6 +513,21 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 */
 		add_thickbox();
 
+		$parent = 'admin.php';
+
+		/**
+		 * Filtert to show email form for non-admins.
+		 *
+		 * @since TBD
+		 *
+		 * @param boolean
+		 */
+		$allow_fe = apply_filters( 'tribe_allow_admin_on_frontend', false );
+		if ( $allow_fe && ! is_admin() ) {
+			global $wp;
+			$parent = untrailingslashit( $wp->request ) . '/';
+		}
+
 		$email_link = Tribe__Settings::instance()->get_url( array(
 			'page'      => 'tickets-attendees',
 			'action'    => 'email',
@@ -520,17 +535,32 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'TB_iframe' => true,
 			'width'     => 410,
 			'height'    => 300,
-			'parent'    => 'admin.php',
+			'parent'    => $parent,
 		) );
+
+		if ( $allow_fe && ! is_admin() ) {
+			$email_link = str_replace( '/wp-admin/', '/', $email_link );
+			$email_link = add_query_arg(
+				array(
+					'page' => null,
+					'post_type' => null,
+				),
+				$email_link
+			);
+		}
 
 		$nav = array(
 			'left' => array(
 				'print'  => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
-				'email'  => '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>',
 				'export' => sprintf( '<a target="_blank" href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
 			),
 			'right' => array(),
 		);
+
+		// Only show the email button if the user is an admin, or we've enableds it via the filter.
+		if ( current_user_can( 'edit_posts' ) || $allow_fe ) {
+			$nav['left']['email'] = sprintf( '<a class="email button action thickbox" href="%1$s">%2$s</a>', esc_url( $email_link ), esc_html__( 'Email', 'event-tickets' ) );
+		}
 
 		/**
 		 * Allows for customization of the buttons/options available above and below the Attendees table.
