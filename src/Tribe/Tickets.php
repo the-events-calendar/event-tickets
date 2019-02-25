@@ -2427,12 +2427,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets_Plus__Meta $meta */
 			$meta = tribe( 'tickets-plus.main' )->meta();
 
-			// Bail if the method doesn't exist (old ET+ version).
-			if ( ! method_exists( $meta, 'cart_has_meta' ) ) {
-				return;
+			$cart_has_meta = true;
+
+			// If the method exists (latest ET+ version), run it.
+			if ( method_exists( $meta, 'cart_has_meta' ) ) {
+				$cart_has_meta = $meta->cart_has_meta( $tickets_in_cart );
 			}
 
-			$cart_has_meta          = $meta->cart_has_meta( $tickets_in_cart );
 			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
 			$up_to_date             = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
 
