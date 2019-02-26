@@ -49,6 +49,15 @@ Object {
 }
 `;
 
+exports[`RSVP block actions RSVP actions set RSVP has duration error 1`] = `
+Object {
+  "payload": Object {
+    "hasDurationError": true,
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_HAS_DURATION_ERROR",
+}
+`;
+
 exports[`RSVP block actions RSVP actions set RSVP header image 1`] = `
 Object {
   "payload": Object {

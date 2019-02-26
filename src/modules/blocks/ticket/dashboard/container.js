@@ -20,6 +20,7 @@ const getIsConfirmDisabled = ( state, ownProps ) => (
 	! selectors.isTicketValid( state, ownProps )
 		|| ! selectors.getTicketHasChanges( state, ownProps )
 		|| selectors.isTicketDisabled( state, ownProps )
+		|| selectors.getTicketHasDurationError( state, ownProps )
 );
 
 const onCancelClick = ( state, dispatch, ownProps ) => () => {

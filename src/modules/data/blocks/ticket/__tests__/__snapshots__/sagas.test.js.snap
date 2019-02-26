@@ -210,6 +210,25 @@ Object {
 }
 `;
 
+exports[`Ticket Block sagas setTicketInitialState should set capacity type to shared if tickets plus is active 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "date",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
 exports[`Ticket Block sagas setTicketInitialState should set ticket initial state 1`] = `
 Object {
   "@@redux-saga/IO": true,
@@ -566,9 +585,19 @@ Object {
             "clientId": "clientId",
             "hasChanges": true,
           },
-          "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+          "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
         },
         "channel": null,
+      },
+    },
+    Object {
+      "@@redux-saga/IO": true,
+      "CALL": Object {
+        "args": Array [
+          "clientId",
+        ],
+        "context": null,
+        "fn": [Function],
       },
     },
   ],

@@ -31,7 +31,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		 */
 		add_filter( 'template_include', array( $this, 'set_page_template' ), 15 );
 
-
 		/*
 		 * Set the content of the page. Again, it has to have a higher priority than the
 		 * TEC filters (at 10) to ensure they do not usurp our rewrite here.
@@ -41,8 +40,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Modify the link for the edit post link
 		add_filter( 'edit_post_link', array( $this, 'set_edit_post_link' ) );
 
-		//switcheroo for tempaltes that force us to use the excerpt as we're saying we're on an archive
-		add_filter( 'the_excerpt', array( $this, 'set_page_excerpt' ) );
+		// Switcheroo for Genesis using the excerpt as we're saying we're on an archive
+		add_filter( 'genesis_pre_get_option_content_archive', array( $this, 'override_genesis_archive' ), 10, 2 );
+		// Also keep content limit from truncating the form
+		add_filter( 'genesis_pre_get_option_content_archive_limit', array( $this, 'override_genesis_limit' ), 10, 2 );
 
 		// Modify the page title
 		add_filter( 'document_title_parts', array( $this, 'modify_page_title' ), 1000 );
@@ -100,43 +101,35 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		// Use the template option set in the admin
-		$event_template = tribe_get_option( 'tribeEventsTemplate' );
 		$template = tribe_get_option( 'ticket-attendee-info-template' );
 
 		if ( empty( $template ) ) {
 			// we should only get here if the value hasn't been set yet
-			$tempalte = 'default';
+			$template = 'default';
 		} elseif ( 'same' === $template ) {
-			//note this could be an empty string...because
-			$template = $event_template;
+			//note this could be an empty string...because.
+			$template = tribe_get_option( 'tribeEventsTemplate', 'default' );
 		}
 
 		switch ( $template ) {
 			case '' :
-			case 'event' :
-				$template = Tribe__Events__Templates::getTemplateHierarchy( 'default-template' );
-				break;
 			case 'default' :
-				$template = get_template_directory() . '/page.php';
+				// A bit of logic for themes without a page.php
+				$page = locate_template( 'page.php' );
+				$page = ! empty( $page ) ? 'page.php' : array_values( wp_get_theme()->get_page_templates() );
+				$page = ! empty( $page ) ? $page : 'index.php';
+				$page = ! is_array( $page ) ? $page : $page[0];
+
+				$template = get_template_directory() . '/' . $page;
 				break;
 			default :
 				$template = get_template_directory() . '/' . $template;
 		}
 
-		// get the page template
-		if ( empty( $template ) ) {
-			$template = get_page_template();
-
-			// Fallback for themes that are missing page.php
-			if ( empty( $template ) ) {
-				$template = get_template_directory() . '/index.php';
-			}
-		}
-
 		/**
 		 * Use `tribe_tickets_attendee_registration_page_template` to modify the attendee registration page template.
 		 *
-		 * @since TBD
+		 * @since 4.10.1
 		 *
 		 * @param string $template The current attendee registration page template.
 		 */
@@ -279,23 +272,37 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
-	 * Set the page excerpt to be post content on attendee registration page.
+	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
 	 *
-	 * @since TBD
+	 * @param [string] (null) $unused_null string for value
+	 * @param [type] $unused_setting
 	 *
-	 * @param string $post_excerpt Excerpt text
-	 *
-	 * @return string Excerpt text or post content.
+	 * @return string|null
 	 */
-	public function set_page_excerpt( $post_excerpt ) {
-
+	public function override_genesis_archive( $unused_null, $unused_setting ) {
 		// Bail if we're not on the attendee info page
 		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
-			return $post_excerpt;
+			return null;
 		}
 
-		// else, be sure we return the content - not the excerpt
-		return get_the_content();
+		return 'full';
+	}
+
+	/**
+	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
+	 *
+	 * @param string|null $unused_null Unused variable
+	 * @param string $setting
+	 *
+	 * @return string|null
+	 */
+	public function override_genesis_limit( $unused_null, $setting ) {
+		// Bail if we're not on the attendee info page
+		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+			return $setting;
+		}
+
+		return '';
 	}
 
 	/**

@@ -2422,9 +2422,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$is_paypal              = (bool) $redirect;
-			$meta                   = tribe( 'tickets-plus.main' )->meta();
-			$cart_has_meta          = $meta->cart_has_meta( $tickets_in_cart );
+			$is_paypal = (bool) $redirect;
+
+			/** @var Tribe__Tickets_Plus__Meta $meta */
+			$meta = tribe( 'tickets-plus.main' )->meta();
+
+			$cart_has_meta = true;
+
+			// If the method exists (latest ET+ version), run it.
+			if ( method_exists( $meta, 'cart_has_meta' ) ) {
+				$cart_has_meta = $meta->cart_has_meta( $tickets_in_cart );
+			}
+
 			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
 			$up_to_date             = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
 

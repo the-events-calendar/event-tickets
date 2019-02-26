@@ -271,6 +271,11 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketHasChanges( clientId, false ) ).toMatchSnapshot();
 		} );
 
+		test( 'set ticket has duration error', () => {
+			expect( actions.setTicketHasDurationError( clientId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketHasDurationError( clientId, false ) ).toMatchSnapshot();
+		} );
+
 		test( 'set ticket is selected', () => {
 			expect( actions.setTicketIsSelected( clientId, true ) ).toMatchSnapshot();
 			expect( actions.setTicketIsSelected( clientId, false ) ).toMatchSnapshot();
