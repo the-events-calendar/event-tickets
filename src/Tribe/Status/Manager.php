@@ -21,10 +21,10 @@ class Tribe__Tickets__Status__Manager {
 	 * @var array
 	 */
 	protected $module_slugs = array(
-		'Easy Digital Downloads' => 'edd',
-		'RSVP'                   => 'rsvp',
-		'Tribe Commerce'         => 'tpp',
-		'WooCommerce'            => 'woo',
+		'Tribe__Tickets_Plus__Commerce__EDD__Main'         => 'edd',
+		'Tribe__Tickets__RSVP'                             => 'rsvp',
+		'Tribe__Tickets__Commerce__PayPal__Main'           => 'tpp',
+		'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
 	);
 	/**
 	 * Active Modules
@@ -98,9 +98,8 @@ class Tribe__Tickets__Status__Manager {
 	protected function convert_initial_active_modules() {
 
 		foreach ( $this->initial_active_modules as $module_class => $module_name ) {
-
-			if ( isset( $this->module_slugs[ $module_name ] ) ) {
-				$this->active_modules[ $module_class ] = $this->module_slugs[ $module_name ];
+			if ( isset( $this->module_slugs[ $module_class ] ) ) {
+				$this->active_modules[ $module_class ] = $this->module_slugs[ $module_class ];
 			}
 		}
 

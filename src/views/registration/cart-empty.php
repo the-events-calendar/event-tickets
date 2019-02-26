@@ -3,7 +3,12 @@
  * This template renders the empty cart for the
  * attendee registration page.
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/cart-empty.php
+ *
+ * @since 4.9
+ * @since 4.10.1 Update template paths to add the "registration/" prefix
+ * @version 4.10.1
  *
  */
 ?>

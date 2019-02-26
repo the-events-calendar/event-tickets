@@ -47,6 +47,11 @@ extends Tribe__Editor__Blocks__Abstract {
 			return;
 		}
 
+		// If Provider is not active return
+		if ( ! array_key_exists( $provider, Tribe__Tickets__Tickets::modules() ) ) {
+			return;
+		}
+
 		$provider    = call_user_func( array( $provider, 'get_instance' ) );
 		$provider_id = $this->get_provider_id( $provider );
 		$tickets     = $this->get_tickets( $post_id );

@@ -62,7 +62,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @return array
 	 */
-	public static function get_table_columns() {
+	public function get_table_columns() {
 		$columns = array(
 			'cb'           => '<input type="checkbox" />',
 			'ticket'       => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
@@ -72,7 +72,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),''
 		);
 
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			$columns['check_in'] = esc_html_x( 'Check in', 'attendee table', 'event-tickets' );
 		}
 
@@ -98,7 +98,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array
 	 */
 	public function get_columns() {
-		return self::get_table_columns();
+		return $this->get_table_columns();
 	}
 
 	/**
@@ -269,7 +269,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	protected function get_row_actions( array $item ) {
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			return false;
 		}
 
@@ -295,7 +295,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function add_default_row_actions( array $row_actions, array $item ) {
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			return;
 		}
 
@@ -369,7 +369,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function column_check_in( $item ) {
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			return false;
 		}
 
@@ -496,6 +496,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function extra_tablenav( $which ) {
 
+		// Bail early if user is not owner/have permissions
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
+			return;
+		}
+
 		$export_url = add_query_arg(
 			array(
 				'attendees_csv'       => true,
@@ -508,6 +513,21 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 */
 		add_thickbox();
 
+		$parent = 'admin.php';
+
+		/**
+		 * Filtert to show email form for non-admins.
+		 *
+		 * @since 4.10.1
+		 *
+		 * @param boolean
+		 */
+		$allow_fe = apply_filters( 'tribe_allow_admin_on_frontend', false );
+		if ( $allow_fe && ! is_admin() ) {
+			global $wp;
+			$parent = untrailingslashit( $wp->request ) . '/';
+		}
+
 		$email_link = Tribe__Settings::instance()->get_url( array(
 			'page'      => 'tickets-attendees',
 			'action'    => 'email',
@@ -515,17 +535,32 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'TB_iframe' => true,
 			'width'     => 410,
 			'height'    => 300,
-			'parent'    => 'admin.php',
+			'parent'    => $parent,
 		) );
+
+		if ( $allow_fe && ! is_admin() ) {
+			$email_link = str_replace( '/wp-admin/', '/', $email_link );
+			$email_link = add_query_arg(
+				array(
+					'page' => null,
+					'post_type' => null,
+				),
+				$email_link
+			);
+		}
 
 		$nav = array(
 			'left' => array(
 				'print'  => sprintf( '<input type="button" name="print" class="print button action" value="%s">', esc_attr__( 'Print', 'event-tickets' ) ),
-				'email'  => '<a class="email button action thickbox" href="' . esc_url( $email_link ) . '">' . esc_attr__( 'Email', 'event-tickets' ) . '</a>',
 				'export' => sprintf( '<a target="_blank" href="%s" class="export button action">%s</a>', esc_url( $export_url ), esc_html__( 'Export', 'event-tickets' ) ),
 			),
 			'right' => array(),
 		);
+
+		// Only show the email button if the user is an admin, or we've enableds it via the filter.
+		if ( current_user_can( 'edit_posts' ) || $allow_fe ) {
+			$nav['left']['email'] = sprintf( '<a class="email button action thickbox" href="%1$s">%2$s</a>', esc_url( $email_link ), esc_html__( 'Email', 'event-tickets' ) );
+		}
 
 		/**
 		 * Allows for customization of the buttons/options available above and below the Attendees table.
@@ -550,7 +585,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function get_bulk_actions() {
 		$actions = array();
 
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			$actions['delete_attendee'] = esc_attr__( 'Delete', 'event-tickets' );
 			$actions['check_in']        = esc_attr__( 'Check in', 'event-tickets' );
 			$actions['uncheck_in']      = esc_attr__( 'Undo Check in', 'event-tickets' );

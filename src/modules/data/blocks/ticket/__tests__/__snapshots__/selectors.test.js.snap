@@ -52,7 +52,7 @@ Object {
         "currencySymbol": undefined,
         "details": Object {
           "capacity": "",
-          "capacityType": "capped",
+          "capacityType": "unlimited",
           "description": "",
           "endDate": "2118-09-01",
           "endDateInput": "September 1, 2118",
@@ -71,13 +71,14 @@ Object {
         "hasAttendeeInfoFields": false,
         "hasBeenCreated": false,
         "hasChanges": false,
+        "hasDurationError": false,
         "isLoading": false,
         "isSelected": false,
         "provider": "",
         "sold": 0,
         "tempDetails": Object {
           "capacity": "",
-          "capacityType": "capped",
+          "capacityType": "unlimited",
           "description": "",
           "endDate": "2118-09-01",
           "endDateInput": "September 1, 2118",
@@ -150,14 +151,14 @@ exports[`Ticket block selectors Ticket details selectors getTicketCapacity 1`] =
 
 exports[`Ticket block selectors Ticket details selectors getTicketCapacityInt 1`] = `0`;
 
-exports[`Ticket block selectors Ticket details selectors getTicketCapacityType 1`] = `"capped"`;
+exports[`Ticket block selectors Ticket details selectors getTicketCapacityType 1`] = `"unlimited"`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketDescription 1`] = `""`;
 
 exports[`Ticket block selectors Ticket details selectors getTicketDetails 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-09-01",
   "endDateInput": "September 1, 2118",
@@ -209,7 +210,7 @@ exports[`Ticket block selectors Ticket details selectors hasTicketOnSale 1`] = `
 
 exports[`Ticket block selectors Ticket details selectors isIndependentTicket 1`] = `false`;
 
-exports[`Ticket block selectors Ticket details selectors isSharedTicket 1`] = `true`;
+exports[`Ticket block selectors Ticket details selectors isSharedTicket 1`] = `false`;
 
 exports[`Ticket block selectors Ticket details selectors isTicketFuture 1`] = `false`;
 
@@ -217,7 +218,7 @@ exports[`Ticket block selectors Ticket details selectors isTicketOnSale 1`] = `f
 
 exports[`Ticket block selectors Ticket details selectors isTicketPast 1`] = `false`;
 
-exports[`Ticket block selectors Ticket details selectors isUnlimitedTicket 1`] = `false`;
+exports[`Ticket block selectors Ticket details selectors isUnlimitedTicket 1`] = `true`;
 
 exports[`Ticket block selectors Ticket selectors getTicket 1`] = `
 Object {
@@ -226,7 +227,7 @@ Object {
   "currencySymbol": undefined,
   "details": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-09-01",
     "endDateInput": "September 1, 2118",
@@ -245,13 +246,14 @@ Object {
   "hasAttendeeInfoFields": false,
   "hasBeenCreated": false,
   "hasChanges": false,
+  "hasDurationError": false,
   "isLoading": false,
   "isSelected": false,
   "provider": "",
   "sold": 0,
   "tempDetails": Object {
     "capacity": "",
-    "capacityType": "capped",
+    "capacityType": "unlimited",
     "description": "",
     "endDate": "2118-09-01",
     "endDateInput": "September 1, 2118",
@@ -285,6 +287,8 @@ exports[`Ticket block selectors Ticket selectors getTicketHasBeenCreated 1`] = `
 
 exports[`Ticket block selectors Ticket selectors getTicketHasChanges 1`] = `false`;
 
+exports[`Ticket block selectors Ticket selectors getTicketHasDurationError 1`] = `false`;
+
 exports[`Ticket block selectors Ticket selectors getTicketId 1`] = `0`;
 
 exports[`Ticket block selectors Ticket selectors getTicketIsLoading 1`] = `false`;
@@ -301,14 +305,14 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapac
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapacityInt 1`] = `0`;
 
-exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapacityType 1`] = `"capped"`;
+exports[`Ticket block selectors Ticket temp details selectors getTicketTempCapacityType 1`] = `"unlimited"`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempDescription 1`] = `""`;
 
 exports[`Ticket block selectors Ticket temp details selectors getTicketTempDetails 1`] = `
 Object {
   "capacity": "",
-  "capacityType": "capped",
+  "capacityType": "unlimited",
   "description": "",
   "endDate": "2118-09-01",
   "endDateInput": "September 1, 2118",
@@ -358,61 +362,9 @@ exports[`Ticket block selectors Ticket temp details selectors getTicketTempTitle
 
 exports[`Ticket block selectors Tickets selectors getIndependentTickets 1`] = `Array []`;
 
-exports[`Ticket block selectors Tickets selectors getSharedTickets 1`] = `
-Array [
-  Object {
-    "available": 0,
-    "currencyPosition": "prefix",
-    "currencySymbol": undefined,
-    "details": Object {
-      "capacity": "",
-      "capacityType": "capped",
-      "description": "",
-      "endDate": "2118-09-01",
-      "endDateInput": "September 1, 2118",
-      "endDateMoment": "2118-09-01T22:30:00.000Z",
-      "endTime": "22:30:00",
-      "endTimeInput": "10:30 pm",
-      "price": "",
-      "sku": "",
-      "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
-      "startDateMoment": "2018-09-01T22:30:00.000Z",
-      "startTime": "22:30:00",
-      "startTimeInput": "10:30 pm",
-      "title": "",
-    },
-    "hasAttendeeInfoFields": false,
-    "hasBeenCreated": false,
-    "hasChanges": false,
-    "isLoading": false,
-    "isSelected": false,
-    "provider": "",
-    "sold": 0,
-    "tempDetails": Object {
-      "capacity": "",
-      "capacityType": "capped",
-      "description": "",
-      "endDate": "2118-09-01",
-      "endDateInput": "September 1, 2118",
-      "endDateMoment": "2118-09-01T22:30:00.000Z",
-      "endTime": "22:30:00",
-      "endTimeInput": "10:30 pm",
-      "price": "",
-      "sku": "",
-      "startDate": "2018-09-01",
-      "startDateInput": "September 1, 2018",
-      "startDateMoment": "2018-09-01T22:30:00.000Z",
-      "startTime": "22:30:00",
-      "startTimeInput": "10:30 pm",
-      "title": "",
-    },
-    "ticketId": 0,
-  },
-]
-`;
+exports[`Ticket block selectors Tickets selectors getSharedTickets 1`] = `Array []`;
 
-exports[`Ticket block selectors Tickets selectors getSharedTicketsCount 1`] = `1`;
+exports[`Ticket block selectors Tickets selectors getSharedTicketsCount 1`] = `0`;
 
 exports[`Ticket block selectors Tickets selectors getTickets 1`] = `
 Object {
@@ -426,7 +378,7 @@ Object {
       "currencySymbol": undefined,
       "details": Object {
         "capacity": "",
-        "capacityType": "capped",
+        "capacityType": "unlimited",
         "description": "",
         "endDate": "2118-09-01",
         "endDateInput": "September 1, 2118",
@@ -445,13 +397,14 @@ Object {
       "hasAttendeeInfoFields": false,
       "hasBeenCreated": false,
       "hasChanges": false,
+      "hasDurationError": false,
       "isLoading": false,
       "isSelected": false,
       "provider": "",
       "sold": 0,
       "tempDetails": Object {
         "capacity": "",
-        "capacityType": "capped",
+        "capacityType": "unlimited",
         "description": "",
         "endDate": "2118-09-01",
         "endDateInput": "September 1, 2118",
@@ -487,7 +440,7 @@ Array [
     "currencySymbol": undefined,
     "details": Object {
       "capacity": "",
-      "capacityType": "capped",
+      "capacityType": "unlimited",
       "description": "",
       "endDate": "2118-09-01",
       "endDateInput": "September 1, 2118",
@@ -506,13 +459,14 @@ Array [
     "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
+    "hasDurationError": false,
     "isLoading": false,
     "isSelected": false,
     "provider": "",
     "sold": 0,
     "tempDetails": Object {
       "capacity": "",
-      "capacityType": "capped",
+      "capacityType": "unlimited",
       "description": "",
       "endDate": "2118-09-01",
       "endDateInput": "September 1, 2118",
@@ -541,7 +495,7 @@ Object {
     "currencySymbol": undefined,
     "details": Object {
       "capacity": "",
-      "capacityType": "capped",
+      "capacityType": "unlimited",
       "description": "",
       "endDate": "2118-09-01",
       "endDateInput": "September 1, 2118",
@@ -560,13 +514,14 @@ Object {
     "hasAttendeeInfoFields": false,
     "hasBeenCreated": false,
     "hasChanges": false,
+    "hasDurationError": false,
     "isLoading": false,
     "isSelected": false,
     "provider": "",
     "sold": 0,
     "tempDetails": Object {
       "capacity": "",
-      "capacityType": "capped",
+      "capacityType": "unlimited",
       "description": "",
       "endDate": "2118-09-01",
       "endDateInput": "September 1, 2118",
@@ -591,7 +546,60 @@ exports[`Ticket block selectors Tickets selectors getTicketsCount 1`] = `1`;
 
 exports[`Ticket block selectors Tickets selectors getTicketsIdsInBlocks 1`] = `Array []`;
 
-exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `Array []`;
+exports[`Ticket block selectors Tickets selectors getUnlimitedTickets 1`] = `
+Array [
+  Object {
+    "available": 0,
+    "currencyPosition": "prefix",
+    "currencySymbol": undefined,
+    "details": Object {
+      "capacity": "",
+      "capacityType": "unlimited",
+      "description": "",
+      "endDate": "2118-09-01",
+      "endDateInput": "September 1, 2118",
+      "endDateMoment": "2118-09-01T22:30:00.000Z",
+      "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
+      "price": "",
+      "sku": "",
+      "startDate": "2018-09-01",
+      "startDateInput": "September 1, 2018",
+      "startDateMoment": "2018-09-01T22:30:00.000Z",
+      "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
+      "title": "",
+    },
+    "hasAttendeeInfoFields": false,
+    "hasBeenCreated": false,
+    "hasChanges": false,
+    "hasDurationError": false,
+    "isLoading": false,
+    "isSelected": false,
+    "provider": "",
+    "sold": 0,
+    "tempDetails": Object {
+      "capacity": "",
+      "capacityType": "unlimited",
+      "description": "",
+      "endDate": "2118-09-01",
+      "endDateInput": "September 1, 2118",
+      "endDateMoment": "2118-09-01T22:30:00.000Z",
+      "endTime": "22:30:00",
+      "endTimeInput": "10:30 pm",
+      "price": "",
+      "sku": "",
+      "startDate": "2018-09-01",
+      "startDateInput": "September 1, 2018",
+      "startDateMoment": "2018-09-01T22:30:00.000Z",
+      "startTime": "22:30:00",
+      "startTimeInput": "10:30 pm",
+      "title": "",
+    },
+    "ticketId": 0,
+  },
+]
+`;
 
 exports[`Ticket block selectors Tickets selectors hasATicketSelected 1`] = `false`;
 

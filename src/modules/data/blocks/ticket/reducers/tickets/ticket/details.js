@@ -36,7 +36,7 @@ export const DEFAULT_STATE = {
 	endTime: momentUtil.toDatabaseTime( endMoment ),
 	startTimeInput: momentUtil.toTime( currentMoment ),
 	endTimeInput: momentUtil.toTime( endMoment ),
-	capacityType: constants.TICKET_TYPES[ constants.SHARED ],
+	capacityType: constants.TICKET_TYPES[ constants.UNLIMITED ],
 	capacity: '',
 };
 
