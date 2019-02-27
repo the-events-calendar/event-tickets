@@ -5,6 +5,7 @@ Tags: RSVP, events, tickets, event management, calendar, ticket sales, community
 Requires at least: 4.7
 Tested up to: 5.1
 Stable tag: 4.10.1
+Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -66,12 +67,6 @@ If you've identified a bug and have a fix, we'd welcome it at our [GitHub page f
 4. Follow the on-screen instructions and wait as the upload completes.
 5. When it's finished, activate the plugin via the prompt. A message will show confirming activation was successful.
 6. For access to new updates, make sure you have added your valid License Key under Events --> Settings --> Licenses.
-
-= Requirements =
-
-* PHP 5.2.4 or greater (recommended: PHP 7.0 or greater)
-* WordPress 4.5 or above
-* jQuery 1.11.x
 
 == Screenshots ==
 
