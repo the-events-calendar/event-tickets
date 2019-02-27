@@ -122,6 +122,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+* Fix - Connect Tribe Commerce Paypal tickets into the share capacity and fix counts in PayPal sales report [109419]
+
 = [4.10.1] TBD =
 
 * Tweak - Add a new setting to set a threshold on whether to show the "Display # tickets left" along with a new filter `tribe_tickets_left_threshold` [119910]
