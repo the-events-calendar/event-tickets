@@ -54,7 +54,7 @@ services:
       - db
       - wordpress
     links:
-      - wp
+      - wordpress
     extra_hosts:
       # This line makes it so that the `/etc/hosts` file of this container will contain an entry
       # redirecting requests for the WP_CHROMEDRIVER_URL to the IP address of the `wordpress` container.
