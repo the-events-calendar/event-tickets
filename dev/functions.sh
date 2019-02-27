@@ -23,7 +23,12 @@ git_clone_required_plugins(){
 
 	  	git clone --single-branch --branch ${branch} ${plugin_repo_url} ${plugin_slug};
 
-	  	cd ${plugin_slug}; git submodule update --recursive --init;
+		cd ${plugin_slug};
+
+		# Tweak git to correctly work with submodules.
+	 	sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
+
+	  	git submodule update --recursive --init;
 
 	  	cd ${plugins_folder}
 	done
