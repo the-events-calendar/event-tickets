@@ -4,7 +4,6 @@
 node_modules
 
 # build files for js minification
-
 compiler.jar
 *.ps1
 
@@ -20,19 +19,11 @@ tests/_output
 Makefile
 
 vendor/
-vendor/badcow
-vendor/bin
-vendor/codeception
-vendor/composer
-vendor/facebook
-vendor/guzzlehttp
-vendor/lucatume
-vendor/ocramius
-vendor/phpunit
-vendor/sebastian
-vendor/symfony
-vendor/autoload.php
 
+# compiled build files
 src/resources/**/app
 src/resources/css
 src/resources/js/**/*.min.js
+
+# edit this yourself to add githoooks
+.huskyrc
