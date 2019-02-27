@@ -36,6 +36,7 @@ import {
 	moment as momentUtil,
 	time as timeUtil,
 } from '@moderntribe/common/utils';
+import { plugins } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
 import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
@@ -184,6 +185,14 @@ export function* setTicketInitialState( action ) {
 		// ¯\_(ツ)_/¯
 	}
 
+	const hasTicketsPlus = yield select( plugins.selectors.hasPlugin, plugins.constants.TICKETS_PLUS );
+	if ( hasTicketsPlus ) {
+		yield all( [
+			put( actions.setTicketCapacityType( clientId, constants.TICKET_TYPES[ constants.SHARED ] ) ),
+			put( actions.setTicketTempCapacityType( clientId, constants.TICKET_TYPES[ constants.SHARED ] ) ),
+		] );
+	}
+
 	const sharedCapacity = yield select( selectors.getTicketsSharedCapacity );
 	if ( sharedCapacity ) {
 		yield all( [
@@ -198,6 +207,8 @@ export function* setTicketInitialState( action ) {
 			put( actions.fetchTicket( clientId, ticketId ) ),
 		] );
 	}
+
+	yield call( handleTicketDurationError, clientId );
 }
 
 export function* setBodyDetails( clientId ) {
@@ -273,6 +284,7 @@ export function* fetchTicket( action ) {
 				sku,
 				capacity_type,
 				capacity,
+				supports_attendee_information,
 			} = ticket;
 
 			const datePickerFormat = tecDateSettings().datepickerFormat;
@@ -328,6 +340,7 @@ export function* fetchTicket( action ) {
 				put( actions.setTicketCurrencySymbol( clientId, cost_details.currency_symbol ) ),
 				put( actions.setTicketCurrencyPosition( clientId, cost_details.currency_position ) ),
 				put( actions.setTicketProvider( clientId, provider ) ),
+				put( actions.setTicketHasAttendeeInfoFields( clientId, supports_attendee_information ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
 			] );
 		}
@@ -369,6 +382,7 @@ export function* createNewTicket( action ) {
 			) {
 				yield put( actions.setTicketsSharedCapacity( tempSharedCapacity ) );
 			}
+			const available = ticket.capacity_details.available === -1 ? 0 : ticket.capacity_details.available;
 
 			const [
 				title,
@@ -425,9 +439,9 @@ export function* createNewTicket( action ) {
 					capacityType,
 					capacity,
 				} ) ),
-				put( actions.setTicketId( clientId, ticket.ID ) ),
+				put( actions.setTicketId( clientId, ticket.id ) ),
 				put( actions.setTicketHasBeenCreated( clientId, true ) ),
-				put( actions.setTicketAvailable( clientId, ticket.capacity ) ),
+				put( actions.setTicketAvailable( clientId, available ) ),
 				put( actions.setTicketProvider( clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
@@ -459,7 +473,7 @@ export function* updateTicket( action ) {
 		}
 
 		yield put( actions.setTicketIsLoading( clientId, true ) );
-		const { response } = yield call( wpREST, {
+		const { response, data: ticket } = yield call( wpREST, {
 			path: `tickets/${ ticketId }`,
 			namespace: 'tribe/tickets/v1',
 			headers: {
@@ -472,6 +486,9 @@ export function* updateTicket( action ) {
 		} );
 
 		if ( response.ok ) {
+			const { capacity_details } = ticket;
+			const available = capacity_details.available === -1 ? 0 : capacity_details.available;
+
 			const [
 				title,
 				description,
@@ -527,6 +544,8 @@ export function* updateTicket( action ) {
 					capacityType,
 					capacity,
 				} ) ),
+				put( actions.setTicketSold( clientId, capacity_details.sold ) ),
+				put( actions.setTicketAvailable( clientId, available ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
 		}
@@ -552,11 +571,12 @@ export function* deleteTicket( action ) {
 
 		yield put( actions.setTicketIsSelected( clientId, false ) );
 		yield put( actions.removeTicketBlock( clientId ) );
+		yield call( [ wpDispatch( 'core/editor' ), 'clearSelectedBlock' ] );
 		yield call( [ wpDispatch( 'core/editor' ), 'removeBlocks' ], [ clientId ] );
 
 		if ( hasBeenCreated ) {
 			const { remove_ticket_nonce = '' } = restNonce();
-			const postId = wpSelect( 'core/editor' ).getCurrentPostId();
+			const postId = yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] );
 
 			/**
 			 * Encode params to be passed into the DELETE request as PHP doesn’t transform the request body
@@ -884,6 +904,9 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 
 				// Trigger UI button
 				put( actions.setTicketHasChanges( clientId, true ) ),
+
+				// Handle ticket duration error
+				call( handleTicketDurationError, clientId ),
 			] );
 
 			yield fork( saveTicketWithPostSave, clientId );
@@ -929,6 +952,30 @@ export function* handleEventStartDateChanges() {
 		// ¯\_(ツ)_/¯
 		console.error( error );
 	}
+}
+
+export function* handleTicketDurationError( clientId ) {
+	let hasDurationError = false;
+	const startDateMoment = yield select( selectors.getTicketTempStartDateMoment, { clientId } );
+	const endDateMoment = yield select( selectors.getTicketTempEndDateMoment, { clientId } );
+
+	if ( ! startDateMoment || ! endDateMoment ) {
+		hasDurationError = true;
+	} else {
+		const startTime = yield select( selectors.getTicketTempStartTime, { clientId } );
+		const endTime = yield select( selectors.getTicketTempEndTime, { clientId } );
+		const startTimeSeconds = yield call( timeUtil.toSeconds, startTime, timeUtil.TIME_FORMAT_HH_MM_SS );
+		const endTimeSeconds = yield call( timeUtil.toSeconds, endTime, timeUtil.TIME_FORMAT_HH_MM_SS );
+		const startDateTimeMoment = yield call( momentUtil.setTimeInSeconds, startDateMoment.clone(), startTimeSeconds );
+		const endDateTimeMoment = yield call( momentUtil.setTimeInSeconds, endDateMoment.clone(), endTimeSeconds );
+		const durationHasError = yield call( [ startDateTimeMoment, 'isSameOrAfter' ], endDateTimeMoment );
+
+		if ( durationHasError ) {
+			hasDurationError = true;
+		}
+	}
+
+	yield put( actions.setTicketHasDurationError( clientId, hasDurationError ) );
 }
 
 export function* handleTicketStartDate( action ) {
@@ -1040,23 +1087,27 @@ export function* handler( action ) {
 
 		case types.HANDLE_TICKET_START_DATE:
 			yield call( handleTicketStartDate, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_END_DATE:
 			yield call( handleTicketEndDate, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_START_TIME:
 			yield call( handleTicketStartTime, action );
 			yield call( handleTicketStartTimeInput, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 
 		case types.HANDLE_TICKET_END_TIME:
 			yield call( handleTicketEndTime, action );
 			yield call( handleTicketEndTimeInput, action );
+			yield call( handleTicketDurationError, action.payload.clientId );
 			yield put( actions.setTicketHasChanges( action.payload.clientId, true ) );
 			break;
 

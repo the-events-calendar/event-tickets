@@ -764,11 +764,12 @@ class Tribe__Tickets__Attendees {
 	 *
 	 * @return boolean
 	 */
-	public function user_can_manage_attendees( $user_id = 0 ) {
-
+	public function user_can_manage_attendees( $user_id = 0, $event_id = '' ) {
 		$user_id = 0 === $user_id ? get_current_user_id() : $user_id;
+		$user_can = true;
 
-		if ( ! $user_id ) {
+		// bail quickly here as we don't have a user to check
+		if ( empty( $user_id ) ) {
 			return false;
 		}
 
@@ -781,16 +782,29 @@ class Tribe__Tickets__Attendees {
 		 * @param int $user_id The ID of the user whose capabilities are being checked.
 		 */
 		$required_caps = apply_filters( 'tribe_tickets_caps_can_manage_attendees', array(
-			'edit_others_posts',
+			'edit_others_posts'
 		), $user_id );
 
 		// Next make sure the user has proper caps in their role.
 		foreach ( $required_caps as $cap ) {
 			if ( ! user_can( $user_id, $cap ) ) {
-				return false;
+				$user_can = false;
+				// break on first fail
+				break;
 			}
 		}
 
-		return true;
+		/**
+		 * Filter our return value to let other plugins hook in and alter things
+		 *
+		 * @since 4.10.1
+		 *
+		 * @param bool $user_can return value, user can or can't
+		 * @param int $user_id id of the user we're checking
+		 * @param int $event_id id of the event we're checking (matter for checks on event authorship)
+		 */
+		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $user_id, $event_id );
+
+		return $user_can;
 	}
 }

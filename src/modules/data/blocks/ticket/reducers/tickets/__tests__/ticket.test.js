@@ -56,6 +56,13 @@ describe( 'Details reducer', () => {
 		) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the has attendee info fields', () => {
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketHasAttendeeInfoFields( 'block-id', true ),
+		) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the is loading', () => {
 		expect( reducer(
 			DEFAULT_STATE,
@@ -74,6 +81,13 @@ describe( 'Details reducer', () => {
 		expect( reducer(
 			DEFAULT_STATE,
 			actions.setTicketHasChanges( 'block-id', true ),
+		) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the has duration error', () => {
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketHasDurationError( 'block-id', true ),
 		) ).toMatchSnapshot();
 	} );
 

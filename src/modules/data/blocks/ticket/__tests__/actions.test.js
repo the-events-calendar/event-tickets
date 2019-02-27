@@ -251,6 +251,11 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketProvider( clientId, 'provider' ) ).toMatchSnapshot();
 		} );
 
+		test( 'set ticket has attendee info fields', () => {
+			expect( actions.setTicketHasAttendeeInfoFields( clientId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketHasAttendeeInfoFields( clientId, false ) ).toMatchSnapshot();
+		} );
+
 		test( 'set ticket is loading', () => {
 			expect( actions.setTicketIsLoading( clientId, true ) ).toMatchSnapshot();
 			expect( actions.setTicketIsLoading( clientId, false ) ).toMatchSnapshot();
@@ -264,6 +269,11 @@ describe( 'Ticket actions', () => {
 		test( 'set ticket has changes', () => {
 			expect( actions.setTicketHasChanges( clientId, true ) ).toMatchSnapshot();
 			expect( actions.setTicketHasChanges( clientId, false ) ).toMatchSnapshot();
+		} );
+
+		test( 'set ticket has duration error', () => {
+			expect( actions.setTicketHasDurationError( clientId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketHasDurationError( clientId, false ) ).toMatchSnapshot();
 		} );
 
 		test( 'set ticket is selected', () => {

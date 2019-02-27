@@ -1,9 +1,9 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, borkweb, bordoni, barry.hughes, aguseo, brianjessee, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, sc0ttkclark, shane.pearlman, vicskf, zbtirrell
+Contributors: ModernTribe, brianjessee, camwynsp, sc0ttkclark
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
-Tested up to: 5.0.3
+Tested up to: 5.1
 Stable tag: 4.10.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -122,24 +122,63 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.1] TBD =
+= [4.10.1] 2019-02-26 =
 
+* Tweak - Add a new setting to set a threshold on whether to show the "Display # tickets left" along with a new filter `tribe_tickets_left_threshold` [119910]
+* Tweak - Add duration error for duration issues with ticket and RSVP [122679]
+* Tweak - Save attendee information on registration page via ajax [121592]
+* Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
+* Tweak - Indicate required fields in ticket block [122442]
+* Tweak - Add filter for attendee registration page template [121223]
+* Tweak - Add filter to manage attendees permissions [123070]
+* Tweak - Add filter to allow email form to be shown for non-admins [123070]
+* Tweak - Added filters: `tribe_tickets_attendee_registration_page_template`, `tribe_tickets_user_can_manage_attendees`, `tribe_allow_admin_on_frontend`, `tribe_display_tickets_left_threshold`
+* Tweak - Changed views: `registration/attendees/content`, `registration/attendees/error`, `registration/attendees/fields`, `registration/attendees/fields/checkbox`, `registration/attendees/fields/radio`, `registration/attendees/fields/select`, `registration/attendees/fields/text`, `registration/attendees/loader`, `registration/attendees/success`, `registration/button-cart`, `registration/button-checkout`, `registration/cart-empty`, `registration/content`, `registration/summary/content`, `registration/summary/description`, `registration/summary/registration-status`, `registration/summary/ticket/content`, `registration/summary/icon-svg`, `registration/summary/ticket/icon`, `registration/summary/ticket/price`, `registration/summary/ticket/quantity`, `registration/summary/ticket/title`, `registration/summary/tickets-header`, `registration/summary/tickets`, `registration/summary/title`, `registration/summary/toggle-handler`
 * Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
 * Fix - Only allow attendee move functionality in admin [87145]
 * Fix - Add filter to allow plugins to bypass the checkin caps requirement (for community events) [118675]
 * Fix - Filter the_excerpt to prevent loading it on the CE attendee registration page [119777]
+* Fix - Allow users to always access attendee registration page if tickets in cart have meta [121819]
+* Fix - Allow tickets with required and non-required meta to be saved together [121821]
+* Fix - Fix issue with WooCommerce checkout returning to attendee registration page [120735]
+* Fix - Update available tickets when updating capacity [120280]
+* Fix - Do not show print, email, and export buttons if not in admin [120646]
+* Fix - Add Indian Rupee and Russian Ruple to PayPal currency code list [120554]
+* Fix - Fix RSVP "don't show my information" checkbox in Twenty Nineteen theme [120685]
+* Fix - Add ticket id to option id for attendee registration fields [122035]
+* Fix - Path to override attendee registration templates defined in template files [120196]
+* Fix - Fix path to override attendee registration templates [120037]
+* Fix - Fix text domain in attendee field view [121019]
+* Fix - Fix focus for sales duration in ticket block [122441]
+* Fix - Fix mobile styles for tickets and RSVP [118299]
+* Fix - Prevent notices when adding a new event in Community Events with Community Tickets active [116724]
+* Fix - Modify how the status manager initializes to use class names instead of proper names, which might be translated [123056]
+* Fix - Prevent fatal errors on front end ticket page if the provider is deactivated [122322]
+* Language - 7 new strings added, 140 updated, 1 fuzzied, and 2 obsoleted
 
-= [4.10] TBD =
+= [4.10.0.1] 2019-02-07 =
 
-* Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Fix - Modify extension dependency checking with new system to determine if it can load [122368]
+
+= [4.10] 2019-02-05 =
+
+* Feature - Add check and enforce PHP 5.6 as the minimum version [116283]
+* Feature - Add system to check plugin versions to inform you to update and prevent site breaking errors [116841]
+* Tweak - Add tooltips and additional information to Tribe Commerce Orders page header [116747]
+* Tweak - Update plugin header [90398]
 * Tweak - Add tooltip info that clarifies two settings only apply to classic editor [20963]
+* Tweak - Added filters: `event_tickets_attendees_{$provider_slug}_checkin_stati`, `tribe_tickets_supported_system_version`, `tribe_not_php_version_names`
+* Tweak - Removed filters: `event_tickets_attendees_{$provider}_checkin_stati`
+* Tweak - Removed actions: `tribe_tickets_plugin_failed_to_load`
+* Fix - Prevent errors in PHP 7.2+ with ticket management [119608]
+* Fix - Only allow delete or move attendee if user can manage attendee [103974]
+* Fix - Prevent redirection of attendee registration to homepage when home is set to main events page [119680]
+* Deprecated - constants MIN_TEC_VERSION and MIN_COMMON_VERSION in Tribe__Tickets__Main, use $min_tec_version property and no replacement for MIN_COMMON_VERSION
+* Deprecated - The `et_plus_compatibility_notice()` method has been deprecated in `Tribe__Tickets__Main` in favor of Plugin Dependency Checking system
+* Language - 15 new strings added, 136 updated, 0 fuzzied, and 40 obsoleted
 
 = [4.9.4] 2019-01-15 =
-
-* Fix - Do not show print, email, and export buttons if not in admin [120646]
-
-= [TBD] =
 
 * Feature - Added prompt in attendee registration when clicking checkout with unsaved attendee info [119760]
 * Feature - Improve the UX for RSVPs with required login [119946]

@@ -1223,6 +1223,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public static function get_ticket_counts( $post_id ) {
+
+			// if no post id return empty array
+			if ( empty( $post_id ) ) {
+				return array();
+			}
+
 			$tickets = self::get_all_event_tickets( $post_id );
 
 			// if no tickets or rsvp return empty array
@@ -2397,7 +2403,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			// Return if not trying to access the chekout page
+			// Return if not trying to access the checkout page
 			if ( ! $this->is_checkout_page() ) {
 				return;
 			}
@@ -2416,31 +2422,49 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$meta                   = tribe( 'tickets-plus.main' )->meta();
+			$is_paypal = (bool) $redirect;
+
+			/** @var Tribe__Tickets_Plus__Meta $meta */
+			$meta = tribe( 'tickets-plus.main' )->meta();
+
+			$cart_has_meta = true;
+
+			// If the method exists (latest ET+ version), run it.
+			if ( method_exists( $meta, 'cart_has_meta' ) ) {
+				$cart_has_meta = $meta->cart_has_meta( $tickets_in_cart );
+			}
+
 			$cart_has_required_meta = $meta->cart_has_required_meta( $tickets_in_cart );
 			$up_to_date             = tribe( 'tickets-plus.meta.contents' )->is_stored_meta_up_to_date( $tickets_in_cart );
 
-			// Bail if there are no required fields in cart or the stored data is up to date
-			// And they're submitting the Attendee Registration page
-			if (
-				isset( $_REQUEST['tribe_tickets_checkout'] )
-				&& (
-					! $cart_has_required_meta
-					|| $up_to_date
-				)
-			) {
-				return;
-			}
+			// If WooCommerce or EDD
+			if ( ! $is_paypal ) {
+				// Bail if there are no required fields in cart or the stored data is up to date
+				// And they're submitting the Attendee Registration page
+				if (
+					isset( $_REQUEST['tribe_tickets_checkout'] )
+						&& ( ! $cart_has_required_meta || $up_to_date )
+				) {
+					return;
+				}
 
-			// Bail If things are up to date and they haven't submitted the form
-			// to access the registration page.
-			if (
-				$up_to_date
-				&& (
-					! isset( $_REQUEST['wootickets_process'] )
-					&& ! isset( $_REQUEST['eddtickets_process'] )
-				)
-			) {
+				// Bail If things are up to date and they haven't submitted the form
+				// to access the registration page.
+				if (
+					$up_to_date
+						&& ! isset( $_REQUEST['wootickets_process'] )
+						&& ! isset( $_REQUEST['eddtickets_process'] )
+				) {
+					return;
+				}
+
+				// Bail if processing checkout for WooCommerce
+				if ( isset( $_REQUEST['key'] ) ) {
+					return;
+				}
+			}
+			// If PayPal and cart does not have meta
+			elseif ( ! $cart_has_meta ) {
 				return;
 			}
 

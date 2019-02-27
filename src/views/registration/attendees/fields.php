@@ -2,12 +2,17 @@
 /**
  * This template renders a the fields for a ticket
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields.php
+ *
+ * @since 4.9
+ * @since 4.10.1 Update template paths to add the "registration/" prefix
+ * @version 4.10.1
  *
  */
 ?>
 <div class="tribe-ticket">
-	<h4><?php esc_html_e( 'Attendee', 'tribe_tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
+	<h4><?php esc_html_e( 'Attendee', 'event-tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
 	<?php foreach ( $fields as $field ) : ?>
 		<?php
 			$value = ! empty( $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] ) ? $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] : null;
@@ -21,7 +26,7 @@
 				'saved_meta' => $saved_meta,
 			);
 
-			$this->template( 'attendees/fields/' . $field->type, $args );
+			$this->template( 'registration/attendees/fields/' . $field->type, $args );
 		?>
 	<?php endforeach; ?>
 </div>

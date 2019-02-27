@@ -5,12 +5,9 @@
  * @var WP_User                                 $author              The post author
  * @var string                                  $post_singular_label The post type singular label
  * @var int                                     $total_sold          The total number of tickets sold
- * @var int                                     $total_completed     The total number of completed ticket payments
- * @var int                                     $total_not_completed The total number of not completed ticket payments
- * @var float                                   $post_revenue        The total revenue for this post PayPal tickets sales
  * @var array                                   $tickets_sold        A list of PayPal tickets that have at least one sale
  * @var Tribe__Tickets__Commerce__PayPal__Main  $paypal              The tickets handler object
- * @var array                                   $tickets_breakdown   An array of information about all the sold PayPal tickets
+ * @var Tribe__Tickets__Status__Manager         $order_overview      Order breakdown for all statuses
  * @var string                                  $table               The orders table output
  */
 ?>
@@ -60,46 +57,20 @@
 
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
-					<h3><?php esc_html_e( 'Sales by Ticket', 'event-tickets' ); ?></h3>
+					<h3>
+						<?php esc_html_e( 'Sales by Ticket Type', 'event-tickets-plus' ); ?>
+						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
+					</h3>
 					<?php
-					/** @var Tribe__Tickets__Ticket_Object $ticket_sold */
 					foreach ( $tickets_sold as $ticket_sold ) {
 
-						//Only Display if a PayPal Ticket otherwise kick out
-						if ( ! $paypal->is_paypal_ticket( $ticket_sold ) ) {
+						//Only Display if a TPP Ticket otherwise kick out
+						if ( 'Tribe__Tickets__Commerce__PayPal__Main' != $ticket_sold['ticket']->provider_class ) {
 							continue;
 						}
 
-						$price        = '';
+						echo $order_overview->get_ticket_sale_infomation( $ticket_sold, $post_id );
 
-						$sold_message = '';
-
-						if ( ! $ticket_sold->managing_stock() ) {
-							$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ),
-								esc_html( $ticket_sold->qty_sold() )
-							);
-						} else {
-							$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ),
-								esc_html( $ticket_sold->qty_sold() )
-							);
-						}
-
-						if ( $ticket_sold->price ) {
-							$price = ' (' . tribe_format_currency( number_format( $ticket_sold->price, 2 ), $post_id ) . ')';
-						}
-
-						$sku = '';
-						if ( $ticket_sold->sku ) {
-							$sku = 'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets-plus' ), esc_html( $ticket_sold->sku ) ) . '"';
-						}
-						?>
-						<div class="tribe-event-meta tribe-event-meta-tickets-sold-itemized">
-							<strong <?php echo $sku; ?>><?php echo esc_html( $ticket_sold->name . $price ); ?>:</strong>
-							<?php
-							echo esc_html( $sold_message );
-							?>
-						</div>
-						<?php
 					}
 					?>
 				</div>
@@ -111,17 +82,70 @@
 					}; ?>
 
 					<div class="totals-header">
-						<h3><?php echo esc_html( sprintf( __( 'Total Sales: %s %s', 'event-tickets' ), esc_html( tribe_format_currency( number_format( $post_revenue, 2 ), $post_id ) ), $total_sold ) ); ?></h3>
+						<h3>
+							<?php
+							$completed_status = $order_overview->get_completed_status_class();
+							$totals_header = sprintf(
+								'%1$s: %2$s (%3$s)',
+								__( 'Total Ticket Sales', 'event-tickets-plus' ),
+								tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ),
+								$completed_status->get_qty()
+							);
+							echo esc_html( $totals_header );
+							echo $order_overview->get_total_sale_tooltip();
+							?>
+						</h3>
+
+						<div class="order-total">
+							<?php
+							$totals_header = sprintf(
+								'%1$s: %2$s (%3$s)',
+								__( 'Total Tickets Ordered', 'event-tickets' ),
+								tribe_format_currency( number_format( $order_overview->get_line_total(), 2 ), $post_id ),
+								$order_overview->get_qty()
+							);
+							echo esc_html( $totals_header );
+							echo $order_overview->get_total_order_tooltip();
+							?>
+						</div>
 					</div>
 
 					<div id="sales_breakdown_wrapper" class="tribe-event-meta-note">
-						<?php foreach ( $tickets_breakdown as $status_label => $details ) : ?>
+
+						<?php
+						/**
+						 * Add Completed Status First and Skip in Loop
+						 */
+						?>
+						<div>
+							<strong><?php esc_html_e( 'Completed', 'event-tickets-plus' ); ?>:</strong>
+							<?php echo esc_html( tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ) ); ?>
+							<span id="total_issued">(<?php echo esc_html( $completed_status->get_qty() ); ?>)</span>
+						</div>
+
+						<?php
+						foreach ( $order_overview->statuses as $provider_key => $status ) {
+
+							// skip the completed order as we always display it above
+							if ( $order_overview->completed_status_id === $provider_key ) {
+								continue;
+							}
+
+							// do not show status if no tickets
+							if ( 0 >= (int) $status->get_qty() ) {
+								continue;
+							}
+							?>
 							<div>
-								<strong><?php echo esc_html( $status_label ); ?></strong>
-								<?php echo esc_html( tribe_format_currency( number_format( $details['total'], 2 ), $post_id ) ); ?>
-								<span>(<?php echo esc_html( $details['qty'] ); ?>)</span>
+								<strong><?php esc_html_e( $status->name, 'event-tickets-plus' ); ?>:</strong>
+								<?php echo esc_html( tribe_format_currency( number_format( $status->get_line_total(), 2 ), $post_id ) ); ?>
+								<span id="total_issued">(<?php echo esc_html( $status->get_qty() ); ?>)</span>
 							</div>
-						<?php endforeach; ?>
+							<?php
+
+						}
+						?>
+
 					</div>
 				</div>
 			</div>
