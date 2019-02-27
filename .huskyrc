@@ -1,5 +1,3 @@
 {
-  "hooks": {
-    "post-checkout": "npm run build:checkout"
-  }
+  "hooks": {}
 }
