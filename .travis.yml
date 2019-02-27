@@ -15,7 +15,6 @@ services:
 addons:
   apt:
     packages:
-      # needed for Nginx
       - libjpeg-dev
       - libpng12-dev
 
@@ -31,7 +30,7 @@ cache:
 
 before_install:
   # Sourcing the .env file will make sure we use, in the environment configuration, the same variables the tests are using.
-  set -o allexport; source .env; set +o allexport;
+  - set -o allexport; source .env; set +o allexport;
 
   # Spin up the `db` container from the test stack.
   # Between initialization and creation of the test database it might take
