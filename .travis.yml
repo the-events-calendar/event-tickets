@@ -85,7 +85,7 @@ install:
   - cd ${TRAVIS_BUILD_DIR}
 
   # Finally, if there are required plugins, clone them.
-  - source ${TRAVIS_BUILD_DIR}/dev/functions.php; git_clone_required_plugins
+  - source ${TRAVIS_BUILD_DIR}/dev/functions.sh; git_clone_required_plugins
 
   # Copy the plugin into the WordPress plugin folder.
   # We also set two variables:
