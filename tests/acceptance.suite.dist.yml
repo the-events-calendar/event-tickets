@@ -20,11 +20,11 @@ modules:
             window_size: false
             capabilities:
               chromeOptions:
-                args: ["--headless", "--disable-gpu", "--proxy-server='direct://'", "--proxy-bypass-list=*", "--url-base=/wd/hub" ]
+                args: ["--headless", "--disable-gpu", "--proxy-server='direct://'", "--proxy-bypass-list=*" ]
         WPDb:
            dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
-           user: %DB_USER%
-           password: %DB_PASSWORD%
+           user: %WP_DB_USER%
+           password: %WP_DB_PASSWORD%
            dump: 'tests/_data/dump.sql'
            populate: true
            waitlock: 10

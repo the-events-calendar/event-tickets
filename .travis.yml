@@ -97,6 +97,12 @@ install:
   # Get back to the WordPress installation root folder.
   - cd ${WP_ROOT_FOLDER}; echo "pwd=$(pwd)"
 
+  # Obtain the IP address of the `wordpress` container we started before from the stack.
+  - export WP_CONTAINER_IP=`docker inspect -f '{{ .NetworkSettings.Networks.docker_default.IPAddress }}' ci_wordpress`
+
+  # Finally start the Selenium and Chromedriver container.
+  - docker-compose -f ${TRAVIS_BUILD_DIR}/dev/docker/ci-compose.yml up -d chromedriver
+
 before_script:
   # Activate the plugin in WordPress.
   - wp plugin activate ${required_plugins_slugs} ${PLUGIN_BASENAME}
