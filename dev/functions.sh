@@ -2,6 +2,7 @@
 
 git_clone_required_plugins(){
 	plugins_folder="${WP_ROOT_FOLDER}/wp-content/plugins"
+
 	cd ${plugins_folder}
 
 	declare -a required_plugins=(`echo ${REQUIRED_PLUGIN_REPOS}`);
