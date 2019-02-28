@@ -122,6 +122,16 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+<<<<<<< Updated upstream
+=======
+= [4.10.2] TBD =
+
+* Fix - Remove duplicate coding to update RSVP stock when deleting an attendee [123334]
+* Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
+* Fix - Fix React console warnings when editing events [121198]
+* Fix - Show RSVP on list view when it's the only attached ticket [123124]
+
+>>>>>>> Stashed changes
 = [4.10.1] 2019-02-26 =
 
 * Tweak - Add a new setting to set a threshold on whether to show the "Display # tickets left" along with a new filter `tribe_tickets_left_threshold` [119910]
