@@ -119,9 +119,9 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	 */
 	public function filter_single_ticket_data( $data, $request ) {
 		$ticket_id = $request['id'];
-		$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+		$ticket    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
-		if ( $ticket === null ) {
+		if ( ! $ticket ) {
 			return $data;
 		}
 

@@ -1163,6 +1163,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
 		$return->name             = $product->post_title;
+		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
