@@ -137,20 +137,20 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 			return $data;
 		}
 
-		$capacity_details = empty( $data['capacity_details'] ) ? array() : $data['capacity_details'];
-		$available = empty( $capacity_details['available'] ) ? 0 : $capacity_details['available'];
-		$capacity_type = $ticket->global_stock_mode();
+		$capacity_details = empty( $data['capacity_details'] ) ? [] : $data['capacity_details'];
+		$available        = empty( $capacity_details['available'] ) ? 0 : $capacity_details['available'];
+		$capacity_type    = $ticket->global_stock_mode();
 
 		// Check for unlimited types
-		if ( $available === -1 || $capacity_type === '' ) {
+		if ( -1 === $available || '' === $capacity_type ) {
 			$capacity_type = 'unlimited';
 		}
 
-		$data['capacity_type'] = $capacity_type;
-		$data['sku'] = $ticket->sku;
-		$data['description'] = $ticket->description;
+		$data['capacity_type']             = $capacity_type;
+		$data['sku']                       = $ticket->sku;
+		$data['description']               = $ticket->description;
 		$data['available_from_start_time'] = $ticket->start_time;
-		$data['available_from_end_time'] = $ticket->end_time;
+		$data['available_from_end_time']   = $ticket->end_time;
 
 		$data['totals'] = tribe( 'tickets.handler' )->get_ticket_totals( $ticket_id );
 
