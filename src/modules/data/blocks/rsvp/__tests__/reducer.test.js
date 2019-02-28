@@ -45,4 +45,12 @@ describe( 'RSVP block reducer', () => {
 	it( 'should set the not going count', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPNotGoingCount( 10 ) ) ).toMatchSnapshot();
 	} );
+
+	it( 'should set the has attendee info fields', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPHasAttendeeInfoFields( true ) ) ).toMatchSnapshot();
+	} );
+
+	it( 'should set the has duration error', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPHasDurationError( true ) ) ).toMatchSnapshot();
+	} );
 } );

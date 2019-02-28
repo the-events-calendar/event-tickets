@@ -107,6 +107,7 @@ class Capacity extends PureComponent {
 					onChange={ onTempSharedCapacityChange }
 					disabled={ isDisabled }
 					min={ 0 }
+					required={ true }
 				/>
 			);
 		}
@@ -117,6 +118,7 @@ class Capacity extends PureComponent {
 			tempCapacityType,
 		) ) {
 			const extraProps = {};
+			const ticketType = tempCapacityType === TICKET_TYPES[ SHARED ] ? SHARED : INDEPENDENT;
 
 			if (
 				tempCapacityType === TICKET_TYPES[ SHARED ]
@@ -124,6 +126,10 @@ class Capacity extends PureComponent {
 			) {
 				const max = sharedCapacity ? sharedCapacity : tempSharedCapacity;
 				extraProps.max = parseInt( max, 10 ) || 0;
+			}
+
+			if ( tempCapacityType === TICKET_TYPES[ INDEPENDENT ] ) {
+				extraProps.required = true;
 			}
 
 			extraProps.label = tempCapacityType === TICKET_TYPES[ SHARED ]
@@ -136,6 +142,7 @@ class Capacity extends PureComponent {
 					className={ classNames(
 						'tribe-editor__ticket__capacity-input-row',
 						'tribe-editor__ticket__capacity-input-row--capacity',
+						`tribe-editor__ticket__capacity-input-row--capacity-${ ticketType }`,
 					) }
 					id={ this.ids.capacity }
 					value={ tempCapacity }

@@ -2,20 +2,25 @@
 /**
  * This template renders the event content
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/summary/content.php
+ *
+ * @since 4.9
+ * @since 4.10.1 Update template paths to add the "registration/" prefix
+ * @version 4.10.1
  *
  */
 ?>
 <div class="tribe-block__tickets__registration__summary">
 
-	<?php $this->template( 'summary/toggle-handler' ); ?>
+	<?php $this->template( 'registration/summary/toggle-handler' ); ?>
 
-	<?php $this->template( 'summary/registration-status' ); ?>
+	<?php $this->template( 'registration/summary/registration-status' ); ?>
 
-	<?php $this->template( 'summary/title', array( 'event_id' => $event_id ) ); ?>
+	<?php $this->template( 'registration/summary/title', array( 'event_id' => $event_id ) ); ?>
 
-	<?php $this->template( 'summary/description', array( 'event_id' => $event_id ) ); ?>
+	<?php $this->template( 'registration/summary/description', array( 'event_id' => $event_id ) ); ?>
 
-	<?php $this->template( 'summary/tickets', array( 'tickets' => $tickets ) ); ?>
+	<?php $this->template( 'registration/summary/tickets', array( 'tickets' => $tickets ) ); ?>
 
 </div>

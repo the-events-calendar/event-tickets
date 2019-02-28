@@ -216,6 +216,11 @@ export const getTicketProvider = createSelector(
 	( ticket ) => ticket.provider,
 );
 
+export const getTicketHasAttendeeInfoFields = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.hasAttendeeInfoFields,
+);
+
 export const getTicketIsLoading = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.isLoading,
@@ -229,6 +234,11 @@ export const getTicketHasBeenCreated = createSelector(
 export const getTicketHasChanges = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.hasChanges,
+);
+
+export const getTicketHasDurationError = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.hasDurationError,
 );
 
 export const getTicketIsSelected = createSelector(
@@ -531,17 +541,21 @@ export const isTempTitleValid = createSelector(
 
 export const isTempCapacityValid = createSelector(
 	[ getTicketTempCapacity ],
-	( capacity ) => trim( capacity ) !== '',
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
+);
+
+export const isTempSharedCapacityValid = createSelector(
+	[ getTicketsTempSharedCapacity ],
+	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
 );
 
 export const isTicketValid = createSelector(
-	[ getTicketTempCapacityType, isTempTitleValid, isTempCapacityValid ],
-	( capacityType, titleValid, capacityValid ) => {
-		if (
-			capacityType === TICKET_TYPES[ UNLIMITED ] ||
-			capacityType === TICKET_TYPES[ SHARED ]
-		) {
+	[ getTicketTempCapacityType, isTempTitleValid, isTempCapacityValid, isTempSharedCapacityValid ],
+	( capacityType, titleValid, capacityValid, sharedCapacityValid ) => {
+		if ( capacityType === TICKET_TYPES[ UNLIMITED ] ) {
 			return titleValid;
+		} else if (	capacityType === TICKET_TYPES[ SHARED ] ) {
+			return titleValid && sharedCapacityValid;
 		}
 		return titleValid && capacityValid;
 	},

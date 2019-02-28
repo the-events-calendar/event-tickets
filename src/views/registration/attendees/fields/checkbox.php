@@ -2,13 +2,19 @@
 /**
  * This template renders the Checkbox
  *
- * @version 4.9
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/fields/checkbox.php
+ *
+ * @since 4.9
+ * @since 4.10.1 Update template paths to add the "registration/" prefix
+ * @version 4.10.1
  *
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
 $field         = (array) $field;
 $attendee_id   = $key;
 $options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
+$field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . ']';
 
 if ( ! $options ) {
 	return;
@@ -24,7 +30,7 @@ if ( ! $options ) {
 
 			$option_slug = sanitize_title( $option );
 			$field_slug  = $field['slug'];
-			$option_id   = "tribe-tickets-meta_{$field_slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
+			$option_id   = "tribe-tickets-meta_{$field_slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
 			$value       = isset( $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] ) ? $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] : false;
 			?>
@@ -33,7 +39,7 @@ if ( ! $options ) {
 					type="checkbox"
 					id="<?php echo esc_attr( $option_id ); ?>"
 					class="ticket-meta"
-					name="<?php echo 'tribe-tickets-meta[' . esc_attr( $ticket->ID ) . '][' . esc_attr( $attendee_id ) . '][' . esc_attr( $slug ) . ']'; ?>"
+					name="<?php echo esc_attr( $field_name . '[' . $slug . ']' ); ?>"
 					value="<?php echo esc_attr( $option ); ?>"
 					<?php checked( $option, $value ); ?>
 				/>
@@ -43,4 +49,9 @@ if ( ! $options ) {
 			</label>
 		<?php endforeach; ?>
 	</div>
+	<input
+		type="hidden"
+		name="<?php echo esc_attr( $field_name . '[0]' ); ?>"
+		value=""
+	>
 </div>

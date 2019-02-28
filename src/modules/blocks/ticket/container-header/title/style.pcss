@@ -1,20 +1,28 @@
 .tribe-editor__ticket__container-header-title {
 	display: flex;
 
+	/* Clipboard tooltip */
+	.tribe-editor__ticket__container-header-clipboard-tooltip {
+		flex: none;
+		height: 20px;
+		margin: 6px 0 0 10px;
+	}
+
 	/* Pencil icon */
-	svg {
+	& > svg {
 		flex: none;
 		margin: 6px 0 0 10px;
 		opacity: 0;
 		transition: opacity 0.2s ease;
 
+		.tribe-editor__ticket--selected &,
 		.is-hovered[data-type="tribe/tickets-item"] & {
 			opacity: 1;
 		}
+	}
 
-		.tribe-editor__ticket--selected & {
-			display: none;
-		}
+	svg {
+		fill: #8d949b;
 	}
 }
 

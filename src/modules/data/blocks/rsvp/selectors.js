@@ -51,6 +51,16 @@ export const getRSVPNotGoingCount = createSelector(
 	( rsvp ) => rsvp.notGoingCount,
 );
 
+export const getRSVPHasAttendeeInfoFields = createSelector(
+	[ getRSVPBlock ],
+	( rsvp ) => rsvp.hasAttendeeInfoFields,
+);
+
+export const getRSVPHasDurationError = createSelector(
+	[ getRSVPBlock ],
+	( rsvp ) => rsvp.hasDurationError,
+);
+
 /**
  * ------------------------------------------------------------
  * RSVP Details
