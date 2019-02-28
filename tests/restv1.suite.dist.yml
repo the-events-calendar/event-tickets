@@ -16,8 +16,6 @@ modules:
             populate: true
             cleanup: true
             waitlock: 10
-            # by default Travis CI MySQL password is empty
-            populator: 'mysql -u$user -h$host $dbname < $dump'
             url: '%WP_URL%'
             tablePrefix: wp_
         WPBrowser:
