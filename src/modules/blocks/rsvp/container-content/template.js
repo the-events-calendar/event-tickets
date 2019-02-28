@@ -43,7 +43,7 @@ const RSVPContainerContentOptions = ( {
 			className="tribe-editor__rsvp-container-content__capacity-input"
 			disabled={ isDisabled }
 			id={ capacityId }
-			min="0"
+			min={ 0 }
 			onChange={ onTempCapacityChange }
 			value={ tempCapacity }
 		/>

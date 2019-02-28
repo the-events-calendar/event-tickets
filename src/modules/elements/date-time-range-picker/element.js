@@ -14,7 +14,6 @@ import { DayPickerInput, TimePicker } from '@moderntribe/common/elements';
 import {
 	date,
 	time,
-	TribePropTypes,
 } from '@moderntribe/common/utils';
 import './style.pcss';
 
@@ -34,7 +33,7 @@ class DateTimeRangePicker extends Component {
 		fromDateInput: PropTypes.string,
 		fromDateDisabled: PropTypes.bool,
 		fromDateFormat: PropTypes.string,
-		fromTime: TribePropTypes.timeFormat.isRequired,
+		fromTime: PropTypes.string,
 		fromTimeDisabled: PropTypes.bool,
 		onFromDateChange: PropTypes.func,
 		onFromTimePickerBlur: PropTypes.func,
@@ -53,7 +52,7 @@ class DateTimeRangePicker extends Component {
 		toDateInput: PropTypes.string,
 		toDateDisabled: PropTypes.bool,
 		toDateFormat: PropTypes.string,
-		toTime: TribePropTypes.timeFormat.isRequired,
+		toTime: PropTypes.string,
 		toTimeDisabled: PropTypes.bool,
 	};
 

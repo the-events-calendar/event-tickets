@@ -27,7 +27,7 @@ const MoveDelete = ( {
 MoveDelete.propTypes = {
 	moveTicket: PropTypes.func.isRequired,
 	removeTicket: PropTypes.func.isRequired,
-	isDisabled: PropTypes.func.isRequired,
+	isDisabled: PropTypes.bool.isRequired,
 };
 
 export default MoveDelete;
