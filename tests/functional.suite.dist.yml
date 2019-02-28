@@ -13,9 +13,9 @@ modules:
             url: '%WP_URL%'
             adminUsername: %WP_ADMIN_USERNAME%
             adminPassword: %WP_ADMIN_PASSWORD%
-            adminPath: '%WP_ADMIN_PATH%'
+            adminPath: '/wp-admin'
         WPDb:
-           dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
+           dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
            user: %WP_DB_USER%
            password: %WP_DB_PASSWORD%
            dump: 'tests/_data/dump.sql'
