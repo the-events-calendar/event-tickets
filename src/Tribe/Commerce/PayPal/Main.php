@@ -850,10 +850,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				if ( $status_stock_size > 0 ) {
 					switch ( $payment_status ) {
 						case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
-							$this->increase_ticket_sales_by( $product_id, 1, $post_id, $shared_capacity, $global_stock );
+							$this->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 							break;
 						case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
-							$this->decrease_ticket_sales_by( $product_id, 1, $post_id, $shared_capacity, $global_stock );
+							$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 							break;
 						default:
 							break;
@@ -2574,7 +2574,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return int
 	 */
-	public function increase_ticket_sales_by( $ticket_id, $qty = 1, $post_id = null, $shared_capacity = false, $global_stock= null ) {
+	public function increase_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock= null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
 
@@ -2596,7 +2596,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @return int
 	 */
-	public function decrease_ticket_sales_by( $ticket_id, $qty = 1, $post_id = null, $shared_capacity = false, $global_stock= null ) {
+	public function decrease_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock= null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
 
@@ -2608,6 +2608,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Update Global Stock
 	 *
+	 * @since TBD
 	 *
 	 * @param      $post_id
 	 * @param int  $qty
@@ -2615,12 +2616,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
 
-		$level        = $global_stock->get_stock_level();
-
+		$level = $global_stock->get_stock_level();
 		if ( $increase ) {
-			$new_level    = (int) $level + (int) $qty;
+			$new_level = (int) $level + (int) $qty;
 		} else {
-			$new_level    = (int) $level - (int) $qty;
+			$new_level = (int) $level - (int) $qty;
 		}
 
 		$global_stock->set_stock_level( $new_level );

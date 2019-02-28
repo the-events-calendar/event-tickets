@@ -2108,7 +2108,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param string      $save_type
 		 */
 		protected function update_capacity( $ticket, $data, $save_type ) {
-
 			if ( empty( $data ) ) {
 				return;
 			}

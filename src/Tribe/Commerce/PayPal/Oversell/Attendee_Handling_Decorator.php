@@ -123,9 +123,8 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 				$shared_capacity = true;
 			}
 
-
 			if ( false !== $product_id ) {
-				$paypal->increase_ticket_sales_by( $product_id, 1, $event_id, $shared_capacity, $global_stock );
+				$paypal->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 			}
 		}
 	}
