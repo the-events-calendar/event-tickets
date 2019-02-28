@@ -19,7 +19,7 @@ git_clone_required_plugins(){
 			branch="master";
 	  	fi;
 
-		echo "\n\nCloning branch ${branch} for plugin ${plugin_slug}\n";
+		echo "Cloning branch ${branch} for plugin ${plugin_slug}";
 
 	  	git clone --single-branch --branch ${branch} ${plugin_repo_url} ${plugin_slug};
 
