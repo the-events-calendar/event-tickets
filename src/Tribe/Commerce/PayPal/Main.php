@@ -2566,11 +2566,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Increases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
-	 * @since TBD added $event_id parameter
+	 * @since TBD added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int $ticket_id The ticket post ID
-	 * @param int $qty
-	 * @param int $post_id the id of an event or post with TPP tickets
+	 * @param int         $ticket_id       The ticket post ID
+	 * @param int         $qty             the quanitity to modify stock
+	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
+	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
 	 *
 	 * @return int
 	 */
@@ -2588,11 +2589,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Decreases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
-	 * @since TBD added $event_id parameter
+	 * @since TBD added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int $ticket_id The ticket post ID
-	 * @param int $qty
-	 * @param int $post_id the id of an event or post with TPP tickets
+	 * @param int         $ticket_id       The ticket post ID
+	 * @param int         $qty             the quanitity to modify stock
+	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
+	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
 	 *
 	 * @return int
 	 */
@@ -2610,9 +2612,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since TBD
 	 *
-	 * @param      $post_id
-	 * @param int  $qty
-	 * @param bool $increase
+	 * @param object $global_stock the object of Tribe__Tickets__Global_Stock
+	 * @param int    $qty          the quanitity to modify stock
+	 * @param bool   $increase     true or false to increase stock, default is false
 	 */
 	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
 
