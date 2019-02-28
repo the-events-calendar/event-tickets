@@ -174,8 +174,6 @@ class SingleTicketCest extends BaseRestCest {
 	 * @test
 	 */
 	public function should_hide_private_fields_to_public_queries(Restv1Tester $I) {
-		Assert::markTestSkipped('Currently we\'re still working this logic out');
-
 		$post_id                     = $I->havePostInDatabase();
 		$going_attendees_count       = 7;
 		$going_optin_count = 4;
