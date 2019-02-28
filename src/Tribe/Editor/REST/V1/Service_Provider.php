@@ -125,6 +125,18 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 			return $data;
 		}
 
+		$ticket_post_type_object = get_post_type_object( $ticket->post_type );
+
+		if ( ! $ticket_post_type_object ) {
+			return $data;
+		}
+
+		$read_post = $ticket_post_type_object->cap->read_post;
+
+		if ( ! current_user_can( $read_post, $ticket_id ) ) {
+			return $data;
+		}
+
 		$capacity_details = empty( $data['capacity_details'] ) ? array() : $data['capacity_details'];
 		$available = empty( $capacity_details['available'] ) ? 0 : $capacity_details['available'];
 		$capacity_type = $ticket->global_stock_mode();
