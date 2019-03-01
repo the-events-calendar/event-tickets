@@ -193,7 +193,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		add_action( 'rsvp_checkin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'rsvp_uncheckin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ) );
-		add_filter( 'tribe_get_cost', array( $this, 'tribe_trigger_get_cost'), 10, 3 );
+		add_filter( 'tribe_get_cost', array( $this, 'tribe_trigger_get_cost' ), 10, 3 );
 		add_filter(
 			'event_tickets_attendees_rsvp_checkin_stati',
 			array( $this, 'filter_event_tickets_attendees_rsvp_checkin_stati' )
@@ -1010,17 +1010,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *
 	 * @param string $cost
 	 * @param int $post_id
-	 * @param boolean $with_currency_symbol
+	 * @param boolean $unused_with_currency_symbol
 	 *
 	 * @return string $cost
 	 */
-	public function tribe_trigger_get_cost( $cost, $post_id, $with_currency_symbol ) {
+	public function tribe_trigger_get_cost( $cost, $post_id, $unused_with_currency_symbol ) {
 
 		if (
 			empty( $cost )
 			&& tribe_events_has_tickets( get_post( $post_id ) )
 		) {
-			$cost = 'Free';
+			$cost = esc_html__( 'Free', 'event-tickets' );
 		}
 
 		return $cost;
