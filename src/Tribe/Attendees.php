@@ -800,8 +800,8 @@ class Tribe__Tickets__Attendees {
 		 * @since 4.10.1
 		 *
 		 * @param bool $user_can return value, user can or can't
-		 * @param int $user_id id of the user we're checking
 		 * @param int $event_id id of the event we're checking (matter for checks on event authorship)
+		 * @param int $user_id id of the user we're checking (optioanl, will use current user if empty)
 		 */
 		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $event_id, $user_id );
 
