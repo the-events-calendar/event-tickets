@@ -803,7 +803,7 @@ class Tribe__Tickets__Attendees {
 		 * @param int $user_id id of the user we're checking
 		 * @param int $event_id id of the event we're checking (matter for checks on event authorship)
 		 */
-		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $user_id, $event_id );
+		$user_can = apply_filters( 'tribe_tickets_user_can_manage_attendees', $user_can, $event_id, $user_id );
 
 		return $user_can;
 	}
