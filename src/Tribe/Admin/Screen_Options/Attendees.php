@@ -63,7 +63,7 @@ class Tribe__Tickets__Admin__Screen_Options__Attendees {
 	 */
 	public function filter_manage_columns( array $columns ) {
 		$attendees_table = new Tribe__Tickets__Attendees_Table();
-		return $attendees_table->get_table_columns();
+		return tribe( 'tickets.editor.attendees_table' )->get_table_columns();
 	}
 
 	/**
