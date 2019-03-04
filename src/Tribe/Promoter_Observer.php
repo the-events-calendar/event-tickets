@@ -45,6 +45,11 @@ class Tribe__Tickets__Promoter_Observer {
 	public function notify( $post_id ) {
 		/** @var Tribe__Promoter__Connector $connector */
 		$connector = tribe( 'promoter.connector' );
+		
+		if ( ! $connector ) {
+			return;
+		}
+
 		$connector->notify_promoter_of_changes( $post_id );
 	}
 }
