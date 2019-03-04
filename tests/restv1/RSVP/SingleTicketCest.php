@@ -239,7 +239,7 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'                      => $ticket_rest_url,
 			'provider'                      => 'rsvp',
 			'title'                         => $ticket_post->post_title,
-			'description'                   => $ticket_post->post_content,
+			'description'                   => $ticket_post->post_excerpt,
 			'image'                         => $repository->get_ticket_header_image( $ticket_id ),
 			'available_from'                => $repository->get_ticket_start_date( $ticket_id ),
 			'available_from_details'        => $repository->get_ticket_start_date( $ticket_id, true ),
