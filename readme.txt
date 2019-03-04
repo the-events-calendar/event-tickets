@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.1
-Stable tag: 4.10.1
+Stable tag: 4.10.2
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
 * Fix - Fix React console warnings when editing events [121198]
 * Fix - Correct attendee list page on posts and pages [123514]
+* Fix - Show RSVP on list view when it's the only attached ticket [123124]
 
 = [4.10.1] 2019-02-26 =
 

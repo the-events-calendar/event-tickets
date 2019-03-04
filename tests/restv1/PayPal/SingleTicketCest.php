@@ -2,6 +2,7 @@
 
 namespace Tribe\Tickets\Test\REST\V1\PayPal;
 
+use PHPUnit\Framework\Assert;
 use Restv1Tester;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as Ticket_Maker;
@@ -62,28 +63,31 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseIsJson();
 
 		$expectedJson = array(
-			'id'                            => $ticket_id,
-			'post_id'                       => $post_id,
-			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
-			'global_id_lineage'             => $repository->get_ticket_global_id_lineage( $ticket_id ),
-			'author'                        => $ticket_post->post_author,
-			'status'                        => $ticket_post->post_status,
-			'date'                          => $ticket_post->post_date,
-			'date_utc'                      => $ticket_post->post_date_gmt,
-			'modified'                      => $ticket_post->post_modified,
-			'modified_utc'                  => $ticket_post->post_modified_gmt,
-			'rest_url'                      => $ticket_rest_url,
-			'provider'                      => 'tribe-commerce',
-			'title'                         => $ticket_post->post_title,
-			'description'                   => $ticket_post->post_excerpt,
-			'image'                         => $repository->get_ticket_header_image( $ticket_id ),
-			'available_from'                => $repository->get_ticket_start_date( $ticket_id ),
+			'id'                        => $ticket_id,
+			'post_id'                   => $post_id,
+			'global_id'                 => $repository->get_ticket_global_id( $ticket_id ),
+			'global_id_lineage'         => $repository->get_ticket_global_id_lineage( $ticket_id ),
+			'author'                    => $ticket_post->post_author,
+			'status'                    => $ticket_post->post_status,
+			'date'                      => $ticket_post->post_date,
+			'date_utc'                  => $ticket_post->post_date_gmt,
+			'modified'                  => $ticket_post->post_modified,
+			'modified_utc'              => $ticket_post->post_modified_gmt,
+			'rest_url'                  => $ticket_rest_url,
+			'provider'                  => 'tribe-commerce',
+			'title'                     => $ticket_post->post_title,
+			'description'               => $ticket_post->post_excerpt,
+			'image'                     => $repository->get_ticket_header_image( $ticket_id ),
+			'available_from'            => $repository->get_ticket_start_date( $ticket_id ),
+			'available_from_start_time' => '',
+
+			'available_from_end_time'       => '',
 			'available_from_details'        => $repository->get_ticket_start_date( $ticket_id, true ),
 			'available_until'               => $repository->get_ticket_end_date( $ticket_id ),
 			'available_until_details'       => $repository->get_ticket_end_date( $ticket_id, true ),
 			'capacity'                      => 30,
 			'capacity_details'              => [
-				'available_percentage' => (int)floor( ( 23 / 30 ) * 100 ),
+				'available_percentage' => (int) floor( ( 23 / 30 ) * 100 ),
 				'max'                  => 30,
 				'available'            => 23,
 				'sold'                 => 7,
@@ -98,15 +102,15 @@ class SingleTicketCest extends BaseRestCest {
 			],
 			'attendees'                     => $repository->get_ticket_attendees( $ticket_id ),
 			'supports_attendee_information' => false, // no ET+ installed'
-			'checkin' => [
+			'checkin'                       => [
 				'checked_in'              => 1,
 				'unchecked_in'            => 6,
 				'checked_in_percentage'   => 15,
 				'unchecked_in_percentage' => 85,
 			],
-			'capacity_type'             => 'own',
-			'sku'                       => '',
-			'totals'                    => [
+			'capacity_type'                 => 'own',
+			'sku'                           => '',
+			'totals'                        => [
 				'stock'   => 23,
 				'sold'    => 7,
 				'pending' => 0,
@@ -253,7 +257,7 @@ class SingleTicketCest extends BaseRestCest {
 			'rest_url'                      => $ticket_rest_url,
 			'provider'                      => 'tribe-commerce',
 			'title'                         => $ticket_post->post_title,
-			'description'                   => $ticket_post->post_content,
+			'description'                   => $ticket_post->post_excerpt,
 			'image'                         => $repository->get_ticket_header_image( $ticket_id ),
 			'available_from'                => $repository->get_ticket_start_date( $ticket_id ),
 			'available_from_details'        => $repository->get_ticket_start_date( $ticket_id, true ),
