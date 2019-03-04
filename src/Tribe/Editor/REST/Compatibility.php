@@ -53,7 +53,6 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 
 		// Fetch capacity field, if we don't have it use default (defined above)
 		$capacity = trim( $capacity );
-		$stock    = absint( get_post_meta( $object_id, '_stock', true ) );
 
 		// If empty we need to modify to the default
 		if ( '' === $capacity ) {
@@ -67,7 +66,14 @@ class Tribe__Tickets__Editor__REST__Compatibility {
 
 		if ( -1 !== $capacity ) {
 			$totals = tribe( 'tickets.handler' )->get_ticket_totals( $object_id );
-			$stock  -= $totals['pending'] + $totals['sold'];
+
+			// update stock by taking capacity - pending and sold tickets
+			$stock  = $capacity - ( $totals['pending'] + $totals['sold'] );
+
+			// set stock to zero if a negative number
+			if ( $stock < 0 ) {
+				$stock = 0;
+			}
 
 			update_post_meta( $object_id, '_manage_stock', 'yes' );
 			update_post_meta( $object_id, '_stock', $stock );

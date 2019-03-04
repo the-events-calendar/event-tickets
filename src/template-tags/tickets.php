@@ -226,7 +226,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 					 * @param array $data      Ticket data.
 					 * @param int   $event_id  Event ID.
 					 *
-					 * @since TBD
+					 * @since 4.10.1
 					 */
 					$threshold = absint( apply_filters( 'tribe_display_tickets_left_threshold', $threshold, $data, $event_id ) );
 

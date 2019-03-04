@@ -970,25 +970,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
 		}
 
 		$product_id = get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true );
 
-		// For attendees whose status ('going' or 'not going') for whom a stock adjustment is required?
-		$rsvp_options    = $this->tickets_view->get_rsvp_options( null, false );
-		$attendee_status = get_post_meta( $ticket_id, self::ATTENDEE_RSVP_KEY, true );
-
-		$adjustment = isset( $rsvp_options[ $attendee_status ]['decrease_stock_by']  )
-			? absint( $rsvp_options[ $attendee_status ]['decrease_stock_by'] )
-			: false;
-
-		// Adjust the sales figure if required
-		if ( $adjustment ) {
-			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			update_post_meta( $product_id, 'total_sales', $sales - $adjustment );
-		}
+		// Stock Adjustment handled by $this->update_stock_from_attendees_page()
 
 		//Store name so we can still show it in the attendee list
 		$attendees      = $this->get_attendees_by_id( $event_id );
@@ -1550,7 +1538,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
-		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+
+		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
 		}
 
@@ -1598,8 +1588,9 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function uncheckin( $attendee_id ) {
+		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
 
-		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees() ) {
+		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
 		}
 
