@@ -1,9 +1,9 @@
 # Quick Introduction
 
-This is a guide to building and compiling assets locally. The process is automated for deployments, so you should not have to worry about that. it borrows heavily from tests.md as they share some setup processes, so there will be some overlap.
-
+This is a guide to building and compiling assets locally. The process is automated for deployments, so you should not have to worry about that. It borrows heavily from tests.md as they share some setup processes, so there will be some overlap.
 
 ## Set up
+
 After cloning the ET repository on your local machine, change directory to the plugin root folder and ensure that you have the latest `tribe-common` by running `git submodule upate --init --recursive`. It is also a good idea to do tis when you change branches - particularly when changing release branch root.
 
 ### Composer
@@ -31,6 +31,7 @@ NPM will install [Husky](https://github.com/typicode/husky), which allows us to 
 _Don't worry - it's already in `.gitignore` to prevent accidentally committing it! We do, however, reserve the right to change that in the future to enforce some standardization._
 
 #### Git Hook Scripts
+
 There is a sample hook in `.huskyrc.sample` that runs a script on post-checkout. The script is defined in `package.json`. For custom scripts beyond running the commands in `package.json`, you can add (and .gitignore) a script file in the base directory. So if you have some complex js to validate commit messagesw (for example), you can put it in my-validate.js and then reference it thus in `.huskyrc`:
 
 	"husky": {
