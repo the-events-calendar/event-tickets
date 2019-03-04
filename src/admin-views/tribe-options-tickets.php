@@ -33,6 +33,14 @@ $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_
 
 $options = get_option( Tribe__Main::OPTIONNAME, array() );
 
+
+include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+
+$tickets_plus_plugin       = 'event-tickets-plus/event-tickets-plus.php';
+$available_plugins         = get_plugins();
+$is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_plugins );
+
+
 /**
  * List of ticketing solutions that support login requirements (ie, disabling or
  * enabling the ticket form according to whether a user is logged in or not).
@@ -64,25 +72,9 @@ $tickets_fields = array(
 	),
 );
 
-/**
- * Add an option to define slug for attendee info page
- * @since 4.9
- */
-$tickets_fields = array_merge( $tickets_fields, array(
-		'ticket-attendee-info-slug' => array(
-			'type'                => 'text',
-			'label'               => esc_html__( 'Attendee Registration URL slug', 'event-tickets' ),
-			'tooltip'             => esc_html__( 'The slug used for building the URL for the Attendee Registration Info page.', 'event-tickets' ),
-			'size'                => 'medium',
-			'default'             => tribe( 'tickets.attendee_registration' )->get_slug(),
-			'validation_callback' => 'is_string',
-			'validation_type'     => 'slug',
-		),
-	)
-);
 
 /**
- * If  The Events Calendar is active let's add an option to control the position
+ * If The Events Calendar is active let's add an option to control the position
  * of the ticket forms in the events view.
  */
 if ( class_exists( 'Tribe__Events__Main' ) ) {
@@ -93,30 +85,38 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		'tribe_events_single_event_before_the_content' => __( 'Above the event description', 'event-tickets' ),
 	);
 
-	$tickets_fields = array_merge( $tickets_fields, array(
-		'ticket-rsvp-form-location'     => array(
-			'type'            => 'dropdown',
-			'label'           => esc_html__( 'Location of RSVP form', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
-			'options'         => $ticket_form_location_options,
-			'validation_type' => 'options',
-			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-			'default'         => reset( $ticket_form_location_options ),
-		),
-		'ticket-commerce-form-location' => array(
-			'type'            => 'dropdown',
-			'label'           => esc_html__( 'Location of Tickets form', 'event-tickets' ),
-			'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
-			'options'         => $ticket_form_location_options,
-			'validation_type' => 'options',
-			'parent_option'   => Tribe__Events__Main::OPTIONNAME,
-			'default'         => reset( $ticket_form_location_options ),
-		),
-	) );
+	$tickets_fields['ticket-rsvp-form-location'] = array(
+		'type'            => 'dropdown',
+		'label'           => esc_html__( 'Location of RSVP form', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
+		'options'         => $ticket_form_location_options,
+		'validation_type' => 'options',
+		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+		'default'         => reset( $ticket_form_location_options ),
+	);
+
+	$tickets_fields['ticket-commerce-form-location'] = array(
+		'type'            => 'dropdown',
+		'label'           => esc_html__( 'Location of Tickets form', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'This setting only impacts events made with the classic editor.', 'event-tickets' ),
+		'options'         => $ticket_form_location_options,
+		'validation_type' => 'options',
+		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+		'default'         => reset( $ticket_form_location_options ),
+	);
+
+	$tickets_fields['ticket-display-tickets-left-threshold'] = array(
+		'type'            => 'text',
+		'label'           => esc_html__( 'Display # tickets left threshold', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'If this number is less than the number of tickets left for sale on your event, this will prevent the "# of tickets left" text from showing on your website. You can leave this blank if you would like to always show the text.', 'event-tickets' ),
+		'validation_type' => 'int',
+		'size'            => 'small',
+		'can_be_empty'    => true,
+		'parent_option'   => Tribe__Events__Main::OPTIONNAME,
+	);
 }
 
 $tickets_fields = array_merge( $tickets_fields, array(
-
 		'ticket-authentication-requirements-heading' => array(
 			'type' => 'html',
 			'html' => '<h3>' . __( 'Login Requirements', 'event-tickets' ) . '</h3>',
@@ -142,11 +142,6 @@ $tickets_fields['ticket-paypal-heading'] = array(
 	'html' => '<h3>' . __( 'Tribe Commerce', 'event-tickets' ) . '</h3>',
 );
 
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
-
-$tickets_plus_plugin       = 'event-tickets-plus/event-tickets-plus.php';
-$available_plugins         = get_plugins();
-$is_tickets_plus_available = array_key_exists( $tickets_plus_plugin, $available_plugins );
 
 if ( ! $is_tickets_plus_available ) {
 	$plus_link = sprintf(

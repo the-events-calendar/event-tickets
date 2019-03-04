@@ -84,6 +84,13 @@ describe( 'Details reducer', () => {
 		) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the has duration error', () => {
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketHasDurationError( 'block-id', true ),
+		) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the is selected', () => {
 		expect( reducer(
 			DEFAULT_STATE,

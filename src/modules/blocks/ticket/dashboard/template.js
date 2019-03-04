@@ -42,12 +42,11 @@ const TicketDashboard = ( {
 );
 
 TicketDashboard.propTypes = {
-	created: PropTypes.bool.isRequired,
-	isCancelDisabled: PropTypes.bool.isRequired,
-	isConfirmDisabled: PropTypes.bool.isRequired,
-	onCancelClick: PropTypes.func.isRequired,
-	onConfirmClick: PropTypes.func.isRequired,
-	showCancel: PropTypes.bool.isRequired,
+	hasBeenCreated: PropTypes.bool,
+	isCancelDisabled: PropTypes.bool,
+	isConfirmDisabled: PropTypes.bool,
+	onCancelClick: PropTypes.func,
+	onConfirmClick: PropTypes.func,
 };
 
 export default TicketDashboard;

@@ -74,6 +74,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 				...state,
 				hasAttendeeInfoFields: action.payload.hasAttendeeInfoFields,
 			};
+		case types.SET_RSVP_HAS_DURATION_ERROR:
+			return {
+				...state,
+				hasDurationError: action.payload.hasDurationError,
+			};
 		case types.SET_RSVP_TITLE:
 		case types.SET_RSVP_DESCRIPTION:
 		case types.SET_RSVP_CAPACITY:

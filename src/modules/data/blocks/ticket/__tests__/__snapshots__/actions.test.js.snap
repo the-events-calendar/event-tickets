@@ -128,7 +128,7 @@ Object {
     "clientId": "modern-tribe",
     "hasChanges": true,
   },
-  "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
 }
 `;
 
@@ -138,7 +138,27 @@ Object {
     "clientId": "modern-tribe",
     "hasChanges": false,
   },
-  "type": "@@MT/TICKETS/SET_TICKETS_HAS_CHANGES",
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_CHANGES",
+}
+`;
+
+exports[`Ticket actions Ticket actions set ticket has duration error 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasDurationError": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_DURATION_ERROR",
+}
+`;
+
+exports[`Ticket actions Ticket actions set ticket has duration error 2`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "hasDurationError": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_HAS_DURATION_ERROR",
 }
 `;
 

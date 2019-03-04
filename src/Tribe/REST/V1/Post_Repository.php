@@ -420,7 +420,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['modified']     = $ticket_post->post_modified;
 		$data['modified_utc'] = $ticket_post->post_modified_gmt;
 		$data['title']        = $ticket_post->post_title;
-		$data['description']  = $ticket_post->post_content;
+		$data['description']  = $ticket_post->post_excerpt;
 
 	}
 

@@ -22,6 +22,7 @@ export const DEFAULT_STATE = {
 	isLoading: false,
 	hasBeenCreated: false,
 	hasChanges: false,
+	hasDurationError: false,
 	isSelected: false,
 };
 
@@ -116,6 +117,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				hasChanges: action.payload.hasChanges,
+			};
+		case types.SET_TICKET_HAS_DURATION_ERROR:
+			return {
+				...state,
+				hasDurationError: action.payload.hasDurationError,
 			};
 		case types.SET_TICKET_IS_SELECTED:
 			return {

@@ -1,10 +1,11 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, brianjessee, camwynsp, sc0ttkclark
+Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
-Tested up to: 5.0.3
-Stable tag: 4.10.1
+Tested up to: 5.1
+Stable tag: 4.10.2
+Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,12 +68,6 @@ If you've identified a bug and have a fix, we'd welcome it at our [GitHub page f
 5. When it's finished, activate the plugin via the prompt. A message will show confirming activation was successful.
 6. For access to new updates, make sure you have added your valid License Key under Events --> Settings --> Licenses.
 
-= Requirements =
-
-* PHP 5.2.4 or greater (recommended: PHP 7.0 or greater)
-* WordPress 4.5 or above
-* jQuery 1.11.x
-
 == Screenshots ==
 
 1. RSVP and ticket on event
@@ -122,12 +117,25 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.1] TBD =
+= [4.10.2] TBD =
 
+* Fix - Use a md5 hash for checkbox and radio option ids to prevent fields from not saving if they a large amount of characters [119448]
+* Fix - Remove duplicate coding to update RSVP stock when deleting an attendee [123334]
+* Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
+* Fix - Fix React console warnings when editing events [121198]
+
+= [4.10.1] 2019-02-26 =
+
+* Tweak - Add a new setting to set a threshold on whether to show the "Display # tickets left" along with a new filter `tribe_tickets_left_threshold` [119910]
+* Tweak - Add duration error for duration issues with ticket and RSVP [122679]
 * Tweak - Save attendee information on registration page via ajax [121592]
 * Tweak - Make clipboard icon for ticket block a tooltip and persistent [122444]
 * Tweak - Indicate required fields in ticket block [122442]
 * Tweak - Add filter for attendee registration page template [121223]
+* Tweak - Add filter to manage attendees permissions [123070]
+* Tweak - Add filter to allow email form to be shown for non-admins [123070]
+* Tweak - Added filters: `tribe_tickets_attendee_registration_page_template`, `tribe_tickets_user_can_manage_attendees`, `tribe_allow_admin_on_frontend`, `tribe_display_tickets_left_threshold`
+* Tweak - Changed views: `registration/attendees/content`, `registration/attendees/error`, `registration/attendees/fields`, `registration/attendees/fields/checkbox`, `registration/attendees/fields/radio`, `registration/attendees/fields/select`, `registration/attendees/fields/text`, `registration/attendees/loader`, `registration/attendees/success`, `registration/button-cart`, `registration/button-checkout`, `registration/cart-empty`, `registration/content`, `registration/summary/content`, `registration/summary/description`, `registration/summary/registration-status`, `registration/summary/ticket/content`, `registration/summary/icon-svg`, `registration/summary/ticket/icon`, `registration/summary/ticket/price`, `registration/summary/ticket/quantity`, `registration/summary/ticket/title`, `registration/summary/tickets-header`, `registration/summary/tickets`, `registration/summary/title`, `registration/summary/toggle-handler`
 * Fix - Only show attendee registration for RSVP if going [121026]
 * Fix - Fix broken ticket block sagas to allow syncing with event times [120736]
 * Fix - Only allow attendee move functionality in admin [87145]
@@ -147,7 +155,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fix focus for sales duration in ticket block [122441]
 * Fix - Fix mobile styles for tickets and RSVP [118299]
 * Fix - Prevent notices when adding a new event in Community Events with Community Tickets active [116724]
-* Fix - Use a md5 hash for checkbox and radio option ids to prevent fields from not saving if they a large amount of characters [119448]
+* Fix - Modify how the status manager initializes to use class names instead of proper names, which might be translated [123056]
+* Fix - Prevent fatal errors on front end ticket page if the provider is deactivated [122322]
+* Language - 7 new strings added, 140 updated, 1 fuzzied, and 2 obsoleted
 
 = [4.10.0.1] 2019-02-07 =
 

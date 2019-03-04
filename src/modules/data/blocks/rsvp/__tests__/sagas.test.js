@@ -129,6 +129,9 @@ describe( 'RSVP block sagas', () => {
 				call( sagas.handleRSVPStartDate, action )
 			);
 			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPDurationError )
+			);
+			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPHasChanges( true ) )
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -139,6 +142,9 @@ describe( 'RSVP block sagas', () => {
 			const gen = sagas.handler( action );
 			expect( gen.next().value ).toEqual(
 				call( sagas.handleRSVPEndDate, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPDurationError )
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPHasChanges( true ) )
@@ -156,6 +162,9 @@ describe( 'RSVP block sagas', () => {
 				call( sagas.handleRSVPStartTimeInput, action )
 			);
 			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPDurationError )
+			);
+			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPHasChanges( true ) )
 			);
 			expect( gen.next().done ).toEqual( true );
@@ -169,6 +178,9 @@ describe( 'RSVP block sagas', () => {
 			);
 			expect( gen.next().value ).toEqual(
 				call( sagas.handleRSVPEndTimeInput, action )
+			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPDurationError )
 			);
 			expect( gen.next().value ).toEqual(
 				put( actions.setRSVPHasChanges( true ) )
@@ -384,6 +396,9 @@ describe( 'RSVP block sagas', () => {
 					put( actions.setRSVPTempEndTimeInput( state.endTime ) ),
 				] )
 			);
+			expect( gen.next().value ).toEqual(
+				call( sagas.handleRSVPDurationError )
+			);
 			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
@@ -472,6 +487,116 @@ describe( 'RSVP block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				fork( sagas.saveRSVPWithPostSave )
 			);
+		} );
+	} );
+
+	describe( 'handleRSVPDurationError', () => {
+		it( 'should set has duration error to true if start or end moment is invalid', () => {
+			const gen = sagas.handleRSVPDurationError();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPTempStartDateMoment )
+			);
+			expect( gen.next( undefined ).value ).toEqual(
+				select( selectors.getRSVPTempEndDateMoment )
+			);
+			expect( gen.next( undefined ).value ).toEqual(
+				put( actions.setRSVPHasDurationError( true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set thas duration error to true if start date time is after end date time', () => {
+			const START_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const END_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const START_TIME = '12:00:00';
+			const END_TIME = '13:00:00';
+			const START_TIME_SECONDS = 43200;
+			const END_TIME_SECONDS = 46800;
+			const gen = sagas.handleRSVPDurationError();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPTempStartDateMoment )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getRSVPTempEndDateMoment )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getRSVPTempStartTime )
+			);
+			expect( gen.next( START_TIME ).value ).toEqual(
+				select( selectors.getRSVPTempEndTime )
+			);
+			expect( gen.next( END_TIME ).value ).toEqual(
+				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( START_TIME_SECONDS ).value ).toEqual(
+				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( END_TIME_SECONDS ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT )
+			);
+			expect( gen.next( true ).value ).toEqual(
+				put( actions.setRSVPHasDurationError( true ) )
+			);
+			expect( gen.next().done ).toEqual( true );
+		} );
+
+		it( 'should set thas duration error to false if start date time is before end date time', () => {
+			const START_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const END_DATE_MOMENT = {
+				clone: () => {},
+				isSameOrAfter: () => {},
+			};
+			const START_TIME = '12:00:00';
+			const END_TIME = '13:00:00';
+			const START_TIME_SECONDS = 43200;
+			const END_TIME_SECONDS = 46800;
+			const gen = sagas.handleRSVPDurationError();
+			expect( gen.next().value ).toEqual(
+				select( selectors.getRSVPTempStartDateMoment )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getRSVPTempEndDateMoment )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				select( selectors.getRSVPTempStartTime )
+			);
+			expect( gen.next( START_TIME ).value ).toEqual(
+				select( selectors.getRSVPTempEndTime )
+			);
+			expect( gen.next( END_TIME ).value ).toEqual(
+				call( timeUtil.toSeconds, START_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( START_TIME_SECONDS ).value ).toEqual(
+				call( timeUtil.toSeconds, END_TIME, timeUtil.TIME_FORMAT_HH_MM_SS )
+			);
+			expect( gen.next( END_TIME_SECONDS ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, START_DATE_MOMENT.clone(), START_TIME_SECONDS )
+			);
+			expect( gen.next( START_DATE_MOMENT ).value ).toEqual(
+				call( momentUtil.setTimeInSeconds, END_DATE_MOMENT.clone(), END_TIME_SECONDS )
+			);
+			expect( gen.next( END_DATE_MOMENT ).value ).toEqual(
+				call( [ START_DATE_MOMENT, 'isSameOrAfter' ], END_DATE_MOMENT )
+			);
+			expect( gen.next( false ).value ).toEqual(
+				put( actions.setRSVPHasDurationError( false ) )
+			);
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
