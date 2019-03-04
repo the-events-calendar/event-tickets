@@ -2579,7 +2579,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
 
-		if ( $shared_capacity ) {
+		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
 			$this->update_global_stock( $global_stock, $qty );
 		}
 		return $sales;
