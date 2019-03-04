@@ -122,6 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Remove duplicate coding to update RSVP stock when deleting an attendee [123334]
 * Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
 * Fix - Fix React console warnings when editing events [121198]
+* Fix - Correct attendee list page on posts and pages [123514]
 
 = [4.10.1] 2019-02-26 =
 
