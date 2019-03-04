@@ -1006,6 +1006,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 	/**
 	 * Trigger for tribe_get_cost if there are only RSVPs
+	 *
 	 * @since TBD
 	 *
 	 * @param string $cost
@@ -1020,7 +1021,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			empty( $cost )
 			&& tribe_events_has_tickets( get_post( $post_id ) )
 		) {
-			$cost = esc_html__( 'Free', 'event-tickets' );
+			$cost = __( 'Free', 'event-tickets' );
 		}
 
 		return $cost;
