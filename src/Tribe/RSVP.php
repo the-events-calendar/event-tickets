@@ -193,6 +193,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		add_action( 'rsvp_checkin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'rsvp_uncheckin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ) );
+		add_filter( 'tribe_get_cost', [ $this, 'trigger_get_cost' ], 10, 3 );
 		add_filter(
 			'event_tickets_attendees_rsvp_checkin_stati',
 			array( $this, 'filter_event_tickets_attendees_rsvp_checkin_stati' )
@@ -1001,6 +1002,29 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		return true;
+	}
+
+	/**
+	 * Trigger for tribe_get_cost if there are only RSVPs
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cost
+	 * @param int $post_id
+	 * @param boolean $unused_with_currency_symbol
+	 *
+	 * @return string $cost
+	 */
+	public function trigger_get_cost( $cost, $post_id, $unused_with_currency_symbol ) {
+
+		if (
+			empty( $cost )
+			&& tribe_events_has_tickets( get_post( $post_id ) )
+		) {
+			$cost = __( 'Free', 'event-tickets' );
+		}
+
+		return $cost;
 	}
 
 	/**
@@ -2152,8 +2176,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int
 	 */
 	public function get_total_not_going( $event_id ) {
+		$not_going = 0;
 
-		$not_going     = 0;
 		foreach ( $this->get_attendees_array( $event_id ) as $attendee ) {
 			if ( in_array( $attendee['order_status'], $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
 				$not_going ++;
