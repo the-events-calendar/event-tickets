@@ -262,6 +262,7 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Type::hook();
 
 		tribe( 'tickets.privacy' );
+		tribe( 'tickets.promoter.observer' );
 
 		/**
 		 * Fires once Event Tickets has completed basic setup.
@@ -295,6 +296,8 @@ class Tribe__Tickets__Main {
 
 		// Privacy
 		tribe_singleton( 'tickets.privacy', 'Tribe__Tickets__Privacy', array( 'hook' ) );
+		// Promoter Observer
+		tribe_singleton( 'tickets.promoter.observer', 'Tribe__Tickets__Promoter_Observer', array( 'hook' ) );
 	}
 
 	/**
