@@ -346,7 +346,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	 *
 	 * @return string
 	 */
-	function modify_archive_title( $title ) {
+	public function modify_archive_title( $title ) {
 		if ( $this->is_on_ar_page() ) {
 			$title = $this->get_page_title();
 		}
