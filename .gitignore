@@ -18,7 +18,7 @@ tests/_output
 # Some people makes...
 Makefile
 
-vendor/
+vendor
 
 # compiled build files
 src/resources/**/app
