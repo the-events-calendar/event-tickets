@@ -262,7 +262,6 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Type::hook();
 
 		tribe( 'tickets.privacy' );
-
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
