@@ -2,19 +2,19 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.10.1\n"
+"Project-Id-Version: Event Tickets 4.10.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2019-02-22 19:37:22+00:00\n"
+"POT-Creation-Date: 2019-03-05 23:30:24+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-02-22 19:37\n"
+"PO-Revision-Date: 2019-03-05 23:30\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.1.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: event-tickets.php:59 src/Tribe/Main.php:582 src/Tribe/Privacy.php:32
+#: event-tickets.php:59 src/Tribe/Main.php:581 src/Tribe/Privacy.php:32
 msgid "Event Tickets"
 msgstr ""
 
@@ -911,112 +911,112 @@ msgstr ""
 msgid "Free"
 msgstr ""
 
-#: src/Tribe/Main.php:333
+#: src/Tribe/Main.php:332
 msgid ""
 "When The Events Calendar and Event Tickets are both activated, The Events "
 "Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:396
+#: src/Tribe/Main.php:395
 msgid ""
 "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your "
 "WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:400
+#: src/Tribe/Main.php:399
 msgid ""
 "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about "
 "moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:514
+#: src/Tribe/Main.php:513
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:516
+#: src/Tribe/Main.php:515
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:517
+#: src/Tribe/Main.php:516
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:518
+#: src/Tribe/Main.php:517
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:519
+#: src/Tribe/Main.php:518
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:536 src/admin-views/admin-welcome-message.php:34
+#: src/Tribe/Main.php:535 src/admin-views/admin-welcome-message.php:34
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:538
+#: src/Tribe/Main.php:537
 msgid ""
 "We are committed to helping you sell tickets for your event. Check out our "
 "handy %s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:555
+#: src/Tribe/Main.php:554
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:556
+#: src/Tribe/Main.php:555
 msgid ""
 "If you have tried the above steps and are still having trouble, you can post "
 "a new thread to our %s. Our support staff monitors these forums once a week "
 "and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:558
+#: src/Tribe/Main.php:557
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:559 src/admin-views/tribe-options-tickets.php:149
+#: src/Tribe/Main.php:558 src/admin-views/tribe-options-tickets.php:149
 msgid "Events Tickets Plus"
 msgstr ""
 
-#: src/Tribe/Main.php:560
+#: src/Tribe/Main.php:559
 msgid ""
 "Looking for more immediate support? We offer %1$s with the purchase of any "
 "of our premium plugins (like %2$s). Pick up a license and you can post there "
 "directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:562 src/Tribe/Main.php:567
+#: src/Tribe/Main.php:561 src/Tribe/Main.php:566
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:563
+#: src/Tribe/Main.php:562
 msgid ""
 "Already have Events Tickets Plus? You can %s in our premium support forums. "
 "Our support team monitors the forums and will respond to your thread within "
 "24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:568
+#: src/Tribe/Main.php:567
 msgid ""
 "If you have a valid license for one of our paid plugins, you can %s in our "
 "premium support forums. Our support team monitors the forums and will "
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:669
+#: src/Tribe/Main.php:668
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
-#: src/Tribe/Main.php:804
+#: src/Tribe/Main.php:803
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Main.php:804
+#: src/Tribe/Main.php:803
 msgctxt "button text"
 msgid "RSVP"
 msgstr ""
 
-#: src/Tribe/Main.php:883
+#: src/Tribe/Main.php:882
 msgid ""
 "When Event Tickets and Event Tickets Plus are both activated, Event Tickets "
 "Plus must be running version %1$s or greater. Please %2$smanually update now"
