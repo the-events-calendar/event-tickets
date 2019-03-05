@@ -25,5 +25,5 @@ src/resources/**/app
 src/resources/css
 src/resources/js/**/*.min.js
 
-# edit this yourself to add githoooks
+# add this yourself to add githoooks
 .huskyrc
