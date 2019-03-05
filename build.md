@@ -42,4 +42,8 @@ There is a sample hook in `.huskyrc.sample` that runs a script on post-checkout.
 
 If you have several, consider putting them all in one `.gitignore`-d folder and reference them by path.
 
+<<<<<<< HEAD
 If you think this stuff is really cool, I recommend reading the [Husky docs](https://github.com/typicode/husky/blob/master/DOCS.md)
+=======
+If you think this stuff is really cool, I rcommend reading the [Husky docs](https://github.com/typicode/husky/blob/master/DOCS.md)
+>>>>>>> release/G19.04
