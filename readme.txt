@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
 * Fix - Fix React console warnings when editing events [121198]
 * Fix - Correct attendee list page on posts and pages [123514]
+* Fix - Connect Tribe Commerce Paypal tickets into the share capacity and fix counts in PayPal sales report [109419]
 * Fix - Show RSVP on list view when it's the only attached ticket [123124]
 
 = [4.10.1] 2019-02-26 =

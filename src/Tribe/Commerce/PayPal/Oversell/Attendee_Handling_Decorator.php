@@ -117,8 +117,14 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Attendee_Handling_Decorator im
 			// any oversold attendee, whether deleted or not, is a sale
 			$product_id = Tribe__Utils__Array::get( $attendee, 'product_id', false );
 
+			$global_stock = new Tribe__Tickets__Global_Stock( $event_id );
+			$shared_capacity = false;
+			if ( $global_stock->is_enabled() ) {
+				$shared_capacity = true;
+			}
+
 			if ( false !== $product_id ) {
-				$paypal->increase_ticket_sales_by( $product_id, 1 );
+				$paypal->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 			}
 		}
 	}
