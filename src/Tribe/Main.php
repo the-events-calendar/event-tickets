@@ -452,6 +452,10 @@ class Tribe__Tickets__Main {
 	 */
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ) );
+
+		// connect upgrade script
+		add_action( 'init', array( $this, 'run_updates' ), 0, 0 );
+
 		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
 
 		// Setup Help Tab texting
