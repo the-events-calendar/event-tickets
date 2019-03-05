@@ -88,6 +88,8 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * convenience wrapper for tribe( 'tickets.attendee_registration' )->is_on_page()
 	 *
+	 * @since TBD
+	 *
 	 * @return boolean
 	 */
 	public function is_on_ar_page() {
