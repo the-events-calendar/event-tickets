@@ -846,8 +846,8 @@ class Tribe__Tickets__Main {
 	 *
 	 */
 	public function run_updates() {
-		if ( ! class_exists( 'Tribe__Events__Updater' ) ) {
-			return; // core needs to be updated for compatibility
+		if ( ! class_exists( 'Tribe__Updater' ) ) {
+			return;
 		}
 
 		$updater = new Tribe__Tickets__Updater( self::VERSION );
