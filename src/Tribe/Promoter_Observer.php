@@ -71,13 +71,13 @@ class Tribe__Tickets__Promoter_Observer {
 	 * @param $post_id int The ID of the post
 	 */
 	public function notify( $post_id ) {
-		/** @var Tribe__Promoter__Connector $connector */
-		$connector = tribe( 'promoter.connector' );
-
-		if ( ! $connector ) {
+		try {
+			/** @var Tribe__Promoter__Connector $connector */
+			$connector = tribe( 'promoter.connector' );
+			$connector->notify_promoter_of_changes( $post_id );
+		} catch( RuntimeException $exception ) {
+			// TODO: Report this to the logger
 			return;
 		}
-
-		$connector->notify_promoter_of_changes( $post_id );
 	}
 }
