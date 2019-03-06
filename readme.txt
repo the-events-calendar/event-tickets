@@ -127,6 +127,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Show RSVP on list view when it's the only attached ticket [123124]
 * Fix - Make submit button dependent on presence of editable meta data [114111]
 
+= [4.10.1.1] 2019-03-06 =
+
+* Feature - Add hooks to notify Promoter when an event with tickets has changes [123732]
+* Fix - Correct variable name that is throwing undefined errors on checkin [123756]
+* Language - 0 new strings added, 23 updated, 0 fuzzied, and 0 obsoleted
+
 = [4.10.1] 2019-02-26 =
 
 * Tweak - Add a new setting to set a threshold on whether to show the "Display # tickets left" along with a new filter `tribe_tickets_left_threshold` [119910]

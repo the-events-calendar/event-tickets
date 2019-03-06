@@ -1563,7 +1563,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
-		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
@@ -1613,7 +1613,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function uncheckin( $attendee_id ) {
-		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
