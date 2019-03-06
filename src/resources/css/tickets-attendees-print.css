@@ -23,7 +23,6 @@
 	#icon-edit,
 	#wpbody-content #update-nag,
 	#wpbody-content .update-nag,
-	#tribe-attendees-summary .about-description,
 	.row-actions,
 	.event-actions,
 	.wrap h2 + h2 {
@@ -47,27 +46,26 @@
 	#wpwrap #wpbody-content {
 		padding-bottom: 0;
 	}
+		.tribe-attendees-page form {
+			display: block !important;
+		}
 
 	#tribe-attendees-summary {
-		margin: 0;
+		margin: 0 0 30px 0;
 		border: 0;
 		box-shadow: none;
 	}
 
-	#tribe-attendees-summary .welcome-panel-content {
-		margin: 0;
-	}
+		#tribe-attendees-summary .about-description {
+			display: none;
+		}
 
-	#tribe-attendees-summary .welcome-panel-column {
-		padding: 0;
-		float: none;
-	}
-
-	#tribe-attendees-summary {
-		margin-bottom: 30px;
-	}
+		#tribe-attendees-summary .welcome-panel-content {
+			margin: 0;
+		}
 
 		#tribe-attendees-summary .welcome-panel-column {
+			padding: 0;
 			width: 32%;
 			float: left;
 			display: inline-block;

@@ -797,7 +797,7 @@ class Tribe__Tickets__Attendees {
 		/**
 		 * Filter our return value to let other plugins hook in and alter things
 		 *
-		 * @since TBD
+		 * @since 4.10.1
 		 *
 		 * @param bool $user_can return value, user can or can't
 		 * @param int $user_id id of the user we're checking
