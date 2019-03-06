@@ -106,7 +106,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Update container status to complete
 	 *
-	 * @since TBD
+	 * @since 4.10.1
 	 *
 	 * @return void
 	 */
@@ -119,7 +119,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Update container status to incomplete
 	 *
-	 * @since TBD
+	 * @since 4.10.1
 	 *
 	 * @return void
 	 */
@@ -294,7 +294,7 @@ tribe.tickets.registration = {};
 	/**
 	 * Init containers for each event
 	 *
-	 * @since TBD
+	 * @since 4.10.1
 	 *
 	 * @return void
 	 */

@@ -108,7 +108,7 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 	$tickets_fields['ticket-display-tickets-left-threshold'] = array(
 		'type'            => 'text',
 		'label'           => esc_html__( 'Display # tickets left threshold', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'Leave empty for no threshold', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'If this number is less than the number of tickets left for sale on your event, this will prevent the "# of tickets left" text from showing on your website. You can leave this blank if you would like to always show the text.', 'event-tickets' ),
 		'validation_type' => 'int',
 		'size'            => 'small',
 		'can_be_empty'    => true,

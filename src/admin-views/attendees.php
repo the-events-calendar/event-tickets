@@ -20,7 +20,7 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, tribe( 
 
 <div class="wrap tribe-attendees-page">
 	<?php if ( $show_title ) : ?>
-        <h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
+		<h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
 	<?php endif; ?>
 	<div id="tribe-attendees-summary" class="welcome-panel">
 		<div class="welcome-panel-content">

@@ -2,8 +2,11 @@
 /**
  * This template renders the attendee registration loader
  *
- * @since TBD
- * @version TBD
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/registration/attendees/loader.php
+ *
+ * @since 4.10.1
+ * @version 4.10.1
  *
  */
 

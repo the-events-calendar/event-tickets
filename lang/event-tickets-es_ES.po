@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-11-08 11:59:19+0000\n"
+"PO-Revision-Date: 2019-02-14 21:12:46+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -515,7 +515,7 @@ msgstr ""
 
 #: src/views/registration/attendees/fields.php:10
 msgid "Attendee"
-msgstr ""
+msgstr "Asistente"
 
 #: src/views/registration/attendees/error.php:11
 msgid "Please fill in all required fields"
@@ -532,7 +532,7 @@ msgstr ""
 
 #: src/views/registration/button-checkout.php:15
 msgid "Checkout"
-msgstr ""
+msgstr "Finalizar compra"
 
 #: src/views/registration/content.php:39
 msgid "Save Attendee Info"
@@ -552,7 +552,7 @@ msgstr ""
 
 #: src/views/registration/button-cart.php:15
 msgid "Back to cart"
-msgstr ""
+msgstr "Volver al carrito"
 
 #: src/template-tags/tickets.php:419
 msgid "issued"
@@ -3502,7 +3502,7 @@ msgstr ""
 #: src/views/tickets/orders-rsvp.php:63
 #: src/views/tickets/orders-pp-tickets.php:66
 msgid "Attendee %d"
-msgstr ""
+msgstr "Asistente %d"
 
 #: src/views/tickets/orders-rsvp.php:44
 #: src/views/tickets/orders-pp-tickets.php:47
