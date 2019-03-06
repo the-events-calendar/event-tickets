@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, sc0ttkclark
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.1
-Stable tag: 4.10.1
+Stable tag: 4.10.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -121,6 +121,12 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.10.1.1] 2019-03-06 =
+
+* Feature - Add hooks to notify Promoter when an event with tickets has changes [123732]
+* Fix - Correct variable name that is throwing undefined errors on checkin [123756]
+* Language - 0 new strings added, 23 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.1] 2019-02-26 =
 

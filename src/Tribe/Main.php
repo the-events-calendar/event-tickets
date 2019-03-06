@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.10.1';
+	const VERSION = '4.10.1.1';
 
 	/**
 	 * Min required The Events Calendar version
@@ -262,7 +262,6 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Type::hook();
 
 		tribe( 'tickets.privacy' );
-
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
