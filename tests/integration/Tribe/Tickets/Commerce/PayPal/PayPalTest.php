@@ -2,11 +2,12 @@
 namespace Tribe\Tickets\Commerce\PayPal;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
+use Tribe__Post_Transient as Post_Transient;
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
 use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
-use Tribe__Post_Transient as Post_Transient;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
@@ -168,8 +169,8 @@ EOT;
 		/** @var Post_Transient $post_transient */
 		$post_transient = tribe( 'post-transient' );
 
-		$post_transient->delete( $event_1_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-		$post_transient->delete( $event_2_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+		$post_transient->delete( $event_1_id, Tickets::ATTENDEES_CACHE );
+		$post_transient->delete( $event_2_id, Tickets::ATTENDEES_CACHE );
 
 		$attendees = tribe_tickets_get_attendees( $event_1_id );
 
@@ -177,6 +178,6 @@ EOT;
 
 		$attendees = tribe_tickets_get_attendees( $event_2_id );
 
-		$this->assertCount( 1, $attendees, 'Attendee count for the event 2 should be 2' );
+		$this->assertCount( 1, $attendees, 'Attendee count for the event 2 should be 1' );
 	}
 }
