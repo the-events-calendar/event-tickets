@@ -119,9 +119,28 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	 */
 	public function filter_single_ticket_data( $data, $request ) {
 		$ticket_id = $request['id'];
+
+		 // If the user cannot edit this ticket then do not disclose this information.
+		$post_type = get_post_type_object( get_post_type( $ticket_id ) );
+		if ( ! ( $post_type instanceof WP_Post_Type && current_user_can( $post_type->cap->edit_post, $ticket_id ) ) ) {
+			return $data;
+		}
+
 		$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
-		if ( $ticket === null ) {
+		if ( ! $ticket ) {
+			return $data;
+		}
+
+		$ticket_post_type_object = get_post_type_object( $ticket->post_type );
+
+		if ( ! $ticket_post_type_object ) {
+			return $data;
+		}
+
+		$read_post = $ticket_post_type_object->cap->read_post;
+
+		if ( ! current_user_can( $read_post, $ticket_id ) ) {
 			return $data;
 		}
 
@@ -137,8 +156,6 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 		$data['capacity_type'] = $capacity_type;
 		$data['sku'] = $ticket->sku;
 		$data['description'] = $ticket->description;
-		$data['available_from_start_time'] = $ticket->start_time;
-		$data['available_from_end_time'] = $ticket->end_time;
 
 		$data['totals'] = tribe( 'tickets.handler' )->get_ticket_totals( $ticket_id );
 
