@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Feature - Add hooks to notify Promoter when an event with tickets has changes [123732]
 * Fix - Correct variable name that is throwing undefined errors on checkin [123756]
+* Language - 0 new strings added, 23 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.1] 2019-02-26 =
 
