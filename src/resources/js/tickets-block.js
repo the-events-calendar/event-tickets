@@ -45,16 +45,48 @@ tribe.tickets.block = {
 		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
 		function( e ) {
 			e.preventDefault();
-			var input  = $( this ).parent().find( 'input[type="number"]' );
-			var add    = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
+			var input = $( this ).parent().find( 'input[type="number"]' );
+			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
+			var step = ( undefined !== Number( input[ 0 ].step ) ) ? Number( input[ 0 ].step ) : 1;
+			var originalValue = input[ 0 ].value;
+
 
 			// stepUp or stepDown the input according to the button that was clicked
-			add ? input[0].stepUp() : input[0].stepDown();
+			// handle IE/Edge
+			if ( add ) {
+				var max = ( undefined !== Number( input[ 0 ].min ) ) ? Number( input[ 0 ].min ) : 0;
 
-			// Trigger the on Change for the input as it's not handled via stepUp() || stepDown()
-			input.trigger( 'change' );
+				if ( typeof input[ 0 ].stepUp === 'function' ) {
+					try {
+						input[ 0 ].stepUp();
+					} catch ( ex ) {
+						if ( 0 === max || max > input[ 0 ].value ) {
+							input[ 0 ].value = Number( input[ 0 ].value ) + step;
+						} else {
+							input[ 0 ].value = max;
+						}
+					}
+				}
+			} else if ( typeof input[ 0 ].stepDown === 'function' ) {
+				var min = ( undefined !== Number( input[ 0 ].max ) ) ? Number( input[ 0 ].max ) : 0;
 
-	} );
+				try {
+					input[ 0 ].stepDown();
+				} catch ( ex ) {
+					if ( min < input[ 0 ].value ) {
+						input[ 0 ].value = Number( input[ 0 ].value ) - step;
+					} else {
+						input[ 0 ].value = min;
+					}
+				}
+			}
+
+			// Trigger the on Change for the input (if it changed) as it's not handled via stepUp() || stepDown()
+			if ( originalValue !== input[ 0 ].value ) {
+				input.trigger( 'change' );
+			}
+		}
+	);
 
 	/**
 	 * Handle the TPP form
