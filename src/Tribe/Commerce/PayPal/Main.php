@@ -841,13 +841,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$has_generated_new_tickets = true;
 				}
 
+				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+				$shared_capacity = false;
+				if ( $global_stock->is_enabled() ) {
+					$shared_capacity = true;
+				}
+
 				if ( $status_stock_size > 0 ) {
 					switch ( $payment_status ) {
 						case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
-							$this->increase_ticket_sales_by( $product_id, 1 );
+							$this->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 							break;
 						case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
-							$this->decrease_ticket_sales_by( $product_id, 1 );
+							$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 							break;
 						default:
 							break;
@@ -1471,6 +1477,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
 		$return->name             = $product->post_title;
+		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
@@ -2560,16 +2567,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Increases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
+	 * @since TBD added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int  $ticket_id The ticket post ID
-	 * @param int  $qty
+	 * @param int         $ticket_id       The ticket post ID
+	 * @param int         $qty             the quanitity to modify stock
+	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
+	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
 	 *
 	 * @return int
 	 */
-	public function increase_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function increase_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
 
+		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
+			$this->update_global_stock( $global_stock, $qty );
+		}
 		return $sales;
 	}
 
@@ -2577,15 +2590,43 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Decreases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
+	 * @since TBD added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int $ticket_id The ticket post ID
-	 * @param int $qty
+	 * @param int         $ticket_id       The ticket post ID
+	 * @param int         $qty             the quanitity to modify stock
+	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
+	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
 	 *
 	 * @return int
 	 */
-	public function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function decrease_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
+
+		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
+			$this->update_global_stock( $global_stock, $qty, true );
+		}
+	}
+
+	/**
+	 * Update Global Stock
+	 *
+	 * @since TBD
+	 *
+	 * @param object $global_stock the object of Tribe__Tickets__Global_Stock
+	 * @param int    $qty          the quanitity to modify stock
+	 * @param bool   $increase     true or false to increase stock, default is false
+	 */
+	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
+
+		$level = $global_stock->get_stock_level();
+		if ( $increase ) {
+			$new_level = (int) $level + (int) $qty;
+		} else {
+			$new_level = (int) $level - (int) $qty;
+		}
+
+		$global_stock->set_stock_level( $new_level );
 	}
 
 	/**
