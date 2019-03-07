@@ -411,18 +411,18 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$button_classes = ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati ) ?
-			'button-primary' : 'button-primary button-disabled';
+			'' : 'button-disabled';
 
 		if ( empty( $this->event ) ) {
 			$checkin   = sprintf(
-				'<a href="#" data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
+				'<button data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</button>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $provider ),
 				esc_attr( $button_classes ),
 				esc_html__( 'Check In', 'event-tickets' )
 			);
 			$uncheckin = sprintf(
-				'<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>',
+				'<span class="delete"><button data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</button></span>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $provider ),
 				sprintf(
@@ -434,7 +434,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		} else {
 			// add the additional `data-event-id` attribute if this is an event
 			$checkin   = sprintf(
-				'<a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
+				'<button data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="button-primary %s tickets_checkin">%s</button>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $this->event->ID ),
 				esc_attr( $provider ),
@@ -442,11 +442,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				esc_html__( 'Check In', 'event-tickets' )
 			);
 			$uncheckin = sprintf(
-				'<span class="delete"><a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>',
+				'<span class="delete"><button data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="button-secondary tickets_uncheckin">%s</button></span>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $this->event->ID ), esc_attr( $provider ),
 				sprintf(
-					'<div>%1$s</div><div>%2$s</div>',
+					'%1$s %2$s',
 					esc_html__( 'Undo', 'event-tickets' ),
 					esc_html__( 'Check In', 'event-tickets' )
 				)

@@ -85,12 +85,17 @@
 		margin-top: 0;
 	}
 
-.tribe-attendees-page a.tickets_uncheckin {
-		display: none;
-	}
-
 .tribe-attendees-page h4.tickets-summary {
 		margin: 0;
+	}
+
+.tribe-attendees-page .tickets_checkin {
+		min-width: 87px;
+		text-align: center;
+	}
+
+.tribe-attendees-page .tickets_uncheckin {
+		display: none;
 	}
 
 .tribe-attendees-page .tickets_checked td {
@@ -101,23 +106,18 @@
 			opacity: 1;
 		}
 
-.tribe-attendees-page .tickets_checked a.tickets_checkin {
+.tribe-attendees-page .tickets_checked .tickets_checkin {
 			display: none;
 		}
 
-.tribe-attendees-page .tickets_checked a.tickets_uncheckin {
+.tribe-attendees-page .tickets_checked .tickets_uncheckin {
 			display: block;
 			opacity: 1;
 		}
 
-.tribe-attendees-page .tickets_checked .inline a.tickets_uncheckin {
+.tribe-attendees-page .tickets_checked .inline .tickets_uncheckin {
 			display: inline;
 		}
-
-.tribe-attendees-page .tickets_checkin {
-		min-width: 87px;
-		text-align: center;
-	}
 
 .tribe-attendees-page .cancelled {
 		font-style: italic;
