@@ -48,40 +48,38 @@ tribe.tickets.block = {
 			var input = $( this ).parent().find( 'input[type="number"]' );
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
 			var step = ( undefined !== Number( input[ 0 ].step ) ) ? Number( input[ 0 ].step ) : 1;
-			var originalValue = input[ 0 ].value;
+			var originalValue = Number( input[ 0 ].value );
 
 
 			// stepUp or stepDown the input according to the button that was clicked
 			// handle IE/Edge
 			if ( add ) {
-				var max = ( undefined !== Number( input[ 0 ].min ) ) ? Number( input[ 0 ].min ) : 0;
+				var max = ( undefined !== Number( input[ 0 ].max ) ) ? Number( input[ 0 ].max ) : 0;
 
 				if ( typeof input[ 0 ].stepUp === 'function' ) {
 					try {
 						input[ 0 ].stepUp();
 					} catch ( ex ) {
-						if ( 0 === max || max > input[ 0 ].value ) {
-							input[ 0 ].value = Number( input[ 0 ].value ) + step;
-						} else {
-							input[ 0 ].value = max;
-						}
+						input[ 0 ].value = ( 0 === max || max > input[ 0 ].value ) ? originalValue + step : max;
 					}
+				} else {
+					input[ 0 ].value = ( 0 === max || max > input[ 0 ].value ) ? originalValue + step : max;
 				}
-			} else if ( typeof input[ 0 ].stepDown === 'function' ) {
-				var min = ( undefined !== Number( input[ 0 ].max ) ) ? Number( input[ 0 ].max ) : 0;
+			} else {
+				var min = ( undefined !== Number( input[ 0 ].min ) ) ? Number( input[ 0 ].min ) : 0;
 
-				try {
-					input[ 0 ].stepDown();
-				} catch ( ex ) {
-					if ( min < input[ 0 ].value ) {
-						input[ 0 ].value = Number( input[ 0 ].value ) - step;
-					} else {
-						input[ 0 ].value = min;
+				if ( typeof input[ 0 ].stepDown === 'function' ) {
+					try {
+						input[ 0 ].stepDown();
+					} catch ( ex ) {
+						input[ 0 ].value = ( min < input[ 0 ].value ) ? originalValue - step : min;
 					}
+				} else {
+					input[ 0 ].value = ( min < input[ 0 ].value ) ? originalValue - step : min;
 				}
 			}
 
-			// Trigger the on Change for the input (if it changed) as it's not handled via stepUp() || stepDown()
+			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown()
 			if ( originalValue !== input[ 0 ].value ) {
 				input.trigger( 'change' );
 			}
