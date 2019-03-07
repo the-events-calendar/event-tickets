@@ -119,11 +119,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.2] TBD =
 
-<<<<<<< HEAD
 * Tweak - Use buttons instead of links and add better feedback on checkin (disable buttons) [70618]
-=======
 * Fix - Use a md5 hash for checkbox and radio option names to prevent fields from not saving if they a large amount of characters [119448]
->>>>>>> release/G19.04
 * Fix - Remove duplicate coding to update RSVP stock when deleting an attendee [123334]
 * Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
 * Fix - Fix React console warnings when editing events [121198]
