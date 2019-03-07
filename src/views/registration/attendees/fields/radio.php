@@ -38,7 +38,7 @@ $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][
 	<div class="tribe-options" aria-role="radiogroup">
 		<?php
 		foreach ( $options as $option ) :
-			$option_slug = sanitize_title( $option );
+			$option_slug = md5( sanitize_title( $option ) );
 			$option_id   = "tribe-tickets-meta_{$slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			?>
 			<label for="<?php echo esc_attr( $option_id ); ?>" class="tribe-tickets-meta-field-header">
