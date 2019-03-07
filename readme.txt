@@ -123,7 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
 * Fix - Fix React console warnings when editing events [121198]
 * Fix - Correct attendee list page on posts and pages [123514]
-* Fix - Connect Tribe Commerce Paypal tickets into the share capacity and fix counts in PayPal sales report [109419]
+* Fix - Connect Tribe Commerce PayPal tickets into the share capacity and fix counts in PayPal sales report [109419]
 * Fix - Show RSVP on list view when it's the only attached ticket [123124]
 * Fix - Make submit button dependent on presence of editable meta data [114111]
 
@@ -360,7 +360,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
 * Fix - Display a notice if the user accesses the tickets page and doesn't have tickets [89201]
 * Fix - If the ticket is a WooCommerce product and has a featured image, display it in the email [79877]
-* Fix - Make sure the Paypal orders are being recorded. Thanks @burlingtonbytes for flagging this! [108436]
+* Fix - Make sure the PayPal orders are being recorded. Thanks @burlingtonbytes for flagging this! [108436]
 * Tweak - Added new action, `tribe_tickets_ticket_email_ticket_top`, to the tickets email template [79878]
 * Tweak - Changed `tribe_tickets_email_include_event_date` filter default value to true. Now event date shows by default in RSVP ticket emails. Thanks @melvidge for the feedback [102309]
 * Tweak - Replaced start date in the RSVP non-attendace email template with full event schedule details [87686]
