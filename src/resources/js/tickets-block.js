@@ -47,35 +47,36 @@ tribe.tickets.block = {
 			e.preventDefault();
 			var input = $( this ).parent().find( 'input[type="number"]' );
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
-			var step = ( undefined !== Number( input[ 0 ].step ) ) ? Number( input[ 0 ].step ) : 1;
+			var step = input[ 0 ].step ? Number( input [ 0 ].step ) : 1
 			var originalValue = Number( input[ 0 ].value );
 
 
 			// stepUp or stepDown the input according to the button that was clicked
 			// handle IE/Edge
 			if ( add ) {
-				var max = ( undefined !== Number( input[ 0 ].max ) ) ? Number( input[ 0 ].max ) : 0;
+				// we use 0 here as a shorthand for no maximum
+				var max = input[ 0 ].max ? Number( input[ 0 ].max ) : -1;
 
 				if ( typeof input[ 0 ].stepUp === 'function' ) {
 					try {
 						input[ 0 ].stepUp();
 					} catch ( ex ) {
-						input[ 0 ].value = ( 0 === max || max > input[ 0 ].value ) ? originalValue + step : max;
+						input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
 					}
 				} else {
-					input[ 0 ].value = ( 0 === max || max > input[ 0 ].value ) ? originalValue + step : max;
+					input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
 				}
 			} else {
-				var min = ( undefined !== Number( input[ 0 ].min ) ) ? Number( input[ 0 ].min ) : 0;
+				var min = input[ 0 ].min ? Number( input[ 0 ].min ) : 0;
 
 				if ( typeof input[ 0 ].stepDown === 'function' ) {
 					try {
 						input[ 0 ].stepDown();
 					} catch ( ex ) {
-						input[ 0 ].value = ( min < input[ 0 ].value ) ? originalValue - step : min;
+						input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
 					}
 				} else {
-					input[ 0 ].value = ( min < input[ 0 ].value ) ? originalValue - step : min;
+					input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
 				}
 			}
 
