@@ -130,7 +130,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 				$page = locate_template( 'page.php' );
 				$page = ! empty( $page ) ? 'page.php' : array_keys( wp_get_theme()->get_page_templates() );
 				$page = ! empty( $page ) ? $page : 'index.php';
-				$page = ! is_array( $page ) ? $page : $page[0];
+				$page = is_array( $page ) || ! locate_template( $page[0] ) ? $page[0] : $page;
 
 				$template = get_stylesheet_directory() . '/' . $page;
 				break;
