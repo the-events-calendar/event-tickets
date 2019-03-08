@@ -132,10 +132,10 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 				$page = ! empty( $page ) ? $page : 'index.php';
 				$page = ! is_array( $page ) ? $page : $page[0];
 
-				$template = get_template_directory() . '/' . $page;
+				$template = get_stylesheet_directory() . '/' . $page;
 				break;
 			default :
-				$template = get_template_directory() . '/' . $template;
+				$template = get_stylesheet_directory() . '/' . $template;
 		}
 
 		/**
