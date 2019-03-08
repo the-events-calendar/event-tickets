@@ -120,7 +120,9 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.10.2] TBD =
 
 * Tweak - Use buttons instead of links and add better feedback on checkin (disable buttons) [70618]
+* Tweak - Use get_stylesheet_directory() instead of get_template_directory() to honor child themes for AR template [123613]
 * Tweak - Remove empty "Primary Info" column from attendee list email and export [122274]
+* Fix - Resolve problems with WP_Theme::get_page_templates() usage, use array_keys() instead of array_values() since the array is keyed by filename, not template name. Props to @eri-trabiccolo for flagging this! [123613]
 * Fix - Allow IE users to increment/decrement the ticket quantity field via the buttons [121073]
 * Fix - Use a md5 hash for checkbox and radio option names to prevent fields from not saving if they a large amount of characters [119448]
 * Fix - Remove duplicate coding to update RSVP stock when deleting an attendee [123334]
