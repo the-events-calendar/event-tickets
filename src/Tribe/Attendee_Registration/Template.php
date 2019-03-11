@@ -70,7 +70,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Create a fake virtual page
 		$posts[] = $this->spoofed_page();
 
-		$wp_query->is_page     = false;
+		$wp_query->is_page     = true;
 		$wp_query->is_singular = false;
 		$wp_query->is_home     = false;
 		$wp_query->is_archive  = false;
