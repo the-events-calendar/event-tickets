@@ -21,12 +21,9 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 	 *
 	 * @since TBD
 	 *
-	 * @param string|array $unused_arams An array of shortcode attributes.
-	 * @param string       $unused_content    The shortcode content if any.
-	 *
 	 * @return string
 	 */
-	public function render( $params = array(), $shortcode_name = 'tribe_attendee_registration' ) {
+	public function render() {
 		ob_start();
 
 		echo tribe( 'tickets.attendee_registration.view' )->display_attendee_registration_page( null, true );
