@@ -125,7 +125,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 
 		if ( in_array( $template, array( '', 'default' ), true ) ) {
 			// A bit of logic for themes without a page.php
-			$template = 'page.php;
+			$template = 'page.php';
 
 			if ( ! locate_template( $template ) ) {
 				$pages = array_keys( wp_get_theme()->get_page_templates() );
