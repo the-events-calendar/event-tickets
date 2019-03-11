@@ -70,12 +70,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Create a fake virtual page
 		$posts[] = $this->spoofed_page();
 
-		// Set it as an archive page so it doesn't give the edit link
-		// nor it loads the comments template
+		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
 		$wp_query->is_page     = false;
 		$wp_query->is_singular = false;
 		$wp_query->is_home     = false;
-		$wp_query->is_archive  = true;
+		$wp_query->is_archive  = false;
 		$wp_query->is_category = false;
 		$wp_query->is_404      = false;
 		$wp_query->found_posts = 1;
@@ -97,9 +96,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
-	 * Set the theme page template as the
-	 * template we're gonna use for the attendee-registration
-	 * page
+	 * Set the theme page template we're going to use for the attendee-registration page
 	 *
 	 * @since 4.9
 	 *

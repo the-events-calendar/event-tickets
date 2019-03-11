@@ -21,16 +21,17 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 *
 	 * @since 4.9
 	 * @param string $content The original page|post content
-	 * @return srting $template The resulting template content
+	 * @param string $context The context of the rendering
+	 *
+	 * @return string The resulting template content
 	 */
-	public function display_attendee_registration_page( $content = '' ) {
+	public function display_attendee_registration_page( $content = '', $context = 'default' ) {
 		global $wp_query;
 
-		// Bail if we don't have the flag to be in the registration page
-		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+		// Bail if we don't have the flag to be in the registration page (or we're not using a shortcode to display it)
+		if ( 'shortcode' !== $context && ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $content;
 		}
-
 		/**
 		 * Filter to add/remove tickets from the global cart
 		 *

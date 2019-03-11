@@ -29,7 +29,15 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_slug() {
-		return Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
+
+		$page = get_page_by_path( $slug );
+
+		if ( empty( $slug ) || ! has_shortcode( $page->post_content, 'tribe_attendee_registration' ) ) {
+			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+		}
+
+		return $slug;
 	}
 
 	/**
@@ -42,7 +50,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		return ! empty( $wp_query->query_vars[ $this->key_query_var ] );
+		return ! empty( $wp_query->query_vars[ $this->key_query_var ] ) || ( ! empty( $wp_query->queried_object ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' ) );
 	}
 
 	/**
