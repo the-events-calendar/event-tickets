@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.2] TBD =
 
+* Tweak - Update hooks attached to tickets to notify Promoter [124118]
 * Tweak - Use buttons instead of links and add better feedback on checkin (disable buttons) [70618]
 * Tweak - Use get_stylesheet_directory() instead of get_template_directory() to honor child themes for AR template [123613]
 * Tweak - Remove empty "Primary Info" column from attendee list email and export [122274]
