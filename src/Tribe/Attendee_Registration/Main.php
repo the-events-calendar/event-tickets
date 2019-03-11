@@ -29,7 +29,11 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_slug() {
-		return Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+		$slug =  Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+
+		$slug =  Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', $slug );
+
+		return $slug;
 	}
 
 	/**
