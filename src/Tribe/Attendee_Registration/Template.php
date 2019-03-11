@@ -123,20 +123,25 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			$template = tribe_get_option( 'tribeEventsTemplate', 'default' );
 		}
 
-		switch ( $template ) {
-			case '' :
-			case 'default' :
-				// A bit of logic for themes without a page.php
-				$page = locate_template( 'page.php' );
-				$page = ! empty( $page ) ? 'page.php' : array_keys( wp_get_theme()->get_page_templates() );
-				$page = ! empty( $page ) ? $page : 'index.php';
-				$page = is_array( $page ) || ! locate_template( $page[0] ) ? $page[0] : $page;
+		if ( in_array( $template, array( '', 'default' ), true ) ) {
+			// A bit of logic for themes without a page.php
+			$template = 'page.php;
 
-				$template = get_stylesheet_directory() . '/' . $page;
-				break;
-			default :
-				$template = get_stylesheet_directory() . '/' . $template;
+			if ( ! locate_template( $template ) ) {
+				$pages = array_keys( wp_get_theme()->get_page_templates() );
+
+				if ( ! empty( $pages ) ) {
+					$template = $pages[0];
+				}
+			}
 		}
+
+		// If template is not found, use default.
+		if ( ! locate_template( $template ) ) {
+			$template = 'index.php';
+		}
+
+		$template = get_stylesheet_directory() . '/' . $template;
 
 		/**
 		 * Use `tribe_tickets_attendee_registration_page_template` to modify the attendee registration page template.
