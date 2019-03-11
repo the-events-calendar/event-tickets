@@ -132,6 +132,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Connect Tribe Commerce PayPal tickets into the share capacity and fix counts in PayPal sales report [109419]
 * Fix - Show RSVP on list view when it's the only attached ticket [123124]
 * Fix - Make submit button dependent on presence of editable meta data [114111]
+* Fix - Stop claiming that the AR page is an archive, add shortcode to display on any page. [123044]
 
 = [4.10.1.1] 2019-03-06 =
 

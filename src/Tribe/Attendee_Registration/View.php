@@ -22,7 +22,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * @since 4.9
 	 * @param string $content The original page|post content
 	 * @param string $context The context of the rendering
-	 * @return string $template The resulting template content
+	 * @return string The resulting template content
 	 */
 	public function display_attendee_registration_page( $content = '', $context = 'default' ) {
 		global $wp_query;
