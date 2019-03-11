@@ -50,7 +50,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		return ! empty( $wp_query->query_vars[ $this->key_query_var ] ) || ( ! empty( $wp_query->queried_object ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' ) );
+		return ! empty( $wp_query->query_vars[ $this->key_query_var ] ) || ( ! empty( $wp_query->queried_object->post_content ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' ) );
 	}
 
 	/**
