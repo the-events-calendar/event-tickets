@@ -16,6 +16,8 @@ class Tribe__Tickets__Promoter_Observer {
 	 */
 	public function hook() {
 		$this->registered_types();
+		// Listen for changes on RSVP as Gutenberg Uses the post_type API to update RSVP's
+		add_action( 'save_post_tribe_rsvp_tickets', array( $this, 'notify_rsvp_event' ), 10, 2 );
 		// RSVP
 		add_action( 'event_tickets_rsvp_ticket_created', array( $this, 'notify_event_id' ), 10, 2 );
 		add_action( 'tickets_rsvp_ticket_deleted', array( $this, 'notify_event_id' ), 10, 2 );
@@ -27,8 +29,23 @@ class Tribe__Tickets__Promoter_Observer {
 		add_action( 'event_tickets_after_save_ticket', array( $this, 'notify' ), 10, 1 );
 		add_action( 'tribe_tickets_ticket_add', array( $this, 'notify' ), 10, 1 );
 		// Actions from REST
-		add_action( 'tribe_tickets_ticket_added', array( $this, 'notify' ), 10, 1 );
-		add_action( 'tribe_tickets_ticket_deleted', array( $this, 'notify' ), 10, 1 );
+		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'ticket_moved_type' ), 10, 4 );
+	}
+
+	/**
+	 * Notify to the parent Event when an attendee has changes via REST API.
+	 *
+	 * @since TBD
+	 *
+	 * @param $attendee_id
+	 */
+	public function notify_rsvp_event( $attendee_id ) {
+		/** @var Tribe__Tickets__RSVP $provider */
+		$provider = tribe_tickets_get_ticket_provider( $attendee_id );
+		if ( ! $provider instanceof Tribe__Tickets__RSVP ) {
+			return;
+		}
+		$this->notify( $provider->get_event_for_ticket( $attendee_id ) );
 	}
 
 	/**
@@ -63,6 +80,24 @@ class Tribe__Tickets__Promoter_Observer {
 	 */
 	public function notify_event_id( $ticket_id, $event_id ) {
 		$this->notify( $event_id );
+	}
+
+	/**
+	 * Action attached to tribe_tickets_ticket_type_moved to notify promoter when a ticket is moved
+	 *
+	 * @since TBD
+	 *
+	 * @param $tycket_type_id
+	 * @param $destination_id
+	 * @param $source_id
+	 * @param $instigator_id
+	 */
+	public function ticket_moved_type( $tycket_type_id, $destination_id, $source_id, $instigator_id ) {
+		$this->notify( $source_id );
+		// Prevent to send the same response twice if the ID's are the same.
+		if ( $source_id !== $destination_id ) {
+			$this->notify( $destination_id );
+		}
 	}
 
 	/**
