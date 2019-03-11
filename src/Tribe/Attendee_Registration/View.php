@@ -28,6 +28,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		// Bail if we don't have the flag to be in the registration page
 		if ( ! $shortcode && ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+			bdump('short!');
 			return $content;
 		}
 		/**
