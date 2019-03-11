@@ -33,7 +33,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 		$page = get_page_by_path( $slug );
 
-		if ( empty( $slug ) || ! has_shortcode( $page->post_content, 'tribe_attendee_registration') ) {
+		if ( empty( $slug ) || ! has_shortcode( $page->post_content, 'tribe_attendee_registration' ) ) {
 			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
 		}
 
