@@ -19,7 +19,6 @@ class Tribe__Tickets__Promoter_Observer {
 		// Listen for changes on RSVP as Gutenberg Uses the post_type API to update RSVP's
 		add_action( 'save_post_tribe_rsvp_tickets', array( $this, 'notify_rsvp_event' ), 10, 2 );
 		// RSVP
-		add_action( 'event_tickets_rsvp_ticket_created', array( $this, 'notify_event_id' ), 10, 2 );
 		add_action( 'tickets_rsvp_ticket_deleted', array( $this, 'notify_event_id' ), 10, 2 );
 		add_action( 'event_tickets_rsvp_tickets_generated', array( $this, 'notify_event_id' ), 10, 2 );
 		// Paypal
@@ -27,7 +26,6 @@ class Tribe__Tickets__Promoter_Observer {
 		add_action( 'event_tickets_tpp_tickets_generated', array( $this, 'notify_event_id' ), 10, 2 );
 		// All tickets
 		add_action( 'event_tickets_after_save_ticket', array( $this, 'notify' ), 10, 1 );
-		add_action( 'tribe_tickets_ticket_add', array( $this, 'notify' ), 10, 1 );
 		// Actions from REST
 		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'ticket_moved_type' ), 10, 4 );
 	}
