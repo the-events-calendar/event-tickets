@@ -94,8 +94,9 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 			wp_send_json_error();
 		}
 
-		$ticket_type_id = absint( $args[ 'ticket_type_id' ] );
-		$destination_id = absint( $args[ 'target_post_id' ] );
+		$ticket_type_id = absint( $args['ticket_type_id'] );
+		$destination_id = absint( $args['target_post_id'] );
+		$src_post_id    = absint( $args['src_post_id'] );
 
 		if ( ! $ticket_type_id || ! $destination_id ) {
 			wp_send_json_error( array(
