@@ -641,9 +641,27 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	protected function add_ticket_attendees_data( array &$data ) {
 		$ticket_id = $data['id'];
 
-		$data['attendees'] = $this->get_ticket_attendees( $ticket_id );
-
 		$ticket_object = $this->get_ticket_object( $ticket_id );
+
+		$event = $ticket_object->get_event();
+
+		// Return if there's no event.
+		if ( ! $event ) {
+			return;
+		}
+
+		// Return if event is not showing attendees.
+		if (
+			(
+				! function_exists( 'has_block' )
+				|| ! has_block( 'tribe/attendees', $event )
+			)
+			&& ! has_shortcode( $event->post_content, 'tribe_attendees_list' )
+		) {
+			return;
+		}
+
+		$data['attendees'] = $this->get_ticket_attendees( $ticket_id );
 
 		if (
 			$ticket_object instanceof Tribe__Tickets__Ticket_Object
