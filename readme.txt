@@ -122,6 +122,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.1.2] 2019-03-13 =
+
+
+
 = [4.10.1.1] 2019-03-06 =
 
 * Feature - Add hooks to notify Promoter when an event with tickets has changes [123732]
