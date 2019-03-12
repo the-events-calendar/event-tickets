@@ -134,6 +134,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Connect Tribe Commerce PayPal tickets into the share capacity and fix counts in PayPal sales report [109419]
 * Fix - Show RSVP on list view when it's the only attached ticket [123124]
 * Fix - Make submit button dependent on presence of editable meta data [114111]
+* Fix - Allow the PayPal confirmation email address sender to be empty, so it can default to the WordPress site email address [122745]
 * Fix - Stop claiming that the AR page is an archive, add shortcode to display on any page [123044]
 * Fix - Remove CSS that was hiding the RSVP form when Blocks are disabled [123136]
 

@@ -302,10 +302,11 @@ $paypal_fields            = array(
 	'ticket-paypal-confirmation-email-sender-email' => array(
 		'type'            => 'email',
 		'label'           => esc_html__( 'Confirmation email sender address', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'Email address PayPal tickets customers will receive confirmation from.', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'Email address PayPal tickets customers will receive confirmation from. Leave empty to use the default WordPress site email address.', 'event-tickets' ),
 		'size'            => 'medium',
 		'default'         => $current_user->user_email,
 		'validation_type' => 'email',
+		'can_be_empty'    => true,
 	),
 	'ticket-paypal-confirmation-email-sender-name' => array(
 		'type'                => 'text',
