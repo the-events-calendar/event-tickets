@@ -134,6 +134,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Show RSVP on list view when it's the only attached ticket [123124]
 * Fix - Make submit button dependent on presence of editable meta data [114111]
 * Fix - Stop claiming that the AR page is an archive, add shortcode to display on any page. [123044]
+* Fix - Allow the PayPal confirmation email address sender to be empty, so it can default to the WordPress site email address [122745]
 
 = [4.10.1.1] 2019-03-06 =
 
