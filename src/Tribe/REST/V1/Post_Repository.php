@@ -639,6 +639,9 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @param array $data
 	 */
 	protected function add_ticket_attendees_data( array &$data ) {
+		// Set as empty so it prevents errors with previous usage (no shortcode/block check).
+		$data['attendees'] = [];
+
 		$ticket_id = $data['id'];
 
 		$ticket_object = $this->get_ticket_object( $ticket_id );

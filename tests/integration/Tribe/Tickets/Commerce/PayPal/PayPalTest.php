@@ -91,6 +91,7 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_1_gross    = 4.0;
 		$ticket_2_gross    = 5.0;
 		$tickets_in_cart   = 3;
+		$total_in_cart     = number_format( $ticket_1_gross + $ticket_2_gross, 2, '.', '' );
 
 		// we have a ticket product in the database
 		$ticket_1_id = $this->create_paypal_ticket( $event_1_id, $ticket_1_price );
@@ -98,7 +99,7 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
 		$body = <<<EOT
 SUCCESS
-mc_gross=9.00
+mc_gross={$total_in_cart}
 protection_eligibility=Eligible
 address_status=confirmed
 item_number1={$event_1_id}%3A{$ticket_1_id}
@@ -147,7 +148,7 @@ mc_currency=USD
 residence_country=US
 shipping_method=Default
 transaction_subject=
-payment_gross=9.00
+payment_gross={$total_in_cart}
 EOT;
 
 		tribe( 'tickets.data_api' );
