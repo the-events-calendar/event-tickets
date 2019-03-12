@@ -173,8 +173,8 @@ class SingleTicketCest extends BaseRestCest {
 	 *
 	 * @test
 	 */
-	public function should_hide_private_fields_to_public_queries(Restv1Tester $I) {
-		$post_id                     = $I->havePostInDatabase();
+	public function should_hide_private_fields_to_public_queries( Restv1Tester $I ) {
+		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 		$going_attendees_count       = 7;
 		$going_optin_count = 4;
 		$going_optout_count = 3;
