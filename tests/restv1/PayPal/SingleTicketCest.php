@@ -119,7 +119,7 @@ class SingleTicketCest extends BaseRestCest {
 
 		$response = json_decode( $I->grabResponse(), true );
 
-		$I->assertContains( $response, $expectedJson );
+		$I->assertEquals( $expectedJson, $response );
 
 		// @todo - move this to dedicated test when Attendees endpoint is done
 		$attendees_objects            = tribe_tickets_get_ticket_provider( $ticket_id )->get_attendees_by_id( $ticket_id );
