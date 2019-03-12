@@ -19,7 +19,7 @@ class SingleTicketCest extends BaseRestCest {
 	public function should_allow_getting_a_ticket_information_by_ticket_post_id( Restv1Tester $I ) {
 		$I->generate_nonce_for_role( 'administrator' );
 
-		$post_id                     = $I->havePostInDatabase();
+		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 		$going_attendees_count       = 7;
 		$not_going_attendees_count   = 5;
 		$ticket_id                   = $this->create_rsvp_ticket( $post_id, [
@@ -116,7 +116,7 @@ class SingleTicketCest extends BaseRestCest {
 
 		$response = json_decode( $I->grabResponse(), true );
 
-		$I->assertEquals( $expectedJson, $response );
+		$I->assertContains( $response, $expectedJson );
 
 		// @todo - move this to dedicated test when Attendees endpoint is done
 		$attendees_objects            = tribe_tickets_get_ticket_provider( $ticket_id )->get_attendees_by_id( $ticket_id );
@@ -173,8 +173,8 @@ class SingleTicketCest extends BaseRestCest {
 	 *
 	 * @test
 	 */
-	public function should_hide_private_fields_to_public_queries(Restv1Tester $I) {
-		$post_id                     = $I->havePostInDatabase();
+	public function should_hide_private_fields_to_public_queries( Restv1Tester $I ) {
+		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 		$going_attendees_count       = 7;
 		$going_optin_count = 4;
 		$going_optout_count = 3;
