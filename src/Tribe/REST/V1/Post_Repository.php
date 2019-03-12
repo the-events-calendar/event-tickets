@@ -663,6 +663,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		if ( ! $always_show_attendees_data ) {
 			// Return if there's no event.
 			if ( ! $event ) {
+				$data['no_event'] = 1;
 				return;
 			}
 
@@ -670,7 +671,10 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			if (
 				( ! function_exists( 'has_block' ) || ! has_block( 'tribe/attendees', $event ) )
 				&& ! has_shortcode( $event->post_content, 'tribe_attendees_list' )
+				// In case has_shortcode does not work.
+				&& false === strpos( $event->post_content, '[tribe_attendees_list]' )
 			) {
+				$data['no_event_block_shortcode'] = $event->post_content;
 				return;
 			}
 		}
