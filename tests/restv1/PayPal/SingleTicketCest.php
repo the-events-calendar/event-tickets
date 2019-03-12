@@ -20,7 +20,7 @@ class SingleTicketCest extends BaseRestCest {
 	public function should_allow_getting_a_ticket_information_by_ticket_post_id( Restv1Tester $I ) {
 		$I->generate_nonce_for_role( 'administrator' );
 
-		$post_id                     = $I->havePostInDatabase();
+		$post_id                     = $I->havePostInDatabase( [ 'post_content' => '[tribe_attendees_list]' ] );
 		$attendees_count             = 7;
 		$ticket_id                   = $this->create_paypal_ticket( $post_id, 5, [
 			'meta_input' => [
