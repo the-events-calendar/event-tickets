@@ -139,6 +139,11 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Stop claiming that the AR page is an archive, add shortcode to display on any page [123044]
 * Fix - Remove CSS that was hiding the RSVP form when Blocks are disabled [123136]
 
+= [4.10.1.2] 2019-03-13 =
+
+* Tweak - Update hooks attached to tickets to notify Promoter [124118]
+* Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
+
 = [4.10.1.1] 2019-03-06 =
 
 * Feature - Add hooks to notify Promoter when an event with tickets has changes [123732]

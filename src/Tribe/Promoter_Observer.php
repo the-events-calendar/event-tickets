@@ -5,14 +5,14 @@
  *
  * Class used to observe hooks and actions happening to notify promoter of those actions.
  *
- * @since TBD
+ * @since 4.10.1.1
  */
 class Tribe__Tickets__Promoter_Observer {
 
 	/**
 	 * Hooks on which this obseverver notifies promoter
 	 *
-	 * @since TBD
+	 * @since 4.10.1.1
 	 */
 	public function hook() {
 		$this->registered_types();
@@ -33,7 +33,7 @@ class Tribe__Tickets__Promoter_Observer {
 	/**
 	 * Notify to the parent Event when an attendee has changes via REST API.
 	 *
-	 * @since TBD
+	 * @since 4.10.1.2
 	 *
 	 * @param $attendee_id
 	 */
@@ -51,7 +51,7 @@ class Tribe__Tickets__Promoter_Observer {
 	 * to attach a hook to `save_post_tribe_events` only attaches the action
 	 * if the post has supoort for tickets or if the support has been enabled for this type.
 	 *
-	 * @since TBD
+	 * @since 4.10.1.1
 	 */
 	public function registered_types() {
 		$event_type = class_exists( 'Tribe__Events__Main' )
@@ -71,7 +71,7 @@ class Tribe__Tickets__Promoter_Observer {
 	/**
 	 * Wrapper when the $post_id is passed as second argument of the hook
 	 *
-	 * @since TBD
+	 * @since 4.10.1.1
 	 *
 	 * @param $ticket_id int The ID of the ticket
 	 * @param $event_id int The ID of the post/event
@@ -83,14 +83,14 @@ class Tribe__Tickets__Promoter_Observer {
 	/**
 	 * Action attached to tribe_tickets_ticket_type_moved to notify promoter when a ticket is moved
 	 *
-	 * @since TBD
+	 * @since 4.10.1.2
 	 *
-	 * @param $tycket_type_id
-	 * @param $destination_id
-	 * @param $source_id
-	 * @param $instigator_id
+	 * @param int $ticket_type_id
+	 * @param int $destination_id
+	 * @param int $source_id
+	 * @param int $instigator_id
 	 */
-	public function ticket_moved_type( $tycket_type_id, $destination_id, $source_id, $instigator_id ) {
+	public function ticket_moved_type( $ticket_type_id, $destination_id, $source_id, $instigator_id ) {
 		$this->notify( $source_id );
 		// Prevent to send the same response twice if the ID's are the same.
 		if ( $source_id !== $destination_id ) {
@@ -100,6 +100,8 @@ class Tribe__Tickets__Promoter_Observer {
 
 	/**
 	 * Function used to notify the promoter endpoint of a new change on an event
+	 *
+	 * @since 4.10.1.1
 	 *
 	 * @param $post_id int The ID of the post
 	 */
