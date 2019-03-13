@@ -35,6 +35,7 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 				'name'  => [],
 				'value' => [],
 				'type'  => [],
+				'action' => [],
 			],
 			// form fields - input
 			'input' => [
