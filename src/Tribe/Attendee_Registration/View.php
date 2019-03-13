@@ -26,8 +26,6 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * @return string The resulting template content
 	 */
 	public function display_attendee_registration_page( $content = '', $context = 'default' ) {
-		global $wp_query;
-
 		// Bail if we don't have the flag to be in the registration page (or we're not using a shortcode to display it)
 		if ( 'shortcode' !== $context && ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $content;
@@ -110,6 +108,8 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'is_meta_up_to_date'     => $is_meta_up_to_date,
 			'cart_has_required_meta' => $cart_has_required_meta,
 			'providers'              => $providers,
+			'context'                => $context,
+			'original_content'       => $content,
 		);
 
 		// enqueue styles and scripts for this page
