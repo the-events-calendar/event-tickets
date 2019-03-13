@@ -30,11 +30,12 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 		$additional_allowed = [
 			// forms
 			'form' => [
-				'class' => [],
-				'id'    => [],
-				'name'  => [],
-				'value' => [],
-				'type'  => [],
+				'class'  => [],
+				'id'     => [],
+				'name'   => [],
+				'value'  => [],
+				'type'   => [],
+				'action' => [],
 			],
 			// form fields - input
 			'input' => [
