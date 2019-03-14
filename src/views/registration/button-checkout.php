@@ -22,7 +22,7 @@ if ( ! $checkout_url ) {
 	<input type="hidden" name="tribe_tickets_checkout" value="1" />
 	<button
 		type="submit"
-		class="alignright button-primary tribe-block__tickets__registration__checkout__submit"
+		class="button-primary tribe-block__tickets__registration__checkout__submit"
 		<?php if ( $cart_has_required_meta && ! $is_meta_up_to_date ) : ?>
 		disabled
 		<?php endif; ?>
