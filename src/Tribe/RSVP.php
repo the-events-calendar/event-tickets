@@ -1199,7 +1199,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * tests to see if it functions as a ticket: if so, the corresponding event
 	 * object is returned. If not, boolean false is returned.
 	 *
-	 * @param $ticket_product
+	 * @param WP_Post|int $ticket_product
 	 *
 	 * @return bool|WP_Post
 	 */

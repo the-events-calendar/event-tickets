@@ -5,19 +5,20 @@
  *
  * Class used to observe hooks and actions happening to notify promoter of those actions.
  *
- * @since TBD
+ * @since 4.10.1.1
  */
 class Tribe__Tickets__Promoter_Observer {
 
 	/**
 	 * Hooks on which this obseverver notifies promoter
 	 *
-	 * @since TBD
+	 * @since 4.10.1.1
 	 */
 	public function hook() {
 		$this->registered_types();
+		// Listen for changes on RSVP as Gutenberg Uses the post_type API to update RSVP's
+		add_action( 'save_post_tribe_rsvp_tickets', array( $this, 'notify_rsvp_event' ), 10, 2 );
 		// RSVP
-		add_action( 'event_tickets_rsvp_ticket_created', array( $this, 'notify_event_id' ), 10, 2 );
 		add_action( 'tickets_rsvp_ticket_deleted', array( $this, 'notify_event_id' ), 10, 2 );
 		add_action( 'event_tickets_rsvp_tickets_generated', array( $this, 'notify_event_id' ), 10, 2 );
 		// Paypal
@@ -25,10 +26,24 @@ class Tribe__Tickets__Promoter_Observer {
 		add_action( 'event_tickets_tpp_tickets_generated', array( $this, 'notify_event_id' ), 10, 2 );
 		// All tickets
 		add_action( 'event_tickets_after_save_ticket', array( $this, 'notify' ), 10, 1 );
-		add_action( 'tribe_tickets_ticket_add', array( $this, 'notify' ), 10, 1 );
 		// Actions from REST
-		add_action( 'tribe_tickets_ticket_added', array( $this, 'notify' ), 10, 1 );
-		add_action( 'tribe_tickets_ticket_deleted', array( $this, 'notify' ), 10, 1 );
+		add_action( 'tribe_tickets_ticket_type_moved', array( $this, 'ticket_moved_type' ), 10, 4 );
+	}
+
+	/**
+	 * Notify to the parent Event when an attendee has changes via REST API.
+	 *
+	 * @since 4.10.1.2
+	 *
+	 * @param $attendee_id
+	 */
+	public function notify_rsvp_event( $attendee_id ) {
+		/** @var Tribe__Tickets__RSVP $provider */
+		$provider = tribe_tickets_get_ticket_provider( $attendee_id );
+		if ( ! $provider instanceof Tribe__Tickets__RSVP ) {
+			return;
+		}
+		$this->notify( $provider->get_event_for_ticket( $attendee_id ) );
 	}
 
 	/**
@@ -36,7 +51,7 @@ class Tribe__Tickets__Promoter_Observer {
 	 * to attach a hook to `save_post_tribe_events` only attaches the action
 	 * if the post has supoort for tickets or if the support has been enabled for this type.
 	 *
-	 * @since TBD
+	 * @since 4.10.1.1
 	 */
 	public function registered_types() {
 		$event_type = class_exists( 'Tribe__Events__Main' )
@@ -56,7 +71,7 @@ class Tribe__Tickets__Promoter_Observer {
 	/**
 	 * Wrapper when the $post_id is passed as second argument of the hook
 	 *
-	 * @since TBD
+	 * @since 4.10.1.1
 	 *
 	 * @param $ticket_id int The ID of the ticket
 	 * @param $event_id int The ID of the post/event
@@ -66,7 +81,27 @@ class Tribe__Tickets__Promoter_Observer {
 	}
 
 	/**
+	 * Action attached to tribe_tickets_ticket_type_moved to notify promoter when a ticket is moved
+	 *
+	 * @since 4.10.1.2
+	 *
+	 * @param int $ticket_type_id
+	 * @param int $destination_id
+	 * @param int $source_id
+	 * @param int $instigator_id
+	 */
+	public function ticket_moved_type( $ticket_type_id, $destination_id, $source_id, $instigator_id ) {
+		$this->notify( $source_id );
+		// Prevent to send the same response twice if the ID's are the same.
+		if ( $source_id !== $destination_id ) {
+			$this->notify( $destination_id );
+		}
+	}
+
+	/**
 	 * Function used to notify the promoter endpoint of a new change on an event
+	 *
+	 * @since 4.10.1.1
 	 *
 	 * @param $post_id int The ID of the post
 	 */
