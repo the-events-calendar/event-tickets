@@ -122,7 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.1.2] 2019-03-13 =
+= [4.10.1.2] 2019-03-14 =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
 * Language - 0 new strings added, 1 updated, 0 fuzzied, and 0 obsoleted
