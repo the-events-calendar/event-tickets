@@ -54,6 +54,43 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	}
 
 	/**
+	 * Returns whether or not the user is on a page using the attendee registration shortcode
+	 *
+	 * @return boolean
+	 */
+	public function is_using_shortcode() {
+		global $wp_query;
+
+		return ! empty( $wp_query->queried_object->post_content ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' );
+	}
+
+	/**
+	 * Returns a list of providers in the "cart" (AR page)
+	 *
+	 * @return array
+	 */
+	public function providers_in_cart() {
+		$providers = apply_filters( 'tribe_providers_in_cart', [] );
+
+		return $providers;
+	}
+
+	/**
+	 * Returns whether or not the "cart" (AR page) has tickets from multiple providers in it
+	 *
+	 * @return boolean
+	 */
+	public function has_mixed_providers_in_cart() {
+		if ( empty( $this->providers_in_cart() ) ) {
+			return false;
+		}
+
+		$provider_count = count( $this->providers_in_cart() );
+
+		return $provider_count > 1;
+	}
+
+	/**
 	 * Gets the URL for the attendee registration page
 	 *
 	 * @since 4.9
@@ -78,6 +115,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
 
+		$mixed_providers = $this->has_mixed_providers_in_cart();
 		return $checkout_url;
 	}
 }
