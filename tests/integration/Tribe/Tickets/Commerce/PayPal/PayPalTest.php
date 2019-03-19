@@ -162,7 +162,7 @@ EOT;
 		$data = $pdt->parse_transaction_body( $body );
 		$gateway->set_raw_transaction_data( $data );
 		$parsed_transaction = $gateway->parse_transaction( $data );
-
+		codecept_debug( print_r( $parsed_transaction, true ) );
 		$gateway->set_transaction_data( $parsed_transaction );
 		$paypal->generate_tickets();
 
@@ -173,7 +173,7 @@ EOT;
 		$post_transient->delete( $event_2_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		$attendees = tribe_tickets_get_attendees( $event_1_id );
-
+		codecept_debug( print_r( $attendees, true ) );
 		$this->assertCount( 2, $attendees, 'Attendee count for the event 1 should be 2' );
 
 		$attendees = tribe_tickets_get_attendees( $event_2_id );

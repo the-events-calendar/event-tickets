@@ -24,8 +24,6 @@ class UnregisteredPDTTransactionTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	// tests
-	public function testMe() {
-	}
 
 
 	/**
