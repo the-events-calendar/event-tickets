@@ -687,7 +687,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
 		codecept_debug( 'custom' );
-		codecept_debug( print_r( $custom ) );
+		codecept_debug( print_r( $custom, true ) );
 		/*
 		 * This method might run during a POST (IPN) PayPal request hence the
 		 * purchasing user ID, if any, will be stored in a custom PayPal var.
