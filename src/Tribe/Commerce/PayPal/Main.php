@@ -627,6 +627,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$gateway          = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$transaction_data = $gateway->get_transaction_data();
+		codecept_debug( 'transaction_data' );
+		codecept_debug( print_r( $transaction_data, true ) );
 
 		/** @var Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
 		$cart = tribe( 'tickets.commerce.paypal.cart' );
@@ -649,6 +651,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$raw_transaction_data = $gateway->get_raw_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
+			codecept_debug( 'transaction_data empty!' );
 			return;
 		}
 
@@ -676,13 +679,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
 			$order->hydrate_from_transaction_data( $transaction_data );
 		} else {
+			codecept_debug( 'not a refund' );
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 		}
 
 		$order->set_meta( 'transaction_data', $raw_transaction_data );
 
 		$custom = Tribe__Tickets__Commerce__PayPal__Custom_Argument::decode( $transaction_data['custom'], true );
-
+		codecept_debug( 'custom' );
+		codecept_debug( print_r( $custom ) );
 		/*
 		 * This method might run during a POST (IPN) PayPal request hence the
 		 * purchasing user ID, if any, will be stored in a custom PayPal var.

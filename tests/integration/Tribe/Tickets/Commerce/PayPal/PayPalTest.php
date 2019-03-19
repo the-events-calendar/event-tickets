@@ -162,7 +162,7 @@ EOT;
 		$data = $pdt->parse_transaction_body( $body );
 		$gateway->set_raw_transaction_data( $data );
 		$parsed_transaction = $gateway->parse_transaction( $data );
-		codecept_debug( print_r( $parsed_transaction, true ) );
+
 		$gateway->set_transaction_data( $parsed_transaction );
 		$paypal->generate_tickets();
 
