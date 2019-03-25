@@ -56,6 +56,8 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether or not the user is on a page using the attendee registration shortcode
 	 *
+	 * @since TBD
+	 *
 	 * @return boolean
 	 */
 	public function is_using_shortcode() {
@@ -66,6 +68,8 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 	/**
 	 * Returns a list of providers in the "cart" (AR page)
+	 *
+	 * @since TBD
 	 *
 	 * @return array
 	 */
