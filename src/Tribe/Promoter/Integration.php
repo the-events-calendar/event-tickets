@@ -21,6 +21,7 @@ class Tribe__Tickets__Promoter__Integration {
 		/** @var Tribe__Promoter__Connector $connector */
 		$connector = tribe( 'promoter.connector' );
 
+		// Only add our hook if Promoter has a license key setup and this user is authorized.
 		if ( ! $pue->has_license_key() || ! $connector->is_user_authorized() ) {
 			return;
 		}
