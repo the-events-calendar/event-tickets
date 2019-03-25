@@ -1074,9 +1074,16 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		// Bail on gutenberg
+		// Bail on Gutenberg
 		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
-		if ( tribe_get_option( 'toggle_blocks_editor' ) && ( has_blocks( $post->ID ) || ! $template_overwrite->has_classic_editor( $post->ID ) ) ) {
+
+		if (
+			tribe_get_option( 'toggle_blocks_editor' )
+			&& (
+				has_blocks( $post->ID )
+				|| ! $template_overwrite->has_classic_editor( $post->ID )
+			)
+		) {
 			return $content;
 		}
 
