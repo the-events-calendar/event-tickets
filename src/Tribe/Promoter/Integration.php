@@ -10,11 +10,20 @@
 class Tribe__Tickets__Promoter__Integration {
 
 	/**
-	 * Hooks on which this observer notifies promoter.
+	 * Hooks for integration and customizations needed for Promoter.
 	 *
 	 * @since TBD
 	 */
 	public function hook() {
+		add_action( 'rest_api_init', [ $this, 'maybe_show_rest_api_attendee_data' ], 11 );
+	}
+
+	/**
+	 * Maybe show REST API Attendee data for Tickets if Promoter is active and authorized.
+	 *
+	 * @since TBD
+	 */
+	public function maybe_show_rest_api_attendee_data() {
 		/** @var Tribe__Promoter__PUE $pue */
 		$pue = tribe( 'promoter.pue' );
 
