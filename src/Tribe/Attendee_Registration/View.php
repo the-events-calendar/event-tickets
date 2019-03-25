@@ -98,6 +98,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 * @param bool
 		 */
 		$is_meta_up_to_date = (int) apply_filters( 'tribe_tickets_attendee_registration_is_meta_up_to_date', true );
+
 		/**
 		 *  Set all the template variables
 		 */
