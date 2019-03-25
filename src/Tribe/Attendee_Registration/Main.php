@@ -82,6 +82,8 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether or not the "cart" (AR page) has tickets from multiple providers in it
 	 *
+	 * @since TBD
+	 *
 	 * @return boolean
 	 */
 	public function has_mixed_providers_in_cart() {
