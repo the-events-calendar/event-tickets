@@ -26,7 +26,7 @@ class Tribe__Tickets__Promoter__Integration {
 		}
 
 		// Attendee data is needed by Promoter requests.
-		add_filter( 'tribe_tickets_rest_api_always_show_attendee_data', '__return_true' );
+		add_filter( 'tribe_tickets_rest_api_always_show_attendee_data', '__return_true', 99 );
 	}
 
 }
