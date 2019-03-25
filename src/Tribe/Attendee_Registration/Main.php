@@ -74,6 +74,13 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return array
 	 */
 	public function providers_in_cart() {
+		/**
+		 * Allow filtering of commerce providers in cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $providers List of commerce providers in cart.
+		 */
 		$providers = apply_filters( 'tribe_providers_in_cart', [] );
 
 		return $providers;
