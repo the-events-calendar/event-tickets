@@ -1074,6 +1074,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			return;
 		}
 
+		// Bail on gutenberg
+		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
+		if ( tribe_get_option( 'toggle_blocks_editor' ) && ( has_blocks( $post->ID ) || ! $template_overwrite->has_classic_editor( $post->ID ) ) ) {
+			return $content;
+		}
+
 		// Check to see if all available tickets' end-sale dates have passed, in which case no form
 		// should show on the front-end.
 		$expired_tickets = 0;
