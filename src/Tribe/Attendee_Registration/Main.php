@@ -119,7 +119,9 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
 
-		$mixed_providers = $this->has_mixed_providers_in_cart();
+		// When we want to change where we send fiolks based on providers, use
+		// $this->has_mixed_providers_in_cart();
+
 		return $checkout_url;
 	}
 }
