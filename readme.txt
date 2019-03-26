@@ -123,7 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Use buttons instead of links and add better feedback on checkin (disable buttons) [70618]
 * Tweak - Use `get_stylesheet_directory()` instead of `get_template_directory()` to honor child themes for Attendee Registration template [123613]
 * Tweak - Remove empty "Primary Info" column from attendee list email and export [122274]
-* Tweak - Only show Attendee data in the REST API for tickets if the Event/Post has the Attendees shortcode/block, with new filter `tribe_tickets_rest_api_always_show_attendee_data` to always show it [117668]
+* Tweak - Only show Attendee data in the REST API for tickets if the Event/Post has the Attendees shortcode/block, with new filter `tribe_tickets_rest_api_always_show_attendee_data` to always show it. Promoter bypasses this for it's own requests [117668]
 * Fix - Add variable not defined when a ticket was moved to a different event [124164]
 * Fix - Resolve problems with `WP_Theme::get_page_templates()` usage, use `array_keys()` instead of `array_values()` since the array is keyed by filename, not template name. Props to @eri-trabiccolo for flagging this! [123613]
 * Fix - Allow IE users to increment/decrement the ticket quantity field via the buttons [121073]
