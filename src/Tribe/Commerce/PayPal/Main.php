@@ -2567,7 +2567,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Increases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
-	 * @since TBD added $shared_capacity and $global_stock parameter
+	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
 	 * @param int         $ticket_id       The ticket post ID
 	 * @param int         $qty             the quanitity to modify stock
@@ -2590,7 +2590,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Decreases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
-	 * @since TBD added $shared_capacity and $global_stock parameter
+	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
 	 * @param int         $ticket_id       The ticket post ID
 	 * @param int         $qty             the quanitity to modify stock
@@ -2611,7 +2611,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Update Global Stock
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @param object $global_stock the object of Tribe__Tickets__Global_Stock
 	 * @param int    $qty          the quanitity to modify stock
