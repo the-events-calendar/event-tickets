@@ -4,6 +4,8 @@
  * Filter to allow users to add/alter ignored post types
  *
  * @since 4.7
+ * @since 4.10.2 Update tooltip text for Confirmation email sender address and allow it to be saved as empty
+ * @version 4.10.2
  */
 $post_types_to_ignore = apply_filters( 'tribe_tickets_settings_post_type_ignore_list', array(
 	'attachment',
