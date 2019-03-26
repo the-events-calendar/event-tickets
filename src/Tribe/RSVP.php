@@ -193,6 +193,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		add_action( 'rsvp_checkin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'rsvp_uncheckin', array( $this, 'purge_attendees_transient' ) );
 		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ) );
+		add_filter( 'tribe_get_cost', [ $this, 'trigger_get_cost' ], 10, 3 );
 		add_filter(
 			'event_tickets_attendees_rsvp_checkin_stati',
 			array( $this, 'filter_event_tickets_attendees_rsvp_checkin_stati' )
@@ -976,19 +977,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$product_id = get_post_meta( $ticket_id, self::ATTENDEE_PRODUCT_KEY, true );
 
-		// For attendees whose status ('going' or 'not going') for whom a stock adjustment is required?
-		$rsvp_options    = $this->tickets_view->get_rsvp_options( null, false );
-		$attendee_status = get_post_meta( $ticket_id, self::ATTENDEE_RSVP_KEY, true );
-
-		$adjustment = isset( $rsvp_options[ $attendee_status ]['decrease_stock_by']  )
-			? absint( $rsvp_options[ $attendee_status ]['decrease_stock_by'] )
-			: false;
-
-		// Adjust the sales figure if required
-		if ( $adjustment ) {
-			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
-			update_post_meta( $product_id, 'total_sales', $sales - $adjustment );
-		}
+		// Stock Adjustment handled by $this->update_stock_from_attendees_page()
 
 		//Store name so we can still show it in the attendee list
 		$attendees      = $this->get_attendees_by_id( $event_id );
@@ -1013,6 +1002,29 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		Tribe__Post_Transient::instance()->delete( $event_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		return true;
+	}
+
+	/**
+	 * Trigger for tribe_get_cost if there are only RSVPs
+	 *
+	 * @since TBD
+	 *
+	 * @param string $cost
+	 * @param int $post_id
+	 * @param boolean $unused_with_currency_symbol
+	 *
+	 * @return string $cost
+	 */
+	public function trigger_get_cost( $cost, $post_id, $unused_with_currency_symbol ) {
+
+		if (
+			empty( $cost )
+			&& tribe_events_has_tickets( get_post( $post_id ) )
+		) {
+			$cost = __( 'Free', 'event-tickets' );
+		}
+
+		return $cost;
 	}
 
 	/**
@@ -1060,6 +1072,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		if ( empty( $tickets ) ) {
 			return;
+		}
+
+		// Bail on Gutenberg
+		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
+
+		if (
+			tribe_get_option( 'toggle_blocks_editor' )
+			&& (
+				has_blocks( $post->ID )
+				|| ! $template_overwrite->has_classic_editor( $post->ID )
+			)
+		) {
+			return $content;
 		}
 
 		// Check to see if all available tickets' end-sale dates have passed, in which case no form
@@ -1200,7 +1225,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * tests to see if it functions as a ticket: if so, the corresponding event
 	 * object is returned. If not, boolean false is returned.
 	 *
-	 * @param $ticket_product
+	 * @param WP_Post|int $ticket_product
 	 *
 	 * @return bool|WP_Post
 	 */
@@ -1551,7 +1576,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
-		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
@@ -1601,7 +1626,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function uncheckin( $attendee_id ) {
-		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
@@ -2165,8 +2190,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int
 	 */
 	public function get_total_not_going( $event_id ) {
+		$not_going = 0;
 
-		$not_going     = 0;
 		foreach ( $this->get_attendees_array( $event_id ) as $attendee ) {
 			if ( in_array( $attendee['order_status'], $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
 				$not_going ++;

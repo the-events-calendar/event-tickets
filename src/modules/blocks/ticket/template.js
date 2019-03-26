@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
@@ -52,22 +52,26 @@ class Ticket extends PureComponent {
 			showTicket,
 		} = this.props;
 
-		return showTicket ? [
-			(
-				<article className={ classNames(
-					'tribe-editor__ticket',
-					{ 'tribe-editor__ticket--disabled': isDisabled },
-					{ 'tribe-editor__ticket--selected': isSelected },
-					{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
-				) }
-				>
-					<TicketContainer clientId={ clientId } isSelected={ isSelected } />
-					<TicketDashboard clientId={ clientId } isSelected={ isSelected } />
-					{ isLoading && <Spinner /> }
-				</article>
-			),
-			isModalShowing && <MoveModal />,
-		] : null;
+		return (
+			showTicket
+				? (
+					<Fragment>
+						<article className={ classNames(
+							'tribe-editor__ticket',
+							{ 'tribe-editor__ticket--disabled': isDisabled },
+							{ 'tribe-editor__ticket--selected': isSelected },
+							{ 'tribe-editor__ticket--has-tickets-plus': hasTicketsPlus },
+						) }
+						>
+							<TicketContainer clientId={ clientId } isSelected={ isSelected } />
+							<TicketDashboard clientId={ clientId } isSelected={ isSelected } />
+							{ isLoading && <Spinner /> }
+						</article>
+						{ isModalShowing && <MoveModal /> }
+					</Fragment>
+				)
+				: null
+		);
 	}
 }
 

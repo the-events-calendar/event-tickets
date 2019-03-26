@@ -29,7 +29,15 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_slug() {
-		return Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
+
+		$page = get_page_by_path( $slug );
+
+		if ( empty( $slug ) || ! has_shortcode( $page->post_content, 'tribe_attendee_registration' ) ) {
+			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+		}
+
+		return $slug;
 	}
 
 	/**
@@ -42,7 +50,57 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		return ! empty( $wp_query->query_vars[ $this->key_query_var ] );
+		return ! empty( $wp_query->query_vars[ $this->key_query_var ] ) ;
+	}
+
+	/**
+	 * Returns whether or not the user is on a page using the attendee registration shortcode
+	 *
+	 * @since TBD
+	 *
+	 * @return boolean
+	 */
+	public function is_using_shortcode() {
+		global $wp_query;
+
+		return ! empty( $wp_query->queried_object->post_content ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' );
+	}
+
+	/**
+	 * Returns a list of providers in the "cart" (AR page)
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function providers_in_cart() {
+		/**
+		 * Allow filtering of commerce providers in cart.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $providers List of commerce providers in cart.
+		 */
+		$providers = apply_filters( 'tribe_providers_in_cart', [] );
+
+		return $providers;
+	}
+
+	/**
+	 * Returns whether or not the "cart" (AR page) has tickets from multiple providers in it
+	 *
+	 * @since TBD
+	 *
+	 * @return boolean
+	 */
+	public function has_mixed_providers_in_cart() {
+		if ( empty( $this->providers_in_cart() ) ) {
+			return false;
+		}
+
+		$provider_count = count( $this->providers_in_cart() );
+
+		return $provider_count > 1;
 	}
 
 	/**
@@ -69,6 +127,9 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 * @since 4.9
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
+
+		// When we want to change where we send fiolks based on providers, use
+		// $this->has_mixed_providers_in_cart();
 
 		return $checkout_url;
 	}

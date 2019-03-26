@@ -452,6 +452,10 @@ class Tribe__Tickets__Main {
 	 */
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ) );
+
+		// connect upgrade script
+		add_action( 'init', array( $this, 'run_updates' ), 0, 0 );
+
 		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
 
 		// Setup Help Tab texting
@@ -846,8 +850,8 @@ class Tribe__Tickets__Main {
 	 *
 	 */
 	public function run_updates() {
-		if ( ! class_exists( 'Tribe__Events__Updater' ) ) {
-			return; // core needs to be updated for compatibility
+		if ( ! class_exists( 'Tribe__Updater' ) ) {
+			return;
 		}
 
 		$updater = new Tribe__Tickets__Updater( self::VERSION );

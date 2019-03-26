@@ -125,7 +125,9 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 			return $data;
 		}
 
-		$ticket_post_type_object = get_post_type_object( $ticket->post_type );
+		$ticket_post = get_post( $ticket_id );
+
+		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
 
 		if ( ! $ticket_post_type_object ) {
 			return $data;
@@ -137,7 +139,7 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 			return $data;
 		}
 
-		$capacity_details = empty( $data['capacity_details'] ) ? [] : $data['capacity_details'];
+		$capacity_details = empty( $data['capacity_details'] ) ? array() : $data['capacity_details'];
 		$available        = empty( $capacity_details['available'] ) ? 0 : $capacity_details['available'];
 		$capacity_type    = $ticket->global_stock_mode();
 
