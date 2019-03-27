@@ -101,8 +101,6 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_1_id = $this->create_paypal_ticket( $event_1_id, $ticket_1_price );
 		$ticket_2_id = $this->create_paypal_ticket( $event_2_id, $ticket_2_price );
 
-		codecept_debug( [ 'event/ticket ids' => compact( 'event_1_id', 'event_2_id', 'ticket_1_id', 'ticket_2_id' ) ] );
-
 		$body = <<<EOT
 SUCCESS
 mc_gross={$total_in_cart}
@@ -157,8 +155,6 @@ transaction_subject=
 payment_gross={$total_in_cart}
 EOT;
 
-		codecept_debug( [ 'transaction body' => $body ] );
-
 		tribe( 'tickets.data_api' );
 
 		/** @var PayPal $paypal */
@@ -172,13 +168,9 @@ EOT;
 
 		$data = $pdt->parse_transaction_body( $body );
 
-		codecept_debug( [ 'parsed transaction data' => $data ] );
-
 		$gateway->set_raw_transaction_data( $data );
 
 		$parsed_transaction = $gateway->parse_transaction( $data );
-
-		codecept_debug( [ 'parsed transaction' => $parsed_transaction ] );
 
 		$gateway->set_transaction_data( $parsed_transaction );
 		$paypal->generate_tickets();
@@ -199,8 +191,6 @@ EOT;
 			)
 		);
 
-		codecept_debug( [ 'attendees for event 1' => $attendees ] );
-
 		$this->assertCount( 2, $attendees, 'Attendee count for the event 1 should be 2' );
 
 		$attendees = $wpdb->get_col(
@@ -218,8 +208,6 @@ EOT;
 				]
 			)
 		);
-
-		codecept_debug( [ 'attendees for event 2' => $attendees ] );
 
 		$this->assertCount( 1, $attendees, 'Attendee count for the event 2 should be 2' );
 	}

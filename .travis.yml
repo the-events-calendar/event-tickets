@@ -123,9 +123,9 @@ before_script:
   - cd ${PLUGIN_DIR}
 
 script:
-  #- codecept run unit
-  #- codecept run wpunit
-  - codecept run integration -vvv
-  #- codecept run functional
-  #- codecept run restv1
-  #- codecept run acceptance
+  - codecept run unit
+  - codecept run wpunit
+  - codecept run integration
+  - codecept run functional
+  - codecept run restv1
+  - codecept run acceptance

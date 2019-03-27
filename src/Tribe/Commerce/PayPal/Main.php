@@ -649,7 +649,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$raw_transaction_data = $gateway->get_raw_transaction_data();
 
 		if ( empty( $transaction_data ) || empty( $transaction_data['items'] ) ) {
-			codecept_debug( 'No transaction data / items' );
 			return;
 		}
 
@@ -668,17 +667,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$is_refund = Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status
 		             || 'refund' === Tribe__Utils__Array::get( $transaction_data, 'reason_code', '' );
+
 		if ( $is_refund ) {
-			codecept_debug( 'Is refund' );
 			$transaction_data['payment_status'] = $payment_status = Tribe__Tickets__Commerce__PayPal__Stati::$refunded;
+
 			$refund_order_id = $order_id;
 			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
 			$order           = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
+
 			$order->refund_with( $refund_order_id );
+
 			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
+
 			$order->hydrate_from_transaction_data( $transaction_data );
 		} else {
-			codecept_debug( 'Is not refund' );
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
 		}
 
@@ -702,12 +704,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
 
 		if ( ! empty( $attendee_user_id ) ) {
-			codecept_debug( 'Has attendee user ID: ' . $attendee_user_id );
 			$attendee = get_user_by( 'id', $attendee_user_id );
 
 			if ( $attendee ) {
-				codecept_debug( $attendee->to_array() );
-
 				if ( $attendee->user_email ) {
 					$attendee_email = $attendee->user_email;
 				}
@@ -728,8 +727,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendee_optouts = Tribe__Utils__Array::list_to_array( Tribe__Utils__Array::get( $custom, 'oo', array() ), ',' );
 
 		if ( ! $attendee_email || ! $attendee_full_name ) {
-			codecept_debug( 'No attendee email or full name' );
-			codecept_debug( compact( 'attendee_email', 'attendee_full_name' ) );
 			$this->redirect_after_error( 101, $redirect, $post_id );
 			return;
 		}
@@ -739,7 +736,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$order_attendee_id = 0;
 
 			if ( empty( $item['ticket'] ) ) {
-				codecept_debug( 'No item ticket' );
 				continue;
 			}
 
@@ -751,7 +747,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$post = $ticket_type->get_event();
 
 			if ( empty( $post ) ) {
-				codecept_debug( 'No item post (event)' );
 				continue;
 			}
 
@@ -759,7 +754,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 			// if there were no PayPal tickets for the product added to the cart, continue
 			if ( empty( $item['quantity'] ) ) {
-				codecept_debug( 'No item quantity' );
 				continue;
 			}
 
@@ -805,7 +799,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 
 			if ( $qty === 0 ) {
-				codecept_debug( 'No quantity found' );
 				$this->redirect_after_error( 103, $redirect, $post_id );
 				return;
 			}
@@ -842,7 +835,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$existing_attendee = wp_list_filter( $existing_attendees, $criteria );
 
 				if ( ! empty( $existing_attendee ) ) {
-					codecept_debug( 'Existing attendee' );
 					$existing_attendee = reset( $existing_attendee );
 					$updating_attendee = true;
 					$attendee_id       = $existing_attendee['attendee_id'];
@@ -856,7 +848,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 					// Insert individual ticket purchased
 					$attendee_id = wp_insert_post( $attendee );
-					codecept_debug( 'New attendee: ' . $attendee_id );
 
 					// since we are creating at least one
 					$has_generated_new_tickets = true;
