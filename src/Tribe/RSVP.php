@@ -1071,18 +1071,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$tickets = $this->get_tickets( $post->ID );
 
 		if ( empty( $tickets ) ) {
-			return;
+			return $content;
 		}
 
-		// Bail on Gutenberg
-		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
-
+		// test for blocks in content, but usually called after the blocks have been convereted
 		if (
-			tribe_get_option( 'toggle_blocks_editor' )
-			&& (
-				has_blocks( $post->ID )
-				|| ! $template_overwrite->has_classic_editor( $post->ID )
-			)
+			has_blocks( $content )
+			|| false !== strpos( (string) $content, 'tribe-block' )
 		) {
 			return $content;
 		}
