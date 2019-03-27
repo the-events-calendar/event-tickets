@@ -5,7 +5,7 @@
  * Class Tribe__Tickets__Updater
  *
  * @since 4.7.1
-*  @since TBD - uses Tribe__Updater in common library instead of Tribe__Events__Tribe
+*  @since 4.10.2 - uses Tribe__Updater in common library instead of Tribe__Events__Tribe
  *
  */
 class Tribe__Tickets__Updater extends Tribe__Updater {

@@ -56,7 +56,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether or not the user is on a page using the attendee registration shortcode
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return boolean
 	 */
@@ -69,7 +69,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns a list of providers in the "cart" (AR page)
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return array
 	 */
@@ -77,7 +77,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		/**
 		 * Allow filtering of commerce providers in cart.
 		 *
-		 * @since TBD
+		 * @since 4.10.2
 		 *
 		 * @param array $providers List of commerce providers in cart.
 		 */
@@ -89,7 +89,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether or not the "cart" (AR page) has tickets from multiple providers in it
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return boolean
 	 */

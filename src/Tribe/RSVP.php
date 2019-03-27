@@ -1007,7 +1007,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Trigger for tribe_get_cost if there are only RSVPs
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @param string $cost
 	 * @param int $post_id

@@ -5,7 +5,9 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders.php
  *
  * @package TribeEventsCalendar
- * @version 4.7.4
+ * @since 4.7.4
+ * @since 4.10.2 Only show Update button if ticket has meta
+ * @version 4.10.2
  *
  */
 
