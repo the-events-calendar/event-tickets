@@ -698,17 +698,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			? ''
 			: sanitize_text_field( "{$transaction_data['first_name']} {$transaction_data['last_name']}" );
 
-		if ( empty( $attendee_user_id ) ) {
-			codecept_debug( 'Has no attendee user ID' );
-			$attendee_email = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
-			$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
-		} else {
+		$attendee_email = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
+		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+
+		if ( ! empty( $attendee_user_id ) ) {
 			codecept_debug( 'Has attendee user ID: ' . $attendee_user_id );
-			$attendee       = get_user_by( 'ID', $attendee_user_id );
-			$attendee_email = $attendee->user_email;
-			$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
-			if ( ! empty( $user_full_name ) ) {
-				$attendee_full_name = $user_full_name;
+			$attendee = get_user_by( 'id', $attendee_user_id );
+
+			if ( $attendee ) {
+				$attendee_email = $attendee->user_email;
+				$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
+				if ( ! empty( $user_full_name ) ) {
+					$attendee_full_name = $user_full_name;
+				}
 			}
 		}
 
