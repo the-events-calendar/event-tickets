@@ -1077,7 +1077,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// test for blocks in content, but usually called after the blocks have been convereted
 		if (
 			has_blocks( $content )
-			|| false !== strpos( (string) $content, 'tribe-block' )
+			|| false !== strpos( (string) $content, 'tribe-block ' )
 		) {
 			return $content;
 		}
