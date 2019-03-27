@@ -706,6 +706,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$attendee = get_user_by( 'id', $attendee_user_id );
 
 			if ( $attendee ) {
+				codecept_debug( $attendee->to_array() );
+
 				$attendee_email = $attendee->user_email;
 				$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
 				if ( ! empty( $user_full_name ) ) {
