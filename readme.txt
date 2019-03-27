@@ -141,6 +141,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Stop claiming that the Attendee Registration page is an archive, add shortcode to display on any page [123044]
 * Fix - Remove CSS that was hiding the RSVP form when Blocks are disabled [123136]
 * Fix - Prevent the classic RSVP form from showing in block-enabled posts on front-end [124394]
+* Language - 1 new strings added, 116 updated, 0 fuzzied, and 1 obsoleted
 
 = [4.10.1.2] 2019-03-14 =
 
