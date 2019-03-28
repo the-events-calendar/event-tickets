@@ -117,6 +117,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.4] TBD =
+
 = [4.10.2] TBD =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
