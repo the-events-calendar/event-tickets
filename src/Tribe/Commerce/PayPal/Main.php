@@ -706,13 +706,16 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( ! empty( $attendee_user_id ) ) {
 			$attendee = get_user_by( 'id', $attendee_user_id );
 
+			// Check if the user was found.
 			if ( $attendee ) {
+				// Check if the user has an email address.
 				if ( $attendee->user_email ) {
 					$attendee_email = $attendee->user_email;
 				}
 
 				$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
 
+				// Check if the user has first/last name.
 				if ( ! empty( $user_full_name ) ) {
 					$attendee_full_name = $user_full_name;
 				}
