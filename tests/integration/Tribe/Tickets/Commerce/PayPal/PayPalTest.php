@@ -7,7 +7,6 @@ use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 use Tribe__Post_Transient as Post_Transient;
-use wpdb as DB;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
@@ -63,9 +62,6 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function it_should_generate_attendees_for_all_tickets_in_PDT_transaction() {
-		/** @var DB $wpdb */
-		global $wpdb;
-
 		add_filter( 'tribe_tickets_commerce_paypal_handler', function () {
 			return 'pdt';
 		} );
@@ -175,40 +171,18 @@ EOT;
 		$gateway->set_transaction_data( $parsed_transaction );
 		$paypal->generate_tickets();
 
-		$attendees = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-					SELECT p.ID
-					FROM {$wpdb->posts} AS p
-					LEFT JOIN {$wpdb->postmeta} AS pm ON pm.post_id = p.ID AND pm.meta_key = %s
-					WHERE p.post_type = %s AND pm.meta_value = %s
-				",
-				[
-					$paypal->attendee_event_key,
-					$paypal->attendee_object,
-					$event_1_id,
-				]
-			)
-		);
+		/** @var Post_Transient $post_transient */
+		$post_transient = tribe( 'post-transient' );
 
-		$this->assertCount( 2, $attendees, 'Attendee count for the event 1 should be 2' );
+		$post_transient->delete( $event_1_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+		$post_transient->delete( $event_2_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
-		$attendees = $wpdb->get_col(
-			$wpdb->prepare(
-				"
-					SELECT p.ID
-					FROM {$wpdb->posts} AS p
-					LEFT JOIN {$wpdb->postmeta} AS pm ON pm.post_id = p.ID AND pm.meta_key = %s
-					WHERE p.post_type = %s AND pm.meta_value = %s
-				",
-				[
-					$paypal->attendee_event_key,
-					$paypal->attendee_object,
-					$event_2_id,
-				]
-			)
-		);
+		$attendees_event_1 = tribe_tickets_get_attendees( $event_1_id );
 
-		$this->assertCount( 1, $attendees, 'Attendee count for the event 2 should be 2' );
+		$this->assertCount( 2, $attendees_event_1, 'Attendee count for the event 1 should be 2' );
+
+		$attendees_event_2 = tribe_tickets_get_attendees( $event_2_id );
+
+		$this->assertCount( 1, $attendees_event_2, 'Attendee count for the event 2 should be 2' );
 	}
 }
