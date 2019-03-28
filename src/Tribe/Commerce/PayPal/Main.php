@@ -667,13 +667,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$is_refund = Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status
 		             || 'refund' === Tribe__Utils__Array::get( $transaction_data, 'reason_code', '' );
+
 		if ( $is_refund ) {
 			$transaction_data['payment_status'] = $payment_status = Tribe__Tickets__Commerce__PayPal__Stati::$refunded;
+
 			$refund_order_id = $order_id;
 			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
 			$order           = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
+
 			$order->refund_with( $refund_order_id );
+
 			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
+
 			$order->hydrate_from_transaction_data( $transaction_data );
 		} else {
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
@@ -695,15 +700,25 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			? ''
 			: sanitize_text_field( "{$transaction_data['first_name']} {$transaction_data['last_name']}" );
 
-		if ( empty( $attendee_user_id ) ) {
-			$attendee_email = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
-			$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
-		} else {
-			$attendee       = get_user_by( 'ID', $attendee_user_id );
-			$attendee_email = $attendee->user_email;
-			$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
-			if ( ! empty( $user_full_name ) ) {
-				$attendee_full_name = $user_full_name;
+		$attendee_email = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
+		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+
+		if ( ! empty( $attendee_user_id ) ) {
+			$attendee = get_user_by( 'id', $attendee_user_id );
+
+			// Check if the user was found.
+			if ( $attendee ) {
+				// Check if the user has an email address.
+				if ( $attendee->user_email ) {
+					$attendee_email = $attendee->user_email;
+				}
+
+				$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
+
+				// Check if the user has first/last name.
+				if ( ! empty( $user_full_name ) ) {
+					$attendee_full_name = $user_full_name;
+				}
 			}
 		}
 

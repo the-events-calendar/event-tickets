@@ -295,10 +295,12 @@ abstract class Tribe__Tickets__REST__V1__Endpoints__Base {
 		}
 
 		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
+
 		if ( null === $ticket_post_type_object ) {
 			return new WP_Error( 'ticket-provider-not-found', $this->messages->get_message( 'ticket-provider-not-found' ), array( 'status' => 500 ) );
 		}
-		$read_cap                = $ticket_post_type_object->cap->read_post;
+
+		$read_cap = $ticket_post_type_object->cap->read_post;
 
 		if ( ! ( 'publish' === $ticket_post->post_status || current_user_can( $read_cap, $ticket_id ) ) ) {
 			$message = $this->messages->get_message( 'ticket-not-accessible' );

@@ -56,9 +56,10 @@ class SingleTicketCest extends BaseRestCest {
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
 
-		$ticket_attendees                  = $repository->get_ticket_attendees( $ticket_id );
-		$ticket_object = \Tribe__Tickets__RSVP::load_ticket_object( $ticket_id );
-		$expectedJson                      = array(
+		$ticket_attendees = $repository->get_ticket_attendees( $ticket_id );
+		$ticket_object    = \Tribe__Tickets__RSVP::load_ticket_object( $ticket_id );
+
+		$expectedJson = [
 			'id'                            => $ticket_id,
 			'post_id'                       => $post_id,
 			'global_id'                     => $repository->get_ticket_global_id( $ticket_id ),
@@ -99,34 +100,37 @@ class SingleTicketCest extends BaseRestCest {
 				'rsvp_going'     => $going_attendees_count,
 				'rsvp_not_going' => $not_going_attendees_count,
 			],
-			'checkin' => [
+			'checkin'                       => [
 				'checked_in'              => 1,
 				'unchecked_in'            => 11,
 				'checked_in_percentage'   => 9,
 				'unchecked_in_percentage' => 91,
 			],
-			'capacity_type'             => 'own',
-			'sku'                       => null,
-			'totals'                    => [
+			'capacity_type'                 => 'own',
+			'sku'                           => null,
+			'totals'                        => [
 				'stock'   => 23,
 				'sold'    => 7,
 				'pending' => 0,
 			],
-		);
+		];
 
 		$response = json_decode( $I->grabResponse(), true );
 
 		$I->assertContains( $response, $expectedJson );
 
 		// @todo - move this to dedicated test when Attendees endpoint is done
-		$attendees_objects            = tribe_tickets_get_ticket_provider( $ticket_id )->get_attendees_by_id( $ticket_id );
+		$attendees_objects = tribe_tickets_get_ticket_provider( $ticket_id )->get_attendees_by_id( $ticket_id );
+
 		$first_attendee_object = array_values( array_filter( $attendees_objects, function ( $attendee ) use ( $first_attendee_id ) {
 			return $attendee['attendee_id'] === $first_attendee_id;
 		} ) )[0];
+
 		$first_attendee_from_response = array_values( array_filter( $response['attendees'], function ( $attendee ) use ( $first_attendee_id ) {
 			return $attendee['id'] === $first_attendee_id;
 		} ) )[0];
-		$first_attendee_post          = get_post( $first_attendee_id );
+
+		$first_attendee_post = get_post( $first_attendee_id );
 
 		$I->assertInstanceOf( \WP_Post::class, $first_attendee_post );
 
@@ -165,6 +169,7 @@ class SingleTicketCest extends BaseRestCest {
 			'rsvp_going'        => true,
 			'optout'            => false,
 		];
+
 		$I->assertEquals( $expected_first_attendee, $first_attendee_from_response );
 	}
 
