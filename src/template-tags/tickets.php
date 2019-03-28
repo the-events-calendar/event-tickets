@@ -153,13 +153,20 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			}
 
 			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
+
+			// If we find an unlimted ticket, just return unlimited so we don't use -1 as a real stock
+			if ( -1 === $stock_level ) {
+				bdump('unlimited');
+				return $stock_level;
+			}
+
 			$count += (int) $stock_level; // Explicit cast needed because it's possible $stock_level will be an empty string (unlimited stock)
 		}
 
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 		$global_stock = $global_stock->is_enabled() ? $global_stock->get_stock_level() : 0;
 		$count += $global_stock;
-
+		bdump( 'limited: ' . $count );
 		return $count;
 	}
 }//end if
