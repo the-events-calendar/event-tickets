@@ -11,7 +11,8 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since 4.10.2 Use md5() for field name slugs
+ * @version 4.10.2
  *
  */
 $field         = $this->get( 'field' );

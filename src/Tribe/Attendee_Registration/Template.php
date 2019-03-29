@@ -87,7 +87,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * convenience wrapper for tribe( 'tickets.attendee_registration' )->is_on_page()
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return boolean
 	 */
@@ -345,7 +345,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Modify the archive title - for themes that somehow defeat our earlier hook.
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 * @param string $title
 	 *
 	 * @return string

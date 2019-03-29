@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.1
-Stable tag: 4.10.2
+Stable tag: 4.10.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,6 +117,12 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.4] TBD =
+
+* Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
+
+= [4.10.3] TBD =
+
 = [4.10.2] TBD =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
@@ -124,6 +130,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Use `get_stylesheet_directory()` instead of `get_template_directory()` to honor child themes for Attendee Registration template [123613]
 * Tweak - Remove empty "Primary Info" column from attendee list email and export [122274]
 * Tweak - Only show Attendee data in the REST API for tickets if the Event/Post has the Attendees shortcode/block, with new filter `tribe_tickets_rest_api_always_show_attendee_data` to always show it. Promoter bypasses this for it's own requests [117668]
+* Tweak - Added filters: `tribe_providers_in_cart`, `tribe_tickets_rest_api_always_show_attendee_data`
+* Tweak - Changed views: `blocks/tickets/registration/attendee/fields/checkbox`, `blocks/tickets/registration/attendee/fields/radio`, `registration/attendees/fields/checkbox`, `registration/attendees/fields/radio`, `registration/button-checkout`, `tickets/orders`
 * Fix - Add variable not defined when a ticket was moved to a different event [124164]
 * Fix - Resolve problems with `WP_Theme::get_page_templates()` usage, use `array_keys()` instead of `array_values()` since the array is keyed by filename, not template name. Props to @eri-trabiccolo for flagging this! [123613]
 * Fix - Allow IE users to increment/decrement the ticket quantity field via the buttons [121073]
@@ -139,6 +147,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Stop claiming that the Attendee Registration page is an archive, add shortcode to display on any page [123044]
 * Fix - Remove CSS that was hiding the RSVP form when Blocks are disabled [123136]
 * Fix - Prevent the classic RSVP form from showing in block-enabled posts on front-end [124394]
+* Language - 1 new strings added, 116 updated, 0 fuzzied, and 1 obsoleted
 
 = [4.10.1.2] 2019-03-14 =
 
