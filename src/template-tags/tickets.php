@@ -155,7 +155,7 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
 
 			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
-			if ( -1 === $stock_level || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $stock_level ) {
+			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $stock_level || -1 === (int) $stock_level ) {
 				return -1;
 			}
 
