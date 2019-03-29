@@ -119,6 +119,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
+* Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
+
 = [4.10.3] TBD =
 
 = [4.10.2] TBD =
