@@ -154,12 +154,12 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 
 			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
 
-			// If we find an unlimted ticket, just return unlimited so we don't use -1 as a real stock
+			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
 			if ( -1 === $stock_level || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $stock_level ) {
-				return $stock_level;
+				return -1;
 			}
 
-			$count += (int) $stock_level; // Explicit cast needed because it's possible $stock_level will be an empty string (unlimited stock)
+			$count += (int) $stock_level; // Explicit cast as a failsafe in case a string slips through
 		}
 
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
@@ -325,7 +325,7 @@ if ( ! function_exists( 'tribe_tickets_has_unlimited_stock_tickets' ) ) {
 				return true;
 			}
 			// We also return -1 for stock on unlimited tickets
-			if ( -1 === $ticket->stock() ) {
+			if ( -1 === (int) $ticket->stock() ) {
 				return true;
 			}
 		}
