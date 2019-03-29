@@ -117,6 +117,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+* Tweak - Add method to get all possible names of the completed status by Commerce [122458]
+
 = [4.10.2] TBD =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
