@@ -121,6 +121,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.3] TBD =
 
+* Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+
 = [4.10.2] TBD =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
