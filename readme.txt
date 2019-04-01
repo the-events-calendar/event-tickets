@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.2] TBD =
+= [4.10.2] 2019-04-01 =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
 * Tweak - Use buttons instead of links and add better feedback on checkin (disable buttons) [70618]
