@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.10.4] TBD =
 
 = [4.10.3] TBD =
+* Tweak - After deleting attendees you are redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 
 = [4.10.2] TBD =
 
