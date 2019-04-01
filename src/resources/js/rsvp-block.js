@@ -82,15 +82,44 @@ var tribe_tickets_rsvp_block = {
 	 */
 	my.events.handle_quantity_change = function( e ) {
 		e.preventDefault();
-		var $button  = $( this );
-		var $input   = $button.parent().find( 'input[type="number"]' );
-		var increase = $button.hasClass( 'tribe-block__rsvp__number-input-button--plus' );
+		var $input   = $( this ).parent().find( 'input[type="number"]' );
+		var increase = $( this ).hasClass( 'tribe-block__rsvp__number-input-button--plus' );
+		var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1
+		var originalValue = Number( $input[ 0 ].value );
 
 		// stepUp or stepDown the input according to the button that was clicked
-		increase ? $input[ 0 ].stepUp() : $input[ 0 ].stepDown();
+		// handle IE/Edge
+		if ( increase ) {
+			// we use 0 here as a shorthand for no maximum
+			var max = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
 
-		// Trigger the on Change for the input as it's not handled via stepUp() || stepDown()
-		$input.trigger( 'change' );
+			if ( typeof $input[ 0 ].stepUp === 'function' ) {
+				try {
+					$input[ 0 ].stepUp();
+				} catch ( ex ) {
+					$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+				}
+			} else {
+				$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+			}
+		} else {
+			var min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
+
+			if ( typeof $input[ 0 ].stepDown === 'function' ) {
+				try {
+					$input[ 0 ].stepDown();
+				} catch ( ex ) {
+					$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
+				}
+			} else {
+				$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
+			}
+		}
+
+		// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown()
+		if ( originalValue !== $input[ 0 ].value ) {
+			$input.trigger( 'change' );
+		}
 	};
 
 

@@ -45,6 +45,14 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 
 		$this->container->singleton( 'tickets.admin.notices', 'Tribe__Tickets__Admin__Notices', array( 'hook' ) );
 
+		// Promoter
+		$this->container->singleton( 'tickets.promoter.integration', 'Tribe__Tickets__Promoter__Integration', array( 'hook' ) );
+		$this->container->singleton( 'tickets.promoter.observer', 'Tribe__Tickets__Promoter__Observer', array( 'hook' ) );
+
+		// Repositories, not bound as singleton to allow for decoration and injection.
+		tribe_register( 'tickets.ticket-repository', 'Tribe__Tickets__Ticket_Repository' );
+		tribe_register( 'tickets.attendee-repository', 'Tribe__Tickets__Attendee_Repository' );
+
 		$this->load();
 	}
 
@@ -63,6 +71,8 @@ class Tribe__Tickets__Service_Provider extends tad_DI52_ServiceProvider {
 		tribe( 'tickets.metabox' );
 		tribe( 'tickets.status' );
 		tribe( 'tickets.editor' );
+		tribe( 'tickets.promoter.integration' );
+		tribe( 'tickets.promoter.observer' );
 
 		if ( is_admin() ) {
 			tribe( 'tickets.admin.views' );

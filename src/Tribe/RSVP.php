@@ -1009,7 +1009,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Trigger for tribe_get_cost if there are only RSVPs
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @param string $cost
 	 * @param int $post_id
@@ -1073,7 +1073,15 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$tickets = $this->get_tickets( $post->ID );
 
 		if ( empty( $tickets ) ) {
-			return;
+			return $content;
+		}
+
+		// test for blocks in content, but usually called after the blocks have been converted
+		if (
+			has_blocks( $content )
+			|| false !== strpos( (string) $content, 'tribe-block ' )
+		) {
+			return $content;
 		}
 
 		// Check to see if all available tickets' end-sale dates have passed, in which case no form
@@ -1214,7 +1222,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * tests to see if it functions as a ticket: if so, the corresponding event
 	 * object is returned. If not, boolean false is returned.
 	 *
-	 * @param $ticket_product
+	 * @param WP_Post|int $ticket_product
 	 *
 	 * @return bool|WP_Post
 	 */
@@ -1565,7 +1573,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 			update_post_meta( $attendee_id, '_tribe_qr_status', 1 );
 		}
 
-		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! $qr && ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;
@@ -1615,7 +1623,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return bool
 	 */
 	public function uncheckin( $attendee_id ) {
-		$event_id = get_post_meta( $ticket_id, self::ATTENDEE_EVENT_KEY, true );
+		$event_id = get_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, true );
 
 		if ( ! tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $event_id ) ) {
 			return false;

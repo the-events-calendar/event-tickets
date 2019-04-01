@@ -70,12 +70,11 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		// Create a fake virtual page
 		$posts[] = $this->spoofed_page();
 
-		// Set it as an archive page so it doesn't give the edit link
-		// nor it loads the comments template
+		// Don't tell wp_query we're anything in particular - then we don't run into issues with defaults.
 		$wp_query->is_page     = false;
 		$wp_query->is_singular = false;
 		$wp_query->is_home     = false;
-		$wp_query->is_archive  = true;
+		$wp_query->is_archive  = false;
 		$wp_query->is_category = false;
 		$wp_query->is_404      = false;
 		$wp_query->found_posts = 1;
@@ -88,7 +87,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * convenience wrapper for tribe( 'tickets.attendee_registration' )->is_on_page()
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return boolean
 	 */
@@ -97,9 +96,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	}
 
 	/**
-	 * Set the theme page template as the
-	 * template we're gonna use for the attendee-registration
-	 * page
+	 * Set the theme page template we're going to use for the attendee-registration page
 	 *
 	 * @since 4.9
 	 *
@@ -123,20 +120,25 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 			$template = tribe_get_option( 'tribeEventsTemplate', 'default' );
 		}
 
-		switch ( $template ) {
-			case '' :
-			case 'default' :
-				// A bit of logic for themes without a page.php
-				$page = locate_template( 'page.php' );
-				$page = ! empty( $page ) ? 'page.php' : array_values( wp_get_theme()->get_page_templates() );
-				$page = ! empty( $page ) ? $page : 'index.php';
-				$page = ! is_array( $page ) ? $page : $page[0];
+		if ( in_array( $template, array( '', 'default' ), true ) ) {
+			// A bit of logic for themes without a page.php
+			$template = 'page.php';
 
-				$template = get_template_directory() . '/' . $page;
-				break;
-			default :
-				$template = get_template_directory() . '/' . $template;
+			if ( ! locate_template( $template ) ) {
+				$pages = array_keys( wp_get_theme()->get_page_templates() );
+
+				if ( ! empty( $pages ) ) {
+					$template = $pages[0];
+				}
+			}
 		}
+
+		// If template is not found, use default.
+		if ( ! locate_template( $template ) ) {
+			$template = 'index.php';
+		}
+
+		$template = locate_template( $template );
 
 		/**
 		 * Use `tribe_tickets_attendee_registration_page_template` to modify the attendee registration page template.
@@ -343,7 +345,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Modify the archive title - for themes that somehow defeat our earlier hook.
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 * @param string $title
 	 *
 	 * @return string
