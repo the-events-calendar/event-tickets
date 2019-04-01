@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import AutosizeInput from 'react-input-autosize';
 
@@ -23,20 +23,22 @@ const TicketContainerHeaderPriceInput = ( {
 	onTempPriceChange,
 	tempPrice,
 } ) => {
-	const priceInput = [
-		<span className="tribe-editor__ticket__container-header-price-currency">
-			{ currencySymbol }
-		</span>,
-		<AutosizeInput
-			className="tribe-editor__ticket__container-header-price-input"
-			value={ tempPrice }
-			placeholder={ __( '0', 'event-tickets' ) }
-			onChange={ onTempPriceChange }
-			disabled={ isDisabled }
-			type="number"
-			min="0"
-		/>,
-	];
+	const priceInput = (
+		<Fragment>
+			<span className="tribe-editor__ticket__container-header-price-currency">
+				{ currencySymbol }
+			</span>
+			<AutosizeInput
+				className="tribe-editor__ticket__container-header-price-input"
+				value={ tempPrice }
+				placeholder={ __( '0', 'event-tickets' ) }
+				onChange={ onTempPriceChange }
+				disabled={ isDisabled }
+				type="number"
+				min="0"
+			/>
+		</Fragment>
+	);
 
 	return currencyPosition === SUFFIX ? priceInput.reverse() : priceInput;
 };
@@ -54,19 +56,21 @@ const TicketContainerHeaderPriceLabel = ( {
 	currencySymbol,
 	price,
 } ) => {
-	const priceLabel = [
-		<span className="tribe-editor__ticket__container-header-price-currency">
-			{ currencySymbol }
-		</span>,
-		<span className="tribe-editor__ticket__container-header-price-value">
-			{ price }
-		</span>,
-	];
+	const priceLabel = (
+		<Fragment>
+			<span className="tribe-editor__ticket__container-header-price-currency">
+				{ currencySymbol }
+			</span>
+			<span className="tribe-editor__ticket__container-header-price-value">
+				{ price }
+			</span>
+		</Fragment>
+	);
 
 	return currencyPosition === SUFFIX ? priceLabel.reverse() : priceLabel;
 };
 
-TicketContainerHeaderPriceInput.propTypes = {
+TicketContainerHeaderPriceLabel.propTypes = {
 	currencyPosition: PropTypes.oneOf( PRICE_POSITIONS ),
 	currencySymbol: PropTypes.string,
 	price: PropTypes.string,

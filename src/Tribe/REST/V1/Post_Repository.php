@@ -420,7 +420,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		$data['modified']     = $ticket_post->post_modified;
 		$data['modified_utc'] = $ticket_post->post_modified_gmt;
 		$data['title']        = $ticket_post->post_title;
-		$data['description']  = $ticket_post->post_content;
+		$data['description']  = $ticket_post->post_excerpt;
 
 	}
 
@@ -639,11 +639,45 @@ class Tribe__Tickets__REST__V1__Post_Repository
 	 * @param array $data
 	 */
 	protected function add_ticket_attendees_data( array &$data ) {
+		// Set as empty so it prevents errors with previous usage (no shortcode/block check).
+		$data['attendees'] = [];
+
 		$ticket_id = $data['id'];
 
-		$data['attendees'] = $this->get_ticket_attendees( $ticket_id );
-
 		$ticket_object = $this->get_ticket_object( $ticket_id );
+
+		$event = $ticket_object->get_event();
+
+		/**
+		 * Allow filtering to always show attendees data on tickets in the REST API. This bypasses checks for Attendees
+		 * shortcode or block in the associated event/post content for the ticket.
+		 *
+		 * @since 4.10.2
+		 *
+		 * @param bool  $always_show_attendees_data Whether to always show attendees data.
+		 * @param array $data                       Ticket REST data.
+		 */
+		$always_show_attendees_data = apply_filters( 'tribe_tickets_rest_api_always_show_attendee_data', false, $data );
+
+		// Check if we have an event or attendees block/shortcode.
+		if ( ! $always_show_attendees_data ) {
+			// Return if there's no event.
+			if ( ! $event ) {
+				return;
+			}
+
+			// Return if event is not showing attendees.
+			if (
+				( ! function_exists( 'has_block' ) || ! has_block( 'tribe/attendees', $event ) )
+				&& ! has_shortcode( $event->post_content, 'tribe_attendees_list' )
+				// In case has_shortcode does not work.
+				&& false === strpos( $event->post_content, '[tribe_attendees_list]' )
+			) {
+				return;
+			}
+		}
+
+		$data['attendees'] = $this->get_ticket_attendees( $ticket_id );
 
 		if (
 			$ticket_object instanceof Tribe__Tickets__Ticket_Object

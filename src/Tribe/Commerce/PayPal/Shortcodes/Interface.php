@@ -1,6 +1,6 @@
 <?php
 /**
- * Class Tribe__Tickets__Commerce__PayPal__Shortcodes__Success
+ * Class Tribe__Tickets__Commerce__PayPal__Shortcodes__Interface
  *
  * @since 4.7
  */
