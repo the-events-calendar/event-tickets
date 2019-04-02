@@ -94,13 +94,12 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return boolean
 	 */
 	public function has_mixed_providers_in_cart() {
-		if ( empty( $this->providers_in_cart() ) ) {
+		$providers_in_cart = $this->providers_in_cart();
+		if ( empty( $providers_in_cart ) ) {
 			return false;
 		}
 
-		$provider_count = count( $this->providers_in_cart() );
-
-		return $provider_count > 1;
+		return 1 < count( $providers_in_cart );
 	}
 
 	/**
@@ -127,6 +126,10 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 * @since 4.9
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
+
+		if ( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === tribe_get_request_var( 'provider' ) ) {
+			return null;
+		}
 
 		// When we want to change where we send folks based on providers, use
 		// $this->has_mixed_providers_in_cart();
