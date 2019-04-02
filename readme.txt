@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.10.4] TBD =
 
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
+* Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url. [122317]
 
 = [4.10.3] TBD =
 
