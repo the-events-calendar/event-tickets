@@ -387,7 +387,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @return string
 	 */
-	public function get_provider_symbol( $provider, $object_id ) {
+	public function get_provider_symbol( $provider, $object_id = null ) {
 		if ( ! class_exists( $provider ) ) {
 			return $this->get_currency_symbol( $object_id );
 		}
@@ -506,13 +506,14 @@ class Tribe__Tickets__Commerce__Currency {
 			return strtoupper( $symbol );
 		}
 
-		$encoded = 0 === strpos( $symbol, '&#' )
-			? $symbol
-			: htmlentities( $symbol, ENT_COMPAT );
+		$matches = array();
+		foreach ( $this->currency_code_options_map as $currency_code => $currency ) {
+			if ( $currency['symbol'] === $symbol || html_entity_decode( $currency['symbol'] ) === $symbol ) {
+				$matches[] = $currency_code;
+			}
+		}
 
-		$matches = wp_list_filter( $this->currency_code_options_map, array( 'symbol' => $encoded ) );
-
-		return count( $matches ) > 0 ? array_keys( $matches ) : array();
+		return count( $matches ) > 0 ? $matches : array();
 	}
 
 	/**
