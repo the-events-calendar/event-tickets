@@ -32,6 +32,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		}
 
 		$q_provider = tribe_get_request_var( 'provider', false );
+
 		/**
 		 * Filter to add/remove tickets from the global cart
 		 *
