@@ -38,7 +38,8 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		 *
 		 * @since TDB
 		 *
-		 * @param array  The array containing the cart elements. Format array( 'ticket_id' => 'quantity' );
+		 * @param array  $cart_tickets The array containing the cart elements. Format array( 'ticket_id' => 'quantity' );
+		 * @param string $q_provider   Current ticket provider.
 		 */
 		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array(), $q_provider );
 		$events       = array();
