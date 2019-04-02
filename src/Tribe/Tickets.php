@@ -2473,7 +2473,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$storage = new Tribe__Tickets_Plus__Meta__Storage();
 			if ( ! empty( $redirect ) ) {
 				$key = $storage->store_temporary_data( $redirect );
-				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key ), $url );
+				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key, 'provider' => 'tribe_tpp_attendees' ), $url );
 			}
 
 			wp_safe_redirect( $url, 307 );

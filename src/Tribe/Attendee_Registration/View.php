@@ -30,20 +30,27 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		if ( 'shortcode' !== $context && ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $content;
 		}
+
+		$q_provider = tribe_get_request_var( 'provider', false );
 		/**
 		 * Filter to add/remove tickets from the global cart
 		 *
 		 * @since TDB
 		 *
-		 * @param array  The array containing the cart elements. Format arrat( 'ticket_id' => 'quantity' );
+		 * @param array  The array containing the cart elements. Format array( 'ticket_id' => 'quantity' );
 		 */
-		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
+		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array(), $q_provider );
 		$events       = array();
 		$providers    = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
+
+			// If we've got a provider and it doesn't match, skip the ticket
+			if ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) {
+				continue;
+			}
 
 			$ticket_data = array(
 				'id'       => $ticket_id,
