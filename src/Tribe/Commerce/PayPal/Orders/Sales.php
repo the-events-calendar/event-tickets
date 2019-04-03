@@ -369,7 +369,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 		// if using global stock then return available
 		$event        = Tribe__Tickets__Tickets::find_matching_event( $ticket );
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
-		if ( $global_stock->is_enabled() ) {
+		if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled() ) {
 			return $available;
 		}
 
