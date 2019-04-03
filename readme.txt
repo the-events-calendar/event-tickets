@@ -119,11 +119,15 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
+* Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
+* Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
+
 = [4.10.3] TBD =
 
-* Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
 
-= [4.10.2] TBD =
+
+= [4.10.2] 2019-04-01 =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
 * Tweak - Use buttons instead of links and add better feedback on checkin (disable buttons) [70618]
