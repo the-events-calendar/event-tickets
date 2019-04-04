@@ -8,6 +8,14 @@
  * @since 4.8
  */
 class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
+
+	/**
+	 * The unique fragment that will be used to identify this repository filters.
+	 *
+	 * @var string
+	 */
+	protected $filter_name = 'attendees';
+
 	/**
 	 * @var array An array of all the order statuses supported by the repository.
 	 */
@@ -17,12 +25,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @var array An array of all the public order statuses supported by the repository.
 	 *            This list is hand compiled as reduced and easier to maintain.
 	 */
-	protected static $public_order_statuses = array(
+	protected static $public_order_statuses = [
 		'yes',     // RSVP
 		'completed', // PayPal
 		'wc-completed', // WooCommerce
 		'publish', // Easy Digital Downloads
-	);
+	];
 
 	/**
 	 * @var array An array of all the private order statuses supported by the repository.
@@ -34,26 +42,30 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->default_args = array_merge( $this->default_args, array(
+
+		$this->create_args['post_type'] = current( $this->attendee_types() );
+
+		$this->default_args = array_merge( $this->default_args, [
 			'post_type'   => $this->attendee_types(),
-			'orderby'     => array( 'date', 'title', 'ID' ),
+			'orderby'     => [ 'date', 'title', 'ID' ],
 			'post_status' => 'any',
-		) );
-		$this->schema = array_merge( $this->schema, array(
-			'event'             => array( $this, 'filter_by_event' ),
-			'ticket'            => array( $this, 'filter_by_ticket' ),
-			'event__not_in'     => array( $this, 'filter_by_event_not_in' ),
-			'ticket__not_in'    => array( $this, 'filter_by_ticket_not_in' ),
-			'optout'            => array( $this, 'filter_by_optout' ),
-			'rsvp_status'       => array( $this, 'filter_by_rsvp_status' ),
-			'provider'          => array( $this, 'filter_by_provider' ),
-			'event_status'      => array( $this, 'filter_by_event_status' ),
-			'order_status'      => array( $this, 'filter_by_order_status' ),
-			'price_min'         => array( $this, 'filter_by_price_min' ),
-			'price_max'         => array( $this, 'filter_by_price_max' ),
-			'has_attendee_meta' => array( $this, 'filter_by_attendee_meta_existence' ),
-			'checkedin'         => array( $this, 'filter_by_checkedin' ),
-		) );
+		] );
+
+		$this->schema = array_merge( $this->schema, [
+			'event'             => [ $this, 'filter_by_event' ],
+			'ticket'            => [ $this, 'filter_by_ticket' ],
+			'event__not_in'     => [ $this, 'filter_by_event_not_in' ],
+			'ticket__not_in'    => [ $this, 'filter_by_ticket_not_in' ],
+			'optout'            => [ $this, 'filter_by_optout' ],
+			'rsvp_status'       => [ $this, 'filter_by_rsvp_status' ],
+			'provider'          => [ $this, 'filter_by_provider' ],
+			'event_status'      => [ $this, 'filter_by_event_status' ],
+			'order_status'      => [ $this, 'filter_by_order_status' ],
+			'price_min'         => [ $this, 'filter_by_price_min' ],
+			'price_max'         => [ $this, 'filter_by_price_max' ],
+			'has_attendee_meta' => [ $this, 'filter_by_attendee_meta_existence' ],
+			'checkedin'         => [ $this, 'filter_by_checkedin' ],
+		] );
 
 		$this->init_order_statuses();
 	}
@@ -68,7 +80,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_types() {
-		return array( 'tribe_rsvp_attendees', 'tribe_tpp_attendees' );
+		return [
+			'tribe_rsvp_attendees',
+			'tribe_tpp_attendees',
+		];
 	}
 
 	/**
@@ -98,10 +113,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_to_event_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_event',
 			'tribe-commerce' => '_tribe_tpp_event',
-		);
+		];
 	}
 
 	/**
@@ -148,10 +163,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_to_ticket_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_product',
 			'tribe-commerce' => '_tribe_tpp_product',
-		);
+		];
 	}
 
 	/**
@@ -181,11 +196,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array|null
 	 */
 	public function filter_by_optout( $optout ) {
-		$args = array(
-			'meta_query' => array(
-				'by-optout-status' => array(),
-			),
-		);
+		$args = [
+			'meta_query' => [
+				'by-optout-status' => [],
+			],
+		];
 
 		switch ( $optout ) {
 			case 'any':
@@ -212,10 +227,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_optout_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_attendee_optout',
 			'tribe-commerce' => '_tribe_tpp_attendee_optout',
-		);
+		];
 	}
 
 	/**
@@ -276,7 +291,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
 			if ( ! $can_read_private_posts ) {
-				$statuses = array( 'publish' );
+				$statuses = [ 'publish' ];
 			} else {
 				// no need to filter if the user can read all posts
 				return;
@@ -284,7 +299,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		if ( ! $can_read_private_posts ) {
-			$event_status = array_intersect( $statuses, array( 'publish' ) );
+			$event_status = array_intersect( $statuses, [ 'publish' ] );
 		}
 
 		if ( empty( $event_status ) ) {
@@ -318,7 +333,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
 			if ( ! $can_read_private_posts ) {
-				$statuses = array( 'public' );
+				$statuses = [ 'public' ];
 			} else {
 				// no need to filter if the user can read all posts
 				return;
@@ -442,10 +457,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function checked_in_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_checkedin',
 			'tribe-commerce' => '_tribe_tpp_checkedin',
-		);
+		];
 	}
 
 	/**
@@ -457,9 +472,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	protected function attendee_to_order_keys() {
-		return array(
+		return [
 			'tribe-commerce' => '_tribe_tpp_order',
-		);
+		];
 	}
 
 	/**
@@ -473,7 +488,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	protected function init_order_statuses() {
 		if ( empty( self::$order_statuses ) ) {
 			// For RSVP tickets the order status is the going status
-			$statuses = array( 'yes', 'no' );
+			$statuses = [ 'yes', 'no' ];
 
 			if ( Tribe__Tickets__Commerce__PayPal__Main::get_instance()->is_active() ) {
 				$statuses = array_merge( $statuses, tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' ) );
@@ -496,5 +511,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			self::$order_statuses         = $statuses;
 			self::$private_order_statuses = array_diff( $statuses, self::$public_order_statuses );
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function create() {
+		// Disabled for now.
+		return false;
 	}
 }
