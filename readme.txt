@@ -3,7 +3,7 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
-Tested up to: 5.1
+Tested up to: 5.1.1
 Stable tag: 4.10.4
 Requires PHP: 5.6
 License: GPLv2 or later
@@ -119,10 +119,15 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
+* Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
+* Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 
 = [4.10.3] TBD =
+
+
 
 = [4.10.2] 2019-04-01 =
 

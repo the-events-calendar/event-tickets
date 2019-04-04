@@ -1429,7 +1429,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// Try to kill the actual ticket/attendee post
 		$delete = wp_delete_post( $ticket_id, true );
-		if ( is_wp_error( $delete ) ) {
+		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
 
