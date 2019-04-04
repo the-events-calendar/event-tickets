@@ -29,20 +29,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_slug() {
-		$id = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-id', false );
-
-		// check for old saved slug - since TBD
-		if ( ! empty( $id ) ) {
-			$page = get_post( $id );
-			if ( ! empty( $page ) ) {
-				$slug = $page->post_name;
-			}
-		} else {
-			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
-			if ( ! empty( $slug ) ) {
-				$page = get_page_by_path( $slug );
-			}
-		}
+		$slug = $this->get_attendee_registration_page_slug();
 
 		if (
 			empty( $slug )
@@ -152,5 +139,27 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		// $this->has_mixed_providers_in_cart();
 
 		return $checkout_url;
+	}
+
+	/**
+	 * get page slug from ticket-attendee-page-id or ticket-attendee-page-slug
+	 * in a backwards-compatible way.
+	 *
+	 * @return string|boolean the slug if found, otherwise boolean false.
+	 */
+	public function get_attendee_registration_page_slug() {
+		$id   = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-id', false );
+
+		if ( ! empty( $id ) ) {
+			$page = get_post( $id );
+
+			return ! empty( $page ) ? $page->post_name : false;
+		} else {
+			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
+			return $slug;
+		}
+
+		// fallback
+		return false;
 	}
 }
