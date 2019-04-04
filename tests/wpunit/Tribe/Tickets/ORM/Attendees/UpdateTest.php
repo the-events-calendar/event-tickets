@@ -25,12 +25,12 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 		} );
 
 		// Enable Tribe Commerce.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true', 15 );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
 			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
-		} );
+		}, 15 );
 	}
 
 	/**
@@ -38,7 +38,7 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @test
 	 */
-	public function should_allow_updating_tickets() {
+	public function should_allow_updating_attendees() {
 		/** @var Attendee_Repository $attendees */
 		$attendees = tribe_attendees();
 
@@ -64,7 +64,7 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @test
 	 */
-	public function should_allow_updating_tickets_from_rsvp_context() {
+	public function should_allow_updating_attendees_from_rsvp_context() {
 		/** @var Attendee_Repository $attendees */
 		$attendees = tribe_attendees( 'rsvp' );
 
@@ -90,7 +90,7 @@ class UpdateTest extends \Codeception\TestCase\WPTestCase {
 	 *
 	 * @test
 	 */
-	public function should_allow_updating_tickets_from_tribe_commerce_context() {
+	public function should_allow_updating_attendees_from_tribe_commerce_context() {
 		/** @var Attendee_Repository $attendees */
 		$attendees = tribe_attendees( 'tribe-commerce' );
 
