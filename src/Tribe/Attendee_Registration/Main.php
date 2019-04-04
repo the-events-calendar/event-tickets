@@ -33,14 +33,24 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 		// check for old saved slug - since TBD
 		if ( ! empty( $id ) ) {
-			$page = get_page( $id );
-			$slug = $page->post_name;
+			$page = get_post( $id );
+			if ( ! empty( $page ) ) {
+				$slug = $page->post_name;
+			}
 		} else {
 			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
-			$page = get_page_by_path( $slug );
+			if ( ! empty( $slug ) ) {
+				$page = get_page_by_path( $slug );
+			}
 		}
 
-		if ( empty( $slug ) || empty( $page ) || ! has_shortcode( $page->post_content, 'tribe_attendee_registration' ) ) {
+		if (
+			empty( $slug )
+			|| (
+				! empty( $page )
+				&& ! has_shortcode( $page->post_content, 'tribe_attendee_registration' )
+			)
+		) {
 			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
 		}
 
