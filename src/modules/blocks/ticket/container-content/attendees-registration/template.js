@@ -12,7 +12,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { LabelWithLink } from '@moderntribe/common/elements';
+import { LabelWithModal } from '@moderntribe/common/elements';
 import './style.pcss';
 
 const helperText = __( 'Save your ticket to enable attendee registration fields', 'event-tickets' );
@@ -28,14 +28,24 @@ const AttendeesRegistration = ( {
 }) => {
 	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
+	const iFrame = (
+		<iframe
+			className="tribe-editor__ticket__attendee-registration-modal-iframe"
+			src={ attendeeRegistrationURL }
+		>
+		</iframe>
+	);
+
 	return (
 		<div className="tribe-editor__ticket__attendee-registration">
-			<LabelWithLink
-				className="tribe-editor__ticket__attendee-registration-label-with-link"
+			<LabelWithModal
+				className="tribe-editor__ticket__attendee-registration-label-with-modal"
 				label={ label }
-				linkDisabled={ isDisabled }
-				linkHref={ attendeeRegistrationURL }
-				linkText={ linkText }
+				modalButtonDisabled={ isDisabled }
+				modalButtonLabel={ linkText }
+				modalClassName="tribe-editor__ticket__attendee-registration-modal"
+				modalContent={ iFrame }
+				modalTitle={ label }
 			/>
 			{ ! isCreated && (
 				<span className="tribe-editor__ticket__attendee-registration-helper-text">
