@@ -549,15 +549,28 @@ export const isTempSharedCapacityValid = createSelector(
 	( capacity ) => trim( capacity ) !== '' && ! isNaN( capacity ),
 );
 
+export const isZeroPriceValid = createSelector(
+	[ getTicketProvider, getTicketPrice ],
+	( provider, price ) => {
+		return parseInt( price, 10 ) > 0 || provider !== constants.TC;
+	},
+);
+
 export const isTicketValid = createSelector(
-	[ getTicketTempCapacityType, isTempTitleValid, isTempCapacityValid, isTempSharedCapacityValid ],
-	( capacityType, titleValid, capacityValid, sharedCapacityValid ) => {
+	[
+		getTicketTempCapacityType,
+		isTempTitleValid,
+		isTempCapacityValid,
+		isTempSharedCapacityValid,
+		isZeroPriceValid,
+	],
+	( capacityType, titleValid, capacityValid, sharedCapacityValid, zeroPriceValid ) => {
 		if ( capacityType === TICKET_TYPES[ UNLIMITED ] ) {
 			return titleValid;
 		} else if (	capacityType === TICKET_TYPES[ SHARED ] ) {
 			return titleValid && sharedCapacityValid;
 		}
-		return titleValid && capacityValid;
+		return titleValid && capacityValid && zeroPriceValid;
 	},
 );
 
