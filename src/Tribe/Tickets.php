@@ -595,39 +595,98 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_tickets( $post_id ) {}
 
 		/**
-		 * Get attendees by id and associated post type
-		 * or default to using $post_id
+		 * Get attendees for an event ID.
 		 *
-		 * @param int $post_id ID of parent "event" post
+		 * @param int $event_id Event post ID.
 		 *
-		 * @return array|mixed
+		 * @return array List of attendees.
 		 */
-		public function get_attendees_by_id( $post_id ) {}
+		public function get_attendees_by_id( $event_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return self::get_attendees_from_modules( $repository->by( 'event', $event_id )->all(), $event_id );
+		}
 
 		/**
-		 * Get all the attendees (sold tickets) for an event
+		 * Get attendees for an event ID.
 		 *
-		 * @abstract
+		 * @param int $event_id Event post ID.
 		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_post_id( $event_id ) {
+			return $this->get_attendees_by_id( $event_id );
+		}
+
+		/**
+		 * Get attendees for a ticket ID.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $ticket_id Ticket ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_product_id( $ticket_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return self::get_attendees_from_modules( $repository->by( 'ticket', $ticket_id )->all() );
+		}
+
+		/**
+		 * Get attendees for a ticket by order ID.
+		 *
+		 * @since 4.6
+		 *
+		 * @param int $order_id Order ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_order_id( $order_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return self::get_attendees_from_modules( $repository->by( 'order', $order_id )->all() );
+		}
+
+		/**
+		 * Get attendees for a ticket by attendee ID.
+		 *
+		 * @since 4.6
+		 *
+		 * @param int $attendee_id Attendee ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_attendee_id( $attendee_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return self::get_attendees_from_modules( $repository->by( 'id', $attendee_id )->all() );
+		}
+
+		/**
+		 * Get All Attendees by ticket/attendee ID
+		 *
+		 * @since 4.8.0
+		 *
+		 * @param int $attendee_id
+		 * @return array
+		 */
+		public function get_all_attendees_by_attendee_id( $attendee_id ) {
+			return $this->get_attendees_by_attendee_id( $attendee_id );
+		}
+
+		/**
+		 * Get attendees from provided query
+		 *
+		 * @param WP_Query $attendees_query
 		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
-		protected function get_attendees_by_post_id( $post_id ) {
-			$attendees_query = new WP_Query( array(
-				'posts_per_page' => - 1,
-				'post_type'      => $this->attendee_object,
-				'meta_key'       => $this->attendee_event_key,
-				'meta_value'     => $post_id,
-				'orderby'        => 'ID',
-				'order'          => 'ASC',
-			) );
-
-			if ( ! $attendees_query->have_posts() ) {
-				return array();
-			}
-
-			return $this->get_attendees( $attendees_query, $post_id );
-		}
+		protected function get_attendees( $attendees_query, $post_id ) {}
 
 		/**
 		 * Whether a specific attendee is valid toward inventory decrease or not.
@@ -641,63 +700,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function attendee_decreases_inventory( array $attendee ) {
 			return true;
 		}
-
-		/**
-		 * Get All Attendees by ticket/attendee ID
-		 *
-		 * @since 4.8.0
-		 *
-		 * @param int $attendee_id
-		 * @return array
-		 */
-		public function get_all_attendees_by_attendee_id( $attendee_id ) {
-			$attendees_query = new WP_Query( array(
-				'p'         => absint( $attendee_id ),
-				'post_type' => $this->attendee_object,
-			) );
-
-			if ( ! $attendees_query->have_posts() ) {
-				return array();
-			}
-
-			return $this->get_attendees( $attendees_query, $attendee_id );
-		}
-
-		/**
-		 * Get Attendees by ticket/attendee ID
-		 *
-		 * @param int $attendee_id
-		 * @return array
-		 */
-		protected function get_attendees_by_attendee_id( $attendee_id ) {
-			$attendees_query = new WP_Query( array(
-				'p'         => $attendee_id,
-				'post_type' => $this->attendee_object,
-			) );
-
-			if ( ! $attendees_query->have_posts() ) {
-				return array();
-			}
-
-			return $this->get_attendees( $attendees_query, $attendee_id );
-		}
-
-		/**
-		 * Get attendees by order id
-		 *
-		 * @param int $order_id
-		 * @return array
-		 */
-		protected function get_attendees_by_order_id( $order_id ) {}
-
-		/**
-		 * Get attendees from provided query
-		 *
-		 * @param WP_Query $attendees_query
-		 * @param int $post_id ID of parent "event" post
-		 * @return mixed
-		 */
-		protected function get_attendees( $attendees_query, $post_id ) {}
 
 		/**
 		 * Mark an attendee as checked in
@@ -847,7 +849,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * For Frontend Hooks, admin ones need to be loaded earlier
 		 *
-		 * @since  4.7.5
+		 * @since 4.7.5
 		 *
 		 * @return void
 		 */
