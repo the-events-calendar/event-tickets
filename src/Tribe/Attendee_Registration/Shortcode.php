@@ -1,7 +1,7 @@
 <?php
 /**
 * Provides shortcodes for the attendee registration templatee.
-* @since TBD
+* @since 4.10.2
 */
 class Tribe__Tickets__Attendee_Registration__Shortcode {
 	protected $shortcode_name = 'tribe_attendee_registration';
@@ -19,7 +19,7 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 	/**
 	 * Renders the shortcode AR page.
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return string
 	 */

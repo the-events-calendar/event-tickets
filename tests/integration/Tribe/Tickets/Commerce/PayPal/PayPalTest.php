@@ -2,11 +2,12 @@
 namespace Tribe\Tickets\Commerce\PayPal;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
+use Tribe__Post_Transient as Post_Transient;
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
 use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
-use Tribe__Post_Transient as Post_Transient;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
@@ -152,15 +153,20 @@ payment_gross={$total_in_cart}
 EOT;
 
 		tribe( 'tickets.data_api' );
+
 		/** @var PayPal $paypal */
-		$paypal  = tribe( 'tickets.commerce.paypal' );
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
 		/** @var Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
 		/** @var PDT $pdt */
 		$pdt = tribe( 'tickets.commerce.paypal.handler.pdt' );
 
 		$data = $pdt->parse_transaction_body( $body );
+
 		$gateway->set_raw_transaction_data( $data );
+
 		$parsed_transaction = $gateway->parse_transaction( $data );
 
 		$gateway->set_transaction_data( $parsed_transaction );
@@ -169,15 +175,15 @@ EOT;
 		/** @var Post_Transient $post_transient */
 		$post_transient = tribe( 'post-transient' );
 
-		$post_transient->delete( $event_1_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
-		$post_transient->delete( $event_2_id, \Tribe__Tickets__Tickets::ATTENDEES_CACHE );
+		$post_transient->delete( $event_1_id, Tickets::ATTENDEES_CACHE );
+		$post_transient->delete( $event_2_id, Tickets::ATTENDEES_CACHE );
 
-		$attendees = tribe_tickets_get_attendees( $event_1_id );
+		$attendees_event_1 = tribe_tickets_get_attendees( $event_1_id );
 
-		$this->assertCount( 2, $attendees, 'Attendee count for the event 1 should be 2' );
+		$this->assertCount( 2, $attendees_event_1, 'Attendee count for the event 1 should be 2' );
 
-		$attendees = tribe_tickets_get_attendees( $event_2_id );
+		$attendees_event_2 = tribe_tickets_get_attendees( $event_2_id );
 
-		$this->assertCount( 1, $attendees, 'Attendee count for the event 2 should be 2' );
+		$this->assertCount( 1, $attendees_event_2, 'Attendee count for the event 2 should be 2' );
 	}
 }

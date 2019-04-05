@@ -56,7 +56,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether or not the user is on a page using the attendee registration shortcode
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return boolean
 	 */
@@ -69,7 +69,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns a list of providers in the "cart" (AR page)
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return array
 	 */
@@ -77,7 +77,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		/**
 		 * Allow filtering of commerce providers in cart.
 		 *
-		 * @since TBD
+		 * @since 4.10.2
 		 *
 		 * @param array $providers List of commerce providers in cart.
 		 */
@@ -89,18 +89,17 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Returns whether or not the "cart" (AR page) has tickets from multiple providers in it
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @return boolean
 	 */
 	public function has_mixed_providers_in_cart() {
-		if ( empty( $this->providers_in_cart() ) ) {
+		$providers_in_cart = $this->providers_in_cart();
+		if ( empty( $providers_in_cart ) ) {
 			return false;
 		}
 
-		$provider_count = count( $this->providers_in_cart() );
-
-		return $provider_count > 1;
+		return 1 < count( $providers_in_cart );
 	}
 
 	/**
@@ -128,7 +127,11 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
 
-		// When we want to change where we send fiolks based on providers, use
+		if ( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === tribe_get_request_var( 'provider' ) ) {
+			return null;
+		}
+
+		// When we want to change where we send folks based on providers, use
 		// $this->has_mixed_providers_in_cart();
 
 		return $checkout_url;

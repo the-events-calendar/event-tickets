@@ -2473,7 +2473,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$storage = new Tribe__Tickets_Plus__Meta__Storage();
 			if ( ! empty( $redirect ) ) {
 				$key = $storage->store_temporary_data( $redirect );
-				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key ), $url );
+				/** @var \Tribe__Tickets__Commerce__PayPal__Main $commerce_paypal */
+				$commerce_paypal = tribe( 'tickets.commerce.paypal' );
+
+				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key, 'provider' => $commerce_paypal->attendee_object ), $url );
 			}
 
 			wp_safe_redirect( $url, 307 );

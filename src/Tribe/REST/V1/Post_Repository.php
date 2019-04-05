@@ -652,7 +652,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 * Allow filtering to always show attendees data on tickets in the REST API. This bypasses checks for Attendees
 		 * shortcode or block in the associated event/post content for the ticket.
 		 *
-		 * @since TBD
+		 * @since 4.10.2
 		 *
 		 * @param bool  $always_show_attendees_data Whether to always show attendees data.
 		 * @param array $data                       Ticket REST data.

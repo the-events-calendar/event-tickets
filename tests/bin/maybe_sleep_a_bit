@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Triggers a sleep of a specified duration each number of iterations.
+# Example usage:
+# 	`maybe_sleep_a_bit 5 20` will trigger a 5 seconds sleep each 20 iterations.
+# 	`maybe_sleep_a_bit 10 3` will trigger a 10 seconds sleep each 3 iterations.
+# 	`maybe_sleep_a_bit` will trigger a 5 seconds sleep each 10 iterations falling back to use default values.
+
+time=${1:-5}
+every=${2:-10}
+iterations=${ITERATIONS:-0}
+
+if (( $iterations % ${every} == 0 )); then
+   sleep ${time}
+fi
+
+iterations=$((iterations+1))
+
+echo ${iterations}

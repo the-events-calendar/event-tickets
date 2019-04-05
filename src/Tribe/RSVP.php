@@ -430,10 +430,10 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$user_id = get_current_user_id();
 
 		$rsvp_orders    = $this->tickets_view->get_event_rsvp_attendees( $event_id, $user_id );
-		$rsvp_order_ids = wp_list_pluck( $rsvp_orders, 'order_id' );
+		$rsvp_order_ids = array_map( 'absint', wp_list_pluck( $rsvp_orders, 'order_id' ) );
 
 		// This makes sure we don't save attendees for orders that are not from this current user and event
-		if ( ! in_array( $order_id, $rsvp_order_ids ) ) {
+		if ( ! in_array( (int) $order_id, $rsvp_order_ids, true ) ) {
 			return;
 		}
 
@@ -470,6 +470,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		//check if changing status will cause rsvp to go over capacity
 		$previous_order_status = get_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, true );
+
+		// The status changed from "not going" to "going", check if we have the capacity to support it.
 		if ( tribe_is_truthy( $attendee_order_status ) && in_array( $previous_order_status, $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
 			$capacity = tribe_tickets_get_capacity( $product_id );
 			$sales = (int) get_post_meta( $product_id, 'total_sales', true );
@@ -481,17 +483,17 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		$this->update_sales_and_stock_by_order_status( $order_id, $attendee_order_status, $product_id );
 
-		if ( ! is_null( $attendee_order_status ) ) {
+		if ( null !== $attendee_order_status ) {
 			update_post_meta( $order_id, self::ATTENDEE_RSVP_KEY, $attendee_order_status );
 		}
 
 		update_post_meta( $order_id, self::ATTENDEE_OPTOUT_KEY, (bool) $attendee_optout );
 
-		if ( ! is_null( $attendee_full_name ) ) {
+		if ( null !== $attendee_full_name ) {
 			update_post_meta( $order_id, $this->full_name, $attendee_full_name );
 		}
 
-		if ( ! is_null( $attendee_email ) ) {
+		if ( null !== $attendee_email ) {
 			update_post_meta( $order_id, $this->email, $attendee_email );
 		}
 	}
@@ -993,7 +995,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Try to kill the actual ticket/attendee post
 		$delete = wp_delete_post( $ticket_id, true );
-		if ( is_wp_error( $delete ) ) {
+		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
 
@@ -1007,7 +1009,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Trigger for tribe_get_cost if there are only RSVPs
 	 *
-	 * @since TBD
+	 * @since 4.10.2
 	 *
 	 * @param string $cost
 	 * @param int $post_id
@@ -1071,18 +1073,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$tickets = $this->get_tickets( $post->ID );
 
 		if ( empty( $tickets ) ) {
-			return;
+			return $content;
 		}
 
-		// Bail on Gutenberg
-		$template_overwrite = tribe( 'tickets.editor.template.overwrite' );
-
+		// test for blocks in content, but usually called after the blocks have been converted
 		if (
-			tribe_get_option( 'toggle_blocks_editor' )
-			&& (
-				has_blocks( $post->ID )
-				|| ! $template_overwrite->has_classic_editor( $post->ID )
-			)
+			has_blocks( $content )
+			|| false !== strpos( (string) $content, 'tribe-block ' )
 		) {
 			return $content;
 		}
