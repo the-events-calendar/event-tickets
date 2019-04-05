@@ -632,7 +632,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param int $event_id
 	 */
 	public function send_tickets_email( $order_id, $event_id = null ) {
-		$all_attendees = $this->get_attendees_by_id( $order_id );
+		$all_attendees = $this->get_attendees_by_order_id( $order_id );
 
 		$to_send = array();
 
@@ -750,7 +750,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function send_non_attendance_confirmation( $order_id, $event_id ) {
 
-		$attendees = $this->get_attendees_by_id( $order_id );
+		$attendees = $this->get_attendees_by_order_id( $order_id );
 
 		if ( empty( $attendees ) ) {
 			return;
@@ -982,7 +982,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		// Stock Adjustment handled by $this->update_stock_from_attendees_page()
 
 		//Store name so we can still show it in the attendee list
-		$attendees      = $this->get_attendees_by_id( $ticket_id, $this->ticket_object );
+		$attendees      = $this->get_attendees_by_ticket_id( $ticket_id );
 		$post_to_delete = get_post( $ticket_id );
 
 		foreach ( (array) $attendees as $attendee ) {

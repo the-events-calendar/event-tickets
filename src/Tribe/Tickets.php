@@ -595,17 +595,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_tickets( $post_id ) {}
 
 		/**
-		 * Get attendees for an event ID.
+		 * Get attendees for a Post ID / Post type.
 		 *
-		 * @param int $event_id Event post ID.
+		 * @param int         $post_id   Post ID.
+		 * @param null|string $post_type Post type.
 		 *
 		 * @return array List of attendees.
 		 */
-		public function get_attendees_by_id( $event_id ) {
-			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
-
-			return self::get_attendees_from_modules( $repository->by( 'event', $event_id )->all(), $event_id );
+		public function get_attendees_by_id( $post_id, $post_type = null ) {
+			return $this->get_attendees_by_post_id( $post_id );
 		}
 
 		/**
@@ -616,7 +614,26 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array List of attendees.
 		 */
 		protected function get_attendees_by_post_id( $event_id ) {
-			return $this->get_attendees_by_id( $event_id );
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return self::get_attendees_from_modules( $repository->by( 'event', $event_id )->all(), $event_id );
+		}
+
+		/**
+		 * Get attendees for a ticket ID.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $ticket_id Ticket ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_ticket_id( $ticket_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return self::get_attendees_from_modules( $repository->by( 'ticket', $ticket_id )->all() );
 		}
 
 		/**
@@ -629,26 +646,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array List of attendees.
 		 */
 		protected function get_attendees_by_product_id( $ticket_id ) {
-			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
-
-			return self::get_attendees_from_modules( $repository->by( 'ticket', $ticket_id )->all() );
+			return $this->get_attendees_by_ticket_id( $ticket_id );
 		}
 
 		/**
-		 * Get attendees for a ticket by order ID.
+		 * Get attendees for a ticket by order ID, optionally by ticket ID.
 		 *
 		 * @since 4.6
 		 *
-		 * @param int $order_id Order ID.
+		 * @param int|string $order_id  Order ID.
+		 * @param null|int   $ticket_id Ticket ID.
 		 *
 		 * @return array List of attendees.
 		 */
-		protected function get_attendees_by_order_id( $order_id ) {
+		protected function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees();
 
-			return self::get_attendees_from_modules( $repository->by( 'order', $order_id )->all() );
+			$repository->by( 'order', $order_id );
+
+			if ( $ticket_id ) {
+				$repository->by( 'ticket', $ticket_id );
+			}
+
+			return self::get_attendees_from_modules( $repository->all() );
 		}
 
 		/**

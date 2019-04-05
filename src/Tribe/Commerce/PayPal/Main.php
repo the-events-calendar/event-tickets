@@ -1029,7 +1029,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param int $post_id  Parent post ID (optional)
 	 */
 	public function send_tickets_email( $order_id, $post_id = null ) {
-		$all_attendees = $this->get_attendees_by_id( $order_id );
+		$all_attendees = $this->get_attendees_by_order_id( $order_id );
 
 		$to_send = array();
 
@@ -1417,7 +1417,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// @todo: should deleting an attendee replenish a ticket stock?
 
 		// Store name so we can still show it in the attendee list
-		$attendees      = $this->get_attendees_by_id( $event_id );
+		$attendees      = $this->get_attendees_by_post_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
 
 		foreach ( (array) $attendees as $attendee ) {
@@ -1568,75 +1568,24 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		switch ( $post_type ) {
-
-			case $this->attendee_object :
-
-				return $this->get_all_attendees_by_attendee_id( $post_id );
+			case $this->attendee_object:
+				return $this->get_attendees_by_attendee_id( $post_id );
 
 				break;
-
-			case 'tpp_order_hash' :
-
+			case 'tpp_order_hash':
 				return $this->get_attendees_by_order_id( $post_id );
 
 				break;
 			case $this->ticket_object:
-
 				return $this->get_attendees_by_ticket_id( $post_id );
 
 				break;
-			default :
-
+			default:
 				return $this->get_attendees_by_post_id( $post_id );
 
 				break;
 		}
 
-	}
-
-	/**
-	 * Get attendees by order id and, optionally, ticket ID.
-	 *
-	 * @since 4.7
-	 *
-	 * @param int $order_id An Order PayPal ID (hash)
-	 * @param int $product_id A ticket post ID
-	 *
-	 * @return array
-	 */
-	public function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
-		if ( empty( $order_id ) ) {
-			return array();
-		}
-
-		$args = array(
-			'posts_per_page' => - 1,
-			'post_type'      => $this->attendee_object,
-			'meta_query'     => array(
-				array(
-
-					'key'   => $this->order_key,
-					'value' => esc_attr( $order_id ),
-				),
-			),
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		);
-
-		if ( null !== $ticket_id ) {
-			$args['meta_query'][] = array(
-				'key'   => $this->attendee_product_key,
-				'value' => $ticket_id,
-			);
-		}
-
-		$attendees_query = new WP_Query( $args );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
-
-		return $this->get_attendees( $attendees_query, $order_id );
 	}
 
 	/**
@@ -2106,33 +2055,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns a list of attendees for an order.
-	 *
-	 * @since 4.7
-	 *
-	 * @param string $order The alphanumeric order identification string.
-	 *
-	 * @return array An array of WP_Post attendee objects.
-	 */
-	public function get_attendees_by_order( $order ) {
-		if ( empty( $order ) ) {
-			return false;
-		}
-
-		global $wpdb;
-
-		$attendees = $wpdb->get_col( $wpdb->prepare(
-			"SELECT DISTINCT( m.post_id )
-			FROM {$wpdb->postmeta} m
-			WHERE m.meta_key = %s
-			AND m.meta_value = %s",
-			$this->order_key, $order )
-		);
-
-		return empty( $attendees ) ? array() : array_map( 'get_post', $attendees );
-	}
-
-	/**
 	 * Whether the ticket is a PayPal one or not.
 	 *
 	 * @since 4.7
@@ -2491,32 +2413,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return $this->pending_attendees_by_ticket[ $ticket_id ];
-	}
-
-	/**
-	 * Returns all the attendees for a ticket.
-	 *
-	 * @since 4.7
-	 *
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return array An array of attendees for the ticket.
-	 */
-	public function get_attendees_by_ticket_id( $ticket_id ) {
-		$attendees_query = new WP_Query( array(
-			'posts_per_page' => - 1,
-			'post_type'      => $this->attendee_object,
-			'meta_key'       => self::ATTENDEE_PRODUCT_KEY,
-			'meta_value'     => $ticket_id,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		) );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
-
-		return $this->get_attendees( $attendees_query, $ticket_id );
 	}
 
 	/**
