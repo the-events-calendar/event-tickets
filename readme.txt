@@ -124,6 +124,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
+* Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
+* Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 
 = [4.10.3] TBD =
 
