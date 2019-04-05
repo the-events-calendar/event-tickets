@@ -1286,6 +1286,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * {@inheritdoc}
+	 *
 	 * Get all the attendees for post type. It returns an array with the
 	 * following fields:
 	 *
@@ -1300,30 +1302,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *     product_id
 	 *     check_in
 	 *     provider
-	 *
-	 * @param $attendees_query
-	 * @param $post_id
-	 *
-	 * @return array
-	 */
-	protected function get_attendees( $attendees_query, $post_id ) {
-		$attendees = array();
-
-		foreach ( $attendees_query->posts as $attendee ) {
-			$attendee_data = $this->get_attendee( $attendee, $post_id );
-
-			if ( ! $attendee_data ) {
-				continue;
-			}
-
-			$attendees[] = $attendee_data;
-		}
-
-		return $attendees;
-	}
-
-	/**
-	 * {@inheritdoc}
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {
 		if ( is_numeric( $attendee ) ) {

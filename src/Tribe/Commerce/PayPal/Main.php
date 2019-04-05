@@ -1589,44 +1589,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get all the attendees for post type. It returns an array with the
-	 * following fields:
-	 *
-	 *     order_id
-	 *     purchaser_name
-	 *     purchaser_email
-	 *     optout
-	 *     ticket
-	 *     attendee_id
-	 *     security
-	 *     product_id
-	 *     check_in
-	 *     provider
-	 *
-	 * @since 4.7
-	 *
-	 * @param $attendees_query
-	 * @param $post_id
-	 *
-	 * @return array
-	 */
-	protected function get_attendees( $attendees_query, $post_id ) {
-		$attendees = array();
-
-		foreach ( $attendees_query->posts as $attendee ) {
-			$attendee_data = $this->get_attendee( $attendee, $post_id );
-
-			if ( ! $attendee_data ) {
-				continue;
-			}
-
-			$attendees[] = $attendee_data;
-		}
-
-		return array_filter( $attendees );
-	}
-
-	/**
 	 * Retrieve only order related information
 	 * Important: On PayPal Ticket the order is the Attendee Object
 	 *
@@ -2548,6 +2510,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 	/**
 	 * {@inheritdoc}
+	 *
+	 * It returns an array with the
+	 * following fields:
+	 *
+	 *     order_id
+	 *     purchaser_name
+	 *     purchaser_email
+	 *     optout
+	 *     ticket
+	 *     attendee_id
+	 *     security
+	 *     product_id
+	 *     check_in
+	 *     provider
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {
 		if ( is_numeric( $attendee ) ) {

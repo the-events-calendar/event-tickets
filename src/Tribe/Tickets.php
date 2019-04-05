@@ -707,7 +707,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
-		protected function get_attendees( $attendees_query, $post_id ) {}
+		protected function get_attendees( $attendees_query, $post_id ) {
+			$attendees = [];
+
+			foreach ( $attendees_query->posts as $attendee ) {
+				$attendee_data = $this->get_attendee( $attendee, $post_id );
+
+				if ( ! $attendee_data ) {
+					continue;
+				}
+
+				$attendees[] = $attendee_data;
+			}
+
+			return $attendees;
+		}
 
 		/**
 		 * Whether a specific attendee is valid toward inventory decrease or not.
