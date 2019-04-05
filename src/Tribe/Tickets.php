@@ -987,20 +987,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				// if we haven't grabbed attendees from cache, then attempt to fetch attendees
 				if ( false === $attendees_from_cache && empty( $attendees ) ) {
-					foreach ( self::modules() as $class => $module ) {
-						$obj = call_user_func( array( $class, 'get_instance' ) );
-						if ( is_array( $attendees ) ) {
-							$attendees[] = $obj->get_attendees_by_post_id( $post_id );
-						}
-					}
+					/** @var Tribe__Tickets__Attendee_Repository $repository */
+					$repository = tribe_attendees();
 
-					$attendees = ! empty( $attendees ) ? call_user_func_array( 'array_merge', $attendees ) : array();
-
-					// Set the `ticket_exists` flag on attendees if the ticket they are associated with
-					// does not exist.
-					foreach ( $attendees as &$attendee ) {
-						$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
-					}
+					$attendees = self::get_attendees_from_modules( $repository->by( 'event', $post_id )->all(), $post_id );
 
 					if ( 0 !== $expire ) {
 						$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
