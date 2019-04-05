@@ -921,13 +921,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function get_event_attendees( $post_id ) {
 			$attendees = array();
+
 			/**
 			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
 			 *
 			 * @since 4.9
 			 *
-			 * @param boool $skip_empty_post If the empty post should be skiped or not
-			 * @param int   $post_id ID of the post being affected
+			 * @param bool $skip_empty_post If the empty post should be skipped or not
+			 * @param int  $post_id ID of the post being affected
 			 */
 			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id );
 
@@ -970,7 +971,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$expire = is_admin() ? (int) $admin_expire : (int) $expire;
 
 				$attendees_from_cache = false;
-
 
 				if ( 0 !== $expire ) {
 					$post_transient = tribe( 'post-transient' );
