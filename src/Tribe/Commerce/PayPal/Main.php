@@ -317,6 +317,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_tickets_tickets_in_cart', array( $this, 'get_tickets_in_cart' ), 10, 1 );
 		add_action( 'wp_loaded', array( $this, 'maybe_redirect_to_attendees_registration_screen' ), 1 );
 		add_action( 'wp_loaded', array( $this, 'maybe_delete_expired_products' ), 0 );
+		add_action( 'tickets_tpp_ticket_deleted', array( $this, 'update_stock_after_deletion' ), 10, 3 );
 	}
 
 	/**
@@ -2576,6 +2577,27 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return Tribe__Tickets__Commerce__PayPal__Stati::$completed === $order_status;
+	}
+
+	/**
+	 * Update Stock and Global Stock when deleting an Attendee
+	 *
+	 * @since TBD
+	 *
+	 * @param int $ticket_id the attendee id being deleted
+	 * @param int $post_id the post or event id for the attendee
+	 * @param int $product_id the ticket-product id in Tribe Commerce
+	 */
+	public function update_stock_after_deletion( $ticket_id, $post_id, $product_id ) {
+
+		$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+		$shared_capacity = false;
+		if ( $global_stock->is_enabled() ) {
+			$shared_capacity = true;
+		}
+
+		$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
+
 	}
 
 	/**
