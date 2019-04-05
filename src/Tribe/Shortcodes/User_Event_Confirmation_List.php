@@ -96,8 +96,8 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 		$keys = $this->build_escaped_key_list( $this->get_event_keys() );
 
 		$query = "
-			SELECT DISTINCT( ID )
-			FROM   {$wpdb->postmeta} AS match_user
+			SELECT ID
+			FROM {$wpdb->postmeta} AS match_user
 
 			JOIN {$wpdb->postmeta} AS match_events
 			  ON match_events.post_id = match_user.post_id
@@ -118,8 +118,15 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 				AND event_end_dates.meta_key = '_EventEndDateUTC'
 				AND event_end_dates.meta_value > %s
 			)
-
+			AND NOT EXISTS (
+				SELECT 1
+				  FROM wp_postmeta ticket_status
+				 WHERE ticket_status.meta_key = '_wp_trash_meta_status'
+				   AND ticket_status.post_id = match_events.post_id
+			)
+			GROUP BY ID, event_end_dates.meta_value
 			ORDER BY event_end_dates.meta_value
+
 			$limit
 		";
 
