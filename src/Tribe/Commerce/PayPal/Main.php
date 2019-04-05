@@ -1665,7 +1665,13 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$attendees = array();
 
 		foreach ( $attendees_query->posts as $attendee ) {
-			$attendees[] = $this->get_attendee( $attendee );
+			$attendee_data = $this->get_attendee( $attendee, $post_id );
+
+			if ( ! $attendee_data ) {
+				continue;
+			}
+
+			$attendees[] = $attendee_data;
 		}
 
 		return array_filter( $attendees );
@@ -2645,16 +2651,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns the data for an attendee.
-	 *
-	 * @since 4.7
-	 *
-	 * @param int|WP_Post $attendee An attendee post object or post ID.
-	 *
-	 * @return array|false Either an array of Attendee information or `false`
-	 *                     if the attendee could not be found.
+	 * {@inheritdoc}
 	 */
-	public function get_attendee( $attendee ) {
+	public function get_attendee( $attendee, $post_id = 0 ) {
 		if ( is_numeric( $attendee ) ) {
 			$attendee = get_post( $attendee );
 		}

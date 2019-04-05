@@ -1020,6 +1020,56 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Get attendee data for attendees from the associated modules.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $attendees Attendee objects or IDs.
+		 * @param int   $post_id   Parent post ID.
+		 *
+		 * @return array The attendee data for attendees.
+		 */
+		public static function get_attendees_from_modules( $attendees, $post_id = 0 ) {
+			$attendees_from_modules = [];
+
+			foreach ( $attendees as $attendee ) {
+				/** @var Tribe__Tickets__Tickets $provider */
+				$provider = tribe_tickets_get_ticket_provider( $attendee );
+
+				if ( ! $provider ) {
+					continue;
+				}
+
+				$attendee_data = $provider->get_attendee( $attendee, $post_id );
+
+				if ( ! $attendee_data ) {
+					continue;
+				}
+
+				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
+				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
+
+				$attendees_from_modules[] = $attendee_data;
+			}
+
+			return $attendees_from_modules;
+		}
+
+		/**
+		 * Get attendee data for attendee.
+		 *
+		 * @since TBD
+		 *
+		 * @param WP_Post|int $attendee Attendee object or ID.
+		 * @param int         $post_id  Parent post ID.
+		 *
+		 * @return array|false The attendee data or false if the ticket is invalid.
+		 */
+		public function get_attendee( $attendee, $post_id = 0 ) {
+			return false;
+		}
+
+		/**
 		 * Returns an array of attendees for the specified event, in relation to
 		 * this ticketing provider.
 		 *
