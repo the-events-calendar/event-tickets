@@ -60,6 +60,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'rsvp_status'       => [ $this, 'filter_by_rsvp_status' ],
 			'provider'          => [ $this, 'filter_by_provider' ],
 			'event_status'      => [ $this, 'filter_by_event_status' ],
+			'order'             => [ $this, 'filter_by_order' ],
 			'order_status'      => [ $this, 'filter_by_order_status' ],
 			'price_min'         => [ $this, 'filter_by_price_min' ],
 			'price_max'         => [ $this, 'filter_by_price_max' ],
@@ -314,6 +315,19 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'post_status',
 			$statuses
 		);
+	}
+
+	/**
+	 * Filters attendee to only get those related to orders with a specific ID.
+	 *
+	 * @since TVD
+	 *
+	 * @param string|array $order_id Order ID(s).
+	 */
+	public function filter_by_order( $order_id ) {
+		$order_ids = Tribe__Utils__Array::list_to_array( $order_id );
+
+		$this->by( 'meta_in', $this->attendee_to_order_keys(), $order_ids );
 	}
 
 	/**
