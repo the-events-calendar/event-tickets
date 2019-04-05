@@ -550,10 +550,8 @@ export const isTempSharedCapacityValid = createSelector(
 );
 
 export const isZeroPriceValid = createSelector(
-	[ getTicketProvider, getTicketPrice ],
-	( provider, price ) => {
-		return parseInt( price, 10 ) > 0 || provider !== constants.TC;
-	},
+	[ getTicketTempPrice, getTicketsProvider ],
+	( price, provider ) => 0 < parseInt( price, 10 ) || provider !== constants.TC_CLASS,
 );
 
 export const isTicketValid = createSelector(
@@ -566,9 +564,9 @@ export const isTicketValid = createSelector(
 	],
 	( capacityType, titleValid, capacityValid, sharedCapacityValid, zeroPriceValid ) => {
 		if ( capacityType === TICKET_TYPES[ UNLIMITED ] ) {
-			return titleValid;
+			return titleValid && zeroPriceValid;
 		} else if (	capacityType === TICKET_TYPES[ SHARED ] ) {
-			return titleValid && sharedCapacityValid;
+			return titleValid && sharedCapacityValid && zeroPriceValid;
 		}
 		return titleValid && capacityValid && zeroPriceValid;
 	},
