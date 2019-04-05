@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { createRef, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 /**
@@ -20,47 +20,60 @@ const label = __( 'Attendee Registration', 'event-tickets' );
 const linkTextAdd = __( '+ Add', 'event-tickets' );
 const linkTextEdit = __( 'Edit', 'event-tickets' );
 
-const AttendeesRegistration = ( {
-	attendeeRegistrationURL,
-	hasAttendeeInfoFields,
-	isCreated,
-	isDisabled,
-}) => {
-	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
+class AttendeesRegistration extends PureComponent {
+	static propTypes = {
+		attendeeRegistrationURL: PropTypes.string.isRequired,
+		hasAttendeeInfoFields: PropTypes.bool.isRequired,
+		isCreated: PropTypes.bool.isRequired,
+		isDisabled: PropTypes.bool.isRequired,
+		onIframeLoad: PropTypes.func.isRequired,
+	};
 
-	const iFrame = (
-		<iframe
-			className="tribe-editor__ticket__attendee-registration-modal-iframe"
-			src={ attendeeRegistrationURL }
-		>
-		</iframe>
-	);
+	constructor( props ) {
+		super( props );
+		this.iFrame = createRef();
+	}
 
-	return (
-		<div className="tribe-editor__ticket__attendee-registration">
-			<LabelWithModal
-				className="tribe-editor__ticket__attendee-registration-label-with-modal"
-				label={ label }
-				modalButtonDisabled={ isDisabled }
-				modalButtonLabel={ linkText }
-				modalClassName="tribe-editor__ticket__attendee-registration-modal"
-				modalContent={ iFrame }
-				modalTitle={ label }
-			/>
-			{ ! isCreated && (
-				<span className="tribe-editor__ticket__attendee-registration-helper-text">
-					{ helperText }
-				</span>
-			) }
-		</div>
-	);
-};
+	render() {
+		const {
+			attendeeRegistrationURL,
+			hasAttendeeInfoFields,
+			isCreated,
+			isDisabled,
+			onIframeLoad,
+		} = this.props;
 
-AttendeesRegistration.propTypes = {
-	attendeeRegistrationURL: PropTypes.string,
-	hasAttendeeInfoFields: PropTypes.bool,
-	isCreated: PropTypes.bool,
-	isDisabled: PropTypes.bool,
-};
+		const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
+
+		const iFrame = (
+			<iframe
+				className="tribe-editor__ticket__attendee-registration-modal-iframe"
+				onLoad={ () => onIframeLoad( this.iFrame.current.contentWindow ) }
+				ref={ this.iFrame }
+				src={ attendeeRegistrationURL }
+			>
+			</iframe>
+		);
+
+		return (
+			<div className="tribe-editor__ticket__attendee-registration">
+				<LabelWithModal
+					className="tribe-editor__ticket__attendee-registration-label-with-modal"
+					label={ label }
+					modalButtonDisabled={ isDisabled }
+					modalButtonLabel={ linkText }
+					modalClassName="tribe-editor__ticket__attendee-registration-modal"
+					modalContent={ iFrame }
+					modalTitle={ label }
+				/>
+				{ ! isCreated && (
+					<span className="tribe-editor__ticket__attendee-registration-helper-text">
+						{ helperText }
+					</span>
+				) }
+			</div>
+		);
+	}
+}
 
 export default AttendeesRegistration;
