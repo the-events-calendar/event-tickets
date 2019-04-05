@@ -33,10 +33,6 @@ class Tribe__Tickets__Attendee_Registration__Main {
 
 		$slug = $page ? $page->post_name : '';
 
-		if ( $page ) {
-			$slug = $page->post_name;
-		}
-
 		if (
 			empty( $slug )
 			|| (
