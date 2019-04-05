@@ -347,6 +347,8 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Add addition names a status might be known as
 	 *
+	 * @since TBD
+	 *
 	 * @param array $trigger_statuses an array of statues
 	 * @param array $additional_names an array of additional names a status might be known as
 	 *
