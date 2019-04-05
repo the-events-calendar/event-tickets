@@ -3,15 +3,15 @@
 namespace Tribe\Tickets\ORM\Attendees;
 
 use Tribe\Tickets\RSVPTest;
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_attendee_Maker;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_attendee_Maker;
-use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe__Tickets__Attendee_Repository as Attendee_Repository;
+use Tribe__Tickets__Data_API as Data_API;
 
 class CreateTest extends \Codeception\TestCase\WPTestCase {
 
-	use RSVP_attendee_Maker;
-	use PayPal_attendee_Maker;
+	use RSVP_Ticket_Maker;
+	use PayPal_Ticket_Maker;
 
 	/**
 	 * {@inheritdoc}
@@ -25,12 +25,15 @@ class CreateTest extends \Codeception\TestCase\WPTestCase {
 		} );
 
 		// Enable Tribe Commerce.
-		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true', 15 );
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
 			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
-		}, 15 );
+		} );
+
+		// Reset Data_API object so it sees Tribe Commerce.
+		tribe_singleton( 'tickets.data_api', new Data_API );
 	}
 
 	/**
