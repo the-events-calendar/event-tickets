@@ -352,12 +352,13 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * Filters the available value to allow coherent value when overselling.
 	 *
 	 * @since 4.7
+	 *
 	 * @since TBD - add check for Global Stock
 	 *
 	 * @param int                            $available
 	 * @param \Tribe__Tickets__Ticket_Object $ticket
-	 * @param int                          $sold
-	 * @param      int                       $stock
+	 * @param int                            $sold
+	 * @param int                            $stock
 	 *
 	 * @return int
 	 */
