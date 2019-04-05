@@ -267,6 +267,13 @@ $paypal_fields            = array(
 		'validation_type' => 'html',
 		'class'           => 'indent light-bordered',
 	),
+	'ticket-paypal-sandbox'           => array(
+		'type'            => 'checkbox_bool',
+		'label'           => esc_html__( 'PayPal Sandbox', 'event-tickets' ),
+		'tooltip'         => esc_html__( 'Enables PayPal Sandbox mode for testing.', 'event-tickets' ),
+		'default'         => false,
+		'validation_type' => 'boolean',
+	),
 	'ticket-commerce-currency-code'   => array(
 		'type'            => 'dropdown',
 		'label'           => esc_html__( 'Currency Code', 'event-tickets' ),
@@ -328,20 +335,12 @@ $paypal_fields            = array(
 		'validation_callback' => 'is_string',
 		'validation_type'     => 'textarea',
 	),
-	'ticket-paypal-sandbox'           => array(
-		'type'            => 'checkbox_bool',
-		'label'           => esc_html__( 'PayPal Sandbox', 'event-tickets' ),
-		'tooltip'         => esc_html__( 'Enables PayPal Sandbox mode for testing.', 'event-tickets' ),
-		'default'         => false,
-		'validation_type' => 'boolean',
-	),
 );
 
 if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
-	$paypal_fields = array_merge( $paypal_fields, array(
+	$ipn_fields = [
 		'ticket-paypal-notify-history' => array(
 			'type'            => 'wrapped_html',
-			'label'           => esc_html__( 'See your IPN Notification history', 'event-tickets' ),
 			'html'            => '<p>' .
 			                     sprintf(
 				                     esc_html__( 'You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s).', 'event-tickets' ),
@@ -350,6 +349,7 @@ if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
 			                     '</p>',
 			'size'            => 'medium',
 			'validation_type' => 'html',
+			'class'           => 'indent light-bordered',
 		),
 		'ticket-paypal-notify-url'     => array(
 			'type'            => 'text',
@@ -361,7 +361,9 @@ if ( defined( 'WP_DEBUG' ) && true === WP_DEBUG ) {
 			'default'         => home_url(),
 			'validation_type' => 'html',
 		),
-	) );
+	];
+
+	$paypal_fields = Tribe__Main::array_insert_after_key( 'ticket-paypal-ipn-config-status', $paypal_fields, $ipn_fields );
 }
 
 foreach ( $paypal_fields as $key => &$commerce_field ) {
