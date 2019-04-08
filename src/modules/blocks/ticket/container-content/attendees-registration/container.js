@@ -33,26 +33,37 @@ const mapStateToProps = ( state, ownProps ) => {
 		hasAttendeeInfoFields: selectors.getTicketHasAttendeeInfoFields( state, ownProps ),
 		isCreated,
 		isDisabled: selectors.isTicketDisabled( state, ownProps ) || ! isCreated,
+		isModalOpen: selectors.getTicketIsModalOpen( state, ownProps ),
 	};
 };
 
 const mapDispatchToProps = ( dispatch, ownProps ) => {
 	return {
+		onClick: () => {
+			dispatch( actions.setTicketIsModalOpen( ownProps.clientId, true ) );
+		},
+		onClose: () => {
+			dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
+		},
 		onIframeLoad: ( iframeWindow ) => {
-			// check if there are meta fields
-			const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
-			const hasFields = Boolean( metaFields.firstElementChild );
+			const handleUnload = () => {
+				// remove unload listener
+				removeUnloadListener( iframeWindow );
 
-			// if form was submitted and success == 1, dispatch action and close modal
-			const queryParameters = iframeWindow.location.search.substr( 1 ).split( '&' );
-			queryParameters.forEach( ( parameter ) => {
-				const [ key, value ] = parameter.split( '=' );
-				if ( key === 'success' && value == 1 ) {
-					console.log('here updating has attendee info fields,', hasFields);
-					dispatch( actions.setTicketHasAttendeeInfoFields( ownProps.clientId, hasFields ) );
-					// close modal
-				}
-			} );
+				// check if there are meta fields
+				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
+				const hasFields = Boolean( metaFields.firstElementChild );
+
+				// dispatch actions
+				dispatch( actions.setTicketHasAttendeeInfoFields( ownProps.clientId, hasFields ) );
+				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
+			};
+
+			const removeUnloadListener = ( win ) => {
+				win.removeEventListener( 'unload', handleUnload );
+			};
+
+			iframeWindow.addEventListener( 'unload', handleUnload );
 
 			// add target blank to "Learn more" link
 			const introLink = iframeWindow.document.querySelector( '.tribe-intro > a' );

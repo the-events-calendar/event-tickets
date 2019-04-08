@@ -26,7 +26,11 @@ class AttendeesRegistration extends PureComponent {
 		hasAttendeeInfoFields: PropTypes.bool.isRequired,
 		isCreated: PropTypes.bool.isRequired,
 		isDisabled: PropTypes.bool.isRequired,
+		isModalOpen: PropTypes.bool.isRequired,
+		onClick: PropTypes.func.isRequired,
+		onClose: PropTypes.func.isRequired,
 		onIframeLoad: PropTypes.func.isRequired,
+		onIframeLoadStart: PropTypes.func.isRequired,
 	};
 
 	constructor( props ) {
@@ -40,7 +44,11 @@ class AttendeesRegistration extends PureComponent {
 			hasAttendeeInfoFields,
 			isCreated,
 			isDisabled,
+			isModalOpen,
+			onClick,
+			onClose,
 			onIframeLoad,
+			onIframeLoadStart,
 		} = this.props;
 
 		const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
@@ -49,6 +57,7 @@ class AttendeesRegistration extends PureComponent {
 			<iframe
 				className="tribe-editor__ticket__attendee-registration-modal-iframe"
 				onLoad={ () => onIframeLoad( this.iFrame.current.contentWindow ) }
+				onLoadStart={ () => onIframeLoadStart( this.iFrame.current.contentWindow ) }
 				ref={ this.iFrame }
 				src={ attendeeRegistrationURL }
 			>
@@ -59,12 +68,15 @@ class AttendeesRegistration extends PureComponent {
 			<div className="tribe-editor__ticket__attendee-registration">
 				<LabelWithModal
 					className="tribe-editor__ticket__attendee-registration-label-with-modal"
+					isOpen={ isModalOpen }
 					label={ label }
 					modalButtonDisabled={ isDisabled }
 					modalButtonLabel={ linkText }
 					modalClassName="tribe-editor__ticket__attendee-registration-modal"
 					modalContent={ iFrame }
 					modalTitle={ label }
+					onClick={ onClick }
+					onClose={ onClose }
 				/>
 				{ ! isCreated && (
 					<span className="tribe-editor__ticket__attendee-registration-helper-text">
