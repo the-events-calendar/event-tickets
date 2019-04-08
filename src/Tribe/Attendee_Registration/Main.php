@@ -29,7 +29,9 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_slug() {
-		$slug = $this->get_attendee_registration_page_slug();
+		$page = $this->get_attendee_registration_page();
+
+		$slug = $page ? $page->post_name : '';
 
 		if (
 			empty( $slug )
@@ -142,24 +144,21 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	}
 
 	/**
-	 * get page slug from ticket-attendee-page-id or ticket-attendee-page-slug
-	 * in a backwards-compatible way.
+	 * Get the Attendee Registration page object in a backwards compatible way with slug / ID options.
 	 *
-	 * @return string|boolean the slug if found, otherwise boolean false.
+	 * @since TBD
+	 *
+	 * @return WP_Post|null The Attendee Registration page object if found, null if not found.
 	 */
-	public function get_attendee_registration_page_slug() {
+	public function get_attendee_registration_page() {
 		$id   = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-id', false );
 
 		if ( ! empty( $id ) ) {
-			$page = get_post( $id );
-
-			return ! empty( $page ) ? $page->post_name : false;
-		} else {
-			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
-			return $slug;
+			return get_post( $id );
 		}
 
-		// fallback
-		return false;
+		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
+
+		return get_page_by_path( $slug );
 	}
 }
