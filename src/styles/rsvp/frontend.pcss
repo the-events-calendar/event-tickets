@@ -7,43 +7,46 @@
 .tribe-block__rsvp {}
 
 .tribe-block__rsvp__ticket {
-	background: #f8faf9;
-	border: 2px solid #dfdfdf;
-	border-bottom-width: 0;
+	border: 1px solid #e1e3e6;
 	display: flex;
 	flex-wrap: wrap;
 	position: relative;
-	transition: flex 0.3s ease-out;
 	width: 100%;
 
-	&:last-child {
-		border-bottom-width: 2px;
+	@media (min-width: 600px) {
+		align-items: stretch;
+		flex-wrap: nowrap;
 	}
 }
 
 .tribe-block__rsvp__icon {
-	background: #fff;
-	border: 0;
-	color: #575757;
-	flex: 1 1 100px;
-	padding: 30px 15px;
-	text-align: center;
+	align-items: center;
+	background: #ffffff;
+	border-bottom: 1px dashed #b5bcc2;
+	color: #434343;
+	display: flex;
+	flex: none;
+	flex-direction: column;
+	font-size: 14px;
+	font-weight: bold;
+	line-height: 17px;
+	padding: 20px 17px;
+	width: 100%;
 
-	img,
-	svg {
-		width: 60px;
+	@media (min-width: 600px) {
+		border-bottom: none;
+		border-right: 1px dashed #b5bcc2;
+		padding: 24px 17px;
+		width: 84px;
 	}
 
-	@media only screen and (min-width: 576px) {
-		border-right: 2px dashed #dfdfdf;
+	svg {
+		margin-bottom: 7px;
 	}
 }
 
 .tribe-block__rsvp__content {
-	display: flex;
-	flex: 10 5 400px;
-	flex-direction: column;
-	transition: flex 0.3s ease-out;
+	flex: auto;
 }
 
 .tribe-block__rsvp__details__status {
