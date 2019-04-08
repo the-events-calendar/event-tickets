@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 /**
  * WordPress dependencies
  */
-import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -18,31 +17,10 @@ import {
 	AttendeesActionButton,
 	OrdersActionButton,
 } from '@moderntribe/tickets/blocks/tickets/action-buttons';
-import { ActionDashboard } from '@moderntribe/tickets/elements';
-import { Button } from '@moderntribe/common/elements';
+import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
 const confirmLabel = __( 'Add Tickets', 'event-tickets' );
-
-const TicketsWarningButton = ( { isWarningOpen, onClick } ) => {
-	const icon = isWarningOpen ? 'no' : 'info-outline';
-	const buttonText = isWarningOpen ? __( 'Hide Warning', 'event-tickets' ) : __( 'Warning', 'event-tickets' );
-
-	return (
-		<Button
-			className="tribe-editor__tickets__warning-button"
-			onClick={ onClick }
-		>
-			<Dashicon
-				className="tribe-editor__tickets__warning-button-icon"
-				icon={ icon }
-			/>
-			<span className="tribe-editor__tickets__warning-button-text">
-				{ buttonText }
-			</span>
-		</Button>
-	);
-};
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {
@@ -82,11 +60,15 @@ class TicketsDashboardAction extends PureComponent {
 			}
 		}
 		if ( hasRecurrenceRules ) {
+			const icon = this.state.isWarningOpen ? 'no' : 'info-outline';
+			const text = this.state.isWarningOpen ? __( 'Hide Warning', 'event-tickets' ) : __( 'Warning', 'event-tickets' );
 			actions.push(
-				<TicketsWarningButton
-					isWarningOpen={ this.state.isWarningOpen }
+				<WarningButton
+					icon={ icon }
 					onClick={ this.onWarningClick }
-				/>
+				>
+					{ text }
+				</WarningButton>
 			);
 		}
 		return actions;
