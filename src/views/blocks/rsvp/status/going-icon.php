@@ -27,11 +27,11 @@
                     <g id="Gridicon-/-checkmark" transform="translate(88.000000, 12.000000)">
                         <g id="gridicons-checkmark">
                             <rect id="Rectangle-path" x="0" y="0" width="20" height="20"></rect>
-                            <mask id="mask-2" fill="white">
+                            <mask id="mask-1" fill="white">
                                 <use xlink:href="#path-1"></use>
                             </mask>
                             <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-                            <g id="color-dark-gray-900" mask="url(#mask-2)" fill="#A2AAB2">
+                            <g id="color-dark-gray-900" mask="url(#mask-1)" fill="#A2AAB2">
                                 <rect id="light-gray-900" x="0" y="0" width="20" height="20"></rect>
                             </g>
                         </g>
