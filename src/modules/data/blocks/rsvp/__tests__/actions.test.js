@@ -30,6 +30,10 @@ describe( 'RSVP block actions', () => {
 			expect( actions.setRSVPIsSettingsLoading( true ) ).toMatchSnapshot();
 		} );
 
+		test( 'set RSVP is modal open', () => {
+			expect( actions.setRSVPIsModalOpen( true ) ).toMatchSnapshot();
+		} );
+
 		test( 'set RSVP going count', () => {
 			expect( actions.setRSVPGoingCount( 10 ) ).toMatchSnapshot();
 		} );
