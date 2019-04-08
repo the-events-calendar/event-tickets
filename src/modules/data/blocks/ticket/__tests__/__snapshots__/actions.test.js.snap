@@ -192,6 +192,26 @@ Object {
 }
 `;
 
+exports[`Ticket actions Ticket actions set ticket is modal open 1`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "isModalOpen": true,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_IS_MODAL_OPEN",
+}
+`;
+
+exports[`Ticket actions Ticket actions set ticket is modal open 2`] = `
+Object {
+  "payload": Object {
+    "clientId": "modern-tribe",
+    "isModalOpen": false,
+  },
+  "type": "@@MT/TICKETS/SET_TICKET_IS_MODAL_OPEN",
+}
+`;
+
 exports[`Ticket actions Ticket actions set ticket is selected 1`] = `
 Object {
   "payload": Object {

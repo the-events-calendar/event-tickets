@@ -73,6 +73,7 @@ Object {
         "hasChanges": false,
         "hasDurationError": false,
         "isLoading": false,
+        "isModalOpen": false,
         "isSelected": false,
         "provider": "",
         "sold": 0,
@@ -248,6 +249,7 @@ Object {
   "hasChanges": false,
   "hasDurationError": false,
   "isLoading": false,
+  "isModalOpen": false,
   "isSelected": false,
   "provider": "",
   "sold": 0,
@@ -292,6 +294,8 @@ exports[`Ticket block selectors Ticket selectors getTicketHasDurationError 1`] =
 exports[`Ticket block selectors Ticket selectors getTicketId 1`] = `0`;
 
 exports[`Ticket block selectors Ticket selectors getTicketIsLoading 1`] = `false`;
+
+exports[`Ticket block selectors Ticket selectors getTicketIsModalOpen 1`] = `false`;
 
 exports[`Ticket block selectors Ticket selectors getTicketIsSelected 1`] = `false`;
 
@@ -399,6 +403,7 @@ Object {
       "hasChanges": false,
       "hasDurationError": false,
       "isLoading": false,
+      "isModalOpen": false,
       "isSelected": false,
       "provider": "",
       "sold": 0,
@@ -461,6 +466,7 @@ Array [
     "hasChanges": false,
     "hasDurationError": false,
     "isLoading": false,
+    "isModalOpen": false,
     "isSelected": false,
     "provider": "",
     "sold": 0,
@@ -516,6 +522,7 @@ Object {
     "hasChanges": false,
     "hasDurationError": false,
     "isLoading": false,
+    "isModalOpen": false,
     "isSelected": false,
     "provider": "",
     "sold": 0,
@@ -575,6 +582,7 @@ Array [
     "hasChanges": false,
     "hasDurationError": false,
     "isLoading": false,
+    "isModalOpen": false,
     "isSelected": false,
     "provider": "",
     "sold": 0,
