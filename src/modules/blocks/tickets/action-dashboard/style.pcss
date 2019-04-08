@@ -1,31 +1,41 @@
-.tribe-editor__labeled-item__label {
+.tribe-editor__tickets__warning-button {
+	align-items: center;
+	display: flex;
+}
 
-	.tribe-editor__tickets__warning & {
-		color: #E7563B;
-		font-size: 15px;
-		font-weight: bold;
-		letter-spacing: 0.38px;
-		line-height: 18px;
+.tribe-editor__tickets__warning-button-text {
+	color: #E7563B;
+	font-size: 15px;
+	font-weight: bold;
+	letter-spacing: 0.38px;
+	line-height: 18px;
 
-		.tribe-editor__tickets--loading & {
-			color: #AEB4BB;
-		}
+	.tribe-editor__tickets--loading & {
+		color: #AEB4BB;
 	}
 }
 
-.tribe-editor__label-with-tooltip__tooltip-label {
-
-	.tribe-editor__tickets__warning & {
-		margin-left: 5px;
-	}
-}
-
-svg.tribe-editor__tickets__warning-tooltip-label {
-	width: 17px;
-	height: 17px;
+svg.tribe-editor__tickets__warning-button-icon {
 	fill: #E7563B;
+	height: 17px;
+	margin-right: 5px;
+	width: 17px;
 
 	.tribe-editor__tickets--loading & {
 		fill: #AEB4BB;
+	}
+}
+
+.tribe-editor__tickets__warning {
+	background-color: #f8f9fb;
+	bottom: -14px;
+	color: #545D66;
+	font-size: 15px;
+	line-height: 18px;
+	margin: 0 -14px 0;
+	position: relative;
+
+	@media (min-width: 600px) {
+		padding: 15px 28px;
 	}
 }

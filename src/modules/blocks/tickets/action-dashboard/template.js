@@ -96,9 +96,7 @@ class TicketsDashboardAction extends PureComponent {
 				/>
 				{ this.state.isWarningOpen && (
 					<div className="tribe-editor__tickets__warning">
-						<span className="tribe-editor__tickets__warning-text">
-							{ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
-						</span>
+						{ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
 					</div>
 				) }
 			</Fragment>
