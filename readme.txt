@@ -125,7 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.3] TBD =
 
-
+* Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
 
 = [4.10.2] 2019-04-01 =
 
