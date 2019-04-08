@@ -30,6 +30,12 @@ git_clone_required_plugins(){
 
 	  	git submodule update --recursive --init;
 
+	  	composer update --prefer-dist;
+
+	  	cd common;
+
+	  	composer update --prefer-dist;
+
 	  	cd ${plugins_folder}
 	done
 }
