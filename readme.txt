@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Tweak - Attendee registration fields configuration for block editor opens up in modal [123818]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
 
 = [4.10.3] TBD =
