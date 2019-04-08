@@ -226,6 +226,11 @@ export const getTicketIsLoading = createSelector(
 	( ticket ) => ticket.isLoading,
 );
 
+export const getTicketIsModalOpen = createSelector(
+	[ getTicket ],
+	( ticket ) => ticket.isModalOpen,
+);
+
 export const getTicketHasBeenCreated = createSelector(
 	[ getTicket ],
 	( ticket ) => ticket.hasBeenCreated,
