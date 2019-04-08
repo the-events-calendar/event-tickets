@@ -12,6 +12,7 @@
   "require-dev": {
     "lucatume/wp-browser": "^2.2.1",
     "codeception/codeception": "^2.5.5",
+    "phpunit/phpunit": "^6.5.14",
     "lucatume/function-mocker": "^1.0",
     "lucatume/function-mocker-le": "^1.0",
     "spatie/phpunit-snapshot-assertions": "^1.2",
