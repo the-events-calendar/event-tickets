@@ -121,11 +121,13 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Tweak - Move IPN settings together in ticket settings tab [122333]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
+* Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 
 = [4.10.3] TBD =
 
-
+* Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 
 = [4.10.2] 2019-04-01 =
 
