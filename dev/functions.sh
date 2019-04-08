@@ -32,9 +32,11 @@ git_clone_required_plugins(){
 
 	  	composer update --prefer-dist;
 
-	  	cd common;
+		if [[ "the-events-calendar" = $plugin_slug ]]
+	  		cd common;
 
-	  	composer update --prefer-dist;
+			composer update --prefer-dist;
+		fi;
 
 	  	cd ${plugins_folder}
 	done
