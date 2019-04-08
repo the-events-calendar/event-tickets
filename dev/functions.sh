@@ -32,7 +32,7 @@ git_clone_required_plugins(){
 
 	  	composer update --prefer-dist;
 
-		if [[ "the-events-calendar" = $plugin_slug ]]
+		if [[ $plugin_slug == "the-events-calendar" ]]
 	  		cd common;
 
 			composer update --prefer-dist;
