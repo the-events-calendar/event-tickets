@@ -21,7 +21,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 			return;
 		}
 
-		add_filter( 'admin_body_class', array( $this, 'admin_body_class' ) );
+		add_filter( 'admin_body_class', array( $this, 'filter_admin_body_class' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
@@ -33,14 +33,14 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 *
 	 * @return string
 	 */
-	public function admin_body_class( string $classes ) {
+	public function filter_admin_body_class( string $classes ) {
 		// if not on attendee registration page
-		if ( ! isset( $_GET[ 'page' ] ) || ! ( $_GET[ 'page' ] === 'attendee-registration' ) ) {
+		if ( tribe_get_request_var( 'page', '' ) ) {
 			return $classes;
 		}
 
 		// if tribe_events_modal is not set or not set to 1
-		if ( ! isset( $_GET[ 'tribe_events_modal' ] ) || ! $_GET[ 'tribe_events_modal' ] ) {
+		if ( tribe_get_request_var( 'tribe_events_modal', 0 ) ) {
 			return $classes;
 		}
 
