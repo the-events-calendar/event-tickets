@@ -125,15 +125,25 @@
 	&:hover,
 	&:focus {
 		background: #ffffff;
+		border: 1px solid #000000;
 		color: #000000;
 	}
 
 	&.tribe-active {
+		border: 1px solid #000000;
 		color: #000000;
 	}
 
 	&.tribe-inactive {
+		border: 1px solid #e1e3e6;
 		color: #a2aab2;
+
+		&:hover,
+		&:focus {
+			background: #ffffff;
+			border: 1px solid #545d66;
+			color: #545d66;
+		}
 	}
 
 	&[disabled="disabled"] {
@@ -153,6 +163,11 @@
 
 	.tribe-inactive & {
 		fill: #e1e3e6;
+	}
+
+	.tribe-inactive:hover &,
+	.tribe-inactive:focus & {
+		fill: #a2aab2;
 	}
 }
 

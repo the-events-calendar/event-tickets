@@ -22,9 +22,11 @@ var tribe_tickets_rsvp_block = {
 
 		// Add active classs to the current button
 		$button.addClass( 'tribe-active' );
+		$button.removeClass( 'tribe-inactive' );
 		$button.attr( 'disabled', 'disabled' );
 
 		// Remove the active class of the other button and disable it
+		$siblingEl.addClass( 'tribe-inactive' );
 		$siblingEl.removeClass( 'tribe-active' );
 		$siblingEl.removeAttr( 'disabled' );
 	};
