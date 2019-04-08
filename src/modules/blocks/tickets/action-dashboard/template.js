@@ -24,20 +24,25 @@ import './style.pcss';
 
 const confirmLabel = __( 'Add Tickets', 'event-tickets' );
 
-const TicketsWarningButton = ( { onClick } ) => (
-	<Button
-		className="tribe-editor__tickets__warning-button"
-		onClick={ onClick }
-	>
-		<Dashicon
-			className="tribe-editor__tickets__warning-button-icon"
-			icon="info-outline"
-		/>
-		<span className="tribe-editor__tickets__warning-button-text">
-			{ __( 'Warning', 'event-tickets' ) }
-		</span>
-	</Button>
-);
+const TicketsWarningButton = ( { isWarningOpen, onClick } ) => {
+	const icon = isWarningOpen ? 'no' : 'info-outline';
+	const buttonText = isWarningOpen ? __( 'Hide Warning', 'event-tickets' ) : __( 'Warning', 'event-tickets' );
+
+	return (
+		<Button
+			className="tribe-editor__tickets__warning-button"
+			onClick={ onClick }
+		>
+			<Dashicon
+				className="tribe-editor__tickets__warning-button-icon"
+				icon={ icon }
+			/>
+			<span className="tribe-editor__tickets__warning-button-text">
+				{ buttonText }
+			</span>
+		</Button>
+	);
+};
 
 class TicketsDashboardAction extends PureComponent {
 	static propTypes = {
@@ -77,7 +82,12 @@ class TicketsDashboardAction extends PureComponent {
 			}
 		}
 		if ( hasRecurrenceRules ) {
-			actions.push( <TicketsWarningButton onClick={ this.onWarningClick } /> );
+			actions.push(
+				<TicketsWarningButton
+					isWarningOpen={ this.state.isWarningOpen }
+					onClick={ this.onWarningClick }
+				/>
+			);
 		}
 		return actions;
 	};
