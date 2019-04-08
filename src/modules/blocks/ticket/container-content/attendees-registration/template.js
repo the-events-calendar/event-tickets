@@ -30,7 +30,6 @@ class AttendeesRegistration extends PureComponent {
 		onClick: PropTypes.func.isRequired,
 		onClose: PropTypes.func.isRequired,
 		onIframeLoad: PropTypes.func.isRequired,
-		onIframeLoadStart: PropTypes.func.isRequired,
 	};
 
 	constructor( props ) {
@@ -48,7 +47,6 @@ class AttendeesRegistration extends PureComponent {
 			onClick,
 			onClose,
 			onIframeLoad,
-			onIframeLoadStart,
 		} = this.props;
 
 		const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
@@ -57,7 +55,6 @@ class AttendeesRegistration extends PureComponent {
 			<iframe
 				className="tribe-editor__ticket__attendee-registration-modal-iframe"
 				onLoad={ () => onIframeLoad( this.iFrame.current.contentWindow ) }
-				onLoadStart={ () => onIframeLoadStart( this.iFrame.current.contentWindow ) }
 				ref={ this.iFrame }
 				src={ attendeeRegistrationURL }
 			>

@@ -2,11 +2,29 @@
 	margin-top: 30px;
 }
 
-.tribe-editor__rsvp__attendee-registration-label-with-link .tribe-editor__labeled-item__label {
+.tribe-editor__rsvp__attendee-registration-label-with-modal .tribe-editor__labeled-item__label {
 
 	.tribe-editor__rsvp-container--disabled & {
 		color: #AEB4BB;
 	}
+}
+
+.tribe-editor__rsvp__attendee-registration-modal {
+	bottom: auto;
+	height: 90%;
+	left: 50%;
+	max-height: none;
+	max-width: none;
+	right: auto;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 90%;
+}
+
+.tribe-editor__rsvp__attendee-registration-modal-iframe {
+	height: calc(100% - 56px + 16px);
+	margin: -16px;
+	width: calc(100% + 32px);
 }
 
 .tribe-editor__rsvp__attendee-registration-helper-text {
