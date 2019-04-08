@@ -31,7 +31,7 @@
                                 <use xlink:href="#path-2"></use>
                             </mask>
                             <use id="Shape" fill="#191E23" xlink:href="#path-2"></use>
-                            <g id="color-dark-gray-900" mask="url(#mask-2)" fill="#E1E3E6">
+                            <g id="color-dark-gray-900" class="tribe-block__rsvp__not-going-icon" mask="url(#mask-2)">
                                 <rect id="Rectangle" x="0" y="0" width="20" height="20"></rect>
                             </g>
                         </g>
