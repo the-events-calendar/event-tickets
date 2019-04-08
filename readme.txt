@@ -127,7 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.3] TBD =
 
-
+* Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 
 = [4.10.2] 2019-04-01 =
 
