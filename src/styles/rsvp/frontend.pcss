@@ -228,6 +228,11 @@
 	&:hover,
 	&:focus {
 		background: none;
+
+		&:before,
+		&:after {
+			background-color: #545d66;
+		}
 	}
 }
 
@@ -256,40 +261,60 @@
 .tribe-right {
 	flex: auto;
 
-	label {
-		font-weight: normal;
-	}
-
 	input {
-		margin-bottom: 15px;
-		padding: 10px;
-		max-width: 375px;
-		font-weight: 500;
 
 		&[type="text"],
 		&[type="email"] {
+			border-color: #e1e3e6;
+			color: #000000;
 			display: block;
+			font-size: 16px;
+			height: 40px;
+			line-height: 18px;
+			margin-bottom: 15px;
+			padding: 10px 15px;
 			width: 100%;
-			border-color: #e2e3e7;
-			color: #8d959b;
-		}
 
-		&:placeholder {
-			color: #8d959b;
+			&:placeholder {
+				color: #a2aab2;
+			}
+		}
+	}
+
+	label {
+		font-weight: normal;
+
+		&[for="tribe-tickets-attendees-list-optout"] {
+			align-items: flex-start;
+			display: flex;
+			padding-top: 10px;
+
+			input[type="checkbox"] {
+				flex: none;
+				margin-right: 10px;
+			}
+
+
 		}
 	}
 }
 
-.tribe-block__rsvp__message__success {
-	background: #ecfae5;
-	border: 1px solid #1bd800;
-	padding: 10px;
+.tribe-tickets-meta-option-label {
+	color: #000000;
+	font-size: 14px;
+	line-height: 18px;
 }
 
 .tribe-block__rsvp__message__error {
 	background: #ffebe8;
 	border: 1px solid #c00;
 	display: none;
+	padding: 10px;
+}
+
+.tribe-block__rsvp__message__success {
+	background: #ecfae5;
+	border: 1px solid #1bd800;
 	padding: 10px;
 }
 
