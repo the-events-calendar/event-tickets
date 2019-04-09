@@ -287,14 +287,12 @@
 		&[for="tribe-tickets-attendees-list-optout"] {
 			align-items: flex-start;
 			display: flex;
-			padding-top: 10px;
+			padding-top: 7px;
 
 			input[type="checkbox"] {
 				flex: none;
-				margin-right: 10px;
+				margin: 2px 10px 0 0;
 			}
-
-
 		}
 	}
 }
@@ -305,17 +303,24 @@
 	line-height: 18px;
 }
 
+.tribe-block__rsvp__message__error,
+.tribe-block__rsvp__message__success {
+	color: #000000;
+	font-size: 14px;
+	line-height: 18px;
+	padding: 20px;
+}
+
 .tribe-block__rsvp__message__error {
 	background: #ffebe8;
-	border: 1px solid #c00;
+	border: 1px solid #cc0000;
 	display: none;
-	padding: 10px;
 }
 
 .tribe-block__rsvp__message__success {
 	background: #ecfae5;
 	border: 1px solid #1bd800;
-	padding: 10px;
+	margin-top: 20px;
 }
 
 .tribe-block__rsvp__form__attendee-meta {

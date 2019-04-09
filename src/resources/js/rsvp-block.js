@@ -43,7 +43,8 @@ var tribe_tickets_rsvp_block = {
 	 */
 	my.events.handle_rsvp_response = function() {
 		var $button   = $( this );
-		var $ticket   = $button.closest( '.tribe-block__rsvp__ticket' );
+		var $block    = $button.closest( '.tribe-block__rsvp' );
+		var $ticket   = $block.find( '.tribe-block__rsvp__ticket' );
 		var ticket_id = $ticket.data( 'rsvp-id' );
 		var going     = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
 
@@ -64,6 +65,7 @@ var tribe_tickets_rsvp_block = {
 			TribeRsvp.ajaxurl,
 			params,
 			function( response ) {
+				$block.find( '.tribe-block__rsvp__message__success' ).remove();
 				var $form = $ticket.find( '.tribe-block__rsvp__form' );
 				$form.html( response.data.html );
 				if ( window.tribe_event_tickets_plus ) {
@@ -222,7 +224,8 @@ var tribe_tickets_rsvp_block = {
 
 					// Update templates
 					$ticket.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' ).replaceWith( response.data.remaining_html );
-					$ticket.find( '.tribe-block__rsvp__form' ).html( response.data.html );
+					$ticket.find( '.tribe-block__rsvp__form' ).empty()
+					$ticket.closest( '.tribe-block__rsvp' ).append( response.data.html );
 
 					if ( 0 === remaining ) {
 						// If there are no more RSVPs remaining we update the status section
