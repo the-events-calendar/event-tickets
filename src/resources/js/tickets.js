@@ -768,7 +768,7 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
 		} );
 
-		/* Toggle ticket table warninfg row */
+		/* Toggle ticket table warning row */
 		$document.on( 'click', '.ticket_available .dashicons-warning', function( e ) {
 			e.preventDefault();
 			e.stopPropagation();
