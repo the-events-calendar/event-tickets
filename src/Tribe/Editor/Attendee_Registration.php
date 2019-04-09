@@ -40,7 +40,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 		}
 
 		// if tribe_events_modal is not set or not set to 1
-		if ( tribe_get_request_var( 'tribe_events_modal', 0 ) ) {
+		if ( ! tribe_get_request_var( 'tribe_events_modal', 0 ) ) {
 			return $classes;
 		}
 
