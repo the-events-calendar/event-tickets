@@ -50,4 +50,44 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * Prints an HTML (unordered) list of attendance totals.
 	 */
 	abstract public function print_totals();
+
+	/**
+	 * Get Attendee Total Sold Tooltip
+	 *
+	 * @since TBD
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_total_sold_tooltip() {
+		ob_start();
+		?>
+		<div class="tribe-tooltip" aria-expanded="false">
+			<span class="dashicons dashicons-info"></span>
+			<div class="down">
+				<?php echo esc_html_x( 'No matter what the status is, Total Tickets Issued includes how many tickets that have gone through the order process.', 'total sold tooltip', 'event-tickets' ); ?><i></i>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+	/**
+	 * Get Attendee Total Completed Orders Tooltip
+	 *
+	 * @since TBD
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_total_conpleted_tooltip() {
+		ob_start();
+		?>
+		<div class="tribe-tooltip" aria-expanded="false">
+			<span class="dashicons dashicons-info"></span>
+			<div class="down">
+				<?php echo esc_html_x( 'This pertains to Orders that have been marked Completed.', 'total complete tooltip', 'event-tickets' ); ?><i></i>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
 }

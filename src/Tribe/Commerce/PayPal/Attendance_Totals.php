@@ -70,20 +70,20 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 * @since 4.7
 	 */
 	public function print_totals() {
-		$total_sold_label = esc_html_x( 'Total Tickets Issued:', 'attendee summary', 'event-tickets' );
-		$total_paid_label = esc_html_x( 'Complete:', 'attendee summary', 'event-tickets' );
+		$total_sold_label      = _x( 'Total Tickets Issued:', 'attendee summary', 'event-tickets' );
+		$total_complete_label  = _x( 'Complete:', 'attendee summary', 'event-tickets' );
+		$total_cancelled_label = _x( 'Cancelled:', 'attendee summary', 'event-tickets' );
 
 		$total_sold      = $this->get_total_sold();
-		$total_paid      = $this->get_total_complete();
+		$total_complete  = $this->get_total_complete();
 		$total_cancelled = $this->get_total_cancelled();
 
-		echo "
-			<ul>
-				<li> <strong>$total_sold_label&nbsp;</strong>$total_sold </li>
-				<li> $total_paid_label&nbsp;$total_paid </li>
-				<li> $total_cancelled_label $total_cancelled </li>
+		?><ul>
+				<li> <strong><?php esc_html_e( $total_sold_label ); ?></strong> <?php esc_html_e( $total_sold ); ?> <?php $this->get_total_sold_tooltip(); ?> </li>
+				<li> <?php esc_html_e( $total_complete_label . ' ' . $total_complete ); ?> <?php $this->get_total_completed_tooltip(); ?> </li>
+				<li> <?php esc_html_e( $total_cancelled_label . ' ' . $total_cancelled ); ?> </li>
 			</ul>
-		";
+		<?php
 	}
 
 	/**
