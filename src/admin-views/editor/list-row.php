@@ -1,14 +1,14 @@
 <?php
-$provider      = $ticket->provider_class;
-$provider_obj  = call_user_func( array( $provider, 'get_instance' ) );
-$inventory     = $ticket->inventory();
-$available     = $ticket->available();
-$capacity      = $ticket->capacity();
-$stock         = $ticket->stock();
-$needs_warning = false;
-$stk_warning   = false;
-$mode          = $ticket->global_stock_mode();
-$event         = $ticket->get_event();
+$provider          = $ticket->provider_class;
+$provider_obj      = call_user_func( array( $provider, 'get_instance' ) );
+$inventory         = $ticket->inventory();
+$available         = $ticket->available();
+$capacity          = $ticket->capacity();
+$stock             = $ticket->stock();
+$mode              = $ticket->global_stock_mode();
+$event             = $ticket->get_event();
+$mismatch_warning  = false;
+$mng_stock_warning = false;
 
 // If we don't have an event we should't even continue
 if ( ! $event ) {
@@ -21,11 +21,11 @@ if (
 ) {
 	$product = wc_get_product( $ticket->ID );
 	$shared_stock = new Tribe__Tickets__Global_Stock( $event->ID );
-	$needs_warning = (int) $inventory !== (int) $stock;
+	$mismatch_warning = (int) $inventory !== (int) $stock;
 
 	// We remove the warning flag when shared stock is used
 	if ( $shared_stock->is_enabled() && (int) $stock >= (int) $shared_stock->get_stock_level() ) {
-		$needs_warning = false;
+		$mismatch_warning = false;
 	}
 }
 
@@ -35,8 +35,10 @@ if (
 ) {
 	$product      = wc_get_product( $ticket->ID );
 	$manage_stock = $product->get_manage_stock();
-	$stk_warning  = $manage_stock ? false : true;
+	$mng_stock_warning  = $manage_stock ? false : true;
 }
+
+$needs_warning = $mismatch_warning || $mng_stock_warning;
 
 ?>
 <tr class="<?php echo esc_attr( $provider ); ?> is-expanded" data-ticket-order-id="order_<?php echo esc_attr( $ticket->ID ); ?>" data-ticket-type-id="<?php echo esc_attr( $ticket->ID ); ?>">
@@ -94,13 +96,13 @@ if (
 
 	<td class="ticket_available">
 		<span class='tribe-mobile-only'><?php esc_html_e( 'Available:', 'event-tickets' ); ?></span>
-		<?php if ( $needs_warning ) : ?>
-			<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'The number of Complete ticket sales does not match the number of attendees. Please check the Attendees list and adjust ticket stock in WooCommerce as needed.', 'event-tickets' ) ?>"></span>
-		<?php endif; ?>
-		<?php if ( $stk_warning ) : ?>
-			<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'Stock management is disabled. Enable it on the related Woocommerce product\'s inventory settings.', 'event-tickets' ) ?>"></span>
-		<?php endif; ?>
 		<?php tribe_tickets_get_readable_amount( $available, $mode, true ); ?>
+		<?php if ( $mismatch_warning ) : ?>
+			<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'The number of Complete ticket sales does not match the number of attendees. Click to view more information.', 'event-tickets' ) ?>"></span>
+		<?php endif; ?>
+		<?php if ( $mng_stock_warning ) : ?>
+			<span class="dashicons dashicons-warning required" title="<?php esc_attr_e( 'Stock management is disabled. Click to view more information.', 'event-tickets' ) ?>"></span>
+		<?php endif; ?>
 	</td>
 
 	<td class="ticket_edit">
@@ -115,3 +117,19 @@ if (
 		?>
 	</td>
 </tr>
+<?php if ( $needs_warning ) : ?>
+		<tr class="warning_row">
+			<td colspan="5">
+				<?php if ( $mismatch_warning ) : ?>
+					<p>
+						<span class="required"><?php _e( 'The number of Complete ticket sales does not match the number of attendees. Please check the <a href="' . tribe( 'tickets.attendees' )->get_report_link( $event ) . '">Attendees list</a> and adjust ticket stock in WooCommerce as needed.', 'event-tickets' ) ?></span>
+					</p>
+				<?php endif; ?>
+				<?php if ( $mng_stock_warning ) : ?>
+					<p>
+						<span class="required"><?php _e( '"Unlimited" will be displayed unless you enable the WooCommerce\'s "Manage stock" setting. You can do so <a class="required" href="' . esc_url( $ticket->admin_link ) . '">here</a>.', 'event-tickets' ) ?></span>
+					</p>
+				<?php endif; ?>
+			</td>
+		</tr>
+<?php endif; ?>

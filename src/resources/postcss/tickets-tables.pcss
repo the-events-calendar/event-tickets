@@ -16,6 +16,24 @@
 
 	tr {
 		background-color: #fff;
+
+		&.warning_row {
+			display: none;
+
+			&.show {
+				display: table-row;
+			}
+
+			a {
+				color: inherit;
+				text-decoration: underline;
+
+				&:hover,
+				&:active {
+					color: #a00;
+				}
+			}
+		}
 	}
 
 	tr td {

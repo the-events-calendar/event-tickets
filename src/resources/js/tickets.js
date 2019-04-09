@@ -768,6 +768,25 @@ var ticketHeaderImage = window.ticketHeaderImage || {};
 			$( document.getElementById( 'tribe_ticket_header_image_id' ) ).val( '' );
 		} );
 
+		/* Toggle ticket table warninfg row */
+		$document.on( 'click', '.ticket_available .dashicons-warning', function( e ) {
+			e.preventDefault();
+			e.stopPropagation();
+			var $tog = $( this );
+			var $row = $tog.closest( 'tr' );
+			var $warn_row = $row.next('tr.warning_row');
+
+			if ( ! $warn_row ) {
+				return;
+			}
+
+			if ( $warn_row.hasClass( 'show' ) ) {
+				$warn_row.removeClass( 'show' );
+			} else {
+				$warn_row.addClass( 'show' );
+			}
+		});
+
 		$document.ready( function() {
 			obj.setupPanels();
 		} );
