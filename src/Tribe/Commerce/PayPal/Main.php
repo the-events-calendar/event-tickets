@@ -1018,7 +1018,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 			tribe_exit();
 		}
-}
+	}
 
 	/**
 	 * Sends ticket email

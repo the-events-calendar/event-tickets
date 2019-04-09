@@ -8,6 +8,7 @@ use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use Tribe__Tickets__Data_API as Data_API;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
@@ -38,11 +39,16 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 			'post',
 		] );
 
-		add_filter( 'tribe_tickets_get_modules', function ( array $modules ) {
-			$modules[ \Tribe__Tickets__Commerce__PayPal__Main::class ] = 'Tribe Commerce';
+		// Enable Tribe Commerce.
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
+			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = tribe( 'tickets.commerce.paypal' )->plugin_name;
 
 			return $modules;
 		} );
+
+		// Reset Data_API object so it sees Tribe Commerce.
+		tribe_singleton( 'tickets.data_api', new Data_API );
 	}
 
 	public function dont_die() {
