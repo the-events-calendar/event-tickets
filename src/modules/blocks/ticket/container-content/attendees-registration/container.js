@@ -46,6 +46,10 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 			dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 		},
 		onIframeLoad: ( iframeWindow ) => {
+			const removeUnloadListener = ( win ) => {
+				win.removeEventListener( 'unload', handleUnload );
+			};
+
 			const handleUnload = () => {
 				// remove unload listener
 				removeUnloadListener( iframeWindow );
@@ -57,10 +61,6 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				// dispatch actions
 				dispatch( actions.setTicketHasAttendeeInfoFields( ownProps.clientId, hasFields ) );
 				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
-			};
-
-			const removeUnloadListener = ( win ) => {
-				win.removeEventListener( 'unload', handleUnload );
 			};
 
 			iframeWindow.addEventListener( 'unload', handleUnload );

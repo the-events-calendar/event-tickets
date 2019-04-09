@@ -48,6 +48,10 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 			dispatch( actions.setRSVPIsModalOpen( false ) );
 		},
 		onIframeLoad: ( iframeWindow ) => {
+			const removeUnloadListener = ( win ) => {
+				win.removeEventListener( 'unload', handleUnload );
+			};
+
 			const handleUnload = () => {
 				// remove unload listener
 				removeUnloadListener( iframeWindow );
@@ -59,10 +63,6 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				// dispatch actions
 				dispatch( actions.setRSVPHasAttendeeInfoFields( hasFields ) );
 				dispatch( actions.setRSVPIsModalOpen( false ) );
-			};
-
-			const removeUnloadListener = ( win ) => {
-				win.removeEventListener( 'unload', handleUnload );
 			};
 
 			iframeWindow.addEventListener( 'unload', handleUnload );
