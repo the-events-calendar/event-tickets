@@ -858,6 +858,7 @@ class Tribe__Tickets__REST__V1__Post_Repository
 			'report_link',
 			'frontend_link',
 			'provider_class',
+			'menu_order',
 			'start_date',
 			'start_time',
 			'end_date',
