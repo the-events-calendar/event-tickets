@@ -209,11 +209,13 @@ export function* setTicketInitialState( action ) {
 	}
 
 	yield call( handleTicketDurationError, clientId );
+	yield fork( saveTicketWithPostSave, clientId );
 }
 
 export function* setBodyDetails( clientId ) {
 	const body = new FormData();
 	const props = { clientId };
+	const rootClientId = wpSelect( 'core/editor' ).getBlockRootClientId( clientId );
 	const ticketProvider = yield select( selectors.getTicketProvider, props );
 	const ticketsProvider = yield select( selectors.getTicketsProvider );
 
@@ -227,6 +229,7 @@ export function* setBodyDetails( clientId ) {
 	body.append( 'end_date', yield select( selectors.getTicketTempEndDate, props ) );
 	body.append( 'end_time', yield select( selectors.getTicketTempEndTime, props ) );
 	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
+	body.append( 'menu_order', wpSelect( 'core/editor' ).getBlockIndex( clientId, rootClientId ) )
 
 	const capacityType = yield select( selectors.getTicketTempCapacityType, props );
 	const capacity = yield select( selectors.getTicketTempCapacity, props );
@@ -825,11 +828,13 @@ export function* saveTicketWithPostSave( clientId ) {
 			// Create channel for use
 			saveChannel = yield call( createWPEditorSavingChannel );
 
-			// Wait for channel to save
-			yield take( saveChannel );
+			while ( true ) {
+				// Wait for channel to save
+				yield take( saveChannel );
 
-			// Update when saving
-			yield call( updateTicket, { payload: { clientId } } );
+				// Update when saving
+				yield call( updateTicket, { payload: { clientId } } );
+			}
 		}
 	} catch ( error ) {
 		console.error( error );
@@ -908,8 +913,6 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 				// Handle ticket duration error
 				call( handleTicketDurationError, clientId ),
 			] );
-
-			yield fork( saveTicketWithPostSave, clientId );
 		}
 	} catch ( error ) {
 		// ¯\_(ツ)_/¯
