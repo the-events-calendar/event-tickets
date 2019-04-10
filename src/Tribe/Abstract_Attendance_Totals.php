@@ -99,13 +99,13 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 			'direction' => 'down'
 		];
 
-		$args = wp_parse_args( $args, $default_args );
+		$merged_args = wp_parse_args( $args, $default_args );
 
 		ob_start();
 		?>
 		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-<?php esc_attr_e( $args[ 'icon' ] ); ?> <?php esc_attr_e( $args[ 'additional_classes' ] ); ?>"></span>
-			<div class="<?php esc_attr_e( $args[ 'direction' ] ); ?>">
+			<span class="dashicons dashicons-<?php esc_attr_e( $merged_args[ 'icon' ] ); ?> <?php esc_attr_e( $merged_args[ 'additional_classes' ] ); ?>"></span>
+			<div class="<?php esc_attr_e( $merged_args[ 'direction' ] ); ?>">
 				<?php if ( is_array( $message ) ) {
 					foreach( $message as $mess ) { ?>
 						<p>
@@ -120,6 +120,17 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 			</div>
 		</div>
 		<?php
-		return ob_get_clean();
+		$html = ob_get_clean();
+
+		/**
+		 * Allow us to filter the tooltip output
+		 *
+		 * @since  TBD
+		 *
+		 * @param string $html The tooltip HTML
+		 * @param array|string $message array of messages or single message as string
+		 * @param array $args extra arguments, defaults include icon, classes, and direction
+		 */
+		return apply_filters( 'tribe_tooltip_html', $html, $message, $args );
 	}
 }
