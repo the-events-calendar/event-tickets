@@ -879,7 +879,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				if ( ! $updating_attendee ) {
 					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
-					update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $post_id );
+					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
 					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 					update_post_meta( $attendee_id, $this->order_key, $order_id );
 					$attendee_optout = Tribe__Utils__Array::get( $attendee_optouts, $product_id, false );
@@ -1589,6 +1589,26 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * {@inheritdoc}
+	 */
+	protected function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
+		if ( ! is_numeric( $order_id ) ) {
+			return parent::get_attendees_by_order_id( $order_id, $ticket_id );
+		}
+
+		$find_by_args = [
+			'post_id'   => $order_id,
+			'ticket_id' => [],
+		];
+
+		if ( $ticket_id ) {
+			$find_by_args['ticket_id'] = (array) $ticket_id;
+		}
+
+		return Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
+	}
+
+	/**
 	 * Retrieve only order related information
 	 * Important: On PayPal Ticket the order is the Attendee Object
 	 *
@@ -1802,7 +1822,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$args = array(
 			'post_type' => 'tribe_events',
 			'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
-			'event_id' => get_post_meta( $post_id, self::ATTENDEE_EVENT_KEY, true ),
+			'event_id' => get_post_meta( $post_id, $this->attendee_event_key, true ),
 		);
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
@@ -2492,9 +2512,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.10.2
 	 *
-	 * @param object $global_stock the object of Tribe__Tickets__Global_Stock
-	 * @param int    $qty          the quanitity to modify stock
-	 * @param bool   $increase     true or false to increase stock, default is false
+	 * @param Tribe__Tickets__Global_Stock $global_stock The global stock object.
+	 * @param int                          $qty          The quantity to modify stock.
+	 * @param bool                         $increase     Whether to increase stock, default is false.
 	 */
 	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
 
@@ -2536,6 +2556,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
 		$security     = get_post_meta( $attendee->ID, $this->security_code, true );
+		$order_id     = get_post_meta( $attendee->ID, $this->order_key, true );
 		$product_id   = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
 		$optout       = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
 		$status       = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
@@ -2582,6 +2603,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
 			'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
 			'order_id'      => $attendee->ID,
+			'order_hash'    => $order_id,
 			'ticket_id'     => $ticket_unique_id,
 			'qr_ticket_id'  => $attendee->ID,
 			'security_code' => $security,
