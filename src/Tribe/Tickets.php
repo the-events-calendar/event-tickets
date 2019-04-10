@@ -231,6 +231,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $order_object = '';
 
 		/**
+		 * Name of the CPT that holds Attendees.
+		 *
+		 * @var string
+		 */
+		public $attendee_object = '';
+
+		/**
+		 * Meta key that relates Attendees and Events.
+		 *
+		 * @var string
+		 */
+		public $attendee_event_key = '';
+
+		/**
 		 * Meta key that relates Attendees and Products.
 		 *
 		 * @var string
