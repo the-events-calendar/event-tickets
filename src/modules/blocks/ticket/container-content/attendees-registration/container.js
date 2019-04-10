@@ -45,14 +45,32 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 		onClose: () => {
 			dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 		},
-		onIframeLoad: ( iframeWindow ) => {
-			const removeUnloadListener = ( win ) => {
-				win.removeEventListener( 'unload', handleUnload );
+		onIframeLoad: ( iframe ) => {
+			const iframeWindow = iframe.contentWindow;
+
+			// show overlay
+			const showOverlay = () => {
+				console.log(iframe);
+				console.log(iframe.nextSibling);
+				console.log(iframe.nextSibling.classList);
+				iframe.nextSibling.classList.add( 'tribe-editor__ticket__attendee-registration-modal-overlay--show' );
+				console.log(iframe.nextSibling.classList);
 			};
 
+			// add event listener for form submit
+			const form = iframeWindow.document.querySelector( '#event-tickets-attendee-information' );
+			form.addEventListener( 'submit', showOverlay )
+
+			// remove listeners
+			const removeListeners = () => {
+				iframeWindow.removeEventListener( 'unload', handleUnload );
+				form.removeEventListener( 'submit', showOverlay );
+			};
+
+			// handle unload on iframe unload
 			const handleUnload = () => {
-				// remove unload listener
-				removeUnloadListener( iframeWindow );
+				// remove listeners
+				removeListeners( iframeWindow );
 
 				// check if there are meta fields
 				const metaFields = iframeWindow.document.querySelector( '#tribe-tickets-attendee-sortables' );
@@ -63,6 +81,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 				dispatch( actions.setTicketIsModalOpen( ownProps.clientId, false ) );
 			};
 
+			// add handler to iframe window unload
 			iframeWindow.addEventListener( 'unload', handleUnload );
 
 			// add target blank to "Learn more" link

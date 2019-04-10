@@ -21,10 +21,38 @@
 	width: 90%;
 }
 
-.tribe-editor__ticket__attendee-registration-modal-iframe {
+.tribe-editor__ticket__attendee-registration-modal-content {
 	height: calc(100% - 56px + 16px);
 	margin: -16px;
+	position: relative;
 	width: calc(100% + 32px);
+}
+
+.tribe-editor__ticket__attendee-registration-modal-iframe {
+	display: block;
+	height: 100%;
+	width: 100%;
+}
+
+.tribe-editor__ticket__attendee-registration-modal-overlay {
+	background-color: rgba(0, 0, 0, 0.3);
+	display: none;
+	height: 100%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+
+	.components-spinner {
+		float: none;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
+	}
+}
+
+.tribe-editor__ticket__attendee-registration-modal-overlay--show {
+	display: block;
 }
 
 .tribe-editor__ticket__attendee-registration-helper-text {

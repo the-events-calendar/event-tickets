@@ -7,6 +7,7 @@ import PropTypes from 'prop-types';
 /**
  * Wordpress dependencies
  */
+import { Spinner } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -51,14 +52,19 @@ class AttendeesRegistration extends PureComponent {
 
 		const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
-		const iFrame = (
-			<iframe
-				className="tribe-editor__ticket__attendee-registration-modal-iframe"
-				onLoad={ () => onIframeLoad( this.iFrame.current.contentWindow ) }
-				ref={ this.iFrame }
-				src={ attendeeRegistrationURL }
-			>
-			</iframe>
+		const modalContent = (
+			<div className="tribe-editor__ticket__attendee-registration-modal-content">
+				<iframe
+					className="tribe-editor__ticket__attendee-registration-modal-iframe"
+					onLoad={ () => onIframeLoad( this.iFrame.current ) }
+					ref={ this.iFrame }
+					src={ attendeeRegistrationURL }
+				>
+				</iframe>
+				<div className="tribe-editor__ticket__attendee-registration-modal-overlay">
+					<Spinner />
+				</div>
+			</div>
 		);
 
 		return (
@@ -70,7 +76,7 @@ class AttendeesRegistration extends PureComponent {
 					modalButtonDisabled={ isDisabled }
 					modalButtonLabel={ linkText }
 					modalClassName="tribe-editor__ticket__attendee-registration-modal"
-					modalContent={ iFrame }
+					modalContent={ modalContent }
 					modalTitle={ label }
 					onClick={ onClick }
 					onClose={ onClose }
