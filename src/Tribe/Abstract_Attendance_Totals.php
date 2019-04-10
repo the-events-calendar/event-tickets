@@ -59,16 +59,9 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_sold_tooltip() {
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html_x( 'No matter what the status is, Total Tickets Issued includes how many tickets that have gone through the order process.', 'total sold tooltip', 'event-tickets' ); ?><i></i>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+		$message = _x( 'No matter what the status is, Total Tickets Issued includes how many tickets that have gone through the order process.', 'total sold tooltip', 'event-tickets' );
+
+		return $this->build_tooltip( $message, 'required' );
 	}
 
 	/**
@@ -78,13 +71,52 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 *
 	 * @return string a string of html for the tooltip
 	 */
-	public function get_total_conpleted_tooltip() {
+	public function get_total_completed_tooltip() {
+		$message = _x( 'This pertains to Orders that have been marked Completed.', 'total complete tooltip', 'event-tickets' );
+
+		return $this->build_tooltip( $message, 'required' );
+	}
+
+	/**
+	 * Factory method for tooltips
+	 *
+	 * @since TBD
+	 *
+	 * @TODO: this should get moved to common?
+	 *
+	 * @param array|string $message array of messages or single message as string
+	 * @param array $args extra arguments, defaults include icon, classes, and direction
+	 * @return string a string of html for the tooltip
+	 */
+	private function build_tooltip( $message, $args = [] ) {
+		if ( empty( $message ) ) {
+			return;
+		}
+
+		$default_args = [
+			'classes'   => '',
+			'icon'      => 'info',
+			'direction' => 'down'
+		];
+
+		$args = wp_parse_args( $args, $default_args );
+
 		ob_start();
 		?>
 		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html_x( 'This pertains to Orders that have been marked Completed.', 'total complete tooltip', 'event-tickets' ); ?><i></i>
+			<span class="dashicons dashicons-<?php esc_attr_e( $args[ 'icon' ] ); ?> <?php esc_attr_e( $args[ 'additional_classes' ] ); ?>"></span>
+			<div class="<?php esc_attr_e( $args[ 'direction' ] ); ?>">
+				<?php if ( is_array( $message ) ) {
+					foreach( $message as $mess ) { ?>
+						<p>
+							<span><?php echo wp_kses_post( $mess ); ?><i></i></span>
+						</p>
+					<?php }
+				} else { ?>
+					<p>
+						<span><?php echo wp_kses_post( $message ); ?><i></i></span>
+					</p>
+				<?php } ?>
 			</div>
 		</div>
 		<?php
