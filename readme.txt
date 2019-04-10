@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Move IPN settings together in ticket settings tab [122333]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
+* Fix - Tidy attendee list print styles [12599]
 
 = [4.10.3] TBD =
 
