@@ -1,31 +1,27 @@
-.tribe-editor__labeled-item__label {
+.tribe-editor__warning-button-text {
 
-	.tribe-editor__rsvp__warning & {
-		color: #E7563B;
-		font-size: 15px;
-		font-weight: bold;
-		letter-spacing: 0.38px;
-		line-height: 18px;
-
-		.tribe-editor__rsvp--loading & {
-			color: #AEB4BB;
-		}
+	.tribe-editor__rsvp--loading & {
+		color: #AEB4BB;
 	}
 }
 
-.tribe-editor__label-with-tooltip__tooltip-label {
-
-	.tribe-editor__rsvp__warning & {
-		margin-left: 5px;
-	}
-}
-
-svg.tribe-editor__rsvp__warning-tooltip-label {
-	width: 17px;
-	height: 17px;
-	fill: #E7563B;
+svg.tribe-editor__warning-button-icon {
 
 	.tribe-editor__rsvp--loading & {
 		fill: #AEB4BB;
+	}
+}
+
+.tribe-editor__rsvp__warning {
+	background-color: #f8f9fb;
+	bottom: -14px;
+	color: #545D66;
+	font-size: 15px;
+	line-height: 18px;
+	margin: 0 -14px 0;
+	position: relative;
+
+	@media (min-width: 600px) {
+		padding: 0 28px 15px;
 	}
 }

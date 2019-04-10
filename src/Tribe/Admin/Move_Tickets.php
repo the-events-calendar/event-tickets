@@ -530,6 +530,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		foreach ( $ticket_objects as $ticket ) {
 			$ticket_id = $ticket['attendee_id'];
+			$product_id = $ticket['product_id'];
 			$src_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
 
 			/**
@@ -545,10 +546,9 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			/**
 			 * Actual moving happens
 			 */
-			$src_event_cap = new Tribe__Tickets__Global_Stock( $src_event_id );
 			$tgt_event_cap = new Tribe__Tickets__Global_Stock( $tgt_event_id );
 
-			$src_mode = get_post_meta( $ticket_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+			$src_mode = get_post_meta( $product_id, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 			// When the Mode is not `own` we have to check and modify some stuff
 			if ( Tribe__Tickets__Global_Stock::OWN_STOCK_MODE !== $src_mode ) {
@@ -566,7 +566,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 					update_post_meta( $tgt_event_id, tribe( 'tickets.handler' )->key_capacity, $src_event_capacity );
 				} elseif ( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $src_mode || Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $src_mode ) {
 					// Check if we have capped to avoid ticket cap over event cap
-					$src_ticket_capacity = tribe_tickets_get_capacity( $ticket_id );
+					$src_ticket_capacity = tribe_tickets_get_capacity( $product_id );
 					$tgt_event_capacity = tribe_tickets_get_capacity( $tgt_event_id );
 
 					// Don't allow ticket capacity to be bigger than Target Event Cap
