@@ -199,15 +199,17 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$availability = array();
 		if (  $ticket_sold['ticket']->available() > 0 ) {
-			$availability['available'] = sprintf( '%s %s',
+			$availability['available'] = sprintf( '%s %s %s',
 				esc_html( $ticket_sold['ticket']->available() ),
-				esc_html__( 'available', 'event-tickets' )
+				esc_html__( 'available', 'event-tickets' ),
+				$this->get_availability_by_ticket_tooltip()
 			);
 		}
 		if (  $ticket_sold['incomplete'] > 0 ) {
-			$availability['incomplete'] = sprintf( '%s %s',
+			$availability['incomplete'] = sprintf( '%s %s %s',
 				 $ticket_sold['incomplete'],
-				 __( 'pending order completion', 'event-tickets' )
+				 __( 'pending order completion', 'event-tickets' ),
+				$this->get_pending_by_ticket_tooltip()
 			);
 		}
 
@@ -215,7 +217,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			return false;
 		}
 
-		return '<div>' . implode( ', ', array_map( 'esc_html', $availability ) ) . '</div>';
+		return '<div>' . implode( ', ', $availability ) . '</div>';
 
 	}
 
@@ -278,4 +280,88 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		<?php
 		return ob_get_clean();
 	}
+
+	/**
+	 * Get Pending Tooltip per Ticket
+	 *
+	 * @since TBD
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_pending_by_ticket_tooltip() {
+	/*
+	- WOO -
+	Pending Order Completion refers to anything within the following statuses:
+	- Cancelled
+	- On Hold
+	- Pending
+	- Processing
+
+	- EDD -
+	Pending Order Completion refers to anything within the following statuses:
+	- Revoked
+	- Failed
+	- Abandoned
+	- Pending
+
+	- TC -
+	Pending Order Completion refers to anything within the following statuses:
+	- Denied
+	- Not Completed
+	- Pending
+	- Undefined
+	 */
+		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'woo' );
+
+		ob_start();
+		?>
+		<div class="tribe-tooltip" aria-expanded="false">
+			<span class="dashicons dashicons-info"></span>
+			<div class="down">
+				<?php echo esc_html__( 'Pending Order Completion refers to anything within the following statuses:', 'event-tickets' ); ?><i></i>
+			</div>
+		</div>
+		<?php
+		return ob_get_clean();
+	}
+
+
+	/**
+	 * Get Availability Tooltip per Ticket
+	 *
+	 * @since TBD
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_availability_by_ticket_tooltip() {
+	/*
+	 *
+	 * (have a tooltip that serves data per commerce provider: Woo/EDD/TC)
+
+	 Available [info icon]:
+
+	 Inventory (commerce stock):
+	 Capacity:
+	 Stock:
+
+	 Ticket availability is based on the lowest number of commerce stock, current capacity, and stock. This number is based on the following:
+	 - Unlimited tickets should always state unlimited.
+	 - Shared capacity is based on either the total shared capacity or if you've limited it to that ticket.
+	 - Individual Capacity is what you've assigned to that specific ticket.
+	 *
+	 *
+	 */
+		ob_start();
+		?>
+		<div class="tribe-tooltip" aria-expanded="false">
+			<span class="dashicons dashicons-info"></span>
+			<div class="down">
+				<?php echo esc_html__( 'Inventory (commerce stock):', 'event-tickets' ); ?>
+				<?php echo esc_html__( 'Capacity:', 'event-tickets' ); ?>
+				<?php echo esc_html__( 'Stock:', 'event-tickets' ); ?><i></i>
+			</div>
+		</div><?php
+		return ob_get_clean();
+	}
+
 }
