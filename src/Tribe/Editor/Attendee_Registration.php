@@ -35,7 +35,7 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 */
 	public function filter_admin_body_class( string $classes ) {
 		// if not on attendee registration page
-		if ( ! tribe_get_request_var( 'page', '' ) === 'attendee-registration' ) {
+		if ( ! ( tribe_get_request_var( 'page', '' ) === 'attendee-registration' ) ) {
 			return $classes;
 		}
 
