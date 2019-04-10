@@ -119,6 +119,13 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
+* Tweak - Ticket Attendee and Order Page Header css by changing overflow to visible [120862]
+* Tweak - Update status manage to accept provider names or abbreviations [120862]
+* Tweak - Add tooltip to explain what statues are behind Pending Order Completion [120862]
+* Tweak - Add tooltip to explain the Available Count Per Ticket [120862]
+
+= [4.10.3] TBD =
+
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
 * Tweak - Add method to get all possible names of the completed status by Commerce [122458]
@@ -131,10 +138,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
 * Fix - Tidy attendee list print styles [12599]
-
-= [4.10.3] TBD =
-
-
 
 = [4.10.2] 2019-04-01 =
 

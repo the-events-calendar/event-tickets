@@ -209,7 +209,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			$availability['incomplete'] = sprintf( '%s %s %s',
 				 $ticket_sold['incomplete'],
 				 __( 'pending order completion', 'event-tickets' ),
-				$this->get_pending_by_ticket_tooltip()
+				$this->get_pending_by_ticket_tooltip( $ticket_sold )
 			);
 		}
 
@@ -288,37 +288,19 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @return string a string of html for the tooltip
 	 */
-	public function get_pending_by_ticket_tooltip() {
-	/*
-	- WOO -
-	Pending Order Completion refers to anything within the following statuses:
-	- Cancelled
-	- On Hold
-	- Pending
-	- Processing
+	public function get_pending_by_ticket_tooltip( $ticket_sold ) {
 
-	- EDD -
-	Pending Order Completion refers to anything within the following statuses:
-	- Revoked
-	- Failed
-	- Abandoned
-	- Pending
-
-	- TC -
-	Pending Order Completion refers to anything within the following statuses:
-	- Denied
-	- Not Completed
-	- Pending
-	- Undefined
-	 */
-		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'woo' );
-
+		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true );
 		ob_start();
 		?>
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Pending Order Completion refers to anything within the following statuses:', 'event-tickets' ); ?><i></i>
+				<?php echo esc_html__( 'Pending Order Completion refers to anything within the following statuses:', 'event-tickets' ); ?>
+				<ul>
+					<li><?php echo implode( '</li><li>', $incomplete_statuses ) ?></li>
+				</ul>
+				<i></i>
 			</div>
 		</div>
 		<?php
