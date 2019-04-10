@@ -20,7 +20,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$this->tickets_view = new Tickets_View();
 
 		// let's avoid die()s
-		add_filter (
+		add_filter(
 			'tribe_exit', function () {
 				return [ $this, 'dont_die' ];
 			}
@@ -273,6 +273,192 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * @test
+	 *
+	 * It should return attendees from get_all_attendees_by_attendee_id().
+	 */
+	public function it_should_return_attendees_from_get_all_attendees_by_attendee_id() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$test_attendees = $sut->get_attendees_array( $post_id );
+
+		$test_attendee = current( $test_attendees );
+
+		$attendee_id = $test_attendee['attendee_id'];
+
+		$attendees = $sut->get_all_attendees_by_attendee_id( $attendee_id );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return attendee from get_attendee().
+	 */
+	public function it_should_return_attendee_from_get_attendee() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$test_attendees = $sut->get_attendees_array( $post_id );
+
+		$test_attendee = current( $test_attendees );
+
+		$attendee_formatted = $sut->get_attendee( $test_attendee['attendee_id'], $post_id );
+
+		$this->assertArrayHasKey( 'optout', $attendee_formatted );
+		$this->assertArrayHasKey( 'ticket', $attendee_formatted );
+		$this->assertArrayHasKey( 'attendee_id', $attendee_formatted );
+		$this->assertArrayHasKey( 'security', $attendee_formatted );
+		$this->assertArrayHasKey( 'product_id', $attendee_formatted );
+		$this->assertArrayHasKey( 'check_in', $attendee_formatted );
+		$this->assertArrayHasKey( 'order_status', $attendee_formatted );
+		$this->assertArrayHasKey( 'order_status_label', $attendee_formatted );
+		$this->assertArrayHasKey( 'user_id', $attendee_formatted );
+		$this->assertArrayHasKey( 'ticket_sent', $attendee_formatted );
+
+		$this->assertArrayHasKey( 'holder_name', $attendee_formatted );
+		$this->assertArrayHasKey( 'holder_email', $attendee_formatted );
+		$this->assertArrayHasKey( 'order_id', $attendee_formatted );
+		$this->assertArrayHasKey( 'ticket_id', $attendee_formatted );
+		$this->assertArrayHasKey( 'qr_ticket_id', $attendee_formatted );
+		$this->assertArrayHasKey( 'security_code', $attendee_formatted );
+
+		$this->assertArrayHasKey( 'attendee_meta', $attendee_formatted );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return attendees from get_attendees_array().
+	 */
+	public function it_should_return_attendees_from_get_attendees_array() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$attendees = $sut->get_attendees_array( $post_id );
+
+		$this->assertCount( 10, $attendees );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return attendees from get_attendees_by_id().
+	 */
+	public function it_should_return_attendees_from_get_attendees_by_id() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$attendees = $sut->get_attendees_by_id( $post_id );
+
+		$this->assertCount( 10, $attendees );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return attendees from get_attendees_by_id() for order ID.
+	 */
+	public function it_should_return_attendees_from_get_attendees_by_id_for_order_id() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$test_attendees = $sut->get_attendees_array( $post_id );
+
+		$test_attendee = current( $test_attendees );
+
+		$order_id = $test_attendee['order_id'];
+
+		$attendees = $sut->get_attendees_by_id( $order_id );
+
+		$this->assertCount( 1, $attendees );
+		$this->assertEquals( [ $test_attendee ], $attendees );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return attendees from get_attendees_by_id() for ticket ID.
+	 */
+	public function it_should_return_attendees_from_get_attendees_by_id_for_ticket_id() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$attendees = $sut->get_attendees_by_id( $ticket_id );
+
+		$this->assertCount( 10, $attendees );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return attendees from get_event_id_from_attendee_id() for attendee ID.
+	 */
+	public function it_should_return_event_id_from_get_event_id_from_attendee_id() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$test_attendees = $sut->get_attendees_array( $post_id );
+
+		$test_attendee = current( $test_attendees );
+
+		$attendee_id = $test_attendee['attendee_id'];
+
+		$event_id = $sut->get_event_id_from_attendee_id( $attendee_id );
+
+		$this->assertEquals( $post_id, $event_id );
+	}
+
+	/**
 	 * @return mixed
 	 */
 	protected function setup_POST( $status, $sales ) {
@@ -296,44 +482,60 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// quantity_ID not relevant
 	}
 
-	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {
+	protected function make_base_data( $sales = 0, $stock = 10 ) {
 		$post_id = $this->factory()->post->create();
+
+		$ticket_id = $this->factory()->post->create( [
+			'post_type'   => 'tribe_rsvp_tickets',
+			'post_status' => 'publish',
+			'meta_input'  => [
+				'total_sales'            => $sales,
+				'_tribe_rsvp_for_event'  => $post_id,
+				'_stock'                 => $stock,
+				'_tribe_ticket_capacity' => $stock + $sales,
+			],
+		] );
+
+		$user_id = $this->factory()->user->create();
+
+		return [
+			'post_id'   => $post_id,
+			'ticket_id' => $ticket_id,
+			'user_id'   => $user_id,
+		];
+	}
+
+	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {
+		$base_data = $this->make_base_data( $sales, $stock );
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
 
 		// mock the already placed order
 		$order_id = $this->factory()->post->create(
 			[
 				'meta_input' => [
 					RSVP::ATTENDEE_RSVP_KEY => $previous_status,
-				]
-			]
-		);
-
-		$ticket_id = $this->factory()->post->create(
-			[
-				'post_type'   => 'tribe_rsvp_tickets',
-				'post_status' => 'publish',
-				'meta_input'  => [
-					'total_sales'            => $sales,
-					'_tribe_rsvp_for_event'  => $post_id,
-					'_stock'                 => $stock,
-					'_tribe_ticket_capacity' => $stock + $sales,
-				]
+				],
 			]
 		);
 
 		// mock the current user
-		$user_id = $this->factory()->user->create();
 		wp_set_current_user( $user_id );
 
 		// mock already present attendees
 		$rsvp_options = $this->tickets_view->get_rsvp_options( null, false );
+
+		/** @var Tickets_View $tickets_view */
 		$tickets_view = $this->prophesize( Tickets_View::class );
 		$tickets_view->get_rsvp_options( null, false )->willReturn( $rsvp_options );
-		$tickets_view->get_event_rsvp_attendees( $post_id, $user_id )->willReturn(
+		$tickets_view->get_event_rsvp_attendees( $post_id, $user_id )->willReturn( [
 			[
-				[ 'product_id' => $ticket_id, 'order_id' => $order_id ]
-			]
-		);
+				'product_id' => $ticket_id,
+				'order_id'   => $order_id,
+			],
+		] );
 
 		// not restricted
 		$tickets_view->is_rsvp_restricted( Argument::type( 'int' ), Argument::type( 'int' ) )->willReturn( false );
@@ -351,42 +553,38 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	protected function make_sales_ticket( $sales, $post_id ) {
-		$ticket_id = $_POST['product_id'] = $this->factory()->post->create(
-			[
-				'post_type'   => 'tribe_rsvp_tickets',
-				'post_status' => 'publish',
-				'meta_input'  => [
-					'total_sales'           => $sales,
-					'_tribe_rsvp_for_event' => $post_id,
-				]
-			]
-		);
+		$ticket_id = $_POST['product_id'] = $this->factory()->post->create( [
+			'post_type'   => 'tribe_rsvp_tickets',
+			'post_status' => 'publish',
+			'meta_input'  => [
+				'total_sales'           => $sales,
+				'_tribe_rsvp_for_event' => $post_id,
+			],
+		] );
 
 		return $ticket_id;
 	}
 
 	protected function make_stock_ticket( $stock, $post_id ) {
-		$ticket_id = $_POST['product_id'] = $this->factory()->post->create(
-			[
-				'post_type'   => 'tribe_rsvp_tickets',
-				'post_status' => 'publish',
-				'meta_input'  => [
-					'_stock'                => $stock,
-					'_tribe_rsvp_for_event' => $post_id,
-				]
-			]
-		);
+		$ticket_id = $_POST['product_id'] = $this->factory()->post->create( [
+			'post_type'   => 'tribe_rsvp_tickets',
+			'post_status' => 'publish',
+			'meta_input'  => [
+				'_stock'                => $stock,
+				'_tribe_rsvp_for_event' => $post_id,
+			],
+		] );
 
 		return $ticket_id;
 	}
 
-	protected function fake_attendee_details(array $overrides = array()) {
-		return array_merge( array(
+	protected function fake_attendee_details( array $overrides = [] ) {
+		return array_merge( [
 			'full_name'    => 'Jane Doe',
 			'email'        => 'jane@doe.com',
 			'order_status' => 'yes',
 			'optout'       => 'no',
 			'order_id'     => RSVP::generate_order_id(),
-		), $overrides );
+		], $overrides );
 	}
 }
