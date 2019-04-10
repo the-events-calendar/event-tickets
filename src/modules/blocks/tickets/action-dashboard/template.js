@@ -1,13 +1,12 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import PropTypes from 'prop-types';
 
 /**
  * WordPress dependencies
  */
-import { Dashicon } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -18,63 +17,83 @@ import {
 	AttendeesActionButton,
 	OrdersActionButton,
 } from '@moderntribe/tickets/blocks/tickets/action-buttons';
-import { ActionDashboard, LabelWithTooltip } from '@moderntribe/tickets/elements';
+import { ActionDashboard, WarningButton } from '@moderntribe/tickets/elements';
 import './style.pcss';
 
 const confirmLabel = __( 'Add Tickets', 'event-tickets' );
 
-const TicketsWarningTooltipLabel = () => (
-	<Dashicon
-		className="tribe-editor__tickets__warning-tooltip-label"
-		icon="info-outline"
-	/>
-);
+class TicketsDashboardAction extends PureComponent {
+	static propTypes = {
+		hasCreatedTickets: PropTypes.bool,
+		hasOrdersPage: PropTypes.bool,
+		hasRecurrenceRules: PropTypes.bool,
+		hasTicketsPlus: PropTypes.bool,
+		onConfirmClick: PropTypes.func,
+	};
 
-const TicketsWarning = () => (
-	<LabelWithTooltip
-		className="tribe-editor__tickets__warning"
-		label={ __( 'Warning', 'event-tickets' ) }
-		tooltipLabel={ <TicketsWarningTooltipLabel /> }
-		tooltipText={ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
-	/>
-);
+	constructor( props ) {
+		super( props );
+		this.state = {
+			isWarningOpen: false,
+		};
+	}
 
-const TicketsDashboardAction = ( {
-	hasCreatedTickets,
-	hasRecurrenceRules,
-	hasTicketsPlus,
-	onConfirmClick,
-} ) => {
-	const getActions = () => {
+	onWarningClick = () => {
+		this.setState( { isWarningOpen: ! this.state.isWarningOpen } );
+	};
+
+	getActions = () => {
+		const {
+			hasCreatedTickets,
+			hasOrdersPage,
+			hasRecurrenceRules,
+			hasTicketsPlus,
+		} = this.props;
+
 		const actions = [ <SettingsActionButton /> ];
 		if ( hasCreatedTickets ) {
 			if ( hasTicketsPlus ) {
 				actions.push( <AttendeesActionButton /> );
 			}
-			actions.push( <OrdersActionButton /> );
+			if ( hasOrdersPage ) {
+				actions.push( <OrdersActionButton /> );
+			}
 		}
 		if ( hasRecurrenceRules ) {
-			actions.push( <TicketsWarning /> );
+			const icon = this.state.isWarningOpen ? 'no' : 'info-outline';
+			const text = this.state.isWarningOpen ? __( 'Hide Warning', 'event-tickets' ) : __( 'Warning', 'event-tickets' );
+			actions.push(
+				<WarningButton
+					icon={ icon }
+					onClick={ this.onWarningClick }
+				>
+					{ text }
+				</WarningButton>
+			);
 		}
 		return actions;
 	};
 
-	return (
-		<ActionDashboard
-			className="tribe-editor__tickets__action-dashboard"
-			actions={ getActions() }
-			confirmLabel={ confirmLabel }
-			onConfirmClick={ onConfirmClick }
-			showCancel={ false }
-		/>
-	);
-};
+	render() {
+		const { onConfirmClick } = this.props;
 
-TicketsDashboardAction.propTypes = {
-	hasCreatedTickets: PropTypes.bool,
-	hasRecurrenceRules: PropTypes.bool,
-	hasTicketsPlus: PropTypes.bool,
-	onConfirmClick: PropTypes.func,
+		return (
+			<Fragment>
+				<ActionDashboard
+					className="tribe-editor__tickets__action-dashboard"
+					actions={ this.getActions() }
+					confirmLabel={ confirmLabel }
+					onConfirmClick={ onConfirmClick }
+					showCancel={ false }
+				/>
+				{ this.state.isWarningOpen && (
+					<div className="tribe-editor__tickets__warning">
+						{ __( 'This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly.', 'event-tickets' ) }
+					</div>
+				) }
+			</Fragment>
+		)
+	}
 };
 
 export default TicketsDashboardAction;
