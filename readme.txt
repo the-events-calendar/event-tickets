@@ -129,6 +129,11 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
+* Fix - Tidy attendee list print styles [12599]
+
+= [4.10.3] TBD =
+
+
 
 = [4.10.2] 2019-04-01 =
 
