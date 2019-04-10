@@ -25,7 +25,8 @@
 	#wpbody-content .update-nag,
 	.row-actions,
 	.event-actions,
-	.wrap h2 + h2 {
+	.wrap h2 + h2,
+	.search-box {
 		display: none;
 	}
 
