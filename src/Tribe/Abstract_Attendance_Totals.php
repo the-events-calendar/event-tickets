@@ -85,7 +85,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * @TODO: this should get moved to common?
 	 *
 	 * @param array|string $message array of messages or single message as string
-	 * @param array $args extra arguments, defaults include icon, classes, and direction
+	 * @param array $args extra arguments, defaults include icon, classes, direction, anmd context (for the filter)
 	 * @return string a string of html for the tooltip
 	 */
 	private function build_tooltip( $message, $args = [] ) {
@@ -96,7 +96,8 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 		$default_args = [
 			'classes'   => '',
 			'icon'      => 'info',
-			'direction' => 'down'
+			'direction' => 'down',
+			'context'   => '',
 		];
 
 		$merged_args = wp_parse_args( $args, $default_args );
