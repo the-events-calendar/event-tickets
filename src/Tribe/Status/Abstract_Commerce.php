@@ -165,7 +165,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		$sold = $ticket_sold['completed'] ? $ticket_sold['completed'] : $ticket_sold['sold'];
 
 		$sold_message = ! $ticket_sold['has_stock'] ?
-			$sold_message = sprintf( __( 'Sold %d', 'event-tickets-plus' ), esc_html( $sold ) ) :
+			$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ), esc_html( $sold ) ) :
 			'';
 
 		$price = $ticket_sold['ticket']->price ?
@@ -173,7 +173,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			'';
 
 		$sku = $ticket_sold['sku'] ?
-				'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets-plus' ), esc_html( $ticket_sold['sku'] ) ) . '"' :
+				'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets' ), esc_html( $ticket_sold['sku'] ) ) . '"' :
 				'';
 
 		ob_start();
@@ -201,13 +201,13 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		if (  $ticket_sold['ticket']->available() > 0 ) {
 			$availability['available'] = sprintf( '%s %s',
 				esc_html( $ticket_sold['ticket']->available() ),
-				esc_html__( 'available', 'event-tickets-plus' )
+				esc_html__( 'available', 'event-tickets' )
 			);
 		}
 		if (  $ticket_sold['incomplete'] > 0 ) {
 			$availability['incomplete'] = sprintf( '%s %s',
 				 $ticket_sold['incomplete'],
-				 __( 'pending order completion', 'event-tickets-plus' )
+				 __( 'pending order completion', 'event-tickets' )
 			);
 		}
 
@@ -232,7 +232,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets-plus' ); ?><i></i>
+				<?php echo esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' ); ?><i></i>
 			</div>
 		</div>
 		<?php
@@ -252,7 +252,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets-plus' ); ?><i></i>
+				<?php echo esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' ); ?><i></i>
 			</div>
 		</div>
 		<?php
