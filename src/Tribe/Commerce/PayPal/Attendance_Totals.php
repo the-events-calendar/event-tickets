@@ -12,9 +12,11 @@
  * to obtain a new object of this type to get accurate results.
  */
 class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets__Abstract_Attendance_Totals {
-	protected $total_sold = 0;
-	protected $total_complete = 0;
-	protected $total_pending = 0;
+	protected $total_sold      = 0;
+	protected $total_complete  = 0;
+	protected $total_pending   = 0;
+	protected $total_cancelled = 0;
+
 
 	/**
 	 * Calculate totals for the current event.
@@ -27,8 +29,9 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 				continue;
 			}
 
-			$this->total_sold += $ticket->qty_sold();
-			$this->total_pending += $ticket->qty_pending();
+			$this->total_sold      += $ticket->qty_sold();
+			$this->total_pending   += $ticket->qty_pending();
+			$this->total_cancelled += $ticket->qty_cancelled();
 		}
 
 		$this->total_complete = $this->total_sold;
@@ -70,13 +73,15 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		$total_sold_label = esc_html_x( 'Total Tickets Issued:', 'attendee summary', 'event-tickets' );
 		$total_paid_label = esc_html_x( 'Complete:', 'attendee summary', 'event-tickets' );
 
-		$total_sold = $this->get_total_sold();
-		$total_paid = $this->get_total_complete();
+		$total_sold      = $this->get_total_sold();
+		$total_paid      = $this->get_total_complete();
+		$total_cancelled = $this->get_total_cancelled();
 
 		echo "
 			<ul>
 				<li> <strong>$total_sold_label&nbsp;</strong>$total_sold </li>
 				<li> $total_paid_label&nbsp;$total_paid </li>
+				<li> $total_cancelled_label $total_cancelled </li>
 			</ul>
 		";
 	}
@@ -154,5 +159,25 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		 * @param int $event_id
 		 */
 		return (int) apply_filters( 'tribe_tickets_get_total_paid', $this->total_complete, $this->total_complete, $this->event_id );
+	}
+
+	/**
+	 * The total number of tickets sold then cancelled, for this event.
+	 *
+	 * @since  TBD
+	 *
+	 * @return int
+	 */
+	public function get_total_cancelled() {
+		/**
+		 * Returns the total tickets cancelled, for an event.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $total_cancelled
+		 * @param int $original_total_complete
+		 * @param int $event_id
+		 */
+		return (int) apply_filters( 'tribe_tickets_plus_get_total_cancelled', $this->total_cancelled, $this->total_cancelled, $this->event_id );
 	}
 }

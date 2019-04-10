@@ -121,13 +121,20 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Tweak - Add method to get all possible names of the completed status by Commerce [122458]
+* Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 * Tweak - Move IPN settings together in ticket settings tab [122333]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
+* Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
+* Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
+* Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
+* Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
+* Fix - Tidy attendee list print styles [12599]
 
 = [4.10.3] TBD =
 
-* Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
+
 
 = [4.10.2] 2019-04-01 =
 
