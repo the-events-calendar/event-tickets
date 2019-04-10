@@ -9,15 +9,13 @@ modules:
         - Asserts
     config:
         WPDb:
-            dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
-            user: %DB_USER%
-            password: %DB_PASSWORD%
+            dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
+            user: %WP_DB_USER%
+            password: %WP_DB_PASSWORD%
             dump: tests/_data/restv1-dump.sql
             populate: true
             cleanup: true
             waitlock: 10
-            # by default Travis CI MySQL password is empty
-            populator: 'mysql -u$user -h$host $dbname < $dump'
             url: '%WP_URL%'
             tablePrefix: wp_
         WPBrowser:
@@ -32,7 +30,7 @@ modules:
             # just load WordPress using the same db as WPDb
             loadOnly: true
             wpRootFolder: %WP_ROOT_FOLDER%
-            dbName: %DB_NAME%
-            dbHost: %DB_HOST%
-            dbUser: %DB_USER%
-            dbPassword: '%DB_PASSWORD%'
+            dbName: %WP_DB_NAME%
+            dbHost: %WP_DB_HOST%
+            dbUser: %WP_DB_USER%
+            dbPassword: '%WP_DB_PASSWORD%'

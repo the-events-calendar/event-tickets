@@ -667,13 +667,18 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$is_refund = Tribe__Tickets__Commerce__PayPal__Stati::$refunded === $payment_status
 		             || 'refund' === Tribe__Utils__Array::get( $transaction_data, 'reason_code', '' );
+
 		if ( $is_refund ) {
 			$transaction_data['payment_status'] = $payment_status = Tribe__Tickets__Commerce__PayPal__Stati::$refunded;
+
 			$refund_order_id = $order_id;
 			$order_id        = Tribe__Utils__Array::get( $transaction_data, 'parent_txn_id', $order_id );
 			$order           = Tribe__Tickets__Commerce__PayPal__Order::from_order_id( $order_id );
+
 			$order->refund_with( $refund_order_id );
+
 			unset( $transaction_data['txn_id'], $transaction_data['parent_txn_id'] );
+
 			$order->hydrate_from_transaction_data( $transaction_data );
 		} else {
 			$order = Tribe__Tickets__Commerce__PayPal__Order::from_transaction_data( $transaction_data );
@@ -695,15 +700,25 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			? ''
 			: sanitize_text_field( "{$transaction_data['first_name']} {$transaction_data['last_name']}" );
 
-		if ( empty( $attendee_user_id ) ) {
-			$attendee_email = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
-			$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
-		} else {
-			$attendee       = get_user_by( 'ID', $attendee_user_id );
-			$attendee_email = $attendee->user_email;
-			$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
-			if ( ! empty( $user_full_name ) ) {
-				$attendee_full_name = $user_full_name;
+		$attendee_email = empty( $transaction_data['payer_email'] ) ? null : sanitize_email( $transaction_data['payer_email'] );
+		$attendee_email = is_email( $attendee_email ) ? $attendee_email : null;
+
+		if ( ! empty( $attendee_user_id ) ) {
+			$attendee = get_user_by( 'id', $attendee_user_id );
+
+			// Check if the user was found.
+			if ( $attendee ) {
+				// Check if the user has an email address.
+				if ( $attendee->user_email ) {
+					$attendee_email = $attendee->user_email;
+				}
+
+				$user_full_name = trim( "{$attendee->first_name} {$attendee->last_name}" );
+
+				// Check if the user has first/last name.
+				if ( ! empty( $user_full_name ) ) {
+					$attendee_full_name = $user_full_name;
+				}
 			}
 		}
 
@@ -841,13 +856,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 					$has_generated_new_tickets = true;
 				}
 
+				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
+				$shared_capacity = false;
+				if ( $global_stock->is_enabled() ) {
+					$shared_capacity = true;
+				}
+
 				if ( $status_stock_size > 0 ) {
 					switch ( $payment_status ) {
 						case Tribe__Tickets__Commerce__PayPal__Stati::$completed:
-							$this->increase_ticket_sales_by( $product_id, 1 );
+							$this->increase_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 							break;
 						case Tribe__Tickets__Commerce__PayPal__Stati::$refunded:
-							$this->decrease_ticket_sales_by( $product_id, 1 );
+							$this->decrease_ticket_sales_by( $product_id, 1, $shared_capacity, $global_stock );
 							break;
 						default:
 							break;
@@ -1408,7 +1429,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// Try to kill the actual ticket/attendee post
 		$delete = wp_delete_post( $ticket_id, true );
-		if ( is_wp_error( $delete ) ) {
+		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
 			return false;
 		}
 
@@ -1471,6 +1492,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$return->description      = $product->post_excerpt;
 		$return->ID               = $ticket_id;
 		$return->name             = $product->post_title;
+		$return->post_type        = $product->post_type;
 		$return->price            = get_post_meta( $ticket_id, '_price', true );
 		$return->provider_class   = get_class( $this );
 		$return->admin_link       = '';
@@ -2560,16 +2582,22 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Increases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
+	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int  $ticket_id The ticket post ID
-	 * @param int  $qty
+	 * @param int         $ticket_id       The ticket post ID
+	 * @param int         $qty             the quanitity to modify stock
+	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
+	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
 	 *
 	 * @return int
 	 */
-	public function increase_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function increase_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', $sales + $qty );
 
+		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
+			$this->update_global_stock( $global_stock, $qty );
+		}
 		return $sales;
 	}
 
@@ -2577,15 +2605,43 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * Decreases the sales for a ticket by an amount.
 	 *
 	 * @since 4.7
+	 * @since 4.10.2 added $shared_capacity and $global_stock parameter
 	 *
-	 * @param int $ticket_id The ticket post ID
-	 * @param int $qty
+	 * @param int         $ticket_id       The ticket post ID
+	 * @param int         $qty             the quanitity to modify stock
+	 * @param bool        $shared_capacity true or false if the ticket is using share capacity
+	 * @param object|null $global_stock    the object of Tribe__Tickets__Global_Stock or null
 	 *
 	 * @return int
 	 */
-	public function decrease_ticket_sales_by( $ticket_id, $qty = 1 ) {
+	public function decrease_ticket_sales_by( $ticket_id, $qty = 1, $shared_capacity = false, $global_stock = null ) {
 		$sales = (int) get_post_meta( $ticket_id, 'total_sales', true );
 		update_post_meta( $ticket_id, 'total_sales', max( $sales - $qty, 0 ) );
+
+		if ( $shared_capacity && $global_stock instanceof Tribe__Tickets__Global_Stock ) {
+			$this->update_global_stock( $global_stock, $qty, true );
+		}
+	}
+
+	/**
+	 * Update Global Stock
+	 *
+	 * @since 4.10.2
+	 *
+	 * @param object $global_stock the object of Tribe__Tickets__Global_Stock
+	 * @param int    $qty          the quanitity to modify stock
+	 * @param bool   $increase     true or false to increase stock, default is false
+	 */
+	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
+
+		$level = $global_stock->get_stock_level();
+		if ( $increase ) {
+			$new_level = (int) $level + (int) $qty;
+		} else {
+			$new_level = (int) $level - (int) $qty;
+		}
+
+		$global_stock->set_stock_level( $new_level );
 	}
 
 	/**

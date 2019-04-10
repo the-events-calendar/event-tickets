@@ -21,30 +21,38 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 *
 	 * @since 4.9
 	 * @param string $content The original page|post content
-	 * @return srting $template The resulting template content
+	 * @param string $context The context of the rendering
+	 *
+	 * @return string The resulting template content
 	 */
-	public function display_attendee_registration_page( $content = '' ) {
-		global $wp_query;
-
-		// Bail if we don't have the flag to be in the registration page
-		if ( ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
+	public function display_attendee_registration_page( $content = '', $context = 'default' ) {
+		// Bail if we don't have the flag to be in the registration page (or we're not using a shortcode to display it)
+		if ( 'shortcode' !== $context && ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $content;
 		}
+
+		$q_provider = tribe_get_request_var( 'provider', false );
 
 		/**
 		 * Filter to add/remove tickets from the global cart
 		 *
 		 * @since TDB
 		 *
-		 * @param array  The array containing the cart elements. Format arrat( 'ticket_id' => 'quantity' );
+		 * @param array  $cart_tickets The array containing the cart elements. Format array( 'ticket_id' => 'quantity' );
+		 * @param string $q_provider   Current ticket provider.
 		 */
-		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
+		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array(), $q_provider );
 		$events       = array();
 		$providers    = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
+
+			// If we've got a provider and it doesn't match, skip the ticket
+			if ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) {
+				continue;
+			}
 
 			$ticket_data = array(
 				'id'       => $ticket_id,
@@ -109,6 +117,8 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			'is_meta_up_to_date'     => $is_meta_up_to_date,
 			'cart_has_required_meta' => $cart_has_required_meta,
 			'providers'              => $providers,
+			'context'                => $context,
+			'original_content'       => $content,
 		);
 
 		// enqueue styles and scripts for this page

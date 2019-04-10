@@ -13,6 +13,7 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 		tribe_singleton( 'tickets.attendee_registration.view', 'Tribe__Tickets__Attendee_Registration__View' );
 		tribe_singleton( 'tickets.attendee_registration.rewrite', 'Tribe__Tickets__Attendee_Registration__Rewrite' );
 		tribe_singleton( 'tickets.attendee_registration.meta', 'Tribe__Tickets__Attendee_Registration__Meta' );
+		tribe_singleton( 'tickets.attendee_registration.shortcode', 'Tribe__Tickets__Attendee_Registration__Shortcode' );
 
 		$this->hooks();
 	}
@@ -23,8 +24,8 @@ class Tribe__Tickets__Attendee_Registration__Service_Provider extends tad_DI52_S
 	 * @since 4.9
 	 */
 	protected function hooks() {
-
 		add_action( 'plugins_loaded', tribe_callback( 'tickets.attendee_registration.template', 'hook' ) );
+		add_action( 'init', tribe_callback( 'tickets.attendee_registration.shortcode', 'hook' ) );
 		add_action( 'tribe_tickets_pre_rewrite', tribe_callback( 'tickets.attendee_registration.rewrite', 'generate_core_rules' ) );
 		add_action( 'init', tribe_callback( 'tickets.attendee_registration.rewrite', 'add_rewrite_tags' ) );
 		add_filter( 'generate_rewrite_rules', tribe_callback( 'tickets.attendee_registration.rewrite', 'filter_generate' ) );

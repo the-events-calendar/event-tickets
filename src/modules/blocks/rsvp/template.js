@@ -45,24 +45,28 @@ class RSVP extends PureComponent {
 			isModalShowing,
 		} = this.props;
 
-		return [
-			! isSelected && ( ( created && isInactive ) || ! created )
-				? <RSVPInactiveBlock />
-				: (
-					<div className={
-						classNames(
-							'tribe-editor__rsvp',
-							{ 'tribe-editor__rsvp--selected': isSelected },
-							{ 'tribe-editor__rsvp--loading': isLoading },
-						) }
-					>
-						<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
-						<RSVPDashboard isSelected={ isSelected } />
-						{ isLoading && <Spinner /> }
-					</div>
-				),
-			isModalShowing && <MoveModal />,
-		];
+		return (
+			<Fragment>
+				{
+					! isSelected && ( ( created && isInactive ) || ! created )
+						? <RSVPInactiveBlock />
+						: (
+							<div className={
+								classNames(
+									'tribe-editor__rsvp',
+									{ 'tribe-editor__rsvp--selected': isSelected },
+									{ 'tribe-editor__rsvp--loading': isLoading },
+								) }
+							>
+								<RSVPContainer isSelected={ isSelected } clientId={ clientId } />
+								<RSVPDashboard isSelected={ isSelected } />
+								{ isLoading && <Spinner /> }
+							</div>
+						)
+					}
+					{ isModalShowing && <MoveModal /> }
+			</Fragment>
+		);
 	}
 }
 

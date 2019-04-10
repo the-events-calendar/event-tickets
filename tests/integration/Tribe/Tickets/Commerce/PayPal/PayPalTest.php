@@ -2,9 +2,11 @@
 namespace Tribe\Tickets\Commerce\PayPal;
 
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
+use Tribe__Post_Transient as Post_Transient;
 use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
 use Tribe__Tickets__Commerce__PayPal__Handler__PDT as PDT;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
+use Tribe__Tickets__Tickets as Tickets;
 use Tribe__Tickets__Tickets_View as Tickets_View;
 
 class PayPalTest extends \Codeception\TestCase\WPTestCase {
@@ -90,6 +92,7 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_1_gross    = 4.0;
 		$ticket_2_gross    = 5.0;
 		$tickets_in_cart   = 3;
+		$total_in_cart     = number_format( $ticket_1_gross + $ticket_2_gross, 2, '.', '' );
 
 		// we have a ticket product in the database
 		$ticket_1_id = $this->create_paypal_ticket( $event_1_id, $ticket_1_price );
@@ -97,7 +100,7 @@ class PayPalTest extends \Codeception\TestCase\WPTestCase {
 
 		$body = <<<EOT
 SUCCESS
-mc_gross=9.00
+mc_gross={$total_in_cart}
 protection_eligibility=Eligible
 address_status=confirmed
 item_number1={$event_1_id}%3A{$ticket_1_id}
@@ -146,30 +149,41 @@ mc_currency=USD
 residence_country=US
 shipping_method=Default
 transaction_subject=
-payment_gross=9.00
+payment_gross={$total_in_cart}
 EOT;
 
 		tribe( 'tickets.data_api' );
+
 		/** @var PayPal $paypal */
-		$paypal  = tribe( 'tickets.commerce.paypal' );
+		$paypal = tribe( 'tickets.commerce.paypal' );
+
 		/** @var Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
 		/** @var PDT $pdt */
 		$pdt = tribe( 'tickets.commerce.paypal.handler.pdt' );
 
 		$data = $pdt->parse_transaction_body( $body );
+
 		$gateway->set_raw_transaction_data( $data );
+
 		$parsed_transaction = $gateway->parse_transaction( $data );
 
 		$gateway->set_transaction_data( $parsed_transaction );
 		$paypal->generate_tickets();
 
-		$attendees = tribe_tickets_get_attendees( $event_1_id );
+		/** @var Post_Transient $post_transient */
+		$post_transient = tribe( 'post-transient' );
 
-		$this->assertCount( 2, $attendees, 'Attendee count for the event 1 should be 2' );
+		$post_transient->delete( $event_1_id, Tickets::ATTENDEES_CACHE );
+		$post_transient->delete( $event_2_id, Tickets::ATTENDEES_CACHE );
 
-		$attendees = tribe_tickets_get_attendees( $event_2_id );
+		$attendees_event_1 = tribe_tickets_get_attendees( $event_1_id );
 
-		$this->assertCount( 1, $attendees, 'Attendee count for the event 2 should be 2' );
+		$this->assertCount( 2, $attendees_event_1, 'Attendee count for the event 1 should be 2' );
+
+		$attendees_event_2 = tribe_tickets_get_attendees( $event_2_id );
+
+		$this->assertCount( 1, $attendees_event_2, 'Attendee count for the event 2 should be 2' );
 	}
 }

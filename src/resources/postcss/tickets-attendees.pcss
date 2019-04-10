@@ -144,12 +144,20 @@
 		margin-top: 0;
 	}
 
-	a.tickets_uncheckin {
-		display: none;
-	}
-
 	h4.tickets-summary {
 		margin: 0;
+	}
+
+	.tickets_checkin {
+		min-width: 87px;
+		text-align: center;
+	}
+
+	.tickets_uncheckin {
+		display: none;
+		height: auto;
+		line-height: 1.5;
+		white-space: normal;
 	}
 
 	.tickets_checked {
@@ -161,23 +169,18 @@
 			opacity: 1;
 		}
 
-		a.tickets_checkin {
+		.tickets_checkin {
 			display: none;
 		}
 
-		a.tickets_uncheckin {
+		.tickets_uncheckin {
 			display: block;
 			opacity: 1;
 		}
 
-		.inline a.tickets_uncheckin {
+		.inline .tickets_uncheckin {
 			display: inline;
 		}
-	}
-
-	.tickets_checkin {
-		min-width: 87px;
-		text-align: center;
 	}
 
 	.cancelled {

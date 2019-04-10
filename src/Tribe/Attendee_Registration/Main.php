@@ -29,7 +29,21 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	 * @return string
 	 */
 	public function get_slug() {
-		return Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+		$page = $this->get_attendee_registration_page();
+
+		$slug = $page ? $page->post_name : '';
+
+		if (
+			empty( $slug )
+			|| (
+				! empty( $page )
+				&& ! has_shortcode( $page->post_content, 'tribe_attendee_registration' )
+			)
+		) {
+			$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-info-slug', $this->default_page_slug );
+		}
+
+		return $slug;
 	}
 
 	/**
@@ -42,7 +56,56 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	public function is_on_page() {
 		global $wp_query;
 
-		return ! empty( $wp_query->query_vars[ $this->key_query_var ] );
+		return ! empty( $wp_query->query_vars[ $this->key_query_var ] ) ;
+	}
+
+	/**
+	 * Returns whether or not the user is on a page using the attendee registration shortcode
+	 *
+	 * @since 4.10.2
+	 *
+	 * @return boolean
+	 */
+	public function is_using_shortcode() {
+		global $wp_query;
+
+		return ! empty( $wp_query->queried_object->post_content ) && has_shortcode( $wp_query->queried_object->post_content, 'tribe_attendee_registration' );
+	}
+
+	/**
+	 * Returns a list of providers in the "cart" (AR page)
+	 *
+	 * @since 4.10.2
+	 *
+	 * @return array
+	 */
+	public function providers_in_cart() {
+		/**
+		 * Allow filtering of commerce providers in cart.
+		 *
+		 * @since 4.10.2
+		 *
+		 * @param array $providers List of commerce providers in cart.
+		 */
+		$providers = apply_filters( 'tribe_providers_in_cart', [] );
+
+		return $providers;
+	}
+
+	/**
+	 * Returns whether or not the "cart" (AR page) has tickets from multiple providers in it
+	 *
+	 * @since 4.10.2
+	 *
+	 * @return boolean
+	 */
+	public function has_mixed_providers_in_cart() {
+		$providers_in_cart = $this->providers_in_cart();
+		if ( empty( $providers_in_cart ) ) {
+			return false;
+		}
+
+		return 1 < count( $providers_in_cart );
 	}
 
 	/**
@@ -70,6 +133,32 @@ class Tribe__Tickets__Attendee_Registration__Main {
 		 */
 		$checkout_url = apply_filters( 'tribe_tickets_attendee_registration_checkout_url', null );
 
+		if ( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === tribe_get_request_var( 'provider' ) ) {
+			return null;
+		}
+
+		// When we want to change where we send folks based on providers, use
+		// $this->has_mixed_providers_in_cart();
+
 		return $checkout_url;
+	}
+
+	/**
+	 * Get the Attendee Registration page object in a backwards compatible way with slug / ID options.
+	 *
+	 * @since TBD
+	 *
+	 * @return WP_Post|null The Attendee Registration page object if found, null if not found.
+	 */
+	public function get_attendee_registration_page() {
+		$id   = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-id', false );
+
+		if ( ! empty( $id ) ) {
+			return get_post( $id );
+		}
+
+		$slug = Tribe__Settings_Manager::get_option( 'ticket-attendee-page-slug', false );
+
+		return get_page_by_path( $slug );
 	}
 }

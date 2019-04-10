@@ -9,22 +9,24 @@ modules:
         - Asserts #PHPUnit-like assertions
     config:
         WPWebDriver:
-            url: '%WP_URL%'
+            # We have to use a URL Chromedriver will be able to resolve.
+            # See the `.env` file for more information.
+            url: 'http://%WP_CHROMEDRIVER_URL%'
             # see codeception.dist.yml for the configuration
             adminUsername: %WP_ADMIN_USERNAME%
             adminPassword: %WP_ADMIN_PASSWORD%
-            adminPath: '%WP_ADMIN_PATH%'
+            adminPath: '/wp-admin'
             browser: chrome
             host: %CHROMEDRIVER_HOST%
             port: %CHROMEDRIVER_PORT%
             window_size: false
             capabilities:
               chromeOptions:
-                args: ["--headless", "--disable-gpu", "--proxy-server='direct://'", "--proxy-bypass-list=*", "--url-base=/wd/hub" ]
+                args: ["--headless", "--disable-gpu", "--proxy-server='direct://'", "--proxy-bypass-list=*" ]
         WPDb:
-           dsn: 'mysql:host=%DB_HOST%;dbname=%DB_NAME%'
-           user: %DB_USER%
-           password: %DB_PASSWORD%
+           dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
+           user: %WP_DB_USER%
+           password: %WP_DB_PASSWORD%
            dump: 'tests/_data/dump.sql'
            populate: true
            waitlock: 10

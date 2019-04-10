@@ -4,7 +4,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.10.1.2';
+	const VERSION = '4.10.4';
 
 	/**
 	 * Min required The Events Calendar version
@@ -262,6 +262,7 @@ class Tribe__Tickets__Main {
 		Tribe__Tickets__JSON_LD__Type::hook();
 
 		tribe( 'tickets.privacy' );
+
 		/**
 		 * Fires once Event Tickets has completed basic setup.
 		 */
@@ -276,6 +277,7 @@ class Tribe__Tickets__Main {
 	 */
 	public function bind_implementations() {
 		tribe_singleton( 'tickets.main', $this );
+
 		tribe_singleton( 'tickets.rsvp', new Tribe__Tickets__RSVP );
 		tribe_singleton( 'tickets.commerce.currency', 'Tribe__Tickets__Commerce__Currency', array( 'hook' ) );
 		tribe_singleton( 'tickets.commerce.paypal', new Tribe__Tickets__Commerce__PayPal__Main );
@@ -283,6 +285,9 @@ class Tribe__Tickets__Main {
 
 		// Attendee Registration Page
 		tribe_register_provider( 'Tribe__Tickets__Attendee_Registration__Service_Provider' );
+
+		// ORM
+		tribe_register_provider( 'Tribe__Tickets__Service_Providers__ORM' );
 
 		// REST API v1
 		tribe_register_provider( 'Tribe__Tickets__REST__V1__Service_Provider' );
@@ -451,6 +456,10 @@ class Tribe__Tickets__Main {
 	 */
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ) );
+
+		// connect upgrade script
+		add_action( 'init', array( $this, 'run_updates' ), 0, 0 );
+
 		add_filter( 'tribe_post_types', array( $this, 'inject_post_types' ) );
 
 		// Setup Help Tab texting
@@ -742,7 +751,7 @@ class Tribe__Tickets__Main {
 	 * Returns the supported post types for tickets
 	 */
 	public function post_types() {
-		$options = get_option( Tribe__Main::OPTIONNAME, array() );
+		$options = (array) get_option( Tribe__Main::OPTIONNAME, array() );
 
 		// if the ticket-enabled-post-types index has never been set, default it to tribe_events
 		if ( ! array_key_exists( 'ticket-enabled-post-types', $options ) ) {
@@ -845,8 +854,8 @@ class Tribe__Tickets__Main {
 	 *
 	 */
 	public function run_updates() {
-		if ( ! class_exists( 'Tribe__Events__Updater' ) ) {
-			return; // core needs to be updated for compatibility
+		if ( ! class_exists( 'Tribe__Updater' ) ) {
+			return;
 		}
 
 		$updater = new Tribe__Tickets__Updater( self::VERSION );

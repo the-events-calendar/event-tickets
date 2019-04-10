@@ -7,7 +7,8 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @since 4.10.2 Use md5() for field name slugs
+ * @version 4.10.2
  *
  */
 $required      = isset( $field->required ) && 'on' === $field->required ? true : false;
@@ -28,7 +29,7 @@ if ( ! $options ) {
 		<?php
 		foreach ( $options as $option ) :
 
-			$option_slug = sanitize_title( $option );
+			$option_slug = md5( sanitize_title( $option ) );
 			$field_slug  = $field['slug'];
 			$option_id   = "tribe-tickets-meta_{$field_slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;

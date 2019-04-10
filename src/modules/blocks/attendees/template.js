@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import React from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import AutosizeInput from 'react-input-autosize';
@@ -10,9 +10,7 @@ import AutosizeInput from 'react-input-autosize';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { Component } from '@wordpress/element';
 import {
-	Dashicon,
 	ToggleControl,
 	PanelBody,
 } from '@wordpress/components';
@@ -21,7 +19,6 @@ import { InspectorControls } from '@wordpress/editor';
 /**
  * Internal dependencies
  */
-import { input } from '@moderntribe/common/utils';
 import { AttendeesGravatar } from '@moderntribe/tickets/icons';
 import './style.pcss';
 
@@ -129,10 +126,10 @@ const Controls = ( {
 );
 
 const Attendees = ( props ) => (
-	[
-		<UI {...props} />,
-		<Controls {...props} />,
-	]
+	<Fragment>
+		<UI {...props} />
+		<Controls {...props} />
+	</Fragment>
 );
 
 Attendees.propTypes = {

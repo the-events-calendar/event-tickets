@@ -1,10 +1,11 @@
 === Event Tickets ===
 
-Contributors: ModernTribe, brianjessee, camwynsp, sc0ttkclark
+Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
-Tested up to: 5.1
-Stable tag: 4.10.1.2
+Tested up to: 5.1.1
+Stable tag: 4.10.4
+Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -67,12 +68,6 @@ If you've identified a bug and have a fix, we'd welcome it at our [GitHub page f
 5. When it's finished, activate the plugin via the prompt. A message will show confirming activation was successful.
 6. For access to new updates, make sure you have added your valid License Key under Events --> Settings --> Licenses.
 
-= Requirements =
-
-* PHP 5.2.4 or greater (recommended: PHP 7.0 or greater)
-* WordPress 4.5 or above
-* jQuery 1.11.x
-
 == Screenshots ==
 
 1. RSVP and ticket on event
@@ -124,7 +119,42 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
+* Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
+* Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Tweak - Move IPN settings together in ticket settings tab [122333]
+* Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
+* Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - Tidy attendee list print styles [12599]
+
+= [4.10.3] TBD =
+
+* Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
+
+= [4.10.2] 2019-04-01 =
+
+* Tweak - Update hooks attached to tickets to notify Promoter [124118]
+* Tweak - Use buttons instead of links and add better feedback on checkin (disable buttons) [70618]
+* Tweak - Use `get_stylesheet_directory()` instead of `get_template_directory()` to honor child themes for Attendee Registration template [123613]
+* Tweak - Remove empty "Primary Info" column from attendee list email and export [122274]
+* Tweak - Only show Attendee data in the REST API for tickets if the Event/Post has the Attendees shortcode/block, with new filter `tribe_tickets_rest_api_always_show_attendee_data` to always show it. Promoter bypasses this for it's own requests [117668]
+* Tweak - Added filters: `tribe_providers_in_cart`, `tribe_tickets_rest_api_always_show_attendee_data`
+* Tweak - Changed views: `blocks/tickets/registration/attendee/fields/checkbox`, `blocks/tickets/registration/attendee/fields/radio`, `registration/attendees/fields/checkbox`, `registration/attendees/fields/radio`, `registration/button-checkout`, `tickets/orders`
+* Fix - Add variable not defined when a ticket was moved to a different event [124164]
+* Fix - Resolve problems with `WP_Theme::get_page_templates()` usage, use `array_keys()` instead of `array_values()` since the array is keyed by filename, not template name. Props to @eri-trabiccolo for flagging this! [123613]
+* Fix - Allow IE users to increment/decrement the ticket quantity field via the buttons [121073]
+* Fix - Use a md5 hash for checkbox and radio option names to prevent fields from not saving if they a large amount of characters [119448]
+* Fix - Remove duplicate coding to update RSVP stock when deleting an attendee [123334]
+* Fix - When updating RSVP stock use the capacity - minus complete attendees for the new stock number and prevent negative stock [123334]
+* Fix - Fix React console warnings when editing events [121198]
+* Fix - Correct attendee list page on posts and pages [123514]
+* Fix - Connect Tribe Commerce PayPal tickets into the shared capacity and fix counts in PayPal sales report [109419]
+* Fix - Show RSVP on list view when it's the only attached ticket [123124]
+* Fix - Make submit button dependent on presence of editable meta data [114111]
+* Fix - Allow the PayPal confirmation email address sender to be empty, so it can default to the WordPress site email address [122745]
+* Fix - Stop claiming that the Attendee Registration page is an archive, add shortcode to display on any page [123044]
+* Fix - Remove CSS that was hiding the RSVP form when Blocks are disabled [123136]
+* Fix - Prevent the classic RSVP form from showing in block-enabled posts on front-end [124394]
+* Language - 1 new strings added, 116 updated, 0 fuzzied, and 1 obsoleted
 
 = [4.10.1.2] 2019-03-14 =
 
@@ -364,7 +394,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Make sure the ticket creation is compatible with object cache. Thanks @zanart, @bethanymrac, @vividimage and others for flagging this! [105802]
 * Fix - Display a notice if the user accesses the tickets page and doesn't have tickets [89201]
 * Fix - If the ticket is a WooCommerce product and has a featured image, display it in the email [79877]
-* Fix - Make sure the Paypal orders are being recorded. Thanks @burlingtonbytes for flagging this! [108436]
+* Fix - Make sure the PayPal orders are being recorded. Thanks @burlingtonbytes for flagging this! [108436]
 * Tweak - Added new action, `tribe_tickets_ticket_email_ticket_top`, to the tickets email template [79878]
 * Tweak - Changed `tribe_tickets_email_include_event_date` filter default value to true. Now event date shows by default in RSVP ticket emails. Thanks @melvidge for the feedback [102309]
 * Tweak - Replaced start date in the RSVP non-attendace email template with full event schedule details [87686]
@@ -537,7 +567,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Improved get_ticket_counts() to account for tickets with global stock enabled  [82684]
 * Fix - Improved tribe_events_count_available_tickets() to account for tickets with global stock enabled (thanks to Florian for reporting this) [81967]
-* Fix — Fixed some PHP notices that would show up when buying EDD tickets. [83277]
+* Fix — Fixed some PHP notices that would show up when buying EDD tickets [83277]
 
 
 = [4.5.2] 2017-07-13 =
@@ -623,8 +653,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Fix - Resolve the Fatals related to undefined methods and Memory exhaustion [71958, 71912]
 * Fix - Use timezoned time for `tribe_events_ticket_is_on_sale()` [71959]
-* Tweak - Improvements to the Front End UX Tickets RSVP Styles. [72036]
-* Fix - Prevent content from being cut off on check in screen on iphone, other tweaks to mobile views. [70771]
+* Tweak - Improvements to the Front End UX Tickets RSVP Styles [72036]
+* Fix - Prevent content from being cut off on check in screen on iphone, other tweaks to mobile views [70771]
 * Fix - Prevent PHP 5.2 Strict mode from throwing notices due to usage of `is_a` [72812]
 
 = [4.4.0.1] 2017-01-09 =
@@ -670,7 +700,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.3.1] 2016-10-20 =
 
-* Tweak - Registered plugin as active with Tribe Common. [66657]
+* Tweak - Registered plugin as active with Tribe Common [66657]
 * Fix - When searching in the attendees list the ticket meta details can still be toggled after search [61783]
 * Fix - Fixed an issue where long file names would break plugin updates on some Windows installations [62552]
 

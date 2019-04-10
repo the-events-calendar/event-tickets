@@ -119,26 +119,47 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	 */
 	public function filter_single_ticket_data( $data, $request ) {
 		$ticket_id = $request['id'];
+
+		 // If the user cannot edit this ticket then do not disclose this information.
+		$post_type = get_post_type_object( get_post_type( $ticket_id ) );
+		if ( ! ( $post_type instanceof WP_Post_Type && current_user_can( $post_type->cap->edit_post, $ticket_id ) ) ) {
+			return $data;
+		}
+
 		$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
-		if ( $ticket === null ) {
+		if ( ! $ticket ) {
+			return $data;
+		}
+
+		$ticket_post = get_post( $ticket_id );
+
+		$ticket_post_type_object = get_post_type_object( $ticket_post->post_type );
+
+		if ( ! $ticket_post_type_object ) {
+			return $data;
+		}
+
+		$read_post = $ticket_post_type_object->cap->read_post;
+
+		if ( ! current_user_can( $read_post, $ticket_id ) ) {
 			return $data;
 		}
 
 		$capacity_details = empty( $data['capacity_details'] ) ? array() : $data['capacity_details'];
-		$available = empty( $capacity_details['available'] ) ? 0 : $capacity_details['available'];
-		$capacity_type = $ticket->global_stock_mode();
+		$available        = empty( $capacity_details['available'] ) ? 0 : $capacity_details['available'];
+		$capacity_type    = $ticket->global_stock_mode();
 
 		// Check for unlimited types
-		if ( $available === -1 || $capacity_type === '' ) {
+		if ( -1 === $available || '' === $capacity_type ) {
 			$capacity_type = 'unlimited';
 		}
 
-		$data['capacity_type'] = $capacity_type;
-		$data['sku'] = $ticket->sku;
-		$data['description'] = $ticket->description;
+		$data['capacity_type']             = $capacity_type;
+		$data['sku']                       = $ticket->sku;
+		$data['description']               = $ticket->description;
 		$data['available_from_start_time'] = $ticket->start_time;
-		$data['available_from_end_time'] = $ticket->end_time;
+		$data['available_from_end_time']   = $ticket->end_time;
 
 		$data['totals'] = tribe( 'tickets.handler' )->get_ticket_totals( $ticket_id );
 

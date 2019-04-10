@@ -8,32 +8,12 @@ use Tribe__Tickets__Commerce__PayPal__Notices as Notices;
 use Tribe__Tickets__Commerce__PayPal__Transaction as Transaction;
 
 class UnregisteredPDTTransactionTest extends \Codeception\TestCase\WPTestCase {
-
-	public function setUp() {
-		// before
-		parent::setUp();
-
-		// your set up methods here
-	}
-
-	public function tearDown() {
-		// your tear down methods here
-
-		// then
-		parent::tearDown();
-	}
-
-	// tests
-	public function testMe() {
-	}
-
-
 	/**
 	 * It should save PDT transaction information to database when no identity token is set
 	 *
 	 * @test
 	 */
-	public function should_save_pdt_transaction_infoormation_to_database_when_no_identity_token_is_set() {
+	public function should_save_pdt_transaction_information_to_database_when_no_identity_token_is_set() {
 		add_filter( 'tribe_tickets_commerce_paypal_handler', function () {
 			return 'pdt';
 		} );

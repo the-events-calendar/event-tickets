@@ -16,7 +16,7 @@ import { createBlock } from '@wordpress/blocks';
 import Template from './template';
 import { plugins } from '@moderntribe/common/data';
 import { withStore } from '@moderntribe/common/hoc';
-import { selectors } from '@moderntribe/tickets/data/blocks/ticket';
+import { selectors, constants } from '@moderntribe/tickets/data/blocks/ticket';
 
 const getHasRecurrenceRules = ( state ) => {
 	let hasRules = false;
@@ -28,20 +28,26 @@ const getHasRecurrenceRules = ( state ) => {
 	return hasRules;
 };
 
-const mapStateToProps = ( state, ownProps ) => ( {
-	hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-	hasRecurrenceRules: getHasRecurrenceRules( state ),
-	hasCreatedTickets: selectors.hasCreatedTickets( state ),
-	onConfirmClick: () => {
-		const { clientId } = ownProps;
-		const { getBlockCount } = select( 'core/editor' );
-		const { insertBlock } = wpDispatch( 'core/editor' );
+const mapStateToProps = ( state, ownProps ) => {
+	const provider = selectors.getTicketsProvider( state );
+	const page = constants.TICKET_ORDERS_PAGE_SLUG[ provider ];
 
-		const nextChildPosition = getBlockCount( clientId );
-		const block = createBlock( 'tribe/tickets-item', {} );
-		insertBlock( block, nextChildPosition, clientId );
-	},
-} );
+	return {
+		hasCreatedTickets: selectors.hasCreatedTickets( state ),
+		hasOrdersPage: Boolean( page ),
+		hasRecurrenceRules: getHasRecurrenceRules( state ),
+		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
+		onConfirmClick: () => {
+			const { clientId } = ownProps;
+			const { getBlockCount } = select( 'core/editor' );
+			const { insertBlock } = wpDispatch( 'core/editor' );
+
+			const nextChildPosition = getBlockCount( clientId );
+			const block = createBlock( 'tribe/tickets-item', {} );
+			insertBlock( block, nextChildPosition, clientId );
+		},
+	};
+};
 
 export default compose(
 	withStore(),

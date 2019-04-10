@@ -448,7 +448,7 @@ class Tribe__Tickets__Attendees {
 
 	/**
 	 * Generates a list of attendees taking into account the Screen Options.
-	 * It's used both for the Email functionality, as for the CSV export.
+	 * It's used both for the Email functionality, as well as the CSV export.
 	 *
 	 * @since 4.6.2
 	 *
@@ -486,6 +486,7 @@ class Tribe__Tickets__Attendees {
 		$hidden = array_merge( get_hidden_columns( $this->page_id ), array(
 			'cb',
 			'meta_details',
+			'primary_info',
 			'provider',
 			'purchaser',
 			'status',
@@ -590,18 +591,11 @@ class Tribe__Tickets__Attendees {
 
 			// Get indexes by keys
 			$flip  = array_flip( $items[0] );
-			$prime = $flip['Primary Information'];
 			$name  = $flip['Customer Name'];
 			$email = $flip['Customer Email Address'];
 
 			//And echo the data
 			foreach ( $items as $item ) {
-				if ( empty( $item[ $prime ] ) ) {
-					$string = ! empty( $item[ $name ] ) ? $item[ $name ] : '';
-					$string .= ! empty( $item[ $email ] ) ? ', ' . $item[ $email ] : '';
-					$item[ $prime ] = $string;
-				}
-
 				fputcsv( $output, $item );
 			}
 

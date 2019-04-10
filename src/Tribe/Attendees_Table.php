@@ -411,18 +411,18 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		$button_classes = ! empty( $item['order_status'] ) && in_array( $item['order_status'], $check_in_stati ) ?
-			'button-primary' : 'button-primary button-disabled';
+			'' : 'button-disabled';
 
 		if ( empty( $this->event ) ) {
 			$checkin   = sprintf(
-				'<a href="#" data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
+				'<button data-attendee-id="%d" data-provider="%s" class="%s tickets_checkin">%s</button>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $provider ),
 				esc_attr( $button_classes ),
 				esc_html__( 'Check In', 'event-tickets' )
 			);
 			$uncheckin = sprintf(
-				'<span class="delete"><a href="#" data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>',
+				'<span class="delete"><button data-attendee-id="%d" data-provider="%s" class="tickets_uncheckin">%s</button></span>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $provider ),
 				sprintf(
@@ -434,7 +434,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		} else {
 			// add the additional `data-event-id` attribute if this is an event
 			$checkin   = sprintf(
-				'<a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="%s tickets_checkin">%s</a>',
+				'<button data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="button-primary %s tickets_checkin">%s</button>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $this->event->ID ),
 				esc_attr( $provider ),
@@ -442,11 +442,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 				esc_html__( 'Check In', 'event-tickets' )
 			);
 			$uncheckin = sprintf(
-				'<span class="delete"><a href="#" data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="tickets_uncheckin">%s</a></span>',
+				'<span class="delete"><button data-attendee-id="%d" data-event-id="%d" data-provider="%s" class="button-secondary tickets_uncheckin">%s</button></span>',
 				esc_attr( $item['attendee_id'] ),
 				esc_attr( $this->event->ID ), esc_attr( $provider ),
 				sprintf(
-					'<div>%1$s</div><div>%2$s</div>',
+					'%1$s %2$s',
 					esc_html__( 'Undo', 'event-tickets' ),
 					esc_html__( 'Check In', 'event-tickets' )
 				)
@@ -670,6 +670,24 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get the Event ID ( Post ID ) of the Current Attendees Table
+	 *
+	 * @since TBD
+	 *
+	 * @return int $event_id the event or post id for the attendee table
+	 */
+	protected function get_post_id() {
+
+		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
+
+		//if not event_id try to use post_id
+		$event_id = empty( $event_id ) && isset( $_GET['post_id'] )  ? $_GET['post_id'] : $event_id;
+
+		return absint( $event_id );
+	}
+
+
+	/**
 	 * Process the checking-in of selected attendees from the Attendees table.
 	 */
 	protected function do_check_in() {
@@ -714,6 +732,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Process the deletion of selected attendees from the Attendees table.
+	 *
+	 * @since TBD add redirect after completing action
+	 *
 	 */
 	protected function do_delete() {
 		$attendee_ids = $this->get_action_ids();
@@ -732,6 +753,17 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 			$addon->delete_ticket( null, $id );
 		}
+
+		// redirect after deleting attendees back to attendee url
+		$post = get_post( $this->get_post_id() );
+		if ( ! isset( $post->ID ) ) {
+			return false;
+		}
+
+		$redirect_url = tribe( 'tickets.attendees' )->get_report_link( $post );
+		wp_safe_redirect( $redirect_url );
+
+		exit;
 	}
 
 	/**

@@ -2,11 +2,10 @@
 .DS_Store
 .idea
 node_modules
+vendor
 
-# build files for js minification
-
-compiler.jar
-*.ps1
+# Some people makes...
+Makefile
 
 # Tests - local config files
 codeception.yml
@@ -16,20 +15,14 @@ tests/*.suite.yml
 # Tests - local output files
 tests/_output
 
-# Some people makes...
-Makefile
-
-vendor/
-vendor/badcow
-vendor/bin
-vendor/codeception
-vendor/composer
-vendor/facebook
-vendor/guzzlehttp
-vendor/lucatume
-vendor/ocramius
-vendor/phpunit
-vendor/sebastian
-vendor/symfony
-vendor/autoload.php
+# compiled build files
 src/resources/**/app
+src/resources/css
+src/resources/js/**/*.min.js
+
+# build files for js minification
+compiler.jar
+*.ps1
+
+# add this yourself to add githoooks
+.huskyrc

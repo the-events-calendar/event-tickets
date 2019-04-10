@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Plugins - Event Tickets - Stable (latest release) package.
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2018-11-22 20:10:02+0000\n"
+"PO-Revision-Date: 2019-03-03 15:56:14+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -11,361 +11,694 @@ msgstr ""
 "Language: hu\n"
 "Project-Id-Version: Plugins - Event Tickets - Stable (latest release)\n"
 
-#: src/resources/js/app/blocks.js:42441
+#: src/modules/blocks/attendees/template.js:122
+#: src/resources/js/app/blocks.js:46854
+msgid "Display Subtitle"
+msgstr ""
+
+#: src/modules/blocks/attendees/template.js:117
+#: src/resources/js/app/blocks.js:46849
+msgid "Display Title"
+msgstr ""
+
+#: src/modules/blocks/attendees/template.js:115
+#: src/resources/js/app/blocks.js:46847
+msgid "Attendees Settings"
+msgstr ""
+
+#: src/modules/blocks/ticket/container-header/title/template.js:48
+#: src/resources/js/app/blocks.js:44539
+msgid "Ticket Type *"
+msgstr ""
+
+#: src/modules/blocks/ticket/container-header/title/template.js:32
+#: src/resources/js/app/blocks.js:44527
+msgid "This ticket has Additional Fields configured."
+msgstr ""
+
+#: src/modules/blocks/rsvp/header-image/template.js:26
+#: src/modules/blocks/tickets/header-image/template.js:26
+#: src/resources/js/app/blocks.js:42518 src/resources/js/app/blocks.js:43751
+msgid "Select an image from your Media Library to display on emailed tickets and RSVPs. For best results, use a .jpg, .png, or .gif at least 1160px wide."
+msgstr ""
+
+#: src/modules/blocks/rsvp/duration/template.js:24
+#: src/modules/blocks/ticket/container-content/advanced-options/duration/template.js:44
+#: src/resources/js/app/blocks.js:41483 src/resources/js/app/blocks.js:45490
+msgid "There is an error with the selected sales duration. Please fix the issue before saving."
+msgstr ""
+
+#: common/src/views/promoter/auth.php:84
+msgid "Terms"
+msgstr ""
+
+#: common/src/views/promoter/auth.php:83
+msgid "and"
+msgstr ""
+
+#: common/src/views/promoter/auth.php:82
+msgid "Privacy"
+msgstr ""
+
+#: common/src/views/promoter/auth.php:81
+msgid "Promoter All rights reserved."
+msgstr ""
+
+#: common/src/views/promoter/auth.php:68
+msgid "Authorize Promoter"
+msgstr ""
+
+#: common/src/views/promoter/auth.php:60
+msgid "Please authorize to continue onboarding."
+msgstr ""
+
+#: common/src/views/promoter/auth.php:58
+msgid "Sorry, unable to authenticate your site. Please contact Promoter support."
+msgstr ""
+
+#: common/src/views/promoter/auth.php:52
+msgid "Please log out and log back in as an admin account"
+msgstr ""
+
+#: common/src/views/promoter/auth.php:50
+msgid "You do not have access to authenticate this site."
+msgstr ""
+
+#: common/src/views/promoter/auth.php:45
+msgid "Please log in to continue"
+msgstr ""
+
+#: common/src/views/promoter/auth.php:40
+msgid "You're ready to begin using Promoter! Please close this window."
+msgstr ""
+
+#: common/src/views/promoter/auth.php:34
+msgid "Promoter would like to sync with your site"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:43
+msgid "Licenses for Multisites"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:37
+msgid "Expired license keys and subscriptions"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:34
+msgid "Moving your license keys"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:31
+msgid "View and manage your license keys"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:28
+msgid "Why am I being told my license key is out of installs?"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:23
+msgid "Helpful Links:"
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:10
+msgid "In order to register a plugin license, you'll first need to %1$sdownload and install%2$s the plugin you purchased. You can download the latest version of your plugin(s) from %3$syour account's downloads page%4$s. Once the plugin is installed and activated on this site, the license key field will appear below."
+msgstr ""
+
+#: common/src/admin-views/tribe-options-licenses.php:5
+msgid "If you've purchased a premium add-on, you'll need to enter your license key here in order to have access to automatic updates when new versions are available."
+msgstr ""
+
+#: common/src/Tribe/Plugins_API.php:84
+msgid "With Promoter, you’ll connect with your community via email through every stage of your event, bolster event attendance, and manage notifications more efficiently than ever. Increase event attendance and engagement by automatically sending reminders for on-sale dates, event times and more."
+msgstr ""
+
+#: common/src/views/promoter/auth.php:29 common/src/views/promoter/auth.php:77
+#: common/src/Tribe/Promoter/PUE.php:28 common/src/Tribe/Plugins_API.php:80
+msgid "Promoter"
+msgstr ""
+
+#: src/views/blocks/tickets/content-inactive.php:18
+#: src/modules/blocks/tickets/container/template.js:45
+#: src/resources/js/app/blocks.js:44082
+msgid "Tickets are no longer available"
+msgstr ""
+
+#: src/views/blocks/rsvp/content-inactive.php:18
+msgid "RSVPs are not yet available"
+msgstr ""
+
+#: src/views/blocks/rsvp/content-inactive.php:18
+msgid "RSVPs are no longer available"
+msgstr ""
+
+#: src/views/blocks/rsvp/form/submit-login.php:23
+msgid "Log in to RSVP"
+msgstr ""
+
+#: src/views/registration/attendees/success.php:15
+msgid "Attendee information has been saved."
+msgstr ""
+
+#: src/views/registration/attendees/error.php:19
+msgid "An error occurred while saving, please try again."
+msgstr ""
+
+#: src/admin-views/tpp-orders.php:103
+msgid "Total Tickets Ordered"
+msgstr ""
+
+#: src/admin-views/tpp-orders.php:90
+msgid "Total Ticket Sales"
+msgstr ""
+
+#: src/admin-views/tpp-orders.php:61
+msgid "Sales by Ticket Type"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:78
+msgid "Your ratings keep us focused on making our plugins as useful as possible so we can help other WordPress users just like you."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:65
+msgid "Add me to the list"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:59
+msgid "Stay in touch with Event Tickets and our entire family of events management tools. We share news, occasional discounts, and hilarious gifs."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:58
+msgid "Don't Miss Out"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:54
+msgid "Get the latest block editor news"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:54
+msgid "Gearing up with Gutenberg?"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:53
+msgid "View the latest changelog"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:53
+msgid "Frequent maintenance releases keep your ticket sales running smoothly."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:52
+msgid "The Latest and Greatest"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:44
+msgid "Submit a Help Desk Request"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:43
+msgid "Available Translations"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:42
+msgid "Search the Knowledgebase"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:40
+msgid "We’ve got your back every step of the way."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:39
+msgid "Resources and Support"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:32
+msgid "Key Features"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:30
+msgid "Start strong with these helpful resources."
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:20
+msgid "to create your very first ticket!"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:19
+msgid "section of the admin"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:17
+msgid "the"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:15
+msgid "Check out the resources below for a comprehensive intro to the plugin, or head to"
+msgstr ""
+
+#: src/admin-views/admin-welcome-message.php:9
+msgid "Event Tickets is all about getting tickets into the hands of your attendees as efficiently as possible. No muss, no fuss&mdash;just one seamless transaction on your site."
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:111
+msgid "If this number is less than the number of tickets left for sale on your event, this will prevent the \"# of tickets left\" text from showing on your website. You can leave this blank if you would like to always show the text."
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:110
+msgid "Display # tickets left threshold"
+msgstr ""
+
+#: src/admin-views/tribe-options-tickets.php:91
+#: src/admin-views/tribe-options-tickets.php:101
+msgid "This setting only impacts events made with the classic editor."
+msgstr ""
+
+#: src/Tribe/Assets.php:193
+msgid "There is unsaved attendee information. Are you sure you want to continue?"
+msgstr ""
+
+#: src/Tribe/Editor/Attendee_Registration.php:119
+msgid "Back to Editor"
+msgstr ""
+
+#: src/Tribe/Editor/Attendee_Registration.php:92
+msgid "Attendee Registration fields saved. Make additional changes or %1$s"
+msgstr ""
+
+#: src/Tribe/Editor/Attendee_Registration.php:90
+msgid "return to the content editor"
+msgstr ""
+
+#: src/Tribe/Main.php:399
+msgid "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about moving you to a newer version of PHP."
+msgstr ""
+
+#: src/Tribe/Main.php:395
+msgid "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your WordPress install."
+msgstr ""
+
+#: src/Tribe/Status/Abstract_Commerce.php:275
+msgid "Total Ordered counts tickets from orders of any status, including pending and refunded."
+msgstr ""
+
+#: src/Tribe/Status/Abstract_Commerce.php:255
+msgid "Total Sales counts tickets from all completed orders."
+msgstr ""
+
+#: src/Tribe/Status/Abstract_Commerce.php:235
+msgid "Sold counts tickets from completed orders only."
+msgstr ""
+
+#: src/Tribe/Status/Abstract_Commerce.php:210
+msgid "pending order completion"
+msgstr ""
+
+#: src/Tribe/Commerce/Currency.php:275
+msgid "Russian Ruble (RUB)"
+msgstr ""
+
+#: src/Tribe/Commerce/Currency.php:227
+msgid "Indian Rupee (INR)"
+msgstr ""
+
+#: src/functions/php-min-version.php:76
+msgid "Contact your Host or your system administrator and ask to upgrade to the latest version of PHP."
+msgstr ""
+
+#: src/functions/php-min-version.php:74
+msgid "To allow better control over dates, advanced security improvements and performance gain."
+msgstr ""
+
+#: src/functions/php-min-version.php:64
+msgid "<b>%1$s</b> requires <b>PHP %2$s</b> or higher."
+msgid_plural "<b>%1$s</b> require <b>PHP %2$s</b> or higher."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/functions/php-min-version.php:52
+msgctxt "Plugin A\",\" Plugin B"
+msgid ", "
+msgstr ""
+
+#: src/functions/php-min-version.php:51
+msgctxt "Plugin A \"and\" Plugin B"
+msgid " and "
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "http://m.tri.be/1acb"
+msgstr ""
+
+#: src/resources/js/app/blocks.js:45703
 msgid "Ticket SKU"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:42120
+#: src/resources/js/app/blocks.js:45351
 msgid "Ticket capacity will only be used by attendees buying this ticket type"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:42033
+#: src/resources/js/app/blocks.js:45264
 msgid "Number of tickets available"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:42033
+#: src/resources/js/app/blocks.js:45264
 msgid "(optional) Limit sales of this ticket to:"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:42017
+#: src/resources/js/app/blocks.js:45242
 msgid "Set shared capacity:"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:39705
+#: src/resources/js/app/blocks.js:42870
 msgid "You can also enter keywords to help find the target event by title or description"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:39671
+#: src/resources/js/app/blocks.js:42836
 msgid "No posts found"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:38753
-msgid "Enable \"Not Going responses\""
+#: src/resources/js/app/blocks.js:41910
+msgid "Enable \"Not Going\" responses"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:38723
+#: src/resources/js/app/blocks.js:41881
 msgid "Leave blank if unlimited"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:38718
+#: src/resources/js/app/blocks.js:41876
 msgid "RSVP Capacity"
 msgstr ""
 
-#: src/resources/js/app/blocks.js:38611 src/resources/js/app/blocks.js:42629
+#: src/resources/js/app/blocks.js:41670 src/resources/js/app/blocks.js:46063
 msgid "Advanced Options"
 msgstr ""
 
-#: common/src/modules/elements/time-picker/element.js:54
-#: common/src/modules/elements/time-picker/element.js:147
-#: common/src/resources/js/app/elements.js:59982
-#: common/src/resources/js/app/elements.js:60083
+#: common/src/modules/elements/time-picker/element.js:57
+#: common/src/modules/elements/time-picker/element.js:148
+#: common/src/resources/js/app/elements.js:60102
+#: common/src/resources/js/app/elements.js:60204
 msgid "All Day"
-msgstr ""
+msgstr "Egész nap"
 
 #: common/src/modules/elements/image-upload/element.js:46
-#: common/src/resources/js/app/elements.js:59497
+#: common/src/resources/js/app/elements.js:59581
 msgid "remove"
-msgstr ""
+msgstr "eltávolítás"
 
-#: src/modules/blocks/tickets/container/template.js:36
-#: src/resources/js/app/blocks.js:40927
+#: src/modules/blocks/tickets/container/template.js:40
+#: src/resources/js/app/blocks.js:44077
 msgid "To create tickets, you'll need to enable an ecommerce solution."
 msgstr ""
 
-#: src/modules/blocks/tickets/container/template.js:35
-#: src/resources/js/app/blocks.js:40927
+#: src/modules/blocks/tickets/container/template.js:43
+#: src/resources/js/app/blocks.js:44080
 msgid "Edit this block to create your first ticket."
 msgstr ""
 
-#: src/modules/blocks/tickets/container/template.js:33
-#: src/resources/js/app/blocks.js:40926
+#: src/modules/blocks/tickets/container/template.js:39
+#: src/resources/js/app/blocks.js:44076
 msgid "There is no ecommerce available"
 msgstr ""
 
-#: src/modules/blocks/tickets/container/template.js:32
-#: src/resources/js/app/blocks.js:40926
+#: src/modules/blocks/tickets/container/template.js:42
+#: src/resources/js/app/blocks.js:44079
 msgid "There are no tickets yet"
 msgstr ""
 
-#: src/modules/blocks/tickets/index.js:26 src/resources/js/app/blocks.js:41250
+#: src/modules/blocks/tickets/index.js:26 src/resources/js/app/blocks.js:44449
 msgid "Sell tickets and register attendees."
 msgstr ""
 
 #: src/modules/blocks/tickets/availability/template.js:43
-#: src/resources/js/app/blocks.js:40851
+#: src/resources/js/app/blocks.js:43993
 msgid "%d total tickets"
 msgstr ""
 
 #: src/modules/blocks/tickets/availability/template.js:42
-#: src/resources/js/app/blocks.js:40850
+#: src/resources/js/app/blocks.js:43992
 msgid "%d total ticket"
 msgstr ""
 
 #: src/modules/blocks/tickets/availability/template.js:31
-#: src/resources/js/app/blocks.js:40844
+#: src/resources/js/app/blocks.js:43986
 msgid "%d tickets available"
 msgstr ""
 
 #: src/modules/blocks/tickets/availability/template.js:30
-#: src/resources/js/app/blocks.js:40843
+#: src/resources/js/app/blocks.js:43985
 msgid "%d ticket available"
 msgstr ""
 
 #: src/modules/blocks/tickets/action-dashboard/template.js:24
-#: src/resources/js/app/blocks.js:40291
+#: src/resources/js/app/blocks.js:43433
 msgid "Add Tickets"
 msgstr ""
 
 #: src/modules/blocks/tickets/controls/template.js:62
-#: src/resources/js/app/blocks.js:41063
+#: src/resources/js/app/blocks.js:44238
 msgid "Sell tickets using"
 msgstr ""
 
 #: src/modules/blocks/tickets/controls/template.js:59
-#: src/resources/js/app/blocks.js:41053
+#: src/resources/js/app/blocks.js:44228
 msgid "Tickets Settings"
 msgstr ""
 
 #: src/modules/blocks/tickets/controls/template.js:25
-#: src/resources/js/app/blocks.js:41013
+#: src/resources/js/app/blocks.js:44188
 msgid "Note: adjusting this setting will only impact new tickets. Existing tickets will not change. We highly recommend that all tickets for one event use the same ecommerce plugin"
 msgstr ""
 
 #: src/modules/blocks/tickets/controls/template.js:20
-#: src/resources/js/app/blocks.js:41011
+#: src/resources/js/app/blocks.js:44186
 msgid "It looks like you have multiple ecommerce plugins active. We recommend running only one at a time. However, if you need to run multiple, please select which one to use to sell tickets for this event. "
 msgstr ""
 
 #: src/modules/blocks/tickets/capacity-table/template.js:49
-#: src/resources/js/app/blocks.js:40509
+#: src/resources/js/app/blocks.js:43651
 msgid "Total Capacity"
 msgstr ""
 
 #: src/modules/blocks/tickets/capacity-table/template.js:44
-#: src/resources/js/app/blocks.js:40504
+#: src/resources/js/app/blocks.js:43646
 msgid "Independent capacity"
 msgstr ""
 
 #: src/modules/blocks/tickets/capacity-table/template.js:39
-#: src/resources/js/app/blocks.js:40499
+#: src/resources/js/app/blocks.js:43641
 msgid "Shared capacity"
 msgstr ""
 
 #: src/modules/blocks/attendees/index.js:22
-#: src/resources/js/app/blocks.js:43604
+#: src/resources/js/app/blocks.js:46945
 msgid "Show the gravatars of people coming to this event."
 msgstr ""
 
-#: src/modules/blocks/attendees/template.js:27
-#: src/resources/js/app/blocks.js:43461
+#: src/modules/blocks/attendees/template.js:33
+#: src/resources/js/app/blocks.js:46751
 msgid "(X) people are attending this event"
 msgstr ""
 
-#: src/modules/blocks/attendees/template.js:26
+#: src/modules/blocks/attendees/template.js:32
 #: src/modules/blocks/attendees/index.js:37
-#: src/resources/js/app/blocks.js:43460 src/resources/js/app/blocks.js:43616
+#: src/resources/js/app/blocks.js:46750 src/resources/js/app/blocks.js:46957
 msgid "Who's Attending?"
 msgstr ""
 
 #: src/modules/blocks/ticket/container-content/attendees-registration/template.js:18
-#: src/resources/js/app/blocks.js:42892
+#: src/resources/js/app/blocks.js:46159
 msgid "Save your ticket to enable attendee registration fields"
 msgstr ""
 
-#: src/modules/blocks/ticket/container-content/advanced-options/move-delete/template.js:20
-#: src/resources/js/app/blocks.js:42529
+#: src/modules/blocks/ticket/container-content/advanced-options/move-delete/template.js:21
+#: src/resources/js/app/blocks.js:45960
 msgid "Remove Ticket"
 msgstr ""
 
-#: src/modules/blocks/ticket/container-content/advanced-options/duration/template.js:28
-#: src/resources/js/app/blocks.js:42245
+#: src/modules/blocks/ticket/container-content/advanced-options/duration/template.js:31
+#: src/resources/js/app/blocks.js:45480
 msgid "Sale Duration"
 msgstr ""
 
-#: src/modules/blocks/ticket/container-content/ecommerce-options/template.js:78
-#: src/resources/js/app/blocks.js:42777
+#: src/modules/blocks/ticket/container-content/advanced-options/ecommerce-options/template.js:78
+#: src/resources/js/app/blocks.js:45837
 msgid "Ecommerce"
 msgstr ""
 
-#: src/modules/blocks/ticket/container-content/ecommerce-options/template.js:51
-#: src/resources/js/app/blocks.js:42756
+#: src/modules/blocks/ticket/container-content/advanced-options/ecommerce-options/template.js:51
+#: src/resources/js/app/blocks.js:45816
 msgid "View Sales Report"
 msgstr ""
 
-#: src/modules/blocks/ticket/container-content/ecommerce-options/template.js:38
-#: src/resources/js/app/blocks.js:42747
+#: src/modules/blocks/ticket/container-content/advanced-options/ecommerce-options/template.js:38
+#: src/resources/js/app/blocks.js:45807
 msgid "Edit Ticket in WooCommerce"
 msgstr ""
 
-#: src/modules/blocks/ticket/container-content/ecommerce-options/template.js:36
-#: src/resources/js/app/blocks.js:42745
+#: src/modules/blocks/ticket/container-content/advanced-options/ecommerce-options/template.js:36
+#: src/resources/js/app/blocks.js:45805
 msgid "Edit Ticket in Easy Digital Downloads"
 msgstr ""
 
 #: src/modules/blocks/ticket/container-header/quantity/quantity-bar/element.js:37
-#: src/resources/js/app/blocks.js:41728
+#: src/resources/js/app/blocks.js:44953
 msgid "cap"
 msgstr ""
 
 #: src/modules/blocks/ticket/container-header/quantity/template.js:40
-#: src/resources/js/app/blocks.js:41793
+#: src/resources/js/app/blocks.js:45018
 msgid "unlimited"
 msgstr ""
 
 #: src/modules/blocks/ticket/container-header/quantity/template.js:33
-#: src/resources/js/app/blocks.js:41786
+#: src/resources/js/app/blocks.js:45011
 msgid "%d of %d sold"
 msgstr ""
 
 #: src/modules/blocks/ticket/container-header/quantity/template.js:32
-#: src/resources/js/app/blocks.js:41786
+#: src/resources/js/app/blocks.js:45011
 msgid "%d sold"
 msgstr ""
 
 #: src/modules/blocks/ticket/container-header/price/template.js:33
-#: src/resources/js/app/blocks.js:41501
+#: src/resources/js/app/blocks.js:44726
 msgid "0"
 msgstr ""
 
 #: src/modules/blocks/ticket/container-header/description/template.js:30
-#: src/resources/js/app/blocks.js:41409
+#: src/resources/js/app/blocks.js:44634
 msgid "Description"
-msgstr ""
+msgstr "Leírás"
 
-#: src/modules/blocks/ticket/index.js:16 src/resources/js/app/blocks.js:43394
+#: src/modules/blocks/ticket/index.js:16 src/resources/js/app/blocks.js:46679
 msgid "A single configured ticket type."
 msgstr ""
 
-#: src/modules/blocks/ticket/index.js:15 src/resources/js/app/blocks.js:43393
+#: src/modules/blocks/ticket/index.js:15 src/resources/js/app/blocks.js:46678
 msgid "Event Ticket"
 msgstr ""
 
 #: src/modules/blocks/ticket/dashboard/template.js:21
-#: src/resources/js/app/blocks.js:43131
+#: src/resources/js/app/blocks.js:46403
 msgid "Create Ticket"
 msgstr ""
 
 #: src/modules/blocks/ticket/dashboard/template.js:20
-#: src/resources/js/app/blocks.js:43131
+#: src/resources/js/app/blocks.js:46403
 msgid "Update Ticket"
 msgstr ""
 
 #: src/modules/blocks/rsvp/attendee-registration/template.js:22
 #: src/modules/blocks/ticket/container-content/attendees-registration/template.js:20
-#: src/resources/js/app/blocks.js:38380 src/resources/js/app/blocks.js:42894
+#: src/resources/js/app/blocks.js:41762 src/resources/js/app/blocks.js:46161
 msgid "+ Add"
 msgstr ""
 
 #: src/modules/blocks/rsvp/attendee-registration/template.js:18
-#: src/resources/js/app/blocks.js:38376
+#: src/resources/js/app/blocks.js:41758
 msgid "Save your RSVP to enable attendee registration fields"
 msgstr ""
 
-#: src/modules/blocks/rsvp/container-header/template.js:66
-#: src/resources/js/app/blocks.js:38002
+#: src/modules/blocks/rsvp/container-header/template.js:71
+#: src/resources/js/app/blocks.js:41084
 msgid "%d available"
 msgstr ""
 
-#: src/modules/blocks/rsvp/container-header/template.js:52
-#: src/resources/js/app/blocks.js:37990
+#: src/modules/blocks/rsvp/container-header/template.js:57
+#: src/resources/js/app/blocks.js:41072
 msgid "description"
 msgstr ""
 
-#: src/modules/blocks/rsvp/index.js:23 src/resources/js/app/blocks.js:40028
+#: src/modules/blocks/rsvp/index.js:23 src/resources/js/app/blocks.js:43170
 msgid "Find out who is planning to attend!"
 msgstr ""
 
 #: src/modules/blocks/rsvp/header-image/template.js:33
 #: src/modules/blocks/tickets/header-image/template.js:33
-#: src/resources/js/app/blocks.js:39352 src/resources/js/app/blocks.js:40614
+#: src/resources/js/app/blocks.js:42523 src/resources/js/app/blocks.js:43756
 msgid "Upload Image"
 msgstr ""
 
 #: src/modules/blocks/rsvp/header-image/template.js:25
 #: src/modules/blocks/tickets/header-image/template.js:25
-#: src/resources/js/app/blocks.js:39346 src/resources/js/app/blocks.js:40608
+#: src/resources/js/app/blocks.js:42517 src/resources/js/app/blocks.js:43750
 msgid "Ticket Header Image"
 msgstr ""
 
-#: src/modules/blocks/rsvp/advanced-options/move-delete/container.js:43
-#: src/resources/js/app/blocks.js:38537
+#: src/modules/blocks/rsvp/advanced-options/move-delete/container.js:44
+#: src/resources/js/app/blocks.js:41598
 msgid "Are you sure you want to delete this RSVP? It cannot be undone."
 msgstr ""
 
-#: src/modules/blocks/rsvp/advanced-options/move-delete/template.js:20
-#: src/resources/js/app/blocks.js:38480
+#: src/modules/blocks/rsvp/advanced-options/move-delete/template.js:21
+#: src/resources/js/app/blocks.js:41539
 msgid "Remove RSVP"
 msgstr ""
 
 #: src/modules/blocks/rsvp/action-dashboard/template.js:44
 #: src/modules/blocks/tickets/action-dashboard/template.js:38
-#: src/resources/js/app/blocks.js:39150 src/resources/js/app/blocks.js:40305
+#: src/resources/js/app/blocks.js:42316 src/resources/js/app/blocks.js:43447
 msgid "This is a recurring event. If you add tickets they will only show up on the next upcoming event in the recurrence pattern. The same ticket form will appear across all events in the series. Please configure your events accordingly."
 msgstr ""
 
 #: src/modules/blocks/rsvp/action-dashboard/template.js:41
 #: src/modules/blocks/tickets/action-dashboard/template.js:36
-#: src/resources/js/app/blocks.js:39147 src/resources/js/app/blocks.js:40303
+#: src/resources/js/app/blocks.js:42313 src/resources/js/app/blocks.js:43445
 msgid "Warning"
 msgstr ""
 
 #: src/modules/blocks/rsvp/action-dashboard/template.js:26
-#: src/resources/js/app/blocks.js:39131
+#: src/resources/js/app/blocks.js:42297
 msgid "Create RSVP"
 msgstr ""
 
 #: src/modules/blocks/rsvp/action-dashboard/template.js:25
-#: src/resources/js/app/blocks.js:39131
+#: src/resources/js/app/blocks.js:42297
 msgid "Update RSVP"
 msgstr ""
 
 #: src/modules/blocks/rsvp/duration-label/template.js:32
-#: src/resources/js/app/blocks.js:38142
+#: src/resources/js/app/blocks.js:41227
 msgid "By default, sales will begin as soon as you save the ticket and end when the event begins"
 msgstr ""
 
 #: src/modules/blocks/rsvp/duration-label/template.js:28
-#: src/resources/js/app/blocks.js:38138
+#: src/resources/js/app/blocks.js:41223
 msgid "Duration"
 msgstr ""
 
 #: src/modules/blocks/rsvp/inactive-block/template.js:31
-#: src/resources/js/app/blocks.js:39583
+#: src/resources/js/app/blocks.js:42748
 msgid "Edit this block to create an RSVP form."
 msgstr ""
 
 #: src/modules/blocks/rsvp/inactive-block/template.js:30
-#: src/resources/js/app/blocks.js:39583
+#: src/resources/js/app/blocks.js:42748
 msgid "Edit this block to change RSVP settings."
 msgstr ""
 
 #: src/modules/blocks/rsvp/inactive-block/template.js:27
-#: src/resources/js/app/blocks.js:39581
+#: src/resources/js/app/blocks.js:42746
 msgid "There is no RSVP configured"
 msgstr ""
 
 #: src/modules/blocks/rsvp/inactive-block/template.js:26
-#: src/resources/js/app/blocks.js:39581
+#: src/resources/js/app/blocks.js:42746
 msgid "RSVP is not currently active"
 msgstr ""
 
 #: src/modules/elements/settings-dashboard/element.js:56
-#: src/resources/js/app/blocks.js:11927 src/resources/js/app/elements.js:5526
+#: src/resources/js/app/elements.js:5510 src/resources/js/app/blocks.js:14448
 msgid "close"
 msgstr ""
 
 #: src/modules/data/blocks/ticket/options.js:13
-#: src/resources/js/app/blocks.js:6163 src/resources/js/app/data.js:6141
+#: src/resources/js/app/data.js:5500 src/resources/js/app/blocks.js:5517
 msgid "Share capacity with other tickets"
 msgstr ""
 
-#: src/modules/data/blocks/ticket/sagas.js:476
-#: src/resources/js/app/blocks.js:8142 src/resources/js/app/data.js:8120
+#: src/modules/data/blocks/ticket/sagas.js:566
+#: src/resources/js/app/data.js:7728 src/resources/js/app/blocks.js:7745
 msgid "Are you sure you want to delete this ticket? It cannot be undone."
-msgstr ""
-
-#: common/src/Tribe/Editor/Configuration.php:97
-msgid "F j, Y g:i a"
 msgstr ""
 
 #: common/src/Tribe/Editor/Configuration.php:96
@@ -373,10 +706,12 @@ msgid "F j"
 msgstr ""
 
 #: common/src/Tribe/Editor/Configuration.php:95
+#: common/src/Tribe/Editor/Configuration.php:97
 msgid "F j, Y"
 msgstr ""
 
 #: common/src/Tribe/Editor/Configuration.php:94
+#: common/src/Tribe/Editor/Configuration.php:97
 msgid "g:i a"
 msgstr ""
 
@@ -396,37 +731,25 @@ msgstr ""
 
 #: common/src/Tribe/Editor/Meta.php:123
 msgid "Text Array"
-msgstr ""
+msgstr "Szöveges tömb"
 
 #: common/src/Tribe/Editor/Meta.php:105
 msgid "Numeric Array"
-msgstr ""
+msgstr "Numerikus tömb"
 
-#: src/admin-views/tribe-options-tickets.php:75
-msgid "The slug used for building the URL for the Attendee Registration Info page."
-msgstr ""
-
-#: src/admin-views/tribe-options-tickets.php:74
-msgid "Attendee Registration URL slug"
-msgstr ""
-
-#: src/Tribe/Editor.php:183
+#: src/Tribe/Editor.php:209
 msgid "Tickets Blocks"
 msgstr ""
 
-#: src/Tribe/Attendee_Registration/Template.php:268
+#: src/Tribe/Attendee_Registration/Template.php:345
 #: src/modules/blocks/rsvp/attendee-registration/template.js:20
 #: src/modules/blocks/ticket/container-content/attendees-registration/template.js:19
-#: src/resources/js/app/blocks.js:38378 src/resources/js/app/blocks.js:42893
+#: src/resources/js/app/blocks.js:41760 src/resources/js/app/blocks.js:46160
 msgid "Attendee Registration"
 msgstr ""
 
-#: src/Tribe/Editor/Attendee_Registration.php:139
+#: src/Tribe/Editor/Attendee_Registration.php:140
 msgid "Are you sure you want to leave this page?"
-msgstr ""
-
-#: src/Tribe/Editor/Attendee_Registration.php:90
-msgid "Attendee Registration fields saved."
 msgstr ""
 
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:272
@@ -438,23 +761,24 @@ msgstr ""
 msgid "Invalid nonce"
 msgstr ""
 
-#: src/Tribe/Editor/Blocks/Attendees.php:26
+#: src/Tribe/Editor/Blocks/Attendees.php:27
 msgid "Who's coming?"
 msgstr ""
 
-#: src/views/blocks/tickets/extra-available-quantity.php:21
+#: src/views/blocks/tickets/extra-available-quantity.php:22
+#: src/Tribe/Status/Abstract_Commerce.php:204
 msgid "available"
 msgstr ""
 
-#: src/views/blocks/tickets/quantity-unavailable.php:22
+#: src/views/blocks/tickets/quantity-unavailable.php:23
 msgid "Sold Out"
 msgstr ""
 
-#: src/views/blocks/tickets/submit-button.php:22
+#: src/views/blocks/tickets/submit-button.php:23
 msgid "Add to cart"
 msgstr ""
 
-#: src/views/blocks/tickets/quantity-add.php:23
+#: src/views/blocks/tickets/quantity-add.php:24
 msgid "+"
 msgstr ""
 
@@ -462,99 +786,99 @@ msgstr ""
 msgid "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor."
 msgstr ""
 
-#: src/views/blocks/tickets/registration/summary/title.php:20
+#: src/views/blocks/tickets/registration/summary/title.php:21
 msgid "Ticket Registration"
 msgstr ""
 
-#: src/views/blocks/tickets/registration/summary/ticket-quantity.php:18
+#: src/views/blocks/tickets/registration/summary/ticket-quantity.php:19
 msgid "1"
 msgstr ""
 
-#: src/views/blocks/tickets/quantity-remove.php:22
+#: src/views/blocks/tickets/quantity-remove.php:23
 msgid "-"
-msgstr ""
+msgstr "-"
 
-#: src/views/blocks/attendees/description.php:19
+#: src/views/blocks/attendees/description.php:25
 msgid "One person is attending %2$s"
 msgid_plural "%d people are attending %s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/views/blocks/attendees/order-links.php:54
-#: src/views/blocks/attendees/order-links.php:58
+#: src/views/blocks/attendees/order-links.php:55
+#: src/views/blocks/attendees/order-links.php:59
 msgid "%d %s"
 msgid_plural "%d %ss"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/views/blocks/rsvp/form/opt-out.php:38
+#: src/views/blocks/rsvp/form/opt-out.php:39
 msgid "Don't show my information on public attendee lists"
 msgstr ""
 
-#: src/views/blocks/rsvp/form/error.php:19
+#: src/views/blocks/rsvp/form/error.php:20
 msgid "Please fill in the RSVP confirmation name and email fields."
 msgstr ""
 
-#: src/views/blocks/rsvp/form/submit-button.php:24
+#: src/views/blocks/rsvp/form/submit-button.php:25
 msgid "Submit RSVP"
 msgstr ""
 
-#: src/views/blocks/rsvp/details/availability.php:25
+#: src/views/blocks/rsvp/details/availability.php:26
 msgid "remaining"
 msgstr ""
 
-#: src/views/blocks/rsvp/status/not-going.php:38
+#: src/views/blocks/rsvp/status/not-going.php:45
 #: src/modules/blocks/rsvp/counters/template.js:33
-#: src/resources/js/app/blocks.js:37908
+#: src/resources/js/app/blocks.js:40981
 msgid "Not going"
 msgstr ""
 
-#: src/views/blocks/rsvp/status/full.php:17
+#: src/views/blocks/rsvp/status/full.php:18
 msgid "RSVP Full"
 msgstr ""
 
-#: src/views/registration/attendees/fields.php:10
+#: src/views/registration/attendees/fields.php:15
 msgid "Attendee"
 msgstr ""
 
-#: src/views/registration/attendees/error.php:11
-msgid "Please fill in all required fields"
+#: src/views/registration/attendees/error.php:16
+msgid "Please fill in all required fields."
 msgstr ""
 
-#: src/views/registration/attendees/fields/select.php:34
-#: src/views/blocks/tickets/registration/attendee/fields/select.php:46
+#: src/views/registration/attendees/fields/select.php:39
+#: src/views/blocks/tickets/registration/attendee/fields/select.php:47
 msgid "Select an option"
 msgstr ""
 
-#: src/views/registration/summary/tickets-header.php:11
+#: src/views/registration/summary/tickets-header.php:16
 msgid "Ticket summary"
 msgstr ""
 
-#: src/views/registration/button-checkout.php:15
+#: src/views/registration/button-checkout.php:30
 msgid "Checkout"
 msgstr ""
 
-#: src/views/registration/content.php:39
+#: src/views/registration/content.php:44
 msgid "Save Attendee Info"
 msgstr ""
 
-#: src/views/registration/cart-empty.php:21
+#: src/views/registration/cart-empty.php:26
 msgid "Find events to attend on %1$s"
 msgstr ""
 
-#: src/views/registration/cart-empty.php:18
+#: src/views/registration/cart-empty.php:23
 msgid "the calendar"
 msgstr ""
 
-#: src/views/registration/cart-empty.php:10
+#: src/views/registration/cart-empty.php:15
 msgid "You currently have no events awaiting registration"
 msgstr ""
 
-#: src/views/registration/button-cart.php:15
+#: src/views/registration/button-cart.php:20
 msgid "Back to cart"
 msgstr ""
 
-#: src/template-tags/tickets.php:419
+#: src/template-tags/tickets.php:436
 msgid "issued"
 msgstr ""
 
@@ -563,11 +887,11 @@ msgctxt "attendee screen summary"
 msgid "Overview"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1855
+#: src/Tribe/Tickets.php:1861
 msgid " at "
 msgstr ""
 
-#: src/Tribe/Tickets.php:1849
+#: src/Tribe/Tickets.php:1855
 msgid "Tickets will be available on "
 msgstr ""
 
@@ -703,9 +1027,9 @@ msgstr ""
 msgid "Returns all the tickets matching the search criteria"
 msgstr ""
 
+#: src/Tribe/REST/V1/Endpoints/Single_Ticket.php:72
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:17
 #: src/Tribe/Editor/REST/V1/Endpoints/Single_Ticket.php:135
-#: src/Tribe/REST/V1/Endpoints/Single_Ticket.php:72
 msgid "The ticket post ID"
 msgstr ""
 
@@ -856,7 +1180,7 @@ msgstr ""
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:65
 #: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:65
 msgid "The requested page was not found."
-msgstr ""
+msgstr "A keresett oldal nem található."
 
 #: src/Tribe/REST/V1/Endpoints/Ticket_Archive.php:55
 #: src/Tribe/REST/V1/Endpoints/Attendee_Archive.php:55
@@ -1063,8 +1387,8 @@ msgstr ""
 msgid "The order number, or identifier, of the ticket purchase that generated the attendee"
 msgstr ""
 
-#: src/Tribe/REST/V1/Documentation/Attendee_Definition_Provider.php:76
 #: src/Tribe/REST/V1/Documentation/Ticket_Definition_Provider.php:72
+#: src/Tribe/REST/V1/Documentation/Attendee_Definition_Provider.php:76
 msgid "The ticket commerce provider"
 msgstr ""
 
@@ -1144,7 +1468,7 @@ msgstr ""
 msgid "Event Tickets TribeCommerce Order"
 msgstr ""
 
-#: src/Tribe/Main.php:358
+#: src/Tribe/Main.php:882
 msgid "When Event Tickets and Event Tickets Plus are both activated, Event Tickets Plus must be running version %1$s or greater. Please %2$smanually update now%3$s."
 msgstr ""
 
@@ -1156,15 +1480,15 @@ msgstr ""
 msgid "Event Aggregator adds massive import functionality to your calendar. Before you know it, you’ll be importing events from Meetup, Eventbrite, Google Calendar, iCalendar, and other URLs with ease. Schedule imports to run automatically behind-the-scenes or run them manually when you’re ready. Go ahead and import to your heart’s content—Event Aggregator hooks you up with a central dashboard in the admin to make managing your imports a breeze."
 msgstr ""
 
-#: common/src/Tribe/Main.php:276
+#: common/src/Tribe/Main.php:291
 msgid "Clear"
-msgstr ""
+msgstr "Kiürítés"
 
-#: src/admin-views/tribe-options-tickets.php:327
+#: src/admin-views/tribe-options-tickets.php:324
 msgid "You have tickets!"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:296
+#: src/admin-views/tribe-options-tickets.php:293
 msgid "After a successful PayPal order users will be redirected to this page; use the %s shortcode to display the order confirmation to the user in the page content."
 msgstr ""
 
@@ -1174,7 +1498,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:54
 msgid "Modern Tribe does not send any user data outside of your website by default."
-msgstr ""
+msgstr "Alapértelmezetten a Modern Tribe nem küld semmilyen felhasználói adatot a weboldaladon kívülre."
 
 #: src/admin-views/privacy.php:52
 msgid "Where We Send Your Data"
@@ -1190,7 +1514,7 @@ msgstr ""
 
 #: src/admin-views/privacy.php:46
 msgid "How Long You Retain this Data"
-msgstr ""
+msgstr "Amennyi ideig ezt az adatot tárolja "
 
 #: src/admin-views/privacy.php:44
 msgid "These API keys may include the following third party services: Google Maps and PayPal."
@@ -1246,15 +1570,15 @@ msgstr "Esemény, Résztvevő és Jegy vásárló információk"
 
 #: src/admin-views/privacy.php:19
 msgid "What personal data we collect and why we collect it"
-msgstr "Milyen személyes adatokat gyűjtünk, és miért?"
+msgstr "Milyen személyes adatokat gyűjtünk és miért gyűjtjük azokat"
 
 #: src/admin-views/privacy.php:17
 msgid "This information is only for guidance and not to be considered as legal advice."
-msgstr "Ez az információ csak iránymutatásra szolgál, és nem tekinthető jogi tanácsnak."
+msgstr "Ez az információ csak tájékoztató jellegű, és nem tekinthető jogi tanácsadásnak."
 
 #: src/admin-views/privacy.php:17
 msgid "Disclaimer:"
-msgstr "Nyilatkozat:"
+msgstr "Jogi nyilatkozat:"
 
 #: src/admin-views/privacy.php:16
 msgid "You should include the information below in the correct sections of you privacy policy."
@@ -1266,7 +1590,7 @@ msgstr "Ez az információ útmutatást nyújt az Event Tickets és bővítmény
 
 #: src/admin-views/privacy.php:14
 msgid "Hello,"
-msgstr "Helló!"
+msgstr "Szia,"
 
 #: src/Tribe/REST/V1/Messages.php:22
 msgid "The requested attendee check in is not available"
@@ -1313,8 +1637,8 @@ msgid "Event Tickets TribeCommerce Attendee Data"
 msgstr "Event Tickets TribeCommerce résztvevő adat"
 
 #: src/Tribe/Privacy.php:154
-#: src/modules/blocks/rsvp/container-header/template.js:32
-#: src/resources/js/app/blocks.js:37976
+#: src/modules/blocks/rsvp/container-header/template.js:35
+#: src/resources/js/app/blocks.js:41056
 msgid "RSVP Title"
 msgstr "Meghívó (RSVP) neve"
 
@@ -1334,7 +1658,7 @@ msgstr "Event Tickets meghívó (RSVP) résztvevő"
 msgid "You don't have tickets for this event"
 msgstr "Ehhez az eseményhez nincsenek jegyek"
 
-#: src/admin-views/tribe-options-tickets.php:264
+#: src/admin-views/tribe-options-tickets.php:261
 msgid "For help creating and configuring your account, call PayPal at 1-844-720-4038 (USA)"
 msgstr "Fiókjának létrehozásában és beállításában a PayPal tud segíteni az 1-844-720-4038 (USA) telefonszámon"
 
@@ -1350,11 +1674,11 @@ msgstr "2019 márciustól a(z) %1$s nem fog működni a PHP 5.6-nél régebbi ve
 msgid "Return to Cart"
 msgstr "Vissza a Kosárhoz"
 
-#: src/admin-views/tribe-options-tickets.php:161
+#: src/admin-views/tribe-options-tickets.php:158
 msgid "Tribe Commerce is a light implementation of a commerce gateway using PayPal and simplified stock handling. If you need more advanced features, take a look at %1$s. In addition to integrating with your favorite ecommerce provider, Event Tickets Plus includes options to collect custom information for attendees, check users in via QR codes, and share stock between tickets. %2$s"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:157
+#: src/admin-views/tribe-options-tickets.php:154
 msgid "Check it out!"
 msgstr "Ezt nézd meg!"
 
@@ -1380,7 +1704,7 @@ msgstr "Előadás leírása"
 
 #: common/src/admin-views/tribe-options-help.php:33
 msgid "Search our support help desk"
-msgstr "Keressen a támogatói ügyfélszolgálatunkon"
+msgstr "Keressél a támogatói oldalunkon"
 
 #: common/src/Tribe/Plugins_API.php:71
 msgid "Event Tickets Plus allows you to sell tickets to your events using WooCommerce, Easy Digital Downloads, or our built in Tribe Commerce tool. Add tickets to your posts and pages, or add %1$sThe Events Calendar%2$s and sell tickets from your event listings. Create custom registration forms, manage attendees, use custom capacity options, and more. Guest check in is easy with QR codes and our custom scanning app."
@@ -1453,7 +1777,7 @@ msgid "My Tickets for This %s"
 msgstr "Jegyeim erre a(z) %sre"
 
 #: src/views/login-to-purchase.php:16
-#: src/views/blocks/tickets/submit-login.php:19
+#: src/views/blocks/tickets/submit-login.php:20
 msgid "Log in to purchase"
 msgstr "Belépés a vásárláshoz"
 
@@ -1472,149 +1796,145 @@ msgctxt "Login link on Tribe Commerce checkout page"
 msgid "Log in before purchasing"
 msgstr "Belépés vásárlás előtt"
 
-#: src/admin-views/tribe-options-tickets.php:358
+#: src/admin-views/tribe-options-tickets.php:355
 msgid "Override the default IPN notify URL with this value. This value must be the same set in PayPal IPN Notifications settings area (%s)."
 msgstr "Az alap IPN értesítés URL lecserélése erre. Ugyanennek az értéknek kell lennie a PayPal IPN értesítés beállítások részen (%s)."
 
-#: src/admin-views/tribe-options-tickets.php:356
+#: src/admin-views/tribe-options-tickets.php:353
 msgid "IPN Notify URL"
 msgstr "IPN értesítés URL"
 
-#: src/admin-views/tribe-options-tickets.php:347
+#: src/admin-views/tribe-options-tickets.php:344
 msgid "You can see and manage your IPN Notifications history from the IPN Notifications settings area (%s)."
 msgstr "Az IPN értesítéseket az IPN értesítés beállítások részen lehet megnézni és kezelni (%s)."
 
-#: src/admin-views/tribe-options-tickets.php:344
+#: src/admin-views/tribe-options-tickets.php:341
 msgid "See your IPN Notification history"
 msgstr "Korábbi IPN értesítések megtekintése"
 
-#: src/admin-views/tribe-options-tickets.php:334
+#: src/admin-views/tribe-options-tickets.php:331
 msgid "Enables PayPal Sandbox mode for testing."
 msgstr "PayPal homokozó üzemmód engedélyezése teszteléshez."
 
-#: src/admin-views/tribe-options-tickets.php:333
+#: src/admin-views/tribe-options-tickets.php:330
 msgid "PayPal Sandbox"
 msgstr "PayPal homokozó"
 
-#: src/admin-views/tribe-options-tickets.php:325
+#: src/admin-views/tribe-options-tickets.php:322
 msgid "Subject of the confirmation email sent to customers when confirming a ticket purchase."
 msgstr "A jegyek vásárlásának megerősítésekor kiküldött levelek tárgya."
 
-#: src/admin-views/tribe-options-tickets.php:324
+#: src/admin-views/tribe-options-tickets.php:321
 msgid "Confirmation email subject"
 msgstr "Visszaigazoló email tárgya"
 
-#: src/admin-views/tribe-options-tickets.php:316
+#: src/admin-views/tribe-options-tickets.php:313
 msgid "Sender name of the confirmation email sent to customers when confirming a ticket purchase."
 msgstr "A jegyek vásárlásának megerősítésekor kiküldött levelek feladójának neve."
 
-#: src/admin-views/tribe-options-tickets.php:315
+#: src/admin-views/tribe-options-tickets.php:312
 msgid "Confirmation email sender name"
 msgstr "Visszaigazoló email felaójának a neve"
 
-#: src/admin-views/tribe-options-tickets.php:308
+#: src/admin-views/tribe-options-tickets.php:305
 msgid "Email address PayPal tickets customers will receive confirmation from."
 msgstr "Az emailcím, amelyről a PayPal vásárlók a megerősítést kapni fogják."
 
-#: src/admin-views/tribe-options-tickets.php:307
+#: src/admin-views/tribe-options-tickets.php:304
 msgid "Confirmation email sender address"
 msgstr "Visszaigazoló email feladójának a címe"
 
-#: src/admin-views/tribe-options-tickets.php:293
+#: src/admin-views/tribe-options-tickets.php:290
 msgid "Success page"
 msgstr "Siker oldal"
 
-#: src/admin-views/tribe-options-tickets.php:287
+#: src/admin-views/tribe-options-tickets.php:284
 msgid "Only decrease available ticket stock if an order is confirmed as Completed by PayPal."
 msgstr "Csak akkor csökkentse az elérhető jegykészletet, ha a rendelés állapota „PayPal által befejezett”."
 
-#: src/admin-views/tribe-options-tickets.php:286
+#: src/admin-views/tribe-options-tickets.php:283
 msgid "Decrease available ticket stock as soon as a Pending order is created."
 msgstr "Az elérhető jegykészlet csökkentése már a rendelés létrehozásakor."
 
-#: src/admin-views/tribe-options-tickets.php:282
+#: src/admin-views/tribe-options-tickets.php:279
 msgid "When a customer purchases a ticket, PayPal might flag the order as Pending. The order will be Complete once payment is confirmed by PayPal."
 msgstr "Amikor egy vásárló megvesz egy jegyet, a PayPal „Függőben” jelölést tehet a rendelésre. A rendelés akkor lesz „Teljesítve”, amikor a PayPal megerősíti a fizetést."
 
-#: src/admin-views/tribe-options-tickets.php:281
+#: src/admin-views/tribe-options-tickets.php:278
 msgid "Stock Handling"
 msgstr "Készletkezelés"
 
-#: src/admin-views/tribe-options-tickets.php:274
+#: src/admin-views/tribe-options-tickets.php:271
 msgid "The currency that will be used for Tribe Commerce transactions."
 msgstr "A Tribe Commerce ügyleteknél használt valuta."
 
-#: src/admin-views/tribe-options-tickets.php:273
+#: src/admin-views/tribe-options-tickets.php:270
 msgid "Currency Code"
 msgstr "Valuta kód"
 
-#: src/admin-views/tribe-options-tickets.php:261
+#: src/admin-views/tribe-options-tickets.php:258
 msgid "PayPal configuration status:"
 msgstr "PayPal beállítás állapota:"
 
-#: src/admin-views/tribe-options-tickets.php:238
-#: src/admin-views/tribe-options-tickets.php:250
+#: src/admin-views/tribe-options-tickets.php:235
+#: src/admin-views/tribe-options-tickets.php:247
 msgid "No"
 msgstr "Nem"
 
-#: src/admin-views/tribe-options-tickets.php:235
+#: src/admin-views/tribe-options-tickets.php:232
 msgid "Have you enabled instant payment notifications (IPN) in your PayPal account's Selling Tools?"
 msgstr "Engedélyezve van az azonnali fizetési értesítés (IPN) a PayPal fiókban az eladás eszközöknél (Selling Tools)?"
 
-#: src/admin-views/tribe-options-tickets.php:227
+#: src/admin-views/tribe-options-tickets.php:224
 msgid "PayPal email to receive payments:"
 msgstr "PayPal email a fizetések fogadásához:"
 
-#: src/admin-views/tribe-options-tickets.php:221
+#: src/admin-views/tribe-options-tickets.php:218
 msgid "Configure PayPal:"
 msgstr "PayPal beállítása:"
 
-#: src/admin-views/tribe-options-tickets.php:213
+#: src/admin-views/tribe-options-tickets.php:210
 msgid "Your site address is: %s"
 msgstr "A weboldal címe: %s"
 
-#: src/admin-views/tribe-options-tickets.php:211
+#: src/admin-views/tribe-options-tickets.php:208
 msgid "Have you entered this site's address in the Notification URL field in IPN Settings?"
 msgstr "Megadta a weboldal címét az IPN beállításoknál az értesítés URL mezőben?"
 
-#: src/admin-views/tribe-options-tickets.php:205
+#: src/admin-views/tribe-options-tickets.php:202
 msgid "In order to use Tribe Commerce to sell tickets, you must configure your PayPal account to communicate with your WordPress site. If you need help getting set up, follow %s"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:203
+#: src/admin-views/tribe-options-tickets.php:200
 msgid "these instructions"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:176
+#: src/admin-views/tribe-options-tickets.php:173
 msgid "Check this box if you wish to turn on Tribe Commerce functionality"
 msgstr "A jelölőnégyzettel bekapcsolhatja a Tribe Commerce funkcionalitást"
 
-#: src/admin-views/tribe-options-tickets.php:175
+#: src/admin-views/tribe-options-tickets.php:172
 msgid "Enable Tribe Commerce "
 msgstr "Tribe Commerce bekapcsolása"
 
-#: src/admin-views/tribe-options-tickets.php:140
+#: src/admin-views/tribe-options-tickets.php:142
 msgid "Tribe Commerce"
 msgstr "Tribe Commerce"
 
-#: src/admin-views/tribe-options-tickets.php:44
+#: src/admin-views/tribe-options-tickets.php:52
 msgid "Require users to log in before they purchase tickets"
 msgstr "A felhasználóknak be kell lépniük a jegyek vásárlásához"
 
-#: src/admin-views/tpp-orders.php:114
-msgid "Total Sales: %s %s"
-msgstr "Értékesítés összesen: %s %s"
-
-#: src/admin-views/tpp-orders.php:93
+#: src/Tribe/Status/Abstract_Commerce.php:176
 msgid "SKU: (%s)"
 msgstr "SKU: (%s)"
 
-#: src/admin-views/tpp-orders.php:26
+#: src/admin-views/tpp-orders.php:23
 msgctxt "post type details"
 msgid "%s Details"
 msgstr "%s részletek"
 
-#: src/admin-views/tpp-metabox-sku.php:30 src/resources/js/app/blocks.js:42442
+#: src/admin-views/tpp-metabox-sku.php:30 src/resources/js/app/blocks.js:45704
 msgid "A unique identifying code for each ticket type you're selling"
 msgstr "Egyedi azonosító minden értékesített jegy-típushoz"
 
@@ -1658,7 +1978,7 @@ msgstr "Ingyenes jegy esetén maradjon üresen"
 msgid "Ticket Price must be greater than zero."
 msgstr "A jegy árának 0-nál nagyobbnak kell lennie."
 
-#: src/views/registration/summary/tickets-header.php:14
+#: src/views/registration/summary/tickets-header.php:19
 #: src/admin-views/editor/column-head-price.php:1
 msgid "Price"
 msgstr "Ár"
@@ -1671,22 +1991,6 @@ msgstr "Rendelések megtekintése"
 msgid "The attendee ID is missing from the request parameters."
 msgstr "A résztvevő azonosító hiányzik a lekérés paraméterei közül."
 
-#: src/Tribe/Commerce/PayPal/Tickets_View.php:157
-msgid "denied"
-msgstr "elutasított"
-
-#: src/Tribe/Commerce/PayPal/Tickets_View.php:156
-msgid "refunded"
-msgstr "visszatérített"
-
-#: src/Tribe/Commerce/PayPal/Tickets_View.php:154
-msgid "completed"
-msgstr "teljesített"
-
-#: src/Tribe/Commerce/PayPal/Tickets_View.php:153
-msgid "undefined"
-msgstr "meghatározatlan"
-
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:149
 msgid "unavailable"
 msgstr "nem elérhető"
@@ -1694,61 +1998,6 @@ msgstr "nem elérhető"
 #: src/Tribe/Commerce/PayPal/Tickets_View.php:118
 msgid "This ticket is no longer active."
 msgstr "Ez a jegy már nem aktív."
-
-#: src/Tribe/Commerce/PayPal/Stati.php:131
-msgid "Denied <span class=\"count\">(%s)</span>"
-msgid_plural "Denied <span class=\"count\">(%s)</span>"
-msgstr[0] "Tiltott <span class=\"count\">(%s)</span>"
-msgstr[1] "Tiltott <span class=\"count\">(%s)</span>"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:126
-msgctxt "A PayPal order status"
-msgid "Denied"
-msgstr "Tiltott"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:122
-msgid "Refunded <span class=\"count\">(%s)</span>"
-msgid_plural "Refunded <span class=\"count\">(%s)</span>"
-msgstr[0] "Visszatérített <span class=\"count\">(%s)</span>"
-msgstr[1] "Visszatérített <span class=\"count\">(%s)</span>"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:117
-msgctxt "A PayPal order status"
-msgid "Refunded"
-msgstr "Visszatérítve"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:113
-msgid "Pending <span class=\"count\">(%s)</span>"
-msgid_plural "Pending <span class=\"count\">(%s)</span>"
-msgstr[0] "Függőben lévő <span class=\"count\">(%s)</span>"
-msgstr[1] "Függőben lévő <span class=\"count\">(%s)</span>"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:108
-msgctxt "A PayPal order status"
-msgid "Pending"
-msgstr "Függőben"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:104
-msgid "Not completed <span class=\"count\">(%s)</span>"
-msgid_plural "Not completed <span class=\"count\">(%s)</span>"
-msgstr[0] "Nem teljesített <span class=\"count\">(%s)</span>"
-msgstr[1] "Nem teljesített <span class=\"count\">(%s)</span>"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:99
-msgctxt "A PayPal order status"
-msgid "Not completed"
-msgstr "Nem teljesített"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:95
-msgid "Completed <span class=\"count\">(%s)</span>"
-msgid_plural "Completed <span class=\"count\">(%s)</span>"
-msgstr[0] "Teljesített <span class=\"count\">(%s)</span>"
-msgstr[1] "Teljesített <span class=\"count\">(%s)</span>"
-
-#: src/Tribe/Commerce/PayPal/Stati.php:90
-msgctxt "A PayPal order status"
-msgid "Completed"
-msgstr "Teljesített"
 
 #: src/Tribe/Commerce/PayPal/Oversell/Sell_Available.php:47
 msgid "Sell only available"
@@ -1810,8 +2059,8 @@ msgstr "Összesen"
 msgid "Status"
 msgstr "Állapot"
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:75 src/Tribe/Privacy.php:169
-#: src/Tribe/Privacy.php:450 src/Tribe/Privacy.php:546
+#: src/Tribe/Privacy.php:169 src/Tribe/Privacy.php:450
+#: src/Tribe/Privacy.php:546 src/Tribe/Commerce/PayPal/Orders/Table.php:75
 msgid "Date"
 msgstr "Dátum"
 
@@ -1827,30 +2076,31 @@ msgstr "Rendelés"
 msgid "Number of orders per page:"
 msgstr "Rendelések száma oldalanként:"
 
-#: src/Tribe/Commerce/PayPal/Orders/Sales.php:261
+#: src/Tribe/Commerce/PayPal/Orders/Sales.php:259
 msgid "Not completed"
 msgstr "Nem teljesített"
 
-#: src/Tribe/Commerce/PayPal/Orders/Sales.php:257
+#: src/Tribe/Commerce/PayPal/Orders/Sales.php:255
+#: src/admin-views/tpp-orders.php:121
 msgid "Completed"
 msgstr "Teljesített"
 
-#: src/Tribe/Commerce/PayPal/Orders/Report.php:271
+#: src/Tribe/Commerce/PayPal/Orders/Report.php:315
 msgid "Search Orders"
 msgstr "Rendelés keresése"
 
-#: src/Tribe/Commerce/PayPal/Orders/Report.php:207
+#: src/Tribe/Commerce/PayPal/Orders/Report.php:213
 msgctxt "Browser title"
 msgid "%s - PayPal Orders"
 msgstr "%s - PayPal rendelés"
 
+#: src/Tribe/Commerce/PayPal/Orders/Report.php:108
+#: src/Tribe/Commerce/PayPal/Orders/Report.php:157
 #: src/Tribe/Commerce/PayPal/Orders/Tab.php:33
-#: src/Tribe/Commerce/PayPal/Orders/Report.php:102
-#: src/Tribe/Commerce/PayPal/Orders/Report.php:151
 msgid "PayPal Orders"
 msgstr "PayPal rendelések"
 
-#: src/Tribe/Commerce/PayPal/Orders/Report.php:100
+#: src/Tribe/Commerce/PayPal/Orders/Report.php:106
 msgid "See PayPal purchases for this %s"
 msgstr "Ehhez az %shez tartozó PayPal vásárlások"
 
@@ -1862,55 +2112,25 @@ msgstr "beállítás itt"
 msgid "PayPal is using PDT data but you have not set the PDT identity token"
 msgstr "A PayPal PDT adatokat használ, de nincs beállítva a PDT azonosító token"
 
-#: src/Tribe/Commerce/PayPal/Main.php:2184
-msgctxt "a PayPal ticket order status"
-msgid "Not Completed"
-msgstr "Nem teljesített"
-
-#: src/Tribe/Commerce/PayPal/Main.php:2183
-msgctxt "a PayPal ticket order status"
-msgid "Denied"
-msgstr "Elutasított"
-
-#: src/Tribe/Commerce/PayPal/Main.php:2182
-msgctxt "a PayPal ticket order status"
-msgid "Pending"
-msgstr "Függőben lévő"
-
-#: src/Tribe/Commerce/PayPal/Main.php:2181
-msgctxt "a PayPal ticket order status"
-msgid "Refunded"
-msgstr "Visszatérített"
-
-#: src/Tribe/Commerce/PayPal/Main.php:2180
-msgctxt "a PayPal ticket order status"
-msgid "Completed"
-msgstr "Teljesített"
-
-#: src/Tribe/Commerce/PayPal/Main.php:2179
-msgctxt "a PayPal ticket order status"
-msgid "Undefined"
-msgstr "Ismeretlen"
-
-#: src/Tribe/Commerce/PayPal/Main.php:1755
+#: src/Tribe/Commerce/PayPal/Main.php:1757
 msgid "Report"
 msgstr "Jelentés"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1729
+#: src/Tribe/Commerce/PayPal/Main.php:1731
 msgid "Sales report"
 msgstr "Értékesítési jelentés"
 
-#: src/Tribe/Commerce/PayPal/Main.php:452
+#: src/Tribe/Commerce/PayPal/Main.php:454
 #: src/modules/blocks/tickets/action-buttons/orders/template.js:25
-#: src/resources/js/app/blocks.js:40151
+#: src/resources/js/app/blocks.js:43293
 msgid "Orders"
 msgstr "Rendelések"
 
-#: src/Tribe/Commerce/PayPal/Main.php:427
+#: src/Tribe/Commerce/PayPal/Main.php:429
 msgid "Tribe Commerce Ticket"
 msgstr "Tribe Commerce jegy"
 
-#: src/Tribe/Commerce/PayPal/Main.php:426
+#: src/Tribe/Commerce/PayPal/Main.php:428
 msgid "Tribe Commerce Tickets"
 msgstr "Tribe Commerce jegyek"
 
@@ -1976,7 +2196,6 @@ msgid "There was an error"
 msgstr "Hiba történt"
 
 #: src/Tribe/Commerce/PayPal/Endpoints/Success_Template.php:99
-#: src/Tribe/Commerce/PayPal/Tickets_View.php:155
 msgid "pending"
 msgstr "függőben"
 
@@ -1990,51 +2209,51 @@ msgctxt "attendee summary"
 msgid "Total Tickets Issued:"
 msgstr "Eladott jegyek száma:"
 
-#: src/Tribe/Commerce/Currency.php:293
+#: src/Tribe/Commerce/Currency.php:305
 msgid "U.S. Dollar (USD)"
 msgstr "U.S. dollár (USD)"
 
-#: src/Tribe/Commerce/Currency.php:287
+#: src/Tribe/Commerce/Currency.php:299
 msgid "Taiwan New Dollar (TWD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:281
+#: src/Tribe/Commerce/Currency.php:293
 msgid "Thai Baht (THB)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:275
+#: src/Tribe/Commerce/Currency.php:287
 msgid "Singapore Dollar (SGD)"
 msgstr "Szingapúri dollár (SGD)"
 
-#: src/Tribe/Commerce/Currency.php:269
+#: src/Tribe/Commerce/Currency.php:281
 msgid "Swedish Krona (SEK)"
 msgstr "Svéd korona (SEK)"
 
-#: src/Tribe/Commerce/Currency.php:263
+#: src/Tribe/Commerce/Currency.php:269
 msgid "Polish Zloty (PLN)"
 msgstr "Lengyel Zloty (PLN)"
 
-#: src/Tribe/Commerce/Currency.php:257
+#: src/Tribe/Commerce/Currency.php:263
 msgid "Philippine Peso (PHP)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:251
+#: src/Tribe/Commerce/Currency.php:257
 msgid "New Zealand Dollar (NZD)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:245
+#: src/Tribe/Commerce/Currency.php:251
 msgid "Norwegian Krone (NOK)"
 msgstr "Norvég korona (NOK)"
 
-#: src/Tribe/Commerce/Currency.php:239
+#: src/Tribe/Commerce/Currency.php:245
 msgid "Mexican Peso (MXN)"
 msgstr "Mexikói peso (MXN)"
 
-#: src/Tribe/Commerce/Currency.php:233
+#: src/Tribe/Commerce/Currency.php:239
 msgid "Malaysian Ringgit (MYR)"
 msgstr ""
 
-#: src/Tribe/Commerce/Currency.php:227
+#: src/Tribe/Commerce/Currency.php:233
 msgid "Japanese Yen (JPY)"
 msgstr "Japán jen (JPY)"
 
@@ -2082,7 +2301,7 @@ msgstr "Brazil reál (BRL)"
 msgid "Australian Dollar (AUD)"
 msgstr "Ausztrál dollár (AUD)"
 
-#: src/Tribe/Attendees_Table.php:776
+#: src/Tribe/Attendees_Table.php:814
 msgid "No matching attendees found."
 msgstr "Nem található ilyen résztvevő."
 
@@ -2096,16 +2315,16 @@ msgstr ""
 
 #: common/src/Tribe/Validate.php:184
 msgid "%s must not be empty"
-msgstr ""
+msgstr "A %s mező nem lehet üres"
 
-#: src/template-tags/tickets.php:429
+#: src/template-tags/tickets.php:446
 msgctxt "ticket shared capacity message (remaining stock)"
 msgid "%1$d available of shared capacity"
 msgstr ""
 
 #: src/admin-views/rsvp-metabox-capacity.php:19
 #: src/admin-views/tpp-metabox-capacity.php:25
-#: src/resources/js/app/blocks.js:42093
+#: src/resources/js/app/blocks.js:45324
 msgid "Leave blank for unlimited"
 msgstr ""
 
@@ -2142,9 +2361,6 @@ msgid "Save settings"
 msgstr "Beállítások mentése"
 
 #: src/admin-views/editor/panel/settings.php:43
-#: src/modules/blocks/rsvp/header-image/template.js:26
-#: src/modules/blocks/tickets/header-image/template.js:26
-#: src/resources/js/app/blocks.js:39347 src/resources/js/app/blocks.js:40609
 msgid "Select an image from your Media Library to display on emailed tickets. For best results, use a .jpg, .png, or .gif at least 1160px wide."
 msgstr ""
 
@@ -2174,7 +2390,7 @@ msgstr ""
 
 #: src/admin-views/editor/list-table.php:39
 #: src/modules/blocks/tickets/capacity-table/template.js:36
-#: src/resources/js/app/blocks.js:40496
+#: src/resources/js/app/blocks.js:43638
 msgid "Capacity"
 msgstr ""
 
@@ -2202,7 +2418,7 @@ msgstr ""
 
 #: src/admin-views/editor/fieldset/history.php:27
 msgid "History"
-msgstr ""
+msgstr "Előzmények"
 
 #: src/admin-views/editor/fieldset/advanced.php:132
 msgid "If you do not set an end sale date, tickets sales will never end."
@@ -2217,8 +2433,8 @@ msgid "Ticket end date"
 msgstr ""
 
 #: src/admin-views/editor/fieldset/advanced.php:98
-#: src/modules/blocks/ticket/container-content/advanced-options/duration/template.js:29
-#: src/resources/js/app/blocks.js:42246
+#: src/modules/blocks/ticket/container-content/advanced-options/duration/template.js:32
+#: src/resources/js/app/blocks.js:45481
 msgid "If you do not set a start sale date, tickets will be available immediately."
 msgstr ""
 
@@ -2234,15 +2450,15 @@ msgstr ""
 #: src/admin-views/editor/fieldset/advanced.php:84
 #: src/admin-views/editor/fieldset/advanced.php:113
 #: common/src/modules/utils/date.js:103
-#: common/src/resources/js/app/elements.js:9791
-#: common/src/resources/js/app/utils.js:7339
+#: common/src/resources/js/app/elements.js:9804
+#: common/src/resources/js/app/utils.js:7352
 msgid "at"
 msgstr ""
 
 #: src/admin-views/editor/fieldset/advanced.php:83
 #: src/admin-views/editor/fieldset/advanced.php:112
 msgid "YYYY-MM-DD"
-msgstr ""
+msgstr "ÉÉÉÉ-HH-NN"
 
 #: src/admin-views/editor/fieldset/advanced.php:65
 msgid "Show description on front end ticket form."
@@ -2268,43 +2484,27 @@ msgstr ""
 msgid "Start sale date cannot be empty."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:25
-msgid "Event Tickets Features"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:24
+#: src/admin-views/admin-welcome-message.php:33
 msgid "Settings Overview"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:15
-msgid "If you need a little help, hit us up in %s."
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:14
-msgid "Giving you the best experience with our plugin is our top goal. Check out the resources below for a step-by-step introduction to your new features or head straight to the Events section in your admin to create your first ticket."
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:13
+#: src/Tribe/Main.php:668
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:5
-msgid "our support forums"
-msgstr ""
-
-#: src/views/blocks/rsvp/details/availability.php:27
-#: src/views/blocks/tickets/extra-available-unlimited.php:17
-#: src/views/blocks/tickets/extra-available.php:18
+#: src/views/blocks/rsvp/details/availability.php:28
+#: src/views/blocks/tickets/extra-available.php:19
+#: src/views/blocks/tickets/extra-available-unlimited.php:18
 #: src/Tribe/Tickets_Handler.php:84
 #: src/modules/data/blocks/ticket/options.js:19
-#: src/modules/blocks/rsvp/container-header/template.js:70
-#: src/resources/js/app/blocks.js:6169 src/resources/js/app/blocks.js:38007
-#: src/resources/js/app/data.js:6147
+#: src/modules/blocks/rsvp/container-header/template.js:75
+#: src/resources/js/app/data.js:5506 src/resources/js/app/blocks.js:5523
+#: src/resources/js/app/blocks.js:41089
 msgid "Unlimited"
 msgstr ""
 
 #: src/Tribe/Tickets.php:1196 src/modules/data/blocks/ticket/options.js:16
-#: src/resources/js/app/blocks.js:6166 src/resources/js/app/data.js:6144
+#: src/resources/js/app/data.js:5503 src/resources/js/app/blocks.js:5520
 msgid "Set capacity for this ticket only"
 msgstr ""
 
@@ -2313,14 +2513,14 @@ msgid "Shared capacity with other tickets"
 msgstr ""
 
 #: src/Tribe/Tickets.php:459
-#: src/modules/blocks/ticket/container-content/advanced-options/move-delete/template.js:17
-#: src/resources/js/app/blocks.js:42524
+#: src/modules/blocks/ticket/container-content/advanced-options/move-delete/template.js:18
+#: src/resources/js/app/blocks.js:45955
 msgid "Move Ticket"
 msgstr ""
 
 #: src/Tribe/Tickets.php:459
-#: src/modules/blocks/rsvp/advanced-options/move-delete/template.js:17
-#: src/resources/js/app/blocks.js:38475
+#: src/modules/blocks/rsvp/advanced-options/move-delete/template.js:18
+#: src/resources/js/app/blocks.js:41534
 msgid "Move RSVP"
 msgstr ""
 
@@ -2373,91 +2573,91 @@ msgid "Invalid Post ID"
 msgstr ""
 
 #: src/Tribe/CSV_Importer/Column_Names.php:43
-#: src/resources/js/app/blocks.js:42119
+#: src/resources/js/app/blocks.js:45350
 msgid "Ticket Capacity"
 msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:20
 msgid "Check out our %s for developers."
-msgstr ""
+msgstr "Ebben segít a fejlesztőknek szánt %s. Nézd meg."
 
 #: common/src/admin-views/tribe-options-help.php:18
 msgid "Want to dive deeper?"
-msgstr ""
+msgstr "Mélyebbre szeretnél ásni?"
 
 #: common/src/admin-views/tribe-options-display.php:28
 msgid "The following three fields accept the date format options available to the PHP %1$s function. <a href=\"%2$s\" target=\"_blank\">Learn how to make your own date format here</a>."
-msgstr ""
+msgstr "A következő három mezőben a dátum formátumot lehet beállítani a PHP %1$s függvényének megfelelően. <a href=\"%2$s\" target=\"_blank\">Tanuld meg, hogyan készíthetsz saját dátumformátumot itt</a>."
 
 #: common/src/Tribe/Validate.php:545
 msgid "%s must be an email address."
-msgstr ""
+msgstr "A %s mezőnek email címnek kell lennie."
 
-#: common/src/Tribe/Main.php:251
+#: common/src/Tribe/Main.php:266
 msgid "Clear Selection."
-msgstr ""
+msgstr "Kiválasztás törlése."
 
-#: common/src/Tribe/Main.php:250
+#: common/src/Tribe/Main.php:265
 msgid "Select all pages"
-msgstr ""
+msgstr "Az összes oldal kiválasztása"
 
-#: common/src/Tribe/Main.php:249
+#: common/src/Tribe/Main.php:264
 msgid "All items on this page were selected. "
-msgstr ""
+msgstr "Az összes elem ki lett választva ezen az oldalon."
 
 #: common/src/Tribe/Languages/Locations.php:252
 msgid "Sint Maarten"
-msgstr ""
+msgstr "Sint Maarten"
 
 #: common/src/Tribe/Languages/Locations.php:245
 msgid "S&atilde;o Tom&eacute; and Pr&iacute;ncipe"
-msgstr ""
+msgstr "S&atilde;o Tom&eacute; és Pr&iacute;ncipe"
 
 #: common/src/Tribe/Languages/Locations.php:238
 msgid "Saint Helena"
-msgstr ""
+msgstr "Szent Ilona"
 
 #: common/src/Tribe/Languages/Locations.php:237
 msgid "Saint Barth&eacute;lemy"
-msgstr ""
+msgstr "Saint Barth&eacute;lemy"
 
 #: common/src/Tribe/Languages/Locations.php:113
 msgid "Cura&ccedil;ao"
-msgstr ""
+msgstr "Cura&ccedil;ao"
 
 #: common/src/Tribe/Languages/Locations.php:103
 msgid "Collectivity of Saint Martin"
-msgstr ""
+msgstr "Saint-Martin közössége"
 
 #: common/src/Tribe/Languages/Locations.php:57
 msgid "&Aring;land Islands"
-msgstr ""
+msgstr "&Aring;land Szigetek"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:57
 msgid "A list of links to the term own, archive and parent REST URL"
-msgstr ""
+msgstr "A kifejezés saját, archív és szülő REST URL-jeinek listája"
 
-#: src/views/tickets/tpp.php:154 src/views/tickets/rsvp.php:230
+#: src/views/tickets/rsvp.php:230 src/views/tickets/tpp.php:154
 msgid "You must have JavaScript activated to purchase tickets. Please enable JavaScript in your browser."
 msgstr ""
 
-#: src/template-tags/tickets.php:237
+#: src/template-tags/tickets.php:254
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:234
+#: src/template-tags/tickets.php:251
 msgctxt "list view rsvp now ticket button"
 msgid "RSVP Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:223
+#: src/template-tags/tickets.php:239
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] "%s jegy elérhető"
 msgstr[1] "%s jegy elérhető"
 
-#: src/template-tags/tickets.php:221
+#: src/template-tags/tickets.php:237
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] "%s hely elérhető"
@@ -2468,219 +2668,219 @@ msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr "Minden jegy elkelt"
 
-#: common/src/Tribe/Plugins_API.php:129
+#: common/src/Tribe/Plugins_API.php:139
 msgid "Take your image widgets to the next level with Image Widget Plus! We've taken the simple functionality of our basic Image Widget and amped it up with several popular feature requests - multiple image support, slideshow, lightbox, and random image - all backed by a full year of premium support."
-msgstr ""
+msgstr "Emeld a következő szintre a kép widgeteket az Image Widget Plus-al! Fogtuk az általunk készített Image Widget bővítmény egyszerű funkcióit és felturbóztuk népszerű kérésekkel, mint pl. több kép támogatása, diavetítés, lightbox, véletlenszerű képválasztás, mindez egy év prémium támogatással."
 
-#: common/src/Tribe/Plugins_API.php:125
+#: common/src/Tribe/Plugins_API.php:135
 msgid "Image Widget Plus"
-msgstr ""
+msgstr "Image Widget Plus"
 
-#: common/src/Tribe/Plugins_API.php:94
+#: common/src/Tribe/Plugins_API.php:104
 msgid "Accept user-submitted events on your site! With Community Events, you can accept public submissions or require account sign-on. Settings give you the options to save as a draft or publish automatically, enable categories and tags, and choose whether users can edit/manage their own events or simply submit. Best of all - setup is easy! Just activate, configure the options, and off you go."
-msgstr ""
+msgstr "Vegyél fel felhasználók által beküldött eseményeket a weboldaladon! A Community Events-el felvehetsz publikus beküldéseket vagy kérhetsz előtte bejelentkezést. Beállíthatod, hogy a beküldött események vázlatként legyenek elmentve, vagy azonnal közzé legyenek téve, engedélyezheted a kategóriákat és címkéket, és kiválaszthatod, hogy a beküldők kezelhetik-e / szerkeszthetik-e a saját eseményeiket, vagy csak beküldhetik. A legjobb, hogy a beállítás egyszerű! Csak aktiváld, ellenőrizd a beállításokat és kész."
 
 #: common/src/Tribe/Plugins_API.php:60
 msgid "Event Tickets provides a simple way for visitors to RSVP to your events. As a standalone plugin, it enables you to add RSVP functionality to posts or pages. When paired with The Events Calendar, you can add that same RSVP functionality directly to your event listings."
-msgstr ""
+msgstr "Az Event Tickets lehetőséget ad a látogatóidnak, hogy regisztráljanak az eseményeidre. Különálló bővítményként a blogbejegyzéseidhez és az oldalakhoz adhatsz regisztrációs lehetőséget. A The Events Calendarral együtt használva az eseményeidhez adhatod hozzá ugyanezt a regisztrációs képességet."
 
 #: common/src/Tribe/Plugins_API.php:28
 msgid "Create an events calendar and manage it with ease. The Events Calendar plugin provides professional-level quality and features backed by a team you can trust."
-msgstr ""
+msgstr "Készíts egy eseménynaptárt és kezeld egyszerűen. A The Events Calendar bővítmény profi minőséget és funkciókat kínál, és egy megbízható csapat áll mögötte."
 
 #: src/views/tickets/tpp.php:112
 msgid "Buy now"
 msgstr ""
 
-#: common/src/Tribe/PUE/Notices.php:397
+#: common/src/Tribe/PUE/Notices.php:398
 msgid "You can always check the status of your licenses by logging in to %1$syour account on theeventscalendar.com%2$s."
-msgstr ""
+msgstr "Bármikor leellenőrizheted a licenszeid státuszát, ha %1$sbejelentkezel a fiókodba a theeventscalendar.com oldalon%2$s."
 
-#: common/src/Tribe/PUE/Notices.php:282
+#: common/src/Tribe/PUE/Notices.php:279
 msgid "It looks like you're using %1$s, but the license key is invalid. Please download the latest version %2$sfrom your account%3$s."
 msgid_plural "It looks like you're using %1$s, but the license keys are invalid. Please download the latest versions %2$sfrom your account%3$s."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Úgy tűnik, hogy a(z) %1$s bővítményt használod, de a licensz kulcs érvénytelen. Töltsd le az legfrissebb verziót %2$sa fiókodból%3$s."
+msgstr[1] "Úgy tűnik, hogy a(z) %1$s bővítményeket használod, de a licensz kulcsok érvénytelenek. Töltsd le az legfrissebb verziókat %2$sa fiókodból%3$s."
 
-#: common/src/Tribe/PUE/Checker.php:984
+#: common/src/Tribe/PUE/Checker.php:987
 msgid "Please refresh the page and try your request again."
-msgstr ""
+msgstr "Kérjük frissítse az oldalt és próbálja újra."
 
 #: common/src/Tribe/Ajax/Dropdown.php:243
 msgid "The \"%s\" source is invalid and cannot be reached on \"%s\" instance."
-msgstr ""
+msgstr "A \"%s\" forrás érvénytelen és nem érhető el a \"%s\" hivatkozásban."
 
 #: common/src/Tribe/Ajax/Dropdown.php:193
 msgid "Empty data set for this dropdown"
-msgstr ""
+msgstr "Üres adathalmaz ehhez a lenyílóhoz"
 
 #: common/src/Tribe/Ajax/Dropdown.php:180
 msgid "Missing data source for this dropdown"
-msgstr ""
+msgstr "Ehhez a lenyílóhoz hiányzik az adatforrás"
 
 #: common/src/Tribe/Ajax/Dropdown.php:38
 msgid "Cannot look for Terms without a taxonomy"
-msgstr ""
+msgstr "Nem lehet Kifejezést keresni taxonómia nélkül"
 
-#: common/src/Tribe/PUE/Checker.php:1103
+#: common/src/Tribe/PUE/Checker.php:1106
 msgid "There is a new version of %1$s available. %2$s"
-msgstr ""
+msgstr "A %1$s bővítményhez elérhető egy új verzió. %2$s"
 
-#: common/src/Tribe/PUE/Checker.php:1092
+#: common/src/Tribe/PUE/Checker.php:1095
 msgid "Update now to version %s."
-msgstr ""
+msgstr "Frissítés a %s verzióra."
 
-#: common/src/Tribe/PUE/Checker.php:497
+#: common/src/Tribe/PUE/Checker.php:500
 msgid "%1$sBuy a license%2$s for the Event Aggregator service to access additional import features."
-msgstr ""
+msgstr "%1$sVásárolj egy licenszet%2$s az Event Aggregator szolgáltatáshoz további importálási funkciók eléréséhez."
 
 #: common/src/Tribe/Validate.php:248
 msgid "%s must be a whole number."
-msgstr ""
+msgstr "%s -nek egész számnak kell lennie."
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:52
 msgid "The URL to the term archive page"
-msgstr ""
+msgstr "A kifejezés archívum oldal URL-je"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:48
 msgid "The number of posts associated with the term"
-msgstr ""
+msgstr "A kifejezéshez kapcsolódó bejegyzések száma"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:44
 msgid "The term parent term if any"
-msgstr ""
+msgstr "A kifejezés szülő kifejezése, ha van ilyen"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:40
 msgid "The term description"
-msgstr ""
+msgstr "A kifejezés leírása"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:36
 msgid "The taxonomy the term belongs to"
-msgstr ""
+msgstr "A taxonómia, amihez a kifejezés tartozik"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:32
 msgid "The term slug"
-msgstr ""
+msgstr "A kifejezés keresőbarát URL-je"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:28
 msgid "The term name"
-msgstr ""
+msgstr "A kifejezés neve"
 
 #: common/src/Tribe/Documentation/Swagger/Term_Definition_Provider.php:24
 msgid "The WordPress term ID"
-msgstr ""
+msgstr "A WordPress kifejezés azonosító"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Size_Definition_Provider.php:37
 msgid "The link to the image in the specified size on the site"
-msgstr ""
+msgstr "Hivatkozás a megadott méretű képhez a weboldalon"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Size_Definition_Provider.php:32
 msgid "The image mime-type"
-msgstr ""
+msgstr "A kép mime-típusa"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Size_Definition_Provider.php:28
 msgid "The image height in pixels in the specified size"
-msgstr ""
+msgstr "A kép magassága pixelben az adott méretben"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Size_Definition_Provider.php:24
 msgid "The image width in pixels in the specified size"
-msgstr ""
+msgstr "A kép szélessége pixelben az adott méretben"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Definition_Provider.php:45
 msgid "The details about each size available for the image"
-msgstr ""
+msgstr "Részletek a képhez elérhető összes mérethez"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Definition_Provider.php:41
 msgid "The image natural height in pixels"
-msgstr ""
+msgstr "A kép eredeti magassában pixelben"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Definition_Provider.php:37
 msgid "The image natural width in pixels"
-msgstr ""
+msgstr "A kép eredeti szélessége pixelben"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Definition_Provider.php:33
 msgid "The image file extension"
-msgstr ""
+msgstr "A kép kiterjesztése"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Definition_Provider.php:29
 msgid "The image WordPress post ID"
-msgstr ""
+msgstr "A képhez tartozó WordPress bejegyzés azonosító"
 
 #: common/src/Tribe/Documentation/Swagger/Image_Definition_Provider.php:25
 msgid "The URL to the full size version of the image"
-msgstr ""
+msgstr "Hivatkozás a kép teljes méretű változatához"
 
 #: common/src/Tribe/Documentation/Swagger/Date_Details_Definition_Provider.php:44
 msgid "The date seconds"
-msgstr ""
+msgstr "A dátum másodpercei"
 
 #: common/src/Tribe/Documentation/Swagger/Date_Details_Definition_Provider.php:40
 msgid "The date minutes"
-msgstr ""
+msgstr "A dátum percei"
 
 #: common/src/Tribe/Documentation/Swagger/Date_Details_Definition_Provider.php:36
 msgid "The date hour"
-msgstr ""
+msgstr "A dátum órája"
 
 #: common/src/Tribe/Documentation/Swagger/Date_Details_Definition_Provider.php:32
 msgid "The date day"
-msgstr ""
+msgstr "A dátum napja"
 
 #: common/src/Tribe/Documentation/Swagger/Date_Details_Definition_Provider.php:28
 msgid "The date month"
-msgstr ""
+msgstr "A dátum hónapja"
 
 #: common/src/Tribe/Documentation/Swagger/Date_Details_Definition_Provider.php:24
 msgid "The date year"
-msgstr ""
+msgstr "A dátum éve"
 
 #: common/src/Tribe/Documentation/Swagger/Cost_Details_Definition_Provider.php:34
 msgid "A sorted array of all the numeric values for the cost"
-msgstr ""
+msgstr "A költség összes számértékének rendezett tömbje"
 
 #: common/src/Tribe/Documentation/Swagger/Cost_Details_Definition_Provider.php:28
 msgid "The position of the currency symbol in the cost string"
-msgstr ""
+msgstr "A valuta szimbólum helyzete a költség karakterláncban"
 
 #: common/src/Tribe/Documentation/Swagger/Cost_Details_Definition_Provider.php:24
 msgid "The cost currency symbol"
-msgstr ""
+msgstr "A költséghez tartozó valuta szimbólum"
 
-#: src/template-tags/tickets.php:432
+#: src/template-tags/tickets.php:449
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d available"
 msgstr ""
 
-#: src/template-tags/tickets.php:427
+#: src/template-tags/tickets.php:444
 msgid "%s %d"
 msgstr ""
 
-#: src/template-tags/tickets.php:421
+#: src/template-tags/tickets.php:438
 msgctxt "separate going and remain RSVPs"
 msgid "RSVP'd Going"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:107
+#: src/admin-views/tribe-options-tickets.php:100
 msgid "Location of Tickets form"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:99
+#: src/admin-views/tribe-options-tickets.php:90
 msgid "Location of RSVP form"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:93
+#: src/admin-views/tribe-options-tickets.php:85
 msgid "Above the event description"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:92
+#: src/admin-views/tribe-options-tickets.php:84
 msgid "Below the event description"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:91
+#: src/admin-views/tribe-options-tickets.php:83
 msgid "Above the event details"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:90
+#: src/admin-views/tribe-options-tickets.php:82
 msgid "Below the event details [default]"
 msgstr ""
 
@@ -2699,12 +2899,12 @@ msgctxt "attendee event actions"
 msgid "Edit %s"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:426 src/Tribe/Attendees_Table.php:446
+#: src/Tribe/Attendees_Table.php:430 src/Tribe/Attendees_Table.php:450
 msgid "Undo"
-msgstr ""
+msgstr "Visszavonás"
 
-#: src/Tribe/Attendees_Table.php:418 src/Tribe/Attendees_Table.php:427
-#: src/Tribe/Attendees_Table.php:438 src/Tribe/Attendees_Table.php:447
+#: src/Tribe/Attendees_Table.php:422 src/Tribe/Attendees_Table.php:431
+#: src/Tribe/Attendees_Table.php:442 src/Tribe/Attendees_Table.php:451
 msgid "Check In"
 msgstr ""
 
@@ -2733,79 +2933,79 @@ msgstr ""
 
 #: common/src/Tribe/Settings.php:281 common/src/Tribe/Settings.php:282
 msgid "Events Help"
-msgstr ""
+msgstr "Események segítség"
 
-#: common/src/Tribe/PUE/Checker.php:1685
+#: common/src/Tribe/PUE/Checker.php:1688
 msgid "Expired license. Consult your network administrator."
-msgstr ""
+msgstr "Lejárt licensz. Lépj kapcsolatba a hálózati adminisztrátorral."
 
-#: common/src/Tribe/PUE/Checker.php:1684
+#: common/src/Tribe/PUE/Checker.php:1687
 msgid "No license entered. Consult your network administrator."
-msgstr ""
+msgstr "Nincs megadva licensz kulcs. Lépj kapcsolatba a hálózati adminisztrátorral. "
 
-#: common/src/Tribe/PUE/Checker.php:1683
+#: common/src/Tribe/PUE/Checker.php:1686
 msgid "A valid license has been entered by your network administrator."
-msgstr ""
+msgstr "A hálózati adminisztrátor megadott egy érvényes licensz kulcsot."
 
-#: common/src/Tribe/PUE/Checker.php:550
+#: common/src/Tribe/PUE/Checker.php:553
 msgid "Site License Key"
-msgstr ""
+msgstr "Az oldal licensz kulcsa"
 
-#: common/src/Tribe/PUE/Checker.php:539
+#: common/src/Tribe/PUE/Checker.php:542
 msgid "Check this box if you wish to override the network license key with your own"
-msgstr ""
+msgstr "Jelöld be ezt a négyzetet, ha a hálózati licensz kulcsot felül akarod írni a sajátoddal."
 
-#: common/src/Tribe/PUE/Checker.php:538
+#: common/src/Tribe/PUE/Checker.php:541
 msgid "Override network license key"
-msgstr ""
+msgstr "Hálózati licensz kulcs felülírása"
 
-#: common/src/Tribe/PUE/Checker.php:529 common/src/Tribe/PUE/Checker.php:563
+#: common/src/Tribe/PUE/Checker.php:532 common/src/Tribe/PUE/Checker.php:566
 msgid "License Key Status:"
-msgstr ""
+msgstr "Licensz kulcs állapota:"
 
-#: common/src/Tribe/Main.php:274
+#: common/src/Tribe/Main.php:289
 msgid "Done"
-msgstr ""
+msgstr "Kész"
 
-#: common/src/Tribe/Main.php:273 common/src/Tribe/Main.php:275
+#: common/src/Tribe/Main.php:288 common/src/Tribe/Main.php:290
 msgid "Today"
-msgstr ""
+msgstr "Ma"
 
-#: common/src/Tribe/Main.php:272
+#: common/src/Tribe/Main.php:287
 msgid "Prev"
-msgstr ""
+msgstr "Előző"
 
 #: common/src/Tribe/Customizer.php:643
 msgid "Use the following panel of your customizer to change the styling of your Calendar and Event pages."
-msgstr ""
+msgstr "A naptár és eseményoldalak stílusának a megváltoztatásához használd a következő panelt a testreszabóban."
 
 #: common/src/admin-views/app-shop.php:31
 msgid "Installed"
-msgstr ""
+msgstr "Telepítve"
 
 #: common/src/admin-views/app-shop.php:29
 msgid "Installed Add-Ons"
-msgstr ""
+msgstr "Telepített kiegészítők"
 
-#: common/src/Tribe/Extension.php:368
+#: common/src/Tribe/Extension.php:377
 msgid "Unable to run Tribe Extensions. Your website host is running PHP 5.2 or older, and has likely disabled or misconfigured debug_backtrace(). You, or your website host, will need to upgrade PHP or properly configure debug_backtrace() for Tribe Extensions to work."
-msgstr ""
+msgstr "A Tribe Extensions futtatása nem lehetséges. A szolgáltatód PHP 5.2-t vagy régebbi verziót futtat, és valószínűleg kikapcsolta vagy rosszul konfigurálta a debug_backtrace()-t. Neked vagy a szolgáltatódnak frissítenie kell a PHP-t vagy rendesen be kell állítania a debug_backtrace()-t a Tribe Extensions működéséhez."
 
 #: common/src/Tribe/Extension.php:144
 msgid "Tutorial"
-msgstr ""
+msgstr "Bemutató"
 
-#: common/src/Tribe/Admin/Notice/Plugin_Download.php:92
+#: common/src/Tribe/Admin/Notice/Plugin_Download.php:118
 #: common/src/Tribe/Admin/Notice/Php_Version.php:60
 msgctxt "the final separator in a list of two or more items"
 msgid " and "
-msgstr ""
+msgstr " és "
 
-#: common/src/Tribe/Admin/Notice/Plugin_Download.php:91
+#: common/src/Tribe/Admin/Notice/Plugin_Download.php:117
 #: common/src/Tribe/Admin/Notice/Php_Version.php:59
 msgctxt "separator used in a list of items"
 msgid ", "
-msgstr ""
+msgstr ", "
 
 #: src/views/tickets/rsvp.php:171
 msgctxt "order status label"
@@ -2828,8 +3028,8 @@ msgid_plural "We wanted to let you know that the following %1$s tickets for %2$s
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/views/tickets/email-ticket-type-moved.php:115
 #: src/views/tickets/email-tickets-moved.php:117
+#: src/views/tickets/email-ticket-type-moved.php:115
 msgid " (taking place on %s)"
 msgstr ""
 
@@ -2839,8 +3039,8 @@ msgid_plural "We wanted to let you know that your %1$s tickets for %2$s have bee
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/views/tickets/email-ticket-type-moved.php:97
 #: src/views/tickets/email-tickets-moved.php:99
+#: src/views/tickets/email-ticket-type-moved.php:97
 msgid "Important changes to your tickets"
 msgstr ""
 
@@ -2861,7 +3061,7 @@ msgctxt "move tickets dialog"
 msgid "Next &raquo;"
 msgstr ""
 
-#: src/admin-views/move-tickets.php:88 src/resources/js/app/blocks.js:39731
+#: src/admin-views/move-tickets.php:88 src/resources/js/app/blocks.js:42896
 msgid "Finish!"
 msgstr ""
 
@@ -2879,7 +3079,7 @@ msgstr ""
 msgid "Select the ticket type that the tickets should be transferred to:"
 msgstr ""
 
-#: src/admin-views/move-tickets.php:64 src/resources/js/app/blocks.js:39716
+#: src/admin-views/move-tickets.php:64 src/resources/js/app/blocks.js:42881
 msgid "Select the post you wish to move the ticket type to:"
 msgstr ""
 
@@ -2887,7 +3087,7 @@ msgstr ""
 msgid "You can also enter keywords to help find the target event by title or description:"
 msgstr ""
 
-#: src/admin-views/move-tickets.php:54 src/resources/js/app/blocks.js:39694
+#: src/admin-views/move-tickets.php:54 src/resources/js/app/blocks.js:42859
 msgid "You can optionally focus on a specific post type:"
 msgstr ""
 
@@ -2917,81 +3117,25 @@ msgstr ""
 msgid "Move"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:38
-msgid "Product Releases, Tutorials and Community Activity"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:37
-msgid "News For Events Users"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:35
-msgid "Get the Skinny on the Latest Updates"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:34
-msgid "Release Notes"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:28
-msgid "FAQs, Documentation, Tutorials and Forums"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:27
-msgid "Support Resources"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:32
-msgid "Addons for creating tickets, custom registration, events and more."
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:31
-msgid "Looking for More Features?"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:22
+#: src/admin-views/admin-welcome-message.php:29
 msgid "Getting Started"
-msgstr ""
+msgstr "Kezdjünk bele"
 
-#: src/admin-views/admin-welcome-message.php:64
+#: src/admin-views/admin-welcome-message.php:69
 msgid "Sign Up"
-msgstr ""
+msgstr "Iratkozz fel"
 
-#: src/admin-views/admin-welcome-message.php:59
-msgid "News and Announcements"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:55
-msgid "Developer News"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:51
-msgid "Stay in touch with Event Tickets. We send out periodic updates, key developer notices, and even the occasional discount."
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:50
-msgid "Newsletter Signup"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:47
+#: src/admin-views/admin-welcome-message.php:80
 msgid "Rate It"
-msgstr ""
+msgstr "Értékeld"
 
-#: src/admin-views/admin-welcome-message.php:46
+#: src/admin-views/admin-welcome-message.php:79
 msgid "Rate us today!"
-msgstr ""
+msgstr "Értékelj minket ma!"
 
-#: src/admin-views/admin-welcome-message.php:45
-msgid "Your ratings help us bring Event Tickets to more users. More happy users mean more support, more features, and more of everything you know and love about Event Tickets. We couldn't do this without your support."
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:44
+#: src/admin-views/admin-welcome-message.php:77
 msgid "We Need Your Help"
-msgstr ""
-
-#: src/admin-views/admin-welcome-message.php:10
-msgid "You are running Version %s and deserve a hug :-)"
-msgstr ""
+msgstr "Szükségünk van a segítségedre"
 
 #: src/Tribe/Attendees.php:502
 msgctxt "attendee export"
@@ -3036,15 +3180,15 @@ msgctxt "attendee event actions"
 msgid "Edit"
 msgstr ""
 
-#: src/Tribe/RSVP.php:326
+#: src/Tribe/RSVP.php:331
 msgid "RSVP Ticket"
 msgstr ""
 
-#: src/Tribe/RSVP.php:325
+#: src/Tribe/RSVP.php:330
 msgid "RSVP Tickets"
 msgstr ""
 
-#: src/Tribe/RSVP.php:158
+#: src/Tribe/RSVP.php:163
 msgctxt "ticket provider"
 msgid "RSVP"
 msgstr ""
@@ -3064,17 +3208,13 @@ msgctxt "attendee summary"
 msgid "Total RSVPs:"
 msgstr ""
 
-#: src/Tribe/Assets.php:111
+#: src/Tribe/Assets.php:112
 msgid "Are you sure you want to delete this ticket? This cannot be undone."
 msgstr ""
 
-#: src/Tribe/Main.php:788
+#: src/Tribe/Main.php:803
 msgctxt "button text"
 msgid "RSVP"
-msgstr ""
-
-#: src/Tribe/Main.php:653
-msgid "Welcome to Event Tickets"
 msgstr ""
 
 #: src/Tribe/CSV_Importer/Rows.php:49
@@ -3087,22 +3227,22 @@ msgctxt "import type"
 msgid "RSVPs"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:327
+#: src/Tribe/Attendees_Table.php:330
 msgctxt "row action"
 msgid "Delete"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:315
+#: src/Tribe/Attendees_Table.php:318
 msgctxt "row action"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:305
+#: src/Tribe/Attendees_Table.php:308
 msgctxt "row action"
 msgid "Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:306
+#: src/Tribe/Attendees_Table.php:309
 msgctxt "row action"
 msgid "Undo Check In"
 msgstr ""
@@ -3141,39 +3281,39 @@ msgctxt "attendee table"
 msgid "View history"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:760
+#: src/Tribe/Admin/Move_Tickets.php:763
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:580
+#: src/Tribe/Admin/Move_Tickets.php:583
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:462
+#: src/Tribe/Admin/Move_Tickets.php:465
 msgid "%1$d attendee for %2$s was successfully %3$s. Please adjust capacity and stock manually as needed. This attendee will receive an email notifying them of the change."
 msgid_plural "%1$d attendees for %2$s were successfully %3$s. Please adjust capacity and stock manually as needed. These attendees will receive an email notifying them of the change."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Admin/Move_Tickets.php:455
+#: src/Tribe/Admin/Move_Tickets.php:458
 msgctxt "moved tickets success message fragment"
 msgid "moved to %s and"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:448
+#: src/Tribe/Admin/Move_Tickets.php:451
 msgctxt "moved tickets success message fragment"
 msgid "assigned to %s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:440
+#: src/Tribe/Admin/Move_Tickets.php:443
 msgid "Tickets could not be moved: there was an unexpected failure during reassignment."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:432
+#: src/Tribe/Admin/Move_Tickets.php:435
 msgid "Tickets could not be moved: valid ticket IDs or a destination ID were not provided."
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:224
+#: src/Tribe/Admin/Move_Tickets.php:225
 msgctxt "attendee screen bulk actions"
 msgid "Move"
 msgstr ""
@@ -3202,8 +3342,8 @@ msgstr ""
 msgid "Move Attendees"
 msgstr ""
 
+#: src/Tribe/Admin/Move_Tickets.php:704
 #: src/Tribe/Admin/Move_Ticket_Types.php:301
-#: src/Tribe/Admin/Move_Tickets.php:701
 msgid "Changes to your tickets from %s"
 msgstr ""
 
@@ -3223,257 +3363,240 @@ msgstr ""
 msgid "Ticket type could not be moved: the ticket type or destination post was invalid."
 msgstr ""
 
+#: src/Tribe/Admin/Move_Tickets.php:252
 #: src/Tribe/Admin/Move_Ticket_Types.php:72
-#: src/Tribe/Admin/Move_Tickets.php:249
 msgid "All supported types"
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:28
-#: src/resources/js/app/blocks.js:39759
+#: src/resources/js/app/blocks.js:42924
 msgid "Move Ticket Types"
 msgstr ""
 
-#: common/src/admin-views/tribe-options-licenses.php:30
-msgid "Not seeing an update but expecting one? In WordPress, go to %1$sDashboard > Updates%2$s and click \"Check Again\"."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-licenses.php:25
-msgid "If you're seeing a red message telling you that your key isn't valid or is out of installs, visit %1$s to manage your installs or renew / upgrade your license."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-licenses.php:22
-msgid "Each paid add-on has its own unique license key. Simply paste the key into its appropriate field below, and give it a moment to validate. You know you're set when a green expiration date appears alongside a \"valid\" message."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-licenses.php:15
-msgid "The license key you received when completing your purchase from %1$s will grant you access to support and updates until it expires. You do not need to enter the key below for the plugins to work, but you will need to enter it to get automatic updates. %3$sFind your license keys at %2$s%4$s."
-msgstr ""
-
-#: common/src/admin-views/tribe-options-licenses.php:11
-#: common/src/admin-views/tribe-options-licenses.php:16
-msgid " (opens in new window)"
+#: common/src/admin-views/tribe-options-licenses.php:19
+msgid "Each paid add-on has its own unique license key. Paste the key into its appropriate field below, and give it a moment to validate. You know you're set when a green expiration date appears alongside a \"valid\" message. Then click Save Changes."
 msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:55
 msgid "Event Log"
-msgstr ""
+msgstr "Eseménynapló"
 
 #: common/src/admin-views/tribe-options-help.php:42
 msgid "The details of your calendar plugin and settings is often needed for you or our staff to help troubleshoot an issue. Please opt-in below to automatically share your system information with our support team. This will allow us to assist you faster if you post in our help desk."
-msgstr ""
+msgstr "Sokszor szükség van a naptár bővítmény és a beállítások részleteire ahhoz, hogy munkatársaink segítséget tudjanak nyújtani egy hiba megtalálásában. Jelöld be az alábbi négyzetet a rendszer információk támogatói csapatunkkal való automatikus megosztásához. Ennek segítségével gyorsabban tudunk segítséget nyújtani ha írsz nekünk a help desken."
 
 #: common/src/admin-views/app-shop.php:26
 msgid "Buy This Add-On"
-msgstr ""
+msgstr "Bővítmény megvásárlása"
 
 #: common/src/admin-views/app-shop.php:5
 msgid "Browse All Add-Ons"
-msgstr ""
+msgstr "Összes kiegészítő megtekintése"
 
 #: common/src/admin-views/app-shop.php:4
 msgid "Events Add-Ons"
-msgstr ""
+msgstr "Esemény kiegészítők"
 
 #: common/src/Tribe/Languages/Locations.php:110
 msgid "C&ocirc;te d'Ivoire"
-msgstr ""
+msgstr "Elefántcsontpart"
 
 #: common/src/Tribe/Support.php:372
 msgid "Unique System Info Key Generated"
-msgstr ""
+msgstr "Egyedi Rendszerinformáció kulcs létrehozva"
 
 #: common/src/Tribe/Support.php:358 common/src/Tribe/Support.php:384
 msgid "Permission Error"
-msgstr ""
+msgstr "Engedélyezési hiba"
 
 #: common/src/Tribe/Support.php:325 common/src/Tribe/Support.php:330
 msgid "Invalid Key"
-msgstr ""
+msgstr "Érvénytelen kulcs"
 
 #: common/src/Tribe/Support.php:306
 msgid "Your system information will only be used by the Modern Tribe support team. All information is stored securely. We do not share this information with any third parties."
-msgstr ""
+msgstr "A rendszer információdat csak a Modern Tribe támogatói csapata használja. Minden információ biztonságosan van tárolva. Ezt az információt nem osztjuk meg semmilyen harmadik féllel."
 
 #: common/src/Tribe/Support.php:305
 msgid "Yes, automatically share my system information with the Modern Tribe support team"
-msgstr ""
+msgstr "Igen, automatikusan megosztom a rendszerinformációmat a Modern Tribe támogatási csapatával"
 
-#: common/src/Tribe/PUE/Notices.php:440
+#: common/src/Tribe/PUE/Notices.php:441
 msgctxt "formatted plugin list"
 msgid "%1$s and %2$s"
-msgstr ""
+msgstr "%1$s és %2$s"
 
-#: common/src/Tribe/PUE/Notices.php:359
+#: common/src/Tribe/PUE/Notices.php:356
 msgid "You have a license key for %1$s but the key is out of installs. %2$sVisit the Events Calendar website%3$s to manage your installs, upgrade your license, or purchase a new one."
 msgid_plural "You have license keys for %1$s but your keys are out of installs. %2$sVisit the Events Calendar website%3$s to manage your installs, upgrade your licenses, or purchase new ones."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A(z) %1$s bővítményhez rendelkezel licensz kulccsal, de már nem használható több helyen. %2$sLátogass el a The Events Calendar weboldalára%3$s a licenszeid kezeléséhez, frissítéséhez, vagy egy új licensz vásárlásához."
+msgstr[1] "A(z) %1$s bővítményekhez rendelkezel licensz kulccsal, de azok már nem használhatóak több helyen. %2$sLátogass el a The Events Calendar weboldalára%3$s a licenszeid kezeléséhez, frissítéséhez, vagy egy új licensz vásárlásához."
 
-#: common/src/Tribe/PUE/Notices.php:327
+#: common/src/Tribe/PUE/Notices.php:324
 msgid "There is an update available for %1$s but your license has expired. %2$sVisit the Events Calendar website to renew your license.%3$s"
 msgid_plural "Updates are available for %1$s but your license keys have expired. %2$sVisit the Events Calendar website to renew your licenses.%3$s"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "A(z) %1$s bővítményhez elérhető egy frissítés, de a licenszed lejárt. %2$sLátogass el a The Events Calendar weboldalára a licenszed megújításához.%3$s"
+msgstr[1] "A(z) %1$s bővítményekhez elérhető frissítés, de a licenszeid lejártak. %2$sLátogass el a The Events Calendar weboldalára a licenszeid megújításához.%3$s"
 
-#: common/src/Tribe/PUE/Checker.php:1062
+#: common/src/Tribe/PUE/Checker.php:1065
 msgid "There is an update for %s. %sRenew your license%s to get access to bug fixes, security updates, and new features."
-msgstr ""
+msgstr "A(z) %s bővítményhez elérhető egy frissítés. %sÚjítsd meg a licenszedet%s, hogy hozzáférj a hibajavításokhoz, biztonsági frissítésekhez és új funkciókhoz."
 
-#: common/src/Tribe/PUE/Checker.php:1005
+#: common/src/Tribe/PUE/Checker.php:1008
 msgid "There is an update for %s. You'll need to %scheck your license%s to have access to updates, downloads, and support."
-msgstr ""
+msgstr "A(z) %s bővítményhez elérhető egy frissítés. %sEllenőrizd a licenszedet%s, hogy hozzáférj a frissítésekhez, letöltésekhez, és támogatáshoz."
 
-#: common/src/Tribe/PUE/Notices.php:342 common/src/Tribe/PUE/Checker.php:969
+#: common/src/Tribe/PUE/Checker.php:972 common/src/Tribe/PUE/Notices.php:339
 msgid " (opens in a new window)"
-msgstr ""
+msgstr "(új ablakban nyílik meg)"
 
-#: common/src/Tribe/PUE/Notices.php:340 common/src/Tribe/PUE/Checker.php:967
+#: common/src/Tribe/PUE/Checker.php:970 common/src/Tribe/PUE/Notices.php:337
 msgid "Renew Your License Now"
-msgstr ""
+msgstr "Licensz megújítása most"
+
+#: common/src/Tribe/Main.php:276
+msgid ": Selected 1 row"
+msgstr ": 1 sor kiválasztva"
+
+#: common/src/Tribe/Main.php:275
+msgid ": Selected %d rows"
+msgstr ": %d sor kiválasztva"
+
+#: common/src/Tribe/Main.php:270
+msgid "Previous"
+msgstr "Előző"
+
+#: common/src/Tribe/Main.php:269 common/src/Tribe/Main.php:286
+msgid "Next"
+msgstr "Következő"
+
+#: common/src/Tribe/Main.php:268
+msgid "All"
+msgstr "Összes"
+
+#: common/src/Tribe/Main.php:263
+msgid "Search:"
+msgstr "Keresés:"
+
+#: common/src/Tribe/Main.php:262
+msgid "No matching records found"
+msgstr "Nem található egyező rekord"
 
 #: common/src/Tribe/Main.php:261
-msgid ": Selected 1 row"
-msgstr ""
+msgid "(filtered from _MAX_ total entries)"
+msgstr "(összesen _MAX_ bejegyzésből szűrve)"
 
 #: common/src/Tribe/Main.php:260
-msgid ": Selected %d rows"
-msgstr ""
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Bejegyzések 0-0-ig az összesen 0 bejegyzésből"
+
+#: common/src/Tribe/Main.php:259
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Bejegyzések _START_-_END_-ig az összesen _TOTAL_ bejegyzésből"
+
+#: common/src/Tribe/Main.php:258
+msgid "No data available in table"
+msgstr "Nincs elérhető adat az adattáblában"
+
+#: common/src/Tribe/Main.php:257
+msgid "Show _MENU_ entries"
+msgstr "Mutass _MENU_ bejegyzést"
 
 #: common/src/Tribe/Main.php:255
-msgid "Previous"
-msgstr ""
-
-#: common/src/Tribe/Main.php:254 common/src/Tribe/Main.php:271
-msgid "Next"
-msgstr ""
-
-#: common/src/Tribe/Main.php:253
-msgid "All"
-msgstr ""
-
-#: common/src/Tribe/Main.php:248
-msgid "Search:"
-msgstr ""
-
-#: common/src/Tribe/Main.php:247
-msgid "No matching records found"
-msgstr ""
-
-#: common/src/Tribe/Main.php:246
-msgid "(filtered from _MAX_ total entries)"
-msgstr ""
-
-#: common/src/Tribe/Main.php:245
-msgid "Showing 0 to 0 of 0 entries"
-msgstr ""
-
-#: common/src/Tribe/Main.php:244
-msgid "Showing _START_ to _END_ of _TOTAL_ entries"
-msgstr ""
-
-#: common/src/Tribe/Main.php:243
-msgid "No data available in table"
-msgstr ""
-
-#: common/src/Tribe/Main.php:242
-msgid "Show _MENU_ entries"
-msgstr ""
-
-#: common/src/Tribe/Main.php:240
 msgid ": activate to sort column descending"
-msgstr ""
+msgstr ": aktiváld az oszlop csökkenő sorrendben való rendezéséhez"
 
-#: common/src/Tribe/Main.php:239
+#: common/src/Tribe/Main.php:254
 msgid ": activate to sort column ascending"
-msgstr ""
+msgstr ": aktiváld az oszlop növekvő sorrendben való rendezéséhez"
 
-#: common/src/Tribe/Main.php:284
+#: common/src/Tribe/Main.php:299
 msgid "Press \"Cmd + C\" to copy"
-msgstr ""
+msgstr "\"Cmd + C\" a másoláshoz"
 
-#: common/src/Tribe/Main.php:283
+#: common/src/Tribe/Main.php:298
 msgid "System info copied"
-msgstr ""
+msgstr "Rendszerinformációk másolva"
 
-#: common/src/Tribe/Main.php:282
+#: common/src/Tribe/Main.php:297
 #: common/src/admin-views/tribe-options-help.php:50
 msgid "Copy to clipboard"
-msgstr ""
+msgstr "Másolás a vágólapra"
 
 #: common/src/Tribe/Error.php:38
 msgid "An Unknown error occurred"
-msgstr ""
+msgstr "Ismeretlen hiba történt"
 
 #: common/src/Tribe/Admin/Help_Page.php:219 common/src/Tribe/Plugins_API.php:34
 msgid "Event Aggregator"
-msgstr ""
+msgstr "Event Aggregator"
 
 #: common/src/Tribe/Admin/Activation_Page.php:92
 msgid "Return to WordPress Updates"
-msgstr ""
+msgstr "Vissza a WordPress frissítésekhez"
 
 #: common/src/Tribe/Admin/Activation_Page.php:92
 msgid "Go to WordPress Updates page"
-msgstr ""
+msgstr "Ugrás a WordPress frissítések oldalra"
 
 #: common/src/Tribe/Admin/Activation_Page.php:84
 msgid "Return to Plugins page"
-msgstr ""
+msgstr "Vissza a bővítmények oldalra"
 
 #: common/src/Tribe/Admin/Activation_Page.php:84
 msgid "Go to plugins page"
+msgstr "Tovább a bővítményekhez"
+
+#: common/src/Tribe/Admin/Notice/Plugin_Download.php:101
+msgid "To begin using %2$s, please install and activate the latest version of %3$s."
 msgstr ""
 
-#: common/src/Tribe/Admin/Notice/Plugin_Download.php:75
-msgid "To begin using %1$s, please install and activate the latest version of %2$s."
-msgstr ""
-
-#: src/Tribe/Tickets.php:1813
+#: src/Tribe/Tickets.php:1819
 msgid "Tickets are not available as this %s has passed."
 msgstr ""
 
-#: src/Tribe/Metabox.php:559 src/Tribe/Assets.php:124
+#: src/Tribe/Metabox.php:559 src/Tribe/Assets.php:125
 msgid "Please enter in without thousand separators and currency symbols."
 msgstr ""
 
 #: common/src/Tribe/Support.php:171
 msgid "English"
-msgstr ""
+msgstr "Angol"
 
-#: common/src/Tribe/Plugins_API.php:116
+#: common/src/Tribe/Plugins_API.php:126
 msgid "The Eventbrite Tickets add-on allows you to create & sell tickets through The Events Calendar using the power of %1$sEventbrite%2$s. Whether you’re creating your ticket on the WordPress dashboard or importing the details of an already-existing event from %1$sEventbrite.com%2$s, this add-on brings the power of the Eventbrite API to your calendar."
-msgstr ""
+msgstr "Az Eventbrite Tickets kiegészítővel jegyeket hozhatsz létre és árulhatsz a The Events Calendaron keresztül az %1$sEventbrite%2$s erejét használva. Ez a bővítmény elhozza az Eventbrite API erejét a naptáradba, függetlenül attól, hogy a WordPress vezérlőpulton keresztül hozod-e létre a jegyet, vagy egy már létező eseményt importálsz az %1$sEventbrite.com%2$s oldalról."
 
-#: common/src/Tribe/Plugins_API.php:105
+#: common/src/Tribe/Plugins_API.php:115
 msgctxt "Names of required plugins for Community Tickets"
 msgid "Event Tickets Plus and Community Events"
-msgstr ""
+msgstr "Event Tickets Plus és Community Events"
 
-#: common/src/Tribe/Plugins_API.php:104
+#: common/src/Tribe/Plugins_API.php:114
 msgid "Enable Community Events organizers to offer tickets to their events. You can set flexible payment and fee options. They can even check-in attendees to their events! All of this managed from the front-end of your site without ever needing to grant access to your admin"
-msgstr ""
+msgstr "Engedélyezd a Community Events szervezőknek, hogy jegyeket adjanak az eseményeikhez. Rugalmas fizetési és díjazási lehetőségek állnak rendelkezésre. Még beléptetési / jegyellenőrzési lehetőség is van az eseményekhez! Mindez a weboldal front-end részéről kezelhető anélkül, hogy hozzáférést kellene adni az adminisztrációs felülethez."
 
 #: common/src/Tribe/Plugins_API.php:48
 msgid "The Events Calendar PRO is a paid Add-On to our open source WordPress plugin %1$sThe Events Calendar%2$s. PRO offers a whole host of calendar features including recurring events, custom event attributes, saved venues and organizers, venue pages, advanced event admin and lots more."
-msgstr ""
+msgstr "Az Events Calendar PRO egy fizetős kiegészítő a nyílt forráskódú %1$sThe Events Calendar%2$s WordPress bővítményhez. A PRO rengeteg funkcionalitást kínál, mint pl. ismétlődő események, egyedi esemény tulajdonságok, elmentett helyszínek és szervezők, dedikált helyszín oldalak, fejlett esemény adminisztráció és sok más."
 
-#: common/src/Tribe/Plugins_API.php:84
+#: common/src/Tribe/Plugins_API.php:94
 msgid "It is awesome that your calendar is <em>THE PLACE</em> to get hooked up with prime choice ways to spend time. You have more events than Jabba the Hutt has rolls. Too bad visitors are hiring a personal assistant to go through all the choices. Ever wish you could just filter the calendar to only show events in walking distance, on a weekend, that are free? BOOM. Now you can. Introducing… the Filter Bar."
-msgstr ""
+msgstr "Király, hogy a naptárad <em>A HELY</em>, ahol elsőosztályú időtöltési lehetőségek közül lehet válogatni. Több eseményed van, mint ahány ránca van Jabbának. Kár, hogy a látogatók személyi asszisztenseket vesznek fel, hogy átnézzék az összes lehetőséget. Szeretted volna valaha szűrni a naptáradat, hogy csak a séta távolságra lévő eseményeket mutassa, hétvégén, amik ingyenesek? Hát ITT VAN! Ismerd meg... a Filter Bar-t."
 
-#: common/src/Tribe/Admin/Help_Page.php:227 common/src/Tribe/Plugins_API.php:80
+#: common/src/Tribe/Admin/Help_Page.php:227 common/src/Tribe/Plugins_API.php:90
 msgid "Filter Bar"
-msgstr ""
+msgstr "Filter Bar"
 
 #: common/src/Tribe/Credits.php:64
 msgid "Rate %1$sEvent Tickets%2$s %3$s"
-msgstr ""
+msgstr "Értékeld az %1$sEvent Tickets%2$s %3$s-et"
 
 #: common/src/Tribe/Credits.php:55
 msgid "Rate %1$sThe Events Calendar%2$s %3$s"
-msgstr ""
+msgstr "Értékeld a %1$sThe Events Calendar%2$s-t %3$s"
 
-#: src/Tribe/RSVP.php:791
+#: src/Tribe/RSVP.php:810
 msgid "You confirmed you will not be attending %s"
 msgstr ""
 
@@ -3487,7 +3610,6 @@ msgid "Type: "
 msgstr ""
 
 #: src/views/tickets/rsvp.php:211
-#: src/views/blocks/rsvp/form/submit-login.php:19
 msgid "Login to RSVP"
 msgstr ""
 
@@ -3497,7 +3619,7 @@ msgstr ""
 
 #: src/views/tickets/orders.php:34
 msgid "View %s"
-msgstr ""
+msgstr "%s megtekintése"
 
 #: src/views/tickets/orders-rsvp.php:63
 #: src/views/tickets/orders-pp-tickets.php:66
@@ -3518,12 +3640,12 @@ msgid "My RSVPs for This %s"
 msgstr ""
 
 #: src/views/tickets/orders-link.php:39
-#: src/views/blocks/attendees/order-links.php:64
+#: src/views/blocks/attendees/order-links.php:65
 msgid "View your %s"
 msgstr ""
 
 #: src/views/tickets/orders-link.php:38
-#: src/views/blocks/attendees/order-links.php:47
+#: src/views/blocks/attendees/order-links.php:48
 msgid "You have %s for this %s."
 msgstr ""
 
@@ -3547,49 +3669,47 @@ msgstr ""
 msgid "To see a list of events you're attending, you will need to log in."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:125
+#: src/admin-views/tribe-options-tickets.php:127
 msgid "You can require that users log into your site before they are able to RSVP (or buy tickets). Please review your WordPress Membership option (via the General Settings admin screen) before adjusting this setting."
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:120
+#: src/admin-views/tribe-options-tickets.php:122
 msgid "Login Requirements"
 msgstr ""
 
-#: src/admin-views/tribe-options-tickets.php:43
+#: src/admin-views/tribe-options-tickets.php:51
 msgid "Require users to log in before they RSVP"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:810
+#: src/Tribe/Tickets_View.php:808
 msgid "This RSVP is no longer active."
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:743
+#: src/Tribe/Tickets_View.php:741
 msgid "Ticket"
 msgstr ""
 
-#: src/Tribe/Tickets_View.php:630
-msgid "Not Going"
-msgstr ""
-
-#: src/views/blocks/rsvp/status/going.php:21 src/Tribe/Tickets_View.php:629
+#: src/views/blocks/rsvp/status/going.php:26
 #: src/modules/blocks/rsvp/counters/template.js:27
-#: src/resources/js/app/blocks.js:37903
+#: src/resources/js/app/blocks.js:40976
 msgid "Going"
 msgstr ""
 
-#: src/Tribe/Tickets.php:1863
+#: src/Tribe/Tickets.php:1869
 msgid "There are no tickets available at this time."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1861
+#: src/Tribe/Tickets.php:1867
 msgid "Tickets are no longer available."
 msgstr ""
 
-#: src/Tribe/Tickets.php:1858
+#: src/views/blocks/tickets/content-inactive.php:18 src/Tribe/Tickets.php:1864
+#: src/modules/blocks/tickets/container/template.js:47
+#: src/resources/js/app/blocks.js:44084
 msgid "Tickets are not yet available"
 msgstr "Jegyek még nem kaphatóak"
 
-#: src/Tribe/Main.php:788
+#: src/Tribe/Main.php:803
 msgid "Buy"
 msgstr ""
 
@@ -3597,9 +3717,9 @@ msgstr ""
 #: src/admin-views/editor/column-body-price.php:18
 #: common/src/Tribe/Cost_Utils.php:114
 msgid "Free"
-msgstr ""
+msgstr "Ingyenes"
 
-#: src/Tribe/Tickets_View.php:739
+#: src/Tribe/Tickets_View.php:737
 msgid "RSVPs"
 msgstr ""
 
@@ -3641,61 +3761,61 @@ msgstr ""
 
 #: common/src/admin-views/event-log.php:117
 msgid "Download log"
-msgstr ""
+msgstr "Naplófájl letöltése"
 
 #: common/src/admin-views/event-log.php:100
 msgid "The selected log file is empty or has not been generated yet."
-msgstr ""
+msgstr "A választott napló fájl üres vagy még nem lett létrehozva."
 
 #: common/src/admin-views/event-log.php:43
 msgid "Method"
-msgstr ""
+msgstr "Metódus"
 
 #: common/src/admin-views/event-log.php:21
 msgid "Logging level"
-msgstr ""
+msgstr "Naplózási szint"
 
 #: common/src/Tribe/Validate.php:168
 msgid "%s must contain numbers, letters, dashes and undescores only"
-msgstr ""
+msgstr "A(z) %s csak számokat, betűket, kötőjelet és alsó vonást tartalmazhat"
 
 #: common/src/Tribe/Log.php:376
 msgid "Full debug (all events)"
-msgstr ""
+msgstr "Teljes hibakeresés (összes esemény)"
 
 #: common/src/Tribe/Log.php:375
 msgid "Warnings and errors"
-msgstr ""
+msgstr "Figyelmeztetések és hibák"
 
 #: common/src/Tribe/Log.php:374
 msgid "Only errors"
-msgstr ""
+msgstr "Csak hibák"
 
 #: common/src/Tribe/Log.php:373
 msgid "Disabled"
-msgstr ""
+msgstr "Letiltva"
 
 #: common/src/Tribe/Log.php:274
 msgid "Cannot set %s as the current logging engine"
-msgstr ""
+msgstr "A(z) %s beállítása naplózó motornak nem lehetséges"
 
 #: common/src/Tribe/Log/Null_Logger.php:26
 msgid "Null logger (will log nothing)"
-msgstr ""
+msgstr "Null naplózó (nem fog semmit naplózni)"
 
 #: common/src/Tribe/Log/File_Logger.php:128
 msgid "Default (uses temporary files)"
-msgstr ""
+msgstr "Alapértelmezett (átmeneti fájlokat használ)"
 
 #: common/src/Tribe/Log/Admin.php:148
 msgctxt "log engines"
 msgid "None currently available"
-msgstr ""
+msgstr "Jelenleg nincs elérhető"
 
 #: common/src/Tribe/Log/Admin.php:133
 msgctxt "log selector"
 msgid "None currently available"
-msgstr ""
+msgstr "Jelenleg nincs elérhető"
 
 #: src/views/tickets/rsvp.php:199
 msgid "Don't list me on the public attendee list"
@@ -3723,45 +3843,45 @@ msgstr ""
 msgid "Enable global stock"
 msgstr ""
 
-#: src/Tribe/Assets.php:117
+#: src/Tribe/Assets.php:118
 msgid "It looks like you have modified your shared capacity setting but have not saved or updated the post."
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:406
+#: src/Tribe/Attendees_Table.php:410
 msgid "View order"
 msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:52
 msgid "Recent Template Changes"
-msgstr ""
+msgstr "Legújabb sablon változások"
 
 #: common/src/Tribe/Support/Template_Checker_Report.php:115
 msgid "Information about recent template changes and potentially impacted template overrides is provided below."
-msgstr ""
+msgstr "Lent találhatóak információk a legújabb sablon változtatásokról és az esetlegesen érintett sablon felülírásokról."
 
 #: common/src/Tribe/Support/Template_Checker_Report.php:113
 msgid "No notable template changes detected."
-msgstr ""
+msgstr "Nem észlelhetők jelentős sablonváltozások."
 
 #: common/src/Tribe/Support/Template_Checker_Report.php:97
 msgid "based on %s version"
-msgstr ""
+msgstr "A(z) %s verzió alapján"
 
 #: common/src/Tribe/Support/Template_Checker_Report.php:96
 msgid "version data missing from override"
-msgstr ""
+msgstr "a sablon felülírásból hiányzik a verzió információ"
 
 #: common/src/Tribe/Support/Template_Checker_Report.php:92
 msgid "Existing theme overrides that may need revision:"
-msgstr ""
+msgstr "Lehetséges felülvizsgálatot igénylő sablon felülírások:"
 
 #: common/src/Tribe/Support/Template_Checker_Report.php:82
 msgid "Templates introduced or updated with this release (%s):"
-msgstr ""
+msgstr "Az ebben a verzióban (%s) bevezetett vagy frissített sablonok:"
 
 #: common/src/Tribe/Support/Template_Checker_Report.php:78
 msgid "No notable changes detected"
-msgstr ""
+msgstr "Nem észlelhetők jelentős változások"
 
 #. Author URI of the plugin
 msgid "http://m.tri.be/28"
@@ -3769,19 +3889,19 @@ msgstr ""
 
 #. Author of the plugin
 msgid "Modern Tribe, Inc."
-msgstr ""
+msgstr "Modern Tribe, Inc."
 
 #: src/views/tickets/rsvp.php:221
 msgid "Confirm RSVP"
 msgstr ""
 
-#: src/views/tickets/rsvp.php:154 src/views/blocks/rsvp/form/name.php:30
+#: src/views/tickets/rsvp.php:154 src/views/blocks/rsvp/form/name.php:31
 #: src/Tribe/Privacy.php:159 src/Tribe/Privacy.php:440
 msgid "Full Name"
 msgstr ""
 
-#: src/views/tickets/tpp.php:98 src/views/tickets/rsvp.php:97
-#: src/views/blocks/rsvp/details/availability.php:22
+#: src/views/tickets/rsvp.php:97 src/views/tickets/tpp.php:98
+#: src/views/blocks/rsvp/details/availability.php:23
 msgid "Out of stock!"
 msgstr ""
 
@@ -3789,11 +3909,11 @@ msgstr ""
 msgid "%1$s out of %2$s available"
 msgstr ""
 
-#: src/views/blocks/rsvp/icon.php:20 src/Tribe/Tickets_View.php:739
+#: src/views/blocks/rsvp/icon.php:21 src/Tribe/Tickets_View.php:737
 #: src/admin-views/editor/column-body-price.php:16
 #: src/modules/blocks/rsvp/index.js:22
 #: src/modules/blocks/rsvp/container/template.js:31
-#: src/resources/js/app/blocks.js:38896 src/resources/js/app/blocks.js:40027
+#: src/resources/js/app/blocks.js:42065 src/resources/js/app/blocks.js:43169
 msgid "RSVP"
 msgstr ""
 
@@ -3803,38 +3923,35 @@ msgid "Purchaser"
 msgstr "Vásárló"
 
 #: src/views/tickets/email.php:402
-#: src/modules/blocks/ticket/container-header/title/template.js:29
-#: src/resources/js/app/blocks.js:41324
 msgid "Ticket Type"
 msgstr "Jegy típusa"
 
-#: src/views/tickets/email.php:27
-#: src/views/tickets/email-ticket-type-moved.php:25
-#: src/views/tickets/email-non-attendance.php:39
 #: src/views/tickets/email-tickets-moved.php:26
+#: src/views/tickets/email-ticket-type-moved.php:25
+#: src/views/tickets/email-non-attendance.php:39 src/views/tickets/email.php:27
 msgid "Your tickets"
 msgstr "Jegyeid"
 
 #: src/views/tickets/attendees-email.php:24
 #: src/modules/blocks/attendees/index.js:21
-#: src/resources/js/app/blocks.js:43603
+#: src/resources/js/app/blocks.js:46944
 msgid "Attendee List"
 msgstr "Résztvevők listájára"
 
-#: src/admin-views/tribe-options-tickets.php:58
+#: src/admin-views/tribe-options-tickets.php:66
 msgid "Post types that can have tickets"
 msgstr ""
 
+#: src/admin-views/tribe-options-tickets.php:62
 #: src/admin-views/editor/panel/settings.php:14
-#: src/admin-views/tribe-options-tickets.php:54
 msgid "Ticket Settings"
 msgstr ""
 
-#: src/admin-views/meta-box.php:240 src/admin-views/editor/panel/ticket.php:199
 #: src/admin-views/editor/panel/settings.php:81
+#: src/admin-views/editor/panel/ticket.php:199 src/admin-views/meta-box.php:240
 #: src/modules/blocks/rsvp/action-dashboard/template.js:29
 #: src/modules/blocks/ticket/dashboard/template.js:24
-#: src/resources/js/app/blocks.js:39134 src/resources/js/app/blocks.js:43134
+#: src/resources/js/app/blocks.js:42300 src/resources/js/app/blocks.js:46406
 msgid "Cancel"
 msgstr "Mégsem"
 
@@ -3850,13 +3967,13 @@ msgstr ""
 msgid "When will ticket sales occur?"
 msgstr ""
 
-#: src/admin-views/meta-box.php:192
 #: src/admin-views/editor/fieldset/advanced.php:102
+#: src/admin-views/meta-box.php:192
 msgid "End sale:"
 msgstr "Eladás vége:"
 
-#: src/admin-views/meta-box.php:161
 #: src/admin-views/editor/fieldset/advanced.php:70
+#: src/admin-views/meta-box.php:161
 msgid "Start sale:"
 msgstr "Eladás kezdete:"
 
@@ -3868,24 +3985,24 @@ msgstr "Jegy leírása:"
 msgid "Ticket Name:"
 msgstr "Jegy neve:"
 
-#: src/admin-views/meta-box.php:128 src/admin-views/editor/panel/ticket.php:102
+#: src/admin-views/editor/panel/ticket.php:102 src/admin-views/meta-box.php:128
 msgid "Sell using:"
 msgstr "Eladás a következő használatával:"
 
-#: src/admin-views/meta-box.php:123 src/admin-views/editor/panel/ticket.php:61
+#: src/admin-views/editor/panel/ticket.php:61 src/admin-views/meta-box.php:123
 msgid "Edit ticket"
 msgstr "Jegy szerkesztése"
 
-#: src/admin-views/meta-box.php:112 src/admin-views/meta-box.php:122
-#: src/admin-views/editor/panel/ticket.php:53
+#: src/admin-views/editor/panel/ticket.php:53 src/admin-views/meta-box.php:112
+#: src/admin-views/meta-box.php:122
 msgid "Add new ticket"
 msgstr "Új jegy hozzáadása"
 
-#: src/admin-views/meta-box.php:54 src/admin-views/editor/panel/settings.php:67
+#: src/admin-views/editor/panel/settings.php:67 src/admin-views/meta-box.php:54
 msgid "Remove"
 msgstr "Eltávolít"
 
-#: src/admin-views/meta-box.php:46 src/admin-views/editor/panel/settings.php:51
+#: src/admin-views/editor/panel/settings.php:51 src/admin-views/meta-box.php:46
 msgid "Select an Image"
 msgstr "Válassz ki egy képet"
 
@@ -3901,7 +4018,7 @@ msgstr "Tölts fel képet a jegy fejlécéhez."
 msgid "This event was created using Community Events. Are you sure you want to sell tickets for it?"
 msgstr "Az esemény a Community Events használatával készült. Biztos elkezded a jegyek árusítását az eseményre?"
 
-#: src/admin-views/tpp-orders.php:78 src/admin-views/tpp-orders.php:82
+#: src/Tribe/Status/Abstract_Commerce.php:168
 msgid "Sold %d"
 msgstr "Eladva %d"
 
@@ -3911,9 +4028,12 @@ msgstr "%s szerkesztése"
 
 #: src/admin-views/list.php:47 common/src/admin-views/event-log.php:65
 msgid "View"
-msgstr "Megnéz"
+msgstr "Megtekintés"
 
 #: src/admin-views/list.php:33
+#: src/modules/blocks/rsvp/attendee-registration/template.js:23
+#: src/modules/blocks/ticket/container-content/attendees-registration/template.js:21
+#: src/resources/js/app/blocks.js:41763 src/resources/js/app/blocks.js:46162
 msgid "Edit"
 msgstr "Szerkesztés"
 
@@ -3940,10 +4060,6 @@ msgstr "(írj be 0-át vagy hagyd üresen ingyenes eseményekhez)"
 msgid "Price:"
 msgstr "Ár:"
 
-#: src/admin-views/tpp-orders.php:63
-msgid "Sales by Ticket"
-msgstr ""
-
 #: src/admin-views/attendees-email.php:59
 msgid "Send Email"
 msgstr "E-mail küldése"
@@ -3968,15 +4084,15 @@ msgstr "Válassz felhasználót:"
 msgid "Send the attendee list by email"
 msgstr "Résztvevők listájának küldése e-mailben"
 
-#: src/Tribe/Attendees.php:709
+#: src/Tribe/Attendees.php:708
 msgid "Email sent successfully!"
 msgstr ""
 
-#: src/Tribe/Attendees.php:702
+#: src/Tribe/Attendees.php:701
 msgid "Error when sending the email"
 msgstr ""
 
-#: src/Tribe/Attendees.php:701
+#: src/Tribe/Attendees.php:700
 msgid "Attendee List for: %s"
 msgstr "Résztvevők listája ehhez: %s"
 
@@ -4004,8 +4120,8 @@ msgstr ""
 msgid "attendees"
 msgstr "résztvevők"
 
-#: src/Tribe/Attendees.php:531 src/admin-views/tribe-options-tickets.php:237
-#: src/admin-views/tribe-options-tickets.php:249
+#: src/Tribe/Attendees.php:531 src/admin-views/tribe-options-tickets.php:234
+#: src/admin-views/tribe-options-tickets.php:246
 msgid "Yes"
 msgstr "Igen"
 
@@ -4027,11 +4143,11 @@ msgstr "Ki kell választanod egy felhasználót vagy érvényes e-mail címet ke
 
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
 #: src/Tribe/Admin/Columns/Tickets.php:57 src/Tribe/Attendees.php:210
-#: src/Tribe/Commerce/PayPal/Main.php:440 src/admin-views/list.php:92
+#: src/Tribe/Commerce/PayPal/Main.php:442 src/admin-views/list.php:92
 #: src/admin-views/attendees.php:23
 #: src/modules/blocks/rsvp/action-buttons/attendees-action-button/template.js:27
 #: src/modules/blocks/tickets/action-buttons/attendees/template.js:25
-#: src/resources/js/app/blocks.js:38981 src/resources/js/app/blocks.js:40222
+#: src/resources/js/app/blocks.js:42150 src/resources/js/app/blocks.js:43364
 msgid "Attendees"
 msgstr "Résztvevők"
 
@@ -4039,51 +4155,51 @@ msgstr "Résztvevők"
 msgid "See who purchased tickets to this event"
 msgstr "Nézd meg, hogy kik vásároltak már jegyet ehhez az eseményhez"
 
-#: src/Tribe/Commerce/PayPal/Main.php:1924 src/Tribe/RSVP.php:1743
+#: src/Tribe/RSVP.php:1765 src/Tribe/Commerce/PayPal/Main.php:1926
 msgid "Post draft updated."
 msgstr "Vázlat frissítve."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1923 src/Tribe/RSVP.php:1742
+#: src/Tribe/RSVP.php:1764 src/Tribe/Commerce/PayPal/Main.php:1925
 msgid "Post scheduled."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1922 src/Tribe/RSVP.php:1741
+#: src/Tribe/RSVP.php:1763 src/Tribe/Commerce/PayPal/Main.php:1924
 msgid "Post submitted."
 msgstr "Bejegyzés elküldve."
 
-#: src/Tribe/Commerce/PayPal/Main.php:1919 src/Tribe/RSVP.php:1738
+#: src/Tribe/RSVP.php:1760 src/Tribe/Commerce/PayPal/Main.php:1921
 msgid "Post published. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1915 src/Tribe/RSVP.php:1734
+#: src/Tribe/RSVP.php:1756 src/Tribe/Commerce/PayPal/Main.php:1917
 msgid "Post updated. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1908 src/Tribe/RSVP.php:1727
+#: src/Tribe/RSVP.php:1749 src/Tribe/Commerce/PayPal/Main.php:1910
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2623 src/Tribe/RSVP.php:1399
+#: src/Tribe/RSVP.php:1418 src/Tribe/Commerce/PayPal/Main.php:2623
 msgid "(deleted)"
 msgstr ""
 
-#: src/Tribe/RSVP.php:1096
+#: src/Tribe/RSVP.php:1115
 msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr ""
 
-#: src/Tribe/RSVP.php:1091
+#: src/Tribe/RSVP.php:1110
 msgid "You can't RSVP more than the total remaining tickets."
 msgstr ""
 
-#: src/views/blocks/rsvp/messages/success.php:20 src/Tribe/RSVP.php:1085
+#: src/views/blocks/rsvp/messages/success.php:21 src/Tribe/RSVP.php:1104
 msgid "Your RSVP has been received! Check your email for your RSVP confirmation."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1128 src/Tribe/RSVP.php:703
+#: src/Tribe/RSVP.php:722 src/Tribe/Commerce/PayPal/Main.php:1130
 msgid "Your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:359 src/Tribe/RSVP.php:287
+#: src/Tribe/RSVP.php:292 src/Tribe/Commerce/PayPal/Main.php:361
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr ""
@@ -4096,95 +4212,95 @@ msgstr "Beállítás jegy fejléceként"
 msgid "Ticket header image"
 msgstr "Jegy fejlécének képe"
 
-#: src/Tribe/Main.php:552
+#: src/Tribe/Main.php:567
 msgid "If you have a valid license for one of our paid plugins, you can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:547
+#: src/Tribe/Main.php:562
 msgid "Already have Events Tickets Plus? You can %s in our premium support forums. Our support team monitors the forums and will respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:546 src/Tribe/Main.php:551
+#: src/Tribe/Main.php:561 src/Tribe/Main.php:566
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:544
+#: src/Tribe/Main.php:559
 msgid "Looking for more immediate support? We offer %1$s with the purchase of any of our premium plugins (like %2$s). Pick up a license and you can post there directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:543 src/admin-views/tribe-options-tickets.php:152
+#: src/Tribe/Main.php:558 src/admin-views/tribe-options-tickets.php:149
 msgid "Events Tickets Plus"
 msgstr ""
 
-#: src/Tribe/Main.php:542
+#: src/Tribe/Main.php:557
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:540
+#: src/Tribe/Main.php:555
 msgid "If you have tried the above steps and are still having trouble, you can post a new thread to our %s. Our support staff monitors these forums once a week and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:539
+#: src/Tribe/Main.php:554
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:522
+#: src/Tribe/Main.php:537
 msgid "We are committed to helping you sell tickets for your event. Check out our handy %s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:520 src/admin-views/admin-welcome-message.php:23
+#: src/Tribe/Main.php:535 src/admin-views/admin-welcome-message.php:34
 msgid "New User Primer"
-msgstr ""
+msgstr "Kezdő lépések új felhasználóknak"
 
-#: src/Tribe/Main.php:503
+#: src/Tribe/Main.php:518
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:502
+#: src/Tribe/Main.php:517
 msgid "Troubleshooting common problems"
-msgstr ""
+msgstr "Általános problémák elhárítása"
 
-#: src/Tribe/Main.php:501
+#: src/Tribe/Main.php:516
 msgid "Features overview"
-msgstr ""
+msgstr "Funkciók áttekintése"
 
-#: src/Tribe/Main.php:500
+#: src/Tribe/Main.php:515
 msgid "Settings overview"
-msgstr ""
+msgstr "Beállítások áttekintése"
 
-#: src/Tribe/Main.php:498
+#: src/Tribe/Main.php:513
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:334
+#: src/Tribe/Main.php:332
 msgid "When The Events Calendar and Event Tickets are both activated, The Events Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:548 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:589 src/admin-views/list.php:43
 msgid "Delete"
 msgstr "Törlés"
 
-#: src/Tribe/Attendees_Table.php:521
+#: src/Tribe/Attendees_Table.php:555
 msgid "Export"
 msgstr "Exportál"
 
-#: src/views/tickets/rsvp.php:162 src/views/blocks/rsvp/form/email.php:31
-#: src/Tribe/Attendees_Table.php:520
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:73 src/Tribe/Privacy.php:164
-#: src/Tribe/Privacy.php:445 src/Tribe/Privacy.php:541
+#: src/views/tickets/rsvp.php:162 src/views/blocks/rsvp/form/email.php:32
+#: src/Tribe/Privacy.php:164 src/Tribe/Privacy.php:445
+#: src/Tribe/Privacy.php:541 src/Tribe/Attendees_Table.php:562
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:73
 #: src/admin-views/admin-welcome-message.php:62
 msgid "Email"
-msgstr "Email címed"
+msgstr "Email"
 
-#: src/Tribe/Attendees_Table.php:519
+#: src/Tribe/Attendees_Table.php:554
 msgid "Print"
 msgstr "Nyomtatás"
 
-#: src/Tribe/Attendees_Table.php:553
+#: src/Tribe/Attendees_Table.php:591
 msgid "Undo Check in"
 msgstr "Bejelentkezés visszavonása"
 
-#: src/Tribe/Attendees_Table.php:552
+#: src/Tribe/Attendees_Table.php:590
 msgid "Check in"
 msgstr "Bejelentkezés"
 
@@ -4208,10 +4324,10 @@ msgstr "Vevő email címe"
 msgid "Purchaser Name"
 msgstr "Vevő neve"
 
-#: src/Tribe/Metabox.php:53 src/Tribe/Admin/Ticket_Settings.php:22
-#: src/Tribe/Commerce/PayPal/Main.php:424 src/Tribe/Tickets_View.php:743
+#: src/Tribe/Admin/Ticket_Settings.php:22 src/Tribe/Metabox.php:53
+#: src/Tribe/Commerce/PayPal/Main.php:426 src/Tribe/Tickets_View.php:741
 #: src/admin-views/editor/list-table.php:30
-#: src/modules/blocks/tickets/index.js:25 src/resources/js/app/blocks.js:41249
+#: src/modules/blocks/tickets/index.js:25 src/resources/js/app/blocks.js:44448
 msgid "Tickets"
 msgstr "Jegyek"
 
@@ -4227,14 +4343,6 @@ msgstr "Itt a Modern Tribe The Events Calendar bővítmény összes hálózati b
 msgid "Network Settings"
 msgstr "Hálózati beállítások"
 
-#: common/src/admin-views/tribe-options-licenses.php:47
-msgid "Only license fields for %1$snetwork activated%2$s plugins will be listed on this screen. "
-msgstr ""
-
-#: common/src/admin-views/tribe-options-licenses.php:38
-msgid "%1$s Using our plugins in a multisite network? %2$s Please note that your license key will be applied to the entire network, not just this site."
-msgstr ""
-
 #: common/src/admin-views/tribe-options-help.php:80
 msgid "More..."
 msgstr "Tovább..."
@@ -4245,11 +4353,11 @@ msgstr "Hírek és segédletek"
 
 #: common/src/admin-views/tribe-options-help.php:41
 msgid "System Information"
-msgstr "Rendszer információ"
+msgstr "Rendszerinformáció"
 
 #: common/src/admin-views/tribe-options-help.php:38
 msgid "Read more about our support policy"
-msgstr ""
+msgstr "Olvass többet a támogatási irányelveinkről"
 
 #: common/src/admin-views/tribe-options-help.php:37
 msgid "Please note that all hands-on support is provided via the help desk. You can email or tweet at us… ​but we will probably point you back to the help desk 😄"
@@ -4257,51 +4365,51 @@ msgstr ""
 
 #: common/src/admin-views/tribe-options-help.php:33
 msgid "%s. There are very few issues we haven’t seen and it’s likely another user has already asked your question and gotten an answer from our support staff. While posting to the help desk is open only to paid customers, they are open for anyone to search and review."
-msgstr ""
+msgstr "%s. Kevés olyan kérdés van, amit még nem láttunk, és valószínűleg egy másik felhasználó már megkérdezte a kérdést, és választ kapott a támogató személyzettől. Míg az ügyfélszolgálathoz való kérdés küldés csak a fizetős ügyfelek számára nyitott, mindenki számára nyitva áll a keresés."
 
 #: common/src/admin-views/tribe-options-help.php:32
 msgid "Test for a theme or plugin conflict"
-msgstr ""
+msgstr "Sablon- vagy bővítmény-konfliktus tesztelése"
 
 #: common/src/admin-views/tribe-options-help.php:32
 msgid "%s. Testing for an existing conflict is the best start for in-depth troubleshooting. We will often ask you to follow these steps when opening a new thread, so doing this ahead of time will be super helpful."
-msgstr ""
+msgstr "%s. Egy meglévő konfliktus kitesztelése a legjobb kezdet a hibaelhárításhoz. Gyakran fogjuk kérni, hogy kövesd ezeket a lépéseket, amikor új topicot nyitsz. Hasznos, ha ezt mindjárt az elején megteszed."
 
 #: common/src/admin-views/tribe-options-help.php:31
 msgid "Check our Knowledgebase"
-msgstr ""
+msgstr "Tekintse meg a tudásbázisunkat"
 
 #: common/src/admin-views/tribe-options-help.php:31
 msgid "%s. All of the common (and not-so-common) answers to questions we see are here. It’s often the fastest path to finding an answer!"
-msgstr ""
+msgstr "%s. Az összes gyakori (és kevésbé gyakori) kérdés és válasz, amelyekkel találkozunk, itt található. Gyakran ez a leggyorsabb út a válasz megtalálásához."
 
 #: common/src/admin-views/tribe-options-help.php:27
 msgid "While the resources above help solve a majority of the issues we see, there are times you might be looking for extra support. If you need assistance using our plugins and would like us to take a look, please follow these steps:"
-msgstr ""
+msgstr "Bár a fenti források segítenek megoldani a problémák többségét, időnként lehet, hogy extra támogatást keresel. Ha segítségre van szükséged a bővítmények használatával kapcsolatban, és szeretnéd, hogy megnézzük, kövesd az alábbi lépéseket:"
 
 #: common/src/admin-views/tribe-options-help.php:26
 msgid "Getting More Help"
-msgstr ""
+msgstr "További segítség kérése"
 
 #: common/src/admin-views/tribe-options-help.php:21
 msgid "list of available functions"
-msgstr ""
+msgstr "elérhető funkciók listája"
 
 #: common/src/admin-views/tribe-options-help.php:15
 msgid "Knowledgebase"
-msgstr ""
+msgstr "Tudásbázis"
 
 #: common/src/admin-views/tribe-options-help.php:15
 msgid "Our website’s %s is a great place to find tips and tricks for using and customizing our plugins."
-msgstr ""
+msgstr "A honlapunkon lévő %s egy remek hely, ahol a bővítményeink használatához és testreszabásához találsz tippeket és trükköket."
 
 #: common/src/admin-views/tribe-options-help.php:14
 msgid "Getting Support"
-msgstr ""
+msgstr "Hol találsz segítséget"
 
 #: common/src/admin-views/tribe-options-help.php:11
 msgid "Thank you for using %s! All of us at Modern Tribe sincerely appreciate your support and we’re excited to see you using our plugins."
-msgstr ""
+msgstr "Köszönjük, hogy a(z) %s bővítményt használod! Mi a Modern Tribe-nál mindannyian őszintén értékeljük a támogatásodat és örömmel látjuk, hogy a bővítményeinket használod."
 
 #: common/src/admin-views/tribe-options-general.php:59
 msgid "Debug Bar Plugin"
@@ -4313,7 +4421,7 @@ msgstr "Engedélyezd ezt a beállítást, hogy a hibakeresési információk nap
 
 #: common/src/admin-views/tribe-options-general.php:53
 msgid "Debug mode"
-msgstr "Hibakereső üzemmód"
+msgstr "Hibakereső mód"
 
 #: common/src/admin-views/tribe-options-general.php:35
 msgid "Show The Events Calendar link"
@@ -4325,7 +4433,7 @@ msgstr "Nézz meg egy példát a linkre"
 
 #: common/src/admin-views/tribe-options-general.php:30
 msgid "Are you thinking \"Wow, this plugin is amazing! I should say thanks to Modern Tribe for all their hard work.\" The greatest thanks we could ask for is recognition. Add a small text-only link at the bottom of your calendar pointing to The Events Calendar project."
-msgstr "Arra, gondolsz, hogy \"Hú, ez a bővítmény csodálatos! Köszönetet kéne mondanom Modern Tribe-nak a kemény munkáért.\" A legnagyobb köszönet, amit kérhetünk, az az elismerés és feltüntetés. Adj hozzá egy kis szöveges linket a naptárad aljához, mely a The Events Calendar projekt honlapjára mutat."
+msgstr "Arra gondolsz, hogy \"Hú, ez a bővítmény csodálatos! Köszönetet kéne mondanom Modern Tribe-nak a kemény munkáért.\" A legnagyobb köszönet, amit kérhetünk, az az elismerés. Adj hozzá egy kis szöveges linket a naptárad aljához, mely a The Events Calendar projekt honlapjára mutat."
 
 #: common/src/admin-views/tribe-options-general.php:25
 msgid "We hope our plugin is helping you out."
@@ -4341,11 +4449,11 @@ msgstr "További funkciókat, például ismétlődő eseményeket, egyéni mező
 
 #: common/src/admin-views/tribe-options-general.php:15
 msgid "Optimize your site's event listings with %1$sThe Events Calendar%2$s, our free calendar plugin. Looking for additional functionality including recurring events, user-submission, advanced ticket sales and more? Check out our %3$spremium add-ons%4$s."
-msgstr ""
+msgstr "Optimalizáld az oldalad eseménylistáját a %1$sThe Events Calendar%2$sral, az ingyenes naptár bővítményünkkel. További funkciókat keresel, mint pl. ismétlődő események, felhasználói beküldések, fejlett jegyértékesítés? Nézd meg a %3$sprémium kiegészítőinket%4$s."
 
 #: common/src/admin-views/tribe-options-general.php:10
 msgid "Thank you for using Event Tickets! All of us at Modern Tribe sincerely appreciate your support and we're excited to see you using our plugins. Check out our handy %1$sNew User Primer%2$s to get started."
-msgstr ""
+msgstr "Köszönjük, hogy az Event Tickets bővítményt használod! Mi a Modern Tribe-nál mindannyian őszintén értékeljük a támogatásodat és örömmel látjuk, hogy a bővítményeinket használod. Kezdetnek olvasd el a praktikus %1$sKezdő lépések új felhasználóknak%2$s cikket."
 
 #: common/src/admin-views/tribe-options-display.php:37
 msgid "Select the date format to use in datepickers"
@@ -4358,6 +4466,10 @@ msgstr "Dátumválasztó formátuma"
 #: common/src/admin-views/tribe-options-display.php:22
 msgid "Date Format Settings"
 msgstr "Dátum formátum beállítások"
+
+#: src/admin-views/admin-welcome-message.php:7
+msgid "Version"
+msgstr "Verzió"
 
 #: common/src/Tribe/Languages/Locations.php:374
 msgid "Wyoming"
@@ -4617,7 +4729,7 @@ msgstr "Egyesült Királyság"
 
 #: common/src/Tribe/Languages/Locations.php:283
 msgid "United Arab Emirates"
-msgstr "Egyesült Arab Emirátus"
+msgstr "Egyesült Arab Emírségek"
 
 #: common/src/Tribe/Languages/Locations.php:282
 msgid "Ukraine"
@@ -4657,7 +4769,7 @@ msgstr "Tongai Királyság"
 
 #: common/src/Tribe/Languages/Locations.php:273
 msgid "Tokelau"
-msgstr "Tokelau"
+msgstr "Tokelau-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:272
 msgid "Togo"
@@ -4673,7 +4785,7 @@ msgstr "Tanzániai Egyesült Köztársaság"
 
 #: common/src/Tribe/Languages/Locations.php:269
 msgid "Tajikistan"
-msgstr "Tadzsikisztán"
+msgstr "Tádzsikisztán"
 
 #: common/src/Tribe/Languages/Locations.php:268
 msgid "Taiwan"
@@ -4713,7 +4825,7 @@ msgstr "Saint-Pierre és Miquelon"
 
 #: common/src/Tribe/Languages/Locations.php:260
 msgid "Sri Lanka"
-msgstr "Sri Lanka"
+msgstr "Srí Lanka"
 
 #: common/src/Tribe/Languages/Locations.php:259
 msgid "Spain"
@@ -4745,7 +4857,7 @@ msgstr "Szlovákia"
 
 #: common/src/Tribe/Languages/Locations.php:251
 msgid "Singapore"
-msgstr "Singapore"
+msgstr "Szingapúr"
 
 #: common/src/Tribe/Languages/Locations.php:250
 msgid "Sierra Leone"
@@ -4753,7 +4865,7 @@ msgstr "Sierra Leone"
 
 #: common/src/Tribe/Languages/Locations.php:249
 msgid "Seychelles"
-msgstr "Seychelles"
+msgstr "Seychelle-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:248
 msgid "Serbia"
@@ -4765,7 +4877,7 @@ msgstr "Szenegál"
 
 #: common/src/Tribe/Languages/Locations.php:246
 msgid "Saudi Arabia"
-msgstr "Szaud-Arábia"
+msgstr "Szaúd-Arábia"
 
 #: common/src/Tribe/Languages/Locations.php:244
 msgid "San Marino"
@@ -4781,7 +4893,7 @@ msgstr "Saint Vincent és a Grenadine-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:240
 msgid "Saint Lucia"
-msgstr "Santa Lucia"
+msgstr "Saint Lucia"
 
 #: common/src/Tribe/Languages/Locations.php:239
 msgid "Saint Kitts and Nevis"
@@ -4853,7 +4965,7 @@ msgstr "Pakisztán"
 
 #: common/src/Tribe/Languages/Locations.php:220
 msgid "Oman"
-msgstr "Oman"
+msgstr "Omán"
 
 #: common/src/Tribe/Languages/Locations.php:219
 msgid "Norway"
@@ -4861,7 +4973,7 @@ msgstr "Norvégia"
 
 #: common/src/Tribe/Languages/Locations.php:218
 msgid "Northern Mariana Islands"
-msgstr "Északi Mariana-szigetek"
+msgstr "Északi-Mariana-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:217
 msgid "Norfolk Island"
@@ -4969,7 +5081,7 @@ msgstr "Marshall-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:191
 msgid "Malta"
-msgstr "Máta"
+msgstr "Málta"
 
 #: common/src/Tribe/Languages/Locations.php:190
 msgid "Mali"
@@ -4997,7 +5109,7 @@ msgstr "Macedónia"
 
 #: common/src/Tribe/Languages/Locations.php:184
 msgid "Macau"
-msgstr "Makaó SAR Kína"
+msgstr "Makaó"
 
 #: common/src/Tribe/Languages/Locations.php:183
 msgid "Luxembourg"
@@ -5113,7 +5225,7 @@ msgstr "Magyarország"
 
 #: common/src/Tribe/Languages/Locations.php:155
 msgid "Hong Kong"
-msgstr "Hongkong S.A.R, Kína"
+msgstr "Hongkong"
 
 #: common/src/Tribe/Languages/Locations.php:154
 msgid "Honduras"
@@ -5137,7 +5249,7 @@ msgstr "Guyana"
 
 #: common/src/Tribe/Languages/Locations.php:149
 msgid "Guinea-Bissau"
-msgstr "Guinea-Bissau"
+msgstr "Bissau-Guinea"
 
 #: common/src/Tribe/Languages/Locations.php:148
 msgid "Guinea"
@@ -5182,7 +5294,7 @@ msgstr "Németország"
 #: common/src/Tribe/Languages/Locations.php:138
 #: common/src/Tribe/Languages/Locations.php:334
 msgid "Georgia"
-msgstr "Georgia"
+msgstr "Grúzia"
 
 #: common/src/Tribe/Languages/Locations.php:137
 msgid "Gambia"
@@ -5214,11 +5326,11 @@ msgstr "Finnország"
 
 #: common/src/Tribe/Languages/Locations.php:130
 msgid "Fiji"
-msgstr "Fidzsi"
+msgstr "Fidzsi-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:129
 msgid "Faroe Islands"
-msgstr "Faroe-szigetek"
+msgstr "Feröer szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:128
 msgid "Falkland Islands (Malvinas)"
@@ -5238,7 +5350,7 @@ msgstr "Eritrea"
 
 #: common/src/Tribe/Languages/Locations.php:124
 msgid "Equatorial Guinea"
-msgstr "Egyenlítői Guinea"
+msgstr "Egyenlítői-Guinea"
 
 #: common/src/Tribe/Languages/Locations.php:123
 msgid "El Salvador"
@@ -5306,7 +5418,7 @@ msgstr "Kongó"
 
 #: common/src/Tribe/Languages/Locations.php:105
 msgid "Comoros"
-msgstr "Comoros"
+msgstr "Comore-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:104
 msgid "Colombia"
@@ -5314,7 +5426,7 @@ msgstr "Kolumbia"
 
 #: common/src/Tribe/Languages/Locations.php:102
 msgid "Cocos (Keeling) Islands"
-msgstr "Cocos (Keeling) Islands"
+msgstr "Kókusz- (Keeling-)szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:101
 msgid "Christmas Island"
@@ -5342,7 +5454,7 @@ msgstr "Kajmán-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:95
 msgid "Cape Verde"
-msgstr "Zöld-foki Köztársaság"
+msgstr "Zöld-foki-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:94
 msgid "Canada"
@@ -5370,11 +5482,11 @@ msgstr "Bulgária"
 
 #: common/src/Tribe/Languages/Locations.php:88
 msgid "Brunei Darussalam"
-msgstr "Brunei Darussalam"
+msgstr "Brunei"
 
 #: common/src/Tribe/Languages/Locations.php:87
 msgid "British Indian Ocean Territory"
-msgstr "British Indian Ocean Territory"
+msgstr "Brit Indiai-óceáni Terület"
 
 #: common/src/Tribe/Languages/Locations.php:86
 msgid "Brazil"
@@ -5382,7 +5494,7 @@ msgstr "Brazília"
 
 #: common/src/Tribe/Languages/Locations.php:85
 msgid "Bouvet Island"
-msgstr "Bouvet Island"
+msgstr "Bouvet-sziget"
 
 #: common/src/Tribe/Languages/Locations.php:84
 msgid "Botswana"
@@ -5398,7 +5510,7 @@ msgstr "Bolívia"
 
 #: common/src/Tribe/Languages/Locations.php:81
 msgid "Bhutan"
-msgstr "Bhutan"
+msgstr "Bhután"
 
 #: common/src/Tribe/Languages/Locations.php:80
 msgid "Bermuda"
@@ -5418,7 +5530,7 @@ msgstr "Belgium"
 
 #: common/src/Tribe/Languages/Locations.php:76
 msgid "Belarus"
-msgstr "Belorusszia"
+msgstr "Fehéroroszország"
 
 #: common/src/Tribe/Languages/Locations.php:75
 msgid "Barbados"
@@ -5426,7 +5538,7 @@ msgstr "Barbados"
 
 #: common/src/Tribe/Languages/Locations.php:74
 msgid "Bangladesh"
-msgstr "Bangladesh"
+msgstr "Banglades"
 
 #: common/src/Tribe/Languages/Locations.php:73
 msgid "Bahrain"
@@ -5434,7 +5546,7 @@ msgstr "Bahrein"
 
 #: common/src/Tribe/Languages/Locations.php:72
 msgid "Bahamas"
-msgstr "Bahamák"
+msgstr "Bahama-szigetek"
 
 #: common/src/Tribe/Languages/Locations.php:71
 msgid "Azerbaijan"
@@ -5450,7 +5562,7 @@ msgstr "Ausztrália"
 
 #: common/src/Tribe/Languages/Locations.php:68
 msgid "Aruba"
-msgstr "Aruba "
+msgstr "Aruba"
 
 #: common/src/Tribe/Languages/Locations.php:67
 msgid "Armenia"
@@ -5482,7 +5594,7 @@ msgstr "Andorra"
 
 #: common/src/Tribe/Languages/Locations.php:60
 msgid "American Samoa"
-msgstr "Amerkai Samoa"
+msgstr "Amerikai Szamoa"
 
 #: common/src/Tribe/Languages/Locations.php:59
 msgid "Algeria"
@@ -5559,7 +5671,7 @@ msgstr "%s csak érvényes előtag lehet: szám, betű, kötőjel, alávonás."
 
 #: common/src/Tribe/Validate.php:214
 msgid "%s must be a positive number or percent."
-msgstr ""
+msgstr "%s-nek pozitív számnak vagy százaléknak kell lennie."
 
 #: common/src/Tribe/Validate.php:200 common/src/Tribe/Validate.php:228
 msgid "%s must be a positive number."
@@ -5593,7 +5705,7 @@ msgstr "Érvénytelen vagy hiányos mező lett átadva"
 
 #: common/src/Tribe/Support.php:199
 msgid "Rewrite rules were purged on load of this help page. Chances are there is a rewrite rule flush occurring in a plugin or theme!"
-msgstr ""
+msgstr "A felülírási szabályokat ki lettek tisztítva az oldal betöltésekor. Valószínűleg egy bővítményben vagy sablonban felülírási szabály törlés történik."
 
 #: common/src/Tribe/Support.php:188 common/src/Tribe/Support.php:189
 msgid "Unknown or not set"
@@ -5604,9 +5716,9 @@ msgid "There are no fields setup for this tab yet."
 msgstr "Erre a lapra még nincsenek mezők beállítva."
 
 #: common/src/Tribe/Settings_Manager.php:253
-#: common/src/admin-views/tribe-options-licenses.php:66
+#: common/src/admin-views/tribe-options-licenses.php:57
 msgid "Licenses"
-msgstr "Licensz"
+msgstr "Licenszek"
 
 #: common/src/Tribe/Settings_Manager.php:219
 msgid "Network"
@@ -5614,31 +5726,31 @@ msgstr "Hálózat"
 
 #: common/src/Tribe/Settings_Manager.php:279
 msgid "Help"
-msgstr "Segítség"
+msgstr "Súgó"
 
 #: common/src/Tribe/Settings_Manager.php:55
 msgid "Display"
-msgstr "Kijelzés"
+msgstr "Megjelenítés"
 
 #: common/src/Tribe/Settings_Manager.php:54
 msgid "General"
-msgstr "Általános beállítások"
+msgstr "Általános"
 
-#: common/src/Tribe/Settings.php:643
+#: common/src/Tribe/Settings.php:641
 msgid "Settings saved."
-msgstr "Sikeres mentés."
+msgstr "Beállítások elmentve."
 
-#: common/src/Tribe/Settings.php:621
+#: common/src/Tribe/Settings.php:619
 msgid "The above setting was not saved. Other settings were successfully saved."
 msgid_plural "The above settings were not saved. Other settings were successfully saved."
 msgstr[0] "A fenti beállítást nem sikerült menteni. A többi beállítás mentése sikeresen megtörtént."
 msgstr[1] "A fenti beállításokat nem sikerült menteni. A többi beállítás mentése sikeresen megtörtént."
 
-#: common/src/Tribe/Settings.php:620
+#: common/src/Tribe/Settings.php:618
 msgid "None of your settings were saved. Please try again."
 msgstr "A beállítások mentése nem sikerült. Kérjük, próbáld újra."
 
-#: common/src/Tribe/Settings.php:610
+#: common/src/Tribe/Settings.php:608
 msgid "Your form had the following errors:"
 msgstr "Az űrlap a következő hibákat tartalmazza:"
 
@@ -5654,9 +5766,10 @@ msgstr "A kérés nem biztonságosan lett elküldve."
 msgid "You don't have permission to do that."
 msgstr "Ehhez nincs jogosultságod."
 
+#: src/Tribe/Editor/Attendee_Registration.php:128
 #: common/src/Tribe/Settings.php:371
 msgid "Save Changes"
-msgstr "Változások mentése"
+msgstr "Módosítások mentése"
 
 #: common/src/Tribe/Settings.php:363
 msgid "You've requested a non-existent tab."
@@ -5667,54 +5780,55 @@ msgid "%s Settings"
 msgstr "%s beállítások"
 
 #: src/admin-views/editor/panel/list.php:79 common/src/Tribe/Settings.php:254
-#: src/modules/elements/settings-dashboard/element.js:64
 #: src/modules/blocks/rsvp/action-buttons/settings-action-button/template.js:26
 #: src/modules/blocks/tickets/action-buttons/settings/template.js:20
-#: src/resources/js/app/blocks.js:11937 src/resources/js/app/blocks.js:39061
-#: src/resources/js/app/blocks.js:40087 src/resources/js/app/elements.js:5536
+#: src/modules/elements/settings-dashboard/element.js:64
+#: src/resources/js/app/elements.js:5520 src/resources/js/app/blocks.js:14458
+#: src/resources/js/app/blocks.js:42227 src/resources/js/app/blocks.js:43229
 msgid "Settings"
-msgstr "Beállitások"
+msgstr "Beállítások"
 
 #: common/src/Tribe/Settings.php:253 common/src/Tribe/Settings.php:273
 msgid "Events Settings"
 msgstr "Események beállításai"
 
+#: src/admin-views/admin-welcome-message.php:18
 #: common/src/Tribe/Settings.php:177 common/src/Tribe/Settings.php:241
 #: common/src/Tribe/Settings.php:242
 msgid "Events"
 msgstr "Események"
 
-#: common/src/Tribe/PUE/Checker.php:896
+#: common/src/Tribe/PUE/Checker.php:899
 msgid "Hmmm... something's wrong with this validator. Please contact %ssupport%s."
-msgstr ""
+msgstr "Hmmm... Valami nincs rendben az érvényesítővel. Kérjük, fordulj a %stámogatói csapathoz%s."
 
-#: common/src/Tribe/PUE/Checker.php:940
+#: common/src/Tribe/PUE/Checker.php:943
 msgid "Thanks for setting up a valid key. It will expire on %s"
-msgstr ""
+msgstr "Köszönjük, hogy érvényes kulcsot adott meg. A megadott kulcs lejárata: %s"
 
-#: common/src/Tribe/PUE/Checker.php:935
+#: common/src/Tribe/PUE/Checker.php:938
 msgid "Valid Key! Expires on %s"
 msgstr "Érvényes kulcs! Lejár ekkor: %s"
 
-#: common/src/Tribe/PUE/Checker.php:915
+#: common/src/Tribe/PUE/Checker.php:918
 msgid "Sorry, key validation server is not available."
 msgstr "Sajnáljuk, de a kulcs érvényességét ellenőrző kiszolgáló nem elérhető."
 
-#: common/src/Tribe/PUE/Checker.php:909
+#: common/src/Tribe/PUE/Checker.php:912
 msgid "unknown date"
 msgstr "ismeretlen dátum"
 
-#: common/src/Tribe/PUE/Checker.php:650
+#: common/src/Tribe/PUE/Checker.php:653
 msgid "License key(s) updated."
-msgstr "Licenc kulcs(ok) frissítve."
+msgstr "Licensz kulcs(ok) frissítve."
 
-#: common/src/Tribe/PUE/Checker.php:494
+#: common/src/Tribe/PUE/Checker.php:497
 msgid "A valid license key is required for support and updates"
-msgstr "Egy érvényes licenc szükséges a támogatáshoz és frissítésekhez"
+msgstr "Egy érvényes licensz szükséges a támogatáshoz és frissítésekhez"
 
-#: common/src/Tribe/PUE/Checker.php:509 common/src/Tribe/PUE/Checker.php:520
+#: common/src/Tribe/PUE/Checker.php:512 common/src/Tribe/PUE/Checker.php:523
 msgid "License Key"
-msgstr "Liszensz Kulcs"
+msgstr "Licensz kulcs"
 
 #: common/src/Tribe/Field.php:626
 msgid "No select options specified"
@@ -5743,15 +5857,15 @@ msgstr "Esemény kiegészítők"
 
 #: common/src/Tribe/Admin/Help_Page.php:860
 msgid "Visit the Add-on Page"
-msgstr ""
+msgstr "Látogasson el a bővítmények oldalra"
 
 #: common/src/Tribe/Admin/Help_Page.php:855
 msgid "Plugin Inactive"
-msgstr ""
+msgstr "Bővítmény kikapcsolva"
 
 #: common/src/Tribe/Admin/Help_Page.php:853
 msgid "Plugin Active"
-msgstr ""
+msgstr "Bővítmény bekapcsolva"
 
 #: common/src/Tribe/Admin/Help_Page.php:847
 msgid "Premium Add-Ons"
@@ -5759,15 +5873,15 @@ msgstr "Prémium kiegészítők"
 
 #: common/src/Tribe/Admin/Help_Page.php:828
 msgid "Rating:"
-msgstr ""
+msgstr "Értékelés:"
 
 #: common/src/Tribe/Admin/Help_Page.php:825
 msgid "Active Users:"
-msgstr ""
+msgstr "Aktív felhasználók:"
 
 #: common/src/Tribe/Admin/Help_Page.php:823
 msgid "WordPress "
-msgstr "WordPress"
+msgstr "WordPress "
 
 #: common/src/Tribe/Admin/Help_Page.php:822
 #: common/src/admin-views/app-shop.php:77
@@ -5780,7 +5894,7 @@ msgstr "Legújabb verzió:"
 
 #: common/src/Tribe/Admin/Help_Page.php:802
 msgid "Install Plugin"
-msgstr ""
+msgstr "Bővítmény telepítése"
 
 #: common/src/Tribe/Admin/Help_Page.php:802
 msgid "Install %s"
@@ -5813,56 +5927,57 @@ msgid "n/a"
 msgstr "n/a"
 
 #: common/src/Tribe/Admin/Help_Page.php:244
-#: common/src/Tribe/Plugins_API.php:100
+#: common/src/Tribe/Plugins_API.php:110
 msgid "Community Tickets"
-msgstr ""
+msgstr "Community Tickets"
 
 #: common/src/Tribe/Admin/Help_Page.php:235 common/src/Tribe/Plugins_API.php:66
 msgid "Event Tickets Plus"
-msgstr ""
+msgstr "Event Tickets Plus"
 
-#: common/src/Tribe/Admin/Help_Page.php:211 common/src/Tribe/Plugins_API.php:90
+#: common/src/Tribe/Admin/Help_Page.php:211
+#: common/src/Tribe/Plugins_API.php:100
 msgid "Community Events"
 msgstr "Közösségi események"
 
 #: common/src/Tribe/Admin/Help_Page.php:203
-#: common/src/Tribe/Plugins_API.php:111
+#: common/src/Tribe/Plugins_API.php:121
 msgid "Eventbrite Tickets"
-msgstr ""
+msgstr "Eventbrite Tickets"
 
 #: common/src/Tribe/Admin/Help_Page.php:194 common/src/Tribe/Plugins_API.php:43
 msgid "Events Calendar PRO"
-msgstr ""
+msgstr "Events Calendar PRO"
 
 #: src/views/tickets/orders-link.php:38
-#: src/views/blocks/attendees/order-links.php:47 src/Tribe/Tickets_View.php:751
+#: src/views/blocks/attendees/order-links.php:48 src/Tribe/Tickets_View.php:749
 #: common/src/Tribe/Admin/Help_Page.php:170
 msgid " and "
 msgstr " és"
 
 #: common/src/Tribe/Admin/Help_Page.php:95
 msgid "Turbo charge your posts admin for any custom post type with sortable filters and columns, and auto-registration of metaboxes."
-msgstr ""
+msgstr "Turbózd fel bármelyik bejegyzés típus admin oldalát rendezhető szűrőkkel és oszlopokkal, és metabxok automatikus regisztrációjával."
 
 #: common/src/Tribe/Admin/Help_Page.php:91
 msgid "Advanced Post Manager"
-msgstr ""
+msgstr "Advanced Post Manager"
 
 #: common/src/Tribe/Admin/Help_Page.php:79
 msgid "Events Tickets is a carefully crafted, extensible plugin that lets you easily sell tickets for your events."
-msgstr ""
+msgstr "Az Event Tickets egy gondosan kidolgozott, bővíthető plugin, aminek segítségével könnyen adhatsz el jegyeket az eseményeidre."
 
 #. Plugin Name of the plugin
-#: src/Tribe/Privacy.php:32 src/Tribe/Main.php:566
+#: event-tickets.php:59 src/Tribe/Privacy.php:32 src/Tribe/Main.php:581
 #: common/src/Tribe/Admin/Help_Page.php:75 common/src/Tribe/Plugins_API.php:57
 msgid "Event Tickets"
-msgstr ""
+msgstr "Event Tickets"
 
 #: common/src/Tribe/Admin/Help_Page.php:63
 msgid "The Events Calendar is a carefully crafted, extensible plugin that lets you easily share your events."
-msgstr ""
+msgstr "A The Events Calendar egy gondosan kidolgozott, bővíthető plugin, aminek segítségével könnyen közzéteheted az eseményeidet."
 
-#: common/src/Tribe/Admin/Help_Page.php:59 common/src/Tribe/Plugins_API.php:25
-#: common/src/Tribe/Customizer.php:642
+#: common/src/Tribe/Admin/Help_Page.php:59 common/src/Tribe/Customizer.php:642
+#: common/src/Tribe/Plugins_API.php:25
 msgid "The Events Calendar"
 msgstr "The Events Calendar"

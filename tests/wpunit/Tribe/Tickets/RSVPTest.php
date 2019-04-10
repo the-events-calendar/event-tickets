@@ -165,7 +165,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * @since 4.7.4
 	 */
 	public function it_should_increase_stock_by_1_when_attendee_status_changes_from_going_to_not_going() {
-		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'yes', 'no', 1, 10 );
+		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'yes', 'no', 1, 9 );
 
 		$sut = $this->make_instance();
 		$sut->update_attendee_data( $data, $order_id, $post_id );

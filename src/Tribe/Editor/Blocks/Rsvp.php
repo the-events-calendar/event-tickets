@@ -172,7 +172,7 @@ extends Tribe__Editor__Blocks__Abstract {
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-rsvp',
-			'views/rsvp.js',
+			'rsvp-block.js',
 			array( 'jquery', 'jquery-ui-datepicker' ),
 			null,
 			array(
