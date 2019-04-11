@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Allow reordering of ticket blocks in the block editor to be preserved in the front end [121703]
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Tweak - Attendee registration fields configuration for block editor opens up in modal [123818]
 * Tweak - Move IPN settings together in ticket settings tab [122333]
 * Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
