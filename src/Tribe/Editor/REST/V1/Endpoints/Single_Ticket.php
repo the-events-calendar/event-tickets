@@ -256,6 +256,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 			'ticket_end_date' => $body['end_date'],
 			'ticket_end_time' => $body['end_time'],
 			'ticket_sku' => $body['sku'],
+			'ticket_menu_order' => $body['menu_order'],
 			'tribe-ticket' => $body['ticket'],
 		);
 

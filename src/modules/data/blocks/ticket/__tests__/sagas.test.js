@@ -49,6 +49,8 @@ jest.mock( '@wordpress/data', () => {
 			if ( key === 'core/editor' ) {
 				return {
 					getBlockCount: () => {},
+					getBlockIndex: () => 0,
+					getBlockRootClientId: () => 88,
 					getBlocks: () => {},
 					getCurrentPostId: () => 10,
 					getCurrentPostAttribute: () => {},
@@ -606,11 +608,14 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next( blankSharedCapacity ).value ).toEqual(
 				all( [
 					put( actions.setTicketId( CLIENT_ID, TICKET_ID ) ),
-					put( actions.fetchTicket( CLIENT_ID, TICKET_ID ) ),
+					call( sagas.fetchTicket, { payload: { clientId: CLIENT_ID, ticketId: TICKET_ID } } ),
 				] )
 			);
 			expect( clone1.next().value ).toEqual(
 				call( sagas.handleTicketDurationError, CLIENT_ID )
+			);
+			expect( clone1.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
 			);
 			expect( clone1.next().done ).toEqual( true );
 
@@ -626,11 +631,14 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone2.next().value ).toEqual(
 				all( [
 					put( actions.setTicketId( CLIENT_ID, TICKET_ID ) ),
-					put( actions.fetchTicket( CLIENT_ID, TICKET_ID ) ),
+					call( sagas.fetchTicket, { payload: { clientId: CLIENT_ID, ticketId: TICKET_ID } } ),
 				] )
 			);
 			expect( clone2.next().value ).toEqual(
 				call( sagas.handleTicketDurationError, CLIENT_ID )
+			);
+			expect( clone2.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
 			);
 			expect( clone2.next().done ).toEqual( true );
 		} );
@@ -730,6 +738,9 @@ describe( 'Ticket Block sagas', () => {
 			expect( clone1.next().value ).toEqual(
 				call( sagas.handleTicketDurationError, CLIENT_ID )
 			);
+			expect( clone1.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
+			);
 			expect( clone1.next( blankSharedCapacity ).done ).toEqual( true );
 
 			const clone2 = gen.clone();
@@ -743,6 +754,9 @@ describe( 'Ticket Block sagas', () => {
 			);
 			expect( clone2.next().value ).toEqual(
 				call( sagas.handleTicketDurationError, CLIENT_ID )
+			);
+			expect( clone2.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
 			);
 			expect( clone2.next().done ).toEqual( true );
 		} );
@@ -844,23 +858,31 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				call( sagas.handleTicketDurationError, CLIENT_ID )
 			);
+			expect( gen.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
+			);
 			expect( gen.next( '' ).done ).toEqual( true );
 		} );
 	} );
 
 	describe( 'setBodyDetails', () => {
 		it( 'should set body details', () => {
+			const postId = 10;
+			const rootClientId = 0;
 			const clientId = 'modern-tribe';
+			const menuOrder = 0;
 			const props = { clientId };
 			const gen = cloneableGenerator( sagas.setBodyDetails )( clientId );
 
-			expect( gen.next().value ).toEqual(
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( rootClientId ).value ).toEqual(
 				select( selectors.getTicketProvider, props )
 			);
 			expect( gen.next().value ).toEqual(
 				select( selectors.getTicketsProvider )
 			);
-			expect( gen.next().value ).toEqual(
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( postId ).value ).toEqual(
 				select( selectors.getTicketTempTitle, props )
 			);
 			expect( gen.next().value ).toEqual(
@@ -884,7 +906,8 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next().value ).toEqual(
 				select( selectors.getTicketTempSku, props )
 			);
-			expect( gen.next().value ).toEqual(
+			expect( gen.next().value ).toMatchSnapshot();
+			expect( gen.next( menuOrder ).value ).toEqual(
 				select( selectors.getTicketTempCapacityType, props )
 			);
 
@@ -2479,9 +2502,7 @@ describe( 'Ticket Block sagas', () => {
 				timeInput: '02:00:00',
 			} ).value ).toMatchSnapshot();
 
-			expect( gen.next().value ).toEqual(
-				fork( sagas.saveTicketWithPostSave, clientId )
-			);
+			expect( gen.next().done ).toEqual( true );
 		} );
 	} );
 
@@ -2566,15 +2587,17 @@ describe( 'Ticket Block sagas', () => {
 				take( channel )
 			);
 
-			expect(gen.next().value).toEqual(
-				call( sagas.updateTicket, { payload: { clientId } } )
+			expect( gen.next().value ).toEqual(
+				fork( sagas.updateTicket, { payload: { clientId } } )
+			);
+
+			expect( gen.next( channel ).value ).toEqual(
+				take( channel )
 			);
 
 			expect( gen.next().value ).toEqual(
-				call( [ channel, 'close' ] )
+				fork( sagas.updateTicket, { payload: { clientId } } )
 			);
-
-			expect( gen.next().done ).toEqual( true );
 		} );
 		it( 'should do nothing', () => {
 			const gen = sagas.saveTicketWithPostSave( clientId );
@@ -2586,6 +2609,4 @@ describe( 'Ticket Block sagas', () => {
 			expect( gen.next( false ).done ).toEqual( true );
 		} );
 	} );
-
-
 } );
