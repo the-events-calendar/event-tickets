@@ -112,7 +112,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 						<p>
 							<span><?php echo wp_kses_post( $mess ); ?><i></i></span>
 						</p>
-					<?php }
+					<?php endforeach;
 				} else { ?>
 					<p>
 						<span><?php echo wp_kses_post( $message ); ?><i></i></span>
