@@ -92,6 +92,8 @@ Object {
     "args": Array [],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -109,6 +111,8 @@ Object {
     "args": Array [],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -126,6 +130,8 @@ Object {
     "args": Array [],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -178,6 +184,8 @@ Object {
     ],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -210,6 +218,68 @@ Object {
 }
 `;
 
+exports[`Ticket Block sagas setBodyDetails should set body details 1`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "modern-tribe",
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas setBodyDetails should set body details 2`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
+exports[`Ticket Block sagas setBodyDetails should set body details 3`] = `
+Object {
+  "@@redux-saga/IO": true,
+  "CALL": Object {
+    "args": Array [
+      "modern-tribe",
+      0,
+    ],
+    "context": Object {
+      "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
+      "getBlocks": [Function],
+      "getCurrentPostAttribute": [Function],
+      "getCurrentPostId": [Function],
+      "getEditedPostAttribute": [Function],
+    },
+    "fn": [Function],
+  },
+}
+`;
+
 exports[`Ticket Block sagas setTicketInitialState should set capacity type to shared if tickets plus is active 1`] = `
 Object {
   "@@redux-saga/IO": true,
@@ -219,6 +289,8 @@ Object {
     ],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -238,6 +310,8 @@ Object {
     ],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -257,6 +331,8 @@ Object {
     ],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -611,6 +687,8 @@ Object {
     "args": Array [],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
@@ -628,6 +706,8 @@ Object {
     "args": Array [],
     "context": Object {
       "getBlockCount": [Function],
+      "getBlockIndex": [Function],
+      "getBlockRootClientId": [Function],
       "getBlocks": [Function],
       "getCurrentPostAttribute": [Function],
       "getCurrentPostId": [Function],
