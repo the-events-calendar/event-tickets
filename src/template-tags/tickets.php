@@ -644,7 +644,7 @@ function tribe_tickets_get_template_part( $slug, $name = null, array $data = nul
 
 	if ( ! $echo ) {
 		// Return should come at the end
-		return $html;
+		return isset( $html ) ? $html : '';
 	}
 }
 
