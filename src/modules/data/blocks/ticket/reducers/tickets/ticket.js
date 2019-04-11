@@ -20,6 +20,7 @@ export const DEFAULT_STATE = {
 	provider: '',
 	hasAttendeeInfoFields: false,
 	isLoading: false,
+	isModalOpen: false,
 	hasBeenCreated: false,
 	hasChanges: false,
 	hasDurationError: false,
@@ -107,6 +108,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				isLoading: action.payload.isLoading,
+			};
+		case types.SET_TICKET_IS_MODAL_OPEN:
+			return {
+				...state,
+				isModalOpen: action.payload.isModalOpen,
 			};
 		case types.SET_TICKET_HAS_BEEN_CREATED:
 			return {
