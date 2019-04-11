@@ -108,7 +108,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 			<span class="dashicons dashicons-<?php esc_attr_e( $merged_args[ 'icon' ] ); ?> <?php esc_attr_e( $merged_args[ 'additional_classes' ] ); ?>"></span>
 			<div class="<?php echo sanitize_html_class( $merged_args[ 'direction' ] ); ?>">
 				<?php if ( is_array( $message ) ) {
-					foreach( $message as $mess ) { ?>
+					foreach( $message as $mess ) : ?>
 						<p>
 							<span><?php echo wp_kses_post( $mess ); ?><i></i></span>
 						</p>
