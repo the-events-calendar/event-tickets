@@ -202,14 +202,14 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			$availability['available'] = sprintf( '%s %s %s',
 				esc_html( $ticket_sold['ticket']->available() ),
 				esc_html__( 'available', 'event-tickets' ),
-				$this->get_availability_by_ticket_tooltip()
+				$this->get_availability_by_ticket_tooltip( $ticket_sold )
 			);
 		}
 		if (  $ticket_sold['incomplete'] > 0 ) {
 			$availability['incomplete'] = sprintf( '%s %s %s',
 				 $ticket_sold['incomplete'],
 				 __( 'pending order completion', 'event-tickets' ),
-				$this->get_pending_by_ticket_tooltip( $ticket_sold )
+				 $this->get_pending_by_ticket_tooltip( $ticket_sold )
 			);
 		}
 
@@ -288,6 +288,16 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @return string a string of html for the tooltip
 	 */
+
+	/**
+	 * Get Pending Tooltip per Ticket
+	 *
+	 * @since TBD
+	 *
+	 * @param $ticket_sold object an object of the ticket to get counts
+	 *
+	 * @return string a string of html for the tooltip
+	 */
 	public function get_pending_by_ticket_tooltip( $ticket_sold ) {
 
 		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true );
@@ -313,34 +323,40 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 *
 	 * @since TBD
 	 *
+	 * @param $ticket_sold object an object of the ticket to get counts
+	 *
 	 * @return string a string of html for the tooltip
 	 */
-	public function get_availability_by_ticket_tooltip() {
-	/*
-	 *
-	 * (have a tooltip that serves data per commerce provider: Woo/EDD/TC)
+	public function get_availability_by_ticket_tooltip( $ticket_sold ) {
 
-	 Available [info icon]:
+		$available['inventory'] = sprintf( '%s %s',
+			esc_html__( 'Inventory:', 'event-tickets' ),
+			$ticket_sold['ticket']->inventory()
+		);
+		$available['stock'] = sprintf( '%s %s',
+			esc_html__( 'Stock:', 'event-tickets' ),
+			$ticket_sold['ticket']->stock()
+		);
+		$available['capacity'] = sprintf( '%s %s',
+			esc_html__( 'Capacity:', 'event-tickets' ),
+			$ticket_sold['ticket']->capacity()
+		);
 
-	 Inventory (commerce stock):
-	 Capacity:
-	 Stock:
-
-	 Ticket availability is based on the lowest number of commerce stock, current capacity, and stock. This number is based on the following:
-	 - Unlimited tickets should always state unlimited.
-	 - Shared capacity is based on either the total shared capacity or if you've limited it to that ticket.
-	 - Individual Capacity is what you've assigned to that specific ticket.
-	 *
-	 *
-	 */
 		ob_start();
 		?>
 		<div class="tribe-tooltip" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
-				<?php echo esc_html__( 'Inventory (commerce stock):', 'event-tickets' ); ?>
-				<?php echo esc_html__( 'Capacity:', 'event-tickets' ); ?>
-				<?php echo esc_html__( 'Stock:', 'event-tickets' ); ?><i></i>
+				<ul>
+					<li><?php echo implode( '</li><li>', $available ) ?></li>
+				</ul>
+				<?php echo esc_html__( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?>
+				<ul>
+					<li><?php echo esc_html__( 'Inventory is the capacity minus attendees of the following statuses (LIST STATUES BY PROVIDER', 'event-tickets' ); ?></li>
+					<li><?php echo esc_html__( 'Stock.', 'event-tickets' ); ?></li>
+					<li><?php echo esc_html__( 'Capacity is based on either the total shared capacity or if you\'ve limited it to that ticket.', 'event-tickets' ); ?></li>
+				</ul>
+				<i></i>
 			</div>
 		</div><?php
 		return ob_get_clean();
