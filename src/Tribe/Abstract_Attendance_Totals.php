@@ -60,8 +60,9 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 */
 	public function get_total_sold_tooltip() {
 		$message = _x( 'No matter what the status is, Total Tickets Issued includes how many tickets that have gone through the order process.', 'total sold tooltip', 'event-tickets' );
+		$args = [ 'classes' => 'required' ];
 
-		return $this->build_tooltip( $message, 'required' );
+		return tribe( 'tooltip.view' )->render_tooltip( $message, $args  );
 	}
 
 	/**
@@ -73,65 +74,8 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 */
 	public function get_total_completed_tooltip() {
 		$message = _x( 'This pertains to Orders that have been marked Completed.', 'total complete tooltip', 'event-tickets' );
+		$args    = [ 'classes' => 'required' ];
 
-		return $this->build_tooltip( $message, 'required' );
-	}
-
-	/**
-	 * Factory method for tooltips
-	 *
-	 * @since TBD
-	 *
-	 * @TODO: this should get moved to common?
-	 *
-	 * @param array|string $message array of messages or single message as string
-	 * @param array $args extra arguments, defaults include icon, classes, direction, anmd context (for the filter)
-	 * @return string a string of html for the tooltip
-	 */
-	private function build_tooltip( $message, $args = [] ) {
-		if ( empty( $message ) ) {
-			return;
-		}
-
-		$default_args = [
-			'classes'   => '',
-			'icon'      => 'info',
-			'direction' => 'down',
-			'context'   => '',
-		];
-
-		$merged_args = wp_parse_args( $args, $default_args );
-
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-<?php echo sanitize_html_class( $merged_args[ 'icon' ] ); ?> <?php echo sanitize_html_class( $merged_args[ 'additional_classes' ] ); ?>"></span>
-			<div class="<?php echo sanitize_html_class( $merged_args[ 'direction' ] ); ?>">
-				<?php if ( is_array( $message ) ) :
-					foreach( $message as $mess ) : ?>
-						<p>
-							<span><?php echo wp_kses_post( $mess ); ?><i></i></span>
-						</p>
-					<?php endforeach;
-				else : ?>
-					<p>
-						<span><?php echo wp_kses_post( $message ); ?><i></i></span>
-					</p>
-				<?php endif; ?>
-			</div>
-		</div>
-		<?php
-		$html = ob_get_clean();
-
-		/**
-		 * Allow us to filter the tooltip output
-		 *
-		 * @since  TBD
-		 *
-		 * @param string $html The tooltip HTML
-		 * @param array|string $message array of messages or single message as string
-		 * @param array $args extra arguments, defaults include icon, classes, and direction
-		 */
-		return apply_filters( 'tribe_tooltip_html', $html, $message, $args );
+		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
 	}
 }
