@@ -70,4 +70,30 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEqualSets( array_merge( $paypal_attendee_ids2, $rsvp_attendee_ids2 ), $attendee_ids2 );
 	}
 
+	/**
+	 * It should allow fetching ticket attendees count.
+	 *
+	 * @test
+	 */
+	public function should_allow_fetching_attendees_count() {
+		$post_id  = $this->factory->post->create();
+		$post_id2 = $this->factory->post->create();
+
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
+
+		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
+		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
+
+		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
+		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1 );
+		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2 );
+
+		$paypal_attendee_ids2 = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id2, $post_id2 );
+		$rsvp_attendee_ids2   = $this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id2, $post_id2 );
+
+		$this->assertCount( 10, Tickets::get_event_attendees_count( $post_id ) );
+		$this->assertCount( 10, Tickets::get_event_attendees_count( $post_id2 ) );
+	}
+
 }
