@@ -119,9 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
-
-= [4.10.3] TBD =
-
+* Feature - Implemented our abstract Object-relational Mapping layer for Ticket Attendees and increased stability with more automated tests [123468]
 * Tweak - Allow reordering of ticket blocks in the block editor to be preserved in the front end [121703]
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
