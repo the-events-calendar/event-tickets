@@ -967,21 +967,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param int $post_id ID of parent "event" post
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args    List of arguments to filter attendees by.
+		 *
 		 * @return array
 		 */
-		public static function get_event_attendees( $post_id ) {
+		public static function get_event_attendees( $post_id, $args = [] ) {
 			$attendees = array();
 
 			/**
 			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
 			 *
 			 * @since 4.9
+			 * @since TBD Added $args parameter.
 			 *
-			 * @param bool $skip_empty_post If the empty post should be skipped or not
-			 * @param int  $post_id ID of the post being affected
+			 * @param bool  $skip_empty_post If the empty post should be skipped or not
+			 * @param int   $post_id         ID of the post being affected
+			 * @param array $args            List of arguments to filter attendees by.
 			 */
-			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id );
+			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id, $args );
 
 			/**
 			 * Process an attendee only if:
@@ -1001,11 +1005,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning a falsy value here will force a refetch each time.
 				 *
 				 * @since 4.7
+				 * @since TBD Added $args parameter.
 				 *
-				 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
-				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 * @param int   $admin_expire The cache expiration in seconds; defaults to 2 minutes.
+				 * @param int   $post_id      The ID of the post attendees are being fetched for.
+				 * @param array $args         List of arguments to filter attendees by.
 				 */
-				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
+				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id, $args );
 
 				/**
 				 * Filters the cache expiration when this function is called from a non admin screen.
@@ -1013,17 +1019,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning a falsy value here will force a refetch each time.
 				 *
 				 * @since 4.7
+				 * @since TBD Added $args parameter.
 				 *
-				 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
-				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 * @param int   $admin_expire The cache expiration in seconds, defaults to an hour.
+				 * @param int   $post_id      The ID of the post attendees are being fetched for.
+				 * @param array $args         List of arguments to filter attendees by.
 				 */
-				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS, $post_id, $args );
 
 				$expire = is_admin() ? (int) $admin_expire : (int) $expire;
 
 				$attendees_from_cache = false;
 
-				if ( 0 !== $expire ) {
+				if ( 0 !== $expire && ! $args ) {
 					$post_transient = tribe( 'post-transient' );
 
 					$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
@@ -1041,9 +1049,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					/** @var Tribe__Tickets__Attendee_Repository $repository */
 					$repository = tribe_attendees();
 
-					$attendees = self::get_attendees_from_modules( $repository->by( 'event', $post_id )->all(), $post_id );
+					$repository->by( 'event', $post_id );
 
-					if ( 0 !== $expire ) {
+					if ( ! empty( $args['by'] ) ) {
+						foreach ( $args['by'] as $by => $by_args ) {
+							$by_args = (array) $by_args;
+
+							if ( is_string( $by ) ) {
+								array_unshift( $by_args, $by );
+							}
+
+							call_user_func_array( [ $repository, 'by' ], $by_args );
+						}
+					}
+
+					$attendee_posts = $repository->all();
+
+					$attendees = self::get_attendees_from_modules( $attendee_posts, $post_id );
+
+					if ( 0 !== $expire && ! $args ) {
 						$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
 					}
 				}
@@ -1053,11 +1077,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Filters the return data for event attendees.
 			 *
 			 * @since 4.4
+			 * @since TBD Added $args parameter.
 			 *
 			 * @param array $attendees Array of event attendees.
-			 * @param int   $post_id Event post ID.
+			 * @param int   $post_id   Event post ID.
+			 * @param array $args      List of arguments to filter attendees by.
 			 */
-			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id );
+			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id, $args );
 		}
 
 		/**
@@ -1198,29 +1224,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
-			$checkedin = self::get_event_attendees( $post_id );
+			$args = [
+				'by' => [
+					'checkedin' => true,
+				],
+			];
 
-			return array_reduce( $checkedin, array( 'Tribe__Tickets__Tickets', '_checkedin_attendees_array_filter' ), 0 );
+			return count( self::get_event_attendees( $post_id, $args ) );
 		}
-
-		/**
-		 * Internal function to use as a callback for array_reduce in
-		 * get_event_checkedin_attendees_count. It increments the counter
-		 * if the attendee is checked-in.
-		 *
-		 * @static
-		 *
-		 * @param int $result
-		 * @param array $item
-		 * @return mixed
-		 */
-		private static function _checkedin_attendees_array_filter( $result, $item ) {
-			if ( ! empty( $item['check_in'] ) )
-				return $result + 1;
-
-			return $result;
-		}
-
 
 		// end Attendees
 
