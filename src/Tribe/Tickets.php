@@ -2484,7 +2484,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			exit;
 		}
 
-
 		/************************
 		 *                      *
 		 *  Deprecated Methods  *
