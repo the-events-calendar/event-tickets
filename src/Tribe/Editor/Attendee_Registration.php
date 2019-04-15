@@ -33,11 +33,11 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 	 *
 	 * @return string
 	 */
-	public function filter_admin_body_class( string $classes ) {
+	public function filter_admin_body_class( $classes ) {
 		$ar_page_slug = tribe( 'tickets.attendee_registration' )->get_slug();
 
 		// if not on attendee registration page
-		if ( ( tribe_get_request_var( 'page', '' ) !== $ar_page_slug ) ) {
+		if ( tribe_get_request_var( 'page', '' ) !== $ar_page_slug ) {
 			return $classes;
 		}
 
