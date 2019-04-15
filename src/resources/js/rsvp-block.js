@@ -5,6 +5,10 @@ var tribe_tickets_rsvp_block = {
 ( function( $, my ) {
 	'use strict';
 
+	my.state = {
+		submitActive: true,
+	};
+
 	/**
 	 * Handle the "Going" and "Not Going" button toggle,
 	 * set them active and inactive so they can only use
@@ -72,6 +76,11 @@ var tribe_tickets_rsvp_block = {
 					var $input = $form.find( 'input.tribe-tickets-quantity' );
 					window.tribe_event_tickets_plus.meta.block_set_quantity( $input, going );
 				}
+				if ( ! my.validate_submission( $form ) ) {
+					var $submit = $form.find( '.tribe-block__rsvp__submit-button' );
+					$submit.attr( 'disabled', true );
+					my.state.submitActive = false;
+				}
 				my.tribe_rsvp_loader_end( $ticket );
 			}
 		);
@@ -126,7 +135,12 @@ var tribe_tickets_rsvp_block = {
 		}
 	};
 
-
+	my.events.handle_input_focus = function ( e ) {
+		if ( ! my.state.submitActive ) {
+			$( e.target ).siblings( '.tribe-block__rsvp__submit-button' ).attr( 'disabled', false );
+			my.state.submitActive = true;
+		}
+	};
 
 	/**
 	 * Show the loader
@@ -253,6 +267,11 @@ var tribe_tickets_rsvp_block = {
 				'click',
 				'.tribe-block__rsvp__number-input-button--minus, .tribe-block__rsvp__number-input-button--plus',
 				my.events.handle_quantity_change
+			)
+			.on(
+				'focus',
+				'.tribe-tickets-full-name, .tribe-tickets-email',
+				my.events.handle_input_focus
 			);
 	};
 
