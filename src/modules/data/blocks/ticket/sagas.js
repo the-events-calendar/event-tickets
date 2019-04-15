@@ -454,6 +454,8 @@ export function* createNewTicket( action ) {
 				put( actions.setTicketProvider( clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
+
+			yield fork( saveTicketWithPostSave, clientId );
 		}
 	} catch ( e ) {
 		console.error( e );

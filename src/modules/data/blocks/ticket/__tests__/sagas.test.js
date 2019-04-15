@@ -1335,6 +1335,9 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( clone11.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
+			);
+			expect( clone11.next().value ).toEqual(
 				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
 			);
 			expect( clone11.next().done ).toEqual( true );
@@ -1416,6 +1419,9 @@ describe( 'Ticket Block sagas', () => {
 					) ),
 					put( actions.setTicketHasChanges( CLIENT_ID, false ) ),
 				] )
+			);
+			expect( clone12.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
 			);
 			expect( clone12.next().value ).toEqual(
 				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
