@@ -463,8 +463,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		wp_send_json_success( array(
 			'message' => sprintf(
 				_n(
-					'%1$d attendee for %2$s was successfully %3$s. Please adjust capacity and stock manually as needed. This attendee will receive an email notifying them of the change.',
-					'%1$d attendees for %2$s were successfully %3$s. Please adjust capacity and stock manually as needed. These attendees will receive an email notifying them of the change.',
+					'%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. This attendee will receive an email notifying them of the change.',
+					'%1$d attendees for %2$s were successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. These attendees will receive an email notifying them of the change.',
 					$moved_tickets,
 					'event-tickets'
 				),

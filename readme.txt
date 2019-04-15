@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - Add method to get all possible names of the completed status by Commerce [122458]
 * Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
+* Tweak - Change success message for ticket move [102635]
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 * Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
