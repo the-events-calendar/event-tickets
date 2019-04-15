@@ -39,7 +39,13 @@ import {
 import { plugins } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+import {
+	isTribeEventPostType,
+	createWPEditorSavingChannel,
+	createWPEditorNotSavingChannel,
+	hasPostTypeChannel,
+	createDates,
+} from '@moderntribe/tickets/data/shared/sagas';
 
 
 const {
@@ -448,6 +454,8 @@ export function* createNewTicket( action ) {
 				put( actions.setTicketProvider( clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
+
+			yield fork( saveTicketWithPostSave, clientId );
 		}
 	} catch ( e ) {
 		console.error( e );
@@ -821,27 +829,35 @@ export function* setTicketTempDetails( action ) {
  * @export
  */
 export function* saveTicketWithPostSave( clientId ) {
-	let saveChannel;
+	let savingChannel, notSavingChannel;
 	try {
 		// Do nothing when not already created
 		if ( yield select( selectors.getTicketHasBeenCreated, { clientId } ) ) {
-			// Create channel for use
-			saveChannel = yield call( createWPEditorSavingChannel );
+			// Create channels for use
+			savingChannel = yield call( createWPEditorSavingChannel );
+			notSavingChannel = yield call( createWPEditorNotSavingChannel );
 
 			while ( true ) {
 				// Wait for channel to save
-				yield take( saveChannel );
+				yield take( savingChannel );
 
 				// Update when saving
-				yield fork( updateTicket, { payload: { clientId } } );
+				yield call( updateTicket, { payload: { clientId } } );
+
+				// Wait for channel to finish saving
+				yield take( notSavingChannel );
 			}
 		}
 	} catch ( error ) {
 		console.error( error );
 	} finally {
-		// Close channel if exists
-		if ( saveChannel ) {
-			yield call( [ saveChannel, 'close' ] );
+		// Close save channel if exists
+		if ( savingChannel ) {
+			yield call( [ savingChannel, 'close' ] );
+		}
+		// Close not saving channel if exists
+		if ( notSavingChannel ) {
+			yield call( [ notSavingChannel, 'close' ] );
 		}
 	}
 }
