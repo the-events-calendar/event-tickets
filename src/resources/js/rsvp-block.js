@@ -135,6 +135,13 @@ var tribe_tickets_rsvp_block = {
 		}
 	};
 
+	/**
+	 * Handles the input focus event
+	 *
+	 * @since TBD
+	 *
+	 * @param {event} e input event
+	 */
 	my.events.handle_input_focus = function ( e ) {
 		if ( ! my.state.submitActive ) {
 			$( e.target ).siblings( '.tribe-block__rsvp__submit-button' ).attr( 'disabled', false );
