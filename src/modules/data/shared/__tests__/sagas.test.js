@@ -54,6 +54,12 @@ describe( 'Shared block sagas', () => {
 		} );
 	} );
 
+	describe( 'createWPEditorNotSavingChannel', () => {
+		it( 'should create channel', () => {
+			expect( sagas.createWPEditorNotSavingChannel() ).toMatchSnapshot();
+		} );
+	} );
+
 	describe( 'createDates', () => {
 		const date = '2018-01-01 00:00:00';
 		it( 'should create dates when no format', () => {
