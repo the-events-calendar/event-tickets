@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 * Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
+* Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
 
 = [4.10.4] TBD =
 
