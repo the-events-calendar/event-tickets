@@ -39,7 +39,13 @@ import {
 import { plugins } from '@moderntribe/common/data';
 import { MOVE_TICKET_SUCCESS } from '@moderntribe/tickets/data/shared/move/types';
 import * as moveSelectors from '@moderntribe/tickets/data/shared/move/selectors';
-import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+import {
+	isTribeEventPostType,
+	createWPEditorSavingChannel,
+	createWPEditorNotSavingChannel,
+	hasPostTypeChannel,
+	createDates,
+} from '@moderntribe/tickets/data/shared/sagas';
 
 
 const {
@@ -204,20 +210,22 @@ export function* setTicketInitialState( action ) {
 	if ( ticketId !== 0 ) {
 		yield all( [
 			put( actions.setTicketId( clientId, ticketId ) ),
-			put( actions.fetchTicket( clientId, ticketId ) ),
+			call( fetchTicket, { payload: { clientId, ticketId } } ),
 		] );
 	}
 
 	yield call( handleTicketDurationError, clientId );
+	yield fork( saveTicketWithPostSave, clientId );
 }
 
 export function* setBodyDetails( clientId ) {
 	const body = new FormData();
 	const props = { clientId };
+	const rootClientId = yield call( [ wpSelect( 'core/editor' ), 'getBlockRootClientId' ], clientId );
 	const ticketProvider = yield select( selectors.getTicketProvider, props );
 	const ticketsProvider = yield select( selectors.getTicketsProvider );
 
-	body.append( 'post_id', wpSelect( 'core/editor' ).getCurrentPostId() );
+	body.append( 'post_id', yield call( [ wpSelect( 'core/editor' ), 'getCurrentPostId' ] ) );
 	body.append( 'provider', ticketProvider || ticketsProvider );
 	body.append( 'name', yield select( selectors.getTicketTempTitle, props ) );
 	body.append( 'description', yield select( selectors.getTicketTempDescription, props ) );
@@ -227,6 +235,7 @@ export function* setBodyDetails( clientId ) {
 	body.append( 'end_date', yield select( selectors.getTicketTempEndDate, props ) );
 	body.append( 'end_time', yield select( selectors.getTicketTempEndTime, props ) );
 	body.append( 'sku', yield select( selectors.getTicketTempSku, props ) );
+	body.append( 'menu_order', yield call( [ wpSelect( 'core/editor' ), 'getBlockIndex' ], clientId, rootClientId ) )
 
 	const capacityType = yield select( selectors.getTicketTempCapacityType, props );
 	const capacity = yield select( selectors.getTicketTempCapacity, props );
@@ -445,6 +454,8 @@ export function* createNewTicket( action ) {
 				put( actions.setTicketProvider( clientId, PROVIDER_CLASS_TO_PROVIDER_MAPPING[ ticket.provider_class ] ) ),
 				put( actions.setTicketHasChanges( clientId, false ) ),
 			] );
+
+			yield fork( saveTicketWithPostSave, clientId );
 		}
 	} catch ( e ) {
 		console.error( e );
@@ -818,25 +829,35 @@ export function* setTicketTempDetails( action ) {
  * @export
  */
 export function* saveTicketWithPostSave( clientId ) {
-	let saveChannel;
+	let savingChannel, notSavingChannel;
 	try {
 		// Do nothing when not already created
 		if ( yield select( selectors.getTicketHasBeenCreated, { clientId } ) ) {
-			// Create channel for use
-			saveChannel = yield call( createWPEditorSavingChannel );
+			// Create channels for use
+			savingChannel = yield call( createWPEditorSavingChannel );
+			notSavingChannel = yield call( createWPEditorNotSavingChannel );
 
-			// Wait for channel to save
-			yield take( saveChannel );
+			while ( true ) {
+				// Wait for channel to save
+				yield take( savingChannel );
 
-			// Update when saving
-			yield call( updateTicket, { payload: { clientId } } );
+				// Update when saving
+				yield call( updateTicket, { payload: { clientId } } );
+
+				// Wait for channel to finish saving
+				yield take( notSavingChannel );
+			}
 		}
 	} catch ( error ) {
 		console.error( error );
 	} finally {
-		// Close channel if exists
-		if ( saveChannel ) {
-			yield call( [ saveChannel, 'close' ] );
+		// Close save channel if exists
+		if ( savingChannel ) {
+			yield call( [ savingChannel, 'close' ] );
+		}
+		// Close not saving channel if exists
+		if ( notSavingChannel ) {
+			yield call( [ notSavingChannel, 'close' ] );
 		}
 	}
 }
@@ -908,8 +929,6 @@ export function* syncTicketSaleEndWithEventStart( prevStartDate, clientId ){
 				// Handle ticket duration error
 				call( handleTicketDurationError, clientId ),
 			] );
-
-			yield fork( saveTicketWithPostSave, clientId );
 		}
 	} catch ( error ) {
 		// ¯\_(ツ)_/¯

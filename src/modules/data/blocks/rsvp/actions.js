@@ -42,6 +42,13 @@ export const setRSVPIsSettingsLoading = ( isSettingsLoading ) => ( {
 	},
 } );
 
+export const setRSVPIsModalOpen = ( isModalOpen ) => ( {
+	type: types.SET_RSVP_IS_MODAL_OPEN,
+	payload: {
+		isModalOpen,
+	},
+} );
+
 export const setRSVPGoingCount = ( goingCount ) => ( {
 	type: types.SET_RSVP_GOING_COUNT,
 	payload: {

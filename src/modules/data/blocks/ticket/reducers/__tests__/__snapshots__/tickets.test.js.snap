@@ -45,6 +45,7 @@ Object {
     "hasChanges": false,
     "hasDurationError": false,
     "isLoading": false,
+    "isModalOpen": false,
     "isSelected": false,
     "provider": "",
     "sold": 0,
