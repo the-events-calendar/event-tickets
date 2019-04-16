@@ -19,7 +19,7 @@ if ( empty( $events ) ) {
 $providers_list = [
 	'tribe_wooticket' => 'woo',
 	'tribe_eddticket' => 'edd',
-	'tribe_tppticket' => 'tpp',
+	'tribe_tpp_attendees' => 'tpp',
 ];
 ?>
 <?php foreach ( $events as $event_id => $tickets ) : ?>
