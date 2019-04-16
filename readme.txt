@@ -117,6 +117,12 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.3] 2019-04-17 =
+
+* Feature -
+* Tweak -
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted
+
 = [4.10.2] 2019-04-01 =
 
 * Tweak - Update hooks attached to tickets to notify Promoter [124118]
