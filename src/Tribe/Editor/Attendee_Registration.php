@@ -21,8 +21,35 @@ class Tribe__Tickets__Editor__Attendee_Registration {
 			return;
 		}
 
+		add_filter( 'admin_body_class', array( $this, 'filter_admin_body_class' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+	}
+
+	/**
+	 * Hook into admin_body_class to add class to body
+	 *
+	 * @param string $classes
+	 *
+	 * @return string
+	 */
+	public function filter_admin_body_class( $classes ) {
+		$ar_page_slug = tribe( 'tickets.attendee_registration' )->get_slug();
+
+		// if not on attendee registration page
+		if ( tribe_get_request_var( 'page', '' ) !== $ar_page_slug ) {
+			return $classes;
+		}
+
+		// if tribe_events_modal is not set or not set to 1
+		if ( ! tribe_get_request_var( 'tribe_events_modal', 0 ) ) {
+			return $classes;
+		}
+
+		// add .tribe_events_modal to body class
+		$classes .= ' tribe_events_modal';
+
+		return $classes;
 	}
 
 	/**

@@ -2243,6 +2243,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket->provider_class   = $this->class_name;
 			$ticket->start_date       = null;
 			$ticket->end_date         = null;
+			$ticket->menu_order       = isset( $data['ticket_menu_order'] ) ? intval( $data['ticket_menu_order'] ) : null;
 
 			tribe( 'tickets.handler' )->toggle_manual_update_flag( true );
 

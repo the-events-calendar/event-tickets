@@ -17,6 +17,7 @@ export const DEFAULT_STATE = {
 	hasChanges: false,
 	isLoading: false,
 	isSettingsLoading: false,
+	isModalOpen: false,
 	goingCount: 0,
 	notGoingCount: 0,
 	hasAttendeeInfoFields: false,
@@ -58,6 +59,11 @@ export default ( state = DEFAULT_STATE, action ) => {
 			return {
 				...state,
 				isSettingsLoading: action.payload.isSettingsLoading,
+			};
+		case types.SET_RSVP_IS_MODAL_OPEN:
+			return {
+				...state,
+				isModalOpen: action.payload.isModalOpen,
 			};
 		case types.SET_RSVP_GOING_COUNT:
 			return {
