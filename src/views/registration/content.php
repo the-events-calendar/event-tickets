@@ -15,11 +15,25 @@ if ( empty( $events ) ) {
 	$this->template( 'registration/cart-empty' );
 	return;
 }
+
+$providers_list = [
+	'tribe_wooticket' => 'woo',
+	'tribe_eddticket' => 'edd',
+	'tribe_tppticket' => 'tpp',
+];
 ?>
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 <?php
+	$provider_class = ' ';
 	$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
 	$has_tpp = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers);
+	$passed_provider = tribe_get_request_var('provider');
+
+	if ( ! empty( $passed_provider ) ) {
+		$provider_class .= 'tribe-block__tickets__item__attendee__fields__form--' . $providers_list[ $passed_provider ];
+	} else if ( ! empty( $providers[ $event_id ] ) ) {
+		$provider_class .= 'tribe-block__tickets__item__attendee__fields__form--' . $providers[ $event_id ];
+	}
 ?>
 	<div
 		class="tribe-block__tickets__registration__event"
@@ -38,7 +52,7 @@ if ( empty( $events ) ) {
 
 			<form
 				method="post"
-				class="tribe-block__tickets__item__attendee__fields__form<?php if ( ! empty( $providers[ $event_id ] ) ) : ?> tribe-block__tickets__item__attendee__fields__form--<?php echo esc_attr( $providers[ $event_id ] ); ?><?php endif; ?>"
+				class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"// here
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
 				novalidate
 			>
