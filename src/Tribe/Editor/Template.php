@@ -16,7 +16,7 @@ class Tribe__Tickets__Editor__Template extends Tribe__Template {
 
 		$this->set_template_folder( 'src/views' );
 
-		// Configures this templating class extract variables
+		// Configures this templating class to extract variables
 		$this->set_template_context_extract( true );
 
 		// Uses the public folders

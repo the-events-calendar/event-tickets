@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TSM] TBD =
 
+* Feature - Add tooltips to Attendee Report page [120856]
 * Tweak - Add method to get all possible names of the completed status by Commerce [122458]
 * Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 * Tweak - Change success message for ticket move [102635]
