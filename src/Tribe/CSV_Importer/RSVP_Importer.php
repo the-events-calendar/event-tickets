@@ -109,7 +109,7 @@ class Tribe__Tickets__CSV_Importer__RSVP_Importer extends Tribe__Events__Importe
 	public function update_post( $post_id, array $record ) {
 		// nothing is updated in existing tickets
 		if ( $this->is_aggregator && ! empty( $this->aggregator_record ) ) {
-			$this->aggregator_record->meta['activity']->add( 'rsvp_tickets', 'skipped', $post_id );
+			$this->aggregator_record->meta['activity']->add( 'tribe_rsvp_tickets', 'skipped', $post_id );
 		}
 	}
 
