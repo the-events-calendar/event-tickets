@@ -78,4 +78,16 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 
 		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
 	}
+
+	/**
+	 * Get Attendee Total Cancelled Orders Tooltip
+	 *
+	 * @since TBD
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_total_cancelled_tooltip() {
+		// For future use
+		return;
+	}
 }

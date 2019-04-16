@@ -70,24 +70,24 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 * @since 4.7
 	 */
 	public function print_totals() {
-		$total_sold_label      = _x( 'Total Tickets Issued:', 'attendee summary', 'event-tickets' );
-		$total_complete_label  = _x( 'Complete:', 'attendee summary', 'event-tickets' );
-		$total_cancelled_label = _x( 'Cancelled:', 'attendee summary', 'event-tickets' );
+		$args = [
+			'total_sold_label'        => _x( 'Total Tickets Issued:', 'attendee summary', 'event-tickets' ),
+			'total_complete_label'    => _x( 'Complete:', 'attendee summary', 'event-tickets' ),
+			'total_cancelled_label'   => _x( 'Cancelled:', 'attendee summary', 'event-tickets' ),
+			'total_sold'              => $this->get_total_sold(),
+			'total_complete'          => $this->get_total_complete(),
+			'total_cancelled'         => $this->get_total_cancelled(),
+			'total_sold_tooltip'      => $this->get_total_sold_tooltip(),
+			'total_completed_tooltip' => $this->get_total_completed_tooltip(),
+			'total_cancelled_tooltip' => $this->get_total_cancelled_tooltip(),
+		];
 
-		$total_sold      = $this->get_total_sold();
-		$total_complete  = $this->get_total_complete();
-		$total_cancelled = $this->get_total_cancelled();
 
-		?><ul>
-				<li> <strong><?php esc_html_e( $total_sold_label ); ?></strong> <?php esc_html_e( $total_sold ); ?> <?php $this->get_total_sold_tooltip(); ?> </li>
-				<li> <?php esc_html_e( $total_complete_label . ' ' . $total_complete ); ?> <?php $this->get_total_completed_tooltip(); ?> </li>
-				<li> <?php esc_html_e( $total_cancelled_label . ' ' . $total_cancelled ); ?> </li>
-			</ul>
-		<?php
+		tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, true );
 	}
 
 	/**
-	 * Avoid render the total if ET+ is active as this is added by Tribe__Tickets_Plus__Commerce__Attendance_Totals
+	 * Avoid rendering the total if ET+ is active as this is added by Tribe__Tickets_Plus__Commerce__Attendance_Totals
 	 * otherwise go with regular flow provided by the parent.
 	 *
 	 * @since 4.7.1
