@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Attendee registration fields configuration for block editor opens up in modal [123818]
 * Tweak - Move IPN settings together in ticket settings tab [122333]
 * Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
+* Fix - Change rsvp imports so they give the correct response info [124052]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
