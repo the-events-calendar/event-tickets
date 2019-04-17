@@ -232,7 +232,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' );
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
 
 	/**
@@ -246,7 +246,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' );
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
 
 	/**
@@ -260,7 +260,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$message = esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' );
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
 
 	/**
@@ -283,7 +283,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		<?php
 		$message = ob_get_clean();
 
-		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
 
 
