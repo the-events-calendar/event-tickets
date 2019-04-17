@@ -118,7 +118,7 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [4.10.4] TBD =
-
+* Tweak - Add function and hooks for provider classes added to the attendee registration form. [124997]
 
 = [4.10.3] TBD =
 
