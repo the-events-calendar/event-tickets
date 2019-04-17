@@ -299,8 +299,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	public function get_availability_by_ticket_tooltip( $ticket_sold ) {
 
 		$available[ __( 'Inventory', 'event-tickets' ) ] = $ticket_sold['ticket']->inventory();
-		$available[ __( 'Stock', 'event-tickets' ) ] = $ticket_sold['ticket']->stock();
-		$available[ __( 'Capacity', 'event-tickets' ) ] = $ticket_sold['ticket']->capacity();
+		$available[ __( 'Stock', 'event-tickets' ) ]     = $ticket_sold['ticket']->stock();
+		$available[ __( 'Capacity', 'event-tickets' ) ]  = $ticket_sold['ticket']->capacity();
 
 		ob_start();
 		?>
