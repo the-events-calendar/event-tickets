@@ -199,14 +199,14 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$availability = array();
 		if (  $ticket_sold['ticket']->available() > 0 ) {
-			$availability['available'] = sprintf( '%s %s %s',
+			$availability['available'] = sprintf( '%s %s%s',
 				esc_html( $ticket_sold['ticket']->available() ),
 				esc_html__( 'available', 'event-tickets' ),
 				$this->get_availability_by_ticket_tooltip( $ticket_sold )
 			);
 		}
 		if (  $ticket_sold['incomplete'] > 0 ) {
-			$availability['incomplete'] = sprintf( '%s %s %s',
+			$availability['incomplete'] = sprintf( '%s %s%s',
 				 $ticket_sold['incomplete'],
 				 __( 'pending order completion', 'event-tickets' ),
 				 $this->get_pending_by_ticket_tooltip( $ticket_sold )
@@ -217,7 +217,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			return false;
 		}
 
-		return '<div>' . implode( ', ', $availability ) . '</div>';
+		return '<div>' . implode( '- ', $availability ) . '</div>';
 
 	}
 
@@ -229,16 +229,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_sale_by_ticket_tooltip() {
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' ); ?><i></i>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+
+		$message = esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' );
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
 	}
 
 	/**
@@ -249,16 +243,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_sale_tooltip() {
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' ); ?><i></i>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+
+		$message = esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' );
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
 	}
 
 	/**
@@ -269,16 +257,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_order_tooltip() {
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' ); ?><i></i>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+
+		$message = esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' );
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
 	}
 
 	/**
@@ -302,19 +284,14 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true );
 		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Pending Order Completion refers to anything within the following statuses:', 'event-tickets' ); ?>
-				<ul>
-					<li><?php echo implode( '</li><li>', $incomplete_statuses ) ?></li>
-				</ul>
-				<i></i>
-			</div>
-		</div>
+			echo esc_html__( 'Pending Order Completion refers to anything with the following statuses:', 'event-tickets' ); ?>
+			<ul class="tooltip-list">
+				<li><?php echo implode( '</li><li>', $incomplete_statuses ) ?></li>
+			</ul>
 		<?php
-		return ob_get_clean();
+		$message = ob_get_clean();
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
 	}
 
 
@@ -329,37 +306,25 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 */
 	public function get_availability_by_ticket_tooltip( $ticket_sold ) {
 
-		$available['inventory'] = sprintf( '%s %s',
-			esc_html__( 'Inventory:', 'event-tickets' ),
-			$ticket_sold['ticket']->inventory()
-		);
-		$available['stock'] = sprintf( '%s %s',
-			esc_html__( 'Stock:', 'event-tickets' ),
-			$ticket_sold['ticket']->stock()
-		);
-		$available['capacity'] = sprintf( '%s %s',
-			esc_html__( 'Capacity:', 'event-tickets' ),
-			$ticket_sold['ticket']->capacity()
-		);
+		$available[ __( 'Inventory', 'event-tickets' ) ] = $ticket_sold['ticket']->inventory();
+		$available[ __( 'Stock', 'event-tickets' ) ] = $ticket_sold['ticket']->stock();
+		$available[ __( 'Capacity', 'event-tickets' ) ] = $ticket_sold['ticket']->capacity();
 
 		ob_start();
 		?>
-		<div class="tribe-tooltip large" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?>
-				<ul>
-					<li><?php echo implode( '</li><li>', $available ) ?></li>
-				</ul>
-				<ul>
-					<li><?php echo esc_html__( 'Inventory is the capacity minus attendees of the following statuses (LIST STATUES BY PROVIDER', 'event-tickets' ); ?></li>
-					<li><?php echo esc_html__( 'Stock.', 'event-tickets' ); ?></li>
-					<li><?php echo esc_html__( 'Capacity is based on either the total shared capacity or if you\'ve limited it to that ticket.', 'event-tickets' ); ?></li>
-				</ul>
-				<i></i>
-			</div>
-		</div><?php
-		return ob_get_clean();
+			<div><?php echo esc_html__( 'Current availablity is using', 'event-tickets' ) . ', ' . esc_html( array_search( min( $available ), $available ) . ' - ' . min( $available ) ); ?></div>
+			<p><?php echo esc_html__( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?></p>
+			<ul class="tooltip-list">
+				<li><?php echo esc_html__( 'Inventory is the capacity minus generated attendees for that ticket.', 'event-tickets' ); ?></li>
+				<li><?php echo esc_html__( 'Stock is the lowest number of ticket stock or if active the shared stock.', 'event-tickets' ); ?></li>
+				<li><?php echo esc_html__( 'Capacity is based on the chosen shared, shared capped, or individual capacity for this ticket.', 'event-tickets' ); ?></li>
+			</ul>
+		<?php
+		$message = ob_get_clean();
+		$args    = [ 'wrap_classes' => 'large' ];
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
+
 	}
 
 }
