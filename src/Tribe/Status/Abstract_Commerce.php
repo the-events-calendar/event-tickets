@@ -173,8 +173,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			'';
 
 		$sku = $ticket_sold['sku'] ?
-				'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets' ), esc_html( $ticket_sold['sku'] ) ) . '"' :
-				'';
+			'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets' ), esc_html( $ticket_sold['sku'] ) ) . '"' :
+			'';
 
 		ob_start();
 		?>
@@ -262,14 +262,6 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		return tribe( 'tooltip.view' )->render_tooltip( $message, [] );
 	}
-
-	/**
-	 * Get Pending Tooltip per Ticket
-	 *
-	 * @since TBD
-	 *
-	 * @return string a string of html for the tooltip
-	 */
 
 	/**
 	 * Get Pending Tooltip per Ticket
