@@ -16,24 +16,20 @@ if ( empty( $events ) ) {
 	return;
 }
 
-$providers_list = [
-	'tribe_wooticket' => 'woo',
-	'tribe_eddticket' => 'edd',
-	'tribe_tpp_attendees' => 'attendee_object',
-];
+$passed_provider = tribe_get_request_var('provider');
+$passed_provider_class = $this->get_form_class( $passed_provider );
 ?>
+
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 <?php
-	$provider_class = '';
+	$provider_class = $passed_provider_class;
 	$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
-	$has_tpp = in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers);
-	$passed_provider = tribe_get_request_var('provider');
 
-	if ( ! empty( $passed_provider ) ) {
-		$provider_class = 'tribe-block__tickets__item__attendee__fields__form--' . $providers_list[ $passed_provider ];
-	} else if ( ! empty( $providers[ $event_id ] ) ) {
+	if (  empty( $provider_class ) && ! empty( $providers[ $event_id ] ) ) {
 		$provider_class = 'tribe-block__tickets__item__attendee__fields__form--' . $providers[ $event_id ];
 	}
+
+	$has_tpp = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers);
 ?>
 	<div
 		class="tribe-block__tickets__registration__event"
