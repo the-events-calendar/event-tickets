@@ -119,8 +119,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.3] 2019-04-17 =
 
-* Feature -
-* Tweak -
+* Feature - Compatibility with the Object Relational Mapping introduced on version 4.9 of The Events Calendar
+* Tweak - Improving cost symbol usage across all Commerces
+* Fix - Make sure we are not displaying ticket for non-logged users on the Rest API that can edit the Event
 * Language - 0 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.2] 2019-04-01 =
