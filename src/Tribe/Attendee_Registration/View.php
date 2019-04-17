@@ -167,32 +167,34 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		if ( empty( $provider ) ) {
 			/**
-		 * Allows filterting the class before returning it in the case of no provider
-		 * @since  TBD
-		 *
-		 * @param string $class the (empty) class string
-		 */
+			 * Allows filterting the class before returning it in the case of no provider.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $class The (empty) class string.
+			 */
 			return apply_filters( 'tribe_attendee_registration_form_no_provider_class', $class );
 		}
+
 		/**
-		 * Allow providers to include their own strings/suffixes
-		 * @since  TBD
+		 * Allow providers to include their own strings/suffixes.
 		 *
-		 * @param array $classes in format $provider -> class suffix
+		 * @since TBD
+		 *
+		 * @param array $provider_classes in format $provider -> class suffix.
 		 */
 		$provider_classes = apply_filters( 'tribe_attendee_registration_form_classes', [] );
-
-
 
 		if ( array_key_exists( $provider, $provider_classes ) ) {
 			$class = 'tribe-block__tickets__item__attendee__fields__form--' . $provider_classes[ $provider ];
 		}
 
 		/**
-		 * Allows filterting the class before returning it
-		 * @since  TBD
+		 * Allows filterting the class before returning it.
 		 *
-		 * @param string $class the class string
+		 * @since TBD
+		 *
+		 * @param string $class The class string.
 		 */
 		return apply_filters( 'tribe_attendee_registration_form_class', $class );
 	}
