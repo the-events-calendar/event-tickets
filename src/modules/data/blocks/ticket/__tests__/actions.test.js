@@ -261,6 +261,11 @@ describe( 'Ticket actions', () => {
 			expect( actions.setTicketIsLoading( clientId, false ) ).toMatchSnapshot();
 		} );
 
+		test( 'set ticket is modal open', () => {
+			expect( actions.setTicketIsModalOpen( clientId, true ) ).toMatchSnapshot();
+			expect( actions.setTicketIsModalOpen( clientId, false ) ).toMatchSnapshot();
+		})
+
 		test( 'set ticket has been created', () => {
 			expect( actions.setTicketHasBeenCreated( clientId, true ) ).toMatchSnapshot();
 			expect( actions.setTicketHasBeenCreated( clientId, false ) ).toMatchSnapshot();

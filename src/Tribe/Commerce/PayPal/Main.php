@@ -1203,6 +1203,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				'ID'           => $ticket->ID,
 				'post_excerpt' => $ticket->description,
 				'post_title'   => $ticket->name,
+				'menu_order'   => $ticket->menu_order,
 			);
 
 			$ticket->ID = wp_update_post( $args );

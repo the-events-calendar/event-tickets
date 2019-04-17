@@ -438,6 +438,14 @@ export const setTicketIsLoading = ( clientId, isLoading ) => ( {
 	},
 } );
 
+export const setTicketIsModalOpen = ( clientId, isModalOpen ) => ( {
+	type: types.SET_TICKET_IS_MODAL_OPEN,
+	payload: {
+		clientId,
+		isModalOpen,
+	},
+} );
+
 export const setTicketHasBeenCreated = ( clientId, hasBeenCreated ) => ( {
 	type: types.SET_TICKET_HAS_BEEN_CREATED,
 	payload: {

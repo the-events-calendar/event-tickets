@@ -87,6 +87,15 @@ Object {
 }
 `;
 
+exports[`RSVP block actions RSVP actions set RSVP is modal open 1`] = `
+Object {
+  "payload": Object {
+    "isModalOpen": true,
+  },
+  "type": "@@MT/TICKETS/SET_RSVP_IS_MODAL_OPEN",
+}
+`;
+
 exports[`RSVP block actions RSVP actions set RSVP is settings loading 1`] = `
 Object {
   "payload": Object {

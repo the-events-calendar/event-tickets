@@ -344,13 +344,13 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		ob_start();
 		?>
-		<div class="tribe-tooltip" aria-expanded="false">
+		<div class="tribe-tooltip large" aria-expanded="false">
 			<span class="dashicons dashicons-info"></span>
 			<div class="down">
+				<?php echo esc_html__( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?>
 				<ul>
 					<li><?php echo implode( '</li><li>', $available ) ?></li>
 				</ul>
-				<?php echo esc_html__( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?>
 				<ul>
 					<li><?php echo esc_html__( 'Inventory is the capacity minus attendees of the following statuses (LIST STATUES BY PROVIDER', 'event-tickets' ); ?></li>
 					<li><?php echo esc_html__( 'Stock.', 'event-tickets' ); ?></li>
