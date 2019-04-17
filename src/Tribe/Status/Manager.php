@@ -359,9 +359,9 @@ class Tribe__Tickets__Status__Manager {
 			$provider_name = get_class( $provider_name );
 		}
 
-		$abbvetied_name = $this->check_for_full_provider_name( $provider_name );
+		$abbreviated_name = $this->check_for_full_provider_name( $provider_name );
 
-		$filtered_statuses = wp_list_filter( $this->statuses[ $abbvetied_name ]->statuses, [
+		$filtered_statuses = wp_list_filter( $this->statuses[ $abbreviated_name ]->statuses, [
 			'count_completed' => true,
 		] );
 
