@@ -106,6 +106,28 @@ class Tribe__Tickets__Status__Manager {
 	}
 
 	/**
+	 * Check if the Name of the Class was Provided and Convert to Abbreviation
+	 *
+	 * @since TBD
+	 *
+	 */
+	protected function check_for_full_provider_name( $provider ) {
+
+		// if abbreviated then return it back
+		if ( strlen( $provider ) <= 4 ) {
+			return $provider;
+		}
+
+		// if the provider is not found return
+		if ( ! isset( $this->module_slugs[ $provider ] ) ) {
+			return false;
+		}
+
+		return $this->module_slugs[ $provider ];
+
+	}
+
+	/**
 	 * Get the statuses for each provider that is active and has a manager
 	 *
 	 * @since 4.10
@@ -168,6 +190,8 @@ class Tribe__Tickets__Status__Manager {
 
 		$trigger_statuses = [];
 
+		$commerce = $this->check_for_full_provider_name( $commerce );
+
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
 		}
@@ -188,16 +212,20 @@ class Tribe__Tickets__Status__Manager {
 	 * Return an array of Statuses for an action with the provider Commerce
 	 *
 	 * @since 4.10
+	 * @since TBD - add nicename parameter
 	 *
 	 * @param $action   string a string of the action to filter
 	 * @param $commerce string a string of the Commerce System to get statuses from
 	 * @param $operator string a string of the default 'AND', 'OR', 'NOT' to change the criteria
+	 * @param $nicename bool a boolean of whether to return the name of the status
 	 *
 	 * @return array an array of the commerce's statuses matching the provide action
 	 */
-	public function get_statuses_by_action( $action, $commerce, $operator = 'AND' ) {
+	public function get_statuses_by_action( $action, $commerce, $operator = 'AND', $nicename = false ) {
 
 		$trigger_statuses = [];
+
+		$commerce = $this->check_for_full_provider_name( $commerce );
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
@@ -218,6 +246,13 @@ class Tribe__Tickets__Status__Manager {
 		}
 
 		foreach ( $filtered_statuses as $status ) {
+
+			// if nicename is true then only return that name for a given status
+			if ( $nicename ) {
+				$trigger_statuses[] = $status->name;
+				continue;
+			}
+
 			$trigger_statuses[] = $status->provider_name;
 
 			if ( ! empty( $status->additional_names ) ) {
@@ -242,6 +277,8 @@ class Tribe__Tickets__Status__Manager {
 
 		$trigger_statuses = [];
 
+		$commerce = $this->check_for_full_provider_name( $commerce );
+
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
 		}
@@ -262,6 +299,8 @@ class Tribe__Tickets__Status__Manager {
 	public function get_status_options( $commerce ) {
 
 		static $status_options;
+
+		$commerce = $this->check_for_full_provider_name( $commerce );
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return [];
@@ -295,6 +334,8 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_providers_status_classes( $commerce ) {
 
+		$commerce = $this->check_for_full_provider_name( $commerce );
+
 		if ( ! isset( $this->statuses[ $commerce ] ) ) {
 			return [];
 		}
@@ -318,14 +359,9 @@ class Tribe__Tickets__Status__Manager {
 			$provider_name = get_class( $provider_name );
 		}
 
-		if ( ! isset( $this->module_slugs[ $provider_name ] ) ) {
-			return [];
-		}
+		$abbreviated_name = $this->check_for_full_provider_name( $provider_name );
 
-		$trigger_statuses = [];
-		$abbvetied_name   = $this->module_slugs[ $provider_name ];
-
-		$filtered_statuses = wp_list_filter( $this->statuses[ $abbvetied_name ]->statuses, [
+		$filtered_statuses = wp_list_filter( $this->statuses[ $abbreviated_name ]->statuses, [
 			'count_completed' => true,
 		] );
 
