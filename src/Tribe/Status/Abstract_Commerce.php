@@ -165,7 +165,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		$sold = $ticket_sold['completed'] ? $ticket_sold['completed'] : $ticket_sold['sold'];
 
 		$sold_message = ! $ticket_sold['has_stock'] ?
-			$sold_message = sprintf( __( 'Sold %d', 'event-tickets-plus' ), esc_html( $sold ) ) :
+			$sold_message = sprintf( '%s %d', esc_attr__( 'Sold', 'event-tickets' ), esc_html( $sold ) ) :
 			'';
 
 		$price = $ticket_sold['ticket']->price ?
@@ -173,8 +173,8 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			'';
 
 		$sku = $ticket_sold['sku'] ?
-				'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets-plus' ), esc_html( $ticket_sold['sku'] ) ) . '"' :
-				'';
+			'title="' . sprintf( '%s: (%s)', esc_attr__( 'SKU', 'event-tickets' ), esc_attr__( $ticket_sold['sku'] ) ) . '"' :
+			'';
 
 		ob_start();
 		?>
@@ -199,15 +199,17 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 
 		$availability = array();
 		if (  $ticket_sold['ticket']->available() > 0 ) {
-			$availability['available'] = sprintf( '%s %s',
+			$availability['available'] = sprintf( '%s %s%s',
 				esc_html( $ticket_sold['ticket']->available() ),
-				esc_html__( 'available', 'event-tickets-plus' )
+				esc_html__( 'available', 'event-tickets' ),
+				$this->get_availability_by_ticket_tooltip( $ticket_sold )
 			);
 		}
 		if (  $ticket_sold['incomplete'] > 0 ) {
-			$availability['incomplete'] = sprintf( '%s %s',
+			$availability['incomplete'] = sprintf( '%s %s%s',
 				 $ticket_sold['incomplete'],
-				 __( 'pending order completion', 'event-tickets-plus' )
+				 esc_html__( 'pending order completion', 'event-tickets' ),
+				 $this->get_pending_by_ticket_tooltip( $ticket_sold )
 			);
 		}
 
@@ -215,7 +217,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			return false;
 		}
 
-		return '<div>' . implode( ', ', array_map( 'esc_html', $availability ) ) . '</div>';
+		return '<div>' . implode( '- ', $availability ) . '</div>';
 
 	}
 
@@ -227,16 +229,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_sale_by_ticket_tooltip() {
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets-plus' ); ?><i></i>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+
+		$message = esc_html__( 'Sold counts tickets from completed orders only.', 'event-tickets' );
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
 
 	/**
@@ -247,16 +243,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_sale_tooltip() {
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets-plus' ); ?><i></i>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+
+		$message = esc_html__( 'Total Sales counts tickets from all completed orders.', 'event-tickets' );
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
 
 	/**
@@ -267,15 +257,56 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_order_tooltip() {
-		ob_start();
-		?>
-		<div class="tribe-tooltip" aria-expanded="false">
-			<span class="dashicons dashicons-info"></span>
-			<div class="down">
-				<?php echo esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' ); ?><i></i>
-			</div>
-		</div>
-		<?php
-		return ob_get_clean();
+
+		$message = esc_html__( 'Total Ordered counts tickets from orders of any status, including pending and refunded.', 'event-tickets' );
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
+
+	/**
+	 * Get Pending Tooltip per Ticket
+	 *
+	 * @since TBD
+	 *
+	 * @param $ticket_sold object an object of the ticket to get counts
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_pending_by_ticket_tooltip( $ticket_sold ) {
+
+		$args = [
+			'incomplete_statuses'        => (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true ),
+		];
+		$message = tribe( 'tickets.admin.views' )->template( 'order-pending-completion', $args, false );
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message );
+	}
+
+
+	/**
+	 * Get Availability Tooltip per Ticket
+	 *
+	 * @since TBD
+	 *
+	 * @param $ticket_sold object an object of the ticket to get counts
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_availability_by_ticket_tooltip( $ticket_sold ) {
+
+		$available[ __( 'Inventory', 'event-tickets' ) ] = $ticket_sold['ticket']->inventory();
+		$available[ __( 'Stock', 'event-tickets' ) ]     = $ticket_sold['ticket']->stock();
+		$available[ __( 'Capacity', 'event-tickets' ) ]  = $ticket_sold['ticket']->capacity();
+
+		$args = [
+			'available'        => $available,
+		];
+		$message = tribe( 'tickets.admin.views' )->template( 'order-available', $args, false );
+
+		$args    = [ 'wrap_classes' => 'large' ];
+
+		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
+
+	}
+
 }
