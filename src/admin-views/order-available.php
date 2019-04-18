@@ -8,7 +8,7 @@
 	<?php echo esc_html__( 'Current availablity is using', 'event-tickets' ) . ', ' . esc_html( array_search( min( $available ), $available ) . ' - ' . min( $available ) ); ?>
 </div>
 <p>
-	<?php echo esc_html__( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?>
+	<?php esc_html_e( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?>
 </p>
 <ul class="tooltip-list">
 	<li><?php echo esc_html__( 'Inventory is the capacity minus generated attendees for that ticket.', 'event-tickets' ); ?></li>
