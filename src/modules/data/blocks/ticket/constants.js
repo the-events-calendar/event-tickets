@@ -16,12 +16,14 @@ export const PROVIDER_CLASS_TO_PROVIDER_MAPPING = {
 
 export const PROVIDER_TYPES = [ TC, EDD, WOO ];
 
+export const EDD_ORDERS = 'edd-orders';
 export const TC_ORDERS = 'tpp-orders';
 export const WOO_ORDERS = 'tickets-orders';
 
 export const TICKET_ORDERS_PAGE_SLUG = {
-	[ TC_CLASS ]: TC_ORDERS,
-	[ WOO_CLASS ]: WOO_ORDERS,
+	[EDD_CLASS]: EDD_ORDERS,
+	[TC_CLASS]: TC_ORDERS,
+	[WOO_CLASS]: WOO_ORDERS,
 };
 
 export const UNLIMITED = 'unlimited';
