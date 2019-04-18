@@ -11,7 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @version TBD
  *
  */
 
@@ -41,7 +41,7 @@ $going = $must_login ? false : $this->get( 'going' );
 		class="tribe-block__rsvp__status-button tribe-block__rsvp__status-button--not-going<?php if ( 'no' === $going ) { echo ' tribe-active'; }?>"
 		<?php echo disabled( 'no', $going, false ); ?>
 	>
-		<?php $this->template( 'blocks/rsvp/status/not-going-icon' ); ?>
 		<span><?php esc_html_e( 'Not going', 'event-tickets' ); ?></span>
+		<?php $this->template( 'blocks/rsvp/status/not-going-icon' ); ?>
 	</button>
 </span>

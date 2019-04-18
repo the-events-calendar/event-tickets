@@ -34,21 +34,20 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 	 * Prints an HTML (unordered) list of attendance totals.
 	 */
 	public function print_totals() {
-		$total_rsvps_label = esc_html_x( 'Total RSVPs:', 'attendee summary', 'event-tickets' );
-		$going_label = esc_html_x( 'Going:', 'attendee summary', 'event-tickets' );
-		$not_going_label = esc_html_x( 'Not Going:', 'attendee summary', 'event-tickets' );
+		//Note this now uses the `attendees-totals-list` template, so the array values don't quite logically line up
+		$args = [
+			'total_sold_label'        => _x( 'Total RSVPs:', 'attendee summary', 'event-tickets' ),
+			'total_complete_label'    => _x( 'Going:', 'attendee summary', 'event-tickets' ),
+			'total_cancelled_label'   => _x( 'Not Going:', 'attendee summary', 'event-tickets' ),
+			'total_sold'              => $this->get_total_rsvps(),
+			'total_complete'          => $this->get_total_going(),
+			'total_cancelled'         => $this->get_total_not_going(),
+			'total_sold_tooltip'      => '',
+			'total_completed_tooltip' => '',
+			'total_cancelled_tooltip' => '',
+		];
 
-		$total_rsvps = $this->get_total_rsvps();
-		$going = $this->get_total_going();
-		$not_going = $this->get_total_not_going();
-
-		$html = "
-			<ul>
-				<li> <strong>$total_rsvps_label</strong>&nbsp;$total_rsvps </li>
-				<li> $going_label $going </li>
-				<li> $not_going_label $not_going </li>
-			</ul>
-		";
+		$html = tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, false );
 
 		/**
 		 * Filters the HTML that should be printed to display RSVP attendance lines.

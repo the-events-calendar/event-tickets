@@ -20,12 +20,12 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @var array
 	 */
-	protected $module_slugs = array(
+	protected $module_slugs = [
 		'Tribe__Tickets_Plus__Commerce__EDD__Main'         => 'edd',
 		'Tribe__Tickets__RSVP'                             => 'rsvp',
 		'Tribe__Tickets__Commerce__PayPal__Main'           => 'tpp',
 		'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' => 'woo',
-	);
+	];
 	/**
 	 * Active Modules
 	 *
@@ -38,12 +38,12 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @var array
 	 */
-	protected $status_managers = array(
+	protected $status_managers = [
 		'edd'  => 'Tribe__Tickets_Plus__Commerce__EDD__Status_Manager',
 		'rsvp' => 'Tribe__Tickets__RSVP__Status_Manager',
 		'tpp' => 'Tribe__Tickets__Commerce__PayPal__Status_Manager',
 		'woo'  => 'Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager',
-	);
+	];
 
 
 	/**
@@ -51,7 +51,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 * @var array
 	 */
-	protected $statuses = array();
+	protected $statuses = [];
 
 
 	/**
@@ -74,7 +74,7 @@ class Tribe__Tickets__Status__Manager {
 	 *
 	 */
 	public function hook() {
-		add_action( 'init', array( $this, 'setup' ) );
+		add_action( 'init', [ $this, 'setup' ] );
 	}
 
 	/**
@@ -166,15 +166,15 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_trigger_statuses( $commerce ) {
 
-		$trigger_statuses = array();
+		$trigger_statuses = [];
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
 		}
 
-		$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
+		$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, [
 			'trigger_option' => true,
-		) );
+		] );
 
 		foreach ( $filtered_statuses as $status ) {
 			$trigger_statuses[ $status->provider_name ] = $status->name;
@@ -197,7 +197,7 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_statuses_by_action( $action, $commerce, $operator = 'AND' ) {
 
-		$trigger_statuses = array();
+		$trigger_statuses = [];
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
@@ -206,19 +206,23 @@ class Tribe__Tickets__Status__Manager {
 		if ( 'all' === $action ) {
 			$filtered_statuses = $this->statuses[ $commerce ]->statuses;
 		} elseif ( is_array( $action ) ) {
-			$criteria = array();
+			$criteria = [];
 			foreach ( $action as $name ) {
 				$criteria[ $name ] = true;
 			}
 			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, $criteria, $operator );
 		} else {
-			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, array(
+			$filtered_statuses = wp_list_filter( $this->statuses[ $commerce ]->statuses, [
 				$action => true,
-			) );
+			] );
 		}
 
 		foreach ( $filtered_statuses as $status ) {
 			$trigger_statuses[] = $status->provider_name;
+
+			if ( ! empty( $status->additional_names ) ) {
+				$trigger_statuses = $this->add_additional_names_to_array( $trigger_statuses, $status->additional_names );
+			}
 		}
 
 		return $trigger_statuses;
@@ -236,7 +240,7 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_all_provider_statuses( $commerce ) {
 
-		$trigger_statuses = array();
+		$trigger_statuses = [];
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
 			return $trigger_statuses;
@@ -260,7 +264,7 @@ class Tribe__Tickets__Status__Manager {
 		static $status_options;
 
 		if ( ! isset( $this->statuses[ $commerce ]->statuses ) ) {
-			return array();
+			return [];
 		}
 
 		if ( ! empty( $status_options[ $commerce ] ) ) {
@@ -270,10 +274,10 @@ class Tribe__Tickets__Status__Manager {
 		$filtered_statuses = $this->statuses[ $commerce ]->statuses;
 
 		foreach ( $filtered_statuses as $status ) {
-			$status_options[ $commerce ][ $status->provider_name ] = array(
+			$status_options[ $commerce ][ $status->provider_name ] = [
 				'label'             => __( $status->name, 'event-tickets' ),
 				'decrease_stock_by' => empty( $status->count_completed ) ? 0 : 1,
-			);
+			];
 		}
 
 		return $status_options[ $commerce ];
@@ -292,10 +296,71 @@ class Tribe__Tickets__Status__Manager {
 	public function get_providers_status_classes( $commerce ) {
 
 		if ( ! isset( $this->statuses[ $commerce ] ) ) {
-			return array();
+			return [];
 		}
 
 		return $this->statuses[ $commerce ];
+
+	}
+
+	/**
+	 * Get the Completed Status by Commerce Provider Class Name
+	 *
+	 * @since TBD
+	 *
+	 * @param string|object $provider_name an object or string of a commerce main class name
+	 *
+	 * @return array
+	 */
+	public function get_completed_status_by_provider_name( $provider_name ) {
+
+		if ( is_object( $provider_name ) ) {
+			$provider_name = get_class( $provider_name );
+		}
+
+		if ( ! isset( $this->module_slugs[ $provider_name ] ) ) {
+			return [];
+		}
+
+		$trigger_statuses = [];
+		$abbvetied_name   = $this->module_slugs[ $provider_name ];
+
+		$filtered_statuses = wp_list_filter( $this->statuses[ $abbvetied_name ]->statuses, [
+			'count_completed' => true,
+		] );
+
+
+		foreach ( $filtered_statuses as $status ) {
+			$trigger_statuses[] = $status->provider_name;
+
+			if ( ! empty( $status->additional_names ) ) {
+				$trigger_statuses = $this->add_additional_names_to_array( $trigger_statuses, $status->additional_names );
+			}
+
+		}
+
+
+		return $trigger_statuses;
+
+	}
+
+	/**
+	 * Add addition names a status might be known as
+	 *
+	 * @since TBD
+	 *
+	 * @param array $trigger_statuses an array of statues
+	 * @param array $additional_names an array of additional names a status might be known as
+	 *
+	 * @return array an array of trigger statuses
+	 */
+	protected function add_additional_names_to_array( $trigger_statuses, $additional_names ) {
+
+		foreach ( $additional_names as $name ) {
+			$trigger_statuses[] = $name;
+		}
+
+		return $trigger_statuses;
 
 	}
 }
