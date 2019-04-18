@@ -30,7 +30,7 @@ const TicketContainerHeaderTitle = ( {
 			labelClassName="tribe-editor__ticket__container-header-clipboard-tooltip"
 			label={ <Clipboard /> }
 			text={ __(
-				'This ticket has Additional Fields configured.',
+				'This ticket has Attendee Information Fields configured.',
 				'event-tickets',
 			) }
 		/>
