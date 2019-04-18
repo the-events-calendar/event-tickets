@@ -114,7 +114,7 @@ class Tribe__Tickets__Status__Manager {
 	protected function check_for_full_provider_name( $provider ) {
 
 		// if abbreviated then return it back
-		if ( strlen($provider ) <= 4 ) {
+		if ( strlen( $provider ) <= 4 ) {
 			return $provider;
 		}
 
