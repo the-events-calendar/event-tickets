@@ -132,6 +132,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
 * Fix - Tidy attendee list print styles [12599]
+* Fix - Prevent PHP notices when looking for a template that does not exist in `tribe_tickets_get_template_part()` (props @stian-overasen) [125913]
 
 = [4.10.3] 2019-04-17 =
 
