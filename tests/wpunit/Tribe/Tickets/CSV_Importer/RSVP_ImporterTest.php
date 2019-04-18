@@ -2,8 +2,6 @@
 
 namespace Tribe\Tickets\CSV_Importer;
 
-use tad\FunctionMocker\FunctionMocker as Test;
-
 class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
@@ -16,7 +14,6 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 		parent::setUp();
 
 		// your set up methods here
-		Test::setUp();
 		\Tribe__Tickets__CSV_Importer__RSVP_Importer::reset_cache();
 		$this->file_reader    = $this->prophesize( 'Tribe__Events__Importer__File_Reader' );
 		$this->image_uploader = $this->prophesize( 'Tribe__Events__Importer__Featured_Image_Uploader' );
@@ -27,7 +24,6 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 		// your tear down methods here
 
 		// then
-		Test::tearDown();
 		parent::tearDown();
 	}
 
@@ -335,10 +331,9 @@ class RSVP_ImporterTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_mark_record_as_invalid_if_referring_recurring_event() {
 		$event_id = \Tribe__Events__API::createEvent( [ 'post_title' => 'Event 15' ] );
-		Test::replace( 'tribe_is_recurring_event',
-			function ( $id ) use ( $event_id ) {
-				return $event_id === $id;
-			} );
+		add_filter( 'tribe_is_recurring_event', function ( $recurring, $post_id ) use ( $event_id ) {
+			return $post_id ===$event_id ? true : $recurring;
+		}, 10, 2 );
 
 		$sut = $this->make_instance();
 

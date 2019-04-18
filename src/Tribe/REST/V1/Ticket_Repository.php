@@ -68,9 +68,11 @@ class Tribe__Tickets__REST__V1__Ticket_Repository
 	 *
 	 * @since 4.8
 	 *
+	 * @param bool $use_query_builder Whether to use the query builder, if set, or not.
+	 *
 	 * @return WP_Query
 	 */
-	public function build_query() {
+	public function build_query( $use_query_builder = true ) {
 		$this->add_related_post_clauses();
 
 		return $this->decorated->build_query();

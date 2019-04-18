@@ -119,7 +119,14 @@ class Tribe__Tickets__Editor__REST__V1__Service_Provider extends tad_DI52_Servic
 	 */
 	public function filter_single_ticket_data( $data, $request ) {
 		$ticket_id = $request['id'];
-		$ticket    = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
+
+		 // If the user cannot edit this ticket then do not disclose this information.
+		$post_type = get_post_type_object( get_post_type( $ticket_id ) );
+		if ( ! ( $post_type instanceof WP_Post_Type && current_user_can( $post_type->cap->edit_post, $ticket_id ) ) ) {
+			return $data;
+		}
+
+		$ticket = Tribe__Tickets__Tickets::load_ticket_object( $ticket_id );
 
 		if ( ! $ticket ) {
 			return $data;
