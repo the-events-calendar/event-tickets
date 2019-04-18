@@ -38,6 +38,7 @@ const RSVPAttendeeRegistration = ( {
 			isModalOpen={ isModalOpen }
 			label={ __( 'Attendee Registration', 'event-tickets' ) }
 			linkText={ linkText }
+			modalTitle={ __( 'Attendee Information', 'event-tickets' ) }
 			onClick={ onClick }
 			onClose={ onClose }
 			onIframeLoad={ onIframeLoad }
