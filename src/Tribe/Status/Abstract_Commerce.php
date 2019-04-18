@@ -208,7 +208,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		if (  $ticket_sold['incomplete'] > 0 ) {
 			$availability['incomplete'] = sprintf( '%s %s%s',
 				 $ticket_sold['incomplete'],
-				 __( 'pending order completion', 'event-tickets' ),
+				 esc_html__( 'pending order completion', 'event-tickets' ),
 				 $this->get_pending_by_ticket_tooltip( $ticket_sold )
 			);
 		}
