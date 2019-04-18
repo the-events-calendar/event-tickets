@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Change success message for ticket move [102635]
 * Tweak - Ticket Attendee and Order Page Header css by changing overflow to visible [120862]
 * Tweak - Update status manage to accept provider names or abbreviations [120862]
+* Tweak - In the Ticket Block add link to EDD Orders Page [121440]
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 * Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
