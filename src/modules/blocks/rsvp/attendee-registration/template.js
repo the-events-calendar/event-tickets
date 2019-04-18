@@ -32,11 +32,11 @@ const RSVPAttendeeRegistration = ( {
 
 	return (
 		<ARElement
-			helperText={ __( 'Save your RSVP to enable attendee registration fields', 'event-tickets' ) }
+			helperText={ __( 'Save your RSVP to enable attendee information fields', 'event-tickets' ) }
 			iframeURL={ attendeeRegistrationURL }
 			isDisabled={ isDisabled }
 			isModalOpen={ isModalOpen }
-			label={ __( 'Attendee Registration', 'event-tickets' ) }
+			label={ __( 'Attendee Information', 'event-tickets' ) }
 			linkText={ linkText }
 			onClick={ onClick }
 			onClose={ onClose }
