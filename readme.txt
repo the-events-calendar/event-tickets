@@ -119,10 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
-* Tweak - Add function and hooks for provider classes added to the attendee registration form. [124997]
-
-= [4.10.3] TBD =
-
+* Tweak - Add function and hooks for provider classes added to the attendee registration form [124997]
 * Tweak - Restyle RSVP block in the front end [123196]
 * Tweak - Allow reordering of ticket blocks in the block editor to be preserved in the front end [121703]
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
@@ -136,9 +133,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
 * Fix - Tidy attendee list print styles [12599]
 
-= [4.10.3] TBD =
+= [4.10.3] 2019-04-17 =
 
-
+* Feature - Compatibility with the Object Relational Mapping introduced on version 4.9 of The Events Calendar
+* Tweak - Improving cost symbol usage across all Commerces
+* Fix - Make sure we are not displaying ticket for non-logged users on the Rest API that can edit the Event
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.2] 2019-04-01 =
 
