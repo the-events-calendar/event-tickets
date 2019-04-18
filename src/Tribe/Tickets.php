@@ -968,12 +968,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @static
 		 *
 		 * @param int   $post_id ID of parent "event" post.
-		 * @param array $args    List of arguments to filter attendees by.
+		 * @param array $args {
+		 *      List of arguments to filter attendees by.
 		 *
-		 * @return array
+		 *      @type boolean $return_total_found Whether to return total_found count in an array along with list of
+		 *                                        attendees. Default is off.
+		 *      @type int     $page               Page number of attendees to return. Default is page 1.
+		 *      @type int     $per_page           How many attendees to return per page. Default is all.
+		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                                        [[what,args...]] format.
+		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 *
+		 * @return array List of attendees, or an array of total_found and attendees if $args['return_total_found'].
 		 */
 		public static function get_event_attendees( $post_id, $args = [] ) {
-			$attendees = array();
+			$total_found = 0;
+			$attendees   = array();
 
 			/**
 			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
@@ -1049,8 +1060,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					/** @var Tribe__Tickets__Attendee_Repository $repository */
 					$repository = tribe_attendees();
 
+					// Limit by post ID.
 					$repository->by( 'event', $post_id );
 
+					// Handle filtering.
 					if ( ! empty( $args['by'] ) ) {
 						foreach ( $args['by'] as $by => $by_args ) {
 							$by_args = (array) $by_args;
@@ -1063,7 +1076,29 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						}
 					}
 
+					// Handle multi filtering.
+					if ( ! empty( $args['where_multi'] ) ) {
+						foreach ( $args['where_multi'] as $where_multi_args ) {
+							call_user_func_array( [ $repository, 'where_multi' ], $where_multi_args );
+						}
+					}
+
+					// Set current page.
+					if ( ! empty( $args['page'] ) ) {
+						$repository->page( absint( $args['page'] ) );
+					}
+
+					// Limit results per page.
+					if ( ! empty( $args['per_page'] ) ) {
+						$repository->per_page( absint( $args['per_page'] ) );
+					}
+
 					$attendee_posts = $repository->all();
+
+					// Get total_found if we need to return it.
+					if ( ! empty( $args['return_total_found'] ) ) {
+						$total_found = $repository->get_last_built_query()->found_posts;
+					}
 
 					$attendees = self::get_attendees_from_modules( $attendee_posts, $post_id );
 
@@ -1083,7 +1118,17 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @param int   $post_id   Event post ID.
 			 * @param array $args      List of arguments to filter attendees by.
 			 */
-			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id, $args );
+			$attendees = apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id, $args );
+
+			// Return attendees with total_found count.
+			if ( ! empty( $args['return_total_found'] ) ) {
+				return [
+					'total_found' => $total_found,
+					'attendees'   => $attendees,
+				];
+			}
+
+			return $attendees;
 		}
 
 		/**
