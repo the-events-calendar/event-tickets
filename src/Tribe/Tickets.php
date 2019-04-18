@@ -1706,16 +1706,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_order_key( $provider_class ) {
 			$attendee_order_key = $provider_class->getConstant( 'ATTENDEE_ORDER_KEY' );
 
-			if ( empty( $attendee_order_key ) ) {
-				switch ( $this->class_name ) {
-					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_order';   break;
-					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_order';   break;
-					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_order'; break;
-					case 'Tribe__Events__Tickets__Wpec__Main':  return '_tribe_wpecticket_order';  break;
-				}
+			if ( ! empty( $attendee_order_key ) ) {
+				return (string) $attendee_order_key;
 			}
 
-			return (string) $attendee_order_key;
+			switch ( $this->class_name ) {
+				case 'Tribe__Events__Tickets__Woo__Main':
+					return '_tribe_wooticket_order';
+				case 'Tribe__Events__Tickets__EDD__Main':
+					return '_tribe_eddticket_order';
+				case 'Tribe__Events__Tickets__Shopp__Main':
+					return '_tribe_shoppticket_order';
+				case 'Tribe__Events__Tickets__Wpec__Main':
+					return '_tribe_wpecticket_order';
+				default:
+					return '';
+			}
 		}
 
 		/**
@@ -1731,17 +1737,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_object( $provider_class ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
-			// @todo this will always be empty... why is this here?
-			if ( empty( $attendee_order_key ) ) {
-				switch ( $this->class_name ) {
-					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
-					case 'Tribe__Events__Tickets__EDD__Main':   return 'tribe_eddticket';   break;
-					case 'Tribe__Events__Tickets__Shopp__Main': return 'tribe_shoppticket'; break;
-					case 'Tribe__Events__Tickets__Wpec__Main':  return 'tribe_wpecticket';  break;
-				}
+			if ( ! empty( $attendee_object ) ) {
+				return (string) $attendee_object;
 			}
 
-			return (string) $attendee_object;
+			switch ( $this->class_name ) {
+				case 'Tribe__Events__Tickets__Woo__Main':
+					return 'tribe_wooticket';
+				case 'Tribe__Events__Tickets__EDD__Main':
+					return 'tribe_eddticket';
+				case 'Tribe__Events__Tickets__Shopp__Main':
+					return 'tribe_shoppticket';
+				case 'Tribe__Events__Tickets__Wpec__Main':
+					return 'tribe_wpecticket';
+				default:
+					return '';
+			}
 		}
 
 		/**
@@ -1759,16 +1770,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_event_key( $provider_class ) {
 			$attendee_event_key = $provider_class->getConstant( 'ATTENDEE_EVENT_KEY' );
 
-			if ( empty( $attendee_event_key ) ) {
-				switch ( $this->class_name ) {
-					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_event';   break;
-					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_event';   break;
-					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_event'; break;
-					case 'Tribe__Events__Tickets__Wpec__Main':  return '_tribe_wpecticket_event';  break;
-				}
+			if ( ! empty( $attendee_event_key ) ) {
+				return (string) $attendee_event_key;
 			}
 
-			return (string) $attendee_event_key;
+			switch ( $this->class_name ) {
+				case 'Tribe__Events__Tickets__Woo__Main':
+					return '_tribe_wooticket_event';
+				case 'Tribe__Events__Tickets__EDD__Main':
+					return '_tribe_eddticket_event';
+				case 'Tribe__Events__Tickets__Shopp__Main':
+					return '_tribe_shoppticket_event';
+				case 'Tribe__Events__Tickets__Wpec__Main':
+					return '_tribe_wpecticket_event';
+				default:
+					return '';
+			}
 		}
 
 		/**
