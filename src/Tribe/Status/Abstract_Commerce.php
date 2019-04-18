@@ -165,7 +165,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		$sold = $ticket_sold['completed'] ? $ticket_sold['completed'] : $ticket_sold['sold'];
 
 		$sold_message = ! $ticket_sold['has_stock'] ?
-			$sold_message = sprintf( __( 'Sold %d', 'event-tickets' ), esc_html( $sold ) ) :
+			$sold_message = sprintf( '%s %d', esc_attr__( 'Sold', 'event-tickets' ), esc_html( $sold ) ) :
 			'';
 
 		$price = $ticket_sold['ticket']->price ?
@@ -173,7 +173,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 			'';
 
 		$sku = $ticket_sold['sku'] ?
-			'title="' . sprintf( esc_html__( 'SKU: (%s)', 'event-tickets' ), esc_html( $ticket_sold['sku'] ) ) . '"' :
+			'title="' . sprintf( '%s: (%s)', esc_attr__( 'SKU', 'event-tickets' ), esc_attr__( $ticket_sold['sku'] ) ) . '"' :
 			'';
 
 		ob_start();
