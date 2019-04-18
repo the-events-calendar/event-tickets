@@ -289,34 +289,36 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_resources' ), 11 );
-		add_action( 'trashed_post', array( $this, 'maybe_redirect_to_attendees_report' ) );
-		add_filter( 'post_updated_messages', array( $this, 'updated_messages' ) );
-		add_action( 'tpp_checkin', array( $this, 'purge_attendees_transient' ) );
-		add_action( 'tpp_uncheckin', array( $this, 'purge_attendees_transient' ) );
-		add_action( 'tribe_events_tickets_attendees_event_details_top', array( $this, 'setup_attendance_totals' ) );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_resources' ], 11 );
+		add_action( 'trashed_post', [ $this, 'maybe_redirect_to_attendees_report' ] );
+		add_filter( 'post_updated_messages', [ $this, 'updated_messages' ] );
+		add_action( 'tpp_checkin', [ $this, 'purge_attendees_transient' ] );
+		add_action( 'tpp_uncheckin', [ $this, 'purge_attendees_transient' ] );
+		add_action( 'tribe_events_tickets_attendees_event_details_top', [ $this, 'setup_attendance_totals' ] );
 
-		add_action( 'init', array( $this, 'init' ) );
+		add_action( 'init', [ $this, 'init' ] );
 		add_action( 'init', tribe_callback( 'tickets.commerce.paypal.orders.report', 'hook' ) );
 
-		add_action( 'event_tickets_attendee_update', array( $this, 'update_attendee_data' ), 10, 3 );
-		add_action( 'event_tickets_after_attendees_update', array( $this, 'maybe_send_tickets_after_status_change' ) );
+		add_action( 'event_tickets_attendee_update', [ $this, 'update_attendee_data' ], 10, 3 );
+		add_action( 'event_tickets_after_attendees_update', [ $this, 'maybe_send_tickets_after_status_change' ] );
 		add_filter(
 			'event_tickets_attendees_tpp_checkin_stati',
-			array( $this, 'filter_event_tickets_attendees_tpp_checkin_stati' )
+			[ $this, 'filter_event_tickets_attendees_tpp_checkin_stati' ]
 		);
 
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.notices', 'hook' ) );
 
 		add_action( 'tribe_tickets_attendees_page_inside', tribe_callback( 'tickets.commerce.paypal.orders.tabbed-view', 'render' ) );
-		add_action( 'tribe_events_tickets_metabox_edit_advanced', array( $this, 'do_metabox_advanced_options' ), 10, 2 );
+		add_action( 'tribe_events_tickets_metabox_edit_advanced', [ $this, 'do_metabox_advanced_options' ], 10, 2 );
 		add_filter( 'tribe_tickets_stock_message_available_quantity', tribe_callback( 'tickets.commerce.paypal.orders.sales', 'filter_available' ), 10, 4 );
 		add_action( 'admin_init', tribe_callback( 'tickets.commerce.paypal.oversell.request', 'handle' ) );
-		add_filter( 'tribe_tickets_get_default_module', array( $this, 'deprioritize_module' ), 5, 2 );
+		add_filter( 'tribe_tickets_get_default_module', [ $this, 'deprioritize_module' ], 5, 2 );
 
-		add_filter( 'tribe_tickets_tickets_in_cart', array( $this, 'get_tickets_in_cart' ), 10, 1 );
-		add_action( 'wp_loaded', array( $this, 'maybe_redirect_to_attendees_registration_screen' ), 1 );
-		add_action( 'wp_loaded', array( $this, 'maybe_delete_expired_products' ), 0 );
+		add_filter( 'tribe_tickets_tickets_in_cart', [ $this, 'get_tickets_in_cart' ], 10, 1 );
+		add_action( 'wp_loaded', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 1 );
+		add_action( 'wp_loaded', [ $this, 'maybe_delete_expired_products' ], 0 );
+
+		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'tribe_attendee_registration_form_class' ] );
 	}
 
 	/**
@@ -2833,5 +2835,20 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		return next( $available_modules );
+	}
+
+	/**
+	 * Add our class to the list of classes for the attendee registartion form
+	 *
+	 * @since TBD
+	 *
+	 * @param array $classes existing array of classes
+	 *
+	 * @return array $classes with our class added
+	 */
+	public function tribe_attendee_registration_form_class( $classes ) {
+		$classes[ $this->attendee_object ] = 'tpp';
+
+		return $classes;
 	}
 }
