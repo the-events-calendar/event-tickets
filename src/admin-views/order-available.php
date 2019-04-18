@@ -11,7 +11,7 @@
 	<?php esc_html_e( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?>
 </p>
 <ul class="tooltip-list">
-	<li><?php echo esc_html__( 'Inventory is the capacity minus generated attendees for that ticket.', 'event-tickets' ); ?></li>
+	<li><?php esc_html_e( 'Inventory is the capacity minus generated attendees for that ticket.', 'event-tickets' ); ?></li>
 	<li><?php echo esc_html__( 'Stock is the lowest number of ticket stock or if active the shared stock.', 'event-tickets' ); ?></li>
 	<li><?php echo esc_html__( 'Capacity is based on the chosen shared, shared capped, or individual capacity for this ticket.', 'event-tickets' ); ?></li>
 </ul>
