@@ -274,14 +274,10 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	 */
 	public function get_pending_by_ticket_tooltip( $ticket_sold ) {
 
-		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true );
-		ob_start();
-			echo esc_html__( 'Pending Order Completion refers to anything with the following statuses:', 'event-tickets' ); ?>
-			<ul class="tooltip-list">
-				<li><?php echo implode( '</li><li>', $incomplete_statuses ) ?></li>
-			</ul>
-		<?php
-		$message = ob_get_clean();
+		$args = [
+			'incomplete_statuses'        => (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', $ticket_sold['ticket']->provider_class, null, true ),
+		];
+		$message = tribe( 'tickets.admin.views' )->template( 'order-pending-completion', $args, false );
 
 		return tribe( 'tooltip.view' )->render_tooltip( $message );
 	}
@@ -302,17 +298,11 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 		$available[ __( 'Stock', 'event-tickets' ) ]     = $ticket_sold['ticket']->stock();
 		$available[ __( 'Capacity', 'event-tickets' ) ]  = $ticket_sold['ticket']->capacity();
 
-		ob_start();
-		?>
-			<div><?php echo esc_html__( 'Current availablity is using', 'event-tickets' ) . ', ' . esc_html( array_search( min( $available ), $available ) . ' - ' . min( $available ) ); ?></div>
-			<p><?php echo esc_html__( 'Ticket availability is based on the lowest number of inventory, stock, and capacity.', 'event-tickets' ); ?></p>
-			<ul class="tooltip-list">
-				<li><?php echo esc_html__( 'Inventory is the capacity minus generated attendees for that ticket.', 'event-tickets' ); ?></li>
-				<li><?php echo esc_html__( 'Stock is the lowest number of ticket stock or if active the shared stock.', 'event-tickets' ); ?></li>
-				<li><?php echo esc_html__( 'Capacity is based on the chosen shared, shared capped, or individual capacity for this ticket.', 'event-tickets' ); ?></li>
-			</ul>
-		<?php
-		$message = ob_get_clean();
+		$args = [
+			'available'        => $available,
+		];
+		$message = tribe( 'tickets.admin.views' )->template( 'order-available', $args, false );
+
 		$args    = [ 'wrap_classes' => 'large' ];
 
 		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
