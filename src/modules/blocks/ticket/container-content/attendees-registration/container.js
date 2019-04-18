@@ -50,7 +50,7 @@ const mapDispatchToProps = ( dispatch, ownProps ) => {
 
 			// show overlay
 			const showOverlay = () => {
-				iframe.nextSibling.classList.add( 'tribe-editor__ticket__attendee-registration-modal-overlay--show' );
+				iframe.nextSibling.classList.add( 'tribe-editor__attendee-registration__modal-overlay--show' );
 			};
 
 			// add event listener for form submit

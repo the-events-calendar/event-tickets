@@ -123,7 +123,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Add tooltip to explain what statues are behind Pending Order Completion [120862]
 * Feature - Add tooltip to explain the Available Count Per Ticket [120862]
 * Tweak - Add method to get all possible names of the completed status by Commerce [122458]
-* Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 * Tweak - Change success message for ticket move [102635]
 * Tweak - Ticket Attendee and Order Page Header css by changing overflow to visible [120862]
 * Tweak - Update status manage to accept provider names or abbreviations [120862]
@@ -135,20 +134,26 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] TBD =
 
+* Tweak - Add function and hooks for provider classes added to the attendee registration form [124997]
+* Tweak - Restyle RSVP block in the front end [123196]
 * Tweak - Allow reordering of ticket blocks in the block editor to be preserved in the front end [121703]
 * Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
 * Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
 * Tweak - Attendee registration fields configuration for block editor opens up in modal [123818]
 * Tweak - Move IPN settings together in ticket settings tab [122333]
 * Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
+* Fix - Change RSVP import identifier in CSV importer so it provides the correct response message [124052]
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
 * Fix - Tidy attendee list print styles [12599]
 
-= [4.10.3] TBD =
+= [4.10.3] 2019-04-17 =
 
-
+* Feature - Compatibility with the Object Relational Mapping introduced on version 4.9 of The Events Calendar
+* Tweak - Improving cost symbol usage across all Commerces
+* Fix - Make sure we are not displaying ticket for non-logged users on the Rest API that can edit the Event
+* Language - 0 new strings added, 38 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.2] 2019-04-01 =
 

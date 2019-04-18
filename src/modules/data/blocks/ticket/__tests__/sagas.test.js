@@ -33,7 +33,13 @@ import {
 	time as timeUtil,
 } from '@moderntribe/common/utils';
 import { plugins } from '@moderntribe/common/data';
-import { isTribeEventPostType, createWPEditorSavingChannel, hasPostTypeChannel, createDates } from '@moderntribe/tickets/data/shared/sagas';
+import {
+	isTribeEventPostType,
+	createWPEditorSavingChannel,
+	createWPEditorNotSavingChannel,
+	hasPostTypeChannel,
+	createDates,
+} from '@moderntribe/tickets/data/shared/sagas';
 
 const {
 	INDEPENDENT,
@@ -1329,6 +1335,9 @@ describe( 'Ticket Block sagas', () => {
 				] )
 			);
 			expect( clone11.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
+			);
+			expect( clone11.next().value ).toEqual(
 				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
 			);
 			expect( clone11.next().done ).toEqual( true );
@@ -1410,6 +1419,9 @@ describe( 'Ticket Block sagas', () => {
 					) ),
 					put( actions.setTicketHasChanges( CLIENT_ID, false ) ),
 				] )
+			);
+			expect( clone12.next().value ).toEqual(
+				fork( sagas.saveTicketWithPostSave, CLIENT_ID )
 			);
 			expect( clone12.next().value ).toEqual(
 				put( actions.setTicketIsLoading( CLIENT_ID, false ) )
@@ -2584,11 +2596,7 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( gen.next( channel ).value ).toEqual(
-				take( channel )
-			);
-
-			expect( gen.next().value ).toEqual(
-				fork( sagas.updateTicket, { payload: { clientId } } )
+				call( createWPEditorNotSavingChannel )
 			);
 
 			expect( gen.next( channel ).value ).toEqual(
@@ -2596,7 +2604,23 @@ describe( 'Ticket Block sagas', () => {
 			);
 
 			expect( gen.next().value ).toEqual(
-				fork( sagas.updateTicket, { payload: { clientId } } )
+				call( sagas.updateTicket, { payload: { clientId } } )
+			);
+
+			expect( gen.next( channel ).value ).toEqual(
+				take( channel )
+			);
+
+			expect( gen.next( channel ).value ).toEqual(
+				take( channel )
+			);
+
+			expect( gen.next().value ).toEqual(
+				call( sagas.updateTicket, { payload: { clientId } } )
+			);
+
+			expect( gen.next( channel ).value ).toEqual(
+				take( channel )
 			);
 		} );
 		it( 'should do nothing', () => {

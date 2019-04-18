@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Shared block sagas createWPEditorNotSavingChannel should create channel 1`] = `
+Object {
+  "close": [Function],
+  "flush": [Function],
+  "take": [Function],
+}
+`;
+
 exports[`Shared block sagas createWPEditorSavingChannel should create channel 1`] = `
 Object {
   "close": [Function],
