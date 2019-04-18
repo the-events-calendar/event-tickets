@@ -30,20 +30,29 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		if ( 'shortcode' !== $context && ! tribe( 'tickets.attendee_registration' )->is_on_page() ) {
 			return $content;
 		}
+
+		$q_provider = tribe_get_request_var( 'provider', false );
+
 		/**
 		 * Filter to add/remove tickets from the global cart
 		 *
 		 * @since TDB
 		 *
-		 * @param array  The array containing the cart elements. Format arrat( 'ticket_id' => 'quantity' );
+		 * @param array  $cart_tickets The array containing the cart elements. Format array( 'ticket_id' => 'quantity' );
+		 * @param string $q_provider   Current ticket provider.
 		 */
-		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
+		$cart_tickets = apply_filters( 'tribe_tickets_tickets_in_cart', array(), $q_provider );
 		$events       = array();
 		$providers    = array();
 
 		foreach ( $cart_tickets as $ticket_id => $quantity ) {
 			// Load the tickets in cart for each event, with their ID, quantity and provider.
 			$ticket = tribe( 'tickets.handler' )->get_object_connections( $ticket_id );
+
+			// If we've got a provider and it doesn't match, skip the ticket
+			if ( $q_provider && $q_provider !== $ticket->provider->attendee_object ) {
+				continue;
+			}
 
 			$ticket_data = array(
 				'id'       => $ticket_id,
@@ -143,5 +152,50 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		$provider = new $post_provider;
 
 		return $provider->get_cart_url();
+	}
+
+	/**
+	 * Given a provider, get the class to be applied to the attendee registration form
+	 * @since TBD
+	 *
+	 * @param string $provider the provider/attendee object name indicating ticket porovider
+	 *
+	 * @return string the class string or empty string if provider not found
+	 */
+	public function get_form_class( $provider ) {
+		$class = '';
+
+		if ( empty( $provider ) ) {
+			/**
+			 * Allows filterting the class before returning it in the case of no provider.
+			 *
+			 * @since TBD
+			 *
+			 * @param string $class The (empty) class string.
+			 */
+			return apply_filters( 'tribe_attendee_registration_form_no_provider_class', $class );
+		}
+
+		/**
+		 * Allow providers to include their own strings/suffixes.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $provider_classes in format $provider -> class suffix.
+		 */
+		$provider_classes = apply_filters( 'tribe_attendee_registration_form_classes', [] );
+
+		if ( array_key_exists( $provider, $provider_classes ) ) {
+			$class = 'tribe-block__tickets__item__attendee__fields__form--' . $provider_classes[ $provider ];
+		}
+
+		/**
+		 * Allows filterting the class before returning it.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $class The class string.
+		 */
+		return apply_filters( 'tribe_attendee_registration_form_class', $class );
 	}
 }

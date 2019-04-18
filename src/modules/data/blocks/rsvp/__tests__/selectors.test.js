@@ -48,6 +48,11 @@ describe( 'RSVP block selectors', () => {
 			.toBe( DEFAULT_STATE.isSettingsLoading );
 	} );
 
+	it( 'should return the is modal open', () => {
+		expect( selectors.getRSVPIsModalOpen( state ) )
+			.toBe( DEFAULT_STATE.isModalOpen );
+	} );
+
 	it( 'should return the going count', () => {
 		expect( selectors.getRSVPGoingCount( state ) )
 			.toBe( DEFAULT_STATE.goingCount );

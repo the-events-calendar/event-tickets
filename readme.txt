@@ -3,8 +3,8 @@
 Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, bordoni, borkweb, barry.hughes, cliffpaulick, courane01, faction23, GeoffBel, geoffgraham, ggwicz, jbrinley, jentheo, leahkoerper, lucatume, mastromktg, MZAWeb, neillmcshea, nicosantos, patriciahillebrandt, peterchester, reid.peifer, roblagatta, ryancurban, shane.pearlman, vicskf, zbtirrell
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
-Tested up to: 5.1
-Stable tag: 4.10.3
+Tested up to: 5.1.1
+Stable tag: 4.10.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,22 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.10.4] TBD =
+
+* Tweak - Add function and hooks for provider classes added to the attendee registration form [124997]
+* Tweak - Restyle RSVP block in the front end [123196]
+* Tweak - Allow reordering of ticket blocks in the block editor to be preserved in the front end [121703]
+* Tweak - After deleting attendees you are now redirected back to the admin attendee page to clear the url of the deleting actions [122083]
+* Tweak - Tribe Commerce knowledge base article link now opens up in a new window [122331]
+* Tweak - Attendee registration fields configuration for block editor opens up in modal [123818]
+* Tweak - Move IPN settings together in ticket settings tab [122333]
+* Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
+* Fix - Change RSVP import identifier in CSV importer so it provides the correct response message [124052]
+* Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
+* Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
+* Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
+* Fix - Tidy attendee list print styles [12599]
 
 = [4.10.3] 2019-04-17 =
 
