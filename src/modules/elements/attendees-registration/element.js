@@ -23,6 +23,7 @@ class AttendeesRegistration extends PureComponent {
 		isModalOpen: PropTypes.bool.isRequired,
 		label: PropTypes.string.isRequired,
 		linkText: PropTypes.string.isRequired,
+		modalTitle: PropTypes.string.isRequired,
 		onClick: PropTypes.func.isRequired,
 		onClose: PropTypes.func.isRequired,
 		onIframeLoad: PropTypes.func.isRequired,
@@ -42,6 +43,7 @@ class AttendeesRegistration extends PureComponent {
 			isModalOpen,
 			label,
 			linkText,
+			modalTitle,
 			onClick,
 			onClose,
 			onIframeLoad,
@@ -73,7 +75,7 @@ class AttendeesRegistration extends PureComponent {
 					modalButtonLabel={ linkText }
 					modalClassName="tribe-editor__attendee-registration__modal"
 					modalContent={ modalContent }
-					modalTitle={ label }
+					modalTitle={ modalTitle }
 					onClick={ onClick }
 					onClose={ onClose }
 				/>
