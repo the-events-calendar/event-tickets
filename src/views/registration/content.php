@@ -48,7 +48,7 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 
 			<form
 				method="post"
-				class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"// here
+				class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
 				novalidate
 			>

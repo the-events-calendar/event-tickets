@@ -121,13 +121,20 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Feature - Implemented our abstract Object-relational Mapping layer for Ticket Attendees and increased stability with more automated tests [123468]
 * Feature - Add tooltips to Attendee Report page [120856]
+* Feature - Add tooltip to explain what statues are behind Pending Order Completion [120862]
+* Feature - Add tooltip to explain the Available Count Per Ticket [120862]
 * Tweak - Add method to get all possible names of the completed status by Commerce [122458]
 * Tweak - Change success message for ticket move [102635]
+* Tweak - Ticket Attendee and Order Page Header css by changing overflow to visible [120862]
+* Tweak - Update status manage to accept provider names or abbreviations [120862]
+* Tweak - In the Ticket Block add link to EDD Orders Page [121440]
+* Tweak - Change "Attendee Registration" to "Attendee Information" in several locations [126038]
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 * Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
 * Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
+* Fix - Correct escaping on attendee registration shortcode [125964]
 
 = [4.10.4] TBD =
 
@@ -143,7 +150,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
-* Fix - Tidy attendee list print styles [12599]
+* Fix - Tidy attendee list print styles [125299]
+* Fix - Prevent PHP notices when looking for a template that does not exist in `tribe_tickets_get_template_part()` (props @stian-overasen) [125913]
 
 = [4.10.3] 2019-04-17 =
 
