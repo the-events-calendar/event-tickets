@@ -50,7 +50,7 @@ const Availability = ( { available, total } ) => {
 			<span
 				class="tribe-tooltip"
 				title="Ticket availability is based on the lowest number of inventory, stock, and capacity."
-			>{ Available }<i className="dashicons dashicons-info"></i></span>
+			>{ Available }<span className="dashicons dashicons-info"></span></span>
 			{ Total }
 		</div>
 	);
