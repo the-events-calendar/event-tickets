@@ -1280,12 +1280,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
 			$args = [
-				'by' => [
+				'by'       => [
 					'checkedin' => true,
 				],
+				'per_page' => 1,
 			];
 
-			return count( self::get_event_attendees( $post_id, $args ) );
+			$attendee_data = self::get_event_attendees_by_args( $post_id, $args );
+
+			return $attendee_data['total_found'];
 		}
 
 		// end Attendees
