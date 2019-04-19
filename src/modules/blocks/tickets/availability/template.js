@@ -25,6 +25,7 @@ const Availability = ( { available, total } ) => {
 			className={ classNames(
 				'tribe-editor__tickets__availability-label',
 				'tribe-editor__tickets__availability-label--available',
+				'tribe-tooltip'
 			) }
 			count={ available }
 			singular={ __( '%d ticket available', 'event-tickets' ) }
@@ -46,7 +47,10 @@ const Availability = ( { available, total } ) => {
 
 	return (
 		<div className="tribe-editor__tickets__availability">
-			{ Available }
+			<span
+				class="tribe-tooltip"
+				title="Ticket availability is based on the lowest number of inventory, stock, and capacity."
+			>{ Available }<i className="dashicons dashicons-info"></i></span>
 			{ Total }
 		</div>
 	);
