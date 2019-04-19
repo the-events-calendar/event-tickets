@@ -51,16 +51,30 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'post_status' => 'any',
 		] );
 
+		// Add initial simple schema.
+		$this->add_simple_meta_schema_entry( 'event', $this->attendee_to_event_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'event__not_in', $this->attendee_to_event_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'ticket', $this->attendee_to_ticket_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'ticket__not_in', $this->attendee_to_ticket_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'order', $this->attendee_to_order_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'order__not_in', $this->attendee_to_order_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'product_id', $this->attendee_to_ticket_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'product_id__not_in', $this->attendee_to_ticket_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_name', $this->purchaser_name_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_name__not_in', $this->purchaser_name_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email', $this->purchaser_email_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email__not_in', $this->purchaser_email_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'security_code', $this->security_code_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'security_code__not_in', $this->security_code_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'user', '_tribe_tickets_attendee_user_id', 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'user__not_in', '_tribe_tickets_attendee_user_id', 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'price', '_paid_price' );
+
 		$this->schema = array_merge( $this->schema, [
-			'event'             => [ $this, 'filter_by_event' ],
-			'ticket'            => [ $this, 'filter_by_ticket' ],
-			'event__not_in'     => [ $this, 'filter_by_event_not_in' ],
-			'ticket__not_in'    => [ $this, 'filter_by_ticket_not_in' ],
 			'optout'            => [ $this, 'filter_by_optout' ],
 			'rsvp_status'       => [ $this, 'filter_by_rsvp_status' ],
 			'provider'          => [ $this, 'filter_by_provider' ],
 			'event_status'      => [ $this, 'filter_by_event_status' ],
-			'order'             => [ $this, 'filter_by_order' ],
 			'order_status'      => [ $this, 'filter_by_order_status' ],
 			'price_min'         => [ $this, 'filter_by_price_min' ],
 			'price_max'         => [ $this, 'filter_by_price_max' ],
@@ -88,23 +102,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Provides arguments to filter attendees by a specific event.
-	 *
-	 * @since 4.8
-	 *
-	 * @param int|array $event_id A post ID or an array of post IDs.
-	 *
-	 * @return array
-	 */
-	public function filter_by_event( $event_id ) {
-		return Tribe__Repository__Query_Filters::meta_in(
-			$this->attendee_to_event_keys(),
-			$event_id,
-			'by-related-event'
-		);
-	}
-
-	/**
 	 * Returns the list of meta keys relating an Attendee to a Post (Event).
 	 *
 	 * Extending repository classes should override this to add more keys.
@@ -118,40 +115,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'rsvp'           => '_tribe_rsvp_event',
 			'tribe-commerce' => '_tribe_tpp_event',
 		];
-	}
-
-	/**
-	 * Provides arguments to get attendees that are not related to an event.
-	 *
-	 * @since 4.8
-	 *
-	 * @param int|array $event_id A post ID or an array of post IDs.
-	 *
-	 * @return array
-	 */
-	public function filter_by_event_not_in( $event_id ) {
-		return Tribe__Repository__Query_Filters::meta_not_in(
-			$this->attendee_to_event_keys(),
-			$event_id,
-			'by-event-not-in'
-		);
-	}
-
-	/**
-	 * Provides arguments to filter attendees by a specific ticket.
-	 *
-	 * @since 4.8
-	 *
-	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
-	 *
-	 * @return array
-	 */
-	public function filter_by_ticket( $ticket_id ) {
-		return Tribe__Repository__Query_Filters::meta_in(
-			$this->attendee_to_ticket_keys(),
-			$ticket_id,
-			'by-ticket'
-		);
 	}
 
 	/**
@@ -171,20 +134,95 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Provides arguments to get attendees that are not related to a ticket.
+	 * Returns a list of meta keys relating an attendee to the order
+	 * that generated it.
 	 *
 	 * @since 4.8
 	 *
-	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
+	 * @return array
+	 */
+	protected function attendee_to_order_keys() {
+		return [
+			'tribe-commerce' => '_tribe_tpp_order',
+		];
+	}
+
+	/**
+	 * Returns the list of meta keys relating an Attendee to a Post (Event).
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since TBD
 	 *
 	 * @return array
 	 */
-	public function filter_by_ticket_not_in( $ticket_id ) {
-		return Tribe__Repository__Query_Filters::meta_not_in(
-			$this->attendee_to_ticket_keys(),
-			$ticket_id,
-			'by-ticket-not-in'
-		);
+	public function purchaser_name_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_full_name',
+			'tribe-commerce' => '_tribe_tpp_full_name',
+		];
+	}
+
+	/**
+	 * Returns the list of meta keys relating an Attendee to a Post (Event).
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function purchaser_email_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_email',
+			'tribe-commerce' => '_tribe_tpp_email',
+		];
+	}
+
+	/**
+	 * Returns the list of meta keys relating an Attendee to a Post (Event).
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function security_code_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_security_code',
+			'tribe-commerce' => '_tribe_tpp_security_code',
+		];
+	}
+
+	/**
+	 * Returns the list of meta keys denoting an Attendee optout choice.
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since 4.8
+	 *
+	 * @return array
+	 */
+	public function attendee_optout_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_attendee_optout',
+			'tribe-commerce' => '_tribe_tpp_attendee_optout',
+		];
+	}
+
+	/**
+	 * Returns a list of meta keys indicating an attendee checkin status.
+	 *
+	 * @since 4.8
+	 *
+	 * @return array
+	 */
+	public function checked_in_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_checkedin',
+			'tribe-commerce' => '_tribe_tpp_checkedin',
+		];
 	}
 
 	/**
@@ -216,22 +254,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		return null;
-	}
-
-	/**
-	 * Returns the list of meta keys denoting an Attendee optout choice.
-	 *
-	 * Extending repository classes should override this to add more keys.
-	 *
-	 * @since 4.8
-	 *
-	 * @return array
-	 */
-	public function attendee_optout_keys() {
-		return [
-			'rsvp'           => '_tribe_rsvp_attendee_optout',
-			'tribe-commerce' => '_tribe_tpp_attendee_optout',
-		];
 	}
 
 	/**
@@ -461,34 +483,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		return Tribe__Repository__Query_Filters::meta_not_in_or_not_exists( $meta_keys, '1', 'is-not-checked-in' );
-	}
-
-	/**
-	 * Returns a list of meta keys indicating an attendee checkin status.
-	 *
-	 * @since 4.8
-	 *
-	 * @return array
-	 */
-	public function checked_in_keys() {
-		return [
-			'rsvp'           => '_tribe_rsvp_checkedin',
-			'tribe-commerce' => '_tribe_tpp_checkedin',
-		];
-	}
-
-	/**
-	 * Returns a list of meta keys relating an attendee to the order
-	 * that generated it.
-	 *
-	 * @since 4.8
-	 *
-	 * @return array
-	 */
-	protected function attendee_to_order_keys() {
-		return [
-			'tribe-commerce' => '_tribe_tpp_order',
-		];
 	}
 
 	/**
