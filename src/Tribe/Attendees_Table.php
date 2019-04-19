@@ -828,52 +828,41 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'return_total_found' => true,
 		];
 
-		$event_id = 0;
+		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
+		$search   = empty( $_REQUEST['s'] ) ? null : sanitize_text_field( $_REQUEST['s'] );
 
-		if ( ! empty( $_GET['event_id'] ) ) {
-			$event_id = absint( $_GET['event_id'] );
+		if ( ! empty( $search ) ) {
+			$search_keys = [
+				'purchaser_name',
+				'purchaser_email',
+				'product_id',
+				'security_code',
+				'user',
+			];
+
+			/**
+			 * Filters the item keys that should be used to filter attendees while searching them.
+			 *
+			 * @since 4.7
+			 * @since TBD Deprecated usage of $items attendees list.
+			 *
+			 * @param array  $search_keys The keys that should be used to search attendees.
+			 * @param array  $items       (deprecated) The attendees list.
+			 * @param string $s           The current search string.
+			 */
+			$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
+
+			// Only get matches that have search phrase in the keys.
+			$args['where_multi'] = [
+				[
+					$search_keys,
+					'LIKE',
+					$search,
+				],
+			];
 		}
 
-		$search = null;
-
-		if ( ! empty( $_REQUEST['s'] ) ) {
-			$search = sanitize_text_field( $_REQUEST['s'] );
-
-			if ( ! empty( $search ) ) {
-				$search_keys = [
-					'purchaser_name',
-					'purchaser_email',
-					'purchase_time',
-					'order_status',
-					'ticket_name',
-					'product_id',
-					'security_code',
-				];
-
-				/**
-				 * Filters the item keys that should be used to filter attendees while searching them.
-				 *
-				 * @since 4.7
-				 * @since TBD Deprecated usage of $items attendees list.
-				 *
-				 * @param array  $search_keys The keys that should be used to search attendees.
-				 * @param array  $items       (deprecated) The attendees list.
-				 * @param string $s           The current search string.
-				 */
-				$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
-
-				// Only get matches that have search phrase in the keys.
-				$args['where_multi'] = [
-					[
-						$search_keys,
-						'LIKE',
-						$search,
-					],
-				];
-			}
-		}
-
-		$item_data = Tribe__Tickets__Tickets::get_event_attendees( $event_id, $args );
+		$item_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
 
 		$items = [];
 
