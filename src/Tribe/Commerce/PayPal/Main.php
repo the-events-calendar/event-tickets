@@ -1610,7 +1610,15 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$find_by_args['ticket_id'] = (array) $ticket_id;
 		}
 
-		return Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
+
+		if ( ! $orders ) {
+			return [];
+		}
+
+		$order_id = current( $orders )->paypal_id();
+
+		return parent::get_attendees_by_order_id( $order_id, $ticket_id );
 	}
 
 	/**
