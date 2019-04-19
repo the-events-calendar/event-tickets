@@ -572,6 +572,8 @@ function tribe_tickets_get_template_part( $slug, $name = null, array $data = nul
 		extract( $data );
 	}
 
+	$html = null;
+
 	// loop through templates, return first one found.
 	foreach ( $templates as $template ) {
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( $template, array( 'disable_view_check' => true ) );

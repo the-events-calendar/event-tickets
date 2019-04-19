@@ -38,6 +38,7 @@ const AttendeesRegistration = ( {
 			isModalOpen={ isModalOpen }
 			label={ __( 'Attendee Information', 'event-tickets' ) }
 			linkText={ linkText }
+			modalTitle={ __( 'Attendee Information', 'event-tickets' ) }
 			onClick={ onClick }
 			onClose={ onClose }
 			onIframeLoad={ onIframeLoad }
