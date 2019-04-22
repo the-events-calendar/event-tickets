@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4] 2019-04-22 =
 
+* Tweak - Changed minimum supported version of The Events Calendar to 4.9
 * Tweak - Add function and hooks for provider classes added to the attendee registration form [124997]
 * Tweak - Restyle RSVP block in the front end [123196]
 * Tweak - Allow reordering of ticket blocks in the block editor to be preserved in the front end [121703]
