@@ -64,11 +64,10 @@ class Template_TagTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_tickets_parent_post()
 	 */
 	public function it_should_return_the_parent_event_of_a_ticket() {
-		$event_id  = $this->factory()->event->create();
-		$rsvp_id   = $this->create_rsvp_ticket( $event_id );
-		$parent_id = tribe_tickets_parent_post( $rsvp_id );
+		$event_id = $this->factory()->event->create();
+		$parent   = tribe_tickets_parent_post( $event_id );
 
-		$this->assertEquals( $rsvp_id, $event_id );
+		$this->assertEquals( $event_id, $parent->ID );
 	}
 
 
@@ -81,7 +80,15 @@ class Template_TagTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_tickets_parent_post()
 	 */
 	public function it_should_return_the_parent_non_event_post_of_a_ticket() {
-		$this->markTestSkipped("Test not finished");
+		tribe_update_option( 'ticket-enabled-post-types', [
+			'tribe_events',
+			'post',
+		] );
+
+		$event_id = wp_insert_post( ['id' => 1337] );
+		$parent   = tribe_tickets_parent_post( $event_id );
+
+		$this->assertEquals( $event_id, $parent );
 	}
 
 
