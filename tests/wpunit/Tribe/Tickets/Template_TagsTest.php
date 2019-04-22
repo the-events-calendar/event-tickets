@@ -24,18 +24,52 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
+	/**
+	 * Wrapper function to create RSVPs
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id
+	 * @param int $capacity
+	 * @param int $stock
+	 *
+	 * @return int $ticket_id
+	 */
 	protected function make_sales_rsvp( $event_id, $capacity, $stock = false ) {
 		$ticket_id = $this->make_ticket( $event_id, 'tribe_rsvp_tickets', $capacity, $stock );
 
 		return $ticket_id;
 	}
 
+	/**
+	 * Wrapper function to create tribe-commerce tickets
+	 *
+	 * @since TBD
+	 *
+	 * @param int $event_id
+	 * @param int $capacity
+	 * @param int $price
+	 * @param int $stock
+	 *
+	 * @return int $ticket_id
+	 */
 	protected function make_sales_ticket( $event_id, $capacity, $price, $stock = false ) {
 		$ticket_id = $this->make_ticket( $event_id, 'tribe_tpp_tickets', $capacity, $stock, $price );
 
 		return $ticket_id;
 	}
 
+	/**
+	 * Create a ticket attached to an event
+	 *
+	 * @param int $event_id
+	 * @param string $ticket_type
+	 * @param int $capacity
+	 * @param int $stock
+	 * @param int $price
+	 *
+	 * @return int $ticket_id
+	 */
 	protected function make_ticket( $event_id, $ticket_type, $capacity, $stock, $price = false ) {
 		// set stock to capacity if not passed
 		$stock = ( false === $stock ) ? $capacity : $stock;
