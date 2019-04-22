@@ -136,6 +136,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Tidy attendee list print styles [125299]
 * Fix - Use trbe.context->doing_cron to avoid issues with WordPress versions before 4.8 [26111]
 * Fix - Prevent PHP notices when looking for a template that does not exist in `tribe_tickets_get_template_part()` (props @stian-overasen) [125913]
+* Language - 1 new strings added, 46 updated, 0 fuzzied, and 1 obsoleted
 
 = [4.10.3] 2019-04-17 =
 
