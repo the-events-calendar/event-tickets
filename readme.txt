@@ -130,11 +130,11 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Added filters: `tribe_attendee_registration_form_no_provider_class`, `tribe_attendee_registration_form_classes`, `tribe_attendee_registration_form_class`
 * Tweak - Changed views: `blocks/rsvp/form/quantity`, `blocks/rsvp/icon-svg`, `blocks/rsvp/status/going-icon`, `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going-icon`, `blocks/rsvp/status/not-going`, `registration/content`
 * Fix - Change RSVP import identifier in CSV importer so it provides the correct response message [124052]
-* Fix - Filter the attendee registration display to only show tickets for the current provider. Add provider to attendee registration url [122317]
+* Fix - Filter the Attendee Registration display to only show tickets for the current provider and add provider to Attendee Registration URL [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
 * Fix - Tidy attendee list print styles [125299]
-* Fix - Use trbe.context->doing_cron to avoid issues with WordPress verions before 4.8 [26111]
+* Fix - Use trbe.context->doing_cron to avoid issues with WordPress versions before 4.8 [26111]
 * Fix - Prevent PHP notices when looking for a template that does not exist in `tribe_tickets_get_template_part()` (props @stian-overasen) [125913]
 
 = [4.10.3] 2019-04-17 =
