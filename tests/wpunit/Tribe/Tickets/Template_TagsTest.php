@@ -621,4 +621,86 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertEquals( $event_id, $found_event->ID );
 	}
 
+	/**
+	 * @test
+	 * it should return false when event has no tickets
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_events_has_tickets_on_sale
+	 */
+	public function it_should_return_false_when_event_has_no_tickets() {
+		$event_id     = $this->factory()->event->create();
+
+		$on_sale = tribe_events_has_tickets_on_sale( $event_id );
+
+		$this->assertFalse( $on_sale, 'No tickets shold return false on check for tickets on sale' );
+	}
+
+	/**
+	 * @test
+	 * rsvps and tickets with no date are on sale
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_events_ticket_is_on_sale
+	 */
+	public function rsvps_and_tickets_with_no_date_are_on_sale(){
+		$event_id     = $this->factory()->event->create();
+		$rsvp_id      = $this->make_sales_rsvp( $event_id, 5 );
+		$rsvp_on_sale = tribe_events_ticket_is_on_sale( tribe( 'tickets.rsvp' )->get_ticket( $event_id, $rsvp_id ) );
+
+		$this->assertTrue( $rsvp_on_sale, 'RSVP with no date should show as on sale' );
+
+		$ticket_id      = $this->make_sales_ticket( $event_id, 5, 1 );
+		$ticket_on_sale = tribe_events_ticket_is_on_sale( tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id ) );
+
+		$this->assertTrue( $ticket_on_sale, 'Ticket with no date should show as on sale' );
+	}
+
+	/**
+	 * @test
+	 * rsvps and tickets with future end dates are on sale
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_events_ticket_is_on_sale
+	 */
+	public function rsvps_and_tickets_with_future_end_date_are_on_sale(){
+		$event_id     = $this->factory()->event->create();
+		$rsvp_id      = $this->make_sales_rsvp( $event_id, 5 );
+		update_post_meta( $rsvp_id, '_ticket_end_date', date( 'Y-m-d H:i:s', strtotime( '+10 days' ) ) );
+		$rsvp_on_sale = tribe_events_ticket_is_on_sale( tribe( 'tickets.rsvp' )->get_ticket( $event_id, $rsvp_id ) );
+
+		$this->assertTrue( $rsvp_on_sale, 'RSVP with future end date should show as on sale' );
+
+		$ticket_id      = $this->make_sales_ticket( $event_id, 5, 1 );
+		update_post_meta( $ticket_id, '_ticket_end_date', date( 'Y-m-d H:i:s', strtotime( '+10 days' ) ) );
+		$ticket_on_sale = tribe_events_ticket_is_on_sale( tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id ) );
+
+		$this->assertTrue( $ticket_on_sale, 'Ticket with with future end date should show as on sale' );
+	}
+
+	/**
+	 * @test
+	 * rsvps and tickets with past end dates are not on sale
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_events_ticket_is_on_sale
+	 */
+	public function rsvps_and_tickets_with_past_end_date_are_not_on_sale(){
+		$event_id     = $this->factory()->event->create();
+		$rsvp_id      = $this->make_sales_rsvp( $event_id, 5 );
+		update_post_meta( $rsvp_id, '_ticket_end_date', date( 'Y-m-d H:i:s', strtotime( '-10 days' ) ) );
+		$rsvp_on_sale = tribe_events_ticket_is_on_sale( tribe( 'tickets.rsvp' )->get_ticket( $event_id, $rsvp_id ) );
+
+		$this->assertFalse( $rsvp_on_sale, 'RSVP with past end date should show as not on sale' );
+
+		$ticket_id      = $this->make_sales_ticket( $event_id, 5, 1 );
+		update_post_meta( $ticket_id, '_ticket_end_date', date( 'Y-m-d H:i:s', strtotime( '-10 days' ) ) );
+		$ticket_on_sale = tribe_events_ticket_is_on_sale( tribe( 'tickets.commerce.paypal' )->get_ticket( $event_id, $ticket_id ) );
+
+		$this->assertFalse( $ticket_on_sale, 'Ticket with with past end date should show as not on sale' );
+	}
 }
