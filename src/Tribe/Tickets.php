@@ -967,13 +967,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param int   $post_id ID of parent "event" post.
-		 * @param array $args    List of arguments to filter attendees by.
+		 * @param int $post_id ID of parent "event" post.
 		 *
-		 * @return array
+		 * @return array List of attendees.
 		 */
-		public static function get_event_attendees( $post_id, $args = [] ) {
-			$attendees = array();
+		public static function get_event_attendees( $post_id ) {
+			$attendees = [];
 
 			/**
 			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
@@ -981,11 +980,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * @since 4.9
 			 * @since TBD Added $args parameter.
 			 *
-			 * @param bool  $skip_empty_post If the empty post should be skipped or not
-			 * @param int   $post_id         ID of the post being affected
-			 * @param array $args            List of arguments to filter attendees by.
+			 * @param bool $skip_empty_post If the empty post should be skipped or not
+			 * @param int  $post_id         ID of the post being affected
 			 */
-			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id, $args );
+			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id );
 
 			/**
 			 * Process an attendee only if:
@@ -1005,13 +1003,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning a falsy value here will force a refetch each time.
 				 *
 				 * @since 4.7
-				 * @since TBD Added $args parameter.
 				 *
-				 * @param int   $admin_expire The cache expiration in seconds; defaults to 2 minutes.
-				 * @param int   $post_id      The ID of the post attendees are being fetched for.
-				 * @param array $args         List of arguments to filter attendees by.
+				 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
+				 * @param int $post_id      The ID of the post attendees are being fetched for.
 				 */
-				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id, $args );
+				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
 
 				/**
 				 * Filters the cache expiration when this function is called from a non admin screen.
@@ -1019,19 +1015,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning a falsy value here will force a refetch each time.
 				 *
 				 * @since 4.7
-				 * @since TBD Added $args parameter.
 				 *
-				 * @param int   $admin_expire The cache expiration in seconds, defaults to an hour.
-				 * @param int   $post_id      The ID of the post attendees are being fetched for.
-				 * @param array $args         List of arguments to filter attendees by.
+				 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
+				 * @param int $post_id      The ID of the post attendees are being fetched for.
 				 */
-				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS, $post_id, $args );
+				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS, $post_id );
 
 				$expire = is_admin() ? (int) $admin_expire : (int) $expire;
 
 				$attendees_from_cache = false;
 
-				if ( 0 !== $expire && ! $args ) {
+				$post_transient = null;
+
+				if ( 0 !== $expire ) {
 					$post_transient = tribe( 'post-transient' );
 
 					$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
@@ -1046,28 +1042,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				// if we haven't grabbed attendees from cache, then attempt to fetch attendees
 				if ( false === $attendees_from_cache && empty( $attendees ) ) {
-					/** @var Tribe__Tickets__Attendee_Repository $repository */
-					$repository = tribe_attendees();
+					$attendee_data = self::get_event_attendees_by_args( $post_id );
 
-					$repository->by( 'event', $post_id );
-
-					if ( ! empty( $args['by'] ) ) {
-						foreach ( $args['by'] as $by => $by_args ) {
-							$by_args = (array) $by_args;
-
-							if ( is_string( $by ) ) {
-								array_unshift( $by_args, $by );
-							}
-
-							call_user_func_array( [ $repository, 'by' ], $by_args );
-						}
+					if ( ! empty( $attendee_data['attendees'] ) ) {
+						$attendees = $attendee_data['attendees'];
 					}
 
-					$attendee_posts = $repository->all();
-
-					$attendees = self::get_attendees_from_modules( $attendee_posts, $post_id );
-
-					if ( 0 !== $expire && ! $args ) {
+					if ( 0 !== $expire ) {
 						$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
 					}
 				}
@@ -1077,13 +1058,87 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Filters the return data for event attendees.
 			 *
 			 * @since 4.4
-			 * @since TBD Added $args parameter.
 			 *
 			 * @param array $attendees Array of event attendees.
 			 * @param int   $post_id   Event post ID.
-			 * @param array $args      List of arguments to filter attendees by.
 			 */
-			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id, $args );
+			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id );
+		}
+
+		/**
+		 * Returns all the attendees for an event with filtered by arguments. Queries all registered providers.
+		 *
+		 * @since TBD
+		 *
+		 * @static
+		 *
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args {
+		 *      List of arguments to filter attendees by.
+		 *
+		 *      @type boolean $return_total_found Whether to return total_found count in an array along with list of
+		 *                                        attendees. Default is off.
+		 *      @type int     $page               Page number of attendees to return. Default is page 1.
+		 *      @type int     $per_page           How many attendees to return per page. Default is all.
+		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                                        [[what,args...]] format.
+		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 *
+		 * @return array List of attendees and total_found.
+		 */
+		public static function get_event_attendees_by_args( $post_id, $args = [] ) {
+			$attendee_data = [
+				'total_found' => 0,
+				'attendees'   => [],
+			];
+
+			if ( empty( $post_id ) ) {
+				return $attendee_data;
+			}
+
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			// Limit by post ID.
+			$repository->by( 'event', $post_id );
+
+			// Handle filtering.
+			if ( ! empty( $args['by'] ) ) {
+				foreach ( $args['by'] as $by => $by_args ) {
+					$by_args = (array) $by_args;
+
+					if ( is_string( $by ) ) {
+						array_unshift( $by_args, $by );
+					}
+
+					call_user_func_array( [ $repository, 'by' ], $by_args );
+				}
+			}
+
+			// Handle multi filtering.
+			if ( ! empty( $args['where_multi'] ) ) {
+				foreach ( $args['where_multi'] as $where_multi_args ) {
+					call_user_func_array( [ $repository, 'where_multi' ], $where_multi_args );
+				}
+			}
+
+			// Set current page.
+			if ( ! empty( $args['page'] ) ) {
+				$repository->page( absint( $args['page'] ) );
+			}
+
+			// Limit results per page.
+			if ( ! empty( $args['per_page'] ) ) {
+				$repository->per_page( absint( $args['per_page'] ) );
+			}
+
+			$attendee_posts = $repository->all();
+
+			$attendee_data['total_found'] = $repository->found();
+			$attendee_data['attendees']   = self::get_attendees_from_modules( $attendee_posts, $post_id );
+
+			return $attendee_data;
 		}
 
 		/**
@@ -1225,12 +1280,15 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
 			$args = [
-				'by' => [
+				'by'       => [
 					'checkedin' => true,
 				],
+				'per_page' => 1,
 			];
 
-			return count( self::get_event_attendees( $post_id, $args ) );
+			$attendee_data = self::get_event_attendees_by_args( $post_id, $args );
+
+			return $attendee_data['total_found'];
 		}
 
 		// end Attendees
