@@ -703,4 +703,69 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertFalse( $ticket_on_sale, 'Ticket with with past end date should show as not on sale' );
 	}
+
+	/**
+	 * @test
+	 * it should return true for event post type by default
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_tickets_resource_url
+	 */
+	public function it_should_return_true_for_event_post_type_by_default() {
+		$event_enabled = tribe_tickets_post_type_enabled( 'tribe_events' );
+
+		$this->assertTrue( $event_enabled );
+	}
+
+	/**
+	 * @test
+	 * it should return true for post types we set
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_tickets_resource_url
+	 */
+	public function it_should_return_true_for_post_types_we_set() {
+		tribe_update_option( 'ticket-enabled-post-types', [
+			'tribe_events',
+			'post',
+		] );
+
+		$event_enabled = tribe_tickets_post_type_enabled( 'post' );
+
+		$this->assertTrue( $event_enabled );
+	}
+
+	/**
+	 * @test
+	 * it should return the event for an rsvp
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_tickets_get_event_ids
+	 */
+	public function it_should_return_the_event_for_an_rsvp() {
+		$event_id       = $this->factory()->event->create();
+		$rsvp_id        = $this->make_sales_rsvp( $event_id, 5 );
+		$test_event_ids = tribe_tickets_get_event_ids( $rsvp_id );
+
+		$this->assertContains( $event_id, $test_event_ids );
+	}
+
+	/**
+	 * @test
+	 * it should return the event for a tribe-commerce ticket
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_tickets_get_event_ids
+	 */
+	public function it_should_return_the_event_for_a_tribe_commerce_ticket() {
+		$event_id       = $this->factory()->event->create();
+		$ticket_id      = $this->make_sales_ticket( $event_id, 5, 1 );
+		$test_event_ids = tribe_tickets_get_event_ids( $ticket_id );
+
+		$this->assertContains( $event_id, $test_event_ids );
+	}
 }
