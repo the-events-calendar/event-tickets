@@ -843,8 +843,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should get capacity from an rsvp
 	 *
-	 * @since TBD
-	 *
 	 * @covers tribe_tickets_get_capacity
 	 */
 	public function it_should_get_capacity_from_an_rsvp() {
@@ -865,8 +863,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should get capacity from a ticket
-	 *
-	 * @since TBD
 	 *
 	 * @covers tribe_tickets_get_capacity
 	 */
