@@ -209,7 +209,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			if ( ! $data['available'] ) {
 				$parts[ $type . '-stock' ] = '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
 
-				// Only re-aply if we don't have a stock yet
+				// Only re-apply if we don't have a stock yet
 				if ( empty( $html['stock'] ) ) {
 					$html['stock'] = $parts[ $type . '-stock' ];
 				}
@@ -748,11 +748,11 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 }
 
 /**
- * Updates a given Object Capacity
+ * Removes all meta for a given Object capacity
  *
  * @since  4.6.2
  *
- * @param  int  $object  Post We are trying to save capacity
+ * @param  int  $object  Post We are trying to delete capacity from
  *
  * @return int|false
  */
@@ -792,7 +792,7 @@ function tribe_tickets_delete_capacity( $object ) {
  * @since  4.6.2
  *
  * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
- * @param  int  $capacty  How much we are trying to update the capacity to
+ * @param  int  $capacity  How much we are trying to update the capacity to
  *
  * @return int|false
  */
@@ -884,7 +884,7 @@ function tribe_tickets_get_capacity( $post ) {
  *
  * @since  4.6
  *
- * @param  string|int $number Which you are tring to convert
+ * @param  string|int $number Which you are trying to convert
  * @param  string     $mode   Mode this post is on
  *
  * @return string
