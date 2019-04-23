@@ -11,6 +11,7 @@ abstract class Tribe__Tickets__Status__Abstract {
 
 	public $name                = '';
 	public $provider_name       = '';
+	public $additional_names    = [];
 	public $post_type           = '';
 	public $incomplete          = false;
 	public $warning             = false;

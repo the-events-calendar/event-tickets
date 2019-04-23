@@ -117,6 +117,25 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TSM] TBD =
+
+* Feature - Add tooltips to Attendee Report page [120856]
+* Feature - Add tooltip to explain what statues are behind Pending Order Completion [120862]
+* Feature - Add tooltip to explain the Available Count Per Ticket [120862]
+* Feature - Add tooltips to explain the sold & available amounts in the ticket block [121992]
+* Tweak - Add method to get all possible names of the completed status by Commerce [122458]
+* Tweak - Change success message for ticket move [102635]
+* Tweak - Ticket Attendee and Order Page Header css by changing overflow to visible [120862]
+* Tweak - Update status manage to accept provider names or abbreviations [120862]
+* Tweak - In the Ticket Block add link to EDD Orders Page [121440]
+* Tweak - Change "Attendee Registration" to "Attendee Information" in several locations [126038]
+* Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
+* Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
+* Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
+* Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
+* Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
+* Fix - Correct escaping on attendee registration shortcode [125964]
+
 = [4.10.4] 2019-04-23 =
 
 * Tweak - Changed minimum supported version of The Events Calendar to 4.9

@@ -463,8 +463,8 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		wp_send_json_success( array(
 			'message' => sprintf(
 				_n(
-					'%1$d attendee for %2$s was successfully %3$s. Please adjust capacity and stock manually as needed. This attendee will receive an email notifying them of the change.',
-					'%1$d attendees for %2$s were successfully %3$s. Please adjust capacity and stock manually as needed. These attendees will receive an email notifying them of the change.',
+					'%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. This attendee will receive an email notifying them of the change.',
+					'%1$d attendees for %2$s were successfully %3$s. By default, we adjust capacity and stock, however, we recommend reviewing each as needed to ensure numbers are correct. These attendees will receive an email notifying them of the change.',
 					$moved_tickets,
 					'event-tickets'
 				),
@@ -529,9 +529,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		}
 
 		foreach ( $ticket_objects as $ticket ) {
-			$ticket_id = $ticket['attendee_id'];
-			$product_id = $ticket['product_id'];
+			$ticket_id          = $ticket['attendee_id'];
+			$product_id         = $ticket['product_id'];
 			$src_ticket_type_id = get_post_meta( $ticket_id, $ticket_type_key, true );
+			$src_qty_sold       = (int) get_post_meta( $src_ticket_type_id, 'total_sales', true );
+			$tgt_qty_sold       = (int) get_post_meta( $tgt_ticket_type_id, 'total_sales', true );
 
 			/**
 			 * Fires immediately before a ticket is moved.
@@ -578,6 +580,12 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 			update_post_meta( $ticket_id, $ticket_type_key, $tgt_ticket_type_id );
 			update_post_meta( $ticket_id, $ticket_event_key, $tgt_event_id );
+
+			// adjust sales numbers - don't allow negatives
+			$src_qty_sold--;
+			$tgt_qty_sold++;
+			update_post_meta( $src_ticket_type_id, 'total_sales', $src_qty_sold );
+			update_post_meta( $tgt_ticket_type_id, 'total_sales', $tgt_qty_sold );
 
 			$history_message = sprintf(
 				__( 'This ticket was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),

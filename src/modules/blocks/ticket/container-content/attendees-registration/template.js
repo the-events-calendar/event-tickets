@@ -32,11 +32,11 @@ const AttendeesRegistration = ( {
 
 	return (
 		<ARElement
-			helperText={ __( 'Save your ticket to enable attendee registration fields', 'event-tickets' ) }
+			helperText={ __( 'Save your ticket to enable attendee information fields', 'event-tickets' ) }
 			iframeURL={ attendeeRegistrationURL }
 			isDisabled={ isDisabled }
 			isModalOpen={ isModalOpen }
-			label={ __( 'Attendee Registration', 'event-tickets' ) }
+			label={ __( 'Attendee Information', 'event-tickets' ) }
 			linkText={ linkText }
 			modalTitle={ __( 'Attendee Information', 'event-tickets' ) }
 			onClick={ onClick }
