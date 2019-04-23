@@ -2863,7 +2863,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Add our class to the list of classes for the attendee registartion form
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param array $classes existing array of classes
 	 *

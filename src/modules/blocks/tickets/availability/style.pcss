@@ -21,9 +21,16 @@
 
 .tribe-editor__tickets__availability-label--available {
 
-	&:after {
-		content: '|';
-		padding-left: 15px;
-		padding-right: 15px;
+	+ .dashicons-info {
+		margin-right: 25px;
+		position: relative;
+
+		&:after {
+			content: '|';
+			padding-left: 10px;
+			padding-right: 10px;
+			position: absolute;
+			top: -2px;
+		}
 	}
 }
