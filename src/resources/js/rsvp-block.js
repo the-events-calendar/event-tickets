@@ -138,7 +138,7 @@ var tribe_tickets_rsvp_block = {
 	/**
 	 * Handles the input focus event
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param {event} e input event
 	 */
