@@ -2,20 +2,20 @@
 /**
  * Registers Event Tickets ORM classes.
  *
- * @since TBD
+ * @since 4.10.4
  */
 
 /**
  * Class Tribe__Tickets__Service_Providers__ORM
  *
- * @since TBD
+ * @since 4.10.4
  */
 class Tribe__Tickets__Service_Providers__ORM extends tad_DI52_ServiceProvider {
 
 	/**
 	 * Binds and sets up implementations.
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 */
 	public function register() {
 		// Repositories, not bound as singleton to allow for decoration and injection.
@@ -34,7 +34,7 @@ class Tribe__Tickets__Service_Providers__ORM extends tad_DI52_ServiceProvider {
 	 * Filters the event repository map to replace the base Event repository with the
 	 * tickets decorator.
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param array $map The repository map to filter.
 	 *

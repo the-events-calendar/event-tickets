@@ -146,7 +146,7 @@ class Tribe__Tickets__Attendee_Registration__Main {
 	/**
 	 * Get the Attendee Registration page object in a backwards compatible way with slug / ID options.
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @return WP_Post|null The Attendee Registration page object if found, null if not found.
 	 */

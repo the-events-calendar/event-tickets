@@ -156,7 +156,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 	/**
 	 * Given a provider, get the class to be applied to the attendee registration form
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param string $provider the provider/attendee object name indicating ticket porovider
 	 *
@@ -169,7 +169,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			/**
 			 * Allows filterting the class before returning it in the case of no provider.
 			 *
-			 * @since TBD
+			 * @since 4.10.4
 			 *
 			 * @param string $class The (empty) class string.
 			 */
@@ -179,7 +179,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		/**
 		 * Allow providers to include their own strings/suffixes.
 		 *
-		 * @since TBD
+		 * @since 4.10.4
 		 *
 		 * @param array $provider_classes in format $provider -> class suffix.
 		 */
@@ -192,7 +192,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 		/**
 		 * Allows filterting the class before returning it.
 		 *
-		 * @since TBD
+		 * @since 4.10.4
 		 *
 		 * @param string $class The class string.
 		 */
