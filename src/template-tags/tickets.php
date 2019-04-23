@@ -445,7 +445,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = _x( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
+			$sold_label = _x( "RSVP'd Going", 'separate going and remain RSVPs', 'event-tickets' );
 		}
 
 		// Base message
@@ -748,11 +748,15 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 }
 
 /**
- * Removes all meta for a given Object capacity
+ * Removes all meta for a given object capacity
+ * object can be a ticket, or an event/post with tickets
+ *
+ * Note, you can pass an event/post to this function and it will merrily change the meta values
+ * for the event - not fot the tickets!
  *
  * @since  4.6.2
  *
- * @param  int  $object  Post We are trying to delete capacity from
+ * @param  int|WP_Post  $object  WP_Post (or ID of post) We are trying to delete capacity from
  *
  * @return int|false
  */
@@ -789,6 +793,9 @@ function tribe_tickets_delete_capacity( $object ) {
 /**
  * Updates a given Object Capacity
  *
+ * Note, you can pass an event/post to this function and it will merrily change the meta values
+ * for the event - not fot the tickets!
+ *
  * @since  4.6.2
  *
  * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
@@ -814,11 +821,11 @@ function tribe_tickets_update_capacity( $object, $capacity ) {
 }
 
 /**
- * Returns the capacity for a given Post
+ * Returns the capacity for a given Ticket
  *
  * @since  4.6
  *
- * @param  int  $post  Post We are trying to fetch capacity
+ * @param  int $post Ticket We are trying to fetch capacity for
  *
  * @return int|null
  */
