@@ -46,8 +46,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it not should allow tickets on posts by default
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_post_type_enabled()
 	 */
 	public function it_should_not_allow_tickets_on_posts_by_default() {
@@ -59,8 +57,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should allow tickets on posts when enabled
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_post_type_enabled()
 	 */
@@ -79,8 +75,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the post id - events support tickets by default
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_parent_post()
 	 */
 	public function it_should_return_the_post_id_events_support_tickets_by_default() {
@@ -93,8 +87,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return the non event post id if it supports tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_parent_post()
 	 */
@@ -114,8 +106,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return null if it does not supports tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_parent_post()
 	 */
 	public function it_should_return_null_if_it_does_not_supports_tickets() {
@@ -133,8 +123,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true if event has tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_tickets()
 	 */
 	public function it_should_return_true_if_event_has_rsvps() {
@@ -149,8 +137,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true if event has tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_has_tickets()
 	 */
@@ -171,8 +157,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true if non-event post has tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_has_tickets()
 	 */
@@ -195,8 +179,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false if event has no tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_tickets()
 	 */
 	public function it_should_return_false_if_event_has_no_tickets() {
@@ -209,8 +191,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return correct number of tickets on sold out event
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
@@ -235,8 +215,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return correct number of tickets on event with no sales
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
 	public function it_should_return_correct_number_of_rsvps_on_event_with_no_sales() {
@@ -256,8 +234,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return correct number of tickets on event with some sales
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
@@ -281,8 +257,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return correct number of tickets on event with multiple tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
@@ -314,8 +288,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return correct number of tickets on event with mixed tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
 	public function it_should_return_correct_number_of_tickets_on_event_with_mixed_tickets() {
@@ -346,8 +318,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true if event has unlimited rsvps
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_unlimited_stock_tickets()
 	 */
 	public function it_should_return_true_if_event_has_unlimited_rsvps() {
@@ -367,8 +337,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true if event has unlimited tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_has_unlimited_stock_tickets()
 	 */
@@ -390,8 +358,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false if event has no unlimited rsvps
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_unlimited_stock_tickets()
 	 */
 	public function it_should_return_false_if_event_has_no_unlimited_tickets() {
@@ -410,8 +376,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true when event is sold out
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_has_soldout
 	 */
@@ -444,8 +408,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when rsvp is not sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_soldout
 	 */
 	public function it_should_return_false_when_rsvp_is_not_sold_out() {
@@ -467,8 +429,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when ticket is not sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_soldout
 	 */
 	public function it_should_return_false_when_ticket_is_not_sold_out() {
@@ -489,8 +449,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return false when event is sold out
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_partially_soldout
 	 */
@@ -524,8 +482,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when no tickets are sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_partially_soldout
 	 */
 	public function it_should_return_false_when_no_tickets_are_sold_out() {
@@ -551,8 +507,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true when rsvp is sold out
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_partially_soldout
 	 */
@@ -585,8 +539,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true when ticket is sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_partially_soldout
 	 */
 	public function it_should_return_true_when_ticket_is_sold_out() {
@@ -617,8 +569,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the correct number of rsvps
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_count_available_tickets
 	 */
 	public function it_should_return_the_correct_number_of_rsvps() {
@@ -641,8 +591,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should properlyu detect an rsvp as a ticket
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_product_is_ticket
 	 */
 	public function it_should_properlyu_detect_an_rsvp_as_a_ticket() {
@@ -657,8 +605,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should properly detect a tribe-commerce ticket as a ticket
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_product_is_ticket
 	 */
 	public function it_should_properly_detect_a_tribe_commerce_ticket_as_a_ticket() {
@@ -672,8 +618,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should find the event for an rsvp
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_get_ticket_event
 	 */
@@ -690,8 +634,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should find the event for a ticket
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_get_ticket_event
 	 */
 	public function it_should_find_the_event_for_a_ticket() {
@@ -707,8 +649,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when event has no tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_tickets_on_sale
 	 */
 	public function it_should_return_false_when_event_has_no_tickets() {
@@ -722,8 +662,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * rsvps and tickets with no date are on sale
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_ticket_is_on_sale
 	 */
@@ -743,8 +681,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * rsvps and tickets with future end dates are on sale
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_ticket_is_on_sale
 	 */
@@ -766,8 +702,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * rsvps and tickets with past end dates are not on sale
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_ticket_is_on_sale
 	 */
@@ -794,8 +728,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true for event post type by default
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_resource_url
 	 */
 	public function it_should_return_true_for_event_post_type_by_default() {
@@ -807,8 +739,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true for post types we set
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_resource_url
 	 */
@@ -827,8 +757,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the event for an rsvp
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_get_event_ids
 	 */
 	public function it_should_return_the_event_for_an_rsvp() {
@@ -841,8 +769,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return the event for a tribe-commerce ticket
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_get_event_ids
 	 */
@@ -861,8 +787,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return the correct providers
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_get_ticket_provider
 	 */
@@ -886,8 +810,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should get the correct number of rsvp attendees
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_get_attendees
 	 */
 	public function it_should_get_the_correct_number_of_rsvp_attendees() {
@@ -903,8 +825,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should get the correct number of ticket attendees
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_get_attendees
 	 */
