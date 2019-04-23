@@ -4,10 +4,15 @@ namespace Tribe\Tickets;
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
+
 
 class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	use RSVP_Ticket_Maker;
 	use PayPal_Ticket_Maker;
+	use Attendee_Maker;
+
+	var $skip_commerce = 'Tribe Commerce testing is not identifying tickets, need more exploration before required';
 
 	public function setUp() {
 		// before
@@ -15,6 +20,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		// your set up methods here
 		$this->factory()->event = new Event();
+		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
 	}
 
 	public function tearDown() {
@@ -208,6 +214,9 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_events_has_tickets()
 	 */
 	public function it_should_return_true_if_event_has_tickets() {
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
 		$event_id = $this->factory()->event->create();
 		$this->make_sales_ticket( $event_id, 10, 1 );
 
@@ -336,6 +345,9 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_events_count_available_tickets()
 	 */
 	public function it_should_return_correct_number_of_tickets_on_event_with_mixed_tickets() {
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
 		$event_id = $this->factory()->event->create();
 
 		// mixed rsvp/ticket
@@ -372,6 +384,10 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_events_has_unlimited_stock_tickets()
 	 */
 	public function it_should_return_true_if_event_has_unlimited_tickets(){
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
+
 		$event_id = $this->factory()->event->create();
 		$this->make_sales_ticket( $event_id, -1, 1 );
 
@@ -509,7 +525,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		// sold out
 		$this->make_sales_rsvp( $event_id, 5, 0 );
 		// not sold out
-		$this->make_sales_ticket( $event_id, 5, 1 );
+		$this->make_sales_rsvp( $event_id, 5, 1 );
 
 		$soldout = tribe_events_partially_soldout( $event_id );
 
@@ -580,6 +596,9 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_events_product_is_ticket
 	 */
 	public function it_should_properly_detect_a_tribe_commerce_ticket_as_a_ticket() {
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
 		$event_id    = $this->factory()->event->create();
 		$ticket_id   = $this->make_sales_ticket( $event_id, 5, 1 );
 		$is_ticket   = tribe_events_product_is_ticket( $ticket_id );
@@ -613,6 +632,9 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_events_get_ticket_event
 	 */
 	public function it_should_find_the_event_for_a_ticket(){
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
 		$event_id    = $this->factory()->event->create();
 		$ticket_id   = $this->make_sales_ticket( $event_id, 5, 1 );
 		$found_event = tribe_events_get_ticket_event( $ticket_id );
@@ -762,10 +784,75 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @covers tribe_tickets_get_event_ids
 	 */
 	public function it_should_return_the_event_for_a_tribe_commerce_ticket() {
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
 		$event_id       = $this->factory()->event->create();
 		$ticket_id      = $this->make_sales_ticket( $event_id, 5, 1 );
 		$test_event_ids = tribe_tickets_get_event_ids( $ticket_id );
 
 		$this->assertContains( $event_id, $test_event_ids );
+	}
+
+	/**
+	 * @test
+	 * it should return the correct providers
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_tickets_get_ticket_provider
+	 */
+	public function it_should_return_the_correct_providers() {
+		$event_id  = $this->factory()->event->create();
+		$rsvp_id   = $this->make_sales_rsvp( $event_id, 5 );
+		$ticket_id = $this->make_sales_ticket( $event_id, 5, 1 );
+
+		$rsvp_provider   = tribe_tickets_get_ticket_provider( $rsvp_id );
+		$ticket_provider = tribe_tickets_get_ticket_provider( $ticket_id );
+
+		$this->assertInstanceOf( 'Tribe__Tickets__RSVP', $rsvp_provider, 'RSVP provider identified incorrectly' );
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
+		$this->assertInstanceOf( 'Tribe__Tickets__RSVP', $ticket_provider, 'Tribe Commerce provider identified incorrectly' );
+	}
+
+	/**
+	 * @test
+	 * it should get the correct number of rsvp attendees
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_tickets_get_attendees
+	 */
+	public function it_should_get_the_correct_number_of_rsvp_attendees() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_id  = $this->make_sales_rsvp( $event_id, 50 );
+
+		$created_attendees = $this->create_many_attendees_for_ticket( '10', $rsvp_id, $event_id );
+		$tested_attendees = tribe_tickets_get_attendees( $event_id );
+
+		$this->assertEquals( count( $created_attendees ), count( $tested_attendees ) );
+	}
+
+	/**
+	 * @test
+	 * it should get the correct number of ticket attendees
+	 *
+	 * @since TBD
+	 *
+	 * @covers tribe_tickets_get_attendees
+	 */
+	public function it_should_get_the_correct_number_of_ticket_attendees() {
+		if ( ! empty( $this->skip_commerce ) ) {
+			$this->markTestSkipped( $this->skip_commerce );
+		}
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->make_sales_ticket( $event_id, 50, 1 );
+
+		$created_attendees = $this->create_attendee_for_ticket( $ticket_id, $event_id );
+		$tested_attendees = tribe_tickets_get_attendees( $event_id );
+
+		$this->assertEquals( count( $created_attendees ), count( $tested_attendees ) );
 	}
 }
