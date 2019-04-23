@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.4] 2019-04-22 =
+= [4.10.4] 2019-04-23 =
 
 * Tweak - Changed minimum supported version of The Events Calendar to 4.9
 * Tweak - Add function and hooks for provider classes added to the attendee registration form [124997]
@@ -135,7 +135,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
 * Fix - When moving an attendee prevent shared capacity from being enabled on the receiving event [120727]
 * Fix - Tidy attendee list print styles [125299]
-* Fix - Use trbe.context->doing_cron to avoid issues with WordPress versions before 4.8 [26111]
+* Fix - Use tribe.context->doing_cron to avoid issues with WordPress versions before 4.8 [26111]
 * Fix - Prevent PHP notices when looking for a template that does not exist in `tribe_tickets_get_template_part()` (props @stian-overasen) [125913]
 * Language - 1 new strings added, 46 updated, 0 fuzzied, and 1 obsoleted
 
