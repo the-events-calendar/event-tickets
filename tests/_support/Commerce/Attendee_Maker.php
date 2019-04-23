@@ -20,6 +20,10 @@ trait Attendee_Maker {
 	 * @return array An array of generated attendees post IDs.
 	 */
 	protected function create_many_attendees_for_ticket( int $count, int $ticket_id, int $post_id, array $overrides = [] ): array {
+		// If not set let's make sure to set an order ID to ensure all attendees will be part of the same order.
+		if ( ! isset( $overrides['order_id'] ) ) {
+			$overrides['order_id'] = md5( time() );
+		}
 
 		$attendes = [];
 
