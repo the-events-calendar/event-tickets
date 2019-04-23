@@ -57,11 +57,34 @@ export function hasPostTypeChannel() {
  * @returns {Function} Channel
  */
 export function createWPEditorSavingChannel() {
-	return eventChannel( emit => {
+	return eventChannel( ( emit ) => {
 		const wpEditor = wpSelect( 'core/editor' );
 
 		const predicates = [
 			() => wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost(),
+		];
+
+		// Returns unsubscribe function
+		return subscribe( () => {
+			// Only emit when truthy
+			if ( some( predicates, fn => fn() ) ) {
+				emit( true ); // Emitted value is insignificant here, but cannot be left undefined
+			}
+		} );
+	} );
+}
+
+/**
+ * Creates event channel subscribing to WP editor state when not saving post
+ *
+ * @returns {Function} Channel
+ */
+export function createWPEditorNotSavingChannel() {
+	return eventChannel( ( emit ) => {
+		const wpEditor = wpSelect( 'core/editor' );
+
+		const predicates = [
+			() => ! ( wpEditor.isSavingPost() && ! wpEditor.isAutosavingPost() ),
 		];
 
 		// Returns unsubscribe function

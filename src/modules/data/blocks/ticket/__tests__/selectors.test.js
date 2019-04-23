@@ -200,6 +200,10 @@ describe( 'Ticket block selectors', () => {
 			expect( selectors.getTicketIsLoading( state, ownProps ) ).toMatchSnapshot();
 		} );
 
+		test( 'getTicketIsModalOpen', () => {
+			expect( selectors.getTicketIsModalOpen( state, ownProps ) ).toMatchSnapshot();
+		} );
+
 		test( 'getTicketHasBeenCreated', () => {
 			expect( selectors.getTicketHasBeenCreated( state, ownProps ) ).toMatchSnapshot();
 		} );

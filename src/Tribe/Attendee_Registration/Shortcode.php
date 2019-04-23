@@ -9,7 +9,7 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 
 	public function hook() {
 		// block editor has a fit if we don't bail on the admin...don't really need them in other places?
-		if ( is_admin() || wp_doing_cron() || wp_doing_ajax() ) {
+		if ( is_admin() || wp_doing_ajax() || tribe( 'context' )->doing_cron() ) {
 			return;
 		}
 

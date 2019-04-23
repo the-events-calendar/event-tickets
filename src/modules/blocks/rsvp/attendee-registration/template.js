@@ -12,12 +12,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { LabelWithLink } from '@moderntribe/common/elements';
+import { AttendeesRegistration as ARElement } from '@moderntribe/tickets/elements';
 import './style.pcss';
-
-const helperText = __( 'Save your RSVP to enable attendee registration fields', 'event-tickets' );
-
-const label = __( 'Attendee Registration', 'event-tickets' );
 
 const linkTextAdd = __( '+ Add', 'event-tickets' );
 const linkTextEdit = __( 'Edit', 'event-tickets' );
@@ -27,32 +23,39 @@ const RSVPAttendeeRegistration = ( {
 	hasAttendeeInfoFields,
 	isCreated,
 	isDisabled,
+	isModalOpen,
+	onClick,
+	onClose,
+	onIframeLoad,
 } ) => {
 	const linkText = hasAttendeeInfoFields ? linkTextEdit : linkTextAdd;
 
 	return (
-		<div className="tribe-editor__rsvp__attendee-registration">
-			<LabelWithLink
-				className="tribe-editor__rsvp__attendee-registration-label-with-link"
-				label={ label }
-				linkDisabled={ isDisabled }
-				linkHref={ attendeeRegistrationURL }
-				linkText={ linkText }
-			/>
-			{ ! isCreated && (
-				<span className="tribe-editor__rsvp__attendee-registration-helper-text">
-					{ helperText }
-				</span>
-			) }
-		</div>
+		<ARElement
+			helperText={ __( 'Save your RSVP to enable attendee registration fields', 'event-tickets' ) }
+			iframeURL={ attendeeRegistrationURL }
+			isDisabled={ isDisabled }
+			isModalOpen={ isModalOpen }
+			label={ __( 'Attendee Registration', 'event-tickets' ) }
+			linkText={ linkText }
+			modalTitle={ __( 'Attendee Information', 'event-tickets' ) }
+			onClick={ onClick }
+			onClose={ onClose }
+			onIframeLoad={ onIframeLoad }
+			showHelperText={ ! isCreated }
+		/>
 	);
 };
 
 RSVPAttendeeRegistration.propTypes = {
-	attendeeRegistrationURL: PropTypes.string,
-	hasAttendeeInfoFields: PropTypes.bool,
-	isCreated: PropTypes.bool,
-	isDisabled: PropTypes.bool,
+	attendeeRegistrationURL: PropTypes.string.isRequired,
+	hasAttendeeInfoFields: PropTypes.bool.isRequired,
+	isCreated: PropTypes.bool.isRequired,
+	isDisabled: PropTypes.bool.isRequired,
+	isModalOpen: PropTypes.bool.isRequired,
+	onClick: PropTypes.func.isRequired,
+	onClose: PropTypes.func.isRequired,
+	onIframeLoad: PropTypes.func.isRequired,
 };
 
 export default RSVPAttendeeRegistration;

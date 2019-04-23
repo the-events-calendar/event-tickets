@@ -5,6 +5,10 @@ var tribe_tickets_rsvp_block = {
 ( function( $, my ) {
 	'use strict';
 
+	my.state = {
+		submitActive: true,
+	};
+
 	/**
 	 * Handle the "Going" and "Not Going" button toggle,
 	 * set them active and inactive so they can only use
@@ -22,9 +26,11 @@ var tribe_tickets_rsvp_block = {
 
 		// Add active classs to the current button
 		$button.addClass( 'tribe-active' );
+		$button.removeClass( 'tribe-inactive' );
 		$button.attr( 'disabled', 'disabled' );
 
 		// Remove the active class of the other button and disable it
+		$siblingEl.addClass( 'tribe-inactive' );
 		$siblingEl.removeClass( 'tribe-active' );
 		$siblingEl.removeAttr( 'disabled' );
 	};
@@ -41,7 +47,8 @@ var tribe_tickets_rsvp_block = {
 	 */
 	my.events.handle_rsvp_response = function() {
 		var $button   = $( this );
-		var $ticket   = $button.closest( '.tribe-block__rsvp__ticket' );
+		var $block    = $button.closest( '.tribe-block__rsvp' );
+		var $ticket   = $block.find( '.tribe-block__rsvp__ticket' );
 		var ticket_id = $ticket.data( 'rsvp-id' );
 		var going     = $button.hasClass( 'tribe-block__rsvp__status-button--going' );
 
@@ -62,11 +69,17 @@ var tribe_tickets_rsvp_block = {
 			TribeRsvp.ajaxurl,
 			params,
 			function( response ) {
+				$block.find( '.tribe-block__rsvp__message__success' ).remove();
 				var $form = $ticket.find( '.tribe-block__rsvp__form' );
 				$form.html( response.data.html );
 				if ( window.tribe_event_tickets_plus ) {
 					var $input = $form.find( 'input.tribe-tickets-quantity' );
 					window.tribe_event_tickets_plus.meta.block_set_quantity( $input, going );
+				}
+				if ( ! my.validate_submission( $form ) ) {
+					var $submit = $form.find( '.tribe-block__rsvp__submit-button' );
+					$submit.attr( 'disabled', true );
+					my.state.submitActive = false;
 				}
 				my.tribe_rsvp_loader_end( $ticket );
 			}
@@ -122,7 +135,19 @@ var tribe_tickets_rsvp_block = {
 		}
 	};
 
-
+	/**
+	 * Handles the input focus event
+	 *
+	 * @since 4.10.4
+	 *
+	 * @param {event} e input event
+	 */
+	my.events.handle_input_focus = function ( e ) {
+		if ( ! my.state.submitActive ) {
+			$( e.target ).siblings( '.tribe-block__rsvp__submit-button' ).attr( 'disabled', false );
+			my.state.submitActive = true;
+		}
+	};
 
 	/**
 	 * Show the loader
@@ -220,7 +245,8 @@ var tribe_tickets_rsvp_block = {
 
 					// Update templates
 					$ticket.find( '.tribe-block__rsvp__details .tribe-block__rsvp__availability' ).replaceWith( response.data.remaining_html );
-					$ticket.find( '.tribe-block__rsvp__form' ).html( response.data.html );
+					$ticket.find( '.tribe-block__rsvp__form' ).empty()
+					$ticket.closest( '.tribe-block__rsvp' ).append( response.data.html );
 
 					if ( 0 === remaining ) {
 						// If there are no more RSVPs remaining we update the status section
@@ -248,6 +274,11 @@ var tribe_tickets_rsvp_block = {
 				'click',
 				'.tribe-block__rsvp__number-input-button--minus, .tribe-block__rsvp__number-input-button--plus',
 				my.events.handle_quantity_change
+			)
+			.on(
+				'focus',
+				'.tribe-tickets-full-name, .tribe-tickets-email',
+				my.events.handle_input_focus
 			);
 	};
 

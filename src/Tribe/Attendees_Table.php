@@ -670,6 +670,24 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get the Event ID ( Post ID ) of the Current Attendees Table
+	 *
+	 * @since 4.10.4
+	 *
+	 * @return int $event_id the event or post id for the attendee table
+	 */
+	protected function get_post_id() {
+
+		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
+
+		//if not event_id try to use post_id
+		$event_id = empty( $event_id ) && isset( $_GET['post_id'] )  ? $_GET['post_id'] : $event_id;
+
+		return absint( $event_id );
+	}
+
+
+	/**
 	 * Process the checking-in of selected attendees from the Attendees table.
 	 */
 	protected function do_check_in() {
@@ -714,6 +732,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 	/**
 	 * Process the deletion of selected attendees from the Attendees table.
+	 *
+	 * @since 4.10.4 add redirect after completing action
+	 *
 	 */
 	protected function do_delete() {
 		$attendee_ids = $this->get_action_ids();
@@ -732,6 +753,17 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 			$addon->delete_ticket( null, $id );
 		}
+
+		// redirect after deleting attendees back to attendee url
+		$post = get_post( $this->get_post_id() );
+		if ( ! isset( $post->ID ) ) {
+			return false;
+		}
+
+		$redirect_url = tribe( 'tickets.attendees' )->get_report_link( $post );
+		wp_safe_redirect( $redirect_url );
+
+		exit;
 	}
 
 	/**
