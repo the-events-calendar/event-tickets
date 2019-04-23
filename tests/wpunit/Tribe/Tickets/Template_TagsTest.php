@@ -1087,4 +1087,52 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEquals( 'Unlimited', $capacity );
 	}
+
+	/**
+	 * @test
+	 * it should find meta fields for a ticket
+	 *
+	 * @covers tribe_tickets_has_meta_fields
+	 */
+	public function it_should_find_meta_fields_for_a_ticket() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'                   => 10,
+				'_tribe_tickets_meta_enabled' => true,
+				'_tribe_tickets_meta'         => 'a:1:{i:0;a:5:{s:4:"type";s:4:"text";s:8:"required";s:0:"";s:5:"label";s:0:"";s:4:"slug";s:0:"";s:5:"extra";a:0:{}}}',
+			],
+		] );
+		$rsvp_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'                   => 10,
+				'_tribe_tickets_meta_enabled' => true,
+				'_tribe_tickets_meta'         => 'a:1:{i:0;a:5:{s:4:"type";s:4:"text";s:8:"required";s:0:"";s:5:"label";s:0:"";s:4:"slug";s:0:"";s:5:"extra";a:0:{}}}',
+			],
+		] );
+
+		$ticket_meta = tribe_tickets_has_meta_fields( $ticket_id );
+		$rsvp_meta = tribe_tickets_has_meta_fields( $rsvp_id );
+
+		$this->assertTrue( $ticket_meta, 'Ticket meta not found' );
+		$this->assertTrue( $rsvp_meta, 'RSVP meta not found' );
+	}
+
+	/**
+	 * @test
+	 * it should not find meta fields for a ticket when there isn't any
+	 *
+	 * @covers tribe_tickets_has_meta_fields
+	 */
+	public function it_should_not_find_meta_fields_for_a_ticket_when_there_isnt_any() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1 );
+		$rsvp_id   = $this->create_rsvp_ticket( $event_id );
+
+		$ticket_meta = tribe_tickets_has_meta_fields( $ticket_id );
+		$rsvp_meta = tribe_tickets_has_meta_fields( $rsvp_id );
+
+		$this->assertFalse( $ticket_meta, 'Nonexistent ticket meta found' );
+		$this->assertFalse( $rsvp_meta, 'Nonexistent RSVP meta found' );
+	}
 }
