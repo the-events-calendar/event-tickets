@@ -14,7 +14,7 @@ if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
 	/**
 	 * Returns the current post object that can have tickets attached to it
 	 *
-	 * Optionally the post object or ID of a ticket post can be passed in and, again, the
+	 * Optionally the post object or ID of a ticketed post can be passed in and, again, the
 	 * parent (event) post object will be returned if possible
 	 *
 	 * @param int|WP_Post $data
