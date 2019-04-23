@@ -1,11 +1,17 @@
 <?php
+
 namespace Tribe\Tickets;
 
 use Prophecy\Argument;
 use Tribe__Tickets__RSVP as RSVP;
 use Tribe__Tickets__Tickets_View as Tickets_View;
+use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 
 class RSVPTest extends \Codeception\TestCase\WPTestCase {
+
+	use Attendee_Maker;
+	use RSVP_Ticket_Maker;
 
 	/**
 	 * @var Tickets_View
@@ -20,11 +26,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$this->tickets_view = new Tickets_View();
 
 		// let's avoid die()s
-		add_filter(
-			'tribe_exit', function () {
-				return [ $this, 'dont_die' ];
-			}
-		);
+		add_filter( 'tribe_exit', function () {
+			return [ $this, 'dont_die' ];
+		} );
 
 		// let's avoid confirmation emails
 		add_filter( 'tribe_tickets_rsvp_send_mail', '__return_false' );
@@ -42,7 +46,6 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// then
 		parent::tearDown();
 	}
-
 
 	/**
 	 * @test
@@ -73,7 +76,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->make_stock_ticket( 10, $post_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( ['order_status' => 'yes'] ) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
 
 		$this->assertEquals( 9, get_post_meta( $ticket_id, '_stock', true ) );
 	}
@@ -87,7 +90,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$ticket_id = $this->make_sales_ticket( 10, $post_id );
 
 		$sut = $this->make_instance();
-		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( ['order_status' => 'yes'] ) );
+		$sut->generate_tickets_for( $ticket_id, 1, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
 
 		$this->assertEquals( 11, get_post_meta( $ticket_id, 'total_sales', true ) );
 	}
@@ -127,15 +130,11 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * it should increase sales by the status stock size
 	 */
 	public function it_should_increase_sales_by_the_status_stock_size() {
-		add_filter(
-			'event_tickets_rsvp_options', function ( $options ) {
-			return array_merge(
-				$options, [
-					        'yes-plus-one' => [ 'label' => 'Yes plus one', 'decrease_stock_by' => 2 ],
-				        ]
-			);
-		}
-		);
+		add_filter( 'event_tickets_rsvp_options', function ( $options ) {
+			return array_merge( $options, [
+					'yes-plus-one' => [ 'label' => 'Yes plus one', 'decrease_stock_by' => 2 ],
+				] );
+		} );
 
 		$ticket_id = $this->setup_POST( 'yes-plus-one', 10 );
 
@@ -180,7 +179,6 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	public function it_should_increase_sales_by_1_when_attendee_status_changes_from_not_going_to_going() {
 		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( 'no', 'yes', 0, 10 );
 
-
 		$sut = $this->make_instance();
 		$sut->update_attendee_data( $data, $order_id, $post_id );
 
@@ -222,7 +220,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	 * it should update the sales according to old and new status stock sizes
 	 * @dataProvider stati_stocks_provider
 	 *
-	 * @since 4.7.4
+	 * @since        4.7.4
 	 */
 	public function it_should_update_the_sales_according_to_old_and_new_status_stock_sizes( $a_status_stock_size, $b_status_stock_size, $old_status, $new_status, $diff ) {
 		$stati = [
@@ -230,11 +228,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'b' => [ 'label' => 'b', 'decrease_stock_by' => $b_status_stock_size ],
 		];
 
-		add_filter(
-			'event_tickets_rsvp_options', function ( $options ) use ( $stati ) {
+		add_filter( 'event_tickets_rsvp_options', function ( $options ) use ( $stati ) {
 			return array_merge( $options, $stati );
-		}
-		);
+		} );
 
 		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( $old_status, $new_status, 10 );
 
@@ -255,11 +251,9 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 			'b' => [ 'label' => 'b', 'decrease_stock_by' => $b_status_stock_size ],
 		];
 
-		add_filter(
-			'event_tickets_rsvp_options', function ( $options ) use ( $stati ) {
+		add_filter( 'event_tickets_rsvp_options', function ( $options ) use ( $stati ) {
 			return array_merge( $options, $stati );
-		}
-		);
+		} );
 
 		list( $data, $ticket_id, $order_id, $post_id ) = $this->make_data( $old_status, $new_status, 0, 10 );
 
@@ -466,7 +460,7 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$_POST['attendee']              = [
 			'email'        => 'me@tri.be',
 			'full_name'    => 'Me',
-			'order_status' => $status
+			'order_status' => $status,
 		];
 		$post_id                        = $this->factory()->post->create();
 		$ticket_id                      = $this->make_sales_ticket( $sales, $post_id );
@@ -482,29 +476,6 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		// quantity_ID not relevant
 	}
 
-	protected function make_base_data( $sales = 0, $stock = 10 ) {
-		$post_id = $this->factory()->post->create();
-
-		$ticket_id = $this->factory()->post->create( [
-			'post_type'   => 'tribe_rsvp_tickets',
-			'post_status' => 'publish',
-			'meta_input'  => [
-				'total_sales'            => $sales,
-				'_tribe_rsvp_for_event'  => $post_id,
-				'_stock'                 => $stock,
-				'_tribe_ticket_capacity' => $stock + $sales,
-			],
-		] );
-
-		$user_id = $this->factory()->user->create();
-
-		return [
-			'post_id'   => $post_id,
-			'ticket_id' => $ticket_id,
-			'user_id'   => $user_id,
-		];
-	}
-
 	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {
 		$base_data = $this->make_base_data( $sales, $stock );
 
@@ -513,13 +484,11 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		$user_id   = $base_data['user_id'];
 
 		// mock the already placed order
-		$order_id = $this->factory()->post->create(
-			[
+		$order_id = $this->factory()->post->create( [
 				'meta_input' => [
 					RSVP::ATTENDEE_RSVP_KEY => $previous_status,
 				],
-			]
-		);
+			] );
 
 		// mock the current user
 		wp_set_current_user( $user_id );
@@ -552,28 +521,51 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 		return [ $data, $ticket_id, $order_id, $post_id ];
 	}
 
-	protected function make_sales_ticket( $sales, $post_id ) {
-		$ticket_id = $_POST['product_id'] = $this->factory()->post->create( [
-			'post_type'   => 'tribe_rsvp_tickets',
-			'post_status' => 'publish',
-			'meta_input'  => [
-				'total_sales'           => $sales,
-				'_tribe_rsvp_for_event' => $post_id,
+	protected function make_base_data( $sales = 0, $stock = 10 ) {
+		$post_id = $this->factory()->post->create();
+
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'total_sales' => $sales,
+				'_stock'      => $stock,
+				'_capacity'   => $stock + $sales,
 			],
 		] );
+
+		$user_id = $this->factory()->user->create();
+
+		return [
+			'post_id'   => $post_id,
+			'ticket_id' => $ticket_id,
+			'user_id'   => $user_id,
+		];
+	}
+
+	protected function make_sales_ticket( $sales, $post_id ) {
+		$stock = 10;
+
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'total_sales' => $sales,
+				'_capacity'   => $stock + $sales,
+				'_stock'      => $stock,
+			],
+		] );
+
+		$_POST['product_id'] = $ticket_id;
 
 		return $ticket_id;
 	}
 
 	protected function make_stock_ticket( $stock, $post_id ) {
-		$ticket_id = $_POST['product_id'] = $this->factory()->post->create( [
-			'post_type'   => 'tribe_rsvp_tickets',
-			'post_status' => 'publish',
-			'meta_input'  => [
-				'_stock'                => $stock,
-				'_tribe_rsvp_for_event' => $post_id,
+		$ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_capacity' => $stock,
+				'_stock'    => $stock,
 			],
 		] );
+
+		$_POST['product_id'] = $ticket_id;
 
 		return $ticket_id;
 	}

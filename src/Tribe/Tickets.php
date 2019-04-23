@@ -669,11 +669,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @since 4.6
 		 *
 		 * @param int|string $order_id  Order ID.
-		 * @param null|int   $ticket_id Ticket ID.
+		 * @param null|int   $ticket_id (optional) Ticket ID.
 		 *
 		 * @return array List of attendees.
 		 */
-		protected function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
+		protected function get_attendees_by_order_id( $order_id ) {
+			// Support an optional second argument while not causing warnings from other ticket provider classes.
+			$ticket_id = func_get_arg( 2 );
+
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees();
 

@@ -2564,20 +2564,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 	/**
 	 * {@inheritdoc}
-	 *
-	 * It returns an array with the
-	 * following fields:
-	 *
-	 *     order_id
-	 *     purchaser_name
-	 *     purchaser_email
-	 *     optout
-	 *     ticket
-	 *     attendee_id
-	 *     security
-	 *     product_id
-	 *     check_in
-	 *     provider
 	 */
 	public function get_attendee( $attendee, $post_id = 0 ) {
 		if ( is_numeric( $attendee ) ) {
