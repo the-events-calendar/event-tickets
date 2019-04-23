@@ -799,7 +799,7 @@ function tribe_tickets_delete_capacity( $object ) {
  * @since  4.6.2
  *
  * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
- * @param  int  $capacity  How much we are trying to update the capacity to
+ * @param  int  $capacity  What much we are trying to update the capacity to.
  *
  * @return int|false
  */
@@ -821,11 +821,14 @@ function tribe_tickets_update_capacity( $object, $capacity ) {
 }
 
 /**
- * Returns the capacity for a given Ticket
+ * Returns the capacity for a given Post
+ *
+ * Note while we can send a post/event we do not store capacity on events
+ * so the return values will always be null
  *
  * @since  4.6
  *
- * @param  int $post Ticket We are trying to fetch capacity for
+ * @param  int|WP_Post $post Post We are trying to fetch capacity for
  *
  * @return int|null
  */
