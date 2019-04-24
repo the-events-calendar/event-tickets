@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.1.1
-Stable tag: 4.10.4
+Stable tag: 4.10.5
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TSM] TBD =
+= [4.10.5] TBD =
 
 * Feature - Implemented our abstract Object-relational Mapping layer for Ticket Attendees and increased stability with more automated tests [123468]
 * Feature - Add tooltips to Attendee Report page [120856]
@@ -136,6 +136,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
 * Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
 * Fix - Correct escaping on attendee registration shortcode [125964]
+* Fix - Fix error with creating new ticket in block editor [126266]
 
 = [4.10.4] 2019-04-23 =
 
