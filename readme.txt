@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [TSM] TBD =
+= [4.10.5] TBD =
 
 * Feature - Add tooltips to Attendee Report page [120856]
 * Feature - Add tooltip to explain what statues are behind Pending Order Completion [120862]
@@ -135,9 +135,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
 * Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
 * Fix - Correct escaping on attendee registration shortcode [125964]
-
-= [4.10.5] TBD =
-
 * Fix - Fix error with creating new ticket in block editor [126266]
 
 = [4.10.4] 2019-04-23 =
