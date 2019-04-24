@@ -11,18 +11,26 @@ class Tribe__Tickets__Repositories__Ticket__Commerce extends Tribe__Tickets__Tic
 	 * {@inheritdoc}
 	 */
 	public function ticket_types() {
-		return [
-			'tribe_tpp_tickets',
+		$types = parent::ticket_types();
+
+		$types = [
+			'tribe-commerce' => $types['tribe-commerce'],
 		];
+
+		return $types;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function ticket_to_event_keys() {
-		return [
-			'tribe-commerce' => '_tribe_tpp_for_event',
+		$keys = parent::ticket_to_event_keys();
+
+		$keys = [
+			'tribe-commerce' => $keys['tribe-commerce'],
 		];
+
+		return $keys;
 	}
 
 }

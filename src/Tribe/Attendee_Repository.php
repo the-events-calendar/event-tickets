@@ -96,8 +96,8 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function attendee_types() {
 		return [
-			'tribe_rsvp_attendees',
-			'tribe_tpp_attendees',
+			'rsvp'           => 'tribe_rsvp_attendees',
+			'tribe-commerce' => 'tribe_tpp_attendees',
 		];
 	}
 

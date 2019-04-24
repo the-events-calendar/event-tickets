@@ -11,18 +11,26 @@ class Tribe__Tickets__Repositories__Ticket__RSVP extends Tribe__Tickets__Ticket_
 	 * {@inheritdoc}
 	 */
 	public function ticket_types() {
-		return [
-			'tribe_rsvp_tickets',
+		$types = parent::ticket_types();
+
+		$types = [
+			'rsvp' => $types['rsvp'],
 		];
+
+		return $types;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function ticket_to_event_keys() {
-		return [
-			'rsvp' => '_tribe_rsvp_for_event',
+		$keys = parent::ticket_to_event_keys();
+
+		$keys = [
+			'rsvp' => $keys['rsvp'],
 		];
+
+		return $keys;
 	}
 
 }
