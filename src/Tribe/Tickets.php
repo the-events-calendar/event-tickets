@@ -678,7 +678,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// Support an optional second argument while not causing warnings from other ticket provider classes.
 			if ( 1 < func_num_args() ) {
-				$ticket_id = func_get_arg( 2 );
+				$ticket_id = func_get_arg( 1 );
 			}
 
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
