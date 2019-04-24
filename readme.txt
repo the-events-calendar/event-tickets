@@ -136,6 +136,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
 * Fix - Correct escaping on attendee registration shortcode [125964]
 
+= [4.10.5] TBD =
+
+* Fix - Fix error with creating new ticket in block editor [126266]
+
 = [4.10.4] 2019-04-23 =
 
 * Tweak - Changed minimum supported version of The Events Calendar to 4.9
