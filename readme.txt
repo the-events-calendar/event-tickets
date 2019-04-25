@@ -137,6 +137,11 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct escaping on attendee registration shortcode [125964]
 * Fix - Fix error with creating new ticket in block editor [126266]
 
+= [4.10.4.1] 2019-04-25 =
+
+* Fix - Fix error with creating new ticket in block editor [126266]
+* Fix - Prevent PHP fatals with Tribe__Util__Array aliases
+
 = [4.10.4] 2019-04-23 =
 
 * Tweak - Changed minimum supported version of The Events Calendar to 4.9
