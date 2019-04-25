@@ -110,4 +110,17 @@ class RSVPManagerTest extends \Codeception\TestCase\WPTestCase {
 		$this->assertSame( 0, $options['no']['decrease_stock_by'] );
 
 	}
+
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_has_rsvp_status_object_named_going() {
+
+		$sut = $this->make_instance();
+		$completed = $sut->get_completed_status_class();
+
+		$this->assertSame( 'Going', $completed->name );
+	}
+
 }

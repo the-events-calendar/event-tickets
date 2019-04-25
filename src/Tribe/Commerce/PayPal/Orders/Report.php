@@ -257,9 +257,35 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 		$total_sold          = $sales->get_sales_for_tickets( $tickets );
 		$order_overview      = tribe( 'tickets.status' )->get_providers_status_classes( 'tpp' );
+		$tickets_sold        = $this->get_item_counts_by_status( $paypal_tickets, $order_overview, $sales );
+
+		$post_type_object = get_post_type_object( $post->post_type );
+		$post_singular_label = $post_type_object->labels->singular_name;
+
+		// Render the table buffering its output; it will be used in the template below
+		$this->orders_table->prepare_items();
+
+		ob_start();
+		$this->orders_table->search_box( __( 'Search Orders', 'event-tickets' ), 'tpp-orders' );
+		$this->orders_table->display();
+		$table = ob_get_clean();
+
+		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-orders.php';
+	}
+
+	/**
+	 * @param $paypal_tickets
+	 * @param $order_overview
+	 * @param $sales
+	 *
+	 * @return array
+	 */
+	public function get_item_counts_by_status( $paypal_tickets, $order_overview, $sales ) {
+
 		$complete_statuses   = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_completed', 'tpp' );
 		$incomplete_statuses = (array) tribe( 'tickets.status' )->get_statuses_by_action( 'count_incomplete', 'tpp' );
-		$tickets_sold        = array();
+
+		$tickets_sold = array();
 
 		//update ticket item counts by order status
 		foreach ( $paypal_tickets as $ticket ) {
@@ -303,20 +329,8 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Report {
 
 				}
 			}
+
+			return $tickets_sold;
 		}
-
-		$post_type_object = get_post_type_object( $post->post_type );
-		$post_singular_label = $post_type_object->labels->singular_name;
-
-		// Render the table buffering its output; it will be used in the template below
-		$this->orders_table->prepare_items();
-
-		ob_start();
-		$this->orders_table->search_box( __( 'Search Orders', 'event-tickets' ), 'tpp-orders' );
-		$this->orders_table->display();
-		$table = ob_get_clean();
-
-		include Tribe__Tickets__Main::instance()->plugin_path . 'src/admin-views/tpp-orders.php';
 	}
-
 }
