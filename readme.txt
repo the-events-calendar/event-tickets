@@ -140,7 +140,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.10.4.1] 2019-04-25 =
 
 * Fix - Fix error with creating new ticket in block editor [126266]
-* Fix - Prevent PHP fatals with Tribe__Util__Array aliases
+* Fix - Prevent PHP fatals with Tribe__Utils__Array aliases
 
 = [4.10.4] 2019-04-23 =
 
