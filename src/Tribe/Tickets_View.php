@@ -534,20 +534,23 @@ class Tribe__Tickets__Tickets_View {
 	 * @return array                    List of Attendees grouped by order id
 	 */
 	public function get_event_attendees_by_order( $event_id, $user_id = null, $include_rsvp = false ) {
-		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		if ( ! $user_id ) {
+			$attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		} else {
+			// If we have a user_id then limit by that.
+			$args = [
+				'user' => $user_id,
+			];
+
+			$attendees = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
+		}
+
 		$orders = array();
 
 		foreach ( $attendees as $key => $attendee ) {
 			// Ignore RSVP if we don't tell it specifically
 			if ( 'rsvp' === $attendee['provider_slug'] && ! $include_rsvp ) {
 				continue;
-			}
-
-			// If we have a user_id then test it and ignore the ones that don't have it
-			if ( ! is_null( $user_id ) ) {
-				if ( empty( $attendee['user_id'] ) || $attendee['user_id'] != $user_id ) {
-					continue;
-				}
 			}
 
 			$orders[ (int) $attendee['order_id'] ][] = $attendee;
