@@ -568,20 +568,23 @@ class Tribe__Tickets__Tickets_View {
 	 * @return array                   Array with the RSVP attendees
 	 */
 	public function get_event_rsvp_attendees( $event_id, $user_id = null ) {
-		$all_attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
 		$attendees = array();
+
+		if ( ! $user_id ) {
+			$all_attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
+		} else {
+			// If we have a user_id then limit by that.
+			$args = [
+				'user' => $user_id,
+			];
+
+			$all_attendees = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
+		}
 
 		foreach ( $all_attendees as $key => $attendee ) {
 			// Skip Non RSVP
 			if ( 'rsvp' !== $attendee['provider_slug'] ) {
 				continue;
-			}
-
-			// If we have a user_id then test it and ignore the ones that don't have it
-			if ( ! is_null( $user_id ) ) {
-				if ( empty( $attendee['user_id'] ) || $attendee['user_id'] != $user_id ) {
-					continue;
-				}
 			}
 
 			$attendees[] = $attendee;
