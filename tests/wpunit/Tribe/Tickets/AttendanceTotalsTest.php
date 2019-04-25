@@ -4,7 +4,6 @@ namespace Tribe\Tickets;
 
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe__Tickets__Attendance_Totals as Tickets__Attendance;
 
