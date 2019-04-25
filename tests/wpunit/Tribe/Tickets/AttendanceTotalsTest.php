@@ -1,6 +1,6 @@
 <?php
-namespace Tribe\Tickets;
 
+namespace Tribe\Tickets;
 
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -10,6 +10,8 @@ use Tribe__Tickets__Attendance_Totals as Tickets__Attendance;
 
 /**
  * Test Calculations
+ *
+ * @since TBD
  *
  * Class AttendanceTotalsTest
  *
@@ -29,6 +31,7 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 		add_filter( 'tribe_tickets_user_can_manage_attendees', '__return_true' );
 
 	}
+
 	public function tearDown() {
 		// your tear down methods here
 		// then
@@ -37,6 +40,7 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * @since TBD
 	 */
 	public function it_should_count_checked_in_attendees_correctly() {
 
@@ -57,6 +61,7 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * @since TBD
 	 */
 	public function it_should_count_not_checked_in_attendees_correctly() {
 
@@ -73,23 +78,27 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * @since TBD
 	 */
 	public function it_should_count_deleted_attendees_correctly() {
+
+		$user = $this->factory()->user->create( [ 'role' => 'administrator' ] );
+		wp_set_current_user( $user );
 
 		$event_id          = $this->factory()->event->create();
 		$rsvp_id           = $this->create_rsvp_ticket( $event_id );
 		$created_attendees = $this->create_many_attendees_for_ticket( 10, $rsvp_id, $event_id );
 
-		foreach ( $created_attendees as $attendee ) {
-			var_dump( tribe( 'tickets.rsvp' )->delete_ticket( $event_id, $attendee ) );
+		// delete 4 attendees
+		for ( $x = 0; $x < 4; $x ++ ) {
+			tribe( 'tickets.rsvp' )->delete_ticket( $event_id, $created_attendees[ $x ] );
 		}
 
 		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$total_deleted      = $Tickets__Attendance->get_total_deleted();
+		$total_deleted       = $Tickets__Attendance->get_total_deleted();
 
-		$this->assertEquals( count( $created_attendees ), $total_deleted );
+		$this->assertEquals( 4, $total_deleted );
 
 	}
-
 
 }
