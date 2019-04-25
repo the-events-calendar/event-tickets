@@ -19,6 +19,7 @@ use Tribe__Tickets__Commerce__PayPal__Orders__Report as TPPOrderReport;
  * @package Tribe__Tickets__Commerce__PayPal__Status_Manager
  */
 class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
+
 	use PayPal_Order_Maker;
 	use PayPal_Ticket_Maker;
 	use Attendee_Maker;
@@ -177,7 +178,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * @since TBD
 	 */
-	public function it_has_tpp_correct_completed_order_count() {
+	public function it_has_tpp_correct_order_counts() {
 
 		$sut   = $this->make_instance();
 		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
@@ -197,7 +198,7 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 		$paypal_tickets = Tickets::get_event_tickets( $event_id );
 
 		$report = new TPPOrderReport();
-		$report->get_item_counts_by_status( $paypal_tickets, $sut, $sales );
+		$report->get_all_counts_per_ticket( $paypal_tickets, $sut, $sales );
 
 		$this->assertSame( 28, $sut->get_qty(), 'Matches Total Quantity Ordered for an Event' );
 		$this->assertSame( 140, $sut->get_line_total(), 'Matches the Line Total for an Event' );
@@ -216,6 +217,42 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertSame( 1, $sut->statuses['Undefined']->get_qty(), 'Matches Undefined Quantity Ordered for an Event' );
 		$this->assertSame( 5, $sut->statuses['Undefined']->get_line_total(), 'Matches the Undefined Line Total for an Event' );
+	}
+
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_has_tpp_correct_order_counts_for_multiple_tickets() {
+
+		$sut   = $this->make_instance();
+		$sales = tribe( 'tickets.commerce.paypal.orders.sales' );
+
+		$event_id  = $this->factory()->event->create();
+		$ticket_id_1 = $this->create_paypal_ticket( $event_id, 5, [
+			'meta_input' => [
+				'_stock'    => 50,
+				'_capacity' => 50,
+			]
+		] );
+		$ticket_id_2 = $this->create_paypal_ticket( $event_id, 4, [
+			'meta_input' => [
+				'_stock'    => 20,
+				'_capacity' => 20,
+			]
+		] );
+		$this->generate_orders( $event_id, [ $ticket_id_1 ], 5, 3, 'completed' );
+		$this->generate_orders( $event_id, [ $ticket_id_2 ], 3, 2, 'completed' );
+		$paypal_tickets = Tickets::get_event_tickets( $event_id );
+
+		$report = new TPPOrderReport();
+		$report->get_all_counts_per_ticket( $paypal_tickets, $sut, $sales );
+
+		$this->assertSame( 21, $sut->get_qty(), 'Matches Total Quantity Ordered of all tickets for an Event' );
+		$this->assertSame( 99, $sut->get_line_total(), 'Matches the Line Total of all tickets for an Event' );
+
+		$this->assertSame( 21, $sut->statuses['Completed']->get_qty(), 'Matches Completed Quantity Ordered of all tickets for an Event' );
+		$this->assertSame( 99, $sut->statuses['Completed']->get_line_total(), 'Matches the Completed Line Total of all tickets for an Event' );
 	}
 
 }

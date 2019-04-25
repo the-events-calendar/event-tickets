@@ -10,6 +10,8 @@ trait Order_Maker {
 	/**
 	 * Generates the PayPal orders for a post.
 	 *
+	 * @since TBD
+	 *
 	 * @param array $args
 	 * @param array $assoc_args
 	 */
@@ -161,7 +163,7 @@ trait Order_Maker {
 	/**
 	 * Parses and validate the user-provided PayPal order status.
 	 *
-	 * @since 0.2.0
+	 * @since TBD
 	 *
 	 * @param array $assoc_args
 	 *
@@ -187,7 +189,8 @@ trait Order_Maker {
 	/**
 	 * Hijack some PayPal related hooks to make all work.
 	 *
-	 * @since 0.2.0
+	 * @since TBD
+	 *
 	 */
 	protected function hijack_request_flow() {
 		// all transactions are valid, we are generating fake numbers
@@ -219,6 +222,8 @@ trait Order_Maker {
 	 *
 	 * Some order stati will require a negative value, e.g. refunds.
 	 *
+	 * @since TBD
+	 *
 	 * @param int $fee
 	 *
 	 * @return string
@@ -233,7 +238,6 @@ trait Order_Maker {
 
 	/**
 	 * Updates the fees in the data depending on the current order status.
-	 *
 	 *
 	 * @param array $data
 	 *
@@ -260,6 +264,8 @@ trait Order_Maker {
 
 	/**
 	 * Places an Order using the PayPal code API.
+	 *
+	 * @since TBD
 	 *
 	 * @param array  $transaction_data
 	 * @param string $order_status
