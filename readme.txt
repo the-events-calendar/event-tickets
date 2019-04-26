@@ -119,7 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4.2] 2019-04-25 =
 
-* Fix - Avoid fatals due to Events Query method not been present by bumping version of The Events Calendar required to 4.9.0.1
+* Fix - Avoid fatals due to Events Query method not been present by bumping version of The Events Calendar required to 4.9.0.2
 
 = [4.10.4.1] 2019-04-25 =
 
