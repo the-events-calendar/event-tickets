@@ -138,6 +138,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct escaping on attendee registration shortcode [125964]
 * Fix - Fix error with creating new ticket in block editor [126266]
 
+= [4.10.4.2] 2019-04-25 =
+
+* Fix - Avoid fatals due to Events Query method not been present by bumping version of The Events Calendar required to 4.9.0.2
+
 = [4.10.4.1] 2019-04-25 =
 
 * Fix - Fix error with creating new ticket in block editor [126266]
