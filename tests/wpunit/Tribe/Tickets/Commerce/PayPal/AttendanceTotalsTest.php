@@ -3,9 +3,11 @@
 namespace Tribe\Tickets;
 
 use Tribe\Events\Test\Factories\Event;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Order_Maker as PayPal_Order_Maker;
 use Tribe__Tickets__Commerce__PayPal__Attendance_Totals as Tickets__Attendance;
+
 
 /**
  * Test Calculations
@@ -18,7 +20,8 @@ use Tribe__Tickets__Commerce__PayPal__Attendance_Totals as Tickets__Attendance;
  */
 class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
-	use Ticket_Maker;
+	use PayPal_Order_Maker;
+	use PayPal_Ticket_Maker;
 	use Attendee_Maker;
 
 	public function setUp() {
@@ -58,7 +61,8 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 		$event_id          = $this->factory()->event->create();
 		$tpp_id           = $this->create_paypal_ticket( $event_id, 5 );
-		$created_attendees = $this->create_many_attendees_for_ticket( 10, $tpp_id, $event_id );
+		$this->generate_orders( $event_id, [ $tpp_id ], 10, 1, 'completed' );
+		//$created_attendees = $this->create_many_attendees_for_ticket( 10, $tpp_id, $event_id );
 
 		$Tickets__Attendance = new Tickets__Attendance( $event_id );
 		$total_sold       = $Tickets__Attendance->get_total_sold();
