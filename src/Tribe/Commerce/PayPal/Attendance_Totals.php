@@ -71,7 +71,7 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 */
 	public function print_totals() {
 		$args = [
-			'total_sold_label'        => _x( 'Total Tickets Issued:', 'attendee summary', 'event-tickets' ),
+			'total_sold_label'        => _x( 'Total Tickets:', 'attendee summary', 'event-tickets' ),
 			'total_complete_label'    => _x( 'Complete:', 'attendee summary', 'event-tickets' ),
 			'total_cancelled_label'   => _x( 'Cancelled:', 'attendee summary', 'event-tickets' ),
 			'total_sold'              => $this->get_total_sold(),
