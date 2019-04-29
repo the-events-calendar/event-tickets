@@ -536,11 +536,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// If we don't have the provider we fetch from inventory
 			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
+
 				return $capacity - $this->qty_sold() - $this->qty_pending();
 			}
 
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
 			if ( ! $this->managing_stock() || -1 === $capacity ) {
+
 				return -1;
 			}
 
@@ -553,11 +555,13 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			foreach ( $attendees as $attendee ) {
 				// Prevent RSVP with Not Going Status to decrease Inventory
 				if ( ! empty( $attendee['provider_slug'] ) && 'rsvp' === $attendee['provider_slug'] && in_array( $attendee[ 'order_status' ], $not_going_arr, true ) ) {
+
 					continue;
 				}
 
 				// allow providers to decide if an attendee will count toward inventory decrease or not
 				if ( ! $this->provider->attendee_decreases_inventory( $attendee ) ) {
+
 					continue;
 				}
 
@@ -572,12 +576,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $this->global_stock_mode()
 				|| Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $this->global_stock_mode()
 			) {
+
 				$event_attendees = $this->provider->get_attendees_by_id( $this->get_event()->ID );
 				$event_attendees_count = 0;
 
 				foreach ( $event_attendees as $attendee ) {
 					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['event_id'] );
-					$attendee_ticket_stock_mode = get_post_meta( $this->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+					// bypass any potential weirdness (RSVPs or such)
+					if ( empty( $attendee[ 'product_id' ] ) ) {
+						continue;
+					}
+
+					$attendee_ticket_stock_mode = get_post_meta( $attendee[ 'product_id' ], Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 					// On all cases of indy stock we don't add
 					if (
@@ -613,9 +623,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Provides the quantity of Avaiable tickets based on the Attendees number
+		 * Provides the quantity of Available tickets based on the Attendees number
 		 *
-		 * @todo   Create a way to get the Available for an Event (currenty impossible)
+		 * @todo   Create a way to get the Available for an Event (currently impossible)
 		 *
 		 * @since  4.6
 		 *
