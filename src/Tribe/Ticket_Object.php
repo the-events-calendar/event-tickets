@@ -348,7 +348,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return DateTime|false|int
 		 */
 		public function get_date( $date = '', $as_timestamp = true ) {
-
 			if ( $as_timestamp ) {
 				return strtotime( $date );
 			}
@@ -370,7 +369,6 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return DateTimeZone|null
 		 */
 		public function get_event_timezone() {
-
 			if (
 				class_exists( 'Tribe__Events__Timezones' )
 				&& ! is_null( $this->get_event_id() )
@@ -577,7 +575,12 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 				foreach ( $event_attendees as $attendee ) {
 					$attendee_ticket_stock = new Tribe__Tickets__Global_Stock( $attendee['event_id'] );
-					$attendee_ticket_stock_mode = get_post_meta( $this->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+					// bypass any potential weirdness (RSVPs or such)
+					if ( empty( $attendee[ 'product_id' ] ) ) {
+						continue;
+					}
+
+					$attendee_ticket_stock_mode = get_post_meta( $attendee[ 'product_id' ], Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
 
 					// On all cases of indy stock we don't add
 					if (
@@ -613,9 +616,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		}
 
 		/**
-		 * Provides the quantity of Avaiable tickets based on the Attendees number
+		 * Provides the quantity of Available tickets based on the Attendees number
 		 *
-		 * @todo   Create a way to get the Available for an Event (currenty impossible)
+		 * @todo   Create a way to get the Available for an Event (currently impossible)
 		 *
 		 * @since  4.6
 		 *

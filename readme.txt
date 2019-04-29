@@ -130,6 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - In the Ticket Block add link to EDD Orders Page [121440]
 * Tweak - Change "Attendee Registration" to "Attendee Information" in several locations [126038]
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
+* Fix - Change `inventory` to compare the correct ticket when checking event shared capacity [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 * Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
