@@ -9,6 +9,8 @@
  */
 class Tribe__Tickets__RSVP__Status_Manager extends Tribe__Tickets__Status__Abstract_Commerce {
 
+	public $completed_status_id = 'Going';
+
 	public $status_names = array(
 		'Going',
 		'Not_Going',
