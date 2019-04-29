@@ -15,8 +15,20 @@ import { __ } from '@wordpress/i18n';
  */
 import RSVPCounters from '@moderntribe/tickets/blocks/rsvp/counters/container';
 import { NumericLabel } from '@moderntribe/tickets/elements';
+import { Tooltip } from '@moderntribe/common/elements';
 import { Clipboard } from '@moderntribe/common/icons';
 import './style.pcss';
+
+const clipboard = (
+	<Tooltip
+		labelClassName="tribe-editor__ticket__container-header-clipboard-tooltip"
+		label={ <Clipboard /> }
+		text={ __(
+			'This ticket has Attendee Information Fields configured.',
+			'event-tickets',
+		) }
+	/>
+);
 
 const getTitle = (
 	hasAttendeeInfoFields,
@@ -36,7 +48,7 @@ const getTitle = (
 					onChange={ onTempTitleChange }
 					disabled={ isDisabled }
 				/>
-				{ hasAttendeeInfoFields && <Clipboard /> }
+				{ hasAttendeeInfoFields && clipboard }
 			</div>
 		)
 		: <h2 className="tribe-editor__rsvp-container-header__title">{ title }</h2>
