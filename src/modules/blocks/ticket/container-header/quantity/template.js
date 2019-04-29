@@ -54,7 +54,7 @@ const TicketContainerHeaderDescription = ( {
 	return ! isSelected && (
 		<div className="tribe-editor__ticket__container-header-quantity tribe-tooltip" title={ __( 'This pertains to Orders that have been marked Completed.', 'event-tickets' ) }>
 			<span className="tribe-editor__ticket__container-header-quantity-label">
-				{ getLabel() }<i class="dashicons dashicons-info"></i>
+				{ getLabel() }<span class="dashicons dashicons-info"></span>
 			</span>
 			{ getQuantityBar() }
 		</div>
