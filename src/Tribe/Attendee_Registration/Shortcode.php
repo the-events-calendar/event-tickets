@@ -27,7 +27,8 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 		}
 
 		$shortcode_page = tribe_get_option( 'ticket-attendee-page-id', false );
-		// option not set
+
+		// Option is not set, don't enqueue scripts.
 		if ( ! $shortcode_page ) {
 			return;
 		}
