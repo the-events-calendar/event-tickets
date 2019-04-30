@@ -34,7 +34,8 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 		}
 
 		$page = get_queried_object();
-		//not on the correct page
+
+		// Not on a shortcode page, don't enqueue scripts.
 		if ( ! $page || absint( $shortcode_page ) !== absint( $page->ID ) ) {
 			return;
 		}
