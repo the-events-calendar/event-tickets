@@ -760,7 +760,7 @@ class Tribe__Tickets__Main {
 			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 
-		// removes WooCommerce Product and EDD Download Post Type to Prevent Recursion Fatal Error on Saving
+		// Remove WooCommerce Product and EDD post types to prevent recursion fatal error on save.
 		$filtered_post_types = array_diff( $options['ticket-enabled-post-types'], [ 'product', 'download' ] );
 
 		/**
