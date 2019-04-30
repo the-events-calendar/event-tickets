@@ -14,7 +14,41 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 		}
 
 		add_shortcode( $this->shortcode_name, [ $this, 'render' ] );
+
+		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_scripts'] );
 	}
+
+	public function maybe_enqueue_scripts() {
+		if (
+			is_archive()
+			|| is_admin()
+		) {
+			return;
+		}
+
+		$shortcode_page = tribe_get_option( 'ticket-attendee-page-id', false );
+		// option not set
+		if ( ! $shortcode_page ) {
+			return;
+		}
+
+		$slug = parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
+		// not on a page we can parse
+		if ( ! $slug ) {
+			return;
+		}
+
+		$page = get_page_by_path( $slug, OBJECT );
+		//not on the correct page
+		if ( ! $page || absint( $shortcode_page ) !== absint( $page->ID ) ) {
+			return;
+		}
+
+		// enqueue styles and scripts for this page
+		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
+		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
+	}
+
 
 	/**
 	 * Renders the shortcode AR page.
