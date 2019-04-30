@@ -768,7 +768,7 @@ class Tribe__Tickets__Main {
 		 *
 		 * @param array $post_types Array of post types
 		 */
-		return apply_filters( 'tribe_tickets_post_types', (array) $filtered_post_types );
+		return apply_filters( 'tribe_tickets_post_types', $filtered_post_types );
 	}
 
 	/**
