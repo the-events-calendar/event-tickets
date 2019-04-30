@@ -760,12 +760,15 @@ class Tribe__Tickets__Main {
 			tribe_update_option( 'ticket-enabled-post-types', $defaults );
 		}
 
+		// removes WooCommerce Product and EDD Download Post Type to Prevent Recursion Fatal Error on Saving
+		$filtered_post_types = array_diff( $options['ticket-enabled-post-types'], array( 'product', 'download' ) );
+
 		/**
 		 * Filters the list of post types that support tickets
 		 *
 		 * @param array $post_types Array of post types
 		 */
-		return apply_filters( 'tribe_tickets_post_types', (array) $options['ticket-enabled-post-types'] );
+		return apply_filters( 'tribe_tickets_post_types', (array) $filtered_post_types );
 	}
 
 	/**

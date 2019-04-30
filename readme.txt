@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Update status manage to accept provider names or abbreviations [120862]
 * Tweak - In the Ticket Block add link to EDD Orders Page [121440]
 * Tweak - Change "Attendee Registration" to "Attendee Information" in several locations [126038]
+* Tweak - Supported post types for tickets by removing product and download from saved options to prevent recursion errors [126749]
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
 * Fix - Change `inventory` to compare the correct ticket when checking event shared capacity [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
@@ -137,6 +138,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
 * Fix - Correct escaping on attendee registration shortcode [125964]
 * Fix - Fix error with creating new ticket in block editor [126266]
+
 
 = [4.10.4.3] 2019-04-26 =
 
