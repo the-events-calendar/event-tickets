@@ -32,13 +32,7 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 			return;
 		}
 
-		$slug = parse_url( $_SERVER[ 'REQUEST_URI' ], PHP_URL_PATH );
-		// not on a page we can parse
-		if ( ! $slug ) {
-			return;
-		}
-
-		$page = get_page_by_path( $slug, OBJECT );
+		$page = get_queried_object();
 		//not on the correct page
 		if ( ! $page || absint( $shortcode_page ) !== absint( $page->ID ) ) {
 			return;
