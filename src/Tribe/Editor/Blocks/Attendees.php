@@ -106,16 +106,16 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		];
 
 		/**
-		 * Allow for adjusting the limit of attendees retrieved for the front-end "Who's Coming?" list.
+		 * Allow for adjusting the limit of attendees fetched from the database for the front-end "Who's Coming?" list.
 		 *
 		 * @since TBD
 		 *
-		 * @param int $limit Number of attendees to retrieve. Default is no limit -1.
+		 * @param int $limit_attendees Number of attendees to retrieve. Default is no limit -1.
 		 */
-		$limit = apply_filters( 'tribe_tickets_attendees_list_limit', -1 );
+		$limit_attendees = (int) apply_filters( 'tribe_tickets_attendees_list_limit_attendees', -1 );
 
-		if ( 0 < $limit ) {
-			$args['per_page'] = $limit;
+		if ( 0 < $limit_attendees ) {
+			$args['per_page'] = $limit_attendees;
 		}
 
 		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post->ID, $args );
