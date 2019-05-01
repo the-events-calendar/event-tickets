@@ -165,6 +165,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 * Tweak - Added filters: `tribe_attendee_registration_form_no_provider_class`, `tribe_attendee_registration_form_classes`, `tribe_attendee_registration_form_class`
 * Tweak - Changed views: `blocks/rsvp/form/quantity`, `blocks/rsvp/icon-svg`, `blocks/rsvp/status/going-icon`, `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going-icon`, `blocks/rsvp/status/not-going`, `registration/content`
+* Tweak - Changed some attendee report tooltip text to clarify capacity/inventory/stock and added a link for more information about Availability [126342]
 * Fix - Change RSVP import identifier in CSV importer so it provides the correct response message [124052]
 * Fix - Filter the Attendee Registration display to only show tickets for the current provider and add provider to Attendee Registration URL [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
