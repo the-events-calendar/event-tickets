@@ -1178,6 +1178,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
+			// Handle post__in.
+			if ( ! empty( $args['in'] ) ) {
+				$repository->in( (array) $args['in'] );
+			}
+
+			// Handle post__not_in.
+			if ( ! empty( $args['not_in'] ) ) {
+				$repository->not_in( (array) $args['not_in'] );
+			}
+
 			// Handle multi filtering.
 			if ( ! empty( $args['where_multi'] ) ) {
 				foreach ( $args['where_multi'] as $where_multi_args ) {

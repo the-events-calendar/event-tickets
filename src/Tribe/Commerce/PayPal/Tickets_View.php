@@ -50,26 +50,14 @@ class Tribe__Tickets__Commerce__PayPal__Tickets_View extends Tribe__Tickets__Tic
 	 * @return array                   Array with the PayPal tickets attendees
 	 */
 	public function get_post_ticket_attendees( $event_id, $user_id ) {
-		$all_attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
-		$attendees     = array();
+		/** @var Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		$paypal = tribe( 'tickets.commerce.paypal' );
 
-		foreach ( $all_attendees as $key => $attendee ) {
-			// Skip Non PayPal tickets
-			if ( 'tpp' !== $attendee['provider_slug'] ) {
-				continue;
-			}
-
-			// If we have a user_id then test it and ignore the ones that don't have it
-			if ( ! is_null( $user_id ) ) {
-				if ( empty( $attendee['user_id'] ) || $attendee['user_id'] != $user_id ) {
-					continue;
-				}
-			}
-
-			$attendees[] = $attendee;
+		if ( $user_id ) {
+			return $paypal->get_attendees_by_user_id( $user_id, $event_id );
 		}
 
-		return $attendees;
+		return $paypal->get_attendees_by_id( $event_id );
 	}
 
 	/**

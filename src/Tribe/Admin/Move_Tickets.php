@@ -166,16 +166,12 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$this->has_multiple_providers = false;
 
 		$args = [
-			'by' => [
-				'id' => $attendee_ids,
-			],
+			'in' => $attendee_ids,
 		];
 
 		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
 
-		$attendees = $attendee_data['attendees'];
-
-		foreach ( $attendees as $attendee ) {
+		foreach ( $attendee_data['attendees'] as $attendee ) {
 			$attendee_id = (int) $attendee['attendee_id'];
 
 			$this->attendees[ $attendee_id ] = $attendee;
@@ -507,14 +503,19 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			return 0;
 		}
 
-		$ticket_objects = array();
-		$providers = array();
+		$ticket_objects = [];
+		$providers      = [];
 
-		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $src_event_id ) as $issued_ticket ) {
-			if ( in_array( absint( $issued_ticket['attendee_id'] ), $ticket_ids ) ) {
-				$ticket_objects[] = $issued_ticket;
-				$providers[ $issued_ticket['provider'] ] = call_user_func( array( $issued_ticket['provider'], 'get_instance' ) );
-			}
+		$args = [
+			'in' => $ticket_ids,
+		];
+
+		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $src_event_id, $args );
+
+		foreach ( $attendee_data['attendees'] as $issued_ticket ) {
+			$ticket_objects[] = $issued_ticket;
+
+			$providers[ $issued_ticket['provider'] ] = call_user_func( array( $issued_ticket['provider'], 'get_instance' ) );
 		}
 
 		// We expect to have found as many tickets as were specified
@@ -522,7 +523,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			return 0;
 		}
 
-		// Check that the tickets are homogenous in relation to the ticket provider
+		// Check that the tickets are homogeneous in relation to the ticket provider.
 		if ( 1 !== count( $providers ) ) {
 			return 0;
 		}
@@ -658,13 +659,14 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	public function notify_attendees( $ticket_ids, $tgt_ticket_type_id, $src_event_id, $tgt_event_id ) {
 		$to_notify = array();
 
-		// Build a list of email addresses we want to send notifications of the change to
-		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $tgt_event_id ) as $attendee ) {
-			// We're not interested in attendees who were already attending this event
-			if ( ! in_array( (int) $attendee['attendee_id'], $ticket_ids ) ) {
-				continue;
-			}
+		$args = [
+			'not_in' => $ticket_ids,
+		];
 
+		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $tgt_event_id, $args );
+
+		// Build a list of email addresses we want to send notifications of the change to
+		foreach ( $attendee_data['attendees'] as $attendee ) {
 			// Skip if an email address isn't available
 			if ( ! isset( $attendee['purchaser_email'] ) ) {
 				continue;
@@ -757,12 +759,15 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * @param int $instigator_id
 	 */
 	public function move_all_tickets_for_type( $ticket_type_id, $destination_post_id, $src_post_id, $instigator_id ) {
-		foreach (  Tribe__Tickets__Tickets::get_event_attendees( $src_post_id ) as $issued_ticket ) {
-			// We're only interested in tickets of the specified type
-			if ( (int) $ticket_type_id !== (int) $issued_ticket['product_id'] ) {
-				continue;
-			}
+		$args = [
+			'by' => [
+				'ticket' => $ticket_type_id,
+			],
+		];
 
+		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $src_post_id, $args );
+
+		foreach ( $attendee_data['attendees'] as $issued_ticket ) {
 			if ( ! class_exists( $issued_ticket['provider'] ) ) {
 				continue;
 			}
