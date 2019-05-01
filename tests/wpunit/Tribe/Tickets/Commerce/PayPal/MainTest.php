@@ -282,6 +282,51 @@ class MainTest extends Test_Case {
 		$this->assertEquals( $post_id, $event_id );
 	}
 
+	/**
+	 * @test
+	 *
+	 * It should return count from get_attendees_count().
+	 */
+	public function it_should_return_count_from_get_attendees_count() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
+
+		$this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
+
+		$this->assertEquals( 10, $sut->get_attendees_count( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return count from get_attendees_count_by_user().
+	 */
+	public function it_should_return_count_from_get_attendees_count_by_user() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
+		$user_id        = $base_data['user_id'];
+
+		$this->create_paypal_orders( $post_id, $ticket_id, 10, 1, null, true, [ 'user_id' => $user_id ] );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id, [ 'user_id' => $user_id ] );
+
+		$this->assertEquals( 10, $sut->get_attendees_count_by_user( $post_id, $user_id ) );
+	}
+
 	protected function make_data( $previous_status, $status, $sales, $stock = 0 ) {
 		$base_data = $this->make_base_data( $sales, $stock );
 

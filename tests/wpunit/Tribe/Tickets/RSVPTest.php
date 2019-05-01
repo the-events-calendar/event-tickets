@@ -453,6 +453,89 @@ class RSVPTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * @test
+	 *
+	 * It should return count from get_attendees_count().
+	 */
+	public function it_should_return_count_from_get_attendees_count() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$this->assertEquals( 10, $sut->get_attendees_count( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return count from get_attendees_count_by_user().
+	 */
+	public function it_should_return_count_from_get_attendees_count_by_user() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		// Generate some tickets while logged in.
+		wp_set_current_user( $user_id );
+
+		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+
+		$this->assertEquals( 5, $sut->get_attendees_count_by_user( $post_id, $user_id ) );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return count from get_attendees_count_going().
+	 */
+	public function it_should_return_count_from_get_attendees_count_going() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
+
+		$this->assertEquals( 10, $sut->get_attendees_count_going( $post_id ) );
+	}
+
+	/**
+	 * @test
+	 *
+	 * It should return count from get_attendees_count_not_going().
+	 */
+	public function it_should_return_count_from_get_attendees_count_not_going() {
+		$sut = $this->make_instance();
+
+		$base_data = $this->make_base_data();
+
+		$post_id   = $base_data['post_id'];
+		$ticket_id = $base_data['ticket_id'];
+		$user_id   = $base_data['user_id'];
+
+		$sut->generate_tickets_for( $ticket_id, 10, $this->fake_attendee_details( [ 'order_status' => 'yes' ] ) );
+		$sut->generate_tickets_for( $ticket_id, 5, $this->fake_attendee_details( [ 'order_status' => 'no' ] ) );
+
+		$this->assertEquals( 5, $sut->get_attendees_count_not_going( $post_id ) );
+	}
+
+	/**
 	 * @return mixed
 	 */
 	protected function setup_POST( $status, $sales ) {

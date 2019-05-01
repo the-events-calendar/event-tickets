@@ -638,7 +638,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 
-			return self::get_attendees_from_modules( $repository->by( 'event', $event_id )->all(), $event_id );
+			return $this->get_attendees_from_module( $repository->by( 'event', $event_id )->all(), $event_id );
 		}
 
 		/**
@@ -654,7 +654,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 
-			return self::get_attendees_from_modules( $repository->by( 'ticket', $ticket_id )->all() );
+			return $this->get_attendees_from_module( $repository->by( 'ticket', $ticket_id )->all() );
 		}
 
 		/**
@@ -697,7 +697,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$repository->by( 'ticket', $ticket_id );
 			}
 
-			return self::get_attendees_from_modules( $repository->all() );
+			return $this->get_attendees_from_module( $repository->all() );
 		}
 
 		/**
@@ -713,7 +713,30 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $this->orm_provider );
 
-			return self::get_attendees_from_modules( $repository->by( 'id', $attendee_id )->all() );
+			return $this->get_attendees_from_module( $repository->by( 'id', $attendee_id )->all() );
+		}
+
+		/**
+		 * Get attendees for a ticket by user ID.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $user_id User ID.
+		 * @param int $post_id Post or Event ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		public function get_attendees_by_user_id( $user_id, $post_id = 0 ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			$repository->by( 'user', $user_id );
+
+			if ( $post_id ) {
+				$repository->by( 'event', $post_id );
+			}
+
+			return $this->get_attendees_from_module( $repository->all() );
 		}
 
 		/**
@@ -1094,6 +1117,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *                                        attendees. Default is off.
 		 *      @type int     $page               Page number of attendees to return. Default is page 1.
 		 *      @type int     $per_page           How many attendees to return per page. Default is all.
+		 *      @type string  $fields             Which fields to return. Default is all.
 		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
 		 *                                        [[what,args...]] format.
 		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
@@ -1111,8 +1135,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $attendee_data;
 			}
 
+			$provider = 'default';
+
+			if ( ! empty( $args['provider'] ) ) {
+				$provider = $args['provider'];
+			}
+
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
+			$repository = tribe_attendees( $provider );
+
+			if ( ! empty( $args['fields'] ) ) {
+				$repository->fields( $args['fields'] );
+			}
 
 			// Limit by post ID.
 			$repository->by( 'event', $post_id );
@@ -1192,6 +1226,35 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Get attendee data for attendees from the current module.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $attendees Attendee objects or IDs.
+		 * @param int   $post_id   Parent post ID.
+		 *
+		 * @return array The attendee data for attendees.
+		 */
+		public function get_attendees_from_module( $attendees, $post_id = 0 ) {
+			$attendees_from_module = [];
+
+			foreach ( $attendees as $attendee ) {
+				$attendee_data = $this->get_attendee( $attendee, $post_id );
+
+				if ( ! $attendee_data ) {
+					continue;
+				}
+
+				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
+				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
+
+				$attendees_from_module[] = $attendee_data;
+			}
+
+			return $attendees_from_module;
+		}
+
+		/**
 		 * Get attendee data for attendee.
 		 *
 		 * @since TBD
@@ -1209,11 +1272,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns an array of attendees for the specified event, in relation to
 		 * this ticketing provider.
 		 *
-		 * Implementation note: this is just a public wrapper around the get_attendees() method.
-		 * The reason we don't simply make that same method public is to avoid breakages in other
-		 * ticket provider plugins which have already implemented that method with protected
-		 * accessibility.
-		 *
 		 * @param int $post_id ID of parent "event" post
 		 * @return array
 		 */
@@ -1222,14 +1280,68 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
+		 * Returns total count of attendees for the specified event, in relation to
+		 * this ticketing provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id ID of parent "event" post
+		 *
+		 * @return int Total count of attendees.
+		 */
+		public function get_attendees_count( $post_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			return $repository->by( 'event', $post_id )->found();
+		}
+
+		/**
+		 * Returns total count of attendees for the specified event, in relation to
+		 * this ticketing provider.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id ID of parent "event" post.
+		 * @param int $user_id ID of user.
+		 *
+		 * @return int Total count of attendees.
+		 */
+		public function get_attendees_count_by_user( $post_id, $user_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			return $repository->by( 'event', $post_id )->by( 'user', $user_id )->found();
+		}
+
+		/**
 		 * Returns the total number of attendees for an event (regardless of provider).
 		 *
 		 * @param int $post_id ID of parent "event" post
-		 * @return int
+		 * @return int Total count of attendees.
 		 */
 		public static function get_event_attendees_count( $post_id ) {
-			$attendees = self::get_event_attendees( $post_id );
-			return count( $attendees );
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return $repository->by( 'event', $post_id )->found();
+		}
+
+		/**
+		 * Returns the total number of attendees for an event (regardless of provider).
+		 *
+		 * @since TBD
+		 *
+		 * @param int $post_id ID of parent "event" post.
+		 * @param int $user_id ID of user.
+		 *
+		 * @return int Total count of attendees.
+		 */
+		public static function get_event_attendees_count_by_user( $post_id, $user_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
+
+			return $repository->by( 'event', $post_id )->by( 'user', $user_id )->found();
 		}
 
 		/**
@@ -1293,16 +1405,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
-			$args = [
-				'by'       => [
-					'checkedin' => true,
-				],
-				'per_page' => 1,
-			];
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
 
-			$attendee_data = self::get_event_attendees_by_args( $post_id, $args );
-
-			return $attendee_data['total_found'];
+			return $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
 		}
 
 		// end Attendees

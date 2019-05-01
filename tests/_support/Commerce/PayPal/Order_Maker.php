@@ -18,10 +18,11 @@ trait Order_Maker {
 	 * @param int         $orders_count
 	 * @param string|null $order_status
 	 * @param bool        $dont_send_emails
+	 * @param array       $overrides
 	 *
 	 * @return array
 	 */
-	protected function create_paypal_orders( $post_id, $ticket_ids, $ticket_count, $orders_count = 1, $order_status = null, $dont_send_emails = true ) {
+	protected function create_paypal_orders( $post_id, $ticket_ids, $ticket_count, $orders_count = 1, $order_status = null, $dont_send_emails = true, $overrides = [] ) {
 		$order_status           = $this->parse_order_status( $order_status );
 		$this->dont_send_emails = $dont_send_emails;
 
@@ -30,7 +31,7 @@ trait Order_Maker {
 		$generated = [];
 
 		for ( $k = 0; $k < $orders_count; $k ++ ) {
-			$user_id    = 0;
+			$user_id    = $overrides['user_id'] ?? 0;
 			$ticket_qty = [];
 
 			foreach ( $ticket_ids as $ticket_id ) {
