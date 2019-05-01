@@ -965,7 +965,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			/**
 			 * Action fired when a PayPal has had attendee tickets updated for it.
 			 *
-			 * This will fire even when tickets are initially craeted; if you need to hook on the
+			 * This will fire even when tickets are initially created; if you need to hook on the
 			 * creation process only use the 'event_tickets_tpp_tickets_generated_for_product' action.
 			 *
 			 * @since 4.7
