@@ -1286,6 +1286,38 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
+	 * Get total count of attendees marked as going for this provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return int Total count of attendees marked as going.
+	 */
+	public function get_attendees_count_going( $post_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		return $repository->by( 'event', $post_id )->by( 'rsvp_status', 'yes' )->found();
+	}
+
+	/**
+	 * Get total count of attendees marked as going for this provider.
+	 *
+	 * @since TBD
+	 *
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return int Total count of attendees marked as going.
+	 */
+	public function get_attendees_count_not_going( $post_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
+
+		return $repository->by( 'event', $post_id )->by( 'rsvp_status', 'no' )->found();
+	}
+
+	/**
 	 * {@inheritdoc}
 	 *
 	 * Get all the attendees for post type. It returns an array with the
@@ -2072,16 +2104,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int
 	 */
 	public function get_total_not_going( $event_id ) {
-		$not_going = 0;
-
-		$attendees = $this->get_attendees_by_post_id( $event_id );
-
-		foreach ( $attendees as $attendee ) {
-			if ( in_array( $attendee['order_status'], $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
-				$not_going ++;
-			}
-		}
-
-		return $not_going;
+		return $this->get_attendees_count_not_going( $event_id );
 	}
 }
