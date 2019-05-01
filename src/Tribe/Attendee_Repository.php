@@ -71,15 +71,16 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'price', '_paid_price' );
 
 		$this->schema = array_merge( $this->schema, [
-			'optout'            => [ $this, 'filter_by_optout' ],
-			'rsvp_status'       => [ $this, 'filter_by_rsvp_status' ],
-			'provider'          => [ $this, 'filter_by_provider' ],
-			'event_status'      => [ $this, 'filter_by_event_status' ],
-			'order_status'      => [ $this, 'filter_by_order_status' ],
-			'price_min'         => [ $this, 'filter_by_price_min' ],
-			'price_max'         => [ $this, 'filter_by_price_max' ],
-			'has_attendee_meta' => [ $this, 'filter_by_attendee_meta_existence' ],
-			'checkedin'         => [ $this, 'filter_by_checkedin' ],
+			'optout'               => [ $this, 'filter_by_optout' ],
+			'rsvp_status'          => [ $this, 'filter_by_rsvp_status' ],
+			'provider'             => [ $this, 'filter_by_provider' ],
+			'event_status'         => [ $this, 'filter_by_event_status' ],
+			'order_status'         => [ $this, 'filter_by_order_status' ],
+			'order_status__not_in' => [ $this, 'filter_by_order_status_not_in' ],
+			'price_min'            => [ $this, 'filter_by_price_min' ],
+			'price_max'            => [ $this, 'filter_by_price_max' ],
+			'has_attendee_meta'    => [ $this, 'filter_by_attendee_meta_existence' ],
+			'checkedin'            => [ $this, 'filter_by_checkedin' ],
 		] );
 
 		$this->init_order_statuses();
@@ -248,7 +249,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			case 'no':
 				$this->by( 'meta_not_in', $this->attendee_optout_keys(), 'yes' );
 				break;
-			case'yes':
+			case 'yes':
 				$this->by( 'meta_in', $this->attendee_optout_keys(), 'yes' );
 				break;
 		}
@@ -423,6 +424,82 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				(
 					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
 					AND order_post.post_status IN ( {$statuses_in} )
+				)
+			)" );
+		}
+	}
+
+	/**
+	 * Filters attendee to only get those not related to orders with a specific status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $order_status
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 */
+	public function filter_by_order_status_not_in( $order_status ) {
+		$statuses = Tribe__Utils__Array::list_to_array( $order_status );
+
+		$can_read_private_posts = current_user_can( 'read_private_posts' );
+
+		// map the `any` meta-status
+		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
+			if ( ! $can_read_private_posts ) {
+				$statuses = [ 'private' ];
+			} else {
+				// no need to filter if the user can read all posts
+				return;
+			}
+		}
+
+		// Allow the user to define singular statuses or the meta-status "public"
+		if ( in_array( 'public', $statuses, true ) ) {
+			$statuses = array_unique( array_merge( $statuses, self::$public_order_statuses ) );
+		}
+
+		// Allow the user to define singular statuses or the meta-status "private"
+		if ( in_array( 'private', $statuses, true ) ) {
+			$statuses = array_unique( array_merge( $statuses, self::$private_order_statuses ) );
+		}
+
+		// Remove any status the user cannot access
+		if ( ! $can_read_private_posts ) {
+			$statuses = array_intersect( $statuses, self::$private_order_statuses );
+		}
+
+		if ( empty( $statuses ) ) {
+			throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results(
+				'The user cannot access the requested attendee order statuses.'
+			);
+		}
+
+		/** @var wpdb $wpdb */
+		global $wpdb;
+
+		$statuses_in = "'" . implode( "','", array_map( 'esc_sql', $statuses ) ) . "'";
+
+		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
+		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
+
+		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} order_status_meta "
+		                           . "ON {$wpdb->posts}.ID = order_status_meta.post_id" );
+
+		if ( ! $has_plus_providers ) {
+			$this->filter_query->where( "order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
+			                            . "AND order_status_meta.meta_value NOT IN ( {$statuses_in} )" );
+		} else {
+			$this->filter_query->join( "LEFT JOIN {$wpdb->posts} order_post "
+			                           . "ON order_post.ID != {$wpdb->posts}.ID" );
+			$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} attendee_to_order_meta "
+			                           . 'ON attendee_to_order_meta.meta_value = order_post.ID' );
+			$this->filter_query->where( "(
+				(order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
+			                            . "AND order_status_meta.meta_value NOT IN ( {$statuses_in} ))
+				OR
+				(
+					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
+					AND order_post.post_status NOT IN ( {$statuses_in} )
 				)
 			)" );
 		}
