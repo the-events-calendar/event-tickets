@@ -236,11 +236,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array|null
 	 */
 	public function filter_by_optout( $optout ) {
-		$args = [
-			'meta_query' => [
-				'by-optout-status' => [],
-			],
-		];
+		global $wpdb;
 
 		switch ( $optout ) {
 			case 'any':
@@ -251,6 +247,23 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				break;
 			case 'yes':
 				$this->by( 'meta_in', $this->attendee_optout_keys(), 'yes' );
+				break;
+			case 'no_or_none':
+				$optout_keys = $this->attendee_optout_keys();
+				$optout_keys = array_map( [ $wpdb, '_real_escape' ], $optout_keys );
+				$optout_keys = '"' . implode( '", "', $optout_keys ) . '"';
+
+				$this->filter_query->join( "
+					LEFT JOIN {$wpdb->postmeta} attendee_optout
+					ON ( attendee_optout.post_id = wp_posts.ID
+						AND attendee_optout.meta_key IN ( {$optout_keys} ) )
+				" );
+
+				$this->filter_query->where( "(
+					attendee_optout.post_id IS NULL
+					OR attendee_optout.meta_value != 'yes'
+				)" );
+
 				break;
 		}
 
@@ -401,9 +414,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/** @var wpdb $wpdb */
 		global $wpdb;
 
-		$statuses_in = "'" . implode( "','", array_map( 'esc_sql', $statuses ) ) . "'";
+		$statuses_in = "'" . implode( "','", array_map( [ $wpdb, '_escape' ], $statuses ) ) . "'";
 
-		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
+		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
 		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
 
 		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} order_status_meta "
@@ -477,9 +490,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/** @var wpdb $wpdb */
 		global $wpdb;
 
-		$statuses_in = "'" . implode( "','", array_map( 'esc_sql', $statuses ) ) . "'";
+		$statuses_in = "'" . implode( "','", array_map( [ $wpdb, '_escape' ], $statuses ) ) . "'";
 
-		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
+		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
 		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
 
 		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} order_status_meta "
