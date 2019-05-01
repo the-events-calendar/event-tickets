@@ -744,7 +744,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		foreach ( $attendee_ids as $attendee ) {
-
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 
 			if ( false === $id ) {
@@ -757,7 +756,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		// redirect after deleting attendees back to attendee url
 		$post = get_post( $this->get_post_id() );
 		if ( ! isset( $post->ID ) ) {
-			return false;
+			return;
+		}
+
+		if ( headers_sent() ) {
+			return;
 		}
 
 		$redirect_url = tribe( 'tickets.attendees' )->get_report_link( $post );

@@ -98,6 +98,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 			return $output;
 		}
 
+		// @todo Determine how to best optimize this request so the foreach below is not relied on as heavily.
 		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post->ID );
 		$emails    = array();
 
@@ -107,23 +108,25 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		}
 
 		foreach ( $attendees as $key => $attendee ) {
-
 			// Only Check for optout when It's there
+			// @todo Convert this to ORM somehow.
 			if ( isset( $attendee['optout'] ) && false !== $attendee['optout'] ) {
 				continue;
 			}
 
 			// Skip when we already have another email like this one.
-			if ( in_array( $attendee['purchaser_email'], $emails ) ) {
+			if ( in_array( $attendee['purchaser_email'], $emails, true ) ) {
 				continue;
 			}
 
 			// Skip folks who've RSVPed as "Not Going".
+			// @todo Convert this to ORM order_status__not_in.
 			if ( 'no' === $attendee['order_status'] ) {
 				continue;
 			}
 
 			// Skip "Failed" orders
+			// @todo Convert this to ORM order_status__not_in.
 			if ( 'failed' === $attendee['order_status'] ) {
 				continue;
 			}

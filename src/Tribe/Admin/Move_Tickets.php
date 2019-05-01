@@ -157,23 +157,30 @@ class Tribe__Tickets__Admin__Move_Tickets {
 	 * $this->attendees, to determine which ticket provider we're using
 	 * or if the range of tickets includes more than one provider.
 	 *
-	 * @param array $ticket_ids
+	 * @param array $attendee_ids
 	 * @param int   $event_id
 	 */
-	protected function build_attendee_list( array $ticket_ids, $event_id ) {
+	protected function build_attendee_list( array $attendee_ids, $event_id ) {
 		$this->attendees = array();
 		$this->ticket_provider = '';
 		$this->has_multiple_providers = false;
 
-		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $event_id ) as $attendee ) {
+		$args = [
+			'by' => [
+				'id' => $attendee_ids,
+			],
+		];
+
+		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
+
+		$attendees = $attendee_data['attendees'];
+
+		foreach ( $attendees as $attendee ) {
 			$attendee_id = (int) $attendee['attendee_id'];
 
-			if ( ! in_array( $attendee_id, $ticket_ids ) ) {
-				continue;
-			}
+			$this->attendees[ $attendee_id ] = $attendee;
 
 			$provider = $this->get_ticket_provider( $attendee );
-			$this->attendees[ $attendee_id ] = $attendee;
 
 			if ( ! empty( $this->ticket_provider ) && $this->ticket_provider !== $provider ) {
 				$this->has_multiple_providers = true;

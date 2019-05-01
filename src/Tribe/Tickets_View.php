@@ -539,10 +539,14 @@ class Tribe__Tickets__Tickets_View {
 		} else {
 			// If we have a user_id then limit by that.
 			$args = [
-				'user' => $user_id,
+				'by' => [
+					'user' => $user_id,
+				],
 			];
 
-			$attendees = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
+			$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
+
+			$attendees = $attendee_data['attendees'];
 		}
 
 		$orders = array();
@@ -570,27 +574,14 @@ class Tribe__Tickets__Tickets_View {
 	public function get_event_rsvp_attendees( $event_id, $user_id = null ) {
 		$attendees = array();
 
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
 		if ( ! $user_id ) {
-			$all_attendees = Tribe__Tickets__Tickets::get_event_attendees( $event_id );
-		} else {
-			// If we have a user_id then limit by that.
-			$args = [
-				'user' => $user_id,
-			];
-
-			$all_attendees = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
+			return $rsvp->get_attendees_by_id( $event_id );
 		}
 
-		foreach ( $all_attendees as $key => $attendee ) {
-			// Skip Non RSVP
-			if ( 'rsvp' !== $attendee['provider_slug'] ) {
-				continue;
-			}
-
-			$attendees[] = $attendee;
-		}
-
-		return $attendees;
+		return $rsvp->get_attendees_by_user_id( $user_id, $event_id );
 	}
 
 	/**
@@ -684,8 +675,14 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_rsvp_attendees( $event_id, $user_id = null ) {
-		$rsvp_orders = $this->get_event_rsvp_attendees( $event_id, $user_id );
-		return count( $rsvp_orders );
+		/** @var Tribe__Tickets__RSVP $rsvp */
+		$rsvp = tribe( 'tickets.rsvp' );
+
+		if ( ! $user_id ) {
+			return $rsvp->get_attendees_count( $event_id );
+		}
+
+		return $rsvp->get_attendees_count_by_user( $event_id, $user_id );
 	}
 
 	/**
@@ -696,12 +693,11 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_ticket_attendees( $event_id, $user_id = null ) {
-		$ticket_orders = $this->get_event_attendees_by_order( $event_id, $user_id );
-		$i = 0;
-		foreach ( $ticket_orders as $orders ) {
-			$i += count( $orders );
+		if ( ! $user_id ) {
+			return Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
 		}
-		return $i;
+
+		return Tribe__Tickets__Tickets::get_event_attendees_count_by_user( $event_id, $user_id );
 	}
 
 	/**
@@ -712,7 +708,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function has_rsvp_attendees( $event_id, $user_id = null ) {
-		$rsvp_orders = $this->get_event_rsvp_attendees( $event_id, $user_id );
+		$rsvp_orders = $this->count_rsvp_attendees( $event_id, $user_id );
 		return ! empty( $rsvp_orders );
 	}
 
@@ -724,7 +720,7 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function has_ticket_attendees( $event_id, $user_id = null ) {
-		$ticket_orders = $this->get_event_attendees_by_order( $event_id, $user_id );
+		$ticket_orders = $this->count_ticket_attendees( $event_id, $user_id );
 		return ! empty( $ticket_orders );
 	}
 
