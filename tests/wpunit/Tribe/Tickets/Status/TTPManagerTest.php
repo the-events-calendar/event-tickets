@@ -190,11 +190,11 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 				'_capacity' => 50,
 			]
 		] );
-		$this->generate_orders( $event_id, [ $ticket_id ], 5, 4, 'completed' );
-		$this->generate_orders( $event_id, [ $ticket_id ], 2, 1, 'pending-payment' );
-		$this->generate_orders( $event_id, [ $ticket_id ], 3, 1, 'refunded' );
-		$this->generate_orders( $event_id, [ $ticket_id ], 2, 1, 'denied' );
-		$this->generate_orders( $event_id, [ $ticket_id ], 1, 1, 'undefined' );
+		$this->create_paypal_orders( $event_id, $ticket_id, 5, 4, 'completed' );
+		$this->create_paypal_orders( $event_id, $ticket_id, 2, 1, 'pending-payment' );
+		$this->create_paypal_orders( $event_id, $ticket_id, 3, 1, 'refunded' );
+		$this->create_paypal_orders( $event_id, $ticket_id, 2, 1, 'denied' );
+		$this->create_paypal_orders( $event_id, $ticket_id, 1, 1, 'undefined' );
 		$paypal_tickets = Tickets::get_event_tickets( $event_id );
 
 		$report = new TPPOrderReport();
@@ -241,8 +241,8 @@ class TTPManagerTest extends \Codeception\TestCase\WPTestCase {
 				'_capacity' => 20,
 			]
 		] );
-		$this->generate_orders( $event_id, [ $ticket_id_1 ], 5, 3, 'completed' );
-		$this->generate_orders( $event_id, [ $ticket_id_2 ], 3, 2, 'completed' );
+		$this->create_paypal_orders( $event_id, $ticket_id_1, 5, 3 );
+		$this->create_paypal_orders( $event_id, $ticket_id_2, 3, 2 );
 		$paypal_tickets = Tickets::get_event_tickets( $event_id );
 
 		$report = new TPPOrderReport();
