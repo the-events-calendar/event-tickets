@@ -981,17 +981,23 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Stock Adjustment handled by $this->update_stock_from_attendees_page()
 
-		//Store name so we can still show it in the attendee list
-		$attendees      = $this->get_attendees_by_ticket_id( $ticket_id );
+		// Store name so we can still show it in the attendee list
+		$attendees = [];
+
+		if ( get_post_type( $ticket_id ) === $this->ticket_object ) {
+			$attendees = $this->get_attendees_by_ticket_id( $ticket_id );
+		}
+
 		$post_to_delete = get_post( $ticket_id );
 
-		foreach ( (array) $attendees as $attendee ) {
+		// Loop through attendees of ticket (if deleting ticket and not a specific attendee).
+		foreach ( $attendees as $attendee ) {
 			update_post_meta( $attendee['attendee_id'], $this->deleted_product, esc_html( $post_to_delete->post_title ) );
 		}
 
 		// Try to kill the actual ticket/attendee post
 		$delete = wp_delete_post( $ticket_id, true );
-		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
+		if ( ! isset( $delete->ID ) || is_wp_error( $delete ) ) {
 			return false;
 		}
 
