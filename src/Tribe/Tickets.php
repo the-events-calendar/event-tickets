@@ -266,6 +266,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $attendee_optout_key = '';
 
 		/**
+		 * The provider used for Attendees and Tickets ORM.
+		 *
+		 * @var string
+		 */
+		public $orm_provider = 'default';
+
+		/**
 		 * Returns link to the report interface for sales for an event or
 		 * null if the provider doesn't have reporting capabilities.
 		 *
@@ -629,7 +636,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function get_attendees_by_post_id( $event_id ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
+			$repository = tribe_attendees( $this->orm_provider );
 
 			return self::get_attendees_from_modules( $repository->by( 'event', $event_id )->all(), $event_id );
 		}
@@ -645,7 +652,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function get_attendees_by_ticket_id( $ticket_id ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
+			$repository = tribe_attendees( $this->orm_provider );
 
 			return self::get_attendees_from_modules( $repository->by( 'ticket', $ticket_id )->all() );
 		}
@@ -682,7 +689,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
+			$repository = tribe_attendees( $this->orm_provider );
 
 			$repository->by( 'order', $order_id );
 
@@ -704,7 +711,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		protected function get_attendees_by_attendee_id( $attendee_id ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
+			$repository = tribe_attendees( $this->orm_provider );
 
 			return self::get_attendees_from_modules( $repository->by( 'id', $attendee_id )->all() );
 		}

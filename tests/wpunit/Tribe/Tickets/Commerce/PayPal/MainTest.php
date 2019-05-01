@@ -6,6 +6,7 @@ use Tribe\Tickets\Test\Commerce\Test_Case;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Order_Maker as PayPal_Order_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Commerce__PayPal__Main as Main;
 use Tribe__Tickets__Data_API as Data_API;
 use Prophecy\Argument;
@@ -15,6 +16,7 @@ class MainTest extends Test_Case {
 	use Attendee_Maker;
 	use PayPal_Ticket_Maker;
 	use PayPal_Order_Maker;
+	use RSVP_Ticket_Maker;
 
 	public function setUp() {
 		// before
@@ -43,7 +45,6 @@ class MainTest extends Test_Case {
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
-
 	}
 
 	public function dont_die() {
@@ -84,10 +85,14 @@ class MainTest extends Test_Case {
 
 		$base_data = $this->make_base_data();
 
-		$post_id   = $base_data['post_id'];
-		$ticket_id = $base_data['ticket_id'];
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
 
 		$this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -108,10 +113,14 @@ class MainTest extends Test_Case {
 
 		$base_data = $this->make_base_data();
 
-		$post_id   = $base_data['post_id'];
-		$ticket_id = $base_data['ticket_id'];
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
 
 		$this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -150,10 +159,14 @@ class MainTest extends Test_Case {
 
 		$base_data = $this->make_base_data();
 
-		$post_id   = $base_data['post_id'];
-		$ticket_id = $base_data['ticket_id'];
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
 
 		$this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$attendees = $sut->get_attendees_array( $post_id );
 
@@ -170,10 +183,14 @@ class MainTest extends Test_Case {
 
 		$base_data = $this->make_base_data();
 
-		$post_id   = $base_data['post_id'];
-		$ticket_id = $base_data['ticket_id'];
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
 
 		$this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$attendees = $sut->get_attendees_by_id( $post_id );
 
@@ -190,10 +207,14 @@ class MainTest extends Test_Case {
 
 		$base_data = $this->make_base_data();
 
-		$post_id   = $base_data['post_id'];
-		$ticket_id = $base_data['ticket_id'];
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
 
 		$generated = $this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -217,10 +238,14 @@ class MainTest extends Test_Case {
 
 		$base_data = $this->make_base_data();
 
-		$post_id   = $base_data['post_id'];
-		$ticket_id = $base_data['ticket_id'];
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
 
 		$this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$attendees = $sut->get_attendees_by_id( $ticket_id );
 
@@ -237,10 +262,14 @@ class MainTest extends Test_Case {
 
 		$base_data = $this->make_base_data();
 
-		$post_id   = $base_data['post_id'];
-		$ticket_id = $base_data['ticket_id'];
+		$post_id        = $base_data['post_id'];
+		$ticket_id      = $base_data['ticket_id'];
+		$rsvp_ticket_id = $base_data['rsvp_ticket_id'];
 
 		$this->create_paypal_orders( $post_id, $ticket_id, 10 );
+
+		// Create RSVP attendees to ensure only the expected attendees get returned.
+		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$test_attendees = $sut->get_attendees_array( $post_id );
 
@@ -291,12 +320,21 @@ class MainTest extends Test_Case {
 			],
 		] );
 
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'total_sales' => $sales,
+				'_stock'      => $stock,
+				'_capacity'   => $stock + $sales,
+			],
+		] );
+
 		$user_id = $this->factory()->user->create();
 
 		return [
-			'post_id'   => $post_id,
-			'ticket_id' => $ticket_id,
-			'user_id'   => $user_id,
+			'post_id'        => $post_id,
+			'ticket_id'      => $ticket_id,
+			'rsvp_ticket_id' => $rsvp_ticket_id,
+			'user_id'        => $user_id,
 		];
 	}
 }
