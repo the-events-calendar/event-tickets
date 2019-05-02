@@ -141,7 +141,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.4.4] 2019-05-02 =
 
-* Fix - Prevent Composer autoloader from throwing Fatal due to unexistent `setClassMapAuthoritative()` method as the previous fix only applied to coordinated The Events Calendar release [126590]
+* Fix - Prevent Composer autoloader from throwing Fatal due to unexistent `setClassMapAuthoritative()` method as the previous fix only applied to coordinated The Events Calendar release [126988]
 
 = [4.10.4.3] 2019-04-26 =
 
