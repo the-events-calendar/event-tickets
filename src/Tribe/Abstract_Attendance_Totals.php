@@ -73,7 +73,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_completed_tooltip() {
-		$message = _x( 'Pending order completion counts tickets from orders with the following statuses:', 'total complete tooltip', 'event-tickets' );
+		$message = _x( 'This pertains to Orders that have been marked Completed.', 'total complete tooltip', 'event-tickets' );
 		$args    = [ 'classes' => 'required' ];
 
 		return tribe( 'tooltip.view' )->render_tooltip( $message, $args );
