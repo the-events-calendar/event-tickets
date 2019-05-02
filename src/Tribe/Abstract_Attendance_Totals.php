@@ -59,7 +59,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	 * @return string a string of html for the tooltip
 	 */
 	public function get_total_sold_tooltip() {
-		$message = _x( 'No matter what the status is, Total Tickets Issued includes how many tickets that have gone through the order process.', 'total sold tooltip', 'event-tickets' );
+		$message = _x( 'Includes all ticketed attendees regardless of order status.', 'total sold tooltip', 'event-tickets' );
 		$args = [ 'classes' => 'required' ];
 
 		return tribe( 'tooltip.view' )->render_tooltip( $message, $args  );
