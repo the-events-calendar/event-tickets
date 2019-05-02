@@ -130,13 +130,19 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Update status manage to accept provider names or abbreviations [120862]
 * Tweak - In the Ticket Block add link to EDD Orders Page [121440]
 * Tweak - Change "Attendee Registration" to "Attendee Information" in several locations [126038]
+* Tweak - Exclude WooCommerce Product and EDD Downloads as supported post types when saving for tickets to prevent recursion errors, in case they were previously saved before we removed them from the options list [126749]
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
+* Fix - Change `inventory` to compare the correct ticket when checking event shared capacity [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
 * Fix - On deletion of an attendee update the shared capacity for Tribe Commerce Tickets [106516]
 * Fix - On the Attendee page use the shared capacity in Overview if ticket has it enabled  [106516]
 * Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
 * Fix - Correct escaping on attendee registration shortcode [125964]
 * Fix - Fix error with creating new ticket in block editor [126266]
+
+= [4.10.4.4] 2019-05-02 =
+
+* Fix - Prevent Composer autoloader from throwing Fatal due to unexistent `setClassMapAuthoritative()` method as the previous fix only applied to coordinated The Events Calendar release [126988]
 
 = [4.10.4.3] 2019-04-26 =
 
@@ -164,6 +170,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Change attendee registration page shortcode to use ID instead of page slug, add function for backward compatibility [124997]
 * Tweak - Added filters: `tribe_attendee_registration_form_no_provider_class`, `tribe_attendee_registration_form_classes`, `tribe_attendee_registration_form_class`
 * Tweak - Changed views: `blocks/rsvp/form/quantity`, `blocks/rsvp/icon-svg`, `blocks/rsvp/status/going-icon`, `blocks/rsvp/status/going`, `blocks/rsvp/status/not-going-icon`, `blocks/rsvp/status/not-going`, `registration/content`
+* Tweak - Changed some attendee report tooltip text to clarify capacity/inventory/stock and added a link for more information about Availability [126342]
 * Fix - Change RSVP import identifier in CSV importer so it provides the correct response message [124052]
 * Fix - Filter the Attendee Registration display to only show tickets for the current provider and add provider to Attendee Registration URL [122317]
 * Fix - Prevent potential PayPal issues by not allowing $0 tickets in the block editor for Tribe Commerce [123835]
@@ -171,6 +178,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Tidy attendee list print styles [125299]
 * Fix - Use tribe.context->doing_cron to avoid issues with WordPress versions before 4.8 [26111]
 * Fix - Prevent PHP notices when looking for a template that does not exist in `tribe_tickets_get_template_part()` (props @stian-overasen) [125913]
+* Fix - Correct issue with attendee registration information not saving on shortcode page [125964]
 * Language - 1 new strings added, 46 updated, 0 fuzzied, and 1 obsoleted
 
 = [4.10.3] 2019-04-17 =

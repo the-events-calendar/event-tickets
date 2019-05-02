@@ -543,6 +543,12 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$src_qty_sold       = (int) get_post_meta( $src_ticket_type_id, 'total_sales', true );
 			$tgt_qty_sold       = (int) get_post_meta( $tgt_ticket_type_id, 'total_sales', true );
 
+			//get stock levels for RSVP Tickets
+			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
+				$src_stock = (int) get_post_meta( $src_ticket_type_id, '_stock', true );
+				$tgt_stock = (int) get_post_meta( $tgt_ticket_type_id, '_stock', true );
+			}
+
 			/**
 			 * Fires immediately before a ticket is moved.
 			 *
@@ -594,6 +600,14 @@ class Tribe__Tickets__Admin__Move_Tickets {
 			$tgt_qty_sold++;
 			update_post_meta( $src_ticket_type_id, 'total_sales', $src_qty_sold );
 			update_post_meta( $tgt_ticket_type_id, 'total_sales', $tgt_qty_sold );
+
+			//adjust stock numbers for RSVP Tickets
+			if ( 'Tribe__Tickets__RSVP' === $ticket['provider'] ) {
+				$src_stock ++;
+				$tgt_stock --;
+				update_post_meta( $src_ticket_type_id, '_stock', $src_stock );
+				update_post_meta( $tgt_ticket_type_id, '_stock', $tgt_stock );
+			}
 
 			$history_message = sprintf(
 				__( 'This ticket was moved to %1$s %2$s from %3$s %4$s', 'event-tickets' ),
