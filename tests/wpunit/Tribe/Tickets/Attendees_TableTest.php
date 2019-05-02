@@ -121,7 +121,14 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$_REQUEST['s'] = 'rob';
 
 		$_GET['event_id'] = $post_id;
+
+		// Only use our search key to ensure we are testing the correct matching.
+		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
+			return [ 'purchaser_name' ];
+		} );
+
 		$sut->prepare_items();
+
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
 		$this->assertEqualSets( [ $search_attendee_id ], $attendee_ids );
@@ -153,7 +160,14 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$_REQUEST['s'] = 'likestests';
 
 		$_GET['event_id'] = $post_id;
+
+		// Only use our search key to ensure we are testing the correct matching.
+		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
+			return [ 'purchaser_email' ];
+		} );
+
 		$sut->prepare_items();
+
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
 		$this->assertEqualSets( [ $search_attendee_id ], $attendee_ids );
@@ -172,14 +186,21 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
-		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id, [ 'post_title' => 'Rob loves only the best of tests' ] );
+		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = 'Rob loves only';
+		$_REQUEST['s'] = $rsvp_ticket_id;
 
 		$_GET['event_id'] = $post_id;
+
+		// Only use our search key to ensure we are testing the correct matching.
+		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
+			return [ 'product_id' ];
+		} );
+
 		$sut->prepare_items();
+
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
 		$this->assertEqualSets( $rsvp_attendee_ids, $attendee_ids );
@@ -211,7 +232,14 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$_REQUEST['s'] = 'robba';
 
 		$_GET['event_id'] = $post_id;
+
+		// Only use our search key to ensure we are testing the correct matching.
+		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
+			return [ 'security_code' ];
+		} );
+
 		$sut->prepare_items();
+
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
 		$this->assertEqualSets( [ $search_attendee_id ], $attendee_ids );
@@ -243,7 +271,14 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$_REQUEST['s'] = '1234';
 
 		$_GET['event_id'] = $post_id;
+
+		// Only use our search key to ensure we are testing the correct matching.
+		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
+			return [ 'user' ];
+		} );
+
 		$sut->prepare_items();
+
 		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
 
 		$this->assertEqualSets( [ $search_attendee_id ], $attendee_ids );
