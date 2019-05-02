@@ -172,11 +172,11 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
 
 		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
-		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
+		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id, [ 'post_title' => 'Rob loves only the best of tests' ] );
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = $rsvp_ticket_id;
+		$_REQUEST['s'] = 'Rob loves only';
 
 		$_GET['event_id'] = $post_id;
 		$sut->prepare_items();
