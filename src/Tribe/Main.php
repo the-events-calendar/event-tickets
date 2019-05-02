@@ -11,7 +11,7 @@ class Tribe__Tickets__Main {
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_TEC_VERSION = '4.9-dev';
+	const MIN_TEC_VERSION = '4.9.0.3-dev';
 
 	/**
 	 * Min required version of Tribe Common
