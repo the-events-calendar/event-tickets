@@ -84,7 +84,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		$must_login = ! is_user_logged_in() && $this->main->login_required();
 
 		/**
-		 * Controls the visibility of the "Log it before purchasing" link below the tickets form
+		 * Controls the visibility of the "Log in before purchasing" link below the tickets form
 		 * for TPP tickets
 		 *
 		 * @since 4.9.3

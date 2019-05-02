@@ -52,6 +52,13 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 				name="<?php echo 'event' . esc_attr( $event_id ); ?>"
 				novalidate
 			>
+				<?php $is_tpp =  'tpp' === substr( $provider_class, -3 )?>
+				<?php if ( $is_tpp ) : ?>
+					<?php $product_id = $tickets[0]['id']; ?>
+					<input type="hidden" name="product_id" value="<?php esc_attr_e( $product_id ); ?>" />
+					<input type="hidden" name="provider" value="Tribe__Tickets__Commerce__PayPal__Main" />
+					<input type="hidden" name="quantity_<?php esc_attr_e( $product_id ); ?>" value="<?php esc_attr_e( $tickets[0]['qty'] ); ?>" />
+				<?php endif; ?>
 				<?php $this->template( 'registration/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 				<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 				<?php if ( $has_tpp ) : ?>

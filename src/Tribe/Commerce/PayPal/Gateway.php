@@ -83,6 +83,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 	 * @since 4.7
 	 */
 	public function add_to_cart() {
+		bdump('add_to_cart');
 		global $post;
 
 		/**
@@ -96,9 +97,9 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		// bail if this isn't a Tribe Commerce PayPal ticket
 		if (
-			empty( $_POST['product_id'] )
-			|| empty( $_POST['provider'] )
-			|| 'Tribe__Tickets__Commerce__PayPal__Main' !== $_POST['provider']
+			empty( $_POST[ 'product_id' ] )
+			|| empty( $_POST[ 'provider' ] )
+			|| 'Tribe__Tickets__Commerce__PayPal__Main' !== $_POST[ 'provider' ]
 		) {
 			return;
 		}
@@ -106,7 +107,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$cart_url      = $this->get_cart_url( '_cart' );
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
-		$product_ids   = $_POST['product_id'];
+		$product_ids   = (array) $_POST[ 'product_id' ];
 
 		$notify_url = tribe_get_option( 'ticket-paypal-notify-url', home_url() );
 
@@ -175,6 +176,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 				! $ticket->is_in_stock()
 				|| ! $ticket->date_in_range()
 			) {
+				bdump('ticket error');
 				continue;
 			}
 
@@ -188,6 +190,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 			// if the ticket doesn't have a quantity, skip it
 			if ( empty( $quantity ) ) {
+				bdump('empty quantity');
 				continue;
 			}
 
@@ -205,6 +208,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 
 		// If there isn't a quantity at all, then there's nothing to purchase. Redirect with an error
 		if ( empty( $args['quantity'] ) || ! is_numeric( $args['quantity'] ) || (int) $args['quantity'] < 1 ) {
+			bdump('die');
 			/**
 			 * @see Tribe__Tickets__Commerce__PayPal__Errors::error_code_to_message for error codes
 			 */
