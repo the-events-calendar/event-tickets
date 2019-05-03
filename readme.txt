@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.1.1
-Stable tag: 4.10.4.3
+Stable tag: 4.10.4.4
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -117,18 +117,22 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.4.4] 2019-05-03 =
+
+* Fix - Prevent Composer autoloader from throwing Fatal due to non-existent `setClassMapAuthoritative()` method as the previous fix only applied to coordinated The Events Calendar release [126988]
+
 = [4.10.4.3] 2019-04-26 =
 
-* Fix - Prevent Composer autoloader from throwing Fatal due to unexistent `setClassMapAuthoritative()` method [126590]
+* Fix - Prevent Composer autoloader from throwing Fatal due to non-existent `setClassMapAuthoritative()` method [126590]
 
 = [4.10.4.2] 2019-04-25 =
 
-* Fix - Avoid fatals due to Events Query method not been present by bumping version of The Events Calendar required to 4.9.0.2
+* Fix - Avoid fatal errors due to Events Query method not been present by bumping version of The Events Calendar required to 4.9.0.2
 
 = [4.10.4.1] 2019-04-25 =
 
 * Fix - Fix error with creating new ticket in block editor [126266]
-* Fix - Prevent PHP fatals with Tribe__Util__Array aliases
+* Fix - Prevent PHP fatal errors with Tribe__Util__Array aliases
 
 = [4.10.4] 2019-04-23 =
 
