@@ -2,13 +2,13 @@
 /**
  * A decorator of the Event repository to add and replace some tickets related functions.
  *
- * @since TBD
+ * @since 4.10.4
  */
 
 /**
  * Class Tribe__Tickets__Event_Repository
  *
- * @since TBD
+ * @since 4.10.4
  */
 class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 
@@ -17,7 +17,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 *
 	 * Gets the current event repository instance to add or replace some filters in it.
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 */
 	public function __construct() {
 		$this->decorated = tribe( 'events.event-repository' );
@@ -31,7 +31,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 * A re-implementation of the base `filter_by_cost` method to filter events by related
 	 * ticket costs in place of their own cost meta.
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param float|array $value       The cost to use for the comparison; in the case of `BETWEEN`, `NOT BETWEEN`,
 	 *                                 `IN` and `NOT IN` operators this value should be an array.
@@ -128,7 +128,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 * WooCommerce tickets use the "USD" code means "only fetch events that have WooCommerce
 	 * tickets".
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param string|array $symbol One or more currency symbols or currency ISO codes. E.g.
 	 *                             "$" and "USD".
@@ -210,7 +210,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	 * This does NOT include RSVPs or events that have a cost assigned via the
 	 * cost custom field.
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param bool $has_tickets Indicates if the event should have ticket types attached to it or not.
 	 */
@@ -239,7 +239,7 @@ class Tribe__Tickets__Event_Repository extends Tribe__Repository__Decorator {
 	/**
 	 * Filters events to include only those that match the provided RSVP state.
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @param bool $has_rsvp Indicates if the event should have RSVP tickets attached to it or not.
 	 */

@@ -153,4 +153,49 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		return $provider->get_cart_url();
 	}
+
+	/**
+	 * Given a provider, get the class to be applied to the attendee registration form
+	 * @since 4.10.4
+	 *
+	 * @param string $provider the provider/attendee object name indicating ticket porovider
+	 *
+	 * @return string the class string or empty string if provider not found
+	 */
+	public function get_form_class( $provider ) {
+		$class = '';
+
+		if ( empty( $provider ) ) {
+			/**
+			 * Allows filterting the class before returning it in the case of no provider.
+			 *
+			 * @since 4.10.4
+			 *
+			 * @param string $class The (empty) class string.
+			 */
+			return apply_filters( 'tribe_attendee_registration_form_no_provider_class', $class );
+		}
+
+		/**
+		 * Allow providers to include their own strings/suffixes.
+		 *
+		 * @since 4.10.4
+		 *
+		 * @param array $provider_classes in format $provider -> class suffix.
+		 */
+		$provider_classes = apply_filters( 'tribe_attendee_registration_form_classes', [] );
+
+		if ( array_key_exists( $provider, $provider_classes ) ) {
+			$class = 'tribe-block__tickets__item__attendee__fields__form--' . $provider_classes[ $provider ];
+		}
+
+		/**
+		 * Allows filterting the class before returning it.
+		 *
+		 * @since 4.10.4
+		 *
+		 * @param string $class The class string.
+		 */
+		return apply_filters( 'tribe_attendee_registration_form_class', $class );
+	}
 }

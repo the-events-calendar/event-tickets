@@ -70,6 +70,13 @@ describe( 'Details reducer', () => {
 		) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the is modal open', () => {
+		expect( reducer(
+			DEFAULT_STATE,
+			actions.setTicketIsModalOpen( 'block-id', true ),
+		) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the has been created', () => {
 		expect( reducer(
 			DEFAULT_STATE,

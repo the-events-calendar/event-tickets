@@ -672,7 +672,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Get the Event ID ( Post ID ) of the Current Attendees Table
 	 *
-	 * @since TBD
+	 * @since 4.10.4
 	 *
 	 * @return int $event_id the event or post id for the attendee table
 	 */
@@ -733,7 +733,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Process the deletion of selected attendees from the Attendees table.
 	 *
-	 * @since TBD add redirect after completing action
+	 * @since 4.10.4 add redirect after completing action
 	 *
 	 */
 	protected function do_delete() {

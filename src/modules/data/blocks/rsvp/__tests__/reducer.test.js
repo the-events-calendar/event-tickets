@@ -38,6 +38,10 @@ describe( 'RSVP block reducer', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPIsSettingsLoading( true ) ) ).toMatchSnapshot();
 	} );
 
+	it( 'should set the is modal open', () => {
+		expect( reducer( DEFAULT_STATE, actions.setRSVPIsModalOpen( true ) ) ).toMatchSnapshot();
+	} );
+
 	it( 'should set the going count', () => {
 		expect( reducer( DEFAULT_STATE, actions.setRSVPGoingCount( 10 ) ) ).toMatchSnapshot();
 	} );

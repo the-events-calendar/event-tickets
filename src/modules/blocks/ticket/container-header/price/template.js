@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { SUFFIX, PRICE_POSITIONS } from '@moderntribe/tickets/data/blocks/ticket/constants';
+import { PREFIX, SUFFIX, PRICE_POSITIONS } from '@moderntribe/tickets/data/blocks/ticket/constants';
 import './style.pcss';
 
 const TicketContainerHeaderPriceInput = ( {
@@ -23,11 +23,13 @@ const TicketContainerHeaderPriceInput = ( {
 	onTempPriceChange,
 	tempPrice,
 } ) => {
-	const priceInput = (
+	return (
 		<Fragment>
-			<span className="tribe-editor__ticket__container-header-price-currency">
-				{ currencySymbol }
-			</span>
+			{ currencyPosition === PREFIX && (
+				<span className="tribe-editor__ticket__container-header-price-currency">
+					{ currencySymbol }
+				</span>
+			) }
 			<AutosizeInput
 				className="tribe-editor__ticket__container-header-price-input"
 				value={ tempPrice }
@@ -37,10 +39,13 @@ const TicketContainerHeaderPriceInput = ( {
 				type="number"
 				min="0"
 			/>
+			{ currencyPosition === SUFFIX && (
+				<span className="tribe-editor__ticket__container-header-price-currency">
+					{ currencySymbol }
+				</span>
+			) }
 		</Fragment>
 	);
-
-	return currencyPosition === SUFFIX ? priceInput.reverse() : priceInput;
 };
 
 TicketContainerHeaderPriceInput.propTypes = {
@@ -56,18 +61,23 @@ const TicketContainerHeaderPriceLabel = ( {
 	currencySymbol,
 	price,
 } ) => {
-	const priceLabel = (
+	return (
 		<Fragment>
-			<span className="tribe-editor__ticket__container-header-price-currency">
-				{ currencySymbol }
-			</span>
+			{ currencyPosition === PREFIX && (
+				<span className="tribe-editor__ticket__container-header-price-currency">
+					{ currencySymbol }
+				</span>
+			) }
 			<span className="tribe-editor__ticket__container-header-price-value">
 				{ price }
 			</span>
+			{ currencyPosition === SUFFIX && (
+				<span className="tribe-editor__ticket__container-header-price-currency">
+					{ currencySymbol }
+				</span>
+			) }
 		</Fragment>
 	);
-
-	return currencyPosition === SUFFIX ? priceLabel.reverse() : priceLabel;
 };
 
 TicketContainerHeaderPriceLabel.propTypes = {
