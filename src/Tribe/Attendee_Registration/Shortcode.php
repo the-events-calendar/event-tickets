@@ -66,14 +66,16 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 				'value'  => [],
 				'type'   => [],
 				'action' => [],
+				'method' => [],
 			],
 			// form fields - input
 			'input' => [
-				'class' => [],
-				'id'    => [],
-				'name'  => [],
-				'value' => [],
-				'type'  => [],
+				'class'   => [],
+				'id'      => [],
+				'name'    => [],
+				'value'   => [],
+				'type'    => [],
+				'checked' => [],
 			],
 			// select
 			'select' => [
