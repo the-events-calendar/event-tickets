@@ -3,20 +3,18 @@
 namespace Tribe\Tickets;
 
 use Tribe\Events\Test\Factories\Event;
+use Tribe__Tickets__Status__Manager as Manager;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Order_Maker as PayPal_Order_Maker;
 use Tribe__Tickets__Commerce__PayPal__Attendance_Totals as Tickets__Attendance;
 
-
 /**
- * Test Calculations
+ * Test Status TTPManager
  *
- * @since TBD
+ * @group   core
  *
- * Class AttendanceTotalsTest
- *
- * @package Tribe\Tickets
+ * @package Tribe__Tickets__Commerce__PayPal__Status_Manager
  */
 class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
@@ -25,6 +23,7 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 	use Attendee_Maker;
 
 	public function setUp() {
+
 		// before
 		parent::setUp();
 
@@ -44,13 +43,26 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 			return $modules;
 		} );
+	}
 
+	public function dont_die() {
+		// no-op, go on
 	}
 
 	public function tearDown() {
 		// your tear down methods here
+
 		// then
 		parent::tearDown();
+	}
+
+	/**
+	 * Use to initialize TPP with status manager to prevent undefined error
+	 */
+	private function set_ttp_with_status_manager() {
+		tribe_update_option( 'ticket-paypal-enable', true );
+
+		Manager::get_instance()->setup();
 	}
 
 	/**
@@ -59,19 +71,89 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	public function it_should_count_total_sold_attendees_correctly() {
 
-		$event_id          = $this->factory()->event->create();
-		$tpp_id           = $this->create_paypal_ticket( $event_id, 5 );
-		$this->generate_orders( $event_id, [ $tpp_id ], 10, 1, 'completed' );
-		//$created_attendees = $this->create_many_attendees_for_ticket( 10, $tpp_id, $event_id );
+		$this->set_ttp_with_status_manager();
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 4, [
+			'meta_input' => [
+				'_stock'    => 50,
+				'_capacity' => 50,
+			]
+		] );
 
+		$this->create_paypal_orders( $event_id, $ticket_id, 5, 4, 'completed' );
 		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$total_sold       = $Tickets__Attendance->get_total_sold();
+		$total       = $Tickets__Attendance->get_total_sold();
 
-		$this->assertEquals( 10, $total_sold );
+		$this->assertEquals( 20, $total );
 
 	}
 
-// get_total_pending()
-//get_total_complete()
-//get_total_cancelled()
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_should_count_total_pending_attendees_correctly() {
+
+		$this->set_ttp_with_status_manager();
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 5, [
+			'meta_input' => [
+				'_stock'    => 50,
+				'_capacity' => 50,
+			]
+		] );
+		$this->create_paypal_orders( $event_id, $ticket_id, 1, 1, 'pending-payment' );
+		$Tickets__Attendance = new Tickets__Attendance( $event_id );
+		$total       = $Tickets__Attendance->get_total_pending();
+
+		$this->assertEquals( 1, $total );
+
+	}
+
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_should_count_total_complete_attendees_correctly() {
+
+		$this->set_ttp_with_status_manager();
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 2, [
+			'meta_input' => [
+				'_stock'    => 50,
+				'_capacity' => 50,
+			]
+		] );
+
+		$this->create_paypal_orders( $event_id, $ticket_id, 2, 10, 'completed' );
+		$Tickets__Attendance = new Tickets__Attendance( $event_id );
+		$total       = $Tickets__Attendance->get_total_complete();
+
+		$this->assertEquals( 20, $total );
+
+	}
+
+	/**
+	 * @test
+	 * @since TBD
+	 */
+	public function it_should_count_total_cancelled_attendees_correctly() {
+
+		$this->set_ttp_with_status_manager();
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 10, [
+			'meta_input' => [
+				'_stock'    => 50,
+				'_capacity' => 50,
+			]
+		] );
+
+		$this->create_paypal_orders( $event_id, $ticket_id, 3, 2, 'denied' );
+		$Tickets__Attendance = new Tickets__Attendance( $event_id );
+		$total       = $Tickets__Attendance->get_total_cancelled();
+
+		$this->assertEquals( 6, $total );
+
+	}
+
 }
