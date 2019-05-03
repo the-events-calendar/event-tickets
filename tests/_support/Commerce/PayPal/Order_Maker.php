@@ -4,36 +4,44 @@ namespace Tribe\Tickets\Test\Commerce\PayPal;
 
 use Faker;
 use Tribe__Tickets__Commerce__PayPal__Stati as Stati;
+use Tribe__Tickets__Commerce__PayPal__Main as Main;
+use Tribe__Tickets__Commerce__PayPal__Gateway as Gateway;
 
 trait Order_Maker {
 
 	/**
 	 * Generates the PayPal orders for a post.
 	 *
-	 * @since TBD
+	 * @param int         $post_id
+	 * @param int|array   $ticket_ids
+	 * @param int         $ticket_count
+	 * @param int         $orders_count
+	 * @param string|null $order_status
+	 * @param bool        $dont_send_emails
 	 *
-	 * @param array $args
-	 * @param array $assoc_args
+	 * @return array
 	 */
-	protected function generate_orders( $post_id, array $ticket_ids, $ticket_count, $orders_count, $order_status, $dont_send_emails=true ) {
-
-		$order_status = $this->parse_order_status( $order_status );
+	protected function create_paypal_orders( $post_id, $ticket_ids, $ticket_count, $orders_count = 1, $order_status = null, $dont_send_emails = true ) {
+		$order_status           = $this->parse_order_status( $order_status );
 		$this->dont_send_emails = $dont_send_emails;
 
-		$generated = array();
+		$ticket_ids = (array) $ticket_ids;
+
+		$generated = [];
 
 		for ( $k = 0; $k < $orders_count; $k ++ ) {
 			$user_id    = 0;
-			$ticket_qty = array();
+			$ticket_qty = [];
+
 			foreach ( $ticket_ids as $ticket_id ) {
 				$ticket_qty[ $ticket_id ] = $ticket_count;
 			}
 
-			$items_data    = array();
+			$items_data    = [];
 			$items_index   = 1;
 			$payment_gross = 0;
 
-			/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+			/** @var Main $paypal */
 			$paypal = tribe( 'tickets.commerce.paypal' );
 
 			foreach ( $ticket_ids as $ticket_id ) {
@@ -41,7 +49,7 @@ trait Order_Maker {
 				//$post_id         = (int) get_post_meta( $ticket_id, $paypal->event_key, true );
 
 				$ticket = $paypal->get_ticket( $post_id, $ticket_id );
-				$post = get_post( $post_id );
+				$post   = get_post( $post_id );
 				//$this->backup_ticket_total_sales( $ticket_id );
 				//$this->backup_ticket_stock( $ticket_id );
 
@@ -51,7 +59,7 @@ trait Order_Maker {
 
 				$this_ticket_qty = - 1 === $inventory ? $this_ticket_qty : min( $this_ticket_qty, (int) $inventory );
 
-				if ( $this_ticket_qty === 0 ) {
+				if ( 0 === $this_ticket_qty ) {
 					continue;
 				}
 
@@ -60,7 +68,7 @@ trait Order_Maker {
 				$mc_gross      = $ticket->price * $this_ticket_qty;
 				$payment_gross += $mc_gross;
 
-				$items_data[] = array(
+				$items_data[] = [
 					"item_name{$items_index}"   => "{$ticket->name} - {$post->post_title}",
 					"item_number{$items_index}" => "{$post_id}:{$ticket_id}",
 					"mc_handling{$items_index}" => '0.00',
@@ -68,7 +76,7 @@ trait Order_Maker {
 					"mc_gross_{$items_index}"   => $this->signed_value( $mc_gross ),
 					"tax{$items_index}"         => '0.00',
 					"quantity{$items_index}"    => $this_ticket_qty,
-				);
+				];
 				$items_index ++;
 			}
 
@@ -91,7 +99,7 @@ trait Order_Maker {
 			$receiver_email = 'merchant@' . parse_url( home_url(), PHP_URL_HOST );
 			$payment_date   = $faker->date( 'H:i:s M d, Y e' );
 
-			$data = array(
+			$data = [
 				'last_name'              => $faker->lastName,
 				'shipping_method'        => 'Default',
 				'address_state'          => $faker->stateAbbr,
@@ -130,11 +138,11 @@ trait Order_Maker {
 				'discount'               => '0.00',
 				'payment_date'           => $payment_date,
 				'mc_handling'            => '0.00',
-			);
+			];
 
 			$data = array_merge( $data, $items_data );
 
-			if ( $order_status === Stati::$refunded ) {
+			if ( Stati::$refunded === $order_status ) {
 				// complete the order to be refunded before the refund
 				$data['payment_status'] = ucwords( Stati::$completed );
 				$this->order_status     = Stati::$completed;
@@ -151,10 +159,10 @@ trait Order_Maker {
 
 			$this->place_order( $order_status, $data );
 
-			$generated[] = array(
+			$generated[] = [
 				'Order ID'        => $transaction_id,
 				'Attendees count' => $ticket_qty,
-			);
+			];
 		}
 
 		return $generated;
@@ -163,24 +171,26 @@ trait Order_Maker {
 	/**
 	 * Parses and validate the user-provided PayPal order status.
 	 *
-	 * @since TBD
-	 *
-	 * @param array $assoc_args
+	 * @param string $order_status
 	 *
 	 * @return string
 	 */
 	protected function parse_order_status( $order_status ) {
+		if ( null === $order_status ) {
+			$order_status = Stati::$completed;
+		}
+
 		$order_status = trim( $order_status );
 
-		$supported_stati = array(
+		$supported_stati = [
 			Stati::$completed,
 			Stati::$pending,
 			Stati::$refunded,
 			Stati::$denied,
-		);
+		];
 
-		if ( ! in_array( $order_status, $supported_stati ) ) {
-			return "The {$order_status} order status is not valid or suported";
+		if ( ! in_array( $order_status, $supported_stati, true ) ) {
+			return "The {$order_status} order status is not valid or supported";
 		}
 
 		return $order_status;
@@ -188,9 +198,6 @@ trait Order_Maker {
 
 	/**
 	 * Hijack some PayPal related hooks to make all work.
-	 *
-	 * @since TBD
-	 *
 	 */
 	protected function hijack_request_flow() {
 		// all transactions are valid, we are generating fake numbers
@@ -202,7 +209,7 @@ trait Order_Maker {
 		} );
 
 		add_filter( 'tribe_tickets_tpp_order_postarr', function ( $postarr ) {
-			$postarr['meta_input'][ '_tribe_tests_generated' ] = 1;
+			$postarr['meta_input']['_tribe_tests_generated'] = 1;
 
 			return $postarr;
 		} );
@@ -221,8 +228,6 @@ trait Order_Maker {
 	 * Applies a signum to a number depending on the order status.
 	 *
 	 * Some order stati will require a negative value, e.g. refunds.
-	 *
-	 * @since TBD
 	 *
 	 * @param int $fee
 	 *
@@ -244,12 +249,12 @@ trait Order_Maker {
 	 * @return array
 	 */
 	protected function update_fees( array $data ) {
-		$fee_fields = array(
+		$fee_fields = [
 			'payment_fee',
 			'mc_fee',
 			'mc_gross',
 			'payment_gross',
-		);
+		];
 
 		foreach ( $fee_fields as $field ) {
 			if ( ! isset( $data[ $field ] ) ) {
@@ -265,18 +270,16 @@ trait Order_Maker {
 	/**
 	 * Places an Order using the PayPal code API.
 	 *
-	 * @since TBD
-	 *
 	 * @param array  $transaction_data
 	 * @param string $order_status
 	 */
 	protected function place_order( $order_status, $transaction_data ) {
 		$this->hijack_request_flow();
 
-		/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
+		/** @var Main $paypal */
 		$paypal = tribe( 'tickets.commerce.paypal' );
 
-		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		/** @var Gateway $gateway */
 		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
 
 		$gateway->set_raw_transaction_data( $transaction_data );
