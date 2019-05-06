@@ -284,7 +284,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * it should return correct number of tickets on event with mixed tickets
+	 * it should return correct number of tickets on event with mixed tickets & RSVPs
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */

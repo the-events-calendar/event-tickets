@@ -13,10 +13,11 @@ After cloning the ET repository on your local machine change directory to the pl
 Using `composer install` in place of `composer update` will ensure you are using working and known dependencies; only run `composer update` if you know what you are doing.
 When Composer finished the update process (might take a while) set up your own [Codeception](http://codeception.com/) installation to work in your local setup.
 Create a `codeception.yml` file in the plugin root folder with this content:
+_(note: if you copy/paste this, make sure it's using spaces and not tabs!)_
 
 ```yaml
 params:
-	- .env.local
+  - .env.local
 ```
 
 Codeception will process configuration files in a cascading way, think of CSS, so the `codeception.dist.yml` file will be read first and whatever you set in `codeception.yml` will be applied on top of it.
@@ -28,15 +29,15 @@ WP_ROOT_FOLDER="/Users/Luca/Sites/wp"
 WP_DOMAIN="tribe.test"
 WP_URL="http://tribe.test"
 WP_ADMIN_USERNAME="admin"
-WP_ADMIN_PASSWORD="secred"
-DB_HOST="db"
-DB_NAME="tribe"
-DB_USER="root"
-DB_PASSWORD="root"
-TEST_DB_HOST="db"
-TEST_DB_NAME="test"
-TEST_DB_USER="root"
-TEST_DB_PASSWORD="root"
+WP_ADMIN_PASSWORD="secret"
+WP_DB_HOST="db"
+WP_DB_NAME="tribe"
+WP_DB_USER="root"
+WP_DB_PASSWORD="root"
+WP_TEST_DB_HOST="db"
+WP_TEST_DB_NAME="test"
+WP_TEST_DB_USER="root"
+WP_TEST_DB_PASSWORD="root"
 ```
 
 If you look at any `tests/*.suite.dist.yml` file you will see that the configuration contains placeholders like `%WP_ROOT_FOLDER%` that [Codeception will configure at runtime](http://codeception.com/docs/06-ModulesAndHelpers#Dynamic-Configuration-With-Parameters).
