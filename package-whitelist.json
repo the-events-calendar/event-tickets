@@ -1,9 +1,7 @@
 [
   "common/lang/**/*",
-  "common/readme.txt",
   "common/src/**/*",
   "common/tribe-autoload.php",
-  "common/tribe-common.php",
   "common/vendor/a5hleyrich/wp-background-processing/*.php",
   "common/vendor/a5hleyrich/wp-background-processing/classes/**",
   "common/vendor/a5hleyrich/wp-background-processing/license.*",
