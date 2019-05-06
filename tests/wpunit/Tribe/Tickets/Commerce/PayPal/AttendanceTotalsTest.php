@@ -1,6 +1,6 @@
 <?php
 
-namespace Tribe\Tickets;
+namespace Tribe\Tickets\Commerce\PayPal;
 
 use Tribe\Events\Test\Factories\Event;
 use Tribe__Tickets__Status__Manager as Manager;
