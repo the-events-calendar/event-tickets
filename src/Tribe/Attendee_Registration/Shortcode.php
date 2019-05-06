@@ -14,7 +14,37 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 		}
 
 		add_shortcode( $this->shortcode_name, [ $this, 'render' ] );
+
+		add_action( 'wp_enqueue_scripts', [ $this, 'maybe_enqueue_scripts'] );
 	}
+
+	public function maybe_enqueue_scripts() {
+		if (
+			is_archive()
+			|| is_admin()
+		) {
+			return;
+		}
+
+		$shortcode_page = (int) tribe_get_option( 'ticket-attendee-page-id', 0 );
+
+		// Option is not set, don't enqueue scripts.
+		if ( ! $shortcode_page ) {
+			return;
+		}
+
+		$page = get_queried_object();
+
+		// Not on a shortcode page, don't enqueue scripts.
+		if ( ! $page || ! $page instanceof WP_Post || $shortcode_page !== $page->ID ) {
+			return;
+		}
+
+		// enqueue styles and scripts for this page
+		tribe_asset_enqueue( 'event-tickets-registration-page-styles' );
+		tribe_asset_enqueue( 'event-tickets-registration-page-scripts' );
+	}
+
 
 	/**
 	 * Renders the shortcode AR page.
@@ -36,14 +66,16 @@ class Tribe__Tickets__Attendee_Registration__Shortcode {
 				'value'  => [],
 				'type'   => [],
 				'action' => [],
+				'method' => [],
 			],
 			// form fields - input
 			'input' => [
-				'class' => [],
-				'id'    => [],
-				'name'  => [],
-				'value' => [],
-				'type'  => [],
+				'class'   => [],
+				'id'      => [],
+				'name'    => [],
+				'value'   => [],
+				'type'    => [],
+				'checked' => [],
 			],
 			// select
 			'select' => [

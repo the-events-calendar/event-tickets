@@ -247,7 +247,6 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		return $classes;
 	}
 
-
 	/**
 	 * Checks if theme needs a compatibility fix
 	 *
