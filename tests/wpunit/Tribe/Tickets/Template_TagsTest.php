@@ -42,11 +42,16 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		parent::tearDown();
 	}
 
+	protected function allow_posts() {
+		tribe_update_option( 'ticket-enabled-post-types', [
+			'tribe_events',
+			'post',
+		] );
+	}
+
 	/**
 	 * @test
 	 * it not should allow tickets on posts by default
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_post_type_enabled()
 	 */
@@ -60,15 +65,10 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should allow tickets on posts when enabled
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_post_type_enabled()
 	 */
 	public function it_should_allow_tickets_on_posts_when_enabled() {
-		tribe_update_option( 'ticket-enabled-post-types', [
-			'tribe_events',
-			'post',
-		] );
+		$this->allow_posts();
 
 		$allowed = tribe_tickets_post_type_enabled( 'post' );
 
@@ -78,8 +78,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return the post id - events support tickets by default
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_parent_post()
 	 */
@@ -94,15 +92,10 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the non event post id if it supports tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_parent_post()
 	 */
 	public function it_should_return_the_non_event_post_id_if_it_supports_tickets() {
-		tribe_update_option( 'ticket-enabled-post-types', [
-			'tribe_events',
-			'post',
-		] );
+		$this->allow_posts();
 
 		$non_event_id = wp_insert_post( [ 'id' => 1337 ] );
 		$parent       = tribe_tickets_parent_post( $non_event_id );
@@ -113,8 +106,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return null if it does not supports tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_parent_post()
 	 */
@@ -133,8 +124,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true if event has tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_tickets()
 	 */
 	public function it_should_return_true_if_event_has_rsvps() {
@@ -149,8 +138,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true if event has tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_has_tickets()
 	 */
@@ -172,16 +159,11 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true if non-event post has tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_tickets()
 	 */
 	public function it_should_return_true_if_non_event_post_has_rsvps() {
 		// Make sure it's allowed first!
-		tribe_update_option( 'ticket-enabled-post-types', [
-			'tribe_events',
-			'post',
-		] );
+		$this->allow_posts();
 
 		$event_id = $this->factory()->post->create();
 		$this->create_rsvp_ticket( $event_id );
@@ -195,8 +177,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false if event has no tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_tickets()
 	 */
 	public function it_should_return_false_if_event_has_no_tickets() {
@@ -209,8 +189,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return correct number of tickets on sold out event
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
@@ -235,8 +213,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return correct number of tickets on event with no sales
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
 	public function it_should_return_correct_number_of_rsvps_on_event_with_no_sales() {
@@ -256,8 +232,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return correct number of tickets on event with some sales
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
@@ -281,8 +255,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return correct number of tickets on event with multiple tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
@@ -312,9 +284,7 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * it should return correct number of tickets on event with mixed tickets
-	 *
-	 * @since  TBD
+	 * it should return correct number of tickets on event with mixed tickets & RSVPs
 	 *
 	 * @covers tribe_events_count_available_tickets()
 	 */
@@ -346,8 +316,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true if event has unlimited rsvps
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_unlimited_stock_tickets()
 	 */
 	public function it_should_return_true_if_event_has_unlimited_rsvps() {
@@ -367,8 +335,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true if event has unlimited tickets
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_has_unlimited_stock_tickets()
 	 */
@@ -390,8 +356,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false if event has no unlimited rsvps
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_unlimited_stock_tickets()
 	 */
 	public function it_should_return_false_if_event_has_no_unlimited_tickets() {
@@ -410,8 +374,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true when event is sold out
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_has_soldout
 	 */
@@ -444,8 +406,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when rsvp is not sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_soldout
 	 */
 	public function it_should_return_false_when_rsvp_is_not_sold_out() {
@@ -467,8 +427,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when ticket is not sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_soldout
 	 */
 	public function it_should_return_false_when_ticket_is_not_sold_out() {
@@ -489,8 +447,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return false when event is sold out
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_partially_soldout
 	 */
@@ -524,8 +480,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when no tickets are sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_partially_soldout
 	 */
 	public function it_should_return_false_when_no_tickets_are_sold_out() {
@@ -551,8 +505,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return true when rsvp is sold out
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_partially_soldout
 	 */
@@ -585,8 +537,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true when ticket is sold out
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_partially_soldout
 	 */
 	public function it_should_return_true_when_ticket_is_sold_out() {
@@ -617,8 +567,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return the correct number of rsvps
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_count_available_tickets
 	 */
 	public function it_should_return_the_correct_number_of_rsvps() {
@@ -639,13 +587,11 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * it should properlyu detect an rsvp as a ticket
-	 *
-	 * @since  TBD
+	 * it should properly detect an rsvp as a ticket
 	 *
 	 * @covers tribe_events_product_is_ticket
 	 */
-	public function it_should_properlyu_detect_an_rsvp_as_a_ticket() {
+	public function it_should_properly_detect_an_rsvp_as_a_ticket() {
 		$event_id  = $this->factory()->event->create();
 		$rsvp_id   = $this->create_rsvp_ticket( $event_id );
 		$is_ticket = tribe_events_product_is_ticket( $rsvp_id );
@@ -656,8 +602,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should properly detect a tribe-commerce ticket as a ticket
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_product_is_ticket
 	 */
@@ -672,8 +616,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should find the event for an rsvp
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_get_ticket_event
 	 */
@@ -690,8 +632,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should find the event for a ticket
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_get_ticket_event
 	 */
 	public function it_should_find_the_event_for_a_ticket() {
@@ -707,8 +647,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return false when event has no tickets
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_events_has_tickets_on_sale
 	 */
 	public function it_should_return_false_when_event_has_no_tickets() {
@@ -716,14 +654,12 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 
 		$on_sale = tribe_events_has_tickets_on_sale( $event_id );
 
-		$this->assertFalse( $on_sale, 'No tickets shold return false on check for tickets on sale' );
+		$this->assertFalse( $on_sale, 'No tickets should return false on check for tickets on sale' );
 	}
 
 	/**
 	 * @test
 	 * rsvps and tickets with no date are on sale
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_ticket_is_on_sale
 	 */
@@ -743,8 +679,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * rsvps and tickets with future end dates are on sale
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_ticket_is_on_sale
 	 */
@@ -766,8 +700,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * rsvps and tickets with past end dates are not on sale
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_events_ticket_is_on_sale
 	 */
@@ -794,8 +726,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true for event post type by default
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_resource_url
 	 */
 	public function it_should_return_true_for_event_post_type_by_default() {
@@ -808,15 +738,10 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should return true for post types we set
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_resource_url
 	 */
 	public function it_should_return_true_for_post_types_we_set() {
-		tribe_update_option( 'ticket-enabled-post-types', [
-			'tribe_events',
-			'post',
-		] );
+		$this->allow_posts();
 
 		$event_enabled = tribe_tickets_post_type_enabled( 'post' );
 
@@ -826,8 +751,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return the event for an rsvp
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_get_event_ids
 	 */
@@ -841,8 +764,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return the event for a tribe-commerce ticket
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_get_event_ids
 	 */
@@ -861,8 +782,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return the correct providers
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_get_ticket_provider
 	 */
@@ -886,8 +805,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 * it should get the correct number of rsvp attendees
 	 *
-	 * @since  TBD
-	 *
 	 * @covers tribe_tickets_get_attendees
 	 */
 	public function it_should_get_the_correct_number_of_rsvp_attendees() {
@@ -903,8 +820,6 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should get the correct number of ticket attendees
-	 *
-	 * @since  TBD
 	 *
 	 * @covers tribe_tickets_get_attendees
 	 */
@@ -922,5 +837,298 @@ class Template_TagsTest extends \Codeception\TestCase\WPTestCase {
 		tribe( 'tickets.rsvp' )->clear_attendees_cache( $event_id );
 
 		$this->assertCount( count( $paypal_attendees ) + count( $rsvp_attendees ), tribe_tickets_get_attendees( $event_id ) );
+	}
+
+	/**
+	 * @test
+	 * it should get capacity from an rsvp
+	 *
+	 * @covers tribe_tickets_get_capacity
+	 */
+	public function it_should_get_capacity_from_an_rsvp() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_tickets_get_capacity( $rsvp_ticket_id );
+
+		$this->assertEquals( '10', $capacity );
+	}
+
+	/**
+	 * @test
+	 * it should get capacity from a ticket
+	 *
+	 * @covers tribe_tickets_get_capacity
+	 */
+
+	public function it_should_get_capacity_from_a_ticket() {
+		$event_id = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+				'_stock'      => 5,
+				'total_sales' => 5,
+			],
+		] );
+
+		$capacity = tribe_tickets_get_capacity( $ticket_id );
+
+		$this->assertEquals( '10', $capacity );
+	}
+
+	/**
+	 * @test
+	 * it should delete capacity from a ticket
+	 *
+	 * @covers tribe_tickets_delete_capacity
+	 */
+	public function it_should_delete_capacity_from_a_ticket() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$deleted_ticket = tribe_tickets_delete_capacity( $ticket_id );
+		$deleted_rsvp   = tribe_tickets_delete_capacity( $rsvp_ticket_id );
+
+		$this->assertTrue( $deleted_ticket, 'Could not delete capacity for ticket' );
+		$this->assertTrue( $deleted_rsvp, 'Could not delete capacity for RSVP' );
+	}
+
+	/**
+	 * @test
+	 * it should delete capacity from an event
+	 * Worth noting that this does NOT change the ticket capacity!
+	 *
+	 * @covers tribe_tickets_delete_capacity
+	 */
+	public function it_should_delete_capacity_from_an_event() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$deleted_event = tribe_tickets_delete_capacity( $event_id );
+
+		$this->assertTrue( $deleted_event, 'Could not delete capacity for event' );
+	}
+
+	/**
+	 * @test
+	 * it should delete capacity from a post
+	 * Worth noting that this does NOT change the ticket capacity!
+	 *
+	 * @covers tribe_tickets_delete_capacity
+	 */
+	public function it_should_delete_capacity_from_a_post() {
+		$this->allow_posts();
+		$post_id   = $this->factory()->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$deleted_event = tribe_tickets_delete_capacity( $post_id );
+
+		$this->assertTrue( $deleted_event, 'Could not delete capacity for post' );
+	}
+
+	/**
+	 * @test
+	 * it should update capacity for a ticket
+	 *
+	 * @covers tribe_tickets_update_capacity
+	 */
+	public function it_should_update_capacity_for_a_ticket() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$updated_ticket = tribe_tickets_update_capacity( $ticket_id, 8 );
+		$updated_rsvp   = tribe_tickets_update_capacity( $rsvp_ticket_id, 7 );
+
+		$this->assertEquals( 8, $updated_ticket, 'Could not update capacity for ticket' );
+		$this->assertEquals( 7, $updated_rsvp, 'Could not update capacity for RSVP' );
+	}
+
+	/**
+	 * @test
+	 * it should update capacity for an event
+	 * Worth noting that this does NOT change the ticket capacity!
+	 *
+	 * @covers tribe_tickets_update_capacity
+	 */
+	public function it_should_update_capacity_for_an_event() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$updated_event = tribe_tickets_update_capacity( $event_id, 10 );
+
+		$this->assertEquals( 10, $updated_event, 'Could not update capacity for event' );
+	}
+
+	/**
+	 * @test
+	 * it should update capacity for a post
+	 * Worth noting that this does NOT change the ticket capacity!
+	 *
+	 * @covers tribe_tickets_update_capacity
+	 */
+	public function it_should_update_capacity_for_a_post() {
+		$this->allow_posts();
+		$post_id   = $this->factory()->post->create();
+		$ticket_id = $this->create_paypal_ticket( $post_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$rsvp_ticket_id = $this->create_rsvp_ticket( $post_id, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$updated_event = tribe_tickets_update_capacity( $post_id, 10 );
+
+		$this->assertEquals( 10, $updated_event, 'Could not update capacity for post' );
+	}
+
+	/**
+	 * @test
+	 * it should get readable amount for ticket with own capacity
+	 *
+	 * @covers tribe_tickets_get_readable_amount
+	 */
+	public function it_should_get_readable_amount_for_ticket_with_own_capacity() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => 10,
+			],
+		] );
+
+		$ticket_count = tribe_tickets_get_capacity( $ticket_id );
+
+		$capacity = tribe_tickets_get_readable_amount( $ticket_count );
+
+		$this->assertEquals( $ticket_count, $capacity );
+	}
+
+	/**
+	 * @test
+	 * it should get readable amount for ticket with unlimited capacity
+	 *
+	 * @covers tribe_tickets_get_readable_amount
+	 */
+	public function it_should_get_readable_amount_for_ticket_with_unlimited_capacity() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'   => -1,
+			],
+		] );
+
+		$ticket_count = tribe_tickets_get_capacity( $ticket_id );
+
+		$capacity = tribe_tickets_get_readable_amount( $ticket_count );
+
+		$this->assertEquals( 'Unlimited', $capacity );
+	}
+
+	/**
+	 * @test
+	 * it should find meta fields for a ticket
+	 *
+	 * @covers tribe_tickets_has_meta_fields
+	 */
+	public function it_should_find_meta_fields_for_a_ticket() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1, [
+			'meta_input' => [
+				'_capacity'                   => 10,
+				'_tribe_tickets_meta_enabled' => true,
+				'_tribe_tickets_meta'         => 'a:1:{i:0;a:5:{s:4:"type";s:4:"text";s:8:"required";s:0:"";s:5:"label";s:0:"";s:4:"slug";s:0:"";s:5:"extra";a:0:{}}}',
+			],
+		] );
+		$rsvp_id = $this->create_rsvp_ticket( $event_id, [
+			'meta_input' => [
+				'_capacity'                   => 10,
+				'_tribe_tickets_meta_enabled' => true,
+				'_tribe_tickets_meta'         => 'a:1:{i:0;a:5:{s:4:"type";s:4:"text";s:8:"required";s:0:"";s:5:"label";s:0:"";s:4:"slug";s:0:"";s:5:"extra";a:0:{}}}',
+			],
+		] );
+
+		$ticket_meta = tribe_tickets_has_meta_fields( $ticket_id );
+		$rsvp_meta = tribe_tickets_has_meta_fields( $rsvp_id );
+
+		$this->assertTrue( $ticket_meta, 'Ticket meta not found' );
+		$this->assertTrue( $rsvp_meta, 'RSVP meta not found' );
+	}
+
+	/**
+	 * @test
+	 * it should not find meta fields for a ticket when there isn't any
+	 *
+	 * @covers tribe_tickets_has_meta_fields
+	 */
+	public function it_should_not_find_meta_fields_for_a_ticket_when_there_isnt_any() {
+		$event_id  = $this->factory()->event->create();
+		$ticket_id = $this->create_paypal_ticket( $event_id, 1 );
+		$rsvp_id   = $this->create_rsvp_ticket( $event_id );
+
+		$ticket_meta = tribe_tickets_has_meta_fields( $ticket_id );
+		$rsvp_meta = tribe_tickets_has_meta_fields( $rsvp_id );
+
+		$this->assertFalse( $ticket_meta, 'Nonexistent ticket meta found' );
+		$this->assertFalse( $rsvp_meta, 'Nonexistent RSVP meta found' );
 	}
 }
