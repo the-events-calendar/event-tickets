@@ -130,6 +130,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - In the Ticket Block add link to EDD Orders Page [121440]
 * Tweak - Change "Attendee Registration" to "Attendee Information" in several locations [126038]
 * Tweak - Exclude WooCommerce Product and EDD Downloads as supported post types when saving for tickets to prevent recursion errors, in case they were previously saved before we removed them from the options list [126749]
+* Tweak - Added filters: `tribe_tickets_plus_get_total_cancelled`
+* Tweak - Added actions: `tribe_ticket_available_warnings`
+* Tweak - Changed views: `registration/content`
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
 * Fix - Change `inventory` to compare the correct ticket when checking event shared capacity [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
