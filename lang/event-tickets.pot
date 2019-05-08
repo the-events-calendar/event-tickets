@@ -2,24 +2,34 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.10.4\n"
+"Project-Id-Version: Event Tickets 4.10.5\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2019-04-22 19:44:53+00:00\n"
+"POT-Creation-Date: 2019-05-08 05:51:31+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-04-22 19:44\n"
+"PO-Revision-Date: 2019-05-08 05:51\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.4)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.5)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:59 src/Tribe/Main.php:590 src/Tribe/Privacy.php:32
 msgid "Event Tickets"
 msgstr ""
 
+#: src/Tribe/Abstract_Attendance_Totals.php:62
+msgctxt "total sold tooltip"
+msgid "Includes all ticketed attendees regardless of order status."
+msgstr ""
+
+#: src/Tribe/Abstract_Attendance_Totals.php:76
+msgctxt "total complete tooltip"
+msgid "Includes ticketed attendees with orders marked Completed."
+msgstr ""
+
 #: src/Tribe/Admin/Columns/Tickets.php:57 src/Tribe/Attendees.php:210
-#: src/Tribe/Commerce/PayPal/Main.php:444
+#: src/Tribe/Commerce/PayPal/Main.php:446
 #: src/Tribe/Tabbed_View/Attendee_Report_Tab.php:22
 #: src/admin-views/attendees.php:23 src/admin-views/list.php:92
 msgid "Attendees"
@@ -59,7 +69,7 @@ msgid ""
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:302
-#: src/Tribe/Admin/Move_Tickets.php:704
+#: src/Tribe/Admin/Move_Tickets.php:726
 msgid "Changes to your tickets from %s"
 msgstr ""
 
@@ -118,21 +128,23 @@ msgstr ""
 
 #: src/Tribe/Admin/Move_Tickets.php:465
 msgid ""
-"%1$d attendee for %2$s was successfully %3$s. Please adjust capacity and "
-"stock manually as needed. This attendee will receive an email notifying them "
-"of the change."
+"%1$d attendee for %2$s was successfully %3$s. By default, we adjust capacity "
+"and stock, however, we recommend reviewing each as needed to ensure numbers "
+"are correct. This attendee will receive an email notifying them of the "
+"change."
 msgid_plural ""
-"%1$d attendees for %2$s were successfully %3$s. Please adjust capacity and "
-"stock manually as needed. These attendees will receive an email notifying "
-"them of the change."
+"%1$d attendees for %2$s were successfully %3$s. By default, we adjust "
+"capacity and stock, however, we recommend reviewing each as needed to ensure "
+"numbers are correct. These attendees will receive an email notifying them of "
+"the change."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Tribe/Admin/Move_Tickets.php:583
+#: src/Tribe/Admin/Move_Tickets.php:605
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:763
+#: src/Tribe/Admin/Move_Tickets.php:785
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -158,7 +170,7 @@ msgid "No history available"
 msgstr ""
 
 #: src/Tribe/Admin/Ticket_Settings.php:22
-#: src/Tribe/Commerce/PayPal/Main.php:428 src/Tribe/Metabox.php:53
+#: src/Tribe/Commerce/PayPal/Main.php:430 src/Tribe/Metabox.php:53
 #: src/Tribe/Tickets_View.php:741 src/admin-views/editor/list-table.php:30
 msgid "Tickets"
 msgstr ""
@@ -203,7 +215,7 @@ msgctxt "attendee summary"
 msgid "Deleted Attendees:"
 msgstr ""
 
-#: src/Tribe/Attendee_Registration/Template.php:376
+#: src/Tribe/Attendee_Registration/Template.php:375
 msgid "Attendee Registration"
 msgstr ""
 
@@ -581,14 +593,19 @@ msgstr ""
 msgid "U.S. Dollar (USD)"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Attendance_Totals.php:70
+#: src/Tribe/Commerce/PayPal/Attendance_Totals.php:74
 msgctxt "attendee summary"
-msgid "Total Tickets Issued:"
+msgid "Total Tickets:"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Attendance_Totals.php:71
+#: src/Tribe/Commerce/PayPal/Attendance_Totals.php:75
 msgctxt "attendee summary"
 msgid "Complete:"
+msgstr ""
+
+#: src/Tribe/Commerce/PayPal/Attendance_Totals.php:76
+msgctxt "attendee summary"
+msgid "Cancelled:"
 msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Endpoints/Success_Template.php:99
@@ -667,60 +684,60 @@ msgctxt "ticket provider"
 msgid "Tribe Commerce"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:363 src/Tribe/RSVP.php:293
+#: src/Tribe/Commerce/PayPal/Main.php:365 src/Tribe/RSVP.php:293
 msgctxt "Attendee number"
 msgid "Attendee %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:430
+#: src/Tribe/Commerce/PayPal/Main.php:432
 msgid "Tribe Commerce Tickets"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:431
+#: src/Tribe/Commerce/PayPal/Main.php:433
 msgid "Tribe Commerce Ticket"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:456
+#: src/Tribe/Commerce/PayPal/Main.php:458
 msgid "Orders"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1153 src/Tribe/RSVP.php:725
+#: src/Tribe/Commerce/PayPal/Main.php:1155 src/Tribe/RSVP.php:725
 msgid "Your tickets from %s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1756
+#: src/Tribe/Commerce/PayPal/Main.php:1758
 msgid "Sales report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1782
+#: src/Tribe/Commerce/PayPal/Main.php:1784
 msgid "Report"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1935 src/Tribe/RSVP.php:1772
+#: src/Tribe/Commerce/PayPal/Main.php:1937 src/Tribe/RSVP.php:1772
 msgid "Return to the %1$sAttendees Report%2$s."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1942 src/Tribe/RSVP.php:1779
+#: src/Tribe/Commerce/PayPal/Main.php:1944 src/Tribe/RSVP.php:1779
 msgid "Post updated. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1946 src/Tribe/RSVP.php:1783
+#: src/Tribe/Commerce/PayPal/Main.php:1948 src/Tribe/RSVP.php:1783
 msgid "Post published. %1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1949 src/Tribe/RSVP.php:1786
+#: src/Tribe/Commerce/PayPal/Main.php:1951 src/Tribe/RSVP.php:1786
 msgid "Post submitted."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1950 src/Tribe/RSVP.php:1787
+#: src/Tribe/Commerce/PayPal/Main.php:1952 src/Tribe/RSVP.php:1787
 msgid "Post scheduled."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:1951 src/Tribe/RSVP.php:1788
+#: src/Tribe/Commerce/PayPal/Main.php:1953 src/Tribe/RSVP.php:1788
 msgid "Post draft updated."
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Main.php:2682 src/Tribe/RSVP.php:1441
+#: src/Tribe/Commerce/PayPal/Main.php:2705 src/Tribe/RSVP.php:1441
 msgid "(deleted)"
 msgstr ""
 
@@ -1007,16 +1024,16 @@ msgstr ""
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
-#: src/Tribe/Main.php:812
+#: src/Tribe/Main.php:815
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Main.php:812
+#: src/Tribe/Main.php:815
 msgctxt "button text"
 msgid "RSVP"
 msgstr ""
 
-#: src/Tribe/Main.php:891
+#: src/Tribe/Main.php:894
 msgid ""
 "When Event Tickets and Event Tickets Plus are both activated, Event Tickets "
 "Plus must be running version %1$s or greater. Please %2$smanually update now"
@@ -1782,17 +1799,17 @@ msgstr ""
 msgid "An error happened while building the response: "
 msgstr ""
 
-#: src/Tribe/RSVP/Attendance_Totals.php:37
+#: src/Tribe/RSVP/Attendance_Totals.php:39
 msgctxt "attendee summary"
 msgid "Total RSVPs:"
 msgstr ""
 
-#: src/Tribe/RSVP/Attendance_Totals.php:38
+#: src/Tribe/RSVP/Attendance_Totals.php:40
 msgctxt "attendee summary"
 msgid "Going:"
 msgstr ""
 
-#: src/Tribe/RSVP/Attendance_Totals.php:39
+#: src/Tribe/RSVP/Attendance_Totals.php:41
 msgctxt "attendee summary"
 msgid "Not Going:"
 msgstr ""
@@ -1828,11 +1845,11 @@ msgid "In order to RSVP, you must enter your name and a valid email address."
 msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:168
-msgid "Sold %d"
+msgid "Sold"
 msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:176
-msgid "SKU: (%s)"
+msgid "SKU"
 msgstr ""
 
 #: src/Tribe/Status/Abstract_Commerce.php:204
@@ -1840,22 +1857,35 @@ msgstr ""
 msgid "available"
 msgstr ""
 
-#: src/Tribe/Status/Abstract_Commerce.php:210
+#: src/Tribe/Status/Abstract_Commerce.php:211
 msgid "pending order completion"
 msgstr ""
 
-#: src/Tribe/Status/Abstract_Commerce.php:235
+#: src/Tribe/Status/Abstract_Commerce.php:233
 msgid "Sold counts tickets from completed orders only."
 msgstr ""
 
-#: src/Tribe/Status/Abstract_Commerce.php:255
+#: src/Tribe/Status/Abstract_Commerce.php:247
 msgid "Total Sales counts tickets from all completed orders."
 msgstr ""
 
-#: src/Tribe/Status/Abstract_Commerce.php:275
+#: src/Tribe/Status/Abstract_Commerce.php:261
 msgid ""
 "Total Ordered counts tickets from orders of any status, including pending "
 "and refunded."
+msgstr ""
+
+#: src/Tribe/Status/Abstract_Commerce.php:297
+msgid "Inventory"
+msgstr ""
+
+#: src/Tribe/Status/Abstract_Commerce.php:298
+msgid "Stock"
+msgstr ""
+
+#: src/Tribe/Status/Abstract_Commerce.php:299
+#: src/admin-views/editor/list-table.php:39
+msgid "Capacity"
 msgstr ""
 
 #: src/Tribe/Tickets.php:384
@@ -2254,25 +2284,8 @@ msgstr ""
 msgid "Available:"
 msgstr ""
 
-#: src/admin-views/editor/list-row.php:98
-msgid ""
-"The number of Complete ticket sales does not match the number of attendees. "
-"Please check the Attendees list and adjust ticket stock in WooCommerce as "
-"needed."
-msgstr ""
-
-#: src/admin-views/editor/list-row.php:101
-msgid ""
-"Stock management is disabled. Enable it on the related Woocommerce product's "
-"inventory settings."
-msgstr ""
-
-#: src/admin-views/editor/list-row.php:112
+#: src/admin-views/editor/list-row.php:107
 msgid "( Ticket ID: %d )"
-msgstr ""
-
-#: src/admin-views/editor/list-table.php:39
-msgid "Capacity"
 msgstr ""
 
 #: src/admin-views/editor/list-table.php:40
@@ -2526,6 +2539,20 @@ msgstr ""
 #: src/admin-views/move-tickets.php:89
 msgctxt "move tickets dialog"
 msgid "Next &raquo;"
+msgstr ""
+
+#: src/admin-views/order-available.php:8
+msgid "Availability for this ticket type is counted using"
+msgstr ""
+
+#: src/admin-views/order-available.php:13
+msgid "Learn more about how Availability is calculated."
+msgstr ""
+
+#: src/admin-views/order-pending-completion.php:7
+msgid ""
+"Pending order completion counts tickets from orders with the following "
+"statuses:"
 msgstr ""
 
 #: src/admin-views/privacy.php:14
@@ -2969,52 +2996,52 @@ msgid ""
 "latest version of PHP."
 msgstr ""
 
-#: src/template-tags/tickets.php:204
+#: src/template-tags/tickets.php:210
 msgctxt "list view stock sold out"
 msgid "Sold out"
 msgstr ""
 
-#: src/template-tags/tickets.php:237
+#: src/template-tags/tickets.php:243
 msgid "%s spot left"
 msgid_plural "%s spots left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/template-tags/tickets.php:239
+#: src/template-tags/tickets.php:245
 msgid "%s ticket left"
 msgid_plural "%s tickets left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/template-tags/tickets.php:251
+#: src/template-tags/tickets.php:257
 msgctxt "list view rsvp now ticket button"
 msgid "RSVP Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:254
+#: src/template-tags/tickets.php:260
 msgctxt "list view buy now ticket button"
 msgid "Buy Now!"
 msgstr ""
 
-#: src/template-tags/tickets.php:436
+#: src/template-tags/tickets.php:446
 msgid "issued"
 msgstr ""
 
-#: src/template-tags/tickets.php:438
+#: src/template-tags/tickets.php:448
 msgctxt "separate going and remain RSVPs"
 msgid "RSVP'd Going"
 msgstr ""
 
-#: src/template-tags/tickets.php:444
+#: src/template-tags/tickets.php:454
 msgid "%s %d"
 msgstr ""
 
-#: src/template-tags/tickets.php:446
+#: src/template-tags/tickets.php:456
 msgctxt "ticket shared capacity message (remaining stock)"
 msgid "%1$d available of shared capacity"
 msgstr ""
 
-#: src/template-tags/tickets.php:449
+#: src/template-tags/tickets.php:459
 msgctxt "ticket stock message (remaining stock)"
 msgid "%1$d available"
 msgstr ""
