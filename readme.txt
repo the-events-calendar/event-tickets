@@ -142,6 +142,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct escaping on attendee registration shortcode [125964]
 * Fix - Fix error with creating new ticket in block editor [126266]
 * Fix - Fix issue where tribe commerce would not submit correctly when using the attendee registration shortcode [126779]
+* Language - 10 new strings added, 45 updated, 1 fuzzied, and 6 obsoleted
 
 = [4.10.4.4] 2019-05-03 =
 
