@@ -108,7 +108,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Check if the Name of the Class was Provided and Convert to Abbreviation
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 */
 	protected function check_for_full_provider_name( $provider ) {
@@ -212,7 +212,7 @@ class Tribe__Tickets__Status__Manager {
 	 * Return an array of Statuses for an action with the provider Commerce
 	 *
 	 * @since 4.10
-	 * @since TBD - add nicename parameter
+	 * @since 4.10.5 - add nicename parameter
 	 *
 	 * @param $action   string a string of the action to filter
 	 * @param $commerce string a string of the Commerce System to get statuses from
@@ -347,7 +347,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Get the Completed Status by Commerce Provider Class Name
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @param string|object $provider_name an object or string of a commerce main class name
 	 *
@@ -383,7 +383,7 @@ class Tribe__Tickets__Status__Manager {
 	/**
 	 * Add addition names a status might be known as
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @param array $trigger_statuses an array of statues
 	 * @param array $additional_names an array of additional names a status might be known as

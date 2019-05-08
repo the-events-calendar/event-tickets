@@ -266,7 +266,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Pending Tooltip per Ticket
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @param $ticket_sold object an object of the ticket to get counts
 	 *
@@ -286,7 +286,7 @@ class Tribe__Tickets__Status__Abstract_Commerce {
 	/**
 	 * Get Availability Tooltip per Ticket
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @param $ticket_sold object an object of the ticket to get counts
 	 *

@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.5] TBD =
+= [4.10.5] 2019-05-09 =
 
 * Feature - Add tooltips to Attendee Report page [120856]
 * Feature - Add tooltip to explain what statues are behind Pending Order Completion [120862]

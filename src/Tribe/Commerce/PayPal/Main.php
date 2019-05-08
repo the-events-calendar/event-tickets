@@ -2586,7 +2586,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
 	 * Update Stock and Global Stock when deleting an Attendee
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @param int $ticket_id the attendee id being deleted
 	 * @param int $post_id the post or event id for the attendee

@@ -10,8 +10,6 @@ use Tribe__Tickets__Attendance_Totals as Tickets__Attendance;
 /**
  * Test Calculations
  *
- * @since TBD
- *
  * Class AttendanceTotalsTest
  *
  * @package Tribe\Tickets
@@ -39,7 +37,6 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
 	 */
 	public function it_should_count_checked_in_attendees_correctly() {
 
@@ -60,7 +57,6 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
 	 */
 	public function it_should_count_not_checked_in_attendees_correctly() {
 
@@ -77,7 +73,6 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
-	 * @since TBD
 	 */
 	public function it_should_count_deleted_attendees_correctly() {
 
