@@ -24,7 +24,7 @@ modules:
               chromeOptions:
                 args: ["--headless", "--disable-gpu", "--proxy-server='direct://'", "--proxy-bypass-list=*" ]
         WPDb:
-           dsn: 'mysql:host=%WP_TEST_DB_HOST%;dbname=%WP_TEST_DB_NAME%'
+           dsn: 'mysql:host=%WP_DB_HOST%;dbname=%WP_DB_NAME%'
            user: %WP_DB_USER%
            password: %WP_DB_PASSWORD%
            dump: 'tests/_data/dump.sql'
