@@ -123,7 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Add tooltip to explain what statues are behind Pending Order Completion [120862]
 * Feature - Add tooltip to explain the Available Count Per Ticket [120862]
 * Feature - Add tooltips to explain the sold & available amounts in the ticket block [121992]
-* Tweak - Add method to get all possible names of the completed status by Commerce Provider [122458]
+* Tweak - Add method to get all possible names of the completed status by ecommerce provider [122458]
 * Tweak - Change success message for ticket move [102635]
 * Tweak - Ticket Attendee and Order Page Header css by changing overflow to visible [120862]
 * Tweak - Update Status Manager to accept provider names or abbreviations [120862]
