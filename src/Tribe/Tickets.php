@@ -49,7 +49,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $active_modules = array();
+		protected static $active_modules = [];
 
 		/**
 		 * Default Tribe__Tickets__Tickets ecommerce module.
@@ -72,7 +72,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $frontend_ticket_data = array();
+		protected static $frontend_ticket_data = [];
 
 		/**
 		 * Name of this class. Note that it refers to the child class.
@@ -101,7 +101,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $currently_unavailable_tickets = array();
+		protected static $currently_unavailable_tickets = [];
 
 		/**
 		 * Records posts for which tickets *are* available (used to determine if
@@ -109,7 +109,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $posts_with_available_tickets = array();
+		protected static $posts_with_available_tickets = [];
 
 		// start API Definitions
 		// Child classes must implement all these functions / properties
@@ -506,7 +506,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $return;
 			}
 
-			$controls   = array();
+			$controls   = [];
 
 			if ( tribe_is_truthy( tribe_get_request_var( 'is_admin' ) ) ) {
 				$controls[] = $this->get_ticket_move_link( $return['post_id'], $ticket );
@@ -602,7 +602,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $raw_data
 		 * @return mixed
 		 */
-		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {}
+		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {}
 
 		/**
 		 * Returns all the tickets for an event
@@ -1084,7 +1084,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					// if there is a valid transient, we'll use the value from that and note
 					// that we have fetched from cache
 					if ( false !== $attendees_from_cache ) {
-						$attendees            = empty( $attendees_from_cache ) ? array() : $attendees_from_cache;
+						$attendees            = empty( $attendees_from_cache ) ? [] : $attendees_from_cache;
 						$attendees_from_cache = true;
 					}
 				}
@@ -1384,7 +1384,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $tickets;
 			}
 
-			$tickets = array();
+			$tickets = [];
 			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
@@ -1395,7 +1395,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			$tickets = empty( $tickets ) ? array() : call_user_func_array( 'array_merge', $tickets );
+			$tickets = empty( $tickets ) ? [] : call_user_func_array( 'array_merge', $tickets );
 			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
 
 			return $tickets;
@@ -1530,14 +1530,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// if no post id return empty array
 			if ( empty( $post_id ) ) {
-				return array();
+				return [];
 			}
 
 			$tickets = self::get_all_event_tickets( $post_id );
 
 			// if no tickets or rsvp return empty array
 			if ( ! $tickets ) {
-				return array();
+				return [];
 			}
 
 			/**
@@ -1660,8 +1660,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function enqueue_frontend_stock_data() {
 			$data = array(
-				'tickets' => array(),
-				'events'  => array(),
+				'tickets' => [],
+				'events'  => [],
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
@@ -1768,7 +1768,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		final public static function get_event_tickets( $post_id ) {
-			$tickets = array();
+			$tickets = [];
 
 			foreach ( self::modules() as $class => $module ) {
 				$obj              = call_user_func( array( $class, 'get_instance' ) );
@@ -1778,7 +1778,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : array();
+			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : [];
 		}
 
 		/**
@@ -1998,7 +1998,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function process_attendee_meta( $product_id, $meta ) {
-			$meta_values = array();
+			$meta_values = [];
 
 			if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
 				return $meta_values;
@@ -2011,7 +2011,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				if ( 'checkbox' === $field->type ) {
 					$field_prefix = $field->slug . '_';
-					$value        = array();
+					$value        = [];
 
 					foreach ( $meta as $full_key => $check_value ) {
 						if ( 0 === strpos( $full_key, $field_prefix ) ) {
@@ -2088,7 +2088,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$collection_availability_slug = 'available';
 			$tickets_available = false;
-			$slugs = array();
+			$slugs = [];
 
 			foreach ( $tickets as $ticket ) {
 				$availability_slug = $ticket->availability_slug( $timestamp );
@@ -2218,7 +2218,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$existing_tickets = ! empty( $unavailable_tickets[ (int) $post_id ] )
 				? $unavailable_tickets[ (int) $post_id ]
-				: array();
+				: [];
 
 			self::$currently_unavailable_tickets[ (int) $post_id ] = array_merge( $existing_tickets, $tickets );
 
@@ -2387,7 +2387,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public function login_required() {
-			$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
+			$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 
 			return in_array( 'event-tickets_all', $requirements, true );
 		}
@@ -2737,7 +2737,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param array
 			*/
-			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
+			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', [] );
 
 			// Bail if there are no tickets
 			if ( empty( $tickets_in_cart ) ) {
