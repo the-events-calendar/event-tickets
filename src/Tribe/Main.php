@@ -194,9 +194,15 @@ class Tribe__Tickets__Main {
 			class_exists( 'Tribe__Events__Main' ) &&
 			! version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' )
 		) {
-			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
-			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
-			add_action( 'tribe_plugins_loaded', array( $this, 'remove_exts' ), 0 );
+			add_action( 'admin_notices', [ $this, 'tec_compatibility_notice' ] );
+			add_action( 'network_admin_notices', [ $this, 'tec_compatibility_notice' ] );
+			add_action( 'tribe_plugins_loaded', [ $this, 'remove_exts' ], 0 );
+			/*
+			* After common was loaded by another source (e.g. The Event Calendar) let's append this plugin source files
+			* to the ones the Autoloader will search. Since we're appending them the ones registered by the plugin
+			* "owning" common will be searched first.
+			*/
+			add_action( 'tribe_common_loaded', [ $this, 'register_plugin_autoload_paths' ] );
 
 			return;
 		}
@@ -427,18 +433,8 @@ class Tribe__Tickets__Main {
 	 * Sets up autoloading
 	 */
 	protected function init_autoloading() {
-		$prefixes = array(
-			'Tribe__Tickets__' => $this->plugin_path . 'src/Tribe',
-		);
-
-		if ( ! class_exists( 'Tribe__Autoloader' ) ) {
-			require_once( $GLOBALS['tribe-common-info']['dir'] . '/Autoloader.php' );
-
-			$prefixes['Tribe__'] = $GLOBALS['tribe-common-info']['dir'];
-		}
-
-		$autoloader = Tribe__Autoloader::instance();
-		$autoloader->register_prefixes( $prefixes );
+		$autoloader = $this->get_autoloader_instance();
+		$this->register_plugin_autoload_paths();
 
 		require_once $this->plugin_path . 'src/template-tags/tickets.php';
 
@@ -896,4 +892,36 @@ class Tribe__Tickets__Main {
 
 			echo $output;
 		}
+
+	/**
+	 * Returns the autoloader singleton instance to use in a context-aware manner.
+	 *
+	 * @since TBD
+	 *
+	 * @return \Tribe__Autoloader Teh singleton common Autoloader instance.
+	 */
+	public function get_autoloader_instance() {
+		if ( ! class_exists( 'Tribe__Autoloader' ) ) {
+			require_once $GLOBALS['tribe-common-info']['dir'] . '/Autoloader.php';
+
+			Tribe__Autoloader::instance()->register_prefixes( [
+				'Tribe__' => $GLOBALS['tribe-common-info']['dir'],
+			] );
+		}
+
+		return Tribe__Autoloader::instance();
+	}
+
+	/**
+	 * Registers the plugin autoload paths in the Common Autoloader instance.
+	 *
+	 * @since TBD
+	 */
+	public function register_plugin_autoload_paths() {
+		$prefixes = array(
+			'Tribe__Tickets__' => $this->plugin_path . 'src/Tribe',
+		);
+
+		$this->get_autoloader_instance()->register_prefixes( $prefixes );
+	}
 }

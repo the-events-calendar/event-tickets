@@ -57,7 +57,6 @@ const TicketsContainer = ( {
 			<div className={ innerBlocksClassName }>
 				<InnerBlocks
 					allowedBlocks={ [ 'tribe/tickets-item' ] }
-					templateLock="insert"
 				/>
 			</div>
 			{

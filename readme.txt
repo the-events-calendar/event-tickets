@@ -117,20 +117,23 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.5] TBD =
+= [4.10.5] 2019-05-09 =
 
 * Feature - Implemented our abstract Object-relational Mapping layer for Ticket Attendees and increased stability with more automated tests [123468]
 * Feature - Add tooltips to Attendee Report page [120856]
 * Feature - Add tooltip to explain what statues are behind Pending Order Completion [120862]
 * Feature - Add tooltip to explain the Available Count Per Ticket [120862]
 * Feature - Add tooltips to explain the sold & available amounts in the ticket block [121992]
-* Tweak - Add method to get all possible names of the completed status by Commerce [122458]
+* Tweak - Add method to get all possible names of the completed status by ecommerce provider [122458]
 * Tweak - Change success message for ticket move [102635]
 * Tweak - Ticket Attendee and Order Page Header css by changing overflow to visible [120862]
-* Tweak - Update status manage to accept provider names or abbreviations [120862]
+* Tweak - Update Status Manager to accept provider names or abbreviations [120862]
 * Tweak - In the Ticket Block add link to EDD Orders Page [121440]
 * Tweak - Change "Attendee Registration" to "Attendee Information" in several locations [126038]
 * Tweak - Exclude WooCommerce Product and EDD Downloads as supported post types when saving for tickets to prevent recursion errors, in case they were previously saved before we removed them from the options list [126749]
+* Tweak - Added filters: `tribe_tickets_plus_get_total_cancelled`
+* Tweak - Added actions: `tribe_ticket_available_warnings`
+* Tweak - Changed views: `registration/content`
 * Fix - Add checks to `tribe_events_count_available_tickets()` and `tribe_events_has_unlimited_stock_tickets()` to properly detect unlimited tickets. [119844]
 * Fix - Change `inventory` to compare the correct ticket when checking event shared capacity [119844]
 * Fix - Make Attendees Report match the order report, specifically "Total Tickets Issued" should not include cancelled tickets [69823]
@@ -139,6 +142,9 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Ensure capacity changes for source and target tickets when moving a ticket from one type to another [102636]
 * Fix - Correct escaping on attendee registration shortcode [125964]
 * Fix - Fix error with creating new ticket in block editor [126266]
+* Fix - Fix issue where Tribe Commerce would not submit correctly when using the attendee registration shortcode [126779]
+* Fix - Fix autoloader usage so it loads the correct latest version of Tribe Common [127173]
+* Language - 10 new strings added, 45 updated, 1 fuzzied, and 6 obsoleted
 
 = [4.10.4.4] 2019-05-03 =
 

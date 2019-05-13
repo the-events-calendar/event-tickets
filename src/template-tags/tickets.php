@@ -209,7 +209,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			if ( ! $data['available'] ) {
 				$parts[ $type . '-stock' ] = '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
 
-				// Only re-aply if we don't have a stock yet
+				// Only re-apply if we don't have a stock yet
 				if ( empty( $html['stock'] ) ) {
 					$html['stock'] = $parts[ $type . '-stock' ];
 				}
@@ -445,7 +445,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = _x( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
+			$sold_label = _x( "RSVP'd Going", 'separate going and remain RSVPs', 'event-tickets' );
 		}
 
 		// Base message
@@ -748,11 +748,14 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 }
 
 /**
- * Updates a given Object Capacity
+ * Removes all meta for a given object capacity. Object can be a ticket, or an event/post with tickets.
+ *
+ * Note, you can pass an event/post to this function and it will merrily change the meta values
+ * for the event - not for the tickets!
  *
  * @since  4.6.2
  *
- * @param  int  $object  Post We are trying to save capacity
+ * @param int|WP_Post $object WP_Post (or ID of post) We are trying to delete capacity from.
  *
  * @return int|false
  */
@@ -789,10 +792,13 @@ function tribe_tickets_delete_capacity( $object ) {
 /**
  * Updates a given Object Capacity
  *
+ * Note, you can pass an event/post to this function and it will merrily change the meta values
+ * for the event - not for the tickets!
+ *
  * @since  4.6.2
  *
- * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
- * @param  int  $capacty  How much we are trying to update the capacity to
+ * @param int|WP_Post|Tribe__Tickets__Ticket_Object $object  Post We are trying to save capacity
+ * @param int                                       $capacty What we are trying to update the capacity to.
  *
  * @return int|false
  */
@@ -816,9 +822,12 @@ function tribe_tickets_update_capacity( $object, $capacity ) {
 /**
  * Returns the capacity for a given Post
  *
+ * Note while we can send a post/event we do not store capacity on events
+ * so the return values will always be null.
+ *
  * @since  4.6
  *
- * @param  int  $post  Post We are trying to fetch capacity
+ * @param int|WP_Post $post Post we are trying to fetch capacity for.
  *
  * @return int|null
  */
@@ -884,8 +893,8 @@ function tribe_tickets_get_capacity( $post ) {
  *
  * @since  4.6
  *
- * @param  string|int $number Which you are tring to convert
- * @param  string     $mode   Mode this post is on
+ * @param string|int $number Which you are trying to convert.
+ * @param string     $mode   Mode this post is on.
  *
  * @return string
  */

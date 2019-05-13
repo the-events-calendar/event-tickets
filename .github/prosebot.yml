@@ -1,0 +1,4 @@
+# .github/prosebot.yml
+writeGood: true
+alex: false
+spellchecker: true

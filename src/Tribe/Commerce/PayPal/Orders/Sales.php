@@ -353,7 +353,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @since 4.7
 	 *
-	 * @since TBD - add check for Global Stock
+	 * @since 4.10.5 - add check for Global Stock
 	 *
 	 * @param int                            $available
 	 * @param \Tribe__Tickets__Ticket_Object $ticket

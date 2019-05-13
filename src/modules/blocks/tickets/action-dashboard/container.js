@@ -37,7 +37,7 @@ const mapStateToProps = ( state, ownProps ) => {
 		hasOrdersPage: Boolean( page ),
 		hasRecurrenceRules: getHasRecurrenceRules( state ),
 		hasTicketsPlus: plugins.selectors.hasPlugin( state )( plugins.constants.TICKETS_PLUS ),
-		onConfirmClick: () => {
+		onConfirmClick: () => { // eslint-disable-line wpcalypso/redux-no-bound-selectors
 			const { clientId } = ownProps;
 			const { getBlockCount } = select( 'core/editor' );
 			const { insertBlock } = wpDispatch( 'core/editor' );

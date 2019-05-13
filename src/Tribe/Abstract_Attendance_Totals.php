@@ -54,7 +54,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	/**
 	 * Get Attendee Total Sold Tooltip
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @return string a string of html for the tooltip
 	 */
@@ -68,7 +68,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	/**
 	 * Get Attendee Total Completed Orders Tooltip
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @return string a string of html for the tooltip
 	 */
@@ -82,7 +82,7 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 	/**
 	 * Get Attendee Total Cancelled Orders Tooltip
 	 *
-	 * @since TBD
+	 * @since 4.10.5
 	 *
 	 * @return string a string of html for the tooltip
 	 */
