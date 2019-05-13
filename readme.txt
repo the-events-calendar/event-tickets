@@ -143,6 +143,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Fix error with creating new ticket in block editor [126266]
 * Fix - Fix issue where Tribe Commerce would not submit correctly when using the attendee registration shortcode [126779]
 * Fix - Fix autoloader usage so it loads the correct latest version of Tribe Common [127173]
+* Fix - Fix text domain in Tribe Commerce order sales view [127645]
 * Language - 10 new strings added, 45 updated, 1 fuzzied, and 6 obsoleted
 
 = [4.10.4.4] 2019-05-03 =
