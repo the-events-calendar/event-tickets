@@ -1070,13 +1070,18 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$post_transient = null;
 
-				$cache_key = $post_id;
+				$cache_key = 'any';
 
-				if ( ! empty( $args ) ) {
-					$cache_key .= ':' . md5( json_encode( $args ) );
+				if ( 0 < $post_id ) {
+					$cache_key = 'post_' . (int) $post_id;
 				}
 
-				if ( 0 !== $expire ) {
+				if ( ! empty( $args ) ) {
+					$cache_key = false;
+				}
+
+				if ( 0 !== $expire && $cache_key ) {
+					/** @var Tribe__Post_Transient $post_transient */
 					$post_transient = tribe( 'post-transient' );
 
 					$attendees_from_cache = $post_transient->get( $cache_key, self::ATTENDEES_CACHE );
@@ -1097,7 +1102,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						$attendees = $attendee_data['attendees'];
 					}
 
-					if ( 0 !== $expire ) {
+					if ( 0 !== $expire && $cache_key ) {
 						$post_transient->set( $cache_key, self::ATTENDEES_CACHE, $attendees, $expire );
 					}
 				}
@@ -2494,12 +2499,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Clears the attendees cache for a given post
 		 *
-		 * @param int|WP_Post $post The parent post or ID
+		 * @param int|WP_Post $post_id The parent post or ID
 		 *
 		 * @return bool Was the operation successful?
 		 */
-		public function clear_attendees_cache( $post ) {
-			return Tribe__Post_Transient::instance()->delete( $post, self::ATTENDEES_CACHE );
+		public function clear_attendees_cache( $post_id ) {
+			if ( $post_id instanceof WP_Post ) {
+				$post_id = $post_id->ID;
+			}
+
+			/** @var Tribe__Post_Transient $post_transient */
+			$post_transient = tribe( 'post-transient' );
+
+			$cache_key = 'post_' . (int) $post_id;
+
+			$post_transient->delete( 'any', self::ATTENDEES_CACHE );
+
+			return $post_transient->delete( $cache_key, self::ATTENDEES_CACHE );
 		}
 
 		/**
