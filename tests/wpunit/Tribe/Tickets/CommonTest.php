@@ -41,4 +41,4 @@ class CommonTest extends \Codeception\TestCase\WPTestCase {
 		);
 	}
 
-	}
+}

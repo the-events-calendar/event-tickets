@@ -14,7 +14,7 @@ if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
 	/**
 	 * Returns the current post object that can have tickets attached to it
 	 *
-	 * Optionally the post object or ID of a ticket post can be passed in and, again, the
+	 * Optionally the post object or ID of a ticketed post can be passed in and, again, the
 	 * parent (event) post object will be returned if possible
 	 *
 	 * @param int|WP_Post $data
@@ -153,7 +153,13 @@ if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
 			}
 
 			$stock_level = $global_stock_mode === Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE ? $ticket->global_stock_cap : $ticket->stock;
-			$count += (int) $stock_level; // Explicit cast needed because it's possible $stock_level will be an empty string (unlimited stock)
+
+			// If we find an unlimited ticket, just return unlimited (-1) so we don't use -1 or an empty string as a numeric stock and try to do math with it
+			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $stock_level || -1 === (int) $stock_level ) {
+				return -1;
+			}
+
+			$count += (int) $stock_level; // Explicit cast as a failsafe in case a string slips through
 		}
 
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
@@ -203,7 +209,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 			if ( ! $data['available'] ) {
 				$parts[ $type . '-stock' ] = '<span class="tribe-out-of-stock">' . esc_html_x( 'Sold out', 'list view stock sold out', 'event-tickets' ) . '</span>';
 
-				// Only re-aply if we don't have a stock yet
+				// Only re-apply if we don't have a stock yet
 				if ( empty( $html['stock'] ) ) {
 					$html['stock'] = $parts[ $type . '-stock' ];
 				}
@@ -316,6 +322,10 @@ if ( ! function_exists( 'tribe_tickets_has_unlimited_stock_tickets' ) ) {
 		foreach ( Tribe__Tickets__Tickets::get_all_event_tickets( $event->ID ) as $ticket ) {
 			// Using equal operator as identical comparison operator causes this to always be false
 			if ( Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $ticket->stock() ) {
+				return true;
+			}
+			// We also return -1 for stock on unlimited tickets
+			if ( -1 === (int) $ticket->stock() ) {
 				return true;
 			}
 		}
@@ -435,7 +445,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = _x( 'RSVP\'d Going', 'separate going and remain RSVPs', 'event-tickets' );
+			$sold_label = _x( "RSVP'd Going", 'separate going and remain RSVPs', 'event-tickets' );
 		}
 
 		// Base message
@@ -738,11 +748,14 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 }
 
 /**
- * Updates a given Object Capacity
+ * Removes all meta for a given object capacity. Object can be a ticket, or an event/post with tickets.
+ *
+ * Note, you can pass an event/post to this function and it will merrily change the meta values
+ * for the event - not for the tickets!
  *
  * @since  4.6.2
  *
- * @param  int  $object  Post We are trying to save capacity
+ * @param int|WP_Post $object WP_Post (or ID of post) We are trying to delete capacity from.
  *
  * @return int|false
  */
@@ -779,10 +792,13 @@ function tribe_tickets_delete_capacity( $object ) {
 /**
  * Updates a given Object Capacity
  *
+ * Note, you can pass an event/post to this function and it will merrily change the meta values
+ * for the event - not for the tickets!
+ *
  * @since  4.6.2
  *
- * @param  int|WP_Post|Tribe__Tickets__Ticket_Object  $object   Post We are trying to save capacity
- * @param  int  $capacty  How much we are trying to update the capacity to
+ * @param int|WP_Post|Tribe__Tickets__Ticket_Object $object  Post We are trying to save capacity
+ * @param int                                       $capacty What we are trying to update the capacity to.
  *
  * @return int|false
  */
@@ -806,9 +822,12 @@ function tribe_tickets_update_capacity( $object, $capacity ) {
 /**
  * Returns the capacity for a given Post
  *
+ * Note while we can send a post/event we do not store capacity on events
+ * so the return values will always be null.
+ *
  * @since  4.6
  *
- * @param  int  $post  Post We are trying to fetch capacity
+ * @param int|WP_Post $post Post we are trying to fetch capacity for.
  *
  * @return int|null
  */
@@ -874,8 +893,8 @@ function tribe_tickets_get_capacity( $post ) {
  *
  * @since  4.6
  *
- * @param  string|int $number Which you are tring to convert
- * @param  string     $mode   Mode this post is on
+ * @param string|int $number Which you are trying to convert.
+ * @param string     $mode   Mode this post is on.
  *
  * @return string
  */

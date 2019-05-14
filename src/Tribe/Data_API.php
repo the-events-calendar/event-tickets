@@ -2,7 +2,7 @@
 
 
 /**
- * Class to connect ticketing infomation requests with ticket provider
+ * Class to connect ticketing information requests with ticket provider
  *
  * Class Tribe__Tickets__Data_API
  */

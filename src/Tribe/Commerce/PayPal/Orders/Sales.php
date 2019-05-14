@@ -353,15 +353,24 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 *
 	 * @since 4.7
 	 *
+	 * @since 4.10.5 - add check for Global Stock
+	 *
 	 * @param int                            $available
 	 * @param \Tribe__Tickets__Ticket_Object $ticket
-	 * @param   int                          $sold
-	 * @param      int                       $stock
+	 * @param int                            $sold
+	 * @param int                            $stock
 	 *
 	 * @return int
 	 */
 	public function filter_available( $available, Tribe__Tickets__Ticket_Object $ticket, $sold, $stock ) {
 		if ( 'Tribe__Tickets__Commerce__PayPal__Main' !== $ticket->provider_class ) {
+			return $available;
+		}
+
+		// if using global stock then return available
+		$event        = Tribe__Tickets__Tickets::find_matching_event( $ticket );
+		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
+		if ( Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $ticket->global_stock_mode() && $global_stock->is_enabled() ) {
 			return $available;
 		}
 
