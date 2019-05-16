@@ -25,18 +25,29 @@ git_clone_required_plugins(){
 
 		cd ${plugin_slug};
 
-		# Tweak git to correctly work with submodules.
-	 	sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
+	  	if [[ -f ".gitmodules" ]]; then
+			echo "Setting up submodules for plugin ${plugin_slug}";
 
-	  	git submodule update --recursive --init;
+			# Tweak git to correctly work with submodules.
+			sed -i 's/git@github.com:/git:\/\/github.com\//' .gitmodules
 
-	  	composer update --prefer-dist;
+			# Setup submodules.
+			git submodule update --recursive --init;
+	  	fi;
 
-		if [[ $plugin_slug == "the-events-calendar" ]]; then
-	  		cd common;
+		echo "Installing composer for plugin ${plugin_slug}";
 
-			composer update --prefer-dist;
-		fi;
+		# Install composer on plugin.
+		composer update --prefer-dist --no-dev;
+
+		# Install composer on common if it exists.
+	  	if [[ -d "common" ]]; then
+			cd common;
+
+			echo "Installing common composer for plugin ${plugin_slug}";
+
+			composer update --prefer-dist --no-dev;
+	  	fi;
 
 	  	cd ${plugins_folder}
 	done
