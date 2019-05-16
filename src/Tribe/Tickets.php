@@ -1346,31 +1346,31 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns the total number of attendees for an event (regardless of provider).
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @return int Total count of attendees.
-		 */
-		public static function get_event_attendees_count( $post_id ) {
-			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
-
-			return $repository->by( 'event', $post_id )->found();
-		}
-
-		/**
-		 * Returns the total number of attendees for an event (regardless of provider).
-		 *
-		 * @since TBD
-		 *
-		 * @param int $post_id ID of parent "event" post.
-		 * @param int $user_id ID of user.
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args    List of arguments to filter by.
 		 *
 		 * @return int Total count of attendees.
 		 */
-		public static function get_event_attendees_count_by_user( $post_id, $user_id ) {
+		public static function get_event_attendees_count( $post_id, $args = [] ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees();
 
-			return $repository->by( 'event', $post_id )->by( 'user', $user_id )->found();
+			$repository->by( 'event', $post_id );
+
+			// Handle filtering.
+			if ( ! empty( $args['by'] ) ) {
+				foreach ( $args['by'] as $by => $by_args ) {
+					$by_args = (array) $by_args;
+
+					if ( is_string( $by ) ) {
+						array_unshift( $by_args, $by );
+					}
+
+					call_user_func_array( [ $repository, 'by' ], $by_args );
+				}
+			}
+
+			return $repository->found();
 		}
 
 		/**
