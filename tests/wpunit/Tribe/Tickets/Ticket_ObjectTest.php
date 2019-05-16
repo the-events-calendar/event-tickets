@@ -6,6 +6,7 @@ use Tribe__Tickets__Ticket_Object as RSVP;
 use Tribe__Tickets__Tickets as Ticket;
 use Tribe__Tickets__Commerce__PayPal__Main as PayPal;
 use Tribe__Tickets__Data_API as Data_API;
+use Tribe__Tickets__Global_Stock as Global_Stock;
 
 use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
@@ -88,7 +89,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
-	 * reate event and Tribe Commerce Ticket, return Ticket object.
+	 * Create event and Tribe Commerce Ticket, return Ticket object.
 	 * Also sets timezone for event as this is needed for some tests.
 	 *
 	 * @param integer $cost
@@ -97,6 +98,52 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	 */
 	private function make_ticket( $cost = 1, $args = [] ) {
 		$event_id = $this->factory()->event->create();
+		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
+		$ticket_id  = $this->create_paypal_ticket( $event_id, $cost, $args );
+
+		return $this->get_ticket( $event_id, $ticket_id );
+	}
+
+	/**
+	 * Create event and RSVP with shared capacity, return RSVP object.
+	 * Also sets timezone for event as this is needed for some tests.
+	 *
+	 * @param integer $cost
+	 * @param array $args
+	 * @return Tribe__Tickets__Commerce__PayPal__Main
+	 */
+	private function make_shared_rsvp( $cost = 1, $args = [] ) {
+		$event_args = [
+			'meta_input' => [
+				'_tribe_ticket_use_global_stock' => 1,
+				'_tribe_ticket_capacity' => 100,
+			]
+		];
+
+		$event_id = $this->factory()->event->create( $event_args );
+		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
+		$ticket_id  = $this->create_rsvp_ticket( $event_id, $args );
+
+		return $this->get_ticket( $event_id, $ticket_id );
+	}
+
+	/**
+	 * reate event and Tribe Commerce Ticket with shared capacity, return Ticket object.
+	 * Also sets timezone for event as this is needed for some tests.
+	 *
+	 * @param integer $cost
+	 * @param array $args
+	 * @return Tribe__Tickets__Commerce__PayPal__Main
+	 */
+	private function make_shared_ticket( $cost = 1, $args = [] ) {
+		$event_args = [
+			'meta_input' => [
+				'_tribe_ticket_use_global_stock' => 1,
+				'_tribe_ticket_capacity' => 100,
+			]
+		];
+
+		$event_id = $this->factory()->event->create( $event_args );
 		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
 		$ticket_id  = $this->create_paypal_ticket( $event_id, $cost, $args );
 
@@ -456,7 +503,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->create_many_attendees_for_ticket( 5, $rsvp->ID, $rsvp->get_event_id() );
 
-		$this->assertEquals( 5, $rsvp->inventory(), 'Incorrect number of attendees reported for RSVP.' );
+		$this->assertEquals( 5, $rsvp->inventory(), 'Incorrect inventory reported for RSVP.' );
 
 		$ticket = $this->make_ticket(
 			1,
@@ -469,6 +516,80 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->create_many_attendees_for_ticket( 5, $ticket->ID, $ticket->get_event_id() );
 
-		$this->assertEquals( 5, $ticket->inventory(), 'Incorrect number of attendees reported for Ticket.' );
+		$this->assertEquals( 5, $ticket->inventory(), 'Incorrect inventory reported for Ticket.' );
+	}
+
+	/**
+	 * @test
+	 * it should return correct "own" capacity
+	 *
+	 * @covers capacity
+	 */
+	public function it_should_return_correct_own_capacity() {
+		$rsvp = $this->make_rsvp(
+			[
+				'meta_input' => [
+					'_capacity'   => 10,
+				],
+			]
+		);
+
+		$this->assertEquals( 10, $rsvp->capacity(), 'Incorrect capacity reported for new RSVP.' );
+
+		$this->create_many_attendees_for_ticket( 5, $rsvp->ID, $rsvp->get_event_id() );
+
+		$this->assertEquals( 10, $rsvp->capacity(), 'Incorrect capacity reported for RSVP with attendees.' );
+
+		$ticket = $this->make_ticket(
+			1,
+			[
+				'meta_input' => [
+					'_capacity'   => 10,
+				],
+			]
+		);
+
+		$this->assertEquals( 10, $ticket->capacity(), 'Incorrect capacity reported for new ticket.' );
+
+		$this->create_many_attendees_for_ticket( 5, $ticket->ID, $ticket->get_event_id() );
+
+		$this->assertEquals( 10, $ticket->capacity(), 'Incorrect capacity reported for ticket with attendees.' );
+	}
+
+	/**
+	 * @test
+	 * it should return correct "unlimited" capacity
+	 *
+	 * @covers capacity
+	 */
+	public function it_should_return_correct_unlimited_capacity() {
+		$rsvp = $this->make_rsvp(
+			[
+				'meta_input' => [
+					'_capacity'   => -1,
+				],
+			]
+		);
+
+		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for new RSVP.' );
+
+		$this->create_many_attendees_for_ticket( 5, $rsvp->ID, $rsvp->get_event_id() );
+
+		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for RSVP with attendees.' );
+
+		$ticket = $this->make_ticket(
+			1,
+			[
+				'meta_input' => [
+					'_capacity'   => -1,
+				],
+			]
+		);
+
+		$this->assertEquals( -1, $ticket->capacity(), 'Incorrect capacity reported for new ticket.' );
+
+		$this->create_many_attendees_for_ticket( 5, $ticket->ID, $ticket->get_event_id() );
+
+		$this->assertEquals( -1, $ticket->capacity(), 'Incorrect capacity reported for ticket with attendees.' );
 	}
 }
