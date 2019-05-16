@@ -1163,12 +1163,44 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
 			$repository = tribe_attendees( $provider );
 
+			// Limit by post ID.
+			$repository->by( 'event', $post_id );
+
+			self::pass_args_to_repository( $repository, $args );
+
+			$attendee_posts = $repository->all();
+
+			if ( ! empty( $args['return_total_found'] ) ) {
+				$attendee_data['total_found'] = $repository->found();
+			}
+
+			$attendee_data['attendees']   = self::get_attendees_from_modules( $attendee_posts, $post_id );
+
+			return $attendee_data;
+		}
+
+		/**
+		 * Pass arguments to repository object with dynamic support for by() and where_multi().
+		 *
+		 * @since TBD
+		 *
+		 * @param Tribe__Repository $repository Repository object.
+		 * @param array             $args       {
+		 *      List of arguments to filter by.
+		 *
+		 *      @type int     $page               Page number of results to return. Default is page 1.
+		 *      @type int     $per_page           How many results to return per page. Default is all.
+		 *      @type string  $fields             Which fields to return. Default is all.
+		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                                        [[what,args...]] format.
+		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 */
+		protected static function pass_args_to_repository( $repository, $args ) {
+			// Only return specific fields.
 			if ( ! empty( $args['fields'] ) ) {
 				$repository->fields( $args['fields'] );
 			}
-
-			// Limit by post ID.
-			$repository->by( 'event', $post_id );
 
 			// Handle filtering.
 			if ( ! empty( $args['by'] ) ) {
@@ -1209,13 +1241,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! empty( $args['per_page'] ) ) {
 				$repository->per_page( absint( $args['per_page'] ) );
 			}
-
-			$attendee_posts = $repository->all();
-
-			$attendee_data['total_found'] = $repository->found();
-			$attendee_data['attendees']   = self::get_attendees_from_modules( $attendee_posts, $post_id );
-
-			return $attendee_data;
 		}
 
 		/**
@@ -1347,28 +1372,34 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns the total number of attendees for an event (regardless of provider).
 		 *
 		 * @param int   $post_id ID of parent "event" post.
-		 * @param array $args    List of arguments to filter by.
+		 * @param array $args    {
+		 *      List of arguments to filter attendees by.
+		 *
+		 *      @type array $by          List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                               [[what,args...]] format.
+		 *      @type array $where_multi List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
 		 *
 		 * @return int Total count of attendees.
 		 */
 		public static function get_event_attendees_count( $post_id, $args = [] ) {
+			// Post ID is required.
+			if ( empty( $post_id ) ) {
+				return 0;
+			}
+
+			$provider = 'default';
+
+			if ( ! empty( $args['provider'] ) ) {
+				$provider = $args['provider'];
+			}
+
 			/** @var Tribe__Tickets__Attendee_Repository $repository */
-			$repository = tribe_attendees();
+			$repository = tribe_attendees( $provider );
 
 			$repository->by( 'event', $post_id );
 
-			// Handle filtering.
-			if ( ! empty( $args['by'] ) ) {
-				foreach ( $args['by'] as $by => $by_args ) {
-					$by_args = (array) $by_args;
-
-					if ( is_string( $by ) ) {
-						array_unshift( $by_args, $by );
-					}
-
-					call_user_func_array( [ $repository, 'by' ], $by_args );
-				}
-			}
+			self::pass_args_to_repository( $repository, $args );
 
 			return $repository->found();
 		}
