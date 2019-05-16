@@ -9,6 +9,12 @@
  */
 class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 
+	/**
+	 * The unique fragment that will be used to identify this repository filters.
+	 *
+	 * @var string
+	 */
+	protected $filter_name = 'tickets';
 
 	/**
 	 * Tribe__Tickets__Ticket_Repository constructor.
@@ -17,30 +23,34 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->default_args = array(
+
+		$this->create_args['post_type'] = current( $this->ticket_types() );
+
+		$this->default_args = [
 			'post_type' => $this->ticket_types(),
-			'orderby'   => array( 'date', 'ID' ),
-		);
-		$this->schema = array_merge( $this->schema, array(
-			'event'             => array( $this, 'filter_by_event' ),
-			'event_not_in'      => array( $this, 'filter_by_event_not_in' ),
-			'is_available'      => array( $this, 'filter_by_availability' ),
-			'provider'          => array( $this, 'filter_by_provider' ),
-			'attendees_min'     => array( $this, 'filter_by_attendees_min' ),
-			'attendees_max'     => array( $this, 'filter_by_attendees_max' ),
-			'attendees_between' => array( $this, 'filter_by_attendees_between' ),
-			'checkedin_min'     => array( $this, 'filter_by_checkedin_min' ),
-			'checkedin_max'     => array( $this, 'filter_by_checkedin_max' ),
-			'checkedin_between' => array( $this, 'filter_by_checkedin_between' ),
-			'capacity_min'      => array( $this, 'filter_by_capacity_min' ),
-			'capacity_max'      => array( $this, 'filter_by_capacity_max' ),
-			'capacity_between'  => array( $this, 'filter_by_capacity_between' ),
-			'available_from'    => array( $this, 'filter_by_available_from' ),
-			'available_until'   => array( $this, 'filter_by_available_until' ),
-			'event_status'      => array( $this, 'filter_by_event_status' ),
-			'has_attendee_meta' => array( $this, 'filter_by_attendee_meta_existence' ),
-			'currency_code'     => array( $this, 'filter_by_currency_code' ),
-		) );
+			'orderby'   => [ 'date', 'ID' ],
+		];
+
+		$this->schema = array_merge( $this->schema, [
+			'event'             => [ $this, 'filter_by_event' ],
+			'event_not_in'      => [ $this, 'filter_by_event_not_in' ],
+			'is_available'      => [ $this, 'filter_by_availability' ],
+			'provider'          => [ $this, 'filter_by_provider' ],
+			'attendees_min'     => [ $this, 'filter_by_attendees_min' ],
+			'attendees_max'     => [ $this, 'filter_by_attendees_max' ],
+			'attendees_between' => [ $this, 'filter_by_attendees_between' ],
+			'checkedin_min'     => [ $this, 'filter_by_checkedin_min' ],
+			'checkedin_max'     => [ $this, 'filter_by_checkedin_max' ],
+			'checkedin_between' => [ $this, 'filter_by_checkedin_between' ],
+			'capacity_min'      => [ $this, 'filter_by_capacity_min' ],
+			'capacity_max'      => [ $this, 'filter_by_capacity_max' ],
+			'capacity_between'  => [ $this, 'filter_by_capacity_between' ],
+			'available_from'    => [ $this, 'filter_by_available_from' ],
+			'available_until'   => [ $this, 'filter_by_available_until' ],
+			'event_status'      => [ $this, 'filter_by_event_status' ],
+			'has_attendee_meta' => [ $this, 'filter_by_attendee_meta_existence' ],
+			'currency_code'     => [ $this, 'filter_by_currency_code' ],
+		] );
 	}
 
 	/**
@@ -53,7 +63,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function ticket_types() {
-		return array( 'tribe_rsvp_tickets', 'tribe_tpp_tickets' );
+		return [
+			'rsvp'           => 'tribe_rsvp_tickets',
+			'tribe-commerce' => 'tribe_tpp_tickets',
+		];
 	}
 
 	/**
@@ -77,10 +90,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function ticket_to_event_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_for_event',
 			'tribe-commerce' => '_tribe_tpp_for_event',
-		);
+		];
 	}
 
 	/**
@@ -138,7 +151,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $attendees_min
 	 */
 	public function filter_by_attendees_min( $attendees_min ) {
-		$this->by_related_to_min( tribe_attendees()->attendee_to_ticket_keys(), $attendees_min );
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe_attendees();
+
+		$this->by_related_to_min( $attendees->attendee_to_ticket_keys(), $attendees_min );
 	}
 
 	/**
@@ -150,7 +166,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $attendees_max
 	 */
 	public function filter_by_attendees_max( $attendees_max ) {
-		$this->by_related_to_max( tribe_attendees()->attendee_to_ticket_keys(), $attendees_max );
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe_attendees();
+
+		$this->by_related_to_max( $attendees->attendee_to_ticket_keys(), $attendees_max );
 	}
 
 	/**
@@ -163,7 +182,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $attendees_max
 	 */
 	public function filter_by_attendees_between( $attendees_min, $attendees_max ) {
-		$this->by_related_to_between( tribe_attendees()->attendee_to_ticket_keys(), $attendees_min, $attendees_max );
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe_attendees();
+
+		$this->by_related_to_between( $attendees->attendee_to_ticket_keys(), $attendees_min, $attendees_max );
 	}
 
 	/**
@@ -175,12 +197,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $checkedin_min
 	 */
 	public function filter_by_checkedin_min( $checkedin_min ) {
-		$this->by_related_to_min(
-			tribe_attendees()->attendee_to_ticket_keys(),
-			$checkedin_min,
-			tribe_attendees()->checked_in_keys(),
-			'1'
-		);
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe_attendees();
+
+		$this->by_related_to_min( $attendees->attendee_to_ticket_keys(), $checkedin_min, $attendees->checked_in_keys(), '1' );
 	}
 
 	/**
@@ -192,12 +212,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $checkedin_max
 	 */
 	public function filter_by_checkedin_max( $checkedin_max ) {
-		$this->by_related_to_max(
-			tribe_attendees()->attendee_to_ticket_keys(),
-			$checkedin_max,
-			tribe_attendees()->checked_in_keys(),
-			'1'
-		);
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe_attendees();
+
+		$this->by_related_to_max( $attendees->attendee_to_ticket_keys(), $checkedin_max, $attendees->checked_in_keys(), '1' );
 	}
 
 	/**
@@ -210,13 +228,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $checkedin_max
 	 */
 	public function filter_by_checkedin_between( $checkedin_min, $checkedin_max ) {
-		$this->by_related_to_between(
-			tribe_attendees()->attendee_to_ticket_keys(),
-			$checkedin_min,
-			$checkedin_max,
-			tribe_attendees()->checked_in_keys(),
-			'1'
-		);
+		/** @var Tribe__Tickets__Attendee_Repository $attendees */
+		$attendees = tribe_attendees();
+
+		$this->by_related_to_between( $attendees->attendee_to_ticket_keys(), $checkedin_min, $checkedin_max, $attendees->checked_in_keys(), '1' );
 	}
 
 	/**
@@ -255,7 +270,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		 * but they should not satisfy any maximum capacity requirement
 		 * so we need to use a BETWEEN query.
 		 */
-		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, array( 0, $capacity_max ), 'NUMERIC' );
+		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, [ 0, $capacity_max ], 'NUMERIC' );
 	}
 
 	/**
@@ -267,7 +282,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 * @param int $capacity_max
 	 */
 	public function filter_by_capacity_between( $capacity_min, $capacity_max ) {
-		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, array( (int) $capacity_min, (int) $capacity_max ), 'NUMERIC' );
+		$this->by( 'meta_between', tribe( 'tickets.handler' )->key_capacity, [
+			(int) $capacity_min,
+			(int) $capacity_max,
+		], 'NUMERIC' );
 	}
 
 	/**
@@ -279,28 +297,28 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	public function filter_by_available_from( $date) {
+	public function filter_by_available_from( $date ) {
 		// the input is a UTC date or timestamp
 		$utc_date_string = is_numeric( $date ) ? "@{$date}" : $date;
 		$utc_date        = new DateTime( $utc_date_string, new DateTimeZone( 'UTC' ) );
 		$from            = Tribe__Timezones::to_tz( $utc_date->format( 'Y-m-d H:i:s' ), Tribe__Timezones::wp_timezone_string() );
 
-		return array(
-			'meta_query' => array(
-				'available-from' => array(
-					'not-exists' => array(
+		return [
+			'meta_query' => [
+				'available-from' => [
+					'not-exists' => [
 						'key'     => '_ticket_start_date',
 						'compare' => 'NOT EXISTS',
-					),
+					],
 					'relation'   => 'OR',
-					'from'       => array(
+					'from'       => [
 						'key'     => '_ticket_start_date',
 						'compare' => '>=',
 						'value'   => $from,
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 	}
 
 	/**
@@ -318,22 +336,22 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		$utc_date        = new DateTime( $utc_date_string, new DateTimeZone( 'UTC' ) );
 		$until           = Tribe__Timezones::to_tz( $utc_date->format( 'Y-m-d H:i:s' ), Tribe__Timezones::wp_timezone_string() );
 
-		return array(
-			'meta_query' => array(
-				'available-until' => array(
-					'not-exists' => array(
+		return [
+			'meta_query' => [
+				'available-until' => [
+					'not-exists' => [
 						'key'     => '_ticket_end_date',
 						'compare' => 'NOT EXISTS',
-					),
+					],
 					'relation'   => 'OR',
-					'from'       => array(
+					'from'       => [
 						'key'     => '_ticket_end_date',
 						'compare' => '<=',
 						'value'   => $until,
-					),
-				),
-			),
-		);
+					],
+				],
+			],
+		];
 	}
 
 	/**
@@ -354,7 +372,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
 			if ( ! $can_read_private_posts ) {
-				$statuses = array( 'publish' );
+				$statuses = [ 'publish' ];
 			} else {
 				// no need to filter if the user can read all posts
 				return;
@@ -362,21 +380,14 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		}
 
 		if ( ! $can_read_private_posts ) {
-			$event_status = array_intersect( $statuses, array( 'publish' ) );
+			$event_status = array_intersect( $statuses, [ 'publish' ] );
 		}
 
 		if ( empty( $event_status ) ) {
-			throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results(
-				'The user cannot read posts with the requested post statuses.'
-			);
+			throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results( 'The user cannot read posts with the requested post statuses.' );
 		}
 
-		$this->where_meta_related_by(
-			$this->ticket_to_event_keys(),
-			'IN',
-			'post_status',
-			$statuses
-		);
+		$this->where_meta_related_by( $this->ticket_to_event_keys(), 'IN', 'post_status', $statuses );
 	}
 
 	/**
@@ -391,44 +402,44 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	 */
 	public function filter_by_attendee_meta_existence( $exists ) {
 		if ( ! class_exists( 'Tribe__Tickets_Plus__Meta' ) ) {
-			return;
+			return [];
 		}
 
 		if ( $exists ) {
-			return array(
-				'meta_query' => array(
-					'by-attendee-meta-availability' => array(
-						'is-enabled' => array(
+			return [
+				'meta_query' => [
+					'by-attendee-meta-availability' => [
+						'is-enabled' => [
 							'key'     => Tribe__Tickets_Plus__Meta::ENABLE_META_KEY,
 							'compare' => '=',
 							'value'   => 'yes',
-						),
+						],
 						'relation'   => 'AND',
-						'has-meta'   => array(
+						'has-meta'   => [
 							'key'     => Tribe__Tickets_Plus__Meta::META_KEY,
-							'compare' => 'EXISTS'
-						),
-					),
-				),
-			);
+							'compare' => 'EXISTS',
+						],
+					],
+				],
+			];
 		}
 
-		return array(
-			'meta_query' => array(
-				'by-attendee-meta-availability' => array(
-					'is-not-enabled' => array(
+		return [
+			'meta_query' => [
+				'by-attendee-meta-availability' => [
+					'is-not-enabled' => [
 						'key'     => Tribe__Tickets_Plus__Meta::ENABLE_META_KEY,
 						'compare' => '!=',
 						'value'   => 'yes',
-					),
+					],
 					'relation'       => 'OR',
-					'not-exists'     => array(
+					'not-exists'     => [
 						'key'     => Tribe__Tickets_Plus__Meta::ENABLE_META_KEY,
-						'compare' => 'NOT EXISTS'
-					),
-				),
-			),
-		);
+						'compare' => 'NOT EXISTS',
+					],
+				],
+			],
+		];
 	}
 
 	/**
@@ -454,24 +465,10 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 
 		$queried_codes = array_map( 'strtoupper', $queried_codes );
 
-		/** @var Tribe__Tickets__Commerce__Currency $currency */
-		$currency         = tribe( 'tickets.commerce.paypal.currency' );
 		$keys             = $this->ticket_to_event_keys();
-		$provider_symbols = array();
+		$provider_symbols = $this->ticket_provider_symbols();
 
-		if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
-			$provider_symbols['tribe-commerce'] = $currency->get_currency_code();
-		}
-
-		if ( function_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) ) {
-			$provider_symbols['edd'] = edd_get_currency();
-		}
-
-		if ( class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) ) {
-			$provider_symbols['woo'] = get_option( 'woocommerce_currency' );
-		}
-
-		$in_keys = array();
+		$in_keys = [];
 
 		foreach ( $provider_symbols as $provider_slug => $provider_code ) {
 			$intersected = array_intersect( (array) $provider_code, $queried_codes );
@@ -489,5 +486,37 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 		}
 
 		$this->by( 'meta_exists', $in_keys );
+	}
+
+	/**
+	 * Get list of provider symbols.
+	 *
+	 * @since TBD
+	 *
+	 * @return array List of provider symbols.
+	 */
+	public function ticket_provider_symbols() {
+		$provider_symbols = [];
+
+		if ( tribe( 'tickets.commerce.paypal' )->is_active() ) {
+			/** @var Tribe__Tickets__Commerce__Currency $currency */
+			$currency = tribe( 'tickets.commerce.paypal.currency' );
+
+			$provider_symbols['tribe-commerce'] = $currency->get_currency_code();
+		}
+
+		return $provider_symbols;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function create() {
+		// Prevent creation of Tickets through the default ORM.
+		if ( 1 !== count( $this->ticket_types() ) ) {
+			return false;
+		}
+
+		return parent::create();
 	}
 }

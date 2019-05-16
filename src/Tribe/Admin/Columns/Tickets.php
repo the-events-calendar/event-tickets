@@ -89,18 +89,19 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * @return string The column HTML.
 	 */
 	protected function render_tickets_entry( $post_id ) {
-		$post      = get_post( $post_id );
-		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post_id );
-		$totals    = count( $attendees );
+		$post = get_post( $post_id );
+
+		$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+
 		// Remove the "Not Going" RSVPs
-		$totals = $totals - tribe( 'tickets.rsvp' )->get_total_not_going( $post_id );
+		$not_going = tribe( 'tickets.rsvp' )->get_attendees_count_not_going( $post_id );
 
 		// Bail with —
-		if ( 1 > $totals ) {
+		if ( $not_going >= $total ) {
 			return '&mdash;';
 		}
 
-		$content = sprintf( '<div>%s</div>%s', $totals, $this->get_percentage_string( $post_id ) );
+		$content = sprintf( '<div>%s</div>%s', $total - $not_going, $this->get_percentage_string( $post_id, null, $total, $not_going ) );
 		$attendees_link = tribe( 'tickets.attendees' )->get_report_link( $post );
 
 		return sprintf( '<a href="%s" target="_blank" class="tribe-tickets-column-attendees-link">%s</a>', $attendees_link, $content );
@@ -109,20 +110,30 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	/**
 	 * Gets the HTML for the percentage string for Attendees Column
 	 *
-	 * @since  4.6.2  Deprecated the Second Param
+	 * @since 4.6.2 Deprecated the second parameter.
+	 * @since TBD Added $total and $not_going parameters to further optimize requests.
 	 *
-	 * @param  int  $post_id    The current post ID.
-	 * @param  null $deprecated
+	 * @param  int     $post_id   The current post ID.
+	 * @param  null    $deprecated
+	 * @param null|int $total     Total attendees found for post (if already calculated).
+	 * @param null|int $not_going Total attendees not going for post (if already calculated).
 	 *
 	 * @return string The percentage HTML or an empty string if one of the
 	 *                post tickets has unlimited stock.
 	 */
-	protected function get_percentage_string( $post_id, $deprecated = null ) {
+	protected function get_percentage_string( $post_id, $deprecated = null, $total = null, $not_going = null ) {
 		$ticket    = tribe( 'tickets.handler' )->get_post_totals( $post_id );
-		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post_id );
-		$totals    = count( $attendees );
+
+		if ( null === $total ) {
+			$total = Tribe__Tickets__Tickets::get_event_attendees_count( $post_id );
+		}
+
+		if ( null === $not_going ) {
+			$not_going = tribe( 'tickets.rsvp' )->get_attendees_count_not_going( $post_id );
+		}
+
 		// Remove the "Not Going" RSVPs
-		$totals    = $totals - tribe( 'tickets.rsvp' )->get_total_not_going( $post_id );
+		$total -= $not_going;
 
 		// Bail early for unlimited
 		if ( $ticket['has_unlimited'] ) {
@@ -135,17 +146,15 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 
 		$stock = $global_stock_enabled ? $global_stock : $ticket['stock'];
 
-		// If there have been zero sales we need not do any further arithmetic
-		if ( 1 > $totals || 0 === $ticket['capacity'] ) {
+		if ( 1 > $total || 0 === $ticket['capacity'] ) {
+			// If there have been zero sales we need not do any further arithmetic
 			$percentage = 0;
-		}
-		// If $stock is zero (and items *have* been sold per the above conditional) we can assume 100%
-		elseif ( 0 === $stock ) {
+		} elseif ( 0 === $stock ) {
+			// If $stock is zero (and items *have* been sold per the above conditional) we can assume 100%
 			$percentage = 100;
-		}
-		// In all other cases, calculate the actual percentage
-		else {
-			$percentage = round( ( 100 / $ticket['capacity'] ) * $totals, 0 );
+		} else {
+			// In all other cases, calculate the actual percentage
+			$percentage = round( ( 100 / $ticket['capacity'] ) * $total );
 		}
 
 		return ' <div><small>(' . $percentage . '%)</small></div>';
