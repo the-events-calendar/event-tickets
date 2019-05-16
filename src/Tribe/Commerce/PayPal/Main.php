@@ -9,6 +9,11 @@
  */
 class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	/**
+	 * {@inheritdoc}
+	 */
+	public $orm_provider = 'tribe-commerce';
+
+	/**
 	 * Name of the CPT that holds Attendees (tickets holders).
 	 *
 	 * @var string
@@ -883,7 +888,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 				if ( ! $updating_attendee ) {
 					update_post_meta( $attendee_id, $this->attendee_product_key, $product_id );
-					update_post_meta( $attendee_id, self::ATTENDEE_EVENT_KEY, $post_id );
+					update_post_meta( $attendee_id, $this->attendee_event_key, $post_id );
 					update_post_meta( $attendee_id, $this->security_code, $this->generate_security_code( $attendee_id ) );
 					update_post_meta( $attendee_id, $this->order_key, $order_id );
 					$attendee_optout = Tribe__Utils__Array::get( $attendee_optouts, $product_id, false );
@@ -965,7 +970,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			/**
 			 * Action fired when a PayPal has had attendee tickets updated for it.
 			 *
-			 * This will fire even when tickets are initially craeted; if you need to hook on the
+			 * This will fire even when tickets are initially created; if you need to hook on the
 			 * creation process only use the 'event_tickets_tpp_tickets_generated_for_product' action.
 			 *
 			 * @since 4.7
@@ -1022,7 +1027,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			}
 			tribe_exit();
 		}
-}
+	}
 
 	/**
 	 * Sends ticket email
@@ -1033,7 +1038,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 * @param int $post_id  Parent post ID (optional)
 	 */
 	public function send_tickets_email( $order_id, $post_id = null ) {
-		$all_attendees = $this->get_attendees_by_id( $order_id );
+		$all_attendees = $this->get_attendees_by_order_id( $order_id );
 
 		$to_send = array();
 
@@ -1422,7 +1427,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		// @todo: should deleting an attendee replenish a ticket stock?
 
 		// Store name so we can still show it in the attendee list
-		$attendees      = $this->get_attendees_by_id( $event_id );
+		$attendees      = $this->get_attendees_by_post_id( $event_id );
 		$post_to_delete = get_post( $ticket_id );
 
 		foreach ( (array) $attendees as $attendee ) {
@@ -1573,25 +1578,19 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		}
 
 		switch ( $post_type ) {
-
-			case $this->attendee_object :
-
-				return $this->get_all_attendees_by_attendee_id( $post_id );
+			case $this->attendee_object:
+				return $this->get_attendees_by_attendee_id( $post_id );
 
 				break;
-
-			case 'tpp_order_hash' :
-
+			case 'tpp_order_hash':
 				return $this->get_attendees_by_order_id( $post_id );
 
 				break;
 			case $this->ticket_object:
-
 				return $this->get_attendees_by_ticket_id( $post_id );
 
 				break;
-			default :
-
+			default:
 				return $this->get_attendees_by_post_id( $post_id );
 
 				break;
@@ -1600,80 +1599,31 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get attendees by order id and, optionally, ticket ID.
-	 *
-	 * @since 4.7
-	 *
-	 * @param int $order_id An Order PayPal ID (hash)
-	 * @param int $product_id A ticket post ID
-	 *
-	 * @return array
+	 * {@inheritdoc}
 	 */
-	public function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
-		if ( empty( $order_id ) ) {
-			return array();
+	protected function get_attendees_by_order_id( $order_id, $ticket_id = null ) {
+		if ( ! is_numeric( $order_id ) ) {
+			return parent::get_attendees_by_order_id( $order_id, $ticket_id );
 		}
 
-		$args = array(
-			'posts_per_page' => - 1,
-			'post_type'      => $this->attendee_object,
-			'meta_query'     => array(
-				array(
+		$find_by_args = [
+			'post_id'   => $order_id,
+			'ticket_id' => [],
+		];
 
-					'key'   => $this->order_key,
-					'value' => esc_attr( $order_id ),
-				),
-			),
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		);
-
-		if ( null !== $ticket_id ) {
-			$args['meta_query'][] = array(
-				'key'   => $this->attendee_product_key,
-				'value' => $ticket_id,
-			);
+		if ( $ticket_id ) {
+			$find_by_args['ticket_id'] = (array) $ticket_id;
 		}
 
-		$attendees_query = new WP_Query( $args );
+		$orders = Tribe__Tickets__Commerce__PayPal__Order::find_by( $find_by_args );
 
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
+		if ( ! $orders ) {
+			return [];
 		}
 
-		return $this->get_attendees( $attendees_query, $order_id );
-	}
+		$order_id = current( $orders )->paypal_id();
 
-	/**
-	 * Get all the attendees for post type. It returns an array with the
-	 * following fields:
-	 *
-	 *     order_id
-	 *     purchaser_name
-	 *     purchaser_email
-	 *     optout
-	 *     ticket
-	 *     attendee_id
-	 *     security
-	 *     product_id
-	 *     check_in
-	 *     provider
-	 *
-	 * @since 4.7
-	 *
-	 * @param $attendees_query
-	 * @param $post_id
-	 *
-	 * @return array
-	 */
-	protected function get_attendees( $attendees_query, $post_id ) {
-		$attendees = array();
-
-		foreach ( $attendees_query->posts as $attendee ) {
-			$attendees[] = $this->get_attendee( $attendee );
-		}
-
-		return array_filter( $attendees );
+		return parent::get_attendees_by_order_id( $order_id, $ticket_id );
 	}
 
 	/**
@@ -1890,7 +1840,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$args = array(
 			'post_type' => 'tribe_events',
 			'page' => Tribe__Tickets__Tickets_Handler::$attendees_slug,
-			'event_id' => get_post_meta( $post_id, self::ATTENDEE_EVENT_KEY, true ),
+			'event_id' => get_post_meta( $post_id, $this->attendee_event_key, true ),
 		);
 
 		$url = add_query_arg( $args, admin_url( 'edit.php' ) );
@@ -2102,33 +2052,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		);
 
 		return empty( $post_id ) ? false : $post_id;
-	}
-
-	/**
-	 * Returns a list of attendees for an order.
-	 *
-	 * @since 4.7
-	 *
-	 * @param string $order The alphanumeric order identification string.
-	 *
-	 * @return array An array of WP_Post attendee objects.
-	 */
-	public function get_attendees_by_order( $order ) {
-		if ( empty( $order ) ) {
-			return false;
-		}
-
-		global $wpdb;
-
-		$attendees = $wpdb->get_col( $wpdb->prepare(
-			"SELECT DISTINCT( m.post_id )
-			FROM {$wpdb->postmeta} m
-			WHERE m.meta_key = %s
-			AND m.meta_value = %s",
-			$this->order_key, $order )
-		);
-
-		return empty( $attendees ) ? array() : array_map( 'get_post', $attendees );
 	}
 
 	/**
@@ -2493,32 +2416,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns all the attendees for a ticket.
-	 *
-	 * @since 4.7
-	 *
-	 * @param int $ticket_id The ticket post ID.
-	 *
-	 * @return array An array of attendees for the ticket.
-	 */
-	public function get_attendees_by_ticket_id( $ticket_id ) {
-		$attendees_query = new WP_Query( array(
-			'posts_per_page' => - 1,
-			'post_type'      => $this->attendee_object,
-			'meta_key'       => self::ATTENDEE_PRODUCT_KEY,
-			'meta_value'     => $ticket_id,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		) );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
-
-		return $this->get_attendees( $attendees_query, $ticket_id );
-	}
-
-	/**
 	 * Whether a specific attendee is valid toward inventory decrease or not.
 	 *
 	 * By default only attendees generated as part of a Completed order will count toward
@@ -2654,9 +2551,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 *
 	 * @since 4.10.2
 	 *
-	 * @param object $global_stock the object of Tribe__Tickets__Global_Stock
-	 * @param int    $qty          the quanitity to modify stock
-	 * @param bool   $increase     true or false to increase stock, default is false
+	 * @param Tribe__Tickets__Global_Stock $global_stock The global stock object.
+	 * @param int                          $qty          The quantity to modify stock.
+	 * @param bool                         $increase     Whether to increase stock, default is false.
 	 */
 	public function update_global_stock( $global_stock, $qty = 1, $increase = false ) {
 
@@ -2671,16 +2568,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns the data for an attendee.
-	 *
-	 * @since 4.7
-	 *
-	 * @param int|WP_Post $attendee An attendee post object or post ID.
-	 *
-	 * @return array|false Either an array of Attendee information or `false`
-	 *                     if the attendee could not be found.
+	 * {@inheritdoc}
 	 */
-	public function get_attendee( $attendee ) {
+	public function get_attendee( $attendee, $post_id = 0 ) {
 		if ( is_numeric( $attendee ) ) {
 			$attendee = get_post( $attendee );
 		}
@@ -2691,6 +2581,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
 		$security     = get_post_meta( $attendee->ID, $this->security_code, true );
+		$order_id     = get_post_meta( $attendee->ID, $this->order_key, true );
 		$product_id   = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
 		$optout       = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
 		$status       = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
@@ -2737,6 +2628,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
 			'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
 			'order_id'      => $attendee->ID,
+			'order_hash'    => $order_id,
 			'ticket_id'     => $ticket_unique_id,
 			'qr_ticket_id'  => $attendee->ID,
 			'security_code' => $security,

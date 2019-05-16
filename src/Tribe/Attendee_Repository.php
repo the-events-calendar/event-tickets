@@ -8,6 +8,14 @@
  * @since 4.8
  */
 class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
+
+	/**
+	 * The unique fragment that will be used to identify this repository filters.
+	 *
+	 * @var string
+	 */
+	protected $filter_name = 'attendees';
+
 	/**
 	 * @var array An array of all the order statuses supported by the repository.
 	 */
@@ -17,12 +25,12 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @var array An array of all the public order statuses supported by the repository.
 	 *            This list is hand compiled as reduced and easier to maintain.
 	 */
-	protected static $public_order_statuses = array(
+	protected static $public_order_statuses = [
 		'yes',     // RSVP
 		'completed', // PayPal
 		'wc-completed', // WooCommerce
 		'publish', // Easy Digital Downloads
-	);
+	];
 
 	/**
 	 * @var array An array of all the private order statuses supported by the repository.
@@ -34,26 +42,46 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->default_args = array_merge( $this->default_args, array(
+
+		$this->create_args['post_type'] = current( $this->attendee_types() );
+
+		$this->default_args = array_merge( $this->default_args, [
 			'post_type'   => $this->attendee_types(),
-			'orderby'     => array( 'date', 'title', 'ID' ),
+			'orderby'     => [ 'date', 'title', 'ID' ],
 			'post_status' => 'any',
-		) );
-		$this->schema = array_merge( $this->schema, array(
-			'event'             => array( $this, 'filter_by_event' ),
-			'ticket'            => array( $this, 'filter_by_ticket' ),
-			'event__not_in'     => array( $this, 'filter_by_event_not_in' ),
-			'ticket__not_in'    => array( $this, 'filter_by_ticket_not_in' ),
-			'optout'            => array( $this, 'filter_by_optout' ),
-			'rsvp_status'       => array( $this, 'filter_by_rsvp_status' ),
-			'provider'          => array( $this, 'filter_by_provider' ),
-			'event_status'      => array( $this, 'filter_by_event_status' ),
-			'order_status'      => array( $this, 'filter_by_order_status' ),
-			'price_min'         => array( $this, 'filter_by_price_min' ),
-			'price_max'         => array( $this, 'filter_by_price_max' ),
-			'has_attendee_meta' => array( $this, 'filter_by_attendee_meta_existence' ),
-			'checkedin'         => array( $this, 'filter_by_checkedin' ),
-		) );
+		] );
+
+		// Add initial simple schema.
+		$this->add_simple_meta_schema_entry( 'event', $this->attendee_to_event_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'event__not_in', $this->attendee_to_event_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'ticket', $this->attendee_to_ticket_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'ticket__not_in', $this->attendee_to_ticket_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'order', $this->attendee_to_order_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'order__not_in', $this->attendee_to_order_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'product_id', $this->attendee_to_ticket_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'product_id__not_in', $this->attendee_to_ticket_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_name', $this->purchaser_name_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_name__not_in', $this->purchaser_name_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email', $this->purchaser_email_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'purchaser_email__not_in', $this->purchaser_email_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'security_code', $this->security_code_keys(), 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'security_code__not_in', $this->security_code_keys(), 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'user', '_tribe_tickets_attendee_user_id', 'meta_in' );
+		$this->add_simple_meta_schema_entry( 'user__not_in', '_tribe_tickets_attendee_user_id', 'meta_not_in' );
+		$this->add_simple_meta_schema_entry( 'price', '_paid_price' );
+
+		$this->schema = array_merge( $this->schema, [
+			'optout'               => [ $this, 'filter_by_optout' ],
+			'rsvp_status'          => [ $this, 'filter_by_rsvp_status' ],
+			'provider'             => [ $this, 'filter_by_provider' ],
+			'event_status'         => [ $this, 'filter_by_event_status' ],
+			'order_status'         => [ $this, 'filter_by_order_status' ],
+			'order_status__not_in' => [ $this, 'filter_by_order_status_not_in' ],
+			'price_min'            => [ $this, 'filter_by_price_min' ],
+			'price_max'            => [ $this, 'filter_by_price_max' ],
+			'has_attendee_meta'    => [ $this, 'filter_by_attendee_meta_existence' ],
+			'checkedin'            => [ $this, 'filter_by_checkedin' ],
+		] );
 
 		$this->init_order_statuses();
 	}
@@ -68,24 +96,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_types() {
-		return array( 'tribe_rsvp_attendees', 'tribe_tpp_attendees' );
-	}
-
-	/**
-	 * Provides arguments to filter attendees by a specific event.
-	 *
-	 * @since 4.8
-	 *
-	 * @param int|array $event_id A post ID or an array of post IDs.
-	 *
-	 * @return array
-	 */
-	public function filter_by_event( $event_id ) {
-		return Tribe__Repository__Query_Filters::meta_in(
-			$this->attendee_to_event_keys(),
-			$event_id,
-			'by-related-event'
-		);
+		return [
+			'rsvp'           => 'tribe_rsvp_attendees',
+			'tribe-commerce' => 'tribe_tpp_attendees',
+		];
 	}
 
 	/**
@@ -98,44 +112,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_to_event_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_event',
 			'tribe-commerce' => '_tribe_tpp_event',
-		);
-	}
-
-	/**
-	 * Provides arguments to get attendees that are not related to an event.
-	 *
-	 * @since 4.8
-	 *
-	 * @param int|array $event_id A post ID or an array of post IDs.
-	 *
-	 * @return array
-	 */
-	public function filter_by_event_not_in( $event_id ) {
-		return Tribe__Repository__Query_Filters::meta_not_in(
-			$this->attendee_to_event_keys(),
-			$event_id,
-			'by-event-not-in'
-		);
-	}
-
-	/**
-	 * Provides arguments to filter attendees by a specific ticket.
-	 *
-	 * @since 4.8
-	 *
-	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
-	 *
-	 * @return array
-	 */
-	public function filter_by_ticket( $ticket_id ) {
-		return Tribe__Repository__Query_Filters::meta_in(
-			$this->attendee_to_ticket_keys(),
-			$ticket_id,
-			'by-ticket'
-		);
+		];
 	}
 
 	/**
@@ -148,58 +128,72 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_to_ticket_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_product',
 			'tribe-commerce' => '_tribe_tpp_product',
-		);
+		];
 	}
 
 	/**
-	 * Provides arguments to get attendees that are not related to a ticket.
+	 * Returns a list of meta keys relating an attendee to the order
+	 * that generated it.
 	 *
 	 * @since 4.8
-	 *
-	 * @param int|array $ticket_id A ticket post ID or an array of ticket post IDs.
 	 *
 	 * @return array
 	 */
-	public function filter_by_ticket_not_in( $ticket_id ) {
-		return Tribe__Repository__Query_Filters::meta_not_in(
-			$this->attendee_to_ticket_keys(),
-			$ticket_id,
-			'by-ticket-not-in'
-		);
+	protected function attendee_to_order_keys() {
+		return [
+			'tribe-commerce' => '_tribe_tpp_order',
+		];
 	}
 
 	/**
-	 * Provides arguments to filter attendees by their optout status.
+	 * Returns the list of meta keys relating an Attendee to a Post (Event).
 	 *
-	 * @since 4.8
+	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @param string $optout An optout option, supported 'yes','no','any'.
+	 * @since TBD
 	 *
-	 * @return array|null
+	 * @return array
 	 */
-	public function filter_by_optout( $optout ) {
-		$args = array(
-			'meta_query' => array(
-				'by-optout-status' => array(),
-			),
-		);
+	public function purchaser_name_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_full_name',
+			'tribe-commerce' => '_tribe_tpp_full_name',
+		];
+	}
 
-		switch ( $optout ) {
-			case 'any':
-				return null;
-				break;
-			case 'no':
-				$this->by( 'meta_not_in', $this->attendee_optout_keys(), 'yes' );
-				break;
-			case'yes':
-				$this->by( 'meta_in', $this->attendee_optout_keys(), 'yes' );
-				break;
-		}
+	/**
+	 * Returns the list of meta keys relating an Attendee to a Post (Event).
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function purchaser_email_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_email',
+			'tribe-commerce' => '_tribe_tpp_email',
+		];
+	}
 
-		return null;
+	/**
+	 * Returns the list of meta keys relating an Attendee to a Post (Event).
+	 *
+	 * Extending repository classes should override this to add more keys.
+	 *
+	 * @since TBD
+	 *
+	 * @return array
+	 */
+	public function security_code_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_security_code',
+			'tribe-commerce' => '_tribe_tpp_security_code',
+		];
 	}
 
 	/**
@@ -212,10 +206,68 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function attendee_optout_keys() {
-		return array(
+		return [
 			'rsvp'           => '_tribe_rsvp_attendee_optout',
 			'tribe-commerce' => '_tribe_tpp_attendee_optout',
-		);
+		];
+	}
+
+	/**
+	 * Returns a list of meta keys indicating an attendee checkin status.
+	 *
+	 * @since 4.8
+	 *
+	 * @return array
+	 */
+	public function checked_in_keys() {
+		return [
+			'rsvp'           => '_tribe_rsvp_checkedin',
+			'tribe-commerce' => '_tribe_tpp_checkedin',
+		];
+	}
+
+	/**
+	 * Provides arguments to filter attendees by their optout status.
+	 *
+	 * @since 4.8
+	 *
+	 * @param string $optout An optout option, supported 'yes','no','any'.
+	 *
+	 * @return array|null
+	 */
+	public function filter_by_optout( $optout ) {
+		global $wpdb;
+
+		switch ( $optout ) {
+			case 'any':
+				return null;
+				break;
+			case 'no':
+				$this->by( 'meta_not_in', $this->attendee_optout_keys(), 'yes' );
+				break;
+			case 'yes':
+				$this->by( 'meta_in', $this->attendee_optout_keys(), 'yes' );
+				break;
+			case 'no_or_none':
+				$optout_keys = $this->attendee_optout_keys();
+				$optout_keys = array_map( [ $wpdb, '_real_escape' ], $optout_keys );
+				$optout_keys = '"' . implode( '", "', $optout_keys ) . '"';
+
+				$this->filter_query->join( "
+					LEFT JOIN {$wpdb->postmeta} attendee_optout
+					ON ( attendee_optout.post_id = wp_posts.ID
+						AND attendee_optout.meta_key IN ( {$optout_keys} ) )
+				" );
+
+				$this->filter_query->where( "(
+					attendee_optout.post_id IS NULL
+					OR attendee_optout.meta_value != 'yes'
+				)" );
+
+				break;
+		}
+
+		return null;
 	}
 
 	/**
@@ -276,7 +328,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
 			if ( ! $can_read_private_posts ) {
-				$statuses = array( 'publish' );
+				$statuses = [ 'publish' ];
 			} else {
 				// no need to filter if the user can read all posts
 				return;
@@ -284,7 +336,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		}
 
 		if ( ! $can_read_private_posts ) {
-			$event_status = array_intersect( $statuses, array( 'publish' ) );
+			$event_status = array_intersect( $statuses, [ 'publish' ] );
 		}
 
 		if ( empty( $event_status ) ) {
@@ -299,6 +351,19 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'post_status',
 			$statuses
 		);
+	}
+
+	/**
+	 * Filters attendee to only get those related to orders with a specific ID.
+	 *
+	 * @since TVD
+	 *
+	 * @param string|array $order_id Order ID(s).
+	 */
+	public function filter_by_order( $order_id ) {
+		$order_ids = Tribe__Utils__Array::list_to_array( $order_id );
+
+		$this->by( 'meta_in', $this->attendee_to_order_keys(), $order_ids );
 	}
 
 	/**
@@ -318,7 +383,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// map the `any` meta-status
 		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
 			if ( ! $can_read_private_posts ) {
-				$statuses = array( 'public' );
+				$statuses = [ 'public' ];
 			} else {
 				// no need to filter if the user can read all posts
 				return;
@@ -349,9 +414,9 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		/** @var wpdb $wpdb */
 		global $wpdb;
 
-		$statuses_in = "'" . implode( "','", array_map( 'esc_sql', $statuses ) ) . "'";
+		$statuses_in = "'" . implode( "','", array_map( [ $wpdb, '_escape' ], $statuses ) ) . "'";
 
-		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' )
+		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
 		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
 
 		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} order_status_meta "
@@ -372,6 +437,82 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				(
 					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
 					AND order_post.post_status IN ( {$statuses_in} )
+				)
+			)" );
+		}
+	}
+
+	/**
+	 * Filters attendee to only get those not related to orders with a specific status.
+	 *
+	 * @since TBD
+	 *
+	 * @param string|array $order_status
+	 *
+	 * @throws Tribe__Repository__Void_Query_Exception If the requested statuses are not accessible by the user.
+	 */
+	public function filter_by_order_status_not_in( $order_status ) {
+		$statuses = Tribe__Utils__Array::list_to_array( $order_status );
+
+		$can_read_private_posts = current_user_can( 'read_private_posts' );
+
+		// map the `any` meta-status
+		if ( 1 === count( $statuses ) && 'any' === $statuses[0] ) {
+			if ( ! $can_read_private_posts ) {
+				$statuses = [ 'private' ];
+			} else {
+				// no need to filter if the user can read all posts
+				return;
+			}
+		}
+
+		// Allow the user to define singular statuses or the meta-status "public"
+		if ( in_array( 'public', $statuses, true ) ) {
+			$statuses = array_unique( array_merge( $statuses, self::$public_order_statuses ) );
+		}
+
+		// Allow the user to define singular statuses or the meta-status "private"
+		if ( in_array( 'private', $statuses, true ) ) {
+			$statuses = array_unique( array_merge( $statuses, self::$private_order_statuses ) );
+		}
+
+		// Remove any status the user cannot access
+		if ( ! $can_read_private_posts ) {
+			$statuses = array_intersect( $statuses, self::$private_order_statuses );
+		}
+
+		if ( empty( $statuses ) ) {
+			throw Tribe__Repository__Void_Query_Exception::because_the_query_would_yield_no_results(
+				'The user cannot access the requested attendee order statuses.'
+			);
+		}
+
+		/** @var wpdb $wpdb */
+		global $wpdb;
+
+		$statuses_in = "'" . implode( "','", array_map( [ $wpdb, '_escape' ], $statuses ) ) . "'";
+
+		$has_plus_providers = class_exists( 'Tribe__Tickets_Plus__Commerce__EDD__Main' )
+		                      || class_exists( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' );
+
+		$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} order_status_meta "
+		                           . "ON {$wpdb->posts}.ID = order_status_meta.post_id" );
+
+		if ( ! $has_plus_providers ) {
+			$this->filter_query->where( "order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
+			                            . "AND order_status_meta.meta_value NOT IN ( {$statuses_in} )" );
+		} else {
+			$this->filter_query->join( "LEFT JOIN {$wpdb->posts} order_post "
+			                           . "ON order_post.ID != {$wpdb->posts}.ID" );
+			$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} attendee_to_order_meta "
+			                           . 'ON attendee_to_order_meta.meta_value = order_post.ID' );
+			$this->filter_query->where( "(
+				(order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
+			                            . "AND order_status_meta.meta_value NOT IN ( {$statuses_in} ))
+				OR
+				(
+					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
+					AND order_post.post_status NOT IN ( {$statuses_in} )
 				)
 			)" );
 		}
@@ -435,34 +576,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	}
 
 	/**
-	 * Returns a list of meta keys indicating an attendee checkin status.
-	 *
-	 * @since 4.8
-	 *
-	 * @return array
-	 */
-	public function checked_in_keys() {
-		return array(
-			'rsvp'           => '_tribe_rsvp_checkedin',
-			'tribe-commerce' => '_tribe_tpp_checkedin',
-		);
-	}
-
-	/**
-	 * Returns a list of meta keys relating an attendee to the order
-	 * that generated it.
-	 *
-	 * @since 4.8
-	 *
-	 * @return array
-	 */
-	protected function attendee_to_order_keys() {
-		return array(
-			'tribe-commerce' => '_tribe_tpp_order',
-		);
-	}
-
-	/**
 	 * Bootstrap method called once per request to compile the available
 	 * order statuses.
 	 *
@@ -473,7 +586,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	protected function init_order_statuses() {
 		if ( empty( self::$order_statuses ) ) {
 			// For RSVP tickets the order status is the going status
-			$statuses = array( 'yes', 'no' );
+			$statuses = [ 'yes', 'no' ];
 
 			if ( Tribe__Tickets__Commerce__PayPal__Main::get_instance()->is_active() ) {
 				$statuses = array_merge( $statuses, tribe( 'tickets.status' )->get_statuses_by_action( 'all', 'tpp' ) );
@@ -496,5 +609,13 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			self::$order_statuses         = $statuses;
 			self::$private_order_statuses = array_diff( $statuses, self::$public_order_statuses );
 		}
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function create() {
+		// Disabled for now.
+		return false;
 	}
 }
