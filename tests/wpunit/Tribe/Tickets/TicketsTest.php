@@ -147,21 +147,18 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id, $post_id );
 		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id, $post_id );
 
-		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id, $post_id, [ 'user_id' => $user_id ] );
-		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id, $post_id, [ 'user_id' => $user_id ] );
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider' => 'tribe-commerce' ] ] ) );
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider' => 'rsvp' ] ] ) );
 
 		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
 		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1 );
 		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2 );
 
-		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id2, $post_id2 );
-		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id2, $post_id2 );
+		$this->create_many_attendees_for_ticket( 6, $paypal_ticket_id2, $post_id2 );
+		$this->create_many_attendees_for_ticket( 4, $rsvp_ticket_id2, $post_id2 );
 
-		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id2, $post_id2, [ 'user_id' => $user_id ] );
-		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id2, $post_id2, [ 'user_id' => $user_id ] );
-
-		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider' => 'tribe-commerce' ] ] ) );
-		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider' => 'rsvp' ] ] ) );
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider' => 'tribe-commerce' ] ] ) );
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider' => 'rsvp' ] ] ) );
 	}
 
 	/**
@@ -181,21 +178,18 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id, $post_id );
 		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id, $post_id );
 
-		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id, $post_id, [ 'user_id' => $user_id ] );
-		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id, $post_id, [ 'user_id' => $user_id ] );
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider__not_in' => 'rsvp' ] ] ) );
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider__not_in' => 'tribe-commerce' ] ] ) );
 
 		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
 		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1 );
 		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2 );
 
-		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id2, $post_id2 );
-		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id2, $post_id2 );
+		$this->create_many_attendees_for_ticket( 6, $paypal_ticket_id2, $post_id2 );
+		$this->create_many_attendees_for_ticket( 4, $rsvp_ticket_id2, $post_id2 );
 
-		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id2, $post_id2, [ 'user_id' => $user_id ] );
-		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id2, $post_id2, [ 'user_id' => $user_id ] );
-
-		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider__not_in' => 'rsvp' ] ] ) );
-		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider__not_in' => 'tribe-commerce' ] ] ) );
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider__not_in' => 'rsvp' ] ] ) );
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider__not_in' => 'tribe-commerce' ] ] ) );
 	}
 
 	/**
