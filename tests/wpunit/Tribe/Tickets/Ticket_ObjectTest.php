@@ -115,6 +115,19 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 
 	/**
 	 * @test
+	 * it should return the correct event ID
+	 */
+	public function it_should_return_the_correct_ID() {
+		$event_id = $this->factory()->event->create();
+		$rsvp_id  = $this->create_rsvp_ticket( $event_id, [] );
+		$rsvp     = $this->get_ticket( $event_id, $rsvp_id );
+
+		$this->assertEquals( $event_id, $rsvp->get_event_id(), 'Incorrect event ID reported for RSVP.' );
+
+	}
+
+	/**
+	 * @test
 	 * it should return the correct start date
 	 *
 	 * @covers start_date
@@ -428,6 +441,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	/**
 	 * @test
 	 * it should return correct current inventory
+	 * Note: inventory is based on attendees! So we can't just manually set it (as stock)
 	 *
 	 * @covers inventory
 	 */
@@ -436,25 +450,25 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 			[
 				'meta_input' => [
 					'_capacity'   => 10,
-					'_stock'      => 5,
-					'total_sales' => 5,
 				],
 			]
 		);
 
-		$this->assertEquals( 5, $rsvp->inventory() );
+		$this->create_many_attendees_for_ticket( 5, $rsvp->ID, $rsvp->get_event_id() );
+
+		$this->assertEquals( 5, $rsvp->inventory(), 'Incorrect number of attendees reported for RSVP.' );
 
 		$ticket = $this->make_ticket(
 			1,
 			[
 				'meta_input' => [
 					'_capacity'   => 10,
-					'_stock'      => 5,
-					'total_sales' => 5,
 				],
 			]
 		);
 
-		$this->assertEquals( 5, $ticket->inventory() );
+		$this->create_many_attendees_for_ticket( 5, $ticket->ID, $ticket->get_event_id() );
+
+		$this->assertEquals( 5, $ticket->inventory(), 'Incorrect number of attendees reported for Ticket.' );
 	}
 }
