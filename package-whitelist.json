@@ -1,6 +1,11 @@
 [
-  "common/lang/**/*",
+  "lang/**/*.mo",
+  "lang/**/*.pot",
+  "lang/**/*.txt",
   "common/src/**/*",
+  "common/lang/**/*.mo",
+  "common/lang/**/*.pot",
+  "common/lang/**/*.txt",
   "common/tribe-autoload.php",
   "common/vendor/a5hleyrich/wp-background-processing/*.php",
   "common/vendor/a5hleyrich/wp-background-processing/classes/**",

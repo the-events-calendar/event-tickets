@@ -26,3 +26,6 @@ compiler.jar
 
 # add this yourself to add githoooks
 .huskyrc
+
+# get from translate.wordpress.org as needed
+lang/*.po

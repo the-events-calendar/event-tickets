@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.6] TBD =
+
+* Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
+
 = [4.10.5] 2019-05-14 =
 
 * Feature - Add tooltips to Attendee Report page [120856]
