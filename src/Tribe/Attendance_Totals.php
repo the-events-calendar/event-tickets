@@ -18,8 +18,7 @@ class Tribe__Tickets__Attendance_Totals extends Tribe__Tickets__Abstract_Attenda
 	protected $total_deleted = 0;
 
 	protected function calculate_totals() {
-		$all_attendees = Tribe__Tickets__Tickets::get_event_attendees( $this->event_id );
-		$total_attendees = count( $all_attendees );
+		$total_attendees = Tribe__Tickets__Tickets::get_event_attendees_count( $this->event_id );
 
 		$this->total_checked_in = Tribe__Tickets__Tickets::get_event_checkedin_attendees_count( $this->event_id );
 		$this->total_not_checked_in = $total_attendees - $this->total_checked_in;

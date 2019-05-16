@@ -20,14 +20,11 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 	 * Calculate total RSVP attendance for the current event.
 	 */
 	protected function calculate_totals() {
-		foreach ( Tribe__Tickets__RSVP::get_instance()->get_attendees_array( $this->event_id ) as $attendee ) {
-			switch( $attendee[ 'order_status' ] ) {
-				case 'yes': $this->total_going++; break;
-				case 'no': $this->total_not_going++; break;
-			}
-		}
+		$rsvp = Tribe__Tickets__RSVP::get_instance();
 
-		$this->total_rsvps = $this->total_going + $this->total_not_going;
+		$this->total_going     = $rsvp->get_attendees_count_going( $this->event_id );
+		$this->total_not_going = $rsvp->get_attendees_count_not_going( $this->event_id );
+		$this->total_rsvps     = $this->total_going + $this->total_not_going;
 	}
 
 	/**
