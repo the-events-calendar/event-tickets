@@ -74,6 +74,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 			'optout'               => [ $this, 'filter_by_optout' ],
 			'rsvp_status'          => [ $this, 'filter_by_rsvp_status' ],
 			'provider'             => [ $this, 'filter_by_provider' ],
+			'provider__not_in'     => [ $this, 'filter_by_provider_not_in' ],
 			'event_status'         => [ $this, 'filter_by_event_status' ],
 			'order_status'         => [ $this, 'filter_by_order_status' ],
 			'order_status__not_in' => [ $this, 'filter_by_order_status_not_in' ],
@@ -144,6 +145,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_order_keys() {
 		return [
+			'rsvp'           => '_tribe_rsvp_order',
 			'tribe-commerce' => '_tribe_tpp_order',
 		];
 	}
@@ -243,10 +245,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				return null;
 				break;
 			case 'no':
-				$this->by( 'meta_not_in', $this->attendee_optout_keys(), 'yes' );
+				$this->by( 'meta_not_in', $this->attendee_optout_keys(), [ 'yes', 1 ] );
 				break;
 			case 'yes':
-				$this->by( 'meta_in', $this->attendee_optout_keys(), 'yes' );
+				$this->by( 'meta_in', $this->attendee_optout_keys(), [ 'yes', 1 ] );
 				break;
 			case 'no_or_none':
 				$optout_keys = $this->attendee_optout_keys();
@@ -261,7 +263,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 				$this->filter_query->where( "(
 					attendee_optout.post_id IS NULL
-					OR attendee_optout.meta_value != 'yes'
+					OR attendee_optout.meta_value NOT IN ( 'yes', '1' )
 				)" );
 
 				break;
@@ -309,6 +311,26 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
 
 		$this->by( 'meta_exists', $meta_keys );
+	}
+
+	/**
+	 * Provides arguments to exclude attendees by the ticket provider.
+	 *
+	 * To avoid lengthy queries we check if a provider specific meta
+	 * key relating the Attendee to the event (a post) is not set.
+	 *
+	 * @since 4.8
+	 *
+	 * @param string|array $provider A provider supported slug or an
+	 *                               array of supported provider slugs.
+	 *
+	 * @return array
+	 */
+	public function filter_by_provider_not_in( $provider ) {
+		$providers = Tribe__Utils__Array::list_to_array( $provider );
+		$meta_keys = Tribe__Utils__Array::map_or_discard( (array) $providers, $this->attendee_to_event_keys() );
+
+		$this->by( 'meta_not_exists', $meta_keys );
 	}
 
 	/**
