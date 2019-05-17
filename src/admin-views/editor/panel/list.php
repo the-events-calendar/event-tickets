@@ -46,7 +46,7 @@ $add_new_ticket_label = count( $ticket_providing_modules ) > 0
 			<?php tribe( 'tickets.admin.views' )->template( 'editor/list-table', array( 'tickets' => $tickets ) ); ?>
 		<?php endif; ?>
 	</div>
-	<div>
+	<div class="tribe-ticket-control-wrap">
 		<?php
 		/**
 		 * Allows for the insertion of additional content into the main ticket admin panel after the tickets listing

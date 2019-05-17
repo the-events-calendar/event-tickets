@@ -1,7 +1,9 @@
 [
   "data_collection_disclosure.html",
   "event-tickets.php",
-  "lang/**/*",
+  "lang/**/*.mo",
+  "lang/**/*.pot",
+  "lang/**/*.txt",
   "license.txt",
   "readme.txt",
   "site_owner_data_collection_statement.html",

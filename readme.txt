@@ -119,7 +119,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.7] TBD =
 
-
+* Tweak - Add class to wrapper div around ticket controls in admin [127193]
+* Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 
 = [4.10.6] TBD =
 
