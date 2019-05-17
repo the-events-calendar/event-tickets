@@ -8,7 +8,7 @@ git_clone_required_plugins(){
 	declare -a required_plugins=(`echo ${REQUIRED_PLUGIN_REPOS}`);
 
 	for plugin_repo in "${required_plugins[@]}"; do
-		plugin_repo_url="git://github.com/${plugin_repo}.git"
+		plugin_repo_url="git@github.com:${plugin_repo}.git"
 		plugin_slug="$(basename ${plugin_repo})"
 
 	  	if [[ -n "$(git ls-remote --heads ${plugin_repo_url} ${TRAVIS_PULL_REQUEST_BRANCH})" ]]; then
