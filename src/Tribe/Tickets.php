@@ -1070,14 +1070,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				$post_transient = null;
 
-				$cache_key = 'any';
+				$cache_key = false;
 
-				if ( 0 < $post_id ) {
-					$cache_key = 'post_' . (int) $post_id;
-				}
-
-				if ( ! empty( $args ) ) {
-					$cache_key = false;
+				if ( empty( $args ) && 0 < $post_id ) {
+					$cache_key = (int) $post_id;
 				}
 
 				if ( 0 !== $expire && $cache_key ) {
@@ -2542,9 +2538,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			/** @var Tribe__Post_Transient $post_transient */
 			$post_transient = tribe( 'post-transient' );
 
-			$cache_key = 'post_' . (int) $post_id;
-
-			$post_transient->delete( 'any', self::ATTENDEES_CACHE );
+			$cache_key = (int) $post_id;
 
 			return $post_transient->delete( $cache_key, self::ATTENDEES_CACHE );
 		}
