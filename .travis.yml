@@ -27,7 +27,6 @@ cache:
     # The composer user-level cache.
     - $HOME/.composer/cache
 
-
 before_install:
   # Sourcing the .env file will make sure we use, in the environment configuration, the same variables the tests are using.
   - set -o allexport; source .env; set +o allexport;
@@ -48,6 +47,9 @@ install:
 
   # The installation will include wp-cli as well as it's a requirement of wp-browser.
   - composer update --prefer-dist
+
+  # Install composer on common if it exists.
+  - if [[ -d "common" ]]; then cd common; composer update --prefer-dist; cd ../; fi;
 
   # Install wp-cli phar.
   # While wp-cli is one of wp-browser dependencies the binary that lives in the `vendor/bin` folder will load the
@@ -136,3 +138,8 @@ script:
   - codecept run functional
   - codecept run restv1
   - codecept run acceptance
+
+after_failure:
+  # if the build failed let's see why
+  - sudo cat $(php -i | grep ^error_log | cut -d' ' -f 3)
+  - sudo cat /var/log/nginx/error.log

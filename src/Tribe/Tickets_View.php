@@ -693,11 +693,17 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_ticket_attendees( $event_id, $user_id = null ) {
-		if ( ! $user_id ) {
-			return Tribe__Tickets__Tickets::get_event_attendees_count( $event_id );
+		$args = [
+			'by' => [
+				'provider__not_in' => 'rsvp',
+			],
+		];
+
+		if ( $user_id ) {
+			$args['by']['user'] = $user_id;
 		}
 
-		return Tribe__Tickets__Tickets::get_event_attendees_count_by_user( $event_id, $user_id );
+		return Tribe__Tickets__Tickets::get_event_attendees_count( $event_id, $args );
 	}
 
 	/**

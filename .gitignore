@@ -10,10 +10,13 @@ Makefile
 # Tests - local config files
 codeception.yml
 tests/*.suite.yml
+phpunit.xml
 .env.local
+.env.testing
 
 # Tests - local output files
 tests/_output
+tests/_support/_generated
 
 # compiled build files
 src/resources/**/app

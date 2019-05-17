@@ -117,6 +117,15 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.7] TBD =
+
+
+
+= [4.10.6] TBD =
+
+* Feature - Implemented our abstract Object-relational Mapping layer for Ticket Attendees and increased stability with more automated tests [123468]
+* Fix - Prevent multiple Tickets or RSVP blocks from being created in the block editor, limit blocks to one instance of ecah per post [127507]
+
 = [4.10.5] 2019-05-14 =
 
 * Feature - Add tooltips to Attendee Report page [120856]
