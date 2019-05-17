@@ -126,8 +126,70 @@ class TicketsTest extends \Codeception\TestCase\WPTestCase {
 		$this->create_many_attendees_for_ticket( 5, $paypal_ticket_id2, $post_id2, [ 'user_id' => $user_id ] );
 		$this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id2, $post_id2, [ 'user_id' => $user_id ] );
 
-		$this->assertEquals( 10, Tickets::get_event_attendees_count_by_user( $post_id, $user_id ) );
-		$this->assertEquals( 10, Tickets::get_event_attendees_count_by_user( $post_id2, $user_id ) );
+		$this->assertEquals( 10, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'user' => $user_id ] ] ) );
+		$this->assertEquals( 10, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'user' => $user_id ] ] ) );
+	}
+
+	/**
+	 * It should allow fetching ticket attendees count by provider.
+	 *
+	 * @test
+	 */
+	public function should_allow_fetching_attendees_count_by_provider() {
+		$user_id = $this->factory->user->create();
+
+		$post_id  = $this->factory->post->create();
+		$post_id2 = $this->factory->post->create();
+
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
+
+		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id, $post_id );
+		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id, $post_id );
+
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider' => 'tribe-commerce' ] ] ) );
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider' => 'rsvp' ] ] ) );
+
+		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
+		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1 );
+		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2 );
+
+		$this->create_many_attendees_for_ticket( 6, $paypal_ticket_id2, $post_id2 );
+		$this->create_many_attendees_for_ticket( 4, $rsvp_ticket_id2, $post_id2 );
+
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider' => 'tribe-commerce' ] ] ) );
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider' => 'rsvp' ] ] ) );
+	}
+
+	/**
+	 * It should allow fetching ticket attendees count by provider__not_in.
+	 *
+	 * @test
+	 */
+	public function should_allow_fetching_attendees_count_by_provider__not_in() {
+		$user_id = $this->factory->user->create();
+
+		$post_id  = $this->factory->post->create();
+		$post_id2 = $this->factory->post->create();
+
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
+
+		$this->create_many_attendees_for_ticket( 4, $paypal_ticket_id, $post_id );
+		$this->create_many_attendees_for_ticket( 6, $rsvp_ticket_id, $post_id );
+
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider__not_in' => 'rsvp' ] ] ) );
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id, [ 'by' => [ 'provider__not_in' => 'tribe-commerce' ] ] ) );
+
+		// Add other ticket/attendees for another post so we can confirm we only returned the correct attendees.
+		$paypal_ticket_id2 = $this->create_paypal_ticket( $post_id2, 1 );
+		$rsvp_ticket_id2   = $this->create_rsvp_ticket( $post_id2 );
+
+		$this->create_many_attendees_for_ticket( 6, $paypal_ticket_id2, $post_id2 );
+		$this->create_many_attendees_for_ticket( 4, $rsvp_ticket_id2, $post_id2 );
+
+		$this->assertEquals( 6, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider__not_in' => 'rsvp' ] ] ) );
+		$this->assertEquals( 4, Tickets::get_event_attendees_count( $post_id2, [ 'by' => [ 'provider__not_in' => 'tribe-commerce' ] ] ) );
 	}
 
 	/**
