@@ -244,10 +244,10 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				return null;
 				break;
 			case 'no':
-				$this->by( 'meta_not_in', $this->attendee_optout_keys(), 'yes' );
+				$this->by( 'meta_not_in', $this->attendee_optout_keys(), [ 'yes', 1 ] );
 				break;
 			case 'yes':
-				$this->by( 'meta_in', $this->attendee_optout_keys(), 'yes' );
+				$this->by( 'meta_in', $this->attendee_optout_keys(), [ 'yes', 1 ] );
 				break;
 			case 'no_or_none':
 				$optout_keys = $this->attendee_optout_keys();
@@ -262,7 +262,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 				$this->filter_query->where( "(
 					attendee_optout.post_id IS NULL
-					OR attendee_optout.meta_value != 'yes'
+					OR attendee_optout.meta_value NOT IN ( 'yes', '1' )
 				)" );
 
 				break;
