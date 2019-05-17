@@ -145,6 +145,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 */
 	protected function attendee_to_order_keys() {
 		return [
+			'rsvp'           => '_tribe_rsvp_order',
 			'tribe-commerce' => '_tribe_tpp_order',
 		];
 	}
