@@ -675,13 +675,20 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_rsvp_attendees( $event_id, $user_id = null ) {
+		if ( ! $user_id && null !== $user_id ) {
+			// No attendees for this user.
+			return 0;
+		}
+
 		/** @var Tribe__Tickets__RSVP $rsvp */
 		$rsvp = tribe( 'tickets.rsvp' );
 
+		// Get total attendees count for all users.
 		if ( ! $user_id ) {
 			return $rsvp->get_attendees_count( $event_id );
 		}
 
+		// Get total attendees count for this user.
 		return $rsvp->get_attendees_count_by_user( $event_id, $user_id );
 	}
 
@@ -693,12 +700,18 @@ class Tribe__Tickets__Tickets_View {
 	 * @return int
 	 */
 	public function count_ticket_attendees( $event_id, $user_id = null ) {
+		if ( ! $user_id && null !== $user_id ) {
+			// No attendees for this user.
+			return 0;
+		}
+
 		$args = [
 			'by' => [
 				'provider__not_in' => 'rsvp',
 			],
 		];
 
+		// Get total attendees count for this user.
 		if ( $user_id ) {
 			$args['by']['user'] = $user_id;
 		}
