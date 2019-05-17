@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.6] TBD =
+
+* Tweak - Add class to wrapper div around ticket controls in admin [127193]
+
 = [4.10.5] 2019-05-14 =
 
 * Feature - Add tooltips to Attendee Report page [120856]
