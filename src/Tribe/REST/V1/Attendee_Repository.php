@@ -42,7 +42,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 		if ( ! current_user_can( 'read_private_posts' ) ) {
 			$this->decorated->by( 'optout', 'no' );
 			$this->decorated->by( 'post_status', 'publish' );
-			$this->decorated->by( 'rsvp_status', 'yes' );
+			$this->decorated->by( 'rsvp_status__or_none', 'yes' );
 		}
 
 		$this->decorated->set_query_builder( null );
@@ -116,7 +116,7 @@ class Tribe__Tickets__REST__V1__Attendee_Repository
 
 		$this->decorated->by( 'optout', 'no' );
 		$this->decorated->by( 'post_status', 'publish' );
-		$this->decorated->by( 'rsvp_status', 'yes' );
+		$this->decorated->by( 'rsvp_status__or_none', 'yes' );
 
 		$cap_query = $this->decorated->get_query();
 		$cap_query->set( 'fields', 'ids' );
