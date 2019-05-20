@@ -23,10 +23,13 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 	protected function calculate_totals() {
 		$rsvp = Tribe__Tickets__RSVP::get_instance();
 
-		$this->total_going      = $rsvp->get_attendees_count_going( $this->event_id );
-		$this->total_not_going  = $rsvp->get_attendees_count_not_going( $this->event_id );
-		$this->total_rsvps      = $this->total_going + $this->total_not_going;
-		$this->has_rsvp_enabled = ! empty( $rsvp->get_tickets( $this->event_id ) );
+		$this->total_going     = $rsvp->get_attendees_count_going( $this->event_id );
+		$this->total_not_going = $rsvp->get_attendees_count_not_going( $this->event_id );
+		$this->total_rsvps     = $this->total_going + $this->total_not_going;
+
+		$rsvp_tickets = $rsvp->get_tickets( $this->event_id );
+
+		$this->has_rsvp_enabled = ! empty( $rsvp_tickets );
 	}
 
 	/**
