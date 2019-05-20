@@ -114,11 +114,11 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$search_attendee_id = current( array_slice( $rsvp_attendee_ids, 0, 1 ) );
 
-		update_post_meta( $search_attendee_id, $rsvp_name_meta_key, 'Rob Tester' );
+		update_post_meta( $search_attendee_id, $rsvp_name_meta_key, 'Robbbbbbbbbbbbb Tester' );
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = 'rob';
+		$_REQUEST['s'] = 'robbbbb';
 
 		$_GET['event_id'] = $post_id;
 

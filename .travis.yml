@@ -27,7 +27,6 @@ cache:
     # The composer user-level cache.
     - $HOME/.composer/cache
 
-
 before_install:
   # Sourcing the .env file will make sure we use, in the environment configuration, the same variables the tests are using.
   - set -o allexport; source .env; set +o allexport;
@@ -49,9 +48,19 @@ install:
   # The installation will include wp-cli as well as it's a requirement of wp-browser.
   - composer update --prefer-dist
 
+  # Install composer on common if it exists.
+  - if [[ -d "common" ]]; then cd common; composer update --prefer-dist; cd ../; fi;
+
+  # Install wp-cli phar.
+  # While wp-cli is one of wp-browser dependencies the binary that lives in the `vendor/bin` folder will load the
+  # Composer autoload file when used and that will conflict with the one loaded by the plugin.
+  - curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+  - chmod +x wp-cli.phar
+  - mkdir -p ${HOME}/.local/bin && mv wp-cli.phar ${HOME}/.local/bin/wp
+
   # Tweak the path to look for binaries in `vendor/bin` first.
-  # Binaries installed in the `vendor/bin` folder, like `wp` and `codecept`, will be available system-wide.
-  - export PATH=${TRAVIS_BUILD_DIR}/vendor/bin:$PATH
+  # Binaries installed in the `vendor/bin` folder, like `codecept`, will be available system-wide.
+  - export PATH=${PATH}:${TRAVIS_BUILD_DIR}/vendor/bin
 
   # Create the WordPress root folder.
   - mkdir -p ${WP_ROOT_FOLDER}
@@ -129,3 +138,8 @@ script:
   - codecept run functional
   - codecept run restv1
   - codecept run acceptance
+
+after_failure:
+  # if the build failed let's see why
+  - sudo cat $(php -i | grep ^error_log | cut -d' ' -f 3)
+  - sudo cat /var/log/nginx/error.log
