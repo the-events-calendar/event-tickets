@@ -73,6 +73,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->schema = array_merge( $this->schema, [
 			'optout'               => [ $this, 'filter_by_optout' ],
 			'rsvp_status'          => [ $this, 'filter_by_rsvp_status' ],
+			'rsvp_status__or_none' => [ $this, 'filter_by_rsvp_status_or_none' ],
 			'provider'             => [ $this, 'filter_by_provider' ],
 			'provider__not_in'     => [ $this, 'filter_by_provider_not_in' ],
 			'event_status'         => [ $this, 'filter_by_event_status' ],
@@ -275,6 +276,23 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Provides arguments to filter attendees by a specific RSVP status.
 	 *
+	 * @since 4.8
+	 *
+	 * @param string $rsvp_status
+	 *
+	 * @return array
+	 */
+	public function filter_by_rsvp_status( $rsvp_status ) {
+		return Tribe__Repository__Query_Filters::meta_in(
+			Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
+			$rsvp_status,
+			'by-rsvp-status'
+		);
+	}
+
+	/**
+	 * Provides arguments to filter attendees by a specific RSVP status or no status at all.
+	 *
 	 * Mind that we allow tickets not to have an RSVP status at all and
 	 * still match. This assumes that all RSVP tickets will have a status
 	 * assigned (which is the default behaviour).
@@ -285,11 +303,11 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * @return array
 	 */
-	public function filter_by_rsvp_status( $rsvp_status ) {
+	public function filter_by_rsvp_status_or_none( $rsvp_status ) {
 		return Tribe__Repository__Query_Filters::meta_in_or_not_exists(
 			Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
 			$rsvp_status,
-			'by-rsvp-status'
+			'by-rsvp-status-or-none'
 		);
 	}
 
