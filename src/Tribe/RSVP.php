@@ -2,6 +2,11 @@
 
 class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
+	 * {@inheritdoc}
+	 */
+	public $orm_provider = 'rsvp';
+
+	/**
 	 * Name of the CPT that holds Attendees (tickets holders).
 	 *
 	 * @var string
