@@ -286,7 +286,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 * @return array
 	 */
 	public function filter_by_rsvp_status( $rsvp_status ) {
-		return Tribe__Repository__Query_Filters::meta_in_or_not_exists(
+		return Tribe__Repository__Query_Filters::meta_in(
 			Tribe__Tickets__RSVP::ATTENDEE_RSVP_KEY,
 			$rsvp_status,
 			'by-rsvp-status'
