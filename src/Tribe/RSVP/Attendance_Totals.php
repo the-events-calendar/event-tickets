@@ -49,7 +49,7 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 			'total_cancelled_tooltip' => '',
 		];
 
-		// Not output.
+		// Skip output if there are no RSVP attendees going/not going AND if there are no current RSVP tickets.
 		if ( false === $this->has_rsvp_enabled && 0 === $this->get_total_rsvps() && 0 === $this->get_total_going() && 0 === $this->get_total_not_going() ) {
 			return;
 		}
