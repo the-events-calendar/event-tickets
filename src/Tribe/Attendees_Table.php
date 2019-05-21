@@ -870,7 +870,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$search_like_keys = [
 				'purchaser_name',
 				'purchaser_email',
-				'security_code',
 			];
 
 			/**
@@ -887,6 +886,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			// Update search key if it supports LIKE matching.
 			if ( in_array( $search_key, $search_like_keys, true ) ) {
 				$search_key .= '__like';
+				$search     = '%' . $search . '%';
 			}
 
 			// Only get matches that have search phrase in the key.

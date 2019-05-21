@@ -1170,7 +1170,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$attendee_data['total_found'] = $repository->found();
 			}
 
-			$attendee_data['attendees']   = self::get_attendees_from_modules( $attendee_posts, $post_id );
+			$attendee_data['attendees'] = self::get_attendees_from_modules( $attendee_posts, $post_id );
 
 			return $attendee_data;
 		}

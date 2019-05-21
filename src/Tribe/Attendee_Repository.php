@@ -68,7 +68,6 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		$this->add_simple_meta_schema_entry( 'purchaser_email__like', $this->purchaser_email_keys(), 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'security_code', $this->security_code_keys(), 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'security_code__not_in', $this->security_code_keys(), 'meta_not_in' );
-		$this->add_simple_meta_schema_entry( 'security_code__like', $this->purchaser_email_keys(), 'meta_like' );
 		$this->add_simple_meta_schema_entry( 'user', '_tribe_tickets_attendee_user_id', 'meta_in' );
 		$this->add_simple_meta_schema_entry( 'user__not_in', '_tribe_tickets_attendee_user_id', 'meta_not_in' );
 		$this->add_simple_meta_schema_entry( 'price', '_paid_price' );
