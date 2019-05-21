@@ -838,28 +838,60 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			$search_keys = [
 				'purchaser_name',
 				'purchaser_email',
+				'order_status',
 				'product_id',
 				'security_code',
 				'user',
 			];
 
 			/**
-			 * Filters the item keys that should be used to filter attendees while searching them.
+			 * Filters the item keys that can be used to filter attendees while searching them.
 			 *
 			 * @since 4.7
 			 * @since 4.10.6 Deprecated usage of $items attendees list.
 			 *
-			 * @param array  $search_keys The keys that should be used to search attendees.
+			 * @param array  $search_keys The keys that can be used to search attendees.
 			 * @param array  $items       (deprecated) The attendees list.
-			 * @param string $s           The current search string.
+			 * @param string $search      The current search string.
 			 */
 			$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
 
-			// Only get matches that have search phrase in the keys.
-			$args['where_multi'] = [
-				[
-					$search_keys,
-					'LIKE',
+			// Default selection.
+			$search_key = 'purchaser_name';
+
+			if ( ! empty( $_REQUEST['tribe_attendee_search_type'] ) ) {
+				$search_type = sanitize_text_field( $_REQUEST['tribe_attendee_search_type'] );
+
+				if ( in_array( $search_type, $search_keys, true ) ) {
+					$search_key = $search_type;
+				}
+			}
+
+			$search_like_keys = [
+				'purchaser_name',
+				'purchaser_email',
+				'security_code',
+			];
+
+			/**
+			 * Filters the item keys that support LIKE matching to filter attendees while searching them.
+			 *
+			 * @since 4.10.6
+			 *
+			 * @param array  $search_like_keys The keys that support LIKE matching.
+			 * @param array  $search_keys      The keys that can be used to search attendees.
+			 * @param string $search           The current search string.
+			 */
+			$search_like_keys = apply_filters( 'tribe_tickets_search_attendees_by_like', $search_like_keys, $search_keys, $search );
+
+			// Update search key if it supports LIKE matching.
+			if ( in_array( $search_key, $search_like_keys, true ) ) {
+				$search_key .= '__like';
+			}
+
+			// Only get matches that have search phrase in the key.
+			$args['by'] = [
+				$search_key => [
 					$search,
 				],
 			];
@@ -887,5 +919,65 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 */
 	public function no_items() {
 		esc_html_e( 'No matching attendees found.', 'event-tickets' );
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function search_box( $text, $input_id ) {
+		// Workaround to show the search box even when no items are found.
+		$old_items   = $this->items;
+		$this->items = [
+			'Temporary',
+		];
+
+		// Get normal search box HTML so we can add our own inputs.
+		ob_start();
+		parent::search_box( $text, $input_id );
+		$search_box = ob_get_clean();
+
+		$this->items = $old_items;
+
+		$options = [
+			'purchaser_name'  => __( 'Search by Purchaser Name', 'event-tickets' ),
+			'purchaser_email' => __( 'Search by Purchaser Email', 'event-tickets' ),
+			'user'            => __( 'Search by User ID', 'event-tickets' ),
+			'order_status'    => __( 'Search by Order Status', 'event-tickets' ),
+			'security_code'   => __( 'Search by Security Code', 'event-tickets' ),
+			'product_id'      => __( 'Search by Ticket ID', 'event-tickets' ),
+		];
+
+		/**
+		 * Filters the search types to be shown in the search box for filtering attendees.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param array $options List of ORM search types and their labels.
+		 */
+		$options = apply_filters( 'tribe_tickets_search_attendees_types', $options );
+
+		// Default selection.
+		$selected = 'purchaser_name';
+
+		if ( ! empty( $_REQUEST['tribe_attendee_search_type'] ) ) {
+			$search_type = sanitize_text_field( $_REQUEST['tribe_attendee_search_type'] );
+
+			if ( array_key_exists( $search_type, $options ) ) {
+				$selected = $search_type;
+			}
+		}
+
+		$args = [
+			'options'  => $options,
+			'selected' => $selected,
+		];
+
+		// Get our search dropdown.
+		$custom_search = tribe( 'tickets.admin.views' )->template( 'attendees-table-search', $args, false );
+
+		// Add our search dropdown.
+		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
+
+		echo $search_box;
 	}
 }

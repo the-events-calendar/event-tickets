@@ -75,6 +75,19 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	/**
 	 * {@inheritdoc}
 	 */
+	public function purchaser_email_keys() {
+		$keys = parent::purchaser_email_keys();
+
+		$keys = [
+			'tribe-commerce' => $keys['tribe-commerce'],
+		];
+
+		return $keys;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function security_code_keys() {
 		$keys = parent::security_code_keys();
 

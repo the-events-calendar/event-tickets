@@ -75,6 +75,19 @@ class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Atten
 	/**
 	 * {@inheritdoc}
 	 */
+	public function purchaser_email_keys() {
+		$keys = parent::purchaser_email_keys();
+
+		$keys = [
+			'rsvp' => $keys['rsvp'],
+		];
+
+		return $keys;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function security_code_keys() {
 		$keys = parent::security_code_keys();
 
