@@ -2,7 +2,7 @@
 /**
  * The template that displays the search type dropdown in the Attendees admin screen.
  *
- * @since 1.10.6
+ * @since 4.10.6
  */
 ?>
 
