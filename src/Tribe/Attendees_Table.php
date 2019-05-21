@@ -847,7 +847,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			 * Filters the item keys that should be used to filter attendees while searching them.
 			 *
 			 * @since 4.7
-			 * @since TBD Deprecated usage of $items attendees list.
+			 * @since 4.10.6 Deprecated usage of $items attendees list.
 			 *
 			 * @param array  $search_keys The keys that should be used to search attendees.
 			 * @param array  $items       (deprecated) The attendees list.

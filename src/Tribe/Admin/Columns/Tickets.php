@@ -111,7 +111,7 @@ class Tribe__Tickets__Admin__Columns__Tickets {
 	 * Gets the HTML for the percentage string for Attendees Column
 	 *
 	 * @since 4.6.2 Deprecated the second parameter.
-	 * @since TBD Added $total and $not_going parameters to further optimize requests.
+	 * @since 4.10.6 Added $total and $not_going parameters to further optimize requests.
 	 *
 	 * @param  int     $post_id   The current post ID.
 	 * @param  null    $deprecated

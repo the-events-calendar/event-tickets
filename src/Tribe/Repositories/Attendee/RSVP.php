@@ -3,7 +3,7 @@
 /**
  * The ORM/Repository class for RSVP attendees.
  *
- * @since TBD
+ * @since 4.10.6
  */
 class Tribe__Tickets__Repositories__Attendee__RSVP extends Tribe__Tickets__Attendee_Repository {
 

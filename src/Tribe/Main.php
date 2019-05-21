@@ -896,7 +896,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Returns the autoloader singleton instance to use in a context-aware manner.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @return \Tribe__Autoloader Teh singleton common Autoloader instance.
 	 */
@@ -915,7 +915,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Registers the plugin autoload paths in the Common Autoloader instance.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 */
 	public function register_plugin_autoload_paths() {
 		$prefixes = array(

@@ -644,7 +644,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get attendees for a ticket ID.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param int $ticket_id Ticket ID.
 		 *
@@ -660,7 +660,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get attendees for a ticket ID.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param int $ticket_id Ticket ID.
 		 *
@@ -719,7 +719,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get attendees for a ticket by user ID.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param int $user_id User ID.
 		 * @param int $post_id Post or Event ID.
@@ -1016,7 +1016,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
 			 *
 			 * @since 4.9
-			 * @since TBD Added $args parameter.
+			 * @since 4.10.6 Added $args parameter.
 			 *
 			 * @param bool  $skip_empty_post If the empty post should be skipped or not
 			 * @param int   $post_id         ID of the post being affected
@@ -1042,7 +1042,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning a falsy value here will force a fetch each time.
 				 *
 				 * @since 4.7
-				 * @since TBD Added $args parameter.
+				 * @since 4.10.6 Added $args parameter.
 				 *
 				 * @param int   $admin_expire The cache expiration in seconds; defaults to 2 minutes.
 				 * @param int   $post_id      The ID of the post attendees are being fetched for.
@@ -1056,7 +1056,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning a falsy value here will force a refetch each time.
 				 *
 				 * @since 4.7
-				 * @since TBD Added $args parameter.
+				 * @since 4.10.6 Added $args parameter.
 				 *
 				 * @param int   $admin_expire The cache expiration in seconds, defaults to an hour.
 				 * @param int   $post_id      The ID of the post attendees are being fetched for.
@@ -1108,7 +1108,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Filters the return data for event attendees.
 			 *
 			 * @since 4.4
-			 * @since TBD Added $args parameter.
+			 * @since 4.10.6 Added $args parameter.
 			 *
 			 * @param array $attendees Array of event attendees.
 			 * @param int   $post_id   Event post ID.
@@ -1120,7 +1120,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Returns all the attendees for an event with filtered by arguments. Queries all registered providers.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @static
 		 *
@@ -1178,7 +1178,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Pass arguments to repository object with dynamic support for by() and where_multi().
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param Tribe__Repository $repository Repository object.
 		 * @param array             $args       {
@@ -1242,7 +1242,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get attendee data for attendees from the associated modules.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param array $attendees Attendee objects or IDs.
 		 * @param int   $post_id   Parent post ID.
@@ -1278,7 +1278,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get attendee data for attendees from the current module.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param array $attendees Attendee objects or IDs.
 		 * @param int   $post_id   Parent post ID.
@@ -1307,7 +1307,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Get attendee data for attendee.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param WP_Post|int $attendee Attendee object or ID.
 		 * @param int         $post_id  Parent post ID.
@@ -1333,7 +1333,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns total count of attendees for the specified event, in relation to
 		 * this ticketing provider.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param int $post_id ID of parent "event" post
 		 *
@@ -1350,7 +1350,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns total count of attendees for the specified event, in relation to
 		 * this ticketing provider.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param int $post_id ID of parent "event" post.
 		 * @param int $user_id ID of user.

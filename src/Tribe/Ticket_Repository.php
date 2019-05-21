@@ -491,7 +491,7 @@ class Tribe__Tickets__Ticket_Repository extends Tribe__Repository {
 	/**
 	 * Get list of provider symbols.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @return array List of provider symbols.
 	 */

@@ -156,7 +156,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @return array
 	 */
@@ -172,7 +172,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @return array
 	 */
@@ -188,7 +188,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	 *
 	 * Extending repository classes should override this to add more keys.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @return array
 	 */
@@ -485,7 +485,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 	/**
 	 * Filters attendee to only get those not related to orders with a specific status.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @param string|array $order_status
 	 *

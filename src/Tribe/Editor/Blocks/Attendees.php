@@ -108,7 +108,7 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		/**
 		 * Allow for adjusting the limit of attendees fetched from the database for the front-end "Who's Coming?" list.
 		 *
-		 * @since TBD
+		 * @since 4.10.6
 		 *
 		 * @param int $limit_attendees Number of attendees to retrieve. Default is no limit -1.
 		 */
