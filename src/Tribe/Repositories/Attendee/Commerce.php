@@ -36,6 +36,19 @@ class Tribe__Tickets__Repositories__Attendee__Commerce extends Tribe__Tickets__A
 	/**
 	 * {@inheritdoc}
 	 */
+	public function attendee_to_ticket_keys() {
+		$keys = parent::attendee_to_ticket_keys();
+
+		$keys = [
+			'tribe-commerce' => $keys['tribe-commerce'],
+		];
+
+		return $keys;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function attendee_to_order_keys() {
 		$keys = parent::attendee_to_order_keys();
 
