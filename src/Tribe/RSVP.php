@@ -2,6 +2,11 @@
 
 class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
+	 * {@inheritdoc}
+	 */
+	public $orm_provider = 'rsvp';
+
+	/**
 	 * Name of the CPT that holds Attendees (tickets holders).
 	 *
 	 * @var string
@@ -1034,12 +1039,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns all the tickets for an event
 	 *
-	 * @param int $event_id
+	 * @param int $post_id
 	 *
 	 * @return array
 	 */
-	protected function get_tickets( $event_id ) {
-		$ticket_ids = $this->get_tickets_ids( $event_id );
+	public function get_tickets( $post_id ) {
+		$ticket_ids = $this->get_tickets_ids( $post_id );
 		if ( ! $ticket_ids ) {
 			return array();
 		}
@@ -1047,7 +1052,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$tickets = array();
 
 		foreach ( $ticket_ids as $post ) {
-			$tickets[] = $this->get_ticket( $event_id, $post );
+			$tickets[] = $this->get_ticket( $post_id, $post );
 		}
 
 		return $tickets;
@@ -1294,7 +1299,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get total count of attendees marked as going for this provider.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @param int $post_id Post or Event ID.
 	 *
@@ -1310,7 +1315,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Get total count of attendees marked as going for this provider.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @param int $post_id Post or Event ID.
 	 *
