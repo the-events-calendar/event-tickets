@@ -102,7 +102,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_name_search() {
-		$post_id  = $this->factory->post->create();
+		$post_id = $this->factory->post->create();
 
 		$rsvp_name_meta_key = tribe( 'tickets.rsvp' )->full_name;
 
@@ -118,14 +118,10 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = 'robbbbb';
+		$_REQUEST['s']                       = 'robbbbb';
+		$_POST['tribe_attendee_search_type'] = 'purchaser_name';
 
 		$_GET['event_id'] = $post_id;
-
-		// Only use our search key to ensure we are testing the correct matching.
-		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
-			return [ 'purchaser_name' ];
-		} );
 
 		$sut->prepare_items();
 
@@ -141,7 +137,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_email_search() {
-		$post_id  = $this->factory->post->create();
+		$post_id = $this->factory->post->create();
 
 		$rsvp_email_meta_key = tribe( 'tickets.rsvp' )->email;
 
@@ -157,14 +153,10 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = 'likestests';
+		$_REQUEST['s']                       = 'likestests';
+		$_POST['tribe_attendee_search_type'] = 'purchaser_email';
 
 		$_GET['event_id'] = $post_id;
-
-		// Only use our search key to ensure we are testing the correct matching.
-		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
-			return [ 'purchaser_email' ];
-		} );
 
 		$sut->prepare_items();
 
@@ -180,7 +172,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_ticket_search() {
-		$post_id  = $this->factory->post->create();
+		$post_id = $this->factory->post->create();
 
 		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
 		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
@@ -190,14 +182,10 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = $rsvp_ticket_id;
+		$_REQUEST['s']                       = $rsvp_ticket_id;
+		$_POST['tribe_attendee_search_type'] = 'product_id';
 
 		$_GET['event_id'] = $post_id;
-
-		// Only use our search key to ensure we are testing the correct matching.
-		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
-			return [ 'product_id' ];
-		} );
 
 		$sut->prepare_items();
 
@@ -213,7 +201,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_security_code_search() {
-		$post_id  = $this->factory->post->create();
+		$post_id = $this->factory->post->create();
 
 		$rsvp_security_code_meta_key = tribe( 'tickets.rsvp' )->security_code;
 
@@ -229,14 +217,10 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = 'robba';
+		$_REQUEST['s']                       = 'robba';
+		$_POST['tribe_attendee_search_type'] = 'security_code';
 
 		$_GET['event_id'] = $post_id;
-
-		// Only use our search key to ensure we are testing the correct matching.
-		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
-			return [ 'security_code' ];
-		} );
 
 		$sut->prepare_items();
 
@@ -252,7 +236,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 	 * @test
 	 */
 	public function should_allow_fetching_attendees_by_user_search() {
-		$post_id  = $this->factory->post->create();
+		$post_id = $this->factory->post->create();
 
 		$rsvp_user_meta_key = tribe( 'tickets.rsvp' )->attendee_user_id;
 
@@ -268,14 +252,10 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s'] = '1234';
+		$_REQUEST['s']                       = '1234567890';
+		$_POST['tribe_attendee_search_type'] = 'user';
 
 		$_GET['event_id'] = $post_id;
-
-		// Only use our search key to ensure we are testing the correct matching.
-		add_filter( 'tribe_tickets_search_attendees_by', function( $search_keys ) {
-			return [ 'user' ];
-		} );
 
 		$sut->prepare_items();
 
@@ -283,6 +263,37 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$this->assertEqualSets( [ $search_attendee_id ], $attendee_ids );
 		$this->assertEquals( 1, $sut->get_pagination_arg( 'total_items' ) );
+	}
+
+	/**
+	 * It should allow fetching ticket attendees by order status search.
+	 *
+	 * @test
+	 */
+	public function should_allow_fetching_attendees_by_order_status_search() {
+		$post_id = $this->factory->post->create();
+
+		$rsvp_user_meta_key = tribe( 'tickets.rsvp' )->attendee_user_id;
+
+		$paypal_ticket_id = $this->create_paypal_ticket( $post_id, 1 );
+		$rsvp_ticket_id   = $this->create_rsvp_ticket( $post_id );
+
+		$paypal_attendee_ids = $this->create_many_attendees_for_ticket( 5, $paypal_ticket_id, $post_id );
+		$rsvp_attendee_ids   = $this->create_many_attendees_for_ticket( 5, $rsvp_ticket_id, $post_id );
+
+		$sut = $this->make_instance();
+
+		$_REQUEST['s']                       = 'yes';
+		$_POST['tribe_attendee_search_type'] = 'order_status';
+
+		$_GET['event_id'] = $post_id;
+
+		$sut->prepare_items();
+
+		$attendee_ids = wp_list_pluck( $sut->items, 'attendee_id' );
+
+		$this->assertEqualSets( $rsvp_attendee_ids, $attendee_ids );
+		$this->assertEquals( 5, $sut->get_pagination_arg( 'total_items' ) );
 	}
 
 }
