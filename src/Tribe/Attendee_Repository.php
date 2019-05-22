@@ -477,7 +477,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 				order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' )
 				AND order_status_meta.meta_value {$value_operator} {$value_clause}
 			)
-        ";
+		";
 
 		if ( ! $has_plus_providers ) {
 			$this->filter_query->where( $et_where_clause );
