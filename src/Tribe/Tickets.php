@@ -1164,6 +1164,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			self::pass_args_to_repository( $repository, $args );
 
+			if ( ! empty( $args['return_total_found'] ) ) {
+				$repository->set_found_rows( true );
+			}
+
 			$attendee_posts = $repository->all();
 
 			if ( ! empty( $args['return_total_found'] ) ) {
