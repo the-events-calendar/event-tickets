@@ -117,7 +117,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.6] TBD =
+= [4.10.6] 2019-05-23 =
 
 * Feature - Implemented our abstract Object-relational Mapping (ORM) layer where Ticket Attendees are called throughout the plugin and increased stability with more automated tests [123468]
 * Tweak - Added ability to query attendees by provider using `tribe_attendees( 'rsvp' )`, `tribe_attendees( 'tribe-commerce' )`, and other providers registered by Event Tickets Plus [123468]
