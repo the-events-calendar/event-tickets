@@ -660,4 +660,24 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		// Disabled for now.
 		return false;
 	}
+
+	/**
+	 * Get key from list of keys if it exists and fallback to empty array.
+	 *
+	 * @since 4.10.5
+	 *
+	 * @param string $key  Key name.
+	 * @param array  $list List of keys.
+	 *
+	 * @return array List of matching keys.
+	 */
+	protected function limit_list( $key, $list ) {
+		if ( ! array_key_exists( $key, $list ) ) {
+			return [];
+		}
+
+		return [
+			$key => $list[ $key ],
+		];
+	}
 }
