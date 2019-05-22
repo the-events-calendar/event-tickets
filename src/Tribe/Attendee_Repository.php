@@ -465,22 +465,27 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 		                           . "ON {$wpdb->posts}.ID = order_status_meta.post_id" );
 
 		if ( ! $has_plus_providers ) {
-			$this->filter_query->where( "order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
-			                            . "AND order_status_meta.meta_value IN ( {$statuses_in} )" );
+			$this->filter_query->where( "
+				order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' )
+				AND order_status_meta.meta_value IN ( {$statuses_in} )
+            " );
 		} else {
 			$this->filter_query->join( "LEFT JOIN {$wpdb->posts} order_post "
 			                           . "ON order_post.ID != {$wpdb->posts}.ID" );
 			$this->filter_query->join( "LEFT JOIN {$wpdb->postmeta} attendee_to_order_meta "
 			                           . 'ON attendee_to_order_meta.meta_value = order_post.ID' );
-			$this->filter_query->where( "(
-				(order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' ) "
-			                            . "AND order_status_meta.meta_value IN ( {$statuses_in} ))
-				OR
+			$this->filter_query->where( "
 				(
-					attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
-					AND order_post.post_status IN ( {$statuses_in} )
+					(
+						order_status_meta.meta_key IN ( '_tribe_rsvp_status', '_tribe_tpp_status' )
+						AND order_status_meta.meta_value IN ( {$statuses_in} )
+					)
+					OR (
+						attendee_to_order_meta.meta_key IN ( '_tribe_wooticket_order','_tribe_eddticket_order' )
+						AND order_post.post_status IN ( {$statuses_in} )
+					)
 				)
-			)" );
+			" );
 		}
 	}
 
