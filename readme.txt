@@ -127,6 +127,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Only show RSVP totals when an Event or Post has an RSVP set up on it or if it has attendees [128071]
 * Tweak - Added filters: `tribe_tickets_search_attendees_by_like`, `tribe_tickets_search_attendees_types`, `tribe_tickets_attendees_list_limit_attendees`
 * Fix - Prevent multiple Tickets or RSVP blocks from being created in the block editor, limit blocks to one instance of each per post [127507]
+* Language - 6 new strings added, 82 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.5] 2019-05-14 =
 
