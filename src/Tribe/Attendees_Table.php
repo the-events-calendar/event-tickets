@@ -859,12 +859,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			// Default selection.
 			$search_key = 'purchaser_name';
 
-			if ( ! empty( $_REQUEST['tribe_attendee_search_type'] ) ) {
-				$search_type = sanitize_text_field( $_REQUEST['tribe_attendee_search_type'] );
+			$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
 
-				if ( in_array( $search_type, $search_keys, true ) ) {
-					$search_key = $search_type;
-				}
+			if ( $search_type && in_array( $search_type, $search_keys, true ) ) {
+				$search_key = $search_type;
 			}
 
 			$search_like_keys = [
@@ -959,12 +957,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		// Default selection.
 		$selected = 'purchaser_name';
 
-		if ( ! empty( $_REQUEST['tribe_attendee_search_type'] ) ) {
-			$search_type = sanitize_text_field( $_REQUEST['tribe_attendee_search_type'] );
+		$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
 
-			if ( array_key_exists( $search_type, $options ) ) {
-				$selected = $search_type;
-			}
+		if ( $search_type && array_key_exists( $search_type, $options ) ) {
+			$selected = $search_type;
 		}
 
 		$args = [

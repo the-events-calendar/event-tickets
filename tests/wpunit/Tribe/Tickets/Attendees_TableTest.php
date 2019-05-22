@@ -118,8 +118,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                          = 'robbbbb';
-		$_REQUEST['tribe_attendee_search_type'] = 'purchaser_name';
+		$_REQUEST['s']                       = 'robbbbb';
+		$_POST['tribe_attendee_search_type'] = 'purchaser_name';
 
 		$_GET['event_id'] = $post_id;
 
@@ -153,8 +153,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                          = 'likestests';
-		$_REQUEST['tribe_attendee_search_type'] = 'purchaser_email';
+		$_REQUEST['s']                       = 'likestests';
+		$_POST['tribe_attendee_search_type'] = 'purchaser_email';
 
 		$_GET['event_id'] = $post_id;
 
@@ -182,8 +182,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                          = $rsvp_ticket_id;
-		$_REQUEST['tribe_attendee_search_type'] = 'product_id';
+		$_REQUEST['s']                       = $rsvp_ticket_id;
+		$_POST['tribe_attendee_search_type'] = 'product_id';
 
 		$_GET['event_id'] = $post_id;
 
@@ -217,8 +217,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                          = 'robba';
-		$_REQUEST['tribe_attendee_search_type'] = 'security_code';
+		$_REQUEST['s']                       = 'robba';
+		$_POST['tribe_attendee_search_type'] = 'security_code';
 
 		$_GET['event_id'] = $post_id;
 
@@ -252,8 +252,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                          = '1234567890';
-		$_REQUEST['tribe_attendee_search_type'] = 'user';
+		$_REQUEST['s']                       = '1234567890';
+		$_POST['tribe_attendee_search_type'] = 'user';
 
 		$_GET['event_id'] = $post_id;
 
@@ -283,8 +283,8 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                          = 'yes';
-		$_REQUEST['tribe_attendee_search_type'] = 'order_status';
+		$_REQUEST['s']                       = 'yes';
+		$_POST['tribe_attendee_search_type'] = 'order_status';
 
 		$_GET['event_id'] = $post_id;
 
