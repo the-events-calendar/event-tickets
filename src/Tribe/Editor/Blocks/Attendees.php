@@ -82,49 +82,63 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 	}
 
 	/**
-	 * Get the attendees for the event
+	 * Get the attendees for the event.
 	 *
 	 * @since 4.9
 	 *
-	 * @param  array $attributes
+	 * @param WP_Post|int $post_id Post object or ID.
 	 *
-	 * @return string
+	 * @return array
 	 */
 	public function get_attendees( $post_id ) {
-
 		$post   = get_post( $post_id );
-		$output = array();
+		$output = [];
+
 		if ( ! $post instanceof WP_Post ) {
 			return $output;
 		}
 
-		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post->ID );
-		$emails    = array();
+		$args = [
+			'by' => [
+				// Exclude people who have opted out or not specified optout.
+				'optout' => 'no_or_none',
+			],
+		];
+
+		/**
+		 * Allow for adjusting the limit of attendees fetched from the database for the front-end "Who's Coming?" list.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param int $limit_attendees Number of attendees to retrieve. Default is no limit -1.
+		 */
+		$limit_attendees = (int) apply_filters( 'tribe_tickets_attendees_list_limit_attendees', -1 );
+
+		if ( 0 < $limit_attendees ) {
+			$args['per_page'] = $limit_attendees;
+		}
+
+		$attendees = Tribe__Tickets__Tickets::get_event_attendees( $post->ID, $args );
+		$emails    = [];
 
 		// Bail if there are no attendees
 		if ( empty( $attendees ) || ! is_array( $attendees ) ) {
-			return;
+			return $output;
 		}
 
+		$excluded_statuses = [
+			'no',
+			'failed',
+		];
+
 		foreach ( $attendees as $key => $attendee ) {
-
-			// Only Check for optout when It's there
-			if ( isset( $attendee['optout'] ) && false !== $attendee['optout'] ) {
-				continue;
-			}
-
 			// Skip when we already have another email like this one.
-			if ( in_array( $attendee['purchaser_email'], $emails ) ) {
+			if ( in_array( $attendee['purchaser_email'], $emails, true ) ) {
 				continue;
 			}
 
-			// Skip folks who've RSVPed as "Not Going".
-			if ( 'no' === $attendee['order_status'] ) {
-				continue;
-			}
-
-			// Skip "Failed" orders
-			if ( 'failed' === $attendee['order_status'] ) {
+			// Skip "Failed" orders and folks who've RSVPed as "Not Going".
+			if ( in_array( $attendee['order_status'], $excluded_statuses, true ) ) {
 				continue;
 			}
 
@@ -133,6 +147,5 @@ class Tribe__Tickets__Editor__Blocks__Attendees
 		}
 
 		return $output;
-
 	}
 }

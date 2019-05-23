@@ -4,21 +4,21 @@ class Tribe__Tickets__Main {
 	/**
 	 * Current version of this plugin
 	 */
-	const VERSION = '4.10.5';
+	const VERSION = '4.10.6';
 
 	/**
 	 * Min required The Events Calendar version
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_TEC_VERSION = '4.9.0.3-dev';
+	const MIN_TEC_VERSION = '4.9.2-dev';
 
 	/**
 	 * Min required version of Tribe Common
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_COMMON_VERSION = '4.9-dev';
+	const MIN_COMMON_VERSION = '4.9.9-dev';
 
 	/**
 	* Min Version of WordPress
@@ -32,14 +32,14 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_php = '5.2.17';
+	protected $min_php = '5.6';
 
 	/**
 	* Min Version of The Events Calendar
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '4.9.0.3-dev';
+	protected $min_tec_version = '4.9.2-dev';
 
 	/**
 	 * Name of the provider
@@ -896,7 +896,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Returns the autoloader singleton instance to use in a context-aware manner.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 *
 	 * @return \Tribe__Autoloader Teh singleton common Autoloader instance.
 	 */
@@ -915,7 +915,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Registers the plugin autoload paths in the Common Autoloader instance.
 	 *
-	 * @since TBD
+	 * @since 4.10.6
 	 */
 	public function register_plugin_autoload_paths() {
 		$prefixes = array(

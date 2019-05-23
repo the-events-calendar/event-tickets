@@ -108,7 +108,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Attendee_Archive
 			'status'                         => 'post_status',
 			'order_status'                   => 'order_status',
 			'checkedin'                      => 'checkedin',
-			'rsvp_going_status'              => 'rsvp_status',
+			'rsvp_going_status'              => 'rsvp_status__or_none',
 			'price_min'                      => 'price_min',
 			'price_max'                      => 'price_max',
 			'attendee_information_available' => 'has_attendee_meta',

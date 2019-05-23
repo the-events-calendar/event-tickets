@@ -30,6 +30,7 @@ export default {
 
 	supports: {
 		html: false,
+		multiple: false,
 	},
 
 	attributes: {

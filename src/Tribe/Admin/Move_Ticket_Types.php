@@ -238,24 +238,27 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	 * @param int $original_post_id
 	 */
 	public function notify_event_attendees( $ticket_type_id, $new_post_id, $original_post_id ) {
-		$to_notify = array();
+		$to_notify = [];
+
+		$args = [
+			'by' => [
+				'ticket' => $ticket_type_id,
+			],
+		];
+
+		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $new_post_id, $args );
 
 		// Build a list of email addresses we want to send notifications of the change to
-		foreach ( Tribe__Tickets__Tickets::get_event_attendees( $new_post_id ) as $attendee ) {
-			// We're not interested in attendees who were already attending this event
-			if ( (int) $ticket_type_id !== (int) $attendee[ 'product_id' ] ) {
-				continue;
-			}
-
+		foreach ( $attendee_data['attendees'] as $attendee ) {
 			// Skip if an email address isn't available
-			if ( ! isset( $attendee[ 'purchaser_email' ] ) ) {
+			if ( ! isset( $attendee['purchaser_email'] ) ) {
 				continue;
 			}
 
-			if ( ! isset( $to_notify[ $attendee[ 'purchaser_email' ] ] ) ) {
-				$to_notify[ $attendee[ 'purchaser_email' ] ] = 1;
+			if ( ! isset( $to_notify[ $attendee['purchaser_email'] ] ) ) {
+				$to_notify[ $attendee['purchaser_email'] ] = 1;
 			} else {
-				$to_notify[ $attendee[ 'purchaser_email' ] ]++;
+				$to_notify[ $attendee['purchaser_email'] ] ++;
 			}
 		}
 

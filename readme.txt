@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 4.10.5
+Stable tag: 4.10.6
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -116,6 +116,18 @@ Currently, the following add-ons are available for Event Tickets:
 * [Eventbrite Tickets](http://m.tri.be/2e), for selling tickets to your event directly through Eventbrite.
 
 == Changelog ==
+
+= [4.10.6] 2019-05-23 =
+
+* Feature - Implemented our abstract Object-relational Mapping (ORM) layer where Ticket Attendees are called throughout the plugin and increased stability with more automated tests [123468]
+* Tweak - Added ability to query attendees by provider using `tribe_attendees( 'rsvp' )`, `tribe_attendees( 'tribe-commerce' )`, and other providers registered by Event Tickets Plus [123468]
+* Tweak - Added new Attendees querying filters with `tribe_attendees()` including: `order`, `order__not_in`, `product_id`, `product_id__not_in`, `purchaser_name`, `purchaser_name__not_in`, `purchaser_name__like`, `purchaser_email`, `purchaser_email__not_in`, `purchaser_email__like`, `security_code`, `security_code__not_in`, `user`, `user__not_in`, `price`, `rsvp_status__or_none`, `provider`, `provider__not_in`, and `order_status__not_in` [123468]
+* Tweak - Added new `no_or_none` option for `tribe_attendees()` filtering by `optout` to return attendees if they have not opted out or not provided their intention yet [123468]
+* Tweak - Added ability to select which attendee field to search on Attendees admin screen; Added ability to search attendees by User ID and Ticket ID; Removed ability to search by purchase time and ticket name to improve search performance [128202]
+* Tweak - Only show RSVP totals when an Event or Post has an RSVP set up on it or if it has attendees [128071]
+* Tweak - Added filters: `tribe_tickets_search_attendees_by_like`, `tribe_tickets_search_attendees_types`, `tribe_tickets_attendees_list_limit_attendees`
+* Fix - Prevent multiple Tickets or RSVP blocks from being created in the block editor, limit blocks to one instance of each per post [127507]
+* Language - 6 new strings added, 82 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.5] 2019-05-14 =
 
