@@ -944,14 +944,13 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int|null
 	 */
 	public function get_total_event_capacity( $post = null ) {
-
 		$post_id            = Tribe__Main::post_id_helper( $post );
 		$total              = 0;
 		if ( 0 === $post_id ) {
 			return $total;
 		}
 
-		$has_shared_tickets = 0 !== $post_id && 0 !== count( $this->get_event_shared_tickets( $post_id ) );
+		$has_shared_tickets = 0 !== count( $this->get_event_shared_tickets( $post_id ) );
 		if ( $has_shared_tickets ) {
 			$total = tribe_tickets_get_capacity( $post_id );
 		}
