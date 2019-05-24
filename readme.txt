@@ -117,6 +117,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.7] TBD =
+* Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
+
 = [4.10.6] 2019-05-23 =
 
 * Feature - Implemented our abstract Object-relational Mapping (ORM) layer where Ticket Attendees are called throughout the plugin and increased stability with more automated tests [123468]
