@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 4.10.6
+Stable tag: 4.10.7
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -118,6 +118,8 @@ Currently, the following add-ons are available for Event Tickets:
 == Changelog ==
 
 = [4.10.7] TBD =
+* Tweak - Add class to wrapper div around ticket controls in admin [127193]
+* Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
 
 = [4.10.6] 2019-05-23 =
