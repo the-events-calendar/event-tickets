@@ -119,9 +119,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.7] TBD =
 
-* Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
-* Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
+* Tweak - Add hook under the price description field of the admin ticket editor [128843]
+* Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
 
 = [4.10.6.2] 2019-06-20 =
 
