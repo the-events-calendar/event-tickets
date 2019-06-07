@@ -58,15 +58,16 @@
 		<h4 data-tribe-icon="dashicons-megaphone"><?php esc_html_e( "Don't Miss Out", 'event-tickets' ); ?></h4>
 		<p><?php esc_html_e( 'Stay in touch with Event Tickets and our entire family of events management tools. We share news, occasional discounts, and hilarious gifs.', 'event-tickets' ); ?></p>
 
-		<form action="https://moderntribe.createsend.com/t/r/s/athqh/" method="post">
-			<p><input id="fieldEmail" class="regular-text" name="cm-athqh-athqh" type="email" placeholder="<?php esc_attr_e( 'Email', 'event-tickets' ); ?>" required /></p>
+		<form action="https://support-api.tri.be/mailing-list/subscribe" method="post">
+			<p><input id="fieldEmail" class="regular-text" name="email" type="email" placeholder="<?php esc_attr_e( 'Email', 'event-tickets' ); ?>" required /></p>
 			<div>
-				<input id="cm-privacy-consent" name="cm-privacy-consent" required type="checkbox" role="checkbox" aria-checked="false" />
-				<label for="cm-privacy-consent"><?php esc_html_e( 'Add me to the list', 'event-tickets' ); ?></label>
-		   		<input id="cm-privacy-consent-hidden" name="cm-privacy-consent-hidden" type="hidden" value="true" />
+				<input id="cm-privacy-consent" name="consent" required type="checkbox" role="checkbox" aria-checked="false" />
+				<label for="cm-privacy-consent"><?php esc_html_e( 'Add me to the list', 'the-events-calendar' ); ?></label>
 			</div>
 			<p>
-				<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'event-tickets' ); ?></button>
+				<input type="hidden" name="list" value="tec-newsletter" />
+				<input type="hidden" name="source" value="plugin:et" />
+				<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'the-events-calendar' ); ?></button>
 			</p>
 		</form>
 	</div>
