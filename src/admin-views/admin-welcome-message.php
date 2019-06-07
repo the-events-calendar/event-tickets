@@ -62,12 +62,12 @@
 			<p><input id="fieldEmail" class="regular-text" name="email" type="email" placeholder="<?php esc_attr_e( 'Email', 'event-tickets' ); ?>" required /></p>
 			<div>
 				<input id="cm-privacy-consent" name="consent" required type="checkbox" role="checkbox" aria-checked="false" />
-				<label for="cm-privacy-consent"><?php esc_html_e( 'Add me to the list', 'the-events-calendar' ); ?></label>
+				<label for="cm-privacy-consent"><?php esc_html_e( 'Add me to the list', 'event-tickets' ); ?></label>
 			</div>
 			<p>
 				<input type="hidden" name="list" value="tec-newsletter" />
 				<input type="hidden" name="source" value="plugin:et" />
-				<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'the-events-calendar' ); ?></button>
+				<button type="submit" class="button-primary"><?php esc_html_e( 'Sign Up', 'event-tickets' ); ?></button>
 			</p>
 		</form>
 	</div>
