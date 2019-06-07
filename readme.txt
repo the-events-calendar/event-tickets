@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [4.10.6.1] 2019-06-11 =
 
 * Tweak - Adjust newsletter signup submission destination [129034]
+* Fix - Resolve hardcoded reference to `wp_posts` table in optout ORM queries []
 
 = [4.10.6] 2019-05-23 =
 
