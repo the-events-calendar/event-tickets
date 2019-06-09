@@ -260,7 +260,7 @@ class Tribe__Tickets__Attendee_Repository extends Tribe__Repository {
 
 				$this->filter_query->join( "
 					LEFT JOIN {$wpdb->postmeta} attendee_optout
-					ON ( attendee_optout.post_id = wp_posts.ID
+					ON ( attendee_optout.post_id = {$wpdb->prefix}posts.ID
 						AND attendee_optout.meta_key IN ( {$optout_keys} ) )
 				" );
 
