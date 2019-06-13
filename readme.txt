@@ -124,6 +124,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 
+= [4.10.6.1] 2019-06-13 =
+
+* Tweak - Adjust newsletter signup submission destination [129034]
+* Fix - Resolve hardcoded reference to `wp_posts` table in optout ORM queries [129053]
+* Language - 0 new strings added, 8 updated, 0 fuzzied, and 0 obsoleted
+
 = [4.10.6] 2019-05-23 =
 
 * Feature - Implemented our abstract Object-relational Mapping (ORM) layer where Ticket Attendees are called throughout the plugin and increased stability with more automated tests [123468]

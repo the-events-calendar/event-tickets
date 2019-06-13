@@ -674,7 +674,10 @@ class Tribe__Tickets__Admin__Move_Tickets {
 		$to_notify = array();
 
 		$args = [
-			'not_in' => $ticket_ids,
+			'in' => $ticket_ids,
+			'by' => [
+				'ticket' => $tgt_ticket_type_id,
+			],
 		];
 
 		$attendee_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $tgt_event_id, $args );
