@@ -120,7 +120,7 @@ class Tribe__Tickets__Shortcodes__User_Event_Confirmation_List {
 			)
 			AND NOT EXISTS (
 				SELECT 1
-				  FROM wp_postmeta ticket_status
+				  FROM {$wpdb->postmeta} ticket_status
 				 WHERE ticket_status.meta_key = '_wp_trash_meta_status'
 				   AND ticket_status.post_id = match_events.post_id
 			)
