@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.6.2] TBD =
+
+* Fix - Prevent issue where older versions of the tribe-common libraries could be bootstrapped [129478]
+
 = [4.10.6.1] 2019-06-13 =
 
 * Tweak - Adjust newsletter signup submission destination [129034]
