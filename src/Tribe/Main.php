@@ -96,6 +96,11 @@ class Tribe__Tickets__Main {
 	protected $activation_page;
 
 	/**
+	 * @var bool Prevent autoload intialization
+	 */
+	private $should_prevent_autoload_init = false;
+
+	/**
 	 * Static Singleton Holder
 	 * @var self
 	 */
@@ -143,6 +148,8 @@ class Tribe__Tickets__Main {
 
 		$this->maybe_set_common_lib_info();
 
+		add_action( 'plugins_loaded', array( $this, 'maybe_bail_if_old_tec_is_present' ), -1 );
+		add_action( 'plugins_loaded', array( $this, 'maybe_bail_if_invalid_wp_or_php' ), -1 );
 		add_action( 'plugins_loaded', array( $this, 'plugins_loaded' ), 0 );
 		register_activation_hook( EVENT_TICKETS_MAIN_PLUGIN_FILE, array( $this, 'on_activation' ) );
 	}
@@ -204,36 +211,64 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
-	 * Finalize the initialization of this plugin
+	 * Prevents bootstrapping and autoloading if the version of TEC that is running is too old
+	 *
+	 * @since 4.10.6.2
 	 */
-	public function plugins_loaded() {
-
+	public function maybe_bail_if_old_tec_is_present() {
 		// early check for an older version of The Events Calendar to prevent fatal error
-		if (
-			class_exists( 'Tribe__Events__Main' ) &&
-			version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '<' )
-		) {
-			add_action( 'admin_notices', [ $this, 'tec_compatibility_notice' ] );
-			add_action( 'network_admin_notices', [ $this, 'tec_compatibility_notice' ] );
-			add_action( 'tribe_plugins_loaded', [ $this, 'remove_exts' ], 0 );
-			/*
-			* After common was loaded by another source (e.g. The Event Calendar) let's append this plugin source files
-			* to the ones the Autoloader will search. Since we're appending them the ones registered by the plugin
-			* "owning" common will be searched first.
-			*/
-			add_action( 'tribe_common_loaded', [ $this, 'register_plugin_autoload_paths' ] );
-
-			// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
-			$this->reset_common_lib_info_back_to_tec();
-
+		if ( ! class_exists( 'Tribe__Events__Main' ) ) {
 			return;
 		}
 
-		// WordPress and PHP Version Check
-		if ( ! self::supported_version( 'wordpress' ) || ! self::supported_version( 'php' ) ) {
-			add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
-			add_action( 'network_admin_notices', array( $this, 'not_supported_error' ) );
+		if ( version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' ) ) {
+			return;
+		}
 
+		$this->should_prevent_autoload_init = true;
+
+		add_action( 'admin_notices', [ $this, 'tec_compatibility_notice' ] );
+		add_action( 'network_admin_notices', [ $this, 'tec_compatibility_notice' ] );
+		add_action( 'tribe_plugins_loaded', [ $this, 'remove_exts' ], 0 );
+		/*
+		* After common was loaded by another source (e.g. Event Tickets) let's append this plugin source files
+		* to the ones the Autoloader will search. Since we're appending them the ones registered by the plugin
+		* "owning" common will be searched first.
+		*/
+		add_action( 'tribe_common_loaded', [ $this, 'register_plugin_autoload_paths' ] );
+
+		// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
+		$this->reset_common_lib_info_back_to_tec();
+	}
+
+	/**
+	 * Prevents bootstrapping and autoloading if the version of WP or PHP are too old
+	 *
+	 * @since 4.10.6.2
+	 */
+	public function maybe_bail_if_invalid_wp_or_php() {
+		if ( self::supported_version( 'wordpress' ) && self::supported_version( 'php' ) ) {
+			return;
+		}
+
+		add_action( 'admin_notices', array( $this, 'not_supported_error' ) );
+		add_action( 'network_admin_notices', array( $this, 'not_supported_error' ) );
+
+		// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
+		$this->reset_common_lib_info_back_to_tec();
+
+		$this->should_prevent_autoload_init = true;
+	}
+
+	/**
+	 * Finalize the initialization of this plugin
+	 */
+	public function plugins_loaded() {
+		if ( $this->should_prevent_autoload_init ) {
+			/**
+			 * Fires if Event Tickets cannot load due to compatibility or other problems.
+			 */
+			do_action( 'tribe_tickets_plugin_failed_to_load' );
 			return;
 		}
 
@@ -243,21 +278,9 @@ class Tribe__Tickets__Main {
 		 */
 		$this->init_autoloading();
 
-		if (
-			class_exists( 'Tribe__Events__Main' ) &&
-			! version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' )
-		) {
-			add_action( 'admin_notices', array( $this, 'tec_compatibility_notice' ) );
-			add_action( 'network_admin_notices', array( $this, 'tec_compatibility_notice' ) );
-			/**
-			 * Fires if Event Tickets cannot load due to compatibility or other problems.
-			 */
-			do_action( 'tribe_tickets_plugin_failed_to_load' );
-			return;
-		}
-
 		// Start Up Common
 		Tribe__Main::instance();
+
 		add_action( 'tribe_common_loaded', array( $this, 'bootstrap' ), 0 );
 	}
 
