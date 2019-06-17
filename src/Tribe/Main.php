@@ -96,7 +96,7 @@ class Tribe__Tickets__Main {
 	protected $activation_page;
 
 	/**
-	 * @var bool Prevent autoload intialization
+	 * @var bool Prevent autoload initialization
 	 */
 	private $should_prevent_autoload_init = false;
 
