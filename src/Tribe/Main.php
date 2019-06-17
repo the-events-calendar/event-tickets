@@ -189,6 +189,21 @@ class Tribe__Tickets__Main {
 	}
 
 	/**
+	 * Resets the global common info back to TEC's common path
+	 *
+	 * @since 4.10.6.2
+	 */
+	private function reset_common_lib_info_back_to_tec() {
+		// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
+		$tec = Tribe__Events__Main::instance();
+		$tec_common_version = file_get_contents( $tec->plugin_path . 'common/src/Tribe/Main.php' );
+		$GLOBALS['tribe-common-info'] = [
+			'dir'     => "{$tec->plugin_path}common/src/Tribe",
+			'version' => $tec_common_version,
+		];
+	}
+
+	/**
 	 * Finalize the initialization of this plugin
 	 */
 	public function plugins_loaded() {
@@ -196,7 +211,7 @@ class Tribe__Tickets__Main {
 		// early check for an older version of The Events Calendar to prevent fatal error
 		if (
 			class_exists( 'Tribe__Events__Main' ) &&
-			! version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '>=' )
+			version_compare( Tribe__Events__Main::VERSION, $this->min_tec_version, '<' )
 		) {
 			add_action( 'admin_notices', [ $this, 'tec_compatibility_notice' ] );
 			add_action( 'network_admin_notices', [ $this, 'tec_compatibility_notice' ] );
@@ -207,6 +222,9 @@ class Tribe__Tickets__Main {
 			* "owning" common will be searched first.
 			*/
 			add_action( 'tribe_common_loaded', [ $this, 'register_plugin_autoload_paths' ] );
+
+			// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
+			$this->reset_common_lib_info_back_to_tec();
 
 			return;
 		}
