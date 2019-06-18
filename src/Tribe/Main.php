@@ -206,6 +206,10 @@ class Tribe__Tickets__Main {
 	 * @since 4.10.6.2
 	 */
 	private function reset_common_lib_info_back_to_tec() {
+		if ( ! class_exists( 'Tribe__Events__Main' ) ) {
+			return;
+		}
+
 		// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
 		$tec         = Tribe__Events__Main::instance();
 		$main_source = file_get_contents( $tec->plugin_path . 'common/src/Tribe/Main.php' );
