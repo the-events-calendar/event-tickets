@@ -101,6 +101,11 @@ class Tribe__Tickets__Main {
 	private $should_prevent_autoload_init = false;
 
 	/**
+	 * @var string tribe-common VERSION regex
+	 */
+	private $common_version_regex = "/const\s+VERSION\s*=\s*'([^']+)'/m";
+
+	/**
 	 * Static Singleton Holder
 	 * @var self
 	 */
@@ -172,7 +177,7 @@ class Tribe__Tickets__Main {
 		$common_version = file_get_contents( $this->plugin_path . 'common/src/Tribe/Main.php' );
 
 		// if there isn't a tribe-common version, bail
-		if ( ! preg_match( "/const\s+VERSION\s*=\s*'([^']+)'/m", $common_version, $matches ) ) {
+		if ( ! preg_match( $this->common_version_regex, $common_version, $matches ) ) {
 			add_action( 'admin_head', array( $this, 'missing_common_libs' ) );
 
 			return;
@@ -202,11 +207,17 @@ class Tribe__Tickets__Main {
 	 */
 	private function reset_common_lib_info_back_to_tec() {
 		// if we get in here, we need to reset the global common to TEC's version so that we don't cause a fatal
-		$tec = Tribe__Events__Main::instance();
-		$tec_common_version = file_get_contents( $tec->plugin_path . 'common/src/Tribe/Main.php' );
+		$tec         = Tribe__Events__Main::instance();
+		$main_source = file_get_contents( $tec->plugin_path . 'common/src/Tribe/Main.php' );
+
+		// if there isn't a VERSION, don't override the common path
+		if ( ! preg_match( $this->common_version_regex, $main_source, $matches ) ) {
+			return;
+		}
+
 		$GLOBALS['tribe-common-info'] = [
 			'dir'     => "{$tec->plugin_path}common/src/Tribe",
-			'version' => $tec_common_version,
+			'version' => $matches[1],
 		];
 	}
 
