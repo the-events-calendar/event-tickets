@@ -242,7 +242,7 @@ class Tribe__Tickets__Main {
 		add_action( 'network_admin_notices', [ $this, 'tec_compatibility_notice' ] );
 		add_action( 'tribe_plugins_loaded', [ $this, 'remove_exts' ], 0 );
 		/*
-		* After common was loaded by another source (e.g. Event Tickets) let's append this plugin source files
+		* After common was loaded by another source (e.g. The Events Calendar) let's append this plugin source files
 		* to the ones the Autoloader will search. Since we're appending them the ones registered by the plugin
 		* "owning" common will be searched first.
 		*/
