@@ -6,6 +6,7 @@ use Tribe\Events\Test\Factories\Event;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker as Attendee_Maker;
 use Tribe__Tickets__Attendance_Totals as Tickets__Attendance;
+use Tribe__Tickets_Plus__Commerce__WooCommerce__Status_Manager as WooManager;
 
 /**
  * Test Calculations
@@ -36,6 +37,23 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * @return Tickets__Attendance
+	 */
+	private function make_instance( $event_id ) {
+
+		return new Tickets__Attendance( $event_id );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_be_instantiatable() {
+		$sut = $this->make_instance( 0 );
+
+		$this->assertInstanceOf( Tickets__Attendance::class, $sut );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_count_checked_in_attendees_correctly() {
@@ -48,8 +66,8 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 			tribe( 'tickets.rsvp' )->checkin( $attendee, true );
 		}
 
-		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$checked_in          = $Tickets__Attendance->get_total_checked_in();
+		$tickets__attendance =  $this->make_instance( $event_id );
+		$checked_in          = $tickets__attendance->get_total_checked_in();
 
 		$this->assertEquals( count( $created_attendees ), $checked_in );
 
@@ -64,8 +82,8 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_id           = $this->create_rsvp_ticket( $event_id );
 		$created_attendees = $this->create_many_attendees_for_ticket( 10, $rsvp_id, $event_id );
 
-		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$not_checked_in      = $Tickets__Attendance->get_total_not_checked_in();
+		$tickets__attendance =  $this->make_instance( $event_id );
+		$not_checked_in      = $tickets__attendance->get_total_not_checked_in();
 
 		$this->assertEquals( count( $created_attendees ), $not_checked_in );
 
@@ -88,8 +106,8 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 			tribe( 'tickets.rsvp' )->delete_ticket( $event_id, $created_attendees[ $x ] );
 		}
 
-		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$total_deleted       = $Tickets__Attendance->get_total_deleted();
+		$tickets__attendance =  $this->make_instance( $event_id );
+		$total_deleted       = $tickets__attendance->get_total_deleted();
 
 		$this->assertEquals( 4, $total_deleted );
 
