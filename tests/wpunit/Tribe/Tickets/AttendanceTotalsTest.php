@@ -66,7 +66,7 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 			tribe( 'tickets.rsvp' )->checkin( $attendee, true );
 		}
 
-		$tickets__attendance =  $this->make_instance( $event_id );
+		$tickets__attendance = $this->make_instance( $event_id );
 		$checked_in          = $tickets__attendance->get_total_checked_in();
 
 		$this->assertEquals( count( $created_attendees ), $checked_in );
@@ -82,7 +82,7 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_id           = $this->create_rsvp_ticket( $event_id );
 		$created_attendees = $this->create_many_attendees_for_ticket( 10, $rsvp_id, $event_id );
 
-		$tickets__attendance =  $this->make_instance( $event_id );
+		$tickets__attendance = $this->make_instance( $event_id );
 		$not_checked_in      = $tickets__attendance->get_total_not_checked_in();
 
 		$this->assertEquals( count( $created_attendees ), $not_checked_in );
@@ -106,7 +106,7 @@ class AttendanceTotalsTest extends \Codeception\TestCase\WPTestCase {
 			tribe( 'tickets.rsvp' )->delete_ticket( $event_id, $created_attendees[ $x ] );
 		}
 
-		$tickets__attendance =  $this->make_instance( $event_id );
+		$tickets__attendance = $this->make_instance( $event_id );
 		$total_deleted       = $tickets__attendance->get_total_deleted();
 
 		$this->assertEquals( 4, $total_deleted );
