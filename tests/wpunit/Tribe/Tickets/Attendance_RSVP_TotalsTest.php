@@ -39,6 +39,23 @@ class Attendance_RSVP_TotalsTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * @return \Tribe__Tickets__RSVP__Attendance_Totals
+	 */
+	private function make_instance( $event_id ) {
+
+		return new Tickets__Attendance( $event_id );
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_should_be_instantiatable() {
+		$sut = $this->make_instance( 0 );
+
+		$this->assertInstanceOf( Tickets__Attendance::class, $sut );
+	}
+
+	/**
 	 * @test
 	 */
 	public function it_should_count_total_rsvps_correctly() {
@@ -47,8 +64,8 @@ class Attendance_RSVP_TotalsTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_id           = $this->create_rsvp_ticket( $event_id );
 		$created_attendees = $this->create_many_attendees_for_ticket( 10, $rsvp_id, $event_id );
 
-		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$total_rsvps         = $Tickets__Attendance->get_total_rsvps();
+		$tickets__attendance = $this->make_instance( $event_id );
+		$total_rsvps         = $tickets__attendance->get_total_rsvps();
 
 		$this->assertEquals( count( $created_attendees ), $total_rsvps );
 
@@ -63,8 +80,8 @@ class Attendance_RSVP_TotalsTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_id           = $this->create_rsvp_ticket( $event_id );
 		$created_attendees = $this->create_many_attendees_for_ticket( 10, $rsvp_id, $event_id );
 
-		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$get_total_going     = $Tickets__Attendance->get_total_going();
+		$tickets__attendance = $this->make_instance( $event_id );
+		$get_total_going     = $tickets__attendance->get_total_going();
 
 		$this->assertEquals( count( $created_attendees ), $get_total_going );
 
@@ -79,8 +96,8 @@ class Attendance_RSVP_TotalsTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp_id           = $this->create_rsvp_ticket( $event_id );
 		$created_attendees = $this->create_many_attendees_for_ticket( 10, $rsvp_id, $event_id, [ 'rsvp_status' => 'no' ] );
 
-		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$get_total_not_going = $Tickets__Attendance->get_total_not_going();
+		$tickets__attendance = $this->make_instance( $event_id );
+		$get_total_not_going = $tickets__attendance->get_total_not_going();
 
 		$this->assertEquals( count( $created_attendees ), $get_total_not_going );
 
@@ -96,10 +113,10 @@ class Attendance_RSVP_TotalsTest extends \Codeception\TestCase\WPTestCase {
 		$created_attendees_yes = $this->create_many_attendees_for_ticket( 5, $rsvp_id, $event_id );
 		$created_attendees_no  = $this->create_many_attendees_for_ticket( 8, $rsvp_id, $event_id, [ 'rsvp_status' => 'no' ] );
 
-		$Tickets__Attendance = new Tickets__Attendance( $event_id );
-		$get_total_not_going = $Tickets__Attendance->get_total_not_going();
-		$get_total_going     = $Tickets__Attendance->get_total_going();
-		$get_total_rsvps     = $Tickets__Attendance->get_total_rsvps();
+		$tickets__attendance = $this->make_instance( $event_id );
+		$get_total_not_going = $tickets__attendance->get_total_not_going();
+		$get_total_going     = $tickets__attendance->get_total_going();
+		$get_total_rsvps     = $tickets__attendance->get_total_rsvps();
 
 		$this->assertEquals( count( $created_attendees_yes ), $get_total_going );
 		$this->assertEquals( count( $created_attendees_no ), $get_total_not_going );
