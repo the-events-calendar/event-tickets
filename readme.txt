@@ -124,6 +124,11 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 
+= [4.10.6.2] 2019-06-20 =
+
+* Fix - Prevent issue where older versions of the tribe-common libraries could be bootstrapped [129479]
+* Fix - Add Promoter PCSS file so that the proper CSS will be generated on package build [129584]
+
 = [4.10.6.1] 2019-06-13 =
 
 * Tweak - Adjust newsletter signup submission destination [129034]
