@@ -48,7 +48,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// Fetch the event Object
 		if ( ! empty( $_GET['event_id'] ) ) {
-			$this->event = get_post( $_GET['event_id'] );
+			$this->event = get_post( absint( $_GET['event_id'] ) );
 		}
 
 		add_filter( 'event_tickets_attendees_table_row_actions', array( $this, 'add_default_row_actions' ), 10, 2 );
@@ -744,7 +744,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		}
 
 		foreach ( $attendee_ids as $attendee ) {
-
 			list( $id, $addon ) = $this->attendee_reference( $attendee );
 
 			if ( false === $id ) {
@@ -757,7 +756,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		// redirect after deleting attendees back to attendee url
 		$post = get_post( $this->get_post_id() );
 		if ( ! isset( $post->ID ) ) {
-			return false;
+			return;
+		}
+
+		if ( headers_sent() ) {
+			return;
 		}
 
 		$redirect_url = tribe( 'tickets.attendees' )->get_report_link( $post );
@@ -814,27 +817,97 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function prepare_items() {
 		$this->process_actions();
 
-		$event_id = isset( $_GET['event_id'] ) ? $_GET['event_id'] : 0;
+		$current_page = $this->get_pagenum();
+		$per_page     = $this->get_items_per_page( $this->per_page_option );
 
-		$items = Tribe__Tickets__Tickets::get_event_attendees( $event_id, true );
+		$pagination_args = [
+			'total_items' => 0,
+			'per_page'    => $per_page,
+		];
 
-		$search = isset( $_REQUEST['s'] ) ? esc_attr( trim( $_REQUEST['s'] ) ) : false;
+		$args = [
+			'page'               => $current_page,
+			'per_page'           => $per_page,
+			'return_total_found' => true,
+		];
+
+		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
+		$search   = empty( $_REQUEST['s'] ) ? null : sanitize_text_field( $_REQUEST['s'] );
+
 		if ( ! empty( $search ) ) {
-			$items = $this->filter_attendees_by_string( $search, $items );
+			$search_keys = [
+				'purchaser_name',
+				'purchaser_email',
+				'order_status',
+				'product_id',
+				'security_code',
+				'user',
+			];
+
+			/**
+			 * Filters the item keys that can be used to filter attendees while searching them.
+			 *
+			 * @since 4.7
+			 * @since 4.10.6 Deprecated usage of $items attendees list.
+			 *
+			 * @param array  $search_keys The keys that can be used to search attendees.
+			 * @param array  $items       (deprecated) The attendees list.
+			 * @param string $search      The current search string.
+			 */
+			$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, [], $search );
+
+			// Default selection.
+			$search_key = 'purchaser_name';
+
+			$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
+
+			if ( $search_type && in_array( $search_type, $search_keys, true ) ) {
+				$search_key = $search_type;
+			}
+
+			$search_like_keys = [
+				'purchaser_name',
+				'purchaser_email',
+			];
+
+			/**
+			 * Filters the item keys that support LIKE matching to filter attendees while searching them.
+			 *
+			 * @since 4.10.6
+			 *
+			 * @param array  $search_like_keys The keys that support LIKE matching.
+			 * @param array  $search_keys      The keys that can be used to search attendees.
+			 * @param string $search           The current search string.
+			 */
+			$search_like_keys = apply_filters( 'tribe_tickets_search_attendees_by_like', $search_like_keys, $search_keys, $search );
+
+			// Update search key if it supports LIKE matching.
+			if ( in_array( $search_key, $search_like_keys, true ) ) {
+				$search_key .= '__like';
+				$search     = '%' . $search . '%';
+			}
+
+			// Only get matches that have search phrase in the key.
+			$args['by'] = [
+				$search_key => [
+					$search,
+				],
+			];
 		}
 
-		$total_items = count( $items );
+		$item_data = Tribe__Tickets__Tickets::get_event_attendees_by_args( $event_id, $args );
 
-		$current_page = $this->get_pagenum();
-		$per_page = $this->get_items_per_page( $this->per_page_option );
-		$this->items  = array_slice( $items, ( $current_page - 1 ) * $per_page, $per_page );
+		$items = [];
 
-		$this->set_pagination_args(
-			array(
-				'total_items' => $total_items,
-				'per_page'    => $per_page,
-			)
-		);
+		if ( ! empty( $item_data ) ) {
+			$items = $item_data['attendees'];
+
+			$pagination_args['total_items'] = $item_data['total_found'];
+		}
+
+		$this->items = $items;
+
+		$this->set_pagination_args( $pagination_args );
 	}
 
 	/**
@@ -843,48 +916,64 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @since 4.7
 	 */
 	public function no_items() {
-		_e( 'No matching attendees found.', 'event-tickets' );
+		esc_html_e( 'No matching attendees found.', 'event-tickets' );
 	}
 
 	/**
-	 * Filters the attendees by a search string if available.
-	 *
-	 * @since 4.7
-	 *
-	 * @param       string $search The string to filter attendees by.
-	 * @param array        $items  The attendees list.
-	 *
-	 * @return array
+	 * {@inheritdoc}
 	 */
-	protected function filter_attendees_by_string( $search, array $items ) {
-		if ( empty( $items ) ) {
-			return $items;
-		}
+	public function search_box( $text, $input_id ) {
+		// Workaround to show the search box even when no items are found.
+		$old_items   = $this->items;
+		$this->items = [
+			'Temporary',
+		];
 
-		$search_keys = array( 'purchaser_name', 'purchaser_email', 'purchase_time', 'order_status', 'ticket_name', 'product_id', 'security_code' );
+		// Get normal search box HTML so we can add our own inputs.
+		ob_start();
+		parent::search_box( $text, $input_id );
+		$search_box = ob_get_clean();
+
+		$this->items = $old_items;
+
+		$options = [
+			'purchaser_name'  => __( 'Search by Purchaser Name', 'event-tickets' ),
+			'purchaser_email' => __( 'Search by Purchaser Email', 'event-tickets' ),
+			'user'            => __( 'Search by User ID', 'event-tickets' ),
+			'order_status'    => __( 'Search by Order Status', 'event-tickets' ),
+			'security_code'   => __( 'Search by Security Code', 'event-tickets' ),
+			'product_id'      => __( 'Search by Ticket ID', 'event-tickets' ),
+		];
 
 		/**
-		 * Filters the item keys that should be used to filter attendees while searching them.
+		 * Filters the search types to be shown in the search box for filtering attendees.
 		 *
-		 * @since 4.7
+		 * @since 4.10.6
 		 *
-		 * @param array  $search_keys The keys that should be used to search attendees
-		 * @param array  $items       The attendees list
-		 * @param string $s           The current search string.
+		 * @param array $options List of ORM search types and their labels.
 		 */
-		$search_keys = apply_filters( 'tribe_tickets_search_attendees_by', $search_keys, $items, $search );
+		$options = apply_filters( 'tribe_tickets_search_attendees_types', $options );
 
-		$filtered = array();
-		foreach ( $items as $order_number => $order_data ) {
-			$keys = array_intersect( array_keys( $order_data ), $search_keys );
-			foreach ( $keys as $key ) {
-				if ( ! empty( $order_data[ $key ] ) && false !== stripos( $order_data[ $key ], $search ) ) {
-					$filtered[ $order_number ] = $order_data;
-					break;
-				}
-			}
+		// Default selection.
+		$selected = 'purchaser_name';
+
+		$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
+
+		if ( $search_type && array_key_exists( $search_type, $options ) ) {
+			$selected = $search_type;
 		}
 
-		return $filtered;
+		$args = [
+			'options'  => $options,
+			'selected' => $selected,
+		];
+
+		// Get our search dropdown.
+		$custom_search = tribe( 'tickets.admin.views' )->template( 'attendees-table-search', $args, false );
+
+		// Add our search dropdown.
+		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
+
+		echo $search_box;
 	}
 }

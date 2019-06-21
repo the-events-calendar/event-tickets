@@ -49,7 +49,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $active_modules = array();
+		protected static $active_modules = [];
 
 		/**
 		 * Default Tribe__Tickets__Tickets ecommerce module.
@@ -72,7 +72,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $frontend_ticket_data = array();
+		protected static $frontend_ticket_data = [];
 
 		/**
 		 * Name of this class. Note that it refers to the child class.
@@ -101,7 +101,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $currently_unavailable_tickets = array();
+		protected static $currently_unavailable_tickets = [];
 
 		/**
 		 * Records posts for which tickets *are* available (used to determine if
@@ -109,7 +109,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @var array
 		 */
-		protected static $posts_with_available_tickets = array();
+		protected static $posts_with_available_tickets = [];
 
 		// start API Definitions
 		// Child classes must implement all these functions / properties
@@ -231,6 +231,20 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public $order_object = '';
 
 		/**
+		 * Name of the CPT that holds Attendees.
+		 *
+		 * @var string
+		 */
+		public $attendee_object = '';
+
+		/**
+		 * Meta key that relates Attendees and Events.
+		 *
+		 * @var string
+		 */
+		public $attendee_event_key = '';
+
+		/**
 		 * Meta key that relates Attendees and Products.
 		 *
 		 * @var string
@@ -250,6 +264,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @var string
 		 */
 		public $attendee_optout_key = '';
+
+		/**
+		 * The provider used for Attendees and Tickets ORM.
+		 *
+		 * @var string
+		 */
+		public $orm_provider = 'default';
 
 		/**
 		 * Returns link to the report interface for sales for an event or
@@ -485,7 +506,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $return;
 			}
 
-			$controls   = array();
+			$controls   = [];
 
 			if ( tribe_is_truthy( tribe_get_request_var( 'is_admin' ) ) ) {
 				$controls[] = $this->get_ticket_move_link( $return['post_id'], $ticket );
@@ -581,7 +602,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @param array $raw_data
 		 * @return mixed
 		 */
-		public function save_ticket( $post_id, $ticket, $raw_data = array() ) {}
+		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {}
 
 		/**
 		 * Returns all the tickets for an event
@@ -595,38 +616,162 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_tickets( $post_id ) {}
 
 		/**
-		 * Get attendees by id and associated post type
-		 * or default to using $post_id
+		 * Get attendees for a Post ID / Post type.
 		 *
-		 * @param int $post_id ID of parent "event" post
+		 * @param int         $post_id   Post ID.
+		 * @param null|string $post_type Post type.
 		 *
-		 * @return array|mixed
+		 * @return array List of attendees.
 		 */
-		public function get_attendees_by_id( $post_id ) {}
+		public function get_attendees_by_id( $post_id, $post_type = null ) {
+			return $this->get_attendees_by_post_id( $post_id );
+		}
 
 		/**
-		 * Get all the attendees (sold tickets) for an event
+		 * Get attendees for an event ID.
 		 *
-		 * @abstract
+		 * @param int $event_id Event post ID.
 		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_post_id( $event_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			return $this->get_attendees_from_module( $repository->by( 'event', $event_id )->all(), $event_id );
+		}
+
+		/**
+		 * Get attendees for a ticket ID.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param int $ticket_id Ticket ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_ticket_id( $ticket_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			return $this->get_attendees_from_module( $repository->by( 'ticket', $ticket_id )->all() );
+		}
+
+		/**
+		 * Get attendees for a ticket ID.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param int $ticket_id Ticket ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_product_id( $ticket_id ) {
+			return $this->get_attendees_by_ticket_id( $ticket_id );
+		}
+
+		/**
+		 * Get attendees for a ticket by order ID, optionally by ticket ID.
+		 *
+		 * @since 4.6
+		 *
+		 * @param int|string $order_id  Order ID.
+		 * @param null|int   $ticket_id (optional) Ticket ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_order_id( $order_id ) {
+			$ticket_id = null;
+
+			// Support an optional second argument while not causing warnings from other ticket provider classes.
+			if ( 1 < func_num_args() ) {
+				$ticket_id = func_get_arg( 1 );
+			}
+
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			$repository->by( 'order', $order_id );
+
+			if ( $ticket_id ) {
+				$repository->by( 'ticket', $ticket_id );
+			}
+
+			return $this->get_attendees_from_module( $repository->all() );
+		}
+
+		/**
+		 * Get attendees for a ticket by attendee ID.
+		 *
+		 * @since 4.6
+		 *
+		 * @param int $attendee_id Attendee ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		protected function get_attendees_by_attendee_id( $attendee_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			return $this->get_attendees_from_module( $repository->by( 'id', $attendee_id )->all() );
+		}
+
+		/**
+		 * Get attendees for a ticket by user ID.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param int $user_id User ID.
+		 * @param int $post_id Post or Event ID.
+		 *
+		 * @return array List of attendees.
+		 */
+		public function get_attendees_by_user_id( $user_id, $post_id = 0 ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			$repository->by( 'user', $user_id );
+
+			if ( $post_id ) {
+				$repository->by( 'event', $post_id );
+			}
+
+			return $this->get_attendees_from_module( $repository->all() );
+		}
+
+		/**
+		 * Get All Attendees by ticket/attendee ID
+		 *
+		 * @since 4.8.0
+		 *
+		 * @param int $attendee_id
+		 * @return array
+		 */
+		public function get_all_attendees_by_attendee_id( $attendee_id ) {
+			return $this->get_attendees_by_attendee_id( $attendee_id );
+		}
+
+		/**
+		 * Get attendees from provided query
+		 *
+		 * @param WP_Query $attendees_query
 		 * @param int $post_id ID of parent "event" post
 		 * @return mixed
 		 */
-		protected function get_attendees_by_post_id( $post_id ) {
-			$attendees_query = new WP_Query( array(
-				'posts_per_page' => - 1,
-				'post_type'      => $this->attendee_object,
-				'meta_key'       => $this->attendee_event_key,
-				'meta_value'     => $post_id,
-				'orderby'        => 'ID',
-				'order'          => 'ASC',
-			) );
+		protected function get_attendees( $attendees_query, $post_id ) {
+			$attendees = [];
 
-			if ( ! $attendees_query->have_posts() ) {
-				return array();
+			foreach ( $attendees_query->posts as $attendee ) {
+				$attendee_data = $this->get_attendee( $attendee, $post_id );
+
+				if ( ! $attendee_data ) {
+					continue;
+				}
+
+				$attendees[] = $attendee_data;
 			}
 
-			return $this->get_attendees( $attendees_query, $post_id );
+			return $attendees;
 		}
 
 		/**
@@ -641,63 +786,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function attendee_decreases_inventory( array $attendee ) {
 			return true;
 		}
-
-		/**
-		 * Get All Attendees by ticket/attendee ID
-		 *
-		 * @since 4.8.0
-		 *
-		 * @param int $attendee_id
-		 * @return array
-		 */
-		public function get_all_attendees_by_attendee_id( $attendee_id ) {
-			$attendees_query = new WP_Query( array(
-				'p'         => absint( $attendee_id ),
-				'post_type' => $this->attendee_object,
-			) );
-
-			if ( ! $attendees_query->have_posts() ) {
-				return array();
-			}
-
-			return $this->get_attendees( $attendees_query, $attendee_id );
-		}
-
-		/**
-		 * Get Attendees by ticket/attendee ID
-		 *
-		 * @param int $attendee_id
-		 * @return array
-		 */
-		protected function get_attendees_by_attendee_id( $attendee_id ) {
-			$attendees_query = new WP_Query( array(
-				'p'         => $attendee_id,
-				'post_type' => $this->attendee_object,
-			) );
-
-			if ( ! $attendees_query->have_posts() ) {
-				return array();
-			}
-
-			return $this->get_attendees( $attendees_query, $attendee_id );
-		}
-
-		/**
-		 * Get attendees by order id
-		 *
-		 * @param int $order_id
-		 * @return array
-		 */
-		protected function get_attendees_by_order_id( $order_id ) {}
-
-		/**
-		 * Get attendees from provided query
-		 *
-		 * @param WP_Query $attendees_query
-		 * @param int $post_id ID of parent "event" post
-		 * @return mixed
-		 */
-		protected function get_attendees( $attendees_query, $post_id ) {}
 
 		/**
 		 * Mark an attendee as checked in
@@ -847,7 +935,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * For Frontend Hooks, admin ones need to be loaded earlier
 		 *
-		 * @since  4.7.5
+		 * @since 4.7.5
 		 *
 		 * @return void
 		 */
@@ -916,20 +1004,25 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @static
 		 *
-		 * @param int $post_id ID of parent "event" post
-		 * @return array
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args    List of arguments to filter by.
+		 *
+		 * @return array List of attendees.
 		 */
-		public static function get_event_attendees( $post_id ) {
-			$attendees = array();
+		public static function get_event_attendees( $post_id, $args = [] ) {
+			$attendees = [];
+
 			/**
 			 * Filter to skip all empty $post_ID otherwise will fallback to the current global post ID
 			 *
 			 * @since 4.9
+			 * @since 4.10.6 Added $args parameter.
 			 *
-			 * @param boool $skip_empty_post If the empty post should be skiped or not
-			 * @param int   $post_id ID of the post being affected
+			 * @param bool  $skip_empty_post If the empty post should be skipped or not
+			 * @param int   $post_id         ID of the post being affected
+			 * @param array $args            List of arguments to filter by.
 			 */
-			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id );
+			$skip_empty_post = apply_filters( 'tribe_tickets_event_attendees_skip_empty_post', true, $post_id, $args );
 
 			/**
 			 * Process an attendee only if:
@@ -946,14 +1039,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/**
 				 * Filters the cache expiration when this function is called from an admin screen.
 				 *
-				 * Returning a falsy value here will force a refetch each time.
+				 * Returning a falsy value here will force a fetch each time.
 				 *
 				 * @since 4.7
+				 * @since 4.10.6 Added $args parameter.
 				 *
-				 * @param int $admin_expire The cache expiration in seconds; defaults to 2 minutes.
-				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 * @param int   $admin_expire The cache expiration in seconds; defaults to 2 minutes.
+				 * @param int   $post_id      The ID of the post attendees are being fetched for.
+				 * @param array $args         List of arguments to filter by.
 				 */
-				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id );
+				$admin_expire = apply_filters( 'tribe_tickets_attendees_admin_expire', 120, $post_id, $args );
 
 				/**
 				 * Filters the cache expiration when this function is called from a non admin screen.
@@ -961,49 +1056,50 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				 * Returning a falsy value here will force a refetch each time.
 				 *
 				 * @since 4.7
+				 * @since 4.10.6 Added $args parameter.
 				 *
-				 * @param int $admin_expire The cache expiration in seconds, defaults to an hour.
-				 * @param int $post_id The ID of the post attendees are being fetched for.
+				 * @param int   $admin_expire The cache expiration in seconds, defaults to an hour.
+				 * @param int   $post_id      The ID of the post attendees are being fetched for.
+				 * @param array $args         List of arguments to filter by.
 				 */
-				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS );
+				$expire = apply_filters( 'tribe_tickets_attendees_expire', HOUR_IN_SECONDS, $post_id, $args );
 
 				$expire = is_admin() ? (int) $admin_expire : (int) $expire;
 
 				$attendees_from_cache = false;
 
+				$post_transient = null;
 
-				if ( 0 !== $expire ) {
+				$cache_key = false;
+
+				if ( empty( $args ) && 0 < $post_id ) {
+					$cache_key = (int) $post_id;
+				}
+
+				if ( 0 !== $expire && $cache_key ) {
+					/** @var Tribe__Post_Transient $post_transient */
 					$post_transient = tribe( 'post-transient' );
 
-					$attendees_from_cache = $post_transient->get( $post_id, self::ATTENDEES_CACHE );
+					$attendees_from_cache = $post_transient->get( $cache_key, self::ATTENDEES_CACHE );
 
 					// if there is a valid transient, we'll use the value from that and note
 					// that we have fetched from cache
 					if ( false !== $attendees_from_cache ) {
-						$attendees            = empty( $attendees_from_cache ) ? array() : $attendees_from_cache;
+						$attendees            = empty( $attendees_from_cache ) ? [] : $attendees_from_cache;
 						$attendees_from_cache = true;
 					}
 				}
 
 				// if we haven't grabbed attendees from cache, then attempt to fetch attendees
 				if ( false === $attendees_from_cache && empty( $attendees ) ) {
-					foreach ( self::modules() as $class => $module ) {
-						$obj = call_user_func( array( $class, 'get_instance' ) );
-						if ( is_array( $attendees ) ) {
-							$attendees[] = $obj->get_attendees_by_post_id( $post_id );
-						}
+					$attendee_data = self::get_event_attendees_by_args( $post_id, $args );
+
+					if ( ! empty( $attendee_data['attendees'] ) ) {
+						$attendees = $attendee_data['attendees'];
 					}
 
-					$attendees = ! empty( $attendees ) ? call_user_func_array( 'array_merge', $attendees ) : array();
-
-					// Set the `ticket_exists` flag on attendees if the ticket they are associated with
-					// does not exist.
-					foreach ( $attendees as &$attendee ) {
-						$attendee['ticket_exists'] = ! empty( $attendee['product_id'] ) && get_post( $attendee['product_id'] );
-					}
-
-					if ( 0 !== $expire ) {
-						$post_transient->set( $post_id, self::ATTENDEES_CACHE, $attendees, $expire );
+					if ( 0 !== $expire && $cache_key ) {
+						$post_transient->set( $cache_key, self::ATTENDEES_CACHE, $attendees, $expire );
 					}
 				}
 			}
@@ -1012,21 +1108,223 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * Filters the return data for event attendees.
 			 *
 			 * @since 4.4
+			 * @since 4.10.6 Added $args parameter.
 			 *
 			 * @param array $attendees Array of event attendees.
-			 * @param int   $post_id Event post ID.
+			 * @param int   $post_id   Event post ID.
+			 * @param array $args      List of arguments to filter by.
 			 */
-			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id );
+			return apply_filters( 'tribe_tickets_event_attendees', $attendees, $post_id, $args );
+		}
+
+		/**
+		 * Returns all the attendees for an event with filtered by arguments. Queries all registered providers.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @static
+		 *
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args {
+		 *      List of arguments to filter attendees by.
+		 *
+		 *      @type boolean $return_total_found Whether to return total_found count in an array along with list of
+		 *                                        attendees. Default is off.
+		 *      @type int     $page               Page number of attendees to return. Default is page 1.
+		 *      @type int     $per_page           How many attendees to return per page. Default is all.
+		 *      @type string  $fields             Which fields to return. Default is all.
+		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                                        [[what,args...]] format.
+		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 *
+		 * @return array List of attendees and total_found.
+		 */
+		public static function get_event_attendees_by_args( $post_id, $args = [] ) {
+			$attendee_data = [
+				'total_found' => 0,
+				'attendees'   => [],
+			];
+
+			if ( empty( $post_id ) ) {
+				return $attendee_data;
+			}
+
+			$provider = 'default';
+
+			if ( ! empty( $args['provider'] ) ) {
+				$provider = $args['provider'];
+			}
+
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $provider );
+
+			// Limit by post ID.
+			$repository->by( 'event', $post_id );
+
+			self::pass_args_to_repository( $repository, $args );
+
+			if ( ! empty( $args['return_total_found'] ) ) {
+				$repository->set_found_rows( true );
+			}
+
+			$attendee_posts = $repository->all();
+
+			if ( ! empty( $args['return_total_found'] ) ) {
+				$attendee_data['total_found'] = $repository->found();
+			}
+
+			$attendee_data['attendees'] = self::get_attendees_from_modules( $attendee_posts, $post_id );
+
+			return $attendee_data;
+		}
+
+		/**
+		 * Pass arguments to repository object with dynamic support for by() and where_multi().
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param Tribe__Repository $repository Repository object.
+		 * @param array             $args       {
+		 *      List of arguments to filter by.
+		 *
+		 *      @type int     $page               Page number of results to return. Default is page 1.
+		 *      @type int     $per_page           How many results to return per page. Default is all.
+		 *      @type string  $fields             Which fields to return. Default is all.
+		 *      @type array   $by                 List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                                        [[what,args...]] format.
+		 *      @type array   $where_multi        List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 */
+		protected static function pass_args_to_repository( $repository, $args ) {
+			// Only return specific fields.
+			if ( ! empty( $args['fields'] ) ) {
+				$repository->fields( $args['fields'] );
+			}
+
+			// Handle filtering.
+			if ( ! empty( $args['by'] ) ) {
+				foreach ( $args['by'] as $by => $by_args ) {
+					$by_args = (array) $by_args;
+
+					if ( is_string( $by ) ) {
+						array_unshift( $by_args, $by );
+					}
+
+					call_user_func_array( [ $repository, 'by' ], $by_args );
+				}
+			}
+
+			// Handle post__in.
+			if ( ! empty( $args['in'] ) ) {
+				$repository->in( (array) $args['in'] );
+			}
+
+			// Handle post__not_in.
+			if ( ! empty( $args['not_in'] ) ) {
+				$repository->not_in( (array) $args['not_in'] );
+			}
+
+			// Handle multi filtering.
+			if ( ! empty( $args['where_multi'] ) ) {
+				foreach ( $args['where_multi'] as $where_multi_args ) {
+					call_user_func_array( [ $repository, 'where_multi' ], $where_multi_args );
+				}
+			}
+
+			// Set current page.
+			if ( ! empty( $args['page'] ) ) {
+				$repository->page( absint( $args['page'] ) );
+			}
+
+			// Limit results per page.
+			if ( ! empty( $args['per_page'] ) ) {
+				$repository->per_page( absint( $args['per_page'] ) );
+			}
+		}
+
+		/**
+		 * Get attendee data for attendees from the associated modules.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param array $attendees Attendee objects or IDs.
+		 * @param int   $post_id   Parent post ID.
+		 *
+		 * @return array The attendee data for attendees.
+		 */
+		public static function get_attendees_from_modules( $attendees, $post_id = 0 ) {
+			$attendees_from_modules = [];
+
+			foreach ( $attendees as $attendee ) {
+				/** @var Tribe__Tickets__Tickets $provider */
+				$provider = tribe_tickets_get_ticket_provider( $attendee );
+
+				if ( ! $provider ) {
+					continue;
+				}
+
+				$attendee_data = $provider->get_attendee( $attendee, $post_id );
+
+				if ( ! $attendee_data ) {
+					continue;
+				}
+
+				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
+				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
+
+				$attendees_from_modules[] = $attendee_data;
+			}
+
+			return $attendees_from_modules;
+		}
+
+		/**
+		 * Get attendee data for attendees from the current module.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param array $attendees Attendee objects or IDs.
+		 * @param int   $post_id   Parent post ID.
+		 *
+		 * @return array The attendee data for attendees.
+		 */
+		public function get_attendees_from_module( $attendees, $post_id = 0 ) {
+			$attendees_from_module = [];
+
+			foreach ( $attendees as $attendee ) {
+				$attendee_data = $this->get_attendee( $attendee, $post_id );
+
+				if ( ! $attendee_data ) {
+					continue;
+				}
+
+				// Set the `ticket_exists` flag on attendees if the ticket they are associated with does not exist.
+				$attendee_data['ticket_exists'] = ! empty( $attendee_data['product_id'] ) && get_post( $attendee_data['product_id'] );
+
+				$attendees_from_module[] = $attendee_data;
+			}
+
+			return $attendees_from_module;
+		}
+
+		/**
+		 * Get attendee data for attendee.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param WP_Post|int $attendee Attendee object or ID.
+		 * @param int         $post_id  Parent post ID.
+		 *
+		 * @return array|false The attendee data or false if the ticket is invalid.
+		 */
+		public function get_attendee( $attendee, $post_id = 0 ) {
+			return false;
 		}
 
 		/**
 		 * Returns an array of attendees for the specified event, in relation to
 		 * this ticketing provider.
-		 *
-		 * Implementation note: this is just a public wrapper around the get_attendees() method.
-		 * The reason we don't simply make that same method public is to avoid breakages in other
-		 * ticket provider plugins which have already implemented that method with protected
-		 * accessibility.
 		 *
 		 * @param int $post_id ID of parent "event" post
 		 * @return array
@@ -1036,14 +1334,74 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		}
 
 		/**
-		 * Returns the total number of attendees for an event (regardless of provider).
+		 * Returns total count of attendees for the specified event, in relation to
+		 * this ticketing provider.
+		 *
+		 * @since 4.10.6
 		 *
 		 * @param int $post_id ID of parent "event" post
-		 * @return int
+		 *
+		 * @return int Total count of attendees.
 		 */
-		public static function get_event_attendees_count( $post_id ) {
-			$attendees = self::get_event_attendees( $post_id );
-			return count( $attendees );
+		public function get_attendees_count( $post_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			return $repository->by( 'event', $post_id )->found();
+		}
+
+		/**
+		 * Returns total count of attendees for the specified event, in relation to
+		 * this ticketing provider.
+		 *
+		 * @since 4.10.6
+		 *
+		 * @param int $post_id ID of parent "event" post.
+		 * @param int $user_id ID of user.
+		 *
+		 * @return int Total count of attendees.
+		 */
+		public function get_attendees_count_by_user( $post_id, $user_id ) {
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $this->orm_provider );
+
+			return $repository->by( 'event', $post_id )->by( 'user', $user_id )->found();
+		}
+
+		/**
+		 * Returns the total number of attendees for an event (regardless of provider).
+		 *
+		 * @param int   $post_id ID of parent "event" post.
+		 * @param array $args    {
+		 *      List of arguments to filter attendees by.
+		 *
+		 *      @type array $by          List of ORM->by() filters to use. [what=>[args...]], [what=>arg], or
+		 *                               [[what,args...]] format.
+		 *      @type array $where_multi List of ORM->where_multi() filters to use. [[what,args...]] format.
+		 * }
+		 *
+		 * @return int Total count of attendees.
+		 */
+		public static function get_event_attendees_count( $post_id, $args = [] ) {
+			// Post ID is required.
+			if ( empty( $post_id ) ) {
+				return 0;
+			}
+
+			$provider = 'default';
+
+			if ( ! empty( $args['provider'] ) ) {
+				$provider = $args['provider'];
+			}
+
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees( $provider );
+
+			$repository->by( 'event', $post_id );
+
+			self::pass_args_to_repository( $repository, $args );
+
+			return $repository->found();
 		}
 
 		/**
@@ -1062,7 +1420,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return $tickets;
 			}
 
-			$tickets = array();
+			$tickets = [];
 			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
@@ -1073,7 +1431,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			$tickets = empty( $tickets ) ? array() : call_user_func_array( 'array_merge', $tickets );
+			$tickets = empty( $tickets ) ? [] : call_user_func_array( 'array_merge', $tickets );
 			$cache->set( $cache_key, $tickets, Tribe__Cache::NO_EXPIRATION );
 
 			return $tickets;
@@ -1107,29 +1465,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return mixed
 		 */
 		final public static function get_event_checkedin_attendees_count( $post_id ) {
-			$checkedin = self::get_event_attendees( $post_id );
+			/** @var Tribe__Tickets__Attendee_Repository $repository */
+			$repository = tribe_attendees();
 
-			return array_reduce( $checkedin, array( 'Tribe__Tickets__Tickets', '_checkedin_attendees_array_filter' ), 0 );
+			return $repository->by( 'event', $post_id )->by( 'checkedin', true )->found();
 		}
-
-		/**
-		 * Internal function to use as a callback for array_reduce in
-		 * get_event_checkedin_attendees_count. It increments the counter
-		 * if the attendee is checked-in.
-		 *
-		 * @static
-		 *
-		 * @param int $result
-		 * @param array $item
-		 * @return mixed
-		 */
-		private static function _checkedin_attendees_array_filter( $result, $item ) {
-			if ( ! empty( $item['check_in'] ) )
-				return $result + 1;
-
-			return $result;
-		}
-
 
 		// end Attendees
 
@@ -1226,14 +1566,14 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// if no post id return empty array
 			if ( empty( $post_id ) ) {
-				return array();
+				return [];
 			}
 
 			$tickets = self::get_all_event_tickets( $post_id );
 
 			// if no tickets or rsvp return empty array
 			if ( ! $tickets ) {
-				return array();
+				return [];
 			}
 
 			/**
@@ -1356,8 +1696,8 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function enqueue_frontend_stock_data() {
 			$data = array(
-				'tickets' => array(),
-				'events'  => array(),
+				'tickets' => [],
+				'events'  => [],
 			);
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
@@ -1464,7 +1804,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		final public static function get_event_tickets( $post_id ) {
-			$tickets = array();
+			$tickets = [];
 
 			foreach ( self::modules() as $class => $module ) {
 				$obj              = call_user_func( array( $class, 'get_instance' ) );
@@ -1474,7 +1814,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				}
 			}
 
-			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : array();
+			return ! empty( $tickets ) ? call_user_func_array( 'array_merge', $tickets ) : [];
 		}
 
 		/**
@@ -1604,16 +1944,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_order_key( $provider_class ) {
 			$attendee_order_key = $provider_class->getConstant( 'ATTENDEE_ORDER_KEY' );
 
-			if ( empty( $attendee_order_key ) ) {
-				switch ( $this->class_name ) {
-					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_order';   break;
-					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_order';   break;
-					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_order'; break;
-					case 'Tribe__Events__Tickets__Wpec__Main':  return '_tribe_wpecticket_order';  break;
-				}
+			if ( ! empty( $attendee_order_key ) ) {
+				return (string) $attendee_order_key;
 			}
 
-			return (string) $attendee_order_key;
+			switch ( $this->class_name ) {
+				case 'Tribe__Events__Tickets__Woo__Main':
+					return '_tribe_wooticket_order';
+				case 'Tribe__Events__Tickets__EDD__Main':
+					return '_tribe_eddticket_order';
+				case 'Tribe__Events__Tickets__Shopp__Main':
+					return '_tribe_shoppticket_order';
+				case 'Tribe__Events__Tickets__Wpec__Main':
+					return '_tribe_wpecticket_order';
+				default:
+					return '';
+			}
 		}
 
 		/**
@@ -1629,17 +1975,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_object( $provider_class ) {
 			$attendee_object = $provider_class->getConstant( 'ATTENDEE_OBJECT' );
 
-			// @todo this will always be empty... why is this here?
-			if ( empty( $attendee_order_key ) ) {
-				switch ( $this->class_name ) {
-					case 'Tribe__Events__Tickets__Woo__Main':   return 'tribe_wooticket';   break;
-					case 'Tribe__Events__Tickets__EDD__Main':   return 'tribe_eddticket';   break;
-					case 'Tribe__Events__Tickets__Shopp__Main': return 'tribe_shoppticket'; break;
-					case 'Tribe__Events__Tickets__Wpec__Main':  return 'tribe_wpecticket';  break;
-				}
+			if ( ! empty( $attendee_object ) ) {
+				return (string) $attendee_object;
 			}
 
-			return (string) $attendee_object;
+			switch ( $this->class_name ) {
+				case 'Tribe__Events__Tickets__Woo__Main':
+					return 'tribe_wooticket';
+				case 'Tribe__Events__Tickets__EDD__Main':
+					return 'tribe_eddticket';
+				case 'Tribe__Events__Tickets__Shopp__Main':
+					return 'tribe_shoppticket';
+				case 'Tribe__Events__Tickets__Wpec__Main':
+					return 'tribe_wpecticket';
+				default:
+					return '';
+			}
 		}
 
 		/**
@@ -1657,16 +2008,22 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		protected function get_attendee_event_key( $provider_class ) {
 			$attendee_event_key = $provider_class->getConstant( 'ATTENDEE_EVENT_KEY' );
 
-			if ( empty( $attendee_event_key ) ) {
-				switch ( $this->class_name ) {
-					case 'Tribe__Events__Tickets__Woo__Main':   return '_tribe_wooticket_event';   break;
-					case 'Tribe__Events__Tickets__EDD__Main':   return '_tribe_eddticket_event';   break;
-					case 'Tribe__Events__Tickets__Shopp__Main': return '_tribe_shoppticket_event'; break;
-					case 'Tribe__Events__Tickets__Wpec__Main':  return '_tribe_wpecticket_event';  break;
-				}
+			if ( ! empty( $attendee_event_key ) ) {
+				return (string) $attendee_event_key;
 			}
 
-			return (string) $attendee_event_key;
+			switch ( $this->class_name ) {
+				case 'Tribe__Events__Tickets__Woo__Main':
+					return '_tribe_wooticket_event';
+				case 'Tribe__Events__Tickets__EDD__Main':
+					return '_tribe_eddticket_event';
+				case 'Tribe__Events__Tickets__Shopp__Main':
+					return '_tribe_shoppticket_event';
+				case 'Tribe__Events__Tickets__Wpec__Main':
+					return '_tribe_wpecticket_event';
+				default:
+					return '';
+			}
 		}
 
 		/**
@@ -1677,7 +2034,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		public function process_attendee_meta( $product_id, $meta ) {
-			$meta_values = array();
+			$meta_values = [];
 
 			if ( ! class_exists( 'Tribe__Tickets_Plus__Main' ) ) {
 				return $meta_values;
@@ -1690,7 +2047,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 				if ( 'checkbox' === $field->type ) {
 					$field_prefix = $field->slug . '_';
-					$value        = array();
+					$value        = [];
 
 					foreach ( $meta as $full_key => $check_value ) {
 						if ( 0 === strpos( $full_key, $field_prefix ) ) {
@@ -1767,7 +2124,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$collection_availability_slug = 'available';
 			$tickets_available = false;
-			$slugs = array();
+			$slugs = [];
 
 			foreach ( $tickets as $ticket ) {
 				$availability_slug = $ticket->availability_slug( $timestamp );
@@ -1897,7 +2254,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			$existing_tickets = ! empty( $unavailable_tickets[ (int) $post_id ] )
 				? $unavailable_tickets[ (int) $post_id ]
-				: array();
+				: [];
 
 			self::$currently_unavailable_tickets[ (int) $post_id ] = array_merge( $existing_tickets, $tickets );
 
@@ -2066,7 +2423,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return bool
 		 */
 		public function login_required() {
-			$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', array() );
+			$requirements = (array) tribe_get_option( 'ticket-authentication-requirements', [] );
 
 			return in_array( 'event-tickets_all', $requirements, true );
 		}
@@ -2173,12 +2530,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		/**
 		 * Clears the attendees cache for a given post
 		 *
-		 * @param int|WP_Post $post The parent post or ID
+		 * @param int|WP_Post $post_id The parent post or ID
 		 *
 		 * @return bool Was the operation successful?
 		 */
-		public function clear_attendees_cache( $post ) {
-			return Tribe__Post_Transient::instance()->delete( $post, self::ATTENDEES_CACHE );
+		public function clear_attendees_cache( $post_id ) {
+			if ( $post_id instanceof WP_Post ) {
+				$post_id = $post_id->ID;
+			}
+
+			/** @var Tribe__Post_Transient $post_transient */
+			$post_transient = tribe( 'post-transient' );
+
+			$cache_key = (int) $post_id;
+
+			return $post_transient->delete( $cache_key, self::ATTENDEES_CACHE );
 		}
 
 		/**
@@ -2416,7 +2782,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 *
 			 * @param array
 			*/
-			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', array() );
+			$tickets_in_cart = apply_filters( 'tribe_tickets_tickets_in_cart', [] );
 
 			// Bail if there are no tickets
 			if ( empty( $tickets_in_cart ) ) {

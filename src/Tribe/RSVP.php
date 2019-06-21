@@ -2,6 +2,11 @@
 
 class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
+	 * {@inheritdoc}
+	 */
+	public $orm_provider = 'rsvp';
+
+	/**
 	 * Name of the CPT that holds Attendees (tickets holders).
 	 *
 	 * @var string
@@ -632,7 +637,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @param int $event_id
 	 */
 	public function send_tickets_email( $order_id, $event_id = null ) {
-		$all_attendees = $this->get_attendees_by_id( $order_id );
+		$all_attendees = $this->get_attendees_by_order_id( $order_id );
 
 		$to_send = array();
 
@@ -750,7 +755,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 */
 	public function send_non_attendance_confirmation( $order_id, $event_id ) {
 
-		$attendees = $this->get_attendees_by_id( $order_id );
+		$attendees = $this->get_attendees_by_order_id( $order_id );
 
 		if ( empty( $attendees ) ) {
 			return;
@@ -981,21 +986,23 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 
 		// Stock Adjustment handled by $this->update_stock_from_attendees_page()
 
-		//Store name so we can still show it in the attendee list
-		$attendees      = $this->get_attendees_by_id( $event_id );
+		// Store name so we can still show it in the attendee list
+		$attendees = [];
+
+		if ( get_post_type( $ticket_id ) === $this->ticket_object ) {
+			$attendees = $this->get_attendees_by_ticket_id( $ticket_id );
+		}
+
 		$post_to_delete = get_post( $ticket_id );
 
-		foreach ( (array) $attendees as $attendee ) {
-			if ( (int) $attendee['product_id'] !== (int) $ticket_id ) {
-				continue;
-			}
-
+		// Loop through attendees of ticket (if deleting ticket and not a specific attendee).
+		foreach ( $attendees as $attendee ) {
 			update_post_meta( $attendee['attendee_id'], $this->deleted_product, esc_html( $post_to_delete->post_title ) );
 		}
 
 		// Try to kill the actual ticket/attendee post
 		$delete = wp_delete_post( $ticket_id, true );
-		if ( is_wp_error( $delete ) || ! isset( $delete->ID ) ) {
+		if ( ! isset( $delete->ID ) || is_wp_error( $delete ) ) {
 			return false;
 		}
 
@@ -1032,12 +1039,12 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	/**
 	 * Returns all the tickets for an event
 	 *
-	 * @param int $event_id
+	 * @param int $post_id
 	 *
 	 * @return array
 	 */
-	protected function get_tickets( $event_id ) {
-		$ticket_ids = $this->get_tickets_ids( $event_id );
+	public function get_tickets( $post_id ) {
+		$ticket_ids = $this->get_tickets_ids( $post_id );
 		if ( ! $ticket_ids ) {
 			return array();
 		}
@@ -1045,7 +1052,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$tickets = array();
 
 		foreach ( $ticket_ids as $post ) {
-			$tickets[] = $this->get_ticket( $event_id, $post );
+			$tickets[] = $this->get_ticket( $post_id, $post );
 		}
 
 		return $tickets;
@@ -1269,26 +1276,19 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		switch ( $post_type ) {
-
-			case $this->ticket_object :
-
+			case $this->ticket_object:
 				return $this->get_attendees_by_product_id( $post_id );
 
 				break;
-
-			case self::ATTENDEE_OBJECT :
-
-				return $this->get_all_attendees_by_attendee_id( $post_id );
+			case self::ATTENDEE_OBJECT:
+				return $this->get_attendees_by_attendee_id( $post_id );
 
 				break;
-
-			case 'rsvp_order_hash' :
-
+			case 'rsvp_order_hash':
 				return $this->get_attendees_by_order_id( $post_id );
 
 				break;
-			default :
-
+			default:
 				return $this->get_attendees_by_post_id( $post_id );
 
 				break;
@@ -1297,108 +1297,40 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Get RSVP Tickets Attendees for an Post by id
+	 * Get total count of attendees marked as going for this provider.
 	 *
-	 * @since  4.6
+	 * @since 4.10.6
 	 *
-	 * @param  $post_id
+	 * @param int $post_id Post or Event ID.
 	 *
-	 * @return array
+	 * @return int Total count of attendees marked as going.
 	 */
-	protected function get_attendees_by_product_id( $post_id ) {
+	public function get_attendees_count_going( $post_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
 
-		$attendees_query = new WP_Query( array(
-			'posts_per_page' => - 1,
-			'post_type'      => self::ATTENDEE_OBJECT,
-			'meta_key'       => self::ATTENDEE_PRODUCT_KEY,
-			'meta_value'     => $post_id,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		) );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
-
-		return $this->get_attendees( $attendees_query, $post_id );
-
+		return $repository->by( 'event', $post_id )->by( 'rsvp_status', 'yes' )->found();
 	}
 
 	/**
-	 * Get RSVP Tickets Attendees for an Post by id
+	 * Get total count of attendees marked as going for this provider.
 	 *
-	 * @param $post_id
+	 * @since 4.10.6
 	 *
-	 * @return array
+	 * @param int $post_id Post or Event ID.
+	 *
+	 * @return int Total count of attendees marked as going.
 	 */
-	protected function get_attendees_by_post_id( $post_id ) {
+	public function get_attendees_count_not_going( $post_id ) {
+		/** @var Tribe__Tickets__Attendee_Repository $repository */
+		$repository = tribe_attendees( $this->orm_provider );
 
-		$attendees_query = new WP_Query( array(
-			'posts_per_page' => - 1,
-			'post_type'      => self::ATTENDEE_OBJECT,
-			'meta_key'       => self::ATTENDEE_EVENT_KEY,
-			'meta_value'     => $post_id,
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		) );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
-
-		return $this->get_attendees( $attendees_query, $post_id );
-
+		return $repository->by( 'event', $post_id )->by( 'rsvp_status', 'no' )->found();
 	}
 
 	/**
-	 * Get Attendees by ticket/attendee ID
+	 * {@inheritdoc}
 	 *
-	 * @param $attendee_id
-	 *
-	 * @return array
-	 */
-	 public function get_all_attendees_by_attendee_id( $attendee_id ) {
-
-		$attendees_query = new WP_Query( array(
-			'p'         => absint( $attendee_id ),
-			'post_type' => self::ATTENDEE_OBJECT,
-		) );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
-
-		return $this->get_attendees( $attendees_query, $attendee_id );
-
-	}
-
-	/**
-	 * Get attendees by order id
-	 *
-	 * @param $order_id
-	 *
-	 * @return array
-	 */
-	protected function get_attendees_by_order_id( $order_id ) {
-
-		$attendees_query = new WP_Query( array(
-			'posts_per_page' => - 1,
-			'post_type'      => self::ATTENDEE_OBJECT,
-			'meta_key'       => $this->order_key,
-			'meta_value'     => esc_attr( $order_id ),
-			'orderby'        => 'ID',
-			'order'          => 'ASC',
-		) );
-
-		if ( ! $attendees_query->have_posts() ) {
-			return array();
-		}
-
-		return $this->get_attendees( $attendees_query, $order_id );
-
-	}
-
-	/**
 	 * Get all the attendees for post type. It returns an array with the
 	 * following fields:
 	 *
@@ -1413,87 +1345,83 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 *     product_id
 	 *     check_in
 	 *     provider
-	 *
-	 * @param $attendees_query
-	 * @param $post_id
-	 *
-	 * @return array
 	 */
-	protected function get_attendees( $attendees_query, $post_id ) {
-
-		$attendees = array();
-
-		foreach ( $attendees_query->posts as $attendee ) {
-			$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
-			$security     = get_post_meta( $attendee->ID, $this->security_code, true );
-			$product_id   = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
-			$optout       = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
-			$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
-			$status_label = $this->tickets_view->get_rsvp_options( $status );
-			$user_id      = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
-			$ticket_sent  = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_TICKET_SENT, true );
-
-			if ( empty( $product_id ) ) {
-				continue;
-			}
-
-			$product       = get_post( $product_id );
-			$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
-
-			$ticket_unique_id = get_post_meta( $attendee->ID, '_unique_id', true );
-			$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
-
-			$meta = '';
-			if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
-				$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
-
-				// Process Meta to include value, slug, and label
-				if ( ! empty( $meta ) ) {
-					$meta = $this->process_attendee_meta( $product_id, $meta );
-				}
-			}
-
-			$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
-				'optout'             => $optout,
-				'ticket'             => $product_title,
-				'attendee_id'        => $attendee->ID,
-				'security'           => $security,
-				'product_id'         => $product_id,
-				'check_in'           => $checkin,
-				'order_status'       => $status,
-				'order_status_label' => $status_label,
-				'user_id'            => $user_id,
-				'ticket_sent'        => $ticket_sent,
-
-				// Fields for Email Tickets
-				'event_id'      => get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ),
-				'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
-				'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
-				'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
-				'order_id'      => $attendee->ID,
-				'ticket_id'     => $ticket_unique_id,
-				'qr_ticket_id'  => $attendee->ID,
-				'security_code' => $security,
-
-				// Attendee Meta
-				'attendee_meta' => $meta,
-			) );
-
-			/**
-			 * Allow users to filter the Attendee Data
-			 *
-			 * @var array An associative array with the Information of the Attendee
-			 * @var string What Provider is been used
-			 * @var WP_Post Attendee Object
-			 * @var int Post ID
-			 *
-			 */
-			$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'rsvp', $attendee, $post_id );
-
-			$attendees[] = $attendee_data;
+	public function get_attendee( $attendee, $post_id = 0 ) {
+		if ( is_numeric( $attendee ) ) {
+			$attendee = get_post( $attendee );
 		}
 
-		return $attendees;
+		if ( ! $attendee instanceof WP_Post || self::ATTENDEE_OBJECT !== $attendee->post_type ) {
+			return false;
+		}
+
+		$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
+		$security     = get_post_meta( $attendee->ID, $this->security_code, true );
+		$product_id   = get_post_meta( $attendee->ID, self::ATTENDEE_PRODUCT_KEY, true );
+		$optout       = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_OPTOUT_KEY, true );
+		$status       = get_post_meta( $attendee->ID, self::ATTENDEE_RSVP_KEY, true );
+		$status_label = $this->tickets_view->get_rsvp_options( $status );
+		$user_id      = get_post_meta( $attendee->ID, self::ATTENDEE_USER_ID, true );
+		$ticket_sent  = (bool) get_post_meta( $attendee->ID, self::ATTENDEE_TICKET_SENT, true );
+
+		if ( empty( $product_id ) ) {
+			return false;
+		}
+
+		$product       = get_post( $product_id );
+		$product_title = ( ! empty( $product ) ) ? $product->post_title : get_post_meta( $attendee->ID, $this->deleted_product, true ) . ' ' . __( '(deleted)', 'event-tickets' );
+
+		$ticket_unique_id = get_post_meta( $attendee->ID, '_unique_id', true );
+		$ticket_unique_id = $ticket_unique_id === '' ? $attendee->ID : $ticket_unique_id;
+
+		$meta = '';
+		if ( class_exists( 'Tribe__Tickets_Plus__Meta', false ) ) {
+			$meta = get_post_meta( $attendee->ID, Tribe__Tickets_Plus__Meta::META_KEY, true );
+
+			// Process Meta to include value, slug, and label
+			if ( ! empty( $meta ) ) {
+				$meta = $this->process_attendee_meta( $product_id, $meta );
+			}
+		}
+
+		$attendee_data = array_merge( $this->get_order_data( $attendee->ID ), array(
+			'optout'             => $optout,
+			'ticket'             => $product_title,
+			'attendee_id'        => $attendee->ID,
+			'security'           => $security,
+			'product_id'         => $product_id,
+			'check_in'           => $checkin,
+			'order_status'       => $status,
+			'order_status_label' => $status_label,
+			'user_id'            => $user_id,
+			'ticket_sent'        => $ticket_sent,
+
+			// Fields for Email Tickets
+			'event_id'      => get_post_meta( $attendee->ID, self::ATTENDEE_EVENT_KEY, true ),
+			'ticket_name'   => ! empty( $product ) ? $product->post_title : false,
+			'holder_name'   => get_post_meta( $attendee->ID, $this->full_name, true ),
+			'holder_email'  => get_post_meta( $attendee->ID, $this->email, true ),
+			'order_id'      => $attendee->ID,
+			'ticket_id'     => $ticket_unique_id,
+			'qr_ticket_id'  => $attendee->ID,
+			'security_code' => $security,
+
+			// Attendee Meta
+			'attendee_meta' => $meta,
+		) );
+
+		/**
+		 * Allow users to filter the Attendee Data
+		 *
+		 * @var array An associative array with the Information of the Attendee
+		 * @var string What Provider is been used
+		 * @var WP_Post Attendee Object
+		 * @var int Post ID
+		 *
+		 */
+		$attendee_data = apply_filters( 'tribe_tickets_attendee_data', $attendee_data, 'rsvp', $attendee, $post_id );
+
+		return $attendee_data;
 	}
 
 	/**
@@ -2187,15 +2115,6 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return int
 	 */
 	public function get_total_not_going( $event_id ) {
-		$not_going = 0;
-
-		foreach ( $this->get_attendees_array( $event_id ) as $attendee ) {
-			if ( in_array( $attendee['order_status'], $this->get_statuses_by_action( 'count_not_going' ), true ) ) {
-				$not_going ++;
-			}
-		}
-
-		return $not_going;
-
+		return $this->get_attendees_count_not_going( $event_id );
 	}
 }
