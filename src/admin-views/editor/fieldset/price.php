@@ -66,13 +66,13 @@ if ( ! isset( $ticket_id ) ) {
 		}
 
 		/**
-		 * Allow to add messages under the price field
+		 * Allow to add messages under the price field.
 		 *
 		 * @since  TBD
 		 *
-		 * @param  int $post_id an id of the post type
+		 * @param  int $ticket_id Ticket ID.
 		 */
-		do_action( 'tribe_tickets_price_input_description', $post_id );
+		do_action( 'tribe_tickets_price_input_description', $ticket_id );
 		?>
 	</div>
 
