@@ -54,13 +54,13 @@ if ( ! isset( $ticket_id ) ) {
 			class="ticket_field ticket_form_right"
 			size="7"
 			value="<?php echo esc_attr( $ticket ? $price : null ); ?>"
-			<?php echo implode( ' ', $validation_attrs ) ?>
+			<?php echo implode( ' ', $validation_attrs ); ?>
 		/>
 		<?php
 		if ( $price_description ) {
 			?>
 			<p class="description ticket_form_right">
-				<?php echo esc_html( $price_description ) ?>
+				<?php echo esc_html( $price_description ); ?>
 			</p>
 			<?php
 		}
