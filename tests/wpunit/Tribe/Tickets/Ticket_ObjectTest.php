@@ -74,6 +74,19 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	}
 
 	/**
+	 * Create event and return event ID.
+	 *
+	 * @return int Event ID.
+	 */
+	private function make_event() {
+		$event_id = $this->factory()->event->create();
+
+		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
+
+		return $event_id;
+	}
+
+	/**
 	 * Create event and RSVP, return RSVP object.
 	 * Also sets timezone for event as this is needed for some tests.
 	 *
@@ -81,8 +94,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	 * @return Tribe__Tickets__RSVP
 	 */
 	private function make_rsvp( $args = [] ) {
-		$event_id = $this->factory()->event->create();
-		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
+		$event_id = $this->make_event();
 		$rsvp_id  = $this->create_rsvp_ticket( $event_id, $args );
 
 		return $this->get_ticket( $event_id, $rsvp_id );
@@ -120,8 +132,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 			]
 		];
 
-		$event_id = $this->factory()->event->create( $event_args );
-		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
+		$event_id = $this->make_event();
 		$ticket_id  = $this->create_rsvp_ticket( $event_id, $args );
 
 		return $this->get_ticket( $event_id, $ticket_id );
@@ -143,8 +154,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 			]
 		];
 
-		$event_id = $this->factory()->event->create( $event_args );
-		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
+		$event_id = $this->make_event();
 		$ticket_id  = $this->create_paypal_ticket( $event_id, $cost, $args );
 
 		return $this->get_ticket( $event_id, $ticket_id );
@@ -165,7 +175,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	 * it should return the correct event ID
 	 */
 	public function it_should_return_the_correct_ID() {
-		$event_id = $this->factory()->event->create();
+		$event_id = $this->make_event();
 		$rsvp_id  = $this->create_rsvp_ticket( $event_id, [] );
 		$rsvp     = $this->get_ticket( $event_id, $rsvp_id );
 
@@ -189,7 +199,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 
 		$rsvp = $this->make_rsvp( $meta );
 
-		$this->assertEquals( $start_date, $rsvp->start_date(), 'Incorrect start date returned on rsVP by start_date().' );
+		$this->assertEquals( $start_date, $rsvp->start_date(), 'Incorrect start date returned on RSVP by start_date().' );
 
 		$ticket = $this->make_ticket( 1, $meta );
 
@@ -389,12 +399,12 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 		$rsvp         = $this->make_rsvp();
 		$date_later = $rsvp->date_is_later( $this->later_date );
 
-		$this->assertTrue( $date_later, 'Misidentified RSVP date earlier than event.' );
+		$this->assertTrue( $date_later, 'Misidentified RSVP date later than event.' );
 
 		$ticket       = $this->make_ticket();
 		$date_later = $ticket->date_is_later( $this->later_date );
 
-		$this->assertTrue( $date_later, 'Misidentified Ticket date earlier than event.' );
+		$this->assertTrue( $date_later, 'Misidentified Ticket date later than event.' );
 	}
 
 	/**
@@ -571,11 +581,11 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for new RSVP.' );
+		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for new unlimited capacity RSVP.' );
 
 		$this->create_many_attendees_for_ticket( 5, $rsvp->ID, $rsvp->get_event_id() );
 
-		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for RSVP with attendees.' );
+		$this->assertEquals( -1, $rsvp->capacity(), 'Incorrect capacity reported for unlimited capacity  RSVP with attendees.' );
 
 		$ticket = $this->make_ticket(
 			1,
@@ -586,10 +596,10 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 			]
 		);
 
-		$this->assertEquals( -1, $ticket->capacity(), 'Incorrect capacity reported for new ticket.' );
+		$this->assertEquals( -1, $ticket->capacity(), 'Incorrect capacity reported for new unlimited capacity ticket.' );
 
 		$this->create_many_attendees_for_ticket( 5, $ticket->ID, $ticket->get_event_id() );
 
-		$this->assertEquals( -1, $ticket->capacity(), 'Incorrect capacity reported for ticket with attendees.' );
+		$this->assertEquals( -1, $ticket->capacity(), 'Incorrect capacity reported for unlimited capacity ticket with attendees.' );
 	}
 }
