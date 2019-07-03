@@ -109,8 +109,7 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	 * @return Tribe__Tickets__Commerce__PayPal__Main
 	 */
 	private function make_ticket( $cost = 1, $args = [] ) {
-		$event_id = $this->factory()->event->create();
-		update_post_meta( $event_id, '_EventTimezone', $this->timezone );
+		$event_id = $this->make_event();
 		$ticket_id  = $this->create_paypal_ticket( $event_id, $cost, $args );
 
 		return $this->get_ticket( $event_id, $ticket_id );
