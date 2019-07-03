@@ -73,7 +73,7 @@ if ( ! isset( $ticket_id ) ) {
 		 *
 		 * @param  int $post_id an id of the post type
 		 */
-		do_action( 'tribe_tickets_price_input_desription', $post_id );
+		do_action( 'tribe_tickets_price_input_description', $post_id );
 
 		?>
 	</div>
