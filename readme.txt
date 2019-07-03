@@ -117,6 +117,9 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+* Fix - correct hardcoded table name in `tribe-user-event-confirmations` shortcode [129402]
+
 = [4.10.6.2] 2019-06-20 =
 
 * Fix - Prevent issue where older versions of the tribe-common libraries could be bootstrapped [129479]
