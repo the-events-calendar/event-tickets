@@ -68,9 +68,9 @@ if ( ! isset( $ticket_id ) ) {
 		/**
 		 * Allow to add messages under the price field.
 		 *
-		 * @since  TBD
+		 * @since TBD
 		 *
-		 * @param  int $ticket_id Ticket ID.
+		 * @param int $ticket_id Ticket ID.
 		 */
 		do_action( 'tribe_tickets_price_input_description', $ticket_id );
 		?>
