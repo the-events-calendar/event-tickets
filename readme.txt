@@ -123,6 +123,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
+* Fix - Correct hardcoded wp_postmeta table name in `tribe-user-event-confirmations` shortcode [129402]
 
 = [4.10.6.2] 2019-06-20 =
 
