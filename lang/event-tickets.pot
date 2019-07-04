@@ -2,17 +2,17 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.10.6\n"
+"Project-Id-Version: Event Tickets 4.10.6.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2019-05-22 18:43:37+00:00\n"
+"POT-Creation-Date: 2019-06-11 00:12:39+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-05-22 18:43\n"
+"PO-Revision-Date: 2019-06-11 00:12\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.6)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.6.1)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
 #: event-tickets.php:59 src/Tribe/Main.php:586 src/Tribe/Privacy.php:32
 msgid "Event Tickets"
@@ -69,7 +69,7 @@ msgid ""
 msgstr ""
 
 #: src/Tribe/Admin/Move_Ticket_Types.php:305
-#: src/Tribe/Admin/Move_Tickets.php:735
+#: src/Tribe/Admin/Move_Tickets.php:738
 msgid "Changes to your tickets from %s"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgstr[1] ""
 msgid "This ticket was moved to %1$s %2$s from %3$s %4$s"
 msgstr ""
 
-#: src/Tribe/Admin/Move_Tickets.php:797
+#: src/Tribe/Admin/Move_Tickets.php:800
 msgid "This ticket was moved to %1$s from %2$s"
 msgstr ""
 
@@ -2093,25 +2093,25 @@ msgstr ""
 msgid "Add me to the list"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:69
+#: src/admin-views/admin-welcome-message.php:70
 msgid "Sign Up"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:77
+#: src/admin-views/admin-welcome-message.php:78
 msgid "We Need Your Help"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:78
+#: src/admin-views/admin-welcome-message.php:79
 msgid ""
 "Your ratings keep us focused on making our plugins as useful as possible so "
 "we can help other WordPress users just like you."
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:79
+#: src/admin-views/admin-welcome-message.php:80
 msgid "Rate us today!"
 msgstr ""
 
-#: src/admin-views/admin-welcome-message.php:80
+#: src/admin-views/admin-welcome-message.php:81
 msgid "Rate It"
 msgstr ""
 
