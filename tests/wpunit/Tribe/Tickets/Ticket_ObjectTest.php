@@ -253,11 +253,11 @@ class Ticket_ObjectTest extends \Codeception\TestCase\WPTestCase {
 	public function it_returns_timestamp_when_given_no_second_param() {
 		$rsvp = $this->make_rsvp();
 
-		$this->assertIsNumeric( $rsvp->get_date( 'now' ), 'Should return a timestamp - RSVP.' );
+		$this->assertTrue( is_numeric( $rsvp->get_date( 'now' ) ), 'Should return a timestamp - RSVP.' );
 
 		$ticket = $this->make_ticket();
 
-		$this->assertIsNumeric( $ticket->get_date( 'now' ), 'Should return a timestamp - Ticket.' );
+		$this->assertTrue( is_numeric( $ticket->get_date( 'now' ) ), 'Should return a timestamp - Ticket.' );
 	}
 
 	/**
