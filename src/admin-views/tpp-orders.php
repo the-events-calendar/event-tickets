@@ -58,7 +58,7 @@
 				</div>
 				<div class="welcome-panel-column welcome-panel-middle">
 					<h3>
-						<?php esc_html_e( 'Sales by Ticket Type', 'event-tickets-plus' ); ?>
+						<?php esc_html_e( 'Sales by Ticket Type', 'event-tickets' ); ?>
 						<?php echo $order_overview->get_sale_by_ticket_tooltip(); ?>
 					</h3>
 					<?php

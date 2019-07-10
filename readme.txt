@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Correct text domain in Tribe Commerce admin view [127645]
+
 = [4.10.6.2] 2019-06-20 =
 
 * Fix - Prevent issue where older versions of the tribe-common libraries could be bootstrapped [129479]
