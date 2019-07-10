@@ -57,7 +57,6 @@ if ( ! isset( $ticket_id ) ) {
 			<?php echo implode( ' ', $validation_attrs ) ?>
 		/>
 		<?php
-
 		if ( $price_description ) {
 			?>
 			<p class="description ticket_form_right">
@@ -74,7 +73,6 @@ if ( ! isset( $ticket_id ) ) {
 		 * @param  int $post_id an id of the post type
 		 */
 		do_action( 'tribe_tickets_price_input_description', $post_id );
-
 		?>
 	</div>
 
