@@ -119,6 +119,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.7] TBD =
 
+* Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
 
 = [4.10.6.2] 2019-06-20 =
