@@ -87,7 +87,7 @@
 							$completed_status = $order_overview->get_completed_status_class();
 							$totals_header = sprintf(
 								'%1$s: %2$s (%3$s)',
-								__( 'Total Ticket Sales', 'event-tickets-plus' ),
+								__( 'Total Ticket Sales', 'event-tickets' ),
 								tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ),
 								$completed_status->get_qty()
 							);
@@ -118,7 +118,7 @@
 						 */
 						?>
 						<div>
-							<strong><?php esc_html_e( 'Completed', 'event-tickets-plus' ); ?>:</strong>
+							<strong><?php esc_html_e( 'Completed', 'event-tickets' ); ?>:</strong>
 							<?php echo esc_html( tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ) ); ?>
 							<span id="total_issued">(<?php echo esc_html( $completed_status->get_qty() ); ?>)</span>
 						</div>
@@ -137,7 +137,7 @@
 							}
 							?>
 							<div>
-								<strong><?php esc_html_e( $status->name, 'event-tickets-plus' ); ?>:</strong>
+								<strong><?php esc_html_e( $status->name, 'event-tickets' ); ?>:</strong>
 								<?php echo esc_html( tribe_format_currency( number_format( $status->get_line_total(), 2 ), $post_id ) ); ?>
 								<span id="total_issued">(<?php echo esc_html( $status->get_qty() ); ?>)</span>
 							</div>
