@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] TBD =
 
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
+* Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
 
 = [4.10.7] TBD =
 
