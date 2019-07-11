@@ -60,7 +60,7 @@ class Tribe__Tickets__Commerce__PayPal__Frontend__Tickets_Form {
 		foreach ( $tickets as $key => $ticket ) {
 			/** @var Tribe__Tickets__Ticket_Object $ticket */
 			if ( ! $ticket->date_in_range() ) {
-				unset( $tickets[$key] );
+				unset( $tickets[ $key ] );
 			}
 		}
 
