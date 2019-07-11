@@ -1056,14 +1056,14 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @since 4.6
 	 *
-	 * @param int|object (null) $post Post or Post ID tickets are attached to
+	 * @param int|object (null) $post Post or Post ID tickets are attached to.
 	 *
-	 * @return string list of tickets
+	 * @return array List of tickets.
 	 */
 	public function get_event_rsvp_tickets( $post = null ) {
 		$post_id     = Tribe__Main::post_id_helper( $post );
 		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-		$ticket_list = array();
+		$ticket_list = [];
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;
