@@ -945,9 +945,13 @@ class Tribe__Tickets__Tickets_Handler {
 	 */
 	public function get_total_event_capacity( $post = null ) {
 		$post_id            = Tribe__Main::post_id_helper( $post );
-		$has_shared_tickets = 0 !== count( $this->get_event_shared_tickets( $post_id ) );
 		$total              = 0;
 
+		if ( 0 === $post_id ) {
+			return $total;
+		}
+
+		$has_shared_tickets = 0 !== count( $this->get_event_shared_tickets( $post_id ) );
 		if ( $has_shared_tickets ) {
 			$total = tribe_tickets_get_capacity( $post_id );
 		}
@@ -995,12 +999,17 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return array list of tickets
+	 * @return array List of unlimited tickets for an event.
 	 */
 	public function get_event_unlimited_tickets( $post = null ) {
 		$post_id     = Tribe__Main::post_id_helper( $post );
+		$ticket_list = [];
+
+		if ( 0 === $post_id ) {
+			return $ticket_list;
+		}
+
 		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-		$ticket_list = array();
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;
@@ -1024,12 +1033,17 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return array list of tickets
+	 * @return array List of independent tickets for an event.
 	 */
 	public function get_event_independent_tickets( $post = null ) {
 		$post_id     = Tribe__Main::post_id_helper( $post );
+		$ticket_list = [];
+
+		if ( 0 === $post_id ) {
+			return $ticket_list;
+		}
+
 		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-		$ticket_list = array();
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;
@@ -1058,11 +1072,18 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to.
 	 *
-	 * @return array List of tickets.
+	 * @return array List of RSVPs for an event.
 	 */
 	public function get_event_rsvp_tickets( $post = null ) {
 		$post_id     = Tribe__Main::post_id_helper( $post );
-		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+		$ticket_list = [];
+
+		if ( 0 === $post_id ) {
+			return $ticket_list;
+		}
+
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
+
 		$ticket_list = [];
 
 		if ( empty( $tickets ) ) {
@@ -1123,12 +1144,17 @@ class Tribe__Tickets__Tickets_Handler {
 	 *
 	 * @param int|object (null) $post Post or Post ID tickets are attached to
 	 *
-	 * @return array list of tickets
+	 * @return array List of shared capacity tickets for an event.
 	 */
 	public function get_event_shared_tickets( $post = null ) {
 		$post_id     = Tribe__Main::post_id_helper( $post );
+		$ticket_list = [];
+
+		if ( 0 === $post_id ) {
+			return $ticket_list;
+		}
+
 		$tickets     = Tribe__Tickets__Tickets::get_event_tickets( $post_id );
-		$ticket_list = array();
 
 		if ( empty( $tickets ) ) {
 			return $ticket_list;
