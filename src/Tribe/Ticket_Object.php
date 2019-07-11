@@ -436,6 +436,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * The availability slug is used for CSS class names and filter helper strings
 		 *
 		 * @since 4.2
+		 * @param int (null) $datetime the timestamp to test
 		 *
 		 * @return string
 		 */
