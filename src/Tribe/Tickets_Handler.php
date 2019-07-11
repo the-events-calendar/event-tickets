@@ -1090,24 +1090,30 @@ class Tribe__Tickets__Tickets_Handler {
 	 * @return int
 	 */
 	public function get_ticket_max_purchase( $ticket_id ) {
-		$event_id = tribe_events_get_ticket_event( $ticket_id );
+		$event = tribe_events_get_ticket_event( $ticket_id );
+
+		if ( ! $event instanceof WP_Post ) {
+			return 0;
+		}
+
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );
-		$ticket = $provider->get_ticket( $event_id, $ticket_id );
+
+		/** @var Tribe__Tickets__Ticket_Object $ticket */
+		$ticket = $provider->get_ticket( $event, $ticket_id );
 
 		$available = $ticket->available();
 
 		/**
-		 * Allows filtering of the max input for purchase of this one ticket
+		 * Allows filtering of the max input for purchase of this one ticket.
 		 *
 		 * @since 4.8.1
 		 *
-		 * @param int                           $available Max Purchase number
-		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket Object
-		 * @param int                           $event_id  Event ID
-		 * @param int                           $ticket_id Ticket Raw ID
-		 *
+		 * @param int                           $available Max purchase quantity.
+		 * @param Tribe__Tickets__Ticket_Object $ticket    Ticket object.
+		 * @param WP_Post                       $event     Event post.
+		 * @param int                           $ticket_id Raw ticket ID.
 		 */
-		return apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event_id, $ticket_id );
+		return apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event, $ticket_id );
 	}
 
 	/**

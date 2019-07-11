@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [TBD] TBD =
+
+* Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
+
 = [4.10.6.2] 2019-06-20 =
 
 * Fix - Prevent issue where older versions of the tribe-common libraries could be bootstrapped [129479]
