@@ -448,16 +448,14 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 			$sold_label = _x( "RSVP'd Going", 'separate going and remain RSVPs', 'event-tickets' );
 		}
 
-		// Base message
-		if ( 0 !== $sold ) {
-			if ( -1 === $available ) {
-				$status_counts[] = sprintf( _x( '%1$s available', 'unlimited remaining stock message', 'event-tickets' ), tribe_tickets_get_readable_amount( $available, $global_stock ) );
-			} elseif ( $is_global ) {
-				$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
-			} else {
-				// It's "own stock". We use the $stock value
-				$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
-			}
+		// Message for how many remain available
+		if ( -1 === $available ) {
+			$status_counts[] = sprintf( _x( '%1$s available', 'unlimited remaining stock message', 'event-tickets' ), tribe_tickets_get_readable_amount( $available, $global_stock ) );
+		} elseif ( $is_global ) {
+			$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
+		} else {
+			// It's "own stock". We use the $stock value
+			$status_counts[] = sprintf( _x( '%1$d available', 'ticket stock message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
 		}
 
 		if ( ! empty( $status_counts ) ) {
