@@ -5,10 +5,12 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders.php
  *
  * @package TribeEventsCalendar
+ *
  * @since 4.7.4
  * @since 4.10.2 Only show Update button if ticket has meta
- * @version 4.10.2
+ * @since TBD Updated to not use the now-deprecated third parameter of `get_description_rsvp_ticket()`
  *
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -76,7 +78,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 
 	<?php if ( $tribe_my_tickets_have_meta && ( $view->has_rsvp_attendees( $event_id ) || $view->has_ticket_attendees( $event_id ) ) ) : ?>
 		<div class="tribe-submit-tickets-form">
-			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id(), true ) ); ?></button>
+			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?></button>
 		</div>
 	<?php endif;
 	// unset our glbal, we don't need it any more

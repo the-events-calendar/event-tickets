@@ -14,8 +14,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Updated to not use the now-deprecated third parameter of `get_description_rsvp_ticket()`
  *
+ * @version TBD
  */
 
 
@@ -62,5 +63,5 @@ if ( $has_tickets ) {
 
 <div class="tribe-link-view-attendee">
 	<?php echo $message ?>
-	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id, true ) ) ?></a>
+	<a href="<?php echo esc_url( $link ) ?>"><?php echo sprintf( esc_html__( 'View your %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, $user_id ) ) ?></a>
 </div>
