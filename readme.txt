@@ -119,10 +119,14 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [TBD] TBD =
 
+* Fix - Correct text domain in Tribe Commerce admin view [127645]
+* Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type, deprecated its third parameter (_bool_ `$plurals`), and updated _views/tickets/orders-link.php_, _views/blocks/attendees/order-links.php_, and _views/tickets/orders.php_ template files accordingly (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
+* Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
 
 = [4.10.7] TBD =
 
+* Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Add class to wrapper div around ticket controls in admin [127193]
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
