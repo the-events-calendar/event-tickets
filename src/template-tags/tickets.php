@@ -451,7 +451,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		// Base message
 		if ( 0 !== $sold ) {
 			if ( -1 === $available ) {
-				$status_counts[] = sprintf( esc_html__( '%s %d', 'event-tickets' ), esc_html( $sold_label ), esc_html( $sold ) );
+				$status_counts[] = sprintf( _x( '%1$s available', 'unlimited remaining stock message', 'event-tickets' ), tribe_tickets_get_readable_amount( $available, $global_stock ) );
 			} elseif ( $is_global ) {
 				$status_counts[] = sprintf( _x( '%1$d available of shared capacity', 'ticket shared capacity message (remaining stock)', 'event-tickets' ), tribe_tickets_get_readable_amount( $available ) );
 			} else {
@@ -907,7 +907,10 @@ function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = f
 	}
 
 	if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
-		$html[] = esc_html( tribe( 'tickets.handler' )->unlimited_term );
+		/** @var Tribe__Tickets__Tickets_Handler $handler */
+		$handler = tribe( 'tickets.handler' );
+
+		$html[] = esc_html( $handler->unlimited_term );
 	} else {
 		$html[] = esc_html( $number );
 	}
