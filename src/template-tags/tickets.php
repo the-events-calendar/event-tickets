@@ -414,9 +414,9 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 		$event        = Tribe__Tickets__Tickets::find_matching_event( $ticket );
 		$global_stock = new Tribe__Tickets__Global_Stock( $event->ID );
 
-		$stock        = $ticket->stock();
-		$available    = $ticket->available();
-		$sold         = (int) $ticket->qty_sold();
+		$stock     = $ticket->stock();
+		$available = $ticket->available();
+		$sold      = (int) $ticket->qty_sold();
 
 		/**
 		 * Allows filtering the available number that will be displayed.
