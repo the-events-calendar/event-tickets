@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.10.7] TBD =
 
+* Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Add class to wrapper div around ticket controls in admin [127193]
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]

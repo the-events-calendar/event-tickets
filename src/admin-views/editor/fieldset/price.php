@@ -56,9 +56,24 @@ if ( ! isset( $ticket_id ) ) {
 			value="<?php echo esc_attr( $ticket ? $price : null ); ?>"
 			<?php echo implode( ' ', $validation_attrs ) ?>
 		/>
-		<p class="description ticket_form_right">
-			<?php echo esc_html( $price_description ) ?>
-		</p>
+		<?php
+		if ( $price_description ) {
+			?>
+			<p class="description ticket_form_right">
+				<?php echo esc_html( $price_description ) ?>
+			</p>
+			<?php
+		}
+
+		/**
+		 * Allow to add messages under the price field
+		 *
+		 * @since  TBD
+		 *
+		 * @param  int $post_id an id of the post type
+		 */
+		do_action( 'tribe_tickets_price_input_description', $post_id );
+		?>
 	</div>
 
 	<?php if ( $ticket && ( $ticket->on_sale || $ticket_has_wc_member_discount ) ) : ?>
