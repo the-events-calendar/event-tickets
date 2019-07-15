@@ -44,14 +44,6 @@ $ticket_count          = $view->count_ticket_attendees( $event_id, $user_id );
 $has_rsvps = $is_rsvp && 0 !== $rsvp_count;
 $has_tickets = $is_ticket && 0 !== $ticket_count;
 
-
-$link = $view->get_tickets_page_url( $event_id, $is_event_page );
-$message  = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
-
-if ( ! $has_rsvps || ! $has_tickets ){
-	return false;
-}
-
 if ( $has_rsvps ) {
 	$counters[] = sprintf( _n( '%d %s', '%d %ss', $rsvp_count, 'event-tickets' ), $rsvp_count, $ticket_type );
 }
@@ -59,6 +51,14 @@ if ( $has_rsvps ) {
 if ( $has_tickets ) {
 	$counters[] = sprintf( _n( '%d %s', '%d %ss', $ticket_count, 'event-tickets' ), $ticket_count, $ticket_type );
 }
+
+if ( empty( $counters ) ) {
+	return false;
+}
+
+$link = $view->get_tickets_page_url( $event_id, $is_event_page );
+
+$message = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
 ?>
 
 <div class="tribe-link-view-attendee">
