@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] TBD =
 
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
+* Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types. [128666]
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type, deprecated its third parameter (_bool_ `$plurals`), and updated _views/tickets/orders-link.php_, _views/blocks/attendees/order-links.php_, and _views/tickets/orders.php_ template files accordingly (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
