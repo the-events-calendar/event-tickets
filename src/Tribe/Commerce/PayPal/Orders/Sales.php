@@ -363,7 +363,11 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Sales {
 	 * @return int
 	 */
 	public function filter_available( $available, Tribe__Tickets__Ticket_Object $ticket, $sold, $stock ) {
-		if ( 'Tribe__Tickets__Commerce__PayPal__Main' !== $ticket->provider_class ) {
+		if (
+			'Tribe__Tickets__Commerce__PayPal__Main' !== $ticket->provider_class
+			|| -1 === $available
+			|| $ticket::UNLIMITED_STOCK === $available
+		) {
 			return $available;
 		}
 

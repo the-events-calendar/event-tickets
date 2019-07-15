@@ -1442,13 +1442,16 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * All registered providers are asked to perform this test.
 		 *
 		 * @param object|int $possible_ticket
-		 * @return bool
+		 *
+		 * @return WP_Post|false
 		 */
 		public static function find_matching_event( $possible_ticket ) {
 			foreach ( self::modules() as $class => $module ) {
 				$obj   = call_user_func( array( $class, 'get_instance' ) );
 				$event = $obj->get_event_for_ticket( $possible_ticket );
-				if ( false !== $event ) return $event;
+				if ( $event instanceof WP_Post ) {
+					return $event;
+				}
 			}
 
 			return false;
