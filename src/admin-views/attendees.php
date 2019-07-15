@@ -8,7 +8,7 @@ $pto      = get_post_type_object( $event->post_type );
 $singular = $pto->labels->singular_name;
 
 /**
- * Wether or not we should display attendees title
+ * Whether or not we should display attendees title
  *
  * @since  4.6.2
  *
@@ -79,7 +79,10 @@ $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, tribe( 
 					<?php do_action( 'tribe_events_tickets_attendees_ticket_sales_top', $event_id ); ?>
 
 					<ul>
-					<?php foreach ( $tickets as $ticket ) { ?>
+						<?php
+						foreach ( $tickets as $ticket ) {
+							/** @var Tribe__Tickets__Ticket_Object $ticket */
+							?>
 						<li>
 							<strong><?php echo esc_html( $ticket->name ) ?>:&nbsp;</strong><?php
 							echo esc_html( tribe_tickets_get_ticket_stock_message( $ticket ) );
