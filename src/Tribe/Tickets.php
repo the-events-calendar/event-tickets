@@ -911,8 +911,6 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Register all Tribe__Tickets__Tickets api consumers
 			self::$active_modules[ $this->class_name ] = $this->plugin_name;
 
-			add_filter( 'tribe_events_tickets_modules', array( $this, 'modules' ) );
-
 			add_action( 'wp', array( $this, 'hook' ) );
 
 			/**
