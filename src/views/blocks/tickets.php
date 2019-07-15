@@ -30,7 +30,7 @@ if ( ! $provider || empty( $tickets ) ) {
 }
 ?>
 
-<?php $this->template( 'blocks/attendees/order-links', array( 'type' => 'ticket' ) ); ?>
+<?php $this->template( 'blocks/attendees/order-links' ); ?>
 
 <form
 	id="tribe-block__tickets"
