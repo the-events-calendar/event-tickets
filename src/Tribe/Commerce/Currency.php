@@ -79,6 +79,12 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get and allow filtering of the currency symbol position
 	 *
+	 * @since 4.7
+	 * @since TBD Set the default position of the Euro currency symbol to 'suffix' if site language is not English.
+	 *
+	 * @link https://en.wikipedia.org/wiki/Euro_sign#Use EU guideline stating symbol should be placed in front of the
+	 *                                                   amount in English but after in most other languages.
+	 *
 	 * @param int|null $post_id
 	 *
 	 * @return string
@@ -88,6 +94,14 @@ class Tribe__Tickets__Commerce__Currency {
 			$currency_position = 'prefix';
 		} else {
 			$currency_position = $this->currency_code_options_map[ $this->currency_code ]['position'];
+		}
+
+		if (
+			'prefix' === $currency_position
+			&& 'EUR' === $this->get_currency_code()
+			&& 0 !== strpos( get_locale(), 'en_' ) // site language does not start with 'en_'
+		) {
+			$currency_position = 'postfix';
 		}
 
 		return apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
