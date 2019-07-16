@@ -115,7 +115,7 @@ class Tribe__Tickets__Commerce__Currency {
 		$currency_position = apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
 
 		// Plugin's other code only accounts for one of these two values
-		if ( ! in_array( $currency_position, array( 'prefix', 'postfix' ) ) ) {
+		if ( ! in_array( $currency_position, [ 'prefix', 'postfix' ], true ) ) {
 			$currency_position = 'prefix';
 		}
 
