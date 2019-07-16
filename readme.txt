@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
 * Fix - The "View your RSVPs and Tickets" link was not appearing when using the Block Editor for Events [128512]
+* Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
 * Tweak - Tribe Commerce PayPal Tickets now sets Euro currency symbol after amount (postfix/suffix) if WordPress site language is non-English, to match EU's guidelines [128532]
 
 = [4.10.7] TBD =
