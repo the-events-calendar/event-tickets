@@ -41,6 +41,6 @@ export const TICKET_TYPES = {
 };
 
 export const PREFIX = 'prefix';
-export const SUFFIX = 'suffix';
+export const SUFFIX = 'postfix';
 
 export const PRICE_POSITIONS = [ PREFIX, SUFFIX ];
