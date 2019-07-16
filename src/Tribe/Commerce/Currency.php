@@ -104,7 +104,22 @@ class Tribe__Tickets__Commerce__Currency {
 			$currency_position = 'postfix';
 		}
 
-		return apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
+		/**
+		 * Whether the currency position should be 'prefix' or 'postfix' (i.e. suffix).
+		 *
+		 * @param string   $currency_position The currency position string.
+		 * @param null|int $post_id           The post ID.
+		 *
+		 * @return string
+		 */
+		$currency_position = apply_filters( 'tribe_commerce_currency_symbol_position', $currency_position, $post_id );
+
+		// Plugin's other code only accounts for one of these two values
+		if ( ! in_array( $currency_position, array( 'prefix', 'postfix' ) ) ) {
+			$currency_position = 'prefix';
+		}
+
+		return $currency_position;
 	}
 
 	/**
