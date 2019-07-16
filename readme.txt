@@ -124,6 +124,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type, deprecated its third parameter (_bool_ `$plurals`), and updated _views/tickets/orders-link.php_, _views/blocks/attendees/order-links.php_, and _views/tickets/orders.php_ template files accordingly (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
+* Fix - The "View your RSVPs and Tickets" link was not appearing when using the Block Editor for Events [128512]
 
 = [4.10.7] TBD =
 

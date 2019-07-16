@@ -26,7 +26,7 @@ if ( ! $has_rsvps ) {
 }
 ?>
 
-<?php $this->template( 'blocks/attendees/order-links', array( 'type' => 'RSVP' ) ); ?>
+<?php $this->template( 'blocks/attendees/order-links' ); ?>
 
 <div class="tribe-block tribe-block__rsvp">
 	<?php if ( $has_active_rsvps ) : ?>
