@@ -19,7 +19,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	public function settings_ui() {
 		$settings = $this->get_settings_array();
 
-		new Tribe__Settings_Tab( 'event-tickets', __( 'Tickets', 'event-tickets' ), $settings );
+		new Tribe__Settings_Tab( 'event-tickets', tribe_get_ticket_label_plural( 'settings_tab' ), $settings );
 	}
 
 	/**

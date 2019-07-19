@@ -11,7 +11,7 @@
  * @since   4.7.6 Add support for showing description option.
  * @since   4.8.2 Add date_in_range() logic so past tickets do not show.
  * @since   4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
- * @since   TBD Removed the date_in_range() check per ticket, since it now happens upstream.
+ * @since   TBD Removed the date_in_range() check per ticket, since it now happens upstream. Uses new functions to get singular and plural texts.
  *
  * @version TBD
  *
@@ -40,7 +40,7 @@ $cart_url       = '';
 	<input type="hidden" name="provider" value="Tribe__Tickets__Commerce__PayPal__Main">
 	<input type="hidden" name="add" value="1">
 	<h2 class="tribe-events-tickets-title tribe--tpp">
-		<?php echo esc_html_x( 'Tickets', 'form heading', 'event-tickets' ) ?>
+		<?php echo esc_html( tribe_get_ticket_label_plural( basename( __FILE__ ) ) ); ?>
 	</h2>
 
 	<div class="tribe-tpp-messages">

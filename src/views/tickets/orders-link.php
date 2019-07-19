@@ -48,8 +48,12 @@ if ( 1 < $rsvp_count ) {
 	$counters[] = sprintf( _x( '%d %s', 'RSVP count plural', 'event-tickets' ), $rsvp_count, tribe_get_rsvp_label_plural( basename( __FILE__ ) ) );
 }
 
-if ( 0 !== $ticket_count ) {
-	$counters[] = sprintf( _n( '%d Ticket', '%d Tickets', $ticket_count, 'event-tickets' ), $ticket_count );
+if ( 1 === $ticket_count ) {
+	$counters[] = sprintf( _x( '%d %s', 'Ticket count singular', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_singular( basename( __FILE__ ) ) );
+}
+
+if ( 1 < $ticket_count ) {
+	$counters[] = sprintf( _x( '%d %s', 'Ticket count plural', 'event-tickets' ), $ticket_count, tribe_get_ticket_label_plural( basename( __FILE__ ) ) );
 }
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );

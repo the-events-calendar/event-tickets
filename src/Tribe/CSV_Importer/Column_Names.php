@@ -31,16 +31,16 @@ class Tribe__Tickets__CSV_Importer__Column_Names {
 	public function filter_rsvp_column_names( array $column_names ) {
 		$column_names = array_merge( $column_names,
 			array(
-				'event_name'             => esc_html__( 'Event Name or ID or Slug', 'event-tickets' ),
-				'ticket_name'            => esc_html__( 'Ticket Name', 'event-tickets' ),
-				'ticket_description'     => esc_html__( 'Ticket Description', 'event-tickets' ),
-				'ticket_show_description' => esc_html__( 'Ticket Show Description', 'event-tickets-plus' ),
-				'ticket_start_sale_date' => esc_html__( 'Ticket Start Sale Date', 'event-tickets' ),
-				'ticket_start_sale_time' => esc_html__( 'Ticket Start Sale Time', 'event-tickets' ),
-				'ticket_end_sale_date'   => esc_html__( 'Ticket End Sale Date', 'event-tickets' ),
-				'ticket_end_sale_time'   => esc_html__( 'Ticket End Sale Time', 'event-tickets' ),
-				'ticket_stock'           => esc_html__( 'Ticket Stock', 'event-tickets' ),
-				'ticket_capacity'        => esc_html__( 'Ticket Capacity', 'event-tickets' ),
+				'event_name'              => esc_html__( 'Event Name or ID or Slug', 'event-tickets' ),
+				'ticket_name'             => sprintf( esc_html__( '%s Name', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_name' ) ),
+				'ticket_description'      => sprintf( esc_html__( '%s Description', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_description' ) ),
+				'ticket_show_description' => sprintf( esc_html__( '%s Show Description', 'event-tickets-plus' ), tribe_get_ticket_label_singular( 'rsvp_column_name_show_description' ) ),
+				'ticket_start_sale_date'  => sprintf( esc_html__( '%s Start Sale Date', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_start_sale_date' ) ),
+				'ticket_start_sale_time'  => sprintf( esc_html__( '%s Start Sale Time', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_start_sale_time' ) ),
+				'ticket_end_sale_date'    => sprintf( esc_html__( '%s End Sale Date', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_end_sale_date' ) ),
+				'ticket_end_sale_time'    => sprintf( esc_html__( '%s End Sale Time', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_end_sale_time' ) ),
+				'ticket_stock'            => sprintf( esc_html__( '%s Stock', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_stock' ) ),
+				'ticket_capacity'         => sprintf( esc_html__( '%s Capacity', 'event-tickets' ), tribe_get_ticket_label_singular( 'rsvp_column_name_capacity' ) ),
 			) );
 
 		return $column_names;

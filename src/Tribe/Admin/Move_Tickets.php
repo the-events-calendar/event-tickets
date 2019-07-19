@@ -435,7 +435,11 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		if ( ! $ticket_ids || ! $target_type_id ) {
 			wp_send_json_error( array(
-				'message' => __( 'Tickets could not be moved: valid ticket IDs or a destination ID were not provided.', 'event-tickets' ),
+				'message' => sprintf(
+					__( '%1$s could not be moved: valid %2$s IDs or a destination ID were not provided.', 'event-tickets' ),
+					tribe_get_ticket_label_plural( 'move_tickets_request_error' ),
+					tribe_get_ticket_label_singular( 'move_tickets_request_error' )
+				)
 			) );
 		}
 
@@ -443,7 +447,7 @@ class Tribe__Tickets__Admin__Move_Tickets {
 
 		if ( ! $moved_tickets ) {
 			wp_send_json_error( array(
-				'message' => __( 'Tickets could not be moved: there was an unexpected failure during reassignment.', 'event-tickets' ),
+				'message' => sprintf( __( '%s could not be moved: there was an unexpected failure during reassignment.', 'event-tickets' ), tribe_get_ticket_label_plural( 'move_tickets_request_error' ) )
 			) );
 		}
 

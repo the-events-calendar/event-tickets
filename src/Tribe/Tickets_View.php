@@ -771,8 +771,12 @@ class Tribe__Tickets__Tickets_View {
 			$descriptions[] = tribe_get_rsvp_label_plural( 'tickets_view_description' );
 		}
 
-		if ( ! empty( $ticket_count ) ) {
-			$descriptions[] = _nx( 'Ticket', 'Tickets', $ticket_count, 'Singular and plural texts for Ticket(s)', 'event-tickets' );
+		if ( 1 === $ticket_count ) {
+			$descriptions[] = tribe_get_ticket_label_singular( 'tickets_view_description' );
+		}
+
+		if ( 1 < $ticket_count ) {
+			$descriptions[] = tribe_get_ticket_label_plural( 'tickets_view_description' );
 		}
 
 		// Just return false if array is empty

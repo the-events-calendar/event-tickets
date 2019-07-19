@@ -17,23 +17,23 @@ class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provi
 			'properties' => array(
 				'available_percentage' => array(
 					'type'        => 'integer',
-					'description' => __( 'The ticket available capacity percentage', 'event-tickets' ),
+					'description' => sprintf( __( 'The %s available capacity percentage', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_available_percentage' ) ),
 				),
 				'max'                  => array(
 					'type'        => 'integer',
-					'description' => __( 'The ticket max capacity', 'event-tickets' ),
+					'description' => sprintf( __( 'The %s max capacity', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_max' ) ),
 				),
 				'available'            => array(
 					'type'        => 'integer',
-					'description' => __( 'The ticket current available capacity', 'event-tickets' ),
+					'description' => sprintf( __( 'The %s current available capacity', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_available' ) ),
 				),
 				'sold'                 => array(
 					'type'        => 'integer',
-					'description' => __( 'The ticket sale count', 'event-tickets' ),
+					'description' => sprintf( __( 'The %s sale count', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_sold' ) ),
 				),
 				'pending'              => array(
 					'type'        => 'integer',
-					'description' => __( 'The ticket pending count', 'event-tickets' ),
+					'description' => sprintf( __( 'The %s pending count', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'capacity_details_documentation_pending' ) ),
 				),
 			),
 		);

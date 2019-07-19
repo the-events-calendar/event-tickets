@@ -50,8 +50,8 @@ class Tribe__Tickets__Assets {
 		// Set up some data for our localize scripts
 
 		$upload_header_data = array(
-			'title'  => esc_html__( 'Ticket header image', 'event-tickets' ),
-			'button' => esc_html__( 'Set as ticket header', 'event-tickets' ),
+			'title'  => sprintf( esc_html__( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ),
+			'button' => sprintf( esc_html__( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ),
 		);
 
 		$nonces = array(

@@ -5,7 +5,11 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/tpp-success.php
  *
  * @package TribeEventsCalendar
- * @version 4.7
+ *
+ * @since 4.7
+ * @since TBD Uses new functions to get singular and plural texts.
+ *
+ * @version TBD
  *
  * @var bool    $is_just_visiting Whether the current user might just have stumbled on the page or not.
  * @var bool    $order_is_valid Whether the current order is a valid one or not.
@@ -74,10 +78,10 @@ $view      = Tribe__Tickets__Tickets_View::instance();
 		<table class="tickets">
 			<thead>
 				<tr>
-					<th><?php echo esc_html_x( 'Ticket', 'Success page tickets table header', 'event-tickets' ) ?></th>
-					<th><?php echo  esc_html_x( 'Price', 'Success page tickets table header', 'event-tickets' ) ?></th>
-					<th><?php echo esc_html_x( 'Quantity', 'Success page tickets table header', 'event-tickets' ) ?></th>
-					<th><?php echo esc_html_x( 'Subtotal', 'Success page tickets table header', 'event-tickets' ) ?></th>
+					<th><?php echo esc_html( tribe_get_ticket_label_singular( basename( __FILE__ ) ) ); ?></th>
+					<th><?php echo esc_html_x( 'Price', 'Success page tickets table header', 'event-tickets' ); ?></th>
+					<th><?php echo esc_html_x( 'Quantity', 'Success page tickets table header', 'event-tickets' ); ?></th>
+					<th><?php echo esc_html_x( 'Subtotal', 'Success page tickets table header', 'event-tickets' ); ?></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -92,7 +96,7 @@ $view      = Tribe__Tickets__Tickets_View::instance();
 							<div class="thumbnail">
 								<?php echo get_image_tag(
 									$ticket['header_image_id'],
-									__( 'Ticket header image', 'event-tickets' ),
+									sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_alt' ) ),
 									get_the_title( $ticket_post_id ),
 									'none',
 									'thumbnail'

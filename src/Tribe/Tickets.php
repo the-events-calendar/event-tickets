@@ -477,7 +477,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
-			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) ? __( 'Move RSVP', 'event-tickets' ) : __( 'Move Ticket', 'event-tickets' ) ;
+			$button_text = ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) ? sprintf( __( 'Move %s', 'event-tickets' ), tribe_get_rsvp_label_singular( 'move_ticket_button_text' ) ) : sprintf( __( 'Move %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_button_text' ) ) ;
 
 			$move_url = $this->get_ticket_move_url( $post_id, $ticket );
 

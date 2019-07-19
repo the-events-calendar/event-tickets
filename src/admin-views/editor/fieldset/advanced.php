@@ -92,10 +92,10 @@ $start_date_errors = array(
 				data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 				data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 				value="<?php echo esc_attr( $ticket ? $ticket->start_time : null ); ?>"
-				aria-label="<?php esc_html_e( 'Ticket start date', 'event-tickets' ); ?>"
+				aria-label="<?php printf( esc_html__( '%s start date', 'event-tickets' ), tribe_get_ticket_label_singular( 'input_start_time_aria_label' ) ); ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
-			<span class="dashicons dashicons-editor-help" title="<?php esc_attr_e( 'If you do not set a start sale date, tickets will be available immediately.', 'event-tickets' ); ?>"></span>
+			<span class="dashicons dashicons-editor-help" title="<?php printf( esc_attr__( 'If you do not set a start sale date, %s will be available immediately.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' ); ?>"></span>
 		</div>
 	</div>
 	<div class="input_block">
@@ -121,15 +121,15 @@ $start_date_errors = array(
 				data-step="<?php echo esc_attr( $timepicker_step ); ?>"
 				data-round="<?php echo esc_attr( $timepicker_round ); ?>"
 				value="<?php echo esc_attr( $ticket ? $ticket->end_time : null ); ?>"
-				aria-label="<?php esc_html_e( 'Ticket end date', 'event-tickets' ); ?>"
+				aria-label="<?php printf( esc_html__( '%s end date', 'event-tickets' ), tribe_get_ticket_label_singular( 'input_end_time_aria_label' ) ); ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
 			<span
 				class="dashicons dashicons-editor-help"
 				<?php if ( class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === get_post_type( $post_id ) ) : ?>
-					title="<?php esc_attr_e( 'If you do not set an end sale date, tickets will be available until the event begins.', 'event-tickets' ); ?>"
+					title="<?php printf( esc_attr__( 'If you do not set an end sale date, %s will be available until the event begins.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' ) ); ?>"
 				<?php else : ?>
-					title="<?php esc_attr_e( 'If you do not set an end sale date, tickets sales will never end.', 'event-tickets' ); ?>"
+					title="<?php printf( esc_attr__( 'If you do not set an end sale date, %s will be available forever.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'input_end_time_help_text_title' ) ); ?>"
 				<?php endif; ?>
 			></span>
 		</div>

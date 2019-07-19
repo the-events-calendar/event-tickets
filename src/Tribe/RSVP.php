@@ -727,7 +727,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * @param int     $order_id
 		 */
 		$subject     = apply_filters( 'tribe_rsvp_email_subject',
-			sprintf( __( 'Your tickets from %s', 'event-tickets' ), stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) ) ),
+			sprintf(
+				__( 'Your %1$s from %2$s', 'event-tickets' ),
+				tribe_get_ticket_label_plural_lowercase( 'tribe_rsvp_email_subject' ),
+				stripslashes_deep( html_entity_decode( get_bloginfo( 'name' ), ENT_QUOTES ) )
+			),
 			$event_id,
 			$order_id
 		);
@@ -1136,7 +1140,11 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		if ( $rsvp_error ) {
 			switch ( $rsvp_error ) {
 				case 2:
-					$this->add_message( sprintf( __( "You can't %s more than the total remaining tickets.", 'event-tickets' ), tribe_get_rsvp_label_singular( 'verb' ) ), 'error' );
+					$this->add_message( sprintf(
+						__( 'You can\'t %1$s more than the total remaining %2$s.', 'event-tickets' ),
+						tribe_get_rsvp_label_singular( 'verb' ),
+						tribe_get_ticket_label_plural_lowercase( 'rsvp_error_attempt_too_many' )
+					), 'error' );
 					break;
 
 				case 1:
@@ -1147,7 +1155,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		}
 
 		/**
-		 * Allow for the addition of content (namely the "Who's Attening?" list) above the ticket form.
+		 * Allow for the addition of content (namely the "Who's Attending?" list) above the ticket form.
 		 *
 		 * @since 4.5.5
 		 */

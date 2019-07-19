@@ -270,7 +270,7 @@ class Tribe__Tickets__Editor__REST__V1__Endpoints__Single_ticket
 		if ( ! $ticket ) {
 			return new WP_Error(
 				'not_acceptable',
-				__( 'Ticket was not able to be updated', 'event-tickets' ),
+				sprintf( __( '%s was not able to be updated', 'event-tickets' ), tribe_get_ticket_label_singular( 'rest_add_ticket_error' ) ),
 				array( 'status' => 406 )
 			);
 		}

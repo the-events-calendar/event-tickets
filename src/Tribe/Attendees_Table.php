@@ -65,7 +65,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public function get_table_columns() {
 		$columns = array(
 			'cb'           => '<input type="checkbox" />',
-			'ticket'       => esc_html_x( 'Ticket', 'attendee table', 'event-tickets' ),
+			'ticket'       => esc_html( tribe_get_ticket_label_singular( 'attendee_table_column' ) ),
 			'primary_info' => esc_html_x( 'Primary Information', 'attendee table', 'event-tickets' ),
 			'security'     => esc_html_x( 'Security Code', 'attendee table', 'event-tickets' ),
 			'status'       => esc_html_x( 'Status', 'attendee table', 'event-tickets' ),
@@ -942,7 +942,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'user'            => __( 'Search by User ID', 'event-tickets' ),
 			'order_status'    => __( 'Search by Order Status', 'event-tickets' ),
 			'security_code'   => __( 'Search by Security Code', 'event-tickets' ),
-			'product_id'      => __( 'Search by Ticket ID', 'event-tickets' ),
+			'product_id'      => sprintf( __( 'Search by %s ID', 'event-tickets' ), tribe_get_ticket_label_singular( 'attendees_table_search_box_product_id' ) ),
 		];
 
 		/**
