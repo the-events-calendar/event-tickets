@@ -15,7 +15,7 @@ class Tribe__Tickets__REST__V1__Documentation__Capacity_Details_Definition_Provi
 		$documentation = array(
 			'type'       => 'object',
 			'properties' => array(
-				'available_percentabe' => array(
+				'available_percentage' => array(
 					'type'        => 'integer',
 					'description' => __( 'The ticket available capacity percentage', 'event-tickets' ),
 				),
