@@ -11,6 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
+
 	/**
 	 * Returns the current post object that can have tickets attached to it
 	 *
@@ -50,6 +51,7 @@ if ( ! function_exists( 'tribe_tickets_parent_post' ) ) {
 }
 
 if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
+
 	/**
 	 * Determines if any tickets exist for the current event (a specific event
 	 * may be specified, though, by passing the post ID or post object).
@@ -69,6 +71,7 @@ if ( ! function_exists( 'tribe_events_has_tickets' ) ) {
 }//end if
 
 if ( ! function_exists( 'tribe_events_has_soldout' ) ) {
+
 	/**
 	 * Determines if the event has sold out of tickets.
 	 *
@@ -90,6 +93,7 @@ if ( ! function_exists( 'tribe_events_has_soldout' ) ) {
 }
 
 if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
+
 	/**
 	 * Indicates if one or more of the tickets available for this event (but not
 	 * all) have sold out.
@@ -128,6 +132,7 @@ if ( ! function_exists( 'tribe_events_partially_soldout' ) ) {
 }//end if
 
 if ( ! function_exists( 'tribe_events_count_available_tickets' ) ) {
+
 	/**
 	 * Counts the total number of tickets still available for sale for a
 	 * specific event.
@@ -306,6 +311,7 @@ if ( ! function_exists( 'tribe_tickets_buy_button' ) ) {
 }
 
 if ( ! function_exists( 'tribe_tickets_has_unlimited_stock_tickets' ) ) {
+
 	/**
 	 * Returns true if the event contains one or more tickets which are not
 	 * subject to any inventory limitations.
@@ -335,6 +341,7 @@ if ( ! function_exists( 'tribe_tickets_has_unlimited_stock_tickets' ) ) {
 }//end if
 
 if ( ! function_exists( 'tribe_events_product_is_ticket' ) ) {
+
 	/**
 	 * Determines if the product object (or product ID) represents a ticket for
 	 * an event.
@@ -350,6 +357,7 @@ if ( ! function_exists( 'tribe_events_product_is_ticket' ) ) {
 }//end if
 
 if ( ! function_exists( 'tribe_events_get_ticket_event' ) ) {
+
 	/**
 	 * Accepts the post object or ID for a product and, if it represents an event
 	 * ticket, returns the corresponding event object.
@@ -366,6 +374,7 @@ if ( ! function_exists( 'tribe_events_get_ticket_event' ) ) {
 }//end if
 
 if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
+
 	/**
 	 * Checks if the ticket is on sale (in relation to it's start/end sale dates).
 	 *
@@ -384,6 +393,7 @@ if ( ! function_exists( 'tribe_events_ticket_is_on_sale' ) ) {
 }//end if
 
 if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
+
 	/**
 	 * Checks if the event has any tickets on sale
 	 *
@@ -403,6 +413,7 @@ if ( ! function_exists( 'tribe_events_has_tickets_on_sale' ) ) {
 }
 
 if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
+
 	/**
 	 * Gets the "tickets sold" message for a given ticket
 	 *
@@ -472,193 +483,202 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	}
 }
 
-/**
- * Returns or echoes a url to a file in the Event Tickets plugin resources directory
- *
- * @category Tickets
- * @param string $resource the filename of the resource
- * @param bool   $echo     whether or not to echo the url
- * @param string $root_dir directory to hunt for resource files (src or common)
- *
- * @return string
- **/
-function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src' ) {
-	$extension = pathinfo( $resource, PATHINFO_EXTENSION );
-
-	if ( 'src' !== $root_dir ) {
-		return tribe_resource_url( $resource, $echo, $root_dir );
-	}
-
-	$resources_path = $root_dir . '/resources/';
-	switch ( $extension ) {
-		case 'css':
-			$resource_path = $resources_path .'css/';
-			break;
-		case 'js':
-			$resource_path = $resources_path .'js/';
-			break;
-		case 'scss':
-			$resource_path = $resources_path .'scss/';
-			break;
-		default:
-			$resource_path = $resources_path;
-			break;
-	}
-
-	$path = $resource_path . $resource;
-
-	$url  = plugins_url( Tribe__Tickets__Main::instance()->plugin_dir . $path );
+if ( ! function_exists( 'tribe_tickets_resource_url' ) ) {
 
 	/**
-	 * Filter the ticket resource URL
+	 * Returns or echoes a url to a file in the Event Tickets plugin resources directory
 	 *
-	 * @var $url Resource URL
-	 * @var $resource The filename of the resource
-	 */
-	$url = apply_filters( 'tribe_tickets_resource_url', $url, $resource );
-
-	if ( $echo ) {
-		echo esc_url( $url );
-	}
-
-	return $url;
-}
-
-/**
- * Includes a template part, similar to the WP get template part, but looks
- * in the correct directories for Tribe Tickets templates
- *
- * @param string      $slug The Base template name
- * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file
- * @param array       $data (optional) array of vars to inject into the template part
- * @param boolean     $echo (optional) Allows the user to print or return the template
- *
- * @uses Tribe__Tickets__Templates::get_template_hierarchy
- *
- * @return string|void It will depend if it's echoing or not
- **/
-function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
-
-	/**
-	 * Fires an Action before echoing the Template
+	 * @param string $resource the filename of the resource
+	 * @param bool   $echo     whether or not to echo the url
+	 * @param string $root_dir directory to hunt for resource files (src or common)
 	 *
-	 * @param string $slug     Slug for this template
-	 * @param string $name     Template name
-	 * @param array  $data     The Data that will be used on this template
+	 * @return string
+	 **@category Tickets
 	 */
-	do_action( 'tribe_tickets_pre_get_template_part', $slug, $name, $data );
+	function tribe_tickets_resource_url( $resource, $echo = false, $root_dir = 'src' ) {
+		$extension = pathinfo( $resource, PATHINFO_EXTENSION );
 
-	// Setup possible parts
-	$templates = array();
-	if ( isset( $name ) ) {
-		$templates[] = $slug . '-' . $name . '.php';
-	}
-	$templates[] = $slug . '.php';
-
-	/**
-	 * Allow users to filter which templates can be included
-	 *
-	 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
-	 * @param string $slug     Slug for this template
-	 * @param string $name     Template name
-	 * @param array  $data     The Data that will be used on this template
-	 */
-	$templates = apply_filters( 'tribe_tickets_get_template_part_templates', $templates, $slug, $name, $data );
-
-	// Make any provided variables available in the template's symbol table
-	if ( is_array( $data ) ) {
-		extract( $data );
-	}
-
-	$html = null;
-
-	// loop through templates, return first one found.
-	foreach ( $templates as $template ) {
-		$file = Tribe__Tickets__Templates::get_template_hierarchy( $template, array( 'disable_view_check' => true ) );
-
-		/**
-		 * Allow users to filter which template will be included
-		 *
-		 * @param string $file     Complete path to include the PHP File
-		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
-		 * @param string $slug     Slug for this template
-		 * @param string $name     Template name
-		 * @param array  $data     The Data that will be used on this template
-		 */
-		$file = apply_filters( 'tribe_tickets_get_template_part_path', $file, $template, $slug, $name, $data );
-
-		/**
-		 * A more Specific Filter that will include the template name
-		 *
-		 * @param string $file     Complete path to include the PHP File
-		 * @param string $slug     Slug for this template
-		 * @param string $name     Template name
-		 * @param array  $data     The Data that will be used on this template
-		 */
-		$file = apply_filters( "tribe_tickets_get_template_part_path_{$template}", $file, $slug, $name, $data );
-
-		if ( ! file_exists( $file ) ) {
-			continue;
+		if ( 'src' !== $root_dir ) {
+			return tribe_resource_url( $resource, $echo, $root_dir );
 		}
 
-		ob_start();
+		$resources_path = $root_dir . '/resources/';
+		switch ( $extension ) {
+			case 'css':
+				$resource_path = $resources_path . 'css/';
+				break;
+			case 'js':
+				$resource_path = $resources_path . 'js/';
+				break;
+			case 'scss':
+				$resource_path = $resources_path . 'scss/';
+				break;
+			default:
+				$resource_path = $resources_path;
+				break;
+		}
+
+		$path = $resource_path . $resource;
+
+		$url = plugins_url( Tribe__Tickets__Main::instance()->plugin_dir . $path );
+
 		/**
-		 * Fires an Action before including the template file
+		 * Filter the ticket resource URL
 		 *
-		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
-		 * @param string $file     Complete path to include the PHP File
-		 * @param string $slug     Slug for this template
-		 * @param string $name     Template name
-		 * @param array  $data     The Data that will be used on this template
+		 * @var $url      Resource URL
+		 * @var $resource The filename of the resource
 		 */
-		do_action( 'tribe_tickets_before_get_template_part', $template, $file, $slug, $name, $data );
-		include( $file );
-
-		/**
-		 * Fires an Action After including the template file
-		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
-		 * @param string $file     Complete path to include the PHP File
-		 * @param string $slug     Slug for this template
-		 * @param string $name     Template name
-		 * @param array  $data     The Data that will be used on this template
-		 */
-		do_action( 'tribe_tickets_after_get_template_part', $template, $file, $slug, $name, $data );
-		$html = ob_get_clean();
-
-		/**
-		 * Allow users to filter the final HTML
-		 * @param string $html     The final HTML
-		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
-		 * @param string $file     Complete path to include the PHP File
-		 * @param string $slug     Slug for this template
-		 * @param string $name     Template name
-		 * @param array  $data     The Data that will be used on this template
-		 */
-		$html = apply_filters( 'tribe_tickets_get_template_part_content', $html, $template, $file, $slug, $name, $data );
+		$url = apply_filters( 'tribe_tickets_resource_url', $url, $resource );
 
 		if ( $echo ) {
-			echo $html;
+			echo esc_url( $url );
 		}
 
-		break;
+		return $url;
 	}
+}
+
+if ( ! function_exists( 'tribe_tickets_get_template_part' ) ) {
 
 	/**
-	 * Files an Action after echoing/saving the html Template
+	 * Includes a template part, similar to the WP get template part, but looks
+	 * in the correct directories for Tribe Tickets templates
 	 *
-	 * @param string $slug     Slug for this template
-	 * @param string $name     Template name
-	 * @param array  $data     The Data that will be used on this template
+	 * @param string      $slug The Base template name
+	 * @param null|string $name (optional) if set will try to include `{$slug}-{$name}.php` file
+	 * @param array       $data (optional) array of vars to inject into the template part
+	 * @param boolean     $echo (optional) Allows the user to print or return the template
+	 *
+	 * @return string|void It will depend if it's echoing or not
+	 **@uses Tribe__Tickets__Templates::get_template_hierarchy
+	 *
 	 */
-	do_action( 'tribe_tickets_post_get_template_part', $slug, $name, $data );
+	function tribe_tickets_get_template_part( $slug, $name = null, array $data = null, $echo = true ) {
 
-	if ( ! $echo ) {
-		// Return should come at the end
-		return $html;
+		/**
+		 * Fires an Action before echoing the Template
+		 *
+		 * @param string $slug Slug for this template
+		 * @param string $name Template name
+		 * @param array  $data The Data that will be used on this template
+		 */
+		do_action( 'tribe_tickets_pre_get_template_part', $slug, $name, $data );
+
+		// Setup possible parts
+		$templates = array();
+		if ( isset( $name ) ) {
+			$templates[] = $slug . '-' . $name . '.php';
+		}
+		$templates[] = $slug . '.php';
+
+		/**
+		 * Allow users to filter which templates can be included
+		 *
+		 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+		 * @param string $slug     Slug for this template
+		 * @param string $name     Template name
+		 * @param array  $data     The Data that will be used on this template
+		 */
+		$templates = apply_filters( 'tribe_tickets_get_template_part_templates', $templates, $slug, $name, $data );
+
+		// Make any provided variables available in the template's symbol table
+		if ( is_array( $data ) ) {
+			extract( $data );
+		}
+
+		$html = null;
+
+		// loop through templates, return first one found.
+		foreach ( $templates as $template ) {
+			$file = Tribe__Tickets__Templates::get_template_hierarchy( $template, array( 'disable_view_check' => true ) );
+
+			/**
+			 * Allow users to filter which template will be included
+			 *
+			 * @param string $file     Complete path to include the PHP File
+			 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+			 * @param string $slug     Slug for this template
+			 * @param string $name     Template name
+			 * @param array  $data     The Data that will be used on this template
+			 */
+			$file = apply_filters( 'tribe_tickets_get_template_part_path', $file, $template, $slug, $name, $data );
+
+			/**
+			 * A more Specific Filter that will include the template name
+			 *
+			 * @param string $file Complete path to include the PHP File
+			 * @param string $slug Slug for this template
+			 * @param string $name Template name
+			 * @param array  $data The Data that will be used on this template
+			 */
+			$file = apply_filters( "tribe_tickets_get_template_part_path_{$template}", $file, $slug, $name, $data );
+
+			if ( ! file_exists( $file ) ) {
+				continue;
+			}
+
+			ob_start();
+			/**
+			 * Fires an Action before including the template file
+			 *
+			 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+			 * @param string $file     Complete path to include the PHP File
+			 * @param string $slug     Slug for this template
+			 * @param string $name     Template name
+			 * @param array  $data     The Data that will be used on this template
+			 */
+			do_action( 'tribe_tickets_before_get_template_part', $template, $file, $slug, $name, $data );
+			include( $file );
+
+			/**
+			 * Fires an Action After including the template file
+			 *
+			 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+			 * @param string $file     Complete path to include the PHP File
+			 * @param string $slug     Slug for this template
+			 * @param string $name     Template name
+			 * @param array  $data     The Data that will be used on this template
+			 */
+			do_action( 'tribe_tickets_after_get_template_part', $template, $file, $slug, $name, $data );
+			$html = ob_get_clean();
+
+			/**
+			 * Allow users to filter the final HTML
+			 *
+			 * @param string $html     The final HTML
+			 * @param string $template The Template file, which is a relative path from the Folder we are dealing with
+			 * @param string $file     Complete path to include the PHP File
+			 * @param string $slug     Slug for this template
+			 * @param string $name     Template name
+			 * @param array  $data     The Data that will be used on this template
+			 */
+			$html = apply_filters( 'tribe_tickets_get_template_part_content', $html, $template, $file, $slug, $name, $data );
+
+			if ( $echo ) {
+				echo $html;
+			}
+
+			break;
+		}
+
+		/**
+		 * Files an Action after echoing/saving the html Template
+		 *
+		 * @param string $slug Slug for this template
+		 * @param string $name Template name
+		 * @param array  $data The Data that will be used on this template
+		 */
+		do_action( 'tribe_tickets_post_get_template_part', $slug, $name, $data );
+
+		if ( ! $echo ) {
+			// Return should come at the end
+			return $html;
+		}
 	}
 }
 
 if ( ! function_exists( 'tribe_tickets_post_type_enabled' ) ) {
+
 	/**
 	 * Returns whether or not the provided post type allows tickets to be attached
 	 *
@@ -745,272 +765,294 @@ if ( ! function_exists( 'tribe_tickets_has_meta_fields' ) ) {
 	}
 }
 
-/**
- * Removes all meta for a given object capacity. Object can be a ticket, or an event/post with tickets.
- *
- * Note, you can pass an event/post to this function and it will merrily change the meta values
- * for the event - not for the tickets!
- *
- * @since  4.6.2
- *
- * @param int|WP_Post $object WP_Post (or ID of post) We are trying to delete capacity from.
- *
- * @return int|false
- */
-function tribe_tickets_delete_capacity( $object ) {
+if ( ! function_exists( 'tribe_tickets_delete_capacity' ) ) {
 
-	if ( ! $object instanceof WP_Post ) {
-		$object = get_post( $object );
-	}
+	/**
+	 * Removes all meta for a given object capacity. Object can be a ticket, or an event/post with tickets.
+	 *
+	 * Note, you can pass an event/post to this function and it will merrily change the meta values
+	 * for the event - not for the tickets!
+	 *
+	 * @since  4.6.2
+	 *
+	 * @param int|WP_Post $object WP_Post (or ID of post) We are trying to delete capacity from.
+	 *
+	 * @return int|false
+	 */
+	function tribe_tickets_delete_capacity( $object ) {
 
-	if ( ! $object instanceof WP_Post ) {
-		return false;
-	}
+		if ( ! $object instanceof WP_Post ) {
+			$object = get_post( $object );
+		}
 
-	$deleted = delete_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity );
+		if ( ! $object instanceof WP_Post ) {
+			return false;
+		}
 
-	if ( ! $deleted ) {
+		$deleted = delete_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity );
+
+		if ( ! $deleted ) {
+			return $deleted;
+		}
+
+		// We only apply these when we are talking about event-like posts
+		if ( tribe_tickets_post_type_enabled( $object->post_type ) ) {
+			$shared_cap_object = new Tribe__Tickets__Global_Stock( $object->ID );
+			$shared_cap_object->disable();
+
+			// This is mostly to make sure
+			delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
+			delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
+			delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
+		}
+
 		return $deleted;
 	}
-
-	// We only apply these when we are talking about event-like posts
-	if ( tribe_tickets_post_type_enabled( $object->post_type ) ) {
-		$shared_cap_object = new Tribe__Tickets__Global_Stock( $object->ID );
-		$shared_cap_object->disable();
-
-		// This is mostly to make sure
-		delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_LEVEL );
-		delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE );
-		delete_post_meta( $object->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_CAP );
-	}
-
-	return $deleted;
 }
 
-/**
- * Updates a given Object Capacity
- *
- * Note, you can pass an event/post to this function and it will merrily change the meta values
- * for the event - not for the tickets!
- *
- * @since  4.6.2
- *
- * @param int|WP_Post|Tribe__Tickets__Ticket_Object $object  Post We are trying to save capacity
- * @param int                                       $capacty What we are trying to update the capacity to.
- *
- * @return int|false
- */
-function tribe_tickets_update_capacity( $object, $capacity ) {
-	if ( ! is_numeric( $capacity ) ) {
-		return false;
-	}
+if ( ! function_exists( 'tribe_tickets_update_capacity' ) ) {
 
-	if ( ! $object instanceof WP_Post ) {
-		$object = get_post( $object );
-	}
+	/**
+	 * Updates a given Object Capacity
+	 *
+	 * Note, you can pass an event/post to this function and it will merrily change the meta values
+	 * for the event - not for the tickets!
+	 *
+	 * @since  4.6.2
+	 *
+	 * @param int|WP_Post|Tribe__Tickets__Ticket_Object $object  Post We are trying to save capacity
+	 * @param int                                       $capacty What we are trying to update the capacity to.
+	 *
+	 * @return int|false
+	 */
+	function tribe_tickets_update_capacity( $object, $capacity ) {
+		if ( ! is_numeric( $capacity ) ) {
+			return false;
+		}
 
-	if ( ! $object instanceof WP_Post ) {
-		return false;
-	}
+		if ( ! $object instanceof WP_Post ) {
+			$object = get_post( $object );
+		}
 
-	// Do the actual Updating of the Meta value
-	return update_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity, $capacity );
+		if ( ! $object instanceof WP_Post ) {
+			return false;
+		}
+
+		// Do the actual Updating of the Meta value
+		return update_post_meta( $object->ID, tribe( 'tickets.handler' )->key_capacity, $capacity );
+	}
 }
 
-/**
- * Returns the capacity for a given Post
- *
- * Note while we can send a post/event we do not store capacity on events
- * so the return values will always be null.
- *
- * @since  4.6
- *
- * @param int|WP_Post $post Post we are trying to fetch capacity for.
- *
- * @return int|null
- */
-function tribe_tickets_get_capacity( $post ) {
-	// When not dealing with a Instance of Post try to set it up
-	if ( ! $post instanceof WP_Post ) {
-		$post = get_post( $post );
-	}
+if ( ! function_exists( 'tribe_tickets_get_capacity' ) ) {
 
-	// Bail when it's not a post or ID is 0
-	if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
-		return null;
-	}
+	/**
+	 * Returns the capacity for a given Post
+	 *
+	 * Note while we can send a post/event we do not store capacity on events
+	 * so the return values will always be null.
+	 *
+	 * @since  4.6
+	 *
+	 * @param int|WP_Post $post Post we are trying to fetch capacity for.
+	 *
+	 * @return int|null
+	 */
+	function tribe_tickets_get_capacity( $post ) {
+		// When not dealing with a Instance of Post try to set it up
+		if ( ! $post instanceof WP_Post ) {
+			$post = get_post( $post );
+		}
 
-	$event_types = Tribe__Tickets__Main::instance()->post_types();
-	$key = tribe( 'tickets.handler' )->key_capacity;
-
-	// When we have a legacy ticket we migrate it
-	if ( ! in_array( $post->post_type, $event_types ) && tribe( 'tickets.version' )->is_legacy( $post->ID ) ) {
-		$legacy_capacity = tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
-
-		// Cast as integer as it might be returned as numeric string on some cases
-		return (int) $legacy_capacity;
-	}
-
-	// Defaults to the ticket ID
-	$post_id = $post->ID;
-
-	// Return Null for when we don't have the Capacity Data
-	if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
-		$mode = get_post_meta( $post->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
-		$shared_modes = array( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE );
-
-		// When we are in a Ticket Post Type update where we get the value from Event
-		if (
-			! in_array( $post->post_type, $event_types )
-			&& in_array( $mode, $shared_modes )
-		) {
-			$event_id = tribe_tickets_get_event_ids( $post->ID );
-
-			// It will return an array of Events
-			if ( ! empty( $event_id ) ) {
-				$post_id = current( $event_id );
-			}
-		} else {
+		// Bail when it's not a post or ID is 0
+		if ( ! $post instanceof WP_Post || 0 === $post->ID ) {
 			return null;
 		}
+
+		$event_types = Tribe__Tickets__Main::instance()->post_types();
+		$key         = tribe( 'tickets.handler' )->key_capacity;
+
+		// When we have a legacy ticket we migrate it
+		if ( ! in_array( $post->post_type, $event_types ) && tribe( 'tickets.version' )->is_legacy( $post->ID ) ) {
+			$legacy_capacity = tribe( 'tickets.handler' )->filter_capacity_support( null, $post->ID, $key );
+
+			// Cast as integer as it might be returned as numeric string on some cases
+			return (int) $legacy_capacity;
+		}
+
+		// Defaults to the ticket ID
+		$post_id = $post->ID;
+
+		// Return Null for when we don't have the Capacity Data
+		if ( ! metadata_exists( 'post', $post->ID, $key ) ) {
+			$mode         = get_post_meta( $post->ID, Tribe__Tickets__Global_Stock::TICKET_STOCK_MODE, true );
+			$shared_modes = array( Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE, Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE );
+
+			// When we are in a Ticket Post Type update where we get the value from Event
+			if (
+				! in_array( $post->post_type, $event_types )
+				&& in_array( $mode, $shared_modes )
+			) {
+				$event_id = tribe_tickets_get_event_ids( $post->ID );
+
+				// It will return an array of Events
+				if ( ! empty( $event_id ) ) {
+					$post_id = current( $event_id );
+				}
+			} else {
+				return null;
+			}
+		}
+
+		// Fetch the value
+		$value = get_post_meta( $post_id, $key, true );
+
+		// When dealing with an empty string we assume it's unlimited
+		if ( '' === $value ) {
+			$value = - 1;
+		}
+
+		return (int) $value;
 	}
-
-	// Fetch the value
-	$value = get_post_meta( $post_id, $key, true );
-
-	// When dealing with an empty string we assume it's unlimited
-	if ( '' === $value ) {
-		$value = -1;
-	}
-
-	return (int) $value;
 }
 
-/**
- * Turns a Stock, Remaining or Capacity into a Human Readable Format
- *
- * @since  4.6
- *
- * @param string|int $number Which you are trying to convert.
- * @param string     $mode   Mode this post is on.
- *
- * @return string
- */
-function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = false ) {
-	$html = array();
-
-	$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode;
-	if ( $show_parens ) {
-		$html[] = '(';
-	}
-
-	if ( -1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
-		/** @var Tribe__Tickets__Tickets_Handler $handler */
-		$handler = tribe( 'tickets.handler' );
-
-		$html[] = esc_html( $handler->unlimited_term );
-	} else {
-		$html[] = esc_html( $number );
-	}
-
-	if ( $show_parens ) {
-		$html[] = ')';
-	}
-
-	$html = implode( '', $html );
-
-	if ( true === $display ) {
-		echo $html;
-	}
-
-	return $html;
-}
-
-/**
- * Checks if the specified user (defaults to currently-logged-in user) belongs to any active
- * WooCommerce Membership plans, *and* if the specified ticket (by ticket ID) has any active
- * member discounts applied to it. It may not be the user's membership plan specifically, so this
- * template tag *may* produce some false positives.
- *
- * @since 4.7.3
- *
- * @param int $ticket_id
- * @param int $user_id
- * @return boolean
- */
-function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 0 ) {
-
-	if (
-		! function_exists( 'wc_memberships_get_user_active_memberships' ) ||
-		! function_exists( 'wc_memberships_product_has_member_discount' )
-	) {
-		return false;
-	}
-
-	$user_id = 0 ? get_current_user_id() : $user_id;
-
-	$user_is_member             = wc_memberships_get_user_active_memberships( $user_id );
-	$ticket_has_member_discount = wc_memberships_product_has_member_discount( $ticket_id );
-
-	return $user_is_member && $ticket_has_member_discount;
-}
-
-/**
- * Builds and returns the correct ticket repository.
- *
- * @since 4.8
- *
- * @param string $repository The slug of the repository to build/return.
- *
- * @return Tribe__Repository__Interface
- */
-function tribe_tickets( $repository = 'default' ) {
-	$map = [
-		'default'        => 'tickets.ticket-repository',
-		'rsvp'           => 'tickets.ticket-repository.rsvp',
-		'tribe-commerce' => 'tickets.ticket-repository.commerce',
-		'restv1'         => 'tickets.rest-v1.ticket-repository',
-	];
+if ( ! function_exists( 'tribe_tickets_get_readable_amount' ) ) {
 
 	/**
-	 * Filters the map relating ticket repository slugs to service container bindings.
+	 * Turns a Stock, Remaining or Capacity into a Human Readable Format
+	 *
+	 * @since  4.6
+	 *
+	 * @param string|int $number Which you are trying to convert.
+	 * @param string     $mode   Mode this post is on.
+	 *
+	 * @return string
+	 */
+	function tribe_tickets_get_readable_amount( $number, $mode = 'own', $display = false ) {
+		$html = array();
+
+		$show_parens = Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE === $mode || Tribe__Tickets__Global_Stock::CAPPED_STOCK_MODE === $mode;
+		if ( $show_parens ) {
+			$html[] = '(';
+		}
+
+		if ( - 1 === (int) $number || Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK === $number ) {
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
+
+			$html[] = esc_html( $handler->unlimited_term );
+		} else {
+			$html[] = esc_html( $number );
+		}
+
+		if ( $show_parens ) {
+			$html[] = ')';
+		}
+
+		$html = implode( '', $html );
+
+		if ( true === $display ) {
+			echo $html;
+		}
+
+		return $html;
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets_ticket_in_wc_membership_for_user' ) ) {
+
+	/**
+	 * Checks if the specified user (defaults to currently-logged-in user) belongs to any active
+	 * WooCommerce Membership plans, *and* if the specified ticket (by ticket ID) has any active
+	 * member discounts applied to it. It may not be the user's membership plan specifically, so this
+	 * template tag *may* produce some false positives.
+	 *
+	 * @since 4.7.3
+	 *
+	 * @param int $ticket_id
+	 * @param int $user_id
+	 *
+	 * @return boolean
+	 */
+	function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 0 ) {
+
+		if (
+			! function_exists( 'wc_memberships_get_user_active_memberships' ) ||
+			! function_exists( 'wc_memberships_product_has_member_discount' )
+		) {
+			return false;
+		}
+
+		$user_id = 0 ? get_current_user_id() : $user_id;
+
+		$user_is_member             = wc_memberships_get_user_active_memberships( $user_id );
+		$ticket_has_member_discount = wc_memberships_product_has_member_discount( $ticket_id );
+
+		return $user_is_member && $ticket_has_member_discount;
+	}
+}
+
+if ( ! function_exists( 'tribe_tickets' ) ) {
+
+	/**
+	 * Builds and returns the correct ticket repository.
 	 *
 	 * @since 4.8
 	 *
-	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
-	 * @param string $repository The currently requested implementation.
+	 * @param string $repository The slug of the repository to build/return.
+	 *
+	 * @return Tribe__Repository__Interface
 	 */
-	$map = apply_filters( 'tribe_tickets_ticket_repository_map', $map, $repository );
+	function tribe_tickets( $repository = 'default' ) {
+		$map = [
+			'default'        => 'tickets.ticket-repository',
+			'rsvp'           => 'tickets.ticket-repository.rsvp',
+			'tribe-commerce' => 'tickets.ticket-repository.commerce',
+			'restv1'         => 'tickets.rest-v1.ticket-repository',
+		];
 
-	return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+		/**
+		 * Filters the map relating ticket repository slugs to service container bindings.
+		 *
+		 * @since 4.8
+		 *
+		 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
+		 * @param string $repository The currently requested implementation.
+		 */
+		$map = apply_filters( 'tribe_tickets_ticket_repository_map', $map, $repository );
+
+		return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+	}
 }
 
-/**
- * Builds and returns the correct attendee repository.
- *
- * @since 4.8
- *
- * @param string $repository The slug of the repository to build/return.
- *
- * @return Tribe__Repository__Interface
- */
-function tribe_attendees( $repository = 'default' ) {
-	$map = [
-		'default'        => 'tickets.attendee-repository',
-		'rsvp'           => 'tickets.attendee-repository.rsvp',
-		'tribe-commerce' => 'tickets.attendee-repository.commerce',
-		'restv1'         => 'tickets.rest-v1.attendee-repository',
-	];
+if ( ! function_exists( 'tribe_attendees' ) ) {
 
 	/**
-	 * Filters the map relating attendee repository slugs to service container bindings.
+	 * Builds and returns the correct attendee repository.
 	 *
 	 * @since 4.8
 	 *
-	 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
-	 * @param string $repository The currently requested implementation.
+	 * @param string $repository The slug of the repository to build/return.
+	 *
+	 * @return Tribe__Repository__Interface
 	 */
-	$map = apply_filters( 'tribe_tickets_attendee_repository_map', $map, $repository );
+	function tribe_attendees( $repository = 'default' ) {
+		$map = [
+			'default'        => 'tickets.attendee-repository',
+			'rsvp'           => 'tickets.attendee-repository.rsvp',
+			'tribe-commerce' => 'tickets.attendee-repository.commerce',
+			'restv1'         => 'tickets.rest-v1.attendee-repository',
+		];
 
-	return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+		/**
+		 * Filters the map relating attendee repository slugs to service container bindings.
+		 *
+		 * @since 4.8
+		 *
+		 * @param array  $map        A map in the shape [ <repository_slug> => <service_name> ]
+		 * @param string $repository The currently requested implementation.
+		 */
+		$map = apply_filters( 'tribe_tickets_attendee_repository_map', $map, $repository );
+
+		return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+	}
 }
