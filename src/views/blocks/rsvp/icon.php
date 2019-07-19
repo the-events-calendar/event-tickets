@@ -19,5 +19,5 @@
 ?>
 <div class="tribe-block__rsvp__icon">
 	<?php $this->template( 'blocks/rsvp/icon-svg' ); ?>
-	<?php echo tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ?>
+	<?php echo esc_html( tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ); ?>
 </div>
