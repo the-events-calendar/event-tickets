@@ -6,7 +6,10 @@
  *
  *     [your-theme]/tribe-events/tickets/rsvp.php
  *
- * @version 4.9
+ * @since 4.0
+ * @since TBD Uses new functions to get singular and plural texts.
+ *
+ * @version TBD
  *
  * @var bool $must_login
  */

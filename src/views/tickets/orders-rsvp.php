@@ -5,8 +5,11 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-rsvp.php
  *
  * @package TribeEventsCalendar
- * @version 4.5.5
  *
+ * @since 4.2
+ * @since TBD Uses new functions to get singular and plural texts.
+ *
+ * @version TBD
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

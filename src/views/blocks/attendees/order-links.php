@@ -15,7 +15,7 @@
  *
  * @since 4.9
  * @since TBD Updated to not use the now-deprecated third parameter of `get_description_rsvp_ticket()` and to simplify
- *        the template's logic.
+ *        the template's logic. Uses new functions to get singular and plural texts.
  *
  * @version TBD
  */

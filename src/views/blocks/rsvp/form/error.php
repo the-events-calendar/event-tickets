@@ -11,8 +11,9 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
- * @version 4.9.4
+ * @since TBD Uses new functions to get singular and plural texts.
  *
+ * @version TBD
  */
 ?>
 <div class="tribe-block__rsvp__message__error">

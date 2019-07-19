@@ -3,7 +3,9 @@
  * This template renders the RSVP ticket form quantity input
  *
  * @since 4.9
- * @version 4.10.4
+ * @since TBD Uses new functions to get singular and plural texts.
+ *
+ * @version TBD
  */
 ?>
 <div class="tribe-block__rsvp__number-input">
