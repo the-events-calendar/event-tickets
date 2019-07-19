@@ -1064,6 +1064,8 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 	 *
 	 * Returns the singular version of the RSVP label. May also be used as a verb.
 	 *
+	 * @since TBD
+	 *
 	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
 	 * @return string
