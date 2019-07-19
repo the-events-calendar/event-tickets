@@ -1060,9 +1060,7 @@ if ( ! function_exists( 'tribe_attendees' ) ) {
 if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 
 	/**
-	 * Get the label for singular RSVP.
-	 *
-	 * Returns the singular version of the RSVP label. May also be used as a verb.
+	 * Get the singular version of the RSVP label. May also be used as a verb.
 	 *
 	 * @since TBD
 	 *
@@ -1076,23 +1074,45 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 		 *
 		 * @since TBD
 		 *
-		 * @param string $label   The singular version of the RSVP label, defaults to "RSVP".
-		 * @param string $context The context in which this string is filtered.
+		 * @param string $label   The singular version of the RSVP label. Defaults to "RSVP".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( 'tribe_rsvp_label_singular', esc_html_x( 'RSVP', 'singular label for RSVP', 'event-tickets' ), $context );
+		return apply_filters( __FUNCTION__, esc_html_x( 'RSVP', 'singular label for RSVP', 'event-tickets' ), $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_get_rsvp_label_singular_lowercase' ) ) {
+
+	/**
+	 * Get the lowercase singular version of the RSVP label. May also be used as a verb.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string
+	 */
+	function tribe_get_rsvp_label_singular_lowercase( $context = '' ) {
+		/**
+		 * Allows customization of the lowercase singular version of the RSVP label.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The lowercase singular version of the RSVP label. Defaults to "rsvp".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters( __FUNCTION__, esc_html_x( 'rsvp', 'lowercase singular label for RSVP', 'event-tickets' ), $context );
 	}
 }
 
 if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 
 	/**
-	 * Get the label for plural RSVP.
-	 *
-	 * Returns the plural version of the RSVP label.
+	 * Get the plural version of the RSVP label. May also be used as a verb.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $context Allows passing additional context to this function's filter.
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
 	 *
 	 * @return string
 	 */
@@ -1103,8 +1123,36 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 		 * @since TBD
 		 *
 		 * @param string $label   The plural version of the RSVP label, defaults to "RSVPs".
-		 * @param string $context The context in which this string is filtered.
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
 		 */
-		return apply_filters( 'tribe_rsvp_label_plural', esc_html_x( 'RSVPs', 'plural label for RSVPs', 'event-tickets' ), $context );
+		return apply_filters( __FUNCTION__, esc_html_x( 'RSVPs', 'plural label for RSVPs', 'event-tickets' ), $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_get_rsvp_label_plural_lowercase' ) ) {
+
+	/**
+	 * Get the lowercase plural version of the RSVP label.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string
+	 */
+	function tribe_get_rsvp_label_plural_lowercase( $context = '' ) {
+		/**
+		 * Allows customization of the lowercase plural version of the RSVP label.
+		 *
+		 * @since TBD
+		 *
+		 * @param string $label   The lowercase plural version of the RSVP label, defaults to "rsvps".
+		 * @param string $context The context in which this string is filtered, e.g. 'verb' or 'template.php'.
+		 */
+		return apply_filters( __FUNCTION__, esc_html_x( 'rsvps', 'lowercase plural label for RSVPs', 'event-tickets' ), $context );
+	}
+}
+
+		 */
 	}
 }
