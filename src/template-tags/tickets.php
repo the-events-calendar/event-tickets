@@ -1096,6 +1096,8 @@ if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
 		/**
 		 * Allows customization of the plural version of the RSVP label.
 		 *
+		 * @since TBD
+		 *
 		 * @param string $label   The plural version of the RSVP label, defaults to "RSVPs".
 		 * @param string $context The context in which this string is filtered.
 		 */
