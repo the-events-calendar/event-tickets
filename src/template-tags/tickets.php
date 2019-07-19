@@ -1072,6 +1072,8 @@ if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
 		/**
 		 * Allows customization of the singular version of the RSVP label.
 		 *
+		 * @since TBD
+		 *
 		 * @param string $label   The singular version of the RSVP label, defaults to "RSVP".
 		 * @param string $context The context in which this string is filtered.
 		 */
