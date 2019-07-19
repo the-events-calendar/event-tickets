@@ -456,7 +456,7 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 
 		$sold_label = __( 'issued', 'event-tickets' );
 		if ( 'Tribe__Tickets__RSVP' === $ticket->provider_class ) {
-			$sold_label = _x( "RSVP'd Going", 'separate going and remain RSVPs', 'event-tickets' );
+			$sold_label = sprintf( _x( "%s'd going", 'RSVPs going', 'event-tickets' ), tribe_get_rsvp_label_singular() );
 		}
 
 		// Message for how many remain available
@@ -1054,5 +1054,49 @@ if ( ! function_exists( 'tribe_attendees' ) ) {
 		$map = apply_filters( 'tribe_tickets_attendee_repository_map', $map, $repository );
 
 		return tribe( Tribe__Utils__Array::get( $map, $repository, $map['default'] ) );
+	}
+}
+
+if ( ! function_exists( 'tribe_get_rsvp_label_singular' ) ) {
+
+	/**
+	 * Get the label for singular RSVP.
+	 *
+	 * Returns the singular version of the RSVP label. May also be used as a verb.
+	 *
+	 * @param string $context Allows passing additional context to this function's filter, e.g. 'verb' or 'template.php'.
+	 *
+	 * @return string
+	 */
+	function tribe_get_rsvp_label_singular( $context = '' ) {
+		/**
+		 * Allows customization of the singular version of the RSVP label.
+		 *
+		 * @param string $label   The singular version of the RSVP label, defaults to "RSVP".
+		 * @param string $context The context in which this string is filtered.
+		 */
+		return apply_filters( 'tribe_rsvp_label_singular', esc_html_x( 'RSVP', 'singular label for RSVP', 'event-tickets' ), $context );
+	}
+}
+
+if ( ! function_exists( 'tribe_get_rsvp_label_plural' ) ) {
+
+	/**
+	 * Get the label for plural RSVP.
+	 *
+	 * Returns the plural version of the RSVP label.
+	 *
+	 * @param string $context Allows passing additional context to this function's filter.
+	 *
+	 * @return string
+	 */
+	function tribe_get_rsvp_label_plural( $context = '' ) {
+		/**
+		 * Allows customization of the plural version of the RSVP label.
+		 *
+		 * @param string $label   The plural version of the RSVP label, defaults to "RSVPs".
+		 * @param string $context The context in which this string is filtered.
+		 */
+		return apply_filters( 'tribe_rsvp_label_plural', esc_html_x( 'RSVPs', 'plural label for RSVPs', 'event-tickets' ), $context );
 	}
 }

@@ -165,7 +165,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
 		/* Set up parent vars */
-		$this->plugin_name = $this->pluginName = _x( 'RSVP', 'ticket provider', 'event-tickets' );
+		$this->plugin_name = $this->pluginName = tribe_get_rsvp_label_singular( 'plugin_name' );
 		$this->plugin_path = $this->pluginPath = $main->plugin_path;
 		$this->plugin_url  = $this->pluginUrl  = $main->plugin_url;
 
@@ -1130,18 +1130,18 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$rsvp_error = empty( $_GET['rsvp_error'] ) ? false : intval( $_GET['rsvp_error'] );
 
 		if ( $rsvp_sent ) {
-			$this->add_message( __( 'Your RSVP has been received! Check your email for your RSVP confirmation.', 'event-tickets' ), 'success' );
+			$this->add_message( sprintf( __( 'Your %1$s has been received! Check your email for your %1$s confirmation.', 'event-tickets' ), tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ), 'success' );
 		}
 
 		if ( $rsvp_error ) {
 			switch ( $rsvp_error ) {
 				case 2:
-					$this->add_message( __( 'You can\'t RSVP more than the total remaining tickets.', 'event-tickets' ), 'error' );
+					$this->add_message( sprintf( __( "You can't %s more than the total remaining tickets.", 'event-tickets' ), tribe_get_rsvp_label_singular( 'verb' ) ), 'error' );
 					break;
 
 				case 1:
 				default:
-					$this->add_message( __( 'In order to RSVP, you must enter your name and a valid email address.', 'event-tickets' ), 'error' );
+					$this->add_message( sprintf( __( 'In order to %s, you must enter your name and a valid email address.', 'event-tickets' ), tribe_get_rsvp_label_singular( 'verb' ) ), 'error' );
 					break;
 			}
 		}
@@ -1425,7 +1425,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Retreive only order related information
+	 * Retrieve only order related information
 	 * Important: On RSVP the order is the Attendee Object
 	 *
 	 *     order_id
@@ -1438,8 +1438,8 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 	 * @return array
 	 */
 	public function get_order_data( $order_id ) {
-		$name       = get_post_meta( $order_id, $this->full_name, true );
-		$email      = get_post_meta( $order_id, $this->email, true );
+		$name  = get_post_meta( $order_id, $this->full_name, true );
+		$email = get_post_meta( $order_id, $this->email, true );
 
 		$data = array(
 			'order_id'        => $order_id,

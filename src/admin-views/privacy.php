@@ -25,8 +25,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p><?php esc_html_e( 'If you create, submit, import, save, or publish event ticket information, as well as RSVP or purchase tickets to events, such information is retained in the local database:', 'event-tickets' ); ?></p>
 
 	<ol>
-		<li><?php esc_html_e( 'Attendees information (RSVPs and Tickets): name and email address', 'event-tickets' ); ?></li>
-		<li><?php esc_html_e( 'Ticket information (RSVPs and Tickets): name, email address, and ticket number/SKU (via check-in page)', 'event-tickets' ); ?></li>
+		<li><?php printf( esc_html__( 'Attendees information (%1$s and Tickets): name and email address', 'event-tickets' ), tribe_get_rsvp_label_plural( basename( __FILE__ ) ) ); ?></li>
+		<li><?php printf( esc_html__( 'Ticket information (%1$s and Tickets): name, email address, and ticket number/SKU (via check-in page)', 'event-tickets' ), tribe_get_rsvp_label_plural( basename( __FILE__ ) ) ); ?></li>
 		<li><?php esc_html_e( 'Ticket purchaser information: name and email address', 'event-tickets' ); ?></li>
 		<li><?php esc_html_e( 'Ticket purchaser billing address, which is collected through the use of WooCommerce, Easy Digital Downloads, or PayPal', 'event-tickets' ); ?></li>
 	</ol>

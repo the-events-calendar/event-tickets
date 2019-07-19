@@ -15,6 +15,6 @@
 		<?php $this->template( 'blocks/rsvp/form/quantity-plus' ); ?>
 	</div>
 	<span class="tribe-block__rsvp__number-input-label">
-		<?php echo esc_html__( 'RSVPs', 'event-tickets' ); ?>
+		<?php echo tribe_get_rsvp_label_plural( 'number_input_label' ); ?>
 	</span>
 </div>

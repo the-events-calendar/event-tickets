@@ -28,7 +28,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 	enctype='multipart/form-data'
 >
 	<h2 class="tribe-events-tickets-title tribe--rsvp">
-		<?php echo esc_html_x( 'RSVP', 'form heading', 'event-tickets' ) ?>
+		<?php echo tribe_get_rsvp_label_singular( 'form_heading' ) ?>
 	</h2>
 
 
@@ -168,7 +168,7 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 
 						<tr class="tribe-tickets-order_status-row">
 							<td>
-								<label for="tribe-tickets-order_status"><?php echo esc_html_x( 'RSVP', 'order status label', 'event-tickets' ); ?>:</label>
+								<label for="tribe-tickets-order_status"><?php echo tribe_get_rsvp_label_singular( 'order_status_label' ); ?>:</label>
 							</td>
 							<td colspan="3">
 								<?php Tribe__Tickets__Tickets_View::instance()->render_rsvp_selector( 'attendee[order_status]', '' ); ?>

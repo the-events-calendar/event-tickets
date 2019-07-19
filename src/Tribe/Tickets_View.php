@@ -763,8 +763,12 @@ class Tribe__Tickets__Tickets_View {
 
 		$ticket_count = $this->count_ticket_attendees( $event_id, $user_id );
 
-		if ( ! empty( $rsvp_count ) ) {
-			$descriptions[] = _nx( 'RSVP', 'RSVPs', $rsvp_count, 'Singular and plural texts for RSVP(s)', 'event-tickets' );
+		if ( 1 === $rsvp_count ) {
+			$descriptions[] = tribe_get_rsvp_label_singular( 'tickets_view_description' );
+		}
+
+		if ( 1 < $rsvp_count ) {
+			$descriptions[] = tribe_get_rsvp_label_plural( 'tickets_view_description' );
 		}
 
 		if ( ! empty( $ticket_count ) ) {
