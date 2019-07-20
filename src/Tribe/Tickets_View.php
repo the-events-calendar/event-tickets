@@ -479,7 +479,7 @@ class Tribe__Tickets__Tickets_View {
 		 * @since TBD Attempt to load from old location to account for pre-existing theme overrides. If not found,
 		 *            go through the motions with the new location.
 		 */
-		if ( empty( $file) ) {
+		if ( empty( $file ) ) {
 			$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/view-link.php' );
 		}
 
@@ -533,7 +533,7 @@ class Tribe__Tickets__Tickets_View {
 		 * @since TBD Attempt to load from old location to account for pre-existing theme overrides. If not found,
 		 *            go through the motions with the new location.
 		 */
-		if ( empty( $file) ) {
+		if ( empty( $file ) ) {
 			$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/view-link.php' );
 		}
 

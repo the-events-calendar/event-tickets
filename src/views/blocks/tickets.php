@@ -34,7 +34,7 @@ if ( ! $provider || empty( $tickets ) ) {
 
 $html = $this->template( 'blocks/attendees/order-links', [], false );
 
-if ( empty( $html) ) {
+if ( empty( $html ) ) {
 	$html = $this->template( 'blocks/attendees/view-link', [], false );;
 }
 
