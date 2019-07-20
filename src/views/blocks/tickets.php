@@ -31,9 +31,15 @@ $cart_classes        = array( 'tribe-block', 'tribe-block__tickets' );
 if ( ! $provider || empty( $tickets ) ) {
 	return false;
 }
-?>
 
-<?php $this->template( 'blocks/attendees/order-links' ); ?>
+$html = $this->template( 'blocks/attendees/order-links', [], false );
+
+if ( empty( $html) ) {
+	$html = $this->template( 'blocks/attendees/view-link', [], false );;
+}
+
+echo $html;
+?>
 
 <form
 	id="tribe-block__tickets"

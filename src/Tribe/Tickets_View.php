@@ -475,6 +475,14 @@ class Tribe__Tickets__Tickets_View {
 
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
 
+		/**
+		 * @since TBD Attempt to load from old location to account for pre-existing theme overrides. If not found,
+		 *            go through the motions with the new location.
+		 */
+		if ( empty( $file) ) {
+			$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/view-link.php' );
+		}
+
 		include $file;
 
 		add_filter( 'tribe_tickets_order_link_template_already_rendered', '__return_true' );
@@ -518,7 +526,19 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		ob_start();
-		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
+
+		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders-link.php' );
+
+		/**
+		 * @since TBD Attempt to load from old location to account for pre-existing theme overrides. If not found,
+		 *            go through the motions with the new location.
+		 */
+		if ( empty( $file) ) {
+			$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/view-link.php' );
+		}
+
+		include $file;
+
 		$content .= ob_get_clean();
 
 		return $content;
