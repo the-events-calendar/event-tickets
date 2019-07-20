@@ -7,15 +7,15 @@
  * the Message that Will link to the Tickets Page
  *
  * Override this template in your own theme by creating a file at:
- * [your-theme]/tribe/tickets/blocks/attendees/description.php
+ * [your-theme]/tribe/tickets/blocks/attendees/view-link.php
  *
  * See more documentation about our Blocks Editor templating system.
  *
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @since TBD Updated to not use the now-deprecated third parameter of `get_description_rsvp_ticket()` and to simplify
- *        the template's logic.
+ * @since TBD Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
+ *            third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
  *
  * @version TBD
  */
