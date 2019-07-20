@@ -7,11 +7,13 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
+ * @link  {INSERT_ARTICLE_LINK_HERE}
  *
- * @since 4.9
- * @version 4.9.4
+ * @since TBD Updated loading logic for including a renamed template.
  *
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this
  */
 
 $event_id         = $this->get( 'post_id' );
@@ -24,9 +26,15 @@ $all_past         = $this->get( 'all_past' );
 if ( ! $has_rsvps ) {
 	return false;
 }
-?>
 
-<?php $this->template( 'blocks/attendees/order-links' ); ?>
+$html = $this->template( 'blocks/attendees/order-links', [], false );
+
+if ( empty( $html ) ) {
+	$html = $this->template( 'blocks/attendees/view-link', [], false );;
+}
+
+echo $html;
+?>
 
 <div class="tribe-block tribe-block__rsvp">
 	<?php if ( $has_active_rsvps ) : ?>

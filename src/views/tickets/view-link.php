@@ -4,10 +4,11 @@
  * Included on the Events Single Page after the meta
  * The Message that will link to the Tickets page
  *
- * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-link.php
+ * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/view-link.php
  *
  * @since 4.2
- * @since TBD Updated to not use the now-deprecated third parameter of `get_description_rsvp_ticket()`
+ * @since TBD Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
+ *            parameter of `get_description_rsvp_ticket()`
  *
  * @version TBD
  */

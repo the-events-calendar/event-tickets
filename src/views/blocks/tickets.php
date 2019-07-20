@@ -10,8 +10,11 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Updated loading logic for including a renamed template.
  *
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this
  */
 
 $post_id             = $this->get( 'post_id' );
