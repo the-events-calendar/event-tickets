@@ -95,7 +95,7 @@ $start_date_errors = array(
 				aria-label="<?php printf( esc_html__( '%s start date', 'event-tickets' ), tribe_get_ticket_label_singular( 'input_start_time_aria_label' ) ); ?>"
 			/>
 			<span class="helper-text hide-if-js"><?php esc_html_e( 'HH:MM', 'event-tickets' ) ?></span>
-			<span class="dashicons dashicons-editor-help" title="<?php printf( esc_attr__( 'If you do not set a start sale date, %s will be available immediately.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' ); ?>"></span>
+			<span class="dashicons dashicons-editor-help" title="<?php printf( esc_attr__( 'If you do not set a start sale date, %s will be available immediately.', 'event-tickets' ), tribe_get_ticket_label_plural_lowercase( 'input_start_time_help_text_title' ) ); ?>"></span>
 		</div>
 	</div>
 	<div class="input_block">
