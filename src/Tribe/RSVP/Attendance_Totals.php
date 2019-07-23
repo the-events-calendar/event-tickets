@@ -15,19 +15,21 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 	protected $total_rsvps = 0;
 	protected $total_going = 0;
 	protected $total_not_going = 0;
+	protected $has_rsvp_enabled = false;
 
 	/**
 	 * Calculate total RSVP attendance for the current event.
 	 */
 	protected function calculate_totals() {
-		foreach ( Tribe__Tickets__RSVP::get_instance()->get_attendees_array( $this->event_id ) as $attendee ) {
-			switch( $attendee[ 'order_status' ] ) {
-				case 'yes': $this->total_going++; break;
-				case 'no': $this->total_not_going++; break;
-			}
-		}
+		$rsvp = Tribe__Tickets__RSVP::get_instance();
 
-		$this->total_rsvps = $this->total_going + $this->total_not_going;
+		$this->total_going     = $rsvp->get_attendees_count_going( $this->event_id );
+		$this->total_not_going = $rsvp->get_attendees_count_not_going( $this->event_id );
+		$this->total_rsvps     = $this->total_going + $this->total_not_going;
+
+		$rsvp_tickets = $rsvp->get_tickets( $this->event_id );
+
+		$this->has_rsvp_enabled = ! empty( $rsvp_tickets );
 	}
 
 	/**
@@ -46,6 +48,11 @@ class Tribe__Tickets__RSVP__Attendance_Totals extends Tribe__Tickets__Abstract_A
 			'total_completed_tooltip' => '',
 			'total_cancelled_tooltip' => '',
 		];
+
+		// Skip output if there are no RSVP attendees going/not going AND if there are no current RSVP tickets.
+		if ( false === $this->has_rsvp_enabled && 0 === $this->get_total_rsvps() && 0 === $this->get_total_going() && 0 === $this->get_total_not_going() ) {
+			return;
+		}
 
 		$html = tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, false );
 

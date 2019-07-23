@@ -964,10 +964,12 @@ function tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id, $user_id = 
  * @return Tribe__Repository__Interface
  */
 function tribe_tickets( $repository = 'default' ) {
-	$map = array(
-		'default' => 'tickets.ticket-repository',
-		'restv1'  => 'tickets.rest-v1.ticket-repository',
-	);
+	$map = [
+		'default'        => 'tickets.ticket-repository',
+		'rsvp'           => 'tickets.ticket-repository.rsvp',
+		'tribe-commerce' => 'tickets.ticket-repository.commerce',
+		'restv1'         => 'tickets.rest-v1.ticket-repository',
+	];
 
 	/**
 	 * Filters the map relating ticket repository slugs to service container bindings.
@@ -992,10 +994,12 @@ function tribe_tickets( $repository = 'default' ) {
  * @return Tribe__Repository__Interface
  */
 function tribe_attendees( $repository = 'default' ) {
-	$map = array(
-		'default' => 'tickets.attendee-repository',
-		'restv1'  => 'tickets.rest-v1.attendee-repository',
-	);
+	$map = [
+		'default'        => 'tickets.attendee-repository',
+		'rsvp'           => 'tickets.attendee-repository.rsvp',
+		'tribe-commerce' => 'tickets.attendee-repository.commerce',
+		'restv1'         => 'tickets.rest-v1.attendee-repository',
+	];
 
 	/**
 	 * Filters the map relating attendee repository slugs to service container bindings.
