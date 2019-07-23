@@ -11,11 +11,12 @@
  *
  * See more documentation about our Blocks Editor templating system.
  *
- * @link {INSERT_ARTICLE_LINK_HERE}
- *
  * @since 4.9
- * @since TBD Updated to not use the now-deprecated third parameter of `get_description_rsvp_ticket()` and to simplify
- *        the template's logic. Uses new functions to get singular and plural texts.
+ * @since TBD Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated
+ *            third parameter of `get_description_rsvp_ticket()` and to simplify the template's logic.
+ *            Uses new functions to get singular and plural texts.
+ *
+ * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @version TBD
  */
@@ -34,7 +35,7 @@ $user_id   = get_current_user_id();
 $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 
 $events_label_singular = $post_type->labels->singular_name;
-$counters              = array();
+$counters              = [];
 $rsvp_count            = $view->count_rsvp_attendees( $event_id, $user_id );
 $ticket_count          = $view->count_ticket_attendees( $event_id, $user_id );
 

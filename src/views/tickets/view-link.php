@@ -7,8 +7,8 @@
  * Override this template in your own theme by creating a file at [your-theme]/tribe-events/tickets/orders-link.php
  *
  * @since 4.2
- * @since TBD Updated to not use the now-deprecated third parameter of `get_description_rsvp_ticket()`. Uses new
- *            functions to get singular and plural texts.
+ * @since TBD Renamed template from order-links.php to view-link.php. Updated to not use the now-deprecated third
+ *            parameter of `get_description_rsvp_ticket()`. Uses new functions to get singular and plural texts.
  *
  * @version TBD
  */

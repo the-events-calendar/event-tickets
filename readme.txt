@@ -122,11 +122,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - New functions to easily rename ticket types and ensure consistent wording: `tribe_get_rsvp_label_singular()` and `tribe_get_rsvp_label_plural()` [130897]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
 * Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types [128666]
-* Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type, deprecated its third parameter (_bool_ `$plurals`), and updated _views/tickets/orders-link.php_, _views/blocks/attendees/order-links.php_, and _views/tickets/orders.php_ template files accordingly (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
 * Fix - The "View your RSVPs and Tickets" link was not appearing when using the Block Editor for Events [128512]
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
+* Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
+* Tweak - Renamed `src/views/tickets/orders-link.php` to `src/views/tickets/view-link.php` and renamed `src/views/blocks/attendees/order-links.php` to `src/views/blocks/attendees/view-link.php` for improved and consistent naming between Classic and Block Editor templates [130955]
 * Tweak - Tribe Commerce PayPal Tickets now sets Euro currency symbol after amount (postfix/suffix) if WordPress site language is non-English, to match EU's guidelines [128532]
 
 = [4.10.7] TBD =
