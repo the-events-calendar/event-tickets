@@ -11,14 +11,14 @@ class Tribe__Tickets__Main {
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_TEC_VERSION = '4.9.3.2-dev';
+	const MIN_TEC_VERSION = '4.9.4';
 
 	/**
 	 * Min required version of Tribe Common
 	 *
 	 * @deprecated 4.10
 	 */
-	const MIN_COMMON_VERSION = '4.9.9-dev';
+	const MIN_COMMON_VERSION = '4.9.15';
 
 	/**
 	* Min Version of WordPress
@@ -39,7 +39,7 @@ class Tribe__Tickets__Main {
 	*
 	* @since 4.10
 	*/
-	protected $min_tec_version = '4.9.2-dev';
+	protected $min_tec_version = '4.9.4';
 
 	/**
 	 * Name of the provider
