@@ -2163,6 +2163,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Returns a tickets unavailable message based on the availability slug of a collection of tickets
 		 *
 		 * @since 4.2
+		 * @since TBD Use customizable ticket name functions.
 		 *
 		 * @param array $tickets Collection of tickets
 		 * @return string
@@ -2172,9 +2173,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$message           = null;
 			$post_type = get_post_type();
 
-			if ( 'tribe_events' == $post_type && function_exists( 'tribe_is_past_event' ) && tribe_is_past_event() ) {
+			if (
+				'tribe_events' == $post_type
+				&& function_exists( 'tribe_is_past_event' )
+				&& tribe_is_past_event()
+			) {
 				$events_label_singular_lowercase = tribe_get_event_label_singular_lowercase();
-				$message = sprintf( esc_html__( 'Tickets are not available as this %s has passed.', 'event-tickets' ), $events_label_singular_lowercase );
+				$message = esc_html( sprintf( __( '%s are not available as this %s has passed.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_past_tribe_events' ), $events_label_singular_lowercase ) );
 			} elseif ( 'availability-future' === $availability_slug ) {
 				/**
 				 * Allows inclusion of ticket start sale date in unavailability message
@@ -2210,7 +2215,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$date_format = tribe_get_date_format( true );
 					$start_sale_date = Tribe__Date_Utils::reformat( $start_sale_date, $date_format );
 
-					$message = __( 'Tickets will be available on ', 'event-tickets' );
+					$message = esc_html( sprintf( __( '%s will be available on ', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_display_date' ) ) );
 					$message .= $start_sale_date;
 
 					if ( $display_time ) {
@@ -2219,12 +2224,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 						$message .= __( ' at ', 'event_tickets' ) . $start_sale_time;
 					}
 				} else {
-					$message = __( 'Tickets are not yet available', 'event-tickets' );
+					$message = esc_html( sprintf( __( '%s are not yet available', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_future_without_date' ) ) );
 				}
 			} elseif ( 'availability-past' === $availability_slug ) {
-				$message = __( 'Tickets are no longer available.', 'event-tickets' );
+				$message = esc_html( sprintf( __( '%s are no longer available.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_past' ) ) );
 			} elseif ( 'availability-mixed' === $availability_slug ) {
-				$message = __( 'There are no tickets available at this time.', 'event-tickets' );
+				$message = esc_html( sprintf( __( 'There are no %s available at this time.', 'event-tickets' ), tribe_get_ticket_label_plural( 'unavailable_mixed' ) ) );
 			}
 
 			/**
