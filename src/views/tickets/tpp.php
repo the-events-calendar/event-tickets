@@ -67,7 +67,10 @@ $cart_url       = '';
 		$item_counter = 1;
 		foreach ( $tickets as $ticket ) {
 			// if the ticket isn't a Tribe Commerce ticket, then let's skip it
-			if ( 'Tribe__Tickets__Commerce__PayPal__Main' !== $ticket->provider_class ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| 'Tribe__Tickets__Commerce__PayPal__Main' !== $ticket->provider_class
+			) {
 				continue;
 			}
 
