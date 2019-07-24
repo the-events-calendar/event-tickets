@@ -25,7 +25,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 		}
 
 		return array_merge( $vars, array(
-			'title'    => sprintf( __( 'Move %s Types', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_title' ) ),
+			'title'    => esc_html( sprintf( __( 'Move %s Types', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_title' ) ) ),
 			'mode'     => 'ticket_type_only',
 		) );
 	}
@@ -81,6 +81,8 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 	/**
 	 * Listens out for ajax requests to move a ticket type to a new post.
+	 *
+	 * @since TBD Use customizable ticket name functions.
 	 */
 	public function move_ticket_type_requests() {
 		$args = wp_parse_args( $_POST, array(
@@ -100,29 +102,29 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 		if ( ! $ticket_type_id || ! $destination_id ) {
 			wp_send_json_error( array(
-				'message' => sprintf(
+				'message' => esc_html( sprintf(
 					__( '%1$s type could not be moved: the %2$s type or destination post was invalid.', 'event-tickets' ),
 					tribe_get_ticket_label_singular( 'move_ticket_type_error' ),
 					tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_error' )
-				)
+				) )
 			) );
 		}
 
 		if ( ! $this->move_ticket_type( $ticket_type_id, $destination_id ) ) {
 			wp_send_json_error( array(
-				'message' => sprintf( __( '%s type could not be moved: unexpected failure during reassignment.', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_error' ) )
+				'message' => esc_html( sprintf( __( '%s type could not be moved: unexpected failure during reassignment.', 'event-tickets' ), tribe_get_ticket_label_singular( 'move_ticket_type_error' ) ) )
 			) );
 		}
 
 		wp_send_json_success( array(
 			'message' => sprintf(
 				'<p>' . __( '%1$s type %2$s for %3$s was successfully moved to %4$s. All previously sold %5$s of this type have been transferred to %4$s. Please adjust capacity and stock manually as needed. %2$s %6$s holders have received an email notifying them of the change. You may now close this window!', 'event-tickets' ) . '</p>',
-				tribe_get_ticket_label_singular( 'move_ticket_type_success' ),
+				esc_html( tribe_get_ticket_label_singular( 'move_ticket_type_success' ) ),
 				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $ticket_type_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $ticket_type_id ) . '</a>',
 				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $src_post_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $src_post_id ) . '</a>',
 				'<a href="' . esc_url( get_admin_url( null, '/post.php?post=' . $destination_id . '&action=edit' ) ) . '" target="_blank">' . get_the_title( $destination_id ) . '</a>',
-				tribe_get_ticket_label_plural_lowercase( 'move_ticket_type_success' ),
-				tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_success' )
+				esc_html( tribe_get_ticket_label_plural_lowercase( 'move_ticket_type_success' ) ),
+				esc_html( tribe_get_ticket_label_singular_lowercase( 'move_ticket_type_success' ) )
 			),
 			'remove_ticket_type' => $ticket_type_id,
 		) );
@@ -137,6 +139,8 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 	 *
 	 * Moving the ticket type, rather than recreating it, can be useful when ticket orders
 	 * have already been placed.
+	 *
+	 * @since TBD Use customizable ticket name functions.
 	 *
 	 * @param int $ticket_type_id
 	 * @param int $destination_post_id
@@ -210,7 +214,7 @@ class Tribe__Tickets__Admin__Move_Ticket_Types extends Tribe__Tickets__Admin__Mo
 
 		$history_message = sprintf(
 			__( '%1$s type was moved to <a href="%2$s" target="_blank">%3$s</a> from <a href="%4$s" target="_blank">%5$s</a>', 'event-tickets' ),
-			tribe_get_ticket_label_singular( 'move_ticket_type_history_message' ),
+			esc_html( tribe_get_ticket_label_singular( 'move_ticket_type_history_message' ) ),
 			get_permalink( $destination_post_id ),
 			get_the_title( $destination_post_id ),
 			get_permalink( $src_post_id ),

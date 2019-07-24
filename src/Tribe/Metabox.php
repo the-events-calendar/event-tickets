@@ -176,10 +176,10 @@ class Tribe__Tickets__Metabox {
 	}
 
 	/**
-	 * Sanitizes the data for the new/edit ticket ajax call,
-	 * and calls the child save_ticket function.
+	 * Sanitizes the data for the new/edit ticket ajax call, and calls the child save_ticket function.
 	 *
-	 * @since  4.6.2
+	 * @since 4.6.2
+	 * @since TBD Use customizable ticket name functions.
 	 */
 	public function ajax_ticket_add() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -195,7 +195,7 @@ class Tribe__Tickets__Metabox {
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'add_ticket_nonce' ) ) {
-			wp_send_json_error( sprintf( esc_html__( 'Failed to add the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) ) );
+			wp_send_json_error( esc_html( sprintf( __( 'Failed to add the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) ) ) );
 		}
 
 		if ( ! isset( $data['ticket_provider'] ) || ! $this->module_is_valid( $data['ticket_provider'] ) ) {
@@ -217,7 +217,7 @@ class Tribe__Tickets__Metabox {
 			 */
 			do_action( 'tribe_tickets_ticket_added', $post_id );
 		} else {
-			wp_send_json_error( sprintf( esc_html__( 'Failed to add the %s', 'event-tickets' ) ), tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) );
+			wp_send_json_error( esc_html( sprintf( __( 'Failed to add the %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_add_error' ) ) ) );
 		}
 
 		$return = $this->get_panels( $post_id );
@@ -235,12 +235,10 @@ class Tribe__Tickets__Metabox {
 	}
 
 	/**
-	 * Returns the data from a single ticket to populate
-	 * the edit form.
+	 * Returns the data from a single ticket to populate the edit form.
 	 *
-	 * @since  4.6.2
-	 *
-	 * @return array $return array of ticket data
+	 * @since 4.6.2
+	 * @since TBD Use customizable ticket name functions.
 	 */
 	public function ajax_ticket_edit() {
 		$post_id = absint( tribe_get_request_var( 'post_id', 0 ) );
@@ -252,7 +250,7 @@ class Tribe__Tickets__Metabox {
 		$ticket_id = absint( tribe_get_request_var( 'ticket_id', 0 ) );
 
 		if ( ! $ticket_id ) {
-			wp_send_json_error( sprintf( esc_html__( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
+			wp_send_json_error( esc_html( sprintf( __( 'Invalid %s', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) ) );
 		}
 
 		/**
@@ -262,7 +260,7 @@ class Tribe__Tickets__Metabox {
 		$data = wp_parse_args( tribe_get_request_var( array( 'data' ), array() ), array() );
 
 		if ( ! $this->has_permission( $post_id, $_POST, 'edit_ticket_nonce' ) ) {
-			wp_send_json_error( sprintf( esc_html__( 'Failed to edit the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) );
+			wp_send_json_error( esc_html( sprintf( __( 'Failed to edit the %s. Refresh the page to try again.', 'event-tickets' ), tribe_get_ticket_label_singular( 'ajax_ticket_edit_error' ) ) ) );
 		}
 
 		$provider = tribe_tickets_get_ticket_provider( $ticket_id );

@@ -419,6 +419,8 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_stock_message' ) ) {
 	 *
 	 * @param Tribe__Tickets__Ticket_Object $ticket Ticket to analyze
 	 *
+	 * @since TBD Use customizable ticket name functions.
+	 *
 	 * @return string
 	 */
 	function tribe_tickets_get_ticket_stock_message( Tribe__Tickets__Ticket_Object $ticket ) {

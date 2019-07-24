@@ -14,7 +14,7 @@ class Tribe__Tickets__Admin__Ticket_Settings {
 	/**
 	 * Loads the ticket settings from an admin-view file and returns them as an array.
 	 *
-	 * @return array
+	 * @since TBD Use customizable ticket name functions.
 	 */
 	public function settings_ui() {
 		$settings = $this->get_settings_array();

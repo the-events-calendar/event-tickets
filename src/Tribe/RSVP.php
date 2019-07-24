@@ -721,12 +721,13 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		 * Filters the RSVP tickets email subject
 		 *
 		 * @since 4.5.2 added new parameters $event_id and $order_id
+		 * @since TBD Use customizable ticket name functions.
 		 *
 		 * @param string
-		 * @param int     $event_id
-		 * @param int     $order_id
+		 * @param int    $event_id
+		 * @param int    $order_id
 		 */
-		$subject     = apply_filters( 'tribe_rsvp_email_subject',
+		$subject = apply_filters( 'tribe_rsvp_email_subject',
 			sprintf(
 				__( 'Your %1$s from %2$s', 'event-tickets' ),
 				tribe_get_ticket_label_plural_lowercase( 'tribe_rsvp_email_subject' ),

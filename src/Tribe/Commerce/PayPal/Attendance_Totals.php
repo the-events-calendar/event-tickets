@@ -68,10 +68,11 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 * Prints an HTML (unordered) list of attendance totals.
 	 *
 	 * @since 4.7
+	 * @since TBD Use customizable ticket name functions.
 	 */
 	public function print_totals() {
 		$args = [
-			'total_sold_label'        => sprintf( _x( 'Total %s:', 'attendee summary', 'event-tickets' ), tribe_get_ticket_label_plural( 'total_sold_label' ) ),
+			'total_sold_label'        => esc_html( sprintf( _x( 'Total %s:', 'attendee summary', 'event-tickets' ), tribe_get_ticket_label_plural( 'total_sold_label' ) ) ),
 			'total_complete_label'    => _x( 'Complete:', 'attendee summary', 'event-tickets' ),
 			'total_cancelled_label'   => _x( 'Cancelled:', 'attendee summary', 'event-tickets' ),
 			'total_sold'              => $this->get_total_sold(),

@@ -96,7 +96,7 @@ $view      = Tribe__Tickets__Tickets_View::instance();
 							<div class="thumbnail">
 								<?php echo get_image_tag(
 									$ticket['header_image_id'],
-									sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_alt' ) ),
+									esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_alt' ) ) ),
 									get_the_title( $ticket_post_id ),
 									'none',
 									'thumbnail'

@@ -58,8 +58,8 @@ if ( 1 < $ticket_count ) {
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );
 
-$message  = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
-$message .= ' <a href="' . esc_url( $link ) . '">' . sprintf( esc_html__( 'View your %s', 'event-tickets' ), $this->get_description_rsvp_ticket( $event_id, $user_id ) ) . '</a>';
+$message  = esc_html( sprintf( __( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular ) );
+$message .= ' <a href="' . esc_url( $link ) . '">' . esc_html( sprintf( __( 'View your %s', 'event-tickets' ), $this->get_description_rsvp_ticket( $event_id, $user_id ) ) ) . '</a>';
 ?>
 
 <div class="tribe-link-view-attendee">

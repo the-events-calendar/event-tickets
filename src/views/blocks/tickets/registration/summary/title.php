@@ -19,7 +19,7 @@
 ?>
 <div class="tribe-block__tickets__registration__title">
 	<header>
-		<h2><?php printf( esc_html__( '%s Registration', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ); ?></h2>
+		<h2><?php echo esc_html( sprintf( __( '%s Registration', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></h2>
 	</header>
 </div>
 

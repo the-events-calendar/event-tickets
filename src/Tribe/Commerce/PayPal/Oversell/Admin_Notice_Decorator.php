@@ -95,6 +95,7 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 	 * Returns the notice header HTML.
 	 *
 	 * @since 4.7
+	 * @since TBD Use customizable ticket name functions.
 	 *
 	 * @param int $qty
 	 * @param int $inventory
@@ -134,12 +135,12 @@ class Tribe__Tickets__Commerce__PayPal__Oversell__Admin_Notice_Decorator impleme
 			sprintf(
 				$message,
 				$post_title,
-				tribe_get_ticket_label_plural_lowercase( 'oversold_message' ),
-				tribe_get_ticket_label_singular_lowercase( 'oversold_message' ),
+				esc_html( tribe_get_ticket_label_plural_lowercase( 'oversold_message' ) ),
+				esc_html( tribe_get_ticket_label_singular_lowercase( 'oversold_message' ) ),
 				esc_html( $this->get_order_id() ),
 				"<strong>{$qty}</strong>",
 				"<strong>{$inventory}</strong>",
-				tribe_get_ticket_label_singular( 'oversold_message' )
+				esc_html( tribe_get_ticket_label_singular( 'oversold_message' ) )
 			)
 		);
 	}

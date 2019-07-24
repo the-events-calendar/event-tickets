@@ -42,16 +42,17 @@ class Tribe__Tickets__Assets {
 	}
 
 	/**
-	 * Enqueue scripts for admin views
+	 * Enqueue scripts for admin views.
 	 *
 	 * @since 4.6
+	 * @since TBD Use customizable ticket name functions.
 	 */
 	public function admin_enqueue_scripts() {
 		// Set up some data for our localize scripts
 
 		$upload_header_data = array(
-			'title'  => sprintf( esc_html__( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ),
-			'button' => sprintf( esc_html__( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ),
+			'title'  => esc_html( sprintf( __( '%s header image', 'event-tickets' ), tribe_get_ticket_label_singular( 'header_image_title' ) ) ),
+			'button' => esc_html( sprintf( __( 'Set as %s header', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( 'header_button' ) ) ),
 		);
 
 		$nonces = array(

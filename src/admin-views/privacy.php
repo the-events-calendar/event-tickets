@@ -1,6 +1,8 @@
 <?php
 /**
  * Event Tickets Privacy
+ *
+ * @since TBD Use customizable ticket name functions.
  */
 
 // Don't load directly
@@ -22,31 +24,37 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<p class="privacy-policy-tutorial"><?php esc_html_e( 'Through the usage of Event Tickets, Event Tickets Plus, and Community Tickets, information may be collected and stored within your website’s database.', 'event-tickets' ); ?></p>
 	<p class="privacy-policy-tutorial"><strong><?php esc_html_e( 'Suggested text:', 'event-tickets' ); ?></strong></p>
-	<p><?php printf(
-			esc_html__( 'If you create, submit, import, save, or publish event %1$s information, as well as obtain %2$s or purchase %3$s to events, such information is retained in the local database:', 'event-tickets' ),
+	<p><?php echo esc_html(
+			sprintf(
+				__( 'If you create, submit, import, save, or publish event %1$s information, as well as obtain %2$s or purchase %3$s to events, such information is retained in the local database:', 'event-tickets' ),
 			tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) ),
 			tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
 			tribe_get_ticket_label_plural_lowercase( basename( __FILE__ ) )
+			)
 		); ?></p>
 
 	<ol>
-		<li><?php printf(
-				esc_html__( 'Attendees information (%1$s and %2$s): name and email address', 'event-tickets' ),
+		<li><?php echo esc_html(
+				sprintf(
+					__( 'Attendees information (%1$s and %2$s): name and email address', 'event-tickets' ),
 				tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
 				tribe_get_ticket_label_plural( basename( __FILE__ ) )
+				)
 			); ?></li>
-		<li><?php printf(
-				esc_html__( '%1$s information (%2$s and %3$s): name, email address, and %4$s number/SKU (via check-in page)', 'event-tickets' ),
+		<li><?php echo esc_html(
+				sprintf(
+					__( '%1$s information (%2$s and %3$s): name, email address, and %4$s number/SKU (via check-in page)', 'event-tickets' ),
 				tribe_get_ticket_label_singular( basename( __FILE__ ) ),
 				tribe_get_rsvp_label_plural( basename( __FILE__ ) ),
 				tribe_get_ticket_label_plural( basename( __FILE__ ) ),
 				tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) )
+				)
 			); ?></li>
-		<li><?php printf( esc_html__( '%s purchaser information: name and email address', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ); ?></li>
-		<li><?php printf( esc_html__( '%s purchaser billing address, which is collected through the use of WooCommerce, Easy Digital Downloads, or PayPal', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ); ?></li>
+		<li><?php echo esc_html( sprintf( __( '%s purchaser information: name and email address', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></li>
+		<li><?php echo esc_html( sprintf( __( '%s purchaser billing address, which is collected through the use of WooCommerce, Easy Digital Downloads, or PayPal', 'event-tickets' ), tribe_get_ticket_label_singular( basename( __FILE__ ) ) ) ); ?></li>
 	</ol>
 
-	<p><?php printf( esc_html__( 'Please note: The website owner can collect nearly any Attendee Information requested from %s buyers by creating a custom registration form.', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) ) ); ?></p>
+	<p><?php echo esc_html( sprintf( __( 'Please note: The website owner can collect nearly any Attendee Information requested from %s buyers by creating a custom registration form.', 'event-tickets' ), tribe_get_ticket_label_singular_lowercase( basename( __FILE__ ) ) ) ); ?></p>
 
 	<h3><?php esc_html_e( 'API Keys', 'event-tickets' ); ?></h3>
 
