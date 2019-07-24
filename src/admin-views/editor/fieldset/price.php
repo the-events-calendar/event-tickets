@@ -71,8 +71,9 @@ if ( ! isset( $ticket_id ) ) {
 		 * @since TBD
 		 *
 		 * @param int $ticket_id Ticket ID.
+		 * @param int $post_id   Post ID.
 		 */
-		do_action( 'tribe_tickets_price_input_description', $ticket_id );
+		do_action( 'tribe_tickets_price_input_description', $ticket_id, $post_id );
 		?>
 	</div>
 
