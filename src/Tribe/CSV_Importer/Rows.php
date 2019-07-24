@@ -32,7 +32,7 @@ class Tribe__Tickets__CSV_Importer__Rows {
 	 * @return array
 	 */
 	public function filter_import_options_rows( array $import_options ) {
-		$import_options['rsvp'] = tribe_get_rsvp_label_plural( 'import_type' );
+		$import_options['rsvp'] = esc_html( tribe_get_rsvp_label_plural( 'import_type' ) );
 
 		return $import_options;
 	}
@@ -46,7 +46,7 @@ class Tribe__Tickets__CSV_Importer__Rows {
 	 */
 	public function filter_csv_post_types( array $post_types ) {
 		$post_type = get_post_type_object( Tribe__Tickets__RSVP::get_instance()->ticket_object );
-		$post_type->labels->name = tribe_get_rsvp_label_plural( 'post_type_label' );
+		$post_type->labels->name = esc_html( tribe_get_rsvp_label_plural( 'post_type_label' ) );
 		$post_types[] = $post_type;
 		return $post_types;
 	}

@@ -61,7 +61,7 @@ if ( empty( $counters ) ) {
 
 $link = $view->get_tickets_page_url( $event_id, $is_event_page );
 
-$message = sprintf( esc_html__( 'You have %s for this %s.', 'event-tickets' ), implode( __( ' and ', 'event-tickets' ), $counters ), $events_label_singular );
+$message = esc_html( sprintf( __( 'You have %s for this %s.', 'event-tickets' ), implode( _x( ' and ', 'separator if there are both RSVPs and Tickets', 'event-tickets' ), $counters ), $events_label_singular ) );
 ?>
 
 <div class="tribe-link-view-attendee">

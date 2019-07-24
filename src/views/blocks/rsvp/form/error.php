@@ -18,6 +18,6 @@
 ?>
 <div class="tribe-block__rsvp__message__error">
 
-	<?php printf( esc_html__( 'Please fill in the %s confirmation name and email fields.', 'event-tickets' ), tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ); ?>
+	<?php echo esc_html( sprintf( __( 'Please fill in the %s confirmation name and email fields.', 'event-tickets' ), tribe_get_rsvp_label_singular( basename( __FILE__ ) ) ) ); ?>
 
 </div>
