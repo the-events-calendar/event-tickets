@@ -58,7 +58,10 @@ $messages_class = $messages ? 'tribe-rsvp-message-display' : '';
 		<?php
 		foreach ( $tickets as $ticket ) {
 			// if the ticket isn't an RSVP ticket, then let's skip it
-			if ( 'Tribe__Tickets__RSVP' !== $ticket->provider_class ) {
+			if (
+				! $ticket instanceof Tribe__Tickets__Ticket_Object
+				|| 'Tribe__Tickets__RSVP' !== $ticket->provider_class
+			) {
 				continue;
 			}
 
