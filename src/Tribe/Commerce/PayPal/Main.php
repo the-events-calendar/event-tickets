@@ -178,7 +178,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 
 		/* Set up some parent's vars */
-		$this->plugin_name = _x( 'Tribe Commerce', 'ticket provider', 'event-tickets' );
+		$this->plugin_name = esc_html_x( 'Tribe Commerce', 'ticket provider', 'event-tickets' );
 		$this->plugin_path = $main->plugin_path;
 		$this->plugin_url  = $main->plugin_url;
 

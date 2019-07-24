@@ -165,7 +165,7 @@ class Tribe__Tickets__RSVP extends Tribe__Tickets__Tickets {
 		$main = Tribe__Tickets__Main::instance();
 		$this->tickets_view = Tribe__Tickets__Tickets_View::instance();
 		/* Set up parent vars */
-		$this->plugin_name = $this->pluginName = esc_html( tribe_get_rsvp_label_singular( 'plugin_name' ) );
+		$this->plugin_name = $this->pluginName = esc_html( tribe_get_rsvp_label_plural( 'provider_plugin_name' ) );
 		$this->plugin_path = $this->pluginPath = $main->plugin_path;
 		$this->plugin_url  = $this->pluginUrl  = $main->plugin_url;
 

@@ -138,7 +138,7 @@ class Tribe__Tickets__Main {
 	 */
 	protected function __construct() {
 		/* Set up some parent's vars */
-		$this->plugin_name = 'Tickets';
+		$this->plugin_name = esc_html( tribe_get_ticket_label_plural( 'provider_plugin_name' ) );
 		$this->plugin_slug = 'tickets';
 		$this->plugin_path = trailingslashit( EVENT_TICKETS_DIR );
 		$this->plugin_dir = trailingslashit( basename( $this->plugin_path ) );
