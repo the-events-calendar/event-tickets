@@ -304,18 +304,21 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 	/**
 	 * Hooks into the genesis excerpt filter and forces it "off" on the AR page
 	 *
+	 * @since TBD - return null if not on ar page and true if on ar page
+	 *
 	 * @param string|null $unused_null Unused variable
 	 * @param string $setting
 	 *
-	 * @return string|null
+	 * @return null|boolean
 	 */
 	public function override_genesis_limit( $unused_null, $setting ) {
 		// Bail if we're not on the attendee info page
 		if ( ! $this->is_on_ar_page() ) {
-			return $setting;
+			return null;
 		}
 
-		return '';
+		// return true on AR to get no content
+		return true;
 	}
 
 	/**

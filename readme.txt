@@ -120,6 +120,7 @@ Currently, the following add-ons are available for Event Tickets:
 = [TBD] TBD =
 
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
+* Fix - Prevent conflict with Genesis Framework where content or the excerpt does not show in the post archives [125496]
 * Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types [128666]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
