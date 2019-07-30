@@ -654,10 +654,11 @@ class Tribe__Tickets__REST__V1__Post_Repository
 		 *
 		 * @since 4.10.2
 		 *
-		 * @param bool  $always_show_attendees_data Whether to always show attendees data.
-		 * @param array $data                       Ticket REST data.
+		 * @param bool $always_show_attendees_data Whether to always show attendees data. By default, Admin and Editor
+		 *                                         can see this information.
+		 * @param array $data                      Ticket REST data.
 		 */
-		$always_show_attendees_data = apply_filters( 'tribe_tickets_rest_api_always_show_attendee_data', false, $data );
+		$always_show_attendees_data = apply_filters( 'tribe_tickets_rest_api_always_show_attendee_data', current_user_can( 'read_private_posts' ), $data );
 
 		// Check if we have an event or attendees block/shortcode.
 		if ( ! $always_show_attendees_data ) {
