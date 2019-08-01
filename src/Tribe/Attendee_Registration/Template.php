@@ -318,7 +318,7 @@ class Tribe__Tickets__Attendee_Registration__Template extends Tribe__Templates {
 		}
 
 		// return true on AR to get no content
-		return true;
+		return '';
 	}
 
 	/**
