@@ -117,6 +117,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+* Fix - The attendee link in the ticket and RSVP block so it shows after the creation of a ticket or RSVP. [128521]
+
 = [4.10.6.2] 2019-06-20 =
 
 * Fix - Prevent issue where older versions of the tribe-common libraries could be bootstrapped [129479]
