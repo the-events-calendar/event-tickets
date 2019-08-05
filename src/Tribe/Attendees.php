@@ -301,8 +301,8 @@ class Tribe__Tickets__Attendees {
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( $this->slug(), $resources_url . '/css/tickets-attendees.css', array(), Tribe__Tickets__Main::instance()->css_version() );
-		wp_enqueue_style( $this->slug() . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
+		wp_enqueue_style( $this->slug(), $resources_url . '/css/tickets-report.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( $this->slug() . '-print', $resources_url . '/css/tickets-report-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
 		wp_enqueue_script( $this->slug(), $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
 
 		add_thickbox();
