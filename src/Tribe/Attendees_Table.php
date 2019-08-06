@@ -65,7 +65,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @return array List of CSS classes for the table tag.
 	 */
 	protected function get_table_classes() {
-		$classes = [ 'widefat', 'striped', 'attendees' ];
+		$classes = [ 'widefat', 'striped', 'attendees', 'tribe-attendees' ];
 
 		if ( is_admin() ) {
 			$classes[] = 'fixed';
