@@ -76,7 +76,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param $classes array The array of classes to be applied.
+		 * @param array $classes The array of classes to be applied.
 		 */
 		$classes = apply_filters( 'tribe_tickets_attendees_table_classes', $classes );
 
