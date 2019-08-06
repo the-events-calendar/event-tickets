@@ -66,7 +66,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		/**
 		 * Filters the default classes added to the TCC order report `WP_List_Table`.
 		 *
-		 * @since BTD
+		 * @since TBD
 		 *
 		 * @param $classes array The array of classes to be applied.
 		 */
