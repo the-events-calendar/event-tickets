@@ -68,7 +68,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		 *
 		 * @since TBD
 		 *
-		 * @param $classes array The array of classes to be applied.
+		 * @param array $classes The array of classes to be applied.
 		 */
 		$classes = apply_filters( 'tribe_tickets_commerce_order_table_classes', $classes );
 
