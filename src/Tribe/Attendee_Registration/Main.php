@@ -188,6 +188,8 @@ class Tribe__Tickets__Attendee_Registration__Main {
 			}
 		}
 
+		return false;
+
 	}
 
 }
