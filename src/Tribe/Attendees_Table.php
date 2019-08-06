@@ -74,7 +74,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		/**
 		 * Filters the default classes added to the attendees report `WP_List_Table`.
 		 *
-		 * @since BTD
+		 * @since TBD
 		 *
 		 * @param $classes array The array of classes to be applied.
 		 */
