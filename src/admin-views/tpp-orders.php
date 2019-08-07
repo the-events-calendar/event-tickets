@@ -12,7 +12,7 @@
  */
 ?>
 
-<div class="wrap tribe-attendees-page">
+<div class="wrap tribe-report-page">
 	<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
 
 	<div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
