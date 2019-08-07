@@ -322,7 +322,7 @@ class Tribe__Tickets__Attendees {
 			) ),
 		);
 
-		wp_localize_script( $this->slug(), 'Attendees', $mail_data );
+		wp_localize_script( $this->slug() . '-js', 'Attendees', $mail_data );
 	}
 
 	/**
@@ -353,7 +353,7 @@ class Tribe__Tickets__Attendees {
 			wp_enqueue_style( 'wp-pointer' );
 		}
 
-		wp_localize_script( $this->slug(), 'AttendeesPointer', $pointer );
+		wp_localize_script( $this->slug() . '-js', 'AttendeesPointer', $pointer );
 	}
 
 	/**
