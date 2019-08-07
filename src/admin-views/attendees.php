@@ -18,7 +18,7 @@ $singular = $pto->labels->singular_name;
 $show_title = apply_filters( 'tribe_tickets_attendees_show_title', true, tribe( 'tickets.attendees' ) );
 ?>
 
-<div class="wrap tribe-attendees-page">
+<div class="wrap tribe-report-page">
 	<?php if ( $show_title ) : ?>
 		<h1><?php esc_html_e( 'Attendees', 'event-tickets' ); ?></h1>
 	<?php endif; ?>
