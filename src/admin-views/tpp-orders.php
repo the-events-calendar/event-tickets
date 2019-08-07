@@ -10,10 +10,42 @@
  * @var Tribe__Tickets__Status__Manager         $order_overview      Order breakdown for all statuses
  * @var string                                  $table               The orders table output
  */
+
+/**
+ * Wether or not we should display order report title.
+ *
+ * @since  TBD
+ *
+ * @param  boolean $show_title (false) Whether or not to show the title.
+ */
+$show_title = apply_filters( 'tribe_tickets_order_report_show_title', false );
+
+/**
+ * Wether or not we should display order report title for Tribe Commerce orders.
+ *
+ * @since  TBD
+ *
+ * @param  boolean $show_title (false) Whether or not to show the title.
+ */
+$show_title = apply_filters( 'tribe_tickets_tpp_order_report_show_title', $show_title );
+
+$title = __( 'Orders Report', 'event-tickets-plus' );
+/**
+ * Allows filtering of the Tribe Commerce order report title
+ *
+ * @since  TBD
+ *
+ * @param  string $title the title.
+ */
+$title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
 ?>
 
 <div class="wrap tribe-report-page">
+	<?php if ( $show_title ) : ?>
+	<h1><?php echo esc_html( $title ); ?></h1>
+	<?php endif; ?>
 	<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
+
 
 	<div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
 		<div class="welcome-panel-content">
