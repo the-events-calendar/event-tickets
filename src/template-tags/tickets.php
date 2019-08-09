@@ -698,7 +698,10 @@ if ( ! function_exists( 'tribe_tickets_get_ticket_provider' ) ) {
 	 * @return bool|object
 	 */
 	function tribe_tickets_get_ticket_provider( $id ) {
-		return tribe( 'tickets.data_api' )->get_ticket_provider( $id );
+		/** @var Tribe__Tickets__Data_API $data_api */
+		$data_api = tribe( 'tickets.data_api' );
+
+		return $data_api->get_ticket_provider( $id );
 	}
 }
 
