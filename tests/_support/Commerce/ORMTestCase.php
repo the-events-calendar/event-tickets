@@ -50,22 +50,16 @@ class ORMTestCase extends Test_Case {
 
 	/**
 	 * Get test matrix with all the assertions filled out.
-	 *
-	 * Format is [ $filter_name, $filter_arguments, $assertions ]
 	 */
 	public function get_attendee_test_matrix() {
-		yield [
-			'get_test_matrix_event_match',
-		];
-		yield [
-			'get_test_matrix_event_miss',
-		];
+		yield [ 'get_test_matrix_event_in_match' ];
+		yield [ 'get_test_matrix_event_in_mismatch' ];
 	}
 
 	/**
-	 * Get test matrix for event matching.
+	 * Get test matrix for event match.
 	 */
-	public function get_test_matrix_event_match() {
+	public function get_test_matrix_event_in_match() {
 		return [
 			// Filter name.
 			'event',
@@ -90,9 +84,9 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
-	 * Get test matrix for event miss.
+	 * Get test matrix for event mismatch.
 	 */
-	public function get_test_matrix_event_miss() {
+	public function get_test_matrix_event_in_mismatch() {
 		return [
 			// Filter name.
 			'event',
