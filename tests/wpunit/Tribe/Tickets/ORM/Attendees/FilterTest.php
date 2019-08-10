@@ -9,15 +9,11 @@ class FilterTest extends ORMTestCase {
 	/**
 	 * @dataProvider get_attendee_test_matrix
 	 */
-	public function test_attendees_orm_filters() {
-		foreach ( $this->get_attendee_test_matrix() as $matrix_item ) {
-			$filter_name      = $matrix_item[0];
-			$filter_arguments = $matrix_item[1];
-			$assertions       = $matrix_item[2];
-		}
+	public function test_attendees_orm_filters( $method ) {
+		list( $filter_name, $filter_arguments, $assertions ) = $this->$method();
 
 		// Tell codeception what filter we are testing. You can see these by adding -vvv when running tests.
-		codecept_debug( $filter_name );
+		codecept_debug( $method );
 
 		// Setup attendees.
 		$attendees = tribe_attendees();
@@ -26,7 +22,13 @@ class FilterTest extends ORMTestCase {
 		$attendees->set_found_rows( true );
 
 		// Do the filtering.
-		$attendees->by( $filter_name, ...$filter_arguments );
+		$args = [
+			$filter_name,
+		];
+
+		$args = array_merge( $args, $filter_arguments );
+
+		$attendees->by( ...$args );
 
 		// Assert that we get what we expected.
 		$this->assertEquals( $assertions['get_ids'], $attendees->get_ids(), $filter_name );

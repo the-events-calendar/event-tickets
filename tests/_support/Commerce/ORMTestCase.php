@@ -3,11 +3,9 @@
 namespace Tribe\Tickets\Test\Commerce;
 
 use Tribe\Events\Test\Factories\Event;
-use Tribe\Tickets\Test\Commerce\Attendee_Maker;
 use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
-use Tribe__Tickets__Main as Main;
 
 class ORMTestCase extends Test_Case {
 
@@ -20,7 +18,7 @@ class ORMTestCase extends Test_Case {
 	 *
 	 * @var array
 	 */
-	public $test_data = [];
+	protected $test_data = [];
 
 	public function setUp() {
 		parent::setUp();
@@ -28,30 +26,128 @@ class ORMTestCase extends Test_Case {
 		$this->factory()->event = new Event();
 
 		// Enable post as ticket type.
-		add_filter(
-			'tribe_tickets_post_types', function () {
+		add_filter( 'tribe_tickets_post_types', function () {
 			return [ 'post' ];
-		}
-		);
+		} );
 
 		// Enable Tribe Commerce.
 		add_filter( 'tribe_tickets_commerce_paypal_is_active', '__return_true' );
-		add_filter(
-			'tribe_tickets_get_modules', function ( $modules ) {
+		add_filter( 'tribe_tickets_get_modules', function ( $modules ) {
 			/** @var \Tribe__Tickets__Commerce__PayPal__Main $paypal */
 			$paypal = tribe( 'tickets.commerce.paypal' );
 
 			$modules['Tribe__Tickets__Commerce__PayPal__Main'] = $paypal->plugin_name;
 
 			return $modules;
-		}
-		);
+		} );
 
 		// Reset Data_API object so it sees Tribe Commerce.
 		tribe_singleton( 'tickets.data_api', new Data_API );
 
 		// Setup test data here.
 		$this->setup_test_data();
+	}
+
+	/**
+	 * Get test matrix with all the assertions filled out.
+	 *
+	 * Format is [ $filter_name, $filter_arguments, $assertions ]
+	 */
+	public function get_attendee_test_matrix() {
+		yield [
+			'get_test_matrix_event_match',
+		];
+		yield [
+			'get_test_matrix_event_miss',
+		];
+	}
+
+	/**
+	 * Get test matrix for event matching.
+	 */
+	public function get_test_matrix_event_match() {
+		return [
+			// Filter name.
+			'event',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 0 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [
+					$this->get_attendee_id( 0 ),
+					$this->get_attendee_id( 1 ),
+				],
+				'all'     => [
+					get_post( $this->get_attendee_id( 0 ) ),
+					get_post( $this->get_attendee_id( 1 ) ),
+				],
+				'count'   => 2,
+				'found'   => 2,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for event miss.
+	 */
+	public function get_test_matrix_event_miss() {
+		return [
+			// Filter name.
+			'event',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 1 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [],
+				'all'     => [],
+				'count'   => 0,
+				'found'   => 0,
+			],
+		];
+	}
+
+	protected function get_event_id( $index ) {
+		if ( isset( $this->test_data['events'][ $index ] ) ) {
+			return $this->test_data['events'][ $index ];
+		}
+
+		return 0;
+	}
+
+	protected function get_attendee_id( $index ) {
+		if ( isset( $this->test_data['attendees'][ $index ] ) ) {
+			return $this->test_data['attendees'][ $index ];
+		}
+
+		return 0;
+	}
+
+	protected function get_user_id( $index ) {
+		if ( isset( $this->test_data['users'][ $index ] ) ) {
+			return $this->test_data['users'][ $index ];
+		}
+
+		return 0;
+	}
+
+	protected function get_rsvp_id( $index ) {
+		if ( isset( $this->test_data['rsvps'][ $index ] ) ) {
+			return $this->test_data['rsvps'][ $index ];
+		}
+
+		return 0;
+	}
+
+	protected function get_paypal_tickets_id( $index ) {
+		if ( isset( $this->test_data['paypal_tickets'][ $index ] ) ) {
+			return $this->test_data['paypal_tickets'][ $index ];
+		}
+
+		return 0;
 	}
 
 	/**
@@ -75,22 +171,18 @@ class ORMTestCase extends Test_Case {
 		$test_data['users'][] = $this->factory()->user->create();
 
 		// Create test event 1.
-		$event_id = $this->factory()->event->create(
-			[
-				'post_title'  => 'Test event 1',
-				'post_author' => $user_id,
-			]
-		);
+		$event_id = $this->factory()->event->create( [
+			'post_title'  => 'Test event 1',
+			'post_author' => $user_id,
+		] );
 
 		$test_data['events'][] = $event_id;
 
 		// Create test event 2.
-		$test_data['events'][] = $this->factory()->event->create(
-			[
-				'post_title'  => 'Test event 2',
-				'post_author' => 0,
-			]
-		);
+		$test_data['events'][] = $this->factory()->event->create( [
+			'post_title'  => 'Test event 2',
+			'post_author' => 0,
+		] );
 
 		// Create test RSVP ticket, add Attendee to the first, and add other RSVP tickets that do not have attendees
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
@@ -112,99 +204,5 @@ class ORMTestCase extends Test_Case {
 
 		// Save test data to reference.
 		$this->test_data = $test_data;
-	}
-
-	public function tearDown() {
-		parent::tearDown();
-	}
-
-	/**
-	 * Get test matrix with all the assertions filled out.
-	 *
-	 * Format is [ $filter_name, $filter_arguments, $assertions ]
-	 */
-	public function get_attendee_test_matrix() {
-		yield from $this->get_test_matrix_event();
-	}
-
-	/**
-	 * Get test matrix for event.
-	 */
-	public function get_test_matrix_event() {
-		yield[
-			// Filter name.
-			'event',
-			// Filter arguments to use.
-			[
-				$this->get_event_id( 0 ),
-			],
-			// Assertions to make.
-			[
-				'get_ids' => [
-					$this->get_attendee_id( 0 ),
-				],
-				'all'     => [
-					get_post( $this->get_attendee_id( 0 ) ),
-				],
-				'count'   => 1,
-				'found'   => 1,
-			],
-		];
-
-		yield[
-			// Filter name.
-			'event',
-			// Filter arguments to use.
-			[
-				$this->get_event_id( 1 ),
-			],
-			// Assertions to make.
-			[
-				'get_ids' => [],
-				'all'     => [],
-				'count'   => 0,
-				'found'   => 0,
-			],
-		];
-	}
-
-	public function get_event_id( $index ) {
-		if ( isset( $this->test_data['events'][$index] ) ) {
-			return $this->test_data['events'][$index];
-		}
-
-		return 0;
-	}
-
-	public function get_attendee_id( $index ) {
-		if ( isset( $this->test_data['attendees'][$index] ) ) {
-			return $this->test_data['attendees'][$index];
-		}
-
-		return 0;
-	}
-
-	public function get_user_id( $index ) {
-		if ( isset( $this->test_data['users'][$index] ) ) {
-			return $this->test_data['users'][$index];
-		}
-
-		return 0;
-	}
-
-	public function get_rsvp_id( $index ) {
-		if ( isset( $this->test_data['rsvps'][$index] ) ) {
-			return $this->test_data['rsvps'][$index];
-		}
-
-		return 0;
-	}
-
-	public function get_paypal_tickets_id( $index ) {
-		if ( isset( $this->test_data['paypal_tickets'][$index] ) ) {
-			return $this->test_data['paypal_tickets'][$index];
-		}
-
-		return 0;
 	}
 }
