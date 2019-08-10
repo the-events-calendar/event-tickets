@@ -7,6 +7,15 @@ use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
 use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Data_API as Data_API;
 
+/**
+ * Class ORMTestCase
+ * @package Tribe\Tickets\Test\Commerce
+ *
+ * @see \tribe_attendees() What all these tests are for, for the following classes:
+ * @see \Tribe__Tickets__Attendee_Repository Default.
+ * @see \Tribe__Tickets__Repositories__Attendee__RSVP RSVP.
+ * @see \Tribe__Tickets__Repositories__Attendee__Commerce Tribe Commerce.
+ */
 class ORMTestCase extends Test_Case {
 
 	use RSVP_Ticket_Maker;
@@ -50,16 +59,24 @@ class ORMTestCase extends Test_Case {
 
 	/**
 	 * Get test matrix with all the assertions filled out.
+	 *
+	 * Method naming:
+	 * "Match" means the filter finds what we expect it to with the created data.
+	 * "Mismatch" means the filter should not find anything because we don't have a matching ID to find anything for.
 	 */
 	public function get_attendee_test_matrix() {
-		yield [ 'get_test_matrix_event_in_match' ];
-		yield [ 'get_test_matrix_event_in_mismatch' ];
+		// Event
+		yield [ 'get_test_matrix_event_match' ];
+		yield [ 'get_test_matrix_event_mismatch' ];
+		// Event Not In
+		yield [ 'get_test_matrix_event_not_in_match' ];
+		yield [ 'get_test_matrix_event_not_in_mismatch' ];
 	}
 
 	/**
-	 * Get test matrix for event match.
+	 * Get test matrix for Event match.
 	 */
-	public function get_test_matrix_event_in_match() {
+	public function get_test_matrix_event_match() {
 		return [
 			// Filter name.
 			'event',
@@ -84,15 +101,63 @@ class ORMTestCase extends Test_Case {
 	}
 
 	/**
-	 * Get test matrix for event mismatch.
+	 * Get test matrix for Event mismatch.
 	 */
-	public function get_test_matrix_event_in_mismatch() {
+	public function get_test_matrix_event_mismatch() {
 		return [
 			// Filter name.
 			'event',
 			// Filter arguments to use.
 			[
 				$this->get_event_id( 1 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [],
+				'all'     => [],
+				'count'   => 0,
+				'found'   => 0,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for Event Not In match.
+	 */
+	public function get_test_matrix_event_not_in_match() {
+		return [
+			// Filter name.
+			'event__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 1 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [
+					$this->get_attendee_id( 0 ),
+					$this->get_attendee_id( 1 ),
+				],
+				'all'     => [
+					get_post( $this->get_attendee_id( 0 ) ),
+					get_post( $this->get_attendee_id( 1 ) ),
+				],
+				'count'   => 2,
+				'found'   => 2,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for Event Not In mismatch.
+	 */
+	public function get_test_matrix_event_not_in_mismatch() {
+		return [
+			// Filter name.
+			'event__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_event_id( 0 ),
 			],
 			// Assertions to make.
 			[
