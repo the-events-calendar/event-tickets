@@ -246,20 +246,16 @@ class ORMTestCase extends Test_Case {
 		// Create test RSVP ticket, add Attendee to the first, and add other RSVP tickets that do not have attendees
 		$rsvp_ticket_id = $this->create_rsvp_ticket( $event_id );
 
-		$test_data['rsvps'][] = $rsvp_ticket_id;
-
 		$test_data['attendees'][] = $this->create_attendee_for_ticket( $rsvp_ticket_id, $event_id );
 
-		$test_data['rsvps'] = array_merge( $test_data['rsvps'], $this->create_many_rsvp_tickets( 3, $event_id ) );
+		$test_data['rsvps'] = array_merge( [ $rsvp_ticket_id ], $this->create_many_rsvp_tickets( 3, $event_id ) );
 
 		// Create test PayPal ticket, add Attendee to the first, and add other PayPal tickets that do not have attendees
 		$paypal_ticket_id = $this->create_paypal_ticket( $event_id, 5 );
 
-		$test_data['paypal_tickets'][] = $paypal_ticket_id;
-
 		$test_data['attendees'][] = $this->create_attendee_for_ticket( $paypal_ticket_id, $event_id );
 
-		$test_data['paypal_tickets'] = array_merge( $test_data['paypal_tickets'], $this->create_many_paypal_tickets( 3, $event_id ) );
+		$test_data['paypal_tickets'] = array_merge( [ $paypal_ticket_id ], $this->create_many_paypal_tickets( 3, $event_id ) );
 
 		// Save test data to reference.
 		$this->test_data = $test_data;
