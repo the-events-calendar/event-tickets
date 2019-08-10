@@ -10,11 +10,6 @@ use Tribe__Tickets__Data_API as Data_API;
 /**
  * Class ORMTestCase
  * @package Tribe\Tickets\Test\Commerce
- *
- * @see \tribe_attendees() What all these tests are for, for the following classes:
- * @see \Tribe__Tickets__Attendee_Repository Default.
- * @see \Tribe__Tickets__Repositories__Attendee__RSVP RSVP.
- * @see \Tribe__Tickets__Repositories__Attendee__Commerce Tribe Commerce.
  */
 class ORMTestCase extends Test_Case {
 

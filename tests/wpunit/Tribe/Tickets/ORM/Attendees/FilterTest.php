@@ -4,6 +4,15 @@ namespace Tribe\Tickets\ORM\Attendees;
 
 use Tribe\Tickets\Test\Commerce\ORMTestCase;
 
+/**
+ * Class FilterTest
+ * @package Tribe\Tickets\ORM\Attendees
+ *
+ * @see \tribe_attendees() What all these tests are for, for the following classes:
+ * @see \Tribe__Tickets__Attendee_Repository Default.
+ * @see \Tribe__Tickets__Repositories__Attendee__RSVP RSVP.
+ * @see \Tribe__Tickets__Repositories__Attendee__Commerce Tribe Commerce.
+ */
 class FilterTest extends ORMTestCase {
 
 	/**
