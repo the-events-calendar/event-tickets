@@ -19,10 +19,10 @@ class FilterTest extends ORMTestCase {
 	 * @dataProvider get_attendee_test_matrix
 	 */
 	public function test_attendees_orm_filters( $method ) {
-		list( $filter_name, $filter_arguments, $assertions ) = $this->$method();
+		list( $repository, $filter_name, $filter_arguments, $assertions ) = $this->$method();
 
 		// Setup attendees.
-		$attendees = tribe_attendees();
+		$attendees = tribe_attendees( $repository );
 
 		// Enable found() calculations.
 		$attendees->set_found_rows( true );

@@ -73,6 +73,8 @@ class ORMTestCase extends Test_Case {
 	 */
 	public function get_test_matrix_event_match() {
 		return [
+			// Repository
+			'default',
 			// Filter name.
 			'event',
 			// Filter arguments to use.
@@ -100,6 +102,8 @@ class ORMTestCase extends Test_Case {
 	 */
 	public function get_test_matrix_event_mismatch() {
 		return [
+			// Repository
+			'default',
 			// Filter name.
 			'event',
 			// Filter arguments to use.
@@ -121,6 +125,8 @@ class ORMTestCase extends Test_Case {
 	 */
 	public function get_test_matrix_event_not_in_match() {
 		return [
+			// Repository
+			'default',
 			// Filter name.
 			'event__not_in',
 			// Filter arguments to use.
@@ -148,6 +154,8 @@ class ORMTestCase extends Test_Case {
 	 */
 	public function get_test_matrix_event_not_in_mismatch() {
 		return [
+			// Repository
+			'default',
 			// Filter name.
 			'event__not_in',
 			// Filter arguments to use.
