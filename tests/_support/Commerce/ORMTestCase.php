@@ -66,6 +66,13 @@ class ORMTestCase extends Test_Case {
 		// Event Not In
 		yield [ 'get_test_matrix_event_not_in_match' ];
 		yield [ 'get_test_matrix_event_not_in_mismatch' ];
+
+		// RSVP
+		yield [ 'get_test_matrix_rsvp_match' ];
+		yield [ 'get_test_matrix_rsvp_mismatch' ];
+		// Ticket Not In
+		yield [ 'get_test_matrix_rsvp_not_in_match' ];
+		yield [ 'get_test_matrix_rsvp_not_in_mismatch' ];
 	}
 
 	/**
@@ -169,6 +176,110 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				$this->get_event_id( 0 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [],
+				'all'     => [],
+				'count'   => 0,
+				'found'   => 0,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for RSVP match.
+	 */
+	public function get_test_matrix_rsvp_match() {
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				$this->get_rsvp_id( 0 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [
+					$this->get_attendee_id( 0 ),
+					$this->get_attendee_id( 1 ),
+				],
+				'all'     => [
+					get_post( $this->get_attendee_id( 0 ) ),
+					get_post( $this->get_attendee_id( 1 ) ),
+				],
+				'count'   => 2,
+				'found'   => 2,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for RSVP mismatch.
+	 */
+	public function get_test_matrix_rsvp_mismatch() {
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				$this->get_rsvp_id( 1 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [],
+				'all'     => [],
+				'count'   => 0,
+				'found'   => 0,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for RSVP Not In match.
+	 */
+	public function get_test_matrix_rsvp_not_in_match() {
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_rsvp_id( 1 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [
+					$this->get_attendee_id( 0 ),
+					$this->get_attendee_id( 1 ),
+				],
+				'all'     => [
+					get_post( $this->get_attendee_id( 0 ) ),
+					get_post( $this->get_attendee_id( 1 ) ),
+				],
+				'count'   => 2,
+				'found'   => 2,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for RSVP Not In mismatch.
+	 */
+	public function get_test_matrix_rsvp_not_in_mismatch() {
+		return [
+			// Repository
+			'rsvp',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_rsvp_id( 0 ),
 			],
 			// Assertions to make.
 			[
