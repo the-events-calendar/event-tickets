@@ -73,6 +73,13 @@ class ORMTestCase extends Test_Case {
 		// Ticket Not In
 		yield [ 'get_test_matrix_rsvp_not_in_match' ];
 		yield [ 'get_test_matrix_rsvp_not_in_mismatch' ];
+
+		// Tribe Commerce PayPal
+		yield [ 'get_test_matrix_paypal_match' ];
+		yield [ 'get_test_matrix_paypal_mismatch' ];
+		// Ticket Not In
+		yield [ 'get_test_matrix_paypal_not_in_match' ];
+		yield [ 'get_test_matrix_paypal_not_in_mismatch' ];
 	}
 
 	/**
@@ -280,6 +287,110 @@ class ORMTestCase extends Test_Case {
 			// Filter arguments to use.
 			[
 				$this->get_rsvp_id( 0 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [],
+				'all'     => [],
+				'count'   => 0,
+				'found'   => 0,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for Tribe Commerce PayPal match.
+	 */
+	public function get_test_matrix_paypal_match() {
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				$this->get_paypal_tickets_id( 0 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [
+					$this->get_attendee_id( 2 ),
+					$this->get_attendee_id( 3 ),
+				],
+				'all'     => [
+					get_post( $this->get_attendee_id( 2 ) ),
+					get_post( $this->get_attendee_id( 3 ) ),
+				],
+				'count'   => 2,
+				'found'   => 2,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for Tribe Commerce PayPal mismatch.
+	 */
+	public function get_test_matrix_paypal_mismatch() {
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket',
+			// Filter arguments to use.
+			[
+				$this->get_paypal_tickets_id( 1 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [],
+				'all'     => [],
+				'count'   => 0,
+				'found'   => 0,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for Tribe Commerce PayPal Not In match.
+	 */
+	public function get_test_matrix_paypal_not_in_match() {
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_paypal_tickets_id( 1 ),
+			],
+			// Assertions to make.
+			[
+				'get_ids' => [
+					$this->get_attendee_id( 2 ),
+					$this->get_attendee_id( 3 ),
+				],
+				'all'     => [
+					get_post( $this->get_attendee_id( 2 ) ),
+					get_post( $this->get_attendee_id( 3 ) ),
+				],
+				'count'   => 2,
+				'found'   => 2,
+			],
+		];
+	}
+
+	/**
+	 * Get test matrix for Tribe Commerce PayPal Not In mismatch.
+	 */
+	public function get_test_matrix_paypal_not_in_mismatch() {
+		return [
+			// Repository
+			'tribe-commerce',
+			// Filter name.
+			'ticket__not_in',
+			// Filter arguments to use.
+			[
+				$this->get_paypal_tickets_id( 0 ),
 			],
 			// Assertions to make.
 			[
