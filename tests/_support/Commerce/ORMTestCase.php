@@ -61,25 +61,25 @@ class ORMTestCase extends Test_Case {
 	 */
 	public function get_attendee_test_matrix() {
 		// Event
-		yield [ 'get_test_matrix_event_match' ];
-		yield [ 'get_test_matrix_event_mismatch' ];
+		yield 'event match' => [ 'get_test_matrix_event_match' ];
+		yield 'event mismatch' => [ 'get_test_matrix_event_mismatch' ];
 		// Event Not In
-		yield [ 'get_test_matrix_event_not_in_match' ];
-		yield [ 'get_test_matrix_event_not_in_mismatch' ];
+		yield 'event not in match' => [ 'get_test_matrix_event_not_in_match' ];
+		yield 'event not in mismatch' => [ 'get_test_matrix_event_not_in_mismatch' ];
 
 		// RSVP
-		yield [ 'get_test_matrix_rsvp_match' ];
-		yield [ 'get_test_matrix_rsvp_mismatch' ];
-		// Ticket Not In
-		yield [ 'get_test_matrix_rsvp_not_in_match' ];
-		yield [ 'get_test_matrix_rsvp_not_in_mismatch' ];
+		yield 'rsvp match' => [ 'get_test_matrix_rsvp_match' ];
+		yield 'rsvp mismatch' => [ 'get_test_matrix_rsvp_mismatch' ];
+		// RSVP Not In
+		yield 'rsvp not in match' => [ 'get_test_matrix_rsvp_not_in_match' ];
+		yield 'rsvp not in mismatch' => [ 'get_test_matrix_rsvp_not_in_mismatch' ];
 
 		// Tribe Commerce PayPal
-		yield [ 'get_test_matrix_paypal_match' ];
-		yield [ 'get_test_matrix_paypal_mismatch' ];
-		// Ticket Not In
-		yield [ 'get_test_matrix_paypal_not_in_match' ];
-		yield [ 'get_test_matrix_paypal_not_in_mismatch' ];
+		yield 'paypal match' => [ 'get_test_matrix_paypal_match' ];
+		yield 'paypal mismatch' => [ 'get_test_matrix_paypal_mismatch' ];
+		// Tribe Commerce PayPal Not In
+		yield 'paypal not in match' => [ 'get_test_matrix_paypal_not_in_match' ];
+		yield 'paypal not in mismatch' => [ 'get_test_matrix_paypal_not_in_mismatch' ];
 	}
 
 	/**
