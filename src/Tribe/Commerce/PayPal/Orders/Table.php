@@ -52,7 +52,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 	 * Overrides the list of CSS classes for the WP_List_Table table tag.
 	 * This function is not hookable in core, so it needs to be overridden!
 	 *
-	 * @since TBD
+	 * @since 4.10.7
 	 *
 	 * @return array List of CSS classes for the table tag.
 	 */
@@ -66,7 +66,7 @@ class Tribe__Tickets__Commerce__PayPal__Orders__Table extends WP_List_Table {
 		/**
 		 * Filters the default classes added to the TCC order report `WP_List_Table`.
 		 *
-		 * @since TBD
+		 * @since 4.10.7
 		 *
 		 * @param array $classes The array of classes to be applied.
 		 */

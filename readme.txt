@@ -132,11 +132,13 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 
-= [4.10.7] TBD =
+= [4.10.7] 2019-08-22 =
 
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
 * Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
+* Tweak - Added filters: `tribe_tickets_attendees_table_classes`, `tribe_tickets_commerce_order_table_classes`, `tribe_tickets_order_report_show_title`, `tribe_tickets_tpp_order_report_show_title`, `tribe_tickets_tpp_order_report_title`
+* Tweak - Added actions: `tribe_tickets_price_input_description`
 * Fix - Correct hardcoded table name in `tribe-user-event-confirmations` shortcode [129402]
 
 = [4.10.6.2] 2019-06-20 =
