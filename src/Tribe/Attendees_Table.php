@@ -57,6 +57,33 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Overrides the list of CSS classes for the WP_List_Table table tag.
+	 * This function is not hookable in core, so it needs to be overridden!
+	 *
+	 * @since TBD
+	 *
+	 * @return array List of CSS classes for the table tag.
+	 */
+	protected function get_table_classes() {
+		$classes = [ 'widefat', 'striped', 'attendees', 'tribe-attendees' ];
+
+		if ( is_admin() ) {
+			$classes[] = 'fixed';
+		}
+
+		/**
+		 * Filters the default classes added to the attendees report `WP_List_Table`.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $classes The array of classes to be applied.
+		 */
+		$classes = apply_filters( 'tribe_tickets_attendees_table_classes', $classes );
+
+		return $classes;
+	}
+
+	/**
 	 * Get a list of columns. The format is:
 	 * 'internal-name' => 'Title'
 	 *

@@ -10,12 +10,48 @@
  * @var Tribe__Tickets__Status__Manager         $order_overview      Order breakdown for all statuses
  * @var string                                  $table               The orders table output
  */
+
+/**
+ * Wether or not we should display order report title.
+ *
+ * @since  TBD
+ *
+ * @param  boolean $show_title (false) Whether or not to show the title.
+ */
+$show_title = apply_filters( 'tribe_tickets_order_report_show_title', false );
+
+/**
+ * Wether or not we should display order report title for Tribe Commerce orders.
+ *
+ * @since  TBD
+ *
+ * @param  boolean $show_title (false) Whether or not to show the title.
+ */
+$show_title = apply_filters( 'tribe_tickets_tpp_order_report_show_title', $show_title );
+
+$title = __( 'Orders Report', 'event-tickets' );
+
+/**
+ * Allows filtering of the Tribe Commerce order report title
+ *
+ * @since  TBD
+ *
+ * @param  string $title the title.
+ */
+$title = apply_filters( 'tribe_tickets_tpp_order_report_title', $title );
+
+if ( $total_sold ) {
+	$total_sold = '(' . $total_sold . ')';
+}
 ?>
 
-<div class="wrap tribe-attendees-page">
+<div class="wrap tribe-report-page">
+	<?php if ( $show_title ) : ?>
+		<h1><?php echo esc_html( $title ); ?></h1>
+	<?php endif; ?>
 	<div id="icon-edit" class="icon32 icon32-tickets-orders"><br></div>
 
-	<div id="tribe-attendees-summary" class="welcome-panel">
+	<div id="tribe-order-summary" class="welcome-panel tribe-report-panel">
 		<div class="welcome-panel-content">
 			<div class="welcome-panel-column-container">
 
@@ -75,12 +111,6 @@
 					?>
 				</div>
 				<div class="welcome-panel-column welcome-panel-last alternate">
-
-					<?php
-					if (  $total_sold ) {
-						$total_sold = '(' . $total_sold . ')';
-					}; ?>
-
 					<div class="totals-header">
 						<h3>
 							<?php
@@ -110,22 +140,20 @@
 						</div>
 					</div>
 
-					<div id="sales_breakdown_wrapper" class="tribe-event-meta-note">
-
+					<ul id="sales_breakdown_wrapper" class="tribe-event-meta-note">
 						<?php
 						/**
 						 * Add Completed Status First and Skip in Loop
 						 */
 						?>
-						<div>
+						<li>
 							<strong><?php esc_html_e( 'Completed', 'event-tickets' ); ?>:</strong>
 							<?php echo esc_html( tribe_format_currency( number_format( $completed_status->get_line_total(), 2 ), $post_id ) ); ?>
 							<span id="total_issued">(<?php echo esc_html( $completed_status->get_qty() ); ?>)</span>
-						</div>
+						</li>
 
 						<?php
 						foreach ( $order_overview->statuses as $provider_key => $status ) {
-
 							// skip the completed order as we always display it above
 							if ( $order_overview->completed_status_id === $provider_key ) {
 								continue;
@@ -136,17 +164,15 @@
 								continue;
 							}
 							?>
-							<div>
+							<li>
 								<strong><?php esc_html_e( $status->name, 'event-tickets' ); ?>:</strong>
 								<?php echo esc_html( tribe_format_currency( number_format( $status->get_line_total(), 2 ), $post_id ) ); ?>
 								<span id="total_issued">(<?php echo esc_html( $status->get_qty() ); ?>)</span>
-							</div>
+							</li>
 							<?php
-
 						}
 						?>
-
-					</div>
+					</ul>
 				</div>
 			</div>
 		</div>
