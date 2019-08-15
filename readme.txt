@@ -117,11 +117,13 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.7] TBD =
+= [4.10.7] 2019-08-22 =
 
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
 * Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
+* Tweak - Added filters: `tribe_tickets_attendees_table_classes`, `tribe_tickets_commerce_order_table_classes`, `tribe_tickets_order_report_show_title`, `tribe_tickets_tpp_order_report_show_title`, `tribe_tickets_tpp_order_report_title`
+* Tweak - Added actions: `tribe_tickets_price_input_description`
 * Fix - Correct hardcoded table name in `tribe-user-event-confirmations` shortcode [129402]
 
 = [4.10.6.2] 2019-06-20 =
