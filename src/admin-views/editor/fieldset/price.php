@@ -31,6 +31,8 @@ if ( ! isset( $ticket_id ) ) {
 	/**
 	 * Filters whether we shold disable the ticket - separate from tribe-dependency.
 	 *
+	 * @since TBD
+	 *
 	 * @param boolean     $$disabled The boolean value tested againt
 	 * @param WP_Post|int $ticket_id The current ticket object or its ID
 	 */
