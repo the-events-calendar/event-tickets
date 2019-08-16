@@ -8,17 +8,19 @@ $validation_attrs = array(
 );
 
 if ( ! isset( $ticket_id ) ) {
-	$provider          = null;
-	$ticket_id         = null;
-	$ticket            = null;
-	$is_paypal_ticket  = false;
-	$price_description = '';
+	$provider           = null;
+	$ticket_id          = null;
+	$ticket             = null;
+	$is_paypal_ticket   = false;
+	$price_description  = '';
+	$disabled           = false;
 } else {
-	$provider          = tribe_tickets_get_ticket_provider( $ticket_id );
-	$is_paypal_ticket  = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
-	$price_description = $is_paypal_ticket
-		? ''
-		: esc_html__( 'Leave blank for free tickets', 'event-tickets' );
+	$provider           = tribe_tickets_get_ticket_provider( $ticket_id );
+	$is_paypal_ticket   = $provider instanceof Tribe__Tickets__Commerce__PayPal__Main;
+
+	$description_string = __( 'Leave blank for free tickets', 'event-tickets' );
+	$description_string = esc_html( apply_filters( 'tribe_tickets_price_description', $description_string, $ticket_id ) );
+	$price_description  = $is_paypal_ticket ? '' : $description_string;
 
 	if ( $is_paypal_ticket ) {
 		$validation_attrs[] = 'data-required';
@@ -26,6 +28,14 @@ if ( ! isset( $ticket_id ) ) {
 
 	}
 
+	/**
+	 * Filters twhether we shold disable the ticket - separate from tribe-dependency.
+	 *
+	 * @param boolean     $$disabled The boolean value tested againt
+	 * @param WP_Post|int $ticket_id The current ticket object or its ID
+	 */
+	$disabled           = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
+	$disabled           = (bool) filter_var( $disabled, FILTER_VALIDATE_BOOLEAN );
 	$ticket = $provider->get_ticket( $post_id, $ticket_id );
 
 	// If the ticket has a WC Memberships discount for the currently-logged-in user.
@@ -39,12 +49,14 @@ if ( ! isset( $ticket_id ) ) {
 		$price      = $ticket->price;
 	}
 }
+
 ?>
 <div
-	class="price tribe-dependent"
+	class="price <?php echo $disabled ? 'input_block' : 'tribe-dependent'; ?>"
+	<?php if ( ! $disabled ) { ?>
 	data-depends="#Tribe__Tickets__RSVP_radio"
 	data-condition-is-not-checked
->
+>	<?php } ?>
 	<div class="input_block">
 		<label for="ticket_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Price:', 'event-tickets' ); ?></label>
 		<input
@@ -54,6 +66,7 @@ if ( ! isset( $ticket_id ) ) {
 			class="ticket_field ticket_form_right"
 			size="7"
 			value="<?php echo esc_attr( $ticket ? $price : null ); ?>"
+			<?php echo $disabled ? ' disabled="disabled" ' : ''; ?>
 			<?php echo implode( ' ', $validation_attrs ); ?>
 		/>
 		<?php
@@ -102,4 +115,4 @@ if ( ! isset( $ticket_id ) ) {
 		<p class="description ticket_form_right"><?php echo $sale_price_desc; ?></p>
 	</div>
 	<?php endif; ?>
-</div>
+	</div>
