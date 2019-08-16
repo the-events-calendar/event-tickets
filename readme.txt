@@ -117,7 +117,11 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
-= [4.10.7] TBD =
+= [TBD] TBD =
+
+* Tweak - Allow Admin and Editor users to see Attendees in REST API responses by default [128298]
+
+= [4.10.7] 2019-08-22 =
 
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
 * Tweak - Add hook under the price description field of the admin ticket editor [128843]
