@@ -81,7 +81,7 @@ if ( ! isset( $ticket_id ) ) {
 		/**
 		 * Allow to add messages under the price field.
 		 *
-		 * @since TBD
+		 * @since 4.10.7
 		 *
 		 * @param int $ticket_id Ticket ID.
 		 * @param int $post_id   Post ID.
