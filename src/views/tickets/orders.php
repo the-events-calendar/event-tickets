@@ -34,7 +34,7 @@ if ( ! $view->has_ticket_attendees( $event_id, $user_id ) && ! $view->has_rsvp_a
 	Tribe__Notices::set_notice( 'ticket-no-results', esc_html__( "You don't have tickets for this event", 'event-tickets' ) );
 }
 
-$is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type ? true : false;
+$is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::POSTTYPE === $event->post_type;
 ?>
 
 <div id="tribe-events-content" class="tribe-events-single">
@@ -81,7 +81,7 @@ $is_event_page = class_exists( 'Tribe__Events__Main' ) && Tribe__Events__Main::P
 			<button type="submit" name="process-tickets" value="1" class="button alt"><?php echo sprintf( esc_html__( 'Update %s', 'event-tickets' ), $view->get_description_rsvp_ticket( $event_id, get_current_user_id() ) ); ?></button>
 		</div>
 	<?php endif;
-	// unset our glbal, we don't need it any more
+	// unset our global since we don't need it any more
 	unset( $tribe_my_tickets_have_meta );
 	?>
 	</form>

@@ -144,8 +144,12 @@ class Tribe__Tickets__Tickets_View {
 	}
 
 	/**
-	 * Add a new Query Var to allow tickets editing
+	 * Register a new public (URL query parameters can use it) Query Var to allow tickets editing.
+	 *
+	 * @see \WP::parse_request()
+	 *
 	 * @param array $vars
+	 *
 	 * @return array
 	 */
 	public function add_query_vars( $vars ) {
@@ -175,16 +179,25 @@ class Tribe__Tickets__Tickets_View {
 		$is_correct_page = $this->is_edit_page();
 
 		// Now fetch the display and check it
-		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display && ! $is_correct_page ) {
+		if (
+			'tickets' !== get_query_var( 'eventDisplay', false )
+			&& ! $is_correct_page
+		) {
 			return;
 		}
 
-		if ( empty( $_POST['process-tickets'] ) || ( empty( $_POST['attendee'] ) && empty( $_POST['tribe-tickets-meta'] ) ) ) {
+		if (
+			empty( $_POST['process-tickets'] )
+			|| (
+				empty( $_POST['attendee'] )
+				&& empty( $_POST['tribe-tickets-meta'] )
+			)
+		) {
 			return;
 		}
 
 		$post_id = get_the_ID();
+
 		$attendees = ! empty( $_POST['attendee'] ) ? $_POST['attendee'] : array();
 
 		/**
@@ -362,12 +375,17 @@ class Tribe__Tickets__Tickets_View {
 		$in_the_loop = isset( $GLOBALS['wp_query']->in_the_loop ) && $GLOBALS['wp_query']->in_the_loop;
 
 		// Prevents Weird
-		if ( ! $this->is_edit_page() || ! $in_the_loop ) {
+		if (
+			! $this->is_edit_page()
+			|| ! $in_the_loop
+		) {
 			return $content;
 		}
 
 		ob_start();
+
 		include Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
+
 		$content = ob_get_clean();
 
 		return $content;
@@ -389,8 +407,7 @@ class Tribe__Tickets__Tickets_View {
 			return;
 		}
 
-		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display ) {
+		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) ) {
 			return;
 		}
 
@@ -433,7 +450,7 @@ class Tribe__Tickets__Tickets_View {
 			return $old_file;
 		}
 
-		// Fetch the Correct File using the Tickets Hiearchy
+		// Fetch the correct file using the Tickets Hierarchy
 		$file = Tribe__Tickets__Templates::get_template_hierarchy( 'tickets/orders.php' );
 
 		return $file;
