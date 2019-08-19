@@ -58,7 +58,8 @@ if ( ! isset( $ticket_id ) ) {
 	<?php if ( ! $disabled ) : ?>
 	data-depends="#Tribe__Tickets__RSVP_radio"
 	data-condition-is-not-checked
->	<?php } ?>
+	<?php endif; ?>
+>
 	<div class="input_block">
 		<label for="ticket_price" class="ticket_form_label ticket_form_left"><?php esc_html_e( 'Price:', 'event-tickets' ); ?></label>
 		<input
