@@ -55,7 +55,7 @@ if ( ! isset( $ticket_id ) ) {
 ?>
 <div
 	class="price <?php echo $disabled ? 'input_block' : 'tribe-dependent'; ?>"
-	<?php if ( ! $disabled ) { ?>
+	<?php if ( ! $disabled ) : ?>
 	data-depends="#Tribe__Tickets__RSVP_radio"
 	data-condition-is-not-checked
 >	<?php } ?>
