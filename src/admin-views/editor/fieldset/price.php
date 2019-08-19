@@ -38,7 +38,7 @@ if ( ! isset( $ticket_id ) ) {
 	 */
 	$disabled           = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
 	$disabled           = (bool) filter_var( $disabled, FILTER_VALIDATE_BOOLEAN );
-	$ticket = $provider->get_ticket( $post_id, $ticket_id );
+	$ticket   = $provider->get_ticket( $post_id, $ticket_id );
 
 	// If the ticket has a WC Memberships discount for the currently-logged-in user.
 	$ticket_has_wc_member_discount = tribe_tickets_ticket_in_wc_membership_for_user( $ticket_id );
