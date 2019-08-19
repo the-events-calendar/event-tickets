@@ -36,8 +36,8 @@ if ( ! isset( $ticket_id ) ) {
 	 * @param boolean     $$disabled The boolean value tested againt
 	 * @param WP_Post|int $ticket_id The current ticket object or its ID
 	 */
-	$disabled           = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
-	$disabled           = (bool) filter_var( $disabled, FILTER_VALIDATE_BOOLEAN );
+	$disabled = apply_filters( 'tribe_tickets_price_disabled', false, $ticket_id );
+	$disabled = (bool) filter_var( $disabled, FILTER_VALIDATE_BOOLEAN );
 	$ticket   = $provider->get_ticket( $post_id, $ticket_id );
 
 	// If the ticket has a WC Memberships discount for the currently-logged-in user.
