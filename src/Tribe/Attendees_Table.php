@@ -996,7 +996,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		];
 
 		// Get our search dropdown.
-		$custom_search = tribe( 'tickets.admin.views' )->template( 'attendees-table-search', $args, false );
+
+		/** @var Tribe__Tickets__Admin__Views $admin_views */
+		$admin_views = tribe( 'tickets.admin.views' );
+
+		$custom_search = $admin_views->template( 'attendees-table-search', $args, false );
 
 		// Add our search dropdown.
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
