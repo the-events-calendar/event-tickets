@@ -263,9 +263,9 @@ class Tribe__Tickets__Tickets_View {
 				? add_query_arg( 'tribe-edit-orders', 1, untrailingslashit( $event_url ) )
 				: home_url( '/tickets/' . $event_id );
 		}
+
 		return $link;
 	}
-
 
 	/**
 	 * Makes sure only logged users can See the Tickets page.
@@ -289,8 +289,7 @@ class Tribe__Tickets__Tickets_View {
 		}
 
 		// Now fetch the display and check it
-		$display = get_query_var( 'eventDisplay', false );
-		if ( 'tickets' !== $display ) {
+		if ( 'tickets' !== get_query_var( 'eventDisplay', false ) ) {
 			return;
 		}
 
