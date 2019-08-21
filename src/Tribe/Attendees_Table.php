@@ -99,7 +99,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			'check_in'     => esc_html_x( 'Check in', 'attendee table', 'event-tickets' ),''
 		);
 
-		if ( tribe( 'tickets.attendees' )->user_can_manage_attendees( 0, $this->event->ID ) ) {
+		/** @var Tribe__Tickets__Attendees $attendees */
+		$attendees = tribe( 'tickets.attendees' );
+
+		if ( $attendees->user_can_manage_attendees( 0, $this->event->ID ) ) {
 			$columns['check_in'] = esc_html_x( 'Check in', 'attendee table', 'event-tickets' );
 		}
 
@@ -506,9 +509,9 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		echo '</tr>';
 
 		/**
-		 * Hook to allow for the insertion of data after an attendee table row
+		 * Hook to allow for the insertion of data after an attendee table row.
 		 *
-		 * @var $item Attendee data
+		 * @var $item array of an Attendee's data
 		 */
 		do_action( 'event_tickets_attendees_table_after_row', $item );
 	}
