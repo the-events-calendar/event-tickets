@@ -133,25 +133,78 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	}
 
 	/**
-	 * Get the provider Cart URL if WooCommerce is the provider.
-	 * Checks the provider by post id (event)
+	 * Get the provider Cart URL.
 	 *
 	 * @since 4.9
 	 *
-	 * @param int $post_id
+	 * @param int $provider
 	 * @return bool|string
 	 */
-	public function get_cart_url( $post_id ) {
-
-		$post_provider = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field, true );
-
-		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' !== $post_provider ) {
+	public function get_cart_url( $provider ) {
+		if ( empty( $provider ) ) {
 			return false;
 		}
 
-		$provider = new $post_provider;
+		$post_provider = $this->get_cart_provider( $provider );
+
+		if ( empty( $post_provider ) ) {
+			return false;
+		}
+
+		$cart_url = false;
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider ) ) {
+			$provider = tribe( 'tickets-plus.commerce.woo' );
+		} elseif(
+			'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider )
+		) {
+			$provider = tribe( 'tickets-plus.commerce.edd' );
+		} else {
+			return;
+		}
 
 		return $provider->get_cart_url();
+	}
+
+
+	public function get_cart_provider( $provider ) {
+		if ( empty( $provider ) ) {
+			return false;
+		}
+
+		switch ( $provider ) {
+			case 'woo':
+			case 'tribe_wooticket':
+			case 'Tribe__Events__Tickets__Woo__Main':
+				return tribe( 'tickets-plus.commerce.woo' );
+				break;
+			case 'edd':
+			case 'tribe_eddticket':
+			case 'Tribe__Events__Tickets__EDD__Main':
+				return tribe( 'tickets-plus.commerce.edd' );
+				break;
+			case 'tpp':
+			case 'tribe_tpp_attendees':
+			case 'Tribe__Tickets__Commerce__PayPal__Main':
+			return tribe( 'tickets.commerce.paypal' );
+				break;
+			default:
+				return '';
+				break;
+		}
+
+		/**
+		 * Allow providers to include their own strings/suffixes.
+		 *
+		 * @since TBD
+		 *
+		 * @param array $provider_classes in format $provider -> class suffix.
+		 */
+		$provider_classes = apply_filters( 'tribe_attendee_registration_form_classes', [] );
+
+		if ( array_key_exists( $provider, $provider_classes ) ) {
+			$class = 'tribe-block__tickets__item__attendee__fields__form--' . $provider_classes[ $provider ];
+		}
 	}
 
 	/**
