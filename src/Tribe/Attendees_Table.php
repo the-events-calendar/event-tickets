@@ -861,7 +861,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
 
-		// Front-end uses 'search'; parent class' default is 's'. Let's account for either.
+		// This class uses 'search'; parent class' default is 's'. Let's account for either.
 		$search = sanitize_text_field( tribe_get_request_var( 'search' ) );
 
 		if ( empty( $search ) ) {
