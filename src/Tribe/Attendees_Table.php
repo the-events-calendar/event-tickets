@@ -492,8 +492,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @param object $item The current item
 	 */
 	public function single_row( $item ) {
-
-
 		$checked = '';
 		if ( ( (int) $item['check_in'] ) === 1 ) {
 			$checked = ' tickets_checked ';
@@ -862,8 +860,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		];
 
 		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
-		$search   = empty( $_REQUEST['s'] ) ? null : sanitize_text_field( $_REQUEST['s'] );
 
+		// Front-end uses 'search'; parent class' default is 's'. Let's account for either.
+		$search = sanitize_text_field( tribe_get_request_var( 'search' ) );
+
+		if ( empty( $search ) ) {
+			$search = sanitize_text_field( tribe_get_request_var( 's' ) );
+		}
+
+		// If one of them was found, use it.
 		if ( ! empty( $search ) ) {
 			$search_keys = [
 				'purchaser_name',
