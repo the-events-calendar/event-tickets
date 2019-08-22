@@ -20,6 +20,15 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	public $event = false;
 
 	/**
+	 * The name (what gets submitted to the server) of our search box input.
+	 *
+	 * This class' parent defaults to 's', but we want to change that on the front-end (e.g. Community) to avoid the
+	 * possibility of triggering the theme's Search template.
+	 *
+	 * @var string $search_box_input_name
+	 */
+	private $search_box_input_name = 'search';
+
 	/**
 	 * The user option that will be used to store the number of attendees per page to show.
 	 *
@@ -868,14 +877,8 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$event_id = empty( $_GET['event_id'] ) ? 0 : absint( $_GET['event_id'] );
 
-		// This class uses 'search'; parent class' default is 's'. Let's account for either.
-		$search = sanitize_text_field( tribe_get_request_var( 'search' ) );
+		$search = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
-		if ( empty( $search ) ) {
-			$search = sanitize_text_field( tribe_get_request_var( 's' ) );
-		}
-
-		// If one of them was found, use it.
 		if ( ! empty( $search ) ) {
 			$search_keys = [
 				'purchaser_name',
@@ -976,6 +979,11 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		parent::search_box( $text, $input_id );
 		$search_box = ob_get_clean();
 
+		// Give front-end (e.g. Community) a custom input name
+		if ( ! is_admin() ) {
+			$search_box = str_replace( 'name="s"', 'name="' . $this->search_box_input_name . '"', $search_box );
+		}
+
 		$this->items = $old_items;
 
 		$options = [
@@ -1017,7 +1025,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$custom_search = $admin_views->template( 'attendees-table-search', $args, false );
 
-		// Add our search dropdown.
+		// Add our search type dropdown before the search box input
 		$search_box = str_replace( '<input type="search"', $custom_search . '<input type="search"', $search_box );
 
 		echo $search_box;
