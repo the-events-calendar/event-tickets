@@ -35,7 +35,7 @@ $all_post_types = apply_filters( 'tribe_tickets_settings_post_types', $all_post_
 
 $options = get_option( Tribe__Main::OPTIONNAME, array() );
 
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+$modal_version_check = tribe_installed_after( 'Tribe__Tickets__Main', '4.11.0' );
 
 /**
  * List of ticketing solutions that support login requirements (ie, disabling or
@@ -112,6 +112,22 @@ if ( class_exists( 'Tribe__Events__Main' ) ) {
 		],
 	];
 }
+
+$attendee_fields = [
+	'ticket-attendee-heading'       => [
+		'type' => 'html',
+		'html' => '<h3>' . __( 'Attendee Registration', 'event-tickets-plus' ) . '</h3>',
+	],
+	'ticket-attendee-modal'         => [
+		'type'            => 'checkbox_bool',
+		'label'           => esc_html__( 'Attendee Registration Modal ', 'event-tickets-plus' ),
+		'tooltip'         => esc_html__( 'Check this box if you wish to turn on the Attendee Registration Modal on the single-event page.', 'event-tickets-plus' ),
+		'size'            => 'medium',
+		'default'         => $modal_version_check,
+		'validation_type' => 'boolean',
+		'attributes'      => array( 'id' => 'ticket-attendee-enable-modal' ),
+	],
+];
 
 $authentication_fields = [
 	'ticket-authentication-requirements-heading' => [
@@ -384,6 +400,7 @@ $ticket_fields_end = [
 $tickets_fields = array_merge(
 	$tickets_fields,
 	$tec_fields,
+	$attendee_fields,
 	$authentication_fields,
 	$paypal_fields,
 	$paypal_subfields,
