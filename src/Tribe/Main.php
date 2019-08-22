@@ -7,6 +7,11 @@ class Tribe__Tickets__Main {
 	const VERSION = '4.11.0';
 
 	/**
+	 * Current version of this plugin
+	 */
+	const VERSION_HISTORY_SLUG = 'previous_event_tickets_versions';
+
+	/**
 	 * Min required The Events Calendar version
 	 *
 	 * @deprecated 4.10
@@ -474,15 +479,15 @@ class Tribe__Tickets__Main {
 	 */
 	public function maybe_set_et_version() {
 		if ( version_compare( Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' ), self::VERSION, '<' ) ) {
-			$previous_versions = Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
-				? Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
+			$previous_versions = Tribe__Settings_Manager::get_option( self::VERSION_HISTORY_SLUG )
+				? Tribe__Settings_Manager::get_option( self::VERSION_HISTORY_SLUG )
 				: array();
 
 			$previous_versions[] = Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
 				? Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
 				: '0';
 
-			Tribe__Settings_Manager::set_option( 'previous_event_tickets_versions', $previous_versions );
+			Tribe__Settings_Manager::set_option( self::VERSION_HISTORY_SLUG, $previous_versions );
 			Tribe__Settings_Manager::set_option( 'latest_event_tickets_version', self::VERSION );
 		}
 	}
@@ -727,7 +732,7 @@ class Tribe__Tickets__Main {
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
-				'version_history_slug'  => 'previous_event_tickets_versions',
+				'version_history_slug'  => self::VERSION_HISTORY_SLUG,
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			) );
