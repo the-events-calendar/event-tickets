@@ -478,17 +478,17 @@ class Tribe__Tickets__Main {
 	 * Set the Event Tickets version in the options table if it's not already set.
 	 */
 	public function maybe_set_et_version() {
-		if ( version_compare( Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' ), self::VERSION, '<' ) ) {
+		if ( version_compare( Tribe__Settings_Manager::get_option( self::LATEST_VERSION_SLUG ), self::VERSION, '<' ) ) {
 			$previous_versions = Tribe__Settings_Manager::get_option( self::VERSION_HISTORY_SLUG )
 				? Tribe__Settings_Manager::get_option( self::VERSION_HISTORY_SLUG )
-				: array();
+				: [];
 
-			$previous_versions[] = Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
-				? Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
+			$previous_versions[] = Tribe__Settings_Manager::get_option( self::LATEST_VERSION_SLUG )
+				? Tribe__Settings_Manager::get_option( self::LATEST_VERSION_SLUG )
 				: '0';
 
 			Tribe__Settings_Manager::set_option( self::VERSION_HISTORY_SLUG, $previous_versions );
-			Tribe__Settings_Manager::set_option( 'latest_event_tickets_version', self::VERSION );
+			Tribe__Settings_Manager::set_option( self::LATEST_VERSION_SLUG, self::VERSION );
 		}
 	}
 

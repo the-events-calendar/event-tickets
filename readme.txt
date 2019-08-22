@@ -119,7 +119,8 @@ Currently, the following add-ons are available for Event Tickets:
 
 = [4.11] TBD =
 
-
+* Tweak - Change the way we add options to the ticket settings tab. [133048]
+* Tweak - Add ability to track installed version history [133048]
 
 = [4.10.8] TBD =
 
