@@ -12,11 +12,18 @@ if ( ! class_exists( 'WP_List_Table' ) ) {
  */
 class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
-	// Store a possible Event
+	/**
+	 * Store a possible Event.
+	 *
+	 * @var mixed $event
+	 */
 	public $event = false;
 
 	/**
-	 * @var string The user option that will be used to store the number of attendees per page to show.
+	/**
+	 * The user option that will be used to store the number of attendees per page to show.
+	 *
+	 * @var string $per_page_option
 	 */
 	protected $per_page_option;
 
