@@ -7,9 +7,14 @@ class Tribe__Tickets__Main {
 	const VERSION = '4.11.0';
 
 	/**
-	 * Current version of this plugin
+	 * Used to store the version history
 	 */
 	const VERSION_HISTORY_SLUG = 'previous_event_tickets_versions';
+
+	/**
+	 * Used to store the latest version
+	 */
+	const LATEST_VERSION_SLUG = 'latest_event_tickets_version';
 
 	/**
 	 * Min required The Events Calendar version
