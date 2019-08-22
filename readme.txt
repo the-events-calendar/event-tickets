@@ -132,6 +132,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
+* Fix - Front-end search box input name changed to no longer trigger a theme's Search template [132248]
 
 = [4.10.7] 2019-08-22 =
 
