@@ -301,9 +301,9 @@ class Tribe__Tickets__Attendees {
 
 		$resources_url = plugins_url( 'src/resources', dirname( dirname( __FILE__ ) ) );
 
-		wp_enqueue_style( $this->slug(), $resources_url . '/css/tickets-attendees.css', array(), Tribe__Tickets__Main::instance()->css_version() );
-		wp_enqueue_style( $this->slug() . '-print', $resources_url . '/css/tickets-attendees-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
-		wp_enqueue_script( $this->slug(), $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
+		wp_enqueue_style( 'tickets-report-css', $resources_url . '/css/tickets-report.css', array(), Tribe__Tickets__Main::instance()->css_version() );
+		wp_enqueue_style( 'tickets-report-print-css', $resources_url . '/css/tickets-report-print.css', array(), Tribe__Tickets__Main::instance()->css_version(), 'print' );
+		wp_enqueue_script( $this->slug() . '-js', $resources_url . '/js/tickets-attendees.js', array( 'jquery' ), Tribe__Tickets__Main::instance()->js_version() );
 
 		add_thickbox();
 
@@ -322,7 +322,7 @@ class Tribe__Tickets__Attendees {
 			) ),
 		);
 
-		wp_localize_script( $this->slug(), 'Attendees', $mail_data );
+		wp_localize_script( $this->slug() . '-js', 'Attendees', $mail_data );
 	}
 
 	/**
@@ -353,7 +353,7 @@ class Tribe__Tickets__Attendees {
 			wp_enqueue_style( 'wp-pointer' );
 		}
 
-		wp_localize_script( $this->slug(), 'AttendeesPointer', $pointer );
+		wp_localize_script( $this->slug() . '-js', 'AttendeesPointer', $pointer );
 	}
 
 	/**
