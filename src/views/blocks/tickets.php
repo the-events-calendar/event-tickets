@@ -10,8 +10,11 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Updated loading logic for including a renamed template.
  *
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Editor__Template $this
  */
 
 $post_id             = $this->get( 'post_id' );
@@ -28,9 +31,15 @@ $cart_classes        = array( 'tribe-block', 'tribe-block__tickets' );
 if ( ! $provider || empty( $tickets ) ) {
 	return false;
 }
-?>
 
-<?php $this->template( 'blocks/attendees/order-links', array( 'type' => 'ticket' ) ); ?>
+$html = $this->template( 'blocks/attendees/order-links', [], false );
+
+if ( empty( $html ) ) {
+	$html = $this->template( 'blocks/attendees/view-link', [], false );;
+}
+
+echo $html;
+?>
 
 <form
 	id="tribe-block__tickets"
