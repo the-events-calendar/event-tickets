@@ -141,6 +141,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Added filters: `tribe_tickets_attendees_table_classes`, `tribe_tickets_commerce_order_table_classes`, `tribe_tickets_order_report_show_title`, `tribe_tickets_tpp_order_report_show_title`, `tribe_tickets_tpp_order_report_title`
 * Tweak - Added actions: `tribe_tickets_price_input_description`
 * Fix - Correct hardcoded table name in `tribe-user-event-confirmations` shortcode [129402]
+* Language - 1 new strings added, 66 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.6.2] 2019-06-20 =
 
