@@ -122,6 +122,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Renamed `src/views/tickets/orders-link.php` to `src/views/tickets/view-link.php` and renamed `src/views/blocks/attendees/order-links.php` to `src/views/blocks/attendees/view-link.php` for improved and consistent naming between Classic and Block Editor templates [130955]
 * Tweak - Tribe Commerce PayPal Tickets now sets Euro currency symbol after amount (postfix/suffix) if WordPress site language is non-English, to match EU's guidelines [128532]
 * Tweak - Add class to wrapper div around ticket controls in admin [127193]
+* Tweak - Smarter plugin dependency checking with more accurate admin notices if not all requirements are satisfied [131080]
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
