@@ -64,7 +64,7 @@
 				'TB_iframe'      => 'true',
 			) );
 
-			// Make sure Thickbox is available regardless of which admin page we're on
+			// Make sure Thickbox is available regardless of which admin page we're on.
 			add_thickbox();
 
 			$controls[] = sprintf( '<a href="%1$s" class="thickbox">' . __( 'Move', 'event-tickets' ) . '</a>', $move_type_url );
