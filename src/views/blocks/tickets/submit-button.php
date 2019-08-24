@@ -11,6 +11,7 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
+ *
  * @version 4.9.4
  *
  */
@@ -22,11 +23,9 @@
 	<?php esc_html_e( 'Add to cart', 'event-tickets' ); ?>
 </button>
 <?php
-/* translators: %s is the event or post title the tickets are attached to. */
-$title       = sprintf( __( '%s Tickets', 'event-tickets-plus' ), esc_html__( get_the_title() ) );
-$button_text = __( 'Get Tickets!', 'event-tickets-plus');
-$content     = apply_filters( 'tribe_events_tickets_woo_attendee_registration_modal_content', $this );
-//$content     = wp_kses_post( $content );
+$title       = sprintf( __( '%s Tickets', 'event-tickets' ), esc_html__( get_the_title() ) );
+$button_text = __( 'Get Tickets!', 'event-tickets');
+$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', $this );
 $args = [
 	'button_name'  => 'wootickets_process',
 	'button_text'  => $button_text,
