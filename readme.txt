@@ -4,7 +4,7 @@ Contributors: ModernTribe, brianjessee, camwynsp, paulkim, sc0ttkclark, aguseo, 
 Tags: RSVP, events, tickets, event management, calendar, ticket sales, community, registration, api, dates, date, posts, workshop, conference, meeting, seminar, concert, summit, ticket integration, event ticketing
 Requires at least: 4.7
 Tested up to: 5.2
-Stable tag: 4.10.7
+Stable tag: 4.10.8
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -131,13 +131,17 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
+* Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
 
-= [4.10.7] TBD =
+= [4.10.7] 2019-08-22 =
 
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
 * Tweak - Add hook under the price description field of the admin ticket editor [128843]
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
+* Tweak - Added filters: `tribe_tickets_attendees_table_classes`, `tribe_tickets_commerce_order_table_classes`, `tribe_tickets_order_report_show_title`, `tribe_tickets_tpp_order_report_show_title`, `tribe_tickets_tpp_order_report_title`
+* Tweak - Added actions: `tribe_tickets_price_input_description`
 * Fix - Correct hardcoded table name in `tribe-user-event-confirmations` shortcode [129402]
+* Language - 1 new strings added, 66 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.6.2] 2019-06-20 =
 
