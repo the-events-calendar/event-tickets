@@ -181,7 +181,7 @@ class Tribe__Tickets__Data_API {
 
 
 	/**
-	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID
+	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID.
 	 *
 	 * @param $post_id
 	 *
@@ -195,7 +195,7 @@ class Tribe__Tickets__Data_API {
 			return false;
 		}
 
-		return call_user_func( array( $services['class'], 'get_instance' ) );
+		return call_user_func( [ $services['class'], 'get_instance' ] );
 	}
 
 	/**
