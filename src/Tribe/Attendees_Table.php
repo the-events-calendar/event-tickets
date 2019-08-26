@@ -22,9 +22,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * The name (what gets submitted to the server) of our search box input.
 	 *
-	 * This class' parent defaults to 's', but we want to change that on the front-end (e.g. Community) to avoid the
-	 * possibility of triggering the theme's Search template.
-	 *
 	 * @var string $search_box_input_name
 	 */
 	private $search_box_input_name = 's';
@@ -44,6 +41,14 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 * @see WP_List_Table::__construct()
 	 */
 	public function __construct( $args = array() ) {
+		/**
+		 * This class' parent defaults to 's', but we want to change that on the front-end (e.g. Community) to avoid
+		 * the possibility of triggering the theme's Search template.
+		 */
+		if ( ! is_admin() ) {
+			$this->search_box_input_name = 'search';
+		}
+
 		$screen = get_current_screen();
 
 		$args   = wp_parse_args( $args, array(
