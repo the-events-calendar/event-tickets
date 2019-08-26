@@ -374,7 +374,7 @@ tribe.tickets.block = {
 	*
 	* @since TBD
 	*
-	* @param id
+	* @param int id the id of the ticket/product
 	* @param obj modalCartItem the cart item to update
 	* @param obj blockCartItem the optional ticket block cart item
 	*

@@ -20,7 +20,7 @@
 $post_id  = $this->get( 'post_id' );
 $ticket   = $this->get( 'ticket' );
 $provider = $this->get( 'provider' );
-$modal = $this->get( 'is_modal' );
+$modal    = $this->get( 'is_modal' );
 
 $classes  = array(
 	'tribe-block__tickets__item',
