@@ -24,10 +24,10 @@
 </button>
 <?php
 $title       = sprintf( __( '%s Tickets', 'event-tickets' ), esc_html__( get_the_title() ) );
-$button_text = __( 'Get Tickets!', 'event-tickets');
-$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', $this );
+$button_text = __( 'Get Tickets', 'event-tickets');
+$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Modal Cart</p>', $this );
 $args = [
-	'button_name'  => 'wootickets_process',
+	'button_name'  => $provider_id . 'tickets_process',
 	'button_text'  => $button_text,
 	'button_type'  => 'submit',
 	'button_value' => '1',

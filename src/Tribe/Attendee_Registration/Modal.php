@@ -9,10 +9,10 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 
 	public function hook() {
 
-		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_cart_template' ] );
+		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_cart_template' ], 10, 2 );
 	}
 
-	function modal_cart_template( $template_obj ) {
+	function modal_cart_template( $content, $template_obj ) {
 
 		$main = Tribe__Tickets__Main::instance();
 
