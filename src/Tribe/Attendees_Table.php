@@ -27,7 +27,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	 *
 	 * @var string $search_box_input_name
 	 */
-	private $search_box_input_name = 'search';
+	private $search_box_input_name = 's';
 
 	/**
 	 * The user option that will be used to store the number of attendees per page to show.
