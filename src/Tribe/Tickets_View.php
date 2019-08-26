@@ -215,9 +215,9 @@ class Tribe__Tickets__Tickets_View {
 			/**
 			 * An Action fired for each one of the Attendees that were posted on the Order Tickets page
 			 *
-			 * @var array $data     Infomation that we are trying to save
-			 * @var int   $order_id ID of attendee ticket
-			 * @var int   $post_id  ID of event
+			 * @var array $data     Information that we are trying to save.
+			 * @var int   $order_id ID of attendee ticket.
+			 * @var int   $post_id  ID of event.
 			 */
 			do_action( 'event_tickets_attendee_update', $data, $order_id, $post_id );
 		}
@@ -229,7 +229,7 @@ class Tribe__Tickets__Tickets_View {
 		 */
 		do_action( 'event_tickets_after_attendees_update', $post_id );
 
-		// After Editing the Values we Update the Transient
+		// After editing the values, we update the transient.
 		Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 
 		// If it's not events CPT
