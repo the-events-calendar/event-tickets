@@ -981,7 +981,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		// Give front-end (e.g. Community) a custom input name
 		if ( ! is_admin() ) {
-			$search_box = str_replace( 'name="s"', 'name="' . $this->search_box_input_name . '"', $search_box );
+			$search_box = str_replace( 'name="s"', 'name="' . esc_attr( $this->search_box_input_name ) . '"', $search_box );
 		}
 
 		$this->items = $old_items;
