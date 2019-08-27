@@ -395,7 +395,7 @@ class Tribe__Tickets__Data_API {
 	 */
 	protected function check_rsvp_order_key_exists( $order_key ) {
 
-		$attendees_query = $this->query_by_rsvp_order_key( $order_key );
+		$attendees_query = $this->query_by_rsvp_order_key( $order_key, 1 );
 		if ( ! $attendees_query->have_posts() ) {
 			return '';
 		}
