@@ -128,6 +128,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Modify methods to check for a post id of 0 to prevent PHP notices [128346]
 * Tweak - Allow Admin and Editor users to see Attendees in REST API responses by default [128298]
 * Fix - Correct hardcoded table name in `tribe-user-event-confirmations` shortcode [129402]
+* Language - 1 new strings added, 66 updated, 0 fuzzied, and 0 obsoleted
 
 = [4.10.6.2] 2019-06-20 =
 
