@@ -136,6 +136,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 * Fix - Front-end search box input name changed to no longer trigger a theme's Search template [132248]
 
+= [4.10.7.1] 2019-08-27 =
+
+ * Fix - Resolve JS console warnings from `tooltip.js` in `tribe-common` by adding missing `tribe` var when the var is not setup on the current page already [133207]
+
 = [4.10.7] 2019-08-22 =
 
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
