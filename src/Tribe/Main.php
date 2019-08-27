@@ -9,7 +9,7 @@ class Tribe__Tickets__Main {
 	/**
 	 * Used to store the version history
 	 */
-	const VERSION_HISTORY_SLUG = 'previous_event_tickets_versions';
+	public $version_history_slug = 'previous_event_tickets_versions';
 
 	/**
 	 * Used to store the latest version
@@ -483,17 +483,17 @@ class Tribe__Tickets__Main {
 	 * Set the Event Tickets version in the options table if it's not already set.
 	 */
 	public function maybe_set_et_version() {
-		if ( version_compare( Tribe__Settings_Manager::get_option( self::LATEST_VERSION_SLUG ), self::VERSION, '<' ) ) {
-			$previous_versions = Tribe__Settings_Manager::get_option( self::VERSION_HISTORY_SLUG )
-				? Tribe__Settings_Manager::get_option( self::VERSION_HISTORY_SLUG )
+		if ( version_compare( Tribe__Settings_Manager::get_option( $this->latest_version_slug ), self::VERSION, '<' ) ) {
+			$previous_versions = Tribe__Settings_Manager::get_option( $this->version_history_slug )
+				? Tribe__Settings_Manager::get_option( $this->version_history_slug )
 				: [];
 
-			$previous_versions[] = Tribe__Settings_Manager::get_option( self::LATEST_VERSION_SLUG )
-				? Tribe__Settings_Manager::get_option( self::LATEST_VERSION_SLUG )
+			$previous_versions[] = Tribe__Settings_Manager::get_option( $this->latest_version_slug )
+				? Tribe__Settings_Manager::get_option( $this->latest_version_slug )
 				: '0';
 
-			Tribe__Settings_Manager::set_option( self::VERSION_HISTORY_SLUG, $previous_versions );
-			Tribe__Settings_Manager::set_option( self::LATEST_VERSION_SLUG, self::VERSION );
+			Tribe__Settings_Manager::set_option( $this->version_history_slug, $previous_versions );
+			Tribe__Settings_Manager::set_option( $this->latest_version_slug, self::VERSION );
 		}
 	}
 
@@ -759,7 +759,7 @@ class Tribe__Tickets__Main {
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
-				'version_history_slug'  => self::VERSION_HISTORY_SLUG,
+				'version_history_slug'  => $this->version_history_slug,
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			) );
