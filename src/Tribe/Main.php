@@ -7,16 +7,6 @@ class Tribe__Tickets__Main {
 	const VERSION = '4.11.0';
 
 	/**
-	 * Used to store the version history
-	 */
-	public $version_history_slug = 'previous_event_tickets_versions';
-
-	/**
-	 * Used to store the latest version
-	 */
-	const LATEST_VERSION_SLUG = 'latest_event_tickets_version';
-
-	/**
 	 * Min required The Events Calendar version
 	 *
 	 * @deprecated 4.10
@@ -29,6 +19,16 @@ class Tribe__Tickets__Main {
 	 * @deprecated 4.10
 	 */
 	const MIN_COMMON_VERSION = '4.9.14';
+
+	/**
+	 * Used to store the version history
+	 */
+	public $version_history_slug = 'previous_event_tickets_versions';
+
+	/**
+	 * Used to store the latest version
+	 */
+	public $latest_version_slug = 'latest_event_tickets_version';
 
 	/**
 	* Min Version of WordPress
