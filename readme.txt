@@ -125,6 +125,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Smarter plugin dependency checking with more accurate admin notices if not all requirements are satisfied [131080]
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
+* Fix - Fix potential issues with query that had no upper limit set when all that's needed is to check if it had one item [133247]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
 * Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types [128666]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
