@@ -117,6 +117,10 @@ Currently, the following add-ons are available for Event Tickets:
 
 == Changelog ==
 
+= [4.10.7.1] 2019-08-27 =
+
+ * Fix - Resolve JS console warnings from `tooltip.js` in `tribe-common` by adding missing `tribe` var when the var is not setup on the current page already [133207]
+
 = [4.10.7] 2019-08-22 =
 
 * Tweak - Use unique IDs for tabbed views, correct styles to adapt [131430]
