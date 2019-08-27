@@ -186,7 +186,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			case 'tpp':
 			case 'tribe_tpp_attendees':
 			case 'Tribe__Tickets__Commerce__PayPal__Main':
-			return tribe( 'tickets.commerce.paypal' );
+				return tribe( 'tickets.commerce.paypal' );
 				break;
 			default:
 				return '';
