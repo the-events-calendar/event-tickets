@@ -87,6 +87,7 @@
     "node-sass": "^4.9.2",
     "postcss-hexrgba": "^1.0.0",
     "postcss-import": "^11.0.0",
+    "postcss-inline-svg": "^4.1.0",
     "postcss-loader": "2.0.6",
     "postcss-mixins": "^4.0.1",
     "postcss-nested": "^1.0.0",
