@@ -981,7 +981,6 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			 */
 			do_action( 'event_tickets_tpp_tickets_generated_for_product', $product_id, $order_id, $qty );
 
-
 			// After Adding the Values we Update the Transient
 			Tribe__Post_Transient::instance()->delete( $post_id, Tribe__Tickets__Tickets::ATTENDEES_CACHE );
 		}
@@ -2255,13 +2254,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Returns all the tickets for an event
-	 *
-	 * @since 4.7
-	 *
-	 * @param int $post_id
-	 *
-	 * @return array
+	 * {@inheritDoc}
 	 */
 	public function get_tickets( $post_id ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id );
