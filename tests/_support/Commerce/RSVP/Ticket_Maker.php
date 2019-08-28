@@ -14,7 +14,9 @@ trait Ticket_Maker {
 	 * @return int The generated ticket post ID.
 	 */
 	protected function create_rsvp_ticket( $post_id, array $overrides = [] ) {
-		$factory = $this->factory ?? $this->factory();
+		if ( ! isset( $this->factory ) || ! $this->factory instanceof \WP_UnitTest_Factory ) {
+			throw new \RuntimeException( 'This trait should be used in classes that extend the \\Codeception\\TestCase\\WPTestCase class' );
+		}
 
 		$meta_input = isset( $overrides['meta_input'] ) && \is_array( $overrides['meta_input'] )
 			? $overrides['meta_input']
@@ -49,7 +51,7 @@ trait Ticket_Maker {
 			}
 		}
 
-		$ticket_id = $factory->post->create( array_merge(
+		$ticket_id = $this->factory()->post->create( array_merge(
 				[
 					'post_title'   => "Test RSVP ticket for {$post_id}",
 					'post_content' => "Test RSVP ticket description for {$post_id}",
