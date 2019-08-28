@@ -21,12 +21,16 @@ class Tribe__Tickets__Main {
 	const MIN_COMMON_VERSION = '4.9.14';
 
 	/**
-	 * Used to store the version history
+	 * Used to store the version history.
+	 *
+	 * @since TBD
 	 */
 	public $version_history_slug = 'previous_event_tickets_versions';
 
 	/**
-	 * Used to store the latest version
+	 * Used to store the latest version.
+	 *
+	 * @since TBD
 	 */
 	public $latest_version_slug = 'latest_event_tickets_version';
 
@@ -679,8 +683,6 @@ class Tribe__Tickets__Main {
 	 * or set if they are missing (like meta keys).
 	 *
 	 * @since TBD
-	 *
-	 * @return void
 	 */
 	public function maybe_set_options_for_old_installs() {
 		// If the (boolean) option is not set, and this install predated the modal, let's set the option to false.
