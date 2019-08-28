@@ -216,7 +216,9 @@ $paypal_fields = [
 		'size'            => 'medium',
 		'default'         => false,
 		'validation_type' => 'boolean',
-		'attributes'      => array( 'id' => 'ticket-paypal-enable-input' ),
+		'attributes'      => [
+			'id' => 'ticket-paypal-enable-input',
+		],
 	],
 ];
 
