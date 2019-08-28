@@ -21,6 +21,20 @@ class Tribe__Tickets__Main {
 	const MIN_COMMON_VERSION = '4.9.14';
 
 	/**
+	 * Used to store the version history.
+	 *
+	 * @since TBD
+	 */
+	public $version_history_slug = 'previous_event_tickets_versions';
+
+	/**
+	 * Used to store the latest version.
+	 *
+	 * @since TBD
+	 */
+	public $latest_version_slug = 'latest_event_tickets_version';
+
+	/**
 	* Min Version of WordPress
 	*
 	* @since 4.10
@@ -473,17 +487,17 @@ class Tribe__Tickets__Main {
 	 * Set the Event Tickets version in the options table if it's not already set.
 	 */
 	public function maybe_set_et_version() {
-		if ( version_compare( Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' ), self::VERSION, '<' ) ) {
-			$previous_versions = Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
-				? Tribe__Settings_Manager::get_option( 'previous_event_tickets_versions' )
-				: array();
+		if ( version_compare( Tribe__Settings_Manager::get_option( $this->latest_version_slug ), self::VERSION, '<' ) ) {
+			$previous_versions = Tribe__Settings_Manager::get_option( $this->version_history_slug )
+				? Tribe__Settings_Manager::get_option( $this->version_history_slug )
+				: [];
 
-			$previous_versions[] = Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
-				? Tribe__Settings_Manager::get_option( 'latest_event_tickets_version' )
+			$previous_versions[] = Tribe__Settings_Manager::get_option( $this->latest_version_slug )
+				? Tribe__Settings_Manager::get_option( $this->latest_version_slug )
 				: '0';
 
-			Tribe__Settings_Manager::set_option( 'previous_event_tickets_versions', $previous_versions );
-			Tribe__Settings_Manager::set_option( 'latest_event_tickets_version', self::VERSION );
+			Tribe__Settings_Manager::set_option( $this->version_history_slug, $previous_versions );
+			Tribe__Settings_Manager::set_option( $this->latest_version_slug, self::VERSION );
 		}
 	}
 
@@ -660,6 +674,26 @@ class Tribe__Tickets__Main {
 		$this->tickets_view();
 		Tribe__Credits::init();
 		$this->maybe_set_et_version();
+		$this->maybe_set_options_for_old_installs();
+	}
+
+	/**
+	 * Allows us to set options based on installed version.
+	 * Also a good place for things that need to be changed
+	 * or set if they are missing (like meta keys).
+	 *
+	 * @since TBD
+	 */
+	public function maybe_set_options_for_old_installs() {
+		// If the (boolean) option is not set, and this install predated the modal, let's set the option to false.
+		$modal_option = Tribe__Settings_Manager::get_option( 'ticket-attendee-modal' );
+
+		if ( ! $modal_option && $modal_option !== false ) {
+			$modal_version_check = tribe_installed_after( 'Tribe__Tickets__Main', '4.11.0' );
+			if ( ! $modal_version_check ) {
+				Tribe__Settings_Manager::set_option( 'ticket-attendee-modal', false );
+			}
+		}
 	}
 
 	/**
@@ -727,7 +761,7 @@ class Tribe__Tickets__Main {
 				'version'               => self::VERSION,
 				'activation_transient'  => '_tribe_tickets_activation_redirect',
 				'plugin_path'           => $this->plugin_dir . 'event-tickets.php',
-				'version_history_slug'  => 'previous_event_tickets_versions',
+				'version_history_slug'  => $this->version_history_slug,
 				'welcome_page_title'    => esc_html__( 'Welcome to Event Tickets!', 'event-tickets' ),
 				'welcome_page_template' => $this->plugin_path . 'src/admin-views/admin-welcome-message.php',
 			) );

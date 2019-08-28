@@ -181,7 +181,7 @@ class Tribe__Tickets__Data_API {
 
 
 	/**
-	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID
+	 * Return Ticket Provider by Order, Product, Attendee, or Ticket ID.
 	 *
 	 * @param $post_id
 	 *
@@ -195,7 +195,7 @@ class Tribe__Tickets__Data_API {
 			return false;
 		}
 
-		return call_user_func( array( $services['class'], 'get_instance' ) );
+		return call_user_func( [ $services['class'], 'get_instance' ] );
 	}
 
 	/**
@@ -395,7 +395,7 @@ class Tribe__Tickets__Data_API {
 	 */
 	protected function check_rsvp_order_key_exists( $order_key ) {
 
-		$attendees_query = $this->query_by_rsvp_order_key( $order_key );
+		$attendees_query = $this->query_by_rsvp_order_key( $order_key, 1 );
 		if ( ! $attendees_query->have_posts() ) {
 			return '';
 		}
