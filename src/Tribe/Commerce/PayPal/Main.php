@@ -2255,6 +2255,8 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since 4.7
 	 */
 	public function get_tickets( $post_id ) {
 		$ticket_ids = $this->get_tickets_ids( $post_id );
