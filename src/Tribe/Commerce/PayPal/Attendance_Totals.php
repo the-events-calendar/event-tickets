@@ -19,8 +19,6 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 
 
 	/**
-	 * Calculate totals for the current event.
-	 *
 	 * {@inheritDoc}
 	 *
 	 * @since 4.7
