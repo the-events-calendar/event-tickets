@@ -485,6 +485,9 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			// Make sure Thickbox is available regardless of which admin page we're on.
+			add_thickbox();
+
 			$move_link = sprintf( '<a href="%1$s" class="thickbox tribe-ticket-move-link">' . esc_html( $button_text ) . '</a>', $move_url );
 
 			return $move_link;

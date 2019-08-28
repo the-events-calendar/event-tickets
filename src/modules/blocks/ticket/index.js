@@ -16,7 +16,7 @@ export default {
 	description: __( 'A single configured ticket type.', 'event-tickets' ),
 	icon: <TicketsIcon/>,
 	category: 'tribe-tickets',
-	keywords: [ 'event', 'events-tickets', 'tribe' ],
+	keywords: [ 'event', 'event-tickets', 'tribe' ],
 
 	parent: [ 'tribe/tickets' ],
 
