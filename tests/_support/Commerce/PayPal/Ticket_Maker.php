@@ -15,9 +15,7 @@ trait Ticket_Maker {
 	 * @return int The generated ticket post ID.
 	 */
 	protected function create_paypal_ticket( int $post_id, int $price, array $overrides = [] ) {
-		if ( ! isset( $this->factory ) || ! $this->factory instanceof \WP_UnitTest_Factory ) {
-			throw new \RuntimeException( 'This trait should be used in classes that extend the \\Codeception\\TestCase\\WPTestCase class' );
-		}
+		$factory = $this->factory ?? $this->factory();
 
 		$meta_input = isset( $overrides['meta_input'] ) && \is_array( $overrides['meta_input'] )
 			? $overrides['meta_input']
@@ -28,7 +26,7 @@ trait Ticket_Maker {
 
 		unset( $overrides['meta_input'] );
 
-		$ticket_id = $this->factory()->post->create( array_merge(
+		$ticket_id = $factory->post->create( array_merge(
 				[
 					'post_title'   => "Test PayPal ticket for {$post_id}",
 					'post_content' => "Test PayPal ticket description for {$post_id}",
