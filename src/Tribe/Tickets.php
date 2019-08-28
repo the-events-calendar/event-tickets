@@ -608,13 +608,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		public function save_ticket( $post_id, $ticket, $raw_data = [] ) {}
 
 		/**
-		 * Returns all the tickets for an event
+		 * Returns all the tickets for an event.
 		 *
 		 * @abstract
 		 *
-		 * @param int $post_id ID of parent "event" post
+		 * @param int $post_id ID of parent "event" post.
 		 *
-		 * @return array mixed
+		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
 		protected function get_tickets( $post_id ) {}
 
@@ -1811,8 +1811,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$tickets = [];
 
 			foreach ( self::modules() as $class => $module ) {
-				$obj              = call_user_func( array( $class, 'get_instance' ) );
+				/** @var Tribe__Tickets__Tickets $obj */
+				$obj = call_user_func( array( $class, 'get_instance' ) );
+
 				$provider_tickets = $obj->get_tickets( $post_id );
+
 				if ( ! empty( $provider_tickets ) && is_array( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
 				}

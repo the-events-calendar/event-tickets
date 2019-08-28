@@ -90,4 +90,16 @@ abstract class Tribe__Tickets__Abstract_Attendance_Totals {
 		// For future use
 		return;
 	}
+
+	/**
+	 * Get Attendee Total Refunded Orders Tooltip
+	 *
+	 * @since TBD
+	 *
+	 * @return string a string of html for the tooltip
+	 */
+	public function get_total_refunded_tooltip() {
+		// For future use
+		return;
+	}
 }
