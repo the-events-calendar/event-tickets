@@ -129,6 +129,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Smarter plugin dependency checking with more accurate admin notices if not all requirements are satisfied [131080]
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
+* Tweak - Allow text to wrap in attendees and orders report tables to avoid text going into other columns. [133195]
 * Fix - Fix potential issues with query that had no upper limit set when all that's needed is to check if it had one item [133247]
 * Fix - Support refunded attendee counting/handling for Tribe Commerce and Event Tickets Plus WooCommerce orders [126734]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
