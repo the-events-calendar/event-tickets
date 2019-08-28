@@ -12,29 +12,31 @@
  * to obtain a new object of this type to get accurate results.
  */
 class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets__Abstract_Attendance_Totals {
-	protected $total_sold      = 0;
-	protected $total_complete  = 0;
+	protected $total_paid      = 0;
 	protected $total_pending   = 0;
 	protected $total_cancelled = 0;
+	protected $total_refunded  = 0;
 
 
 	/**
-	 * Calculate totals for the current event.
+	 * {@inheritDoc}
 	 *
 	 * @since 4.7
 	 */
 	protected function calculate_totals() {
-		foreach ( Tribe__Tickets__Tickets::get_event_tickets( $this->event_id ) as $ticket ) {
+		$tickets = Tribe__Tickets__Tickets::get_event_tickets( $this->event_id );
+
+		foreach ( $tickets as $ticket ) {
+			/** @var Tribe__Tickets__Ticket_Object $ticket */
 			if ( ! $this->should_count( $ticket ) ) {
 				continue;
 			}
 
-			$this->total_sold      += $ticket->qty_sold();
+			$this->total_paid      += $ticket->qty_sold();
 			$this->total_pending   += $ticket->qty_pending();
 			$this->total_cancelled += $ticket->qty_cancelled();
+			$this->total_refunded  += $ticket->qty_refunded();
 		}
-
-		$this->total_complete = $this->total_sold;
 	}
 
 	/**
@@ -77,11 +79,12 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 			'total_sold'              => $this->get_total_sold(),
 			'total_complete'          => $this->get_total_complete(),
 			'total_cancelled'         => $this->get_total_cancelled(),
+			'total_refunded'          => $this->get_total_refunded(),
 			'total_sold_tooltip'      => $this->get_total_sold_tooltip(),
 			'total_completed_tooltip' => $this->get_total_completed_tooltip(),
 			'total_cancelled_tooltip' => $this->get_total_cancelled_tooltip(),
+			'total_refunded_tooltip'  => $this->get_total_refunded_tooltip(),
 		];
-
 
 		tribe( 'tickets.admin.views' )->template( 'attendees-totals-list', $args, true );
 	}
@@ -93,7 +96,6 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 * @since 4.7.1
 	 */
 	public function integrate_with_attendee_screen() {
-
 		if ( class_exists( 'Tribe__Tickets_Plus__Commerce__Attendance_Totals' ) ) {
 			return;
 		}
@@ -109,16 +111,18 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 	 * @return int
 	 */
 	public function get_total_sold() {
+		$total_sold = $this->get_total_paid() + $this->get_total_pending();
+
 		/**
 		 * Returns the total tickets sold for an event.
 		 *
 		 * @since 4.7
 		 *
-		 * @param int $total_sold
-		 * @param int $original_total_sold
-		 * @param int $event_id
+		 * @param int $total_sold          Total number of tickets sold.
+		 * @param int $original_total_sold Original total number of tickets sold.
+		 * @param int $event_id            Event ID.
 		 */
-		return (int) apply_filters( 'tribe_tickets_get_total_sold', $this->total_sold, $this->total_sold, $this->event_id );
+		return (int) apply_filters( 'tribe_tickets_get_total_sold', $total_sold, $total_sold, $this->event_id );
 	}
 
 	/**
@@ -134,31 +138,53 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		 *
 		 * @since 4.7
 		 *
-		 * @param int $total_pending
-		 * @param int $original_total_pending
-		 * @param int $event_id
+		 * @param int $total_pending          Total number of tickets pending.
+		 * @param int $original_total_pending Original total number of tickets pending.
+		 * @param int $event_id               Event ID.
 		 */
 		return (int) apply_filters( 'tribe_tickets_get_total_pending', $this->total_pending, $this->total_pending, $this->event_id );
 	}
 
 	/**
-	 * The total number of tickets sold and paid for, for this event.
+	 * The total number of tickets sold and paid for, minus cancelled and refunded, for this event.
 	 *
 	 * @since 4.7
 	 *
 	 * @return int
 	 */
 	public function get_total_complete() {
+		$total_complete = $this->get_total_paid() - $this->get_total_cancelled() - $this->get_total_refunded();
+
+		/**
+		 * Returns the total tickets completed for an event.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $total_complete          Total number of tickets completed.
+		 * @param int $original_total_complete Original total number of tickets completed.
+		 * @param int $event_id                Event ID.
+		 */
+		return (int) apply_filters( 'tribe_tickets_get_total_complete', $total_complete, $total_complete, $this->event_id );
+	}
+
+	/**
+	 * The total number of tickets sold and paid for, for this event.
+	 *
+	 * @since  4.6
+	 *
+	 * @return int
+	 */
+	public function get_total_paid() {
 		/**
 		 * Returns the total tickets sold and paid for, for an event.
 		 *
 		 * @since 4.7
 		 *
-		 * @param int $total_complete
-		 * @param int $original_total_complete
-		 * @param int $event_id
+		 * @param int $total_paid          Total number of tickets paid.
+		 * @param int $original_total_paid Original total number of tickets paid.
+		 * @param int $event_id            Event ID.
 		 */
-		return (int) apply_filters( 'tribe_tickets_get_total_paid', $this->total_complete, $this->total_complete, $this->event_id );
+		return (int) apply_filters( 'tribe_tickets_get_total_paid', $this->total_paid, $this->total_paid, $this->event_id );
 	}
 
 	/**
@@ -174,10 +200,30 @@ class Tribe__Tickets__Commerce__PayPal__Attendance_Totals extends Tribe__Tickets
 		 *
 		 * @since 4.10.5
 		 *
-		 * @param int $total_cancelled
-		 * @param int $original_total_complete
-		 * @param int $event_id
+		 * @param int $total_cancelled          Total number of tickets cancelled.
+		 * @param int $original_total_cancelled Original total number of tickets cancelled.
+		 * @param int $event_id                 Event ID.
 		 */
 		return (int) apply_filters( 'tribe_tickets_plus_get_total_cancelled', $this->total_cancelled, $this->total_cancelled, $this->event_id );
+	}
+
+	/**
+	 * The total number of tickets sold then refunded, for this event.
+	 *
+	 * @since TBD
+	 *
+	 * @return int Total number of tickets refunded.
+	 */
+	public function get_total_refunded() {
+		/**
+		 * Returns the total tickets refunded, for an event.
+		 *
+		 * @since TBD
+		 *
+		 * @param int $total_refunded          Total number of tickets refunded.
+		 * @param int $original_total_refunded Original total number of tickets refunded.
+		 * @param int $event_id                Event ID.
+		 */
+		return (int) apply_filters( 'tribe_tickets_get_total_refunded', $this->total_refunded, $this->total_refunded, $this->event_id );
 	}
 }
