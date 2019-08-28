@@ -2013,7 +2013,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		$constant_map = [
 			'attendee_event_key'   => $instance->attendee_event_key,
 			'attendee_product_key' => $instance->attendee_product_key,
-			'attendee_order_key'   => self::ATTENDEE_ORDER_KEY,
+			'attendee_order_key'   => $instance->order_key,
 			'attendee_optout_key'  => $instance->attendee_optout_key,
 			'attendee_tpp_key'     => $instance->attendee_tpp_key,
 			'event_key'            => $instance->event_key,
