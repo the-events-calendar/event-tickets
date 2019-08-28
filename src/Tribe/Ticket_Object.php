@@ -936,15 +936,15 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @return int
 		 */
 		public function qty_completed( $value = null ) {
-			// If the Value was passed as numeric value overwrite
+			// If the Value was passed as numeric value, overwrite.
 			if ( is_numeric( $value ) ) {
 				$this->qty_completed = $value;
 			}
 
-			// Prevents qty_completed from going negative
+			// Prevents qty_completed from going negative.
 			$this->qty_completed = max( (int) $this->qty_completed, 0 );
 
-			// return the new Qty Refunded
+			// Return the new quantity completed.
 			return $this->qty_completed;
 		}
 
