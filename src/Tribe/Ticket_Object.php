@@ -215,7 +215,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		public $end_time;
 
 		/**
-		 * Purchase limite for the ticket
+		 * Purchase limit for the ticket
 		 *
 		 * @var
 		 * @deprecated 4.7.5
@@ -845,6 +845,9 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 				case 'qty_refunded':
 					return $this->qty_refunded();
 					break;
+				case 'qty_completed':
+					return $this->qty_completed();
+					break;
 				case 'qty_cancelled':
 					return $this->qty_cancelled();
 					break;
@@ -888,7 +891,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @param int|null $value This will overwrite the old value
 		 * @return int
 		 */
-		public function qty_cancelled(  $value = null ) {
+		public function qty_cancelled( $value = null ) {
 			// If the Value was passed as numeric value overwrite
 			if ( is_numeric( $value ) ) {
 				$this->qty_cancelled = $value;
@@ -910,7 +913,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 * @param int|null $value This will overwrite the old value
 		 * @return int
 		 */
-		public function qty_refunded(  $value = null ) {
+		public function qty_refunded( $value = null ) {
 			// If the Value was passed as numeric value overwrite
 			if ( is_numeric( $value ) ) {
 				$this->qty_refunded = $value;
@@ -921,6 +924,28 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			// return the new Qty Refunded
 			return $this->qty_refunded;
+		}
+
+		/**
+		 * Method to manage the protected `qty_completed` property of the Object
+		 * Prevents setting `qty_completed` lower then zero
+		 *
+		 * @since 4.7.3
+		 *
+		 * @param int|null $value This will overwrite the old value
+		 * @return int
+		 */
+		public function qty_completed( $value = null ) {
+			// If the Value was passed as numeric value, overwrite.
+			if ( is_numeric( $value ) ) {
+				$this->qty_completed = $value;
+			}
+
+			// Prevents qty_completed from going negative.
+			$this->qty_completed = max( (int) $this->qty_completed, 0 );
+
+			// Return the new quantity completed.
+			return $this->qty_completed;
 		}
 
 		/**

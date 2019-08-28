@@ -2,19 +2,19 @@
 # This file is distributed under the same license as the Event Tickets package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Event Tickets 4.10.6.1\n"
+"Project-Id-Version: Event Tickets 4.10.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/event-tickets\n"
-"POT-Creation-Date: 2019-06-11 00:12:39+00:00\n"
+"POT-Creation-Date: 2019-08-20 03:22:30+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-06-11 00:12\n"
+"PO-Revision-Date: 2019-08-20 03:22\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 
-#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.6.1)  #-#-#-#-#
+#. #-#-#-#-#  event-tickets.pot (Event Tickets 4.10.7)  #-#-#-#-#
 #. Plugin Name of the plugin/theme
-#: event-tickets.php:59 src/Tribe/Main.php:586 src/Tribe/Privacy.php:32
+#: event-tickets.php:59 src/Tribe/Main.php:644 src/Tribe/Privacy.php:32
 msgid "Event Tickets"
 msgstr ""
 
@@ -349,117 +349,117 @@ msgstr ""
 msgid "Number of attendees per page:"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:68
+#: src/Tribe/Attendees_Table.php:95
 msgctxt "attendee table"
 msgid "Ticket"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:69
+#: src/Tribe/Attendees_Table.php:96
 msgctxt "attendee table"
 msgid "Primary Information"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:70
+#: src/Tribe/Attendees_Table.php:97
 msgctxt "attendee table"
 msgid "Security Code"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:71
+#: src/Tribe/Attendees_Table.php:98
 msgctxt "attendee table"
 msgid "Status"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:72 src/Tribe/Attendees_Table.php:76
+#: src/Tribe/Attendees_Table.php:99 src/Tribe/Attendees_Table.php:103
 msgctxt "attendee table"
 msgid "Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:308
+#: src/Tribe/Attendees_Table.php:335
 msgctxt "row action"
 msgid "Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:309
+#: src/Tribe/Attendees_Table.php:336
 msgctxt "row action"
 msgid "Undo Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:318
+#: src/Tribe/Attendees_Table.php:345
 msgctxt "row action"
 msgid "Move"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:330
+#: src/Tribe/Attendees_Table.php:357
 msgctxt "row action"
 msgid "Delete"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:410
+#: src/Tribe/Attendees_Table.php:437
 msgid "View order"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:422 src/Tribe/Attendees_Table.php:431
-#: src/Tribe/Attendees_Table.php:442 src/Tribe/Attendees_Table.php:451
+#: src/Tribe/Attendees_Table.php:449 src/Tribe/Attendees_Table.php:458
+#: src/Tribe/Attendees_Table.php:469 src/Tribe/Attendees_Table.php:478
 msgid "Check In"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:430 src/Tribe/Attendees_Table.php:450
+#: src/Tribe/Attendees_Table.php:457 src/Tribe/Attendees_Table.php:477
 msgid "Undo"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:554
+#: src/Tribe/Attendees_Table.php:581
 msgid "Print"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:555
+#: src/Tribe/Attendees_Table.php:582
 msgid "Export"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:562
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:73 src/Tribe/Privacy.php:164
+#: src/Tribe/Attendees_Table.php:589
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:100 src/Tribe/Privacy.php:164
 #: src/Tribe/Privacy.php:445 src/Tribe/Privacy.php:541
 #: src/admin-views/admin-welcome-message.php:62
 #: src/views/blocks/rsvp/form/email.php:32 src/views/tickets/rsvp.php:162
 msgid "Email"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:589 src/admin-views/list.php:43
+#: src/Tribe/Attendees_Table.php:616 src/admin-views/list.php:43
 msgid "Delete"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:590
+#: src/Tribe/Attendees_Table.php:617
 msgid "Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:591
+#: src/Tribe/Attendees_Table.php:618
 msgid "Undo Check in"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:919
+#: src/Tribe/Attendees_Table.php:946
 msgid "No matching attendees found."
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:940
+#: src/Tribe/Attendees_Table.php:967
 msgid "Search by Purchaser Name"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:941
+#: src/Tribe/Attendees_Table.php:968
 msgid "Search by Purchaser Email"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:942
+#: src/Tribe/Attendees_Table.php:969
 msgid "Search by User ID"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:943
+#: src/Tribe/Attendees_Table.php:970
 msgid "Search by Order Status"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:944
+#: src/Tribe/Attendees_Table.php:971
 msgid "Search by Security Code"
 msgstr ""
 
-#: src/Tribe/Attendees_Table.php:945
+#: src/Tribe/Attendees_Table.php:972
 msgid "Search by Ticket ID"
 msgstr ""
 
@@ -793,7 +793,7 @@ msgid "Search Orders"
 msgstr ""
 
 #: src/Tribe/Commerce/PayPal/Orders/Sales.php:255
-#: src/admin-views/tpp-orders.php:121
+#: src/admin-views/tpp-orders.php:153
 msgid "Completed"
 msgstr ""
 
@@ -805,41 +805,41 @@ msgstr ""
 msgid "Number of orders per page:"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:71
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:98
 msgid "Order"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:72
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:99
 #: src/views/tickets/email.php:406
 msgid "Purchaser"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:74
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:101
 msgid "Purchased"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:75 src/Tribe/Privacy.php:169
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:102 src/Tribe/Privacy.php:169
 #: src/Tribe/Privacy.php:450 src/Tribe/Privacy.php:546
 msgid "Date"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:76
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:103
 msgid "Status"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:79
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:106
 msgid "Total"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:150
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:177
 msgid "%1$s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:157
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:184
 msgid "Refunded with %s"
 msgstr ""
 
-#: src/Tribe/Commerce/PayPal/Orders/Table.php:247
+#: src/Tribe/Commerce/PayPal/Orders/Table.php:274
 msgid "No matching orders found."
 msgstr ""
 
@@ -952,112 +952,112 @@ msgstr ""
 msgid "Free"
 msgstr ""
 
-#: src/Tribe/Main.php:343
+#: src/Tribe/Main.php:401
 msgid ""
 "When The Events Calendar and Event Tickets are both activated, The Events "
 "Calendar must be running version %1$s or greater. Please %2$supdate now.%3$s"
 msgstr ""
 
-#: src/Tribe/Main.php:406
+#: src/Tribe/Main.php:464
 msgid ""
 "Sorry, Event Tickets requires WordPress %s or higher. Please upgrade your "
 "WordPress install."
 msgstr ""
 
-#: src/Tribe/Main.php:410
+#: src/Tribe/Main.php:468
 msgid ""
 "Sorry, Event Tickets requires PHP %s or higher. Talk to your Web host about "
 "moving you to a newer version of PHP."
 msgstr ""
 
-#: src/Tribe/Main.php:518
+#: src/Tribe/Main.php:576
 msgid "Support for Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:520
+#: src/Tribe/Main.php:578
 msgid "Settings overview"
 msgstr ""
 
-#: src/Tribe/Main.php:521
+#: src/Tribe/Main.php:579
 msgid "Features overview"
 msgstr ""
 
-#: src/Tribe/Main.php:522
+#: src/Tribe/Main.php:580
 msgid "Troubleshooting common problems"
 msgstr ""
 
-#: src/Tribe/Main.php:523
+#: src/Tribe/Main.php:581
 msgid "Customizing Event Tickets"
 msgstr ""
 
-#: src/Tribe/Main.php:540 src/admin-views/admin-welcome-message.php:34
+#: src/Tribe/Main.php:598 src/admin-views/admin-welcome-message.php:34
 msgid "New User Primer"
 msgstr ""
 
-#: src/Tribe/Main.php:542
+#: src/Tribe/Main.php:600
 msgid ""
 "We are committed to helping you sell tickets for your event. Check out our "
 "handy %s to get started."
 msgstr ""
 
-#: src/Tribe/Main.php:559
+#: src/Tribe/Main.php:617
 msgid "open-source forum on WordPress.org"
 msgstr ""
 
-#: src/Tribe/Main.php:560
+#: src/Tribe/Main.php:618
 msgid ""
 "If you have tried the above steps and are still having trouble, you can post "
 "a new thread to our %s. Our support staff monitors these forums once a week "
 "and would be happy to assist you there."
 msgstr ""
 
-#: src/Tribe/Main.php:562
+#: src/Tribe/Main.php:620
 msgid "premium support on our website"
 msgstr ""
 
-#: src/Tribe/Main.php:563 src/admin-views/tribe-options-tickets.php:151
+#: src/Tribe/Main.php:621 src/admin-views/tribe-options-tickets.php:151
 msgid "Events Tickets Plus"
 msgstr ""
 
-#: src/Tribe/Main.php:564
+#: src/Tribe/Main.php:622
 msgid ""
 "Looking for more immediate support? We offer %1$s with the purchase of any "
 "of our premium plugins (like %2$s). Pick up a license and you can post there "
 "directly and expect a response within 24-48 hours during weekdays."
 msgstr ""
 
-#: src/Tribe/Main.php:566 src/Tribe/Main.php:571
+#: src/Tribe/Main.php:624 src/Tribe/Main.php:629
 msgid "post a thread"
 msgstr ""
 
-#: src/Tribe/Main.php:567
+#: src/Tribe/Main.php:625
 msgid ""
 "Already have Events Tickets Plus? You can %s in our premium support forums. "
 "Our support team monitors the forums and will respond to your thread within "
 "24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:572
+#: src/Tribe/Main.php:630
 msgid ""
 "If you have a valid license for one of our paid plugins, you can %s in our "
 "premium support forums. Our support team monitors the forums and will "
 "respond to your thread within 24-48 hours (during the week)."
 msgstr ""
 
-#: src/Tribe/Main.php:673
+#: src/Tribe/Main.php:731
 msgid "Welcome to Event Tickets!"
 msgstr ""
 
-#: src/Tribe/Main.php:811
+#: src/Tribe/Main.php:869
 msgid "Buy"
 msgstr ""
 
-#: src/Tribe/Main.php:811
+#: src/Tribe/Main.php:869
 msgctxt "button text"
 msgid "RSVP"
 msgstr ""
 
-#: src/Tribe/Main.php:890
+#: src/Tribe/Main.php:948
 msgid ""
 "When Event Tickets and Event Tickets Plus are both activated, Event Tickets "
 "Plus must be running version %1$s or greater. Please %2$smanually update now"
@@ -2257,21 +2257,21 @@ msgstr ""
 msgid "Leave blank for free tickets"
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:67
+#: src/admin-views/editor/fieldset/price.php:83
 #: src/admin-views/legacy-ticket-fields.php:24
 #: src/admin-views/price-fields.php:12
 msgid "Sale Price:"
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:68
+#: src/admin-views/editor/fieldset/price.php:84
 msgid "Current sale price. This can be managed via the product editor."
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:71
+#: src/admin-views/editor/fieldset/price.php:87
 msgid "Sale/Member Price:"
 msgstr ""
 
-#: src/admin-views/editor/fieldset/price.php:72
+#: src/admin-views/editor/fieldset/price.php:88
 msgid ""
 "Current sale or member price. This can be managed via the product editor."
 msgstr ""
@@ -2739,20 +2739,24 @@ msgstr ""
 msgid "A unique identifying code for each ticket type you're selling"
 msgstr ""
 
-#: src/admin-views/tpp-orders.php:23
+#: src/admin-views/tpp-orders.php:32
+msgid "Orders Report"
+msgstr ""
+
+#: src/admin-views/tpp-orders.php:55
 msgctxt "post type details"
 msgid "%s Details"
 msgstr ""
 
-#: src/admin-views/tpp-orders.php:61
+#: src/admin-views/tpp-orders.php:93
 msgid "Sales by Ticket Type"
 msgstr ""
 
-#: src/admin-views/tpp-orders.php:90
+#: src/admin-views/tpp-orders.php:122
 msgid "Total Ticket Sales"
 msgstr ""
 
-#: src/admin-views/tpp-orders.php:103
+#: src/admin-views/tpp-orders.php:135
 msgid "Total Tickets Ordered"
 msgstr ""
 
