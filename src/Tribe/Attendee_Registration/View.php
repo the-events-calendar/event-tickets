@@ -137,7 +137,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 *
 	 * @since 4.9
 	 *
-	 * @param int $provider
+	 * @param string $provider Provider identifier.
 	 * @return bool|string
 	 */
 	public function get_cart_url( $provider ) {
@@ -151,15 +151,15 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 			return false;
 		}
 
-		$cart_url = false;
-
 		if (
 			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider )
 		) {
+			/** @var \Tribe__Tickets_Plus__Commerce__WooCommerce__Main $provider */
 			$provider = tribe( 'tickets-plus.commerce.woo' );
 		} elseif (
 			'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider )
 		) {
+			/** @var \Tribe__Tickets_Plus__Commerce__EDD__Main $provider */
 			$provider = tribe( 'tickets-plus.commerce.edd' );
 		} else {
 			return;
