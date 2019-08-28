@@ -153,9 +153,11 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 		$cart_url = false;
 
-		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider ) ) {
+		if (
+			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider )
+		) {
 			$provider = tribe( 'tickets-plus.commerce.woo' );
-		} elseif(
+		} elseif (
 			'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider )
 		) {
 			$provider = tribe( 'tickets-plus.commerce.edd' );
