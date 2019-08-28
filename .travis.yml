@@ -136,8 +136,8 @@ script:
   - codecept run unit
   - codecept run wpunit
   - codecept run integration
-  - codecept run functional
-  - codecept run restv1
+  - codecept run functional -vvv
+  - codecept run restv1 -vvv
   - codecept run acceptance
 
 after_failure:
