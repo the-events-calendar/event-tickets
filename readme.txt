@@ -121,6 +121,7 @@ Currently, the following add-ons are available for Event Tickets:
 
 * Tweak - Clean up the way we add options to the ticket settings tab in PHP to make it more readable and maintainable. [133048]
 * Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
+* Feature - Add ability to utilize the block ticket template outside of gun=tenberg views [132568]
 
 = [4.10.8] TBD =
 
