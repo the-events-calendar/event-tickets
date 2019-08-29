@@ -175,41 +175,46 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	}
 
 
+	/**
+	 * Undocumented function
+	 *
+	 * @param string $provider A string indicating the desired provider.
+	 * @return boolean|object The provider object or boolean false if none found.
+	 */
 	public function get_cart_provider( $provider ) {
 		if ( empty( $provider ) ) {
 			return false;
 		}
 
+		$provider_obj = false;
+
 		switch ( $provider ) {
 			case 'woo':
 			case 'tribe_wooticket':
 			case 'Tribe__Events__Tickets__Woo__Main':
-				$provider = tribe( 'tickets-plus.commerce.woo' );
+				$provider_obj = tribe( 'tickets-plus.commerce.woo' );
 				break;
 			case 'edd':
 			case 'tribe_eddticket':
 			case 'Tribe__Events__Tickets__EDD__Main':
-				$provider = tribe( 'tickets-plus.commerce.edd' );
+				$provider_obj = tribe( 'tickets-plus.commerce.edd' );
 				break;
 			case 'tpp':
 			case 'tribe_tpp_attendees':
 			case 'Tribe__Tickets__Commerce__PayPal__Main':
-				$provider = tribe( 'tickets.commerce.paypal' );
+				$provider_obj = tribe( 'tickets.commerce.paypal' );
 				break;
 		}
 
 		/**
-		 * Allow providers to include their own strings/suffixes.
+		 * Allow providers to include themselves if they are not in the above.
 		 *
 		 * @since TBD
 		 *
-		 * @param array $provider_classes in format $provider -> class suffix.
+		 * @return boolean|object The provider object or boolean false if none found above.
+		 * @param string $provider A string indicating the desired provider.
 		 */
-		$provider_classes = apply_filters( 'tribe_attendee_registration_form_classes', [] );
-
-		if ( array_key_exists( $provider, $provider_classes ) ) {
-			$class = 'tribe-block__tickets__item__attendee__fields__form--' . $provider_classes[ $provider ];
-		}
+		return apply_filters( 'tribe_attendee_registration_cart_provider', $provider_obj, $provider );
 	}
 
 	/**
