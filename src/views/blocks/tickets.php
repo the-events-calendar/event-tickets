@@ -17,15 +17,14 @@
  * @var Tribe__Tickets__Editor__Template $this
  */
 
-$post_id             = $this->get( 'post_id' );
-$tickets             = $this->get( 'tickets', array() );
-$provider            = $this->get( 'provider' );
-$provider_id         = $this->get( 'provider_id' );
+$cart_classes        = [ 'tribe-block', 'tribe-block__tickets' ];
 $cart_url            = $this->get( 'cart_url' );
-$tickets_on_sale     = $this->get( 'tickets_on_sale' );
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
 $is_sale_past        = $this->get( 'is_sale_past' );
-$cart_classes        = array( 'tribe-block', 'tribe-block__tickets' );
+$provider            = $this->get( 'provider' );
+$provider_id         = $this->get( 'provider_id' );
+$tickets             = $this->get( 'tickets', [] );
+$tickets_on_sale     = $this->get( 'tickets_on_sale' );
 
 // We don't display anything if there is no provider or tickets
 if ( ! $provider || empty( $tickets ) ) {
@@ -35,8 +34,9 @@ if ( ! $provider || empty( $tickets ) ) {
 $html = $this->template( 'blocks/attendees/order-links', [], false );
 
 if ( empty( $html ) ) {
-	$html = $this->template( 'blocks/attendees/view-link', [], false );;
+	$html = $this->template( 'blocks/attendees/view-link', [], false );
 }
+
 
 echo $html;
 ?>
@@ -50,13 +50,13 @@ echo $html;
 	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
 	novalidate
 >
-	<?php $this->template( 'blocks/tickets/commerce/fields', array( 'provider' => $provider, 'provider_id' => $provider_id ) ); ?>
+	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
-			<?php $this->template( 'blocks/tickets/item', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+			<?php $this->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
 		<?php endforeach; ?>
-		<?php $this->template( 'blocks/tickets/submit', array( 'provider' => $provider, 'provider_id' => $provider_id, 'ticket' => $ticket ) ); ?>
+		<?php $this->template( 'blocks/tickets/submit', [ 'provider' => $provider, 'provider_id' => $provider_id, 'ticket' => $ticket ] ); ?>
 	<?php else : ?>
-		<?php $this->template( 'blocks/tickets/item-inactive', array( 'is_sale_past' => $is_sale_past ) ); ?>
+		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 	<?php endif; ?>
 </form>

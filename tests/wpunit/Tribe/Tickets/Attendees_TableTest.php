@@ -2,11 +2,11 @@
 
 namespace Tribe\Tickets;
 
-use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
-use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
-use Tribe__Tickets__Data_API as Data_API;
 use Tribe\Tickets\Test\Commerce\Attendee_Maker;
+use Tribe\Tickets\Test\Commerce\PayPal\Ticket_Maker as PayPal_Ticket_Maker;
+use Tribe\Tickets\Test\Commerce\RSVP\Ticket_Maker as RSVP_Ticket_Maker;
 use Tribe__Tickets__Attendees_Table as Attendees_Table;
+use Tribe__Tickets__Data_API as Data_API;
 
 class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
@@ -118,7 +118,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                       = 'robbbbb';
+		$_REQUEST['search']                  = 'robbbbb';
 		$_POST['tribe_attendee_search_type'] = 'purchaser_name';
 
 		$_GET['event_id'] = $post_id;
@@ -153,7 +153,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                       = 'likestests';
+		$_REQUEST['search']                  = 'likestests';
 		$_POST['tribe_attendee_search_type'] = 'purchaser_email';
 
 		$_GET['event_id'] = $post_id;
@@ -182,7 +182,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                       = $rsvp_ticket_id;
+		$_REQUEST['search']                  = $rsvp_ticket_id;
 		$_POST['tribe_attendee_search_type'] = 'product_id';
 
 		$_GET['event_id'] = $post_id;
@@ -217,7 +217,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                       = 'robba';
+		$_REQUEST['search']                  = 'robba';
 		$_POST['tribe_attendee_search_type'] = 'security_code';
 
 		$_GET['event_id'] = $post_id;
@@ -252,7 +252,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                       = '1234567890';
+		$_REQUEST['search']                  = '1234567890';
 		$_POST['tribe_attendee_search_type'] = 'user';
 
 		$_GET['event_id'] = $post_id;
@@ -283,7 +283,7 @@ class Attendees_TableTest extends \Codeception\TestCase\WPTestCase {
 
 		$sut = $this->make_instance();
 
-		$_REQUEST['s']                       = 'yes';
+		$_REQUEST['search']                  = 'yes';
 		$_POST['tribe_attendee_search_type'] = 'order_status';
 
 		$_GET['event_id'] = $post_id;
