@@ -24,7 +24,7 @@ $args = [
 	'button_type'  => 'submit',
 	'button_name'  => 'edd-submit',
 	'button_text'  => $button_text,
-	'title'        => esc_html( $title ),
+	'title'        => $title,
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
