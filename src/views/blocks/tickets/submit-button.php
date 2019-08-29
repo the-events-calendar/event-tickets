@@ -23,7 +23,7 @@
 	<?php esc_html_e( 'Add to cart', 'event-tickets' ); ?>
 </button>
 <?php
-$title       = sprintf( __( '%s Tickets', 'event-tickets' ), esc_html__( get_the_title() ) );
+$title       = sprintf( __( '%s Tickets', 'event-tickets' ), get_the_title() );
 $button_text = __( 'Get Tickets', 'event-tickets');
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Modal Cart</p>', $this );
 $args = [
