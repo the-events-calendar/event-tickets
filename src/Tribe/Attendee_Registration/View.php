@@ -138,6 +138,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	 * @since 4.9
 	 *
 	 * @param string $provider Provider identifier.
+	 *
 	 * @return bool|string
 	 */
 	public function get_cart_url( $provider ) {
@@ -147,6 +148,7 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 
 			$provider = get_post_meta( absint( $provider ), $tickets_handler->key_provider_field, true );
 		}
+
 		if ( empty( $provider ) ) {
 			return false;
 		}
