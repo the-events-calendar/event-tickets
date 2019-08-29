@@ -39,10 +39,10 @@ if (
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( $ticket->ID ); ?>" />
-	<?php if ( isset( $modal ) ) { $this->template( 'modal/item-remove', $context ); } ?>
+	<?php if ( true === $modal ) { $this->template( 'modal/item-remove', $context ); } ?>
 	<?php $this->template( 'blocks/tickets/icon', $context ); ?>
 	<?php $this->template( 'blocks/tickets/content', $context ); ?>
 	<?php $this->template( 'blocks/tickets/extra', $context ); ?>
 	<?php $this->template( 'blocks/tickets/quantity', $context ); ?>
-	<?php if ( isset( $modal ) ) { $this->template( 'modal/item-total', $context ); } ?>
+	<?php if ( true === $modal ) { $this->template( 'modal/item-total', $context ); } ?>
 </div>

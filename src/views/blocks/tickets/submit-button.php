@@ -22,16 +22,3 @@
 >
 	<?php esc_html_e( 'Add to cart', 'event-tickets' ); ?>
 </button>
-<?php
-$title       = sprintf( __( '%s Tickets', 'event-tickets' ), esc_html__( get_the_title() ) );
-$button_text = __( 'Get Tickets', 'event-tickets');
-$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Modal Cart</p>', $this );
-$args = [
-	'button_name'  => $provider_id . 'tickets_process',
-	'button_text'  => $button_text,
-	'button_type'  => 'submit',
-	'button_value' => '1',
-	'title'        => esc_html( $title ),
-];
-
-tribe( 'dialog.view' )->render_modal( $content, $args );

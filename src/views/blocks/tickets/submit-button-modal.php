@@ -16,15 +16,15 @@
  */
 
 /* translators: %s is the event or post title the tickets are attached to. */
-$title       = sprintf( __( '%s Tickets', 'event-tickets-plus' ), esc_html__( get_the_title() ) );
-$button_text = esc_html__( 'Get Tickets!', 'event-tickets-plus');
-$content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_modal_content', '<p>EDD Tickets modal needs content, badly.</p>' );
-$content     = wp_kses_post( $content );
+$title       = sprintf( __( '%s Tickets', 'event-tickets' ), esc_html__( get_the_title() ) );
+$button_text = esc_html__( 'Get Tickets!', 'event-tickets');
+$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 $args = [
-	'button_type'  => 'submit',
-	'button_name'  => 'edd-submit',
-	'button_text'  => $button_text,
-	'title'        => esc_html( $title ),
+	'button_name' => $provider_id . '_get_tickets',
+	'button_text' => $button_text,
+	'button_type' => 'submit',
+	'show_event'  => 'tribe_dialog_show_ar_modal',
+	'title'       => esc_html( $title ),
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );

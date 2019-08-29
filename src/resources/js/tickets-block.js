@@ -321,7 +321,10 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( te ).on( 'tribe_tickets_get_tickets', function ( e, dialogEl, event ) {
+	$( te ).on( 'tribe_dialog_show_ar_modal', function ( e, dialogEl, event ) {
+
+		console.log('dialogEl',dialogEl);
+		console.log('event',event);
 
 		var $cart = $( obj.selector.container );
 		var $modalCart = $( obj.modalSelector.container );
