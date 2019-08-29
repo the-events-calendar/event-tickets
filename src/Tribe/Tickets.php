@@ -322,23 +322,23 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$post_id = $post_id->ID;
 			}
 
-			$args = array(
-				'post_type'      => array( $this->ticket_object ),
+			$args = [
+				'post_type'      => [ $this->ticket_object ],
 				'posts_per_page' => - 1,
 				'fields'         => 'ids',
 				'post_status'    => 'publish',
 				'orderby'        => 'menu_order',
 				'order'          => 'ASC',
-			);
+			];
 
 			if ( ! empty( $post_id ) ) {
-				$args['meta_query'] = array(
-					array(
+				$args['meta_query'] = [
+					[
 						'key'     => $this->event_key,
 						'value'   => $post_id,
 						'compare' => '=',
-					),
-				);
+					],
+				];
 			}
 
 			/**
@@ -451,12 +451,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$post_url = get_edit_post_link( $post_id, 'admin' );
 
 			$move_type_url = add_query_arg(
-				array(
+				[
 					'dialog'         => Tribe__Tickets__Main::instance()->move_ticket_types()->dialog_name(),
 					'ticket_type_id' => $ticket->ID,
 					'check'          => wp_create_nonce( 'move_tickets' ),
 					'TB_iframe'      => 'true',
-				),
+				],
 				$post_url
 			);
 
@@ -531,7 +531,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function load_ticket_object( $ticket_id ) {
 			foreach ( self::modules() as $provider_class => $name ) {
-				$provider = call_user_func( array( $provider_class, 'get_instance' ) );
+				$provider = call_user_func( [ $provider_class, 'get_instance' ] );
 				$event    = $provider->get_event_for_ticket( $ticket_id );
 
 				if ( ! $event ) {
@@ -616,7 +616,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 *
 		 * @return Tribe__Tickets__Ticket_Object[] List of ticket objects.
 		 */
-		protected function get_tickets( $post_id ) {}
+		public function get_tickets( $post_id ) {}
 
 		/**
 		 * Get attendees for a Post ID / Post type.
@@ -914,21 +914,21 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			// Register all Tribe__Tickets__Tickets api consumers
 			self::$active_modules[ $this->class_name ] = $this->plugin_name;
 
-			add_action( 'wp', array( $this, 'hook' ) );
+			add_action( 'wp', [ $this, 'hook' ] );
 
 			/**
 			 * Priority set to 11 to force a specific display order
 			 *
 			 * @since 4.6
 			 */
-			add_action( 'tribe_events_tickets_metabox_edit_main', array( $this, 'do_metabox_capacity_options' ), 11, 2 );
+			add_action( 'tribe_events_tickets_metabox_edit_main', [ $this, 'do_metabox_capacity_options' ], 11, 2 );
 
 			// Ensure ticket prices and event costs are linked
-			add_filter( 'tribe_events_event_costs', array( $this, 'get_ticket_prices' ), 10, 2 );
+			add_filter( 'tribe_events_event_costs', [ $this, 'get_ticket_prices' ], 10, 2 );
 
-			add_action( 'event_tickets_checkin', array( $this, 'purge_attendees_transient' ) );
-			add_action( 'event_tickets_uncheckin', array( $this, 'purge_attendees_transient' ) );
-			add_action( 'template_redirect', array( $this, 'maybe_redirect_to_attendees_registration_screen' ), 0 );
+			add_action( 'event_tickets_checkin', [ $this, 'purge_attendees_transient' ] );
+			add_action( 'event_tickets_uncheckin', [ $this, 'purge_attendees_transient' ] );
+			add_action( 'template_redirect', [ $this, 'maybe_redirect_to_attendees_registration_screen' ], 0 );
 		}
 
 		/**
@@ -945,12 +945,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$ticket_form_hook = $this->get_ticket_form_hook();
 
 			if ( ! empty( $ticket_form_hook ) ) {
-				add_action( $ticket_form_hook, array( $this, 'maybe_add_front_end_tickets_form' ), 5 );
-				add_filter( $ticket_form_hook, array( $this, 'show_tickets_unavailable_message' ), 6 );
+				add_action( $ticket_form_hook, [ $this, 'maybe_add_front_end_tickets_form' ], 5 );
+				add_filter( $ticket_form_hook, [ $this, 'show_tickets_unavailable_message' ], 6 );
 			}
 
-			add_filter( 'the_content', array( $this, 'front_end_tickets_form_in_content' ), 11 );
-			add_filter( 'the_content', array( $this, 'show_tickets_unavailable_message_in_content' ), 12 );
+			add_filter( 'the_content', [ $this, 'front_end_tickets_form_in_content' ], 11 );
+			add_filter( 'the_content', [ $this, 'show_tickets_unavailable_message_in_content' ], 12 );
 			/**
 			 * Trigger an action every time a new ticket instance has been created
 			 *
@@ -1425,7 +1425,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			$modules = self::modules();
 
 			foreach ( $modules as $class => $module ) {
-				$obj              = call_user_func( array( $class, 'get_instance' ) );
+				$obj              = call_user_func( [ $class, 'get_instance' ] );
 				$provider_tickets = $obj->get_tickets( $post_id );
 				if ( is_array( $provider_tickets ) ) {
 					$tickets[] = $provider_tickets;
@@ -1450,7 +1450,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function find_matching_event( $possible_ticket ) {
 			foreach ( self::modules() as $class => $module ) {
-				$obj   = call_user_func( array( $class, 'get_instance' ) );
+				$obj   = call_user_func( [ $class, 'get_instance' ] );
 				$event = $obj->get_event_for_ticket( $possible_ticket );
 				if ( $event instanceof WP_Post ) {
 					return $event;
@@ -1486,7 +1486,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 */
 		public static function global_stock_available() {
 			foreach ( self::modules() as $class => $module ) {
-				$provider = call_user_func( array( $class, 'get_instance' ) );
+				$provider = call_user_func( [ $class, 'get_instance' ] );
 
 				if ( method_exists( $provider, 'supports_global_stock' ) && $provider->supports_global_stock() ) {
 					return true;
@@ -1535,10 +1535,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return array
 		 */
 		protected function global_stock_mode_options() {
-			return array(
+			return [
 				Tribe__Tickets__Global_Stock::GLOBAL_STOCK_MODE => __( 'Shared capacity with other tickets', 'event-tickets' ),
 				Tribe__Tickets__Global_Stock::OWN_STOCK_MODE    => __( 'Set capacity for this ticket only', 'event-tickets' ),
-			);
+			];
 		}
 
 		/**
@@ -1553,11 +1553,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			if ( ! self::$frontend_script_enqueued ) {
 				$url = Tribe__Tickets__Main::instance()->plugin_url . 'src/resources/js/frontend-ticket-form.js';
 				$url = Tribe__Template_Factory::getMinFile( $url, true );
-				wp_enqueue_script( 'tribe_tickets_frontend_tickets', $url, array( 'jquery' ), Tribe__Tickets__Main::VERSION, true );
+				wp_enqueue_script( 'tribe_tickets_frontend_tickets', $url, [ 'jquery' ], Tribe__Tickets__Main::VERSION, true );
 			}
 
 			self::$frontend_ticket_data = array_filter( array_merge( self::$frontend_ticket_data, $tickets ) );
-			add_action( 'wp_footer', array( __CLASS__, 'enqueue_frontend_stock_data' ) );
+			add_action( 'wp_footer', [ __CLASS__, 'enqueue_frontend_stock_data' ] );
 		}
 
 		/**
@@ -1584,19 +1584,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			 * This order is important so that tickets overwrite RSVP on
 			 * the Buy Now Button on the front-end
 			 */
-			$types['rsvp']    = array(
+			$types['rsvp']    = [
 				'count'     => 0,
 				'stock'     => 0,
 				'unlimited' => 0,
 				'available' => 0,
-			);
-			$types['tickets'] = array(
+			];
+			$types['tickets'] = [
 				'count'     => 0, // count of ticket types currently for sale
 				'stock'     => 0, // current stock of tickets available for sale
 				'global'    => 0, // global stock ticket
 				'unlimited' => 0, // unlimited stock tickets
 				'available' => 0, // are tickets available for sale right now
-			);
+			];
 
 			foreach ( $tickets as $ticket ) {
 				// If a ticket is not current for sale do not count it
@@ -1699,10 +1699,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * Takes any global stock data and makes it available via a wp_localize_script() call.
 		 */
 		public static function enqueue_frontend_stock_data() {
-			$data = array(
+			$data = [
 				'tickets' => [],
 				'events'  => [],
-			);
+			];
 
 			foreach ( self::$frontend_ticket_data as $ticket ) {
 				$post = $ticket->get_event();
@@ -1715,19 +1715,19 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$global_stock = new Tribe__Tickets__Global_Stock( $post_id );
 				$stock_mode   = $ticket->global_stock_mode();
 
-				$ticket_data = array(
+				$ticket_data = [
 					'event_id' => $post_id,
 					'mode'     => $stock_mode,
 					'cap'      => $ticket->capacity(),
-				);
+				];
 
 				if ( $ticket->managing_stock() ) {
 					$ticket_data['stock'] = $ticket->available();
 				}
 
-				$data['events'][ $post_id ] = array(
+				$data['events'][ $post_id ] = [
 					'stock' => $global_stock->get_stock_level(),
-				);
+				];
 
 				$data['tickets'][ $ticket->ID ] = $ticket_data;
 			}
@@ -1812,7 +1812,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			foreach ( self::modules() as $class => $module ) {
 				/** @var Tribe__Tickets__Tickets $obj */
-				$obj = call_user_func( array( $class, 'get_instance' ) );
+				$obj = call_user_func( [ $class, 'get_instance' ] );
 
 				$provider_tickets = $obj->get_tickets( $post_id );
 
@@ -1831,7 +1831,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 		 * @return string
 		 */
 		public function generate_tickets_email_content( $tickets ) {
-			return tribe_tickets_get_template_part( 'tickets/email', null, array( 'tickets' => $tickets ), false );
+			return tribe_tickets_get_template_part( 'tickets/email', null, [ 'tickets' => $tickets ], false );
 		}
 
 		/**
@@ -1846,7 +1846,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				$template .= '.php';
 			}
 
-			if ( $theme_file = locate_template( array( 'tribe-events/' . $template ) ) ) {
+			if ( $theme_file = locate_template( [ 'tribe-events/' . $template ] ) ) {
 				$file = $theme_file;
 			} else {
 				$file = $this->plugin_path . 'src/views/' . $template;
@@ -1924,12 +1924,12 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return false;
 			}
 
-			$first_matched_attendee = get_posts( array(
+			$first_matched_attendee = get_posts( [
 				'post_type'  => $attendee_object,
 				'meta_key'   => $attendee_order_key,
 				'meta_value' => $order_id,
 				'posts_per_page' => 1,
-			) );
+			] );
 
 			if ( empty( $first_matched_attendee ) ) {
 				return false;
@@ -2070,11 +2070,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 					$value = $meta[ $field->slug ];
 				}
 
-				$meta_values[ $field->slug ] = array(
+				$meta_values[ $field->slug ] = [
 					'slug'  => $field->slug,
 					'label' => $field->label,
 					'value' => $value,
-				);
+				];
 			}
 
 			return $meta_values;
@@ -2139,7 +2139,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				// if any ticket is available for this event, consider the availability slug as 'available'
 				if ( 'available' === $availability_slug ) {
 					// reset the collected slugs to "available" only
-					$slugs = array( 'available' );
+					$slugs = [ 'available' ];
 					break;
 				}
 
@@ -2850,7 +2850,13 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				/** @var \Tribe__Tickets__Commerce__PayPal__Main $commerce_paypal */
 				$commerce_paypal = tribe( 'tickets.commerce.paypal' );
 
-				$url = add_query_arg( array( 'event_tickets_redirect_to' => $key, 'provider' => $commerce_paypal->attendee_object ), $url );
+				$url = add_query_arg(
+					[
+						'event_tickets_redirect_to' => $key,
+						'provider' => $commerce_paypal->attendee_object,
+					],
+					$url
+				);
 			}
 
 			wp_safe_redirect( $url, 307 );
