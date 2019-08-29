@@ -178,6 +178,8 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	/**
 	 * Undocumented function
 	 *
+	 * @since TBD
+	 *
 	 * @param string $provider A string indicating the desired provider.
 	 * @return boolean|object The provider object or boolean false if none found.
 	 */
