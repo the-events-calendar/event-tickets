@@ -31,7 +31,7 @@ $args = [
 	'button_text'  => $button_text,
 	'button_type'  => 'submit',
 	'button_value' => '1',
-	'title'        => esc_html( $title ),
+	'title'        => $title,
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
