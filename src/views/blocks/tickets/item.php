@@ -16,20 +16,14 @@
  * @version 4.9.4
  *
  */
-
-$post_id  = $this->get( 'post_id' );
-$ticket   = $this->get( 'ticket' );
+$classes  = [ 'tribe-block__tickets__item' ];
 $provider = $this->get( 'provider' );
+$ticket   = $this->get( 'ticket' );
 $modal    = $this->get( 'is_modal' );
-
-$classes  = array(
-	'tribe-block__tickets__item',
-);
-
-$context = array(
+$context  = [
 	'ticket' => $ticket,
 	'key'    => $this->get( 'key' ),
-);
+];
 
 if (
 	empty( $provider )

@@ -20,6 +20,8 @@ $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required()
 ?>
 <?php if ( $must_login ) : ?>
 	<?php $this->template( 'blocks/tickets/submit-login' ); ?>
+<?php elseif ( Tribe__Settings_Manager::get_option( 'ticket-attendee-modal' ) ) : ?>
+	<?php $this->template( 'blocks/tickets/submit-button-modal' ); ?>
 <?php else : ?>
 	<?php $this->template( 'blocks/tickets/submit-button' ); ?>
 <?php endif; ?>
