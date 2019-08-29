@@ -11,7 +11,10 @@
  *
  */
 
-$cart_classes        = array( 'tribe-modal-cart', 'tribe-modal__cart' );
+$cart_classes = [
+	'tribe-modal-cart',
+	'tribe-modal__cart',
+];
 
 // We don't display anything if there is no provider or tickets
 if ( ! $provider || empty( $tickets ) ) {
