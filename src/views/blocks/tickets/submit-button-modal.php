@@ -17,7 +17,7 @@
 
 /* translators: %s is the event or post title the tickets are attached to. */
 $title       = sprintf( __( '%s Tickets', 'event-tickets-plus' ), esc_html__( get_the_title() ) );
-$button_text = esc_html__( 'Get Tickets!', 'event-tickets-plus');
+$button_text = __( 'Get Tickets!', 'event-tickets-plus');
 $content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_modal_content', '<p>EDD Tickets modal needs content, badly.</p>' );
 $content     = wp_kses_post( $content );
 $args = [
