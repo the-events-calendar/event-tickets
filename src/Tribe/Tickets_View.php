@@ -959,7 +959,6 @@ class Tribe__Tickets__Tickets_View {
 
 		$tickets = $provider->get_tickets( $post_id );
 
-
 		$args = [
 			'post_id'             => $post_id,
 			'provider'            => $provider,
@@ -971,7 +970,6 @@ class Tribe__Tickets__Tickets_View {
 			'has_tickets_on_sale' => tribe_events_has_tickets_on_sale( $post_id ),
 			'is_sale_past'        => $blocks_tickets->get_is_sale_past( $tickets ),
 		];
-
 
 		// Add the rendering attributes into global context.
 		$template->add_template_globals( $args );
