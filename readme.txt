@@ -122,7 +122,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Renamed `src/views/tickets/orders-link.php` to `src/views/tickets/view-link.php` and renamed `src/views/blocks/attendees/order-links.php` to `src/views/blocks/attendees/view-link.php` for improved and consistent naming between Classic and Block Editor templates [130955]
 * Tweak - Tribe Commerce PayPal Tickets now sets Euro currency symbol after amount (postfix/suffix) if WordPress site language is non-English, to match EU's guidelines [128532]
 * Tweak - Add class to wrapper div around ticket controls in admin [127193]
+* Tweak - Smarter plugin dependency checking with more accurate admin notices if not all requirements are satisfied [131080]
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
+* Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
+* Tweak - Allow text to wrap in attendees and orders report tables to avoid text going into other columns. [133195]
+* Fix - Fix potential issues with query that had no upper limit set when all that's needed is to check if it had one item [133247]
+* Fix - Support refunded attendee counting/handling for Tribe Commerce and Event Tickets Plus WooCommerce orders [126734]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
 * Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types [128666]
 * Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
@@ -131,7 +136,12 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
-* Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
+* Fix - Front-end search box input name changed to no longer trigger a theme's Search template [132248]
+* Fix - Allow saving RSVP status changes (Going / Not Going) even if tickets have no Attendee Information fields [128629]
+
+= [4.10.7.1] 2019-08-27 =
+
+ * Fix - Resolve JS console warnings from `tooltip.js` in `tribe-common` by adding missing `tribe` var when the var is not setup on the current page already [133207]
 
 = [4.10.7] 2019-08-22 =
 
