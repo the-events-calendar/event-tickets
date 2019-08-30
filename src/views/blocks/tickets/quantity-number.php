@@ -11,13 +11,22 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9
- * @version 4.9.4
+ * @since TBD Tweaked logic for unlimited maximum quantity allowed.
  *
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Ticket_Object $ticket
+ * @var Tribe__Tickets__Editor__Template $this
  */
 
 $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
-$ticket = $this->get( 'ticket' );
-$max_quantity = tribe( 'tickets.handler' )->get_ticket_max_purchase( $ticket->ID );
+
+$ticket = $this->get( [ 'ticket' ] );
+
+/** @var Tribe__Tickets__Tickets_Handler $handler */
+$handler = tribe( 'tickets.handler' );
+
+$max_quantity = $handler->get_ticket_max_purchase( $ticket->ID );
 ?>
 <div
 	class="tribe-block__tickets__item__quantity__number"
