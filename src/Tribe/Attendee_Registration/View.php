@@ -133,25 +133,92 @@ class Tribe__Tickets__Attendee_Registration__View extends Tribe__Template {
 	}
 
 	/**
-	 * Get the provider Cart URL if WooCommerce is the provider.
-	 * Checks the provider by post id (event)
+	 * Get the provider Cart URL.
 	 *
 	 * @since 4.9
 	 *
-	 * @param int $post_id
+	 * @param string $provider Provider identifier.
+	 *
 	 * @return bool|string
 	 */
-	public function get_cart_url( $post_id ) {
+	public function get_cart_url( $provider ) {
+		if ( is_numeric( $provider ) ) {
+			/** @var Tribe__Tickets__Tickets_Handler $tickets_handler */
+			$tickets_handler = tribe( 'tickets.handler' );
 
-		$post_provider = get_post_meta( $post_id, tribe( 'tickets.handler' )->key_provider_field, true );
+			$provider = get_post_meta( absint( $provider ), $tickets_handler->key_provider_field, true );
+		}
 
-		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' !== $post_provider ) {
+		if ( empty( $provider ) ) {
 			return false;
 		}
 
-		$provider = new $post_provider;
+		$post_provider = $this->get_cart_provider( $provider );
+
+		if ( empty( $post_provider ) ) {
+			return false;
+		}
+
+		if (
+			'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === get_class( $post_provider )
+		) {
+			/** @var \Tribe__Tickets_Plus__Commerce__WooCommerce__Main $provider */
+			$provider = tribe( 'tickets-plus.commerce.woo' );
+		} elseif (
+			'Tribe__Tickets_Plus__Commerce__EDD__Main' === get_class( $post_provider )
+		) {
+			/** @var \Tribe__Tickets_Plus__Commerce__EDD__Main $provider */
+			$provider = tribe( 'tickets-plus.commerce.edd' );
+		} else {
+			return;
+		}
 
 		return $provider->get_cart_url();
+	}
+
+
+	/**
+	 * Undocumented function
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider A string indicating the desired provider.
+	 * @return boolean|object The provider object or boolean false if none found.
+	 */
+	public function get_cart_provider( $provider ) {
+		if ( empty( $provider ) ) {
+			return false;
+		}
+
+		$provider_obj = false;
+
+		switch ( $provider ) {
+			case 'woo':
+			case 'tribe_wooticket':
+			case 'Tribe__Events__Tickets__Woo__Main':
+				$provider_obj = tribe( 'tickets-plus.commerce.woo' );
+				break;
+			case 'edd':
+			case 'tribe_eddticket':
+			case 'Tribe__Events__Tickets__EDD__Main':
+				$provider_obj = tribe( 'tickets-plus.commerce.edd' );
+				break;
+			case 'tpp':
+			case 'tribe_tpp_attendees':
+			case 'Tribe__Tickets__Commerce__PayPal__Main':
+				$provider_obj = tribe( 'tickets.commerce.paypal' );
+				break;
+		}
+
+		/**
+		 * Allow providers to include themselves if they are not in the above.
+		 *
+		 * @since TBD
+		 *
+		 * @return boolean|object The provider object or boolean false if none found above.
+		 * @param string $provider A string indicating the desired provider.
+		 */
+		return apply_filters( 'tribe_attendee_registration_cart_provider', $provider_obj, $provider );
 	}
 
 	/**
