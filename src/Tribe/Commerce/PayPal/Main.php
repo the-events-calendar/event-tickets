@@ -787,7 +787,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 				$inventory = (int) $ticket_type->inventory();
 				$this->ignore_pending_stock_logic( false );
 
-				$inventory_is_not_unlimited = - 1 !== $inventory;
+				$inventory_is_not_unlimited = -1 !== $inventory;
 
 				if ( $inventory_is_not_unlimited && $qty > $inventory ) {
 					if ( ! $order->was_pending() ) {
@@ -1520,7 +1520,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 
 		// If we don't have a stock value, then stock should be considered 'unlimited'
 		if ( null === $stock ) {
-			$stock = - 1;
+			$stock = -1;
 		}
 
 		$return->manage_stock( 'yes' === get_post_meta( $ticket_id, '_manage_stock', true ) );

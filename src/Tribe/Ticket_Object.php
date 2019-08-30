@@ -492,7 +492,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$remaining = $this->inventory();
 
-			$is_unlimited = $remaining === - 1;
+			$is_unlimited = $remaining === -1;
 
 			return false === $remaining || $remaining > 0 || $is_unlimited;
 		}
