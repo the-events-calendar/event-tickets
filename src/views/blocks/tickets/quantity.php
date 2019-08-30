@@ -26,7 +26,7 @@ $context = array(
 
 ?>
 <div
-	class="tribe-block__tickets__item__quantity"
+	class="tribe-block__tickets__item__quantity tribe-common-h4"
 >
 	<?php if ( $is_available ) : ?>
 		<?php $this->template( 'blocks/tickets/quantity-remove', $context ); ?>
