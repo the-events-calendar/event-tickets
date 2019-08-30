@@ -19,9 +19,7 @@
  * @var bool $display_login_link
  */
 
-$is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
-$are_products_available       = false;
 
 /** @var Tribe__Tickets__Commerce__PayPal__Main $commerce */
 $commerce = tribe( 'tickets.commerce.paypal' );
@@ -81,7 +79,6 @@ $cart_url       = '';
 
 			$available = $handler->get_ticket_max_purchase( $ticket->ID );
 
-			$is_there_any_product         = true;
 			$is_there_any_product_to_sell = 0 !== $available;
 			?>
 			<tr>
