@@ -10,7 +10,7 @@
  * @version 4.10.1
  *
  */
-$cart_url = $this->get_cart_url( $event_id );
+$cart_url = $this->get_cart_url( $provider );
 ?>
 <?php if ( $cart_url ) : ?>
 	<a
