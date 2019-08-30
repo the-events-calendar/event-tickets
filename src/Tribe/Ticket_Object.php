@@ -534,7 +534,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$capacity = $this->capacity();
 
 			// If we don't have the provider we fetch from inventory
-			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
+			if (
+				is_null( $provider )
+				|| ! method_exists( $provider, 'get_attendees_by_id' )
+			) {
 				return $capacity - $this->qty_sold() - $this->qty_pending();
 			}
 
