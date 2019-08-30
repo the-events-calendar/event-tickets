@@ -1136,7 +1136,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 * @param WP_Post                       $event     Event post.
 		 * @param int                           $ticket_id Raw ticket ID.
 		 */
-		return apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event, $ticket_id );
+		return (int) apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event, $ticket_id );
 	}
 
 	/**
