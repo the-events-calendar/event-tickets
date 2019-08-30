@@ -630,7 +630,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function available() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
-			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+			if (
+				! $this->managing_stock()
+				|| -1 === $this->capacity()
+			) {
 				return -1;
 			}
 
