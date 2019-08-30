@@ -130,7 +130,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Support refunded attendee counting/handling for Tribe Commerce and Event Tickets Plus WooCommerce orders [126734]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
 * Fix - Correct the sold count in Attendees Report for unlimited stock Tribe Commerce tickets (was previously showing negative), and improve text to always display quantities sold and remaining for all ticket types [128666]
-* Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter [119822]
+* Fix - Correct the docblock and variable names passed to the `tribe_tickets_get_ticket_max_purchase` filter and update RSVP and Tribe Commerce ticket templates to only display the available quantity [119822]
 * Fix - Make the "Tickets" heading not appear on a single event page if there are only past Tribe Commerce tickets [130748]
 * Fix - The "View your RSVPs and Tickets" link was not appearing when using the Block Editor for Events [128512]
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
