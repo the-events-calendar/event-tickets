@@ -27,7 +27,7 @@ $max_quantity = tribe( 'tickets.handler' )->get_ticket_max_purchase( $ticket->ID
 		class="tribe-ticket-quantity"
 		step="1"
 		min="0"
-		<?php if ( -1 !== $max_quantity && $ticket->managing_stock() ) : ?>
+		<?php if ( -1 !== $max_quantity ) : ?>
 			max="<?php echo esc_attr( $max_quantity ); ?>"
 		<?php endif; ?>
 		name="quantity_<?php echo absint( $ticket->ID ); ?>"
