@@ -23,7 +23,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 *
 	 *
 	 * @since  4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
-	 *                 we changed this from an Abstract to a normal parent Class
+	 *                 we changed this from an Abstract to a normal parent class.
 	 */
 	class Tribe__Tickets__Tickets {
 
