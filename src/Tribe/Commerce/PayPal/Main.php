@@ -563,23 +563,17 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
-		$attendee = array();
-
 		// Get the Attendee Data, it's important for testing
 		foreach ( $ticket_orders as $test_attendee ) {
 			if ( $order_id !== $test_attendee['order_id'] ) {
 				continue;
 			}
-
-			$attendee = $test_attendee;
 		}
 
-		$attendee_email        = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
-		$attendee_email        = is_email( $attendee_email ) ? $attendee_email : null;
-		$attendee_full_name    = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
-		$attendee_optout       = empty( $data['optout'] ) ? false : (bool) $data['optout'];
-
-		$product_id  = $attendee['product_id'];
+		$attendee_email     = empty( $data['email'] ) ? null : sanitize_email( $data['email'] );
+		$attendee_email     = is_email( $attendee_email ) ? $attendee_email : null;
+		$attendee_full_name = empty( $data['full_name'] ) ? null : sanitize_text_field( $data['full_name'] );
+		$attendee_optout    = empty( $data['optout'] ) ? false : (bool) $data['optout'];
 
 		update_post_meta( $order_id, $this->attendee_optout_key, (bool) $attendee_optout );
 
@@ -2091,9 +2085,9 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( ! empty( $orders ) ) {
 			/** @var Tribe__Tickets__Commerce__PayPal__Order $order */
 			foreach ( $orders as $order ) {
-				$order_id                        = $order->paypal_id();
-				$status                          = $order->get_status();
-				$attendees                       = $order->get_attendees();
+				$order_id        = $order->paypal_id();
+				$status          = $order->get_status();
+				$attendees       = $order->get_attendees();
 				$refund_order_id = $order->get_refund_order_id();
 
 				$found[ $order_id ] = array(
@@ -2575,14 +2569,14 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return false;
 		}
 
-		$checkin      = get_post_meta( $attendee->ID, $this->checkin_key, true );
-		$security     = get_post_meta( $attendee->ID, $this->security_code, true );
-		$order_id     = get_post_meta( $attendee->ID, $this->order_key, true );
-		$product_id   = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
-		$optout       = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
-		$status       = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
-		$user_id      = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
-		$ticket_sent  = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
+		$checkin     = get_post_meta( $attendee->ID, $this->checkin_key, true );
+		$security    = get_post_meta( $attendee->ID, $this->security_code, true );
+		$order_id    = get_post_meta( $attendee->ID, $this->order_key, true );
+		$product_id  = get_post_meta( $attendee->ID, $this->attendee_product_key, true );
+		$optout      = (bool) get_post_meta( $attendee->ID, $this->attendee_optout_key, true );
+		$status      = get_post_meta( $attendee->ID, $this->attendee_tpp_key, true );
+		$user_id     = get_post_meta( $attendee->ID, $this->attendee_user_id, true );
+		$ticket_sent = (bool) get_post_meta( $attendee->ID, $this->attendee_ticket_sent, true );
 
 		if ( empty( $product_id ) ) {
 			return false;
