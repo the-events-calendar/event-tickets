@@ -24,10 +24,7 @@ $is_there_any_product_to_sell = false;
 $are_products_available       = false;
 
 /** @var Tribe__Tickets__Commerce__PayPal__Main $commerce */
-$commerce       = tribe( 'tickets.commerce.paypal' );
-
-/** @var Tribe__Tickets__Tickets_Handler $handler */
-$handler = tribe( 'tickets.handler' );
+$commerce = tribe( 'tickets.commerce.paypal' );
 
 $messages       = $commerce->get_messages();
 $messages_class = $messages ? 'tribe-tpp-message-display' : '';
@@ -78,6 +75,9 @@ $cart_url       = '';
 			if ( 'Tribe__Tickets__Commerce__PayPal__Main' !== $ticket->provider_class ) {
 				continue;
 			}
+
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
 
 			$available = $handler->get_ticket_max_purchase( $ticket->ID );
 
