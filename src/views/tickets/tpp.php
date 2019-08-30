@@ -89,11 +89,9 @@ $cart_url       = '';
 							type="number"
 							class="tribe-ticket-quantity qty"
 							min="0"
-							<?php
-							if ( -1 !== $available ) {
-								echo 'max="' . esc_attr( $available ) . '"';
-							}
-							?>
+							<?php if ( -1 !== $available ) : ?>
+								max="<?php echo esc_attr( $available ); ?>"
+							<?php endif; ?>
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
