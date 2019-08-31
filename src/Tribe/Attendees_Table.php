@@ -911,7 +911,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 			$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
 
-			if ( $search_type && in_array( $search_type, $search_keys, true ) ) {
+			if (
+				$search_type
+				&& in_array( $search_type, $search_keys, true )
+			) {
 				$search_key = $search_type;
 			}
 
@@ -1016,7 +1019,10 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$search_type = sanitize_text_field( tribe_get_request_var( 'tribe_attendee_search_type' ) );
 
-		if ( $search_type && array_key_exists( $search_type, $options ) ) {
+		if (
+			$search_type
+			&& array_key_exists( $search_type, $options )
+		) {
 			$selected = $search_type;
 		}
 
