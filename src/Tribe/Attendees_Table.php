@@ -885,14 +885,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		$search = sanitize_text_field( tribe_get_request_var( $this->search_box_input_name ) );
 
 		if ( ! empty( $search ) ) {
-			$search_keys = [
-				'purchaser_name',
-				'purchaser_email',
-				'order_status',
-				'product_id',
-				'security_code',
-				'user',
-			];
+			$search_keys = array_keys( $this->get_search_options() );
 
 			/**
 			 * Filters the item keys that can be used to filter attendees while searching them.
@@ -973,6 +966,28 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	}
 
 	/**
+	 * Get the allowed search types and their descriptions.
+	 *
+	 * @since TBD
+	 *
+	 * @see   \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
+	 *
+	 * @return array
+	 */
+	private function get_search_options() {
+		return [
+			'purchaser_name'  => __( 'Search by Purchaser Name', 'event-tickets' ),
+			'purchaser_email' => __( 'Search by Purchaser Email', 'event-tickets' ),
+			'user'            => __( 'Search by User ID', 'event-tickets' ),
+			'order_status'    => __( 'Search by Order Status', 'event-tickets' ),
+			'order'           => __( 'Search by Order ID', 'event-tickets' ),
+			'security_code'   => __( 'Search by Security Code', 'event-tickets' ),
+			'ID'              => __( 'Search by Ticket ID', 'event-tickets' ),
+			'product_id'      => __( 'Search by Product ID', 'event-tickets' ),
+		];
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function search_box( $text, $input_id ) {
@@ -996,15 +1011,6 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 
 		$this->items = $old_items;
 
-		$options = [
-			'purchaser_name'  => __( 'Search by Purchaser Name', 'event-tickets' ),
-			'purchaser_email' => __( 'Search by Purchaser Email', 'event-tickets' ),
-			'user'            => __( 'Search by User ID', 'event-tickets' ),
-			'order_status'    => __( 'Search by Order Status', 'event-tickets' ),
-			'security_code'   => __( 'Search by Security Code', 'event-tickets' ),
-			'product_id'      => __( 'Search by Ticket ID', 'event-tickets' ),
-		];
-
 		/**
 		 * Filters the search types to be shown in the search box for filtering attendees.
 		 *
@@ -1012,7 +1018,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 		 *
 		 * @param array $options List of ORM search types and their labels.
 		 */
-		$options = apply_filters( 'tribe_tickets_search_attendees_types', $options );
+		$options = apply_filters( 'tribe_tickets_search_attendees_types', $this->get_search_options() );
 
 		// Default selection.
 		$selected = 'purchaser_name';
