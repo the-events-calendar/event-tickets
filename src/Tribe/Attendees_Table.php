@@ -1006,7 +1006,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 			// Give front-end (e.g. Community) a custom input name
 			$search_box = str_replace( 'name="s"', 'name="' . esc_attr( $this->search_box_input_name ) . '"', $search_box );
 			// And get its value upon reloading the page to display its search results so user knows what they searched for
-			$search_box = str_replace( 'value=""', 'value="' . esc_attr( tribe_get_request_var($this->search_box_input_name ) ). '"', $search_box );
+			$search_box = str_replace( 'value=""', 'value="' . esc_attr( tribe_get_request_var( $this->search_box_input_name ) ) . '"', $search_box );
 		}
 
 		$this->items = $old_items;
