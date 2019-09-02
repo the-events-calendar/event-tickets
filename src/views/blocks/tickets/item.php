@@ -29,7 +29,7 @@ if (
 	return false;
 }
 
-$must_login = true;//! is_user_logged_in() && $ticket->get_provider()->login_required();
+$must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
 if ( $must_login ) {
 	$classes[] = 'tribe-block__tickets__item__disabled';
 }
