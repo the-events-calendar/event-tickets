@@ -28,6 +28,11 @@ if (
 ) {
 	return false;
 }
+
+$must_login = true;//! is_user_logged_in() && $ticket->get_provider()->login_required();
+if ( $must_login ) {
+	$classes[] = 'tribe-block__tickets__item__disabled';
+}
 ?>
 <div
 	id="tribe-block-tickets-item-<?php echo esc_attr( $ticket->ID ); ?>"
@@ -36,8 +41,6 @@ if (
 	data-available="<?php echo ( 0 === $ticket->available() ) ? 'false' : 'true'; ?>"
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( $ticket->ID ); ?>" />
-	<?php $this->template( 'blocks/tickets/icon', $context ); ?>
 	<?php $this->template( 'blocks/tickets/content', $context ); ?>
-	<?php $this->template( 'blocks/tickets/extra', $context ); ?>
 	<?php $this->template( 'blocks/tickets/quantity', $context ); ?>
 </div>

@@ -46,6 +46,10 @@ tribe.tickets.block = {
 		function( e ) {
 			e.preventDefault();
 			var $input = $( this ).parent().find( 'input[type="number"]' );
+			if( $input.is( ':disabled' ) ) {
+				return;
+			}
+
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
 			var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1
 			var originalValue = Number( $input[ 0 ].value );
@@ -84,6 +88,8 @@ tribe.tickets.block = {
 			if ( originalValue !== $input[ 0 ].value ) {
 				$input.trigger( 'change' );
 			}
+
+			$input.addClass( 'tribe-block__tickets__item__quantity__number--active' );
 		}
 	);
 

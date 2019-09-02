@@ -19,7 +19,7 @@
 
 	.tribe-block__tickets__item {
 		display: flex;
-		flex-wrap: nowrap;
+		flex-flow: row wrap;
 		background: var(--color-background);
 		border-bottom: 1px solid var(--color-border-secondary);
 		border-top: 1px solid var(--color-border-secondary);
@@ -51,7 +51,7 @@
 
 	.tribe-block__tickets__item__content__title {
 		display: block;
-		flex: 0 0 100%;
+		flex: 1 1 100%;
 		font-weight: bold;
 		order: 1;
 
@@ -68,16 +68,17 @@
 
 		@media(--viewport-medium) {
 			margin-left: 0;
+			order: 2;
 		}
 	}
 
 	.tribe-block__tickets__item__content__description__more {
-		@media (--viewport-medium) {
+		@media(--viewport-medium) {
 			display: none;
 		}
 
 		&:after {
-			background-image: svg-inline(caret-down);
+			/* /background-image: svg-inline(caret-down); */
 			height: 10px;
 			width: 10px;
 		}
@@ -86,7 +87,7 @@
 	.tribe-block__tickets__item__content__description__content {
 		display: none;
 
-		@media (--viewport-medium) {
+		@media(--viewport-medium) {
 			display: block;
 		}
 	}
@@ -104,8 +105,9 @@
 
 		@media(--viewport-medium) {
 			align-items: center;
-			flex: 0 1 20%;
+			flex: 0 0 20%;
 			flex-flow: column;
+			order: 3;
 		}
 	}
 
@@ -119,6 +121,7 @@
 
 	.tribe-block__tickets__item__quantity {
 		flex: 0 0 90px;
+		order: 3;
 	}
 
 	.tribe-block__tickets__item__quantity__add,

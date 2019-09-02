@@ -27,4 +27,5 @@ $context = array(
 >
 	<?php $this->template( 'blocks/tickets/content-title', $context ); ?>
 	<?php $this->template( 'blocks/tickets/content-description', $context ); ?>
+	<?php $this->template( 'blocks/tickets/extra', $context ); ?>
 </div>

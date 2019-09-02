@@ -21,10 +21,11 @@ $button_text = __( 'Get Tickets!', 'event-tickets-plus');
 $content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_modal_content', '<p>EDD Tickets modal needs content, badly.</p>' );
 $content     = wp_kses_post( $content );
 $args = [
-	'button_type'  => 'submit',
-	'button_name'  => 'edd-submit',
-	'button_text'  => $button_text,
-	'title'        => $title,
+	'button_type'    => 'submit',
+	'button_classes' => [ 'tribe-common-c-btn--small tribe-block__tickets__submit' ],
+	'button_name'    => 'edd-submit',
+	'button_text'    => $button_text,
+	'title'          => $title,
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
