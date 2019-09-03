@@ -21,7 +21,6 @@ if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 	return false;
 }
 ?>
-<div class="tribe-block__tickets__item__details__summary tribe-common-b3" aria-controls="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>">More</div>
-<div id="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>" class="tribe-block__tickets__item__details__content tribe-common-b3">
+<div id="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>" class="tribe-common-b3 tribe-block__tickets__item__details__content">
 	<?php echo $ticket->description; ?>
 </div>

@@ -30,7 +30,7 @@ $container_classes = implode( ' ', $container_classes);
 >
 	<input
 		type="number"
-		class="tribe-ticket-quantity"
+		class="tribe-ticket-quantity tribe-common-h3 tribe-common-h4--min-medium"
 		step="1"
 		min="0"
 		<?php if ( -1 !== $max_quantity && $ticket->managing_stock() ) : ?>
