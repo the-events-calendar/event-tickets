@@ -126,6 +126,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Reduced file size by removing .po files and directing anyone creating or editing local translations to translate.wordpress.org
 * Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
 * Tweak - Allow text to wrap in attendees and orders report tables to avoid text going into other columns. [133195]
+* Tweak - Added Order ID and Product ID search types to Attendees Report and fixed Ticket ID search type to be based on the ticket's Post ID [132248]
+* Fix - Front-end search box (Community Tickets) input name changed to no longer trigger a theme's Search template [132248]
 * Fix - Fix potential issues with query that had no upper limit set when all that's needed is to check if it had one item [133247]
 * Fix - Support refunded attendee counting/handling for Tribe Commerce and Event Tickets Plus WooCommerce orders [126734]
 * Fix - Correct text domain in Tribe Commerce admin view [127645]
@@ -136,7 +138,6 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Admin ticket editor was not displaying currency symbol at all if set to display after amount (postfix/suffix) [128532]
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
-* Fix - Front-end search box input name changed to no longer trigger a theme's Search template [132248]
 * Fix - Allow saving RSVP status changes (Going / Not Going) even if tickets have no Attendee Information fields [128629]
 
 = [4.10.7.1] 2019-08-27 =
