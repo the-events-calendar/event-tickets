@@ -140,9 +140,13 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 * Fix - Allow saving RSVP status changes (Going / Not Going) even if tickets have no Attendee Information fields [128629]
 
+= [4.10.7.2] 2019-09-03 =
+
+* Fix - Prevent formulas from being exported when exporting attendees to CSV [133550]
+
 = [4.10.7.1] 2019-08-27 =
 
- * Fix - Resolve JS console warnings from `tooltip.js` in `tribe-common` by adding missing `tribe` var when the var is not setup on the current page already [133207]
+* Fix - Resolve JS console warnings from `tooltip.js` in `tribe-common` by adding missing `tribe` var when the var is not setup on the current page already [133207]
 
 = [4.10.7] 2019-08-22 =
 
