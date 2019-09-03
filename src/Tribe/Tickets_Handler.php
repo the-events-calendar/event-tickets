@@ -1101,11 +1101,11 @@ class Tribe__Tickets__Tickets_Handler {
 	}
 
 	/**
-	 * Gets the Maximum Purchase number for a given ticket
+	 * Gets the Maximum Purchase number for a given ticket.
 	 *
 	 * @since  4.8.1
 	 *
-	 * @param  int|string  $ticket_id  Ticket to fetch purchase max from
+	 * @param  int|string $ticket_id Ticket from which to fetch purchase max.
 	 *
 	 * @return int
 	 */
@@ -1124,7 +1124,10 @@ class Tribe__Tickets__Tickets_Handler {
 		$available = $ticket->available();
 
 		/**
-		 * Allows filtering of the max input for purchase of this one ticket.
+		 * Allows filtering the quantity available displayed below the ticket
+		 * quantity input for purchase of this one ticket.
+		 *
+		 * If less than the maximum quantity available, will restrict that as well.
 		 *
 		 * @since 4.8.1
 		 *
@@ -1133,7 +1136,7 @@ class Tribe__Tickets__Tickets_Handler {
 		 * @param WP_Post                       $event     Event post.
 		 * @param int                           $ticket_id Raw ticket ID.
 		 */
-		return apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event, $ticket_id );
+		return (int) apply_filters( 'tribe_tickets_get_ticket_max_purchase', $available, $ticket, $event, $ticket_id );
 	}
 
 	/**

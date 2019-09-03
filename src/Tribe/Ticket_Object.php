@@ -492,7 +492,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 			$remaining = $this->inventory();
 
-			$is_unlimited = $remaining === - 1;
+			$is_unlimited = $remaining === -1;
 
 			return false === $remaining || $remaining > 0 || $is_unlimited;
 		}
@@ -534,12 +534,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$capacity = $this->capacity();
 
 			// If we don't have the provider we fetch from inventory
-			if ( is_null( $provider ) || ! method_exists( $provider, 'get_attendees_by_id' ) ) {
+			if (
+				is_null( $provider )
+				|| ! method_exists( $provider, 'get_attendees_by_id' )
+			) {
 				return $capacity - $this->qty_sold() - $this->qty_pending();
 			}
 
-			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
-			if ( ! $this->managing_stock() || -1 === $capacity ) {
+			// If we aren't tracking stock, then always assume it is in stock or capacity is unlimited.
+			if (
+				! $this->managing_stock()
+				|| -1 === $capacity
+			) {
 				return -1;
 			}
 
@@ -627,7 +633,10 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 		 */
 		public function available() {
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
-			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+			if (
+				! $this->managing_stock()
+				|| -1 === $this->capacity()
+			) {
 				return -1;
 			}
 
@@ -635,7 +644,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			$values[] = $this->capacity();
 			$values[] = $this->stock();
 
-			// What ever is the lowest we use it
+			// Whatever is the lowest we use it
 			$available = min( $values );
 
 			// Prevents Negative
@@ -680,7 +689,7 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 
 		/**
 		 * Method to manage the protected `stock` property of the Object
-		 * Prevents setting `stock` lower then zero.
+		 * Prevents setting `stock` lower then zero but may return `-1`.
 		 *
 		 * Returns the current ticket stock level: either an integer or an
 		 * empty string (Tribe__Tickets__Ticket_Object::UNLIMITED_STOCK)
@@ -698,12 +707,18 @@ if ( ! class_exists( 'Tribe__Tickets__Ticket_Object' ) ) {
 			}
 
 			// if we aren't tracking stock, then always assume it is in stock or capacity is unlimited
-			if ( ! $this->managing_stock() || -1 === $this->capacity() ) {
+			if (
+				! $this->managing_stock()
+				|| -1 === $this->capacity()
+			) {
 				return -1;
 			}
 
 			// If the Value was passed as numeric value overwrite
-			if ( is_numeric( $value ) || $value === self::UNLIMITED_STOCK ) {
+			if (
+				is_numeric( $value )
+				|| $value === self::UNLIMITED_STOCK
+			) {
 				$this->stock = $value;
 			}
 
