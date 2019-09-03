@@ -586,11 +586,8 @@ class Tribe__Tickets__Attendees {
 			|| 0 === mb_strpos( $value, '-' )
 			|| 0 === mb_strpos( $value, '@' )
 		) {
-			// Remove the character from the start of the value.
-			$value = mb_substr( $value, 1 );
-
-			// Continue sanitizing in case there are other disallowed characters at the start now.
-			return $this->sanitize_csv_value( $value );
+			// Prefix the value with a single quote to prevent formula from being processed.
+			$value = '\'' . $value;
 		}
 
 		return $value;
