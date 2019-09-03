@@ -622,11 +622,11 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		// Generate filtereed list of attendees.
+		// Generate filtered list of attendees.
 		$items = $this->generate_filtered_list( $event_id );
 
 		// Sanitize items for CSV usage.
-		$items = array_map( [ $this, 'sanitize_csv_rows' ], $items );
+		$items = $this->sanitize_csv_rows( $items );
 
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
