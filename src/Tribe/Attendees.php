@@ -554,6 +554,49 @@ class Tribe__Tickets__Attendees {
 	}
 
 	/**
+	 * Sanitize rows for CSV usage.
+	 *
+	 * @since 4.10.7.2
+	 *
+	 * @param array $rows Rows to be sanitized.
+	 *
+	 * @return array Sanitized rows.
+	 */
+	public function sanitize_csv_rows( array $rows ) {
+		foreach ( $rows as &$row ) {
+			$row = array_map( [ $this, 'sanitize_csv_value' ], $row );
+		}
+
+		return $rows;
+	}
+
+	/**
+	 * Sanitize a value for CSV usage.
+	 *
+	 * @since 4.10.7.2
+	 *
+	 * @param mixed $value Value to be sanitized.
+	 *
+	 * @return string Sanitized value.
+	 */
+	public function sanitize_csv_value( $value ) {
+		if (
+			0 === mb_strpos( $value, '=' )
+			|| 0 === mb_strpos( $value, '+' )
+			|| 0 === mb_strpos( $value, '-' )
+			|| 0 === mb_strpos( $value, '@' )
+		) {
+			// Remove the character from the start of the value.
+			$value = mb_substr( $value, 1 );
+
+			// Continue sanitizing in case there are other disallowed characters at the start now.
+			return $this->sanitize_csv_value( $value );
+		}
+
+		return $value;
+	}
+
+	/**
 	 * Checks if the user requested a CSV export from the attendees list.
 	 * If so, generates the download and finishes the execution.
 	 *
@@ -565,18 +608,36 @@ class Tribe__Tickets__Attendees {
 			return;
 		}
 
-		if ( ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) || ! $this->user_can( 'edit_posts', $_GET['event_id'] ) ) {
+		$event_id = absint( $_GET['event_id'] );
+
+		// Verify event ID is a valid integer and the nonce is accepted.
+		if ( empty( $event_id ) || ! wp_verify_nonce( $_GET['attendees_csv_nonce'], 'attendees_csv_nonce' ) ) {
 			return;
 		}
+
+		$event = get_post( $event_id );
+
+		// Verify event exists and current user has access to it.
+		if (
+			! $event instanceof WP_Post
+			|| ! $this->user_can( 'edit_posts', $event_id )
+		) {
+			return;
+		}
+
+		// Generate filtereed list of attendees.
+		$items = $this->generate_filtered_list( $event_id );
+
+		// Sanitize items for CSV usage.
+		$items = array_map( [ $this, 'sanitize_csv_rows' ], $items );
 
 		/**
 		 * Allow for filtering and modifying the list of attendees that will be exported via CSV for a given event.
 		 *
-		 * @param array $items The array of attendees that will be exported in this CSV file.
-		 * @param int $event_id The ID of the event these attendees are associated with.
+		 * @param array $items    The array of attendees that will be exported in this CSV file.
+		 * @param int   $event_id The ID of the event these attendees are associated with.
 		 */
-		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $this->generate_filtered_list( $_GET['event_id'] ), $_GET['event_id'] );
-		$event = get_post( $_GET['event_id'] );
+		$items = apply_filters( 'tribe_events_tickets_attendees_csv_items', $items, $event_id );
 
 		if ( ! empty( $items ) ) {
 			$charset  = get_option( 'blog_charset' );
