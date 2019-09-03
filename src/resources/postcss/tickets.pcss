@@ -15,6 +15,7 @@
 }
 
  .tribe-common {
+	 --color-ticket-field-disabled: rgba(20,24,39,0.5);
 
 	 .tribe-block__tickets__title {
 		 color: var(--color-text-primary);
@@ -22,6 +23,7 @@
 	 }
 
 	.tribe-block__tickets__item {
+		align-items: center;
 		display: flex;
 		flex-flow: row wrap;
 		background: var(--color-background);
@@ -70,78 +72,58 @@
 		}
 	}
 
-	.tribe-block__tickets__item__icon {
-		background: #f9f9f9;
-		flex: 1 1 70px;
-		text-align: center;
-
-		.tribe-svg-icon-ticket {
-			display: block;
-			width: 100%;
-			height: auto;
-		}
-	}
-
 	.tribe-block__tickets__item__content {
 		align-items: baseline;
-		display: flex;
+		display: grid;
 		flex: 1 1 calc(100% - 90px);
-		flex-direction: column;
-		flex-wrap: wrap;
-
-		@media(--viewport-medium) {
-		flex-direction: row;
-		}
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: auto;
 	}
 
 	.tribe-block__tickets__item__content__title {
-		display: block;
-		flex: 1 1 50%;
 		font-weight: bold;
+		grid-column: 1 / span 2;
+		grid-row: 1;
 		line-height: 1;
-		order: 1;
 
 		@media(--viewport-medium) {
-			flex: 0 0 80%;
+			grid-column: 1;
 		}
 	}
 
-	.tribe-block__tickets__item__content__description {
-		align-items: flex-end;
+	.tribe-block__tickets__item__details__content {
 		color: var(--color-text-secondary);
-		display: flex;
-		flex: 1 1 100%;
-		flex-wrap: wrap;
-		line-height: 1;
-		margin-left: .5em;
-		order: 3;
+		display: none;
+		grid-column: 1 / span 2;
+		grid-row: 3;
+
+		&.tribe__details--open {
+			display: block;
+		}
 
 		@media(--viewport-medium) {
-			align-items: center;
-			margin-left: 0;
-			flex: 0 0 80%;
+			display: block;
+			grid-column: 1;
+			grid-row: 2;
 		}
 	}
 
-	.tribe-block__tickets__item__content__description__more {
-		color: var(--color-text-secondary);
+	.tribe-block__tickets__item__details__summary {
+		grid-column: 2;
+		grid-row: 2;
+
+		&:before {
+			content: '\25bc';
+		}
+
 		@media(--viewport-medium) {
 			display: none;
 		}
 
-		&:after {
-			/* /background-image: svg-inline(caret-down); */
-			height: 10px;
-			width: 10px;
-		}
-	}
-
-	.tribe-block__tickets__item__content__description__content {
-		color: var(--color-text-secondary);
-		display: none;
-
-		@media(--viewport-medium) {
-			display: block;
+		&.tribe__details--open {
+			&:before {
+				content: '\25b2';
+			}
 		}
 	}
 
@@ -149,8 +131,9 @@
 		align-items: baseline;
 		display: flex;
 		flex: 0 1 auto;
+		grid-column: 1;
+		grid-row: 2;
 		justify-content: left;
-		order: 2;
 		text-align: center;
 
 
@@ -158,6 +141,8 @@
 			align-items: center;
 			flex: 0 0 20%;
 			flex-flow: column;
+			grid-column: 2;
+			grid-row: 1 / span 2;
 		}
 	}
 
@@ -248,22 +233,18 @@
 	*/
 	.tribe-block__tickets__item__disabled {
 		* {
-			color: var(--color-text-secondary);
+			color: #14182780;
+			color: var(--color-ticket-field-disabled);
 		}
 
+
+		.tribe-block__tickets__item__quantity,
 		.tribe-block__tickets__item__quantity__add,
 		.tribe-block__tickets__item__quantity__remove,
-		.tribe-block__tickets__item__quantity {
-			color: var(--color-icon-disabled);
+		.tribe-block__tickets__item__quantity__number input[type="number"] {
+			color: #14182780;
+			color: var(--color-ticket-field-disabled);
 		}
-
-		.tribe-block__tickets__item__quantity__number {
-			input[type="number"] {
-				background-color:var(--color-background-secondary);
-				color: var(--color-icon-disabled);
-			}
-		}
-
 	}
 
 	/*

@@ -17,13 +17,11 @@
 
 $ticket = $this->get( 'ticket' );
 
-if ( ! $ticket->show_description() ) {
+if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 	return false;
 }
 ?>
-<div class="tribe-block__tickets__item__content__description tribe-common-b3">
-	<span class="tribe-block__tickets__item__content__description__more tribe-common-svgicon tribe-common-svgicon--caret_down">More</span>
-	<div class="tribe-block__tickets__item__content__description__content">
-		<?php echo $ticket->description; ?>
-	</div>
+<div class="tribe-block__tickets__item__details__summary tribe-common-b3" aria-controls="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>">More</div>
+<div id="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>" class="tribe-block__tickets__item__details__content tribe-common-b3">
+	<?php echo $ticket->description; ?>
 </div>

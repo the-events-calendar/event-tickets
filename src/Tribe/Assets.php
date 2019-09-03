@@ -15,6 +15,7 @@ class Tribe__Tickets__Assets {
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp.css', [] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery', 'jquery-ui-datepicker' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
+				[ 'event-tickets-details-js', 'details.js', [] ],
 			],
 			'wp_enqueue_scripts'
 		);
