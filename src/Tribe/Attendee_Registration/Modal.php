@@ -17,7 +17,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$main = Tribe__Tickets__Main::instance();
 
 		$template = 'modal/cart.php';
-		if ( $theme_file = locate_template( array( 'tribe-events/' . $template ) ) ) {
+		if ( $theme_file = locate_template( [ 'tribe-events/' . $template ] ) ) {
 			$file = $theme_file;
 		} else {
 			$file = $main->plugin_path . 'src/views/' . $template;
@@ -26,7 +26,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$file = apply_filters( 'tribe_events_tickets_template_' . $template, $file );
 
 		$post_id             = $template_obj->get( 'post_id' );
-		$tickets             = $template_obj->get( 'tickets', array() );
+		$tickets             = $template_obj->get( 'tickets', [] );
 		$provider            = $template_obj->get( 'provider' );
 		$provider_id         = $template_obj->get( 'provider_id' );
 		$cart_url            = $template_obj->get( 'cart_url' );
