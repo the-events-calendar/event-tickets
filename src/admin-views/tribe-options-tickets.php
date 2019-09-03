@@ -165,7 +165,7 @@ $plus_message = sprintf(
 	$plus_link_2
 );
 
-$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => - 1 ) );
+$pages = get_pages( array( 'post_status' => 'publish', 'posts_per_page' => -1 ) );
 
 if ( ! empty( $pages ) ) {
 	$pages = array_combine( wp_list_pluck( $pages, 'ID' ), wp_list_pluck( $pages, 'post_title' ) );

@@ -11,7 +11,7 @@
  * @since   4.7.6 Add support for showing description option.
  * @since   4.8.2 Add date_in_range() logic so past tickets do not show.
  * @since   4.9.3 Display login link if visitor is logged out and logging in is required to purchase.
- * @since   TBD Removed the date_in_range() check per ticket, since it now happens upstream.
+ * @since   TBD Removed the date_in_range() check per ticket, since it now happens upstream. Better checking of max quantity available.
  *
  * @version TBD
  *
@@ -19,12 +19,11 @@
  * @var bool $display_login_link
  */
 
-$is_there_any_product         = false;
 $is_there_any_product_to_sell = false;
-$are_products_available       = false;
 
 /** @var Tribe__Tickets__Commerce__PayPal__Main $commerce */
-$commerce       = tribe( 'tickets.commerce.paypal' );
+$commerce = tribe( 'tickets.commerce.paypal' );
+
 $messages       = $commerce->get_messages();
 $messages_class = $messages ? 'tribe-tpp-message-display' : '';
 $now            = current_time( 'timestamp' );
@@ -66,15 +65,21 @@ $cart_url       = '';
 		<?php
 		$item_counter = 1;
 		foreach ( $tickets as $ticket ) {
+			if ( ! $ticket instanceof Tribe__Tickets__Ticket_Object ) {
+				continue;
+			}
+
 			// if the ticket isn't a Tribe Commerce ticket, then let's skip it
 			if ( 'Tribe__Tickets__Commerce__PayPal__Main' !== $ticket->provider_class ) {
 				continue;
 			}
 
-			$is_there_any_product         = true;
-			$is_there_any_product_to_sell = $ticket->is_in_stock();
-			$inventory                    = (int) $ticket->inventory();
-			$max_quantity                 = $inventory > 0 ? $inventory : '';
+			/** @var Tribe__Tickets__Tickets_Handler $handler */
+			$handler = tribe( 'tickets.handler' );
+
+			$available = $handler->get_ticket_max_purchase( $ticket->ID );
+
+			$is_there_any_product_to_sell = 0 !== $available;
 			?>
 			<tr>
 				<td class="tribe-ticket quantity" data-product-id="<?php echo esc_attr( $ticket->ID ); ?>">
@@ -84,15 +89,17 @@ $cart_url       = '';
 							type="number"
 							class="tribe-ticket-quantity qty"
 							min="0"
-							<?php if ( $max_quantity ) { echo 'max="' . esc_attr( $max_quantity ) . '"'; } ?>
+							<?php if ( -1 !== $available ) : ?>
+								max="<?php echo esc_attr( $available ); ?>"
+							<?php endif; ?>
 							name="quantity_<?php echo absint( $ticket->ID ); ?>"
 							value="0"
 							<?php disabled( $must_login ); ?>
 						>
-						<?php if ( $ticket->managing_stock() ) : ?>
+						<?php if ( -1 !== $available ) : ?>
 							<span class="tribe-tickets-remaining">
 							<?php
-							$readable_amount = tribe_tickets_get_readable_amount( $ticket->available(), null, false );
+							$readable_amount = tribe_tickets_get_readable_amount( $available, null, false );
 							echo sprintf( esc_html__( '%1$s available', 'event-tickets' ), '<span class="available-stock" data-product-id="' . esc_attr( $ticket->ID ) . '">' . esc_html( $readable_amount ) . '</span>' );
 							?>
 							</span>

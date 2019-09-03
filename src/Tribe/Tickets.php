@@ -23,7 +23,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 	 *
 	 *
 	 * @since  4.5.0.1 Due to a fatal between Event Ticket Plus extending commerces and this class,
-	 *                 we changed this from an Abstract to a normal parent Class
+	 *                 we changed this from an Abstract to a normal parent class.
 	 */
 	class Tribe__Tickets__Tickets {
 
@@ -2477,7 +2477,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 			}
 
 			// set the default capacity to that of the event, if set, or to unlimited
-			$default_capacity = Tribe__Utils__Array::get( $data, 'event_capacity', - 1 );
+			$default_capacity = Tribe__Utils__Array::get( $data, 'event_capacity', -1 );
 
 			// Fetch capacity field, if we don't have it use default (defined above)
 			$data['capacity'] = trim( Tribe__Utils__Array::get( $data, 'capacity', $default_capacity ) );
@@ -2489,7 +2489,7 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// The only available value lower than zero is -1 which is unlimited
 			if ( 0 > $data['capacity'] ) {
-				$data['capacity'] = - 1;
+				$data['capacity'] = -1;
 			}
 
 			// Fetch the stock if defined, otherwise use Capacity field
@@ -2502,10 +2502,10 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 
 			// The only available value lower than zero is -1 which is unlimited
 			if ( 0 > $data['stock'] ) {
-				$data['stock'] = - 1;
+				$data['stock'] = -1;
 			}
 
-			if ( - 1 !== $data['capacity'] ) {
+			if ( -1 !== $data['capacity'] ) {
 				if ( 'update' === $save_type ) {
 					$totals        = tribe( 'tickets.handler' )->get_ticket_totals( $ticket->ID );
 					$data['stock'] -= $totals['pending'] + $totals['sold'];
