@@ -18,6 +18,16 @@
 /* translators: %s is the event or post title the tickets are attached to. */
 $title       = sprintf( __( '%s Tickets', 'event-tickets' ), esc_html__( get_the_title() ) );
 $button_text = esc_html__( 'Get Tickets!', 'event-tickets');
+
+/**
+ * Filter Modal Content
+ *
+ * @since TBD
+ *
+ * @param string $content a string of default content
+ * @param Tribe__Tickets__Editor__Template $template_obj the Template objec
+ *
+ */
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 $args = [
 	'button_name' => $provider_id . '_get_tickets',
