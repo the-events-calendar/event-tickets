@@ -173,6 +173,7 @@
 
 	.tribe-block__tickets__item__quantity {
 		color: var(--color-text-secondary);
+		display: flex;
 		flex: 0 0 90px;
 		order: 3;
 	}
@@ -186,6 +187,7 @@
 		background-color: transparent;
 		color: var(--color-icon-secondary);
 		display: inline-block;
+		width: 1rem;
 
 		&:hover,
 		&:focus {
@@ -207,7 +209,7 @@
 		margin: 0;
 		outline:none;
 		position: relative;
-		width: 3rem;
+		width: calc(90px - 2rem);
 
 		&:hover {
 			background: none;
