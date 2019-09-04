@@ -24,7 +24,7 @@ $args = [
 	'button_text' => $button_text,
 	'button_type' => 'submit',
 	'show_event'  => 'tribe_dialog_show_ar_modal',
-	'title'       => esc_html( $title ),
+	'title'       => $title,
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
