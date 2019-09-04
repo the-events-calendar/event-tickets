@@ -14,6 +14,7 @@
 $cart_classes = [
 	'tribe-modal-cart',
 	'tribe-modal__cart',
+	'tribe-common',
 ];
 
 // We don't display anything if there is no provider or tickets
