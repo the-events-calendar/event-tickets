@@ -11,10 +11,10 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
+ *
  * @version 4.9.4
  *
  */
-
 ?>
 <button
 	class="tribe-block__tickets__buy"
