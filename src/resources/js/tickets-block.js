@@ -236,9 +236,8 @@ tribe.tickets.block = {
 		}
 
 		// Update total count in footer
-		console.log( 'increase ' + change );
 		if ( 0 < change ) {
-			obj.footerCount( change, 'add' );
+			obj.footerCount( $input, change, 'add' );
 		}
 	}
 
@@ -265,24 +264,29 @@ tribe.tickets.block = {
 		}
 
 		// Update total count in footer
-		console.log( 'decrease ' + change );
 		if ( 0 < change ) {
-			obj.footerCount( change, 'minus' );
+			obj.footerCount( $input, change, 'minus' );
 		}
 
 	}
 
-	obj.footerCount = function( step, direction ) {
+	/**
+	 * Adjust the footer count for +/-
+	 *
+	 * @param int    step      The amount to increase/decrease
+	 * @param string direction The direction to change 'add' adds, anything else subtracts.
+	 */
+	obj.footerCount = function( $input, step, direction ) {
+		var $field = $input.closest( 'form' ).find( '.tribe-block__tickets__item__footer__total__number' );
 		// Update total count in footer
-		var footerCount = parseInt( $( '.tribe-block__tickets__item__footer__total__number' ).text() ) || 0;
+		var footerCount = parseInt( $field.text() ) || 0;
 
 		if ( 'add' === direction ) {
 			footerCount = footerCount + step;
 		} else {
 			footerCount = footerCount - step;
 		}
-
-		$( '.tribe-block__tickets__item__footer__total__number' ).text( footerCount );
+		$field.text( footerCount );
 	}
 
 	/**
