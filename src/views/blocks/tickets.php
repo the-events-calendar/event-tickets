@@ -17,7 +17,7 @@
  * @var Tribe__Tickets__Editor__Template $this
  */
 
-$cart_classes        = array( 'tribe-block', 'tribe-block__tickets', 'tribe-common', 'tribe-common-l-container' );
+$cart_classes        = [ 'tribe-block', 'tribe-block__tickets', 'tribe-common', 'tribe-common-l-container' ];
 $cart_url            = $this->get( 'cart_url' );
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
 $is_sale_past        = $this->get( 'is_sale_past' );
