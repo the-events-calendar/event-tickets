@@ -179,7 +179,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 			}
 
 			$inventory    = $ticket->inventory();
-			$is_unlimited = $inventory === - 1;
+			$is_unlimited = $inventory === -1;
 
 			// if the requested amount is greater than remaining, use remaining instead
 			if ( ! $is_unlimited && $quantity > $inventory ) {

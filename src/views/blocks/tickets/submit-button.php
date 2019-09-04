@@ -11,14 +11,14 @@
  * @link {INSERT_ARTICLE_LINK_HERE}
  *
  * @since 4.9.3
+ *
  * @version 4.9.4
  *
  */
-
 ?>
 <button
 	class="tribe-block__tickets__buy tribe-common-c-btn--small"
 	type="submit"
 >
-	<?php echo esc_html_x( 'Add to cart', 'add tickets to cart', 'event-tickets' ); ?>
+	<?php echo esc_html_x( 'Add to cart', 'Add tickets to cart.', 'event-tickets' ); ?>
 </button>

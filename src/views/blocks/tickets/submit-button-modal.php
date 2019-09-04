@@ -19,12 +19,23 @@
 $title       = sprintf( _x( '%s Tickets', 'Modal title. %s: event name', 'event-tickets' ), esc_html__( get_the_title() ) );
 $button_text = _x( 'Get Tickets!', 'Get selected tickets.', 'event-tickets');
 $content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_modal_content', '<p>Tickets modal needs content, badly.</p>' );
-$content     = wp_kses_post( $content );
+
+/**
+ * Filter Modal Content
+ *
+ * @since TBD
+ *
+ * @param string $content a string of default content
+ * @param Tribe__Tickets__Editor__Template $template_obj the Template objec
+ */
+$content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
+
 $args = [
-	'button_type'    => 'submit',
 	'button_classes' => [ 'tribe-common-c-btn--small tribe-block__tickets__submit' ],
-	'button_name'    => 'edd-submit',
+	'button_name'    => $provider_id . '_get_tickets',
 	'button_text'    => $button_text,
+	'button_type'    => 'submit',
+	'show_event'  => 'tribe_dialog_show_ar_modal',
 	'title'          => $title,
 ];
 

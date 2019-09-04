@@ -164,7 +164,7 @@ class Tribe__Tickets__Data_API {
 			'post_type'      => $ticket_cpt,
 			'meta_key'       => $order_id_key,
 			'meta_value'     => $post_id,
-			'posts_per_page' => - 1,
+			'posts_per_page' => -1,
 		) );
 
 		foreach ( $order_tickets as $ticket ) {
