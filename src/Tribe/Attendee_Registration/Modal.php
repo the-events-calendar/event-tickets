@@ -44,7 +44,6 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		 *
 		 * @param string $template the template name
 		 * @param string $file the template location
-		 *
 		 */
 		$file = apply_filters( 'tribe_events_tickets_template_' . $template, $file );
 
