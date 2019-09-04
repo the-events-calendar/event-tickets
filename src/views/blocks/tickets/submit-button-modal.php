@@ -26,7 +26,6 @@ $button_text = __( 'Get Tickets!', 'event-tickets');
  *
  * @param string $content a string of default content
  * @param Tribe__Tickets__Editor__Template $template_obj the Template objec
- *
  */
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 $args = [
