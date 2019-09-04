@@ -20,5 +20,5 @@ $ticket = $this->get( 'ticket' );
 <div
 	class="tribe-block__tickets__item__quantity__unavailable"
 >
-	<?php esc_html_e( 'Sold Out', 'event-tickets' ); ?>
+	<?php echo esc_html_x( 'Sold Out', 'Tickets are sold out.', 'event-tickets' ); ?>
 </div>

@@ -21,7 +21,7 @@ $ticket = $this->get( 'ticket' );
 <div
 	class="tribe-block__tickets__item__footer__quantity tribe-common-b2"
 >
-	<?php esc_html_e( 'Quantity:', 'event-tickets' ); ?>
+	<?php echo esc_html_x( 'Quantity:', 'Total selected tickets count.', 'event-tickets' ); ?>
 	&nbsp;
 	<span class="tribe-block__tickets__item__footer__quantity__number"><?php echo tribe_format_currency( 0 ); ?></span>
 </div>

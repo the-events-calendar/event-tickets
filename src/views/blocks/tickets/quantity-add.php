@@ -27,5 +27,5 @@ $button_title = sprintf(
 	title="<?php echo esc_attr( $button_title ); ?>"
 >
 <span class="screen-reader-text"><?php echo esc_html( $button_title ); ?></span>
-	<?php esc_html_e( '+', 'event-tickets' ); ?>
+	<?php echo esc_html_x( '+', 'A plus sign, add ticket.', 'event-tickets' ); ?>
 </button>

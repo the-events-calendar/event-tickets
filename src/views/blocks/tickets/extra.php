@@ -29,8 +29,14 @@ $context = array(
 	<?php $this->template( 'blocks/tickets/extra-available', $context ); ?>
 	<?php if ( $ticket->show_description() && ! empty( $ticket->description ) ) { ?>
 		<div class="tribe-block__tickets__item__details__summary">
-			<div class="tribe-common-b3 tribe-block__tickets__item__details__summary--more" aria-controls="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>" tabindex="0">More</div>
-			<div class="tribe-common-b3 tribe-block__tickets__item__details__summary--less" aria-controls="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>" tabindex="0">Less</div>
+			<div
+				class="tribe-common-b3 tribe-block__tickets__item__details__summary--more"
+				aria-controls="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>"
+				tabindex="0"><span class="screen-reader-text"><?php esc_html_e('Open the ticket description.', 'event-tickets'); ?></span><?php echo esc_html_x('More', 'Opens the ticket description', 'event-tickets'); ?></div>
+			<div
+				class="tribe-common-b3 tribe-block__tickets__item__details__summary--less"
+				aria-controls="<?php echo esc_attr( 'tribe__details__content--' . $ticket->ID ); ?>"
+				tabindex="0"><span class="screen-reader-text"><?php esc_html_e('Close the ticket description.', 'event-tickets'); ?></span><?php echo esc_html_x('Less', 'Closes the ticket description', 'event-tickets'); ?></div>
 	</div>
 	<?php } ?>
 </div>

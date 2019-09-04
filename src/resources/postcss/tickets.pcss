@@ -8,10 +8,14 @@
 .tribe-common.tribe-block__tickets {
 	border: 1px solid var(--color-border-secondary);
 	border-radius: var(--border-radius-default);
-	margin: 30px auto;
+	margin: 1.5rem auto;
 	max-width: 580px;
 	padding: 1rem;
 	width: 100%;
+
+	@media(--viewport-medium) {
+		padding: 1.5rem;
+	}
 }
 
  .tribe-common {
@@ -173,6 +177,10 @@
 		order: 3;
 	}
 
+	.tribe-block__tickets__item__quantity__unavailable {
+		color: var(--color-text-secondary);
+	}
+
 	.tribe-block__tickets__item__quantity__add,
 	.tribe-block__tickets__item__quantity__remove {
 		background-color: transparent;
@@ -265,24 +273,13 @@
 		font-weight: var(--font-weight-bold);
 	}
 
-	.tribe-block__tickets__submit {
+	.tribe-block__tickets__submit,
+	.tribe-block__tickets__buy {
 		margin: 0;
 		margin-left: auto;
 
 		@media( max-width: 400px ) {
 			width: 100%;
-		}
-	}
-
-	.tribe-block__tickets__buy {
-		border: 1px solid #e1e3e6;
-		background-color: #009fd4;
-		color: #fff;
-		float: right;
-		margin: 25px 0;
-
-		&:hover {
-			background-color: #078ab6;
 		}
 	}
 
@@ -308,7 +305,6 @@
 	/*
 		Attendee fields
 	*/
-
 	.tribe-block__tickets__item__attendee__fields {
 		background: #f9f9f9;
 
@@ -405,7 +401,6 @@
 	/*
 		Tickets Registration/Purchase
 	*/
-
 	.tribe-block__tickets__registration {
 		border: 1px solid #e1e3e6;
 	}

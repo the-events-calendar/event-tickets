@@ -21,7 +21,7 @@ $ticket = $this->get( 'ticket' );
 <div
 	class="tribe-block__tickets__item__footer__total tribe-common-b2"
 >
-	<?php esc_html_e( 'Quantity:', 'event-tickets' ); ?>
+	<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
 	&nbsp;
 	<span class="tribe-block__tickets__item__footer__total__number">0</span>
 </div>

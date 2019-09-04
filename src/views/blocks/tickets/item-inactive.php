@@ -26,6 +26,5 @@ $context = array(
 );
 ?>
 <div class="<?php echo esc_attr( implode( ' ', get_post_class( $classes ) ) ); ?>">
-	<?php $this->template( 'blocks/tickets/icon', $context ); ?>
 	<?php $this->template( 'blocks/tickets/content-inactive', $context ); ?>
 </div>

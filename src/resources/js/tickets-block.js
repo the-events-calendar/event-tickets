@@ -51,37 +51,15 @@ tribe.tickets.block = {
 			}
 
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
-			var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1
 			var originalValue = Number( $input[ 0 ].value );
 
 
 			// stepUp or stepDown the input according to the button that was clicked
 			// handle IE/Edge
 			if ( add ) {
-				// we use 0 here as a shorthand for no maximum
-				var max = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
-
-				if ( typeof $input[ 0 ].stepUp === 'function' ) {
-					try {
-						$input[ 0 ].stepUp();
-					} catch ( ex ) {
-						$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-					}
-				} else {
-					$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-				}
+				obj.stepUp( $input, originalValue );
 			} else {
-				var min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
-
-				if ( typeof $input[ 0 ].stepDown === 'function' ) {
-					try {
-						$input[ 0 ].stepDown();
-					} catch ( ex ) {
-						$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
-					}
-				} else {
-					$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
-				}
+				obj.stepDown( $input, originalValue );
 			}
 
 			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown()
@@ -232,6 +210,79 @@ tribe.tickets.block = {
 		// Repeat every 15 seconds
 		setTimeout( obj.checkAvailability, 15000 );
 
+	}
+
+	/**
+	 * stepUp the input according to the button that was clicked
+	 * handles IE/Edge
+	 *
+	 * @since TBD
+	 */
+	obj.stepUp = function( $input, originalValue ) {
+		// we use 0 here as a shorthand for no maximum
+		var max      = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
+		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var increase = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+		var change   = increase - originalValue;
+
+		if ( typeof $input[ 0 ].stepUp === 'function' ) {
+			try {
+				$input[ 0 ].stepUp();
+			} catch ( ex ) {
+				$input[ 0 ].value = increase;
+			}
+		} else {
+			$input[ 0 ].value = increase;
+		}
+
+		// Update total count in footer
+		console.log( 'increase ' + change );
+		if ( 0 < change ) {
+			obj.footerCount( change, 'add' );
+		}
+	}
+
+	/**
+	 * stepDown the input according to the button that was clicked
+	 * handles IE/Edge
+	 *
+	 * @since TBD
+	 */
+	obj.stepDown = function( $input, originalValue ) {
+		var min      = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
+		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var decrease = ( min <= originalValue - step ) ? originalValue - step : min;
+		var change   = originalValue - decrease;
+
+		if ( typeof $input[ 0 ].stepDown === 'function' ) {
+			try {
+				$input[ 0 ].stepDown();
+			} catch ( ex ) {
+				$input[ 0 ].value = decrease;
+			}
+		} else {
+			$input[ 0 ].value = decrease;
+		}
+
+		// Update total count in footer
+		console.log( 'decrease ' + change );
+		if ( 0 < change ) {
+			obj.footerCount( change, 'minus' );
+		}
+
+	}
+
+	obj.footerCount = function( step, direction ) {
+		// Update total count in footer
+		var footerCount = parseInt( $( '.tribe-block__tickets__item__footer__total__number' ).text() ) || 0;
+
+		if ( 'add' === direction ) {
+			footerCount = footerCount + step;
+		} else {
+			footerCount = footerCount - step;
+		}
+
+		$( '.tribe-block__tickets__item__footer__total__number' ).text( footerCount );
 	}
 
 	/**
