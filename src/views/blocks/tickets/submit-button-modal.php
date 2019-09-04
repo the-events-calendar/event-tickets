@@ -16,8 +16,8 @@
  */
 
 /* translators: %s is the event or post title the tickets are attached to. */
-$title       = sprintf( __( '%s Tickets', 'event-tickets' ), esc_html__( get_the_title() ) );
-$button_text = esc_html__( 'Get Tickets!', 'event-tickets');
+$title       = sprintf( __( '%s Tickets', 'event-tickets' ), get_the_title() );
+$button_text = __( 'Get Tickets!', 'event-tickets');
 
 /**
  * Filter Modal Content
@@ -34,7 +34,7 @@ $args = [
 	'button_text' => $button_text,
 	'button_type' => 'submit',
 	'show_event'  => 'tribe_dialog_show_ar_modal',
-	'title'       => esc_html( $title ),
+	'title'       => $title,
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );

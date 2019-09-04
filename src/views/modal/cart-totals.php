@@ -9,7 +9,7 @@
  * @since TBD
  *
  * @version TBD
- *
+ * @todo Adjust with #133179
  */
 ?>
 <div class="tribe-modal__cart__totals">

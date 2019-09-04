@@ -435,7 +435,7 @@ tribe.tickets.block = {
 	 * @returns {number}
 	 */
 	obj.getPrice = function ( cartItem, cssClass ) {
-		//todo handle multiple currency symbols
+		//todo Adjust with #133179
 		var price = parseFloat( cartItem.find( cssClass ).text().replace("$", "") );
 
 		return isNaN( price ) ? 0 : price;
