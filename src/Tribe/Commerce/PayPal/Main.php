@@ -326,6 +326,11 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_filter( 'tribe_attendee_registration_form_classes', [ $this, 'tribe_attendee_registration_form_class' ] );
 
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
+
+		// REST API hooks.
+		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'get_tickets_in_cart' ] );
+		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'get_cart_url' ] );
+		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'get_checkout_url' ] );
 	}
 
 	/**
@@ -1971,14 +1976,26 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	}
 
 	/**
-	 * Gets the cart URL
+	 * Get cart URL for Tribe Commerce.
 	 *
 	 * @since 4.7
 	 *
-	 * @return string
+	 * @return string Cart URL.
 	 */
 	public function get_cart_url() {
-		return tribe( 'tickets.commerce.paypal.gateway' )->get_cart_url();
+		return '';
+	}
+
+	/**
+	 * Get checkout URL for Tribe Commerce.
+	 *
+	 * @since TBD
+	 *
+	 * @return string Checkout URL.
+	 */
+	public function get_checkout_url() {
+		// Right now the checkout is the cart.
+		return $this->get_cart_url();
 	}
 
 	/**

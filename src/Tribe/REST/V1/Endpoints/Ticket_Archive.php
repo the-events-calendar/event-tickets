@@ -290,7 +290,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 			'provider'      => array(
 				'description'       => __( 'Limit results to tickets provided by one of the providers specified in the CSV list or array; defaults to all available.', 'event-tickets' ),
 				'required'          => false,
-				'sanitize-callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
+				'sanitize_callback' => array( 'Tribe__Utils__Array', 'list_to_array' ),
 				'swagger_type' => array(
 					'oneOf' => array(
 						array( 'type' => 'array', 'items' => array( 'type' => 'string' ) ),
@@ -448,33 +448,5 @@ class Tribe__Tickets__REST__V1__Endpoints__Ticket_Archive
 				'type'           => 'boolean',
 			),
 		);
-	}
-
-	/**
-	 * Filters the found tickets to only return those the current user can access and formats
-	 * the ticket data depending on the current user access rights.
-	 *
-	 * @since 4.8
-	 *
-	 * @param Tribe__Tickets__Ticket_Object[] $found
-	 *
-	 * @return array[]
-	 */
-	protected function filter_readable_tickets( array $found ) {
-		$readable = array();
-
-		foreach ( $found as $ticket ) {
-			$ticket_id   = $ticket->ID;
-			$ticket_data = $this->get_readable_ticket_data( $ticket_id );
-
-			if ( $ticket_data instanceof WP_Error ) {
-				continue;
-			}
-
-			$readable[] = $ticket_data;
-		}
-
-
-		return $readable;
 	}
 }

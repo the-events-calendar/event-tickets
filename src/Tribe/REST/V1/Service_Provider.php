@@ -69,6 +69,14 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 				tribe( 'tickets.rest-v1.validator' )
 			)
 		);
+		tribe_singleton(
+			'tickets.rest-v1.endpoints.cart',
+			new Tribe__Tickets__REST__V1__Endpoints__Cart(
+				tribe( 'tickets.rest-v1.messages' ),
+				tribe( 'tickets.rest-v1.repository' ),
+				tribe( 'tickets.rest-v1.validator' )
+			)
+		);
 
 		include_once Tribe__Tickets__Main::instance()->plugin_path . 'src/functions/advanced-functions/rest-v1.php';
 
@@ -88,6 +96,7 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		$this->register_ticket_archive_endpoint();
 		$this->register_single_attendee_endpoint();
 		$this->register_attendee_archive_endpoint();
+		$this->register_cart_endpoint();
 
 		// @todo add the endpoints as documentation providers here
 		$doc_endpoint->register_documentation_provider( '/doc', $doc_endpoint );
@@ -165,6 +174,36 @@ class Tribe__Tickets__REST__V1__Service_Provider extends tad_DI52_ServiceProvide
 		) );
 
 		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/tickets', $endpoint );
+
+		return $endpoint;
+	}
+
+	/**
+	 * Registers the REST API endpoint that will handle cart requests.
+	 *
+	 * @since 4.8
+	 *
+	 * @return Tribe__Tickets__REST__V1__Endpoints__Cart
+	 */
+	protected function register_cart_endpoint() {
+		/** @var Tribe__Tickets__REST__V1__Endpoints__Cart $endpoint */
+		$endpoint = tribe( 'tickets.rest-v1.endpoints.cart' );
+
+		register_rest_route( $this->namespace, '/cart/(?P<post_id>\\d+)', [
+			[
+				'methods'  => WP_REST_Server::READABLE,
+				'args'     => $endpoint->READ_args(),
+				'callback' => [ $endpoint, 'get' ],
+			],
+			[
+				'methods'             => WP_REST_Server::EDITABLE,
+				'args'                => $endpoint->EDIT_args(),
+				'permission_callback' => [ $endpoint, 'can_edit' ],
+				'callback'            => [ $endpoint, 'update' ],
+			],
+		] );
+
+		tribe( 'tickets.rest-v1.endpoints.documentation' )->register_documentation_provider( '/cart/{id}', $endpoint );
 
 		return $endpoint;
 	}

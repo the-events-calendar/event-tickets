@@ -106,7 +106,7 @@ class Tribe__Tickets__Commerce__PayPal__Gateway {
 		$cart_url      = $this->get_cart_url( '_cart' );
 		$post_url      = get_permalink( $post );
 		$currency_code = trim( tribe_get_option( 'ticket-commerce-currency-code' ) );
-		$product_ids   = $_POST['product_id'];
+		$product_ids   = (array) $_POST['product_id'];
 
 		$notify_url = tribe_get_option( 'ticket-paypal-notify-url', home_url() );
 
