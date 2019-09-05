@@ -23,5 +23,5 @@ $currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
 	class="tribe-block__tickets__item__total__wrap"
 >
 	<span class="tribe-block__tickets__item__total__currency-symbol"><?php echo $currency_symbol; ?></span>
-	<span class="tribe-block__tickets__item__total">0.00</span>
+	<span class="tribe-block__tickets__item__total"><?php echo tribe_format_currency( 0 ); ?</span>
 </div>
