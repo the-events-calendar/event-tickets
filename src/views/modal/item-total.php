@@ -13,10 +13,11 @@
  * @version TBD
  */
 
-$ticket   = $this->get( 'ticket' );
- /** @var Tribe__Tickets__Commerce__Currency $currency */
- $currency        = tribe( 'tickets.commerce.currency' );
- $currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
+$ticket = $this->get( 'ticket' );
+
+/** @var Tribe__Tickets__Commerce__Currency $currency */
+$currency        = tribe( 'tickets.commerce.currency' );
+$currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
 ?>
 <div
 	class="tribe-block__tickets__item__total__wrap"
