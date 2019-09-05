@@ -9,6 +9,7 @@ use Tribe__Tickets__Data_API as Data_API;
 
 /**
  * Class ORMTestCase
+ *
  * @package Tribe\Tickets\Test\Commerce
  */
 class ORMTestCase extends Test_Case {
@@ -447,11 +448,16 @@ class ORMTestCase extends Test_Case {
 	 */
 	protected function setup_test_data() {
 		$test_data = [
-			'users'          => [], // 2 total (1 author an Event, 1 as an Attendee of the Event)
-			'events'         => [], // 2 total (1 with an Author and Attendees, 1 with Author ID of zero and no Attendees)
-			'rsvps'          => [], // 4 total (1 having 2 Attendees, 3 having no Attendees)
-			'paypal_tickets' => [], // 4 total (1 having 2 Attendees, 3 having no Attendees)
-			'attendees'      => [], // 4 total (first 2 are RSVP, next 2 are PayPal)
+			'users'          => [],
+			// 2 total (1 author an Event, 1 as an Attendee of the Event)
+			'events'         => [],
+			// 2 total (1 with an Author and Attendees, 1 with Author ID of zero and no Attendees)
+			'rsvps'          => [],
+			// 4 total (1 having 2 Attendees, 3 having no Attendees)
+			'paypal_tickets' => [],
+			// 4 total (1 having 2 Attendees, 3 having no Attendees)
+			'attendees'      => [],
+			// 4 total (first 2 are RSVP, next 2 are PayPal)
 		];
 
 		// Create test user 1. Author of one of the two Events.
