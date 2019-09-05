@@ -23,7 +23,7 @@ $modal  = $this->get( 'is_modal' );
 >
 <?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
 <?php $this->template( 'blocks/tickets/footer-total' ); ?>
-<?php if ( true !== $modal) { ?>
+<?php if ( true !== $modal ) : ?>
 	<?php $this->template( 'blocks/tickets/submit' ); ?>
-<?php } ?>
+<?php endif; ?>
 </div>
