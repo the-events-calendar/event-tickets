@@ -11,7 +11,6 @@
  * @since TBD
  *
  * @version TBD
- * @todo Adjust with #133179
  */
 
 $ticket   = $this->get( 'ticket' );
