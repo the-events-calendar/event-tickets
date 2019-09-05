@@ -11,7 +11,9 @@ var tribe_ticket_details = tribe_ticket_details || {};
 		// Add keyboard support for enter key.
 		document.addEventListener( 'keyup', function( event ) {
 			// Toggle open like click does.
-			if ( 13 === event.keyCode ) { obj.toggle_open( event.target ); }
+			if ( 13 === event.keyCode ) {
+				obj.toggle_open( event.target );
+			}
 		} );
 
 		document.addEventListener( 'click', function( event ) {
