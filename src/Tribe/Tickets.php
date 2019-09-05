@@ -2782,6 +2782,11 @@ if ( ! class_exists( 'Tribe__Tickets__Tickets' ) ) {
 				return;
 			}
 
+			// Return if Ticket Modal is Active
+			if ( Tribe__Settings_Manager::get_option( 'ticket-attendee-modal' ) ) {
+				return;
+			}
+
 			/**
 	 		 * Modify the tickets in cart, useful to
 	 		 * change the contents for each vendor
