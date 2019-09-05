@@ -580,4 +580,104 @@ class Tribe__Tickets__Commerce__Currency {
 	public function get_currency_code() {
 		return $this->currency_code;
 	}
+
+	/**
+	 * Get the Currency Decimal Point for a Provider
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider  The ticket provider class name
+	 *
+	 * @return string the decimal separator
+	 */
+	public function get_currency_decimal_point( $provider ) {
+
+		if ( ! class_exists( $provider ) ) {
+			return $this->get_currency_locale( 'decimal_point' );
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
+			$decimal_sep = get_option( 'woocommerce_price_decimal_sep' );
+
+			return $decimal_sep;
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
+			$decimal_sep = edd_get_option( 'decimal_separator', '.' );
+
+			return $decimal_sep;
+		}
+
+		return $this->get_currency_locale( 'decimal_point' );
+	}
+
+	/**
+	 * Get the Currency Thousands Separator for a Provider
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider  The ticket provider class name
+	 *
+	 * @return string the thousands separator
+	 */
+	public function get_currency_thousands_sep( $provider ) {
+
+		if ( ! class_exists( $provider ) ) {
+			return $this->get_currency_locale( 'thousands_sep' );
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
+			$decimal_sep = get_option( 'woocommerce_price_thousand_sep' );
+
+			return $decimal_sep;
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
+			$decimal_sep = edd_get_option( 'thousands_separator', '.' );
+
+			return $decimal_sep;
+		}
+
+		return $this->get_currency_locale( 'thousands_sep' );
+	}
+
+	/**
+	 * Get the Currency Configuration for all Passed Providers
+	 *
+	 * @since TBD
+	 *
+	 * @param string $provider The ticket provider class name
+	 * @param int    $post_id  The id of the post with tickets
+	 *
+	 * @return array
+	 */
+	public function get_currency_config_for_provider( $providers, $post_id ) {
+
+		if ( ! is_array( $providers ) ) {
+			$providers[]  = $providers;
+		}
+
+		$currency = [];
+
+
+		foreach( $providers as $provider ) {
+
+			$currency[$provider] = [
+				'symbol' => $this->get_provider_symbol( $provider ),
+				'placement' => $this->get_provider_symbol_position( $provider, $post_id ),
+				'decimal_point' => $this->get_currency_decimal_point( $provider ),
+				'thousands_sep' => $this->get_currency_thousands_sep( $provider ),
+			];
+
+		}
+
+		return $currency;
+	}
+
+// This method should localize the PHP configuration for the providers of tickets on the current event/post.
+	public function localize_script_with_config( $post_id ) {
+
+
+	}
+
 }

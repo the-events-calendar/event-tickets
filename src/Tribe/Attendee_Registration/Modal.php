@@ -56,6 +56,15 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$has_tickets_on_sale = $template_obj->get( 'has_tickets_on_sale' );
 		$is_sale_past        = $template_obj->get( 'is_sale_past' );
 
+		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( $post_id );
+		$currency = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, $post_id );
+
+		log_me( 'wc_format_localized_price( $cost )' );
+		log_me( wc_format_localized_price( 0 ) );
+		log_me( edd_format_amount( 0 ) );
+		log_me( tribe( 'tickets.commerce.currency' )->filter_currency_cost( 0 ) );
+
+
 		ob_start();
 
 		include $file;
