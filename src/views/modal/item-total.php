@@ -13,10 +13,15 @@
  * @version TBD
  * @todo Adjust with #133179
  */
+
+$ticket   = $this->get( 'ticket' );
+ /** @var Tribe__Tickets__Commerce__Currency $currency */
+ $currency        = tribe( 'tickets.commerce.currency' );
+ $currency_symbol = $currency->get_currency_symbol( $ticket->ID, true );
 ?>
 <div
-	class="tribe-modal__cart__item__total__wrap"
+	class="tribe-block__tickets__item__total__wrap"
 >
-	<span class="tribe-modal__cart__item__total__currency__symbol"><?php echo tribe_get_option( 'defaultCurrencySymbol', '$' ); ?></span>
-	<span class="tribe-modal__cart__item__total">0.00</span>
+	<span class="tribe-block__tickets__item__total__currency-symbol"><?php echo $currency_symbol; ?></span>
+	<span class="tribe-block__tickets__item__total">0.00</span>
 </div>

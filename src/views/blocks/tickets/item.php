@@ -21,8 +21,9 @@ $provider = $this->get( 'provider' );
 $ticket   = $this->get( 'ticket' );
 $modal    = $this->get( 'is_modal' );
 $context  = [
-	'ticket' => $ticket,
-	'key'    => $this->get( 'key' ),
+	'ticket'  => $ticket,
+	'key'     => $this->get( 'key' ),
+	'is_modal'=> $modal,
 ];
 
 if (

@@ -25,6 +25,6 @@ $available = $ticket->available();
 	class="tribe-common-b3 tribe-block__tickets__item__extra__available"
 >
 	<?php if ( -1 !== $ticket->available() ) : ?>
-		<?php $this->template( 'blocks/tickets/extra-available-quantity', array( 'ticket' => $ticket, 'key' => $key ) ); ?>
+		<?php $this->template( 'blocks/tickets/extra-available-quantity', [ 'ticket' => $ticket ] ); ?>
 	<?php endif; ?>
 </div>

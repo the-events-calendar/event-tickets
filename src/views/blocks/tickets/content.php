@@ -20,6 +20,7 @@ $ticket = $this->get( 'ticket' );
 $context = array(
 	'ticket' => $ticket,
 	'key' => $this->get( 'key' ),
+	'is_modal' => $this->get( 'is_modal' ),
 );
 ?>
 <div
