@@ -8,6 +8,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD
 	 */
 	public function get_documentation() {
 		$get_defaults = [
@@ -121,6 +123,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD
 	 */
 	public function get( WP_REST_Request $request ) {
 		$post_id  = (int) $request->get_param( 'post_id' );
@@ -187,6 +191,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD
 	 */
 	public function READ_args() {
 		return [
@@ -223,6 +229,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD
 	 */
 	public function update( WP_REST_Request $request ) {
 		$post_id  = (int) $request->get_param( 'post_id' );
@@ -335,6 +343,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD
 	 */
 	public function EDIT_args() {
 		return [
@@ -367,6 +377,8 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 	/**
 	 * {@inheritDoc}
+	 *
+	 * @since TBD
 	 */
 	public function can_edit() {
 		// Everyone can edit their own cart.
