@@ -318,6 +318,7 @@ tribe.tickets.block = {
 		cartTotals: '.tribe-modal__cart__totals',
 		cartQuantity: '.tribe-modal__cart__total__qty',
 		cartTotal: '.tribe-modal__cart__total__amount',
+		closeButton: '.tribe-modal__close-button',
 	};
 
 	/**
@@ -521,5 +522,13 @@ tribe.tickets.block = {
 
 		return total_for_item;
 	};
+
+	$(document).on( 'click', obj.modalSelector.closeButton, function (event) {
+			event.preventDefault();
+			var modal = event.target.closest( '.tribe-dialog' );
+			var form = jQuery( modal ).find('form');
+			console.log(form.serialize());
+		}
+	);
 
 })( jQuery, tribe.tickets.block, tribe_ev.events );
