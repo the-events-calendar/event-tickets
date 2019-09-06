@@ -10,8 +10,10 @@ var tribe_ticket_details = tribe_ticket_details || {};
 	obj.event_listeners = function() {
 		// Add keyboard support for enter key.
 		document.addEventListener( 'keyup', function( event ) {
-			// Just trigger the click so we don't have to copy code.
-			if ( 13 === event.keyCode ) { obj.toggle_open( event.target ); }
+			// Toggle open like click does.
+			if ( 13 === event.keyCode ) {
+				obj.toggle_open( event.target );
+			}
 		} );
 
 		document.addEventListener( 'click', function( event ) {
@@ -20,12 +22,12 @@ var tribe_ticket_details = tribe_ticket_details || {};
 	}
 
 	obj.toggle_open = function( trigger ) {
-		if(! trigger ){
+		if( ! trigger ) {
 			return;
 		}
 
-		var parent          = trigger.closest( '.tribe-block__tickets__item__details__summary');
-		var target_selector = trigger.getAttribute('aria-controls');
+		var parent          = trigger.closest( '.tribe-block__tickets__item__details__summary' );
+		var target_selector = trigger.getAttribute( 'aria-controls' );
 		var target          = document.getElementById( target_selector );
 
 		if ( ! target || ! parent ) {
@@ -49,7 +51,8 @@ var tribe_ticket_details = tribe_ticket_details || {};
 
 		// details element not present
 		if ( ! detailsElems.length ) {
-			return; }
+			return;
+		}
 
 		obj.init( detailsElems );
 	});

@@ -16,12 +16,11 @@
  */
 
 
-//$ticket = $this->get( 'ticket' );
 ?>
 <div
 	class="tribe-block__tickets__item__footer__total tribe-common-b2"
 >
 	<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
 	&nbsp;
-	<span class="tribe-block__tickets__item__footer__total__number">0</span>
+	<span class="tribe-block__tickets__item__footer__total__number"><?php echo tribe_format_currency( 0 ); ?</span>
 </div>

@@ -16,7 +16,6 @@
  */
 
 
-//$ticket = $this->get( 'ticket' );
 ?>
 <div
 	class="tribe-block__tickets__item__footer__quantity tribe-common-b2"
