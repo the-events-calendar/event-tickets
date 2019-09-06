@@ -37,6 +37,11 @@ class BaseRestCest {
 	/**
 	 * @var string
 	 */
+	protected $cart_url;
+
+	/**
+	 * @var string
+	 */
 	protected $documentation_url;
 
 	/**
@@ -61,6 +66,7 @@ class BaseRestCest {
 		$this->tec_rest_url      = $this->site_url . '/wp-json/tribe/events/v1/';
 		$this->tickets_url       = $this->rest_url . 'tickets';
 		$this->attendees_url     = $this->rest_url . 'attendees';
+		$this->cart_url          = $this->rest_url . 'cart';
 		$this->documentation_url = $this->rest_url . 'doc';
 		$this->factory           = $I->factory();
 
