@@ -584,13 +584,11 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Decimal Point for a Provider
 	 *
-	 * @since TBD
-	 *
-	 * @param string $provider  The ticket provider class name
+	 * @param string|null $provider The ticket provider class name
 	 *
 	 * @return string the decimal separator
 	 */
-	public function get_currency_decimal_point( $provider ) {
+	public function get_currency_decimal_point( $provider = null ) {
 
 		if ( ! class_exists( $provider ) ) {
 			return $this->get_currency_locale( 'decimal_point' );
@@ -614,13 +612,11 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Thousands Separator for a Provider
 	 *
-	 * @since TBD
-	 *
-	 * @param string $provider  The ticket provider class name
+	 * @param string|null $provider The ticket provider class name
 	 *
 	 * @return string the thousands separator
 	 */
-	public function get_currency_thousands_sep( $provider ) {
+	public function get_currency_thousands_sep( $provider = null ) {
 
 		if ( ! class_exists( $provider ) ) {
 			return $this->get_currency_locale( 'thousands_sep' );
@@ -642,9 +638,58 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Currency Configuration for all Passed Providers
+	 * Get the Number of Decimals by provider or default
 	 *
-	 * @since TBD
+	 * @param string|null $provider The ticket provider class name
+	 *
+	 * @return string the thousands separator
+	 */
+	public function get_number_of_decimals( $provider = null ) {
+
+		if ( ! class_exists( $provider ) ) {
+			return $this->get_currency_number_of_decimals();
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
+			$decimals = get_option( 'woocommerce_price_num_decimals' );
+
+			return $decimals;
+		}
+
+		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
+
+			/**
+			 * Filter the Amount of Decimals for EDD
+			 *
+			 * @param int the default number of decimals
+			 */
+			$decimals = apply_filters( 'tribe_edd_format_amount_decimals', 2 );
+
+			return $decimals;
+		}
+
+		return $this->get_currency_number_of_decimals();
+	}
+
+	/**
+	 * Get the Default Amount of Decimals
+	 *
+	 * @return int the amount of decimals
+	 */
+	public function get_currency_number_of_decimals() {
+
+		/**
+		 * Filter the Amount of Decimals
+		 *
+		 * @param int the default number of decimals
+		 */
+		$decimals = apply_filters( 'tribe_format_amount_decimals', 2 );
+
+		return $decimals;
+	}
+
+	/**
+	 * Get the Currency Configuration for all Passed Providers
 	 *
 	 * @param string $provider The ticket provider class name
 	 * @param int    $post_id  The id of the post with tickets
@@ -654,30 +699,123 @@ class Tribe__Tickets__Commerce__Currency {
 	public function get_currency_config_for_provider( $providers, $post_id ) {
 
 		if ( ! is_array( $providers ) ) {
-			$providers[]  = $providers;
+			$providers[] = $providers;
 		}
 
 		$currency = [];
 
-
-		foreach( $providers as $provider ) {
-
-			$currency[$provider] = [
-				'symbol' => $this->get_provider_symbol( $provider ),
-				'placement' => $this->get_provider_symbol_position( $provider, $post_id ),
-				'decimal_point' => $this->get_currency_decimal_point( $provider ),
-				'thousands_sep' => $this->get_currency_thousands_sep( $provider ),
-			];
-
+		foreach ( $providers as $provider ) {
+			$currency[ $provider ] = $this->get_currency_by_provider( $post_id, $provider );
 		}
 
 		return $currency;
 	}
 
-// This method should localize the PHP configuration for the providers of tickets on the current event/post.
+	/**
+	 * Get the Currency Formatting Information for a Provider
+	 *
+	 * @param int         $post_id  The id of the post with tickets
+	 * @param string|null $provider The ticket provider class name
+	 *
+	 * @return array an array of formatting details
+	 */
+	public function get_currency_by_provider( $post_id, $provider = null ) {
+		return [
+			'symbol'             => $this->get_provider_symbol( $provider ),
+			'placement'          => $this->get_provider_symbol_position( $provider, $post_id ),
+			'decimal_point'      => $this->get_currency_decimal_point( $provider ),
+			'thousands_sep'      => $this->get_currency_thousands_sep( $provider ),
+			'number_of_decimals' => $this->get_number_of_decimals( $provider ),
+		];
+	}
+
+	/**
+	 * Get Formatted Currency According to a Provider
+	 *
+	 * @param int         $amount   the amount to format
+	 * @param int         $post_id  The id of the post with tickets
+	 * @param string|null $provider The ticket provider class name
+	 *
+	 * @return mixed|void
+	 */
+	public function get_formatted_currency( $amount, $post_id, $provider = null ) {
+
+		$currency = $this->get_currency_by_provider( $post_id, $provider );
+
+		// Format the amount
+		if ( $currency['decimal_point'] == ',' && false !== ( $sep_found = strpos( $amount, $currency['decimal_point'] ) ) ) {
+			$whole  = substr( $amount, 0, $sep_found );
+			$part   = substr( $amount, $sep_found + 1, ( strlen( $amount ) - 1 ) );
+			$amount = $whole . '.' . $part;
+		}
+
+		// Strip , from the amount (if set as the thousands separator)
+		if ( $currency['thousands_sep'] == ',' && false !== ( $found = strpos( $amount, $currency['thousands_sep'] ) ) ) {
+			$amount = str_replace( ',', '', $amount );
+		}
+
+		// Strip ' ' from the amount (if set as the thousands separator)
+		if ( $currency['thousands_sep'] == ' ' && false !== ( $found = strpos( $amount, $currency['thousands_sep'] ) ) ) {
+			$amount = str_replace( ' ', '', $amount );
+		}
+
+		if ( empty( $amount ) ) {
+			$amount = 0;
+		}
+
+		$formatted = number_format( $amount, $currency['number_of_decimals'], $currency['decimal_point'], $currency['thousands_sep'] );
+
+		/**
+		 * Filter the Formatted Currency
+		 *
+		 * @param string $formatted the formatted amount
+		 * @param int    $amount    the original amount to be formatted
+		 * @param array  $currency  an array of currency formatting details
+		 */
+		return apply_filters( 'tribe_format_amount', $formatted, $amount, $currency );
+	}
+
+	/**
+	 * Get Formatted Currency According to a Provider with Symbol
+	 *
+	 * @param int         $amount   the amount to format
+	 * @param int         $post_id  The id of the post with tickets
+	 * @param string|null $provider The ticket provider class name
+	 * @param boolean     $html     whether to return with html wrap
+	 *
+	 * @return mixed
+	 */
+	public function get_formatted_currency_with_symbol( $amount, $post_id, $provider = null, $html = true ) {
+
+		$amount          = $this->get_formatted_currency( $amount, $post_id, $provider );
+		$amount          = $html ? '<span class="tribe-amount">' . $amount . '</span>' : $amount;
+		$currency        = $this->get_currency_by_provider( $post_id, $provider );
+		$currency_symbol = $html ? '<span class="tribe-currency-symbol">' . $currency['symbol'] . '</span>' : $currency['symbol'];
+
+		$formatted = $html ? '<span class="tribe-formatted-currency-wrap tribe-currency-prefix">' . $currency_symbol . $amount . '</span>' : $currency_symbol . $amount;
+		if ( 'postfix' === $currency['placement'] ) {
+			$formatted = $html ? '<span class="tribe-formatted-currency-wrap tribe-currency-postfix">' . $amount . $currency_symbol . '</span>' : $amount . $currency_symbol;
+		}
+
+
+		//todo edd_sanitize_amount or add in the sanitization here
+		/**
+		 * Filter the Formatted Currency with Symbol
+		 *
+		 * @param string  $formatted the formatted amount
+		 * @param int     $amount    the original amount to be formatted
+		 * @param array   $currency  an array of currency formatting details
+		 * @param boolean $html      whether to return with html wrap
+		 */
+		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html );
+	}
+
+
+	// This method should localize the PHP configuration for the providers of tickets on the current event/post.
 	public function localize_script_with_config( $post_id ) {
 
 
 	}
+
 
 }

@@ -252,11 +252,11 @@ tribe.tickets.block = {
 		item: '.tribe-block__tickets__item',
 		itemQuantity: '.tribe-ticket-quantity',
 		itemPrice: '.tribe-block__tickets__item__extra__price',
-		itemTotal: '.tribe-modal__cart__item__total',
+		itemTotal: '.tribe-amount',
 		itemRemove: '.tribe-modal__cart__item__remove',
 		cartTotals: '.tribe-modal__cart__totals',
 		cartQuantity: '.tribe-modal__cart__total__qty',
-		cartTotal: '.tribe-modal__cart__total__amount',
+		cartTotal: '.tribe-amount',
 	};
 
 	/**

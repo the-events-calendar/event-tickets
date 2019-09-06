@@ -9,7 +9,6 @@
  * @since TBD
  *
  * @version TBD
- * @todo Adjust with #133179
  */
 ?>
 <div class="tribe-modal__cart__totals">
@@ -19,6 +18,6 @@
 	</span>
 	<span class="tribe-modal__cart__total__amount__wrap">
 		<span class="tribe-modal__cart__total__amount__label"><?php esc_html_e( 'Total', 'event-tickets'); ?>: </span>
-		<span class="tribe-modal__cart__total__amount__currency__symbol"><?php echo tribe_get_option( 'defaultCurrencySymbol', '$' ); ?></span><span class="tribe-modal__cart__total__amount"></span>
+		<?php echo tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ) ?>
 	</span>
 </div>

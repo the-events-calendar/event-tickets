@@ -59,11 +59,23 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( $post_id );
 		$currency = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, $post_id );
 
-		log_me( 'wc_format_localized_price( $cost )' );
-		log_me( wc_format_localized_price( 0 ) );
-		log_me( edd_format_amount( 0 ) );
-		log_me( tribe( 'tickets.commerce.currency' )->filter_currency_cost( 0 ) );
-
+		log_me( 'tribe()->get_formatted_currency' );
+		//log_me( $providers );
+		//log_me( wc_format_localized_price( 0 ) );
+		//log_me( wc_price( 0 ) );
+		// this is good and does not include the currency symbol
+		//log_me( edd_format_amount( 0 ) );
+		//log_me( edd_currency_filter( 0 ) );
+/*		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency( 1000, $post_id, 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) );
+		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( 1000, $post_id, 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) );
+		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency( 0, $post_id, 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) );
+		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( 0, $post_id, 'Tribe__Tickets_Plus__Commerce__EDD__Main' ) );
+		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency( 1000, $post_id, 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
+		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( 1000, $post_id, 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
+		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency( 0, $post_id, 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
+		log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( 0, $post_id, 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );*/
+		//log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency( 1000, $post_id, 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
+		//log_me( tribe( 'tickets.commerce.currency' )->get_formatted_currency( 0, $post_id, 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' ) );
 
 		ob_start();
 
