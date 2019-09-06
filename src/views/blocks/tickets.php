@@ -29,8 +29,6 @@ $provider            = $this->get( 'provider' );
 $provider_id         = $this->get( 'provider_id' );
 $tickets             = $this->get( 'tickets', [] );
 $tickets_on_sale     = $this->get( 'tickets_on_sale' );
-// We're assuming that all the currency is the same here.
-$currency_symbol     = $currency->get_currency_symbol( $tickets[0]->ID, true );
 
 // We don't display anything if there is no provider or tickets
 if ( ! $provider || empty( $tickets ) ) {
@@ -63,7 +61,11 @@ echo $html;
 		<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
 			<?php $this->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'currency_symbol' => $ticket_symbol ] ); ?>
 		<?php endforeach; ?>
-		<?php $this->template( 'blocks/tickets/footer', [ 'currency_symbol' => $currency_symbol ] ); ?>
+		<?php
+		// We're assuming that all the currency is the same here.
+		$currency_symbol     = $currency->get_currency_symbol( $tickets[0]->ID, true );
+		$this->template( 'blocks/tickets/footer', [ 'currency_symbol' => $currency_symbol ] );
+		?>
 	<?php else : ?>
 		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 	<?php endif; ?>
