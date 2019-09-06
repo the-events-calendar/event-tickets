@@ -2237,16 +2237,21 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function get_tickets_in_cart( $tickets ) {
 		$contents  = get_transient( $this->get_current_cart_transient() );
+
 		if ( empty( $contents ) ) {
 			return $tickets;
 		}
+
 		foreach ( $contents as $id => $quantity ) {
 			$event_check = get_post_meta( $id, $this->event_key, true );
+
 			if ( empty( $event_check ) ) {
 				continue;
 			}
+
 			$tickets[ $id ] = $quantity;
 		}
+
 		return $tickets;
 	}
 

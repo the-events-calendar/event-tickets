@@ -139,7 +139,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		];
 
 		// Confirm post has tickets.
-		$has_tickets = false;
+		$has_tickets = ! empty( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
 
 		if ( ! $has_tickets ) {
 			return new WP_REST_Response( $data );
@@ -153,8 +153,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 		// Fetch tickets for cart providers.
 		foreach ( $providers as $provider_data ) {
+			/** @var Tribe__Tickets__Tickets $provider_object */
+			$provider_object = call_user_func( [ $provider_data['class'], 'get_instance' ] );
+			$provider_key    = $provider_object->orm_provider;
+
 			// Skip provider if we only want specific ones.
-			if ( null !== $provider && ! in_array( $provider_data['name'], $provider, true ) ) {
+			if ( null !== $provider && ! in_array( $provider_key, $provider, true ) ) {
 				continue;
 			}
 
@@ -170,7 +174,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 *
 			 * @param array $cart_tickets List of tickets in the cart.
 			 */
-			$cart_tickets = apply_filters( 'tribe_tickets_rest_cart_get_tickets_' . $provider, $cart_tickets );
+			$cart_tickets = apply_filters( 'tribe_tickets_rest_cart_get_tickets_' . $provider_key, $cart_tickets );
 
 			foreach ( $cart_tickets as $ticket_id => $quantity ) {
 				// Skip ticket if it has no quantity or is not accessible.
@@ -181,7 +185,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 				$data['tickets'][] = [
 					'ticket_id' => $ticket_id,
 					'quantity'  => $quantity,
-					'provider'  => $provider_data['name'],
+					'provider'  => $provider_key,
 				];
 			}
 		}
@@ -239,7 +243,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		$meta     = $request->get_param( 'meta' );
 
 		// Confirm post has tickets.
-		$has_tickets = false;
+		$has_tickets = ! empty( Tribe__Tickets__Tickets::get_all_event_tickets( $post_id ) );
 
 		if ( ! $has_tickets ) {
 			$message = $this->messages->get_message( 'post-has-no-tickets' );
