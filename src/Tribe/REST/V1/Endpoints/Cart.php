@@ -155,10 +155,12 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 		foreach ( $providers as $provider_data ) {
 			/** @var Tribe__Tickets__Tickets $provider_object */
 			$provider_object = call_user_func( [ $provider_data['class'], 'get_instance' ] );
-			$provider_key    = $provider_object->orm_provider;
+
+			$provider_key             = $provider_object->orm_provider;
+			$provider_attendee_object = $provider_object->attendee_object;
 
 			// Skip provider if we only want specific ones.
-			if ( null !== $provider && ! in_array( $provider_key, $provider, true ) ) {
+			if ( null !== $provider && ! in_array( $provider_key, $provider, true ) && ! in_array( $provider_attendee_object, $provider, true ) ) {
 				continue;
 			}
 
