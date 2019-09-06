@@ -1526,9 +1526,12 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			$return->global_stock_cap( $capped );
 		}
 
-		$return->qty_sold( $qty_sold );
+		$qty_cancelled = $this->get_cancelled( $ticket_id );
 
-		$return->qty_cancelled( $this->get_cancelled( $ticket_id ) );
+		// Manually add cancelled to sold so that we can remove it correctly later when calculating.
+		$return->qty_sold( $qty_sold + $qty_cancelled );
+
+		$return->qty_cancelled( $qty_cancelled );
 
 		$pending = $this->get_qty_pending( $ticket_id );
 
