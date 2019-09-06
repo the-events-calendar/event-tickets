@@ -20,10 +20,12 @@ $classes  = [ 'tribe-block__tickets__item' ];
 $provider = $this->get( 'provider' );
 $ticket   = $this->get( 'ticket' );
 $modal    = $this->get( 'is_modal' );
+$currency_symbol = $this->get( 'currency_symbol' );
 $context  = [
 	'ticket'  => $ticket,
 	'key'     => $this->get( 'key' ),
 	'is_modal'=> $modal,
+	'currency_symbol' => $currency_symbol,
 ];
 
 if (
