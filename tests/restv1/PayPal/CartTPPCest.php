@@ -33,11 +33,24 @@ class CartTPPCest extends BaseRestCest {
 
 		$cart_rest_url = $this->cart_url . "/{$first_post_id}";
 
+		/** @var \Tribe__Tickets__Commerce__PayPal__Gateway $gateway */
+		$gateway = tribe( 'tickets.commerce.paypal.gateway' );
+
+		$invoice_number = $gateway->set_invoice_number();
+
 		/** @var \Tribe__Tickets__Commerce__PayPal__Cart__Interface $cart */
 		$cart = tribe( 'tickets.commerce.paypal.cart' );
 
-		$cart->set_id( '123456' );
+		$cart->set_id( $invoice_number );
 		$cart->add_item( $first_ticket_id, 15 );
+
+		// Save cart cookie.
+		$I->setCookie( $gateway::$invoice_cookie_name, $invoice_number, [
+			'expires' => time() + 900,
+			'path'    => COOKIEPATH,
+			'domain'  => COOKIE_DOMAIN,
+			'secure'  => false,
+		] );
 
 		$I->sendGET( $cart_rest_url, [ 'provider' => 'tribe-commerce' ] );
 		$I->seeResponseCodeIs( 200 );
