@@ -8,13 +8,13 @@
 .tribe-common.tribe-block__tickets {
 	border: 1px solid var(--color-border-secondary);
 	border-radius: var(--border-radius-default);
-	margin: 1.5rem auto;
+	margin: 24px auto;
 	max-width: 580px;
-	padding: 1rem;
+	padding: 16px;
 	width: 100%;
 
 	@media(--viewport-medium) {
-		padding: 1.5rem;
+		padding: 24px;
 	}
 }
 
@@ -46,7 +46,7 @@
 		}
 
 		.tribe-modal__cart& {
-			flex: 1 1 calc(100% - (64px + 4rem));
+			flex: 1 1 calc(100% - 128px);
 		}
 	}
 
@@ -227,7 +227,7 @@
 		background-color: transparent;
 		color: var(--color-icon-secondary);
 		display: inline-block;
-		width: 1rem;
+		width: 16px;
 
 		&:hover,
 		&:focus {
@@ -244,15 +244,15 @@
 		cursor: pointer;
 		color: var(--color-icon-secondary);
 		display: inline-flex;
-		height: 3rem;
+		height: 48px;
 		justify-content: center;
 		margin: 0;
 		outline:none;
 		position: relative;
-		width: calc(90px - 2rem);
+		width: calc(90px - 32px);
 
 		.tribe-modal__cart& {
-			width: calc(64px - 2rem);
+			width: calc(64px - 32px);
 		}
 
 		&:hover {
@@ -309,7 +309,7 @@
 			margin-left: 1em;
 
 			@media( max-width: 400px ) {
-				margin: .875rem;
+				margin: 14px;
 			}
 		}
 	}
@@ -359,13 +359,13 @@
 		Modal-cart specific fields
 	*/
 	.tribe-block__tickets__item__remove__wrap {
-		width: 1rem;
+		width: 16px;
 	}
 
 	.tribe-block__tickets__item__total__wrap {
 		display: flex;
 		justify-content: flex-end;
-		width: 4rem;
+		width: 64px;
 	}
 
 	/*
