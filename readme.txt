@@ -127,6 +127,8 @@ Currently, the following add-ons are available for Event Tickets:
 * Tweak - Make the ticket form price field disable-able via a filter and make its description text filterable as well. [132274]
 * Tweak - Allow text to wrap in attendees and orders report tables to avoid text going into other columns. [133195]
 * Tweak - Added Order ID and Product ID search types to Attendees Report and fixed Ticket ID search type to be based on the ticket's Post ID [132248]
+* Tweak - Added filters: `tribe_tickets_get_total_complete`, `tribe_tickets_get_total_refunded`, `tribe_tickets_price_description`, `tribe_tickets_price_disabled`
+* Tweak - Changed views: `blocks/attendees/order-links`, `blocks/rsvp`, `blocks/rsvp/form/submit-login`, `blocks/tickets`, `blocks/tickets/quantity-number`, `registration/attendees/fields/select`, `tickets/orders`, `tickets/rsvp`, `tickets/tpp`, `tickets/orders-link`
 * Fix - Front-end search box (Community Tickets) input name changed to no longer trigger a theme's Search template [132248]
 * Fix - Fix potential issues with query that had no upper limit set when all that's needed is to check if it had one item [133247]
 * Fix - Support refunded attendee counting/handling for Tribe Commerce and Event Tickets Plus WooCommerce orders [126734]
