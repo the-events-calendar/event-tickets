@@ -141,6 +141,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Fix - Update `\Tribe__Tickets__Tickets_View::get_description_rsvp_ticket()` to determine when to use the appropriate singular or plural texts based on the quantity found for each ticket type and deprecated its third parameter (_bool_ `$plurals`) (props @solepixel for pointing us to the issue) [129582]
 * Fix - Correct two places where the translation domain was incorrect. Thanks to @cfaria for the catch! [128193]
 * Fix - Allow saving RSVP status changes (Going / Not Going) even if tickets have no Attendee Information fields [128629]
+* Language - 5 new strings added, 132 updated, 0 fuzzied, and 3 obsoleted
 
 = [4.10.7.2] 2019-09-03 =
 
