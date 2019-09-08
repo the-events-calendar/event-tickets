@@ -968,7 +968,7 @@ class Tribe__Tickets__Attendees_Table extends WP_List_Table {
 	/**
 	 * Get the allowed search types and their descriptions.
 	 *
-	 * @since TBD
+	 * @since 4.10.8
 	 *
 	 * @see   \Tribe__Tickets__Attendee_Repository::__construct() List of valid ORM args.
 	 *
