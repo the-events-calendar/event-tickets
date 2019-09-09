@@ -689,7 +689,7 @@ class Tribe__Tickets__Main {
 		$modal_option = Tribe__Settings_Manager::get_option( 'ticket-attendee-modal' );
 
 		if ( ! $modal_option && $modal_option !== false ) {
-			$modal_version_check = tribe_installed_after( 'Tribe__Tickets__Main', '4.11.0' );
+			$modal_version_check = tribe_installed_after( Tribe__Tickets__Main::instance(), '4.11.0' );
 			if ( ! $modal_version_check ) {
 				Tribe__Settings_Manager::set_option( 'ticket-attendee-modal', false );
 			}

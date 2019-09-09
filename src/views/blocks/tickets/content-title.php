@@ -18,7 +18,7 @@
 $ticket = $this->get( 'ticket' );
 ?>
 <div
-	class="tribe-block__tickets__item__content__title"
+	class="tribe-block__tickets__item__content__title tribe-common-h7 tribe-common-h6--min-medium"
 >
 	<?php echo $ticket->name; ?>
 </div>

@@ -24,9 +24,11 @@ $context = array(
 	'key' => $this->get( 'key' ),
 );
 
+$container_classes = [ 'tribe-block__tickets__item__quantity', 'tribe-common-h4' ];
+$container_classes = implode( ' ', $container_classes);
 ?>
 <div
-	class="tribe-block__tickets__item__quantity"
+	class="<?php echo esc_attr( $container_classes ); ?>"
 >
 	<?php if ( $is_available ) : ?>
 		<?php $this->template( 'blocks/tickets/quantity-remove', $context ); ?>

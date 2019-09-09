@@ -110,14 +110,6 @@ extends Tribe__Editor__Blocks__Abstract {
 				],
 			]
 		);
-
-		tribe_asset(
-			$plugin,
-			'tribe-tickets-gutenberg-block-tickets-style',
-			'app/tickets/frontend.css',
-			array(),
-			null
-		);
 	}
 
 	/**

@@ -46,44 +46,28 @@ tribe.tickets.block = {
 		function( e ) {
 			e.preventDefault();
 			var $input = $( this ).parent().find( 'input[type="number"]' );
+			if( $input.is( ':disabled' ) ) {
+				return;
+			}
+
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
-			var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1
 			var originalValue = Number( $input[ 0 ].value );
 
 
 			// stepUp or stepDown the input according to the button that was clicked
 			// handle IE/Edge
 			if ( add ) {
-				// we use 0 here as a shorthand for no maximum
-				var max = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
-
-				if ( typeof $input[ 0 ].stepUp === 'function' ) {
-					try {
-						$input[ 0 ].stepUp();
-					} catch ( ex ) {
-						$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-					}
-				} else {
-					$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-				}
+				obj.stepUp( $input, originalValue );
 			} else {
-				var min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
-
-				if ( typeof $input[ 0 ].stepDown === 'function' ) {
-					try {
-						$input[ 0 ].stepDown();
-					} catch ( ex ) {
-						$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
-					}
-				} else {
-					$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
-				}
+				obj.stepDown( $input, originalValue );
 			}
 
 			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown()
 			if ( originalValue !== $input[ 0 ].value ) {
 				$input.trigger( 'change' );
 			}
+
+			$input.addClass( 'tribe-block__tickets__item__quantity__number--active' );
 		}
 	);
 
@@ -229,6 +213,83 @@ tribe.tickets.block = {
 	}
 
 	/**
+	 * stepUp the input according to the button that was clicked
+	 * handles IE/Edge
+	 *
+	 * @since TBD
+	 */
+	obj.stepUp = function( $input, originalValue ) {
+		// we use 0 here as a shorthand for no maximum
+		var max      = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
+		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var increase = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+		var change   = increase - originalValue;
+
+		if ( typeof $input[ 0 ].stepUp === 'function' ) {
+			try {
+				$input[ 0 ].stepUp();
+			} catch ( ex ) {
+				$input[ 0 ].value = increase;
+			}
+		} else {
+			$input[ 0 ].value = increase;
+		}
+
+		// Update total count in footer
+		if ( 0 < change ) {
+			obj.footerCount( $input, change, 'add' );
+		}
+	}
+
+	/**
+	 * stepDown the input according to the button that was clicked
+	 * handles IE/Edge
+	 *
+	 * @since TBD
+	 */
+	obj.stepDown = function( $input, originalValue ) {
+		var min      = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
+		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var decrease = ( min <= originalValue - step ) ? originalValue - step : min;
+		var change   = originalValue - decrease;
+
+		if ( typeof $input[ 0 ].stepDown === 'function' ) {
+			try {
+				$input[ 0 ].stepDown();
+			} catch ( ex ) {
+				$input[ 0 ].value = decrease;
+			}
+		} else {
+			$input[ 0 ].value = decrease;
+		}
+
+		// Update total count in footer
+		if ( 0 < change ) {
+			obj.footerCount( $input, change, 'minus' );
+		}
+
+	}
+
+	/**
+	 * Adjust the footer count for +/-
+	 *
+	 * @param int    step      The amount to increase/decrease
+	 * @param string direction The direction to change 'add' adds, anything else subtracts.
+	 */
+	obj.footerCount = function( $input, step, direction ) {
+		var $field = $input.closest( 'form' ).find( '.tribe-block__tickets__item__footer__total__number' );
+		// Update total count in footer
+		var footerCount = parseInt( $field.text() ) || 0;
+
+		if ( 'add' === direction ) {
+			footerCount = footerCount + step;
+		} else {
+			footerCount = footerCount - step;
+		}
+		$field.text( footerCount );
+	}
+
+	/**
 	 * Init the tickets script
 	 *
 	 * @since 4.9
@@ -252,10 +313,13 @@ tribe.tickets.block = {
 		item: '.tribe-block__tickets__item',
 		itemQuantity: '.tribe-ticket-quantity',
 		itemPrice: '.tribe-block__tickets__item__extra__price',
+		//itemTotal: '.tribe-block__tickets__item__total',
+		//itemRemove: '.tribe-block__tickets__item__remove',
 		itemTotal: '.tribe-amount',
 		itemRemove: '.tribe-modal__cart__item__remove',
 		cartTotals: '.tribe-modal__cart__totals',
 		cartQuantity: '.tribe-modal__cart__total__qty',
+		//cartTotal: '.tribe-modal__cart__total__amount',
 		cartTotal: '.tribe-amount',
 	};
 
