@@ -123,7 +123,7 @@ $attendee_fields = [
 		'label'           => esc_html__( 'Attendee Registration Modal ', 'event-tickets-plus' ),
 		'tooltip' => sprintf(
 			esc_html_x(
-				'Enabling the Attendee Registration Modal provides a new sales flow for purchasing tickets that include Attendee Registration. [%sLearn more%s]',
+				'Enabling the Attendee Registration Modal provides a new sales flow for purchasing tickets that include Attendee Registration. [%1$sLearn more%2$s]',
 				'checkbox to enable Attendee Registration Modal',
 				'event-tickets-plus'
 			),
