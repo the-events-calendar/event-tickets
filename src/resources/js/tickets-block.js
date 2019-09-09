@@ -313,14 +313,11 @@ tribe.tickets.block = {
 		item: '.tribe-block__tickets__item',
 		itemQuantity: '.tribe-ticket-quantity',
 		itemPrice: '.tribe-block__tickets__item__extra__price',
-		//itemTotal: '.tribe-block__tickets__item__total',
-		//itemRemove: '.tribe-block__tickets__item__remove',
-		itemTotal: '.tribe-amount',
-		itemRemove: '.tribe-modal__cart__item__remove',
-		cartTotals: '.tribe-modal__cart__totals',
-		cartQuantity: '.tribe-modal__cart__total__qty',
-		//cartTotal: '.tribe-modal__cart__total__amount',
-		cartTotal: '.tribe-amount',
+		itemTotal: '.tribe-block__tickets__item__total__wrap .tribe-amount',
+		itemRemove: '.tribe-block__tickets__item__remove',
+		cartTotals: '.tribe-block__tickets__footer',
+		cartQuantity: '.tribe-block__tickets__item__footer__quantity__number',
+		cartTotal: '.tribe-block__tickets__item__footer__total .tribe-amount',
 	};
 
 	/**
@@ -329,7 +326,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( document ).on( 'change', obj.modalSelector.container + ' ' + obj.modalSelector.itemQuantity, function ( e ) {
+	$( document ).on( 'change', obj.modalSelector.itemQuantity, function ( e ) {
 			e.preventDefault();
 
 			var $cartItem = $( this ).closest( obj.modalSelector.item );
@@ -530,20 +527,27 @@ tribe.tickets.block = {
 	};
 
 	/**
+	 * Get the Currency Formatting for a Provider
+	 *
+	 * @since TBD
 	 *
 	 * @returns {*}
 	 */
 	obj.getCurrencyFormatting = function () {
 
 		var currency = JSON.parse( TribeCurrency.formatting );
-		var provider = $( obj.modalSelector.container ).data( 'provider' );
+		var provider = $( obj.selector.container ).data( 'provider' );
 
 		return currency[provider];
 	};
 
 	/**
+	 * Format the number according to provider settings
+	 * Based off coding fron https://stackoverflow.com/a/2901136
 	 *
-	 * @param number
+	 * @since TBD
+	 *
+	 * @param number the number to format
 	 * @returns {string}
 	 */
 	obj.numberFormat = function ( number ) {
