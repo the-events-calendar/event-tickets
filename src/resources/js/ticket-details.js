@@ -31,7 +31,7 @@ var tribe_ticket_details = tribe_ticket_details || {};
 			return;
 		}
 
-		var $parent = $( trigger.closest( '.tribe-block__tickets__item__details__summary' ) );
+		var $parent = $( trigger ).closest( '.tribe-block__tickets__item__details__summary' );
 		var $target = $( document.getElementById( trigger.getAttribute( 'aria-controls' ) ) );
 
 		if ( ! $target || ! $parent ) {
