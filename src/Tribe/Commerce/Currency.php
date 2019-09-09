@@ -584,6 +584,8 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Decimal Point for a Provider
 	 *
+	 * @since TBD
+	 *
 	 * @param string|null $provider The ticket provider class name
 	 *
 	 * @return string the decimal separator
@@ -611,6 +613,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 	/**
 	 * Get the Currency Thousands Separator for a Provider
+	 *
+	 * @since TBD
 	 *
 	 * @param string|null $provider The ticket provider class name
 	 *
@@ -640,6 +644,8 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Number of Decimals by provider or default
 	 *
+	 * @since TBD
+	 *
 	 * @param string|null $provider The ticket provider class name
 	 *
 	 * @return string the thousands separator
@@ -661,6 +667,8 @@ class Tribe__Tickets__Commerce__Currency {
 			/**
 			 * Filter the Amount of Decimals for EDD
 			 *
+			 * @since TBD
+			 *
 			 * @param int the default number of decimals
 			 */
 			$decimals = apply_filters( 'tribe_edd_format_amount_decimals', 2 );
@@ -674,12 +682,16 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Default Amount of Decimals
 	 *
+	 * @since TBD
+	 *
 	 * @return int the amount of decimals
 	 */
 	public function get_currency_number_of_decimals() {
 
 		/**
 		 * Filter the Amount of Decimals
+		 *
+		 * @since TBD
 		 *
 		 * @param int the default number of decimals
 		 */
@@ -690,6 +702,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 	/**
 	 * Get the Currency Configuration for all Passed Providers
+	 *
+	 * @since TBD
 	 *
 	 * @param string $provider The ticket provider class name
 	 * @param int    $post_id  The id of the post with tickets
@@ -714,6 +728,8 @@ class Tribe__Tickets__Commerce__Currency {
 	/**
 	 * Get the Currency Formatting Information for a Provider
 	 *
+	 * @since TBD
+	 *
 	 * @param int         $post_id  The id of the post with tickets
 	 * @param string|null $provider The ticket provider class name
 	 *
@@ -731,6 +747,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 	/**
 	 * Get Formatted Currency According to a Provider
+	 *
+	 * @since TBD
 	 *
 	 * @param int         $amount   the amount to format
 	 * @param int         $post_id  The id of the post with tickets
@@ -768,6 +786,8 @@ class Tribe__Tickets__Commerce__Currency {
 		/**
 		 * Filter the Formatted Currency
 		 *
+		 * @since TBD
+		 *
 		 * @param string $formatted the formatted amount
 		 * @param int    $amount    the original amount to be formatted
 		 * @param array  $currency  an array of currency formatting details
@@ -777,6 +797,8 @@ class Tribe__Tickets__Commerce__Currency {
 
 	/**
 	 * Get Formatted Currency According to a Provider with Symbol
+	 *
+	 * @since TBD
 	 *
 	 * @param int         $amount   the amount to format
 	 * @param int         $post_id  The id of the post with tickets
@@ -797,10 +819,10 @@ class Tribe__Tickets__Commerce__Currency {
 			$formatted = $html ? '<span class="tribe-formatted-currency-wrap tribe-currency-postfix">' . $amount . $currency_symbol . '</span>' : $amount . $currency_symbol;
 		}
 
-
-		//todo edd_sanitize_amount or add in the sanitization here
 		/**
 		 * Filter the Formatted Currency with Symbol
+		 *
+		 * @since TBD
 		 *
 		 * @param string  $formatted the formatted amount
 		 * @param int     $amount    the original amount to be formatted
@@ -809,13 +831,5 @@ class Tribe__Tickets__Commerce__Currency {
 		 */
 		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html );
 	}
-
-
-	// This method should localize the PHP configuration for the providers of tickets on the current event/post.
-	public function localize_script_with_config( $post_id ) {
-
-
-	}
-
 
 }

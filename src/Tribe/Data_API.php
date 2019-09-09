@@ -209,16 +209,6 @@ class Tribe__Tickets__Data_API {
 	 * @return array an array of providers
 	 */
 	public function get_providers_for_post( $post_id ) {
-
-		//todo should there be caching here? Would it help?
-/*		$cache_key = self::$cache_key_prefix . $post_id;
-		$cache = new Tribe__Cache();
-		$providers = $cache->get( $cache_key );
-
-		if ( is_array( $tickets ) ) {
-			return $providers;
-		}*/
-
 		$providers = [];
 		$modules = $this->ticket_class;
 
@@ -230,8 +220,6 @@ class Tribe__Tickets__Data_API {
 				$providers[ $module['slug'] ] = $class;
 			}
 		}
-
-		//$cache->set( $cache_key, $providers, Tribe__Cache::NO_EXPIRATION );
 
 		return $providers;
 	}
