@@ -160,7 +160,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			$provider_attendee_object = $provider_object->attendee_object;
 
 			// Skip provider if we only want specific ones.
-			if ( null !== $provider && ! in_array( $provider_key, $provider, true ) && ! in_array( $provider_attendee_object, $provider, true ) ) {
+			if (
+				null !== $provider
+				&& ! in_array( $provider_key, $provider, true )
+				&& ! in_array( $provider_attendee_object, $provider, true )
+			) {
 				continue;
 			}
 
@@ -255,6 +259,11 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 
 		// Update cart quantities.
 		if ( null !== $tickets ) {
+			foreach ( $tickets as $k => $ticket ) {
+				$tickets[ $k ]['ticket_id'] = absint( $tickets[ $k ]['ticket_id'] );
+				$tickets[ $k ]['quantity']  = absint( $tickets[ $k ]['quantity'] );
+			}
+
 			/**
 			 * Update tickets in cart for provider.
 			 *
@@ -264,7 +273,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 *
 			 * @param array $tickets List of tickets with their ID and quantity.
 			 */
-			do_action( 'tribe_tickets_rest_cart_update_' . $provider, $tickets );
+			do_action( 'tribe_tickets_rest_cart_update_tickets_' . $provider, $tickets );
 
 			/**
 			 * Update tickets in cart.
@@ -274,7 +283,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @param array  $tickets  List of tickets with their ID and quantity.
 			 * @param string $provider The cart provider.
 			 */
-			do_action( 'tribe_tickets_rest_cart_update', $tickets, $provider );
+			do_action( 'tribe_tickets_rest_cart_update_tickets', $tickets, $provider );
 		}
 
 		// Update ticket meta.
@@ -289,7 +298,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @param array $meta    List of meta for each ticket to be saved for Attendee Registration.
 			 * @param array $tickets List of tickets with their ID and quantity.
 			 */
-			do_action( 'tribe_tickets_rest_cart_meta_update_' . $provider, $meta, $tickets );
+			do_action( 'tribe_tickets_rest_cart_update_ticket_meta_' . $provider, $meta, $tickets );
 
 			/**
 			 * Update ticket meta from Attendee Registration.
@@ -300,7 +309,7 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @param array  $tickets  List of tickets with their ID and quantity.
 			 * @param string $provider The cart provider.
 			 */
-			do_action( 'tribe_tickets_rest_cart_meta_update', $meta, $tickets, $provider );
+			do_action( 'tribe_tickets_rest_cart_update_ticket_meta', $meta, $tickets, $provider );
 		}
 
 		// Get the updated cart details.
@@ -322,8 +331,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @since TBD
 			 *
 			 * @param string $cart_url Cart URL.
+			 * @param array  $data     REST API response data to be sent.
 			 */
-			$cart_url = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $provider, $cart_url );
+			$cart_url = apply_filters( 'tribe_tickets_rest_cart_get_cart_url_' . $provider, $cart_url, $data );
 
 			/**
 			 * Get checkout URL for provider.
@@ -333,8 +343,9 @@ class Tribe__Tickets__REST__V1__Endpoints__Cart
 			 * @since TBD
 			 *
 			 * @param string $checkout_url Checkout URL.
+			 * @param array  $data         REST API response data to be sent.
 			 */
-			$checkout_url = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $provider, $checkout_url );
+			$checkout_url = apply_filters( 'tribe_tickets_rest_cart_get_checkout_url_' . $provider, $checkout_url, $data );
 
 			// Update cart and checkout URL.
 			$data['cart_url']     = $cart_url;

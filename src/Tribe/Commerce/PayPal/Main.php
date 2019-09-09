@@ -328,9 +328,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		add_action( 'tickets_tpp_ticket_deleted', [ $this, 'update_stock_after_deletion' ], 10, 3 );
 
 		// REST API hooks.
-		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'get_tickets_in_cart' ] );
 		add_filter( 'tribe_tickets_rest_cart_get_cart_url_tribe-commerce', [ $this, 'get_cart_url' ] );
 		add_filter( 'tribe_tickets_rest_cart_get_checkout_url_tribe-commerce', [ $this, 'get_checkout_url' ] );
+		add_filter( 'tribe_tickets_rest_cart_get_tickets_tribe-commerce', [ $this, 'get_tickets_in_cart' ] );
+		add_filter( 'tribe_tickets_rest_cart_update_tickets_tribe-commerce', [ $this, 'update_tickets_in_cart' ] );
 	}
 
 	/**
@@ -2201,7 +2202,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 			return;
 		}
 
- 		if ( $_POST ) {
+		if ( $_POST ) {
 			return;
 		}
 
@@ -2222,8 +2223,10 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		if ( is_admin() ) {
 			return false;
 		}
- 		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
- 		return ! empty( $redirect );
+
+		$redirect = tribe_get_request_var( 'tribe_tickets_redirect_to', null );
+
+		return ! empty( $redirect );
 	}
 
 	/**
@@ -2255,7 +2258,59 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 		return $tickets;
 	}
 
- 	/**
+	/**
+	 * Update tickets in Tribe Commerce cart.
+	 *
+	 * @since TBD
+	 *
+	 * @param array $tickets List of tickets with their ID and quantity.
+	 */
+	public function update_tickets_in_cart( $tickets ) {
+		foreach ( $tickets as $ticket ) {
+			// Skip if ticket ID not set.
+			if ( empty( $ticket['ticket_id'] ) ) {
+				continue;
+			}
+
+			$this->add_ticket_to_cart( $ticket['ticket_id'], $ticket['quantity'] );
+		}
+	}
+
+	/**
+	 * Handles the process of adding a ticket product to the cart.
+	 *
+	 * If the cart contains a line item for the product, this will replace the previous quantity.
+	 * If the quantity is zero and the cart contains a line item for the product, this will remove it.
+	 *
+	 * @since TBD
+	 *
+	 * @param int  $ticket_id Ticket ID.
+	 * @param int  $quantity  Ticket quantity.
+	 * @param bool $increment Whether to increment the quantity if the ticket is already in cart.
+	 */
+	public function add_ticket_to_cart( $ticket_id, $quantity, $increment = false ) {
+		try {
+			if ( 1 === 0 ) {
+				// Maybe remove cart item if we are not incrementing the quantity if already in cart.
+				if ( ! $increment ) {
+					// @todo Remove item from cart.
+				}
+
+				// Update quantity in cart.
+				if ( 0 < $quantity ) {
+					// @todo Update quantity in cart.
+				}
+			} elseif ( 0 < $quantity ) {
+				// Add item to cart.
+
+				// @todo Add item to cart.
+			}
+		} catch ( \Exception $exception ) {
+			// Item not added to / removed from cart.
+		}
+	}
+
+	/**
 	 * Get the current cart Transient key.
 	 *
 	 * @since 4.9
@@ -2366,7 +2421,7 @@ class Tribe__Tickets__Commerce__PayPal__Main extends Tribe__Tickets__Tickets {
 	 */
 	public function supports_global_stock() {
 		/**
-		 * Allows the declaration of global stock support for WooCommerce tickets
+		 * Allows the declaration of global stock support for Tribe Commerce tickets
 		 * to be overridden.
 		 *
 		 * @param bool $enable_global_stock_support
