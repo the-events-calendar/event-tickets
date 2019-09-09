@@ -1,22 +1,27 @@
 var tribe_ticket_details = tribe_ticket_details || {};
 
-( function( obj ) {
+( function( $, obj ) {
 	'use strict';
 
 	obj.init = function( detailsElems ) {
 		obj.event_listeners();
 	}
 
+	obj.selectors = [
+		'.tribe-block__tickets__item__details__summary--more',
+		'.tribe-block__tickets__item__details__summary--less',
+	];
+
 	obj.event_listeners = function() {
 		// Add keyboard support for enter key.
-		document.addEventListener( 'keyup', function( event ) {
+		$( document ).on( 'keyup', obj.selectors, function( event ) {
 			// Toggle open like click does.
 			if ( 13 === event.keyCode ) {
 				obj.toggle_open( event.target );
 			}
 		} );
 
-		document.addEventListener( 'click', function( event ) {
+		$( document ).on( 'click', obj.selectors, function( event ) {
 			obj.toggle_open( event.target );
 		} );
 	}
@@ -26,35 +31,31 @@ var tribe_ticket_details = tribe_ticket_details || {};
 			return;
 		}
 
-		var parent          = trigger.closest( '.tribe-block__tickets__item__details__summary' );
-		var target_selector = trigger.getAttribute( 'aria-controls' );
-		var target          = document.getElementById( target_selector );
+		var $parent = $( trigger ).closest( '.tribe-block__tickets__item__details__summary' );
+		var $target = $( document.getElementById( trigger.getAttribute( 'aria-controls' ) ) );
 
-		if ( ! target || ! parent ) {
+		if ( ! $target || ! $parent ) {
 			return;
 		}
 
 		event.preventDefault();
-
 		// Let our CSS handle the hide/show. Also allows us to make it responsive.
-		if ( parent.classList.contains( 'tribe__details--open' ) ) {
-			parent.classList.remove( 'tribe__details--open' );
-			target.classList.remove( 'tribe__details--open' );
-		} else {
-			parent.classList.add( 'tribe__details--open' );
-			target.classList.add( 'tribe__details--open' );
-		}
+		var onOff = ! $parent.hasClass( 'tribe__details--open' );
+		$parent.toggleClass( 'tribe__details--open', onOff );
+		$target.toggleClass( 'tribe__details--open', onOff );
 	}
 
-	window.addEventListener( 'load', function() {
-		var detailsElems = document.querySelectorAll( '.tribe-block__tickets__item__details__summary' );
+	$( document ).ready(
+		function() {
+			var detailsElems = document.querySelectorAll( '.tribe-block__tickets__item__details__summary' );
 
-		// details element not present
-		if ( ! detailsElems.length ) {
-			return;
+			// details element not present
+			if ( ! detailsElems.length ) {
+				return;
+			}
+
+			obj.init( detailsElems );
 		}
+	);
 
-		obj.init( detailsElems );
-	});
-
-} )( tribe_ticket_details );
+} )( jQuery, tribe_ticket_details );

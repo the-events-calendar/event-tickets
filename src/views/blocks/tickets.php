@@ -17,6 +17,10 @@
  * @var Tribe__Tickets__Editor__Template $this
  */
 
+
+/** @var Tribe__Tickets__Commerce__Currency $currency */
+$currency        = tribe( 'tickets.commerce.currency' );
+
 $cart_classes        = [ 'tribe-block', 'tribe-block__tickets', 'tribe-common' ];
 $cart_url            = $this->get( 'cart_url' );
 $has_tickets_on_sale = $this->get( 'has_tickets_on_sale' );
@@ -54,9 +58,14 @@ echo $html;
 	<?php $this->template( 'blocks/tickets/commerce/fields', [ 'provider' => $provider, 'provider_id' => $provider_id ] ); ?>
 	<?php if ( $has_tickets_on_sale ) : ?>
 		<?php foreach ( $tickets_on_sale as $key => $ticket ) : ?>
-			<?php $this->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key ] ); ?>
+		<?php $ticket_symbol = $currency->get_currency_symbol( $ticket->ID, true ); ?>
+			<?php $this->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'currency_symbol' => $ticket_symbol ] ); ?>
 		<?php endforeach; ?>
-		<?php $this->template( 'blocks/tickets/footer', [ 'provider' => $provider, 'provider_id' => $provider_id, 'ticket' => $ticket ] ); ?>
+		<?php
+		// We're assuming that all the currency is the same here.
+		$currency_symbol     = $currency->get_currency_symbol( $tickets[0]->ID, true );
+		$this->template( 'blocks/tickets/footer', [ 'currency_symbol' => $currency_symbol ] );
+		?>
 	<?php else : ?>
 		<?php $this->template( 'blocks/tickets/item-inactive', [ 'is_sale_past' => $is_sale_past ] ); ?>
 	<?php endif; ?>

@@ -8,13 +8,13 @@
 .tribe-common.tribe-block__tickets {
 	border: 1px solid var(--color-border-secondary);
 	border-radius: var(--border-radius-default);
-	margin: 1.5rem auto;
+	margin: 24px auto;
 	max-width: 580px;
-	padding: 1rem;
+	padding: 16px;
 	width: 100%;
 
 	@media(--viewport-medium) {
-		padding: 1.5rem;
+		padding: 24px;
 	}
 }
 
@@ -31,7 +31,7 @@
 		display: flex;
 		background: var(--color-background);
 		border-top: 1px solid var(--color-border-secondary);
-		padding: .875em 0;
+		padding: 14px 0;
 	}
 
 	.tribe-block__tickets__item__content {
@@ -46,7 +46,7 @@
 		}
 
 		.tribe-modal__cart& {
-			flex: 1 1 calc(100% - (64px + 4rem));
+			flex: 1 1 calc(100% - 128px);
 		}
 	}
 
@@ -121,7 +121,6 @@
 				display: none;
 			}
 		}
-
 	}
 
 	.tribe-block__tickets__item__details__summary--more {
@@ -227,7 +226,7 @@
 		background-color: transparent;
 		color: var(--color-icon-secondary);
 		display: inline-block;
-		width: 1rem;
+		width: 16px;
 
 		&:hover,
 		&:focus {
@@ -244,15 +243,15 @@
 		cursor: pointer;
 		color: var(--color-icon-secondary);
 		display: inline-flex;
-		height: 3rem;
+		height: 48px;
 		justify-content: center;
 		margin: 0;
 		outline:none;
 		position: relative;
-		width: calc(90px - 2rem);
+		width: calc(90px - 32px);
 
 		.tribe-modal__cart& {
-			width: calc(64px - 2rem);
+			width: calc(64px - 32px);
 		}
 
 		&:hover {
@@ -296,7 +295,7 @@
 	.tribe-block__tickets__footer {
 		align-items: baseline;
 		border-top: 1px solid var(--color-border-secondary);
-		padding: .875em 0 0;
+		padding: 10px 0 0;
 		display: flex;
 		flex-flow: row wrap;
 		justify-content: flex-end;
@@ -306,10 +305,10 @@
 		}
 
 		> * + *:not('.tribe-dialog') {
-			margin-left: 1em;
+			margin-left: 12px;
 
 			@media( max-width: 400px ) {
-				margin: .875rem;
+				margin: 14px;
 			}
 		}
 	}
@@ -345,7 +344,6 @@
 			color: var(--color-ticket-field-disabled);
 		}
 
-
 		.tribe-block__tickets__item__quantity,
 		.tribe-block__tickets__item__quantity__add,
 		.tribe-block__tickets__item__quantity__remove,
@@ -359,13 +357,13 @@
 		Modal-cart specific fields
 	*/
 	.tribe-block__tickets__item__remove__wrap {
-		width: 1rem;
+		width: 16px;
 	}
 
 	.tribe-block__tickets__item__total__wrap {
 		display: flex;
 		justify-content: flex-end;
-		width: 4rem;
+		width: 64px;
 	}
 
 	.tribe-block__tickets__button--next {
