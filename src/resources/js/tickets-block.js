@@ -357,7 +357,11 @@ tribe.tickets.block = {
 
 			var modalCartItem = $( this );
 			var qty = obj.getQty( modalCartItem );
-			var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text() );
+
+			var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace(',', '') );
+			if ( '.' === obj.getCurrencyFormatting().thousands_sep ) {
+				total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace(/\./g,'').replace(',', '.') );
+			}
 
 			total_qty += parseInt( qty, 10 );
 			total_amount += total;
@@ -365,7 +369,7 @@ tribe.tickets.block = {
 		} );
 
 		$cart_totals.find( obj.modalSelector.cartQuantity ).text( total_qty );
-		$cart_totals.find( obj.modalSelector.cartTotal ).text( total_amount.toFixed( 2 ) );
+		$cart_totals.find( obj.modalSelector.cartTotal ).text( obj.numberFormat( total_amount ) );
 
 	};
 
@@ -435,8 +439,8 @@ tribe.tickets.block = {
 	 * @returns {number}
 	 */
 	obj.getPrice = function ( cartItem, cssClass ) {
-		//todo Adjust with #133179
-		var price = parseFloat( cartItem.find( cssClass ).text().replace("$", "") );
+
+		var price = parseFloat( cartItem.find( cssClass ).text() );
 
 		return isNaN( price ) ? 0 : price;
 	};
@@ -454,11 +458,54 @@ tribe.tickets.block = {
 	 */
 	obj.updateTotal = function ( qty, price, cartItem ) {
 
-		var total_for_item = (qty * price).toFixed( 2 );
+		var total_for_item = (qty * price).toFixed( obj.getCurrencyFormatting().number_of_decimals );
 
-		cartItem.find( obj.modalSelector.itemTotal ).text( total_for_item );
+		cartItem.find( obj.modalSelector.itemTotal ).text( obj.numberFormat( total_for_item ) );
 
 		return total_for_item;
 	};
+
+	/**
+	 *
+	 * @returns {*}
+	 */
+	obj.getCurrencyFormatting = function () {
+
+		var currency = JSON.parse( TribeCurrency.formatting );
+		var provider = $( obj.modalSelector.container ).data( 'provider' );
+
+		return currency[provider];
+	};
+
+	/**
+	 *
+	 * @param number
+	 * @returns {string}
+	 */
+	obj.numberFormat = function ( number ) {
+
+		var decimals = obj.getCurrencyFormatting().number_of_decimals;
+		var dec_point = obj.getCurrencyFormatting().decimal_point;
+		var thousands_sep = obj.getCurrencyFormatting().thousands_sep;
+
+		var n = !isFinite( +number ) ? 0 : +number,
+			prec = !isFinite( +decimals ) ? 0 : Math.abs( decimals ),
+			sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+			dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+			toFixedFix = function ( n, prec ) {
+				// Fix for IE parseFloat(0.55).toFixed(0) = 0;
+				var k = Math.pow( 10, prec );
+				return Math.round( n * k ) / k;
+			},
+			s = (prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
+		if ( s[0].length > 3 ) {
+			s[0] = s[0].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
+		}
+		if ( (s[1] || '').length < prec ) {
+			s[1] = s[1] || '';
+			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
+		}
+		return s.join( dec );
+	}
 
 })( jQuery, tribe.tickets.block, tribe_ev.events );
