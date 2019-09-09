@@ -44,11 +44,11 @@ tribe.tickets.block = {
 	$( document ).on( 'click',
 		'.tribe-block__tickets__item__quantity__remove, .tribe-block__tickets__item__quantity__add',
 		function( e ) {
-			e.preventDefault();
 			var $input = $( this ).parent().find( 'input[type="number"]' );
 			if( $input.is( ':disabled' ) ) {
 				return;
 			}
+			e.preventDefault();
 
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
 			var originalValue = Number( $input[ 0 ].value );

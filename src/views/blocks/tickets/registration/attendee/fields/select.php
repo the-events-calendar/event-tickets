@@ -37,12 +37,12 @@ $option_id = "tribe-tickets-meta_{$slug}" . ( $attendee_id ? '_' . $attendee_id 
 <div
 	class="tribe-field tribe-block__tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>"
 >
-	<label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+	<label class="tribe-common-b1 tribe-common-b2--min-medium" for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<select	<?php disabled( $is_restricted ); ?>
 		id="<?php echo esc_attr( $option_id ); ?>"
-		class="ticket-meta"
+		class="ticket-meta ticket-metatribe-common-form-control-select__input"
 		name="<?php echo $field_name; ?>"
-		<?php echo $required ? 'required' : ''; ?>
+		<?php tribe_required( $required ); ?>
 	>
 		<option><?php esc_html_e( 'Select an option', 'event-tickets' ); ?></option>
 		<?php foreach ( $options as $option ) : ?>

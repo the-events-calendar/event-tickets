@@ -27,12 +27,16 @@ $field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field[
 <div
 	class="tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>"
 >
-	<label for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?></label>
+	<label
+		class="tribe-tickets-meta-label tribe-common-b1 tribe-common-b2--min-medium"
+		for="<?php echo esc_attr( $option_id ); ?>"
+	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<?php if ( $multiline ) : ?>
 		<textarea
 			id="<?php echo esc_attr( $option_id ); ?>"
 			name="<?php echo $field_name; ?>"
-			<?php echo $required ? 'required' : ''; ?>
+			class="ticket-metatribe-common-form-control-text__input"
+			<?php tribe_required( $required ); ?>
 			<?php disabled( $is_restricted ); ?>
 		><?php echo esc_textarea( $value ); ?></textarea>
 	<?php else : ?>
@@ -41,7 +45,7 @@ $field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field[
 			id="<?php echo esc_attr( $option_id ); ?>"
 			name="<?php echo $field_name; ?>"
 			value="<?php echo esc_attr( $value ); ?>"
-			<?php echo $required ? 'required' : ''; ?>
+			<?php tribe_required( $required ); ?>
 			<?php disabled( $is_restricted ); ?>
 		>
 	<?php endif; ?>

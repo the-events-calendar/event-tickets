@@ -30,6 +30,9 @@ var tribe_ticket_details = tribe_ticket_details || {};
 		if( ! trigger ) {
 			return;
 		}
+		if ( ! $( trigger ).hasClass( 'tribe-block__tickets__item__details__summary--more' ) && ! $( trigger ).hasClass( 'tribe-block__tickets__item__details__summary--less' ) ) {
+			return;
+		}
 
 		var $parent = $( trigger ).closest( '.tribe-block__tickets__item__details__summary' );
 		var $target = $( document.getElementById( trigger.getAttribute( 'aria-controls' ) ) );

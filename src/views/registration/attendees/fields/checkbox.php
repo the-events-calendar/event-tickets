@@ -16,39 +16,45 @@ $field         = (array) $field;
 $attendee_id   = $key;
 $options       = Tribe__Utils__Array::get( $field, array( 'extra', 'options' ), null );
 $field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . ']';
+$is_restricted = false;
 
 if ( ! $options ) {
 	return;
 }
 ?>
-<div class="tribe-field tribe-block__tickets__item__attendee__field__checkbox <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
+<div class="tribe-field tribe-tickets-meta-fieldset tribe-tickets-meta-fieldset__checkbox-radio">
 	<header class="tribe-tickets-meta-label">
-		<h3><?php echo wp_kses_post( $field['label'] ); ?></h3>
+		<h3 class="tribe-common-b1 tribe-common-b2--min-medium" ><?php echo wp_kses_post( $field['label'] ); ?></h3>
 	</header>
-	<div class="tribe-options">
-		<?php
-		foreach ( $options as $option ) :
 
+	<div class="tribe-common-form-control-checkbox-radio-group">
+		<?php
+		foreach ( $options as $option ) {
 			$option_slug = md5( sanitize_title( $option ) );
 			$field_slug  = $field['slug'];
-			$option_id   = "tribe-tickets-meta_{$field_slug}_{$ticket->ID}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
+			$option_id   = "tribe-tickets-meta_{$field_slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
 			$slug        = $field_slug . '_' . $option_slug;
-			$value       = isset( $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] ) ? $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] : false;
-			?>
-			<label for="<?php echo esc_attr( $option_id ); ?>" class="tribe-tickets-meta-field-header">
+			$value       = isset( $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] ) ? $saved_meta[ $ticket->ID ][ $attendee_id ][ $slug ] : [];
+		?>
+
+		<div class="tribe-common-form-control-checkbox">
+			<label
+				class="tribe-common-form-control-checkbox__label"
+				for="<?php echo esc_attr( $option_id ); ?>"
+			>
 				<input
-					type="checkbox"
+					class="tribe-common-form-control-checkbox__input"
 					id="<?php echo esc_attr( $option_id ); ?>"
-					class="ticket-meta"
-					name="<?php echo esc_attr( $field_name . '[' . $slug . ']' ); ?>"
+					name="tribe-tickets-meta[<?php echo $attendee_id ?>][<?php echo esc_attr( $slug ); ?>]"
+					type="checkbox"
 					value="<?php echo esc_attr( $option ); ?>"
-					<?php checked( $option, $value ); ?>
+					<?php checked( true, in_array( $slug, $value ) ); ?>
+					<?php disabled( $is_restricted ); ?>
 				/>
-				<span class="tribe-tickets-meta-option-label">
-					<?php echo wp_kses_post( $option ); ?>
-				</span>
+				<?php echo wp_kses_post( $option ); ?>
 			</label>
-		<?php endforeach; ?>
+		</div>
+		<?php }?>
 	</div>
 	<input
 		type="hidden"

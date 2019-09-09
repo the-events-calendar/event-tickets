@@ -13,7 +13,6 @@ class Tribe__Tickets__Assets {
 			[
 				[ 'event-tickets-tickets-css', 'tickets.css', [ 'dashicons' ] ],
 				[ 'event-tickets-tickets-rsvp-css', 'rsvp.css', [] ],
-				[ 'event-tickets-registration-fields-css', 'tickets-registration-fields.css', [] ],
 				[ 'event-tickets-tickets-rsvp-js', 'rsvp.js', [ 'jquery', 'jquery-ui-datepicker' ] ],
 				[ 'event-tickets-attendees-list-js', 'attendees-list.js', [ 'jquery' ] ],
 				[ 'event-tickets-details-js', 'ticket-details.js', [] ],
