@@ -121,7 +121,15 @@ $attendee_fields = [
 	'ticket-attendee-modal'         => [
 		'type'            => 'checkbox_bool',
 		'label'           => esc_html__( 'Attendee Registration Modal ', 'event-tickets-plus' ),
-		'tooltip'         => esc_html__( 'Check this box if you wish to turn on the Attendee Registration Modal on the single-event page.', 'event-tickets-plus' ),
+		'tooltip' => sprintf(
+			esc_html_x(
+				'Enabling the Attendee Registration Modal provides a new sales flow for purchasing tickets that include Attendee Registration. [%sLearn more%s]',
+				'checkbox to enable Attendee Registration Modal',
+				'event-tickets-plus'
+			),
+			'<a href="http://m.tri.be/attendee-registration" target="_blank">',
+			'</a>'
+		),
 		'size'            => 'medium',
 		'default'         => $modal_version_check,
 		'validation_type' => 'boolean',
