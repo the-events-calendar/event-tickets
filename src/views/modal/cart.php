@@ -39,7 +39,5 @@ if ( ! $provider || empty( $tickets ) ) {
 			<?php $template_obj->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'is_modal' => true ] ); ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
-
-	<?php //$template_obj->template( 'modal/cart-totals', [] ); ?>
 	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_modal' => true ] ); ?>
 </form>

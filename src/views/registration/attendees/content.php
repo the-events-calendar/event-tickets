@@ -33,7 +33,7 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 	$attendee_count = 0;
 	$post           = get_post( $ticket['id'] );
 	?>
-	<h3 class="tribe-ticket__heading"><?php echo get_the_title( $post->ID ); ?></h3>
+	<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading "><?php echo get_the_title( $post->ID ); ?></h3>
 	<?php // go through each attendee ?>
 	<?php while ( $attendee_count < $ticket['qty'] ) : ?>
 		<?php

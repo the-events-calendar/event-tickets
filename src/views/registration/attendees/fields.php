@@ -11,8 +11,8 @@
  *
  */
 ?>
-<div class="tribe-ticket">
-	<h4><?php esc_html_e( 'Attendee', 'event-tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
+<div class="tribe-common-h7 tribe-common-h6--min-medium tribe-common-h--alt tribe-ticket">
+	<h4 class=""><?php esc_html_e( 'Attendee', 'event-tickets' ); ?> <?php echo esc_html( $key + 1 ); ?></h4>
 	<?php foreach ( $fields as $field ) : ?>
 		<?php
 			$value = ! empty( $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] ) ? $saved_meta[ $ticket->ID ][ $key ][ $field->slug ] : null;

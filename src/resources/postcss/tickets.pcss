@@ -305,7 +305,7 @@
 			justify-content: flex-start;
 		}
 
-		> * + * {
+		> * + *:not('.tribe-dialog') {
 			margin-left: 1em;
 
 			@media( max-width: 400px ) {
@@ -366,87 +366,6 @@
 		display: flex;
 		justify-content: flex-end;
 		width: 4rem;
-	}
-
-	/*
-		Attendee fields
-	*/
-	.tribe-block__tickets__item__attendee__fields {
-		background: #f9f9f9;
-
-		.tribe-field {
-			margin-bottom: 40px;
-			clear: both;
-			&:last-child {
-				margin-bottom: 0;
-			}
-		}
-
-		label {
-			color: #545d66;
-			display: block;
-			font-weight: 500;
-			margin-bottom: .8em;
-
-			&.tribe-tickets-meta-field-header {
-				cursor: pointer;
-				display: inline-block;
-				float: left;
-				margin-right: 20px;
-			}
-		}
-
-		.tribe-tickets-meta-label {
-
-			display: block;
-			margin-bottom: .8em;
-
-			&,
-			& h3 {
-				font-weight: 500;
-				color: #545d66;
-			}
-		}
-
-		input[type="text"],
-		input[type="email"],
-		input[type="url"],
-		input[type="password"],
-		input[type="search"],
-		input[type="number"],
-		input[type="tel"],
-		input[type="range"],
-		input[type="date"],
-		input[type="month"],
-		input[type="week"],
-		input[type="time"],
-		input[type="datetime"],
-		input[type="datetime-local"],
-		input[type="color"],
-		select,
-		textarea {
-			border: 1px solid #e1e3e6;
-			max-width: 400px;
-
-			&:focus {
-				border: 1px solid #e1e3e6;
-			}
-		}
-
-		select {
-			-webkit-appearance: none;
-			-moz-appearance:    none;
-			appearance:         none;
-			background: var(--color-background);
-			height: auto;
-			min-width: 400px;
-		}
-
-		.tribe-options {
-			overflow:hidden;
-			width: 100%;
-		}
-
 	}
 
 	.tribe-block__tickets__button--next {

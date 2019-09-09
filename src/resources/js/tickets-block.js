@@ -524,10 +524,12 @@ tribe.tickets.block = {
 	};
 
 	$(document).on( 'click', obj.modalSelector.closeButton, function (event) {
-			event.preventDefault();
 			var modal = event.target.closest( '.tribe-dialog' );
-			var form = jQuery( modal ).find('form');
-			console.log(form.serialize());
+			var form = jQuery( '#tribe-modal__cart' );
+			var data = form.serialize();
+			sessionStorage.setItem('tribe_tickets_cart', data);
+
+			console.log(sessionStorage.getItem( 'tribe_tickets_cart' ) );
 		}
 	);
 

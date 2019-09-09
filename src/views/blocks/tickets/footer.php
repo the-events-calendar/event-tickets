@@ -17,6 +17,7 @@
 
 // /$ticket = $this->get( 'ticket' );
 $modal  = $this->get( 'is_modal' );
+$ticket = $this->get( 'ticket' );
 ?>
 <div
 	class="tribe-block__tickets__footer"
@@ -24,6 +25,6 @@ $modal  = $this->get( 'is_modal' );
 <?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
 <?php $this->template( 'blocks/tickets/footer-total' ); ?>
 <?php if ( true !== $modal ) : ?>
-	<?php $this->template( 'blocks/tickets/submit' ); ?>
+	<?php $this->template( 'blocks/tickets/submit', [ 'ticket' => $ticket]); ?>
 <?php endif; ?>
 </div>
