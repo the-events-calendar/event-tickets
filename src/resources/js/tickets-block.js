@@ -396,22 +396,20 @@ tribe.tickets.block = {
 	 *
 	 */
 	$( te ).on( 'tribe_dialog_show_ar_modal', function ( e, dialogEl, event ) {
-
 		var $cart = $( obj.selector.container );
 		var $modalCart = $( obj.modalSelector.container );
 
 		$cart.find( obj.modalSelector.item ).each( function () {
 
-			var blockCartItem = $( this );
-			var id = blockCartItem.data( 'ticketId' );
+			var $blockCartItem = $( this );
+			var id = $blockCartItem.data( 'ticketId' );
 			var modalCartItem = $modalCart.find( '[data-ticket-id="' + id + '"]' );
 
-			obj.updateItem( id, modalCartItem, blockCartItem );
+			obj.updateItem( id, modalCartItem, $blockCartItem );
 
 		} );
 
 		obj.updateCartTotals( $modalCart );
-
 	} );
 
 	/**
@@ -422,15 +420,14 @@ tribe.tickets.block = {
 	 * @param $cart the jQuery cart object to update totals
 	 */
 	obj.updateCartTotals = function ( $cart ) {
-
 		var total_qty = 0;
 		var total_amount = 0.00;
 		var $cart_totals = $( obj.modalSelector.cartTotals );
 
 		$cart.find( obj.modalSelector.item ).each( function () {
 
-			var modalCartItem = $( this );
-			var qty = obj.getQty( modalCartItem );
+			var $modalCartItem = $( this );
+			var qty = obj.getQty( $modalCartItem );
 			var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text() );
 
 			total_qty += parseInt( qty, 10 );
@@ -441,7 +438,40 @@ tribe.tickets.block = {
 		$cart_totals.find( obj.modalSelector.cartQuantity ).text( total_qty );
 		$cart_totals.find( obj.modalSelector.cartTotal ).text( total_amount.toFixed( 2 ) );
 
+		obj.appendARFields( $cart );
 	};
+
+	obj.appendARFields = function ( $cart ) {
+		$cart.find( obj.modalSelector.item ).each( function () {
+			var $modalCartItem = $( this );
+			if ( $modalCartItem.is(':visible') ) {
+				var ticketID = $modalCartItem.closest( '.tribe-block__tickets__item' ).data( 'ticket-id' );
+				var $ticket_container = $( '#tribe-modal__attendee_registration' ).find( '.tribe-block__tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
+				var $existing = $ticket_container.find( '.tribe-ticket' );
+
+				var qty = obj.getQty( $modalCartItem );
+				if ( 0 >= qty ) {
+					$ticket_container.removeClass( 'tribe-block__tickets--has-tickets' );
+					$ticket_container.find( '.tribe-ticket' ).remove();
+					return;
+				}
+
+				if ( $existing.length > qty ) {
+
+					var remove_count = $existing.length - qty;
+					$ticket_container.find( '.tribe-ticket:nth-last-child(-n+' + remove_count + ')' ).remove();
+				} else if ( $existing.length < qty ) {
+					$ticket_container.addClass( 'tribe-block__tickets--has-tickets' );
+					var ticketTemplate = window.wp.template( 'tribe-registration--' + ticketID );
+					var counter = $existing.length > 0 ? $existing.length + 1 : 1;
+					for ( var i = counter; i <= qty; i++ ) {
+						var data = { 'attendee_id': i };
+						$ticket_container.append( ticketTemplate( data ) );
+					}
+				}
+			}
+		});
+	}
 
 	/**
 	* Possibly Update an Items Qty and always update the Total

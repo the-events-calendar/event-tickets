@@ -17,7 +17,7 @@
  */
 ?>
 <button
-	class="tribe-block__tickets__buy tribe-common-c-btn--small"
+	class="tribe-common-c-btn tribe-common-c-btn--small tribe-block__tickets__buy"
 	type="submit"
 >
 	<?php echo esc_html_x( 'Add to cart', 'Add tickets to cart.', 'event-tickets' ); ?>

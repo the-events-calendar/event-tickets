@@ -380,217 +380,240 @@
 
 	/*
 	Attendee fields
-*/
-.tribe-block__tickets__item__attendee__fields {
-	.tribe-ticket {
-		border: solid var(--form-color-border-secondary);
-		border-width: 1px 1px 1px 4px;
-		clear: both;
-		margin-bottom: 40px;
-		padding: 16px;
+	*/
+	.tribe-block__tickets__item__attendee__fields {
+		.tribe-ticket {
+			border: solid var(--form-color-border-secondary);
+			border-width: 1px 1px 1px 4px;
+			clear: both;
+			margin-bottom: 40px;
+			padding: 16px;
 
-		&.tribe-ticket-item--has-focus {
-			border-left-color: var(--color-icon-focus);
-		}
-	}
-
-	.tribe-field {
-		display: flex;
-		flex-flow: column nowrap;
-		margin-bottom: 40px;
-
-		&:last-child {
-			margin-bottom: 0;
+			&.tribe-ticket-item--has-focus {
+				border-left-color: var(--color-icon-focus);
+			}
 		}
 
-		@media(--viewport-medium) {
-			flex-flow: row nowrap;
-		}
-	}
-
-	.tribe-tickets-meta-fieldset {
-		border: 0;
-		display: flex;
-		flex-flow: row nowrap;
-		padding: 0;
-
-		&__checkbox-radio {
+		.tribe-field {
+			display: flex;
 			flex-flow: column nowrap;
+			margin-bottom: 40px;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
 
 			@media(--viewport-medium) {
 				flex-flow: row nowrap;
 			}
 		}
-	}
 
-	/* Overrides ET+ */
-	.tribe-tickets-meta-required {
-		header:first-child::after,
-		label:first-child::after {
-			content: '';
-		}
-	}
+		.tribe-tickets-meta-fieldset {
+			border: 0;
+			display: flex;
+			flex-flow: row nowrap;
+			padding: 0;
 
-	.tribe-required {
-		color: red;
-		margin-left: 4px;
-	}
+			&__checkbox-radio {
+				flex-flow: column nowrap;
 
-	label,
-	.tribe-tickets-meta-label {
-		display: block;
-		font-weight: var(--font-weight-regular);
-		margin-bottom: 0;
-		width: 134px;
-
-		&.tribe-tickets-meta-field-header {
-			cursor: pointer;
-			display: inline-block;
-			margin-right: 20px;
+				@media(--viewport-medium) {
+					flex-flow: row nowrap;
+				}
+			}
 		}
 
-		@media(--viewport-medium) {
-			flex: 0 0 134px;
-			margin-right: 20px;
-		}
-	}
-
-	input[type="text"],
-	input[type="email"],
-	input[type="url"],
-	input[type="password"],
-	input[type="search"],
-	input[type="number"],
-	input[type="tel"],
-	input[type="range"],
-	input[type="date"],
-	input[type="month"],
-	input[type="week"],
-	input[type="time"],
-	input[type="datetime"],
-	input[type="datetime-local"],
-	input[type="color"],
-	select,
-	textarea {
-		border-width: 1px;
-		border-style: solid;
-		border-color: var(--form-color-border-secondary);
-		width: 100%;
-
-		&:focus {
-			border-color: var(--form-color-border-active);
+		/* Overrides ET+ */
+		.tribe-tickets-meta-required {
+			header:first-child::after,
+			label:first-child::after {
+				content: '';
+			}
 		}
 
-		@media(--viewport-medium) {
-			max-width: 600px;
+		.tribe-required {
+			color: red;
+			margin-left: 4px;
 		}
-	}
 
-	select {
-		appearance: none;
-		background-color: var(--color-background);
-		background-image: url('../images/select.png');
-		background-position: right center;
-		background-repeat: no-repeat;
-		background-size: 33px 33px;
-		height: auto;
-		padding: 0.7em;
-	}
+		label,
+		.tribe-tickets-meta-label {
+			display: block;
+			font-weight: var(--font-weight-regular);
+			margin-bottom: 0;
+			width: 134px;
 
-	.tribe-options {
-		overflow:hidden;
-		width: 100%;
-	}
+			&.tribe-tickets-meta-field-header {
+				cursor: pointer;
+				display: inline-block;
+				margin-right: 20px;
+			}
 
-	/* Field-type specific */
-	.tribe-common-form-control-radio__input,
-	.tribe-common-form-control-checkbox__input {
-		border-color: var(--form-color-border-secondary);
-		margin-right: 11px;
+			@media(--viewport-medium) {
+				flex: 0 0 134px;
+				margin-right: 20px;
+			}
+		}
 
-		&:focus {
-			border-color: var(--form-color-border-active);
+		input[type="text"],
+		input[type="email"],
+		input[type="url"],
+		input[type="password"],
+		input[type="search"],
+		input[type="number"],
+		input[type="tel"],
+		input[type="range"],
+		input[type="date"],
+		input[type="month"],
+		input[type="week"],
+		input[type="time"],
+		input[type="datetime"],
+		input[type="datetime-local"],
+		input[type="color"],
+		select,
+		textarea {
 			border-width: 1px;
+			border-style: solid;
+			border-color: var(--form-color-border-secondary);
+			width: 100%;
+
+			&:focus {
+				border-color: var(--form-color-border-active);
+			}
+
+			@media(--viewport-medium) {
+				max-width: 600px;
+			}
 		}
-	}
 
-	.tribe-common-form-control-radio__label,
-	.tribe-common-form-control-checkbox__label {
-		display: inline-block;
-		margin-left: 0;
+		select {
+			appearance: none;
+			background-color: var(--color-background);
+			background-image: url('../images/select.png');
+			background-position: right center;
+			background-repeat: no-repeat;
+			background-size: 33px 33px;
+			height: auto;
+			padding: 0.7em;
+		}
 
-		&:hover {
-			.tribe-common-form-control-radio__input,
-			.tribe-common-form-control-checkbox__input {
-				border-color: #8D949B;
+		.tribe-options {
+			overflow:hidden;
+			width: 100%;
+		}
+
+		/* Field-type specific */
+		.tribe-common-form-control-radio__input,
+		.tribe-common-form-control-checkbox__input {
+			border-color: var(--form-color-border-secondary);
+			margin-right: 11px;
+
+			&:focus {
+				border-color: var(--form-color-border-active);
+				border-width: 1px;
+			}
+		}
+
+		.tribe-common-form-control-radio__label,
+		.tribe-common-form-control-checkbox__label {
+			display: inline-block;
+			margin-left: 0;
+
+			&:hover {
+				.tribe-common-form-control-radio__input,
+				.tribe-common-form-control-checkbox__input {
+					border-color: #8D949B;
+				}
+			}
+		}
+
+		.tribe-common-form-control-checkbox__input,
+		.tribe-common-form-control-radio__input {
+			&:checked {
+				background-color: var(--color-icon-focus);
+				border-color: var(--color-icon-focus);
+			}
+		}
+
+		.tribe-common-form-control-checkbox__input {
+			border-radius: var(--border-radius-default);
+		}
+
+		.tribe-common-form-control-text__input {
+			padding: 8px 16px;
+		}
+
+		/* Notices */
+		.tribe-block__tickets__item__attendee__fields__error {
+			color: red;
+			display: none;
+			padding: 30px 0 0 0;
+		}
+
+		.tribe-block__tickets__item__attendee__fields__success {
+			color: rgb(24, 217, 0);
+			display: none;
+			padding: 30px 0 0 0;
+		}
+
+		.tribe-block__tickets__item__attendee__fields__loader {
+			background: rgba( 255, 255, 255, .7 );
+			display: none;
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+			z-index: 99;
+
+			svg {
+				left: 50%;
+				max-width: 70px;
+				position: absolute;
+				transform: translateX(-50%);
+				top: 35%;
+			}
+		}
+
+		.tribe-block__tickets__button--next {
+			align-items: center;
+			border: 1px solid #e1e3e6;
+			background-color: #009fd4;
+			color: #fff;
+			display: inline-flex;
+			justify-content: center;
+			min-height: 54px;
+			padding: 0 20px;
+			max-width: 100%;
+
+			&:hover {
+				color: #fff;
+			}
+		}
+
+		.tribe-block__tickets__item__attendee__fields__container {
+			display: none;
+
+			&.tribe-block__tickets--has-tickets {
+				display: block;
 			}
 		}
 	}
 
-	.tribe-common-form-control-checkbox__input,
-	.tribe-common-form-control-radio__input {
-		&:checked {
-			background-color: var(--color-icon-focus);
-			border-color: var(--color-icon-focus);
-		}
-	}
-
-	.tribe-common-form-control-checkbox__input {
-		border-radius: var(--border-radius-default);
-	}
-
-	.tribe-common-form-control-text__input {
-		padding: 8px 16px;
-	}
-
-	/* Notices */
-	.tribe-block__tickets__item__attendee__fields__error {
-		color: red;
-		display: none;
-		padding: 30px 0 0 0;
-	}
-
-	.tribe-block__tickets__item__attendee__fields__success {
-		color: rgb(24, 217, 0);
-		display: none;
-		padding: 30px 0 0 0;
-	}
-
-	.tribe-block__tickets__item__attendee__fields__loader {
-		background: rgba( 255, 255, 255, .7 );
-		display: none;
-		height: 100%;
-		left: 0;
-		position: absolute;
-		top: 0;
-		width: 100%;
-		z-index: 99;
-
-		svg {
-			left: 50%;
-			max-width: 70px;
-			position: absolute;
-			transform: translateX(-50%);
-			top: 35%;
-		}
-	}
-
-	.tribe-block__tickets__button--next {
+	.tribe-block__tickets__item__attendee__fields__footer {
 		align-items: center;
-		border: 1px solid #e1e3e6;
-		background-color: #009fd4;
-		color: #fff;
-		display: inline-flex;
-		justify-content: center;
-		min-height: 54px;
-		padding: 0 20px;
-		max-width: 100%;
-
-		&:hover {
-			color: #fff;
-		}
+		display: flex;
+		justify-content: flex-end;
 	}
-}
+
+	.tribe-block__tickets__item__attendee__fields__footer__divider {
+		margin-right: 20px;
+	}
+
+	.tribe-block__tickets__item__attendee__fields__footer_submit {
+		padding: 11px 13px;
+		white-space: nowrap;
+	}
 
 
 	/*

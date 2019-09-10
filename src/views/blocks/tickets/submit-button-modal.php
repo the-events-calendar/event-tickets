@@ -31,7 +31,7 @@ $content     = apply_filters( 'tribe_events_tickets_edd_attendee_registration_mo
 $content     = apply_filters( 'tribe_events_tickets_attendee_registration_modal_content', '<p>Ticket Modal</p>', $this );
 
 $args = [
-	'button_classes' => [ 'tribe-common-c-btn--small tribe-block__tickets__submit' ],
+	'button_classes' => [ 'tribe-common-c-btn', 'tribe-common-c-btn--small', 'tribe-block__tickets__submit' ],
 	'button_name'    => $provider_id . '_get_tickets',
 	'button_text'    => $button_text,
 	'button_type'    => 'submit',
@@ -40,3 +40,20 @@ $args = [
 ];
 
 tribe( 'dialog.view' )->render_modal( $content, $args );
+$event_id = get_the_id();
+/** @var Tribe__Tickets__Editor__Template $template */
+$template = tribe( 'tickets.editor.template' );
+$provider_id = Tribe__Tickets__Tickets::get_event_ticket_provider( $post_id );
+$provider    = call_user_func( [ $provider_id, 'get_instance' ] );
+$obj_tickets = $provider->get_tickets( $event_id );
+foreach( $obj_tickets as $ticket ) {
+	$ticket_data = array(
+		'id'       => $ticket->ID,
+		'qty'      => 1,
+		'provider' => $provider,
+	);
+
+	$tickets_content[] = $ticket_data;
+}
+
+$template->template( 'registration-js/attendees/content', array( 'event_id' => $event_id, 'tickets' => $tickets_content ) );

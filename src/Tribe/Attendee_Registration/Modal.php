@@ -59,7 +59,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 * @return string The content with AR fields appended.
 	 */
 	function modal_ar_template( $content, $template_obj ) {
-		$template = 'modal/registration.php';
+		$template = 'modal/registration-js.php';
 		$file = $this->locate_template( $template );
 
 		$obj_tickets = $template_obj->get( 'tickets', [] );

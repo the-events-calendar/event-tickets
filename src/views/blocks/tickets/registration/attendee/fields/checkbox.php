@@ -36,7 +36,6 @@ if ( ! $options ) {
 		<div class="tribe-common-form-control-checkbox-radio-group">
 			<?php
 			foreach ( $options as $option ) {
-				bdump($option);
 				$option_slug = md5( sanitize_title( $option ) );
 				$field_slug  = $field['slug'];
 				$option_id   = "tribe-tickets-meta_{$field_slug}" . ( $attendee_id ? '_' . $attendee_id : '' ) . "_{$option_slug}";
