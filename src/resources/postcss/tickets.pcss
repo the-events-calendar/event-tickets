@@ -388,6 +388,10 @@
 		clear: both;
 		margin-bottom: 40px;
 		padding: 16px;
+
+		&.tribe-ticket-item--has-focus {
+			border-left-color: var(--color-icon-focus);
+		}
 	}
 
 	.tribe-field {
@@ -414,9 +418,22 @@
 			flex-flow: column nowrap;
 
 			@media(--viewport-medium) {
-			flex-flow: row nowrap;
+				flex-flow: row nowrap;
+			}
 		}
+	}
+
+	/* Overrides ET+ */
+	.tribe-tickets-meta-required {
+		header:first-child::after,
+		label:first-child::after {
+			content: '';
 		}
+	}
+
+	.tribe-required {
+		color: red;
+		margin-left: 4px;
 	}
 
 	label,

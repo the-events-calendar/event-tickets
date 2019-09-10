@@ -363,6 +363,18 @@ tribe.tickets.block = {
 		}
 	);
 
+	$(document).on( 'focus', '.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea', function( e ) {
+		var input     = e.target;
+		var $container = $( input ).closest( '.tribe-ticket' );
+		$container.addClass( 'tribe-ticket-item--has-focus' );
+	} );
+
+	$(document).on( 'blur', '.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea', function( e ) {
+		var input     = e.target;
+		var $container = $( input ).closest( '.tribe-ticket' );
+		$container.removeClass( 'tribe-ticket-item--has-focus' );
+	} );
+
 	/**
 	 * When Modal Qty is updated, update the cart totals in modal
 	 *

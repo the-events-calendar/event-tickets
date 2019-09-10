@@ -10,13 +10,13 @@
  * @version 4.10.1
  *
  */
-$required      = isset( $field->required ) && 'on' === $field->required ? true : false;
-$field         = (array) $field;
-$attendee_id   = $key;
-$is_restricted = false;
-$slug          = $field['slug'];
-$options       = null;
-$field_name    = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
+$required    = isset( $field->required ) && 'on' === $field->required ? true : false;
+$field       = (array) $field;
+$attendee_id = $key;
+$disabled    = false;
+$slug        = $field['slug'];
+$options     = null;
+$field_name  = 'tribe-tickets-meta[' . $ticket->ID . '][' . $attendee_id . '][' . esc_attr( $field['slug'] ) . ']';
 
 if ( isset( $field['extra'] ) && ! empty( $field['extra']['options'] ) ) {
 	$options = $field['extra']['options'];
@@ -31,7 +31,7 @@ $option_id = "tribe-tickets-meta_{$slug}_{$ticket->ID}" . ( $attendee_id ? '_' .
 <div class="tribe-field tribe-block__tickets__item__attendee__field__select <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>">
 	<label class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets-meta-label" for="<?php echo esc_attr( $option_id ); ?>"><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<select
-		<?php disabled( $is_restricted ); ?>
+		<?php tribe_disabled( $disabled ); ?>
 		id="<?php echo esc_attr( $option_id ); ?>"
 		class="ticket-meta ticket-metatribe-common-form-control-select__input"
 		name="<?php echo esc_attr( $field_name ); ?>"

@@ -1,4 +1,15 @@
 <?php
+/**
+ * Modal: Registration
+ *
+ * Override this template in your own theme by creating a file at:
+ * [your-theme]/tribe/tickets/modal/registration.php
+ *
+ * @since TBD
+ *
+ * @version TBD
+ *
+ */
 
 $passed_provider       = tribe_get_request_var('provider');
 $passed_provider_class = tribe( 'tickets.attendee_registration.view' )->get_form_class( $passed_provider );
