@@ -12,7 +12,6 @@ class CartUpdateCest extends BaseRestCest {
 	/**
 	 * It should allow updating cart for post.
 	 *
-	 * @skip
 	 * @test
 	 */
 	public function should_allow_updating_cart_for_post( Restv1Tester $I ) {
@@ -61,7 +60,6 @@ class CartUpdateCest extends BaseRestCest {
 	/**
 	 * It should allow updating empty cart for post.
 	 *
-	 * @skip
 	 * @test
 	 */
 	public function should_allow_updating_empty_cart_for_post( Restv1Tester $I ) {
@@ -102,7 +100,12 @@ class CartUpdateCest extends BaseRestCest {
 
 		$I->sendPOST( $cart_rest_url, [
 			'provider' => 'tribe-commerce',
-			'tickets'  => [],
+			'tickets'  => [
+				[
+					'ticket_id' => $first_ticket_id,
+					'quantity'  => 0,
+				],
+			],
 		] );
 		$I->seeResponseCodeIs( 200 );
 		$I->seeResponseIsJson();
