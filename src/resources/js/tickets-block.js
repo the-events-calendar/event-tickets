@@ -470,7 +470,7 @@ tribe.tickets.block = {
 					}
 				}
 			}
-		});
+		} );
 	}
 
 	/**
