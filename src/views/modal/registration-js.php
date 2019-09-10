@@ -13,10 +13,11 @@
 
 $passed_provider       = tribe_get_request_var('provider');
 $passed_provider_class = tribe( 'tickets.attendee_registration.view' )->get_form_class( $passed_provider );
-$provider_class = $passed_provider_class;
-$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
+$provider_class        = $passed_provider_class;
+$providers             = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
 $has_tpp               = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers);
-$event_id = get_the_id();
+$event_id              = get_the_id();
+$meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 ?>
 <div class="tribe-block__tickets__item__attendee__fields">
 	<h2 class="tribe-common-h3 tribe-common-h4--min-medium tribe-common-h--alt"><?php esc_html_e( 'Attendee Details', 'event-tickets' ); ?></h2>
@@ -28,9 +29,17 @@ $event_id = get_the_id();
 		novalidate
 	>
 		<?php foreach( $tickets as $ticket ) : ?>
-		<div class="tribe-block__tickets__item__attendee__fields__container" data-ticket-id="<?php echo esc_attr( $ticket['id'] ); ?>">
-			<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading "><?php echo get_the_title( $ticket['id'] ); ?></h3>
-		</div>
+			<?php
+			// Only include tickets with meta
+			$has_meta = get_post_meta( $ticket['id'], '_tribe_tickets_meta_enabled', true );
+
+			if ( empty( $has_meta ) || ! tribe_is_truthy( $has_meta ) ) {
+				continue;
+			}
+			?>
+				<div class="tribe-block__tickets__item__attendee__fields__container" data-ticket-id="<?php echo esc_attr( $ticket['id'] ); ?>">
+					<h3 class="tribe-common-h5 tribe-common-h5--min-medium tribe-common-h--alt tribe-ticket__heading "><?php echo get_the_title( $ticket['id'] ); ?></h3>
+				</div>
 		<?php endforeach; ?>
 		<input type="hidden" name="tribe_tickets_saving_attendees" value="1" />
 		<div  class="tribe-block__tickets__item__attendee__fields__footer">

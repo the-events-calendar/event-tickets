@@ -447,6 +447,10 @@ tribe.tickets.block = {
 			if ( $modalCartItem.is(':visible') ) {
 				var ticketID = $modalCartItem.closest( '.tribe-block__tickets__item' ).data( 'ticket-id' );
 				var $ticket_container = $( '#tribe-modal__attendee_registration' ).find( '.tribe-block__tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
+				if ( ! $ticket_container.length ) {
+					// Ticket does not have meta - no need to jump through hoops (and throw errors)
+					return;
+				}
 				var $existing = $ticket_container.find( '.tribe-ticket' );
 
 				var qty = obj.getQty( $modalCartItem );
