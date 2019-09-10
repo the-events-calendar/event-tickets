@@ -18,7 +18,7 @@
 
 ?>
 <div
-	class="tribe-block__tickets__item__footer__quantity tribe-common-b2"
+	class="tribe-common-b2 tribe-block__tickets__item__footer__quantity"
 >
 	<?php echo esc_html_x( 'Quantity:', 'Total selected tickets count.', 'event-tickets' ); ?>
 	&nbsp;

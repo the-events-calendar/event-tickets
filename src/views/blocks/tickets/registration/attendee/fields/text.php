@@ -28,7 +28,7 @@ $field_name    = 'tribe-tickets-meta[' . $attendee_id . '][' . esc_attr( $field[
 	class="tribe-field tribe-block__tickets__item__attendee__field__text <?php echo $required ? 'tribe-tickets-meta-required' : ''; ?>"
 >
 	<label
-		class="tribe-tickets-meta-label tribe-common-b1 tribe-common-b2--min-medium"
+		class="tribe-common-b1 tribe-common-b2--min-medium tribe-tickets-meta-label"
 		for="<?php echo esc_attr( $option_id ); ?>"
 	><?php echo wp_kses_post( $field['label'] ); ?><?php tribe_required_label( $required ); ?></label>
 	<?php if ( $multiline ) : ?>

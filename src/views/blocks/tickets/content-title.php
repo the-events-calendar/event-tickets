@@ -16,9 +16,18 @@
  */
 
 $ticket = $this->get( 'ticket' );
+$classes = [
+	'tribe-common-h7',
+	'tribe-common-h6--min-medium',
+	'tribe-block__tickets__item__content__title',
+];
+
+if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
+	$classes[] = 'tribe-block__tickets--no-description';
+}
 ?>
 <div
-	class="tribe-block__tickets__item__content__title tribe-common-h7 tribe-common-h6--min-medium"
+	class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"
 >
 	<?php echo $ticket->name; ?>
 </div>

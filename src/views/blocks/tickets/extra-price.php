@@ -18,7 +18,7 @@
 $ticket = $this->get( 'ticket' );
 ?>
 <div
-	class="tribe-block__tickets__item__extra__price tribe-common-b1"
+	class="tribe-common-b1 tribe-block__tickets__item__extra__price"
 >
 	<?php echo $ticket->get_provider()->get_price_html( $ticket->ID ); ?>
 </div>

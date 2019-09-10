@@ -66,8 +66,6 @@ tribe.tickets.block = {
 			if ( originalValue !== $input[ 0 ].value ) {
 				$input.trigger( 'change' );
 			}
-
-			$input.addClass( 'tribe-block__tickets__item__quantity__number--active' );
 		}
 	);
 
