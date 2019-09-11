@@ -612,13 +612,13 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Currency Thousands Separator for a Provider
+	 * Get the Currency Thousands Separator for a Provider.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null $provider The ticket provider class name
+	 * @param string|null $provider The ticket provider class name.
 	 *
-	 * @return string the thousands separator
+	 * @return string The thousands separator.
 	 */
 	public function get_currency_thousands_sep( $provider = null ) {
 
