@@ -7,8 +7,9 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.4
+ * @since TBD Add docblocks and pass missing 'provider' arg to registration/button-cart template.
  *
+ * @version TBD
  */
 // If there are no events with tickets in cart, print the empty cart template
 if ( empty( $events ) ) {
@@ -39,7 +40,10 @@ $passed_provider_class = $this->get_form_class( $passed_provider );
 		<?php $this->template( 'registration/summary/content', array( 'event_id' => $event_id, 'tickets' => $tickets ) ); ?>
 
 		<div class="tribe-block__tickets__registration__actions">
-			<?php $this->template( 'registration/button-cart', array( 'event_id' => $event_id ) ); ?>
+			<?php $this->template( 'registration/button-cart', [
+				'event_id' => $event_id,
+				'provider' => $passed_provider,
+			] ); ?>
 		</div>
 
 		<div class="tribe-block__tickets__item__attendee__fields">
