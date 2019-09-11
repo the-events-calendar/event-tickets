@@ -26,6 +26,6 @@ $button_title = sprintf(
 	class="tribe-block__tickets__item__quantity__add"
 	title="<?php echo esc_attr( $button_title ); ?>"
 >
-<span class="screen-reader-text"><?php echo esc_html( $button_title ); ?></span>
+	<span class="screen-reader-text"><?php echo esc_html( $button_title ); ?></span>
 	<?php echo esc_html_x( '+', 'A plus sign, add ticket.', 'event-tickets' ); ?>
 </button>
