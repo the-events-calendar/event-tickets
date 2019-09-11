@@ -582,13 +582,13 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Currency Decimal Point for a Provider
+	 * Get the Currency Decimal Point for a Provider.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null $provider The ticket provider class name
+	 * @param string|null $provider The ticket provider class name.
 	 *
-	 * @return string the decimal separator
+	 * @return string The decimal separator.
 	 */
 	public function get_currency_decimal_point( $provider = null ) {
 
