@@ -35,11 +35,19 @@ $id = 'tribe__details__content--' . $ticket->ID;
 			<button
 				class="tribe-common-b3 tribe-block__tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
-				tabindex="0"><span class="screen-reader-text"><?php esc_html_e('Open the ticket description.', 'event-tickets'); ?></span><?php echo esc_html_x('More', 'Opens the ticket description', 'event-tickets'); ?></button>
+				tabindex="0"
+			>
+				<span class="screen-reader-text"><?php esc_html_e('Open the ticket description.', 'event-tickets'); ?></span>
+				<?php echo esc_html_x('More', 'Opens the ticket description', 'event-tickets'); ?>
+			</button>
 			<button
 				class="tribe-common-b3 tribe-block__tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
-				tabindex="0"><span class="screen-reader-text"><?php esc_html_e('Close the ticket description.', 'event-tickets'); ?></span><?php echo esc_html_x('Less', 'Closes the ticket description', 'event-tickets'); ?></button>
+				tabindex="0"
+			>
+				<span class="screen-reader-text"><?php esc_html_e('Close the ticket description.', 'event-tickets'); ?></span>
+				<?php echo esc_html_x('Less', 'Closes the ticket description', 'event-tickets'); ?>
+			</button>
 	</div>
 	<?php endif; ?>
 </div>
