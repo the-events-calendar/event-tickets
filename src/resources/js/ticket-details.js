@@ -2,7 +2,7 @@ var tribe_ticket_details = tribe_ticket_details || {};
 
 ( function( $, obj ) {
 	'use strict';
-	$document = $( document );
+	var $document = $( document );
 
 	obj.init = function( detailsElems ) {
 		obj.event_listeners();
