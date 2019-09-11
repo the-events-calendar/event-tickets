@@ -409,7 +409,7 @@ class Tribe__Tickets__Status__Manager {
 	 */
 	public function get_provider_slug( $module_class ) {
 
-		if ( ! isset( $this->module_slugs[ $module_class ] ) ) {
+		if ( ! isset( $this->module_slugs[ $module_class ] ) ||  ! isset( $this->active_modules[ $module_class ] ) ) {
 			return false;
 		}
 
