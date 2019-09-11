@@ -52,6 +52,7 @@ echo $html;
 	method="post"
 	enctype='multipart/form-data'
 	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
+	autocomplete="off"
 	novalidate
 >
 	<h2 class="tribe-common-h4 tribe-common-h--alt tribe-block__tickets__title"><?php esc_html_e('Tickets', 'event-tickets'); ?></h2>

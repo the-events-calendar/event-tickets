@@ -17,7 +17,7 @@
 	width: 100%;
 
 	@media(--viewport-medium) {
-		padding: 24px;
+		padding: 24px 24px 20px;
 	}
 
 	.tribe-dialog__wrapper {
@@ -260,11 +260,7 @@
 		margin: 0;
 		outline:none;
 		position: relative;
-		width: calc(90px - 32px);
-
-		.tribe-modal__cart& {
-			width: calc(64px - 32px);
-		}
+		width: calc(90px - 24px);
 
 		&:hover {
 			background: none;
@@ -277,6 +273,7 @@
 			background: transparent;
 			border: none;
 			color: var(--color-text-primary);
+			padding: 16px 12px;
 			text-align: center;
 
 			&::-webkit-inner-spin-button,
@@ -303,10 +300,10 @@
 	/*
 		Block footer
 	*/
-	.tribe-block__tickets__footer {
+	.tribe-tickets__footer {
 		align-items: baseline;
 		border-top: 1px solid var(--color-border-secondary);
-		padding: 10px 0 0;
+		padding: 20px 0 0;
 		display: flex;
 		flex-flow: row wrap;
 		justify-content: flex-end;
@@ -324,28 +321,52 @@
 		}
 	}
 
-	.tribe-block__tickets__item__footer__total,
-	.tribe-block__tickets__item__footer__quantity {
+	.tribe-tickets__item__footer__total,
+	.tribe-tickets__item__footer__quantity {
 		color: var(--color-text-secondary);
+		display: none;
 		text-align: center;
 	}
 
-	.tribe-block__tickets__item__footer__total {
-		margin-left: .5em;
+	.tribe-tickets__footer--active,
+	.tribe-modal__content {
+		.tribe-tickets__item__footer__total,
+		.tribe-tickets__item__footer__quantity {
+			display: block;
+		}
 	}
 
-	.tribe-block__tickets__item__footer__total__number,
-	.tribe-block__tickets__item__footer__quantity__number {
+	.tribe-tickets__item__footer__total {
+		margin-left: 8px;
+
+		@media(--viewport-medium) {
+			margin-left: 24px;
+		}
+	}
+
+	.tribe-tickets__item__footer__total__number,
+	.tribe-tickets__item__footer__quantity__number {
 		color: var(--color-text-primary);
 	}
 
 	.tribe-block__tickets__submit,
 	.tribe-block__tickets__buy {
 		margin: 0;
-		margin-left: auto;
 
 		@media( max-width: 400px ) {
 			width: 100%;
+		}
+
+		&.tribe-common-c-btn {
+			margin-left: 8px;
+
+			@media( max-width: 400px ) {
+				width: auto;
+			}
+
+			@media(--viewport-medium) {
+				margin-left: 24px;
+			}
 		}
 	}
 

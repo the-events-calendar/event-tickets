@@ -17,10 +17,9 @@
 $currency_symbol = $this->get( 'currency_symbol' );
 ?>
 <div
-	class="tribe-common-b2 tribe-block__tickets__item__footer__total"
+	class="tribe-common-b2 tribe-tickets__item__footer__total"
 >
 	<?php echo esc_html_x( 'Total:', 'Total selected tickets price.', 'event-tickets' ); ?>
-	&nbsp;
-	<span class="tribe-block__tickets__item__footer__total__currency-symbol"><?php echo $currency_symbol; ?></span>
-	<span class="tribe-block__tickets__item__footer__total__number"><?php echo tribe_format_currency( 0 ); ?></span>
+	<span class="tribe-tickets__item__footer__total__currency-symbol"><?php echo $currency_symbol; ?></span>
+	<span class="tribe-tickets__item__footer__total__number"><?php echo tribe_format_currency( 0 ); ?></span>
 </div>

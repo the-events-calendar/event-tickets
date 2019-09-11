@@ -20,7 +20,7 @@ $modal  = $this->get( 'is_modal' );
 $ticket = $this->get( 'ticket' );
 ?>
 <div
-	class="tribe-block__tickets__footer"
+	class="tribe-tickets__footer"
 >
 <?php $this->template( 'blocks/tickets/footer-quantity' ); ?>
 <?php $this->template( 'blocks/tickets/footer-total' ); ?>

@@ -26,6 +26,7 @@ $meta                  = Tribe__Tickets_Plus__Main::instance()->meta();
 		method="post"
 		class="tribe-block__tickets__item__attendee__fields__form <?php echo sanitize_html_class( $provider_class ); ?>"
 		name="<?php echo 'event' . esc_attr( $event_id ); ?>"
+		autocomplete="off"
 		novalidate
 	>
 		<?php foreach( $tickets as $ticket ) : ?>
