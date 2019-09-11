@@ -8,23 +8,23 @@
 .tribe-common.tribe-block__tickets {
 	border: 1px solid var(--color-border-secondary);
 	border-radius: var(--border-radius-default);
-	margin: 24px auto;
+	margin: var(--spacer-5) auto;
 	max-width: 580px;
-	padding: 16px;
+	padding: var(--spacer-3);
 	width: 100%;
 
 	@media(--viewport-medium) {
-		padding: 24px;
+		padding: var(--spacer-5);
 	}
 }
 
  .tribe-common {
-	 --color-ticket-field-disabled: rgba(20,24,39,0.5);
+	--color-ticket-field-disabled: rgba(20,24,39,0.5);
 
-	 .tribe-block__tickets__title {
-		 color: var(--color-text-primary);
-		 font-weight: var(--font-weight-regular);
-	 }
+	.tribe-block__tickets__title {
+	color: var(--color-text-primary);
+	font-weight: var(--font-weight-regular);
+}
 
 	.tribe-block__tickets__item {
 		align-items: center;
@@ -37,7 +37,7 @@
 	.tribe-block__tickets__item__content {
 		align-items: center;
 		display: grid;
-		flex: 1 1 calc(100% - 90px);
+		flex: 1 1 calc(100% - 82px);
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: auto;
 
@@ -89,7 +89,7 @@
 		font-size: var(--font-size-1);
 		grid-column: 2;
 		grid-row: 1;
-		padding-left: 5px;
+		padding-left: var(--spacer-0);
 
 		.tribe-modal__cart& {
 			grid-column: 1;
@@ -209,10 +209,10 @@
 	.tribe-block__tickets__item__quantity {
 		color: var(--color-text-secondary);
 		display: flex;
-		flex: 0 0 90px;
+		flex: 0 0 82px;
 
 		.tribe-modal__cart& {
-			font-size: 16px;
+			font-size: var(--font-size-3);
 			flex: 0 0 64px;
 		}
 	}
@@ -226,7 +226,7 @@
 		background-color: transparent;
 		color: var(--color-icon-secondary);
 		display: inline-block;
-		width: 16px;
+		width: 12px;
 
 		&:hover,
 		&:focus {
@@ -248,17 +248,17 @@
 		margin: 0;
 		outline:none;
 		position: relative;
-		width: calc(90px - 32px);
+		width: calc(82px - 42px);
 
 		.tribe-modal__cart& {
-			width: calc(64px - 32px);
+			width: calc(64px - 42px);
 		}
 
 		&:hover {
 			background: none;
 		}
 
-		input[type="number"] {
+		.tribe-ticket-quantity {
 			appearance: textfield;
 			-moz-appearance: textfield;
 			-webkit-appearance: textfield;
@@ -266,7 +266,10 @@
 			border: none;
 			color: inherit;
 			font-weight: var(--font-weight-bold);
+			max-width: 100%;
+		padding: var(--spacer-3) 0;
 			text-align: center;
+			width: fit-content;
 
 			&::-webkit-inner-spin-button,
 			&::-webkit-outer-spin-button {
@@ -284,7 +287,7 @@
 			}
 
 			.tribe-modal__cart& {
-				font-size: 16px;
+				font-size: var(--font-size-3);
 			}
 		}
 	}
@@ -305,7 +308,7 @@
 		}
 
 		> * + * {
-			margin-left: 12px;
+			margin-left: var(--spacer-2);
 
 			@media( max-width: 400px ) {
 				margin: 14px;
@@ -347,7 +350,7 @@
 		.tribe-block__tickets__item__quantity,
 		.tribe-block__tickets__item__quantity__add,
 		.tribe-block__tickets__item__quantity__remove,
-		.tribe-block__tickets__item__quantity__number input[type="number"] {
+		.tribe-block__tickets__item__quantity__number .tribe-ticket-quantity {
 			color: #14182780;
 			color: var(--color-ticket-field-disabled);
 		}
