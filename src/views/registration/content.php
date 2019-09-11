@@ -10,6 +10,8 @@
  * @since TBD Add docblocks and pass missing 'provider' arg to registration/button-cart template.
  *
  * @version TBD
+ *
+ * @var Tribe__Tickets__Attendee_Registration__View $this
  */
 // If there are no events with tickets in cart, print the empty cart template
 if ( empty( $events ) ) {
