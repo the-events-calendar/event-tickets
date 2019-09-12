@@ -14,6 +14,8 @@
  * @version TBD
  *
  */
+
+$currency_symbol = $this->get( 'currency_symbol' );
 ?>
 <div
 	class="tribe-common-b2 tribe-tickets__item__footer__total"

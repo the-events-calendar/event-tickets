@@ -18,6 +18,7 @@
 // /$ticket = $this->get( 'ticket' );
 $modal  = $this->get( 'is_modal' );
 $ticket = $this->get( 'ticket' );
+$currency_symbol = $this->get( 'currency_symbol' );
 ?>
 <div
 	class="tribe-tickets__footer"
