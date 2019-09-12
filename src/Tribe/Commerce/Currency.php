@@ -798,6 +798,8 @@ class Tribe__Tickets__Commerce__Currency {
 		$amount   = $this->get_formatted_currency( $amount, $post_id, $provider );
 		$currency = $this->get_currency_by_provider( $post_id, $provider );
 		
+		$format = '%1$s%2$s';
+		
 		if ( $html ) {
 			$format = '
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
@@ -805,8 +807,12 @@ class Tribe__Tickets__Commerce__Currency {
 					<span class="tribe-amount">%2$s</span>
 				</span>
 			';
+		}
 			
-			if ( 'postfix' === $currency['placement'] ) {
+		if ( 'postfix' === $currency['placement'] ) {
+			$format = '%2$s%1$s';
+			
+			if ( $html ) {
 				$format = '
 					<span class="tribe-formatted-currency-wrap tribe-currency-postfix">
 						<span class="tribe-amount">%2$s</span>
@@ -814,9 +820,9 @@ class Tribe__Tickets__Commerce__Currency {
 					</span>
 				';
 			}
-			
-			$formatted = sprintf( $format, $currency['symbol'], $amount );
 		}
+			
+		$formatted = sprintf( $format, $currency['symbol'], $amount );
 
 		/**
 		 * Filter the Formatted Currency with Symbol
