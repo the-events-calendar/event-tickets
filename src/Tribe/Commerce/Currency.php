@@ -795,8 +795,8 @@ class Tribe__Tickets__Commerce__Currency {
 	 */
 	public function get_formatted_currency_with_symbol( $amount, $post_id, $provider = null, $html = true ) {
 
-		$amount          = $this->get_formatted_currency( $amount, $post_id, $provider );
-		$currency        = $this->get_currency_by_provider( $post_id, $provider );
+		$amount   = $this->get_formatted_currency( $amount, $post_id, $provider );
+		$currency = $this->get_currency_by_provider( $post_id, $provider );
 		
 		if ( $html ) {
 			$format = '
