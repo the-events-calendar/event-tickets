@@ -31,6 +31,7 @@ var tribe_tickets_ticket_form = {};
 		}
 
 		var $form = $this.closest( 'form' );
+		var parent = $this.parent( '.tribe-block__tickets__item__quantity__number' ).addClass( 'tribe-block__tickets__item__quantity__number--active' );
 
 		// Only disable / enable if is a Tribe Commerce Paypal form.
 		if ( ! $form.hasClass( 'tribe-tickets-tpp' ) ) {

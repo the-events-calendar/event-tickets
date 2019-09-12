@@ -46,44 +46,28 @@ tribe.tickets.block = {
 		function( e ) {
 			e.preventDefault();
 			var $input = $( this ).parent().find( 'input[type="number"]' );
+			if( $input.is( ':disabled' ) ) {
+				return;
+			}
+
 			var add = $( this ).hasClass( 'tribe-block__tickets__item__quantity__add' );
-			var step = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1
 			var originalValue = Number( $input[ 0 ].value );
 
 
 			// stepUp or stepDown the input according to the button that was clicked
 			// handle IE/Edge
 			if ( add ) {
-				// we use 0 here as a shorthand for no maximum
-				var max = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
-
-				if ( typeof $input[ 0 ].stepUp === 'function' ) {
-					try {
-						$input[ 0 ].stepUp();
-					} catch ( ex ) {
-						$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-					}
-				} else {
-					$input[ 0 ].value = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
-				}
+				obj.stepUp( $input, originalValue );
 			} else {
-				var min = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
-
-				if ( typeof $input[ 0 ].stepDown === 'function' ) {
-					try {
-						$input[ 0 ].stepDown();
-					} catch ( ex ) {
-						$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
-					}
-				} else {
-					$input[ 0 ].value = ( min <= originalValue - step ) ? originalValue - step : min;
-				}
+				obj.stepDown( $input, originalValue );
 			}
 
 			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown()
 			if ( originalValue !== $input[ 0 ].value ) {
 				$input.trigger( 'change' );
 			}
+
+			$input.addClass( 'tribe-block__tickets__item__quantity__number--active' );
 		}
 	);
 
@@ -229,6 +213,83 @@ tribe.tickets.block = {
 	}
 
 	/**
+	 * stepUp the input according to the button that was clicked
+	 * handles IE/Edge
+	 *
+	 * @since TBD
+	 */
+	obj.stepUp = function( $input, originalValue ) {
+		// we use 0 here as a shorthand for no maximum
+		var max      = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
+		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var increase = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
+		var change   = increase - originalValue;
+
+		if ( typeof $input[ 0 ].stepUp === 'function' ) {
+			try {
+				$input[ 0 ].stepUp();
+			} catch ( ex ) {
+				$input[ 0 ].value = increase;
+			}
+		} else {
+			$input[ 0 ].value = increase;
+		}
+
+		// Update total count in footer
+		if ( 0 < change ) {
+			obj.footerCount( $input, change, 'add' );
+		}
+	}
+
+	/**
+	 * stepDown the input according to the button that was clicked
+	 * handles IE/Edge
+	 *
+	 * @since TBD
+	 */
+	obj.stepDown = function( $input, originalValue ) {
+		var min      = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
+		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
+		var decrease = ( min <= originalValue - step ) ? originalValue - step : min;
+		var change   = originalValue - decrease;
+
+		if ( typeof $input[ 0 ].stepDown === 'function' ) {
+			try {
+				$input[ 0 ].stepDown();
+			} catch ( ex ) {
+				$input[ 0 ].value = decrease;
+			}
+		} else {
+			$input[ 0 ].value = decrease;
+		}
+
+		// Update total count in footer
+		if ( 0 < change ) {
+			obj.footerCount( $input, change, 'minus' );
+		}
+
+	}
+
+	/**
+	 * Adjust the footer count for +/-
+	 *
+	 * @param int    step      The amount to increase/decrease
+	 * @param string direction The direction to change 'add' adds, anything else subtracts.
+	 */
+	obj.footerCount = function( $input, step, direction ) {
+		var $field = $input.closest( 'form' ).find( '.tribe-block__tickets__item__footer__total__number' );
+		// Update total count in footer
+		var footerCount = parseInt( $field.text() ) || 0;
+
+		if ( 'add' === direction ) {
+			footerCount = footerCount + step;
+		} else {
+			footerCount = footerCount - step;
+		}
+		$field.text( footerCount );
+	}
+
+	/**
 	 * Init the tickets script
 	 *
 	 * @since 4.9
@@ -252,11 +313,11 @@ tribe.tickets.block = {
 		item: '.tribe-block__tickets__item',
 		itemQuantity: '.tribe-ticket-quantity',
 		itemPrice: '.tribe-block__tickets__item__extra__price',
-		itemTotal: '.tribe-modal__cart__item__total',
-		itemRemove: '.tribe-modal__cart__item__remove',
-		cartTotals: '.tribe-modal__cart__totals',
-		cartQuantity: '.tribe-modal__cart__total__qty',
-		cartTotal: '.tribe-modal__cart__total__amount',
+		itemTotal: '.tribe-block__tickets__item__total__wrap .tribe-amount',
+		itemRemove: '.tribe-block__tickets__item__remove',
+		cartTotals: '.tribe-block__tickets__footer',
+		cartQuantity: '.tribe-block__tickets__item__footer__quantity__number',
+		cartTotal: '.tribe-block__tickets__item__footer__total .tribe-amount',
 	};
 
 	/**
@@ -265,7 +326,7 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( document ).on( 'change', obj.modalSelector.container + ' ' + obj.modalSelector.itemQuantity, function ( e ) {
+	$( document ).on( 'change', obj.modalSelector.itemQuantity, function ( e ) {
 			e.preventDefault();
 
 			var $cartItem = $( this ).closest( obj.modalSelector.item );
@@ -357,7 +418,11 @@ tribe.tickets.block = {
 
 			var modalCartItem = $( this );
 			var qty = obj.getQty( modalCartItem );
-			var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text() );
+
+			var total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace(',', '') );
+			if ( '.' === obj.getCurrencyFormatting().thousands_sep ) {
+				total = parseFloat( $( this ).find( obj.modalSelector.itemTotal ).text().replace(/\./g,'').replace(',', '.') );
+			}
 
 			total_qty += parseInt( qty, 10 );
 			total_amount += total;
@@ -365,7 +430,7 @@ tribe.tickets.block = {
 		} );
 
 		$cart_totals.find( obj.modalSelector.cartQuantity ).text( total_qty );
-		$cart_totals.find( obj.modalSelector.cartTotal ).text( total_amount.toFixed( 2 ) );
+		$cart_totals.find( obj.modalSelector.cartTotal ).text( obj.numberFormat( total_amount ) );
 
 	};
 
@@ -435,8 +500,8 @@ tribe.tickets.block = {
 	 * @returns {number}
 	 */
 	obj.getPrice = function ( cartItem, cssClass ) {
-		//todo Adjust with #133179
-		var price = parseFloat( cartItem.find( cssClass ).text().replace("$", "") );
+
+		var price = parseFloat( cartItem.find( cssClass ).text() );
 
 		return isNaN( price ) ? 0 : price;
 	};
@@ -454,11 +519,61 @@ tribe.tickets.block = {
 	 */
 	obj.updateTotal = function ( qty, price, cartItem ) {
 
-		var total_for_item = (qty * price).toFixed( 2 );
+		var total_for_item = (qty * price).toFixed( obj.getCurrencyFormatting().number_of_decimals );
 
-		cartItem.find( obj.modalSelector.itemTotal ).text( total_for_item );
+		cartItem.find( obj.modalSelector.itemTotal ).text( obj.numberFormat( total_for_item ) );
 
 		return total_for_item;
 	};
+
+	/**
+	 * Get the Currency Formatting for a Provider
+	 *
+	 * @since TBD
+	 *
+	 * @returns {*}
+	 */
+	obj.getCurrencyFormatting = function () {
+
+		var currency = JSON.parse( TribeCurrency.formatting );
+		var provider = $( obj.selector.container ).data( 'provider' );
+
+		return currency[provider];
+	};
+
+	/**
+	 * Format the number according to provider settings
+	 * Based off coding fron https://stackoverflow.com/a/2901136
+	 *
+	 * @since TBD
+	 *
+	 * @param number the number to format
+	 * @returns {string}
+	 */
+	obj.numberFormat = function ( number ) {
+
+		var decimals = obj.getCurrencyFormatting().number_of_decimals;
+		var dec_point = obj.getCurrencyFormatting().decimal_point;
+		var thousands_sep = obj.getCurrencyFormatting().thousands_sep;
+
+		var n = !isFinite( +number ) ? 0 : +number,
+			prec = !isFinite( +decimals ) ? 0 : Math.abs( decimals ),
+			sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+			dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+			toFixedFix = function ( n, prec ) {
+				// Fix for IE parseFloat(0.55).toFixed(0) = 0;
+				var k = Math.pow( 10, prec );
+				return Math.round( n * k ) / k;
+			},
+			s = (prec ? toFixedFix( n, prec ) : Math.round( n )).toString().split( '.' );
+		if ( s[0].length > 3 ) {
+			s[0] = s[0].replace( /\B(?=(?:\d{3})+(?!\d))/g, sep );
+		}
+		if ( (s[1] || '').length < prec ) {
+			s[1] = s[1] || '';
+			s[1] += new Array( prec - s[1].length + 1 ).join( '0' );
+		}
+		return s.join( dec );
+	}
 
 })( jQuery, tribe.tickets.block, tribe_ev.events );

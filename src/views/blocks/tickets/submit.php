@@ -16,7 +16,7 @@
  */
 
 
-$must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
+$must_login = ! is_user_logged_in() && tribe( 'tickets.main' )->login_required();
 ?>
 <?php if ( $must_login ) : ?>
 	<?php $this->template( 'blocks/tickets/submit-login' ); ?>
