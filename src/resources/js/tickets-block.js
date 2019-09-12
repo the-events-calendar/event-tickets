@@ -529,7 +529,7 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Get the Currency Formatting for a Provider
+	 * Get the Currency Formatting for a Provider.
 	 *
 	 * @since TBD
 	 *
@@ -544,12 +544,13 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Format the number according to provider settings
+	 * Format the number according to provider settings.
 	 * Based off coding fron https://stackoverflow.com/a/2901136
 	 *
 	 * @since TBD
 	 *
-	 * @param number the number to format
+	 * @param number The number to format.
+	 *
 	 * @returns {string}
 	 */
 	obj.numberFormat = function ( number ) {

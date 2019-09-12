@@ -634,13 +634,13 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Number of Decimals by provider or default
+	 * Get the Number of Decimals by provider or default.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null $provider The ticket provider class name
+	 * @param string|null $provider The ticket provider class name.
 	 *
-	 * @return string the thousands separator
+	 * @return string The thousands separator.
 	 */
 	public function get_number_of_decimals( $provider = null ) {
 
@@ -654,11 +654,11 @@ class Tribe__Tickets__Commerce__Currency {
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
 			/**
-			 * Filter the Amount of Decimals for EDD
+			 * Filter the Amount of Decimals for EDD.
 			 *
 			 * @since TBD
 			 *
-			 * @param int the default number of decimals
+			 * @param int The default number of decimals.
 			 */
 			$decimals = apply_filters( 'tribe_edd_format_amount_decimals', 2 );
 
@@ -669,20 +669,20 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Default Amount of Decimals
+	 * Get the Default Amount of Decimals.
 	 *
 	 * @since TBD
 	 *
-	 * @return int the amount of decimals
+	 * @return int The amount of decimals.
 	 */
 	public function get_currency_number_of_decimals() {
 
 		/**
-		 * Filter the Amount of Decimals
+		 * Filter the Amount of Decimals.
 		 *
 		 * @since TBD
 		 *
-		 * @param int the default number of decimals
+		 * @param int The default number of decimals.
 		 */
 		$decimals = apply_filters( 'tribe_format_amount_decimals', 2 );
 
@@ -690,12 +690,12 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Currency Configuration for all Passed Providers
+	 * Get the Currency Configuration for all Passed Providers.
 	 *
 	 * @since TBD
 	 *
-	 * @param string $provider The ticket provider class name
-	 * @param int    $post_id  The id of the post with tickets
+	 * @param string $provider The ticket provider class name.
+	 * @param int    $post_id  The id of the post with tickets.
 	 *
 	 * @return array
 	 */
@@ -715,12 +715,12 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Currency Formatting Information for a Provider
+	 * Get the Currency Formatting Information for a Provider.
 	 *
 	 * @since TBD
 	 *
-	 * @param int         $post_id  The id of the post with tickets
-	 * @param string|null $provider The ticket provider class name
+	 * @param int         $post_id  The id of the post with tickets.
+	 * @param string|null $provider The ticket provider class name.
 	 *
 	 * @return array an array of formatting details
 	 */
@@ -735,13 +735,13 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get Formatted Currency According to a Provider
+	 * Get Formatted Currency According to a Provider.
 	 *
 	 * @since TBD
 	 *
-	 * @param int|string  $amount   the amount to format
-	 * @param int         $post_id  The id of the post with tickets
-	 * @param string|null $provider The ticket provider class name
+	 * @param int|string  $amount   The amount to format.
+	 * @param int         $post_id  The id of the post with tickets.
+	 * @param string|null $provider The ticket provider class name.
 	 *
 	 * @return mixed|void
 	 */
@@ -770,13 +770,13 @@ class Tribe__Tickets__Commerce__Currency {
 		$formatted = number_format( $amount, $currency['number_of_decimals'], $currency['decimal_point'], $currency['thousands_sep'] );
 
 		/**
-		 * Filter the Formatted Currency
+		 * Filter the Formatted Currency.
 		 *
 		 * @since TBD
 		 *
-		 * @param string $formatted the formatted amount
-		 * @param int    $amount    the original amount to be formatted
-		 * @param array  $currency  an array of currency formatting details
+		 * @param string $formatted The formatted amount.
+		 * @param int    $amount    The original amount to be formatted.
+		 * @param array  $currency  An array of currency formatting details.
 		 */
 		return apply_filters( 'tribe_format_amount', $formatted, $amount, $currency );
 	}
@@ -786,10 +786,10 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since TBD
 	 *
-	 * @param int         $amount   the amount to format
-	 * @param int         $post_id  The id of the post with tickets
-	 * @param string|null $provider The ticket provider class name
-	 * @param boolean     $html     whether to return with html wrap
+	 * @param int         $amount   The amount to format.
+	 * @param int         $post_id  The id of the post with tickets.
+	 * @param string|null $provider The ticket provider class name.
+	 * @param boolean     $html     Whether to return with html wrap.
 	 *
 	 * @return mixed
 	 */
@@ -797,9 +797,9 @@ class Tribe__Tickets__Commerce__Currency {
 
 		$amount   = $this->get_formatted_currency( $amount, $post_id, $provider );
 		$currency = $this->get_currency_by_provider( $post_id, $provider );
-		
+
 		$format = '%1$s%2$s';
-		
+
 		if ( $html ) {
 			$format = '
 				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
@@ -808,10 +808,10 @@ class Tribe__Tickets__Commerce__Currency {
 				</span>
 			';
 		}
-			
+
 		if ( 'postfix' === $currency['placement'] ) {
 			$format = '%2$s%1$s';
-			
+
 			if ( $html ) {
 				$format = '
 					<span class="tribe-formatted-currency-wrap tribe-currency-postfix">
@@ -821,7 +821,7 @@ class Tribe__Tickets__Commerce__Currency {
 				';
 			}
 		}
-			
+
 		$formatted = sprintf( $format, $currency['symbol'], $amount );
 
 		/**
@@ -829,10 +829,10 @@ class Tribe__Tickets__Commerce__Currency {
 		 *
 		 * @since TBD
 		 *
-		 * @param string  $formatted the formatted amount
-		 * @param int     $amount    the original amount to be formatted
-		 * @param array   $currency  an array of currency formatting details
-		 * @param boolean $html      whether to return with html wrap
+		 * @param string  $formatted The formatted amount.
+		 * @param int     $amount    The original amount to be formatted.
+		 * @param array   $currency  An array of currency formatting details.
+		 * @param boolean $html      Whether to return with html wrap.
 		 */
 		return apply_filters( 'tribe_format_amount_with_symbol', $formatted, $amount, $currency, $html );
 	}

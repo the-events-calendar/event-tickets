@@ -124,10 +124,10 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Use the block template for the "classic" editor [132568]
 * Feature - Implement a copy of tribe-common-styles and restyle the front end tickets block [131117]
 * Feature - Add currency formatting by commerce [133179]
+* Feature - Prefill ticket quantities based on what is already added to the cart for WooCommerce and EDD Tickets [129446]
 * Tweak - Clean up the way we add options to the ticket settings tab in PHP to make it more readable and maintainable. [133048]
 * Tweak - Add ability to track installed version history. Added `$version_history_slug` and `$latest_version_slug` properties to `Tribe__Tickets_Plus__Main` [133048]
 * Fix - Pass missing 'provider' argument from `views/registration/content.php` to `views/registration/button-cart.php` [131896]
-* Feature - Prefill ticket quantitities based on what is already added to the cart for WooCommerce and EDD Tickets [129446]
 
 = [4.10.8] TBD =
 

@@ -16,7 +16,6 @@
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
-log_me('loading tickets');
 
 /** @var Tribe__Tickets__Commerce__Currency $currency */
 $currency        = tribe( 'tickets.commerce.currency' );
