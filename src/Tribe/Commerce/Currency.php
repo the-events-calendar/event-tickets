@@ -796,13 +796,26 @@ class Tribe__Tickets__Commerce__Currency {
 	public function get_formatted_currency_with_symbol( $amount, $post_id, $provider = null, $html = true ) {
 
 		$amount          = $this->get_formatted_currency( $amount, $post_id, $provider );
-		$amount          = $html ? '<span class="tribe-amount">' . $amount . '</span>' : $amount;
 		$currency        = $this->get_currency_by_provider( $post_id, $provider );
-		$currency_symbol = $html ? '<span class="tribe-currency-symbol">' . $currency['symbol'] . '</span>' : $currency['symbol'];
-
-		$formatted = $html ? '<span class="tribe-formatted-currency-wrap tribe-currency-prefix">' . $currency_symbol . $amount . '</span>' : $currency_symbol . $amount;
-		if ( 'postfix' === $currency['placement'] ) {
-			$formatted = $html ? '<span class="tribe-formatted-currency-wrap tribe-currency-postfix">' . $amount . $currency_symbol . '</span>' : $amount . $currency_symbol;
+		
+		if ( $html ) {
+			$format = '
+				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
+					<span class="tribe-currency-symbol">%1$s</span>
+					<span class="tribe-amount">%2$s</span>
+				</span>
+			';
+			
+			if ( 'postfix' === $currency['placement'] ) {
+				$format = '
+					<span class="tribe-formatted-currency-wrap tribe-currency-postfix">
+						<span class="tribe-amount">%2$s</span>
+						<span class="tribe-currency-symbol">%1$s</span>
+					</span>
+				';
+			}
+			
+			$formatted = sprintf( $format, $currency['symbol'], $amount );
 		}
 
 		/**
