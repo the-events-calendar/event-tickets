@@ -750,10 +750,11 @@ class Tribe__Tickets__Commerce__Currency {
 		$currency = $this->get_currency_by_provider( $post_id, $provider );
 
 		// Format the amount
-		if ( $currency['decimal_point'] == ',' && false !== ( $sep_found = strpos( $amount, $currency['decimal_point'] ) ) ) {
-			$whole  = substr( $amount, 0, $sep_found );
-			$part   = substr( $amount, $sep_found + 1, ( strlen( $amount ) - 1 ) );
-			$amount = $whole . '.' . $part;
+		if (
+			',' === $currency['decimal_point']
+			&& false !== strpos( $amount, $currency['decimal_point'] )
+		) {
+			$amount = str_replace( ',', '.', $amount );
 		}
 
 		// Strip , from the amount (if set as the thousands separator)
