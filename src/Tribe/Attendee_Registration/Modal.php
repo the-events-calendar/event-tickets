@@ -14,8 +14,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	public function hook() {
 
 		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_cart_template' ], 10, 2 );
-		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_ar_template' ], 11, 2 );
-		// add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'modal_footer_template' ], 12, 2 );
+		add_filter( 'tribe_events_tickets_attendee_registration_modal_content', [ $this, 'append_modal_ar_template' ], 11, 2 );
 	}
 
 	/**
@@ -58,7 +57,7 @@ class Tribe__Tickets__Attendee_Registration__Modal {
 	 *
 	 * @return string The content with AR fields appended.
 	 */
-	function modal_ar_template( $content, $template_obj ) {
+	function append_modal_ar_template( $content, $template_obj ) {
 		$template = 'modal/registration-js.php';
 		$file = $this->locate_template( $template );
 
