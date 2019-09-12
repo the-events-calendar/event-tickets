@@ -739,7 +739,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since TBD
 	 *
-	 * @param int         $amount   the amount to format
+	 * @param int|string  $amount   the amount to format
 	 * @param int         $post_id  The id of the post with tickets
 	 * @param string|null $provider The ticket provider class name
 	 *
