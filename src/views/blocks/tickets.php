@@ -16,7 +16,7 @@
  *
  * @var Tribe__Tickets__Editor__Template $this
  */
-
+log_me('loading tickets');
 
 /** @var Tribe__Tickets__Commerce__Currency $currency */
 $currency        = tribe( 'tickets.commerce.currency' );
@@ -41,7 +41,6 @@ if ( empty( $html ) ) {
 	$html = $this->template( 'blocks/attendees/view-link', [], false );
 }
 
-
 echo $html;
 ?>
 
@@ -52,6 +51,8 @@ echo $html;
 	method="post"
 	enctype='multipart/form-data'
 	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"
+	data-cart="<?php echo esc_url( tribe_tickets_rest_url('/cart/') ) . absint( $post_id ); ?>"
+	data-provider-id="<?php echo esc_attr( $provider->orm_provider ); ?>"
 	novalidate
 >
 	<h2 class="tribe-block__tickets__title tribe-common-h4 tribe-common-h-alt tribe-common-h5--min-medium "><?php esc_html_e('Tickets', 'event-tickets'); ?></h2>

@@ -126,6 +126,7 @@ Currently, the following add-ons are available for Event Tickets:
 * Feature - Use the block template for the "classic" editor [132568]
 * Feature - Implement a copy of tribe-common-styles and restyle the front end tickets block [131117]
 * Feature - Add currency formatting by commerce [133179]
+* Feature - Prefill ticket quantitities based on what is already added to the cart for WooCommerce and EDD Tickets [129446]
 
 = [4.10.8] TBD =
 
