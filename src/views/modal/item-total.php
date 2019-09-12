@@ -11,13 +11,11 @@
  * @since TBD
  *
  * @version TBD
+ * @todo Adjust with #133179
  */
-
-$currency_symbol = $this->get( 'currency_symbol' );
 ?>
 <div
 	class="tribe-block__tickets__item__total__wrap"
 >
-	<span class="tribe-block__tickets__item__total__currency-symbol"><?php echo $currency_symbol; ?></span>
-	<span class="tribe-block__tickets__item__total"><?php echo tribe_format_currency( 0 ); ?></span>
+	<?php echo tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( 0, $post_id, $provider->class_name ) ?>
 </div>

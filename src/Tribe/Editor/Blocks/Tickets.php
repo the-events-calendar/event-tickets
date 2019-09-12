@@ -81,11 +81,19 @@ extends Tribe__Editor__Blocks__Abstract {
 	 * @return void
 	 */
 	public function assets() {
-		$plugin = Tribe__Tickets__Main::instance();
+		$plugin    = Tribe__Tickets__Main::instance();
+		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( null );
+		$currency  = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
 
-		wp_register_script('wp-utils',
+
+		wp_register_script(
+			'wp-utils',
 			includes_url( '/js/wp-util.js' ),
-			[ 'jquery', 'underscore' ], false, false);
+			[ 'jquery', 'underscore' ],
+			false,
+			false
+		);
+
 		wp_enqueue_script('wp-utils');
 
 		tribe_asset(
@@ -94,15 +102,23 @@ extends Tribe__Editor__Blocks__Abstract {
 			'tickets-block.js',
 			array( 'jquery', 'jquery-ui-datepicker', 'wp-utils' ),
 			null,
-			array(
+			[
 				'type'         => 'js',
-				'localize'     => array(
-					'name' => 'TribeTickets',
-					'data' => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-					),
-				),
-			)
+				'localize'     => [
+					[
+						'name' => 'TribeTickets',
+						'data' => array(
+							'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						),
+					],
+					[
+						'name' => 'TribeCurrency',
+						'data' => array(
+							'formatting' => json_encode( $currency ),
+						),
+					],
+				],
+			]
 		);
 	}
 

@@ -26,14 +26,22 @@ if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 ?>
 <?php if ( true === $modal && $ticket->show_description() && ! empty( $ticket->description ) ) : ?>
 		<div class="tribe-block__tickets__item__details__summary">
-			<div
+			<button
 				class="tribe-common-b3 tribe-block__tickets__item__details__summary--more"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
-				tabindex="0"><span class="screen-reader-text"><?php esc_html_e('Open the ticket description.', 'event-tickets'); ?></span><?php echo esc_html_x('More', 'Opens the ticket description', 'event-tickets'); ?></div>
-			<div
+				tabindex="0"
+			>
+				<span class="screen-reader-text"><?php esc_html_e( 'Open the ticket description.', 'event-tickets' ); ?></span>
+				<?php echo esc_html_x( 'More', 'Opens the ticket description', 'event-tickets' ); ?>
+			</button>
+			<button
 				class="tribe-common-b3 tribe-block__tickets__item__details__summary--less"
 				aria-controls="<?php echo esc_attr( $id ); ?>"
-				tabindex="0"><span class="screen-reader-text"><?php esc_html_e('Close the ticket description.', 'event-tickets'); ?></span><?php echo esc_html_x('Less', 'Closes the ticket description', 'event-tickets'); ?></div>
+				tabindex="0"
+			>
+				<span class="screen-reader-text"><?php esc_html_e( 'Close the ticket description.', 'event-tickets' ); ?></span>
+				<?php echo esc_html_x( 'Less', 'Closes the ticket description', 'event-tickets' ); ?>
+			</button>
 	</div>
 <?php endif; ?>
 <div id="<?php echo esc_attr( $id ); ?>" class="tribe-common-b3 tribe-block__tickets__item__details__content">

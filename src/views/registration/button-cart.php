@@ -7,8 +7,11 @@
  *
  * @since 4.9
  * @since 4.10.1 Update template paths to add the "registration/" prefix
- * @version 4.10.1
+ * @since TBD Add docblock for `$this`.
  *
+ * @version TBD
+ *
+ * @var Tribe__Tickets__Attendee_Registration__View $this
  */
 $cart_url = $this->get_cart_url( $provider );
 ?>
