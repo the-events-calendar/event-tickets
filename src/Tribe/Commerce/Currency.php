@@ -582,13 +582,13 @@ class Tribe__Tickets__Commerce__Currency {
 	}
 
 	/**
-	 * Get the Currency Decimal Point for a Provider
+	 * Get the Currency Decimal Point for a Provider.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null $provider The ticket provider class name
+	 * @param string|null $provider The ticket provider class name.
 	 *
-	 * @return string the decimal separator
+	 * @return string The decimal separator.
 	 */
 	public function get_currency_decimal_point( $provider = null ) {
 
@@ -597,28 +597,24 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
-			$decimal_sep = get_option( 'woocommerce_price_decimal_sep' );
-
-			return $decimal_sep;
+			return get_option( 'woocommerce_price_decimal_sep' );
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
-			$decimal_sep = edd_get_option( 'decimal_separator', '.' );
-
-			return $decimal_sep;
+			return edd_get_option( 'decimal_separator', '.' );
 		}
 
 		return $this->get_currency_locale( 'decimal_point' );
 	}
 
 	/**
-	 * Get the Currency Thousands Separator for a Provider
+	 * Get the Currency Thousands Separator for a Provider.
 	 *
 	 * @since TBD
 	 *
-	 * @param string|null $provider The ticket provider class name
+	 * @param string|null $provider The ticket provider class name.
 	 *
-	 * @return string the thousands separator
+	 * @return string The thousands separator.
 	 */
 	public function get_currency_thousands_sep( $provider = null ) {
 
@@ -627,15 +623,11 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
-			$decimal_sep = get_option( 'woocommerce_price_thousand_sep' );
-
-			return $decimal_sep;
+			return get_option( 'woocommerce_price_thousand_sep' );
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
-			$decimal_sep = edd_get_option( 'thousands_separator', '.' );
-
-			return $decimal_sep;
+			return edd_get_option( 'thousands_separator', '.' );
 		}
 
 		return $this->get_currency_locale( 'thousands_sep' );
@@ -657,13 +649,10 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
-			$decimals = get_option( 'woocommerce_price_num_decimals' );
-
-			return $decimals;
+			return get_option( 'woocommerce_price_num_decimals' );
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
-
 			/**
 			 * Filter the Amount of Decimals for EDD
 			 *
@@ -750,7 +739,7 @@ class Tribe__Tickets__Commerce__Currency {
 	 *
 	 * @since TBD
 	 *
-	 * @param int         $amount   the amount to format
+	 * @param int|string  $amount   the amount to format
 	 * @param int         $post_id  The id of the post with tickets
 	 * @param string|null $provider The ticket provider class name
 	 *
@@ -761,21 +750,18 @@ class Tribe__Tickets__Commerce__Currency {
 		$currency = $this->get_currency_by_provider( $post_id, $provider );
 
 		// Format the amount
-		if ( $currency['decimal_point'] == ',' && false !== ( $sep_found = strpos( $amount, $currency['decimal_point'] ) ) ) {
-			$whole  = substr( $amount, 0, $sep_found );
-			$part   = substr( $amount, $sep_found + 1, ( strlen( $amount ) - 1 ) );
-			$amount = $whole . '.' . $part;
+		if (
+			',' === $currency['decimal_point']
+			&& false !== strpos( $amount, $currency['decimal_point'] )
+		) {
+			$amount = str_replace( ',', '.', $amount );
 		}
 
 		// Strip , from the amount (if set as the thousands separator)
-		if ( $currency['thousands_sep'] == ',' && false !== ( $found = strpos( $amount, $currency['thousands_sep'] ) ) ) {
-			$amount = str_replace( ',', '', $amount );
-		}
+		$amount = str_replace( ',', '', $amount );
 
 		// Strip ' ' from the amount (if set as the thousands separator)
-		if ( $currency['thousands_sep'] == ' ' && false !== ( $found = strpos( $amount, $currency['thousands_sep'] ) ) ) {
-			$amount = str_replace( ' ', '', $amount );
-		}
+		$amount = str_replace( ' ', '', $amount );
 
 		if ( empty( $amount ) ) {
 			$amount = 0;
@@ -809,15 +795,34 @@ class Tribe__Tickets__Commerce__Currency {
 	 */
 	public function get_formatted_currency_with_symbol( $amount, $post_id, $provider = null, $html = true ) {
 
-		$amount          = $this->get_formatted_currency( $amount, $post_id, $provider );
-		$amount          = $html ? '<span class="tribe-amount">' . $amount . '</span>' : $amount;
-		$currency        = $this->get_currency_by_provider( $post_id, $provider );
-		$currency_symbol = $html ? '<span class="tribe-currency-symbol">' . $currency['symbol'] . '</span>' : $currency['symbol'];
-
-		$formatted = $html ? '<span class="tribe-formatted-currency-wrap tribe-currency-prefix">' . $currency_symbol . $amount . '</span>' : $currency_symbol . $amount;
-		if ( 'postfix' === $currency['placement'] ) {
-			$formatted = $html ? '<span class="tribe-formatted-currency-wrap tribe-currency-postfix">' . $amount . $currency_symbol . '</span>' : $amount . $currency_symbol;
+		$amount   = $this->get_formatted_currency( $amount, $post_id, $provider );
+		$currency = $this->get_currency_by_provider( $post_id, $provider );
+		
+		$format = '%1$s%2$s';
+		
+		if ( $html ) {
+			$format = '
+				<span class="tribe-formatted-currency-wrap tribe-currency-prefix">
+					<span class="tribe-currency-symbol">%1$s</span>
+					<span class="tribe-amount">%2$s</span>
+				</span>
+			';
 		}
+			
+		if ( 'postfix' === $currency['placement'] ) {
+			$format = '%2$s%1$s';
+			
+			if ( $html ) {
+				$format = '
+					<span class="tribe-formatted-currency-wrap tribe-currency-postfix">
+						<span class="tribe-amount">%2$s</span>
+						<span class="tribe-currency-symbol">%1$s</span>
+					</span>
+				';
+			}
+		}
+			
+		$formatted = sprintf( $format, $currency['symbol'], $amount );
 
 		/**
 		 * Filter the Formatted Currency with Symbol
