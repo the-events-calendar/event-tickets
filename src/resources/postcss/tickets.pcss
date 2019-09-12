@@ -6,15 +6,18 @@
  * @since  0.3.0-alpha
  */
 .tribe-common.tribe-block__tickets {
-	border: 1px solid var(--color-border-secondary);
 	border-radius: var(--border-radius-default);
-	margin: var(--spacer-5) auto;
+	border: 1px solid var(--color-border-secondary);
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	margin: var(--spacer-5) 0;
 	max-width: 580px;
 	padding: var(--spacer-3);
 	width: 100%;
 
 	@media(--viewport-medium) {
-		padding: var(--spacer-5);
+		padding: var(--spacer-5) var(--spacer-5) var(--spacer-4);
 	}
 
 	.tribe-dialog__wrapper {
@@ -28,6 +31,12 @@
 
 	 .tribe-block__tickets__title {
 		 color: var(--color-text-primary);
+		 margin-bottom: 10px;
+
+		/* Override since we don't have a header at this size */
+		 @media(--viewport-medium) {
+			 font-size: var(--font-size-5);
+		 }
 	 }
 
 	.tribe-block__tickets__item {
@@ -35,7 +44,7 @@
 		display: flex;
 		background: var(--color-background);
 		border-top: 1px solid var(--color-border-secondary);
-		padding: var(--spacer-2) 0;
+		padding: var(--spacer-1) 0 var(--spacer-0);
 	}
 
 	.tribe-block__tickets__item__content {
@@ -60,7 +69,11 @@
 		line-height: 1;
 
 		@media(--viewport-medium) {
-			grid-column: 1;
+			line-height: 1;
+
+			&.tribe-block__tickets--no-description {
+				grid-row: 1 / span 2;
+			}
 		}
 	}
 
@@ -266,10 +279,8 @@
 			appearance: textfield;
 			background: transparent;
 			border: none;
-			color: inherit;
-			font-weight: var(--font-weight-bold);
-			max-width: 100%;
-			padding: var(--spacer-3) 0;
+			color: var(--color-text-primary);
+			padding: var(--spacer-3) var(--spacer-2);
 			text-align: center;
 			width: fit-content;
 
@@ -295,10 +306,10 @@
 	/*
 		Block footer
 	*/
-	.tribe-block__tickets__footer {
+	.tribe-tickets__footer {
 		align-items: baseline;
 		border-top: 1px solid var(--color-border-secondary);
-		padding: 10px 0 0;
+		padding: 20px 0 0;
 		display: flex;
 		flex-flow: row wrap;
 		justify-content: flex-end;
@@ -316,24 +327,52 @@
 		}
 	}
 
-	.tribe-block__tickets__item__footer__total,
-	.tribe-block__tickets__item__footer__quantity {
+	.tribe-tickets__item__footer__total,
+	.tribe-tickets__item__footer__quantity {
 		color: var(--color-text-secondary);
+		display: none;
 		text-align: center;
 	}
 
-	.tribe-block__tickets__item__footer__total__number,
-	.tribe-block__tickets__item__footer__quantity__number {
+	.tribe-tickets__footer--active,
+	.tribe-modal__content {
+		.tribe-tickets__item__footer__total,
+		.tribe-tickets__item__footer__quantity {
+			display: block;
+		}
+	}
+
+	.tribe-tickets__item__footer__total {
+		margin-left: 8px;
+
+		@media(--viewport-medium) {
+			margin-left: 24px;
+		}
+	}
+
+	.tribe-tickets__item__footer__total__number,
+	.tribe-tickets__item__footer__quantity__number {
 		color: var(--color-text-primary);
 	}
 
 	.tribe-block__tickets__submit,
 	.tribe-block__tickets__buy {
 		margin: 0;
-		margin-left: auto;
 
 		@media( max-width: 400px ) {
 			width: 100%;
+		}
+
+		&.tribe-common-c-btn {
+			margin-left: 8px;
+
+			@media( max-width: 400px ) {
+				width: auto;
+			}
+
+			@media(--viewport-medium) {
+				margin-left: 24px;
+			}
 		}
 	}
 

@@ -18,7 +18,7 @@
 $ticket = $this->get( 'ticket' );
 ?>
 <div
-	class="tribe-block__tickets__item__extra__price tribe-common-b1"
+	class="tribe-common-b1 tribe-block__tickets__item__extra__price"
 >
 	<?php echo tribe( 'tickets.commerce.currency' )->get_formatted_currency_with_symbol( $ticket->price, $post_id, $provider->class_name ) ?>
 </div>

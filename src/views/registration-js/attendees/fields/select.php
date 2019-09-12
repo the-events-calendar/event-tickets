@@ -32,7 +32,7 @@ $option_id = "tribe-tickets-meta_{$slug}_{$ticket->ID}{{data.attendee_id}}";
 	<select
 		<?php tribe_disabled( $disabled ); ?>
 		id="<?php echo esc_attr( $option_id ); ?>"
-		class="ticket-meta ticket-metatribe-common-form-control-select__input"
+		class="tribe-common-form-control-select__input ticket-meta ticket-meta"
 		name="<?php echo esc_attr( $field_name ); ?>"
 		<?php tribe_required( $required ); ?>
 		>

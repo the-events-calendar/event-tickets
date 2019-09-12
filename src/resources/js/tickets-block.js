@@ -66,8 +66,6 @@ tribe.tickets.block = {
 			if ( originalValue !== $input[ 0 ].value ) {
 				$input.trigger( 'change' );
 			}
-
-			$input.addClass( 'tribe-block__tickets__item__quantity__number--active' );
 		}
 	);
 
@@ -250,7 +248,7 @@ tribe.tickets.block = {
 	obj.stepDown = function( $input, originalValue ) {
 		var min      = $input[ 0 ].min ? Number( $input[ 0 ].min ) : 0;
 		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
-		var decrease = ( min <= originalValue - step ) ? originalValue - step : min;
+		var decrease = ( min <= originalValue - step && 0 < originalValue - step ) ? originalValue - step : min;
 		var change   = originalValue - decrease;
 
 		if ( typeof $input[ 0 ].stepDown === 'function' ) {
@@ -277,7 +275,7 @@ tribe.tickets.block = {
 	 * @param string direction The direction to change 'add' adds, anything else subtracts.
 	 */
 	obj.footerCount = function( $input, step, direction ) {
-		var $field = $input.closest( 'form' ).find( '.tribe-block__tickets__item__footer__total__number' );
+		var $field = $input.closest( 'form' ).find( '.tribe-tickets__item__footer__quantity__number' );
 		// Update total count in footer
 		var footerCount = parseInt( $field.text() ) || 0;
 
@@ -286,7 +284,14 @@ tribe.tickets.block = {
 		} else {
 			footerCount = footerCount - step;
 		}
+
+		if ( 0 > footerCount ) {
+			return;
+		}
+
 		$field.text( footerCount );
+
+		$( '.tribe-tickets__footer' ).addClass( 'tribe-tickets__footer--active');
 	}
 
 	/**
@@ -315,9 +320,10 @@ tribe.tickets.block = {
 		itemPrice: '.tribe-block__tickets__item__extra__price',
 		itemTotal: '.tribe-block__tickets__item__total__wrap .tribe-amount',
 		itemRemove: '.tribe-block__tickets__item__remove',
-		cartTotals: '.tribe-block__tickets__footer',
-		cartQuantity: '.tribe-block__tickets__item__footer__quantity__number',
-		cartTotal: '.tribe-block__tickets__item__footer__total .tribe-amount',
+		cartTotals: '.tribe-tickets__footer',
+		cartQuantity: '.tribe-tickets__item__footer__quantity__number',
+		cartTotal: '.tribe-tickets__item__footer__total__number',
+		closeButton: '.tribe-modal__close-button',
 	};
 
 	/**
@@ -326,17 +332,16 @@ tribe.tickets.block = {
 	 * @since TBD
 	 *
 	 */
-	$( document ).on( 'change', obj.modalSelector.itemQuantity, function ( e ) {
-			e.preventDefault();
+	$( document ).on( 'change', obj.modalSelector.container + ' ' + obj.modalSelector.itemQuantity, function ( e ) {
+		e.preventDefault();
 
-			var $cartItem = $( this ).closest( obj.modalSelector.item );
-			var id = $cartItem.data( 'ticketId' );
-			var ticket = obj.updateItem( id, $cartItem );
+		var $cartItem = $( this ).closest( obj.modalSelector.item );
+		var id = $cartItem.data( 'ticketId' );
+		var ticket = obj.updateItem( id, $cartItem );
 
-			$( te ).trigger( 'tribe_tickets_qty_updated', ticket );
+		$( te ).trigger( 'tribe_tickets_qty_updated', ticket );
 
-		}
-	);
+	} );
 
 	/**
 	 * Remove Item from Cart Modal
@@ -345,34 +350,41 @@ tribe.tickets.block = {
 	 *
 	 */
 	$( document ).on( 'click', obj.modalSelector.itemRemove, function ( e ) {
-			e.preventDefault();
+		e.preventDefault();
 
-			var $cartItem = $( this ).closest( obj.modalSelector.item );
-			$cartItem.find( obj.modalSelector.itemQuantity ).val( 0 );
-			$cartItem.fadeOut() ;
+		var $cartItem = $( this ).closest( obj.modalSelector.item );
+		$cartItem.find( obj.modalSelector.itemQuantity ).val( 0 );
+		$cartItem.fadeOut() ;
 
-			var ticket = {};
-			ticket.id = $cartItem.data( 'ticketId' );
-			ticket.qty = 0;
-			ticket.price = obj.getPrice( $cartItem, obj.modalSelector.itemPrice );
+		var ticket = {};
+		ticket.id = $cartItem.data( 'ticketId' );
+		ticket.qty = 0;
+		ticket.price = obj.getPrice( $cartItem, obj.modalSelector.itemPrice );
 
-			obj.updateTotal( ticket.qty, ticket.price, $cartItem );
+		obj.updateTotal( ticket.qty, ticket.price, $cartItem );
 
-			$( te ).trigger( 'tribe_tickets_qty_updated', ticket );
+		$( te ).trigger( 'tribe_tickets_qty_updated', ticket );
+	} );
+
+	$(document).on(
+		'focus',
+		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
+		function( e ) {
+			var input     = e.target;
+			var $container = $( input ).closest( '.tribe-ticket' );
+			$container.addClass( 'tribe-ticket-item--has-focus' );
 		}
 	);
 
-	$(document).on( 'focus', '.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea', function( e ) {
-		var input     = e.target;
-		var $container = $( input ).closest( '.tribe-ticket' );
-		$container.addClass( 'tribe-ticket-item--has-focus' );
-	} );
-
-	$(document).on( 'blur', '.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea', function( e ) {
-		var input     = e.target;
-		var $container = $( input ).closest( '.tribe-ticket' );
-		$container.removeClass( 'tribe-ticket-item--has-focus' );
-	} );
+	$(document).on(
+		'blur',
+		'.tribe-ticket input, .tribe-ticket select, .tribe-ticket textarea',
+		function( e ) {
+			var input     = e.target;
+			var $container = $( input ).closest( '.tribe-ticket' );
+			$container.removeClass( 'tribe-ticket-item--has-focus' );
+		}
+	);
 
 	/**
 	 * When Modal Qty is updated, update the cart totals in modal
@@ -421,7 +433,7 @@ tribe.tickets.block = {
 	obj.updateCartTotals = function ( $cart ) {
 		var total_qty = 0;
 		var total_amount = 0.00;
-		var $cart_totals = $( obj.modalSelector.cartTotals );
+		var $cart_totals = $( obj.modalSelector.container ).find( obj.modalSelector.cartTotals);
 
 		$cart.find( obj.modalSelector.item ).each( function () {
 
@@ -481,16 +493,16 @@ tribe.tickets.block = {
 	}
 
 	/**
-	* Possibly Update an Items Qty and always update the Total
-	*
-	* @since TBD
-	*
-	* @param int id the id of the ticket/product
-	* @param obj modalCartItem the cart item to update
-	* @param obj blockCartItem the optional ticket block cart item
-	*
-	* @returns {number}
-	*/
+	 * Possibly Update an Items Qty and always update the Total
+	 *
+	 * @since TBD
+	 *
+	 * @param int id the id of the ticket/product
+	 * @param obj modalCartItem the cart item to update
+	 * @param obj blockCartItem the optional ticket block cart item
+	 *
+	 * @returns {number}
+	 */
 	obj.updateItem = function ( id, modalCartItem, blockCartItem ) {
 
 		var item = {};
@@ -631,5 +643,4 @@ tribe.tickets.block = {
 			console.log(sessionStorage.getItem( 'tribe_tickets_cart' ) );
 		}
 	);
-
-})( jQuery, tribe.tickets.block, tribe_ev.events );
+} )( jQuery, tribe.tickets.block, tribe_ev.events );
