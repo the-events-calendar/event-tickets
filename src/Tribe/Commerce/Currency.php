@@ -757,9 +757,7 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		// Strip , from the amount (if set as the thousands separator)
-		if ( $currency['thousands_sep'] == ',' && false !== ( $found = strpos( $amount, $currency['thousands_sep'] ) ) ) {
-			$amount = str_replace( ',', '', $amount );
-		}
+		$amount = str_replace( ',', '', $amount );
 
 		// Strip ' ' from the amount (if set as the thousands separator)
 		if ( $currency['thousands_sep'] == ' ' && false !== ( $found = strpos( $amount, $currency['thousands_sep'] ) ) ) {
