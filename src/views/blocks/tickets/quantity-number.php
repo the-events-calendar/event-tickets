@@ -26,14 +26,13 @@ $ticket     = $this->get( 'ticket' );
 $handler      = tribe( 'tickets.handler' );
 $max_quantity = $handler->get_ticket_max_purchase( $ticket->ID );
 
-$container_classes = [ 'tribe-block__tickets__item__quantity__number' ];
+$classes = [ 'tribe-block__tickets__item__quantity__number' ];
 if ( $must_login ) {
-	$container_classes[] = 'tribe-block__tickets__disabled';
+	$classes[] = 'tribe-block__tickets__disabled';
 }
-$container_classes = implode( ' ', $container_classes);
 ?>
 <div
-	class="<?php echo esc_attr( $container_classes ); ?>"
+<?php tribe_classes( $classes ); ?>
 >
 	<input
 		type="number"

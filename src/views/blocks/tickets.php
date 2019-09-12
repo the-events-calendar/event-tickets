@@ -48,7 +48,7 @@ echo $html;
 <form
 	id="tribe-block__tickets"
 	action="<?php echo esc_url( $cart_url ) ?>"
-	class="<?php echo esc_attr( implode( ' ', $cart_classes ) ); ?>"
+	<?php tribe_classes( $cart_classes ); ?>
 	method="post"
 	enctype='multipart/form-data'
 	data-provider="<?php echo esc_attr( $provider->class_name ); ?>"

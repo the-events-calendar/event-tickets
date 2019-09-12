@@ -14,10 +14,8 @@
 $passed_provider = tribe_get_request_var('provider');
 $passed_provider_class = $this->get_form_class( $passed_provider );
 ?>
-<?php var_dump($events); ?>
 <?php foreach ( $events as $event_id => $tickets ) : ?>
 
-<?php var_dump($tickets); ?>
 	<?php
 		$provider_class = $passed_provider_class;
 		$providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );

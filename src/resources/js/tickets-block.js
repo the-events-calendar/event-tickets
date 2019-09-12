@@ -3,7 +3,7 @@ if ( 'undefined' === typeof tribe ) {
 	tribe = {};
 }
 
-// Define the tickets object if not defined
+// Define the tickets object if not defined.
 if ( 'undefined' === typeof tribe.tickets ) {
 	tribe.tickets = {};
 }
@@ -29,13 +29,13 @@ tribe.tickets.block = {
 
 	var $tribe_ticket = $( obj.selector.container );
 
-	// Bail if there are no tickets on the current event/page/post
+	// Bail if there are no tickets on the current event/page/post.
 	if ( 0 === $tribe_ticket.length ) {
 		return;
 	}
 
 	/**
-	 * Handle the number input + and - actions
+	 * Handle the number input + and - actions.
 	 *
 	 * @since 4.9
 	 *
@@ -54,15 +54,15 @@ tribe.tickets.block = {
 			var originalValue = Number( $input[ 0 ].value );
 
 
-			// stepUp or stepDown the input according to the button that was clicked
-			// handle IE/Edge
+			// stepUp or stepDown the input according to the button that was clicked.
+			// Handle IE/Edge.
 			if ( add ) {
 				obj.stepUp( $input, originalValue );
 			} else {
 				obj.stepDown( $input, originalValue );
 			}
 
-			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown()
+			// Trigger the on Change for the input (if it has changed) as it's not handled via stepUp() || stepDown().
 			if ( originalValue !== $input[ 0 ].value ) {
 				$input.trigger( 'change' );
 			}
@@ -70,7 +70,7 @@ tribe.tickets.block = {
 	);
 
 	/**
-	 * Handle the TPP form
+	 * Handle the TPP form.
 	 *
 	 * @since 4.9
 	 *
@@ -88,7 +88,7 @@ tribe.tickets.block = {
 			var new_quantity = parseInt( $this.val(), 10 );
 			new_quantity     = isNaN( new_quantity ) ? 0 : new_quantity;
 
-			// Maybe display the Opt Out
+			// Maybe display the Opt Out.
 			var $has_optout = $ticket.has( obj.selector.itemOptOut ).length;
 			if ( $has_optout ) {
 				( new_quantity > 0 ) ? $( obj.selector.itemOptOut ).show() : $( obj.selector.itemOptOut ).hide();
@@ -119,7 +119,7 @@ tribe.tickets.block = {
 	} );
 
 	/**
-	 * Get the tickets IDs
+	 * Get the tickets IDs.
 	 *
 	 * @since 4.9
 	 *
@@ -135,7 +135,7 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Make dom updates for the AJAX response
+	 * Make dom updates for the AJAX response.
 	 *
 	 * @since 4.9
 	 *
@@ -148,21 +148,21 @@ tribe.tickets.block = {
 			var available = tickets[ ticket_id ].available;
 			var $ticketEl = $( obj.selector.item + "[data-ticket-id='" + ticket_id + "']" );
 
-			if ( 0 === available ) { // ticket is out of stock
+			if ( 0 === available ) { // Ticket is out of stock.
 
 				var unavailableHtml = tickets[ ticket_id ].unavailable_html;
-				// Set the availability data attribute to false
+				// Set the availability data attribute to false.
 				$ticketEl.attr( 'available', false );
-				// Remove classes for instock and purchasable
+				// Remove classes for instock and purchasable.
 				$ticketEl.removeClass( 'instock' );
 				$ticketEl.removeClass( 'purchasable' );
 
-				// Update HTML elements with the "Out of Stock" messages
+				// Update HTML elements with the "Out of Stock" messages.
 				$ticketEl.find( obj.selector.itemExtraAvailable ).replaceWith( unavailableHtml );
 				$ticketEl.find( obj.selector.itemQuantity ).html( unavailableHtml );
 			}
 
-			if ( 1 < available ) { // Ticket in stock, we may want to update values
+			if ( 1 < available ) { // Ticket in stock, we may want to update values.
 				$ticketEl.find( obj.selector.itemQuantityInput ).attr( { 'max' : available } );
 				$ticketEl.find( obj.selector.itemExtraAvailableQuantity ).html( available );
 			}
@@ -171,7 +171,7 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Check tickets availability
+	 * Check tickets availability.
 	 *
 	 * @since 4.9
 	 *
@@ -179,7 +179,7 @@ tribe.tickets.block = {
 	 */
 	obj.checkAvailability = function() {
 
-		// We're checking availability for all the tickets at once
+		// We're checking availability for all the tickets at once.
 		var params = {
 			action  : 'ticket_availability_check',
 			tickets : obj.getTickets(),
@@ -191,15 +191,15 @@ tribe.tickets.block = {
 			function( response ) {
 				var success = response.success;
 
-				// Bail if we don't get a successful response
+				// Bail if we don't get a successful response.
 				if ( ! success ) {
 					return;
 				}
 
-				// Get the tickets response with availability
+				// Get the tickets response with availability.
 				var tickets = response.data.tickets;
 
-				// Make DOM updates
+				// Make DOM updates.
 				obj.updateAvailability( tickets );
 
 			}
@@ -211,13 +211,13 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * stepUp the input according to the button that was clicked
-	 * handles IE/Edge
+	 * Step up the input according to the button that was clicked
+	 * handles IE/Edge.
 	 *
 	 * @since TBD
 	 */
 	obj.stepUp = function( $input, originalValue ) {
-		// we use 0 here as a shorthand for no maximum
+		// We use 0 here as a shorthand for no maximum.
 		var max      = $input[ 0 ].max ? Number( $input[ 0 ].max ) : -1;
 		var step     = $input[ 0 ].step ? Number( $input [ 0 ].step ) : 1;
 		var increase = ( -1 === max || max >= originalValue + step ) ? originalValue + step : max;
@@ -233,15 +233,15 @@ tribe.tickets.block = {
 			$input[ 0 ].value = increase;
 		}
 
-		// Update total count in footer
+		// Update total count in footer.
 		if ( 0 < change ) {
 			obj.footerCount( $input, change, 'add' );
 		}
 	}
 
 	/**
-	 * stepDown the input according to the button that was clicked
-	 * handles IE/Edge
+	 * Step down the input according to the button that was clicked
+	 * handles IE/Edge.
 	 *
 	 * @since TBD
 	 */
@@ -261,7 +261,7 @@ tribe.tickets.block = {
 			$input[ 0 ].value = decrease;
 		}
 
-		// Update total count in footer
+		// Update total count in footer.
 		if ( 0 < change ) {
 			obj.footerCount( $input, change, 'minus' );
 		}
@@ -269,14 +269,14 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Adjust the footer count for +/-
+	 * Adjust the footer count for +/-.
 	 *
 	 * @param int    step      The amount to increase/decrease
 	 * @param string direction The direction to change 'add' adds, anything else subtracts.
 	 */
 	obj.footerCount = function( $input, step, direction ) {
 		var $field = $input.closest( 'form' ).find( '.tribe-tickets__item__footer__quantity__number' );
-		// Update total count in footer
+		// Update total count in footer.
 		var footerCount = parseInt( $field.text() ) || 0;
 
 		if ( 'add' === direction ) {
@@ -295,7 +295,7 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Init the tickets script
+	 * Init the tickets script.
 	 *
 	 * @since 4.9
 	 *
@@ -308,7 +308,7 @@ tribe.tickets.block = {
 	obj.init();
 
 	/*
-	 * AR Cart Modal Selectors
+	 * AR Cart Modal Selectors.
 	 *
 	 * @since TBD
 	 *
@@ -327,7 +327,7 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * On Change of Modal Cart Qty Update Item
+	 * On Change of Modal Cart Qty Update Item.
 	 *
 	 * @since TBD
 	 *
@@ -344,7 +344,7 @@ tribe.tickets.block = {
 	} );
 
 	/**
-	 * Remove Item from Cart Modal
+	 * Remove Item from Cart Modal.
 	 *
 	 * @since TBD
 	 *
@@ -387,7 +387,7 @@ tribe.tickets.block = {
 	);
 
 	/**
-	 * When Modal Qty is updated, update the cart totals in modal
+	 * When Modal Qty is updated, update the cart totals in modal.
 	 *
 	 * @since TBD
 	 *
@@ -401,7 +401,7 @@ tribe.tickets.block = {
 	} );
 
 	/**
-	 * When Get Tickets CLicked Update the Modal
+	 * When Get Tickets CLicked Update the Modal.
 	 *
 	 * @since TBD
 	 *
@@ -424,11 +424,11 @@ tribe.tickets.block = {
 	} );
 
 	/**
-	 * Update Cart Totals in Modal
+	 * Update Cart Totals in Modal.
 	 *
 	 * @since TBD
 	 *
-	 * @param $cart the jQuery cart object to update totals
+	 * @param $cart The jQuery cart object to update totals.
 	 */
 	obj.updateCartTotals = function ( $cart ) {
 		var total_qty = 0;
@@ -463,7 +463,7 @@ tribe.tickets.block = {
 				var ticketID = $modalCartItem.closest( '.tribe-block__tickets__item' ).data( 'ticket-id' );
 				var $ticket_container = $( '#tribe-modal__attendee_registration' ).find( '.tribe-block__tickets__item__attendee__fields__container[data-ticket-id="' + ticketID + '"]' );
 				if ( ! $ticket_container.length ) {
-					// Ticket does not have meta - no need to jump through hoops (and throw errors)
+					// Ticket does not have meta - no need to jump through hoops (and throw errors).
 					return;
 				}
 				var $existing = $ticket_container.find( '.tribe-ticket' );
@@ -493,13 +493,13 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Possibly Update an Items Qty and always update the Total
+	 * Possibly Update an Items Qty and always update the Total.
 	 *
 	 * @since TBD
 	 *
-	 * @param int id the id of the ticket/product
-	 * @param obj modalCartItem the cart item to update
-	 * @param obj blockCartItem the optional ticket block cart item
+	 * @param int id            The id of the ticket/product.
+	 * @param obj modalCartItem The cart item to update.
+	 * @param obj blockCartItem The optional ticket block cart item.
 	 *
 	 * @returns {number}
 	 */
@@ -533,11 +533,11 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Get the Quantity
+	 * Get the Quantity.
 	 *
 	 * @since TBD
 	 *
-	 * @param obj cartItem the cart item to update
+	 * @param obj cartItem The cart item to update.
 	 *
 	 * @returns {number}
 	 */
@@ -549,11 +549,11 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Get the Price
+	 * Get the Price.
 	 *
 	 *
-	 * @param obj cartItem the cart item to update
-	 * @params string cssClass the string of the class to get the price from
+	 * @param obj cartItem     The cart item to update.
+	 * @params string cssClass The string of the class to get the price from.
 	 *
 	 * @returns {number}
 	 */
@@ -565,13 +565,13 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Update the Price for the Given Cart Item
+	 * Update the Price for the Given Cart Item.
 	 *
 	 * @since TBD
 	 *
-	 * @param number qty the quantity
-	 * @param number price the price
-	 * @param obj cartItem the cart item to update
+	 * @param number qty   The quantity.
+	 * @param number price The price.
+	 * @param obj cartItem The cart item to update.
 	 *
 	 * @returns {string}
 	 */
@@ -585,7 +585,7 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Get the Currency Formatting for a Provider
+	 * Get the Currency Formatting for a Provider.
 	 *
 	 * @since TBD
 	 *
@@ -600,12 +600,12 @@ tribe.tickets.block = {
 	};
 
 	/**
-	 * Format the number according to provider settings
-	 * Based off coding fron https://stackoverflow.com/a/2901136
+	 * Format the number according to provider settings.
+	 * Based off coding fron https://stackoverflow.com/a/2901136.
 	 *
 	 * @since TBD
 	 *
-	 * @param number the number to format
+	 * @param number The number to format.
 	 * @returns {string}
 	 */
 	obj.numberFormat = function ( number ) {

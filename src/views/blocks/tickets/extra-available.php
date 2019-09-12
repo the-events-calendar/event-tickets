@@ -16,10 +16,10 @@
  */
 
 $ticket    = $this->get( 'ticket' );
-if ( -1 === $ticket->available() ) {
+$available = $ticket->available();
+if ( -1 === $available ) {
 	return;
 }
-$available = $ticket->available();
 ?>
 <div
 	class="tribe-common-b3 tribe-block__tickets__item__extra__available"

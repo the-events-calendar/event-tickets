@@ -27,7 +27,7 @@ if ( ! $ticket->show_description() || empty( $ticket->description ) ) {
 }
 ?>
 <div
-	class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>"
+	<?php tribe_classes( $classes ); ?>
 >
 	<?php echo $ticket->name; ?>
 </div>

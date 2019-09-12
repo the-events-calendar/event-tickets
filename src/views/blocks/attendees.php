@@ -24,7 +24,7 @@ if ( ! is_array( $attendees ) ) {
 ?>
 <div
 	id="tribe-block__attendees"
-	class="<?php echo esc_attr( implode( ' ', $classes ) ); ?>">
+	<?php tribe_classes( $classes ); ?>
 
 	<?php $this->template( 'blocks/attendees/title', array( 'title' => $title ) ); ?>
 
