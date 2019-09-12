@@ -13,7 +13,7 @@
 	font-smoothing: antialiased;
 	margin: var(--spacer-5) 0;
 	max-width: 580px;
-	padding: var(--spacer-3);
+	padding: var(--spacer-3) var(--spacer-3)  var(--spacer-4);
 	width: 100%;
 
 	@media(--viewport-medium) {
@@ -49,6 +49,7 @@
 
 	.tribe-block__tickets__item__content {
 		align-items: center;
+		align-self: flex-start;
 		display: grid;
 		flex: 1 1 calc(100% - 82px);
 		grid-template-columns: 1fr 1fr;
@@ -67,6 +68,7 @@
 		grid-column: 1 / span 2;
 		grid-row: 1;
 		line-height: 1;
+		padding: var(--spacer-1) 0;
 
 		@media(--viewport-medium) {
 			line-height: 1;
@@ -86,8 +88,8 @@
 		grid-column: 1 / span 2;
 		grid-row: 3;
 
-		&:not(.tribe__details--open) {
-			display: none;
+		&.tribe__details--open {
+			display: block;
 		}
 
 		.tribe-block__tickets& {
@@ -101,8 +103,10 @@
 
 	.tribe-block__tickets__item__details__summary {
 		color: var(--color-text-secondary);
+		display: grid;
 		grid-column: 2;
 		grid-row: 1;
+		justify-content: flex-start;
 		padding-left: var(--spacer-0);
 
 		.tribe-modal__cart& {
