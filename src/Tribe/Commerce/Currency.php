@@ -597,15 +597,11 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
-			$decimal_sep = get_option( 'woocommerce_price_decimal_sep' );
-
-			return $decimal_sep;
+			return get_option( 'woocommerce_price_decimal_sep' );
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
-			$decimal_sep = edd_get_option( 'decimal_separator', '.' );
-
-			return $decimal_sep;
+			return edd_get_option( 'decimal_separator', '.' );
 		}
 
 		return $this->get_currency_locale( 'decimal_point' );
@@ -627,15 +623,11 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
-			$decimal_sep = get_option( 'woocommerce_price_thousand_sep' );
-
-			return $decimal_sep;
+			return get_option( 'woocommerce_price_thousand_sep' );
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider && function_exists( 'edd_get_option' ) ) {
-			$decimal_sep = edd_get_option( 'thousands_separator', '.' );
-
-			return $decimal_sep;
+			return edd_get_option( 'thousands_separator', '.' );
 		}
 
 		return $this->get_currency_locale( 'thousands_sep' );
@@ -657,13 +649,10 @@ class Tribe__Tickets__Commerce__Currency {
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__WooCommerce__Main' === $provider ) {
-			$decimals = get_option( 'woocommerce_price_num_decimals' );
-
-			return $decimals;
+			return get_option( 'woocommerce_price_num_decimals' );
 		}
 
 		if ( 'Tribe__Tickets_Plus__Commerce__EDD__Main' === $provider ) {
-
 			/**
 			 * Filter the Amount of Decimals for EDD
 			 *
