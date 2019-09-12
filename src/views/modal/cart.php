@@ -44,5 +44,6 @@ $currency        = tribe( 'tickets.commerce.currency' );
 			<?php $template_obj->template( 'blocks/tickets/item', [ 'ticket' => $ticket, 'key' => $key, 'is_modal' => true, 'currency_symbol' => $currency_symbol ] ); ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
+
 	<?php $template_obj->template( 'blocks/tickets/footer', [ 'is_modal' => true ] ); ?>
 </form>

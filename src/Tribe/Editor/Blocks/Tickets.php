@@ -83,21 +83,32 @@ extends Tribe__Editor__Blocks__Abstract {
 	public function assets() {
 		$plugin = Tribe__Tickets__Main::instance();
 
+		$providers = tribe( 'tickets.data_api' )->get_providers_for_post( null );
+		$currency = tribe( 'tickets.commerce.currency' )->get_currency_config_for_provider( $providers, null );
+
 		tribe_asset(
 			$plugin,
 			'tribe-tickets-gutenberg-tickets',
 			'tickets-block.js',
-			array( 'jquery', 'jquery-ui-datepicker' ),
+			[ 'jquery', 'jquery-ui-datepicker' ],
 			null,
-			array(
+			[
 				'type'         => 'js',
-				'localize'     => array(
-					'name' => 'TribeTickets',
-					'data' => array(
-						'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
-					),
-				),
-			)
+				'localize'     => [
+					[
+						'name' => 'TribeTickets',
+						'data' => array(
+							'ajaxurl' => admin_url( 'admin-ajax.php', ( is_ssl() ? 'https' : 'http' ) ),
+						),
+					],
+					[
+						'name' => 'TribeCurrency',
+						'data' => array(
+							'formatting' => json_encode( $currency ),
+						),
+					],
+				],
+			]
 		);
 	}
 
