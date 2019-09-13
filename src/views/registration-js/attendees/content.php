@@ -52,7 +52,6 @@ $meta    = tribe( 'tickets-plus.main' )->meta();
 						'saved_meta' => $saved_meta,
 					];
 
-
 					$this->template( 'registration-js/attendees/fields', $args );
 					$ticket_qty--;
 				?>
