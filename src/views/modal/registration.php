@@ -16,7 +16,7 @@ $passed_provider_class = tribe( 'tickets.attendee_registration.view' )->get_form
 $provider_class = $passed_provider_class;
 $providers = array_unique( wp_list_pluck( wp_list_pluck( $tickets, 'provider'), 'attendee_object') );
 $has_tpp               = Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT === $passed_provider || in_array( Tribe__Tickets__Commerce__PayPal__Main::ATTENDEE_OBJECT, $providers);
-$event_id = get_the_id();
+$event_id = get_the_ID();
 ?>
 
 <div class="tribe-block__tickets__item__attendee__fields">
