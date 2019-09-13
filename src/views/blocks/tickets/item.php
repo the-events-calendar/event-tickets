@@ -20,9 +20,12 @@ $classes  = [ 'tribe-block__tickets__item' ];
 $provider = $this->get( 'provider' );
 $ticket   = $this->get( 'ticket' );
 $modal    = $this->get( 'is_modal' );
+$currency_symbol = $this->get( 'currency_symbol' );
 $context  = [
-	'ticket' => $ticket,
-	'key'    => $this->get( 'key' ),
+	'ticket'  => $ticket,
+	'key'     => $this->get( 'key' ),
+	'is_modal' => $modal,
+	'currency_symbol' => $currency_symbol,
 ];
 
 if (
@@ -30,6 +33,11 @@ if (
 	|| $ticket->provider_class !== $provider->class_name
 ) {
 	return false;
+}
+
+$must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
+if ( $must_login ) {
+	$classes[] = 'tribe-block__tickets__item__disabled';
 }
 ?>
 <div
@@ -40,9 +48,7 @@ if (
 >
 	<input type="hidden" name="product_id[]" value="<?php echo esc_attr( $ticket->ID ); ?>" />
 	<?php if ( true === $modal ) { $this->template( 'modal/item-remove', $context ); } ?>
-	<?php $this->template( 'blocks/tickets/icon', $context ); ?>
 	<?php $this->template( 'blocks/tickets/content', $context ); ?>
-	<?php $this->template( 'blocks/tickets/extra', $context ); ?>
 	<?php $this->template( 'blocks/tickets/quantity', $context ); ?>
 	<?php if ( true === $modal ) { $this->template( 'modal/item-total', $context ); } ?>
 </div>

@@ -718,9 +718,9 @@
             "authors": [
                 {
                     "name": "Franck Nijhof",
+                    "role": "Developer",
                     "email": "f.nijhof@dealerdirect.nl",
-                    "homepage": "http://workingatdealerdirect.eu",
-                    "role": "Developer"
+                    "homepage": "http://workingatdealerdirect.eu"
                 }
             ],
             "description": "PHP_CodeSniffer Standards Composer Installer Plugin",

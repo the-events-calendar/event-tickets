@@ -20,20 +20,24 @@
  */
 
 $must_login = ! is_user_logged_in() && $ticket->get_provider()->login_required();
-
-$ticket = $this->get( [ 'ticket' ] );
+$ticket     = $this->get( 'ticket' );
 
 /** @var Tribe__Tickets__Tickets_Handler $handler */
-$handler = tribe( 'tickets.handler' );
-
+$handler      = tribe( 'tickets.handler' );
 $max_quantity = $handler->get_ticket_max_purchase( $ticket->ID );
+
+$container_classes = [ 'tribe-block__tickets__item__quantity__number' ];
+if ( $must_login ) {
+	$container_classes[] = 'tribe-block__tickets__disabled';
+}
+$container_classes = implode( ' ', $container_classes);
 ?>
 <div
-	class="tribe-block__tickets__item__quantity__number"
+	class="<?php echo esc_attr( $container_classes ); ?>"
 >
 	<input
 		type="number"
-		class="tribe-ticket-quantity"
+		class="tribe-ticket-quantity tribe-common-h3 tribe-common-h4--min-medium"
 		step="1"
 		min="0"
 		<?php if ( -1 !== $max_quantity ) : ?>
