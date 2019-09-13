@@ -238,8 +238,8 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Step up the input according to the button that was clicked
-	 * handles IE/Edge.
+	 * Step up the input according to the button that was clicked.
+	 * Handles IE/Edge.
 	 *
 	 * @since TBD
 	 */
@@ -261,8 +261,8 @@ tribe.tickets.block = {
 	}
 
 	/**
-	 * Step down the input according to the button that was clicked
-	 * handles IE/Edge.
+	 * Step down the input according to the button that was clicked.
+	 * Handles IE/Edge.
 	 *
 	 * @since TBD
 	 */
